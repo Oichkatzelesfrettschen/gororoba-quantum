@@ -86,6 +86,7 @@ EOF
             | select(.performed_via_github_app.node_id == "A_kwHOAOQ6Gs4AEXij")
             | select(.body | test("codex-pull-request-review-summary") | not)
             | select(.body
+                     | sub("^<!-- codex-review-receipt:v1 -->[[:space:]]*"; "")
                      | startswith("Codex Review: Didn'"'"'t find any major issues"))
             | [.created_at,
                (try (.body

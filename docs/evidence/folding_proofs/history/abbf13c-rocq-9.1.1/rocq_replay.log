@@ -1,0 +1,33 @@
+The Rocq Prover, version 9.1.1
+compiled with OCaml 5.4.0
+compile_pass theories/GF2Algebra.v
+compile_pass theories/SignCodeProjection.v
+compile_pass theories/SchreierSignCode.v
+compile_pass theories/SignCodeCardinality.v
+compile_pass theories/BooleanCochainFiltration.v
+compile_pass verified/C881_GF2CubicMinDegree.v
+compile_pass assumptions.v
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+
+CONTEXT SUMMARY
+===============
+
+* Theory: Set is predicative
+  
+* Theory: Rewrite rules are not allowed
+  
+* Axioms: <none>
+  
+* Constants/Inductives relying on type-in-type: <none>
+  
+* Constants/Inductives relying on unsafe (co)fixpoints: <none>
+  
+* Inductives whose positivity is assumed: <none>
+  
+kernel_check_pass

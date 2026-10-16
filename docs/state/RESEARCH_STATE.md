@@ -216,7 +216,7 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Gates: replayed by core-278.
   Depends on: associator-cubic-normal-form.
   Supersedes: withdrawn-ccz-resource-gain.
-- **design-c-cubic-noise-separation** (numerical or stochastic simulation, implementation). Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00, the compiled factorized dim-32 Design C circuit (about 123-128 CZ) keeps the two spectral classes apart at 20,000 shots: collision estimates 0.181-0.253 for the 234 pairs of ideal K = 11/32 and 0.093-0.113 for the 126 pairs of ideal K = 5/32; the Reed-Muller and CCZ normal-form references keep about 86 percent of the ideal gap.
+- **design-c-cubic-noise-separation** (numerical or stochastic simulation, implementation). Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00, the compiled factorized dim-32 Design C circuit (about 123-128 CZ) keeps the two spectral classes apart at 20,000 shots: collision estimates 0.1807-0.2534 for the 234 pairs of ideal K = 11/32 and 0.0933-0.1135 for the 126 pairs of ideal K = 5/32; the Reed-Muller and CCZ normal-form references keep about 86 percent of the ideal gap.
   Boundary: A noise-model prediction (depolarizing and thermal relaxation from the Target, asymmetric readout); coherent errors, crosstalk and leakage are outside it, and no hardware run exists.
   Evidence: [result.json](../evidence/design_c_cubic_noise/result.json), [ibm_kingston.json](../evidence/calibration/ibm_kingston.json), [README.md](../evidence/design_c_cubic_noise/README.md).
   Gates: replayed by core-282.

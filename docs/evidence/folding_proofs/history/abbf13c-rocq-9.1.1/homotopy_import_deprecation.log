@@ -1,0 +1,6 @@
+File "./theories/HomotopyTransferAssociator.v", line 9, characters 0-54:
+Error:
+Error when parsing .vo (from file <ROCQ_PREFIX>/lib/coq/user-contrib/Stdlib/ZArith/ZArith_base.vo) for library Stdlib.ZArith.ZArith_base: Library File (transitively required)
+Stdlib.ZArith.ZArith_base is deprecated since 9.0. use ZArith instead
+[deprecated-transitive-library-file-since-9.0,deprecated-since-9.0,deprecated-transitive-library-file,deprecated]
+
