@@ -55,6 +55,15 @@ ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results/kaggle"
 MODULE_DIRS = ("gororoba_quantum", "scripts")
 KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer-gpu-cu11==0.17.2")
+# A TPU host has no NVIDIA GPU, and the cu11 wheel ships cp313 only, so a
+# TPU kernel takes the CPU build of the same Aer release.
+TPU_KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer==0.17.2")
+
+
+def kernel_pins(machine: str) -> tuple[str, ...]:
+    return TPU_KERNEL_PINS if machine.startswith("Tpu") else KERNEL_PINS
+
+
 # Usage guides every bundle carries, so an agent or author inside a kernel
 # reads the same package manuals, workflow and substrate notes as the host:
 # every tracked file under each directory.
@@ -123,8 +132,14 @@ BUNDLE = "{bundle}"
 
 out = Path("/kaggle/working/output")
 out.mkdir(parents=True, exist_ok=True)
-# The image's numpy and scipy stay fixed while the pins install.
-frozen = [f"{{name}}=={{metadata.version(name)}}" for name in ("numpy", "scipy")]
+# The image's numpy and scipy, and its JAX and libtpu where present, stay
+# fixed while the pins install.
+frozen = []
+for name in ("numpy", "scipy", "jax", "jaxlib", "libtpu"):
+    try:
+        frozen.append(f"{{name}}=={{metadata.version(name)}}")
+    except metadata.PackageNotFoundError:
+        pass
 Path("/tmp/constraints.txt").write_text("\n".join([*PINS, *frozen]) + "\n")
 pip = subprocess.run(
     [sys.executable, "-m", "pip", "install", "-q", "-c", "/tmp/constraints.txt", *PINS, *EXTRA],
@@ -256,7 +271,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
             data = path.read_bytes()
             digests[rel] = sha256(data)
             bundle.writestr(rel, data)
-        device = "CPU" if args.machine == "cpu" else "GPU"
+        device = "CPU" if args.machine == "cpu" or args.machine.startswith("Tpu") else "GPU"
         datasets = [dataset_record(slug) for slug in getattr(args, "dataset", [])]
         job = {
             "entry": entry_rel,
@@ -271,7 +286,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     kernel_dir.mkdir(parents=True)
     extra = [pin for group in getattr(args, "with_groups", []) for pin in PIN_GROUPS[group]]
     runner = RUNNER.format(
-        pins=list(KERNEL_PINS), extra=extra, bundle=base64.b64encode(buffer.getvalue()).decode("ascii")
+        pins=list(kernel_pins(args.machine)), extra=extra, bundle=base64.b64encode(buffer.getvalue()).decode("ascii")
     )
     (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
     tpu = args.machine.startswith("Tpu")
@@ -312,7 +327,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "smoke": smoke,
         "git_commit": revision,
         "untracked_inputs": untracked,
-        "pins": list(KERNEL_PINS),
+        "pins": list(kernel_pins(args.machine)),
         "pin_groups": {group: list(PIN_GROUPS[group]) for group in getattr(args, "with_groups", [])},
         "bundle": digests,
         "datasets": {d["ref"]: d["archive_sha256"] for d in datasets},
