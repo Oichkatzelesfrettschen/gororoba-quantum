@@ -1,4 +1,13 @@
 {
+  "bcdi_nullity_regressions": {
+    "fixtures": {
+      "bracket_e1_0": 12,
+      "generic_h5_perp": 0,
+      "i4_e1": 12,
+      "moreno_unequal_norm": 4
+    },
+    "source": "math/0702075 Proposition 5.11, Proposition 8.2; math/0512517 Section 5"
+  },
   "denominator_per_dimension": "2*binomial(D-1,2) = (D-1)(D-2); global negatives identified",
   "dimensions": [
     {

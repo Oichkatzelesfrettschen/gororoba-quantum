@@ -223,6 +223,33 @@
       "superseded_by": null
     },
     {
+      "id": "a5-d-locus-nullity",
+      "statement": "On 1000 exact rational pairs of sedenion zero divisors (200 Cayley-frame a's, each with five b's under independent rational scale factors, |b|/|a| from 0.18 to 508 on the 200 members), the A_5 element (a + b, e_8 (b - a)) has nullity 12 exactly when b lies in V(a) = span{(a1, -a2), (a2, a1)} + Eig_2(a) and 8 otherwise, reproducing Theorem 1.5 with Corollary 7.4 of Biss-Christensen-Dugger-Isaksen (math/0702075); b drawn from Ann(a), b a positive multiple of a and b a positive multiple of (a2, -a1) all fall outside V(a) with nullity 8, and dim Ann(a) = dim Eig_2(a) = 4 with Ann(a) orthogonal to V(a) on every frame.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Known theorems reproduced on sampled exact points: the certificate covers its 1000 pairs only, decomposes neither D_(5,8) nor D_(5,12), and says nothing about ZD_12(A_5) outside H_5^perp or the bracket-axis limits.",
+      "evidence": [
+        {
+          "path": "docs/evidence/d_locus_nullity/result.json",
+          "sha256": "6a68af644dcf4fd805ea2603048e9e3324f180e8be6d1e45a740ce3d78a8cdc2"
+        }
+      ],
+      "documents": [
+        "docs/evidence/d_locus_nullity/README.md",
+        "docs/notes/math-0702075.md"
+      ],
+      "gates": {
+        "core-323": "replay",
+        "core-324": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "a5-stiefel-universal",
       "statement": "Every A_5 Stiefel element (a, b), a and b pure in A_4, orthogonal, equal norm, is a zero divisor (Moreno, math/0512517, Section 5, at A_5).",
       "domain": "algebra",
@@ -1633,18 +1660,63 @@
       "superseded_by": null
     },
     {
+      "id": "echo-pair-coherent-sign",
+      "statement": "Under the retained ibm_fez, ibm_kingston and ibm_marrakesh noise models of 2026-10-15, the echo-matched pair U Z U^dagger Z U and U U^dagger U on the dark input of e1+e10, compiled once at 141 CZ with a symbolic ancilla reflection so both arms share every non-virtual gate, moves amplified - echo by 1e-3 or more positively only for a PREP angle error (+0.012 to +0.019 at 0.03 rad), and every shift of 1e-3 or more from SX over-rotation, CZ local phase and CZ conditional phase, at both signs, is negative (-0.009 to -0.012 for a 0.01 rad conditional phase, -0.024 to -0.029 for a 0.01 rad local phase), so it separates no physical rotation error from a CZ phase. The edges' conditional phases act jointly: the four single-edge shifts sum to 0.24 to 0.33 of the uniform shift, so a per-edge 2m-CZ Y-basis reference, which cancels local phase and SX over-rotation to 8.3e-4 rad, must, under the uniform-phase model, bound every edge to the joint tolerance of 0.0049 to 0.0058 rad, 340 to 501 Y-basis shots per edge and target state at m = 24 for a 40,000-shot pair.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "A noise-model prediction (gate depolarizing, thermal relaxation and asymmetric readout from the retained snapshots) with each channel injected alone and uniformly (the conditional phase also one edge at a time) at seed-7 compiles; mixed edge-phase vectors are untested, the reference's slope comes from the model rather than a visibility calibration, and its X-quadrature arms and their share of the shot budget are unsized, the residual after the conditional share is unidentified, since extra depolarizing moves the pair the same way; the matched null holds on Kingston only (the incoherent baseline is 1.3 to 1.5 standard errors at 40,000 shots on Fez and Marrakesh), mixtures cancel, leakage and crosstalk are outside it, and no hardware run of the pair exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/echo_dilation_noise/result.json",
+          "sha256": "22ff95398e68e05dd8fc8d2973250362a91cebaa4a9964b4ac702ca9f2df7c50"
+        },
+        {
+          "path": "docs/evidence/echo_dilation_noise/arms.qpy",
+          "sha256": "9da4bdc34cbe308d9bc801725792c30ab1fea0fc34a0352611ca1a722ffcab75"
+        },
+        {
+          "path": "docs/evidence/calibration/history/ibm_fez/20261015T2031280700.json",
+          "sha256": "b244e7b16f771b3d0ee4e2263d8c63b337476c0445a323c90981ee0ac6c5d684"
+        },
+        {
+          "path": "docs/evidence/calibration/history/ibm_kingston/20261015T2035330700.json",
+          "sha256": "1b96aa950e86733f287b80d4a88bd737276a4f4e136f5cfc1ea180c9f69f1865"
+        },
+        {
+          "path": "docs/evidence/calibration/history/ibm_marrakesh/20261015T2046350700.json",
+          "sha256": "6c8c75217326e2dbb03b74d7b5d5df47496176790e4a285b58a048c71bbc166c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/echo_dilation_noise/README.md",
+        "docs/notes/singular_sector_dynamics.md"
+      ],
+      "gates": {
+        "core-313": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "singular-sector-split"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "proposed-echo-matched-dilation",
-      "statement": "Compare U Z U^dagger Z U against U U^dagger U at equal non-virtual gates and duration to separate rotation errors the compiled inverse undoes from conditional CZ phases.",
+      "statement": "Compare U Z U^dagger Z U against U U^dagger U at equal non-virtual gates and duration, with a per-edge CZ-phase reference whose X-quadrature arms calibrate its visibility and common phase, and an incoherent control on the same compile, to measure the error the dark probe carries and bound its conditional-phase share under the uniform-phase model.",
       "domain": "hardware",
       "evidence_class": "proposed experiment",
       "status": "proposed",
-      "boundary": "A mixture can cancel, so it needs an independent CZ-phase reference before a priced case.",
+      "boundary": "Every physical coherent channel and extra depolarizing move the pair the same way under the retained noise models (echo-pair-coherent-sign), edge phases act jointly, and mixtures cancel, so the pair alone separates no rotation error from a CZ phase and leaves the residual unidentified without an incoherent control; the case binds the retained device compile.",
       "evidence": [],
       "documents": [],
       "gates": {},
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [
+        "echo-pair-coherent-sign",
         "singular-sector-split"
       ],
       "supersedes": [],
@@ -2055,6 +2127,54 @@
       "superseded_by": null
     },
     {
+      "id": "cd-sign-row-degree",
+      "statement": "For every n >= 2 and m != 0, the sign row f_m(x) = [cd_sign(2^n, m, x) = -1] of L_{e_m} has algebraic degree exactly n - 1, so octonion left multiplications are Clifford and every sedenion and higher one carries a sign of degree 3 or more.",
+      "boundary": "Written induction from the cd_sign recursion (R), the commutator lemma and the two-point lemma; scripts/cd_phase_degree.py checks every identity it uses and the statement on every row through n = 8, and no proof assistant has checked it.",
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md"
+      ],
+      "domain": "algebra",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "evidence": [],
+      "documents": [
+        "docs/notes/cd_phase_degree.md",
+        "docs/notes/left_mult_sign_rank.md"
+      ],
+      "gates": {
+        "core-320": "replay"
+      },
+      "acquisitions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "cd-associator-phase-degree",
+      "statement": "For every n >= 3 and distinct nonzero i, j < 2^n, the associator phase g_ij of W_ij = L_{e_i e_j}^dagger L_{e_i} L_{e_j} has algebraic degree exactly max(1, bitlen(max(i, j)) - 2), independent of n: each phase splits as A(y) + c xi over the top index bit with c = N(i') + N(j') + N(i' ^ j'), a pair with an index in the top half has A = g' + delta_u + delta_v + const with u != v, and the census adds 3 2^(b-2) (2^(b-1) - 1) pairs of degree b - 2 at bit length b (84, 360, 1488, 6048, 24384 at dims 16 to 256).",
+      "boundary": "Written induction (slice Lemma D, involution Lemma A, two-point Lemma B); scripts/cd_phase_degree.py checks every identity on all ordered pairs and the statement through n = 8, and no proof assistant has checked it. Walsh spectra within one degree, which the degree does not determine, stay with scripts/associator_walsh_classes.py.",
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md"
+      ],
+      "domain": "algebra",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "evidence": [],
+      "documents": [
+        "docs/notes/cd_phase_degree.md",
+        "docs/notes/left_mult_sign_rank.md"
+      ],
+      "gates": {
+        "core-320": "replay"
+      },
+      "acquisitions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "evidence": [
         {
           "path": "docs/evidence/ccz-reduction/normal_form.json",
@@ -2437,6 +2557,39 @@
       "assumptions": [],
       "depends_on": [
         "hw-walk-scaffold-floor"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "a5-rank-locus-local-dimension",
+      "statement": "At exact witnesses, the A_5 rank loci have local dimension 11 on D_(5,16) ({a,0}, a a zero divisor), 17 on D_(5,12) (both entries zero divisors on the D-locus) and 23 on D_(5,8) (both zero divisors off the D-locus): each family's dimension meets the exact upper bound dim{y : U^T L_y V = 0} - 1, so at those witnesses the tangent cone lies in H_5^perp. Every family with a non-zero-divisor coordinate (nullities 12, 8, 4) sits exactly two below its bound, and the listed witnesses outside H_5^perp carry upper bounds only: 15 at Proposition 8.2's nullity-12 (i_4, e_p) and 27 at Moreno's nullity-4 e_1 + e_10 + 2 e_24.",
+      "domain": "geometry",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Local dimensions at 29 named exact points; the family dimensions rest on Theorems 1.5 and 7.5 of math/0702075 and Theorem 15.7 of math/0511691, and the upper bound is a tangent-cone containment. It decomposes no rank locus, counts no components, constructs no family through the witnesses outside H_5^perp, and leaves the two-dimensional gap at non-zero-divisor families open.",
+      "evidence": [
+        {
+          "path": "docs/evidence/rank_locus_local_dimension/result.json",
+          "sha256": "ea92a2a676d82b0e4b27c24414deeab1b3d2d352b983cbf165efa40f14ac0ef6"
+        }
+      ],
+      "documents": [
+        "docs/evidence/rank_locus_local_dimension/README.md",
+        "gororoba_quantum/RANK_STRATUM_TOPOLOGY.md",
+        "docs/notes/math-0702075.md",
+        "docs/notes/math-0511691.md"
+      ],
+      "gates": {
+        "core-328": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "Theorem 1.5 and Theorem 7.5 of math/0702075 as stated in docs/notes/math-0702075.md",
+        "Theorem 15.7 of math/0511691 (unit zero divisors of A_4 form V_2(R^7)) as stated in docs/notes/math-0511691.md"
+      ],
+      "depends_on": [
+        "a5-d-locus-nullity"
       ],
       "supersedes": [],
       "superseded_by": null
