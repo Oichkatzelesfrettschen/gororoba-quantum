@@ -67,7 +67,6 @@ import hashlib
 import importlib.metadata
 import json
 import math
-import os
 import re
 import sys
 import time
@@ -707,7 +706,7 @@ def check(path: Path, run_dir: Path) -> int:
                         params[k] = moved
                         probes.append((name, k, moved))
                         items.append((index, name, tuple(params), member))
-    results = parallel.ordered_map(ScoreTask(lanes, "CPU"), items, min_items=1)
+    results = parallel.ordered_map(ScoreTask(lanes, calibration_snapshot.aer_device()), items, min_items=1)
     replayed = iter(results)
     baseline_ll = None
     for name, row in models:
@@ -770,7 +769,7 @@ def main() -> int:
     channels = args.channels.split(",") if args.channels else None
     if channels and set(channels) - set(CHANNELS):
         parser.error(f"unknown channels {sorted(set(channels) - set(CHANNELS))}")
-    result = run(os.environ.get("GOROROBA_AER_DEVICE", "CPU"), lanes, channels)
+    result = run(calibration_snapshot.aer_device(), lanes, channels)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     print(f"wrote {args.out}: {len(result['lanes'])} lanes in {result['seconds']} s")

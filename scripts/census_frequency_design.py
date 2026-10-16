@@ -37,7 +37,7 @@ that sampled references cost.
 
 ``--pairs all`` or ``--pairs I,J;I,J``. ``--check FILE`` requires FILE to hold
 every ordered pair exactly once, recomputes its summary from its records
-exactly, prints the reference allocation, reruns the named pairs on the CPU
+exactly, prints the reference allocation, reruns the named pairs on GOROROBA_AER_DEVICE
 and requires each P(c = 1) within five binomial standard errors and the CZ
 counts exactly.
 """
@@ -47,7 +47,6 @@ from __future__ import annotations
 import argparse
 import json
 import math
-import os
 import sys
 from fractions import Fraction
 from pathlib import Path
@@ -291,17 +290,17 @@ def main() -> int:
         print(json.dumps({"reference_allocation": reference_allocation(retained)}))
         named = {tuple(r["pair"]): r for r in retained["records"]}
         subset = list(named) if args.pairs == "all" else pairs_of(args.pairs)
-        fresh = run(subset, "CPU", retained["shots"])
+        fresh = run(subset, calibration_snapshot.aer_device(), retained["shots"])
         for record in fresh["records"]:
             old = named[tuple(record["pair"])]
             require(old["cz"] == record["cz"], f"pair {record['pair']}: CZ count differs")
             for a, b in zip(old["p1"], record["p1"], strict=True):
                 bound = 5 * math.sqrt(2 * max(a * (1 - a), 1 / retained["shots"]) / retained["shots"])
                 require(abs(a - b) <= bound, f"pair {record['pair']}: P(c=1) {a} against {b}")
-        print(f"{args.check}: pairs {subset} reproduced on the CPU")
+        print(f"{args.check}: pairs {subset} reproduced on {calibration_snapshot.aer_device()}")
         return 0
     require(args.out is not None, "--out is required")
-    result = run(pairs_of(args.pairs), os.environ.get("GOROROBA_AER_DEVICE", "CPU"), args.shots)
+    result = run(pairs_of(args.pairs), calibration_snapshot.aer_device(), args.shots)
     result["summary"] = summarize(result)
     print(json.dumps(result["summary"]), flush=True)
     args.out.parent.mkdir(parents=True, exist_ok=True)

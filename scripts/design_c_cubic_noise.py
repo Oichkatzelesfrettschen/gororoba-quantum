@@ -18,11 +18,11 @@ collision estimate sum_y n_y (n_y - 1) / (S (S - 1)) and the ideal K.
 
 ``--pairs all`` runs the 360 pairs; ``--pairs I,J;I,J`` names a subset.
 ``--check FILE`` reruns the ``--pairs`` subset of FILE (every pair with
-``--pairs all``) on the CPU, so the replay gate re-derives two class
+``--pairs all``) on GOROROBA_AER_DEVICE, so the replay gate re-derives two class
 representatives of a 360-pair Kaggle result, and requires each TV distance and collision estimate to
 agree within five standard errors of a difference of two independent
 estimates at FILE's shot count: sqrt(2/S) for TV and 2 sqrt(2K/S) for the
-collision estimate, so a CPU replay re-derives a GPU result.
+collision estimate, so a replay on either device re-derives the result.
 """
 
 from __future__ import annotations
@@ -30,7 +30,6 @@ from __future__ import annotations
 import argparse
 import json
 import math
-import os
 import sys
 from collections import Counter
 from pathlib import Path
@@ -160,7 +159,7 @@ def check(path: Path, subset: list[tuple[int, int]]) -> int:
         require(classes == CLASS_SIZES, f"{path} class sizes {dict(classes)} differ from {CLASS_SIZES}")
     require(all(pair in by_pair for pair in subset), f"{path} lacks one of the pairs {subset}")
     pairs = subset or list(by_pair)
-    fresh = run(pairs, "CPU", shots)
+    fresh = run(pairs, calibration_snapshot.aer_device(), shots)
     for old, new in zip((by_pair[p] for p in pairs), fresh["records"], strict=True):
         for name in IMPLEMENTATIONS:
             for metric in ("tv", "collision"):
@@ -175,7 +174,8 @@ def check(path: Path, subset: list[tuple[int, int]]) -> int:
                 old[name]["final_layout"] == new[name]["final_layout"],
                 f"pair {old['pair']} {name} routes onto different physical qubits",
             )
-    print(f"{path}: {len(pairs)} pairs reproduced on the CPU within {TOLERANCE_SIGMAS} sigma")
+    device = calibration_snapshot.aer_device()
+    print(f"{path}: {len(pairs)} pairs reproduced on {device} within {TOLERANCE_SIGMAS} sigma")
     return 0
 
 
@@ -189,7 +189,7 @@ def main() -> int:
     if args.check:
         return check(args.check, parse_pairs(args.pairs) if args.pairs != "all" else [])
     require(args.out is not None, "--out is required")
-    result = run(parse_pairs(args.pairs), os.environ.get("GOROROBA_AER_DEVICE", "CPU"), args.shots)
+    result = run(parse_pairs(args.pairs), calibration_snapshot.aer_device(), args.shots)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     return 0
