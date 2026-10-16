@@ -20,14 +20,19 @@ phase).
 docs/evidence/submitted_circuits/comparison.json. ``--check`` needs no network:
 it requires the file to name exactly the audit's jobs and runs, every
 retained circuit file to keep its recorded digest, each job's item count to
-equal both its expected PUB list and the audit's pub_count, and every item
-to match its expected circuit at the same position.
+equal both its expected PUB list and the audit's pub_count, and the QPY
+sha256 that --write recorded for every submitted item to equal the QPY
+sha256 of the expected circuit at the same position, recomputed from the
+retained file. A circuit the service returns and the equal archived circuit
+serialize to identical QPY bytes, so the gate re-derives the comparison
+rather than trusting a recorded count.
 """
 
 from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import sys
 from pathlib import Path
@@ -36,7 +41,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 AUDIT = ROOT / "results/live/qpu-job-retention-audit.json"
 OUT = ROOT / "docs/evidence/submitted_circuits/comparison.json"
-SCHEMA = "submitted-circuit-comparison-v2"
+SCHEMA = "submitted-circuit-comparison-v3"
 
 
 def require(condition: bool, message: str) -> None:
@@ -63,6 +68,27 @@ def expected_order(job: dict[str, Any]) -> tuple[Path, list[str] | None]:
     return path, None
 
 
+def qpy_digest(circuit: Any) -> str:
+    """sha256 of a circuit's QPY serialization; equal service and archived circuits serialize identically."""
+    from qiskit import qpy
+
+    buffer = io.BytesIO()
+    qpy.dump(circuit, buffer)
+    return hashlib.sha256(buffer.getvalue()).hexdigest()
+
+
+def expected_circuits(row: dict[str, Any]) -> list[Any]:
+    """The retained circuits a job's items must equal, in order, rebuilt from the retained file."""
+    from qiskit import qpy
+
+    with (ROOT / row["retained_file"]).open("rb") as stream:
+        retained = list(qpy.load(stream))
+    if row["order_source"] == "retained submission order":
+        return retained
+    by_name = {circuit.name: circuit for circuit in retained}
+    return [by_name[name] for name in row["expected_pubs"]]
+
+
 def write() -> int:
     from qiskit import qpy
     from qiskit_ibm_runtime import QiskitRuntimeService
@@ -84,6 +110,7 @@ def write() -> int:
             source = "record.json submission.jobs[].pubs"
         items = service.job(job["job_id"]).inputs["quantum_program"].items
         circuits = [getattr(item, "circuit", None) for item in items]
+        submitted_digests = [qpy_digest(c) if c is not None else None for c in circuits]
         matched = sum(
             got is not None and index < len(expected) and got == expected[index] for index, got in enumerate(circuits)
         )
@@ -98,6 +125,7 @@ def write() -> int:
                 "items": len(items),
                 "item_kinds": sorted({type(item).__name__ for item in items}),
                 "positional_matches": matched,
+                "submitted_qpy_sha256": submitted_digests,
             }
         )
         print(json.dumps({k: v for k, v in rows[-1].items() if k != "expected_pubs"}), flush=True)
@@ -117,7 +145,14 @@ def check() -> int:
         path = ROOT / row["retained_file"]
         require(hashlib.sha256(path.read_bytes()).hexdigest() == row["retained_sha256"], f"{path} changed")
         pub_count = audited[row["job_id"]]["pub_count"]
-        require(row["items"] == pub_count == len(row["expected_pubs"]), f"{row['job_id']}: item and PUB counts differ")
+        counts_agree = row["items"] == pub_count == len(row["expected_pubs"])
+        require(counts_agree, f"{row['job_id']}: item and PUB counts differ")
+        expected = [qpy_digest(circuit) for circuit in expected_circuits(row)]
+        require(len(row["submitted_qpy_sha256"]) == row["items"], f"{row['job_id']}: item digests are incomplete")
+        mismatched = [
+            k for k, (got, want) in enumerate(zip(row["submitted_qpy_sha256"], expected, strict=True)) if got != want
+        ]
+        require(not mismatched, f"{row['job_id']}: submitted items {mismatched} differ from the retained circuits")
         require(row["positional_matches"] == row["items"], f"{row['job_id']}: an item differs from its circuit")
         require(row["item_kinds"] == ["CircuitItem"], f"{row['job_id']}: item kinds {row['item_kinds']}")
     items = sum(r["items"] for r in rows)

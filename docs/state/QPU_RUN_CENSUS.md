@@ -43,11 +43,14 @@ back-action needs the repeated-readout arm that
 `proposed-first-bit-readout-controls` names, which this design lacks and
 which would need its own dry run.
 
-**Submit commands**, valid only for the records above and only after the
-owner approves the case; a calibration change before submission makes the
+**Submit commands**, run from the repository root (the block changes into
+`gororoba_quantum/`, where live_run.py and its `../results/live` paths
+resolve), valid only for the records above and only after the owner
+approves the case; a calibration change before submission makes the
 comparison write `approval_required` and send nothing:
 
 ```sh
+cd gororoba_quantum
 "$PYTHON" live_run.py --groups conditional_ramsey --backends ibm_kingston --exclude-qubits ibm_kingston:0-66,69-155 --shots 1024 --max-replicas 1 --no-isolated-reference --max-pending 100 --max-execution-seconds 20 --max-total-execution-seconds 20 --reserve-seconds 60 --min-remaining-seconds 60 --out ../results/live --approved-record ../results/live/2026-10-15T224704.122016Z --approved-record-sha256 b29c0a3825f09f1c90c078d244beb875739d8c97fbcb85ce328e64ed8f1707b5 --submit
 "$PYTHON" live_run.py --groups conditional_ramsey --backends ibm_kingston --exclude-qubits ibm_kingston:0-65,68-155 --shots 1024 --max-replicas 1 --no-isolated-reference --max-pending 100 --max-execution-seconds 20 --max-total-execution-seconds 20 --reserve-seconds 60 --min-remaining-seconds 60 --out ../results/live --approved-record ../results/live/2026-10-15T224725.179602Z --approved-record-sha256 fceebffbb3376d6c9676da907a1077719f412622ae2ad5f0199335517f597b0f --submit
 "$PYTHON" live_run.py --groups crossed_tile_template --backends ibm_kingston --exclude-qubits ibm_kingston:4-103,108-155 --shots 512 --max-replicas 2 --no-isolated-reference --max-pending 100 --max-execution-seconds 15 --max-total-execution-seconds 15 --reserve-seconds 60 --min-remaining-seconds 60 --out ../results/live --approved-record ../results/live/2026-10-15T224747.140174Z --approved-record-sha256 8c7764d2e40c3e102b3cd089e956a951c3d19c7650a4ec9fd1b8e27d9372d030 --submit
