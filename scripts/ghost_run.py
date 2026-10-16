@@ -32,8 +32,9 @@ skipped with the record's reason.
 ``--runs all`` ghosts every audited run; ``--runs RUN[,RUN]`` names run
 directories. ``--states execution,current`` or ``all``. The entry reads
 GOROROBA_AER_DEVICE (CPU by default). ``--check FILE`` reruns the
-execution-state ghost of the runs FILE names on the CPU and requires each
-mean TV distance to agree within five standard errors.
+execution-state ghost of the runs FILE names (or of the ``--runs`` subset)
+on the CPU and requires each mean TV distance to agree within five standard
+errors.
 """
 
 from __future__ import annotations
@@ -231,9 +232,12 @@ def main() -> int:
     index = json.loads(INDEX.read_text(encoding="utf-8"))
     if args.check:
         retained = json.loads(args.check.read_text(encoding="utf-8"))
+        named = None if args.runs == "all" else set(args.runs.split(","))
+        checked = 0
         for run in retained["runs"]:
-            if "skipped" in run:
+            if "skipped" in run or (named is not None and run["run"] not in named):
                 continue
+            checked += 1
             fresh = ghost_run(run["run"], "execution", "CPU", index)
             for relative, summary in run["summary"].items():
                 if summary["state"] != "execution":
@@ -244,7 +248,8 @@ def main() -> int:
                     abs(old - new) <= 5 * math.sqrt(2.0 / (pairs * run["shots"])) + 1e-3,
                     f"{run['run']}: {old} vs {new}",
                 )
-        print(f"{args.check}: execution-state ghosts reproduced on the CPU")
+        require(checked > 0 and (named is None or checked == len(named)), "--runs names a run FILE lacks")
+        print(f"{args.check}: execution-state ghosts of {checked} runs reproduced on the CPU")
         return 0
     require(args.out is not None, "--out is required")
     runs = audited_runs() if args.runs == "all" else args.runs.split(",")
