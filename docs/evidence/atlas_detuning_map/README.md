@@ -1,9 +1,9 @@
 # Frame detunings fitted to the Fez ripple atlas, on the executed circuits
 
-`result.json` (schema v4) is the output of `scripts/atlas_detuning_map.py
+`result.json` (schema v5) is the output of `scripts/atlas_detuning_map.py
 --lanes all` at its committed revision, run as the Kaggle CPU kernel
 `gororoba-atlas-detuning-map` (run directory
-results/kaggle/2026-10-16T110034Z-gororoba-atlas-detuning-map; the stack
+results/kaggle/2026-10-16T112536Z-gororoba-atlas-detuning-map; the stack
 proof passed and every file of the `gororoba-retained-runs` dataset matched
 its manifest). It replaces the notebook `correlated-coherent`, whose
 over-rotation test could not change a Z-basis population
@@ -38,6 +38,20 @@ hardware-minus-replay offsets:
 | 5 | 126, 127, 128, 137, 147 | 33-50 | 0.028 | 0.130 | 0.113 / 0.108 | 0.130 / 0.131 | 0.324 / 0.339 |
 | 6 | 103, 104, 105, 106, 117 | 36-50 | 0.022 | 0.129 | 0.074 / 0.086 | 0.151 / 0.151 | 0.073 / 0.077 |
 
+A held-out residual carries the held-out edge's shot noise and the noise of
+the prediction fitted to the other 11 edges, so each model has its own
+leave-one-out noise floor, the RMS of both propagated through the fit (rad):
+
+| Lane | Lane mean | Detuning | CZ phase | Both |
+| ---: | ---: | ---: | ---: | ---: |
+| 0 | 0.037 | 0.049 | 0.045 | 0.098 |
+| 1 | 0.023 | 0.029 | 0.027 | 0.071 |
+| 2 | 0.021 | 0.028 | 0.026 | 0.049 |
+| 3 | 0.029 | 0.038 | 0.034 | 0.069 |
+| 4 | 0.024 | 0.035 | 0.030 | 0.060 |
+| 5 | 0.030 | 0.041 | 0.037 | 0.076 |
+| 6 | 0.023 | 0.032 | 0.028 | 0.052 |
+
 - Resimulated at its fitted values, a static frame detuning per qubit
   predicts held-out edges better than the lane mean on six of seven lanes,
   often halving the error (lane 2: 0.212 to 0.093 rad). Lane 0, where no
@@ -49,9 +63,13 @@ hardware-minus-replay offsets:
   Kingston coherence-window rotation (`hw-idle-detuning-scale`), here on a
   different device and day. Lane 0's 117 kHz on qubit 113 comes from the lane
   the model does not explain.
-- Residuals stay 2.9 to 5.4 times the shot noise (best model per lane), so detuning is the largest
-  identified part of the offset, not all of it. The joint model, about 9
-  parameters on 12 edges, overfits on most lanes.
+- Against its own leave-one-out floor, the resimulated detuning model
+  leaves 2.7 to 4.1 times the noise on lanes 1 to 6, so a static detuning
+  is the largest identified part of the offset, not all of it. The joint
+  model (about 9 parameters on 12 edges) comes within 1.2 to 1.6 times its
+  floor on lanes 1, 3 and 6, where detuning plus CZ phase accounts for the
+  offsets to about the noise, and overfits on lanes 2, 4 and 5 (4.5 to 5.1
+  times).
 - A first version of this fit recompiled each edge itself (57 to 94 CZ
   against the 33 to 53 the hardware ran); it was withdrawn before
   publication. Every response here comes from the executed circuits.
