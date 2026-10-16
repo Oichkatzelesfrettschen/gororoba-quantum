@@ -2381,6 +2381,65 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "walk-scaffold-single-channel-exclusion",
+      "statement": "Added to live_run's calibrated noise model under each member's execution calibration, none of six single candidate channels (end-of-circuit flips, SX over-rotation, CZ local phase, CZ conditional phase, extra amplitude damping, extra depolarizing; one parameter per qubit or edge, coherent angles within 0.15 rad) fitted on the walk readout0 member reproduces the floor and predicts the lane's 13 other walk members in any of the four Fez and Kingston lanes: held-out deviance 2,955 to 31,661 on 195 degrees of freedom. Three fits pass the readout0 gate: CZ local phase on Fez 1-4 (p = 0.018) and on Kingston 59, 73-75 (p = 0.30), and end flips on Kingston 59, 73-75 (p = 0.028); the two Kingston fits predict its held-out members worse than the baseline, and the Fez fit leaves held-out deviance 7,202.",
+      "domain": "implementation",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "A reanalysis of retained hardware counts seen before the candidates were chosen; it excludes six single-mechanism channels with one parameter per qubit or edge under the stated bounds, which nine of twelve coherent fits reach; combinations, spectator crosstalk and drifting errors are outside it, end-of-circuit flips do not separate a readout fault from leakage, and no device mechanism is identified.",
+      "evidence": [
+        {
+          "path": "docs/evidence/walk_scaffold_channels/result.json",
+          "sha256": "1076a9bf0ada5efca18258b8aa4b76b0acb83cc6f53756930c9b0a318ee39fe2"
+        },
+        {
+          "path": "docs/evidence/walk_scaffold_channels/members.json",
+          "sha256": "bb69ac0fe8b486d603fabcde58d9d08bce04b6b17a922676830fee616b1436ff"
+        },
+        {
+          "path": "docs/evidence/walk_scaffold_channels/members.qpy",
+          "sha256": "a5d9d4f6e4098a19f496ac84cb54b44477baa2a3d8f974ae8d03793077c18882"
+        },
+        {
+          "path": "docs/evidence/calibration/history/ibm_kingston/20261014T1947440700.json",
+          "sha256": "211608ee3dfb7297d7671fcb74f0a24570d5b2a5b16918629d964e50605ada84"
+        },
+        {
+          "path": "docs/evidence/calibration/history/ibm_kingston/20261014T2025340700.json",
+          "sha256": "ac3345f4ac23aea6fcce32ef74b86085b92f25fa2bb596dfadd9d2d979f59e92"
+        },
+        {
+          "path": "docs/evidence/calibration/history/ibm_fez/20261012T1920460700.json",
+          "sha256": "f5260cfb997a9d23e2231eea3f0f8b856377a8f448bcb39491e792e492f732dd"
+        },
+        {
+          "path": "results/live/2026-10-13T025444.603480Z/collect.json",
+          "sha256": "2c3cc9f751bddc7a0aa86460601f426411eb9a4c87e5b4819c0779f5cb23db13"
+        },
+        {
+          "path": "results/live/2026-10-15T031229.371738Z/collect.json",
+          "sha256": "0ee357bcc0438ca9c603d7766ec150e1c9c8b2a53ffd5021dc1697fbf8f05d7d"
+        }
+      ],
+      "documents": [
+        "docs/evidence/walk_scaffold_channels/README.md",
+        "docs/evidence/walk-control-scaffolding/README.md"
+      ],
+      "gates": {
+        "core-311": "replay"
+      },
+      "acquisitions": [
+        "fez-ripple-atlas",
+        "kingston-ripple-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-walk-scaffold-floor"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }

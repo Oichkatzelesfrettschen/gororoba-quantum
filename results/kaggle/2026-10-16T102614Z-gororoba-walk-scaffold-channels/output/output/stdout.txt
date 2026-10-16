@@ -1,0 +1,1 @@
+wrote results/kaggle_out/walk_scaffold_channels.json: 4 lanes in 8901.7 s
