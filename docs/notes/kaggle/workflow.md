@@ -94,7 +94,11 @@ GPU matters for sweeps and batched trials, not for single circuits.
 - The account runs at most five CPU batch sessions at once, shared by
   every kernel it pushes; a sixth push fails with "Maximum batch CPU session
   count of 5 reached", and `shards --slot-wait` retries until a session
-  ends.
+  ends. A `TpuV5E8` request draws on the same pool: with five CPU sessions
+  running, it fails with the same CPU-count message (2026-10-16), so the
+  GPU pool is the only capacity beyond the five. `shards --machine
+  cpu,NvidiaTeslaT4` falls through to a GPU session when the CPU pool is
+  full; a GPU session runs the shard on its 4-core host.
 - The account runs at most two GPU batch sessions at once; a third push
   fails with "Maximum batch GPU session count of 2 reached", and `push`
   exits with that message and removes the unsent run directory, as it does
