@@ -223,6 +223,33 @@
       "superseded_by": null
     },
     {
+      "id": "a5-d-locus-nullity",
+      "statement": "On 1000 exact rational pairs of sedenion zero divisors (200 Cayley-frame a's, each with five b's at independent rational lengths, |b|/|a| from 0.18 to 508), the A_5 element (a + b, e_8 (b - a)) has nullity 12 exactly when b lies in V(a) = span{(a1, -a2), (a2, a1)} + Eig_2(a) and 8 otherwise, reproducing Theorem 1.5 with Corollary 7.4 of Biss-Christensen-Dugger-Isaksen (math/0702075); b drawn from Ann(a), b = a and b = (a2, -a1) all fall outside V(a) with nullity 8, and dim Ann(a) = dim Eig_2(a) = 4 with Ann(a) orthogonal to V(a) on every frame.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Known theorems reproduced on sampled exact points: the certificate covers its 1000 pairs only, decomposes neither D_(5,8) nor D_(5,12), and says nothing about ZD_12(A_5) outside H_5^perp or the bracket-axis limits.",
+      "evidence": [
+        {
+          "path": "docs/evidence/d_locus_nullity/result.json",
+          "sha256": "6a68af644dcf4fd805ea2603048e9e3324f180e8be6d1e45a740ce3d78a8cdc2"
+        }
+      ],
+      "documents": [
+        "docs/evidence/d_locus_nullity/README.md",
+        "docs/notes/math-0702075.md"
+      ],
+      "gates": {
+        "core-323": "replay",
+        "core-324": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "a5-stiefel-universal",
       "statement": "Every A_5 Stiefel element (a, b), a and b pure in A_4, orthogonal, equal norm, is a zero divisor (Moreno, math/0512517, Section 5, at A_5).",
       "domain": "algebra",
