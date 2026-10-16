@@ -579,7 +579,7 @@ service's message.
 **Gates.** core-325 (`capture_qi_docs.py --check`), core-326
 (`qi_platform.py check docs/evidence/quantum_inspire --agents AGENTS.md`),
 core-327 (`qi_crosstalk_teleport_cases.py --check results/quantum_inspire/cases`)
-core-328 (`--replay` of every retained analysis.json), core-329 and core-330
+core-331 (`--replay` of every retained analysis.json), core-329 and core-330
 (`qi_zero_divisor_cases.py --check` and `--replay`), and core-340
 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of the Tuna-17
 cases).

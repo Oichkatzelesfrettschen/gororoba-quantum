@@ -60,7 +60,7 @@ core-327 regenerates them byte for byte.
 Each run directory keeps the circuits, cases.json with their sha256,
 submission.json (approval text, queue at submit), raw/ (every shot),
 results.json (job records, result metadata, charged transactions: none) and
-analysis.json, which gate core-328 recomputes from raw/ byte for byte.
+analysis.json, which gate core-331 recomputes from raw/ byte for byte.
 
 ## Results
 
