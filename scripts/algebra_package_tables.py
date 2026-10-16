@@ -46,6 +46,7 @@ import json
 import random
 import sys
 import tarfile
+import zipfile
 from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any
@@ -98,6 +99,47 @@ RELEASES: dict[str, tuple[str, str, str]] = {
         PYPI + "mathdunders/0.4.2/",
         "ff9b624725fafd34c51decbe3e661eb91b79bbd3841ab04d2256704df0845ce5",
     ),
+    "numpy-quaternion": (
+        "2024.0.13",
+        PYPI + "numpy-quaternion/2024.0.13/",
+        "e155853fefdfb972b4674f47c30ddb12c825f3ab135a2ea14c67472905c49fd1",
+    ),
+    "quaternionic": (
+        "1.0.18",
+        PYPI + "quaternionic/1.0.18/",
+        "9c5ee261650a52d09b9319e66b59dfa69d0b2025ab0db3eba6dff6ec63f5443b",
+    ),
+    "pyquaternion": (
+        "0.9.9",
+        PYPI + "pyquaternion/0.9.9/",
+        "b1f61af219cb2fe966b5fb79a192124f2e63a3f7a777ac3cadf2957b1a81bea8",
+    ),
+    "clifford": (
+        "1.5.1",
+        PYPI + "clifford/1.5.1/",
+        "3484b312cff0e2d5e14fb99409b8242193c358dfaa6af7bc6ea230c4606e66f3",
+    ),
+    "kingdon": (
+        "3.0.0",
+        PYPI + "kingdon/3.0.0/",
+        "77e6f3442b30f75daae33c73dc6086f175e9c70e5c2809bf411ecf7ff97d6e92",
+    ),
+    "galgebra": (
+        "0.6.0",
+        PYPI + "galgebra/0.6.0/",
+        "2e8db0172286bcb7ff6d37c4d7e99476ffe178570dea78a2345d34cc78da10f1",
+    ),
+    "pyoctonion": (
+        "3.12",
+        PYPI + "pyoctonion/3.12/",
+        "a0ed5c58dc0f19368cc794eb076403b48a7cc6e35cf0a8bfe1e45f7d6b906d0c",
+    ),
+    # PyPI publishes this release only as a wheel.
+    "Octonion-Sedenion": (
+        "1.0.0",
+        PYPI + "Octonion-Sedenion/1.0.0/",
+        "365374433649809b50c542b28cc60ec8433cfdd61d19b90c233ec631bb5cf00e",
+    ),
 }
 SDIST = "https://files.pythonhosted.org/packages/source/{0}/{1}/{1}-{2}.tar.gz"
 # Download location of each pinned archive, as the local PKGBUILD's source array names it.
@@ -110,6 +152,15 @@ ARCHIVE_URLS = {
     "octonion": SDIST.format("o", "octonion", "0.1.0"),
     "splitoct": RELEASES["splitoct"][1],
     "mathdunders": SDIST.format("m", "mathdunders", "0.4.2"),
+    "numpy-quaternion": SDIST.format("n", "numpy_quaternion", "2024.0.13"),
+    "quaternionic": SDIST.format("q", "quaternionic", "1.0.18"),
+    "pyquaternion": SDIST.format("p", "pyquaternion", "0.9.9"),
+    "clifford": SDIST.format("c", "clifford", "1.5.1"),
+    "kingdon": SDIST.format("k", "kingdon", "3.0.0"),
+    "galgebra": SDIST.format("g", "galgebra", "0.6.0"),
+    "pyoctonion": SDIST.format("p", "pyoctonion", "3.12"),
+    "Octonion-Sedenion": "https://files.pythonhosted.org/packages/b2/57/"
+    "92944779eda89a8adf6ba3284df0e15793a7494a14e83a5b5532c3d2dea0/octonion_sedenion-1.0.0-py3-none-any.whl",
 }
 _CAYLEY_DICKSON_PYPROJECT = """[build-system]
 requires = ["setuptools>=61.0"]
@@ -162,8 +213,11 @@ BUILD_RECIPES: dict[str, dict[str, dict[str, str]]] = {
     "splitoct": {"copy": {"src/SplitOct.py": "SplitOct.py"}, "write": {"pyproject.toml": _SPLITOCT_PYPROJECT}},
 }
 # Runtime dependencies an imported package needs beyond numpy, scipy, pandas,
-# sympy and torch, pinned to the Arch package versions on the build host.
-RUNTIME_PINS = ("numpy-quaternion==2024.0.13",)
+# sympy, h5py and torch, pinned to the Arch package versions on the build host.
+# numpy-quaternion is a compiled extension: --install takes its PyPI wheel at
+# the pinned version, and --extract binds its Python files to the sdist.
+RUNTIME_PINS = ("numpy-quaternion==2024.0.13", "numba==0.68.0", "sparse==0.17.0", "anywidget==0.11.0")
+FROM_PINS = {"numpy-quaternion"}
 # Installed files absent from the release archive, added by the local build
 # recipe: name -> {installed path: sha256}.
 PACKAGING_SHIMS = {
@@ -189,6 +243,17 @@ RELATIONS: dict[str, dict[str, dict[str, Any]]] = {
     "octonion": {"8": {"kind": "signed relabeling", "pi": TORCH_TO_CD_PI, "eta": TORCH_TO_CD_ETA}},
     "splitoct": {"8": SPLIT},
     "mathdunders": {},
+    "numpy-quaternion": {"4": IDENTICAL},
+    "quaternionic": {"4": IDENTICAL},
+    "pyquaternion": {"4": IDENTICAL},
+    # The Clifford algebra Cl(0,2) on blades (1, e1, e2, e12) in bitmask order
+    # is the quaternion algebra; its (1, e1) block is Cl(0,1), the complex
+    # numbers. No associative algebra carries the octonions or sedenions.
+    "clifford": {"4": IDENTICAL},
+    "kingdon": {"4": IDENTICAL},
+    "galgebra": {"4": IDENTICAL},
+    "pyoctonion": {"8": IDENTICAL},
+    "Octonion-Sedenion": {"8": IDENTICAL, "16": IDENTICAL},
 }
 # Basis squares of the split octonion tables: e1, e2, e3 square to -1, e4 to e7 to +1.
 SPLIT_SQUARES = [1, -1, -1, -1, 1, 1, 1, 1]
@@ -252,12 +317,7 @@ def bind_installation(name: str, archives: Path) -> dict[str, Any]:
         if path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest() == sha
     ]
     require(len(matches) == 1, f"{name}: {len(matches)} archives match the pinned sha256; exactly one is required")
-    with tarfile.open(matches[0]) as archive:
-        members = set()
-        for member in archive.getmembers():
-            handle = archive.extractfile(member) if member.isfile() else None
-            if handle is not None:
-                members.add(hashlib.sha256(handle.read()).hexdigest())
+    members = archive_digests(matches[0])
     dist = importlib.metadata.distribution(name)
     if not version.startswith("commit "):
         require(dist.version == version, f"{name}: installed version {dist.version} differs from {version}")
@@ -277,6 +337,20 @@ def bind_installation(name: str, archives: Path) -> dict[str, Any]:
         "byte_identical_to_release": identical,
         "packaging_shims": shims,
     }
+
+
+def archive_digests(path: Path) -> set[str]:
+    """sha256 of every file member of a release archive, a tarball or a wheel."""
+    if zipfile.is_zipfile(path):
+        with zipfile.ZipFile(path) as wheel:
+            return {hashlib.sha256(wheel.read(n)).hexdigest() for n in wheel.namelist() if not n.endswith("/")}
+    members = set()
+    with tarfile.open(path) as archive:
+        for member in archive.getmembers():
+            handle = archive.extractfile(member) if member.isfile() else None
+            if handle is not None:
+                members.add(hashlib.sha256(handle.read()).hexdigest())
+    return members
 
 
 def require_bound(module: Any, name: str) -> None:
@@ -355,6 +429,12 @@ def extract(archives: Path) -> dict[str, Any]:
     require_bound(octonion, "octonion")
     constants = octonion.STRUCTURE_CONSTANTS.detach().cpu().numpy()
     put("octonion", 8, unit_table(8, lambda i, j: constants[i, j]), RELATIONS["octonion"]["8"])
+    for name, dim, table in quaternion_and_clifford_tables():
+        put(name, dim, table, RELATIONS[name][str(dim)])
+    for name, dim, table, note in octonion_and_sedenion_tables():
+        put(name, dim, table, RELATIONS[name][str(dim)])
+        if note:
+            packages[name]["import_note"] = note
     expression_pairs = sample_pairs("hypercomplex-algebra", EXPRESSION_DIM, EXPRESSION_SAMPLES)
     packages["hypercomplex-algebra"]["expression_samples"] = {
         "dim": EXPRESSION_DIM,
@@ -390,6 +470,140 @@ def extract(archives: Path) -> dict[str, Any]:
                 "signs": {label: sign_string(dim, pairs, mul) for label, mul in evaluators[name](dim).items()},
             }
     return {"schema": "algebra-package-tables-v1", "packages": packages}
+
+
+def basis(index: int, dim: int) -> list[int]:
+    return [1 if k == index else 0 for k in range(dim)]
+
+
+def quaternion_and_clifford_tables() -> list[tuple[str, int, Table]]:
+    """D = 4 tables: three quaternion classes, and Cl(0,2) on blades (1, e1, e2, e12) from three Clifford packages."""
+    import clifford
+    import galgebra.ga
+    import kingdon
+    import pyquaternion
+    import quaternion
+    import quaternionic
+    import sympy
+
+    for module, owner in (
+        (quaternion, "numpy-quaternion"),
+        (quaternionic, "quaternionic"),
+        (pyquaternion, "pyquaternion"),
+        (clifford, "clifford"),
+        (kingdon, "kingdon"),
+        (galgebra.ga, "galgebra"),
+    ):
+        require_bound(module, owner)
+    layout, blades = clifford.Cl(0, 2)
+    require(layout.names == ["", "e1", "e2", "e12"], f"clifford Cl(0,2) blade order {layout.names}")
+    clifford_basis = [layout.scalar] + [blades[name] for name in layout.names[1:]]
+    king = kingdon.Algebra(p=0, q=2)
+    require(list(king.blades.keys()) == ["e", "e1", "e2", "e12"], "kingdon Cl(0,2) blade order")
+    king_basis = [king.blades[name] for name in king.blades.keys()]
+
+    def kingdon_coefficients(p: int, q: int) -> list[float]:
+        product = king_basis[p] * king_basis[q]
+        out = [0.0] * 4
+        for key, value in zip(product.keys(), product.values(), strict=True):
+            out[key] += float(value)
+        return out
+
+    ga, g1, g2 = galgebra.ga.Ga.build("e1 e2", g=[-1, -1])
+    ga_basis = [ga.mv(sympy.S.One, "scalar"), g1, g2, g1 ^ g2]
+    return [
+        (
+            "numpy-quaternion",
+            4,
+            unit_table(
+                4,
+                lambda p, q: quaternion.as_float_array(
+                    quaternion.quaternion(*basis(p, 4)) * quaternion.quaternion(*basis(q, 4))
+                ),
+            ),
+        ),
+        (
+            "quaternionic",
+            4,
+            unit_table(
+                4, lambda p, q: (quaternionic.array(basis(p, 4)) * quaternionic.array(basis(q, 4))).ndarray.tolist()
+            ),
+        ),
+        (
+            "pyquaternion",
+            4,
+            unit_table(
+                4,
+                lambda p, q: (pyquaternion.Quaternion(*basis(p, 4)) * pyquaternion.Quaternion(*basis(q, 4))).elements,
+            ),
+        ),
+        ("clifford", 4, unit_table(4, lambda p, q: (clifford_basis[p] * clifford_basis[q]).value)),
+        ("kingdon", 4, unit_table(4, kingdon_coefficients)),
+        (
+            "galgebra",
+            4,
+            unit_table(4, lambda p, q: [float(c) for c in (ga_basis[p] * ga_basis[q]).blade_coefs(ga_basis)]),
+        ),
+    ]
+
+
+def octonion_and_sedenion_tables() -> list[tuple[str, int, Table, str | None]]:
+    """pyoctonion at D = 8; Octonion-Sedenion at D = 8 and 16.
+
+    Octonion_Sedenion.sedenion runs ``from octonion import Octonion``, which
+    resolves to python-octonion's top-level ``octonion`` module, and fails at
+    import. Its sedenions are read with sys.modules["octonion"] bound to the
+    package's own Octonion_Sedenion.octonion for the import, then restored;
+    the note retains the as-installed import failure.
+    """
+    import importlib
+
+    import pyoctonion
+
+    require_bound(pyoctonion, "pyoctonion")
+
+    def pyoctonion_product(p: int, q: int) -> list[float]:
+        product = pyoctonion.Octonion(*basis(p, 8)) * pyoctonion.Octonion(*basis(q, 8))
+        return [product.x_0, product.x_1, product.x_2, product.x_3, product.x_4, product.x_5, product.x_6, product.x_7]
+
+    rows: list[tuple[str, int, Table, str | None]] = [("pyoctonion", 8, unit_table(8, pyoctonion_product), None)]
+    own = importlib.import_module("Octonion_Sedenion.octonion")
+    require_bound(own, "Octonion-Sedenion")
+    rows.append(
+        (
+            "Octonion-Sedenion",
+            8,
+            unit_table(8, lambda p, q: (own.Octonion(*basis(p, 8)) * own.Octonion(*basis(q, 8))).components),
+            None,
+        )
+    )
+    saved = sys.modules.get("octonion")
+    try:
+        importlib.import_module("Octonion_Sedenion.sedenion")
+        note = None
+    except Exception as failure:  # noqa: BLE001  (the failure text is the retained evidence)
+        note = f"as installed, importing Octonion_Sedenion.sedenion raises {type(failure).__name__}: {failure}"
+        sys.modules.pop("Octonion_Sedenion.sedenion", None)
+    sys.modules["octonion"] = own
+    try:
+        sedenion = importlib.import_module("Octonion_Sedenion.sedenion")
+    finally:
+        if saved is None:
+            sys.modules.pop("octonion", None)
+        else:
+            sys.modules["octonion"] = saved
+    require_bound(sedenion, "Octonion-Sedenion")
+    rows.append(
+        (
+            "Octonion-Sedenion",
+            16,
+            unit_table(
+                16, lambda p, q: (sedenion.Sedenion(*basis(p, 16)) * sedenion.Sedenion(*basis(q, 16))).components
+            ),
+            note,
+        )
+    )
+    return rows
 
 
 def omega(sign: list[list[int]], p: int, q: int, r: int) -> int:
@@ -485,6 +699,9 @@ def check(data: dict[str, Any]) -> int:
 
 
 def archive_name(name: str) -> str:
+    # pip installs a wheel only under its own file name.
+    if ARCHIVE_URLS[name].endswith(".whl"):
+        return ARCHIVE_URLS[name].rsplit("/", 1)[1]
     return f"{name}-{RELEASES[name][2][:12]}.tar.gz"
 
 
@@ -518,6 +735,12 @@ def install(archives: Path) -> None:
         require(
             hashlib.sha256(archive.read_bytes()).hexdigest() == RELEASES[name][2], f"{name}: {archive} is not the pin"
         )
+        if name in FROM_PINS:
+            continue
+        if zipfile.is_zipfile(archive):
+            subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-deps", str(archive)], check=True)
+            print(f"{name}: installed from {archive.name}")
+            continue
         with tempfile.TemporaryDirectory() as scratch:
             with tarfile.open(archive) as tar:
                 tar.extractall(scratch, filter="data")
