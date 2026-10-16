@@ -492,7 +492,8 @@ Return to the default reviewer when hosted Codex review becomes available.
   `codex-pull-request-review-summary`, which reads Running while a review is in
   progress.
 - *Outcome.* A review with findings publishes inline review comments with P1 or
-  P2 badges. A clean review either posts an issue comment beginning "Codex
+  P2 badges. A clean review either posts an issue comment whose text, after
+  an optional `<!-- codex-review-receipt:v1 -->` marker, begins "Codex
   Review: Didn't find any major issues" with a reviewed commit matching the PR
   head, or adds an app-owned `+1` reaction after the completed summary update
   for the current head. A prior reaction cannot qualify a later review round.
