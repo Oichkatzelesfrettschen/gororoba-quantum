@@ -162,6 +162,15 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         path = (ROOT / include).resolve()
         require(path.is_file() and path.is_relative_to(ROOT), f"{include} is not a repository file")
         files.append(path)
+    bundled = sorted({path.relative_to(ROOT).as_posix() for path in files})
+    listed = subprocess.run(
+        ["git", "ls-files", "-z", "--", *bundled], cwd=ROOT, capture_output=True, text=True, check=True
+    )
+    # git status above ignores untracked files so that run directories stay
+    # clean; a bundled input outside the index makes the revision irreproducible.
+    untracked = sorted(set(bundled) - set(filter(None, listed.stdout.split("\0"))))
+    if untracked and not revision.endswith("-dirty"):
+        revision += "-dirty"
     buffer = io.BytesIO()
     digests: dict[str, str] = {}
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as bundle:
@@ -200,6 +209,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "args": list(args.args),
         "smoke": smoke,
         "git_commit": revision,
+        "untracked_inputs": untracked,
         "pins": list(KERNEL_PINS),
         "bundle": digests,
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
@@ -267,6 +277,7 @@ def self_test(args: argparse.Namespace) -> int:
         py_compile.compile(str(run_dir / "kernel/run.py"), doraise=True)
         runner = (run_dir / "kernel/run.py").read_text(encoding="utf-8")
         require(all(pin in runner for pin in KERNEL_PINS), "run.py lacks a pin")
+        require(submission["untracked_inputs"] == [], f"untracked bundled inputs {submission['untracked_inputs']}")
     print(f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private GPU kernel, run.py compiles")
     return 0
 
@@ -304,7 +315,11 @@ def collect(args: argparse.Namespace) -> int:
     versioned = kernel_ref(submission)
     reported = kaggle("kernels", "status", versioned).strip()
     out = run_dir / "output"
-    out.mkdir(exist_ok=True)
+    # A refused earlier attempt leaves its partial download here; the ledger
+    # describes one complete download, so every retry starts empty.
+    if out.exists():
+        shutil.rmtree(out)
+    out.mkdir()
     kaggle("kernels", "output", versioned, "-p", str(out))
     for stray in out.iterdir():
         # The kernel's results live in output/ and its log beside it; anything
@@ -336,7 +351,11 @@ def collect(args: argparse.Namespace) -> int:
 
 
 def verify(args: argparse.Namespace) -> int:
-    """Every retained collect.json names exactly the files under its output/ with their sha256."""
+    """Every retained collect.json names exactly the files under its output/ with their sha256.
+
+    A versioned run's ledger must include the exit.json collection required;
+    an earlier, unversioned run keeps the status Kaggle reported then.
+    """
     runs = sorted(RESULTS.glob("*/collect.json"))
     for path in runs:
         run_dir = path.parent
@@ -346,7 +365,15 @@ def verify(args: argparse.Namespace) -> int:
         require(present == set(record["files"]), f"{run_dir.name}: output files differ from collect.json")
         for rel, digest in record["files"].items():
             require(sha256((out / rel).read_bytes()) == digest, f"{run_dir.name}: {rel} differs from its sha256")
-        require(record["kernel"] == kernel_ref(submission_of(run_dir)), f"{run_dir.name}: kernel differs")
+        submission = submission_of(run_dir)
+        require(record["kernel"] == kernel_ref(submission), f"{run_dir.name}: kernel differs")
+        # Runs pushed before push recorded kernel versions also predate
+        # exit.json and keep the status Kaggle reported; every versioned run
+        # was collected on its exit.json.
+        require(
+            "kernel_version" not in submission or "output/exit.json" in record["files"],
+            f"{run_dir.name}: a versioned run's ledger lacks output/exit.json",
+        )
     require(bool(runs), f"no collect.json under {RESULTS.relative_to(ROOT)}")
     print(f"kaggle runs: {len(runs)} collected outputs match their sha256 ledgers")
     return 0
