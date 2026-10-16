@@ -33,7 +33,8 @@ per qubit (per CZ edge for the conditional phase):
 Inserted operations carry no duration and no calibrated noise of their own,
 and the model with every parameter at zero reproduces the scheduled baseline
 exactly. Each candidate is fitted to the lane's readout0 counts by maximum
-likelihood (L-BFGS-B from FIT_STARTS fixed starts), then frozen and scored
+likelihood (a seeded global search for the coherent candidates, L-BFGS-B
+from FIT_STARTS for the others), then frozen and scored
 on the lane's 13 other members (readout1 and the depth members).
 
 Preregistered reading: a candidate passes the readout0 gate when its
@@ -52,9 +53,10 @@ Laws, fits and scores run through parallel.ordered_map. The entry reads
 GOROROBA_AER_DEVICE (CPU by default). ``--check FILE --run DIR`` binds FILE
 to the Kaggle run's collect.json digest, recomputes the cd_core side of the
 algebra record without importing any package, re-derives Kingston lane 0's
-baseline and fitted readout0 laws to 1e-8, and requires each recorded
-optimum to be a local minimum (a restarted fit improves it by less than
-1e-3 in log-likelihood).
+baseline and fitted laws of all 14 members to 1e-8 with the held-out
+log-likelihood, deviance and reproduces_floor decision, and requires each
+recorded optimum to be a local minimum (a restarted fit improves it by less
+than 1e-3 in log-likelihood).
 """
 
 from __future__ import annotations
@@ -63,6 +65,7 @@ import argparse
 import hashlib
 import importlib.metadata
 import json
+import math
 import os
 import re
 import sys
@@ -104,18 +107,21 @@ DIM = 32
 # name -> (parameters per qubit or per edge, lower bound, upper bound)
 CHANNELS: dict[str, tuple[str, float, float]] = {
     "end_flip": ("qubit", 0.0, 0.5),
-    "sx_overrotation": ("qubit", -0.3, 0.3),
-    "cz_local_phase": ("qubit", -0.6, 0.6),
-    "cz_conditional_phase": ("edge", -0.6, 0.6),
+    "sx_overrotation": ("qubit", -0.15, 0.15),
+    "cz_local_phase": ("qubit", -0.15, 0.15),
+    "cz_conditional_phase": ("edge", -0.15, 0.15),
     "extra_damping": ("qubit", 0.0, 0.2),
     "extra_depolarizing": ("qubit", 0.0, 0.2),
 }
-# Fixed starting points as fractions of the bound: signed channels start in
-# four sign patterns, non-negative ones at two magnitudes.
-FIT_STARTS = {
-    "signed": ((0.1, 0.1, 0.1, 0.1), (-0.1, -0.1, -0.1, -0.1), (0.1, -0.1, 0.1, -0.1), (-0.1, 0.1, -0.1, 0.1)),
-    "positive": ((0.05, 0.05, 0.05, 0.05), (0.3, 0.3, 0.3, 0.3)),
-}
+# A coherent per-gate angle error delta costs about delta^2 / 4 of gate
+# infidelity, so the calibrated CZ and SX errors near 2e-3 and 3e-4 put
+# |delta| near 0.09 and 0.035 rad; the coherent bounds of 0.15 rad leave room
+# above both. The coherent likelihood winds with the angle accumulated over
+# about 100 gates per qubit, so those candidates take a seeded global search
+# (differential evolution from a Sobol population, polished by L-BFGS-B);
+# the incoherent candidates start L-BFGS-B at fixed fractions of the bound.
+FIT_STARTS = {"positive": ((0.05, 0.05, 0.05, 0.05), (0.3, 0.3, 0.3, 0.3))}
+GLOBAL_SEARCH = {"seed": 20261016, "popsize": 10, "maxiter": 60, "init": "sobol", "tol": 1e-6}
 GATE_P = 0.01
 
 
@@ -148,13 +154,15 @@ def ideal_law(name: str) -> np.ndarray:
 
 
 def local_circuit(component: QuantumCircuit) -> tuple[QuantumCircuit, list[int]]:
-    """The component on its own qubits (ascending physical order), barriers dropped, measures kept."""
+    """The component on its own qubits (ascending physical order), barriers and measures kept.
+
+    The walk template's layer barriers hold every qubit until its layer ends,
+    so ALAP scheduling keeps them to reproduce the executed idles.
+    """
     qubits = snapshot_laws.active_qubits(component)
     index = {q: k for k, q in enumerate(qubits)}
     out = QuantumCircuit(len(qubits), component.num_clbits)
     for instruction in component.data:
-        if instruction.operation.name == "barrier":
-            continue
         out.append(
             instruction.operation,
             [index[component.find_bit(q).index] for q in instruction.qubits],
@@ -365,7 +373,11 @@ def fit_member(lane: dict[str, Any]) -> str:
 
 
 class FitTask:
-    """Picklable worker: (lane, channel, start) -> the L-BFGS-B optimum of the readout0 likelihood."""
+    """Picklable worker: (lane, channel, start) -> the readout0 maximum-likelihood fit.
+
+    An empty start runs the seeded global search; any other start runs
+    L-BFGS-B from that start as a fraction of the bound.
+    """
 
     def __init__(self, lanes: list[dict[str, Any]], device: str) -> None:
         self.lanes = lanes
@@ -379,14 +391,29 @@ class FitTask:
         counts = lane["members"][member]["counts"]
         size = parameter_count(channel, model)
         _, low, high = CHANNELS[channel]
-        x0 = np.clip(np.asarray(start[:size]) * max(abs(low), abs(high)), low, high)
+        x0 = np.clip(np.asarray(start[:size]) * max(abs(low), abs(high)), low, high) if start else None
 
         def objective(x: np.ndarray) -> float:
             return -log_likelihood(counts, model.law(channel, x))
 
-        result = optimize.minimize(
-            objective, x0, method="L-BFGS-B", bounds=[(low, high)] * size, options={"eps": 1e-5, "maxiter": 200}
-        )
+        bounds = [(low, high)] * size
+        if not start:
+            result = optimize.differential_evolution(
+                objective,
+                bounds,
+                seed=GLOBAL_SEARCH["seed"],
+                popsize=GLOBAL_SEARCH["popsize"],
+                maxiter=GLOBAL_SEARCH["maxiter"],
+                init=GLOBAL_SEARCH["init"],
+                tol=GLOBAL_SEARCH["tol"],
+                polish=True,
+                updating="immediate",
+                workers=1,
+            )
+        else:
+            result = optimize.minimize(
+                objective, x0, method="L-BFGS-B", bounds=bounds, options={"eps": 1e-5, "maxiter": 200}
+            )
         return {
             "lane": lane_index,
             "channel": channel,
@@ -497,7 +524,7 @@ def algebra_record() -> dict[str, Any]:
 
 
 def channel_starts(channel: str) -> tuple[tuple[float, ...], ...]:
-    return FIT_STARTS["positive" if CHANNELS[channel][1] >= 0.0 else "signed"]
+    return FIT_STARTS["positive"] if CHANNELS[channel][1] >= 0.0 else ((),)
 
 
 def evaluate(device: str, lane_indices: list[int] | None = None, channels: list[str] | None = None) -> dict[str, Any]:
@@ -607,6 +634,7 @@ def run(device: str, lane_indices: list[int] | None = None, channels: list[str] 
         "runs": list(RUNS),
         "channels": {name: {"per": per, "bounds": [low, high]} for name, (per, low, high) in CHANNELS.items()},
         "fit_starts": {key: [list(s) for s in value] for key, value in FIT_STARTS.items()},
+        "global_search": GLOBAL_SEARCH,
         "gate_p": GATE_P,
         "algebra": algebra,
         "environment": environment(device),
@@ -659,17 +687,30 @@ def check(path: Path, run_dir: Path) -> int:
     lane = lanes[index]
     kept = next(entry for entry in retained["lanes"] if entry["run"] == lane["run"] and entry["lane"] == lane["lane"])
     member = kept["fit_member"]
-    model = lane_model(lane, member, "CPU")
     counts = lane["members"][member]["counts"]
+    held = kept["held_out_members"]
+    baseline_ll = None
     for name, row in kept["models"].items():
-        if name == "unscheduled":
-            law = model.law(None, np.zeros(4), scheduled=False)
-        elif name == "scheduled":
-            law = model.law(None, np.zeros(4))
-        else:
-            law = model.law(name, np.asarray(row["parameters"]))
-        if not np.allclose(law, row["laws"][member], rtol=1e-8, atol=1e-10):
-            failures.append(f"{name}: readout0 law differs from the retained law")
+        laws = {}
+        for other in lane["members"]:
+            other_model = lane_model(lane, other, "CPU")
+            if name == "unscheduled":
+                laws[other] = other_model.law(None, np.zeros(4), scheduled=False)
+            elif name == "scheduled":
+                laws[other] = other_model.law(None, np.zeros(4))
+            else:
+                laws[other] = other_model.law(name, np.asarray(row["parameters"]))
+            if not np.allclose(laws[other], row["laws"][other], rtol=1e-8, atol=1e-10):
+                failures.append(f"{name}: law of {other} differs from the retained law")
+        held_ll = sum(log_likelihood(lane["members"][m]["counts"], laws[m]) for m in held)
+        held_g2 = sum(deviance(lane["members"][m]["counts"], laws[m]) for m in held)
+        if not math.isclose(held_ll, row["held_out_log_likelihood"], rel_tol=1e-8):
+            failures.append(f"{name}: held-out log-likelihood {held_ll} against {row['held_out_log_likelihood']}")
+        if not math.isclose(held_g2, row["held_out_deviance"], rel_tol=1e-8):
+            failures.append(f"{name}: held-out deviance {held_g2} against {row['held_out_deviance']}")
+        if name == "scheduled":
+            baseline_ll = held_ll
+        law = laws[member]
         if name in CHANNELS:
             restart = FitTask(lanes, "CPU")(
                 (
@@ -680,9 +721,23 @@ def check(path: Path, run_dir: Path) -> int:
             )
             if restart["neg_log_likelihood"] < -log_likelihood(counts, law) - 1e-3:
                 failures.append(f"{name}: a restarted fit improves the retained optimum")
+    for name in CHANNELS:
+        row = kept["models"][name]
+        fit_g2 = deviance(counts, np.asarray(row["laws"][member]))
+        decision = bool(
+            stats.chi2.sf(fit_g2, row["fit_dof"]) >= GATE_P
+            and stats.chi2.sf(row["held_out_deviance"], row["held_out_dof"]) >= GATE_P
+            and baseline_ll is not None
+            and row["held_out_log_likelihood"] > baseline_ll
+        )
+        if decision != row["reproduces_floor"]:
+            failures.append(f"{name}: reproduces_floor {row['reproduces_floor']} against the replayed {decision}")
     for failure in failures:
         print(failure)
-    print(f"walk scaffold channels replay: Kingston lane0, {len(kept['models'])} models, {len(failures)} departures")
+    print(
+        f"walk scaffold channels replay: Kingston lane0, {len(kept['models'])} models over "
+        f"{len(lane['members'])} members, {len(failures)} departures"
+    )
     return 1 if failures else 0
 
 
