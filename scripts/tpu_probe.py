@@ -10,15 +10,25 @@ operators follow Qiskit's little-endian order: qubit q is bit q of the basis
 index, and qargs[0] is the least significant local bit.
 
 The output states where the replay ran from the result array's devices, not
-from the session's accelerator label.
+from the session's accelerator label. The ``hardware`` record decides whether
+the session is a TPU VM before JAX is consulted: Kaggle's TPU VM has 96 cores
+and 330 GB RAM where a CPU session has 4 cores and 30 GB
+(docs/notes/kaggle/site/notebooks.md), a TPU host exposes its chips as
+``/dev/accel*`` or numbered ``/dev/vfio`` group nodes (``/dev/vfio/vfio`` is the
+control node any VFIO-capable host has) and as PCI functions of vendor 0x1ae0
+(Google), and Kaggle's TPU image sets ``ISTPUVM=1``. ``KAGGLE_DOCKER_IMAGE``
+names the image the session received.
 """
 
 from __future__ import annotations
 
 import argparse
+import glob
 import importlib.metadata
 import json
+import os
 import platform
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -97,13 +107,40 @@ def replay(n: int, device: Any) -> tuple[Any, float, float]:
     return result, cold, warm
 
 
+def hardware() -> dict[str, Any]:
+    """CPU count, memory, accelerator device nodes, Google PCI functions and the image's TPU variables."""
+    meminfo = Path("/proc/meminfo")
+    mem_kib = (
+        next((int(line.split()[1]) for line in meminfo.read_text().splitlines() if line.startswith("MemTotal:")), None)
+        if meminfo.is_file()
+        else None
+    )
+    try:
+        lspci = subprocess.run(["lspci", "-nn"], capture_output=True, text=True, check=False).stdout
+        google_pci: list[str] | str = [line for line in lspci.splitlines() if "1ae0" in line.lower()]
+    except FileNotFoundError:
+        google_pci = "lspci not installed"
+    return {
+        "cpu_count": os.cpu_count(),
+        "mem_total_gib": round(mem_kib / 2**20, 2) if mem_kib else None,
+        "dev_accel": sorted(glob.glob("/dev/accel*")),
+        "dev_vfio_groups": sorted(path for path in glob.glob("/dev/vfio/*") if path != "/dev/vfio/vfio"),
+        "google_pci_functions": google_pci,
+        "environment": {
+            key: value
+            for key, value in sorted(os.environ.items())
+            if key in ("ISTPUVM", "KAGGLE_DOCKER_IMAGE", "PJRT_DEVICE") or key.startswith(("TPU_", "XLA_"))
+        },
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
-    out: dict[str, Any] = {"schema": "tpu-probe-v1", "python": platform.python_version()}
+    out: dict[str, Any] = {"schema": "tpu-probe-v2", "python": platform.python_version(), "hardware": hardware()}
     versions: dict[str, str | None] = {}
-    for name in ("jax", "jaxlib", "libtpu", "libtpu-nightly", "jax-cuda12-plugin"):
+    for name in ("jax", "jaxlib", "libtpu", "libtpu-nightly", "jax-cuda12-plugin", "torch", "torch_xla"):
         try:
             versions[name] = importlib.metadata.version(name)
         except importlib.metadata.PackageNotFoundError:

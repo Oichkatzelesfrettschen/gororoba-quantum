@@ -120,12 +120,13 @@ PIN_GROUPS: dict[str, tuple[str, ...]] = {
 }
 MAX_ACCELERATOR_SECONDS = 4 * 3600
 SMOKE_TIMEOUT_SECONDS = 1800
-# A TPU session needs Kaggle's TPU-VM image, which carries libtpu: a script
-# kernel pushed with a Tpu machine shape receives the CPU image and runs on a
-# 4-core CPU machine whose JAX finds no libtpu.so. Public notebooks that ran
-# on TpuV5E8 record this image digest and kernel_type notebook in their
-# server metadata (`kaggle kernels pull -m`), so a TPU push uses both.
-TPU_DOCKER_IMAGE = "gcr.io/kaggle-images/python@sha256:dafd4ce5668bbf1ad422e4c109e0f18c9623c3a7c7f48b0235f13142755c40b9"
+# A TPU VM session carries no docker image on Kaggle's backend, and a
+# docker_image in kernel-metadata.json or a dockerImageVersionId in the
+# notebook pins a CPU/GPU image that overrides it (kaggle-api issue 1197).
+# A TPU push therefore names no image, asks for the latest pinning, and
+# writes a notebook without a "kaggle" metadata block. The session's
+# hardware is read from its own output (scripts/tpu_probe.py); the request
+# fields establish nothing about it (docs/notes/kaggle/tpu-research.md).
 DEFAULT_MACHINE = "cpu"
 GPU_MACHINE = "NvidiaTeslaT4"
 TPU_MACHINE = "TpuV5E8"
@@ -349,7 +350,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     if args.machine != "cpu":
         metadata["machine_shape"] = args.machine
     if tpu:
-        metadata["docker_image"] = TPU_DOCKER_IMAGE
+        metadata["docker_image_pinning_type"] = "latest"
     if datasets:
         metadata["dataset_sources"] = [d["ref"] for d in datasets]
     (kernel_dir / "kernel-metadata.json").write_text(json.dumps(metadata, indent=1) + "\n", encoding="utf-8")
@@ -569,8 +570,12 @@ def _self_test_kernel(entry: str, data: str, machine: str) -> dict[str, Any]:
             notebook = json.loads((run_dir / "kernel/run.ipynb").read_text(encoding="utf-8"))
             require(notebook["cells"][0]["source"] == runner, "the TPU notebook cell differs from run.py")
             require(
-                metadata["kernel_type"] == "notebook" and metadata["docker_image"] == TPU_DOCKER_IMAGE,
-                f"TPU kernel metadata {metadata}",
+                metadata["kernel_type"] == "notebook"
+                and "docker_image" not in metadata
+                and metadata["docker_image_pinning_type"] == "latest"
+                and "kaggle" not in notebook["metadata"]
+                and "dockerImageVersionId" not in json.dumps(notebook["metadata"]),
+                f"TPU kernel pins an image: {metadata} {notebook['metadata']}",
             )
         require(submission["untracked_inputs"] == [], f"untracked bundled inputs {submission['untracked_inputs']}")
     return submission

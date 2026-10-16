@@ -10,6 +10,7 @@ Kaggle kernels run every simulation of 14 qubits or fewer (root AGENTS.md,
 | [substrates.md](substrates.md) | measured CPU, RAM, disk, GPU, TPU and qubit limits of each machine shape, and what runs on which substrate |
 | [hypercomplex-stack.md](hypercomplex-stack.md) | the eight hypercomplex packages built and proved identically on the host and in every kernel |
 | [interfaces.md](interfaces.md) | every CLI command, kagglesdk method and MCP tool, mapped onto shared operations; which call addresses which kernel version, where a session id comes from, how a session is cancelled; accelerator fields, authentication and the host's MCP permission policy |
+| [tpu-research.md](tpu-research.md) | every TPU request route measured on this account, the server record of each version, the markers that decide whether a session is a TPU VM, the root-cause analysis and its sources, and the push procedure |
 | [libraries.md](libraries.md) | the Kaggle PyPI packages: kaggle, kagglesdk and kagglehub as installed Arch packages with their recipes and run examples, the packages left out and why, and what a kernel image carries |
 
 ## Captured Kaggle documentation

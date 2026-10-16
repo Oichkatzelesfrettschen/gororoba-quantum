@@ -67,9 +67,9 @@ GPU matters for sweeps and batched trials, not for single circuits.
   and JAX fixed; `pin_groups.json` records what installed. Every bundle
   carries the usage guides in `KERNEL_DOCS` (docs/notes/kaggle,
   docs/notes/packages, docs/notes/quantum-tools and the Qiskit ecosystem
-  audit). A `Tpu*` machine is pushed as a notebook on Kaggle's TPU-VM image
-  with the CPU build of Aer; batch pushes have not reached a TPU (next
-  section).
+  audit). A `Tpu*` machine is pushed as a notebook with latest image
+  pinning, no `docker_image` and no notebook `kaggle` block, with the CPU
+  build of Aer; batch pushes have not reached a TPU (next section).
 - `shards [--tier pr] [--count N] [--only I,J] [--machine M,...]
   [--slot-wait S]` pushes one kernel per CI shard of the committed HEAD,
   with CI's shard count by default (6 for pr, 12 for full), on the first
@@ -213,18 +213,21 @@ the agent session; a session with the Kaggle MCP loaded can call
 CANCEL_REQUESTED, then CANCEL_ACKNOWLEDGED, and the quota's reserved time
 for it returns to zero. The version page in the web UI also stops a run.
 
-**TPU.** No API route reaches a TPU on this account. Each of these ran
-on a 4-core CPU machine without `libtpu.so`, JAX reported only the `cpu`
-backend, and the TPU quota stayed at zero:
-the CLI push of a script or of a notebook with `TpuV5E8` or `TpuV6E8`, on
-the default image or the TPU-VM image public TPU notebooks record;
-kagglesdk `create_kernel_session` with `TpuV5E8`, which returned a session
-id and no observable execution; and the MCP's `save_notebook` with
-`machineShape TpuV5E8`, `enableTpu`, `kernelExecutionType SaveAndRunAll`
-and every presence flag set (2026-10-16). A TPU request also counts
-against the five-session CPU pool. A TPU run starts
-from the Kaggle editor with the accelerator set to TPU and "Save Version";
-`kaggle_run.py collect` then retrieves it like any run.
+**TPU.** No route has attached a TPU to this account's sessions. Every
+batch request (CLI script or notebook push, with or without an image pin or
+`--accelerator`; MCP `save_notebook`; the editor's "Save & Run All
+(Commit)") reached Kaggle's server with the TPU
+accelerator recorded in the version's commit settings and ran in a container
+on the CPU image on a 4-core machine without `libtpu`; the TPU quota's
+`time_used` stayed at zero. kagglesdk `create_kernel_session` returned a
+session id and no observable execution. A pinned `docker_image` overrides the TPU VM
+(kaggle-api issue 1197), so `kaggle_run.py` pins none, but the unpinned
+pushes ran on the CPU image as well. A TPU request counts against the
+five-session CPU pool. The route-by-route record, the markers that decide
+whether a session is a TPU VM, the root-cause analysis and the open editor
+test are in [tpu-research.md](tpu-research.md). `kaggle kernels pull -m
+OWNER/SLUG` seconds after a TPU push names the image the server assigned; a
+`gcr.io/kaggle-images/python` image is a CPU session to cancel at once.
 
 ## Retained notebooks
 
