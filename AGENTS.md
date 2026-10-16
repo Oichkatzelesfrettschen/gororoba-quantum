@@ -725,6 +725,15 @@ unresolveReviewThread.
   analysis of the same raw files named by its own analysis digest, beside
   any earlier one. Raw files
   are never rewritten by a later collection or analysis.
+- docs/state/research_state.json registers every acquisition under its
+  provider, and scripts/research_state.py holds one adapter per provider
+  whose run set the registry matches exactly: `ibm` runs come from the
+  retained-run audit, `quantum_inspire` runs from the directories under
+  results/quantum_inspire/runs/ (circuits matching cases.json, one raw shot
+  list per completed job, failed jobs included) bound to the ledger in
+  docs/evidence/quantum_inspire/usage.json. A retained run therefore enters
+  the registry, with a claim citing it and a refreshed ledger or inventory,
+  in the change that retains it.
 - A record names an IBM Cloud instance only by a 12-hex sha256 of its CRN.
 - Tokens, account identifiers, and local absolute paths stay out of every
   commit. The IBM credential lives in the qiskit account store,
