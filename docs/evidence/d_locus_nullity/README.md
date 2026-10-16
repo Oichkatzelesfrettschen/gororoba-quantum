@@ -88,9 +88,8 @@ bracket-axis limits. Those remain roadmap item 3 of
   recomputes the first 20 frames (100 pairs) in about 6 s (gate core-323,
   pr tier).
 - Without `--limit` the same command recomputes all 1000 pairs (gate
-  core-324, pr tier). The frames run independently through `parallel.py`'s
-  process pool, so a 2-CPU runner replays them in about 32 s per mode and
-  `GOROROBA_WORKERS=1` reproduces the same rows serially.
+  core-324, full tier). The frames run independently through `parallel.py`'s
+  process pool, and `GOROROBA_WORKERS=1` reproduces the same rows serially.
 
 Both gates run in normal and `-O` mode, re-derive the summary from the
 rows, and require exactly five retained rows per frame.

@@ -304,6 +304,7 @@ def main() -> int:
     )
     _require(retained["summary"] == summarize(retained["rows"]), "the retained summary differs from its rows")
     _require(retained["summary"]["violations"] == 0, "the retained rows contradict Theorem 1.5")
+    _require(args.limit is None or args.limit > 0, f"--limit must be a positive frame count, got {args.limit}")
     frames = FRAMES if args.limit is None else min(args.limit, FRAMES)
     rows = run(frames)
     _require(rows == retained["rows"][: len(rows)], f"recomputed rows of the first {frames} frames differ")
