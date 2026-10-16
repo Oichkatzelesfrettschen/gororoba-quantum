@@ -1634,7 +1634,7 @@
     },
     {
       "id": "echo-pair-coherent-sign",
-      "statement": "Under the retained ibm_fez, ibm_kingston and ibm_marrakesh noise models of 2026-10-15, the echo-matched pair U Z U^dagger Z U and U U^dagger U on the dark input of e1+e10, compiled once at 141 CZ with a symbolic ancilla reflection so both arms share every non-virtual gate, moves amplified - echo by 1e-3 or more positively only for a PREP angle error (+0.012 to +0.019 at 0.03 rad), and every shift of 1e-3 or more from SX over-rotation, CZ local phase and CZ conditional phase, at both signs, is negative (-0.009 to -0.012 for a 0.01 rad conditional phase, -0.024 to -0.029 for a 0.01 rad local phase), so it separates no physical rotation error from a CZ phase. The edges' conditional phases act jointly: the four single-edge shifts sum to 0.25 to 0.33 of the uniform shift, so a per-edge 2m-CZ Y-basis reference, which cancels local phase and SX over-rotation to 8.3e-4 rad, must, under the uniform-phase model, bound every edge to the joint tolerance of 0.0048 to 0.0057 rad, 355 to 529 Y-basis shots per edge and target state at m = 24 for a 40,000-shot pair.",
+      "statement": "Under the retained ibm_fez, ibm_kingston and ibm_marrakesh noise models of 2026-10-15, the echo-matched pair U Z U^dagger Z U and U U^dagger U on the dark input of e1+e10, compiled once at 141 CZ with a symbolic ancilla reflection so both arms share every non-virtual gate, moves amplified - echo by 1e-3 or more positively only for a PREP angle error (+0.012 to +0.019 at 0.03 rad), and every shift of 1e-3 or more from SX over-rotation, CZ local phase and CZ conditional phase, at both signs, is negative (-0.009 to -0.012 for a 0.01 rad conditional phase, -0.024 to -0.029 for a 0.01 rad local phase), so it separates no physical rotation error from a CZ phase. The edges' conditional phases act jointly: the four single-edge shifts sum to 0.24 to 0.33 of the uniform shift, so a per-edge 2m-CZ Y-basis reference, which cancels local phase and SX over-rotation to 8.3e-4 rad, must, under the uniform-phase model, bound every edge to the joint tolerance of 0.0049 to 0.0058 rad, 340 to 501 Y-basis shots per edge and target state at m = 24 for a 40,000-shot pair.",
       "domain": "implementation",
       "evidence_class": "numerical or stochastic simulation",
       "status": "established",
@@ -1642,11 +1642,11 @@
       "evidence": [
         {
           "path": "docs/evidence/echo_dilation_noise/result.json",
-          "sha256": "9becd3f51a544e98d6ec9101f62a8967ad64d0b61902149dbdda49ed295ee4e6"
+          "sha256": "22ff95398e68e05dd8fc8d2973250362a91cebaa4a9964b4ac702ca9f2df7c50"
         },
         {
           "path": "docs/evidence/echo_dilation_noise/arms.qpy",
-          "sha256": "5ed74b67edda1f8d2b406427c3e8b5cecc811da7665bcb60a89ed64c687e845c"
+          "sha256": "9da4bdc34cbe308d9bc801725792c30ab1fea0fc34a0352611ca1a722ffcab75"
         },
         {
           "path": "docs/evidence/calibration/history/ibm_fez/20261015T2031280700.json",

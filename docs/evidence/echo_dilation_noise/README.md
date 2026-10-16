@@ -1,17 +1,22 @@
 # Echo-matched dilation pair under the retained calibrations
 
 `result.json` is the output of `scripts/echo_dilation_noise.py`. It ran as
-Kaggle kernel version 3 of `gororoba-echo-dilation-noise` on a CPU machine
-in 137.8 s, and the run is retained under
-`results/kaggle/2026-10-16T174357Z-gororoba-echo-dilation-noise/`. Earlier
+Kaggle kernel version 5 of `gororoba-echo-dilation-noise` on a CPU machine
+in 113.9 s, and the run is retained under
+`results/kaggle/2026-10-16T182806Z-gororoba-echo-dilation-noise/`. Earlier
 versions stay as history:
 - Version 1 (GPU, `results/kaggle/2026-10-16T153522Z-gororoba-echo-dilation-noise/`)
   lacked the per-edge sweep and sized the PREP shots on the device baseline.
 - Version 2 (CPU, `results/kaggle/2026-10-16T162448Z-gororoba-echo-dilation-noise/`)
   bounded the conditional phase by the mean of its two sign responses.
+- Version 3 (CPU, `results/kaggle/2026-10-16T174357Z-gororoba-echo-dilation-noise/`)
+  extrapolated the conditional-phase tolerance below its smallest sampled
+  magnitude, 0.01 rad.
 
-All three agree on every law they share: version 1 against version 2 to
-5.3e-15, and version 2 against version 3 bit for bit.
+Version 4 failed before computing anything because its push omitted the
+calibration snapshots, and it is not retained. The retained versions agree on
+every law they share: version 1 against version 2 to 5.3e-15, and versions
+2, 3 and 5 bit for bit.
 `arms.qpy` holds the compiled device arms (amplified, echo) of each backend,
 in the order `result.json` lists under `qpy_arms`.
 
@@ -102,7 +107,10 @@ need in shots and in an independent CZ-phase reference.
    - **Phase bound.** The conditional phase moves the pair about evenly in
      delta, so the reference must bound |delta| below the magnitude whose
      shift equals the pair's standard error. That magnitude comes from
-     power-law interpolation on the delta grid.
+     power-law interpolation between the two sampled points of the delta
+     grid that bracket it; the grid samples 0.003, 0.005 and 0.007 rad at
+     both signs for that purpose, and a level below the smallest sampled
+     response stops the run.
    - **Reference shots.** The shots per edge and target state that reach
      that bound at z = 3 through the reference's own slope, for the uniform
      bound and for each edge's single-edge bound.
@@ -175,20 +183,22 @@ Shift of amplified - echo from the baseline, at both signs of each magnitude:
      readout is 0 to 1.1e-16.
    - **Cross-sensitivity.** SX over-rotation, CZ local phase and extra
      depolarizing bias its delta estimate by at most 8.3e-4 rad. The
-     tolerance the 40,000-shot pair needs is 0.0048 to 0.0057 rad.
+     tolerance the 40,000-shot pair needs is 0.0049 to 0.0058 rad, where
+     the sampled response is quadratic: the shift at 0.005 rad is about a
+     quarter of the shift at 0.01 rad.
    - **Visibility.** On hardware the Y-basis readout difference is
      `V [sin(theta + 2m delta) - sin(theta)]`, with an unknown visibility V
      and common phase theta. The slope here comes from the model's known
      deltas, so the device case adds an X-quadrature arm for each edge and
      depth to measure V and theta before its counts bound any phase.
-   - **Shots.** At m = 24 the Y-basis arms reach that tolerance with 355
-     to 529 shots per edge and target state, about 4,000 shots over four
-     edges. That figure is the Y-basis share only: the X-quadrature arms,
+   - **Shots.** At m = 24 the Y-basis arms reach that tolerance with 340
+     to 501 shots per edge and target state, 2,944 to 3,530 shots over four
+     edges and both target states. That figure is the Y-basis share only: the X-quadrature arms,
      and the variance that estimating V and theta adds to the phase bound,
      are unsized, so the reference budget is open until a case designs
      those arms and sizes both quadratures jointly.
 6. **Edge phases add coherently, not edge by edge.** The four single-edge
-   shifts sum to 0.25 to 0.33 of the uniform shift on every backend (Fez at
+   shifts sum to 0.24 to 0.33 of the uniform shift on every backend (Fez at
    0.02 rad: -0.0115 against -0.0404). Four comparable edges whose phases
    add inside the shift, which grows about quadratically, give 1/4. So the
    pair responds to a weighted sum of the edge phases, and one edge's
@@ -198,7 +208,7 @@ Shift of amplified - echo from the baseline, at both signs of each magnitude:
      0.019 rad.
    - Bounding each edge to its single-edge tolerance would therefore under-size
      the reference about tenfold (32 to 64 shots per target where the joint
-     bound needs 355 to 529). The joint tolerance, 0.0048 to 0.0057 rad on
+     bound needs 340 to 501). The joint tolerance, 0.0049 to 0.0058 rad on
      every edge, is the sizing a case uses under the uniform-phase model.
    - Mixed phase vectors, with unequal or opposite-signed phases across
      edges, are untested. The response is nonlinear, so the joint tolerance

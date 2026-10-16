@@ -262,6 +262,16 @@
      "uniform_shift": -0.01038463520010835
     },
     {
+     "delta": -0.005,
+     "sum_of_edge_shifts": -0.0007314397575840514,
+     "uniform_shift": -0.0025998819276858987
+    },
+    {
+     "delta": 0.005,
+     "sum_of_edge_shifts": -0.0006907845863932671,
+     "uniform_shift": -0.0024767799730855966
+    },
+    {
      "delta": 0.01,
      "sum_of_edge_shifts": -0.002784652686831146,
      "uniform_shift": -0.00963225966668857
@@ -300,6 +310,36 @@
        "magnitude": -0.01,
        "shift": -0.01038463520010835,
        "shots_per_arm": 64419
+      },
+      {
+       "magnitude": -0.007,
+       "shift": -0.00509598040590703,
+       "shots_per_arm": 266426
+      },
+      {
+       "magnitude": -0.005,
+       "shift": -0.0025998819276858987,
+       "shots_per_arm": 1021576
+      },
+      {
+       "magnitude": -0.003,
+       "shift": -0.0009369228941555341,
+       "shots_per_arm": 7855777
+      },
+      {
+       "magnitude": 0.003,
+       "shift": -0.0008962831714150465,
+       "shots_per_arm": 8582680
+      },
+      {
+       "magnitude": 0.005,
+       "shift": -0.0024767799730855966,
+       "shots_per_arm": 1125243
+      },
+      {
+       "magnitude": 0.007,
+       "shift": -0.00480864030988587,
+       "shots_per_arm": 299041
       },
       {
        "magnitude": 0.01,
@@ -461,9 +501,9 @@
     }
    },
    "delta_tolerance": {
-    "16384": 0.0067675326262253855,
-    "40000": 0.005388533272588778,
-    "4096": 0.00964115243371187
+    "16384": 0.0068174692661166734,
+    "40000": 0.005454050585284117,
+    "4096": 0.009647737857123492
    },
    "family_baseline_difference": 0.0047462495944029515,
    "mixtures": [
@@ -508,8 +548,10 @@
       25
      ],
      "shifts": {
+      "-0.005": -9.554231375225042e-05,
       "-0.01": -0.0002975602379760578,
       "-0.02": -0.0010294874968334033,
+      "0.005": -8.251111772494824e-06,
       "0.01": -0.0001171882584433126,
       "0.02": -0.0006227158411999945
      }
@@ -525,8 +567,10 @@
       26
      ],
      "shifts": {
+      "-0.005": -0.0002839888886544961,
       "-0.01": -0.0010395593966778804,
       "-0.02": -0.0039721247341207855,
+      "0.005": -0.00018364124512304514,
       "0.01": -0.0008291946443125808,
       "0.02": -0.0034746889401589542
      }
@@ -542,8 +586,10 @@
       37
      ],
      "shifts": {
+      "-0.005": -0.00032331858086032117,
       "-0.01": -0.0013959394439154171,
       "-0.02": -0.005719656107228299,
+      "0.005": -0.00043102161268904204,
       "0.01": -0.001611477749590362,
       "0.02": -0.006152053367989518
      }
@@ -559,8 +605,10 @@
       45
      ],
      "shifts": {
+      "-0.005": -2.8589974316983735e-05,
       "-0.01": -0.00015854530372155784,
       "-0.02": -0.0007394709206438033,
+      "0.005": -6.787061680868511e-05,
       "0.01": -0.0002267920344848906,
       "0.02": -0.0007938159810605971
      }
@@ -585,9 +633,9 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 1716,
-      "40000": 2707,
-      "4096": 846
+      "16384": 1691,
+      "40000": 2642,
+      "4096": 845
      },
      "slope_per_rad": 7.567082436942251
     },
@@ -609,8 +657,8 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 237,
-      "40000": 374,
+      "16384": 234,
+      "40000": 365,
       "4096": 117
      },
      "slope_per_rad": 20.38203560025711
@@ -633,9 +681,9 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 1732,
-      "40000": 2731,
-      "4096": 854
+      "16384": 1707,
+      "40000": 2666,
+      "4096": 852
      },
      "slope_per_rad": 7.5332938110409
     },
@@ -657,9 +705,9 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 242,
-      "40000": 382,
-      "4096": 120
+      "16384": 239,
+      "40000": 372,
+      "4096": 119
      },
      "slope_per_rad": 20.16825806996189
     },
@@ -681,9 +729,9 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 1717,
-      "40000": 2709,
-      "4096": 846
+      "16384": 1692,
+      "40000": 2644,
+      "4096": 845
      },
      "slope_per_rad": 7.564745357581495
     },
@@ -705,9 +753,9 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 236,
-      "40000": 372,
-      "4096": 117
+      "16384": 233,
+      "40000": 363,
+      "4096": 116
      },
      "slope_per_rad": 20.42750842961126
     },
@@ -729,9 +777,9 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 1724,
-      "40000": 2720,
-      "4096": 850
+      "16384": 1699,
+      "40000": 2655,
+      "4096": 849
      },
      "slope_per_rad": 7.549281684755818
     },
@@ -753,8 +801,8 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 242,
-      "40000": 381,
+      "16384": 238,
+      "40000": 372,
       "4096": 119
      },
      "slope_per_rad": 20.176077475745657
@@ -779,6 +827,16 @@
      "delta": -0.01,
      "sum_of_edge_shifts": -0.0031296381077718927,
      "uniform_shift": -0.011699538571343981
+    },
+    {
+     "delta": -0.005,
+     "sum_of_edge_shifts": -0.0007335483298045453,
+     "uniform_shift": -0.0028670330995788917
+    },
+    {
+     "delta": 0.005,
+     "sum_of_edge_shifts": -0.0009240069223481195,
+     "uniform_shift": -0.002961832592463104
     },
     {
      "delta": 0.01,
@@ -819,6 +877,36 @@
        "magnitude": -0.01,
        "shift": -0.011699538571343981,
        "shots_per_arm": 43523
+      },
+      {
+       "magnitude": -0.007,
+       "shift": -0.005687624072653413,
+       "shots_per_arm": 182978
+      },
+      {
+       "magnitude": -0.005,
+       "shift": -0.0028670330995788917,
+       "shots_per_arm": 717881
+      },
+      {
+       "magnitude": -0.003,
+       "shift": -0.0010046990246715126,
+       "shots_per_arm": 5833674
+      },
+      {
+       "magnitude": 0.003,
+       "shift": -0.0010996629405975733,
+       "shots_per_arm": 4869166
+      },
+      {
+       "magnitude": 0.005,
+       "shift": -0.002961832592463104,
+       "shots_per_arm": 672514
+      },
+      {
+       "magnitude": 0.007,
+       "shift": -0.005688354026595982,
+       "shots_per_arm": 182849
       },
       {
        "magnitude": 0.01,
@@ -980,9 +1068,9 @@
     }
    },
    "delta_tolerance": {
-    "16384": 0.006072194706133317,
-    "40000": 0.004778208219793756,
-    "4096": 0.008725002882761184
+    "16384": 0.006179007464707588,
+    "40000": 0.004908962354259487,
+    "4096": 0.008750324542905174
    },
    "family_baseline_difference": 0.002276072346125285,
    "mixtures": [
@@ -1027,8 +1115,10 @@
       151
      ],
      "shifts": {
+      "-0.005": -0.00027550497232775584,
       "-0.01": -0.0011180290743889598,
       "-0.02": -0.0045130616496655285,
+      "0.005": -0.00028654271083322636,
       "0.01": -0.0011280421969511734,
       "0.02": -0.004437385586796044
      }
@@ -1044,8 +1134,10 @@
       151
      ],
      "shifts": {
+      "-0.005": -7.868314245385033e-05,
       "-0.01": -0.0002853224730712256,
       "-0.02": -0.0010929778620374364,
+      "0.005": -4.595997269510321e-05,
       "0.01": -0.00021273489733114603,
       "0.02": -0.0008910255162368208
      }
@@ -1061,8 +1153,10 @@
       152
      ],
      "shifts": {
+      "-0.005": -0.0003704306812842839,
       "-0.01": -0.0015877894597927933,
       "-0.02": -0.006480325692751032,
+      "0.005": -0.0004859594465108086,
       "0.01": -0.0018285862696439115,
       "0.02": -0.007039110255871894
      }
@@ -1078,8 +1172,10 @@
       153
      ],
      "shifts": {
+      "-0.005": -8.929533738655238e-06,
       "-0.01": -0.00013849710051891395,
       "-0.02": -0.0007809479486284299,
+      "0.005": -0.0001055447923089814,
       "0.01": -0.000318793172538967,
       "0.02": -0.0010385222430311647
      }
@@ -1104,9 +1200,9 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 2422,
-      "40000": 3912,
-      "4096": 1173
+      "16384": 2339,
+      "40000": 3706,
+      "4096": 1167
      },
      "slope_per_rad": 7.097385492340169
     },
@@ -1128,9 +1224,9 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 328,
-      "40000": 529,
-      "4096": 159
+      "16384": 316,
+      "40000": 501,
+      "4096": 158
      },
      "slope_per_rad": 19.31290745792207
     },
@@ -1152,9 +1248,9 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 2109,
-      "40000": 3405,
-      "4096": 1022
+      "16384": 2037,
+      "40000": 3226,
+      "4096": 1016
      },
      "slope_per_rad": 7.607761476431693
     },
@@ -1176,9 +1272,9 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 284,
-      "40000": 458,
-      "4096": 138
+      "16384": 274,
+      "40000": 434,
+      "4096": 137
      },
      "slope_per_rad": 20.751451487511183
     },
@@ -1200,9 +1296,9 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 2062,
-      "40000": 3330,
-      "4096": 999
+      "16384": 1991,
+      "40000": 3155,
+      "4096": 993
      },
      "slope_per_rad": 7.6944031410906195
     },
@@ -1224,9 +1320,9 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 268,
-      "40000": 432,
-      "4096": 130
+      "16384": 259,
+      "40000": 410,
+      "4096": 129
      },
      "slope_per_rad": 21.366185662826517
     },
@@ -1248,9 +1344,9 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 2095,
-      "40000": 3383,
-      "4096": 1015
+      "16384": 2023,
+      "40000": 3205,
+      "4096": 1009
      },
      "slope_per_rad": 7.632957315608055
     },
@@ -1272,9 +1368,9 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 274,
-      "40000": 443,
-      "4096": 133
+      "16384": 265,
+      "40000": 420,
+      "4096": 132
      },
      "slope_per_rad": 21.106112544220345
     }
@@ -1298,6 +1394,16 @@
      "delta": -0.01,
      "sum_of_edge_shifts": -0.0023900250518862354,
      "uniform_shift": -0.009368871235284404
+    },
+    {
+     "delta": -0.005,
+     "sum_of_edge_shifts": -0.0005582286796299574,
+     "uniform_shift": -0.0023114584865575605
+    },
+    {
+     "delta": 0.005,
+     "sum_of_edge_shifts": -0.0007102392917918698,
+     "uniform_shift": -0.0024038605991052453
     },
     {
      "delta": 0.01,
@@ -1338,6 +1444,36 @@
        "magnitude": -0.01,
        "shift": -0.009368871235284404,
        "shots_per_arm": 85093
+      },
+      {
+       "magnitude": -0.007,
+       "shift": -0.0045740435352892295,
+       "shots_per_arm": 355881
+      },
+      {
+       "magnitude": -0.005,
+       "shift": -0.0023114584865575605,
+       "shots_per_arm": 1391458
+      },
+      {
+       "magnitude": -0.003,
+       "shift": -0.0008119005013620395,
+       "shots_per_arm": 11266361
+      },
+      {
+       "magnitude": 0.003,
+       "shift": -0.0008915249506413758,
+       "shots_per_arm": 9342373
+      },
+      {
+       "magnitude": 0.005,
+       "shift": -0.0024038605991052453,
+       "shots_per_arm": 1286188
+      },
+      {
+       "magnitude": 0.007,
+       "shift": -0.0046198982142532374,
+       "shots_per_arm": 348700
       },
       {
        "magnitude": 0.01,
@@ -1499,8 +1635,8 @@
     }
    },
    "delta_tolerance": {
-    "16384": 0.007219850263803574,
-    "40000": 0.005677798622089376,
+    "16384": 0.007305694180552627,
+    "40000": 0.005803644495154014,
     "4096": 0.010357390765883254
    },
    "family_baseline_difference": 0.004471106971467909,
@@ -1546,8 +1682,10 @@
       89
      ],
      "shifts": {
+      "-0.005": -8.328209192548508e-05,
       "-0.01": -0.00025942418290991753,
       "-0.02": -0.0008976519029164076,
+      "0.005": -7.242520160211097e-06,
       "0.01": -0.00010230273839534343,
       "0.02": -0.0005433224194989483
      }
@@ -1563,8 +1701,10 @@
       88
      ],
      "shifts": {
+      "-0.005": 6.731119423397658e-06,
       "-0.01": -9.734162221175513e-05,
       "-0.02": -0.0006506495492786812,
+      "0.005": -0.00011372228747302815,
       "0.01": -0.0003301575270189816,
       "0.02": -0.001051917307703154
      }
@@ -1580,8 +1720,10 @@
       89
      ],
      "shifts": {
+      "-0.005": -0.00021997741892082479,
       "-0.01": -0.0010945035122350566,
       "-0.02": -0.004746333201328334,
+      "0.005": -0.00043899917233525265,
       "0.01": -0.0015326920037018743,
       "0.02": -0.005624072787338452
      }
@@ -1597,8 +1739,10 @@
       90
      ],
      "shifts": {
+      "-0.005": -0.00026170028820704516,
       "-0.01": -0.0009387557345295061,
       "-0.02": -0.0035443880944844852,
+      "0.005": -0.00015027531182337794,
       "0.01": -0.0007075849423661129,
       "0.02": -0.003016041525252977
      }
@@ -1623,8 +1767,8 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 1588,
-      "40000": 2567,
+      "16384": 1551,
+      "40000": 2457,
       "4096": 772
      },
      "slope_per_rad": 7.3738129563826105
@@ -1647,8 +1791,8 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 240,
-      "40000": 387,
+      "16384": 234,
+      "40000": 371,
       "4096": 117
      },
      "slope_per_rad": 18.998276360057776
@@ -1671,8 +1815,8 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 1608,
-      "40000": 2600,
+      "16384": 1570,
+      "40000": 2488,
       "4096": 782
      },
      "slope_per_rad": 7.328064284178473
@@ -1695,8 +1839,8 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 238,
-      "40000": 384,
+      "16384": 232,
+      "40000": 368,
       "4096": 116
      },
      "slope_per_rad": 19.076092776875235
@@ -1719,8 +1863,8 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 1976,
-      "40000": 3194,
+      "16384": 1929,
+      "40000": 3057,
       "4096": 960
      },
      "slope_per_rad": 6.611153717242852
@@ -1743,8 +1887,8 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 269,
-      "40000": 434,
+      "16384": 263,
+      "40000": 416,
       "4096": 131
      },
      "slope_per_rad": 17.936457580672798
@@ -1767,8 +1911,8 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 1540,
-      "40000": 2490,
+      "16384": 1504,
+      "40000": 2384,
       "4096": 749
      },
      "slope_per_rad": 7.487367913481735
@@ -1791,8 +1935,8 @@
       "4096": null
      },
      "shots_per_target_uniform": {
-      "16384": 220,
-      "40000": 355,
+      "16384": 215,
+      "40000": 340,
       "4096": 107
      },
      "slope_per_rad": 19.83261707209336
@@ -2001,6 +2145,12 @@
     -0.05,
     -0.02,
     -0.01,
+    -0.007,
+    -0.005,
+    -0.003,
+    0.003,
+    0.005,
+    0.007,
     0.01,
     0.02,
     0.05,
@@ -2412,6 +2562,126 @@
    "compile": "device",
    "eps": 0.0,
    "kind": "pair",
+   "magnitude": -0.007,
+   "p0": 0.2609716660818298
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.007,
+   "p0": 0.26143880579972534
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.2606483846286108
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.2586194258682852
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.003,
+   "p0": 0.2604201716717562
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.003,
+   "p0": 0.2567282538779002
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.003,
+   "p0": 0.26028820822702503
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.003,
+   "p0": 0.2565556507104286
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.26042228263315353
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.2582702219182276
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.007,
+   "p0": 0.26064221168556145
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.007,
+   "p0": 0.2608220113074358
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
    "magnitude": 0.01,
    "p0": 0.26112882389109876
   },
@@ -2592,6 +2862,46 @@
    "compile": "device",
    "eps": 0.0,
    "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.26030530803718327
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@0",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.255772009662924
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@0",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.2603522781985676
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@0",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.2557316886223286
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@0",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
    "magnitude": 0.01,
    "p0": 0.2606027758108352
   },
@@ -2664,6 +2974,46 @@
    "kind": "pair",
    "magnitude": -0.01,
    "p0": 0.25687721023109467
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@1",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.2603187042942436
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@1",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.2559738524948866
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@1",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.2602678000606146
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@1",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.25582260061772616
   },
   {
    "arm": "amplified",
@@ -2752,6 +3102,46 @@
    "compile": "device",
    "eps": 0.0,
    "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.2603471640940976
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@2",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.2560416419869464
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@2",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.260372991090381
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@2",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.2561751720150585
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@2",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
    "magnitude": 0.01,
    "p0": 0.26070734360255626
   },
@@ -2824,6 +3214,46 @@
    "kind": "pair",
    "magnitude": -0.01,
    "p0": 0.2564622494974722
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@3",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.26048282066920786
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@3",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.25588256995551334
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@3",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.26024432287791993
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase@3",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.2556833528067171
   },
   {
    "arm": "amplified",
@@ -3435,6 +3865,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.5039768384045262,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.5039768384045262,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.5039768384045262,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5039768384045262,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5039768384045262,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.5039768384045262,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.5039768384045262,
    "target": 0
@@ -3747,6 +4255,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.45089172923443466,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.46602003164779476,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.4811871977320724,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.52676647907698,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5419336451612576,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.5570619475746178,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.5796476627739487,
    "target": 1
@@ -4047,6 +4633,84 @@
    "kind": "reference",
    "m": 24,
    "magnitude": -0.01,
+   "p0": 0.5039768384045262,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.5039768384045262,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.5039768384045262,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.5039768384045262,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5039768384045262,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.5039768384045262,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
    "p0": 0.5039768384045262,
    "target": 0
   },
@@ -4371,6 +5035,84 @@
    ],
    "kind": "reference",
    "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.35844776264529693,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.39905953838495667,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.4406374830657054,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5673161937433471,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.6088941384240958,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
+   "p0": 0.6495059141637557,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    24,
+    25
+   ],
+   "kind": "reference",
+   "m": 24,
    "magnitude": 0.01,
    "p0": 0.7077971944070974,
    "target": 1
@@ -4671,6 +5413,84 @@
    "kind": "reference",
    "m": 8,
    "magnitude": -0.01,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
    "p0": 0.5020276170497049,
    "target": 0
   },
@@ -4995,6 +5815,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.44917954544472716,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.46424029685008456,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.47933973795146995,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5247154961479399,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5398149372493253,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.5548756886546826,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.5773605551601139,
    "target": 1
@@ -5295,6 +6193,84 @@
    "kind": "reference",
    "m": 24,
    "magnitude": -0.01,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
    "p0": 0.5020276170497049,
    "target": 0
   },
@@ -5619,6 +6595,84 @@
    ],
    "kind": "reference",
    "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.35802493803642904,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.3982107566840015,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.4393526068078051,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5647026272916048,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.6058444774154081,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
+   "p0": 0.6460302960629808,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    26
+   ],
+   "kind": "reference",
+   "m": 24,
    "magnitude": 0.01,
    "p0": 0.7037101977493238,
    "target": 1
@@ -5919,6 +6973,84 @@
    "kind": "reference",
    "m": 8,
    "magnitude": -0.01,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
    "p0": 0.5020276170497049,
    "target": 0
   },
@@ -6243,6 +7375,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.44895890327283433,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.4640825333460228,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.47924501503471484,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5248102190646949,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.539972700753387,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.5550963308265754,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.5776750706255198,
    "target": 1
@@ -6543,6 +7753,84 @@
    "kind": "reference",
    "m": 24,
    "magnitude": -0.01,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.5020276170497049,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
    "p0": 0.5020276170497049,
    "target": 0
   },
@@ -6867,6 +8155,84 @@
    ],
    "kind": "reference",
    "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.35617386362695075,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.3968762453238703,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.4385469510563913,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5655082830430184,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.6071789887755396,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
+   "p0": 0.647881370472459,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    25,
+    37
+   ],
+   "kind": "reference",
+   "m": 24,
    "magnitude": 0.01,
    "p0": 0.7063027013458175,
    "target": 1
@@ -7167,6 +8533,84 @@
    "kind": "reference",
    "m": 8,
    "magnitude": -0.01,
+   "p0": 0.5020328596358687,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.5020328596358687,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.5020328596358687,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.5020328596358687,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5020328596358687,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5020328596358687,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
    "p0": 0.5020328596358687,
    "target": 0
   },
@@ -7491,6 +8935,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.44907262777961754,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.4641653424932555,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.47929682936377355,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.524768889907964,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5399003767784821,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.5549930914921201,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.577525676483427,
    "target": 1
@@ -7791,6 +9313,84 @@
    "kind": "reference",
    "m": 24,
    "magnitude": -0.01,
+   "p0": 0.5020328596358687,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.5020328596358687,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.5020328596358687,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.5020328596358687,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5020328596358687,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.5020328596358687,
+   "target": 0
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
    "p0": 0.5020328596358687,
    "target": 0
   },
@@ -8104,6 +9704,84 @@
    "m": 24,
    "magnitude": -0.01,
    "p0": 0.3002720848784123,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.35797434073903395,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.3981757392846382,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.4393335429645985,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.564732176307139,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.6058899799870994,
+   "target": 1
+  },
+  {
+   "backend": "ibm_fez",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    37,
+    45
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
+   "p0": 0.6460913785327037,
    "target": 1
   },
   {
@@ -8544,6 +10222,126 @@
    "compile": "device",
    "eps": 0.0,
    "kind": "pair",
+   "magnitude": -0.007,
+   "p0": 0.20751393538395285
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.007,
+   "p0": 0.2109918242935339
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.20718119396210596
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.20783849189861248
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.003,
+   "p0": 0.20695017814348846
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.003,
+   "p0": 0.2057451420050876
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.003,
+   "p0": 0.20685089132124104
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.003,
+   "p0": 0.20574081909876624
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.20700996273029273
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.20776206015968346
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.007,
+   "p0": 0.20726215923553862
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.007,
+   "p0": 0.21074077809906222
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
    "magnitude": 0.01,
    "p0": 0.20781110737237368
   },
@@ -8724,6 +10522,46 @@
    "compile": "device",
    "eps": 0.0,
    "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.20685640121079077
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@0",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.20492217102004615
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@0",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.20682511345109064
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@0",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.2049019209988515
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@0",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
    "magnitude": 0.01,
    "p0": 0.20695995683495705
   },
@@ -8796,6 +10634,46 @@
    "kind": "pair",
    "magnitude": -0.01,
    "p0": 0.20521061028439622
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@1",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.20686819018602806
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@1",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.20473713816540953
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@1",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.20690001716742198
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@1",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.2047362419770447
   },
   {
    "arm": "amplified",
@@ -8884,6 +10762,46 @@
    "compile": "device",
    "eps": 0.0,
    "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.20689989365482883
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@2",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.20506058917304074
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@2",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.20689902829048487
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@2",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.2051752525739233
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@2",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
    "magnitude": 0.01,
    "p0": 0.2072223158023632
   },
@@ -8956,6 +10874,46 @@
    "kind": "pair",
    "magnitude": -0.01,
    "p0": 0.20542252251637597
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@3",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.20700808298166612
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@3",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.2048072773523324
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@3",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.20684598667765067
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase@3",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.20474179630688727
   },
   {
    "arm": "amplified",
@@ -9567,6 +11525,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.48943446846956806,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.48943446846956806,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.48943446846956806,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.48943446846956806,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.48943446846956806,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.48943446846956806,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.48943446846956806,
    "target": 0
@@ -9879,6 +11915,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.4396444082948083,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.4538336806664467,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.4680594046748899,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5108095322642462,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5250352562726895,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.5392245286443278,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.5604083233929698,
    "target": 1
@@ -10179,6 +12293,84 @@
    "kind": "reference",
    "m": 24,
    "magnitude": -0.01,
+   "p0": 0.48943446846956806,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.48943446846956806,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.48943446846956806,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.48943446846956806,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.48943446846956806,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.48943446846956806,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
    "p0": 0.48943446846956806,
    "target": 0
   },
@@ -10503,6 +12695,84 @@
    ],
    "kind": "reference",
    "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.3515390309797627,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.3900205386181914,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.4294175377451381,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5494513991939981,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.5888483983209447,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
+   "p0": 0.6273299059593734,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    138,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
    "magnitude": 0.01,
    "p0": 0.6825635430487887,
    "target": 1
@@ -10803,6 +13073,84 @@
    "kind": "reference",
    "m": 8,
    "magnitude": -0.01,
+   "p0": 0.5059042093554894,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.5059042093554894,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.5059042093554894,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.5059042093554894,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5059042093554894,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5059042093554894,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
    "p0": 0.5059042093554894,
    "target": 0
   },
@@ -11127,6 +13475,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.4525337247342119,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.46774335365522546,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.48299205553975927,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5288163631712196,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5440650650557532,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.559274693976767,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.5819818241198064,
    "target": 1
@@ -11427,6 +13853,84 @@
    "kind": "reference",
    "m": 24,
    "magnitude": -0.01,
+   "p0": 0.5059042093554894,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.5059042093554894,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.5059042093554894,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.5059042093554894,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5059042093554894,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.5059042093554894,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
    "p0": 0.5059042093554894,
    "target": 0
   },
@@ -11751,6 +14255,84 @@
    ],
    "kind": "reference",
    "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.3577374703904206,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.3990853170906422,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.4414168473547506,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5703915713562283,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.6127231016203366,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
+   "p0": 0.6540709483205582,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    150,
+    151
+   ],
+   "kind": "reference",
+   "m": 24,
    "magnitude": 0.01,
    "p0": 0.7134187242306013,
    "target": 1
@@ -12051,6 +14633,84 @@
    "kind": "reference",
    "m": 8,
    "magnitude": -0.01,
+   "p0": 0.5028606375860936,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.5028606375860936,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.5028606375860936,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.5028606375860936,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5028606375860936,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5028606375860936,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
    "p0": 0.5028606375860936,
    "target": 0
   },
@@ -12375,6 +15035,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.4488823390651514,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.4642651842206556,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.4796875471282547,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5260337280439326,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5414560909515318,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.5568389361070358,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.5798046689969998,
    "target": 1
@@ -12675,6 +15413,84 @@
    "kind": "reference",
    "m": 24,
    "magnitude": -0.01,
+   "p0": 0.5028606375860937,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.5028606375860937,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.5028606375860937,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.5028606375860937,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5028606375860937,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.5028606375860937,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
    "p0": 0.5028606375860937,
    "target": 0
   },
@@ -12999,6 +15815,84 @@
    ],
    "kind": "reference",
    "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.35030466099892327,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.3928773829971918,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.4364629271331869,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5692583480390002,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.6128438921749954,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
+   "p0": 0.655416614173264,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    151,
+    152
+   ],
+   "kind": "reference",
+   "m": 24,
    "magnitude": 0.01,
    "p0": 0.7165224942143588,
    "target": 1
@@ -13299,6 +16193,84 @@
    "kind": "reference",
    "m": 8,
    "magnitude": -0.01,
+   "p0": 0.505814478424488,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.505814478424488,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.505814478424488,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.505814478424488,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.505814478424488,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.505814478424488,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
    "p0": 0.505814478424488,
    "target": 0
   },
@@ -13623,6 +16595,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.45226723788880996,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.4675272389499588,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.48282644249776185,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5288025143512141,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5441017178990172,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.5593617189601661,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.5821440515805686,
    "target": 1
@@ -13923,6 +16973,84 @@
    "kind": "reference",
    "m": 24,
    "magnitude": -0.01,
+   "p0": 0.505814478424488,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.505814478424488,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.505814478424488,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.505814478424488,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.505814478424488,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.505814478424488,
+   "target": 0
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
    "p0": 0.505814478424488,
    "target": 0
   },
@@ -14236,6 +17364,84 @@
    "m": 24,
    "magnitude": -0.01,
    "p0": 0.29475335298228456,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.3551154329333837,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.397169951525286,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.44022496676737877,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5714039900815973,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.6144590053236901,
+   "target": 1
+  },
+  {
+   "backend": "ibm_kingston",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    152,
+    153
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
+   "p0": 0.6565135239155923,
    "target": 1
   },
   {
@@ -14676,6 +17882,126 @@
    "compile": "device",
    "eps": 0.0,
    "kind": "pair",
+   "magnitude": -0.007,
+   "p0": 0.2936610668198072
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.007,
+   "p0": 0.29395915374497283
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.29327107139310565
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.2913065732695396
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.003,
+   "p0": 0.2929918290570484
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.003,
+   "p0": 0.28952777294828685
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.003,
+   "p0": 0.2928037232811894
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.003,
+   "p0": 0.2894192916217072
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.29295192590532226
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.2910798298943039
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.007,
+   "p0": 0.2932024560465371
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.007,
+   "p0": 0.29354639765066676
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
    "magnitude": 0.01,
    "p0": 0.29376562249057886
   },
@@ -14856,6 +18182,46 @@
    "compile": "device",
    "eps": 0.0,
    "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.292820078332072
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@0",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.2886274038138739
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@0",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.2928686055038046
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@0",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.28859989141384124
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@0",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
    "magnitude": 0.01,
    "p0": 0.29309121151693057
   },
@@ -14928,6 +18294,46 @@
    "kind": "pair",
    "magnitude": -0.01,
    "p0": 0.289329726723064
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@1",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.29303870090906536
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@1",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.2887560131795184
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@1",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.29272807954798474
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@1",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.2885658452253342
   },
   {
    "arm": "amplified",
@@ -15016,6 +18422,46 @@
    "compile": "device",
    "eps": 0.0,
    "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.29287413554657993
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@2",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.28881815635537716
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@2",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.29286928593766376
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@2",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.2890323284998754
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@2",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
    "magnitude": 0.01,
    "p0": 0.2931478276193818
   },
@@ -15088,6 +18534,46 @@
    "kind": "pair",
    "magnitude": -0.01,
    "p0": 0.2896255060291228
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@3",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.292834769336008
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@3",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": -0.005,
+   "p0": 0.28882051301409145
+  },
+  {
+   "arm": "amplified",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@3",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.29279137840291525
+  },
+  {
+   "arm": "echo",
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase@3",
+   "compile": "device",
+   "eps": 0.0,
+   "kind": "pair",
+   "magnitude": 0.005,
+   "p0": 0.28866569710461504
   },
   {
    "arm": "amplified",
@@ -15699,6 +19185,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.5058622169688914,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.5058622169688914,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.5058622169688914,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5058622169688914,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5058622169688914,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.5058622169688914,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.5058622169688914,
    "target": 0
@@ -16011,6 +19575,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.45413294493216166,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.4688748581156659,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.48365464236525363,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5280697915725292,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.542849575822117,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.5575914890056213,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.5796003465327175,
    "target": 1
@@ -16311,6 +19953,84 @@
    "kind": "reference",
    "m": 24,
    "magnitude": -0.01,
+   "p0": 0.5058622169688914,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.5058622169688914,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.5058622169688914,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.5058622169688914,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5058622169688914,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.5058622169688914,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
    "p0": 0.5058622169688914,
    "target": 0
   },
@@ -16635,6 +20355,84 @@
    ],
    "kind": "reference",
    "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.37021327314119556,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.4080678699031092,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.4468230413561494,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5649013925816335,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.6036565640346737,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
+   "p0": 0.6415111607965873,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    78,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
    "magnitude": 0.01,
    "p0": 0.6958449805694692,
    "target": 1
@@ -16935,6 +20733,84 @@
    "kind": "reference",
    "m": 8,
    "magnitude": -0.01,
+   "p0": 0.49694262278811685,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.49694262278811685,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.49694262278811685,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.49694262278811685,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.49694262278811685,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.49694262278811685,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
    "p0": 0.49694262278811685,
    "target": 0
   },
@@ -17259,6 +21135,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.44553428932751027,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.4601847405786182,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.4748728281402517,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5190124174359819,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5337005049976156,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.5483509562487234,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.5702232656299016,
    "target": 1
@@ -17559,6 +21513,84 @@
    "kind": "reference",
    "m": 24,
    "magnitude": -0.01,
+   "p0": 0.4969426227881169,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.4969426227881169,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.4969426227881169,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.4969426227881169,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.4969426227881169,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.4969426227881169,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
    "p0": 0.4969426227881169,
    "target": 0
   },
@@ -17883,6 +21915,84 @@
    ],
    "kind": "reference",
    "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.36073805962776995,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.3987477074997747,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.4376616204896053,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5562236250866284,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.5951375380764591,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
+   "p0": 0.6331471859484639,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    87,
+    88
+   ],
+   "kind": "reference",
+   "m": 24,
    "magnitude": 0.01,
    "p0": 0.6877035505568693,
    "target": 1
@@ -18183,6 +22293,84 @@
    "kind": "reference",
    "m": 8,
    "magnitude": -0.01,
+   "p0": 0.5027561733151874,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.5027561733151874,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.5027561733151874,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.5027561733151874,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5027561733151874,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5027561733151874,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
    "p0": 0.5027561733151874,
    "target": 0
   },
@@ -18507,6 +22695,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.45637716002330925,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.46959434558509316,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.48284548528170457,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5226668613486701,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5359180010452816,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.5491351866070656,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.568867710487616,
    "target": 1
@@ -18807,6 +23073,84 @@
    "kind": "reference",
    "m": 24,
    "magnitude": -0.01,
+   "p0": 0.5027561733151874,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.5027561733151874,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.5027561733151874,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.5027561733151874,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5027561733151874,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.5027561733151874,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
    "p0": 0.5027561733151874,
    "target": 0
   },
@@ -19131,6 +23475,84 @@
    ],
    "kind": "reference",
    "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.3746886854696146,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.41042757862947127,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.4470167131185668,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5584956335118081,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.5950847680009036,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
+   "p0": 0.6308236611607604,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    88,
+    89
+   ],
+   "kind": "reference",
+   "m": 24,
    "magnitude": 0.01,
    "p0": 0.6821207491219153,
    "target": 1
@@ -19431,6 +23853,84 @@
    "kind": "reference",
    "m": 8,
    "magnitude": -0.01,
+   "p0": 0.5036509963949681,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.5036509963949681,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.5036509963949681,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.5036509963949681,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5036509963949681,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.5036509963949681,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
    "p0": 0.5036509963949681,
    "target": 0
   },
@@ -19755,6 +24255,84 @@
    ],
    "kind": "reference",
    "m": 8,
+   "magnitude": -0.007,
+   "p0": 0.4511251087843316,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.005,
+   "p0": 0.4660940440526674,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": -0.003,
+   "p0": 0.481101432632752,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.003,
+   "p0": 0.5262005601571844,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.005,
+   "p0": 0.541207948737269,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 8,
+   "magnitude": 0.007,
+   "p0": 0.5561768840056048,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 8,
    "magnitude": 0.01,
    "p0": 0.5785246755297856,
    "target": 1
@@ -20055,6 +24633,84 @@
    "kind": "reference",
    "m": 24,
    "magnitude": -0.01,
+   "p0": 0.5036509963949681,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.5036509963949681,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.5036509963949681,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.5036509963949681,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5036509963949681,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.5036509963949681,
+   "target": 0
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
    "p0": 0.5036509963949681,
    "target": 0
   },
@@ -20379,6 +25035,84 @@
    ],
    "kind": "reference",
    "m": 24,
+   "magnitude": -0.007,
+   "p0": 0.3620448289883306,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.005,
+   "p0": 0.40156187427044476,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": -0.003,
+   "p0": 0.44201903630290473,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.003,
+   "p0": 0.5652829564870316,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.005,
+   "p0": 0.6057401185194918,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 24,
+   "magnitude": 0.007,
+   "p0": 0.6452571638016058,
+   "target": 1
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "channel": "cz_conditional_phase",
+   "edge": [
+    89,
+    90
+   ],
+   "kind": "reference",
+   "m": 24,
    "magnitude": 0.01,
    "p0": 0.7019771671159019,
    "target": 1
@@ -20463,7 +25197,7 @@
   }
  ],
  "schema": "gororoba-echo-dilation-noise-v1",
- "seconds": 137.8,
+ "seconds": 113.9,
  "seed_transpiler": 7,
  "snapshots": {
   "ibm_fez": {
