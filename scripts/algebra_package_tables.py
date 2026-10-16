@@ -199,8 +199,8 @@ dependencies = [
 [tool.setuptools]
 py-modules = ["SplitOct"]
 """
-# The prepare() step of python-cayley-dickson and python-splitoct in the local
-# PKGBUILDs: files written ("write") and archive members copied ("copy") before
+# The prepare() step of python-cayley-dickson, python-splitoct and
+# python-pyquaternion in the local PKGBUILDs: files written ("write") and archive members copied ("copy") before
 # the wheel is built. The other packages build from their sdist unchanged.
 BUILD_RECIPES: dict[str, dict[str, dict[str, str]]] = {
     "cayley-dickson": {
@@ -211,6 +211,8 @@ BUILD_RECIPES: dict[str, dict[str, dict[str, str]]] = {
         },
     },
     "splitoct": {"copy": {"src/SplitOct.py": "SplitOct.py"}, "write": {"pyproject.toml": _SPLITOCT_PYPROJECT}},
+    # setup.py reads VERSION.txt, which the PyPI sdist omits.
+    "pyquaternion": {"write": {"VERSION.txt": "0.9.9\n"}},
 }
 # Runtime dependencies an imported package needs beyond numpy, scipy, pandas,
 # sympy, h5py and torch, pinned to the Arch package versions on the build host.
