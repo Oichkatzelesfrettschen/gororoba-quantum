@@ -9,12 +9,14 @@ Aer simulate shot by shot. Noise is gororoba_quantum/calibration_snapshot's
 rebuild of live_run's model from the retained export
 docs/evidence/calibration/ibm_kingston.json.
 
-For every available device (CPU always, GPU when nvidia-smi lists one) and
-workload it records the noise-model build once, then the run of BATCH
+For every device named by --devices (default: CPU always, GPU when
+nvidia-smi lists one) and workload it records the noise-model build once, then the run of BATCH
 circuits at SHOTS shots per width, best of REPEATS. Once a width exceeds
 BUDGET_SECONDS on a device and workload, the wider widths there are not run
 and record why. The output names the machine (CPU model, cores, GPU) so a
-row is read against the substrate that produced it.
+row is read against the substrate that produced it. A kernel on a GPU
+machine passes ``--devices GPU`` so its accelerator session times only the
+GPU; the CPU column comes from a CPU kernel.
 """
 
 from __future__ import annotations
@@ -147,9 +149,14 @@ def measure(snapshot: dict[str, Any], device: str, dynamic: bool) -> dict[str, A
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--devices", help="comma-separated subset of CPU,GPU; default every available device")
     args = parser.parse_args()
     snapshot = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
-    devices = ["CPU"] + (["GPU"] if gpu_names() else [])
+    available = ["CPU"] + (["GPU"] if gpu_names() else [])
+    devices = args.devices.split(",") if args.devices else available
+    missing = [d for d in devices if d not in available]
+    if missing:
+        raise SystemExit(f"--devices names {missing}, absent here; available {available}")
     out: dict[str, Any] = {
         "schema": "substrate-crossover-v1",
         "machine": {
