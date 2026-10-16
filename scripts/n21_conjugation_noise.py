@@ -21,7 +21,8 @@ if_else, which the Heron Targets list, before compiling. Every circuit
 compiles at optimization level 3 on the snapshot Target over the transpiler
 seeds, and the seed with the fewest routed CZ (then the least depth) runs.
 Sampling uses Aer statevector trajectories under the snapshot's noise model,
-an unbiased sample of the density-matrix channel live_run evaluates.
+an unbiased sample of the density-matrix channel live_run evaluates, on the
+device GOROROBA_AER_DEVICE names; a GPU batches shots (batched_shots_gpu).
 
 Timing follows live_run's planning model: the Target duration of the
 gate-time view (each if_else replaced by its true branch), plus the declared
@@ -80,6 +81,8 @@ SHOT_TIERS = (4096, 8192, 16384, 32768)
 TWO_ROUND_SHOTS = 32768
 TEN_ROUND_SHOTS = 16384
 TEN_ROUND_ORDER = 6
+# GOROROBA_AER_DEVICE, which a Kaggle kernel sets to its machine's device.
+DEVICE = calibration_snapshot.aer_device()
 
 
 def _require(ok: bool, message: str) -> None:
@@ -326,8 +329,8 @@ def run(search: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any]:
     for position, path in enumerate(snapshot_paths):
         snapshot = json.loads(path.read_text(encoding="utf-8"))
         backend = _backend(snapshot)
-        simulator = calibration_snapshot.noise_simulator(snapshot, "CPU")
-        simulator.set_options(method="statevector", max_parallel_threads=parallel.workers())
+        simulator = calibration_snapshot.noise_simulator(snapshot, DEVICE, method="statevector", batched_shots=True)
+        simulator.set_options(max_parallel_threads=parallel.workers())
         results: dict[str, dict[str, Any]] = {}
         for index, name in enumerate(names):
             start = (position * len(names) + index) * len(TRANSPILER_SEEDS)
@@ -371,6 +374,8 @@ def run(search: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any]:
         },
         "simulation": {
             "method": "statevector trajectories",
+            "device": DEVICE,
+            "batched_shots_gpu": DEVICE == "GPU",
             "seed_base": SIMULATOR_SEED,
             "workers": parallel.workers(),
         },
