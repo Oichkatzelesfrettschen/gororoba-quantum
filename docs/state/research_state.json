@@ -224,7 +224,7 @@
     },
     {
       "id": "a5-d-locus-nullity",
-      "statement": "On 1000 exact rational pairs of sedenion zero divisors (200 Cayley-frame a's, each with five b's at independent rational lengths, |b|/|a| from 0.18 to 508), the A_5 element (a + b, e_8 (b - a)) has nullity 12 exactly when b lies in V(a) = span{(a1, -a2), (a2, a1)} + Eig_2(a) and 8 otherwise, reproducing Theorem 1.5 with Corollary 7.4 of Biss-Christensen-Dugger-Isaksen (math/0702075); b drawn from Ann(a), b = a and b = (a2, -a1) all fall outside V(a) with nullity 8, and dim Ann(a) = dim Eig_2(a) = 4 with Ann(a) orthogonal to V(a) on every frame.",
+      "statement": "On 1000 exact rational pairs of sedenion zero divisors (200 Cayley-frame a's, each with five b's under independent rational scale factors, |b|/|a| from 0.18 to 508), the A_5 element (a + b, e_8 (b - a)) has nullity 12 exactly when b lies in V(a) = span{(a1, -a2), (a2, a1)} + Eig_2(a) and 8 otherwise, reproducing Theorem 1.5 with Corollary 7.4 of Biss-Christensen-Dugger-Isaksen (math/0702075); b drawn from Ann(a), b = a and b = (a2, -a1) all fall outside V(a) with nullity 8, and dim Ann(a) = dim Eig_2(a) = 4 with Ann(a) orthogonal to V(a) on every frame.",
       "domain": "algebra",
       "evidence_class": "exact finite certificate",
       "status": "established",

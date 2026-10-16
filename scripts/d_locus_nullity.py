@@ -38,7 +38,9 @@ Usage:
     "$PYTHON" scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json [--limit K]
 
 --check recomputes every pair, or the pairs of the first K frames, and requires
-them to equal the retained rows; it also re-derives the summary from the rows.
+them to equal the retained rows; every other field (seed, frame count, kinds,
+source, convention, certificate method, summary) must equal what this script
+writes for those rows.
 """
 
 from __future__ import annotations
@@ -270,7 +272,9 @@ def main() -> int:
     frames = FRAMES if args.limit is None else min(args.limit, FRAMES)
     rows = run(frames)
     _require(rows == retained["rows"][: len(rows)], f"recomputed rows of the first {frames} frames differ")
-    _require(retained["left_matrix_checks"] == check_left_matrix(), "the cd_multiply cross-check differs")
+    expected = result(retained["rows"])
+    differing = sorted(key for key in expected.keys() | retained.keys() if expected.get(key) != retained.get(key))
+    _require(not differing, f"retained fields differ from this computation: {differing}")
     print(
         f"d_locus_nullity: {len(rows)} of {len(retained['rows'])} pairs recomputed; {json.dumps(retained['summary'])}"
     )
