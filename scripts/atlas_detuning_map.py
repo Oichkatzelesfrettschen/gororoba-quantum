@@ -32,7 +32,8 @@ Self-check: with no error term each edge's simulated fringe phase must equal
 the fringe phase of the recorded ideal probabilities within 1e-9 rad, so the
 extraction and timing pairing preserve the circuit.
 
-``--lanes all`` or ``--lanes 0,4``. ``--check FILE`` reruns the named lanes on
+``--lanes all`` or ``--lanes 0,4``. ``--check FILE`` requires FILE to hold each
+of the 7 lanes once and every named lane among them, reruns the named lanes on
 the CPU and requires every response to 1e-9 and every fitted parameter and
 model score (fit and leave-one-out RMS) to 1e-6 in absolute terms, since the
 computation is deterministic statevector algebra. Pulse times use the dt the
@@ -65,6 +66,7 @@ RUN = ROOT / "results/live/2026-10-13T025444.603480Z"
 MEASURED = ROOT / "results/ripple/measured-ripple.json"
 BACKEND = "ibm_fez"
 PHASES = 8
+LANES = 7
 KHZ = 1e3
 CZ_STEP = 0.01
 VIRTUAL = {"rz", "barrier", "delay"}
@@ -322,7 +324,9 @@ def main() -> int:
     if args.check:
         retained = json.loads(args.check.read_text(encoding="utf-8"))
         named = [fit["lane"] for fit in retained["lanes"]]
+        require(sorted(named) == list(range(LANES)), f"{args.check}: lanes {named} are not each of 0..{LANES - 1} once")
         lanes = named if args.lanes == "all" else [int(v) for v in args.lanes.split(",")]
+        require(set(lanes) <= set(named), f"--lanes {lanes} names a lane {args.check} lacks")
         fresh = {fit["lane"]: fit for fit in run(lanes)["lanes"]}
         for fit in retained["lanes"]:
             if fit["lane"] not in fresh:
@@ -343,7 +347,7 @@ def main() -> int:
         print(f"{args.check}: lanes {lanes} reproduced")
         return 0
     require(args.out is not None, "--out is required")
-    lanes = list(range(7)) if args.lanes == "all" else [int(v) for v in args.lanes.split(",")]
+    lanes = list(range(LANES)) if args.lanes == "all" else [int(v) for v in args.lanes.split(",")]
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(run(lanes), indent=1) + "\n", encoding="utf-8")
     return 0
