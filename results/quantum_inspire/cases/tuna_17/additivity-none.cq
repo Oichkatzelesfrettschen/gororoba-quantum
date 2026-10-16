@@ -1,0 +1,28 @@
+version 3.0
+
+qubit[17] q
+bit[17] b
+
+// star T=0 A=1 B=2 config=none
+X90 q[0]
+wait(40) q[0]
+Y90 q[0]
+// star T=3 A=5 B=6 config=none
+X90 q[3]
+wait(40) q[3]
+Y90 q[3]
+// star T=4 A=7 B=8 config=none
+X90 q[4]
+wait(40) q[4]
+Y90 q[4]
+// star T=11 A=13 B=14 config=none
+X90 q[11]
+wait(40) q[11]
+Y90 q[11]
+// star T=12 A=9 B=15 config=none
+X90 q[12]
+wait(40) q[12]
+Y90 q[12]
+
+barrier q
+b = measure q

@@ -1,0 +1,13 @@
+{
+ "schema": "qi-docs-capture-v1",
+ "kind": "sdk",
+ "retrieved_utc": "2026-10-16T21:20Z",
+ "files": [
+  {
+   "path": "docs/notes/quantum_inspire/sdk/README.md",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/quantuminspire/054a4f0be22983a5d515c31a24881bc0d875463d/README.md",
+   "sha256": "7d6fae6537b963515e626354748c283340afa06876ffb7f6323133a383acd0a8"
+  }
+ ],
+ "commit": "054a4f0be22983a5d515c31a24881bc0d875463d"
+}

@@ -1,0 +1,23 @@
+{
+ "schema": "qi-submission-v1",
+ "submitted_utc": "2026-10-16T21:16:46+00:00",
+ "approval": "User, 2026-10-16: EMULATOR PLUS EACH GRANULAR PIECE OF PHYSICAL HARDWARE AVAILABLE FOR A TEST (so many one run each)",
+ "backend": "Rydberg",
+ "backend_type_id": 5,
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 1,
+  "min_wait_time_in_queue_secs": 1.0,
+  "avg_wait_time_in_queue_secs": 1.0,
+  "max_wait_time_in_queue_secs": 1.0
+ },
+ "batch_job": 869576,
+ "project": 765386,
+ "shots": 1024,
+ "jobs": [
+  {
+   "file": "teleport.cq",
+   "job": 1526744
+  }
+ ]
+}
