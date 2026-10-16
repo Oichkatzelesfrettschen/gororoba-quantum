@@ -86,7 +86,20 @@ def _entries(target: Any, name: str) -> list[dict[str, Any]]:
 
 
 def describe(name: str, target: Any, props: Any, readout_flips: Any) -> dict[str, Any]:
-    """The snapshot of one fetched backend; readout_flips is live_run.readout_flips."""
+    """The snapshot of one fetched backend; readout_flips is live_run.readout_flips.
+
+    The Target and the properties must describe one calibration update, the
+    condition live_run.take_snapshot enforces through
+    check_snapshot_matches_properties: the rebuilt noise model takes gate and
+    coherence data from the Target and readout and the calibration identity
+    from the properties, so a mixed pair would pass the channel comparison.
+    """
+    import live_run
+
+    try:
+        live_run.check_snapshot_matches_properties(target, props, name)
+    except live_run.LiveRunError as error:
+        raise SystemExit(f"Target and properties describe different calibrations: {error}") from None
     qubits = []
     for q in range(target.num_qubits):
         qp = target.qubit_properties[q] if target.qubit_properties else None

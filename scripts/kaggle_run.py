@@ -294,8 +294,7 @@ def collect(args: argparse.Namespace) -> int:
     `kernels status` reports the slug's latest version whatever version it
     names, so a later push would hide this run's state. The versioned output
     carries kaggle_kernel/kernel_main.py's exit.json, written on every exit
-    path, and that file decides completion; a version that died before
-    writing it is accepted only when the reported status is terminal.
+    path, and that file alone decides completion.
     """
     import shutil
 
@@ -313,15 +312,16 @@ def collect(args: argparse.Namespace) -> int:
         if stray.is_dir() and stray.name != "output":
             shutil.rmtree(stray)
     exit_file = out / "output" / "exit.json"
-    if exit_file.is_file():
-        returncode = json.loads(exit_file.read_text(encoding="utf-8"))["returncode"]
-        state = "COMPLETE" if returncode == 0 else "ERROR"
-    else:
-        terminal = "COMPLETE" in reported or "ERROR" in reported
-        if not terminal and not any(out.rglob("*")):
-            out.rmdir()
-        require(terminal, f"{versioned} returned no exit.json and reports {reported}")
-        state = reported.rsplit(" ", 1)[-1].strip('"')
+    # The reported status names the slug's latest version, so it cannot stand
+    # in for a missing exit.json: such a version is unfinished or died before
+    # kernel_main ran, and its downloaded files stay for inspection unledgered.
+    require(
+        exit_file.is_file(),
+        f"{versioned} returned no exit.json (status of the latest version: {reported}); "
+        f"{out.relative_to(ROOT)} holds what it returned and no collect.json was written",
+    )
+    returncode = json.loads(exit_file.read_text(encoding="utf-8"))["returncode"]
+    state = "COMPLETE" if returncode == 0 else "ERROR"
     files = {p.relative_to(out).as_posix(): sha256(p.read_bytes()) for p in sorted(out.rglob("*")) if p.is_file()}
     record = {
         "schema": "kaggle-aer-collect-v1",

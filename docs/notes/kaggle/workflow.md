@@ -57,7 +57,8 @@ GPU matters for sweeps and batched trials, not for single circuits.
 - `status RUN_DIR` and `collect RUN_DIR` poll the kernel and download the
   run's own version with a sha256 manifest. `kernels status` reports the
   slug's latest version whatever version it names, so `collect` decides
-  completion from the `exit.json` the kernel writes on every exit path.
+  completion from the `exit.json` the kernel writes on every exit path; a
+  version that returns none is not collected.
 - `verify` checks every retained collect.json against its output files
   offline (gate core-290).
 - `push --smoke` probes the environment and measures the widest

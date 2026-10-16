@@ -15,13 +15,13 @@ seed 11) and samples 20,000 noisy shots of the Walsh distribution.
 
 | Ideal class K | Pairs | Factorized: noisy K (range) | Reed-Muller: noisy K | CCZ normal form: noisy K | Factorized TV | Mean CZ (fact., RM, NF) |
 | --- | ---: | --- | --- | --- | ---: | --- |
-| 11/32 = 0.344 | 234 | 0.211 (0.181 to 0.253) | 0.307 | 0.298 | 0.181 | 122.9, 19.6, 29.2 |
-| 5/32 = 0.156 | 126 | 0.102 (0.093 to 0.113) | 0.141 | 0.140 | 0.169 | 127.6, 29.2, 31.4 |
+| 11/32 = 0.344 | 234 | 0.211 (0.180 to 0.254) | 0.307 | 0.298 | 0.181 | 122.9, 19.6, 29.2 |
+| 5/32 = 0.156 | 126 | 0.102 (0.093 to 0.114) | 0.141 | 0.140 | 0.169 | 127.6, 29.2, 31.4 |
 
 - The factorized circuit, the one whose hardware run tests composition of
   the three multiplication blocks, keeps the two classes apart under this
-  noise model: every high-class pair estimates above 0.181 and every
-  low-class pair below 0.113. The mean class gap falls from 0.188 to
+  noise model: every high-class pair estimates at least 0.180754 and every
+  low-class pair at most 0.113477. The mean class gap falls from 0.188 to
   0.109.
 - The diagonal references keep about 86 percent of the gap at a sixth to a
   quarter of the factorized mean CZ count; they encode the predicted phase
