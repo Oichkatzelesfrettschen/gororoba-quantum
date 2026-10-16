@@ -111,6 +111,7 @@ PIN_GROUPS: dict[str, tuple[str, ...]] = {
     "exact-arithmetic": ("python-flint==0.9.0", "pyadic==0.3.0"),
 }
 DEFAULT_MACHINE = "NvidiaTeslaT4"
+MAX_ACCELERATOR_SECONDS = 4 * 3600
 # A TPU session needs Kaggle's TPU-VM image, which carries libtpu: a script
 # kernel pushed with a Tpu machine shape receives the CPU image and runs on a
 # 4-core CPU machine whose JAX finds no libtpu.so. Public notebooks that ran
@@ -345,6 +346,13 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
 
 
 def push(args: argparse.Namespace) -> int:
+    # An accelerator session bills its whole wall time against the weekly
+    # quota, and no API call can stop a running batch session, so a GPU or
+    # TPU push states its ceiling; Kaggle ends the session at --timeout.
+    require(
+        args.machine == "cpu" or 0 < args.timeout <= MAX_ACCELERATOR_SECONDS,
+        f"a {args.machine} push needs --timeout SECONDS (at most {MAX_ACCELERATOR_SECONDS})",
+    )
     revision = git_commit()
     stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
     run_dir = RESULTS / f"{stamp}-{args.slug}"
