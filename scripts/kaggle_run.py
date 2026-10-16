@@ -345,6 +345,14 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     return submission
 
 
+def live_status(ref: str) -> str | None:
+    """RUNNING or QUEUED when the kernel's latest version is live; None for a new slug or a finished run."""
+    proc = subprocess.run(["kaggle", "kernels", "status", ref], capture_output=True, text=True)
+    match = re.search(r"KernelWorkerStatus\.([A-Z_]+)", proc.stdout)
+    status = match.group(1) if match else None
+    return status if status in ("RUNNING", "QUEUED", "NEW_SCRIPT") else None
+
+
 def push(args: argparse.Namespace) -> int:
     # An accelerator session bills its whole wall time against the weekly
     # quota, and no API call can stop a running batch session, so a GPU or
@@ -353,6 +361,15 @@ def push(args: argparse.Namespace) -> int:
         args.machine == "cpu" or 0 < args.timeout <= MAX_ACCELERATOR_SECONDS,
         f"a {args.machine} push needs --timeout SECONDS (at most {MAX_ACCELERATOR_SECONDS})",
     )
+    if args.machine != "cpu":
+        # A new version does not end a running version's session: both bill
+        # the accelerator. scripts/kaggle_sessions.py lists and cancels them.
+        state = live_status(f"{username()}/{args.slug}")
+        require(
+            state is None,
+            f"{args.slug} has a {state} version; cancel it first "
+            f"(scripts/kaggle_sessions.py cancel-running OWNER/{args.slug}) or push under a new slug",
+        )
     revision = git_commit()
     stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
     run_dir = RESULTS / f"{stamp}-{args.slug}"
