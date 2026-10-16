@@ -170,10 +170,12 @@ Fact sheet references [6] and [7] (Esposti et al., Appl. Phys. Lett. 120,
 184003 (2022) and npj Quantum Inf. 10, 32 (2024)) and the software reference
 [8] were not checked against a registration record and carry no entry here.
 
-Two 2026 QuTech-affiliated spin-qubit papers are retained with notes on the
-platform documentation branch, `docs/notes/s41586-026-10423-9.md` and
-`docs/notes/s41567-026-03466-2.md` (they join this tree when that branch
-merges). No Quantum Inspire page cites them and neither describes a QI
+Two 2026 QuTech-affiliated spin-qubit papers are retained with notes,
+[s41586-026-10423-9.md](../s41586-026-10423-9.md) (Matsumoto et al., Nature
+653, 391-397) and [s41567-026-03466-2.md](../s41567-026-03466-2.md) (Wu,
+Camenzind et al., Nature Physics), whose BibTeX the notes carry; the Tuna-17
+cases that translate them are in [experiments.md](experiments.md). No
+Quantum Inspire page cites them and neither describes a QI
 backend; the checkable relation is authorship: Matsumoto and De Smet, the
 first two authors of the Nature paper, are the first two authors of
 fact-sheet reference [5] in reverse order.

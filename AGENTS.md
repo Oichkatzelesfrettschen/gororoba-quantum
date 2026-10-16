@@ -538,8 +538,8 @@ type this account can submit to.
   shots). An analysis states the order of the backend it reads.
 - The Ry emulator takes no measurement statements and measures every qubit
   at the end; a circuit with a bit register, H and CNOT compiled remotely but
-  failed at execution with no log, while the X-only form of its code example
-  ran.
+  failed at execution with the job message "error interpreting cQASM script"
+  (its log stays empty), while the X-only form of its code example ran.
 - The Qiskit provider writes a multi-qubit barrier as per-qubit barriers, so
   a timing-sensitive case writes cQASM directly with explicit `wait`.
 

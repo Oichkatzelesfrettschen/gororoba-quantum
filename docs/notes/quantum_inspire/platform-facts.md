@@ -1,13 +1,14 @@
-# Knowledge-base facts for the platform guides
+# Quantum Inspire platform facts by source
 
-Facts the knowledge-base capture establishes for README.md, backends.md,
-usage.md and setup.md, each with its source. Paths are relative to this
-directory; `C<n>` refers to the reconciliations in
+Every per-backend constraint, retired-backend record, calibration and
+maintenance rule, account rule and tooling fact the knowledge-base capture
+establishes, each beside its source. Paths are relative to this directory;
+`C<n>` refers to the reconciliations in
 [knowledge-base.md](knowledge-base.md#contradictions-and-their-reconciliation).
 Captures were retrieved 2026-10-16 UTC; the catalogue is
-[catalogue.json](../../evidence/quantum_inspire/catalogue.json) (retrieved
-2026-10-16T21:24:53Z). This file merges into those guides and then leaves the
-tree.
+[catalogue.json](../../evidence/quantum_inspire/catalogue.json). The live
+pages stay the authority, since they change without notice;
+[backends.md](backends.md) and [usage.md](usage.md) carry the measured runs.
 
 ## Per-backend constraints
 
@@ -40,8 +41,8 @@ QX and Tuna-17 accepted `H`, `CNOT`, `SWAP`, `X`, `X90`, `Y90`,
 `wait(n) q[i]`, `barrier q` and `b = measure q`, and Tuna-17 also `S` and
 `Sdag`; a Tuna-17 job of 16384
 shots executed in 9.9 to 12.6 s. The Ry emulator rejected a 9-qubit
-`H`/`CNOT` program with `bit[9] b` ("RSP returned failure: error
-interpreting cQASM script") and ran a 2-qubit `X` program without a bit
+`H`/`CNOT` program with `bit[9] b` (job message "Quantum backend error: RSP
+returned failure: error interpreting cQASM script") and ran a 2-qubit `X` program without a bit
 register (1024 shots, 16.26 s); the cause of the rejection is open (C4).
 Every job in [usage.json](../../evidence/quantum_inspire/usage.json) shows
 `charged: 0`.

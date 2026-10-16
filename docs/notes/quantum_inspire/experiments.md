@@ -54,7 +54,7 @@ core-327 regenerates them byte for byte.
 |---|---|---|---|
 | runs/2026-10-16T211635Z-QXsinglenodesimulator | QX (batch 869574) | 2048 | 5 jobs completed |
 | runs/2026-10-16T211635Z-tuna_17 | Tuna-17 (batch 869577) | 16384 | 5 jobs completed |
-| runs/2026-10-16T211635Z-Rydberg | Ry emulator (batch 869576) | 1024 | teleport job failed, empty log |
+| runs/2026-10-16T211635Z-Rydberg | Ry emulator (batch 869576) | 1024 | teleport job failed: "error interpreting cQASM script" |
 | runs/2026-10-16T213823Z-Rydberg-diagnostic | Ry emulator (batch 869597) | 1024 | X on q[0] read `10` in every shot |
 
 Each run directory keeps the circuits, cases.json with their sha256,
