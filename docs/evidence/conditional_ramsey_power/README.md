@@ -114,7 +114,7 @@ whenever J is nonzero (`unconditioned_systematic_hz`).
 
 ## Replay
 
-Gate core-291 reruns pair (68, 67) in the `split` and `stark_600`
+Gate core-301 reruns pair (68, 67) in the `split` and `stark_600`
 scenarios on the CPU, at 400 trials. It requires two things:
 
 - the exact-law estimates and delta-method errors match `result.json` to
@@ -122,4 +122,4 @@ scenarios on the CPU, at 400 trials. It requires two things:
 - each spread-to-error ratio agrees within five standard errors of the
   difference of two independent spread estimates.
 
-Gate core-290 lints and type-checks the script.
+Gate core-300 lints and type-checks the script.
