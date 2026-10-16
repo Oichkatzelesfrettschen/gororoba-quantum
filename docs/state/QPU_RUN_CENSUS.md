@@ -91,11 +91,15 @@ sweep on the 84/84 pairs, and the CCZ normal form as a fidelity test of the
 
 - **Submitted circuits (done).** `scripts/compare_submitted_circuits.py`
   retrieved the submitted program of all 23 retained jobs through
-  `job.inputs` and compared every item with the run's retained circuits:
-  488 of 488 items are `CircuitItem`s equal to a retained circuit, so no
-  job carried client-side twirling and the service received exactly the
-  circuits each record holds (`docs/evidence/submitted_circuits/comparison.json`,
-  gate core-281 rechecks it offline against the retention audit). What the
-  control electronics did with those circuits stays outside any record.
+  `job.inputs` and compared each item with the circuit expected at the same
+  position: the job's ordered PUBs in `record.json` (`submission.jobs[].pubs`)
+  resolved by name in `isa.qpy`, or the retained submission order for the
+  recovered wide-control job. All 488 items are `CircuitItem`s equal to
+  their expected circuit in order, and every job's item count equals its
+  audited `pub_count`, so no job carried client-side twirling and the
+  service received exactly the circuits each record holds
+  (`docs/evidence/submitted_circuits/comparison.json`, gate core-281
+  rechecks it offline). What the control electronics did with those
+  circuits stays outside any record.
 - **VLF transmitter outages.** A calendar comparison of transmitter
   maintenance against the run dates; it needs no hardware.

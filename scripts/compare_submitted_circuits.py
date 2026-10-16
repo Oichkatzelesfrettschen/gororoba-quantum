@@ -1,19 +1,27 @@
-"""Compare the circuits IBM received for every retained job with the run's retained circuits.
+"""Compare the circuits IBM received for every retained job, position by position, with the run's record.
 
-Each retained run keeps the ISA circuits it planned in isa.qpy (the
-recovered wide-control job keeps submitted-circuits.qpy instead). The
-service returns a job's submitted program through job.inputs: a
-QuantumProgram whose CircuitItem entries hold the circuits the executor
-ran. For every job of results/live/qpu-job-retention-audit.json this script
-retrieves that program and records, per job, how many items it holds, their
-item kinds, and how many items equal a retained circuit under
+Each retained run keeps its ISA circuits in isa.qpy, one circuit per PUB and
+named by the PUB, and its record.json lists, per submitted job, the ordered
+PUBs that job carried (``submission.jobs[].pubs``). The recovered wide-control
+job keeps no record; its submitted-circuits.qpy holds the job's circuits in
+submission order. The service returns a job's submitted program through
+job.inputs: a QuantumProgram whose CircuitItem entries are the circuits the
+executor ran, in order.
+
+For every job of results/live/qpu-job-retention-audit.json this script
+builds the expected ordered circuit list (isa.qpy circuits by the job's PUB
+names, or the retained submission order) and records, per job, the expected
+PUB names, the number of items the service returned, their item kinds, and
+how many items equal the expected circuit at the same position under
 QuantumCircuit equality (same DAG: gates, operands, parameters, global
 phase).
 
 ``--write`` needs the service and the account's credential store and writes
 docs/evidence/submitted_circuits/comparison.json. ``--check`` needs no network:
-it requires the file to name exactly the audit's jobs and runs, and every
-item of every job to match a retained circuit.
+it requires the file to name exactly the audit's jobs and runs, every
+retained circuit file to keep its recorded digest, each job's item count to
+equal both its expected PUB list and the audit's pub_count, and every item
+to match its expected circuit at the same position.
 """
 
 from __future__ import annotations
@@ -28,7 +36,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 AUDIT = ROOT / "results/live/qpu-job-retention-audit.json"
 OUT = ROOT / "docs/evidence/submitted_circuits/comparison.json"
-RETAINED_NAMES = ("isa.qpy", "submitted-circuits.qpy")
+SCHEMA = "submitted-circuit-comparison-v2"
 
 
 def require(condition: bool, message: str) -> None:
@@ -40,12 +48,19 @@ def audit_jobs() -> list[dict[str, Any]]:
     return list(json.loads(AUDIT.read_text(encoding="utf-8"))["jobs"])
 
 
-def retained_file(run: str) -> Path:
-    for name in RETAINED_NAMES:
-        path = ROOT / run / name
-        if path.is_file():
-            return path
-    raise SystemExit(f"{run} retains no circuit file")
+def expected_order(job: dict[str, Any]) -> tuple[Path, list[str] | None]:
+    """The retained circuit file and, for a recorded run, the job's ordered PUB names."""
+    run = ROOT / job["run"]
+    record = run / "record.json"
+    if (run / "isa.qpy").is_file() and record.is_file():
+        submission = json.loads(record.read_text(encoding="utf-8")).get("submission") or {}
+        for entry in submission.get("jobs", []):
+            if entry.get("job_id") == job["job_id"]:
+                return run / "isa.qpy", [pub["name"] for pub in entry["pubs"]]
+        raise SystemExit(f"{job['job_id']}: record.json lists no such submitted job")
+    path = run / "submitted-circuits.qpy"
+    require(path.is_file(), f"{job['run']} retains no circuit file")
+    return path, None
 
 
 def write() -> int:
@@ -55,44 +70,58 @@ def write() -> int:
     service = QiskitRuntimeService()
     rows = []
     for job in audit_jobs():
-        path = retained_file(job["run"])
+        path, names = expected_order(job)
         with path.open("rb") as stream:
             retained = qpy.load(stream)
+        if names is None:
+            expected = list(retained)
+            names = [circuit.name for circuit in expected]
+            source = "retained submission order"
+        else:
+            by_name = {circuit.name: circuit for circuit in retained}
+            require(all(name in by_name for name in names), f"{job['job_id']}: a PUB name is missing from isa.qpy")
+            expected = [by_name[name] for name in names]
+            source = "record.json submission.jobs[].pubs"
         items = service.job(job["job_id"]).inputs["quantum_program"].items
         circuits = [getattr(item, "circuit", None) for item in items]
-        matched = sum(c is not None and any(c == r for r in retained) for c in circuits)
+        matched = sum(
+            got is not None and index < len(expected) and got == expected[index] for index, got in enumerate(circuits)
+        )
         rows.append(
             {
                 "job_id": job["job_id"],
                 "run": job["run"],
                 "retained_file": path.relative_to(ROOT).as_posix(),
                 "retained_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-                "retained_circuits": len(retained),
+                "order_source": source,
+                "expected_pubs": names,
                 "items": len(items),
                 "item_kinds": sorted({type(item).__name__ for item in items}),
-                "matched_items": matched,
+                "positional_matches": matched,
             }
         )
-        print(json.dumps(rows[-1]), flush=True)
+        print(json.dumps({k: v for k, v in rows[-1].items() if k != "expected_pubs"}), flush=True)
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps({"schema": "submitted-circuit-comparison-v1", "jobs": rows}, indent=1) + "\n")
+    OUT.write_text(json.dumps({"schema": SCHEMA, "jobs": rows}, indent=1) + "\n", encoding="utf-8")
     return 0
 
 
 def check() -> int:
     data = json.loads(OUT.read_text(encoding="utf-8"))
-    require(data.get("schema") == "submitted-circuit-comparison-v1", "unexpected schema")
+    require(data.get("schema") == SCHEMA, "unexpected schema")
     rows = data["jobs"]
-    expected = {(job["job_id"], job["run"]) for job in audit_jobs()}
-    require({(r["job_id"], r["run"]) for r in rows} == expected, "the comparison names other jobs than the audit")
-    require(len(rows) == len(expected), "a job appears twice")
+    audited = {job["job_id"]: job for job in audit_jobs()}
+    require({(r["job_id"], r["run"]) for r in rows} == {(j, a["run"]) for j, a in audited.items()}, "jobs differ")
+    require(len(rows) == len(audited), "a job appears twice")
     for row in rows:
         path = ROOT / row["retained_file"]
         require(hashlib.sha256(path.read_bytes()).hexdigest() == row["retained_sha256"], f"{path} changed")
-        require(row["items"] > 0 and row["matched_items"] == row["items"], f"{row['job_id']}: unmatched items")
+        pub_count = audited[row["job_id"]]["pub_count"]
+        require(row["items"] == pub_count == len(row["expected_pubs"]), f"{row['job_id']}: item and PUB counts differ")
+        require(row["positional_matches"] == row["items"], f"{row['job_id']}: an item differs from its circuit")
         require(row["item_kinds"] == ["CircuitItem"], f"{row['job_id']}: item kinds {row['item_kinds']}")
     items = sum(r["items"] for r in rows)
-    print(f"submitted circuits: {len(rows)} jobs, {items} items, every item equals a retained circuit")
+    print(f"submitted circuits: {len(rows)} jobs, {items} items, each equal to its expected circuit in order")
     return 0
 
 
