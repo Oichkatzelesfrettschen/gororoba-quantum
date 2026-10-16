@@ -55,6 +55,10 @@ ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results/kaggle"
 MODULE_DIRS = ("gororoba_quantum", "scripts")
 KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer-gpu-cu11==0.17.2")
+# Usage guides every bundle carries, so an agent or author inside a kernel
+# reads the same package manuals, workflow and substrate notes as the host:
+# every tracked file under each directory.
+KERNEL_DOCS = ("docs/notes/kaggle", "docs/notes/packages")
 # Opt-in package groups (``push --with GROUP``), each pinned to the version of
 # the build host's Arch package, so a kernel and the host import the same
 # releases. The kernel installs them under a constraints file that holds
@@ -211,6 +215,8 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         files = import_closure(entry)
     for always in KERNEL_FILES:
         files.extend(import_closure(ROOT / always) if always.endswith(".py") else [ROOT / always])
+    for docs in KERNEL_DOCS:
+        files.extend(tracked_files(docs))
     for include in args.include:
         files.extend(tracked_files(include))
     bundled = sorted({path.relative_to(ROOT).as_posix() for path in files})
@@ -350,6 +356,9 @@ def self_test(args: argparse.Namespace) -> int:
         runner = (run_dir / "kernel/run.py").read_text(encoding="utf-8")
         require(all(pin in runner for pin in KERNEL_PINS), "run.py lacks a pin")
         require(all(pin in runner for pin in PIN_GROUPS["quantum-tools"]), "run.py lacks a group pin")
+        for docs in KERNEL_DOCS:
+            for path in tracked_files(docs):
+                require(path.relative_to(ROOT).as_posix() in submission["bundle"], f"bundle lacks {path}")
         require(
             submission["pin_groups"] == {"quantum-tools": list(PIN_GROUPS["quantum-tools"])},
             "submission does not record the pin group",

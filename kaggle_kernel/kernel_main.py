@@ -290,6 +290,8 @@ def main() -> int:
 def run_entry() -> int:
     job = json.loads((REPO / "kaggle_kernel/kernel_job.json").read_text(encoding="utf-8"))
     print((REPO / "kaggle_kernel/AGENTS.md").read_text(encoding="utf-8"), flush=True)
+    guides = sorted(p.relative_to(REPO).as_posix() for p in (REPO / "docs/notes").rglob("*.md"))
+    print(f"usage guides in this kernel under {REPO}:", *guides, sep="\n  ", flush=True)
     if job.get("datasets"):
         write("datasets.json", unpack_datasets(job["datasets"]))
     before = {p: sha256(p) for p in REPO.rglob("*") if p.is_file()}
