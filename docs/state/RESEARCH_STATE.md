@@ -95,6 +95,11 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Boundary: Exact and statevector facts plus a priced FakeFez compile; no hardware visibility.
   Evidence: [result.json](../evidence/signed_kernel_probe/result.json), [signed_kernel_probe.md](../notes/signed_kernel_probe.md).
   Gates: replayed by core-273.
+- **associator-cubic-normal-form** (exact finite certificate, algebra). Each of the 360 degree-3 dim-32 associator phases is l1 l2 l3 + q with l1, l2, l3 linearly independent linear forms on F_2^5 and deg q <= 2, so W_ij = D_q U_A^dagger (CCZ x I) U_A; the cubic part takes 15 values, 24 pairs each.
+  Boundary: Dimension 32 only; degree-4 and degree-5 phases at dims 64 and 128 are not examined.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
+  Evidence: [normal_form.json](../evidence/ccz-reduction/normal_form.json), [README.md](../evidence/ccz-reduction/README.md), [README.md](../evidence/simulation-notebook-audit/README.md).
+  Gates: replayed by core-278.
 - **four-support-topology** (mathematical theorem, geometry). On support {1, 10, 18, 25} exact sector identities classify every real tuple; the unit base has 96 connected smooth strata; a 1,200-cell CW model with explicit attaching maps gives torsion-free integral homology and a square-zero positive-degree cohomology ideal, and ordinary doubling preserves the five-factor model for every n >= 5.
   Boundary: The first operand stays on the four-coordinate support; other supports, a wedge decomposition, homotopy type and unrestricted topology remain open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); operand on the zero-padded support {1, 10, 18, 25}.
@@ -205,6 +210,12 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Boundary: Design semantics; the crossing itself is a proposed experiment.
   Evidence: [crossed_tile_template.py](../../gororoba_quantum/crossed_tile_template.py).
   Gates: replayed by core-274.
+- **associator-normal-form-compile** (circuit-conformance check, implementation). For all 360 dim-32 cubic pairs the factorized Design C circuit (block barriers kept), the Reed-Muller diagonal oracle and the CCZ normal form equal diag((-1)^omega) entry by entry, global phase included; on the ibm_kingston coupling map (optimization level 3, seed 11) they compile to about 122-131, 10-43 and 25-32 CZ on average, and the normal form uses fewer CZ than the diagonal oracle on 97 pairs.
+  Boundary: One coupling map, one seed, ideal semantics; the two diagonal circuits encode the predicted phase and are references for the factorized circuit, not substitutes. The dim-16 ripple circuits have no cubic phase.
+  Evidence: [normal_form.json](../evidence/ccz-reduction/normal_form.json), [README.md](../evidence/ccz-reduction/README.md), [README.md](../evidence/simulation-notebook-audit/README.md).
+  Gates: replayed by core-278.
+  Depends on: associator-cubic-normal-form.
+  Supersedes: withdrawn-ccz-resource-gain.
 - **hw-mod15-pilot** (preregistered hardware inference, hardware). Hybrid Shor mod 15 factor yield 0.4971 [0.4726, 0.5216] against the exact uniform null 0.2969; packed replica 0 differs from its isolated reference by +0.0020 (Shor) and -0.0037 (folded QPE), both inside the 0.03 Newcombe equivalence margin.
   Boundary: The order-4 law is the same with and without the conditional phases, so the feed-forward is untested; the Hoeffding view leaves folded-QPE equivalence unresolved.
   Evidence: [collect.json](../../results/live/2026-10-11T152922.787095Z/collect.json), [adjudication-05b97e57a73f-seed20261011.json](../../results/live/2026-10-11T152922.787095Z/adjudication-05b97e57a73f-seed20261011.json), [CAMPAIGN_FINDINGS.md](../../results/live/CAMPAIGN_FINDINGS.md).
@@ -304,7 +315,7 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Evidence: [exposure.json](../evidence/walk-control-scaffolding/exposure.json), [isa.qpy](../../results/live/2026-10-13T025444.603480Z/isa.qpy), [isa.qpy](../../results/live/2026-10-15T031229.371738Z/isa.qpy), [README.md](../evidence/transpiler-audit/README.md).
   Gates: replayed by core-276.
   Acquisitions: fez-ripple-atlas, kingston-ripple-atlas.
-  Supersedes: withdrawn-unital-angle-argument, withdrawn-readout-contrast-impossible.
+  Supersedes: withdrawn-unital-angle-argument, withdrawn-readout-contrast-impossible, withdrawn-aer-toy-split, withdrawn-algebraic-detuning-test, withdrawn-predelay-negative.
 - **hw-first-bit-correlation** (exploratory reanalysis, hardware). The recorded first bit on qubit 79 reads 0 in about 11 percent of correction shots, and in the known-label arms terminal success falls from 0.80 to 0.54-0.57 in that stratum, which excludes independent, state-preserving assignment error.
   Boundary: A state change of qubit 79 and a common cause behind both the misread and the terminal loss remain; the strata stay descriptive.
   Evidence: [analysis-1fdb68508f14.json](../../results/live/2026-10-13T020454.599853Z/analysis-1fdb68508f14.json), [collect.json](../../results/live/2026-10-13T022433.333775Z/collect.json), [REPORT.md](../evidence/novel-insights/REPORT.md).
@@ -351,6 +362,7 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
 - **proposed-conditional-ramsey-hamiltonian** (proposed experiment, hardware). Add Ramsey of qubit A conditioned on B in |0> and |1> to the Bell odd and even coherence rates: the design matrix for H/hbar = (omega_A Z_A + omega_B Z_B + J Z_A Z_B)/2 rises from rank 2 to 3, J = (nu_A|0 - nu_A|1)/2, and nu_odd + nu_even = nu_A|0 + nu_A|1 is the falsifier of the reduced diagonal model.
   Boundary: Each rate needs resolved quadratures, qualified exposure, phase-reference controls and delay diversity against winding.
   Depends on: hw-coherence-window.
+  Supersedes: withdrawn-interleaving-verified.
 - **proposed-crossed-tile-template** (proposed experiment, hardware). Cross {affected template, reference template} x {candidate weak tile, reference tile}, optionally x {isolated, packed}, to separate tile, template and interaction effects on the weak-lane loss.
   Boundary: Tiles were chosen after seeing the data, so only prospective validation counts; qubit labels on different processors do not identify one defect.
   Depends on: hw-corner-explains-weak-lane.
@@ -379,6 +391,10 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
 
 ## Withdrawn claims
 
+- **withdrawn-ccz-resource-gain** (withdrawn claim, implementation). The CCZ normal form cuts the associator circuit by 18.9 percent of its CZ gates, raises fidelity 1.19x, and is a verified drop-in replacement for the factorized circuit.
+  Boundary: The counts were typed-in estimates, the equivalence test compared CCZ with itself and a singular U_A, and a diagonal built from the predicted phase cannot replace the circuit that tests composition.
+  Superseded by: associator-normal-form-compile.
+  Withdrawn text: docs/evidence/ccz-reduction/ccz-optimization.ipynb and factorized-vs-ccz.ipynb at commit fa6783e, and docs/handoff-notes-2026-10-15.md at commit 900461a.
 - **withdrawn-idle-dephasing-drift** (withdrawn claim, hardware). The -1.130 rad coherence rotation is a dephasing drift that dynamical decoupling mitigates.
   Boundary: A rotation is not a dephasing, and no DD acquisition exists.
   Superseded by: hw-coherence-idle-rotation.
@@ -403,3 +419,19 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Boundary: The Kingston rotation is a detuning difference between two work qubits, and the observations differ in device, qubits, circuits and day.
   Superseded by: hw-idle-detuning-scale.
   Withdrawn text: docs/evidence/ghost-frequency/README.md at commit e8df46e and docs/evidence/novel-insights/REPORT.md at commit 8f1dc70.
+- **withdrawn-aer-toy-split** (withdrawn claim, hardware). Aer simulation shows the 84/84 bright/dark split emerging from quantum mechanics and surviving Heron-level noise.
+  Boundary: The simulated circuit is no repository design, and its kernel printed an ideal difference of 0.089 and 'Signal survives Heron-level noise: False'.
+  Superseded by: hw-box-kite-executed-pairs.
+  Withdrawn text: docs/evidence/simulation/qiskit-aer-simulation.ipynb at commit fa6783e.
+- **withdrawn-interleaving-verified** (withdrawn claim, hardware). GPU simulation verifies that interleaved differential Ramsey cancels drift and reaches 50 Hz in about 72 s.
+  Boundary: The kernel printed SNR 0.0 against the expected 1.18e-03; two sampled arms at SNR 2 need 4/dP^2 shots in total, about 2.9 million (about 750 s) at 50 Hz, and IBM guarantees no PUB order, so one job does not interleave matched pairs.
+  Superseded by: proposed-conditional-ramsey-hamiltonian.
+  Withdrawn text: docs/evidence/ghost-frequency/differential-interleaved.ipynb at commit fa6783e and docs/handoff-notes-2026-10-15.md at commit 900461a.
+- **withdrawn-algebraic-detuning-test** (withdrawn claim, hardware). Ramsey on 20 defective and 20 clean triples detects a sedenion-structure-dependent detuning down to about 5 kHz.
+  Boundary: The single-quadrature fit returned -29.5 kHz for +30 kHz, and no circuit is named in which a triple label sets a qubit frequency; bright and dark members differ in one virtual RZ.
+  Superseded by: hw-box-kite-executed-pairs.
+  Withdrawn text: docs/evidence/ghost-frequency/algebraic-frequency.ipynb at commit 6d51e9c.
+- **withdrawn-predelay-negative** (withdrawn claim, hardware). A pre-delay sweep has 11 percent power to detect a photonic contribution to the 84/84 contrast, a negative result.
+  Boundary: The power restates hand-set inputs (a 0.01 kHz shift at 0.1 contrast per kHz against a 0.02 standard error); it measures nothing about the device.
+  Superseded by: hw-box-kite-executed-pairs.
+  Withdrawn text: docs/evidence/ghost-frequency/predelay-84-84.ipynb and docs/handoff-notes-2026-10-15.md at commit 3e91f57.

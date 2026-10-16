@@ -1,0 +1,34 @@
+[{"stream_name":"stderr","time":10.03053534,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":10.0305973,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":11.589204919,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":11.589235327,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":11.589240785,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":11.589246458,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":12.418761734,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":12.418792758,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":12.418799071,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":12.418807389,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":28.277807171,"data":"device: cuda\n"}
+,{"stream_name":"stdout","time":28.291043883,"data":"Optimal Ramsey delay: 8.3 µs\n"}
+,{"stream_name":"stdout","time":28.291067612,"data":"Max slope dP/dδ: 2.36e-05 per Hz\n"}
+,{"stream_name":"stdout","time":28.291072451,"data":"50 Hz effect → ΔP = 1.18e-03\n"}
+,{"stream_name":"stdout","time":28.291075978,"data":"5 Hz effect  → ΔP = 1.18e-04\n"}
+,{"stream_name":"stdout","time":28.304020911,"data":" 5000 Hz: ΔP=1.2e-01, N=7.2e+01 shots, ~0s at 10kHz rep rate\n"}
+,{"stream_name":"stdout","time":28.304039992,"data":"  500 Hz: ΔP=1.2e-02, N=7.2e+03 shots, ~1s at 10kHz rep rate\n"}
+,{"stream_name":"stdout","time":28.304044378,"data":"   50 Hz: ΔP=1.2e-03, N=7.2e+05 shots, ~72s at 10kHz rep rate\n"}
+,{"stream_name":"stdout","time":28.304048228,"data":"    5 Hz: ΔP=1.2e-04, N=7.2e+07 shots, ~7188s at 10kHz rep rate\n"}
+,{"stream_name":"stdout","time":28.937346945,"data":"Expected ΔP: 1.18e-03\n"}
+,{"stream_name":"stdout","time":28.937378502,"data":"Measured ΔP: -6.00e-05 ± 3.23e-03\n"}
+,{"stream_name":"stdout","time":28.937384044,"data":"SNR: 0.0\n"}
+,{"stream_name":"stdout","time":28.954318333,"data":"With drift: ΔP = -4.29e-03 ± 2.37e-03\n"}
+,{"stream_name":"stdout","time":28.954352698,"data":"SNR: 1.8\n"}
+,{"stream_name":"stdout","time":28.954359136,"data":"Drift cancels in the pair difference.\n"}
+,{"stream_name":"stderr","time":34.316869428,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":34.316900256,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":34.515390182,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":34.515415286,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":35.302933661,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":35.383260115,"data":"[NbConvertApp] Writing 11522 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":37.852232451,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":38.38960389,"data":"[NbConvertApp] Writing 294477 bytes to __results__.html\n"}
+]

@@ -1,0 +1,7357 @@
+{
+ "by_cubic_monomial_count": {
+  "1": {
+   "cz": {
+    "factorized": {
+     "max": 139,
+     "mean": 121.625,
+     "min": 94
+    },
+    "normal_form": {
+     "max": 40,
+     "mean": 24.646,
+     "min": 7
+    },
+    "reed_muller": {
+     "max": 11,
+     "mean": 9.917,
+     "min": 7
+    }
+   },
+   "pairs": 96
+  },
+  "2": {
+   "cz": {
+    "factorized": {
+     "max": 158,
+     "mean": 124.632,
+     "min": 96
+    },
+    "normal_form": {
+     "max": 48,
+     "mean": 32.472,
+     "min": 17
+    },
+    "reed_muller": {
+     "max": 26,
+     "mean": 21.694,
+     "min": 15
+    }
+   },
+   "pairs": 144
+  },
+  "3": {
+   "cz": {
+    "factorized": {
+     "max": 154,
+     "mean": 125.885,
+     "min": 107
+    },
+    "normal_form": {
+     "max": 44,
+     "mean": 32.302,
+     "min": 20
+    },
+    "reed_muller": {
+     "max": 42,
+     "mean": 32.917,
+     "min": 27
+    }
+   },
+   "pairs": 96
+  },
+  "4": {
+   "cz": {
+    "factorized": {
+     "max": 152,
+     "mean": 130.583,
+     "min": 120
+    },
+    "normal_form": {
+     "max": 32,
+     "mean": 29.333,
+     "min": 24
+    },
+    "reed_muller": {
+     "max": 45,
+     "mean": 42.667,
+     "min": 38
+    }
+   },
+   "pairs": 24
+  }
+ },
+ "compile": {
+  "backend_snapshot": "ibm_kingston",
+  "basis": [
+   "cz",
+   "rz",
+   "sx",
+   "x"
+  ],
+  "optimization_level": 3,
+  "qiskit": "2.5.2",
+  "seed_transpiler": 11
+ },
+ "dimension": 32,
+ "distinct_cubic_parts": 15,
+ "normal_form_below_reed_muller": {
+  "1": 3,
+  "2": 22,
+  "3": 48,
+  "4": 24
+ },
+ "pairs": 360,
+ "pairs_per_cubic_part": 24,
+ "records": [
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 99,
+    "normal_form": 39,
+    "reed_muller": 10
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 94,
+    "normal_form": 39,
+    "reed_muller": 10
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 116,
+    "normal_form": 37,
+    "reed_muller": 10
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 103,
+    "normal_form": 37,
+    "reed_muller": 10
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 108,
+    "normal_form": 40,
+    "reed_muller": 11
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 113,
+    "normal_form": 40,
+    "reed_muller": 11
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 111,
+    "normal_form": 36,
+    "reed_muller": 11
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 111,
+    "normal_form": 36,
+    "reed_muller": 11
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 116,
+    "normal_form": 39,
+    "reed_muller": 10
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 114,
+    "normal_form": 39,
+    "reed_muller": 10
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 114,
+    "normal_form": 37,
+    "reed_muller": 10
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 116,
+    "normal_form": 37,
+    "reed_muller": 10
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 40,
+    "reed_muller": 11
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 40,
+    "reed_muller": 11
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 36,
+    "reed_muller": 11
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 36,
+    "reed_muller": 11
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    1,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 115,
+    "normal_form": 37,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 100,
+    "normal_form": 36,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 110,
+    "normal_form": 37,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 115,
+    "normal_form": 36,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 115,
+    "normal_form": 33,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 119,
+    "normal_form": 28,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 120,
+    "normal_form": 33,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 28,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 37,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 36,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 37,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 36,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 33,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 28,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 33,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 28,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    2,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 105,
+    "normal_form": 46,
+    "reed_muller": 26
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 102,
+    "normal_form": 44,
+    "reed_muller": 26
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 108,
+    "normal_form": 44,
+    "reed_muller": 26
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 109,
+    "normal_form": 46,
+    "reed_muller": 26
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 110,
+    "normal_form": 41,
+    "reed_muller": 21
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 115,
+    "normal_form": 40,
+    "reed_muller": 21
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 114,
+    "normal_form": 40,
+    "reed_muller": 21
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 117,
+    "normal_form": 41,
+    "reed_muller": 21
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 118,
+    "normal_form": 46,
+    "reed_muller": 26
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 44,
+    "reed_muller": 26
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 44,
+    "reed_muller": 26
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 118,
+    "normal_form": 46,
+    "reed_muller": 26
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 132,
+    "normal_form": 41,
+    "reed_muller": 21
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 132,
+    "normal_form": 40,
+    "reed_muller": 21
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 132,
+    "normal_form": 40,
+    "reed_muller": 21
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 132,
+    "normal_form": 41,
+    "reed_muller": 21
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    3,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 116,
+    "normal_form": 20,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 107,
+    "normal_form": 16,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 16,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 122,
+    "normal_form": 15,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 107,
+    "normal_form": 20,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 112,
+    "normal_form": 16,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 115,
+    "normal_form": 16,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 110,
+    "normal_form": 15,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 136,
+    "normal_form": 20,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 136,
+    "normal_form": 16,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 136,
+    "normal_form": 16,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 136,
+    "normal_form": 15,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 20,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 139,
+    "normal_form": 16,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 139,
+    "normal_form": 16,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 15,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    4,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 110,
+    "normal_form": 38,
+    "reed_muller": 20
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 110,
+    "normal_form": 38,
+    "reed_muller": 20
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 117,
+    "normal_form": 34,
+    "reed_muller": 21
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 120,
+    "normal_form": 30,
+    "reed_muller": 21
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 106,
+    "normal_form": 38,
+    "reed_muller": 20
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 103,
+    "normal_form": 38,
+    "reed_muller": 20
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 113,
+    "normal_form": 30,
+    "reed_muller": 21
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 111,
+    "normal_form": 34,
+    "reed_muller": 21
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 38,
+    "reed_muller": 20
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 122,
+    "normal_form": 38,
+    "reed_muller": 20
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 122,
+    "normal_form": 34,
+    "reed_muller": 21
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 30,
+    "reed_muller": 21
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 38,
+    "reed_muller": 20
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 38,
+    "reed_muller": 20
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 30,
+    "reed_muller": 21
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 34,
+    "reed_muller": 21
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    5,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 32,
+    "reed_muller": 18
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 118,
+    "normal_form": 27,
+    "reed_muller": 18
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 114,
+    "normal_form": 28,
+    "reed_muller": 19
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 23,
+    "reed_muller": 19
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 28,
+    "reed_muller": 19
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 23,
+    "reed_muller": 19
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 113,
+    "normal_form": 32,
+    "reed_muller": 18
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 115,
+    "normal_form": 27,
+    "reed_muller": 18
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 134,
+    "normal_form": 32,
+    "reed_muller": 18
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 27,
+    "reed_muller": 18
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 28,
+    "reed_muller": 19
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 134,
+    "normal_form": 23,
+    "reed_muller": 19
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 137,
+    "normal_form": 28,
+    "reed_muller": 19
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 134,
+    "normal_form": 23,
+    "reed_muller": 19
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 134,
+    "normal_form": 32,
+    "reed_muller": 18
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 137,
+    "normal_form": 27,
+    "reed_muller": 18
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    6,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 120,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 112,
+    "normal_form": 29,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 37,
+    "reed_muller": 34
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 29,
+    "reed_muller": 34
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 116,
+    "normal_form": 29,
+    "reed_muller": 34
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 120,
+    "normal_form": 37,
+    "reed_muller": 34
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 109,
+    "normal_form": 29,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 107,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 134,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 132,
+    "normal_form": 29,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 132,
+    "normal_form": 37,
+    "reed_muller": 34
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 134,
+    "normal_form": 29,
+    "reed_muller": 34
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 29,
+    "reed_muller": 34
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 37,
+    "reed_muller": 34
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 29,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    7,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 127,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 139,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    8,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 40,
+    "reed_muller": 25
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 112,
+    "normal_form": 40,
+    "reed_muller": 25
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 120,
+    "normal_form": 39,
+    "reed_muller": 25
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 117,
+    "normal_form": 39,
+    "reed_muller": 25
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 122,
+    "normal_form": 36,
+    "reed_muller": 24
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 36,
+    "reed_muller": 24
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 35,
+    "reed_muller": 24
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 35,
+    "reed_muller": 24
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 40,
+    "reed_muller": 25
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 40,
+    "reed_muller": 25
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 122,
+    "normal_form": 39,
+    "reed_muller": 25
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 132,
+    "normal_form": 39,
+    "reed_muller": 25
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 36,
+    "reed_muller": 24
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 36,
+    "reed_muller": 24
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 133,
+    "normal_form": 35,
+    "reed_muller": 24
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 35,
+    "reed_muller": 24
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    9,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 31,
+    "reed_muller": 23
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 116,
+    "normal_form": 29,
+    "reed_muller": 23
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 31,
+    "reed_muller": 23
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 29,
+    "reed_muller": 23
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 31,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 127,
+    "normal_form": 29,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 127,
+    "normal_form": 31,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 127,
+    "normal_form": 29,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 31,
+    "reed_muller": 23
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 127,
+    "normal_form": 29,
+    "reed_muller": 23
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 31,
+    "reed_muller": 23
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 127,
+    "normal_form": 29,
+    "reed_muller": 23
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 31,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 29,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 31,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 29,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    10,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 36,
+    "reed_muller": 30
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 35,
+    "reed_muller": 30
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 35,
+    "reed_muller": 30
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 36,
+    "reed_muller": 30
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 118,
+    "normal_form": 34,
+    "reed_muller": 31
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 120,
+    "normal_form": 30,
+    "reed_muller": 31
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 120,
+    "normal_form": 30,
+    "reed_muller": 31
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 120,
+    "normal_form": 34,
+    "reed_muller": 31
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 114,
+    "normal_form": 36,
+    "reed_muller": 30
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 120,
+    "normal_form": 35,
+    "reed_muller": 30
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 35,
+    "reed_muller": 30
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 115,
+    "normal_form": 36,
+    "reed_muller": 30
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 34,
+    "reed_muller": 31
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 30,
+    "reed_muller": 31
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 115,
+    "normal_form": 30,
+    "reed_muller": 31
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 34,
+    "reed_muller": 31
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    11,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 150,
+    "normal_form": 20,
+    "reed_muller": 25
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 158,
+    "normal_form": 19,
+    "reed_muller": 25
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 19,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 132,
+    "normal_form": 18,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 20,
+    "reed_muller": 25
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 133,
+    "normal_form": 19,
+    "reed_muller": 25
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 19,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 18,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 143,
+    "normal_form": 20,
+    "reed_muller": 25
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 19,
+    "reed_muller": 25
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 19,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 18,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 20,
+    "reed_muller": 25
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 127,
+    "normal_form": 19,
+    "reed_muller": 25
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 133,
+    "normal_form": 19,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 18,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    12,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 146,
+    "normal_form": 43,
+    "reed_muller": 34
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 154,
+    "normal_form": 37,
+    "reed_muller": 34
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 36,
+    "reed_muller": 35
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 33,
+    "reed_muller": 35
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 37,
+    "reed_muller": 34
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 43,
+    "reed_muller": 34
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 33,
+    "reed_muller": 35
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 120,
+    "normal_form": 36,
+    "reed_muller": 35
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 43,
+    "reed_muller": 34
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 37,
+    "reed_muller": 34
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 36,
+    "reed_muller": 35
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 33,
+    "reed_muller": 35
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 37,
+    "reed_muller": 34
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 43,
+    "reed_muller": 34
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 33,
+    "reed_muller": 35
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 36,
+    "reed_muller": 35
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    13,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 148,
+    "normal_form": 28,
+    "reed_muller": 32
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 145,
+    "normal_form": 26,
+    "reed_muller": 32
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 23,
+    "reed_muller": 29
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 133,
+    "normal_form": 20,
+    "reed_muller": 29
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 134,
+    "normal_form": 23,
+    "reed_muller": 29
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 20,
+    "reed_muller": 29
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 28,
+    "reed_muller": 32
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 26,
+    "reed_muller": 32
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 132,
+    "normal_form": 28,
+    "reed_muller": 32
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 26,
+    "reed_muller": 32
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 141,
+    "normal_form": 23,
+    "reed_muller": 29
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 133,
+    "normal_form": 20,
+    "reed_muller": 29
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 23,
+    "reed_muller": 29
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 133,
+    "normal_form": 20,
+    "reed_muller": 29
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 28,
+    "reed_muller": 32
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 132,
+    "normal_form": 26,
+    "reed_muller": 32
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    14,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 143,
+    "normal_form": 29,
+    "reed_muller": 45
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    16
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 140,
+    "normal_form": 24,
+    "reed_muller": 45
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 148,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 152,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 24,
+    "reed_muller": 45
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 29,
+    "reed_muller": 45
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 120,
+    "normal_form": 29,
+    "reed_muller": 45
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 24,
+    "reed_muller": 45
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 122,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 24,
+    "reed_muller": 45
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 133,
+    "normal_form": 29,
+    "reed_muller": 45
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    15,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 97,
+    "normal_form": 39,
+    "reed_muller": 10
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    16,
+    17
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 117,
+    "normal_form": 37,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    16,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 46,
+    "reed_muller": 26
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    16,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 115,
+    "normal_form": 20,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    16,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 107,
+    "normal_form": 38,
+    "reed_muller": 20
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    16,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 115,
+    "normal_form": 32,
+    "reed_muller": 18
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    16,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 113,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    16,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 12,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    16,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 40,
+    "reed_muller": 25
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    16,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 140,
+    "normal_form": 31,
+    "reed_muller": 23
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    16,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 118,
+    "normal_form": 36,
+    "reed_muller": 30
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    16,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 132,
+    "normal_form": 20,
+    "reed_muller": 25
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    16,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 43,
+    "reed_muller": 34
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    16,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 28,
+    "reed_muller": 32
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    16,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 29,
+    "reed_muller": 45
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    16,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 105,
+    "normal_form": 48,
+    "reed_muller": 26
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    17,
+    18
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 98,
+    "normal_form": 37,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    17,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 109,
+    "normal_form": 38,
+    "reed_muller": 20
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    17,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 20,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    17,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 113,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    17,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 115,
+    "normal_form": 32,
+    "reed_muller": 18
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    17,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 117,
+    "normal_form": 36,
+    "reed_muller": 25
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    17,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 8,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    17,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 122,
+    "normal_form": 37,
+    "reed_muller": 30
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    17,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 31,
+    "reed_muller": 23
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    17,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 35,
+    "reed_muller": 34
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    17,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 127,
+    "normal_form": 19,
+    "reed_muller": 25
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    17,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 127,
+    "normal_form": 28,
+    "reed_muller": 45
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    17,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 127,
+    "normal_form": 27,
+    "reed_muller": 32
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    17,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 108,
+    "normal_form": 39,
+    "reed_muller": 10
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    18,
+    19
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 32,
+    "reed_muller": 18
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    18,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 115,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    18,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 20,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    18,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 117,
+    "normal_form": 38,
+    "reed_muller": 20
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    18,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 132,
+    "normal_form": 33,
+    "reed_muller": 20
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    18,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 44,
+    "reed_muller": 35
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    18,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 127,
+    "normal_form": 10,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    18,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 34,
+    "reed_muller": 22
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    18,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 26,
+    "reed_muller": 29
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    18,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 134,
+    "normal_form": 31,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    18,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 138,
+    "normal_form": 19,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    18,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 134,
+    "normal_form": 33,
+    "reed_muller": 31
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    18,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 32,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    19,
+    20
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 118,
+    "normal_form": 32,
+    "reed_muller": 18
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    19,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 38,
+    "reed_muller": 20
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    19,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 115,
+    "normal_form": 20,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    19,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 38,
+    "reed_muller": 35
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    19,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 122,
+    "normal_form": 30,
+    "reed_muller": 20
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    19,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 116,
+    "normal_form": 33,
+    "reed_muller": 22
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    19,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 7,
+    "reed_muller": 11
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    19,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 133,
+    "normal_form": 30,
+    "reed_muller": 42
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    19,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 26,
+    "reed_muller": 29
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    19,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 34,
+    "reed_muller": 31
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    19,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 18,
+    "reed_muller": 22
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    19,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 105,
+    "normal_form": 39,
+    "reed_muller": 10
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    20,
+    21
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 105,
+    "normal_form": 37,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    20,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 96,
+    "normal_form": 48,
+    "reed_muller": 26
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    20,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 18,
+    "reed_muller": 19
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    20,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 119,
+    "normal_form": 43,
+    "reed_muller": 30
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    20,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 32,
+    "reed_muller": 28
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    20,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 29,
+    "reed_muller": 39
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    20,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 12,
+    "reed_muller": 8
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    20,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 40,
+    "reed_muller": 22
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    20,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 123,
+    "normal_form": 35,
+    "reed_muller": 24
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    20,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 36,
+    "reed_muller": 34
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    20,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 98,
+    "normal_form": 48,
+    "reed_muller": 26
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    21,
+    22
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 107,
+    "normal_form": 37,
+    "reed_muller": 10
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    21,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 120,
+    "normal_form": 35,
+    "reed_muller": 30
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    21,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 17,
+    "reed_muller": 19
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    21,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 120,
+    "normal_form": 28,
+    "reed_muller": 39
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    21,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 113,
+    "normal_form": 31,
+    "reed_muller": 28
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    21,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 119,
+    "normal_form": 36,
+    "reed_muller": 22
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    21,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 133,
+    "normal_form": 8,
+    "reed_muller": 8
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    21,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 37,
+    "reed_muller": 34
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    21,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 32,
+    "reed_muller": 24
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    21,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 98,
+    "normal_form": 39,
+    "reed_muller": 10
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    22,
+    23
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 28,
+    "reed_muller": 27
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    22,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 31,
+    "reed_muller": 38
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    22,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 19,
+    "reed_muller": 18
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    22,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 119,
+    "normal_form": 33,
+    "reed_muller": 29
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    22,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 29,
+    "reed_muller": 23
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    22,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 44,
+    "reed_muller": 29
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    22,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 10,
+    "reed_muller": 7
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    22,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 34,
+    "reed_muller": 21
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    22,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 126,
+    "normal_form": 30,
+    "reed_muller": 38
+   },
+   "forms": [
+    3,
+    5,
+    9
+   ],
+   "pair": [
+    23,
+    24
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 27,
+    "reed_muller": 27
+   },
+   "forms": [
+    1,
+    6,
+    10
+   ],
+   "pair": [
+    23,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 119,
+    "normal_form": 34,
+    "reed_muller": 29
+   },
+   "forms": [
+    2,
+    5,
+    9
+   ],
+   "pair": [
+    23,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    11
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 18,
+    "reed_muller": 18
+   },
+   "forms": [
+    1,
+    2,
+    12
+   ],
+   "pair": [
+    23,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 118,
+    "normal_form": 38,
+    "reed_muller": 29
+   },
+   "forms": [
+    3,
+    4,
+    9
+   ],
+   "pair": [
+    23,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    13
+   ],
+   "cz": {
+    "factorized": 130,
+    "normal_form": 29,
+    "reed_muller": 23
+   },
+   "forms": [
+    1,
+    4,
+    10
+   ],
+   "pair": [
+    23,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7,
+    14
+   ],
+   "cz": {
+    "factorized": 119,
+    "normal_form": 33,
+    "reed_muller": 21
+   },
+   "forms": [
+    2,
+    4,
+    9
+   ],
+   "pair": [
+    23,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    7
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 7,
+    "reed_muller": 7
+   },
+   "forms": [
+    1,
+    2,
+    4
+   ],
+   "pair": [
+    23,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 114,
+    "normal_form": 38,
+    "reed_muller": 8
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    24,
+    25
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 121,
+    "normal_form": 18,
+    "reed_muller": 8
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    24,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 124,
+    "normal_form": 41,
+    "reed_muller": 21
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    24,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 127,
+    "normal_form": 20,
+    "reed_muller": 8
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    24,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 42,
+    "reed_muller": 17
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    24,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 32,
+    "reed_muller": 15
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    24,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 132,
+    "normal_form": 29,
+    "reed_muller": 30
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    24,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 135,
+    "normal_form": 41,
+    "reed_muller": 21
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    25,
+    26
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 127,
+    "normal_form": 18,
+    "reed_muller": 8
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    25,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 42,
+    "reed_muller": 17
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    25,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 133,
+    "normal_form": 20,
+    "reed_muller": 8
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    25,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 137,
+    "normal_form": 29,
+    "reed_muller": 30
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    25,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 137,
+    "normal_form": 30,
+    "reed_muller": 15
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    25,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 119,
+    "normal_form": 38,
+    "reed_muller": 8
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    26,
+    27
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 137,
+    "normal_form": 30,
+    "reed_muller": 15
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    26,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 137,
+    "normal_form": 29,
+    "reed_muller": 30
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    26,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 133,
+    "normal_form": 20,
+    "reed_muller": 8
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    26,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 131,
+    "normal_form": 42,
+    "reed_muller": 17
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    26,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 132,
+    "normal_form": 29,
+    "reed_muller": 30
+   },
+   "forms": [
+    3,
+    5,
+    8
+   ],
+   "pair": [
+    27,
+    28
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    13
+   ],
+   "cz": {
+    "factorized": 125,
+    "normal_form": 30,
+    "reed_muller": 15
+   },
+   "forms": [
+    1,
+    6,
+    8
+   ],
+   "pair": [
+    27,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11,
+    14
+   ],
+   "cz": {
+    "factorized": 128,
+    "normal_form": 42,
+    "reed_muller": 17
+   },
+   "forms": [
+    2,
+    5,
+    8
+   ],
+   "pair": [
+    27,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    11
+   ],
+   "cz": {
+    "factorized": 127,
+    "normal_form": 20,
+    "reed_muller": 8
+   },
+   "forms": [
+    1,
+    2,
+    8
+   ],
+   "pair": [
+    27,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 38,
+    "reed_muller": 8
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    28,
+    29
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 18,
+    "reed_muller": 8
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    28,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 140,
+    "normal_form": 41,
+    "reed_muller": 21
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    28,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13,
+    14
+   ],
+   "cz": {
+    "factorized": 140,
+    "normal_form": 41,
+    "reed_muller": 21
+   },
+   "forms": [
+    3,
+    4,
+    8
+   ],
+   "pair": [
+    29,
+    30
+   ]
+  },
+  {
+   "cubic_monomials": [
+    13
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 18,
+    "reed_muller": 8
+   },
+   "forms": [
+    1,
+    4,
+    8
+   ],
+   "pair": [
+    29,
+    31
+   ]
+  },
+  {
+   "cubic_monomials": [
+    14
+   ],
+   "cz": {
+    "factorized": 129,
+    "normal_form": 38,
+    "reed_muller": 8
+   },
+   "forms": [
+    2,
+    4,
+    8
+   ],
+   "pair": [
+    30,
+    31
+   ]
+  }
+ ],
+ "schema": "associator-cubic-normal-form-v1"
+}
