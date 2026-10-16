@@ -97,6 +97,12 @@ PROBLEMS = {
 }
 SKELETON_OPERATIONS = ("h", "if_else", "measure", "reset")
 COMPARED_METRICS = ("routed_cz", "depth", "scheduled_duration_dt")
+# Routed CZ and qubit counts replay exactly on every host. Depth and duration
+# follow single-qubit synthesis, whose floating-point rounding depends on the
+# BLAS build: one layer and 18 dt of 131,793 separate an AOCL host from pip's
+# numpy wheels, so a replay accepts these two within this relative tolerance.
+REPLAY_TOLERANCE = 0.002
+EXACT_FIELDS = ("seed_transpiler", "logical_qubits", "active_physical_qubits", "routed_cz")
 
 
 def _baseline_candidate() -> Candidate:
@@ -371,11 +377,26 @@ def _require(ok: bool, message: str) -> None:
         raise SystemExit(f"linear_conjugation_challenger: {message}")
 
 
+def replay_matches(recompiled: dict[str, Any], retained: dict[str, Any]) -> float | None:
+    """The largest relative depth or duration deviation, or None when an exact field differs."""
+    if any(recompiled[field] != retained[field] for field in EXACT_FIELDS):
+        return None
+    return max(
+        abs(recompiled[metric] - retained[metric]) / retained[metric] for metric in ("depth", "scheduled_duration_dt")
+    )
+
+
 def check(record: dict[str, Any]) -> str:
-    """Recompile the baseline and the best admitted coset of every problem; require the retained runs."""
+    """Recompile the baseline and the best admitted coset of every problem and re-derive their admission.
+
+    Exact fields must match; depth and duration within REPLAY_TOLERANCE; and the
+    best coset's admission, recomputed from the recompiled runs of both, must
+    keep its verdict.
+    """
     _require(record.get("capture") == "n21-linear-conjugation-challenger", "not a challenger record")
     seeds = tuple(record["compiler"]["seeds"])
     replayed = 0
+    deviation = 0.0
     for problem, entry in record["problems"].items():
         arms = PROBLEMS[problem][2]
         circuits: list[tuple[dict[str, Any], tuple[int, ...] | None]] = [(entry["baseline"], None)]
@@ -383,16 +404,32 @@ def check(record: dict[str, Any]) -> str:
         if best is not None:
             circuits.append((best, tuple(best["columns"])))
             _require(equivalence_checks((problem, tuple(best["columns"])))["pass"], f"{problem}: best coset fails")
+        rebuilt = []
         for retained, columns in circuits:
             jobs = [(problem, columns, feed_forward, seed) for feed_forward in arms for seed in seeds]
             runs = parallel.ordered_map(compile_job, jobs, min_items=2)
             expected = [run for feed_forward in arms for run in retained["arms"][_arm_name(feed_forward)]["runs"]]
-            _require(runs == expected, f"{problem} {retained['name']}: recompiled runs differ from the record")
+            for run, kept in zip(runs, expected, strict=True):
+                matched = replay_matches(run, kept)
+                if matched is None or matched > REPLAY_TOLERANCE:
+                    raise SystemExit(
+                        f"linear_conjugation_challenger: {problem} {retained['name']} seed "
+                        f"{kept['seed_transpiler']}: recompiled {run} against {kept}"
+                    )
+                deviation = max(deviation, matched)
+            per_arm = {
+                _arm_name(feed_forward): runs[index * len(seeds) : (index + 1) * len(seeds)]
+                for index, feed_forward in enumerate(arms)
+            }
+            rebuilt.append(_record(problem, retained["name"], columns, per_arm))
             replayed += len(runs)
+        if best is not None:
+            verdict = admission(rebuilt[0], rebuilt[1], best["checks"]["pass"])["verdict"]
+            _require(verdict == best["admission"]["verdict"], f"{problem}: the recompiled admission is {verdict}")
         for challenger in entry["challengers"]:
             verdict = admission(entry["baseline"], challenger, challenger["checks"]["pass"])
             _require(verdict == challenger["admission"], f"{problem} {challenger['name']}: admission differs")
-    return f"{replayed} compilations replayed; best admitted " + ", ".join(
+    return f"{replayed} compilations replayed (largest depth or duration deviation {deviation:.5f}); best " + ", ".join(
         f"{problem}={entry['best_admitted']}" for problem, entry in record["problems"].items()
     )
 

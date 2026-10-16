@@ -83,6 +83,11 @@ SHOT_TIERS = (4096, 8192, 16384, 32768)
 TWO_ROUND_SHOTS = 32768
 TEN_ROUND_SHOTS = 16384
 TEN_ROUND_ORDER = 6
+# A replay recompiles on another host: routed CZ, layout and classical stages
+# match exactly, while depth and duration follow floating-point single-qubit
+# synthesis and match within this relative tolerance (the challenger's).
+REPLAY_TOLERANCE = 0.002
+EXACT_COMPILE_FIELDS = ("seed_transpiler", "routed_cz", "if_else", "classical_stages", "layout")
 # GOROROBA_AER_DEVICE, which a Kaggle kernel sets to its machine's device.
 DEVICE = calibration_snapshot.aer_device()
 
@@ -294,7 +299,15 @@ def check(record: dict[str, Any]) -> str:
         snapshot = json.loads((ROOT / backend["snapshot"]).read_text(encoding="utf-8"))
         for name in CIRCUIT_NAMES:
             retained = backend["circuits"][name]
-            _require(next(recompiled) == retained["chosen"], f"{backend['backend']} {name}: compile differs")
+            run, chosen = next(recompiled), retained["chosen"]
+            _require(
+                all(run[field] == chosen[field] for field in EXACT_COMPILE_FIELDS)
+                and all(
+                    abs(run[metric] - chosen[metric]) <= REPLAY_TOLERANCE * chosen[metric]
+                    for metric in ("depth", "duration_dt")
+                ),
+                f"{backend['backend']} {name}: recompiled {run} against {chosen}",
+            )
             expected = circuit_entry(
                 name, retained["chosen"], [], retained["counts"], retained["shots"], snapshot["dt"]
             )
