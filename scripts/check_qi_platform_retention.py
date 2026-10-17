@@ -258,12 +258,24 @@ class GeneratedCaseChecks(unittest.TestCase):
         for name in ("zero_divisor_tuna_17", "zero_divisor_qx"):
             with self.subTest(series=name), tempfile.TemporaryDirectory() as scratch:
                 retained = ROOT / f"results/quantum_inspire/runs/2026-10-16T221133Z-{name}"
+                # The retained record keeps the placement it executed; its batches
+                # come from the recorded manifest split by finish(), whatever
+                # regions the current generator places.
+                recorded = json.loads((retained / "cases.json").read_text(encoding="utf-8"))
+                sources = {
+                    row["file"]: (retained / row["file"]).read_text(encoding="utf-8") for row in recorded["circuits"]
+                }
+                manifests = {
+                    path: text
+                    for path, text in zero_divisor.finish(recorded, sources).items()
+                    if path.endswith("/cases.json")
+                }
                 runs = []
-                for manifest in sorted((CASES / name).glob("batch-*/cases.json")):
-                    run = Path(scratch) / manifest.parent.name
+                for path, text in sorted(manifests.items()):
+                    run = Path(scratch) / Path(path).parent.name
                     (run / "raw").mkdir(parents=True)
-                    (run / "cases.json").write_bytes(manifest.read_bytes())
-                    for row in json.loads(manifest.read_text(encoding="utf-8"))["circuits"]:
+                    (run / "cases.json").write_text(text, encoding="utf-8")
+                    for row in json.loads(text)["circuits"]:
                         raw = f"raw/{row['file']}.json"
                         (run / raw).write_bytes((retained / raw).read_bytes())
                     runs.append(run)

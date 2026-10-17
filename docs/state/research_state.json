@@ -203,6 +203,55 @@
       "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-03",
       "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
       "question": "Batch 3 of 4: what residual ZZ does each of Tuna-17's 24 parked flux-tunable couplers leave, measured from both of its ends, and what frame frequency does each qubit carry?"
+    },
+    {
+      "id": "qi-qx-zero-divisor-batch-dry-run-0",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T034409Z-zero_divisor_qx-batch-00",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "Dry run, batch 0 of 2: does the ideal QX emulator execute the batched twin circuits of the per-batch zero-divisor series exactly (dark 0, bright 1, fixture 1/2) before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-zero-divisor-batch-dry-run-1",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T034409Z-zero_divisor_qx-batch-01",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "Dry run, batch 1 of 2: does the ideal QX emulator execute the batched twin circuits of the per-batch zero-divisor series exactly (dark 0, bright 1, fixture 1/2) before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-zero-divisor-two-region-dry-run",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T042652Z-zero_divisor_qx-batch-00",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "Dry run of the two-region placement off Tuna-17 q0, q6 and q9: does the ideal QX emulator execute the rotated twin circuits exactly (dark 0, bright 1, fixture 1/2) before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-zero-divisor-visibility-floor-dry-run",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T044225Z-zero_divisor_qx-batch-00",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "Dry run of the placement off Tuna-17 q0, q5, q6, q7 and q9: does the ideal QX emulator execute the rotated twin circuits of regions {1,2,4,8,12} and {10,11,13,14,16} exactly (dark 0, bright 1, fixture 1/2) before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-tuna17-zero-divisor-visibility-floor-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "Batch 00 of the Tuna-17 series placed off q0, q5, q6, q7 and q9 (regions {1,2,4,8,12} and {10,11,13,14,16}): what does the rotated witness circuit read beside its in-batch readout-0 and readout-1 calibration?"
+    },
+    {
+      "id": "qi-tuna17-zero-divisor-visibility-floor-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "Batch 01 of the Tuna-17 series placed off q0, q5, q6, q7 and q9 (regions {1,2,4,8,12} and {10,11,13,14,16}): what does the rotated witness circuit read beside its in-batch readout-0 and readout-1 calibration?"
+    },
+    {
+      "id": "qi-tuna17-zero-divisor-visibility-floor-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "Batch 02 of the Tuna-17 series placed off q0, q5, q6, q7 and q9 (regions {1,2,4,8,12} and {10,11,13,14,16}): what does the rotated witness circuit read beside its in-batch readout-0 and readout-1 calibration?"
     }
   ],
   "claims": [
@@ -2896,8 +2945,7 @@
         "docs/notes/quantum_inspire/experiments.md"
       ],
       "gates": {
-        "core-330": "replay",
-        "core-348": "freshness"
+        "core-330": "replay"
       },
       "acquisitions": [
         "qi-tuna17-zero-divisor",
@@ -2969,6 +3017,105 @@
       "depends_on": [
         "qi-tuna17-zero-divisor-contraction"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-qx-zero-divisor-batched-twin",
+      "statement": "Split into two QX batches, the nine routed Clifford+T zero-divisor replicas of the per-batch series read P(s = 0) = 0 in 6144 dark shots, 1 in 6144 bright shots and 0.498 [0.485, 0.510] fixture (1053, 998 and 1007 of 2048 per replica; fixture - 1/2 = -0.002, z = -0.36), so the emulator executes the batched series' emitted cQASM as certified.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "The QX emulator is noiseless, so the run tests the platform's parsing and execution of the emitted circuits and the batch-keyed analysis, not device noise; the exact SELECT identity rests on the full-operator certificate in certify(), not on finite samples; 2048 shots per circuit.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/zero_divisor_qx_analysis.json",
+          "sha256": "301341f1308b5ac23bd2745b20fe54fd265b48e1fbcf526bb2197c5c04d60324"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-17T034409Z-zero_divisor_qx-batch-00/results.json",
+          "sha256": "1b6df6c01d0819362d3bd8043a0871d354fcc3a7eefa0e8e53c7e2f57d2637b6"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-17T034409Z-zero_divisor_qx-batch-01/results.json",
+          "sha256": "389acdb0910a77c18143b1660e81ec09f7eb1014e589796bc7b1a08c1aee5725"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-330": "replay"
+      },
+      "acquisitions": [
+        "qi-qx-zero-divisor-batch-dry-run-0",
+        "qi-qx-zero-divisor-batch-dry-run-1"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-qx-zero-divisor-two-region-twin",
+      "statement": "In one QX batch, the six routed Clifford+T zero-divisor replicas of the two-region series (regions {1,2,4,7,8} and {11,12,14,15,16}, rotated so each case runs once per region) read P(s = 0) = 0 in 4096 dark shots, 1 in 4096 bright shots and 0.486 [0.471, 0.501] fixture (986 and 1004 of 2048 per replica; fixture - 1/2 = -0.014, z = -1.81), so the emulator executes the regenerated series' emitted cQASM as certified.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "The QX emulator is noiseless, so the run tests the platform's parsing and execution of the emitted circuits and the batch-keyed analysis, not device noise; the exact SELECT identity rests on the full-operator certificate in certify(), not on finite samples; 2048 shots per circuit.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/zero_divisor_qx_two_region_analysis.json",
+          "sha256": "13671850148ad1b0b89388c13691b1761c3a58d681402b55d91c8b1ba1842376"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-17T042652Z-zero_divisor_qx-batch-00/results.json",
+          "sha256": "a50948280f78ebf393ab1faa7d4b560d31905664b216ff2dea5ca070cf185f57"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-330": "replay"
+      },
+      "acquisitions": [
+        "qi-qx-zero-divisor-two-region-dry-run"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-qx-zero-divisor-visibility-floor-twin",
+      "statement": "In one QX batch, the six routed Clifford+T zero-divisor replicas of the placement off Tuna-17 q0, q5, q6, q7 and q9 (regions {1,2,4,8,12} and {10,11,13,14,16}, rotated so each case runs once per region) read P(s = 0) = 0 in 4096 dark shots, 1 in 4096 bright shots and 0.506 [0.491, 0.521] fixture (1034 and 1038 of 2048 per replica; fixture - 1/2 = +0.006, z = +0.75), so the emulator executes the regenerated series' emitted cQASM as certified.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "The QX emulator is noiseless, so the run tests the platform's parsing and execution of the emitted circuits and the batch-keyed analysis, not device noise; the exact SELECT identity rests on the full-operator certificate in certify(), not on finite samples; 2048 shots per circuit.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/zero_divisor_qx_visibility_floor_analysis.json",
+          "sha256": "4c7673da6fcdd5d79f48a96e4d5c73bfdc11bbaec64a808457d9b286d587a331"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-17T044225Z-zero_divisor_qx-batch-00/results.json",
+          "sha256": "7cdfa441b89bc3aed0766eed263247c2a265619027ea558ca98c9bec6f6c9a2b"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-330": "replay",
+        "core-348": "freshness"
+      },
+      "acquisitions": [
+        "qi-qx-zero-divisor-visibility-floor-dry-run"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     },
@@ -3169,6 +3316,50 @@
       ],
       "depends_on": [
         "n21-linear-encoding-routed"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-zero-divisor-visibility-floor",
+      "statement": "Placed off Tuna-17 q0, q5, q6, q7 and q9 on regions {1,2,4,8,12} and {10,11,13,14,16}, three batches of the exact Clifford+T Design B witness of (e1 + e10)(e4 - e15) = 0 read P(s = 0) = 0.4854 [0.4800, 0.4908] dark, 0.5056 [0.5002, 0.5110] bright and 0.4918 fixture at 16384 shots per circuit, an endpoint contrast of 0.0202 +- 0.0039 (z = 5.2; readout-corrected bootstrap 0.022, 95 % 0.014 to 0.031), half the 0.042 of the three-region placement through the excluded qubits; by region the contrast is 0.0504 +- 0.0055 on {1,2,4,8,12} at 75 routed CZ and -0.0100 +- 0.0055 on {10,11,13,14,16} at 87 routed CZ, while every batch's readout-0 P1 stays at most 0.053 and readout-1 P1 at least 0.901 on every used qubit.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One 16384-shot run per circuit, the three batches minutes apart on the calibration after the platform's benchmarking, so drift between batches enters the case contrasts; the exclusion forced longer routes (75 to 91 CZ against 66 to 70 in the three-region placement), so the comparison with the earlier placement changes depth and qubits together and does not separate them; the per-region split rests on one replica per case and region; dark + bright - 1 = -0.009 (z = -2.3) and fixture - 1/2 = -0.008 (z = -3.0) repeat the earlier series' shift toward selector 1; the readout correction uses all-|0> and all-|1> circuits, which omit readout crosstalk under the witness's state.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/zero_divisor_tuna_17_visibility_floor_analysis.json",
+          "sha256": "41ed8fb3d89e674bc4d595d224af168f6b9bb1330bef110b10fcbff56f1fbab2"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00/results.json",
+          "sha256": "87dd435a36d18d59474556ab49c5a49cccd05f9c4a1967c52504e87571046bc9"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01/results.json",
+          "sha256": "12d9a70240829d982f6f6c4925becf1744c3ccb6f84599c052a19c67ae650d22"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02/results.json",
+          "sha256": "2f4dc82b6ae1b95fa2ee9dafc3330b853e15b5066ab127944ab89760001e9818"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-330": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna17-zero-divisor-visibility-floor-batch-00",
+        "qi-tuna17-zero-divisor-visibility-floor-batch-01",
+        "qi-tuna17-zero-divisor-visibility-floor-batch-02"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qi-tuna17-zero-divisor-contraction",
+        "qi-qx-zero-divisor-visibility-floor-twin"
       ],
       "supersedes": [],
       "superseded_by": null
