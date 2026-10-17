@@ -2494,7 +2494,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_ibm_noise_replay.py --check",
    "name": "core-340",
-   "seconds": 71.0,
+   "seconds": 9.0,
    "tier": "pr"
   },
   {
