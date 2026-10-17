@@ -2540,6 +2540,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test && \"$PYTHON\" -B -O -W error scripts/materialize_gororoba_csv.py --self-test",
+   "name": "core-401",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "shellcheck -S error ci/fetch_open_gororoba.sh",
+   "name": "core-402",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_platform.py check docs/evidence/quantum_inspire --agents AGENTS.md",
    "name": "core-347",
    "seconds": 1.0,
@@ -2663,6 +2679,14 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_tuna17_device_context.py --check",
    "name": "core-387",
    "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_tuna17_readout_faults.py --check && \"$PYTHON\" -B -O -W error scripts/qi_tuna17_readout_faults.py --check",
+   "name": "core-400",
+   "seconds": 2.0,
    "tier": "pr"
   },
   {
@@ -2916,6 +2940,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py && \"$PYTHON\" -B -O -W error ci/check_rocq_ci_pins.py",
+   "name": "core-403",
+   "seconds": 0.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py --self-test && \"$PYTHON\" -B -O -W error ci/check_rocq_ci_pins.py --self-test",
+   "name": "core-404",
+   "seconds": 0.9,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/patch_window_analysis.py results/live/2026-10-13T201757.782152Z --check results/live/2026-10-13T201757.782152Z/patch-analysis.json && \"$PYTHON\" -B -O -W error scripts/patch_window_analysis.py results/live/2026-10-13T201757.782152Z --check results/live/2026-10-13T201757.782152Z/patch-analysis.json",
    "name": "core-495",
    "seconds": 62.0,
@@ -2926,17 +2966,17 @@
   {
    "cmd": "\"$PYTHON\" verify.py",
    "cwd": "gororoba_quantum",
-   "reason": "needs the git-ignored open_gororoba data/csv build; issue #62"
+   "reason": "runs in the ci.yml job external-ground-truth over the pinned open_gororoba checkout (ci/open_gororoba.pin)"
   },
   {
    "cmd": "ROCQ=\"${ROCQ:-rocq}\" sh docs/evidence/c881_exhaustive/replay_rocq.sh",
    "cwd": ".",
-   "reason": "needs the Rocq toolchain pinned in docs/evidence/c881_exhaustive/toolchain.txt; proof-change replay"
+   "reason": "runs in the ci.yml job rocq-replay on proof paths under the toolchain of ci/rocq_toolchain.pin"
   },
   {
    "cmd": "GOROROBA_ROOT=\"$GOROROBA_ROOT\" sh docs/evidence/stiefel_witness/replay_rocq.sh",
    "cwd": ".",
-   "reason": "needs the Rocq toolchain in docs/evidence/stiefel_witness/toolchain.txt and an open_gororoba checkout; proof-change replay"
+   "reason": "runs in the ci.yml job rocq-replay on pushes to main and the nightly schedule, over the pinned open_gororoba checkout"
   }
  ]
 }
