@@ -164,7 +164,7 @@ docs/evidence/calibration/ibm_kingston.json, inserts ALAP delays and saves
 exact Aer probabilities beside 16384-shot samples. It ran on a Kaggle CPU
 kernel (results/kaggle/2026-10-16T214611Z-qi-ibm-noise-replay) and is retained
 as results/quantum_inspire/ibm_noise_replay/tuna_17-ibm_kingston.json; gate
-core-340 replays one star and one path.
+core-340 replays every star and path.
 
 | Quantity | Kingston model (exact) | Tuna-17 measured |
 |---|---|---|
