@@ -120,6 +120,9 @@ against 65.42 on 4 without detuning, with five parameters on six cells.
   lowers G2 by 0.54 at equal parameter count, and the single gap already
   fits the no_feedback members. The unresolved joint probe came from the
   five-qubit logical model, not from the window's segmentation.
+  The single gap also has a basin at G2 27.26, with qubit 143 near -0.75
+  rad/us, that the seeded search does not start in, so the piecewise gain
+  lies between 0.51 and 0.54.
 - The fitted rates are not identified: the two exposures' optima, 0.54
   apart in G2, place qubit 136 at -0.160 and +0.163 rad/us and qubit 143 at
   -3.26 and +0.87 rad/us, so no rate is a measured detuning; the deviances

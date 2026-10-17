@@ -974,6 +974,9 @@ class ExposureObjective:
 EXPOSURE_RATE_BOUND = 5.0
 EXPOSURE_GRID_CAP = 32768
 EXPOSURE_SEEDS = 12
+# Grid deviances agree across BLAS builds to about 1e-11; seed ranking
+# resolves them at this deviance step.
+EXPOSURE_SEED_RESOLUTION = 1e-6
 EXPOSURE_PROBES = ((0.41, 0.73), (-0.29, 1.13))
 
 
@@ -987,7 +990,12 @@ def coupled_rates(laws: dict[str, CompiledLaw], rates: int) -> list[int]:
 def grid_seeds(
     objective: ExposureObjective, longest_us: list[float], rounds: tuple[float, float]
 ) -> list[dict[int, float]]:
-    """The EXPOSURE_SEEDS lowest grid points over the objective's free rates, keyed by rate index."""
+    """The EXPOSURE_SEEDS lowest grid points over the objective's free rates, keyed by rate index.
+
+    Ranking rounds each deviance to EXPOSURE_SEED_RESOLUTION and breaks ties
+    by grid order, so BLAS builds whose deviances differ at rounding level
+    choose the same seeds and the local searches start in the same basins.
+    """
     import heapq
     import itertools
 
@@ -999,8 +1007,12 @@ def grid_seeds(
     points = [count + 1 - count % 2 for count in points]
     grid = list(itertools.product(*(np.linspace(-bound, bound, count) for count in points)))
     landscape = parallel.ordered_map(objective, [np.array([*rounds, *rates]) for rates in grid], min_items=2)
-    ranked = heapq.nsmallest(EXPOSURE_SEEDS, zip(landscape, grid, strict=True), key=lambda item: item[0])
-    return [dict(zip(objective.free, map(float, rates), strict=True)) for _value, rates in ranked]
+    ranked = heapq.nsmallest(
+        EXPOSURE_SEEDS,
+        range(len(grid)),
+        key=lambda index: (round(landscape[index] / EXPOSURE_SEED_RESOLUTION), index),
+    )
+    return [dict(zip(objective.free, map(float, grid[index]), strict=True)) for index in ranked]
 
 
 def exposure_models(
@@ -1470,6 +1482,25 @@ def _window_member(
     return circuit, {"metadata": {"compilation": {"scheduler_timing": {"timing": timing}}}}
 
 
+class _TiedLandscape:
+    """A rate landscape whose points tie in |rate 0| up to a rounding-level tilt along rate 1."""
+
+    free = [0, 1]
+
+    def __init__(self, tilt: float) -> None:
+        self.tilt = tilt
+
+    def __call__(self, vector: np.ndarray) -> float:
+        return round(abs(float(vector[2])), 6) + self.tilt * float(vector[3])
+
+
+def _check_seed_ranking() -> None:
+    """Grid seeds stay the same when tied deviances move at rounding level, as across BLAS builds."""
+    seeds = [grid_seeds(_TiedLandscape(tilt), [1.0, 1.0], (0.1, 0.0)) for tilt in (1e-11, -1e-11)]  # type: ignore[arg-type]
+    if seeds[0] != seeds[1]:
+        raise RuntimeError("a rounding-level change of tied grid deviances changes the grid seeds")
+
+
 def _check_piecewise_exposure() -> None:
     """Segments split at a work-only pulse, the split moves the law, and a fit recovers the planted rates."""
     from qpe_diagnostics import ideal_compiled_probabilities
@@ -1563,6 +1594,7 @@ def self_check() -> None:
     _check_manifest_binding()
     _check_static_basins()
     _check_piecewise_exposure()
+    _check_seed_ranking()
     _check_differences()
     readout = _readout(0.001, 0.006)
     truth = readout | {"round1": 0.1, "round2": 0.02, "phase_one": 0.5}
