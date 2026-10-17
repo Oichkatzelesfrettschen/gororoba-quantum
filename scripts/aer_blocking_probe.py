@@ -261,7 +261,15 @@ def sampled(command: list[str], ngpus: int) -> dict[str, Any]:
     kills = oom_kills()
     started = time.time()
     with tempfile.TemporaryFile("w+") as out, tempfile.TemporaryFile("w+") as err:
-        child = subprocess.Popen(command, stdout=out, stderr=err, text=True)
+        # The child raises its own oom_score_adj to the maximum before it
+        # execs, so a state the host cannot hold ends the trial and leaves the
+        # probe and the kernel that runs it alive (proc(5), oom_score_adj).
+        child = subprocess.Popen(
+            ["sh", "-c", 'echo 1000 > /proc/self/oom_score_adj && exec "$0" "$@"', *command],
+            stdout=out,
+            stderr=err,
+            text=True,
+        )
         timer = threading.Timer(TRIAL_TIMEOUT_SECONDS, child.kill)
         timer.start()
         # wait4 reaps the child with its own rusage, whose ru_maxrss is that

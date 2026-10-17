@@ -1,0 +1,3 @@
+{"name": "density_matrix-14-ghz-auto", "ended_by": "ok", "wall_seconds": 1.833, "peak_rss_mib": 515}
+{"name": "density_matrix-14-ghz-blocked", "ended_by": "ok", "wall_seconds": 2.103, "peak_rss_mib": 517}
+{"name": "density_matrix-15-ghz-auto", "ended_by": "oom_kill", "wall_seconds": 67.178, "peak_rss_mib": 30155}
