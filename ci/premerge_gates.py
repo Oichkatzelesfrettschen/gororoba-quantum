@@ -18,7 +18,8 @@ whose local toolchain differs from CI's does not mask the comparison. A
 textual conflict stops the run with the conflicted paths.
 
 The worktrees live under --worktrees (default ~/worktrees/<repository>/premerge,
-<repository> naming the primary checkout) and are removed on exit. Exit
+<repository> naming the primary checkout), named by base, ref and process id,
+and are removed on exit. Exit
 status: 0 when the merge introduces no failure, 1 when it does, 2 on a merge
 conflict.
 
@@ -125,7 +126,9 @@ def premerge(repo: Path, ref: str, base_ref: str, max_seconds: float, worktrees:
     base_commit = git(repo, "rev-parse", "--verify", f"{base_ref}^{{commit}}")
     ref_commit = git(repo, "rev-parse", "--verify", f"{ref}^{{commit}}")
     worktrees.mkdir(parents=True, exist_ok=True)
-    label = f"{base_commit[:12]}-{ref_commit[:12]}"
+    # The process id keeps two concurrent runs over one base and ref, from any
+    # session sharing --worktrees, on separate worktree paths.
+    label = f"{base_commit[:12]}-{ref_commit[:12]}-{os.getpid()}"
     try:
         with (
             worktree(repo, worktrees / f"base-{label}", base_commit) as base_tree,
