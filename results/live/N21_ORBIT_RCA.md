@@ -62,6 +62,34 @@ The delay and the extra readout lengthen the window by the same 415 dt. The
 echo refocuses 136 completely; 144 keeps 532 dt unrefocused because its
 round-1 pulses end 248 dt before the window opens.
 
+## Exact-ISA window exposure
+
+The `piecewise` block of each rca-mechanism-fit.json fits one static
+detuning per placed window qubit through the archived ISA itself
+(`CompiledLaw`): an exact density matrix on the active wires, with a Z
+rotation of rate times length on every idle interval the qubit plays inside
+the control's measurement-to-feed-forward window, the two depolarizing rounds
+at the first two measurements, and the mid-circuit assignment flip on the
+recorded bit before the if_else. Each qubit's coupling to the work register
+in each recorded branch follows from the circuit, so no single-gap sign is
+needed. dt is 4 ns from docs/evidence/heron_platform/targets.json.
+
+Work-only gates inside the window split it: in nominal_feedback (window 1426
+to 2394 dt) qubit 136 idles over [1373, 2335] and [2381, 2416], qubit 143
+over [1419, 2335] and [2393, 2400], and qubit 144 over [1194, 2606]. The
+single gap keeps the first interval of each.
+
+| Exposure (083417, 8 members, 24 cells) | G2 | dof | goodness-of-fit p |
+|---|---|---|---|
+| no detuning | 166.74 | 22 | < 1e-3 |
+| single gap, rates on 136, 143, 144 | 26.63 | 19 | 0.11 |
+| piecewise, rates on 136, 143, 144 | 26.01 | 19 | 0.13 |
+
+Per pair (piecewise / single gap): nominal 3.6 / 3.3, window_delay 4.8 /
+5.9, extra_readout 11.6 / 11.6, window_echo 5.9 / 5.8; without detuning
+70.0, 30.0, 34.2 and 32.6. On 080216 both exposures reach G2 1.80 on 1 dof
+against 65.42 on 4 without detuning, with five parameters on six cells.
+
 ## Findings
 
 - The phase reproduces on the same qubits across a recalibration (0.59, then 0.70).
@@ -80,7 +108,21 @@ round-1 pulses end 248 dt before the window opens.
   records that fit as skipped, because the window state is not a branch
   phase on the work bit for residue 1 and joint probes leave the relative
   sign of qubits 136 and 144 unresolved. The three deviances carry no
-  current evidence until a qualified joint fit is rerun.
+  current evidence; the fit of Exact-ISA window exposure replaces them.
+- Static detuning on the window qubits, evaluated through the archived
+  ISA, explains the 083417 orbit family: G2 falls from 166.7 to 26.0 on 19
+  dof with three rates (goodness of fit p = 0.13). The likelihood-ratio
+  statistic of 140.7 on 3 added parameters is nominal only, because the
+  rates are periodic and their likelihood has several basins.
+- Splitting the window at work-only pulses does not change the fit: the
+  splits are 35 dt on qubit 136 and 7 dt on 143, the piecewise exposure
+  lowers G2 by 0.62 at equal parameter count, and the single gap already
+  fits the no_feedback members. The unresolved joint probe came from the
+  five-qubit logical model, not from the window's segmentation.
+- The fitted rates are not identified: the two exposures' optima, 0.62
+  apart in G2, place qubit 136 at -0.157 and +0.159 rad/us and qubit 143 at
+  -3.26 and +0.87 rad/us, so no rate is a measured detuning; the deviances
+  and segment tables are the result.
 - The extra-readout arm misfits the single-phase model (G2 9.3 on 3 dof),
   so its fitted phase does not support a conclusion; the delay arm is
   borderline (5.6). The preregistered ordering assumed the window preserves

@@ -1684,11 +1684,11 @@
       "evidence": [
         {
           "path": "results/live/2026-10-13T080216.451663Z/rca-mechanism-fit.json",
-          "sha256": "21bba4121b743b2befbd2ef44569c711f00c6b57e60ac1a4f4e550262dcbd041"
+          "sha256": "7e4a43bddcf319d1c682f51669c116cfef6b0eb91fd72ade82c15a05f50b4281"
         },
         {
           "path": "results/live/2026-10-13T083417.634585Z/rca-mechanism-fit.json",
-          "sha256": "e0dfb453d6192b0b5880921972993e84c9a81de434479e88a60e4f4608fc187f"
+          "sha256": "098eabcd0245b527b662587a9c3640182d3d854b6ee491075941a2bf0883c504"
         }
       ],
       "documents": [
@@ -2460,7 +2460,7 @@
         },
         {
           "path": "results/live/2026-10-13T080216.451663Z/rca-mechanism-fit.json",
-          "sha256": "21bba4121b743b2befbd2ef44569c711f00c6b57e60ac1a4f4e550262dcbd041"
+          "sha256": "7e4a43bddcf319d1c682f51669c116cfef6b0eb91fd72ade82c15a05f50b4281"
         },
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
