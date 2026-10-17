@@ -65,10 +65,13 @@ Columns, by group:
   5 and 6. On those lanes the model step reduces to the constant.
 - **Fez lane 0 has a broad spread, not a single outlier.** Four of its 12
   edges sit below y = -0.55.
-- **Normalizing by the replay lowers the chi-square on every lane against
-  the ideal normalization.** The calibrated channels therefore carry part
-  of the edge structure. The excess scatter tau also drops on 12 of 14
-  lanes; it rises on Fez lane 3 and Kingston lane 0.
+- **Normalizing by the replay lowers the excess scatter tau on 12 of 14
+  lanes against the ideal normalization; it rises on Fez lane 3 and
+  Kingston lane 0.** tau is in units of y under both normalizations, so it
+  compares them. The calibrated channels therefore carry part of the edge
+  structure. The two chi-square columns do not compare: the replay one
+  divides by sigma_y, which includes sigma_replay, and the ideal one by
+  sigma_hw alone.
 
 ## The replay omits idle relaxation
 
@@ -192,7 +195,7 @@ other structured lanes: Fez 0, 1, 2, 3, 5 and 6, and Kingston 0 and 1.
     relaxation is flagged and its coefficient recovered within 3 standard
     errors, and a planted sx amplitude of -0.02 on qubit 58 is recovered in
     magnitude, sign and constant.
-- **core-341** (full tier, about 455 s for both modes at one worker):
+- **core-341** (full tier, 395 s for both modes at one worker: 227 s normal, 168 s optimized):
   `--check result.json --runs ibm_fez,ibm_kingston --lanes 4`. It recomputes
   both lanes and the 14-lane structure block, and compares every number
   within 1.5e-6 absolute or 1e-9 relative.
