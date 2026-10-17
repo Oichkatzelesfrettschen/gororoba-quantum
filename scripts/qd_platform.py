@@ -380,14 +380,21 @@ def tool_rows(text: str) -> list[str]:
 
 def check_agents(catalogue: dict[str, Any], files: list[Path]) -> None:
     table = facts_table(catalogue)
+    tables = 0
     for path in files:
         text = path.read_text(encoding="utf-8")
-        if (rows := tool_rows(text)) and tuple(sorted(rows)) != MCP_TOOLS:
-            raise SystemExit(f"{path}: MCP tool table {sorted(rows)} differs from {MCP_TOOLS}")
+        if rows := tool_rows(text):
+            if tuple(sorted(rows)) != MCP_TOOLS:
+                raise SystemExit(f"{path}: MCP tool table {sorted(rows)} differs from {MCP_TOOLS}")
+            tables += 1
         if text.count(BEGIN) != 1 or text.count(END) != 1:
             raise SystemExit(f"{path}: needs one quandela-facts section")
         if text[text.index(BEGIN) + len(BEGIN) : text.index(END)] != table:
             raise SystemExit(f"{path}: the quandela-facts table differs from facts_table of the snapshot")
+    # The guide's tool table states each tool's approval rule; a check over the
+    # guides requires one file to carry it.
+    if not tables:
+        raise SystemExit("no --agents file carries the MCP tool table")
 
 
 def load(directory: Path) -> dict[str, Any]:
@@ -455,6 +462,11 @@ def self_test() -> None:
 
         return edit
 
+    def drop_tool_rows(scratch: Path) -> None:
+        path = scratch / "README.md"
+        lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
+        path.write_text("".join(line for line in lines if not line.startswith("| `qd_")), encoding="utf-8")
+
     def qpu(c: dict[str, Any]) -> dict[str, Any]:
         name = next(r["name"] for r in c["explorer_platforms"] if r["type"] == "qpu")
         specs: dict[str, Any] = c["processors"][name]["specs"]
@@ -471,6 +483,7 @@ def self_test() -> None:
         "edited table": text("AGENTS.md", "| credits per shot |", "| price |"),
         "stale row": text("AGENTS.md", END, "| stale | row |\n" + END),
         "README table drops a tool": text("README.md", "| `qd_usage` |", "| usage |"),
+        "README drops the tool table": drop_tool_rows,
         "server adds a submit tool": text(
             "qd_mcp_server.py",
             'if __name__ == "__main__":',

@@ -165,11 +165,16 @@ async def qd_job_result(job_id: JobId, include_raw: bool = False) -> dict[str, A
 
 
 def truncated(value: Any) -> Any:
-    """A JSON value whose strings, at any depth, end after RESULT_CHARACTERS characters."""
+    """A JSON value whose strings and keys, at any depth, end after RESULT_CHARACTERS characters."""
     if isinstance(value, str):
         return value[:RESULT_CHARACTERS] + "..." if len(value) > RESULT_CHARACTERS else value
     if isinstance(value, dict):
-        return {k: truncated(v) for k, v in value.items()}
+        out: dict[str, Any] = {}
+        for index, (key, item) in enumerate(value.items()):
+            short = truncated(key) if isinstance(key, str) else key
+            # Two long keys sharing a prefix stay distinct through their position.
+            out[f"{short}#{index}" if short in out or short != key else short] = truncated(item)
+        return out
     if isinstance(value, list):
         return [truncated(v) for v in value]
     return value

@@ -172,6 +172,9 @@ OFFER_CODE = (
 )
 OFFER_LIST = "https://api.cloud.quandela.com/api/public/offer/list"
 
+# Sources whose fetch may fail without failing the capture.
+OPTIONAL_SOURCES = {page for page, _ in LEGAL_PAGES} | {PERCEVAL + page for page in PERCEVAL_PAGES}
+
 PYPI_RELEASES = (
     ("perceval-quandela", "1.3.1"),
     ("exqalibur", "1.4.2"),
@@ -437,6 +440,14 @@ def check_tree(root: Path) -> int:
         failed = {item["url"] for item in doc["unreachable"]}
         if stray := sorted(failed - set(pinned.values())):
             raise SystemExit(f"{kind}: unreachable entry {stray[0]} is outside the captured inventory")
+        # Only fetched pages record an answer other than 200; a bundle,
+        # API description, offer record or PyPI release aborts the capture.
+        if mandatory := sorted(failed - OPTIONAL_SOURCES):
+            raise SystemExit(f"{kind}: unreachable entry {mandatory[0]} names a mandatory source")
+        if bad := [
+            item for item in doc["unreachable"] if not isinstance(item.get("status"), int) or item["status"] == 200
+        ]:
+            raise SystemExit(f"{kind}: unreachable entry {bad[0]} carries no failure status")
         expected = {path for path, url in pinned.items() if url not in failed}
         if missing := sorted(expected - listed):
             raise SystemExit(f"{kind}: captured inventory path {missing[0]} has no manifest row")
@@ -525,6 +536,18 @@ def self_test() -> int:
         )
         expect("unreachable entry outside the inventory", "outside the captured inventory")
         manifest_path("perceval", base).write_bytes(original)
+        api_doc = base / "api" / "cloud-openapi.json"
+        api_bytes = api_doc.read_bytes()
+        api_doc.unlink()
+
+        def exempt_api(doc: dict[str, Any]) -> None:
+            doc["files"] = [row for row in doc["files"] if not row["path"].endswith("cloud-openapi.json")]
+            doc["unreachable"].append({"url": API_DOCUMENTS[0][0], "status": 404})
+
+        original = edit_manifest("api", exempt_api)
+        expect("mandatory source marked unreachable", "names a mandatory source")
+        manifest_path("api", base).write_bytes(original)
+        api_doc.write_bytes(api_bytes)
         check_tree(root)
     print(f"capture_qd_docs self-test: {cases} mutations rejected")
     return 0
