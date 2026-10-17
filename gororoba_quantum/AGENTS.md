@@ -229,7 +229,9 @@ at those versions, except the linters.
 | python-qiskit | qiskit 2.5.2 |
 | python-qiskit-ibm-runtime | qiskit-ibm-runtime 0.50.0 |
 | python-qiskit-aer-cuda (provides python-qiskit-aer) | qiskit-aer 0.17.2, pkgrel 2: CUDA Thrust backend for sm_89 with cuQuantum, so `AerSimulator(device="GPU", cuStateVec_enable=True)` runs |
-| cuquantum | cuquantum 26.09.0.8 for CUDA 13 (libcustatevec.so.1 1.15.0, libcutensornet.so.2 2.14.0), repackaged from the vendor archive |
+| cuquantum | cuquantum 26.09.0.8 for CUDA 13, repackaged from the vendor archive: libcustatevec.so.1 1.15.0 and libcutensornet.so.2 2.14.0, the two libraries python-qiskit-aer-cuda 0.17.2-2 links |
+| cutensor | cutensor 2.8.1.0, the tensor library libcutensornet.so.2 loads |
+| cuda | cuda 13.4.2 (nvcc 13.4.92): the toolkit both packages build against and the libcublas and libcusolver the module loads from /opt/cuda/lib64 |
 | python-samplomatic | samplomatic 0.21.0, the runtime 0.50 floor |
 | python-ibm-quantum-schemas | ibm-quantum-schemas 0.12.20260921, the runtime 0.50 floor |
 | python-numpy, python-scipy | numpy 2.5.4, scipy 1.18.1 |
@@ -254,8 +256,13 @@ submit-free dry run confirm the stack. python-qiskit-aer-cuda builds against
 the cuquantum package of the same directory tree and installs in one
 `pacman -U` with it; its PKGBUILD links Aer's BLAS and LAPACK calls to the
 AOCL providers and builds the module as C++20, which CUDA 13's CCCL 3
-headers and fmt 12 require. `docs/notes/build_host/custatevec.md` holds the
-requirement list, the install command and the probe results. A Kaggle kernel installs qiskit 2.5.2,
+headers and fmt 12 require. `readelf -d` on
+`qiskit_aer/backends/controller_wrappers.cpython-314-x86_64-linux-gnu.so`
+lists libcustatevec.so.1 and libcutensornet.so.2 among its NEEDED entries;
+a module without them raises `Simulation device "GPU" does not support
+cuStateVec on this system` on `cuStateVec_enable=True`.
+`docs/notes/build_host/custatevec.md` holds the requirement list, the build
+and install commands and the probe results. A Kaggle kernel installs qiskit 2.5.2,
 qiskit-ibm-runtime 0.50.0 (its fake backends, such as FakeFez, need no
 account) and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel
 stops at 0.15.1) over the Kaggle image's numpy and scipy, records every

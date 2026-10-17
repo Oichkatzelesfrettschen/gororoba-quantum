@@ -75,12 +75,14 @@ MODULE_DIRS = ("gororoba_quantum", "scripts")
 # libcutensornet.so.2 through an RPATH into site-packages/cuquantum/lib, which
 # its Requires-Dist cuquantum-cu11 (>=23.3.0,<24.11.0) installs; 24.8.0 is the
 # newest release in that range and brings custatevec-cu11 1.6.0.post1 and
-# cutensornet-cu11 2.5.0. Pinning it holds the library that
-# Aer's cuStateVec_enable path loads at one version.
+# cutensornet-cu11 2.5.0, whose cutensor-cu11>=2.0.1,<3 resolves to 2.2.0.
+# Pinning both holds every library Aer's cuStateVec_enable path loads at one
+# version.
 KERNEL_PINS = (
     "qiskit==2.5.2",
     "qiskit-aer-gpu-cu11==0.17.2",
     "cuquantum-cu11==24.8.0",
+    "cutensor-cu11==2.2.0",
     "qiskit-ibm-runtime==0.50.0",
 )
 # A CPU or TPU host has no NVIDIA GPU, and the cu11 wheel ships cp313 only,

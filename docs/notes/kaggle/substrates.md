@@ -168,39 +168,8 @@ ran.
 
 ## cuStateVec on the GPU kernel
 
-The qiskit-aer-gpu-cu11 0.17.2 wheel (sha256 2684a4bf8dc7...f2892, cp313
-manylinux2014) lists libcustatevec.so.1 and libcutensornet.so.2 as NEEDED
-libraries, resolved through the RPATH `$ORIGIN/../../cuquantum/lib`, and its
-Requires-Dist names `cuquantum-cu11>=23.3.0,<24.11.0`, so every GPU kernel
-that pip-installed the wheel with dependencies already carries the libraries:
-the 2026-10-16T204620Z probe imported it and ran GPU trajectories, which the
-NEEDED entries require to resolve (its pip.txt holds download progress bars
-only, with no package names). The wheel carries cubins for sm_70 through sm_87, which
-include the T4's sm_75. The retained GPU runs never set `cuStateVec_enable`,
-whose Aer default is off, so no retained record exercises the library.
-`KERNEL_PINS` now pins `cuquantum-cu11==24.8.0` (custatevec-cu11
-1.6.0.post1, cutensornet-cu11 2.5.0) and the kernel reports all three
-versions in `environment.json`.
-
-The T4 check pushed after this change:
-
-```sh
-"$PYTHON" scripts/kaggle_run.py push --slug aer-custatevec-probe \
-    --machine NvidiaTeslaT4 --timeout 1800 \
-    --include docs/evidence/calibration/ibm_kingston.json \
-    scripts/aer_gpu_probe.py -- \
-    --snapshot docs/evidence/calibration/ibm_kingston.json \
-    --out /kaggle/working/output/aer-gpu-probe.json \
-    --only cpu_statevector gpu_statevector gpu_statevector_custatevec
-```
-
-It succeeds when the `gpu_statevector_custatevec` rows carry `cuStateVec_enable`
-true in `metadata`, no `failed` field, and a total variation from
-`cpu_statevector` inside the row's `sampling_scale`. A `failed` row with the
-text "does not support cuStateVec" means the wheel's library failed to load;
-the `environment.json` versions then identify the cuquantum release.
-Host measurements of the same option on a CUDA 13 build are in
-`docs/notes/build_host/custatevec.md`.
+[custatevec.md](custatevec.md) holds the cu11 wheel's cuQuantum library
+chain, the pins that hold it, the T4 push command and the success test.
 
 ## CPU-only kernel
 

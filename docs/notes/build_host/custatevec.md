@@ -3,9 +3,9 @@
 The installed python-qiskit-aer-cuda 0.17.2-1 was compiled without cuQuantum,
 so `AerSimulator(device="GPU", cuStateVec_enable=True)` raises
 `RuntimeError: Simulation device "GPU" does not support cuStateVec on this
-system`. A rebuilt python-qiskit-aer-cuda 0.17.2-2 against a repackaged
-cuquantum 26.09.0.8 enables the option; the package is built and verified
-from an extracted tree and is not installed.
+system`. python-qiskit-aer-cuda 0.17.2-2, built against a repackaged
+cuquantum 26.09.0.8, enables the option. Its verification ran on the
+extracted package tree and again on the installed package.
 
 ## Cause chain
 
@@ -71,7 +71,7 @@ note (live copies in ~/Github/PKGBUILDs/cuquantum and
 libblis-mt.so.5 and libflame.so (AOCL), libcustatevec.so.1,
 libcutensornet.so.2, and no libopenblas.
 
-## Verification (extracted package, nothing installed)
+## Verification on the extracted package
 
 Probe: `probe_custatevec.py` in this directory, run with PYTHONPATH on the
 extracted site-packages and LD_LIBRARY_PATH on the extracted cuquantum
@@ -104,7 +104,18 @@ circuit costs 0.035 and 0.078 ms/shot with cuStateVec against 0.017 and 0.035
 without, so tiny circuits pay a fixed overhead. The 7-qubit N=21 two-round
 circuit with feed-forward (`aer_gpu_probe.py --one two_round_encoded_ff
 gpu_statevector_custatevec`) ran 1859 shots at 39.8 ms/shot under that load;
-its plain-GPU counterpart did not finish before shutdown.
+its plain-GPU counterpart is not measured.
+
+## Verification on the installed package
+
+With both packages installed by `pacman -U`, `noise_simulator(snapshot,
+"GPU", method="statevector", custatevec=True)` on a 4-qubit GHZ circuit under
+the ibm_kingston snapshot's noise reports `metadata.cuStateVec_enable` true,
+and its 2000 seeded shots equal the `custatevec=False` counts outcome for
+outcome; `custatevec=True` with `batched_shots=True` raises ValueError. The
+seeded-count gates core-109, core-110, core-111, core-273, core-279,
+core-287, core-288, core-302, core-304, core-311 and core-313 pass under
+`GOROROBA_AER_DEVICE=CPU` on the AOCL-linked module.
 
 ## Findings outside the goal
 
@@ -118,8 +129,8 @@ its plain-GPU counterpart did not finish before shutdown.
 - The CPU recipe python-qiskit-aer in ~/Github/PKGBUILDs links libopenblas.so.0
   the same way whenever openblas is installed; the BLAS patch in the cuda
   recipe applies to it unchanged.
-- After the install, openblas is orphaned (its only dependent was the old
-  package) and can be removed.
+- The 0.17.2-2 module has no openblas dependent, so openblas is orphaned
+  unless another package needs it.
 
 ## Kaggle
 
@@ -129,20 +140,26 @@ requires `cuquantum-cu11>=23.3.0,<24.11.0` (24.8.0, custatevec-cu11
 1.6.0.post1, cutensornet-cu11 2.5.0). Kernels that pip-install with
 dependencies therefore already carry the library; the retained T4 probe
 imported the wheel and ran. Cubins cover sm_70 through sm_87 (T4 is sm_75).
-No retained run sets `cuStateVec_enable`, so the T4 path is unmeasured. The
-repository change pins `cuquantum-cu11==24.8.0` in `KERNEL_PINS`, reports the
-three package versions in `environment.json`, adds `custatevec=True` to
-`calibration_snapshot.noise_simulator`, and adds the
-`gpu_statevector_custatevec` configuration and `--only` to
-`scripts/aer_gpu_probe.py`. The push command is in
-`docs/notes/kaggle/substrates.md`; it has not been run.
+No retained run sets `cuStateVec_enable`, so the T4 path is unmeasured.
+`KERNEL_PINS` pins `cuquantum-cu11==24.8.0` and the kernel reports the
+three package versions in `environment.json`.
+`calibration_snapshot.noise_simulator(..., custatevec=True)` sets the
+option, and `scripts/aer_gpu_probe.py` carries the
+`gpu_statevector_custatevec` configuration and `--only`. The T4 push command
+is in `docs/notes/kaggle/substrates.md`.
 
-## Install (orchestrator)
+## Build and install
 
 ```sh
 cd ~/Github/PKGBUILDs
 SUDO_ASKPASS=/usr/bin/unified-askpass sudo -A pacman -U \
   cuquantum/cuquantum-26.09.0.8-1-x86_64.pkg.tar.zst \
   python-qiskit-aer-cuda/python-qiskit-aer-cuda-0.17.2-2-x86_64.pkg.tar.zst
-python3 -c "import qiskit, qiskit_ibm_runtime, qiskit_aer; from qiskit_aer import AerSimulator; print(AerSimulator(method='statevector', device='GPU', cuStateVec_enable=True).available_devices())"
+"$PYTHON" -c "import qiskit, qiskit_ibm_runtime, qiskit_aer; from qiskit_aer import AerSimulator; print(AerSimulator(method='statevector', device='GPU', cuStateVec_enable=True).available_devices())"
 ```
+
+A rebuild runs `nice -n 19 makepkg -s --nocheck` in
+~/Github/PKGBUILDs/python-qiskit-aer-cuda with the cuquantum package
+installed; before that package is installed, the build takes
+`CUQUANTUM_ROOT=$HOME/Github/PKGBUILDs/cuquantum/pkg/cuquantum/usr
+AER_BUILD_JOBS=6 nice -n 19 makepkg -fC --nodeps --nocheck`.

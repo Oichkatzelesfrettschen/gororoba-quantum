@@ -52,6 +52,7 @@ REPORTED_PACKAGES = (
     "cuquantum-cu11",
     "custatevec-cu11",
     "cutensornet-cu11",
+    "cutensor-cu11",
     "qiskit-ibm-runtime",
     "numpy",
     "scipy",

@@ -1,4 +1,5 @@
 """Scratch probe: cuStateVec on/off, CPU parity hashes, ms/shot. Prints one JSON line per task."""
+
 import hashlib
 import json
 import sys
@@ -54,7 +55,10 @@ def run(label, sim, qc, shots):
         "seconds": round(dt, 3),
         "ms_per_shot": round(1e3 * dt / shots, 3),
         "digest": digest(res.get_counts()) if res.success else None,
-        "meta": {k: md.get(k) for k in ("method", "device", "cuStateVec_enable", "batched_shots_optimization", "parallel_shots")},
+        "meta": {
+            k: md.get(k)
+            for k in ("method", "device", "cuStateVec_enable", "batched_shots_optimization", "parallel_shots")
+        },
     }
     print(json.dumps(out), flush=True)
 
