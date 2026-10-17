@@ -100,7 +100,7 @@ from linear_conjugation_challenger import (  # noqa: E402
     total_variation,
 )
 from linear_conjugation_challenger import source as single_source  # noqa: E402
-from live_run import _gate_time_view  # noqa: E402
+from live_run import _feed_forward_stages, _gate_time_view  # noqa: E402
 from modular_arithmetic import (  # noqa: E402
     _append_controlled_target_flips,
     conjugated_permutation,
@@ -138,8 +138,30 @@ TWO_ROUND_SPLITS = 16
 TEN_ROUND_PER_X = 2
 SAMPLE_SEED = 20261017
 SAMPLE_PAIRS = 64
-RUN_FIELDS = ("seed_transpiler", "logical_qubits", "active_physical_qubits", "routed_cz", "depth", "duration_dt")
-EXACT_FIELDS = ("seed_transpiler", "logical_qubits", "active_physical_qubits", "routed_cz")
+RUN_FIELDS = (
+    "seed_transpiler",
+    "logical_qubits",
+    "active_physical_qubits",
+    "routed_cz",
+    "depth",
+    "duration_dt",
+    "if_else",
+    "classical_stages",
+    "classical_sha256_16",
+    "final_layout",
+)
+# A replay on another host holds routed CZ, layout and classical stages
+# exactly; depth and duration follow BLAS rounding (REPLAY_TOLERANCE).
+EXACT_FIELDS = (
+    "seed_transpiler",
+    "logical_qubits",
+    "active_physical_qubits",
+    "routed_cz",
+    "if_else",
+    "classical_stages",
+    "classical_sha256_16",
+    "final_layout",
+)
 
 
 def _require(ok: bool, message: str) -> None:
@@ -186,10 +208,18 @@ def cnot_bfs(sources: list[int], width: int = WIDTH) -> np.ndarray:
 
 
 @lru_cache(maxsize=1)
+def identity_table() -> np.ndarray:
+    return cnot_bfs([pack_columns([1 << j for j in range(WIDTH)])])
+
+
+@lru_cache(maxsize=1)
+def permutation_free_table() -> np.ndarray:
+    return cnot_bfs(permutation_matrices())
+
+
 def distance_tables() -> tuple[np.ndarray, np.ndarray]:
     """(d, d_perm) over every packed 5x5 matrix."""
-    identity = pack_columns([1 << j for j in range(WIDTH)])
-    return cnot_bfs([identity]), cnot_bfs(permutation_matrices())
+    return identity_table(), permutation_free_table()
 
 
 def table_summary(table: np.ndarray) -> dict[str, Any]:
@@ -205,7 +235,7 @@ def table_summary(table: np.ndarray) -> dict[str, Any]:
 
 def cnot_word(packed: int) -> list[tuple[int, int]]:
     """A shortest CNOT circuit (control, target) for the packed matrix, in application order."""
-    table = distance_tables()[0]
+    table = identity_table()
     _require(table[packed] != UNREACHED, f"packed matrix {packed:#x} is singular")
     peeled = []
     while table[packed]:
@@ -228,7 +258,7 @@ def transition_columns(previous: tuple[int, ...], following: tuple[int, ...]) ->
 
 def best_representative(previous: tuple[int, ...], coset: tuple[int, ...]) -> tuple[tuple[int, ...], int]:
     """The column order of coset with the shortest transition from previous (first order on ties), and its d."""
-    table = distance_tables()[0]
+    table = identity_table()
     best: tuple[int, tuple[int, ...]] | None = None
     for order in permutations(range(WIDTH)):
         columns = tuple(coset[position] for position in order)
@@ -293,22 +323,38 @@ def coset_distances_from(index: int) -> np.ndarray:
     return relax(start)
 
 
-def pair_distances(x: int, ys: np.ndarray) -> np.ndarray:
-    """d_perm(B_Y^-1 B_X) for one coset X against many Y, by table lookup."""
-    d_perm = distance_tables()[1]
-    columns = coset_array()[ys]
+@lru_cache(maxsize=1)
+def coset_inverses() -> np.ndarray:
+    """(cosets, 32): row Y holds B_Y^-1 v for every register value v."""
+    columns = coset_array()
     values = np.arange(SIZE)
-    tables = np.zeros((len(ys), SIZE), dtype=np.int64)
+    tables = np.zeros((len(columns), SIZE), dtype=np.int64)
     for j in range(WIDTH):
         tables ^= np.where((values >> j) & 1, columns[:, j : j + 1], 0)
     inverse = np.zeros_like(tables)
     np.put_along_axis(inverse, tables, np.broadcast_to(values, tables.shape), axis=1)
-    images = inverse[:, list(coset_array()[x])]
+    return inverse
+
+
+def pair_distances(x: int, ys: np.ndarray) -> np.ndarray:
+    """d_perm(B_Y^-1 B_X) for one coset X against many Y, by table lookup."""
+    d_perm = permutation_free_table()
+    images = coset_inverses()[ys][:, list(coset_array()[x])]
     packed = np.zeros(len(ys), dtype=np.int64)
     for row in range(WIDTH):
         for j in range(WIDTH):
             packed |= ((images[:, j] >> row) & 1) << (WIDTH * row + j)
     return d_perm[packed].astype(np.int64)
+
+
+def distances_from(x: int) -> np.ndarray:
+    """d_perm from coset x to every coset, as uint8; one pool item per coset."""
+    return pair_distances(x, np.arange(len(coset_array()))).astype(np.uint8)
+
+
+def distance_rows(xs: list[int]) -> list[np.ndarray]:
+    """distances_from for each x, over the process pool; each worker builds the shared tables once."""
+    return [row.astype(np.int64) for row in parallel.ordered_map(distances_from, [int(x) for x in xs], min_items=2)]
 
 
 def round_costs(problem: str) -> list[np.ndarray]:
@@ -367,10 +413,9 @@ def ten_round_enumeration() -> dict[str, Any]:
     nine = sum(multiplier != 2 for multiplier in schedule("ten_round"))
     single = int((nine * s4 + s2).min())
     xs = np.flatnonzero(nine * s4 + int(s2.min()) < single)
-    everything = np.arange(len(s4))
     best = None
-    for x in xs:
-        totals = nine * int(s4[x]) + s2 + pair_distances(int(x), everything)
+    for x, distances in zip(xs, distance_rows([int(x) for x in xs]), strict=True):
+        totals = nine * int(s4[x]) + s2 + distances
         y = int(np.argmin(totals))
         if best is None or int(totals[y]) < best[0]:
             best = (int(totals[y]), int(x), y)
@@ -381,13 +426,12 @@ def ten_round_enumeration() -> dict[str, Any]:
 
 def ten_round_per_x(xs: list[int]) -> list[dict[str, Any]]:
     s4, s2 = surrogate_arrays()
-    everything = np.arange(len(s4))
     rows = []
-    for x in xs:
-        distances = pair_distances(x, everything)
+    for x, distances in zip(xs, distance_rows(xs), strict=True):
         totals = s2 + distances
         totals[x] = 1 << 30
-        ranked = sorted(range(len(totals)), key=lambda y: (int(totals[y]), y))[:TEN_ROUND_PER_X]
+        # A stable sort orders ties by coset index.
+        ranked = [int(y) for y in np.argsort(totals, kind="stable")[:TEN_ROUND_PER_X]]
         rows.append(
             {
                 "x": x,
@@ -451,21 +495,26 @@ def make_split(problem: str, x: int, y: int, switch: int) -> dict[str, Any]:
     }
 
 
+def make_split_job(job: tuple[str, int, int, int]) -> dict[str, Any]:
+    return make_split(*job)
+
+
 def split_candidates(problem: str) -> list[dict[str, Any]]:
     if problem == "two_round":
         s4 = surrogate_arrays()[0]
         pool = [int(index) for index in np.flatnonzero(s4 <= TWO_ROUND_POOL_S4)]
         pairs = []
-        for x in pool:
-            distances = pair_distances(x, np.asarray(pool))
-            pairs += [(int(s4[x]) + int(s4[y]) + int(d), x, y) for y, d in zip(pool, distances, strict=True) if y != x]
-        return [make_split(problem, x, y, 1) for _, x, y in sorted(pairs)[:TWO_ROUND_SPLITS]]
-    rows = ten_round_per_x(single_b_cosets(problem))
-    return [
-        make_split(problem, row["x"], entry["y"], len(schedule(problem)) - 1)
-        for row in rows
-        for entry in row["round_ten"]
-    ]
+        for x, distances in zip(pool, distance_rows(pool), strict=True):
+            pairs += [(int(s4[x]) + int(s4[y]) + int(distances[y]), x, y) for y in pool if y != x]
+        jobs = [(problem, x, y, 1) for _, x, y in sorted(pairs)[:TWO_ROUND_SPLITS]]
+    else:
+        switch = len(schedule(problem)) - 1
+        jobs = [
+            (problem, row["x"], entry["y"], switch)
+            for row in ten_round_per_x(single_b_cosets(problem))
+            for entry in row["round_ten"]
+        ]
+    return parallel.ordered_map(make_split_job, jobs, min_items=2)
 
 
 def single_candidate(index: int) -> dict[str, Any]:
@@ -593,6 +642,38 @@ def _active_physical_qubits(circuit: QuantumCircuit) -> int:
     return len({circuit.find_bit(qubit).index for instruction in circuit.data for qubit in instruction.qubits})
 
 
+def classical_digest(circuit: QuantumCircuit) -> str:
+    """First 16 hex of the sha256 of every measure, reset and if_else site in order.
+
+    Each site carries its physical qubits and clbits; an if_else adds its
+    condition and the gates of each block with their parameters.
+    """
+    sites: list[Any] = []
+    for instruction in circuit.data:
+        operation = instruction.operation
+        if operation.name not in ("measure", "reset", "if_else"):
+            continue
+        site: list[Any] = [
+            operation.name,
+            [circuit.find_bit(qubit).index for qubit in instruction.qubits],
+            [circuit.find_bit(clbit).index for clbit in instruction.clbits],
+        ]
+        if isinstance(operation, IfElseOp):
+            clbit, value = operation.condition
+            site.append([circuit.find_bit(clbit).index, int(value)])
+            site.append(
+                [
+                    [
+                        [inner.operation.name, [repr(float(param)) for param in inner.operation.params]]
+                        for inner in block.data
+                    ]
+                    for block in operation.blocks
+                ]
+            )
+        sites.append(site)
+    return hashlib.sha256(json.dumps(sites, separators=(",", ":")).encode()).hexdigest()[:16]
+
+
 def compile_job(job: tuple[str, str, dict[str, Any] | None, bool, int]) -> list[Any]:
     """One arm of one circuit at one transpiler seed, as a RUN_FIELDS row."""
     target_name, problem, candidate, feed_forward, seed = job
@@ -611,6 +692,7 @@ def compile_job(job: tuple[str, str, dict[str, Any] | None, bool, int]) -> list[
     compiled = manager.run(circuit)
     if not isinstance(backend, Target):
         duration = int(_gate_time_view(compiled).estimate_duration(backend.target, unit="dt"))
+    _require(compiled.layout is not None, f"{target_name} {problem} seed {seed}: the transpiler set no layout")
     return [
         seed,
         circuit.num_qubits,
@@ -618,6 +700,10 @@ def compile_job(job: tuple[str, str, dict[str, Any] | None, bool, int]) -> list[
         int(compiled.count_ops().get("cz", 0)),
         compiled.depth(),
         duration,
+        int(compiled.count_ops().get("if_else", 0)),
+        _feed_forward_stages(compiled),
+        classical_digest(compiled),
+        list(compiled.layout.final_index_layout(filter_ancillas=True)),
     ]
 
 
@@ -939,6 +1025,11 @@ def check_derived(record: dict[str, Any], recompute_exact: bool = True) -> None:
             value = {name: field for name, field in value.items() if name not in CATALOGUE_PROVENANCE}
         _require(retained == value, f"retained {key} differs from the recomputed {key}")
     _require(expected["distance"]["identity_source"]["reached"] == GL52_ORDER, "the search misses GL(5,2) matrices")
+    _require(set(record["checks"]) == set(PROBLEMS), f"checks cover {sorted(record['checks'])}")
+    for section in ("routed", "holdout"):
+        _require(set(record[section]) == set(TARGETS), f"{section} covers {sorted(record[section])}, not {TARGETS}")
+        for target_name, problems in record[section].items():
+            _require(set(problems) == set(PROBLEMS), f"{section} {target_name} covers {sorted(problems)}")
     for problem, checks in record["checks"].items():
         if recompute_exact:
             _require(
@@ -1038,6 +1129,29 @@ def brute_force_gl32() -> dict[int, int]:
     return {sum(bit << (3 * r + j) for r, row in enumerate(m) for j, bit in enumerate(row)): d for m, d in seen.items()}
 
 
+def sample_pair_holds(pair: tuple[int, int]) -> bool:
+    """min_P d(P T) = min_P d(T P) = d_perm(T) for T between two cosets, and both distance routes agree."""
+    x, y = pair
+    identity, free = distance_tables()
+    cosets = lcs.coset_columns()
+    perms = permutation_matrices()
+    packed = pack_columns(transition_columns(tuple(cosets[x]), tuple(cosets[y])))
+    left = min(int(identity[_multiply(p, packed)]) for p in perms)
+    right = min(int(identity[_multiply(packed, p)]) for p in perms)
+    return (
+        left == right == int(free[packed])
+        and best_representative(tuple(cosets[x]), tuple(cosets[y]))[1] == left
+        and int(pair_distances(x, np.asarray([y]))[0]) == left
+    )
+
+
+def graph_distance_holds(job: tuple[int, tuple[int, ...]]) -> bool:
+    """The coset-graph distance from x equals the table distance to every listed coset."""
+    x, ys = job
+    targets = np.asarray(ys)
+    return bool(np.array_equal(coset_distances_from(x)[targets], pair_distances(x, targets)))
+
+
 def self_test(record: dict[str, Any]) -> str:
     small = cnot_bfs([pack_columns([1, 2, 4], 3)], 3)
     reference = brute_force_gl32()
@@ -1049,21 +1163,17 @@ def self_test(record: dict[str, Any]) -> str:
         table_summary(identity)["histogram"]["1"] == 20 and table_summary(free)["histogram"]["0"] == 120, "level counts"
     )
     rng = random.Random(SAMPLE_SEED)
-    cosets = lcs.coset_columns()
-    perms = permutation_matrices()
-    pairs = [(rng.randrange(len(cosets)), rng.randrange(len(cosets))) for _ in range(SAMPLE_PAIRS)]
-    for x, y in pairs:
-        columns = transition_columns(tuple(cosets[x]), tuple(cosets[y]))
-        packed = pack_columns(columns)
-        left = min(int(identity[_multiply(p, packed)]) for p in perms)
-        right = min(int(identity[_multiply(packed, p)]) for p in perms)
-        _require(left == right == int(free[packed]), f"permutation-free identity fails on cosets {x}, {y}")
-        _require(best_representative(tuple(cosets[x]), tuple(cosets[y]))[1] == left, f"representative {x}, {y}")
-        _require(int(pair_distances(x, np.asarray([y]))[0]) == left, f"vectorized distance {x}, {y}")
-    for x, _ in pairs[:4]:
-        graph = coset_distances_from(x)
-        ys = np.asarray([y for _, y in pairs])
-        _require(bool(np.array_equal(graph[ys], pair_distances(x, ys))), f"coset-graph distance from {x}")
+    count = len(lcs.coset_columns())
+    pairs = [(rng.randrange(count), rng.randrange(count)) for _ in range(SAMPLE_PAIRS)]
+    failed = [
+        pair
+        for pair, ok in zip(pairs, parallel.ordered_map(sample_pair_holds, pairs, min_items=2), strict=True)
+        if not ok
+    ]
+    _require(not failed, f"permutation-free identities fail on coset pairs {failed[:4]}")
+    ys = [y for _, y in pairs]
+    graph_jobs = [(x, tuple(ys)) for x, _ in pairs[:4]]
+    _require(all(parallel.ordered_map(graph_distance_holds, graph_jobs, min_items=2)), "coset-graph distance differs")
     corruptions = {
         "garnet coupling": lambda r: r["inputs"]["garnet_coupling"].pop(),
         "identity histogram": lambda r: r["distance"]["identity_source"]["histogram"].__setitem__("12", 25),
@@ -1087,6 +1197,7 @@ def self_test(record: dict[str, Any]) -> str:
     corruptions["exact check"] = lambda r: r["checks"]["ten_round"]["splits"][
         next(iter(r["checks"]["ten_round"]["splits"]))
     ].__setitem__("transition_exact", False)
+    corruptions["missing target"] = lambda r: (r["routed"].pop("fake_kingston"), r["holdout"].pop("fake_kingston"))
     check_derived(record, recompute_exact=False)
     refreshed = copy.deepcopy(record)
     refreshed["inputs"]["garnet_retrieved_utc"] = "2099-01-01T00:00:00+00:00"
@@ -1100,15 +1211,27 @@ def self_test(record: dict[str, Any]) -> str:
         except SystemExit:
             continue
         raise SystemExit(f"gl52_split_conjugators: --check accepted a corrupted {label}")
-    damaged = copy.deepcopy(record)
-    block = damaged["routed"]["fake_fez"]["two_round"]
+    block = record["routed"]["fake_fez"]["two_round"]
     best = next(e for e in block["single_b"] if e["name"] == block["best_single_b"])
-    best["arms"]["feed_forward"]["runs"][0][3] += 1
-    jobs = replay_jobs(damaged)
-    target = next(index for index, (job, kept) in enumerate(jobs) if kept is best["arms"]["feed_forward"]["runs"][0])
-    run = compile_job(jobs[target][0])
-    _require(replay_matches(run, jobs[target][1]) is None, "the replay accepted a corrupted routed CZ")
-    return f"GL(3,2) search, {SAMPLE_PAIRS} sampled coset pairs and {len(corruptions) + 1} corruptions rejected"
+    kept = best["arms"]["feed_forward"]["runs"][0]
+    job = next(job for job, row in replay_jobs(record) if row is kept)
+    run = compile_job(job)
+    _require(replay_matches(run, kept) is not None, "the replay rejects the retained run")
+    layout = RUN_FIELDS.index("final_layout")
+    replay_corruptions = {
+        "routed CZ": lambda row: row.__setitem__(3, row[3] + 1),
+        "swapped layout entry": lambda row: row.__setitem__(layout, [row[layout][1], row[layout][0], *row[layout][2:]]),
+        "classical stages": lambda row: row.__setitem__(
+            RUN_FIELDS.index("classical_stages"), row[RUN_FIELDS.index("classical_stages")] + 1
+        ),
+        "classical sequence": lambda row: row.__setitem__(RUN_FIELDS.index("classical_sha256_16"), "0" * 16),
+    }
+    for label, corrupt_row in replay_corruptions.items():
+        damaged_row = copy.deepcopy(kept)
+        corrupt_row(damaged_row)
+        _require(replay_matches(run, damaged_row) is None, f"the replay accepted a corrupted {label}")
+    total = len(corruptions) + len(replay_corruptions)
+    return f"GL(3,2) search, {SAMPLE_PAIRS} sampled coset pairs and {total} corruptions rejected"
 
 
 def _multiply(left: int, right: int) -> int:
@@ -1125,17 +1248,22 @@ def _multiply(left: int, right: int) -> int:
     return product
 
 
+SCALAR = r'(?:-?[0-9][0-9.e+-]*|null|true|false|"[^"\n]*")'
+FLAT_LIST = rf"\[(?:\s*{SCALAR}\s*,)*\s*{SCALAR}\s*\]"
+ROW = rf"\[(?:\s*(?:{SCALAR}|{FLAT_LIST})\s*,)*\s*(?:{SCALAR}|{FLAT_LIST})\s*\]"
+
+
+def _one_line(match: re.Match[str]) -> str:
+    text = re.sub(r"\[\s+", "[", match.group(0))
+    text = re.sub(r"\s+\]", "]", text)
+    return re.sub(r",\s+", ", ", text)
+
+
 def dump(record: dict[str, Any]) -> str:
-    """Indented JSON with every list of numbers on one line."""
+    """Indented JSON with every flat list, and every list of scalars and flat lists, on one line."""
     text = json.dumps(record, indent=1, sort_keys=True)
-    return (
-        re.sub(
-            r"\[\s*(-?[0-9][0-9.]*|null)((?:,\s*(?:-?[0-9][0-9.]*|null))*)\s*\]",
-            lambda match: "[" + ", ".join(part.strip() for part in match.group(0)[1:-1].split(",")) + "]",
-            text,
-        )
-        + "\n"
-    )
+    text = re.sub(FLAT_LIST, _one_line, text)
+    return re.sub(ROW, _one_line, text) + "\n"
 
 
 def main() -> int:

@@ -159,5 +159,6 @@ each problem over all eight seeds.
   CNOT networks, is searched exactly in
   [gl52_split_conjugators/](../gl52_split_conjugators/README.md). The
   42-unit bound holds only against coset 281. The ten-round split 15265 ->
-  111 lowers the median routed CZ from 3,933 to 3,754 on FakeFez. No
-  two-round split beats a single B.
+  111 lowers the median routed CZ from 3,933 to 3,754 on FakeFez. None of
+  the 16 routed two-round splits beats a single B. The surrogate proves
+  that no two-round split lowers the surrogate cost below 372.

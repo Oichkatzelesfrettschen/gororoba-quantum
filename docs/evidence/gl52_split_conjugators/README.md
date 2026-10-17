@@ -1,15 +1,21 @@
 # Split linear encodings of N=21 order finding
 
 A per-round linear encoding of the work register lowers the ten-round
-circuit's routed CZ and leaves the two-round n21-feedback circuit unchanged.
+circuit's routed CZ. Among the routed two-round candidates, none beats a
+single encoding.
 
 - **Ten-round.** The best split holds coset 15265 for rounds 1 to 9 and
   coset 111 for round 10, joined by a 3-CNOT transition. It routes to a
   median 3,754 CZ on FakeFez and FakeKingston, 179 below the best single-B
   circuit (coset 15241, 3,933). On the Garnet square grid it routes to
   3,026.5, against 3,190 for the best single B.
-- **Two-round.** No split beats the best single-B circuit on any target. The
-  surrogate proves that none can gain.
+- **Two-round, routed.** None of the 16 routed two-round splits beats the
+  best single-B circuit on any target. The claim covers those candidates
+  only. A split of higher surrogate cost that routes better stays
+  unsearched.
+- **Two-round, surrogate.** No split has a lower surrogate cost than the
+  single-B optimum of 372. That is a theorem of the surrogate, not a routed
+  bound.
 
 `split.json` holds the record, which
 [`scripts/gl52_split_conjugators.py`](../../../scripts/gl52_split_conjugators.py)
@@ -95,8 +101,10 @@ coset graph.
 | Ten-round, multipliers 4, 16 (x4), 4, 2 | 1,896 (coset 281) | 1,857 | 15265 on rounds 1 to 9, then 111 (s(2) = 180), d = 3 |
 
 **Two-round.** Both rounds pay s(4) of their coset, so any split costs at
-least 2 min s(4) = 372. That bound is the single-B optimum, and the split
-null is a theorem of the surrogate.
+least 2 min s(4) = 372. That bound is the single-B optimum, so no split
+lowers the surrogate cost. The routed cost does not follow the surrogate
+exactly, so the theorem leaves open a split that costs more under the
+surrogate and routes to fewer CZ.
 
 **Ten-round.**
 - **Shape of the optimum.** Only a split before round 10 can pay. By the
@@ -183,15 +191,15 @@ single-B 3,954, or 3,768; the split routed to 3,754.
   predict no fidelity.
 - **Hardware use.** The ten-round split would need its own submit-free
   live_run dry run, and any execution needs an approved case.
-- **Searched family.** Splits of at most one boundary per circuit, since
-  the dynamic program proves that more boundaries never pay under the
-  surrogate.
+- **Searched family.** The routed search covers splits with one boundary
+  per circuit. The dynamic program proves that more boundaries never lower
+  the surrogate cost; their routed cost stays unsearched.
 - **Routed candidates.** The routed comparison covers only the listed
   candidates. A routed optimum outside them stays unsearched.
 - **Execution host.** The record was produced on the build host under
   Python 3.14.7, numpy 2.5.4 (AOCL BLAS), qiskit 2.5.2 and
-  qiskit-ibm-runtime 0.50.0, the CI pins. Routed CZ and qubit counts
-  replay exactly across BLAS builds. Depth and duration replay
+  qiskit-ibm-runtime 0.50.0, the CI pins. Routed CZ, qubit counts, final
+  layouts and classical stages replay exactly across BLAS builds. Depth and duration replay
   within the challenger's relative tolerance of 0.002.
 
 ## Replay
@@ -206,19 +214,26 @@ single-B 3,954, or 3,768; the split routed to 3,754.
 - the dynamic program and the enumeration;
 - the candidate lists and every exact check;
 - the sampled check of each best split;
-- every median and verdict from the retained runs.
+- every median and verdict from the retained runs;
+- complete target and problem sets in the routed and held-out sections.
 
 It then recompiles the best single B, the best split and the incumbent of
-every problem on every target over seeds 0 to 7.
+every problem on every target over seeds 0 to 7. Routed CZ, qubit counts,
+final layout, if_else count, feed-forward stages and the digest of the
+measure, reset and if_else sequence must match exactly. Depth and duration
+must match within 0.002.
 
-**`--self-test`** (gate core-490) runs three checks and a rejection test:
+**`--self-test`** (gate core-490) runs these checks:
 - the packed search on GL(3,2), against a brute-force search of its 168
   elements;
 - the permutation-free identities and the coset-graph distance, on 64
   seeded coset pairs;
 - the vectorized pair distance, on the same pairs;
-- rejection of twelve corrupted copies of the record, one carrying a
-  corrupted routed CZ that only recompilation exposes;
+- rejection of twelve corrupted copies of the record, one missing a
+  target in both the routed and held-out sections;
+- rejection, against a fresh recompilation, of four corrupted runs: a
+  changed routed CZ, a swapped layout entry, a changed feed-forward stage
+  count, and a changed classical-sequence digest;
 - acceptance of a copy whose catalogue timestamp and sha256 differ. A
   catalogue refresh rewrites those fields, while the replay binds Garnet's
   qubit count and coupling.
