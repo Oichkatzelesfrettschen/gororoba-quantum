@@ -3,8 +3,14 @@
 The current external theorem contracts extend open_gororoba base
 `4706d40eafa524957a9b20384a6a7346fe8536a1` and bind retained inputs from
 quantum commit `a3d95ab60b25c4a6f18e5ff7c0435b4947abceb8`.
-The [external delta](https://github.com/Oichkatzelesfrettschen/open_gororoba/blob/main/docs/engineering/quantum_observable_reconciliation.txt)
-records the current proof scope and replay entry point. The historical certificate
+The [retained delta](observable-contracts-delta.txt) records the current proof
+scope and replay entry point. The [source snapshot](observable-contracts.tar.gz)
+retains 235 files: the complete 29-source receipt closure, 21 source-bound
+witnesses and receipt specifications, 25 binding assets, the 160-declaration
+manifest, validator sources and raw compile/kernel/assumption logs.
+[Retrieval identity](observable-contracts-source.json) pins the external commit
+and archive digest; [member hashes](observable-contracts.files.sha256) bind
+every extracted file. The archive preserves the external repository paths. The historical certificate
 bundle retains its fixed-count application and Rocq 9.2 / OCaml 5.5.0 receipts.
 The external build uses Rocq 9.3.0, OCaml 5.5.1 and Stdlib 9.2.0.
 
@@ -45,3 +51,19 @@ classical branches differs from coherence between branches.
 
 The change reads retained files and runs local proof and document checks. Quantum
 acquisition, simulator execution and provider service calls remain outside scope.
+
+To inspect and verify the retained snapshot without retrieving upstream bytes:
+
+```sh
+snapshot_dir="$(mktemp -d)"
+tar -xzf docs/evidence/formal_certificates/observable-contracts.tar.gz -C "$snapshot_dir"
+(cd "$snapshot_dir" && sha256sum -c "$OLDPWD/docs/evidence/formal_certificates/observable-contracts.files.sha256")
+```
+
+The per-target receipts retain exact compile and checker arguments, source
+closures, source/object digests and declaration assumptions. A fresh kernel replay
+requires the recorded Rocq 9.3.0 / OCaml 5.5.1 / Stdlib 9.2.0 toolchain. Running
+the Rust validator uses the pinned external workspace, because the archive retains
+the validator and its inputs rather than every unrelated Rust dependency crate.
+The snapshot verifies retained evidence; acquisition and physical model validation
+remain separate obligations.

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/Oichkatzelesfrettschen/open_gororoba",
+  "commit": "82aab5a4e518e561a149b7d8d9bb3a69d2c2cb5f",
+  "publication_state": "local_commit_pending_owner_publication_approval",
+  "acquisition": "local_git_worktree_snapshot",
+  "recorded_at_utc": "2026-10-17T04:22:43Z",
+  "source_base_commit": "4706d40eafa524957a9b20384a6a7346fe8536a1",
+  "quantum_input_commit": "a3d95ab60b25c4a6f18e5ff7c0435b4947abceb8",
+  "archive": "observable-contracts.tar.gz",
+  "archive_sha256": "a0cfd24c6a781e103c53f958f54cfc793c604e0641ed91da46580292540d24fc",
+  "member_manifest": "observable-contracts.files.sha256",
+  "member_manifest_sha256": "aef541e414126f5bdf744b2f273882d647004a8d1eeed199bc0681901559605a",
+  "member_count": 235,
+  "bound_theorem_declarations": 160,
+  "bound_theorem_sources": 11,
+  "receipt_source_closure_count": 29,
+  "receipt_target_count": 21,
+  "toolchain": "Rocq 9.3.0; OCaml 5.5.1; Stdlib 9.2.0",
+  "scope": "Retained source and receipt bytes; physical premises and QPY semantic correspondence remain separate obligations."
+}
