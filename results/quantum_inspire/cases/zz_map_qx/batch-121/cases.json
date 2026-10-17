@@ -1,0 +1,228 @@
+{
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "circuits": [
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "delay_cycles": 1000,
+   "delay_seconds": 2e-05,
+   "direction": "a_probe",
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-06-a_probe-n0-x-t1000.cq",
+   "ideal_probe_p1_at_zero_detuning": 0.0,
+   "kind": "conditional_ramsey",
+   "neighbor_state": 0,
+   "nqubits": 6,
+   "packing_id": "pack-06",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      1
+     ],
+     "neighbor": 1,
+     "neighbor_state": 0,
+     "probe": 0,
+     "tuna_edge": [
+      2,
+      4
+     ]
+    },
+    {
+     "edge": [
+      2,
+      4
+     ],
+     "neighbor": 4,
+     "neighbor_state": 0,
+     "probe": 2,
+     "tuna_edge": [
+      9,
+      12
+     ]
+    },
+    {
+     "edge": [
+      3,
+      5
+     ],
+     "neighbor": 5,
+     "neighbor_state": 0,
+     "probe": 3,
+     "tuna_edge": [
+      11,
+      13
+     ]
+    }
+   ],
+   "quadrature": "x",
+   "sha256": "9deafcd21f4725054e637da3ad6f26e2fcdc49390d084f3524eee34ab95e6be1",
+   "source_tuna_circuit": {
+    "path": "batch-121/pack-06-a_probe-n0-x-t1000.cq",
+    "sha256": "413cb896a4da153d8fa5b1a17a2e0bbd7b1b99718cece16bbd8f6f6429799bc1"
+   },
+   "tuna_to_qx": {
+    "11": 3,
+    "12": 4,
+    "13": 5,
+    "2": 0,
+    "4": 1,
+    "9": 2
+   }
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-07-readout-00.cq",
+   "kind": "readout",
+   "nqubits": 6,
+   "packing_id": "pack-07",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      1
+     ],
+     "prepared": [
+      0,
+      0
+     ],
+     "tuna_edge": [
+      1,
+      4
+     ]
+    },
+    {
+     "edge": [
+      2,
+      3
+     ],
+     "prepared": [
+      0,
+      0
+     ],
+     "tuna_edge": [
+      5,
+      9
+     ]
+    },
+    {
+     "edge": [
+      4,
+      5
+     ],
+     "prepared": [
+      0,
+      0
+     ],
+     "tuna_edge": [
+      11,
+      14
+     ]
+    }
+   ],
+   "prepared_pair": [
+    0,
+    0
+   ],
+   "sha256": "58f806552867b73661d65161456cf85d6003d39248056cca8011c719aba0be81",
+   "source_tuna_circuit": {
+    "path": "batch-121/pack-07-readout-00.cq",
+    "sha256": "afc0adb46d0e3a28510e488f5edb85dad63683d5591c7e471b99b158cfbab814"
+   },
+   "tuna_to_qx": {
+    "1": 0,
+    "11": 4,
+    "14": 5,
+    "4": 1,
+    "5": 2,
+    "9": 3
+   }
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-07-readout-01.cq",
+   "kind": "readout",
+   "nqubits": 6,
+   "packing_id": "pack-07",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      1
+     ],
+     "prepared": [
+      0,
+      1
+     ],
+     "tuna_edge": [
+      1,
+      4
+     ]
+    },
+    {
+     "edge": [
+      2,
+      3
+     ],
+     "prepared": [
+      0,
+      1
+     ],
+     "tuna_edge": [
+      5,
+      9
+     ]
+    },
+    {
+     "edge": [
+      4,
+      5
+     ],
+     "prepared": [
+      0,
+      1
+     ],
+     "tuna_edge": [
+      11,
+      14
+     ]
+    }
+   ],
+   "prepared_pair": [
+    0,
+    1
+   ],
+   "sha256": "bb0ab8910bcc771d9ae37dae9348e04141f092d2b72026eaf3ccb75583c29f6c",
+   "source_tuna_circuit": {
+    "path": "batch-121/pack-07-readout-01.cq",
+    "sha256": "cd34186917fb3981905ac0f89bc06603a5fabac116c68e21931ab768517d94dd"
+   },
+   "tuna_to_qx": {
+    "1": 0,
+    "11": 4,
+    "14": 5,
+    "4": 1,
+    "5": 2,
+    "9": 3
+   }
+  }
+ ],
+ "nqubits": 6,
+ "register_width_convention": "nqubits is the batch maximum; each circuit records its exact nqubits",
+ "schema": "qi-zz-map-qx-cases-v1",
+ "shots": 1024,
+ "source_digests": {
+  "catalogue_sha256": "48242276c46be0354bef00f0a09354d73dbf2a92e30bb393a4800db42da14928",
+  "qx_builder_sha256": "3b12db9131033a3663f37920b159e62b940c2e87ef9db10663893216cf67ff8d",
+  "source_tuna_plan_sha256": "f827b4e4b66bff8d56b6dd26d8ca5f0c245ef9fc583e2601cd7199a3c140356e"
+ },
+ "status": "proposed_not_submitted"
+}
