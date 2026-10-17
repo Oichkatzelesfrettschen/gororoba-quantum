@@ -1,0 +1,13 @@
+{
+ "schema": "qd-docs-capture-v1",
+ "kind": "offer",
+ "retrieved_utc": "2026-10-17T17:28Z",
+ "files": [
+  {
+   "path": "docs/notes/quandela/offer/sources.json",
+   "source": "https://cloud.quandela.com/pricing",
+   "sha256": "fd6fe758109502ae91ee7e0c68fb625ce37844058fb9ce992fbd2294ac0ba56c"
+  }
+ ],
+ "unreachable": []
+}
