@@ -3224,6 +3224,14 @@
    "name": "core-496",
    "seconds": 25.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error dynamic_density.py --prep-excitation-test && \"$PYTHON\" -B -O -W error dynamic_density.py --prep-excitation-test",
+   "name": "core-525",
+   "seconds": 8.8,
+   "tier": "pr"
   }
  ],
  "excluded": [
