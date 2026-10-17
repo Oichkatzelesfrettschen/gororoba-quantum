@@ -1,0 +1,85 @@
+{
+ "schema": "oq-pricing-v1",
+ "source": "https://www.openquantum.com/pricing",
+ "retrieved_utc": "2026-10-17T05:08Z",
+ "html_sha256": "54de11a2a83c44811d320caa05895efecd67d4becb419e74640536542aae6881",
+ "units": "USD equivalent: All prices shown in USD equivalent are for reference; actual deduction uses your Spark or Full Credits.",
+ "cost_model": "per_task + shots * per_shot, before any queue-priority increase",
+ "backends": [
+  {
+   "short_code": "aqt:ibex-q1",
+   "name": "IBEX Q1",
+   "provider_name": "AQT",
+   "modality": "Trapped-ion",
+   "active": true,
+   "per_task_public": 0.18,
+   "per_shot_public": 0.0141,
+   "per_task_private": 0.36,
+   "per_shot_private": 0.0282
+  },
+  {
+   "short_code": "ionq:forte-1",
+   "name": "Forte-1",
+   "provider_name": "IonQ",
+   "modality": "Trapped-ion",
+   "active": true,
+   "per_task_public": 0.18,
+   "per_shot_public": 0.048,
+   "per_task_private": 0.36,
+   "per_shot_private": 0.096
+  },
+  {
+   "short_code": "ionq:forte-ent",
+   "name": "Forte Enterprise",
+   "provider_name": "IonQ",
+   "modality": "Trapped-ion",
+   "active": true,
+   "per_task_public": 0.18,
+   "per_shot_public": 0.048,
+   "per_task_private": 0.36,
+   "per_shot_private": 0.096
+  },
+  {
+   "short_code": "iqm:emerald",
+   "name": "Emerald",
+   "provider_name": "IQM",
+   "modality": "Superconducting",
+   "active": true,
+   "per_task_public": 0.18,
+   "per_shot_public": 0.00096,
+   "per_task_private": 0.36,
+   "per_shot_private": 0.00192
+  },
+  {
+   "short_code": "iqm:garnet",
+   "name": "Garnet",
+   "provider_name": "IQM",
+   "modality": "Superconducting",
+   "active": true,
+   "per_task_public": 0.18,
+   "per_shot_public": 0.00087,
+   "per_task_private": 0.36,
+   "per_shot_private": 0.00174
+  },
+  {
+   "short_code": "rigetti:cepheus-1-108q",
+   "name": "Cepheus-1-108Q",
+   "provider_name": "Rigetti",
+   "modality": "Superconducting",
+   "active": true,
+   "per_task_public": 0.18,
+   "per_shot_public": 0.000255,
+   "per_task_private": 0.36,
+   "per_shot_private": 0.00051
+  }
+ ],
+ "credit_to_usd_rate": {
+  "published": false,
+  "matches": [],
+  "nearest_statement": "Claim $50 of free compute every 90 days (25 Spark Credits)"
+ },
+ "queue_priority_surcharge": {
+  "published_in_page": false,
+  "source": "authenticated POST /v1/pricing/estimate with backend_class_id and shots; the quote lists execution plans, each with a price and queue_priorities carrying price_increase, all in credits"
+ }
+}

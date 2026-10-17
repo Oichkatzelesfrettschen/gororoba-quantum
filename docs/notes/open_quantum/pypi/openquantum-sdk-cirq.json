@@ -1,0 +1,37 @@
+{
+ "name": "openquantum-sdk-cirq",
+ "version": "0.5.0",
+ "summary": "Cirq Python SDK for Open Quantum",
+ "requires_python": ">=3.10",
+ "requires_dist": [
+  "openquantum-sdk>=1.0.0",
+  "cirq-core>=1.4",
+  "numpy>=1.22",
+  "pytest>=7.0; extra == \"dev\"",
+  "pytest-cov; extra == \"dev\"",
+  "pytest-mock>=3.10; extra == \"dev\""
+ ],
+ "classifiers": [
+  "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3"
+ ],
+ "project_urls": null,
+ "files": [
+  {
+   "filename": "openquantum_sdk_cirq-0.5.0-py3-none-any.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-10-15T23:54:58.140090Z",
+   "size": 10895,
+   "sha256": "f269c3a95e77f4596bf789de5674e5c936cd92ca98cfe51d7d867f6050bd1d66"
+  },
+  {
+   "filename": "openquantum_sdk_cirq-0.5.0.tar.gz",
+   "packagetype": "sdist",
+   "upload_time_iso_8601": "2026-10-15T23:54:59.381080Z",
+   "size": 15694,
+   "sha256": "a19176031c91138ef88337c03beb65b0346a9124a5c23930647f9cf26d7e7652"
+  }
+ ]
+}

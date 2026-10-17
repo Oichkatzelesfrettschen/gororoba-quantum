@@ -40,10 +40,13 @@ Usage:
     "$PYTHON" scripts/n21_conjugation_noise.py --merge RECORD... --out PATH
     "$PYTHON" scripts/n21_conjugation_noise.py --check PATH
     "$PYTHON" scripts/n21_conjugation_noise.py --check PATH --chain SEARCH CHALLENGER
+    "$PYTHON" scripts/n21_conjugation_noise.py --check PATH --all-seeds
 
 --check recompiles every circuit's chosen seed on its retained snapshot and
 re-derives the distributions, contrasts, recovery rates and seconds from
-the retained counts; it samples nothing.
+the retained counts; it samples nothing. --all-seeds recompiles every seed of
+every circuit, requires each retained per_seed_routed_cz entry to equal its
+recompiled routed CZ, and re-derives the (routed CZ, depth, seed) choice.
 """
 
 from __future__ import annotations
@@ -259,8 +262,12 @@ def backend_summary(results: dict[str, dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def check(record: dict[str, Any]) -> str:
-    """Recompile each chosen seed on its snapshot and re-derive every summary from the retained counts."""
+def check(record: dict[str, Any], all_seeds: bool = False) -> str:
+    """Recompile each chosen seed on its snapshot and re-derive every summary from the retained counts.
+
+    With all_seeds every seed of every circuit is recompiled, which binds the
+    whole per_seed_routed_cz list and the compile choice to the compiler.
+    """
     _require(record.get("schema") == SCHEMA, "not an n21-conjugation-noise record")
     two_round = tuple(record["encodings"]["two_round"]["columns"])
     ten_round = tuple(record["encodings"]["ten_round"]["columns"])
@@ -279,15 +286,30 @@ def check(record: dict[str, Any]) -> str:
         path = ROOT / backend["snapshot"]
         _require(hashlib.sha256(path.read_bytes()).hexdigest() == backend["snapshot_sha256"], f"{path} changed")
         jobs += [
-            (str(path), name, backend["circuits"][name]["chosen"]["seed_transpiler"], two_round, ten_round)
+            (str(path), name, seed, two_round, ten_round)
             for name in CIRCUIT_NAMES
+            for seed in (TRANSPILER_SEEDS if all_seeds else (backend["circuits"][name]["chosen"]["seed_transpiler"],))
         ]
     recompiled = iter(parallel.ordered_map(compile_job, jobs, min_items=2))
     for backend in record["backends"]:
         snapshot = json.loads((ROOT / backend["snapshot"]).read_text(encoding="utf-8"))
         for name in CIRCUIT_NAMES:
             retained = backend["circuits"][name]
-            run, chosen = next(recompiled), retained["chosen"]
+            runs = [next(recompiled) for _ in (TRANSPILER_SEEDS if all_seeds else (0,))]
+            chosen = retained["chosen"]
+            if all_seeds:
+                _require(
+                    [run["routed_cz"] for run in runs] == retained["per_seed_routed_cz"],
+                    f"{backend['backend']} {name}: recompiled per-seed routed CZ "
+                    f"{[run['routed_cz'] for run in runs]} against {retained['per_seed_routed_cz']}",
+                )
+                best = min(runs, key=lambda run: (run["routed_cz"], run["depth"], run["seed_transpiler"]))
+                _require(
+                    best["seed_transpiler"] == chosen["seed_transpiler"],
+                    f"{backend['backend']} {name}: the fewest-CZ, least-depth seed is {best['seed_transpiler']}, "
+                    f"the record chose {chosen['seed_transpiler']}",
+                )
+            run = next(run for run in runs if run["seed_transpiler"] == chosen["seed_transpiler"])
             _require(
                 all(run[field] == chosen[field] for field in EXACT_COMPILE_FIELDS)
                 and all(
@@ -309,7 +331,8 @@ def check(record: dict[str, Any]) -> str:
             _require(derived == expected, f"{backend['backend']} {name}: derived fields differ")
         summary = backend_summary(backend["circuits"])
         _require(all(backend[key] == value for key, value in summary.items()), f"{backend['backend']}: summary")
-    return f"{len(jobs)} chosen compilations and every derived field reproduced"
+    scope = "compilations over every seed" if all_seeds else "chosen compilations"
+    return f"{len(jobs)} {scope} and every derived field reproduced"
 
 
 def admitted(challenger: dict[str, Any], problem: str) -> tuple[int, tuple[int, ...]]:
@@ -468,6 +491,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path, help="retained record to replay without sampling")
     parser.add_argument("--merge", type=Path, nargs="+", help="per-backend records to combine into --out")
+    parser.add_argument("--all-seeds", action="store_true", help="with --check, recompile every transpiler seed")
     parser.add_argument(
         "--chain", type=Path, nargs=2, metavar=("SEARCH", "CHALLENGER"), help="with --check, bind the record chain"
     )
@@ -477,7 +501,7 @@ def main() -> int:
         print(f"n21_conjugation_noise: {check_chain(args.chain[0], args.chain[1], record)}")
         return 0
     if args.check:
-        print(f"n21_conjugation_noise: {check(json.loads(args.check.read_text(encoding='utf-8')))}")
+        print(f"n21_conjugation_noise: {check(json.loads(args.check.read_text(encoding='utf-8')), args.all_seeds)}")
         return 0
     if args.merge:
         _require(args.out is not None, "--merge needs --out")

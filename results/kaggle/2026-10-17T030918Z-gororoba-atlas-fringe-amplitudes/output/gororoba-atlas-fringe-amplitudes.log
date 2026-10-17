@@ -1,0 +1,203 @@
+[{"stream_name":"stdout","time":15.987840703,"data":"# Kaggle kernel agent guide\n"}
+,{"stream_name":"stdout","time":15.987895778,"data":"\n"}
+,{"stream_name":"stdout","time":15.987902216,"data":"This file travels inside every kernel that `scripts/kaggle_run.py` pushes\n"}
+,{"stream_name":"stdout","time":15.98790662,"data":"and is printed at the top of its log. The repository's root AGENTS.md owns\n"}
+,{"stream_name":"stdout","time":15.987910921,"data":"every rule; this guide states what a Kaggle kernel is for, what it runs on,\n"}
+,{"stream_name":"stdout","time":15.987915294,"data":"and what it must prove before its output counts.\n"}
+,{"stream_name":"stdout","time":15.987920209,"data":"\n"}
+,{"stream_name":"stdout","time":15.98792457,"data":"## What runs where\n"}
+,{"stream_name":"stdout","time":15.987929084,"data":"\n"}
+,{"stream_name":"stdout","time":15.987933384,"data":"| Substrate | Runs | Never runs |\n"}
+,{"stream_name":"stdout","time":15.987938008,"data":"| --- | --- | --- |\n"}
+,{"stream_name":"stdout","time":15.987942438,"data":"| Kaggle CPU kernel (the default) | every simulation of 14 qubits or fewer whose widest density matrix stays below 12 qubits (8 with mid-circuit measurement), and the CI gate shards (`kaggle_run.py shards`) | IBM jobs; anything needing an IBM credential |\n"}
+,{"stream_name":"stdout","time":15.987948595,"data":"| Kaggle GPU kernel (Aer on GPU, `--machine NvidiaTeslaT4`) | simulations whose widest density matrix reaches 12 qubits, or 8 with mid-circuit measurement (docs/notes/kaggle/substrates.md, \"CPU against T4\") | IBM jobs; narrow replays, which the T4 speeds up by at most 3 times |\n"}
+,{"stream_name":"stdout","time":15.98795406,"data":"| Kaggle CPU in the same kernel | transpilation, package builds, the hypercomplex table extraction | |\n"}
+,{"stream_name":"stdout","time":15.987958449,"data":"| Kaggle TPU (`TpuV5E8`, `TpuV6E8`) | JAX code only; Aer has no TPU backend. An account without Persona identity verification gets a 4-core CPU machine for every TPU request; a verified account's request queues for a TPU, one batch session at a time (docs/notes/kaggle/tpu-research.md) | Qiskit or Aer |\n"}
+,{"stream_name":"stdout","time":15.987963949,"data":"| Kaggle Gemma models (attached through `model_sources`) | text tasks on request | evidence: a language-model answer supports no physical or mathematical claim |\n"}
+,{"stream_name":"stdout","time":15.987968612,"data":"| IBM Heron (ibm_fez, ibm_kingston, ibm_marrakesh) | 15 or more qubits, or a question about a named device qubit, only after the owner approves a written case | simulations |\n"}
+,{"stream_name":"stdout","time":15.987973199,"data":"| GitHub Actions CPU | the CPU replay gate that re-derives a reduced case of each Kaggle result | GPU work |\n"}
+,{"stream_name":"stdout","time":15.987977642,"data":"| Build host (Arch, RTX 4070 Ti 12 GB; guide in the untracked `docs/local/`) | development, dry runs, calibration exports, CPU replays, the Arch-packaged hypercomplex stack and SageMath | runs the routing rule sends to Kaggle |\n"}
+,{"stream_name":"stdout","time":15.987983144,"data":"\n"}
+,{"stream_name":"stdout","time":15.987987404,"data":"## Every kernel's phases\n"}
+,{"stream_name":"stdout","time":15.987991095,"data":"\n"}
+,{"stream_name":"stdout","time":15.987996837,"data":"`kaggle_kernel/kernel_main.py` writes one JSON file per phase into\n"}
+,{"stream_name":"stdout","time":15.988001378,"data":"`/kaggle/working/output`:\n"}
+,{"stream_name":"stdout","time":15.988005391,"data":"\n"}
+,{"stream_name":"stdout","time":15.988009047,"data":"1. `environment.json`: Python and package versions, CPU model and cores,\n"}
+,{"stream_name":"stdout","time":15.988013057,"data":"   RAM, working disk, every GPU (name, memory, driver, compute capability),\n"}
+,{"stream_name":"stdout","time":15.988025809,"data":"   CUDA driver version, TPU devices, Aer devices and attached models.\n"}
+,{"stream_name":"stdout","time":15.98803011,"data":"2. `hypercomplex.json`: the hypercomplex stack, built and proved by\n"}
+,{"stream_name":"stdout","time":15.988034244,"data":"   `scripts/algebra_package_tables.py`. `--fetch` downloads the seventeen\n"}
+,{"stream_name":"stdout","time":15.988038391,"data":"   archives `RELEASES` pins and keeps each only if its sha256 matches.\n"}
+,{"stream_name":"stdout","time":15.988042393,"data":"   `--install` installs sixteen of them with `pip install --no-deps`,\n"}
+,{"stream_name":"stdout","time":15.988046573,"data":"   applying `BUILD_RECIPES` (the cayley-dickson, SplitOct and pyquaternion\n"}
+,{"stream_name":"stdout","time":15.988050537,"data":"   PKGBUILD `prepare()` steps) and taking the Octonion-Sedenion wheel as\n"}
+,{"stream_name":"stdout","time":15.988054586,"data":"   published, then installs `RUNTIME_PINS`: numpy-quaternion, the\n"}
+,{"stream_name":"stdout","time":15.988058253,"data":"   seventeenth, as its pinned compiled wheel, and numba, sparse and\n"}
+,{"stream_name":"stdout","time":15.988062258,"data":"   anywidget. `--extract` binds all seventeen\n"}
+,{"stream_name":"stdout","time":15.988066201,"data":"   installed distributions to their archives and regenerates\n"}
+,{"stream_name":"stdout","time":15.988070057,"data":"   `docs/evidence/algebra_packages/tables.json`; the kernel stops with exit\n"}
+,{"stream_name":"stdout","time":15.988074219,"data":"   code 3 unless those bytes equal the retained ones. The build host passes\n"}
+,{"stream_name":"stdout","time":15.988078295,"data":"   the same test against its Arch packages, so a run that reaches its entry\n"}
+,{"stream_name":"stdout","time":15.988082569,"data":"   used the same algebra code as the host. The file's `packages` field\n"}
+,{"stream_name":"stdout","time":15.988086659,"data":"   records the versions `kernel_main.REPORTED_PACKAGES` names, nine of the\n"}
+,{"stream_name":"stdout","time":15.988090859,"data":"   seventeen algebra distributions; the byte comparison binds the rest.\n"}
+,{"stream_name":"stdout","time":15.988095161,"data":"3. `capacity.json` (smoke kernels): the widest GHZ circuit each Aer method\n"}
+,{"stream_name":"stdout","time":15.988099418000001,"data":"   runs on the GPU.\n"}
+,{"stream_name":"stdout","time":15.988103454,"data":"4. The entry's stdout, stderr, exit code and changed files.\n"}
+,{"stream_name":"stdout","time":15.98810733,"data":"\n"}
+,{"stream_name":"stdout","time":15.988110901,"data":"## Package stack\n"}
+,{"stream_name":"stdout","time":15.98811471,"data":"\n"}
+,{"stream_name":"stdout","time":15.988118514,"data":"| Package | Pin | Kernel source |\n"}
+,{"stream_name":"stdout","time":15.988122573,"data":"| --- | --- | --- |\n"}
+,{"stream_name":"stdout","time":15.988126736,"data":"| qiskit | 2.5.2 | PyPI |\n"}
+,{"stream_name":"stdout","time":15.988130675,"data":"| qiskit-aer-gpu-cu11 | 0.17.2 (the CUDA 12 `qiskit-aer-gpu` stops at 0.15.1 and has no Python 3.13 wheel) | PyPI |\n"}
+,{"stream_name":"stdout","time":15.988135061,"data":"| qiskit-ibm-runtime | 0.50.0 (fake backends such as FakeFez; no account or credential) | PyPI |\n"}
+,{"stream_name":"stdout","time":15.988139337,"data":"| hypercomplex, hypercomplex-engine, hypercomplex-algebra, Cayley-Calculator, octonion, mathdunders | 0.3.4, 0.5.0, 0.2.0.2, 1.3.1, 0.1.0, 0.4.2 | PyPI sdist, sha256-pinned |\n"}
+,{"stream_name":"stdout","time":15.988144514,"data":"| quaternionic, clifford, kingdon, galgebra, pyoctonion | 1.0.18, 1.5.1, 3.0.0, 0.6.0, 3.12 | PyPI sdist, sha256-pinned |\n"}
+,{"stream_name":"stdout","time":15.988153637,"data":"| pyquaternion | 0.9.9 | PyPI sdist, sha256-pinned, PKGBUILD recipe (writes the VERSION.txt the sdist omits) |\n"}
+,{"stream_name":"stdout","time":15.988158007,"data":"| cayley-dickson, SplitOct | commits abf96e7, e29e72f | GitHub archive, sha256-pinned, PKGBUILD recipe |\n"}
+,{"stream_name":"stdout","time":15.988162299,"data":"| hyprat | 0.2.0 | GitHub tag archive, sha256-pinned |\n"}
+,{"stream_name":"stdout","time":15.988166474,"data":"| Octonion-Sedenion | 1.0.0 | PyPI wheel (its only release form), sha256-pinned |\n"}
+,{"stream_name":"stdout","time":15.988170916,"data":"| numpy-quaternion | 2024.0.13 | PyPI compiled wheel at the pin; `--extract` binds its Python files to the sha256-pinned sdist (Octonion-Sedenion builds on it) |\n"}
+,{"stream_name":"stdout","time":15.988175615,"data":"| numba, sparse, anywidget | 0.68.0, 0.17.0, 0.11.0 | PyPI (`RUNTIME_PINS`; runtime dependencies of quaternionic, clifford and kingdon) |\n"}
+,{"stream_name":"stdout","time":15.988180239,"data":"| numpy, scipy, sympy, pandas, torch | Kaggle image versions, recorded per run | Kaggle image |\n"}
+,{"stream_name":"stdout","time":15.988184742,"data":"| SageMath | 10.10 | build host only; a computation that needs Sage stays there |\n"}
+,{"stream_name":"stdout","time":15.988189058,"data":"\n"}
+,{"stream_name":"stdout","time":15.988192925,"data":"## Rules\n"}
+,{"stream_name":"stdout","time":15.988196825,"data":"\n"}
+,{"stream_name":"stdout","time":15.988200681,"data":"- A kernel is private, has internet enabled (and a GPU when one is\n"}
+,{"stream_name":"stdout","time":15.988204647,"data":"  requested), and holds no IBM credential. Noise comes from a retained\n"}
+,{"stream_name":"stdout","time":15.988208726,"data":"  `gororoba_quantum/calibration_snapshot.py` export.\n"}
+,{"stream_name":"stdout","time":15.988212925,"data":"- The entry reads `GOROROBA_AER_DEVICE`, which the kernel sets to its\n"}
+,{"stream_name":"stdout","time":15.988217534,"data":"  machine's device.\n"}
+,{"stream_name":"stdout","time":15.988222333,"data":"- An output is a numerical simulation. It enters\n"}
+,{"stream_name":"stdout","time":15.988226387,"data":"  `docs/state/research_state.json` only after a CPU replay gate re-derives\n"}
+,{"stream_name":"stdout","time":15.988231027,"data":"  a reduced case.\n"}
+,{"stream_name":"stdout","time":15.988235386,"data":"- The push selects hardware with `--accelerator`; `environment.json`\n"}
+,{"stream_name":"stdout","time":15.988240059,"data":"  records what actually ran.\n"}
+,{"stream_name":"stdout","time":15.988244511,"data":"- Measured limits of each machine shape, the qubit size guide and the\n"}
+,{"stream_name":"stdout","time":15.988253201,"data":"  captured Kaggle documentation are in `docs/notes/kaggle/`.\n"}
+,{"stream_name":"stdout","time":15.988258235,"data":"- An entry whose output a CI gate recompiles runs with `push --ci-env` on a\n"}
+,{"stream_name":"stdout","time":15.988262585,"data":"  CPU or GPU machine, using CPU Aer either way. The kernel then builds CI's Python 3.14.7 with CI's pins\n"}
+,{"stream_name":"stdout","time":15.988267127,"data":"  through `ci/install_pins.sh` and runs the entry under it, because the\n"}
+,{"stream_name":"stdout","time":15.98827148,"data":"  image's Python 3.13 and numpy 2.1.3 change compiled depths and durations.\n"}
+,{"stream_name":"stdout","time":15.98827595,"data":"\n"}
+,{"stream_name":"stdout","time":15.988280862,"data":"## Aer on the GPU\n"}
+,{"stream_name":"stdout","time":15.988285228,"data":"\n"}
+,{"stream_name":"stdout","time":15.988289388,"data":"- **Requesting a GPU.** Push with `--machine NvidiaTeslaT4` and a `--timeout`\n"}
+,{"stream_name":"stdout","time":15.988300039,"data":"  sized to the work; kaggle_run.py refuses an accelerator push without one.\n"}
+,{"stream_name":"stdout","time":15.988305059,"data":"  The kernel installs qiskit-aer-gpu-cu11 0.17.2 and sets\n"}
+,{"stream_name":"stdout","time":15.988309734,"data":"  `GOROROBA_AER_DEVICE=GPU`.\n"}
+,{"stream_name":"stdout","time":15.988313795,"data":"- **Using it in an entry.** The entry passes\n"}
+,{"stream_name":"stdout","time":15.988317735999999,"data":"  `calibration_snapshot.aer_device()` to `noise_simulator(snapshot, device,\n"}
+,{"stream_name":"stdout","time":15.988321851,"data":"  method=...)`.\n"}
+,{"stream_name":"stdout","time":15.98832604,"data":"- **Noise model width.** Restricting the snapshot and the circuit to the\n"}
+,{"stream_name":"stdout","time":15.988329991,"data":"  active qubits (`snapshot_laws.restrict` and `restrict_circuit`) keeps\n"}
+,{"stream_name":"stdout","time":15.988334168,"data":"  Aer's noise model at the circuit's width on either device.\n"}
+,{"stream_name":"stdout","time":15.988339704,"data":"- **What the GPU is for.** It pays for density matrices at\n"}
+,{"stream_name":"stdout","time":15.988456376,"data":"  `local_compute.GPU_MIN_ACTIVE_QUBITS` (11) qubits or more and for wide\n"}
+,{"stream_name":"stdout","time":15.988461012,"data":"  statevectors. Small dynamic circuits sample faster on the host CPUs. On\n"}
+,{"stream_name":"stdout","time":15.988465463,"data":"  the 7-qubit N=21 order-finding circuits, statevector trajectories took 2.8\n"}
+,{"stream_name":"stdout","time":15.988469725,"data":"  and 36 ms per shot on the CPU, against 21.7 and 54.6 ms on one T4.\n"}
+,{"stream_name":"stdout","time":15.98847391,"data":"- **Batched shots.** `noise_simulator(..., batched_shots=True)` enables Aer's\n"}
+,{"stream_name":"stdout","time":15.988478061,"data":"  `batched_shots_gpu`, which aborts on any circuit with control flow\n"}
+,{"stream_name":"stdout","time":15.988482209,"data":"  (`if_else` lowers to `jump`), so only static circuits may batch. Batched\n"}
+,{"stream_name":"stdout","time":15.98848645,"data":"  static runs are unmeasured here.\n"}
+,{"stream_name":"stdout","time":15.988490554,"data":"- **Replay.** A GPU's seeded counts differ from the CPU's. Its records are\n"}
+,{"stream_name":"stdout","time":15.988527977,"data":"  replayed from their retained counts, never by resampling on CI.\n"}
+,{"stream_name":"stdout","time":15.988537836999999,"data":"\n"}
+,{"stream_name":"stdout","time":15.988541992,"data":"The measurements are in `docs/notes/kaggle/substrates.md`, from\n"}
+,{"stream_name":"stdout","time":15.988546207,"data":"`results/kaggle/2026-10-16T204620Z-gororoba-aer-gpu-probe`.\n"}
+,{"stream_name":"stdout","time":15.9885505,"data":"\n"}
+,{"stream_name":"stdout","time":15.991696526,"data":"usage guides in this kernel under /tmp/gororoba/repo:\n"}
+,{"stream_name":"stdout","time":15.99172254,"data":"  docs/notes/kaggle/README.md\n"}
+,{"stream_name":"stdout","time":15.991728201,"data":"  docs/notes/kaggle/hypercomplex-stack.md\n"}
+,{"stream_name":"stdout","time":15.99173315,"data":"  docs/notes/kaggle/interfaces.md\n"}
+,{"stream_name":"stdout","time":15.991737348000001,"data":"  docs/notes/kaggle/jax-bridge-structure-report.md\n"}
+,{"stream_name":"stdout","time":15.991741115,"data":"  docs/notes/kaggle/libraries.md\n"}
+,{"stream_name":"stdout","time":15.991744698,"data":"  docs/notes/kaggle/substrates.md\n"}
+,{"stream_name":"stdout","time":15.991748518,"data":"  docs/notes/kaggle/tpu-research.md\n"}
+,{"stream_name":"stdout","time":15.991752638,"data":"  docs/notes/kaggle/workflow.md\n"}
+,{"stream_name":"stdout","time":15.991757012,"data":"  docs/notes/packages/README.md\n"}
+,{"stream_name":"stdout","time":15.9917748,"data":"  docs/notes/packages/adjacent-algebras.md\n"}
+,{"stream_name":"stdout","time":15.991779421,"data":"  docs/notes/packages/candidates.md\n"}
+,{"stream_name":"stdout","time":15.99178336,"data":"  docs/notes/packages/cayley-calculator.md\n"}
+,{"stream_name":"stdout","time":15.991788013,"data":"  docs/notes/packages/cayley-dickson.md\n"}
+,{"stream_name":"stdout","time":15.991792359,"data":"  docs/notes/packages/clifford.md\n"}
+,{"stream_name":"stdout","time":15.991797072,"data":"  docs/notes/packages/galgebra.md\n"}
+,{"stream_name":"stdout","time":15.991802081,"data":"  docs/notes/packages/hypercomplex-algebra.md\n"}
+,{"stream_name":"stdout","time":15.991807309,"data":"  docs/notes/packages/hypercomplex-engine.md\n"}
+,{"stream_name":"stdout","time":15.991811595,"data":"  docs/notes/packages/hypercomplex.md\n"}
+,{"stream_name":"stdout","time":15.991827809,"data":"  docs/notes/packages/interplay.md\n"}
+,{"stream_name":"stdout","time":15.991832693,"data":"  docs/notes/packages/kingdon.md\n"}
+,{"stream_name":"stdout","time":15.991837639,"data":"  docs/notes/packages/manual/README.md\n"}
+,{"stream_name":"stdout","time":15.991842526,"data":"  docs/notes/packages/manual/cayley-calculator.md\n"}
+,{"stream_name":"stdout","time":15.991846545,"data":"  docs/notes/packages/manual/cayley-dickson.md\n"}
+,{"stream_name":"stdout","time":15.991850698,"data":"  docs/notes/packages/manual/clifford.md\n"}
+,{"stream_name":"stdout","time":15.991854818,"data":"  docs/notes/packages/manual/galgebra.md\n"}
+,{"stream_name":"stdout","time":15.991858605000001,"data":"  docs/notes/packages/manual/hypercomplex-algebra.md\n"}
+,{"stream_name":"stdout","time":15.991862363,"data":"  docs/notes/packages/manual/hypercomplex-engine.md\n"}
+,{"stream_name":"stdout","time":15.991866203,"data":"  docs/notes/packages/manual/hypercomplex.md\n"}
+,{"stream_name":"stdout","time":15.991870265,"data":"  docs/notes/packages/manual/hyprat.md\n"}
+,{"stream_name":"stdout","time":15.991874134,"data":"  docs/notes/packages/manual/kingdon.md\n"}
+,{"stream_name":"stdout","time":15.991877542,"data":"  docs/notes/packages/manual/mathdunders.md\n"}
+,{"stream_name":"stdout","time":15.991881301,"data":"  docs/notes/packages/manual/numpy-quaternion.md\n"}
+,{"stream_name":"stdout","time":15.991884885,"data":"  docs/notes/packages/manual/octonion-sedenion.md\n"}
+,{"stream_name":"stdout","time":15.991888437,"data":"  docs/notes/packages/manual/octonion.md\n"}
+,{"stream_name":"stdout","time":15.991892729,"data":"  docs/notes/packages/manual/pyadic.md\n"}
+,{"stream_name":"stdout","time":15.991896413,"data":"  docs/notes/packages/manual/pyoctonion.md\n"}
+,{"stream_name":"stdout","time":15.991900472,"data":"  docs/notes/packages/manual/pyquaternion.md\n"}
+,{"stream_name":"stdout","time":15.991904305,"data":"  docs/notes/packages/manual/python-flint.md\n"}
+,{"stream_name":"stdout","time":15.991908362,"data":"  docs/notes/packages/manual/quaternionic.md\n"}
+,{"stream_name":"stdout","time":15.991912135,"data":"  docs/notes/packages/manual/sagemath.md\n"}
+,{"stream_name":"stdout","time":15.991915876,"data":"  docs/notes/packages/manual/splitoct.md\n"}
+,{"stream_name":"stdout","time":15.99191955,"data":"  docs/notes/packages/mathdunders.md\n"}
+,{"stream_name":"stdout","time":15.991923242,"data":"  docs/notes/packages/numpy-quaternion.md\n"}
+,{"stream_name":"stdout","time":15.991927098,"data":"  docs/notes/packages/octonion-sedenion.md\n"}
+,{"stream_name":"stdout","time":15.991930933999999,"data":"  docs/notes/packages/octonion.md\n"}
+,{"stream_name":"stdout","time":15.991935089,"data":"  docs/notes/packages/pyoctonion.md\n"}
+,{"stream_name":"stdout","time":15.991944892,"data":"  docs/notes/packages/pyquaternion.md\n"}
+,{"stream_name":"stdout","time":15.991948853,"data":"  docs/notes/packages/quaternionic.md\n"}
+,{"stream_name":"stdout","time":15.991952865,"data":"  docs/notes/packages/sagemath.md\n"}
+,{"stream_name":"stdout","time":15.991958998,"data":"  docs/notes/packages/splitoct.md\n"}
+,{"stream_name":"stdout","time":15.991963097,"data":"  docs/notes/qiskit-ecosystem-install-plan.md\n"}
+,{"stream_name":"stdout","time":15.991966715,"data":"  docs/notes/qiskit-ecosystem.md\n"}
+,{"stream_name":"stdout","time":15.99197031,"data":"  docs/notes/quantum-tools/README.md\n"}
+,{"stream_name":"stdout","time":15.99197417,"data":"  docs/notes/quantum-tools/galois.md\n"}
+,{"stream_name":"stdout","time":15.991978325,"data":"  docs/notes/quantum-tools/gpu-arrays.md\n"}
+,{"stream_name":"stdout","time":15.991982053,"data":"  docs/notes/quantum-tools/ibm-quantum-schemas.md\n"}
+,{"stream_name":"stdout","time":15.991985969,"data":"  docs/notes/quantum-tools/lmfit.md\n"}
+,{"stream_name":"stdout","time":15.991989728,"data":"  docs/notes/quantum-tools/mthree.md\n"}
+,{"stream_name":"stdout","time":15.991993745,"data":"  docs/notes/quantum-tools/numpy-scipy-sympy.md\n"}
+,{"stream_name":"stdout","time":15.991997713,"data":"  docs/notes/quantum-tools/pyzx.md\n"}
+,{"stream_name":"stdout","time":15.992001699,"data":"  docs/notes/quantum-tools/qiskit-addon-utils.md\n"}
+,{"stream_name":"stdout","time":15.992005584,"data":"  docs/notes/quantum-tools/qiskit-aer.md\n"}
+,{"stream_name":"stdout","time":15.992009565,"data":"  docs/notes/quantum-tools/qiskit-experiments.md\n"}
+,{"stream_name":"stdout","time":15.992013747,"data":"  docs/notes/quantum-tools/qiskit-ibm-runtime.md\n"}
+,{"stream_name":"stdout","time":15.99201748,"data":"  docs/notes/quantum-tools/qiskit-mitigation.md\n"}
+,{"stream_name":"stdout","time":15.992021373,"data":"  docs/notes/quantum-tools/qiskit-qasm3-import.md\n"}
+,{"stream_name":"stdout","time":15.992025316,"data":"  docs/notes/quantum-tools/qiskit.md\n"}
+,{"stream_name":"stdout","time":15.99202941,"data":"  docs/notes/quantum-tools/quimb.md\n"}
+,{"stream_name":"stdout","time":15.992033565,"data":"  docs/notes/quantum-tools/rustworkx.md\n"}
+,{"stream_name":"stdout","time":15.992038248,"data":"  docs/notes/quantum-tools/samplomatic.md\n"}
+,{"stream_name":"stdout","time":15.9920423,"data":"  docs/notes/quantum-tools/stim.md\n"}
+,{"stream_name":"stdout","time":17.837544302,"data":"datasets.json: {\"probablyeric/gororoba-retained-runs\": {\"archive\": \"/kaggle/input/datasets/probablyeric/gororoba-retained-runs/repository-files.bundle\", \"files\": 659, \"mismatched\": []}}\n"}
+,{"stream_name":"stdout","time":24.365033803,"data":"environment.json: {\"aer_devices\": [\"CPU\"], \"affinity_cpus\": 4, \"attached_models\": [], \"cpu_model\": \"Intel(R) Xeon(R) CPU @ 2.20GHz\", \"cuda_driver_version\": null, \"gpus\": [], \"logical_cpus\": 4, \"packages\": {\"Cayley-Calculator\": null, \"SplitOct\": null, \"cayley-dickson\": null, \"hypercomplex\": null, \"hypercomplex-algebra\": null, \"hypercomplex-engine\": null, \"mathdunders\": null, \"numpy\": \"2.1.3\", \"numpy-quaternion\": null, \"octonion\": null, \"pandas\": \"2.3.3\", \"qiskit\": \"2.5.2\", \"qiskit-aer\": \"0.17.2\", \"qiskit-aer-gpu-cu11\": null, \"qiskit-ibm-runtime\": \"0.50.0\", \"scipy\": \"1.16.3\", \"sympy\": \"1.14.0\", \"torch\": \"2.11.0+cpu\"}, \"platform\": \"Linux-6.18.48+-x86_64-with-glibc2.39\", \"python\": \"3.13.15\", \"ram_available_gib\": 30.32, \"ram_total_gib\": 31.35, \"tpus\": {\"devices\": [], \"error\": \"RuntimeError: Backend 'tpu' failed to initialize: INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory. Available backends are ['cpu']\"}, \"working_disk_free_gib\": 19.5, \"working_disk_total_gib\": 19.52}\n"}
+,{"stream_name":"stdout","time":174.667656543,"data":"hypercomplex.json: {\"identical\": true, \"packages\": {\"Cayley-Calculator\": \"1.3.1\", \"SplitOct\": \"0.16\", \"cayley-dickson\": \"0.1.0\", \"hypercomplex\": \"0.3.4\", \"hypercomplex-algebra\": \"0.2.0.2\", \"hypercomplex-engine\": \"0.5.0\", \"mathdunders\": \"0.4.2\", \"numpy\": \"2.1.3\", \"numpy-quaternion\": \"2024.0.13\", \"octonion\": \"0.1.0\", \"pandas\": \"2.3.3\", \"qiskit\": \"2.5.2\", \"qiskit-aer\": \"0.17.2\", \"qiskit-aer-gpu-cu11\": null, \"qiskit-ibm-runtime\": \"0.50.0\", \"scipy\": \"1.16.3\", \"sympy\": \"1.14.0\", \"torch\": \"2.11.0+cpu\"}, \"steps\": {\"--extract\": {\"returncode\": 0, \"tail\": \"wrote docs/evidence/algebra_packages/tables.json\\nalgebra package tables: 33 tables and sample sets match their declared relation to cd_core\\n\"}, \"--fetch\": {\"returncode\": 0, \"tail\": \"hypercomplex: hypercomplex-04241e5d01b3.tar.gz matches the pinned sha256\\nhypercomplex-engine: hypercomplex-engine-05634d7421e1.tar.gz matches the pinned sha256\\nhypercomplex-algebra: hypercomplex-algebra-aa043b53a004.tar.gz matches the pinned sha256\\nCayley-Calculator: Cayley-Calculator-65922fc90cc0.tar.gz matches the pinned sha256\\ncayley-dickson: cayley-dickson-446b43f2c955.tar.gz matches the pinned sha256\\noctonion: octonion-01788b55497d.tar.gz matches the pinned sha256\\nsplitoct: splitoct-a192a1d5d973.tar.gz matches the pinned sha256\\nmathdunders: mathdunders-ff9b624725fa.tar.gz matches the pinned sha256\\nnumpy-quaternion: numpy-quaternion-e155853fefdf.tar.gz matches the pinned sha256\\nquaternionic: quaternionic-9c5ee261650a.tar.gz matches the pinned sha256\\npyquaternion: pyquaternion-b1f61af219cb.tar.gz matches the pinned sha256\\nclifford: clifford-3484b312cff0.tar.gz matches the pinned sha256\\nkingdon: kingdon-77e6f3442b30.tar.gz matches the pinned sha256\\ngalgebra: galgebra-2e8db0172286.tar.gz matches the pinned sha256\\npyoctonion: pyoctonion-a0ed5c58dc0f.tar.gz matches the pinned sha256\\nhyprat: hyprat-17ae936c3fc5.tar.gz matches the pinned sha256\\nOctonion-Sedenion: octonion_sedenion-1.0.0-py3-none-any.whl matches the pinned sha256\\n\"}, \"--install\": {\"returncode\": 0, \"tail\": \"\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501 317.3/317.3 kB 10.6 MB/s eta 0:00:00\\n   \\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501 59.7/59.7 MB 25.7 MB/s eta 0:00:00\\nhypercomplex: installed from hypercomplex-04241e5d01b3.tar.gz\\nhypercomplex-engine: installed from hypercomplex-engine-05634d7421e1.tar.gz\\nhypercomplex-algebra: installed from hypercomplex-algebra-aa043b53a004.tar.gz\\nCayley-Calculator: installed from Cayley-Calculator-65922fc90cc0.tar.gz\\ncayley-dickson: installed from cayley-dickson-446b43f2c955.tar.gz\\noctonion: installed from octonion-01788b55497d.tar.gz\\nsplitoct: installed from splitoct-a192a1d5d973.tar.gz\\nmathdunders: installed from mathdunders-ff9b624725\n"}
+,{"stream_name":"stdout","time":1487.30811983,"data":"nd_dephasing_plus_constant\": 0.040371, \"idle_relaxation_and_cz_depolarizing\": 0.031077, \"idle_relaxation_and_cz_depolarizing_plus_constant\": 0.036943, \"idle_relaxation_predicted\": 0.102313, \"idle_relaxation_predicted_plus_constant\": 0.033963}}\n"}
+,{"stream_name":"stdout","time":1487.308226231,"data":"{\"backend\": \"ibm_kingston\", \"lane\": 2, \"loo\": {\"lane_constant\": 0.030326, \"measured_qubit\": 0.035806, \"idle_relaxation\": 0.029501, \"cz_depolarizing\": 0.038609, \"sx_depolarizing\": 0.039474, \"readout\": 0.055861, \"replay_loss\": 0.044376, \"idle_relaxation_plus_constant\": 0.034814, \"cz_depolarizing_plus_constant\": 0.032667, \"sx_depolarizing_plus_constant\": 0.029009, \"readout_plus_constant\": 0.035806, \"replay_loss_plus_constant\": 0.029707, \"idle_amplitude_damping_and_dephasing\": 0.027004, \"idle_amplitude_damping_and_dephasing_plus_constant\": 0.030219, \"idle_relaxation_and_cz_depolarizing\": 0.026103, \"idle_relaxation_and_cz_depolarizing_plus_constant\": 0.030156, \"idle_relaxation_predicted\": 0.060785, \"idle_relaxation_predicted_plus_constant\": 0.028646}}\n"}
+,{"stream_name":"stdout","time":1487.308247937,"data":"{\"backend\": \"ibm_kingston\", \"lane\": 3, \"loo\": {\"lane_constant\": 0.02094, \"measured_qubit\": 0.023105, \"idle_relaxation\": 0.018067, \"cz_depolarizing\": 0.023229, \"sx_depolarizing\": 0.020113, \"readout\": 0.018292, \"replay_loss\": 0.022762, \"idle_relaxation_plus_constant\": 0.020558, \"cz_depolarizing_plus_constant\": 0.023569, \"sx_depolarizing_plus_constant\": 0.021989, \"readout_plus_constant\": 0.023105, \"replay_loss_plus_constant\": 0.024315, \"idle_amplitude_damping_and_dephasing\": 0.018922, \"idle_amplitude_damping_and_dephasing_plus_constant\": 0.021545, \"idle_relaxation_and_cz_depolarizing\": 0.019538, \"idle_relaxation_and_cz_depolarizing_plus_constant\": 0.021918, \"idle_relaxation_predicted\": 0.029358, \"idle_relaxation_predicted_plus_constant\": 0.017529}}\n"}
+,{"stream_name":"stdout","time":1487.308255556,"data":"{\"backend\": \"ibm_kingston\", \"lane\": 4, \"loo\": {\"lane_constant\": 0.055462, \"measured_qubit\": null, \"idle_relaxation\": 0.054255, \"cz_depolarizing\": 0.059724, \"sx_depolarizing\": 0.062238, \"readout\": 0.056164, \"replay_loss\": 0.061698, \"idle_relaxation_plus_constant\": 0.058558, \"cz_depolarizing_plus_constant\": 0.065058, \"sx_depolarizing_plus_constant\": 0.058698, \"readout_plus_constant\": null, \"replay_loss_plus_constant\": 0.067217, \"idle_amplitude_damping_and_dephasing\": 0.067379, \"idle_amplitude_damping_and_dephasing_plus_constant\": 0.070129, \"idle_relaxation_and_cz_depolarizing\": 0.057606, \"idle_relaxation_and_cz_depolarizing_plus_constant\": 0.064607, \"idle_relaxation_predicted\": 0.103062, \"idle_relaxation_predicted_plus_constant\": 0.053995}}\n"}
+,{"stream_name":"stdout","time":1487.308260993,"data":"{\"backend\": \"ibm_kingston\", \"lane\": 5, \"loo\": {\"lane_constant\": 0.022011, \"measured_qubit\": null, \"idle_relaxation\": 0.020559, \"cz_depolarizing\": 0.024829, \"sx_depolarizing\": 0.019036, \"readout\": 0.039328, \"replay_loss\": 0.028731, \"idle_relaxation_plus_constant\": 0.022569, \"cz_depolarizing_plus_constant\": 0.024848, \"sx_depolarizing_plus_constant\": 0.021024, \"readout_plus_constant\": null, \"replay_loss_plus_constant\": 0.02339, \"idle_amplitude_damping_and_dephasing\": 0.024196, \"idle_amplitude_damping_and_dephasing_plus_constant\": 0.025917, \"idle_relaxation_and_cz_depolarizing\": 0.022911, \"idle_relaxation_and_cz_depolarizing_plus_constant\": 0.025357, \"idle_relaxation_predicted\": 0.071415, \"idle_relaxation_predicted_plus_constant\": 0.020388}}\n"}
+,{"stream_name":"stdout","time":1487.308265912,"data":"{\"backend\": \"ibm_kingston\", \"lane\": 6, \"loo\": {\"lane_constant\": 0.026016, \"measured_qubit\": null, \"idle_relaxation\": 0.027975, \"cz_depolarizing\": 0.023122, \"sx_depolarizing\": 0.02852, \"readout\": 0.032668, \"replay_loss\": 0.032923, \"idle_relaxation_plus_constant\": 0.02767, \"cz_depolarizing_plus_constant\": 0.025722, \"sx_depolarizing_plus_constant\": 0.029443, \"readout_plus_constant\": null, \"replay_loss_plus_constant\": 0.02689, \"idle_amplitude_damping_and_dephasing\": 0.025994, \"idle_amplitude_damping_and_dephasing_plus_constant\": 0.032711, \"idle_relaxation_and_cz_depolarizing\": 0.024593, \"idle_relaxation_and_cz_depolarizing_plus_constant\": 0.027689, \"idle_relaxation_predicted\": 0.065819, \"idle_relaxation_predicted_plus_constant\": 0.023473}}\n"}
+,{"stream_name":"stdout","time":1487.308270667,"data":"\n"}
+,{"stream_name":"stdout","time":1487.308276872,"data":"\n"}
+,{"stream_name":"stdout","time":1488.043658804,"data":"exit.json: {\"returncode\": 0}\n"}
+,{"stream_name":"stderr","time":1491.430185037,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1491.430242254,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1491.796366555,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1491.796408105,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1492.837176349,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1493.716962626,"data":"[NbConvertApp] Writing 1263276 bytes to __results__.html\n"}
+]

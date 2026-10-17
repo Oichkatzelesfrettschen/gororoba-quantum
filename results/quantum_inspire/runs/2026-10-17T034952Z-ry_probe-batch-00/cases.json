@@ -1,0 +1,34 @@
+{
+ "schema": "qi-ry-probe-cases-v1",
+ "backend": "Rydberg",
+ "backend_type_id": 5,
+ "nqubits": 2,
+ "shots": 1024,
+ "purpose": "Ry construct probe: each circuit adds one construct to the X-only program that ran, so the first failing circuit names what the emulator's reader rejects. Expected outcomes read q[0] as the leftmost character.",
+ "circuits": [
+  {
+   "file": "x-baseline.cq",
+   "construct": "none: the program that ran",
+   "expected": {
+    "10": 1.0
+   },
+   "sha256": "bd08a6b8a6749768d9c7375dd3f2ec0785918ceeccc609d7926a2e51c875bd96"
+  },
+  {
+   "file": "x-bitreg.cq",
+   "construct": "an unassigned bit register",
+   "expected": {
+    "10": 1.0
+   },
+   "sha256": "ffd9f0e57e0956b9d60c19bc1f16611f1a289f7d8899b5b6bb1b7a7611821f7e"
+  },
+  {
+   "file": "x-measure.cq",
+   "construct": "a measure statement",
+   "expected": {
+    "10": 1.0
+   },
+   "sha256": "5284b4aaf17ce28ad83d1de2a7c74ba1d7b6a2c91ca03e08ae9dde2df084f586"
+  }
+ ]
+}

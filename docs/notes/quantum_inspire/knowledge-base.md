@@ -665,6 +665,11 @@ The live API catalogue ([catalogue.json](../../evidence/quantum_inspire/catalogu
 - Sources: FAQ: tuning takes a few seconds to 30 minutes per backend; displaying-and-downloading attributes it to Spin-2; backends/spin-2-plus: full calibration 5 to 30 minutes, calibrated for more than 24 h.
 - Reconciliation: The pages agree on the 30-minute ceiling; no page states a Tuna calibration cadence. The catalogue reports a `calibrating` status (Tuna-17 at snapshot time).
 
+### C21 Result register
+
+- Sources: hello-quantum-world: the bit register "is independent from the qubit register and can have an arbitrary size. This allows you to store for instance the results of intermediate measurements", and the histogram shows "the contents of the binary register". tuna-operational-specifics: results are a shots x bits array in bit-register order. qx-simulator releases: 0.7.3 took the measurement register out of `QuantumState`; no release through 0.10.0 exposes the bit register. Runs: the remote QX emulator returned 10-character strings for `qubit[10]`, `bit[20]` circuits with mid-circuit outcomes in `b[10..19]` (batch job 869986, 2026-10-17); qxelarator 0.10.0 returns the same shape.
+- Reconciliation: QX returns its measurement register: one character per qubit, ordered by qubit index, holding each qubit's last outcome and 0 for an unmeasured qubit, whatever bit the measurement names. Tuna-17 returns the full bit register: circuits declaring `bit[34]` on `qubit[17]` came back as 34-character strings with every mid-circuit outcome present (batch job 870030, 2026-10-17, [run](../../../results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00)), so the kbase sentence holds for Tuna and fails for QX. Read QX results by qubit index and never from a mid-circuit bit ([qx-runs.md](qx-runs.md)).
+
 ## cQASM 3.0 specification pages
 
 Captured from https://qutech-delft.github.io/cQASM-spec/latest/appendices/ (MkDocs site built from QuTech-Delft/cQASM-spec gh-pages commit `91cff84b22553062cdb2aeebd968a1dd2a6a3ef6`; the newest tagged spec release is 3.0-beta2, 2025-02-18). Every page answered 200 and every external link resolved ([cqasm-spec/MANIFEST.json](cqasm-spec/MANIFEST.json)). [cqasm.md](cqasm.md) condenses the rules.

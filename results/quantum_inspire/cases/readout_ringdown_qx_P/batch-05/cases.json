@@ -1,0 +1,31 @@
+{
+ "schema": "qi-readout-ringdown-cases-v1",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "series": "P",
+ "targets": [
+  0,
+  4,
+  5,
+  6
+ ],
+ "circuits": [
+  {
+   "file": "reference-x-d077.cq",
+   "kind": "ramsey",
+   "sha256": "18ec8eb099f2fe97c79b9bd2ea09796a87366a81f91ee08579addf918dfdbd4f"
+  },
+  {
+   "file": "tau000-x-d077.cq",
+   "kind": "ramsey",
+   "sha256": "d1689015d0a9c2f0ba995d1aab91be6eb517a2a2be1d5d4b320dbbf74fbb0c25"
+  },
+  {
+   "file": "tau005-x-d077.cq",
+   "kind": "ramsey",
+   "sha256": "dc7a1731b9a9f405bf301fe3872833bd4bfc5ab8b49250ecaa5e3f65324810ea"
+  }
+ ]
+}

@@ -71,13 +71,28 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results/kaggle"
 MODULE_DIRS = ("gororoba_quantum", "scripts")
-KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer-gpu-cu11==0.17.2", "qiskit-ibm-runtime==0.50.0")
+# The cu11 wheel's controller_wrappers links libcustatevec.so.1 and
+# libcutensornet.so.2 through an RPATH into site-packages/cuquantum/lib, which
+# its Requires-Dist cuquantum-cu11 (>=23.3.0,<24.11.0) installs; 24.8.0 is the
+# newest release in that range and brings custatevec-cu11 1.6.0.post1 and
+# cutensornet-cu11 2.5.0, whose cutensor-cu11>=2.0.1,<3 resolves to 2.2.0.
+# Pinning both holds every library Aer's cuStateVec_enable path loads at one
+# version.
+KERNEL_PINS = (
+    "qiskit==2.5.2",
+    "qiskit-aer-gpu-cu11==0.17.2",
+    "cuquantum-cu11==24.8.0",
+    "cutensor-cu11==2.2.0",
+    "qiskit-ibm-runtime==0.50.0",
+)
 # A CPU or TPU host has no NVIDIA GPU, and the cu11 wheel ships cp313 only,
 # so those kernels take the CPU build of the same Aer release.
 CPU_KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer==0.17.2", "qiskit-ibm-runtime==0.50.0")
 # Usage guides every bundle carries, so an agent or author inside a kernel
 # reads the same package manuals, workflow and substrate notes as the host:
-# every tracked file under each directory.
+# every tracked file under each directory except the captured upstream
+# references, which are hash-pinned copies of pages the kernel never reads
+# and which alone exceed half of KERNEL_SOURCE_LIMIT.
 KERNEL_DOCS = (
     "docs/notes/kaggle",
     "docs/notes/packages",
@@ -85,6 +100,7 @@ KERNEL_DOCS = (
     "docs/notes/qiskit-ecosystem.md",
     "docs/notes/qiskit-ecosystem-install-plan.md",
 )
+KERNEL_DOC_CAPTURES = ("docs/notes/kaggle/site", "docs/notes/kaggle/cli")
 # Opt-in package groups (``push --with GROUP``), each pinned to the version of
 # the build host's Arch package, so a kernel and the host import the same
 # releases. The kernel installs them under a constraints file that holds
@@ -287,6 +303,17 @@ def tracked_files(include: str) -> list[Path]:
     return [ROOT / name for name in tracked.split("\0") if name]
 
 
+def kernel_docs() -> list[Path]:
+    """Every tracked file of KERNEL_DOCS outside KERNEL_DOC_CAPTURES."""
+    captures = tuple((ROOT / name).resolve() for name in KERNEL_DOC_CAPTURES)
+    return [
+        path
+        for docs in KERNEL_DOCS
+        for path in tracked_files(docs)
+        if not any(path.is_relative_to(capture) for capture in captures)
+    ]
+
+
 def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str, revision: str) -> dict[str, Any]:
     """Write run_dir/kernel (run.py and kernel-metadata.json) and run_dir/submission.json."""
     smoke = args.entry is None
@@ -300,8 +327,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         files = import_closure(entry)
     for always in KERNEL_FILES:
         files.extend(import_closure(ROOT / always) if always.endswith(".py") else [ROOT / always])
-    for docs in KERNEL_DOCS:
-        files.extend(tracked_files(docs))
+    files.extend(kernel_docs())
     for include in args.include:
         files.extend(tracked_files(include))
     ci_env = None
@@ -484,6 +510,17 @@ def push(args: argparse.Namespace) -> int:
     run_dir = RESULTS / f"{stamp}-{args.slug}"
     build_kernel(args, run_dir, username(), stamp, revision)
     kernel_dir = run_dir / "kernel"
+    import shutil
+
+    # SaveKernel refuses a run.py above KERNEL_SOURCE_LIMIT with a bare HTTP
+    # 400, so the size is checked before the request names the cause.
+    size = (kernel_dir / "run.py").stat().st_size
+    if size > KERNEL_SOURCE_LIMIT:
+        shutil.rmtree(run_dir)
+        raise SystemExit(
+            f"run.py is {size} bytes, above Kaggle's script limit (KERNEL_SOURCE_LIMIT {KERNEL_SOURCE_LIMIT}); "
+            "drop --include paths or attach them as a dataset"
+        )
     push_args = ["kernels", "push", "-p", str(kernel_dir)]
     if args.machine != "cpu":
         # kernel-metadata.json's machine_shape alone runs the kernel on a CPU
@@ -491,8 +528,6 @@ def push(args: argparse.Namespace) -> int:
         push_args += ["--accelerator", args.machine]
     if args.timeout:
         push_args += ["-t", str(args.timeout)]
-    import shutil
-
     try:
         reply = kaggle(*push_args).strip()
     except SystemExit:
@@ -693,9 +728,10 @@ def _self_test_kernel(entry: str, data: str, machine: str) -> dict[str, Any]:
         runner = (run_dir / "kernel/run.py").read_text(encoding="utf-8")
         require(all(pin in runner for pin in kernel_pins(machine)), f"{machine}: run.py lacks a pin")
         require(all(pin in runner for pin in PIN_GROUPS["quantum-tools"]), f"{machine}: run.py lacks a group pin")
-        for docs in KERNEL_DOCS:
-            for path in tracked_files(docs):
-                require(path.relative_to(ROOT).as_posix() in submission["bundle"], f"bundle lacks {path}")
+        for path in kernel_docs():
+            require(path.relative_to(ROOT).as_posix() in submission["bundle"], f"bundle lacks {path}")
+        for name in KERNEL_DOC_CAPTURES:
+            require(not any(rel.startswith(name + "/") for rel in submission["bundle"]), f"bundle carries {name}")
         require(
             submission["pin_groups"] == {"quantum-tools": list(PIN_GROUPS["quantum-tools"])},
             f"{machine}: submission does not record the pin group",

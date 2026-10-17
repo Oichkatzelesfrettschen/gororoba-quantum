@@ -231,7 +231,11 @@ class SnapshotSimulator(AerSimulator):
 
 
 def noise_simulator(
-    snapshot: dict[str, Any], device: str = "CPU", method: str = "density_matrix", batched_shots: bool | None = None
+    snapshot: dict[str, Any],
+    device: str = "CPU",
+    method: str = "density_matrix",
+    batched_shots: bool | None = None,
+    custatevec: bool = False,
 ) -> AerSimulator:
     """AerSimulator with live_run.noise_simulator's noise, rebuilt from the snapshot.
 
@@ -248,10 +252,21 @@ def noise_simulator(
     ignored and the simulator carries Aer's default CPU options. Shot
     branching is never enabled: Aer 0.17.2's shot branching drops the
     readout channel of a mid-circuit measurement.
+
+    custatevec sets Aer's cuStateVec_enable on a GPU statevector run, which
+    routes gate application and sampling through libcustatevec; an Aer built
+    or wheeled without cuQuantum raises at run time. Aer 0.17.2 reports
+    cuStateVec_enable False on a run that also sets batched_shots_gpu, so
+    custatevec turns the batched default off and raises on an explicit
+    batched_shots=True instead of falling back unseen.
     """
+    if custatevec and batched_shots:
+        raise ValueError("custatevec and batched_shots are exclusive Aer GPU options")
     view, noise = noise_model(snapshot)
     options: dict[str, Any] = {}
-    if device == "GPU" and batched_shots is not False:
+    if device == "GPU" and custatevec:
+        options = {"cuStateVec_enable": True}
+    elif device == "GPU" and batched_shots is not False:
         options = {"batched_shots_gpu": True, "batched_shots_gpu_max_qubits": BATCHED_SHOTS_MAX_QUBITS}
     return SnapshotSimulator.from_backend(view, noise_model=noise, method=method, device=device, **options)
 

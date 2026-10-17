@@ -1,0 +1,131 @@
+{
+ "schema": "oq-pricing-sources-v1",
+ "retrieved_utc": "2026-10-17T05:08Z",
+ "chunks": [
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/0_0df2est_cmw.js",
+   "sha256": "2e31b5ec3b403855e7a7f4b75f7bdbd461536db6e6b71af059e66fd52b9abc6e"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/0bn21t9recu_c.js",
+   "sha256": "e13f4f0b3bbf2b5cc5d5772f5832105ccd66110a28c966bcdd96dc4bcfe6cdbb"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/0cz1d0mv5g_q7.js",
+   "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/0mhv4qycq35yp.js",
+   "sha256": "ca6823630d7139cf09382c3547b5e8614d74d9343188066d49b6ce05cb2adece"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/0v2ng7herhsfb.js",
+   "sha256": "93bca25f9fe4b205f840c701555fa6718a45067de7c32739befc7349b8121729"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/1484_gdyh9f8t.js",
+   "sha256": "6211ca68d366e891e938b7ac03353b5957042c492665c34481d796f3b1c6a9e9"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/1cnnjm50b66yy.js",
+   "sha256": "a5fd0c4f3e824dc8082e05fdba52e7e5757b227cbd878f83c8c1b7d516a5ef7f"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/1fowclbxis1co.js",
+   "sha256": "3c006b8aa817cd363285671b4d0086f2247d5d199fb765db8847b240899c55e1"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/1ntn7efqc-iiw.js",
+   "sha256": "32e9576b2b87cbc03075cbfde10797120b73b5c6e486723cd9e58a66d99c585d"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/1vu843lcixqbu.js",
+   "sha256": "cb537b29735d322bd1cf118de0d1ab69e75f935c98f7b72e77f9d56e5f973d19"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/27frczc-szmgh.js",
+   "sha256": "280ad27db9b1aece706f2dbd909e9c2d00a8c07e1e2c49d5c106469857478af1"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/2b9vq39k84cg0.js",
+   "sha256": "62a98ec826d1d76cbc0cb2614dcaeb32e7c7b3c759e0f3563f964cd56aee8576"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/2e5gu089xppz6.js",
+   "sha256": "ade70dd5e61daf465a5caf41c6ebf90732e80bf8d5b414ebc7e3c502a7064699"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/33yh_eon9d8wg.js",
+   "sha256": "d1c5861ba96cb534b17a5631c88fed4ff4cf7e54a7bda8dd0855a5804781f750"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/3_wn1sg7eg-bf.js",
+   "sha256": "502516a9826dcbfe4c60832e4d73a12001bfda2a7f5df1488bf8e01d07d15b39"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/3ds9c0d2ysck3.js",
+   "sha256": "5d9c46d52e36d827ee62fa0ec2f487a5ce3a2fddffd10c18546a46d77663c1a5"
+  },
+  {
+   "url": "https://www.openquantum.com/_next/static/chunks/turbopack-0s0y4b1wlro92.js",
+   "sha256": "093536d1af52fe801257cb8d3218a1037a8ffef01f82885e5db53ec417a2ef92"
+  }
+ ],
+ "statements": [
+  {
+   "text": "All prices shown in USD equivalent are for reference; actual deduction uses your Spark or Full Credits.",
+   "found_in": [
+    "page",
+    "https://www.openquantum.com/_next/static/chunks/1vu843lcixqbu.js"
+   ]
+  },
+  {
+   "text": "Claim $50 of free compute every 90 days (25 Spark Credits)",
+   "found_in": [
+    "page",
+    "https://www.openquantum.com/_next/static/chunks/1vu843lcixqbu.js"
+   ]
+  },
+  {
+   "text": "Can only be used for Public Compute executions (routed through qBitTensor Labs).",
+   "found_in": [
+    "page",
+    "https://www.openquantum.com/_next/static/chunks/1vu843lcixqbu.js"
+   ]
+  },
+  {
+   "text": "Public Compute with Full Credits is the same lower price.",
+   "found_in": [
+    "page",
+    "https://www.openquantum.com/_next/static/chunks/1vu843lcixqbu.js"
+   ]
+  }
+ ],
+ "calculator_code": [
+  {
+   "text": "estimatePricing:async e=>i(\"/v1/pricing/estimate\",{method:\"POST\",body:JSON.stringify(e)})",
+   "found_in": [
+    "https://www.openquantum.com/_next/static/chunks/1vu843lcixqbu.js"
+   ]
+  },
+  {
+   "text": "estimatePricing({backend_class_id:E,shots:L})",
+   "found_in": [
+    "https://www.openquantum.com/_next/static/chunks/1vu843lcixqbu.js"
+   ]
+  },
+  {
+   "text": "Y=(0,r.useMemo)(()=>K&&W?Number(K.price)+Number(W.price_increase):null,[K,W])",
+   "found_in": [
+    "https://www.openquantum.com/_next/static/chunks/1vu843lcixqbu.js"
+   ]
+  },
+  {
+   "text": "[\"Your job will cost\",\" \",Y,\" \",V?\"spark\":\"full\",\" \",\"credit\",1!==Y?\"s\":\"\"]",
+   "found_in": [
+    "https://www.openquantum.com/_next/static/chunks/1vu843lcixqbu.js"
+   ]
+  }
+ ],
+ "credit_rate_matches": []
+}

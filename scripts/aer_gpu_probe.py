@@ -166,6 +166,8 @@ PACKAGES = (
     "qiskit-aer-gpu-cu11",
     "cuquantum-cu11",
     "custatevec-cu11",
+    "cutensornet-cu11",
+    "cutensor-cu11",
     "cuquantum-python-cu11",
     "nvidia-cuda-runtime-cu11",
     "numpy",
@@ -476,8 +478,11 @@ def simulator_for(snapshot: dict[str, Any], label: str) -> Any:
 
     device, method, options, _, _ = CONFIGURATIONS[label]
     batched = bool(options.get("batched_shots_gpu"))
-    simulator = calibration_snapshot.noise_simulator(snapshot, device, method=method, batched_shots=batched)
-    extra = {key: value for key, value in options.items() if key != "batched_shots_gpu"}
+    custatevec = bool(options.get("cuStateVec_enable"))
+    simulator = calibration_snapshot.noise_simulator(
+        snapshot, device, method=method, batched_shots=batched, custatevec=custatevec
+    )
+    extra = {key: value for key, value in options.items() if key not in ("batched_shots_gpu", "cuStateVec_enable")}
     simulator.set_options(max_parallel_threads=parallel.workers(), **extra)
     return simulator
 

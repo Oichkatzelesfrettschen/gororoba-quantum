@@ -1,0 +1,113 @@
+{
+ "schema": "oq-docs-capture-v1",
+ "kind": "site",
+ "retrieved_utc": "2026-10-17T05:09Z",
+ "files": [
+  {
+   "path": "docs/notes/open_quantum/site/home.md",
+   "source": "https://www.openquantum.com/",
+   "sha256": "2a43f1dd7de7190cbd62c159db86fe1d3f31544c13b9b3d6359551e5116e0547"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/pricing.md",
+   "source": "https://www.openquantum.com/pricing",
+   "sha256": "d6582b3e36f5a6f42b3ff899c06893fd4d2c6124bb27c10720d3d8b5a95e3de3"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/free-credits.md",
+   "source": "https://www.openquantum.com/free-credits",
+   "sha256": "1cd7e5c4fb7e3c71a4696fa56cba6c0b3f8804a3c95bbd00b31da0c8924584dc"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/citation.md",
+   "source": "https://www.openquantum.com/citation",
+   "sha256": "8d49f314faccf85156068a2d59ab49b4ee6f4cd19b41fe1c59170a38abb4ba02"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/compliance.md",
+   "source": "https://www.openquantum.com/compliance",
+   "sha256": "5ac429677a1fb47c872ca96f62f5ab5d2975566072f84eb5258d2b7e9effe7d5"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/mcp.md",
+   "source": "https://www.openquantum.com/mcp",
+   "sha256": "2d636f89592970b8a470434e54662dfe27350b5aa22418fb1d144be59cfd9a6f"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/providers.md",
+   "source": "https://www.openquantum.com/providers",
+   "sha256": "493434791c637d8e4ba385d60a042520d6b4d3976c27027a7335d7d813a54353"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/providers_aqt.md",
+   "source": "https://www.openquantum.com/providers/aqt",
+   "sha256": "ecd70a969d7f27862a95686d5aa14af5957b7240db05d3f9af6eee07c06e91a3"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/providers_aqt_ibex-q1.md",
+   "source": "https://www.openquantum.com/providers/aqt/ibex-q1",
+   "sha256": "951a898c11286728cfcba1abb5ff112cff72d59ed18310ef91ffd6758eaafee4"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/providers_ionq.md",
+   "source": "https://www.openquantum.com/providers/ionq",
+   "sha256": "1d4f820a93889b2f8aa8cbd03fcb37d07595f4d86d2e4b65545ba0d332a7836a"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/providers_ionq_forte-1.md",
+   "source": "https://www.openquantum.com/providers/ionq/forte-1",
+   "sha256": "dcacd9d037f65c73472b9f7ed093dfa7987b240014bb3455ab450185df0b8e65"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/providers_ionq_forte-ent.md",
+   "source": "https://www.openquantum.com/providers/ionq/forte-ent",
+   "sha256": "5c9c0cc3c69679612a6e701c7cb039f54c66e57ac80c69f9ec5afbcd93b7dc24"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/providers_iqm.md",
+   "source": "https://www.openquantum.com/providers/iqm",
+   "sha256": "52a713b211b432917b3e535a22d81daa179229371c797d41792862aab60b0ed4"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/providers_iqm_emerald.md",
+   "source": "https://www.openquantum.com/providers/iqm/emerald",
+   "sha256": "4942b23f91f523b7ff27a90dd89282d5c506fe7c9a06e56dbc9e9c4d9b6b1555"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/providers_iqm_garnet.md",
+   "source": "https://www.openquantum.com/providers/iqm/garnet",
+   "sha256": "da9e961cc35cf57de437fc84b7c2e374833094f7e18f346fda0a95ac3277d998"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/providers_rigetti.md",
+   "source": "https://www.openquantum.com/providers/rigetti",
+   "sha256": "d9c4c0fc49da0a236bcb19289cdf42d8d5eb3be8c90b1b5397c69543d2a38bbe"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/providers_rigetti_cepheus-1-108q.md",
+   "source": "https://www.openquantum.com/providers/rigetti/cepheus-1-108q",
+   "sha256": "11d6517d0c445c2c05fa9704e5c47f723d176392144fc0101db3c371ce4df8be"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/use-cases_professors.md",
+   "source": "https://www.openquantum.com/use-cases/professors",
+   "sha256": "3cc7a5c440ff90a41be0e26bad2e2b73de0e22f24b269292761b84fc139e8a0e"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/use-cases_students.md",
+   "source": "https://www.openquantum.com/use-cases/students",
+   "sha256": "344c433a7bdce2c2a8807ac95513b2142eeaa5294f37e1181fba1c5e055bd840"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/quantumrings_terms.md",
+   "source": "https://www.quantumrings.com/terms",
+   "sha256": "add2cd2e79c88acaea10b48d05134005b2b5c2856e8cdd59f31df96d62afdcfb"
+  },
+  {
+   "path": "docs/notes/open_quantum/site/quantumrings_privacy.md",
+   "source": "https://www.quantumrings.com/privacy",
+   "sha256": "e66aa1ef4325ae2f86ee424bf67aed3ae0d597ab7b6ce2304f5af8b2c2b7b39e"
+  }
+ ],
+ "unreachable": []
+}
