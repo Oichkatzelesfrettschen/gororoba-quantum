@@ -235,6 +235,7 @@ class Snapshot:
     excluded_edges: dict[tuple[int, int], str] = field(default_factory=dict)
     medians: dict[str, float | None] = field(default_factory=dict)
     admission_target: Target | None = field(default=None, repr=False)
+    identity: dict[str, Any] = field(default_factory=dict)
 
     def ineligible_reason(self, max_pending: int | None) -> str | None:
         if not self.capabilities.native_cz:
@@ -252,6 +253,7 @@ class Snapshot:
             "pending_jobs": self.pending_jobs,
             "calibration": self.calibration,
             "fetched_at": self.fetched_at,
+            **self.identity,
             "capabilities": self.capabilities.summary(),
             "repetition_delay": _optional_repetition_delay(self.backend),
             "medians": self.medians,
@@ -273,6 +275,76 @@ def _backend_capabilities(backend: Any) -> BackendCapabilities:
         operation_names=operation_names,
         control_flow=tuple(sorted(CONTROL_FLOW_OPERATIONS.intersection(operation_names))),
     )
+
+
+# Provenance fields of a backend summary: recorded data that neither selection
+# reuse (unchanged_since_planning) nor the approved-record comparison reads.
+BACKEND_IDENTITY_FIELDS = ("backend_version", "processor_type")
+
+
+def backend_identity(backend: Any) -> dict[str, Any]:
+    """The backend's reported version and processor type, as its configuration carries them.
+
+    IBMBackend.refresh() replaces the configuration but leaves the
+    BackendV2.backend_version read at construction, so both values come from
+    backend.configuration(). processor_type is the configuration's
+    {"family", "revision"[, "segment"]} dictionary, or None when the backend
+    reports none.
+    """
+    configuration = backend.configuration()
+    processor = getattr(configuration, "processor_type", None)
+    return {
+        "backend_version": str(configuration.backend_version),
+        "processor_type": {str(k): str(v) for k, v in processor.items()} if isinstance(processor, Mapping) else None,
+    }
+
+
+def reported_identity(backend: Any) -> dict[str, Any]:
+    """backend_identity, with None for each field a backend object does not report.
+
+    Identity is provenance: a backend without it stays eligible in a snapshot
+    and a collection proceeds.
+    """
+    try:
+        return backend_identity(backend)
+    except AttributeError:
+        return dict.fromkeys(BACKEND_IDENTITY_FIELDS)
+
+
+def execution_identity(backend: Any, properties_at: Mapping[datetime, Any]) -> dict[str, Any]:
+    """A collected job's backend identity: the configuration now and the properties at each execution start.
+
+    The properties in force when a PUB's shots began report the
+    backend_version that ran them; the configuration read at collection names
+    the processor type and the current version; a property set without a
+    version records None.
+    """
+    identity = reported_identity(backend)
+    at_execution = {}
+    for start, properties in sorted(properties_at.items()):
+        version = getattr(properties, "backend_version", None)
+        at_execution[start.isoformat()] = None if version is None else str(version)
+    return identity | {"backend_version_at_execution": at_execution}
+
+
+def backend_identity_violations(entry: Mapping[str, Any]) -> list[str]:
+    """Shape faults of the identity fields one record entry carries; an absent field is no fault.
+
+    backend_version is None or a nonempty string; processor_type is None or a
+    string-valued dictionary naming at least the family and the revision.
+    """
+    faults = []
+    version = entry.get("backend_version")
+    if version is not None and not (isinstance(version, str) and version):
+        faults.append(f"backend_version {entry['backend_version']!r} is not a nonempty string")
+    processor = entry.get("processor_type")
+    if processor is not None and not (
+        isinstance(processor, Mapping)
+        and {"family", "revision"} <= set(processor)
+        and all(isinstance(key, str) and isinstance(value, str) for key, value in processor.items())
+    ):
+        faults.append(f"processor_type {processor!r} is not a string dictionary with family and revision")
+    return faults
 
 
 def _qubit_exclusion(text: str) -> tuple[str, frozenset[int]]:
@@ -325,6 +397,7 @@ def take_snapshot(service: QiskitRuntimeService, name: str, operator_excluded: C
         capabilities = _backend_capabilities(backend)
     except Exception as error:
         raise LiveRunError(f"{name}: backend capability read failed ({type(error).__name__})") from error
+    identity = reported_identity(backend)
     try:
         check_snapshot_matches_properties(backend.target, props, name)
     except LiveRunError:
@@ -341,6 +414,7 @@ def take_snapshot(service: QiskitRuntimeService, name: str, operator_excluded: C
         calibration=props.last_update_date.isoformat(),
         fetched_at=_now(),
         capabilities=capabilities,
+        identity=identity,
     )
     if "cz" not in backend.target.operation_names:
         return snap
@@ -2504,6 +2578,7 @@ def _choice_record(
     return {
         "group": choice.group.name,
         "backend": choice.snap.name,
+        **choice.snap.identity,
         "calibration": choice.snap.calibration,
         "noise_model_calibration": noise_calibration,
         "seed_transpiler": choice.seed,
@@ -3035,7 +3110,9 @@ def unchanged_since_planning(
     each must match its planning value; the entries are captured when the
     snapshot is taken, so a cached backend object refreshed in place still
     compares its planning value. Every chosen backend's compiled instructions
-    must also keep their capabilities and calibration fingerprint.
+    must also keep their capabilities and calibration fingerprint. The
+    backend version and processor type are provenance that selection never
+    reads, so they stay out of the comparison.
     """
     planned = record.get("system_inventory")
     if not isinstance(planned, dict) or set(planned) != set(inventory):
@@ -3043,13 +3120,12 @@ def unchanged_since_planning(
     planned_remaining = record.get("budget_plan", {}).get("remaining_seconds")
     if planned_remaining is None or remaining_seconds != planned_remaining:
         return False
+    unread = {"fetched_at", *BACKEND_IDENTITY_FIELDS}
     for name, entry in inventory.items():
         before = planned[name]
         if not isinstance(before, dict) or not isinstance(entry, dict):
             return False
-        if {k: v for k, v in before.items() if k != "fetched_at"} != {
-            k: v for k, v in entry.items() if k != "fetched_at"
-        }:
+        if {k: v for k, v in before.items() if k not in unread} != {k: v for k, v in entry.items() if k not in unread}:
             return False
     by_name = {snapshot.name: snapshot for snapshot in fresh}
     for choice in choices:
@@ -4536,6 +4612,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 pub_manifest, window, window_reason, scheduled, scheduled_reason, spans.source, execution_bound
             )
         jobs_out[job_entry["job_id"]]["pub_timing"] = timing
+        job_out["backend_identity"] = execution_identity(backend, {start: entry[0] for start, entry in at.items()})
         measured: dict[str, list[np.ndarray]] = {}
         props_by_name: dict[str, Any] = {}
         replayed: dict[str, list[np.ndarray]] = {}

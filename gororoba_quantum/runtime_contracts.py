@@ -1405,6 +1405,14 @@ def _verify_fused_collection() -> None:
         ):
             raise RuntimeError(f"mocked fused execution evidence is {fused_evidence[0]}")
         job_out = collected[0]["jobs"][job_id]
+        job_identity = job_out["backend_identity"]
+        if (
+            live_run_module.backend_identity_violations(job_identity)
+            or job_identity["processor_type"] is None
+            or job_identity["backend_version_at_execution"].get(expected_start.isoformat())
+            != backend.properties().backend_version
+        ):
+            raise RuntimeError(f"collected job identity is {job_identity}")
         fused_timing = job_out["pub_timing"][fused_pub.name]
         lower = planned_job["pubs"][fused_index]["target_gate_lower_bound_dt"]
         if (
@@ -3204,6 +3212,73 @@ def _verify_unchanged_since_planning() -> None:
     queue_only["ibm_a"]["pending_jobs"] = 9
     if live_run_module.unchanged_since_planning(record, queue_only, [], [], 500):
         raise RuntimeError("a queue-length change, which breaks selection ties, reused the plan")
+    upgraded = copy.deepcopy(inventory)
+    upgraded["ibm_a"] |= {"backend_version": "9.9.9", "processor_type": {"family": "Heron", "revision": "3"}}
+    if not live_run_module.unchanged_since_planning(record, upgraded, [], [], 500):
+        raise RuntimeError("a backend version or processor type, which selection never reads, rebuilt the plan")
+
+
+def _verify_backend_identity_records() -> None:
+    """Every planned record carries each backend's version and processor type as data no gate compares."""
+    backend = _ProbeBackend("viable", FakeFez())
+    configuration = backend.configuration()
+    expected = {
+        "backend_version": str(configuration.backend_version),
+        "processor_type": {str(k): str(v) for k, v in configuration.processor_type.items()},
+    }
+    if live_run_module.backend_identity(backend) != expected:
+        raise RuntimeError(f"backend identity reads {live_run_module.backend_identity(backend)}, not {expected}")
+    bare = _ProbeBackend("bare", FakeFez())
+    bare_configuration = copy.copy(bare._backend.configuration())
+    del bare_configuration.processor_type
+    with patch.object(bare, "configuration", lambda: bare_configuration):
+        if live_run_module.backend_identity(bare)["processor_type"] is not None:
+            raise RuntimeError("a backend reporting no processor type records one")
+    args = _fixture_args(groups=["hybrid_shor_mod15"])
+    choices, record = live_run_module.plan(_ProbeService([backend]), args)
+    live_run_module.evaluate(choices, record)
+    entries = [
+        ("backends", record["backends"]["viable"]),
+        ("system_inventory", record["system_inventory"]["viable"]),
+        *((f"group {group['group']}", group) for group in record["groups"]),
+    ]
+    for label, entry in entries:
+        faults = live_run_module.backend_identity_violations(entry)
+        recorded = {key: entry.get(key) for key in live_run_module.BACKEND_IDENTITY_FIELDS}
+        if faults or recorded != expected:
+            raise RuntimeError(f"{label} records identity {recorded}: {faults}")
+    for fault in (
+        {"backend_version": ""},
+        {"backend_version": 128},
+        {"processor_type": {"family": "Heron"}},
+        {"processor_type": {"family": "Heron", "revision": 2}},
+    ):
+        if not live_run_module.backend_identity_violations(fault):
+            raise RuntimeError(f"malformed identity {fault} passes the shape check")
+    if live_run_module.backend_identity_violations({"calibration": "older record"}):
+        raise RuntimeError("a record without the identity fields fails the shape check")
+    start = datetime(2026, 10, 10, tzinfo=UTC)
+    unreported = live_run_module.execution_identity(object(), {start: object()})
+    if unreported != {
+        "backend_version": None,
+        "processor_type": None,
+        "backend_version_at_execution": {start.isoformat(): None},
+    }:
+        raise RuntimeError(f"a backend reporting no identity stops or fabricates collection identity: {unreported}")
+    for name in live_run_module.APPROVED_RECORD_FIELDS:
+        if any(key in json.dumps(record.get(name)) for key in live_run_module.BACKEND_IDENTITY_FIELDS):
+            raise RuntimeError(f"approved-record field {name} carries backend identity")
+    with tempfile.TemporaryDirectory(prefix="gororoba-backend-identity-") as directory:
+        approved_dir = Path(directory)
+        write_archive(approved_dir, choices)
+        write_json(approved_dir, record)
+        qpy_digest = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
+        upgraded = copy.deepcopy(record)
+        for entry in (upgraded["backends"]["viable"], upgraded["system_inventory"]["viable"], *upgraded["groups"]):
+            entry |= {"backend_version": "9.9.9", "processor_type": {"family": "Heron", "revision": "3"}}
+        mismatches = live_run_module.approved_record_mismatches(approved_dir, upgraded, qpy_digest)
+        if mismatches:
+            raise RuntimeError(f"a backend version change refuses the approved record: {mismatches}")
 
 
 def _verify() -> None:
@@ -3227,6 +3302,7 @@ def _verify() -> None:
     _verify_pub_fusion_contracts()
     _verify_worker_quota()
     _verify_unchanged_since_planning()
+    _verify_backend_identity_records()
     _verify_replay_seed_independence()
     _verify_fused_collection()
     _verify_joint_fusion_placement()
