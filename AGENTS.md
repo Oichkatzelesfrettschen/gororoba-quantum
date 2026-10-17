@@ -692,6 +692,91 @@ record itself is regenerated under `$QI_PYTHON`), and core-340
 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of the Tuna-17
 cases).
 
+## Open Quantum
+
+Open Quantum (Quantum Rings; Public Compute through qBitTensor Labs) is the
+third hardware service: one account brokers IonQ, Rigetti, IQM and AQT
+processors through a management API and a scheduler API.
+[docs/notes/open_quantum/](docs/notes/open_quantum/README.md) holds the guide,
+the captured documentation, site, terms and privacy pages, the PyPI release
+records and the environment lock; the live pages at
+https://docs.openquantum.com/ stay the authority because they change.
+
+**Environment and key.** openquantum-mcp 0.2.0 requires `mcp<2`, so the stack
+lives in its own environment: `OQ_ENV=$HOME/.local/share/openquantum/venv`,
+interpreter `OQ_PYTHON=${OQ_PYTHON:-$OQ_ENV/bin/python}`, built with
+`uv venv --python 3.14 "$OQ_ENV"` and
+`VIRTUAL_ENV="$OQ_ENV" uv pip install -r docs/notes/open_quantum/requirements-oq.txt`
+(openquantum-sdk 1.0.0, openquantum-mcp 0.2.0, openquantum-sdk-qiskit 1.0.0,
+qiskit 2.5.2). The SDK key is `~/.config/openquantum/sdk-key.json`
+(`{client_id, client_secret}`, directory 700, file 600), outside every
+checkout; each consumer names it by path through `OPENQUANTUM_SDK_KEY`, so the
+secret never enters a registration, command line, log, commit or memory. CI
+never imports the stack: its gates read retained JSON with the standard
+library.
+
+**MCP.** `openquantum` is registered at Claude Code user scope and in
+`~/.codex/config.toml` as `"$OQ_PYTHON" -I -m openquantum_mcp` with
+`OPENQUANTUM_MCP_MAX_CREDITS=1`. Claude allows and Codex approves the ten
+read tools (organizations, credits, backends, categories, jobs, waiting,
+results, calibration); `prepare_job`, `submit_job` and `cancel_job` ask
+every time. `prepare_job` uploads the circuit, and the server's spend policy
+submits a Public job that Spark covers within the cap without
+`confirm_spend`, so the harness prompt is the human approval.
+
+**Submission.** Every upload and every job waits for the user's approval of
+a written case, like an IBM or Quantum Inspire run: what it measures, why a
+noise simulation cannot answer it, backend, shots, the quoted credits from
+`oq_platform.py`'s estimate, and the statement that the circuit becomes
+public. A Spark-funded run uses `execution_plan="public"` and
+`queue_priority="standard"` in both `prepare_job` and `submit_job`. The
+Public tier makes circuits and results non-confidential: they go to
+independent qBitTensor Labs operators, Quantum Rings retains them for any
+use including AI training, holds a perpetual sublicensable license and may
+retain them indefinitely (`site/quantumrings_privacy.md`,
+`site/quantumrings_terms.md` sections 5.2 and 6.4), and published research
+derived from Public Compute credits Quantum Rings and Open Quantum
+(section 3.4, `site/citation.md`). Unpublished methods stay off it.
+
+**Credits.** A job costs `ceil(per_task + shots * per_shot)` credits of its
+plan's USD-equivalent rates, one credit per USD-equivalent dollar, plus a
+Priority surcharge; `oq_platform.py check` holds every retained estimate to
+that rule. Spark Credits pay the Public plan only, arrive as 25 credits at
+signup and as a 25-credit batch every 90 days that is claimed by hand on
+the free-credits page, and expire 90 days after grant; the site's "$50"
+equals 25 credits of work at the Private rate, twice the Public rate. An
+organization holds at most 10 active Public jobs, a QASM file is at most
+10 MB, and only a Pending job cancels.
+`"$OQ_PYTHON" scripts/oq_platform.py snapshot --out docs/evidence/open_quantum`
+refreshes the catalogue and the circuit-free estimates; gate core-382
+renders this table from them and the captured price list and fails when
+either changes alone:
+
+<!-- open-quantum-facts:begin -->
+| backend (short code) | provider, modality | qubits (per job) | native ops | shots min / default / max | circuits per job | Public USD task + per shot | Public credits at 128 / 1024 / max shots | shots in a 1-credit job | 1024-shot jobs per 25 Spark |
+|---|---|---|---|---|---|---|---|---|---|
+| IBEX Q1 (`aqt:ibex-q1`) | AQT, Trapped-ion | 12 | prx, rz, xx | 1 / 100 / 2000 | 1024 | 0.18 + 0.0141 | 2 / 15 / 29 | 58 | 1 |
+| Forte-1 (`ionq:forte-1`) | IonQ, Trapped-ion | 36 | gpi, gpi2, zz | 100 / 100 / 5000 | 1024 | 0.18 + 0.048 | 7 / 50 / 241 | - | 0 |
+| Forte Enterprise (`ionq:forte-ent`) | IonQ, Trapped-ion | 36 | gpi, gpi2, zz | 100 / 100 / 5000 | 1024 | 0.18 + 0.048 | 7 / 50 / 241 | - | 0 |
+| Emerald (`iqm:emerald`) | IQM, Superconducting | 54 | cc_prx, cz, measure_ff, prx | 1 / 100 / 20000 | 1024 | 0.18 + 0.00096 | 1 / 2 / 20 | 854 | 12 |
+| Garnet (`iqm:garnet`) | IQM, Superconducting | 20 | cc_prx, cz, measure_ff, prx | 1 / 100 / 20000 | 1024 | 0.18 + 0.00087 | 1 / 2 / 18 | 942 | 12 |
+| Cepheus-1-108Q (`rigetti:cepheus-1-108q`) | Rigetti, Superconducting | 108 (107 per job) | cz, rx, rz | 10 / 100 / 50000 | 1024 | 0.18 + 0.000255 | 1 / 1 / 13 | 3215 | 25 |
+
+Features by backend: barriers: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q; defcal: rigetti:cepheus-1-108q; dynamic_circuits: iqm:emerald, iqm:garnet; measure: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q; mid_circuit_measure: ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet; physical_qubits: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q; result_pragmas: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q; verbatim_boxes: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q.
+
+Queue priority increases in credits: Private Plan Priority Queue +2, Private Plan Standard Queue +0, Public Plan Priority Queue +2, Public Plan Standard Queue +0.
+<!-- open-quantum-facts:end -->
+
+`accepting_jobs`, status and queue depth change between reads and live only
+in the snapshot; an Online backend can refuse jobs. The MCP cap of 1 credit
+admits only the jobs in the 1-credit column.
+
+**Gates.** core-380 (`capture_oq_docs.py --check`), core-381 (its
+`--self-test`), core-382
+(`oq_platform.py check docs/evidence/open_quantum --agents AGENTS.md
+docs/notes/open_quantum/README.md`) and
+core-383 (its `--self-test`).
+
 ## Qiskit skills
 
 The Qiskit agent skills come from https://github.com/Qiskit/skills, installed
