@@ -253,6 +253,26 @@ def aer_custatevec() -> bool:
 # fills the device (docs/evidence/aer_gpu_configuration); Aer batches only
 # circuits of at most batched_shots_gpu_max_qubits active qubits.
 BATCHED_SHOTS_MAX_QUBITS = 10
+# Aer's blocking_qubits documentation asks that one double-precision chunk,
+# 16 * 2**blocking_qubits bytes, stay below a quarter of one GPU's memory;
+# a density-matrix chunk of b qubits holds 4**b entries
+# (CacheBlocking::set_blocking scales its chunk bits by 2 for a matrix).
+BLOCKING_MEMORY_FRACTION = 4
+COMPLEX_DOUBLE_BYTES = 16
+
+
+def blocking_qubits_for(method: str, gpu_memory_mib: int) -> int:
+    """The widest Aer chunk whose double-precision state fits a quarter of one GPU's memory."""
+    if method not in ("statevector", "density_matrix"):
+        raise ValueError(f"Aer cache blocking supports statevector and density_matrix, not {method}")
+    scale = 2 if method == "density_matrix" else 1
+    limit = (gpu_memory_mib << 20) // BLOCKING_MEMORY_FRACTION
+    bits = 1
+    while COMPLEX_DOUBLE_BYTES << (scale * (bits + 1)) <= limit:
+        bits += 1
+    return bits
+
+
 CONTROL_FLOW = frozenset({"if_else", "while_loop", "for_loop", "switch_case"})
 
 
