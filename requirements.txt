@@ -14,3 +14,6 @@ rustworkx==0.18.1
 scipy==1.18.1
 # Exact polynomial rank, kernel-chart, and attachment certificates.
 sympy==1.14.0
+# Exact rank modulo a prime and rational null spaces (scripts/exact_rank.py).
+# SymPy's automatic ground types also select it for integers and rationals.
+python-flint==0.9.0
