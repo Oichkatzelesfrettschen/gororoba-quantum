@@ -203,6 +203,132 @@
       "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-03",
       "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
       "question": "Batch 3 of 4: what residual ZZ does each of Tuna-17's 24 parked flux-tunable couplers leave, measured from both of its ends, and what frame frequency does each qubit carry?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-0",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-00",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 0 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-1",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-01",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 1 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-2",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-02",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 2 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-3",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-03",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 3 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-4",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-04",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 4 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-5",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-05",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 5 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-6",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-06",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 6 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-7",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-07",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 7 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-8",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-08",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 8 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-0",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-00",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 0 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-1",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-01",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 1 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-2",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-02",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 2 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-3",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-03",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 3 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-4",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-04",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 4 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-5",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-05",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 5 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-6",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-06",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 6 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-7",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-07",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 7 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-8",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-08",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 8 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
     }
   ],
   "claims": [
@@ -3080,6 +3206,55 @@
         "qi-tuna17-coupler-zz-map",
         "qi-tuna17-neighbor-drive-phase"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-qx-readout-ringdown-dry-run",
+      "statement": "On the noiseless QX emulator the readout ring-down dry run reports 'not detected' on both series under the preregistered rule: all 10 targets are usable at visibility 1, every |delta(tau)| is at most 13.6 kHz against 4.7 kHz standard errors, chi2(H1) runs 0.25 to 10.96 on 5 degrees of freedom (60.3 on 50 summed over targets), and the largest chi2(H1) - chi2(H2) is 6.02, below the 13.82 threshold. QX returned its 10-character measurement register for circuits declaring bit[20], so the mid-circuit outcomes were absent and the postselected cross-check did not run.",
+      "domain": "implementation",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "An ideal state-vector emulator at 2048 shots per circuit, one run per circuit in 18 batches; it tests parsing, submission, collection, the analysis and the decision rule on data whose answer is zero, and establishes nothing about Tuna-17's readout, its register width or the postselected cross-check. The decision rule was fixed in the cases before submission; the all-shot estimator replaced the postselected one after these data showed the measurement register, which changes no circuit byte and leaves the rule's text unchanged, and on these data the two coincide because no mid-circuit bit returned.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/readout_ringdown_qx_P_analysis.json",
+          "sha256": "fb592d4d010ac23a872fd794aa0fa8c0594eaa60aa071d55cf4ee19467bb533a"
+        },
+        {
+          "path": "results/quantum_inspire/readout_ringdown_qx_Q_analysis.json",
+          "sha256": "d76e0de8de0324481bf75ee9b4963b5b1b80d96094153f4d26b11300c6ddf46c"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/qx-runs.md"
+      ],
+      "gates": {
+        "core-369": "replay",
+        "core-362": "freshness"
+      },
+      "acquisitions": [
+        "qi-qx-readout-ringdown-P-dry-run-0",
+        "qi-qx-readout-ringdown-P-dry-run-1",
+        "qi-qx-readout-ringdown-P-dry-run-2",
+        "qi-qx-readout-ringdown-P-dry-run-3",
+        "qi-qx-readout-ringdown-P-dry-run-4",
+        "qi-qx-readout-ringdown-P-dry-run-5",
+        "qi-qx-readout-ringdown-P-dry-run-6",
+        "qi-qx-readout-ringdown-P-dry-run-7",
+        "qi-qx-readout-ringdown-P-dry-run-8",
+        "qi-qx-readout-ringdown-Q-dry-run-0",
+        "qi-qx-readout-ringdown-Q-dry-run-1",
+        "qi-qx-readout-ringdown-Q-dry-run-2",
+        "qi-qx-readout-ringdown-Q-dry-run-3",
+        "qi-qx-readout-ringdown-Q-dry-run-4",
+        "qi-qx-readout-ringdown-Q-dry-run-5",
+        "qi-qx-readout-ringdown-Q-dry-run-6",
+        "qi-qx-readout-ringdown-Q-dry-run-7",
+        "qi-qx-readout-ringdown-Q-dry-run-8"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     },

@@ -160,5 +160,6 @@
   "batch-07",
   "batch-08"
  ],
+ "estimator": "Every rate and delta(tau) comes from all shots, read by qubit index; a target left in |1> after its mid-circuit readout scales both readout-corrected quadratures by (1 - 2 eps) and leaves the phase unbiased. Where the result carries the 2 n-bit register, the analysis also reports the estimate postselected on mid-circuit outcome 0 and each delta's difference from the all-shot estimate with standard error sqrt(se_post^2 - se_all^2).",
  "decision_rule": "A target is usable when every arm reaches Ramsey visibility >= 0.3 at both delays. A usable target shows a readout tail when chi2(H1) - chi2(H2) >= 13.82 (the 2-degree-of-freedom chi-square quantile at p = 0.001), |A| >= 3 se(A), and the fitted T lies below its 100-cycle upper bound; meeting the first two with T at that bound classifies it as a static offset. A series reports 'readout tail detected' when at least 50% of its usable targets show a tail, and 'not detected' otherwise."
 }

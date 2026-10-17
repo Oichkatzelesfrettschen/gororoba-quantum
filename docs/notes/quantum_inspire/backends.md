@@ -62,6 +62,11 @@ December 2025, Tuna-17 since April 2026.
 - **Measured cost**: 2048 shots in 0.028-0.289 s of execution
   (results/quantum_inspire/runs/2026-10-16T211635Z-QXsinglenodesimulator);
   no ledger transaction.
+- **Result register** (Measured): one character per qubit, ordered by qubit
+  index, each the qubit's last outcome (0 if unmeasured); the bit a
+  measurement names is ignored, so mid-circuit outcomes and bit
+  assignments other than `b[k] = measure q[k]` do not survive (C21,
+  [qx-runs.md](qx-runs.md)).
 - **Local twin**: qxelarator 0.10.0 runs the same cQASM locally
   (`qi_run_local` on the MCP server).
 
@@ -109,10 +114,19 @@ Common to all three (KB, [tuna-operational-specifics](site/kbase_tuna-operationa
   multiple of pi/36 (5 degrees).
 - **Durations**: single-qubit gate 20 ns, CZ 60 ns, measurement 800 ns,
   initialization 500 or 200 us.
-- **Scheduling**: OpenSquirrel schedules as late as possible; `wait(n) q[i]`
-  idles qubit i for n cycles of 20 ns (per qubit, independently);
-  `barrier` bounds a scheduling domain. Measurements on several qubits are
-  scheduled too, so parallel readout needs a barrier.
+- **Scheduling**: as late as possible (KB); `wait(n) q[i]` idles qubit i
+  for n cycles of 20 ns (per qubit, independently); `barrier` bounds a
+  scheduling domain. Measurements on several qubits are scheduled too, so
+  parallel readout needs a barrier. In OpenSquirrel 0.9.1 the ALAP schedule
+  comes from `QuantifySchedulerExporter`, which no backend's
+  `default_compiler_config` lists, so the platform applies it after
+  compilation; the exporter gives every operation one cycle unless the
+  caller supplies operation lengths, so the 800 ns measurement in the
+  executed schedule rests on the platform's own length table, which no local
+  check reproduces. Compilation rewrites `barrier q` as one barrier per
+  qubit in the same order, which the exporter aligns as a run
+  (`scripts/qi_toolchain_check.py`,
+  [toolchain_check.json](../../evidence/quantum_inspire/toolchain_check.json)).
 - **Compiler** (API): SWAP2CZDecomposer then CZDecomposer; the configuration
   lists no mapping and no routing pass, so a circuit keeps every two-qubit
   gate on a coupled pair itself.

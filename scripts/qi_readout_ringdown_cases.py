@@ -39,13 +39,22 @@ ring-down of 500 ns leaves exp(-4) of its photons after 2 us. The
 calibration circuits wait SETTLE_CYCLES before their readout too, so the
 inverted assignment channel absorbs relaxation during the wait.
 
-Each target starts in |0>, so its mid-circuit outcome 1 heralds a
-preparation or readout error; a readout arm keeps the target's shots whose
-mid-circuit outcome reads 0 and reports that postselected fraction.
-qxelarator 0.10.0 returns only the per-qubit final register, n characters
-wide; --analyze reads a 2 n-character shot as postselectable, an
-n-character shot as carrying no mid-circuit bits (every shot kept, recorded
-as absent), and refuses any other width.
+Every rate comes from all shots of a circuit. A target that the
+mid-circuit readout leaves in |1> with probability eps runs the same
+single-qubit unitary U as one left in |0>, and |<1|U|1>|^2 = |<0|U|0>|^2 for
+every U in SU(2), so both quadratures read P1 = eps + (1 - 2 eps) p0: after
+readout correction x and y scale by (1 - 2 eps), the visibility shrinks by
+that factor, and the phase, every rate and every delta(tau) stay unbiased,
+whatever eps is on each arm. QX, local and remote, returns its measurement
+register: n characters ordered by qubit index, each qubit's last outcome, so
+b[n + t] never reaches its result (docs/notes/quantum_inspire/qx-runs.md).
+--analyze reads the final outcomes by qubit index from n or 2 n characters
+and refuses any other width. Where 2 n characters return, it also reports the
+estimate postselected on mid-circuit outcome 0, the postselected fraction,
+and each delta's postselected-minus-all difference with standard error
+sqrt(se_post^2 - se_all^2), the variance of a subset estimate's difference
+from the full-sample estimate that contains it; a difference beyond its
+error falsifies the invariance on that backend.
 
 Rates come from the two delays DELAYS = (2, 77) cycles:
 nu = wrap(phi(d2) - phi(d1)) / (d2 - d1), so each arm's fixed phase
@@ -176,6 +185,13 @@ DECISION_RULE = (
     f"and the fitted T lies below its {T_BOUNDS[1]:g}-cycle upper bound; meeting the first two with T "
     "at that bound classifies it as a static offset. A series reports 'readout tail detected' when at "
     f"least {DETECT_FRACTION:.0%} of its usable targets show a tail, and 'not detected' otherwise."
+)
+ESTIMATOR = (
+    "Every rate and delta(tau) comes from all shots, read by qubit index; a target left in |1> after its "
+    "mid-circuit readout scales both readout-corrected quadratures by (1 - 2 eps) and leaves the phase "
+    "unbiased. Where the result carries the 2 n-bit register, the analysis also reports the estimate "
+    "postselected on mid-circuit outcome 0 and each delta's difference from the all-shot estimate with "
+    "standard error sqrt(se_post^2 - se_all^2)."
 )
 TO_HZ = 1 / (2 * math.pi * CYCLE_SECONDS)
 Table = dict[tuple[str, str, int, int], tuple[float, float, float]]
@@ -314,6 +330,7 @@ def build(profile: str, series: str) -> dict[str, str]:
         "batch_limit": BATCH,
         "circuits": len(ordered),
         "batches": batches,
+        "estimator": ESTIMATOR,
         "decision_rule": DECISION_RULE,
     }
     files["cases.json"] = json.dumps(summary, indent=1) + "\n"
@@ -325,7 +342,7 @@ def series_directory(profile: str, series: str) -> str:
 
 
 def mid_bits(width: int, nqubits: int) -> bool:
-    """True for shots that carry the full 2 n-bit register, False for qxelarator's n-bit final register."""
+    """True for the 2 n-bit register, False for the n-character measurement register QX returns."""
     if width == 2 * nqubits:
         return True
     if width == nqubits:
@@ -333,24 +350,35 @@ def mid_bits(width: int, nqubits: int) -> bool:
     raise SystemExit(f"shots of {width} bits match neither the {2 * nqubits}-bit register nor {nqubits} qubits")
 
 
-def tabulate(meta: dict[str, Any], shots_by_circuit: dict[str, list[str]]) -> tuple[Table, bool]:
-    """(ones, kept, recorded) of every target, arm, quadrature and delay after mid-circuit postselection."""
+def tabulate(meta: dict[str, Any], shots_by_circuit: dict[str, list[str]]) -> tuple[Table, Table | None]:
+    """(ones, kept, recorded) of every target, arm, quadrature and delay from all shots, and postselected.
+
+    The postselected table keeps a readout arm's shots whose mid-circuit
+    outcome of that target reads 0; it exists only for the 2 n-bit register.
+    """
     n = meta["nqubits"]
     widths = {len(shot) for shots in shots_by_circuit.values() for shot in shots}
     if len(widths) != 1:
         raise SystemExit(f"the series mixes shot widths {sorted(widths)}")
     present = mid_bits(widths.pop(), n)
     table: Table = {}
+    post: Table = {}
     for arm, quadrature, delay in itertools.product(ARMS, QUADRATURES, DELAYS):
         shots = shots_by_circuit[circuit_name(arm, quadrature, delay)]
         for t in meta["targets"]:
-            kept = [s for s in shots if not present or arm == REFERENCE or bit(s, n + t) == 0]
             table[(arm, quadrature, delay, t)] = (
-                float(sum(bit(s, t) for s in kept)),
-                float(len(kept)),
+                float(sum(bit(s, t) for s in shots)),
+                float(len(shots)),
                 float(len(shots)),
             )
-    return table, present
+            if present:
+                kept = [s for s in shots if arm == REFERENCE or bit(s, n + t) == 0]
+                post[(arm, quadrature, delay, t)] = (
+                    float(sum(bit(s, t) for s in kept)),
+                    float(len(kept)),
+                    float(len(shots)),
+                )
+    return table, post if present else None
 
 
 def phase(table: Table, arm: str, delay: int, target: int, e01: float, e10: float) -> tuple[float, float, float] | None:
@@ -453,13 +481,7 @@ def gain(tail: float) -> float:
 def analyze_target(target: int, table: Table, assignment: tuple[float, float]) -> dict[str, Any]:
     e01, e10 = assignment
     phases = {arm: [phase(table, arm, d, target, e01, e10) for d in DELAYS] for arm in ARMS}
-    fractions = {
-        arm: sum(table[(arm, q, d, target)][1] for q in QUADRATURES for d in DELAYS)
-        / sum(table[(arm, q, d, target)][2] for q in QUADRATURES for d in DELAYS)
-        for arm in ARMS
-        if arm != REFERENCE
-    }
-    row: dict[str, Any] = {"target": target, "postselected_fraction": fractions}
+    row: dict[str, Any] = {"target": target}
     turns = {}
     for arm in ARMS:
         first, second = phases[arm]
@@ -487,6 +509,7 @@ def analyze_target(target: int, table: Table, assignment: tuple[float, float]) -
         "rate_se_hz": {arm: errors[arm] * TO_HZ for arm in ARMS},
         "delta_hz": {str(arm_tau(arm)): (rates[arm] - rates[REFERENCE]) * TO_HZ for arm in ARMS[1:]},
         "delta_se_hz": {str(arm_tau(arm)): math.hypot(errors[arm], errors[REFERENCE]) * TO_HZ for arm in ARMS[1:]},
+        "visibility": {arm: turns[arm][2] for arm in ARMS},
         "min_visibility": visibility,
         "h1": {"chi2": chi2_h1, "dof": len(ARMS) - 1, "rate_hz": c1 * TO_HZ},
         "h2": {
@@ -506,8 +529,44 @@ def analyze_target(target: int, table: Table, assignment: tuple[float, float]) -
     }
 
 
-def analyze_table(meta: dict[str, Any], table: Table, assignment: dict[int, tuple[float, float]]) -> dict[str, Any]:
+def postselection_check(
+    target: int, post: Table, every: dict[str, Any], assignment: tuple[float, float]
+) -> dict[str, Any]:
+    """Postselected fraction and deltas of one target, and their differences from the all-shot estimate."""
+    fractions = {
+        arm: sum(post[(arm, q, d, target)][1] for q in QUADRATURES for d in DELAYS)
+        / sum(post[(arm, q, d, target)][2] for q in QUADRATURES for d in DELAYS)
+        for arm in ARMS[1:]
+    }
+    selected = analyze_target(target, post, assignment)
+    out: dict[str, Any] = {"fraction": fractions}
+    if "delta_hz" not in selected or "delta_hz" not in every:
+        return out
+    difference = {}
+    error = {}
+    score = {}
+    for tau, value in selected["delta_hz"].items():
+        difference[tau] = value - every["delta_hz"][tau]
+        error[tau] = math.sqrt(max(selected["delta_se_hz"][tau] ** 2 - every["delta_se_hz"][tau] ** 2, 0.0))
+        score[tau] = difference[tau] / error[tau] if error[tau] > 0 else None
+    return {
+        **out,
+        "delta_hz": selected["delta_hz"],
+        "delta_se_hz": selected["delta_se_hz"],
+        "class": selected["class"],
+        "difference_hz": difference,
+        "difference_se_hz": error,
+        "difference_z": score,
+    }
+
+
+def analyze_table(
+    meta: dict[str, Any], table: Table, assignment: dict[int, tuple[float, float]], post: Table | None = None
+) -> dict[str, Any]:
     targets = [analyze_target(t, table, assignment[t]) for t in meta["targets"]]
+    if post is not None:
+        for row in targets:
+            row["postselected"] = postselection_check(row["target"], post, row, assignment[row["target"]])
     usable = [row["target"] for row in targets if row["usable"]]
     tails = [row["target"] for row in targets if row["class"] == "tail"]
     detected = bool(usable) and len(tails) >= DETECT_FRACTION * len(usable)
@@ -517,7 +576,13 @@ def analyze_table(meta: dict[str, Any], table: Table, assignment: dict[int, tupl
         "offset_targets": [row["target"] for row in targets if row["class"] == "offset"],
         "verdict": "readout tail detected" if detected else "not detected",
     }
-    return {"targets": targets, "decision": decision}
+    out: dict[str, Any] = {"targets": targets, "decision": decision}
+    if post is not None:
+        scores = [
+            abs(z) for row in targets for z in row["postselected"].get("difference_z", {}).values() if z is not None
+        ]
+        out["postselection_check"] = {"max_abs_difference_z": max(scores, default=None)}
+    return out
 
 
 GATES = {
@@ -576,7 +641,11 @@ class Evolution:
     for t after q's mid-circuit readout ends, integrated over each cycle. H is
     diagonal, so the state takes the exact phase of every interval between
     operations at once. A mid-circuit measurement projects its qubit on
-    outcome 0 (the postselection) and records that probability.
+    outcome 0 and records that probability; with flip it then leaves the qubit
+    in |1>, the trajectory of a post-readout excitation. Targets share no
+    coupler and every spectator's Z is conserved, so a target's final
+    marginal depends on its own trajectory only, and one evolution with every
+    target flipped gives each target's excited trajectory.
     """
 
     def __init__(
@@ -585,8 +654,9 @@ class Evolution:
         omega: list[float],
         coupling: dict[tuple[int, int], float],
         tail: dict[int, tuple[float, float]],
+        flip: bool = False,
     ) -> None:
-        self.nqubits, self.omega, self.coupling, self.tail = nqubits, omega, coupling, tail
+        self.nqubits, self.omega, self.coupling, self.tail, self.flip = nqubits, omega, coupling, tail, flip
 
     def __call__(self, lines: list[str]) -> tuple[list[float], dict[int, float]]:
         n = self.nqubits
@@ -623,7 +693,9 @@ class Evolution:
                     state = np.where(keep, state, 0) / math.sqrt(probability)
                     kept[q] = probability
                     ends[q] = cycle + MEASURE_CYCLES
-                    continue
+                    if not self.flip:
+                        continue
+                    name = "X"
                 axis = n - 1 - q
                 tensor = np.tensordot(GATES[name], state.reshape([2] * n), axes=([1], [axis]))
                 state = np.moveaxis(tensor, 0, axis).reshape(-1)
@@ -655,62 +727,157 @@ def timing_problems(meta: dict[str, Any], texts: dict[str, str]) -> list[str]:
     return problems
 
 
+EPS_FIXED = 0.03
+EPS_RISE = 0.05
+
+
+def eps_profiles() -> dict[str, dict[str, float]]:
+    """Post-readout excitation per readout arm: none, fixed EPS_FIXED, and rising linearly in tau to EPS_RISE."""
+    readout = ARMS[1:]
+    return {
+        "none": dict.fromkeys(readout, 0.0),
+        "fixed": dict.fromkeys(readout, EPS_FIXED),
+        "rising": {arm: EPS_RISE * (arm_tau(arm) or 0) / TAUS[-1] for arm in readout},
+    }
+
+
+def mixed_tables(
+    meta: dict[str, Any],
+    settings: list[tuple[str, str, int]],
+    ground: list[tuple[list[float], dict[int, float]]],
+    excited: list[tuple[list[float], dict[int, float]]],
+    eps: dict[str, float],
+) -> tuple[Table, Table]:
+    """All-shot and postselected tables of exact probabilities at the profile's shots.
+
+    The excitation is heralded: a target left in |1> reads 1 at its
+    mid-circuit readout, so postselection removes it and the all-shot table
+    mixes both trajectories.
+    """
+    shots = float(meta["shots"])
+    table: Table = {}
+    post: Table = {}
+    for (arm, quadrature, delay), (p0, _), (p1, _) in zip(settings, ground, excited, strict=True):
+        e = eps.get(arm, 0.0)
+        for t in meta["targets"]:
+            table[(arm, quadrature, delay, t)] = (((1 - e) * p0[t] + e * p1[t]) * shots, shots, shots)
+            post[(arm, quadrature, delay, t)] = ((1 - e) * p0[t] * shots, (1 - e) * shots, shots)
+    return table, post
+
+
+def shot_strings(
+    meta: dict[str, Any],
+    settings: list[tuple[str, str, int]],
+    ground: list[tuple[list[float], dict[int, float]]],
+    excited: list[tuple[list[float], dict[int, float]]],
+    eps: dict[str, float],
+) -> dict[str, list[str]]:
+    """2 n-character shots whose per-target (mid, final) counts round the exact probabilities."""
+    n = meta["nqubits"]
+    total = int(meta["shots"])
+    out = {}
+    for (arm, quadrature, delay), (p0, _), (p1, _) in zip(settings, ground, excited, strict=True):
+        bits = [["0"] * (2 * n) for _ in range(total)]
+        for t in meta["targets"]:
+            heralded = round(total * eps.get(arm, 0.0))
+            clean = total - heralded
+            ones_clean, ones_heralded = round(clean * p0[t]), round(heralded * p1[t])
+            column = [(0, 1)] * ones_clean + [(0, 0)] * (clean - ones_clean)
+            column += [(1, 1)] * ones_heralded + [(1, 0)] * (heralded - ones_heralded)
+            for shot, (mid, final) in zip(bits, column, strict=True):
+                shot[n + t], shot[t] = str(mid), str(final)
+        out[circuit_name(arm, quadrature, delay)] = ["".join(reversed(shot)) for shot in bits]
+    return out
+
+
+def all_shot_fields(report: dict[str, Any]) -> list[dict[str, Any]]:
+    return [{k: v for k, v in row.items() if k != "postselected"} for row in report["targets"]]
+
+
 def conformance_series(profile: str, series: str, rng: random.Random) -> str:
-    """Recover an injected tail with it on and report none with it off, at the profile's shots."""
+    """Recover an injected tail and report none without it, at the profile's shots, under post-readout excitation.
+
+    (a) excitation of EPS_FIXED, or rising in tau to EPS_RISE, leaves every
+    delta and every class unchanged and scales each readout arm's visibility
+    by (1 - 2 eps); (b) with the full register, the postselected and all-shot
+    deltas agree under excitation alone; (c) the QX profile reads the same
+    all-shot analysis from n-character as from 2 n-character shots.
+    """
     meta, ordered = members(profile, series)
     texts = dict(ordered)
     problems = timing_problems(meta, texts)
     if problems:
         raise SystemExit("conformance: " + "; ".join(problems[:5]))
     n = meta["nqubits"]
+    name = f"conformance {profile} {series}"
     scale = 2 * math.pi * CYCLE_SECONDS
     omega = [scale * rng.uniform(-60e3, 60e3) for _ in range(n)]
     coupling = {e: scale * rng.uniform(-60e3, 60e3) for e in meta["pairs"]}
     # One target sits near the 333 kHz alias edge, so its arm rates straddle it.
     omega[meta["targets"][0]] = scale * 320e3
     injected = {
-        t: (scale * rng.choice((-1, 1)) * rng.uniform(150e3, 300e3), rng.uniform(8.0, 25.0)) for t in meta["targets"]
+        t: (scale * rng.choice((-1, 1)) * rng.uniform(250e3, 400e3), rng.uniform(8.0, 25.0)) for t in meta["targets"]
     }
     settings = list(itertools.product(ARMS, QUADRATURES, DELAYS))
     programs = [texts[circuit_name(*setting)].splitlines() for setting in settings]
-    reports = {}
+    zero = {q: (0.0, 0.0) for q in range(n)}
+    profiles = eps_profiles()
+    reports: dict[tuple[str, str], dict[str, Any]] = {}
+    worst_delta = worst_visibility = worst_post = 0.0
     for label, tail in (("on", injected), ("off", {})):
-        evolved = ordered_map(Evolution(n, omega, coupling, tail), programs, min_items=1)
-        table: Table = {}
-        shots = float(meta["shots"])
-        for (arm, quadrature, delay), (p1, kept) in zip(settings, evolved, strict=True):
-            for t in meta["targets"]:
-                fraction = kept.get(t, 1.0)
-                table[(arm, quadrature, delay, t)] = (p1[t] * fraction * shots, fraction * shots, shots)
-        reports[label] = analyze_table(meta, table, {q: (0.0, 0.0) for q in range(n)})
-    worst_a = worst_t = worst_delta = 0.0
+        ground = ordered_map(Evolution(n, omega, coupling, tail), programs, min_items=1)
+        excited = ordered_map(Evolution(n, omega, coupling, tail, flip=True), programs, min_items=1)
+        for key, eps in profiles.items():
+            table, post = mixed_tables(meta, settings, ground, excited, eps)
+            reports[(label, key)] = analyze_table(meta, table, zero, post)
+            for row, base in zip(reports[(label, key)]["targets"], reports[(label, "none")]["targets"], strict=True):
+                if row["class"] != base["class"]:
+                    raise SystemExit(f"{name}: eps {key} turns target {row['target']} from {base['class']}")
+                for tau, value in row["delta_hz"].items():
+                    worst_delta = max(worst_delta, abs(value - base["delta_hz"][tau]))
+                for arm, value in row["visibility"].items():
+                    expected = base["visibility"][arm] * (1 - 2 * eps.get(arm, 0.0))
+                    worst_visibility = max(worst_visibility, abs(value - expected))
+                if label == "off":
+                    worst_post = max(worst_post, *(abs(v) for v in row["postselected"]["difference_hz"].values()))
+        if profile == "qx" and label == "on":
+            strings = shot_strings(meta, settings, ground, excited, profiles["fixed"])
+            full_table, full_post = tabulate(meta, strings)
+            full = analyze_table(meta, full_table, zero, full_post)
+            short, absent = tabulate(meta, {k: [s[n:] for s in v] for k, v in strings.items()})
+            same = all_shot_fields(analyze_table(meta, short, zero)) == all_shot_fields(full)
+            if full_post is None or absent is not None or not same:
+                raise SystemExit(f"{name}: n-character shots analyze differently from 2 n-character shots")
+    worst_s = worst_t = worst_zero = 0.0
     smallest = math.inf
-    for row in reports["on"]["targets"]:
-        amplitude, decay = injected[row["target"]]
-        if row["class"] != "tail":
-            raise SystemExit(f"conformance {profile} {series}: target {row['target']} classified {row['class']}")
-        worst_a = max(worst_a, abs(row["h2"]["readout_end_shift_hz"] / (amplitude * TO_HZ) - 1))
-        worst_t = max(worst_t, abs(row["h2"]["t_cycles"] / decay - 1))
-        smallest = min(smallest, row["delta_chi2"])
-    for row in reports["off"]["targets"]:
-        if row["class"] != "none":
-            raise SystemExit(
-                f"conformance {profile} {series}: tail-free target {row['target']} classified {row['class']}"
-            )
-        worst_delta = max(worst_delta, *(abs(v) for v in row["delta_hz"].values()))
-    if reports["on"]["decision"]["verdict"] != "readout tail detected":
-        raise SystemExit(f"conformance {profile} {series}: the injected tail is not detected")
-    if reports["off"]["decision"]["verdict"] != "not detected":
-        raise SystemExit(f"conformance {profile} {series}: a tail is detected without one")
-    if max(worst_a, worst_t) > 1e-5 or worst_delta > 1e-3:
+    for key in profiles:
+        for row in reports[("on", key)]["targets"]:
+            amplitude, decay = injected[row["target"]]
+            if row["class"] != "tail":
+                raise SystemExit(f"{name}: eps {key}: target {row['target']} classified {row['class']}")
+            worst_s = max(worst_s, abs(row["h2"]["readout_end_shift_hz"] / (amplitude * TO_HZ) - 1))
+            worst_t = max(worst_t, abs(row["h2"]["t_cycles"] / decay - 1))
+            smallest = min(smallest, row["delta_chi2"])
+        for row in reports[("off", key)]["targets"]:
+            if row["class"] != "none":
+                raise SystemExit(f"{name}: eps {key}: tail-free target {row['target']} classified {row['class']}")
+            worst_zero = max(worst_zero, *(abs(v) for v in row["delta_hz"].values()))
+        if reports[("on", key)]["decision"]["verdict"] != "readout tail detected":
+            raise SystemExit(f"{name}: eps {key}: the injected tail is not detected")
+        if reports[("off", key)]["decision"]["verdict"] != "not detected":
+            raise SystemExit(f"{name}: eps {key}: a tail is detected without one")
+    if max(worst_s, worst_t) > 1e-5 or max(worst_zero, worst_delta, worst_post) > 1e-3 or worst_visibility > 1e-9:
         raise SystemExit(
-            f"conformance {profile} {series}: S within {worst_a:.2g}, T within {worst_t:.2g}, "
-            f"tail-free delta {worst_delta:.2g} Hz"
+            f"{name}: S within {worst_s:.2g}, T within {worst_t:.2g}, tail-free delta {worst_zero:.2g} Hz, "
+            f"eps moves delta {worst_delta:.2g} Hz and visibility {worst_visibility:.2g}, "
+            f"postselection moves delta {worst_post:.2g} Hz"
         )
     return (
-        f"conformance {profile} {series}: {len(meta['targets'])} targets, timing as designed; tail on: S and T "
-        f"within {max(worst_a, worst_t):.2g} relative, smallest delta chi2 {smallest:.3g}, detected; "
-        f"tail off: |delta| <= {worst_delta:.2g} Hz, not detected"
+        f"{name}: {len(meta['targets'])} targets, timing as designed; tail on: S and T within "
+        f"{max(worst_s, worst_t):.2g} relative, smallest delta chi2 {smallest:.3g}, detected; tail off: "
+        f"|delta| <= {worst_zero:.2g} Hz, not detected; eps {EPS_FIXED} and rising to {EPS_RISE}: delta moves "
+        f"<= {worst_delta:.2g} Hz, visibility (1 - 2 eps) within {worst_visibility:.2g}, postselected minus "
+        f"all <= {worst_post:.2g} Hz" + ("; n- and 2 n-character shots agree" if profile == "qx" else "")
     )
 
 
@@ -719,15 +886,16 @@ SANITY_MID_ONE = 0.2
 SANITY_SPECTATOR_ONE = 0.2
 
 
-def sanity(run: Path) -> list[str]:
-    """Checks one collected batch must pass before the next batch is submitted.
+def sanity(run: Path) -> tuple[list[str], list[str]]:
+    """Checks one collected batch must pass before the next batch is submitted, and what the result carried.
 
-    Every job completed with its requested shots; on Tuna-17 every shot carries
-    the full 2 n-bit register; in a readout circuit every target's assignment
-    error stays below SANITY_READOUT_ERROR; in a Ramsey circuit every target's
-    mid-circuit outcome reads 1 below SANITY_MID_ONE and every spectator,
-    held in |0>, reads 1 below SANITY_SPECTATOR_ONE. A failure stops the series
-    before it spends more device time.
+    Every job completed with its requested shots; every shot carries n
+    characters (the measurement register) or the 2 n-bit register, and the
+    notes record which; in a readout circuit every target's assignment error
+    stays below SANITY_READOUT_ERROR; in a Ramsey circuit every spectator, held
+    in |0>, reads 1 below SANITY_SPECTATOR_ONE and, where the 2 n-bit register
+    returns, every target's mid-circuit outcome reads 1 below SANITY_MID_ONE. A
+    failure stops the series before it spends more device time.
     """
     case = json.loads((run / "cases.json").read_text(encoding="utf-8"))
     collected = json.loads((run / "results.json").read_text(encoding="utf-8"))
@@ -739,6 +907,7 @@ def sanity(run: Path) -> list[str]:
     profile = next(name for name, settings in PROFILES.items() if settings["identifier"] == case["backend"])
     meta, _ = members(profile, case["series"])
     n = meta["nqubits"]
+    seen = set()
     for row in case["circuits"]:
         path = run / "raw" / f"{row['file']}.json"
         if not path.exists():
@@ -746,9 +915,10 @@ def sanity(run: Path) -> list[str]:
             continue
         shots = json.loads(path.read_text(encoding="utf-8"))
         widths = {len(s) for s in shots}
-        if widths != {2 * n} and (profile == "tuna_17" or widths != {n}):
-            problems.append(f"{row['file']}: shot widths {sorted(widths)}, register {2 * n} bits")
+        if widths not in ({n}, {2 * n}):
+            problems.append(f"{row['file']}: shot widths {sorted(widths)}, expected {n} or {2 * n}")
             continue
+        seen |= widths
         present = widths == {2 * n}
         ones = {q: sum(bit(s, q) for s in shots) / len(shots) for q in range(n)}
         if row["kind"] == "readout":
@@ -767,7 +937,13 @@ def sanity(run: Path) -> list[str]:
             for q in meta["spectators"]
             if ones[q] > SANITY_SPECTATOR_ONE
         ]
-    return problems
+    notes = []
+    for width in sorted(seen):
+        if width == n:
+            notes.append(f"register width {width}: measurement register only: mid-circuit outcomes absent")
+        else:
+            notes.append(f"register width {width}: full bit register: mid-circuit outcomes present")
+    return problems, notes
 
 
 def analyze(runs: list[Path]) -> dict[str, Any]:
@@ -797,19 +973,20 @@ def analyze(runs: list[Path]) -> dict[str, Any]:
         t: (sum(bit(s, t) for s in zero) / len(zero), sum(1 - bit(s, t) for s in one) / len(one))
         for t in meta["targets"]
     }
-    table, present = tabulate(meta, {name: shots[name] for name, _ in ordered if not name.startswith("readout")})
+    table, post = tabulate(meta, {name: shots[name] for name, _ in ordered if not name.startswith("readout")})
     return {
         "schema": "qi-readout-ringdown-analysis-v1",
         "profile": profile,
         "series": meta["series"],
         "runs": [retained_path(r) for r in runs],
+        "estimator": ESTIMATOR,
         "decision_rule": DECISION_RULE,
-        "mid_circuit_bits": "present" if present else "absent",
+        "mid_circuit_bits": "present" if post is not None else "absent",
         "arm_batches": {
             arm: sorted({batch_of[circuit_name(arm, q, d)] for q in QUADRATURES for d in DELAYS}) for arm in ARMS
         },
         "readout_assignment": {str(t): list(v) for t, v in assignment.items()},
-        **analyze_table(meta, table, assignment),
+        **analyze_table(meta, table, assignment, post),
     }
 
 
@@ -824,9 +1001,9 @@ def main() -> int:
     parser.add_argument("--replay", action="store_true", help="with --analyze: compare OUT with the recomputation")
     args = parser.parse_args()
     if args.sanity:
-        problems = sanity(args.sanity)
-        for problem in problems:
-            print(problem)
+        problems, notes = sanity(args.sanity)
+        for line in [*notes, *problems]:
+            print(line)
         print(f"sanity {args.sanity.name}: {'FAIL' if problems else 'pass'}")
         return 1 if problems else 0
     if args.conformance:
