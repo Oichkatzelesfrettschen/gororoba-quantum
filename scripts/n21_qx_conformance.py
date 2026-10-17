@@ -1090,6 +1090,10 @@ def out(path: Path, seeds: int) -> dict[str, Any]:
     }
     record["reset_model"] = reset_evidence(record, texts)
     record["comparison"] = compare_qx(record)
+    try:
+        require_record_shape(record)
+    except ValueError as error:
+        raise SystemExit(f"{path}: the acquired record would fail --check: {error}") from error
     path.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     try:
         require_verdicts(record)
@@ -1221,6 +1225,10 @@ def verify(record: dict[str, Any], directory: Path) -> dict[str, Any]:
             raise ValueError(f"{name}: readout map, deferral steps or form differ from the current construction")
         texts[name] = text
     staged = stages(built, texts)
+    descriptors = [(arm["name"], arm["member"], arm["physical_qubits"]) for arm in record["arms"]]
+    rebuilt = [(arm["name"], arm["member"], arm["physical"]) for arm in built["arms"]]
+    if descriptors != rebuilt:
+        raise ValueError(f"retained arms {descriptors} differ from the rebuilt arms {rebuilt}")
     for arm in record["arms"]:
         if gap(arm["reference_law"], staged["reference"][arm["member"]]) > EXACT_TOL:
             raise ValueError(f"{arm['member']}: reference law differs from the recomputed one")
