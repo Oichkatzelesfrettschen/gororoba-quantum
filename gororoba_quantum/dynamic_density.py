@@ -13,6 +13,13 @@ matrix per classical-register value, whose traces sum to one.
   the readout matrix R[k][r] of the noise model (``ReadoutError.probabilities``),
   so a conditional reads the recorded bit while the state carries the true one.
 - **reset** applies the Kraus pair |0><0|, |0><1|, then the reset's local error.
+- **prep_excitation** epsilon starts every active qubit in the mixture
+  (1 - epsilon)|0><0| + epsilon|1><1|, the bit-flip channel of probability
+  epsilon on |0> before the first instruction: residual excitation the
+  initialization leaves at a short repetition delay. Zero leaves the
+  evolution untouched; an Aer circuit carries the same channel as a leading
+  ``pauli_error([("X", epsilon), ("I", 1 - epsilon)])`` instruction
+  (``with_prep_excitation``).
 - **if_else** on one clbit or one register applies the true body (or false
   body) to each branch whose recorded value selects it. Body gates carry the
   same local errors as top-level gates: insert_noise leaves bodies untouched
@@ -48,6 +55,7 @@ from jax_bridge import _Numpy, _subscripts
 SKIPPED = {"barrier"}
 UNSUPPORTED = ("while_loop", "for_loop", "switch_case", "box")
 RESET_KRAUS = np.array([[[1, 0], [0, 0]], [[0, 1], [0, 0]]], dtype=np.complex128)
+X_KRAUS = np.array([[0, 1], [1, 0]], dtype=np.complex128)
 
 
 class UnsupportedCircuit(ValueError):
@@ -94,7 +102,9 @@ def _condition_bits(circuit: QuantumCircuit, condition: Any) -> tuple[list[int],
 class _Evolution:
     """Branch dictionary over recorded register values, each an unnormalized (2,)*2n tensor."""
 
-    def __init__(self, circuit: QuantumCircuit, noise_model: Any, semantics: Semantics) -> None:
+    def __init__(
+        self, circuit: QuantumCircuit, noise_model: Any, semantics: Semantics, prep_excitation: float = 0.0
+    ) -> None:
         if getattr(noise_model, "_nonlocal_quantum_errors", None):
             raise UnsupportedCircuit("nonlocal quantum errors are outside the branch-resolved model")
         self.noise = noise_model
@@ -110,6 +120,10 @@ class _Evolution:
         rho = np.zeros((2,) * (2 * self.n), dtype=np.complex128)
         rho[(0,) * (2 * self.n)] = 1
         self.branches: dict[tuple[int, int], np.ndarray] = {(0, 0): rho}
+        if prep_excitation:
+            flip = np.stack((math.sqrt(1.0 - prep_excitation) * np.eye(2), math.sqrt(prep_excitation) * X_KRAUS))
+            for qubit in range(self.n):
+                self.channel((qubit,), flip.astype(np.complex128))
 
     def _apply(self, rho: np.ndarray, qargs: tuple[int, ...], kraus: np.ndarray) -> np.ndarray:
         script = self.subscripts.get(qargs)
@@ -213,14 +227,48 @@ class _Evolution:
         return out
 
 
-def probabilities(circuit: QuantumCircuit, noise_model: Any, semantics: Semantics = AER) -> np.ndarray:
-    """Recorded distribution over circuit's clbits under noise_model, clbit 0 least significant."""
+def validate_prep_excitation(value: float) -> float:
+    """value as a probability in [0, 1), the domain of the initial bit-flip channel."""
+    epsilon = float(value)
+    if not math.isfinite(epsilon) or not 0.0 <= epsilon < 1.0:
+        raise ValueError(f"preparation excitation {value!r} must lie in [0, 1)")
+    return epsilon
+
+
+def with_prep_excitation(circuit: QuantumCircuit, prep_excitation: float) -> QuantumCircuit:
+    """circuit preceded by an X error of probability prep_excitation on each active qubit, for Aer.
+
+    Aer applies the leading QuantumChannelInstruction as the channel
+    probabilities(prep_excitation=...) applies to its initial state, so the
+    sampled and exact laws describe one model. Zero returns circuit itself.
+    """
+    from qiskit_aer.noise import pauli_error
+
+    epsilon = validate_prep_excitation(prep_excitation)
+    if not epsilon:
+        return circuit
+    instruction = pauli_error([("X", epsilon), ("I", 1.0 - epsilon)]).to_instruction()
+    out = circuit.copy_empty_like()
+    for qubit in _active(circuit):
+        out.append(instruction, [out.qubits[qubit]])
+    for item in circuit.data:
+        out.append(item)
+    return out
+
+
+def probabilities(
+    circuit: QuantumCircuit, noise_model: Any, semantics: Semantics = AER, prep_excitation: float = 0.0
+) -> np.ndarray:
+    """Recorded distribution over circuit's clbits under noise_model, clbit 0 least significant.
+
+    prep_excitation flips each active qubit's initial |0> with that probability.
+    """
     from qiskit_aer.noise.errors.base_quantum_error import QuantumChannelInstruction
     from qiskit_aer.utils import insert_noise
 
     if any(isinstance(i.operation, Delay) for i in circuit.data) and noise_model._pass_manager() is not None:
         raise UnsupportedCircuit(f"{circuit.name}: delays under custom noise passes are outside the model")
-    evolution = _Evolution(circuit, noise_model, semantics)
+    evolution = _Evolution(circuit, noise_model, semantics, validate_prep_excitation(prep_excitation))
     noisy = insert_noise(circuit, noise_model, transpile=False)
     previous: Any = None
     for instruction in noisy.data:
@@ -334,13 +382,69 @@ def self_test(shots: int = 400_000, seed: int = 20261017) -> None:
     )
 
 
+def prep_excitation_test(shots: int = 400_000, seed: int = 20261017, epsilon: float = 0.25) -> None:
+    """The initial bit-flip channel: identity at zero, its closed form, reset immunity, and Aer sampling."""
+    from qiskit_aer import AerSimulator
+
+    circuit, noise = _fixture()
+    if not np.array_equal(probabilities(circuit, noise), probabilities(circuit, noise, prep_excitation=0.0)):
+        raise AssertionError("zero preparation excitation changed the fixture law")
+    if with_prep_excitation(circuit, 0.0) is not circuit:
+        raise AssertionError("zero preparation excitation changed the Aer circuit")
+    for bad in (-0.01, 1.0, float("nan")):
+        try:
+            validate_prep_excitation(bad)
+        except ValueError:
+            continue
+        raise AssertionError(f"preparation excitation {bad} was accepted")
+    # init -> measure on the qubit with readout R = [[0.85, 0.15], [0.25, 0.75]]:
+    # P(1) = (1 - eps) R[0][1] + eps R[1][1].
+    readout = QuantumCircuit(1, 1)
+    readout.measure(0, 0)
+    law = probabilities(readout, noise, prep_excitation=epsilon)
+    expected = (1.0 - epsilon) * 0.15 + epsilon * 0.75
+    if abs(law[1] - expected) > 1e-15:
+        raise AssertionError(f"init -> measure reads P(1) = {law[1]}, closed form {expected}")
+    # A reset discards the initial state, so init -> reset -> measure keeps its law.
+    reset = QuantumCircuit(1, 1)
+    reset.reset(0)
+    reset.measure(0, 0)
+    if np.max(np.abs(probabilities(reset, noise, prep_excitation=epsilon) - probabilities(reset, noise))) > 1e-15:
+        raise AssertionError("the initial excitation survived a reset")
+    exact = probabilities(circuit, noise, prep_excitation=epsilon)
+    simulator = AerSimulator(method="density_matrix", noise_model=noise, seed_simulator=seed)
+    counts = simulator.run(with_prep_excitation(circuit, epsilon), shots=shots).result().get_counts()
+    sampled = np.zeros(2**circuit.num_clbits)
+    for bits, count in counts.items():
+        sampled[int(bits.replace(" ", ""), 2)] += count / shots
+    radius = hoeffding_radius(shots, sampled.size, 1e-6)
+    gap = float(np.max(np.abs(exact - sampled)))
+    if gap > radius:
+        raise AssertionError(f"epsilon {epsilon}: exact and sampled distributions differ by {gap} > {radius}")
+    unexcited = float(np.max(np.abs(probabilities(circuit, noise) - sampled)))
+    if unexcited <= 3 * radius:
+        raise AssertionError(f"sampling cannot reject the law without excitation ({unexcited} <= {3 * radius})")
+    print(
+        f"dynamic density: preparation excitation {epsilon} matches {shots} Aer shots with a leading X error "
+        f"within {gap:.5f} (radius {radius:.5f}); the unexcited law sits {unexcited:.5f} away; closed form, "
+        "reset immunity and zero identity hold"
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--self-test", action="store_true", help="pin the branch semantics against Aer sampling")
+    parser.add_argument(
+        "--prep-excitation-test",
+        action="store_true",
+        help="pin the initial bit-flip channel against its closed form and Aer sampling",
+    )
     parser.add_argument("--shots", type=int, default=400_000)
     args = parser.parse_args()
     if args.self_test:
         self_test(args.shots)
+    if args.prep_excitation_test:
+        prep_excitation_test(args.shots)
     return 0
 
 
