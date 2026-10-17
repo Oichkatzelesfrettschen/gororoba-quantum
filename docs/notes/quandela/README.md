@@ -37,6 +37,22 @@ installed with `makepkg -si` in each directory, dependencies first.
 | python-pytest-responses | 0.6.0 | PyPI wheel | checkdepend: activates the `responses` HTTP mock the RPC tests assume |
 | python-multipledispatch, python-latexcodec, python-drawsvg | 1.0.0, 3.0.1, 2.4.2 | AUR through `paru` | runtime dependencies |
 
+perceval-quandela 1.3.1 declares `sympy~=1.12`, `numpy>=1.26,<3`,
+`scipy~=1.13`, `tabulate~=0.9`, `matplotlib<4`, `exqalibur~=1.4.2`,
+`multipledispatch<2`, `drawsvg>=2.0`, `requests<3`, `networkx>=3.1,<4`,
+`latexcodec<4`, `platformdirs<5` and `tqdm`, plus `qhub-api>=2,<3` for its
+`kipu` extra (`pypi/perceval-quandela.json`). The build host satisfies them
+with:
+
+| Arch package | Version | Role |
+|---|---|---|
+| python-sympy, python-numpy, python-scipy | 1.14.0, 2.5.4, 1.18.1 | symbolic parameters, linear algebra |
+| python-tabulate, python-matplotlib, python-networkx | 0.10.0, 3.11.2, 3.7 | display and graph algorithms |
+| python-requests, python-platformdirs, python-tqdm | 2.34.2, 4.13.0, 4.70.1 | cloud calls, persistent data directory, progress |
+| python-protobuf | 7.36.1 (pkgver 36.1) | exqalibur's serialization runtime |
+| python-drawsvg with python-cairosvg, python-cairocffi | 2.4.2, 2.9.1, 1.7.1 | circuit drawing |
+| python-mcp, python-pydantic, python-anyio | 1.29.0, 2.13.5, 4.15.1 | the MCP server |
+
 Facts the recipes encode:
 
 - exqalibur's wheel metadata pins `protobuf==7.34.1`; the system's protobuf
@@ -89,13 +105,38 @@ A token reaches the job and token routes only. `GET /api/platforms`,
 `/api/user` and the offer, notebook and credit routes the portal calls
 answer 401 "Invalid token" or 404 to it; they take the portal session.
 
+## Hosts, versions and related projects
+
+| Host | Role |
+|---|---|
+| https://cloud.quandela.com | portal; `/webide` is the application (dashboard, tokens, jobs, platforms, notebooks, Quantum Toolbox, QRNG, Usage Explorer), `/pricing` the plan page, `/terms-of-service` and `/privacy-policy` the cloud terms |
+| https://api.cloud.quandela.com | the cloud API; `/openapi.json` and `/redoc` describe it without a token |
+| https://account.quandela.com, https://api.account.quandela.com | the shared login (password, MFA, SSO providers) and its OAuth endpoints for Quandela's own sites |
+| https://hub.quandela.com, https://training.quandela.com, https://community.quandela.com | hub, training center and community, behind the same login |
+| https://perceval.quandela.net/docs/v1.3/ | Perceval documentation; the portal's `docs.quandela.com` link does not resolve |
+
+Versions at capture: portal bundle "Quandela Cloud v2.5.1", cloud API
+v2.10.1-rc1, account API v2.6.0-rc6, platforms reporting perceval-quandela
+1.3.0 or 1.3.1 and a minimum client version of 0.10.0 (`catalogue.json`).
+`sim:ascella` describes itself as the "Arcturus simulator" and runs the
+`mosaiq-arcturus` software; `sim:belenos` runs on OVHcloud computing power.
+
+Related projects, none installed: Perceval also ships Scaleway and Kipu
+providers (`perceval.providers.scaleway`, `perceval.providers.kipu`, the
+latter needing `qhub-api`); Quandela's GitHub organization publishes
+Perceval_Interop (converters), QDMI-Perceval (the Quantum Device Management
+Interface) and the Ascella application notebooks; MerLin is Quandela's
+photonic machine-learning framework. Quandela publishes no MCP server; the
+one third-party repository found (`TonyPansera/merlin-perceval-mcp`, no
+stars, no release) serves library documentation and is not used.
+
 ## Interfaces
 
 | Interface | Entry | Reach |
 |---|---|---|
 | REST API | `https://api.cloud.quandela.com/api/...` | jobs (create, status, result, data, cancel, rerun), job availability, token management and usage report, QRNG bytes and integers |
 | Perceval | `pcvl.RemoteProcessor` (legacy), `QuandelaCommunicationLayer` with `RemoteComputer` (1.3 runtime) | platform specs, compilation, sampling, probabilities, job groups, error mitigation |
-| MCP | `/usr/bin/python3 -I scripts/qd_mcp_server.py` | the tools below |
+| MCP | `"$QD_PYTHON" -I scripts/qd_mcp_server.py` | the tools below |
 | Account reads | `scripts/qd_platform.py snapshot` | the catalogue |
 | Portal | https://cloud.quandela.com/webide | tokens, jobs, platforms, notebooks, Quantum Toolbox, QRNG, Usage Explorer, plan |
 
@@ -114,14 +155,34 @@ Routes (`api/cloud-openapi.json`, cloud API v2.10.1-rc1 at capture):
 
 ### MCP tools
 
-`scripts/qd_mcp_server.py` runs on the system interpreter, which carries
-mcp 1.29 (FastMCP), perceval-quandela and exqalibur, and sends the token to
-`qd_platform.API` only. It registers as `quandela` at Claude Code user scope
-and in `~/.codex/config.toml`, launching
-`/usr/bin/python3 -I "$REPO/scripts/qd_mcp_server.py"`, where `REPO` is the
+`scripts/qd_mcp_server.py` runs on the interpreter
+`QD_PYTHON=${QD_PYTHON:-/usr/bin/python3}`, the system Python that carries
+mcp 1.29 (FastMCP), perceval-quandela and exqalibur. It registers as
+`quandela` at Claude Code user scope and in `~/.codex/config.toml`, launching
+`"$QD_PYTHON" -I "$REPO/scripts/qd_mcp_server.py"`, where `REPO` is the
 primary checkout, with `QUANDELA_TOKEN_FILE`; `-I` keeps the user site and
 `PYTHONPATH` out, and the server puts its own directory on `sys.path`. The
 Claude launcher in `~/.config/shell/codex-env.sh` loads it by default.
+
+Properties of the server that its code and gate hold:
+
+- Every network call goes through `qd_platform.request`, which sends the
+  token to `https://api.cloud.quandela.com` only and refuses redirects,
+  because urllib's redirect handler copies the Authorization header to the
+  redirect target. A 401, 403 or 404 answer names its usual cause.
+- Each tool is a coroutine that runs its HTTP call or simulation in a worker
+  thread; FastMCP 1.29 runs a plain function on its event loop, where one
+  slow call stalls every other request.
+- The JSON-RPC stream owns a private duplicate of standard output, and
+  descriptor 1 points at standard error. exqalibur's console logger, which
+  Perceval uses by default, writes warnings to descriptor 1 from C++, so
+  without the split any Perceval warning corrupts the protocol stream.
+- `qd_simulate_local` takes a unitary as JSON numbers. A serialized Perceval
+  circuit is refused by design: `perceval.serialization.deserialize` parses
+  parameter expressions with `sympy.S`, which evaluates Python.
+- Parameters carry schemas: a platform name matches `(qpu|sim):...`, a job
+  id is hexadecimal with dashes, so a path such as `../../api/tokens` fails
+  validation before any request.
 
 | Tool | Parameters | Effect | Claude / Codex approval |
 |---|---|---|---|
@@ -131,13 +192,16 @@ Claude launcher in `~/.config/shell/codex-env.sh` loads it by default.
 | `qd_usage` | none | jobs and usage per token, token ids removed | allow / approve |
 | `qd_job_status` | `job_id` | one status read | allow / approve |
 | `qd_job_result` | `job_id`, `include_raw` | the result; string fields truncate at 8000 characters without `include_raw` | allow / approve |
-| `qd_simulate_local` | `circuit` (from `perceval.serialization.serialize`), `input_state`, `backend` (SLOS, Naive, MPS) | local output probabilities, at most 24 modes and 12 photons; no credits | allow / approve |
+| `qd_simulate_local` | `real`, optional `imag` (a square unitary), `input_photons` (0 or 1 per mode), `backend` (SLOS, Naive) | local output probabilities over at most 24 modes and 1000000 output states, the 256 most probable; no credits | allow / approve |
 | `qd_cancel_job` | `job_id` | cancels a job | ask / prompt |
 
 The server submits nothing and exposes no QRNG route. A submission is a
 reviewed case run through Perceval, never a tool call. Gate core-502 loads
 the server with `mcp` replaced by recorders and requires exactly the tools
-of this table, every one read-only except `qd_cancel_job`.
+of this table, every one read-only except `qd_cancel_job`; it also parses the
+server and fails when a tool other than `qd_cancel_job` names `request`, when
+any string names a `/qt/` route, or when the server imports a network module
+of its own.
 
 ## Explorer plan, credits and notebooks
 
@@ -181,14 +245,14 @@ it:
 <!-- quandela-facts:begin -->
 | platform | kind | description | modes | photons | photon-source input modes | native commands | detector | max s per job | credits per shot |
 |---|---|---|---|---|---|---|---|---|---|
-| `qpu:belenos` | qpu | Belenos QPU | 1..24 | 1..12 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 | probs, samples, sample_count, entropy | threshold | 300 | 1e-06 |
-| `sim:belenos` | simulator | Belenos simulator | 1..24 | 1..12 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 | probs, samples, sample_count, entropy | threshold | 300 | 0 |
 | `qpu:ascella` | qpu | Ascella QPU | 1..12 | 1..6 | 0, 2, 4, 6, 8, 10 | probs, samples, sample_count, entropy | threshold | 300 | 1e-06 |
+| `qpu:belenos` | qpu | Belenos QPU | 1..24 | 1..12 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 | probs, samples, sample_count, entropy | threshold | 300 | 1e-06 |
 | `sim:ascella` | simulator | Arcturus simulator | 1..12 | 1..6 | 0, 2, 4, 6, 8, 10 | probs, samples, sample_count | threshold | 300 | 0 |
-| `sim:slos` | simulator | Simulator with SLOS backend | - | 2..12 | - | probs, samples, sample_count | - | 300 | 0 |
-| `sim:sampling` | simulator | Boson sampler simulator with Clifford&Clifford 2017 backend | - | 2..12 | - | probs, samples, sample_count | - | 300 | 0 |
-| `sim:gpu:small` | simulator | Clifford on GPU | - | 2..24 | - | probs, samples, sample_count | - | 300 | 0 |
+| `sim:belenos` | simulator | Belenos simulator | 1..24 | 1..12 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 | probs, samples, sample_count, entropy | threshold | 300 | 0 |
 | `sim:gpu:medium` | simulator | Clifford on GPU | - | 2..24 | - | samples, sample_count | - | 300 | 0 |
+| `sim:gpu:small` | simulator | Clifford on GPU | - | 2..24 | - | probs, samples, sample_count | - | 300 | 0 |
+| `sim:sampling` | simulator | Boson sampler simulator with Clifford&Clifford 2017 backend | - | 2..12 | - | probs, samples, sample_count | - | 300 | 0 |
+| `sim:slos` | simulator | Simulator with SLOS backend | - | 2..12 | - | probs, samples, sample_count | - | 300 | 0 |
 
 Token job limits (/api/jobs/availability): 1 running, 1 queued, 10 running Quantum Toolbox jobs.
 

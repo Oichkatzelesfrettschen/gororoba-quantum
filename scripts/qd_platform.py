@@ -52,6 +52,7 @@ Usage: QUANDELA_TOKEN_FILE=TOKEN "$PYTHON" scripts/qd_platform.py snapshot --out
 from __future__ import annotations
 
 import argparse
+import ast
 import datetime
 import importlib.metadata
 import importlib.util
@@ -67,7 +68,9 @@ from collections.abc import Callable
 from pathlib import Path
 from types import ModuleType
 from typing import Any
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
+
+from oq_platform import keys
 
 API = "https://api.cloud.quandela.com"
 CATALOGUE_SCHEMA = "qd-catalogue-v1"
@@ -134,20 +137,42 @@ def token() -> str:
     return value
 
 
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Refuses every redirect, so the bearer token reaches API alone."""
+
+    def redirect_request(self, *args: Any, **kwargs: Any) -> None:
+        return None
+
+
+OPENER = urllib.request.build_opener(NoRedirect)
+# The service's answer to a refused token names no cause; these name the usual ones.
+STATUS_HINTS = {
+    401: "the token is missing, expired or revoked; create one on the portal's Tokens page",
+    403: "the token lacks this platform; grant it on the token's Permissions tab",
+    404: "no such platform or job for this token",
+}
+
+
 def request(method: str, route: str, auth: bool = True) -> Any:
-    """JSON answer of one API call; an HTTP error raises PlatformError with the service's message."""
+    """JSON answer of one API call; any failure raises PlatformError naming the route and the cause."""
     headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
     if auth:
         headers["Authorization"] = f"Bearer {token()}"
     call = urllib.request.Request(API + route, headers=headers, method=method)
     try:
-        with urllib.request.urlopen(call, timeout=60) as response:
+        with OPENER.open(call, timeout=60) as response:
             body = response.read()
     except urllib.error.HTTPError as error:
         detail = error.read()[:500].decode("utf-8", errors="replace")
         error.close()
-        raise PlatformError(f"{method} {route}: HTTP {error.code} {detail}") from None
-    return json.loads(body) if body else None
+        hint = STATUS_HINTS.get(error.code, "redirect refused" if 300 <= error.code < 400 else "")
+        raise PlatformError(f"{method} {route}: HTTP {error.code} {detail} {hint}".rstrip()) from None
+    except (urllib.error.URLError, TimeoutError) as error:
+        raise PlatformError(f"{method} {route}: {error}") from None
+    try:
+        return json.loads(body) if body else None
+    except json.JSONDecodeError:
+        raise PlatformError(f"{method} {route}: answer is not JSON: {body[:200]!r}") from None
 
 
 def get(route: str, auth: bool = True) -> Any:
@@ -172,6 +197,15 @@ def platform_row(row: dict[str, Any]) -> dict[str, Any]:
     return record
 
 
+def scrub(value: Any) -> Any:
+    """A JSON value without FORBIDDEN_KEYS at any depth."""
+    if isinstance(value, dict):
+        return {k: scrub(v) for k, v in value.items() if k not in FORBIDDEN_KEYS}
+    if isinstance(value, list):
+        return [scrub(v) for v in value]
+    return value
+
+
 def usage_rows(report: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """The token usage report without token ids."""
     return [{k: v for k, v in row.items() if k not in FORBIDDEN_KEYS} for row in report]
@@ -194,7 +228,8 @@ def versions() -> dict[str, str | None]:
 
 def snapshot(out: Path) -> None:
     token()
-    explorer = [platform_row(row) for row in get("/api/platforms/public/explorer", auth=False)]
+    rows = get("/api/platforms/public/explorer", auth=False)
+    explorer = sorted((platform_row(row) for row in rows), key=lambda p: p["name"])
     public = [
         {"name": row["name"], "type": row["type"], "status": row["status"]}
         for row in get("/api/platforms/public", auth=False)
@@ -215,17 +250,8 @@ def snapshot(out: Path) -> None:
         "processors": processors,
     }
     out.mkdir(parents=True, exist_ok=True)
-    (out / "catalogue.json").write_text(json.dumps(catalogue, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+    (out / "catalogue.json").write_text(json.dumps(scrub(catalogue), indent=1, sort_keys=True) + "\n", encoding="utf-8")
     print(f"{len(explorer)} Explorer platforms, {len(public)} public platforms")
-
-
-def keys(value: Any) -> set[str]:
-    """Every mapping key at any depth of a JSON value."""
-    if isinstance(value, dict):
-        return set(value) | {k for item in value.values() for k in keys(item)}
-    if isinstance(value, list):
-        return {k for item in value for k in keys(item)}
-    return set()
 
 
 def span(low: int | None, high: int | None) -> str:
@@ -283,14 +309,23 @@ class ToolRecorder:
 
 
 def mcp_surface(server: Path = MCP_SERVER) -> dict[str, dict[str, Any]]:
-    """Tool names and annotations of the MCP server, loaded with mcp replaced by recorders."""
-    modules = {
-        name: ModuleType(name)
-        for name in ("mcp", "mcp.server", "mcp.server.fastmcp", "mcp.server.fastmcp.exceptions", "mcp.types")
-    }
+    """Tool names and annotations of the MCP server, loaded with mcp, anyio and pydantic replaced by stand-ins."""
+    names = (
+        "anyio",
+        "mcp",
+        "mcp.server",
+        "mcp.server.fastmcp",
+        "mcp.server.fastmcp.exceptions",
+        "mcp.server.stdio",
+        "mcp.types",
+        "pydantic",
+    )
+    modules = {name: ModuleType(name) for name in names}
     modules["mcp.server.fastmcp"].FastMCP = ToolRecorder  # type: ignore[attr-defined]
     modules["mcp.server.fastmcp.exceptions"].ToolError = RuntimeError  # type: ignore[attr-defined]
+    modules["mcp.server.stdio"].stdio_server = MagicMock()  # type: ignore[attr-defined]
     modules["mcp.types"].ToolAnnotations = dict  # type: ignore[attr-defined]
+    modules["pydantic"].Field = MagicMock()  # type: ignore[attr-defined]
     spec = importlib.util.spec_from_file_location("qd_mcp_surface", server)
     if spec is None or spec.loader is None:
         raise SystemExit(f"cannot load {server}")
@@ -301,7 +336,35 @@ def mcp_surface(server: Path = MCP_SERVER) -> dict[str, dict[str, Any]]:
     return tools
 
 
+# Modules through which a tool could reach the network without qd_platform.request.
+NETWORK_MODULES = {"http", "httpx", "requests", "socket", "urllib", "urllib3", "aiohttp"}
+
+
+def check_routes(server: Path) -> None:
+    """Binds the server's code to its annotations: only MCP_MUTATING tools call request, no QRNG route
+    appears, and no module other than qd_platform reaches the network."""
+    tree = ast.parse(server.read_text(encoding="utf-8"))
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import | ast.ImportFrom):
+            roots = {
+                (alias.name if isinstance(node, ast.Import) else node.module or "").split(".")[0]
+                for alias in node.names
+            }
+            if reached := roots & NETWORK_MODULES:
+                raise SystemExit(f"{server.name}: imports {sorted(reached)}; network access goes through qd_platform")
+        if isinstance(node, ast.Constant) and isinstance(node.value, str) and "/qt/" in node.value:
+            raise SystemExit(f"{server.name}: names the QRNG route {node.value!r}")
+    allowed: set[int] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.AsyncFunctionDef | ast.FunctionDef) and node.name in MCP_MUTATING:
+            allowed |= {id(inner) for inner in ast.walk(node)}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Name) and node.id == "request" and id(node) not in allowed:
+            raise SystemExit(f"{server.name}: line {node.lineno} calls request outside {MCP_MUTATING}")
+
+
 def check_mcp(server: Path = MCP_SERVER) -> None:
+    check_routes(server)
     tools = mcp_surface(server)
     if tuple(sorted(tools)) != MCP_TOOLS:
         raise SystemExit(f"MCP tools {sorted(tools)} differ from {MCP_TOOLS}")
@@ -336,9 +399,8 @@ def check(directory: Path, agents: list[Path] | None = None, server: Path = MCP_
     catalogue = load(directory)
     if catalogue["schema"] != CATALOGUE_SCHEMA:
         raise SystemExit(f"unexpected schema {catalogue['schema']}")
-    for key in FORBIDDEN_KEYS:
-        if key in keys(catalogue):
-            raise SystemExit(f"snapshot carries {key}")
+    if carried := sorted(set(FORBIDDEN_KEYS) & keys(catalogue)):
+        raise SystemExit(f"snapshot carries {carried}")
     counters = catalogue["account"]["availability"]
     if missing := [k for k in AVAILABILITY_KEYS if not isinstance(counters.get(k), int) or counters[k] < 0]:
         raise SystemExit(f"availability lacks {missing}")
@@ -347,8 +409,9 @@ def check(directory: Path, agents: list[Path] | None = None, server: Path = MCP_
         raise SystemExit("processor records differ from the Explorer platforms")
     for row in catalogue["explorer_platforms"]:
         name = row["name"]
-        if row["price_per_shot"] < 0 or row["max_duration"] <= 0:
-            raise SystemExit(f"{name}: price {row['price_per_shot']} or duration {row['max_duration']}")
+        price, duration = row.get("price_per_shot"), row.get("max_duration")
+        if not isinstance(price, int | float) or not isinstance(duration, int) or price < 0 or duration <= 0:
+            raise SystemExit(f"{name}: price {price!r} or duration {duration!r}")
         specs = catalogue["processors"][name].get("specs", {})
         limits = specs.get("constraints", {})
         photons = (limits.get("min_photon_count"), limits.get("max_photon_count"))
@@ -413,6 +476,16 @@ def self_test() -> None:
             'if __name__ == "__main__":',
             '@server.tool(annotations=MUTATE)\ndef qd_submit() -> None:\n    pass\n\n\nif __name__ == "__main__":',
         ),
+        "server reads a QRNG route": text("qd_mcp_server.py", '"/api/tokens/usage/report"', '"/qt/qrng/bytes?size=8"'),
+        "read tool posts": text(
+            "qd_mcp_server.py",
+            "await threaded(availability)",
+            'await threaded(lambda: request("POST", "/api/jobs"))',
+        ),
+        "server imports urllib": text(
+            "qd_mcp_server.py", "import functools\n", "import functools\nimport urllib.request\n"
+        ),
+        "price missing": catalogue(lambda c: c["explorer_platforms"][0].pop("price_per_shot")),
         "server marks cancel read-only": text(
             "qd_mcp_server.py", "@server.tool(annotations=MUTATE)", "@server.tool(annotations=READ)"
         ),

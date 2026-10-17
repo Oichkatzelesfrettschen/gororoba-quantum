@@ -856,13 +856,15 @@ Perceval: its gates read retained JSON and Markdown with the standard
 library.
 
 **MCP.** `quandela` is registered at Claude Code user scope and in
-`~/.codex/config.toml` as `/usr/bin/python3 -I scripts/qd_mcp_server.py`
-(the system interpreter carries mcp 1.29 and Perceval) with
-`QUANDELA_TOKEN_FILE`. Claude allows and Codex approves the seven read and
+`~/.codex/config.toml` as `"$QD_PYTHON" -I scripts/qd_mcp_server.py` with
+`QD_PYTHON=${QD_PYTHON:-/usr/bin/python3}`, the system interpreter that
+carries mcp 1.29 and Perceval, and `QUANDELA_TOKEN_FILE`. Claude allows and Codex approves the seven read and
 local tools (platforms, platform, availability, usage, job status, job
 result, local simulation); `qd_cancel_job` asks every time. The server
-submits nothing and exposes no QRNG route; gate core-502 holds its tool set
-and annotations to the guide's table.
+submits nothing and exposes no QRNG route; gate core-502 holds its tool set,
+annotations and the routes each tool may call to the guide's table. Its
+`qd_simulate_local` takes a unitary as JSON numbers, because Perceval's
+deserializer evaluates parameter expressions through sympy.
 
 **Submission.** Every remote job, simulator or QPU, every QRNG read
 (`/qt/qrng/bytes` and `/qt/qrng/ints` are GETs an offer can price per byte)
@@ -884,14 +886,14 @@ renders this table from it and fails when either changes alone:
 <!-- quandela-facts:begin -->
 | platform | kind | description | modes | photons | photon-source input modes | native commands | detector | max s per job | credits per shot |
 |---|---|---|---|---|---|---|---|---|---|
-| `qpu:belenos` | qpu | Belenos QPU | 1..24 | 1..12 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 | probs, samples, sample_count, entropy | threshold | 300 | 1e-06 |
-| `sim:belenos` | simulator | Belenos simulator | 1..24 | 1..12 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 | probs, samples, sample_count, entropy | threshold | 300 | 0 |
 | `qpu:ascella` | qpu | Ascella QPU | 1..12 | 1..6 | 0, 2, 4, 6, 8, 10 | probs, samples, sample_count, entropy | threshold | 300 | 1e-06 |
+| `qpu:belenos` | qpu | Belenos QPU | 1..24 | 1..12 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 | probs, samples, sample_count, entropy | threshold | 300 | 1e-06 |
 | `sim:ascella` | simulator | Arcturus simulator | 1..12 | 1..6 | 0, 2, 4, 6, 8, 10 | probs, samples, sample_count | threshold | 300 | 0 |
-| `sim:slos` | simulator | Simulator with SLOS backend | - | 2..12 | - | probs, samples, sample_count | - | 300 | 0 |
-| `sim:sampling` | simulator | Boson sampler simulator with Clifford&Clifford 2017 backend | - | 2..12 | - | probs, samples, sample_count | - | 300 | 0 |
-| `sim:gpu:small` | simulator | Clifford on GPU | - | 2..24 | - | probs, samples, sample_count | - | 300 | 0 |
+| `sim:belenos` | simulator | Belenos simulator | 1..24 | 1..12 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 | probs, samples, sample_count, entropy | threshold | 300 | 0 |
 | `sim:gpu:medium` | simulator | Clifford on GPU | - | 2..24 | - | samples, sample_count | - | 300 | 0 |
+| `sim:gpu:small` | simulator | Clifford on GPU | - | 2..24 | - | probs, samples, sample_count | - | 300 | 0 |
+| `sim:sampling` | simulator | Boson sampler simulator with Clifford&Clifford 2017 backend | - | 2..12 | - | probs, samples, sample_count | - | 300 | 0 |
+| `sim:slos` | simulator | Simulator with SLOS backend | - | 2..12 | - | probs, samples, sample_count | - | 300 | 0 |
 
 Token job limits (/api/jobs/availability): 1 running, 1 queued, 10 running Quantum Toolbox jobs.
 

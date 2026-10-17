@@ -20,6 +20,44 @@
  "explorer_platforms": [
   {
    "bookable": true,
+   "description": "Ascella QPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "qpu:ascella",
+   "price_per_shot": 1e-06,
+   "statistic": {
+    "2026-10-10": {
+     "availability": 90.00999999999999
+    },
+    "2026-10-11": {
+     "availability": 89.98
+    },
+    "2026-10-12": {
+     "availability": 89.94999999999999
+    },
+    "2026-10-13": {
+     "availability": 89.93
+    },
+    "2026-10-14": {
+     "availability": 89.85000000000001
+    },
+    "2026-10-15": {
+     "availability": 89.82
+    },
+    "2026-10-16": {
+     "availability": 89.72
+    },
+    "2026-10-17": {
+     "availability": 89.1
+    }
+   },
+   "status": "available",
+   "type": "qpu"
+  },
+  {
+   "bookable": true,
    "description": "Belenos QPU",
    "is_locked": false,
    "is_offer_platform": true,
@@ -55,83 +93,7 @@
      "availability": 72.11
     },
     "2026-10-17": {
-     "availability": 85.38
-    }
-   },
-   "status": "running",
-   "type": "qpu"
-  },
-  {
-   "bookable": false,
-   "description": "Belenos simulator",
-   "is_locked": false,
-   "is_offer_platform": true,
-   "maintenance": null,
-   "max_duration": 300,
-   "name": "sim:belenos",
-   "price_per_shot": 0.0,
-   "statistic": {
-    "2026-10-10": {
-     "availability": 99.92
-    },
-    "2026-10-11": {
-     "availability": 99.91
-    },
-    "2026-10-12": {
-     "availability": 99.88
-    },
-    "2026-10-13": {
-     "availability": 99.86000000000001
-    },
-    "2026-10-14": {
-     "availability": 99.88000000000001
-    },
-    "2026-10-15": {
-     "availability": 99.9
-    },
-    "2026-10-16": {
-     "availability": 99.88000000000001
-    },
-    "2026-10-17": {
-     "availability": 99.78
-    }
-   },
-   "status": "running",
-   "type": "simulator"
-  },
-  {
-   "bookable": true,
-   "description": "Ascella QPU",
-   "is_locked": false,
-   "is_offer_platform": true,
-   "maintenance": null,
-   "max_duration": 300,
-   "name": "qpu:ascella",
-   "price_per_shot": 1e-06,
-   "statistic": {
-    "2026-10-10": {
-     "availability": 90.00999999999999
-    },
-    "2026-10-11": {
-     "availability": 89.98
-    },
-    "2026-10-12": {
-     "availability": 89.94999999999999
-    },
-    "2026-10-13": {
-     "availability": 89.93
-    },
-    "2026-10-14": {
-     "availability": 89.85000000000001
-    },
-    "2026-10-15": {
-     "availability": 89.82
-    },
-    "2026-10-16": {
-     "availability": 89.72
-    },
-    "2026-10-17": {
-     "availability": 88.16
+     "availability": 85.77
     }
    },
    "status": "available",
@@ -169,7 +131,7 @@
      "availability": 99.9
     },
     "2026-10-17": {
-     "availability": 100.24000000000001
+     "availability": 100.13000000000001
     }
    },
    "status": "available",
@@ -177,37 +139,113 @@
   },
   {
    "bookable": false,
-   "description": "Simulator with SLOS backend",
+   "description": "Belenos simulator",
    "is_locked": false,
    "is_offer_platform": true,
    "maintenance": null,
    "max_duration": 300,
-   "name": "sim:slos",
+   "name": "sim:belenos",
    "price_per_shot": 0.0,
    "statistic": {
     "2026-10-10": {
      "availability": 99.92
     },
     "2026-10-11": {
+     "availability": 99.91
+    },
+    "2026-10-12": {
+     "availability": 99.88
+    },
+    "2026-10-13": {
+     "availability": 99.86000000000001
+    },
+    "2026-10-14": {
+     "availability": 99.88000000000001
+    },
+    "2026-10-15": {
+     "availability": 99.9
+    },
+    "2026-10-16": {
+     "availability": 99.88000000000001
+    },
+    "2026-10-17": {
+     "availability": 99.83
+    }
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  {
+   "bookable": false,
+   "description": "Clifford on GPU",
+   "is_locked": true,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:gpu:medium",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-10": {
+     "availability": 0.0
+    },
+    "2026-10-11": {
+     "availability": 0.0
+    },
+    "2026-10-12": {
+     "availability": 0.0
+    },
+    "2026-10-13": {
+     "availability": 0.0
+    },
+    "2026-10-14": {
+     "availability": 0.0
+    },
+    "2026-10-15": {
+     "availability": 0.0
+    },
+    "2026-10-16": {
+     "availability": 0.0
+    },
+    "2026-10-17": {
+     "availability": 0.0
+    }
+   },
+   "status": "decommissioned",
+   "type": "simulator"
+  },
+  {
+   "bookable": false,
+   "description": "Clifford on GPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:gpu:small",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-10": {
+     "availability": 99.93
+    },
+    "2026-10-11": {
      "availability": 99.92
     },
     "2026-10-12": {
-     "availability": 99.91000000000001
+     "availability": 99.92
     },
     "2026-10-13": {
      "availability": 99.9
     },
     "2026-10-14": {
-     "availability": 99.89
+     "availability": 99.9
     },
     "2026-10-15": {
-     "availability": 99.88999999999999
+     "availability": 99.9
     },
     "2026-10-16": {
-     "availability": 99.89
+     "availability": 99.9
     },
     "2026-10-17": {
-     "availability": 99.83999999999999
+     "availability": 99.82
     }
    },
    "status": "available",
@@ -253,78 +291,40 @@
   },
   {
    "bookable": false,
-   "description": "Clifford on GPU",
+   "description": "Simulator with SLOS backend",
    "is_locked": false,
    "is_offer_platform": true,
    "maintenance": null,
    "max_duration": 300,
-   "name": "sim:gpu:small",
+   "name": "sim:slos",
    "price_per_shot": 0.0,
    "statistic": {
     "2026-10-10": {
-     "availability": 99.93
+     "availability": 99.92
     },
     "2026-10-11": {
      "availability": 99.92
     },
     "2026-10-12": {
-     "availability": 99.92
+     "availability": 99.91000000000001
     },
     "2026-10-13": {
      "availability": 99.9
     },
     "2026-10-14": {
-     "availability": 99.9
+     "availability": 99.89
     },
     "2026-10-15": {
-     "availability": 99.9
+     "availability": 99.88999999999999
     },
     "2026-10-16": {
-     "availability": 99.9
+     "availability": 99.89
     },
     "2026-10-17": {
-     "availability": 99.83
+     "availability": 99.81
     }
    },
    "status": "available",
-   "type": "simulator"
-  },
-  {
-   "bookable": false,
-   "description": "Clifford on GPU",
-   "is_locked": true,
-   "is_offer_platform": true,
-   "maintenance": null,
-   "max_duration": 300,
-   "name": "sim:gpu:medium",
-   "price_per_shot": 0.0,
-   "statistic": {
-    "2026-10-10": {
-     "availability": 0.0
-    },
-    "2026-10-11": {
-     "availability": 0.0
-    },
-    "2026-10-12": {
-     "availability": 0.0
-    },
-    "2026-10-13": {
-     "availability": 0.0
-    },
-    "2026-10-14": {
-     "availability": 0.0
-    },
-    "2026-10-15": {
-     "availability": 0.0
-    },
-    "2026-10-16": {
-     "availability": 0.0
-    },
-    "2026-10-17": {
-     "availability": 0.0
-    }
-   },
-   "status": "decommissioned",
    "type": "simulator"
   }
  ],
@@ -582,7 +582,7 @@
     },
     "type": "qpu"
    },
-   "status": "running",
+   "status": "available",
    "type": "qpu"
   },
   "sim:ascella": {
@@ -696,7 +696,7 @@
     },
     "type": "simulator"
    },
-   "status": "running",
+   "status": "available",
    "type": "simulator"
   },
   "sim:gpu:medium": {
@@ -865,7 +865,7 @@
    "type": "qpu"
   }
  ],
- "retrieved_utc": "2026-10-17T17:31:00+00:00",
+ "retrieved_utc": "2026-10-17T17:53:31+00:00",
  "schema": "qd-catalogue-v1",
  "versions": {
   "exqalibur": "1.4.2",
