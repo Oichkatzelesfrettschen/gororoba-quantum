@@ -907,10 +907,12 @@ windows change between reads and live only in the catalogue.
 
 **Runner.** A run directory is a copy of one case `job-NN/` under
 `results/quandela/runs/UTC-PLATFORM-SERIES-job-NN/`. `qd_platform.py plan
-RUN_DIR --platform NAME --max-credits C` makes every submit check read-only
-(digest, platform status and duration, max_shots times the live price within
-C, no running or queued job, Perceval's shot estimate within max_shots) and
-prints the body Perceval would send; the written case quotes it. `submit`
+RUN_DIR --platform NAME --max-credits C --expected-seconds S
+--per-job-credits P` makes every submit check read-only (digest, platform
+status and duration, S within max_duration, P plus max_shots times the live
+price within C, no running or queued job, Perceval's shot estimate within
+max_shots), records the processor's performance figures and prints the body
+Perceval would send; the written case states S, P and C and quotes it. `submit`
 adds `--approval TEXT`, holds an flock beside the token file, checkpoints
 before the POST and never sends a case twice; `collect` retains the raw
 result bytes and parses counts without Perceval's deserializer. One job runs

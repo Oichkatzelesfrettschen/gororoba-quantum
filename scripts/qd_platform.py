@@ -38,16 +38,18 @@ Subcommands:
   windows and software versions change between reads and stay out of the
   table.
 - facts DIR prints the table.
-- plan RUN_DIR --platform NAME --max-credits C (network, read-only) runs
-  every check submit makes and prints the result: the circuit matches its
-  cases.json sha256, the platform is one the case admits, is available and
-  allows the case's max_duration, max_shots times the live price per shot
-  stays within C, the token has no running or queued job, and Perceval's
+- plan RUN_DIR --platform NAME --max-credits C --expected-seconds S
+  --per-job-credits P (network, read-only) runs every check submit makes and
+  prints the result: the circuit matches its cases.json sha256, the platform
+  is one the case admits, is available and allows the case's max_duration,
+  S stays within max_duration, P plus max_shots times the live price per
+  shot stays within C, the processor's perfs (g2 among them) are recorded,
+  the token has no running or queued job, and Perceval's
   estimate_required_shots for max_samples stays within max_shots. It builds
   the job body through Perceval's own RemoteComputer.prepare_payload and
   communication-layer send with create_job replaced by a recorder, so the
   body is exactly Perceval's and nothing leaves.
-- submit RUN_DIR --platform NAME --max-credits C --approval TEXT repeats
+- submit RUN_DIR (plan's arguments) --approval TEXT repeats
   plan under an flock beside the token file, writes submission-state.json
   before the request (a lost answer leaves a case submit refuses, never one
   it sends twice), posts the body to /api/jobs with the case's max_duration
@@ -560,10 +562,23 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     return {"body": body, "estimated_shots": estimate, "versions": found}
 
 
-def plan(case_dir: Path, platform: str, max_credits: float) -> dict[str, Any]:
-    """Every check submit makes, read-only: digests, platform, price ceiling, availability and the estimate."""
-    if not math.isfinite(max_credits) or max_credits < 0:
-        raise PlatformError(f"--max-credits {max_credits} is not a finite, non-negative credit ceiling")
+def plan(
+    case_dir: Path, platform: str, max_credits: float, expected_seconds: float, per_job_credits: float
+) -> dict[str, Any]:
+    """Every check submit makes, read-only: digests, platform, complete cost ceiling, availability and the estimate.
+
+    expected_seconds and per_job_credits are the written case's values: the
+    offer's per-job price is visible only in the portal, so the case states
+    it, and per-job credits plus max_shots times the live price per shot must
+    stay within max_credits.
+    """
+    for name, value in (
+        ("--max-credits", max_credits),
+        ("--expected-seconds", expected_seconds),
+        ("--per-job-credits", per_job_credits),
+    ):
+        if not math.isfinite(value) or value < 0:
+            raise PlatformError(f"{name} {value} is not a finite, non-negative number")
     manifest, circuit, cases_sha256 = load_case(case_dir)
     if platform not in manifest["platforms"]:
         raise PlatformError(f"cases.json admits {manifest['platforms']}, not {platform}")
@@ -572,9 +587,14 @@ def plan(case_dir: Path, platform: str, max_credits: float) -> dict[str, Any]:
         raise PlatformError(f"{platform} is {row['status']}")
     if manifest["max_duration"] > row["max_duration"]:
         raise PlatformError(f"max_duration {manifest['max_duration']} exceeds the platform's {row['max_duration']}")
-    ceiling = row["price_per_shot"] * manifest["max_shots"]
+    if expected_seconds > manifest["max_duration"]:
+        raise PlatformError(f"expected {expected_seconds} s exceed the case's max_duration {manifest['max_duration']}")
+    ceiling = row["price_per_shot"] * manifest["max_shots"] + per_job_credits
     if ceiling > max_credits:
-        raise PlatformError(f"{manifest['max_shots']} shots cost up to {ceiling:g} credits, above {max_credits:g}")
+        raise PlatformError(
+            f"{manifest['max_shots']} shots and the per-job price cost up to {ceiling:g} credits, above {max_credits:g}"
+        )
+    perfs = scrub(get(platform_route(platform)).get("perfs", {}))
     counters = availability()
     if counters["num_concurrent_jobs"] or counters["num_jobs_in_queue"]:
         raise PlatformError(f"the token has a running or queued job: {counters}")
@@ -587,12 +607,15 @@ def plan(case_dir: Path, platform: str, max_credits: float) -> dict[str, Any]:
         "cases_sha256": cases_sha256,
         "platform": platform,
         "platform_at_plan": row,
+        "perfs_at_plan": perfs,
         "availability_at_plan": counters,
+        "expected_seconds": expected_seconds,
+        "per_job_credits": per_job_credits,
         "max_samples": manifest["max_samples"],
         "max_shots": manifest["max_shots"],
         "estimated_shots": estimate,
         "credit_ceiling": ceiling,
-        "estimated_credits": row["price_per_shot"] * estimate,
+        "estimated_credits": row["price_per_shot"] * estimate + per_job_credits,
         "max_credits": max_credits,
         "body": built["body"],
         "body_sha256": sha256_bytes(json.dumps(built["body"], sort_keys=True).encode()),
@@ -616,7 +639,14 @@ def write_json(path: Path, value: object, exclusive: bool = False) -> None:
         temporary.unlink(missing_ok=True)
 
 
-def submit(case_dir: Path, platform: str, approval: str, max_credits: float) -> dict[str, Any]:
+def submit(
+    case_dir: Path,
+    platform: str,
+    approval: str,
+    max_credits: float,
+    expected_seconds: float,
+    per_job_credits: float,
+) -> dict[str, Any]:
     """Send one approved case as one job while holding the token's submit lock beside the token file."""
     if not approval.strip():
         raise PlatformError("a nonempty approval is required")
@@ -626,7 +656,7 @@ def submit(case_dir: Path, platform: str, approval: str, max_credits: float) -> 
         state_path = case_dir / "submission-state.json"
         if any((case_dir / name).exists() for name in ("submission.json", "submission-state.json", "job-body.json")):
             raise PlatformError(f"{case_dir} was submitted or holds an interrupted submission; never resubmit it")
-        checked = plan(case_dir, platform, max_credits)
+        checked = plan(case_dir, platform, max_credits, expected_seconds, per_job_credits)
         usage_before = usage_rows(get("/api/tokens/usage/report"))
         receipt = {
             "schema": SUBMISSION_SCHEMA,
@@ -736,22 +766,25 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
         if status["status"] == "completed":
             raise
         collected["result_absent"] = str(error)
+        result_bytes = None
     else:
         collected["result_sha256"] = sha256_bytes(result_bytes)
         collected.update(result_summary(result_bytes, job, status, complete=status["status"] == "completed"))
-        retain_bytes(raw_dir / "result.json", result_bytes)
-    try:
-        write_json(case_dir / "results.json", collected, exclusive=True)
-    except FileExistsError:
-        retained = json.loads((case_dir / "results.json").read_text(encoding="utf-8"))
+    # A recollection is compared before any write, so a result that appears
+    # after a recorded absence changes nothing on disk and is reported.
+    retained_path = case_dir / "results.json"
+    if retained_path.exists():
+        retained = json.loads(retained_path.read_text(encoding="utf-8"))
         moving = ("collected_utc", "usage_after")
         if {k: v for k, v in retained.items() if k not in moving} != {
             k: v for k, v in collected.items() if k not in moving
         }:
-            raise PlatformError(
-                f"{case_dir}/results.json differs from the recollection; nothing was rewritten"
-            ) from None
+            raise PlatformError(f"{retained_path} differs from the recollection; nothing was rewritten")
+    if result_bytes is not None:
+        retain_bytes(raw_dir / "result.json", result_bytes)
+    if retained_path.exists():
         return dict(retained)
+    write_json(retained_path, collected, exclusive=True)
     return collected
 
 
@@ -791,6 +824,8 @@ def result_summary(result_bytes: bytes, job: str, status: dict[str, Any], comple
             raise PlatformError("the result carries no serialized counts")
         return {"shots": shots, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}
     counts = parse_counts(inner["results"])
+    if sum(counts.values()) > shots:
+        raise PlatformError(f"job {job}: {sum(counts.values())} samples exceed its {shots} shots")
     scalars = {k: v for k, v in inner.items() if k != "results" and isinstance(v, int | float | str | None)}
     return {
         "shots": shots,
@@ -843,9 +878,17 @@ def run_facts(directory: Path) -> dict[str, Any]:
         modes = len(json.loads((directory / manifest["circuit"]["file"]).read_text(encoding="utf-8"))["input_state"])
         if any(len(state.split(",")) != modes for state in summary["counts"]):
             raise PlatformError(f"{owner}: a counted state has a mode count other than {modes}")
+        if summary["samples"] > manifest["max_samples"]:
+            raise PlatformError(f"{owner}: {summary['samples']} samples exceed max_samples {manifest['max_samples']}")
         shots = summary["shots"]
     elif not isinstance(collected.get("result_absent"), str):
         raise PlatformError(f"{owner}: a {status} job records neither a raw result nor its absence")
+    else:
+        # A result-less terminal job still consumed the shots its status reports.
+        reported = collected["status"].get("shots")
+        if reported is not None and (not isinstance(reported, int) or reported < 0):
+            raise PlatformError(f"{owner}: status shots {reported!r} are not a shot count")
+        shots = reported or 0
     return {
         "created_at": submission["submitted_utc"],
         "backends": [submission["platform"]],
@@ -907,6 +950,8 @@ def runner_self_test() -> int:
             if service["result"] is None:
                 raise RefusedError(f"GET {route}: HTTP 404 no result")
             return str(service["result"]).encode("utf-8")
+        if route == platform_route("sim:belenos"):
+            return {"perfs": {"g2 (%)": 1.0, "HOM (%)": 94.2}, "token_id": 7}
         if route == "/api/tokens/usage/report":
             return [{"total_jobs": 1, "usage": [{"job": "job-a", "token_label": "secret-label"}], "token_id": 7}]
         raise AssertionError(f"unexpected {method} {route}")
@@ -942,29 +987,38 @@ def runner_self_test() -> int:
         for stub in stubs:
             stub.start()
         try:
-            refuse("a non-finite credit ceiling", lambda: plan(run, "sim:belenos", math.nan), "finite")
-            refuse("a platform outside the case", lambda: plan(run, "qpu:ascella", 1.0), "admits")
+            refuse("a non-finite credit ceiling", lambda: plan(run, "sim:belenos", math.nan, 10.0, 0.0), "finite")
+            refuse("a platform outside the case", lambda: plan(run, "qpu:ascella", 1.0, 10.0, 0.0), "admits")
+            refuse("a per-job price above the ceiling", lambda: plan(run, "sim:belenos", 0.0, 10.0, 0.5), "above")
+            refuse("expected seconds past max_duration", lambda: plan(run, "sim:belenos", 1.0, 301.0, 0.0), "exceed")
             service["row"] = {**row, "status": "maintenance"}
-            refuse("a platform under maintenance", lambda: plan(run, "sim:belenos", 1.0), "is maintenance")
+            refuse("a platform under maintenance", lambda: plan(run, "sim:belenos", 1.0, 10.0, 0.0), "is maintenance")
             service["row"] = {**row, "price_per_shot": 1e-6}
-            refuse("a ceiling above the case's credits", lambda: plan(run, "sim:belenos", 0.0), "above")
+            refuse("a ceiling above the case's credits", lambda: plan(run, "sim:belenos", 0.0, 10.0, 0.0), "above")
             service["row"], service["idle"] = row, {**idle, "num_jobs_in_queue": 1}
-            refuse("a token with a queued job", lambda: plan(run, "sim:belenos", 1.0), "running or queued")
+            refuse("a token with a queued job", lambda: plan(run, "sim:belenos", 1.0, 10.0, 0.0), "running or queued")
             service["idle"], service["estimate"] = idle, 10**9
-            refuse("an estimate above max_shots", lambda: plan(run, "sim:belenos", 1.0), "estimates")
+            refuse("an estimate above max_shots", lambda: plan(run, "sim:belenos", 1.0, 10.0, 0.0), "estimates")
             service["estimate"] = 10000
-            refuse("an empty approval", lambda: submit(run, "sim:belenos", " ", 1.0), "approval")
+            refuse("an empty approval", lambda: submit(run, "sim:belenos", " ", 1.0, 10.0, 0.0), "approval")
             refused = scratch / "refused"
             shutil.copytree(case, refused)
             service["refuse"] = True
-            refuse("a refused POST", lambda: submit(refused, "sim:belenos", "approved", 0.0), "HTTP 422")
+            refuse("a refused POST", lambda: submit(refused, "sim:belenos", "approved", 0.0, 10.0, 0.0), "HTTP 422")
             service["refuse"] = False
             if json.loads((refused / "submission-state.json").read_text(encoding="utf-8"))["phase"] != "refused":
                 raise AssertionError("a refused POST left a checkpoint other than refused")
-            refuse("a resubmitted refusal", lambda: submit(refused, "sim:belenos", "again", 0.0), "never resubmit")
-            submit(run, "sim:belenos", "approved in the written case", 0.0)
-            refuse("a second submit", lambda: submit(run, "sim:belenos", "again", 0.0), "never resubmit")
+            refuse(
+                "a resubmitted refusal",
+                lambda: submit(refused, "sim:belenos", "again", 0.0, 10.0, 0.0),
+                "never resubmit",
+            )
+            submit(run, "sim:belenos", "approved in the written case", 0.0, 10.0, 0.0)
+            refuse("a second submit", lambda: submit(run, "sim:belenos", "again", 0.0, 10.0, 0.0), "never resubmit")
             collected = collect(run, 0.0, 1.0)
+            receipt = json.loads((run / "submission.json").read_text(encoding="utf-8"))
+            if receipt["perfs_at_plan"].get("g2 (%)") != 1.0 or receipt["expected_seconds"] != 10.0:
+                raise AssertionError("the receipt lacks the processor perfs or the approved seconds")
             for name in ("results.json", "submission.json"):
                 if carried := sorted(set(FORBIDDEN_KEYS) & keys(json.loads((run / name).read_text(encoding="utf-8")))):
                     raise AssertionError(f"{name} retained {carried}")
@@ -984,7 +1038,7 @@ def runner_self_test() -> int:
             for terminal, partial in (("canceled", None), ("error", result)):
                 stopped = scratch / f"stopped-{terminal}"
                 shutil.copytree(case, stopped)
-                submit(stopped, "sim:belenos", "approved", 0.0)
+                submit(stopped, "sim:belenos", "approved", 0.0, 10.0, 0.0)
                 service["status"], service["result"] = terminal, partial
                 collect(stopped, 0.0, 1.0)
                 facts = run_facts(stopped)
@@ -993,6 +1047,13 @@ def runner_self_test() -> int:
                     or (partial is not None) != (stopped / "raw/result.json").exists()
                 ):
                     raise AssertionError(f"a {terminal} job was retained as {facts}")
+            if "10012 shots" not in run_facts(scratch / "stopped-canceled")["detail"]:
+                raise AssertionError("a result-less canceled job lost its status shots")
+            late = scratch / "stopped-canceled"
+            service["status"], service["result"] = "canceled", result.replace("job-a", "job-a")
+            refuse("a late partial result", lambda: collect(late, 0.0, 1.0), "nothing was rewritten")
+            if (late / "raw/result.json").exists():
+                raise AssertionError("a refused recollection wrote raw/result.json")
             service["status"], service["result"] = "completed", result
             if collected["counts"] != {",".join(dark): 9990, ",".join(label): 10}:
                 raise AssertionError(f"collect parsed {collected['counts']}")
@@ -1009,6 +1070,7 @@ def runner_self_test() -> int:
                 ("a retained token id", lambda d: _rewrite(d / "results.json", token_id=7), "carries"),
                 ("another job id", lambda d: _rewrite(d / "results.json", job_id="job-b"), "another job"),
                 ("a raw result of another job", _foreign_result, "not job-a"),
+                ("more samples than shots", _inflated_result, "exceed its"),
                 (
                     "status shots off the result",
                     lambda d: _rewrite(d / "results.json", status={"status": "completed", "shots": 5}),
@@ -1032,6 +1094,15 @@ def runner_self_test() -> int:
     ):
         refuse(label_text, functools.partial(parse_counts, text), "")
     return rejected
+
+
+def _inflated_result(directory: Path) -> None:
+    """Shrink the result's shots below its sample count and rebind its digest."""
+    raw = directory / "raw/result.json"
+    data = raw.read_bytes().replace(b'"shots": 10012', b'"shots": 5')
+    raw.write_bytes(data)
+    status = json.loads((directory / "results.json").read_text(encoding="utf-8"))["status"]
+    _rewrite(directory / "results.json", result_sha256=sha256_bytes(data), shots=5, status={**status, "shots": 5})
 
 
 def _foreign_result(directory: Path) -> None:
@@ -1188,6 +1259,8 @@ def main() -> int:
         p.add_argument("case_dir", type=Path)
         p.add_argument("--platform", required=True)
         p.add_argument("--max-credits", type=float, required=True, help="the written case's credit ceiling")
+        p.add_argument("--expected-seconds", type=float, required=True, help="the written case's expected seconds")
+        p.add_argument("--per-job-credits", type=float, required=True, help="the offer's per-job price in the case")
         if name == "submit":
             p.add_argument("--approval", required=True, help="the user's approval, quoted, kept in submission.json")
     p = sub.add_parser("recover")
@@ -1213,10 +1286,19 @@ def main() -> int:
     elif args.command in ("plan", "submit", "recover", "collect", "runs"):
         try:
             if args.command == "plan":
-                checked = plan(args.case_dir, args.platform, args.max_credits)
+                checked = plan(
+                    args.case_dir, args.platform, args.max_credits, args.expected_seconds, args.per_job_credits
+                )
                 print(json.dumps({k: v for k, v in checked.items() if k != "body"}, indent=1, sort_keys=True))
             elif args.command == "submit":
-                record = submit(args.case_dir, args.platform, args.approval, args.max_credits)
+                record = submit(
+                    args.case_dir,
+                    args.platform,
+                    args.approval,
+                    args.max_credits,
+                    args.expected_seconds,
+                    args.per_job_credits,
+                )
                 print(f"job {record['job_id']} on {record['platform']}")
             elif args.command == "recover":
                 print(f"job {recover(args.case_dir)['job_id']}: submission.json written from the checkpoint")

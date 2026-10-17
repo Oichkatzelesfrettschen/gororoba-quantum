@@ -329,14 +329,18 @@ unpublished method enters a Quandela job only with that use accepted.
 export QUANDELA_TOKEN_FILE="$HOME/.config/quandela/cloud-token"
 RUN=results/quandela/runs/$(date -u +%Y-%m-%dT%H%M%SZ)-sim_belenos-box_kite_photonic_single-job-00
 mkdir -p "$RUN" && cp results/quandela/cases/box_kite_photonic_single/job-00/*.json "$RUN"/
-"$PYTHON" scripts/qd_platform.py plan "$RUN" --platform sim:belenos --max-credits 0
-"$PYTHON" scripts/qd_platform.py submit "$RUN" --platform sim:belenos --max-credits 0 --approval "TEXT"
+CASE="--platform sim:belenos --max-credits C --expected-seconds S --per-job-credits P"
+"$PYTHON" scripts/qd_platform.py plan "$RUN" $CASE
+"$PYTHON" scripts/qd_platform.py submit "$RUN" $CASE --approval "TEXT"
 "$PYTHON" scripts/qd_platform.py collect "$RUN"
 ```
 
 `plan` reads only: it checks the digests, the platform's status and
-duration limit, the credit ceiling (max_shots times the live price per
-shot) against `--max-credits`, the token's availability and Perceval's
+duration limit, the case's expected seconds against max_duration, the
+complete credit ceiling (max_shots times the live price per shot plus the
+per-job price the written case states from the portal) against
+`--max-credits`, records the processor's performance figures (the g2 the
+pair fit fixes), the token's availability and Perceval's
 `estimate_required_shots`, and builds the job body through Perceval's
 `RemoteComputer.prepare_payload` and communication-layer `send` with the
 RPC handler's `create_job` replaced by a recorder. `submit` repeats those

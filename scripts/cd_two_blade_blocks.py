@@ -217,6 +217,10 @@ def validate(record: dict[str, Any]) -> None:
             row["zero_products"] == int(row["p_histogram"].get("0", 0)),
             f"D={dim}: zero products differ from the P histogram",
         )
+        require(
+            row["zero_products"] == row["annihilator_nullity_sum"] and row["zero_products_equal_nullity_sum"],
+            f"D={dim}: zero products differ from the annihilator nullity sum",
+        )
     require(record["dimensions"][0]["zero_products"] == 336, "D=16 zero products differ from the 336-row corpus")
     coverage = record["photonic_coverage"]
     require(coverage["every_configuration_has_a_single_job"], "a two-label configuration has no single-series job")
@@ -263,7 +267,11 @@ def self_test() -> int:
     def coverage(r: dict[str, Any]) -> None:
         r["photonic_coverage"]["every_block_has_a_pair_job"] = False
 
+    def nullity(r: dict[str, Any]) -> None:
+        r["dimensions"][2]["annihilator_nullity_sum"] += 4
+
     mutations: list[tuple[str, Callable[[dict[str, Any]], None]]] = [
+        ("a nullity sum off the zero products", nullity),
         ("an oracle digest off cd_core", oracle),
         ("pair classes that miss a pair", partition),
         ("a zero count off the P histogram", zeros),
