@@ -31,11 +31,14 @@ Five sources, each retained with its identity:
 Each writes MANIFEST.json beside the files (path, source URL, sha256); the
 site and spec manifests also list every unreachable URL with the pages that
 link it, and ``--check`` verifies every retained file against its manifest
-without network access. It also requires each captured directory's file set to equal its
-manifest's path set and that set to equal the inventory the capture defines (SDK_REPOS, the
-API and release lists, the site crawl set the manifest records, the spec rows' source URLs);
-``--self-test`` proves the check rejects a removed page with its row and an unlisted file on a
-temporary copy.
+without network access. It also requires each captured directory's file set to
+equal its manifest's path set and that set to equal the inventory the capture
+defines: SDK_REPOS, the API and release lists, the site crawl set the manifest
+records, and the fixed tuple SPEC_PAGES. A capture that crawls another spec page
+set fails ``--check`` until SPEC_PAGES changes in the same commit; a refresh
+prunes captured files its new rows no longer name. ``--self-test`` proves the
+check rejects removed pages with their rows, unlisted files and altered
+records, and that pruning restores a passing tree, on a temporary copy.
 """
 
 from __future__ import annotations
@@ -129,6 +132,76 @@ SITE_ASSET = re.compile(r"^(_nuxt|images|logos|icon-sprite|site\.webmanifest)|\.
 ASSET_HOST = "https://www.datocms-assets.com/"
 SPEC_BASE = "https://qutech-delft.github.io/cQASM-spec/latest/"
 SPEC_REPO = "QuTech-Delft/cQASM-spec"
+# Spec pages the capture retains, relative to SPEC_BASE. A capture that crawls another page set
+# fails --check until this tuple changes in the same commit.
+SPEC_PAGES = (
+    "appendices/spin_2plus.html",
+    "index.html",
+    "introduction/acknowledgements.html",
+    "introduction/context.html",
+    "introduction/history.html",
+    "language_specification/expressions/builtin_functions.html",
+    "language_specification/expressions/indices.html",
+    "language_specification/expressions/predefined_constants.html",
+    "language_specification/index.html",
+    "language_specification/statements/assembly_declaration.html",
+    "language_specification/statements/instructions/control_instructions/barrier_instruction.html",
+    "language_specification/statements/instructions/control_instructions/wait_instruction.html",
+    "language_specification/statements/instructions/non_unitary_instructions/init_instruction.html",
+    "language_specification/statements/instructions/non_unitary_instructions/measure_instruction.html",
+    "language_specification/statements/instructions/non_unitary_instructions/reset_instruction.html",
+    "language_specification/statements/instructions/single-gate-multiple-qubit-notation.html",
+    "language_specification/statements/instructions/unitary_instructions.html",
+    "language_specification/statements/variable_declarations/bit_register_declaration.html",
+    "language_specification/statements/variable_declarations/qubit_register_declaration.html",
+    "language_specification/statements/version_statement.html",
+    "language_specification/tokens/identifiers.html",
+    "language_specification/tokens/keywords.html",
+    "language_specification/tokens/literals.html",
+    "language_specification/tokens/newlines.html",
+    "language_specification/tokens/operators_and_punctuators.html",
+    "language_specification/tokens/raw_text_string.html",
+    "language_specification/tokens/whitespace_and_comments.html",
+    "language_specification/types.html",
+    "standard_gate_set/index.html",
+    "standard_gate_set/multi_qubit/mq_CCX.html",
+    "standard_gate_set/multi_qubit/mq_CNOT.html",
+    "standard_gate_set/multi_qubit/mq_CR.html",
+    "standard_gate_set/multi_qubit/mq_CRk.html",
+    "standard_gate_set/multi_qubit/mq_CSWAP.html",
+    "standard_gate_set/multi_qubit/mq_CV.html",
+    "standard_gate_set/multi_qubit/mq_CY.html",
+    "standard_gate_set/multi_qubit/mq_CZ.html",
+    "standard_gate_set/multi_qubit/mq_DCNOT.html",
+    "standard_gate_set/multi_qubit/mq_ECR.html",
+    "standard_gate_set/multi_qubit/mq_ISWAP.html",
+    "standard_gate_set/multi_qubit/mq_InvSqrtSWAP.html",
+    "standard_gate_set/multi_qubit/mq_M.html",
+    "standard_gate_set/multi_qubit/mq_MS.html",
+    "standard_gate_set/multi_qubit/mq_SWAP.html",
+    "standard_gate_set/multi_qubit/mq_SqrtISWAP.html",
+    "standard_gate_set/multi_qubit/mq_SqrtSWAP.html",
+    "standard_gate_set/single_qubit/sq_H.html",
+    "standard_gate_set/single_qubit/sq_I.html",
+    "standard_gate_set/single_qubit/sq_Rn.html",
+    "standard_gate_set/single_qubit/sq_Rx.html",
+    "standard_gate_set/single_qubit/sq_Ry.html",
+    "standard_gate_set/single_qubit/sq_Rz.html",
+    "standard_gate_set/single_qubit/sq_S.html",
+    "standard_gate_set/single_qubit/sq_Sdag.html",
+    "standard_gate_set/single_qubit/sq_T.html",
+    "standard_gate_set/single_qubit/sq_Tdag.html",
+    "standard_gate_set/single_qubit/sq_U.html",
+    "standard_gate_set/single_qubit/sq_X.html",
+    "standard_gate_set/single_qubit/sq_X90.html",
+    "standard_gate_set/single_qubit/sq_Y.html",
+    "standard_gate_set/single_qubit/sq_Y90.html",
+    "standard_gate_set/single_qubit/sq_Z.html",
+    "standard_gate_set/single_qubit/sq_Z90.html",
+    "standard_gate_set/single_qubit/sq_mX90.html",
+    "standard_gate_set/single_qubit/sq_mY90.html",
+    "standard_gate_set/single_qubit/sq_mZ90.html",
+)
 # repository -> (release tag, commit the tag resolves to through
 # GET /repos/QuTech-Delft/{repo}/git/ref/tags/{tag}, documentation sources).
 SDK_REPOS: dict[str, tuple[str, str, tuple[str, ...]]] = {
@@ -790,7 +863,21 @@ def manifest_path(kind: str, base: Path = BASE) -> Path:
     return base / ("cqasm-spec" if kind == "spec" else kind) / "MANIFEST.json"
 
 
+def prune_capture(kind: str, rows: list[dict[str, Any]], base: Path = BASE) -> None:
+    """Removes every file under a kind's directory that the new rows and the manifest do not name."""
+    root = base.parent.parent.parent
+    manifest = manifest_path(kind, base)
+    directory = manifest.parent
+    listed = {root / row["path"] for row in rows}
+    for path in sorted(directory.rglob("*"), reverse=True):
+        if path.is_file() and path != manifest and path not in listed:
+            path.unlink()
+        elif path.is_dir() and not any(path.iterdir()):
+            path.rmdir()
+
+
 def write_manifest(kind: str, rows: list[dict[str, Any]], extra: dict[str, Any]) -> None:
+    prune_capture(kind, rows)
     doc: dict[str, Any] = {"schema": "qi-docs-capture-v2", "kind": kind, "retrieved_utc": now(), "files": rows}
     doc.update(extra)
     manifest_path(kind).write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
@@ -821,16 +908,14 @@ def expected_paths(kind: str, doc: dict[str, Any], base: Path, root: Path) -> se
         names = [*GITHUB_RELEASES, *(project.split("/")[-1] for project in GITLAB_RELEASES)]
         return {f"{prefix}/releases/{name}.{ext}" for name in names for ext in ("json", "md")}
     if kind == "spec":
-        # The crawl follows navigation links, so the page set is the one the manifest rows name;
-        # each row's path must be the one its source URL maps to.
-        out = set()
+        # SPEC_PAGES fixes the page set; each row's path and source must be the ones it maps to.
+        out = {f"{prefix}/cqasm-spec/{page.removesuffix('.html')}.md" for page in SPEC_PAGES}
         for row in doc["files"]:
-            if not row["source"].startswith(SPEC_BASE):
-                raise SystemExit(f"{row['path']}: source {row['source']} lies outside the spec site")
+            if row["source"] not in {SPEC_BASE + page for page in SPEC_PAGES}:
+                raise SystemExit(f"{row['path']}: source {row['source']} is outside SPEC_PAGES")
             relative = row["source"][len(SPEC_BASE) :].removesuffix(".html") + ".md"
             if row["path"] != f"{prefix}/cqasm-spec/{relative}":
                 raise SystemExit(f"{row['path']} does not match its source {row['source']}")
-            out.add(row["path"])
         listed = {row["source"] for row in doc["files"]}
         for item in (*doc["unreachable"], *doc["external_links"]):
             for referrer in item["referrers"]:
@@ -953,6 +1038,25 @@ def self_test() -> int:
         manifest.write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
         expect("failed site page record with another url", "records an inconsistent url")
         manifest.write_bytes(manifest_bytes)
+        spec_page = base / "cqasm-spec" / "appendices" / "spin_2plus.md"
+        spec_bytes = spec_page.read_bytes()
+        spec_manifest = manifest_path("spec", base)
+        spec_manifest_bytes = spec_manifest.read_bytes()
+        spec_page.unlink()
+        drop_row("spec", "/appendices/spin_2plus.md")
+        expect("spec page and manifest row removed", "has no manifest row")
+        spec_manifest.write_bytes(spec_manifest_bytes)
+        spec_page.write_bytes(spec_bytes)
+        stray = base / "releases" / "stray" / "gone.md"
+        stray.parent.mkdir()
+        stray.write_text("x\n", encoding="utf-8")
+        expect("stray release file", "is not listed in its manifest")
+        rows = json.loads(manifest_path("releases", base).read_text(encoding="utf-8"))["files"]
+        prune_capture("releases", rows, base)
+        if stray.exists() or stray.parent.exists():
+            raise SystemExit("self-test prune: stray file survived")
+        check_tree(root)
+        cases += 1
         nested = base / "site" / "nested" / "MANIFEST.json"
         nested.parent.mkdir()
         nested.write_text("{}\n", encoding="utf-8")
