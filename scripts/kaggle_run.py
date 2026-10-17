@@ -534,6 +534,37 @@ def push(args: argparse.Namespace) -> int:
     return 0
 
 
+def _dataset_history_self_test() -> None:
+    """Three uploads of one dataset keep every archive; a foreign digest or ref is refused."""
+    ref = "owner/data"
+
+    def upload(digest: str, files: int) -> dict[str, Any]:
+        return {
+            "ref": ref,
+            "archive_sha256": digest,
+            "git_commit": digest[:7],
+            "files": {str(k): "" for k in range(files)},
+        }
+
+    first = with_history(upload("a" * 64, 1), None)
+    third = with_history(upload("c" * 64, 3), with_history(upload("b" * 64, 2), first))
+    require(first["history"] == [], "a first upload carries history")
+    require([entry["files"] for entry in third["history"]] == [2, 1], f"history out of order {third['history']}")
+    for digest in ("a", "b", "c"):
+        require_dataset_version("run", ref, digest * 64, third)
+    for action, fragment in (
+        (lambda: require_dataset_version("run", ref, "d" * 64, third), "is no recorded version"),
+        (lambda: require_dataset_version("run", "owner/other", "c" * 64, third), "has the record of"),
+        (lambda: with_history({**upload("e" * 64, 1), "ref": "owner/other"}, third), "replaced by"),
+    ):
+        try:
+            action()
+        except SystemExit as reason:
+            require(fragment in str(reason), f"dataset history: {reason} lacks {fragment!r}")
+            continue
+        raise SystemExit(f"dataset history: expected a failure naming {fragment!r}")
+
+
 def self_test(args: argparse.Namespace) -> int:
     """Build the Design C kernel (CPU and GPU) and a shard kernel offline, and check bundles, metadata and code."""
     import py_compile
@@ -555,10 +586,12 @@ def self_test(args: argparse.Namespace) -> int:
         py_compile.compile(str(Path(scratch) / "shard/kernel/run.py"), doraise=True)
     _overlay_self_test()
     _push_guard_self_test()
+    _dataset_history_self_test()
     print(
         f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private CPU, GPU and TPU kernels, "
         "a shard kernel bound to HEAD's tree, an overlay that rebuilds a directory-to-file change, run.py compiles, "
-        "an accelerator push or shard run refused while an older version runs"
+        "an accelerator push or shard run refused while an older version runs, "
+        "a re-versioned dataset that keeps every earlier archive"
     )
     return 0
 
@@ -748,6 +781,23 @@ def dataset_record(slug: str) -> dict[str, Any]:
     return dict(json.loads(path.read_text(encoding="utf-8")))
 
 
+def with_history(record: dict[str, Any], previous: dict[str, Any] | None) -> dict[str, Any]:
+    """The record with every earlier version, newest first, as its archive digest, commit and file count."""
+    history: list[dict[str, Any]] = []
+    if previous is not None:
+        require(previous["ref"] == record["ref"], f"dataset record {previous['ref']} replaced by {record['ref']}")
+        entry = {"archive_sha256": previous["archive_sha256"], "git_commit": previous["git_commit"]}
+        history = [{**entry, "files": len(previous["files"])}, *previous.get("history", [])]
+    return {**record, "history": history}
+
+
+def require_dataset_version(run: str, ref: str, digest: str, record: dict[str, Any]) -> None:
+    """A run's attached archive is the record's current version or one its history names."""
+    versions = {record["archive_sha256"], *(entry["archive_sha256"] for entry in record.get("history", []))}
+    require(record["ref"] == ref, f"{run}: dataset {ref} has the record of {record['ref']}")
+    require(digest in versions, f"{run}: dataset {ref} archive {digest[:12]} is no recorded version")
+
+
 def dataset(args: argparse.Namespace) -> int:
     """Upload repository files as a private Kaggle dataset: one tar archive and its sha256 manifest.
 
@@ -798,8 +848,10 @@ def dataset(args: argparse.Namespace) -> int:
         "files": manifest,
         "reply": reply.strip()[-300:],
     }
+    path = DATASETS / f"{args.slug}.json"
+    previous = dict(json.loads(path.read_text(encoding="utf-8"))) if path.is_file() else None
     DATASETS.mkdir(parents=True, exist_ok=True)
-    (DATASETS / f"{args.slug}.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(with_history(record, previous), indent=1) + "\n", encoding="utf-8")
     print(f"{ref}: {len(manifest)} files, archive {archive_sha256[:12]}")
     return 0
 
@@ -1160,8 +1212,10 @@ def verify(args: argparse.Namespace) -> int:
             "kernel_version" not in submission or "output/exit.json" in record["files"],
             f"{run_dir.name}: a versioned run's ledger lacks output/exit.json",
         )
+        for ref, digest in submission.get("datasets", {}).items():
+            require_dataset_version(run_dir.name, ref, digest, dataset_record(ref.split("/")[1]))
     require(bool(runs), f"no collect.json under {RESULTS.relative_to(ROOT)}")
-    print(f"kaggle runs: {len(runs)} collected outputs match their sha256 ledgers")
+    print(f"kaggle runs: {len(runs)} collected outputs match their sha256 ledgers and recorded dataset versions")
     return 0
 
 
