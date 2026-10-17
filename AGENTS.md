@@ -447,8 +447,12 @@ retain its output under results/kaggle/. The kernel's own guide is
   set.
   `scripts/aer_gpu_probe.py --workloads n21 --configurations
   cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec` records the three paths
-  with Aer's reported `cuStateVec_enable`; a T4 result for it is not retained
-  yet. `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
+  with Aer's reported `cuStateVec_enable`. On the T4 x2 (gate core-440)
+  cuStateVec ran the dynamic density matrix 1.44 and 1.63 times faster than
+  the plain GPU executor at 7 and 10 qubits and statevector trajectories
+  1.19 to 1.29 times slower, and Aer spread every multi-shot run over both
+  GPUs (`docs/evidence/aer_gpu_configuration/README.md`).
+  `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
   the T4 check, and `docs/notes/build_host/custatevec.md` the host build.
 - **Batched GPU shots.** On a GPU `noise_simulator` enables Aer's
   `batched_shots_gpu` by default for circuits of at most

@@ -129,11 +129,21 @@ probe's own process tree held more than FOREIGN_CPU_LIMIT CPUs before or
 during it; the probe's own Aer threads never count. On the build host, the
 1-minute load-average rule marked every row of a four-CPU probe busy,
 because that average still counts the previous row. Each row then waited
-IDLE_WAIT_SECONDS and ran again, which is how the first T4 push overran
+IDLE_WAIT_SECONDS and ran again, which is how the first T4 push
+(`results/kaggle/2026-10-17T083803Z-gororoba-aer-gpu-config`) overran
 5400 s without one finished row.
 
 Read `kaggle quota` before and after, then `status` and `collect` retain the
 output under results/kaggle/.
+
+**Result.** The push above ran as
+`results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config` in 0.84 h of GPU
+quota and exited 0. Its `gpu_env.json` lists no failure, nvidia-smi listed
+both T4s, and both Bell runs report device GPU, the cuStateVec run with
+`cuStateVec_enable` true. All 35 rows ran uncontended, every GPU row reports
+device GPU, and every cuStateVec row reports `cuStateVec_enable` true; gate
+core-440 rechecks the record. The timings and the two-GPU metadata are in
+`docs/evidence/aer_gpu_configuration/README.md`.
 
 ## Reading the result
 

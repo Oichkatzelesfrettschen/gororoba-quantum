@@ -1,0 +1,11 @@
+{
+ "id": "probablyeric/gororoba-aer-gpu-env-preflight",
+ "title": "gororoba-aer-gpu-env-preflight",
+ "code_file": "run.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": false,
+ "enable_tpu": false,
+ "enable_internet": true
+}

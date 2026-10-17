@@ -3068,6 +3068,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config/output/output/aer_gpu_probe.json && \"$PYTHON\" -B -O -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config/output/output/aer_gpu_probe.json",
+   "name": "core-440",
+   "seconds": 20.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -O -W error scripts/box_kite_cases.py --check results/quantum_inspire/cases",
    "name": "core-420",
    "seconds": 41.0,
