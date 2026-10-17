@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import contextlib
 import copy
+import datetime
 import hashlib
 import importlib.util
 import io
@@ -99,6 +100,14 @@ class FakeClient:
             "batchjobs_per_queue_limit": 5,
         }
         self.uploaded_sources: list[str] = []
+        # The account's other jobs and batches, read by the hardware pause check.
+        self.account_types: list[dict[str, Any]] = [
+            {"id": 1, "is_hardware": False},
+            {"id": 6, "is_hardware": True},
+            {"id": 7, "is_hardware": True},
+        ]
+        self.account_batches: list[dict[str, Any]] = []
+        self.account_jobs: list[dict[str, Any]] = []
 
     def get(self, path: str, **params: Any) -> Any:
         self.calls.append(("GET", path))
@@ -122,6 +131,12 @@ class FakeClient:
             return [{"id": 1, "name": "cQASM", "version": "3.0"}]
         if path == "/transactions/":
             return []
+        if path == "/backend_types/":
+            return copy.deepcopy(self.account_types)
+        if path == "/batch_jobs" and not params:
+            return copy.deepcopy(self.account_batches)
+        if path == "/jobs":
+            return copy.deepcopy(self.account_jobs)
         if path == "/batch_jobs" and params == {"id": self.batch["id"]}:
             return [copy.deepcopy(self.batch)]
         raise AssertionError(f"unexpected mock paginated GET {path} {params}")
@@ -193,6 +208,8 @@ class PreflightClient:
         raise AssertionError(f"unexpected preflight GET {path}")
 
     def pages(self, path: str, **params: Any) -> list[dict[str, Any]]:
+        if path in {"/backend_types/", "/batch_jobs", "/jobs"}:
+            return []
         raise PreflightReached(path)
 
     def post(self, path: str, body: dict[str, Any]) -> dict[str, Any]:
@@ -489,6 +506,70 @@ class RetentionChecks(unittest.TestCase):
         record = json.loads((self.case_dir / "submission.json").read_text())
         self.assertEqual(record["queue_limit_at_submit"], 5)
         self.assertEqual(record["queue_at_submit"]["number_of_jobs_in_queue"], 4)
+
+    def paused_client(self, jobs: list[tuple[int, str, int | None]], *, now: datetime.datetime) -> FakeClient:
+        """A client whose account holds one job per (backend type, status, seconds since it finished) row."""
+        client = FakeClient(self.case_dir)
+        for index, (type_id, status, age) in enumerate(jobs):
+            client.account_batches.append({"id": 900 + index, "backend_type_id": type_id})
+            finished = None if age is None else (now - datetime.timedelta(seconds=age)).isoformat()
+            client.account_jobs.append(
+                {"id": 800 + index, "batch_job_id": 900 + index, "status": status, "finished_at": finished}
+            )
+        return client
+
+    def test_hardware_batch_waits_for_the_account_pause(self) -> None:
+        now = datetime.datetime(2026, 10, 17, 12, 0, 0, tzinfo=datetime.UTC)
+        pause = platform.HARDWARE_PAUSE_SECONDS
+        self.assertEqual(pause, 120)
+        with patch.object(platform, "utc_now", return_value=now):
+            # Jobs of every hardware backend type count, whichever session submitted them.
+            for type_id in (6, 7):
+                for age, wait in ((pause - 1, "wait 1 more seconds"), (5, f"wait {pause - 5} more seconds")):
+                    with self.subTest(backend_type=type_id, age=age):
+                        client = self.paused_client([(type_id, "completed", age)], now=now)
+                        with self.assertRaisesRegex(SystemExit, wait):
+                            self.submit(client)
+                        self.assertTrue(all(method == "GET" for method, _ in client.calls))
+                        self.assertFalse((self.case_dir / "submission-state.json").exists())
+            for age in (pause, pause + 1, 3600):
+                with self.subTest(accepted_after=age):
+                    client = self.paused_client([(6, "completed", age), (7, "failed", age + 50)], now=now)
+                    self.submit(client)
+                    self.assertEqual(sum(method == "PATCH" for method, _ in client.calls), 1)
+                    for name in ("submission.json", "submission-state.json"):
+                        (self.case_dir / name).unlink()
+            with self.subTest(latest_of_several=True):
+                client = self.paused_client([(7, "completed", 600), (6, "completed", 30), (7, "failed", 300)], now=now)
+                with self.assertRaisesRegex(SystemExit, "wait 90 more seconds"):
+                    self.submit(client)
+
+    def test_hardware_batch_refuses_while_an_account_hardware_job_is_unfinished(self) -> None:
+        now = datetime.datetime(2026, 10, 17, 12, 0, 0, tzinfo=datetime.UTC)
+        with patch.object(platform, "utc_now", return_value=now):
+            for status in ("planned", "queued", "running"):
+                with self.subTest(status=status):
+                    client = self.paused_client([(6, "completed", 3600), (6, status, None)], now=now)
+                    with self.assertRaisesRegex(SystemExit, f"hardware job 801 is {status}"):
+                        self.submit(client)
+                    self.assertTrue(all(method == "GET" for method, _ in client.calls))
+                    self.assertFalse((self.case_dir / "submission-state.json").exists())
+
+    def test_emulator_jobs_and_emulator_batches_ignore_the_pause(self) -> None:
+        now = datetime.datetime(2026, 10, 17, 12, 0, 0, tzinfo=datetime.UTC)
+        with patch.object(platform, "utc_now", return_value=now):
+            # An emulator job that finished a second ago or is still running does not delay a hardware batch.
+            client = self.paused_client([(1, "completed", 1), (1, "running", None)], now=now)
+            self.submit(client)
+            self.assertEqual(sum(method == "PATCH" for method, _ in client.calls), 1)
+            for name in ("submission.json", "submission-state.json"):
+                (self.case_dir / name).unlink()
+            # An emulator batch skips the pause and never reads the account's jobs.
+            client = self.paused_client([(6, "completed", 1), (6, "running", None)], now=now)
+            client.backend["is_hardware"] = False
+            self.submit(client)
+            self.assertEqual(sum(method == "PATCH" for method, _ in client.calls), 1)
+            self.assertNotIn(("GET", "/jobs"), client.calls)
 
     def test_hardware_batch_holds_at_most_three_circuits(self) -> None:
         source = (self.case_dir / "one.cq").read_bytes()
@@ -826,6 +907,69 @@ class RetentionChecks(unittest.TestCase):
         path.write_text(json.dumps(usage))
         with self.assertRaisesRegex(SystemExit, "completed shots differ"):
             platform.check(self.case_dir)
+
+    def test_ledger_declares_the_jobs_no_run_directory_retains(self) -> None:
+        class LedgerClient:
+            jobs = [
+                {
+                    "id": job,
+                    "batch_job_id": 5,
+                    "status": "completed",
+                    "created_on": "",
+                    "number_of_shots": 2,
+                    "queued_at": "",
+                    "finished_at": "",
+                }
+                for job in (40, 10, 30, 20)
+            ]
+
+            def pages(self, path: str, **params: Any) -> list[dict[str, Any]]:
+                tables: dict[str, list[dict[str, Any]]] = {
+                    "/jobs": self.jobs,
+                    "/batch_jobs": [{"id": 5, "backend_type_id": 1}],
+                    "/transactions/": [],
+                }
+                return tables[path]
+
+            def get(self, path: str, **params: Any) -> Any:
+                return {"items": [{"shots_done": 2, "execution_time_in_seconds": 0.5, "change": 0}]}
+
+        runs = self.case_dir / "runs"
+        for name, jobs in (("a", [10, 20]), ("b", [30])):
+            (runs / name).mkdir(parents=True)
+            (runs / name / "submission.json").write_text(json.dumps({"jobs": [{"job": job} for job in jobs]}))
+        (runs / "interrupted").mkdir()
+        (runs / "interrupted" / "submission-state.json").write_text("{}")
+        self.assertEqual(platform.run_directories(runs), [runs / "a", runs / "b", runs / "interrupted"])
+        self.assertEqual(platform.retained_job_ids(runs), {10, 20, 30})
+        record = platform.ledger(LedgerClient(), runs)  # type: ignore[arg-type]
+        self.assertEqual((record["schema"], record["unretained"]), ("qi-usage-v2", [40]))
+        self.assertEqual([row["job"] for row in record["jobs"]], [10, 20, 30, 40])
+        self.assertEqual(platform.retained_job_ids(runs / "absent"), set())
+
+    def test_snapshot_check_validates_the_unretained_list(self) -> None:
+        retained = Path(__file__).resolve().parents[1] / "docs/evidence/quantum_inspire"
+        for name in ("catalogue.json", "usage.json"):
+            (self.case_dir / name).write_bytes((retained / name).read_bytes())
+        path = self.case_dir / "usage.json"
+        usage = json.loads(path.read_text())
+        ids = [row["job"] for row in usage["jobs"]]
+        for schema, unretained, refusal in (
+            ("qi-usage-v2", [ids[0], ids[1]], None),
+            ("qi-usage-v2", [], None),
+            ("qi-usage-v2", [ids[1], ids[0]], "sorted list of distinct"),
+            ("qi-usage-v2", [ids[0], ids[0]], "sorted list of distinct"),
+            ("qi-usage-v2", [max(ids) + 1], "sorted list of distinct"),
+            ("qi-usage-v1", [], "carries no unretained list"),
+        ):
+            with self.subTest(schema=schema, unretained=unretained):
+                path.write_text(json.dumps({**usage, "schema": schema, "unretained": unretained}))
+                if refusal is None:
+                    with contextlib.redirect_stdout(self.output):
+                        platform.check(self.case_dir)
+                else:
+                    with self.assertRaisesRegex(SystemExit, refusal):
+                        platform.check(self.case_dir)
 
     def test_mcp_legacy_submit_refuses_without_service_access(self) -> None:
         module = mcp_with_stubs()

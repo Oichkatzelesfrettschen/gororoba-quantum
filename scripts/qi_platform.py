@@ -13,7 +13,9 @@ Subcommands:
   backend type the account sees with its limits, topology and queue, every
   backend's status and heartbeat, the languages) and usage.json (the account's
   transaction ledger aggregated by domain, backend type and job, beside each
-  job's shots and execution seconds). Team, member and user identifiers,
+  job's shots and execution seconds, and `unretained`, the sorted ids of the
+  ledger jobs that have no run directory under results/quantum_inspire/runs/
+  at snapshot time). Team, member and user identifiers,
   names, e-mail addresses and OIDC subjects never enter either file: the ids
   are small integers, so even a hash of one is recoverable by enumeration.
 - check DIR [--agents FILE] (offline) requires both files to carry their
@@ -26,7 +28,9 @@ Subcommands:
 - submit CASE_DIR --backend-type-id N --approval TEXT (network, spends quota)
   creates one project, one algorithm, commit and file per circuit, one batch
   job holding every circuit of cases.json, and enqueues it. It verifies each
-  circuit's sha256 against cases.json first. An exclusive submission-state.json
+  circuit's sha256 against cases.json first. A hardware batch is refused
+  while any of the account's jobs on a hardware backend type is unfinished or
+  finished less than HARDWARE_PAUSE_SECONDS ago. An exclusive submission-state.json
   is retained before the first remote write; either it or submission.json
   prevents a repeat submission, including after an uncertain enqueue response.
 - reconcile CASE_DIR (network, read-only) reads the recorded batch and jobs.
@@ -49,6 +53,7 @@ import datetime
 import hashlib
 import importlib
 import json
+import math
 import os
 import re
 import sys
@@ -60,7 +65,10 @@ from typing import Any
 
 HOST = "https://api.quantum-inspire.com"
 CATALOGUE_SCHEMA = "qi-catalogue-v1"
-USAGE_SCHEMA = "qi-usage-v1"
+USAGE_SCHEMA = "qi-usage-v2"
+# qi-usage-v1 carries no `unretained` list: every ledger job belongs to a
+# retained run directory.
+USAGE_SCHEMAS = ("qi-usage-v1", USAGE_SCHEMA)
 SUBMISSION_STATE_SCHEMA = "qi-submission-state-v1"
 SUBMISSION_SCHEMA = "qi-submission-v2"
 # The FAQ allows three queued jobs per hardware backend, and the API counts
@@ -69,6 +77,12 @@ SUBMISSION_SCHEMA = "qi-submission-v2"
 # under either reading of "job".
 HARDWARE_BATCH_CIRCUITS = 3
 HARDWARE_QUEUED_BATCHES = 1
+# Calibration and tuning run between user jobs, so the platform needs idle time
+# on the account between hardware batches. The pause counts every job of the
+# account on every hardware backend type, whichever session submitted it.
+HARDWARE_PAUSE_SECONDS = 120
+ROOT = Path(__file__).resolve().parent.parent
+RUNS = ROOT / "results/quantum_inspire/runs"
 REDACTED = ("email", "full_name", "oidc_sub")
 # Account ids are small integers; a hash of one reverses by enumeration, so no
 # form of them is retained.
@@ -80,6 +94,25 @@ REFRESH_MARGIN = 120.0
 
 def now() -> str:
     return datetime.datetime.now(datetime.UTC).isoformat(timespec="seconds")
+
+
+def utc_now() -> datetime.datetime:
+    return datetime.datetime.now(datetime.UTC)
+
+
+def run_directories(runs: Path = RUNS) -> list[Path]:
+    """Every retained run directory under `runs`, in name order."""
+    return sorted(path for path in runs.iterdir() if path.is_dir()) if runs.is_dir() else []
+
+
+def retained_job_ids(runs: Path = RUNS) -> set[int]:
+    """The job ids that the submission.json receipts of the run directories name."""
+    ids: set[int] = set()
+    for directory in run_directories(runs):
+        receipt = directory / "submission.json"
+        if receipt.is_file():
+            ids.update(row["job"] for row in json.loads(receipt.read_text(encoding="utf-8"))["jobs"])
+    return ids
 
 
 class PlatformError(RuntimeError):
@@ -158,7 +191,7 @@ class Client:
         return self.request("PATCH", path)
 
 
-def ledger(client: Client) -> dict[str, Any]:
+def ledger(client: Client, runs: Path = RUNS) -> dict[str, Any]:
     jobs = {job["id"]: job for job in client.pages("/jobs")}
     batches = {batch["id"]: batch for batch in client.pages("/batch_jobs")}
     results: dict[int, list[dict[str, Any]]] = {}
@@ -206,6 +239,7 @@ def ledger(client: Client) -> dict[str, Any]:
         "retrieved_utc": now(),
         "transactions": rows,
         "jobs": job_rows,
+        "unretained": sorted(set(jobs) - retained_job_ids(runs)),
         "totals": {
             "change": sum(r["change"] for r in rows),
             "by_domain": dict(sorted(by["domain"].items())),
@@ -283,8 +317,15 @@ def keys(value: Any) -> set[str]:
 def check(directory: Path, agents: Path | None = None) -> None:
     catalogue = json.loads((directory / "catalogue.json").read_text(encoding="utf-8"))
     usage = json.loads((directory / "usage.json").read_text(encoding="utf-8"))
-    if catalogue["schema"] != CATALOGUE_SCHEMA or usage["schema"] != USAGE_SCHEMA:
+    if catalogue["schema"] != CATALOGUE_SCHEMA or usage["schema"] not in USAGE_SCHEMAS:
         raise SystemExit("unexpected schema")
+    ledger_ids = [job["job"] for job in usage["jobs"]]
+    if usage["schema"] == USAGE_SCHEMA:
+        unretained = usage["unretained"]
+        if unretained != sorted(set(unretained)) or not set(unretained) <= set(ledger_ids):
+            raise SystemExit("unretained is not a sorted list of distinct ledger job ids")
+    elif "unretained" in usage:
+        raise SystemExit(f"{usage['schema']} carries no unretained list")
     present = keys(catalogue) | keys(usage)
     for key in (*REDACTED, *ACCOUNT_IDENTIFIERS, "access_token", "refresh_token"):
         if key in present:
@@ -467,6 +508,27 @@ def _case_qubit_widths(cases: dict[str, Any], sources: dict[str, str]) -> dict[s
     return widths
 
 
+def hardware_pause_left(client: Client) -> int:
+    """Whole seconds before the account's hardware jobs have all been finished for HARDWARE_PAUSE_SECONDS.
+
+    A job counts when its batch runs on a backend type with is_hardware set. An
+    unfinished job (a status outside TERMINAL) refuses the batch outright.
+    """
+    hardware = {row["id"] for row in client.pages("/backend_types/") if row["is_hardware"]}
+    batches = {row["id"] for row in client.pages("/batch_jobs") if row["backend_type_id"] in hardware}
+    at = utc_now()
+    left = 0.0
+    for job in client.pages("/jobs"):
+        if job["batch_job_id"] not in batches:
+            continue
+        if job["status"] not in TERMINAL:
+            raise SystemExit(f"hardware job {job['id']} is {job['status']}; wait until the account's jobs finish")
+        if job["finished_at"] is not None:
+            elapsed = (at - datetime.datetime.fromisoformat(job["finished_at"])).total_seconds()
+            left = max(left, HARDWARE_PAUSE_SECONDS - elapsed)
+    return math.ceil(left)
+
+
 def submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any]:
     if (case_dir / "submission.json").exists():
         raise SystemExit(f"{case_dir}/submission.json exists; this case was submitted")
@@ -520,6 +582,12 @@ def submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any
         if len(sources) > HARDWARE_BATCH_CIRCUITS:
             raise SystemExit(f"{len(sources)} circuits exceed the {HARDWARE_BATCH_CIRCUITS} a hardware batch may hold")
         queue_limit = min(queue_limit, HARDWARE_QUEUED_BATCHES)
+        pause = hardware_pause_left(client)
+        if pause > 0:
+            raise SystemExit(
+                f"the account's last hardware job finished less than {HARDWARE_PAUSE_SECONDS} s ago; "
+                f"wait {pause} more seconds so the platform can calibrate"
+            )
     if queued + 1 > queue_limit:
         raise SystemExit(f"current-user queue has {queued} batches; adding one exceeds the limit {queue_limit}")
     language = next(lang for lang in client.pages("/languages") if lang["name"] == "cQASM" and lang["version"] == "3.0")
