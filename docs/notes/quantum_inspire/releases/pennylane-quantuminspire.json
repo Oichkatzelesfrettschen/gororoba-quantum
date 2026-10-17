@@ -1,0 +1,199 @@
+{
+ "component": "pennylane-quantuminspire",
+ "source": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases",
+ "retrieved_utc": "2026-10-16T22:27Z",
+ "releases": [
+  {
+   "name": "Release 0.15.5",
+   "tag": "0.15.5",
+   "date": "2026-10-05T08:40:20Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.15.5",
+   "body": "Release 0.15.5"
+  },
+  {
+   "name": "Release 0.15.4",
+   "tag": "0.15.4",
+   "date": "2026-09-17T09:10:06Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.15.4",
+   "body": "Release 0.15.4"
+  },
+  {
+   "name": "Release 0.15.3",
+   "tag": "0.15.3",
+   "date": "2026-09-15T14:25:49Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.15.3",
+   "body": ""
+  },
+  {
+   "name": "Release 0.15.2",
+   "tag": "0.15.2",
+   "date": "2026-07-31T10:05:58Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.15.2",
+   "body": "Release 0.15.2"
+  },
+  {
+   "name": "Release 0.15.1",
+   "tag": "0.15.1",
+   "date": "2026-06-09T11:33:28Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.15.1",
+   "body": "Release 0.15.1"
+  },
+  {
+   "name": "Release 0.15.0",
+   "tag": "0.15.0",
+   "date": "2026-05-29T11:14:51Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.15.0",
+   "body": "Release 0.15.0"
+  },
+  {
+   "name": "Release 0.14.1",
+   "tag": "0.14.1",
+   "date": "2026-05-07T12:40:01Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.14.1",
+   "body": "Release 0.14.1"
+  },
+  {
+   "name": "Release 0.14.0",
+   "tag": "0.14.0",
+   "date": "2026-05-06T09:11:04Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.14.0",
+   "body": "Release 0.14.0"
+  },
+  {
+   "name": "Release 0.13.0",
+   "tag": "0.13.0",
+   "date": "2026-02-04T09:08:56Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.13.0",
+   "body": "Upgraded pennylane to 0.44.0"
+  },
+  {
+   "name": "Release 0.12.0",
+   "tag": "0.12.0",
+   "date": "2026-01-19T13:50:28Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.12.0",
+   "body": "Release 0.12.0"
+  },
+  {
+   "name": "Release 0.11.0",
+   "tag": "0.11.0",
+   "date": "2026-01-19T13:21:27Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.11.0",
+   "body": "Release 0.11.0"
+  },
+  {
+   "name": "Release 0.10.0",
+   "tag": "0.10.0",
+   "date": "2026-01-12T14:59:34Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.10.0",
+   "body": "Release 0.10.0"
+  },
+  {
+   "name": "Release 0.9.0",
+   "tag": "0.9.0",
+   "date": "2025-12-15T10:28:02Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.9.0",
+   "body": "Release 0.9.0"
+  },
+  {
+   "name": "Feature release 0.8.0",
+   "tag": "0.8.0",
+   "date": "2025-10-22T13:54:10Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.8.0",
+   "body": "* [QI2-1580] Update version of qiskit-quantuminspire "
+  },
+  {
+   "name": "Release 0.7.1",
+   "tag": "0.7.1",
+   "date": "2025-10-03T10:18:09Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.7.1",
+   "body": "Release 0.7.1 fixes asm declarations bug while running hybrid algorithms\r\n"
+  },
+  {
+   "name": "Release 0.7.0",
+   "tag": "0.7.0",
+   "date": "2025-06-24T14:03:51Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.7.0",
+   "body": "Added support for asm declarations"
+  },
+  {
+   "name": "Release 0.6.2",
+   "tag": "0.6.2",
+   "date": "2025-05-30T08:23:23Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.6.2",
+   "body": "## What's Changed\r\n* Bump ruff from 0.11.7 to 0.11.8 by @dependabot in https://github.com/QuTech-Delft/pennylane-quantuminspire/pull/200\r\n* Bump docformatter from 1.7.5 to 1.7.6 by @dependabot in https://github.com/QuTech-Delft/pennylane-quantuminspire/pull/201\r\n* Bump docformatter from 1.7.6 to 1.7.7 by @dependabot in https://github.com/QuTech-Delft/pennylane-quantuminspire/pull/202\r\n* Bump ruff from 0.11.8 to 0.11.9 by @dependabot in https://github.com/QuTech-Delft/pennylane-quantuminspire/pull/203\r\n* Bump types-requests from 2.32.0.20250328 to 2.32.0.20250515 by @dependabot in https://github.com/QuTech-Delft/pennylane-quantuminspire/pull/204\r\n* Bump ruff from 0.11.9 to 0.11.10 by @dependabot in https://github.com/QuTech-Delft/pennylane-quantuminspire/pull/205\r\n* Bump coverage from 7.8.0 to 7.8.1 by @dependabot in https://github.com/QuTech-Delft/pennylane-quantuminspire/pull/206\r\n* Bump ruff from 0.11.10 to 0.11.11 by @dependabot in https://github.com/QuTech-Delft/pennylane-quantuminspire/pull/207\r\n* Bump pytest-mock from 3.14.0 to 3.14.1 by @dependabot in https://github.com/QuTech-Delft/pennylane-quantuminspire/pull/209\r\n* Bump coverage from 7.8.1 to 7.8.2 by @dependabot in https://github.com/QuTech-Delft/pennylane-quantuminspire/pull/208\r\n* Bump ruff from 0.11.11 to 0.11.12 by @dependabot in https://github.com/QuTech-Delft/pennylane-quantuminspire/pull/211\r\n* Bump mypy from 1.15.0 to 1.16.0 by @dependabot in https://github.com/QuTech-Delft/pennylane-quantuminspire/pull/212\r\n* [QI2-1609] Updated opensquirrel to support asm block by @NischalQuTech in https://github.com/QuTech-Delft/pennylane-quantuminspire/pull/210\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/pennylane-quantuminspire/compare/0.6.1...0.6.2"
+  },
+  {
+   "name": "Release 0.6.1",
+   "tag": "0.6.1",
+   "date": "2025-04-29T12:55:32Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.6.1",
+   "body": "Release 0.6.1"
+  },
+  {
+   "name": "Release 0.6.0",
+   "tag": "0.6.0",
+   "date": "2025-02-11T09:51:33Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.6.0",
+   "body": "Release 0.6.0"
+  },
+  {
+   "name": "Release 0.5.0",
+   "tag": "0.5.0",
+   "date": "2025-02-05T08:23:52Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.5.0",
+   "body": ""
+  },
+  {
+   "name": "Release 0.4.1",
+   "tag": "v0.4.1",
+   "date": "2023-04-04T09:37:28Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/v0.4.1",
+   "body": "* [SDS-934] no wires fails for hw backends (#79)\r\n* [SDS-NNN] unit tests needed flaky and different directory (#90)\r\n* Bumped versions of multiple packages\r\n"
+  },
+  {
+   "name": "Release 0.4.0",
+   "tag": "0.4.0",
+   "date": "2023-02-27T09:46:42Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.4.0",
+   "body": "* Check and warning for OFFLINE backend,\r\n* Tests skipped when backend is OFFLINE \r\n* Documentation improvements\r\n* Python 3.7 support removed\r\n* Broaden support number of wires of hardware devices"
+  },
+  {
+   "name": "Beta-release 0.3.0",
+   "tag": "0.3.0",
+   "date": "2022-07-07T12:45:29Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.3.0",
+   "body": "* Unit tests and integration tests added\r\n* Upgraded pipelines\r\n* Documentation (readthedocs) added"
+  },
+  {
+   "name": "Beta release 0.2.0-beta.0",
+   "tag": "0.2.0b0",
+   "date": "2022-06-09T18:28:36Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases/tag/0.2.0b0",
+   "body": "* First release of plugin\r\n* Pypi release\r\n* readthedocs integration\r\n* github workflows\r\n"
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "schema": "qi-crosstalk-teleport-cases-v1",
+ "backend": "Rydberg",
+ "backend_type_id": 5,
+ "nqubits": 2,
+ "shots": 1024,
+ "purpose": "Diagnostic: the teleport circuit failed with no log; X on q[0] with no bit register and no measurement, the form of the Rydberg code example, separates an unavailable backend from an unsupported circuit. Ideal outcome 01 (q[0] is the rightmost character).",
+ "circuits": [
+  {
+   "file": "x-only.cq",
+   "kind": "diagnostic",
+   "sha256": "bd08a6b8a6749768d9c7375dd3f2ec0785918ceeccc609d7926a2e51c875bd96"
+  }
+ ]
+}

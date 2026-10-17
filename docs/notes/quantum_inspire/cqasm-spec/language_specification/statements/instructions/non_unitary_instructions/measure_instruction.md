@@ -1,0 +1,127 @@
+> Full piece: [https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/non_unitary_instructions/measure_instruction.html](https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/non_unitary_instructions/measure_instruction.html)
+> Retrieved 2026-10-16T21:53Z by scripts/capture_qi_docs.py --spec (urllib, pandoc);
+> fetched HTML sha256 e6343c9a5bf6375194c2657d65dbf100bb131905e9e8aca7aec2944e76e90686;
+> site built from QuTech-Delft/cQASM-spec gh-pages commit 91cff84b22553062cdb2aeebd968a1dd2a6a3ef6.
+
+# Measure instruction
+
+A **`measure`** instruction performs a measurement to its qubit argument and assigns the outcome to a bit variable.
+
+The `measure` instruction can either
+
+- have no parameters `measure`, which corresponds to a measurement in the Z-basis, or
+- accept 3 floating-point parameters `measure(0,0,1)`, which define the axis of the basis along which the measurement is to be performed.
+
+The following aliases for the (parameterized) `measure` instruction also exist:
+
+- `measureX`: measurement in the X-basis (a.k.a. Hadamard basis), equivalent to `measure(1,0,0)`,
+- `measureY`: measurement in the Y-basis, equivalent to `measure(0,1,0)`,
+- `measureZ`: measurement in the Z-basis (computational basis), equivalent to `measure(0,0,1)` and 'measure',
+
+Note
+
+`measure(0,0,1)` is equal to the non-parameterized `measure` as $`(0,0,1)`$ defines the positive $`z`$-axis.
+
+The general form of a **`measure`** instruction is as follows:
+
+ *bit-argument* **`=`** **`measure`** *qubit-argument*\
+ *bit-argument* **`=`** **`measure(`***parameter-list***`)`** *qubit-argument*
+
+Grammar for **`measure`** instruction
+
+*measure-instruction*:\
+  *bit-argument* **`=`** **`measure`** *qubit-argument*\
+  *bit-argument* **`=`** **`measure`** *parameters* *qubit-argument*
+
+*bit-argument*:\
+  *bit-variable*\
+  *bit-index*
+
+*bit-variable*:\
+  *identifier*
+
+*bit-index*:\
+  *index*
+
+*parameters*:\
+  **`(`** *parameter-list* **`)`**
+
+*parameter-list*:\
+  *parameter*\
+  *parameter-list* **`,`** *parameter*
+
+*parameter*:\
+  *floating-literal*
+
+*qubit-argument*:\
+  *qubit-variable*\
+  *qubit-index*
+
+*qubit-variable*:\
+  *identifier*
+
+*qubit-index*:\
+  *index*
+
+Example
+
+Measurement of a single qubitMeasurement of multiple qubits through their register index
+
+```
+qubit q
+bit b
+b = measure q
+b = measure(1,0,0) q
+b = measureY q
+```
+
+```
+qubit[5] q
+bit[2] b
+b[0, 1] = measure q[2, 3]
+b[1, 0] = measure(1,0,0) q[4, 3]
+b[0, 1] = measureY q[0, 1]
+```
+
+Note
+
+The **`measure`** instruction accepts [SGMQ notation](https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/single-gate-multiple-qubit-notation.html), similar to gates. Note that when using SGMQ notation with the **`measure`** instruction, that the number of bit operands is equal to the number of qubit operands. For example, it is valid to write `b[0, 2, 1] = measure q[3:5]` because that unpacks to
+
+```
+b[0] = measure q[3]
+b[2] = measure q[4]
+b[1] = measure q[5]
+```
+
+However, it is invalid to write `b[0:1] = measure q[2]` or `b[2] = measure q[0:1]`, because in both cases the number of bit and qubit operands is unequal.
+
+The following code snippet shows how the **`measure`** instruction might be used in context.
+
+```
+version 3.0
+
+qubit[2] q
+bit[2] b
+
+H q[0]
+CNOT q[0], q[1]
+
+b = measure q  // Measurement in the standard basis.
+```
+
+On the last line of this simple cQASM program, the respective states of both qubits in the qubit register are measured along the standard/computational basis.
+
+To measure in the Hadamard basis (or X-basis) you can use the parameterized `measure` instruction to measure along the $`x`$-axis, defined by $`(1,0,0)`$.
+
+```
+version 3.0
+
+qubit q
+bit b
+
+X q
+H q
+b = measure(1,0,0) q // Measurement in the Hadamard basis.
+```
+
+On the last line of the latter cQASM program the qubit is measured along the $`x`$-axis; the measurement outcome will (always) be 1, due to measuring the $`|1\rangle`$ state in the X-basis.

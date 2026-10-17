@@ -12,7 +12,7 @@ broadcast stays ideal, while on hardware it relaxes. The retained
 qubit; charged at the snapshot's T1 and T2, it gives the idle error E_idle,
 and `c_idle = 1 + E_idle / E_cz` is the CZ factor a fit would need if idle
 relaxation were the only omission ([idle_budget.json](idle_budget.json),
-gate core-331; the script's docstring states the charge and why it is an
+gate core-343; the script's docstring states the charge and why it is an
 upper estimate).
 
 ## Fitted factor against the idle budget
@@ -71,7 +71,7 @@ Readings:
 
 `part_a.json`, `part_b.json` and `part_c.json` are the outputs of the three
 sweep parts, retained byte for byte from their Kaggle run directories under
-`results/kaggle/` (gate core-338 compares them). The kernels ran commit
+`results/kaggle/` (gate core-349 compares them). The kernels ran commit
 2298108; of the 55 files each bundled, four differ from this tree, and only
 in how the Aer device is chosen (`calibration_snapshot.aer_device` reads
 GOROROBA_AER_DEVICE), which leaves the CPU computation unchanged. Gate

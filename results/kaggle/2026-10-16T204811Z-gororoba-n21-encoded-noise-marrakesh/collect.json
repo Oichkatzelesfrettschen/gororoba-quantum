@@ -1,0 +1,21 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-n21-encoded-noise-marrakesh/1",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T212938Z",
+ "files": {
+  "gororoba-n21-encoded-noise-marrakesh.log": "fc28617444b2ac74d02226dd5b3fb54de52522918bdde5966643564b55a0a018",
+  "output/ci-freeze.txt": "63c5eb3a77c3c9f478aff2cb79c7b33a82f29ed4dbc2b17fd02271dbabae8101",
+  "output/environment.json": "9401a6fb4089c99ee6a98c5adfbbb3a2a164e09e908405f2de278df7a2aa8cbc",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "80bbd23b2656c65a2e143d271f668f76cf844027dbc4ac93f7aea70719a823f3",
+  "output/install-pins.txt": "d80af966692bf75d68d6112593ae6206d8c5957cd079c909845d8d0cedac174a",
+  "output/pip.txt": "d0bbe861177443e431b4784e06a2d658e931aea999fde8b8be7c580b64aa3f00",
+  "output/python-install.txt": "e0e83836c58f3ff4d18e57b99ff56932d22914d8ca215aac945a6bc3ce629a96",
+  "output/repo/results/kaggle_out/n21_conjugation_noise_marrakesh.json": "90df39216011abb5cda46d5441968a7e319f55cb2ee07a9fc72cb5736a8ad270",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "6108dc69c1c1f5eb9acbad15c842fcb8bca96431bb9c04e1d817a516132bd760",
+  "output/uv-install.txt": "b2dd4ee9049343bb5679411414fb8d6425e4bcbef91ca6316f3f5c4f5e3ffe80",
+  "output/venv.txt": "c48758d995a48623a551e0e9f985c932e5fed775b217d7ed00f929890de3f00b"
+ }
+}

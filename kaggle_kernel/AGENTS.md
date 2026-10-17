@@ -43,6 +43,7 @@ and what it must prove before its output counts.
 | --- | --- | --- |
 | qiskit | 2.5.2 | PyPI |
 | qiskit-aer-gpu-cu11 | 0.17.2 (the CUDA 12 `qiskit-aer-gpu` stops at 0.15.1 and has no Python 3.13 wheel) | PyPI |
+| qiskit-ibm-runtime | 0.50.0 (fake backends such as FakeFez; no account or credential) | PyPI |
 | hypercomplex, hypercomplex-engine, hypercomplex-algebra, Cayley-Calculator, octonion, mathdunders | 0.3.4, 0.5.0, 0.2.0.2, 1.3.1, 0.1.0, 0.4.2 | PyPI sdist, sha256-pinned |
 | cayley-dickson, SplitOct | commits abf96e7, e29e72f | GitHub archive, sha256-pinned, PKGBUILD recipe |
 | numpy-quaternion | 2024.0.13 | PyPI (Cayley-Calculator runtime) |
@@ -63,3 +64,34 @@ and what it must prove before its output counts.
   records what actually ran.
 - Measured limits of each machine shape, the qubit size guide and the
   captured Kaggle documentation are in `docs/notes/kaggle/`.
+- An entry whose output a CI gate recompiles runs with `push --ci-env` on a
+  CPU or GPU machine, using CPU Aer either way. The kernel then builds CI's Python 3.14.7 with CI's pins
+  through `ci/install_pins.sh` and runs the entry under it, because the
+  image's Python 3.13 and numpy 2.1.3 change compiled depths and durations.
+
+## Aer on the GPU
+
+- **Requesting a GPU.** Push with `--machine NvidiaTeslaT4` and a `--timeout`
+  sized to the work; kaggle_run.py refuses an accelerator push without one.
+  The kernel installs qiskit-aer-gpu-cu11 0.17.2 and sets
+  `GOROROBA_AER_DEVICE=GPU`.
+- **Using it in an entry.** The entry passes
+  `calibration_snapshot.aer_device()` to `noise_simulator(snapshot, device,
+  method=...)`.
+- **Noise model width.** Restricting the snapshot and the circuit to the
+  active qubits (`snapshot_laws.restrict` and `restrict_circuit`) keeps
+  Aer's noise model at the circuit's width on either device.
+- **What the GPU is for.** It pays for density matrices at
+  `local_compute.GPU_MIN_ACTIVE_QUBITS` (11) qubits or more and for wide
+  statevectors. Small dynamic circuits sample faster on the host CPUs. On
+  the 7-qubit N=21 order-finding circuits, statevector trajectories took 2.8
+  and 36 ms per shot on the CPU, against 21.7 and 54.6 ms on one T4.
+- **Batched shots.** `noise_simulator(..., batched_shots=True)` enables Aer's
+  `batched_shots_gpu`, which aborts on any circuit with control flow
+  (`if_else` lowers to `jump`), so only static circuits may batch. Batched
+  static runs are unmeasured here.
+- **Replay.** A GPU's seeded counts differ from the CPU's. Its records are
+  replayed from their retained counts, never by resampling on CI.
+
+The measurements are in `docs/notes/kaggle/substrates.md`, from
+`results/kaggle/2026-10-16T204620Z-gororoba-aer-gpu-probe`.

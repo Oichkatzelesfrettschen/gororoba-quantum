@@ -1,0 +1,171 @@
+{
+ "schema": "qi-docs-capture-v2",
+ "kind": "sdk",
+ "retrieved_utc": "2026-10-16T21:50Z",
+ "files": [
+  {
+   "path": "docs/notes/quantum_inspire/sdk/README.md",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/quantuminspire/054a4f0be22983a5d515c31a24881bc0d875463d/README.md",
+   "sha256": "7d6fae6537b963515e626354748c283340afa06876ffb7f6323133a383acd0a8"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/README.md",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/README.md",
+   "sha256": "5c453459f1f915e468ad4f53842caf4ba4da4afdb6170e32606d20d25be9dd9c"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/index.rst",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/index.rst",
+   "sha256": "9ceec99e17be5c578d8c6d274539ed6d77f0f73140fdd3705411a3734d97145e"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/contributing.md",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/contributing.md",
+   "sha256": "541b8424980a328044a79551353ed9ed55abbc87b922692662ee4664da84f8e2"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/api/modules.rst",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/api/modules.rst",
+   "sha256": "4fc8d718107b3be02cd72f6ad53d3ceb138010ee1ba6255ba4157c94d64f2fc0"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/getting_started/index.rst",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/getting_started/index.rst",
+   "sha256": "b2b0e60900a42d25f2ad6c7fd423ca7c828e41cc1e2f7d90567df4730ebf3c3f"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/getting_started/installation.md",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/getting_started/installation.md",
+   "sha256": "fe6d48a48e4bcfd5c42d978e21e59b3d29a44f7f0b153f1899abcdf3173b1d4f"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/getting_started/submitting.md",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/getting_started/submitting.md",
+   "sha256": "74fd8c0fcfe1e5be397a5094cca7e9a3498184aa3e2cbf99d8454201ca243b1f"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/hybrid/index.rst",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/hybrid/index.rst",
+   "sha256": "b07c561d472ad86b3c725065ad0783b00a60454b8c464a1bd0a23a5df3ce5c67"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/hybrid/basics.md",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/hybrid/basics.md",
+   "sha256": "06c5ffe3a6468d70d14af46a919438deb8f5b6daa3ea7300386555a621e1dea7"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/hybrid/leveraging_qiskit.md",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/hybrid/leveraging_qiskit.md",
+   "sha256": "ce347da367b951f5335da7b83b9b5aaec6c1157cbd3045660a9931fa48bf9f33"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/hybrid/hqca_circuit.py",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/hybrid/hqca_circuit.py",
+   "sha256": "f41bdcf3fb370db8137b663428ae3084e683d8cb3fd3de2a81afdd8eb50d8de0"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/hybrid/hydrogen.py",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/hybrid/hydrogen.py",
+   "sha256": "a35b7ce7fe7ab39d98bedb7594f011cbf0fa2dee6294ca09e7f08947de81c899"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/notebooks/index.rst",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/notebooks/index.rst",
+   "sha256": "a632ab4425a12d53f1d5abbbea15342f1b4ef81406731ba7bca9d78f12cf21b1"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/notebooks/basic_circuit_execution.ipynb",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/notebooks/basic_circuit_execution.ipynb",
+   "sha256": "b476c1f25ff5e69df3711847a3e4d3e2757bdc4fe2dc8b5853e8c04e766ba93c"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/notebooks/Super Dense Coding.ipynb",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/notebooks/Super%20Dense%20Coding.ipynb",
+   "sha256": "3cc55c18a64e8e7e9e77d2286790b25dd1ee1b8f5d6589cefa744f9c128c0b51"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/qiskit-quantuminspire/docs/notebooks/QI2 Performance Test.ipynb",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/notebooks/QI2%20Performance%20Test.ipynb",
+   "sha256": "91c2f7b40267d73ea85501b66298d03df375cf1e4fac9b5a73295203cb4303b0"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/pennylane-quantuminspire/README.md",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/README.md",
+   "sha256": "74ccaf333613ee8fa54e8380895ba62298f493f451ff44171ea595b0ba10aac8"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/pennylane-quantuminspire/docs/index.rst",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/index.rst",
+   "sha256": "adfcf6e9dfde8b9d8d518d12e26e9a41255294f8e021f694fb59d44e6b79a00b"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/pennylane-quantuminspire/docs/contributing.md",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/contributing.md",
+   "sha256": "a3c03e8e70b2f063f27f349ce27498f124ca5d6a3c1ec070c242487b8c0cad79"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/pennylane-quantuminspire/docs/api/modules.rst",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/api/modules.rst",
+   "sha256": "c60874ff345ba5d094df63058243cb40fa68b6bb15e2b1b90f6679356c848697"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/pennylane-quantuminspire/docs/getting_started/index.rst",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/getting_started/index.rst",
+   "sha256": "b2b0e60900a42d25f2ad6c7fd423ca7c828e41cc1e2f7d90567df4730ebf3c3f"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/pennylane-quantuminspire/docs/getting_started/installation.md",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/getting_started/installation.md",
+   "sha256": "f3d026922abb8e4423d19823843ca1c11de4af22eec8c0e2ddc18c9e1cc1f02f"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/pennylane-quantuminspire/docs/getting_started/submitting.rst",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/getting_started/submitting.rst",
+   "sha256": "c8716cab9e1e4e49bb537cfd243d7804e707994bd39d8d02af4110f6294cfbfe"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/pennylane-quantuminspire/docs/hybrid/index.rst",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/hybrid/index.rst",
+   "sha256": "cfd473dafec673cddb62cca8be211dcfbf7a94ad56ac0fab543a0e8774aba646"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/pennylane-quantuminspire/docs/hybrid/basics.md",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/hybrid/basics.md",
+   "sha256": "e743cf2dbbeeca721982560dace56891cb842d0cf086c905412311c2f7b21248"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/pennylane-quantuminspire/docs/hybrid/leveraging_pennylane.md",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/hybrid/leveraging_pennylane.md",
+   "sha256": "cf868ccbd55f74c3e8f9abc0bc1218fe145637ce5672d41d3a5fead227d40caa"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/pennylane-quantuminspire/docs/hybrid/simple.py",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/hybrid/simple.py",
+   "sha256": "bb4fc8f45f4cae0545490864ded212b88fb669005cf3e6fdbf2c68f2b4fb3383"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/pennylane-quantuminspire/docs/notebooks/index.rst",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/notebooks/index.rst",
+   "sha256": "a632ab4425a12d53f1d5abbbea15342f1b4ef81406731ba7bca9d78f12cf21b1"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/sdk/pennylane-quantuminspire/docs/notebooks/basic_circuit_execution.ipynb",
+   "source": "https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/notebooks/basic_circuit_execution.ipynb",
+   "sha256": "5168a155d01b4956926ab15574d88e838bb2538b4436058e9276cf8a92e531fe"
+  }
+ ],
+ "repos": {
+  "quantuminspire": {
+   "tag": "4.1.0",
+   "commit": "054a4f0be22983a5d515c31a24881bc0d875463d"
+  },
+  "qiskit-quantuminspire": {
+   "tag": "0.18.5",
+   "commit": "fbe5256e6671a45cf2fc6557a111f0dc705cf6ac"
+  },
+  "pennylane-quantuminspire": {
+   "tag": "0.15.5",
+   "commit": "0f7a6fffd39613bc9e14f6a735cc81cb667803ad"
+  }
+ }
+}

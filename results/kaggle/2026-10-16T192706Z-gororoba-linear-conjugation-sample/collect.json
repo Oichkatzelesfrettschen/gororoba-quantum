@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-linear-conjugation-sample/1",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T193430Z",
+ "files": {
+  "gororoba-linear-conjugation-sample.log": "977bc8620e909d502b386107d85152bcc0acb965d6d81826a0b05b2f2eb4250b",
+  "output/environment.json": "faa0d8f12e56b04e1124f6a329351738a1178a23a97968c8b44aceb976faaeef",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "436f798e5e0993c26ca46543030a788abeac33735327a56c31b01c620ea906f7",
+  "output/pip.txt": "bae01634b368ae62f512f4a897ddd917640e56c7c8afe4c4283043128d70490f",
+  "output/repo/results/kaggle_out/linear_conjugation_sample.json": "ccd19949c94db007cd985d904b35b517bf6ce5ec7867a293e004c163e1a959f7",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "13111fd7eec1b2a5f798ad5fead3e346b23f89c0640eb6358e620b8b02b4d0bb"
+ }
+}

@@ -7,7 +7,7 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 
 | Location | Contents | Git treatment |
 | --- | --- | --- |
-| `docs/pdf/` | 21 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
+| `docs/pdf/` | 23 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
 | `docs/local_source_cache/` | 84 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 4 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
@@ -72,6 +72,8 @@ each source license in force.
 | [Ma et al. 2026 -- Prediction of a measurable sign change in the Casimir force using a magnetic fluid](notes/2601.00483.md) | [2601.00483v1.pdf](pdf/2601.00483v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Kang et al. 2025 -- Scalable architecture for dark photon searches: Superconducting-qubit proof of principle](notes/2503.18315.md) | [2503.18315v1.pdf](pdf/2503.18315v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Google Quantum AI and Collaborators 2023 -- Non-Abelian braiding of graph vertices in a superconducting processor](notes/2210.10255.md) | [2210.10255v2.pdf](pdf/2210.10255v2.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Matsumoto et al. 2026 -- Two-qubit logic and teleportation with mobile spin qubits in silicon (Nature 653, 391)](notes/s41586-026-10423-9.md) | [s41586-026-10423-9.pdf](pdf/s41586-026-10423-9.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Wu et al. 2026 -- Simultaneous high-fidelity single-qubit gates in a spin qubit array (Nature Physics)](notes/s41567-026-03466-2.md) | [s41567-026-03466-2.pdf](pdf/s41567-026-03466-2.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 
 The two Nature aliases identify retained arXiv preprints, with their own
 licenses and versions. The aliases do not identify the publisher versions.

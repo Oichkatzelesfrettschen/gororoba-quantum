@@ -1,0 +1,21 @@
+{
+ "schema": "qi-crosstalk-teleport-series-v1",
+ "backend": "tuna_5",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "additivity-none.cq",
+    "additivity-A.cq",
+    "additivity-B.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "files": [
+    "additivity-none.cq",
+    "additivity-AB.cq"
+   ]
+  }
+ ]
+}

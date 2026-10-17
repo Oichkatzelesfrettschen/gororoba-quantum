@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-n21-conjugation-noise-kingston/1",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T204841Z",
+ "files": {
+  "gororoba-n21-conjugation-noise-kingston.log": "2fae5a8c519d6c903d72273fe0b20c6b498b55297b9c2115406f4b71d1dcedc2",
+  "output/environment.json": "63b5de6bad0d610c5a494e0edf56837e34b98fdbe590b1f4ce7128337b6eeb14",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "0242fa52fa6d7af9ace9e846f49260457e35add314a4a1ba9c2efb36b7924e5d",
+  "output/pip.txt": "028ca0b588c9678d3367feb0d23e6e822a69c94ca4178b34b66cf32ee94c2090",
+  "output/repo/results/kaggle_out/n21_conjugation_noise_kingston.json": "5e06b698d17cddcab9b2dce2c729bd5e89d8f129f047dbc279bd95f55b23a434",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "eaa7237b6d721b098a7bc9b6eef384a6c55e8db06d53a2c2f4afd64627677c59"
+ }
+}
