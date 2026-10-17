@@ -376,6 +376,36 @@ and the two before it as preregistered emulator controls: the noiseless
 emulator tests the platform's parsing and execution, and the hardware
 inference stays with the Tuna-17 run.
 
+**Placement off q0, q5, q6, q7 and q9, Tuna-17.** The same three Latin
+circuits ran as three hardware batches, each holding one witness circuit and
+the batch's own readout-0 and readout-1 calibration, 16384 shots per circuit,
+with the account-wide pause between batches: batch jobs 870122, 870127 and
+870133 (jobs 1527397-1527399, 1527404-1527406, 1527412-1527414), retained as
+results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00,
+...T052915Z...-batch-01 and ...T053226Z...-batch-02. Every batch read
+readout-0 P1 at most 0.053 and readout-1 P1 at least 0.901 on every used
+qubit. `--analyze` writes
+results/quantum_inspire/zero_divisor_tuna_17_visibility_floor_analysis.json,
+which gate core-330 replays with `--replay-series`.
+
+| Case | {1,2,4,8,12} (CZ) | {10,11,13,14,16} (CZ) | pooled P(s=0) (95%) | ideal |
+|---|---|---|---|---|
+| dark | 0.4835 (75) | 0.4874 (87) | 0.4854 (0.4800-0.4908) | 0 |
+| bright | 0.5339 (75) | 0.4774 (87) | 0.5056 (0.5002-0.5110) | 1 |
+| fixture | 0.5007 (79) | 0.4828 (91) | 0.4918 (0.4863-0.4972) | 1/2 |
+
+The endpoint contrast is 0.0202 +- 0.0039 (z = 5.2; readout-corrected
+bootstrap 0.022, 95% 0.014-0.031), half the 0.042 of the three-region
+placement through the excluded qubits. By region it is 0.0504 +- 0.0055 at
+75 routed CZ and -0.0100 +- 0.0055 at 87: avoiding the excluded qubits
+lengthened the routes from 66-70 CZ to 75-91 CZ, and the depth outweighs the
+cleaner qubits, so the next zero-divisor case on Tuna-17 shortens the circuit
+(the reduced two-label LCU of docs/notes/box_kites/experiment-program.md, one
+CZ) instead of moving it. dark + bright - 1 = -0.009 (z = -2.3) and
+fixture - 1/2 = -0.008 (z = -3.0) repeat the earlier series' shift toward
+selector 1. The comparison with the earlier placement changes depth and
+qubits together and does not separate them.
+
 ## Residual ZZ of every Tuna-17 coupler
 
 Each coupling-map edge carries a flux-tunable coupler that the control
