@@ -3788,7 +3788,7 @@
     },
     {
       "id": "qi-tuna17-readout-ringdown-Q",
-      "statement": "On Tuna-17 series Q (targets Q1, Q2, Q3, Q7, Q8, Q9, Q13, Q14, Q15, 8192 shots per circuit; delays d = 2 and d = 77) the preregistered rule reports 'not detected': 7 targets are usable (Q7 and Q8 fail the 0.3 visibility floor), 3 classify as tails (Q9, Q14, Q15) and none as a static offset, below the 50% threshold. Q9 fits H2 (chi2 6.95 on 3 degrees of freedom) while Q14 (146.8) and Q15 (39.3) do not; Q14's readout arms sit 43 to 61 kHz below its reference from tau = 100 ns out to 2 us.",
+      "statement": "On Tuna-17 series Q (targets Q1, Q2, Q3, Q7, Q8, Q9, Q13, Q14, Q15, 8192 shots per circuit; delays d = 2 and d = 77) the preregistered rule reports 'not detected': 7 targets are usable (Q7 and Q8 fail the 0.3 visibility floor), 3 classify as tails (Q9, Q14, Q15) and none as a static offset, below the 50% threshold; Q15's tail class holds under the all-shot estimator only, and its postselected estimate classifies as none. Q9 fits H2 (chi2 6.95 on 3 degrees of freedom) while Q14 (146.8) and Q15 (39.3) do not; Q14's readout arms sit 43 to 61 kHz below its reference from tau = 100 ns out to 2 us.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
