@@ -76,7 +76,7 @@
   "select_equals_left_multiplication": true
  },
  "preregistered": {
-  "estimators": "P(s=0) raw with Wilson 95%; readout-corrected with the selector's assignment from readout-0 and readout-1; contraction residuals dark+bright-1 and fixture-1/2 with |z| < 3 as consistency",
+  "estimators": "P(s=0) raw with Wilson 95%; readout-corrected with the selector's assignment from the readout-0 and readout-1 circuits of the same batch; contraction residuals dark+bright-1 and fixture-1/2 with |z| < 3 as consistency",
   "comparison": {
    "dark": 0.182,
    "dark_ci95": [
