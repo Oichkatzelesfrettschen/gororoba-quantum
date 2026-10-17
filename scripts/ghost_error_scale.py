@@ -35,6 +35,15 @@ cap counts from the archived inputs and the retained distances, requires the
 (1, 1) means to agree with docs/evidence/ghost_runs/result.json, and reruns
 the ``--runs`` subset on the CPU at (1, 1), its minimizing point and the
 grid's top corner, each within five standard errors.
+
+``--regenerate-diagnostics IN --out OUT`` rewrites a retained part's
+calibration-derived fields (each run's per-snapshot diagnostics and the
+``scaled`` block) from the archived calibration and circuits, keeps every
+other field, and writes OUT in the sweep's own serialization.
+``--provenance PART KERNEL_OUTPUT`` passes when PART is byte for byte the
+regeneration of KERNEL_OUTPUT, so PART carries the kernel's simulation
+fields unchanged and calibration-derived fields equal to a fresh
+recomputation; otherwise it names the first differing path.
 """
 
 from __future__ import annotations
@@ -62,6 +71,7 @@ from qiskit.quantum_info import average_gate_fidelity  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import parallel  # noqa: E402
+import snapshot_laws  # noqa: E402
 
 GHOST_RESULT = ROOT / "docs/evidence/ghost_runs/result.json"
 CZ_FACTORS = (0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 12.0)
@@ -106,6 +116,24 @@ def footprint(circuits: list[QuantumCircuit]) -> tuple[set[int], set[frozenset[i
     return qubits, couplers
 
 
+def scaled_block() -> dict[str, Any]:
+    """The part header's record of which snapshot fields the grid scales and their caps."""
+    return {
+        "cz": "instructions.cz[].error",
+        "readout": "qubits[].e01 and qubits[].e10",
+        "cz_cap": CZ_CAP,
+        "readout_cap": FLIP_CAP,
+    }
+
+
+def write_part(path: Path, part: dict[str, Any]) -> None:
+    path.write_text(serialize(part), encoding="utf-8")
+
+
+def serialize(part: dict[str, Any]) -> str:
+    return json.dumps(part) + "\n"
+
+
 def diagnostics(snapshot: dict[str, Any], circuits: list[QuantumCircuit], infidelity: bool) -> dict[str, Any]:
     """Reported means, cap counts per factor and, with infidelity, the modeled mean CZ infidelity per factor."""
     qubits, couplers = footprint(circuits)
@@ -119,28 +147,38 @@ def diagnostics(snapshot: dict[str, Any], circuits: list[QuantumCircuit], infide
             seen.add(edge)
             entries.append(e)
     flips = [v for q in sorted(qubits) for v in (snapshot["qubits"][q]["e01"], snapshot["qubits"][q]["e10"])]
+    # NoiseModel.from_backend builds each CZ channel from that instruction's
+    # own error and duration and its qubits' T1 and T2, so the snapshot
+    # restricted to the footprint (renumbered in ascending physical order)
+    # with its cz rows alone yields the same CZ channels and skips building
+    # every other instruction's channel on the full device.
+    active = sorted(qubits)
+    position = {q: k for k, q in enumerate(active)}
+    footprint_view = snapshot_laws.restrict(snapshot, active)
+    reduced = dict(footprint_view, instructions={"cz": footprint_view["instructions"]["cz"]})
     cz_rows = []
     for factor in CZ_FACTORS:
         row: dict[str, Any] = {"factor": factor, "capped": sum(factor * e["error"] > CZ_CAP for e in entries)}
         if infidelity:
-            channels = calibration_snapshot.channel_table(
-                calibration_snapshot.noise_model(scaled(snapshot, factor, 1.0))[1]
-            )
-            row["model_infidelity_mean"] = (
-                round(
+            row["model_infidelity_mean"] = None
+            if entries:
+                channels = calibration_snapshot.channel_table(
+                    calibration_snapshot.noise_model(scaled(reduced, factor, 1.0))[1]
+                )
+                row["model_infidelity_mean"] = round(
                     float(
                         np.mean(
                             [
-                                1 - average_gate_fidelity(channels[f"cz{e['qargs']}"].to_quantumchannel())
+                                1
+                                - average_gate_fidelity(
+                                    channels[f"cz{[position[q] for q in e['qargs']]}"].to_quantumchannel()
+                                )
                                 for e in entries
                             ]
                         )
                     ),
                     9,
                 )
-                if entries
-                else None
-            )
         cz_rows.append(row)
     return {
         "qubits": len(qubits),
@@ -153,6 +191,84 @@ def diagnostics(snapshot: dict[str, Any], circuits: list[QuantumCircuit], infide
         "cz": cz_rows,
         "readout": [{"factor": f, "capped": sum(flip(e, f) < f * e for e in flips)} for f in READOUT_FACTORS],
     }
+
+
+def snapshot_diagnostics(prepared: dict[str, Any], members: list[str]) -> dict[str, dict[str, Any]]:
+    """Per execution snapshot, in sorted path order: its member count and diagnostics() with the modeled infidelity."""
+    execution = prepared["execution"]
+    entries = {}
+    for relative in sorted(set(execution.values())):
+        snapshot = json.loads((ROOT / relative).read_text(encoding="utf-8"))
+        chosen = [m for m in members if execution[m] == relative]
+        circuits = [replica for m in chosen for replica in prepared["replicas"][m][1]]
+        entries[relative] = {"members": len(chosen), **diagnostics(snapshot, circuits, infidelity=True)}
+    return entries
+
+
+class DiagnosticsBuilder:
+    """A run's snapshot_diagnostics() from its archived inputs, or None for a skipped run; picklable for the pool."""
+
+    def __init__(self, index: dict[str, Any]) -> None:
+        self.index = index
+
+    def __call__(self, run_name: str) -> dict[str, dict[str, Any]] | None:
+        prepared = ghost_run.prepare(run_name, self.index)
+        if "skipped" in prepared:
+            return None
+        return snapshot_diagnostics(prepared, [m for m in prepared["members"] if m in prepared["execution"]])
+
+
+def regenerate(part: dict[str, Any], index: dict[str, Any]) -> dict[str, Any]:
+    """The part with its scaled block and every run's snapshots recomputed; every other field is kept in place."""
+    out = copy.deepcopy(part)
+    out["scaled"] = scaled_block()
+    names = [run["run"] for run in out["runs"]]
+    for run, entries in zip(
+        out["runs"], parallel.ordered_map(DiagnosticsBuilder(index), names, min_items=2), strict=True
+    ):
+        if entries is None:
+            require("skipped" in run, f"{run['run']}: inputs are skipped although the part holds a sweep")
+            continue
+        require("skipped" not in run, f"{run['run']}: marked skipped although its inputs rebuild")
+        run["snapshots"] = entries
+    return out
+
+
+def first_difference(a: Any, b: Any, path: str = "") -> str | None:
+    """The first JSON path, in document order, where a and b differ in value, type or key order."""
+    if type(a) is not type(b):
+        return path or "/"
+    if isinstance(a, dict):
+        if list(a) != list(b):
+            for key in list(a) + list(b):
+                if key not in a or key not in b or list(a).index(key) != list(b).index(key):
+                    return f"{path}/{key}"
+        for key in a:
+            found = first_difference(a[key], b[key], f"{path}/{key}")
+            if found is not None:
+                return found
+        return None
+    if isinstance(a, list):
+        for k, (x, y) in enumerate(zip(a, b, strict=False)):
+            found = first_difference(x, y, f"{path}[{k}]")
+            if found is not None:
+                return found
+        return f"{path}[{min(len(a), len(b))}]" if len(a) != len(b) else None
+    return None if a == b else (path or "/")
+
+
+def provenance(part_path: Path, kernel_path: Path, index: dict[str, Any]) -> None:
+    """Require part_path's bytes to equal the regeneration of kernel_path's part."""
+    text = part_path.read_text(encoding="utf-8")
+    expected = regenerate(json.loads(kernel_path.read_text(encoding="utf-8")), index)
+    if text != serialize(expected):
+        where = first_difference(json.loads(text), expected)
+        raise SystemExit(
+            f"{part_path}: differs from the regeneration of {kernel_path} at {where}"
+            if where is not None
+            else f"{part_path}: equal in value to the regeneration of {kernel_path} but serialized differently"
+        )
+    print(f"{part_path}: the regeneration of {kernel_path}")
 
 
 def grid_means(points: list[dict[str, Any]], members: list[str]) -> list[float]:
@@ -219,12 +335,10 @@ def sweep_run(
     )
     members = [m for m in prepared["members"] if m in execution]
     points: list[dict[str, Any]] = [{"cz": c, "readout": r, "tvd": {}} for c, r in grid]
-    snapshots = {}
-    for relative in sorted(set(execution.values())):
+    snapshots = snapshot_diagnostics(prepared, members)
+    for relative in snapshots:
         snapshot = json.loads((ROOT / relative).read_text(encoding="utf-8"))
         chosen = [m for m in members if execution[m] == relative]
-        circuits = [replica for m in chosen for replica in replicas[m][1]]
-        snapshots[relative] = {"members": len(chosen), **diagnostics(snapshot, circuits, infidelity=True)}
         sampler = GridSampler(
             snapshot, device, aer_threads(len(points)), chosen, {m: replicas[m][1] for m in chosen}, measured, shots
         )
@@ -520,6 +634,16 @@ def main() -> int:
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path, nargs="+", help="retained part files that together hold every run")
     parser.add_argument("--report", type=Path, nargs="+", help="print the fitted factors of retained part files")
+    parser.add_argument(
+        "--regenerate-diagnostics", type=Path, metavar="IN", help="rewrite a part's calibration-derived fields to --out"
+    )
+    parser.add_argument(
+        "--provenance",
+        type=Path,
+        nargs=2,
+        metavar=("PART", "KERNEL_OUTPUT"),
+        help="require PART to be the regeneration of a kernel's part",
+    )
     args = parser.parse_args()
     if args.report:
         print(json.dumps(report(args.report), indent=1))
@@ -527,6 +651,16 @@ def main() -> int:
     index = json.loads(ghost_run.INDEX.read_text(encoding="utf-8"))
     if args.check:
         check(args.check, args.runs, index)
+        return 0
+    if args.provenance:
+        part_path, kernel_path = args.provenance
+        provenance(part_path, kernel_path, index)
+        return 0
+    if args.regenerate_diagnostics:
+        require(args.out is not None, "--out is required")
+        part = json.loads(args.regenerate_diagnostics.read_text(encoding="utf-8"))
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        write_part(args.out, regenerate(part, index))
         return 0
     require(args.out is not None, "--out is required")
     runs = ghost_run.audited_runs() if args.runs == "all" else args.runs.split(",")
@@ -538,12 +672,7 @@ def main() -> int:
         "max_qubits": ghost_run.MAX_QUBITS,
         "seed": SEED,
         "grid": [list(p) for p in grid],
-        "scaled": {
-            "cz": "instructions.cz[].error",
-            "readout": "qubits[].e01 and qubits[].e10",
-            "cz_cap": CZ_CAP,
-            "readout_cap": FLIP_CAP,
-        },
+        "scaled": scaled_block(),
         "versions": {"qiskit": qiskit.__version__, "qiskit_aer": qiskit_aer.__version__},
         "runs": [],
     }
@@ -551,7 +680,7 @@ def main() -> int:
     for run in runs:
         # Written after every run, so a failure keeps every finished one.
         out["runs"].append(sweep_run(run, device, index, grid))
-        args.out.write_text(json.dumps(out) + "\n", encoding="utf-8")
+        write_part(args.out, out)
     return 0
 
 

@@ -39,8 +39,9 @@ What the replay does:
 
 Modes: --run writes the full replay JSON; --check requires the recorded
 cases and analysis digests and every measured Tuna-17 column to match the
-retained run, then replays one star and one path at reduced shots on the CPU
-and compares them with the retained JSON; --refresh-measured rewrites the
+retained run, then replays every star and path on the CPU and compares each
+exact prediction, duration and native gate count with the retained JSON, with
+sampled counts at reduced shots checked against the exact values; --refresh-measured rewrites the
 measured columns, summary and analysis digest from the current analysis.json
 and leaves every Kingston prediction untouched.
 
@@ -70,6 +71,7 @@ import qi_crosstalk_teleport_cases as qi  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import parallel  # noqa: E402
+import snapshot_laws  # noqa: E402
 
 SCHEMA = "qi-ibm-noise-replay-v1"
 RUN_DIR = ROOT / "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17"
@@ -299,33 +301,35 @@ def apply_readout(probs: np.ndarray, flips: Sequence[tuple[float, float]]) -> np
 
 
 class Replay:
-    """Callable over group tasks; each worker builds the Target and simulator once, on first use."""
+    """Callable over group tasks; each task simulates on the snapshot restricted to its own qubits."""
 
     def __init__(self, snapshot: dict[str, Any], shots: int, seed: int) -> None:
         self.snapshot = snapshot
         self.shots = shots
         self.seed = seed
-        self._built: tuple[Any, Any, Chip] | None = None
 
     def __call__(self, task: dict[str, Any]) -> dict[str, Any]:
         from qiskit import transpile
 
-        if self._built is None:
-            self._built = (
-                calibration_snapshot.build_target(self.snapshot),
-                calibration_snapshot.noise_simulator(self.snapshot, "CPU"),
-                Chip(self.snapshot),
-            )
-        target, simulator, chip = self._built
+        # The noise model is local to each qubit and gate, so the group's
+        # snapshot restriction (ascending physical order) carries the same
+        # channels as the full device while Aer assembles three or four
+        # qubits instead of 156.
         physical = task["physical"]
+        active = sorted(physical)
+        local = [active.index(q) for q in physical]
+        sub = snapshot_laws.restrict(self.snapshot, active)
+        target = calibration_snapshot.build_target(sub)
+        simulator = calibration_snapshot.noise_simulator(sub, "CPU")
+        chip = Chip(sub)
         flips = [(self.snapshot["qubits"][q]["e10"], self.snapshot["qubits"][q]["e01"]) for q in physical]
         runs = {}
         for name, gates in task["circuits"].items():
             logical = logical_circuit([(g[0], g[1], tuple(g[2])) for g in gates], task["labels"], chip.dt)
             compiled = transpile(
-                logical, target=target, initial_layout=physical, optimization_level=0, seed_transpiler=self.seed
+                logical, target=target, initial_layout=local, optimization_level=0, seed_transpiler=self.seed
             )
-            scheduled = schedule_alap(compiled, chip, len(physical), physical)
+            scheduled = schedule_alap(compiled, chip, len(physical), local)
             result = simulator.run(scheduled, shots=self.shots, seed_simulator=self.seed).result()
             exact = apply_readout(np.asarray(result.data(0)["p"], dtype=float), flips)
             counts = {key: int(value) for key, value in sorted(result.get_counts().items())}
@@ -583,8 +587,24 @@ def close(sampled: float, exact: float, shots: int, sigmas: float = SIGMAS) -> b
     return abs(sampled - exact) <= sigmas * math.sqrt(max(exact * (1 - exact), 1.0 / shots) / shots)
 
 
+def compare(name: str, new: Any, old: Any, problems: list[str]) -> None:
+    """Append one problem per leaf where a replayed value leaves the retained one by more than EXACT_TOLERANCE."""
+    if isinstance(old, dict):
+        if not isinstance(new, dict) or set(new) != set(old):
+            problems.append(f"{name}: keys differ from the retained record")
+            return
+        for key in old:
+            compare(f"{name}.{key}", new[key], old[key], problems)
+    elif isinstance(old, float):
+        both_nan = isinstance(new, float) and math.isnan(new) and math.isnan(old)
+        if not both_nan and not abs(new - old) <= EXACT_TOLERANCE:
+            problems.append(f"{name}: {new} differs from retained {old}")
+    elif new != old:
+        problems.append(f"{name}: {new} differs from retained {old}")
+
+
 def check(retained: Path) -> None:
-    """Reduced replay of the first star and path against the retained JSON and its own sampled counts."""
+    """Replay of every star and path against the retained JSON, sampled counts at reduced shots against exact values."""
     snapshot = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
     record = json.loads(retained.read_text(encoding="utf-8"))
     if record["schema"] != SCHEMA:
@@ -608,37 +628,34 @@ def check(retained: Path) -> None:
         digest = hashlib.sha256(text.encode()).hexdigest()
         if not digest == row["sha256"] == record["source_run"]["circuits"][row["file"]]:
             raise SystemExit(f"{retained}: circuit {row['file']} differs from the replayed one")
-    body = replay(RUN_DIR, snapshot, CHECK_SHOTS, SEED, 1, 1)
-    star, path = body["additivity"][0], body["teleport"][0]
-    kept_star, kept_path = record["additivity"][0], record["teleport"][0]
+    body = replay(RUN_DIR, snapshot, CHECK_SHOTS, SEED, None, None)
     problems: list[str] = []
-    if star["physical"] != kept_star["physical"] or path["physical"] != kept_path["physical"]:
-        problems.append("embedding differs from the retained one")
-
-    def same(name: str, new: float, old: float) -> None:
-        if abs(new - old) > EXACT_TOLERANCE:
-            problems.append(f"{name}: {new} differs from retained {old}")
-
-    for config in qi.CONFIGS:
-        same(f"p1[{config}]", star["exact"]["p1"][config], kept_star["exact"]["p1"][config])
-        if not close(star["sampled"]["p1"][config], star["exact"]["p1"][config], CHECK_SHOTS):
-            problems.append(f"sampled p1[{config}] disagrees with its exact value")
-        for qubit, value in star["exact"]["driver_p1"][config].items():
-            same(f"driver_p1[{config}][{qubit}]", value, kept_star["exact"]["driver_p1"][config][qubit])
-    same(
-        "additivity_residual_rad",
-        star["exact"]["additivity_residual_rad"],
-        kept_star["exact"]["additivity_residual_rad"],
-    )
-    for name in ("corrected_fidelity", "postselected_fidelity", "postselected_fraction"):
-        same(name, path["exact"][name], kept_path["exact"][name])
-    if not close(path["sampled"]["corrected_fidelity"], path["exact"]["corrected_fidelity"], CHECK_SHOTS):
-        problems.append("sampled corrected fidelity disagrees with its exact value")
+    for family, key in (("additivity", "T"), ("teleport", "I")):
+        if [row[key] for row in body[family]] != [row[key] for row in record[family]]:
+            raise SystemExit(f"{retained}: {family} entries differ from the replayed cases")
+    for new, old in zip(body["additivity"], record["additivity"], strict=True):
+        tag = f"star T={new['T']}"
+        if new["physical"] != old["physical"]:
+            problems.append(f"{tag}: embedding differs from the retained one")
+        for field in ("duration_dt", "exact"):
+            compare(f"{tag} {field}", new[field], old[field], problems)
+        for config in qi.CONFIGS:
+            if not close(new["sampled"]["p1"][config], new["exact"]["p1"][config], CHECK_SHOTS):
+                problems.append(f"{tag}: sampled p1[{config}] disagrees with its exact value")
+    for new, old in zip(body["teleport"], record["teleport"], strict=True):
+        tag = f"path I={new['I']}"
+        if new["physical"] != old["physical"]:
+            problems.append(f"{tag}: embedding differs from the retained one")
+        for field in ("duration_dt", "native_gates", "exact"):
+            compare(f"{tag} {field}", new[field], old[field], problems)
+        if not close(new["sampled"]["corrected_fidelity"], new["exact"]["corrected_fidelity"], CHECK_SHOTS):
+            problems.append(f"{tag}: sampled corrected fidelity disagrees with its exact value")
     if problems:
         raise SystemExit(f"{retained}: " + "; ".join(problems))
+    worst = max(abs(row["exact"]["additivity_residual_rad"]) for row in body["additivity"])
     print(
-        f"qi ibm noise replay: star T={star['T']} on {star['physical']} and path I={path['I']} on "
-        f"{path['physical']} match {retained.name}; exact residual {star['exact']['additivity_residual_rad']:.2e} rad"
+        f"qi ibm noise replay: {len(body['additivity'])} stars and {len(body['teleport'])} paths match "
+        f"{retained.name}; largest exact residual {worst:.2e} rad"
     )
 
 

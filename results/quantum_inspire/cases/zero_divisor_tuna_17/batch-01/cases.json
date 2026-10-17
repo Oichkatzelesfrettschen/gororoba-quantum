@@ -76,7 +76,7 @@
   "select_equals_left_multiplication": true
  },
  "preregistered": {
-  "estimators": "P(s=0) raw with Wilson 95%; readout-corrected with the selector's assignment from readout-0 and readout-1; contraction residuals dark+bright-1 and fixture-1/2 with |z| < 3 as consistency",
+  "estimators": "P(s=0) raw with Wilson 95%; readout-corrected with the selector's assignment from the readout-0 and readout-1 circuits of the same batch; contraction residuals dark+bright-1 and fixture-1/2 with |z| < 3 as consistency",
   "comparison": {
    "dark": 0.182,
    "dark_ci95": [
@@ -312,6 +312,11 @@
  ],
  "batch": "batch-01",
  "circuits": [
+  {
+   "file": "latin-2.cq",
+   "kind": "witness",
+   "sha256": "9c0af8833707d78e4dd00c3575b32d253e57800a860aed83a4048e20ef2a7def"
+  },
   {
    "file": "readout-0.cq",
    "kind": "readout",

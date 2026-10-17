@@ -43,6 +43,17 @@ them to equal the retained rows, which number exactly five per frame; every
 other field (seed, frame count, kinds,
 source, convention, certificate method, summary) must equal what this script
 writes for those rows.
+
+Under --limit the rows past the first K frames bind to data computable without
+the exact rank work: the key set, the frame index, the kind order, the seeded
+a_scale and b_scale of each row (frame_draws, drawn for all FRAMES frames in the
+generator's order), and, for the self, swap and generic kinds, length_ratio_squared,
+which follows from the scales and the norms of the Cayley-frame zero divisors
+(self and swap reuse a, so the ratio is b_scale squared).
+member and nullity are bound to the kind by the summary check (violations == 0).
+The length_ratio_squared of locus and annihilator rows (a seeded combination of
+a kernel basis), element_sha256 and b_nullity_a4 are bound only by the full
+replay (no --limit), which the full-tier gate runs.
 """
 
 from __future__ import annotations
@@ -259,9 +270,64 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def run(frames: int) -> list[dict[str, Any]]:
+def run(draws: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Every frame's rows in frame order; frames run independently on the process pool."""
-    return [row for rows in parallel.ordered_map(frame_rows, frame_draws(frames), min_items=2) for row in rows]
+    return [row for rows in parallel.ordered_map(frame_rows, draws, min_items=2) for row in rows]
+
+
+ROW_KEYS = frozenset(
+    {
+        "frame",
+        "kind",
+        "a_scale",
+        "b_scale",
+        "length_ratio_squared",
+        "member",
+        "b_nullity_a4",
+        "nullity",
+        "element_sha256",
+    }
+)
+
+
+def frame_norms(frame: int) -> tuple[Fraction, Fraction]:
+    """|a|^2 and |b|^2 of the unscaled Cayley-frame zero divisors of one frame."""
+    a, b = zero_divisor(A_SEED_BASE + frame), zero_divisor(B_SEED_BASE + frame)
+    return dot(a, a), dot(b, b)
+
+
+def suffix_mismatch(draws: list[dict[str, Any]], start: int, rows: list[dict[str, Any]]) -> str | None:
+    """First retained row from index start that departs from what the draws fix without rank work.
+
+    Checked: key set, frame, kind, a_scale, b_scale, and for self, swap and
+    generic rows length_ratio_squared.
+    """
+    first = start // len(KINDS)
+    frames = range(first, len(draws))
+    norms = dict(zip(frames, parallel.ordered_map(frame_norms, frames, min_items=2), strict=True))
+    for index in range(start, len(rows)):
+        draw = draws[index // len(KINDS)]
+        slot = index % len(KINDS)
+        kind = KINDS[slot]
+        a_scale, b_scale = draw["a_scale"], draw["b_scales"][slot]
+        expected = {
+            "frame": draw["frame"],
+            "kind": kind,
+            "a_scale": str(a_scale),
+            "b_scale": str(b_scale),
+        }
+        if kind in ("self", "swap"):
+            expected["length_ratio_squared"] = str(b_scale**2)
+        elif kind == "generic":
+            norm_a, norm_b = norms[draw["frame"]]
+            expected["length_ratio_squared"] = str(b_scale**2 * norm_b / (a_scale**2 * norm_a))
+        row = rows[index]
+        if set(row) != ROW_KEYS:
+            return f"retained row {index} has keys {sorted(row)}"
+        for key, value in expected.items():
+            if row[key] != value:
+                return f"retained row {index} {key} is {row[key]!r}, the seeded draw gives {value!r}"
+    return None
 
 
 def result(rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -288,7 +354,7 @@ def main() -> int:
     parser.add_argument("--limit", type=int, help="with --check, recompute only the first LIMIT frames")
     args = parser.parse_args()
     if args.out:
-        record = result(run(FRAMES))
+        record = result(run(frame_draws(FRAMES)))
         _require(
             record["summary"]["violations"] == 0, f"{record['summary']['violations']} pairs contradict Theorem 1.5"
         )
@@ -306,8 +372,11 @@ def main() -> int:
     _require(retained["summary"]["violations"] == 0, "the retained rows contradict Theorem 1.5")
     _require(args.limit is None or args.limit > 0, f"--limit must be a positive frame count, got {args.limit}")
     frames = FRAMES if args.limit is None else min(args.limit, FRAMES)
-    rows = run(frames)
+    draws = frame_draws(FRAMES)
+    rows = run(draws[:frames])
     _require(rows == retained["rows"][: len(rows)], f"recomputed rows of the first {frames} frames differ")
+    mismatch = suffix_mismatch(draws, len(rows), retained["rows"])
+    _require(mismatch is None, f"{mismatch}")
     expected = result(retained["rows"])
     differing = sorted(key for key in expected.keys() | retained.keys() if expected.get(key) != retained.get(key))
     _require(not differing, f"retained fields differ from this computation: {differing}")

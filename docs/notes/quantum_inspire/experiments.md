@@ -164,7 +164,7 @@ docs/evidence/calibration/ibm_kingston.json, inserts ALAP delays and saves
 exact Aer probabilities beside 16384-shot samples. It ran on a Kaggle CPU
 kernel (results/kaggle/2026-10-16T214611Z-qi-ibm-noise-replay) and is retained
 as results/quantum_inspire/ibm_noise_replay/tuna_17-ibm_kingston.json; gate
-core-340 replays one star and one path.
+core-340 replays every star and path.
 
 | Quantity | Kingston model (exact) | Tuna-17 measured |
 |---|---|---|
@@ -205,10 +205,19 @@ and two CCZ on five qubits, with every gate in H, S, T, Tdag and CZ. Routed
 onto Tuna-17 a replica takes 66-70 CZ and 26 T. Three disjoint regions,
 {0,1,2,4,5}, {7,8,10,11,13} and {9,12,14,15,16}, run the three cases in a 3x3
 Latin square (latin-1..3); readout-0 and readout-1 prepare every qubit in |0>
-and |1>. The generator emits the Latin square whole as batch-00, so its dark,
-bright and fixture contrasts share one calibration, and the readout pair as
-batch-01; the retained 221133Z runs predate the split and ran all five
-circuits as one batch. The estimators and the comparison were fixed in cases.json before
+and |1>. A batch boundary is a calibration boundary, so the generator emits
+three batches of three circuits, batch-00..02, each holding one Latin circuit
+followed by readout-0 and readout-1. A Latin circuit carries dark, bright and
+fixture in its three regions, so its contrasts share one calibration, and its
+readout correction uses the assignment measured in the same batch:
+`load_series` keys shots by (batch, file), and `secondary()` resamples each
+batch's readout pair and then its witness circuit, correcting every circuit
+with its own batch's assignment. A readout change between batches therefore
+moves only that batch's corrected estimates and bootstrap intervals, while
+the raw estimators stay fixed (`--self-test`, gate core-348). Pooled means
+average circuits from three calibrations. The retained 221133Z runs predate
+batching and ran all five circuits as one batch, which forms the single
+calibration group of their replay. The estimators and the comparison were fixed in cases.json before
 submission (claim class: preregistered hardware inference). The QX twin packs
 the same nine replicas two per 10-qubit circuit.
 

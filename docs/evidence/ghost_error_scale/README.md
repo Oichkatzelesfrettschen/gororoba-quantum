@@ -69,15 +69,26 @@ Readings:
 
 ## Retained parts
 
-`part_a.json`, `part_b.json` and `part_c.json` are the outputs of the three
-sweep parts, retained byte for byte from their Kaggle run directories under
-`results/kaggle/` (gate core-349 compares them). The kernels ran commit
-2298108; of the 55 files each bundled, four differ from this tree, and only
-in how the Aer device is chosen (`calibration_snapshot.aer_device` reads
-GOROROBA_AER_DEVICE), which leaves the CPU computation unchanged. Gate
-core-339 runs `ghost_error_scale.py --check` on the three parts: it rebuilds
-every audited run's members, shots, snapshots and diagnostics from the
-archived inputs and reruns 2026-10-13T080216 on the CPU.
+`part_a.json`, `part_b.json` and `part_c.json` hold, unchanged, the
+simulation fields of the three sweep kernels that ran commit 2298108
+(`results/kaggle/2026-10-16T160703Z-gororoba-ghost-error-scale-a`, `-b` at
+160706Z and `-c` at 160710Z). Their calibration-derived fields -- each
+run's per-snapshot diagnostics, which count every coupler once, and the
+`scaled` block with its separate `cz_cap` and `readout_cap` -- are
+regenerated on the build host by `ghost_error_scale.py
+--regenerate-diagnostics` from the archived calibration and circuits. Gate
+core-349 is the provenance gate: `--provenance` requires each part to be,
+byte for byte, the regeneration of its kernel's output, and a plain `cmp`
+requires `part_c.json` to equal the output of a second part c kernel, which
+ran commit dfb4384 with the per-coupler diagnostics
+(`results/kaggle/2026-10-17T004620Z-gororoba-ghost-error-scale-c`). That
+kernel resampled every grid point and wrote the same simulation bytes, so
+the identity shows that local regeneration reproduces a kernel's output.
+The `bundle` digests in each run's `submission.json` record the files each
+kernel carried. Gate core-339 is the recomputation gate: it runs
+`ghost_error_scale.py --check` on the three parts, which rebuilds every
+audited run's members, shots, snapshots and diagnostics from the archived
+inputs and reruns 2026-10-13T080216 on the CPU.
 `scripts/ghost_event_scale.py` reads each dynamic run's fitted readout
 factor from these parts.
 

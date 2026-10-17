@@ -2974,7 +2974,7 @@
       "domain": "implementation",
       "evidence_class": "numerical or stochastic simulation",
       "status": "established",
-      "boundary": "Gate core-340 re-derives one star and one path at 2048 shots against the retained record; the other stars, paths and the 16384-shot samples come from the retained Kaggle CPU run. The model class holds no coherent error, crosstalk or leakage, so its zero shift is a property of the model, and Kingston's 32 ns X stretches the driver train to 1.28 us against the target's 0.8 us wait.",
+      "boundary": "Gate core-340 re-derives every star and path at 2048 shots against the retained record; the 16384-shot samples come from the retained Kaggle CPU run. The model class holds no coherent error, crosstalk or leakage, so its zero shift is a property of the model, and Kingston's 32 ns X stretches the driver train to 1.28 us against the target's 0.8 us wait.",
       "evidence": [
         {
           "path": "results/quantum_inspire/ibm_noise_replay/tuna_17-ibm_kingston.json",
