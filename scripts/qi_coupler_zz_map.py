@@ -169,23 +169,17 @@ def members(profile: str) -> tuple[dict[str, Any], list[tuple[str, str]]]:
 
 
 def groups(ordered: list[tuple[str, str]]) -> list[list[tuple[str, str]]]:
-    """Batches of at most BATCH circuits that keep each delay's x and y circuits together.
+    """Batches of at most BATCH circuits: both readout references together, then one per x/y pair.
 
-    atan2(y, x) combines the two quadratures as one simultaneous measurement,
-    and a batch boundary is a calibration boundary; the readout circuits fill
-    the remaining slots.
+    atan2(y, x) combines a delay's two quadratures as one measurement and the
+    assignment correction combines readout-0 with readout-1, and a batch
+    boundary is a calibration boundary, so each set shares one batch. A
+    common frame change between the two delays' batches adds the same rate to
+    every sector of a target and lands in omega, never in J.
     """
     readouts = [item for item in ordered if item[0].startswith("readout")]
     pairs = [ordered[i : i + 2] for i in range(len(readouts), len(ordered), 2)]
-    out = []
-    for pair in pairs:
-        batch = list(pair)
-        while readouts and len(batch) < BATCH:
-            batch.append(readouts.pop(0))
-        out.append(batch)
-    if readouts:
-        out.append(readouts)
-    return out
+    return [readouts, *pairs]
 
 
 def build(profile: str) -> dict[str, str]:
@@ -610,13 +604,20 @@ def main() -> int:
         return 0
     if args.analyze:
         out, *runs = args.analyze
-        backend = json.loads((runs[0] / "cases.json").read_text(encoding="utf-8"))["backend"]
+        manifests = [json.loads((run / "cases.json").read_text(encoding="utf-8")) for run in runs]
+        series = ("schema", "backend", "backend_type_id", "nqubits", "shots")
+        for run, manifest in zip(runs, manifests, strict=True):
+            if any(manifest[key] != manifests[0][key] for key in series):
+                raise SystemExit(f"{run}: its manifest differs from {runs[0]} in {', '.join(series)}")
+        backend = manifests[0]["backend"]
         profile = next(name for name, settings in PROFILES.items() if settings["identifier"] == backend)
         meta, _ = members(profile)
+        if manifests[0]["nqubits"] != meta["nqubits"] or manifests[0]["shots"] != meta["shots"]:
+            raise SystemExit(f"{runs[0]}: its manifest does not describe the {profile} profile")
         shots: dict[str, list[str]] = {}
         batch_of: dict[str, int] = {}
-        for index, run in enumerate(runs):
-            for row in json.loads((run / "cases.json").read_text(encoding="utf-8"))["circuits"]:
+        for index, (run, manifest) in enumerate(zip(runs, manifests, strict=True)):
+            for row in manifest["circuits"]:
                 if row["file"] in shots:
                     raise SystemExit(f"{run}: {row['file']} appears in more than one listed batch")
                 shots[row["file"]] = json.loads((run / "raw" / f"{row['file']}.json").read_text(encoding="utf-8"))
@@ -633,13 +634,27 @@ def main() -> int:
             q: (sum(bit(s, q) for s in zero) / len(zero), sum(1 - bit(s, q) for s in one) / len(one))
             for q in range(meta["nqubits"])
         }
+        table = tabulate(meta, shots)
+        fitted = analyze_table(meta, table, assignment)
+        # The two readout references run in their own batches and correct all
+        # four; refitting without any correction bounds what a change in the
+        # assignment between batches can do to J.
+        uncorrected = analyze_table(meta, table, {q: (0.0, 0.0) for q in range(meta["nqubits"])})
+        shifts = [
+            (abs(e["j_hz"] - u["j_hz"]) / e["j_se_hz"], e["edge"])
+            for e, u in zip(fitted["edges"], uncorrected["edges"], strict=True)
+            if e["j_hz"] is not None and u["j_hz"] is not None and e["j_se_hz"]
+        ]
+        largest = max(shifts, default=(0.0, None))
         report = {
             "schema": "qi-coupler-zz-analysis-v1",
             "profile": profile,
             "runs": [retained_path(r) for r in runs],
             "quadrature_pairs_across_batches": split_pairs,
+            "readout_batches": sorted({batch_of["readout-0.cq"], batch_of["readout-1.cq"]}),
             "readout_assignment": {str(q): list(v) for q, v in assignment.items()},
-            **analyze_table(meta, tabulate(meta, shots), assignment),
+            "readout_correction_sensitivity": {"max_abs_j_shift_over_se": largest[0], "edge": largest[1]},
+            **fitted,
         }
         text = json.dumps(quantized(report), indent=1) + "\n"
         if args.replay:

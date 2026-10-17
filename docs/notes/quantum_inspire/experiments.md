@@ -310,7 +310,10 @@ omega carries any common alias; a target detuned near 333 kHz would otherwise
 split its sectors across branches and fail the additivity test spuriously.
 The role swap measures every coupler again from its other end. The case is
 10 circuits (2 roles x 2 quadratures x 2 delays, plus two readout circuits),
-grouped so each delay's x and y circuits share a batch; `--conformance`
+run as five batches: both readout references together, then one batch per
+delay's x and y pair. A frame change between the two delays' batches adds
+the same rate to every sector of a target and lands in omega, never in J;
+`--conformance`
 evolves all 17 qubits under injected frequencies, one of them at 320 kHz
 across the alias edge, and all 24 couplings through the ALAP-scheduled
 circuits and recovers them to 1e-10 Hz.

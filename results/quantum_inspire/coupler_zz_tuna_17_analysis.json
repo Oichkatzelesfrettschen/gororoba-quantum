@@ -11,6 +11,9 @@
   "P-d025",
   "Q-d100"
  ],
+ "readout_batches": [
+  0
+ ],
  "readout_assignment": {
   "0": [
    0.0160522460938,
@@ -79,6 +82,13 @@
   "16": [
    0.02685546875,
    0.0333251953125
+  ]
+ },
+ "readout_correction_sensitivity": {
+  "max_abs_j_shift_over_se": 0.756732385454,
+  "edge": [
+   1,
+   4
   ]
  },
  "targets": [

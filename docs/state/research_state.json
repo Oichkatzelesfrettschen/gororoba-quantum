@@ -2978,15 +2978,15 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "The data-taking design (bipartite roles, delays 0.5 and 2 us, quadratures, neighbor conditioning, readout correction) was fixed before submission; the end-quality rule (visibility at least 0.3, additivity p at least 1e-3) was fixed after the Tuna-17 data; one 16384-shot run per circuit on one calibration, the four batches minutes apart; a spectator's measured Z labels its state during the idle only up to its decay in the 2 us window, which shrinks J toward zero; neighbor readout error mixes sectors and shrinks J by about the neighbor's 1 - e01 - e10; the P-role 0.5 us and Q-role 2 us x/y quadrature pairs ran in adjacent batches minutes apart, so a calibration change between those batches enters their phases.",
+      "boundary": "The data-taking design (bipartite roles, delays 0.5 and 2 us, quadratures, neighbor conditioning, readout correction) was fixed before submission; the end-quality rule (visibility at least 0.3, additivity p at least 1e-3) was fixed after the Tuna-17 data; one 16384-shot run per circuit on one calibration, the four batches minutes apart; a spectator's measured Z labels its state during the idle only up to its decay in the 2 us window, which shrinks J toward zero; neighbor readout error mixes sectors and shrinks J by about the neighbor's 1 - e01 - e10; the P-role 0.5 us and Q-role 2 us x/y quadrature pairs ran in adjacent batches minutes apart, so a calibration change between those batches enters their phases; both readout references ran in batch 00 and correct all four batches, and refitting with no readout correction moves no J by more than 0.76 standard errors; a frame change between the two delays' batches shifts omega only, while a coupler retuned between batches would enter J.",
       "evidence": [
         {
           "path": "results/quantum_inspire/coupler_zz_tuna_17_analysis.json",
-          "sha256": "3dafdfbedb33ba34e96cacbab6315e566654da041b1a1b341217870fb78250fd"
+          "sha256": "adb913b31b49f8371c0e3bbdfc00823330bda1eb0fb8024afbe41789d0ea4375"
         },
         {
           "path": "results/quantum_inspire/coupler_zz_qx_analysis.json",
-          "sha256": "804e26d575c852d484dcbf2dcd7cc547db0a17129bcfed3c3d432b4543285fdc"
+          "sha256": "553f898da0216a8f0b0b272ce8366021787f941c03f2bb71e6386c97c5bb8546"
         }
       ],
       "documents": [
@@ -3017,11 +3017,11 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "The data-taking design (bipartite roles, delays 0.5 and 2 us, quadratures, neighbor conditioning, readout correction) was fixed before submission; the end-quality rule (visibility at least 0.3, additivity p at least 1e-3) was fixed after the Tuna-17 data; one 16384-shot run per circuit on one calibration, the four batches minutes apart; a spectator's measured Z labels its state during the idle only up to its decay in the 2 us window, which shrinks J toward zero; neighbor readout error mixes sectors and shrinks J by about the neighbor's 1 - e01 - e10; the P-role 0.5 us and Q-role 2 us x/y quadrature pairs ran in adjacent batches minutes apart, so a calibration change between those batches enters their phases.",
+      "boundary": "The data-taking design (bipartite roles, delays 0.5 and 2 us, quadratures, neighbor conditioning, readout correction) was fixed before submission; the end-quality rule (visibility at least 0.3, additivity p at least 1e-3) was fixed after the Tuna-17 data; one 16384-shot run per circuit on one calibration, the four batches minutes apart; a spectator's measured Z labels its state during the idle only up to its decay in the 2 us window, which shrinks J toward zero; neighbor readout error mixes sectors and shrinks J by about the neighbor's 1 - e01 - e10; the P-role 0.5 us and Q-role 2 us x/y quadrature pairs ran in adjacent batches minutes apart, so a calibration change between those batches enters their phases; both readout references ran in batch 00 and correct all four batches, and refitting with no readout correction moves no J by more than 0.76 standard errors; a frame change between the two delays' batches shifts omega only, while a coupler retuned between batches would enter J.",
       "evidence": [
         {
           "path": "results/quantum_inspire/coupler_zz_tuna_17_analysis.json",
-          "sha256": "3dafdfbedb33ba34e96cacbab6315e566654da041b1a1b341217870fb78250fd"
+          "sha256": "adb913b31b49f8371c0e3bbdfc00823330bda1eb0fb8024afbe41789d0ea4375"
         }
       ],
       "documents": [
@@ -3055,7 +3055,7 @@
         },
         {
           "path": "results/quantum_inspire/coupler_zz_tuna_17_analysis.json",
-          "sha256": "3dafdfbedb33ba34e96cacbab6315e566654da041b1a1b341217870fb78250fd"
+          "sha256": "adb913b31b49f8371c0e3bbdfc00823330bda1eb0fb8024afbe41789d0ea4375"
         },
         {
           "path": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/analysis.json",
