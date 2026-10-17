@@ -2918,7 +2918,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/n21_replica_covariance.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_replica_covariance.py --self-test",
    "name": "core-483",
-   "seconds": 5.0,
+   "seconds": 4.5,
    "tier": "pr"
   },
   {
@@ -2926,7 +2926,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/n21_usage_budget.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_usage_budget.py --check gororoba_quantum/N21_USAGE_BUDGET.md",
    "name": "core-484",
-   "seconds": 20.0,
+   "seconds": 16.0,
    "tier": "pr"
   },
   {
@@ -2942,7 +2942,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error replica_covariance_contracts.py && \"$PYTHON\" -B -O -W error replica_covariance_contracts.py",
    "name": "core-486",
-   "seconds": 3.2,
+   "seconds": 9.0,
    "tier": "pr"
   }
  ],

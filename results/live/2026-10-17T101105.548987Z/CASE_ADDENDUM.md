@@ -1,7 +1,21 @@
 # Case addendum: n21-feedback-encoded at the 02:30 Kingston calibration
 
-Status: UNAPPROVED. This addendum accompanies `UNAPPROVED_CASE.md` and
-authorizes nothing.
+Status: UNAPPROVED and SUPERSEDED by `results/live/2026-10-17T114216.070396Z`
+(04:20 calibration, 131,072 shots, 88.5 s), whose case and addendum carry
+the collection-time covariance falsifier and the exact-model bias
+sensitivity. This record stays as an audit record; its experiment digest
+predates those changes, so the runner refuses to submit against it. This
+addendum accompanies `UNAPPROVED_CASE.md` and authorizes nothing.
+
+**Replica covariance falsifier, as preregistered for this design.** The
+statistic is, per PUB, the biased sample variance over the 118,784 shots of
+the replica-average signed score (weights +1/2 on the feedback PUB, -1/2 on
+the control PUB). The threshold is the declared projection 0.55 / 2 = 0.275
+plus the Hoeffding allowance eps2 + D eps1, D = 2, s = sqrt(ln(4 / t) / (2n)),
+eps1 = D s, eps2 = (D^2 / 4) s, t = 1e-3 / 2: 0.275 + 0.0308 = 0.3058. Both
+PUBs at or below it apply the declared bound; otherwise the endpoint takes
+the Hoeffding radius, which leaves the detection threshold unchanged at R = 2
+and reports the power underpowered.
 
 **What the run measures.** The signed-contrast difference between the
 feed-forward and no-feed-forward arms of the encoded two-round N=21 order

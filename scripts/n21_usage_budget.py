@@ -64,7 +64,7 @@ from experiment_optimizer import (  # noqa: E402
     evaluate_candidate,
 )
 
-REFERENCE = ROOT / "results/live/2026-10-17T111902.183133Z/record.json"
+REFERENCE = ROOT / "results/live/2026-10-17T114216.070396Z/record.json"
 TARGETS = ROOT / "docs/evidence/heron_platform/targets.json"
 # Exact-model dry runs of the same family, oldest calibration first, and the
 # Kaggle validation record of the retained 2026-10-17T003834Z ISA.
@@ -72,6 +72,7 @@ DRIFT_RECORDS = (
     ROOT / "results/live/2026-10-17T091514.662497Z/record.json",
     ROOT / "results/live/2026-10-17T094344.639211Z/record.json",
     ROOT / "results/live/2026-10-17T101105.548987Z/record.json",
+    ROOT / "results/live/2026-10-17T111902.183133Z/record.json",
     REFERENCE,
 )
 VALIDATION = ROOT / "docs/evidence/n21_exact_model/validation.json"
