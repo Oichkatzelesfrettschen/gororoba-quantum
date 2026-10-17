@@ -90,9 +90,11 @@ surrogate does not see.
   with both arms' total variation from their ideal laws at 0.10 to 0.23.
 
 **Ten-round circuit.** Order recovery is 0.134 to 0.139 baseline and 0.129
-to 0.134 encoded. That is at or below the fully depolarized 0.1445 and far
-from the noiseless 0.334, so neither form carries order information on
-these devices.
+to 0.134 encoded. Under these snapshot noise models, that recovery statistic
+stays at or below the fully depolarized 0.1445, far from the noiseless
+0.334, in both forms. This bounds only the modeled order-recovery rate. It
+does not test the complete phase distribution for order information, and it
+does not measure the devices.
 
 **Seconds.**
 - **Formula:** shots x (Target duration of the true-branch gate-time view +
