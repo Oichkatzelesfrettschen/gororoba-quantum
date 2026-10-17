@@ -99,6 +99,8 @@ def results(root: Path, max_seconds: float) -> dict[str, tuple[int, str]]:
     )
     lines = completed.stdout.splitlines()
     statuses = {m.group(2): 0 if m.group(1) == "PASS" else 1 for m in map(VERDICT.match, lines) if m}
+    if "unrecognized arguments: --max-seconds" in completed.stderr:
+        raise SystemExit(f"{root / 'ci/run_gates.py'} predates --max-seconds; the base needs ci/premerge_gates.py too")
     if not statuses:
         raise SystemExit(f"{root / 'ci/run_gates.py'} reported no gate:\n{completed.stdout}{completed.stderr}")
     tails: dict[str, list[str]] = {}
