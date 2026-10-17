@@ -3,16 +3,18 @@
 A plan that declares ``--replica-variance-bound V`` asserts, for every
 contract and PUB with replicated members, that the replica scores of one shot
 have variance at most V and are independent across replicas
-(n21_exact_planning). The collector tests that assertion before it applies
+(n21_exact_planning). The collector measures that assertion before it reads
 the bound: qpu_planning.measured_family runs
 n21_exact_planning.covariance_falsifier on the shot-ordered registers
-raw/<job_id>/pub_NN.json retains and records the branch it took under
-collect.json's ``family_analysis.replica_covariance``.
+raw/<job_id>/pub_NN.json retains, reads the declared projection where the
+variance upper confidence limit stays at or below it and the limit itself
+elsewhere, and records the branch under collect.json's
+``family_analysis.replica_covariance``.
 
 ``--run-dir`` reruns the same falsifier from the run directory alone: it reads
 record.json and the raw files (each checked against its index digest),
-recomputes every bound's statistic and threshold, and, when collect.json
-exists, requires the collector's verdict, branch and per-bound statistics to
+recomputes every bound's sample variance, UCL and variance used, and, when
+collect.json exists, requires the collector's branch and per-bound values to
 match. It prints the replayed rows and exits 1 on a disagreement.
 
 Usage:
@@ -38,7 +40,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import n21_exact_planning  # noqa: E402
 
-COMPARED = ("statistic", "declared_projection", "allowance", "threshold")
+COMPARED = ("statistic", "declared_projection", "allowance", "ucl", "variance_used")
 
 
 def replay(run_dir: Path) -> dict[str, Any]:
@@ -53,16 +55,19 @@ def replay(run_dir: Path) -> dict[str, Any]:
 def disagreements(replayed: dict[str, Any], collected: dict[str, Any]) -> list[str]:
     """Differences between the replayed falsifier and the collector's recorded one."""
     problems = []
-    branch = "declared_covariance" if replayed["holds"] else "hoeffding_fallback"
-    if collected.get("holds") != replayed["holds"] or collected.get("branch") != branch:
-        problems.append(f"verdict: collected {collected.get('holds')}/{collected.get('branch')}, replayed {branch}")
+    if collected.get("branch") != replayed["branch"]:
+        problems.append(f"branch: collected {collected.get('branch')}, replayed {replayed['branch']}")
     rows = collected.get("bounds", [])
     if len(rows) != len(replayed["bounds"]):
         return [*problems, "the collected and replayed bound lists differ in length"]
     for mine, theirs in zip(replayed["bounds"], rows, strict=True):
         label = f"{mine['observable']}/{mine['pub']}"
-        if (mine["observable"], mine["pub"], mine["holds"]) != (theirs["observable"], theirs["pub"], theirs["holds"]):
-            problems.append(f"{label}: identity or verdict differs")
+        if (mine["observable"], mine["pub"], mine.get("source")) != (
+            theirs["observable"],
+            theirs["pub"],
+            theirs.get("source"),
+        ):
+            problems.append(f"{label}: identity or variance source differs")
             continue
         for key in COMPARED:
             if key in mine and not math.isclose(mine[key], theirs.get(key, math.nan), rel_tol=1e-12, abs_tol=1e-15):
@@ -201,15 +206,17 @@ def _write_collected(run: Path, collected: dict[str, Any]) -> None:
 
 def self_test() -> None:
     generator = np.random.default_rng(20261017)
-    law = np.array([0.28, 0.25, 0.22, 0.25])
     shots = 65536
-    independent = generator.choice(4, size=(shots, 2), p=law)
-    correlated = independent.copy()
+    # Score variance 0.2 per replica, independent: the replica average's UCL
+    # stays below the declared 0.275. Variance 0.5 with 0.8 of the shots
+    # shared: the UCL exceeds it and the collection reads the UCL.
+    low = generator.choice(4, size=(shots, 2), p=[0.7, 0.1, 0.1, 0.1])
+    correlated = generator.choice(4, size=(shots, 2), p=[0.28, 0.25, 0.22, 0.25])
     shared = generator.random(shots) < 0.8
     correlated[shared, 1] = correlated[shared, 0]
     verdicts = {}
     with tempfile.TemporaryDirectory() as scratch:
-        for label, outcomes in (("independent", independent), ("correlated", correlated)):
+        for label, outcomes in (("independent", low), ("correlated", correlated)):
             run = Path(scratch) / label
             run.mkdir()
             record = _fixture_run(run, outcomes)
@@ -220,10 +227,9 @@ def self_test() -> None:
             marginals = {"m": [np.bincount(outcomes[:, k], minlength=4) / shots for k in range(2)]}
             registers = n21_exact_planning.retained_registers(run, {"pub_a"})
             joined = n21_exact_planning.covariance_falsifier(record, registers, marginals)
-            if joined["holds"] != replayed["holds"] or "differ from the collected marginal" in joined["reason"]:
+            if joined["branch"] != replayed["branch"] or "differ from the collected marginal" in joined["reason"]:
                 raise AssertionError(f"{label}: register join order disagrees with the replica marginals: {joined}")
-            branch = "declared_covariance" if replayed["holds"] else "hoeffding_fallback"
-            collected = copy.deepcopy(replayed) | {"branch": branch}
+            collected = copy.deepcopy(replayed)
             _write_collected(run, collected)
             if check_run(run)[1]:
                 raise AssertionError(f"{label}: replay disagrees with an identical collected verdict")
@@ -231,10 +237,13 @@ def self_test() -> None:
             _write_collected(run, collected)
             if not check_run(run)[1]:
                 raise AssertionError(f"{label}: replay accepted an altered collected statistic")
-        if not verdicts["independent"]["holds"]:
-            raise AssertionError(f"independent replicas rejected: {verdicts['independent']}")
-        if verdicts["correlated"]["holds"]:
-            raise AssertionError("replicas sharing 0.8 of their shots passed the declared bound")
+        low_row, high_row = verdicts["independent"]["bounds"][0], verdicts["correlated"]["bounds"][0]
+        if verdicts["independent"]["branch"] != "declared_covariance" or low_row["variance_used"] != 0.275:
+            raise AssertionError(f"low-variance independent replicas did not read the declared bound: {low_row}")
+        if verdicts["correlated"]["branch"] != "ucl_covariance" or high_row["variance_used"] <= 0.275:
+            raise AssertionError(f"correlated replicas read less than their UCL: {high_row}")
+        if not math.isclose(high_row["variance_used"], high_row["statistic"] + high_row["allowance"]):
+            raise AssertionError("the variance used differs from the UCL")
         real = real_run_check(Path(scratch))
         pub = Path(scratch) / "independent" / "raw" / "job0" / "pub_00.json"
         pub.write_text(pub.read_text().replace('"pub_a"', '"pub_b"', 1))
@@ -244,13 +253,12 @@ def self_test() -> None:
             pass
         else:
             raise AssertionError("a raw PUB file that differs from its index digest was read")
-    row = verdicts["independent"]["bounds"][0]
     print(
-        f"n21 replica covariance: independent replicas pass (statistic {row['statistic']:.4f} <= threshold "
-        f"{row['threshold']:.4f}); shared shots fail; the replay matches an identical collected verdict, "
-        "rejects an altered one and refuses a raw file off its index digest; the retained "
-        f"{REAL_RUN.name} manifest replays ({real['shots']} shots, statistic {real['statistic']:.4f}) and its "
-        "decoded replica frequencies equal collect.json"
+        f"n21 replica covariance: independent low-variance replicas read the declared 0.275 (UCL "
+        f"{low_row['ucl']:.4f}); shared shots read their UCL {high_row['ucl']:.4f}; the replay matches an "
+        "identical collected verdict, rejects an altered one and refuses a raw file off its index digest; the "
+        f"retained {REAL_RUN.name} manifest replays ({real['shots']} shots, sample variance "
+        f"{real['statistic']:.4f}) and its decoded replica frequencies equal collect.json"
     )
 
 

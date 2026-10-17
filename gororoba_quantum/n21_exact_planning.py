@@ -18,14 +18,17 @@ asks for them; every other family plans as before.
   and a noise model without inter-replica crosstalk. A declared V below a
   replica's modeled score variance stops planning.
 
-- ``covariance_falsifier`` tests every declared bound on the shot-ordered
-  replica registers a collection retains under raw/<job_id>/pub_NN.json.
-  qpu_planning.measured_family applies the declared bounds only when every
-  bound passes and otherwise analyzes every endpoint under the Hoeffding
-  arbitrary-dependence radius; ``COVARIANCE_FALSIFIER`` states the
-  statistic, threshold and decision, and the record carries it beside the
-  bounds. scripts/n21_replica_covariance.py replays the test from a run
-  directory.
+- ``covariance_falsifier`` measures every declared bound on the shot-ordered
+  replica registers a collection retains under raw/<job_id>/pub_NN.json: the
+  upper confidence limit (UCL) of the variance the radius reads, at the
+  falsifier tail. qpu_planning.measured_family applies the declared variance
+  where the UCL stays at or below it and the UCL itself elsewhere, and spends
+  the falsifier tail from the endpoint's alpha; absent registers leave every
+  endpoint on the Hoeffding radius at the full alpha.
+  ``COVARIANCE_FALSIFIER`` states the rule, the record carries it beside the
+  bounds, and scripts/n21_replica_covariance.py replays it from a run
+  directory. The plan sizes shots under the same rule: each bound carries the
+  allowance its collection adds at the planned shots and the falsifier tail.
 """
 
 from __future__ import annotations
@@ -35,6 +38,7 @@ import io
 import json
 import math
 from collections.abc import Mapping, Sequence
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
@@ -49,25 +53,31 @@ MODEL_METHODS = ("sampled", "exact")
 INDEPENDENCE_ASSUMPTION = (
     "per-replica score variance at most {bound}; replicas independent: disjoint placements one CZ hop apart "
     "on the admitted graph and no inter-replica crosstalk in the noise model; "
-    "collection tests the bound on the retained shot-ordered replica registers "
-    "(n21_exact_planning.COVARIANCE_FALSIFIER) and analyzes under Hoeffding when it fails"
+    "collection replaces the bound by its variance upper confidence limit where that limit exceeds it "
+    "(n21_exact_planning.COVARIANCE_FALSIFIER), spending the falsifier tail from alpha"
 )
 FALSIFIER_TAIL = 1e-3
 COVARIANCE_FALSIFIER = {
     "statistic": (
         "biased sample variance over shots of the weighted replica score sum Y = sum_k w_k s_k of one "
-        "declared bound, w_k = term sign / replica count: the projection w' Sigma w the radius reads"
+        "declared bound, w_k = term sign / replica count: an estimate of the projection w' Sigma w the radius "
+        "reads"
     ),
-    "threshold": (
-        "declared projection w' V w plus eps2 + D eps1, with D = sum_k |w_k| (max score - min score), "
+    "upper_confidence_limit": (
+        "UCL = statistic + eps2 + D eps1, with D = sum_k |w_k| (max score - min score), "
         "s = sqrt(ln(4 / t) / (2 n)), eps1 = D s, eps2 = (D^2 / 4) s, n the PUB's shots and "
-        "t = tail / number of declared bounds"
+        "t = tail / number of declared bounds; the true projection exceeds the UCL with probability at most t"
     ),
     "tail": FALSIFIER_TAIL,
     "decision": (
-        "every declared bound at or below its threshold applies the declared covariance to every endpoint; "
-        "any bound above its threshold, or a bound whose shot-ordered registers are absent, analyzes every "
-        "endpoint under the Hoeffding arbitrary-dependence radius"
+        "each bound's radius reads the declared projection w' V w when its UCL is at or below it and the UCL "
+        "otherwise, through Cantelli only where that is smaller than Hoeffding; an endpoint that reads any "
+        "bound runs its confidence and detection radii at alpha minus the falsifier tails of the bounds it "
+        "reads; absent or inconsistent registers leave every endpoint on the Hoeffding radius at the full alpha"
+    ),
+    "planning": (
+        "the plan adds each bound's allowance at the planned shots to the declared projection, the variance "
+        "collection reads when the sample variance equals the declared one, and spends the same falsifier tail"
     ),
 }
 
@@ -237,23 +247,32 @@ def score_variance(distribution: tuple[float, ...], values: tuple[float, ...]) -
 
 
 def replica_covariance_bounds(
-    pubs: list[Any], contracts: tuple[ObservableContract, ...], variance_bound: float
+    pubs: list[Any], contracts: tuple[ObservableContract, ...], variance_bound: float, shots: int
 ) -> tuple[CovarianceBound, ...]:
     """diag(variance_bound) for every contract/PUB pair whose terms carry two or more replicas.
 
     pubs are PubPrediction objects; labels follow the optimizer's member/rK
-    order (term order, then replica order).
+    order (term order, then replica order). Each bound carries the falsifier
+    tail FALSIFIER_TAIL / bounds and, as its variance allowance, the UCL
+    allowance that collection adds to the sample variance at shots: the plan
+    sizes the run on the variance collection reads when the sample variance
+    meets the declared projection.
     """
     if not 0 < variance_bound <= 1:
         raise ValueError("the replica variance bound must lie in (0, 1]")
+    if shots <= 0:
+        raise ValueError("planned shots must be positive")
     bounds = []
+    spans = []
     for contract in contracts:
         for pub in pubs:
             labels: list[str] = []
+            span = 0.0
             for term in contract.terms:
                 replicas = pub.member_distributions.get(term.member)
                 if replicas is None:
                     continue
+                span += float(max(term.values) - min(term.values))
                 for index, distribution in enumerate(replicas):
                     modeled = score_variance(distribution, term.values)
                     if modeled > variance_bound:
@@ -264,6 +283,7 @@ def replica_covariance_bounds(
                     labels.append(f"{term.member}/r{index}")
             if len(labels) < 2:
                 continue
+            spans.append(span)
             matrix = tuple(
                 tuple(variance_bound if row == column else 0.0 for column in range(len(labels)))
                 for row in range(len(labels))
@@ -277,7 +297,11 @@ def replica_covariance_bounds(
                     INDEPENDENCE_ASSUMPTION.format(bound=variance_bound),
                 )
             )
-    return tuple(bounds)
+    tail = FALSIFIER_TAIL / len(bounds) if bounds else FALSIFIER_TAIL
+    return tuple(
+        replace(bound, variance_allowance=variance_allowance(shots, span, tail), falsifier_tail=tail)
+        for bound, span in zip(bounds, spans, strict=True)
+    )
 
 
 def variance_allowance(shots: int, span: float, tail: float) -> float:
@@ -338,16 +362,18 @@ def covariance_falsifier(
     registers_by_pub maps a PUB name to its registers' shot-ordered bit
     strings. distributions, when given, are the collector's replica marginals;
     each replica's outcome frequencies must equal them, which binds the
-    register mapping to the counts the endpoints read. A bound passes when its
-    statistic stays at or below its threshold; ``holds`` requires every bound
-    to pass.
+    register mapping to the counts the endpoints read. ``branch`` is
+    declared_covariance when every UCL stays at or below its declared
+    projection, ucl_covariance when any exceeds it, and hoeffding_fallback when
+    any bound's registers are absent or inconsistent; each measured row
+    carries ``variance_used``, the projection its radius reads.
     """
     bounds = list(record.get("covariance_bounds", []))
     if not bounds:
         raise ValueError("the record declares no covariance bound")
     result: dict[str, Any] = {"specification": COVARIANCE_FALSIFIER, "bounds": []}
     if registers_by_pub is None:
-        return result | {"holds": False, "reason": "shot-ordered replica registers are unavailable"}
+        return result | {"branch": "hoeffding_fallback", "reason": "shot-ordered replica registers are unavailable"}
     contracts = {contract["name"]: contract for contract in record["observable_contracts"]}
     components = {
         (pub["name"], component["member"]): component["registers_by_replica"]
@@ -356,6 +382,7 @@ def covariance_falsifier(
     }
     tail = FALSIFIER_TAIL / len(bounds)
     failures: list[str] = []
+    exceeded: list[str] = []
     for bound in bounds:
         pub_name = bound["pub_name"]
         row: dict[str, Any] = {"observable": bound["observable_name"], "pub": pub_name, "tail": tail}
@@ -388,18 +415,16 @@ def covariance_falsifier(
         except (KeyError, IndexError, ValueError) as error:
             reason = str(error) if isinstance(error, ValueError) else f"missing {error}"
             failures.append(f"{pub_name}: {reason}")
-            result["bounds"].append(row | {"holds": False, "reason": reason})
+            result["bounds"].append(row | {"reason": reason})
             continue
         scores = np.stack(columns, axis=1)
         vector = np.asarray(weights, dtype=float)
         realized = float(np.var(scores @ vector))
         declared = float(vector @ np.asarray(bound["matrix"], dtype=float) @ vector)
         allowance = variance_allowance(scores.shape[0], span, tail)
-        holds = realized <= declared + allowance
-        if not holds:
-            failures.append(
-                f"{pub_name}: weighted replica score variance {realized:.6f} exceeds {declared:.6f} + {allowance:.6f}"
-            )
+        ucl = realized + allowance
+        if ucl > declared:
+            exceeded.append(f"{pub_name}: UCL {ucl:.6f} > declared {declared:.6f}")
         result["bounds"].append(
             row
             | {
@@ -408,18 +433,19 @@ def covariance_falsifier(
                 "weights": weights,
                 "score_span": span,
                 "statistic": realized,
-                "declared_projection": declared,
                 "allowance": allowance,
-                "threshold": declared + allowance,
+                "ucl": ucl,
+                "declared_projection": declared,
+                "variance_used": max(declared, ucl),
+                "source": "ucl" if ucl > declared else "declared",
                 "covariance_estimate": np.atleast_2d(np.cov(scores, rowvar=False, bias=True)).round(6).tolist(),
-                "holds": holds,
             }
         )
-    holds = not failures
-    return result | {
-        "holds": holds,
-        "reason": "every declared bound is at or below its threshold" if holds else "; ".join(failures),
-    }
+    if failures:
+        return result | {"branch": "hoeffding_fallback", "reason": "; ".join(failures)}
+    if exceeded:
+        return result | {"branch": "ucl_covariance", "reason": "; ".join(exceeded)}
+    return result | {"branch": "declared_covariance", "reason": "every UCL is at or below its declared projection"}
 
 
 def self_test() -> None:
@@ -437,12 +463,16 @@ def self_test() -> None:
     def pub(name: str, member: str, replicas: int) -> PubPrediction:
         return PubPrediction(name, {member: (law,) * replicas}, 1e-4, 2.5e-4, "fixture")
 
-    bounds = replica_covariance_bounds([pub("p1", "a", 3), pub("p2", "b", 1)], (contract,), 0.55)
+    bounds = replica_covariance_bounds([pub("p1", "a", 3), pub("p2", "b", 1)], (contract,), 0.55, 8192)
     if len(bounds) != 1 or bounds[0].labels != ("a/r0", "a/r1", "a/r2") or bounds[0].matrix[1] != (0.0, 0.55, 0.0):
         raise AssertionError(f"unexpected covariance bounds {bounds}")
+    if bounds[0].falsifier_tail != FALSIFIER_TAIL or bounds[0].variance_allowance != variance_allowance(
+        8192, 2.0, FALSIFIER_TAIL
+    ):
+        raise AssertionError(f"planned bound lacks the collection allowance or falsifier tail: {bounds[0]}")
     for invalid in (0.0, 1.5, 0.4):
         try:
-            replica_covariance_bounds([pub("p1", "a", 2)], (contract,), invalid)
+            replica_covariance_bounds([pub("p1", "a", 2)], (contract,), invalid, 8192)
         except ValueError:
             continue
         raise AssertionError(f"variance bound {invalid} must be refused (modeled variance 0.5)")

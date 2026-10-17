@@ -858,7 +858,7 @@ def prepare(
             try:
                 covariance = (
                     n21_exact_planning.replica_covariance_bounds(
-                        [pub for job in jobs for pub in job.pubs], contracts, variance_bound
+                        [pub for job in jobs for pub in job.pubs], contracts, variance_bound, shots
                     )
                     if variance_bound is not None
                     else ()
@@ -1075,23 +1075,41 @@ def measured_family(
             pubs = tuple(ObservedPub(name, members, shot_map[name]) for name, members in by_pub.items())
         else:
             pubs = tuple(ObservedPub(name, members, int(record["shots"])) for name, members in by_pub.items())
-        declared = tuple(
-            CovarianceBound(
-                bound["observable_name"],
-                bound["pub_name"],
-                tuple(bound["labels"]),
-                tuple(tuple(float(value) for value in row) for row in bound["matrix"]),
-                bound["assumption"],
-            )
-            for bound in record.get("covariance_bounds", [])
-        )
-        if not declared:
+        bounds = record.get("covariance_bounds", [])
+        if not bounds:
             return analyze_observations(pubs, endpoints).as_dict()
         falsifier = n21_exact_planning.covariance_falsifier(record, replica_registers, distributions)
-        covariance = declared if falsifier["holds"] else ()
+        # The record's planned allowance sized the run; collection replaces it
+        # with the measured excess of the UCL over the declared projection.
+        covariance = (
+            ()
+            if falsifier["branch"] == "hoeffding_fallback"
+            else tuple(
+                CovarianceBound(
+                    bound["observable_name"],
+                    bound["pub_name"],
+                    tuple(bound["labels"]),
+                    tuple(tuple(float(value) for value in row) for row in bound["matrix"]),
+                    bound["assumption"],
+                    variance_allowance=row["variance_used"] - row["declared_projection"],
+                    falsifier_tail=row["tail"],
+                )
+                for bound, row in zip(bounds, falsifier["bounds"], strict=True)
+            )
+        )
         analysis = analyze_observations(pubs, endpoints, covariance).as_dict()
         analysis["replica_covariance"] = falsifier | {
-            "branch": "declared_covariance" if falsifier["holds"] else "hoeffding_fallback",
+            "alpha_split": [
+                {
+                    "name": endpoint.name,
+                    "alpha": endpoint.alpha,
+                    "falsifier_tail": (
+                        spent := math.fsum(b.falsifier_tail for b in covariance if b.observable_name == endpoint.name)
+                    ),
+                    "confidence_tail": endpoint.alpha - spent,
+                }
+                for endpoint in endpoints
+            ],
             "power": _power_status(record, pubs, endpoints, covariance, analysis),
         }
         return analysis

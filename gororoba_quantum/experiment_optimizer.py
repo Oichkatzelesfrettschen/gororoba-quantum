@@ -104,6 +104,14 @@ class CovarianceBound:
     order; the optimizer applies each term's sign and replica-average weight.
     The bound must include cross-member covariance when the PUB fuses members.
     assumption records the evidence or modeling assumption supporting the bound.
+
+    variance_allowance adds to the weighted projection w' matrix w the radius
+    reads: a plan adds the falsifier allowance its collection will add to the
+    sample variance, and a collection whose variance upper confidence limit
+    exceeds the projection adds the excess, so the radius takes that limit.
+    falsifier_tail is the probability that limit misses the true variance; an
+    endpoint that reads the bound spends it from its alpha, so its confidence
+    and detection radii run at alpha minus the summed falsifier tails.
     """
 
     observable_name: str
@@ -111,6 +119,8 @@ class CovarianceBound:
     labels: tuple[str, ...]
     matrix: tuple[tuple[float, ...], ...]
     assumption: str
+    variance_allowance: float = 0.0
+    falsifier_tail: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -492,6 +502,7 @@ class _PubObservable:
     span: float
     variance_bound: float | None
     covariance_assumption: str | None
+    falsifier_tail: float = 0.0
 
 
 def _covariance_variance(bound: CovarianceBound, labels: list[str], weights: list[float]) -> float:
@@ -509,8 +520,16 @@ def _covariance_variance(bound: CovarianceBound, labels: list[str], weights: lis
     )
     matrix = (matrix + matrix.T) / 2
     _require(float(np.linalg.eigvalsh(matrix).min()) >= 0, f"{bound.pub_name}: covariance bound must be PSD")
+    _require(
+        _finite(bound.variance_allowance) and bound.variance_allowance >= 0,
+        f"{bound.pub_name}: variance allowance must be finite and nonnegative",
+    )
+    _require(
+        _finite(bound.falsifier_tail) and 0 <= bound.falsifier_tail < 1,
+        f"{bound.pub_name}: falsifier tail must lie in [0, 1)",
+    )
     vector = np.asarray(weights, dtype=float)
-    variance_bound = float(vector @ matrix @ vector)
+    variance_bound = float(vector @ matrix @ vector) + bound.variance_allowance
     _require(math.isfinite(variance_bound), f"{bound.pub_name}: covariance projection overflowed")
     _require(variance_bound >= 0, f"{bound.pub_name}: covariance projection must be nonnegative")
     return variance_bound
@@ -562,6 +581,7 @@ def _observable_inputs(
                     math.fsum(spans),
                     variance_bound,
                     bound.assumption if bound is not None else None,
+                    bound.falsifier_tail if bound is not None else 0.0,
                 )
             )
         else:
@@ -570,6 +590,13 @@ def _observable_inputs(
                 f"{contract.name}/{pub.name}: covariance bound has no observable terms",
             )
     return math.fsum(predictions), math.fsum(simulation_errors), tuple(streams)
+
+
+def _confidence_tail(contract: ObservableContract, streams: tuple[_PubObservable, ...]) -> float:
+    """The endpoint's alpha after the falsifier tails of the covariance bounds its streams read."""
+    remaining = contract.alpha - math.fsum(stream.falsifier_tail for stream in streams)
+    _require(remaining > 0, f"{contract.name}: covariance falsifier tails exhaust alpha")
+    return remaining
 
 
 def _radius(streams: tuple[_PubObservable, ...], probability: float, two_sided: bool) -> float:
@@ -599,11 +626,12 @@ def _evaluate_observable(plan: CandidatePlan, contract: ObservableContract, simu
     predicted, model_radius, streams = _observable_inputs(
         pubs, contract, simulation_tail, plan.covariance_bounds, samples
     )
-    confidence = _radius(streams, contract.alpha, two_sided=True)
+    alpha = _confidence_tail(contract, streams)
+    confidence = _radius(streams, alpha, two_sided=True)
     reasons: list[str] = []
     detection = power = effect_used = None
     if contract.minimum_effect is not None:
-        detection = _radius(streams, contract.alpha, two_sided=False)
+        detection = _radius(streams, alpha, two_sided=False)
         power = _radius(streams, 1 - contract.power, two_sided=False)
         modeled_gap = predicted - model_radius - contract.null_value
         effect_used = modeled_gap if contract.minimum_effect == 0 else contract.minimum_effect
@@ -679,8 +707,9 @@ def analyze_observations(
         for term in contract.terms:
             _require(term.member in members, f"{contract.name}: observed member {term.member!r} is absent")
         estimate, _, streams = _observable_inputs(pubs, contract, 1.0, covariance_bounds)
-        confidence = _radius(streams, contract.alpha, two_sided=True)
-        detection = _radius(streams, contract.alpha, two_sided=False) if contract.minimum_effect is not None else None
+        alpha = _confidence_tail(contract, streams)
+        confidence = _radius(streams, alpha, two_sided=True)
+        detection = _radius(streams, alpha, two_sided=False) if contract.minimum_effect is not None else None
         rows.append(
             ObservationResult(
                 contract.name,
