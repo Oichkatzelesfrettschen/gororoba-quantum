@@ -166,6 +166,11 @@ ran.
 - **Agreement.** Every sampler that completed agrees with the CPU
   trajectories within its sampling scale.
 
+## cuStateVec on the GPU kernel
+
+[custatevec.md](custatevec.md) holds the cu11 wheel's cuQuantum library
+chain, the pins that hold it, the T4 push command and the success test.
+
 ## CPU-only kernel
 
 `results/kaggle/2026-10-15T232053Z-gororoba-substrate-probe-cpu`
