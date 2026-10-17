@@ -485,7 +485,10 @@ def design_checks(design: np.ndarray) -> dict[str, Any]:
 
     Columns carry different units (kHz^2, rad^2, a unit constant), so each is
     scaled to unit norm first; the rank and condition then measure collinearity,
-    not units.
+    not units. The condition of a design (or of the worst fold) whose rank falls
+    short of the column count is null: its smallest singular value is rounding
+    noise, so the ratio is inf or about 1e16 by BLAS build and carries no
+    collinearity measure beyond the reported rank.
     """
     n, p = design.shape
 
@@ -497,9 +500,9 @@ def design_checks(design: np.ndarray) -> dict[str, Any]:
     folds = [acf.design_rank(normalized(np.delete(design, held, axis=0))) for held in range(n)]
     out: dict[str, Any] = {
         "rank": rank,
-        "condition": acf.finite(condition),
+        "condition": acf.finite(condition) if rank == p else None,
         "fold_rank_min": min(r for r, _ in folds),
-        "fold_condition_max": acf.finite(max(c for _, c in folds)),
+        "fold_condition_max": acf.finite(max(c for _, c in folds)) if all(r == p for r, _ in folds) else None,
     }
     if rank < p:
         out["unidentified"] = f"rank {rank} of {p} columns"

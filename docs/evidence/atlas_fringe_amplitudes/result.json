@@ -4429,7 +4429,7 @@
      "rank": 2,
      "condition": 100.478,
      "fold_rank_min": 1,
-     "fold_condition_max": 1.2738103345051548e+16,
+     "fold_condition_max": null,
      "unidentified": "leave-one-out fold rank 1 of 2 columns"
     },
     "replay_loss_plus_constant": {
