@@ -99,7 +99,12 @@ def probe() -> Probe:
     if completed.returncode != 0:
         tail = (completed.stderr.strip().splitlines() or ["no output"])[-1]
         return Probe(named, False, f"QI_PYTHON={named} cannot import the stack: {tail}")
-    versions = json.loads(completed.stdout)
+    try:
+        versions = json.loads(completed.stdout)
+        if not isinstance(versions, dict) or not all(isinstance(versions.get(name), str) for name in DISTRIBUTIONS):
+            raise ValueError("a distribution version is missing")
+    except ValueError as error:
+        return Probe(named, False, f"QI_PYTHON={named} printed no version record: {error}")
     wanted = pins()
     differing = [
         f"{name} {versions[name]} (lock {wanted[name]})" for name in DISTRIBUTIONS if versions[name] != wanted[name]

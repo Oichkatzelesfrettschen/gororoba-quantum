@@ -93,10 +93,10 @@ jobs:
           "$QI_PYTHON" ci/runner_specs.py
       - name: Run the qi gates
         # --requires qi exports GOROROBA_QI_REQUIRED=1, so a gate that cannot
-        # reach the stack fails instead of replaying. The lane runs a handful of
-        # gates, so each gate's process pool takes every CPU.
+        # reach the stack fails instead of replaying. run_gates.py runs the
+        # gates concurrently with one worker each, which fills the runner's CPUs.
         run: >-
-          GOROROBA_WORKERS="$(nproc)" python ci/run_gates.py --requires qi
+          python ci/run_gates.py --requires qi
           --tier ${{ github.event_name == 'pull_request' && 'pr' || 'full' }}
 
   external-ground-truth:
