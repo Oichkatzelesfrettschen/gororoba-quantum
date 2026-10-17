@@ -1,9 +1,11 @@
 # Box-kite experiment program: QX, Ry emulator and Tuna-17
 
-Design only. No circuit below has been generated or submitted; every
-submission waits for the owner's approval of its written case (root
-AGENTS.md, "Quantum Inspire"). Dates in this note date the measurements they
-cite.
+`scripts/box_kite_cases.py` generates the QX smoke set of family (a), the
+Tuna-17 series and their QX twins under results/quantum_inspire/cases/, and
+`scripts/box_kite_qx_sweep.py` runs the exhaustive family (a) on the
+qxelarator emulator; nothing has been submitted. Every submission waits for
+the owner's approval of its written case (root AGENTS.md, "Quantum
+Inspire"). Dates in this note date the measurements they cite.
 
 ## 1. What each backend can establish
 
@@ -24,6 +26,18 @@ implementation reproduces the census prediction.
 Theorem 7, the twist and the strut law are therefore never "confirmed by
 hardware"; QX checks the implementation of the census predictions, and
 Tuna-17 checks how much of the predicted contrast survives.
+
+**Where each run goes.** Remote backends run smoke sets and questions about
+the device itself; exhaustive ideal emulation runs on a Kaggle CPU kernel
+(root AGENTS.md: simulations of 14 qubits or fewer run on Kaggle). Remote
+QX runs the QX simulator, an ideal state vector, so a remote QX run
+establishes only that the emitted cQASM passes the platform's compile path
+(parser, bit order, gate set, angle grid); the generator already checks
+every emitted circuit by state vector, and qxelarator 0.10.0, the same
+simulator's Python binding, runs the full families on Kaggle. One replica
+per gate pattern therefore goes to remote QX, and Tuna-17 time goes to the
+questions the census cannot settle: how much contrast survives, at which
+depth, and whether coherence and associator signs survive a stated layout.
 
 Monograph claims enter only as the census recomputes them;
 [inventory-monographs.md](inventory-monographs.md) names the census field of
@@ -175,7 +189,27 @@ falsifier fixed before the run, and the backends.
   |z| < 4.5 at 2048 shots (Bonferroni over the about 1010 P = 1/2 rows of
   both encodings at family error 0.01) refutes it. Uncertainty: the QX predictions are exact; the earlier QX
   runs of the (1,10) witness read dark 0.000, bright 1.000 and fixture 0.490.
-- Backends: QX (exhaustive), Ry (subset in (f)), Tuna-17 (subset in (g)).
+- Backends: Kaggle CPU, qxelarator (exhaustive: 848 circuits, 2354
+  replicas, 1010 of them at P = 1/2, `box_kite_qx_sweep.py --run`); remote
+  QX (smoke set: 15 replicas in 6 circuits, 2 batches,
+  results/quantum_inspire/cases/box_kite_a_qx/); Ry (smoke subset in (f));
+  Tuna-17 (the rows of (g)).
+- Smoke set: the first census row, in census order, matching each pattern
+  of `SMOKE_PATTERNS`, recorded with its selection rule in every replica.
+  Full Design B: an edge row at signs (+, +) with P = 0 and one with P = 1, a
+  strut at (+, +), an edge row at (-, +) and one at (+, -), a cross-kite
+  control, an (l, l^8) pair and the negative fixture (8 replicas, 4
+  circuits); reduced: the same edge dark, edge bright, strut and two sign
+  variants (5 replicas, 1 circuit: the local-Z SELECT of every edge, the
+  Sdag-CNOT-S SELECT of every strut, both selector Z positions); reduced
+  cross-kite: a cross-kite control and the fixture (1 circuit). The sign
+  variants select edge rows because a strut gives P = 1/2 at both signs, so
+  a dropped selector Z or data phase would read correctly on it. Reduced
+  non-kite rows share the strut's SELECT and P = 1/2 and add no pattern.
+- Falsifier (Kaggle sweep): the QX falsifier above on every replica; the
+  record keeps each circuit's sha256 and selector counts, and
+  `--replay RECORD --bind --require-pass` re-derives every verdict and binds
+  the circuits to the checkout's generator.
 
 ### (b) Theorem 7 edge-sign law and face classification
 
@@ -205,9 +239,10 @@ falsifier fixed before the run, and the backends.
 | 6 | (3,13)(4,10) | (3,13)(1,15) | (1,15)(7,9) |
 | 7 | (1,14)(4,11) | (1,14)(2,13) | (1,14)(6,9) |
 
-- Falsifier (QX): the exhaustive family (a) classifies every edge; any face
-  whose measured edge types differ from `census:kites[].faces` refutes the
-  implementation. Falsifier (Tuna-17): in (g).
+- Falsifier (Kaggle sweep): the exhaustive family (a) classifies every edge;
+  any face whose measured edge types differ from `census:kites[].faces`
+  refutes the implementation. Falsifier (Tuna-17): T1 of (g), which carries
+  one opposite-sign edge, its same-sign twist and one strut.
 
 ### (c) Twist equivalence
 
@@ -220,11 +255,15 @@ falsifier fixed before the run, and the backends.
   (l, l^8) planes (`census:kites[].twists`). This links C-473's twist
   navigation in open_gororoba to an observable.
 - Observable: zero-product success on both factorizations.
-- Circuits: no new circuits on QX; family (a) contains both sides of every
-  twist pair. On Tuna-17, the pairs in (g).
-- Falsifier: on QX, any twist pair whose two rows read different
-  deterministic outcomes; on Tuna-17, a twist pair whose raw P differ by more
-  than 3 combined standard errors plus the pair-location allowance of (g).
+- Circuits: no new circuits; the exhaustive family (a) on Kaggle contains
+  both sides of every twist pair. On Tuna-17, one pair in T1 of (g): the edge
+  (1,10)(4,15) of kite 3 and its census twist (4,10)(1,15) of kite 6
+  (`census:kites[2].twists[0]`), each twist pair in one batch.
+- Falsifier: in the Kaggle sweep, any twist pair whose two rows read
+  different deterministic outcomes; on Tuna-17, a twist pair whose
+  readout-corrected P differ by more than 3 combined standard errors plus the
+  pair-location allowance (the difference of the two pairs' depth-1 bright P
+  in T0).
 
 ### (d) Associator-sign interference witnesses on box-kite triples
 
@@ -239,19 +278,30 @@ falsifier fixed before the run, and the backends.
   elsewhere; the uniform baseline over all 16^3 triples is 25/256 with
   P(c = 1) = 231/512 (root AGENTS.md).
 - Observable: associator-sign interference witness <Z_c> after the final H.
+- Backends: remote QX runs smoke representatives, the first circuit of
+  each sub-family (results/quantum_inspire/cases/box_kite_de_qx/, with the
+  first (e) circuit: 4 circuits, 7 replicas, 2 batches); the full sets run
+  on a Kaggle CPU kernel under qxelarator (`box_kite_qx_sweep.py --run`,
+  family de: 149 circuits, 281 replicas), as family (a) does.
+- Construction: controlled W_ij is designs' L_{e_j}, L_{e_i} and
+  L_{e_{i^j}}^dagger as controlled sign diagonals (signs read from
+  `designs.left_mult_gate`'s operator) and CNOTs, with the sign of
+  e_i e_j as a Z on the control; d3 applies the diagonal of W_ij over the
+  (j, k) registers, assembled from the same operators. Every emitted circuit
+  reproduces its census value by state vector before emission.
 - Circuits and register counts:
-  - d1, fixed triple, controlled-W (QX): 4 data + 1 control; per kite the 5
+  - d1, fixed triple, controlled-W: 4 data + 1 control; per kite the 5
     constant-sign exemplars plus one omit-last-block control (42 replicas).
     Prediction: omega in `census:associator.deterministic_exemplars`, and 0 for
     the control.
-  - d2, fixed pair, uniform k (QX): 4 data + 1 control, all 105 pairs;
+  - d2, fixed pair, uniform k: 4 data + 1 control, all 105 pairs;
     prediction `census:associator.fixed_pair_uniform_k`.
-  - d3, fixed i, uniform (j, k) (QX): 8 data + 1 control = 9 qubits, all 16
+  - d3, fixed i, uniform (j, k): 8 data + 1 control = 9 qubits, all 16
     values of i; the mean over i is 400/4096 = 25/256, so the uniform
     baseline is reached through 16 circuits that fit QX's 10 qubits. The
     uniform 12 + 1 qubit circuit fits neither QX (10) nor Ry (9) and is not run.
-  - d4, fixed-triple walk (Tuna-17, in (g)).
-- Falsifier (QX): d1 sign wrong, or the control's |<Z_c>| above 4.5 sigma at
+  - d4, fixed-triple walk (Tuna-17, the walk stage of (g)).
+- Falsifier (Kaggle sweep and QX smoke): d1 sign wrong, or the control's |<Z_c>| above 4.5 sigma at
   2048 shots; d2 and d3 outside 4.5 sigma of the census value. A sign
   witness cannot separate the octonion-level facts from the split octonions
   (section 2), so no claim beyond the stated sign table rests on d1-d4.
@@ -271,12 +321,17 @@ falsifier fixed before the run, and the backends.
   (`census:experiment_counts.full_coherence_settings_by_kite`), plus one all-Z
   setting for the label populations. In the reduced encoding the two labels
   differ in d alone: settings X and Y on d, plus Z.
-- Circuits: full Design B per kite on one bright edge row and one strut row,
-  52 + 52 settings plus 14 all-Z settings (QX); reduced form on Tuna-17 (g).
+- Circuits: full Design B per kite on the first bright edge row and the
+  first strut row at (+, +), 52 + 52 settings plus 14 all-Z settings (118
+  replicas, 59 circuits), on a Kaggle CPU kernel under qxelarator, with the
+  first circuit (two kite 1 edge settings) as the remote QX smoke
+  representative; the reduced form on Tuna-17 is the coherence stage of (g).
+  Each setting reads P(data parity even | selector = 0) = (1 + <P>)/2, with
+  <P> computed from the row's census coefficients and labels.
 - Predictions: reduced <X_d | a = 0> = 2 c0 c1 / (c0^2 + c1^2) = +-1 on the
   bright edge, <Y_d> = 0, <Z_d> = 0; on the strut <X_d> = 0 and <Z_d> = +-1.
-- Falsifier: QX, a reconstructed coherence off the census value by more than
-  4.5 sigma; Tuna-17, sign(<X_d>) opposite to the census coherence at |z| > 3
+- Falsifier: Kaggle sweep and QX smoke, a reconstructed coherence off the
+  census value by more than 4.5 sigma; Tuna-17, sign(<X_d>) opposite to the census coherence at |z| > 3
   on a bright edge, or |<X_d>| > 0.1 + 3 sigma on a strut.
 
 ### (f) Ry emulator
@@ -302,19 +357,35 @@ passing circuit, each with a deterministic outcome read with q0 leftmost:
 | R8 | teleport.cq verbatim | job failure (replication) |
 | R9 | teleport.cq without its bit register and comments | completes |
 
-Two batches of five jobs. The first factor whose circuit fails is the cause;
-if R0-R7 all pass and R8 fails, a third and fourth batch run the pairwise
-combinations of {width 9, comments, bit register, H, CNOT}. Falsifier for the
-documented cause: R7 completing. Uncertainty: low on which factor; the
-emulator's noise model is unpublished.
+The API flags the Ry emulator `is_hardware`, so `qi_platform.py submit`
+holds its batches to three circuits. The retained construct probe
+(`scripts/qi_ry_probe_cases.py`, 9 circuits in 3 batches at 1024 shots,
+runs 2026-10-17T034952Z-ry_probe-batch-00..02,
+results/quantum_inspire/ry_probe_analysis.json) covers R0 (x-baseline), R3
+(x-bitreg), R7 (x-measure), R5 (x-cnot), R6 (rz-x) and a single H, and adds
+H with CNOT, with and without a bit register, and an `INIT` block. It
+completed X, H, CNOT and Rz and failed every program carrying a bit
+register ("error interpreting cQASM script", the failed teleport.cq's
+message) or a measure statement ("not in the primitive gate set"), so R3 is
+the cause, R7 refutes the documented cause the other way round, and R8's
+replication adds nothing. The ladder residue is therefore R1, R2 and R9, one
+batch of 3 circuits (results/quantum_inspire/cases/box_kite_ry_ladder/;
+R9 is teleport.cq read by its sha256 with the bit register and comment
+lines removed, predicted by state vector). Uncertainty: low on which
+factor; the emulator's noise model is unpublished.
 
-**Box-kite subset** (only after the diagnostic names an accepted dialect; no
-measure statements, every atom read at the end, q0 the leftmost character):
-the 21 items of (b) at y_sign = +-1 in the reduced encoding, four replicas per
-9-atom circuit (11 circuits), the four twist items of (g) (2 circuits), and,
-if H and CNOT pass, the full Design B (1,10) dark, bright and fixture
-witnesses, one per circuit (3 circuits). Gates come from the Ry set X, Z, Rx,
-Rz, T, S, H, CNOT; Sdag is Rz(-pi/2) and a controlled-Y is S, CNOT, Sdag.
+**Box-kite smoke subset** (only after the diagnostic names an accepted
+dialect; no measure statements, every atom read at the end, q0 the leftmost
+character): the five reduced smoke replicas of (a) (edge dark, edge bright,
+strut and the two sign variants) and the T1 edge and its twist at y_sign
++-1, four 2-atom replicas per `qubit[9]` circuit (3 circuits), and the full
+Design B (1,10) dark, bright and fixture witnesses, one per circuit (3
+circuits): 12 replicas, 6 circuits in 2 batches at 1024 shots
+(results/quantum_inspire/cases/box_kite_ry_smoke/), which run only after R1
+passes. The ideal predictions come from the Kaggle
+sweep, so the Ry run measures only the emulator. Gates come from the Ry set
+X, Z, Rx, Rz, T, S, H, CNOT; Sdag is Rz(-pi/2) and a controlled-Y is S,
+CNOT, Sdag.
 Predictions as in (a); the falsifier for the emulator model is a
 deterministic row below 0.9 of its ideal outcome, reported with the
 emulator's raw rates rather than as an algebraic result.
@@ -339,13 +410,16 @@ exist. Ranked by the predicted contrast below, the best one that avoids q15
 (readout P(0|1) 0.270) is M = {(1,4), (10,13), (12,14)} with selectors q1,
 q10 and q12 (minimum pair contrast 0.789 central); the best one through q15,
 {(1,4), (10,13), (12,15)}, reaches 0.800, equal within the model, so q15
-stays out. The walks use the star centred on 11 {8, 13, 14} and the path
+stays out. The walks use the star centered on 11 {8, 13, 14} and the path
 8-11-13; the star on 12 {8, 14, 15} carries q15, and the star on 4 {1, 2, 8}
 is avoided because simultaneous drive of q1 and q2 raised q2's P1 from 0.046
 to 0.893. Every circuit declares `qubit[17] q`, uses only
-H, S, Sdag, Z, X and CZ (on the pi/36 grid), applies no binary-controlled
-gate, leaves post-selection to the analysis, and reads q0 at the rightmost
-character.
+H, S, Sdag, Z, X and CZ (CNOT written as H CZ H on its target, so no rotation
+and nothing off the pi/36 grid), applies no binary-controlled gate, leaves
+post-selection to the analysis, and reads q0 at the rightmost character. The
+generator refuses a CZ off the Tuna-17 coupling graph and any witness gate
+on {0, 5, 6, 7, 9} or q15, and requires the retained exclusions
+(`qi_zero_divisor_cases.EXCLUDED_QUBITS`) to equal {0, 5, 6, 7, 9}.
 
 **Separation model.** A circuit with n CZ keeps the raw contrast
 C = r^n x prod_q V_q^(t/2us) x (1 - e01 - e10)_readout qubit, with r the
@@ -381,149 +455,232 @@ ladder measures r directly and replaces this model.
 | associator walk, 6 CNOT, 3 data bits | 6 | star 11 {8, 13, 14} | 0.51 | 0.29 | Tuna-17 |
 | associator walk, 4 CNOT, 2 data bits | 4 | path 8-11-13 | 0.65 | 0.45 | Tuna-17 |
 | reduced coherence (X, Y on d) | 1 | as the LCU, data read too | 0.63-0.69 | 0.58-0.63 | Tuna-17 |
-| full Design B | 66-70 | 5-qubit region | 0.042 measured | below 0.001 | QX only |
-| full-encoding coherence (2^w settings) | 66-70 | -- | below floor | -- | QX only |
-| controlled W, uniform data (d2, d3) | degree-4 phases off the pi/36 grid | -- | -- | -- | QX only |
-| reduced cross-kite control | 2 | path w-a-d | P = 1/2 by construction | -- | QX only (carries no contrast) |
+| full Design B | 66-70 | 5-qubit region | 0.042 measured | below 0.001 | Kaggle sweep, QX smoke |
+| full-encoding coherence (2^w settings) | 66-70 | -- | below floor | -- | Kaggle sweep, QX smoke |
+| controlled W, uniform data (d2, d3) | degree-4 phases off the pi/36 grid | -- | -- | -- | Kaggle sweep, QX smoke |
+| reduced cross-kite control | 2 | path w-a-d | P = 1/2 by construction | -- | Kaggle sweep, QX smoke (carries no contrast) |
 
-**Stages.** Each batch is one witness circuit, then readout-0 and readout-1
-(three circuits, the repository's hardware cap), 16384 shots per circuit.
+**Stages.** Ten batches in four case directories, so the owner approves T0
+alone first: results/quantum_inspire/cases/box_kite_tuna_t0/,
+box_kite_tuna_t1/, box_kite_tuna_coherence/ and box_kite_tuna_walk/, each a
+series of batch-NN/ cases. Each batch is one witness circuit, then readout-0
+and readout-1 (`qi_zero_divisor_cases.readout_circuits`; three circuits, the
+repository's hardware cap), so every readout correction uses its own batch's
+calibration. Each manifest carries its stage's preregistered observable,
+predictions and falsifier.
 
-- T0, depth ladder (6 batches). The ladder uses the acquired edge
-  (1,10)(4,15) of kite 3 (opposite-sign, P(+,+) = 1, P(+,-) = 0), so it
-  joins the earlier full Design B run: depths n = 1, 5,
-  9 (CZ-pair identity padding on the same pair) on the three pairs of M in a
-  Latin rotation, y_sign + in batches 0-2 and - in batches 3-5. Predictions:
-  C(1) in [0.72, 0.82]; C(9)/C(1) = r^8. Falsifier, fixed now: the pooled
-  depth-1 contrast with its 99% upper bound below 0.5 refutes the shallow
-  admission and ends the Tuna-17 program; a fitted r outside [0.87, 0.97] at
-  99% refutes the planning range and resizes every later stage before it runs.
-- T1, Theorem 7 subset (21 batches). One item of (b) per circuit: y_sign + on
-  one pair of M, y_sign - on another, and the reference replica (1,10)(4,15)
-  at y_sign + (ideal 1) on the third, rotating the pair roles by item index.
-  Classification rule fixed now: D above +0.4 is same-sign, below -0.4
-  opposite-sign, |D| below 0.2 strut, otherwise unresolved. Predicted |D| on
-  edges at least 0.72 (pessimistic, readout of 2026-10-17 04:25-04:36Z). Falsifier: any item misclassified or unresolved
-  refutes the separation estimate for its layout; a strut with
-  |D| > 0.1 + 3 sigma exposes a pair-dependent bias the analysis must carry.
-- T2, twist, coherence and associator (17 batches).
-  - Twist (8 batches): the edges (1,10)(4,15) of kite 3 and (1,14)(4,11) of
-    kite 7, whose twists are the same-sign edges (4,10)(1,15) of kite 6 and
-    (4,14)(1,11) of kite 2, and the struts (1,10)(2,9) and (1,14)(6,9), whose
-    twists are the non-kite pairs (2,10)(1,9) and (6,14)(1,9). Each circuit
-    holds one row and its twisted row (y_sign negated) plus the reference.
-    Prediction: equal P.
-  - Coherence (3 batches): a bright same-sign edge, a bright opposite-sign
-    edge and a strut, X and Y settings on d in one circuit plus the reference.
-  - Associator walk (6 batches): the five kite 1 exemplars of
-    `census:associator.deterministic_exemplars["1"]`, (2,11,3)
-    ij-same-vertex-third-strut omega -1 (6 CNOT, star 11), (2,4,6)
-    face-sail-xor0 +1, (2,3,11) ik-same-vertex-third-strut -1, (2,4,11)
-    ik-same-vertex-third-edge +1 and (2,3,10) jk-same-vertex-third-strut -1
-    (4 CNOT each, path 8-11-13), and the omit-last-block control of
-    (2,11,3), one per batch, each plus the reference on a disjoint pair. Falsifier: sign(<Z_c>) opposite to omega at
-    |z| > 3, or the control's |<Z_c>| above 0.1 + 3 sigma.
+- T0, depth ladder (3 batches, 16384 shots). The reduced LCU of the acquired
+  edge (1,10)(4,15) of kite 3 (opposite-sign, P(+,+) = 1, P(+,-) = 0), so
+  it joins the earlier full Design B run, at CZ depths n = 1, 5 and 9: the
+  SELECT CZ followed by (n - 1)/2 identity CZ pairs on the same pair, each
+  repeat after a per-qubit barrier run so no compiler pass meets two
+  adjacent CZ. A 3 x 3 Latin square: batch b places depth index
+  (pair + b) mod 3 on each pair of M and y_sign -1 (P = 0) on pair b, y_sign
+  +1 (P = 1) on the other two, so every depth, pair and batch holds one dark
+  and two bright replicas.
+  - Contrast: C(n) = mean Pc(bright, n) - Pc(dark, n), with Pc the
+    P(selector = 0) corrected by the batch's readout pair. The difference
+    cancels a common additive shift of P (amplitude damping toward |0>, the
+    measured common-shift offset), which 2 Pc(bright) - 1 alone would carry
+    into C as a bias.
+  - Accepted confound: the dark replica of a depth sits on one pair in one
+    batch and its brights on the other two, so C(n) carries that pair's and
+    batch's offset against the others; the square balances pair and batch
+    main effects across depths, and a pair x depth interaction stays inside
+    the fitted r.
+  - Fit: r = exp(slope) of the weighted least-squares line of ln C(n) on n;
+    its 99% interval from a parametric bootstrap of the binomial counts and
+    each batch's readout pair.
+  - Predictions: C(1) in [0.72, 0.82]; C(9)/C(1) = r^8.
+  - Falsifier, fixed now: the pooled depth-1 contrast with its 99% upper
+    bound below 0.5 refutes the shallow admission and ends the Tuna-17
+    program; a 99% interval of r disjoint from [0.87, 0.97] refutes the
+    planning range and resizes T1, coherence and walk before they run.
+- T1, edge-sign classification and twist (2 batches, 4096 shots). The
+  opposite-sign edge (1,10)(4,15) of kite 3 on (1,4), its census twist the
+  same-sign edge (4,10)(1,15) of kite 6 on (10,13) (`census:kites[2].twists[0]`,
+  checked by the generator), and the strut (1,10)(2,9) of kite 3 on (12,14);
+  batch-00 holds the edge at y_sign +1, the twist at -1 and the strut at +1,
+  batch-01 the opposite signs. Each row keeps its pair in both batches, so
+  the Theorem 7 statistic D = Pc(+,-) - Pc(+,+) compares one pair across the
+  two batches, and each twist pair (edge at y, twist at -y, equal P under
+  (L, U, x; L', U', y) -> (L', U, x; L, U', -y)) shares a batch. Predictions:
+  D = -1 on the edge, +1 on the twist, 0 on the strut. Classification rule:
+  D above +0.4 same-sign, below -0.4 opposite-sign, |D| below 0.2 strut,
+  otherwise unresolved; predicted |D| on edges at least 0.72 (pessimistic,
+  readout of 2026-10-17 04:25-04:36Z). Falsifier: a row misclassified or
+  unresolved refutes the separation estimate for its pair; a strut with
+  |D| > 0.1 + 3 sigma exposes a pair-dependent bias the analysis carries; a
+  twist pair outside 3 combined standard errors plus the pair-location
+  allowance of (c) refutes twist equality for that layout.
+- Coherence (2 batches, 4096 shots). Setting X (H on d) in batch-00 and Y
+  (Sdag, H on d) in batch-01, on the bright same-sign edge (4,10)+ x (1,15)-
+  of kite 6 on (1,4) and the strut (1,10)+ x (2,9)+ of kite 3 on (10,13),
+  each row on one pair in both batches, plus the reference (1,10)+ x (4,15)+
+  (P = 1) on (12,14). Predictions: on the edge <X_d | a = 0> = 2 x the
+  census coherence_selector_0 = -1 and <Y_d | a = 0> = 0; on the strut both
+  0. Falsifier: sign(<X_d>) opposite to the census coherence at |z| > 3 on
+  the edge, or |<X_d>| above 0.1 + 3 sigma on the strut.
+- Walk (3 batches, 4096 shots). From `census:associator.deterministic_exemplars["1"]`:
+  (2,11,3) ij-same-vertex-third-strut omega -1 (6 CNOT, control q11, data
+  bits 0, 1, 3 on q8, q13, q14), (2,3,10) jk-same-vertex-third-strut
+  omega -1 (4 CNOT, data bits 0, 1 on q8, q13 of the path 8-11-13) and the
+  omit-last-block control of (2,11,3), one per batch, each with the
+  reference on (1,4), the pair that meets the walk qubits through one
+  coupler (4-8). The generator reads omega from the census, requires each
+  exemplar's CNOT and data-bit counts to equal the walk of j, i and i^j, and
+  never computes a sign from cd_core. Prediction: <Z_c> = -1 on both walks,
+  0 on the control. Falsifier: sign(<Z_c>) opposite to omega at |z| > 3, or
+  the control's |<Z_c>| above 0.1 + 3 sigma.
 
-**Per-batch procedure.** Before each Tuna-17 batch the identical cQASM runs on
-the local qxelarator emulator, and its relabeled twin (the same gate list on
-QX qubits 0-9, map recorded) on the remote QX emulator, because remote QX
-serves 10 qubits and the Tuna circuits address qubits up to 16. Then submit
-through `qi_platform.py submit`, collect, and check before a 120 s pause:
-every job completed with 16384 shots; readout-0 P1 at most 0.10 and readout-1
-P1 at least 0.80 on every used qubit (a failure stops the series and
-re-plans the layout); the reference replica at P(selector = 0) at least 0.7;
-circuit digests equal cases.json; the account's queue empty.
+**Per-batch procedure.** Before each Tuna-17 batch its identical cQASM runs
+on the local qxelarator emulator (`box_kite_qx_sweep.py --emulate CASE_DIR`,
+the readout pair included), and the relabeled twin of its witness circuit
+(the same gate list on QX qubits 0-9, the Tuna qubits in ascending order,
+map recorded as `qubit_map`) runs on the remote QX emulator, because remote
+QX serves 10 qubits and the Tuna circuits address qubits up to 16. The
+readout circuits have no twin: they measure the device and carry no
+prediction an ideal emulator tests. The twins live in
+results/quantum_inspire/cases/box_kite_tuna_twins_qx/, one batch per stage
+(3, 2, 2 and 3 circuits at 2048 shots), so the T0 twin runs before T0 is
+approved. Then submit through `qi_platform.py submit`, collect, and check
+before a 120 s pause: every job completed with the manifest's shots;
+readout-0 P1 at most 0.10 and readout-1 P1 at least 0.80 on every used qubit
+(a failure stops the series and re-plans the layout); every bright or
+reference replica at P(selector = 0) at least 0.7; circuit digests equal
+cases.json; the account's queue empty.
 
 ## 5. Run order and budget
 
-QX first, then Ry, then Tuna-17; a later backend runs a family only after
-QX has passed it.
+The Kaggle sweep runs first: it sets the ideal outcome of every family (a)
+circuit on the remote backends' own simulator. Then the remote QX smoke set,
+the Ry probe, ladder and smoke subset, and Tuna-17 stage by stage, each
+stage after its QX twins pass and T0 before any other stage is approved.
+Counts below come from `box_kite_cases.py --summary` and, for the exhaustive
+family, from `series("a", "qx")`.
 
-| Backend | Family | Replicas | Per circuit | Circuits | Batches (5 jobs) | Shots |
+| Substrate | Set | Replicas | Circuits | Batches | Shots per circuit | Shots |
 |---|---|---|---|---|---|---|
-| QX | (a) full Design B, within kite | 840 | 2 | 420 | 84 | 860160 |
-| QX | (a) reduced, within kite | 840 | 5 | 168 | 34 | 344064 |
-| QX | (a) full, cross-kite + fixture | 169 | 2 | 85 | 17 | 174080 |
-| QX | (a) reduced, cross-kite + fixture | 169 | 3 | 57 | 12 | 116736 |
-| QX | (a) full, non-kite pairs | 168 | 2 | 84 | 17 | 172032 |
-| QX | (a) reduced, non-kite pairs | 168 | 5 | 34 | 7 | 69632 |
-| QX | (d1) fixed triples + controls | 42 | 2 | 21 | 5 | 43008 |
-| QX | (d2) fixed pairs, uniform k | 105 | 2 | 53 | 11 | 108544 |
-| QX | (d3) fixed i, uniform (j, k) | 16 | 1 | 16 | 4 | 32768 |
-| QX | (e) full coherence settings | 118 | 2 | 59 | 12 | 120832 |
-| QX | total | | | 997 | 203 | 2041856 |
-| QX | Tuna-17 twins (one per Tuna batch) | | | 132 | 44 | 270336 |
-| Ry | (f) diagnostic | 10 | 1 | 10 | 2 (+2 adaptive) | 10240 |
-| Ry | (f) box-kite subset | 53 | 4 or 1 | 16 | 4 | 16384 |
-| Tuna-17 | T0 + T1 + T2 | | 3 LCU replicas, or one walk plus the reference | 132 (44 witness, 88 readout) | 44 (3 jobs) | 2162688 |
+| Kaggle CPU, qxelarator | (a) exhaustive (1010 replicas at P = 1/2) | 2354 | 848 | one kernel | 2048 | 1736704 |
+| Kaggle CPU, qxelarator | (d1)-(d3) and (e) exhaustive | 281 | 149 | the same kernel | 2048 | 305152 |
+| remote QX | (a) smoke set | 15 | 6 | 2 | 2048 | 12288 |
+| remote QX | (d1)-(d3) and (e) smoke representatives | 7 | 4 | 2 | 2048 | 8192 |
+| remote QX | Tuna-17 witness twins | 27 | 10 | 4 | 2048 | 20480 |
+| Ry | construct probe (retained `ry_probe`) | -- | 9 | 3 | 1024 | 9216 |
+| Ry | ladder residue R1, R2, R9 | -- | 3 | 1 | 1024 | 3072 |
+| Ry | box-kite smoke subset | 12 | 6 | 2 | 1024 | 6144 |
+| Tuna-17 | T0 depth ladder | 9 | 9 (3 witness, 6 readout) | 3 | 16384 | 147456 |
+| Tuna-17 | T1 classification and twist | 6 | 6 (2 witness) | 2 | 4096 | 24576 |
+| Tuna-17 | coherence | 6 | 6 (2 witness) | 2 | 4096 | 24576 |
+| Tuna-17 | walk | 6 | 9 (3 witness) | 3 | 4096 | 36864 |
+| Tuna-17 | total | 27 | 30 jobs (10 witness, 20 readout) | 10 | | 233472 |
 
-Families (b) and (c) need no circuits beyond (a) on QX. Shots: QX 2048 per
-circuit (its maximum), Ry 1024 (its maximum), Tuna-17 16384 (about 11 s per
-job at the measured 0.60-0.94 ms per shot, inside the 300 s limit). Tuna-17
-execution totals about 23 minutes; with queue, collection and pauses the
-series takes about three hours. Quantum Inspire records no charge for this
-account; the limits are structural (catalogue in
+Families (b) and (c) need no circuits beyond (a). qxelarator re-simulates
+every shot: on the build host a family (a) circuit took 0.14 to 0.23 s at
+2048 shots, while a dense d2 or d3 circuit took about 215 s, so the de
+family costs about 15000 CPU-seconds and the whole sweep about an hour on a
+4-CPU Kaggle kernel. Tuna-17 executes 233472 shots,
+140 to 219 s at the measured 0.60-0.94 ms per shot, about 3 minutes, each
+job inside the 300 s limit; with queue, collection and the ten 120 s pauses
+the series takes about 45 minutes. QX 2048 shots per circuit is its maximum
+and Ry 1024 its maximum. Quantum Inspire records no charge for this account;
+the limits are structural (catalogue in
 docs/evidence/quantum_inspire/catalogue.json).
 
-## 6. Generators to build next
+## 6. Generators
 
-One generator, `scripts/box_kite_cases.py`, reads census.json and never
-recomputes a sign:
+`scripts/box_kite_cases.py` reads census.json and never recomputes a sign.
+Built:
 
 - `reduced_lcu(row)` and `reduced_cross_control(row)` (x_sign-free SELECT
   phases, selector Z for x_sign = -1, SELECT verified by unitary), and
   `full_design_b(row)` (wrapping `designs.lcu_witness`, adding the selector Z
   for x_sign = -1);
-- `associator_walk(i, j, k, omit_last)`, `controlled_w_fixed_pair(i, j)` and
-  `controlled_w_fixed_i(i)` (from `designs.left_mult_gate` and
-  `left_mult_adjoint_gate`, with the sign set before control as in
-  `scripts/algebra_circuit_fixtures.py`);
-- `coherence_settings(row, encoding)` for the 2^w rule;
-- `ry_diagnostic_ladder()`;
-- `pack(replicas, backend, layout)`, `emit(circuit, place, dialect)` for the
-  qx, tuna and ry dialects, and `twin(case)` for the relabeled QX twin;
-- `series(family, backend)` writing batch-NN/ cases with the layout of
-  `qi_zero_divisor_cases.finish`, `analyze(run_dirs)`, `replay` and
-  `self_test()`.
+- `associator_walk(i, j, k, omega, bits, omit_last)` with omega from
+  `census:associator.deterministic_exemplars`, `coherence_setting(row,
+  setting)` for the reduced X and Y settings, and `lower_for_tuna` (CNOT as
+  H CZ H, identity CZ-pair padding behind barriers);
+- `pack`, `emit(circuit, place, dialect)` for the qx and tuna dialects,
+  `parse_cqasm` back, `twin(witness, text, source)` for the relabeled QX
+  twin, and `verify_text`, which simulates every emitted text on the qubits
+  it uses and checks each replica's selector or control marginal, each
+  coherence setting's conditional data marginal and each padded replica's
+  CZ count;
+- `series("a", "qx")` (the exhaustive family, in memory), `smoke_series()`,
+  `tuna_series()`, `--summary` and `self_test()`; gates core-420 (`--check`)
+  and core-421 (`--self-test`), each in normal and optimized mode.
+
+`scripts/box_kite_qx_sweep.py` runs the exhaustive family on qxelarator
+(`--run`), replays a record from its counts and the census (`--replay`,
+`--bind`, `--require-pass`), runs retained case directories locally
+(`--emulate`), and self-tests on synthetic records of both families (gate
+core-422). A
+Kaggle CPU kernel installs qxelarator through the `qx-emulator` pin group of
+`scripts/kaggle_run.py`; qxelarator 0.10.0 ships cp313 wheels only, so the
+sweep runs on the image's Python and never under `--ci-env`, and the CI
+replay binds the record to CI's own regeneration instead.
+
+The sweep ran on a Kaggle CPU kernel
+(results/kaggle/2026-10-17T131115Z-box-kite-qx-sweep) and both families pass:
+family (a) 848 circuits, 2354 replicas, max |z| 3.14; families (d) and (e)
+149 circuits, 281 replicas, 399 checks, max |z| 2.92. The records are
+docs/evidence/box_kite_qx_sweep/family-a.json and family-de.json; gate
+core-423 replays both with `--bind --require-pass`, so every swept circuit
+equals the bytes this checkout generates.
+
+Also built: `de_specs` (the (d1)-(d3) and (e) replicas with their census
+predictions, standard library only, which the sweep replay reuses),
+`controlled_w` and `controlled_block` (designs' left multiplications as
+controlled sign diagonals and CNOTs, the sign set before control as in
+`scripts/algebra_circuit_fixtures.py`), `pauli_expectation` for the 2^w
+settings, `series_de()` and `de_smoke_series()`; the ry dialect with
+`lower_for_ry`, `ry_ladder()` and `ry_series()`.
+
+Not built: `analyze` with its replay for the Tuna-17 stages (C(n) and r,
+D, twist pairs, coherences, <Z_c>) and for the Ry runs.
 
 Reused unchanged: `qi_platform.py` (submit, collect, the three-circuit and
-one-queued-batch caps), `qi_zero_divisor_cases.py` (`finish`, `header`,
-`wilson`, the catalogue admission pattern of `catalogue_backends`),
+one-queued-batch caps), `qi_zero_divisor_cases.py` (`header`,
+`readout_circuits`, `catalogue_backends`, `EXCLUDED_QUBITS`, `TUNA17`),
 `select_lcu.sparse_pair_prep`, `scripts/check_qi_platform_retention.py`
-(every generated batch through submit's checks), and the research-state
-registration of retained runs. Each generated circuit is required to
-reproduce its census row by state vector before emission, and the generator
-joins ci/gates.json with `--check` and `--self-test` gates in the change that
-adds it.
+(every generated batch through submit's checks), the toolchain record of
+`scripts/qi_toolchain_check.py` (gate core-368; every box-kite Tuna circuit
+keeps its gate sequence, CZ count included, through the Tuna decomposition
+passes), and the research-state registration of retained runs.
 
-Reuse per family:
-
-| Family | Reuses | New in `box_kite_cases.py` |
+| Family | Reuses | In `box_kite_cases.py` |
 |---|---|---|
-| (a) full | `designs.lcu_witness`, `select_lcu.select_circuit`, `sparse_pair_prep`, the batching of `qi_zero_divisor_cases` | `full_design_b`, `pack`, `emit` (qx) |
-| (a), (b), (c) reduced, (g) T0-T2 LCU | `qi_zero_divisor_cases.finish`, `header`, `wilson`, readout-0/readout-1 circuits, `qi_platform.py` | `reduced_lcu`, `reduced_cross_control`, `twin`, `emit` (tuna, ry) |
-| (b), (c) analysis | census.json rows and `kites[].twists` | `analyze` (edge classification statistic D, twist pairing) |
-| (d1)-(d3) | `designs.left_mult_gate`, `left_mult_adjoint_gate`, the controlled-block idiom of `algebra_circuit_fixtures.hadamard_test` | `controlled_w_fixed_pair`, `controlled_w_fixed_i` and the fixed-triple form |
+| (a) full | `designs.lcu_witness`, `select_lcu.select_circuit`, `sparse_pair_prep` | `full_design_b`, `pack`, `emit` (qx) |
+| (a), (b), (c) reduced, (g) LCU stages | `qi_zero_divisor_cases.header`, `readout_circuits`, `catalogue_backends`, `qi_platform.py` | `reduced_lcu`, `reduced_cross_control`, `lower_for_tuna`, `twin`, `emit` (tuna) |
+| (b), (c) analysis | census.json rows and `kites[].twists` | `analyze` (not built) |
+| (d1)-(d3) | `designs.left_mult_gate`, the controlled-block idiom of `algebra_circuit_fixtures.hadamard_test` | `controlled_block`, `controlled_w`, `w_diagonal`, `de_logical` |
 | (d4) | the workspace control of `algebra_circuit_fixtures` | `associator_walk` |
-| (e) | the 2^w settings rule (root AGENTS.md) | `coherence_settings` |
-| (f) | `qi_platform.py` submit and collect, leftmost-q0 parsing of the Ry diagnostic run | `ry_diagnostic_ladder`, `emit` (ry) |
+| (e) | the 2^w settings rule (root AGENTS.md) | `coherence_setting` (reduced); `pauli_expectation`, `de_specs` (full) |
+| (f) | the retained `ry_probe` result, `qi_platform.py` submit and collect | `emit` (ry), `lower_for_ry`, `ry_ladder`, `ry_series` |
 
-**QX and Ry stop rules.** On QX one shot violating a deterministic row stops
-that family's series until the circuit is explained, and a P = 1/2 row
-outside the Bonferroni bound of (a) does the same; each batch also checks
-completed jobs, 2048 shots per job and circuit digests against cases.json.
-On Ry the diagnostic's first failing factor stops the ladder and fixes the
-dialect; in the box-kite subset a deterministic row below 0.9 of its ideal
-outcome stops the series, and the result is reported as an emulator rate. If
-R6 shows Rz rejected, Sdag is written as S S S, which keeps every reduced
-circuit on the Ry gate set.
+**QX and Ry stop rules.** In the Kaggle sweep and on remote QX one shot
+violating a deterministic row stops that family's series until the circuit
+is explained, and a P = 1/2 row outside the Bonferroni bound of (a) does the
+same; each remote batch also checks completed jobs, 2048 shots per job and
+circuit digests against cases.json. On Ry the diagnostic's first failing
+factor stops the ladder and fixes the dialect; in the box-kite smoke subset
+a deterministic row below 0.9 of its ideal outcome stops the series, and the
+result is reported as an emulator rate. If the probe shows Rz rejected, Sdag
+is written as S S S, which keeps every reduced circuit on the Ry gate set.
 
 ## 7. Open points
 
 - The remote QX dry run of the identical Tuna-17 cQASM is impossible at 10
-  qubits; the plan runs the identical bytes on local qxelarator and a
-  relabeled twin on remote QX. Whether that satisfies the dry-run rule is
-  the owner's decision.
+  qubits; the plan runs the identical bytes on local qxelarator
+  (`box_kite_qx_sweep.py --emulate`) and the relabeled twin of each witness
+  circuit on remote QX. Whether that satisfies the dry-run rule is the
+  owner's decision.
+- T0 is approved alone; its falsifier can end the Tuna-17 program or resize
+  T1, coherence and walk before they run.
+- OpenSquirrel prints compiled Rz angles at 8 significant digits, so the
+  toolchain record marks the QX full Design B smoke circuits as a changed
+  gate sequence (angle text only, a rounding near 1e-9 rad); whether the
+  platform executes the source or the compiled text is not established.
 - The Ry emulator's error model is undocumented, so a Ry deviation is
   reported as an emulator rate, not interpreted.
 - The Tuna-17 separation estimates rest on one depth point; T0 replaces them.

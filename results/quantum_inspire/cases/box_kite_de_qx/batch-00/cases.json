@@ -1,0 +1,162 @@
+{
+ "schema": "box-kite-cases-v1",
+ "family": "de_smoke",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "dialect": "qx",
+ "bit_order": "qubit 0 at the rightmost character (QX)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "encodings": {
+  "d1_fixed_triple": "data 0-3, control 4: X on the bits of k, H on c, controlled W_ij (designs' L_{e_j}, L_{e_i}, L_{e_{i^j}}^dagger as controlled diagonals and CNOTs, e_i e_j's sign as Z on c), H on c",
+  "d2_fixed_pair": "as d1 with H on every data qubit in place of the basis input",
+  "d3_fixed_i": "k on 0-3, j on 4-7, control 8: H on 0-8, the diagonal of W_ij over (j, k) from designs' operators on c = 1, H on c",
+  "e_full_coherence": "full Design B (selector 4), then per data qubit H for X, Sdag and H for Y, nothing for Z; pauli names data qubit b at position b",
+  "compile": "optimization level 0 to cx, rz, h, x, z, s, sdg with Rz on the pi/64 grid"
+ },
+ "preregistered": {
+  "observable": "d1-d3: associator-sign interference witness <Z_c> = 2 P(c = 0) - 1; e: coherence reconstruction <P> = 2 P(data parity even | selector = 0) - 1 per setting",
+  "predictions": "d1 omega of census associator.deterministic_exemplars and 0 for the omit-last control; d2 associator.fixed_pair_uniform_k; d3 associator.fixed_i_uniform_jk; e <P> from the census coefficients c0, c1 and labels of each row",
+  "falsifier": "a deterministic replica off its outcome in one shot, or any other replica outside |z| < 4.5 at 2048 shots, refutes that circuit's implementation",
+  "limit": "an associator-sign witness cannot separate the octonions from the split octonions"
+ },
+ "role": "smoke run of the remote QX compile path; the exhaustive (d1)-(d3) and (e) sets run on Kaggle CPU through scripts/box_kite_qx_sweep.py",
+ "batch": "batch-00",
+ "group": "smoke",
+ "circuits": [
+  {
+   "file": "d1_fixed_triple-001.cq",
+   "kind": "witness",
+   "sub_family": "d1_fixed_triple",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "associator.deterministic_exemplars[1].face-sail-xor0",
+     "triple": [
+      2,
+      4,
+      6
+     ],
+     "omega": 1,
+     "omit_last_block": false,
+     "p_selector_zero": "1",
+     "roles": {
+      "selector": 4,
+      "data": [
+       0,
+       1,
+       2,
+       3
+      ]
+     }
+    },
+    {
+     "slot": 1,
+     "census": "associator.deterministic_exemplars[1].ij-same-vertex-third-strut",
+     "triple": [
+      2,
+      11,
+      3
+     ],
+     "omega": -1,
+     "omit_last_block": false,
+     "p_selector_zero": "0",
+     "roles": {
+      "selector": 9,
+      "data": [
+       5,
+       6,
+       7,
+       8
+      ]
+     }
+    }
+   ],
+   "group": "smoke",
+   "sha256": "278529223f76be14621825369aca7a026275682a3c8dd38d8f1eeac73bc984c0"
+  },
+  {
+   "file": "d2_fixed_pair-001.cq",
+   "kind": "witness",
+   "sub_family": "d2_fixed_pair",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "associator.fixed_pair_uniform_k[0]",
+     "pair": [
+      1,
+      2
+     ],
+     "witness": "0",
+     "p_selector_zero": "1/2",
+     "roles": {
+      "selector": 4,
+      "data": [
+       0,
+       1,
+       2,
+       3
+      ]
+     }
+    },
+    {
+     "slot": 1,
+     "census": "associator.fixed_pair_uniform_k[0]",
+     "pair": [
+      1,
+      3
+     ],
+     "witness": "0",
+     "p_selector_zero": "1/2",
+     "roles": {
+      "selector": 9,
+      "data": [
+       5,
+       6,
+       7,
+       8
+      ]
+     }
+    }
+   ],
+   "group": "smoke",
+   "sha256": "fac2c967e64a58e6deca127d8b5be63dbe71911f892046a9d9c6b299efd346c6"
+  },
+  {
+   "file": "d3_fixed_i-001.cq",
+   "kind": "witness",
+   "sub_family": "d3_fixed_i",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "associator.fixed_i_uniform_jk[0]",
+     "i": 0,
+     "witness": "1",
+     "p_selector_zero": "1",
+     "roles": {
+      "selector": 8,
+      "data": [
+       0,
+       1,
+       2,
+       3
+      ],
+      "j": [
+       4,
+       5,
+       6,
+       7
+      ]
+     }
+    }
+   ],
+   "group": "smoke",
+   "sha256": "ae110befdc9dbfcdab8c20f146a0785bc430e6c02f1bdf7b7e76289f8ccec33d"
+  }
+ ]
+}

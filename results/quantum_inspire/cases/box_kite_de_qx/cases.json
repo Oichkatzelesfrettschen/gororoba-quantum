@@ -1,0 +1,24 @@
+{
+ "schema": "box-kite-series-v1",
+ "family": "de_smoke",
+ "backend": "QXsinglenodesimulator",
+ "census_sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "group": "smoke",
+   "files": [
+    "d1_fixed_triple-001.cq",
+    "d2_fixed_pair-001.cq",
+    "d3_fixed_i-001.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "group": "smoke",
+   "files": [
+    "e_full_coherence-001.cq"
+   ]
+  }
+ ]
+}
