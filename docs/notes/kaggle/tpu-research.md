@@ -49,18 +49,20 @@ Rows whose output carries `environment.json` (the CLI rows) or the
 hardware probe (the `-latest` and `-cli` rows) record 4 cores and about 31
 GiB; `environment.json` names an Intel Xeon at 2.20 GHz. The two
 `gororoba-tpu-mcp-probe` rows recorded Python and the JAX state only.
-"Server record" is the version's ListKernelVersions entry.
+"Server record" is the version's ListKernelVersions entry; no run
+directory retains it, so every server-record cell is a recorded reading.
+"Retained" names the tracked run directory, or the reason none exists.
 
-| Route | Request | Session software | Server record |
-|---|---|---|---|
-| CLI push, script (`gororoba-substrate-probe-tpu`, `-tpuv5e8`, `-tpuv6e8`) | `machine_shape` TpuV5E8 or TpuV6E8, `--accelerator`, default image | Python 3.13.15 | not read |
-| CLI push, script (`gororoba-tpu-probe` v1) | `machine_shape` TpuV6E8, `enable_tpu`, `--accelerator`, no image | Python 3.13.15, jax 0.11.1, torch 2.11.0+cpu, glibc 2.39, `libtpu.so` missing | accelerator `TPU_V6E_8`; image `81b1e7c4` |
-| CLI push, notebook (`gororoba-tpu-probe` v2) | `machine_shape` TpuV5E8, `--accelerator`, `docker_image` pinned to digest `dafd4ce5` | Python 3.12.13, jax 0.7.2, torch 2.10.0+cpu, glibc 2.35, `libtpu.so` missing | accelerator `TPU_V5E_8`, `dockerImageVersionId` 31429; image `dafd4ce5` |
-| kagglesdk `create_kernel_session` | `TpuV5E8` | returned a session id; no observable execution | not read |
-| MCP `save_notebook` (`gororoba-tpu-mcp-probe` v1) | `machineShape` TpuV5E8, `enableTpu`, `SaveAndRunAll`, every presence flag | Python 3.13.15, jax 0.11.1, no libtpu | accelerator `TPU_V5E_8`; image `81b1e7c4` |
-| Editor "Save & Run All (Commit)" (`gororoba-tpu-mcp-probe` v2) | Settings -> Accelerator TPU v5e-8, "Run with TPU for this session" | Python 3.13.15, jax 0.11.1, no libtpu | accelerator `TPU_V5E_8`; image `81b1e7c4` |
-| MCP `save_notebook` (`gororoba-tpu-probe-latest` v1) | `machineShape` TpuV5E8, `enableTpu`, `dockerImagePinningType latest`, no image, no `kaggle` notebook block | Python 3.13.15, jax 0.11.1, torch 2.11.0+cpu, no libtpu, no `/dev/accel*`, no vendor-1ae0 PCI function, `ISTPUVM` unset | not read; the run's `KAGGLE_DOCKER_IMAGE` is `81b1e7c4` |
-| CLI push, staff recipe (`gororoba-tpu-probe-cli` v1) | notebook, `enable_tpu`, `machine_shape` TpuV5E8, `docker_image_pinning_type latest`, no image, no `kaggle` block, no `--accelerator` | identical to the row above | accelerator `TPU_V5E_8`; image `81b1e7c4` |
+| Route | Request | Session software | Server record | Retained |
+|---|---|---|---|---|
+| CLI push, script (`gororoba-substrate-probe-tpu`, `-tpuv5e8`, `-tpuv6e8`) | `machine_shape` TpuV5E8 or TpuV6E8, `--accelerator`, default image | Python 3.13.15 | not read | yes: `results/kaggle/2026-10-16T025337Z-...-tpu`, `025621Z-...-tpu`, `030546Z-...-tpuv5e8`, `030548Z-...-tpuv6e8` |
+| CLI push, script (`gororoba-tpu-probe` v1) | `machine_shape` TpuV6E8, `enable_tpu`, `--accelerator`, no image | Python 3.13.15, jax 0.11.1, torch 2.11.0+cpu, glibc 2.39, `libtpu.so` missing | accelerator `TPU_V6E_8`; image `81b1e7c4` | yes: `results/kaggle/2026-10-16T163111Z-gororoba-tpu-probe` |
+| CLI push, notebook (`gororoba-tpu-probe` v2) | `machine_shape` TpuV5E8, `--accelerator`, `docker_image` pinned to digest `dafd4ce5` | Python 3.12.13, jax 0.7.2, torch 2.10.0+cpu, glibc 2.35, `libtpu.so` missing | accelerator `TPU_V5E_8`, `dockerImageVersionId` 31429; image `dafd4ce5` | yes: `results/kaggle/2026-10-16T170035Z-gororoba-tpu-probe` |
+| kagglesdk `create_kernel_session` | `TpuV5E8` | returned a session id; no observable execution | not read | unretained: the call returns a session id and writes no run directory |
+| MCP `save_notebook` (`gororoba-tpu-mcp-probe` v1) | `machineShape` TpuV5E8, `enableTpu`, `SaveAndRunAll`, every presence flag | Python 3.13.15, jax 0.11.1, no libtpu | accelerator `TPU_V5E_8`; image `81b1e7c4` | unretained: an MCP save produces no `kaggle_run.py` run directory, so the table row is the only record |
+| Editor "Save & Run All (Commit)" (`gororoba-tpu-mcp-probe` v2) | Settings -> Accelerator TPU v5e-8, "Run with TPU for this session" | Python 3.13.15, jax 0.11.1, no libtpu | accelerator `TPU_V5E_8`; image `81b1e7c4` | unretained: the editor commit produces no run directory, so the table row is the only record |
+| MCP `save_notebook` (`gororoba-tpu-probe-latest` v1) | `machineShape` TpuV5E8, `enableTpu`, `dockerImagePinningType latest`, no image, no `kaggle` notebook block | Python 3.13.15, jax 0.11.1, torch 2.11.0+cpu, no libtpu, no `/dev/accel*`, no vendor-1ae0 PCI function, `ISTPUVM` unset | not read; the run's `KAGGLE_DOCKER_IMAGE` is `81b1e7c4` | unretained: an MCP save produces no run directory; the hardware values come from the session output read at the time and are not tracked |
+| CLI push, staff recipe (`gororoba-tpu-probe-cli` v1) | notebook, `enable_tpu`, `machine_shape` TpuV5E8, `docker_image_pinning_type latest`, no image, no `kaggle` block, no `--accelerator` | identical to the row above | accelerator `TPU_V5E_8`; image `81b1e7c4` | unretained: the push ran outside `kaggle_run.py`, so no run directory exists; the hardware values are not tracked |
 
 `81b1e7c4` is `gcr.io/kaggle-images/python@sha256:81b1e7c4b4f0...`, the
 image built from docker-python's `Dockerfile.tmpl` (the CPU image);
@@ -117,7 +119,7 @@ counts:
 | `run.isTpuEnabled` in ListKernelVersions | absent | `true` |
 | `docker_image` in `kaggle kernels pull -m` seconds after the push | `gcr.io/kaggle-images/python@sha256:81b1e7c4...` | empty |
 | a second TPU push while the first is live | accepted: `-tpuv5e8` and `-tpuv6e8` went in 1.8 s apart and both ran | refused: "Maximum batch TPU session count of 1 reached" (a TpuV6E8 probe at 21:31 UTC) |
-| status | ran on the CPU worker | `QUEUED`, with an empty session log, for at least 1 h 40 min |
+| status | ran on the CPU worker | `QUEUED`, with an empty session log, at every read through 7 h 08 min after the push, the timestamped read at 03:15:52 UTC on 2026-10-17 (section 3, "Queue behavior") |
 
 `tpu_quota.time_used` and `time_reserved` stay at 0 while the version
 queues. The web method `kernels.KernelsService/GetKernelSessionLog` takes
@@ -131,6 +133,19 @@ session starts, closes it.
 
 ### Queue behavior
 
+One queue wait underlies every figure here. The version was pushed at
+20:07 UTC on 2026-10-16 (`pushed_utc` "2026-10-16T200737Z" at line 131 of
+`results/kaggle/2026-10-16T200737Z-gororoba-tpu-probe-verified/submission.json`)
+and read `QUEUED` at each later look. The one timestamped observation is a
+`kaggle kernels status` read at 03:15:52 UTC on 2026-10-17, 7 h 08 min after
+the push, which answered `KernelWorkerStatus.QUEUED`; that interval is the
+lower bound on a wait that had not ended. The earlier "1 h 40 min" and
+"5.5 h" readings were recorded in 4c9e295 (21:44 UTC) and f930a62 (01:33
+UTC) without their own timestamps; a commit follows its read, so a commit
+time bounds the read time from above and those two figures are approximate.
+The timestamped read supersedes them; the interactive measurement below ran
+at 01:50 UTC and also found the batch version `QUEUED`.
+
 A QUEUED TPU version is the documented normal state of a busy pool. Kaggle's
 notebooks documentation says "Free TPU availability is limited: in busy
 times, you might be placed in a queue" (the sentence predates v5e-8 and
@@ -142,7 +157,7 @@ Kaggle staff call it a demand and supply issue, with T4 almost never
 queued and TPUs queued now and again, and other threads report positions
 such as #323 and a 13 h wait. These pages render client-side, so only the
 titles and search summaries were readable; no thread body was fetched. The
-5.5 h queue here sits inside the reported range of 2 h to more than 14 h.
+queue here, 7 h 08 min and counting at the timestamped read, sits inside the reported range of 2 h to more than 14 h.
 Inferred: the queue is a shared FIFO-like pool whose drain rate is set by
 the 9 h session cap of the sessions ahead, so waits of hours persist while
 public GLM-serving notebooks hold slots (the claim of topic 745817).
@@ -153,8 +168,8 @@ title of product-feedback thread 318562, so an interactive request can show
 a position. A batch version shows "Queued..." with no position, and the
 session-log method returns an empty body, as measured above (batch row).
 No Kaggle page states whether queued time counts against the 20 h weekly
-quota; the measured `time_used` and `time_reserved` of 0 after 5.5 h of
-queueing show that a queued batch session neither consumes nor reserves
+quota; the measured `time_used` and `time_reserved` of 0 through
+7 h 08 min of queueing show that a queued batch session neither consumes nor reserves
 quota here. The slot cap is separate from quota: the queued version holds
 the account's one TPU batch slot (kaggle-api issue 1197 and the
 refused second push above), so a queued session blocks later TPU pushes
