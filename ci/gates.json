@@ -2628,6 +2628,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/noise.json --all-seeds && \"$PYTHON\" -B -O -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/noise.json --all-seeds",
+   "name": "core-379",
+   "seconds": 1281.7,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "ruff check scripts/ghost_idle_budget.py && ruff format --check scripts/ghost_idle_budget.py && MYPYPATH=gororoba_quantum mypy scripts/ghost_idle_budget.py",
    "name": "core-342",
    "seconds": 8.0,
