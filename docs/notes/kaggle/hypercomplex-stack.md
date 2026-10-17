@@ -1,8 +1,11 @@
 # The hypercomplex package stack on every substrate
 
-`gororoba_quantum/cd_core.py` is the algebra's specification. Eight external
-packages are measured against it (`docs/notes/packages/README.md`), and the
-same eight run identically on the build host and in every Kaggle kernel.
+`gororoba_quantum/cd_core.py` is the algebra's specification. Sixteen
+external packages are measured against it (`docs/notes/packages/README.md`):
+the Cayley-Dickson packages, three quaternion classes, three Clifford
+algebra packages read through Cl(0,2), and two further octonion and sedenion
+implementations. The same sixteen run identically on the build host and in
+every Kaggle kernel.
 IBM jobs run circuits only; the algebra that builds those circuits runs on
 the host, so the host stack is the one that shapes an IBM run.
 
@@ -10,9 +13,12 @@ the host, so the host stack is the one that shapes an IBM run.
 
 `scripts/algebra_package_tables.py` holds the pins: `RELEASES` (version and
 sha256 of each PyPI sdist or GitHub archive), `ARCHIVE_URLS`,
-`BUILD_RECIPES` (the `prepare()` step of the cayley-dickson and SplitOct
-PKGBUILDs, transcribed byte for byte) and `RUNTIME_PINS`
-(numpy-quaternion 2024.0.13 for Cayley-Calculator).
+`BUILD_RECIPES` (the `prepare()` step of the cayley-dickson, SplitOct and
+pyquaternion PKGBUILDs, transcribed byte for byte) and `RUNTIME_PINS`
+(numpy-quaternion 2024.0.13 as its compiled wheel, and numba 0.68.0,
+sparse 0.17.0 and anywidget 0.11.0 for quaternionic, clifford and kingdon,
+each at the build host's Arch package version). Octonion-Sedenion is
+published only as a wheel, which `--install` installs as it is.
 
 | Substrate | How the stack is built | How it is proved |
 | --- | --- | --- |

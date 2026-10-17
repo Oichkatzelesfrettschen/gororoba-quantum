@@ -2,15 +2,12 @@
 
 Two sources, each retained with its identity:
 
-- kaggle.com/docs pages render in the browser only, so ``--site`` loads each
-  page in headless Chromium (Playwright), takes the ``#site-content``
-  element, converts it to GitHub Markdown with pandoc, and writes
-  docs/notes/kaggle/site/<page>.md under a header naming the URL, the
-  retrieval time and the sha256 of the rendered HTML (efficient-gpu-usage
-  renders navigation only and scheduling-notebooks is not found, so neither
-  is in SITE_PAGES). Collapsed
-  ``<details>`` blocks, which hold the MCP tool definitions, are part of the
-  DOM and are captured with it.
+- kaggle.com/docs serves each page's Markdown source at
+  ``https://www.kaggle.com/docs/<page>.md`` (the "Copy as Markdown" view of
+  the rendered page); ``--site`` downloads every page the docs navigation
+  lists, SITE_PAGES, verbatim into docs/notes/kaggle/site/<page>.md.
+  Root-relative links in those files (``/settings``, ``/static/...``) are
+  relative to https://www.kaggle.com/.
 - The Kaggle CLI documents itself in github.com/Kaggle/kaggle-cli/docs;
   ``--cli`` downloads every Markdown file of that directory at the pinned
   commit CLI_COMMIT verbatim into docs/notes/kaggle/cli/, so its internal
@@ -23,11 +20,8 @@ Both write MANIFEST.json beside the files (path, source URL, sha256), and
 from __future__ import annotations
 
 import argparse
-import asyncio
 import hashlib
 import json
-import re
-import subprocess
 import sys
 import urllib.request
 from datetime import UTC, datetime
@@ -37,14 +31,19 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 BASE = ROOT / "docs/notes/kaggle"
 SITE_PAGES = (
-    "notebooks",
-    "tpu",
-    "api",
-    "mcp",
-    "models",
+    "competitions",
     "datasets",
+    "efficient-gpu-usage",
+    "tpu",
+    "models",
+    "competitions-setup",
+    "organizations",
+    "groups",
     "packages",
+    "notebooks",
+    "mcp",
     "benchmarks",
+    "api",
 )
 CLI_COMMIT = "931014d9c50b7b073750bc45d36a872f7ef7219b"
 CLI_DOCS = (
@@ -77,49 +76,21 @@ def now() -> str:
     return datetime.now(UTC).strftime("%Y-%m-%dT%H:%MZ")
 
 
-async def render(pages: tuple[str, ...]) -> dict[str, str]:
-    from playwright.async_api import async_playwright
-
-    html: dict[str, str] = {}
-    async with async_playwright() as playwright:
-        browser = await playwright.chromium.launch(executable_path="/usr/bin/chromium", headless=True)
-        page = await browser.new_page(viewport={"width": 1400, "height": 2000})
-        for name in pages:
-            await page.goto(f"https://www.kaggle.com/docs/{name}", wait_until="networkidle", timeout=90000)
-            await page.wait_for_timeout(3000)
-            html[name] = await page.locator("#site-content").inner_html()
-        await browser.close()
-    return html
-
-
 def capture_site() -> list[dict[str, Any]]:
     out = BASE / "site"
     out.mkdir(parents=True, exist_ok=True)
     rows = []
-    stamp = now()
-    for name, html in asyncio.run(render(SITE_PAGES)).items():
-        url = f"https://www.kaggle.com/docs/{name}"
-        markdown = subprocess.run(
-            ["pandoc", "-f", "html", "-t", "gfm-raw_html", "--wrap=none"],
-            input=html,
-            capture_output=True,
-            text=True,
-            check=True,
-        ).stdout
-        # Root-relative links point at kaggle.com and bare relative links at
-        # kaggle.com/docs; the captured copy lives elsewhere, so both become
-        # absolute.
-        markdown = re.sub(r"\]\(/(?!/)", "](https://www.kaggle.com/", markdown)
-        markdown = re.sub(r"\]\((?![a-zA-Z][a-zA-Z0-9+.-]*:|#|/)", "](https://www.kaggle.com/docs/", markdown)
-        header = (
-            f"> Full piece: [{url}]({url})\n"
-            f"> Retrieved {stamp} by scripts/capture_kaggle_docs.py --site (headless Chromium, pandoc);\n"
-            f"> rendered HTML sha256 {sha256(html.encode())}.\n\n"
-        )
+    for name in SITE_PAGES:
+        url = f"https://www.kaggle.com/docs/{name}.md"
+        with urllib.request.urlopen(url, timeout=60) as response:
+            kind = response.headers.get_content_type()
+            data = response.read()
+        if kind != "text/markdown":
+            raise SystemExit(f"{url} answered {kind}, not text/markdown")
         path = out / f"{name}.md"
-        path.write_text(header + markdown, encoding="utf-8")
-        rows.append({"path": path.relative_to(ROOT).as_posix(), "source": url, "sha256": sha256(path.read_bytes())})
-        print(f"{name}: {len(markdown)} characters")
+        path.write_bytes(data)
+        rows.append({"path": path.relative_to(ROOT).as_posix(), "source": url, "sha256": sha256(data)})
+        print(f"site/{name}.md: {len(data)} bytes")
     return rows
 
 
