@@ -33,9 +33,10 @@ site and spec manifests also list every unreachable URL with the pages that
 link it, and ``--check`` verifies every retained file against its manifest
 without network access. It also requires each captured directory's file set to
 equal its manifest's path set and that set to equal the inventory the capture
-defines: SDK_REPOS, the API and release lists, the site crawl set the manifest
-records, and the fixed tuple SPEC_PAGES. A capture that crawls another spec page
-set fails ``--check`` until SPEC_PAGES changes in the same commit; a refresh
+defines: SDK_REPOS with each file's pinned raw URL, the API and release lists,
+SITE_SEEDS with the fixed tuple SITE_DISCOVERED, and the fixed tuple SPEC_PAGES.
+A capture that crawls another site or spec page set fails ``--check`` until the
+tuple changes in the same commit; a refresh
 prunes captured files its new rows no longer name. ``--self-test`` proves the
 check rejects removed pages with their rows, unlisted files and altered
 records, and that pruning restores a passing tree, on a temporary copy.
@@ -248,6 +249,35 @@ SDK_REPOS: dict[str, tuple[str, str, tuple[str, ...]]] = {
         ),
     ),
 }
+# Site pages the crawl reaches beyond SITE_SEEDS. A capture that discovers another set fails
+# --check until this tuple changes in the same commit.
+SITE_DISCOVERED = (
+    "account",
+    "backends/qx-simulator",
+    "backends/spin-2",
+    "backends/starmon-7",
+    "kbase/bell-states",
+    "kbase/bloch-sphere",
+    "kbase/cqasm-binary-controlled-gates",
+    "kbase/cqasm-error-models",
+    "kbase/cqasm-qubit-initialization-and-measurement",
+    "kbase/deutsch-jozsa-algorithm/kbase/spin-2-operational-specifics",
+    "kbase/full-adder/kbase/spin-2-operational-specifics",
+    "kbase/grover-algorithm/kbase/spin-2-operational-specifics",
+    "kbase/hardware",
+    "kbase/managing-your-account/kbase/software-development-kit",
+    "kbase/measure",
+    "kbase/measure-all",
+    "kbase/measure-x",
+    "kbase/measure-y",
+    "kbase/measure-z",
+    "kbase/optimization-of-simulations",
+    "kbase/prep-x",
+    "kbase/prep-y",
+    "kbase/prep-z",
+    "kbase/quantum-classification/kbase/spin-2-operational-specifics",
+    "kbase/spin-2-operational-specifics",
+)
 OPENAPI = "https://api.quantum-inspire.com/openapi.json"
 # Components the release-notes page links, in its order.
 GITHUB_RELEASES = (
@@ -897,11 +927,19 @@ def expected_paths(kind: str, doc: dict[str, Any], base: Path, root: Path) -> se
         repos = {repo: {"tag": tag, "commit": commit} for repo, (tag, commit, _) in SDK_REPOS.items()}
         if doc.get("repos") != repos:
             raise SystemExit("sdk manifest repos differ from SDK_REPOS")
-        return {
-            f"{prefix}/sdk/{name}" if repo == "quantuminspire" else f"{prefix}/sdk/{repo}/{name}"
-            for repo, (_, _, files) in SDK_REPOS.items()
+        sources = {
+            (f"{prefix}/sdk/{name}" if repo == "quantuminspire" else f"{prefix}/sdk/{repo}/{name}"): (
+                f"https://raw.githubusercontent.com/QuTech-Delft/{repo}/{commit}/{urllib.parse.quote(name)}"
+            )
+            for repo, (_, commit, files) in SDK_REPOS.items()
             for name in files
         }
+        for row in doc["files"]:
+            if row["path"] in sources and row["source"] != sources[row["path"]]:
+                raise SystemExit(
+                    f"{row['path']}: source {row['source']} differs from the pinned {sources[row['path']]}"
+                )
+        return set(sources)
     if kind == "api":
         return {f"{prefix}/api/openapi.json"}
     if kind == "releases":
@@ -926,6 +964,8 @@ def expected_paths(kind: str, doc: dict[str, Any], base: Path, root: Path) -> se
     names = [record["page"] for record in pages]
     if doc["seeds"] != len(SITE_SEEDS) or set(names) != set(SITE_SEEDS) | set(doc["discovered_beyond_seed"]):
         raise SystemExit("site manifest crawl set differs from SITE_SEEDS and its discovered pages")
+    if doc["discovered_beyond_seed"] != sorted(SITE_DISCOVERED):
+        raise SystemExit("site manifest discovered pages differ from SITE_DISCOVERED")
     if len(set(names)) != len(names):
         raise SystemExit("site manifest lists a crawled page twice")
     out = set()
@@ -1038,6 +1078,27 @@ def self_test() -> int:
         manifest.write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
         expect("failed site page record with another url", "records an inconsistent url")
         manifest.write_bytes(manifest_bytes)
+        qx = "backends/qx-simulator"
+        doc = json.loads(manifest_bytes)
+        doc["pages"] = [record for record in doc["pages"] if record["page"] != qx]
+        doc["discovered_beyond_seed"].remove(qx)
+        manifest.write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
+        qx_page = base / "site" / "backends_qx-simulator.md"
+        qx_bytes = qx_page.read_bytes()
+        qx_page.unlink()
+        drop_row("site", "/backends_qx-simulator.md")
+        expect("discovered site page removed everywhere", "differ from SITE_DISCOVERED")
+        qx_page.write_bytes(qx_bytes)
+        manifest.write_bytes(manifest_bytes)
+        sdk_manifest = manifest_path("sdk", base)
+        sdk_bytes = sdk_manifest.read_bytes()
+        doc = json.loads(sdk_bytes)
+        next(row for row in doc["files"] if row["path"].endswith("/sdk/README.md"))["source"] = (
+            "https://example.invalid/"
+        )
+        sdk_manifest.write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
+        expect("sdk row with another source", "differs from the pinned")
+        sdk_manifest.write_bytes(sdk_bytes)
         spec_page = base / "cqasm-spec" / "appendices" / "spin_2plus.md"
         spec_bytes = spec_page.read_bytes()
         spec_manifest = manifest_path("spec", base)

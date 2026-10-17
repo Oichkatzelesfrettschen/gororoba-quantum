@@ -408,6 +408,14 @@ class QuantumInspireRuns:
             f"(ledger only {sorted(set(ledger) - set(retained))}, runs only {sorted(set(retained) - set(ledger))}, "
             f"differing {sorted(job for job in set(ledger) & set(retained) if ledger[job] != retained[job])})",
         )
+        for owner, ids in (
+            ("the run results", [key[0] for key in run_rows.elements()]),
+            ("the ledger", [row["id"] for row in self.ledger["transactions"]]),
+        ):
+            repeated = sorted({i for i, count in Counter(ids).items() if count > 1}, key=repr)
+            require(
+                not repeated, f"Quantum Inspire transaction id {repeated[0] if repeated else None} repeats in {owner}"
+            )
         dangling = sorted(
             {row["job"] for row in self.ledger["transactions"] if row["job"] is not None and row["job"] not in retained}
         )
@@ -1081,6 +1089,15 @@ def _qi_row_mutations() -> Iterable[tuple[str, Callable[[dict[str, dict[str, Any
         run = next(run for run in records.values() if run["results"]["transactions"])
         run["results"]["transactions"].append({**first_row(records), "id": 9000, "change": 0})
 
+    def duplicate_everywhere(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        # Both sides repeat one +5 row; the job charge and the totals follow, so only the id rule can reject it.
+        run = next(run for run in records.values() if run["results"]["transactions"])
+        row = next(row for row in ledger["transactions"] if row["change"] == 5)
+        run["results"]["transactions"].append({key: row[key] for key in TRANSACTION_FIELDS})
+        ledger["transactions"].append(copy.deepcopy(row))
+        next(job for job in ledger["jobs"] if job["job"] == row["job"])["charged"] += 5
+        ledger["totals"]["change"] += 5
+
     def ledger_zero_duplicate(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
         ledger["transactions"].append({**ledger["transactions"][-1], "id": 9000, "change": 0})
 
@@ -1096,6 +1113,7 @@ def _qi_row_mutations() -> Iterable[tuple[str, Callable[[dict[str, dict[str, Any
     yield "run transaction without its domain", run_field_missing, "lacks domain"
     yield "ledger transaction without its timestamp", ledger_field_missing, "lacks timestamp"
     yield "zero-change row added to a run", run_zero_duplicate, "transaction rows of the retained jobs differ"
+    yield "synthetic row repeated in the run and the ledger", duplicate_everywhere, "transaction id 10"
     yield "zero-change row added to the ledger", ledger_zero_duplicate, "transaction rows of the retained jobs differ"
     yield "ledger transaction row dropped", ledger_dropped, "transaction rows of the retained jobs differ"
     yield "ledger transaction charging an unretained job", ledger_dangling, "charge jobs outside the runs"
