@@ -20,9 +20,15 @@ nightly schedule and manual runs add the `full` tier's long simulation
 contracts on twelve shards. Runners are 2-vCPU, 8 GB machines on Python 3.14
 with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
 the plotting-only `matplotlib==3.11.2`). A pull request merges when every
-shard is green and its review threads are resolved; a red main or nightly
-run is fixed in the next change. A new module, evidence
-replay or contract joins the gate list in ci/gates.json in the same change.
+shard and the `external-ground-truth` job are green and its review threads
+are resolved; a red main or nightly run is fixed in the next change. The
+`external-ground-truth` job runs `verify.py` over the open_gororoba commit
+named in [ci/open_gororoba.pin](ci/open_gororoba.pin):
+`ci/fetch_open_gororoba.sh` sparse-checks out the paths it is given, and
+`scripts/materialize_gororoba_csv.py` rewrites the git-ignored `data/csv`
+files from the registry records, whose sha256 pins `verify.py` rechecks. A
+pin bump is a reviewed commit. A new module, evidence replay or contract
+joins the gate list in ci/gates.json in the same change.
 The lint and type gates (core-000, core-001, core-002, core-039) cover
 gororoba_quantum/, scripts/, ci/ and kaggle_kernel/ whole, so a module there
 is linted and type-checked without a list edit; a checked file elsewhere in
@@ -125,8 +131,16 @@ measured extraction/render checks join `ci/gates.json`.
 
 Changes to the C881 proof sources or receipts also run the pinned Rocq
 procedure in `docs/evidence/c881_exhaustive/README.md`. The CI receipt
-check verifies retained hashes; a fresh kernel replay remains the proof-change
-procedure because hosted CI supplies no pinned Rocq toolchain.
+check verifies retained hashes. The ci.yml job `rocq-replay` replays the
+formal_certificates, c881_exhaustive, folding_proofs and TargetFlipN21
+bundles under the opam switch of `ci/rocq_toolchain.pin` (Rocq 9.2.0 on OCaml
+5.5.0) on a pull request that touches `proofs/`, a replay bundle, the replay
+driver, a pin or the workflow (`ci/rocq_changed.sh` holds the path list), and
+adds the stiefel_witness bundle on pushes to main and the nightly schedule.
+Gates core-403 and core-404 hold the pin, the toolchain.txt banners, the path
+list and the open_gororoba fetch in agreement. The manual procedure remains
+the local replay. A pull request merges when `rocq-replay` is green whenever
+it ran.
 
 ## Source library and research replay
 
@@ -987,6 +1001,18 @@ unresolveReviewThread.
   uncompared. A branch merging main re-snapshots only when its own retained
   jobs are missing from the snapshot it carries; a `qi-usage-v1` ledger
   declares no unretained job.
+- Every run record carries the identity of the system that ran or would
+  run it as data: live_run.py records each backend's `backend_version` and
+  `processor_type` from its configuration in `backends`, `system_inventory`
+  and each group, and the properties' `backend_version` at each execution
+  start in collect.json. Calibration and Heron Target snapshots carry the
+  same fields; a simulation record that copies a snapshot's calibration
+  stamp copies them too (`calibration_snapshot.backend_identity`) beside the
+  Aer version and device, and one that names its snapshot by path reaches
+  them through that file. A Kaggle submission.json records the entry's Aer
+  device and every bundled snapshot's identity. The approved-record
+  comparison reads none of these fields, and every checker accepts a
+  record without them.
 - A record names an IBM Cloud instance only by a 12-hex sha256 of its CRN.
 - Tokens, account identifiers, and local absolute paths stay out of every
   commit. The IBM credential lives in the qiskit account store,

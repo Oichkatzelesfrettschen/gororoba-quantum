@@ -1,0 +1,195 @@
+"""Check that the Rocq replay job, its pins and the replay bundles name one toolchain and one path set.
+
+The ci.yml job rocq-replay builds the opam switch of ci/rocq_toolchain.pin and
+runs scripts/rocq_kaggle_replay.py against it. Each bundle's toolchain.txt is
+the banner ``rocq --version`` must print, so the compiler and Rocq versions of
+the pin, the constants OCAML, ROCQ_PACKAGES and SWITCH of the replay driver and
+those banners agree. The open_gororoba fetch in the workflow covers every
+directory a bundle's source_hashes.sha256 lists, and ci/rocq_changed.sh selects
+every bundle directory with a replay_rocq.sh. ``--self-test`` mutates a copy of
+the inputs and requires each mutation to fail the check.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import shutil
+import sys
+import tempfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+HEX40 = re.compile(r"[0-9a-f]{40}")
+FIXED_FILES = (
+    "ci/rocq_toolchain.pin",
+    "ci/open_gororoba.pin",
+    "ci/rocq_changed.sh",
+    "ci/install_rocq.sh",
+    "ci/fetch_open_gororoba.sh",
+    "scripts/rocq_kaggle_replay.py",
+    ".github/workflows/ci.yml",
+    "ci/gates.json",
+)
+
+
+def bundles(root: Path) -> list[str]:
+    return sorted(path.parent.name for path in (root / "docs/evidence").glob("*/replay_rocq.sh"))
+
+
+def constant(source: str, name: str) -> str:
+    match = re.search(rf"^{name} = (.+)$", source, re.MULTILINE)
+    if match is None:
+        raise ValueError(f"scripts/rocq_kaggle_replay.py defines no {name}")
+    return match.group(1)
+
+
+def read_pin(root: Path) -> dict[str, str]:
+    fields: dict[str, str] = {}
+    for line in (root / "ci/rocq_toolchain.pin").read_text(encoding="utf-8").splitlines():
+        key, _, value = line.partition("=")
+        fields[key] = value
+    return fields
+
+
+def check(root: Path) -> list[str]:
+    errors: list[str] = []
+    pin = read_pin(root)
+    for key in ("switch", "compiler", "packages", "opam_repository"):
+        if not pin.get(key):
+            errors.append(f"ci/rocq_toolchain.pin lacks {key}")
+    if errors:
+        return errors
+    if not HEX40.fullmatch(pin["opam_repository"]):
+        errors.append("opam_repository is not a 40-digit commit")
+    driver = (root / "scripts/rocq_kaggle_replay.py").read_text(encoding="utf-8")
+    if constant(driver, "OCAML") != f'"{pin["compiler"]}"':
+        errors.append("OCAML of the replay driver differs from the pin compiler")
+    if constant(driver, "SWITCH") != f'"{pin["switch"]}"':
+        errors.append("SWITCH of the replay driver differs from the pin switch")
+    packages = tuple(pin["packages"].split())
+    if constant(driver, "ROCQ_PACKAGES") != "(" + ", ".join(f'"{p}"' for p in packages) + ")":
+        errors.append("ROCQ_PACKAGES of the replay driver differs from the pin packages")
+    ocaml_version = pin["compiler"].split(".", 1)[1]
+    rocq_versions = {package.split(".", 1)[1] for package in packages}
+    if len(rocq_versions) != 1:
+        errors.append("the pin packages carry more than one version")
+    else:
+        major_minor = ".".join(next(iter(rocq_versions)).split(".")[:2])
+        expected = f"The Rocq Prover, version {major_minor}\ncompiled with OCaml {ocaml_version}\n"
+        names = bundles(root)
+        if not names:
+            errors.append("no docs/evidence bundle carries a replay_rocq.sh")
+        for name in names:
+            banner = (root / f"docs/evidence/{name}/toolchain.txt").read_text(encoding="utf-8")
+            if banner != expected:
+                errors.append(f"docs/evidence/{name}/toolchain.txt is {banner!r}, the pin implies {expected!r}")
+    if not HEX40.fullmatch((root / "ci/open_gororoba.pin").read_text(encoding="utf-8").strip()):
+        errors.append("ci/open_gororoba.pin is not a 40-digit commit")
+    workflow = (root / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    for needle in (
+        "ci/install_rocq.sh",
+        "hashFiles('ci/rocq_toolchain.pin'",
+        "ripgrep",
+        "command -v rg",
+        "needs.changes.outputs.rocq == 'true'",
+        "ci/rocq_changed.sh",
+        "--rocq ",
+        "ci/open_gororoba.pin",
+    ):
+        if needle not in workflow:
+            errors.append(f"ci.yml lacks {needle!r}")
+    fetched = set(re.findall(r"^\s+((?:proofs|crates)[^\s]*)$", workflow, re.MULTILINE))
+    for name in bundles(root):
+        hashes = root / f"docs/evidence/{name}/source_hashes.sha256"
+        script = (root / f"docs/evidence/{name}/replay_rocq.sh").read_text(encoding="utf-8")
+        if not hashes.exists() or "GOROROBA_ROOT" not in script:
+            continue
+        directories = {
+            line.split(None, 1)[1].strip().rpartition("/")[0]
+            for line in hashes.read_text().splitlines()
+            if line.strip()
+        }
+        for directory in sorted(directories):
+            if not any(directory == cone or directory.startswith(cone + "/") for cone in fetched):
+                errors.append(f"the ci.yml fetch does not cover {directory}, which {name} hashes")
+    selector = (root / "ci/rocq_changed.sh").read_text(encoding="utf-8")
+    required = [f"docs/evidence/{name}/*" for name in bundles(root)]
+    required += ["proofs/*", "scripts/rocq_kaggle_replay.py", "ci/open_gororoba.pin", "ci/rocq_toolchain.pin"]
+    required += [".github/workflows/ci.yml", "docs/evidence/rocq_kaggle_replay/*"]
+    for pattern in required:
+        if pattern not in selector:
+            errors.append(f"ci/rocq_changed.sh lacks {pattern}")
+    excluded = json.loads((root / "ci/gates.json").read_text(encoding="utf-8"))["excluded"]
+    for name in ("c881_exhaustive", "stiefel_witness"):
+        entries = [e for e in excluded if f"docs/evidence/{name}/replay_rocq.sh" in e["cmd"]]
+        if len(entries) != 1:
+            errors.append(f"ci/gates.json excludes no {name} replay")
+        elif "ci.yml job rocq-replay" not in entries[0]["reason"]:
+            errors.append(f"the excluded {name} replay does not name the ci.yml job rocq-replay")
+    return errors
+
+
+def self_test() -> None:
+    if errors := check(ROOT):
+        raise SystemExit("the repository fails its own check:\n" + "\n".join(errors))
+    names = bundles(ROOT)
+    files = list(FIXED_FILES)
+    for name in names:
+        files += [f"docs/evidence/{name}/{leaf}" for leaf in ("toolchain.txt", "replay_rocq.sh")]
+        if (ROOT / f"docs/evidence/{name}/source_hashes.sha256").exists():
+            files.append(f"docs/evidence/{name}/source_hashes.sha256")
+    workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    some_crate = next(line.strip() for line in workflow.splitlines() if line.strip().startswith("crates/"))
+    mutations = {
+        "ci/rocq_toolchain.pin": [
+            ("ocaml-base-compiler.5.5.0", "ocaml-base-compiler.5.4.0"),
+            ("rocq-core.9.2.0", "rocq-core.9.2.1"),
+            ("switch=rocq-9.2", "switch=rocq-9.3"),
+            ("opam_repository=eba24de", "opam_repository=zba24de"),
+        ],
+        "ci/open_gororoba.pin": [("7", "x")],
+        f"docs/evidence/{names[0]}/toolchain.txt": [("9.2", "9.1")],
+        "ci/rocq_changed.sh": [("docs/evidence/stiefel_witness/*", "docs/evidence/stiefel_witnes/*")],
+        ".github/workflows/ci.yml": [
+            ("command -v rg", "command -v grep"),
+            (some_crate, "crates/elsewhere"),
+            ("needs.changes.outputs.rocq == 'true'", "true"),
+        ],
+        "scripts/rocq_kaggle_replay.py": [('"ocaml-base-compiler.5.5.0"', '"ocaml-base-compiler.5.4.0"')],
+        "ci/gates.json": [("the ci.yml job rocq-replay on proof paths", "a manual step on proof paths")],
+    }
+    for target, edits in mutations.items():
+        for old, new in edits:
+            with tempfile.TemporaryDirectory(prefix="rocq-pins-") as scratch:
+                copy = Path(scratch)
+                for rel in files:
+                    (copy / rel).parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(ROOT / rel, copy / rel)
+                text = (copy / target).read_text(encoding="utf-8")
+                if old not in text:
+                    raise SystemExit(f"self-test mutation {old!r} is absent from {target}")
+                (copy / target).write_text(text.replace(old, new, 1), encoding="utf-8")
+                if not check(copy):
+                    raise SystemExit(f"mutation {old!r} -> {new!r} in {target} passed the check")
+    print(f"rocq ci pins self-test: {sum(len(v) for v in mutations.values())} mutations rejected")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--self-test", action="store_true")
+    args = parser.parse_args()
+    if args.self_test:
+        self_test()
+        return 0
+    errors = check(ROOT)
+    for error in errors:
+        print(error, file=sys.stderr)
+    if not errors:
+        print(f"rocq ci pins agree across {len(bundles(ROOT))} bundles")
+    return 1 if errors else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

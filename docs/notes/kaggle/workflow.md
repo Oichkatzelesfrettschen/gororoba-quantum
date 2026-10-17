@@ -165,7 +165,8 @@ bearer header. [interfaces.md](interfaces.md) maps every CLI command, SDK
 method and MCP tool onto the operations they share.
 
 Each run directory under results/kaggle/ keeps submission.json (entry,
-arguments, git commit, bundle digests, pins), the generated kernel, and
+arguments, git commit, bundle digests, pins, the entry's Aer device and the
+backend identity of every bundled calibration snapshot), the generated kernel, and
 after collection the output with collect.json. Retaining it registers no
 claim. A `numerical or stochastic simulation` claim in the research state
 needs a replay gate that re-derives it in CI, so a Kaggle result becomes a
