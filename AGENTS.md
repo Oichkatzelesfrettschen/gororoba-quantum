@@ -669,7 +669,9 @@ core-327 (`qi_crosstalk_teleport_cases.py --check results/quantum_inspire/cases`
 core-331 (`--replay` of every retained analysis.json), core-348 and core-330
 (`qi_zero_divisor_cases.py --check` and `--replay`), core-332 and core-333
 (`qi_coupler_zz_map.py` case regeneration with conformance, and the replay of
-the coupler map, its QX dry run and the spectator split), and core-340
+the coupler map, its QX dry run and the spectator split), core-362
+(`qi_readout_ringdown_cases.py` case regeneration with the post-readout
+tail conformance), and core-340
 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of the Tuna-17
 cases).
 
