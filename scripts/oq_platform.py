@@ -16,7 +16,10 @@ Subcommands:
   (qubits, limits, native and supported operations, features, topology) and
   its job configuration schema, the job categories, the 13 MCP tools with
   their input schemas, and the organization count, credit balances and job
-  count. Organization ids and names never enter the file. It also writes
+  count of the organization OPENQUANTUM_ORGANIZATION_ID names, else the first
+  membership, the selection the MCP server spends on; every listing
+  follows its pagination cursor. Organization ids and names never enter the
+  file. It also writes
   estimates.json, the scheduler's circuit-free price estimate
   (POST /v1/pricing/estimate with a backend class and a shot count, the call
   the pricing page's calculator makes) at ESTIMATE_SHOTS and each backend's
@@ -30,14 +33,15 @@ Subcommands:
   estimate to equal ceil(per_task + shots * per_shot) of its plan's
   USD-equivalent rates, one credit per USD-equivalent dollar; with --agents
   it renders facts_table and requires FILE to carry it verbatim between the
-  open-quantum-facts markers, so a refreshed catalogue, estimate or price list
+  open-quantum-facts markers as the whole marked body, so a refreshed catalogue, estimate or price list
   that changes a limit, a rate or the credit rule fails until AGENTS.md
   changes with it. Status, accepting_jobs and queue depth change between
   reads and stay out of the table.
 - facts DIR prints the table.
 - --self-test proves check rejects an organization id, a shot limit that
   disagrees with its schema, a backend without a price, an estimate off the
-  credit rule and an edited table, on a temporary copy.
+  credit rule, an edited table and a stale row inside the markers, on a
+  temporary copy.
 
 Usage: OPENQUANTUM_SDK_KEY=KEY.json "$OQ_PYTHON" scripts/oq_platform.py snapshot --out DIR
        "$PYTHON" scripts/oq_platform.py (check DIR [--agents AGENTS.md] | facts DIR | --self-test)
@@ -51,11 +55,13 @@ import dataclasses
 import datetime
 import json
 import math
+import os
 import shutil
 import sys
 import tempfile
 from collections.abc import Callable
 from decimal import Decimal
+from functools import partial
 from pathlib import Path
 from typing import Any
 
@@ -131,6 +137,18 @@ def estimates(scheduler: Any, backends: list[dict[str, Any]]) -> list[dict[str, 
     return rows
 
 
+def pages(listing: Callable[..., Any], field: str, *args: Any) -> list[Any]:
+    """Every record of a cursor-paginated SDK listing, following pagination.next_cursor to the end."""
+    records: list[Any] = []
+    cursor = None
+    while True:
+        page = listing(*args, limit=100, cursor=cursor)
+        records += getattr(page, field)
+        cursor = page.pagination.next_cursor if page.pagination else None
+        if not cursor:
+            return records
+
+
 def snapshot(out: Path) -> None:
     import openquantum_mcp
     import openquantum_sdk
@@ -138,30 +156,31 @@ def snapshot(out: Path) -> None:
 
     clients = build_clients()
     management, scheduler = clients.management, clients.scheduler
-    organizations = management.list_user_organizations(limit=100).organizations
+    organizations = pages(management.list_user_organizations, "organizations")
     if not organizations:
         raise SystemExit("the SDK key reaches no organization")
-    balance = management.get_credit_balance(organizations[0].id)
-    jobs, cursor = 0, None
-    while True:
-        page = scheduler.list_jobs(organization_id=organizations[0].id, limit=100, cursor=cursor)
-        jobs += len(page.jobs)
-        cursor = page.pagination.next_cursor if page.pagination else None
-        if not cursor:
-            break
+    # The MCP server spends on OPENQUANTUM_ORGANIZATION_ID when it is set and
+    # on the first membership otherwise; the snapshot reads the same one.
+    configured = os.environ.get("OPENQUANTUM_ORGANIZATION_ID")
+    chosen = [o for o in organizations if o.id == configured] if configured else organizations[:1]
+    if not chosen:
+        raise SystemExit("OPENQUANTUM_ORGANIZATION_ID names no organization of this SDK key")
+    organization = chosen[0].id
+    balance = management.get_credit_balance(organization)
+    jobs = len(pages(partial(scheduler.list_jobs, organization_id=organization), "jobs"))
     backends = []
-    for summary in sorted(management.list_backend_classes(limit=200).backend_classes, key=lambda b: b.short_code):
+    listed = pages(management.list_backend_classes, "backend_classes")
+    for summary in sorted(listed, key=lambda b: b.short_code):
         record = plain(summary)
         detail = scheduler.get_backend_class(summary.short_code)
         record["constraint_data"] = detail["constraint_data"]
         record["configuration_schema"] = detail["configuration_schema"]
         record["constraint_model_id"] = detail["constraint_model_id"]
         backends.append(record)
-    categories = [plain(c) for c in scheduler.get_job_categories(limit=200).categories]
+    categories = [plain(c) for c in pages(scheduler.get_job_categories, "categories")]
     for category in categories:
-        category["subcategories"] = [
-            plain(s) for s in scheduler.get_job_subcategories(category["id"], limit=200).categories
-        ]
+        subcategories = pages(scheduler.get_job_subcategories, "categories", category["id"])
+        category["subcategories"] = [plain(s) for s in subcategories]
     retrieved = now()
     catalogue = {
         "schema": CATALOGUE_SCHEMA,
@@ -170,12 +189,13 @@ def snapshot(out: Path) -> None:
         "versions": {"openquantum-sdk": openquantum_sdk.__version__, "openquantum-mcp": openquantum_mcp.__version__},
         "account": {
             "organization_count": len(organizations),
+            "organization_selection": "OPENQUANTUM_ORGANIZATION_ID" if configured else "first membership",
             "spark_credits": balance.spark_credits,
             "full_credits": balance.full_credits,
             "jobs": jobs,
         },
         "providers": sorted(
-            (plain(p) for p in management.list_providers(limit=100).providers), key=lambda p: p["short_code"]
+            (plain(p) for p in pages(management.list_providers, "providers")), key=lambda p: p["short_code"]
         ),
         "backend_classes": backends,
         "job_categories": sorted(categories, key=lambda c: c["short_code"]),
@@ -219,7 +239,7 @@ def facts_table(catalogue: dict[str, Any], quotes: dict[str, Any], pricing: dict
     prices = {row["short_code"]: row for row in pricing["backends"]}
     measured = {(r["short_code"], r["shots"]): r["plans"]["Public Plan"]["price"] for r in quotes["rows"]}
     lines = [
-        "| backend (short code) | provider, modality | qubits | native ops | shots min / default / max "
+        "| backend (short code) | provider, modality | qubits (per job) | native ops | shots min / default / max "
         "| circuits per job | Public USD task + per shot | Public credits at 128 / 1024 / max shots "
         "| shots in a 1-credit job | 1024-shot jobs per 25 Spark |",
         "|---|---|---|---|---|---|---|---|---|---|",
@@ -230,9 +250,11 @@ def facts_table(catalogue: dict[str, Any], quotes: dict[str, Any], pricing: dict
         price = prices[code]
         cost = [measured[(code, n)] for n in (*TABLE_SHOTS, high)]
         native = ", ".join(sorted(op["name"] for op in data["native_ops"] if op["name"] != "barrier"))
+        per_job = data["limits"]["max_qubits_per_job"]
+        qubits = f"{data['n_qubits']}" if per_job == data["n_qubits"] else f"{data['n_qubits']} ({per_job} per job)"
         lines.append(
             f"| {b['name']} (`{code}`) | {price['provider_name']}, {price['modality']} "
-            f"| {data['n_qubits']} | {native} | {low} / {default} / {high} | {data['limits']['max_circuits']} "
+            f"| {qubits} | {native} | {low} / {default} / {high} | {data['limits']['max_circuits']} "
             f"| {usd(price['per_task_public'])} + {usd(price['per_shot_public'])} "
             f"| {' / '.join(map(str, cost))} | {one_credit_shots(price, low, high)} "
             f"| {SPARK_GRANT_CREDITS // cost[1]} |"
@@ -266,7 +288,7 @@ def check_agents(catalogue: dict[str, Any], quotes: dict[str, Any], pricing: dic
     if text.count(BEGIN) != 1 or text.count(END) != 1:
         raise SystemExit(f"{agents}: needs one open-quantum-facts section")
     body = text[text.index(BEGIN) + len(BEGIN) : text.index(END)]
-    if facts_table(catalogue, quotes, pricing) not in body:
+    if body != facts_table(catalogue, quotes, pricing):
         raise SystemExit(f"{agents}: the open-quantum-facts table differs from facts_table of the snapshot")
 
 
@@ -355,7 +377,11 @@ def self_test() -> None:
         text = copy.read_text(encoding="utf-8")
         copy.write_text(text.replace("| 1024-shot jobs per 25 Spark |", "| jobs |", 1), encoding="utf-8")
 
-    edits = (organization_id, shot_limit, unpriced, off_rule, table)
+    def stale_row(_: Path, copy: Path) -> None:
+        text = copy.read_text(encoding="utf-8")
+        copy.write_text(text.replace(END, "| stale | row |\n" + END, 1), encoding="utf-8")
+
+    edits = (organization_id, shot_limit, unpriced, off_rule, table, stale_row)
     for edit in edits:
         with tempfile.TemporaryDirectory() as scratch:
             directory = Path(scratch) / "open_quantum"

@@ -218,14 +218,14 @@ The table is the AGENTS.md facts table, rendered by
 `oq_platform.py facts docs/evidence/open_quantum` (gate core-382 holds the
 two equal):
 
-| backend (short code) | provider, modality | qubits | native ops | shots min / default / max | circuits per job | Public USD task + per shot | Public credits at 128 / 1024 / max shots | shots in a 1-credit job | 1024-shot jobs per 25 Spark |
+| backend (short code) | provider, modality | qubits (per job) | native ops | shots min / default / max | circuits per job | Public USD task + per shot | Public credits at 128 / 1024 / max shots | shots in a 1-credit job | 1024-shot jobs per 25 Spark |
 |---|---|---|---|---|---|---|---|---|---|
 | IBEX Q1 (`aqt:ibex-q1`) | AQT, Trapped-ion | 12 | prx, rz, xx | 1 / 100 / 2000 | 1024 | 0.18 + 0.0141 | 2 / 15 / 29 | 58 | 1 |
 | Forte-1 (`ionq:forte-1`) | IonQ, Trapped-ion | 36 | gpi, gpi2, zz | 100 / 100 / 5000 | 1024 | 0.18 + 0.048 | 7 / 50 / 241 | - | 0 |
 | Forte Enterprise (`ionq:forte-ent`) | IonQ, Trapped-ion | 36 | gpi, gpi2, zz | 100 / 100 / 5000 | 1024 | 0.18 + 0.048 | 7 / 50 / 241 | - | 0 |
 | Emerald (`iqm:emerald`) | IQM, Superconducting | 54 | cc_prx, cz, measure_ff, prx | 1 / 100 / 20000 | 1024 | 0.18 + 0.00096 | 1 / 2 / 20 | 854 | 12 |
 | Garnet (`iqm:garnet`) | IQM, Superconducting | 20 | cc_prx, cz, measure_ff, prx | 1 / 100 / 20000 | 1024 | 0.18 + 0.00087 | 1 / 2 / 18 | 942 | 12 |
-| Cepheus-1-108Q (`rigetti:cepheus-1-108q`) | Rigetti, Superconducting | 108 | cz, rx, rz | 10 / 100 / 50000 | 1024 | 0.18 + 0.000255 | 1 / 1 / 13 | 3215 | 25 |
+| Cepheus-1-108Q (`rigetti:cepheus-1-108q`) | Rigetti, Superconducting | 108 (107 per job) | cz, rx, rz | 10 / 100 / 50000 | 1024 | 0.18 + 0.000255 | 1 / 1 / 13 | 3215 | 25 |
 
 Features by backend: barriers: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q; defcal: rigetti:cepheus-1-108q; dynamic_circuits: iqm:emerald, iqm:garnet; measure: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q; mid_circuit_measure: ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet; physical_qubits: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q; result_pragmas: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q; verbatim_boxes: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q.
 

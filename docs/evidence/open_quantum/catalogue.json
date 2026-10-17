@@ -3,6 +3,7 @@
   "full_credits": 0,
   "jobs": 0,
   "organization_count": 1,
+  "organization_selection": "first membership",
   "spark_credits": 25
  },
  "backend_classes": [
@@ -8818,7 +8819,7 @@
    "short_code": "rigetti"
   }
  ],
- "retrieved_utc": "2026-10-17T05:13:49+00:00",
+ "retrieved_utc": "2026-10-17T05:24:54+00:00",
  "schema": "oq-catalogue-v1",
  "versions": {
   "openquantum-mcp": "0.2.0",
