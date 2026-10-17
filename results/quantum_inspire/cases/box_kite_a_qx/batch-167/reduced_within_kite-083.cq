@@ -1,0 +1,42 @@
+version 3.0
+
+qubit[10] q
+bit[10] b
+
+// slot 0 reduced census within_kite[410] kite 4 (3,15)- x (5,9)+ edge_same P 1 selector q[0]
+H q[1]
+H q[0]
+Z q[0]
+Z q[0]
+CNOT q[0], q[1]
+H q[0]
+// slot 1 reduced census within_kite[411] kite 4 (3,15)- x (5,9)- edge_same P 0 selector q[2]
+H q[3]
+Z q[3]
+H q[2]
+Z q[2]
+Z q[2]
+CNOT q[2], q[3]
+H q[2]
+// slot 2 reduced census within_kite[412] kite 4 (3,15)+ x (6,10)+ edge_same P 0 selector q[4]
+H q[5]
+H q[4]
+Z q[4]
+CNOT q[4], q[5]
+H q[4]
+// slot 3 reduced census within_kite[413] kite 4 (3,15)+ x (6,10)- edge_same P 1 selector q[6]
+H q[7]
+Z q[7]
+H q[6]
+Z q[6]
+CNOT q[6], q[7]
+H q[6]
+// slot 4 reduced census within_kite[414] kite 4 (3,15)- x (6,10)+ edge_same P 1 selector q[8]
+H q[9]
+H q[8]
+Z q[8]
+Z q[8]
+CNOT q[8], q[9]
+H q[8]
+
+b = measure q

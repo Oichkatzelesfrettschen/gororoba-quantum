@@ -1,0 +1,27 @@
+version 3.0
+
+qubit[10] q
+bit[10] b
+
+// slot 0 reduced_cross census cross_kite_controls[84] kite 4 (1,13)+ x (1,12)+ cross_kite_5 P 1/2 selector q[0]
+H q[1]
+H q[0]
+CNOT q[0], q[1]
+CNOT q[0], q[2]
+H q[0]
+// slot 1 reduced_cross census cross_kite_controls[85] kite 4 (1,13)+ x (1,12)- cross_kite_5 P 1/2 selector q[3]
+H q[4]
+Z q[4]
+H q[3]
+CNOT q[3], q[4]
+CNOT q[3], q[5]
+H q[3]
+// slot 2 reduced_cross census cross_kite_controls[86] kite 4 (1,13)- x (1,12)+ cross_kite_5 P 1/2 selector q[6]
+H q[7]
+H q[6]
+Z q[6]
+CNOT q[6], q[7]
+CNOT q[6], q[8]
+H q[6]
+
+b = measure q

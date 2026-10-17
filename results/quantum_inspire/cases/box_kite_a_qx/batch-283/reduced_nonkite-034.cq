@@ -1,0 +1,41 @@
+version 3.0
+
+qubit[10] q
+bit[10] b
+
+// slot 0 reduced census nonkite_pairs[165] kite 0 (7,15)+ x (6,14)- nonkite P 1/2 selector q[0]
+H q[1]
+Z q[1]
+H q[0]
+Z q[0]
+Z q[1]
+Sdag q[1]
+CNOT q[0], q[1]
+S q[1]
+Sdag q[0]
+H q[0]
+// slot 1 reduced census nonkite_pairs[166] kite 0 (7,15)- x (6,14)+ nonkite P 1/2 selector q[2]
+H q[3]
+H q[2]
+Z q[2]
+Z q[2]
+Z q[3]
+Sdag q[3]
+CNOT q[2], q[3]
+S q[3]
+Sdag q[2]
+H q[2]
+// slot 2 reduced census nonkite_pairs[167] kite 0 (7,15)- x (6,14)- nonkite P 1/2 selector q[4]
+H q[5]
+Z q[5]
+H q[4]
+Z q[4]
+Z q[4]
+Z q[5]
+Sdag q[5]
+CNOT q[4], q[5]
+S q[5]
+Sdag q[4]
+H q[4]
+
+b = measure q

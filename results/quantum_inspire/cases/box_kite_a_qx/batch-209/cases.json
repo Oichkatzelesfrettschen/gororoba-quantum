@@ -1,0 +1,281 @@
+{
+ "schema": "box-kite-cases-v1",
+ "family": "a",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "dialect": "qx",
+ "bit_order": "qubit 0 at the rightmost character (QX)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "encodings": {
+  "full": "designs.lcu_witness: data 0-3, selector 4; x_sign = -1 adds Z on the selector after its first H; compiled at optimization level 0 to cx, rz, h, x, z, s, sdg with Rz on the pi/64 grid",
+  "reduced": "selector a = slot qubit 0, data d = slot qubit 1; SELECT = diag(g(L,L'), g(L,U'), g(U,L'), g(U,U')) over (a, d) from the census coefficients, then CNOT(a -> d); x_sign = -1 adds Z on a after its first H",
+  "reduced_cross": "selector a, data d, mark w = slot qubits 0, 1, 2; identity diagonal (the census carries no phases for four-label rows, and P = 1/2 for every sign), CNOT(a -> d), CNOT(a -> w)"
+ },
+ "sub_families": {
+  "full_within_kite": {
+   "census": [
+    "design_b.within_kite"
+   ],
+   "encoding": "full",
+   "replica_qubits": 5,
+   "replicas_per_circuit": 2,
+   "replicas": 840,
+   "circuits": 420
+  },
+  "reduced_within_kite": {
+   "census": [
+    "design_b.within_kite"
+   ],
+   "encoding": "reduced",
+   "replica_qubits": 2,
+   "replicas_per_circuit": 5,
+   "replicas": 840,
+   "circuits": 168
+  },
+  "full_cross_kite": {
+   "census": [
+    "design_b.cross_kite_controls",
+    "design_b.negative_fixture"
+   ],
+   "encoding": "full",
+   "replica_qubits": 5,
+   "replicas_per_circuit": 2,
+   "replicas": 169,
+   "circuits": 85
+  },
+  "reduced_cross_kite": {
+   "census": [
+    "design_b.cross_kite_controls",
+    "design_b.negative_fixture"
+   ],
+   "encoding": "reduced_cross",
+   "replica_qubits": 3,
+   "replicas_per_circuit": 3,
+   "replicas": 169,
+   "circuits": 57
+  },
+  "full_nonkite": {
+   "census": [
+    "design_b.nonkite_pairs"
+   ],
+   "encoding": "full",
+   "replica_qubits": 5,
+   "replicas_per_circuit": 2,
+   "replicas": 168,
+   "circuits": 84
+  },
+  "reduced_nonkite": {
+   "census": [
+    "design_b.nonkite_pairs"
+   ],
+   "encoding": "reduced",
+   "replica_qubits": 2,
+   "replicas_per_circuit": 5,
+   "replicas": 168,
+   "circuits": 34
+  }
+ },
+ "preregistered": {
+  "observable": "zero-product success P(selector = 0), counted from the selector bit of each replica",
+  "predictions": "census:design_b p_selector_zero per replica: 0 on the two zero sign choices of an edge, 1 on its other two, 1/2 on every strut, cross-kite, fixture and non-kite row",
+  "falsifier": "any shot with selector 0 on a P = 0 replica or selector 1 on a P = 1 replica refutes that circuit's implementation; a P = 1/2 replica outside |z| < 4.5 at 2048 shots refutes it",
+  "half_rows": 1010,
+  "z_limit": 4.5,
+  "bonferroni": "two-sided family error 0.01 over the 1010 P = 1/2 replicas of both encodings",
+  "lcu_identity": "P(x_sign) + P(-x_sign) = 1 holds by construction and checks the selector Z, not the algebra",
+  "stop_rule": "one shot violating a deterministic replica, or a P = 1/2 replica outside the bound, stops the series until the circuit is explained; each batch checks completed jobs, the shots per job and circuit digests against cases.json"
+ },
+ "batch": "batch-209",
+ "sub_family": "full_cross_kite",
+ "circuits": [
+  {
+   "file": "full_cross_kite-040.cq",
+   "kind": "witness",
+   "sub_family": "full_cross_kite",
+   "encoding": "full",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "cross_kite_controls[78]",
+     "kite": 4,
+     "p": [
+      1,
+      13,
+      -1
+     ],
+     "q": [
+      1,
+      11,
+      1
+     ],
+     "relation": "cross_kite_2",
+     "roles": {
+      "selector": 4,
+      "data": [
+       0,
+       1,
+       2,
+       3
+      ]
+     },
+     "p_selector_zero": "1/2"
+    },
+    {
+     "slot": 1,
+     "census": "cross_kite_controls[79]",
+     "kite": 4,
+     "p": [
+      1,
+      13,
+      -1
+     ],
+     "q": [
+      1,
+      11,
+      -1
+     ],
+     "relation": "cross_kite_2",
+     "roles": {
+      "selector": 9,
+      "data": [
+       5,
+       6,
+       7,
+       8
+      ]
+     },
+     "p_selector_zero": "1/2"
+    }
+   ],
+   "sha256": "2e195e4fff45f15e8f3fbe29497b70ddb45db7dcc3029ed9f983f90560c3d2ff"
+  },
+  {
+   "file": "full_cross_kite-041.cq",
+   "kind": "witness",
+   "sub_family": "full_cross_kite",
+   "encoding": "full",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "cross_kite_controls[80]",
+     "kite": 4,
+     "p": [
+      1,
+      13,
+      1
+     ],
+     "q": [
+      1,
+      10,
+      1
+     ],
+     "relation": "cross_kite_3",
+     "roles": {
+      "selector": 4,
+      "data": [
+       0,
+       1,
+       2,
+       3
+      ]
+     },
+     "p_selector_zero": "1/2"
+    },
+    {
+     "slot": 1,
+     "census": "cross_kite_controls[81]",
+     "kite": 4,
+     "p": [
+      1,
+      13,
+      1
+     ],
+     "q": [
+      1,
+      10,
+      -1
+     ],
+     "relation": "cross_kite_3",
+     "roles": {
+      "selector": 9,
+      "data": [
+       5,
+       6,
+       7,
+       8
+      ]
+     },
+     "p_selector_zero": "1/2"
+    }
+   ],
+   "sha256": "a0d32b8783b536ebdaac7bd6a220401273cb7226dd7824d2cd25ad2030a21be4"
+  },
+  {
+   "file": "full_cross_kite-042.cq",
+   "kind": "witness",
+   "sub_family": "full_cross_kite",
+   "encoding": "full",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "cross_kite_controls[82]",
+     "kite": 4,
+     "p": [
+      1,
+      13,
+      -1
+     ],
+     "q": [
+      1,
+      10,
+      1
+     ],
+     "relation": "cross_kite_3",
+     "roles": {
+      "selector": 4,
+      "data": [
+       0,
+       1,
+       2,
+       3
+      ]
+     },
+     "p_selector_zero": "1/2"
+    },
+    {
+     "slot": 1,
+     "census": "cross_kite_controls[83]",
+     "kite": 4,
+     "p": [
+      1,
+      13,
+      -1
+     ],
+     "q": [
+      1,
+      10,
+      -1
+     ],
+     "relation": "cross_kite_3",
+     "roles": {
+      "selector": 9,
+      "data": [
+       5,
+       6,
+       7,
+       8
+      ]
+     },
+     "p_selector_zero": "1/2"
+    }
+   ],
+   "sha256": "fb040ac6608951a8099998aac95ac7fccdf26d65c2f537708a7033e5bf8fe624"
+  }
+ ]
+}
