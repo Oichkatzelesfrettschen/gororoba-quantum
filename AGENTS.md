@@ -20,8 +20,11 @@ nightly schedule and manual runs add the `full` tier's long simulation
 contracts on twelve shards. Runners are 2-vCPU, 8 GB machines on Python 3.14
 with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
 the plotting-only `matplotlib==3.11.2`). A pull request merges when every
-shard and the `external-ground-truth` job are green and its review threads
-are resolved; a red main or nightly run is fixed in the next change. The
+shard and the `qi-stack` and `external-ground-truth` jobs are green and its
+review threads are resolved; a red main or nightly run is fixed in the next
+change. The `qi-stack` job runs, at the same tier, the gates that ci/gates.json
+tags `"requires": ["qi"]`, under the Quantum Inspire interpreter
+([Quantum Inspire](#quantum-inspire)). The
 `external-ground-truth` job runs `verify.py` over the open_gororoba commit
 named in [ci/open_gororoba.pin](ci/open_gororoba.pin):
 `ci/fetch_open_gororoba.sh` sparse-checks out the paths it is given, and
@@ -620,8 +623,18 @@ lives in its own environment, never in the repository's Python 3.14 stack:
 `QI_PYTHON=${QI_PYTHON:-$QI_ENV/bin/python}`, built with
 `uv venv --python 3.13 "$QI_ENV"` and
 `VIRTUAL_ENV="$QI_ENV" uv pip install -r docs/notes/quantum_inspire/requirements-qi.txt`.
-No Arch package carries the stack. CI never imports it: every gate checks
-retained JSON or regenerates text with the standard library.
+No Arch package carries the stack. CI's `qi-stack` job installs the lock
+exactly (`pip install --no-deps` and `pip check`) under Python 3.13.15 beside
+Python 3.14.7 and exports `QI_PYTHON`; there qxelarator, libqasm and
+OpenSquirrel run locally with no credential, and no SDK call reaches the
+network. gororoba_quantum/qi_stack.py reads `QI_PYTHON` from the environment
+alone and probes it once per process for the three modules at the lock's
+versions. A gate tagged `"requires": ["qi"]` compares a live run with its
+retained record where that probe passes; everywhere else (the gate shards,
+premerge, Kaggle shard replicas, a shell that has not exported `QI_PYTHON`)
+it replays the record and prints one line naming the replay.
+`ci/run_gates.py --requires qi` runs the tagged gates alone with
+`GOROROBA_QI_REQUIRED=1`, which makes a replay a failure.
 
 | Package | Version | Role |
 |---|---|---|
@@ -750,10 +763,14 @@ the coupler map, its QX dry run and the spectator split), core-362
 (`qi_readout_ringdown_cases.py` case regeneration with the post-readout
 tail and excitation conformance), core-369 (the replay of its QX dry-run
 analyses), core-368 (`qi_toolchain_check.py --check`: the libqasm and
-OpenSquirrel record names every current case circuit at its sha256; the
-record itself is regenerated under `$QI_PYTHON`), and core-340
-(`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of the Tuna-17
-cases).
+OpenSquirrel record names every current case circuit at its sha256, and
+under the stack the record regenerates byte for byte), core-527 and core-423
+(`box_kite_qx_sweep.py --replay --live N`: the sweep records replay, and
+under the stack 24 evenly spaced family a circuits plus each sub-family's
+first rerun on qxelarator at their recorded seeds and must reproduce the
+retained counts exactly; core-423 adds 8 family de circuits on the full tier),
+and core-340 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of
+the Tuna-17 cases).
 
 ## Open Quantum
 
@@ -917,9 +934,41 @@ Decommissioned at the snapshot: `sim:gpu:medium`.
 Status, performance figures, availability statistics and maintenance
 windows change between reads and live only in the catalogue.
 
+**Runner.** A run directory is a copy of one case `job-NN/` under
+`results/quandela/runs/UTC-PLATFORM-SERIES-job-NN/`. `qd_platform.py plan
+RUN_DIR --platform NAME --max-credits C --expected-seconds S
+--per-job-credits P` makes every submit check read-only (digest, platform
+status and duration, S within max_duration, P plus max_shots times the live
+price within C, no running or queued job, Perceval's shot estimate within
+max_shots), records the processor's performance figures and prints the body
+Perceval would send; the written case states S, P and C and quotes it. `submit`
+adds `--approval TEXT`, holds an flock beside the token file, checkpoints
+before the POST and never sends a case twice; `collect` retains the raw
+result bytes and parses counts without Perceval's deserializer. One job runs
+at a time: the next is planned after the previous one is collected. Every
+retained run enters docs/state/research_state.json under the `quandela`
+provider in the change that retains it.
+
+**Box-kite photonic cases.** `scripts/qd_box_kite_cases.py` writes three
+series under `results/quandela/cases/` from the box-kite census: single
+(32 one-photon two-label configurations, one four-label control, the
+one-hot 16D pair), packed (the 32 configurations six to a job) and pairs
+(the 16 sign blocks with two photons). Every unitary is the
+exact Halmos dilation over Q(sqrt2); a one-photon block reads the census P
+on its algebra modes, and a two-photon block reads (perm M / 4)^2 on its
+label pair, 1/4 on a kite edge and 0 on a strut. A dark block is
+p_algebra 0, a bright block p_algebra 1. `scripts/cd_two_blade_blocks.py`
+records that every two-label two-blade product at D = 16, 32 and 64 uses
+one of these configurations, and that the signed zero products (336, 5040,
+52080) equal the annihilator nullity sums.
+
 **Gates.** core-500 (`capture_qd_docs.py --check`), core-501 (its
 `--self-test`), core-502 (`qd_platform.py check docs/evidence/quandela
---agents AGENTS.md docs/notes/quandela/README.md`) and core-503 (its
+--agents AGENTS.md docs/notes/quandela/README.md`), core-503 (its
+`--self-test`, the runner's stubbed-service contract included), core-504
+(`qd_box_kite_cases.py --check results/quandela/cases`), core-505 (its
+`--self-test`), core-506 (`cd_two_blade_blocks.py --check
+docs/evidence/box_kite_census/two_blade_blocks.json`) and core-507 (its
 `--self-test`).
 
 ## Qiskit skills

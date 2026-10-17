@@ -24,9 +24,15 @@ VIRTUAL_ENV="$QI_ENV" uv pip install -r docs/notes/quantum_inspire/requirements-
 
 [requirements-qi.txt](requirements-qi.txt) is the full lock (Python 3.13.15,
 uv 0.13.0, Linux x86_64). The direct packages and their roles are tabled in
-the root AGENTS.md section "Quantum Inspire". CI never imports this stack;
-gates core-346, core-347, core-327, core-330 and core-331 read retained files with the
-standard library; core-348 and core-340 regenerate with the pinned Qiskit stack.
+the root AGENTS.md section "Quantum Inspire". The gate shards never import
+this stack: gates core-346, core-347, core-327, core-330 and core-331 read
+retained files with the standard library, and core-348 and core-340
+regenerate with the pinned Qiskit stack. CI's `qi-stack` job installs this
+lock under Python 3.13.15 and runs the gates tagged `"requires": ["qi"]`
+(core-368, core-423, core-527) with `QI_PYTHON` exported, so their live
+paths recompile and re-emulate against the retained records; a local live run
+exports `QI_PYTHON` the same way, since gororoba_quantum/qi_stack.py reads
+the environment alone.
 
 ## Login (OAuth device authorization)
 
