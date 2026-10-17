@@ -52,7 +52,7 @@ value.
 - Kaggle: `scripts/kaggle_run.py` gains the `qx-emulator` pin group
   (`qxelarator==0.10.0`). A locally built kernel (no push) bundles the
   entry, its import closure, the three `--include` files and the kernel
-  files in a 525124-byte run.py, below KERNEL_SOURCE_LIMIT (1000000).
+  files in a 539016-byte run.py, below KERNEL_SOURCE_LIMIT (1000000).
 - Gates core-420 (`--check`), core-421 (`--self-test`) and core-422 (sweep
   `--self-test`), each in normal and optimized mode, from the range the
   orchestrator assigned (core-420 to core-429).
