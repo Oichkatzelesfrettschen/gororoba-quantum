@@ -138,6 +138,63 @@ def _fixture_run(directory: Path, outcomes: np.ndarray) -> dict[str, Any]:
     return record
 
 
+# A collected run whose execution manifest live_run wrote: folded_qpe_s1 runs
+# three replicas in ibm_kingston_dynamic_pub_01, registers g0_r{k}_c.
+REAL_RUN = ROOT / "results/live/2026-10-11T152922.787095Z"
+REAL_MEMBER = "folded_qpe_s1"
+REAL_PUB = "ibm_kingston_dynamic_pub_01"
+
+
+def real_run_check(scratch: Path) -> dict[str, Any]:
+    """check_run on a retained run's own manifest and raw registers, with one declared bound added.
+
+    The replica frequencies the falsifier decodes must equal the collector's
+    measured marginals in collect.json (rounded to 6 decimals there), which
+    binds the manifest's register names and join order to the counts the
+    collection analyzed.
+    """
+    record = json.loads((REAL_RUN / "record.json").read_text())
+    (component,) = [
+        component
+        for pub in record["execution_pubs"]
+        if pub["name"] == REAL_PUB
+        for component in pub["components"]
+        if component["member"] == REAL_MEMBER
+    ]
+    replicas = len(component["registers_by_replica"])
+    record["observable_contracts"] = [
+        {"name": "fixture", "terms": [{"member": REAL_MEMBER, "values": [0.0, 1.0, 0.0, -1.0], "sign": 1}]}
+    ]
+    record["covariance_bounds"] = [
+        {
+            "observable_name": "fixture",
+            "pub_name": REAL_PUB,
+            "labels": [f"{REAL_MEMBER}/r{k}" for k in range(replicas)],
+            "matrix": [[0.55 if i == j else 0.0 for j in range(replicas)] for i in range(replicas)],
+            "assumption": "fixture",
+        }
+    ]
+    run = scratch / "real"
+    run.mkdir()
+    (run / "record.json").write_text(json.dumps(record))
+    (run / "raw").symlink_to(REAL_RUN / "raw")
+    replayed, problems = check_run(run)
+    if problems or len(replayed["bounds"]) != 1 or "statistic" not in replayed["bounds"][0]:
+        raise AssertionError(f"the retained run's manifest did not replay: {problems} {replayed}")
+    registers = n21_exact_planning.retained_registers(run, {REAL_PUB})[REAL_PUB]
+    collected = next(
+        group["measured"][REAL_MEMBER]
+        for group in json.loads((REAL_RUN / "collect.json").read_text())
+        if REAL_MEMBER in group.get("measured", {})
+    )
+    for index, names in enumerate(component["registers_by_replica"]):
+        outcomes = n21_exact_planning.replica_outcomes(registers, names)
+        frequency = np.bincount(outcomes, minlength=4) / outcomes.size
+        if not np.allclose(frequency, collected[index], rtol=0.0, atol=5e-7):
+            raise AssertionError(f"replica {index}: decoded frequencies differ from collect.json")
+    return replayed["bounds"][0]
+
+
 def _write_collected(run: Path, collected: dict[str, Any]) -> None:
     (run / "collect.json").write_text(json.dumps([{"family_analysis": {"replica_covariance": collected}}]))
 
@@ -178,6 +235,7 @@ def self_test() -> None:
             raise AssertionError(f"independent replicas rejected: {verdicts['independent']}")
         if verdicts["correlated"]["holds"]:
             raise AssertionError("replicas sharing 0.8 of their shots passed the declared bound")
+        real = real_run_check(Path(scratch))
         pub = Path(scratch) / "independent" / "raw" / "job0" / "pub_00.json"
         pub.write_text(pub.read_text().replace('"pub_a"', '"pub_b"', 1))
         try:
@@ -190,7 +248,9 @@ def self_test() -> None:
     print(
         f"n21 replica covariance: independent replicas pass (statistic {row['statistic']:.4f} <= threshold "
         f"{row['threshold']:.4f}); shared shots fail; the replay matches an identical collected verdict, "
-        "rejects an altered one and refuses a raw file off its index digest"
+        "rejects an altered one and refuses a raw file off its index digest; the retained "
+        f"{REAL_RUN.name} manifest replays ({real['shots']} shots, statistic {real['statistic']:.4f}) and its "
+        "decoded replica frequencies equal collect.json"
     )
 
 
