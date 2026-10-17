@@ -25,7 +25,9 @@ adapter's run set agree exactly.
   whose length and histogram equal the recorded result, every charged
   transaction belongs to the run, and the account ledger
   (docs/evidence/quantum_inspire/usage.json) lists exactly the retained jobs
-  with the same backend type, batch job, status, shots done and charge. A failed job is part of
+  with the same backend type, batch job, status, shots done and charge, and
+  exactly the transaction rows of those jobs (id, timestamp, domain, change,
+  job and backend type, counted with multiplicity). A failed job is part of
   its run's acquisition.
 
 A third provider adds one adapter class and one PROVIDERS entry.
@@ -51,6 +53,10 @@ from pathlib import Path
 from typing import Any, Protocol
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+
+import parallel  # noqa: E402
+
 REGISTRY = ROOT / "docs/state/research_state.json"
 STATE_DOCUMENT = ROOT / "docs/state/RESEARCH_STATE.md"
 RETENTION_AUDIT = ROOT / "results/live/qpu-job-retention-audit.json"
@@ -212,6 +218,24 @@ def _optional_json(path: Path) -> Any:
     return load_json(path) if path.is_file() else None
 
 
+TRANSACTION_FIELDS = ("id", "timestamp", "domain", "change", "job")
+# Ids of the +5 and -5 rows the self-test adds to a retained run and to the ledger.
+SYNTHETIC_ROW_ID = 10**9 + 1
+SYNTHETIC_OFFSET_ID = SYNTHETIC_ROW_ID + 1
+
+
+def _ledger_backend(owner: str, row: dict[str, Any]) -> Any:
+    require("backend_type_id" in row, f"{owner}: transaction row {row.get('id')} lacks backend_type_id")
+    return row["backend_type_id"]
+
+
+def _transaction_key(owner: str, row: dict[str, Any], backend_type_id: Any) -> tuple[Any, ...]:
+    """The ledger fields of one transaction row, compared field by field between a run and the ledger."""
+    for field in TRANSACTION_FIELDS:
+        require(field in row, f"{owner}: transaction row {row.get('id')} lacks {field}")
+    return (*(row[field] for field in TRANSACTION_FIELDS), backend_type_id)
+
+
 class QuantumInspireRuns:
     """Quantum Inspire runs: the retained run directories bound to the account ledger.
 
@@ -248,7 +272,9 @@ class QuantumInspireRuns:
                 "raw": raw,
             }
 
-    def _run(self, run: str, record: dict[str, Any]) -> tuple[dict[str, Any], dict[int, tuple[Any, ...]]]:
+    def _run(
+        self, run: str, record: dict[str, Any]
+    ) -> tuple[dict[str, Any], dict[int, tuple[Any, ...]], Counter[tuple[Any, ...]]]:
         owner = f"Quantum Inspire run {run}"
         submission = record["submission"]
         require(
@@ -304,9 +330,11 @@ class QuantumInspireRuns:
         )
         job_ids = {row["job"] for row in submission["jobs"]}
         charges: Counter[int] = Counter()
+        rows: Counter[tuple[Any, ...]] = Counter()
         for transaction in collected["transactions"]:
             require(transaction["job"] in job_ids, f"{owner}: transaction {transaction['id']} charges another job")
             charges[transaction["job"]] += transaction["change"]
+            rows[_transaction_key(owner, transaction, submission["backend_type_id"])] += 1
         completed: dict[str, dict[str, Any]] = {}
         jobs: dict[int, tuple[Any, ...]] = {}
         for row in collected["jobs"]:
@@ -360,14 +388,16 @@ class QuantumInspireRuns:
             "charge": sum(charges.values()),
             "detail": f"batch job {submission['batch_job']}, {shots_done} of {requested} shots done",
         }
-        return facts, jobs
+        return facts, jobs, rows
 
     def runs(self) -> dict[str, dict[str, Any]]:
         require(self.ledger.get("schema") == "qi-usage-v1", "the Quantum Inspire ledger schema differs")
         facts = {}
         retained: dict[int, tuple[Any, ...]] = {}
+        run_rows: Counter[tuple[Any, ...]] = Counter()
         for run, record in self.records.items():
-            facts[run], jobs = self._run(run, record)
+            facts[run], jobs, rows = self._run(run, record)
+            run_rows.update(rows)
             require(
                 not (set(retained) & set(jobs)),
                 f"Quantum Inspire job ids repeat across retained runs: {sorted(set(retained) & set(jobs))}",
@@ -384,6 +414,29 @@ class QuantumInspireRuns:
             "the Quantum Inspire ledger and the retained run directories record different jobs "
             f"(ledger only {sorted(set(ledger) - set(retained))}, runs only {sorted(set(retained) - set(ledger))}, "
             f"differing {sorted(job for job in set(ledger) & set(retained) if ledger[job] != retained[job])})",
+        )
+        for owner, ids in (
+            ("the run results", [key[0] for key in run_rows.elements()]),
+            ("the ledger", [row["id"] for row in self.ledger["transactions"]]),
+        ):
+            repeated = sorted({i for i, count in Counter(ids).items() if count > 1}, key=repr)
+            require(
+                not repeated, f"Quantum Inspire transaction id {repeated[0] if repeated else None} repeats in {owner}"
+            )
+        dangling = sorted(
+            {row["job"] for row in self.ledger["transactions"] if row["job"] is not None and row["job"] not in retained}
+        )
+        require(not dangling, f"the Quantum Inspire ledger transactions charge jobs outside the runs: {dangling}")
+        ledger_rows = Counter(
+            _transaction_key("the Quantum Inspire ledger", row, _ledger_backend("the Quantum Inspire ledger", row))
+            for row in self.ledger["transactions"]
+            if row["job"] in retained
+        )
+        require(
+            ledger_rows == run_rows,
+            "the Quantum Inspire ledger transaction rows of the retained jobs differ from the run results "
+            f"(runs only {sorted((run_rows - ledger_rows).elements(), key=repr)}, "
+            f"ledger only {sorted((ledger_rows - run_rows).elements(), key=repr)})",
         )
         require(
             self.ledger["totals"]["shots_done"] == sum(job[3] for job in retained.values()),
@@ -1018,44 +1071,177 @@ def _qi_mutations() -> Iterable[tuple[str, Callable[[dict[str, dict[str, Any]], 
     yield "v1 receipt with altered manifest binding", legacy_receipt_manifest_changed, "cases.json digest differs"
 
 
-def _rejects(name: str, expected: str, registry: dict[str, Any], context: Context) -> None:
-    try:
-        validate(registry, context)
-    except ValueError as error:
-        require(expected in str(error), f"mutation {name!r} failed for another reason: {error}")
-    else:
-        raise ValueError(f"mutation {name!r} passed validation")
+def _qi_row_mutations() -> Iterable[tuple[str, Callable[[dict[str, dict[str, Any]], dict[str, Any]], None], str]]:
+    """Mutations of the synthetic transaction rows that the run-to-ledger row comparison must reject."""
+
+    def first_row(records: dict[str, dict[str, Any]]) -> dict[str, Any]:
+        return next(run for run in records.values() if run["results"]["transactions"])["results"]["transactions"][0]
+
+    def run_id(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        first_row(records)["id"] += 1000
+
+    def run_timestamp(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        first_row(records)["timestamp"] = "2026-01-01T00:00:00Z"
+
+    def run_domain(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        first_row(records)["domain"] = "other"
+
+    def run_field_missing(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        del first_row(records)["domain"]
+
+    def ledger_field_missing(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        del ledger["transactions"][-1]["timestamp"]
+
+    def run_zero_duplicate(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        run = next(run for run in records.values() if run["results"]["transactions"])
+        run["results"]["transactions"].append({**first_row(records), "id": 9000, "change": 0})
+
+    def duplicate_everywhere(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        # Both sides repeat one +5 row; the job charge and the totals follow, so only the id rule can reject it.
+        run = next(run for run in records.values() if run["results"]["transactions"])
+        row = next(row for row in ledger["transactions"] if row["id"] == SYNTHETIC_ROW_ID)
+        run["results"]["transactions"].append({key: row[key] for key in TRANSACTION_FIELDS})
+        ledger["transactions"].append(copy.deepcopy(row))
+        next(job for job in ledger["jobs"] if job["job"] == row["job"])["charged"] += 5
+        ledger["totals"]["change"] += 5
+
+    def ledger_zero_duplicate(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        ledger["transactions"].append({**ledger["transactions"][-1], "id": 9000, "change": 0})
+
+    def ledger_dropped(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        ledger["transactions"].pop()
+
+    def ledger_dangling(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        ledger["transactions"].append({**ledger["transactions"][-1], "id": 9001, "job": 1, "change": 0})
+
+    yield "run transaction id changed", run_id, "transaction rows of the retained jobs differ"
+    yield "run transaction timestamp changed", run_timestamp, "transaction rows of the retained jobs differ"
+    yield "run transaction domain changed", run_domain, "transaction rows of the retained jobs differ"
+    yield "run transaction without its domain", run_field_missing, "lacks domain"
+    yield "ledger transaction without its timestamp", ledger_field_missing, "lacks timestamp"
+    yield "zero-change row added to a run", run_zero_duplicate, "transaction rows of the retained jobs differ"
+    yield (
+        "synthetic row repeated in the run and the ledger",
+        duplicate_everywhere,
+        f"transaction id {SYNTHETIC_ROW_ID} repeats",
+    )
+    yield "zero-change row added to the ledger", ledger_zero_duplicate, "transaction rows of the retained jobs differ"
+    yield "ledger transaction row dropped", ledger_dropped, "transaction rows of the retained jobs differ"
+    yield "ledger transaction charging an unretained job", ledger_dangling, "charge jobs outside the runs"
 
 
-def self_test(registry: dict[str, Any], context: Context) -> int:
-    validate(copy.deepcopy(registry), context)
+def _with_synthetic_rows(
+    records: dict[str, dict[str, Any]], ledger: dict[str, Any]
+) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
+    """Copies of the retained records and ledger plus a synthetic +5/-5 transaction pair.
+
+    The pair charges one retained job a +5 and a -5 row, which leaves every
+    per-job charge unchanged while the run results and the ledger carry the
+    same two added rows.
+    """
+    records, ledger = copy.deepcopy(records), copy.deepcopy(ledger)
+    run = next(iter(records))
+    submission = records[run]["submission"]
+    job = submission["jobs"][0]["job"]
+    stamp = "2026-10-16T21:16:40.000000Z"
+    rows = [
+        {"id": SYNTHETIC_ROW_ID, "timestamp": stamp, "domain": "compute", "change": 5, "job": job},
+        {"id": SYNTHETIC_OFFSET_ID, "timestamp": stamp, "domain": "compute", "change": -5, "job": job},
+    ]
+    records[run]["results"]["transactions"].extend(copy.deepcopy(rows))
+    ledger["transactions"].extend({**row, "backend_type_id": submission["backend_type_id"]} for row in rows)
+    return records, ledger
+
+
+# One self-test case: name, the rejection text its validation must contain (None
+# for a baseline that must pass), the registry, and the quantum_inspire run records
+# and ledger to install (None keeps the retained ones).
+Case = tuple[str, str | None, dict[str, Any], dict[str, dict[str, Any]] | None, dict[str, Any] | None]
+
+
+class CaseVerdict:
+    """Validates one self-test case and returns the ValueError text, or None when it validates.
+
+    The serial path reuses the caller's context. A pickled copy carries none
+    and each pool worker loads its own once, so every process validates against
+    the repository facts of its own Context.
+    """
+
+    def __init__(self, context: Context | None = None) -> None:
+        self._loaded: tuple[Context, QuantumInspireRuns, dict[str, dict[str, Any]], dict[str, Any]] | None = None
+        if context is not None:
+            self._loaded = self._adopt(context)
+
+    def __getstate__(self) -> dict[str, Any]:
+        return {"_loaded": None}
+
+    @staticmethod
+    def _adopt(context: Context) -> tuple[Context, QuantumInspireRuns, dict[str, dict[str, Any]], dict[str, Any]]:
+        qi = context.providers["quantum_inspire"]
+        if not isinstance(qi, QuantumInspireRuns):
+            raise ValueError("the quantum_inspire provider is not the run-directory adapter")
+        return context, qi, qi.records, qi.ledger
+
+    def __call__(self, case: Case) -> str | None:
+        _, _, registry, records, ledger = case
+        if self._loaded is None:
+            self._loaded = self._adopt(Context())
+        context, qi, retained_records, retained_ledger = self._loaded
+        qi.records = retained_records if records is None else records
+        qi.ledger = retained_ledger if ledger is None else ledger
+        try:
+            validate(registry, context)
+        except ValueError as error:
+            return str(error)
+        finally:
+            qi.records, qi.ledger = retained_records, retained_ledger
+        return None
+
+
+def _cases(registry: dict[str, Any], qi: QuantumInspireRuns) -> list[Case]:
+    """Every self-test case in the order the rules are exercised, each on its own deep copies."""
+    records, ledger = qi.records, qi.ledger
+    cases: list[Case] = [("retained state", None, copy.deepcopy(registry), None, None)]
     for name, mutate, expected in _mutations():
         candidate = copy.deepcopy(registry)
         mutate(candidate)
-        _rejects(name, expected, candidate, context)
-    qi = context.providers["quantum_inspire"]
-    if not isinstance(qi, QuantumInspireRuns):
-        raise ValueError("the quantum_inspire provider is not the run-directory adapter")
-    records, ledger = qi.records, qi.ledger
-    qi.records = copy.deepcopy(records)
-    for record in qi.records.values():
+        cases.append((name, expected, candidate, None, None))
+    receipts = copy.deepcopy(records)
+    for record in receipts.values():
         record["submission"]["schema"] = "qi-submission-v2"
         record["submission"]["state"] = "enqueued"
         record["submission"]["cases_sha256"] = record["cases_sha256"]
         for row in record["submission"]["jobs"]:
             row["sha256"] = record["circuits"][row["file"]]
-    try:
-        validate(copy.deepcopy(registry), context)
-    finally:
-        qi.records = records
+    cases.append(("v2 receipts", None, copy.deepcopy(registry), receipts, None))
     for name, mutate_files, expected in _qi_mutations():
-        qi.records, qi.ledger = copy.deepcopy(records), copy.deepcopy(ledger)
-        mutate_files(qi.records, qi.ledger)
-        try:
-            _rejects(name, expected, copy.deepcopy(registry), context)
-        finally:
-            qi.records, qi.ledger = records, ledger
-    return len(list(_mutations())) + len(list(_qi_mutations()))
+        mutated_records, mutated_ledger = copy.deepcopy(records), copy.deepcopy(ledger)
+        mutate_files(mutated_records, mutated_ledger)
+        cases.append((name, expected, copy.deepcopy(registry), mutated_records, mutated_ledger))
+    baseline_records, baseline_ledger = _with_synthetic_rows(records, ledger)
+    cases.append(("synthetic transaction rows", None, copy.deepcopy(registry), baseline_records, baseline_ledger))
+    for name, mutate_rows, expected in _qi_row_mutations():
+        mutated_records, mutated_ledger = copy.deepcopy(baseline_records), copy.deepcopy(baseline_ledger)
+        mutate_rows(mutated_records, mutated_ledger)
+        cases.append((name, expected, copy.deepcopy(registry), mutated_records, mutated_ledger))
+    return cases
+
+
+def self_test(registry: dict[str, Any], context: Context) -> int:
+    qi = context.providers["quantum_inspire"]
+    if not isinstance(qi, QuantumInspireRuns):
+        raise ValueError("the quantum_inspire provider is not the run-directory adapter")
+    cases = _cases(registry, qi)
+    verdicts = parallel.ordered_map(CaseVerdict(context), cases, min_items=2)
+    for (name, expected, *_), verdict in zip(cases, verdicts, strict=True):
+        if expected is None:
+            if verdict is not None:
+                raise ValueError(verdict)
+        elif verdict is None:
+            raise ValueError(f"mutation {name!r} passed validation")
+        else:
+            require(expected in verdict, f"mutation {name!r} failed for another reason: {verdict}")
+    return sum(1 for case in cases if case[1] is not None)
 
 
 def main() -> int:

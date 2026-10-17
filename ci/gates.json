@@ -2150,7 +2150,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/research_state.py --self-test && \"$PYTHON\" -B -O -W error scripts/research_state.py --self-test",
    "name": "core-271",
-   "seconds": 1.0,
+   "seconds": 10.0,
    "tier": "pr"
   },
   {
@@ -2463,6 +2463,14 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/capture_qi_docs.py --check",
    "name": "core-346",
    "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/capture_qi_docs.py --self-test && \"$PYTHON\" -B -O -W error scripts/capture_qi_docs.py --self-test",
+   "name": "core-371",
+   "seconds": 1.5,
    "tier": "pr"
   },
   {
