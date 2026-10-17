@@ -798,12 +798,9 @@ def write_manifest(kind: str, rows: list[dict[str, Any]], extra: dict[str, Any])
 
 def captured_files(base: Path, kind: str, root: Path) -> set[str]:
     """Root-relative path of every file under a kind's directory except its manifest."""
-    directory = manifest_path(kind, base).parent
-    return {
-        path.relative_to(root).as_posix()
-        for path in directory.rglob("*")
-        if path.is_file() and path.name != "MANIFEST.json"
-    }
+    manifest = manifest_path(kind, base)
+    directory = manifest.parent
+    return {path.relative_to(root).as_posix() for path in directory.rglob("*") if path.is_file() and path != manifest}
 
 
 def expected_paths(kind: str, doc: dict[str, Any], base: Path, root: Path) -> set[str]:
@@ -848,9 +845,13 @@ def expected_paths(kind: str, doc: dict[str, Any], base: Path, root: Path) -> se
         raise SystemExit("site manifest lists a crawled page twice")
     out = set()
     for record in pages:
-        if "path" not in record:
-            continue
         page = record["page"]
+        if record["status"] != 200 or "uncaptured" in record:
+            if "path" in record:
+                raise SystemExit(f"site page {page or '/'} records a failed capture with a path")
+            continue
+        if "path" not in record:
+            raise SystemExit(f"site page {page or '/'} records a successful capture without a path")
         stem = (page or "home").replace("/", "_")
         if record["url"] != page_url(page) or record["path"] != f"{prefix}/site/{stem}.md":
             raise SystemExit(f"site page {page or '/'} records an inconsistent url or path")
@@ -936,6 +937,19 @@ def self_test() -> int:
             victim.write_bytes(victim_bytes + b"!")
             expect(f"{kind} file altered", "differs from its captured sha256")
             victim.write_bytes(victim_bytes)
+        manifest = manifest_path("site", base)
+        manifest_bytes = manifest.read_bytes()
+        doc = json.loads(manifest_bytes)
+        record = next(record for record in doc["pages"] if "path" in record)
+        del record["path"]
+        manifest.write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
+        expect("site page record without its path", "successful capture without a path")
+        manifest.write_bytes(manifest_bytes)
+        nested = base / "site" / "nested" / "MANIFEST.json"
+        nested.parent.mkdir()
+        nested.write_text("{}\n", encoding="utf-8")
+        expect("unlisted nested manifest", "is not listed in its manifest")
+        shutil.rmtree(nested.parent)
         check_tree(root)
     print(f"capture_qi_docs self-test: {cases} mutations rejected")
     return 0
