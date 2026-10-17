@@ -2,8 +2,8 @@
 
 Scope: circuit-testable structural claims about Cayley-Dickson (CD) zero divisors,
 assessors, box-kites, Theorem 7, XOR indexing and the ladder to 128D, extracted from
-the PDFs under ~/Documents/Writing/Monographs/ plus the two ~/Documents
-side files. Compiled 2026-10-17 by read-only reading of those PDFs; the PDFs stay
+the PDFs of the owner's local Monographs collection plus two side files
+beside it. Compiled 2026-10-17 by read-only reading of those PDFs; the PDFs stay
 outside the repository and the claims below are second-hand unless a row cites
 the census.
 
@@ -14,8 +14,8 @@ The monographs are AI-generated syntheses ("DAS MERGUS" series). They quote de M
 Catamaran), Moreno (q-alg/9710013), Reggiani (arXiv 2411.18881) and Biss-Dugger-Isaksen
 second-hand. None of them proves anything itself; "proved" below means "stated as a
 theorem of a cited primary paper". The primary papers are on disk
-(~/Documents/Projects/CayleyDickson/tier1_core_cd_algebra/cd_tower_structure/
-and .../zero_divisors_geometry/) but were outside the stated scope and were not read.
+(the owner's local CayleyDickson collection, its cd_tower_structure/
+and zero_divisors_geometry/ subdirectories) but were outside the stated scope and were not read.
 
 Independent recomputation. To separate what sources assert from what holds, every
 16D claim, and the 32D and 64D census claims, were recomputed in the repository
@@ -76,7 +76,7 @@ Source keys (PDF page numbers, 1-based, as rendered by pdftotext):
 - M11 Gororoba Monograph: A Spectral-Topological-Hypercomplex Physics Stack in Rust
 - M12 A Unified Algebra-Lattice-Graph-Inference Monograph Reconstructing the Full Chat Corpus
 - M13 E10 Billiards, Octonion Locality, and Zero-Divisor Skies
-- SOL ~/Documents/CAYLEYDICKSON_SOLAR_ANALYSIS.md (no structural claims; see section 4)
+- SOL CAYLEYDICKSON_SOLAR_ANALYSIS.md, a local side file (no structural claims; see section 4)
 
 Observable conventions used in the last two columns. Basis state |k> is e_k with index bit
 b on qubit b (little-endian, qubit 0 least significant). "LCU P0" is the fixed-operand
@@ -271,11 +271,11 @@ Skipped, with reason (zero or incidental hits for "box-kite", "assessor", "zero 
   Cognition Architecture; Warp Evidence-Contract Monograph; Drude Metals; theme and desktop PDFs.
   Keyword counts were 0 (Drude: 2, incidental). The two physics ones with "Cayley-Dickson" in the title
   (STAR and Condensate) contain no zero-divisor or box-kite text.
-- ~/Documents/CAYLEYDICKSON_SOLAR_ANALYSIS.md: read headings and every zero-divisor hit.
+- CAYLEYDICKSON_SOLAR_ANALYSIS.md: read headings and every zero-divisor hit.
   Its only use is as a null control: the CD associator observable is reported "not a zero-divisor
   artifact" (lines 139, 156, 239), i.e. a zero-divisor proximity audit that stayed flat. No structural
   box-kite claim. Not tabulated.
-- ~/Documents/Projects/CayleyDickson/*.pdf (top level): titles are a Statistics and
+- The top level of the local CayleyDickson collection (PDFs): titles are a Statistics and
   Probability Letters paper, "Spacetime Quasicrystals", "Perturbative unitarity of fractional field
   theories", two Nature/Nature Physics silicon-qubit papers, an MPEG-2 and rate-control set, and the
   Nature Scientific Reports paper; none concerns Cayley-Dickson algebras, zero divisors or sedenions,
