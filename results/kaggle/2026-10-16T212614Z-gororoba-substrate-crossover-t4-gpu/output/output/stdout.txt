@@ -1,0 +1,12 @@
+{"device": "GPU", "dynamic": false, "width": 2, "seconds": 2.411, "seconds_per_circuit": 0.3013}
+{"device": "GPU", "dynamic": false, "width": 4, "seconds": 2.455, "seconds_per_circuit": 0.3068}
+{"device": "GPU", "dynamic": false, "width": 6, "seconds": 2.593, "seconds_per_circuit": 0.3241}
+{"device": "GPU", "dynamic": false, "width": 8, "seconds": 2.585, "seconds_per_circuit": 0.3231}
+{"device": "GPU", "dynamic": false, "width": 10, "seconds": 3.044, "seconds_per_circuit": 0.3804}
+{"device": "GPU", "dynamic": false, "width": 12, "seconds": 8.254, "seconds_per_circuit": 1.0318}
+{"device": "GPU", "dynamic": false, "width": 14, "seconds": 110.768, "seconds_per_circuit": 13.846}
+{"device": "GPU", "dynamic": true, "width": 2, "seconds": 6.111, "seconds_per_circuit": 0.7639}
+{"device": "GPU", "dynamic": true, "width": 4, "seconds": 9.166, "seconds_per_circuit": 1.1458}
+{"device": "GPU", "dynamic": true, "width": 6, "seconds": 24.312, "seconds_per_circuit": 3.039}
+{"device": "GPU", "dynamic": true, "width": 8, "seconds": 19.434, "seconds_per_circuit": 2.4293}
+{"device": "GPU", "dynamic": true, "width": 10, "seconds": 309.317, "seconds_per_circuit": 38.6647}

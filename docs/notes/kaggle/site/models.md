@@ -1,74 +1,6 @@
-> Full piece: [https://www.kaggle.com/docs/models](https://www.kaggle.com/docs/models)
-> Retrieved 2026-10-16T03:13Z by scripts/capture_kaggle_docs.py --site (headless Chromium, pandoc);
-> rendered HTML sha256 2191c1c05aa561ec807f8866bbbedb409f3caaba2e003fd5984e951e3420ba6a.
+# Models
 
-Kaggle uses cookies from Google to deliver and enhance the quality of its services and to analyze traffic.
-
-[](https://www.kaggle.com/cookies)
-
-Learn more
-
-OK, Got it.
-
-# How to Use Kaggle
-
-keyboard_arrow_right[Competitions](https://www.kaggle.com/docs/competitions)
-
-keyboard_arrow_right[Datasets](https://www.kaggle.com/docs/datasets)
-
-[Efficient GPU Usage Tips](https://www.kaggle.com/docs/efficient-gpu-usage)
-
-keyboard_arrow_right[Tensor Processing Units (TPUs)](https://www.kaggle.com/docs/tpu)
-
-keyboard_arrow_down
-
-Models
-
-keyboard_arrow_right
-
-[What is Kaggle Models](#what-is-kaggle-models)
-
-keyboard_arrow_right
-
-[Finding Kaggle Models](#finding-models)
-
-keyboard_arrow_right
-
-[Using Kaggle Models](#using-models)
-
-keyboard_arrow_right
-
-[Creating a Model](#publishing-a-model)
-
-keyboard_arrow_right
-
-[How to name your model and variations](#name-model)
-
-[Accessing Gated Models](#access-gated-models)
-
-keyboard_arrow_right[Competitions Setup](https://www.kaggle.com/docs/competitions-setup)
-
-keyboard_arrow_right[Organizations](https://www.kaggle.com/docs/organizations)
-
-keyboard_arrow_right[Groups](https://www.kaggle.com/docs/groups)
-
-keyboard_arrow_right[Kaggle Packages](https://www.kaggle.com/docs/packages)
-
-keyboard_arrow_right[Notebooks](https://www.kaggle.com/docs/notebooks)
-
-keyboard_arrow_right[MCP Server](https://www.kaggle.com/docs/mcp)
-
-keyboard_arrow_right[Benchmarks](https://www.kaggle.com/docs/benchmarks)
-
-keyboard_arrow_right[Public API](https://www.kaggle.com/docs/api)
-
-## Models
-
-Use and share pre-trained models
-
-content_copyCopy as Markdown
-
-------------------------------------------------------------------------
+***
 
 ### What is Kaggle Models
 
@@ -78,7 +10,7 @@ content_copyCopy as Markdown
 
 Kaggle Models come from a variety of sources including partners that we collaborate with on releases like Meta's Llama 2 and Alibaba's Qwen, integrations with modeling libraries like Keras, [integrations with Hugging Face Hub](https://www.kaggle.com/blog/kaggle-hugging-face-integration), and the community of millions of Kagglers sharing fine-tuned variants and other innovations.
 
-------------------------------------------------------------------------
+***
 
 ### Finding Kaggle Models
 
@@ -137,17 +69,19 @@ See [Kaggle CLI model download documentation](https://github.com/Kaggle/kagglehu
 
 #### Method 3. Calling the API directly
 
-\# Authenticate with credentials\
-export KAGGLE_USERNAME=xyz\
-export KAGGLE_KEY=xyz\
-\
-\# With Curl\
-curl -L -o ~/Downloads/model.tar.gz  https://www.kaggle.com/api/v1/models/google/gemma/pyTorch/2b/1/download -u \$KAGGLE_USERNAME:\$KAGGLE_KEY\
-\
-\# Download specific version (here version 1)\
-wget https://www.kaggle.com/api/v1/models/google/gemma/pyTorch/2b/1/download --user=\$KAGGLE_USERNAME --password=\$KAGGLE_KEY --auth-no-challenge\
+```
+# Authenticate with credentials
+export KAGGLE_USERNAME=xyz
+export KAGGLE_KEY=xyz
 
-------------------------------------------------------------------------
+# With Curl
+curl -L -o ~/Downloads/model.tar.gz  https://www.kaggle.com/api/v1/models/google/gemma/pyTorch/2b/1/download -u $KAGGLE_USERNAME:$KAGGLE_KEY
+
+# Download specific version (here version 1)
+wget https://www.kaggle.com/api/v1/models/google/gemma/pyTorch/2b/1/download --user=$KAGGLE_USERNAME --password=$KAGGLE_KEY --auth-no-challenge
+```
+
+***
 
 ### Creating a Model
 
@@ -163,33 +97,33 @@ See [Kaggle CLI model creation tutorial](https://github.com/Kaggle/kaggle-cli/bl
 
 #### Upload via the UI
 
-1.  Go to: [https://www.kaggle.com/models?new=true](https://www.kaggle.com/models?new=true) and follow the steps including setting “Creating As” to the Organization Profile you want to publish under
-2.  To add new Variations once your model is initially created:
-    1.  Scroll down to the "Model Variations" section.
-    2.  Click on the "New Variation" button to open the "Add/Edit" Variations modal.
-    3.  Select the ML framework for which you want to update weights / assets for.
-    4.  Click on the "Add new variation" button
-    5.  Select the weight / assets files to upload
-    6.  Enter the variation slug
-        1.  For example, `7b`
-        2.  Select a license
-    7.  Click on the "Create" button and wait until your instance has been fully processed.
-    8.  Click on "Go to model detail page".
-    9.  In the "Model Variations" section, you should see your variation in the drop-down.
-    10. If you select it, confirm that you have all the files you were expecting under the "File Explorer" section.
-    11. To upload a new version for an existing variation. Use the "New Version" button.
+1. Go to: [https://www.kaggle.com/models?new=true](https://www.kaggle.com/models?new=true) and follow the steps including setting “Creating As” to the Organization Profile you want to publish under
+2. To add new Variations once your model is initially created:
+   1. Scroll down to the "Model Variations" section.
+   2. Click on the "New Variation" button to open the "Add/Edit" Variations modal.
+   3. Select the ML framework for which you want to update weights / assets for.
+   4. Click on the "Add new variation" button
+   5. Select the weight / assets files to upload
+   6. Enter the variation slug
+      1. For example, `7b`
+      2. Select a license
+   7. Click on the "Create" button and wait until your instance has been fully processed.
+   8. Click on "Go to model detail page".
+   9. In the "Model Variations" section, you should see your variation in the drop-down.
+   10. If you select it, confirm that you have all the files you were expecting under the "File Explorer" section.
+   11. To upload a new version for an existing variation. Use the "New Version" button.
 
 #### Create via Hugging Face Integration
 
 If you have published a model on Hugging Face Hub, you can create a page for it on Kaggle easily by simply using your model in a Kaggle Notebook.
 
-1.  Navigate to your model page on Hugging Face
-2.  Click "Use this model" in the page header
-3.  Select "Kaggle" from the drop down to create a Kaggle Notebook
-4.  If you're not already logged-in, you will be prompted to do so
-5.  Optionally make changes to your notebook
-6.  Give your notebook a name and create a "Save Version"
-7.  Optionally click "Share" to make your notebook public
+1. Navigate to your model page on Hugging Face
+2. Click "Use this model" in the page header
+3. Select "Kaggle" from the drop down to create a Kaggle Notebook
+4. If you're not already logged-in, you will be prompted to do so
+5. Optionally make changes to your notebook
+6. Give your notebook a name and create a "Save Version"
+7. Optionally click "Share" to make your notebook public
 
 Once you complete these steps, a page for your model will be automatically created. Any public notebooks using the model will show up in the "Code" tab on the model page.
 
@@ -197,56 +131,56 @@ Once you complete these steps, a page for your model will be automatically creat
 
 Documenting your model is easiest to do via the UI.
 
-1.  When viewing your model page, you will see a section at the top called “Pending Actions”.
-2.  Follow each of these steps to complete your model’s documentation:
-    1.  Add a description (model card)
-    2.  Add model instance descriptions including example code
-    3.  Add a subtitle
-    4.  Add tags
-    5.  Specify provenance and other metadata
-    6.  Publish a notebook (we recommend making it public after your model is made public)
-3.  Once your model is made public, you can also optionally generate a DOI from the “Metadata” section of your model.
-4.  Once you’re done, you can make your model public from the “Settings” tab on the model page.
-5.  You can now promote your model!
-6.  You’ll be automatically subscribed to email and site notifications when any discussion topics are created
+1. When viewing your model page, you will see a section at the top called “Pending Actions”.
+2. Follow each of these steps to complete your model’s documentation:
+   1. Add a description (model card)
+   2. Add model instance descriptions including example code
+   3. Add a subtitle
+   4. Add tags
+   5. Specify provenance and other metadata
+   6. Publish a notebook (we recommend making it public after your model is made public)
+3. Once your model is made public, you can also optionally generate a DOI from the “Metadata” section of your model.
+4. Once you’re done, you can make your model public from the “Settings” tab on the model page.
+5. You can now promote your model!
+6. You’ll be automatically subscribed to email and site notifications when any discussion topics are created
 
 #### Importing Model Versions
 
 This tool allows you to copy model versions from one model to another. You can import versions from any public model or private models where you have collaborator access.
 
-1.  Navigate to your target model's page on Kaggle
-    1.  Click the "︙" button in the top right
-    2.  Select "Import Versions" from the dropdown menu
-2.  Select Source Model:
-    1.  Click the "Select Model" button
-    2.  Browse or search for the model you want to import versions from
-        1.  You can only select models you own or have collaborator access to
-        2.  The current model will be disabled to prevent self-copying
-    3.  Click on your chosen model to select it
-3.  Select Versions:
-    1.  Once you've selected a source model, you'll see all available versions
-    2.  Use the search bar to filter versions by name
-    3.  Use the framework chips to filter by specific frameworks (PyTorch, TensorFlow, etc.)
-    4.  Select versions by checking the boxes in the leftmost column
-        1.  You can select multiple versions at once
-    5.  Click "Next" to proceed to confirmation
-4.  Confirm and Import:
-    1.  Review the versions you selected
-        1.  Each row shows the full path of what will be copied
-        2.  Source path → Target path is displayed
-    2.  Important notes:
-        1.  If importing from a private model to a public model, versions will become public permanently
-        2.  This action cannot be undone
-    3.  Click "Import" to begin the copy process
-5.  After Import:
-    1.  A progress indicator will show while versions are being copied
-    2.  For successful imports:
-        1.  You'll see a success message
-        2.  Click "Go to Model" to view your imported versions
-    3.  If any versions fail to import:
-        1.  Error messages will explain what went wrong
-        2.  You can retry failed imports by clicking "Try again"
-        3.  Successfully copied versions will not be duplicated on retry
+1. Navigate to your target model's page on Kaggle
+   1. Click the "︙" button in the top right
+   2. Select "Import Versions" from the dropdown menu
+2. Select Source Model:
+   1. Click the "Select Model" button
+   2. Browse or search for the model you want to import versions from
+      1. You can only select models you own or have collaborator access to
+      2. The current model will be disabled to prevent self-copying
+   3. Click on your chosen model to select it
+3. Select Versions:
+   1. Once you've selected a source model, you'll see all available versions
+   2. Use the search bar to filter versions by name
+   3. Use the framework chips to filter by specific frameworks (PyTorch, TensorFlow, etc.)
+   4. Select versions by checking the boxes in the leftmost column
+      1. You can select multiple versions at once
+   5. Click "Next" to proceed to confirmation
+4. Confirm and Import:
+   1. Review the versions you selected
+      1. Each row shows the full path of what will be copied
+      2. Source path → Target path is displayed
+   2. Important notes:
+      1. If importing from a private model to a public model, versions will become public permanently
+      2. This action cannot be undone
+   3. Click "Import" to begin the copy process
+5. After Import:
+   1. A progress indicator will show while versions are being copied
+   2. For successful imports:
+      1. You'll see a success message
+      2. Click "Go to Model" to view your imported versions
+   3. If any versions fail to import:
+      1. Error messages will explain what went wrong
+      2. You can retry failed imports by clicking "Try again"
+      3. Successfully copied versions will not be duplicated on retry
 
 ##### Tips for Importing
 
@@ -259,15 +193,15 @@ This tool allows you to copy model versions from one model to another. You can i
 
 A handle is represented as
 
-###### owner_slug/model_slug/framework/variation_slug/version_number
+###### owner\_slug/model\_slug/framework/variation\_slug/version\_number
 
 The breakdown is as follows:
 
-- **owner_slug:** Your organization or username.
-- **model_slug:** The name of your model family (e.g., "llama").
+- **owner\_slug:** Your organization or username.
+- **model\_slug:** The name of your model family (e.g., "llama").
 - **framework:** The model framework used (e.g., "pytorch").
-- **variation_slug:** Details about this specific version of your model.
-- **version_number:** A numeric identifier for tracking model changes.
+- **variation\_slug:** Details about this specific version of your model.
+- **version\_number:** A numeric identifier for tracking model changes.
 
 #### Model vs. Variation: Uniqueness
 
@@ -288,13 +222,13 @@ Versions are like checkpoints. They represent a model at a specific point in tra
 
 #### Questions to Guide Your Variation Naming:
 
-1.  How large is your model (number of parameters)? ex: 100m, 2b, 27b, etc..
-2.  What task does it perform? ex: image generation, text, chat
-3.  What dataset was it trained on? ex: coco, imagenet
-4.  Did you make any changes to the code, architecture, or configuration?
-5.  What training techniques did you use? ex: Instruction Tuned, Prompt Tuned, etc…
-6.  Is it optimized for a specific language or hardware? ex: gpu, cpu, tpu
-7.  Did you apply any quantization or other optimizations?
+1. How large is your model (number of parameters)? ex: 100m, 2b, 27b, etc..
+2. What task does it perform? ex: image generation, text, chat
+3. What dataset was it trained on? ex: coco, imagenet
+4. Did you make any changes to the code, architecture, or configuration?
+5. What training techniques did you use? ex: Instruction Tuned, Prompt Tuned, etc…
+6. Is it optimized for a specific language or hardware? ex: gpu, cpu, tpu
+7. Did you apply any quantization or other optimizations?
 
 #### General Guidelines for Naming Success:
 
@@ -305,11 +239,8 @@ Versions are like checkpoints. They represent a model at a specific point in tra
 
 #### Real-World Examples
 
-                                                                                          
-
-|  |  |
-|----|----|
 | Handle | Variation Note |
+| --- | --- |
 | google/gemma-2/gguf/2.0-27b-it/1 | Version 2, 27 billion parameters, instruction tuned |
 | google/gemma/tfLite/gemma-2b-it-gpu-int4/1 | 2 billion , instruction tuned, gpu, int4 quantization |
 | metaresearch/llama-3/pyTorch/70b-chat | 70 billion parameters, chating |

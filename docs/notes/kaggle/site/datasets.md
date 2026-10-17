@@ -1,64 +1,6 @@
-> Full piece: [https://www.kaggle.com/docs/datasets](https://www.kaggle.com/docs/datasets)
-> Retrieved 2026-10-16T03:13Z by scripts/capture_kaggle_docs.py --site (headless Chromium, pandoc);
-> rendered HTML sha256 3a772f8604a98a213c038ad4800f06cbba2dfde4f80891b328973bff49083e31.
+# Datasets
 
-Kaggle uses cookies from Google to deliver and enhance the quality of its services and to analyze traffic.
-
-[](https://www.kaggle.com/cookies)
-
-Learn more
-
-OK, Got it.
-
-# How to Use Kaggle
-
-keyboard_arrow_right[Competitions](https://www.kaggle.com/docs/competitions)
-
-keyboard_arrow_down
-
-Datasets
-
-keyboard_arrow_right
-
-[Types of Datasets](#types-of-datasets)
-
-keyboard_arrow_right
-
-[Searching for Datasets](#searching-for-datasets)
-
-keyboard_arrow_right
-
-[Creating a Dataset](#creating-a-dataset)
-
-[Efficient GPU Usage Tips](https://www.kaggle.com/docs/efficient-gpu-usage)
-
-keyboard_arrow_right[Tensor Processing Units (TPUs)](https://www.kaggle.com/docs/tpu)
-
-keyboard_arrow_right[Models](https://www.kaggle.com/docs/models)
-
-keyboard_arrow_right[Competitions Setup](https://www.kaggle.com/docs/competitions-setup)
-
-keyboard_arrow_right[Organizations](https://www.kaggle.com/docs/organizations)
-
-keyboard_arrow_right[Groups](https://www.kaggle.com/docs/groups)
-
-keyboard_arrow_right[Kaggle Packages](https://www.kaggle.com/docs/packages)
-
-keyboard_arrow_right[Notebooks](https://www.kaggle.com/docs/notebooks)
-
-keyboard_arrow_right[MCP Server](https://www.kaggle.com/docs/mcp)
-
-keyboard_arrow_right[Benchmarks](https://www.kaggle.com/docs/benchmarks)
-
-keyboard_arrow_right[Public API](https://www.kaggle.com/docs/api)
-
-## Datasets
-
-Explore, analyze, and share quality data
-
-content_copyCopy as Markdown
-
-------------------------------------------------------------------------
+***
 
 ### Types of Datasets
 
@@ -90,7 +32,7 @@ CSV files will also have associated column descriptions and column metadata. The
 
 While CSV is the most common file format for “flat” data, JSON is the most common file format for “tree-like” data that potentially has multiple layers, like the branches on a tree:
 
-{\[{‘id’: 0, ‘type’: ‘bananas’, ‘quantity’: 12}, {‘id’: 1, ‘type’: ‘apples’, ‘quantity’: 7}\]}
+{[{‘id’: 0, ‘type’: ‘bananas’, ‘quantity’: 12}, {‘id’: 1, ‘type’: ‘apples’, ‘quantity’: 7}]}
 
 For JSON files, the Data tab preview will present an interactive tree with the nodes in the JSON file attached. You can click on individual keys to open and collapse sections of the tree, exploring the structure of the dataset as you go along. JSON files do not support column descriptions or metrics.
 
@@ -120,7 +62,7 @@ As a result, we recommend that you only upload your dataset as an archive if the
 
 Kaggle also supports special BigQuery Datasets. BigQuery is a “big data” SQL store invented by Google. Many massive public datasets, like all the code in GitHub and the complete history of the Bitcoin blockchain, are available publically through the Google BigQuery Public Datasets initiative. Some of these are in turn also available as Kaggle Datasets!
 
-BigQuery Datasets are special in many ways. Because they are multi-terabyte datasets hosted on Google’s servers they cannot be uploaded or downloaded. Within Notebooks, instead of loading the files from disk, you interact with the dataset by writing SQL fetch queries within either the Google BigQuery Python library or Kaggle’s bq_helper library. And, due to the large size of the datasets involved, there is a quota of 5 TB of data scanned per user per 30-days.
+BigQuery Datasets are special in many ways. Because they are multi-terabyte datasets hosted on Google’s servers they cannot be uploaded or downloaded. Within Notebooks, instead of loading the files from disk, you interact with the dataset by writing SQL fetch queries within either the Google BigQuery Python library or Kaggle’s bq\_helper library. And, due to the large size of the datasets involved, there is a quota of 5 TB of data scanned per user per 30-days.
 
 Some resources for understanding how to use BigQuery:
 
@@ -138,7 +80,7 @@ If you can convert your file into one of the formats above (the simpler the bett
 
 However, there are nevertheless use cases for alternative data formats. We do encourage uploads in speciality data formats like NPZ, image file formats like PNG, and complex hierarchical data formats like HDF5. But, when doing so, we suggest also uploading a Notebook discussing what and where the files are, how to work with them, and demonstrating how to get started with the dataset. Reproducible code samples can go a long way towards making your data files accessible to the data science world!
 
-------------------------------------------------------------------------
+***
 
 ### Searching for Datasets
 
@@ -178,7 +120,7 @@ Searching by tags allow you to search for Datasets by topical area. For example,
 
 Tag pages include a section listing the most popular pages with the given tag, making them a great way of searching for datasets by content.
 
-------------------------------------------------------------------------
+***
 
 ### Creating a Dataset
 
@@ -285,11 +227,8 @@ The usual technical specifications for dataset creation apply to connectors too.
 #### Using Datasets in Notebooks
 
 - [Dowload dataset with kagglehub](https://github.com/Kaggle/kagglehub?tab=readme-ov-file#download-dataset)
-
 - [Upload dataset with kagglehub](https://github.com/Kaggle/kagglehub?tab=readme-ov-file#upload-dataset)
-
-  ------------------------------------------------------------------------
-
+  ***
   ### Collaborating on Datasets
 
   Dataset collaboration is a powerful feature. It allows multiple users to co-own and co-maintain a private or publicly shared dataset. For example, you can invite collaborators to view and edit a private dataset to work together on preparing it before changing its visibility to public.
@@ -297,35 +236,28 @@ The usual technical specifications for dataset creation apply to connectors too.
   When uploading a Dataset you may choose either yourself or any Organization you are a part of as the Owner of that Dataset. If you select yourself, that Dataset will be created with yourself as the Owner. If you select an Organization, that Organization will be the Owner of the dataset, and every other user in the Organization (including yourself) will be added as a Collaborator with editing privileges (if you are unfamiliar with Organizations, you may also want to read the section “Creating and using organizations”).
 
   This means that Organizations are an easy way to manage access to datasets or groups of datasets.
-
   #### Inviting Collaborators
 
-  Alternatively, you may manage Collaborators directly. To do so, go to any dataset you own and navigate to Settings \> Sharing. There, use the search box to find and add other users as Dataset collaborators.
+  Alternatively, you may manage Collaborators directly. To do so, go to any dataset you own and navigate to Settings &gt; Sharing. There, use the search box to find and add other users as Dataset collaborators.
 
   If your Dataset is private, you may choose between giving Collaborators either viewing privileges (“Can view”) or editing privileges (“Can edit”). If your Dataset is public, Collaborators can only be added with editing privileges (“Can edit”), as anyone can view it already.
 
   When you add a collaborator, they will receive a notification via email.
 
   “[Data Science for Good: Kiva Crowdfunding](https://www.kaggle.com/kiva/data-science-for-good-kiva-crowdfunding)” is a great example of a Collaborative Dataset.
-
   #### Using Notebooks with Dataset Collaborators
 
   Using Notebooks, Kaggle’s interactive code editing and execution environment, is a powerful way to work with your collaborators on a Dataset. You might want to work with collaborators to write public Notebooks that help familiarize other users with your dataset. Or you may want to keep all of your code private among your collaborators as you work on privately shared projects together.
 
   Notebooks you create are private by default, and their sharing settings are distinct from the sharing settings on your Dataset. That is, your Dataset collaborators won’t automatically see your private Notebooks. Here’s what that means and how you can productively use sharing settings on Datasets and Notebooks together:
-
   - You can make public Notebooks on a private Dataset which will allow anyone to view your Notebook, but not the underlying private data source.
 
-  - If you want to add view or edit collaborators to a private Notebook (whether the dataset is private or public), you can do so by adding users via Options \> Sharing on the Notebook.
-
-  ------------------------------------------------------------------------
-
+  - If you want to add view or edit collaborators to a private Notebook (whether the dataset is private or public), you can do so by adding users via Options &gt; Sharing on the Notebook.
+  ***
   ### Resources for Starting a Data Project
 
   There are many resources available online to help you get started working on your open data project.
-
   #### Using Datasets
-
   - [Getting Started on Kaggle video tutorials](https://www.youtube.com/playlist?list=PLqFaTIg4myu8gbDh6oBl7XRYNBlthpDEW): Just started on Kaggle? Not sure what is where and why? Here are our very own Kaggle team tutorials to orient you quickly on navigating the Kaggle platform and creating your own datasets and Notebooks
 
   - [A Guide to Open Data Publishing](http://blog.kaggle.com/2016/10/21/a-guide-to-open-data-publishing-analytics/): This article includes the key ingredients to an open data project.
@@ -334,14 +266,12 @@ The usual technical specifications for dataset creation apply to connectors too.
 
   - [Making Kaggle the Home of Open Data](http://blog.kaggle.com/2016/08/17/making-kaggle-the-home-of-open-data/): Ben’s post shares instructions for publishing your open data project on Kaggle and how you can explore others’ datasets.
 
-  - [Creating an Organization](https://www.kaggle.com/organizations/new): If you’re publishing data from an organization, you can create an organization profile first. Then you just select the organization profile from the dropdown near your avatar when publishing (<https://www.kaggle.com/datasets/new>).
+  - [Creating an Organization](https://www.kaggle.com/organizations/new): If you’re publishing data from an organization, you can create an organization profile first. Then you just select the organization profile from the dropdown near your avatar when publishing ([https://www.kaggle.com/datasets/new](https://www.kaggle.com/datasets/new)).
 
   - [Open Data Spotlights](http://blog.kaggle.com/tag/open-data-spotlight/): This series highlights some of the best open data projects on Kaggle.
 
   - Have requests or want to discuss data collection, cleaning, or other aspects of open data projects? Post away in the [Datasets Discussion forum](https://www.kaggle.com/data) on Kaggle.
-
   #### Using Notebooks
-
   - [Getting Started on Kaggle video tutorials](https://www.youtube.com/playlist?list=PLqFaTIg4myu8gbDh6oBl7XRYNBlthpDEW): Just started on Kaggle? Not sure what is where and why? Here are our very own Kaggle team tutorials to orient you quickly on navigating the Kaggle platform and creating your own datasets and Notebooks
 
   - [Kaggle Learn](https://www.kaggle.com/learn/overview) is a great place to start getting hands on with data science and machine learning techniques using Notebooks.
@@ -349,25 +279,18 @@ The usual technical specifications for dataset creation apply to connectors too.
   - [Does open data make you happy? An introduction to Kaggle Notebooks](https://medium.com/@meganrisdal/does-open-data-make-you-happy-an-introduction-to-kaggle-kernels-d8cce437d5ff): Learn how to use Notebooks to explore any combination of datasets published on Kaggle.
 
   - [Seventeen Ways to Map Data in Notebooks](http://blog.kaggle.com/2016/11/30/seventeen-ways-to-map-data-in-kaggle-kernels/): A collection of mini-tutorials by Kaggle users for Python and R users.
-
   #### Analysis
-
   - [How to Get Started with Data Science in Containers](http://blog.kaggle.com/2016/02/05/how-to-get-started-with-data-science-in-containers/): One of our data scientists, Jamie Hall, explains how and why Docker containers are at the heart of Notebooks – reproducible analysis.
 
   - [Approaching (Almost) Any Machine Learning Problem by Kaggle Grandmaster Abhishek Thakur](http://blog.kaggle.com/2016/07/21/approaching-almost-any-machine-learning-problem-abhishek-thakur/): Exactly what it says – a great tutorial.
-
   #### Other
-
   - [Kaggle Datasets Twitter](https://twitter.com/KaggleDatasets): The new account features newly featured datasets plus open data news.
 
   - [Collecting & Using Open Data](http://mlwave.com/how-to-produce-and-use-datasets-lessons-learned/): A blog by Kaggler MLWave recommended by Triskelion.
-
-  ------------------------------------------------------------------------
-
+  ***
   ### Technical Specifications
 
   Kaggle Datasets allows you to publish and share datasets privately or publicly. We provide resources for storing and processing datasets, but there are certain technical specifications:
-
   - 200GB per dataset limit
 
   - 200GB max private datasets (if you exceed this, either make your datasets public or delete unused datasets)
@@ -375,7 +298,6 @@ The usual technical specifications for dataset creation apply to connectors too.
   - A max of 50 top-level files (if you have more, use a directory structure and upload an archive)
 
   When you upload a dataset we apply certain processing steps to make the dataset more usable.
-
   - A complete archive is created so the dataset can be easily downloaded later
 
   - Any archives (e.g., ZIP files) that you upload are uncompressed so that the files are easily accessible in Notebooks (directory structure is preserved)
