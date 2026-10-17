@@ -620,7 +620,7 @@ device.
   is undefined there and serves as no falsifier.
 
 **Series Q result** ([analysis](../../../results/quantum_inspire/readout_ringdown_tuna_17_Q_analysis.json),
-gate core-390). The analysis reads Q-batch-00 (calibration) and Q-01 to Q-08
+gate core-430). The analysis reads Q-batch-00 (calibration) and Q-01 to Q-08
 (d = 2 in Q-01 to Q-04, d = 77 in Q-05 to Q-08); the Q-recal-053951 run is a
 repeated calibration outside it.
 

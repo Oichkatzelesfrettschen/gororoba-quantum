@@ -3779,7 +3779,7 @@
         "docs/notes/quantum_inspire/tuna-17.md"
       ],
       "gates": {
-        "core-390": "replay",
+        "core-430": "replay",
         "core-362": "freshness"
       },
       "acquisitions": [
