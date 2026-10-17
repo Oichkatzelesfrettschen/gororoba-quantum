@@ -297,6 +297,24 @@ stand.
   description; it identifies no unique channel acting on the five-qubit
   circuit.
 
+**Per-batch series, QX dry run.** The batched series' QX twin ran as
+batch-00 (twin-1..3, batch job 870037, jobs 1527264, 1527266, 1527267) and
+batch-01 (twin-4..5, batch job 870040, jobs 1527269, 1527270), 2048 shots
+each, retained as results/quantum_inspire/runs/2026-10-17T034409Z-zero_divisor_qx-batch-00
+and -batch-01. `--analyze` over both batches writes
+results/quantum_inspire/zero_divisor_qx_analysis.json, and gate core-330
+replays it with `--replay-series`.
+
+| Case | replicas (count of 2048 at s = 0) | P(s=0) (95%) | ideal |
+|---|---|---|---|
+| dark | 0, 0, 0 | 0.000 (0.000-0.001) | 0 |
+| bright | 2048, 2048, 2048 | 1.000 (0.999-1.000) | 1 |
+| fixture | 1007, 998, 1053 | 0.498 (0.485-0.510) | 1/2 |
+
+The fixture sits 0.002 below 1/2 (z = -0.36), so the emulator executes the
+batched circuits as certified and the series analysis keys every replica to
+its batch.
+
 ## Residual ZZ of every Tuna-17 coupler
 
 Each coupling-map edge carries a flux-tunable coupler that the control
