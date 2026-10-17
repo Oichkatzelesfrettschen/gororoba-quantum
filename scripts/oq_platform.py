@@ -18,8 +18,9 @@ Subcommands:
   their input schemas, and the organization count, credit balances and job
   count of the organization OPENQUANTUM_ORGANIZATION_ID names, else the first
   membership, the selection the MCP server spends on; every listing
-  follows its pagination cursor. Organization ids and names never enter the
-  file. It also writes
+  follows its pagination cursor, and it refuses to run unless
+  OPENQUANTUM_SDK_KEY names a key file. Organization ids and names never
+  enter the file. It also writes
   estimates.json, the scheduler's circuit-free price estimate
   (POST /v1/pricing/estimate with a backend class and a shot count, the call
   the pricing page's calculator makes) at ESTIMATE_SHOTS and each backend's
@@ -32,7 +33,9 @@ Subcommands:
   limits agree with each other; exactly one pricing row per catalogue
   backend, each Private rate twice its Public rate; and every estimate to
   equal ceil(per_task + shots * per_shot) of its plan's USD-equivalent
-  rates, one credit per USD-equivalent dollar. With --agents it renders
+  rates, one credit per USD-equivalent dollar, with exactly the rows the
+  catalogue's shot grid names and one queue-priority list per plan across
+  them. With --agents it renders
   facts_table and requires each FILE's open-quantum-facts markers to enclose
   exactly that table, so a refreshed catalogue, estimate or price list that
   changes a limit, a rate or the credit rule fails until AGENTS.md and the
@@ -42,7 +45,8 @@ Subcommands:
 - facts DIR prints the table.
 - --self-test proves check rejects an organization id, a shot limit that
   disagrees with its schema, a missing and an extra pricing row, a Private
-  rate off twice Public, an estimate off the credit rule, an edited table
+  rate off twice Public, an estimate off the credit rule or the grid, a
+  quote missing a priority, an edited table
   and a stale row inside the markers, on a temporary copy.
 
 Usage: OPENQUANTUM_SDK_KEY=KEY.json "$OQ_PYTHON" scripts/oq_platform.py snapshot --out DIR
@@ -156,6 +160,11 @@ def snapshot(out: Path) -> None:
     import openquantum_sdk
     from openquantum_mcp.auth import build_clients
 
+    # The resolver falls back to OPENQUANTUM_TOKEN and the client-id pair; the
+    # snapshot binds its provenance to the named key file alone.
+    key = os.environ.get("OPENQUANTUM_SDK_KEY")
+    if not key or not Path(key).is_file():
+        raise SystemExit("OPENQUANTUM_SDK_KEY must name the SDK key file the snapshot reads")
     clients = build_clients()
     management, scheduler = clients.management, clients.scheduler
     organizations = pages(management.list_user_organizations, "organizations")
@@ -348,6 +357,14 @@ def check(directory: Path, agents: list[Path] | None = None) -> None:
                     raise SystemExit(f"{name} {shots} shots: {plan} {plans[plan]['price']} credits, rule {expected}")
     if len(quoted) != len(quotes["rows"]):
         raise SystemExit("estimates repeat a backend and shot count")
+    grid = {(b["short_code"], n) for b in catalogue["backend_classes"] for n in estimate_grid(b)}
+    if stray := sorted(set(quoted) - grid):
+        raise SystemExit(f"estimate {stray[0]} lies outside the catalogue's shot grid")
+    # facts_table states one priority list per plan, so every quote offers it.
+    for plan in PLANS:
+        offered = {json.dumps(plans[plan]["queue_priorities"], sort_keys=True) for plans in quoted.values()}
+        if len(offered) != 1:
+            raise SystemExit(f"{plan} queue priorities differ between estimates: {sorted(offered)}")
     if agents is not None:
         check_agents(catalogue, quotes, pricing, agents)
     print(
@@ -391,6 +408,15 @@ def self_test() -> None:
 
         rewrite(directory / "estimates.json", change)
 
+    def stray_estimate(directory: Path, _: Path) -> None:
+        rewrite(directory / "estimates.json", lambda q: q["rows"].append({**q["rows"][0], "shots": 3}))
+
+    def dropped_priority(directory: Path, _: Path) -> None:
+        def change(quotes: dict[str, Any]) -> None:
+            quotes["rows"][0]["plans"]["Public Plan"]["queue_priorities"].pop("Priority Queue")
+
+        rewrite(directory / "estimates.json", change)
+
     def table(_: Path, copy: Path) -> None:
         text = copy.read_text(encoding="utf-8")
         copy.write_text(text.replace("| 1024-shot jobs per 25 Spark |", "| jobs |", 1), encoding="utf-8")
@@ -399,7 +425,18 @@ def self_test() -> None:
         text = copy.read_text(encoding="utf-8")
         copy.write_text(text.replace(END, "| stale | row |\n" + END, 1), encoding="utf-8")
 
-    edits = (organization_id, shot_limit, unpriced, extra_price, private_rate, off_rule, table, stale_row)
+    edits = (
+        organization_id,
+        shot_limit,
+        unpriced,
+        extra_price,
+        private_rate,
+        off_rule,
+        stray_estimate,
+        dropped_priority,
+        table,
+        stale_row,
+    )
     for edit in edits:
         with tempfile.TemporaryDirectory() as scratch:
             directory = Path(scratch) / "open_quantum"
