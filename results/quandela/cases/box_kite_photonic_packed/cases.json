@@ -1,0 +1,80 @@
+{
+ "schema": "qd-box-kite-series-v1",
+ "family": "box_kite_photonic_packed",
+ "census_sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2",
+ "census_sign_blocks": 14,
+ "summary": {
+  "two_label": {
+   "configs": 28,
+   "rows": 1008
+  },
+  "two_label_witness": {
+   "configs": 4,
+   "rows": 0
+  }
+ },
+ "jobs": [
+  {
+   "job": "job-00",
+   "configs": [
+    "two_label-00",
+    "two_label-01",
+    "two_label-02",
+    "two_label-03",
+    "two_label-04",
+    "two_label-05"
+   ]
+  },
+  {
+   "job": "job-01",
+   "configs": [
+    "two_label-06",
+    "two_label-07",
+    "two_label-08",
+    "two_label-09",
+    "two_label-10",
+    "two_label-11"
+   ]
+  },
+  {
+   "job": "job-02",
+   "configs": [
+    "two_label-12",
+    "two_label-13",
+    "two_label-14",
+    "two_label-15",
+    "two_label-16",
+    "two_label-17"
+   ]
+  },
+  {
+   "job": "job-03",
+   "configs": [
+    "two_label-18",
+    "two_label-19",
+    "two_label-20",
+    "two_label-21",
+    "two_label-22",
+    "two_label-23"
+   ]
+  },
+  {
+   "job": "job-04",
+   "configs": [
+    "two_label-24",
+    "two_label-25",
+    "two_label-26",
+    "two_label-27",
+    "two_label-28",
+    "two_label-29"
+   ]
+  },
+  {
+   "job": "job-05",
+   "configs": [
+    "two_label-30",
+    "two_label-31"
+   ]
+  }
+ ]
+}

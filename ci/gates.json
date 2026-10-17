@@ -2636,6 +2636,38 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_cases.py --check results/quandela/cases",
+   "name": "core-504",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_cases.py --self-test && \"$PYTHON\" -B -O -W error scripts/qd_box_kite_cases.py --self-test",
+   "name": "core-505",
+   "seconds": 7.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/cd_two_blade_blocks.py --check docs/evidence/box_kite_census/two_blade_blocks.json",
+   "name": "core-506",
+   "seconds": 5.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/cd_two_blade_blocks.py --self-test && \"$PYTHON\" -B -O -W error scripts/cd_two_blade_blocks.py --self-test",
+   "name": "core-507",
+   "seconds": 9.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test && \"$PYTHON\" -B -O -W error scripts/materialize_gororoba_csv.py --self-test",
    "name": "core-401",
    "seconds": 1.0,
@@ -2751,7 +2783,10 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_toolchain_check.py --check",
    "name": "core-368",
    "seconds": 0.1,
-   "tier": "pr"
+   "tier": "pr",
+   "requires": [
+    "qi"
+   ]
   },
   {
    "suite": "core",
@@ -3116,10 +3151,24 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "cmp docs/evidence/box_kite_qx_sweep/family-a.json results/kaggle/2026-10-17T131115Z-box-kite-qx-sweep/output/output/repo/docs/evidence/box_kite_qx_sweep/family-a.json && cmp docs/evidence/box_kite_qx_sweep/family-de.json results/kaggle/2026-10-17T131115Z-box-kite-qx-sweep/output/output/repo/docs/evidence/box_kite_qx_sweep/family-de.json && \"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a.json --bind --require-pass && \"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-de.json --bind --require-pass && \"$PYTHON\" -B -O -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a.json --bind --require-pass && \"$PYTHON\" -B -O -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-de.json --bind --require-pass",
+   "cmd": "cmp docs/evidence/box_kite_qx_sweep/family-a.json results/kaggle/2026-10-17T131115Z-box-kite-qx-sweep/output/output/repo/docs/evidence/box_kite_qx_sweep/family-a.json && cmp docs/evidence/box_kite_qx_sweep/family-de.json results/kaggle/2026-10-17T131115Z-box-kite-qx-sweep/output/output/repo/docs/evidence/box_kite_qx_sweep/family-de.json && \"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a.json --bind --require-pass --live 24 && \"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-de.json --bind --require-pass --live 8 && \"$PYTHON\" -B -O -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a.json --bind --require-pass && \"$PYTHON\" -B -O -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-de.json --bind --require-pass",
    "name": "core-423",
    "seconds": 132.0,
-   "tier": "full"
+   "tier": "full",
+   "requires": [
+    "qi"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a.json --require-pass --live 24",
+   "name": "core-527",
+   "seconds": 1.0,
+   "tier": "pr",
+   "requires": [
+    "qi"
+   ]
   },
   {
    "suite": "core",
@@ -3287,6 +3336,38 @@
    "cmd": "\"$PYTHON\" -B -W error parallel.py --self-test && \"$PYTHON\" -B -O -W error parallel.py --self-test",
    "name": "core-520",
    "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error dynamic_density.py --prep-excitation-test && \"$PYTHON\" -B -O -W error dynamic_density.py --prep-excitation-test && \"$PYTHON\" -B -W error qpu_planning_contracts.py --prep-excitation && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --prep-excitation",
+   "name": "core-525",
+   "seconds": 31.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck_prep_excitation.json && \"$PYTHON\" -B -O -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck_prep_excitation.json",
+   "name": "core-526",
+   "seconds": 40.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --rep-delay && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --rep-delay",
+   "name": "core-523",
+   "seconds": 158.8,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error diagnostic_experiments.py --self-test && \"$PYTHON\" -B -O -W error diagnostic_experiments.py --self-test && \"$PYTHON\" -B -W error qpu_planning_contracts.py --state-prep && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --state-prep",
+   "name": "core-524",
+   "seconds": 21.6,
    "tier": "pr"
   }
  ],

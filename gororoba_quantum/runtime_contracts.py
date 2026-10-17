@@ -1336,6 +1336,8 @@ def _verify_fused_collection() -> None:
             tags: list[str],
             shots: int = 4096,
             max_execution_seconds: int | None = None,
+            *,
+            rep_delay: float | None = None,
         ) -> Any:
             del backend, twirl, dd
             return _ProbeSampler(kind, tags, shots, lambda unused_circuits: None)
@@ -2175,6 +2177,8 @@ def _verify_approved_record_gate() -> None:
         tags: list[str],
         shots: int = 4096,
         max_execution_seconds: int | None = None,
+        *,
+        rep_delay: float | None = None,
     ) -> Any:
         # build_submission_plan constructs a Sampler to record its effective
         # options before any batch runs, so runs, not constructions, count
@@ -2441,6 +2445,8 @@ def _verify_schema_lifecycle() -> None:
         tags: list[str],
         shots: int = 4096,
         max_execution_seconds: int | None = None,
+        *,
+        rep_delay: float | None = None,
     ) -> Any:
         del backend, kind, twirl, dd, tags, shots
         nonlocal sampler_constructions
@@ -2518,6 +2524,8 @@ def _verify_schema_lifecycle() -> None:
         tags: list[str],
         shots: int = 4096,
         max_execution_seconds: int | None = None,
+        *,
+        rep_delay: float | None = None,
     ) -> Any:
         del backend, twirl, dd
         return _ProbeSampler(kind, tags, shots, before_run)
@@ -2780,6 +2788,8 @@ def _verify_every_job_revalidates() -> None:
         tags: list[str],
         shots: int = 4096,
         max_execution_seconds: int | None = None,
+        *,
+        rep_delay: float | None = None,
     ) -> Any:
         del backend, twirl, dd
         return _ProbeSampler(kind, tags, shots, lambda unused_circuits: None, after_run)
@@ -3058,6 +3068,8 @@ def _verify_instance_and_ceiling() -> None:
         tags: list[str],
         shots: int = 4096,
         max_execution_seconds: int | None = None,
+        *,
+        rep_delay: float | None = None,
     ) -> Any:
         del backend, twirl, dd, max_execution_seconds
         return _ProbeSampler(kind, tags, shots, lambda circuits: runs.append(len(circuits)))
@@ -3396,6 +3408,8 @@ def _submit_after_version_bump(remaining: float | None, rebuilt: bool) -> None:
         tags: list[str],
         shots: int = 4096,
         max_execution_seconds: int | None = None,
+        *,
+        rep_delay: float | None = None,
     ) -> Any:
         del backend, twirl, dd
         return _ProbeSampler(
