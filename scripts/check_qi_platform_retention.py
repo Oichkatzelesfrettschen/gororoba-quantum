@@ -26,6 +26,9 @@ from unittest.mock import patch
 
 import qi_platform as platform
 
+# submit() takes the account submit lock; the fixtures lock a private file.
+platform.SUBMIT_LOCK = Path(tempfile.mkdtemp(prefix="qi-submit-lock-")) / "submit.lock"
+
 
 class FakeToolError(RuntimeError):
     """SDK-free stand-in for the MCP tool error envelope."""
@@ -554,6 +557,35 @@ class RetentionChecks(unittest.TestCase):
                         self.submit(client)
                     self.assertTrue(all(method == "GET" for method, _ in client.calls))
                     self.assertFalse((self.case_dir / "submission-state.json").exists())
+
+    def test_terminal_hardware_job_without_finish_time_refuses(self) -> None:
+        now = datetime.datetime(2026, 10, 17, 12, 0, 0, tzinfo=datetime.UTC)
+        with patch.object(platform, "utc_now", return_value=now):
+            for status in sorted(platform.TERMINAL):
+                with self.subTest(status=status):
+                    client = self.paused_client([(7, status, None)], now=now)
+                    with self.assertRaisesRegex(SystemExit, "without a finish time"):
+                        self.submit(client)
+                    self.assertFalse((self.case_dir / "submission-state.json").exists())
+
+    def test_submit_waits_for_the_account_submit_lock(self) -> None:
+        import threading
+
+        client = self.paused_client([], now=datetime.datetime(2026, 10, 17, 12, 0, 0, tzinfo=datetime.UTC))
+        done = threading.Event()
+
+        def run() -> None:
+            self.submit(client)
+            done.set()
+
+        with platform.token_lock(platform.SUBMIT_LOCK):
+            worker = threading.Thread(target=run)
+            worker.start()
+            self.assertFalse(done.wait(0.5))
+            self.assertEqual(client.calls, [])
+        worker.join(30)
+        self.assertTrue(done.is_set())
+        self.assertEqual(sum(method == "PATCH" for method, _ in client.calls), 1)
 
     def test_emulator_jobs_and_emulator_batches_ignore_the_pause(self) -> None:
         now = datetime.datetime(2026, 10, 17, 12, 0, 0, tzinfo=datetime.UTC)

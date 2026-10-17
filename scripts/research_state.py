@@ -464,6 +464,15 @@ class QuantumInspireRuns:
             totals["change"] == sum(row["change"] for row in self.ledger["transactions"]),
             "the Quantum Inspire ledger aggregate change differs from the sum over its transaction rows",
         )
+        charged: Counter[int] = Counter()
+        for row in self.ledger["transactions"]:
+            if row["job"] is not None:
+                charged[row["job"]] += row["change"]
+        misattributed = sorted(job["job"] for job in self.ledger["jobs"] if job["charged"] != charged[job["job"]])
+        require(
+            not misattributed,
+            f"the Quantum Inspire ledger job charges differ from their transaction rows: {misattributed}",
+        )
         return facts
 
     def _declared(self) -> list[int]:
@@ -1223,12 +1232,16 @@ def _qi_declared_mutations() -> Iterable[tuple[str, Callable[[dict[str, Any]], N
     def declared_charge(ledger: dict[str, Any]) -> None:
         ledger["totals"]["change"] += 1
 
+    def declared_job_charge(ledger: dict[str, Any]) -> None:
+        next(job for job in ledger["jobs"] if job["job"] == SYNTHETIC_JOB_ID)["charged"] += 1
+
     yield "declared job also retained", declared_and_retained, None
     yield "ledger job neither retained nor declared (v2)", undeclared, "its unretained list omits"
     yield "declared job absent from the ledger", declared_absent, "declares unretained jobs that it does not list"
     yield "declared job repeated", declared_repeated, "unretained job ids repeat"
     yield "transaction charging a job outside a v2 ledger", dangling, "charge jobs outside the ledger"
     yield "declared job charge outside the totals", declared_charge, "aggregate change differs"
+    yield "declared job with another charge than its rows", declared_job_charge, "job charges differ"
 
 
 def _with_declared_job(ledger: dict[str, Any]) -> dict[str, Any]:

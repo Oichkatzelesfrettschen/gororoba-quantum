@@ -97,6 +97,8 @@ TOKEN_FILE = Path.home() / ".quantuminspire" / "config.json"
 # Every process that refreshes the shared OAuth tokens holds this lock while it
 # reads, exchanges and writes them.
 TOKEN_LOCK = TOKEN_FILE.with_name("config.json.lock")
+# Held from the hardware pause and queue checks until a batch is enqueued.
+SUBMIT_LOCK = TOKEN_FILE.with_name("submit.lock")
 
 
 @contextlib.contextmanager
@@ -569,13 +571,25 @@ def hardware_pause_left(client: Client) -> int:
             continue
         if job["status"] not in TERMINAL:
             raise SystemExit(f"hardware job {job['id']} is {job['status']}; wait until the account's jobs finish")
-        if job["finished_at"] is not None:
-            elapsed = (at - datetime.datetime.fromisoformat(job["finished_at"])).total_seconds()
-            left = max(left, HARDWARE_PAUSE_SECONDS - elapsed)
+        if job["finished_at"] is None:
+            raise SystemExit(f"hardware job {job['id']} is {job['status']} without a finish time; its pause is unknown")
+        elapsed = (at - datetime.datetime.fromisoformat(job["finished_at"])).total_seconds()
+        left = max(left, HARDWARE_PAUSE_SECONDS - elapsed)
     return math.ceil(left)
 
 
 def submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any]:
+    """Submit one case batch while holding the account submit lock.
+
+    Every local process holds SUBMIT_LOCK from the pause and queue checks
+    until its batch is enqueued, so two sessions on this host cannot both pass
+    the checks before either batch exists on the service.
+    """
+    with token_lock(SUBMIT_LOCK):
+        return _submit(case_dir, backend_type_id, approval)
+
+
+def _submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any]:
     if (case_dir / "submission.json").exists():
         raise SystemExit(f"{case_dir}/submission.json exists; this case was submitted")
     state_path = case_dir / "submission-state.json"
