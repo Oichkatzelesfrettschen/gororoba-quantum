@@ -917,9 +917,41 @@ Decommissioned at the snapshot: `sim:gpu:medium`.
 Status, performance figures, availability statistics and maintenance
 windows change between reads and live only in the catalogue.
 
+**Runner.** A run directory is a copy of one case `job-NN/` under
+`results/quandela/runs/UTC-PLATFORM-SERIES-job-NN/`. `qd_platform.py plan
+RUN_DIR --platform NAME --max-credits C --expected-seconds S
+--per-job-credits P` makes every submit check read-only (digest, platform
+status and duration, S within max_duration, P plus max_shots times the live
+price within C, no running or queued job, Perceval's shot estimate within
+max_shots), records the processor's performance figures and prints the body
+Perceval would send; the written case states S, P and C and quotes it. `submit`
+adds `--approval TEXT`, holds an flock beside the token file, checkpoints
+before the POST and never sends a case twice; `collect` retains the raw
+result bytes and parses counts without Perceval's deserializer. One job runs
+at a time: the next is planned after the previous one is collected. Every
+retained run enters docs/state/research_state.json under the `quandela`
+provider in the change that retains it.
+
+**Box-kite photonic cases.** `scripts/qd_box_kite_cases.py` writes three
+series under `results/quandela/cases/` from the box-kite census: single
+(32 one-photon two-label configurations, one four-label control, the
+one-hot 16D pair), packed (the 32 configurations six to a job) and pairs
+(the 16 sign blocks with two photons). Every unitary is the
+exact Halmos dilation over Q(sqrt2); a one-photon block reads the census P
+on its algebra modes, and a two-photon block reads (perm M / 4)^2 on its
+label pair, 1/4 on a kite edge and 0 on a strut. A dark block is
+p_algebra 0, a bright block p_algebra 1. `scripts/cd_two_blade_blocks.py`
+records that every two-label two-blade product at D = 16, 32 and 64 uses
+one of these configurations, and that the signed zero products (336, 5040,
+52080) equal the annihilator nullity sums.
+
 **Gates.** core-500 (`capture_qd_docs.py --check`), core-501 (its
 `--self-test`), core-502 (`qd_platform.py check docs/evidence/quandela
---agents AGENTS.md docs/notes/quandela/README.md`) and core-503 (its
+--agents AGENTS.md docs/notes/quandela/README.md`), core-503 (its
+`--self-test`, the runner's stubbed-service contract included), core-504
+(`qd_box_kite_cases.py --check results/quandela/cases`), core-505 (its
+`--self-test`), core-506 (`cd_two_blade_blocks.py --check
+docs/evidence/box_kite_census/two_blade_blocks.json`) and core-507 (its
 `--self-test`).
 
 ## Qiskit skills

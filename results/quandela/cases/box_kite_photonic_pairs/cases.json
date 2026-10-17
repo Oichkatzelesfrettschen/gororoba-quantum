@@ -1,0 +1,114 @@
+{
+ "schema": "qd-box-kite-series-v1",
+ "family": "box_kite_photonic_pairs",
+ "census_sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2",
+ "census_sign_blocks": 14,
+ "summary": {
+  "pair": {
+   "configs": 14,
+   "rows": 1008
+  },
+  "pair_witness": {
+   "configs": 2,
+   "rows": 0
+  }
+ },
+ "jobs": [
+  {
+   "job": "job-00",
+   "configs": [
+    "pair-00"
+   ]
+  },
+  {
+   "job": "job-01",
+   "configs": [
+    "pair-01"
+   ]
+  },
+  {
+   "job": "job-02",
+   "configs": [
+    "pair-02"
+   ]
+  },
+  {
+   "job": "job-03",
+   "configs": [
+    "pair-03"
+   ]
+  },
+  {
+   "job": "job-04",
+   "configs": [
+    "pair-04"
+   ]
+  },
+  {
+   "job": "job-05",
+   "configs": [
+    "pair-05"
+   ]
+  },
+  {
+   "job": "job-06",
+   "configs": [
+    "pair-06"
+   ]
+  },
+  {
+   "job": "job-07",
+   "configs": [
+    "pair-07"
+   ]
+  },
+  {
+   "job": "job-08",
+   "configs": [
+    "pair-08"
+   ]
+  },
+  {
+   "job": "job-09",
+   "configs": [
+    "pair-09"
+   ]
+  },
+  {
+   "job": "job-10",
+   "configs": [
+    "pair-10"
+   ]
+  },
+  {
+   "job": "job-11",
+   "configs": [
+    "pair-11"
+   ]
+  },
+  {
+   "job": "job-12",
+   "configs": [
+    "pair-12"
+   ]
+  },
+  {
+   "job": "job-13",
+   "configs": [
+    "pair-13"
+   ]
+  },
+  {
+   "job": "job-14",
+   "configs": [
+    "pair-14"
+   ]
+  },
+  {
+   "job": "job-15",
+   "configs": [
+    "pair-15"
+   ]
+  }
+ ]
+}
