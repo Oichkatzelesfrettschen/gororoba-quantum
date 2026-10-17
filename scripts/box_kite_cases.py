@@ -1734,7 +1734,12 @@ def pre_twin() -> tuple[dict[str, Any], str]:
 
 
 def pre_claim(path: Path = RESEARCH_STATE) -> dict[str, Any]:
-    """The registry entry of PRE_CLAIM; its statement must carry every prediction of PRE_PREDICTIONS."""
+    """The registry entry of PRE_CLAIM; its statement must carry every prediction of PRE_PREDICTIONS.
+
+    The self-test runs this check; the manifest names the claim by id and
+    registry path only, so a later edit of the claim leaves the case bytes,
+    and the digests a run binds, unchanged.
+    """
     matches = [c for c in json.loads(path.read_text(encoding="utf-8"))["claims"] if c.get("id") == PRE_CLAIM]
     if len(matches) != 1:
         raise ValueError(f"{path.relative_to(ROOT)} holds {len(matches)} claims {PRE_CLAIM}")
@@ -1781,7 +1786,7 @@ def pre_series(
         "preregistered": {
             "observable": "per-qubit raw P(1|0) from readout-0, P(1|1) from readout-1 and P(1|XX) from double-x, "
             "each with its binomial standard error",
-            "claim": pre_claim(),
+            "claim": {"id": PRE_CLAIM, "registry": RESEARCH_STATE.relative_to(ROOT).as_posix()},
             "predictions": "raw P(1|XX): Q0 0.98 and Q6 0.52 under X under-rotation by the angle the zero-wait "
             "P(1|1) implies, Q0 0.038 and Q6 0.013 (the idle floor) under |1> misassignment",
             "precondition": f"the batch's own readout pair still shows the fault ({fault}); otherwise the batch "
@@ -2557,6 +2562,8 @@ def self_test() -> None:
     reject("a double X without its barrier run", lambda: check_double_x(PRE_FILE, merged))
     reject("a double X read as a witness on the admitted layout", lambda: check_tuna_text(PRE_FILE, pre_text))
     reject("a double X with one X dropped", lambda: check_double_x(PRE_FILE, pre_text.replace("X q[6]\n", "", 1)))
+    if pre_claim()["id"] != PRE_CLAIM:
+        raise AssertionError("the registry claim lost its id")
     registry = json.loads(RESEARCH_STATE.read_text(encoding="utf-8"))
     for claim in registry["claims"]:
         if claim.get("id") == PRE_CLAIM:

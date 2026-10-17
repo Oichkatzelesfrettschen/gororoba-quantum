@@ -474,8 +474,8 @@ prose prints; the analysis reads only that block.
 - Pre-T0 double X (1 batch, 4096 shots). X on all 17 qubits, a per-qubit
   barrier run, X again with no wait, beside readout-0 and readout-1: claim
   `proposed-tuna17-q0-q6-double-x-discriminator`
-  (docs/state/research_state.json, whose statement the generator embeds and
-  checks against its predictions). Precondition: the batch's own readout
+  (docs/state/research_state.json; the manifest names it by id, and the
+  generator's self-test checks its statement against the predictions). Precondition: the batch's own readout
   still shows the fault, Q0 P(1|1) < 0.7 and Q6 P(1|1) < 0.3, else
   fault-recovered and the discriminator is not read. Decision: Q0
   P(1|XX) > 0.5 and Q6 > 0.25 favor under-rotation (predicted 0.98, 0.52),
@@ -686,8 +686,8 @@ settings, `series_de()` and `de_smoke_series()`; the ry dialect with
 `lower_for_ry`, `ry_ladder()` and `ry_series()`.
 
 Also built: `pre_series()`, `double_x_text` and `check_double_x` for the
-pre-T0 batch, `pre_twin()` for its QX twin and `pre_claim()`, which reads
-the claim from the registry; and `scripts/box_kite_analysis.py` (section
+pre-T0 batch, `pre_twin()` for its QX twin and `pre_claim()`, the self-test's
+check of the claim in the registry; and `scripts/box_kite_analysis.py` (section
 4(g), **Analysis**; gate core-424).
 
 Reused unchanged: `qi_platform.py` (submit, collect, the three-circuit and

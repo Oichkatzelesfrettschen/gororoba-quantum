@@ -63,8 +63,7 @@
   "observable": "per-qubit raw P(1|0) from readout-0, P(1|1) from readout-1 and P(1|XX) from double-x, each with its binomial standard error",
   "claim": {
    "id": "proposed-tuna17-q0-q6-double-x-discriminator",
-   "registry": "docs/state/research_state.json",
-   "statement": "P1 after X X with no wait, beside a readout-0 and readout-1 pair in one Tuna-17 batch, separates an under-rotated X from |1> misassignment on Q0 and Q6: under-rotation by the angle their zero-wait P(1|1) implies predicts 0.98 and 0.52, misassignment 0.038 and 0.013. Ramsey inverted with the matched calibration cannot separate them when X and X90 share the under-rotation, because the raw quadratures then take the readout-scale form sin^2(beta) (1 + cos phi) / 2; a fault confined to native X keeps the X90 Ramsey at the earlier scale, which Q6's raw quadrature mean (0.064 against a floor of 0.148) excludes and Q0's (0.287 against 0.175) does not."
+   "registry": "docs/state/research_state.json"
   },
   "predictions": "raw P(1|XX): Q0 0.98 and Q6 0.52 under X under-rotation by the angle the zero-wait P(1|1) implies, Q0 0.038 and Q6 0.013 (the idle floor) under |1> misassignment",
   "precondition": "the batch's own readout pair still shows the fault (Q0 P(1|1) < 0.7, Q6 P(1|1) < 0.3); otherwise the batch reports fault-recovered and the discriminator is not read",
