@@ -1016,4 +1016,8 @@ unresolveReviewThread.
 - A record names an IBM Cloud instance only by a 12-hex sha256 of its CRN.
 - Tokens, account identifiers, and local absolute paths stay out of every
   commit. The IBM credential lives in the qiskit account store,
-  `~/.qiskit/qiskit-ibm.json`.
+  `~/.qiskit/qiskit-ibm.json`. Account identifiers are credentials, account
+  and instance ids, CRNs and email addresses. A public platform handle --
+  the GitHub owner in every repository URL, the Kaggle username in a
+  kernel or dataset slug (`owner/slug`) -- names published work, and
+  records keep it so `collect` and `status` resolve the kernel.
