@@ -177,7 +177,6 @@ def prepare(
         shots, alpha=args.alpha, minimum_gain=0.01, assumed_gain=0.04, required_joint_power=args.power
     )
     group = correction_group()
-    requirements = runtime.group_requirements(group)
     frontier = []
     owners = {}
     backend_search = []
@@ -194,7 +193,7 @@ def prepare(
     )
     for snapshot in sorted(snapshots, key=lambda item: item.name):
         reason = snapshot.ineligible_reason(getattr(args, "max_pending", None))
-        violations = runtime.capability_violations(requirements, snapshot.capabilities)
+        violations = runtime.group_admission_violations(group, snapshot.capabilities)
         if reason is None and violations:
             reason = "; ".join(violations)
         if reason is None:

@@ -3048,6 +3048,14 @@
    "name": "core-495",
    "seconds": 62.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --static-group-admission && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --static-group-admission",
+   "name": "core-496",
+   "seconds": 25.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
