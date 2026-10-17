@@ -551,8 +551,10 @@ an equal `wait(40)`. A residual-photon Stark shift predicts
 delta(tau) = A exp(-tau / T); a static detuning predicts delta = 0. Every
 circuit idles 2 us before its final readout so leftover photons cannot bias
 the final readout of the short-tau arms, and the readout-calibration
-circuits idle the same 2 us, so the in-batch calibration absorbs the decay
-during that wait. Rates come from all shots: a target left in |1> after its
+circuits idle the same 2 us. Their assignment model includes decay during
+that wait, but both references occupy batch-00 and correct the whole
+series; this is not a separate calibration for every Ramsey batch. Rates
+come from all shots: a target left in |1> after its
 mid-circuit readout scales both quadratures by (1 - 2 eps) and keeps the
 phase ([qx-runs.md](qx-runs.md)); where the full register returns, the
 estimate postselected on the mid-circuit outcome is reported beside it. The
@@ -820,6 +822,22 @@ and results/quantum_inspire/box_kite_ry_analysis.json; claims
   batch confirms the fault persists (Q0 P(1|1) < 0.7, Q6 < 0.3, Q9 idle
   P1 > 0.2); a train that plateaus instead of oscillating marks leakage.
 
+
+- [Tuna-17 static-neighbor conditional-Ramsey check](tuna_zz_map.md): a
+  complete, unacquired design reference for an independent comparison with
+  the bipartite map above. It uses both directions, explicit |0>/|1>
+  neighbors, eight induced matchings, X/Y readout, six delays including zero,
+  and joint pair calibration with propagated covariance and fixed Holm
+  criteria. Its 416 circuits occupy 139 batches. The current 120 s hardware
+  pause imposes at least 4.6 hours between batches alone, while the retained
+  runs show calibration changes within minutes. Mandatory 20 and 40 us
+  points also lack demonstrated all-qubit viability. The case is therefore
+  not recommended for acquisition unchanged: first fix a shorter pilot or
+  targeted comparison and its calibration policy. The frozen grid remains
+  a reviewable reference, and a failed delay remains inconclusive. The
+  separate 425,984-shot compact QX preflight is also unsubmitted; earlier
+  QX controls do not validate its payloads. Neither case reconstructs flux
+  settings or directly probes the Q1/Q2 nonedge.
 - Interleave the four configurations inside one job (disjoint stars per
   configuration) so drift cancels between them.
 - Drive amplitude series (1, 2, 4 X-pair densities) to test the quadratic
