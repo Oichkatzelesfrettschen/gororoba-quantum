@@ -886,7 +886,9 @@ SANITY_MID_ONE = 0.2
 SANITY_SPECTATOR_ONE = 0.2
 
 
-def sanity(run: Path, readout_error: float = SANITY_READOUT_ERROR) -> tuple[list[str], list[str]]:
+def sanity(
+    run: Path, readout_error: float = SANITY_READOUT_ERROR, exempt: frozenset[int] = frozenset()
+) -> tuple[list[str], list[str]]:
     """Checks one collected batch must pass before the next batch is submitted, and what the result carried.
 
     Every job completed with its requested shots; every shot carries n
@@ -894,7 +896,8 @@ def sanity(run: Path, readout_error: float = SANITY_READOUT_ERROR) -> tuple[list
     notes record which; in a readout circuit every target's assignment error
     stays below readout_error (SANITY_READOUT_ERROR unless a series names its
     own guard, which the notes record); in a Ramsey circuit every spectator, held
-    in |0>, reads 1 below SANITY_SPECTATOR_ONE and, where the 2 n-bit register
+    in |0>, reads 1 below SANITY_SPECTATOR_ONE (a spectator in exempt is
+    reported in the notes instead) and, where the 2 n-bit register
     returns, every target's mid-circuit outcome reads 1 below SANITY_MID_ONE. A
     failure stops the series before it spends more device time.
     """
@@ -909,6 +912,7 @@ def sanity(run: Path, readout_error: float = SANITY_READOUT_ERROR) -> tuple[list
     meta, _ = members(profile, case["series"])
     n = meta["nqubits"]
     seen = set()
+    exempt_notes: list[str] = []
     for row in case["circuits"]:
         path = run / "raw" / f"{row['file']}.json"
         if not path.exists():
@@ -936,9 +940,12 @@ def sanity(run: Path, readout_error: float = SANITY_READOUT_ERROR) -> tuple[list
         problems += [
             f"{row['file']} spectator q{q}: P1 {ones[q]:.3f}"
             for q in meta["spectators"]
-            if ones[q] > SANITY_SPECTATOR_ONE
+            if ones[q] > SANITY_SPECTATOR_ONE and q not in exempt
         ]
-    notes = []
+        exempt_notes += [
+            f"{row['file']} exempt spectator q{q}: P1 {ones[q]:.3f}" for q in meta["spectators"] if q in exempt
+        ]
+    notes = list(exempt_notes)
     for width in sorted(seen):
         if width == n:
             notes.append(f"register width {width}: measurement register only: mid-circuit outcomes absent")
@@ -1001,6 +1008,12 @@ def main() -> int:
     mode.add_argument("--sanity", type=Path, metavar="RUN_DIR")
     parser.add_argument("--replay", action="store_true", help="with --analyze: compare OUT with the recomputation")
     parser.add_argument(
+        "--sanity-spectator-exempt",
+        type=lambda value: frozenset(int(item) for item in value.split(",")),
+        default=frozenset(),
+        help="with --sanity: comma-separated spectators reported in the notes instead of checked against the guard",
+    )
+    parser.add_argument(
         "--sanity-readout-error",
         type=float,
         default=SANITY_READOUT_ERROR,
@@ -1008,7 +1021,7 @@ def main() -> int:
     )
     args = parser.parse_args()
     if args.sanity:
-        problems, notes = sanity(args.sanity, args.sanity_readout_error)
+        problems, notes = sanity(args.sanity, args.sanity_readout_error, args.sanity_spectator_exempt)
         if args.sanity_readout_error != SANITY_READOUT_ERROR:
             notes.append(f"readout guard {args.sanity_readout_error} (default {SANITY_READOUT_ERROR})")
         for line in [*notes, *problems]:
