@@ -1790,8 +1790,19 @@ def check_null_target(rec: dict[str, Any]) -> None:
         raise SystemExit(f"{rec['stream']}: the prefix length is not {count}")
     if sha(statistic_lines(null_statistics(rec["weights"], count, rec["stream"]))) != rec["prefix_sha256"]:
         raise SystemExit(f"{rec['stream']}: the first {count} replicates differ from their recomputation")
-    if rec["delta_exceedances"] / n != rec["delta_rate"] or rec["joint_exceedances"] / n != rec["joint_rate"]:
+    if rec["threshold"] != DETECT_DELTA_CHI2:
+        raise SystemExit(f"{rec['stream']}: the threshold is not DETECT_DELTA_CHI2 = {DETECT_DELTA_CHI2}")
+    over = rec["delta_exceedances"]
+    if DETECT_DELTA_CHI2 >= tail[0] and over != sum(v >= DETECT_DELTA_CHI2 for v in tail):
+        raise SystemExit(f"{rec['stream']}: the delta chi2 exceedance count differs from the kept tail")
+    if DETECT_DELTA_CHI2 < tail[0] and over < len(tail):
+        raise SystemExit(f"{rec['stream']}: the delta chi2 exceedance count is below the kept tail")
+    if over / n != rec["delta_rate"] or rec["joint_exceedances"] / n != rec["joint_rate"]:
         raise SystemExit(f"{rec['stream']}: an exceedance rate differs from its count")
+    if rec["delta_rate_interval"] != wilson(over, n) or rec["joint_rate_interval"] != wilson(
+        rec["joint_exceedances"], n
+    ):
+        raise SystemExit(f"{rec['stream']}: an exceedance-rate interval differs from its Wilson recomputation")
     if rec["joint_exceedances"] > rec["delta_exceedances"]:
         raise SystemExit(f"{rec['stream']}: the joint rule fires more often than its delta chi2 conjunct")
     observed = rec["observed"]["delta_chi2"]
@@ -1864,6 +1875,14 @@ def null_self_test() -> str:
         "tail": {**rec, "tail": rec["tail"][1:]},
         "weight": {**rec, "weights": [weights[0] * 1.001, *weights[1:]]},
         "tail value": {**rec, "tail": [*rec["tail"][:-1], rec["tail"][-1] + 0.5]},
+        "threshold": {**rec, "threshold": DETECT_DELTA_CHI2 + 1},
+        "delta count": {
+            **rec,
+            "delta_exceedances": rec["delta_exceedances"] + 1,
+            "delta_rate": (rec["delta_exceedances"] + 1) / rec["replicates"],
+        },
+        "delta interval": {**rec, "delta_rate_interval": wilson(rec["delta_exceedances"] + 1, rec["replicates"])},
+        "joint interval": {**rec, "joint_rate_interval": wilson(rec["joint_exceedances"] + 1, rec["replicates"])},
     }
     for name, bad in mutations.items():
         try:
@@ -1919,8 +1938,8 @@ def null_self_test() -> str:
             continue
         raise SystemExit(f"null self-test: a mutated {name} is accepted")
     return (
-        "null self-test: replay reproduces; mutated seed, dropped tail value, changed weight, a_sigma "
-        "and readjudication fields are rejected"
+        "null self-test: replay reproduces; mutated seed, dropped tail value, changed weight, threshold, "
+        "delta count, rate intervals, a_sigma and readjudication fields are rejected"
     )
 
 
