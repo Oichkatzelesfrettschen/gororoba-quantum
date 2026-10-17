@@ -13,8 +13,9 @@ Subcommands:
   backend type the account sees with its limits, topology and queue, every
   backend's status and heartbeat, the languages) and usage.json (the account's
   transaction ledger aggregated by domain, backend type and job, beside each
-  job's shots and execution seconds). Team, member and user identifiers enter
-  only as a 12-hex sha256; names, e-mail addresses and OIDC subjects never do.
+  job's shots and execution seconds). Team, member and user identifiers,
+  names, e-mail addresses and OIDC subjects never enter either file: the ids
+  are small integers, so even a hash of one is recoverable by enumeration.
 - check DIR [--agents FILE] (offline) requires both files to carry their
   schema, the redacted identity form and a ledger whose aggregates equal the
   sum of its rows; with --agents it renders the structural backend table
@@ -69,13 +70,12 @@ SUBMISSION_SCHEMA = "qi-submission-v2"
 HARDWARE_BATCH_CIRCUITS = 3
 HARDWARE_QUEUED_BATCHES = 1
 REDACTED = ("email", "full_name", "oidc_sub")
+# Account ids are small integers; a hash of one reverses by enumeration, so no
+# form of them is retained.
+ACCOUNT_IDENTIFIERS = ("team", "member", "user", "team_id", "member_id", "user_id", "owner_id")
 TERMINAL = {"completed", "failed", "cancelled"}
 ENQUEUED_BATCH_STATUSES = {"queued", "reserved", "running", "finished"}
 REFRESH_MARGIN = 120.0
-
-
-def digest(value: object) -> str:
-    return hashlib.sha256(str(value).encode()).hexdigest()[:12]
 
 
 def now() -> str:
@@ -176,8 +176,6 @@ def ledger(client: Client) -> dict[str, Any]:
                 "change": row["change"],
                 "job": row["job"],
                 "backend_type_id": batch["backend_type_id"] if batch else None,
-                "team": digest(row["team_id"]),
-                "member": digest(row["member_id"]) if row["member_id"] is not None else None,
             }
         )
     job_rows = []
@@ -230,16 +228,8 @@ def snapshot(out: Path) -> None:
         "retrieved_utc": now(),
         "host": HOST,
         "account": {
-            "teams": [{"team": digest(t["id"]), "individual_user": t["individual_user"]} for t in teams],
-            "members": [
-                {
-                    "member": digest(m["id"]),
-                    "team": digest(m["team_id"]),
-                    "role": m["role"],
-                    "is_active": m["is_active"],
-                }
-                for m in members
-            ],
+            "teams": [{"individual_user": t["individual_user"]} for t in teams],
+            "members": [{"role": m["role"], "is_active": m["is_active"]} for m in members],
             "projects": len(client.pages("/projects")),
             "reservations": len(client.pages("/reservations")),
         },
@@ -281,18 +271,13 @@ def check_agents(catalogue: dict[str, Any], agents: Path) -> None:
         raise SystemExit(f"{agents}: the quantum-inspire-facts table differs from facts_table(catalogue.json)")
 
 
-HEX = "0123456789abcdef"
-PSEUDONYMS = ("team", "member")
-
-
-def pseudonyms(value: Any) -> list[Any]:
-    """Every value stored under a team or member key, at any depth; digest() writes each as 12 hex digits."""
+def keys(value: Any) -> set[str]:
+    """Every mapping key at any depth of a JSON value."""
     if isinstance(value, dict):
-        found = [item for key, item in value.items() if key in PSEUDONYMS]
-        return found + [x for item in value.values() for x in pseudonyms(item)]
+        return set(value) | {k for item in value.values() for k in keys(item)}
     if isinstance(value, list):
-        return [x for item in value for x in pseudonyms(item)]
-    return []
+        return {k for item in value for k in keys(item)}
+    return set()
 
 
 def check(directory: Path, agents: Path | None = None) -> None:
@@ -300,13 +285,10 @@ def check(directory: Path, agents: Path | None = None) -> None:
     usage = json.loads((directory / "usage.json").read_text(encoding="utf-8"))
     if catalogue["schema"] != CATALOGUE_SCHEMA or usage["schema"] != USAGE_SCHEMA:
         raise SystemExit("unexpected schema")
-    text = json.dumps(catalogue) + json.dumps(usage)
-    for key in (*REDACTED, "access_token", "refresh_token", "team_id", "member_id", "user_id"):
-        if f'"{key}"' in text:
+    present = keys(catalogue) | keys(usage)
+    for key in (*REDACTED, *ACCOUNT_IDENTIFIERS, "access_token", "refresh_token"):
+        if key in present:
             raise SystemExit(f"snapshot carries {key}")
-    for value in pseudonyms(catalogue) + pseudonyms(usage):
-        if not (value is None or (isinstance(value, str) and len(value) == 12 and set(value) <= set(HEX))):
-            raise SystemExit(f"snapshot carries an account identifier that is not a 12-hex digest: {value!r}")
     for field in (
         "nqubits",
         "topology",
@@ -731,8 +713,6 @@ def collect(case_dir: Path, poll: float, timeout: float) -> None:
             "domain": t["domain"],
             "change": t["change"],
             "job": t["job"],
-            "team": digest(t["team_id"]),
-            "member": digest(t["member_id"]) if t["member_id"] is not None else None,
         }
         for t in client.pages("/transactions/")
         if t["job"] in job_ids

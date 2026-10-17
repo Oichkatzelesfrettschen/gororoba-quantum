@@ -3,17 +3,14 @@
   "members": [
    {
     "is_active": true,
-    "member": "7834541aeb21",
-    "role": "member",
-    "team": "61cec6179092"
+    "role": "member"
    }
   ],
   "projects": 9,
   "reservations": 0,
   "teams": [
    {
-    "individual_user": true,
-    "team": "61cec6179092"
+    "individual_user": true
    }
   ]
  },

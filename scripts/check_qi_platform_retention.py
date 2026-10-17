@@ -777,20 +777,24 @@ class RetentionChecks(unittest.TestCase):
             with self.assertRaisesRegex(SystemExit, "nonempty approval"):
                 platform.submit(self.case_dir, 7, "  ")
 
-    def test_snapshot_rejects_unhashed_account_identifiers(self) -> None:
+    def test_snapshot_rejects_every_form_of_account_identifier(self) -> None:
         evidence = ROOT / "docs/evidence/quantum_inspire"
-        for name, identifier in (("catalogue.json", 4321), ("usage.json", "4321")):
-            with self.subTest(file=name), tempfile.TemporaryDirectory() as scratch:
+        for name, key, value in (
+            ("catalogue.json", "team", "61cec6179092"),
+            ("catalogue.json", "member", 4321),
+            ("usage.json", "member", None),
+        ):
+            with self.subTest(file=name, key=key), tempfile.TemporaryDirectory() as scratch:
                 directory = Path(scratch)
                 for source in ("catalogue.json", "usage.json"):
                     (directory / source).write_bytes((evidence / source).read_bytes())
                 snapshot = json.loads((directory / name).read_text(encoding="utf-8"))
                 if name == "usage.json":
-                    snapshot["transactions"].append({"team": identifier, "member": None})
+                    snapshot["transactions"].append({key: value})
                 else:
-                    snapshot["account"]["teams"][0]["team"] = identifier
+                    snapshot["account"]["members"][0][key] = value
                 (directory / name).write_text(json.dumps(snapshot))
-                with self.assertRaisesRegex(SystemExit, "12-hex digest"):
+                with self.assertRaisesRegex(SystemExit, f"snapshot carries {key}"):
                     platform.check(directory)
 
     def test_snapshot_rejects_inconsistent_completed_shots(self) -> None:
