@@ -588,6 +588,7 @@ def holds_flags(text: str, count: int) -> list[bool]:
 
 
 def law_cases(section: dict[str, Any], count: int, laws: Sequence[str], parse: Callable[[Any], Any]) -> list[Any]:
+    require(len(section["holds"]) == len(laws), f"{len(section['holds'])} hold rows for {len(laws)} laws")
     failures: dict[tuple[int, int], tuple[Any, Any]] = {}
     for law, t, left, right in section["failures"]:
         require(
@@ -610,6 +611,13 @@ def classify_w64(doc: dict[str, Any], laws: Sequence[str]) -> dict[str, Any]:
     w64 = doc["w64"]
     require([parse_bits(b) for b in w64["corpus"]] == corpus, "w64 corpus differs from the harness definition")
     require([tuple(t) for t in w64["triples"]] == triples, "w64 triples differ from the harness definition")
+    for op in ("neg", "inv"):
+        require(len(w64[op]) == len(corpus), f"w64 {op} holds {len(w64[op])} results for {len(corpus)} inputs")
+    for op in OPS:
+        require(
+            len(w64[op]) == len(corpus) and all(len(row) == len(corpus) for row in w64[op]),
+            f"w64 {op} is not a {len(corpus)} x {len(corpus)} table",
+        )
     classes: dict[str, Any] = {}
     for op in ("neg", "inv"):
         classes[op] = classify_unary(corpus, [parse_bits(b) for b in w64[op]], op)

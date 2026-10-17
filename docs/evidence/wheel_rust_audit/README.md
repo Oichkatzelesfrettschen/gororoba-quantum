@@ -290,11 +290,11 @@ The audit changes nothing in the module:
 
 ## Replay
 
-CI has no Rust. The core-521 gate runs
+CI has no Rust. The sources-251 gate runs
 `"$PYTHON" scripts/wheel_rust_audit.py --check docs/evidence/wheel_rust_audit`
 in normal and optimized Python. It requires the digests of the harness
 sources and outputs, regenerates the corpus and triples, and recomputes every
-class into `classification.json` byte for byte. The core-522 gate runs
+class into `classification.json` byte for byte. The sources-252 gate runs
 `--self-test`, which checks `round_binary64` and requires the comparison to
 reject a flipped class, a corrupted operation pattern and a corrupted law
 side.
