@@ -131,8 +131,16 @@ measured extraction/render checks join `ci/gates.json`.
 
 Changes to the C881 proof sources or receipts also run the pinned Rocq
 procedure in `docs/evidence/c881_exhaustive/README.md`. The CI receipt
-check verifies retained hashes; a fresh kernel replay remains the proof-change
-procedure because hosted CI supplies no pinned Rocq toolchain.
+check verifies retained hashes. The ci.yml job `rocq-replay` replays the
+formal_certificates, c881_exhaustive, folding_proofs and TargetFlipN21
+bundles under the opam switch of `ci/rocq_toolchain.pin` (Rocq 9.2.0 on OCaml
+5.5.0) on a pull request that touches `proofs/`, a replay bundle, the replay
+driver, a pin or the workflow (`ci/rocq_changed.sh` holds the path list), and
+adds the stiefel_witness bundle on pushes to main and the nightly schedule.
+Gates core-403 and core-404 hold the pin, the toolchain.txt banners, the path
+list and the open_gororoba fetch in agreement. The manual procedure remains
+the local replay. A pull request merges when `rocq-replay` is green whenever
+it ran.
 
 ## Source library and research replay
 

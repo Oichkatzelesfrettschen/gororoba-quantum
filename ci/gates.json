@@ -2936,6 +2936,22 @@
    "name": "core-491",
    "seconds": 410.0,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py && \"$PYTHON\" -B -O -W error ci/check_rocq_ci_pins.py",
+   "name": "core-403",
+   "seconds": 0.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py --self-test && \"$PYTHON\" -B -O -W error ci/check_rocq_ci_pins.py --self-test",
+   "name": "core-404",
+   "seconds": 0.9,
+   "tier": "pr"
   }
  ],
  "excluded": [
@@ -2947,12 +2963,12 @@
   {
    "cmd": "ROCQ=\"${ROCQ:-rocq}\" sh docs/evidence/c881_exhaustive/replay_rocq.sh",
    "cwd": ".",
-   "reason": "needs the Rocq toolchain pinned in docs/evidence/c881_exhaustive/toolchain.txt; proof-change replay"
+   "reason": "runs in the ci.yml job rocq-replay on proof paths under the toolchain of ci/rocq_toolchain.pin"
   },
   {
    "cmd": "GOROROBA_ROOT=\"$GOROROBA_ROOT\" sh docs/evidence/stiefel_witness/replay_rocq.sh",
    "cwd": ".",
-   "reason": "needs the Rocq toolchain in docs/evidence/stiefel_witness/toolchain.txt and an open_gororoba checkout; proof-change replay"
+   "reason": "runs in the ci.yml job rocq-replay on pushes to main and the nightly schedule, over the pinned open_gororoba checkout"
   }
  ]
 }

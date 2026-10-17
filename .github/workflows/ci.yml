@@ -71,3 +71,104 @@ jobs:
       - name: Run verify.py
         working-directory: gororoba_quantum
         run: GOROROBA_ROOT="$RUNNER_TEMP/open_gororoba" python verify.py
+
+  changes:
+    name: rocq paths changed
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      rocq: ${{ steps.filter.outputs.rocq }}
+      full: ${{ steps.filter.outputs.full }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select the Rocq replay
+        id: filter
+        # Pull requests and pushes diff the tree against the base sha; the
+        # schedule and manual runs always replay. Every event but a pull
+        # request adds the Stiefel bundle, whose replay takes about nine minutes.
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          set -eu
+          case "$EVENT" in
+          pull_request) full=false ;;
+          *) full=true ;;
+          esac
+          rocq=true
+          case "$EVENT" in
+          pull_request | push)
+            case "$BASE" in
+            "" | 0000000000000000000000000000000000000000) ;;
+            *)
+              git fetch -q --depth=1 origin "$BASE"
+              if git diff --name-only "$BASE" HEAD | sh ci/rocq_changed.sh; then
+                rocq=true
+              else
+                rocq=false
+              fi
+              ;;
+            esac
+            ;;
+          esac
+          echo "rocq=$rocq" >> "$GITHUB_OUTPUT"
+          echo "full=$full" >> "$GITHUB_OUTPUT"
+
+  rocq-replay:
+    name: rocq replay
+    needs: changes
+    if: needs.changes.outputs.rocq == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PYTHONHASHSEED: "0"
+      OPAMROOT: ${{ github.workspace }}/.opam
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install system packages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq opam m4 pkg-config libgmp-dev git make gcc unzip bubblewrap ripgrep
+          command -v rg
+      - name: Restore the opam switch
+        uses: actions/cache@v4
+        with:
+          path: .opam
+          key: opam-rocq-${{ runner.os }}-${{ hashFiles('ci/rocq_toolchain.pin', 'ci/install_rocq.sh') }}
+      - name: Install the pinned Rocq toolchain
+        run: |
+          sh ci/install_rocq.sh > "$RUNNER_TEMP/opam_list.txt"
+          cat "$RUNNER_TEMP/opam_list.txt"
+      - name: Fetch the pinned open_gororoba sources
+        run: >-
+          sh ci/fetch_open_gororoba.sh "$RUNNER_TEMP/open_gororoba"
+          proofs
+          crates/algebra_analysis/src
+          crates/algebra_experimental/src/sedenion_subalgebras
+          crates/cd_kernel/src/cayley_dickson
+      - name: Replay the receipts
+        # A pull request replays the bundles under two minutes; pushes to main,
+        # the nightly schedule and manual runs add the Stiefel bundle.
+        run: |
+          set -eu
+          rocq=$(sed -n 's/^rocq //p' "$RUNNER_TEMP/opam_list.txt")
+          only="formal_certificates c881_exhaustive folding_proofs TargetFlipN21"
+          if [ "${{ needs.changes.outputs.full }}" = true ]; then
+            only="$only stiefel_witness"
+          fi
+          # shellcheck disable=SC2086
+          python3 scripts/rocq_kaggle_replay.py --rocq "$rocq" \
+            --gororoba-root "$RUNNER_TEMP/open_gororoba" \
+            --gororoba-commit "$(tr -d ' \t\r\n' < ci/open_gororoba.pin)" \
+            --only $only --out "$RUNNER_TEMP/rocq_replay.json"
+      - name: Show the replay record
+        if: always()
+        run: |
+          [ ! -f "$RUNNER_TEMP/rocq_replay.json" ] || python3 -c 'import json,sys; r=json.load(open(sys.argv[1])); [print(k, v["returncode"], v["seconds"], v["warning_lines"], v["tail"][-600:], sep="\n") for k, v in r["replays"].items()]' "$RUNNER_TEMP/rocq_replay.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rocq-replay
+          path: |
+            ${{ runner.temp }}/rocq_replay.json
+            ${{ runner.temp }}/opam_list.txt
