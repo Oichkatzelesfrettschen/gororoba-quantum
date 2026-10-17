@@ -150,7 +150,11 @@ and requires every number to agree within 1.5e-6 (one unit of the six
 retained decimals plus roundoff), or 1e-9 relative for larger values. A
 condition number agrees within 1e-6 relative: an SVD on a condition-kappa
 design carries relative roundoff of order kappa times the machine epsilon,
-which differs between BLAS builds at fold conditions near 5e5.
+which differs between BLAS builds at fold conditions near 5e5. Every other
+number inside a model entry also agrees within eps * kappa^2 * |value|, kappa
+the model's retained fold_condition_max (``compare``): 4.3e-5 relative on the
+ill-conditioned lane-4 model, and below the one-unit floor for values near 1
+wherever kappa stays under about 8e4.
 """
 
 from __future__ import annotations
@@ -1014,12 +1018,14 @@ def self_test() -> int:
         print(f"ibm_kingston edge {key}: ideal mismatch {mismatch:.1e} rad, calibrations {summary['calibrations']}")
         require(mismatch < 1e-9, f"ibm_kingston {key}: replicas miss the ideal fringe by {mismatch:.2e} rad")
     # The check admits roundoff scaled by a model's own conditioning and
-    # still rejects a change beyond it, on well- and ill-conditioned models.
+    # rejects a change just beyond it: the one-unit floor 1.5e-6 at kappa 10
+    # and eps * kappa^2 = 4.299e-5 at kappa 4.4e5, each bracketed within 3
+    # percent so a rescaled coefficient fails.
     for kappa, fresh, accepted in (
-        (10.0, 1.000001, True),
-        (10.0, 1.000003, False),
-        (4.4e5, 1.00003, True),
-        (4.4e5, 1.001, False),
+        (10.0, 1.0 + 1.46e-6, True),
+        (10.0, 1.0 + 1.54e-6, False),
+        (4.4e5, 1.0 + 4.25e-5, True),
+        (4.4e5, 1.0 + 4.35e-5, False),
     ):
         try:
             compare({"fold_condition_max": kappa, "value": 1.0}, {"fold_condition_max": kappa, "value": fresh}, "model")
@@ -1073,14 +1079,17 @@ def lsq_roundoff_scaling(kappa: float, trials: int = 40) -> tuple[float, float]:
 def compare(retained: Any, fresh: Any, path: str, conditioning: float = 0.0) -> None:
     """Every retained number within the check tolerance of its recomputation.
 
-    A least-squares solution with a nonzero residual carries roundoff of
-    order eps * kappa^2 relative, which lsq_roundoff_scaling() measures in the
-    self-test, so the fitted values of a model whose design or leave-one-out
-    fold is ill-conditioned move by that much between BLAS builds. Inside a
-    model entry a fitted value therefore also admits eps * kappa^2 * |value|
-    with kappa its retained fold_condition_max; the condition numbers keep
-    their own relative tolerance, and a well-conditioned model keeps the
-    one-rounding-unit floor.
+    A least-squares solution with a nonzero residual carries normwise
+    roundoff of order eps * kappa^2 * max|x|, which lsq_roundoff_scaling()
+    measures in the self-test, so the values of a model whose design or
+    leave-one-out fold is ill-conditioned move between BLAS builds. Inside a
+    model entry a value therefore also admits eps * kappa^2 * |value| with
+    kappa its retained fold_condition_max; the condition numbers keep their
+    own relative tolerance, and a well-conditioned model keeps the
+    one-rounding-unit floor. The componentwise form is tighter than the
+    normwise bound, so a substrate that moves a small component past it fails
+    the check rather than passing a regression; the AOCL, OpenBLAS and Kaggle
+    recomputes fall inside it (docs/evidence/atlas_coherent_families).
     """
     if isinstance(retained, dict):
         require(isinstance(fresh, dict) and set(retained) == set(fresh), f"{path}: keys differ")

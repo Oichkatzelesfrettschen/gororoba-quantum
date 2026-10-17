@@ -121,8 +121,10 @@ The host recompute of lane 4 and the Kaggle kernel's lane 4 differ in four
 numbers: two below 5e-16 rad and two by one unit of the last retained
 decimal (a fold condition number near 4.4e5 and a predicted log contrast in
 the ill-conditioned `axis_tilt_plus_mean` model). CI's OpenBLAS build moves
-five numbers of that model by one to three units (largest 3e-6 on a log
-ratio of -2.22) and reproduces every other model exactly. A least-squares
+five resimulated contrast values of that model (Fez and Kingston lane 4) by
+one to three units (largest 3e-6 on a predicted log ratio of -2.22),
+reproduces its fitted parameters to all six decimals, and reproduces every
+other model exactly. A least-squares
 solution with a nonzero residual carries roundoff of order eps * kappa^2,
 and Fez lane 4's worst fold has kappa = 4.4e5, so eps * kappa^2 is 4.3e-5
 relative. The self-test (core-325) measures that law with
@@ -132,9 +134,12 @@ the signal, perturbed at eps, the solution drift stays inside eps * kappa^2
 0.2 % of the first and about 200 to 700 times the second on both the AOCL
 and OpenBLAS builds). `--check` therefore allows one rounding unit, 1.5e-6,
 1e-6 relative on condition numbers, and inside each model eps * kappa^2 *
-|value| on every fitted value, kappa its retained fold_condition_max; a
+|value| on every other value, kappa its retained fold_condition_max; a
 model whose kappa stays below about 8e4 keeps the one-unit floor for values
-near 1. The host also reproduced all seven Fez lanes of the Kaggle
+near 1. The probe bounds the drift normwise, against the solution's largest
+component, while `--check` applies the bound to each value's own magnitude;
+the componentwise form is the tighter one, so a substrate that moved a small
+component past it would fail the gate rather than hide a regression. The host also reproduced all seven Fez lanes of the Kaggle
 result under that check.
 
 ## Gate
