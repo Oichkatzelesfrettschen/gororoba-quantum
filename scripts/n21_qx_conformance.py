@@ -95,6 +95,14 @@ SCHEMA = "n21-qx-conformance-v1"
 ISA = ROOT / "results/live/2026-10-17T003834.987727Z/isa.qpy"
 RECORD = ISA.parent / "record.json"
 QX_WIDTH = 10
+BIT_ORDER = (
+    "QX keys hold one character per declared qubit, qubit 0 rightmost, each the qubit's last measured "
+    "outcome; recorded value r = c0 + 2 c1 (clbit 0 least significant) reads c_k from readout[k]"
+)
+# Formatted floats inside retained messages compare at this many significant digits, the
+# precision at which BLAS builds agree on the values the messages quote.
+MESSAGE_DIGITS = 9
+FLOAT_TEXT = re.compile(r"-?\d+\.\d+(?:e[-+]?\d+)?")
 QX_ANCILLA = 7
 QX_SHOTS = 2048
 BASE_SEED = 20261017
@@ -1015,10 +1023,7 @@ def out(path: Path, seeds: int) -> dict[str, Any]:
         "isa": {"path": ISA.relative_to(ROOT).as_posix(), "sha256": sha256(ISA.read_bytes())},
         "record": {"path": RECORD.relative_to(ROOT).as_posix(), "sha256": sha256(RECORD.read_bytes())},
         "qx_width": QX_WIDTH,
-        "bit_order": (
-            "QX keys hold one character per declared qubit, qubit 0 rightmost, each the qubit's last measured "
-            "outcome; recorded value r = c0 + 2 c1 (clbit 0 least significant) reads c_k from readout[k]"
-        ),
+        "bit_order": BIT_ORDER,
         "arms": [
             {
                 "name": arm["name"],
@@ -1192,7 +1197,14 @@ def _close(a: Any, b: Any, tol: float = EXACT_TOL) -> bool:
         return len(a) == len(b) and all(_close(x, y, tol) for x, y in zip(a, b, strict=True))
     if isinstance(a, float) or isinstance(b, float):
         return isinstance(a, (int, float)) and isinstance(b, (int, float)) and abs(a - b) <= tol
+    if isinstance(a, str) and isinstance(b, str):
+        return _message_form(a) == _message_form(b)
     return bool(a == b)
+
+
+def _message_form(text: str) -> str:
+    """A retained message with every embedded float rounded to MESSAGE_DIGITS significant digits."""
+    return FLOAT_TEXT.sub(lambda match: f"{float(match.group()):.{MESSAGE_DIGITS}g}", text)
 
 
 def verify(record: dict[str, Any], directory: Path) -> dict[str, Any]:
@@ -1200,7 +1212,11 @@ def verify(record: dict[str, Any], directory: Path) -> dict[str, Any]:
     if record.get("schema") != SCHEMA:
         raise ValueError(f"schema {record.get('schema')!r} is not {SCHEMA}")
     require_record_shape(record)
+    if (record.get("qx_width"), record.get("bit_order")) != (QX_WIDTH, BIT_ORDER):
+        raise ValueError(f"declared width {record.get('qx_width')!r} or bit order differs from the key reading")
     for key, path in (("isa", ISA), ("record", RECORD)):
+        if record[key]["path"] != path.relative_to(ROOT).as_posix():
+            raise ValueError(f"{key} path {record[key]['path']!r} is not {path.relative_to(ROOT).as_posix()}")
         if record[key]["sha256"] != sha256(path.read_bytes()):
             raise ValueError(f"{record[key]['path']} differs from the input the record was built from")
     built = build()
@@ -1238,7 +1254,11 @@ def verify(record: dict[str, Any], directory: Path) -> dict[str, Any]:
         if probe["text_sha256"] != sha256(RESET_PHASE_PROBES[name].encode()):
             raise ValueError(f"reset phase probe {name}: text differs from the probe that ran")
     native = native_form(record)
+    readout_qubit = native["readout"][0]
     for n, run in enumerate(qx["native_branches"]):
+        (key,) = run["results"]
+        if any(bit(key, q) != "0" for q in range(QX_WIDTH) if q != readout_qubit):
+            raise ValueError(f"native branch run {n}: key {key} sets a qubit other than measured q[{readout_qubit}]")
         if (run["seed"], run["text_sha256"]) != (BASE_SEED + n, sha256(branch_program(texts[native["file"]]).encode())):
             raise ValueError(f"native branch run {n}: seed or program differs from the branch program")
     evidence = reset_evidence(record, texts)
