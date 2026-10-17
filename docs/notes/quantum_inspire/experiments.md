@@ -622,7 +622,62 @@ device.
   through Q-03; its analysis and the remaining batches land with the rest
   of the series.
 
+## Readout faults on Tuna-17, 2026-10-17
+
+`scripts/qi_tuna17_readout_faults.py` (gate core-400) tests the readout
+changes of that morning against named retained runs and writes
+results/quantum_inspire/tuna_17_readout_faults.json. Each test states its
+falsifier before its number.
+
+- **Q9 reads |0> as 1 and stays in |0>.** With assignment errors e0, e1 and
+  excited population p <= 1/2, an idle readout gives e0 + s p and an X at
+  most e0 + s (1 - p), so e0 >= P(1|idle) + P(1|X) - 1 whatever p and e1.
+  With every frequency at its one-sided 3-sigma limit, the three zero-wait
+  batches at 05:26-05:33Z give e0 >= 0.19 (the 2 us wait batch Q-00,
+  0.145), against e0 <= 0.030 in the two runs of the previous evening, and
+  bound p <= 0.115. Series Q reads every target
+  mid-circuit before an X90 pair two cycles apart: a shot left in |1> by
+  that readout ends near the idle floor and a shot left in |0> near the X
+  level. Relaxation during a longer delay pulls w toward 0, so the test
+  reads the zero-delay arm: opening-1 shots of Q9 end where opening-0 shots
+  do, excited fraction w = 0.021 +- 0.013 over 2122 shots (falsifier
+  w >= 0.5), where the eight healthy targets read -0.10 to 0.20. An excitation
+  that the readout itself causes would also give w near 1, so it is
+  excluded with the population.
+- **Q0 and Q6 lose |1> before the readout window, or misread it.** At
+  zero wait their P(1|1) keeps 0.55 and 0.16 of the previous evening's
+  excited scale. Relaxation inside the 800 ns readout would need
+  T1 <= 1.36 and 0.44 us and leave at most 0.156 and 0.015 after a 2 us
+  wait; the 2 us wait runs of 04:15-04:24Z read 0.39 and 0.14 (z >= 32).
+  A qubit that survives the whole window reads 1 at the earlier scale
+  whatever the discriminator does with a decay inside it, so the bound
+  holds for every such response. The test assumes the device did not
+  change between 04:24Z and 05:26Z.
+- **What separates under-rotation from |1> misassignment.** Inverting the
+  post-calibration Ramsey arms (P-05-rerun1 to P-08, d = 77) with the
+  matched readout pair gives Q0 visibility 0.81-0.87, like its healthy
+  neighbors, and Q6 0.28-0.38. When X and X90 share one under-rotation,
+  that inversion cannot decide: the raw quadratures take the readout-scale
+  form sin^2(beta) (1 + cos phi) / 2. X and X90 are separate native
+  operations, and a fault confined to X keeps the X90 Ramsey at the earlier
+  scale, where the mean of the two raw quadratures is at least
+  P10 + S_pre (1 - 1/sqrt 2) / 2 at every phase: Q6's 0.064 against 0.148
+  excludes that fault, Q0's 0.287 against 0.175 does not. P1 after X X
+  decides between under-rotation of X, either kind, which predicts 0.98 on
+  Q0 and 0.52 on Q6, and misassignment, which predicts the floor, 0.038
+  and 0.013.
+- The 05:23Z endpoint for Q9 is the last job of Q-04 (jobs
+  1527388-1527390, finished 05:23:12-05:23:27Z), whose opening readout of
+  Q9 reads 0.238-0.243: a mid-circuit readout with nine targets read at
+  once, a different observable from the readout-0 circuit's 0.27-0.29.
+
 ## Next cases
+
+- Q0 and Q6 double X (claim proposed-tuna17-q0-q6-double-x-discriminator):
+  one batch of readout-0, readout-1 and X X on every qubit, with 0 and 2 us
+  waits and X trains of three and more in later batches, after the first
+  batch confirms the fault persists (Q0 P(1|1) < 0.7, Q6 < 0.3, Q9 idle
+  P1 > 0.2); a train that plateaus instead of oscillating marks leakage.
 
 - Interleave the four configurations inside one job (disjoint stars per
   configuration) so drift cancels between them.

@@ -20,9 +20,15 @@ nightly schedule and manual runs add the `full` tier's long simulation
 contracts on twelve shards. Runners are 2-vCPU, 8 GB machines on Python 3.14
 with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
 the plotting-only `matplotlib==3.11.2`). A pull request merges when every
-shard is green and its review threads are resolved; a red main or nightly
-run is fixed in the next change. A new module, evidence
-replay or contract joins the gate list in ci/gates.json in the same change.
+shard and the `external-ground-truth` job are green and its review threads
+are resolved; a red main or nightly run is fixed in the next change. The
+`external-ground-truth` job runs `verify.py` over the open_gororoba commit
+named in [ci/open_gororoba.pin](ci/open_gororoba.pin):
+`ci/fetch_open_gororoba.sh` sparse-checks out the paths it is given, and
+`scripts/materialize_gororoba_csv.py` rewrites the git-ignored `data/csv`
+files from the registry records, whose sha256 pins `verify.py` rechecks. A
+pin bump is a reviewed commit. A new module, evidence replay or contract
+joins the gate list in ci/gates.json in the same change.
 The lint and type gates (core-000, core-001, core-002, core-039) cover
 gororoba_quantum/, scripts/, ci/ and kaggle_kernel/ whole, so a module there
 is linted and type-checked without a list edit; a checked file elsewhere in
