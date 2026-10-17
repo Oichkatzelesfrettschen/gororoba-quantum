@@ -51,11 +51,15 @@ Estimators, exactly as preregistered:
   r = exp(slope) of the least-squares line of ln C(n) on n, weights
   C(n)^2 / Var C(n), and its percentile interval from a parametric bootstrap
   of every replica's selector count and each batch's readout counts.
-- t1: D = Pc(y_sign -1) - Pc(y_sign +1) per pair, its class, the strut bias
-  flag and the twist equality of each batch's edge and twist replicas; the
-  pair-location allowance is the difference of the two pairs' depth-1 bright
-  Pc in T0 runs analyzed in the same call, and stays undetermined when T0
-  holds no such replica.
+- t1: D = Pc(y_sign -1) - Pc(y_sign +1) per pair and its class; a strut
+  whose |D| exceeds null_offset + sigma SE records a stop (pair-dependent
+  bias). Twist equality of each batch's edge and twist replicas uses the
+  pair-location allowance |Pc_bright(q1, d) - Pc_bright(q10, d)| plus
+  twist_allowance_se_multiple standard errors of that difference, at the
+  shallowest CZ depth d where T0 runs analyzed in the same call place a
+  bright replica on both selectors (d = 5 in the generated Latin square). The
+  pair gap grows with depth, so the depth-d allowance bounds the depth-1 gap
+  of T1 from above; without such T0 runs the test stays undetermined.
 - coherence: P(d = 0 | a = 0) from the joint (a, d) counts corrected by the
   inverse of the tensor product of the two qubits' assignment matrices,
   <S_d | a = 0> = 2 P - 1, its standard error from a parametric bootstrap
@@ -64,9 +68,13 @@ Estimators, exactly as preregistered:
   against omega and the omit-last null test.
 - ry_ladder: completion or failure per circuit and, for a completed one, the
   z of every expected outcome (qubit 0 leftmost) and the count of outcomes
-  of probability 0; the gating factor's failure stops the smoke subset.
+  of probability 0; the gating factor's failure stops the smoke subset, and
+  ry_smoke analyzed in the same call carries that stop (alone, it records
+  the gate as unverified).
 - ry_smoke: P(selector = 0) per replica, qubit 0 leftmost; a deterministic
-  replica below the fraction floor of its ideal outcome stops the series.
+  replica below the fraction floor of its ideal outcome, judged on the point
+  estimate, stops the series. Every Ry fraction carries its count, shots,
+  binomial standard error and Wilson 95% interval.
 - tuna_twins: each relabeled QX twin on the ideal emulator; a deterministic
   prediction (selector, control or the selector-0 conditional of a data
   qubit) admits no shot off it, a P = 1/2 prediction stays inside the z
@@ -621,23 +629,34 @@ def analyze_t1(batches: dict[str, Batch], t: dict[str, Any], t0: dict[str, Any] 
                  "class": found, "expected": expected,
                  "verdict": "classified" if found == expected else "refuted"}  # fmt: skip
         if expected == "strut":
-            entry["bias_flag"] = abs(d) > t["null_offset"] + t["sigma"] * se
+            entry["bias_limit"] = t["null_offset"] + t["sigma"] * se
+            entry["bias_flag"] = abs(d) > entry["bias_limit"]
+            if entry["bias_flag"]:
+                entry["verdict"] = "refuted: pair-dependent bias"
+                stops.append(
+                    f"pair {entry['pair']}: strut |D| {abs(d):.4f} above the bias limit {entry['bias_limit']:.4f}"
+                )
         if found != expected:
             stops.append(f"pair {entry['pair']}: D {d:.4f} reads {found}, census {expected}")
         classification[str(selector)] = entry
     allowance = None
+    allowance_record: dict[str, Any] | None = None
     reason = "T0 runs were not analyzed with T1"
     edge_pair = next(s for s, v in by_pair.items() if v[1]["relation"] == "edge_opposite")
     twist_pair = next(s for s, v in by_pair.items() if v[1]["relation"] == "edge_same")
     if t0 is not None:
-        bright1 = {
-            r["qubit"]: r["p_zero_corrected"] for r in t0["replicas"] if r["depth"] == 1 and r["role"] == "bright"
-        }
-        missing = [q for q in (edge_pair, twist_pair) if q not in bright1]
-        if missing:
-            reason = f"T0 holds no depth-1 bright replica on selector q{missing}"
+        bright = {(r["qubit"], r["depth"]): r for r in t0["replicas"] if r["role"] == "bright"}
+        depths = sorted(n for q, n in bright if q == edge_pair and (twist_pair, n) in bright)
+        if not depths:
+            reason = f"T0 holds no CZ depth with a bright replica on both selectors q{[edge_pair, twist_pair]}"
         else:
-            allowance = abs(bright1[edge_pair] - bright1[twist_pair])
+            depth = depths[0]
+            a, b = bright[(edge_pair, depth)], bright[(twist_pair, depth)]
+            gap = abs(a["p_zero_corrected"] - b["p_zero_corrected"])
+            gap_se = math.sqrt(a["se"] ** 2 + b["se"] ** 2)
+            allowance = gap + t["twist_allowance_se_multiple"] * gap_se
+            allowance_record = {"depth": depth, "selectors": [edge_pair, twist_pair], "gap": gap, "gap_se": gap_se,
+                                "se_multiple": t["twist_allowance_se_multiple"], "value": allowance}  # fmt: skip
     twist = {}
     for name in batches:
         edge = next(r for r in rows if r["batch"] == name and r["relation"] == "edge_opposite")
@@ -652,7 +671,13 @@ def analyze_t1(batches: dict[str, Batch], t: dict[str, Any], t0: dict[str, Any] 
                        "z": diff / se if se > 0 else None, "allowance": allowance, "verdict": verdict}  # fmt: skip
         if verdict == "refuted":
             stops.append(f"{name}: twist equality refuted")
-    return {"replicas": rows, "classification": classification, "twist_equality": twist, "stops": stops}
+    return {
+        "replicas": rows,
+        "classification": classification,
+        "twist_allowance": allowance_record if allowance_record is not None else {"undetermined": reason},
+        "twist_equality": twist,
+        "stops": stops,
+    }
 
 
 def analyze_coherence(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
@@ -740,6 +765,23 @@ def binomial_z(k: int, n: int, p: float) -> float | None:
     return (k - n * p) / math.sqrt(n * p * (1 - p)) if 0 < p < 1 else None
 
 
+WILSON_Z = 1.959963984540054
+
+
+def proportion(k: int, n: int) -> dict[str, Any]:
+    """k of n with its binomial standard error and Wilson 95% interval."""
+    p = k / n
+    centre = (p + WILSON_Z**2 / (2 * n)) / (1 + WILSON_Z**2 / n)
+    half = WILSON_Z * math.sqrt(p * (1 - p) / n + WILSON_Z**2 / (4 * n * n)) / (1 + WILSON_Z**2 / n)
+    return {
+        "count": k,
+        "shots": n,
+        "value": p,
+        "se": math.sqrt(p * (1 - p) / n),
+        "wilson95": [centre - half, centre + half],
+    }
+
+
 def fraction(text: str) -> float:
     num, _, den = text.partition("/")
     return float(num) / float(den or 1)
@@ -758,8 +800,13 @@ def analyze_ry_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str,
                     counts[s] = counts.get(s, 0) + 1
                 expected = row["expected_leftmost"]
                 entry["stray"] = sum(c for key, c in counts.items() if key not in expected)
+                entry["stray_fraction"] = proportion(entry["stray"], len(shots))
                 entry["outcomes"] = {
-                    key: {"count": counts.get(key, 0), "z": binomial_z(counts.get(key, 0), len(shots), fraction(p))}
+                    key: {
+                        **proportion(counts.get(key, 0), len(shots)),
+                        "prediction": p,
+                        "z": binomial_z(counts.get(key, 0), len(shots), fraction(p)),
+                    }
                     for key, p in expected.items()
                 }
                 inside = all(o["z"] is None or abs(o["z"]) < t["z_limit"] for o in entry["outcomes"].values())
@@ -769,7 +816,12 @@ def analyze_ry_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str,
                 if row["ladder"] == t["gating_factor"]:
                     stops.append(f"{row['ladder']} failed: the Ry smoke subset is stopped")
             rows.append(entry)
-    return {"circuits": rows, "stops": stops}
+    gating = [r for r in rows if r["ladder"] == t["gating_factor"]]
+    return {
+        "circuits": rows,
+        "gating_factor": {"factor": t["gating_factor"], "failed": any(r["status"] != "completed" for r in gating)},
+        "stops": stops,
+    }
 
 
 def analyze_ry_smoke(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
@@ -786,10 +838,13 @@ def analyze_ry_smoke(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, 
                 p = fraction(r["p_selector_zero"])
                 entry: dict[str, Any] = {"batch": name, "file": row["file"], "slot": r["slot"],
                                          "pattern": r["pattern"], "prediction": r["p_selector_zero"], "zeros": k,
-                                         "shots": len(shots), "p_zero": k / len(shots)}  # fmt: skip
+                                         "shots": len(shots), "p_zero": k / len(shots),
+                                         "p_zero_uncertainty": proportion(k, len(shots))}  # fmt: skip
                 if p in (0.0, 1.0):
-                    ideal = k / len(shots) if p == 1.0 else 1 - k / len(shots)
+                    ideal_count = k if p == 1.0 else len(shots) - k
+                    ideal = ideal_count / len(shots)
                     entry["ideal_fraction"] = ideal
+                    entry["ideal_fraction_uncertainty"] = proportion(ideal_count, len(shots))
                     entry["verdict"] = (
                         "conforms" if ideal >= t["deterministic_ideal_fraction_at_least"] else "emulator rate"
                     )
@@ -890,6 +945,15 @@ def analyze(runs: list[Path], base: Path = ROOT, cases_root: Path = CASES) -> di
                 estimates = analyze_twins(batches, t)
             else:
                 estimates = analyze_ry_smoke(batches, t)
+                ladder = results.get("ry_ladder")
+                if ladder is None:
+                    estimates["ladder_gate"] = "unverified: the ry_ladder runs were not analyzed in this call"
+                elif ladder["gating_factor"]["failed"]:
+                    factor = ladder["gating_factor"]["factor"]
+                    estimates["ladder_gate"] = f"stopped: {factor} failed in the ladder"
+                    estimates["stops"].insert(0, f"ladder gate: {factor} failed, which stops the Ry smoke subset")
+                else:
+                    estimates["ladder_gate"] = f"passed: {ladder['gating_factor']['factor']} completed"
             results[family] = estimates
         stops = sanity_stops + estimates.pop("stops")
         out.update(estimates)
@@ -996,6 +1060,8 @@ def tuna_model(row: dict[str, Any], scenario: dict[str, Any]) -> dict[Any, Any]:
         depth = r.get("cz_depth", 1)
         contrast = scenario.get("amplitude", visibility) * scenario.get("r", 1.0) ** depth
         model.update(lcu_model(r, contrast))
+        if r.get("relation") == "strut" and r["q"][2] == -1 and "strut_shift" in scenario:
+            model[r["roles"]["selector"]] -= scenario["strut_shift"]
     return model
 
 
@@ -1110,6 +1176,9 @@ SCENARIOS: dict[str, dict[str, Any]] = {
     "coherence_refuted": {"families": ["tuna_coherence"], "readout": {}, "coherence_flipped": True},
     "pre_recovered": {"families": ["tuna_pre"], "readout": {**HEALTHY, 13: (0.02, 0.3)}, "xx": {}},
     "pre_misassignment": {"families": ["tuna_pre"], "readout": FAULT, "xx": MISASSIGNMENT_XX},
+    "t1_strut_bias": {"families": ["tuna_t1"], "readout": {}, "strut_shift": 0.16},
+    "ry_gate": {"families": ["ry_ladder", "ry_smoke"],
+                "ry_failed": {"r1-width-9.cq": "Quantum backend error: error interpreting cQASM script"}},
     "ry_stopped": {"families": ["ry_ladder", "ry_smoke"], "ry_fidelity": 0.85,
                    "ry_failed": {"r1-width-9.cq": "Quantum backend error: error interpreting cQASM script"}},
 }  # fmt: skip
@@ -1152,11 +1221,14 @@ def analyze_self_test() -> None:
         check(all(c["verdict"] == "classified" for c in t1["classification"].values()), "t1 classification")
         check(t1["verdict"] == "continue", f"t1 stops: {t1['stops']}")
         check(
-            all(
-                v["verdict"].startswith("undetermined: T0 holds no depth-1 bright")
-                for v in t1["twist_equality"].values()
-            ),
-            "the T1 twist allowance needs a depth-1 bright replica on (1, 4), which T0 lacks",
+            t1["twist_allowance"].get("depth") == 5
+            and all(v["verdict"] == "consistent" for v in t1["twist_equality"].values()),
+            f"the T1 twist allowance reads T0 at depth 5: {t1['twist_allowance']}",
+        )
+        lone_t1 = analyze([r for r in runs["pass"] if "tuna_t1" in r.name], root / "pass")["stages"]["tuna_t1"]
+        check(
+            all(v["verdict"].startswith("undetermined: T0 runs") for v in lone_t1["twist_equality"].values()),
+            "T1 without T0 runs judged twist equality",
         )
         coherence = good["tuna_coherence"]
         x_verdicts = sorted(s["verdict"] for s in coherence["settings"] if s["setting"] == "X")
@@ -1208,6 +1280,30 @@ def analyze_self_test() -> None:
         )
         ry = stages("ry_stopped")
         check(ry["ry_ladder"]["verdict"] == "stop" and ry["ry_smoke"]["verdict"] == "stop", "ry stop rules")
+        gated = stages("ry_gate")["ry_smoke"]
+        check(
+            gated["verdict"] == "stop"
+            and gated["stops"] == ["ladder gate: R1 failed, which stops the Ry smoke subset"],
+            f"an R1 failure left the smoke subset running: {gated['stops']}",
+        )
+        lone_smoke = analyze([r for r in runs["pass"] if "ry_smoke" in r.name], root / "pass")["stages"]["ry_smoke"]
+        check(lone_smoke["ladder_gate"].startswith("unverified"), "smoke alone read the ladder gate as passed")
+        check(good["ry_smoke"]["ladder_gate"] == "passed: R1 completed", "the passed ladder gate is not recorded")
+        for r in good["ry_smoke"]["replicas"]:
+            u = r["p_zero_uncertainty"]
+            check(u["wilson95"][0] <= r["p_zero"] <= u["wilson95"][1] and u["se"] >= 0, "Ry smoke uncertainty")
+            if "ideal_fraction" in r:
+                w = r["ideal_fraction_uncertainty"]["wilson95"]
+                check(w[0] <= r["ideal_fraction"] <= w[1], "Ry ideal-fraction interval")
+        for c in good["ry_ladder"]["circuits"]:
+            if c["status"] == "completed":
+                check("stray_fraction" in c and all("wilson95" in o for o in c["outcomes"].values()), "Ry ladder")
+        bias = stages("t1_strut_bias")["tuna_t1"]
+        strut = next(c for c in bias["classification"].values() if c["expected"] == "strut")
+        check(
+            strut["bias_flag"] and strut["class"] == "strut" and bias["verdict"] == "stop",
+            f"a strut bias above 0.1 + 3 SE left T1 running: {strut}",
+        )
 
         # Replay: an exact record reproduces; a changed byte does not.
         record = root / "analysis.json"

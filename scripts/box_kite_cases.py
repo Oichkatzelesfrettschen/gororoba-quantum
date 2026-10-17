@@ -278,6 +278,7 @@ BOOTSTRAP_DRAWS = 4000
 BOOTSTRAP_SEED = 20261017
 T1_SAME_ABOVE, T1_OPPOSITE_BELOW, T1_STRUT_BELOW = 0.4, -0.4, 0.2
 NULL_OFFSET, SIGMA = 0.1, 3.0
+TWIST_ALLOWANCE_SE = 3.0
 RY_DETERMINISTIC_MIN = 0.9
 # Pre-T0 double-X batch (claim proposed-tuna17-q0-q6-double-x-discriminator).
 PRE_SHOTS = FOLLOW_SHOTS
@@ -1452,6 +1453,19 @@ def tuna_witnesses(census: dict[str, Any], rows: dict[str, list[Row]]) -> dict[s
     return stages
 
 
+def t0_bright_depths(pair: int) -> set[int]:
+    """CZ depths at which the T0 Latin square places a bright replica on LCU pair `pair` (dark when batch == pair)."""
+    return {T0_DEPTHS[(pair + batch) % 3] for batch in range(3) if batch != pair}
+
+
+def twist_allowance_depth() -> int:
+    """The shallowest CZ depth with a T0 bright replica on both the T1 edge pair and the T1 twist pair."""
+    common = t0_bright_depths(0) & t0_bright_depths(1)
+    if not common:
+        raise ValueError("T0 places no bright replica on both T1 pairs at one depth; the twist allowance is undefined")
+    return min(common)
+
+
 def sanity_thresholds() -> dict[str, Any]:
     return {
         "readout_0_p1_at_most": READOUT_0_P1_MAX,
@@ -1524,9 +1538,14 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
             "classification": f"D above +{T1_SAME_ABOVE} same-sign, below {T1_OPPOSITE_BELOW} opposite-sign, |D| "
             f"below {T1_STRUT_BELOW} strut, otherwise unresolved; predicted |D| on edges at least 0.72 (pessimistic)",
             "falsifier": "a row misclassified or unresolved refutes the separation estimate for its pair; a strut "
-            f"with |D| > {NULL_OFFSET} + {SIGMA:g} sigma exposes a pair-dependent bias the analysis carries; a twist "
+            f"with |D| > {NULL_OFFSET} + {SIGMA:g} sigma exposes a pair-dependent bias and stops the series; a twist "
             f"pair whose Pc differ by more than {SIGMA:g} combined standard errors plus the pair-location allowance "
-            "(the difference of the two pairs' depth-1 bright Pc in T0) refutes twist equality for that layout",
+            "refutes twist equality for that layout",
+            "twist_allowance": f"|Pc_bright(q{LCU_PAIRS[0][0]}, d) - Pc_bright(q{LCU_PAIRS[1][0]}, d)| plus "
+            f"{TWIST_ALLOWANCE_SE:g} standard errors of that difference, at the shallowest CZ depth d at which T0 "
+            f"places a bright replica on both pairs (d = {twist_allowance_depth()} in the generated Latin square, "
+            "whose depth-1 replica on the first pair is dark); the gap between the two pairs grows with depth, so "
+            "the depth-d allowance bounds T1's depth-1 gap from above and the test is conservative",
             "stop_rule": stop,
             "thresholds": {
                 **sanity,
@@ -1535,6 +1554,7 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
                 "strut_abs_below": T1_STRUT_BELOW,
                 "null_offset": NULL_OFFSET,
                 "sigma": SIGMA,
+                "twist_allowance_se_multiple": TWIST_ALLOWANCE_SE,
             },
         },
         "coherence": {

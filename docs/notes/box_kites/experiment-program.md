@@ -262,8 +262,7 @@ falsifier fixed before the run, and the backends.
 - Falsifier: in the Kaggle sweep, any twist pair whose two rows read
   different deterministic outcomes; on Tuna-17, a twist pair whose
   readout-corrected P differ by more than 3 combined standard errors plus the
-  pair-location allowance (the difference of the two pairs' depth-1 bright P
-  in T0).
+  pair-location allowance of section 4(g), T1.
 
 ### (d) Associator-sign interference witnesses on box-kite triples
 
@@ -532,14 +531,17 @@ prose prints; the analysis reads only that block.
   otherwise unresolved; predicted |D| on edges at least 0.72 (pessimistic,
   readout of 2026-10-17 04:25-04:36Z). Falsifier: a row misclassified or
   unresolved refutes the separation estimate for its pair; a strut with
-  |D| > 0.1 + 3 sigma exposes a pair-dependent bias the analysis carries; a
+  |D| > 0.1 + 3 sigma exposes a pair-dependent bias and stops the series; a
   twist pair outside 3 combined standard errors plus the pair-location
-  allowance of (c) refutes twist equality for that layout. The allowance
-  is the difference of the depth-1 bright Pc on (1,4) and (10,13) in T0,
-  and the Latin square places the dark replica on (1,4) at depth 1, so T0
-  holds no depth-1 bright replica there: the analysis reports the twist
-  difference, its standard error and z, and the verdict stays undetermined
-  until the owner names an allowance.
+  allowance refutes twist equality for that layout. The allowance is
+  |Pc_bright(q1, d) - Pc_bright(q10, d)| plus 3 standard errors of that
+  difference at the shallowest CZ depth d where T0 places a bright replica
+  on both pairs: d = 5 (q10 in batch-00, q1 in batch-01), since the Latin
+  square puts the depth-1 replica of (1,4) dark. The pair gap grows with
+  depth, so the depth-5 allowance bounds T1's depth-1 gap from above and the
+  test is conservative. The retained T0 runs give Pc 0.844 (q1) and 0.931
+  (q10), gap 0.087 +- 0.005, allowance 0.101; the analysis computes it when
+  T1 runs are analyzed together with the T0 runs.
 - Coherence (2 batches, 4096 shots). Setting X (H on d) in batch-00 and Y
   (Sdag, H on d) in batch-01, on the bright same-sign edge (4,10)+ x (1,15)-
   of kite 6 on (1,4) and the strut (1,10)+ x (2,9)+ of kite 3 on (10,13),
@@ -601,10 +603,13 @@ corrected with its own batch's pair, Pc = (p - e10) / (1 - e01 - e10), with
 the delta-method variance [p(1 - p)/n + Pc^2 e01(1 - e01)/n0 +
 (1 - Pc)^2 e10(1 - e10)/n1] / (1 - e01 - e10)^2. `--replay` recomputes a
 retained analysis from the runs it names and compares bytes. Gate
-core-424 runs the self-test: ten synthetic scenarios (seeded shots under a
-readout model of e01 0.02 and e10 0.06 per qubit, and ideal QX twins) give
-their preregistered verdicts, and twelve mutations (digest, receipt, both
-shot counts, shot width, missing readout raw and job, duplicate batch,
+core-424 runs the self-test: twelve synthetic scenarios (seeded shots under
+a readout model of e01 0.02 and e10 0.06 per qubit, and ideal QX twins) give
+their preregistered verdicts, among them a strut bias that stops T1 and an
+R1 failure that stops the Ry smoke subset analyzed beside it (alone, the
+smoke analysis records the ladder gate as unverified); every Ry fraction
+carries its count, binomial standard error and Wilson 95% interval. Twelve
+mutations (digest, receipt, both shot counts, shot width, missing readout raw and job, duplicate batch,
 reversed bit order, readout-1 outside the limit) are refused for their own
 reason. The twins stage judges each QX twin batch on its own: no shot off a
 deterministic prediction, P = 1/2 inside |z| < 4.5, the double-X twin all 0.
@@ -779,7 +784,9 @@ is written as S S S, which keeps every reduced circuit on the Ry gate set.
   depth-9 bright replica near 0.6, which C(n) and r judge. Any C(1) whose
   upper bound falls below 0.5 still fails the floor, and the analysis
   reports that stop beside the T0 verdicts.
-- The T1 twist allowance has no T0 source on (1,4) (section 4(g), T1).
+- The T1 twist allowance reads T0 at CZ depth 5, where both pairs carry a
+  bright replica (section 4(g), T1); the owner approves its value, 0.101 from
+  the retained T0 runs, with the T1 case.
 - The pre-T0 precondition reads Q0 and Q6; the claim's experiments note
   also names Q9 idle P1 above 0.2, and its later batches add 2 us waits and
   longer X trains, which a three-circuit batch cannot hold beside its

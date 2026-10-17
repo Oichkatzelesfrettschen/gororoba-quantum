@@ -22,11 +22,29 @@
      "outcomes": {
       "100000000": {
        "count": 1024,
+       "prediction": "1",
+       "se": 0.0,
+       "shots": 1024,
+       "value": 1.0,
+       "wilson95": [
+        0.99626259596,
+        1.0
+       ],
        "z": null
       }
      },
      "status": "completed",
      "stray": 0,
+     "stray_fraction": {
+      "count": 0,
+      "se": 0.0,
+      "shots": 1024,
+      "value": 0.0,
+      "wilson95": [
+       0.0,
+       0.00373740404
+      ]
+     },
      "verdict": "conforms"
     },
     {
@@ -37,11 +55,29 @@
      "outcomes": {
       "10": {
        "count": 1024,
+       "prediction": "1",
+       "se": 0.0,
+       "shots": 1024,
+       "value": 1.0,
+       "wilson95": [
+        0.99626259596,
+        1.0
+       ],
        "z": null
       }
      },
      "status": "completed",
      "stray": 0,
+     "stray_fraction": {
+      "count": 0,
+      "se": 0.0,
+      "shots": 1024,
+      "value": 0.0,
+      "wilson95": [
+       0.0,
+       0.00373740404
+      ]
+     },
      "verdict": "conforms"
     },
     {
@@ -52,74 +88,216 @@
      "outcomes": {
       "000000010": {
        "count": 54,
+       "prediction": "1/16",
+       "se": 0.00698445964,
+       "shots": 1024,
+       "value": 0.052734375,
+       "wilson95": [
+        0.040640430566,
+        0.068171544141
+       ],
        "z": -1.290994448736
       },
       "000001010": {
        "count": 48,
+       "prediction": "1/16",
+       "se": 0.006605346318,
+       "shots": 1024,
+       "value": 0.046875,
+       "wilson95": [
+        0.035535985543,
+        0.061601036869
+       ],
        "z": -2.065591117977
       },
       "000010000": {
        "count": 74,
+       "prediction": "1/16",
+       "se": 0.008091475576,
+       "shots": 1024,
+       "value": 0.072265625,
+       "wilson95": [
+        0.057954386041,
+        0.089774096321
+       ],
        "z": 1.290994448736
       },
       "000011000": {
        "count": 62,
+       "prediction": "1/16",
+       "se": 0.007453039893,
+       "shots": 1024,
+       "value": 0.060546875,
+       "wilson95": [
+        0.047516708363,
+        0.076861869406
+       ],
        "z": -0.258198889747
       },
       "010000010": {
        "count": 69,
+       "prediction": "1/16",
+       "se": 0.007833868843,
+       "shots": 1024,
+       "value": 0.0673828125,
+       "wilson95": [
+        0.053589240442,
+        0.084410115007
+       ],
        "z": 0.645497224368
       },
       "010001010": {
        "count": 68,
+       "prediction": "1/16",
+       "se": 0.007780965103,
+       "shots": 1024,
+       "value": 0.06640625,
+       "wilson95": [
+        0.052718862208,
+        0.083334667858
+       ],
        "z": 0.516397779494
       },
       "010010000": {
        "count": 61,
+       "prediction": "1/16",
+       "se": 0.007396531755,
+       "shots": 1024,
+       "value": 0.0595703125,
+       "wilson95": [
+        0.046653230325,
+        0.075779522062
+       ],
        "z": -0.387298334621
       },
       "010011000": {
        "count": 60,
+       "prediction": "1/16",
+       "se": 0.007339461678,
+       "shots": 1024,
+       "value": 0.05859375,
+       "wilson95": [
+        0.045790826575,
+        0.074696100429
+       ],
        "z": -0.516397779494
       },
       "100100010": {
        "count": 66,
+       "prediction": "1/16",
+       "se": 0.007673699483,
+       "shots": 1024,
+       "value": 0.064453125,
+       "wilson95": [
+        0.050980899698,
+        0.081180979602
+       ],
        "z": 0.258198889747
       },
       "100101010": {
        "count": 53,
+       "prediction": "1/16",
+       "se": 0.006923052337,
+       "shots": 1024,
+       "value": 0.0517578125,
+       "wilson95": [
+        0.039786304459,
+        0.067079844866
+       ],
        "z": -1.420093893609
       },
       "100110000": {
        "count": 52,
+       "prediction": "1/16",
+       "se": 0.006860959715,
+       "shots": 1024,
+       "value": 0.05078125,
+       "wilson95": [
+        0.038933483946,
+        0.065986839996
+       ],
        "z": -1.549193338483
       },
       "100111000": {
        "count": 52,
+       "prediction": "1/16",
+       "se": 0.006860959715,
+       "shots": 1024,
+       "value": 0.05078125,
+       "wilson95": [
+        0.038933483946,
+        0.065986839996
+       ],
        "z": -1.549193338483
       },
       "110100010": {
        "count": 49,
+       "prediction": "1/16",
+       "se": 0.006670377501,
+       "shots": 1024,
+       "value": 0.0478515625,
+       "wilson95": [
+        0.036383215383,
+        0.062699632411
+       ],
        "z": -1.936491673104
       },
       "110101010": {
        "count": 63,
+       "prediction": "1/16",
+       "se": 0.007508998777,
+       "shots": 1024,
+       "value": 0.0615234375,
+       "wilson95": [
+        0.048381236829,
+        0.077943166323
+       ],
        "z": -0.129099444874
       },
       "110110000": {
        "count": 57,
+       "prediction": "1/16",
+       "se": 0.007164744866,
+       "shots": 1024,
+       "value": 0.0556640625,
+       "wilson95": [
+        0.043210314622,
+        0.071439136234
+       ],
        "z": -0.903696114115
       },
       "110111000": {
        "count": 59,
+       "prediction": "1/16",
+       "se": 0.007281816448,
+       "shots": 1024,
+       "value": 0.0576171875,
+       "wilson95": [
+        0.04492952195,
+        0.073611579671
+       ],
        "z": -0.645497224368
       }
      },
      "status": "completed",
      "stray": 77,
+     "stray_fraction": {
+      "count": 77,
+      "se": 0.00824081979,
+      "shots": 1024,
+      "value": 0.0751953125,
+      "wilson95": [
+       0.060583491118,
+       0.092982467392
+      ]
+     },
      "verdict": "emulator rate"
     }
    ],
+   "gating_factor": {
+    "factor": "R1",
+    "failed": false
+   },
    "missing_batches": [],
    "stops": [],
    "thresholds": {
@@ -137,13 +315,34 @@
      "run": "results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_smoke-batch-01"
     }
    },
+   "ladder_gate": "passed: R1 completed",
    "missing_batches": [],
    "replicas": [
     {
      "batch": "batch-00",
      "file": "ry-reduced-1.cq",
      "ideal_fraction": 0.984375,
+     "ideal_fraction_uncertainty": {
+      "count": 1008,
+      "se": 0.003875612272,
+      "shots": 1024,
+      "value": 0.984375,
+      "wilson95": [
+       0.974769716377,
+       0.990359673459
+      ]
+     },
      "p_zero": 0.015625,
+     "p_zero_uncertainty": {
+      "count": 16,
+      "se": 0.003875612272,
+      "shots": 1024,
+      "value": 0.015625,
+      "wilson95": [
+       0.009640326541,
+       0.025230283623
+      ]
+     },
      "pattern": "reduced_edge_dark",
      "prediction": "0",
      "shots": 1024,
@@ -155,7 +354,27 @@
      "batch": "batch-00",
      "file": "ry-reduced-1.cq",
      "ideal_fraction": 0.9873046875,
+     "ideal_fraction_uncertainty": {
+      "count": 1011,
+      "se": 0.003498624387,
+      "shots": 1024,
+      "value": 0.9873046875,
+      "wilson95": [
+       0.978400910898,
+       0.992565955086
+      ]
+     },
      "p_zero": 0.9873046875,
+     "p_zero_uncertainty": {
+      "count": 1011,
+      "se": 0.003498624387,
+      "shots": 1024,
+      "value": 0.9873046875,
+      "wilson95": [
+       0.978400910898,
+       0.992565955086
+      ]
+     },
      "pattern": "reduced_edge_bright",
      "prediction": "1",
      "shots": 1024,
@@ -167,6 +386,16 @@
      "batch": "batch-00",
      "file": "ry-reduced-1.cq",
      "p_zero": 0.548828125,
+     "p_zero_uncertainty": {
+      "count": 562,
+      "se": 0.015550315706,
+      "shots": 1024,
+      "value": 0.548828125,
+      "wilson95": [
+       0.518224036202,
+       0.579067232935
+      ]
+     },
      "pattern": "reduced_strut",
      "prediction": "1/2",
      "shots": 1024,
@@ -179,7 +408,27 @@
      "batch": "batch-00",
      "file": "ry-reduced-1.cq",
      "ideal_fraction": 0.978515625,
+     "ideal_fraction_uncertainty": {
+      "count": 1002,
+      "se": 0.004531012562,
+      "shots": 1024,
+      "value": 0.978515625,
+      "wilson95": [
+       0.96768459294,
+       0.9857698446
+      ]
+     },
      "p_zero": 0.021484375,
+     "p_zero_uncertainty": {
+      "count": 22,
+      "se": 0.004531012562,
+      "shots": 1024,
+      "value": 0.021484375,
+      "wilson95": [
+       0.0142301554,
+       0.03231540706
+      ]
+     },
      "pattern": "reduced_edge_x_minus",
      "prediction": "0",
      "shots": 1024,
@@ -191,7 +440,27 @@
      "batch": "batch-00",
      "file": "ry-reduced-2.cq",
      "ideal_fraction": 1.0,
+     "ideal_fraction_uncertainty": {
+      "count": 1024,
+      "se": 0.0,
+      "shots": 1024,
+      "value": 1.0,
+      "wilson95": [
+       0.99626259596,
+       1.0
+      ]
+     },
      "p_zero": 0.0,
+     "p_zero_uncertainty": {
+      "count": 0,
+      "se": 0.0,
+      "shots": 1024,
+      "value": 0.0,
+      "wilson95": [
+       0.0,
+       0.00373740404
+      ]
+     },
      "pattern": "reduced_edge_y_minus",
      "prediction": "0",
      "shots": 1024,
@@ -203,7 +472,27 @@
      "batch": "batch-00",
      "file": "ry-reduced-2.cq",
      "ideal_fraction": 0.9814453125,
+     "ideal_fraction_uncertainty": {
+      "count": 1005,
+      "se": 0.004217061129,
+      "shots": 1024,
+      "value": 0.9814453125,
+      "wilson95": [
+       0.971202181344,
+       0.988089732344
+      ]
+     },
      "p_zero": 0.9814453125,
+     "p_zero_uncertainty": {
+      "count": 1005,
+      "se": 0.004217061129,
+      "shots": 1024,
+      "value": 0.9814453125,
+      "wilson95": [
+       0.971202181344,
+       0.988089732344
+      ]
+     },
      "pattern": "t1_edge_y+",
      "prediction": "1",
      "shots": 1024,
@@ -215,7 +504,27 @@
      "batch": "batch-00",
      "file": "ry-reduced-2.cq",
      "ideal_fraction": 1.0,
+     "ideal_fraction_uncertainty": {
+      "count": 1024,
+      "se": 0.0,
+      "shots": 1024,
+      "value": 1.0,
+      "wilson95": [
+       0.99626259596,
+       1.0
+      ]
+     },
      "p_zero": 0.0,
+     "p_zero_uncertainty": {
+      "count": 0,
+      "se": 0.0,
+      "shots": 1024,
+      "value": 0.0,
+      "wilson95": [
+       0.0,
+       0.00373740404
+      ]
+     },
      "pattern": "t1_edge_y-",
      "prediction": "0",
      "shots": 1024,
@@ -227,7 +536,27 @@
      "batch": "batch-00",
      "file": "ry-reduced-2.cq",
      "ideal_fraction": 1.0,
+     "ideal_fraction_uncertainty": {
+      "count": 1024,
+      "se": 0.0,
+      "shots": 1024,
+      "value": 1.0,
+      "wilson95": [
+       0.99626259596,
+       1.0
+      ]
+     },
      "p_zero": 0.0,
+     "p_zero_uncertainty": {
+      "count": 0,
+      "se": 0.0,
+      "shots": 1024,
+      "value": 0.0,
+      "wilson95": [
+       0.0,
+       0.00373740404
+      ]
+     },
      "pattern": "t1_twist_y+",
      "prediction": "0",
      "shots": 1024,
@@ -239,7 +568,27 @@
      "batch": "batch-00",
      "file": "ry-reduced-3.cq",
      "ideal_fraction": 0.9814453125,
+     "ideal_fraction_uncertainty": {
+      "count": 1005,
+      "se": 0.004217061129,
+      "shots": 1024,
+      "value": 0.9814453125,
+      "wilson95": [
+       0.971202181344,
+       0.988089732344
+      ]
+     },
      "p_zero": 0.9814453125,
+     "p_zero_uncertainty": {
+      "count": 1005,
+      "se": 0.004217061129,
+      "shots": 1024,
+      "value": 0.9814453125,
+      "wilson95": [
+       0.971202181344,
+       0.988089732344
+      ]
+     },
      "pattern": "t1_twist_y-",
      "prediction": "1",
      "shots": 1024,
@@ -251,7 +600,27 @@
      "batch": "batch-01",
      "file": "ry-full-witness-dark.cq",
      "ideal_fraction": 0.73046875,
+     "ideal_fraction_uncertainty": {
+      "count": 748,
+      "se": 0.013866134389,
+      "shots": 1024,
+      "value": 0.73046875,
+      "wilson95": [
+       0.702467432571,
+       0.756747357755
+      ]
+     },
      "p_zero": 0.26953125,
+     "p_zero_uncertainty": {
+      "count": 276,
+      "se": 0.013866134389,
+      "shots": 1024,
+      "value": 0.26953125,
+      "wilson95": [
+       0.243252642245,
+       0.297532567429
+      ]
+     },
      "pattern": "full_witness_dark",
      "prediction": "0",
      "shots": 1024,
@@ -263,7 +632,27 @@
      "batch": "batch-01",
      "file": "ry-full-witness-bright.cq",
      "ideal_fraction": 0.65625,
+     "ideal_fraction_uncertainty": {
+      "count": 672,
+      "se": 0.014842464994,
+      "shots": 1024,
+      "value": 0.65625,
+      "wilson95": [
+       0.626623874803,
+       0.684708186434
+      ]
+     },
      "p_zero": 0.65625,
+     "p_zero_uncertainty": {
+      "count": 672,
+      "se": 0.014842464994,
+      "shots": 1024,
+      "value": 0.65625,
+      "wilson95": [
+       0.626623874803,
+       0.684708186434
+      ]
+     },
      "pattern": "full_witness_bright",
      "prediction": "1",
      "shots": 1024,
@@ -275,6 +664,16 @@
      "batch": "batch-01",
      "file": "ry-full-negative-fixture.cq",
      "p_zero": 0.486328125,
+     "p_zero_uncertainty": {
+      "count": 498,
+      "se": 0.015619157653,
+      "shots": 1024,
+      "value": 0.486328125,
+      "wilson95": [
+       0.45582345323,
+       0.516934991412
+      ]
+     },
      "pattern": "full_negative_fixture",
      "prediction": "1/2",
      "shots": 1024,
