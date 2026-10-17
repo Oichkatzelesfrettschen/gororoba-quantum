@@ -1159,6 +1159,68 @@ def _verify_rep_delay_approval() -> None:
         _require(not (approved / live_run.APPROVAL_CONSUMED_FILE).exists(), "the refused batch consumed the approval")
 
 
+def _verify_state_prep_family() -> None:
+    """state-prep-control pins each arm to its qubit, fuses two static PUBs and one dynamic, admits 8192 shots."""
+    backend = _ProbeBackend("state_prep_fixture", FakeFez())
+    service = _ProbeService([backend])
+    with redirect_stdout(io.StringIO()):
+        snapshot = live_run.take_snapshot(cast(Any, service), backend.name)
+    qubits = [qubit for qubit in range(40, 156, 7) if qubit not in snapshot.excluded_qubits][:14]
+    _require(len(qubits) == 14, "FakeFez lacks 14 admitted fixture qubits")
+    args = _args(
+        "state-prep-control",
+        layout=qubits,
+        optimize=True,
+        shot_tiers=[4096, 8192, 16384],
+        optimizer_candidates=1,
+        max_execution_seconds=60,
+        max_total_execution_seconds=120.0,
+        reserve_seconds=0.0,
+    )
+    trace: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(live_run, [snapshot], args, trace)
+    _require(len(candidates) == 1, f"the declared layout produced {len(candidates)} candidates: {trace}")
+    choices, configuration = candidates[0]
+    _require(configuration["qubits"] == qubits and configuration["layout_source"] == "declared", "layout lost")
+    _require(len(choices) == 28, "each qubit needs one static and one dynamic group")
+    for choice in choices:
+        qubit = int(choice.group.name.rsplit("_q", 1)[1])
+        _require([r.qubits for r in choice.replicas] == [[qubit]], f"{choice.group.name}: moved off qubit {qubit}")
+    pubs = live_run.execution_pubs(choices)
+    _require(sorted(pub.kind for pub in pubs) == ["dynamic", "static", "static"], "the arms fused into other PUBs")
+    for pub in pubs:
+        covered = sorted(q for component in pub.components for q in component.manifest()["physical_qubits"])
+        _require(covered == sorted(qubits), f"{pub.name}: measures {covered}, not every named qubit")
+        arms = {component.entry.name.split("_q")[0] for component in pub.components}
+        _require(len(arms) == 1, f"{pub.name}: mixes arms {arms}")
+    batches = {kind: live_run.submission_batches(choices, kind, 8192) for kind in ("static", "dynamic")}
+    _require([len(b) for b in batches["static"]] == [2] and [len(b) for b in batches["dynamic"]] == [1], "jobs")
+    default_trace: dict[str, Any] = {}
+    default_args = _args("state-prep-control", layout=None)
+    _require(
+        not qpu_planning.family_candidates(live_run, [snapshot], default_args, default_trace),
+        "the retained n21 layout was placed on a backend other than its own",
+    )
+    _require(
+        "ibm_kingston" in default_trace["family_rejections"][0]["reason"],
+        f"the default layout refused for another reason: {default_trace}",
+    )
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
+    with patch.object(live_run, "simulate", _ideal_predictions):
+        selected, metadata = qpu_planning.prepare(live_run, [snapshot], args, usage, {})
+    _require(
+        [choice.group.name for choice in selected] == [choice.group.name for choice in choices] and args.shots == 8192,
+        f"the optimizer selected {args.shots} shots",
+    )
+    rejected = {
+        int(row["proxy_metadata"]["shots"]) for row in metadata["optimization"]["candidates"] if not row["feasible"]
+    }
+    _require(rejected == {4096}, f"the optimizer rejected tiers {rejected}, not 4096 alone")
+    _require(len(metadata["observable_contracts"]) == 42, "the plan lost a per-qubit endpoint")
+    rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
+    _require([g.name for g in rebuilt] == [c.group.name for c in choices], "record_groups lost the per-qubit groups")
+
+
 def _forbid_service(*args: Any, **kwargs: Any) -> Any:
     del args, kwargs
     raise RuntimeError("credential-free planning contract reached a RuntimeService constructor")
@@ -1187,6 +1249,7 @@ def _verify() -> None:
         _verify_coherence_readout(snapshot)
         _verify_patch_selection(snapshot)
         _verify_static_group_admission(service, snapshot)
+        _verify_state_prep_family()
     _verify_control_timing()
     with patch.object(live_run, "QiskitRuntimeService", _forbid_service):
         _verify_rep_delay_range()
@@ -1195,6 +1258,18 @@ def _verify() -> None:
         "QPU planning: matching, calibrated timing, budgets, shot optimization, "
         "approval, infeasible archives, unrouted rejection diagnostics, coherence readout maps, calibrated "
         "patch selection and the requested repetition delay checked"
+    )
+
+
+def _verify_state_prep_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _verify_state_prep_family()
+    print(
+        "QPU planning: state-prep-control pins each arm to its named qubit, fuses two static PUBs and one "
+        "dynamic PUB over every qubit, refuses the retained layout off its backend, and admits 8192 shots"
     )
 
 
@@ -1231,10 +1306,13 @@ if __name__ == "__main__":
         "--static-group-admission", action="store_true", help="run only the static-group admission contract"
     )
     parser.add_argument("--rep-delay", action="store_true", help="run only the requested repetition-delay contracts")
+    parser.add_argument("--state-prep", action="store_true", help="run only the state-prep-control planning contract")
     parsed = parser.parse_args()
     if parsed.static_group_admission:
         _verify_static_admission_only()
     elif parsed.rep_delay:
         _verify_rep_delay_only()
+    elif parsed.state_prep:
+        _verify_state_prep_only()
     else:
         _verify()

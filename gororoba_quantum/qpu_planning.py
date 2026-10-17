@@ -12,6 +12,7 @@ import json
 import math
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -23,10 +24,13 @@ import parallel
 from diagnostic_experiments import (
     N21_FAMILIES,
     PATCH_FAMILIES,
+    STATE_PREP_FAMILY,
+    STATE_PREP_SOURCE_RECORD,
     family_contracts,
     folded_group,
     n21_group,
     n21_orbit_rca_group,
+    state_prep_groups,
 )
 from experiment_optimizer import (
     BudgetContract,
@@ -492,6 +496,117 @@ def patch_candidates(
     return [(choices, configuration) for _, _, choices, configuration in scored[: args.optimizer_candidates]]
 
 
+def state_prep_layout(args: Any) -> tuple[list[int], dict[str, Any]]:
+    """The named qubits of state-prep-control and where they come from.
+
+    --layout names them; otherwise they are the replica qubits of the
+    retained n21-feedback-encoded dry run STATE_PREP_SOURCE_RECORD, which
+    belong to that record's backend.
+    """
+    declared = getattr(args, "layout", None)
+    if declared is not None:
+        qubits = [int(qubit) for qubit in declared]
+        source: dict[str, Any] = {"layout_source": "declared"}
+    else:
+        record = json.loads((Path(__file__).resolve().parent.parent / STATE_PREP_SOURCE_RECORD).read_text())
+        replicas = [
+            sorted(int(qubit) for qubit in replica["physical_qubits"])
+            for group in record["groups"]
+            for replica in group["replicas"]
+        ]
+        qubits = sorted(qubit for replica in replicas for qubit in replica)
+        source = {
+            "layout_source": STATE_PREP_SOURCE_RECORD,
+            "layout_backend": record["groups"][0]["backend"],
+            "source_replicas": replicas,
+        }
+    if not qubits or len(set(qubits)) != len(qubits) or any(qubit < 0 for qubit in qubits):
+        raise ValueError(f"state-prep-control needs distinct nonnegative qubits, got {qubits}")
+    return qubits, source
+
+
+def state_prep_candidates(
+    runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
+) -> list[tuple[list[Any], dict[str, Any]]]:
+    """Compile every arm on its named qubit of each eligible snapshot, or record why the snapshot is refused.
+
+    Each qubit's arms compile with initial layout [qubit] and stay there: a
+    calibration that excludes a named qubit refuses the snapshot rather than
+    moving the control off the qubits it characterizes.
+    """
+    try:
+        qubits, source = state_prep_layout(args)
+    except (OSError, KeyError, ValueError) as error:
+        raise runtime.LiveRunError(f"state-prep-control layout: {error}") from error
+    groups = state_prep_groups(qubits)
+    candidates = []
+    for snapshot in snapshots:
+        try:
+            if "layout_backend" in source and snapshot.name != source["layout_backend"]:
+                raise runtime.LiveRunError(f"the layout names {source['layout_backend']} qubits")
+            outside = [qubit for qubit in qubits if qubit >= snapshot.backend.target.num_qubits]
+            excluded = sorted(set(qubits) & set(snapshot.excluded_qubits))
+            if outside or excluded:
+                raise runtime.LiveRunError(f"qubits {outside} lie outside the device; calibration excludes {excluded}")
+            choices = []
+            for group in groups:
+                qubit = int(group.name.rsplit("_q", 1)[1])
+                isas = [
+                    runtime._compile(member.circuit, snapshot, runtime.SEED_TRANSPILER, [qubit])
+                    for member in group.members
+                ]
+                for isa in isas:
+                    if runtime._physical(isa) != [qubit]:
+                        raise runtime.LiveRunError(f"{group.name}: compiled onto {runtime._physical(isa)}")
+                    violations = runtime.compiled_violations(isa, snapshot)
+                    if violations:
+                        raise runtime.LiveRunError(f"{group.name}: {violations}")
+                scores = [runtime.layout_score(isa, snapshot.backend.target) for isa in isas]
+                if any(score <= 0 for score in scores):
+                    raise runtime.LiveRunError(f"{group.name}: layout score underflows to zero")
+                choice = runtime.Choice(
+                    group,
+                    snapshot,
+                    runtime.SEED_TRANSPILER,
+                    [qubit],
+                    isas,
+                    scores,
+                    math.exp(sum(math.log(score) for score in scores) / len(scores)),
+                )
+                runtime._set_entries(
+                    choice,
+                    [Replica(0, {qubit: qubit}, min(scores))],
+                    runtime.ReplicaPolicy(args.replica_floor, 1, False, True),
+                )
+                choices.append(choice)
+            pubs = runtime.execution_pubs(choices)
+            kinds = sorted(pub.kind for pub in pubs)
+            if kinds != ["dynamic", "static", "static"]:
+                raise runtime.LiveRunError(f"the arms fused into PUB kinds {kinds}, not two static and one dynamic")
+        except (runtime.LiveRunError, QiskitError, ValueError) as error:
+            trace.setdefault("family_rejections", []).append(
+                {"backend": snapshot.name, "qubits": qubits, "reason": str(error)}
+            )
+            continue
+        candidates.append(
+            (
+                choices,
+                {
+                    "name": STATE_PREP_FAMILY,
+                    "qubits": qubits,
+                    **source,
+                    "arms": {"prep0": "init, measure", "reset": "init, reset, measure", "x": "x, measure"},
+                    "placement_contract": (
+                        "one pinned single-qubit placement per named qubit; every qubit runs each arm in the "
+                        "same shots; static prep0 and x PUBs, dynamic reset PUB"
+                    ),
+                    "dt_seconds": snapshot.backend.target.dt,
+                },
+            )
+        )
+    return candidates[: args.optimizer_candidates]
+
+
 def measurement_delay(runtime: Any, snapshot: Any, physical_qubit: int) -> int:
     """Round the actual measurement writer's fresh duration to timing granularity."""
     target = snapshot.backend.target
@@ -584,6 +699,8 @@ def family_candidates(
         return candidates
     if args.family in PATCH_FAMILIES:
         return patch_candidates(runtime, snapshots, args, trace)
+    if args.family == STATE_PREP_FAMILY:
+        return state_prep_candidates(runtime, snapshots, args, trace)
     if args.family != "folded-qpe":
         raise runtime.LiveRunError(f"unknown family {args.family}")
     coherent = runtime.select_candidates(folded_group(("coherent",)), snapshots, args.seeds, trace)
@@ -806,7 +923,13 @@ def prepare(
             "the experiment family has no admitted routed candidate; "
             f"family={args.family!r}; selection_trace={json.dumps(diagnostic, sort_keys=True)}"
         )
-    contracts = family_contracts(args.family, args.precision, args.alpha, args.power)
+    contracts = family_contracts(
+        args.family,
+        args.precision,
+        args.alpha,
+        args.power,
+        **({"configuration": candidates[0][1]} if args.family == STATE_PREP_FAMILY else {}),
+    )
     plans: list[CandidatePlan] = []
     ownership: dict[str, tuple[list[Any], dict[str, Any], int]] = {}
     simulators: dict[int, Any] = {}

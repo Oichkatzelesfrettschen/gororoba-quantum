@@ -5101,6 +5101,12 @@ def main(argv: list[str] | None = None) -> int:
         help="physical qubits of the patch, in patch_characterization.PATCH_ROLES order; "
         "omitted, the planner chooses the best calibrated patch on every eligible backend",
     )
+    parser.add_argument(
+        "--layout",
+        type=lambda value: [int(item) for item in value.split(",")],
+        help="physical qubits state-prep-control characterizes; omitted, the replica qubits of "
+        "diagnostic_experiments.STATE_PREP_SOURCE_RECORD on its backend",
+    )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
         "--local-compute-method",
@@ -5303,6 +5309,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--patch-qubits applies to the pinned-patch families only")
     if args.family in PATCH_FAMILIES and args.max_replicas not in (None, 1):
         parser.error("the patch family runs one pinned placement; --max-replicas must be 1")
+    if args.layout is not None and args.family != "state-prep-control":
+        parser.error("--layout applies to the state-prep-control family only")
+    if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
+        parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "folded-correction":
         if args.native_dry_run:
             parser.error("folded-correction uses fresh live calibration and post-execution schedules; mock is disabled")
