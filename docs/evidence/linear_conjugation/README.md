@@ -155,8 +155,9 @@ each problem over all eight seeds.
   backend.
 - **What they do not cover.** They predict no fidelity. A hardware use needs
   a fresh dry run and an approved case.
-- **Split conjugators.** One B for rounds 1 to 9 and another for round 10
-  would add one uncontrolled CNOT network at that boundary. The minimum s(2)
-  over all cosets is 180, against 222 at the joint optimum, so a split can
-  gain at most 42 surrogate units minus that network's CNOT count. That
-  variant has not been searched.
+- **Split conjugators.** A different B per round, joined by uncontrolled
+  CNOT networks, is searched exactly in
+  [gl52_split_conjugators/](../gl52_split_conjugators/README.md). The
+  42-unit bound holds only against coset 281. The ten-round split 15265 ->
+  111 lowers the median routed CZ from 3,933 to 3,754 on FakeFez. No
+  two-round split beats a single B.
