@@ -65,8 +65,8 @@ GPU matters for sweeps and batched trials, not for single circuits.
   private dataset, one tar archive with its sha256 manifest, and records it
   under `results/kaggle/datasets/`; `push --dataset SLUG` attaches it, and
   the kernel verifies every file against the manifest before ENTRY runs. A GPU or TPU push needs
-  `--timeout SECONDS` (at most four hours) and refuses while the slug's
-  latest version is still running (next section). `--with GROUP` adds an
+  `--timeout SECONDS` (at most four hours) and refuses while any version
+  of the slug is still running or queued (next section). `--with GROUP` adds an
   opt-in package group from `PIN_GROUPS` (`quantum-tools`,
   `exact-arithmetic`) at the build host's versions, installed under a
   constraints file that holds the core pins and the image's numpy, scipy
@@ -178,9 +178,13 @@ shared with every other session on the account.
 - A non-CPU push needs `--timeout SECONDS`, at most four hours; Kaggle ends
   the session there. Without it a session runs to the 12-hour notebook
   limit.
-- A non-CPU push refuses while the slug's latest version is RUNNING or
-  QUEUED, because a new version leaves the old session running. Push under
-  a new slug, or cancel the live version first.
+- A non-CPU push refuses while any version of the slug is RUNNING, QUEUED
+  or NEW_SCRIPT, because a new version leaves every older session running.
+  The Kaggle API answers status for the latest version only, so for a slug
+  Kaggle already holds the push reads every version's state through
+  ListKernelVersions (`scripts/kaggle_sessions.py`, which needs the signed-in
+  Firefox profile below) and refuses when that listing fails. Push under a
+  new slug, or cancel every live version first.
 - Route by measured cost: on the build host the CPU matches or beats the
   GPU for density matrices up to 8 active qubits and every retained IBM job
   replays at 1 to 6, so those runs go to `--machine cpu`. A GPU kernel does
