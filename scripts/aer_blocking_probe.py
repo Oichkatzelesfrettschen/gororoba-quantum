@@ -36,7 +36,7 @@ Circuits: ``ghz`` (H, a CX chain, every qubit measured; outcomes all zeros
 or all ones) and ``dynamic`` (the same GHZ, qubit 0 measured mid-circuit and
 an if_else that flips every qubit on a one, so every final readout is all
 zeros), and ``dynamic_lowered`` (that circuit through
-``aer_gpu_probe.lower_conditionals``: each body gate conditioned on the
+``calibration_snapshot.lower_conditionals``: each body gate conditioned on the
 measured bit, with no jump or mark). AerCompiler inlines an if_else into
 jump and mark operations, and the cache-blocking pass splits the operation
 list into per-chunk blocks, so a jump whose mark lies in a later block finds
@@ -51,6 +51,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import signal
 import subprocess
@@ -127,7 +128,7 @@ def circuit_for(kind: str, width: int) -> Any:
     from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 
     if kind == "dynamic_lowered":
-        return aer_gpu_probe.lower_conditionals(circuit_for("dynamic", width))
+        return calibration_snapshot.lower_conditionals(circuit_for("dynamic", width))
 
     qubits = QuantumRegister(width, "q")
     out = ClassicalRegister(width, "out")
@@ -354,12 +355,16 @@ def main() -> int:
     parser.add_argument("--trials", help="comma-separated trial names (default: every TRIALS entry)")
     parser.add_argument("--one", help=argparse.SUPPRESS)
     parser.add_argument("--check", type=Path, metavar="RECORD")
+    parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     if args.one:
         print(json.dumps(run_one(json.loads(args.one))), flush=True)
         return 0
     if args.check:
         return check(args.check)
+    if args.self_test:
+        print(f"aer_blocking_probe: {self_test()}")
+        return 0
     if args.out is None:
         parser.error("--out is required")
     devices = aer_gpu_probe.gpus()
@@ -421,6 +426,141 @@ def check(path: Path) -> int:
         print(problem)
     print(f"{path}: {len(record['trials'])} trials, {len(problems)} differences")
     return 1 if problems else 0
+
+
+TOY_WIDTH, TOY_CHUNK, TOY_SHOTS, TOY_E10, TOY_E01 = 6, 3, 4000, 0.05, 0.10
+
+
+def readout_toy(flip: bool = False) -> Any:
+    """Qubit 0's recorded bit, read through a readout channel, conditions an X on the top qubit outside a chunk.
+
+    Qubit 0 stays in |0>, so its recorded bit reads 1 only through the
+    readout channel; a condition evaluated before that channel never flips
+    the top qubit, and a correct one flips it in exactly the shots that
+    recorded a 1. flip tests the opposite value, the negative control.
+    """
+    from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
+
+    qubits = QuantumRegister(TOY_WIDTH, "q")
+    mid, out = ClassicalRegister(1, "mid"), ClassicalRegister(TOY_WIDTH, "out")
+    circuit = QuantumCircuit(qubits, mid, out)
+    circuit.h(1)
+    circuit.cx(1, TOY_WIDTH - 2)
+    circuit.measure(0, mid[0])
+    with circuit.if_test((mid[0], 0 if flip else 1)):
+        circuit.x(TOY_WIDTH - 1)
+    circuit.measure(qubits, out)
+    return circuit
+
+
+def toy_counts(circuit: Any, method: str, device: str, options: dict[str, Any]) -> dict[str, int]:
+    from qiskit_aer import AerSimulator
+    from qiskit_aer.noise import NoiseModel, ReadoutError
+
+    noise = NoiseModel()
+    noise.add_readout_error(ReadoutError([[1 - TOY_E10, TOY_E10], [TOY_E01, 1 - TOY_E01]]), [0])
+    simulator = AerSimulator(method=method, device=device, noise_model=noise, **options)
+    result = simulator.run(circuit, shots=TOY_SHOTS, seed_simulator=SEED).result()
+    if options and result.results[0].metadata.get("cacheblocking", {}).get("block_bits") != options["blocking_qubits"]:
+        raise SystemExit(f"aer_blocking_probe: the {device} {method} toy ran without its {TOY_CHUNK}-qubit chunks")
+    return dict(sorted(result.get_counts().items()))
+
+
+def toy_contract(method: str, device: str) -> None:
+    """The lowered toy under blocking: on a GPU the if_else toy's counts, on the CPU a condition off its bit.
+
+    Aer's GPU chunk executor applies a bfunc-conditioned gate after the
+    readout channel on the recorded bit, so the blocked lowered toy draws the
+    if_else toy's seeded counts. Its CPU executor under the same blocking
+    draws outcomes whose top qubit disagrees with the recorded bit, which is
+    why SnapshotSimulator.run applies blocking_options on a GPU device only.
+    """
+    forced = {"blocking_enable": True, "blocking_qubits": TOY_CHUNK, "max_parallel_shots": 1}
+    # A device of 0 MiB puts every width past one GPU, so blocked_batch takes
+    # its blocking path on the six-qubit toy.
+    lowered, blocking = calibration_snapshot.blocked_batch([readout_toy()], method, 0)
+    if not blocking or calibration_snapshot.has_control_flow(lowered[0]):
+        raise SystemExit("aer_blocking_probe: blocked_batch left the toy unlowered")
+    blocked = toy_counts(lowered[0], method, device, forced)
+    # Keys read "out mid"; out's leftmost character is the conditioned top qubit.
+    on_bit = all(key.split()[0][0] == key.split()[1] for key in blocked)
+    if device == "CPU":
+        if on_bit:
+            raise SystemExit("aer_blocking_probe: CPU cache blocking keeps the condition; revisit the GPU-only rule")
+        return
+    if blocked != toy_counts(readout_toy(), method, device, {}) or not on_bit:
+        raise SystemExit(f"aer_blocking_probe: the blocked {device} {method} toy differs from the if_else toy")
+    ones = sum(value for key, value in blocked.items() if key.split()[1] == "1")
+    if abs(ones - TOY_E10 * TOY_SHOTS) > 5 * math.sqrt(TOY_SHOTS * TOY_E10 * (1 - TOY_E10)):
+        raise SystemExit(f"aer_blocking_probe: {ones} recorded ones is off the readout channel's {TOY_E10}")
+    flipped = calibration_snapshot.lower_conditionals(readout_toy(flip=True))
+    if toy_counts(flipped, method, device, forced) == blocked:
+        raise SystemExit("aer_blocking_probe: the toy's condition does not reach its outcome")
+
+
+def self_test() -> str:
+    """Chunk sizes, the blocking trigger, active width, refusal, and the readout toy under blocking."""
+    from qiskit import ClassicalRegister, QuantumCircuit
+
+    sizes = {
+        (method, memory): calibration_snapshot.blocking_qubits_for(method, memory)
+        for method in ("statevector", "density_matrix")
+        for memory in (15360, 12282)
+    }
+    if set(sizes.values()) != {27, 13} or any(
+        calibration_snapshot.state_bytes(method, bits) > (memory << 20) // 4
+        or calibration_snapshot.state_bytes(method, bits + 1) <= (memory << 20) // 4
+        for (method, memory), bits in sizes.items()
+    ):
+        raise SystemExit(f"aer_blocking_probe: blocking_qubits_for gave {sizes}")
+    t4 = 15360
+    decisions = {
+        (method, width): bool(calibration_snapshot.blocking_options(method, width, t4))
+        for method, width in (("statevector", 29), ("statevector", 30), ("density_matrix", 14), ("density_matrix", 15))
+    }
+    if decisions != {
+        ("statevector", 29): False,
+        ("statevector", 30): True,
+        ("density_matrix", 14): False,
+        ("density_matrix", 15): True,
+    }:
+        raise SystemExit(f"aer_blocking_probe: blocking_options decided {decisions} on a T4")
+    if calibration_snapshot.blocking_options("statevector", 40, None) or calibration_snapshot.blocking_options(
+        "matrix_product_state", 40, t4
+    ):
+        raise SystemExit("aer_blocking_probe: blocking_options blocked without a GPU or for an unchunked method")
+    wide = QuantumCircuit(156, 7)
+    wide.h(3)
+    for a, b in ((3, 4), (4, 5), (5, 16), (16, 23), (23, 24), (24, 25)):
+        wide.cx(a, b)
+    wide.measure([3, 4, 5, 16, 23, 24, 25], range(7))
+    sized = calibration_snapshot.blocked_batch([wide], "statevector", t4)[1]
+    if calibration_snapshot.active_qubits(wide) != 7 or sized:
+        raise SystemExit("aer_blocking_probe: a 156-qubit circuit with 7 active qubits was sized by its register")
+    with_else = QuantumCircuit(TOY_WIDTH, 1)
+    with_else.measure(0, 0)
+    with with_else.if_test((with_else.clbits[0], 1)) as orelse:
+        with_else.x(1)
+    with orelse:
+        with_else.x(2)
+    with_else.add_register(ClassicalRegister(1, "extra"))
+    try:
+        calibration_snapshot.blocked_batch([with_else], "statevector", 0)
+    except ValueError:
+        pass
+    else:
+        raise SystemExit("aer_blocking_probe: blocked_batch accepted an if_else with an else body")
+    toy_contract("statevector", "CPU")
+    gpu = "no GPU here, so the GPU toy did not run"
+    if aer_gpu_probe.gpus():
+        for method in ("statevector", "density_matrix"):
+            toy_contract(method, "GPU")
+        gpu = "on the GPU it draws the if_else counts, the condition on the recorded bit (statevector, density matrix)"
+    return (
+        f"chunks {sorted(set(sizes.values()))}; a T4 blocks statevector 30 and density matrix 15, not 29 or 14; "
+        f"a 156-qubit circuit counts its 7 active qubits; an else body is refused; under {TOY_CHUNK}-qubit chunks "
+        f"the CPU's lowered readout toy leaves its condition's bit; {gpu}"
+    )
 
 
 if __name__ == "__main__":

@@ -540,44 +540,6 @@ TOY_LABELS = (
 )
 
 
-def lower_conditionals(circuit: Any) -> Any:
-    """circuit with every if_else replaced by its true body's gates, each conditioned on the same test.
-
-    AerCompiler inlines an if_else into mark and jump instructions, which
-    Aer's batched GPU executor rejects. Aer's assemble_circuit turns an
-    operation's ``condition`` (a Clbit or ClassicalRegister and a value)
-    into a bfunc register that gates it. A one-level if_else without an else
-    body whose true body holds gates only has that form. The result is the
-    circuit itself without control flow, and None when an instruction has no
-    such form (an else body, an expression condition, a measurement, reset or
-    nested control flow inside the body, or a loop or switch).
-    """
-    from qiskit.circuit import Gate
-
-    import calibration_snapshot
-
-    if not calibration_snapshot.has_control_flow(circuit):
-        return circuit
-    lowered = circuit.copy_empty_like()
-    for instruction in circuit.data:
-        operation = instruction.operation
-        if operation.name not in calibration_snapshot.CONTROL_FLOW:
-            lowered.append(instruction)
-            continue
-        condition = getattr(operation, "condition", None)
-        if operation.name != "if_else" or not isinstance(condition, tuple) or operation.params[1] is not None:
-            return None
-        body = operation.params[0]
-        wires = dict(zip(body.qubits, instruction.qubits, strict=True))
-        for inner in body.data:
-            if not isinstance(inner.operation, Gate) or inner.clbits:
-                return None
-            gate = inner.operation.to_mutable()
-            gate.condition = condition
-            lowered.append(gate, [wires[q] for q in inner.qubits])
-    return lowered
-
-
 def execute(simulator: Any, label: str, circuits: Any, shots: int) -> Any:
     """The configuration's run: a lowering configuration submits lower_conditionals' circuits.
 
@@ -588,11 +550,13 @@ def execute(simulator: Any, label: str, circuits: Any, shots: int) -> Any:
     """
     from qiskit_aer import AerSimulator
 
+    import calibration_snapshot
+
     _, _, options, lower, _ = {**CONFIGURATIONS, **TOY_CONFIGURATIONS}[label]
     extra = {key: value for key, value in options.items() if key in RUN_OPTIONS}
     if lower:
         batch = circuits if isinstance(circuits, list) else [circuits]
-        lowered = [lower_conditionals(circuit) for circuit in batch]
+        lowered = [calibration_snapshot.lower_conditionals(circuit) for circuit in batch]
         if any(circuit is None for circuit in lowered):
             raise RuntimeError("a circuit has no bfunc-conditioned form")
         circuits = lowered if isinstance(circuits, list) else lowered[0]
@@ -1004,7 +968,7 @@ def lowering_contract() -> str:
     source.measure([0, 1], out)
     basis = ["cz", "sx", "x", "rz", "measure", "if_else"]
     circuit = transpile(source, basis_gates=basis, optimization_level=0, seed_transpiler=0)
-    lowered = lower_conditionals(circuit)
+    lowered = calibration_snapshot.lower_conditionals(circuit)
     if lowered is None or any(instruction.operation.name == "if_else" for instruction in lowered.data):
         raise SystemExit("aer_gpu_probe: lower_conditionals left an if_else in a lowerable circuit")
     flipped, dropped = lowered.copy_empty_like(), lowered.copy_empty_like()
@@ -1033,7 +997,7 @@ def lowering_contract() -> str:
         with_else.x(1)
     with orelse:
         with_else.x(0)
-    if lower_conditionals(with_else) is not None:
+    if calibration_snapshot.lower_conditionals(with_else) is not None:
         raise SystemExit("aer_gpu_probe: lower_conditionals accepted an else body")
     return "lowered counts equal the if_else counts; flipped and dropped conditions differ; else bodies stay unlowered"
 
