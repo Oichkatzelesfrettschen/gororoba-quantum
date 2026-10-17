@@ -58,11 +58,17 @@ compare with `roughly_eq`.
 
 ## Use in this repository
 
-The following are inferences about the code, not statements of the crate.
+The following are inferences about the code, measured by the audit, not
+statements of the crate.
 
-The crate is a second, independent implementation of the wheel of fractions
-of [Carlstrom's report](wheels-carlstrom.md), which
-`gororoba_quantum/wheel_algebra.py` implements exactly over Q.
+The [differential audit](../evidence/wheel_rust_audit/README.md) runs the
+crate against `gororoba_quantum/wheel_algebra.py`, the exact wheel of
+fractions over Q of [Carlstrom's report](wheels-carlstrom.md). The `w64`
+category table is the wheel of fractions over Q with infinity and bottom:
+every law failure it shows is caused by binary64 rounding, overflow or
+underflow, and the rounded model reproduces every result bit for bit.
+`qw64` agrees with the exact module on every case of its corpus;
+fixed-width integer overflow breaks `qw8` by a panic or a wrapped value.
 
 Relevance: (a) none; (b) method -- a second, independent wheel
 implementation that cross-checks wheel_algebra.py; (c) none.
