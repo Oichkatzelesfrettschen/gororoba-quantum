@@ -62,6 +62,7 @@ import base64
 import hashlib
 import io
 import json
+import lzma
 import re
 import subprocess
 import sys
@@ -200,7 +201,7 @@ KERNEL_FILES = (
 )
 
 RUNNER = r"""
-import base64, io, subprocess, sys, zipfile
+import base64, io, lzma, subprocess, sys, zipfile
 from pathlib import Path
 
 import importlib.metadata as metadata
@@ -233,7 +234,7 @@ for pin in [*PINS, *EXTRA, *frozen]:
     if metadata.version(name) != wanted:
         raise SystemExit(f"{{name}} is {{metadata.version(name)}}, pinned {{wanted}}")
 repo = Path("/tmp/gororoba/repo")
-zipfile.ZipFile(io.BytesIO(base64.b64decode(BUNDLE))).extractall(repo)
+zipfile.ZipFile(io.BytesIO(lzma.decompress(base64.b64decode(BUNDLE)))).extractall(repo)
 raise SystemExit(subprocess.run([sys.executable, "-B", "kaggle_kernel/kernel_main.py"], cwd=repo).returncode)
 """
 
@@ -403,7 +404,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     buffer = io.BytesIO()
     digests: dict[str, str] = {}
     contents: dict[str, bytes] = {}
-    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as bundle:
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_STORED) as bundle:
         for path in sorted(set(files)):
             rel = path.relative_to(ROOT).as_posix()
             data = path.read_bytes()
@@ -426,9 +427,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     kernel_dir = run_dir / "kernel"
     kernel_dir.mkdir(parents=True)
     extra = [pin for group in getattr(args, "with_groups", []) for pin in PIN_GROUPS[group]]
-    runner = RUNNER.format(
-        pins=list(kernel_pins(args.machine)), extra=extra, bundle=base64.b64encode(buffer.getvalue()).decode("ascii")
-    )
+    runner = RUNNER.format(pins=list(kernel_pins(args.machine)), extra=extra, bundle=pack_bundle(buffer.getvalue()))
     (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
     tpu = args.machine.startswith("Tpu")
     if tpu:
@@ -926,12 +925,22 @@ def _overlay_self_test() -> None:
         require(run("write-tree").strip() == expected, "the overlay does not rebuild a directory-to-file change")
 
 
+def pack_bundle(archive: bytes) -> str:
+    """A stored zip as one xz stream in base64, the BUNDLE string run.py embeds.
+
+    Per-member deflate compresses each file alone; one xz stream over the
+    stored archive also removes the redundancy between files, which keeps
+    run.py about a third smaller under KERNEL_SOURCE_LIMIT.
+    """
+    return base64.b64encode(lzma.compress(archive, preset=9 | lzma.PRESET_EXTREME)).decode("ascii")
+
+
 def bundled_job(run_py: Path) -> dict[str, Any]:
     """The kernel_job.json inside a generated run.py's embedded bundle."""
     found = re.search(r'BUNDLE = "([^"]+)"', run_py.read_text(encoding="utf-8"))
     require(found is not None, f"{run_py} embeds no bundle")
     assert found is not None
-    archive = zipfile.ZipFile(io.BytesIO(base64.b64decode(found.group(1))))
+    archive = zipfile.ZipFile(io.BytesIO(lzma.decompress(base64.b64decode(found.group(1)))))
     return dict(json.loads(archive.read("kaggle_kernel/kernel_job.json")))
 
 
@@ -968,6 +977,17 @@ def _self_test_kernel(entry: str, data: str, machine: str) -> dict[str, Any]:
         require(metadata["id"] == "owner/self-test", f"kernel id {metadata['id']}")
         py_compile.compile(str(run_dir / "kernel/run.py"), doraise=True)
         runner = (run_dir / "kernel/run.py").read_text(encoding="utf-8")
+        # run.py's own decoding, so the kernel unpacks exactly the bundled bytes.
+        embedded = re.search(r'BUNDLE = "([^"]+)"', runner)
+        require(embedded is not None, f"{machine}: run.py embeds no bundle")
+        assert embedded is not None
+        unpacked = zipfile.ZipFile(io.BytesIO(lzma.decompress(base64.b64decode(embedded.group(1)))))
+        members = {name: sha256(unpacked.read(name)) for name in unpacked.namelist()}
+        require(
+            {name: members.get(name) for name in submission["bundle"]} == submission["bundle"],
+            f"{machine}: run.py's bundle differs from the tree",
+        )
+        require(len(runner.encode("utf-8")) <= KERNEL_SOURCE_LIMIT, f"{machine}: run.py exceeds KERNEL_SOURCE_LIMIT")
         require(all(pin in runner for pin in kernel_pins(machine)), f"{machine}: run.py lacks a pin")
         require(all(pin in runner for pin in PIN_GROUPS["quantum-tools"]), f"{machine}: run.py lacks a group pin")
         for path in kernel_docs():
@@ -1135,7 +1155,7 @@ def build_shard_kernel(
     buffer = io.BytesIO()
     digests: dict[str, str] = {}
     contents: dict[str, bytes] = {}
-    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as bundle:
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_STORED) as bundle:
         for always in KERNEL_FILES:
             for path in import_closure(ROOT / always) if always.endswith(".py") else [ROOT / always]:
                 rel = path.relative_to(ROOT).as_posix()
@@ -1177,7 +1197,7 @@ def build_shard_kernel(
     kernel_dir = run_dir / "kernel"
     kernel_dir.mkdir(parents=True)
     pins = kernel_pins(machine)
-    runner = RUNNER.format(pins=list(pins), extra=[], bundle=base64.b64encode(buffer.getvalue()).decode("ascii"))
+    runner = RUNNER.format(pins=list(pins), extra=[], bundle=pack_bundle(buffer.getvalue()))
     (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
     slug = shard_slug(shard, count)
     metadata = {
