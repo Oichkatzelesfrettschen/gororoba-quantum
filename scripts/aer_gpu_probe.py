@@ -18,10 +18,12 @@ Aer abort ends only that row. Three workload families run:
   full count while the fit t = a + b * shots through the measured tiers
   predicts a run within BUDGET_SECONDS; the smallest tier always runs.
 - width: scripts/substrate_crossover.py's batch of 8 layered circuits on a
-  chain of 7, 10 and 14 ibm_kingston qubits at WIDTH_SHOTS shots, static
-  (terminal measurement only) and dynamic (one mid-circuit measurement and
-  one if_test), on the GPU configurations of WIDTH_CONFIGURATIONS. A series
-  stops at the first width whose run exceeds BUDGET_SECONDS.
+  chain of ibm_kingston qubits at WIDTH_SHOTS shots, static (terminal
+  measurement only) and dynamic (one mid-circuit measurement and one
+  if_test), on the GPU configurations of WIDTH_CONFIGURATIONS: 7, 10 and 14
+  qubits for the density matrix (WIDTHS) and up to 24 for the statevector
+  (STATEVECTOR_WIDTHS), whose GPU kernels stay underoccupied at 14 qubits.
+  A series stops at the first width whose run exceeds BUDGET_SECONDS.
 
 Configurations (CONFIGURATIONS) name a device, a method and Aer options:
 statevector trajectories, shot branching (shot_branching_enable with
@@ -87,6 +89,7 @@ SEED = 20261016
 N21_CIRCUITS = {"two_round_encoded_ff": 32768, "two_round_encoded_noff": 32768, "ten_round_encoded": 16384}
 SHOT_TIERS = (32, 256, 2048, 16384, 32768)
 WIDTHS = (7, 10, 14)
+STATEVECTOR_WIDTHS = (7, 10, 14, 20, 24)
 WIDTH_SHOTS = 2048
 BUDGET_SECONDS = 60.0
 # A tier whose first run is shorter than this repeats REPEATS times in all
@@ -146,6 +149,13 @@ CONFIGURATIONS: dict[str, tuple[str, str, dict[str, Any], bool, bool]] = {
     ),
     "gpu_density_matrix_unbatched": ("GPU", "density_matrix", {"batched_shots_gpu": False}, False, False),
     "gpu_density_matrix_batched": ("GPU", "density_matrix", {"batched_shots_gpu": True}, True, False),
+    "gpu_density_matrix_custatevec": (
+        "GPU",
+        "density_matrix",
+        {"batched_shots_gpu": False, "cuStateVec_enable": True},
+        False,
+        False,
+    ),
     "gpu_statevector_default": ("GPU", "statevector", {"batched_shots_gpu": True}, False, False),
 }
 # Rows of the readout toy only: shot branching under the density matrix.
@@ -156,8 +166,10 @@ TOY_CONFIGURATIONS: dict[str, tuple[str, str, dict[str, Any], bool, bool]] = {
 WIDTH_CONFIGURATIONS = (
     "gpu_statevector_unbatched",
     "gpu_statevector_batched",
+    "gpu_statevector_custatevec",
     "gpu_density_matrix_unbatched",
     "gpu_density_matrix_batched",
+    "gpu_density_matrix_custatevec",
 )
 PACKAGES = (
     "qiskit",
@@ -776,6 +788,8 @@ def main() -> int:
             "logical_cpus": os.cpu_count(),
             "available_cpus": cpus,
             "workers": parallel.workers(),
+            # A niced probe yields the CPU to other work, which lengthens its rows.
+            "niceness": os.nice(0),
             "gpus": devices,
             "cuda_driver_version": cuda_driver_version(),
             "python": platform.python_version(),
@@ -817,7 +831,8 @@ def main() -> int:
         for circuit in ("static", "dynamic"):
             for label in (label for label in WIDTH_CONFIGURATIONS if label in labels):
                 stop = skip_reason(label, len(devices))
-                for width in WIDTHS:
+                widths = STATEVECTOR_WIDTHS if CONFIGURATIONS[label][1] == "statevector" else WIDTHS
+                for width in widths:
                     spec = {"workload": "width", "circuit": circuit, "width": width, "configuration": label}
                     if stop is not None:
                         emit({**spec, "skipped": stop})
