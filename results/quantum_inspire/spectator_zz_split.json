@@ -5,92 +5,92 @@
   {
    "target": 0,
    "driver": 1,
-   "j_hz": -2206.889684647301,
-   "measured_shift_rad": -0.1220165760100881,
-   "zz_predicted_shift_rad": 0.01109303747291369,
-   "zz_predicted_se_rad": 0.004503732626511191,
-   "residual_rad": -0.1331096134830018
+   "j_hz": -2206.88968465,
+   "measured_shift_rad": -0.12201657601,
+   "zz_predicted_shift_rad": 0.0110930374729,
+   "zz_predicted_se_rad": 0.00450373262651,
+   "residual_rad": -0.133109613483
   },
   {
    "target": 0,
    "driver": 2,
-   "j_hz": -7902.751711715086,
-   "measured_shift_rad": 0.13865803579082697,
-   "zz_predicted_shift_rad": 0.039723562753069236,
-   "zz_predicted_se_rad": 0.004839540122476145,
-   "residual_rad": 0.09893447303775774
+   "j_hz": -7902.75171172,
+   "measured_shift_rad": 0.138658035791,
+   "zz_predicted_shift_rad": 0.0397235627531,
+   "zz_predicted_se_rad": 0.00483954012248,
+   "residual_rad": 0.0989344730377
   },
   {
    "target": 3,
    "driver": 5,
-   "j_hz": 11730.771140103512,
-   "measured_shift_rad": 0.07400683485683,
-   "zz_predicted_shift_rad": -0.05896528709550777,
-   "zz_predicted_se_rad": 0.006570244404735192,
-   "residual_rad": 0.13297212195233776
+   "j_hz": 11730.7711401,
+   "measured_shift_rad": 0.0740068348568,
+   "zz_predicted_shift_rad": -0.0589652870955,
+   "zz_predicted_se_rad": 0.00657024440474,
+   "residual_rad": 0.132972121952
   },
   {
    "target": 3,
    "driver": 6,
-   "j_hz": -7823.680096026388,
-   "measured_shift_rad": 0.060070589027478034,
-   "zz_predicted_shift_rad": 0.0393261054619411,
-   "zz_predicted_se_rad": 0.00671464421229597,
-   "residual_rad": 0.020744483565536938
+   "j_hz": -7823.68009603,
+   "measured_shift_rad": 0.0600705890275,
+   "zz_predicted_shift_rad": 0.039326105462,
+   "zz_predicted_se_rad": 0.00671464421228,
+   "residual_rad": 0.0207444835655
   },
   {
    "target": 4,
    "driver": 7,
-   "j_hz": -2984.110710040631,
-   "measured_shift_rad": 0.6328965188569562,
-   "zz_predicted_shift_rad": 0.014999776454659629,
-   "zz_predicted_se_rad": 0.006731178668765153,
-   "residual_rad": 0.6178967424022965
+   "j_hz": -2984.11071004,
+   "measured_shift_rad": 0.632896518857,
+   "zz_predicted_shift_rad": 0.0149997764547,
+   "zz_predicted_se_rad": 0.00673117866876,
+   "residual_rad": 0.617896742402
   },
   {
    "target": 4,
    "driver": 8,
-   "j_hz": -4985.4221309190025,
-   "measured_shift_rad": 0.030036014076022202,
-   "zz_predicted_shift_rad": 0.025059464866462575,
-   "zz_predicted_se_rad": 0.004822710929085581,
-   "residual_rad": 0.004976549209559627
+   "j_hz": -4985.42213092,
+   "measured_shift_rad": 0.030036014076,
+   "zz_predicted_shift_rad": 0.0250594648665,
+   "zz_predicted_se_rad": 0.00482271092909,
+   "residual_rad": 0.00497654920955
   },
   {
    "target": 11,
    "driver": 13,
-   "j_hz": 7501.984499734667,
-   "measured_shift_rad": 0.013582425618235451,
-   "zz_predicted_shift_rad": -0.03770908702673748,
-   "zz_predicted_se_rad": 0.00471007224819628,
-   "residual_rad": 0.051291512644972934
+   "j_hz": 7501.98449973,
+   "measured_shift_rad": 0.0135824256182,
+   "zz_predicted_shift_rad": -0.0377090870267,
+   "zz_predicted_se_rad": 0.00471007224819,
+   "residual_rad": 0.0512915126449
   },
   {
    "target": 11,
    "driver": 14,
-   "j_hz": -31434.077058639126,
-   "measured_shift_rad": 0.15273631977310204,
-   "zz_predicted_shift_rad": 0.15800490489567381,
-   "zz_predicted_se_rad": 0.0047460063701824,
-   "residual_rad": -0.005268585122571778
+   "j_hz": -31434.0770586,
+   "measured_shift_rad": 0.152736319773,
+   "zz_predicted_shift_rad": 0.158004904895,
+   "zz_predicted_se_rad": 0.00474600637018,
+   "residual_rad": -0.00526858512238
   },
   {
    "target": 12,
    "driver": 9,
-   "j_hz": 3730.1833303570293,
-   "measured_shift_rad": -0.04293576645605479,
-   "zz_predicted_shift_rad": -0.0187499464755084,
-   "zz_predicted_se_rad": 0.004683793701070882,
-   "residual_rad": -0.02418581998054639
+   "j_hz": 3730.18333036,
+   "measured_shift_rad": -0.0429357664561,
+   "zz_predicted_shift_rad": -0.0187499464755,
+   "zz_predicted_se_rad": 0.00468379370107,
+   "residual_rad": -0.0241858199805
   },
   {
    "target": 12,
    "driver": 15,
-   "j_hz": 2952.285933133452,
-   "measured_shift_rad": -0.03681184739285222,
-   "zz_predicted_shift_rad": -0.014839807678125665,
-   "zz_predicted_se_rad": 0.0045882874037109535,
-   "residual_rad": -0.021972039714726554
+   "j_hz": 2952.28593313,
+   "measured_shift_rad": -0.0368118473929,
+   "zz_predicted_shift_rad": -0.0148398076781,
+   "zz_predicted_se_rad": 0.00458828740371,
+   "residual_rad": -0.0219720397147
   }
  ]
 }

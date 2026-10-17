@@ -32,8 +32,13 @@ cancels, and |nu| / 2 pi < 1 / (2 (d2 - d1) 20 ns) = 333 kHz is unambiguous.
 
 Per role assignment the configuration needs 2 quadratures x 2 delays = 4
 circuits; with two readout-calibration circuits the case is 10 circuits,
-submitted in batches of at most BATCH = 3, one batch at a time, which keeps
-the account within the FAQ's three queued jobs per hardware backend.
+submitted in batches of at most qi_platform.HARDWARE_BATCH_CIRCUITS, one batch
+at a time, which keeps the account within the FAQ's three queued jobs per
+hardware backend.
+
+Analyses write every float at SIGNIFICANT digits: numpy builds linked to
+different BLAS libraries disagree in the last ulp of solve and inv, and the
+replays compare bytes.
 
 --write DIR writes DIR/coupler_zz_tuna_17/ and the QX dry run DIR/coupler_zz_qx/
 (batch-NN/ case directories and cases.json); --check DIR regenerates both and
@@ -68,6 +73,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from qi_platform import HARDWARE_BATCH_CIRCUITS
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOGUE = ROOT / "docs/evidence/quantum_inspire/catalogue.json"
@@ -81,7 +87,8 @@ PROFILES: dict[str, dict[str, Any]] = {
 }
 DELAYS = (25, 100)
 QUADRATURES = ("x", "y")
-BATCH = 3
+BATCH = HARDWARE_BATCH_CIRCUITS
+SIGNIFICANT = 12
 ROLES = ("P", "Q")
 Table = dict[tuple[str, str, int, int, tuple[int, ...]], tuple[float, float]]
 
@@ -206,6 +213,17 @@ def bit(shot: str, qubit: int) -> int:
     return int(shot[len(shot) - 1 - qubit])
 
 
+def quantized(value: Any) -> Any:
+    """value with every float rounded to SIGNIFICANT significant digits."""
+    if isinstance(value, float):
+        return float(f"{value:.{SIGNIFICANT}g}")
+    if isinstance(value, dict):
+        return {key: quantized(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [quantized(item) for item in value]
+    return value
+
+
 def wrap(angle: float) -> float:
     return (angle + math.pi) % (2 * math.pi) - math.pi
 
@@ -243,11 +261,11 @@ def fit_target(
     design = np.array([[1.0, *(1.0 if zk == 0 else -1.0 for zk in z)] for z, *_ in rows])
     # An exact (zero-variance) sector gets a large finite weight, so the conformance's exact data stay solvable.
     weights = np.array([1 / max(se, 1e-12) ** 2 for _, _, se, *_ in rows])
-    nu = np.array([r[1] for r in rows])
+    rates = np.array([r[1] for r in rows])
     normal = design.T @ (weights[:, None] * design)
-    coefficients = np.linalg.solve(normal, design.T @ (weights * nu))
+    coefficients = np.linalg.solve(normal, design.T @ (weights * rates))
     covariance = np.linalg.inv(normal)
-    residual = nu - design @ coefficients
+    residual = rates - design @ coefficients
     to_hz = 1 / (2 * math.pi * CYCLE_SECONDS)
     return {
         "target": target,
@@ -513,7 +531,7 @@ def main() -> int:
         split = explain_spectators(
             json.loads(spectator_path.read_text(encoding="utf-8")), json.loads(zz_path.read_text(encoding="utf-8"))
         )
-        text = json.dumps(split, indent=1) + "\n"
+        text = json.dumps(quantized(split), indent=1) + "\n"
         if args.replay:
             if out.read_text(encoding="utf-8") != text:
                 raise SystemExit(f"{out} differs from its recomputation")
@@ -553,7 +571,7 @@ def main() -> int:
             "readout_assignment": {str(q): list(v) for q, v in assignment.items()},
             **analyze_table(meta, tabulate(meta, shots), assignment),
         }
-        text = json.dumps(report, indent=1) + "\n"
+        text = json.dumps(quantized(report), indent=1) + "\n"
         if args.replay:
             if out.read_text(encoding="utf-8") != text:
                 raise SystemExit(f"{out} differs from its recomputation")
