@@ -440,8 +440,11 @@ def _validate_allocated_scenarios(candidate: dict[str, Any], record: dict[str, A
         assumption = by_name[scenario["name"]]
         _require(scenario["feasible"] is True, "allocated cost scenario fails admission")
         _require(len(scenario["jobs"]) == len(candidate["jobs"]), "allocated cost scenario changed the job count")
+        # Each scenario ledger prices its dynamic stages at the scenario's own
+        # classical latency, so _validate_costs checks it under that value.
         scenario_record = copy.deepcopy(record)
         scenario_record["policy"]["design"]["job_overhead_seconds"] = assumption["job_overhead_seconds"]
+        scenario_record["policy"]["design"]["classical_latency_us"] = assumption["classical_latency_us"]
         scenario_candidate = dict(
             candidate, jobs=scenario["jobs"], estimated_charge_seconds=scenario["estimated_charge_seconds"]
         )
@@ -460,7 +463,6 @@ def _validate_allocated_scenarios(candidate: dict[str, Any], record: dict[str, A
                             "repetition_delay_seconds",
                             "reset_seconds",
                             "classical_stage_count",
-                            "classical_latency_seconds",
                         )
                     ),
                     "allocated cost scenario changed the compiled workload",
