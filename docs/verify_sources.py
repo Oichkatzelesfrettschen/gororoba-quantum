@@ -732,8 +732,12 @@ def verify() -> None:
         recorded_hashes = record.get("source_sha256", {}) | record.get("documentation_sha256", {})
         require(recorded_hashes[entry["path"]] == entry["sha256"], "historical manifest identity")
     link_count = 0
+    # The pages under notes/kaggle/site are kaggle.com's own Markdown, bound byte
+    # for byte by site/MANIFEST.json, and their links resolve against
+    # https://www.kaggle.com/ rather than the checkout.
+    verbatim_captures = (library / "local_source_cache", library / "notes" / "kaggle" / "site")
     for note in library.rglob("*.md"):
-        if library / "local_source_cache" in note.parents:
+        if any(capture in note.parents for capture in verbatim_captures):
             continue
         for target in re.findall(r"\[[^\]]*\]\(([^\s)]+)\)", note.read_text()):
             if ":" in target or target.startswith("#"):
