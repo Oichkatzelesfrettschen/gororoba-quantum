@@ -1,7 +1,11 @@
-# Box-kite experiment program: source inventories
+# Box-kite experiment program
 
-Read-only inventories that the box-kite experiment design draws on. Each
-names its sources by path and line; the sources stay the authority.
+[experiment-program.md](experiment-program.md) is the design: every family's
+claim, observable, circuit, census prediction, falsifier, backend and batch
+plan, citing [census.json](../../evidence/box_kite_census/census.json).
+
+The read-only inventories it draws on each name their sources by path and
+line; the sources stay the authority.
 
 | Inventory | Scope |
 |---|---|
