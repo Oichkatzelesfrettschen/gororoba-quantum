@@ -61,7 +61,7 @@
   "readout": "readout-0 measures all 17 qubits in |0>, readout-1 after X on all 17"
  },
  "preregistered": {
-  "observable": "zero-product success; classification statistic D = Pc(+, -) - Pc(+, +) per row from its two replicas on one pair, batch-01 minus batch-00",
+  "observable": "zero-product success; classification statistic D = Pc(+, -) - Pc(+, +) per row from its two replicas on one pair, the y_sign -1 replica minus the y_sign +1 replica",
   "rows": "opposite-sign edge (1,10)(4,15) of kite 3 on (1, 4), its census twist the same-sign edge (4,10)(1,15) of kite 6 on (10, 13), strut (1,10)(2,9) of kite 3 on (12, 14); batch-00 holds the edge at y_sign +1, the twist at -1 and the strut at +1, batch-01 the opposite signs",
   "predictions": "D = -1 opposite edge, +1 twist (same-sign edge), 0 strut; P(edge, y) = P(twist, -y) under the twist map (L, U, x; L', U', y) -> (L', U, x; L, U', -y)",
   "classification": "D above +0.4 same-sign, below -0.4 opposite-sign, |D| below 0.2 strut, otherwise unresolved; predicted |D| on edges at least 0.72 (pessimistic)",

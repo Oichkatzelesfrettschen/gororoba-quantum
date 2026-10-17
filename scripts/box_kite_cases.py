@@ -1439,7 +1439,7 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
         },
         "t1": {
             "observable": "zero-product success; classification statistic D = Pc(+, -) - Pc(+, +) per row from its "
-            "two replicas on one pair, batch-01 minus batch-00",
+            "two replicas on one pair, the y_sign -1 replica minus the y_sign +1 replica",
             "rows": "opposite-sign edge (1,10)(4,15) of kite 3 on (1, 4), its census twist the same-sign edge "
             "(4,10)(1,15) of kite 6 on (10, 13), strut (1,10)(2,9) of kite 3 on (12, 14); batch-00 holds the edge "
             "at y_sign +1, the twist at -1 and the strut at +1, batch-01 the opposite signs",

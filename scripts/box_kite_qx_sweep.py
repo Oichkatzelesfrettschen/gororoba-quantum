@@ -37,7 +37,8 @@ sub-family), seeds, shot totals, counts, z, verdicts and the summary. --bind
 also regenerates the circuits and requires each sha256 and each replica's
 checks, qubits included, to equal the record's, which binds the record to
 this checkout's generator and re-checks every prediction by state vector.
---require-pass fails when any check is refuted.
+--require-pass fails when any check is refuted or the record ran with
+--limit, so an evidence replay accepts only the exhaustive family.
 
 --emulate CASE_DIR... runs every circuit of the given case directories on
 qxelarator at its manifest's shots (seed BASE_SEED + its index), applies the
@@ -335,8 +336,12 @@ def expected_replicas(family: str, census: dict[str, Any], limit: int | None) ->
     return out
 
 
-def replay(record: dict[str, Any], bind: bool = False) -> dict[str, Any]:
-    """Every verdict of a sweep record re-derived from its counts and the census; raises on a difference."""
+def replay(record: dict[str, Any], bind: bool = False, exhaustive: bool = False) -> dict[str, Any]:
+    """Every verdict of a sweep record re-derived from its counts and the census; raises on a difference.
+
+    exhaustive refuses a record made with --limit, which covers only the first N replicas of each
+    sub-family; evidence replay of the family requires it.
+    """
     if record.get("schema") != SCHEMA or record.get("family") not in FAMILIES:
         raise ValueError(f"record schema {record.get('schema')!r} or family {record.get('family')!r} is unknown")
     census_path = ROOT / record["census"]["path"]
@@ -344,6 +349,8 @@ def replay(record: dict[str, Any], bind: bool = False) -> dict[str, Any]:
         raise ValueError(f"{record['census']['path']} differs from the census the sweep ran against")
     census = cases.load_census(census_path)
     shots, limit = record["shots"], record["limit"]
+    if exhaustive and limit is not None:
+        raise ValueError(f"record ran with --limit {limit}, so it covers only part of each sub-family")
     if (shots, record["z_limit"], record["base_seed"]) != (SHOTS, Z_LIMIT, BASE_SEED):
         raise ValueError("record shots, z_limit or base seed differ from the sweep's")
     covered: dict[str, list[Any]] = {}
@@ -601,6 +608,15 @@ def family_mutations(family: str, circuits: int) -> int:
             replica["params"]["pauli"] = "XXXX"
 
         reject("a swapped coherence setting", swap_setting)
+    limited = copy.deepcopy(record)
+    limited["limit"] = len(record["circuits"]) * 8
+    replay(limited)
+    try:
+        replay(limited, exhaustive=True)
+    except ValueError:
+        rejected += 1
+    else:
+        raise AssertionError(f"family {family}: a --limit record passed the exhaustive replay")
     # An honest record of a refutation replays and reports the refuted check.
     honest = copy.deepcopy(record)
     move_shot(honest, dark[0], dark[1], "0")
@@ -635,7 +651,11 @@ def main() -> int:
     parser.add_argument("--family", nargs="+", choices=FAMILIES, default=list(FAMILIES), help="with --run")
     parser.add_argument("--limit", type=int, help="with --run: the first N replicas of each sub-family")
     parser.add_argument("--bind", action="store_true", help="with --replay: regenerate and compare circuit bytes")
-    parser.add_argument("--require-pass", action="store_true", help="with --replay: fail on a refuted check")
+    parser.add_argument(
+        "--require-pass",
+        action="store_true",
+        help="with --replay: fail on a refuted check or on a record made with --limit",
+    )
     parser.add_argument("--out", type=Path, help="with --emulate: write the emulation record here")
     args = parser.parse_args()
     if args.self_test:
@@ -662,7 +682,8 @@ def main() -> int:
             print(f"refuted: {file}")
         return 0 if record["verdict"] == "pass" else 1
     try:
-        summary = replay(json.loads(args.replay.read_text(encoding="utf-8")), bind=args.bind)
+        record = json.loads(args.replay.read_text(encoding="utf-8"))
+        summary = replay(record, bind=args.bind, exhaustive=args.require_pass)
     except ValueError as error:
         raise SystemExit(f"{args.replay}: {error}") from error
     print(
