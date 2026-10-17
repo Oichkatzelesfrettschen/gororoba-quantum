@@ -23,6 +23,19 @@ the plotting-only `matplotlib==3.11.2`). A pull request merges when every
 shard is green and its review threads are resolved; a red main or nightly
 run is fixed in the next change. A new module, evidence
 replay or contract joins the gate list in ci/gates.json in the same change.
+The lint and type gates (core-000, core-001, core-002, core-039) cover
+gororoba_quantum/, scripts/, ci/ and kaggle_kernel/ whole, so a module there
+is linted and type-checked without a list edit; a checked file elsewhere in
+the tree, such as an evidence replay under results/ or docs/, is named in
+those gates' commands.
+
+Gate commands invoke `"$PYTHON"`. ci/run_gates.py sets it to its own
+interpreter when the environment leaves it unset, and sets
+`GOROROBA_WORKERS=1` the same way. A gate command run outside run_gates.py
+needs `PYTHON` exported (`export PYTHON="${PYTHON:-python3}"`): a variable
+assigned without `export` expands empty in the child shell, and every gate
+then exits 127 in 0.0 s with `/bin/sh: line 1: : command not found`, which
+reads as a gate failure.
 
 
 Every CPU-bound loop over independent items (embedding scores in replica
@@ -410,6 +423,17 @@ retain its output under results/kaggle/. The kernel's own guide is
      keeps the circuit and the noise model at the active width.
   4. `set_options(max_parallel_threads=parallel.workers())` uses every host
      CPU.
+- **cuStateVec.** `noise_simulator(..., custatevec=True)` sets Aer's
+  `cuStateVec_enable` on a GPU statevector run. qiskit-aer-gpu-cu11 0.17.2
+  links libcustatevec.so.1 and libcutensornet.so.2, which `cuquantum-cu11`
+  24.8.0 and `cutensor-cu11` 2.2.0 (`KERNEL_PINS` entries) supply. Aer
+  0.17.2 reports `cuStateVec_enable` False when `batched_shots_gpu` is also
+  set.
+  `scripts/aer_gpu_probe.py --only cpu_statevector
+  gpu_statevector gpu_statevector_custatevec` records the three paths
+  with Aer's reported `cuStateVec_enable`; a T4 result for it is not retained
+  yet. `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
+  the T4 check, and `docs/notes/build_host/custatevec.md` the host build.
 - **Batched GPU shots.** `noise_simulator(..., batched_shots=True)` enables
   Aer's `batched_shots_gpu` for static circuits of at most 16 active qubits.
   qiskit-aer-gpu-cu11 0.17.2 aborts it on any circuit with control flow
@@ -512,7 +536,10 @@ at those versions, except the linters.
 |---|---|
 | python-qiskit | qiskit 2.5.2 |
 | python-qiskit-ibm-runtime | qiskit-ibm-runtime 0.50.0 |
-| python-qiskit-aer-cuda (provides python-qiskit-aer) | qiskit-aer 0.17.2 |
+| python-qiskit-aer-cuda (provides python-qiskit-aer) | qiskit-aer 0.17.2, pkgrel 2: CUDA Thrust backend for sm_89 with cuQuantum, so `AerSimulator(device="GPU", cuStateVec_enable=True)` runs |
+| cuquantum | cuquantum 26.09.0.8 for CUDA 13, repackaged from the vendor archive: libcustatevec.so.1 1.15.0 and libcutensornet.so.2 2.14.0, the two libraries python-qiskit-aer-cuda 0.17.2-2 links |
+| cutensor | cutensor 2.8.1.0, the tensor library libcutensornet.so.2 loads |
+| cuda | cuda 13.4.2 (nvcc 13.4.92): the toolkit both packages build against and the libcublas and libcusolver the module loads from /opt/cuda/lib64 |
 | python-samplomatic | samplomatic 0.21.0, the runtime 0.50 floor |
 | python-ibm-quantum-schemas | ibm-quantum-schemas 0.12.20260921, the runtime 0.50 floor |
 | python-numpy, python-scipy | numpy 2.5.4, scipy 1.18.1 |
@@ -533,7 +560,17 @@ has a local PKGBUILD over the PyPI sdist: the AUR builds the GitHub tag
 archive, which lacks the randomized-benchmarking `.npz` tables, so
 `qiskit_experiments.library` fails to import. After a rebuild,
 `"$PYTHON" -c "import qiskit, qiskit_ibm_runtime, qiskit_aer"` and a
-submit-free dry run confirm the stack. A Kaggle kernel installs qiskit 2.5.2,
+submit-free dry run confirm the stack. python-qiskit-aer-cuda builds against
+the cuquantum package of the same directory tree and installs in one
+`pacman -U` with it; its PKGBUILD links Aer's BLAS and LAPACK calls to the
+AOCL providers and builds the module as C++20, which CUDA 13's CCCL 3
+headers and fmt 12 require. `readelf -d` on
+`qiskit_aer/backends/controller_wrappers.cpython-314-x86_64-linux-gnu.so`
+lists libcustatevec.so.1 and libcutensornet.so.2 among its NEEDED entries;
+a module without them raises `Simulation device "GPU" does not support
+cuStateVec on this system` on `cuStateVec_enable=True`.
+`docs/notes/build_host/custatevec.md` holds the requirement list, the build
+and install commands and the probe results. A Kaggle kernel installs qiskit 2.5.2,
 qiskit-ibm-runtime 0.50.0 (its fake backends, such as FakeFez, need no
 account) and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel
 stops at 0.15.1) over the Kaggle image's numpy and scipy, records every
@@ -683,7 +720,12 @@ core-327 (`qi_crosstalk_teleport_cases.py --check results/quantum_inspire/cases`
 core-331 (`--replay` of every retained analysis.json), core-348 and core-330
 (`qi_zero_divisor_cases.py --check` and `--replay`), core-332 and core-333
 (`qi_coupler_zz_map.py` case regeneration with conformance, and the replay of
-the coupler map, its QX dry run and the spectator split), and core-340
+the coupler map, its QX dry run and the spectator split), core-362
+(`qi_readout_ringdown_cases.py` case regeneration with the post-readout
+tail and excitation conformance), core-369 (the replay of its QX dry-run
+analyses), core-368 (`qi_toolchain_check.py --check`: the libqasm and
+OpenSquirrel record names every current case circuit at its sha256; the
+record itself is regenerated under `$QI_PYTHON`), and core-340
 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of the Tuna-17
 cases).
 
@@ -887,7 +929,16 @@ code-review quota, the owner decides how the PR proceeds.
   run on every branch the merge touched.
 
 **Merging.** A PR merges when its latest review is clean, every thread is
-resolved, and GitHub reports mergeable_state clean. Bottom-up, for each PR:
+resolved, GitHub reports mergeable_state clean, and
+`"$PYTHON" ci/premerge_gates.py BRANCH` exits 0. That script merges the
+branch into origin/main in a scratch worktree and runs every pr-tier gate
+measured at 5 s or less there and on origin/main, each tree through its own
+ci/run_gates.py; it fails on a gate the merge breaks. A gate over a
+whole-tree record (core-368 over every case circuit, core-270 over every
+retained run) can pass on two branches separately and fail on their merge,
+and a PR's CI ran against main as it stood then. Full-tier record gates such
+as core-289 (every retained family configuration) run only on main's full
+CI run. Bottom-up, for each PR:
 1. Merge it with a merge commit:
    `gh api -X PUT repos/OWNER/REPO/pulls/PR/merge -f merge_method=merge`.
 2. Retarget the next PR to main: `gh api -X PATCH repos/OWNER/REPO/pulls/NEXT -f base=main`.

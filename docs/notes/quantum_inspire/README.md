@@ -13,6 +13,9 @@ and the captures with `"$PYTHON" scripts/capture_qi_docs.py`.
 | Guide | Content |
 |---|---|
 | [setup.md](setup.md) | the Python 3.13 environment and its lock, OAuth device login, the `qi` CLI command map, REST, SDK, Qiskit, PennyLane and hybrid routes, result bit order |
+| [qx-runs.md](qx-runs.md) | what a QX result contains (the measurement register, by qubit), the root cause and its consequences, and the procedures for a local qxelarator run, a remote QX dry run and a QX run |
+| [ry-emulator.md](ry-emulator.md) | the Ry emulator: the neutral-atom model and why the API flags it hardware, geometry against the all-to-all topology, gate set and what the compiler does to each gate, qubit-0-leftmost result order, limits and cost, the measured "error interpreting cQASM script" failure, the procedure for a run, and unmeasured capabilities with probes |
+| [tuna-9.md](tuna-9.md) | Tuna-9: live status, adjacency and bipartition, the facts shared with every Tuna backend, the Q8 two-level system and which designs exclude it, the absence of any retained run, which generators emit Tuna-9 cases, the procedure for a run once online, and unmeasured capabilities with probes |
 | [backends.md](backends.md) | one constraint sheet per machine, emulator and processor alike: qubits, couplings, gate sets, durations, angle grid, shots, run-time limits, compiler passes, bit order, measured cost |
 | [usage.md](usage.md) | the transaction ledger and what it charged, structural limits, measured seconds per job and shot, queue rules, calibration and maintenance, the conditions of use |
 | [platform-facts.md](platform-facts.md) | every fact the knowledge-base capture establishes, each with its source: per-backend constraints, retired backends, calibration, maintenance, account rules, tooling |

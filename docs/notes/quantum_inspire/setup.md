@@ -128,4 +128,7 @@ QX and Tuna return strings whose rightmost character is qubit 0, as the cQASM
 specification states; the Ry emulator returns qubit 0 at the leftmost
 character (measured, [backends.md](backends.md)). Validate a new backend
 with an asymmetric preparation (X on q[0] only), since a Bell state reads
-the same in both orders.
+the same in both orders. A QX string has one character per qubit (its
+measurement register), not one per declared bit, so a mid-circuit outcome
+or a bit assigned from another qubit's index does not appear in it
+([qx-runs.md](qx-runs.md)).

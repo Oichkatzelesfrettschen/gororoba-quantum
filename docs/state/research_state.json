@@ -252,6 +252,279 @@
       "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
       "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
       "question": "Batch 02 of the Tuna-17 series placed off q0, q5, q6, q7 and q9 (regions {1,2,4,8,12} and {10,11,13,14,16}): what does the rotated witness circuit read beside its in-batch readout-0 and readout-1 calibration?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-0",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-00",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 0 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-1",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-01",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 1 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-2",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-02",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 2 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-3",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-03",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 3 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-4",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-04",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 4 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-5",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-05",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 5 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-6",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-06",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 6 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-7",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-07",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 7 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-P-dry-run-8",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-08",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series P batch 8 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-0",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-00",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 0 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-1",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-01",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 1 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-2",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-02",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 2 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-3",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-03",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 3 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-4",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-04",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 4 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-5",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-05",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 5 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-6",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-06",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 6 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-7",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-07",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 7 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-readout-ringdown-Q-dry-run-8",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-08",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Dry run, series Q batch 8 of 9: does the ideal QX emulator run the readout ring-down circuits and return every delta(tau) consistent with zero before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-P-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series P batch-00 on Tuna-17 (the readout calibration): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-P-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series P batch-01 on Tuna-17 (reference, tau 0 and tau 5, quadrature X, d = 2): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-P-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series P batch-02 on Tuna-17 (tau 15, 40 and 100, quadrature X, d = 2): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-P-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series P batch-03 on Tuna-17 (reference, tau 0 and tau 5, quadrature Y, d = 2): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-P-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series P batch-04 on Tuna-17 (tau 15, 40 and 100, quadrature Y, d = 2): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-P-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series P batch-05 on Tuna-17 (reference, tau 0 and tau 5, quadrature X, d = 77 (before the 04:04Z q9 change)): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-P-batch-05-rerun1",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series P batch-05-rerun1 on Tuna-17 (reference, tau 0 and tau 5, quadrature X, d = 77 (after the q9 change)): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-P-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series P batch-06 on Tuna-17 (tau 15, 40 and 100, quadrature X, d = 77 (first run, after the q9 change)): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-P-batch-06-rerun1",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series P batch-06-rerun1 on Tuna-17 (tau 15, 40 and 100, quadrature X, d = 77 (after the platform calibration)): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-P-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series P batch-07 on Tuna-17 (reference, tau 0 and tau 5, quadrature Y, d = 77): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-P-batch-08",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series P batch-08 on Tuna-17 (tau 15, 40 and 100, quadrature Y, d = 77): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-P-recal-041520",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series P recal-041520 on Tuna-17 (a repeated readout calibration after the platform calibration): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-P-recal-042425",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series P recal-042425 on Tuna-17 (a repeated readout calibration): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-Q-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q batch-00 on Tuna-17 (the readout calibration): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-Q-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q batch-01 on Tuna-17 (reference, tau 0 and tau 5, quadrature X, d = 2): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-Q-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q batch-02 on Tuna-17 (tau 15, 40 and 100, quadrature X, d = 2): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-Q-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-03",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q batch-03 on Tuna-17 (reference, tau 0 and tau 5, quadrature Y, d = 2): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-Q-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-04",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q batch-04 on Tuna-17 (tau 15, 40 and 100, quadrature Y, d = 2): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-ry-probe-0",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T034952Z-ry_probe-batch-00",
+      "family": "Ry emulator cQASM reader constructs",
+      "question": "Ry probe batch 0 (X only, an unassigned bit register, a measure statement): which cQASM construct does the Ry emulator reject?"
+    },
+    {
+      "id": "qi-ry-probe-1",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T034952Z-ry_probe-batch-01",
+      "family": "Ry emulator cQASM reader constructs",
+      "question": "Ry probe batch 1 (H, CNOT after X, Rz before X): which cQASM construct does the Ry emulator reject?"
+    },
+    {
+      "id": "qi-ry-probe-2",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T034952Z-ry_probe-batch-02",
+      "family": "Ry emulator cQASM reader constructs",
+      "question": "Ry probe batch 2 (H with CNOT, the same with a bit register, an INIT block): which cQASM construct does the Ry emulator reject?"
     }
   ],
   "claims": [
@@ -663,7 +936,8 @@
       "boundary": "Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.",
       "evidence": [],
       "documents": [
-        "docs/RESEARCH_ROADMAP.md"
+        "docs/RESEARCH_ROADMAP.md",
+        "docs/notes/rank_locus_two_dimension_gap.md"
       ],
       "gates": {},
       "acquisitions": [],
@@ -1031,7 +1305,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "Receipts record Rocq 9.1.1; the full Cayley-Dickson scalar embedding, tower and zero-product bridge remain open obligations.",
+      "boundary": "The retained verification receipt pins Rocq 9.2 / OCaml 5.5.0 after renewal of the initial 9.1.1 receipts. The scalar proof alone leaves the general Cayley-Dickson embedding and tower bridge open; open_gororoba separately formalizes a concrete 16D average/detail transport retaining all coordinates. Current external builds use Rocq 9.3.0; historical receipts keep their recorded identity.",
       "evidence": [
         {
           "path": "proofs/FoldAverageDescent.v",
@@ -1753,7 +2027,7 @@
       "domain": "hardware",
       "evidence_class": "proposed experiment",
       "status": "proposed",
-      "boundary": "Each rate needs resolved quadratures, qualified exposure, phase-reference controls and delay diversity against winding.",
+      "boundary": "Each rate needs resolved quadratures, qualified exposure, phase-reference controls and delay diversity against winding. The ibm_kingston pair cases (68, 67) and (67, 66) are retired without a run (docs/state/QPU_RUN_CENSUS.md). The Tuna-17 coupler map (qi-tuna17-coupler-zz-map) runs the conditional-arm fit for J and omega on another device; no run collects the Bell odd and even coherence rates or the nu_odd + nu_even falsifier.",
       "evidence": [],
       "documents": [],
       "gates": {},
@@ -2992,6 +3266,30 @@
       "superseded_by": null
     },
     {
+      "id": "a5-nonzero-divisor-two-dimension-gap",
+      "statement": "At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.",
+      "domain": "geometry",
+      "evidence_class": "mathematical theorem",
+      "status": "open",
+      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound; a second-order obstruction on the two transverse directions would refute the statement, and an explicit curve family of the larger dimension would establish it.",
+      "evidence": [],
+      "documents": [
+        "docs/notes/rank_locus_two_dimension_gap.md",
+        "docs/evidence/rank_locus_local_dimension/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "a5-rank-locus-local-dimension",
+        "nullity-twelve-cone"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "qi-tuna17-zero-divisor-common-response",
       "statement": "Readout-corrected with a seeded bootstrap over the joint selector outcomes and both calibration circuits, the Tuna-17 witness gives dark + bright - 1 = -0.042 (95 % -0.049 to -0.036), fixture - 1/2 = -0.016 (-0.021 to -0.012) and H = fixture - (dark + bright)/2 = +0.005 (-0.001 to 0.011): every selector misreads |1> more often than |0>, so readout hides part of the asymmetry rather than producing it, and the three preparations follow one affine response shifted toward selector 1, which disfavors circuit-dependent symmetric contractions; by region the common response holds on two regions and fails on qubits 0, 1, 2, 4, 5 (H = 0.027, z = 5.6).",
       "domain": "hardware",
@@ -3361,6 +3659,157 @@
         "qi-tuna17-zero-divisor-contraction",
         "qi-qx-zero-divisor-visibility-floor-twin"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-qx-readout-ringdown-dry-run",
+      "statement": "On the noiseless QX emulator the readout ring-down dry run reports 'not detected' on both series under the preregistered rule: all 10 targets are usable at visibility 1, every |delta(tau)| is at most 13.6 kHz against 4.7 kHz standard errors, chi2(H1) runs 0.25 to 10.96 on 5 degrees of freedom (60.3 on 50 summed over targets), and the largest chi2(H1) - chi2(H2) is 6.02, below the 13.82 threshold. QX returned its 10-character measurement register for circuits declaring bit[20], so the mid-circuit outcomes were absent and the postselected cross-check did not run.",
+      "domain": "implementation",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "An ideal state-vector emulator at 2048 shots per circuit, one run per circuit in 18 batches; it tests parsing, submission, collection, the analysis and the decision rule on data whose answer is zero, and establishes nothing about Tuna-17's readout, its register width or the postselected cross-check. The decision rule was fixed in the cases before submission; the all-shot estimator replaced the postselected one after these data showed the measurement register, which changes no circuit byte and leaves the rule's text unchanged, and on these data the two coincide because no mid-circuit bit returned.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/readout_ringdown_qx_P_analysis.json",
+          "sha256": "fb592d4d010ac23a872fd794aa0fa8c0594eaa60aa071d55cf4ee19467bb533a"
+        },
+        {
+          "path": "results/quantum_inspire/readout_ringdown_qx_Q_analysis.json",
+          "sha256": "d76e0de8de0324481bf75ee9b4963b5b1b80d96094153f4d26b11300c6ddf46c"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/qx-runs.md"
+      ],
+      "gates": {
+        "core-369": "replay",
+        "core-362": "freshness"
+      },
+      "acquisitions": [
+        "qi-qx-readout-ringdown-P-dry-run-0",
+        "qi-qx-readout-ringdown-P-dry-run-1",
+        "qi-qx-readout-ringdown-P-dry-run-2",
+        "qi-qx-readout-ringdown-P-dry-run-3",
+        "qi-qx-readout-ringdown-P-dry-run-4",
+        "qi-qx-readout-ringdown-P-dry-run-5",
+        "qi-qx-readout-ringdown-P-dry-run-6",
+        "qi-qx-readout-ringdown-P-dry-run-7",
+        "qi-qx-readout-ringdown-P-dry-run-8",
+        "qi-qx-readout-ringdown-Q-dry-run-0",
+        "qi-qx-readout-ringdown-Q-dry-run-1",
+        "qi-qx-readout-ringdown-Q-dry-run-2",
+        "qi-qx-readout-ringdown-Q-dry-run-3",
+        "qi-qx-readout-ringdown-Q-dry-run-4",
+        "qi-qx-readout-ringdown-Q-dry-run-5",
+        "qi-qx-readout-ringdown-Q-dry-run-6",
+        "qi-qx-readout-ringdown-Q-dry-run-7",
+        "qi-qx-readout-ringdown-Q-dry-run-8"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-P",
+      "statement": "On Tuna-17 series P (targets Q0, Q4, Q5, Q6, Q10, Q11, Q12, Q16, 8192 shots per circuit) the preregistered rule reports 'not detected': 7 targets are usable (Q5 fails the 0.3 visibility floor), 3 classify as tails (Q6, Q10, Q16) and 2 as static offsets (Q11, Q12), below the 50% threshold. No classified target fits H2 (chi2 30.7 to 193.7 on 3 degrees of freedom); Q11's readout arms sit 19 to 33 kHz below its reference at every tau out to 2 us.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One series on one device state, read against its batch-00 calibration as the rule fixes; Q6's visibility of 1.08 shows that calibration no longer describes Q6 after the 04:12Z platform calibration, so its class rests on a stale correction. The rule compares H2 with H1 and tests neither model's fit, so the tail and offset classes mark arm-to-arm structure beyond shot noise rather than a residual-photon decay. P-05 and P-06 stay outside the analysis because they straddle the 04:04Z q9 change; the reruns replace them.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/readout_ringdown_tuna_17_P_analysis.json",
+          "sha256": "bf230bbf16104edc271f2dbf2dca32168aae568c21285384981ffa24c7056e56"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-386": "replay",
+        "core-362": "freshness"
+      },
+      "acquisitions": [
+        "qi-tuna17-readout-ringdown-P-batch-00",
+        "qi-tuna17-readout-ringdown-P-batch-01",
+        "qi-tuna17-readout-ringdown-P-batch-02",
+        "qi-tuna17-readout-ringdown-P-batch-03",
+        "qi-tuna17-readout-ringdown-P-batch-04",
+        "qi-tuna17-readout-ringdown-P-batch-05",
+        "qi-tuna17-readout-ringdown-P-batch-05-rerun1",
+        "qi-tuna17-readout-ringdown-P-batch-06",
+        "qi-tuna17-readout-ringdown-P-batch-06-rerun1",
+        "qi-tuna17-readout-ringdown-P-batch-07",
+        "qi-tuna17-readout-ringdown-P-batch-08",
+        "qi-tuna17-readout-ringdown-P-recal-041520",
+        "qi-tuna17-readout-ringdown-P-recal-042425"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-register-and-readout-state",
+      "statement": "Tuna-17 returns the full bit register: bit[34] circuits on qubit[17] came back as 34-character strings carrying every mid-circuit outcome. On 2026-10-17, Q9's idle P1 rose from 0.02-0.05 to 0.27-0.29 from 04:06Z and stayed there through 05:33Z, and after the 04:12Z platform calibration Q0 and Q6 prepared in |1> read 0.39 and 0.14 after a 2 us wait (0.85 and 0.67 at 03:39Z) while their idle P1 stayed below 0.04.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Readout-calibration circuits that idle 2 us before readout, so P(0|1) folds 2 us of relaxation into the assignment error; the platform publishes no calibration, so a change is located only to the interval between two retained batches.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/readout_ringdown_tuna_17_device_context.json",
+          "sha256": "c5416928452446f298b2f44d4d4dd1fc67eb748894cf8ad51fc894ce5a9ffd10"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/qx-runs.md",
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-387": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna17-readout-ringdown-Q-batch-00",
+        "qi-tuna17-readout-ringdown-Q-batch-01",
+        "qi-tuna17-readout-ringdown-Q-batch-02",
+        "qi-tuna17-readout-ringdown-Q-batch-03",
+        "qi-tuna17-readout-ringdown-Q-batch-04"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-ry-emulator-reader-constructs",
+      "statement": "The Ry emulator rejects any bit declaration, assigned or not ('error interpreting cQASM script'), and fails a measure statement at compilation ('not in the primitive gate set'); X, H, CNOT, Rz and an asm(Rydberg) INIT block run, with outcome distributions within total-variation distance 0.035 of the ideal at 1024 shots.",
+      "domain": "implementation",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Two-qubit circuits, one run each on the emulator as served on 2026-10-17; widths above two qubits and other constructs are untested.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/ry_probe_analysis.json",
+          "sha256": "54f24cf2d03d59ccd7c13a1ce0ccbc0f3e4713e9b5c70f9732618e553b5a2b10"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/ry-emulator.md"
+      ],
+      "gates": {
+        "core-385": "replay",
+        "core-370": "freshness"
+      },
+      "acquisitions": [
+        "qi-ry-probe-0",
+        "qi-ry-probe-1",
+        "qi-ry-probe-2"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     }

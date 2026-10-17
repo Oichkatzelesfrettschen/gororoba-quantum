@@ -1,0 +1,59 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-17T04:24:28+00:00",
+ "approval": "User, 2026-10-17: \"then you need to review the rules per machine and per the documentation in the repo for fair use and batch size and queuing then use the real TUNA-17 hardware\" (readout ring-down pilot, PR #164, after the QX dry run); after batch P-00: \"Continue, q6 judged by rule but also use all that we've learned from our calibration runs and measurement within this repo granularly to build accordingly to compensate.\" (sanity readout guard 0.35); after batch P-06: \"if it fails then grab the fresh calibration data dawg, you gotta iteratively recalibrate.\" and \"yeah add the calibration batch before P-07 so we have what we have so far\" (calibration batches of the series' readout-0 and readout-1 before P-07, after every 4 Ramsey batches and after any sanity failure, then one rerun); after the P-06 rerun: \"we can keep going even with that and then design without q9 for future runs and let the other agent know the same.\" (spectator q9 reported, not guarded); after the 04:18Z calibration batch (q9 idle 0.27, q0 and q6 prepared |1> at 0.39 and 0.14): continuing under that instruction with q0, q6 and q9 reported, and P-05 rerun on the post-change device",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "5fd9e7b744e4075a3d0456eeb5e66b6ac455209af4a5a9abf8b7a43875f461aa",
+ "shots": 8192,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1527345,
+   "sha256": "26bca2366191407c550349601304d5be4ff0b1f5c5a9366969a523d2ad18f109"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1527346,
+   "sha256": "f5896f0922c24a529ff4ecaabb14d1d6527f78a88bcb6a6b2f78fc29d6539b0e"
+  }
+ ],
+ "project": 765893,
+ "batch_job": 870088,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-17T04:24:30+00:00",
+  "approval": "User, 2026-10-17: \"then you need to review the rules per machine and per the documentation in the repo for fair use and batch size and queuing then use the real TUNA-17 hardware\" (readout ring-down pilot, PR #164, after the QX dry run); after batch P-00: \"Continue, q6 judged by rule but also use all that we've learned from our calibration runs and measurement within this repo granularly to build accordingly to compensate.\" (sanity readout guard 0.35); after batch P-06: \"if it fails then grab the fresh calibration data dawg, you gotta iteratively recalibrate.\" and \"yeah add the calibration batch before P-07 so we have what we have so far\" (calibration batches of the series' readout-0 and readout-1 before P-07, after every 4 Ramsey batches and after any sanity failure, then one rerun); after the P-06 rerun: \"we can keep going even with that and then design without q9 for future runs and let the other agent know the same.\" (spectator q9 reported, not guarded); after the 04:18Z calibration batch (q9 idle 0.27, q0 and q6 prepared |1> at 0.39 and 0.14): continuing under that instruction with q0, q6 and q9 reported, and P-05 rerun on the post-change device",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "5fd9e7b744e4075a3d0456eeb5e66b6ac455209af4a5a9abf8b7a43875f461aa",
+  "backend_status_at_submit": "executing",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 870088,
+  "project": 765893,
+  "shots": 8192,
+  "jobs": [
+   {
+    "file": "readout-0.cq",
+    "job": 1527345,
+    "sha256": "26bca2366191407c550349601304d5be4ff0b1f5c5a9366969a523d2ad18f109"
+   },
+   {
+    "file": "readout-1.cq",
+    "job": 1527346,
+    "sha256": "f5896f0922c24a529ff4ecaabb14d1d6527f78a88bcb6a6b2f78fc29d6539b0e"
+   }
+  ],
+  "submitted_utc": "2026-10-17T04:24:30+00:00"
+ },
+ "confirmed_utc": "2026-10-17T04:24:30+00:00"
+}

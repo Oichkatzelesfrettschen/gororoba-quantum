@@ -7,6 +7,7 @@ calibration snapshot's noise (calibration_snapshot.noise_simulator):
   cpu_density_matrix    the exact channel per shot on every host CPU
   gpu_statevector       statevector trajectories, one GPU kernel per shot
   gpu_statevector_batch the same with Aer's batched_shots_gpu
+  gpu_statevector_custatevec the same through libcustatevec (cuStateVec_enable)
   gpu_density_matrix_batch the exact channel with batched_shots_gpu
 
 The circuits are the N=21 order-finding workloads of
@@ -22,6 +23,12 @@ on a machine without a GPU.
 
 Usage:
     "$PYTHON" scripts/aer_gpu_probe.py --snapshot SNAP.json --out PATH
+    "$PYTHON" scripts/aer_gpu_probe.py --snapshot SNAP.json --out PATH \\
+        --only cpu_statevector gpu_statevector gpu_statevector_custatevec
+
+--only keeps the listed configurations. Each row's metadata carries Aer's
+cuStateVec_enable, so a run on a build without libcustatevec shows the failed
+configuration with the library's error.
 """
 
 from __future__ import annotations
@@ -53,12 +60,14 @@ PILOT_SHOTS = 32
 # Wall-time budget per configuration and circuit; a slower configuration
 # runs the shot count the pilot predicts fits it.
 BUDGET_SECONDS = 120.0
+# (device, method, batched_shots_gpu, cuStateVec_enable)
 CONFIGURATIONS = {
-    "cpu_statevector": ("CPU", "statevector", False),
-    "cpu_density_matrix": ("CPU", "density_matrix", False),
-    "gpu_statevector": ("GPU", "statevector", False),
-    "gpu_statevector_batch": ("GPU", "statevector", True),
-    "gpu_density_matrix_batch": ("GPU", "density_matrix", True),
+    "cpu_statevector": ("CPU", "statevector", False, False),
+    "cpu_density_matrix": ("CPU", "density_matrix", False, False),
+    "gpu_statevector": ("GPU", "statevector", False, False),
+    "gpu_statevector_batch": ("GPU", "statevector", True, False),
+    "gpu_statevector_custatevec": ("GPU", "statevector", False, True),
+    "gpu_density_matrix_batch": ("GPU", "density_matrix", True, False),
 }
 
 
@@ -83,7 +92,14 @@ def sample(simulator: Any, isa: Any, shots: int) -> tuple[dict[str, int], float,
     result = simulator.run(isa, shots=shots, seed_simulator=SEED).result()
     seconds = time.perf_counter() - started
     metadata = result.results[0].metadata
-    keys = ("method", "device", "batched_shots_optimization", "num_bind_params", "parallel_shots")
+    keys = (
+        "method",
+        "device",
+        "batched_shots_optimization",
+        "num_bind_params",
+        "parallel_shots",
+        "cuStateVec_enable",
+    )
     return result.get_counts(), seconds, {key: metadata[key] for key in keys if key in metadata}
 
 
@@ -104,13 +120,15 @@ def planned_shots(simulator: Any, isa: Any, full: int) -> int:
 def measure(snapshot_path: Path, name: str, label: str) -> dict[str, Any]:
     """One configuration on one circuit, in this process."""
     snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
-    device, method, batched = CONFIGURATIONS[label]
+    device, method, batched, custatevec = CONFIGURATIONS[label]
     compiled = generate_preset_pass_manager(
         optimization_level=3, target=_backend(snapshot).target, seed_transpiler=0
     ).run(circuits(COLUMNS, COLUMNS)[name])
     isa, qubits = snapshot_laws.restrict_circuit(compiled)
     reduced = snapshot_laws.restrict(snapshot, qubits)
-    simulator = calibration_snapshot.noise_simulator(reduced, device, method=method, batched_shots=batched)
+    simulator = calibration_snapshot.noise_simulator(
+        reduced, device, method=method, batched_shots=batched, custatevec=custatevec
+    )
     simulator.set_options(max_parallel_threads=parallel.workers())
     full = FULL_SHOTS[name]
     shots = planned_shots(simulator, isa, full)
@@ -121,6 +139,7 @@ def measure(snapshot_path: Path, name: str, label: str) -> dict[str, Any]:
         "device": device,
         "method": method,
         "batched_shots_gpu": batched,
+        "cuStateVec_enable": custatevec,
         "shots": shots,
         "reduced": shots < full,
         "seconds": round(seconds, 3),
@@ -137,6 +156,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--snapshot", type=Path, required=True)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--only", nargs="+", choices=sorted(CONFIGURATIONS), help="run only these configurations")
     parser.add_argument("--one", nargs=2, metavar=("CIRCUIT", "CONFIGURATION"), help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.one:
@@ -147,7 +167,9 @@ def main() -> int:
     rows: list[dict[str, Any]] = []
     for name in FULL_SHOTS:
         reference = None
-        for label, (device, _, _) in CONFIGURATIONS.items():
+        for label, (device, _, _, _) in CONFIGURATIONS.items():
+            if args.only and label not in args.only:
+                continue
             if device == "GPU" and gpus == 0:
                 rows.append({"circuit": name, "configuration": label, "skipped": "no GPU on this machine"})
                 continue

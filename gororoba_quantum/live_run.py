@@ -163,6 +163,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "ripple_experiments.py",
     "runtime_contracts.py",
     "select_lcu.py",
+    "star_ramsey.py",
     "target_flip.py",
     "variance.py",
 )
@@ -1967,6 +1968,12 @@ def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict
             if member_rejections:
                 trace.append({"seed": seed, "layout": layout, "member_rejections": member_rejections})
                 continue
+            if group.routed_violations is not None:
+                compiled_target = snap.admission_target if snap.admission_target is not None else snap.backend.target
+                routed_rejections = group.routed_violations(isas, compiled_target)
+                if routed_rejections:
+                    trace.append({"seed": seed, "layout": layout, "routed_rejections": routed_rejections})
+                    continue
             scores = [layout_score(c, snap.backend.target) for c in isas]
             joint = math.exp(sum(math.log(s) for s in scores) / len(scores))
             trace.append({"seed": seed, "joint_score": joint, "layout": layout})
@@ -2261,7 +2268,12 @@ def simulate_entries(noise: Any, entries: list[Entry], shots: int, seed: int) ->
 
 
 def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any, symmetric: bool = False) -> np.ndarray:
-    """dist with each classical bit's readout channel inverted, unclipped.
+    """dist with each classical bit's readout channel inverted, unclipped (readout_inverse)."""
+    return np.asarray(readout_inverse(isa, props, symmetric) @ dist)
+
+
+def readout_inverse(isa: QuantumCircuit, props: Any, symmetric: bool = False) -> np.ndarray:
+    """The inverse of the Kronecker product of every classical bit's readout channel.
 
     A raw P(0) carries prob_meas0_prep1 of its readout qubit as an additive
     floor, so even a perfect zero divisor reads a nonzero dark probability.
@@ -2287,7 +2299,12 @@ def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any, symmetr
         if symmetric:
             e10 = e01 = (e10 + e01) / 2.0
         inverse = np.kron(inverse, np.linalg.inv(np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])))
-    return np.asarray(inverse @ dist)
+    return inverse
+
+
+def corrected_covariance(dist: np.ndarray, inverse: np.ndarray) -> np.ndarray:
+    """One-shot covariance of inverse @ dist: M (diag(p) - p p^T) M^T for the multinomial law p."""
+    return np.asarray(inverse @ (np.diag(dist) - np.outer(dist, dist)) @ inverse.T)
 
 
 def corrected_summary(
@@ -2304,23 +2321,39 @@ def corrected_summary(
     its own readout qubits before the replicas are averaged. props is one
     properties object, or a per-circuit mapping when circuits ran under
     different calibrations.
+
+    The inverted arrays are quasi-probabilities M p, whose one-shot
+    covariance is M (diag(p) - p p^T) M^T rather than the multinomial form of
+    M p itself; a group that declares summarize_with_covariance receives that
+    covariance for every circuit, so its delta-method errors carry the
+    inversion.
     """
     runs = [e for e in entries if not e.reference]
     if any(_has_feed_forward(e.replicas[0]) for e in runs):
         return {"skipped": "feed-forward circuit: mid-circuit readout error changes later quantum evolution"}
-    corrected = {}
+    propagate = group.summarize_with_covariance is not None
+    corrected: dict[str, list[np.ndarray]] = {}
+    covariances: dict[str, list[np.ndarray]] = {}
     for e in runs:
         own = props[e.name] if isinstance(props, dict) else props
-        corrected[e.name] = [
-            readout_corrected(d, rep, own, symmetric) for d, rep in zip(dists[e.name], e.replicas, strict=True)
-        ]
-    return _pooled_summaries(group, runs, corrected)[0]
+        inverses = [readout_inverse(rep, own, symmetric) for rep in e.replicas]
+        raw = [np.asarray(d, dtype=float) for d in dists[e.name]]
+        corrected[e.name] = [np.asarray(m @ d) for m, d in zip(inverses, raw, strict=True)]
+        if propagate:
+            covariances[e.name] = [corrected_covariance(d, m) for m, d in zip(inverses, raw, strict=True)]
+    return _pooled_summaries(group, runs, corrected, covariances if propagate else None)[0]
 
 
 def _pooled_summaries(
-    group: Group, runs: list[Entry], dists: dict[str, list[np.ndarray]]
+    group: Group,
+    runs: list[Entry],
+    dists: dict[str, list[np.ndarray]],
+    covariances: dict[str, list[np.ndarray]] | None = None,
 ) -> tuple[dict[str, float], list[dict[str, float]]]:
     """The pooled summary and the per-replica summaries of runs' replica distributions.
+
+    covariances carries each replica's one-shot covariance of a readout-inverted
+    distribution; a group with summarize_with_covariance summarizes through it.
 
     Every pooled value is the mean over replicas of that value computed on
     each replica alone, the estimand summary_interval spans. For a ratio, a
@@ -2329,7 +2362,14 @@ def _pooled_summaries(
     witness by that replica's own twin.
     """
     count = len(runs[0].replicas)
-    per_replica = [group.summarize({e.name: dists[e.name][k] for e in runs}) for k in range(count)]
+    with_covariance = group.summarize_with_covariance
+    if covariances is not None and with_covariance is not None:
+        per_replica = [
+            with_covariance({e.name: dists[e.name][k] for e in runs}, {e.name: covariances[e.name][k] for e in runs})
+            for k in range(count)
+        ]
+    else:
+        per_replica = [group.summarize({e.name: dists[e.name][k] for e in runs}) for k in range(count)]
     pooled = {key: float(np.mean([r[key] for r in per_replica])) for key in per_replica[0]}
     return pooled, per_replica
 
@@ -2755,6 +2795,15 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                     raise LiveRunError("conditional_ramsey runs without dynamical decoupling; omit --dd")
                 if args.max_replicas != 1:
                     raise LiveRunError("conditional_ramsey runs one replica; pass --max-replicas 1")
+            if "star_ramsey" in campaigns and args.dd:
+                # The sector rates are free-evolution phase slopes, which echo pulses
+                # refocus. The replica count stays open: placement blocks every neighbor
+                # of a placed replica on the admitted CZ graph, so no two stars share an
+                # admitted coupler and a degree-three center's couplers all join its own
+                # leaves. A coupler the quality policy excluded still couples its
+                # endpoints, so a leaf's outside neighbor across one can belong to
+                # another star.
+                raise LiveRunError("star_ramsey runs without dynamical decoupling; omit --dd")
             if set(campaigns) & {"scaffold_ab", "readout_delay"}:
                 # Both compare members on one tile under one calibration: the idles
                 # must stay free of echo pulses, and a second replica is a second tile.

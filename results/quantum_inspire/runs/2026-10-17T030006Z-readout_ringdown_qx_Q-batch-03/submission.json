@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-17T03:05:24+00:00",
+ "approval": "User, 2026-10-17: \"approve the QX dry run for the ring-down pilot for #164\"",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "e729f3e889f4cc5c1535f7802afc28d1542083bedb332d0edff39d25b7a41778",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 870004,
+ "project": 765808,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "reference-y-d002.cq",
+   "job": 1527218,
+   "sha256": "545da433569ba3f71cdc210491ec609b8d4d15c7c3d54fb4bd68594ace4c6866"
+  },
+  {
+   "file": "tau000-y-d002.cq",
+   "job": 1527219,
+   "sha256": "878b710cf8115ad52bada9434e5ddd50d2e0c43cd57168af811385e2f40c506e"
+  },
+  {
+   "file": "tau005-y-d002.cq",
+   "job": 1527220,
+   "sha256": "d579c46a901d0c3e63ee08d7bb0223259f56c11cf7d716bc4ebd0155fd5fff13"
+  }
+ ],
+ "submitted_utc": "2026-10-17T03:05:25+00:00"
+}
