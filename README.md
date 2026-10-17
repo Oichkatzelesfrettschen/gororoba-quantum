@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (56 established, 25 exploratory, 3 open, 7 proposed, 2 superseded, 11 withdrawn) with its evidence class,
+registered claim (57 established, 25 exploratory, 3 open, 7 proposed, 2 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -59,10 +59,28 @@ acquisition of every provider:
 | [2026-10-16T224924Z-coupler_zz_tuna_17-batch-01](results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-01) | Quantum Inspire | coupler residual-ZZ map (bipartite conditional Ramsey) | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-16T224924Z-coupler_zz_tuna_17-batch-02](results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-02) | Quantum Inspire | coupler residual-ZZ map (bipartite conditional Ramsey) | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-16T224924Z-coupler_zz_tuna_17-batch-03](results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-03) | Quantum Inspire | coupler residual-ZZ map (bipartite conditional Ramsey) | tuna_17 | 1 | 1 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_P-batch-00](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-00) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 2 | 2 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_P-batch-01](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-01) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_P-batch-02](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-02) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_P-batch-03](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-03) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_P-batch-04](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-04) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_P-batch-05](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-05) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_P-batch-06](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-06) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_P-batch-07](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-07) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_P-batch-08](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-08) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_Q-batch-00](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-00) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 2 | 2 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_Q-batch-01](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-01) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_Q-batch-02](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-02) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_Q-batch-03](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-03) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_Q-batch-04](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-04) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_Q-batch-05](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-05) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_Q-batch-06](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-06) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_Q-batch-07](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-07) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T030006Z-readout_ringdown_qx_Q-batch-08](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-08) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
 
 The IBM service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 physical jobs with 334 settled seconds; the account then reported 334 of 600 s consumed in the rolling window ending 2026-10-15T07:13:13.771Z. That is an observation, not a current balance or an authorization.
 
-The Quantum Inspire ledger retrieved at 2026-10-16T23:09:01+00:00 lists 42 jobs with 369664 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+The Quantum Inspire ledger retrieved at 2026-10-17T03:19:03+00:00 lists 94 jobs with 476160 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 <!-- research-state:end -->
 
 ## Contents
