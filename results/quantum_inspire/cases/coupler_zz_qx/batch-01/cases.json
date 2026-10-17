@@ -11,14 +11,14 @@
    "sha256": "7d23f5ae2ec39ef4769878ee13d92bbecb5baec63af48eba1f9b54018554af69"
   },
   {
-   "file": "targets-P-y-d025.cq",
-   "kind": "ramsey",
-   "sha256": "8ddd6c9c596672d860f572c9baf503548949c98771efffaa457d72b25fa485d7"
-  },
-  {
    "file": "targets-P-y-d100.cq",
    "kind": "ramsey",
    "sha256": "4ec1d10c61324632d26d4f88df5398ff42ec2bcd5aba37276b9ab2e37b2dbb56"
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout",
+   "sha256": "60ecbe81d641021373451a90b7e12fcab073c703403f4316f89bae05c8b85938"
   }
  ]
 }

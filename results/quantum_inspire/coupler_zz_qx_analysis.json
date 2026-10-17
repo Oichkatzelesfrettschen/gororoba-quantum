@@ -7,6 +7,10 @@
   "results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-02",
   "results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-03"
  ],
+ "quadrature_pairs_across_batches": [
+  "P-d025",
+  "Q-d100"
+ ],
  "readout_assignment": {
   "0": [
    0.0,
@@ -241,7 +245,7 @@
     "4": 3311.24494662
    },
    "sectors": 2,
-   "additivity_chi2": 2.17450019694e-33,
+   "additivity_chi2": 0.0,
    "additivity_dof": 0,
    "min_visibility": 1.0,
    "usable": true

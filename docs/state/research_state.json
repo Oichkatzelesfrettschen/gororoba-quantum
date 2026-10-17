@@ -2978,15 +2978,15 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "The data-taking design (bipartite roles, delays 0.5 and 2 us, quadratures, neighbor conditioning, readout correction) was fixed before submission; the end-quality rule (visibility at least 0.3, additivity p at least 1e-3) was fixed after the Tuna-17 data; one 16384-shot run per circuit on one calibration, the four batches minutes apart; a spectator's measured Z labels its state during the idle only up to its decay in the 2 us window, which shrinks J toward zero; neighbor readout error mixes sectors and shrinks J by about the neighbor's 1 - e01 - e10.",
+      "boundary": "The data-taking design (bipartite roles, delays 0.5 and 2 us, quadratures, neighbor conditioning, readout correction) was fixed before submission; the end-quality rule (visibility at least 0.3, additivity p at least 1e-3) was fixed after the Tuna-17 data; one 16384-shot run per circuit on one calibration, the four batches minutes apart; a spectator's measured Z labels its state during the idle only up to its decay in the 2 us window, which shrinks J toward zero; neighbor readout error mixes sectors and shrinks J by about the neighbor's 1 - e01 - e10; the P-role 0.5 us and Q-role 2 us x/y quadrature pairs ran in adjacent batches minutes apart, so a calibration change between those batches enters their phases.",
       "evidence": [
         {
           "path": "results/quantum_inspire/coupler_zz_tuna_17_analysis.json",
-          "sha256": "cbced8457a5022ae1d03cfe25d62680e7d10201384c207806b246dcc85c96503"
+          "sha256": "3dafdfbedb33ba34e96cacbab6315e566654da041b1a1b341217870fb78250fd"
         },
         {
           "path": "results/quantum_inspire/coupler_zz_qx_analysis.json",
-          "sha256": "58c117280fd5fb3c3e8ad0a78b43a358dae1bdc11bd03d642c0e9261628c9458"
+          "sha256": "804e26d575c852d484dcbf2dcd7cc547db0a17129bcfed3c3d432b4543285fdc"
         }
       ],
       "documents": [
@@ -3013,15 +3013,15 @@
     },
     {
       "id": "qi-tuna17-q5-q6-q7-short-coherence",
-      "statement": "As Ramsey targets, Tuna-17 qubits 5, 6 and 7 lose visibility to 0.04, 0.27 and 0.08 by 2 us and carry frame offsets of +142, +144 and -116 kHz, and the pairwise-additive rate model fails on qubits 5 and 6 (chi2 726 on 11 and 2364 on 1 degrees of freedom), while every other qubit keeps visibility of at least 0.75; their couplers take J from the other end only.",
+      "statement": "As Ramsey targets, Tuna-17 qubits 5, 6 and 7 lose visibility to 0.04, 0.27 and 0.08 by 2 us, while every other qubit keeps visibility of at least 0.75; qubits 5 and 6 idle 322 and 324 kHz from their frames (modulo the 666.7 kHz alias period of the two-delay rate) and qubit 7 at -116 kHz, and with every sector on one alias branch the pairwise-additive rate model holds on all three (chi2 16.4 on 11, 0.26 on 1 and 0.13 on 4 degrees of freedom); their couplers take J from the other end only.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "The data-taking design (bipartite roles, delays 0.5 and 2 us, quadratures, neighbor conditioning, readout correction) was fixed before submission; the end-quality rule (visibility at least 0.3, additivity p at least 1e-3) was fixed after the Tuna-17 data; one 16384-shot run per circuit on one calibration, the four batches minutes apart; a spectator's measured Z labels its state during the idle only up to its decay in the 2 us window, which shrinks J toward zero; neighbor readout error mixes sectors and shrinks J by about the neighbor's 1 - e01 - e10.",
+      "boundary": "The data-taking design (bipartite roles, delays 0.5 and 2 us, quadratures, neighbor conditioning, readout correction) was fixed before submission; the end-quality rule (visibility at least 0.3, additivity p at least 1e-3) was fixed after the Tuna-17 data; one 16384-shot run per circuit on one calibration, the four batches minutes apart; a spectator's measured Z labels its state during the idle only up to its decay in the 2 us window, which shrinks J toward zero; neighbor readout error mixes sectors and shrinks J by about the neighbor's 1 - e01 - e10; the P-role 0.5 us and Q-role 2 us x/y quadrature pairs ran in adjacent batches minutes apart, so a calibration change between those batches enters their phases.",
       "evidence": [
         {
           "path": "results/quantum_inspire/coupler_zz_tuna_17_analysis.json",
-          "sha256": "cbced8457a5022ae1d03cfe25d62680e7d10201384c207806b246dcc85c96503"
+          "sha256": "3dafdfbedb33ba34e96cacbab6315e566654da041b1a1b341217870fb78250fd"
         }
       ],
       "documents": [
@@ -3055,7 +3055,7 @@
         },
         {
           "path": "results/quantum_inspire/coupler_zz_tuna_17_analysis.json",
-          "sha256": "cbced8457a5022ae1d03cfe25d62680e7d10201384c207806b246dcc85c96503"
+          "sha256": "3dafdfbedb33ba34e96cacbab6315e566654da041b1a1b341217870fb78250fd"
         },
         {
           "path": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/analysis.json",

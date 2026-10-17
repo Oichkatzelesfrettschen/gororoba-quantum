@@ -6,19 +6,19 @@
  "shots": 16384,
  "circuits": [
   {
-   "file": "readout-0.cq",
-   "kind": "readout",
-   "sha256": "a36928ee64d24ae0e45618bfb9192a49f1d6993a9b320bae474cd5ea7a75a74d"
-  },
-  {
-   "file": "readout-1.cq",
-   "kind": "readout",
-   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
-  },
-  {
    "file": "targets-P-x-d025.cq",
    "kind": "ramsey",
    "sha256": "5fbab405cc913452b798caf40cf532855bc93af27fdb9abb1fbc779e1f560af9"
+  },
+  {
+   "file": "targets-P-y-d025.cq",
+   "kind": "ramsey",
+   "sha256": "3be8d5cb6f6cd483a0e3a0b045e07e95ec79f948433357eb850a6933a1758124"
+  },
+  {
+   "file": "readout-0.cq",
+   "kind": "readout",
+   "sha256": "a36928ee64d24ae0e45618bfb9192a49f1d6993a9b320bae474cd5ea7a75a74d"
   }
  ]
 }

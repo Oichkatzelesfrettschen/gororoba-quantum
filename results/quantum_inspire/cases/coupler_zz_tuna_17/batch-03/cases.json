@@ -6,6 +6,11 @@
  "shots": 16384,
  "circuits": [
   {
+   "file": "targets-Q-x-d100.cq",
+   "kind": "ramsey",
+   "sha256": "544d75c42efec9e95e4cc463c79f14c73789f0b09f074b1f11dcdc2d98017e11"
+  },
+  {
    "file": "targets-Q-y-d100.cq",
    "kind": "ramsey",
    "sha256": "22f279701817f41c803cf0507be810d7b331650af5b89ebf92de0a047d06be55"

@@ -301,12 +301,17 @@ grouping each target's shots by its neighbors' outcomes gives every
 conditional sector at once, and a weighted fit
 nu(z) = omega + sum_k J_k s_k returns every incident coupler with a residual
 that tests the pairwise, additive form. The rate comes from two delays,
-0.5 and 2 us, so each sector's fixed phase cancels and |nu|/2 pi < 333 kHz
-is unambiguous. The role swap measures every coupler again from its other
-end. The case is 10 circuits (2 roles x 2 quadratures x 2 delays, plus two
-readout circuits); `--conformance` evolves all 17 qubits under injected
-frequencies and all 24 couplings through the ALAP-scheduled circuits and
-recovers them to 4e-11 Hz.
+0.5 and 2 us, so each sector's fixed phase cancels and a rate is known
+modulo 666.7 kHz. Every sector of a target takes the alias branch nearest
+the circular mean of its sectors, so J reads differences on one branch and
+omega carries any common alias; a target detuned near 333 kHz would otherwise
+split its sectors across branches and fail the additivity test spuriously.
+The role swap measures every coupler again from its other end. The case is
+10 circuits (2 roles x 2 quadratures x 2 delays, plus two readout circuits),
+grouped so each delay's x and y circuits share a batch; `--conformance`
+evolves all 17 qubits under injected frequencies, one of them at 320 kHz
+across the alias edge, and all 24 couplings through the ALAP-scheduled
+circuits and recovers them to 1e-10 Hz.
 
 **Submission under the conditions of use.** The FAQ allows three queued
 jobs per hardware backend, so the series ran as four batches of at most three
@@ -321,12 +326,18 @@ visibility 1.000. On Tuna-17 the four batches ran from 22:52 to 23:07 UTC,
 10.2 to 14.3 s per 16384-shot job.
 
 **Map** (results/quantum_inspire/coupler_zz_tuna_17_analysis.json; claim
-kind exploratory reanalysis). Qubits 5, 6 and 7 fail as Ramsey targets: their
-visibility falls to 0.04, 0.27 and 0.08 by 2 us, their frame offsets reach
-+142, +144 and -116 kHz, and the additive fit fails on 5 and 6 (chi2 726/11
-and 2364/1). An end-quality rule fixed after the data (visibility at least
-0.3, additivity p at least 1e-3) excludes those ends, so their couplers take
-J from the other end; every coupler keeps one usable end.
+kind exploratory reanalysis). Qubits 5, 6 and 7 fail as Ramsey targets on
+visibility alone: it falls to 0.04, 0.27 and 0.08 by 2 us, while every other
+qubit keeps at least 0.75. Qubits 5 and 6 idle 322 and 324 kHz from their
+frames (modulo 666.7 kHz) and qubit 7 at -116 kHz; on one alias branch the
+additive fit holds on all three (chi2 16.4/11, 0.26/1, 0.13/4) and on every
+other target (smallest p 0.034, qubit 2). An end-quality rule fixed after the
+data (visibility at least 0.3, additivity p at least 1e-3) excludes those
+ends, so their couplers take J from the other end; every coupler keeps one
+usable end. The retained run predates the paired batching: its P-role 0.5 us
+and Q-role 2 us x/y pairs ran in adjacent batches, so a calibration change
+between those batches enters their phases (`quadrature_pairs_across_batches`
+in the analysis).
 
 | Coupler | J (kHz) | ends | | Coupler | J (kHz) | ends |
 |---|---|---|---|---|---|---|

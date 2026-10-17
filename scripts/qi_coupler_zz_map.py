@@ -76,6 +76,9 @@ import numpy as np
 from qi_platform import HARDWARE_BATCH_CIRCUITS
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+from parallel import ordered_map  # noqa: E402
+
 CATALOGUE = ROOT / "docs/evidence/quantum_inspire/catalogue.json"
 CYCLE_SECONDS = 20e-9
 # The QX dry run keeps Tuna-17's coupling map restricted to qubits 0-9 (12
@@ -158,21 +161,41 @@ def members(profile: str) -> tuple[dict[str, Any], list[tuple[str, str]]]:
     pairs = edges(n)
     split = parts(pairs, n)
     out = [("readout-0.cq", "\n".join(readout_lines(n, 0))), ("readout-1.cq", "\n".join(readout_lines(n, 1)))]
-    for role, quadrature, delay in itertools.product(ROLES, QUADRATURES, DELAYS):
+    for role, delay, quadrature in itertools.product(ROLES, DELAYS, QUADRATURES):
         name = f"targets-{role}-{quadrature}-d{delay:03d}.cq"
         out.append((name, "\n".join(circuit_lines(n, split[role], quadrature, delay))))
     meta = {"backend": backend, "nqubits": n, "pairs": pairs, "parts": split, "shots": int(settings["shots"])}
     return meta, out
 
 
+def groups(ordered: list[tuple[str, str]]) -> list[list[tuple[str, str]]]:
+    """Batches of at most BATCH circuits that keep each delay's x and y circuits together.
+
+    atan2(y, x) combines the two quadratures as one simultaneous measurement,
+    and a batch boundary is a calibration boundary; the readout circuits fill
+    the remaining slots.
+    """
+    readouts = [item for item in ordered if item[0].startswith("readout")]
+    pairs = [ordered[i : i + 2] for i in range(len(readouts), len(ordered), 2)]
+    out = []
+    for pair in pairs:
+        batch = list(pair)
+        while readouts and len(batch) < BATCH:
+            batch.append(readouts.pop(0))
+        out.append(batch)
+    if readouts:
+        out.append(readouts)
+    return out
+
+
 def build(profile: str) -> dict[str, str]:
     meta, ordered = members(profile)
     files: dict[str, str] = {}
     batches = []
-    for start in range(0, len(ordered), BATCH):
-        directory = f"batch-{start // BATCH:02d}"
+    for index, group in enumerate(groups(ordered)):
+        directory = f"batch-{index:02d}"
         rows = []
-        for name, text in ordered[start : start + BATCH]:
+        for name, text in group:
             files[f"{directory}/{name}"] = text
             rows.append(
                 {
@@ -211,6 +234,14 @@ def build(profile: str) -> dict[str, str]:
 
 def bit(shot: str, qubit: int) -> int:
     return int(shot[len(shot) - 1 - qubit])
+
+
+def retained_path(path: Path) -> str:
+    """path relative to the repository root, so a retained record names no local directory."""
+    try:
+        return path.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        raise SystemExit(f"{path} lies outside the repository; retained analyses name repository paths") from None
 
 
 def quantized(value: Any) -> Any:
@@ -258,6 +289,13 @@ def fit_target(
         nu = wrap(phases[1][0] - phases[0][0]) / span
         se = math.sqrt(phases[0][1] + phases[1][1]) / span
         rows.append((z, nu, se, phases[0][2], phases[1][2]))
+    # Each sector rate is known modulo 2 pi / span (666.7 kHz). The additive
+    # model is invariant under a common shift by that period, so every sector
+    # takes the branch nearest the circular mean of all sectors; J then reads
+    # differences on one branch, and omega carries the common alias.
+    span = DELAYS[1] - DELAYS[0]
+    centre = math.atan2(sum(math.sin(r[1] * span) for r in rows), sum(math.cos(r[1] * span) for r in rows)) / span
+    rows = [(z, centre + wrap((nu - centre) * span) / span, se, v1, v2) for z, nu, se, v1, v2 in rows]
     design = np.array([[1.0, *(1.0 if zk == 0 else -1.0 for zk in z)] for z, *_ in rows])
     # An exact (zero-variance) sector gets a large finite weight, so the conformance's exact data stay solvable.
     weights = np.array([1 / max(se, 1e-12) ** 2 for _, _, se, *_ in rows])
@@ -393,6 +431,16 @@ def exact_probabilities(lines: list[str], nqubits: int, omega: Any, coupling: di
     return np.abs(state) ** 2
 
 
+class Evolution:
+    """exact_probabilities with fixed parameters, picklable for the process pool."""
+
+    def __init__(self, nqubits: int, omega: Any, coupling: dict[tuple[int, int], float]) -> None:
+        self.nqubits, self.omega, self.coupling = nqubits, omega, coupling
+
+    def __call__(self, lines: list[str]) -> Any:
+        return exact_probabilities(lines, self.nqubits, self.omega, self.coupling)
+
+
 def conformance(profile: str) -> str:
     """Recover injected omega_q and every J_ab from exact probabilities of the emitted circuits."""
     meta, ordered = members(profile)
@@ -401,13 +449,21 @@ def conformance(profile: str) -> str:
     scale = 2 * math.pi * CYCLE_SECONDS
     omega = np.array([scale * rng.uniform(-60e3, 60e3) for _ in range(n)])
     coupling = {e: scale * rng.uniform(-60e3, 60e3) for e in meta["pairs"]}
+    # One target sits near the 333 kHz alias edge, so its sector rates straddle
+    # it and the joint branch choice is exercised; its omega is compared
+    # modulo the 666.7 kHz period.
+    omega[meta["parts"]["P"][0]] = scale * 320e3
+    period_hz = 1 / ((DELAYS[1] - DELAYS[0]) * CYCLE_SECONDS)
     adjacent = neighbors(meta["pairs"])
     texts = dict(ordered)
     index = np.arange(1 << n)
     table: Table = {}
-    for role, quadrature, delay in itertools.product(ROLES, QUADRATURES, DELAYS):
-        lines = texts[f"targets-{role}-{quadrature}-d{delay:03d}.cq"].splitlines()
-        probabilities = exact_probabilities(lines, n, omega, coupling)
+    settings = list(itertools.product(ROLES, QUADRATURES, DELAYS))
+    programs = [
+        texts[f"targets-{role}-{quadrature}-d{delay:03d}.cq"].splitlines() for role, quadrature, delay in settings
+    ]
+    evolved = ordered_map(Evolution(n, omega, coupling), programs)
+    for (role, quadrature, delay), probabilities in zip(settings, evolved, strict=True):
         for target in meta["parts"][role]:
             one = ((index >> target) & 1) == 1
             for key in itertools.product((0, 1), repeat=len(adjacent[target])):
@@ -427,7 +483,8 @@ def conformance(profile: str) -> str:
         for end in row["ends"].values():
             worst = max(worst, abs(end["j_hz"] - coupling[(row["edge"][0], row["edge"][1])] * to_hz))
     for row in report["targets"]:
-        worst = max(worst, abs(row["omega_hz"] - float(omega[row["target"]]) * to_hz))
+        offset = row["omega_hz"] - float(omega[row["target"]]) * to_hz
+        worst = max(worst, abs(offset - period_hz * round(offset / period_hz)))
     if worst > 1.0:
         raise SystemExit(f"conformance: recovered rates differ from the injected ones by {worst:.3g} Hz")
     couplers = len(report["edges"])
@@ -460,6 +517,7 @@ def sanity(run: Path) -> list[str]:
     for row in case["circuits"]:
         path = run / "raw" / f"{row['file']}.json"
         if not path.exists():
+            problems.append(f"{row['file']}: raw shots missing")
             continue
         shots = json.loads(path.read_text(encoding="utf-8"))
         ones = [sum(bit(s, q) for s in shots) / len(shots) for q in range(meta["nqubits"])]
@@ -556,9 +614,20 @@ def main() -> int:
         profile = next(name for name, settings in PROFILES.items() if settings["identifier"] == backend)
         meta, _ = members(profile)
         shots: dict[str, list[str]] = {}
-        for run in runs:
+        batch_of: dict[str, int] = {}
+        for index, run in enumerate(runs):
             for row in json.loads((run / "cases.json").read_text(encoding="utf-8"))["circuits"]:
+                if row["file"] in shots:
+                    raise SystemExit(f"{run}: {row['file']} appears in more than one listed batch")
                 shots[row["file"]] = json.loads((run / "raw" / f"{row['file']}.json").read_text(encoding="utf-8"))
+                batch_of[row["file"]] = index
+        # atan2 treats a delay's x and y circuits as one measurement; a pair
+        # split across batches carries any calibration change between them.
+        split_pairs = [
+            f"{role}-d{delay:03d}"
+            for role, delay in itertools.product(ROLES, DELAYS)
+            if len({batch_of[f"targets-{role}-{q}-d{delay:03d}.cq"] for q in QUADRATURES}) > 1
+        ]
         zero, one = shots["readout-0.cq"], shots["readout-1.cq"]
         assignment = {
             q: (sum(bit(s, q) for s in zero) / len(zero), sum(1 - bit(s, q) for s in one) / len(one))
@@ -567,7 +636,8 @@ def main() -> int:
         report = {
             "schema": "qi-coupler-zz-analysis-v1",
             "profile": profile,
-            "runs": [r.as_posix() for r in runs],
+            "runs": [retained_path(r) for r in runs],
+            "quadrature_pairs_across_batches": split_pairs,
             "readout_assignment": {str(q): list(v) for q, v in assignment.items()},
             **analyze_table(meta, tabulate(meta, shots), assignment),
         }
