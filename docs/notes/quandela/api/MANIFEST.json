@@ -1,0 +1,28 @@
+{
+ "schema": "qd-docs-capture-v1",
+ "kind": "api",
+ "retrieved_utc": "2026-10-17T17:28Z",
+ "files": [
+  {
+   "path": "docs/notes/quandela/api/cloud-openapi.json",
+   "source": "https://api.cloud.quandela.com/openapi.json",
+   "sha256": "482dc29813dacd4a4f8045e48c99a137ec25212fe90afdc7a1057d6d926f2d15"
+  },
+  {
+   "path": "docs/notes/quandela/api/cloud-qt-openapi.json",
+   "source": "https://api.cloud.quandela.com/qt-openapi.json",
+   "sha256": "c183a9bf04fd0f2c6063502e5266c3c1c772d515c4adc233b42fe74f871695af"
+  },
+  {
+   "path": "docs/notes/quandela/api/account-openapi.json",
+   "source": "https://api.account.quandela.com/openapi.json",
+   "sha256": "74d29183192077c50516fde764c249cea293792ab3cb3bce99450759d38e2bb2"
+  }
+ ],
+ "unreachable": [],
+ "served_sha256": {
+  "https://api.cloud.quandela.com/openapi.json": "d444026d3d2735c4eee078410e001efe67863d670b55aaa0696e8f440540ab2f",
+  "https://api.cloud.quandela.com/qt-openapi.json": "a1fe41a393a997f6bd764f05043e7a6478fa295806c5aab0b733944896d2d279",
+  "https://api.account.quandela.com/openapi.json": "eecb463e7e8c53dc2d39b1ce2f3c07a9684210b82757584d0e877f6b4baac65a"
+ }
+}

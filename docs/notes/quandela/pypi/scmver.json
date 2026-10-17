@@ -1,0 +1,29 @@
+{
+ "name": "scmver",
+ "version": "1.10",
+ "summary": "A package version manager based on SCM tags",
+ "license": null,
+ "requires_python": ">=3.11",
+ "requires_dist": [
+  "click; extra == \"cli\""
+ ],
+ "project_urls": {
+  "Homepage": "https://github.com/hattya/scmver"
+ },
+ "files": [
+  {
+   "filename": "scmver-1.10-py3-none-any.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-10-17T06:32:43.022680Z",
+   "size": 22400,
+   "sha256": "786b4e6baee35c7439f97de7ab92385d6290273ba47ec41b1a09d91ce910a539"
+  },
+  {
+   "filename": "scmver-1.10.tar.gz",
+   "packagetype": "sdist",
+   "upload_time_iso_8601": "2026-10-17T06:32:44.234747Z",
+   "size": 30581,
+   "sha256": "faa3ce90c3ff827408b6af4a40b455631b14d70415bc01182690f3c2c8b53427"
+  }
+ ]
+}
