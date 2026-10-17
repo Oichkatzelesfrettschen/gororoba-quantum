@@ -835,6 +835,18 @@ def repetition_delay_range(backend: Any) -> list[float] | None:
     return [float(interval[0]), float(interval[1])]
 
 
+def shot_ceiling(backend: Any) -> int | None:
+    """backend's configuration().max_shots, the per-PUB shot limit planning and each batch hold, or None."""
+    value = getattr(backend.configuration(), "max_shots", None)
+    return int(value) if value else None
+
+
+def shot_ceiling_violations(backend: Any, shots: int) -> list[str]:
+    """Why shots per PUB cannot run under backend's fresh max_shots."""
+    ceiling = shot_ceiling(backend)
+    return [f"{shots} shots per PUB exceed max_shots {ceiling}"] if ceiling is not None and shots > ceiling else []
+
+
 def repetition_delay_violations(backend: Any, requested: float, planned_range: list[float] | None) -> list[str]:
     """Why requested cannot run on backend's fresh configuration, or why its allowed range moved since planning."""
     try:
@@ -942,6 +954,22 @@ def prepare(
     ownership: dict[str, tuple[list[Any], dict[str, Any], int]] = {}
     simulators: dict[int, Any] = {}
     tiers = sorted(set(args.shot_tiers if args.optimize else [args.shots]))
+    # Tiers above a candidate backend's max_shots never reach a plan; the
+    # trace keeps the dropped tiers beside the ceiling that dropped them.
+    ceiling = min(
+        (
+            limit
+            for choices, _configuration in candidates
+            for choice in choices
+            if (limit := shot_ceiling(choice.snap.backend)) is not None
+        ),
+        default=None,
+    )
+    if ceiling is not None and tiers[-1] > ceiling:
+        trace["shot_ceiling"] = {"max_shots": ceiling, "dropped_tiers": [shots for shots in tiers if shots > ceiling]}
+        tiers = [shots for shots in tiers if shots <= ceiling]
+        if not tiers:
+            raise runtime.LiveRunError(f"every shot tier exceeds max_shots {ceiling}: {trace['shot_ceiling']}")
     per_pub = getattr(args, "shot_allocation", "uniform") == "per-pub"
     if per_pub and (args.family not in ("ripple", "rank-sector", *PATCH_FAMILIES) or not args.optimize):
         raise runtime.LiveRunError("per-PUB shot allocation requires an optimized algebra or patch family")

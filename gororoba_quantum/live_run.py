@@ -2813,6 +2813,14 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         }
         if refused:
             raise LiveRunError(f"--rep-delay {requested_delay} s is unavailable: {refused}")
+    if not getattr(args, "family", None):
+        refused_shots = {
+            snapshot.name: violations
+            for snapshot in snaps
+            if (violations := qpu_planning.shot_ceiling_violations(snapshot.backend, args.shots))
+        }
+        if refused_shots:
+            raise LiveRunError(f"--shots {args.shots} is unavailable: {refused_shots}")
     trace: dict[str, Any] = {}
     design: dict[str, Any] = {}
     if getattr(args, "family", None):
@@ -3888,6 +3896,13 @@ def submit(
                 else:
                     record["state"] = "approval_required"
                 raise LiveRunError(f"{name}: {batch_tag} {reason}; no circuit in this batch was submitted")
+        shot_violations = qpu_planning.shot_ceiling_violations(fresh.backend, int(plan_entry["shots"]))
+        if shot_violations:
+            if not record["submission"]["jobs"]:
+                record["state"] = "approval_required"
+            raise LiveRunError(
+                f"{name}: {batch_tag} {'; '.join(shot_violations)}; no circuit in this batch was submitted"
+            )
         usage = service.usage()
         check_budget(name, usage, args.min_remaining_seconds)
         # Accepted jobs may remain unbilled. Every ceiling stays reserved until

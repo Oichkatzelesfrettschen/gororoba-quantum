@@ -1219,6 +1219,47 @@ def _verify_state_prep_family() -> None:
     _require(len(metadata["observable_contracts"]) == 42, "the plan lost a per-qubit endpoint")
     rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
     _require([g.name for g in rebuilt] == [c.group.name for c in choices], "record_groups lost the per-qubit groups")
+    _verify_shot_ceiling(snapshot, qubits)
+
+
+def _verify_shot_ceiling(snapshot: Any, qubits: list[int]) -> None:
+    """Shot tiers above configuration().max_shots leave the plan, and a batch above it refuses."""
+    reported = qpu_planning.shot_ceiling(snapshot.backend)
+    _require(reported == 100000, f"FakeFez reports max_shots {reported}")
+    ceiling = 100000
+    _require(not qpu_planning.shot_ceiling_violations(snapshot.backend, ceiling), "max_shots itself was refused")
+    _require(bool(qpu_planning.shot_ceiling_violations(snapshot.backend, ceiling + 1)), "max_shots + 1 was admitted")
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
+
+    def tier_args(tiers: list[int]) -> Any:
+        return _args(
+            "state-prep-control",
+            layout=qubits,
+            optimize=True,
+            shot_tiers=tiers,
+            optimizer_candidates=1,
+            max_execution_seconds=60,
+            max_total_execution_seconds=120.0,
+            reserve_seconds=0.0,
+        )
+
+    trace: dict[str, Any] = {}
+    args = tier_args([8192, ceiling + 1])
+    with patch.object(live_run, "simulate", _ideal_predictions):
+        _selected, metadata = qpu_planning.prepare(live_run, [snapshot], args, usage, trace)
+    planned = {int(row["proxy_metadata"]["shots"]) for row in metadata["optimization"]["candidates"]}
+    _require(planned == {8192} and args.shots == 8192, f"the optimizer planned tiers {planned}")
+    _require(
+        trace.get("shot_ceiling") == {"max_shots": ceiling, "dropped_tiers": [ceiling + 1]},
+        f"the dropped tier left no trace: {trace.get('shot_ceiling')}",
+    )
+    try:
+        with patch.object(live_run, "simulate", _ideal_predictions):
+            qpu_planning.prepare(live_run, [snapshot], tier_args([ceiling + 1]), usage, {})
+    except live_run.LiveRunError as error:
+        _require("max_shots" in str(error), f"the planner refused for another reason: {error}")
+    else:
+        raise RuntimeError("a plan whose every tier exceeds max_shots was admitted")
 
 
 def _verify_prep_excitation() -> None:
@@ -1341,7 +1382,8 @@ def _verify_state_prep_only() -> None:
         _verify_state_prep_family()
     print(
         "QPU planning: state-prep-control pins each arm to its named qubit, fuses two static PUBs and one "
-        "dynamic PUB over every qubit, refuses the retained layout off its backend, and admits 8192 shots"
+        "dynamic PUB over every qubit, refuses the retained layout off its backend, admits 8192 shots and drops "
+        "tiers above max_shots"
     )
 
 
