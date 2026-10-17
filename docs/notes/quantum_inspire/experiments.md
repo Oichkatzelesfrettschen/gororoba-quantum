@@ -326,6 +326,24 @@ The fixture sits 0.002 below 1/2 (z = -0.36), so the emulator executes the
 batched circuits as certified and the series analysis keys every replica to
 its batch.
 
+**Two-region placement, QX dry run.** The twin of the two-region placement
+(six replicas, two per 10-qubit circuit) ran as one batch (twin-1..3, batch
+job 870091, jobs 1527349, 1527350, 1527352), 2048 shots each, retained as
+results/quantum_inspire/runs/2026-10-17T042652Z-zero_divisor_qx-batch-00.
+`--analyze` writes results/quantum_inspire/zero_divisor_qx_two_region_analysis.json,
+which gate core-330 replays with `--replay-series`; gate core-374 reruns
+`--select-regions` and requires REGIONS to rank first.
+
+| Case | replicas {1,2,4,7,8}, {11,12,14,15,16} (count of 2048 at s = 0) | P(s=0) (95%) | ideal |
+|---|---|---|---|
+| dark | 0, 0 | 0.000 (0.000-0.001) | 0 |
+| bright | 2048, 2048 | 1.000 (0.999-1.000) | 1 |
+| fixture | 1004, 986 | 0.486 (0.471-0.501) | 1/2 |
+
+The fixture sits 0.014 below 1/2 (z = -1.81), inside the two-sided 95%
+sampling band, so the regenerated circuits execute as certified on the
+emulator.
+
 ## Residual ZZ of every Tuna-17 coupler
 
 Each coupling-map edge carries a flux-tunable coupler that the control

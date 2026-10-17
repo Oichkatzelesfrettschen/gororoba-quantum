@@ -217,6 +217,13 @@
       "run": "results/quantum_inspire/runs/2026-10-17T034409Z-zero_divisor_qx-batch-01",
       "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
       "question": "Dry run, batch 1 of 2: does the ideal QX emulator execute the batched twin circuits of the per-batch zero-divisor series exactly (dark 0, bright 1, fixture 1/2) before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-zero-divisor-two-region-dry-run",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T042652Z-zero_divisor_qx-batch-00",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "Dry run of the two-region placement off Tuna-17 q0, q6 and q9: does the ideal QX emulator execute the rotated twin circuits exactly (dark 0, bright 1, fixture 1/2) before any Tuna-17 submission?"
     }
   ],
   "claims": [
@@ -3017,6 +3024,38 @@
       "acquisitions": [
         "qi-qx-zero-divisor-batch-dry-run-0",
         "qi-qx-zero-divisor-batch-dry-run-1"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-qx-zero-divisor-two-region-twin",
+      "statement": "In one QX batch, the six routed Clifford+T zero-divisor replicas of the two-region series (regions {1,2,4,7,8} and {11,12,14,15,16}, rotated so each case runs once per region) read P(s = 0) = 0 in 4096 dark shots, 1 in 4096 bright shots and 0.486 [0.471, 0.501] fixture (986 and 1004 of 2048 per replica; fixture - 1/2 = -0.014, z = -1.81), so the emulator executes the regenerated series' emitted cQASM as certified.",
+      "domain": "implementation",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The QX emulator is noiseless, so the run tests the platform's parsing and execution of the emitted circuits and the batch-keyed analysis, not device noise; the exact SELECT identity rests on the full-operator certificate in certify(), not on finite samples; 2048 shots per circuit.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/zero_divisor_qx_two_region_analysis.json",
+          "sha256": "13671850148ad1b0b89388c13691b1761c3a58d681402b55d91c8b1ba1842376"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-17T042652Z-zero_divisor_qx-batch-00/results.json",
+          "sha256": "a50948280f78ebf393ab1faa7d4b560d31905664b216ff2dea5ca070cf185f57"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-330": "replay",
+        "core-348": "freshness"
+      },
+      "acquisitions": [
+        "qi-qx-zero-divisor-two-region-dry-run"
       ],
       "assumptions": [],
       "depends_on": [],
