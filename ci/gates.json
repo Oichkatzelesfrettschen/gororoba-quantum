@@ -1740,17 +1740,25 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z && PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z",
    "name": "core-443",
-   "seconds": 49,
-   "tier": "pr"
+   "seconds": 160,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z",
+   "name": "core-449",
+   "seconds": 169,
+   "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --check results/live/2026-10-13T083417.634585Z",
    "name": "core-447",
-   "seconds": 190,
+   "seconds": 850,
    "tier": "full"
   },
   {
@@ -1758,7 +1766,7 @@
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --check results/live/2026-10-13T083417.634585Z",
    "name": "core-448",
-   "seconds": 199,
+   "seconds": 850,
    "tier": "full"
   },
   {
