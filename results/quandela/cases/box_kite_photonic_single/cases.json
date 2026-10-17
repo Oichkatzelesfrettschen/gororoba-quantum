@@ -1,0 +1,236 @@
+{
+ "schema": "qd-box-kite-series-v1",
+ "family": "box_kite_photonic_single",
+ "census_sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2",
+ "census_sign_blocks": 14,
+ "summary": {
+  "two_label": {
+   "configs": 28,
+   "rows": 1008
+  },
+  "two_label_witness": {
+   "configs": 4,
+   "rows": 0
+  },
+  "four_label": {
+   "configs": 1,
+   "rows": 169
+  },
+  "one_hot": {
+   "configs": 2,
+   "rows": 0
+  }
+ },
+ "jobs": [
+  {
+   "job": "job-00",
+   "configs": [
+    "two_label-00"
+   ]
+  },
+  {
+   "job": "job-01",
+   "configs": [
+    "two_label-01"
+   ]
+  },
+  {
+   "job": "job-02",
+   "configs": [
+    "two_label-02"
+   ]
+  },
+  {
+   "job": "job-03",
+   "configs": [
+    "two_label-03"
+   ]
+  },
+  {
+   "job": "job-04",
+   "configs": [
+    "two_label-04"
+   ]
+  },
+  {
+   "job": "job-05",
+   "configs": [
+    "two_label-05"
+   ]
+  },
+  {
+   "job": "job-06",
+   "configs": [
+    "two_label-06"
+   ]
+  },
+  {
+   "job": "job-07",
+   "configs": [
+    "two_label-07"
+   ]
+  },
+  {
+   "job": "job-08",
+   "configs": [
+    "two_label-08"
+   ]
+  },
+  {
+   "job": "job-09",
+   "configs": [
+    "two_label-09"
+   ]
+  },
+  {
+   "job": "job-10",
+   "configs": [
+    "two_label-10"
+   ]
+  },
+  {
+   "job": "job-11",
+   "configs": [
+    "two_label-11"
+   ]
+  },
+  {
+   "job": "job-12",
+   "configs": [
+    "two_label-12"
+   ]
+  },
+  {
+   "job": "job-13",
+   "configs": [
+    "two_label-13"
+   ]
+  },
+  {
+   "job": "job-14",
+   "configs": [
+    "two_label-14"
+   ]
+  },
+  {
+   "job": "job-15",
+   "configs": [
+    "two_label-15"
+   ]
+  },
+  {
+   "job": "job-16",
+   "configs": [
+    "two_label-16"
+   ]
+  },
+  {
+   "job": "job-17",
+   "configs": [
+    "two_label-17"
+   ]
+  },
+  {
+   "job": "job-18",
+   "configs": [
+    "two_label-18"
+   ]
+  },
+  {
+   "job": "job-19",
+   "configs": [
+    "two_label-19"
+   ]
+  },
+  {
+   "job": "job-20",
+   "configs": [
+    "two_label-20"
+   ]
+  },
+  {
+   "job": "job-21",
+   "configs": [
+    "two_label-21"
+   ]
+  },
+  {
+   "job": "job-22",
+   "configs": [
+    "two_label-22"
+   ]
+  },
+  {
+   "job": "job-23",
+   "configs": [
+    "two_label-23"
+   ]
+  },
+  {
+   "job": "job-24",
+   "configs": [
+    "two_label-24"
+   ]
+  },
+  {
+   "job": "job-25",
+   "configs": [
+    "two_label-25"
+   ]
+  },
+  {
+   "job": "job-26",
+   "configs": [
+    "two_label-26"
+   ]
+  },
+  {
+   "job": "job-27",
+   "configs": [
+    "two_label-27"
+   ]
+  },
+  {
+   "job": "job-28",
+   "configs": [
+    "two_label-28"
+   ]
+  },
+  {
+   "job": "job-29",
+   "configs": [
+    "two_label-29"
+   ]
+  },
+  {
+   "job": "job-30",
+   "configs": [
+    "two_label-30"
+   ]
+  },
+  {
+   "job": "job-31",
+   "configs": [
+    "two_label-31"
+   ]
+  },
+  {
+   "job": "job-32",
+   "configs": [
+    "four_label-00"
+   ]
+  },
+  {
+   "job": "job-33",
+   "configs": [
+    "one_hot-00"
+   ]
+  },
+  {
+   "job": "job-34",
+   "configs": [
+    "one_hot-01"
+   ]
+  }
+ ]
+}

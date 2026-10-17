@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/ringdown-null-calibration/1",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-17T171005Z",
+ "files": {
+  "output/environment.json": "160a3139451b8d7a26e0b8fe9660126abe24818f6c6634a1be8e4ec5720d0762",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "28289c3548fbc0bf09b2261c755f7987d1f399565e735b21aad7cbc40ae5e7a6",
+  "output/pip.txt": "a8107f8e9c95663104a334870f3df7866181021a89c4703b0a0da5026cc9706b",
+  "output/repo/results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json": "dd8e1ed2c2a5fd1f608b2396b820cdc2798b63286dcfa2cd641436d8a01e3153",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "c1eb5c1888d4b35e1620cb0a39c5104f225eab0a78c6d234cef4b6d4b13beccb",
+  "ringdown-null-calibration.log": "a44fda6ef55abe1db0c7f3503723d10ec39f87800abb6ceb80b3a18fb7aa3c6b"
+ }
+}
