@@ -60,6 +60,7 @@ from experiment_optimizer import (  # noqa: E402
     CovarianceBound,
     JobCandidate,
     ObservableContract,
+    ObservableTerm,
     PubPrediction,
     evaluate_candidate,
 )
@@ -891,11 +892,40 @@ def self_test() -> None:
         feasible(ref, single, 8192)[1].observables[0].detection_radius
     ):
         raise AssertionError("replicas without a covariance bound must leave the Hoeffding radius unchanged")
+    exact_evidence_replay(record)
     pinned_inputs_test()
     print(
-        f"n21 usage budget: sizing reproduces {checked} reference candidates' radii and charges; the billing fit "
+        f"n21 usage budget: sizing reproduces {checked} reference candidates' radii and charges; their retained "
+        "exact-model checks replay; the billing fit "
         "ignores an unpinned raw job and refuses an altered pinned index or PUB file"
     )
+
+
+def exact_evidence_replay(record: dict[str, Any]) -> None:
+    """validate_exact rerun on every candidate's retained exact and sampled laws reproduces the record."""
+    import n21_exact_planning
+
+    contracts = tuple(
+        ObservableContract(
+            **{key: value for key, value in contract.items() if key != "terms"},
+            terms=tuple(ObservableTerm(t["member"], tuple(t["values"]), t["sign"]) for t in contract["terms"]),
+        )
+        for contract in record["observable_contracts"]
+    )
+    exact = record["exact_model"]
+    design = record["policy"]["design"]
+    for name, evidence in exact["candidates"].items():
+        rows = [{key: row[key] for key in ("entry", "replica", "exact", "sampled")} for row in evidence["replicas"]]
+        replay = n21_exact_planning.validate_exact(
+            rows, contracts, int(design["model_shots"]), float(design["simulation_alpha"])
+        )
+        if replay["passed"] != evidence["passed"] or not math.isclose(replay["max_gap"], evidence["max_gap"]):
+            raise AssertionError(f"{name}: replayed exact-model verdict differs from the record")
+        for group in ("arms", "contrasts"):
+            for key, row in evidence[group].items():
+                for field, value in row.items():
+                    if not math.isclose(replay[group][key][field], value, rel_tol=1e-12, abs_tol=1e-15):
+                        raise AssertionError(f"{name} {group}/{key}/{field}: replay differs from the record")
 
 
 def billing(live: Path) -> tuple[list[Job], tuple[float, float], dict[int, list[int]]]:

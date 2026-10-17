@@ -8,8 +8,10 @@ registers and registers that disagree with the collected marginals each take
 the Hoeffding branch and reproduce analyze_observations without them. At the
 n21-feedback-encoded allocation (118,784 shots per PUB, two replicas) the
 declared branch meets the planned power condition and the Hoeffding branch
-reports the endpoint underpowered. Explicit failures remain active under
-optimized Python. live_run.main refuses the model flags outside the N21
+reports the endpoint underpowered. qpu_planning.prepare drops a candidate
+whose exact model fails, keeps its evidence and reason, and refuses only when
+every candidate fails. Explicit failures remain active under optimized
+Python. live_run.main refuses the model flags outside the N21
 families before any planning.
 """
 
@@ -213,8 +215,114 @@ def _verify_model_flags() -> None:
             pass
 
 
+def _verify_candidate_rejection() -> None:
+    """prepare drops a candidate whose exact model fails and refuses only when every candidate fails."""
+    from unittest.mock import patch
+
+    import n21_exact_planning
+
+    law = np.array([0.25, 0.25, 0.25, 0.25])
+    backend = SimpleNamespace(
+        configuration=lambda: SimpleNamespace(
+            dynamic_reprate_enabled=True, default_rep_delay=0.00025, rep_delay_range=[0.0, 0.001]
+        ),
+        target=object(),
+    )
+    snapshot = SimpleNamespace(name="backend", backend=backend, properties=object())
+
+    def candidate(seed: int) -> tuple[list[Any], dict[str, Any]]:
+        entries = [SimpleNamespace(name=member, replicas=[object()], ideal=law) for member in LAWS]
+        choice = SimpleNamespace(entries=entries, snap=snapshot, seed=seed, replicas=[object()], joint_score=0.9)
+        return [choice], {"name": "n21-feedback-encoded", "seed": seed}
+
+    candidates = [candidate(1), candidate(2)]
+    pubs = {
+        id(choices[0]): [
+            SimpleNamespace(
+                name=f"pub_{entry.name}",
+                circuit=object(),
+                components=(SimpleNamespace(entry=entry),),
+                manifest=lambda: {"sequential_stage_count": 0},
+            )
+            for entry in choices[0].entries
+        ]
+        for choices, _configuration in candidates
+    }
+    runtime = SimpleNamespace(
+        LiveRunError=RuntimeError,
+        noise_simulator=lambda *_args: SimpleNamespace(options=SimpleNamespace(noise_model=None)),
+        simulate=lambda choice, *_args: {entry.name: [entry.ideal] for entry in choice.entries},
+        submission_batches=lambda selected, kind, _shots: [pubs[id(selected[0])]] if kind == "dynamic" else [],
+        duration_s=lambda *_args: 0.0001,
+        _scrub_instances=lambda value: value,
+        _jsonable=lambda value: value,
+    )
+    contracts = (_contract(),)
+    args = SimpleNamespace(
+        family="n21-feedback-encoded",
+        optimize=True,
+        shot_allocation="uniform",
+        shot_tiers=[65536],
+        shots=65536,
+        model_shots=65536,
+        model_method="exact",
+        replica_variance_bound=None,
+        max_execution_seconds=1e6,
+        max_total_execution_seconds=1e6,
+        reserve_seconds=0.0,
+        job_overhead_seconds=2.3,
+        classical_latency_us=20.0,
+        precision=0.08,
+        alpha=0.05,
+        power=0.8,
+        simulation_alpha=0.01,
+        cost_scenarios=[],
+    )
+    effective = {member: (tuple(float(v) for v in law),) for member, law in LAWS.items()}
+    planted = {"passed": False, "failures": ["planted failure"], "max_gap": 0.0, "arms": {}, "contrasts": {}}
+    planted |= {"replicas": [], "radius": 1.0}
+
+    def plan(rejected_seeds: set[int]) -> tuple[Any, dict[str, Any], dict[str, Any]]:
+        trace: dict[str, Any] = {}
+
+        def exact(choices: list[Any], *_args: Any) -> tuple[Any, dict[str, Any]]:
+            if choices[0].seed in rejected_seeds:
+                raise n21_exact_planning.ExactModelRejected(dict(planted))
+            return effective, dict(planted, passed=True, failures=[])
+
+        with (
+            patch.object(qpu_planning, "family_candidates", return_value=candidates),
+            patch.object(qpu_planning, "family_contracts", return_value=contracts),
+            patch.object(qpu_planning, "ideal_compiled_probabilities", return_value=law),
+            patch.object(qpu_planning.n21_exact_planning, "exact_predictions", side_effect=exact),
+        ):
+            choices, metadata = qpu_planning.prepare(runtime, [snapshot], args, {"usage_remaining_seconds": 1e9}, trace)
+        return choices, metadata, trace
+
+    choices, metadata, trace = plan({1})
+    names = [candidate["name"] for candidate in metadata["optimization"]["candidates"]]
+    _require(names == ["candidate-001-shots-65536"], f"a rejected candidate reached the optimizer: {names}")
+    _require(
+        trace.get("model_rejections")
+        == [{"candidate": "candidate-000", "reason": str(n21_exact_planning.ExactModelRejected(planted))}],
+        f"the rejection left no trace entry: {trace}",
+    )
+    _require(choices[0].seed == 2, "the surviving candidate was not retained")
+    _require(
+        metadata["exact_model"]["candidates"]["candidate-000"]["passed"] is False,
+        "the rejected candidate's evidence left the record",
+    )
+    try:
+        plan({1, 2})
+    except RuntimeError as error:
+        _require("every candidate failed" in str(error), f"total rejection raised the wrong error: {error}")
+    else:
+        raise RuntimeError("prepare planned with every candidate rejected")
+
+
 def _verify() -> None:
     _verify_model_flags()
+    _verify_candidate_rejection()
     generator = np.random.default_rng(20261017)
     record = _record()
     independent = {member: _outcomes(generator, law, 0.0) for member, law in LAWS.items()}
@@ -265,7 +373,7 @@ def _verify() -> None:
         "replica covariance contracts: independent replicas apply the declared bound (statistics "
         + ", ".join(f"{row['statistic']:.4f}" for row in rows)
         + f" <= {rows[0]['threshold']:.4f}); correlated, mixed, absent and misjoined registers fall back to "
-        "Hoeffding and report the endpoint underpowered"
+        "Hoeffding and report the endpoint underpowered; a failing exact model drops one candidate, not the run"
     )
 
 
