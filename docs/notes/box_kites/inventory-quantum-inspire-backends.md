@@ -39,7 +39,7 @@ Connected induced subgraph counts:
 ## Ry emulator (5, Rydberg)
 
 - 9 atoms, rectangular lattice; INIT(x,y) only before any operation (cqasm.md:159-169).
-- Native X Z Rx Rz T S H CNOT; compiler CNOTDecomposer then XZXDecomposer (catalogue.json:560-589).
+- Catalogue gate set X Z Rx Rz T S H CNOT with compiler passes CNOTDecomposer then XZXDecomposer (catalogue.json:560-589); the operational-specifics page lists X, Z, T, S, Rx, Rz and the RYD directive (site/kbase_ry-emulator-operational-specifics.md:9,21-27), and the retained H/CNOT case failed, so H and CNOT are catalogue gates, not demonstrated native operations.
 - No mid-circuit measurement; all qubits measured at the end. Result order: qubit 0 LEFTMOST.
 - Measured failure: runs/2026-10-16T211635Z-Rydberg/teleport.cq (bit[9] b, H, CNOT, X; no Rz, no measure) failed "error interpreting cQASM script". X-only diagnostic (no bit register, no measure) ran.
 - Stale comment: qi_crosstalk_teleport_cases.py:205 says the emulator rejects measure statements, but the failing file has no measure. cqasm.md:226-229 records the open question (C4): bit register, H, CNOT, or a combination. A box-kite Ry run must first isolate this with a small diagnostic batch (X-only, +bit register, +H, +CNOT).
@@ -57,21 +57,23 @@ Connected induced subgraph counts:
 ## Existing scripts
 
 - qi_crosstalk_teleport_cases.py: DRIVE_PULSES=40, WAIT_CYCLES=40; Tuna-17 stars T=0 (1,2), 3 (5,6), 4 (7,8), 11 (13,14), 12 (9,15); teleport paths 1-0-2-4, 5-3-6-9, 10-7-11-8, 14-12-15-16. Rydberg excluded from generation (:98).
-- qi_zero_divisor_cases.py: frozen edge tuple :107-111; the retained 2026-10-16T221133Z run used regions {0,1,2,4,5}, {7,8,10,11,13} and {9,12,14,15,16}, each a four-cycle plus one pendant qubit (for example cycle 0-1-4-2-0 with pendant 2-5); the generator now places two regions off the excluded qubits below; cases dark, bright, fixture; emits H S Sdag T Tdag X Y Z X90 mX90 CZ barrier measure; readout-0 and readout-1 calibration circuits per batch.
+- qi_zero_divisor_cases.py: frozen edge tuple :107-111; the retained 2026-10-16T221133Z run used regions {0,1,2,4,5}, {7,8,10,11,13} and {9,12,14,15,16}, each a four-cycle plus one pendant qubit (for example cycle 0-1-4-2-0 with pendant 2-5); the checked-in generator on main still routes those three regions, and the zero-divisor series branch (qi/zero-divisor-per-batch-runs) places two regions off the excluded qubits below; cases dark, bright, fixture; emits H S Sdag T Tdag X Y Z X90 mX90 CZ barrier measure; readout-0 and readout-1 calibration circuits per batch.
 
 ## Tuna-17 qubit exclusions
 
 Two kinds of evidence set the exclusions; a later batch showing recovery
-re-admits a qubit.
+re-admits a qubit. The readout endpoints alone leave state preparation,
+measurement and relaxation ambiguous; separating them takes a discriminating
+batch (for example a delay sweep after the X, or a repeated readout).
 
 Readout and pi-pulse. Readout batches of the Tuna-17 ring-down series on
 2026-10-17 (all qubits idle in readout-0, all flipped in readout-1) read:
 
-| qubit | 03:39Z | after the ~04:12Z platform calibration (04:18:39Z) | reading |
+| qubit | 03:39Z | after the ~04:12Z platform calibration (04:18:39Z) | what the endpoints constrain |
 |---|---|---|---|
-| q9 | idle P1 0.03 | idle P1 0.27 in a gate-free circuit | intrinsic shift; couplers 5-9, 6-9, 9-12 carry a mixed ZZ shift onto q5, q6, q12 |
-| q0 | P1 0.85 prepared in 1 | P1 0.39 prepared in 1, idle below 0.04 | pi-pulse or T1 collapse, not readout |
-| q6 | P1 0.67 prepared in 1 | P1 0.14 prepared in 1, idle below 0.04 | pi-pulse or T1 collapse, not readout |
+| q9 | idle P1 0.03 | idle P1 0.27 in a gate-free circuit | excited population or 0-state readout drift, not separated by these batches; couplers 5-9, 6-9, 9-12 carry a mixed ZZ shift onto q5, q6, q12 |
+| q0 | P1 0.85 prepared in 1 | P1 0.39 prepared in 1, idle below 0.04 | 0-state false positives stay low; 1-state misassignment, X-preparation failure and T1 decay are not separated |
+| q6 | P1 0.67 prepared in 1 | P1 0.14 prepared in 1, idle below 0.04 | 0-state false positives stay low; 1-state misassignment, X-preparation failure and T1 decay are not separated |
 
 Those batches are the readout pilot's runs; their raw records land with the
 readout ring-down pull request (branch qi/readout-ringdown-pilot), and this
