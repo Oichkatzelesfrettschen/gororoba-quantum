@@ -138,7 +138,10 @@ def count_check(kind: str, bits: Callable[[str], list[str]], histogram: dict[str
                 k += count * (values[1] == "0")
             else:
                 k += count * (values[1:].count("1") % 2 == 0)
-        elif kind not in ("p_zero_given_zero", "parity_zero_given_zero"):
+        elif kind == "p_zero_given_one" and values[0] == "1":
+            n += count
+            k += count * (values[1] == "0")
+        elif kind not in ("p_zero_given_zero", "parity_zero_given_zero", "p_zero_given_one"):
             raise ValueError(f"unknown check {kind!r}")
     return k, n
 
