@@ -144,8 +144,16 @@ circuits read every replica exactly. C(1) lies above its preregistered
 
 [tuna-17-run-design.md](tuna-17-run-design.md) holds the platform
 configuration that prices a Tuna-17 batch (decompose-only compilation, the
-fitted 3.0 s per job plus 0.49 ms per shot, no published calibration) and the
+fitted 2.9 s per job plus 0.51 ms per shot, no published calibration) and the
 box-kite follow series built on it: seven batches whose readout pairs bracket
 fifteen packed witnesses, sized from T0's r, the readout drift across the T0
 batches and the coupler-ZZ map (`docs/evidence/box_kite_follow_design/design.json`,
-gates core-439 and core-440).
+gates core-439 and core-440). The series ran on 2026-10-17 from 23:08Z to
+23:29Z with every preregistered decision as the census predicts: all six
+classification rows, twist equality at |z| at most 2.44 in all four
+crossovers, every depth-1 X coherence sign and both walk signs. Its results
+section records the depth-9 batch-to-batch scatter of about 0.03, the drift
+against T0 across a platform calibration (-0.209 on (12,14) at depth 9) and
+the context-dependent q13 readout error (claims
+`qi-tuna17-boxkite-follow-crossover` and
+`qi-tuna17-boxkite-follow-ladder-drift`).
