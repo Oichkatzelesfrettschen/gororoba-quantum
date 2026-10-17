@@ -489,7 +489,9 @@ class QuantumInspireRuns:
 
     def account_line(self) -> str:
         totals = self.ledger["totals"]
-        declared = set(self._declared())
+        # A declared job whose run landed after the snapshot is retained, not another branch's.
+        retained = {job for run, record in self.records.items() for job in self._run(run, record)[1]}
+        declared = set(self._declared()) - retained
         names = {row["id"]: row["identifier"] for row in load_json(QI_CATALOGUE)["backend_types"]}
         backends = Counter(
             names.get(job["backend_type_id"], job["backend_type_id"])
@@ -1387,7 +1389,20 @@ def self_test(registry: dict[str, Any], context: Context) -> int:
             raise ValueError(f"mutation {name!r} passed validation")
         else:
             require(expected in verdict, f"mutation {name!r} failed for another reason: {verdict}")
+    _check_declared_retained_summary(qi)
     return sum(1 for case in cases if case[1] is not None)
+
+
+def _check_declared_retained_summary(qi: QuantumInspireRuns) -> None:
+    """A declared job whose run is retained counts as retained in the account statement."""
+    ledger = qi.ledger
+    retained = next(iter(qi.records.values()))["submission"]["jobs"][0]["job"]
+    qi.ledger = {**copy.deepcopy(ledger), "schema": "qi-usage-v2", "unretained": [retained]}
+    try:
+        line = qi.account_line()
+    finally:
+        qi.ledger = ledger
+    require("declared unretained" not in line, f"a retained declared job enters the unretained summary: {line}")
 
 
 def main() -> int:
