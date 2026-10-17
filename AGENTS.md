@@ -23,6 +23,11 @@ the plotting-only `matplotlib==3.11.2`). A pull request merges when every
 shard is green and its review threads are resolved; a red main or nightly
 run is fixed in the next change. A new module, evidence
 replay or contract joins the gate list in ci/gates.json in the same change.
+The lint and type gates (core-000, core-001, core-002, core-039) cover
+gororoba_quantum/, scripts/, ci/ and kaggle_kernel/ whole, so a module there
+is linted and type-checked without a list edit; a checked file elsewhere in
+the tree, such as an evidence replay under results/ or docs/, is named in
+those gates' commands.
 
 
 Every CPU-bound loop over independent items (embedding scores in replica
