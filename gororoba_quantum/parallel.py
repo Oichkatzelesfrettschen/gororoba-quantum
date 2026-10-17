@@ -12,17 +12,28 @@ run returns exactly what the serial loop returns.
 
 GOROROBA_WORKERS caps the worker count; 1 runs serially in-process. The
 default is the CPU count available to this process.
+
+Each worker's BLAS and OpenMP libraries start with one thread: the pool is
+the parallelism. OpenBLAS and OpenMP read OPENBLAS_NUM_THREADS and
+OMP_NUM_THREADS when a worker imports them and otherwise start one thread
+per CPU in every worker, so N workers would run N times the CPUs' threads on
+matrices too small to repay BLAS threading (WORKER_BLAS_THREADS). A variable
+the caller already set keeps its value. The variables apply only while the
+pool spawns workers, which ProcessPoolExecutor does inside submit, so the
+calling process keeps its own settings.
 """
 
 from __future__ import annotations
 
+import argparse
 import atexit
+import contextlib
 import hashlib
 import math
 import multiprocessing
 import os
 import pickle
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Iterator, Sequence
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from typing import Any
@@ -36,6 +47,19 @@ MIN_PARALLEL_ITEMS = 64
 CHUNKS_PER_WORKER = 4
 # Callables each worker keeps deserialized; one pipeline stage reuses one.
 WORKER_CACHE_SIZE = 4
+# Thread-count variables of the BLAS builds numpy and scipy link (OpenBLAS,
+# MKL, BLIS, Accelerate) and of OpenMP, which Aer and OpenMP-threaded BLAS read.
+WORKER_THREAD_VARIABLES = (
+    "OPENBLAS_NUM_THREADS",
+    "OMP_NUM_THREADS",
+    "MKL_NUM_THREADS",
+    "BLIS_NUM_THREADS",
+    "VECLIB_MAXIMUM_THREADS",
+)
+# BLAS and OpenMP threads per worker: the pool supplies the parallelism, and
+# the matrices a worker handles are too small to repay BLAS threading. core-520
+# checks that every spawned worker reads this value.
+WORKER_BLAS_THREADS = 1
 
 _pool: ProcessPoolExecutor | None = None
 _pool_size = 0
@@ -150,6 +174,20 @@ def _cgroup_v1_quota(quota_file: Path, period_file: Path) -> float | None:
     return quota / period if quota > 0 and period > 0 else None
 
 
+@contextlib.contextmanager
+def _worker_environment() -> Iterator[None]:
+    """Set every unset thread-count variable for workers spawned inside the block, then restore the environment."""
+    value = str(WORKER_BLAS_THREADS)
+    added = [name for name in WORKER_THREAD_VARIABLES if name not in os.environ]
+    for name in added:
+        os.environ[name] = value
+    try:
+        yield
+    finally:
+        for name in added:
+            os.environ.pop(name, None)
+
+
 def _executor(count: int) -> ProcessPoolExecutor:
     global _pool, _pool_size
     if _pool is None or _pool_size != count:
@@ -191,6 +229,60 @@ def ordered_map(function: Callable[[Any], Any], items: Sequence[Any], min_items:
     key = hashlib.sha256(payload).hexdigest()
     size = -(-len(items) // (CHUNKS_PER_WORKER * count))
     chunks = [list(items[start : start + size]) for start in range(0, len(items), size)]
-    pool = _executor(count)
-    futures = [pool.submit(_run_chunk, key, payload, chunk) for chunk in chunks]
+    with _worker_environment():
+        pool = _executor(count)
+        futures = [pool.submit(_run_chunk, key, payload, chunk) for chunk in chunks]
     return [result for future in futures for result in future.result()]
+
+
+def _thread_settings(_item: int) -> dict[str, str | None]:
+    return {name: os.environ.get(name) for name in WORKER_THREAD_VARIABLES}
+
+
+def _square(item: int) -> int:
+    return item * item
+
+
+def self_test() -> str:
+    """Workers start one BLAS/OpenMP thread, a caller's setting wins, the parent is restored, order is kept."""
+    saved = {name: os.environ.pop(name, None) for name in (*WORKER_THREAD_VARIABLES, "GOROROBA_WORKERS")}
+    _shutdown()
+    try:
+        count = 2
+        os.environ["GOROROBA_WORKERS"] = str(count)
+        expected = str(WORKER_BLAS_THREADS)
+        os.environ["MKL_NUM_THREADS"] = "3"
+        seen = ordered_map(_thread_settings, list(range(4 * count)), min_items=1)
+        for settings in seen:
+            for name in WORKER_THREAD_VARIABLES:
+                want = "3" if name == "MKL_NUM_THREADS" else expected
+                if settings[name] != want:
+                    raise SystemExit(f"parallel: a worker read {name}={settings[name]!r}, expected {want!r}")
+        if {name: os.environ.get(name) for name in WORKER_THREAD_VARIABLES} != {
+            name: ("3" if name == "MKL_NUM_THREADS" else None) for name in WORKER_THREAD_VARIABLES
+        }:
+            raise SystemExit("parallel: the parent environment kept a worker thread setting")
+        items = list(range(257))
+        if ordered_map(_square, items, min_items=1) != [_square(item) for item in items]:
+            raise SystemExit("parallel: the pooled map differs from the serial loop")
+    finally:
+        _shutdown()
+        for name, value in saved.items():
+            if value is None:
+                os.environ.pop(name, None)
+            else:
+                os.environ[name] = value
+    return f"{count} workers read {expected} BLAS/OpenMP threads each; a caller's setting is kept; order preserved"
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--self-test", action="store_true")
+    if not parser.parse_args().self_test:
+        parser.error("--self-test is the only action")
+    print(f"parallel: {self_test()}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
