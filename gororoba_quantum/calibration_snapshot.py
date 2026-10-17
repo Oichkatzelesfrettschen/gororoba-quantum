@@ -19,6 +19,11 @@ module carries those inputs as JSON:
 - ``noise_simulator(snapshot, device)`` rebuilds the Target, applies the same
   two noise steps, and returns a density-matrix AerSimulator on CPU or GPU.
 
+The snapshot also records the backend_version its properties report and the
+processor_type of the backend configuration. ``backend_identity(snapshot)``
+returns the fields a snapshot holds, empty for a snapshot without them, so a
+record that names the snapshot carries them through.
+
 The file is public device calibration and carries no account or instance
 identifier. ``--check FILE`` rebuilds the Target from a retained file,
 requires it to reproduce every instruction entry and T1/T2, and runs a
@@ -31,6 +36,7 @@ import argparse
 import json
 import os
 import sys
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
@@ -86,8 +92,17 @@ def _entries(target: Any, name: str) -> list[dict[str, Any]]:
     return sorted(rows, key=lambda row: row["qargs"])
 
 
-def describe(name: str, target: Any, props: Any, readout_flips: Any) -> dict[str, Any]:
+IDENTITY_FIELDS = ("backend_version", "processor_type")
+
+
+def describe(
+    name: str, target: Any, props: Any, readout_flips: Any, processor_type: Mapping[str, Any] | None = None
+) -> dict[str, Any]:
     """The snapshot of one fetched backend; readout_flips is live_run.readout_flips.
+
+    backend_version comes from the properties, so a historical calibration
+    keeps the version reported with it; processor_type is the backend
+    configuration's (live_run.backend_identity).
 
     The Target and the properties must describe one calibration update, the
     condition live_run.take_snapshot enforces through
@@ -118,12 +133,33 @@ def describe(name: str, target: Any, props: Any, readout_flips: Any) -> dict[str
         "schema": SCHEMA,
         "backend": name,
         "calibration": props.last_update_date.isoformat(),
+        "backend_version": str(props.backend_version),
+        "processor_type": dict(processor_type) if processor_type is not None else None,
         "num_qubits": target.num_qubits,
         "dt": target.dt,
         "qubits": qubits,
         "instructions": {op: _entries(target, op) for op in (*GATES, *NON_GATES)},
         "omitted_operations": sorted(set(target.operation_names) - set(GATES) - set(NON_GATES) - {"delay"}),
     }
+
+
+def backend_identity(snapshot: Mapping[str, Any]) -> dict[str, Any]:
+    """The backend_version and processor_type a snapshot holds; a snapshot without them yields an empty dictionary."""
+    return {key: snapshot[key] for key in IDENTITY_FIELDS if key in snapshot}
+
+
+def check_identity(snapshot: Mapping[str, Any]) -> None:
+    """A present backend_version is a nonempty string and a present processor_type a string dictionary."""
+    version = snapshot.get("backend_version")
+    if "backend_version" in snapshot and not (isinstance(version, str) and version):
+        raise ValueError(f"snapshot backend_version {version!r} is not a nonempty string")
+    processor = snapshot.get("processor_type")
+    if processor is not None and not (
+        isinstance(processor, dict)
+        and {"family", "revision"} <= set(processor)
+        and all(isinstance(value, str) for value in processor.values())
+    ):
+        raise ValueError(f"snapshot processor_type {processor!r} lacks a string family and revision")
 
 
 def build_target(snapshot: dict[str, Any]) -> Target:
@@ -155,7 +191,11 @@ def build_target(snapshot: dict[str, Any]) -> Target:
 
 
 def round_trip(snapshot: dict[str, Any]) -> None:
-    """The rebuilt Target reproduces every instruction entry and every T1 and T2 of the snapshot."""
+    """The rebuilt Target reproduces every instruction entry and every T1 and T2 of the snapshot.
+
+    A present backend_version or processor_type also passes check_identity.
+    """
+    check_identity(snapshot)
     target = build_target(snapshot)
     for op in (*GATES, *NON_GATES):
         if _entries(target, op) != snapshot["instructions"].get(op, []):
@@ -200,7 +240,11 @@ BATCHED_SHOTS_MAX_QUBITS = 16
 
 
 def noise_simulator(
-    snapshot: dict[str, Any], device: str = "CPU", method: str = "density_matrix", batched_shots: bool = False
+    snapshot: dict[str, Any],
+    device: str = "CPU",
+    method: str = "density_matrix",
+    batched_shots: bool = False,
+    custatevec: bool = False,
 ) -> AerSimulator:
     """AerSimulator with live_run.noise_simulator's noise, rebuilt from the snapshot.
 
@@ -211,11 +255,20 @@ def noise_simulator(
     states which sampler produced its counts. qiskit-aer-gpu-cu11 0.17.2
     aborts a batched run of a circuit with control flow (its if_else lowers
     to jump), so only static circuits batch (results/kaggle aer-gpu-probe).
+    custatevec sets Aer's cuStateVec_enable on a GPU statevector run, which
+    routes gate application and sampling through libcustatevec; an Aer built
+    or wheeled without cuQuantum raises at run time. Aer 0.17.2 reports
+    cuStateVec_enable False on a run that also sets batched_shots_gpu, so
+    custatevec with batched_shots raises instead of falling back unseen.
     """
+    if custatevec and batched_shots:
+        raise ValueError("custatevec and batched_shots are exclusive Aer GPU options")
     view, noise = noise_model(snapshot)
     options: dict[str, Any] = {}
     if device == "GPU" and batched_shots:
         options = {"batched_shots_gpu": True, "batched_shots_gpu_max_qubits": BATCHED_SHOTS_MAX_QUBITS}
+    if device == "GPU" and custatevec:
+        options = {"cuStateVec_enable": True}
     return AerSimulator.from_backend(view, noise_model=noise, method=method, device=device, **options)
 
 
@@ -265,7 +318,8 @@ def export(name: str, out: Path) -> None:
     backend.refresh()
     props = backend.properties()
     target = backend.target
-    snapshot = describe(name, target, props, live_run.readout_flips)
+    processor_type = live_run.backend_identity(backend)["processor_type"]
+    snapshot = describe(name, target, props, live_run.readout_flips, processor_type)
     snapshot = json.loads(json.dumps(snapshot))
     omitted = tuple(snapshot["omitted_operations"])
     live_all = channel_table(live_run._noise_model(name, live_run.TargetView(name, target), target, props))
@@ -277,6 +331,7 @@ def export(name: str, out: Path) -> None:
     differing = sorted((live.keys() ^ rebuilt.keys()) | {key for key in shared if not live[key] == rebuilt[key]})
     if differing:
         raise SystemExit(f"rebuilt noise differs from live_run's on {len(differing)} channels, first {differing[:3]}")
+    check_identity(snapshot)
     out.write_text(json.dumps(snapshot, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     print(
         f"wrote {out}: calibration {snapshot['calibration']}, {len(live)} channels equal to live_run's, "

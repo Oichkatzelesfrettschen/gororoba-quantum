@@ -63,7 +63,7 @@ need review before a new acquisition.
 ### Open and proposed claims
 
 [RESEARCH_STATE.md](state/RESEARCH_STATE.md) records every registered claim
-(63 established, 26 exploratory, 3 open, 8 proposed, 2 superseded, 11 withdrawn) and every executed acquisition. Open and
+(63 established, 28 exploratory, 4 open, 9 proposed, 2 superseded, 11 withdrawn) and every executed acquisition. Open and
 proposed work, in dependency order:
 
 - **cd-moving-pair-walsh-proof** (open, mathematical theorem). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32. Depends on cd-associator-census.
@@ -76,6 +76,8 @@ proposed work, in dependency order:
 - **proposed-echo-matched-dilation** (proposed, proposed experiment). Compare U Z U^dagger Z U against U U^dagger U at equal non-virtual gates and duration, with a per-edge CZ-phase reference whose X-quadrature arms calibrate its visibility and common phase, and an incoherent control on the same compile, to measure the error the dark probe carries and bound its conditional-phase share under the uniform-phase model. Depends on echo-pair-coherent-sign, singular-sector-split.
 - **proposed-scaffold-ab** (proposed, proposed experiment). Run the walk template bound to readout0 and readout1 beside measure-only and X-then-measure circuits on one tile under one calibration, isolating the scaffold's loss. Depends on hw-walk-scaffold-floor.
 - **proposed-census-frequency** (proposed, proposed experiment). Read a per-triple associator witness on the 3360 sedenion triples with i and j nonzero and unequal: P(c = 1) = (1 - V+)/2 + f (V+ + V-)/2 gives their dark fraction f = 1848/3360, where pooled bright (omega = +1) and dark (omega = -1) references fix V+ and V-; the other 736 triples are bright exactly, so the census is f x 3360/4096 = 231/512, a test of how faithfully hardware carries the sign function. Depends on cd-associator-census.
+- **a5-nonzero-divisor-two-dimension-gap** (open, mathematical theorem). At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24. Depends on a5-rank-locus-local-dimension, nullity-twelve-cone.
+- **proposed-tuna17-q0-q6-double-x-discriminator** (proposed, proposed experiment). P1 after X X with no wait, beside a readout-0 and readout-1 pair in one Tuna-17 batch, separates an under-rotated X from |1> misassignment on Q0 and Q6: under-rotation by the angle their zero-wait P(1|1) implies predicts 0.98 and 0.52, misassignment 0.038 and 0.013. Ramsey inverted with the matched calibration cannot separate them when X and X90 share the under-rotation, because the raw quadratures then take the readout-scale form sin^2(beta) (1 + cos phi) / 2; a fault confined to native X keeps the X90 Ramsey at the earlier scale, which Q6's raw quadrature mean (0.064 against a floor of 0.148) excludes and Q0's (0.287 against 0.175) does not. Depends on qi-tuna17-q0-q6-loss-not-readout-relaxation.
 - **qi-tuna17-effective-idle-zz-map** (proposed, proposed experiment). A proposed confirmatory cross-check of the retained exploratory coupler map uses a gate-level conditional-Ramsey case covering all 24 edges of the retained Tuna-17 coupling graph in eight induced matchings, with both probe directions, static neighbor states 0 and 1, X/Y quadratures, six identical physical delay values including zero, and full four-state joint readout calibration. The 384 Ramsey and 32 calibration circuits form 139 batches at 8192 shots each (3407872 job shots), with no CZ gates. A source-bound analyzer reconstructs omega_A, omega_B and J, checks signal quality and reciprocal-J agreement, and uses Holm correction over 24 edge tests. A separately budgeted compact QX preflight contains the same 416 circuits and 139 batches on 2 to 8 qubits at 1024 shots each (425984 emulator job shots), with fixed ideal-output criteria. Neither case has been submitted. Under the current 120-second hardware pause policy, the series requires at least 16560 seconds of interbatch pauses. It is retained as a complete offline design reference and needs a revised delay/calibration acquisition plan before submission. Depends on qi-tuna17-zero-divisor-common-response, hw-idle-detuning-scale, qi-tuna17-coupler-zz-map.
 <!-- research-state:end -->
 
@@ -227,8 +229,12 @@ The mathematical chain has the following acceptance gates.
    `collect.json`: `retain_measured_correction`. The reviewed acquisition in
    PR #53 satisfies the results-availability milestone. New proof work still
    requires its own compiler/kernel receipts. The latest C881 closure now has
-   fresh Rocq 9.2/OCaml 5.5.0 receipts; the other retained proof bundles still
-   record their own Rocq 9.1.1 toolchain and require separate refreshes.
+   fresh Rocq 9.2/OCaml 5.5.0 receipts. The retained folding, terminal and
+   Stiefel bundles also record their renewed Rocq 9.2 identities; historical
+   9.1.1 receipts retain their original scope. Current external builds use
+   Rocq 9.3.0/OCaml 5.5.1. The
+   [current observable delta](evidence/formal_certificates/CURRENT_RECONCILIATION.md)
+   records the new concentration and signed-coherence contracts.
    Preserve full average/detail coordinates or all XOR sectors when information
    matters; average-only multiplication fails. The
    [complex skew certificate](notes/complex_skew_rank_geometry.md) supplies

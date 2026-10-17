@@ -27,7 +27,9 @@ the only path from the repository to Kaggle:
   base with REMOTE's main plus the bundled files changed since then with their modes and
   deletions; it requires git write-tree to equal HEAD's tree, installs CI's
   Python and pins (ci/install_pins.sh), and runs ci/run_gates.py on that
-  shard. Shard runs live under the ignored
+  shard. Its submission.json records the CPU Aer device every shard runs
+  under and the identity of every calibration snapshot the overlay carries.
+  Shard runs live under the ignored
   .kaggle-shards/ and are iteration records, never evidence;
   ``shards-report RUN_DIR...`` prints each collected shard's summary and
   failures.
@@ -44,8 +46,10 @@ network access and checks its bundle digests, metadata and generated code.
 and statevector GHZ circuits the GPU runs.
 
 Each run directory, results/kaggle/<UTC stamp>-<slug>/, holds submission.json
-(entry, arguments, git commit, bundle file digests, pins, machine shape) and
-the generated kernel. A Kaggle output is a numerical simulation: it enters
+(entry, arguments, git commit, bundle file digests, pins, machine shape, the
+Aer device the entry sees, and the backend, calibration, backend version and
+processor type of every bundled calibration snapshot) and the generated
+kernel. A Kaggle output is a numerical simulation: it enters
 docs/state/research_state.json only through a CPU replay gate on a reduced
 case. Credentials stay in the Kaggle CLI's own store (``kaggle auth login``).
 """
@@ -71,7 +75,20 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results/kaggle"
 MODULE_DIRS = ("gororoba_quantum", "scripts")
-KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer-gpu-cu11==0.17.2", "qiskit-ibm-runtime==0.50.0")
+# The cu11 wheel's controller_wrappers links libcustatevec.so.1 and
+# libcutensornet.so.2 through an RPATH into site-packages/cuquantum/lib, which
+# its Requires-Dist cuquantum-cu11 (>=23.3.0,<24.11.0) installs; 24.8.0 is the
+# newest release in that range and brings custatevec-cu11 1.6.0.post1 and
+# cutensornet-cu11 2.5.0, whose cutensor-cu11>=2.0.1,<3 resolves to 2.2.0.
+# Pinning both holds every library Aer's cuStateVec_enable path loads at one
+# version.
+KERNEL_PINS = (
+    "qiskit==2.5.2",
+    "qiskit-aer-gpu-cu11==0.17.2",
+    "cuquantum-cu11==24.8.0",
+    "cutensor-cu11==2.2.0",
+    "qiskit-ibm-runtime==0.50.0",
+)
 # A CPU or TPU host has no NVIDIA GPU, and the cu11 wheel ships cp313 only,
 # so those kernels take the CPU build of the same Aer release.
 CPU_KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer==0.17.2", "qiskit-ibm-runtime==0.50.0")
@@ -143,6 +160,8 @@ REMOTE_REFS = "refs/kaggle-shards/remote"
 # kernel, and the shellcheck the shellcheck gates call when the image lacks one.
 CI_PYTHON = "3.14.7"
 UV_PIN = "uv==0.13.0"
+# calibration_snapshot.SCHEMA without its version suffix, so every snapshot schema version is recognized.
+CALIBRATION_SCHEMA_PREFIX = "gororoba-calibration-snapshot-"
 SHELLCHECK_PIN = "shellcheck-py==0.10.0.1"
 SLOT_POLL_SECONDS = 90
 # What ci/install_pins.sh reads; --ci-env bundles them with the entry.
@@ -301,6 +320,32 @@ def kernel_docs() -> list[Path]:
     ]
 
 
+def calibration_identity(content: bytes) -> dict[str, Any] | None:
+    """Backend identity of one calibration snapshot's bytes (calibration_snapshot.describe), or None for other files.
+
+    backend_version and processor_type appear when the snapshot holds them, and
+    every identity names the backend and calibration.
+    """
+    try:
+        data = json.loads(content)
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return None
+    if not (isinstance(data, dict) and str(data.get("schema", "")).startswith(CALIBRATION_SCHEMA_PREFIX)):
+        return None
+    fields = ("backend", "calibration", "backend_version", "processor_type")
+    return {key: data[key] for key in fields if key in data}
+
+
+def bundled_calibrations(bundled: dict[str, bytes]) -> dict[str, dict[str, Any]]:
+    """calibration_identity of every bundled JSON file that is a calibration snapshot, by bundle path."""
+    identities: dict[str, dict[str, Any]] = {}
+    for rel, content in sorted(bundled.items()):
+        identity = calibration_identity(content) if rel.endswith(".json") else None
+        if identity is not None:
+            identities[rel] = identity
+    return identities
+
+
 def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str, revision: str) -> dict[str, Any]:
     """Write run_dir/kernel (run.py and kernel-metadata.json) and run_dir/submission.json."""
     smoke = args.entry is None
@@ -335,11 +380,13 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         revision += "-dirty"
     buffer = io.BytesIO()
     digests: dict[str, str] = {}
+    contents: dict[str, bytes] = {}
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as bundle:
         for path in sorted(set(files)):
             rel = path.relative_to(ROOT).as_posix()
             data = path.read_bytes()
             digests[rel] = sha256(data)
+            contents[rel] = data
             bundle.writestr(rel, data)
         device = "CPU" if args.machine == "cpu" or args.machine.startswith("Tpu") else "GPU"
         datasets = [dataset_record(slug) for slug in getattr(args, "dataset", [])]
@@ -401,6 +448,9 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "pins": list(kernel_pins(args.machine)),
         "pin_groups": {group: list(PIN_GROUPS[group]) for group in getattr(args, "with_groups", [])},
         "ci_env": ci_env,
+        # kernel_main.entry_aer_device: CI's CPU under --ci-env, else the machine's device.
+        "aer_device": "CPU" if ci_env else device,
+        "calibration_snapshots": bundled_calibrations(contents),
         "bundle": digests,
         "datasets": {d["ref"]: d["archive_sha256"] for d in datasets},
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
@@ -552,15 +602,75 @@ def self_test(args: argparse.Namespace) -> int:
         require(job["mode"] == "shards" and job["shard"] == 2 and job["count"] == 6, f"shard job {job}")
         require(job["modes"] == {} and job["deleted"] == [], "HEAD against itself carries an overlay")
         require(shard["tree"] == job["tree"] and job["python"] == CI_PYTHON, "shard job lacks the tree or CI's Python")
+        require(
+            shard["aer_device"] == "CPU" and shard["calibration_snapshots"] == {},
+            f"shard without an overlay records Aer device {shard['aer_device']} and {shard['calibration_snapshots']}",
+        )
         py_compile.compile(str(Path(scratch) / "shard/kernel/run.py"), doraise=True)
+        _shard_identity_self_test(Path(scratch), head.stdout.strip(), data)
     _overlay_self_test()
     _push_guard_self_test()
     print(
-        f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private CPU, GPU and TPU kernels, "
-        "a shard kernel bound to HEAD's tree, an overlay that rebuilds a directory-to-file change, run.py compiles, "
+        f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private CPU, GPU and TPU kernels "
+        "with their Aer device and bundled calibration identity, "
+        "a shard kernel bound to HEAD's tree with CI's CPU Aer and its overlaid calibration identity, "
+        "an overlay that rebuilds a directory-to-file change, run.py compiles, "
         "an accelerator push or shard run refused while an older version runs"
     )
     return 0
+
+
+def _shard_identity_self_test(scratch: Path, head: str, data: str) -> None:
+    """A shard whose base lacks a calibration snapshot overlays it and records its identity and CI's CPU Aer device.
+
+    The base is HEAD's tree without the snapshot, written through a scratch
+    index, so the check needs no commit beyond HEAD and runs in a depth-1
+    checkout. calibration_identity is also checked on a snapshot carrying
+    backend_version and processor_type, and on bytes that are no snapshot.
+    """
+    import os
+
+    sys.path.insert(0, str(ROOT / "kaggle_kernel"))
+    import kernel_main
+
+    env = dict(os.environ, GIT_INDEX_FILE=str(scratch / "identity-index"))
+
+    def indexed(*args: str) -> str:
+        return subprocess.run(["git", *args], cwd=ROOT, env=env, capture_output=True, text=True, check=True).stdout
+
+    indexed("read-tree", head)
+    indexed("update-index", "--force-remove", "--", data)
+    base = indexed("write-tree").strip()
+    shard = build_shard_kernel(scratch / "identity-shard", "owner", "2000-01-01T000000Z", base, head, "pr", 0, 6)
+    job = bundled_job(scratch / "identity-shard/kernel/run.py")
+    require(set(job["modes"]) == {data} and job["deleted"] == [], f"identity shard overlay {job['modes']}")
+    blob = subprocess.run(["git", "cat-file", "blob", f"{head}:{data}"], cwd=ROOT, capture_output=True, check=True)
+    snapshot = json.loads(blob.stdout)
+    require(
+        shard["aer_device"] == kernel_main.entry_aer_device(job) == "CPU",
+        f"shard Aer device {shard['aer_device']}, kernel {kernel_main.entry_aer_device(job)}",
+    )
+    overlaid = {
+        key: snapshot[key] for key in ("backend", "calibration", "backend_version", "processor_type") if key in snapshot
+    }
+    require(
+        shard["calibration_snapshots"] == {f"overlay/{data}": overlaid} and set(overlaid) >= {"backend", "calibration"},
+        f"overlaid calibration identity {shard['calibration_snapshots']}",
+    )
+    synthetic = {
+        "schema": f"{CALIBRATION_SCHEMA_PREFIX}v2",
+        "backend": "ibm_fixture",
+        "calibration": "2000-01-01T00:00:00+00:00",
+        "backend_version": "1.2.3",
+        "processor_type": {"family": "Heron", "revision": "2"},
+        "instructions": {},
+    }
+    expected = {key: synthetic[key] for key in ("backend", "calibration", "backend_version", "processor_type")}
+    require(calibration_identity(json.dumps(synthetic).encode()) == expected, "snapshot identity fields")
+    require(
+        calibration_identity(b'{"schema": "kaggle-ci-shard-v1"}') is None and calibration_identity(b"\xff") is None,
+        "a file that is no calibration snapshot yields an identity",
+    )
 
 
 def _push_guard_self_test() -> None:
@@ -735,6 +845,19 @@ def _self_test_kernel(entry: str, data: str, machine: str) -> dict[str, Any]:
                 f"TPU kernel pins an image: {metadata} {notebook['metadata']}",
             )
         require(submission["untracked_inputs"] == [], f"untracked bundled inputs {submission['untracked_inputs']}")
+        device = bundled_job(run_dir / "kernel/run.py")["device"]
+        require(submission["aer_device"] == device == ("GPU" if gpu else "CPU"), f"{machine}: Aer device {device}")
+        snapshot = json.loads((ROOT / data).read_text(encoding="utf-8"))
+        identity = submission["calibration_snapshots"].get(data, {})
+        require(
+            set(submission["calibration_snapshots"]) == {data}
+            and identity.get("backend") == snapshot["backend"]
+            and identity.get("calibration") == snapshot["calibration"]
+            and all(
+                identity.get(key) == snapshot[key] for key in ("backend_version", "processor_type") if key in snapshot
+            ),
+            f"{machine}: bundled calibration identity {submission['calibration_snapshots']}",
+        )
     return submission
 
 
@@ -841,12 +964,14 @@ def build_shard_kernel(
     deleted: list[str] = []
     buffer = io.BytesIO()
     digests: dict[str, str] = {}
+    contents: dict[str, bytes] = {}
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as bundle:
         for always in KERNEL_FILES:
             for path in import_closure(ROOT / always) if always.endswith(".py") else [ROOT / always]:
                 rel = path.relative_to(ROOT).as_posix()
                 data = path.read_bytes()
                 digests[rel] = sha256(data)
+                contents[rel] = data
                 bundle.writestr(rel, data)
         for status_code, rel in zip(changes[0:-1:2], changes[1::2], strict=True):
             if status_code == "D":
@@ -856,6 +981,7 @@ def build_shard_kernel(
             data = subprocess.run(["git", "cat-file", "blob", blob], cwd=ROOT, capture_output=True, check=True).stdout
             modes[rel] = mode
             digests[f"overlay/{rel}"] = sha256(data)
+            contents[f"overlay/{rel}"] = data
             bundle.writestr(f"kaggle_kernel/overlay/{rel}", data)
         job = {
             "mode": "shards",
@@ -911,6 +1037,9 @@ def build_shard_kernel(
         "overlay_files": len(modes),
         "deleted_files": len(deleted),
         "pins": list(pins),
+        # kernel_main.entry_aer_device runs every shard under CI's CPU Aer.
+        "aer_device": "CPU",
+        "calibration_snapshots": bundled_calibrations(contents),
         "bundle": digests,
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
         "pushed_utc": stamp,

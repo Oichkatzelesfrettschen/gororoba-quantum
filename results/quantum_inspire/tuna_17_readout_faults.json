@@ -1,0 +1,1173 @@
+{
+ "schema": "qi-tuna17-readout-faults-v1",
+ "profile": "tuna_17",
+ "q9_assignment": {
+  "assumptions": "p <= 1/2, X inverts at most fully, s > 0, idle and X readouts from one batch",
+  "limit_sigma": 3.0,
+  "pre_change": [
+   {
+    "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+    "shots": 16384,
+    "p1_given_0": 0.0183716,
+    "p1_given_1": 0.921021,
+    "e0_upper": 0.021519
+   },
+   {
+    "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+    "shots": 16384,
+    "p1_given_0": 0.0264893,
+    "p1_given_1": 0.923279,
+    "e0_upper": 0.030253
+   }
+  ],
+  "post_change": [
+   {
+    "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+    "shots": 8192,
+    "p1_given_0": 0.279297,
+    "p1_given_1": 0.891113,
+    "e0_lower": 0.145214,
+    "scale_lower": 0.586621,
+    "population_upper": 0.203217
+   },
+   {
+    "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+    "shots": 16384,
+    "p1_given_0": 0.287964,
+    "p1_given_1": 0.934021,
+    "e0_lower": 0.205554,
+    "scale_lower": 0.629626,
+    "population_upper": 0.114032
+   },
+   {
+    "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+    "shots": 16384,
+    "p1_given_0": 0.275818,
+    "p1_given_1": 0.932739,
+    "e0_lower": 0.192212,
+    "scale_lower": 0.640576,
+    "population_upper": 0.114165
+   },
+   {
+    "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+    "shots": 16384,
+    "p1_given_0": 0.280396,
+    "p1_given_1": 0.932983,
+    "e0_lower": 0.19699,
+    "scale_lower": 0.636199,
+    "population_upper": 0.114551
+   }
+  ],
+  "e0_lower_min": 0.145214,
+  "e0_upper_pre_max": 0.030253,
+  "population_upper_max": 0.203217
+ },
+ "q9_herald": {
+  "floor_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+  "falsifier": "w >= 0.5 at zero delay for Q9 would put at least half of its opening-1 shots in |1>; w near 0 is misassignment",
+  "targets": [
+   {
+    "qubit": 1,
+    "idle_floor": 0.0257568,
+    "arms": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau000-x-d002.cq",
+      "opening_1_fraction": 0.0267334,
+      "p_final_1_given_opening_0": 0.901166,
+      "p_final_1_given_opening_1": 0.726027,
+      "excited_fraction_w": 0.200065
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau005-x-d002.cq",
+      "opening_1_fraction": 0.0267334,
+      "p_final_1_given_opening_0": 0.897278,
+      "p_final_1_given_opening_1": 0.771689,
+      "excited_fraction_w": 0.144103
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau015-x-d002.cq",
+      "opening_1_fraction": 0.0239258,
+      "p_final_1_given_opening_0": 0.898574,
+      "p_final_1_given_opening_1": 0.790816,
+      "excited_fraction_w": 0.12346
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau040-x-d002.cq",
+      "opening_1_fraction": 0.0234375,
+      "p_final_1_given_opening_0": 0.88925,
+      "p_final_1_given_opening_1": 0.807292,
+      "excited_fraction_w": 0.0949149
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau100-x-d002.cq",
+      "opening_1_fraction": 0.0273438,
+      "p_final_1_given_opening_0": 0.898092,
+      "p_final_1_given_opening_1": 0.816964,
+      "excited_fraction_w": 0.093001
+     }
+    ],
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 7973,
+     "opening_1_shots": 219,
+     "w": 0.200065,
+     "w_se": 0.0345643
+    }
+   },
+   {
+    "qubit": 2,
+    "idle_floor": 0.0246582,
+    "arms": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau000-x-d002.cq",
+      "opening_1_fraction": 0.0251465,
+      "p_final_1_given_opening_0": 0.87716,
+      "p_final_1_given_opening_1": 0.781553,
+      "excited_fraction_w": 0.112148
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau005-x-d002.cq",
+      "opening_1_fraction": 0.0269775,
+      "p_final_1_given_opening_0": 0.882574,
+      "p_final_1_given_opening_1": 0.764706,
+      "excited_fraction_w": 0.137389
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau015-x-d002.cq",
+      "opening_1_fraction": 0.0234375,
+      "p_final_1_given_opening_0": 0.894125,
+      "p_final_1_given_opening_1": 0.822917,
+      "excited_fraction_w": 0.0818989
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau040-x-d002.cq",
+      "opening_1_fraction": 0.02771,
+      "p_final_1_given_opening_0": 0.878092,
+      "p_final_1_given_opening_1": 0.823789,
+      "excited_fraction_w": 0.063629
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau100-x-d002.cq",
+      "opening_1_fraction": 0.0274658,
+      "p_final_1_given_opening_0": 0.886406,
+      "p_final_1_given_opening_1": 0.791111,
+      "excited_fraction_w": 0.110584
+     }
+    ],
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 7986,
+     "opening_1_shots": 206,
+     "w": 0.112148,
+     "w_se": 0.0339861
+    }
+   },
+   {
+    "qubit": 3,
+    "idle_floor": 0.0454102,
+    "arms": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau000-x-d002.cq",
+      "opening_1_fraction": 0.0456543,
+      "p_final_1_given_opening_0": 0.783065,
+      "p_final_1_given_opening_1": 0.748663,
+      "excited_fraction_w": 0.0466365
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau005-x-d002.cq",
+      "opening_1_fraction": 0.0423584,
+      "p_final_1_given_opening_0": 0.81211,
+      "p_final_1_given_opening_1": 0.801153,
+      "excited_fraction_w": 0.014291
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau015-x-d002.cq",
+      "opening_1_fraction": 0.0474854,
+      "p_final_1_given_opening_0": 0.807638,
+      "p_final_1_given_opening_1": 0.786632,
+      "excited_fraction_w": 0.0275583
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau040-x-d002.cq",
+      "opening_1_fraction": 0.0447998,
+      "p_final_1_given_opening_0": 0.777764,
+      "p_final_1_given_opening_1": 0.730245,
+      "excited_fraction_w": 0.0648844
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau100-x-d002.cq",
+      "opening_1_fraction": 0.0422363,
+      "p_final_1_given_opening_0": 0.751848,
+      "p_final_1_given_opening_1": 0.760116,
+      "excited_fraction_w": -0.0117031
+     }
+    ],
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 7818,
+     "opening_1_shots": 374,
+     "w": 0.0466365,
+     "w_se": 0.030999
+    }
+   },
+   {
+    "qubit": 7,
+    "idle_floor": 0.0610352,
+    "arms": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau000-x-d002.cq",
+      "opening_1_fraction": 0.0313721,
+      "p_final_1_given_opening_0": 0.736988,
+      "p_final_1_given_opening_1": 0.696498,
+      "excited_fraction_w": 0.0599006
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau005-x-d002.cq",
+      "opening_1_fraction": 0.0313721,
+      "p_final_1_given_opening_0": 0.682672,
+      "p_final_1_given_opening_1": 0.653696,
+      "excited_fraction_w": 0.0466112
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau015-x-d002.cq",
+      "opening_1_fraction": 0.0340576,
+      "p_final_1_given_opening_0": 0.798433,
+      "p_final_1_given_opening_1": 0.72043,
+      "excited_fraction_w": 0.105781
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau040-x-d002.cq",
+      "opening_1_fraction": 0.0292969,
+      "p_final_1_given_opening_0": 0.784205,
+      "p_final_1_given_opening_1": 0.7125,
+      "excited_fraction_w": 0.099154
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau100-x-d002.cq",
+      "opening_1_fraction": 0.0349121,
+      "p_final_1_given_opening_0": 0.78725,
+      "p_final_1_given_opening_1": 0.727273,
+      "excited_fraction_w": 0.0825891
+     }
+    ],
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 7935,
+     "opening_1_shots": 257,
+     "w": 0.0599006,
+     "w_se": 0.0429824
+    }
+   },
+   {
+    "qubit": 8,
+    "idle_floor": 0.036377,
+    "arms": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau000-x-d002.cq",
+      "opening_1_fraction": 0.0328369,
+      "p_final_1_given_opening_0": 0.806386,
+      "p_final_1_given_opening_1": 0.732342,
+      "excited_fraction_w": 0.0961605
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau005-x-d002.cq",
+      "opening_1_fraction": 0.0310059,
+      "p_final_1_given_opening_0": 0.83812,
+      "p_final_1_given_opening_1": 0.755906,
+      "excited_fraction_w": 0.102545
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau015-x-d002.cq",
+      "opening_1_fraction": 0.0341797,
+      "p_final_1_given_opening_0": 0.616658,
+      "p_final_1_given_opening_1": 0.575,
+      "excited_fraction_w": 0.0717897
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau040-x-d002.cq",
+      "opening_1_fraction": 0.0300293,
+      "p_final_1_given_opening_0": 0.53486,
+      "p_final_1_given_opening_1": 0.5,
+      "excited_fraction_w": 0.0699327
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau100-x-d002.cq",
+      "opening_1_fraction": 0.0333252,
+      "p_final_1_given_opening_0": 0.718904,
+      "p_final_1_given_opening_1": 0.699634,
+      "excited_fraction_w": 0.0282336
+     }
+    ],
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 7923,
+     "opening_1_shots": 269,
+     "w": 0.0961605,
+     "w_se": 0.0354431
+    }
+   },
+   {
+    "qubit": 9,
+    "idle_floor": 0.279297,
+    "arms": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau000-x-d002.cq",
+      "opening_1_fraction": 0.259033,
+      "p_final_1_given_opening_0": 0.893081,
+      "p_final_1_given_opening_1": 0.880302,
+      "excited_fraction_w": 0.0208202
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau005-x-d002.cq",
+      "opening_1_fraction": 0.250122,
+      "p_final_1_given_opening_0": 0.86684,
+      "p_final_1_given_opening_1": 0.863348,
+      "excited_fraction_w": 0.00594395
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau015-x-d002.cq",
+      "opening_1_fraction": 0.249634,
+      "p_final_1_given_opening_0": 0.875224,
+      "p_final_1_given_opening_1": 0.870905,
+      "excited_fraction_w": 0.0072476
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau040-x-d002.cq",
+      "opening_1_fraction": 0.245483,
+      "p_final_1_given_opening_0": 0.863614,
+      "p_final_1_given_opening_1": 0.840378,
+      "excited_fraction_w": 0.0397667
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau100-x-d002.cq",
+      "opening_1_fraction": 0.246826,
+      "p_final_1_given_opening_0": 0.88363,
+      "p_final_1_given_opening_1": 0.864491,
+      "excited_fraction_w": 0.031671
+     }
+    ],
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 6070,
+     "opening_1_shots": 2122,
+     "w": 0.0208202,
+     "w_se": 0.01311
+    }
+   },
+   {
+    "qubit": 13,
+    "idle_floor": 0.0216064,
+    "arms": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau000-x-d002.cq",
+      "opening_1_fraction": 0.0195312,
+      "p_final_1_given_opening_0": 0.859935,
+      "p_final_1_given_opening_1": 0.725,
+      "excited_fraction_w": 0.160957
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau005-x-d002.cq",
+      "opening_1_fraction": 0.0228271,
+      "p_final_1_given_opening_0": 0.870456,
+      "p_final_1_given_opening_1": 0.759358,
+      "excited_fraction_w": 0.13088
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau015-x-d002.cq",
+      "opening_1_fraction": 0.0206299,
+      "p_final_1_given_opening_0": 0.837592,
+      "p_final_1_given_opening_1": 0.721893,
+      "excited_fraction_w": 0.14179
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau040-x-d002.cq",
+      "opening_1_fraction": 0.0205078,
+      "p_final_1_given_opening_0": 0.878739,
+      "p_final_1_given_opening_1": 0.755952,
+      "excited_fraction_w": 0.143253
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau100-x-d002.cq",
+      "opening_1_fraction": 0.0179443,
+      "p_final_1_given_opening_0": 0.878558,
+      "p_final_1_given_opening_1": 0.782313,
+      "excited_fraction_w": 0.112311
+     }
+    ],
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 8032,
+     "opening_1_shots": 160,
+     "w": 0.160957,
+     "w_se": 0.0422868
+    }
+   },
+   {
+    "qubit": 14,
+    "idle_floor": 0.0374756,
+    "arms": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau000-x-d002.cq",
+      "opening_1_fraction": 0.0288086,
+      "p_final_1_given_opening_0": 0.652212,
+      "p_final_1_given_opening_1": 0.716102,
+      "excited_fraction_w": -0.10393
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau005-x-d002.cq",
+      "opening_1_fraction": 0.0292969,
+      "p_final_1_given_opening_0": 0.649396,
+      "p_final_1_given_opening_1": 0.654167,
+      "excited_fraction_w": -0.0077956
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau015-x-d002.cq",
+      "opening_1_fraction": 0.034668,
+      "p_final_1_given_opening_0": 0.677036,
+      "p_final_1_given_opening_1": 0.644366,
+      "excited_fraction_w": 0.0510815
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau040-x-d002.cq",
+      "opening_1_fraction": 0.0349121,
+      "p_final_1_given_opening_0": 0.857829,
+      "p_final_1_given_opening_1": 0.783217,
+      "excited_fraction_w": 0.0909519
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau100-x-d002.cq",
+      "opening_1_fraction": 0.0307617,
+      "p_final_1_given_opening_0": 0.76738,
+      "p_final_1_given_opening_1": 0.734127,
+      "excited_fraction_w": 0.0455585
+     }
+    ],
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 7956,
+     "opening_1_shots": 236,
+     "w": -0.10393,
+     "w_se": 0.0486992
+    }
+   },
+   {
+    "qubit": 15,
+    "idle_floor": 0.052124,
+    "arms": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau000-x-d002.cq",
+      "opening_1_fraction": 0.0438232,
+      "p_final_1_given_opening_0": 0.852675,
+      "p_final_1_given_opening_1": 0.799443,
+      "excited_fraction_w": 0.0664938
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+      "circuit": "tau005-x-d002.cq",
+      "opening_1_fraction": 0.0457764,
+      "p_final_1_given_opening_0": 0.904055,
+      "p_final_1_given_opening_1": 0.829333,
+      "excited_fraction_w": 0.0877089
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau015-x-d002.cq",
+      "opening_1_fraction": 0.0423584,
+      "p_final_1_given_opening_0": 0.889994,
+      "p_final_1_given_opening_1": 0.835735,
+      "excited_fraction_w": 0.064758
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau040-x-d002.cq",
+      "opening_1_fraction": 0.043457,
+      "p_final_1_given_opening_0": 0.898545,
+      "p_final_1_given_opening_1": 0.823034,
+      "excited_fraction_w": 0.0892126
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+      "circuit": "tau100-x-d002.cq",
+      "opening_1_fraction": 0.045166,
+      "p_final_1_given_opening_0": 0.897213,
+      "p_final_1_given_opening_1": 0.854054,
+      "excited_fraction_w": 0.0510703
+     }
+    ],
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 7833,
+     "opening_1_shots": 359,
+     "w": 0.0664938,
+     "w_se": 0.026809
+    }
+   }
+  ]
+ },
+ "short_t1": {
+  "hypothesis": "the post-calibration zero-wait loss of P(1|1) is relaxation inside the readout window",
+  "readout_seconds": 8e-07,
+  "assumption": "the device is unchanged between the 2 us wait runs (04:15-04:24Z) and the zero-wait runs (05:26-05:33Z)",
+  "qubits": {
+   "0": {
+    "pre_change": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "p1_given_0": 0.0161743,
+      "p1_given_1": 0.970398
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "p1_given_0": 0.0160522,
+      "p1_given_1": 0.97052
+     }
+    ],
+    "no_wait": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "p1_given_0": 0.0386353,
+      "p1_given_1": 0.565125
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "p1_given_0": 0.0368652,
+      "p1_given_1": 0.571167
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "p1_given_0": 0.0385132,
+      "p1_given_1": 0.565491
+     }
+    ],
+    "two_us_wait": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "p1_given_0": 0.034668,
+      "p1_given_1": 0.392944
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "p1_given_0": 0.0351562,
+      "p1_given_1": 0.38855
+     }
+    ],
+    "readout_survival": 0.554575,
+    "t1_max_us": 1.35696,
+    "two_us_ceiling": 0.15613,
+    "two_us_observed": [
+     0.392944,
+     0.38855
+    ],
+    "excess_z": [
+     43.8857,
+     43.1583
+    ],
+    "hypothesis_rejected": true
+   },
+   "6": {
+    "pre_change": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "p1_given_0": 0.0316772,
+      "p1_given_1": 0.945679
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "p1_given_0": 0.0366821,
+      "p1_given_1": 0.958252
+     }
+    ],
+    "no_wait": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "p1_given_0": 0.0142212,
+      "p1_given_1": 0.163086
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "p1_given_0": 0.0131836,
+      "p1_given_1": 0.16571
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "p1_given_0": 0.0124512,
+      "p1_given_1": 0.16156
+     }
+    ],
+    "two_us_wait": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "p1_given_0": 0.0125732,
+      "p1_given_1": 0.143921
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "p1_given_0": 0.0146484,
+      "p1_given_1": 0.140015
+     }
+    ],
+    "readout_survival": 0.163619,
+    "t1_max_us": 0.441936,
+    "two_us_ceiling": 0.015237,
+    "two_us_observed": [
+     0.143921,
+     0.140015
+    ],
+    "excess_z": [
+     33.1818,
+     32.5461
+    ],
+    "hypothesis_rejected": true
+   }
+  }
+ },
+ "ramsey_matched_calibration": {
+  "x_runs": [
+   "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1",
+   "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1"
+  ],
+  "y_runs": [
+   "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07",
+   "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08"
+  ],
+  "calibration_runs": [
+   "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+   "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425"
+  ],
+  "degeneracy": "X and X90 sharing one under-rotation (X turning 2 beta, X90 beta) give raw quadratures sin^2(beta) (1 + cos phi) / 2 and sin^2(beta) (1 + sin phi) / 2, the readout-scale form, so the inverted visibility does not separate that fault from |1> misassignment",
+  "targets": {
+   "0": {
+    "calibration_p1_given_0": 0.0349121,
+    "calibration_p1_given_1": 0.390747,
+    "arms": [
+     {
+      "arm": "reference",
+      "raw_x": 0.366455,
+      "raw_y": 0.22168,
+      "visibility": 0.864896,
+      "visibility_se": 0.0363112,
+      "phase_deg": 3.29707
+     },
+     {
+      "arm": "tau000",
+      "raw_x": 0.360474,
+      "raw_y": 0.211426,
+      "visibility": 0.829883,
+      "visibility_se": 0.0356323,
+      "phase_deg": -0.544755
+     },
+     {
+      "arm": "tau005",
+      "raw_x": 0.362793,
+      "raw_y": 0.211426,
+      "visibility": 0.842919,
+      "visibility_se": 0.0357435,
+      "phase_deg": -0.536331
+     },
+     {
+      "arm": "tau015",
+      "raw_x": 0.362793,
+      "raw_y": 0.214111,
+      "visibility": 0.842912,
+      "visibility_se": 0.0358506,
+      "phase_deg": 0.489696
+     },
+     {
+      "arm": "tau040",
+      "raw_x": 0.356201,
+      "raw_y": 0.203613,
+      "visibility": 0.807495,
+      "visibility_se": 0.0350925,
+      "phase_deg": -3.67807
+     },
+     {
+      "arm": "tau100",
+      "raw_x": 0.363281,
+      "raw_y": 0.209595,
+      "visibility": 0.845822,
+      "visibility_se": 0.0356931,
+      "phase_deg": -1.23173
+     }
+    ]
+   },
+   "4": {
+    "calibration_p1_given_0": 0.012207,
+    "calibration_p1_given_1": 0.851196,
+    "arms": [
+     {
+      "arm": "reference",
+      "raw_x": 0.807617,
+      "raw_y": 0.431519,
+      "visibility": 0.896115,
+      "visibility_se": 0.0121348,
+      "phase_deg": -0.0279083
+     },
+     {
+      "arm": "tau000",
+      "raw_x": 0.80835,
+      "raw_y": 0.452148,
+      "visibility": 0.899183,
+      "visibility_se": 0.0122279,
+      "phase_deg": 3.10732
+     },
+     {
+      "arm": "tau005",
+      "raw_x": 0.788696,
+      "raw_y": 0.442017,
+      "visibility": 0.851366,
+      "visibility_se": 0.0124296,
+      "phase_deg": 1.65503
+     },
+     {
+      "arm": "tau015",
+      "raw_x": 0.789917,
+      "raw_y": 0.443604,
+      "visibility": 0.854392,
+      "visibility_se": 0.0124225,
+      "phase_deg": 1.90298
+     },
+     {
+      "arm": "tau040",
+      "raw_x": 0.790283,
+      "raw_y": 0.455933,
+      "visibility": 0.856744,
+      "visibility_se": 0.0124835,
+      "phase_deg": 3.86585
+     },
+     {
+      "arm": "tau100",
+      "raw_x": 0.806152,
+      "raw_y": 0.456909,
+      "visibility": 0.894644,
+      "visibility_se": 0.0122838,
+      "phase_deg": 3.85126
+     }
+    ]
+   },
+   "5": {
+    "calibration_p1_given_0": 0.0368042,
+    "calibration_p1_given_1": 0.848755,
+    "arms": [
+     {
+      "arm": "reference",
+      "raw_x": 0.496948,
+      "raw_y": 0.44873,
+      "visibility": 0.134231,
+      "visibility_se": 0.014367,
+      "phase_deg": 6.26933
+     },
+     {
+      "arm": "tau000",
+      "raw_x": 0.494629,
+      "raw_y": 0.461182,
+      "visibility": 0.135521,
+      "visibility_se": 0.0145946,
+      "phase_deg": 19.5405
+     },
+     {
+      "arm": "tau005",
+      "raw_x": 0.494141,
+      "raw_y": 0.46814,
+      "visibility": 0.141094,
+      "visibility_se": 0.0146886,
+      "phase_deg": 26.2784
+     },
+     {
+      "arm": "tau015",
+      "raw_x": 0.492554,
+      "raw_y": 0.471558,
+      "visibility": 0.141621,
+      "visibility_se": 0.0147284,
+      "phase_deg": 30.0353
+     },
+     {
+      "arm": "tau040",
+      "raw_x": 0.48938,
+      "raw_y": 0.447021,
+      "visibility": 0.115261,
+      "visibility_se": 0.0143291,
+      "phase_deg": 5.2012
+     },
+     {
+      "arm": "tau100",
+      "raw_x": 0.496826,
+      "raw_y": 0.463867,
+      "visibility": 0.142902,
+      "visibility_se": 0.0146273,
+      "phase_deg": 21.3145
+     }
+    ]
+   },
+   "6": {
+    "calibration_p1_given_0": 0.0136108,
+    "calibration_p1_given_1": 0.141968,
+    "arms": [
+     {
+      "arm": "reference",
+      "raw_x": 0.0570068,
+      "raw_y": 0.0709229,
+      "visibility": 0.34104,
+      "visibility_se": 0.0462641,
+      "phase_deg": -161.717
+     },
+     {
+      "arm": "tau000",
+      "raw_x": 0.0574951,
+      "raw_y": 0.0732422,
+      "visibility": 0.324055,
+      "visibility_se": 0.0456284,
+      "phase_deg": -167.371
+     },
+     {
+      "arm": "tau005",
+      "raw_x": 0.0612793,
+      "raw_y": 0.0700684,
+      "visibility": 0.283992,
+      "visibility_se": 0.0486636,
+      "phase_deg": -154.937
+     },
+     {
+      "arm": "tau015",
+      "raw_x": 0.0598145,
+      "raw_y": 0.0683594,
+      "visibility": 0.316278,
+      "visibility_se": 0.0483193,
+      "phase_deg": -152.318
+     },
+     {
+      "arm": "tau040",
+      "raw_x": 0.0543213,
+      "raw_y": 0.0721436,
+      "visibility": 0.376101,
+      "visibility_se": 0.0445325,
+      "phase_deg": -166.473
+     },
+     {
+      "arm": "tau100",
+      "raw_x": 0.059082,
+      "raw_y": 0.0673828,
+      "visibility": 0.333553,
+      "visibility_se": 0.0481296,
+      "phase_deg": -150.914
+     }
+    ]
+   },
+   "10": {
+    "calibration_p1_given_0": 0.0516357,
+    "calibration_p1_given_1": 0.916565,
+    "arms": [
+     {
+      "arm": "reference",
+      "raw_x": 0.838257,
+      "raw_y": 0.600342,
+      "visibility": 0.861909,
+      "visibility_se": 0.0111311,
+      "phase_deg": 18.1709
+     },
+     {
+      "arm": "tau000",
+      "raw_x": 0.811279,
+      "raw_y": 0.58606,
+      "visibility": 0.79243,
+      "visibility_se": 0.0114904,
+      "phase_deg": 17.3087
+     },
+     {
+      "arm": "tau005",
+      "raw_x": 0.849854,
+      "raw_y": 0.595825,
+      "visibility": 0.884319,
+      "visibility_se": 0.0108859,
+      "phase_deg": 16.9861
+     },
+     {
+      "arm": "tau015",
+      "raw_x": 0.854492,
+      "raw_y": 0.604004,
+      "visibility": 0.900226,
+      "visibility_se": 0.0108571,
+      "phase_deg": 17.9378
+     },
+     {
+      "arm": "tau040",
+      "raw_x": 0.844971,
+      "raw_y": 0.659424,
+      "visibility": 0.927718,
+      "visibility_se": 0.0113937,
+      "phase_deg": 25.9121
+     },
+     {
+      "arm": "tau100",
+      "raw_x": 0.8396,
+      "raw_y": 0.671753,
+      "visibility": 0.929525,
+      "visibility_se": 0.0115443,
+      "phase_deg": 27.8276
+     }
+    ]
+   },
+   "11": {
+    "calibration_p1_given_0": 0.0189819,
+    "calibration_p1_given_1": 0.882751,
+    "arms": [
+     {
+      "arm": "reference",
+      "raw_x": 0.858276,
+      "raw_y": 0.489136,
+      "visibility": 0.947482,
+      "visibility_se": 0.0107466,
+      "phase_deg": 5.3662
+     },
+     {
+      "arm": "tau000",
+      "raw_x": 0.859619,
+      "raw_y": 0.383789,
+      "visibility": 0.959098,
+      "visibility_se": 0.0103892,
+      "phase_deg": -9.31936
+     },
+     {
+      "arm": "tau005",
+      "raw_x": 0.834473,
+      "raw_y": 0.385254,
+      "visibility": 0.901113,
+      "visibility_se": 0.0108278,
+      "phase_deg": -9.70607
+     },
+     {
+      "arm": "tau015",
+      "raw_x": 0.807129,
+      "raw_y": 0.375,
+      "visibility": 0.843398,
+      "visibility_se": 0.0112319,
+      "phase_deg": -12.0217
+     },
+     {
+      "arm": "tau040",
+      "raw_x": 0.847778,
+      "raw_y": 0.414673,
+      "visibility": 0.922835,
+      "visibility_se": 0.0106471,
+      "phase_deg": -5.21032
+     },
+     {
+      "arm": "tau100",
+      "raw_x": 0.824951,
+      "raw_y": 0.397705,
+      "visibility": 0.87487,
+      "visibility_se": 0.010996,
+      "phase_deg": -8.08822
+     }
+    ]
+   },
+   "12": {
+    "calibration_p1_given_0": 0.00457764,
+    "calibration_p1_given_1": 0.878113,
+    "arms": [
+     {
+      "arm": "reference",
+      "raw_x": 0.822388,
+      "raw_y": 0.383423,
+      "visibility": 0.882437,
+      "visibility_se": 0.0109601,
+      "phase_deg": -8.64338
+     },
+     {
+      "arm": "tau000",
+      "raw_x": 0.81604,
+      "raw_y": 0.358765,
+      "visibility": 0.87847,
+      "visibility_se": 0.0110207,
+      "phase_deg": -12.429
+     },
+     {
+      "arm": "tau005",
+      "raw_x": 0.818115,
+      "raw_y": 0.426758,
+      "visibility": 0.863279,
+      "visibility_se": 0.0111261,
+      "phase_deg": -2.21721
+     },
+     {
+      "arm": "tau015",
+      "raw_x": 0.817139,
+      "raw_y": 0.440186,
+      "visibility": 0.860401,
+      "visibility_se": 0.0111873,
+      "phase_deg": -0.17681
+     },
+     {
+      "arm": "tau040",
+      "raw_x": 0.812256,
+      "raw_y": 0.463745,
+      "visibility": 0.850765,
+      "visibility_se": 0.011359,
+      "phase_deg": 3.45599
+     },
+     {
+      "arm": "tau100",
+      "raw_x": 0.826782,
+      "raw_y": 0.345947,
+      "visibility": 0.909104,
+      "visibility_se": 0.0108506,
+      "phase_deg": -13.9017
+     }
+    ]
+   },
+   "16": {
+    "calibration_p1_given_0": 0.0297241,
+    "calibration_p1_given_1": 0.867615,
+    "arms": [
+     {
+      "arm": "reference",
+      "raw_x": 0.804443,
+      "raw_y": 0.527222,
+      "visibility": 0.869666,
+      "visibility_se": 0.0124536,
+      "phase_deg": 12.4507
+     },
+     {
+      "arm": "tau000",
+      "raw_x": 0.804321,
+      "raw_y": 0.485596,
+      "visibility": 0.853485,
+      "visibility_se": 0.0121788,
+      "phase_deg": 5.92761
+     },
+     {
+      "arm": "tau005",
+      "raw_x": 0.811157,
+      "raw_y": 0.493164,
+      "visibility": 0.871733,
+      "visibility_se": 0.0121274,
+      "phase_deg": 6.99793
+     },
+     {
+      "arm": "tau015",
+      "raw_x": 0.817017,
+      "raw_y": 0.566528,
+      "visibility": 0.923135,
+      "visibility_se": 0.0125671,
+      "phase_deg": 17.7429
+     },
+     {
+      "arm": "tau040",
+      "raw_x": 0.819458,
+      "raw_y": 0.494751,
+      "visibility": 0.891861,
+      "visibility_se": 0.0120144,
+      "phase_deg": 7.08439
+     },
+     {
+      "arm": "tau100",
+      "raw_x": 0.80896,
+      "raw_y": 0.491211,
+      "visibility": 0.865968,
+      "visibility_se": 0.012147,
+      "phase_deg": 6.73405
+     }
+    ]
+   }
+  }
+ },
+ "x_only_fault": {
+  "hypothesis": "the fault is confined to native X; X90 and the readout keep the earlier scale",
+  "qubits": {
+   "0": {
+    "raw_quadrature_mean": 0.286987,
+    "x_only_lower_bound": 0.174673,
+    "x_only_excluded": false
+   },
+   "6": {
+    "raw_quadrature_mean": 0.0642598,
+    "x_only_lower_bound": 0.148017,
+    "x_only_excluded": true
+   }
+  }
+ },
+ "xx_discriminator": {
+  "observable": "P1 after X X with no wait, in the same batch as a readout-0 and readout-1 pair",
+  "qubits": {
+   "0": {
+    "pre_change_scale": 0.954346,
+    "half_angle_beta_rad": 0.840082,
+    "xx_p1_under_rotation": 0.98098,
+    "xx_p1_misassignment": 0.0380046
+   },
+   "6": {
+    "pre_change_scale": 0.917786,
+    "half_angle_beta_rad": 0.41643,
+    "xx_p1_under_rotation": 0.515672,
+    "xx_p1_misassignment": 0.0132853
+   }
+  }
+ },
+ "q9_endpoint": {
+  "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-04",
+  "job_finished_at": [
+   "2026-10-17T05:23:12.850629Z",
+   "2026-10-17T05:23:20.410812Z",
+   "2026-10-17T05:23:27.631506Z"
+  ],
+  "q9_opening_readout_p1": {
+   "tau015-y-d002.cq": 0.243042,
+   "tau040-y-d002.cq": 0.238159,
+   "tau100-y-d002.cq": 0.241577
+  }
+ }
+}

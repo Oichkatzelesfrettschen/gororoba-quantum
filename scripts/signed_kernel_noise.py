@@ -305,6 +305,7 @@ def run(ts: tuple[float, ...], device: str) -> dict[str, Any]:
         "snapshot": str(SNAPSHOT.relative_to(ROOT)),
         "snapshot_sha256": hashlib.sha256(SNAPSHOT.read_bytes()).hexdigest(),
         "calibration": snapshot["calibration"],
+        **calibration_snapshot.backend_identity(snapshot),
         "seed_transpiler": probe.SEED,
         "layout_t": LAYOUT_T,
         "environment": environment(device),

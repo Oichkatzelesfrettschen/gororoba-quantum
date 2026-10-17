@@ -85,7 +85,9 @@ def export(backend: Any, name: str, props: Any, target: Any, written: dict[str, 
     """Snapshot of one fetched calibration, verified against live_run's noise model; returns its path."""
     import live_run
 
-    snapshot = json.loads(json.dumps(calibration_snapshot.describe(name, target, props, live_run.readout_flips)))
+    processor_type = live_run.backend_identity(backend)["processor_type"]
+    described = calibration_snapshot.describe(name, target, props, live_run.readout_flips, processor_type)
+    snapshot = json.loads(json.dumps(described))
     path = HISTORY / name / file_name(snapshot["calibration"])
     relative = path.relative_to(ROOT).as_posix()
     if relative in written:

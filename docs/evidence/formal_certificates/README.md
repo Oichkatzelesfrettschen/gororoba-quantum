@@ -50,6 +50,14 @@ remain necessary before attaching a confidence level to this certificate.
 The hypothesis appends one common stochastic channel to the replay means;
 replacement readout and context-dependent instruments have different models.
 
+## Current external theorem scope
+
+The current open_gororoba terminal-channel theorems accept arbitrary observed
+centers and four radii. This bundle preserves the fixed-count application and
+its Rocq 9.2 receipt. The external build now uses Rocq 9.3.0 / OCaml 5.5.1;
+that build identity differs from the replay pin recorded here. Both variants
+require explicit statistical and physical premises at their application.
+
 ## Replay
 
 Use the toolchain `toolchain.txt` records, Rocq 9.2 with OCaml 5.5.0. The
@@ -74,3 +82,6 @@ proof objects remain outside the repository.
 exit statuses. `SHA256SUMS` binds the README, replay script, source-hash
 manifest, receipt and raw outputs. Changing a theorem requires fresh
 compilation, kernel checking, assumption inspection and receipt renewal.
+
+See [the current observable reconciliation](CURRENT_RECONCILIATION.md) for the
+new concentration certificate, signed estimator and explicit physical premises.

@@ -8,7 +8,8 @@ one JSON file into /kaggle/working/output:
 1. ``environment.json``: the measured substrate. Python and package
    versions, CPU model and logical cores, RAM, working-disk capacity, every
    GPU (name, memory, driver, CUDA, compute capability), the Aer devices,
-   and the Kaggle input models attached to the kernel.
+   the Aer device the entry runs on (``entry_aer_device``), and the Kaggle
+   input models attached to the kernel.
 2. ``hypercomplex.json``: the repository's hypercomplex stack, built and
    proved. scripts/algebra_package_tables.py fetches every pinned archive
    (sha256-checked), installs it through the PKGBUILD recipes, and
@@ -49,6 +50,10 @@ REPORTED_PACKAGES = (
     "qiskit",
     "qiskit-aer",
     "qiskit-aer-gpu-cu11",
+    "cuquantum-cu11",
+    "custatevec-cu11",
+    "cutensornet-cu11",
+    "cutensor-cu11",
     "qiskit-ibm-runtime",
     "numpy",
     "scipy",
@@ -165,6 +170,11 @@ def environment() -> dict[str, Any]:
         "attached_models": attached_models(),
         "packages": versions(),
     }
+
+
+def entry_aer_device(job: dict[str, Any]) -> str:
+    """The GOROROBA_AER_DEVICE the entry sees: CI's CPU under --ci-env and in a shard run, else the machine's."""
+    return "CPU" if job.get("ci_env") or job.get("mode") == "shards" else str(job.get("device", "GPU"))
 
 
 def hypercomplex() -> dict[str, Any]:
@@ -393,7 +403,7 @@ def run_entry() -> int:
     if job.get("datasets"):
         write("datasets.json", unpack_datasets(job["datasets"]))
     before = {p: sha256(p) for p in REPO.rglob("*") if p.is_file()}
-    write("environment.json", environment())
+    write("environment.json", environment() | {"entry_aer_device": entry_aer_device(job)})
     if job.get("pin_groups"):
         write(
             "pin_groups.json",
@@ -418,7 +428,7 @@ def run_entry() -> int:
         python, env = ci_interpreter(REPO, job["ci_env"]["uv"], job["ci_env"]["python"])
     else:
         python = sys.executable
-        env = dict(os.environ, GOROROBA_AER_DEVICE=job.get("device", "GPU"), PYTHON=python)
+        env = dict(os.environ, GOROROBA_AER_DEVICE=entry_aer_device(job), PYTHON=python)
     proc = subprocess.run([python, "-B", job["entry"], *job["args"]], cwd=REPO, env=env, capture_output=True, text=True)
     (OUT / "stdout.txt").write_text(proc.stdout, encoding="utf-8")
     (OUT / "stderr.txt").write_text(proc.stderr, encoding="utf-8")

@@ -1,0 +1,48 @@
+--- a/src/misc/wrap_thrust.hpp
++++ b/src/misc/wrap_thrust.hpp
+@@ -51,4 +51,16 @@
+ #endif
+ DISABLE_WARNING_POP
+ 
++namespace AER {
++
++// thrust::unary_function was removed with CCCL 3 (CUDA 13); the functors
++// below derive from this equivalent for their argument_type/result_type.
++template <typename ArgumentType, typename ResultType>
++struct unary_function {
++  using argument_type = ArgumentType;
++  using result_type = ResultType;
++};
++
++} // namespace AER
++
+ #endif // inclusion guard
+--- a/src/simulators/statevector/chunk/thrust_kernels.hpp
++++ b/src/simulators/statevector/chunk/thrust_kernels.hpp
+@@ -276,7 +276,7 @@
+   typedef typename thrust::iterator_difference<Iterator>::type difference_type;
+ 
+   struct stride_functor
+-      : public thrust::unary_function<difference_type, difference_type> {
++      : public AER::unary_function<difference_type, difference_type> {
+     difference_type stride;
+ 
+     stride_functor(difference_type _stride) : stride(_stride) {}
+@@ -328,7 +328,7 @@
+ 
+ template <typename data_t>
+ struct complex_dot_scan
+-    : public thrust::unary_function<thrust::complex<data_t>,
++    : public AER::unary_function<thrust::complex<data_t>,
+                                     thrust::complex<data_t>> {
+   __host__ __device__ thrust::complex<data_t>
+   operator()(thrust::complex<data_t> x) {
+@@ -338,7 +338,7 @@
+ };
+ 
+ template <typename data_t>
+-struct complex_norm : public thrust::unary_function<thrust::complex<data_t>,
++struct complex_norm : public AER::unary_function<thrust::complex<data_t>,
+                                                     thrust::complex<data_t>> {
+   __host__ __device__ thrust::complex<double>
+   operator()(thrust::complex<data_t> x) {

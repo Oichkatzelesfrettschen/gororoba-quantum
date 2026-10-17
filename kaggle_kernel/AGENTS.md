@@ -25,7 +25,8 @@ and what it must prove before its output counts.
 
 1. `environment.json`: Python and package versions, CPU model and cores,
    RAM, working disk, every GPU (name, memory, driver, compute capability),
-   CUDA driver version, TPU devices, Aer devices and attached models.
+   CUDA driver version, TPU devices, Aer devices, the Aer device the entry
+   runs on (`entry_aer_device`) and attached models.
 2. `hypercomplex.json`: the hypercomplex stack, built and proved by
    `scripts/algebra_package_tables.py`. `--fetch` downloads the seventeen
    archives `RELEASES` pins and keeps each only if its sha256 matches.
@@ -52,6 +53,8 @@ and what it must prove before its output counts.
 | --- | --- | --- |
 | qiskit | 2.5.2 | PyPI |
 | qiskit-aer-gpu-cu11 | 0.17.2 (the CUDA 12 `qiskit-aer-gpu` stops at 0.15.1 and has no Python 3.13 wheel) | PyPI |
+| cuquantum-cu11 | 24.8.0 (brings custatevec-cu11 1.6.0.post1 and cutensornet-cu11 2.5.0; the libraries the cu11 Aer wheel links) | PyPI |
+| cutensor-cu11 | 2.2.0 (the newest release inside cutensornet-cu11 2.5.0's `>=2.0.1,<3`) | PyPI |
 | qiskit-ibm-runtime | 0.50.0 (fake backends such as FakeFez; no account or credential) | PyPI |
 | hypercomplex, hypercomplex-engine, hypercomplex-algebra, Cayley-Calculator, octonion, mathdunders | 0.3.4, 0.5.0, 0.2.0.2, 1.3.1, 0.1.0, 0.4.2 | PyPI sdist, sha256-pinned |
 | quaternionic, clifford, kingdon, galgebra, pyoctonion | 1.0.18, 1.5.1, 3.0.0, 0.6.0, 3.12 | PyPI sdist, sha256-pinned |
@@ -87,8 +90,14 @@ and what it must prove before its output counts.
 
 - **Requesting a GPU.** Push with `--machine NvidiaTeslaT4` and a `--timeout`
   sized to the work; kaggle_run.py refuses an accelerator push without one.
-  The kernel installs qiskit-aer-gpu-cu11 0.17.2 and sets
-  `GOROROBA_AER_DEVICE=GPU`.
+  The kernel installs qiskit-aer-gpu-cu11 0.17.2, cuquantum-cu11 24.8.0 and
+  cutensor-cu11 2.2.0 and sets `GOROROBA_AER_DEVICE=GPU`.
+- **cuStateVec.** `noise_simulator(..., custatevec=True)` sets
+  `cuStateVec_enable` on a GPU statevector run; `scripts/aer_gpu_probe.py
+  --only cpu_statevector gpu_statevector gpu_statevector_custatevec` records
+  the three paths with Aer's reported `cuStateVec_enable`. The option excludes
+  `batched_shots_gpu`. `docs/notes/kaggle/custatevec.md` holds the library
+  chain, the T4 push command and how to read its result.
 - **Using it in an entry.** The entry passes
   `calibration_snapshot.aer_device()` to `noise_simulator(snapshot, device,
   method=...)`.
