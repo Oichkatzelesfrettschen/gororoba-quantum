@@ -424,9 +424,16 @@ Evidence for what the account devices expose, from the live API read
 Feed-forward latency, for scheduling: the `measure_2` and `measure` durations
 above plus a latency that no public source states for the three account
 devices. Values nearby: roughly 0.7 us (ibm_sherbrooke / ibm_peekskill,
-2023-2024 paper), approximately 600 ns ("IBM hardware", 2026 paper, device
-unstated), 500 ns (cited by MCMit, source device unstated). These are
-context, not device values. A device-matched figure can be read from the
+revisions unstated, arXiv:2308.13065v2), approximately 600 ns ("IBM hardware",
+arXiv:2604.03360v2, device unstated), 500 ns (cited by MCMit, source device
+unstated), and approximately 200 ns (arXiv:2406.07611v2, appendix C.3: "the
+superconducting quantum processors we utilized do not yet support pulse
+operations during the feedforward latency [70], that is, during the short
+period of time (~200 ns) that the mid-circuit measurement outcomes are
+processed by classical control hardware"; OTHER-FAMILY, the Falcon devices
+ibm_algiers, ibmq_kolkata, ibm_mumbai and Eagle devices ibm_osaka, ibm_kyoto
+of section 4d, with no per-device split, and a rounded figure that cites
+reference [70] for the latency). These are context, not device values. A device-matched figure can be read from the
 circuit-timing output (`scheduler_timing`), which the repository already
 documents (docs/notes/ibm_quantum/qiskit-runtime-circuit-timing.md), but I
 did not run that probe because it needs a job submission.
@@ -445,6 +452,7 @@ did not run that probe because it needs a job submission.
 | Heron readout length range | 1560-2584 ns | fleet, device-unstated | Heron (revision unstated) | arXiv:2604.25863v3 (7 Aug 2026), citing an IBM resources page (reference accessed 2025-08-20; the table is a fleet range of unknown date) | context | cannot tell |
 | ibm_kingston `measure_2` vs `measure` | 65 percent shorter; `measure` 34x a 2q gate | ibm_kingston | Heron r2 | arXiv:2604.03360v2 (15 Sep 2026) | stated, device-matched, disagrees with snapshot (37 percent) | cannot tell; no backend version given |
 | Feed-forward latency | approx 600 ns | "IBM hardware", device unstated | unstated | arXiv:2604.03360v2 | not device-matched | n/a |
+| Feed-forward latency | approx 200 ns | ibm_algiers, ibmq_kolkata, ibm_mumbai, ibm_osaka, ibm_kyoto (no per-device split) | Falcon and Eagle, revisions unstated | arXiv:2406.07611v2, appendix C.3 | other-family | cannot tell |
 | Feed-forward latency | roughly 0.7 us | ibm_sherbrooke, ibm_peekskill | unstated (likely Eagle / Falcon, inference) | arXiv:2308.13065v2 (18 Sep 2024), App. D | other-family | yes |
 | Ring-down / post-measurement buffer | none found | account devices | Heron r2 | none (not split out of readout_length) | not found | n/a |
 | Residual-photon Stark shift / dephasing vs delay, with decay time | none found | account devices | Heron r2 | none; arXiv:2606.00433v2 reports T1-dominated backaction, no photon figure | not found | n/a |
