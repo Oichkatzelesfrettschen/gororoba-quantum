@@ -2872,6 +2872,22 @@
    "name": "core-360",
    "seconds": 395.0,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_census.py --check docs/evidence/box_kite_census/census.json && \"$PYTHON\" -B -O -W error scripts/box_kite_census.py --check docs/evidence/box_kite_census/census.json",
+   "name": "core-372",
+   "seconds": 17.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_census.py --self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_census.py --self-test",
+   "name": "core-373",
+   "seconds": 15.7,
+   "tier": "pr"
   }
  ],
  "excluded": [
