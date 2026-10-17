@@ -1,0 +1,93 @@
+# The two-dimension gap of the A_5 rank loci and the route to item 3
+
+The local-dimension certificate
+([evidence](../evidence/rank_locus_local_dimension/README.md),
+`scripts/rank_locus_local_dimension.py`) closes every family of D_(5,k)
+whose entries are both zero divisors and leaves each family with a
+non-zero-divisor entry exactly 2 below its tangent bound:
+
+| Family | Nullity | Family dimension | Tangent bound |
+| --- | --- | --- | --- |
+| {a, 0}, a not a zero divisor | 12 | 13 | 15 |
+| a zero divisor, b in W(a) | 8 | 19 | 21 |
+| a zero divisor, b not, off the locus | 4 | 25 | 27 |
+| neither, C-orthogonal | 4 | 25 | 27 |
+
+The open question is which side moves: either D_(5,k) carries two more
+dimensions at these witnesses (the conjecture in the evidence README: the
+extra directions leave H_5^perp through e_8 and e_24 and curve, since the
+straight lines drop to nullity 0), or a second-order obstruction kills both
+tangent directions and the local dimension equals the family dimension.
+The question is classical and exact; it needs no QPU and no Tuna run.
+
+## The lead from the nullity-twelve cone
+
+At x0 = e1 + e18 the nullity-12 locus has Bouligand cone A15 union B17
+([note](nullity_twelve_local_geometry.md),
+`gororoba_quantum/nullity_twelve_locus.py`). B17 is the
+Biss-Christensen-Dugger-Isaksen D-locus bundle with its length ratio, the
+certified 17-dimensional family. A15 is realized by actual curves (a
+four-parameter rational slice and octonion derivation flows) and contains
+the direction e8, so it leaves H_5^perp. A 15-dimensional nullity-12 piece
+that exits through e8 has exactly the shape the conjecture predicts for the
+{a, 0} family, whose tangent bound is also 15. The Schur machinery that
+decided the cone at x0 (centered chart, `D(a) = -2 Q(h)`, the polarized
+coefficient matrix G and its sum-of-squares reduction) runs unchanged at
+any center whose kernel frame is exact.
+
+## Design: three exact computations, cheapest first
+
+1. **Locate the extra directions.** At each certified witness, complete
+   the family's tangent space to T(x) and record the 2-dimensional
+   complement in coordinates. Prediction: its projection onto span{e_8,
+   e_24} has rank 2 at every non-zero-divisor witness. Falsifier: rank
+   below 2 at any witness refutes the "leaves through e_8 and e_24" part
+   of the conjecture while leaving the dimension question open.
+2. **Second-order compatibility on the complement.** Run the centered Schur
+   construction of `nullity_twelve_locus.py` at the nullity-12 witnesses
+   {a, 0} (then the nullity-8 and nullity-4 witnesses): `Dmap`, its
+   nullspace K, the obstruction space C and the quadratic system
+   `C^T upper_triangle(Q(K z)) = 0`, restricted to directions transverse to
+   the family. Two outcomes decide the question:
+   - the real zero set on the complement is {0}: no curve leaves the family
+     to second order, the local dimension equals the family dimension, and
+     the conjecture is refuted at that nullity;
+   - a nonzero real solution exists: build an actual curve through it (a
+     rational slice as for A15, or an exact flow) and certify its nullity
+     along the curve; the family grows by the dimension the curves span.
+   A sum-of-squares identity, as at x0, is the certificate in the first
+   outcome; an explicit curve with exact nullity at rational parameter
+   values is the certificate in the second.
+3. **Join A15 to the {a, 0} family.** Sample exact rational points of the
+   A15 slice near x0, compute their nullity and their bracket coordinates,
+   and test whether {a, 0} witnesses with a not a zero divisor lie in the
+   closure of A15-type pieces. A positive answer names the larger piece the
+   conjecture asks for; a negative one separates the two 15-dimensional
+   phenomena.
+
+Every computation is a loop over independent witnesses or sample points
+and runs through `parallel.py`. Each joins `ci/gates.json` with `--check`
+regenerating its retained result and `--self-test` rejecting a corrupted
+nullity, frame or coefficient, in normal and `-O` modes. The registry
+carries the question as the open claim `a5-nonzero-divisor-two-dimension-gap`
+and promotes it only through a retained certificate.
+
+## Route to the global classification (roadmap items 3-8)
+
+The global obligations are listed in
+[RANK_STRATUM_TOPOLOGY.md](../../gororoba_quantum/RANK_STRATUM_TOPOLOGY.md#global-classification-roadmap-and-admission-gates)
+and registered as the open claim `dimension32-global-topology`. They
+depend on each other in order, and each has a first deliverable that
+admits on its own:
+
+| Item | First deliverable | Rests on | Admission |
+| --- | --- | --- | --- |
+| 3. Components of D_(5,4), D_(5,8), D_(5,12) | D_(5,12) first: its known pieces are B17, A15, the {a, 0} family and Proposition 8.2's (i_4, e_p) points; the gap computation above fixes the dimension of the {a, 0} piece | the gap computation | a covering argument for every real coefficient vector, exact boundary admission; numerical charts alone do not admit |
+| 4. Regularity and links | smoothness of each D_(5,12) piece from independent local equations; the normal link at x0, where A15 and B17 meet in dimension 13 | item 3 for D_(5,12) | rank loci and smooth strata kept distinct |
+| 5. Kernel bundles | transition data of ker L_x over each smooth piece of D_(5,12) | item 4 | invariants computed; a classification needs its own sufficiency argument |
+| 6. Attachments | how partner spheres specialize across every admitted closure incidence of D_(5,12) | items 3 and 5 | attaching maps, not a frontier matrix |
+| 7. Global model | a finite model of Z_5 with a proved map, homology, cup products | items 3-6 for every nullity | chain maps and selected homotopy invariants; homology agreement alone does not admit |
+| 8. Uniform structure in n | a recurrence across the doubling ladder | item 7 at n = 5 and the restricted family's sparse chain construction | a theorem, distinct from an algorithm that accepts n |
+
+Items 3 to 8 are research obligations with no near-term hardware question;
+the D_(5,12) column above is the smallest step that moves item 3.

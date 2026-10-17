@@ -232,6 +232,10 @@ dimension thirteen, at `e1+e18` on the doubly-pure dimension-32,
 norm-squared-two nullity-twelve locus. Exact CPU certificates and written
 arguments establish that result; a Rocq port, other centers, neighborhood
 branches and attachments remain separate obligations.
+The [two-dimension gap design](notes/rank_locus_two_dimension_gap.md)
+plans the exact computations that decide whether the A_5 rank-locus families
+with a non-zero-divisor entry gain two dimensions through e_8 and e_24, and
+orders roadmap items 3 to 8 behind D_(5,12).
 
 The [finite field-model replay](evidence/vacuum_models/README.md) checks
 invariant-sector encoding, observable-specific cutoff bias, synthesis error,

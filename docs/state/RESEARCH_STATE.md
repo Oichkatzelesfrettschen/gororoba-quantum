@@ -645,8 +645,13 @@ circuit and charges the account ledger's change.
 - **dimension32-global-topology** (mathematical theorem, geometry). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants.
   Boundary: Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
-  Evidence: [RESEARCH_ROADMAP.md](../RESEARCH_ROADMAP.md).
+  Evidence: [RESEARCH_ROADMAP.md](../RESEARCH_ROADMAP.md), [rank_locus_two_dimension_gap.md](../notes/rank_locus_two_dimension_gap.md).
   Depends on: four-support-topology, principal-skew-atlas, kernel-limit-slice, nullity-twelve-cone.
+- **a5-nonzero-divisor-two-dimension-gap** (mathematical theorem, geometry). At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.
+  Boundary: The certificate bounds the local dimension between the family dimension and the tangent bound; a second-order obstruction on the two transverse directions would refute the statement, and an explicit curve family of the larger dimension would establish it.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
+  Evidence: [rank_locus_two_dimension_gap.md](../notes/rank_locus_two_dimension_gap.md), [README.md](../evidence/rank_locus_local_dimension/README.md).
+  Depends on: a5-rank-locus-local-dimension, nullity-twelve-cone.
 
 ## Proposed claims
 
