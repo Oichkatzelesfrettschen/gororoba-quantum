@@ -153,9 +153,12 @@ RY_TELEPORT = ROOT / "results/quantum_inspire/runs/2026-10-16T211635Z-Rydberg/te
 RY_TELEPORT_SHA256 = "e4df1064cc91a908cb0ad12c253464ca9d441f2a3e36b9bef0be6f3346134f08"
 TUNA_QUBITS = 17
 # T0 reads a contrast near 0.1 at depth 9 against binomial noise, so it takes
-# the larger shot count; the later stages read deterministic or 1/2 rates.
+# the larger shot count. The follow series reads conditional coherences on
+# about half the shots of each branch and phase differences at the 0.01 level,
+# and a Tuna-17 shot costs about 0.5 ms against a 120 s pause per batch, so it
+# takes the same count (docs/notes/quantum_inspire/tuna-17-run-design.md).
 T0_SHOTS = 16384
-FOLLOW_SHOTS = 4096
+FOLLOW_SHOTS = 16384
 # Rz angles of the compiled full Design B are multiples of pi/ANGLE_GRID.
 ANGLE_GRID = 64
 ANGLE_TOLERANCE = 1e-9
@@ -242,23 +245,28 @@ SMOKE_PATTERNS: tuple[tuple[str, str, str, str, Callable[[Row], bool]], ...] = (
 # derived from the retained records; q15 reads P(0|1) 0.270 and stays out.
 TUNA_EXCLUDED = (0, 5, 6, 7, 9)
 TUNA_AVOIDED = (15,)
+# LCU_PAIRS is a maximum induced matching of the admitted coupling graph: no
+# coupler joins two pairs, so three replicas run side by side without a CZ
+# next to another replica's qubit.
 LCU_PAIRS = ((1, 4), (10, 13), (12, 14))
+# The walk set the pre-T0 batch read its readout stop rule on; its retained
+# cases fix it.
 WALK_LAYOUTS: dict[str, tuple[int, tuple[int, ...]]] = {"star_11": (11, (8, 13, 14)), "path_8_11_13": (11, (8, 13))}
-# The walk circuits place the reference replica on the LCU pair that shares
-# the fewest couplers with the walk qubits: (1, 4) meets q8 through 4-8 only.
-WALK_REFERENCE_PAIR = 0
 T0_DEPTHS = (1, 5, 9)
+# Follow-series walks: a 3-data star and a 2-data path with no qubit or
+# coupler in common, so one circuit carries both. Among the stars that admit
+# such a path on the admitted qubits, star_14 with data (11, 12, 16) loses the
+# least contrast to the retained static ZZ under both a 60 ns and a 0.8 us CZ
+# window (docs/notes/quantum_inspire/tuna-17-run-design.md).
+FOLLOW_WALK_LAYOUTS: dict[str, tuple[int, tuple[int, ...]]] = {"star_14": (14, (11, 12, 16)), "path_4": (4, (1, 2))}
+FOLLOW_WALKS = (((2, 11, 3), "star_14"), ((2, 3, 10), "path_4"))
+FOLLOW_DEPTHS = (5, 9)
 # Census rows by (kite, (p_low, p_high), x_sign, (q_low, q_high), y_sign).
 EDGE_K3 = (3, (1, 10), (4, 15))  # opposite-sign edge of kite 3, the acquired (1,10) witness pair
 TWIST_K6 = (6, (4, 10), (1, 15))  # its twist, a same-sign edge of kite 6 (census kites[2].twists[0])
 STRUT_K3 = (3, (1, 10), (2, 9))
 WALK_KITE = "1"
-WALKS = (
-    ("walk_ij_strut", (2, 11, 3), "star_11", False),
-    ("walk_jk_strut", (2, 3, 10), "path_8_11_13", False),
-    ("walk_ij_strut_omit_last", (2, 11, 3), "star_11", True),
-)
-TUNA_STAGES = ("t0", "t1", "coherence", "walk")
+TUNA_STAGES = ("t0", "follow")
 # Per-batch sanity limits of every Tuna-17 stage. An idle qubit of a witness
 # circuit reads within IDLE_MARGIN of its own readout-0 P1; a replica's
 # outcome moved onto an idle position (a reversed bit order) leaves it.
@@ -278,10 +286,20 @@ BOOTSTRAP_DRAWS = 4000
 BOOTSTRAP_SEED = 20261017
 T1_SAME_ABOVE, T1_OPPOSITE_BELOW, T1_STRUT_BELOW = 0.4, -0.4, 0.2
 NULL_OFFSET, SIGMA = 0.1, 3.0
-TWIST_ALLOWANCE_SE = 3.0
+# Readout brackets: a used qubit whose e01 or e10 moves more than this between
+# two brackets stops the series. T0's three batches moved at most 0.0071.
+BRACKET_DRIFT_MAX = 0.02
+# Cross-prediction band around r ** n_CZ for the walk magnitudes and the
+# depth-1 conditional coherences.
+CROSS_PREDICTION_BAND = 0.10
+# T0's fitted contrast decay per CZ and its depth-1 contrast C(1) (claim
+# qi-tuna17-boxkite-t0-depth-ladder); scripts/box_kite_follow_design.py binds
+# both roundings to the retained T0 analysis.
+T0_R = 0.9654
+T0_C1 = 0.954
 RY_DETERMINISTIC_MIN = 0.9
 # Pre-T0 double-X batch (claim proposed-tuna17-q0-q6-double-x-discriminator).
-PRE_SHOTS = FOLLOW_SHOTS
+PRE_SHOTS = 4096
 PRE_CLAIM = "proposed-tuna17-q0-q6-double-x-discriminator"
 RESEARCH_STATE = ROOT / "docs/state/research_state.json"
 PRE_PREDICTIONS = {"under_rotation": {"0": 0.98, "6": 0.52}, "misassignment": {"0": 0.038, "6": 0.013}}
@@ -293,9 +311,7 @@ CASE_DIRECTORIES = (
     "box_kite_a_qx",
     "box_kite_tuna_pre",
     "box_kite_tuna_t0",
-    "box_kite_tuna_t1",
-    "box_kite_tuna_coherence",
-    "box_kite_tuna_walk",
+    "box_kite_tuna_follow",
     "box_kite_tuna_twins_qx",
     "box_kite_ry_ladder",
     "box_kite_ry_smoke",
@@ -663,13 +679,19 @@ def coherence_setting(row: Row, setting: str) -> Any:
     return qc
 
 
-def associator_walk(i: int, j: int, k: int, omega: int, bits: list[int], omit_last: bool = False) -> Any:
+def associator_walk(
+    i: int, j: int, k: int, omega: int, bits: list[int], omit_last: bool = False, readout: str = "X"
+) -> Any:
     """Control 0 and data 1..len(bits), data qubit 1 + b carrying algebra bit bits[b].
 
     X prepares the bits of k; H, then Z for omega = -1, on the control;
     CNOT(c -> data) for every set bit of j, then of i, then of i^j unless
     omit_last; H on the control. Bits of k outside `bits` are never walked.
+    Readout Y puts Sdag before the last H, so Z on the control after it reads
+    S X Sdag = Y: 2 P(c = 0) - 1 = <Y_c>, the imaginary part of the overlap.
     """
+    if readout not in ("X", "Y"):
+        raise ValueError(f"walk readout {readout!r} is not X or Y")
     from qiskit import QuantumCircuit
 
     if any((mask & ~sum(1 << b for b in bits)) for mask in (i, j)):
@@ -685,6 +707,8 @@ def associator_walk(i: int, j: int, k: int, omega: int, bits: list[int], omit_la
         for slot, bit in enumerate(bits):
             if mask >> bit & 1:
                 qc.cx(0, 1 + slot)
+    if readout == "Y":
+        qc.sdg(0)
     qc.h(0)
     return qc
 
@@ -756,20 +780,24 @@ def check_row(item: tuple[str, Row]) -> None:
 # ---------------------------------------------------------------- emission
 
 
-def snap_angle(theta: float) -> int:
-    k = round(theta * ANGLE_GRID / math.pi)
-    if abs(theta - k * math.pi / ANGLE_GRID) > ANGLE_TOLERANCE:
-        raise ValueError(f"Rz angle {theta!r} is off the pi/{ANGLE_GRID} grid")
+def snap_angle(theta: float, grid: int = ANGLE_GRID) -> int:
+    k = round(theta * grid / math.pi)
+    if abs(theta - k * math.pi / grid) > ANGLE_TOLERANCE:
+        raise ValueError(f"Rz angle {theta!r} is off the pi/{grid} grid")
     return k
 
 
-def emit(circuit: Any, place: dict[int, int], dialect: str = "qx") -> list[str]:
+def emit(circuit: Any, place: dict[int, int], dialect: str = "qx", angle_grid: int | None = ANGLE_GRID) -> list[str]:
     """cQASM 3.0 lines of a basis-level replica; place maps its local qubits to register indices.
 
     The circuit's global phase is unobservable and is not written. Rz angles
-    print from their pi/ANGLE_GRID multiple. The tuna dialect writes a
-    barrier as one per-qubit barrier line per qubit, a run the platform's
-    scheduler aligns; the qx dialect omits barriers.
+    print from their pi/angle_grid multiple, which rejects an angle off that
+    grid; angle_grid None prints the angle itself at the same 15 decimals.
+    The tuna dialect writes a barrier as one per-qubit barrier line per
+    qubit, a run the platform's scheduler aligns; the qx dialect omits
+    barriers. No dialect maps rz into tuna or reset into any backend, so a
+    Tuna text carries no angle to quantize and no text reaches qxelarator's
+    reset.
     """
     if dialect not in DIALECTS:
         raise ValueError(f"dialect {dialect!r} has no gate map")
@@ -787,8 +815,10 @@ def emit(circuit: Any, place: dict[int, int], dialect: str = "qx") -> list[str]:
         if name in TWO_QUBIT:
             lines.append(f"{names[name]} q[{qubits[0]}], q[{qubits[1]}]")
         elif name == "rz":
-            k = snap_angle(float(instruction.operation.params[0]))
-            lines.append(f"{names[name]}({k * math.pi / ANGLE_GRID:.15f}) q[{qubits[0]}]")
+            theta = float(instruction.operation.params[0])
+            if angle_grid is not None:
+                theta = snap_angle(theta, angle_grid) * math.pi / angle_grid
+            lines.append(f"{names[name]}({theta:.15f}) q[{qubits[0]}]")
         else:
             lines.append(f"{names[name]} q[{qubits[0]}]")
     return lines
@@ -846,8 +876,8 @@ def restricted(circuit: Any) -> tuple[Any, dict[int, int]]:
 def replica_checks(replica: dict[str, Any]) -> list[tuple[str, tuple[int, ...], str]]:
     """(kind, register qubits, prediction) for one manifest replica.
 
-    p_zero: P(q = 0); p_zero_given_zero: P(d = 0 | a = 0); parity_zero_given_zero: P(the data bits
-    have even parity | selector = 0); cz_count: CZ lines on the pair.
+    p_zero: P(q = 0); p_zero_given_zero and p_zero_given_one: P(d = 0 | a = 0) and P(d = 0 | a = 1);
+    parity_zero_given_zero: P(the data bits have even parity | selector = 0); cz_count: CZ lines on the pair.
     """
     roles = replica["roles"]
     checks: list[tuple[str, tuple[int, ...], str]] = []
@@ -858,6 +888,10 @@ def replica_checks(replica: dict[str, Any]) -> list[tuple[str, tuple[int, ...], 
     if "p_data_zero_given_selector_zero" in replica:
         checks.append(
             ("p_zero_given_zero", (roles["selector"], roles["data"][0]), replica["p_data_zero_given_selector_zero"])
+        )
+    if "p_data_zero_given_selector_one" in replica:
+        checks.append(
+            ("p_zero_given_one", (roles["selector"], roles["data"][0]), replica["p_data_zero_given_selector_one"])
         )
     if "p_parity_even_given_selector_zero" in replica:
         checks.append(
@@ -898,9 +932,10 @@ def verify_text(item: tuple[str, str, list[tuple[str, tuple[int, ...], str]]]) -
         if kind == "p_zero":
             measured.add(qubits[0])
             value = float(state.probabilities([index[qubits[0]]])[0])
-        elif kind == "p_zero_given_zero":
+        elif kind in ("p_zero_given_zero", "p_zero_given_one"):
             joint = state.probabilities([index[qubits[0]], index[qubits[1]]])
-            value = float(joint[0] / (joint[0] + joint[2]))
+            branch = int(kind == "p_zero_given_one")
+            value = float(joint[branch] / (joint[branch] + joint[2 + branch]))
         elif kind == "parity_zero_given_zero":
             joint = state.probabilities([index[q] for q in qubits])
             kept = [n for n in range(len(joint)) if n % 2 == 0]
@@ -1100,6 +1135,7 @@ def validate_series(files: dict[str, str], backend: dict[str, Any]) -> None:
     """Offline admission of a generated series: batch sizes, digests, widths, shots and the series index."""
     series_index = json.loads(files["cases.json"])
     listed = set()
+    bracketed: list[bool] = []
     for batch in series_index["batches"]:
         name = batch["batch"]
         manifest = json.loads(files[f"{name}/cases.json"])
@@ -1138,15 +1174,48 @@ def validate_series(files: dict[str, str], backend: dict[str, Any]) -> None:
             # A diagnostic circuit (the pre-T0 double X) addresses every qubit by design;
             # a witness keeps to the admitted layout.
             kinds = [row["kind"] for row in circuits]
-            if (
+            pair = ["readout-0.cq", "readout-1.cq"]
+            if manifest.get("readout_calibration") == "bracketed":
+                if not (
+                    kinds == ["witness"] * HARDWARE_BATCH_CIRCUITS
+                    or (kinds == ["readout", "readout", "witness"] and batch["files"][:2] == pair)
+                    or (kinds == ["witness", "readout", "readout"] and batch["files"][1:] == pair)
+                ):
+                    raise ValueError(f"{name}: a bracketed Tuna batch is three witnesses or a readout pair and one")
+                bracketed.append("readout" in kinds)
+            elif (
                 kinds[0] not in ("witness", "diagnostic")
                 or kinds[1:] != ["readout", "readout"]
-                or batch["files"][1:] != ["readout-0.cq", "readout-1.cq"]
+                or batch["files"][1:] != pair
             ):
                 raise ValueError(f"{name}: a Tuna batch is one witness circuit, then readout-0 and readout-1")
         listed.add(f"{name}/cases.json")
     if listed | {"cases.json"} != set(files):
         raise ValueError("series files differ from the batches its cases.json lists")
+    check_quadratures(series_index)
+    if bracketed:
+        gaps = "".join("R" if b else "." for b in bracketed).split("R")
+        if not (bracketed[0] and bracketed[-1]) or max(map(len, gaps)) > BRACKET_SPAN:
+            raise ValueError(
+                f"a bracketed series needs readout pairs in its first and last batch and at most {BRACKET_SPAN} "
+                "witness-only batches between two pairs"
+            )
+
+
+def check_quadratures(series_index: dict[str, Any]) -> None:
+    """The X and Y circuits of a quadrature pair (name-x[-k], name-y[-k]) lie within QUADRATURE_SPAN batches."""
+    placed: dict[tuple[str, str], dict[str, int]] = {}
+    for index, batch in enumerate(series_index["batches"]):
+        for file in batch["files"]:
+            match = QUADRATURE.match(file)
+            if match:
+                placed.setdefault((match[1], match[3] or ""), {})[match[2]] = index
+    for (stem, suffix), at in sorted(placed.items()):
+        if len(at) == 2 and abs(at["x"] - at["y"]) > QUADRATURE_SPAN:
+            raise ValueError(
+                f"{stem}-x{suffix} and {stem}-y{suffix} lie {abs(at['x'] - at['y'])} batches apart, beyond "
+                f"{QUADRATURE_SPAN}"
+            )
 
 
 def replica_qubits(roles: dict[str, Any]) -> list[int]:
@@ -1320,9 +1389,19 @@ def smoke_series(census_path: Path = CENSUS) -> dict[str, str]:
 
 
 def lcu_replica(
-    slot: int, row: Row, pair: tuple[int, int], kind: str, depth: int = 1, setting: str | None = None
+    slot: int,
+    row: Row,
+    pair: tuple[int, int],
+    kind: str,
+    depth: int = 1,
+    setting: str | None = None,
+    label: str | None = None,
 ) -> tuple[dict[str, Any], Any]:
-    """Manifest record and Tuna-level circuit of one reduced LCU replica on an LCU pair (selector first)."""
+    """Manifest record and Tuna-level circuit of one reduced LCU replica on an LCU pair (selector first).
+
+    With a setting, the data qubit is read in X or Y, and the record carries
+    the conditional data prediction of every selector branch the row populates.
+    """
     check_select("reduced", row)
     check_amplitudes("reduced", row, reduced_lcu(row))
     logical_circuit = reduced_lcu(row) if setting is None else coherence_setting(row, setting)
@@ -1332,6 +1411,7 @@ def lcu_replica(
     record: dict[str, Any] = {
         "slot": slot,
         "kind": kind,
+        **({"label": label} if label is not None else {}),
         "census": f"{row['source']}[{row['index']}]",
         "kite": row["kite"],
         "p": [row["p_low"], row["p_high"], row["x_sign"]],
@@ -1342,26 +1422,38 @@ def lcu_replica(
         "p_selector_zero": row["p_selector_zero"],
     }
     if setting is not None:
-        coh = row["coherence_selector_0"]
-        if coh is None:
-            raise ValueError(f"census {record['census']}: the selector-0 branch is empty and carries no coherence")
-        expectation = 2 * Fraction(coh) if setting == "X" else Fraction(0)
         record["setting"] = setting
-        record["coherence_selector_0"] = coh
-        record["expectation_given_selector_zero"] = str(expectation)
-        record["p_data_zero_given_selector_zero"] = str((1 + expectation) / 2)
+        populated = 0
+        for branch, name in (("0", "zero"), ("1", "one")):
+            coh = row[f"coherence_selector_{branch}"]
+            if coh is None:
+                continue
+            populated += 1
+            expectation = 2 * Fraction(coh) if setting == "X" else Fraction(0)
+            record[f"coherence_selector_{branch}"] = coh
+            record[f"expectation_given_selector_{name}"] = str(expectation)
+            record[f"p_data_zero_given_selector_{name}"] = str((1 + expectation) / 2)
+        if not populated:
+            raise ValueError(f"census {record['census']}: no selector branch carries a coherence")
     return record, circuit
 
 
 def walk_replica(
-    slot: int, census: dict[str, Any], triple: tuple[int, int, int], layout: str, omit_last: bool
+    slot: int,
+    census: dict[str, Any],
+    triple: tuple[int, int, int],
+    layout: str,
+    omit_last: bool,
+    readout: str = "X",
+    layouts: dict[str, tuple[int, tuple[int, ...]]] = FOLLOW_WALK_LAYOUTS,
 ) -> tuple[dict[str, Any], Any]:
     exemplar = walk_exemplar(census, triple)
-    control, data = WALK_LAYOUTS[layout]
+    control, data = layouts[layout]
     if len(data) != len(exemplar["bits"]):
         raise ValueError(f"walk {triple} needs {len(exemplar['bits'])} data qubits; {layout} holds {len(data)}")
     i, j, k, omega = exemplar["i"], exemplar["j"], exemplar["k"], exemplar["omega"]
-    circuit = lower_for_tuna(associator_walk(i, j, k, omega, exemplar["bits"], omit_last))
+    circuit = lower_for_tuna(associator_walk(i, j, k, omega, exemplar["bits"], omit_last, readout))
+    balanced = omit_last or readout == "Y"
     record = {
         "slot": slot,
         "kind": "walk",
@@ -1370,11 +1462,12 @@ def walk_replica(
         "triple": [i, j, k],
         "omega": omega,
         "omit_last_block": omit_last,
+        "readout": readout,
         "layout": layout,
         "roles": {"control": control, "data": list(data)},
         "data_bits": {str(bit): q for bit, q in zip(exemplar["bits"], data, strict=True)},
         "cz": exemplar["cnots"] - (bin(i ^ j).count("1") if omit_last else 0),
-        "p_control_zero": "1/2" if omit_last else str(Fraction(1 + omega, 2)),
+        "p_control_zero": "1/2" if balanced else str(Fraction(1 + omega, 2)),
     }
     return record, circuit
 
@@ -1387,14 +1480,16 @@ def tuna_text(members: list[tuple[dict[str, Any], Any]]) -> str:
             place = {0: roles["control"], **{1 + n: q for n, q in enumerate(roles["data"])}}
             what = (
                 f"walk {tuple(record['triple'])} omega {record['omega']}"
-                f"{' omit-last-block' if record['omit_last_block'] else ''} control q[{roles['control']}] "
+                f"{' omit-last-block' if record['omit_last_block'] else ''}"
+                f"{' readout Y' if record['readout'] == 'Y' else ''} control q[{roles['control']}] "
                 f"P(c=0) {record['p_control_zero']}"
             )
         else:
             place = {0: roles["selector"], 1: roles["data"][0]}
             setting = f" setting {record['setting']}" if "setting" in record else ""
+            label = f" {record['label']}" if "label" in record else ""
             what = (
-                f"{record['kind']} census {record['census']} kite {record['kite']} "
+                f"{record['kind']}{label} census {record['census']} kite {record['kite']} "
                 f"({record['p'][0]},{record['p'][1]}){'+' if record['p'][2] > 0 else '-'} x "
                 f"({record['q'][0]},{record['q'][1]}){'+' if record['q'][2] > 0 else '-'} {record['relation']} "
                 f"depth {record['cz_depth']}{setting} P {record['p_selector_zero']} selector q[{roles['selector']}]"
@@ -1404,66 +1499,94 @@ def tuna_text(members: list[tuple[dict[str, Any], Any]]) -> str:
     return "\n".join(lines + ["", "barrier q", "b = measure q", ""])
 
 
-def tuna_witnesses(census: dict[str, Any], rows: dict[str, list[Row]]) -> dict[str, list[list[tuple[Any, Any]]]]:
-    """Per stage, the replica list of each witness circuit, one circuit per batch."""
+# The follow series in submission order. Each witness name is a circuit file;
+# readout-0 and readout-1 bracket the witnesses at the start, the middle and
+# the end, so no witness sits more than one batch from a readout pair. The X
+# and Y circuits that one Bloch vector combines run in one batch or in two
+# consecutive ones, and walk-x and walk-y in consecutive jobs; the depth-1 and
+# depth-9 bright edges of a setting, which carry the ladder slopes, share a
+# batch.
+FOLLOW_PLAN = (
+    ("readout-0", "readout-1", "walk-omit"),
+    ("lcu-bright-x-1", "lcu-bright-x-2", "depth-9-x"),
+    ("lcu-bright-y-1", "lcu-bright-y-2", "depth-9-y"),
+    ("readout-0", "readout-1", "walk-x"),
+    ("walk-y", "lcu-dark-x-1", "lcu-dark-x-2"),
+    ("lcu-dark-y-1", "lcu-dark-y-2", "depth-5-x"),
+    ("depth-5-y", "readout-0", "readout-1"),
+)
+# Witness-only batches allowed between two readout brackets.
+BRACKET_SPAN = 2
+# Batches allowed between the X and the Y circuit of one quadrature pair.
+QUADRATURE_SPAN = 1
+QUADRATURE = re.compile(r"^(.*)-([xy])(-\d+)?\.cq$")
+
+
+def follow_witnesses(census: dict[str, Any], rows: dict[str, list[Row]]) -> dict[str, list[tuple[Any, Any]]]:
+    """The fifteen follow witnesses by name: crossover LCU pairs, the coherence depth ladder and the walks.
+
+    lcu-{bright,dark}-{x,y}-{1,2} are 2 x 2 crossovers: the edge and its twist
+    at the opposite y_sign trade the pairs LCU_PAIRS[0] and [1] between
+    circuits 1 and 2 of a setting, so the twist difference averaged over both
+    pairs cancels the pair and the circuit offsets. LCU_PAIRS[2] holds the
+    edge at both signs in the bright block and the strut at both signs in the
+    dark block. depth-{5,9}-{x,y} put the bright edge at that CZ depth on all
+    three pairs. walk-x, walk-omit and walk-y carry both FOLLOW_WALKS read in
+    X, with the last block omitted, and read in Y.
+    """
     check_twist(census)
     edge = {y: find_row(rows, EDGE_K3, 1, y) for y in (1, -1)}
     twist = {y: find_row(rows, TWIST_K6, 1, y) for y in (1, -1)}
     strut = {y: find_row(rows, STRUT_K3, 1, y) for y in (1, -1)}
-    reference = edge[1]
-    if reference["p_selector_zero"] != "1" or edge[-1]["p_selector_zero"] != "0":
-        raise ValueError("the T0 edge rows lost their (P = 1, P = 0) pair")
-    stages: dict[str, list[list[tuple[Any, Any]]]] = {stage: [] for stage in TUNA_STAGES}
-    # T0: depth index (pair + batch) mod 3, and y_sign -1 on the diagonal pair == batch, so every
-    # depth, pair and batch holds one dark and two bright replicas.
-    for batch in range(3):
-        stages["t0"].append(
-            [
-                lcu_replica(p, edge[-1 if p == batch else 1], LCU_PAIRS[p], "lcu", T0_DEPTHS[(p + batch) % 3])
-                for p in range(3)
-            ]
-        )
-    # T1: each row keeps its pair in both batches, so D compares one pair across the two
-    # batches, and each twist pair (edge at y, twist at -y) shares a batch.
-    for y in (1, -1):
-        stages["t1"].append(
-            [
-                lcu_replica(0, edge[y], LCU_PAIRS[0], "lcu"),
-                lcu_replica(1, twist[-y], LCU_PAIRS[1], "lcu"),
-                lcu_replica(2, strut[y], LCU_PAIRS[2], "lcu"),
-            ]
-        )
-    # Coherence: the bright twist edge and the strut keep their pairs across the X and Y
-    # settings; the reference sits on the third pair.
+    if edge[1]["p_selector_zero"] != "1" or twist[-1]["p_selector_zero"] != "1":
+        raise ValueError("the follow crossover lost its bright pair (edge +, twist -)")
+    if edge[-1]["p_selector_zero"] != "0" or twist[1]["p_selector_zero"] != "0":
+        raise ValueError("the follow crossover lost its dark pair (edge -, twist +)")
+    named = {**{f"edge{'+' if y > 0 else '-'}": r for y, r in edge.items()}}
+    named |= {f"twist{'+' if y > 0 else '-'}": r for y, r in twist.items()}
+    named |= {f"strut{'+' if y > 0 else '-'}": r for y, r in strut.items()}
+
+    def circuit(labels: tuple[str, str, str], setting: str, depth: int = 1) -> list[tuple[Any, Any]]:
+        return [
+            lcu_replica(slot, named[label], LCU_PAIRS[slot], "lcu", depth, setting, label)
+            for slot, label in enumerate(labels)
+        ]
+
+    witnesses: dict[str, list[tuple[Any, Any]]] = {}
     for setting in ("X", "Y"):
-        stages["coherence"].append(
-            [
-                lcu_replica(0, twist[-1], LCU_PAIRS[0], "coherence", setting=setting),
-                lcu_replica(1, strut[1], LCU_PAIRS[1], "coherence", setting=setting),
-                lcu_replica(2, reference, LCU_PAIRS[2], "reference"),
-            ]
-        )
-    for _, triple, layout, omit_last in WALKS:
-        stages["walk"].append(
-            [
-                walk_replica(0, census, triple, layout, omit_last),
-                lcu_replica(1, reference, LCU_PAIRS[WALK_REFERENCE_PAIR], "reference"),
-            ]
-        )
-    return stages
+        s = setting.lower()
+        witnesses[f"lcu-bright-{s}-1"] = circuit(("edge+", "twist-", "edge-"), setting)
+        witnesses[f"lcu-bright-{s}-2"] = circuit(("twist-", "edge+", "edge+"), setting)
+        witnesses[f"lcu-dark-{s}-1"] = circuit(("edge-", "twist+", "strut+"), setting)
+        witnesses[f"lcu-dark-{s}-2"] = circuit(("twist+", "edge-", "strut-"), setting)
+        for depth in FOLLOW_DEPTHS:
+            witnesses[f"depth-{depth}-{s}"] = circuit(("edge+", "edge+", "edge+"), setting, depth)
+    for name, omit_last, readout in (("walk-x", False, "X"), ("walk-omit", True, "X"), ("walk-y", False, "Y")):
+        witnesses[name] = [
+            walk_replica(slot, census, triple, layout, omit_last, readout)
+            for slot, (triple, layout) in enumerate(FOLLOW_WALKS)
+        ]
+    planned = [name for batch in FOLLOW_PLAN for name in batch if not name.startswith("readout-")]
+    if sorted(planned) != sorted(witnesses) or len(planned) != len(set(planned)):
+        raise ValueError("FOLLOW_PLAN does not list every follow witness exactly once")
+    return witnesses
 
 
-def t0_bright_depths(pair: int) -> set[int]:
-    """CZ depths at which the T0 Latin square places a bright replica on LCU pair `pair` (dark when batch == pair)."""
-    return {T0_DEPTHS[(pair + batch) % 3] for batch in range(3) if batch != pair}
-
-
-def twist_allowance_depth() -> int:
-    """The shallowest CZ depth with a T0 bright replica on both the T1 edge pair and the T1 twist pair."""
-    common = t0_bright_depths(0) & t0_bright_depths(1)
-    if not common:
-        raise ValueError("T0 places no bright replica on both T1 pairs at one depth; the twist allowance is undefined")
-    return min(common)
+def tuna_witnesses(census: dict[str, Any], rows: dict[str, list[Row]]) -> list[list[tuple[Any, Any]]]:
+    """The T0 witness circuits, one per batch: a 3 x 3 Latin square of CZ depth over the LCU pairs."""
+    check_twist(census)
+    edge = {y: find_row(rows, EDGE_K3, 1, y) for y in (1, -1)}
+    if edge[1]["p_selector_zero"] != "1" or edge[-1]["p_selector_zero"] != "0":
+        raise ValueError("the T0 edge rows lost their (P = 1, P = 0) pair")
+    # Depth index (pair + batch) mod 3, and y_sign -1 on the diagonal pair == batch, so every
+    # depth, pair and batch holds one dark and two bright replicas.
+    return [
+        [
+            lcu_replica(p, edge[-1 if p == batch else 1], LCU_PAIRS[p], "lcu", T0_DEPTHS[(p + batch) % 3])
+            for p in range(3)
+        ]
+        for batch in range(3)
+    ]
 
 
 def sanity_thresholds() -> dict[str, Any]:
@@ -1476,7 +1599,8 @@ def sanity_thresholds() -> dict[str, Any]:
     }
 
 
-def tuna_preregistered() -> dict[str, dict[str, Any]]:
+def tuna_preregistered(census: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    walk_targets = [T0_R ** walk_exemplar(census, triple)["cnots"] for triple, _ in FOLLOW_WALKS]
     stop = (
         f"each batch: every job completed with the manifest's shots; readout-0 P1 at most {READOUT_0_P1_MAX:.2f} "
         f"and readout-1 P1 at least {READOUT_1_P1_MIN:.2f} on every used qubit (a failure stops the series and "
@@ -1527,86 +1651,98 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
                 "interval_percentiles": [0.5, 99.5],
             },
         },
-        "t1": {
-            "observable": "zero-product success; classification statistic D = Pc(+, -) - Pc(+, +) per row from its "
-            "two replicas on one pair, the y_sign -1 replica minus the y_sign +1 replica",
-            "rows": "opposite-sign edge (1,10)(4,15) of kite 3 on (1, 4), its census twist the same-sign edge "
-            "(4,10)(1,15) of kite 6 on (10, 13), strut (1,10)(2,9) of kite 3 on (12, 14); batch-00 holds the edge "
-            "at y_sign +1, the twist at -1 and the strut at +1, batch-01 the opposite signs",
-            "predictions": "D = -1 opposite edge, +1 twist (same-sign edge), 0 strut; P(edge, y) = P(twist, -y) "
-            "under the twist map (L, U, x; L', U', y) -> (L', U, x; L, U', -y)",
-            "classification": f"D above +{T1_SAME_ABOVE} same-sign, below {T1_OPPOSITE_BELOW} opposite-sign, |D| "
-            f"below {T1_STRUT_BELOW} strut, otherwise unresolved; predicted |D| on edges at least 0.72 (pessimistic)",
-            "falsifier": "a row misclassified or unresolved refutes the separation estimate for its pair; a strut "
-            f"with |D| > {NULL_OFFSET} + {SIGMA:g} sigma exposes a pair-dependent bias and stops the series; a twist "
-            f"pair whose Pc differ by more than {SIGMA:g} combined standard errors plus the pair-location allowance "
-            "refutes twist equality for that layout",
-            "twist_allowance": f"|Pc_bright(q{LCU_PAIRS[0][0]}, d) - Pc_bright(q{LCU_PAIRS[1][0]}, d)| plus "
-            f"{TWIST_ALLOWANCE_SE:g} standard errors of that difference, at the shallowest CZ depth d at which T0 "
-            f"places a bright replica on both pairs (d = {twist_allowance_depth()} in the generated Latin square, "
-            "whose depth-1 replica on the first pair is dark); the gap between the two pairs grows with depth, so "
-            "the depth-d allowance bounds T1's depth-1 gap from above and the test is conservative",
-            "stop_rule": stop,
+        "follow": {
+            "observable": "per LCU replica the selector success P(a = 0) and, for every populated selector branch b, "
+            "the data expectation E_b = <S_d | a = b> = 2 P(d = 0 | a = b) - 1 in the replica's setting S (X: H on "
+            "d; Y: Sdag, H on d); per walk the control expectation 2 P(c = 0) - 1, which reads <X_c> (readout X) or "
+            "<Y_c> (readout Y: Sdag, H on c)",
+            "design": "seven batches in FOLLOW_PLAN order. lcu-{bright,dark}-{x,y}-{1,2}: 2 x 2 crossovers in which "
+            "the edge (1,10)(4,15) of kite 3 at y_sign y and its census twist (4,10)(1,15) of kite 6 at -y trade "
+            "the pairs (1, 4) and (10, 13) between circuits 1 and 2; (12, 14) holds the edge at both signs in the "
+            "bright block and the strut (1,10)(2,9) at both signs in the dark block. depth-{5,9}-{x,y}: the bright "
+            "edge at that CZ depth on all three pairs. walk-x, walk-omit, walk-y: the kite 1 exemplars (2,11,3) on "
+            "star 14 {11, 12, 16} (6 CZ) and (2,3,10) on path 4 {1, 2} (4 CZ), read in X, with the last block "
+            "omitted, and read in Y",
+            "readout": "readout-0 and readout-1 in batches 0, 3 and 6; the X and Y circuits of one Bloch vector "
+            f"lie at most {QUADRATURE_SPAN} batch apart; each qubit's e01 and e10 at a witness job are "
+            "interpolated linearly in job finish time between the two nearest brackets, with the binomial variance "
+            "of both brackets; the bracket difference enters as a reported systematic. Pc = (p - e10) / (1 - e01 - "
+            "e10) on the selector; E_b inverts the tensor product of the selector's and the data qubit's "
+            "assignment matrices on the joint (a, d) counts",
+            "classification": f"D = Pc(y_sign -1) - Pc(y_sign +1) per row and pair, pooled over the settings: D "
+            f"above +{T1_SAME_ABOVE} same-sign (twist), below {T1_OPPOSITE_BELOW} opposite-sign (edge), |D| below "
+            f"{T1_STRUT_BELOW} strut, otherwise unresolved; a misclassified or unresolved row refutes the "
+            "separation of its pair",
+            "twist": "per block (bright: edge +, twist -; dark: edge -, twist +) and setting, Delta = "
+            "[(Pc(edge, pair 0, circuit 1) - Pc(twist, pair 0, circuit 2)) + (Pc(edge, pair 1, circuit 2) - "
+            "Pc(twist, pair 1, circuit 1))] / 2, in which the pair and circuit offsets cancel; the census predicts "
+            f"Delta = 0, and |Delta| above {SIGMA:g} standard errors refutes twist equality for that block and "
+            "setting. The edge and the twist differ only in their local Z, S and Sdag gates, so a refutation "
+            "measures a gate-dependent error between them",
+            "strut": f"D of the strut on (12, 14) per setting; |D| above {NULL_OFFSET} + {SIGMA:g} sigma exposes a "
+            "pair-dependent bias",
+            "coherence": "census predictions: E_0 = -1 on the bright edge and twist in X, E_1 = +1 on the dark edge "
+            "and twist in X, 0 in Y and 0 on both strut branches. Falsifier: an X expectation of sign opposite to "
+            f"the census at |z| > {SIGMA:g}, or a strut |E_b| above {NULL_OFFSET} + {SIGMA:g} sigma. "
+            f"Cross-prediction: the depth-1 magnitude |E_b| in X equals T0's C(1) = {T0_C1} within "
+            f"{CROSS_PREDICTION_BAND}, the value a depolarizing error of the two-qubit block gives",
+            "depth_ladder": "per pair, the bright edge at CZ depths 1 (the lcu-bright circuits), 5 and 9 gives the "
+            "conditional magnitude m(n) = sqrt(E_X^2 + E_Y^2), the phase phi(n) = atan2(E_Y, -E_X) about the "
+            "census value -1, and the population Pc(n) of the same replicas; the joint coherence J(n) = Pc(n) m(n) "
+            "and the population contrast 2 Pc(n) - 1 both equal lambda^n under a global depolarizing channel of "
+            "rate lambda per CZ, so r_coh and r_pop are exp(slope) of ln J(n) and ln(2 Pc(n) - 1) on n and their "
+            "ratio is 1 there, while dephasing lowers it and amplitude damping raises r_pop; the phase slope is "
+            "phi per CZ, the data qubit's detuning phase over one CZ window plus the CZ's residual local phase, with "
+            "phi(n) unwrapped along n before the fit, which identifies a slope below pi / 4 per CZ in magnitude. "
+            "Each is an unweighted least-squares slope with a 99% parametric-bootstrap interval "
+            f"({BOOTSTRAP_DRAWS} draws, seed {BOOTSTRAP_SEED}), reported as estimates",
+            "walks": f"<X_c> = omega = -1 on both walks, 0 on both omit-last controls and 0 in Y. Falsifier: sign "
+            f"opposite to omega at |z| > {SIGMA:g}, or a control's |<X_c>| above {NULL_OFFSET} + {SIGMA:g} sigma. "
+            "Cross-prediction: sqrt(<X_c>^2 + <Y_c>^2) equals r^n_CZ for T0's r = "
+            f"{T0_R}, {walk_targets[0]:.3f} on the star and {walk_targets[1]:.3f} on the path, within "
+            f"{CROSS_PREDICTION_BAND}; the phase "
+            "atan2(<Y_c>, -<X_c>) is reported",
+            "replication": "the depth-5 and depth-9 bright edge populations per pair against T0's values on the "
+            "same pair and depth, reported as drift over the hours between the series",
+            "stop_rule": f"each batch: every job completed with the manifest's shots; circuit digests equal "
+            f"cases.json; the account's queue empty; a 120 s pause before the next batch. At each readout "
+            f"bracket: readout-0 P1 at most {READOUT_0_P1_MAX:.2f} and readout-1 P1 at least "
+            f"{READOUT_1_P1_MIN:.2f} on every used qubit, and no used qubit's e01 or e10 moved more than "
+            f"{BRACKET_DRIFT_MAX} since the previous bracket; a failure stops the series. Every depth-1 "
+            f"deterministic LCU replica within {1 - BRIGHT_P_MIN:g} of its ideal raw P(selector = 0), and a "
+            f"walk read in X at raw P(c = 1) at least {BRIGHT_P_MIN:g}; every idle qubit at P1 at most "
+            f"{IDLE_MARGIN:g} above its interpolated readout-0 P1",
             "thresholds": {
                 **sanity,
+                "deterministic_floor_margin": round(1 - BRIGHT_P_MIN, 12),
                 "same_sign_above": T1_SAME_ABOVE,
                 "opposite_sign_below": T1_OPPOSITE_BELOW,
                 "strut_abs_below": T1_STRUT_BELOW,
                 "null_offset": NULL_OFFSET,
                 "sigma": SIGMA,
-                "twist_allowance_se_multiple": TWIST_ALLOWANCE_SE,
-            },
-        },
-        "coherence": {
-            "observable": "coherence reconstruction of the selector-0 branch: <X_d | a = 0> on setting X (H on d), "
-            "<Y_d | a = 0> on setting Y (Sdag, H on d), each 2 P(d = 0 | a = 0) - 1 with the selector and data "
-            "readout corrected from the batch's readout pair",
-            "rows": "bright same-sign edge (4,10)+ x (1,15)- of kite 6 on (1, 4), strut (1,10)+ x (2,9)+ of kite 3 "
-            "on (10, 13), the reference (1,10)+ x (4,15)+ (P = 1) on (12, 14)",
-            "predictions": "edge <X_d> = 2 census coherence_selector_0 = -1 and <Y_d> = 0; strut <X_d> = <Y_d> = 0",
-            "falsifier": f"sign(<X_d>) opposite to the census coherence at |z| > {SIGMA:g} on the edge, or |<X_d>| "
-            f"above {NULL_OFFSET} + {SIGMA:g} sigma on the strut",
-            "uncertainty": "the selector-0 conditional is corrected by inverting the tensor product of the selector's "
-            "and the data qubit's assignment matrices on the joint (a, d) counts; its standard error is the standard "
-            f"deviation of a parametric bootstrap ({BOOTSTRAP_DRAWS} draws, seed {BOOTSTRAP_SEED}) of the joint "
-            "counts and the batch's readout pair",
-            "stop_rule": stop,
-            "thresholds": {
-                **sanity,
-                "null_offset": NULL_OFFSET,
-                "sigma": SIGMA,
+                "bracket_drift_max": BRACKET_DRIFT_MAX,
+                "bracket_span": BRACKET_SPAN,
+                "cross_prediction_band": CROSS_PREDICTION_BAND,
+                "t0_r": T0_R,
+                "t0_c1": T0_C1,
+                "depths": [1, *FOLLOW_DEPTHS],
                 "bootstrap_draws": BOOTSTRAP_DRAWS,
                 "bootstrap_seed": BOOTSTRAP_SEED,
+                "interval_percentiles": [0.5, 99.5],
             },
-        },
-        "walk": {
-            "observable": "associator-sign interference witness <Z_c> = 2 Pc(c = 0) - 1 of the fixed-triple walk",
-            "rows": "kite 1 exemplars (2,11,3) ij-same-vertex-third-strut omega -1 (6 CNOT, star 11 {8, 13, 14}) "
-            "and (2,3,10) jk-same-vertex-third-strut omega -1 (4 CNOT, path 8-11-13), and the omit-last-block "
-            "control of (2,11,3); each with the reference on (1, 4)",
-            "predictions": "<Z_c> = omega = -1 on both walks, 0 on the control",
-            "falsifier": f"sign(<Z_c>) opposite to omega at |z| > {SIGMA:g}, or the control's |<Z_c>| above "
-            f"{NULL_OFFSET} + {SIGMA:g} sigma",
-            "limit": "the walk carries omega as a compiled Z on the control; the hardware establishes coherent return "
-            "of the walked register and reads a compiled sign, and an associator-sign witness cannot separate the "
-            "octonions from the split octonions",
-            "stop_rule": stop,
-            "thresholds": {**sanity, "null_offset": NULL_OFFSET, "sigma": SIGMA},
         },
     }
 
 
 def tuna_series(census_path: Path = CENSUS) -> dict[str, dict[str, str]]:
-    """The four Tuna-17 case directories and the QX twin directory."""
+    """The pre-T0, T0 and follow Tuna-17 case directories and the QX twin directory."""
     catalogue = json.loads(CATALOGUE.read_text(encoding="utf-8"))
     tuna = tuna_backend(catalogue)
     qx = qx_backend(catalogue)
     census = load_census(census_path)
     rows = validate_census(census)
-    stages = tuna_witnesses(census, rows)
-    prereg = tuna_preregistered()
+    prereg = tuna_preregistered(census)
     readout = readout_circuits(TUNA_QUBITS)
-    shots = {"t0": T0_SHOTS, "t1": FOLLOW_SHOTS, "coherence": FOLLOW_SHOTS, "walk": FOLLOW_SHOTS}
     layout = {
         "excluded": list(TUNA_EXCLUDED),
         "avoided": list(TUNA_AVOIDED),
@@ -1615,52 +1751,84 @@ def tuna_series(census_path: Path = CENSUS) -> dict[str, dict[str, str]]:
     }
     directories: dict[str, dict[str, str]] = {"box_kite_tuna_pre": pre_series(tuna, census_path, census, layout)}
     witness_jobs: list[tuple[str, str, list[tuple[str, tuple[int, ...], str]]]] = []
-    twin_rows: list[dict[str, Any]] = []
-    twin_texts: dict[str, str] = {}
-    for stage in TUNA_STAGES:
-        chunks: list[list[dict[str, Any]]] = []
-        texts: dict[str, str] = {}
-        for index, members in enumerate(stages[stage]):
-            file = f"{stage}-{index + 1}.cq"
-            text = tuna_text(members)
-            witness = {"file": file, "kind": "witness", "stage": stage, "replicas": [r for r, _ in members]}
-            texts[file] = text
-            witness_jobs.append((f"box_kite_tuna_{stage}/{file}", text, checks_of(witness)))
-            chunks.append(
-                [
-                    witness,
-                    {"file": "readout-0.cq", "kind": "readout", "stage": stage, "prepared": 0},
-                    {"file": "readout-1.cq", "kind": "readout", "stage": stage, "prepared": 1},
-                ]
-            )
-            twin_row, twin_text = twin(witness, text, f"box_kite_tuna_{stage}/batch-{index:02d}/{file}")
-            twin_rows.append(twin_row)
-            twin_texts[twin_row["file"]] = twin_text
-        texts.update(readout)
-        shared = {
-            "schema": CASES_SCHEMA,
-            "family": f"tuna_{stage}",
-            "backend": tuna["identifier"],
-            "backend_type_id": tuna["id"],
-            "nqubits": tuna["nqubits"],
-            "shots": shots[stage],
-            "dialect": "tuna",
-            "bit_order": "qubit 0 at the rightmost character (Tuna)",
-            "census": census_record(census_path, census),
-            "layout": layout,
-            "encodings": {
-                "reduced": "selector a = the pair's first qubit, data d = its second; reduced two-label LCU with "
-                "CNOT as H CZ H on d; CZ depth n repeats CZ(a, d) (n - 1) times after the SELECT CZ, each after "
-                "a per-qubit barrier run",
-                "walk": "control c on q11, data bits on the layout's data qubits in ascending bit order; CNOT as "
-                "H CZ H on the data qubit; omega as Z on c after its first H",
-                "readout": "readout-0 measures all 17 qubits in |0>, readout-1 after X on all 17",
-            },
-            "preregistered": prereg[stage],
-        }
-        files = write_batches(shared, chunks, texts, "stage")
-        validate_series(files, tuna)
-        directories[f"box_kite_tuna_{stage}"] = files
+    twins: dict[str, list[tuple[dict[str, Any], str]]] = {"t0": [], "follow": []}
+
+    def witness(stage: str, file: str, members: list[tuple[Any, Any]], batch: int) -> dict[str, Any]:
+        text = tuna_text(members)
+        row = {"file": file, "kind": "witness", "stage": stage, "replicas": [r for r, _ in members]}
+        texts[file] = text
+        witness_jobs.append((f"box_kite_tuna_{stage}/{file}", text, checks_of(row)))
+        twins[stage].append(twin(row, text, f"box_kite_tuna_{stage}/batch-{batch:02d}/{file}"))
+        return row
+
+    def readout_row(stage: str, prepared: int) -> dict[str, Any]:
+        return {"file": f"readout-{prepared}.cq", "kind": "readout", "stage": stage, "prepared": prepared}
+
+    # T0: one witness, then the batch's own readout pair.
+    texts: dict[str, str] = dict(readout)
+    chunks = [
+        [witness("t0", f"t0-{index + 1}.cq", members, index), readout_row("t0", 0), readout_row("t0", 1)]
+        for index, members in enumerate(tuna_witnesses(census, rows))
+    ]
+    shared = {
+        "schema": CASES_SCHEMA,
+        "family": "tuna_t0",
+        "backend": tuna["identifier"],
+        "backend_type_id": tuna["id"],
+        "nqubits": tuna["nqubits"],
+        "shots": T0_SHOTS,
+        "dialect": "tuna",
+        "bit_order": "qubit 0 at the rightmost character (Tuna)",
+        "census": census_record(census_path, census),
+        "layout": layout,
+        "encodings": {
+            "reduced": "selector a = the pair's first qubit, data d = its second; reduced two-label LCU with "
+            "CNOT as H CZ H on d; CZ depth n repeats CZ(a, d) (n - 1) times after the SELECT CZ, each after "
+            "a per-qubit barrier run",
+            "walk": "control c on q11, data bits on the layout's data qubits in ascending bit order; CNOT as "
+            "H CZ H on the data qubit; omega as Z on c after its first H",
+            "readout": "readout-0 measures all 17 qubits in |0>, readout-1 after X on all 17",
+        },
+        "preregistered": prereg["t0"],
+    }
+    files = write_batches(shared, chunks, texts, "stage")
+    validate_series(files, tuna)
+    directories["box_kite_tuna_t0"] = files
+
+    # Follow: FOLLOW_PLAN batches with readout brackets.
+    texts = dict(readout)
+    follow = follow_witnesses(census, rows)
+    chunks = [
+        [
+            readout_row("follow", int(name[-1])) if name.startswith("readout-") else
+            witness("follow", f"{name}.cq", follow[name], index)
+            for name in batch
+        ]
+        for index, batch in enumerate(FOLLOW_PLAN)
+    ]  # fmt: skip
+    shared = {
+        **shared,
+        "family": "tuna_follow",
+        "shots": FOLLOW_SHOTS,
+        "layout": {
+            **layout,
+            "walks": {name: {"control": c, "data": list(d)} for name, (c, d) in FOLLOW_WALK_LAYOUTS.items()},
+        },
+        "readout_calibration": "bracketed",
+        "encodings": {
+            "reduced": "selector a = the pair's first qubit, data d = its second; reduced two-label LCU with "
+            "CNOT as H CZ H on d; setting X adds H on d and setting Y adds Sdag, H on d before the measurement; "
+            "CZ depth n repeats CZ(a, d) (n - 1) times after the SELECT CZ, each after a per-qubit barrier run",
+            "walk": "control c and the data bits on the layout's data qubits in ascending bit order; CNOT as H CZ H "
+            "on the data qubit; omega as Z on c after its first H; readout Y adds Sdag on c before its last H",
+            "readout": "readout-0 measures all 17 qubits in |0>, readout-1 after X on all 17",
+        },
+        "preregistered": prereg["follow"],
+    }
+    files = write_batches(shared, chunks, texts, "stage")
+    validate_series(files, tuna)
+    directories["box_kite_tuna_follow"] = files
+
     twin_shared = {
         "schema": CASES_SCHEMA,
         "family": "tuna_twins",
@@ -1680,18 +1848,24 @@ def tuna_series(census_path: Path = CENSUS) -> dict[str, dict[str, str]]:
             f"outside |z| < {Z_LIMIT} at {QX_SHOTS} shots refutes it",
         },
     }
-    # The double-X twin follows the witness twins, so it adds a batch after theirs.
+    # Batch-04 keeps the double-X twin, whose retained run binds that batch name.
     pre_row, pre_text = pre_twin()
-    twin_rows.append(pre_row)
-    twin_texts[pre_row["file"]] = pre_text
-    twin_files = finish(twin_shared, twin_rows, twin_texts, group="stage")
+    follow_twins = [row for row, _ in twins["follow"]]
+    twin_chunks = [
+        [row for row, _ in twins["t0"]],
+        *(follow_twins[start : start + HARDWARE_BATCH_CIRCUITS] for start in range(0, 9, HARDWARE_BATCH_CIRCUITS)),
+        [pre_row],
+        *(follow_twins[start : start + HARDWARE_BATCH_CIRCUITS] for start in range(9, 15, HARDWARE_BATCH_CIRCUITS)),
+    ]
+    twin_texts = {row["file"]: text for row, text in twins["t0"] + twins["follow"]} | {pre_row["file"]: pre_text}
+    twin_files = write_batches(twin_shared, twin_chunks, twin_texts, "stage")
     validate_series(twin_files, qx)
     directories["box_kite_tuna_twins_qx"] = twin_files
     pre_text_17 = directories["box_kite_tuna_pre"][f"batch-00/{PRE_FILE}"]
     parallel.ordered_map(
         verify_text,
         witness_jobs
-        + [(row["file"], twin_texts[row["file"]], checks_of(row)) for row in twin_rows]
+        + [(row["file"], twin_texts[row["file"]], checks_of(row)) for row, _ in twins["t0"] + twins["follow"]]
         + [(PRE_FILE, pre_text_17, double_x_checks(range(TUNA_QUBITS)))],
     )
     return directories
@@ -2543,6 +2717,21 @@ def self_test() -> None:
     reject("a file outside the series index", lambda: validate_series(stray, backend))
     reject("an unknown dialect", lambda: emit(logical("reduced", within[0]), {0: 0, 1: 1}, dialect="ry"))
     reject("an off-grid Rz angle", lambda: snap_angle(math.pi / 3))
+    from qiskit import QuantumCircuit
+
+    off_grid = QuantumCircuit(1)
+    off_grid.rz(math.pi / 3, 0)
+    reject("an off-grid Rz angle in the default emit", lambda: emit(off_grid, {0: 0}))
+    if emit(off_grid, {0: 2}, angle_grid=None) != [f"Rz({math.pi / 3:.15f}) q[2]"]:
+        raise AssertionError("emit with angle_grid None does not print the angle itself")
+    on_grid = QuantumCircuit(1)
+    on_grid.rz(3 * math.pi / ANGLE_GRID, 0)
+    if emit(on_grid, {0: 0}, angle_grid=None) != emit(on_grid, {0: 0}):
+        raise AssertionError("an on-grid angle prints differently with and without snapping")
+    with_reset = QuantumCircuit(1)
+    with_reset.reset(0)
+    for dialect in DIALECTS:
+        reject(f"a reset in the {dialect} dialect", lambda d=dialect: emit(with_reset, {0: 0}, dialect=d))
 
     # Tuna dialect and layout.
     reject("a CNOT in the tuna dialect", lambda: emit(logical("reduced", within[0]), {0: 1, 1: 4}, dialect="tuna"))
@@ -2597,27 +2786,72 @@ def self_test() -> None:
         altered_registry = Path(scratch) / "research_state.json"
         altered_registry.write_text(json.dumps(registry), encoding="utf-8")
         reject("a registry claim whose predictions moved", lambda: pre_claim(altered_registry))
-    walk = tuna_dirs["box_kite_tuna_walk"]
-    walk_row = json.loads(walk["batch-00/cases.json"])["circuits"][0]
-    walk_text = walk["batch-00/walk-1.cq"]
-    verify_text(("walk", walk_text, checks_of(walk_row)))
+    follow = tuna_dirs["box_kite_tuna_follow"]
+    validate_series(follow, tuna)
+    follow_rows = {
+        row["file"]: (name, row)
+        for name in sorted({key.split("/")[0] for key in follow if "/" in key})
+        for row in json.loads(follow[f"{name}/cases.json"])["circuits"]
+    }
+
+    def follow_case(file: str) -> tuple[str, dict[str, Any]]:
+        batch, row = follow_rows[file]
+        return follow[f"{batch}/{file}"], row
+
+    walk_text, walk_row = follow_case("walk-x.cq")
     control_z = f"Z q[{walk_row['replicas'][0]['roles']['control']}]"
     reject(
         "a walk without its omega Z",
         lambda: verify_text(("walk", walk_text.replace(control_z + "\n", "", 1), checks_of(walk_row))),
     )
-    coherence_dir = tuna_dirs["box_kite_tuna_coherence"]
-    coh_row = json.loads(coherence_dir["batch-00/cases.json"])["circuits"][0]
-    coh_text = coherence_dir["batch-00/coherence-1.cq"]
-    verify_text(("coherence", coh_text, checks_of(coh_row)))
-    edge_data = coh_row["replicas"][0]["roles"]["data"][0]
-    lines = coh_text.splitlines()
-    last_h = max(n for n, line in enumerate(lines) if line == f"H q[{edge_data}]")
-    lines.insert(last_h, f"Z q[{edge_data}]")
-    reject(
-        "a coherence setting with its sign flipped",
-        lambda: verify_text(("coherence", "\n".join(lines), checks_of(coh_row))),
-    )
+    from qiskit.quantum_info import Statevector
+
+    for theta in (0.3, -1.1):
+        walk = associator_walk(2, 11, 3, -1, [0, 1, 3], readout="Y")
+        phased = QuantumCircuit(walk.num_qubits)
+        for instruction in walk.data[:-2]:
+            phased.append(instruction)
+        phased.rz(theta, 0)
+        for instruction in walk.data[-2:]:
+            phased.append(instruction)
+        p_zero = float(Statevector(phased).probabilities([0])[0])
+        if abs(p_zero - (1 - math.sin(theta)) / 2) > PROBABILITY_TOLERANCE:
+            raise AssertionError(f"readout Y on a control phase {theta} reads P(c = 0) {p_zero}, not (1 + omega sin)/2")
+    for file, slot in (("lcu-bright-x-1.cq", 0), ("lcu-dark-x-1.cq", 0)):
+        text, row = follow_case(file)
+        data = row["replicas"][slot]["roles"]["data"][0]
+        lines = text.splitlines()
+        last_h = max(n for n, line in enumerate(lines) if line == f"H q[{data}]")
+        lines.insert(last_h, f"Z q[{data}]")
+        reject(
+            f"a coherence sign flipped in {file}",
+            lambda lines=lines, row=row: verify_text(("coherence", "\n".join(lines), checks_of(row))),
+        )
+    index = json.loads(follow["cases.json"])
+    last = index["batches"][-1]["batch"]
+    manifest = json.loads(follow[f"{last}/cases.json"])
+    unbracketed = dict(follow)
+    witnesses_only = [manifest["circuits"][0]] * HARDWARE_BATCH_CIRCUITS
+    unbracketed[f"{last}/cases.json"] = json.dumps({**manifest, "circuits": witnesses_only}, indent=1) + "\n"
+    index["batches"][-1]["files"] = [row["file"] for row in witnesses_only]
+    unbracketed["cases.json"] = json.dumps(index, indent=1) + "\n"
+    for key in [k for k in unbracketed if k.startswith(f"{last}/readout-")]:
+        del unbracketed[key]
+    reject("a bracketed series without its closing readout pair", lambda: validate_series(unbracketed, tuna))
+    swapped_pair = dict(follow)
+    first = json.loads(follow["cases.json"])["batches"][0]["batch"]
+    head = json.loads(follow[f"{first}/cases.json"])
+    order = [head["circuits"][1], head["circuits"][0], head["circuits"][2]]
+    swapped_pair[f"{first}/cases.json"] = json.dumps({**head, "circuits": order}, indent=1) + "\n"
+    index = json.loads(follow["cases.json"])
+    index["batches"][0]["files"] = [row["file"] for row in order]
+    swapped_pair["cases.json"] = json.dumps(index, indent=1) + "\n"
+    reject("a bracketed batch with readout-1 before readout-0", lambda: validate_series(swapped_pair, tuna))
+    # walk-y swapped with depth-5-y into the last batch: walk-x and walk-y three batches apart.
+    index = json.loads(follow["cases.json"])
+    for batch in index["batches"]:
+        batch["files"] = [{"walk-y.cq": "depth-5-y.cq", "depth-5-y.cq": "walk-y.cq"}.get(f, f) for f in batch["files"]]
+    reject("walk-x and walk-y three batches apart", lambda: check_quadratures(index))
     mutated = copy.deepcopy(census)
     mutated["kites"][2]["twists"][0]["twisted_kite"] = 5
     reject("a census twist that no longer maps the T1 edge", lambda: check_twist(mutated))

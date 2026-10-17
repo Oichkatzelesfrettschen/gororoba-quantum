@@ -1,0 +1,3815 @@
+{
+  "schema_version": 7,
+  "schema_contract": "live-target-statistical-design-invocation-budget-v1",
+  "state": "planned",
+  "started": "2026-10-17T20:19:31.783685+00:00",
+  "versions": {
+    "numpy": "2.5.4",
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0",
+    "scipy": "1.18.1",
+    "rustworkx": "0.18.1",
+    "sympy": "1.14.0"
+  },
+  "policy": {
+    "max_readout_error": 0.08,
+    "max_cz_error": 0.03,
+    "max_sx_error": 0.01,
+    "min_t1_us": 20.0,
+    "min_t2_us": 20.0,
+    "max_pending": 25,
+    "seeds": 8,
+    "joint_candidates": 3,
+    "replica_floor": 0.55,
+    "max_replicas": null,
+    "isolated_reference": false,
+    "cross_group_buffer": true,
+    "twirl": false,
+    "dd": null,
+    "min_remaining_seconds": 60.0,
+    "max_execution_seconds": 40,
+    "rep_delay_seconds": 0.0001,
+    "operator_excluded_qubits": {},
+    "design": {
+      "family": "n21-feedback-encoded",
+      "optimize": true,
+      "objective": "minimum_charge",
+      "cost_scenarios": [],
+      "shot_tiers": [
+        81920,
+        90112,
+        98304,
+        106496,
+        110592,
+        114688,
+        118784,
+        122880,
+        131072,
+        139264
+      ],
+      "shot_allocation": "uniform",
+      "replica_tiers": [
+        1,
+        2,
+        4
+      ],
+      "optimizer_candidates": 2,
+      "model_shots": 65536,
+      "precision": 0.08,
+      "alpha": 0.05,
+      "power": 0.8,
+      "simulation_alpha": 0.01,
+      "job_overhead_seconds": 2.3,
+      "classical_latency_us": 20.0,
+      "reserve_seconds": 60.0,
+      "max_total_execution_seconds": 120.0,
+      "patch_qubits": null,
+      "model_method": "exact",
+      "replica_variance_bound": 0.55,
+      "prep_excitation": 0.01
+    },
+    "local_compute": {
+      "mode": "auto",
+      "threads": 12,
+      "memory_mb": 512,
+      "shot_branching": false,
+      "method": "density_matrix_dynamic_statevector",
+      "precision": "double",
+      "shot_branching_sampling": false,
+      "parallel_experiments": 1,
+      "aer_native": {
+        "schema": "native-aer-identity-v1",
+        "distribution": "qiskit-aer",
+        "version": "0.17.2",
+        "python_soabi": "cpython-314-x86_64-linux-gnu",
+        "extension": {
+          "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+          "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+        },
+        "native_cuda_build": null,
+        "loaded_mapping_verified": true,
+        "loaded_mapping_scope": "linux-process-map-device-inode"
+      }
+    }
+  },
+  "shots": 90112,
+  "instance_sha256_12": "e3de05b6901e",
+  "seed_simulator": 20261011,
+  "experiment_digest": "734c65835b47ba99e4408126e54ff81889f7317c09f0f608691c9be9d13f638c",
+  "code_commit": {
+    "head": "b8fcaed6356c4cc89a67b940347960da3b3205c1",
+    "sources_modified": false
+  },
+  "system_inventory": {
+    "ibm_fez": {
+      "eligibility": "eligible",
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 1,
+      "calibration": "2026-10-17T13:13:27-07:00",
+      "fetched_at": "2026-10-17T20:19:34+00:00",
+      "backend_version": "1.3.37",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 128.44030280014854,
+        "t2_us": 100.36415541781098,
+        "readout_error": 0.00970458984375,
+        "cz_error": 0.0025239359620679996
+      },
+      "excluded_qubits": {
+        "11": "T1=75.3us T2=9.6us",
+        "43": "readout error 0.171",
+        "46": "T1=76.3us T2=14.7us",
+        "53": "T1=161.4us T2=17.5us",
+        "63": "T1=135.4us T2=16.3us",
+        "64": "T1=43.5us T2=18.8us",
+        "65": "readout error 0.083",
+        "66": "T1=104.8us T2=18.8us",
+        "72": "missing calibration: \"Couldn't find the property 'T2' for qubit 72.\"",
+        "83": "readout error 0.131",
+        "98": "T1=50.9us T2=18.2us",
+        "102": "readout error 0.105",
+        "108": "T1=124.9us T2=16.3us",
+        "113": "readout error 0.090",
+        "131": "readout error 0.083",
+        "146": "T1=122.8us T2=14.5us",
+        "148": "T1=9.7us T2=23.8us",
+        "149": "T1=27.4us T2=7.1us",
+        "150": "T1=179.7us T2=5.4us",
+        "155": "T1=74.2us T2=17.6us"
+      },
+      "excluded_edges": {
+        "17-27": "cz error 0.043967158014273616",
+        "26-27": "cz error 0.043269864814527714",
+        "27-17": "cz error 0.043967158014273616",
+        "27-26": "cz error 0.043269864814527714",
+        "27-28": "cz error 0.10323228480861839",
+        "28-27": "cz error 0.10323228480861839",
+        "31-32": "cz error 0.03593461718055063",
+        "32-31": "cz error 0.03593461718055063",
+        "32-33": "cz error 1.0",
+        "33-32": "cz error 1.0",
+        "48-49": "cz error 0.06584895622264286",
+        "49-48": "cz error 0.06584895622264286",
+        "63-64": "cz error 0.05646249187228328",
+        "64-63": "cz error 0.05646249187228328",
+        "71-72": "cz error 1.0",
+        "72-71": "cz error 1.0",
+        "72-73": "cz error 1.0",
+        "73-72": "cz error 1.0",
+        "102-103": "cz error 0.1383706445183723",
+        "103-102": "cz error 0.1383706445183723",
+        "147-148": "cz error 0.047980960293134256",
+        "148-147": "cz error 0.047980960293134256",
+        "148-149": "cz error 0.13106785643824742",
+        "149-148": "cz error 0.13106785643824742"
+      }
+    },
+    "ibm_kingston": {
+      "eligibility": "eligible",
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 3,
+      "calibration": "2026-10-17T12:27:27-07:00",
+      "fetched_at": "2026-10-17T20:19:35+00:00",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 239.03382559901283,
+        "t2_us": 141.20932720181028,
+        "readout_error": 0.0086669921875,
+        "cz_error": 0.0019003524476841616
+      },
+      "excluded_qubits": {
+        "113": "readout error 0.290",
+        "115": "T1=336.6us T2=14.0us",
+        "121": "missing calibration: \"Couldn't find the property 'T2' for qubit 121.\"",
+        "139": "T1=1.8us T2=24.7us",
+        "146": "missing calibration: \"Couldn't find the property 'T1' for qubit 146.\""
+      },
+      "excluded_edges": {
+        "14-15": "cz error 0.036462581381857734",
+        "15-14": "cz error 0.036462581381857734",
+        "37-45": "cz error 0.030531357550332316",
+        "44-45": "cz error 0.0383051334384342",
+        "45-37": "cz error 0.030531357550332316",
+        "45-44": "cz error 0.0383051334384342",
+        "45-46": "cz error 0.04117351938086017",
+        "46-45": "cz error 0.04117351938086017",
+        "84-85": "cz error 0.03826235663842001",
+        "85-84": "cz error 0.03826235663842001",
+        "85-86": "cz error 0.07508914119620674",
+        "86-85": "cz error 0.07508914119620674",
+        "86-87": "cz error 0.042475491132601406",
+        "87-86": "cz error 0.042475491132601406",
+        "111-112": "cz error 0.13197736928585646",
+        "112-111": "cz error 0.13197736928585646",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "116-121": "cz error 0.06615300636200355",
+        "119-133": "cz error 0.03841485927601557",
+        "120-121": "cz error 0.09449542870671401",
+        "121-116": "cz error 0.06615300636200355",
+        "121-120": "cz error 0.09449542870671401",
+        "121-122": "cz error 0.03660799754656879",
+        "122-121": "cz error 0.03660799754656879",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "133-119": "cz error 0.03841485927601557",
+        "145-146": "cz error 1.0",
+        "146-145": "cz error 1.0",
+        "146-147": "cz error 1.0",
+        "147-146": "cz error 1.0"
+      }
+    },
+    "ibm_marrakesh": {
+      "eligibility": "eligible",
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 3,
+      "calibration": "2026-10-17T12:10:04-07:00",
+      "fetched_at": "2026-10-17T20:19:36+00:00",
+      "backend_version": "1.0.21",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 158.4801432839383,
+        "t2_us": 78.01060041026079,
+        "readout_error": 0.01324462890625,
+        "cz_error": 0.0027912285496200367
+      },
+      "excluded_qubits": {
+        "1": "readout error 0.200",
+        "3": "readout error 0.081",
+        "9": "readout error 0.316",
+        "11": "readout error 0.119",
+        "13": "readout error 0.218",
+        "17": "T1=172.8us T2=14.0us",
+        "20": "readout error 0.092",
+        "25": "readout error 0.352",
+        "26": "T1=7.2us T2=4.6us",
+        "34": "readout error 0.086",
+        "37": "T1=80.2us T2=16.4us",
+        "38": "readout error 0.145",
+        "48": "readout error 0.112",
+        "57": "readout error 0.080",
+        "60": "T1=152.7us T2=15.3us",
+        "63": "readout error 0.307",
+        "69": "readout error 0.135",
+        "74": "T1=101.1us T2=18.9us",
+        "82": "missing calibration: \"Couldn't find the property 'T2' for qubit 82.\"",
+        "83": "readout error 0.089",
+        "85": "readout error 0.193",
+        "94": "missing calibration: \"Couldn't find the property 'T1' for qubit 94.\"",
+        "96": "T1=65.3us T2=7.5us",
+        "100": "T1=86.0us T2=13.6us",
+        "113": "missing calibration: \"Couldn't find the property 'T2' for qubit 113.\"",
+        "115": "readout error 0.089",
+        "116": "T1=82.0us T2=11.7us",
+        "117": "T1=186.1us T2=12.5us",
+        "119": "readout error 0.176",
+        "122": "T1=153.4us T2=20.0us",
+        "124": "T1=114.0us T2=11.7us",
+        "126": "T1=135.6us T2=17.9us",
+        "130": "missing calibration: \"Couldn't find the property 'T1' for qubit 130.\"",
+        "137": "readout error 0.143"
+      },
+      "excluded_edges": {
+        "40-41": "cz error 0.1363571117900575",
+        "41-40": "cz error 0.1363571117900575",
+        "81-82": "cz error 0.07469783469660052",
+        "82-81": "cz error 0.07469783469660052",
+        "82-83": "cz error 1.0",
+        "83-82": "cz error 1.0",
+        "95-99": "cz error 0.1418415119422666",
+        "99-95": "cz error 0.1418415119422666",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "113-114": "cz error 1.0",
+        "113-119": "cz error 1.0",
+        "114-113": "cz error 1.0",
+        "119-113": "cz error 1.0",
+        "119-133": "cz error 0.09775733334311232",
+        "129-130": "cz error 1.0",
+        "130-129": "cz error 1.0",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "133-119": "cz error 0.09775733334311232"
+      }
+    }
+  },
+  "backends": {
+    "ibm_fez": {
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 1,
+      "calibration": "2026-10-17T13:13:27-07:00",
+      "fetched_at": "2026-10-17T20:19:34+00:00",
+      "backend_version": "1.3.37",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 128.44030280014854,
+        "t2_us": 100.36415541781098,
+        "readout_error": 0.00970458984375,
+        "cz_error": 0.0025239359620679996
+      },
+      "excluded_qubits": {
+        "11": "T1=75.3us T2=9.6us",
+        "43": "readout error 0.171",
+        "46": "T1=76.3us T2=14.7us",
+        "53": "T1=161.4us T2=17.5us",
+        "63": "T1=135.4us T2=16.3us",
+        "64": "T1=43.5us T2=18.8us",
+        "65": "readout error 0.083",
+        "66": "T1=104.8us T2=18.8us",
+        "72": "missing calibration: \"Couldn't find the property 'T2' for qubit 72.\"",
+        "83": "readout error 0.131",
+        "98": "T1=50.9us T2=18.2us",
+        "102": "readout error 0.105",
+        "108": "T1=124.9us T2=16.3us",
+        "113": "readout error 0.090",
+        "131": "readout error 0.083",
+        "146": "T1=122.8us T2=14.5us",
+        "148": "T1=9.7us T2=23.8us",
+        "149": "T1=27.4us T2=7.1us",
+        "150": "T1=179.7us T2=5.4us",
+        "155": "T1=74.2us T2=17.6us"
+      },
+      "excluded_edges": {
+        "17-27": "cz error 0.043967158014273616",
+        "26-27": "cz error 0.043269864814527714",
+        "27-17": "cz error 0.043967158014273616",
+        "27-26": "cz error 0.043269864814527714",
+        "27-28": "cz error 0.10323228480861839",
+        "28-27": "cz error 0.10323228480861839",
+        "31-32": "cz error 0.03593461718055063",
+        "32-31": "cz error 0.03593461718055063",
+        "32-33": "cz error 1.0",
+        "33-32": "cz error 1.0",
+        "48-49": "cz error 0.06584895622264286",
+        "49-48": "cz error 0.06584895622264286",
+        "63-64": "cz error 0.05646249187228328",
+        "64-63": "cz error 0.05646249187228328",
+        "71-72": "cz error 1.0",
+        "72-71": "cz error 1.0",
+        "72-73": "cz error 1.0",
+        "73-72": "cz error 1.0",
+        "102-103": "cz error 0.1383706445183723",
+        "103-102": "cz error 0.1383706445183723",
+        "147-148": "cz error 0.047980960293134256",
+        "148-147": "cz error 0.047980960293134256",
+        "148-149": "cz error 0.13106785643824742",
+        "149-148": "cz error 0.13106785643824742"
+      }
+    },
+    "ibm_kingston": {
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 3,
+      "calibration": "2026-10-17T12:27:27-07:00",
+      "fetched_at": "2026-10-17T20:19:35+00:00",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 239.03382559901283,
+        "t2_us": 141.20932720181028,
+        "readout_error": 0.0086669921875,
+        "cz_error": 0.0019003524476841616
+      },
+      "excluded_qubits": {
+        "113": "readout error 0.290",
+        "115": "T1=336.6us T2=14.0us",
+        "121": "missing calibration: \"Couldn't find the property 'T2' for qubit 121.\"",
+        "139": "T1=1.8us T2=24.7us",
+        "146": "missing calibration: \"Couldn't find the property 'T1' for qubit 146.\""
+      },
+      "excluded_edges": {
+        "14-15": "cz error 0.036462581381857734",
+        "15-14": "cz error 0.036462581381857734",
+        "37-45": "cz error 0.030531357550332316",
+        "44-45": "cz error 0.0383051334384342",
+        "45-37": "cz error 0.030531357550332316",
+        "45-44": "cz error 0.0383051334384342",
+        "45-46": "cz error 0.04117351938086017",
+        "46-45": "cz error 0.04117351938086017",
+        "84-85": "cz error 0.03826235663842001",
+        "85-84": "cz error 0.03826235663842001",
+        "85-86": "cz error 0.07508914119620674",
+        "86-85": "cz error 0.07508914119620674",
+        "86-87": "cz error 0.042475491132601406",
+        "87-86": "cz error 0.042475491132601406",
+        "111-112": "cz error 0.13197736928585646",
+        "112-111": "cz error 0.13197736928585646",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "116-121": "cz error 0.06615300636200355",
+        "119-133": "cz error 0.03841485927601557",
+        "120-121": "cz error 0.09449542870671401",
+        "121-116": "cz error 0.06615300636200355",
+        "121-120": "cz error 0.09449542870671401",
+        "121-122": "cz error 0.03660799754656879",
+        "122-121": "cz error 0.03660799754656879",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "133-119": "cz error 0.03841485927601557",
+        "145-146": "cz error 1.0",
+        "146-145": "cz error 1.0",
+        "146-147": "cz error 1.0",
+        "147-146": "cz error 1.0"
+      }
+    },
+    "ibm_marrakesh": {
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 3,
+      "calibration": "2026-10-17T12:10:04-07:00",
+      "fetched_at": "2026-10-17T20:19:36+00:00",
+      "backend_version": "1.0.21",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 158.4801432839383,
+        "t2_us": 78.01060041026079,
+        "readout_error": 0.01324462890625,
+        "cz_error": 0.0027912285496200367
+      },
+      "excluded_qubits": {
+        "1": "readout error 0.200",
+        "3": "readout error 0.081",
+        "9": "readout error 0.316",
+        "11": "readout error 0.119",
+        "13": "readout error 0.218",
+        "17": "T1=172.8us T2=14.0us",
+        "20": "readout error 0.092",
+        "25": "readout error 0.352",
+        "26": "T1=7.2us T2=4.6us",
+        "34": "readout error 0.086",
+        "37": "T1=80.2us T2=16.4us",
+        "38": "readout error 0.145",
+        "48": "readout error 0.112",
+        "57": "readout error 0.080",
+        "60": "T1=152.7us T2=15.3us",
+        "63": "readout error 0.307",
+        "69": "readout error 0.135",
+        "74": "T1=101.1us T2=18.9us",
+        "82": "missing calibration: \"Couldn't find the property 'T2' for qubit 82.\"",
+        "83": "readout error 0.089",
+        "85": "readout error 0.193",
+        "94": "missing calibration: \"Couldn't find the property 'T1' for qubit 94.\"",
+        "96": "T1=65.3us T2=7.5us",
+        "100": "T1=86.0us T2=13.6us",
+        "113": "missing calibration: \"Couldn't find the property 'T2' for qubit 113.\"",
+        "115": "readout error 0.089",
+        "116": "T1=82.0us T2=11.7us",
+        "117": "T1=186.1us T2=12.5us",
+        "119": "readout error 0.176",
+        "122": "T1=153.4us T2=20.0us",
+        "124": "T1=114.0us T2=11.7us",
+        "126": "T1=135.6us T2=17.9us",
+        "130": "missing calibration: \"Couldn't find the property 'T1' for qubit 130.\"",
+        "137": "readout error 0.143"
+      },
+      "excluded_edges": {
+        "40-41": "cz error 0.1363571117900575",
+        "41-40": "cz error 0.1363571117900575",
+        "81-82": "cz error 0.07469783469660052",
+        "82-81": "cz error 0.07469783469660052",
+        "82-83": "cz error 1.0",
+        "83-82": "cz error 1.0",
+        "95-99": "cz error 0.1418415119422666",
+        "99-95": "cz error 0.1418415119422666",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "113-114": "cz error 1.0",
+        "113-119": "cz error 1.0",
+        "114-113": "cz error 1.0",
+        "119-113": "cz error 1.0",
+        "119-133": "cz error 0.09775733334311232",
+        "129-130": "cz error 1.0",
+        "130-129": "cz error 1.0",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "133-119": "cz error 0.09775733334311232"
+      }
+    }
+  },
+  "skipped_backends": {},
+  "circuit_requirements": {
+    "n21_encoded_feedback": {
+      "qubits": 7,
+      "classical_bits": 2,
+      "static_circuits": 0,
+      "dynamic_circuits": 2,
+      "target_operations": [
+        "if_else",
+        "measure",
+        "reset"
+      ],
+      "control_flow": [
+        "if_else"
+      ]
+    }
+  },
+  "execution_requirements": {
+    "n21_encoded_feedback": {
+      "entries": 2,
+      "entry_names": [
+        "n21_encoded_feedback",
+        "n21_encoded_no_feedback"
+      ],
+      "static_circuits": 0,
+      "dynamic_circuits": 2,
+      "max_classical_bits": 2,
+      "physical_qubits": [
+        104,
+        105,
+        106,
+        117,
+        124,
+        125,
+        126
+      ],
+      "operation_names": [
+        "cz",
+        "measure",
+        "reset",
+        "rz",
+        "sx",
+        "x"
+      ],
+      "replicas": 1,
+      "isolated_references": 0,
+      "target_validated": true
+    }
+  },
+  "fusion_placement": {
+    "allocation": "matched-family",
+    "configuration": {
+      "name": "n21-feedback-encoded",
+      "replica_cap": 1
+    }
+  },
+  "fusion_summary": {
+    "strategy": "aligned_members_without_reference",
+    "reference_estimand": null,
+    "reference_estimand_by_kind": {
+      "static": null,
+      "dynamic": null
+    },
+    "logical_entries": {
+      "static": 0,
+      "dynamic": 2
+    },
+    "execution_pubs": {
+      "static": 0,
+      "dynamic": 2
+    },
+    "reference_components": {
+      "static": 0,
+      "dynamic": 0
+    }
+  },
+  "execution_pubs": [
+    {
+      "name": "ibm_kingston_dynamic_pub_01",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 17180,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "n21_encoded_feedback",
+          "member": "n21_encoded_feedback",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            104,
+            105,
+            106,
+            117,
+            124,
+            125,
+            126
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_phase"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_02",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 17494,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
+      "components": [
+        {
+          "group": "n21_encoded_feedback",
+          "member": "n21_encoded_no_feedback",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            104,
+            105,
+            106,
+            117,
+            124,
+            125,
+            126
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_phase"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "selection_trace": {
+    "n21_encoded_feedback": {
+      "ibm_fez": [
+        {
+          "stage": "capability_admission",
+          "requirements": {
+            "qubits": 7,
+            "classical_bits": 2,
+            "static_circuits": 0,
+            "dynamic_circuits": 2,
+            "target_operations": [
+              "if_else",
+              "measure",
+              "reset"
+            ],
+            "control_flow": [
+              "if_else"
+            ]
+          },
+          "rejected": []
+        },
+        {
+          "stage": "routing_admission",
+          "rejected": []
+        },
+        {
+          "seed": 20261010,
+          "cz": 766,
+          "rejected": [],
+          "primary_score": 0.004881385684972021
+        },
+        {
+          "seed": 20261011,
+          "cz": 747,
+          "rejected": [],
+          "primary_score": 0.0054150675169883054
+        },
+        {
+          "seed": 20261012,
+          "cz": 728,
+          "rejected": [],
+          "primary_score": 0.0035148091582444673
+        },
+        {
+          "seed": 20261013,
+          "cz": 714,
+          "rejected": [],
+          "primary_score": 0.003907270853629759
+        },
+        {
+          "seed": 20261014,
+          "cz": 724,
+          "rejected": [],
+          "primary_score": 0.0036093503372273223
+        },
+        {
+          "seed": 20261015,
+          "cz": 713,
+          "rejected": [],
+          "primary_score": 0.003942611752672801
+        },
+        {
+          "seed": 20261016,
+          "cz": 737,
+          "rejected": [],
+          "primary_score": 0.00573483583046966
+        },
+        {
+          "seed": 20261017,
+          "cz": 713,
+          "rejected": [],
+          "primary_score": 0.003942611752672801
+        },
+        {
+          "seed": 20261016,
+          "joint_score": 0.005752768665706269,
+          "layout": [
+            25,
+            23,
+            45,
+            22,
+            37,
+            26,
+            24
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.0055020162977259665,
+          "layout": [
+            37,
+            24,
+            45,
+            23,
+            22,
+            26,
+            25
+          ]
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.004892583774258915,
+          "layout": [
+            37,
+            24,
+            26,
+            23,
+            22,
+            45,
+            25
+          ]
+        }
+      ],
+      "ibm_kingston": [
+        {
+          "stage": "capability_admission",
+          "requirements": {
+            "qubits": 7,
+            "classical_bits": 2,
+            "static_circuits": 0,
+            "dynamic_circuits": 2,
+            "target_operations": [
+              "if_else",
+              "measure",
+              "reset"
+            ],
+            "control_flow": [
+              "if_else"
+            ]
+          },
+          "rejected": []
+        },
+        {
+          "stage": "routing_admission",
+          "rejected": []
+        },
+        {
+          "seed": 20261010,
+          "cz": 714,
+          "rejected": [],
+          "primary_score": 0.008462157579352585
+        },
+        {
+          "seed": 20261011,
+          "cz": 716,
+          "rejected": [],
+          "primary_score": 0.008478127487350667
+        },
+        {
+          "seed": 20261012,
+          "cz": 770,
+          "rejected": [],
+          "primary_score": 0.00620431836648787
+        },
+        {
+          "seed": 20261013,
+          "cz": 716,
+          "rejected": [],
+          "primary_score": 0.008478127487350667
+        },
+        {
+          "seed": 20261014,
+          "cz": 728,
+          "rejected": [],
+          "primary_score": 0.003919342294970379
+        },
+        {
+          "seed": 20261015,
+          "cz": 766,
+          "rejected": [],
+          "primary_score": 0.006342304807154691
+        },
+        {
+          "seed": 20261016,
+          "cz": 739,
+          "rejected": [],
+          "primary_score": 0.007274739043760541
+        },
+        {
+          "seed": 20261017,
+          "cz": 766,
+          "rejected": [],
+          "primary_score": 0.006342304807154691
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.008424218367498341,
+          "layout": [
+            73,
+            71,
+            74,
+            70,
+            58,
+            79,
+            72
+          ]
+        },
+        {
+          "seed": 20261013,
+          "joint_score": 0.007905056321659916,
+          "layout": [
+            73,
+            71,
+            74,
+            70,
+            58,
+            79,
+            72
+          ]
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.008206573182348574,
+          "layout": [
+            73,
+            71,
+            74,
+            58,
+            70,
+            79,
+            72
+          ]
+        }
+      ],
+      "ibm_marrakesh": [
+        {
+          "stage": "capability_admission",
+          "requirements": {
+            "qubits": 7,
+            "classical_bits": 2,
+            "static_circuits": 0,
+            "dynamic_circuits": 2,
+            "target_operations": [
+              "if_else",
+              "measure",
+              "reset"
+            ],
+            "control_flow": [
+              "if_else"
+            ]
+          },
+          "rejected": []
+        },
+        {
+          "stage": "routing_admission",
+          "rejected": []
+        },
+        {
+          "seed": 20261010,
+          "cz": 742,
+          "rejected": [],
+          "primary_score": 3.2232871618074305e-05
+        },
+        {
+          "seed": 20261011,
+          "cz": 766,
+          "rejected": [],
+          "primary_score": 4.340286712443902e-05
+        },
+        {
+          "seed": 20261012,
+          "cz": 724,
+          "rejected": [],
+          "primary_score": 3.5286420585973106e-05
+        },
+        {
+          "seed": 20261013,
+          "cz": 766,
+          "rejected": [],
+          "primary_score": 4.340286712443902e-05
+        },
+        {
+          "seed": 20261014,
+          "cz": 770,
+          "rejected": [],
+          "primary_score": 4.139425874279206e-05
+        },
+        {
+          "seed": 20261015,
+          "cz": 714,
+          "rejected": [],
+          "primary_score": 5.855441576158393e-05
+        },
+        {
+          "seed": 20261016,
+          "cz": 739,
+          "rejected": [],
+          "primary_score": 5.436056753936493e-05
+        },
+        {
+          "seed": 20261017,
+          "cz": 739,
+          "rejected": [],
+          "primary_score": 5.436056753936493e-05
+        },
+        {
+          "seed": 20261015,
+          "joint_score": 5.430924336652858e-05,
+          "layout": [
+            111,
+            91,
+            110,
+            92,
+            90,
+            112,
+            98
+          ]
+        },
+        {
+          "seed": 20261016,
+          "joint_score": 5.421247899681809e-05,
+          "layout": [
+            111,
+            91,
+            109,
+            92,
+            110,
+            112,
+            98
+          ]
+        },
+        {
+          "seed": 20261017,
+          "joint_score": 5.421247899681809e-05,
+          "layout": [
+            111,
+            91,
+            109,
+            92,
+            110,
+            112,
+            98
+          ]
+        }
+      ]
+    }
+  },
+  "family_configuration": {
+    "name": "n21-feedback-encoded",
+    "replica_cap": 1
+  },
+  "observable_contracts": [
+    {
+      "name": "n21_encoded_feedback_contrast",
+      "terms": [
+        {
+          "member": "n21_encoded_feedback",
+          "values": [
+            0.0,
+            1.0,
+            0.0,
+            -1.0
+          ],
+          "sign": 1
+        },
+        {
+          "member": "n21_encoded_no_feedback",
+          "values": [
+            0.0,
+            1.0,
+            0.0,
+            -1.0
+          ],
+          "sign": -1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": 0.0,
+      "alpha": 0.05,
+      "power": 0.8,
+      "precision_half_width": null
+    }
+  ],
+  "optimization": {
+    "selected": "candidate-001-shots-90112",
+    "candidates": [
+      {
+        "name": "candidate-000-shots-106496",
+        "feasible": false,
+        "estimated_charge_seconds": 40.348038912000156,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 106496,
+                "scheduled_seconds": 6.862000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 20.087275520000077,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 106496,
+                "scheduled_seconds": 6.865200000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 17.96076339200008,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 40.348038912000156,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.032346415000081036,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.032346415000081036,
+            "modeled_value_upper_bound": 0.032346415000081036,
+            "confidence_half_width": 0.018143282048574665,
+            "detection_radius": 0.016646601274522492,
+            "power_radius": 0.013151830100428545,
+            "effect_used_for_power": 0.032346415000081036,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/dynamic/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261011,
+          "replicas": 1,
+          "shots": 106496,
+          "proxy_score": 0.008424218367498341
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 40.348038912000156,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-000-shots-110592",
+        "feasible": false,
+        "estimated_charge_seconds": 41.81142502400016,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 110592,
+                "scheduled_seconds": 6.862000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 20.85986304000008,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 110592,
+                "scheduled_seconds": 6.865200000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 18.651561984000082,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 41.81142502400016,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.032346415000081036,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.032346415000081036,
+            "modeled_value_upper_bound": 0.032346415000081036,
+            "confidence_half_width": 0.017804125375927807,
+            "detection_radius": 0.016335422410410114,
+            "power_radius": 0.012905979822395273,
+            "effect_used_for_power": 0.032346415000081036,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/dynamic/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261011,
+          "replicas": 1,
+          "shots": 110592,
+          "proxy_score": 0.008424218367498341
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 41.81142502400016,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-000-shots-114688",
+        "feasible": false,
+        "estimated_charge_seconds": 43.27481113600017,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 114688,
+                "scheduled_seconds": 6.862000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 21.632450560000084,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 114688,
+                "scheduled_seconds": 6.865200000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 19.342360576000086,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 43.27481113600017,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.032346415000081036,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.032346415000081036,
+            "modeled_value_upper_bound": 0.032346415000081036,
+            "confidence_half_width": 0.017483304046644273,
+            "detection_radius": 0.016041066365310497,
+            "power_radius": 0.012673420597221229,
+            "effect_used_for_power": 0.032346415000081036,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/dynamic/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261011,
+          "replicas": 1,
+          "shots": 114688,
+          "proxy_score": 0.008424218367498341
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 43.27481113600017,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-000-shots-118784",
+        "feasible": false,
+        "estimated_charge_seconds": 44.738197248000176,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 118784,
+                "scheduled_seconds": 6.862000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 22.405038080000086,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 118784,
+                "scheduled_seconds": 6.865200000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 20.03315916800009,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 44.738197248000176,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.032346415000081036,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.032346415000081036,
+            "modeled_value_upper_bound": 0.032346415000081036,
+            "confidence_half_width": 0.017179223388620282,
+            "detection_radius": 0.015762070015263818,
+            "power_radius": 0.012452996467758267,
+            "effect_used_for_power": 0.032346415000081036,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/dynamic/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261011,
+          "replicas": 1,
+          "shots": 118784,
+          "proxy_score": 0.008424218367498341
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 44.738197248000176,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-000-shots-122880",
+        "feasible": false,
+        "estimated_charge_seconds": 46.20158336000018,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 122880,
+                "scheduled_seconds": 6.862000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 23.177625600000088,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 122880,
+                "scheduled_seconds": 6.865200000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 20.72395776000009,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 46.20158336000018,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.032346415000081036,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.032346415000081036,
+            "modeled_value_upper_bound": 0.032346415000081036,
+            "confidence_half_width": 0.016890476380540035,
+            "detection_radius": 0.01549714240735614,
+            "power_radius": 0.012243687502483332,
+            "effect_used_for_power": 0.032346415000081036,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/dynamic/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261011,
+          "replicas": 1,
+          "shots": 122880,
+          "proxy_score": 0.008424218367498341
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 46.20158336000018,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-000-shots-131072",
+        "feasible": false,
+        "estimated_charge_seconds": 49.12835558400019,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 131072,
+                "scheduled_seconds": 6.862000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 24.722800640000095,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 131072,
+                "scheduled_seconds": 6.865200000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 22.105554944000097,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 49.12835558400019,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.032346415000081036,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.032346415000081036,
+            "modeled_value_upper_bound": 0.032346415000081036,
+            "confidence_half_width": 0.01635413343283532,
+            "detection_radius": 0.015005043614373761,
+            "power_radius": 0.011854899448321457,
+            "effect_used_for_power": 0.032346415000081036,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/dynamic/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261011,
+          "replicas": 1,
+          "shots": 131072,
+          "proxy_score": 0.008424218367498341
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 49.12835558400019,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-000-shots-139264",
+        "feasible": false,
+        "estimated_charge_seconds": 52.05512780800021,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 139264,
+                "scheduled_seconds": 6.862000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 26.267975680000102,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 139264,
+                "scheduled_seconds": 6.865200000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 23.487152128000105,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 52.05512780800021,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.032346415000081036,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.032346415000081036,
+            "modeled_value_upper_bound": 0.032346415000081036,
+            "confidence_half_width": 0.01586583989624122,
+            "detection_radius": 0.014557030526838308,
+            "power_radius": 0.011500941789766093,
+            "effect_used_for_power": 0.032346415000081036,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/dynamic/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261011,
+          "replicas": 1,
+          "shots": 139264,
+          "proxy_score": 0.008424218367498341
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 52.05512780800021,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-000-shots-81920",
+        "feasible": false,
+        "estimated_charge_seconds": 31.56772224000012,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 81920,
+                "scheduled_seconds": 6.862000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 15.451750400000059,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 81920,
+                "scheduled_seconds": 6.865200000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 13.81597184000006,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 31.56772224000012,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.032346415000081036,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.032346415000081036,
+            "modeled_value_upper_bound": 0.032346415000081036,
+            "confidence_half_width": 0.020686524322427177,
+            "detection_radius": 0.018980045684634538,
+            "power_radius": 0.014995393475587754,
+            "effect_used_for_power": 0.032346415000081036,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": false,
+            "rejection_reasons": [
+              "shot tier cannot detect the reported alternative effect at the declared alpha and power"
+            ]
+          }
+        ],
+        "rejection_reasons": [
+          "n21_encoded_feedback_contrast: shot tier cannot detect the reported alternative effect at the declared alpha and power"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261011,
+          "replicas": 1,
+          "shots": 81920,
+          "proxy_score": 0.008424218367498341
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 31.56772224000012,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-000-shots-90112",
+        "feasible": false,
+        "estimated_charge_seconds": 34.494494464000134,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 90112,
+                "scheduled_seconds": 6.862000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 16.996925440000066,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 90112,
+                "scheduled_seconds": 6.865200000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 15.197569024000067,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 34.494494464000134,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.032346415000081036,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.032346415000081036,
+            "modeled_value_upper_bound": 0.032346415000081036,
+            "confidence_half_width": 0.019723827042953338,
+            "detection_radius": 0.018096763502471278,
+            "power_radius": 0.014297546689990361,
+            "effect_used_for_power": 0.032346415000081036,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": false,
+            "rejection_reasons": [
+              "shot tier cannot detect the reported alternative effect at the declared alpha and power"
+            ]
+          }
+        ],
+        "rejection_reasons": [
+          "n21_encoded_feedback_contrast: shot tier cannot detect the reported alternative effect at the declared alpha and power"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261011,
+          "replicas": 1,
+          "shots": 90112,
+          "proxy_score": 0.008424218367498341
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 34.494494464000134,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-000-shots-98304",
+        "feasible": true,
+        "estimated_charge_seconds": 37.421266688000145,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 98304,
+                "scheduled_seconds": 6.862000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 18.542100480000073,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 98304,
+                "scheduled_seconds": 6.865200000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 16.579166208000075,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 37.421266688000145,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.032346415000081036,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.032346415000081036,
+            "modeled_value_upper_bound": 0.032346415000081036,
+            "confidence_half_width": 0.018884126679621062,
+            "detection_radius": 0.017326331939921533,
+            "power_radius": 0.013688858775408678,
+            "effect_used_for_power": 0.032346415000081036,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261011,
+          "replicas": 1,
+          "shots": 98304,
+          "proxy_score": 0.008424218367498341
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 37.421266688000145,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-001-shots-106496",
+        "feasible": false,
+        "estimated_charge_seconds": 40.49968921600016,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 106496,
+                "scheduled_seconds": 6.872000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 20.097925120000077,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 106496,
+                "scheduled_seconds": 6.997600000000078e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 18.101764096000082,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 40.49968921600016,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.03293355484235852,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.03293355484235852,
+            "modeled_value_upper_bound": 0.03293355484235852,
+            "confidence_half_width": 0.018143282048574665,
+            "detection_radius": 0.016646601274522492,
+            "power_radius": 0.013151830100428545,
+            "effect_used_for_power": 0.03293355484235852,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/dynamic/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 106496,
+          "proxy_score": 0.008206573182348574
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 40.49968921600016,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-001-shots-110592",
+        "feasible": false,
+        "estimated_charge_seconds": 41.968908032000165,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 110592,
+                "scheduled_seconds": 6.872000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 20.87092224000008,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 110592,
+                "scheduled_seconds": 6.997600000000078e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 18.797985792000084,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 41.968908032000165,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.03293355484235852,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.03293355484235852,
+            "modeled_value_upper_bound": 0.03293355484235852,
+            "confidence_half_width": 0.017804125375927807,
+            "detection_radius": 0.016335422410410114,
+            "power_radius": 0.012905979822395273,
+            "effect_used_for_power": 0.03293355484235852,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/dynamic/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 110592,
+          "proxy_score": 0.008206573182348574
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 41.968908032000165,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-001-shots-114688",
+        "feasible": false,
+        "estimated_charge_seconds": 43.438126848000174,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 114688,
+                "scheduled_seconds": 6.872000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 21.643919360000083,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 114688,
+                "scheduled_seconds": 6.997600000000078e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 19.49420748800009,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 43.438126848000174,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.03293355484235852,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.03293355484235852,
+            "modeled_value_upper_bound": 0.03293355484235852,
+            "confidence_half_width": 0.017483304046644273,
+            "detection_radius": 0.016041066365310497,
+            "power_radius": 0.012673420597221229,
+            "effect_used_for_power": 0.03293355484235852,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/dynamic/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 114688,
+          "proxy_score": 0.008206573182348574
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 43.438126848000174,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-001-shots-118784",
+        "feasible": false,
+        "estimated_charge_seconds": 44.907345664000175,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 118784,
+                "scheduled_seconds": 6.872000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 22.416916480000086,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 118784,
+                "scheduled_seconds": 6.997600000000078e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 20.19042918400009,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 44.907345664000175,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.03293355484235852,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.03293355484235852,
+            "modeled_value_upper_bound": 0.03293355484235852,
+            "confidence_half_width": 0.017179223388620282,
+            "detection_radius": 0.015762070015263818,
+            "power_radius": 0.012452996467758267,
+            "effect_used_for_power": 0.03293355484235852,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/dynamic/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 118784,
+          "proxy_score": 0.008206573182348574
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 44.907345664000175,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-001-shots-122880",
+        "feasible": false,
+        "estimated_charge_seconds": 46.376564480000184,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 122880,
+                "scheduled_seconds": 6.872000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 23.18991360000009,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 122880,
+                "scheduled_seconds": 6.997600000000078e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 20.886650880000094,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 46.376564480000184,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.03293355484235852,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.03293355484235852,
+            "modeled_value_upper_bound": 0.03293355484235852,
+            "confidence_half_width": 0.016890476380540035,
+            "detection_radius": 0.01549714240735614,
+            "power_radius": 0.012243687502483332,
+            "effect_used_for_power": 0.03293355484235852,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/dynamic/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 122880,
+          "proxy_score": 0.008206573182348574
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 46.376564480000184,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-001-shots-131072",
+        "feasible": false,
+        "estimated_charge_seconds": 49.315002112000194,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 131072,
+                "scheduled_seconds": 6.872000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 24.735907840000095,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 131072,
+                "scheduled_seconds": 6.997600000000078e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 22.2790942720001,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 49.315002112000194,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.03293355484235852,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.03293355484235852,
+            "modeled_value_upper_bound": 0.03293355484235852,
+            "confidence_half_width": 0.01635413343283532,
+            "detection_radius": 0.015005043614373761,
+            "power_radius": 0.011854899448321457,
+            "effect_used_for_power": 0.03293355484235852,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/dynamic/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 131072,
+          "proxy_score": 0.008206573182348574
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 49.315002112000194,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-001-shots-139264",
+        "feasible": false,
+        "estimated_charge_seconds": 52.25343974400021,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 139264,
+                "scheduled_seconds": 6.872000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 26.2819020800001,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 139264,
+                "scheduled_seconds": 6.997600000000078e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 23.67153766400011,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 52.25343974400021,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.03293355484235852,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.03293355484235852,
+            "modeled_value_upper_bound": 0.03293355484235852,
+            "confidence_half_width": 0.01586583989624122,
+            "detection_radius": 0.014557030526838308,
+            "power_radius": 0.011500941789766093,
+            "effect_used_for_power": 0.03293355484235852,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/dynamic/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 139264,
+          "proxy_score": 0.008206573182348574
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 52.25343974400021,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-001-shots-81920",
+        "feasible": false,
+        "estimated_charge_seconds": 31.684376320000123,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 81920,
+                "scheduled_seconds": 6.872000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 15.45994240000006,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 81920,
+                "scheduled_seconds": 6.997600000000078e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 13.924433920000062,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 31.684376320000123,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.03293355484235852,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.03293355484235852,
+            "modeled_value_upper_bound": 0.03293355484235852,
+            "confidence_half_width": 0.020686524322427177,
+            "detection_radius": 0.018980045684634538,
+            "power_radius": 0.014995393475587754,
+            "effect_used_for_power": 0.03293355484235852,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": false,
+            "rejection_reasons": [
+              "shot tier cannot detect the reported alternative effect at the declared alpha and power"
+            ]
+          }
+        ],
+        "rejection_reasons": [
+          "n21_encoded_feedback_contrast: shot tier cannot detect the reported alternative effect at the declared alpha and power"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 81920,
+          "proxy_score": 0.008206573182348574
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 31.684376320000123,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-001-shots-90112",
+        "feasible": true,
+        "estimated_charge_seconds": 34.622813952000136,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 90112,
+                "scheduled_seconds": 6.872000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 17.005936640000066,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 90112,
+                "scheduled_seconds": 6.997600000000078e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 15.31687731200007,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 34.622813952000136,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.03293355484235852,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.03293355484235852,
+            "modeled_value_upper_bound": 0.03293355484235852,
+            "confidence_half_width": 0.019723827042953338,
+            "detection_radius": 0.018096763502471278,
+            "power_radius": 0.014297546689990361,
+            "effect_used_for_power": 0.03293355484235852,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 90112,
+          "proxy_score": 0.008206573182348574
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 34.622813952000136,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-001-shots-98304",
+        "feasible": true,
+        "estimated_charge_seconds": 37.561251584000146,
+        "total_execution_ceiling_seconds": 40.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_dynamic_pub_01",
+                "shots": 98304,
+                "scheduled_seconds": 6.872000000000074e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 18.55193088000007,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_kingston_dynamic_pub_02",
+                "shots": 98304,
+                "scheduled_seconds": 6.997600000000078e-05,
+                "repetition_delay_seconds": 0.0001,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 16.709320704000078,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 37.561251584000146,
+            "max_execution_seconds": 40,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "predicted_value": 0.03293355484235852,
+            "simulation_error_radius": 0.0,
+            "modeled_value_lower_bound": 0.03293355484235852,
+            "modeled_value_upper_bound": 0.03293355484235852,
+            "confidence_half_width": 0.018884126679621062,
+            "detection_radius": 0.017326331939921533,
+            "power_radius": 0.013688858775408678,
+            "effect_used_for_power": 0.03293355484235852,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 98304,
+          "proxy_score": 0.008206573182348574
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 37.561251584000146,
+        "normalized_precision_radius": null
+      }
+    ],
+    "pareto_frontier": [
+      "candidate-000-shots-98304",
+      "candidate-001-shots-90112",
+      "candidate-001-shots-98304"
+    ],
+    "rejection_reasons": [],
+    "simulation_alpha": 0.01,
+    "simulation_comparisons": 0,
+    "assumptions": [
+      "independent stationary repetitions; arbitrary dependence within each PUB shot unless explicitly bounded",
+      "union bounds across PUBs; no independence assumption between PUBs",
+      "observable alpha and power are per endpoint, conditional on the supplied outcome model",
+      "finite simulation error is controlled simultaneously across all supplied candidate-observable marginals",
+      "hardware-model discrepancy and cost-model error remain unquantified",
+      "charge estimates include every PUB, control, repetition delay, declared duration addition, and job overhead",
+      "execution ceilings apply per job; their aggregate must preserve the declared reserve",
+      "explicit cost scenarios are sensitivity assumptions; their coverage of cost uncertainty is unquantified"
+    ],
+    "objective": "minimum_charge",
+    "selected_objective_value": 34.622813952000136,
+    "cost_scenarios": [],
+    "retained_candidate": "candidate-001-shots-90112",
+    "searched_routed_sets": 2,
+    "shot_tiers": [
+      81920,
+      90112,
+      98304,
+      106496,
+      110592,
+      114688,
+      118784,
+      122880,
+      131072,
+      139264
+    ],
+    "scope": "bounded routed candidates and uniform shot tiers; global optimality is unclaimed"
+  },
+  "optimizer_settings": {
+    "family": "n21-feedback-encoded",
+    "optimize": true,
+    "objective": "minimum_charge",
+    "cost_scenarios": [],
+    "shot_tiers": [
+      81920,
+      90112,
+      98304,
+      106496,
+      110592,
+      114688,
+      118784,
+      122880,
+      131072,
+      139264
+    ],
+    "shot_allocation": "uniform",
+    "replica_tiers": [
+      1,
+      2,
+      4
+    ],
+    "optimizer_candidates": 2,
+    "model_shots": 65536,
+    "precision": 0.08,
+    "alpha": 0.05,
+    "power": 0.8,
+    "simulation_alpha": 0.01,
+    "job_overhead_seconds": 2.3,
+    "classical_latency_us": 20.0,
+    "reserve_seconds": 60.0,
+    "max_total_execution_seconds": 120.0,
+    "patch_qubits": null,
+    "model_method": "exact",
+    "replica_variance_bound": 0.55,
+    "prep_excitation": 0.01
+  },
+  "exact_model": {
+    "method": "dynamic_density branch-resolved density matrix under the sampled run's Aer noise model",
+    "prep_excitation": 0.01,
+    "prep_excitation_channel": "declared initial bit flip of this probability on |0> of every active qubit, in the exact law (dynamic_density prep_excitation) and the sampled run (leading X errors)",
+    "validation": "every exact probability within the simultaneous Hoeffding radius of its sampled frequency; each endpoint arm score and contrast within its own Hoeffding radius",
+    "model_shots": 65536,
+    "tail": 0.01,
+    "radius": 0.0075025218071868805,
+    "max_gap": 0.0027254209112282657,
+    "score_tail": 0.0033333333333333335,
+    "arms": {
+      "n21_encoded_feedback": {
+        "exact": 0.0065389643791034235,
+        "sampled": 0.0068511962890625,
+        "gap": 0.00031223190995907646,
+        "radius": 0.00987923655621069
+      },
+      "n21_encoded_no_feedback": {
+        "exact": -0.026394590463255097,
+        "sampled": -0.0232086181640625,
+        "gap": 0.0031859722991925965,
+        "radius": 0.009875148099124365
+      }
+    },
+    "contrasts": {
+      "n21_encoded_feedback_contrast": {
+        "exact": 0.03293355484235852,
+        "sampled": 0.030059814453125,
+        "gap": -0.00287374038923352,
+        "radius": 0.019754384655335057
+      }
+    },
+    "passed": true,
+    "failures": [],
+    "replicas": [
+      {
+        "entry": "n21_encoded_feedback",
+        "replica": 0,
+        "exact": [
+          0.2870295411208466,
+          0.24996140600987166,
+          0.21958661123851345,
+          0.24342244163076823
+        ],
+        "sampled": [
+          0.28485107421875,
+          0.2504425048828125,
+          0.2211151123046875,
+          0.24359130859375
+        ],
+        "max_gap": 0.0021784669020966096
+      },
+      {
+        "entry": "n21_encoded_no_feedback",
+        "replica": 0,
+        "exact": [
+          0.2869231732533686,
+          0.233551179671521,
+          0.21957987694033423,
+          0.2599457701347761
+        ],
+        "sampled": [
+          0.284210205078125,
+          0.235137939453125,
+          0.2223052978515625,
+          0.2583465576171875
+        ],
+        "max_gap": 0.0027254209112282657
+      }
+    ],
+    "retained_candidate": "candidate-001-shots-90112",
+    "candidates": {
+      "candidate-000": {
+        "max_gap": 0.002414972900945389,
+        "passed": true,
+        "failures": [],
+        "arms": {
+          "n21_encoded_feedback": {
+            "exact": 0.00664901435487375,
+            "sampled": 0.009033203125,
+            "gap": 0.00238418877012625,
+            "radius": 0.009881390609426425
+          },
+          "n21_encoded_no_feedback": {
+            "exact": -0.025697400645207286,
+            "sampled": -0.0242919921875,
+            "gap": 0.0014054084577072856,
+            "radius": 0.009876396808892858
+          }
+        },
+        "contrasts": {
+          "n21_encoded_feedback_contrast": {
+            "exact": 0.032346415000081036,
+            "sampled": 0.0333251953125,
+            "gap": 0.0009787803124189642,
+            "radius": 0.01975778741831928
+          }
+        },
+        "replicas": [
+          {
+            "entry": "n21_encoded_feedback",
+            "replica": 0,
+            "exact": [
+              0.2871510671381171,
+              0.25012509370796426,
+              0.21924775980082803,
+              0.2434760793530905
+            ],
+            "sampled": [
+              0.2895660400390625,
+              0.2508697509765625,
+              0.2177276611328125,
+              0.2418365478515625
+            ],
+            "max_gap": 0.002414972900945389
+          },
+          {
+            "entry": "n21_encoded_no_feedback",
+            "replica": 0,
+            "exact": [
+              0.28631261949411985,
+              0.2339466380889074,
+              0.22009670368285816,
+              0.2596440387341147
+            ],
+            "sampled": [
+              0.28564453125,
+              0.2346038818359375,
+              0.220855712890625,
+              0.2588958740234375
+            ],
+            "max_gap": 0.0007590092077668364
+          }
+        ]
+      },
+      "candidate-001": {
+        "max_gap": 0.0027254209112282657,
+        "passed": true,
+        "failures": [],
+        "arms": {
+          "n21_encoded_feedback": {
+            "exact": 0.0065389643791034235,
+            "sampled": 0.0068511962890625,
+            "gap": 0.00031223190995907646,
+            "radius": 0.00987923655621069
+          },
+          "n21_encoded_no_feedback": {
+            "exact": -0.026394590463255097,
+            "sampled": -0.0232086181640625,
+            "gap": 0.0031859722991925965,
+            "radius": 0.009875148099124365
+          }
+        },
+        "contrasts": {
+          "n21_encoded_feedback_contrast": {
+            "exact": 0.03293355484235852,
+            "sampled": 0.030059814453125,
+            "gap": -0.00287374038923352,
+            "radius": 0.019754384655335057
+          }
+        },
+        "replicas": [
+          {
+            "entry": "n21_encoded_feedback",
+            "replica": 0,
+            "exact": [
+              0.2870295411208466,
+              0.24996140600987166,
+              0.21958661123851345,
+              0.24342244163076823
+            ],
+            "sampled": [
+              0.28485107421875,
+              0.2504425048828125,
+              0.2211151123046875,
+              0.24359130859375
+            ],
+            "max_gap": 0.0021784669020966096
+          },
+          {
+            "entry": "n21_encoded_no_feedback",
+            "replica": 0,
+            "exact": [
+              0.2869231732533686,
+              0.233551179671521,
+              0.21957987694033423,
+              0.2599457701347761
+            ],
+            "sampled": [
+              0.284210205078125,
+              0.235137939453125,
+              0.2223052978515625,
+              0.2583465576171875
+            ],
+            "max_gap": 0.0027254209112282657
+          }
+        ]
+      }
+    }
+  },
+  "optimization_budget": {
+    "remaining_seconds": 266.0,
+    "reserve_seconds": 60.0,
+    "max_total_execution_seconds": 120.0
+  },
+  "local_simulation_batches": [
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "statevector",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "n21_encoded_feedback",
+        "n21_encoded_no_feedback"
+      ],
+      "ordered_qpy_sha256": "5900ba257cd633461b69459c308b7db1a6a1022c3e9f567492764df4b25f7df2",
+      "noise_serialized_channels_sha256": "feff7942e92747e9d78f7884d625e2a20638b9de21ac78d025bd0c1f715ec497",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 65536,
+      "seed_simulator": 20261011,
+      "wall_seconds": 84.88400403099513,
+      "experiment_metadata": [
+        {
+          "time_taken": 39.568274799,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              126,
+              6
+            ],
+            [
+              125,
+              5
+            ],
+            [
+              124,
+              4
+            ],
+            [
+              106,
+              2
+            ],
+            [
+              105,
+              1
+            ],
+            [
+              117,
+              3
+            ],
+            [
+              104,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 7,
+          "active_input_qubits": [
+            104,
+            105,
+            106,
+            117,
+            124,
+            125,
+            126
+          ],
+          "num_clbits": 2,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 42.072820426,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              126,
+              6
+            ],
+            [
+              125,
+              5
+            ],
+            [
+              124,
+              4
+            ],
+            [
+              106,
+              2
+            ],
+            [
+              105,
+              1
+            ],
+            [
+              117,
+              3
+            ],
+            [
+              104,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 7,
+          "active_input_qubits": [
+            104,
+            105,
+            106,
+            117,
+            124,
+            125,
+            126
+          ],
+          "num_clbits": 2,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "statevector",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "n21_encoded_feedback",
+        "n21_encoded_no_feedback"
+      ],
+      "ordered_qpy_sha256": "be7f5372d1c72cc37756f5e7a59668037c593021c876f4c60de4b2908a44b2e1",
+      "noise_serialized_channels_sha256": "feff7942e92747e9d78f7884d625e2a20638b9de21ac78d025bd0c1f715ec497",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 65536,
+      "seed_simulator": 20261011,
+      "wall_seconds": 87.2392368429937,
+      "experiment_metadata": [
+        {
+          "time_taken": 40.049990005,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              126,
+              6
+            ],
+            [
+              125,
+              5
+            ],
+            [
+              124,
+              4
+            ],
+            [
+              106,
+              2
+            ],
+            [
+              105,
+              1
+            ],
+            [
+              117,
+              3
+            ],
+            [
+              104,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 7,
+          "active_input_qubits": [
+            104,
+            105,
+            106,
+            117,
+            124,
+            125,
+            126
+          ],
+          "num_clbits": 2,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 43.660575457,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              126,
+              6
+            ],
+            [
+              125,
+              5
+            ],
+            [
+              124,
+              4
+            ],
+            [
+              106,
+              2
+            ],
+            [
+              105,
+              1
+            ],
+            [
+              117,
+              3
+            ],
+            [
+              104,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 7,
+          "active_input_qubits": [
+            104,
+            105,
+            106,
+            117,
+            124,
+            125,
+            126
+          ],
+          "num_clbits": 2,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        }
+      ]
+    }
+  ],
+  "compiled_ideal_validation": {
+    "method": "branch-resolved statevector on active compiled replica wires",
+    "absolute_tolerance": 1e-10,
+    "noise_method": [
+      "statevector"
+    ],
+    "noise_policy": "density_matrix_dynamic_statevector",
+    "all_candidates_passed": true
+  },
+  "budget_plan": {
+    "jobs": [
+      {
+        "backend": "ibm_kingston",
+        "kind": "dynamic",
+        "batch_index": 1,
+        "pubs": 2,
+        "ceiling_seconds": 40
+      }
+    ],
+    "combined_ceiling_seconds": 40.0,
+    "reserve_seconds": 60.0,
+    "max_total_execution_seconds": 120.0,
+    "remaining_seconds": 266,
+    "admitted": true,
+    "reasons": [],
+    "reservation_scope": "invocation-local ceilings; external submissions can change shared quota"
+  },
+  "execution_contract": {
+    "backends": [
+      {
+        "name": "ibm_kingston",
+        "repetition_delay_seconds": 0.0001,
+        "repetition_delay_source": "--rep-delay",
+        "default_repetition_delay_seconds": 0.00025,
+        "repetition_delay_range_seconds": [
+          0.0,
+          0.002
+        ]
+      }
+    ],
+    "selected_job_costs": [
+      {
+        "name": "ibm_kingston/dynamic/1",
+        "pubs": [
+          {
+            "name": "ibm_kingston_dynamic_pub_01",
+            "shots": 90112,
+            "scheduled_seconds": 6.872000000000074e-05,
+            "repetition_delay_seconds": 0.0001,
+            "reset_seconds": 0.0,
+            "classical_latency_seconds": 1.9999999999999998e-05,
+            "estimated_execution_seconds": 17.005936640000066,
+            "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+            "classical_stage_count": 1
+          },
+          {
+            "name": "ibm_kingston_dynamic_pub_02",
+            "shots": 90112,
+            "scheduled_seconds": 6.997600000000078e-05,
+            "repetition_delay_seconds": 0.0001,
+            "reset_seconds": 0.0,
+            "classical_latency_seconds": 0.0,
+            "estimated_execution_seconds": 15.31687731200007,
+            "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+            "classical_stage_count": 0
+          }
+        ],
+        "overhead_seconds": 2.3,
+        "estimated_charge_seconds": 34.622813952000136,
+        "max_execution_seconds": 40,
+        "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+      }
+    ],
+    "selected_cost_scenarios": [],
+    "selected_worst_case_charge_seconds": 34.622813952000136
+  },
+  "groups": [
+    {
+      "group": "n21_encoded_feedback",
+      "backend": "ibm_kingston",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "calibration": "2026-10-17T12:27:27-07:00",
+      "noise_model_calibration": "2026-10-17T12:27:27-07:00",
+      "seed_transpiler": 20261010,
+      "initial_layout": [
+        73,
+        71,
+        74,
+        58,
+        70,
+        79,
+        72
+      ],
+      "joint_score": 0.008206573182348574,
+      "replica_floor": 0.55,
+      "replicas": [
+        {
+          "index": 0,
+          "prefix": "r0_",
+          "score": 0.024494808153931066,
+          "physical_qubits": [
+            104,
+            105,
+            106,
+            117,
+            124,
+            125,
+            126
+          ],
+          "initial_layout": [
+            105,
+            125,
+            104,
+            124,
+            126,
+            106,
+            117
+          ],
+          "mapping": {
+            "58": 124,
+            "70": 126,
+            "71": 125,
+            "72": 117,
+            "73": 105,
+            "74": 104,
+            "79": 106
+          }
+        }
+      ],
+      "summary": {
+        "feedback_signed_contrast": 0.0053821910511363535,
+        "no_feedback_signed_contrast": -0.024114435369318205,
+        "contrast_difference": 0.029496626420454558,
+        "labeled_tvd": 0.01801091974431819,
+        "feedback_tvd_to_ideal": 0.0948486328125,
+        "no_feedback_tvd_to_ideal": 0.20748623934659088
+      },
+      "summary_per_replica": [
+        {
+          "feedback_signed_contrast": 0.0053821910511363535,
+          "no_feedback_signed_contrast": -0.024114435369318205,
+          "contrast_difference": 0.029496626420454558,
+          "labeled_tvd": 0.01801091974431819,
+          "feedback_tvd_to_ideal": 0.0948486328125,
+          "no_feedback_tvd_to_ideal": 0.20748623934659088
+        }
+      ],
+      "variance": {
+        "n21_encoded_feedback": {
+          "replicas": 1.0,
+          "mean": 0.5026910955255681,
+          "shot_variance": 1.367285898073529e-06
+        },
+        "n21_encoded_no_feedback": {
+          "replicas": 1.0,
+          "mean": 0.48794278231534094,
+          "shot_variance": 1.3672923540509455e-06
+        }
+      },
+      "summary_readout_corrected": {
+        "skipped": "feed-forward circuit: mid-circuit readout error changes later quantum evolution"
+      },
+      "placed_qubit_calibration": {
+        "104": {
+          "T1": 136.83310169251868,
+          "T2": 228.09965585932852,
+          "readout_error": 0.0162353515625,
+          "prob_meas1_prep0": 0.016357421875,
+          "prob_meas0_prep1": 0.01611328125
+        },
+        "105": {
+          "T1": 234.55639632372805,
+          "T2": 232.36325493677666,
+          "readout_error": 0.006103515625,
+          "prob_meas1_prep0": 0.00048828125,
+          "prob_meas0_prep1": 0.01171875
+        },
+        "106": {
+          "T1": 105.90464593419759,
+          "T2": 157.5572301501826,
+          "readout_error": 0.0062255859375,
+          "prob_meas1_prep0": 0.000732421875,
+          "prob_meas0_prep1": 0.01171875
+        },
+        "117": {
+          "T1": 259.08402888110254,
+          "T2": 218.6026161595141,
+          "readout_error": 0.00390625,
+          "prob_meas1_prep0": 0.00048828125,
+          "prob_meas0_prep1": 0.00732421875
+        },
+        "124": {
+          "T1": 243.4529587531447,
+          "T2": 145.46914778101964,
+          "readout_error": 0.0126953125,
+          "prob_meas1_prep0": 0.01123046875,
+          "prob_meas0_prep1": 0.01416015625
+        },
+        "125": {
+          "T1": 241.0000620155779,
+          "T2": 283.7975175361988,
+          "readout_error": 0.0240478515625,
+          "prob_meas1_prep0": 0.018310546875,
+          "prob_meas0_prep1": 0.02978515625
+        },
+        "126": {
+          "T1": 288.54981298438753,
+          "T2": 346.40709118425445,
+          "readout_error": 0.0052490234375,
+          "prob_meas1_prep0": 0.002685546875,
+          "prob_meas0_prep1": 0.0078125
+        }
+      },
+      "members": [
+        {
+          "name": "n21_encoded_feedback",
+          "reference": false,
+          "cz": 714,
+          "depth": 1818,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              104,
+              105,
+              106,
+              117,
+              124,
+              125,
+              126
+            ]
+          ],
+          "ideal": [
+            0.375,
+            0.25,
+            0.125,
+            0.25
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                104,
+                105,
+                106,
+                117,
+                124,
+                125,
+                126
+              ],
+              "duration_s": 6.872000000000074e-05,
+              "esp": 0.23484425507087608,
+              "coherence": 0.10430235198446103,
+              "noisy": [
+                0.287287,
+                0.249123,
+                0.219849,
+                0.243741
+              ],
+              "tvd_noisy_to_ideal": 0.0948486328125
+            }
+          ]
+        },
+        {
+          "name": "n21_encoded_no_feedback",
+          "reference": false,
+          "cz": 714,
+          "depth": 1873,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              104,
+              105,
+              106,
+              117,
+              124,
+              125,
+              126
+            ]
+          ],
+          "ideal": [
+            0.375,
+            0.125,
+            0.125,
+            0.375
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                104,
+                105,
+                106,
+                117,
+                124,
+                125,
+                126
+              ],
+              "duration_s": 6.997600000000078e-05,
+              "esp": 0.23398660759007994,
+              "coherence": 0.10008094509785971,
+              "noisy": [
+                0.283747,
+                0.234652,
+                0.222834,
+                0.258767
+              ],
+              "tvd_noisy_to_ideal": 0.20748623934659088
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "evaluation_simulation_batches": [
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "statevector",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "n21_encoded_feedback",
+        "n21_encoded_no_feedback"
+      ],
+      "ordered_qpy_sha256": "d89c784558455a257fa45380f0f6e86ff2d6e9fdf0a03c16d10a880da19b0adc",
+      "noise_serialized_channels_sha256": "feff7942e92747e9d78f7884d625e2a20638b9de21ac78d025bd0c1f715ec497",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 90112,
+      "seed_simulator": 20261011,
+      "wall_seconds": 107.65777887900185,
+      "experiment_metadata": [
+        {
+          "time_taken": 54.612213297,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              126,
+              6
+            ],
+            [
+              125,
+              5
+            ],
+            [
+              124,
+              4
+            ],
+            [
+              106,
+              2
+            ],
+            [
+              105,
+              1
+            ],
+            [
+              117,
+              3
+            ],
+            [
+              104,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 7,
+          "active_input_qubits": [
+            104,
+            105,
+            106,
+            117,
+            124,
+            125,
+            126
+          ],
+          "num_clbits": 2,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 49.492891192,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              126,
+              6
+            ],
+            [
+              125,
+              5
+            ],
+            [
+              124,
+              4
+            ],
+            [
+              106,
+              2
+            ],
+            [
+              105,
+              1
+            ],
+            [
+              117,
+              3
+            ],
+            [
+              104,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 7,
+          "active_input_qubits": [
+            104,
+            105,
+            106,
+            117,
+            124,
+            125,
+            126
+          ],
+          "num_clbits": 2,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        }
+      ]
+    }
+  ]
+}

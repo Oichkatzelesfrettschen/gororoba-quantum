@@ -722,7 +722,9 @@ def attempt(spec: dict[str, Any], cpus: int, ngpus: int) -> dict[str, Any]:
         row.update(json.loads(outcome["stdout"].strip().splitlines()[-1]))
     else:
         row["failed"] = outcome["returncode"]
-        row["stderr_tail"] = outcome["stderr"].strip().splitlines()[-3:]
+        # Traceback lines name files by absolute path; the record keeps them
+        # relative to the repository root.
+        row["stderr_tail"] = [line.replace(f"{ROOT}/", "") for line in outcome["stderr"].strip().splitlines()[-3:]]
     return row
 
 
@@ -740,6 +742,45 @@ def run_row(spec: dict[str, Any], cpus: int, ngpus: int) -> dict[str, Any]:
     row = attempt(spec, cpus, ngpus)
     row["contended"] = contended(row)
     return row
+
+
+def plan(workloads: list[str], labels: list[str], chosen: set[int] | None) -> list[dict[str, Any]]:
+    """Every row a run with these workloads, configurations and widths emits, measured or skipped, in order."""
+    specs: list[dict[str, Any]] = []
+    if "toy" in workloads:
+        specs += [{"workload": "toy", "circuit": "readout_toy", "configuration": label} for label in TOY_LABELS]
+    if "n21" in workloads:
+        specs += [
+            {"workload": "n21", "circuit": name, "configuration": label} for name in N21_CIRCUITS for label in labels
+        ]
+    if "width" in workloads:
+        for circuit in ("static", "dynamic"):
+            for label in (label for label in WIDTH_CONFIGURATIONS if label in labels):
+                widths = STATEVECTOR_WIDTHS if CONFIGURATIONS[label][1] == "statevector" else WIDTHS
+                specs += [
+                    {"workload": "width", "circuit": circuit, "width": width, "configuration": label}
+                    for width in widths
+                    if chosen is None or width in chosen
+                ]
+    return specs
+
+
+def plan_key(row: dict[str, Any]) -> tuple[str, ...]:
+    return (row["workload"], row["circuit"], str(row.get("width")), row["configuration"])
+
+
+def held(environment: dict[str, Any]) -> float:
+    """The contention a row ran under: the most foreign CPUs before or during it, the 1-minute load where unread."""
+    before, during = environment.get("foreign_cpus_before_row"), environment.get("foreign_cpus_during_row")
+    if before is None or during is None:
+        return float(environment["load_1min"])
+    return float(max(before, during))
+
+
+# How a rerun's kept attempt is chosen: the lower held() reading, or, in
+# records made before foreign CPUs were read per row, the lower 1-minute load.
+RERUN_RULES = {"foreign_cpus": held, "load_1min": lambda environment: float(environment["load_1min"])}
+RERUN_RULE = "foreign_cpus"
 
 
 def skip_reason(label: str, ngpus: int) -> str | None:
@@ -819,12 +860,6 @@ def main() -> int:
     if args.one:
         print(json.dumps(child(json.loads(args.one))), flush=True)
         return 0
-    if args.check:
-        return check(args.check)
-    if args.out is None:
-        parser.error("--out or --check is required")
-    import parallel
-
     workloads = args.workloads.split(",")
     labels = args.configurations.split(",")
     unknown = sorted(set(labels) - set(CONFIGURATIONS))
@@ -833,6 +868,12 @@ def main() -> int:
     chosen = None if args.widths is None else {int(width) for width in args.widths.split(",")}
     if chosen is not None and not chosen <= set(WIDTHS) | set(STATEVECTOR_WIDTHS):
         parser.error(f"unknown widths {sorted(chosen - set(WIDTHS) - set(STATEVECTOR_WIDTHS))}")
+    if args.check:
+        return check(args.check, [plan_key(spec) for spec in plan(workloads, labels, chosen)])
+    if args.out is None:
+        parser.error("--out or --check is required")
+    import parallel
+
     cpus = parallel.available_cpus()
     devices = gpus()
     if args.require_gpu and not devices:
@@ -863,6 +904,13 @@ def main() -> int:
         "budget_seconds": BUDGET_SECONDS,
         "gpu_sample_ms": GPU_SAMPLE_MS,
         "readout_toy": {"e10": TOY_E10, "e01": TOY_E01, "shots": TOY_SHOTS, "z_limit": TOY_Z_LIMIT},
+        "workloads": workloads,
+        "configurations": labels,
+        "widths": None if chosen is None else sorted(chosen),
+        "rerun_rule": RERUN_RULE,
+        # Written before the first row, so a record cut off mid-run keeps the
+        # rows it was meant to hold and --check names the missing ones.
+        "planned": [list(plan_key(spec)) for spec in plan(workloads, labels, chosen)],
         "rows": [],
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
@@ -878,42 +926,34 @@ def main() -> int:
         if reason:
             raise SystemExit(f"aer_gpu_probe: --require-gpu and {brief} did not run on the GPU: {reason}")
 
-    if "toy" in workloads:
-        for label in TOY_LABELS:
-            spec: dict[str, Any] = {"workload": "toy", "circuit": "readout_toy", "configuration": label}
-            reason = skip_reason(label, len(devices))
-            emit({**spec, "skipped": reason} if reason else run_row(spec, cpus, len(devices)))
-    if "n21" in workloads:
-        for name in N21_CIRCUITS:
-            for label in labels:
-                spec = {"workload": "n21", "circuit": name, "configuration": label}
-                reason = skip_reason(label, len(devices))
-                emit({**spec, "skipped": reason} if reason else run_row(spec, cpus, len(devices)))
-    if "width" in workloads:
-        for circuit in ("static", "dynamic"):
-            for label in (label for label in WIDTH_CONFIGURATIONS if label in labels):
-                stop = skip_reason(label, len(devices))
-                widths = STATEVECTOR_WIDTHS if CONFIGURATIONS[label][1] == "statevector" else WIDTHS
-                for width in (width for width in widths if chosen is None or width in chosen):
-                    spec = {"workload": "width", "circuit": circuit, "width": width, "configuration": label}
-                    if stop is not None:
-                        emit({**spec, "skipped": stop})
-                        continue
-                    row = run_row(spec, cpus, len(devices))
-                    emit(row)
-                    if "failed" in row:
-                        stop = f"width {width} failed"
-                    elif min(row["tiers"][0]["seconds"]) > BUDGET_SECONDS:
-                        stop = f"width {width} exceeded {BUDGET_SECONDS} s"
+    # A width series stops at its first failed or over-budget width; the
+    # rest of the series is emitted as skipped, so every planned row appears.
+    stops: dict[tuple[str, str], str] = {}
+    for spec in plan(workloads, labels, chosen):
+        series = (spec["circuit"], spec["configuration"])
+        reason = skip_reason(spec["configuration"], len(devices))
+        if reason is None and spec["workload"] == "width":
+            reason = stops.get(series)
+        if reason is not None:
+            emit({**spec, "skipped": reason})
+            continue
+        row = run_row(spec, cpus, len(devices))
+        emit(row)
+        if spec["workload"] == "width":
+            if "failed" in row:
+                stops[series] = f"width {spec['width']} failed"
+            elif min(row["tiers"][0]["seconds"]) > BUDGET_SECONDS:
+                stops[series] = f"width {spec['width']} exceeded {BUDGET_SECONDS} s"
     # Each contended row runs once more; the record keeps the attempt that
-    # ran under the lower starting load and the other attempt's reading.
+    # ran under less contention (RERUN_RULE) and the other attempt's reading.
     for index, row in enumerate(record["rows"]):
         if not row.get("contended"):
             continue
         spec = {key: row[key] for key in ("workload", "circuit", "width", "configuration") if key in row}
         again = run_row(spec, cpus, len(devices))
+        contention = RERUN_RULES[RERUN_RULE]
         keep, other = (
-            (again, row) if again["environment"]["load_1min"] < row["environment"]["load_1min"] else (row, again)
+            (again, row) if contention(again["environment"]) < contention(row["environment"]) else (row, again)
         )
         keep["other_attempt"] = {
             "environment": {key: value for key, value in other["environment"].items() if key != "compute_apps"},
@@ -923,7 +963,7 @@ def main() -> int:
         record["rows"][index] = keep
         derive(record)
         args.out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
-        print(json.dumps({"rerun": spec, "kept_load": keep["environment"]["load_1min"]}), flush=True)
+        print(json.dumps({"rerun": spec, "kept_contention": contention(keep["environment"])}), flush=True)
         reason = gpu_fallback(keep) if args.require_gpu else None
         if reason:
             raise SystemExit(f"aer_gpu_probe: --require-gpu and the rerun of {spec} did not run on the GPU: {reason}")
@@ -1022,7 +1062,38 @@ def fallback_contract() -> str:
     return "a CPU device, cuStateVec off, a missing GPU and an unknown failure count as GPU fallbacks"
 
 
-def check(path: Path) -> int:
+def binding_problems(record: dict[str, Any], requested: list[tuple[str, ...]]) -> list[str]:
+    """How the record's rows depart from its plan, or a kept attempt ran under more contention than its rerun.
+
+    A record names its plan in planned; a collected record made before the
+    probe wrote one is checked against requested, the plan of the arguments
+    --check is given, while its collect.json sha256 pins its bytes.
+    """
+    problems = []
+    expected = [tuple(key) for key in record["planned"]] if "planned" in record else requested
+    if "workloads" in record:
+        chosen = None if record["widths"] is None else set(record["widths"])
+        derived = [plan_key(spec) for spec in plan(record["workloads"], record["configurations"], chosen)]
+        if derived != expected:
+            problems.append("its plan differs from its workloads, configurations and widths")
+    found = [plan_key(row) for row in record["rows"]]
+    if found != expected:
+        missing = [key for key in expected if key not in found]
+        extra = [key for key in found if key not in expected]
+        problems.append(f"{len(found)} of {len(expected)} planned rows; missing {missing[:3]}, unplanned {extra[:3]}")
+    # Records made before foreign CPUs were read per row chose by load.
+    contention = RERUN_RULES[record.get("rerun_rule", "load_1min")]
+    worse = [
+        plan_key(row)
+        for row in record["rows"]
+        if "other_attempt" in row and contention(row["environment"]) > contention(row["other_attempt"]["environment"])
+    ]
+    if worse:
+        problems.append(f"keeps the more contended attempt of {worse[:3]}")
+    return problems
+
+
+def check(path: Path, requested: list[tuple[str, ...]]) -> int:
     record = json.loads(path.read_text(encoding="utf-8"))
     if record.get("schema") != SCHEMA:
         raise SystemExit(f"aer_gpu_probe: {path} schema is not {SCHEMA}")
@@ -1035,6 +1106,16 @@ def check(path: Path) -> int:
             if row != again
         ]
         raise SystemExit(f"aer_gpu_probe: derived values differ from the record on {len(bad)} rows, first {bad[:3]}")
+    problems = binding_problems(record, requested)
+    if problems:
+        raise SystemExit(f"aer_gpu_probe: {path}: {problems[0]}")
+    truncated = {**record, "rows": record["rows"][:-1]}
+    reversed_rerun = json.loads(json.dumps(record))
+    reversed_rerun["rows"][0]["other_attempt"] = {
+        "environment": {**reversed_rerun["rows"][0]["environment"], "load_1min": -1.0, "foreign_cpus_before_row": -1.0}
+    }
+    if not binding_problems(truncated, requested) or not binding_problems(reversed_rerun, requested):
+        raise SystemExit("aer_gpu_probe: a truncated record or a more contended kept attempt passes the check")
     if record.get("require_gpu"):
         fallen = [(row["configuration"], gpu_fallback(row)) for row in record["rows"] if gpu_fallback(row)]
         if fallen:
@@ -1056,6 +1137,8 @@ def check(path: Path) -> int:
         raise SystemExit(f"aer_gpu_probe: the CPU default breaks the readout toy law: {cpu['z_scores']}")
     print(
         f"{path}: {timed_rows} timed rows and {len(toy)} readout-toy rows reproduce their derived values; "
+        f"the rows are the {len(record['rows'])} planned, each rerun keeps its less contended attempt "
+        f"({record.get('rerun_rule', 'load_1min')}), and a truncated record or a reversed rerun fails; "
         f"readout law kept by {', '.join(kept)}; the CPU default keeps it on replay; {lowering_contract()}; "
         f"{fallback_contract()}"
     )

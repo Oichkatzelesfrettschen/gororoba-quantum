@@ -1,0 +1,41 @@
+version 3.0
+
+qubit[17] q
+bit[17] b
+
+// slot 0 lcu twist+ census within_kite[660] kite 6 (4,10)+ x (1,15)+ edge_same depth 1 setting X P 0 selector q[1]
+H q[4]
+H q[1]
+Z q[1]
+H q[4]
+CZ q[1], q[4]
+H q[4]
+H q[1]
+H q[4]
+// slot 1 lcu edge- census within_kite[245] kite 3 (1,10)+ x (4,15)- edge_opposite depth 1 setting X P 0 selector q[10]
+H q[13]
+Z q[13]
+H q[10]
+Z q[10]
+Z q[13]
+H q[13]
+CZ q[10], q[13]
+H q[13]
+H q[10]
+H q[13]
+// slot 2 lcu strut- census within_kite[241] kite 3 (1,10)+ x (2,9)- strut depth 1 setting X P 1/2 selector q[12]
+H q[14]
+Z q[14]
+H q[12]
+Z q[14]
+Sdag q[14]
+H q[14]
+CZ q[12], q[14]
+H q[14]
+S q[14]
+Sdag q[12]
+H q[12]
+H q[14]
+
+barrier q
+b = measure q

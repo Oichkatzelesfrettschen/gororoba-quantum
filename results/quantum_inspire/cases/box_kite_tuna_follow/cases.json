@@ -1,0 +1,71 @@
+{
+ "schema": "box-kite-series-v1",
+ "family": "tuna_follow",
+ "backend": "tuna_17",
+ "census_sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "stage": "follow",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq",
+    "walk-omit.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "stage": "follow",
+   "files": [
+    "lcu-bright-x-1.cq",
+    "lcu-bright-x-2.cq",
+    "depth-9-x.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "stage": "follow",
+   "files": [
+    "lcu-bright-y-1.cq",
+    "lcu-bright-y-2.cq",
+    "depth-9-y.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "stage": "follow",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq",
+    "walk-x.cq"
+   ]
+  },
+  {
+   "batch": "batch-04",
+   "stage": "follow",
+   "files": [
+    "walk-y.cq",
+    "lcu-dark-x-1.cq",
+    "lcu-dark-x-2.cq"
+   ]
+  },
+  {
+   "batch": "batch-05",
+   "stage": "follow",
+   "files": [
+    "lcu-dark-y-1.cq",
+    "lcu-dark-y-2.cq",
+    "depth-5-x.cq"
+   ]
+  },
+  {
+   "batch": "batch-06",
+   "stage": "follow",
+   "files": [
+    "depth-5-y.cq",
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  }
+ ]
+}

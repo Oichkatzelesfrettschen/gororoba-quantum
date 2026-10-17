@@ -20,8 +20,11 @@ nightly schedule and manual runs add the `full` tier's long simulation
 contracts on twelve shards. Runners are 2-vCPU, 8 GB machines on Python 3.14
 with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
 the plotting-only `matplotlib==3.11.2`). A pull request merges when every
-shard and the `external-ground-truth` job are green and its review threads
-are resolved; a red main or nightly run is fixed in the next change. The
+shard and the `qi-stack` and `external-ground-truth` jobs are green and its
+review threads are resolved; a red main or nightly run is fixed in the next
+change. The `qi-stack` job runs, at the same tier, the gates that ci/gates.json
+tags `"requires": ["qi"]`, under the Quantum Inspire interpreter
+([Quantum Inspire](#quantum-inspire)). The
 `external-ground-truth` job runs `verify.py` over the open_gororoba commit
 named in [ci/open_gororoba.pin](ci/open_gororoba.pin):
 `ci/fetch_open_gororoba.sh` sparse-checks out the paths it is given, and
@@ -66,6 +69,18 @@ gate, so a local run computes the simulation replays on the GPU while CI's
 runners keep the CPU; a gate that passes locally and fails on CI exposes a
 device-dependent result. Contracts that compare seeded shot counts keep
 Aer's CPU sampler, whose counts their records retain.
+
+A classical estimator evaluated over many synthetic replicates (a null
+calibration, a parametric or resampling bootstrap) is batched across
+replicates with numpy before it is pooled or sharded: one call fits a block
+of replicates, and parallel.py maps the blocks. The scalar form stays as the
+reference that analyses call, and a gate proves that the batched path
+returns the reference's bits on the record's own streams and on adversarial
+inputs. The bits agree when the batched code keeps the scalar arithmetic
+order, repeats builtin `sum()`'s Neumaier compensation, and sends every
+replicate-dependent `exp` and `** 2` through `math.exp` and `math.pow`;
+[vectorized-fits.md](docs/notes/build_host/vectorized-fits.md) gives the
+rules, the equivalence gates and the measured speedup.
 
 A change to live_run.py or experiments.py also gets a dry run,
 `"$PYTHON" live_run.py --out ../results/live`, whose audit record lands under
@@ -447,8 +462,12 @@ retain its output under results/kaggle/. The kernel's own guide is
   set.
   `scripts/aer_gpu_probe.py --workloads n21 --configurations
   cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec` records the three paths
-  with Aer's reported `cuStateVec_enable`; a T4 result for it is not retained
-  yet. `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
+  with Aer's reported `cuStateVec_enable`. On the T4 x2 (gate core-450)
+  cuStateVec ran the dynamic density matrix 1.44 and 1.63 times faster than
+  the plain GPU executor at 7 and 10 qubits and statevector trajectories
+  1.19 to 1.29 times slower, and Aer spread every multi-shot run over both
+  GPUs (`docs/evidence/aer_gpu_configuration/README.md`).
+  `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
   the T4 check, and `docs/notes/build_host/custatevec.md` the host build.
 - **Batched GPU shots.** On a GPU `noise_simulator` enables Aer's
   `batched_shots_gpu` by default for circuits of at most
@@ -583,6 +602,7 @@ at those versions, except the linters.
 | python-rustworkx, python-sympy | rustworkx 0.18.1, sympy 1.14.0 |
 | python-matplotlib | matplotlib 3.11.2 |
 | python-stim, python-mthree (with python-runningman), python-qiskit-experiments, python-quimb, python-cotengra, python-pyzx, python-galois | stim 1.16.0, mthree 3.0.0, qiskit-experiments 0.14.2, quimb 1.15.0, cotengra 0.8.2, pyzx 0.10.7, galois 0.4.11: the `quantum-tools` group a Kaggle kernel installs with `push --with quantum-tools` (`scripts/kaggle_run.py` PIN_GROUPS) |
+| python-flint | python-flint 0.9.0 (CI pin): exact rank modulo p (`nmod_mat`) and RREF null spaces (`fmpq_mat`) in `scripts/exact_rank.py`, and SymPy 1.14.0's ground types, which it selects when the version is on SymPy's tested list |
 | python-pytorch-opt-cuda, python-pandas | torch and pandas for python-octonion and python-cayley-dickson only |
 | python-ruff, mypy | newer than the CI pins ruff 0.14.11 and mypy 1.19.1; `uvx ruff@0.14.11` reproduces CI formatting |
 
@@ -631,8 +651,18 @@ lives in its own environment, never in the repository's Python 3.14 stack:
 `QI_PYTHON=${QI_PYTHON:-$QI_ENV/bin/python}`, built with
 `uv venv --python 3.13 "$QI_ENV"` and
 `VIRTUAL_ENV="$QI_ENV" uv pip install -r docs/notes/quantum_inspire/requirements-qi.txt`.
-No Arch package carries the stack. CI never imports it: every gate checks
-retained JSON or regenerates text with the standard library.
+No Arch package carries the stack. CI's `qi-stack` job installs the lock
+exactly (`pip install --no-deps` and `pip check`) under Python 3.13.15 beside
+Python 3.14.7 and exports `QI_PYTHON`; there qxelarator, libqasm and
+OpenSquirrel run locally with no credential, and no SDK call reaches the
+network. gororoba_quantum/qi_stack.py reads `QI_PYTHON` from the environment
+alone and probes it once per process for the three modules at the lock's
+versions. A gate tagged `"requires": ["qi"]` compares a live run with its
+retained record where that probe passes; everywhere else (the gate shards,
+premerge, Kaggle shard replicas, a shell that has not exported `QI_PYTHON`)
+it replays the record and prints one line naming the replay.
+`ci/run_gates.py --requires qi` runs the tagged gates alone with
+`GOROROBA_QI_REQUIRED=1`, which makes a replay a failure.
 
 | Package | Version | Role |
 |---|---|---|
@@ -690,17 +720,21 @@ type this account can submit to.
 
 **Execution facts.**
 - Tuna: native single-qubit gates last 20 ns, CZ 60 ns, measurement 800 ns,
-  initialization 200 or 500 us; rotation angles quantize to multiples of
-  pi/36; OpenSquirrel schedules as late as possible, `wait(n)` idles n
-  cycles of 20 ns, and mid-circuit measurement is allowed while binary-
-  controlled gates are not, so feed-forward is applied in post-processing.
+  initialization 200 or 500 us; H, CNOT and SWAP are decomposed, the other
+  gates of the tuna dialect are native; rotation angles quantize to
+  multiples of pi/36; the compiler passes decompose only, so a circuit runs
+  in the gate order written; OpenSquirrel schedules as late as possible,
+  `wait(n)` idles n cycles of 20 ns, and mid-circuit measurement is allowed
+  while binary-controlled gates are not, so feed-forward is applied in
+  post-processing ([tuna-17-run-design.md](docs/notes/quantum_inspire/tuna-17-run-design.md)).
 - Bit order: QX and Tuna results put qubit 0 at the rightmost character; the
   Ry emulator puts it at the leftmost (an X on q[0] read `10` in all 1024
   shots). An analysis states the order of the backend it reads.
 - The Ry emulator takes no measurement statements and measures every qubit
-  at the end; a circuit with a bit register, H and CNOT compiled remotely but
-  failed at execution with the job message "error interpreting cQASM script"
-  (its log stays empty), while the X-only form of its code example ran.
+  at the end; a circuit that declares a bit register compiles remotely and
+  fails at execution with the job message "error interpreting cQASM script"
+  (its log stays empty), while H, CNOT, Z, S and Rz run in a circuit without
+  one ([ry-emulator.md](docs/notes/quantum_inspire/ry-emulator.md)).
 - The Qiskit provider writes a multi-qubit barrier as per-qubit barriers, so
   a timing-sensitive case writes cQASM directly with explicit `wait`.
 
@@ -710,9 +744,10 @@ forty-two jobs of 2026-10-16 on QX, the Ry emulator and Tuna-17, so no metered s
 or credits apply to this account as observed; the limits are structural: the
 table's qubits, shots, per-job execution limit and batch and queue counts,
 plus the FAQ's three queued jobs per hardware backend, which is stricter than
-the API's five batch jobs. Tuna-17 executed 16384 shots in 9.9 to 15.4 s
-(0.60 to 0.94 ms per shot, deeper circuits slower); QX finished 2048 shots
-in 0.03 to 10.4 s.
+the API's five batch jobs. Tuna-17 execution time fits 3.0 s per job plus
+0.49 ms per shot over the retained jobs, so a 16384-shot job takes about 11 s
+and the 120 s pause, not the shots, sets a batch's cost; QX finished 2048
+shots in 0.03 to 10.4 s.
 Calibration and tuning run between user jobs (Tuna-17 read `calibrating`
 between two reads minutes apart), delay queued jobs and charge the account
 nothing. The general conditions license every uploaded algorithm, datum and
@@ -761,10 +796,14 @@ the coupler map, its QX dry run and the spectator split), core-362
 (`qi_readout_ringdown_cases.py` case regeneration with the post-readout
 tail and excitation conformance), core-369 (the replay of its QX dry-run
 analyses), core-368 (`qi_toolchain_check.py --check`: the libqasm and
-OpenSquirrel record names every current case circuit at its sha256; the
-record itself is regenerated under `$QI_PYTHON`), and core-340
-(`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of the Tuna-17
-cases).
+OpenSquirrel record names every current case circuit at its sha256, and
+under the stack the record regenerates byte for byte), core-527 and core-423
+(`box_kite_qx_sweep.py --replay --live N`: the sweep records replay, and
+under the stack 24 evenly spaced family a circuits plus each sub-family's
+first rerun on qxelarator at their recorded seeds and must reproduce the
+retained counts exactly; core-423 adds 8 family de circuits on the full tier),
+and core-340 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of
+the Tuna-17 cases).
 
 ## Open Quantum
 
@@ -928,9 +967,41 @@ Decommissioned at the snapshot: `sim:gpu:medium`.
 Status, performance figures, availability statistics and maintenance
 windows change between reads and live only in the catalogue.
 
+**Runner.** A run directory is a copy of one case `job-NN/` under
+`results/quandela/runs/UTC-PLATFORM-SERIES-job-NN/`. `qd_platform.py plan
+RUN_DIR --platform NAME --max-credits C --expected-seconds S
+--per-job-credits P` makes every submit check read-only (digest, platform
+status and duration, S within max_duration, P plus max_shots times the live
+price within C, no running or queued job, Perceval's shot estimate within
+max_shots), records the processor's performance figures and prints the body
+Perceval would send; the written case states S, P and C and quotes it. `submit`
+adds `--approval TEXT`, holds an flock beside the token file, checkpoints
+before the POST and never sends a case twice; `collect` retains the raw
+result bytes and parses counts without Perceval's deserializer. One job runs
+at a time: the next is planned after the previous one is collected. Every
+retained run enters docs/state/research_state.json under the `quandela`
+provider in the change that retains it.
+
+**Box-kite photonic cases.** `scripts/qd_box_kite_cases.py` writes three
+series under `results/quandela/cases/` from the box-kite census: single
+(32 one-photon two-label configurations, one four-label control, the
+one-hot 16D pair), packed (the 32 configurations six to a job) and pairs
+(the 16 sign blocks with two photons). Every unitary is the
+exact Halmos dilation over Q(sqrt2); a one-photon block reads the census P
+on its algebra modes, and a two-photon block reads (perm M / 4)^2 on its
+label pair, 1/4 on a kite edge and 0 on a strut. A dark block is
+p_algebra 0, a bright block p_algebra 1. `scripts/cd_two_blade_blocks.py`
+records that every two-label two-blade product at D = 16, 32 and 64 uses
+one of these configurations, and that the signed zero products (336, 5040,
+52080) equal the annihilator nullity sums.
+
 **Gates.** core-500 (`capture_qd_docs.py --check`), core-501 (its
 `--self-test`), core-502 (`qd_platform.py check docs/evidence/quandela
---agents AGENTS.md docs/notes/quandela/README.md`) and core-503 (its
+--agents AGENTS.md docs/notes/quandela/README.md`), core-503 (its
+`--self-test`, the runner's stubbed-service contract included), core-504
+(`qd_box_kite_cases.py --check results/quandela/cases`), core-505 (its
+`--self-test`), core-506 (`cd_two_blade_blocks.py --check
+docs/evidence/box_kite_census/two_blade_blocks.json`) and core-507 (its
 `--self-test`).
 
 ## Qiskit skills

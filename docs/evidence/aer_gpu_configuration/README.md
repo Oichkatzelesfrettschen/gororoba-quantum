@@ -12,7 +12,7 @@ and rows above 12 flagged `contended`), and the desktop compositor holds
 about 4.6 GB and 15 to 45 percent utilization of the GPU, recorded per row
 as the baseline. Absolute ms per shot is therefore pessimistic, mostly for
 CPU rows; the configuration decision rests on ratios between GPU rows. The
-clean measurement is the T4 rerun of the same probe.
+T4 section below is the same probe without foreign load.
 
 ## Mechanism
 
@@ -67,3 +67,42 @@ without control flow batch: GPU 0.13 / 0.30 at 7 / 10 against CPU 0.18 /
 0.46, and unbatched GPU 1.51 against CPU 6.6 at 14. At the 7-qubit N=21
 widths the per-shot executor is the limit for feed-forward circuits, and
 the CPU stays the faster correct substrate.
+
+## Kaggle T4 x2
+
+`results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config` ran
+`--workloads toy,width --widths 7,10 --require-gpu` under `--gpu-env` on two
+Tesla T4s (15,360 MiB each, compute capability 7.5, driver 580.178.04) with
+4 Xeon CPUs at 2.00 GHz: Python 3.13.15, numpy 2.5.4 on scipy-openblas
+0.3.34, qiskit 2.5.2, qiskit-aer-gpu-cu11 0.17.2 as the only owner of
+`qiskit_aer`, cuquantum-cu11 24.8.0 (custatevec-cu11 1.6.0.post1). The
+preflight in `gpu_env.json` lists no failure, and both Bell runs report
+device GPU. Every GPU row reports device GPU, every cuStateVec row
+`cuStateVec_enable` true, and no row is contended. Gate core-450 runs
+`--check` on the record in normal and optimized mode.
+
+ms per shot at 2048 shots:
+
+| Configuration | static 7 | static 10 | dynamic 7 | dynamic 10 |
+|---|---|---|---|---|
+| statevector, unbatched | 1.005 | 1.657 | 1.024 | 1.636 |
+| statevector, batched | 0.287 | 0.438 | 0.290 | 0.440 |
+| statevector, cuStateVec | 1.238 | 1.964 | 1.318 | 2.022 |
+| density matrix, unbatched | 0.164 | 0.190 | 1.707 | 19.089 |
+| density matrix, batched | 0.166 | 0.193 | 1.698 | 19.403 |
+| density matrix, cuStateVec | 0.169 | 0.186 | 1.185 | 11.729 |
+
+- Batched statevector trajectories run 3.5 and 3.8 times faster than
+  unbatched at 7 and 10 static qubits, the host's ratio, so the batched
+  default holds on Kaggle. The dynamic batched rows time lowered
+  conditions, which the batched executor evaluates before the readout
+  channel; they are timing rows, and feed-forward circuits stay unbatched.
+- cuStateVec runs the dynamic density matrix 1.44 and 1.63 times faster
+  than the plain GPU executor at 7 and 10 qubits, and statevector
+  trajectories 1.19 to 1.29 times slower. A measurement-sampled static
+  density matrix evolves once, so its rows agree within 4 percent across
+  configurations.
+- Aer spreads every multi-shot run over both T4s: batched rows report
+  `batched_shots_optimization_parallel_gpus` 2, and unbatched trajectories
+  and dynamic density matrices `gpu_parallel_shots_` 2. A static density
+  matrix that measurement sampling serves holds one state on one GPU.

@@ -135,11 +135,46 @@ calling process's own settings alone (gate core-520). A serial run
 (`GOROROBA_WORKERS=1`) keeps the libraries' defaults, where a single large
 BLAS call can use every CPU.
 
+## Exact backends
+
+SymPy 1.14.0 chooses its ground types when it is imported: python-flint when
+the installed version is in its tested list (0.6 to 0.10), else gmpy2, else
+pure Python. requirements.txt pins python-flint 0.9.0, so CI and the build
+host both run `flint` ground types; `SYMPY_GROUND_TYPES=python` reproduces a
+flint-free stack for a comparison. Ground types alone move the SymPy gates by
+under 10 percent: their time goes to Matrix construction, `sympify` and
+entrywise `Matrix` products, not to integer or rational arithmetic.
+
+| work | backend | measured on | speedup |
+|---|---|---|---|
+| rank modulo 2^61 - 1, 16 to 32 square | flint `nmod_mat.rank` (`scripts/exact_rank.py`) | core-324's 170 calls of 10 frames | 10.6 to 14.5x over Python ints |
+| rational null space by RREF | flint `fmpq_mat.rref` | core-324's 130 calls | 22 to 32x over `Fraction` elimination |
+| rational null space by RREF | SymPy `DomainMatrix` over QQ | same | 3.3 to 3.6x |
+| rational null space by RREF | gmpy2 `mpq` in place of `Fraction` | same | 4.6x |
+| rank modulo p | SymPy `DomainMatrix` over GF(p) | same | 0.3 to 0.5x (slower) |
+| 64 x 64 integer matrix products | SymPy `DomainMatrix` over ZZ | complex_skew `coefficient_control` | about 2800x over `Matrix` products |
+| whole gate | core-324 (d_locus_nullity, flint) | serial, build host | 7.3x (126.7 s to 17.4 s) |
+| whole gate | core-063 (complex_skew, DomainMatrix) | serial, build host | 2.2x (94.1 s to 42.7 s) |
+
+- **Compute with FLINT, check the certificate without it.**
+  `exact_rank.rational_kernel` reads the basis from the unique RREF, so it
+  returns the same `Fraction` vectors as Python elimination (gate core-528
+  compares the two on 254 matrices). `d_locus_nullity.nullity` verifies each
+  kernel vector it certifies as integer dot products after lcm scaling; the
+  rank modulo p still bounds the rational rank from below. The kernels that
+  `frame_spaces` and `rank_locus_local_dimension.tangent_bound` read carry no
+  such check.
+- **Multiply integer SymPy matrices as `DomainMatrix`.** `Matrix * Matrix`
+  on mixed mutable and immutable operands takes SymPy's entrywise expression
+  path. `.to_DM()` products over ZZ return the same equality.
+- **Profile SymPy gates under `SYMPY_GROUND_TYPES=python`** when the question
+  is what a flint-free stack spends.
+
 ## Runtime packages
 
 `ci/install_pins.sh` defines CI's stack: the pins in `requirements.txt` and
 `ci/requirements-ci.txt` (numpy, scipy, sympy, qiskit, qiskit-aer,
-qiskit-ibm-runtime, rustworkx, matplotlib, mypy, ruff), then mpmath 1.4.1
+qiskit-ibm-runtime, rustworkx, python-flint, matplotlib, mypy, ruff), then mpmath 1.4.1
 with `--no-deps` and the sympy 1.14.0 patch that pair needs. A gate that needs
 anything else retains its result at `--out` and checks it with the pinned
 stack, as core-489 does for pyadic. Versions below are the build host's.
@@ -153,7 +188,7 @@ stack, as core-489 does for pyadic. Versions below are the build host's.
 | cupy | 14.2.0 | numpy-shaped GPU arrays on the RTX 4070 Ti | host only; the GPU's nominal float64 throughput is 1/64 of float32 (a hardware ratio, not a measured workload speed) |
 | opt_einsum, cotengra, quimb | 3.4.0, 0.8.2, 1.15.0 | contraction order search and tensor networks | host only; quimb and cotengra are the `quantum-tools` Kaggle group |
 | threadpoolctl | 3.6.0 | limit BLAS threads per process | host only |
-| python-flint | 0.9.0 | fast exact `fmpz_mat` / `fmpq_mat` rank, solve and determinants | not in CI; Kaggle `exact-arithmetic` group |
+| python-flint | 0.9.0 (CI pin) | exact rank modulo p (`nmod_mat`), RREF null spaces (`fmpq_mat`), SymPy's ground types | Kaggle images take it through `--ci-env` or the `exact-arithmetic` group |
 | gmpy2 | 2.3.2 | fast big integers and rationals where `Fraction` dominates a profile | host only |
 | pyadic | 0.3.0 | `ModP`, `PAdic`, rational reconstruction | not in CI; Kaggle `exact-arithmetic` group; [note](packages/manual/pyadic.md) |
 | galois | 0.4.11 | finite-field numpy arrays and linear algebra | `quantum-tools` group |
