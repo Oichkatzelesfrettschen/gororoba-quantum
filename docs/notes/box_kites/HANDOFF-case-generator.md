@@ -11,11 +11,12 @@ qxelarator. Nothing has been submitted to any backend.
 | Case directory (results/quantum_inspire/cases/) | Backend | Batches | Circuits | Replicas | Shots per circuit | Shots |
 |---|---|---|---|---|---|---|
 | box_kite_a_qx (smoke set) | QX | 2 | 6 | 15 | 2048 | 12288 |
+| box_kite_tuna_pre | Tuna-17 | 1 | 3 (1 diagnostic) | -- | 4096 | 12288 |
 | box_kite_tuna_t0 | Tuna-17 | 3 | 9 (3 witness) | 9 | 16384 | 147456 |
 | box_kite_tuna_t1 | Tuna-17 | 2 | 6 (2 witness) | 6 | 4096 | 24576 |
 | box_kite_tuna_coherence | Tuna-17 | 2 | 6 (2 witness) | 6 | 4096 | 24576 |
 | box_kite_tuna_walk | Tuna-17 | 3 | 9 (3 witness) | 6 | 4096 | 36864 |
-| box_kite_tuna_twins_qx | QX | 4 | 10 | 27 | 2048 | 20480 |
+| box_kite_tuna_twins_qx | QX | 5 | 11 | 27 | 2048 | 22528 |
 | box_kite_ry_ladder | Ry | 1 | 3 | -- | 1024 | 3072 |
 | box_kite_ry_smoke | Ry | 2 | 6 | 12 | 1024 | 6144 |
 | box_kite_de_qx (smoke representatives) | QX | 2 | 4 | 7 | 2048 | 8192 |
@@ -123,7 +124,11 @@ CI cannot install the cp313-only qxelarator, so the gate re-derives every
 verdict from the retained counts and re-checks every prediction by state
 vector through `--bind`, and nothing resamples.
 
-## Not started
+## Analysis
 
-- `analyze` and its replay for the Tuna-17 stages (C(n) and r, D, twist
-  pairs, coherences, <Z_c>) and for the Ry runs.
+`scripts/box_kite_analysis.py` analyzes and replays every Tuna-17 stage
+(pre, T0, T1, coherence, walk) and both Ry stages from retained run
+directories, with the thresholds each manifest carries; gate core-424 runs
+its synthetic self-test. experiment-program.md section 4(g), **Analysis**,
+gives the commands and rules, and section 7 the preregistration points the
+owner decides (the T0 bright floor, the T1 twist allowance).
