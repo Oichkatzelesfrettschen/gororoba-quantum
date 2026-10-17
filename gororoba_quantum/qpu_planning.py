@@ -12,6 +12,7 @@ import json
 import math
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -23,10 +24,13 @@ import parallel
 from diagnostic_experiments import (
     N21_FAMILIES,
     PATCH_FAMILIES,
+    STATE_PREP_FAMILY,
+    STATE_PREP_SOURCE_RECORD,
     family_contracts,
     folded_group,
     n21_group,
     n21_orbit_rca_group,
+    state_prep_groups,
 )
 from experiment_optimizer import (
     BudgetContract,
@@ -47,7 +51,12 @@ from qpe_diagnostics import ideal_compiled_probabilities
 
 
 def settings(args: Any) -> dict[str, Any]:
-    """Approval-bound design inputs, distinct from fluctuating quota readings."""
+    """Approval-bound design inputs, distinct from fluctuating quota readings.
+
+    A declared preparation excitation joins them only when given, so a plan
+    without it keeps its settings unchanged.
+    """
+    excitation = getattr(args, "prep_excitation", None)
     return {
         name: getattr(args, name, default)
         for name, default in (
@@ -72,7 +81,7 @@ def settings(args: Any) -> dict[str, Any]:
             ("model_method", "sampled"),
             ("replica_variance_bound", None),
         )
-    }
+    } | ({"prep_excitation": excitation} if excitation is not None else {})
 
 
 def budget_plan(runtime: Any, choices: list[Any], args: Any, usage: dict[str, Any]) -> dict[str, Any]:
@@ -492,6 +501,117 @@ def patch_candidates(
     return [(choices, configuration) for _, _, choices, configuration in scored[: args.optimizer_candidates]]
 
 
+def state_prep_layout(args: Any) -> tuple[list[int], dict[str, Any]]:
+    """The named qubits of state-prep-control and where they come from.
+
+    --layout names them; otherwise they are the replica qubits of the
+    retained n21-feedback-encoded dry run STATE_PREP_SOURCE_RECORD, which
+    belong to that record's backend.
+    """
+    declared = getattr(args, "layout", None)
+    if declared is not None:
+        qubits = [int(qubit) for qubit in declared]
+        source: dict[str, Any] = {"layout_source": "declared"}
+    else:
+        record = json.loads((Path(__file__).resolve().parent.parent / STATE_PREP_SOURCE_RECORD).read_text())
+        replicas = [
+            sorted(int(qubit) for qubit in replica["physical_qubits"])
+            for group in record["groups"]
+            for replica in group["replicas"]
+        ]
+        qubits = sorted(qubit for replica in replicas for qubit in replica)
+        source = {
+            "layout_source": STATE_PREP_SOURCE_RECORD,
+            "layout_backend": record["groups"][0]["backend"],
+            "source_replicas": replicas,
+        }
+    if not qubits or len(set(qubits)) != len(qubits) or any(qubit < 0 for qubit in qubits):
+        raise ValueError(f"state-prep-control needs distinct nonnegative qubits, got {qubits}")
+    return qubits, source
+
+
+def state_prep_candidates(
+    runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
+) -> list[tuple[list[Any], dict[str, Any]]]:
+    """Compile every arm on its named qubit of each eligible snapshot, or record why the snapshot is refused.
+
+    Each qubit's arms compile with initial layout [qubit] and stay there: a
+    calibration that excludes a named qubit refuses the snapshot rather than
+    moving the control off the qubits it characterizes.
+    """
+    try:
+        qubits, source = state_prep_layout(args)
+    except (OSError, KeyError, ValueError) as error:
+        raise runtime.LiveRunError(f"state-prep-control layout: {error}") from error
+    groups = state_prep_groups(qubits)
+    candidates = []
+    for snapshot in snapshots:
+        try:
+            if "layout_backend" in source and snapshot.name != source["layout_backend"]:
+                raise runtime.LiveRunError(f"the layout names {source['layout_backend']} qubits")
+            outside = [qubit for qubit in qubits if qubit >= snapshot.backend.target.num_qubits]
+            excluded = sorted(set(qubits) & set(snapshot.excluded_qubits))
+            if outside or excluded:
+                raise runtime.LiveRunError(f"qubits {outside} lie outside the device; calibration excludes {excluded}")
+            choices = []
+            for group in groups:
+                qubit = int(group.name.rsplit("_q", 1)[1])
+                isas = [
+                    runtime._compile(member.circuit, snapshot, runtime.SEED_TRANSPILER, [qubit])
+                    for member in group.members
+                ]
+                for isa in isas:
+                    if runtime._physical(isa) != [qubit]:
+                        raise runtime.LiveRunError(f"{group.name}: compiled onto {runtime._physical(isa)}")
+                    violations = runtime.compiled_violations(isa, snapshot)
+                    if violations:
+                        raise runtime.LiveRunError(f"{group.name}: {violations}")
+                scores = [runtime.layout_score(isa, snapshot.backend.target) for isa in isas]
+                if any(score <= 0 for score in scores):
+                    raise runtime.LiveRunError(f"{group.name}: layout score underflows to zero")
+                choice = runtime.Choice(
+                    group,
+                    snapshot,
+                    runtime.SEED_TRANSPILER,
+                    [qubit],
+                    isas,
+                    scores,
+                    math.exp(sum(math.log(score) for score in scores) / len(scores)),
+                )
+                runtime._set_entries(
+                    choice,
+                    [Replica(0, {qubit: qubit}, min(scores))],
+                    runtime.ReplicaPolicy(args.replica_floor, 1, False, True),
+                )
+                choices.append(choice)
+            pubs = runtime.execution_pubs(choices)
+            kinds = sorted(pub.kind for pub in pubs)
+            if kinds != ["dynamic", "static", "static"]:
+                raise runtime.LiveRunError(f"the arms fused into PUB kinds {kinds}, not two static and one dynamic")
+        except (runtime.LiveRunError, QiskitError, ValueError) as error:
+            trace.setdefault("family_rejections", []).append(
+                {"backend": snapshot.name, "qubits": qubits, "reason": str(error)}
+            )
+            continue
+        candidates.append(
+            (
+                choices,
+                {
+                    "name": STATE_PREP_FAMILY,
+                    "qubits": qubits,
+                    **source,
+                    "arms": {"prep0": "init, measure", "reset": "init, reset, measure", "x": "x, measure"},
+                    "placement_contract": (
+                        "one pinned single-qubit placement per named qubit; every qubit runs each arm in the "
+                        "same shots; static prep0 and x PUBs, dynamic reset PUB"
+                    ),
+                    "dt_seconds": snapshot.backend.target.dt,
+                },
+            )
+        )
+    return candidates[: args.optimizer_candidates]
+
+
 def measurement_delay(runtime: Any, snapshot: Any, physical_qubit: int) -> int:
     """Round the actual measurement writer's fresh duration to timing granularity."""
     target = snapshot.backend.target
@@ -584,6 +704,8 @@ def family_candidates(
         return candidates
     if args.family in PATCH_FAMILIES:
         return patch_candidates(runtime, snapshots, args, trace)
+    if args.family == STATE_PREP_FAMILY:
+        return state_prep_candidates(runtime, snapshots, args, trace)
     if args.family != "folded-qpe":
         raise runtime.LiveRunError(f"unknown family {args.family}")
     coherent = runtime.select_candidates(folded_group(("coherent",)), snapshots, args.seeds, trace)
@@ -675,8 +797,14 @@ def family_candidates(
     return candidates
 
 
-def repetition_delay(backend: Any) -> float:
-    """Read seconds from the SDK attribute; configuration.to_dict uses wire microseconds."""
+def repetition_delay(backend: Any, requested: float | None = None) -> float:
+    """The repetition delay in seconds a job on backend runs at: requested, or the backend default.
+
+    The SDK attributes carry seconds; configuration.to_dict uses wire
+    microseconds. A requested value must lie in rep_delay_range, which IBM's
+    repetition-rate guide names the supported interval and which changes
+    over time, so every caller reads it from a fresh configuration.
+    """
     configuration = backend.configuration()
     value = getattr(configuration, "default_rep_delay", None)
     interval = getattr(configuration, "rep_delay_range", None)
@@ -690,7 +818,33 @@ def repetition_delay(backend: Any) -> float:
         or not interval[0] <= value <= interval[1]
     ):
         raise ValueError("cost planning requires a valid backend default repetition delay in seconds")
-    return float(value)
+    if requested is None:
+        return float(value)
+    low, high = float(interval[0]), float(interval[1])
+    if not math.isfinite(requested) or not low <= requested <= high:
+        raise ValueError(f"repetition delay {requested} s lies outside the backend range [{low}, {high}] s")
+    return float(requested)
+
+
+def repetition_delay_range(backend: Any) -> list[float] | None:
+    """backend's rep_delay_range in seconds, or None for a fixed repetition rate."""
+    configuration = backend.configuration()
+    interval = getattr(configuration, "rep_delay_range", None)
+    if not getattr(configuration, "dynamic_reprate_enabled", False) or interval is None or len(interval) != 2:
+        return None
+    return [float(interval[0]), float(interval[1])]
+
+
+def repetition_delay_violations(backend: Any, requested: float, planned_range: list[float] | None) -> list[str]:
+    """Why requested cannot run on backend's fresh configuration, or why its allowed range moved since planning."""
+    try:
+        repetition_delay(backend, requested)
+    except (ValueError, AttributeError) as error:
+        return [f"repetition delay: {error}"]
+    current = repetition_delay_range(backend)
+    if planned_range is not None and current != planned_range:
+        return [f"repetition delay range moved from {planned_range} s to {current} s since planning"]
+    return []
 
 
 def execution_contract(choices: list[Any], record: dict[str, Any]) -> dict[str, Any]:
@@ -705,6 +859,7 @@ def execution_contract(choices: list[Any], record: dict[str, Any]) -> dict[str, 
         ),
         {},
     )
+    requested = record.get("policy", {}).get("rep_delay_seconds")
     return {
         "backends": [
             {
@@ -712,6 +867,18 @@ def execution_contract(choices: list[Any], record: dict[str, Any]) -> dict[str, 
                 "repetition_delay_seconds": repetition_delay(backend)
                 if getattr(backend.configuration(), "dynamic_reprate_enabled", False)
                 else None,
+            }
+            if requested is None
+            else {
+                # A requested delay binds its value and the range it was admitted
+                # in, so a moved range differs from the approved contract.
+                "name": name,
+                "repetition_delay_seconds": requested,
+                "repetition_delay_source": "--rep-delay",
+                "default_repetition_delay_seconds": repetition_delay(backend)
+                if getattr(backend.configuration(), "dynamic_reprate_enabled", False)
+                else None,
+                "repetition_delay_range_seconds": repetition_delay_range(backend),
             }
             for name, backend in sorted(backends.items())
         ],
@@ -754,6 +921,9 @@ def prepare(
         import correction_planning
 
         return correction_planning.prepare(runtime, snapshots, args, usage, trace)
+    excitation = getattr(args, "prep_excitation", None)
+    if excitation is not None and args.family not in N21_FAMILIES:
+        raise runtime.LiveRunError("--prep-excitation applies to the N21 families")
     candidates = admitted_family_candidates(runtime, family_candidates(runtime, snapshots, args, trace), trace)
     if not candidates:
         diagnostic = runtime._scrub_instances(runtime._jsonable(trace))
@@ -761,7 +931,13 @@ def prepare(
             "the experiment family has no admitted routed candidate; "
             f"family={args.family!r}; selection_trace={json.dumps(diagnostic, sort_keys=True)}"
         )
-    contracts = family_contracts(args.family, args.precision, args.alpha, args.power)
+    contracts = family_contracts(
+        args.family,
+        args.precision,
+        args.alpha,
+        args.power,
+        **({"configuration": candidates[0][1]} if args.family == STATE_PREP_FAMILY else {}),
+    )
     plans: list[CandidatePlan] = []
     ownership: dict[str, tuple[list[Any], dict[str, Any], int]] = {}
     simulators: dict[int, Any] = {}
@@ -788,11 +964,15 @@ def prepare(
     # pool runs only as many simulators as fit in the available CPUs. Each task
     # owns a simulator built from the snapshot's cached noise model; its batch
     # evidence joins the snapshot simulator in serial order.
+    # A declared initial excitation enters the sampled model and the exact
+    # law alike, so the sampled falsifier tests the law the plan prices.
+    excited = {"prep_excitation": excitation} if excitation else {}
+
     def simulate_choice(choice: Any) -> tuple[Any, dict[str, Any]]:
         simulator = runtime.noise_simulator(
             choice.snap.name, choice.snap.backend.target, choice.snap.properties, local_compute.settings(args)
         )
-        return simulator, runtime.simulate(choice, simulator, args.model_shots)
+        return simulator, runtime.simulate(choice, simulator, args.model_shots, **excited)
 
     ordered = [choice for choices, _configuration in candidates for choice in choices]
     concurrent = max(1, parallel.workers() // local_compute.settings(args)["threads"])
@@ -824,6 +1004,7 @@ def prepare(
                     args.model_shots,
                     args.simulation_alpha,
                     contracts,
+                    **excited,
                 )
             except n21_exact_planning.ExactModelRejected as error:
                 exact_evidence[candidate_index] = error.evidence
@@ -849,7 +1030,9 @@ def prepare(
                                         for component in pub.components
                                     },
                                     scheduled_seconds=runtime.duration_s(pub.circuit, backend.target),
-                                    repetition_delay_seconds=repetition_delay(backend),
+                                    repetition_delay_seconds=repetition_delay(
+                                        backend, getattr(args, "rep_delay", None)
+                                    ),
                                     classical_latency_seconds=manifest["sequential_stage_count"]
                                     * args.classical_latency_us
                                     * 1e-6,
