@@ -2562,6 +2562,39 @@
       "superseded_by": null
     },
     {
+      "id": "a5-rank-locus-local-dimension",
+      "statement": "At exact witnesses, the A_5 rank loci have local dimension 11 on D_(5,16) ({a,0}, a a zero divisor), 17 on D_(5,12) (both entries zero divisors on the D-locus) and 23 on D_(5,8) (both zero divisors off the D-locus): each family's dimension meets the exact upper bound dim{y : U^T L_y V = 0} - 1, so at those witnesses the tangent cone lies in H_5^perp. Every family with a non-zero-divisor coordinate (nullities 12, 8, 4) sits exactly two below its bound, and the listed witnesses outside H_5^perp carry upper bounds only: 15 at Proposition 8.2's nullity-12 (i_4, e_p) and 27 at Moreno's nullity-4 e_1 + e_10 + 2 e_24.",
+      "domain": "geometry",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Local dimensions at 29 named exact points; the family dimensions rest on Theorems 1.5 and 7.5 of math/0702075 and Theorem 15.7 of math/0511691, and the upper bound is a tangent-cone containment. It decomposes no rank locus, counts no components, constructs no family through the witnesses outside H_5^perp, and leaves the two-dimensional gap at non-zero-divisor families open.",
+      "evidence": [
+        {
+          "path": "docs/evidence/rank_locus_local_dimension/result.json",
+          "sha256": "ea92a2a676d82b0e4b27c24414deeab1b3d2d352b983cbf165efa40f14ac0ef6"
+        }
+      ],
+      "documents": [
+        "docs/evidence/rank_locus_local_dimension/README.md",
+        "gororoba_quantum/RANK_STRATUM_TOPOLOGY.md",
+        "docs/notes/math-0702075.md",
+        "docs/notes/math-0511691.md"
+      ],
+      "gates": {
+        "core-328": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "Theorem 1.5 and Theorem 7.5 of math/0702075 as stated in docs/notes/math-0702075.md",
+        "Theorem 15.7 of math/0511691 (unit zero divisors of A_4 form V_2(R^7)) as stated in docs/notes/math-0511691.md"
+      ],
+      "depends_on": [
+        "a5-d-locus-nullity"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "n21-linear-encoding-surrogate",
       "statement": "Over all 83,328 cosets B S_5 of GL(5,2), conjugating every N=21, a=2 order-finding multiplier by one uncontrolled linear B gives a ten-round phase-controlled CX surrogate 9 s(4) + s(2) whose unique minimum is 1,896 at columns (1, 2, 5, 13, 25), against 2,556 at B = I; 2,750 cosets beat B = I, and s(B^-1 f_16 B) = s(B^-1 f_4 B) on every one of 1,000 sampled cosets as 16 = 4^-1 mod 21 predicts.",
       "domain": "implementation",
