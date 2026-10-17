@@ -1024,8 +1024,8 @@ def _exact_contrast_sentence(exact: dict[str, Any], name: str) -> str:
     return (
         f" The endpoint's exact contrast {_format_number(row['exact'])} sits "
         f"{_format_number(row['gap'])} from its sampled estimate {_format_number(row['sampled'])}, inside the "
-        f"contrast's own Hoeffding radius {_format_number(row['radius'])} at tail "
-        f"{_format_number(exact['score_tail'])}; that radius bounds a model bias no tighter than itself."
+        f"contrast's own Bernstein radius {_format_number(row['radius'])} at tail "
+        f"{_format_number(exact['score_tail'])}; a model bias smaller than that radius passes this check unseen."
     )
 
 
