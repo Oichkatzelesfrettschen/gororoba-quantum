@@ -110,12 +110,12 @@ member have a law that needs no two-qubit gate:
   delay and measurement on the wires each touches and split into connected
   components, and CZ inside a component whose own unitary is local is
   scaffold. Cancellation across a barrier or an idle is what Design A,
-  Design C, the conditional-Ramsey Bell arms and the spectator wavefront ask
-  the device to perform, and it passes.
+  Design C, the conditional-Ramsey Bell arms, the star-Ramsey Bell and GHZ
+  arms and the spectator wavefront ask the device to perform, and it passes.
 - A **product output** has an entangling unitary that maps its prepared
   input to a product state, so every CZ it executes is optional for its law.
 
-Of 1306 distinct members, 272 are local unitaries, 20 product outputs and
+Of 1452 distinct members, 418 are local unitaries, 20 product outputs and
 950 entangling; 64 member names carry mid-circuit measurement, reset or
 control flow and stay unchecked. Thirty members execute CZ their law does
 not need, and each matches a declaration naming what it measures. Ten local
