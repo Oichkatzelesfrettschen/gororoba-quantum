@@ -582,9 +582,11 @@ access and refresh tokens in `~/.quantuminspire/config.json`, which the CLI
 writes mode 644; `chmod 600` it after login, and scripts/qi_platform.py's
 client narrows it to mode 600 before reading it. The
 access token lives 3600 s; scripts/qi_platform.py renews it before expiry.
-The authorization server rotates the refresh token on every exchange and
-revokes the login when a spent one is presented, and the SDK's
-`refresh_tokens` keeps the rotated tokens in memory only, so `Client.refresh`
+The SDK exchanges the refresh token only within 5 s of access-token expiry,
+and its `refresh_tokens` keeps the rotated tokens in memory only. Every
+process on the account read invalid_grant after one such expiry (2026-10-17,
+two sessions and several MCP servers live); rotation with reuse detection is
+the inferred mechanism, unconfirmed by a probe. `Client.refresh` therefore
 holds an flock on `~/.quantuminspire/config.json.lock`, rereads the file,
 exchanges only near expiry and writes the rotated tokens back atomically. A
 long-lived process (an MCP server) started before that rule restarts before
