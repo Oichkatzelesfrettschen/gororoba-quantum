@@ -416,13 +416,73 @@ def _check_submission_manifest(case_dir: Path, record: dict[str, Any], *, requir
             raise PlatformError("submission receipt is not enqueued; use read-only reconciliation")
 
 
-# Every qubit declaration of a cQASM 3.0 program: `qubit[n] name` or the scalar `qubit name`.
-QUBIT_DECLARATION = re.compile(r"^\s*qubit\s*(?:\[\s*(\d+)\s*\])?\s+[A-Za-z_]\w*", re.MULTILINE)
-
-
 def declared_qubits(cqasm: str) -> int:
-    """Total width of every qubit register the program declares; the platform allocates their sum."""
-    return sum(int(size) if size else 1 for size in QUBIT_DECLARATION.findall(cqasm)) or 1
+    """Count explicit quantum declarations without importing a compiler or rewriting source.
+
+    Admit literal cQASM 3 scalar/array declarations and the legacy `qubits N`
+    declaration. Expressions, duplicate names and mixed declaration styles
+    require explicit literal declarations for this width-only preflight.
+    Comment/string contents cannot introduce or hide a quantum declaration.
+    Validation failures raise ValueError so both CLI and MCP callers can report them.
+    """
+    tokens = re.compile(r'//[^\r\n]*|\#[^\r\n]*|/\*.*?\*/|"(?:\\.|[^"\\])*"', re.DOTALL)
+    stripped = tokens.sub(lambda match: "@" if match[0].startswith('"') else " ", cqasm)
+    if re.search(r'/\*|\*/|"', stripped):
+        raise ValueError("unterminated or ambiguous cQASM comment/string")
+    quantum = re.compile(r"qubit\s*(?:\[\s*([0-9]+)\s*\])?\s+([A-Za-z_][A-Za-z0-9_]*)")
+    legacy = re.compile(r"qubits\s+([0-9]+)", re.IGNORECASE)
+    names: set[str] = set()
+    count = 0
+    legacy_seen = False
+    for statement in re.split(r"[;\r\n]+", stripped):
+        statement = statement.strip()
+        if not re.search(r"\bqubits?\b", statement, re.IGNORECASE):
+            continue
+        if match := quantum.fullmatch(statement):
+            width = int(match[1]) if match[1] is not None else 1
+            name = match[2]
+            if legacy_seen or name in names:
+                raise ValueError("duplicate or mixed cQASM qubit declarations")
+            names.add(name)
+        elif match := legacy.fullmatch(statement):
+            if legacy_seen or names:
+                raise ValueError("duplicate or mixed cQASM qubit declarations")
+            width = int(match[1])
+            legacy_seen = True
+        else:
+            raise ValueError("malformed or nonliteral cQASM qubit declaration")
+        if width < 1:
+            raise ValueError("cQASM qubit declaration width must be positive")
+        count += width
+    if count < 1:
+        raise ValueError("no explicit cQASM qubit declaration")
+    return count
+
+
+def _case_qubit_widths(cases: dict[str, Any], sources: dict[str, str]) -> dict[str, int]:
+    """The batch width is its maximum; a narrower circuit must name its exact width."""
+    batch_width = cases.get("nqubits")
+    if type(batch_width) is not int or batch_width < 1:
+        raise SystemExit("cases.json nqubits must be a positive integer")
+    widths = {}
+    for row in cases["circuits"]:
+        file_name = row["file"]
+        try:
+            width = declared_qubits(sources[file_name])
+        except ValueError as error:
+            raise SystemExit(f"{file_name}: {error}") from error
+        claimed = row.get("nqubits", batch_width)
+        if type(claimed) is not int or claimed < 1:
+            raise SystemExit(f"{file_name}: manifest nqubits must be a positive integer")
+        if claimed != width:
+            raise SystemExit(
+                f"{file_name}: manifest nqubits {claimed} differs from declared width {width}; "
+                "mixed-width batches require exact per-circuit nqubits"
+            )
+        widths[file_name] = width
+    if max(widths.values()) != batch_width:
+        raise SystemExit("cases.json nqubits differs from the maximum declared circuit width")
+    return widths
 
 
 def submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any]:
@@ -449,19 +509,21 @@ def submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any
         digests[row["file"]] = row["sha256"]
     if not sources or len(sources) != len(cases["circuits"]):
         raise SystemExit("cases.json needs at least one circuit and unique circuit filenames")
+    widths = _case_qubit_widths(cases, sources)
     client = Client()
     backend_type = client.get(f"/backend_types/{backend_type_id}")
     if backend_type["identifier"] != cases["backend"]:
         raise SystemExit(f"backend type {backend_type_id} is {backend_type['identifier']}, not {cases['backend']}")
     if backend_type["status"] == "offline":
         raise SystemExit(f"{backend_type['name']} is offline")
+    capacity = backend_type.get("nqubits")
+    if type(capacity) is not int or capacity < 1:
+        raise PlatformError("backend nqubits capacity is not a positive integer")
+    for file_name, width in widths.items():
+        if width > capacity:
+            raise SystemExit(f"{file_name}: declared width {width} exceeds backend nqubits {capacity}")
     if len(sources) > backend_type["max_jobs_per_batch_job"]:
         raise SystemExit(f"{len(sources)} circuits exceed max_jobs_per_batch_job")
-    for file, source in sources.items():
-        if declared_qubits(source) > backend_type["nqubits"]:
-            raise SystemExit(
-                f"{file} declares {declared_qubits(source)} qubits; the backend serves {backend_type['nqubits']}"
-            )
     if cases["shots"] > backend_type["max_number_of_shots"]:
         raise SystemExit("shots exceed max_number_of_shots")
     queue = client.get(f"/backend_types/{backend_type_id}/queue", user_only=True)

@@ -24,6 +24,9 @@ cd_core.cd_multiply and with the retained D = 16 tables of the packages
 identical to cd_core (docs/evidence/algebra_packages/tables.json), requires
 the dark pair in cd_core.sedenion_zero_divisor_corpus, and requires SELECT to
 equal cd_sign(16, m, q)|m XOR q> on all 32 basis inputs.
+Generation first validates backend identities, widths, directed topologies,
+gate support and capacity against the retained QI catalogue. A changed
+catalogue requires review of this fixed routing contract before generation.
 
 Three disjoint 5-qubit regions of Tuna-17 (REGIONS, chosen for the fewest
 routed CZ, 67-70 per replica) run a replica each; circuits 1-3 rotate the
@@ -62,12 +65,13 @@ the rightmost character (Tuna).
 
 Usage: "$PYTHON" scripts/qi_zero_divisor_cases.py
        (--write DIR | --check DIR | --analyze RUN_DIR... [--out FILE] | --replay RUN_DIR...
-        | --replay-series FILE RUN_DIR...)
+        | --replay-series FILE RUN_DIR... | --self-test)
 """
 
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import math
@@ -96,6 +100,8 @@ QX_QUBITS = 10
 QX_SHOTS = 2048
 NQUBITS = 17
 SHOTS = 16384
+# Frozen routing contract for the acquired witness. Fresh generation must
+# validate this contract against the retained catalogue before routing.
 TUNA17 = (
     (0, 1), (0, 2), (1, 4), (2, 4), (2, 5), (3, 5), (3, 6), (4, 7), (4, 8), (5, 8), (5, 9), (6, 9),
     (7, 10), (7, 11), (8, 11), (8, 12), (9, 12), (10, 13), (11, 13), (11, 14), (12, 14), (12, 15),
@@ -117,6 +123,79 @@ BASIS = ["cz", "h", "s", "sdg", "t", "tdg", "x", "y", "z", "sx", "sxdg"]
 CQASM = {"h": "H", "s": "S", "sdg": "Sdag", "t": "T", "tdg": "Tdag", "x": "X", "y": "Y", "z": "Z", "sx": "X90"}
 CQASM["sxdg"] = "mX90"
 KINGSTON = {"dark": 0.182, "dark_ci95": [0.146, 0.217], "bright": 0.828, "claim": "hw-zero-divisor-floor"}
+
+
+def catalogue_backends(catalogue: Any) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Admit only the retained hardware/emulator contract used by this witness.
+
+    A changed backend identity, width or topology needs a reviewed new design;
+    it must not silently reuse this acquisition's routing or provenance.
+    """
+    if not isinstance(catalogue, dict) or not isinstance(catalogue.get("backend_types"), list):
+        raise SystemExit("witness catalogue must contain a backend_types list")
+    admitted = []
+    for identifier, backend_id, width, hardware, shots in (
+        (BACKEND, BACKEND_TYPE_ID, NQUBITS, True, SHOTS),
+        ("QXsinglenodesimulator", QX_BACKEND_TYPE_ID, QX_QUBITS, False, QX_SHOTS),
+    ):
+        matches = [b for b in catalogue["backend_types"] if isinstance(b, dict) and b.get("identifier") == identifier]
+        if len(matches) != 1:
+            raise SystemExit(f"witness catalogue needs exactly one {identifier} backend type")
+        backend = matches[0]
+        if (
+            type(backend.get("id")) is not int
+            or backend["id"] != backend_id
+            or type(backend.get("nqubits")) is not int
+            or backend["nqubits"] != width
+            or backend.get("is_hardware") is not hardware
+        ):
+            raise SystemExit(f"{identifier}: backend identity, width or hardware class changed; review the witness")
+        topology = backend.get("topology")
+        if not isinstance(topology, list) or not all(
+            isinstance(edge, list)
+            and len(edge) == 2
+            and all(type(q) is int and 0 <= q < width for q in edge)
+            and edge[0] != edge[1]
+            for edge in topology
+        ):
+            raise SystemExit(f"{identifier}: malformed catalogue topology")
+        actual = {tuple(edge) for edge in topology}
+        expected = (
+            {edge for a, b in TUNA17 for edge in ((a, b), (b, a))}
+            if hardware
+            else {(a, b) for a in range(width) for b in range(width) if a != b}
+        )
+        if actual != expected or len(actual) != len(topology):
+            raise SystemExit(f"{identifier}: catalogue topology changed; review the witness routing")
+        gates = backend.get("gateset")
+        needed = set(CQASM.values()) | {"CZ", "barrier", "measure"}
+        if not isinstance(gates, list) or not all(isinstance(gate, str) for gate in gates) or not needed <= set(gates):
+            raise SystemExit(f"{identifier}: catalogue lacks a required witness gate")
+        if (
+            type(backend.get("max_number_of_shots")) is not int
+            or backend["max_number_of_shots"] < shots
+            or type(backend.get("max_jobs_per_batch_job")) is not int
+            or backend["max_jobs_per_batch_job"] < HARDWARE_BATCH_CIRCUITS
+        ):
+            raise SystemExit(f"{identifier}: witness exceeds the retained backend capacity")
+        admitted.append(backend)
+    return admitted[0], admitted[1]
+
+
+def analysis_claim_kind(cases: dict[str, Any]) -> str:
+    """Classify retained evidence by its recorded backend; do not relabel old runs from a current catalogue."""
+    if type(cases.get("backend_type_id")) is not int:
+        raise SystemExit("witness analysis needs an integer recorded backend type id")
+    backend = cases.get("backend")
+    if backend == BACKEND and cases.get("backend_type_id") == BACKEND_TYPE_ID and "twin_of" not in cases:
+        return "preregistered hardware inference"
+    if (
+        backend == "QXsinglenodesimulator"
+        and cases.get("backend_type_id") == QX_BACKEND_TYPE_ID
+        and cases.get("twin_of") == BACKEND
+    ):
+        return "preregistered emulator control"
+    raise SystemExit("witness analysis has an unknown or inconsistent recorded backend/twin identity")
 
 
 def vector(terms: dict[int, int]) -> list[float]:
@@ -242,16 +321,17 @@ def logical(case: str) -> Any:
 class Route:
     """One seeded routing of a case onto a region; a module-level callable the process pool can pickle."""
 
-    def __init__(self, case: str, region: tuple[int, ...]) -> None:
+    def __init__(self, case: str, region: tuple[int, ...], topology: tuple[tuple[int, int], ...]) -> None:
         self.case = case
         self.region = region
+        self.topology = topology
 
     def __call__(self, seed: int) -> tuple[int, int, Any]:
         from qiskit import transpile
         from qiskit.transpiler import CouplingMap
 
         local = {q: n for n, q in enumerate(self.region)}
-        edges = [[local[a], local[b]] for a, b in TUNA17 if a in local and b in local]
+        edges = [[local[a], local[b]] for a, b in self.topology if a in local and b in local]
         coupling = CouplingMap(edges + [[b, a] for a, b in edges])
         circuit = transpile(
             logical(self.case), coupling_map=coupling, basis_gates=BASIS, optimization_level=2, seed_transpiler=seed
@@ -259,13 +339,15 @@ class Route:
         return circuit.count_ops().get("cz", 0), seed, circuit
 
 
-def routed(case: str, region: tuple[int, ...]) -> tuple[Any, dict[str, int], int]:
+def routed(
+    case: str, region: tuple[int, ...], topology: tuple[tuple[int, int], ...]
+) -> tuple[Any, dict[str, int], int]:
     """Fewest-CZ routing of a case onto a region; returns the circuit on region-local indices, roles, seed.
 
     The seeds route independently through parallel.ordered_map; the first
     seed in SEEDS order among the fewest-CZ routings wins, as in a serial scan.
     """
-    candidates = parallel.ordered_map(Route(case, region), list(SEEDS))
+    candidates = parallel.ordered_map(Route(case, region, topology), list(SEEDS))
     _, seed, circuit = min(candidates, key=lambda candidate: (candidate[0], candidate[1]))
     final = circuit.layout.final_index_layout()
     roles = {f"d{b}": region[final[b]] for b in DATA}
@@ -323,23 +405,15 @@ def finish(cases: dict[str, Any], texts: dict[str, str]) -> dict[str, str]:
     return files
 
 
-def catalogue_check() -> None:
-    """The routing constants describe the retained catalogue's Tuna-17 and QX backend types."""
-    types = {row["id"]: row for row in json.loads(CATALOGUE.read_text(encoding="utf-8"))["backend_types"]}
-    tuna, qx = types.get(BACKEND_TYPE_ID), types.get(QX_BACKEND_TYPE_ID)
-    if tuna is None or (tuna["identifier"], tuna["nqubits"]) != (BACKEND, NQUBITS):
-        raise SystemExit(f"backend type {BACKEND_TYPE_ID} is no longer {BACKEND} with {NQUBITS} qubits")
-    if {tuple(sorted(edge)) for edge in tuna["topology"]} != set(TUNA17):
-        raise SystemExit(f"the catalogue's {BACKEND} coupling map differs from TUNA17")
-    if qx is None or qx["identifier"] != "QXsinglenodesimulator" or qx["nqubits"] < QX_QUBITS:
-        raise SystemExit(f"backend type {QX_BACKEND_TYPE_ID} no longer serves the {QX_QUBITS}-qubit QX twin")
-    if SHOTS > tuna["max_number_of_shots"] or QX_SHOTS > qx["max_number_of_shots"]:
-        raise SystemExit("the case shots exceed a catalogue shot limit")
+def catalogue_check() -> tuple[dict[str, Any], dict[str, Any]]:
+    """Validate the public routing contract and return the admitted Tuna-17/QX backend records."""
+    return catalogue_backends(json.loads(CATALOGUE.read_text(encoding="utf-8")))
 
 
 def build() -> dict[str, dict[str, str]]:
     """Case directory name -> files: the Tuna-17 Latin square and its QX twin."""
-    catalogue_check()
+    tuna_backend, qx_backend = catalogue_check()
+    topology = tuple(sorted({tuple(sorted(edge)) for edge in tuna_backend["topology"]}))
     common = {
         "a_pair": list(A_PAIR),
         "cases": {
@@ -356,7 +430,7 @@ def build() -> dict[str, dict[str, str]]:
     replicas = []
     for index, assignment in enumerate(LATIN, start=1):
         for region, case in zip(REGIONS, assignment, strict=True):
-            circuit, roles, seed = routed(case, region)
+            circuit, roles, seed = routed(case, region, topology)
             p0 = ideal_selector_zero(circuit, roles, region)
             if abs(p0 - CASES[case][2]) > 1e-9:
                 raise SystemExit(f"{case} on {region}: ideal P(s=0) {p0}")
@@ -379,8 +453,8 @@ def build() -> dict[str, dict[str, str]]:
     cases: dict[str, Any] = {
         "schema": "qi-zero-divisor-cases-v1",
         "backend": BACKEND,
-        "backend_type_id": BACKEND_TYPE_ID,
-        "nqubits": NQUBITS,
+        "backend_type_id": tuna_backend["id"],
+        "nqubits": tuna_backend["nqubits"],
         "shots": SHOTS,
         **common,
         "regions": [list(r) for r in REGIONS],
@@ -409,8 +483,8 @@ def build() -> dict[str, dict[str, str]]:
     twin: dict[str, Any] = {
         "schema": "qi-zero-divisor-cases-v1",
         "backend": "QXsinglenodesimulator",
-        "backend_type_id": QX_BACKEND_TYPE_ID,
-        "nqubits": QX_QUBITS,
+        "backend_type_id": qx_backend["id"],
+        "nqubits": qx_backend["nqubits"],
         "shots": QX_SHOTS,
         **common,
         "twin_of": BACKEND,
@@ -610,6 +684,7 @@ def load_series(run_dirs: list[Path]) -> tuple[dict[str, Any], dict[str, list[st
 
 def analyze(run_dirs: list[Path]) -> dict[str, Any]:
     cases, raw = load_series(run_dirs)
+    claim_kind = analysis_claim_kind(cases)
     # The ideal QX twin carries no readout circuits and takes the assignment as
     # exact; a hardware series is analyzed only with its readout batch.
     if "twin_of" in cases:
@@ -662,7 +737,7 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
 
     return {
         "schema": "qi-zero-divisor-analysis-v1",
-        "claim_kind": "preregistered emulator control" if "twin_of" in cases else "preregistered hardware inference",
+        "claim_kind": claim_kind,
         "replicas": replicas,
         "by_case": by_case,
         "visibility": bright["p_selector_zero"] - dark["p_selector_zero"],
@@ -680,11 +755,66 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
     }
 
 
+def self_test() -> None:
+    catalogue = json.loads(CATALOGUE.read_text(encoding="utf-8"))
+    tuna, qx = catalogue_backends(catalogue)
+    if (tuna["id"], qx["id"]) != (BACKEND_TYPE_ID, QX_BACKEND_TYPE_ID):
+        raise AssertionError("retained witness backend identities were not admitted")
+    rejected = 0
+    for identifier, field, value in (
+        (BACKEND, "topology", tuna["topology"][2:]),
+        (BACKEND, "topology", [[0, 17]]),
+        (BACKEND, "topology", [[0, True]]),
+        (BACKEND, "nqubits", 18),
+        (BACKEND, "id", 8),
+        (BACKEND, "is_hardware", False),
+        ("QXsinglenodesimulator", "topology", qx["topology"][1:]),
+        ("QXsinglenodesimulator", "nqubits", 9),
+        ("QXsinglenodesimulator", "id", 2),
+    ):
+        altered = copy.deepcopy(catalogue)
+        next(b for b in altered["backend_types"] if b["identifier"] == identifier)[field] = value
+        try:
+            catalogue_backends(altered)
+        except SystemExit:
+            rejected += 1
+        else:
+            raise AssertionError(f"witness admitted a changed {identifier} {field}")
+    for malformed in ({}, {"backend_types": None}, {"backend_types": [tuna, tuna, qx]}):
+        try:
+            catalogue_backends(malformed)
+        except SystemExit:
+            rejected += 1
+        else:
+            raise AssertionError("witness admitted a malformed or duplicate backend catalogue")
+    hardware = {"backend": BACKEND, "backend_type_id": BACKEND_TYPE_ID}
+    simulation = {"backend": "QXsinglenodesimulator", "backend_type_id": QX_BACKEND_TYPE_ID, "twin_of": BACKEND}
+    if analysis_claim_kind(hardware) != "preregistered hardware inference":
+        raise AssertionError("hardware evidence lost its classification")
+    if analysis_claim_kind(simulation) != "preregistered emulator control":
+        raise AssertionError("QX evidence was classified as hardware")
+    for inconsistent in (
+        {},
+        {**hardware, "twin_of": BACKEND},
+        {**simulation, "backend_type_id": 7},
+        {**simulation, "backend_type_id": True},
+        {k: v for k, v in simulation.items() if k != "twin_of"},
+    ):
+        try:
+            analysis_claim_kind(inconsistent)
+        except SystemExit:
+            rejected += 1
+        else:
+            raise AssertionError("inconsistent witness backend metadata was accepted")
+    print(f"qi zero-divisor contracts: catalogue admission and evidence classes pass; {rejected} mutations rejected")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", type=Path)
     mode.add_argument("--check", type=Path)
+    mode.add_argument("--self-test", action="store_true")
     mode.add_argument("--analyze", type=Path, nargs="+", metavar="RUN_DIR", help="the batches of one series")
     mode.add_argument(
         "--replay-series",
@@ -696,6 +826,9 @@ def main() -> int:
     mode.add_argument("--replay", type=Path, nargs="+")
     parser.add_argument("--out", type=Path, help="with --analyze: the analysis file (default RUN_DIR/analysis.json)")
     args = parser.parse_args()
+    if args.self_test:
+        self_test()
+        return 0
     if args.analyze:
         if len(args.analyze) > 1 and args.out is None:
             parser.error("--analyze over several batches needs --out")
