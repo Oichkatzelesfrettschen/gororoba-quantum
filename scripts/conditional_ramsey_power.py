@@ -346,6 +346,7 @@ def run(
         "snapshot": str(SNAPSHOT.relative_to(ROOT)),
         "snapshot_sha256": hashlib.sha256(SNAPSHOT.read_bytes()).hexdigest(),
         "calibration": snapshot["calibration"],
+        **calibration_snapshot.backend_identity(snapshot),
         "shots": shots,
         "trials": trials,
         "plugin_trials": plugin_trials,

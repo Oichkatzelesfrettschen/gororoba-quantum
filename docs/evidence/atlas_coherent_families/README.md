@@ -141,9 +141,28 @@ full-fit parameters and RMS values. On Fez lane 4's `axis_tilt_plus_mean`
 that is 4.3e-5 relative for the leave-one-out outputs and 1.1e-6 (full
 condition 7.0e4) for the full fit; a kappa below about 8e4 keeps the
 one-unit floor for values near 1. The probe bounds the drift normwise, against the solution's largest
-component, while `--check` applies the bound to each value's own magnitude;
-the componentwise form is the tighter one, so a substrate that moved a small
-component past it would fail the gate rather than hide a regression. The host also reproduced all seven Fez lanes of the Kaggle
+component. `--check` applies the bound to each parameter and RMS value's
+own magnitude, and to each resimulated contrast vector (`predicted_log_ratio`)
+normwise, against that vector's largest entry, because every prediction
+inherits the leave-one-out solution's normwise drift.
+
+Measured on lane 4 of both backends against the retained Kaggle result:
+- The build host's AOCL numpy and CI's scipy-openblas 0.3.34 numpy (Python
+  3.14.7, requirements.txt pins) reproduce every fitted parameter exactly.
+- Their least-squares designs differ by at most 3.5e-13 relative (about
+  1585 eps, median 1.3e-14).
+- Perturbing each design at eps leaves every parameter component at least
+  1640 times inside its per-value tolerance.
+- Under the componentwise rule, OpenBLAS moved Kingston's near-zero
+  prediction `axis_tilt_plus_mean` `predicted_log_ratio[0]` (-0.060228) by
+  one unit against a 2.95e-6 tolerance.
+- Under the normwise contrast rule, the smallest margin, tolerance over
+  difference, is 31.7 on OpenBLAS and 95 on AOCL, both at Fez
+  `predicted_log_ratio[1]`. `--check` prints it per lane.
+
+A future substrate whose design moves by the largest measured difference on
+every model would leave the thinnest parameter solve, the `axis_tilt_plus_mean`
+full fit, with a margin near 1. That is the residual this rule carries. The host also reproduced all seven Fez lanes of the Kaggle
 result under that check.
 
 ## Gate

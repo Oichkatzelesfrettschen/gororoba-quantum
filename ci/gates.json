@@ -2276,6 +2276,38 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --self-test && \"$PYTHON\" -B -O -W error scripts/local_member_cz_conformance.py --self-test",
+   "name": "core-406",
+   "seconds": 11.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --self-test-undeclared && \"$PYTHON\" -B -O -W error scripts/local_member_cz_conformance.py --self-test-undeclared",
+   "name": "core-407",
+   "seconds": 7.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --cross-check-n21",
+   "name": "core-408",
+   "seconds": 9.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --check-dynamic && \"$PYTHON\" -B -O -W error scripts/local_member_cz_conformance.py --check-dynamic",
+   "name": "core-409",
+   "seconds": 72.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/calibration_snapshot.py --check docs/evidence/calibration/ibm_kingston.json",
    "name": "core-279",
    "seconds": 10.0,
@@ -2540,6 +2572,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test && \"$PYTHON\" -B -O -W error scripts/materialize_gororoba_csv.py --self-test",
+   "name": "core-401",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "shellcheck -S error ci/fetch_open_gororoba.sh",
+   "name": "core-402",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_platform.py check docs/evidence/quantum_inspire --agents AGENTS.md",
    "name": "core-347",
    "seconds": 1.0,
@@ -2678,7 +2726,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/readout_ringdown_tuna_17_P_calibration_sensitivity.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08 --replay && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/readout_ringdown_tuna_17_P_calibration_sensitivity.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08 --replay && \"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/readout_ringdown_tuna_17_Q_calibration_sensitivity.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08 --replay && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/readout_ringdown_tuna_17_Q_calibration_sensitivity.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08 --replay",
    "name": "core-434",
-   "seconds": 1041.0,
+   "seconds": 535.0,
    "tier": "full"
   },
   {
@@ -2686,15 +2734,15 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity-self-test && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --sensitivity-self-test",
    "name": "core-435",
-   "seconds": 6.0,
+   "seconds": 7.0,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --null-calibration results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json --replay && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --null-calibration results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json --replay",
+   "cmd": "cmp results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json results/kaggle/2026-10-17T150731Z-ringdown-null-calibration/output/output/repo/results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json && \"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --null-calibration results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json --replay && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --null-calibration results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json --replay",
    "name": "core-436",
-   "seconds": 390.0,
+   "seconds": 679.0,
    "tier": "full"
   },
   {
@@ -2702,7 +2750,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --null-self-test && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --null-self-test",
    "name": "core-437",
-   "seconds": 30.0,
+   "seconds": 51.1,
    "tier": "pr"
   },
   {
@@ -2844,10 +2892,26 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_a.json results/kaggle/2026-10-16T160703Z-gororoba-ghost-error-scale-a/output/output/repo/results/kaggle_out/ghost_error_scale_a.json && \"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_b.json results/kaggle/2026-10-16T160706Z-gororoba-ghost-error-scale-b/output/output/repo/results/kaggle_out/ghost_error_scale_b.json && \"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_c.json results/kaggle/2026-10-16T160710Z-gororoba-ghost-error-scale-c/output/output/repo/results/kaggle_out/ghost_error_scale_c.json && \"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_b.json results/kaggle/2026-10-17T024808Z-gororoba-ghost-error-scale-b1/output/output/repo/results/kaggle_out/ghost-error-scale-b1.json results/kaggle/2026-10-17T024812Z-gororoba-ghost-error-scale-b2/output/output/repo/results/kaggle_out/ghost-error-scale-b2.json results/kaggle/2026-10-17T024815Z-gororoba-ghost-error-scale-b3/output/output/repo/results/kaggle_out/ghost-error-scale-b3.json results/kaggle/2026-10-17T025046Z-gororoba-ghost-error-scale-b4/output/output/repo/results/kaggle_out/ghost-error-scale-b4.json results/kaggle/2026-10-17T025050Z-gororoba-ghost-error-scale-b5/output/output/repo/results/kaggle_out/ghost-error-scale-b5.json && cmp docs/evidence/ghost_error_scale/part_c.json results/kaggle/2026-10-17T004620Z-gororoba-ghost-error-scale-c/output/output/repo/results/kaggle_out/ghost_error_scale_c.json",
-   "name": "core-349",
-   "seconds": 89.7,
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --self-test && \"$PYTHON\" -O -B -W error scripts/ghost_error_scale.py --self-test",
+   "name": "core-389",
+   "seconds": 2.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_a.json results/kaggle/2026-10-16T160703Z-gororoba-ghost-error-scale-a/output/output/repo/results/kaggle_out/ghost_error_scale_a.json && \"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_b.json results/kaggle/2026-10-16T160706Z-gororoba-ghost-error-scale-b/output/output/repo/results/kaggle_out/ghost_error_scale_b.json && \"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_b.json results/kaggle/2026-10-17T024808Z-gororoba-ghost-error-scale-b1/output/output/repo/results/kaggle_out/ghost-error-scale-b1.json results/kaggle/2026-10-17T024812Z-gororoba-ghost-error-scale-b2/output/output/repo/results/kaggle_out/ghost-error-scale-b2.json results/kaggle/2026-10-17T024815Z-gororoba-ghost-error-scale-b3/output/output/repo/results/kaggle_out/ghost-error-scale-b3.json results/kaggle/2026-10-17T025046Z-gororoba-ghost-error-scale-b4/output/output/repo/results/kaggle_out/ghost-error-scale-b4.json results/kaggle/2026-10-17T025050Z-gororoba-ghost-error-scale-b5/output/output/repo/results/kaggle_out/ghost-error-scale-b5.json && cmp docs/evidence/ghost_error_scale/part_c.json results/kaggle/2026-10-17T004620Z-gororoba-ghost-error-scale-c/output/output/repo/results/kaggle_out/ghost_error_scale_c.json",
+   "name": "core-349",
+   "seconds": 112.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_c.json results/kaggle/2026-10-16T160710Z-gororoba-ghost-error-scale-c/output/output/repo/results/kaggle_out/ghost_error_scale_c.json",
+   "name": "core-390",
+   "seconds": 143.5,
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -2968,23 +3032,111 @@
    "name": "core-491",
    "seconds": 410.0,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py && \"$PYTHON\" -B -O -W error ci/check_rocq_ci_pins.py",
+   "name": "core-403",
+   "seconds": 0.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py --self-test && \"$PYTHON\" -B -O -W error ci/check_rocq_ci_pins.py --self-test",
+   "name": "core-404",
+   "seconds": 0.9,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error dynamic_density.py --self-test && \"$PYTHON\" -B -O -W error dynamic_density.py --self-test",
+   "name": "core-480",
+   "seconds": 20.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_model_validation.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_exact_model_validation.py --self-test",
+   "name": "core-481",
+   "seconds": 40.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error n21_exact_planning.py && \"$PYTHON\" -B -O -W error n21_exact_planning.py",
+   "name": "core-482",
+   "seconds": 15.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_replica_covariance.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_replica_covariance.py --self-test",
+   "name": "core-483",
+   "seconds": 4.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_usage_budget.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_usage_budget.py --check gororoba_quantum/N21_USAGE_BUDGET.md",
+   "name": "core-484",
+   "seconds": 16.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_model_validation.py --check docs/evidence/n21_exact_model/validation.json",
+   "name": "core-485",
+   "seconds": 25.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error replica_covariance_contracts.py && \"$PYTHON\" -B -O -W error replica_covariance_contracts.py",
+   "name": "core-486",
+   "seconds": 12.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/patch_window_analysis.py results/live/2026-10-13T201757.782152Z --check results/live/2026-10-13T201757.782152Z/patch-analysis.json && \"$PYTHON\" -B -O -W error scripts/patch_window_analysis.py results/live/2026-10-13T201757.782152Z --check results/live/2026-10-13T201757.782152Z/patch-analysis.json",
+   "name": "core-495",
+   "seconds": 62.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --static-group-admission && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --static-group-admission",
+   "name": "core-496",
+   "seconds": 25.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
   {
    "cmd": "\"$PYTHON\" verify.py",
    "cwd": "gororoba_quantum",
-   "reason": "needs the git-ignored open_gororoba data/csv build; issue #62"
+   "reason": "runs in the ci.yml job external-ground-truth over the pinned open_gororoba checkout (ci/open_gororoba.pin)"
   },
   {
    "cmd": "ROCQ=\"${ROCQ:-rocq}\" sh docs/evidence/c881_exhaustive/replay_rocq.sh",
    "cwd": ".",
-   "reason": "needs the Rocq toolchain pinned in docs/evidence/c881_exhaustive/toolchain.txt; proof-change replay"
+   "reason": "runs in the ci.yml job rocq-replay on proof paths under the toolchain of ci/rocq_toolchain.pin"
   },
   {
    "cmd": "GOROROBA_ROOT=\"$GOROROBA_ROOT\" sh docs/evidence/stiefel_witness/replay_rocq.sh",
    "cwd": ".",
-   "reason": "needs the Rocq toolchain in docs/evidence/stiefel_witness/toolchain.txt and an open_gororoba checkout; proof-change replay"
+   "reason": "runs in the ci.yml job rocq-replay on pushes to main and the nightly schedule, over the pinned open_gororoba checkout"
   }
  ]
 }

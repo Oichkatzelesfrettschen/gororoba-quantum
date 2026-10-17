@@ -156,7 +156,10 @@ number inside a model entry also agrees within eps * kappa^2 * |value|
 the leave-one-out fits and its full-design condition for the rest: on the
 Fez lane-4 axis-tilt model 4.3e-5 relative for the leave-one-out outputs and
 1.1e-6 for the full fit, and below the one-unit floor for values near 1
-wherever kappa stays under about 8e4.
+wherever kappa stays under about 8e4. A resimulated contrast vector takes
+|value| as its own largest entry's magnitude, the normwise form, so a
+near-zero prediction admits its neighbors' drift; ``--check`` prints each
+lane's smallest margin, tolerance over difference.
 """
 
 from __future__ import annotations
@@ -234,6 +237,8 @@ CONDITION_KEYS = frozenset({"condition", "fold_condition_max"})
 FOLD_DERIVED_KEYS = frozenset(
     {"leave_one_out_rms_rad", "leave_one_out_noise_floor_rad", "nonlinear_leave_one_out_rms_rad", "contrast"}
 )
+# Model outputs whose vectors take the least-squares bound normwise (compare).
+NORMWISE_KEYS = frozenset({"contrast"})
 CONTRADICTION_SIGMA = 3.0
 # A Column names one error parameter: (family, compact qubit index or coupler pair).
 Column = tuple[str, Any]
@@ -1052,6 +1057,33 @@ def self_test() -> int:
         except SystemExit:
             outcome = False
         require(outcome == accepted, f"check tolerance at kappa {full:g}/{fold:g} misjudges {output} {fresh}")
+    # A contrast vector takes the bound against its largest entry, so its
+    # near-zero prediction admits eps * kappa^2 * 1.0, while a parameter
+    # vector keeps each component's own magnitude and refuses the same move.
+    for output, moved, accepted in (
+        ("contrast", 4.25e-5, True),
+        ("contrast", 4.35e-5, False),
+        ("parameters", 4.25e-5, False),
+        ("parameters", 2.5e-6, True),
+    ):
+        block = {"predicted_log_ratio": [1.0, 0.06]} if output == "contrast" else [1.0, 0.06]
+        fresh_block = {"predicted_log_ratio": [1.0, 0.06 + moved]} if output == "contrast" else [1.0, 0.06 + moved]
+        try:
+            compare(
+                {"condition": 4.4e5, "fold_condition_max": 4.4e5, output: block},
+                {"condition": 4.4e5, "fold_condition_max": 4.4e5, output: fresh_block},
+                "model",
+            )
+            outcome = True
+        except SystemExit:
+            outcome = False
+        require(outcome == accepted, f"{output} vector [1.0, 0.06] misjudges a move of {moved}")
+    margin, where = compare(
+        {"contrast": [1.0, 0.06], "fold_condition_max": 4.4e5},
+        {"contrast": [1.0, 0.060001], "fold_condition_max": 4.4e5},
+        "m",
+    )
+    require(where == "m.contrast[1]" and 40 < margin < 46, f"contrast margin {margin:.3g} at {where}")
     # A condition number keeps its own relative tolerance inside an
     # ill-conditioned model, so a moved fold_condition_max still fails.
     try:
@@ -1095,8 +1127,10 @@ def lsq_roundoff_scaling(kappa: float, trials: int = 40) -> tuple[float, float]:
     return drift, float(np.max(np.abs(base)))
 
 
-def compare(retained: Any, fresh: Any, path: str, conditioning: float = 0.0) -> None:
-    """Every retained number within the check tolerance of its recomputation.
+def compare(
+    retained: Any, fresh: Any, path: str, conditioning: float = 0.0, normwise: bool = False, magnitude: float = 0.0
+) -> tuple[float, str]:
+    """Every retained number within the check tolerance of its recomputation; returns the smallest margin and its path.
 
     A least-squares solution with a nonzero residual carries normwise
     roundoff of order eps * kappa^2 * max|x|, which lsq_roundoff_scaling()
@@ -1106,12 +1140,18 @@ def compare(retained: Any, fresh: Any, path: str, conditioning: float = 0.0) -> 
     kappa the retained fold_condition_max for an output of the leave-one-out
     fits (FOLD_DERIVED_KEYS) and the retained full-design condition for every
     other output; the condition numbers keep their own relative tolerance,
-    and a well-conditioned model keeps the one-rounding-unit floor. The
-    componentwise form is tighter than the normwise bound, so a substrate
-    that moves a small component past it fails the check rather than passing
-    a regression; the AOCL, OpenBLAS and Kaggle recomputes fall inside it
-    (docs/evidence/atlas_coherent_families).
+    and a well-conditioned model keeps the one-rounding-unit floor.
+
+    Parameters and RMS values take that bound componentwise, against each
+    value's own magnitude. The resimulated contrast block (NORMWISE_KEYS)
+    takes it normwise, against the largest magnitude of its own output
+    vector: each prediction is the fringe of a leave-one-out fit, so it
+    inherits the solution's normwise drift, and a near-zero prediction moves
+    by as much as its largest neighbor. The margin is tolerance over
+    difference, infinite where the recomputation is exact; --check prints the
+    smallest per lane (docs/evidence/atlas_coherent_families).
     """
+    worst = (math.inf, path)
     if isinstance(retained, dict):
         require(isinstance(fresh, dict) and set(retained) == set(fresh), f"{path}: keys differ")
         for key in retained:
@@ -1119,20 +1159,27 @@ def compare(retained: Any, fresh: Any, path: str, conditioning: float = 0.0) -> 
             scale = conditioning
             if isinstance(kappa, (int, float)) and not isinstance(kappa, bool):
                 scale = max(conditioning, LSQ_ROUNDOFF * float(kappa) ** 2)
-            compare(retained[key], fresh[key], f"{path}.{key}", scale)
+            found = compare(retained[key], fresh[key], f"{path}.{key}", scale, normwise or key in NORMWISE_KEYS)
+            worst = min(worst, found)
     elif isinstance(retained, list):
         require(isinstance(fresh, list) and len(retained) == len(fresh), f"{path}: lengths differ")
+        numbers = [abs(v) for v in retained if isinstance(v, (int, float)) and not isinstance(v, bool)]
+        vector = max(numbers) if normwise and numbers else magnitude
         for k, (a, b) in enumerate(zip(retained, fresh, strict=True)):
-            compare(a, b, f"{path}[{k}]", conditioning)
+            worst = min(worst, compare(a, b, f"{path}[{k}]", conditioning, normwise, vector))
     elif isinstance(retained, float) and isinstance(fresh, (int, float)) and not isinstance(fresh, bool):
         if path.rsplit(".", 1)[-1] in CONDITION_KEYS:
-            relative = CONDITION_RELATIVE
+            tolerance = max(CHECK_TOLERANCE, CONDITION_RELATIVE * abs(retained))
         else:
-            relative = max(CHECK_RELATIVE, conditioning)
-        tolerance = max(CHECK_TOLERANCE, relative * abs(retained))
-        require(abs(retained - fresh) <= tolerance, f"{path}: {retained} against {fresh}")
+            tolerance = max(
+                CHECK_TOLERANCE, CHECK_RELATIVE * abs(retained), conditioning * max(abs(retained), magnitude)
+            )
+        difference = abs(retained - fresh)
+        require(difference <= tolerance, f"{path}: {retained} against {fresh}")
+        worst = (tolerance / difference if difference else math.inf, path)
     else:
         require(retained == fresh, f"{path}: {retained!r} against {fresh!r}")
+    return worst
 
 
 def main() -> int:
@@ -1166,7 +1213,8 @@ def main() -> int:
             by_lane = {fit["lane"]: fit for fit in fresh["lanes"]}
             for fit in retained["lanes"]:
                 if fit["backend"] == backend and fit["lane"] in by_lane:
-                    compare(fit, by_lane[fit["lane"]], f"{backend} lane {fit['lane']}")
+                    margin, where = compare(fit, by_lane[fit["lane"]], f"{backend} lane {fit['lane']}")
+                    print(f"{backend} lane {fit['lane']}: smallest check margin {margin:.3g} at {where}")
         print(f"{args.check}: lanes {selected} reproduced")
         return 0
     require(args.out is not None, "--out is required")

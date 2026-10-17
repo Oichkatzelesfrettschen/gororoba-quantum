@@ -1439,6 +1439,14 @@ def _verify_fused_collection() -> None:
         ):
             raise RuntimeError(f"mocked fused execution evidence is {fused_evidence[0]}")
         job_out = collected[0]["jobs"][job_id]
+        job_identity = job_out["backend_identity"]
+        if (
+            live_run_module.backend_identity_violations(job_identity)
+            or job_identity["processor_type"] is None
+            or job_identity["backend_version_at_execution"].get(expected_start.isoformat())
+            != backend.properties().backend_version
+        ):
+            raise RuntimeError(f"collected job identity is {job_identity}")
         fused_timing = job_out["pub_timing"][fused_pub.name]
         lower = planned_job["pubs"][fused_index]["target_gate_lower_bound_dt"]
         if (
@@ -1549,23 +1557,50 @@ def _verify_fused_collection() -> None:
         if pending != json.loads(first):
             raise RuntimeError("pending and final collections differ outside job and invocation usage")
 
-        # A job that ended in ERROR keeps its usage and its reason; collection
-        # continues without its results.
-        failed = _ProbeResultJob(result, status="ERROR", usage=usage, charge=0.25)
-        failed.result = lambda: (_ for _ in ()).throw(RuntimeError("job failed on the service"))  # type: ignore[method-assign]
+        # A job that ended in ERROR or CANCELLED keeps its usage, its reason
+        # and its backend's configuration identity, with no execution start;
+        # collection continues without its results.
+        configured_identity = live_run_module.backend_identity(backend)
+        for terminal in ("ERROR", "CANCELLED"):
+            failed = _ProbeResultJob(result, status=terminal, usage=usage, charge=0.25)
+            failed.result = lambda: (_ for _ in ()).throw(RuntimeError("job failed on the service"))  # type: ignore[method-assign]
+            with redirect_stdout(io.StringIO()):
+                _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: failed}), run_dir)
+            errored = json.loads((run_dir / "collect.json").read_text())
+            job_record = errored[0]["jobs"][job_id]
+            if (
+                job_record["usage"]["usage_status"] != "final"
+                or job_record["usage"]["qpu_charge_time_seconds"] != "0.25"
+                or job_record["usage"]["pub_shots_per_qpu_second"] is not None
+                or "job failed on the service" not in job_record["result_unavailable"]
+                or len(errored) != 1
+                or (run_dir / "collect.partial.json").exists()
+            ):
+                raise RuntimeError(f"a job that ended in {terminal} collects as {job_record}")
+            if job_record.get("backend_identity") != configured_identity | {"backend_version_at_execution": {}} or (
+                configured_identity["processor_type"] is None
+            ):
+                raise RuntimeError(
+                    f"a job that ended in {terminal} collects identity {job_record.get('backend_identity')}"
+                )
+
+        # A failed job on a backend the account no longer serves still
+        # collects its usage, with an unread identity.
+        class _RetiredBackendService(_CollectionProbeService):
+            def backend(self, name: str) -> _ProbeBackend:
+                raise RuntimeError(f"fixture backend {name} is not served")
+
+        retired = _ProbeResultJob(result, status="CANCELLED", usage=usage, charge=0.25)
+        retired.result = lambda: (_ for _ in ()).throw(RuntimeError("job failed on the service"))  # type: ignore[method-assign]
         with redirect_stdout(io.StringIO()):
-            _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: failed}), run_dir)
-        errored = json.loads((run_dir / "collect.json").read_text())
-        job_record = errored[0]["jobs"][job_id]
-        if (
-            job_record["usage"]["usage_status"] != "final"
-            or job_record["usage"]["qpu_charge_time_seconds"] != "0.25"
-            or job_record["usage"]["pub_shots_per_qpu_second"] is not None
-            or "job failed on the service" not in job_record["result_unavailable"]
-            or len(errored) != 1
-            or (run_dir / "collect.partial.json").exists()
-        ):
-            raise RuntimeError(f"a failed job collects as {job_record}")
+            _collect_with_zero_simulation(_RetiredBackendService(backend, {job_id: retired}), run_dir)
+        retired_record = json.loads((run_dir / "collect.json").read_text())[0]["jobs"][job_id]
+        if retired_record["usage"]["qpu_charge_time_seconds"] != "0.25" or retired_record.get("backend_identity") != {
+            "backend_version": None,
+            "processor_type": None,
+            "backend_version_at_execution": {},
+        }:
+            raise RuntimeError(f"a failed job on an unserved backend collects as {retired_record}")
 
         # A job still running at collection start that then fails keeps the
         # charge read after the failure.
@@ -3238,6 +3273,168 @@ def _verify_unchanged_since_planning() -> None:
     queue_only["ibm_a"]["pending_jobs"] = 9
     if live_run_module.unchanged_since_planning(record, queue_only, [], [], 500):
         raise RuntimeError("a queue-length change, which breaks selection ties, reused the plan")
+    upgraded = copy.deepcopy(inventory)
+    upgraded["ibm_a"] |= {"backend_version": "9.9.9", "processor_type": {"family": "Heron", "revision": "3"}}
+    if not live_run_module.unchanged_since_planning(record, upgraded, [], [], 500):
+        raise RuntimeError("a backend version or processor type, which selection never reads, rebuilt the plan")
+
+
+def _verify_backend_identity_records() -> None:
+    """Every planned record carries each backend's version and processor type as data no gate compares."""
+    backend = _ProbeBackend("viable", FakeFez())
+    configuration = backend.configuration()
+    expected = {
+        "backend_version": str(configuration.backend_version),
+        "processor_type": {str(k): str(v) for k, v in configuration.processor_type.items()},
+    }
+    if live_run_module.backend_identity(backend) != expected:
+        raise RuntimeError(f"backend identity reads {live_run_module.backend_identity(backend)}, not {expected}")
+    bare = _ProbeBackend("bare", FakeFez())
+    bare_configuration = copy.copy(bare._backend.configuration())
+    del bare_configuration.processor_type
+    with patch.object(bare, "configuration", lambda: bare_configuration):
+        if live_run_module.backend_identity(bare)["processor_type"] is not None:
+            raise RuntimeError("a backend reporting no processor type records one")
+    args = _fixture_args(groups=["hybrid_shor_mod15"])
+    choices, record = live_run_module.plan(_ProbeService([backend]), args)
+    live_run_module.evaluate(choices, record)
+    entries = [
+        ("backends", record["backends"]["viable"]),
+        ("system_inventory", record["system_inventory"]["viable"]),
+        *((f"group {group['group']}", group) for group in record["groups"]),
+    ]
+    for label, entry in entries:
+        faults = live_run_module.backend_identity_violations(entry)
+        recorded = {key: entry.get(key) for key in live_run_module.BACKEND_IDENTITY_FIELDS}
+        if faults or recorded != expected:
+            raise RuntimeError(f"{label} records identity {recorded}: {faults}")
+    for fault in (
+        {"backend_version": ""},
+        {"backend_version": 128},
+        {"processor_type": {"family": "Heron"}},
+        {"processor_type": {"family": "Heron", "revision": 2}},
+    ):
+        if not live_run_module.backend_identity_violations(fault):
+            raise RuntimeError(f"malformed identity {fault} passes the shape check")
+    if live_run_module.backend_identity_violations({"calibration": "older record"}):
+        raise RuntimeError("a record without the identity fields fails the shape check")
+    start = datetime(2026, 10, 10, tzinfo=UTC)
+    unreported = live_run_module.execution_identity(object(), {start: object()})
+    if unreported != {
+        "backend_version": None,
+        "processor_type": None,
+        "backend_version_at_execution": {start.isoformat(): None},
+    }:
+        raise RuntimeError(f"a backend reporting no identity stops or fabricates collection identity: {unreported}")
+    for name in live_run_module.APPROVED_RECORD_FIELDS:
+        if any(key in json.dumps(record.get(name)) for key in live_run_module.BACKEND_IDENTITY_FIELDS):
+            raise RuntimeError(f"approved-record field {name} carries backend identity")
+    with tempfile.TemporaryDirectory(prefix="gororoba-backend-identity-") as directory:
+        approved_dir = Path(directory)
+        write_archive(approved_dir, choices)
+        write_json(approved_dir, record)
+        qpy_digest = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
+        upgraded = copy.deepcopy(record)
+        for entry in (upgraded["backends"]["viable"], upgraded["system_inventory"]["viable"], *upgraded["groups"]):
+            entry |= {"backend_version": "9.9.9", "processor_type": {"family": "Heron", "revision": "3"}}
+        mismatches = live_run_module.approved_record_mismatches(approved_dir, upgraded, qpy_digest)
+        if mismatches:
+            raise RuntimeError(f"a backend version change refuses the approved record: {mismatches}")
+
+
+class _VersionedProbeBackend(_ProbeBackend):
+    """A probe backend whose configuration reports the backend_version the contract sets."""
+
+    def __init__(self, name: str, backend: FakeFez, version: str):
+        super().__init__(name, backend)
+        self.version = version
+
+    def configuration(self) -> Any:
+        configuration = super().configuration()
+        configuration.backend_version = self.version
+        return configuration
+
+
+class _QuotaProbeService(_ProbeService):
+    """A probe service reporting a fixed remaining quota, which unchanged_since_planning compares."""
+
+    def __init__(self, backends: list[_ProbeBackend], remaining_seconds: float | None):
+        super().__init__(backends)
+        self.remaining_seconds = remaining_seconds
+
+    def usage(self) -> dict[str, Any]:
+        return {"usage_limit_reached": False, "usage_remaining_seconds": self.remaining_seconds}
+
+
+def _verify_submit_refreshes_backend_identity() -> None:
+    """A backend_version bump between plan and approved submit lands in the submitted record's provenance.
+
+    A fixed quota reuses the plan (unchanged_since_planning) and an unreported
+    quota rebuilds it without reselection; on both paths the approval holds,
+    the batch runs, and backends, system_inventory and every group carry the
+    version the refresh read.
+    """
+    for remaining, rebuilt in ((500.0, False), (None, True)):
+        _submit_after_version_bump(remaining, rebuilt)
+
+
+def _submit_after_version_bump(remaining: float | None, rebuilt: bool) -> None:
+    """Plan at backend_version 1.0.0, bump it to 9.9.9, and submit against the approved plan."""
+    backend = _VersionedProbeBackend("viable", FakeFez(), "1.0.0")
+    service = _QuotaProbeService([backend], remaining)
+    args = _fixture_args(groups=["hybrid_shor_mod15"])
+    choices, record = live_run_module.plan(service, args)
+    live_run_module.evaluate(choices, record)
+    planned_identity = live_run_module.backend_identity(backend)
+    runs: list[int] = []
+
+    def probe_sampler(
+        backend: Any,
+        kind: str,
+        twirl: bool,
+        dd: str | None,
+        tags: list[str],
+        shots: int = 4096,
+        max_execution_seconds: int | None = None,
+    ) -> Any:
+        del backend, twirl, dd
+        return _ProbeSampler(
+            kind, tags, shots, lambda circuits: runs.append(len(circuits)), None, max_execution_seconds
+        )
+
+    with tempfile.TemporaryDirectory(prefix="gororoba-identity-refresh-") as directory:
+        approved_dir, run_dir = Path(directory) / "approved", Path(directory) / "run"
+        approved_dir.mkdir()
+        run_dir.mkdir()
+        write_archive(approved_dir, choices)
+        write_json(approved_dir, record)
+        args.approved_record = approved_dir
+        args.approved_record_sha256 = hashlib.sha256((approved_dir / "record.json").read_bytes()).hexdigest()
+        backend.version = "9.9.9"
+        submitted = copy.deepcopy(record)
+        with patch.object(live_run_module, "configure_sampler", probe_sampler), redirect_stdout(io.StringIO()):
+            live_run_module.submit(
+                service, list(choices), args, submitted, lambda: write_archive(run_dir, choices), lambda: None
+            )
+    label = "rebuilt" if rebuilt else "reused"
+    if (
+        not runs
+        or submitted["state"] == "approval_required"
+        or submitted["revalidation"][-1]["rebuilt"] is not rebuilt
+        or submitted["approved_record"]["mismatches"]
+    ):
+        raise RuntimeError(f"{label} plan: a backend version bump changes the submission: {submitted['state']}")
+    if record["backends"]["viable"]["backend_version"] != "1.0.0":
+        raise RuntimeError(f"{label} plan records {record['backends']['viable']['backend_version']} at planning")
+    entries = [
+        ("backends", submitted["backends"]["viable"]),
+        ("system_inventory", submitted["system_inventory"]["viable"]),
+        *((f"group {group['group']}", group) for group in submitted["groups"]),
+    ]
+    for name, entry in entries:
+        recorded = {key: entry.get(key) for key in live_run_module.BACKEND_IDENTITY_FIELDS}
+        if recorded != planned_identity | {"backend_version": "9.9.9"}:
+            raise RuntimeError(f"{label} plan: submitted {name} keeps identity {recorded}")
 
 
 def _verify() -> None:
@@ -3261,6 +3458,8 @@ def _verify() -> None:
     _verify_pub_fusion_contracts()
     _verify_worker_quota()
     _verify_unchanged_since_planning()
+    _verify_backend_identity_records()
+    _verify_submit_refreshes_backend_identity()
     _verify_replay_seed_independence()
     _verify_fused_collection()
     _verify_joint_fusion_placement()

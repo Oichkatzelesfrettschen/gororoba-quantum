@@ -641,7 +641,9 @@ repeated calibration outside it.
 - Only Q9 fits H2. Q14's readout arms sit 43 to 61 kHz below its reference
   from tau = 100 ns to 2 us (8 kHz at tau = 0); Q15's tail class rests on
   a visibility of 1.28 to 1.46, which shows its batch-00 calibration no
-  longer describes it ([tuna-17.md](tuna-17.md)).
+  longer describes it ([tuna-17.md](tuna-17.md)), and holds under the
+  all-shot estimator only: the postselected estimate of Q15 classifies as
+  none, while Q9 and Q14 read tail under both.
 - The postselected estimates differ from the all-shot estimates by at most
   4.2 standard errors (Q13, tau = 800 ns).
 
@@ -658,13 +660,35 @@ the calibrated delta and rate errors exceed the preregistered ones by at
 most 9.5% (series P) and 3.6% (series Q); on Q6 the excess is at most
 0.14%, and the analytic, bootstrap and preregistered delta errors (1.8 to
 2.2 kHz) agree within the bootstrap spread of about 30 Hz. The calibration
-term is small against shot noise, so the quoted standard errors stand; the
+term is small against shot noise, so the quoted standard errors stand (the
+analytic A error differentiates the complete weighted fit, weights included,
+and exceeds the preregistered one by at most 5.7%, on Q14, where the bootstrap
+gives 5.5%); the
 stale Q6 and Q15 calibrations bias their phases, a shift this error model
 does not bound. One entry (Q15 delta at tau = 15) lies 3.5 spreads from its bootstrap
 error with the same gap in the shot-only bootstrap, a shot-noise
 linearization gap at visibility above 1. A (a three-parameter fit with T at
 a bound on several targets) and the minimum visibility have bootstrap errors
 well above their delta-method errors with or without the calibration term.
+
+**Null calibration of the tail rule**
+([record](../../../results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json),
+gates core-436 and core-437). The tail statistic chi2_H1 - chi2_H2 scans T
+over [5, 100] cycles, so under H1 (A = 0, T unidentified) Wilks' 2-dof
+reference does not hold. The record simulates H1 with each usable target's
+own per-arm shot errors, 200000 replicates per target on a Kaggle CPU
+kernel (results/kaggle/2026-10-17T150731Z-ringdown-null-calibration), and
+runs the identical fit and both conjuncts. Every target's null 0.999
+quantile lies between 12.51 and 12.93 (series P) and 12.55 and 12.93
+(series Q), each 95% order-statistic interval below 13.82 (largest upper
+end 13.17). The preregistered threshold is therefore conservative for the
+weight patterns of both series, against the prediction that the scan
+inflates the quantile above it. Inferred, not measured: A enters linearly
+and only T is scanned, and a supremum over one strongly correlated
+parameter inflates the reference far less than a free two-parameter fit
+would suggest. No
+target changes class: the calibrated rule flags the same targets as the
+preregistered one (P: Q6, Q10, Q11, Q12, Q16; Q: Q9, Q14, Q15).
 
 ## Readout faults on Tuna-17, 2026-10-17
 

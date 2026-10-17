@@ -652,15 +652,6 @@ def h2_errors(taus: Taus, weights: list[float], a: float, tail: float) -> tuple[
     return math.sqrt(covariance[1][1]), math.sqrt(covariance[2][2]) if free else None
 
 
-def h2_gain_vector(taus: Taus, weights: list[float], a: float, tail: float) -> list[float] | None:
-    """k with dA = sum_i k_i d rate_i: the A row of (J^T W J)^-1 J^T W at the fitted parameters."""
-    rows, covariance, free = h2_design(taus, weights, a, tail)
-    if covariance is None:
-        return None
-    width = 3 if free else 2
-    return [w * sum(covariance[1][j] * r[j] for j in range(width)) for w, r in zip(weights, rows, strict=True)]
-
-
 def gain(tail: float) -> float:
     """g(T) = A / S: the rate offset at tau = 0 per unit of frequency shift S at the readout end."""
     return tail * (math.exp(-(DELAYS[0] + 1) / tail) - math.exp(-(DELAYS[1] + 1) / tail)) / SPAN
@@ -1208,8 +1199,10 @@ def analyze(runs: list[Path]) -> dict[str, Any]:
 
 SENSITIVITY_METHOD = (
     "Beside the preregistered verdict, which stays as analyzed: the readout-0 and readout-1 counts give e01 and e10 "
-    "binomial variances; the analytic column propagates them through every quadrature, phase, rate, delta, A and the "
-    "minimum visibility with the one assignment pair shared by all arms; the bootstrap column redraws every readout "
+    "binomial variances; the analytic column propagates them through every quadrature, phase, rate, delta and the "
+    "minimum visibility with the one assignment pair shared by all arms, and through A as the central-difference "
+    "derivative (half-step 1e-4) of the complete weighted fit, whose weights also depend on the assignment; "
+    "the bootstrap column redraws every readout "
     "count and every Ramsey count binomially from the observed fractions, recomputes the assignment and the full "
     "analysis per replicate, and reports the standard deviation of each quantity (rates and deltas as offsets on "
     "the circle). The spread is the normal-theory standard deviation of a standard deviation over the replicates."
@@ -1276,6 +1269,32 @@ def phase_terms(table: Table, arm: str, delay: int, target: int, e01: float, e10
     )
 
 
+FIT_STEP = 1e-4
+
+
+def fit_gradient(target: int, table: Table, e01: float, e10: float, field: str = "A_hz") -> list[float]:
+    """d/d(e01, e10) of one H2 fit output (Hz) by central differences of the complete analyze_target.
+
+    A change of e01 or e10 moves the rates and also every phase variance, hence
+    the weights of the fit, so the derivative of the estimator contains a weight
+    term that a gain vector at fixed weights lacks. Each component uses the
+    half-step FIT_STEP = 1e-4 (clipped at zero): the assignment errors are
+    0.005 to 0.3, so the O(step^2) truncation is below 1e-6 relative to the
+    scale of the fit, and the step stays far above the 1e-12 relative
+    tolerance of the golden-section search over T.
+    """
+    gradient = []
+    for e in range(2):
+        point = [e01, e10]
+        lo, hi = list(point), list(point)
+        lo[e] = max(point[e] - FIT_STEP, 0.0)
+        hi[e] = point[e] + FIT_STEP
+        low = analyze_target(target, table, (lo[0], lo[1]))["h2"][field]
+        high = analyze_target(target, table, (hi[0], hi[1]))["h2"][field]
+        gradient.append((high - low) / (hi[e] - lo[e]))
+    return gradient
+
+
 def calibrated_errors(
     target: int, table: Table, counts: tuple[int, int, int, int], variance_scale: float = 1.0
 ) -> dict[str, Any] | None:
@@ -1286,9 +1305,9 @@ def calibrated_errors(
     variance_scale. Every arm and delay inverts the same pair, so the
     calibration shift of a rate is the Jacobian J of its phase turn over SPAN
     times (d e01, d e10), common to the arms. A delta subtracts the
-    reference's Jacobian before squaring; A is the linear functional k of the
-    rates that the weighted fit applies at its optimum, so its calibration
-    variance is sum_e (k . J_e)^2 var(e); the minimum visibility carries the
+    reference's Jacobian before squaring; A is differentiated through the
+    complete fit, weights included (fit_gradient), so its calibration variance
+    is sum_e (dA/de)^2 var(e); the minimum visibility carries the
     gradient of its own arm and delay. Each calibrated variance adds that
     term to the preregistered shot variance. variance_scale 0 returns the
     preregistered errors, which analyze_target keeps as the verdict.
@@ -1320,14 +1339,8 @@ def calibrated_errors(
         * TO_HZ
         for arm in ARMS[1:]
     }
-    taus: Taus = [arm_tau(arm) for arm in ARMS]
-    weights = [1 / max(shot[arm], 1e-12) ** 2 for arm in ARMS]
-    gain_vector = h2_gain_vector(taus, weights, base["h2"]["A_hz"] / TO_HZ, base["h2"]["t_cycles"])
-    if gain_vector is None:
-        a_se = math.inf
-    else:
-        shift = [sum(k * jacobian[arm][e] for k, arm in zip(gain_vector, ARMS, strict=True)) for e in range(2)]
-        a_se = math.sqrt((base["h2"]["A_se_hz"] / TO_HZ) ** 2 + calibration(shift)) * TO_HZ
+    shift = fit_gradient(target, table, e01, e10)
+    a_se = math.sqrt(base["h2"]["A_se_hz"] ** 2 + sum(shift[e] ** 2 * variances[e] for e in range(2)))
     lowest = min(
         (term for pair in terms.values() for term in pair if term is not None), key=lambda term: term.visibility
     )
@@ -1572,14 +1585,33 @@ def synthetic_series() -> tuple[dict[str, Any], Table, Counts]:
     return {"targets": targets, "series": "S"}, table, counts
 
 
+def frozen_weight_gradient(target: int, table: Table, e01: float, e10: float) -> list[float]:
+    """dA/d(e01, e10) with the fit weights held at their observed values: the rates move, the weights do not."""
+    base = analyze_target(target, table, (e01, e10))
+    taus: Taus = [arm_tau(arm) for arm in ARMS]
+    weights = [1 / max(base["rate_se_hz"][arm] / TO_HZ, 1e-12) ** 2 for arm in ARMS]
+    out = []
+    for e in range(2):
+        values = []
+        for sign in (-1, 1):
+            point = [e01, e10]
+            point[e] += sign * FIT_STEP
+            row = analyze_target(target, table, (point[0], point[1]))
+            rates = [row["rate_hz"][arm] / TO_HZ for arm in ARMS]
+            values.append(fit_h2(taus, rates, weights)[2] * TO_HZ)
+        out.append((values[1] - values[0]) / (2 * FIT_STEP))
+    return out
+
+
 def sensitivity_self_test() -> str:
     """Contract of the sensitivity analysis on synthetic counts.
 
     (a) variance_scale 0 returns the preregistered rate, delta and A errors and the
     shot-only visibility error; (b) the calibration term of every delta equals
     the finite-difference gradient of analyze_target's delta times the
-    binomial errors of e01 and e10; (c) a replay of the same counts is
-    identical and a mutated readout count changes the record.
+    binomial errors of e01 and e10; (c) the A calibration shift equals the central-difference
+    gradient of the complete fit, which differs from the gradient at frozen weights and does not
+    depend on the step; (d) a replay of the same counts is identical and a mutated readout count changes the record.
     """
     meta, table, counts = synthetic_series()
     step = 1e-6
@@ -1606,6 +1638,27 @@ def sensitivity_self_test() -> str:
                 raise SystemExit(
                     f"sensitivity self-test: delta {tau} calibration variance {expected}, gradient {variance}"
                 )
+        gradient = fit_gradient(t, table, e01, e10)
+        coarse = [
+            (
+                analyze_target(t, table, (e01 + (e == 0) * 4e-4, e10 + (e == 1) * 4e-4))["h2"]["A_hz"]
+                - analyze_target(t, table, (e01 - (e == 0) * 4e-4, e10 - (e == 1) * 4e-4))["h2"]["A_hz"]
+            )
+            / 8e-4
+            for e in range(2)
+        ]
+        frozen = frozen_weight_gradient(t, table, e01, e10)
+        shift = math.sqrt(max(full["A_se_hz"] ** 2 - base["h2"]["A_se_hz"] ** 2, 0.0))
+        expected = math.sqrt(gradient[0] ** 2 * e01 * (1 - e01) / n0 + gradient[1] ** 2 * e10 * (1 - e10) / n1)
+        frozen_shift = math.sqrt(frozen[0] ** 2 * e01 * (1 - e01) / n0 + frozen[1] ** 2 * e10 * (1 - e10) / n1)
+        if not math.isclose(shift, expected, rel_tol=1e-6, abs_tol=1e-9):
+            raise SystemExit(
+                f"sensitivity self-test: A calibration shift {shift} differs from the fit gradient {expected}"
+            )
+        if any(not math.isclose(g, c, rel_tol=1e-3, abs_tol=1e-3) for g, c in zip(gradient, coarse, strict=True)):
+            raise SystemExit(f"sensitivity self-test: fit gradient {gradient} is step dependent ({coarse})")
+        if math.isclose(expected, frozen_shift, rel_tol=1e-3):
+            raise SystemExit("sensitivity self-test: the synthetic fit does not separate weight dependence")
     first = sensitivity(meta, table, counts, 24)
     if sensitivity(meta, table, counts, 24) != first:
         raise SystemExit("sensitivity self-test: a replay of the same counts differs")
