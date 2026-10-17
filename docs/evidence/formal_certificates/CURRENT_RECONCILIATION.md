@@ -5,7 +5,7 @@ The current external theorem contracts extend open_gororoba base
 quantum commit `a3d95ab60b25c4a6f18e5ff7c0435b4947abceb8`.
 The [retained delta](observable-contracts-delta.txt) records the current proof
 scope and replay entry point. The [source snapshot](observable-contracts.tar.gz)
-retains 254 files: the complete 29-source receipt closure, 21 source-bound
+retains 257 files: the complete 29-source receipt closure, 21 source-bound
 witnesses and receipt specifications, 39 binding assets, the 160-declaration
 manifest, validator sources and raw compile/kernel/assumption logs.
 [Retrieval identity](observable-contracts-source.json) pins the external commit
@@ -16,8 +16,11 @@ The external build uses Rocq 9.3.0, OCaml 5.5.1 and Stdlib 9.2.0.
 
 The external manifest binds 160 declarations across 11 scoped sources to basis,
 normalization, original-byte circuit archive digests, little-endian register
-maps and observables. Mathematical-only results mark physical fields
-inapplicable. QPY byte identity proves archive provenance; circuit semantic
+maps and observables. Declaration-level contracts classify 133 reusable results as mathematical-only
+with physical fields inapplicable, and 27 results as conditional fixture
+applications. Coverage, retained-margin arithmetic and null rejection carry
+separate premise sets; the coverage result assumes neither a common terminal
+channel nor its own conclusion. QPY byte identity proves archive provenance; circuit semantic
 correspondence remains an explicit obligation.
 
 The terminal certificate proves a finite Bernoulli degree-ten concentration
