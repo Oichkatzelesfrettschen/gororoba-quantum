@@ -84,6 +84,13 @@ ran commit dfb4384 with the per-coupler diagnostics
 (`results/kaggle/2026-10-17T004620Z-gororoba-ghost-error-scale-c`). That
 kernel resampled every grid point and wrote the same simulation bytes, so
 the identity shows that local regeneration reproduces a kernel's output.
+The same gate binds `part_b.json` run by run to five shard kernels that ran
+commit 215b81d on Kaggle CPU sessions, one run each
+(`results/kaggle/2026-10-17T024808Z-gororoba-ghost-error-scale-b1` through
+`-b5` at 025050Z): `--provenance` with several kernel outputs requires equal
+headers, concatenates their runs in argument order and requires the
+regeneration of the merged part to equal `part_b.json` byte for byte, so
+every part b run has two independent kernel sources.
 The `bundle` digests in each run's `submission.json` record the files each
 kernel carried. Gate core-339 is the recomputation gate: it runs
 `ghost_error_scale.py --check` on the three parts, which rebuilds every
