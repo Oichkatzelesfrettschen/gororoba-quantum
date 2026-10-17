@@ -14,15 +14,22 @@ readout factor r as a fourth axis:
    (raw/JOB/pub_NN.json metadata.compilation.scheduler_timing), and
    NoiseModel.from_backend relaxes each delay at the qubit's T1 and T2
    (RelaxationNoisePass, zero temperature).
-2. A per-event error m: a single-qubit depolarizing channel of probability m,
-   ``(1 - m) rho + m I / 2``, on the measured qubit immediately after every
-   mid-circuit measurement (a measure followed by a later non-barrier
-   instruction on its qubit) and after every reset. The channel is appended
-   to the circuit as an Aer QuantumError instruction; in density-matrix mode
-   it acts as a superoperator and draws no random number. A terminal
-   measurement gets no channel, since nothing after it reaches a recorded
-   bit. On a qubit measured and then reset, the post-measurement channel is
-   inert because the reset erases it.
+2. A per-event assignment error m: an X flip of probability m on the
+   measured qubit immediately before every mid-circuit measurement (a
+   measure followed by a later non-barrier instruction on its qubit) and
+   immediately after every reset. The flip before a measurement changes the
+   outcome the circuit records and its feed-forward reads; in the retained
+   runs the qubit is reset next (all but two measurements of
+   2026-10-13T083417, whose qubit is measured again and keeps the flipped
+   state), so the flip acts as an assignment error. A reset is a measurement
+   followed by a conditional flip, so the flip after it is that internal
+   assignment failing and leaving the qubit excited. m is therefore excess
+   mid-circuit assignment error beyond the snapshot's readout flips, which
+   the replay already applies to every measurement and which r scales. The
+   flip is appended to the circuit as an Aer QuantumError instruction; in
+   density-matrix mode it acts as a superoperator and draws no random
+   number. A terminal measurement gets no flip, since r already covers its
+   assignment.
 3. The CZ factor c and the readout factor r, applied as
    ghost_error_scale.scaled does. A static control sweeps the full readout
    axis STATIC_READOUT; a dynamic run sweeps r = 1 and the factor the
@@ -168,6 +175,7 @@ import json
 import math
 import re
 import sys
+import tempfile
 import time
 from collections.abc import Callable
 from pathlib import Path
@@ -184,7 +192,7 @@ import qiskit  # noqa: E402
 import qiskit_aer  # noqa: E402
 from qiskit import QuantumCircuit  # noqa: E402
 from qiskit.circuit import Delay  # noqa: E402
-from qiskit_aer.noise import depolarizing_error  # noqa: E402
+from qiskit_aer.noise import pauli_error  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import parallel  # noqa: E402
@@ -365,6 +373,13 @@ def pad(
     return out, {"delays": len(pads), "pad_dt": sum(pads), "max_pad_dt": max(pads, default=0)}
 
 
+def pad_item(
+    item: tuple[QuantumCircuit, dict[int, list[Row]], dict[tuple[str, tuple[int, ...]], int]],
+) -> tuple[QuantumCircuit, dict[str, Any]]:
+    """pad() over one (replica, schedule rows, durations) item, for the process pool."""
+    return pad(*item)
+
+
 def event_count(circuit: QuantumCircuit) -> int:
     return len(event_positions(circuit))
 
@@ -387,14 +402,17 @@ def event_positions(circuit: QuantumCircuit) -> list[tuple[int, int]]:
 
 
 def with_events(circuit: QuantumCircuit, probability: float) -> QuantumCircuit:
-    """The circuit with a depolarizing channel of the given probability after each event."""
+    """The circuit with an X flip of the given probability before each mid-circuit measure and after each reset."""
     positions = dict(event_positions(circuit))
     out = QuantumCircuit(*circuit.qregs, *circuit.cregs, name=circuit.name)
-    error = depolarizing_error(probability, 1)
+    error = pauli_error([("X", probability), ("I", 1.0 - probability)])
     for position, inst in enumerate(circuit.data):
+        event = positions.get(position)
+        if event is not None and inst.operation.name == "measure":
+            out.append(error, [circuit.qubits[event]])
         out.append(inst)
-        if position in positions:
-            out.append(error, [circuit.qubits[positions[position]]])
+        if event is not None and inst.operation.name == "reset":
+            out.append(error, [circuit.qubits[event]])
     return out
 
 
@@ -435,12 +453,16 @@ def prepare(run_name: str, index: dict[str, Any]) -> dict[str, Any]:
     durations = {relative: target_durations(snapshot) for relative, snapshot in snapshots.items()}
     padded: dict[str, list[QuantumCircuit]] = {}
     padding: dict[str, list[dict[str, Any]]] = {}
+    items = []
     for m in members:
         require(executed[m]["pub"] == pubs[m], f"{run_name}: {m} executed in {executed[m]['pub']}, planned {pubs[m]}")
         rows = schedule_rows(timings[pubs[m]])
-        results = [pad(replica, rows, durations[execution[m]]) for replica in prepared["replicas"][m][1]]
-        padded[m] = [circuit for circuit, _ in results]
-        padding[m] = [summary for _, summary in results]
+        items += [(replica, rows, durations[execution[m]]) for replica in prepared["replicas"][m][1]]
+    results = iter(parallel.ordered_map(pad_item, items))
+    for m in members:
+        done = [next(results) for _ in prepared["replicas"][m][1]]
+        padded[m] = [circuit for circuit, _ in done]
+        padding[m] = [summary for _, summary in done]
     return {
         "backend": prepared["backend"],
         "members": members,
@@ -653,6 +675,8 @@ def step(c: float) -> int:
 # Fields that one part of a run carries for its own (padding, readout)
 # states; every other field of a run's parts must agree.
 PER_STATE = ("states", "points", "mean_tvd", "floors", "draw_seconds", "seconds")
+# Part-file fields that decide a run's draws.
+PROVENANCE = ("seed", "device", "max_qubits", "versions")
 
 
 def merge(name: str, parts: list[dict[str, Any]]) -> dict[str, Any]:
@@ -693,13 +717,21 @@ def merge(name: str, parts: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def load(paths: list[Path]) -> list[dict[str, Any]]:
-    """The runs of every part file, which must share the schema and the module's axes."""
+    """The runs of every part file, which must share the schema and the module's axes.
+
+    Parts of one run merge into one common-seed grid, so they must also agree
+    in seed, device, width limit and package versions.
+    """
     parts: dict[str, list[dict[str, Any]]] = {}
+    provenance: dict[str, dict[str, Any]] = {}
     for path in paths:
         part = json.loads(path.read_text(encoding="utf-8"))
         require(part["schema"] == SCHEMA, f"{path}: schema must be {SCHEMA}")
         require(part["axes"] == axes(), f"{path}: axes differ from the module's")
+        origin = {key: part[key] for key in PROVENANCE}
         for run in part["runs"]:
+            first = provenance.setdefault(run["run"], origin)
+            require(first == origin, f"{run['run']}: {path} differs from its other parts in {PROVENANCE}")
             parts.setdefault(run["run"], []).append(run)
     return [merge(name, rows) for name, rows in parts.items()]
 
@@ -920,6 +952,8 @@ def validate(run: dict[str, Any], index: dict[str, Any], fits: dict[str, Any]) -
         require(point_of(floor) == point_of(run["points"][best_index(run, padded)]), f"{name}: floor off the minimum")
         for key in ("floor_tvd", "resample_tvd"):
             require(list(floor[key]) == members, f"{name}: floor {key} coverage")
+            for m, row in floor[key].items():
+                require(len(row) == len(prepared["replicas"][m]), f"{name}: floor {key} {m} replica count")
             require(floor[f"mean_{key}"] == mean_of(floor[key]), f"{name}: floor {key} mean differs")
     return prepared
 
@@ -1087,6 +1121,15 @@ def record_laws() -> None:
                     )
             parts.append(sub)
     merged = merge("synthetic", parts)
+    with tempfile.TemporaryDirectory() as scratch:
+        files = []
+        for k, half in enumerate((parts[:2], parts[2:])):
+            origin = {"seed": SEED + k, "device": "CPU", "max_qubits": ghost_run.MAX_QUBITS, "versions": {}}
+            files.append(Path(scratch) / f"part{k}.json")
+            files[-1].write_text(
+                json.dumps({"schema": SCHEMA, "axes": axes(), **origin, "runs": half}), encoding="utf-8"
+            )
+        expect_failure(lambda: load(files), "differs from its other parts")
     require(
         {k: merged[k] for k in whole if k != "seconds"} == {k: whole[k] for k in whole if k != "seconds"},
         "self-test: merge",
@@ -1154,6 +1197,16 @@ def self_test() -> None:
     require(delays == expected, f"self-test: delays {delays} differ from the planted {expected}")
     require(summary["pad_dt"] == sum(expected) - 400, "self-test: pad total differs")
     require(event_count(circuit) == 2, "self-test: the synthetic circuit carries a mid-circuit measure and a reset")
+    # On an ideal measure, reset, measure circuit a certain flip reports 1
+    # from the mid-circuit measure and leaves the reset qubit excited.
+    probe = QuantumCircuit(1, 2)
+    probe.measure(0, 0)
+    probe.reset(0)
+    probe.measure(0, 1)
+    ideal = qiskit_aer.AerSimulator(method="density_matrix")
+    require(ideal.run(probe, shots=64, seed_simulator=SEED).result().get_counts() == {"00": 64}, "self-test: probe")
+    flipped = ideal.run(with_events(probe, 1.0), shots=64, seed_simulator=SEED).result().get_counts()
+    require(flipped == {"11": 64}, f"self-test: a certain event flip gives {flipped}, not 11 on every shot")
     simulator = calibration_snapshot.noise_simulator(ghost_error_scale.scaled(snapshot, 2.0, 1.0), "CPU")
     shots = [1000]
     unmodified = ghost_run.sample(simulator, [circuit], shots, SEED)[0]

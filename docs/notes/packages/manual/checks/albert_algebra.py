@@ -31,6 +31,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[4]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from cd_core import cd_sign  # noqa: E402
+from parallel import ordered_map  # noqa: E402
 
 EVIDENCE = HERE / "sage_albert_table.json"
 SCHEMA = "sage-albert-table-v1"
@@ -157,18 +158,28 @@ def random_element(rng: random.Random, dim: int) -> Element:
     return (r(), r(), r(), [r() for _ in range(dim)], [r() for _ in range(dim)], [r() for _ in range(dim)])
 
 
+def jordan_trial(trial: tuple[int, Element, Element]) -> tuple[bool, bool]:
+    """(X o Y != Y o X, (X o Y) o (X o X) != X o (Y o (X o X))) for one pair of elements."""
+    dim, x, y = trial
+    xx = jordan(dim, x, x)
+    left = jordan(dim, jordan(dim, x, y), xx)
+    right = jordan(dim, x, jordan(dim, y, xx))
+    return flatten(jordan(dim, x, y)) != flatten(jordan(dim, y, x)), flatten(left) != flatten(right)
+
+
 def jordan_identity_failures(dim: int, seed: str, trials: int) -> tuple[int, int]:
-    """(commutativity failures, Jordan identity failures) on seeded random rational elements."""
+    """(commutativity failures, Jordan identity failures) on seeded random rational elements.
+
+    Every pair is drawn first, x then y per trial in the generator's order,
+    and the exact trials then run on the order-preserving process pool.
+    """
     rng = random.Random(seed)
-    comm = ident = 0
+    pairs = []
     for _ in range(trials):
-        x, y = random_element(rng, dim), random_element(rng, dim)
-        comm += flatten(jordan(dim, x, y)) != flatten(jordan(dim, y, x))
-        xx = jordan(dim, x, x)
-        left = jordan(dim, jordan(dim, x, y), xx)
-        right = jordan(dim, x, jordan(dim, y, xx))
-        ident += flatten(left) != flatten(right)
-    return comm, ident
+        x = random_element(rng, dim)
+        pairs.append((dim, x, random_element(rng, dim)))
+    results = ordered_map(jordan_trial, pairs, min_items=2)
+    return sum(comm for comm, _ in results), sum(ident for _, ident in results)
 
 
 def check(data: dict[str, Any]) -> list[str]:

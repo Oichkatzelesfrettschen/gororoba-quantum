@@ -113,6 +113,11 @@ def session_items(payload: dict[str, Any]) -> list[dict[str, Any]]:
     return sorted(out, key=lambda row: row["session_id"])
 
 
+def live_sessions(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """The rows of session_items whose session still holds a machine: RUNNING, QUEUED or NEW_SCRIPT."""
+    return [row for row in rows if row["status"] in LIVE]
+
+
 def kernel_id(ref: str) -> int:
     """The kernel's numeric id from Kaggle's public API (`kaggle kernels pull -m` metadata)."""
     with tempfile.TemporaryDirectory() as scratch:
@@ -234,9 +239,10 @@ def self_test() -> None:
         [(r["session_id"], r["version"], r["status"]) for r in rows] == [(11, 1, "ERROR"), (12, 2, "RUNNING")],
         f"{rows}",
     )
+    require([r["session_id"] for r in live_sessions(rows)] == [12], "live filter")
     require(parse_rpc('event: message\ndata: {"id": 2, "result": {}}\n') == {"id": 2, "result": {}}, "SSE parse")
     require(parse_rpc('{"id": 1}') == {"id": 1}, "JSON parse")
-    print("kaggle_sessions self-test: version parsing and JSON-RPC decoding pass")
+    print("kaggle_sessions self-test: version parsing, the live-session filter and JSON-RPC decoding pass")
 
 
 def main() -> int:
@@ -269,7 +275,7 @@ def main() -> int:
             f"https://www.kaggle.com/code/{owner}/{slug}?scriptVersionId={row['session_id']}"
         )
     if args.command == "cancel-running":
-        live = [row for row in rows if row["status"] in LIVE]
+        live = live_sessions(rows)
         for row in live:
             mcp("cancel_notebook_session", {"request": {"kernelSessionId": row["session_id"]}})
             print(f"cancel requested for session {row['session_id']} (version {row['version']})")

@@ -42,6 +42,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[4]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from cd_core import cd_sign  # noqa: E402
+from parallel import ordered_map  # noqa: E402
 
 EVIDENCE = HERE / "interplay_tables.json"
 PINS = ROOT / "scripts/algebra_package_tables.py"
@@ -1030,6 +1031,16 @@ def check_relation(relation: dict[str, Any], tables: dict[str, Table]) -> str:
     raise RuntimeError(f"unknown relation kind {kind}")
 
 
+class RelationCheck:
+    """check_relation bound to one set of retained tables, a picklable callable for parallel.ordered_map."""
+
+    def __init__(self, tables: dict[str, Table]) -> None:
+        self.tables = tables
+
+    def __call__(self, relation: dict[str, Any]) -> str:
+        return check_relation(relation, self.tables)
+
+
 def check(data: dict[str, Any]) -> list[str]:
     require(data.get("schema") == SCHEMA, "unknown evidence schema")
     tables: dict[str, Table] = data["tables"]
@@ -1038,8 +1049,8 @@ def check(data: dict[str, Any]) -> list[str]:
         found = len(relabelings(REFERENCES[name](), REFERENCES[name]()))
         require(found == count, f"calibration: {found} automorphisms of {name}, expected {count}")
         lines.append(f"calibration: cd_core {name} has {found} signed-relabeling automorphisms")
-    for relation in RELATIONS:
-        lines.append(check_relation(relation, tables))
+    # Each relation reads only the retained tables and cd_core; the pool returns the lines in RELATIONS order.
+    lines.extend(ordered_map(RelationCheck(tables), RELATIONS))
     for pkg_a, pkg_b in (("clifford", "kingdon"), ("clifford", "galgebra")):
         for sig in SIGNATURES:
             name = signature_name(sig)

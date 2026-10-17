@@ -18,12 +18,14 @@ import re
 import subprocess
 import sys
 import sysconfig
-from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 MANUAL = HERE.parent
 ROOT = HERE.parents[4]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+from parallel import ordered_map  # noqa: E402
+
 BLOCK = re.compile(
     r"<!-- example -->\n```(?P<lang>python|sh)\n(?P<code>.*?)```\n\n?```text\n(?P<out>.*?)```",
     re.DOTALL,
@@ -49,6 +51,11 @@ def run(lang: str, code: str) -> str:
     return output if not output or output.endswith("\n") else output + "\n"
 
 
+def run_example(example: tuple[str, str]) -> str:
+    """run() on one (lang, code) pair, a picklable callable for parallel.ordered_map."""
+    return run(*example)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -63,8 +70,8 @@ def main() -> int:
         texts[page] = page.read_text()
         for match in BLOCK.finditer(texts[page]):
             jobs.append((page, match))
-    with ThreadPoolExecutor(max_workers=os.cpu_count() or 1) as pool:
-        outputs = list(pool.map(lambda job: run(job[1]["lang"], job[1]["code"]), jobs))
+    # Each example is an independent subprocess; the pool returns the outputs in jobs order.
+    outputs = ordered_map(run_example, [(match["lang"], match["code"]) for _, match in jobs], min_items=2)
     failures = 0
     for page in pages:
         pieces, last = [], 0

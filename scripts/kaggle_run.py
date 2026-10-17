@@ -63,6 +63,7 @@ import subprocess
 import sys
 import time
 import zipfile
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -380,12 +381,68 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     return submission
 
 
-def live_status(ref: str) -> str | None:
-    """RUNNING or QUEUED when the kernel's latest version is live; None for a new slug or a finished run."""
-    proc = subprocess.run(["kaggle", "kernels", "status", ref], capture_output=True, text=True)
-    match = re.search(r"KernelWorkerStatus\.([A-Z_]+)", proc.stdout)
-    status = match.group(1) if match else None
-    return status if status in ("RUNNING", "QUEUED", "NEW_SCRIPT") else None
+def latest_state(ref: str) -> str | None:
+    """The KernelWorkerStatus name of the kernel's latest version; None when the account holds no kernel at ref.
+
+    GetKernelSessionStatus answers a slug that holds no kernel with HTTP 403
+    or 404 (the Kaggle CLI's kernels_status reports a 401 or 403 as a wrong
+    slug); every other failure raises, so the push that asked refuses.
+    """
+    from kaggle.api.kaggle_api_extended import KaggleApi
+    from kagglesdk.kernels.types.kernels_api_service import ApiGetKernelSessionStatusRequest
+    from requests.exceptions import HTTPError
+
+    owner, slug = ref.split("/")
+    api = KaggleApi()
+    api.authenticate()
+    request = ApiGetKernelSessionStatusRequest()
+    request.user_name = owner
+    request.kernel_slug = slug
+    try:
+        with api.build_kaggle_client() as client:
+            response = client.kernels.kernels_api_client.get_kernel_session_status(request)
+    except HTTPError as error:
+        if error.response is not None and error.response.status_code in (403, 404):
+            return None
+        raise
+    return str(response.status.name)
+
+
+def require_no_live_version(
+    ref: str,
+    state: Callable[[str], str | None] = latest_state,
+    versions: Callable[[str], list[dict[str, Any]]] | None = None,
+) -> None:
+    """Refuse while any version of ref runs or queues; Kaggle answers status for the latest version only.
+
+    A new version leaves every older version's session running, each billing
+    its accelerator, so the latest state alone misses an older live session.
+    ListKernelVersions (scripts/kaggle_sessions.py) returns every version's
+    session; a slug Kaggle does not hold has none. A listing that fails
+    refuses the push, since no version's state is then known.
+    """
+    import kaggle_sessions
+
+    latest = state(ref)
+    if latest is None:
+        return
+    remedy = f"cancel every live version (scripts/kaggle_sessions.py cancel-running {ref}) or push under a new slug"
+    require(latest not in kaggle_sessions.LIVE, f"{ref}: the latest version is {latest}; {remedy}")
+
+    def browser_listing(name: str) -> list[dict[str, Any]]:
+        return kaggle_sessions.list_versions(name, kaggle_sessions.default_profile())
+
+    try:
+        rows = (versions or browser_listing)(ref)
+    except Exception as error:
+        raise SystemExit(f"{ref}: cannot list its versions ({error!r}); the accelerator push refuses") from error
+    live = kaggle_sessions.live_sessions(rows)
+    require(
+        not live,
+        f"{ref}: "
+        + ", ".join(f"version {row['version']} is {row['status']} (session {row['session_id']})" for row in live)
+        + f"; {remedy}",
+    )
 
 
 def push(args: argparse.Namespace) -> int:
@@ -405,14 +462,7 @@ def push(args: argparse.Namespace) -> int:
         f"a {args.machine} push needs --timeout SECONDS (at most {MAX_ACCELERATOR_SECONDS})",
     )
     if args.machine != "cpu":
-        # A new version does not end a running version's session: both bill
-        # the accelerator. scripts/kaggle_sessions.py lists and cancels them.
-        state = live_status(f"{username()}/{args.slug}")
-        require(
-            state is None,
-            f"{args.slug} has a {state} version; cancel it first "
-            f"(scripts/kaggle_sessions.py cancel-running OWNER/{args.slug}) or push under a new slug",
-        )
+        require_no_live_version(f"{username()}/{args.slug}")
     revision = git_commit()
     stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
     run_dir = RESULTS / f"{stamp}-{args.slug}"
@@ -466,11 +516,73 @@ def self_test(args: argparse.Namespace) -> int:
         require(shard["tree"] == job["tree"] and job["python"] == CI_PYTHON, "shard job lacks the tree or CI's Python")
         py_compile.compile(str(Path(scratch) / "shard/kernel/run.py"), doraise=True)
     _overlay_self_test()
+    _push_guard_self_test()
     print(
         f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private CPU, GPU and TPU kernels, "
-        "a shard kernel bound to HEAD's tree, an overlay that rebuilds a directory-to-file change, run.py compiles"
+        "a shard kernel bound to HEAD's tree, an overlay that rebuilds a directory-to-file change, run.py compiles, "
+        "an accelerator push or shard run refused while an older version runs"
     )
     return 0
+
+
+def _push_guard_self_test() -> None:
+    """require_no_live_version over stubbed states and version listings; no Kaggle call."""
+
+    def row(version: int, status: str) -> dict[str, Any]:
+        return {"session_id": 100 + version, "version": version, "status": status, "created": None, "kernel_id": 7}
+
+    def refused(latest: str | None, rows: list[dict[str, Any]]) -> str | None:
+        listed: list[str] = []
+
+        def versions(ref: str) -> list[dict[str, Any]]:
+            listed.append(ref)
+            return rows
+
+        try:
+            require_no_live_version("owner/slug", lambda ref: latest, versions)
+        except SystemExit as stop:
+            return str(stop)
+        require(listed == ([] if latest is None else ["owner/slug"]), f"listing calls {listed}")
+        return None
+
+    older = refused("COMPLETE", [row(1, "RUNNING"), row(2, "COMPLETE")])
+    require(older is not None and "version 1 is RUNNING (session 101)" in older, f"older running version: {older}")
+    queued = refused("ERROR", [row(1, "COMPLETE"), row(2, "QUEUED"), row(3, "ERROR")])
+    require(queued is not None and "version 2 is QUEUED" in queued, f"older queued version: {queued}")
+    latest = refused("RUNNING", [row(1, "RUNNING")])
+    require(latest is not None and "the latest version is RUNNING" in latest, f"latest running version: {latest}")
+    require(refused("COMPLETE", [row(1, "ERROR"), row(2, "COMPLETE")]) is None, "finished versions refuse the push")
+    require(refused(None, []) is None, "a new slug refuses the push")
+
+    def failing(ref: str) -> list[dict[str, Any]]:
+        raise RuntimeError("no browser")
+
+    try:
+        require_no_live_version("owner/slug", lambda ref: "COMPLETE", failing)
+    except SystemExit as stop:
+        require("cannot list its versions" in str(stop), f"failed listing: {stop}")
+    else:
+        raise SystemExit("a failed version listing lets the push through")
+
+    # Shard 2's slug holds an older running version: the shard guard refuses
+    # after reading every slug in --only and before any push.
+    checked: list[str] = []
+    tables = {f"owner/{shard_slug(2, 6)}": [row(1, "RUNNING"), row(2, "COMPLETE")]}
+
+    def shard_guard(ref: str) -> None:
+        checked.append(ref)
+        require_no_live_version(ref, lambda name: "COMPLETE", lambda name: tables.get(name, []))
+
+    require_no_live_shard("owner", [0, 1, 2], 6, ["cpu"], shard_guard)
+    require(checked == [], f"a CPU-only shard run reads versions: {checked}")
+    try:
+        require_no_live_shard("owner", [0, 1, 2], 6, ["cpu", GPU_MACHINE], shard_guard)
+    except SystemExit as stop:
+        require("version 1 is RUNNING" in str(stop), f"shard refusal: {stop}")
+    else:
+        raise SystemExit("an accelerator shard run starts beside an older running version")
+    require(checked == [f"owner/{shard_slug(i, 6)}" for i in range(3)], f"shard slugs checked: {checked}")
+    require_no_live_shard("owner", [0, 1], 6, [TPU_MACHINE], shard_guard)
 
 
 def _overlay_self_test() -> None:
@@ -657,6 +769,30 @@ def git(*args: str) -> str:
     return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True, check=True).stdout
 
 
+def shard_slug(shard: int, count: int) -> str:
+    """The fixed kernel slug of one CI shard; every machine type pushes it as a new version."""
+    return f"gororoba-ci-shard-{shard}-of-{count}"
+
+
+def require_no_live_shard(
+    owner: str,
+    shards: list[int],
+    count: int,
+    machines: list[str],
+    guard: Callable[[str], None] = require_no_live_version,
+) -> None:
+    """Apply the all-version guard to every shard slug when any machine in the list is an accelerator.
+
+    A shard may fall through to any machine in the preference list, and each
+    shard slug is fixed, so every slug is checked before the first push and a
+    refusal sends nothing.
+    """
+    if all(machine == "cpu" for machine in machines):
+        return
+    for shard in shards:
+        guard(f"{owner}/{shard_slug(shard, count)}")
+
+
 def build_shard_kernel(
     run_dir: Path, owner: str, stamp: str, base: str, head: str, tier: str, shard: int, count: int, machine: str = "cpu"
 ) -> dict[str, Any]:
@@ -708,7 +844,7 @@ def build_shard_kernel(
     pins = kernel_pins(machine)
     runner = RUNNER.format(pins=list(pins), extra=[], bundle=base64.b64encode(buffer.getvalue()).decode("ascii"))
     (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
-    slug = f"gororoba-ci-shard-{shard}-of-{count}"
+    slug = shard_slug(shard, count)
     metadata = {
         "id": f"{owner}/{slug}",
         "title": slug,
@@ -782,6 +918,7 @@ def shards(args: argparse.Namespace) -> int:
         all(m == "cpu" for m in machines) or 0 < args.timeout <= MAX_ACCELERATOR_SECONDS,
         f"shards on {args.machine} need --timeout SECONDS (at most {MAX_ACCELERATOR_SECONDS})",
     )
+    require_no_live_shard(owner, only, args.count, machines)
     for shard in only:
         waited = 0
         while True:
