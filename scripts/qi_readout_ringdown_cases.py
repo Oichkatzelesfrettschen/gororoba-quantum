@@ -895,9 +895,9 @@ def sanity(
     characters (the measurement register) or the 2 n-bit register, and the
     notes record which; in a readout circuit every target's assignment error
     stays below readout_error (SANITY_READOUT_ERROR unless a series names its
-    own guard, which the notes record); in a Ramsey circuit every spectator, held
-    in |0>, reads 1 below SANITY_SPECTATOR_ONE (a spectator in exempt is
-    reported in the notes instead) and, where the 2 n-bit register
+    own guard, which the notes record; a qubit in exempt is reported instead); in a Ramsey circuit every spectator, held
+    in |0>, reads 1 below SANITY_SPECTATOR_ONE (a qubit in exempt is reported
+    in the notes instead) and, where the 2 n-bit register
     returns, every target's mid-circuit outcome reads 1 below SANITY_MID_ONE. A
     failure stops the series before it spends more device time.
     """
@@ -929,8 +929,11 @@ def sanity(
         if row["kind"] == "readout":
             error = ones if row["file"] == "readout-0.cq" else {q: 1 - p for q, p in ones.items()}
             problems += [
-                f"{row['file']} q{q}: error {error[q]:.3f}" for q in meta["targets"] if error[q] > readout_error
+                f"{row['file']} q{q}: error {error[q]:.3f}"
+                for q in meta["targets"]
+                if error[q] > readout_error and q not in exempt
             ]
+            exempt_notes += [f"{row['file']} exempt q{q}: error {error[q]:.3f}" for q in meta["targets"] if q in exempt]
             continue
         if present and not row["file"].startswith(REFERENCE):
             for t in meta["targets"]:
@@ -1008,10 +1011,10 @@ def main() -> int:
     mode.add_argument("--sanity", type=Path, metavar="RUN_DIR")
     parser.add_argument("--replay", action="store_true", help="with --analyze: compare OUT with the recomputation")
     parser.add_argument(
-        "--sanity-spectator-exempt",
+        "--sanity-exempt",
         type=lambda value: frozenset(int(item) for item in value.split(",")),
         default=frozenset(),
-        help="with --sanity: comma-separated spectators reported in the notes instead of checked against the guard",
+        help="with --sanity: comma-separated qubits whose readout error or spectator P1 the notes report, unguarded",
     )
     parser.add_argument(
         "--sanity-readout-error",
@@ -1021,7 +1024,7 @@ def main() -> int:
     )
     args = parser.parse_args()
     if args.sanity:
-        problems, notes = sanity(args.sanity, args.sanity_readout_error, args.sanity_spectator_exempt)
+        problems, notes = sanity(args.sanity, args.sanity_readout_error, args.sanity_exempt)
         if args.sanity_readout_error != SANITY_READOUT_ERROR:
             notes.append(f"readout guard {args.sanity_readout_error} (default {SANITY_READOUT_ERROR})")
         for line in [*notes, *problems]:
