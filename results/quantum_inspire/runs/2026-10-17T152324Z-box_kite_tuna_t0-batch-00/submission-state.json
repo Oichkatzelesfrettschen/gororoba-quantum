@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-17T15:41:17+00:00",
+ "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: 'Approve pre-T0 + T0' of the written case for the Tuna-17 box-kite pre-T0 and T0 series at f445f33 (QX twins batch-00 and batch-04, pre batch-00, T0 batch-00 to batch-02)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "7774d121117fbfed31eb955b6a5e7efa956118a77c5269ffa0a26cdc7dd00f95",
+ "shots": 16384,
+ "jobs": [
+  {
+   "file": "t0-1.cq",
+   "job": 1528721,
+   "sha256": "cc06efa4752a1b2eac6c5f3e13d066a2b9d3abdc7b3e999a58281d38cab32b28"
+  },
+  {
+   "file": "readout-0.cq",
+   "job": 1528722,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1528723,
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  }
+ ],
+ "project": 766523,
+ "batch_job": 870718,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-17T15:41:21+00:00",
+  "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: 'Approve pre-T0 + T0' of the written case for the Tuna-17 box-kite pre-T0 and T0 series at f445f33 (QX twins batch-00 and batch-04, pre batch-00, T0 batch-00 to batch-02)",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "7774d121117fbfed31eb955b6a5e7efa956118a77c5269ffa0a26cdc7dd00f95",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 870718,
+  "project": 766523,
+  "shots": 16384,
+  "jobs": [
+   {
+    "file": "t0-1.cq",
+    "job": 1528721,
+    "sha256": "cc06efa4752a1b2eac6c5f3e13d066a2b9d3abdc7b3e999a58281d38cab32b28"
+   },
+   {
+    "file": "readout-0.cq",
+    "job": 1528722,
+    "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+   },
+   {
+    "file": "readout-1.cq",
+    "job": 1528723,
+    "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+   }
+  ],
+  "submitted_utc": "2026-10-17T15:41:21+00:00"
+ },
+ "confirmed_utc": "2026-10-17T15:41:21+00:00"
+}

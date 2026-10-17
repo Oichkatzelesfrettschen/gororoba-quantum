@@ -37,6 +37,13 @@
     "twin-walk-2.cq",
     "twin-walk-3.cq"
    ]
+  },
+  {
+   "batch": "batch-04",
+   "stage": "pre",
+   "files": [
+    "twin-double-x.cq"
+   ]
   }
  ]
 }

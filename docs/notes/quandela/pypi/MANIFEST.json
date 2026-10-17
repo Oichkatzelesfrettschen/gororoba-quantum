@@ -1,0 +1,28 @@
+{
+ "schema": "qd-docs-capture-v1",
+ "kind": "pypi",
+ "retrieved_utc": "2026-10-17T17:28Z",
+ "files": [
+  {
+   "path": "docs/notes/quandela/pypi/perceval-quandela.json",
+   "source": "https://pypi.org/pypi/perceval-quandela/1.3.1/json",
+   "sha256": "c8ed2fcbdd475a830b066ec7121fdff96e35850f98ecc4b3be945346aa2d49ea"
+  },
+  {
+   "path": "docs/notes/quandela/pypi/exqalibur.json",
+   "source": "https://pypi.org/pypi/exqalibur/1.4.2/json",
+   "sha256": "1b500908d11a19d33fd96c2e97d92a996143ebb098b9234731b0c19171aec1d7"
+  },
+  {
+   "path": "docs/notes/quandela/pypi/perceval-interop.json",
+   "source": "https://pypi.org/pypi/perceval-interop/1.3.0/json",
+   "sha256": "ed2babca56a9e95c47e4971053da3181e464d393b8eeac8d0104d3a4f9a67bdb"
+  },
+  {
+   "path": "docs/notes/quandela/pypi/scmver.json",
+   "source": "https://pypi.org/pypi/scmver/1.10/json",
+   "sha256": "a35d1d7f9d344b5c1270e3a5fad284f79474e6d67c50fa03f14f28be4ba2c01d"
+  }
+ ],
+ "unreachable": []
+}

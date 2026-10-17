@@ -170,6 +170,34 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.0362549,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0195312,
+      "p1_given_1": 0.972656
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0170288,
+      "p1_given_1": 0.970032
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0169067,
+      "p1_given_1": 0.971619
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0165405,
+      "p1_given_1": 0.968933
      }
     ],
     "implied_t1": {
@@ -314,6 +342,34 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.0256348,
       "p1_given_1": 0.895874
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.027832,
+      "p1_given_1": 0.969727
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0275269,
+      "p1_given_1": 0.969604
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.027771,
+      "p1_given_1": 0.970947
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0261841,
+      "p1_given_1": 0.970398
      }
     ],
     "implied_t1": {
@@ -466,6 +522,34 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.0264893,
       "p1_given_1": 0.88562
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0131836,
+      "p1_given_1": 0.971436
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0111084,
+      "p1_given_1": 0.970337
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0113525,
+      "p1_given_1": 0.97406
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0134277,
+      "p1_given_1": 0.972534
      }
     ],
     "implied_t1": {
@@ -604,6 +688,34 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.0413818,
       "p1_given_1": 0.856201
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.013916,
+      "p1_given_1": 0.959229
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0133057,
+      "p1_given_1": 0.956909
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0125732,
+      "p1_given_1": 0.959717
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0125122,
+      "p1_given_1": 0.957642
      }
     ],
     "implied_t1": {
@@ -758,6 +870,34 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.0145264,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0124512,
+      "p1_given_1": 0.953369
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0117798,
+      "p1_given_1": 0.949524
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0127563,
+      "p1_given_1": 0.948975
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0114746,
+      "p1_given_1": 0.951416
      }
     ],
     "implied_t1": {
@@ -918,6 +1058,34 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.0408936,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.043457,
+      "p1_given_1": 0.960938
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0372925,
+      "p1_given_1": 0.962646
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0407715,
+      "p1_given_1": 0.963562
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0373535,
+      "p1_given_1": 0.963745
      }
     ],
     "implied_t1": {
@@ -1067,6 +1235,34 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.0142822,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0383301,
+      "p1_given_1": 0.957275
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0396729,
+      "p1_given_1": 0.9552
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0354004,
+      "p1_given_1": 0.953125
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0352173,
+      "p1_given_1": 0.932129
      }
     ],
     "implied_t1": {
@@ -1219,6 +1415,34 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.0322266,
       "p1_given_1": 0.848511
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0563965,
+      "p1_given_1": 0.933105
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0341187,
+      "p1_given_1": 0.947327
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0335693,
+      "p1_given_1": 0.93689
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0349731,
+      "p1_given_1": 0.936035
      }
     ],
     "implied_t1": {
@@ -1384,6 +1608,34 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.0314941,
       "p1_given_1": 0.843384
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0344238,
+      "p1_given_1": 0.952393
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0301514,
+      "p1_given_1": 0.94574
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.02948,
+      "p1_given_1": 0.948547
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0323486,
+      "p1_given_1": 0.945679
      }
     ],
     "implied_t1": {
@@ -1541,6 +1793,34 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.276855,
       "p1_given_1": 0.863037
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0178223,
+      "p1_given_1": 0.92627
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0199585,
+      "p1_given_1": 0.925903
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0206909,
+      "p1_given_1": 0.925903
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0194702,
+      "p1_given_1": 0.92572
      }
     ],
     "implied_t1": {
@@ -1679,6 +1959,34 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.0469971,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.045166,
+      "p1_given_1": 0.975342
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0544434,
+      "p1_given_1": 0.978271
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.050293,
+      "p1_given_1": 0.979675
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0548706,
+      "p1_given_1": 0.978271
      }
     ],
     "implied_t1": {
@@ -1833,6 +2141,34 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.0150146,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0187988,
+      "p1_given_1": 0.956055
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0164185,
+      "p1_given_1": 0.952393
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0189209,
+      "p1_given_1": 0.95282
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0164185,
+      "p1_given_1": 0.953857
      }
     ],
     "implied_t1": {
@@ -1987,6 +2323,34 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.00463867,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.00488281,
+      "p1_given_1": 0.973389
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.00494385,
+      "p1_given_1": 0.971741
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.00476074,
+      "p1_given_1": 0.96875
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.00518799,
+      "p1_given_1": 0.970764
      }
     ],
     "implied_t1": {
@@ -2131,6 +2495,34 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.0174561,
       "p1_given_1": 0.689087
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0200195,
+      "p1_given_1": 0.911865
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0240479,
+      "p1_given_1": 0.904236
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0249023,
+      "p1_given_1": 0.909241
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0287476,
+      "p1_given_1": 0.911316
      }
     ],
     "implied_t1": {
@@ -2283,6 +2675,34 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.0341797,
       "p1_given_1": 0.799927
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0371094,
+      "p1_given_1": 0.97168
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0391235,
+      "p1_given_1": 0.972961
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0383301,
+      "p1_given_1": 0.972046
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0376587,
+      "p1_given_1": 0.974121
      }
     ],
     "implied_t1": {
@@ -2427,6 +2847,34 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.0482178,
       "p1_given_1": 0.913574
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0549316,
+      "p1_given_1": 0.976318
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0534058,
+      "p1_given_1": 0.977783
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0548096,
+      "p1_given_1": 0.979492
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.055542,
+      "p1_given_1": 0.980408
      }
     ],
     "implied_t1": {
@@ -2565,6 +3013,34 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.0294189,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "shots": 4096,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.032959,
+      "p1_given_1": 0.970215
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0362549,
+      "p1_given_1": 0.963379
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0322876,
+      "p1_given_1": 0.964966
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0339966,
+      "p1_given_1": 0.971191
      }
     ],
     "implied_t1": {

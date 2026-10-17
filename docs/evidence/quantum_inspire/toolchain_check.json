@@ -13337,6 +13337,57 @@
    "gate_changes": {}
   },
   {
+   "case": "results/quantum_inspire/cases/box_kite_tuna_pre/batch-00/double-x.cq",
+   "sha256": "d015740f27103a3881c5f0ed5c98f2a8dd35f74de664be3f712bb739ca22f2c3",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "fd6fa0b8905f3e8e5bdf5394801eee94f6abd1fb80c1bc2eb3cf1be768bcaf94",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/box_kite_tuna_pre/batch-00/readout-0.cq",
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b9f6522943487823c55f09c907d3b3fbfbb9c2cf628f9a5cda94f990975ebe87",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/box_kite_tuna_pre/batch-00/readout-1.cq",
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "4bf0615459a5abc811e03c4c5d41d66a3935249388c53333138dfd3140a4210f",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
    "case": "results/quantum_inspire/cases/box_kite_tuna_t0/batch-00/t0-1.cq",
    "sha256": "cc06efa4752a1b2eac6c5f3e13d066a2b9d3abdc7b3e999a58281d38cab32b28",
    "backend": "tuna_17",
@@ -13726,6 +13777,20 @@
    "libqasm": "ok",
    "compiled": "ok",
    "compiled_sha256": "76d1ce348990ac4ed615a5a800f14b3b13fca8befafd5e5d8ead51a478295f6e",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/box_kite_tuna_twins_qx/batch-04/twin-double-x.cq",
+   "sha256": "bcf1aba2b39c083ee994e753edb7879a421d5222e776a3611feca5819f669ba3",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "aa7a8952f570535a22b5e06d2d29f3672d6a4b224c0509564a10ef9fb837f038",
    "control_sequence_preserved": true,
    "gate_sequence_preserved": true,
    "control_changes": {},
