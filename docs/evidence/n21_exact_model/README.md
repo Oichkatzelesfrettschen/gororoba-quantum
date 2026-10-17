@@ -114,3 +114,29 @@ trajectories, a different method on the same channel; the cross-check does
 not test that sampler, so the remaining explanations are sampling noise
 (p = 0.041 for one preplanned test) or a departure of the trajectory sampler
 from its channel, the latter untested.
+
+## Initial excitation
+
+`crosscheck_prep_excitation.json` repeats the comparison with every active
+qubit starting in (1 - eps)|0><0| + eps|1><1|, eps = 0.01, the placeholder
+preparation excitation of the shorter repetition-delay dry runs
+(`scripts/n21_exact_crosscheck.py --prep-excitation 0.01 --out`, gate
+core-526 `--check` in normal and optimized Python). Aer receives the channel
+as a leading `pauli_error([("X", 0.01), ("I", 0.99)])` instruction on each of
+the seven qubits (`dynamic_density.with_prep_excitation`), dynamic_density
+as `probabilities(..., prep_excitation=0.01)`, which applies the bit flip to
+its initial density matrix; the channel has one implementation in each engine.
+
+| Model | Circuit | max gap per outcome | largest branch-state gap |
+| --- | --- | --- | --- |
+| raw | n21_encoded_feedback | 8.0e-10 | 3.6e-9 |
+| raw | n21_encoded_no_feedback | 1.0e-9 | 3.6e-9 |
+| cleaned | n21_encoded_feedback | 6.1e-16 | 1.0e-15 |
+| cleaned | n21_encoded_no_feedback | 9.4e-16 | 1.6e-15 |
+
+Under the cleaned model the engines agree within the 1e-12 tolerance at every
+save and in the contrast (gap 1.1e-15); under the raw model the gaps stay
+under the truncation bound, as at eps = 0. The channel lowers the exact
+contrast from 0.030826554245 to 0.029231572435 (shift -0.001595), the
+amount by which an unmeasured 1 percent residual excitation per qubit would
+shrink the admitted effect.

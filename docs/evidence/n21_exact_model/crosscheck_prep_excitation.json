@@ -1,0 +1,429 @@
+{
+ "channel": "bit flip of probability prep_excitation on |0> of every active qubit before the first instruction; Aer: leading pauli_error([('X', eps), ('I', 1 - eps)]) instructions (dynamic_density.with_prep_excitation); dynamic_density: probabilities(..., prep_excitation=eps)",
+ "inputs": {
+  "isa": {
+   "path": "results/live/2026-10-17T003834.987727Z/isa.qpy",
+   "sha256": "b9a7b2c3a8adacde2cca9790504eea08733e011b2b7b337dffa5408be2592e44"
+  },
+  "record": {
+   "path": "results/live/2026-10-17T003834.987727Z/record.json",
+   "sha256": "bfa94947ac9225013570d3a912508e9a894bd7ec042d1b37915c3f2d6fac6012"
+  },
+  "snapshot": {
+   "path": "docs/evidence/calibration/history/ibm_kingston/20261016T1213360700.json",
+   "sha256": "69470d67f12ae90eaa3b0e078c1367f840a152a7d943987b769364536e9e2ec3"
+  }
+ },
+ "models": {
+  "cleaned": {
+   "arms": {
+    "n21_encoded_feedback": {
+     "aer": 0.004491445803746497,
+     "dynamic_density": 0.004491445803746774,
+     "gap": 2.7755575615628914e-16
+    },
+    "n21_encoded_no_feedback": {
+     "aer": -0.024740126631525694,
+     "dynamic_density": -0.02474012663152428,
+     "gap": 1.4155343563970746e-15
+    }
+   },
+   "circuits": {
+    "ibm_kingston_dynamic_pub_01": {
+     "aer": [
+      0.28335918123527104,
+      0.2509861454094742,
+      0.21915997374952717,
+      0.24649469960572773
+     ],
+     "aer_trace_deficit": {
+      "end": 1.4621637234313312e-13,
+      "pre0": 1.4477308241112041e-13
+     },
+     "branch_weights": [
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.49837146931240156
+      },
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.001954397918872163
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.004147685672396654
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.49552644709632965
+      }
+     ],
+     "branches": 4,
+     "dropped_mass": 0.0,
+     "dynamic_density": [
+      0.2833591812352713,
+      0.2509861454094739,
+      0.21915997374952764,
+      0.24649469960572712
+     ],
+     "first_dropped": null,
+     "max_gap": 6.106226635438361e-16,
+     "member": "n21_encoded_feedback",
+     "oracle_total": 1.0000000000000002,
+     "saves": {
+      "end": {
+       "branches": 4,
+       "state_gap": 1.0141679270038073e-15,
+       "weight_gap": 7.771561172376096e-16
+      },
+      "pre0": {
+       "branches": 4,
+       "state_gap": 2.7073418807735423e-16
+      }
+     },
+     "unvisited_weight": 0.0,
+     "visited": 4
+    },
+    "ibm_kingston_dynamic_pub_02": {
+     "aer": [
+      0.28331271533131824,
+      0.23635164000537312,
+      0.21924387802641002,
+      0.2610917666368988
+     ],
+     "aer_trace_deficit": {
+      "end": 1.4765966227514582e-13,
+      "pre0": 1.475486399726833e-13
+     },
+     "branch_weights": [
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.49840922229350754
+      },
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.001954545969778461
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.004147371064220773
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.4954888606724936
+      }
+     ],
+     "branches": 4,
+     "dropped_mass": 0.0,
+     "dynamic_density": [
+      0.28331271533131824,
+      0.2363516400053736,
+      0.2192438780264102,
+      0.26109176663689787
+     ],
+     "first_dropped": null,
+     "max_gap": 9.43689570931383e-16,
+     "member": "n21_encoded_no_feedback",
+     "oracle_total": 1.0000000000000002,
+     "saves": {
+      "end": {
+       "branches": 4,
+       "state_gap": 1.596024413082878e-15,
+       "weight_gap": 5.551115123125783e-16
+      },
+      "pre0": {
+       "branches": 4,
+       "state_gap": 3.418745174798082e-16
+      }
+     },
+     "unvisited_weight": 0.0,
+     "visited": 4
+    }
+   },
+   "contrasts": {
+    "n21_encoded_feedback_contrast": {
+     "aer": 0.02923157243527219,
+     "dynamic_density": 0.029231572435271053,
+     "gap": -1.1379786002407855e-15
+    }
+   }
+  },
+  "raw": {
+   "arms": {
+    "n21_encoded_feedback": {
+     "aer": 0.00449144580374658,
+     "dynamic_density": 0.004491445775756997,
+     "gap": -2.798958287364428e-11
+    },
+    "n21_encoded_no_feedback": {
+     "aer": -0.024740126631524972,
+     "dynamic_density": -0.024740124712915507,
+     "gap": 1.9186094657452912e-09
+    }
+   },
+   "circuits": {
+    "ibm_kingston_dynamic_pub_01": {
+     "aer": [
+      0.2833591812352707,
+      0.25098614540947417,
+      0.21915997374952748,
+      0.2464946996057276
+     ],
+     "aer_trace_deficit": {
+      "end": 3.372581336424929e-08,
+      "pre0": 3.082359656403355e-08
+     },
+     "branch_weights": [
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.49837146931240167
+      },
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.0019543979188721633
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.004147685672396653
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.49552644709632954
+      }
+     ],
+     "branches": 4,
+     "dropped_mass": 6.454931160277334e-08,
+     "dynamic_density": [
+      0.28335918059107923,
+      0.2509861453200429,
+      0.21915997454459196,
+      0.24649469954428588
+     ],
+     "first_dropped": {
+      "dropped_mass": 1.8280594728943404e-10,
+      "gate": "x",
+      "index": 1,
+      "qubits": [
+       1
+      ]
+     },
+     "max_gap": 7.950644864695988e-10,
+     "member": "n21_encoded_feedback",
+     "oracle_total": 1.0,
+     "saves": {
+      "end": {
+       "branches": 4,
+       "state_gap": 3.6079827181456636e-09,
+       "weight_gap": 1.521407999582891e-10
+      },
+      "pre0": {
+       "branches": 4,
+       "state_gap": 3.475263995189423e-10
+      }
+     },
+     "unvisited_weight": 0.0,
+     "visited": 4
+    },
+    "ibm_kingston_dynamic_pub_02": {
+     "aer": [
+      0.283312715331318,
+      0.2363516400053734,
+      0.21924387802641018,
+      0.26109176663689837
+     ],
+     "aer_trace_deficit": {
+      "end": 3.336020182320709e-08,
+      "pre0": 3.040461160619401e-08
+     },
+     "branch_weights": [
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.4984092222935073
+      },
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.00195454596977846
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.0041473710642207715
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.4954888606724933
+      }
+     ],
+     "branches": 4,
+     "dropped_mass": 6.376471556520539e-08,
+     "dynamic_density": [
+      0.2833127147028944,
+      0.23635164088603064,
+      0.2192438788121289,
+      0.26109176559894615
+     ],
+     "first_dropped": {
+      "dropped_mass": 1.5611982308433924e-10,
+      "gate": "cz",
+      "index": 5,
+      "qubits": [
+       1,
+       2
+      ]
+     },
+     "max_gap": 1.0379522241699135e-09,
+     "member": "n21_encoded_no_feedback",
+     "oracle_total": 1.0,
+     "saves": {
+      "end": {
+       "branches": 4,
+       "state_gap": 3.575474222250463e-09,
+       "weight_gap": 1.586170084166838e-10
+      },
+      "pre0": {
+       "branches": 4,
+       "state_gap": 3.435783501690489e-10
+      }
+     },
+     "unvisited_weight": 0.0,
+     "visited": 4
+    }
+   },
+   "contrasts": {
+    "n21_encoded_feedback_contrast": {
+     "aer": 0.029231572435271552,
+     "dynamic_density": 0.029231570488672504,
+     "gap": -1.9465990486189355e-09
+    }
+   }
+  }
+ },
+ "oracle": {
+  "aer_threshold": 1e-10,
+  "method": "density_matrix",
+  "seed": 20261017,
+  "shot_branching_enable": true,
+  "shots": 32,
+  "simulator": "AerSimulator"
+ },
+ "prep_excitation": 0.01,
+ "raw_minus_cleaned": {
+  "ibm_kingston_dynamic_pub_01": {
+   "aer": 3.3306690738754696e-16,
+   "dynamic_density": 7.950643199361451e-10
+  },
+  "ibm_kingston_dynamic_pub_02": {
+   "aer": 4.440892098500626e-16,
+   "dynamic_density": 1.0379517245695524e-09
+  }
+ },
+ "schema": "n21-exact-crosscheck-prep-excitation-v1",
+ "tolerance": 1e-12,
+ "unexcited_cleaned": {
+  "contrast_shift": {
+   "n21_encoded_feedback_contrast": -0.0015949818097071022
+  },
+  "contrasts": {
+   "n21_encoded_feedback_contrast": 0.030826554244978155
+  },
+  "laws": {
+   "ibm_kingston_dynamic_pub_01": [
+    0.28337995216090855,
+    0.251289251093884,
+    0.21856725415775793,
+    0.24676354258744948
+   ],
+   "ibm_kingston_dynamic_pub_02": [
+    0.2833301693844951,
+    0.23585617179689705,
+    0.21865664128316722,
+    0.2621570175354407
+   ]
+  }
+ },
+ "versions": {
+  "numpy": "2.5.4",
+  "python": "3.14.7",
+  "qiskit": "2.5.2",
+  "qiskit-aer": "0.17.2"
+ }
+}
