@@ -224,7 +224,6 @@ def sweep_run(
         snapshot = json.loads((ROOT / relative).read_text(encoding="utf-8"))
         chosen = [m for m in members if execution[m] == relative]
         circuits = [replica for m in chosen for replica in replicas[m][1]]
-        circuit_shots = [shots[m] for m in chosen for _ in replicas[m][1]]
         snapshots[relative] = {"members": len(chosen), **diagnostics(snapshot, circuits, infidelity=True)}
         sampler = GridSampler(
             snapshot, device, aer_threads(len(points)), chosen, {m: replicas[m][1] for m in chosen}, measured, shots
