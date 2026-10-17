@@ -13,11 +13,11 @@ argument are in
 
 | Record | Produced by | Replay gate |
 | --- | --- | --- |
-| `search.json` | `scripts/linear_conjugation_search.py`, five Kaggle CPU shards merged with `--merge` | core-325 |
-| `results/hw_estimate/n21_linear_conjugation_challenger.json` | `gororoba_quantum/linear_conjugation_challenger.py --search search.json`, one Kaggle CPU kernel under CI's interpreter and pins (`kaggle_run.py push --ci-env`) | core-326 |
-| `noise.json` | `scripts/n21_conjugation_noise.py --challenger ...`, one Kaggle CPU kernel per backend under `--ci-env`, combined with `--merge` | core-327 (full tier) |
+| `search.json` | `scripts/linear_conjugation_search.py`, five Kaggle CPU shards merged with `--merge` | core-335 |
+| `results/hw_estimate/n21_linear_conjugation_challenger.json` | `gororoba_quantum/linear_conjugation_challenger.py --search search.json`, one Kaggle CPU kernel under CI's interpreter and pins (`kaggle_run.py push --ci-env`) | core-336 |
+| `noise.json` | `scripts/n21_conjugation_noise.py --challenger ...`, one Kaggle CPU kernel per backend under `--ci-env`, combined with `--merge` | core-337 (full tier) |
 
-Gate core-329 binds all three records to the retained Kaggle outputs under `results/kaggle/`: it re-merges the five shards and the three noise records, compares both merges byte for byte, and compares the challenger record with its kernel output.
+Gate core-338 binds all three records to the retained Kaggle outputs under `results/kaggle/`: it re-merges the five shards and the three noise records, compares both merges byte for byte, and compares the challenger record with its kernel output.
 
 **`search.json` contents.**
 - Per coset: s(4) and s(2) for every one of the 83,328 cosets, in

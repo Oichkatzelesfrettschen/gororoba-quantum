@@ -260,12 +260,12 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Boundary: Exhaustive over the linear family under target_flip_network's surrogate weights 1/6/12/18/24; the surrogate ranks candidates for routed admission and is not a routed or hardware cost. Arbitrary-permutation encodings are excluded as compiled-answer constructions (1301.7007).
   Assumptions: target_flip.target_flip_network and its CONTROLLED_CX_COST weights.
   Evidence: [search.json](../evidence/linear_conjugation/search.json), [README.md](../evidence/linear_conjugation/README.md), [MODULAR_SYNTHESIS.md](../../gororoba_quantum/MODULAR_SYNTHESIS.md).
-  Gates: replayed by core-325, core-329.
+  Gates: replayed by core-335, core-338.
 - **n21-linear-encoding-routed** (circuit-conformance check, implementation). On FakeFez over transpiler seeds 0-7 with the target_flip_one_clean pass manager, the N=21 order-finding circuits encoded by the admitted linear cosets beat the unencoded circuits on every seed in routed CZ, depth and scheduled duration while sampling the identical phase law: the ten-round circuit at coset 15241 has median routed CZ 3,933 against 5,422 (27.5 percent fewer), and the two-round n21-feedback diagnostic at coset 15265 has 739 against 1,107 on both its feed-forward and no-feed-forward arms (33.2 percent fewer).
   Boundary: Compiled counts on one captured fake backend, which bound no fidelity or hardware outcome; the encoded circuits' noisy contrasts are separate simulation records, and every hardware use needs its own approved case.
   Assumptions: the work register is never measured and the operations between rounds act on the control alone.
   Evidence: [n21_linear_conjugation_challenger.json](../../results/hw_estimate/n21_linear_conjugation_challenger.json), [README.md](../evidence/linear_conjugation/README.md), [MODULAR_SYNTHESIS.md](../../gororoba_quantum/MODULAR_SYNTHESIS.md).
-  Gates: replayed by core-326, core-329.
+  Gates: replayed by core-336, core-338.
   Depends on: n21-linear-encoding-surrogate.
 - **hw-mod15-pilot** (preregistered hardware inference, hardware). Hybrid Shor mod 15 factor yield 0.4971 [0.4726, 0.5216] against the exact uniform null 0.2969; packed replica 0 differs from its isolated reference by +0.0020 (Shor) and -0.0037 (folded QPE), both inside the 0.03 Newcombe equivalence margin.
   Boundary: The order-4 law is the same with and without the conditional phases, so the feed-forward is untested; the Hoeffding view leaves folded-QPE equivalence unresolved.
@@ -315,7 +315,7 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Boundary: Statevector trajectories of live_run's calibrated noise channels on each circuit's active qubits under one retained snapshot per backend; the model omits crosstalk, leakage, drift and the scheduler's feed-forward residual, its shot counts omit live_run's simulation allowance, and admission and any hardware run need a fresh live_run dry run and an approved case.
   Assumptions: calibration_snapshot.noise_model equals live_run's noise model channel for channel (checked at export).
   Evidence: [noise.json](../evidence/linear_conjugation/noise.json), [README.md](../evidence/linear_conjugation/README.md).
-  Gates: replayed by core-327, core-329.
+  Gates: replayed by core-337, core-338.
   Depends on: n21-linear-encoding-routed.
 
 ## Exploratory claims

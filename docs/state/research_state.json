@@ -2612,8 +2612,8 @@
         "gororoba_quantum/MODULAR_SYNTHESIS.md"
       ],
       "gates": {
-        "core-325": "replay",
-        "core-329": "replay"
+        "core-335": "replay",
+        "core-338": "replay"
       },
       "acquisitions": [],
       "assumptions": [
@@ -2641,8 +2641,8 @@
         "gororoba_quantum/MODULAR_SYNTHESIS.md"
       ],
       "gates": {
-        "core-326": "replay",
-        "core-329": "replay"
+        "core-336": "replay",
+        "core-338": "replay"
       },
       "acquisitions": [],
       "assumptions": [
@@ -2671,8 +2671,8 @@
         "docs/evidence/linear_conjugation/README.md"
       ],
       "gates": {
-        "core-327": "replay",
-        "core-329": "replay"
+        "core-337": "replay",
+        "core-338": "replay"
       },
       "acquisitions": [],
       "assumptions": [
