@@ -104,6 +104,14 @@ class CovarianceBound:
     order; the optimizer applies each term's sign and replica-average weight.
     The bound must include cross-member covariance when the PUB fuses members.
     assumption records the evidence or modeling assumption supporting the bound.
+
+    variance_allowance adds to the weighted projection w' matrix w the radius
+    reads: a plan adds the falsifier allowance its collection will add to the
+    sample variance, and a collection whose variance upper confidence limit
+    exceeds the projection adds the excess, so the radius takes that limit.
+    falsifier_tail is the probability that limit misses the true variance; an
+    endpoint that reads the bound spends it from its alpha, so its confidence
+    and detection radii run at alpha minus the summed falsifier tails.
     """
 
     observable_name: str
@@ -111,6 +119,8 @@ class CovarianceBound:
     labels: tuple[str, ...]
     matrix: tuple[tuple[float, ...], ...]
     assumption: str
+    variance_allowance: float = 0.0
+    falsifier_tail: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -492,6 +502,7 @@ class _PubObservable:
     span: float
     variance_bound: float | None
     covariance_assumption: str | None
+    falsifier_tail: float = 0.0
 
 
 def _covariance_variance(bound: CovarianceBound, labels: list[str], weights: list[float]) -> float:
@@ -509,8 +520,16 @@ def _covariance_variance(bound: CovarianceBound, labels: list[str], weights: lis
     )
     matrix = (matrix + matrix.T) / 2
     _require(float(np.linalg.eigvalsh(matrix).min()) >= 0, f"{bound.pub_name}: covariance bound must be PSD")
+    _require(
+        _finite(bound.variance_allowance) and bound.variance_allowance >= 0,
+        f"{bound.pub_name}: variance allowance must be finite and nonnegative",
+    )
+    _require(
+        _finite(bound.falsifier_tail) and 0 <= bound.falsifier_tail < 1,
+        f"{bound.pub_name}: falsifier tail must lie in [0, 1)",
+    )
     vector = np.asarray(weights, dtype=float)
-    variance_bound = float(vector @ matrix @ vector)
+    variance_bound = float(vector @ matrix @ vector) + bound.variance_allowance
     _require(math.isfinite(variance_bound), f"{bound.pub_name}: covariance projection overflowed")
     _require(variance_bound >= 0, f"{bound.pub_name}: covariance projection must be nonnegative")
     return variance_bound
@@ -562,6 +581,7 @@ def _observable_inputs(
                     math.fsum(spans),
                     variance_bound,
                     bound.assumption if bound is not None else None,
+                    bound.falsifier_tail if bound is not None else 0.0,
                 )
             )
         else:
@@ -570,6 +590,13 @@ def _observable_inputs(
                 f"{contract.name}/{pub.name}: covariance bound has no observable terms",
             )
     return math.fsum(predictions), math.fsum(simulation_errors), tuple(streams)
+
+
+def _confidence_tail(contract: ObservableContract, streams: tuple[_PubObservable, ...]) -> float:
+    """The endpoint's alpha after the falsifier tails of the covariance bounds its streams read."""
+    remaining = contract.alpha - math.fsum(stream.falsifier_tail for stream in streams)
+    _require(remaining > 0, f"{contract.name}: covariance falsifier tails exhaust alpha")
+    return remaining
 
 
 def _radius(streams: tuple[_PubObservable, ...], probability: float, two_sided: bool) -> float:
@@ -599,11 +626,12 @@ def _evaluate_observable(plan: CandidatePlan, contract: ObservableContract, simu
     predicted, model_radius, streams = _observable_inputs(
         pubs, contract, simulation_tail, plan.covariance_bounds, samples
     )
-    confidence = _radius(streams, contract.alpha, two_sided=True)
+    alpha = _confidence_tail(contract, streams)
+    confidence = _radius(streams, alpha, two_sided=True)
     reasons: list[str] = []
     detection = power = effect_used = None
     if contract.minimum_effect is not None:
-        detection = _radius(streams, contract.alpha, two_sided=False)
+        detection = _radius(streams, alpha, two_sided=False)
         power = _radius(streams, 1 - contract.power, two_sided=False)
         modeled_gap = predicted - model_radius - contract.null_value
         effect_used = modeled_gap if contract.minimum_effect == 0 else contract.minimum_effect
@@ -641,15 +669,19 @@ def _evaluate_observable(plan: CandidatePlan, contract: ObservableContract, simu
 
 
 def analyze_observations(
-    pubs: tuple[ObservedPub, ...], contracts: tuple[ObservableContract, ...]
+    pubs: tuple[ObservedPub, ...],
+    contracts: tuple[ObservableContract, ...],
+    covariance_bounds: tuple[CovarianceBound, ...] = (),
 ) -> ObservationAnalysis:
     """Apply the planner's grouped bounds and directional test to measured data.
 
     No cost or model-prediction fields are needed. The two-sided confidence
     interval describes precision; reject_null applies the same one-sided alpha
     threshold used by the planner's power contract. Dependence within a PUB shot
-    remains arbitrary. Invalid identities or marginal distributions raise
-    ValueError so a collector can withhold the analysis explicitly.
+    remains arbitrary unless the plan declared a covariance bound for that
+    observable and PUB; the collector then applies the same bound the planner
+    did. Invalid identities or marginal distributions raise ValueError so a
+    collector can withhold the analysis explicitly.
     """
     _validate_observable_contracts(contracts)
     _require(bool(pubs), "at least one observed PUB is required")
@@ -674,9 +706,10 @@ def analyze_observations(
     for contract in contracts:
         for term in contract.terms:
             _require(term.member in members, f"{contract.name}: observed member {term.member!r} is absent")
-        estimate, _, streams = _observable_inputs(pubs, contract, simulation_tail=1.0)
-        confidence = _radius(streams, contract.alpha, two_sided=True)
-        detection = _radius(streams, contract.alpha, two_sided=False) if contract.minimum_effect is not None else None
+        estimate, _, streams = _observable_inputs(pubs, contract, 1.0, covariance_bounds)
+        alpha = _confidence_tail(contract, streams)
+        confidence = _radius(streams, alpha, two_sided=True)
+        detection = _radius(streams, alpha, two_sided=False) if contract.minimum_effect is not None else None
         rows.append(
             ObservationResult(
                 contract.name,
@@ -688,18 +721,47 @@ def analyze_observations(
                 contract.null_value,
                 detection,
                 estimate - detection > contract.null_value if detection is not None else None,
-                tuple("hoeffding_arbitrary_within_shot" for _ in streams),
+                tuple(
+                    "hoeffding_arbitrary_within_shot"
+                    if stream.variance_bound is None
+                    else "minimum_of_hoeffding_and_declared_covariance_cantelli_or_chebyshev"
+                    for stream in streams
+                ),
             )
         )
     return ObservationAnalysis(
         tuple(rows),
-        "shared planning/collection Hoeffding bounds grouped by immutable PUB identity",
+        "shared planning/collection Hoeffding bounds grouped by immutable PUB identity"
+        + ("; declared covariance bounds where the plan carried them" if covariance_bounds else ""),
         (
-            "independent stationary repetitions; arbitrary dependence among replicas and members within each PUB shot",
+            "independent stationary repetitions; arbitrary dependence among replicas and members within each PUB shot"
+            + (" unless a declared covariance bound applies" if covariance_bounds else ""),
             "union bounds across PUBs; no independence assumption between PUBs or jobs",
             "directional rejection uses the one-sided alpha radius; displayed intervals use the two-sided alpha radius",
+            *sorted({bound.assumption for bound in covariance_bounds}),
         ),
     )
+
+
+def observation_power_radii(
+    pubs: tuple[ObservedPub, ...],
+    contracts: tuple[ObservableContract, ...],
+    covariance_bounds: tuple[CovarianceBound, ...] = (),
+) -> dict[str, float]:
+    """The planner's one-sided power radius at tail 1 - power for each directional contract, at the observed shots.
+
+    Detection plus this radius covering the planned effect is the power
+    condition evaluate_candidate admits; collection reports it for the bound
+    family its analysis applied.
+    """
+    _validate_observable_contracts(contracts)
+    radii: dict[str, float] = {}
+    for contract in contracts:
+        if contract.minimum_effect is None:
+            continue
+        _, _, streams = _observable_inputs(pubs, contract, 1.0, covariance_bounds)
+        radii[contract.name] = _radius(streams, 1 - contract.power, two_sided=False)
+    return radii
 
 
 def _simulation_comparisons(plans: tuple[CandidatePlan, ...], contracts: tuple[ObservableContract, ...]) -> int:
@@ -1194,6 +1256,15 @@ def _verify() -> None:
         .observables[0]
         .confidence_half_width
         == evaluate_candidate(replicated, (precision,), budget).observables[0].confidence_half_width
+    )
+    planned_half_width = evaluate_candidate(independent, (precision,), budget).observables[0].confidence_half_width
+    observed_replicas = (ObservedPub("signal_pub", {"signal": ((0.2, 0.8),) * replicas}, independent.jobs[0].shots),)
+    collected = analyze_observations(observed_replicas, (precision,), (covariance,)).observables[0]
+    assert math.isclose(collected.confidence_half_width, planned_half_width, rel_tol=1e-12)
+    assert collected.bound_methods == ("minimum_of_hoeffding_and_declared_covariance_cantelli_or_chebyshev",)
+    assert (
+        analyze_observations(observed_replicas, (precision,)).observables[0].confidence_half_width
+        > collected.confidence_half_width
     )
     invalid_covariance = replace(covariance, matrix=((-1.0,),))
     assert not evaluate_candidate(

@@ -374,13 +374,20 @@ def _verify_prepare() -> None:
         ),
         target=object(),
     )
-    snapshot = SimpleNamespace(name="backend", backend=backend, properties=object())
+    snapshot = SimpleNamespace(name="backend", backend=backend, properties=object(), capabilities=object())
     entries = [
         SimpleNamespace(name=member, replicas=[object()], ideal=np.asarray(distributions[0]))
         for pub in source.jobs[0].pubs
         for member, distributions in pub.member_distributions.items()
     ]
-    choice = SimpleNamespace(entries=entries, snap=snapshot, seed=6, replicas=[object()], joint_score=0.9)
+    choice = SimpleNamespace(
+        group=SimpleNamespace(name="rank_sector"),
+        entries=entries,
+        snap=snapshot,
+        seed=6,
+        replicas=[object()],
+        joint_score=0.9,
+    )
     pubs = [
         SimpleNamespace(
             name=pub.name,
@@ -399,6 +406,7 @@ def _verify_prepare() -> None:
 
     runtime = SimpleNamespace(
         LiveRunError=RuntimeError,
+        group_admission_violations=lambda _group, _capabilities: [],
         noise_simulator=lambda *_args: SimpleNamespace(),
         simulate=lambda *_args: {entry.name: [entry.ideal] for entry in entries},
         submission_batches=batches,

@@ -641,7 +641,9 @@ repeated calibration outside it.
 - Only Q9 fits H2. Q14's readout arms sit 43 to 61 kHz below its reference
   from tau = 100 ns to 2 us (8 kHz at tau = 0); Q15's tail class rests on
   a visibility of 1.28 to 1.46, which shows its batch-00 calibration no
-  longer describes it ([tuna-17.md](tuna-17.md)).
+  longer describes it ([tuna-17.md](tuna-17.md)), and holds under the
+  all-shot estimator only: the postselected estimate of Q15 classifies as
+  none, while Q9 and Q14 read tail under both.
 - The postselected estimates differ from the all-shot estimates by at most
   4.2 standard errors (Q13, tau = 800 ns).
 
