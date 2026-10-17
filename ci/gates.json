@@ -2928,6 +2928,14 @@
    "name": "core-484",
    "seconds": 20.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_model_validation.py --check docs/evidence/n21_exact_model/validation.json",
+   "name": "core-485",
+   "seconds": 25.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
