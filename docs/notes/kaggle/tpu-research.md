@@ -225,6 +225,23 @@ https://www.kaggle.com/docs/notebooks.md ,
 https://www.kaggle.com/docs/efficient-gpu-usage.md (separate batch and
 interactive sessions; interactive sessions idle out)
 
+Measured after verification, 01:50 UTC on 2026-10-17: an interactive
+editor session on a second kernel (`gororoba-tpu-mcp-probe`) with
+accelerator TPU v5e-8 entered the queue while the batch version above
+stayed `QUEUED`, so the batch cap of one TPU session leaves interactive
+requests a separate line. The editor reads "TPUs are popular right now.
+You are #524 in the queue. You can wait, try connecting again later, or
+use another accelerator."; the position moved from 524 to 520 in five
+minutes. `tpu_quota.time_used` and `time_reserved` stayed 0 for the
+queued request. The editor's Settings -> Accelerator menu lists None,
+GPU T4 x2 and TPU v5e-8 only, so TPU v6e-8 exists as an API
+`machine_shape` without an editor route. While the status reads
+"Draft Session Starting...", the toolbar power button is disabled; Run ->
+Stop session withdraws the queued request ("Session stopped."). A queued
+interactive request is withdrawn this way before its browser closes,
+because a request that starts with no client attached bills until the
+idle timeout.
+
 ## 4. Sources
 
 Stated items carry their source; inferences are marked.
