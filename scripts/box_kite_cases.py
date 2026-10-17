@@ -292,8 +292,11 @@ BRACKET_DRIFT_MAX = 0.02
 # Cross-prediction band around r ** n_CZ for the walk magnitudes and the
 # depth-1 conditional coherences.
 CROSS_PREDICTION_BAND = 0.10
-# T0's fitted contrast decay per CZ (claim qi-tuna17-boxkite-t0-depth-ladder).
+# T0's fitted contrast decay per CZ and its depth-1 contrast C(1) (claim
+# qi-tuna17-boxkite-t0-depth-ladder); scripts/box_kite_follow_design.py binds
+# both roundings to the retained T0 analysis.
 T0_R = 0.9654
+T0_C1 = 0.954
 RY_DETERMINISTIC_MIN = 0.9
 # Pre-T0 double-X batch (claim proposed-tuna17-q0-q6-double-x-discriminator).
 PRE_SHOTS = 4096
@@ -1189,12 +1192,29 @@ def validate_series(files: dict[str, str], backend: dict[str, Any]) -> None:
         listed.add(f"{name}/cases.json")
     if listed | {"cases.json"} != set(files):
         raise ValueError("series files differ from the batches its cases.json lists")
+    check_quadratures(series_index)
     if bracketed:
         gaps = "".join("R" if b else "." for b in bracketed).split("R")
         if not (bracketed[0] and bracketed[-1]) or max(map(len, gaps)) > BRACKET_SPAN:
             raise ValueError(
                 f"a bracketed series needs readout pairs in its first and last batch and at most {BRACKET_SPAN} "
                 "witness-only batches between two pairs"
+            )
+
+
+def check_quadratures(series_index: dict[str, Any]) -> None:
+    """The X and Y circuits of a quadrature pair (name-x[-k], name-y[-k]) lie within QUADRATURE_SPAN batches."""
+    placed: dict[tuple[str, str], dict[str, int]] = {}
+    for index, batch in enumerate(series_index["batches"]):
+        for file in batch["files"]:
+            match = QUADRATURE.match(file)
+            if match:
+                placed.setdefault((match[1], match[3] or ""), {})[match[2]] = index
+    for (stem, suffix), at in sorted(placed.items()):
+        if len(at) == 2 and abs(at["x"] - at["y"]) > QUADRATURE_SPAN:
+            raise ValueError(
+                f"{stem}-x{suffix} and {stem}-y{suffix} lie {abs(at['x'] - at['y'])} batches apart, beyond "
+                f"{QUADRATURE_SPAN}"
             )
 
 
@@ -1481,18 +1501,25 @@ def tuna_text(members: list[tuple[dict[str, Any], Any]]) -> str:
 
 # The follow series in submission order. Each witness name is a circuit file;
 # readout-0 and readout-1 bracket the witnesses at the start, the middle and
-# the end, so no witness sits more than one batch from a readout pair.
+# the end, so no witness sits more than one batch from a readout pair. The X
+# and Y circuits that one Bloch vector combines run in one batch or in two
+# consecutive ones, and walk-x and walk-y in consecutive jobs; the depth-1 and
+# depth-9 bright edges of a setting, which carry the ladder slopes, share a
+# batch.
 FOLLOW_PLAN = (
-    ("readout-0", "readout-1", "walk-x"),
+    ("readout-0", "readout-1", "walk-omit"),
     ("lcu-bright-x-1", "lcu-bright-x-2", "depth-9-x"),
     ("lcu-bright-y-1", "lcu-bright-y-2", "depth-9-y"),
-    ("readout-0", "readout-1", "walk-omit"),
-    ("lcu-dark-x-1", "lcu-dark-x-2", "depth-5-x"),
-    ("lcu-dark-y-1", "lcu-dark-y-2", "depth-5-y"),
-    ("walk-y", "readout-0", "readout-1"),
+    ("readout-0", "readout-1", "walk-x"),
+    ("walk-y", "lcu-dark-x-1", "lcu-dark-x-2"),
+    ("lcu-dark-y-1", "lcu-dark-y-2", "depth-5-x"),
+    ("depth-5-y", "readout-0", "readout-1"),
 )
 # Witness-only batches allowed between two readout brackets.
 BRACKET_SPAN = 2
+# Batches allowed between the X and the Y circuit of one quadrature pair.
+QUADRATURE_SPAN = 1
+QUADRATURE = re.compile(r"^(.*)-([xy])(-\d+)?\.cq$")
 
 
 def follow_witnesses(census: dict[str, Any], rows: dict[str, list[Row]]) -> dict[str, list[tuple[Any, Any]]]:
@@ -1572,7 +1599,8 @@ def sanity_thresholds() -> dict[str, Any]:
     }
 
 
-def tuna_preregistered() -> dict[str, dict[str, Any]]:
+def tuna_preregistered(census: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    walk_targets = [T0_R ** walk_exemplar(census, triple)["cnots"] for triple, _ in FOLLOW_WALKS]
     stop = (
         f"each batch: every job completed with the manifest's shots; readout-0 P1 at most {READOUT_0_P1_MAX:.2f} "
         f"and readout-1 P1 at least {READOUT_1_P1_MIN:.2f} on every used qubit (a failure stops the series and "
@@ -1635,7 +1663,8 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
             "edge at that CZ depth on all three pairs. walk-x, walk-omit, walk-y: the kite 1 exemplars (2,11,3) on "
             "star 14 {11, 12, 16} (6 CZ) and (2,3,10) on path 4 {1, 2} (4 CZ), read in X, with the last block "
             "omitted, and read in Y",
-            "readout": "readout-0 and readout-1 in batches 0, 3 and 6; each qubit's e01 and e10 at a witness job are "
+            "readout": "readout-0 and readout-1 in batches 0, 3 and 6; the X and Y circuits of one Bloch vector "
+            f"lie at most {QUADRATURE_SPAN} batch apart; each qubit's e01 and e10 at a witness job are "
             "interpolated linearly in job finish time between the two nearest brackets, with the binomial variance "
             "of both brackets; the bracket difference enters as a reported systematic. Pc = (p - e10) / (1 - e01 - "
             "e10) on the selector; E_b inverts the tensor product of the selector's and the data qubit's "
@@ -1655,7 +1684,7 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
             "coherence": "census predictions: E_0 = -1 on the bright edge and twist in X, E_1 = +1 on the dark edge "
             "and twist in X, 0 in Y and 0 on both strut branches. Falsifier: an X expectation of sign opposite to "
             f"the census at |z| > {SIGMA:g}, or a strut |E_b| above {NULL_OFFSET} + {SIGMA:g} sigma. "
-            f"Cross-prediction: the depth-1 magnitude |E_b| in X equals T0's C(1) = 0.954 within "
+            f"Cross-prediction: the depth-1 magnitude |E_b| in X equals T0's C(1) = {T0_C1} within "
             f"{CROSS_PREDICTION_BAND}, the value a depolarizing error of the two-qubit block gives",
             "depth_ladder": "per pair, the bright edge at CZ depths 1 (the lcu-bright circuits), 5 and 9 gives the "
             "conditional magnitude m(n) = sqrt(E_X^2 + E_Y^2), the phase phi(n) = atan2(E_Y, -E_X) about the "
@@ -1670,7 +1699,8 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
             "walks": f"<X_c> = omega = -1 on both walks, 0 on both omit-last controls and 0 in Y. Falsifier: sign "
             f"opposite to omega at |z| > {SIGMA:g}, or a control's |<X_c>| above {NULL_OFFSET} + {SIGMA:g} sigma. "
             "Cross-prediction: sqrt(<X_c>^2 + <Y_c>^2) equals r^n_CZ for T0's r = "
-            f"{T0_R}, 0.810 on the star and 0.869 on the path, within {CROSS_PREDICTION_BAND}; the phase "
+            f"{T0_R}, {walk_targets[0]:.3f} on the star and {walk_targets[1]:.3f} on the path, within "
+            f"{CROSS_PREDICTION_BAND}; the phase "
             "atan2(<Y_c>, -<X_c>) is reported",
             "replication": "the depth-5 and depth-9 bright edge populations per pair against T0's values on the "
             "same pair and depth, reported as drift over the hours between the series",
@@ -1694,7 +1724,7 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
                 "bracket_span": BRACKET_SPAN,
                 "cross_prediction_band": CROSS_PREDICTION_BAND,
                 "t0_r": T0_R,
-                "t0_c1": 0.954,
+                "t0_c1": T0_C1,
                 "depths": [1, *FOLLOW_DEPTHS],
                 "bootstrap_draws": BOOTSTRAP_DRAWS,
                 "bootstrap_seed": BOOTSTRAP_SEED,
@@ -1711,7 +1741,7 @@ def tuna_series(census_path: Path = CENSUS) -> dict[str, dict[str, str]]:
     qx = qx_backend(catalogue)
     census = load_census(census_path)
     rows = validate_census(census)
-    prereg = tuna_preregistered()
+    prereg = tuna_preregistered(census)
     readout = readout_circuits(TUNA_QUBITS)
     layout = {
         "excluded": list(TUNA_EXCLUDED),
@@ -2817,6 +2847,11 @@ def self_test() -> None:
     index["batches"][0]["files"] = [row["file"] for row in order]
     swapped_pair["cases.json"] = json.dumps(index, indent=1) + "\n"
     reject("a bracketed batch with readout-1 before readout-0", lambda: validate_series(swapped_pair, tuna))
+    # walk-y swapped with depth-5-y into the last batch: walk-x and walk-y three batches apart.
+    index = json.loads(follow["cases.json"])
+    for batch in index["batches"]:
+        batch["files"] = [{"walk-y.cq": "depth-5-y.cq", "depth-5-y.cq": "walk-y.cq"}.get(f, f) for f in batch["files"]]
+    reject("walk-x and walk-y three batches apart", lambda: check_quadratures(index))
     mutated = copy.deepcopy(census)
     mutated["kites"][2]["twists"][0]["twisted_kite"] = 5
     reject("a census twist that no longer maps the T1 edge", lambda: check_twist(mutated))

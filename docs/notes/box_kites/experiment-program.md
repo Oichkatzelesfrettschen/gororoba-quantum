@@ -533,7 +533,9 @@ the analysis reads only that block.
   ([tuna-17-run-design.md](../quantum_inspire/tuna-17-run-design.md),
   record `docs/evidence/box_kite_follow_design/design.json`). Fifteen
   witnesses fill every slot: readout pairs open, split and close the series,
-  so no witness sits more than one batch from a bracket.
+  so no witness sits more than one batch from a bracket, and the X and Y
+  circuits of one Bloch vector run in one batch or consecutive ones
+  (walk-x and walk-y as consecutive jobs).
   - Crossover lcu circuits (8): the opposite-sign edge (1,10)(4,15) of
     kite 3 at y_sign y and its census twist, the same-sign edge (4,10)(1,15)
     of kite 6 (`census:kites[2].twists[0]`) at -y, trade (1,4) and (10,13)

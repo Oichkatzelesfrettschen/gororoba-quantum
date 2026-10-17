@@ -63,7 +63,7 @@
  "preregistered": {
   "observable": "per LCU replica the selector success P(a = 0) and, for every populated selector branch b, the data expectation E_b = <S_d | a = b> = 2 P(d = 0 | a = b) - 1 in the replica's setting S (X: H on d; Y: Sdag, H on d); per walk the control expectation 2 P(c = 0) - 1, which reads <X_c> (readout X) or <Y_c> (readout Y: Sdag, H on c)",
   "design": "seven batches in FOLLOW_PLAN order. lcu-{bright,dark}-{x,y}-{1,2}: 2 x 2 crossovers in which the edge (1,10)(4,15) of kite 3 at y_sign y and its census twist (4,10)(1,15) of kite 6 at -y trade the pairs (1, 4) and (10, 13) between circuits 1 and 2; (12, 14) holds the edge at both signs in the bright block and the strut (1,10)(2,9) at both signs in the dark block. depth-{5,9}-{x,y}: the bright edge at that CZ depth on all three pairs. walk-x, walk-omit, walk-y: the kite 1 exemplars (2,11,3) on star 14 {11, 12, 16} (6 CZ) and (2,3,10) on path 4 {1, 2} (4 CZ), read in X, with the last block omitted, and read in Y",
-  "readout": "readout-0 and readout-1 in batches 0, 3 and 6; each qubit's e01 and e10 at a witness job are interpolated linearly in job finish time between the two nearest brackets, with the binomial variance of both brackets; the bracket difference enters as a reported systematic. Pc = (p - e10) / (1 - e01 - e10) on the selector; E_b inverts the tensor product of the selector's and the data qubit's assignment matrices on the joint (a, d) counts",
+  "readout": "readout-0 and readout-1 in batches 0, 3 and 6; the X and Y circuits of one Bloch vector lie at most 1 batch apart; each qubit's e01 and e10 at a witness job are interpolated linearly in job finish time between the two nearest brackets, with the binomial variance of both brackets; the bracket difference enters as a reported systematic. Pc = (p - e10) / (1 - e01 - e10) on the selector; E_b inverts the tensor product of the selector's and the data qubit's assignment matrices on the joint (a, d) counts",
   "classification": "D = Pc(y_sign -1) - Pc(y_sign +1) per row and pair, pooled over the settings: D above +0.4 same-sign (twist), below -0.4 opposite-sign (edge), |D| below 0.2 strut, otherwise unresolved; a misclassified or unresolved row refutes the separation of its pair",
   "twist": "per block (bright: edge +, twist -; dark: edge -, twist +) and setting, Delta = [(Pc(edge, pair 0, circuit 1) - Pc(twist, pair 0, circuit 2)) + (Pc(edge, pair 1, circuit 2) - Pc(twist, pair 1, circuit 1))] / 2, in which the pair and circuit offsets cancel; the census predicts Delta = 0, and |Delta| above 3 standard errors refutes twist equality for that block and setting. The edge and the twist differ only in their local Z, S and Sdag gates, so a refutation measures a gate-dependent error between them",
   "strut": "D of the strut on (12, 14) per setting; |D| above 0.1 + 3 sigma exposes a pair-dependent bias",
@@ -123,7 +123,7 @@
    "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
   },
   {
-   "file": "walk-x.cq",
+   "file": "walk-omit.cq",
    "kind": "witness",
    "stage": "follow",
    "replicas": [
@@ -138,7 +138,7 @@
       3
      ],
      "omega": -1,
-     "omit_last_block": false,
+     "omit_last_block": true,
      "readout": "X",
      "layout": "star_14",
      "roles": {
@@ -154,8 +154,8 @@
       "1": 12,
       "3": 16
      },
-     "cz": 6,
-     "p_control_zero": "0"
+     "cz": 4,
+     "p_control_zero": "1/2"
     },
     {
      "slot": 1,
@@ -168,7 +168,7 @@
       10
      ],
      "omega": -1,
-     "omit_last_block": false,
+     "omit_last_block": true,
      "readout": "X",
      "layout": "path_4",
      "roles": {
@@ -182,11 +182,11 @@
       "0": 1,
       "1": 2
      },
-     "cz": 4,
-     "p_control_zero": "0"
+     "cz": 3,
+     "p_control_zero": "1/2"
     }
    ],
-   "sha256": "8338b8067230752101d11330928463daceb30228a047decb7f4f835d227751f3"
+   "sha256": "311af6d216e21739fd4ab4e00c362fce67e92c2f057e6e9dd098a66f2174eeb6"
   }
  ]
 }

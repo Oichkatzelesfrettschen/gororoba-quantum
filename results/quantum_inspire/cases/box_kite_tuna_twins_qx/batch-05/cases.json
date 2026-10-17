@@ -21,6 +21,116 @@
  "stage": "follow",
  "circuits": [
   {
+   "file": "twin-lcu-dark-x-1.cq",
+   "kind": "witness",
+   "stage": "follow",
+   "tuna_case": "box_kite_tuna_follow/batch-04/lcu-dark-x-1.cq",
+   "qubit_map": {
+    "1": 0,
+    "4": 1,
+    "10": 2,
+    "12": 3,
+    "13": 4,
+    "14": 5
+   },
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "lcu",
+     "label": "edge-",
+     "census": "within_kite[245]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      -1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "0",
+     "setting": "X",
+     "coherence_selector_1": "1/2",
+     "expectation_given_selector_one": "1",
+     "p_data_zero_given_selector_one": "1"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "label": "twist+",
+     "census": "within_kite[660]",
+     "kite": 6,
+     "p": [
+      4,
+      10,
+      1
+     ],
+     "q": [
+      1,
+      15,
+      1
+     ],
+     "relation": "edge_same",
+     "roles": {
+      "selector": 2,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "0",
+     "setting": "X",
+     "coherence_selector_1": "1/2",
+     "expectation_given_selector_one": "1",
+     "p_data_zero_given_selector_one": "1"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "label": "strut+",
+     "census": "within_kite[240]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      2,
+      9,
+      1
+     ],
+     "relation": "strut",
+     "roles": {
+      "selector": 3,
+      "data": [
+       5
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "1/2",
+     "setting": "X",
+     "coherence_selector_0": "0",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2",
+     "coherence_selector_1": "0",
+     "expectation_given_selector_one": "0",
+     "p_data_zero_given_selector_one": "1/2"
+    }
+   ],
+   "sha256": "97919115d6fb1f6dc88a219a0fbe4e21b8a254e6bedb013977096218ad8437cc"
+  },
+  {
    "file": "twin-lcu-dark-x-2.cq",
    "kind": "witness",
    "stage": "follow",
@@ -129,113 +239,6 @@
     }
    ],
    "sha256": "41ac365847195e4f8fb93fe87d4c083a6f31590c28ccd9886c02e0fe4f645fea"
-  },
-  {
-   "file": "twin-depth-5-x.cq",
-   "kind": "witness",
-   "stage": "follow",
-   "tuna_case": "box_kite_tuna_follow/batch-04/depth-5-x.cq",
-   "qubit_map": {
-    "1": 0,
-    "4": 1,
-    "10": 2,
-    "12": 3,
-    "13": 4,
-    "14": 5
-   },
-   "replicas": [
-    {
-     "slot": 0,
-     "kind": "lcu",
-     "label": "edge+",
-     "census": "within_kite[244]",
-     "kite": 3,
-     "p": [
-      1,
-      10,
-      1
-     ],
-     "q": [
-      4,
-      15,
-      1
-     ],
-     "relation": "edge_opposite",
-     "roles": {
-      "selector": 0,
-      "data": [
-       1
-      ]
-     },
-     "cz_depth": 5,
-     "p_selector_zero": "1",
-     "setting": "X",
-     "coherence_selector_0": "-1/2",
-     "expectation_given_selector_zero": "-1",
-     "p_data_zero_given_selector_zero": "0"
-    },
-    {
-     "slot": 1,
-     "kind": "lcu",
-     "label": "edge+",
-     "census": "within_kite[244]",
-     "kite": 3,
-     "p": [
-      1,
-      10,
-      1
-     ],
-     "q": [
-      4,
-      15,
-      1
-     ],
-     "relation": "edge_opposite",
-     "roles": {
-      "selector": 2,
-      "data": [
-       4
-      ]
-     },
-     "cz_depth": 5,
-     "p_selector_zero": "1",
-     "setting": "X",
-     "coherence_selector_0": "-1/2",
-     "expectation_given_selector_zero": "-1",
-     "p_data_zero_given_selector_zero": "0"
-    },
-    {
-     "slot": 2,
-     "kind": "lcu",
-     "label": "edge+",
-     "census": "within_kite[244]",
-     "kite": 3,
-     "p": [
-      1,
-      10,
-      1
-     ],
-     "q": [
-      4,
-      15,
-      1
-     ],
-     "relation": "edge_opposite",
-     "roles": {
-      "selector": 3,
-      "data": [
-       5
-      ]
-     },
-     "cz_depth": 5,
-     "p_selector_zero": "1",
-     "setting": "X",
-     "coherence_selector_0": "-1/2",
-     "expectation_given_selector_zero": "-1",
-     "p_data_zero_given_selector_zero": "0"
-    }
-   ],
-   "sha256": "4bca0191416ab8b5e3f05886ab15eaf6381de6488b476b1bb282dc29f9701fdf"
   },
   {
    "file": "twin-lcu-dark-y-1.cq",

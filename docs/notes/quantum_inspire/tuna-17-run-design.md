@@ -71,13 +71,21 @@ Seven batches, 21 jobs, 16384 shots each:
 
 | Batch | Circuits | What they measure |
 |---|---|---|
-| 0 | readout-0, readout-1, walk-x | readout bracket; both walk signs (star 14: 6 CZ, path 4: 4 CZ) |
+| 0 | readout-0, readout-1, walk-omit | readout bracket; both omit-last controls |
 | 1 | lcu-bright-x-1, lcu-bright-x-2, depth-9-x | bright crossover in X; bright edge at CZ depth 9 on all pairs, X |
 | 2 | lcu-bright-y-1, lcu-bright-y-2, depth-9-y | the same in Y |
-| 3 | readout-0, readout-1, walk-omit | readout bracket; both omit-last controls |
-| 4 | lcu-dark-x-1, lcu-dark-x-2, depth-5-x | dark crossover and strut in X; depth 5, X |
-| 5 | lcu-dark-y-1, lcu-dark-y-2, depth-5-y | the same in Y |
-| 6 | walk-y, readout-0, readout-1 | both walks read in Y; readout bracket |
+| 3 | readout-0, readout-1, walk-x | readout bracket; both walk signs (star 14: 6 CZ, path 4: 4 CZ) |
+| 4 | walk-y, lcu-dark-x-1, lcu-dark-x-2 | both walks read in Y; dark crossover and strut in X |
+| 5 | lcu-dark-y-1, lcu-dark-y-2, depth-5-x | dark crossover and strut in Y; depth 5, X |
+| 6 | depth-5-y, readout-0, readout-1 | depth 5, Y; readout bracket |
+
+The X and Y circuits that one Bloch vector combines run in one batch or in
+consecutive ones, and walk-x and walk-y run as consecutive jobs, so a phase
+drift between the two quadratures has one pause, about two minutes, to act
+in; `validate_series` refuses a plan whose pair lies more than
+`QUADRATURE_SPAN` = 1 batch apart. The ladder slopes rest on depths 1 and 9
+(an unweighted fit on 1, 5, 9 gives depth 5 zero weight), and those two
+share a batch in each setting.
 
 - **Crossover.** In each lcu circuit pair, the edge (1,10)(4,15) of kite 3
   at y_sign y and its twist (4,10)(1,15) of kite 6 at -y trade the pairs

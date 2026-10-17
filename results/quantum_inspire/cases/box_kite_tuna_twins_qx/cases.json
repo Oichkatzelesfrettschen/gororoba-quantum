@@ -17,7 +17,7 @@
    "batch": "batch-01",
    "stage": "follow",
    "files": [
-    "twin-walk-x.cq",
+    "twin-walk-omit.cq",
     "twin-lcu-bright-x-1.cq",
     "twin-lcu-bright-x-2.cq"
    ]
@@ -36,8 +36,8 @@
    "stage": "follow",
    "files": [
     "twin-depth-9-y.cq",
-    "twin-walk-omit.cq",
-    "twin-lcu-dark-x-1.cq"
+    "twin-walk-x.cq",
+    "twin-walk-y.cq"
    ]
   },
   {
@@ -51,8 +51,8 @@
    "batch": "batch-05",
    "stage": "follow",
    "files": [
+    "twin-lcu-dark-x-1.cq",
     "twin-lcu-dark-x-2.cq",
-    "twin-depth-5-x.cq",
     "twin-lcu-dark-y-1.cq"
    ]
   },
@@ -61,8 +61,8 @@
    "stage": "follow",
    "files": [
     "twin-lcu-dark-y-2.cq",
-    "twin-depth-5-y.cq",
-    "twin-walk-y.cq"
+    "twin-depth-5-x.cq",
+    "twin-depth-5-y.cq"
    ]
   }
  ]

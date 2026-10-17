@@ -10,7 +10,7 @@
    "files": [
     "readout-0.cq",
     "readout-1.cq",
-    "walk-x.cq"
+    "walk-omit.cq"
    ]
   },
   {
@@ -37,16 +37,16 @@
    "files": [
     "readout-0.cq",
     "readout-1.cq",
-    "walk-omit.cq"
+    "walk-x.cq"
    ]
   },
   {
    "batch": "batch-04",
    "stage": "follow",
    "files": [
+    "walk-y.cq",
     "lcu-dark-x-1.cq",
-    "lcu-dark-x-2.cq",
-    "depth-5-x.cq"
+    "lcu-dark-x-2.cq"
    ]
   },
   {
@@ -55,14 +55,14 @@
    "files": [
     "lcu-dark-y-1.cq",
     "lcu-dark-y-2.cq",
-    "depth-5-y.cq"
+    "depth-5-x.cq"
    ]
   },
   {
    "batch": "batch-06",
    "stage": "follow",
    "files": [
-    "walk-y.cq",
+    "depth-5-y.cq",
     "readout-0.cq",
     "readout-1.cq"
    ]

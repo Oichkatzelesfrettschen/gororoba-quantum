@@ -102,7 +102,8 @@ Estimators, exactly as preregistered:
   (bootstrap_draws, bootstrap_seed): a draw redraws every bracket's readout
   counts once, so replicas reading one qubit share it, then each replica's
   joint or control counts; the point estimate runs through the same array
-  code as a one-row sample. Stops halt or invalidate the series: sanity,
+  code as a one-row sample. All draws come first, in that fixed order, and
+  the per-row estimates then run in blocks through parallel.ordered_map. Stops halt or invalidate the series: sanity,
   bracket limits, drift, span and T0's carried gate. A refuted
   classification, twist equality, X sign, strut D, strut E_b, walk sign or
   omit control enters the separate refutations list and gives the stage the
@@ -880,6 +881,40 @@ def follow_values(sample: Values, lcu: list[Any], walks: list[Any]) -> Values:
     return {"pc": pc, "e": expectation, "walk": walk}
 
 
+# Bootstrap rows per block that parallel.ordered_map hands one worker.
+FOLLOW_BLOCK_DRAWS = 250
+
+
+class FollowValues:
+    """follow_values on one block of sample rows, picklable for parallel.ordered_map."""
+
+    def __init__(self, lcu: list[Any], walks: list[Any]):
+        self.lcu, self.walks = lcu, walks
+
+    def __call__(self, block: Values) -> Values:
+        return follow_values(block, self.lcu, self.walks)
+
+
+def sample_rows(sample: Values, start: int, stop: int) -> Values:
+    return {kind: [array[start:stop] for array in arrays] for kind, arrays in sample.items()}
+
+
+def pooled_follow_values(sample: Values, lcu: list[Any], walks: list[Any]) -> Values:
+    """follow_values over the rows of a pre-drawn sample, mapped in FOLLOW_BLOCK_DRAWS blocks and concatenated.
+
+    follow_values is elementwise in the rows (sums, products, quotients and selections), so every block returns the
+    bits its rows have in one call over the whole sample, and the pooled result equals the serial one.
+    """
+    rows = len(sample["joint"][0]) if sample["joint"] else len(sample["control"][0])
+    blocks = [sample_rows(sample, start, start + FOLLOW_BLOCK_DRAWS) for start in range(0, rows, FOLLOW_BLOCK_DRAWS)]
+    parts = parallel.ordered_map(FollowValues(lcu, walks), blocks, min_items=1)
+    return {
+        "pc": [np.concatenate([part["pc"][i] for part in parts]) for i in range(len(parts[0]["pc"]))],
+        "e": {key: np.concatenate([part["e"][key] for part in parts]) for key in parts[0]["e"]},
+        "walk": [np.concatenate([part["walk"][i] for part in parts]) for i in range(len(parts[0]["walk"]))],
+    }
+
+
 def summary(point: Any, draws: Any, percentiles: list[float] | None = None) -> dict[str, Any]:
     """Point value, bootstrap standard deviation, undefined-draw count and, when asked, the percentile interval."""
     value = float(np.asarray(point).reshape(-1)[0])
@@ -923,7 +958,7 @@ def analyze_follow(batches: dict[str, Batch], t: dict[str, Any], t0: dict[str, A
     rng = np.random.default_rng(t["bootstrap_seed"])
     observed = follow_sample(brackets, lcu, walks)
     point = follow_values(observed, lcu, walks)
-    boot = follow_values(follow_sample(brackets, lcu, walks, rng, t["bootstrap_draws"]), lcu, walks)
+    boot = pooled_follow_values(follow_sample(brackets, lcu, walks, rng, t["bootstrap_draws"]), lcu, walks)
     pct = t["interval_percentiles"]
     sigma, null = t["sigma"], t["null_offset"]
 
@@ -1863,7 +1898,7 @@ def analyze_self_test() -> None:
             and any("<X_c> refutes" in entry for entry in walked["refutations"])
             # A flipped X walk also leaves the raw P(c = 1) floor, a sanity stop.
             and walked["verdict"] == "stop"
-            and any(entry.startswith("sanity stop at batch-00: walk-x.cq walk") for entry in walked["stops"]),
+            and any(re.match(r"sanity stop at batch-\d\d: walk-x\.cq walk ", entry) for entry in walked["stops"]),
             f"walk sign refutation: {walked['stops']}",
         )
         biased = stages("follow_strut")["tuna_follow"]
@@ -1948,6 +1983,22 @@ def analyze_self_test() -> None:
             else:
                 os.environ["GOROROBA_WORKERS"] = saved
         check(serial == record.read_text(encoding="utf-8"), "a serial analysis differs from the pooled one")
+        # Each pooled follow row carries the bits of follow_values on that row alone, the scalar reference.
+        loaded = [load_batch(run, root / "pass") for run in runs["pass"]]
+        follow_batches, _ = stage_batches([b for b in loaded if b["family"] == "tuna_follow"], "tuna_follow", CASES)
+        t = thresholds_of(follow_batches)
+        brackets = follow_brackets(follow_batches)
+        lcu, walks = follow_items(follow_batches, brackets)
+        drawn = follow_sample(brackets, lcu, walks, np.random.default_rng(t["bootstrap_seed"]), t["bootstrap_draws"])
+        pooled = pooled_follow_values(drawn, lcu, walks)
+        for row in (0, FOLLOW_BLOCK_DRAWS - 1, FOLLOW_BLOCK_DRAWS, t["bootstrap_draws"] - 1):
+            alone = follow_values(sample_rows(drawn, row, row + 1), lcu, walks)
+            same = all(
+                pooled[kind][key][row : row + 1].tobytes() == alone[kind][key].tobytes()
+                for kind in ("pc", "e", "walk")
+                for key in (pooled[kind] if kind == "e" else range(len(pooled[kind])))
+            )
+            check(same, f"pooled follow row {row} differs from follow_values on that row")
         record.write_text(record.read_text(encoding="utf-8").replace('"continue"', '"stop"', 1), encoding="utf-8")
         expect_exit("an edited analysis", lambda: replay(record, root / "pass"), "differs from its recomputation")
 

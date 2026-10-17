@@ -1,6 +1,6 @@
 """Design evidence of the Tuna-17 box-kite follow series, recomputed from retained records.
 
-The follow series (scripts/box_kite_cases.py, FOLLOW_PLAN) rests on five
+The follow series (scripts/box_kite_cases.py, FOLLOW_PLAN) rests on six
 measured facts, each recomputed here from files the repository retains:
 
 - timing: a least-squares fit of every completed Tuna-17 job's
@@ -19,6 +19,10 @@ measured facts, each recomputed here from files the repository retains:
   no qubit or coupler, each scored by the coherent ZZ model below at a 60 ns
   and a 0.8 us CZ window; FOLLOW_WALK_LAYOUTS must be the pair whose worse
   score is best (ties to the lexicographically first placement).
+- T0 targets: r and C(1) of the retained T0 analysis
+  (results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json), which
+  the preregistration carries rounded as T0_R and T0_C1; each constant must
+  equal its value at that rounding.
 - phase scale: the walk control's Bloch vector before its last H under the
   ZZ model, alone and with the targets' Ramsey detunings, at both CZ windows:
   the size of the phase the walk-y readout resolves. Detunings drift and each
@@ -61,6 +65,7 @@ import parallel  # noqa: E402
 SCHEMA = "box-kite-follow-design-v1"
 RUNS = ROOT / "results/quantum_inspire/runs"
 ZZ_ANALYSIS = ROOT / "results/quantum_inspire/coupler_zz_tuna_17_analysis.json"
+T0_ANALYSIS = ROOT / "results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json"
 PRE_T0_RUNS = (
     "2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
     "2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
@@ -123,6 +128,22 @@ def timing_fit(rows: list[tuple[int, float, int, int, int]]) -> dict[str, Any]:
             n: {"value": sig(c), "se": sig(math.sqrt(v))} for n, c, v in zip(names, coef, np.diag(cov), strict=True)
         },
         "residual_sd_s": sig(float(residual.std())),
+    }
+
+
+def t0_targets() -> dict[str, Any]:
+    """T0's fitted r and depth-1 contrast against the rounded constants the follow preregistration carries."""
+    t0 = json.loads(T0_ANALYSIS.read_text(encoding="utf-8"))["stages"]["tuna_t0"]
+    r, c1 = t0["r"], t0["contrast"]["1"]["value"]
+    for name, carried, value, digits in (("T0_R", cases.T0_R, r, 4), ("T0_C1", cases.T0_C1, c1, 3)):
+        if round(value, digits) != carried:
+            raise SystemExit(f"{name} = {carried} differs from the retained T0 value {value} at {digits} decimals")
+    return {
+        "analysis": T0_ANALYSIS.relative_to(ROOT).as_posix(),
+        "r": r,
+        "c1": c1,
+        "t0_r": cases.T0_R,
+        "t0_c1": cases.T0_C1,
     }
 
 
@@ -356,6 +377,7 @@ def record() -> dict[str, Any]:
         "schema": SCHEMA,
         "admitted_qubits": nodes,
         "timing": fit,
+        "t0_targets": t0_targets(),
         "readout_drift": readout_drift(),
         "matchings": matchings(adj),
         "placement": placement(adj, zz),
@@ -402,6 +424,15 @@ def self_test() -> str:
             rejected += 1
     finally:
         cases.FOLLOW_WALK_LAYOUTS = saved
+    saved_r = cases.T0_R
+    try:
+        cases.T0_R = 0.97
+        try:
+            t0_targets()
+        except SystemExit:
+            rejected += 1
+    finally:
+        cases.T0_R = saved_r
     saved_pairs = cases.LCU_PAIRS
     try:
         cases.LCU_PAIRS = ((1, 4), (10, 13), (11, 14))
@@ -411,8 +442,8 @@ def self_test() -> str:
             rejected += 1
     finally:
         cases.LCU_PAIRS = saved_pairs
-    if rejected != 2:
-        raise AssertionError(f"{2 - rejected} mutated selection inputs were accepted")
+    if rejected != 3:
+        raise AssertionError(f"{3 - rejected} mutated inputs were accepted")
     # A strong star beside a weak path loses to a pair whose worse score is higher.
     lopsided: Pair = (0.5, 0.99, 0.5, (14, 11, 12, 16), (4, 1, 2))
     balanced: Pair = (0.9, 0.95, 0.9, (14, 12, 11, 16), (4, 2, 1))
@@ -422,7 +453,7 @@ def self_test() -> str:
         raise AssertionError("separated() misreads a shared coupler")
     if cases.TUNA_EXCLUDED[0] in nodes:
         raise AssertionError("an excluded qubit entered the admitted graph")
-    return "box-kite follow design: noiseless walk, control-detuning phase, selection mutations and maximin rule pass"
+    return "box-kite follow design: noiseless walk, detuning phase, T0 binding, mutations and maximin rule pass"
 
 
 def main() -> int:

@@ -509,6 +509,13 @@
   ]
  },
  "schema": "box-kite-follow-design-v1",
+ "t0_targets": {
+  "analysis": "results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json",
+  "c1": 0.953955111157,
+  "r": 0.965358043114,
+  "t0_c1": 0.954,
+  "t0_r": 0.9654
+ },
  "timing": {
   "coefficients": {
    "fixed_s": {

@@ -128,10 +128,10 @@
    "sha256": "98d191732c29aeeb3de733017fb188a8d53bcaec9d9e4a4038f42ccb996aa236"
   },
   {
-   "file": "twin-walk-omit.cq",
+   "file": "twin-walk-x.cq",
    "kind": "witness",
    "stage": "follow",
-   "tuna_case": "box_kite_tuna_follow/batch-03/walk-omit.cq",
+   "tuna_case": "box_kite_tuna_follow/batch-03/walk-x.cq",
    "qubit_map": {
     "1": 0,
     "2": 1,
@@ -153,7 +153,7 @@
       3
      ],
      "omega": -1,
-     "omit_last_block": true,
+     "omit_last_block": false,
      "readout": "X",
      "layout": "star_14",
      "roles": {
@@ -169,8 +169,8 @@
       "1": 4,
       "3": 6
      },
-     "cz": 4,
-     "p_control_zero": "1/2"
+     "cz": 6,
+     "p_control_zero": "0"
     },
     {
      "slot": 1,
@@ -183,7 +183,7 @@
       10
      ],
      "omega": -1,
-     "omit_last_block": true,
+     "omit_last_block": false,
      "readout": "X",
      "layout": "path_4",
      "roles": {
@@ -197,121 +197,87 @@
       "0": 0,
       "1": 1
      },
-     "cz": 3,
-     "p_control_zero": "1/2"
+     "cz": 4,
+     "p_control_zero": "0"
     }
    ],
-   "sha256": "aeed0a073bf744b7e8fe88aa8cab3b97f2f5ffb624fcec38669440d8713cddec"
+   "sha256": "e1f1c73a3fbb3f3e2ab96ba1a91eae54771f8526be4c6347e1d216bf89578663"
   },
   {
-   "file": "twin-lcu-dark-x-1.cq",
+   "file": "twin-walk-y.cq",
    "kind": "witness",
    "stage": "follow",
-   "tuna_case": "box_kite_tuna_follow/batch-04/lcu-dark-x-1.cq",
+   "tuna_case": "box_kite_tuna_follow/batch-04/walk-y.cq",
    "qubit_map": {
     "1": 0,
-    "4": 1,
-    "10": 2,
-    "12": 3,
-    "13": 4,
-    "14": 5
+    "2": 1,
+    "4": 2,
+    "11": 3,
+    "12": 4,
+    "14": 5,
+    "16": 6
    },
    "replicas": [
     {
      "slot": 0,
-     "kind": "lcu",
-     "label": "edge-",
-     "census": "within_kite[245]",
-     "kite": 3,
-     "p": [
-      1,
-      10,
-      1
+     "kind": "walk",
+     "census": "associator.deterministic_exemplars[1].ij-same-vertex-third-strut",
+     "kite": 1,
+     "triple": [
+      2,
+      11,
+      3
      ],
-     "q": [
-      4,
-      15,
-      -1
-     ],
-     "relation": "edge_opposite",
+     "omega": -1,
+     "omit_last_block": false,
+     "readout": "Y",
+     "layout": "star_14",
      "roles": {
-      "selector": 0,
+      "control": 5,
       "data": [
-       1
+       3,
+       4,
+       6
       ]
      },
-     "cz_depth": 1,
-     "p_selector_zero": "0",
-     "setting": "X",
-     "coherence_selector_1": "1/2",
-     "expectation_given_selector_one": "1",
-     "p_data_zero_given_selector_one": "1"
+     "data_bits": {
+      "0": 3,
+      "1": 4,
+      "3": 6
+     },
+     "cz": 6,
+     "p_control_zero": "1/2"
     },
     {
      "slot": 1,
-     "kind": "lcu",
-     "label": "twist+",
-     "census": "within_kite[660]",
-     "kite": 6,
-     "p": [
-      4,
-      10,
-      1
-     ],
-     "q": [
-      1,
-      15,
-      1
-     ],
-     "relation": "edge_same",
-     "roles": {
-      "selector": 2,
-      "data": [
-       4
-      ]
-     },
-     "cz_depth": 1,
-     "p_selector_zero": "0",
-     "setting": "X",
-     "coherence_selector_1": "1/2",
-     "expectation_given_selector_one": "1",
-     "p_data_zero_given_selector_one": "1"
-    },
-    {
-     "slot": 2,
-     "kind": "lcu",
-     "label": "strut+",
-     "census": "within_kite[240]",
-     "kite": 3,
-     "p": [
-      1,
-      10,
-      1
-     ],
-     "q": [
+     "kind": "walk",
+     "census": "associator.deterministic_exemplars[1].jk-same-vertex-third-strut",
+     "kite": 1,
+     "triple": [
       2,
-      9,
-      1
+      3,
+      10
      ],
-     "relation": "strut",
+     "omega": -1,
+     "omit_last_block": false,
+     "readout": "Y",
+     "layout": "path_4",
      "roles": {
-      "selector": 3,
+      "control": 2,
       "data": [
-       5
+       0,
+       1
       ]
      },
-     "cz_depth": 1,
-     "p_selector_zero": "1/2",
-     "setting": "X",
-     "coherence_selector_0": "0",
-     "expectation_given_selector_zero": "0",
-     "p_data_zero_given_selector_zero": "1/2",
-     "coherence_selector_1": "0",
-     "expectation_given_selector_one": "0",
-     "p_data_zero_given_selector_one": "1/2"
+     "data_bits": {
+      "0": 0,
+      "1": 1
+     },
+     "cz": 4,
+     "p_control_zero": "1/2"
     }
    ],
-   "sha256": "97919115d6fb1f6dc88a219a0fbe4e21b8a254e6bedb013977096218ad8437cc"
+   "sha256": "d3698afcf9a5658e0376061b0f213f5ee2230d9c449d6c851ff9c63e50f220f3"
   }
  ]
 }

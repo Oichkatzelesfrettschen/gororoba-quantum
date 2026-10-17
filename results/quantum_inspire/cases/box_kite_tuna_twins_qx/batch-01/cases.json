@@ -21,10 +21,10 @@
  "stage": "follow",
  "circuits": [
   {
-   "file": "twin-walk-x.cq",
+   "file": "twin-walk-omit.cq",
    "kind": "witness",
    "stage": "follow",
-   "tuna_case": "box_kite_tuna_follow/batch-00/walk-x.cq",
+   "tuna_case": "box_kite_tuna_follow/batch-00/walk-omit.cq",
    "qubit_map": {
     "1": 0,
     "2": 1,
@@ -46,7 +46,7 @@
       3
      ],
      "omega": -1,
-     "omit_last_block": false,
+     "omit_last_block": true,
      "readout": "X",
      "layout": "star_14",
      "roles": {
@@ -62,8 +62,8 @@
       "1": 4,
       "3": 6
      },
-     "cz": 6,
-     "p_control_zero": "0"
+     "cz": 4,
+     "p_control_zero": "1/2"
     },
     {
      "slot": 1,
@@ -76,7 +76,7 @@
       10
      ],
      "omega": -1,
-     "omit_last_block": false,
+     "omit_last_block": true,
      "readout": "X",
      "layout": "path_4",
      "roles": {
@@ -90,11 +90,11 @@
       "0": 0,
       "1": 1
      },
-     "cz": 4,
-     "p_control_zero": "0"
+     "cz": 3,
+     "p_control_zero": "1/2"
     }
    ],
-   "sha256": "e1f1c73a3fbb3f3e2ab96ba1a91eae54771f8526be4c6347e1d216bf89578663"
+   "sha256": "aeed0a073bf744b7e8fe88aa8cab3b97f2f5ffb624fcec38669440d8713cddec"
   },
   {
    "file": "twin-lcu-bright-x-1.cq",
