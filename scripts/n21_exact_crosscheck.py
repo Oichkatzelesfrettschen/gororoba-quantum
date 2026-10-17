@@ -238,6 +238,7 @@ def _aer_saves(circuit: QuantumCircuit, noise: Any, shots: int) -> dict[str, dic
 
     simulator = AerSimulator(
         method="density_matrix",
+        device=calibration_snapshot.aer_device(),
         noise_model=noise,
         seed_simulator=SEED,
         shot_branching_enable=True,
@@ -695,8 +696,12 @@ def _compare(retained: Any, fresh: Any, where: str, failures: list[str]) -> None
         for position, (left, right) in enumerate(zip(retained, fresh, strict=True)):
             _compare(left, right, f"{where}[{position}]", failures)
     elif isinstance(retained, float) or isinstance(fresh, float):
-        if isinstance(retained, bool) or isinstance(fresh, bool) or retained is None or fresh is None:
-            failures.append(f"{where}: {retained!r} != {fresh!r}")
+        numeric = all(
+            isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+            for value in (retained, fresh)
+        )
+        if not numeric:
+            failures.append(f"{where}: {retained!r} != {fresh!r} (both must be finite numbers)")
         elif abs(float(retained) - float(fresh)) > TOLERANCE:
             failures.append(f"{where}: {retained!r} differs from {fresh!r} by more than {TOLERANCE}")
     elif retained != fresh:
@@ -724,6 +729,10 @@ def check(path: Path) -> dict[str, Any]:
 
 
 def self_test() -> None:
+    for tampered in ("NaN", float("nan"), float("inf"), None, True):
+        found: list[str] = []
+        _compare(tampered, 0.030826554245, "contrast", found)
+        _require(len(found) == 1, f"the retained-record comparison accepted {tampered!r}")
     result = fixture()
     circuit, noise = _inputs(("fixture",), "raw")
     layout = _layout(circuit)
