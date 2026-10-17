@@ -26,9 +26,12 @@ Ghostscript 7.0. The archive page itself has SHA-256
 Page references below are the report's printed page numbers; the PDF page
 is the printed page plus 2. Inspection covers section 1 (printed pp. 3-6),
 Definitions 2.1, 2.2 and 2.6 (pp. 8-10), Proposition 3.14 and Theorem 3.15
-(p. 22) and Proposition 4.3 (p. 24), read as extracted text and checked
-against the PDF. The scope stops short of an independent verification of the
-completeness theorems of section 4.3.
+(p. 22) and Proposition 4.3 (p. 24), read as pdftotext extraction. The
+PDF pages 7 and 26 were rendered and read visually to confirm the wheel of
+fractions operations, Definition 1.1 (1)-(8) and Proposition 4.3 (9)-(13)
+with their proofs; the page footers fix the printed = PDF - 2 offset. The
+scope stops short of an independent verification of the completeness
+theorems of section 4.3.
 
 ## Statements used
 
