@@ -268,6 +268,16 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
             _number(value, name)
             argument = str(value)
         arguments.extend(["--" + name.replace("_", "-"), argument])
+    # The N21 exact-model and replica-covariance settings shape the plan the
+    # approval binds; a replay without them plans a different design.
+    model_method = design.get("model_method", "sampled")
+    _require(model_method in ("sampled", "exact"), "model method must be sampled or exact")
+    if model_method != "sampled":
+        arguments.extend(["--model-method", model_method])
+    variance_bound = design.get("replica_variance_bound")
+    if variance_bound is not None:
+        _number(variance_bound, "replica_variance_bound", positive=True)
+        arguments.extend(["--replica-variance-bound", str(variance_bound)])
     arguments.extend(["--out", (Path("..") / location.parent).as_posix()])
     return arguments
 
@@ -920,13 +930,23 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
                 len(coefficients) == len(members[member]["ideal"]), "score labels differ from the member ideal law"
             )
             lines.append(f"- `{member}`: sign {term['sign']:+d}, labeled score vector `{json.dumps(coefficients)}`.")
+        exact = record.get("exact_model")
+        model_sentence = (
+            f"The noise model predicts {_format_number(endpoint['predicted_value'])} from the exact "
+            "branch-resolved law (dynamic_density), so no finite-simulation allowance applies; each "
+            f"replica's exact law lies within {_format_number(exact['max_gap'])} of its "
+            f"{_count(exact['model_shots'], 'model shots')}-shot sampled marginal, inside the simultaneous "
+            f"radius {_format_number(exact['radius'])}."
+            if exact is not None
+            else f"The noise model predicts {_format_number(endpoint['predicted_value'])}; "
+            "the simultaneous finite-simulation allowance is "
+            f"+/-{_format_number(endpoint['simulation_error_radius'])}. "
+            f"The lower modeled value is {_format_number(endpoint['modeled_value_lower_bound'])}."
+        )
         lines.extend(
             [
                 "",
-                f"The noise model predicts {_format_number(endpoint['predicted_value'])}; "
-                "the simultaneous finite-simulation allowance is "
-                f"+/-{_format_number(endpoint['simulation_error_radius'])}. "
-                f"The lower modeled value is {_format_number(endpoint['modeled_value_lower_bound'])}.",
+                model_sentence,
                 "",
                 f"At alpha {_format_number(endpoint['alpha'])}, the two-sided confidence half-width is "
                 f"{_format_number(endpoint['confidence_half_width'])}; requested precision is "
@@ -1729,6 +1749,11 @@ def _verify() -> None:
         assert str(run_dir) not in text and "crn:" not in text
         assert "--submit" not in text.split("## Approval-only submission template")[0]
         assert write_case(run_dir, record) == destination and destination.read_text() == text
+        assert "--model-method" not in text and "--replica-variance-bound" not in text
+        exact = copy.deepcopy(record)
+        exact["policy"]["design"].update(model_method="exact", replica_variance_bound=0.55)
+        exact_arguments = _reproduction_arguments(exact, Path("results/live/fixture/record.json"))
+        assert "--model-method exact --replica-variance-bound 0.55" in " ".join(exact_arguments)
         assert all((run_dir / name).read_bytes() == value for name, value in originals.items())
         for family, phrase in (("ripple", "box-kite phase atlas"), ("rank-sector", "coefficient-dependent LCU")):
             algebra = copy.deepcopy(record)
