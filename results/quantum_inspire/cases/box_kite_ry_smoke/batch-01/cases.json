@@ -1,0 +1,136 @@
+{
+ "schema": "box-kite-cases-v1",
+ "backend": "Rydberg",
+ "backend_type_id": 5,
+ "shots": 1024,
+ "dialect": "ry",
+ "bit_order": "qubit 0 at the leftmost character (Ry)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "family": "ry_smoke",
+ "nqubits": 9,
+ "encodings": {
+  "full": "designs.lcu_witness: data 0-3, selector 4; x_sign = -1 adds Z on the selector after its first H; compiled at optimization level 0 to cx, rz, h, x, z, s, sdg with Rz on the pi/64 grid",
+  "reduced": "selector a = slot qubit 0, data d = slot qubit 1; SELECT = diag(g(L,L'), g(L,U'), g(U,L'), g(U,U')) over (a, d) from the census coefficients, then CNOT(a -> d); x_sign = -1 adds Z on a after its first H",
+  "reduced_cross": "selector a, data d, mark w = slot qubits 0, 1, 2; identity diagonal (the census carries no phases for four-label rows, and P = 1/2 for every sign), CNOT(a -> d), CNOT(a -> w)",
+  "ry": "Sdag written as Rz(-pi/2); no bit register, measure or comment; the emulator measures every atom at the end"
+ },
+ "role": "smoke subset after R1 passes: the reduced smoke replicas of family (a), the T1 edge and its twist at y_sign +-1, and the (1,10) full Design B dark, bright and fixture witnesses",
+ "preregistered": {
+  "observable": "zero-product success P(selector = 0) per replica, selector bits read with qubit 0 leftmost",
+  "falsifier": "a deterministic replica below 0.9 of its ideal outcome is reported with the emulator's raw rates as an emulator rate, never as an algebraic result",
+  "stop_rule": "a deterministic replica below 0.9 of its ideal outcome stops the series"
+ },
+ "batch": "batch-01",
+ "group": "smoke",
+ "circuits": [
+  {
+   "file": "ry-full-witness-dark.cq",
+   "kind": "witness",
+   "group": "smoke",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "within_kite[245]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      -1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 4,
+      "data": [
+       0,
+       1,
+       2,
+       3
+      ]
+     },
+     "p_selector_zero": "0",
+     "pattern": "full_witness_dark"
+    }
+   ],
+   "sha256": "e419b2d87d45ff4c666acfc45ae11e7b240de310adf05884356c1a23ab4fd512"
+  },
+  {
+   "file": "ry-full-witness-bright.cq",
+   "kind": "witness",
+   "group": "smoke",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 4,
+      "data": [
+       0,
+       1,
+       2,
+       3
+      ]
+     },
+     "p_selector_zero": "1",
+     "pattern": "full_witness_bright"
+    }
+   ],
+   "sha256": "83ba79758267c87222e4fe8ffa6f1f69c9630052ff6867331e555a834444ba66"
+  },
+  {
+   "file": "ry-full-negative-fixture.cq",
+   "kind": "witness",
+   "group": "smoke",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "negative_fixture[0]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      2,
+      13,
+      -1
+     ],
+     "relation": "cross_kite_7",
+     "roles": {
+      "selector": 4,
+      "data": [
+       0,
+       1,
+       2,
+       3
+      ]
+     },
+     "p_selector_zero": "1/2",
+     "pattern": "full_negative_fixture"
+    }
+   ],
+   "sha256": "d17979684e07e2d14cae7805eeadfb7262f77bbfbb0e88e5973c047e5834d62e"
+  }
+ ]
+}
