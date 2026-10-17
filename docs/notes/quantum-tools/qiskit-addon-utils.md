@@ -16,7 +16,7 @@ from qiskit_addon_utils.slicing import slice_by_depth
 | Substrate | Status |
 | --- | --- |
 | Build host | python-qiskit-addon-utils 0.4.0 (Arch) |
-| Kaggle | not installed by the repository |
+| Kaggle | `qiskit-addon-utils==0.4.0` in the `quantum-tools` group (`scripts/kaggle_run.py` `PIN_GROUPS`); one of the seven pins added to the group after the retained CPU kernel run `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu`, whose `pin_groups.json` records the twelve earlier members only; not yet installed on a kernel |
 
 ## CAPABILITIES IN THIS REPOSITORY
 

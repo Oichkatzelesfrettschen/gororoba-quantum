@@ -19,7 +19,7 @@ fit.params["tau"].value, fit.params["tau"].stderr, fit.redchi
 | Substrate | Status |
 | --- | --- |
 | Build host | python-lmfit 1.3.4 (Arch) |
-| Kaggle | `lmfit==1.3.4` in the `quantum-tools` group; unmeasured on a kernel |
+| Kaggle | `lmfit==1.3.4` in the `quantum-tools` group; installed at 1.3.4 on the CPU kernel run `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu` (`pin_groups.json`) |
 
 ## CAPABILITIES IN THIS REPOSITORY
 

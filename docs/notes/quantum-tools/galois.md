@@ -19,7 +19,7 @@ a @ b   # matrix product over GF(2)
 | Substrate | Status |
 | --- | --- |
 | Build host | python-galois 0.4.11 (Arch) with numba 0.68.0 |
-| Kaggle | `galois==0.4.11` and `numba==0.68.0` in the `quantum-tools` group; unmeasured on a kernel |
+| Kaggle | `galois==0.4.11` and `numba==0.68.0` in the `quantum-tools` group; both installed at their pins on the CPU kernel run `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu` (`pin_groups.json`) |
 
 ## CAPABILITIES IN THIS REPOSITORY
 

@@ -19,7 +19,7 @@ zx.compare_tensors(c.to_tensor(), out.to_tensor(), preserve_scalar=False)
 | Substrate | Status |
 | --- | --- |
 | Build host | python-pyzx 0.10.7 (Arch) |
-| Kaggle | `pyzx==0.10.7` in the `quantum-tools` group; unmeasured on a kernel |
+| Kaggle | `pyzx==0.10.7` in the `quantum-tools` group; installed at 0.10.7 on the CPU kernel run `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu` (`pin_groups.json`) |
 
 ## CAPABILITIES IN THIS REPOSITORY
 

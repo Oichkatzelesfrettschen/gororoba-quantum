@@ -19,7 +19,7 @@ quasi.expval()                                           # <Z...Z> from quasipro
 | Substrate | Status |
 | --- | --- |
 | Build host | python-mthree 3.0.0 and python-runningman 2.3.0 (Arch) |
-| Kaggle | `mthree==3.0.0` and `runningman==2.3.0` in the `quantum-tools` group; unmeasured on a kernel |
+| Kaggle | `mthree==3.0.0` and `runningman==2.3.0` in the `quantum-tools` group; both installed at their pins on the CPU kernel run `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu` (`pin_groups.json`) |
 
 ## CAPABILITIES IN THIS REPOSITORY
 

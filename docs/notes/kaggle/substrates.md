@@ -80,8 +80,10 @@ simulate shot by shot.
 Runs `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu`
 (Intel Xeon 2.20 GHz, 4 CPUs) and
 `results/kaggle/2026-10-16T212614Z-gororoba-substrate-crossover-t4-gpu`
-(2 x Tesla T4; Intel Xeon 2.00 GHz, 4 CPUs), both qiskit 2.5.2 and
-qiskit-aer 0.17.2:
+(2 x Tesla T4; Intel Xeon 2.00 GHz, 4 CPUs), both qiskit 2.5.2 with the
+`qiskit-aer-gpu-cu11==0.17.2` build (each run's `submission.json` pins and
+`environment.json`; the CPU run predates `CPU_KERNEL_PINS`, so its CPU
+timings come from the cu11 build's CPU path):
 
 | Active qubits | Static, CPU | Static, T4 | Dynamic, CPU | Dynamic, T4 |
 | --- | --- | --- | --- | --- |
@@ -97,7 +99,12 @@ Static circuits through 8 qubits cost the per-call overhead on both
 devices; the T4 is 2.8 times faster at 10 qubits, 12.8 at 12 and 17.7 at
 14. With mid-circuit measurement the CPU leads through 4 qubits and the T4
 is 2.9 times faster at 6 and 28 at 8. The routing rule takes the widths
-where the gain passes 10: 12 static qubits and 8 dynamic ones. The build
+where the gain passes 10: 12 static qubits and 8 dynamic ones. The dynamic
+threshold rests on one best-of-2 point that is not monotone in width: the
+T4 ran 8 dynamic qubits in 19.4 s and 6 in 24.3 s. Each device ran once on
+one machine draw, and the CPU machine (Intel Xeon 2.20 GHz) differs from
+the CPU probe's (AMD EPYC 7B12), so Kaggle's CPU pool is heterogeneous and
+a repeat can move both thresholds. The build
 host's crossover is a different measurement on different hardware and
 sets `local_compute.GPU_MIN_ACTIVE_QUBITS` for local runs only
 (`gororoba_quantum/LOCAL_COMPUTE.md`).

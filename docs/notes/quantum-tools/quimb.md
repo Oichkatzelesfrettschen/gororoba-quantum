@@ -19,7 +19,7 @@ qtn.CircuitMPS(n)                              # matrix-product-state circuit
 | Substrate | Status |
 | --- | --- |
 | Build host | python-quimb 1.15.0, python-cotengra 0.8.2, python-autoray 0.11.0 (Arch); torch 2.14.1 and cupy 14.2.0 see CUDA on the RTX 4070 Ti |
-| Kaggle | `quimb==1.15.0`, `cotengra==0.8.2`, `autoray==0.11.0` in the `quantum-tools` group (pip resolves their dependencies); torch comes from the Kaggle image (2.11.0 in the recorded probes); cupy is not pinned by the repository; unmeasured on a kernel with the group |
+| Kaggle | `quimb==1.15.0`, `cotengra==0.8.2`, `autoray==0.11.0` in the `quantum-tools` group (pip resolves their dependencies); torch comes from the Kaggle image (2.11.0 in the recorded probes); cupy is not pinned by the repository; the three pins installed on the CPU kernel run `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu` (`pin_groups.json`) |
 
 ## CAPABILITIES IN THIS REPOSITORY
 

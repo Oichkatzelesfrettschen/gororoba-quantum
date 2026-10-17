@@ -15,7 +15,7 @@ OptionsModel(rep_delay=250e-6).model_dump_json()
 | Substrate | Status |
 | --- | --- |
 | Build host | python-ibm-quantum-schemas 0.12.20260921 (Arch), the runtime 0.50 floor in the root AGENTS.md; pydantic 2.13.5 |
-| Kaggle | not pinned by name; `ibm-quantum-schemas>=0.12.20260921` and `pydantic>=2.13.0` are hard requirements of `qiskit-ibm-runtime` (host package metadata), so the `quantum-tools` group pulls them in; not measured on a kernel |
+| Kaggle | `ibm-quantum-schemas==0.12.20260921` in the `quantum-tools` group (`scripts/kaggle_run.py` `PIN_GROUPS`), the host's version, so a kernel cannot resolve a newer release under `qiskit-ibm-runtime`'s `<1` bound; `pydantic` arrives as a runtime dependency; one of the seven pins added to the group after the retained CPU kernel run `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu`, whose `pin_groups.json` records the twelve earlier members only; not yet installed on a kernel |
 
 ## CAPABILITIES IN THIS REPOSITORY
 

@@ -21,7 +21,7 @@ Versions and availability:
 | Substrate | Status |
 | --- | --- |
 | Build host | python-stim 1.16.0 (Arch) |
-| Kaggle | `stim==1.16.0` in the `quantum-tools` group (`push --with quantum-tools`); no kernel with the group has been run yet, so the wheel for Kaggle's Python is unmeasured |
+| Kaggle | `stim==1.16.0` in the `quantum-tools` group (`push --with quantum-tools`); installed at 1.16.0 on the CPU kernel run `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu` (`pin_groups.json`) |
 
 ## CAPABILITIES IN THIS REPOSITORY
 
