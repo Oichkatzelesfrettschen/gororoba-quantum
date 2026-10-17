@@ -20,6 +20,13 @@ scheduled window idle begins identifies, through exact branch probabilities
 of the archived ISA, which qubit holds the work bit for 1 and which for 16.
 Routing can move logical qubits away from their initial layout.
 
+Window exposure is also fitted through the archived ISA itself:
+window_segments lists the idle intervals each qubit plays across the
+control's measurement-to-feed-forward window, CompiledLaw evaluates the exact
+compiled law with one static detuning rotation per interval under the
+depolarizing and assignment nuisances, and piecewise_fit compares the
+piecewise exposure with the single gap at one rate per coupled qubit.
+
 Usage: "$PYTHON" scripts/n21_orbit_rca.py RUN_DIR [--out FILE]; --check RUN_DIR regenerates
 RUN_DIR/rca-mechanism-fit.json and requires it to agree (differences()).
 """
@@ -59,11 +66,11 @@ _H = np.array([[1, 1], [1, -1]], dtype=complex) / math.sqrt(2)
 
 
 @functools.cache
-def _embedding(qubits: tuple[int, ...]) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def _embedding(qubits: tuple[int, ...], size: int = DIMENSION) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Rows, columns, and local output and input indices of every entry a gate on qubits occupies."""
     count = len(qubits)
     rows, columns, outs, ins = [], [], [], []
-    for column in range(DIMENSION):
+    for column in range(size):
         local_in = sum(((column >> qubit) & 1) << index for index, qubit in enumerate(qubits))
         rest = column
         for qubit in qubits:
@@ -76,14 +83,14 @@ def _embedding(qubits: tuple[int, ...]) -> tuple[np.ndarray, np.ndarray, np.ndar
     return np.array(rows), np.array(columns), np.array(outs), np.array(ins)
 
 
-def _embed(gate: np.ndarray, qubits: tuple[int, ...]) -> np.ndarray:
-    """Full 32x32 operator for a gate on qubits (little-endian, qubit 0 least significant).
+def _embed(gate: np.ndarray, qubits: tuple[int, ...], size: int = DIMENSION) -> np.ndarray:
+    """Full size x size operator for a gate on qubits (little-endian, qubit 0 least significant).
 
     Each (row, column) pair occurs once in the embedding, so the assignment
     places every gate entry exactly.
     """
-    rows, columns, outs, ins = _embedding(qubits)
-    full = np.zeros((DIMENSION, DIMENSION), dtype=complex)
+    rows, columns, outs, ins = _embedding(qubits, size)
+    full = np.zeros((size, size), dtype=complex)
     full[rows, columns] = gate[outs, ins]
     return full
 
@@ -505,15 +512,34 @@ def signed_exposure(
     return exposure
 
 
-def dt_seconds(run: Path) -> float:
-    """The backend sample time: the family configuration's value, else the backend Target's."""
+TARGET_SNAPSHOT = Path(__file__).resolve().parents[1] / "docs" / "evidence" / "heron_platform" / "targets.json"
+
+
+def dt_source(run: Path) -> tuple[float, str]:
+    """The backend sample time and its source.
+
+    The family configuration's value comes first, then the retained Heron
+    Target snapshot's dt for the record's backend (gates core-254 and
+    core-255 recompute it from the live Targets), then the live backend
+    Target, which needs the IBM service.
+    """
     record = json.loads((run / "record.json").read_text())
     retained = record.get("family_configuration", {}).get("dt_seconds")
     if retained:
-        return float(retained)
+        return float(retained), "record family_configuration.dt_seconds"
+    backend = record["groups"][0]["backend"]
+    if TARGET_SNAPSHOT.exists():
+        snapshot = json.loads(TARGET_SNAPSHOT.read_text())["backends"].get(backend, {})
+        if snapshot.get("dt"):
+            return float(snapshot["dt"]), f"docs/evidence/heron_platform/targets.json backends.{backend}.dt"
     from qiskit_ibm_runtime import QiskitRuntimeService
 
-    return float(QiskitRuntimeService().backend(record["groups"][0]["backend"]).target.dt)
+    return float(QiskitRuntimeService().backend(backend).target.dt), f"live {backend} Target dt"
+
+
+def dt_seconds(run: Path) -> float:
+    """The backend sample time (dt_source without its provenance)."""
+    return dt_source(run)[0]
 
 
 class JointObjective:
@@ -635,6 +661,483 @@ def joint_quasistatic_fit(
             member: {str(branch): {str(q): t for q, t in entries.items()} for branch, entries in values.items()}
             for member, values in exposure.items()
         },
+    }
+
+
+_ONE_PLAY = frozenset({"sx", "x", "cz", "measure"})
+
+
+def window_segments(circuit: Any, payload: dict[str, Any]) -> dict[str, Any]:
+    """Idle intervals of each active qubit across the control's measurement-to-feed-forward window.
+
+    The window opens at the control's first measurement play and closes at
+    its first later play that is neither measurement nor reset, the pulse
+    after which the feed-forward phase acts. Every idle interval between two
+    consecutive pulses of a non-control wire that overlaps the window enters
+    whole, so a work-only pulse inside the window splits that wire's exposure
+    into the intervals before and after it. The single gap of window_roles,
+    from the last pulse before the opening to the first non-X pulse after it,
+    is the subset of intervals inside that span; its intervals always enter,
+    so the piecewise set contains it. Each interval is [start, end, count] in
+    dt, count being the pulses its wire plays before it. The control's window
+    idles hold a measured basis state, on which a Z rotation is a
+    branch-global phase. A wire whose instructions do not map one-to-one onto
+    its pulses is unresolved; a missing schedule raises ValueError (_plays).
+    """
+    plays = _plays(payload)
+    writer = next(circuit.find_bit(i.qubits[0]).index for i in circuit.data if i.operation.name == "measure")
+    control = sorted((start, name) for start, _length, name, wire in plays if wire == writer)
+    opening = min(start for start, name in control if name == "measure")
+    later = [start for start, name in control if start >= opening and name not in ("measure", "reset")]
+    if not later:
+        raise ValueError("the control plays no pulse after its measurement and reset")
+    closing = min(later)
+    active = sorted(
+        {circuit.find_bit(bit).index for i in circuit.data if i.operation.name != "barrier" for bit in i.qubits}
+    )
+    intervals: dict[int, list[list[int]]] = {}
+    single: dict[int, list[list[int]]] = {}
+    unresolved: list[str] = []
+    for qubit in active:
+        if qubit == writer:
+            continue
+        pulses = sorted((start, length, name) for start, length, name, wire in plays if wire == qubit)
+        instructions = [
+            i.operation.name
+            for i in circuit.data
+            if i.operation.name not in _VIRTUAL and qubit in [circuit.find_bit(bit).index for bit in i.qubits]
+        ]
+        if len(instructions) != len(pulses) or not set(instructions) <= _ONE_PLAY:
+            unresolved.append(f"qubit {qubit} holds instructions that do not map one-to-one onto pulses")
+            continue
+        gaps: list[list[int]] = []
+        end: int | None = None
+        for count, (start, length, _name) in enumerate(pulses):
+            if end is not None and start > end:
+                gaps.append([end, start, count])
+            end = start + length if end is None else max(end, start + length)
+        before = [start + length for start, length, _name in pulses if start + length <= opening]
+        after = [start for start, _length, name in pulses if start >= opening and name != "x"]
+        spanned = [gap for gap in gaps if before and after and max(before) <= gap[0] and gap[1] <= min(after)]
+        inside = [gap for gap in gaps if (gap[0] < closing and gap[1] > opening) or gap in spanned]
+        if inside:
+            intervals[qubit] = inside
+        if spanned:
+            single[qubit] = spanned
+    return {
+        "control": writer,
+        "window": [opening, closing],
+        "intervals": intervals,
+        "single_gap": single,
+        "unresolved": unresolved,
+    }
+
+
+class CompiledLaw:
+    """Exact outcome law of an ISA circuit with rz(rate x duration) after chosen pulses, under nuisance channels.
+
+    The circuit compiles once, on its active wires, into fused unitaries
+    between insertions, measurements, resets and if_else blocks; a law then
+    costs a few small matrix products per classical branch. insertions maps a
+    physical qubit to (count, duration_us, rate_index) entries, each a Z
+    rotation by rates[rate_index] x duration_us radians after that wire's
+    count-th physical (non-virtual) instruction, the instruction count
+    _probed uses. round1 depolarizes every active wire where the first
+    measurement stands in instruction order and round2 where the second
+    does, the two multiplier rounds of distribution(); depolarizing commutes
+    with single-qubit rotations, so its place relative to an insertion on
+    the same wire is immaterial. The first measurement's assignment flip
+    (mid_e01, mid_e10) acts on the classical bit as it is written, so it
+    reaches the if_else condition; every later measurement uses end_e01 and
+    end_e10.
+    """
+
+    def __init__(self, circuit: Any, insertions: dict[int, list[tuple[int, float, int]]], rates: int) -> None:
+        active = sorted(
+            {circuit.find_bit(bit).index for i in circuit.data if i.operation.name != "barrier" for bit in i.qubits}
+        )
+        self.local = {qubit: index for index, qubit in enumerate(active)}
+        self.size = 1 << len(active)
+        self.clbits = circuit.num_clbits
+        self.rates = rates
+        indices = np.arange(self.size)
+        bits = [(indices >> index) & 1 for index in range(len(active))]
+        self.diffs = [np.subtract.outer(bit, bit).astype(float) for bit in bits]
+        self.signs = [np.outer(1 - 2 * bit, 1 - 2 * bit).astype(float) for bit in bits]
+        self.masks = [[np.outer(bit == value, bit == value).astype(float) for value in (0, 1)] for bit in bits]
+        self.flipped = [indices ^ (1 << index) for index in range(len(active))]
+        self.program: list[tuple[Any, ...]] = []
+        pending = np.eye(self.size, dtype=complex)
+        fused = False
+        seen: Counter[int] = Counter()
+        measurements = 0
+        placed = 0
+        for instruction in circuit.data:
+            name = instruction.operation.name
+            wires = [circuit.find_bit(bit).index for bit in instruction.qubits]
+            if name in ("barrier", "delay"):
+                continue
+            if name in ("measure", "reset", "if_else") and fused:
+                self.program.append(("unitary", pending))
+                pending, fused = np.eye(self.size, dtype=complex), False
+            if name == "measure":
+                if measurements < 2:
+                    self.program.append(("depolarize", measurements))
+                clbit = circuit.find_bit(instruction.clbits[0]).index
+                self.program.append(("measure", self.local[wires[0]], clbit, min(measurements, 1)))
+                measurements += 1
+            elif name == "reset":
+                self.program.append(("reset", self.local[wires[0]]))
+            elif name == "if_else":
+                bit, value = instruction.operation.condition
+                blocks = [self._block(block, wires) for block in instruction.operation.blocks]
+                self.program.append(
+                    ("if", circuit.find_bit(bit).index, int(value), blocks[0], blocks[1] if len(blocks) > 1 else None)
+                )
+            else:
+                gate = _embed(instruction.operation.to_matrix(), tuple(self.local[w] for w in wires), self.size)
+                pending, fused = gate @ pending, True
+            if name in _VIRTUAL:
+                continue
+            for wire in wires:
+                seen[wire] += 1
+                for count, duration, index in insertions.get(wire, ()):
+                    if count == seen[wire]:
+                        if fused:
+                            self.program.append(("unitary", pending))
+                            pending, fused = np.eye(self.size, dtype=complex), False
+                        self.program.append(("phase", self.local[wire], duration, index))
+                        placed += 1
+        if fused:
+            self.program.append(("unitary", pending))
+        if placed != sum(len(entries) for entries in insertions.values()):
+            raise ValueError("an insertion names a pulse count its wire never reaches")
+
+    def _block(self, block: Any, wires: list[int]) -> np.ndarray:
+        unitary = np.eye(self.size, dtype=complex)
+        for instruction in block.data:
+            if instruction.operation.name in ("barrier", "delay"):
+                continue
+            if instruction.operation.name in ("measure", "reset", "if_else"):
+                raise ValueError("an if_else block holds a non-unitary instruction")
+            targets = tuple(self.local[wires[block.find_bit(bit).index]] for bit in instruction.qubits)
+            unitary = _embed(instruction.operation.to_matrix(), targets, self.size) @ unitary
+        return unitary
+
+    def __call__(self, rates: np.ndarray, round1: float, round2: float, readout: dict[str, float]) -> np.ndarray:
+        flips = ((readout["mid_e01"], readout["mid_e10"]), (readout["end_e01"], readout["end_e10"]))
+        strengths = (round1, round2)
+        start = np.zeros((self.size, self.size), dtype=complex)
+        start[0, 0] = 1.0
+        branches: dict[int, np.ndarray] = {0: start}
+        for step in self.program:
+            kind = step[0]
+            if kind == "unitary":
+                branches = {key: step[1] @ rho @ step[1].conj().T for key, rho in branches.items()}
+            elif kind == "phase":
+                factor = np.exp(1j * float(rates[step[3]]) * step[2] * self.diffs[step[1]])
+                branches = {key: rho * factor for key, rho in branches.items()}
+            elif kind == "depolarize":
+                weight = min(max(strengths[step[1]], 0.0), 1.0)
+                if weight:
+                    for qubit in range(len(self.diffs)):
+                        flip = self.flipped[qubit]
+                        for key, rho in branches.items():
+                            phased = rho * self.signs[qubit]
+                            paulis = rho[np.ix_(flip, flip)] + phased[np.ix_(flip, flip)] + phased
+                            branches[key] = (1 - 3 * weight / 4) * rho + (weight / 4) * paulis
+            elif kind == "measure":
+                _kind, qubit, clbit, which = step
+                following: dict[int, np.ndarray] = {}
+                for key, rho in branches.items():
+                    for outcome in (0, 1):
+                        projected = rho * self.masks[qubit][outcome]
+                        if abs(np.trace(projected)) < 1e-15:
+                            continue
+                        error = min(max(flips[which][outcome], 0.0), 1.0)
+                        for recorded, weight in ((outcome, 1 - error), (1 - outcome, error)):
+                            if weight:
+                                target = (key & ~(1 << clbit)) | (recorded << clbit)
+                                following[target] = following.get(target, 0) + weight * projected
+                branches = following
+            elif kind == "reset":
+                qubit, flip = step[1], self.flipped[step[1]]
+                branches = {
+                    key: rho * self.masks[qubit][0] + (rho * self.masks[qubit][1])[np.ix_(flip, flip)]
+                    for key, rho in branches.items()
+                }
+            else:
+                _kind, clbit, value, taken, otherwise = step
+                for key, rho in branches.items():
+                    block = taken if ((key >> clbit) & 1) == value else otherwise
+                    if block is not None:
+                        branches[key] = block @ rho @ block.conj().T
+        law = np.zeros(1 << self.clbits)
+        for key, rho in branches.items():
+            law[key] += float(np.real(np.trace(rho)))
+        return law
+
+
+_NO_READOUT_ERROR = {"mid_e01": 0.0, "mid_e10": 0.0, "end_e01": 0.0, "end_e10": 0.0}
+
+
+class CompileLaw:
+    """A CompiledLaw of one (circuit, insertions, rates) item, required to equal the exact compiled law at rest.
+
+    With every rate, nuisance and assignment error at zero the evaluator must
+    reproduce qpe_diagnostics.ideal_compiled_probabilities on the same
+    archived circuit.
+    """
+
+    def __call__(self, item: tuple[Any, dict[int, list[tuple[int, float, int]]], int]) -> CompiledLaw:
+        from qpe_diagnostics import ideal_compiled_probabilities
+
+        circuit, insertions, rates = item
+        law = CompiledLaw(circuit, insertions, rates)
+        rest = law(np.zeros(rates), 0.0, 0.0, _NO_READOUT_ERROR)
+        if not np.allclose(rest, ideal_compiled_probabilities(circuit), atol=1e-9):
+            raise RuntimeError(f"{circuit.name}: the compiled evaluator differs from the exact compiled law at rest")
+        return law
+
+
+class LawShift:
+    """Whether one member's noiseless law moves when one rate steps away from a generic common point.
+
+    A rate can act only jointly with another (a product of two branch
+    phases), so the law is compared at a point where every rate is nonzero.
+    """
+
+    def __init__(self, laws: dict[str, CompiledLaw]) -> None:
+        self.laws = laws
+
+    def __call__(self, item: tuple[str, int, float, float]) -> bool:
+        member, index, base, step = item
+        law = self.laws[member]
+        point = np.full(law.rates, base)
+        moved = point.copy()
+        moved[index] += step
+        rest = law(point, 0.0, 0.0, _NO_READOUT_ERROR)
+        return not np.allclose(law(moved, 0.0, 0.0, _NO_READOUT_ERROR), rest, atol=1e-9)
+
+
+class ExposureObjective:
+    """Deviance over every member of the exact-ISA static detuning law at [round1, round2, *free rates].
+
+    Rates outside free stay at zero; readouts gives each member's assignment
+    rates.
+    """
+
+    def __init__(
+        self,
+        laws: dict[str, CompiledLaw],
+        counts: dict[str, np.ndarray],
+        readouts: dict[str, dict[str, float]],
+        free: list[int],
+    ) -> None:
+        self.laws, self.counts, self.readouts, self.free = laws, counts, readouts, free
+
+    def members(self, vector: np.ndarray) -> dict[str, float]:
+        values = [float(value) for value in vector]
+        result = {}
+        for name, law in self.laws.items():
+            rates = np.zeros(law.rates)
+            rates[self.free] = values[2:]
+            observed = self.counts[name]
+            expected = np.clip(law(rates, values[0], values[1], self.readouts[name]), 1e-12, None) * observed.sum()
+            positive = observed > 0
+            result[name] = 2 * float(np.sum(observed[positive] * np.log(observed[positive] / expected[positive])))
+        return result
+
+    def __call__(self, vector: np.ndarray) -> float:
+        return sum(self.members(vector).values())
+
+
+# A static detuning of a few hundred kHz bounds the rates, as in the joint
+# quasi-static fit. Each coupled rate's grid holds an odd count of points, so
+# zero is one, spaced at most a quarter of the detuning period of the
+# qubit's longest interval, which places a point inside every phase basin of
+# that interval; the product is capped, and the lowest points seed the local
+# searches.
+EXPOSURE_RATE_BOUND = 5.0
+EXPOSURE_GRID_CAP = 32768
+EXPOSURE_SEEDS = 12
+EXPOSURE_PROBES = ((0.41, 0.73), (-0.29, 1.13))
+
+
+def coupled_rates(laws: dict[str, CompiledLaw], rates: int) -> list[int]:
+    """Indices of the rates that move some member's noiseless law at either generic probe point."""
+    probes = [(name, index, base, step) for index in range(rates) for base, step in EXPOSURE_PROBES for name in laws]
+    moved = parallel.ordered_map(LawShift(laws), probes)
+    return sorted({index for (_name, index, _base, _step), shift in zip(probes, moved, strict=True) if shift})
+
+
+def grid_seeds(
+    objective: ExposureObjective, longest_us: list[float], rounds: tuple[float, float]
+) -> list[dict[int, float]]:
+    """The EXPOSURE_SEEDS lowest grid points over the objective's free rates, keyed by rate index."""
+    import heapq
+    import itertools
+
+    bound = EXPOSURE_RATE_BOUND
+    points = [max(3, math.ceil(4 * bound * longest_us[index] / math.pi) + 1) for index in objective.free]
+    if math.prod(points) > EXPOSURE_GRID_CAP:
+        scale = (EXPOSURE_GRID_CAP / math.prod(points)) ** (1 / len(points))
+        points = [max(3, int(count * scale)) for count in points]
+    points = [count + 1 - count % 2 for count in points]
+    grid = list(itertools.product(*(np.linspace(-bound, bound, count) for count in points)))
+    landscape = parallel.ordered_map(objective, [np.array([*rounds, *rates]) for rates in grid], min_items=2)
+    ranked = heapq.nsmallest(EXPOSURE_SEEDS, zip(landscape, grid, strict=True), key=lambda item: item[0])
+    return [dict(zip(objective.free, map(float, rates), strict=True)) for _value, rates in ranked]
+
+
+def exposure_models(
+    laws: dict[str, dict[str, CompiledLaw]],
+    counts: dict[str, np.ndarray],
+    readouts: dict[str, dict[str, float]],
+    qubits: list[int],
+    longest_us: dict[str, list[float]],
+) -> dict[str, dict[str, Any]]:
+    """Static detuning fits of every exposure model in laws, and the no-detuning law they all contain.
+
+    Each model fits one rate per coupled qubit (coupled_rates) and the two
+    depolarizing nuisances by deviance. The no-detuning fit comes first and
+    its nuisances evaluate every model's rate grid; every model then searches
+    from the same starts, zero and the grid seeds of all models, so
+    deviances of different exposure placements compare optima found from
+    identical starting points. A qubit whose rate moves no law adds no
+    parameter. Starts are drawn before mapping, so pooled and serial runs
+    return the same results.
+    """
+    reference = next(iter(laws.values()))
+    rest = ExposureObjective(reference, counts, readouts, [])
+    rest_starts = [[0.12, 0.0], [0.05, 0.05], [0.3, 0.1]]
+    unit = [(0.0, 1.0), (0.0, 1.0)]
+    rest_best = _lowest(parallel.ordered_map(LocalSearch(rest, unit), rest_starts, min_items=2))
+    rounds = (rest_best[1][0], rest_best[1][1])
+    objectives = {}
+    seeds: list[dict[int, float]] = [{}]
+    for label, members in laws.items():
+        objectives[label] = ExposureObjective(members, counts, readouts, coupled_rates(members, len(qubits)))
+        for seed in grid_seeds(objectives[label], longest_us[label], rounds):
+            if seed not in seeds:
+                seeds.append(seed)
+    models: dict[str, dict[str, Any]] = {}
+    for label, objective in objectives.items():
+        bounds = unit + [(-EXPOSURE_RATE_BOUND, EXPOSURE_RATE_BOUND)] * len(objective.free)
+        starts = [[*rounds, *(seed.get(index, 0.0) for index in objective.free)] for seed in seeds]
+        best = _lowest(parallel.ordered_map(LocalSearch(objective, bounds), starts, min_items=2))
+        names = ["round1", "round2", *(f"rate_{qubits[index]}_rad_per_us" for index in objective.free)]
+        models[label] = {
+            "fitted_qubits": [qubits[index] for index in objective.free],
+            "uncoupled_qubits": [qubit for index, qubit in enumerate(qubits) if index not in objective.free],
+            "starts": len(starts),
+            "parameters": dict(zip(names, best[1], strict=True)),
+            "deviance": best[0],
+            "member_deviance": objective.members(np.array(best[1])),
+        }
+    models["no_detuning"] = {
+        "parameters": dict(zip(["round1", "round2"], rest_best[1], strict=True)),
+        "deviance": rest_best[0],
+        "member_deviance": rest.members(np.array(rest_best[1])),
+    }
+    cells = sum(len(values) - 1 for values in counts.values())
+    for label, model in models.items():
+        model["parameters_count"] = len(model["parameters"])
+        model["degrees_of_freedom"] = cells - model["parameters_count"]
+        if label == "no_detuning":
+            continue
+        added = model["parameters_count"] - 2
+        statistic = rest_best[0] - model["deviance"]
+        model["likelihood_ratio_vs_no_detuning"] = {
+            "statistic": statistic,
+            "added_parameters": added,
+            # Periodic rates break the regularity conditions of the chi-square limit.
+            "nominal_chi2_p_value": float(chi2.sf(max(statistic, 0.0), added)) if added else None,
+        }
+    return models
+
+
+def _insertions(
+    table: dict[int, list[list[int]]], qubits: list[int], dt_us: float
+) -> dict[int, list[tuple[int, float, int]]]:
+    return {
+        qubit: [(count, (end - start) * dt_us, qubits.index(qubit)) for start, end, count in gaps]
+        for qubit, gaps in table.items()
+    }
+
+
+def piecewise_fit(
+    run: Path, pairs: dict[str, dict[str, np.ndarray]], readouts: dict[str, dict[str, float]]
+) -> dict[str, Any]:
+    """Static detuning fits with piecewise and single-gap window exposure through the exact archived ISA.
+
+    Both models rotate each window qubit by one static rate times every idle
+    interval they expose (window_segments), evaluated by CompiledLaw on the
+    archived circuit, so the coupling of each qubit to the work register in
+    each recorded branch follows from the circuit and needs no single-gap
+    sign. The single gap's intervals are a subset of the piecewise ones and
+    both carry one rate per coupled qubit, so their deviances differ through
+    exposure placement and the coupled-qubit count (exposure_models).
+    """
+    group = _group(run)
+    names = [member["name"] for member in group["members"]]
+    circuits = _circuits(run)
+    try:
+        segments = {
+            name: window_segments(circuit, payload)
+            for name, circuit, payload in zip(names, circuits, raw_pubs(run), strict=True)
+        }
+    except ValueError as error:
+        return {"skipped": str(error)}
+    dt, source = dt_source(run)
+    dt_us = dt * 1e6
+    qubits = sorted({qubit for entry in segments.values() for qubit in entry["intervals"]})
+    counts = {f"{pair}_{arm}": values for pair, arms in pairs.items() for arm, values in arms.items()}
+    tables = {"piecewise": "intervals", "single_gap": "single_gap"}
+    items = [
+        (circuit, _insertions(segments[name][table], qubits, dt_us), len(qubits))
+        for table in tables.values()
+        for name, circuit in zip(names, circuits, strict=True)
+    ]
+    compiled = parallel.ordered_map(CompileLaw(), items, min_items=2)
+    laws = {
+        label: dict(zip(names, compiled[position * len(names) : (position + 1) * len(names)], strict=True))
+        for position, label in enumerate(tables)
+    }
+    longest = {
+        label: [
+            max(
+                [(end - start) * dt_us for entry in segments.values() for start, end, _c in entry[table].get(q, [])],
+                default=0.0,
+            )
+            for q in qubits
+        ]
+        for label, table in tables.items()
+    }
+    models = exposure_models(laws, counts, readouts, qubits, longest)
+    pair_of = {name: name.removesuffix("_no_feedback").removesuffix("_feedback") for name in names}
+    for model in models.values():
+        model["pair_deviance"] = {
+            pair: sum(value for name, value in model["member_deviance"].items() if pair_of[name] == pair)
+            for pair in dict.fromkeys(pair_of.values())
+        }
+    return {
+        "dt_seconds": dt,
+        "dt_source": source,
+        "segments": {
+            name: {
+                "control": entry["control"],
+                "window_dt": entry["window"],
+                "intervals_dt": {str(q): [[s, e] for s, e, _c in gaps] for q, gaps in entry["intervals"].items()},
+                "single_gap_dt": {str(q): [[s, e] for s, e, _c in gaps] for q, gaps in entry["single_gap"].items()},
+                "unresolved": entry["unresolved"],
+            }
+            for name, entry in segments.items()
+        },
+        "models": models,
+        "piecewise_minus_single_gap_deviance": models["piecewise"]["deviance"] - models["single_gap"]["deviance"],
+        "piecewise_added_parameters_over_single_gap": models["piecewise"]["parameters_count"]
+        - models["single_gap"]["parameters_count"],
     }
 
 
@@ -870,6 +1373,114 @@ def _check_static_basins() -> None:
         raise RuntimeError(f"static refit from every seed returns {seeded}; the winner's start alone gives {single}")
 
 
+SYNTHETIC_DT_US = 4e-3
+SYNTHETIC_RATES = (1.1, -2.3)
+# Planted rates expose the work-only split by at least this total variation.
+SYNTHETIC_MIN_TV = 0.1
+SYNTHETIC_RATE_TOLERANCE = 0.01
+
+
+def _window_member(closing: int, rates: tuple[float, float] | None = None) -> tuple[Any, dict[str, Any]]:
+    """A three-qubit member and its returned schedule, with work qubit 1 pulsed inside the control's window.
+
+    Qubit 0 measures at 10 dt, resets, and plays its feed-forward pulse at
+    closing; qubit 1 plays a work-only sx at 200 dt inside the window, so its
+    idle time splits into [8, 200] and [208, closing + 10], and qubit 2 idles
+    over [8, closing + 10]. With rates, the circuit carries the static
+    detuning rotation of every interval explicitly, independent of
+    window_segments and CompiledLaw.
+    """
+    from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
+
+    circuit = QuantumCircuit(QuantumRegister(3, "q"), ClassicalRegister(4, "c"), name=f"window_{closing}")
+    rows: list[tuple[str, int, int, int]] = []
+
+    def pulse(name: str, qubit: int, start: int, length: int = 8) -> None:
+        rows.append((name, qubit, start, length))
+
+    def detune(qubit: int, duration: int) -> None:
+        if rates is not None:
+            circuit.rz(rates[qubit - 1] * duration * SYNTHETIC_DT_US, qubit)
+
+    for qubit in range(3):
+        circuit.sx(qubit)
+        pulse("sx", qubit, 0)
+    detune(1, 192)
+    detune(2, closing + 2)
+    circuit.rz(math.pi / 2, 1)
+    circuit.rz(math.pi / 2, 2)
+    circuit.measure(0, 0)
+    pulse("measure", 0, 10, 400)
+    circuit.sx(1)
+    pulse("sx", 1, 200)
+    detune(1, closing - 198)
+    circuit.reset(0)
+    pulse("reset", 0, 410, 400)
+    circuit.sx(0)
+    pulse("sx", 0, closing)
+    with circuit.if_test((circuit.clbits[0], 1)):
+        circuit.rz(math.pi / 2, 0)
+    circuit.sx(0)
+    pulse("sx", 0, closing + 8)
+    circuit.sx(1)
+    circuit.sx(2)
+    pulse("sx", 1, closing + 10)
+    pulse("sx", 2, closing + 10)
+    for qubit, clbit in ((0, 1), (1, 2), (2, 3)):
+        circuit.measure(qubit, clbit)
+        pulse("measure", qubit, closing + 16 + 2 * min(qubit, 1), 400)
+    timing = "\n".join(f"main,{name}_{q},Qubit {q},{start},{length},play" for name, q, start, length in rows)
+    return circuit, {"metadata": {"compilation": {"scheduler_timing": {"timing": timing}}}}
+
+
+def _check_piecewise_exposure() -> None:
+    """Segments split at a work-only pulse, the split moves the law, and a fit recovers the planted rates."""
+    from qpe_diagnostics import ideal_compiled_probabilities
+
+    members = {f"window_{closing}": closing for closing in (820, 1150)}
+    qubits = [1, 2]
+    laws: dict[str, dict[str, CompiledLaw]] = {"piecewise": {}, "single_gap": {}}
+    counts: dict[str, np.ndarray] = {}
+    longest = [0.0, 0.0]
+    for name, closing in members.items():
+        circuit, payload = _window_member(closing)
+        segments = window_segments(circuit, payload)
+        expected = {
+            "window": [10, closing],
+            "intervals": {1: [[8, 200, 1], [208, closing + 10, 2]], 2: [[8, closing + 10, 1]]},
+            "single_gap": {1: [[8, 200, 1]], 2: [[8, closing + 10, 1]]},
+        }
+        if any(segments[key] != value for key, value in expected.items()):
+            raise RuntimeError(f"window_segments of {name} returns {segments}, not {expected}")
+        for label, table in (("piecewise", "intervals"), ("single_gap", "single_gap")):
+            laws[label][name] = CompileLaw()((circuit, _insertions(segments[table], qubits, SYNTHETIC_DT_US), 2))
+        longest = [max(longest[0], (closing - 198) * SYNTHETIC_DT_US), max(longest[1], (closing + 2) * SYNTHETIC_DT_US)]
+        planted = np.array(SYNTHETIC_RATES)
+        truth = np.array(ideal_compiled_probabilities(_window_member(closing, SYNTHETIC_RATES)[0]))
+        piecewise = laws["piecewise"][name](planted, 0.0, 0.0, _NO_READOUT_ERROR)
+        if not np.allclose(piecewise, truth, atol=1e-9):
+            raise RuntimeError(f"{name}: the piecewise law at the planted rates differs from the explicit circuit")
+        distance = 0.5 * float(np.abs(piecewise - laws["single_gap"][name](planted, 0.0, 0.0, _NO_READOUT_ERROR)).sum())
+        if distance < SYNTHETIC_MIN_TV:
+            raise RuntimeError(
+                f"{name}: piecewise and single-gap laws differ by TV {distance:.4f} < {SYNTHETIC_MIN_TV:g}"
+            )
+        counts[name] = np.round(truth * 2**20)
+        # The recorded first bit drives the if_else: recorded 0 leaves the
+        # control's sx sx at |1>, recorded 1 adds rz(pi/2) between them.
+        flipped = laws["piecewise"][name](planted, 0.0, 0.0, _NO_READOUT_ERROR | {"mid_e01": 0.2, "mid_e10": 0.3})
+        marginal = [sum(flipped[key] for key in range(16) if key & 3 == low) for low in range(4)]
+        if marginal[0] > 1e-12 or not math.isclose(marginal[3], marginal[1], rel_tol=1e-9):
+            raise RuntimeError(f"{name}: a mid-circuit assignment flip misses the feed-forward condition: {marginal}")
+    readouts = dict.fromkeys(members, _NO_READOUT_ERROR)
+    fitted = exposure_models({"piecewise": laws["piecewise"]}, counts, readouts, qubits, {"piecewise": longest})
+    found = fitted["piecewise"]["parameters"]
+    rates = [found.get(f"rate_{qubit}_rad_per_us", math.nan) for qubit in qubits]
+    missed = [abs(rate - planted) for rate, planted in zip(rates, SYNTHETIC_RATES, strict=True)]
+    if not all(miss <= SYNTHETIC_RATE_TOLERANCE for miss in missed):
+        raise RuntimeError(f"the piecewise fit returns rates {rates}; the planted rates are {SYNTHETIC_RATES}")
+
+
 def _check_differences() -> None:
     retained = {"law": [0.25, 0.75], "dof": 3, "flag": True, "source": "--readout"}
     if differences(retained, {**retained, "law": [0.25 + 1e-12, 0.75]}):
@@ -886,6 +1497,7 @@ def self_check() -> None:
     _check_exact_laws()
     _check_manifest_binding()
     _check_static_basins()
+    _check_piecewise_exposure()
     _check_differences()
     readout = _readout(0.001, 0.006)
     truth = readout | {"round1": 0.1, "round2": 0.02, "phase_one": 0.5}
@@ -908,13 +1520,14 @@ def self_check() -> None:
     if np.allclose(half, distribution(readout, False), atol=1e-6):
         raise RuntimeError("branch dephasing leaves the no-feedback law unchanged")
     print(
-        "N=21 orbit RCA: exact laws, manifest binding, seeded static basins, regeneration tolerance, "
-        "planted-phase recovery, "
+        "N=21 orbit RCA: exact laws, manifest binding, seeded static basins, piecewise window exposure, "
+        "regeneration tolerance, planted-phase recovery, "
         "branch-window, and baseline rejection checks pass"
     )
 
 
 RETAINED = "rca-mechanism-fit.json"
+SCHEMA_VERSION = "n21-orbit-rca-mechanism-fit-v2"
 
 
 class PairFit:
@@ -945,7 +1558,7 @@ def build_report(run: Path, readout: tuple[float, float] | None) -> dict[str, An
             for name, entry in member_readouts(run, roles).items()
         }
     readouts = {name: _model_readout(entry) for name, entry in sources.items()}
-    report: dict[str, Any] = {"member_readout": sources, "pairs": {}}
+    report: dict[str, Any] = {"schema_version": SCHEMA_VERSION, "member_readout": sources, "pairs": {}}
     items = [
         (counts, {arm: readouts[f"{pair}_{arm}"] for arm in ("feedback", "no_feedback")})
         for pair, counts in pairs.items()
@@ -983,6 +1596,16 @@ def build_report(run: Path, readout: tuple[float, float] | None) -> dict[str, An
                 f"joint quasi-static detuning: G2={joint['deviance']:.2f} on {joint['degrees_of_freedom']} dof; "
                 f"static-only G2={joint['static_detuning_only_deviance']:.2f}; {joint['parameters_rad_per_us']}"
             )
+    piecewise = piecewise_fit(run, pairs, readouts)
+    report["piecewise"] = piecewise
+    if "skipped" in piecewise:
+        print(f"exact-ISA window exposure skipped: {piecewise['skipped']}")
+    else:
+        for label in ("piecewise", "single_gap", "no_detuning"):
+            model = piecewise["models"][label]
+            params = ", ".join(f"{key}={value:.4f}" for key, value in model["parameters"].items())
+            print(f"exact-ISA {label:12s} G2={model['deviance']:8.2f} on {model['degrees_of_freedom']} dof  {params}")
+        print(f"piecewise minus single-gap G2: {piecewise['piecewise_minus_single_gap_deviance']:+.3f}")
     return report
 
 
