@@ -632,6 +632,25 @@ def capability_violations(requirements: CircuitRequirements, capabilities: Backe
     return violations
 
 
+def group_admission_violations(group: Group, capabilities: BackendCapabilities) -> list[str]:
+    """Capability violations of one source-circuit group, naming the members of a mixed group's minority kind.
+
+    select_candidates, qpu_planning.prepare and the pre-submit refresh
+    (choice_change_reasons) apply this one predicate to the source members, so
+    a group the refresh rejects never reaches a planned record. Routing can
+    serialize independent operations in another order, so a routed ISA can
+    classify static where its source circuit classifies dynamic.
+    """
+    violations = capability_violations(group_requirements(group), capabilities)
+    kinds: dict[str, list[str]] = {"dynamic": [], "static": []}
+    for member in group.members:
+        kinds["dynamic" if _is_dynamic(member.circuit) else "static"].append(member.name)
+    if kinds["dynamic"] and kinds["static"]:
+        minority = "dynamic" if len(kinds["dynamic"]) <= len(kinds["static"]) else "static"
+        violations.append(f"{minority} members {kinds[minority]}")
+    return violations
+
+
 def target_violations(isa: QuantumCircuit, target: Any) -> list[str]:
     """Return ISA instructions that the refreshed Target does not support on their physical qubits."""
     violations: list[str] = []
@@ -1878,7 +1897,7 @@ def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict
     for snap in snaps:
         trace: list[dict[str, Any]] = []
         log[group.name][snap.name] = trace
-        capability_rejections = capability_violations(requirements, snap.capabilities)
+        capability_rejections = group_admission_violations(group, snap.capabilities)
         trace.append(
             {
                 "stage": "capability_admission",
@@ -3123,7 +3142,7 @@ def _qpy_digest(circuits: list[QuantumCircuit]) -> str:
 
 def choice_change_reasons(choice: Choice, fresh: Snapshot) -> list[str]:
     """Reasons an existing compile needs rebuilding against a fresh snapshot."""
-    reasons = capability_violations(group_requirements(choice.group), fresh.capabilities)
+    reasons = group_admission_violations(choice.group, fresh.capabilities)
     if choice.snap.capabilities != fresh.capabilities:
         reasons.append("backend capabilities changed")
     isas = [entry.packed for entry in choice.entries]
@@ -3915,18 +3934,8 @@ def configure_sampler(
     return sampler
 
 
-def _is_dynamic(isa: QuantumCircuit) -> bool:
-    """Control flow, reset, or any measurement followed by later quantum work."""
-    measurement_seen = False
-    for inst in isa.data:
-        name = inst.operation.name
-        if isinstance(inst.operation, ControlFlowOp) or name == "reset":
-            return True
-        if measurement_seen and name not in ("measure", "barrier", "delay"):
-            return True
-        if name == "measure":
-            measurement_seen = True
-    return False
+# One classifier assigns IBM job kinds, group admission and the Aer method.
+_is_dynamic = local_compute.is_dynamic
 
 
 def _has_feed_forward(isa: QuantumCircuit) -> bool:

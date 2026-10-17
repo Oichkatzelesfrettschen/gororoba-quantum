@@ -293,11 +293,18 @@ def _verify_candidate_rejection() -> None:
         ),
         target=object(),
     )
-    snapshot = SimpleNamespace(name="backend", backend=backend, properties=object())
+    snapshot = SimpleNamespace(name="backend", backend=backend, properties=object(), capabilities=object())
 
     def candidate(seed: int) -> tuple[list[Any], dict[str, Any]]:
         entries = [SimpleNamespace(name=member, replicas=[object()], ideal=law) for member in LAWS]
-        choice = SimpleNamespace(entries=entries, snap=snapshot, seed=seed, replicas=[object()], joint_score=0.9)
+        choice = SimpleNamespace(
+            group=SimpleNamespace(name="n21_feedback_encoded"),
+            entries=entries,
+            snap=snapshot,
+            seed=seed,
+            replicas=[object()],
+            joint_score=0.9,
+        )
         return [choice], {"name": "n21-feedback-encoded", "seed": seed}
 
     candidates = [candidate(1), candidate(2)]
@@ -315,6 +322,7 @@ def _verify_candidate_rejection() -> None:
     }
     runtime = SimpleNamespace(
         LiveRunError=RuntimeError,
+        group_admission_violations=lambda _group, _capabilities: [],
         noise_simulator=lambda *_args: SimpleNamespace(options=SimpleNamespace(noise_model=None)),
         simulate=lambda choice, *_args: {entry.name: [entry.ideal] for entry in choice.entries},
         submission_batches=lambda selected, kind, _shots: [pubs[id(selected[0])]] if kind == "dynamic" else [],
