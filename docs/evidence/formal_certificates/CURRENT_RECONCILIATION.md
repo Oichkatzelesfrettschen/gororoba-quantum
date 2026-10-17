@@ -5,8 +5,8 @@ The current external theorem contracts extend open_gororoba base
 quantum commit `a3d95ab60b25c4a6f18e5ff7c0435b4947abceb8`.
 The [retained delta](observable-contracts-delta.txt) records the current proof
 scope and replay entry point. The [source snapshot](observable-contracts.tar.gz)
-retains 235 files: the complete 29-source receipt closure, 21 source-bound
-witnesses and receipt specifications, 25 binding assets, the 160-declaration
+retains 249 files: the complete 29-source receipt closure, 21 source-bound
+witnesses and receipt specifications, 39 binding assets, the 160-declaration
 manifest, validator sources and raw compile/kernel/assumption logs.
 [Retrieval identity](observable-contracts-source.json) pins the external commit
 and archive digest; [member hashes](observable-contracts.files.sha256) bind
@@ -30,6 +30,15 @@ s1/s3 counts 2964/8192 and 4911/8192, and replay s1/s3 counts 4067/8192 and
 4057/8192, give exact margin 156109/1024000 after subtracting four radii.
 The certificate establishes a conditional sampling statement, rather than a
 posterior null probability for fixed observations.
+
+Every terminal hardware PUB supplies 8192 raw bitstrings with the correct register
+map and an exact collected terminal summary. Every replay result supplies a
+count vector recoverable uniquely from retained rounded probabilities on the
+verified 8192-shot grid, consistent batch/member metadata and exact recorded,
+collected and per-replica terminal summaries. The validator accepts the family
+only after all 16 hardware and all 16 replay observations pass these checks.
+Ordered replay bitstrings were not retained; the sampling-law premise remains
+separate from the recovered count evidence.
 
 The signed-coherence proof uses c0=branch, c1=work_a, c2=work_b and c3=spectator.
 With standard Pauli Y and trace(rho O), the odd matrix element is
