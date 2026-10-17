@@ -279,14 +279,26 @@ def row_diagonal(item: tuple[int, list[tuple[tuple[int, ...], np.ndarray]]]) -> 
     return diagonal(jax_bridge.Program(n=n, physical=list(range(n)), ops=ops))
 
 
-def evolve_numpy_rows(
-    structure: list[tuple[int, ...]], n: int, arrays: list[np.ndarray]
-) -> tuple[np.ndarray, set[str]]:
-    """Every batch row of arrays through row_diagonal, rows spread over parallel.ordered_map."""
-    rows = [
-        (n, [(qargs, kraus[b]) for qargs, kraus in zip(structure, arrays, strict=True)]) for b in range(len(arrays[0]))
-    ]
-    return np.array(parallel.ordered_map(row_diagonal, rows)), set()
+class RowCollector:
+    """An Evolve that records each batch row and returns its index, deferring every row to one later map.
+
+    A chunked replay through it yields, in place of diagonals, the indices
+    of the rows its truncation and concatenation keep, so rows of several
+    replays evolve in one parallel.ordered_map over row_diagonal.
+    """
+
+    def __init__(self) -> None:
+        self.rows: list[tuple[int, list[tuple[tuple[int, ...], np.ndarray]]]] = []
+
+    def __call__(
+        self, structure: list[tuple[int, ...]], n: int, arrays: list[np.ndarray]
+    ) -> tuple[np.ndarray, set[str]]:
+        start = len(self.rows)
+        self.rows += [
+            (n, [(qargs, kraus[b]) for qargs, kraus in zip(structure, arrays, strict=True)])
+            for b in range(len(arrays[0]))
+        ]
+        return np.arange(start, len(self.rows))[:, None], set()
 
 
 def replay_groups(programs: list[jax_bridge.Program]) -> dict[tuple[int, tuple[tuple[int, ...], ...]], list[int]]:
@@ -535,19 +547,30 @@ def self_test(device: str | None) -> dict[str, Any]:
 
     # Reproduction: the restructured programs give the distributions of the
     # per-factor exports under the scaled noise models, at every readout factor.
+    # The exports run in-process in loop order, since each factor's Kraus
+    # cache keys by object id; their evolutions run as one map.
     clock = time.perf_counter()
     reproduction = 0.0
     caches: dict[float, dict[int, np.ndarray]] = {factor: {} for factor in REFERENCE_FACTORS}
-    for _, label, replica in replicas:
-        for factor in REFERENCE_FACTORS:
-            reference = jax_bridge.export(replica, models[factor], caches[factor])
-            mine = restructured[label][ghost_error_scale.CZ_FACTORS.index(factor)]
-            left, right = diagonal(reference), diagonal(mine)
-            for r in ghost_error_scale.READOUT_FACTORS:
-                difference = jax_bridge.probabilities(reference, left, readout_scale=r) - jax_bridge.probabilities(
-                    mine, right, readout_scale=r
-                )
-                reproduction = max(reproduction, float(np.max(np.abs(difference))))
+    cases = [
+        (
+            (label, factor),
+            jax_bridge.export(replica, models[factor], caches[factor]),
+            restructured[label][ghost_error_scale.CZ_FACTORS.index(factor)],
+        )
+        for _, label, replica in replicas
+        for factor in REFERENCE_FACTORS
+    ]
+    evolved = parallel.ordered_map(diagonal, [program for _, reference, mine in cases for program in (reference, mine)])
+    restructured_diagonals: dict[tuple[str, float], np.ndarray] = {}
+    for k, (case, reference, mine) in enumerate(cases):
+        left, right = evolved[2 * k], evolved[2 * k + 1]
+        restructured_diagonals[case] = right
+        for r in ghost_error_scale.READOUT_FACTORS:
+            difference = jax_bridge.probabilities(reference, left, readout_scale=r) - jax_bridge.probabilities(
+                mine, right, readout_scale=r
+            )
+            reproduction = max(reproduction, float(np.max(np.abs(difference))))
     require(reproduction <= REPRODUCTION_TOLERANCE, f"restructured programs differ by {reproduction}")
     timing["reproduction"] = time.perf_counter() - clock
 
@@ -574,13 +597,16 @@ def self_test(device: str | None) -> dict[str, Any]:
             f"call {calls}: padded stacks differ from the whole group's rows {rows}",
         )
     require(calls == -(-len(group) // chunk), f"{calls} calls for {len(group)} programs at {chunk} per call")
-    several = chunked_replay(evolve_numpy_rows, CHUNK_TEST_BYTES)(group)[0]
-    require(
-        np.array_equal(several, chunked_replay(evolve_numpy_rows, BATCH_BYTES)(group)[0]), "chunked diagonals differ"
-    )
+    collector = RowCollector()
+    several_rows = chunked_replay(collector, CHUNK_TEST_BYTES)(group)[0][:, 0]
+    single_rows = chunked_replay(collector, BATCH_BYTES)(group)[0][:, 0]
+    row_diagonals = np.array(parallel.ordered_map(row_diagonal, collector.rows))
+    require(np.array_equal(row_diagonals[several_rows], row_diagonals[single_rows]), "chunked diagonals differ")
     timing["chunking"] = time.perf_counter() - clock
 
-    # Sampled parity against Aer's density matrix, and the sample's determinism.
+    # Sampled parity against Aer's density matrix, and the sample's
+    # determinism. A sampled program is the restructured factor-1 program
+    # whose diagonal the reproduction map evolved.
     clock = time.perf_counter()
     labels = [label for _, label, _ in replicas]
     chosen = parity_labels(labels, PARITY_SAMPLE, PARITY_SEED, "self-test")
@@ -591,7 +617,9 @@ def self_test(device: str | None) -> dict[str, Any]:
     base = ghost_error_scale.CZ_FACTORS.index(1.0)
     pairs = [(by_label[label], restructured[label][base]) for label in chosen]
     parity = {
-        label: float(np.max(np.abs(jax_bridge.probabilities(program, diagonal(program)) - reference)))
+        label: float(
+            np.max(np.abs(jax_bridge.probabilities(program, restructured_diagonals[(label, 1.0)]) - reference))
+        )
         for label, (_, program), reference in zip(chosen, pairs, aer_probabilities(pairs, state.aer()), strict=True)
     }
     require(max(parity.values()) <= PARITY_TOLERANCE, f"parity against Aer {parity}")
