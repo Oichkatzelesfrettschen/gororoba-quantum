@@ -10,7 +10,10 @@ on:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # A pull-request push replaces its branch's stale run. A main push waits as
+  # the group's one pending run while the running full tier finishes, so
+  # every started main run completes and the newest main commit runs next.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   gates:
