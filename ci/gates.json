@@ -3158,7 +3158,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/result.json && \"$PYTHON\" -B -O -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/result.json",
    "name": "core-489",
-   "seconds": 58.0,
+   "seconds": 64.0,
    "tier": "pr"
   },
   {
@@ -3166,7 +3166,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/lsq_conditioning_study.py --self-test && \"$PYTHON\" -B -O -W error scripts/lsq_conditioning_study.py --self-test",
    "name": "core-492",
-   "seconds": 2.1,
+   "seconds": 2.3,
    "tier": "pr"
   },
   {
@@ -3174,7 +3174,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error wheel_algebra.py --self-test && \"$PYTHON\" -B -O -W error wheel_algebra.py --self-test",
    "name": "core-493",
-   "seconds": 4.6,
+   "seconds": 3.8,
    "tier": "pr"
   },
   {

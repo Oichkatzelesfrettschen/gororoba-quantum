@@ -46,44 +46,59 @@ first two) gives bottom in every wheel component, rank n - 1 modulo every
 prime, and a ZeroDivisionError in Fraction elimination.
 
 ``--out`` also runs, with pyadic, a Dixon / Hensel solve of the integer-scaled
-normal equations: the inverse modulo the first prime that leaves the scaled
-A^T A invertible, lifted to p^k with p^k > 2 max(N, D)^2, N and D Hadamard
-bounds of the Cramer numerator and denominator, then rational
-reconstruction (pyadic.rationalise). rationalise returns the shortest vector
-(r, s) of the lattice r = y s mod p^k, whose determinant is p^k; a vector of
-norm below sqrt(p^k) is the shortest, and sqrt(N^2 + D^2) < sqrt(p^k)
-follows from the bound. The reconstruction must equal x*; the record keeps its
-digest, its residues, k and the bound. ``--out`` also captures the real
-lane-4 designs of both runs by wrapping atlas_coherent_families.fit_models
-in-process (bridge: rebuilt against real designs and exact solutions), and
-resimulates the axis_tilt_plus_mean held-out contrast predictions at each
-fold solution and at its perturbed solutions (P4).
+normal equations M y = v (M = Ai^T Ai, x = 2^shift y): the inverse modulo
+the first prime that leaves M invertible, lifted to p^k with
+p^k > 2 max(N, D)^2, N and D Hadamard bounds of the Cramer numerator and
+denominator, then rational reconstruction (pyadic.rationalise). rationalise
+returns the shortest vector (r, s) of the lattice r = y s mod p^k, whose
+determinant is p^k; a vector of norm below sqrt(p^k) is the shortest, and
+sqrt(N^2 + D^2) < sqrt(p^k) follows from the bound. The lift of every design,
+(prime, k, Y mod p^k), is the witness in padic_witness.json, bound to the
+record by its sha256. ``--out`` also captures the real lane-4 designs of
+both runs by wrapping atlas_coherent_families.fit_models in-process (bridge:
+rebuilt against real designs and exact solutions), and resimulates the
+axis_tilt_plus_mean held-out contrast predictions at each fold solution and
+at its seeded perturbed solutions (P4). The resimulation section retains its
+witness: the real design and offsets, the seed, and every resimulated log
+ratio.
 
-``--check FILE`` requires the source digest, recomputes everything except the
-pyadic lifting, the bridge and the resimulation, and compares integers,
-strings, booleans and values derived from exact or emulated arithmetic
-exactly, and condition numbers, norms and rho within 1e-6 relative (an SVD
-carries relative roundoff of order kappa eps). Every roundoff measurement of
-a numpy solver agrees within ROUNDOFF_FACTOR once both values are raised to
-the forward-error scale of a backward-stable solve, eps kappa (eps kappa^2
-for the normal equations), times max|x*| for absolute errors and
-max|x*| / min|x*| for componentwise ones; margins agree within the same
-factor below MARGIN_COMPARE. Below that floor a LAPACK build sets the error
-by its own operation order; the README gives the AOCL-to-OpenBLAS spread
-ROUNDOFF_FACTOR covers. P1's normal-equations clause depends on the build, so
---check prints it for the host and compares the other verdict clauses. The
-p-adic certificate is checked with the standard library: the recorded
-reconstruction digest must equal the fresh Fraction digest, whose x* solves
-the normal equations exactly, and the residues of x* modulo every recorded
-prime must match. ``--self-test`` checks the graded and column-scaled
-synthetic cases, the emulator against IEEE double and long double, the
-rank-deficient control, and that --check rejects corrupted records. docs/evidence/lsq_conditioning/README.md states the
-predictions P1-P6 and their falsifiers.
+``--check FILE`` requires the source and witness digests and recomputes
+everything except the pyadic lifting, the bridge and the resimulations. It
+compares integers, strings, booleans and values derived from exact or
+emulated arithmetic exactly, and condition numbers, norms and rho within
+1e-6 relative (an SVD carries relative roundoff of order kappa eps). Every
+roundoff measurement of a numpy solver agrees within ROUNDOFF_FACTOR once
+both values are raised to the forward-error scale of a backward-stable
+solve, eps kappa (eps kappa^2 for the normal equations), times max|x*| for
+absolute errors and max|x*| / min|x*| for componentwise ones; margins agree
+within the same factor below MARGIN_COMPARE. Below that floor a LAPACK build
+sets the error by its own operation order; the README gives the
+AOCL-to-OpenBLAS spread ROUNDOFF_FACTOR covers. P1's normal-equations clause
+depends on the build, so --check prints it for the host and compares every
+other verdict field, the P4 fields and the recommendation text in full.
+
+The p-adic certificate is checked with integers only: each witness lift must
+solve M Y = v modulo p^k with p^k above the recomputed bound, and Wang's
+half-extended Euclid reconstruction of each component
+(rational_reconstruction) must equal the fresh Fraction solution x*, which
+itself solves the normal equations exactly. The resimulation summary is
+recomputed from its witness (resimulation_summary): the real design must
+round to the atlas record's retained slopes and offsets, every unperturbed
+resimulation must lie within compare()'s contrast tolerance of the retained
+prediction, the fold solutions and their seeded perturbations are solved
+afresh for the parameter drifts, and the moves come from the retained log
+ratios. ``--self-test`` checks the graded and column-scaled synthetic cases,
+the emulator against IEEE double and long double, the rank-deficient
+control, that --check rejects corrupted records, that the lift verifier
+rejects altered witnesses, and that the resimulation check rejects a
+corrupted summary or witness. docs/evidence/lsq_conditioning/README.md
+states the predictions P1-P6 and their falsifiers.
 """
 
 from __future__ import annotations
 
 import argparse
+import base64
 import copy
 import hashlib
 import json
@@ -110,6 +125,9 @@ import wheel_algebra  # noqa: E402
 
 SCHEMA = "lsq-conditioning-study-v1"
 SOURCE = ROOT / "docs/evidence/atlas_coherent_families/result.json"
+# The Dixon lift of every design, which --check verifies with integers only.
+WITNESS = ROOT / "docs/evidence/lsq_conditioning/padic_witness.json"
+WITNESS_SCHEMA = "lsq-conditioning-padic-witness-v1"
 EPS = acf.LSQ_ROUNDOFF
 LADDER = (53, 64, 106, 113)
 # Mersenne primes, far above every entry of a scaled design, so a rank drop
@@ -139,6 +157,10 @@ RESIDUE_DIGEST = 16
 # 2-norm (atlas_coherent_families README, cross-substrate agreement).
 MEDIAN_PERTURBATION = 1.3e-14
 CONDITION_RELATIVE = 1e-6
+# Relative agreement of a parameter drift under a seeded design perturbation:
+# the perturbation sets the drift, and LAPACK roundoff, eps kappa against
+# PERTURBATION kappa, moves it by below 1e-3 of itself.
+DRIFT_RELATIVE = 1e-2
 METHODS = ("ne", "qr", "svd", "qr_eq", "svd_eq")
 METRICS = ("rel", "abs", "norm", "margin", "pred", "pred_margin")
 RESIMULATED_MODEL = "axis_tilt_plus_mean"
@@ -299,6 +321,96 @@ def hadamard_bound_bits(gram: list[list[int]], rhs: list[int]) -> int:
     den = math.prod(norms)
     num = math.prod(max(c, rhs_norm) for c in norms)
     return (2 * max(num, den) ** 2).bit_length()
+
+
+def lift_precision(prime: int, bound_bits: int) -> int:
+    """The smallest k with prime^k > 2^bound_bits, which is at least 2 max(N, D)^2."""
+    k = 1
+    while prime**k <= 1 << bound_bits:
+        k += 1
+    return k
+
+
+def rational_reconstruction(residue: int, modulus: int) -> tuple[int, int]:
+    """The rational r/s with r = residue s mod modulus and |r|, |s| <= sqrt(modulus / 2): half-extended Euclid.
+
+    Wang's reconstruction runs the extended Euclidean algorithm on
+    (modulus, residue), keeping the cofactor of the residue, and stops at the
+    first remainder at or below the bound; that remainder over its cofactor
+    is the rational, returned as the coprime pair (r, s) with s > 0. Two
+    rationals within the bound with the same residue are equal, so the result
+    is the only one a lift can reconstruct to.
+    """
+    bound = math.isqrt(modulus // 2)
+    r0, r1, t0, t1 = modulus, residue % modulus, 0, 1
+    while r1 > bound:
+        q = r0 // r1
+        r0, r1 = r1, r0 - q * r1
+        t0, t1 = t1, t0 - q * t1
+    require(t1 != 0 and abs(t1) <= bound and math.gcd(r1, abs(t1)) == 1, "rational reconstruction fails")
+    return (r1, t1) if t1 > 0 else (-r1, -t1)
+
+
+Lift = tuple[int, int, list[int]]
+
+
+def verify_lift(
+    gram: list[list[int]], rhs: list[int], shift: int, exact: Sequence[Fraction], lift: Lift, where: str
+) -> None:
+    """A recorded Dixon lift (prime index, k, Y mod p^k) solves M Y = v mod p^k and reconstructs to x*."""
+    index, k, lifted = lift
+    require(0 <= index < len(PRIMES) and k >= 1, f"{where}: lift prime or precision out of range")
+    modulus = PRIMES[index] ** k
+    require(modulus > 1 << hadamard_bound_bits(gram, rhs), f"{where}: p^k does not exceed 2 max(N, D)^2")
+    require(len(lifted) == len(rhs) and all(0 <= y < modulus for y in lifted), f"{where}: lift is not reduced")
+    require(
+        all(
+            (sum(g * y for g, y in zip(row, lifted, strict=True)) - r) % modulus == 0
+            for row, r in zip(gram, rhs, strict=True)
+        ),
+        f"{where}: the lift does not solve the scaled normal equations modulo p^k",
+    )
+    scale_num, scale_den = (1 << shift, 1) if shift >= 0 else (1, 1 << -shift)
+    for y, x in zip(lifted, exact, strict=True):
+        r, t = rational_reconstruction(y, modulus)
+        require(
+            r * scale_num * x.denominator == x.numerator * t * scale_den,
+            f"{where}: the reconstructed lift differs from the Fraction solution",
+        )
+
+
+def encode_lift(lift: Lift) -> list[Any]:
+    index, k, lifted = lift
+    return [index, k, [base64.b64encode(y.to_bytes(max(1, (y.bit_length() + 7) // 8), "big")).decode() for y in lifted]]
+
+
+def decode_lift(entry: list[Any]) -> Lift:
+    index, k, lifted = entry
+    return int(index), int(k), [int.from_bytes(base64.b64decode(y, validate=True), "big") for y in lifted]
+
+
+def witness_text(lifts: Sequence[Lift]) -> str:
+    rows = ",\n".join(json.dumps(encode_lift(lift), separators=(",", ":")) for lift in lifts)
+    head = json.dumps({"schema": WITNESS_SCHEMA, "primes": [str(p) for p in PRIMES]})[:-1]
+    return f'{head}, "lifts": [\n{rows}\n]}}\n'
+
+
+def fraction_lift(problem: Problem, prime_index: int = 0) -> Lift:
+    """The residues of x* modulo p^k, computed from the Fraction solution with pow(); the self-test's witness."""
+    _, design, data, _, _ = problem
+    a = fractions_of(design)
+    b = [Fraction(v) for v in data.tolist()]
+    gram, rhs = normal_equations(a, b)
+    exact = wheel_algebra.fraction_solve(gram, rhs)
+    scaled_gram, scaled_rhs, shift = scaled_system(a, b)
+    prime = PRIMES[prime_index]
+    k = lift_precision(prime, hadamard_bound_bits(scaled_gram, scaled_rhs))
+    modulus = prime**k
+    lifted = []
+    for x in exact:
+        y = x / Fraction(2) ** shift
+        lifted.append(y.numerator * pow(y.denominator, -1, modulus) % modulus)
+    return prime_index, k, lifted
 
 
 # --- emulated p-bit binary floating point ----------------------------------
@@ -525,14 +637,17 @@ ROW_FIELDS = [
     "residual_v2",
     "residual_vp",
     "bound_bits",
+    "lift_prime_index",
+    "lift_k",
+    "lift_verified",
 ]
 
 
 class Measure:
     """All float64 and exact measurements of one rebuilt least-squares problem."""
 
-    def __call__(self, item: tuple[Problem, np.ndarray | None, int]) -> list[Any]:
-        problem, held, index = item
+    def __call__(self, item: tuple[Problem, np.ndarray | None, int, Lift | None]) -> list[Any]:
+        problem, held, index, lift = item
         (backend, lane, name, fold), design, data, _, kappa_rule = problem
         m, n = design.shape
         a = fractions_of(design)
@@ -577,7 +692,9 @@ class Measure:
             pred_drift = max(pred_drift, float(np.max(np.abs(rows @ change))))
         tolerances = [tolerance(q, kappa_rule) for q in exact]
 
-        scaled_rows, rhs_int, _ = scaled_system(a, b)
+        scaled_rows, rhs_int, shift = scaled_system(a, b)
+        if lift is not None:
+            verify_lift(scaled_rows, rhs_int, shift, exact, lift, f"{backend} {lane} {name} {fold}")
         design_int, _ = integer_scaled([v for row in a for v in row])
         ranks = [rank_mod([design_int[i * n : (i + 1) * n] for i in range(m)], p) for p in PRIMES]
         residue_text = ";".join(",".join(map(str, residues(exact, p))) for p in PRIMES)
@@ -607,6 +724,9 @@ class Measure:
             [valuation(r, 2) for r in residual],
             [max((abs(v) for v in (valuation(r, p) for r in residual) if v is not None), default=0) for p in PRIMES],
             hadamard_bound_bits(scaled_rows, rhs_int),
+            None if lift is None else lift[0],
+            None if lift is None else lift[1],
+            lift is not None,
         ]
         return row
 
@@ -815,9 +935,7 @@ class PadicSolve:
         else:
             raise SystemExit(f"{backend} {lane} {name} {fold}: the scaled A^T A is singular modulo every prime")
         inverse_rows = [[int(v) for v in row[n:]] for row in augmented]
-        k = 1
-        while prime**k <= 1 << bound_bits:
-            k += 1
+        k = lift_precision(prime, bound_bits)
         residual = list(rhs)
         lifted = [0] * n
         power = 1
@@ -847,16 +965,9 @@ class PadicSolve:
             for row, bi in zip(a, b, strict=True)
         ]
         valuations = [PAdic(r, prime, k).n if r else None for r in residual_q]
-        return {
-            "prime_index": index,
-            "k": k,
-            "bound_bits": bound_bits,
-            "solution_sha256": digest_fractions(solution),
-            "residues_sha256": sha256_bytes(
-                ";".join(",".join(map(str, residues(solution, p))) for p in PRIMES).encode()
-            )[:RESIDUE_DIGEST],
-            "lifting_prime_valuations": valuations,
-        }
+        stdlib = [valuation(r, prime) for r in residual_q]
+        require(valuations == stdlib, f"{backend} {lane} {name} {fold}: PAdic and integer valuations differ")
+        return {"lift": (index, k, lifted), "bound_bits": bound_bits}
 
 
 # --- bridge to the real designs and the resimulation (record only) ----------
@@ -902,6 +1013,109 @@ def exact_solution(design: np.ndarray, data: np.ndarray) -> list[Fraction]:
     return wheel_algebra.fraction_solve(gram, rhs)
 
 
+LEVELS = {"worst": PERTURBATION, "median": MEDIAN_PERTURBATION}
+
+
+def perturbed_fold_solutions(
+    real: np.ndarray, offsets: np.ndarray, seed: list[int]
+) -> list[list[tuple[np.ndarray, str]]]:
+    """Per held-out edge: the fold solution, then TRIALS seeded perturbations at each LEVELS size, in draw order."""
+    rng = np.random.default_rng(seed)
+    n = len(offsets)
+    out = []
+    for held in range(n):
+        keep = [k for k in range(n) if k != held]
+        fit = np.linalg.lstsq(real[keep], offsets[keep], rcond=None)[0]
+        solutions = [(fit, "base")]
+        norm = np.linalg.norm(real[keep], 2)
+        for level, size in LEVELS.items():
+            for _ in range(TRIALS):
+                noise = rng.standard_normal(real[keep].shape)
+                noise *= size * norm / np.linalg.norm(noise, 2)
+                solutions.append((np.linalg.lstsq(real[keep] + noise, offsets[keep], rcond=None)[0], level))
+        out.append(solutions)
+    return out
+
+
+def resimulation_summary(witness: dict[str, Any], lane: dict[str, Any]) -> dict[str, Any]:
+    """P4's moves, drifts and ranks from a retained resimulation witness, bound to the atlas lane record.
+
+    The real design must round to the lane's retained nine-decimal slopes
+    and six-decimal offsets, as atlas_coherent_families wrote them; each
+    unperturbed resimulation must lie within compare()'s contrast tolerance
+    of the retained prediction. The fold solutions and their perturbations
+    are recomputed from the design and the seed, so every parameter drift is
+    measured afresh; the resimulated log ratios are the retained amplification
+    inputs.
+    """
+    model = lane["models"][RESIMULATED_MODEL]
+    families, constant = acf.MODELS[RESIMULATED_MODEL]
+    real = np.array(witness["real_design"], dtype=float)
+    offsets = np.array(witness["real_offsets"], dtype=float)
+    n = len(offsets)
+    slopes = [v for row in np.hstack([np.array(lane["fitted_slopes"][f], dtype=float) for f in families]) for v in row]
+    width = len(slopes) // n
+    require(real.shape == (n, width + int(constant)), "resimulation design shape differs from the lane")
+    require([round(float(v), 9) for v in real[:, :width].ravel()] == slopes, "real design misses the retained slopes")
+    require(not constant or bool(np.all(real[:, width] == 1.0)), "real design lane constant is not 1")
+    require([round(float(v), 6) for v in offsets] == lane["measured_offset_rad"], "real offsets miss the record")
+    ratios = witness["log_ratios"]
+    per_fold = 1 + len(LEVELS) * TRIALS
+    require(len(ratios) == n and all(len(row) == per_fold for row in ratios), "resimulation witness shape")
+    retained = model["contrast"]["predicted_log_ratio"]
+    contrast_tolerance = max(
+        acf.CHECK_TOLERANCE, EPS * float(model["fold_condition_max"]) ** 2 * max(abs(v) for v in retained)
+    )
+    base_minus = [float(row[0]) - retained[h] for h, row in enumerate(ratios)]
+    require(all(abs(d) <= contrast_tolerance for d in base_minus), "unperturbed resimulation misses the atlas contrast")
+    drift: dict[str, list[float]] = {level: [] for level in LEVELS}
+    move: dict[str, list[float]] = {level: [] for level in LEVELS}
+    for held, solutions in enumerate(perturbed_fold_solutions(real, offsets, witness["seed"])):
+        fit = solutions[0][0]
+        for level in LEVELS:
+            picks = [k for k, (_, name) in enumerate(solutions) if name == level]
+            drift[level].append(max(float(np.max(np.abs(solutions[k][0] - fit))) for k in picks))
+            move[level].append(max(abs(float(ratios[held][k]) - float(ratios[held][0])) for k in picks))
+    moved = witness["moved_prediction"]
+    return {
+        "contrast_tolerance": sig(contrast_tolerance, CONDITION_DIGITS),
+        "base_minus_retained": [sig(d, 3) for d in base_minus],
+        "moves": [sig(v, 3) for v in move["worst"]],
+        "median_moves": [sig(v, 3) for v in move["median"]],
+        "parameter_drift": [sig(v, 3) for v in drift["worst"]],
+        "moved_prediction_move": sig(move["worst"][moved], 3),
+        "moved_prediction_median_move": sig(move["median"][moved], 3),
+        "moved_prediction_rank": 1 + sum(v > move["worst"][moved] for v in move["worst"]),
+        "largest_move": sig(max(move["worst"]), 3),
+    }
+
+
+def compare_resimulation(retained: dict[str, Any], fresh: dict[str, Any], path: str) -> None:
+    """A retained resimulation summary against the one recomputed from its witness."""
+    require(set(retained) == set(fresh), f"{path}: keys differ")
+    for key, value in retained.items():
+        if key == "parameter_drift":
+            for k, (a, b) in enumerate(zip(value, fresh[key], strict=True)):
+                require(abs(a - b) <= DRIFT_RELATIVE * abs(a), f"{path}.{key}[{k}]: {a} against {b}")
+        elif key == "contrast_tolerance":
+            close_condition(value, fresh[key], f"{path}.{key}")
+        else:
+            require(value == fresh[key], f"{path}.{key}: {value} against {fresh[key]}")
+
+
+def check_resimulation(retained: dict[str, Any], source: dict[str, Any]) -> dict[str, Any]:
+    """Recompute every backend's resimulation summary from its witness and compare it with the retained one."""
+    lanes = {(lane["backend"], lane["lane"]): lane for lane in source["lanes"]}
+    out = {}
+    for backend, entry in retained.items():
+        require(entry["model"] == RESIMULATED_MODEL and entry["moved_prediction"] == MOVED[backend], backend)
+        witness = {k: v for k, v in entry.items() if k != "summary"}
+        summary = resimulation_summary(witness, lanes[backend, BRIDGE_LANE])
+        compare_resimulation(entry["summary"], summary, f"resimulation.{backend}.summary")
+        out[backend] = {**witness, "summary": summary}
+    return out
+
+
 def bridge_and_resimulation(source: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
     bridge: dict[str, Any] = {}
     resim: dict[str, Any] = {}
@@ -940,53 +1154,30 @@ def bridge_and_resimulation(source: dict[str, Any]) -> tuple[dict[str, Any], dic
             }
         bridge[backend] = rows
 
-        model = lane["models"][RESIMULATED_MODEL]
         families, constant = acf.MODELS[RESIMULATED_MODEL]
         columns = [c for f in families for c in captured["fitted_columns"][f]]
         n = len(offsets)
         real = np.hstack(
             [captured["responses"][f]["fitted"] for f in families] + ([np.ones((n, 1))] if constant else [])
         )
-        items, labels = [], []
-        rng = np.random.default_rng([SEED, 1 if backend == "ibm_fez" else 2])
-        levels = {"worst": PERTURBATION, "median": MEDIAN_PERTURBATION}
-        for held in range(n):
-            keep = [k for k in range(n) if k != held]
-            fit = np.linalg.lstsq(real[keep], offsets[keep], rcond=None)[0]
-            solutions = [("base", fit)]
-            norm = np.linalg.norm(real[keep], 2)
-            for level, size in levels.items():
-                for _ in range(TRIALS):
-                    noise = rng.standard_normal(real[keep].shape)
-                    noise *= size * norm / np.linalg.norm(noise, 2)
-                    solutions.append((level, np.linalg.lstsq(real[keep] + noise, offsets[keep], rcond=None)[0]))
+        seed = [SEED, 1 if backend == "ibm_fez" else 2]
+        items = []
+        for held, solutions in enumerate(perturbed_fold_solutions(real, offsets, seed)):
             base = captured["bases"][held]
-            for level, values in solutions:
+            for values, _ in solutions:
                 errors = acf.errors_of(columns, values[: len(columns)])
                 items.append((captured["prepared"][held], errors, base["contrast"], base["phase"]))
-                labels.append((held, level, float(np.max(np.abs(values - fit)))))
         simulated = parallel.ordered_map(acf.Resimulate(), items, min_items=2)
-        per_edge: dict[int, dict[str, Any]] = {}
-        for (held, level, drift), (_, log_ratio) in zip(labels, simulated, strict=True):
-            entry = per_edge.setdefault(held, {"base": log_ratio, **{f"{k}_move": 0.0 for k in levels}})
-            if level != "base":
-                entry[f"{level}_move"] = max(entry[f"{level}_move"], abs(log_ratio - entry["base"]))
-                entry[f"{level}_drift"] = max(entry.get(f"{level}_drift", 0.0), drift)
-        retained = model["contrast"]["predicted_log_ratio"]
-        moved = MOVED[backend]
-        resim[backend] = {
+        per_fold = 1 + len(LEVELS) * TRIALS
+        witness = {
             "model": RESIMULATED_MODEL,
-            "moved_prediction": moved,
-            "base_minus_retained": [sig(per_edge[h]["base"] - retained[h], 3) for h in range(n)],
-            "moves": [sig(per_edge[h]["worst_move"], 3) for h in range(n)],
-            "parameter_drift": [sig(per_edge[h]["worst_drift"], 3) for h in range(n)],
-            "median_moves": [sig(per_edge[h]["median_move"], 3) for h in range(n)],
-            "moved_prediction_move": sig(per_edge[moved]["worst_move"], 3),
-            "moved_prediction_median_move": sig(per_edge[moved]["median_move"], 3),
-            "moved_prediction_rank": 1
-            + sum(e["worst_move"] > per_edge[moved]["worst_move"] for e in per_edge.values()),
-            "largest_move": sig(max(e["worst_move"] for e in per_edge.values()), 3),
+            "moved_prediction": MOVED[backend],
+            "seed": seed,
+            "real_design": real.tolist(),
+            "real_offsets": offsets.tolist(),
+            "log_ratios": [[ratio for _, ratio in simulated[h * per_fold : (h + 1) * per_fold]] for h in range(n)],
         }
+        resim[backend] = {**witness, "summary": resimulation_summary(witness, lane)}
     return bridge, resim
 
 
@@ -1088,7 +1279,7 @@ def verdicts(record: dict[str, Any]) -> dict[str, Any]:
     p3 = ladder_ratio <= 1 and largest_visible < 0.1 and emulator
 
     resim = record.get("resimulation") or {}
-    p4_moves = [float(entry["moved_prediction_move"]) for entry in resim.values()]
+    p4_moves = [float(entry["summary"]["moved_prediction_move"]) for entry in resim.values()]
     p4_largest = max(p4_moves) if p4_moves else None
     if p4_largest is None:
         p4_state = "not run"
@@ -1098,16 +1289,9 @@ def verdicts(record: dict[str, Any]) -> dict[str, Any]:
         p4_state = "falsified"
     else:
         p4_state = "inconclusive"
-    p4_drift = max(
-        get(row, "p4_drift") for row in rows if get(row, "model") == RESIMULATED_MODEL and get(row, "lane") == 4
-    )
+    p4_drift = max(e["summary"]["parameter_drift"][e["moved_prediction"]] for e in resim.values()) if resim else None
 
-    padic = record.get("padic") or {}
-    reference = column(rows, fields, "reference_sha256")
-    padic_rows = padic.get("rows", [])
-    p5_equal = len(padic_rows) == len(rows) and all(
-        r["solution_sha256"] == ref for r, ref in zip(padic_rows, reference, strict=True)
-    )
+    p5_equal = all(column(rows, fields, "lift_verified"))
     full_rank = all(all(rank == get(row, "n") for rank in get(row, "ranks_mod_p")) for row in rows)
     control = record["control"]
     control_rank = all(rank == control["n"] - 1 for rank in control["ranks_mod_p"])
@@ -1128,10 +1312,18 @@ def verdicts(record: dict[str, Any]) -> dict[str, Any]:
     )
     precision_move = max((1 / v for v in finite_values(column(ladder, lfields, "p53_margin"))), default=0.0)
     current_move = max(mover("svd_margin"), mover("svd_pred_margin"))
-    if max(equilibration_move, precision_move, current_move) > 0.1:
+    movers = [
+        name
+        for name, value in (
+            ("column equilibration", equilibration_move),
+            ("Householder at p = 53", precision_move),
+            ("the current SVD solve", current_move),
+        )
+        if value > 0.1
+    ]
+    if movers:
         recommendation = (
-            "a solver or precision change moves a value by more than tolerance / 10: "
-            f"equilibration {equilibration_move:.3g}, precision {precision_move:.3g}, current {current_move:.3g}"
+            f"replace the solver: {', '.join(movers)} moves a value by more than tolerance / 10 (moves_over_tolerance)"
         )
     else:
         if p4_state in ("falsified", "inconclusive"):
@@ -1146,9 +1338,8 @@ def verdicts(record: dict[str, Any]) -> dict[str, Any]:
             source = "not measured: the resimulation runs only with --out"
         recommendation = (
             "keep SVD lstsq in float64: its distance from the exact solution, the most that equilibration or any "
-            f"precision step can recover, stays at {current_move:.3g} of tolerance on every value "
-            f"(equilibrated paths {equilibration_move:.3g}, Householder p = 53 {precision_move:.3g}); the dominant "
-            f"error source is {source}"
+            "precision step can recover, stays below tolerance / 10 on every value (moves_over_tolerance); "
+            f"the dominant error source is {source}"
         )
     return {
         "P1": {
@@ -1178,7 +1369,7 @@ def verdicts(record: dict[str, Any]) -> dict[str, Any]:
         "P4": {
             "state": p4_state,
             "largest_resimulated_move": p4_largest,
-            "axis_tilt_plus_mean_lane4_parameter_drift": p4_drift,
+            "moved_prediction_parameter_drift": p4_drift,
         },
         "P5": {"holds": p5, "padic_equals_fraction": p5_equal, "full_rank_mod_every_prime": full_rank},
         "P6": {"holds": p6, "control_wheel_kinds": control["wheel_kinds"]},
@@ -1192,8 +1383,12 @@ def verdicts(record: dict[str, Any]) -> dict[str, Any]:
 
 
 def study(
-    selection: Callable[[Problem], bool] | None = None, padic: bool = False, bridge: bool = False
-) -> dict[str, Any]:
+    selection: Callable[[Problem], bool] | None = None,
+    lifts: Sequence[Lift] | None = None,
+    padic: bool = False,
+    bridge: bool = False,
+) -> tuple[dict[str, Any], list[Lift]]:
+    """The record, and the lifts it verified: given ones (--check) or pyadic's (padic=True)."""
     source = json.loads(SOURCE.read_text(encoding="utf-8"))
     problems = rebuilt_problems(source)
     if selection is not None:
@@ -1208,7 +1403,12 @@ def study(
                 designs[lane["backend"], lane["lane"], name] = np.hstack(
                     blocks + ([np.ones((n, 1))] if constant else [])
                 )
-    items = [(p, held_row(designs, p), index) for index, p in enumerate(problems)]
+    witness: list[Lift] = list(lifts) if lifts is not None else []
+    if padic:
+        results = parallel.ordered_map(PadicSolve(), problems)
+        witness = [r["lift"] for r in results]
+    require(not witness or len(witness) == len(problems), "the lift witness does not cover every design")
+    items = [(p, held_row(designs, p), index, witness[index] if witness else None) for index, p in enumerate(problems)]
     rows = parallel.ordered_map(Measure(), items)
     worst: dict[tuple[str, int, str], tuple[float, int]] = {}
     for index, row in enumerate(rows):
@@ -1227,6 +1427,7 @@ def study(
             "ladder": list(LADDER),
             "primes": [str(p) for p in PRIMES],
             "perturbation": PERTURBATION,
+            "median_perturbation": MEDIAN_PERTURBATION,
             "trials": TRIALS,
             "seed": SEED,
             "smallest_move": SMALLEST_MOVE,
@@ -1245,21 +1446,24 @@ def study(
         },
         "control": deficient_control(),
     }
-    if padic:
-        results = parallel.ordered_map(PadicSolve(), problems)
-        bound_index = ROW_FIELDS.index("bound_bits")
-        require(all(r["bound_bits"] == row[bound_index] for r, row in zip(results, rows, strict=True)), "bound differs")
+    if witness:
         record["padic"] = {
             "primes": [str(p) for p in PRIMES],
-            "lifting_primes_used": sorted({str(PRIMES[r["prime_index"]]) for r in results}),
-            "k_range": [min(r["k"] for r in results), max(r["k"] for r in results)],
-            "bound_bits_range": [min(r["bound_bits"] for r in results), max(r["bound_bits"] for r in results)],
-            "rows": results,
+            "witness": {
+                "path": WITNESS.relative_to(ROOT).as_posix(),
+                "sha256": sha256_bytes(witness_text(witness).encode()),
+            },
+            "lifting_primes_used": sorted({str(PRIMES[lift[0]]) for lift in witness}),
+            "k_range": [min(lift[1] for lift in witness), max(lift[1] for lift in witness)],
+            "bound_bits_range": [
+                min(column(rows, ROW_FIELDS, "bound_bits")),
+                max(column(rows, ROW_FIELDS, "bound_bits")),
+            ],
         }
     if bridge:
         record["bridge"], record["resimulation"] = bridge_and_resimulation(source)
     record["verdicts"] = verdicts(record)
-    return record
+    return record, witness
 
 
 # --- --check -----------------------------------------------------------------
@@ -1352,10 +1556,18 @@ def compare_verdicts(retained: dict[str, Any], fresh: dict[str, Any]) -> None:
             retained[key][clause] == fresh[key][clause],
             f"verdicts.{key}.{clause}: {retained[key]} against {fresh[key]}",
         )
-    require(retained["P4"]["state"] == fresh["P4"]["state"], f"verdicts.P4: {retained['P4']} against {fresh['P4']}")
+    p4, fresh_p4 = retained["P4"], fresh["P4"]
+    require(set(p4) == set(fresh_p4), f"verdicts.P4 keys: {p4} against {fresh_p4}")
+    for key, value in p4.items():
+        if key == "moved_prediction_parameter_drift" and value is not None and fresh_p4[key] is not None:
+            require(abs(value - fresh_p4[key]) <= DRIFT_RELATIVE * abs(value), f"verdicts.P4.{key}: {value}")
+        else:
+            require(value == fresh_p4[key], f"verdicts.P4.{key}: {value} against {fresh_p4[key]}")
+    for key, value in retained["moves_over_tolerance"].items():
+        close_roundoff(value, fresh["moves_over_tolerance"][key], 1e-12, f"verdicts.moves_over_tolerance.{key}")
     require(
-        retained["recommendation"].split(":")[0] == fresh["recommendation"].split(":")[0],
-        "verdicts.recommendation differs",
+        retained["recommendation"] == fresh["recommendation"],
+        f"verdicts.recommendation: {retained['recommendation']!r} against {fresh['recommendation']!r}",
     )
 
 
@@ -1380,21 +1592,12 @@ def check(retained: dict[str, Any], fresh: dict[str, Any]) -> dict[str, Any]:
     for key in ("graded", "column_scaled"):
         compare_synthetic(retained["synthetic"][key], fresh["synthetic"][key], f"synthetic.{key}")
     require(retained["control"] == fresh["control"], f"control: {retained['control']} against {fresh['control']}")
-    padic = retained.get("padic")
-    if padic is not None:
-        require(padic["primes"] == [str(p) for p in PRIMES], "padic primes differ")
-        fields = retained["fields"]
-        for k, (entry, row) in enumerate(zip(padic["rows"], fresh["matrices"], strict=True)):
-            path = f"padic.rows[{k}]"
-            require(entry["solution_sha256"] == row[fields.index("reference_sha256")], f"{path}: solution differs")
-            require(entry["residues_sha256"] == row[fields.index("residues_sha256")], f"{path}: residues differ")
-            require(entry["bound_bits"] == row[fields.index("bound_bits")], f"{path}: bound differs")
-            prime = PRIMES[entry["prime_index"]]
-            require(prime ** entry["k"] > 1 << entry["bound_bits"], f"{path}: p^k does not exceed 2 max(N, D)^2")
-            vp = row[fields.index("residual_vp")][entry["prime_index"]]
-            largest = max((abs(v) for v in entry["lifting_prime_valuations"] if v is not None), default=0)
-            require(largest == vp, f"{path}: residual valuations differ")
-    fresh_verdicts = verdicts({**fresh, "padic": padic, "resimulation": retained.get("resimulation")})
+    require(retained.get("padic") == fresh.get("padic"), f"padic: {retained.get('padic')} against {fresh.get('padic')}")
+    resimulation = retained.get("resimulation")
+    if resimulation is not None:
+        source = json.loads(SOURCE.read_text(encoding="utf-8"))
+        resimulation = check_resimulation(resimulation, source)
+    fresh_verdicts = verdicts({**fresh, "resimulation": resimulation})
     compare_verdicts(retained["verdicts"], fresh_verdicts)
     return fresh_verdicts
 
@@ -1468,26 +1671,15 @@ def self_test() -> int:
         (backend, lane, name, fold), *_ = problem
         return backend == "ibm_fez" and lane == 4 and name in ("lane_mean", RESIMULATED_MODEL) and fold < 2
 
-    record = study(reduced)
-    rows, fields = record["matrices"], record["fields"]
-    reference = [row[fields.index("reference_sha256")] for row in rows]
-    record["padic"] = {
-        "primes": [str(p) for p in PRIMES],
-        "rows": [
-            {
-                "prime_index": 0,
-                "k": -(-(row[fields.index("bound_bits")] + 1) // 60) + 1,
-                "bound_bits": row[fields.index("bound_bits")],
-                "solution_sha256": ref,
-                "residues_sha256": row[fields.index("residues_sha256")],
-                "lifting_prime_valuations": [row[fields.index("residual_vp")][0]],
-            }
-            for row, ref in zip(rows, reference, strict=True)
-        ],
-    }
-    record["verdicts"] = verdicts(record)
-    fresh = study(reduced)
+    source = json.loads(SOURCE.read_text(encoding="utf-8"))
+    problems = [p for p in rebuilt_problems(source) if reduced(p)]
+    # pyadic is a recording dependency; the residues of x* modulo p^k are the
+    # same lift the Dixon iteration produces, so they exercise the verifier.
+    lifts = [fraction_lift(problem) for problem in problems]
+    record, _ = study(reduced, lifts=lifts)
+    fresh, _ = study(reduced, lifts=lifts)
     check(json.loads(json.dumps(record)), fresh)
+    fields = record["fields"]
     corruptions: list[tuple[str, Callable[[dict[str, Any]], None]]] = [
         ("source digest", lambda r: r["source"].__setitem__("sha256", "0" * 64)),
         ("reference digest", lambda r: r["matrices"][1].__setitem__(fields.index("reference_sha256"), "f" * 64)),
@@ -1508,9 +1700,13 @@ def self_test() -> int:
             lambda r: r["ladder"][0].__setitem__(record["ladder_fields"].index("p113_norm"), 1e-20),
         ),
         ("rank certificate", lambda r: r["matrices"][0].__setitem__(fields.index("ranks_mod_p"), [0, 0, 0])),
-        ("p-adic solution", lambda r: r["padic"]["rows"][2].__setitem__("solution_sha256", "a" * 64)),
-        ("p-adic residues", lambda r: r["padic"]["rows"][2].__setitem__("residues_sha256", "b" * 64)),
+        ("witness digest", lambda r: r["padic"]["witness"].__setitem__("sha256", "a" * 64)),
+        ("lift precision range", lambda r: r["padic"].__setitem__("k_range", [1, 1])),
         ("verdict", lambda r: r["verdicts"]["P5"].__setitem__("holds", not r["verdicts"]["P5"]["holds"])),
+        (
+            "recommendation",
+            lambda r: r["verdicts"].__setitem__("recommendation", r["verdicts"]["recommendation"] + "."),
+        ),
         ("wheel control", lambda r: r["control"].__setitem__("wheel_kinds", ["finite"] * 4)),
     ]
     for label, corrupt in corruptions:
@@ -1522,6 +1718,70 @@ def self_test() -> int:
             continue
         raise SystemExit(f"--check accepted a record with a corrupted {label}")
     print(f"--check accepts the reduced record and rejects {len(corruptions)} corruptions")
+
+    full = problems[3]
+    _, design, data, _, _ = full
+    svd = np.linalg.lstsq(design, data, rcond=None)[0]
+    a = fractions_of(design)
+    b = [Fraction(v) for v in data.tolist()]
+    _, _, shift = scaled_system(a, b)
+    index, k, lifted = lifts[3]
+    modulus = PRIMES[index] ** k
+    float_lift = [
+        (q := Fraction(v) / Fraction(2) ** shift).numerator * pow(q.denominator, -1, modulus) % modulus for v in svd
+    ]
+    bad_lifts: list[tuple[str, Lift]] = [
+        ("one unit added to a lifted component", (index, k, [lifted[0] + 1, *lifted[1:]])),
+        ("residues of the float64 SVD solution", (index, k, float_lift)),
+        ("precision k = 1", (index, 1, [y % PRIMES[index] for y in lifted])),
+        ("another prime", ((index + 1) % len(PRIMES), k, lifted)),
+    ]
+    for label, lift in bad_lifts:
+        try:
+            Measure()((full, None, 3, lift))
+        except SystemExit:
+            continue
+        raise SystemExit(f"the lift verifier accepted {label}")
+    require(rational_reconstruction(-5 * pow(7, -1, 2**61 - 1) % (2**61 - 1), 2**61 - 1) == (-5, 7), "-5/7")
+    print(f"the lift verifier rejects {len(bad_lifts)} altered witnesses")
+
+    retained = json.loads((ROOT / "docs/evidence/lsq_conditioning/result.json").read_text(encoding="utf-8"))
+    resimulation = retained["resimulation"]
+    check_resimulation(resimulation, source)
+    moved = "ibm_fez"
+    summary_move = resimulation[moved]["summary"]["moved_prediction_move"]
+
+    def raise_largest_move(r: dict[str, Any]) -> None:
+        row = r[moved]["log_ratios"][resimulation[moved]["moved_prediction"]]
+        worst = max(range(1, 1 + TRIALS), key=lambda k: abs(row[k] - row[0]))
+        row[worst] += 0.1 * (row[worst] - row[0])
+
+    def shift_bases(r: dict[str, Any]) -> None:
+        for row in r[moved]["log_ratios"]:
+            row[0] += 1.0
+
+    resim_corruptions: list[tuple[str, Callable[[dict[str, Any]], None]]] = [
+        (
+            "moved_prediction_move within its verdict class",
+            lambda r: r[moved]["summary"].__setitem__("moved_prediction_move", summary_move * 1.01),
+        ),
+        ("the log ratio that sets the moved prediction's move", raise_largest_move),
+        (
+            "a real design entry",
+            lambda r: r[moved]["real_design"][0].__setitem__(0, r[moved]["real_design"][0][0] + 1e-6),
+        ),
+        ("the perturbation seed", lambda r: r[moved].__setitem__("seed", [SEED, 7])),
+        ("an unperturbed resimulation", shift_bases),
+    ]
+    for label, corrupt in resim_corruptions:
+        bad = json.loads(json.dumps(resimulation))
+        corrupt(bad)
+        try:
+            check_resimulation(bad, source)
+        except SystemExit:
+            continue
+        raise SystemExit(f"--check accepted a resimulation witness with a corrupted {label}")
+    print(f"the resimulation check rejects {len(resim_corruptions)} corruptions")
     print("self-test passed")
     return 0
 
@@ -1540,8 +1800,14 @@ def main() -> int:
             retained.get("source", {}).get("sha256") == sha256_bytes(SOURCE.read_bytes()),
             f"{SOURCE}: sha256 differs from {args.check}",
         )
+        recorded = retained["padic"]["witness"]
+        require(recorded["path"] == WITNESS.relative_to(ROOT).as_posix(), f"witness path {recorded['path']}")
+        witness_bytes = WITNESS.read_bytes()
+        require(sha256_bytes(witness_bytes) == recorded["sha256"], f"{WITNESS}: sha256 differs from {args.check}")
+        witness = json.loads(witness_bytes)
+        require(witness["schema"] == WITNESS_SCHEMA and witness["primes"] == [str(p) for p in PRIMES], "witness")
         start = time.monotonic()
-        fresh = study()
+        fresh, _ = study(lifts=[decode_lift(entry) for entry in witness["lifts"]])
         here = check(retained, fresh)
         for label, v in (("retained", retained["verdicts"]), ("this host", here)):
             states = ", ".join(
@@ -1551,8 +1817,9 @@ def main() -> int:
         print(f"{args.check}: {len(retained['matrices'])} designs reproduced in {time.monotonic() - start:.1f} s")
         return 0
     require(args.out is not None, "--out, --check or --self-test is required")
-    record = study(padic=True, bridge=True)
+    record, lifts = study(padic=True, bridge=True)
     args.out.parent.mkdir(parents=True, exist_ok=True)
+    WITNESS.write_text(witness_text(lifts), encoding="utf-8")
     text = json.dumps(record, separators=(",", ":"))
     args.out.write_text(text.replace("],[", "],\n[") + "\n", encoding="utf-8")
     print(json.dumps(record["verdicts"], indent=1))

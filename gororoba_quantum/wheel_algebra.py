@@ -1,36 +1,60 @@
-"""The wheel of fractions over Q: total division, with 1/0 = infinity and 0/0 = bottom.
+"""The wheel of fractions over Q: total division, with /0 = infinity and 0/0 = bottom.
 
-A wheel (Carlstrom, "Wheels - On Division by Zero", Math. Struct. Comp. Sci.
-14 (2004) 143-184) extends a commutative ring with a unary involution ``/``
-that is total. The wheel of fractions over a field K is the set of pairs
-(x, y) of K under (x, y) ~ (s x, s y) for every nonzero s, with
+Source: J. Carlstrom, "Wheels - On Division by Zero", Research Reports in
+Mathematics 2001:11, Stockholm University (version of record: Math. Struct.
+in Comp. Science 14(1) (2004) 143-184). docs/notes/wheels-carlstrom.md binds
+the retained report and its page references; pages below are the report's
+printed page numbers.
 
-- (x, y) + (x', y') = (x y' + x' y, y y');
-- (x, y) (x', y') = (x x', y y');
-- /(x, y) = (y, x).
+The wheel of fractions S(.)A of a commutative ring A with respect to a
+multiplicative submonoid S (section 1.2, pp. 4-5) is A x A modulo
+(x, y) == (x', y') iff (s x, s y) = (s' x', s' y') for some s, s' in S, with
 
-Over Q every class has one canonical pair: (q, 1) for a rational q,
-infinity = (1, 0) = /0, and bottom = (0, 0) = 0/0. Division a / b is
-a * /b, so a zero divisor yields infinity or bottom instead of raising, and
-bottom absorbs every operation it enters: 0 * bottom and bottom + x are both
-bottom. The ring laws that fail are the ones division by zero would break:
-0 * x = 0 fails at x = infinity (0 * infinity = bottom), and x - x = 0 fails
-at x = infinity (infinity + infinity = bottom). Carlstrom's axioms replace
-them; ``axiom_failures`` checks every one by name.
+- [x, y] + [x', y'] = [x y' + x' y, y y'];
+- [x, y] [x', y'] = [x x', y y'];
+- /[x, y] = [y, x], the reciprocal, an involution of the multiplicative
+  monoid (Definition 2.1, p. 8).
+
+This module takes A = Q and S = Q minus 0, which gives Q together with /0
+and 0/0 (p. 6, example 1, there as Z minus 0 over Z). Every class has one
+canonical pair: (q, 1) for a rational q, infinity = (1, 0) = /0, and
+bottom = (0, 0) = 0/0 (the names follow p. 3). Division a / b is a * /b, so
+a zero divisor yields infinity or bottom instead of raising.
+
+``axioms`` names each law by its label in the report:
+
+- Definition 1.1 (p. 5): (1) <W, 0, +> is a commutative monoid; (2)
+  <W, 1, *, /> is a commutative monoid with involution /, which gives
+  //x = x and /(xy) = /x /y; (3) (x + y)z + 0z = xz + yz; (4)
+  x/y + z + 0y = (x + yz)/y; (5) 0 * 0 = 0; (6) (x + 0y)z = xz + 0y; (7)
+  /(x + 0y) = /x + 0y; (8) x + 0/0 = 0/0.
+- Proposition 4.3 (p. 24), derived rules: (10) 0x + 0y = 0xy; (11)
+  (0/0)x = 0/0; (12) x/x = 1 + 0x/x.
+
+0 * x = 0 fails at x = infinity (0 * infinity = bottom), and x - x = 0
+fails at x = infinity (infinity + infinity = bottom); the report's x - x =
+0x^2 (p. 5) holds instead.
 
 ``solve`` runs Gaussian elimination in natural pivot order over wheel
-elements with no zero test anywhere: a zero pivot becomes infinity through
-the involution, and its products with the zero entries of a consistent
-singular system become bottom, which then spreads to every component it
-touches. On a nonsingular system whose leading minors are nonzero (a
-symmetric positive definite matrix) every intermediate stays finite and the
-result equals Fraction elimination.
+elements with no zero test anywhere. On a symmetric positive semidefinite
+matrix with a right side in its column space (a Gram or normal-equations
+system), every component is finite if and only if the matrix is positive
+definite, and every component is bottom otherwise: the first zero pivot has
+a zero row in the Schur complement, so the rows below it multiply 0 by its
+reciprocal /0 and become bottom, and bottom absorbs every later operation
+by (8) and (11). Outside that class a bottom or infinite component carries
+no consistency or kernel information: solve([[0, -1], [0, -1]], [-1, 0]) is
+inconsistent and returns bottom, and solve([[1, 1], [1, 1]], [1, 2]) is
+inconsistent and returns infinity.
 
-``--self-test`` checks the axioms over every triple of a pool holding 0, 1,
--1, infinity, bottom and nonzero rationals, plus seeded random triples; the
-non-field facts above; a mutated wheel that maps bottom to zero, which the
-axioms must reject; and ``solve`` on a nonsingular, a consistent singular and
-an inconsistent singular system (bottom on the second, infinity on the third).
+``--self-test`` checks every axiom over every triple of a pool holding 0, 1,
+-1, infinity, bottom and nonzero rationals, plus seeded random triples, as
+(law, triple) cases generated in the seeded order and mapped in chunks
+through parallel.ordered_map; the non-field facts above; a mutated wheel
+that maps bottom to zero, which the axioms must reject; ``solve`` against
+Fraction elimination on positive definite Gram systems and its all-bottom
+result on singular consistent Gram systems; and the two inconsistent
+examples above as the documented limitation.
 """
 
 from __future__ import annotations
@@ -41,8 +65,14 @@ import random
 from collections.abc import Callable, Sequence
 from fractions import Fraction
 
+import parallel
+
 SELF_TEST_SEED = 20041027
 RANDOM_TRIPLES = 2000
+GRAM_TRIALS = 40
+# (law, triple) cases per ordered_map item: enough work per item to repay the
+# transfer of its Wheel triples.
+CASES_PER_CHUNK = 2048
 
 ZERO_Q = Fraction(0)
 ONE_Q = Fraction(1)
@@ -65,6 +95,12 @@ class Wheel:
         else:
             self.x, self.y = ZERO_Q, ZERO_Q
 
+    def __getstate__(self) -> tuple[Fraction, Fraction]:
+        return self.x, self.y
+
+    def __setstate__(self, state: tuple[Fraction, Fraction]) -> None:
+        self.x, self.y = state
+
     def __add__(self, other: Wheel) -> Wheel:
         if self.y == 1 and other.y == 1:
             return Wheel(self.x + other.x)
@@ -80,7 +116,7 @@ class Wheel:
         return self + (-other)
 
     def inv(self) -> Wheel:
-        """The involution /(x, y) = (y, x)."""
+        """The involution /[x, y] = [y, x]."""
         return Wheel(self.y, self.x)
 
     def __truediv__(self, other: Wheel) -> Wheel:
@@ -122,14 +158,25 @@ INFINITY = Wheel(1, 0)
 BOTTOM = Wheel(0, 0)
 
 Ops = tuple[Callable[[Wheel, Wheel], Wheel], Callable[[Wheel, Wheel], Wheel], Callable[[Wheel], Wheel]]
+Triple = tuple[Wheel, Wheel, Wheel]
 
 
-def standard_ops() -> Ops:
-    return (lambda a, b: a + b, lambda a, b: a * b, lambda a: a.inv())
+def collapse(w: Wheel) -> Wheel:
+    """The mutation the self-test rejects: bottom mapped to zero."""
+    return ZERO if w.bottom else w
+
+
+def operations(name: str) -> Ops:
+    """The wheel operations ("standard") or the bottom-collapsed mutation ("collapsed")."""
+    if name == "standard":
+        return (lambda a, b: a + b, lambda a, b: a * b, lambda a: a.inv())
+    if name == "collapsed":
+        return (lambda a, b: collapse(a + b), lambda a, b: collapse(a * b), lambda a: collapse(a.inv()))
+    raise ValueError(f"unknown operations {name!r}")
 
 
 def axioms(ops: Ops) -> dict[str, Callable[[Wheel, Wheel, Wheel], bool]]:
-    """Carlstrom's wheel axioms (Definition 1.1) and the derived identities, each as a predicate on a triple."""
+    """Carlstrom's wheel axioms (Definition 1.1) and derived rules (Proposition 4.3), each a predicate on a triple."""
     add, mul, inv = ops
     zero, one = ZERO, ONE
 
@@ -137,36 +184,56 @@ def axioms(ops: Ops) -> dict[str, Callable[[Wheel, Wheel, Wheel], bool]]:
         return mul(a, inv(b))
 
     return {
-        "addition is associative": lambda x, y, z: add(add(x, y), z) == add(x, add(y, z)),
-        "addition is commutative": lambda x, y, z: add(x, y) == add(y, x),
-        "0 is the additive unit": lambda x, y, z: add(x, zero) == x,
-        "multiplication is associative": lambda x, y, z: mul(mul(x, y), z) == mul(x, mul(y, z)),
-        "multiplication is commutative": lambda x, y, z: mul(x, y) == mul(y, x),
-        "1 is the multiplicative unit": lambda x, y, z: mul(x, one) == x,
-        "involution: //x = x": lambda x, y, z: inv(inv(x)) == x,
-        "involution is multiplicative: /(xy) = /x /y": lambda x, y, z: inv(mul(x, y)) == mul(inv(x), inv(y)),
-        "distributive with 0z: xz + yz = (x + y)z + 0z": lambda x, y, z: (
-            add(mul(x, z), mul(y, z)) == add(mul(add(x, y), z), mul(zero, z))
+        "(1) addition is associative": lambda x, y, z: add(add(x, y), z) == add(x, add(y, z)),
+        "(1) addition is commutative": lambda x, y, z: add(x, y) == add(y, x),
+        "(1) 0 is the additive unit": lambda x, y, z: add(x, zero) == x,
+        "(2) multiplication is associative": lambda x, y, z: mul(mul(x, y), z) == mul(x, mul(y, z)),
+        "(2) multiplication is commutative": lambda x, y, z: mul(x, y) == mul(y, x),
+        "(2) 1 is the multiplicative unit": lambda x, y, z: mul(x, one) == x,
+        "(2) involution: //x = x": lambda x, y, z: inv(inv(x)) == x,
+        "(2) involution is multiplicative: /(xy) = /x /y": lambda x, y, z: inv(mul(x, y)) == mul(inv(x), inv(y)),
+        "(3) distributive: (x + y)z + 0z = xz + yz": lambda x, y, z: (
+            add(mul(add(x, y), z), mul(zero, z)) == add(mul(x, z), mul(y, z))
         ),
-        "division law: x/y + z + 0y = (x + yz)/y": lambda x, y, z: (
+        "(4) division: x/y + z + 0y = (x + yz)/y": lambda x, y, z: (
             add(add(div(x, y), z), mul(zero, y)) == div(add(x, mul(y, z)), y)
         ),
-        "0 * 0 = 0": lambda x, y, z: mul(zero, zero) == zero,
-        "absorption: (x + 0y)z = xz + 0y": lambda x, y, z: mul(add(x, mul(zero, y)), z) == add(mul(x, z), mul(zero, y)),
-        "involution of absorption: /(x + 0y) = /x + 0y": lambda x, y, z: (
-            inv(add(x, mul(zero, y))) == add(inv(x), mul(zero, y))
-        ),
-        "bottom absorbs addition: 0/0 + x = 0/0": lambda x, y, z: add(div(zero, zero), x) == div(zero, zero),
-        "derived: x/x = 1 + 0x/x": lambda x, y, z: div(x, x) == add(one, mul(mul(zero, x), inv(x))),
-        "derived: 0x + 0y = 0xy": lambda x, y, z: add(mul(zero, x), mul(zero, y)) == mul(zero, mul(x, y)),
-        "derived: bottom absorbs multiplication": lambda x, y, z: mul(div(zero, zero), x) == div(zero, zero),
+        "(5) 0 * 0 = 0": lambda x, y, z: mul(zero, zero) == zero,
+        "(6) (x + 0y)z = xz + 0y": lambda x, y, z: mul(add(x, mul(zero, y)), z) == add(mul(x, z), mul(zero, y)),
+        "(7) /(x + 0y) = /x + 0y": lambda x, y, z: inv(add(x, mul(zero, y))) == add(inv(x), mul(zero, y)),
+        "(8) x + 0/0 = 0/0": lambda x, y, z: add(x, div(zero, zero)) == div(zero, zero),
+        "(10) 0x + 0y = 0xy": lambda x, y, z: add(mul(zero, x), mul(zero, y)) == mul(zero, mul(x, y)),
+        "(11) (0/0)x = 0/0": lambda x, y, z: mul(div(zero, zero), x) == div(zero, zero),
+        "(12) x/x = 1 + 0x/x": lambda x, y, z: div(x, x) == add(one, mul(mul(zero, x), inv(x))),
     }
 
 
-def axiom_failures(triples: Sequence[tuple[Wheel, Wheel, Wheel]], ops: Ops | None = None) -> dict[str, int]:
-    """Per axiom name, the number of triples on which it fails."""
-    laws = axioms(ops or standard_ops())
-    return {name: sum(1 for t in triples if not law(*t)) for name, law in laws.items()}
+class AxiomCases:
+    """The failing laws among one chunk of (law, triple) cases, under the named operations."""
+
+    def __init__(self, ops: str) -> None:
+        self.ops = ops
+
+    def __call__(self, chunk: list[tuple[str, Triple]]) -> list[str]:
+        laws = axioms(operations(self.ops))
+        return [law for law, triple in chunk if not laws[law](*triple)]
+
+
+def axiom_failures(triples: Sequence[Triple], ops: str = "standard") -> dict[str, int]:
+    """Per axiom name, the number of triples on which it fails.
+
+    The cases are generated law by law in the given triple order, then mapped
+    in fixed chunks through parallel.ordered_map, so a pooled run counts
+    exactly what the serial loop counts.
+    """
+    names = list(axioms(operations(ops)))
+    cases = [(law, triple) for law in names for triple in triples]
+    chunks = [cases[start : start + CASES_PER_CHUNK] for start in range(0, len(cases), CASES_PER_CHUNK)]
+    failures = dict.fromkeys(names, 0)
+    for failed in parallel.ordered_map(AxiomCases(ops), chunks, min_items=2):
+        for law in failed:
+            failures[law] += 1
+    return failures
 
 
 def solve(matrix: Sequence[Sequence[Fraction | int]], rhs: Sequence[Fraction | int]) -> list[Wheel]:
@@ -228,50 +295,64 @@ def random_element(rng: random.Random) -> Wheel:
     return Wheel(Fraction(rng.randint(-9, 9), rng.randint(1, 9)))
 
 
+def gram_system(rng: random.Random, rows: int, cols: int, dependent: int | None) -> tuple[list[list[int]], list[int]]:
+    """A^T A and A^T b for an integer A; column `dependent` (>= 1) repeats the sum of the columns before it."""
+    a = [[rng.randint(-5, 5) for _ in range(cols)] for _ in range(rows)]
+    if dependent is not None:
+        for row in a:
+            row[dependent] = sum(row[:dependent])
+    b = [rng.randint(-5, 5) for _ in range(rows)]
+    gram = [[sum(r[i] * r[j] for r in a) for j in range(cols)] for i in range(cols)]
+    return gram, [sum(r[i] * bi for r, bi in zip(a, b, strict=True)) for i in range(cols)]
+
+
 def self_test() -> int:
     elements = pool()
-    triples = [(x, y, z) for x, y, z in itertools.product(elements, repeat=3)]
+    triples: list[Triple] = [(x, y, z) for x, y, z in itertools.product(elements, repeat=3)]
     rng = random.Random(SELF_TEST_SEED)
     triples += [(random_element(rng), random_element(rng), random_element(rng)) for _ in range(RANDOM_TRIPLES)]
     failures = axiom_failures(triples)
     require(not any(failures.values()), f"wheel axioms fail: {[k for k, v in failures.items() if v]}")
     print(f"{len(failures)} wheel axioms hold on {len(triples)} triples")
 
-    require(INFINITY == ONE / ZERO and BOTTOM == ZERO / ZERO, "1/0 or 0/0 is not canonical")
+    require(INFINITY == ONE / ZERO and BOTTOM == ZERO / ZERO, "/0 or 0/0 is not canonical")
     require(ZERO * INFINITY == BOTTOM, "0 * infinity is not bottom")
     require(INFINITY - INFINITY == BOTTOM, "infinity - infinity is not bottom")
-    require(Wheel(3) / Wheel(3) == ONE and ZERO / ZERO == BOTTOM, "x/x is not 1 + 0x/x on 3 or 0")
+    for x in elements:
+        require(x - x == ZERO * x * x, f"x - x differs from 0x^2 at {x!r}")
     require(-INFINITY == INFINITY, "infinity is not its own negative")
     require(Wheel(Fraction(1, 3)) + Wheel(Fraction(1, 6)) == Wheel(Fraction(1, 2)), "finite addition differs from Q")
 
-    # A wheel that collapses bottom to zero is a field with a broken division;
-    # the absorption and bottom axioms must reject it.
-    def collapse(w: Wheel) -> Wheel:
-        return ZERO if w.bottom else w
-
-    broken: Ops = (lambda a, b: collapse(a + b), lambda a, b: collapse(a * b), lambda a: collapse(a.inv()))
-    broken_failures = axiom_failures(triples, broken)
+    broken_failures = axiom_failures(triples, "collapsed")
     rejected = sorted(name for name, count in broken_failures.items() if count)
     require(bool(rejected), "the axioms accept a wheel with bottom collapsed to zero")
     print(f"bottom collapsed to zero breaks {len(rejected)} axioms: {rejected}")
 
-    nonsingular = [[4, 1, 0], [1, 3, 1], [0, 1, 2]]
-    rhs = [Fraction(1, 2), Fraction(-3), Fraction(7, 4)]
-    exact = fraction_solve(nonsingular, rhs)
-    wheel = solve(nonsingular, rhs)
-    require(all(w.finite and w.value() == q for w, q in zip(wheel, exact, strict=True)), "wheel solve differs from Q")
-    singular = [[1, 1, 0], [1, 1, 0], [0, 0, 1]]
-    consistent = solve(singular, [2, 2, 1])
-    require([w.kind() for w in consistent] == ["bottom", "bottom", "bottom"], f"consistent singular: {consistent}")
-    inconsistent = solve([[1, 1], [1, 1]], [1, 2])
-    require([w.kind() for w in inconsistent] == ["infinity", "infinity"], f"inconsistent singular: {inconsistent}")
+    for trial in range(GRAM_TRIALS):
+        cols = 2 + trial % 4
+        dependent = None if trial % 2 == 0 else 1 + (trial // 2) % (cols - 1)
+        gram, rhs = gram_system(rng, 6, cols, dependent)
+        wheel = solve(gram, rhs)
+        if dependent is not None:
+            require(all(w.bottom for w in wheel), f"singular Gram system {gram}: {wheel}")
+        else:
+            exact = fraction_solve(gram, rhs)
+            require(all(w.finite and w.value() == q for w, q in zip(wheel, exact, strict=True)), f"Gram {gram}")
+    print(f"{GRAM_TRIALS} Gram systems: positive definite equals Q, singular gives bottom in every component")
+
+    # Outside positive semidefinite systems with a right side in the column
+    # space the kinds carry no consistency information: both are inconsistent.
+    limitation = solve([[0, -1], [0, -1]], [-1, 0])
+    require([w.kind() for w in limitation] == ["bottom", "bottom"], f"nonsymmetric example: {limitation}")
+    other = solve([[1, 1], [1, 1]], [1, 2])
+    require([w.kind() for w in other] == ["infinity", "infinity"], f"singular example: {other}")
     try:
-        fraction_solve(singular, [2, 2, 1])
+        fraction_solve([[1, 1, 0], [1, 1, 0], [0, 0, 1]], [2, 2, 1])
     except ZeroDivisionError:
         pass
     else:
         raise SystemExit("Fraction elimination accepted a zero pivot")
-    print("wheel solve: nonsingular equals Q, consistent singular gives bottom, inconsistent gives infinity")
+    print("documented limitation: two inconsistent systems return bottom and infinity")
     print("self-test passed")
     return 0
 
