@@ -491,6 +491,17 @@ def self_check() -> None:
     if not (p == 0 and low == 0 and high > 0):
         raise RuntimeError("a zero-count Wilson interval collapsed")
     _self_check_calibration()
+    sample_fit: dict[str, Any] = {"delta_mhz": 0.0123456789, "times_us": [1.0, 2.0]}
+    sample: dict[str, Any] = {"fit": sample_fit, "calibration": "stamp"}
+    if first_difference(sample, {**sample, "fit": {**sample_fit, "delta_mhz": 0.0123456789 * (1 + 1e-9)}}):
+        raise RuntimeError("the retained-analysis comparison rejected a rounding-level difference")
+    for altered in (
+        {**sample, "fit": {**sample_fit, "delta_mhz": 0.0123456789 * (1 + 1e-4)}},
+        {**sample, "calibration": "other"},
+        {**sample, "extra": 1},
+    ):
+        if first_difference(sample, altered) is None:
+            raise RuntimeError("the retained-analysis comparison accepted an altered analysis")
     print(
         f"patch window analysis: planted detuning covered in {covered} of {trials} fits; "
         "aliases kept; boundary intervals finite; mixed calibrations withhold every cross-job comparison"
@@ -558,12 +569,49 @@ def render(report: dict[str, Any]) -> str:
     return json.dumps(report, indent=2, sort_keys=True, default=str) + "\n"
 
 
+# The Nelder-Mead fits and their profile intervals follow BLAS rounding, so a
+# float compares within this relative tolerance across builds; keys, strings,
+# integers, booleans and nulls compare exactly.
+CHECK_TOLERANCE = 1e-6
+
+
+def first_difference(retained: Any, fresh: Any, path: str = "$") -> str | None:
+    """The first path where the retained and regenerated analyses disagree, or None."""
+    if isinstance(retained, float) or isinstance(fresh, float):
+        numeric = all(isinstance(value, (int, float)) and not isinstance(value, bool) for value in (retained, fresh))
+        if numeric and math.isclose(retained, fresh, rel_tol=CHECK_TOLERANCE, abs_tol=CHECK_TOLERANCE * 1e-3):
+            return None
+        return f"{path}: retained {retained!r}, regenerated {fresh!r}"
+    if type(retained) is not type(fresh):
+        return f"{path}: retained {type(retained).__name__}, regenerated {type(fresh).__name__}"
+    if isinstance(retained, dict):
+        if sorted(retained) != sorted(fresh):
+            return f"{path}: keys {sorted(set(retained) ^ set(fresh))} differ"
+        for key in sorted(retained):
+            found = first_difference(retained[key], fresh[key], f"{path}.{key}")
+            if found is not None:
+                return found
+        return None
+    if isinstance(retained, list):
+        if len(retained) != len(fresh):
+            return f"{path}: length {len(retained)} against {len(fresh)}"
+        for index, (left, right) in enumerate(zip(retained, fresh, strict=True)):
+            found = first_difference(left, right, f"{path}[{index}]")
+            if found is not None:
+                return found
+        return None
+    return None if retained == fresh else f"{path}: retained {retained!r}, regenerated {fresh!r}"
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run", type=Path, nargs="?")
     parser.add_argument("--out", type=Path)
     parser.add_argument(
-        "--check", type=Path, metavar="FILE", help="regenerate the analysis and byte-compare it to FILE"
+        "--check",
+        type=Path,
+        metavar="FILE",
+        help="regenerate the analysis and compare it to FILE (floats within CHECK_TOLERANCE)",
     )
     parser.add_argument("--self-check", action="store_true")
     arguments = parser.parse_args(argv)
@@ -574,8 +622,11 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("a run directory is required")
     report = analyze(arguments.run)
     if arguments.check is not None:
-        if arguments.check.read_bytes() != render(report).encode():
-            raise SystemExit(f"{arguments.check} differs from the regenerated analysis of {arguments.run}")
+        difference = first_difference(json.loads(arguments.check.read_text()), json.loads(render(report)))
+        if difference is not None:
+            raise SystemExit(
+                f"{arguments.check} differs from the regenerated analysis of {arguments.run}: {difference}"
+            )
         print(f"patch window analysis: {arguments.check} equals the regenerated analysis")
         return 0
     for key, entry in report["conditions"].items():
