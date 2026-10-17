@@ -2,7 +2,7 @@
 
 docs/notes/box_kites/experiment-program.md fixes the design. Every sign comes
 from docs/evidence/box_kite_census/census.json; the generator recomputes none
-from cd_core. Three products come out of one census read:
+from cd_core. Four products come out of one census read:
 
 - Family (a), exhaustive, in memory only: every Design B row (840 within-kite
   rows, 168 cross-kite controls with the negative fixture (1,10)+ x (2,13)-,
@@ -17,6 +17,11 @@ from cd_core. Three products come out of one census read:
 - The Tuna-17 series T0 (depth ladder), T1 (edge-sign classification and
   twist), coherence and walk, each batch one witness circuit plus readout-0
   and readout-1, and the relabeled QX twin of every witness circuit.
+- The Ry emulator ladder residue (R1 width 9, R2 a comment line, R9 the
+  failed teleport.cq without its bit register and comments; the retained
+  construct probe settled the rest) and the Ry smoke subset, written in the
+  ry dialect: no bit register, measure statement or comment, Sdag as
+  Rz(-pi/2), qubit 0 at the leftmost character of the emulator's results.
 
 Encodings, each read through the selector's success outcome P(selector = 0)
 (root AGENTS.md, "Zero-product witnesses"):
@@ -124,6 +129,13 @@ QX_BACKEND_TYPE_ID = 1
 QX_QUBITS = 10
 QX_SHOTS = 2048
 TUNA_IDENTIFIER = "tuna_17"
+RY_IDENTIFIER = "Rydberg"
+RY_BACKEND_TYPE_ID = 5
+RY_QUBITS = 9
+RY_SHOTS = 1024
+# The failing Ry program; ry_ladder reads it by digest.
+RY_TELEPORT = ROOT / "results/quantum_inspire/runs/2026-10-16T211635Z-Rydberg/teleport.cq"
+RY_TELEPORT_SHA256 = "e4df1064cc91a908cb0ad12c253464ca9d441f2a3e36b9bef0be6f3346134f08"
 TUNA_QUBITS = 17
 # T0 reads a contrast near 0.1 at depth 9 against binomial noise, so it takes
 # the larger shot count; the later stages read deterministic or 1/2 rates.
@@ -139,6 +151,7 @@ FULL_BASIS = ["cx", "rz", "h", "x", "z", "s", "sdg"]
 DIALECTS: dict[str, dict[str, str]] = {
     "qx": {"h": "H", "x": "X", "z": "Z", "s": "S", "sdg": "Sdag", "cx": "CNOT", "cz": "CZ", "rz": "Rz"},
     "tuna": {"h": "H", "x": "X", "z": "Z", "s": "S", "sdg": "Sdag", "cz": "CZ"},
+    "ry": {"h": "H", "x": "X", "z": "Z", "s": "S", "cx": "CNOT", "rz": "Rz"},
 }
 TWO_QUBIT = {"cx", "cz"}
 SQRT8 = 2.0 * math.sqrt(2.0)
@@ -236,6 +249,8 @@ CASE_DIRECTORIES = (
     "box_kite_tuna_coherence",
     "box_kite_tuna_walk",
     "box_kite_tuna_twins_qx",
+    "box_kite_ry_ladder",
+    "box_kite_ry_smoke",
 )
 
 
@@ -1039,8 +1054,14 @@ def validate_series(files: dict[str, str], backend: dict[str, Any]) -> None:
             text = files[f"{name}/{row['file']}"]
             if hashlib.sha256(text.encode()).hexdigest() != row["sha256"]:
                 raise ValueError(f"{name}/{row['file']} differs from its cases.json sha256")
-            if declared_qubits(text) != manifest["nqubits"]:
+            if declared_qubits(text) != row.get("nqubits", manifest["nqubits"]):
                 raise ValueError(f"{name}/{row['file']}: declared width differs from the manifest")
+            if (
+                manifest["dialect"] == "ry"
+                and row["kind"] == "witness"
+                and re.search(r"(?m)^(bit\[|b = measure|//)", text)
+            ):
+                raise ValueError(f"{name}/{row['file']}: a Ry circuit carries a bit register, measure or comment")
             qubits = [q for replica in row.get("replicas", []) for q in replica_qubits(replica["roles"])]
             if len(set(qubits)) != len(qubits) or any(q >= manifest["nqubits"] for q in qubits):
                 raise ValueError(f"{name}/{row['file']}: replicas overlap or leave the register")
@@ -1564,7 +1585,194 @@ def twin(witness: dict[str, Any], text: str, source: str) -> tuple[dict[str, Any
 
 
 def case_directories() -> dict[str, dict[str, str]]:
-    return {"box_kite_a_qx": smoke_series(), **tuna_series()}
+    return {"box_kite_a_qx": smoke_series(), **tuna_series(), **ry_series()}
+
+
+# ---------------------------------------------------------------- Ry emulator
+
+
+def ry_backend(catalogue: Any) -> dict[str, Any]:
+    """Admit the retained Ry emulator record: identity, width, all-to-all topology, the ry dialect and 1024 shots."""
+    matches = [
+        b for b in catalogue.get("backend_types", []) if isinstance(b, dict) and b.get("identifier") == RY_IDENTIFIER
+    ]
+    if len(matches) != 1:
+        raise SystemExit(f"catalogue needs exactly one {RY_IDENTIFIER} backend type")
+    backend = matches[0]
+    if (backend.get("id"), backend.get("nqubits")) != (RY_BACKEND_TYPE_ID, RY_QUBITS):
+        raise SystemExit(f"{RY_IDENTIFIER}: backend identity or width changed; review the cases")
+    complete = {(a, b) for a in range(RY_QUBITS) for b in range(RY_QUBITS) if a != b}
+    topology = backend.get("topology")
+    if not isinstance(topology, list) or {tuple(e) for e in topology if isinstance(e, list)} != complete:
+        raise SystemExit(f"{RY_IDENTIFIER}: topology is no longer all-to-all; the packing needs review")
+    if not set(DIALECTS["ry"].values()) <= set(backend.get("gateset", [])):
+        raise SystemExit(f"{RY_IDENTIFIER}: catalogue lacks a gate of the ry dialect")
+    if (
+        backend.get("max_number_of_shots", 0) < RY_SHOTS
+        or backend.get("max_jobs_per_batch_job", 0) < HARDWARE_BATCH_CIRCUITS
+    ):
+        raise SystemExit(f"{RY_IDENTIFIER}: cases exceed the retained backend capacity")
+    return dict(backend)
+
+
+def lower_for_ry(circuit: Any) -> Any:
+    """Sdag as Rz(-pi/2); every other gate must lie in the ry dialect."""
+    from qiskit import QuantumCircuit
+
+    out = QuantumCircuit(circuit.num_qubits, global_phase=circuit.global_phase)
+    for instruction in circuit.data:
+        name = instruction.operation.name
+        qubits = [circuit.find_bit(q).index for q in instruction.qubits]
+        if name == "sdg":
+            out.rz(-math.pi / 2, qubits[0])
+        elif name in DIALECTS["ry"]:
+            out.append(instruction.operation, qubits)
+        elif name != "barrier":
+            raise ValueError(f"{name} is outside the ry gate set")
+    return out
+
+
+def ry_text(width: int, body: list[str]) -> str:
+    """A Ry program: no bit register, no measure statement and no comment, which the retained probe found it needs."""
+    return "\n".join(["version 3.0", "", f"qubit[{width}] q", "", *body, ""])
+
+
+def leftmost_distribution(text: str) -> dict[str, str]:
+    """Outcome probabilities of a text by state vector, keyed with qubit 0 at the leftmost character (Ry)."""
+    from qiskit.quantum_info import Statevector
+
+    out = {}
+    for key, prob in sorted(Statevector(parse_cqasm(text)).probabilities_dict().items()):
+        if prob < PROBABILITY_TOLERANCE:
+            continue
+        exact = Fraction(prob).limit_denominator(1 << 12)
+        if abs(float(exact) - prob) > PROBABILITY_TOLERANCE:
+            raise ValueError(f"outcome probability {prob} is not a dyadic fraction")
+        out[key[::-1]] = str(exact)
+    return dict(sorted(out.items()))
+
+
+def ry_ladder() -> tuple[list[dict[str, Any]], dict[str, str]]:
+    """The diagnostic factors the retained construct probe leaves open: width 9, a comment line, teleport.cq bare."""
+    source = RY_TELEPORT.read_bytes()
+    if hashlib.sha256(source).hexdigest() != RY_TELEPORT_SHA256:
+        raise ValueError(f"{RY_TELEPORT.relative_to(ROOT)} differs from its recorded digest")
+    bare = [line for line in source.decode().splitlines()[3:] if line and not line.startswith(("//", "bit["))]
+    factors = (
+        ("r1-width-9.cq", "R1", "qubit[9] around the program that ran (X on q[0])", ry_text(9, ["X q[0]"])),
+        (
+            "r2-comment.cq",
+            "R2",
+            "one // comment line in the program that ran",
+            ry_text(2, ["// one comment line", "X q[0]"]),
+        ),
+        ("r9-teleport-bare.cq", "R9", "teleport.cq without its bit register and comments", ry_text(9, bare)),
+    )
+    rows, texts = [], {}
+    for file, label, factor, text in factors:
+        texts[file] = text
+        rows.append(
+            {
+                "file": file,
+                "kind": "diagnostic",
+                "group": "ladder",
+                "nqubits": declared_qubits(text),
+                "ladder": label,
+                "factor": factor,
+                "expected_leftmost": leftmost_distribution(text),
+            }
+        )
+    return rows, texts
+
+
+def ry_smoke(rows: dict[str, list[Row]]) -> tuple[list[dict[str, Any]], dict[str, str]]:
+    """The reduced smoke replicas and the T1 edge and twist, four per 9-atom circuit, and the (1,10) full witnesses."""
+    members, patterns = smoke_members(rows)
+    reduced = [(item, patterns[("smoke_reduced", n)]["pattern"]) for n, item in enumerate(members["smoke_reduced"])]
+    reduced += [
+        (("reduced", find_row(rows, spec, 1, y)), f"t1_{name}_y{'+' if y > 0 else '-'}")
+        for name, spec in (("edge", EDGE_K3), ("twist", TWIST_K6))
+        for y in (1, -1)
+    ]
+    full = [
+        (("full", find_row(rows, EDGE_K3, 1, -1)), "full_witness_dark"),
+        (("full", find_row(rows, EDGE_K3, 1, 1)), "full_witness_bright"),
+        (("full", rows["negative_fixture"][0]), "full_negative_fixture"),
+    ]
+    parallel.ordered_map(check_row, [item for item, _ in reduced + full])
+    groups = [(f"ry-reduced-{n + 1}.cq", group) for n, group in enumerate(pack(reduced, 2, RY_QUBITS, per_circuit=4))]
+    groups += [(f"ry-{name.replace('_', '-')}.cq", [((item, name), {q: q for q in range(5)})]) for item, name in full]
+    circuits: list[dict[str, Any]] = []
+    texts: dict[str, str] = {}
+    for file, group in groups:
+        body: list[str] = []
+        replicas: list[dict[str, Any]] = []
+        for slot, (((encoding, row), name), place) in enumerate(group):
+            body += emit(lower_for_ry(basis_circuit(encoding, row)), place, dialect="ry")
+            replicas.append({**replica_record(slot, encoding, row, place), "pattern": name})
+        texts[file] = ry_text(RY_QUBITS, body)
+        circuits.append({"file": file, "kind": "witness", "group": "smoke", "replicas": replicas})
+    parallel.ordered_map(verify_text, [(row["file"], texts[row["file"]], checks_of(row)) for row in circuits])
+    return circuits, texts
+
+
+def ry_series(census_path: Path = CENSUS) -> dict[str, dict[str, str]]:
+    """box_kite_ry_ladder/ (one batch) and box_kite_ry_smoke/ (two batches) for the Ry emulator."""
+    backend = ry_backend(json.loads(CATALOGUE.read_text(encoding="utf-8")))
+    census = load_census(census_path)
+    rows = validate_census(census)
+    common = {
+        "schema": CASES_SCHEMA,
+        "backend": backend["identifier"],
+        "backend_type_id": backend["id"],
+        "shots": RY_SHOTS,
+        "dialect": "ry",
+        "bit_order": "qubit 0 at the leftmost character (Ry)",
+        "census": census_record(census_path, census),
+    }
+    ladder_rows, ladder_texts = ry_ladder()
+    for row in ladder_rows:
+        if leftmost_distribution(ladder_texts[row["file"]]) != row["expected_leftmost"]:
+            raise ValueError(f"{row['file']}: expected distribution differs from its state vector")
+    ladder = {
+        **common,
+        "family": "ry_ladder",
+        "nqubits": max(row["nqubits"] for row in ladder_rows),
+        "role": "the diagnostic factors the construct probe (results/quantum_inspire/ry_probe_analysis.json) leaves "
+        "open; that probe completed X, H, CNOT and Rz and failed every program with a bit register (error "
+        "interpreting cQASM script) or a measure statement (not in the primitive gate set), so R3, R7 and R8 "
+        "are settled",
+        "preregistered": {
+            "observable": "completion or failure of each job, and its counts read with qubit 0 leftmost",
+            "falsifier": "a completed job whose counts leave an expected outcome's |z| < 4.5 or show an outcome of "
+            "probability 0 is reported as an emulator rate; a failed job names its factor",
+            "stop_rule": "R1 failing stops the smoke subset, whose circuits declare qubit[9]",
+        },
+    }
+    ladder_files = finish(ladder, ladder_rows, ladder_texts, group="group")
+    validate_series(ladder_files, backend)
+    smoke_rows, smoke_texts = ry_smoke(rows)
+    smoke = {
+        **common,
+        "family": "ry_smoke",
+        "nqubits": RY_QUBITS,
+        "encodings": {
+            **qx_encodings(),
+            "ry": "Sdag written as Rz(-pi/2); no bit register, measure or comment; the emulator measures every "
+            "atom at the end",
+        },
+        "role": "smoke subset after R1 passes: the reduced smoke replicas of family (a), the T1 edge and its twist "
+        "at y_sign +-1, and the (1,10) full Design B dark, bright and fixture witnesses",
+        "preregistered": {
+            "observable": "zero-product success P(selector = 0) per replica, selector bits read with qubit 0 leftmost",
+            "falsifier": "a deterministic replica below 0.9 of its ideal outcome is reported with the emulator's "
+            "raw rates as an emulator rate, never as an algebraic result",
+            "stop_rule": "a deterministic replica below 0.9 of its ideal outcome stops the series",
+        },
+    }
+    smoke_files = finish(smoke, smoke_rows, smoke_texts, group="group")
+    validate_series(smoke_files, backend)
+    return {"box_kite_ry_ladder": ladder_files, "box_kite_ry_smoke": smoke_files}
 
 
 def summary(directories: dict[str, dict[str, str]]) -> list[dict[str, Any]]:
@@ -1790,6 +1998,42 @@ def self_test() -> None:
     moved = {**twin_row, "replicas": [{**r, "roles": {**r["roles"], "selector": 9}} for r in twin_row["replicas"][:1]]}
     reject("a twin replica read on the wrong qubit", lambda: verify_text(("twin", twin_text, checks_of(moved))))
 
+    # Ry dialect, ladder and smoke series.
+    strut_row = next(row for row in within if row["relation"] == "strut")
+    reject("an Sdag in the ry dialect", lambda: emit(logical("reduced", strut_row), {0: 0, 1: 1}, dialect="ry"))
+    emit(lower_for_ry(logical("reduced", strut_row)), {0: 0, 1: 1}, dialect="ry")
+    cz = QuantumCircuit(2)
+    cz.cz(0, 1)
+    reject("a CZ in the ry dialect", lambda: lower_for_ry(cz))
+    ry = ry_series()
+    ry_record = ry_backend(catalogue)
+    smoke_ry = ry["box_kite_ry_smoke"]
+    first_ry = json.loads(smoke_ry["cases.json"])["batches"][0]
+    target = f"{first_ry['batch']}/{first_ry['files'][0]}"
+    manifest_ry = json.loads(smoke_ry[f"{first_ry['batch']}/cases.json"])
+    bits = smoke_ry[target].replace("qubit[9] q\n", "qubit[9] q\nbit[9] b\n", 1)
+    rows_ry = [
+        {**row, "sha256": hashlib.sha256(bits.encode()).hexdigest()} if row["file"] == first_ry["files"][0] else row
+        for row in manifest_ry["circuits"]
+    ]
+    with_bits = {
+        **smoke_ry,
+        target: bits,
+        f"{first_ry['batch']}/cases.json": json.dumps({**manifest_ry, "circuits": rows_ry}, indent=1) + "\n",
+    }
+    reject("a Ry witness with a bit register", lambda: validate_series(with_bits, ry_record))
+    validate_series(ry["box_kite_ry_ladder"], ry_record)
+    saved = globals()["RY_TELEPORT_SHA256"]
+    globals()["RY_TELEPORT_SHA256"] = "0" * 64
+    try:
+        reject("a changed teleport.cq digest", ry_ladder)
+    finally:
+        globals()["RY_TELEPORT_SHA256"] = saved
+    altered = copy.deepcopy(catalogue)
+    entry = next(b for b in altered["backend_types"] if b["identifier"] == RY_IDENTIFIER)
+    entry["gateset"] = [g for g in entry["gateset"] if g != "CNOT"]
+    reject("a Ry gate set without CNOT", lambda: ry_backend(altered), SystemExit)
+
     # Catalogue admission.
     for field, value in (("nqubits", 9), ("id", 2), ("is_hardware", True), ("topology", backend["topology"][1:])):
         altered = copy.deepcopy(catalogue)
@@ -1804,7 +2048,7 @@ def self_test() -> None:
     entry["gateset"] = [g for g in entry["gateset"] if g != "Sdag"]
     reject("a Tuna-17 gate set without Sdag", lambda: tuna_backend(altered), SystemExit)
     print(
-        f"box-kite cases: census, SELECT, state-vector, packing, batch, Tuna layout, twin and catalogue contracts "
+        f"box-kite cases: census, SELECT, state-vector, packing, batch, Tuna layout, twin, Ry and catalogue contracts "
         f"pass; {rejected} mutations rejected"
     )
 

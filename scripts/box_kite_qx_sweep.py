@@ -284,6 +284,18 @@ def replay(record: dict[str, Any], bind: bool = False) -> dict[str, Any]:
     return record["summary"]
 
 
+def measured(text: str) -> str:
+    """A Ry program with a bit register and a final measure, which qxelarator needs to record outcomes.
+
+    The Ry emulator measures every atom at the end of a program that carries
+    neither; qxelarator records nothing without them.
+    """
+    lines = text.splitlines()
+    width = next(int(line[6:-3]) for line in lines if line.startswith("qubit[") and line.endswith("] q"))
+    at = next(n for n, line in enumerate(lines) if line.startswith("qubit["))
+    return "\n".join([*lines[: at + 1], f"bit[{width}] b", *lines[at + 1 :], "", "b = measure q", ""])
+
+
 def emulate_cases(directories: list[Path]) -> dict[str, Any]:
     """qxelarator runs of retained case circuits, judged replica by replica, and of their readout pairs."""
     jobs = []
@@ -295,6 +307,8 @@ def emulate_cases(directories: list[Path]) -> dict[str, Any]:
             for row in manifest["circuits"]:
                 text = (manifest_path.parent / row["file"]).read_text(encoding="utf-8")
                 path = (manifest_path.parent / row["file"]).relative_to(ROOT).as_posix()
+                if manifest.get("dialect") == "ry":
+                    text = measured(text)
                 jobs.append((path, row, text, manifest["shots"]))
     outcomes = parallel.ordered_map(
         emulate, [(text, shots, BASE_SEED + n) for n, (_, _, text, shots) in enumerate(jobs)]
@@ -302,6 +316,15 @@ def emulate_cases(directories: list[Path]) -> dict[str, Any]:
     results = []
     for (path, row, _, shots), outcome in zip(jobs, outcomes, strict=True):
         checks: list[dict[str, Any]] = []
+        if "expected_leftmost" in row:
+            leftmost = {key[::-1]: count for key, count in outcome.items()}
+            stray = sum(count for key, count in leftmost.items() if key not in row["expected_leftmost"])
+            checks.append(
+                {"check": "no outcome of probability 0", "zeros": stray, "verdict": "pass" if not stray else "refuted"}
+            )
+            for key, want in row["expected_leftmost"].items():
+                result, z = verdict(want, leftmost.get(key, 0), shots)
+                checks.append({"check": f"outcome {key}", "prediction": want, "z": z, "verdict": result})
         if row["kind"] == "readout":
             want = "0" if row["file"] == "readout-0.cq" else "1"
             ok = all(set(key) == {want} for key in outcome)
