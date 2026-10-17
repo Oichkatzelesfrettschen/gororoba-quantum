@@ -88,23 +88,27 @@ def premerge(repo: Path, ref: str, base_ref: str, max_seconds: float, worktrees:
     ref_commit = git(repo, "rev-parse", "--verify", f"{ref}^{{commit}}")
     worktrees.mkdir(parents=True, exist_ok=True)
     label = f"{base_commit[:12]}-{ref_commit[:12]}"
-    with (
-        worktree(repo, worktrees / f"base-{label}", base_commit) as base_tree,
-        worktree(repo, worktrees / f"merge-{label}", base_commit) as merge_tree,
-    ):
-        merged = subprocess.run(
-            ["git", "-C", str(merge_tree), *MERGE_IDENTITY, "merge", "--no-ff", "--no-edit", ref_commit],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        if merged.returncode != 0:
-            conflicts = git(merge_tree, "diff", "--name-only", "--diff-filter=U", check=False)
-            git(merge_tree, "merge", "--abort", check=False)
-            print(f"merge of {ref} into {base_ref} conflicts:\n{conflicts or merged.stdout + merged.stderr}")
-            return 2
-        base_results = results(base_tree, max_seconds)
-        merge_results = results(merge_tree, max_seconds)
+    try:
+        with (
+            worktree(repo, worktrees / f"base-{label}", base_commit) as base_tree,
+            worktree(repo, worktrees / f"merge-{label}", base_commit) as merge_tree,
+        ):
+            merged = subprocess.run(
+                ["git", "-C", str(merge_tree), *MERGE_IDENTITY, "merge", "--no-ff", "--no-edit", ref_commit],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if merged.returncode != 0:
+                conflicts = git(merge_tree, "diff", "--name-only", "--diff-filter=U", check=False)
+                git(merge_tree, "merge", "--abort", check=False)
+                print(f"merge of {ref} into {base_ref} conflicts:\n{conflicts or merged.stdout + merged.stderr}")
+                return 2
+            base_results = results(base_tree, max_seconds)
+            merge_results = results(merge_tree, max_seconds)
+    finally:
+        with contextlib.suppress(OSError):
+            worktrees.rmdir()
     introduced, shared = compare(base_results, merge_results)
     for name in introduced:
         tail = "\n".join(merge_results[name][1].splitlines()[-TAIL_LINES:])
@@ -157,15 +161,15 @@ def self_test() -> None:
             text = output.getvalue()
             if status != expected or marker not in text or "(host or main): host" not in text:
                 raise RuntimeError(f"premerge {ref} returned {status}, expected {expected}:\n{text}")
-            if git(repo, "worktree", "list", "--porcelain").count("worktree ") != 1:
-                raise RuntimeError(f"premerge {ref} left a worktree behind")
+            if git(repo, "worktree", "list", "--porcelain").count("worktree ") != 1 or worktrees.exists():
+                raise RuntimeError(f"premerge {ref} left a worktree or its directory behind")
         git(repo, "switch", "-q", "-c", "conflicting", "main~1")
         commit({"input": "v3\n"}, "conflicting input")
         git(repo, "switch", "-q", "main")
         with contextlib.redirect_stdout(io.StringIO()):
             status = premerge(repo, "conflicting", "main", DEFAULT_MAX_SECONDS, worktrees)
-        if status != 2:
-            raise RuntimeError(f"a conflicting merge returned {status}, expected 2")
+        if status != 2 or worktrees.exists():
+            raise RuntimeError(f"a conflicting merge returned {status}, expected 2, or left its directory")
     print("premerge: a clean merge that breaks a record gate fails, a consistent merge passes, a conflict stops")
 
 
