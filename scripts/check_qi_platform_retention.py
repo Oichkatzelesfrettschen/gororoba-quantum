@@ -86,6 +86,7 @@ class FakeClient:
             "identifier": "tuna_17",
             "status": "idle",
             "is_hardware": True,
+            "nqubits": 17,
             "max_jobs_per_batch_job": 5,
             "max_number_of_shots": 16384,
             "batchjobs_per_queue_limit": 5,
@@ -173,6 +174,7 @@ class PreflightClient:
                 "name": self.cases["backend"],
                 "status": "idle",
                 "is_hardware": True,
+                "nqubits": self.cases["nqubits"],
                 "max_jobs_per_batch_job": 5,
                 "max_number_of_shots": self.cases["shots"],
                 "batchjobs_per_queue_limit": 5,
@@ -209,6 +211,16 @@ class GeneratedCaseChecks(unittest.TestCase):
                         with self.assertRaises(PreflightReached):
                             platform.submit(case_dir, cases["backend_type_id"], "preflight fixture")
                     self.assertFalse((case_dir / "submission-state.json").exists())
+
+    def test_zero_divisor_routing_constants_follow_the_catalogue(self) -> None:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import qi_zero_divisor_cases as zero_divisor
+
+        zero_divisor.catalogue_check()
+        for name, value in (("TUNA17", zero_divisor.TUNA17[1:]), ("NQUBITS", 18), ("BACKEND_TYPE_ID", 6)):
+            with self.subTest(constant=name), patch.object(zero_divisor, name, value):
+                with self.assertRaises(SystemExit):
+                    zero_divisor.catalogue_check()
 
     def test_retained_zero_divisor_runs_reproduce_through_their_batched_series(self) -> None:
         sys.path.insert(0, str(ROOT / "scripts"))
@@ -348,6 +360,17 @@ class RetentionChecks(unittest.TestCase):
                     record = json.loads((self.case_dir / "submission.json").read_text())
                     self.assertEqual(len(record["jobs"]), 3)
                     self.assertEqual(sum(method == "PATCH" for method, _ in client.calls), 1)
+
+    def test_circuit_wider_than_backend_is_refused_before_remote_creation(self) -> None:
+        source = "version 3.0\nqubit[17] q\nqubit r\nX q[0]\n"
+        (self.case_dir / "one.cq").write_text(source)
+        self.cases["circuits"][0]["sha256"] = hashlib.sha256(source.encode()).hexdigest()
+        (self.case_dir / "cases.json").write_text(json.dumps(self.cases))
+        client = FakeClient(self.case_dir)
+        with self.assertRaisesRegex(SystemExit, "declares 18 qubits"):
+            self.submit(client)
+        self.assertTrue(all(method == "GET" for method, _ in client.calls))
+        self.assertFalse((self.case_dir / "submission-state.json").exists())
 
     def test_source_bytes_are_the_uploaded_program(self) -> None:
         source = (self.case_dir / "one.cq").read_bytes().replace(b"\n", b"\r\n")

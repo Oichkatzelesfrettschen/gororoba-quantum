@@ -1,6 +1,6 @@
 {
  "schema": "qi-zero-divisor-analysis-v1",
- "claim_kind": "preregistered hardware inference",
+ "claim_kind": "preregistered emulator control",
  "replicas": [
   {
    "file": "twin-1.cq",

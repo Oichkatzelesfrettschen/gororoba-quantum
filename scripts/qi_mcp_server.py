@@ -24,7 +24,6 @@ Usage: "$QI_PYTHON" scripts/qi_mcp_server.py   (stdio; launched by an MCP client
 from __future__ import annotations
 
 import functools
-import re
 import sys
 from collections.abc import Callable
 from pathlib import Path
@@ -35,7 +34,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from mcp.server.mcpserver import MCPServer  # noqa: E402
 from mcp.server.mcpserver.exceptions import ToolError  # noqa: E402
 from mcp.types import ToolAnnotations  # noqa: E402
-from qi_platform import Client, PlatformError, ledger, submit  # noqa: E402
+from qi_platform import Client, PlatformError, declared_qubits, ledger, submit  # noqa: E402
 
 LOCAL_MAX_QUBITS = 24
 LOCAL_MAX_SHOTS = 100_000
@@ -178,14 +177,7 @@ def qi_run_local(cqasm: str, shots: int = 1024) -> dict[str, Any]:
     return {"shots": result.shots_done, "counts": dict(result.results)}
 
 
-# Every qubit declaration of a cQASM 3.0 program: `qubit[n] name` or the scalar `qubit name`.
-QUBIT_DECLARATION = re.compile(r"^\s*qubit\s*(?:\[\s*(\d+)\s*\])?\s+[A-Za-z_]\w*", re.MULTILINE)
 COMPILE_STAGES = ("none", "decomposition", "mapping", "optimization", "routing")
-
-
-def declared_qubits(cqasm: str) -> int:
-    """Total width of every qubit register the program declares; the emulator allocates their sum."""
-    return sum(int(size) if size else 1 for size in QUBIT_DECLARATION.findall(cqasm)) or 1
 
 
 def _commit(name: str) -> dict[str, Any]:
