@@ -620,6 +620,14 @@ Kaggle CPU kernel installs qxelarator through the `qx-emulator` pin group of
 sweep runs on the image's Python and never under `--ci-env`, and the CI
 replay binds the record to CI's own regeneration instead.
 
+The sweep ran on a Kaggle CPU kernel
+(results/kaggle/2026-10-17T131115Z-box-kite-qx-sweep) and both families pass:
+family (a) 848 circuits, 2354 replicas, max |z| 3.14; families (d) and (e)
+149 circuits, 281 replicas, 399 checks, max |z| 2.92. The records are
+docs/evidence/box_kite_qx_sweep/family-a.json and family-de.json; gate
+core-423 replays both with `--bind --require-pass`, so every swept circuit
+equals the bytes this checkout generates.
+
 Also built: `de_specs` (the (d1)-(d3) and (e) replicas with their census
 predictions, standard library only, which the sweep replay reuses),
 `controlled_w` and `controlled_block` (designs' left multiplications as

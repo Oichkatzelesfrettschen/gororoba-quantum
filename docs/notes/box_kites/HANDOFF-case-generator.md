@@ -108,9 +108,8 @@ box_kite_cases.py and qi_zero_divisor_cases.py. Expected cost: family a
 about 0.2 s per circuit, family de about 15000 CPU-seconds (69 dense d2 and
 d3 circuits at about 215 s each), so about an hour on the kernel's 4 CPUs,
 inside the CPU session limit. After
-`collect`, retain docs/evidence/box_kite_qx_sweep/family-a.json and
-family-de.json and add the replay gate (core-423, the next number of the
-assigned range):
+`collect`, docs/evidence/box_kite_qx_sweep/family-a.json and family-de.json
+hold the kernel's records (both pass), and gate core-423 replays them:
 
 ```sh
 "$PYTHON" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a.json --bind --require-pass && "$PYTHON" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-de.json --bind --require-pass && "$PYTHON" -B -O -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a.json --bind --require-pass && "$PYTHON" -B -O -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-de.json --bind --require-pass
