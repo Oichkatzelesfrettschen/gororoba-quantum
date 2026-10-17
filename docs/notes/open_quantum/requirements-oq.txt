@@ -1,6 +1,6 @@
 # Open Quantum environment: OQ_ENV=$HOME/.local/share/openquantum/venv (Python 3.14).
 # uv venv --python 3.14 "$OQ_ENV" && VIRTUAL_ENV="$OQ_ENV" uv pip install -r docs/notes/open_quantum/requirements-oq.txt
-# The three openquantum wheels carry the PyPI sha256 they were installed from.
+# docs/notes/open_quantum/pypi/ carries the sha256 of every pinned openquantum wheel.
 annotated-types==0.8.0
 anyio==4.15.1
 attrs==26.1.0
@@ -19,9 +19,9 @@ jsonschema==4.26.0
 jsonschema-specifications==2025.9.1
 mcp==1.30.0
 numpy==2.5.4
-openquantum-mcp==0.2.0 --hash=sha256:8973ac5a120d85daabda89d0acb227109c4febda1684c89f2c85d34632226f4d
-openquantum-sdk==1.0.0 --hash=sha256:a189be978d1e52682c362df1301e1e5185b415081ac0b58661824aff4467bdfc
-openquantum-sdk-qiskit==1.0.0 --hash=sha256:21b0814c706af8ab914eaeec6c60283718e7ee23f38483e59f5b3dde718953e6
+openquantum-mcp==0.2.0
+openquantum-sdk==1.0.0
+openquantum-sdk-qiskit==1.0.0
 pycparser==3.11
 pydantic==2.14.1
 pydantic-core==2.50.1

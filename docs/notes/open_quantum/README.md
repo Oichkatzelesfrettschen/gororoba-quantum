@@ -36,7 +36,7 @@ VIRTUAL_ENV="$OQ_ENV" uv pip install -r docs/notes/open_quantum/requirements-oq.
 | openquantum-sdk-qiskit | 1.0.0 | 21b0814c...53e6 | `OQBackend` (BackendV2 with a Target), `OQSampler`, `OQEstimator` |
 | qiskit | 2.5.2 | | the repository's pin; the plugin accepts any `qiskit>=2.0` |
 
-The full digests are in `requirements-oq.txt` and `pypi/`. The PennyLane,
+The full wheel digests are in `pypi/`. The PennyLane,
 Cirq and Qrisp plugins are not installed.
 
 An SDK key is a Client ID and Client Secret created at
@@ -96,6 +96,12 @@ with `OPENQUANTUM_SDK_KEY`, `OPENQUANTUM_MCP_MAX_CREDITS=1`,
 | `submit_job` | `preparation_id` and `confirm_spend`, or every `prepare_job` field for a one-shot upload-and-submit | creates the job and spends credits | ask / prompt |
 | `cancel_job` | `job_id` | cancels a Pending job; credits return | ask / prompt |
 
+Codex applies a tool's `approval_mode = "prompt"` through its session
+approval policy: under the global `approval_policy = "never"` a `codex exec`
+call to `cancel_job` returned "MCP tool call requires approval, but approval
+policy is never" without reaching the server, so a non-interactive Codex run
+holds the three tools closed and an interactive session asks.
+
 Source facts of openquantum-mcp 0.2.0 that bind its use:
 
 - `openquantum_mcp.safety.evaluate_spend` rejects a quote above
@@ -123,7 +129,7 @@ Source facts of openquantum-mcp 0.2.0 that bind its use:
 
 - The core SDK's `JobSubmissionConfig.auto_approve_quote` defaults to `True`,
   so a direct `submit_job` or a Qiskit `backend.run` spends without asking;
-  the repository's code sets it `False` and approves the quote itself.
+  a run from this repository sets it `False` and approves the quote itself.
 - The CLI parses `--organization` but `JobSubmissionConfig` receives no
   organization, plan or priority: it runs `auto` plan and priority on the
   SDK's default organization and asks before a positive quote unless
