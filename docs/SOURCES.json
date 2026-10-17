@@ -1236,6 +1236,78 @@
       "retrieved_at_utc": "2026-10-14T11:32:18+00:00",
       "reading_scope": "Journal of Algebra 220, 188-224 (1999): bibliographic identity of math/9802116",
       "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/html/2604.25863v3",
+      "note": "docs/notes/ibm_quantum/heron-r2-readout-resonator.md",
+      "sha256": "566f547706c9a9f8f84cf4551ebe086009fa0c93efa1e29bfd9b555e6d068fba",
+      "bytes": 455509,
+      "retrieved_at_utc": "2026-10-17T05:20:16+00:00",
+      "reading_scope": "arXiv:2604.25863v3 HTML rendering: MCMit (TUM): ibm_fez Heron r2 micro-benchmarks, readout-length range, calibration-cycle statement",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/html/2604.03360v2",
+      "note": "docs/notes/ibm_quantum/heron-r2-readout-resonator.md",
+      "sha256": "af51bf2c968a3baa205a07a54de1ce3a563a07774072b12517cb706b9cdfa6bb",
+      "bytes": 375857,
+      "retrieved_at_utc": "2026-10-17T05:20:16+00:00",
+      "reading_scope": "arXiv:2604.03360v2 HTML rendering: Shirgure et al.: ibm_kingston Heron r2 measurement duration and error statements",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/html/2606.00433v2",
+      "note": "docs/notes/ibm_quantum/heron-r2-readout-resonator.md",
+      "sha256": "f436f2975c8d799661ac83e27a1807cb58175eb52acb70267607d8101ab503ca",
+      "bytes": 1478913,
+      "retrieved_at_utc": "2026-10-17T05:20:16+00:00",
+      "reading_scope": "arXiv:2606.00433v2 HTML rendering: Chu et al.: ibm_kingston Heron r2, ibm_pittsburgh and ibm_boston Heron r3 mid-circuit measurement backaction",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/html/2412.04053v2",
+      "note": "docs/notes/ibm_quantum/heron-r2-readout-resonator.md",
+      "sha256": "b7cf603e9fc56ffe72d7c9cb323353f778c687d01616bf5757de0b4a8689e6f7",
+      "bytes": 192486,
+      "retrieved_at_utc": "2026-10-17T05:20:16+00:00",
+      "reading_scope": "arXiv:2412.04053v2 HTML rendering: Chatterjee, Schwinger, Gao: ibm_brisbane and ibm_kyoto kappa, 2chi, 720 ns pulse and 680 ns reset delay (127-qubit, family unstated in the paper)",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/html/2305.10508v1",
+      "note": "docs/notes/ibm_quantum/heron-r2-readout-resonator.md",
+      "sha256": "72ba4e3f22c333aa4af6ec9f9c24abffe9f31f7323b55621387ff38e9df78d7f",
+      "bytes": 182728,
+      "retrieved_at_utc": "2026-10-17T05:20:16+00:00",
+      "reading_scope": "arXiv:2305.10508v1 HTML rendering: Thorbeck et al.: IBM-internal test device chi, kappa, dephasing fit gamma_phi(epsilon)",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/html/2407.14431v3",
+      "note": "docs/notes/ibm_quantum/heron-r2-readout-resonator.md",
+      "sha256": "159ec5779593ffbc0d393db268c3aa6bfe15e4eb3ec356c06ba5fb56df7825d1",
+      "bytes": 157642,
+      "retrieved_at_utc": "2026-10-17T05:20:16+00:00",
+      "reading_scope": "arXiv:2407.14431v3 HTML rendering: Yoshioka et al.: Heron r1 ibm montecarlo device properties",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/html/2308.13065v2",
+      "note": "docs/notes/ibm_quantum/heron-r2-readout-resonator.md",
+      "sha256": "5dcc62939c218d6bd518e424d8dfda2744143c9594aa0a5aab8965cf0ad44e3d",
+      "bytes": 343879,
+      "retrieved_at_utc": "2026-10-17T05:20:16+00:00",
+      "reading_scope": "arXiv:2308.13065v2 HTML rendering: Baumer et al.: ibm_sherbrooke and ibm_peekskill readout and feed-forward times",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/html/2406.07611v2",
+      "note": "docs/notes/ibm_quantum/heron-r2-readout-resonator.md",
+      "sha256": "ee5cfd7033ae433743c280f956ae82e2835701e413562125a082cc186ab02485",
+      "bytes": 1046831,
+      "retrieved_at_utc": "2026-10-17T05:20:16+00:00",
+      "reading_scope": "arXiv:2406.07611v2 HTML rendering: Readout error mitigation for mid-circuit measurements: Falcon (ibm_algiers, ibmq_kolkata, ibm_mumbai) and Eagle (ibm_osaka, ibm_kyoto) device families",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",

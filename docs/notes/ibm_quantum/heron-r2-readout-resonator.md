@@ -14,7 +14,7 @@ Measured kappa and chi exist in the open literature for three non-Heron-r2
 IBM devices, all context: an IBM-internal flux-tunable test device of
 unstated family (Thorbeck et al., section 4a) and ibm_brisbane and ibm_kyoto
 (Chatterjee et al., section 4g; 127-qubit devices whose family and revision
-the paper does not state, Eagle-class by inference). "None found" bounds the
+the paper does not state, Eagle-class per section 4d and by inference). "None found" bounds the
 search performed here (section "Not run" lists the gaps); it is not a claim
 about every public source.
 
@@ -100,10 +100,11 @@ split into pulse, integration window and ring-down. That split is not public.
 - Provenance: Heron r2 (ibm_fez) for the experiments; the Heron-wide range
   below is Heron, revision unstated.
 - Version: v3, 7 Aug 2026 (header "arXiv:2604.25863v3 [quant-ph] 7 Aug 2026").
-  Earlier versions exist; v1 date not retrieved. Cited IBM resources page
-  accessed 2025-08-20, so the ibm_fez data predates ibm_fez backend_version
-  as read on 2026-10-17 by an unknown amount; the paper gives no backend
-  version or calibration date, only "the same calibration cycle of ibm_fez".
+  Earlier versions exist; v1 date not retrieved. The paper gives no
+  execution date, backend version or calibration date for its ibm_fez runs,
+  only "Each experiment runs for 10,000 shots on the same calibration cycle of
+  ibm_fez." The experiment date is unknown, so the data cannot be ordered
+  against the ibm_fez backend_version read on 2026-10-17.
 - Device tag: DEVICE-MATCHED (ibm_fez), text: "we conduct experiments
   requiring quantum hardware on ibm_fez, an IBM Heron r2 QPU [12]."
 - Relevance: the paper runs micro-benchmarks and MCM error mitigation on
@@ -229,8 +230,13 @@ therefore has only the repository's own dated snapshots as evidence.
 ## 2. Other Heron r2 devices
 
 None found with a readout-resonator parameter. ibm_kingston is in section 1.
-ibm_aachen is described by IBM as "Heron r3" after upgrade (changelog April
-2026: "the upgraded Heron r3 QPU ibm_aachen"), so it is not an r2 data source.
+ibm_aachen launched as a Heron r2 QPU (changelog 9 and 10 April 2025, section
+1f) and IBM calls it "Heron r3" after its upgrade (changelog April 2026: "the
+upgraded Heron r3 QPU ibm_aachen"). Data from the interval between launch and
+upgrade is Heron r2 (ibm_aachen) evidence, tag HERON-R2-OTHER; data after the
+upgrade is Heron r3 context. No ibm_aachen readout source was located in
+either interval; the search for papers naming ibm_aachen was not run (see
+"Not run").
 
 ## 3. Revision-only Heron r2 statements
 
@@ -267,8 +273,13 @@ ibm_aachen is described by IBM as "Heron r3" after upgrade (changelog April
 - Main text: "during readout the qubit frequency is Stark shifted ... by
   nu_S = 2 chi n_r, where chi is the dispersive shift and n_r is the average
   number of photons in the readout resonator." Supplement "CALIBRATION":
-  dephasing function gamma_phi(n_r) = R n_r^2 style fit with "R/2pi = 429
-  MHz" (as extracted; the exponent layout is garbled in the text layer).
+  the dephasing rate is fit as a function of the readout drive amplitude
+  epsilon (arbitrary DAC units), gamma_phi(epsilon) = R epsilon^2, with
+  "R/2pi = 429 MHz" (supplement, calibration). The Stark shift is fit against
+  the same epsilon and converted to photon number through nu_S = 2 chi n_r,
+  so n_r is proportional to epsilon^2 when the Kerr term is dropped; gamma_phi
+  is then approximately linear in n_r. The paper states no gamma_phi(n_r)
+  fit, and R carries units of MHz per DAC-unit squared (INFERENCE).
 - Statement that ring-up and ring-down were not modeled: "we have not
   accounted for the time-dynamics of the induced qubit dissipation during
   ring-up and ring-down of the readout resonator". This is the closest IBM
@@ -310,13 +321,18 @@ ibm_aachen is described by IBM as "Heron r3" after upgrade (changelog April
 
 ### 4d. Readout error mitigation for MCM and feedforward, arXiv:2406.07611
 
-- Provenance: ibmq_kolkata (27-qubit) and ibm_osaka (127-qubit), revisions
-  unstated, arXiv:2406.07611, section IV.
-- Section IV: devices ibmq_kolkata (27-qubit) and ibm_osaka (127-qubit);
-  revisions unstated; OTHER-FAMILY (Falcon, Eagle by inference). States only:
+- Provenance: Falcon family (ibm_algiers, ibmq_kolkata, ibm_mumbai; 27
+  qubits) and Eagle family (ibm_osaka, ibm_kyoto; 127 qubits), revisions
+  unstated, arXiv:2406.07611v2 (header "03 Feb 2025"), section IV and
+  appendices.
+- The paper states the families: "27-qubit devices {ibm_algiers,
+  ibmq_kolkata, ibm_mumbai} hosting Falcon-family processors, and 127-qubit
+  devices {ibm_osaka, ibm_kyoto} hosting Eagle-family processors." The
+  main-text experiments of section IV use ibmq_kolkata and ibm_osaka; the
+  remaining three appear in appendix data. OTHER-FAMILY. States only:
   "waiting for mid-circuit measurements can incur considerable decoherence",
   "there may be measurement cross-talk", measurements take a small multiple
-  of a CX duration. No resonator parameters. Version not recorded.
+  of a CX duration. No resonator parameters.
 
 ### 4e. Kim et al., Nature 618, 500 (2023), arXiv/PMC10266970
 
@@ -332,11 +348,12 @@ ibm_aachen is described by IBM as "Heron r3" after upgrade (changelog April
 
 - Provenance: ibm_brisbane qubit 2 and ibm_kyoto qubit 2, arXiv:2412.04053v2
   (11 Dec 2024; v1 5 Dec 2024), main text and Table 2 / Appendix. The paper
-  does not state family or revision for either device. Both are 127-qubit IBM
-  devices; Eagle by IBM convention, and third-party papers describe
-  ibm_brisbane as Eagle r3 (not confirmed here against an IBM listing;
-  ibm_kyoto not confirmed at all). Tag: OTHER-FAMILY, INFERENCE for the
-  family label; context only, never a Heron r2 value.
+  does not state family or revision for either device. arXiv:2406.07611v2
+  (section 4d) states ibm_kyoto is a 127-qubit Eagle-family device, revision
+  unstated. ibm_brisbane is Eagle r3 per third-party papers found by search
+  (not confirmed here against an IBM listing). Tag: OTHER-FAMILY, INFERENCE
+  for the ibm_brisbane family and revision; context only, never a Heron r2
+  value.
 - Authors are from the University of Oxford and the Centre for Quantum
   Technologies, National University of Singapore; they used the IBM devices
   as users, so the values are measured by the authors on those devices.
@@ -391,10 +408,14 @@ Evidence for what the account devices expose, from the live API read
   `instruction_signatures` field from backend configuration for `measure_2`;
   that is the only readout-related configuration field named in the release
   notes I read.
-- meas_lo_range, qubit_lo_range, rep_times: not examined in this session
-  beyond the 0.42.0 note on a `rep_times` unit fix in `QasmBackendConfiguration`
-  ("Fixed an inconsistency in the unit conversion of `rep_times`"). Not
-  measured here; treat as not verified.
+- meas_lo_range, qubit_lo_range, rep_times: a read-only
+  `service.backend(NAME).configuration()` call on 2026-10-17 returned a
+  `QasmBackendConfiguration` for ibm_fez (1.3.37), ibm_kingston (1.0.0) and
+  ibm_marrakesh (1.0.21), all processor_type Heron r2, with no `meas_lo_range`,
+  `qubit_lo_range` or `rep_times` attribute; for ibm_fez `to_dict()` carries
+  no key containing "lo_range" and the only repetition fields are
+  `default_rep_delay` and `rep_delay_range`. Tag: DEVICE-MATCHED, stated by
+  the API (fields absent, so no LO range is exposed).
 - `backend_version` is exposed as a string; no public changelog maps its
   values to calibrations (section 1g).
 
@@ -421,7 +442,7 @@ did not run that probe because it needs a job submission.
 | `measure` duration | 1660 / 2180 / 2684 ns (fez / kingston / marrakesh) | each of the three | Heron r2 | live Target, snapshot 2026-10-14 (targets.json), re-read 2026-10-17 | stated, device-matched | no (matches current) |
 | `measure_2` duration | 1340 / 1380 / 1884 ns | each of the three | Heron r2 | same | stated, device-matched | no |
 | `reset` / `measure_reset` | 1684 / 2212 / 2720 ns | each of the three | Heron r2 | same | stated, device-matched | no |
-| Heron readout length range | 1560-2584 ns | fleet, device-unstated | Heron (revision unstated) | arXiv:2604.25863v3 (7 Aug 2026), citing IBM resources page accessed 2025-08-20 | context | yes (2025-08-20 data) |
+| Heron readout length range | 1560-2584 ns | fleet, device-unstated | Heron (revision unstated) | arXiv:2604.25863v3 (7 Aug 2026), citing an IBM resources page (reference accessed 2025-08-20; the table is a fleet range of unknown date) | context | cannot tell |
 | ibm_kingston `measure_2` vs `measure` | 65 percent shorter; `measure` 34x a 2q gate | ibm_kingston | Heron r2 | arXiv:2604.03360v2 (15 Sep 2026) | stated, device-matched, disagrees with snapshot (37 percent) | cannot tell; no backend version given |
 | Feed-forward latency | approx 600 ns | "IBM hardware", device unstated | unstated | arXiv:2604.03360v2 | not device-matched | n/a |
 | Feed-forward latency | roughly 0.7 us | ibm_sherbrooke, ibm_peekskill | unstated (likely Eagle / Falcon, inference) | arXiv:2308.13065v2 (18 Sep 2024), App. D | other-family | yes |
@@ -439,7 +460,9 @@ No Heron r2 value was found in the sources read for: kappa, chi, resonator or qu
 and detuning, integration time apart from `readout_length`, ring-down or
 buffer time, device-matched feed-forward latency, residual-photon Stark shift
 or dephasing with decay time, or any
-backend_version-to-calibration change history. Closing those needs a
+backend_version-to-calibration change history. The configuration fields
+`meas_lo_range`, `qubit_lo_range` and `rep_times` are absent from all three
+account devices (section 5), so no LO range is exposed either. Closing those needs a
 measurement on the devices (a Ramsey-after-measurement delay sweep on a
 spectator and on the measured qubit, run per device and per backend version)
 or IBM disclosure.
@@ -450,7 +473,7 @@ or IBM disclosure.
 - IBM blog posts on Heron readout: no relevant post located by search.
 - Text search of the IBM changelog for the strings above: the page was
   summarized by the fetch tool, not grepped.
-- meas_lo_range and qubit_lo_range population on Heron r2: not checked; the
-  conclusion above leaves them unclassified.
+- ibm_aachen readout papers and snapshots from its Heron r2 interval: no
+  search run.
 - Resolving ibm_sherbrooke and ibm_peekskill revisions from an IBM listing:
   not done.
