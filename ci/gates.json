@@ -2540,6 +2540,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test && \"$PYTHON\" -B -O -W error scripts/materialize_gororoba_csv.py --self-test",
+   "name": "core-401",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "shellcheck -S error ci/fetch_open_gororoba.sh",
+   "name": "core-402",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_platform.py check docs/evidence/quantum_inspire --agents AGENTS.md",
    "name": "core-347",
    "seconds": 1.0,
@@ -2926,7 +2942,7 @@
   {
    "cmd": "\"$PYTHON\" verify.py",
    "cwd": "gororoba_quantum",
-   "reason": "needs the git-ignored open_gororoba data/csv build; issue #62"
+   "reason": "runs in the ci.yml job external-ground-truth over the pinned open_gororoba checkout (ci/open_gororoba.pin)"
   },
   {
    "cmd": "ROCQ=\"${ROCQ:-rocq}\" sh docs/evidence/c881_exhaustive/replay_rocq.sh",

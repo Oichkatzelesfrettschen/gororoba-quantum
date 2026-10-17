@@ -47,3 +47,30 @@ jobs:
           python ci/run_gates.py
           --tier ${{ github.event_name == 'pull_request' && 'pr' || 'full' }}
           --shard ${{ matrix.shard }}/${{ github.event_name == 'pull_request' && 6 || 12 }}
+
+  external-ground-truth:
+    name: verify.py against open_gororoba
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONHASHSEED: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14.7"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            ci/requirements-ci.txt
+      - name: Install pinned dependencies
+        run: PYTHON=python sh ci/install_pins.sh
+      - name: Fetch the pinned open_gororoba registry and proofs
+        run: sh ci/fetch_open_gororoba.sh "$RUNNER_TEMP/open_gororoba" registry/data/project_csv proofs
+      - name: Materialize the kernel CSVs from the registry records
+        run: >-
+          python scripts/materialize_gororoba_csv.py "$RUNNER_TEMP/open_gororoba"
+          --only multiplication_table_8D multiplication_table_16D reggiani_standard_zero_divisor_pairs
+      - name: Run verify.py
+        working-directory: gororoba_quantum
+        run: GOROROBA_ROOT="$RUNNER_TEMP/open_gororoba" python verify.py
