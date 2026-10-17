@@ -1,0 +1,302 @@
+{
+ "schema": "box-kite-cases-v1",
+ "family": "a_smoke",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "dialect": "qx",
+ "bit_order": "qubit 0 at the rightmost character (QX)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "encodings": {
+  "full": "designs.lcu_witness: data 0-3, selector 4; x_sign = -1 adds Z on the selector after its first H; compiled at optimization level 0 to cx, rz, h, x, z, s, sdg with Rz on the pi/64 grid",
+  "reduced": "selector a = slot qubit 0, data d = slot qubit 1; SELECT = diag(g(L,L'), g(L,U'), g(U,L'), g(U,U')) over (a, d) from the census coefficients, then CNOT(a -> d); x_sign = -1 adds Z on a after its first H",
+  "reduced_cross": "selector a, data d, mark w = slot qubits 0, 1, 2; identity diagonal (the census carries no phases for four-label rows, and P = 1/2 for every sign), CNOT(a -> d), CNOT(a -> w)"
+ },
+ "role": "smoke run of the remote QX compile path (parser, bit order, gate set, angle grid); the exhaustive family (a) runs on Kaggle CPU through scripts/box_kite_qx_sweep.py",
+ "preregistered": {
+  "observable": "zero-product success P(selector = 0), counted from the selector bit of each replica",
+  "predictions": "census:design_b p_selector_zero per replica: 0 on the two zero sign choices of an edge, 1 on its other two, 1/2 on every strut, cross-kite, fixture and non-kite row",
+  "falsifier": "any shot with selector 0 on a P = 0 replica or selector 1 on a P = 1 replica refutes that circuit's implementation; a P = 1/2 replica outside |z| < 4.5 at 2048 shots refutes it",
+  "half_rows": 7,
+  "z_limit": 4.5,
+  "bonferroni": "the exhaustive family's bound, z_limit 4.5, applies to every P = 1/2 replica",
+  "lcu_identity": "P(x_sign) + P(-x_sign) = 1 holds by construction and checks the selector Z, not the algebra",
+  "stop_rule": "one shot violating a deterministic replica, or a P = 1/2 replica outside the bound, stops the series until the circuit is explained; each batch checks completed jobs, the shots per job and circuit digests against cases.json"
+ },
+ "batch": "batch-01",
+ "group": "smoke",
+ "circuits": [
+  {
+   "file": "smoke_full-004.cq",
+   "kind": "witness",
+   "sub_family": "smoke_full",
+   "encoding": "full",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "nonkite_pairs[0]",
+     "kite": 0,
+     "p": [
+      1,
+      9,
+      1
+     ],
+     "q": [
+      2,
+      10,
+      1
+     ],
+     "relation": "nonkite",
+     "roles": {
+      "selector": 4,
+      "data": [
+       0,
+       1,
+       2,
+       3
+      ]
+     },
+     "p_selector_zero": "1/2",
+     "pattern": "full_nonkite",
+     "selection": "census nonkite_pairs: first (l, l^8) row"
+    },
+    {
+     "slot": 1,
+     "census": "negative_fixture[0]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      2,
+      13,
+      -1
+     ],
+     "relation": "cross_kite_7",
+     "roles": {
+      "selector": 9,
+      "data": [
+       5,
+       6,
+       7,
+       8
+      ]
+     },
+     "p_selector_zero": "1/2",
+     "pattern": "full_fixture",
+     "selection": "census negative_fixture: the negative fixture (1,10)+ x (2,13)-"
+    }
+   ],
+   "group": "smoke",
+   "sha256": "a59c1e6af23125c14b4b4e049428f55799f05bf7d81b9d8a165c9d2f5fa59ef7"
+  },
+  {
+   "file": "smoke_reduced-001.cq",
+   "kind": "witness",
+   "sub_family": "smoke_reduced",
+   "encoding": "reduced",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "within_kite[8]",
+     "kite": 1,
+     "p": [
+      2,
+      11,
+      1
+     ],
+     "q": [
+      5,
+      12,
+      1
+     ],
+     "relation": "edge_same",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "p_selector_zero": "0",
+     "pattern": "reduced_edge_dark",
+     "selection": "census within_kite: first edge row with signs (+, +) and P = 0 (local-Z SELECT)"
+    },
+    {
+     "slot": 1,
+     "census": "within_kite[4]",
+     "kite": 1,
+     "p": [
+      2,
+      11,
+      1
+     ],
+     "q": [
+      4,
+      13,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 2,
+      "data": [
+       3
+      ]
+     },
+     "p_selector_zero": "1",
+     "pattern": "reduced_edge_bright",
+     "selection": "census within_kite: first edge row with signs (+, +) and P = 1 (local-Z SELECT)"
+    },
+    {
+     "slot": 2,
+     "census": "within_kite[0]",
+     "kite": 1,
+     "p": [
+      2,
+      11,
+      1
+     ],
+     "q": [
+      3,
+      10,
+      1
+     ],
+     "relation": "strut",
+     "roles": {
+      "selector": 4,
+      "data": [
+       5
+      ]
+     },
+     "p_selector_zero": "1/2",
+     "pattern": "reduced_strut",
+     "selection": "census within_kite: first strut row with signs (+, +) (Sdag-CNOT-S SELECT)"
+    },
+    {
+     "slot": 3,
+     "census": "within_kite[6]",
+     "kite": 1,
+     "p": [
+      2,
+      11,
+      -1
+     ],
+     "q": [
+      4,
+      13,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 6,
+      "data": [
+       7
+      ]
+     },
+     "p_selector_zero": "0",
+     "pattern": "reduced_edge_x_minus",
+     "selection": "census within_kite: first edge row with signs (-, +)"
+    },
+    {
+     "slot": 4,
+     "census": "within_kite[5]",
+     "kite": 1,
+     "p": [
+      2,
+      11,
+      1
+     ],
+     "q": [
+      4,
+      13,
+      -1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 8,
+      "data": [
+       9
+      ]
+     },
+     "p_selector_zero": "0",
+     "pattern": "reduced_edge_y_minus",
+     "selection": "census within_kite: first edge row with signs (+, -)"
+    }
+   ],
+   "group": "smoke",
+   "sha256": "7f02cda5f65c9ec27613eb3bdabf6ff4c269f2c2aefa0dd1e6b31fed165f9880"
+  },
+  {
+   "file": "smoke_reduced_cross-001.cq",
+   "kind": "witness",
+   "sub_family": "smoke_reduced_cross",
+   "encoding": "reduced_cross",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "cross_kite_controls[0]",
+     "kite": 1,
+     "p": [
+      2,
+      11,
+      1
+     ],
+     "q": [
+      1,
+      11,
+      1
+     ],
+     "relation": "cross_kite_2",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ],
+      "mark": [
+       2
+      ]
+     },
+     "p_selector_zero": "1/2",
+     "pattern": "reduced_cross_cross_kite",
+     "selection": "census cross_kite_controls: first cross-kite control row"
+    },
+    {
+     "slot": 1,
+     "census": "negative_fixture[0]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      2,
+      13,
+      -1
+     ],
+     "relation": "cross_kite_7",
+     "roles": {
+      "selector": 3,
+      "data": [
+       4
+      ],
+      "mark": [
+       5
+      ]
+     },
+     "p_selector_zero": "1/2",
+     "pattern": "reduced_cross_fixture",
+     "selection": "census negative_fixture: the negative fixture (1,10)+ x (2,13)-"
+    }
+   ],
+   "group": "smoke",
+   "sha256": "9c54b050fc2ebda349265602b6b6b2d01d9aba10d4a9b73810e0956d3e1fb336"
+  }
+ ]
+}

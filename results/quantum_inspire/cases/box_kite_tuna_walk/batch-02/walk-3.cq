@@ -1,0 +1,35 @@
+version 3.0
+
+qubit[17] q
+bit[17] b
+
+// slot 0 walk (2, 11, 3) omega -1 omit-last-block control q[11] P(c=0) 1/2
+X q[8]
+X q[13]
+H q[11]
+Z q[11]
+H q[8]
+CZ q[11], q[8]
+H q[8]
+H q[13]
+CZ q[11], q[13]
+H q[13]
+H q[14]
+CZ q[11], q[14]
+H q[14]
+H q[13]
+CZ q[11], q[13]
+H q[13]
+H q[11]
+// slot 1 reference census within_kite[244] kite 3 (1,10)+ x (4,15)+ edge_opposite depth 1 P 1 selector q[1]
+H q[4]
+H q[1]
+Z q[1]
+Z q[4]
+H q[4]
+CZ q[1], q[4]
+H q[4]
+H q[1]
+
+barrier q
+b = measure q
