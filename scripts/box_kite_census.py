@@ -41,6 +41,15 @@ products and then required to equal its closed form.
   witness with uniform k, the fixed-i witness with uniform (j, k), and the
   uniform baseline 25/256 with P(c = 1) = 231/512.
 
+Package witnesses. scripts/box_kite_packages.py recomputes the basis-product,
+sign and zero-product facts through every package of the Cayley-Dickson stack
+under its declared map (identity, python-octonion's signed relabeling,
+SageMath's opposite algebra and e3/e5/e6 flip, the split relation of the
+negative controls) and the record keeps one sha256 per fact. --write
+multiplies with each package's own arithmetic on the build host; --check
+recomputes the digests through the retained basis tables and requires the
+retained element verdicts to equal them, so CI imports no package.
+
 open_gororoba's de_marrais CSVs enter only through a declared map (identity on
 (low, high) and signs, box_kite id to strut_signature): --open-gororoba DIR
 recomputes the comparison, and the record retains file digests and agreement
@@ -68,6 +77,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+import box_kite_packages as packages  # noqa: E402
+
 import parallel  # noqa: E402
 from cd_core import cd_multiply, cd_sign, left_mult_matrix, sedenion_zero_divisor_corpus, triple_sign  # noqa: E402
 
@@ -819,12 +830,234 @@ def validate_comparison(comparison: Any, record: dict[str, Any]) -> None:
     )
 
 
+def witness_inputs(record: dict[str, Any]) -> packages.Task:
+    """The Design B operand pairs and kite triples every witness multiplies, from the census rows."""
+    table = record["design_b"]
+    rows = table["within_kite"] + table["cross_kite_controls"] + table["nonkite_pairs"] + [table["negative_fixture"]]
+    pairs = [({r[1]: 1, r[2]: r[3]}, {r[4]: 1, r[5]: r[6]}) for r in rows]
+    return packages.Task(
+        "table", pairs, {k["strut_constant"]: kite_triples(k["strut_constant"]) for k in record["kites"]}
+    )
+
+
+def witness_digests(record: dict[str, Any], mode: str, names: list[str]) -> dict[str, dict[str, Any]]:
+    """Fact digests (or the import error) of each named witness under one product mode."""
+    task = witness_inputs(record)
+    task.mode = mode
+    items = [item for name in names for item in packages.tasks_for(name)]
+    results = parallel.ordered_map(task, items, min_items=1)
+    out: dict[str, dict[str, Any]] = {}
+    position = 0
+    for name in names:
+        count = len(packages.tasks_for(name))
+        out[name] = packages.assemble(name, results[position : position + count])
+        position += count
+    return out
+
+
+WRAPPER_EXPRESSIONS = (("e1+e10", "e4-e15"), ("e1+e10", "e4+e15"), ("e1+e10", "e2-e13"))
+
+
+def parse_expression(text: str) -> dict[int, int]:
+    """'2e5 - 2e14' -> {5: 2, 14: -2}; '0' -> {}."""
+    compact = text.replace(" ", "")
+    if compact == "0":
+        return {}
+    terms = re.findall(r"([+-]?)(\d*)e(\d+)", compact)
+    require("".join(f"{a}{b}e{c}" for a, b, c in terms).lstrip("+") == compact.lstrip("+"), f"expression {text!r}")
+    return {int(c): (-1 if a == "-" else 1) * int(b or 1) for a, b, c in terms}
+
+
+def expression_terms(text: str) -> dict[int, int]:
+    return dict(sorted(parse_expression(text).items()))
+
+
+def pinned_release(package: str) -> str:
+    """The release tables.json binds the package to, or the SageMath export's version line."""
+    if package == "sagemath":
+        return str(json.loads(packages.SAGE_TABLE.read_text(encoding="utf-8"))["sage"])
+    return str(json.loads(packages.TABLES.read_text(encoding="utf-8"))["packages"][package]["version"])
+
+
+def package_section(record: dict[str, Any]) -> dict[str, Any]:
+    """Every witness through its package's own arithmetic (build host only), against cd_core."""
+    import importlib.metadata
+
+    names = [w[0] for w in packages.WITNESSES if w[4] != "wrapper"]
+    reference = witness_digests(record, "table", ["cd_core-16", "cd_core-8"])
+    element = witness_digests(record, "element", names)
+    witnesses: dict[str, Any] = {}
+    for spec in packages.WITNESSES:
+        name, package, dim, mapping, role, arithmetic, key, traps = spec
+        try:
+            if package == "sagemath":
+                import sage.version
+
+                version = str(sage.version.version)
+            else:
+                distribution = {"splitoct": "SplitOct"}.get(package, package)
+                version = importlib.metadata.version(distribution)
+        except Exception as failure:  # noqa: BLE001  (a missing distribution is the retained verdict)
+            version = f"unavailable: {type(failure).__name__}: {failure}"
+        entry: dict[str, Any] = {
+            "package": package,
+            "version": version,
+            "dimension": dim,
+            "map": mapping,
+            "role": role,
+            "arithmetic": arithmetic,
+            "retained_table": key,
+            "traps": traps,
+            "pinned_release": pinned_release(package),
+        }
+        if role == "wrapper":
+            try:
+                import hypercomplex_algebra
+
+                texts = {f"({a})({b})": hypercomplex_algebra.multiply_expressions(a, b) for a, b in WRAPPER_EXPRESSIONS}
+                entry["expressions"] = texts
+                entry["error"] = None
+            except Exception as failure:  # noqa: BLE001
+                entry["expressions"] = None
+                entry["error"] = f"{type(failure).__name__}: {failure}"
+        else:
+            result = element[name]
+            entry["error"] = result.get("error")
+            entry["facts"] = result.get("facts")
+        witnesses[name] = entry
+    section = {
+        "method": "each fact is the sha256 of its canonical JSON computed through the witness's own product "
+        "under its declared map; agreement is digest equality with cd_core",
+        "reference": {name: value["facts"] for name, value in reference.items()},
+        "witnesses": witnesses,
+    }
+    finish_package_section(section, record, reference)
+    return section
+
+
+def finish_package_section(section: dict[str, Any], record: dict[str, Any], reference: dict[str, Any]) -> None:
+    """Agreement flags, the split control and the strut-line binding; required laws raise."""
+    ref16, ref8 = reference["cd_core-16"]["facts"], reference["cd_core-8"]["facts"]
+    lines = reference["cd_core-8"]["values"]["strut_lines"] if "values" in reference["cd_core-8"] else None
+    if lines is not None:
+        struts = sorted([k["strut_constant"], *sorted([a[0], b[0]])] for k in record["kites"] for a, b in k["struts"])
+        require(sorted(line[:3] for line in lines) == struts, "strut lines (u, v, S) differ from the kite struts")
+        require(all(line[3] is True and line[4] == 1 for line in lines), "a strut line is not an associative triple")
+    split: dict[str, Any] = {}
+    for name, entry in section["witnesses"].items():
+        if entry["role"] == "wrapper":
+            if entry["error"] is None:
+                agree = {}
+                require(
+                    sorted(entry["expressions"]) == sorted(f"({a})({b})" for a, b in WRAPPER_EXPRESSIONS),
+                    f"{name}: expression set",
+                )
+                for a, b in WRAPPER_EXPRESSIONS:
+                    text = entry["expressions"][f"({a})({b})"]
+                    agree[f"({a})({b})"] = expression_terms(text) == checked_product(
+                        expression_terms(a), expression_terms(b)
+                    )
+                entry["agrees_with_cd_core"] = agree
+            continue
+        if entry["error"] is not None:
+            require(entry.get("facts") is None, f"{name}: an import failure carries facts")
+            entry["agrees_with_cd_core"] = None
+            continue
+        ref = ref16 if entry["dimension"] == 16 else ref8
+        require(sorted(entry["facts"]) == sorted(ref), f"{name}: fact set differs")
+        entry["agrees_with_cd_core"] = {fact: entry["facts"][fact] == ref[fact] for fact in sorted(ref)}
+        if entry["role"] == "split control":
+            shared = [f for f in packages.SPLIT_FACTS_SHARED if entry["agrees_with_cd_core"][f]]
+            differing = [f for f in sorted(ref) if not entry["agrees_with_cd_core"][f]]
+            require(shared == list(packages.SPLIT_FACTS_SHARED), f"{name}: split control loses a shared fact")
+            require(
+                set(packages.SPLIT_FACTS_DIFFERING) <= set(differing),
+                f"{name}: split control keeps a zero-product fact",
+            )
+            split[name] = {"shared_with_octonions": shared, "differing": differing}
+        else:
+            require(
+                all(entry["agrees_with_cd_core"].values()),
+                f"{name}: declared map fails on {entry['agrees_with_cd_core']}",
+            )
+    section["split_control"] = split
+    section["strut_lines_are_kite_struts"] = True
+
+
+def verify_package_section(
+    section: Any, record: dict[str, Any], table_digests: dict[str, dict[str, Any]]
+) -> dict[str, Any]:
+    """Bind a retained package section to cd_core and to the retained basis tables (CI imports no package)."""
+    require(isinstance(section, dict) and set(section) >= {"method", "reference", "witnesses"}, "package section")
+    require(set(section["witnesses"]) == {w[0] for w in packages.WITNESSES}, "package witness set")
+    reference = {name: table_digests[name] for name in ("cd_core-16", "cd_core-8")}
+    require(section["reference"] == {name: value["facts"] for name, value in reference.items()}, "cd_core fact digests")
+    versions = json.loads(packages.TABLES.read_text(encoding="utf-8"))["packages"]
+    sage_version = json.loads(packages.SAGE_TABLE.read_text(encoding="utf-8"))["sage"]
+    rebuilt: dict[str, Any] = {}
+    for spec in packages.WITNESSES:
+        name, package, dim, mapping, role, arithmetic, key, traps = spec
+        entry = section["witnesses"][name]
+        fixed = {
+            "package": package,
+            "dimension": dim,
+            "map": mapping,
+            "role": role,
+            "arithmetic": arithmetic,
+            "retained_table": key,
+            "traps": traps,
+        }
+        require(all(entry.get(k) == v for k, v in fixed.items()), f"{name}: declared witness fields")
+        if package == "sagemath":
+            require(entry["pinned_release"] == sage_version, f"{name}: pinned release")
+            require(f"version {entry['version']}," in sage_version, f"{name}: version {entry['version']}")
+        else:
+            pinned = versions[package]["version"]
+            require(entry["pinned_release"] == pinned, f"{name}: pinned release {entry['pinned_release']}")
+            require(
+                pinned.startswith("commit ")
+                or entry["version"] in (pinned, *(["unavailable"] if entry["error"] else [])),
+                f"{name}: installed version {entry['version']} against the pin {pinned}",
+            )
+        clean = {
+            **fixed,
+            "version": entry["version"],
+            "pinned_release": entry["pinned_release"],
+            "error": entry["error"],
+        }
+        if role == "wrapper":
+            clean["expressions"] = entry["expressions"]
+        elif entry["error"] is None:
+            require(
+                entry["facts"] == table_digests[name]["facts"],
+                f"{name}: retained verdict differs from its retained table",
+            )
+            clean["facts"] = entry["facts"]
+        else:
+            clean["facts"] = None
+        rebuilt[name] = clean
+    out = {"method": section["method"], "reference": section["reference"], "witnesses": rebuilt}
+    finish_package_section(out, record, reference)
+    return out
+
+
+def table_digest_names() -> list[str]:
+    return ["cd_core-16", "cd_core-8"] + [w[0] for w in packages.WITNESSES if w[6] is not None]
+
+
 def canonical(record: dict[str, Any]) -> str:
     return json.dumps(record, sort_keys=True, indent=1, ensure_ascii=True) + "\n"
 
 
-def build(open_gororoba: Path | None, retained: dict[str, Any] | None) -> dict[str, Any]:
+def build(
+    open_gororoba: Path | None, retained: dict[str, Any] | None, table_digests: dict[str, dict[str, Any]] | None = None
+) -> dict[str, Any]:
     record = census()
+    if retained is None:
+        record["package_witnesses"] = package_section(record)
+    else:
+        digests = table_digests if table_digests is not None else witness_digests(record, "table", table_digest_names())
+        record["package_witnesses"] = verify_package_section(retained.get("package_witnesses"), record, digests)
     if open_gororoba is not None:
         record["open_gororoba_comparison"] = compare_open_gororoba(record, open_gororoba)
     else:
@@ -848,10 +1081,14 @@ def check_text(text: str, recompute: Callable[[dict[str, Any] | None], dict[str,
 def self_test(path: Path) -> int:
     text = path.read_text(encoding="utf-8")
     base = census()
+    digests = witness_digests(base, "table", table_digest_names())
 
     def recompute(retained: dict[str, Any] | None) -> dict[str, Any]:
         record = copy.deepcopy(base)
-        comparison = retained.get("open_gororoba_comparison") if isinstance(retained, dict) else None
+        if not isinstance(retained, dict):
+            raise CensusError("record is not an object")
+        record["package_witnesses"] = verify_package_section(retained.get("package_witnesses"), record, digests)
+        comparison = retained.get("open_gororoba_comparison")
         validate_comparison(comparison, record)
         record["open_gororoba_comparison"] = comparison
         return record
@@ -907,7 +1144,33 @@ def self_test(path: Path) -> int:
     def nonkite_plane(r: dict[str, Any]) -> None:
         r["nonkite_planes"][0] = [1, 10]
 
+    def witness_digest(r: dict[str, Any]) -> None:
+        facts = r["package_witnesses"]["witnesses"]["hyprat-16"]["facts"]
+        facts["kite_structure"] = "0" * 64
+
+    def witness_agreement(r: dict[str, Any]) -> None:
+        r["package_witnesses"]["witnesses"]["cayley-dickson-16"]["agrees_with_cd_core"]["twist_counts"] = False
+
+    def split_control(r: dict[str, Any]) -> None:
+        r["package_witnesses"]["split_control"]["splitoct-8"]["differing"] = []
+
+    def witness_version(r: dict[str, Any]) -> None:
+        r["package_witnesses"]["witnesses"]["hypercomplex-16"]["pinned_release"] = "0.3.3"
+
+    def wrapper_expression(r: dict[str, Any]) -> None:
+        texts = r["package_witnesses"]["witnesses"]["hypercomplex-16-wrapper"]["expressions"]
+        texts[next(iter(texts))] = "e5"
+
+    def reference_digest(r: dict[str, Any]) -> None:
+        r["package_witnesses"]["reference"]["cd_core-8"]["strut_lines"] = "f" * 64
+
     mutations = (
+        witness_digest,
+        witness_agreement,
+        split_control,
+        witness_version,
+        wrapper_expression,
+        reference_digest,
         edge_type,
         strut_swap,
         drop_assessor,

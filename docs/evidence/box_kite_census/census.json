@@ -35824,6 +35824,566 @@
    "total": 7
   }
  },
+ "package_witnesses": {
+  "method": "each fact is the sha256 of its canonical JSON computed through the witness's own product under its declared map; agreement is digest equality with cd_core",
+  "reference": {
+   "cd_core-16": {
+    "annihilator_nullities": "e4f55319ec28fba98f8d375a49f9572459e3a9c44359c932b5f025451671bbbb",
+    "associator_classes": "9a7bf412ef9621b5216500963a36e5a0846567e89bd3a9007bf0d5d013989838",
+    "design_b_products": "1cee9597af13b4916a147c05c760caba515f89e8787470e46f761bfa3e16fd11",
+    "kite_structure": "d73dff39bfa81380a064a5c32b7e06ffe101f48092dc99327568596f55cf2f2a",
+    "twist_counts": "388bbf6dad549d1b93ed577472a665eddd8a4c2990c33b28f975deea5e3f064f",
+    "two_blade_norms": "be6efd0cc5ae37d3606be40868c5f0eabb47f471a4b17cbff7ae979994b93940"
+   },
+   "cd_core-8": {
+    "associator_signs": "ca290f7d8743aaf18af3554c388ed0459716d7984a31367912b24b7c2ac1bd2b",
+    "basis_signs": "6da025e3ac5edf1c8954dc7fe8c51e2620165df0dee5cb53a23c2b012def207a",
+    "strut_lines": "307e6cb4cab4f2c14c7b0297ccaf0d429975fc7fc787720de7371c2b1bf026c7",
+    "two_blade_left_nullities": "3a0a7b3f5ef63fb6df85a43e94d741e4618c5a41edcf8c0a25c08637ab94cc95",
+    "two_blade_zero_products": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+   }
+  },
+  "split_control": {
+   "hypercomplex-engine-split-8": {
+    "differing": [
+     "basis_signs",
+     "two_blade_left_nullities",
+     "two_blade_zero_products"
+    ],
+    "shared_with_octonions": [
+     "associator_signs",
+     "strut_lines"
+    ]
+   },
+   "hyprat-split-8": {
+    "differing": [
+     "basis_signs",
+     "two_blade_left_nullities",
+     "two_blade_zero_products"
+    ],
+    "shared_with_octonions": [
+     "associator_signs",
+     "strut_lines"
+    ]
+   },
+   "splitoct-8": {
+    "differing": [
+     "basis_signs",
+     "two_blade_left_nullities",
+     "two_blade_zero_products"
+    ],
+    "shared_with_octonions": [
+     "associator_signs",
+     "strut_lines"
+    ]
+   }
+  },
+  "strut_lines_are_kite_struts": true,
+  "witnesses": {
+   "Cayley-Calculator-16": {
+    "agrees_with_cd_core": {
+     "annihilator_nullities": true,
+     "associator_classes": true,
+     "design_b_products": true,
+     "kite_structure": true,
+     "twist_counts": true,
+     "two_blade_norms": true
+    },
+    "arithmetic": "float64 Sedenion, integral coefficients required",
+    "dimension": 16,
+    "error": null,
+    "facts": {
+     "annihilator_nullities": "e4f55319ec28fba98f8d375a49f9572459e3a9c44359c932b5f025451671bbbb",
+     "associator_classes": "9a7bf412ef9621b5216500963a36e5a0846567e89bd3a9007bf0d5d013989838",
+     "design_b_products": "1cee9597af13b4916a147c05c760caba515f89e8787470e46f761bfa3e16fd11",
+     "kite_structure": "d73dff39bfa81380a064a5c32b7e06ffe101f48092dc99327568596f55cf2f2a",
+     "twist_counts": "388bbf6dad549d1b93ed577472a665eddd8a4c2990c33b28f975deea5e3f064f",
+     "two_blade_norms": "be6efd0cc5ae37d3606be40868c5f0eabb47f471a4b17cbff7ae979994b93940"
+    },
+    "map": "identity",
+    "package": "Cayley-Calculator",
+    "pinned_release": "1.3.1",
+    "retained_table": "16",
+    "role": "independent",
+    "traps": "coerces every coefficient to float64; from octonion import * loads python-octonion",
+    "version": "1.3.1"
+   },
+   "Octonion-Sedenion-16": {
+    "agrees_with_cd_core": {
+     "annihilator_nullities": true,
+     "associator_classes": true,
+     "design_b_products": true,
+     "kite_structure": true,
+     "twist_counts": true,
+     "two_blade_norms": true
+    },
+    "arithmetic": "Sedenion components, imported with its own octonion module bound",
+    "dimension": 16,
+    "error": null,
+    "facts": {
+     "annihilator_nullities": "e4f55319ec28fba98f8d375a49f9572459e3a9c44359c932b5f025451671bbbb",
+     "associator_classes": "9a7bf412ef9621b5216500963a36e5a0846567e89bd3a9007bf0d5d013989838",
+     "design_b_products": "1cee9597af13b4916a147c05c760caba515f89e8787470e46f761bfa3e16fd11",
+     "kite_structure": "d73dff39bfa81380a064a5c32b7e06ffe101f48092dc99327568596f55cf2f2a",
+     "twist_counts": "388bbf6dad549d1b93ed577472a665eddd8a4c2990c33b28f975deea5e3f064f",
+     "two_blade_norms": "be6efd0cc5ae37d3606be40868c5f0eabb47f471a4b17cbff7ae979994b93940"
+    },
+    "map": "identity",
+    "package": "Octonion-Sedenion",
+    "pinned_release": "1.0.0",
+    "retained_table": "16",
+    "role": "independent",
+    "traps": "sedenion.py imports the top-level octonion, which python-octonion owns, and fails as installed",
+    "version": "1.0.0"
+   },
+   "Octonion-Sedenion-8": {
+    "agrees_with_cd_core": {
+     "associator_signs": true,
+     "basis_signs": true,
+     "strut_lines": true,
+     "two_blade_left_nullities": true,
+     "two_blade_zero_products": true
+    },
+    "arithmetic": "Octonion components",
+    "dimension": 8,
+    "error": null,
+    "facts": {
+     "associator_signs": "ca290f7d8743aaf18af3554c388ed0459716d7984a31367912b24b7c2ac1bd2b",
+     "basis_signs": "6da025e3ac5edf1c8954dc7fe8c51e2620165df0dee5cb53a23c2b012def207a",
+     "strut_lines": "307e6cb4cab4f2c14c7b0297ccaf0d429975fc7fc787720de7371c2b1bf026c7",
+     "two_blade_left_nullities": "3a0a7b3f5ef63fb6df85a43e94d741e4618c5a41edcf8c0a25c08637ab94cc95",
+     "two_blade_zero_products": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "map": "identity",
+    "package": "Octonion-Sedenion",
+    "pinned_release": "1.0.0",
+    "retained_table": "8",
+    "role": "independent",
+    "traps": "owns no octonion module name; its sedenion module collides with python-octonion",
+    "version": "1.0.0"
+   },
+   "cayley-dickson-16": {
+    "agrees_with_cd_core": {
+     "annihilator_nullities": true,
+     "associator_classes": true,
+     "design_b_products": true,
+     "kite_structure": true,
+     "twist_counts": true,
+     "two_blade_norms": true
+    },
+    "arithmetic": "integer KD doubling objects",
+    "dimension": 16,
+    "error": null,
+    "facts": {
+     "annihilator_nullities": "e4f55319ec28fba98f8d375a49f9572459e3a9c44359c932b5f025451671bbbb",
+     "associator_classes": "9a7bf412ef9621b5216500963a36e5a0846567e89bd3a9007bf0d5d013989838",
+     "design_b_products": "1cee9597af13b4916a147c05c760caba515f89e8787470e46f761bfa3e16fd11",
+     "kite_structure": "d73dff39bfa81380a064a5c32b7e06ffe101f48092dc99327568596f55cf2f2a",
+     "twist_counts": "388bbf6dad549d1b93ed577472a665eddd8a4c2990c33b28f975deea5e3f064f",
+     "two_blade_norms": "be6efd0cc5ae37d3606be40868c5f0eabb47f471a4b17cbff7ae979994b93940"
+    },
+    "map": "identity",
+    "package": "cayley-dickson",
+    "pinned_release": "commit abf96e707e2a",
+    "retained_table": "16",
+    "role": "independent",
+    "traps": "installs a top-level src package; its pandas table reads transposed (not used)",
+    "version": "0.1.0"
+   },
+   "cayley-dickson-8": {
+    "agrees_with_cd_core": {
+     "associator_signs": true,
+     "basis_signs": true,
+     "strut_lines": true,
+     "two_blade_left_nullities": true,
+     "two_blade_zero_products": true
+    },
+    "arithmetic": "integer KD doubling objects",
+    "dimension": 8,
+    "error": null,
+    "facts": {
+     "associator_signs": "ca290f7d8743aaf18af3554c388ed0459716d7984a31367912b24b7c2ac1bd2b",
+     "basis_signs": "6da025e3ac5edf1c8954dc7fe8c51e2620165df0dee5cb53a23c2b012def207a",
+     "strut_lines": "307e6cb4cab4f2c14c7b0297ccaf0d429975fc7fc787720de7371c2b1bf026c7",
+     "two_blade_left_nullities": "3a0a7b3f5ef63fb6df85a43e94d741e4618c5a41edcf8c0a25c08637ab94cc95",
+     "two_blade_zero_products": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "map": "identity",
+    "package": "cayley-dickson",
+    "pinned_release": "commit abf96e707e2a",
+    "retained_table": "8",
+    "role": "independent",
+    "traps": "installs a top-level src package",
+    "version": "0.1.0"
+   },
+   "hypercomplex-16": {
+    "agrees_with_cd_core": {
+     "annihilator_nullities": true,
+     "associator_classes": true,
+     "design_b_products": true,
+     "kite_structure": true,
+     "twist_counts": true,
+     "two_blade_norms": true
+    },
+    "arithmetic": "exact Fraction, cayley_dickson_algebra(4, Fraction)",
+    "dimension": 16,
+    "error": null,
+    "facts": {
+     "annihilator_nullities": "e4f55319ec28fba98f8d375a49f9572459e3a9c44359c932b5f025451671bbbb",
+     "associator_classes": "9a7bf412ef9621b5216500963a36e5a0846567e89bd3a9007bf0d5d013989838",
+     "design_b_products": "1cee9597af13b4916a147c05c760caba515f89e8787470e46f761bfa3e16fd11",
+     "kite_structure": "d73dff39bfa81380a064a5c32b7e06ffe101f48092dc99327568596f55cf2f2a",
+     "twist_counts": "388bbf6dad549d1b93ed577472a665eddd8a4c2990c33b28f975deea5e3f064f",
+     "two_blade_norms": "be6efd0cc5ae37d3606be40868c5f0eabb47f471a4b17cbff7ae979994b93940"
+    },
+    "map": "identity",
+    "package": "hypercomplex",
+    "pinned_release": "0.3.4",
+    "retained_table": "16",
+    "role": "independent",
+    "traps": "a basis product costs about 4x more per doubling; inverse() exists for zero divisors",
+    "version": "0.3.4"
+   },
+   "hypercomplex-16-wrapper": {
+    "agrees_with_cd_core": {
+     "(e1+e10)(e2-e13)": true,
+     "(e1+e10)(e4+e15)": true,
+     "(e1+e10)(e4-e15)": true
+    },
+    "arithmetic": "multiply_expressions over hypercomplex-engine",
+    "dimension": 16,
+    "error": null,
+    "expressions": {
+     "(e1+e10)(e2-e13)": "e3 + e7 + e8 - e12",
+     "(e1+e10)(e4+e15)": "2e5 - 2e14",
+     "(e1+e10)(e4-e15)": "0"
+    },
+    "map": "identity",
+    "package": "hypercomplex-algebra",
+    "pinned_release": "0.2.0.2",
+    "retained_table": null,
+    "role": "wrapper",
+    "traps": "not an independent witness; multiply_many_expressions folds left",
+    "version": "0.2.0.2"
+   },
+   "hypercomplex-8": {
+    "agrees_with_cd_core": {
+     "associator_signs": true,
+     "basis_signs": true,
+     "strut_lines": true,
+     "two_blade_left_nullities": true,
+     "two_blade_zero_products": true
+    },
+    "arithmetic": "exact Fraction, cayley_dickson_algebra(3, Fraction)",
+    "dimension": 8,
+    "error": null,
+    "facts": {
+     "associator_signs": "ca290f7d8743aaf18af3554c388ed0459716d7984a31367912b24b7c2ac1bd2b",
+     "basis_signs": "6da025e3ac5edf1c8954dc7fe8c51e2620165df0dee5cb53a23c2b012def207a",
+     "strut_lines": "307e6cb4cab4f2c14c7b0297ccaf0d429975fc7fc787720de7371c2b1bf026c7",
+     "two_blade_left_nullities": "3a0a7b3f5ef63fb6df85a43e94d741e4618c5a41edcf8c0a25c08637ab94cc95",
+     "two_blade_zero_products": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "map": "identity",
+    "package": "hypercomplex",
+    "pinned_release": "0.3.4",
+    "retained_table": "8",
+    "role": "independent",
+    "traps": "a basis product costs about 4x more per doubling",
+    "version": "0.3.4"
+   },
+   "hypercomplex-engine-16": {
+    "agrees_with_cd_core": {
+     "annihilator_nullities": true,
+     "associator_classes": true,
+     "design_b_products": true,
+     "kite_structure": true,
+     "twist_counts": true,
+     "two_blade_norms": true
+    },
+    "arithmetic": "basis sign oracle multiply('standard', (1, p), (1, q)), bilinear",
+    "dimension": 16,
+    "error": null,
+    "facts": {
+     "annihilator_nullities": "e4f55319ec28fba98f8d375a49f9572459e3a9c44359c932b5f025451671bbbb",
+     "associator_classes": "9a7bf412ef9621b5216500963a36e5a0846567e89bd3a9007bf0d5d013989838",
+     "design_b_products": "1cee9597af13b4916a147c05c760caba515f89e8787470e46f761bfa3e16fd11",
+     "kite_structure": "d73dff39bfa81380a064a5c32b7e06ffe101f48092dc99327568596f55cf2f2a",
+     "twist_counts": "388bbf6dad549d1b93ed577472a665eddd8a4c2990c33b28f975deea5e3f064f",
+     "two_blade_norms": "be6efd0cc5ae37d3606be40868c5f0eabb47f471a4b17cbff7ae979994b93940"
+    },
+    "map": "identity",
+    "package": "hypercomplex-engine",
+    "pinned_release": "0.5.0",
+    "retained_table": "16",
+    "role": "independent",
+    "traps": "takes and returns (sign, index) tuples; dim changes which doubling is split",
+    "version": "0.5.0"
+   },
+   "hypercomplex-engine-8": {
+    "agrees_with_cd_core": {
+     "associator_signs": true,
+     "basis_signs": true,
+     "strut_lines": true,
+     "two_blade_left_nullities": true,
+     "two_blade_zero_products": true
+    },
+    "arithmetic": "basis sign oracle, bilinear",
+    "dimension": 8,
+    "error": null,
+    "facts": {
+     "associator_signs": "ca290f7d8743aaf18af3554c388ed0459716d7984a31367912b24b7c2ac1bd2b",
+     "basis_signs": "6da025e3ac5edf1c8954dc7fe8c51e2620165df0dee5cb53a23c2b012def207a",
+     "strut_lines": "307e6cb4cab4f2c14c7b0297ccaf0d429975fc7fc787720de7371c2b1bf026c7",
+     "two_blade_left_nullities": "3a0a7b3f5ef63fb6df85a43e94d741e4618c5a41edcf8c0a25c08637ab94cc95",
+     "two_blade_zero_products": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "map": "identity",
+    "package": "hypercomplex-engine",
+    "pinned_release": "0.5.0",
+    "retained_table": "8",
+    "role": "independent",
+    "traps": "(sign, index) tuples",
+    "version": "0.5.0"
+   },
+   "hypercomplex-engine-split-8": {
+    "agrees_with_cd_core": {
+     "associator_signs": true,
+     "basis_signs": false,
+     "strut_lines": true,
+     "two_blade_left_nullities": false,
+     "two_blade_zero_products": false
+    },
+    "arithmetic": "basis sign table, bilinear",
+    "dimension": 8,
+    "error": null,
+    "facts": {
+     "associator_signs": "ca290f7d8743aaf18af3554c388ed0459716d7984a31367912b24b7c2ac1bd2b",
+     "basis_signs": "3695f3b2167a7ba6dd021d9c3c0a544b14b9c335440e2c4405dee193a3e9a30e",
+     "strut_lines": "307e6cb4cab4f2c14c7b0297ccaf0d429975fc7fc787720de7371c2b1bf026c7",
+     "two_blade_left_nullities": "af5e2b8fd9f072b63323f90be33339fac6f13b5602fe31f0c4d0681c767f1993",
+     "two_blade_zero_products": "7f6d7d7e6c702b88887222b655c8926d8a44ba4efa8f0430cff107cbd59c6958"
+    },
+    "map": "split: build_table('split', 3)",
+    "package": "hypercomplex-engine",
+    "pinned_release": "0.5.0",
+    "retained_table": "split-8",
+    "role": "split control",
+    "traps": "dim changes which doubling is split",
+    "version": "0.5.0"
+   },
+   "hyprat-16": {
+    "agrees_with_cd_core": {
+     "annihilator_nullities": true,
+     "associator_classes": true,
+     "design_b_products": true,
+     "kite_structure": true,
+     "twist_counts": true,
+     "two_blade_norms": true
+    },
+    "arithmetic": "exact rationals, Hy.from_array at mu = -1",
+    "dimension": 16,
+    "error": null,
+    "facts": {
+     "annihilator_nullities": "e4f55319ec28fba98f8d375a49f9572459e3a9c44359c932b5f025451671bbbb",
+     "associator_classes": "9a7bf412ef9621b5216500963a36e5a0846567e89bd3a9007bf0d5d013989838",
+     "design_b_products": "1cee9597af13b4916a147c05c760caba515f89e8787470e46f761bfa3e16fd11",
+     "kite_structure": "d73dff39bfa81380a064a5c32b7e06ffe101f48092dc99327568596f55cf2f2a",
+     "twist_counts": "388bbf6dad549d1b93ed577472a665eddd8a4c2990c33b28f975deea5e3f064f",
+     "two_blade_norms": "be6efd0cc5ae37d3606be40868c5f0eabb47f471a4b17cbff7ae979994b93940"
+    },
+    "map": "identity",
+    "package": "hyprat",
+    "pinned_release": "0.2.0",
+    "retained_table": "16",
+    "role": "independent",
+    "traps": "Hy.from_array(coeffs, signs=...) names the algebra, lowest level first",
+    "version": "0.2.0"
+   },
+   "hyprat-8": {
+    "agrees_with_cd_core": {
+     "associator_signs": true,
+     "basis_signs": true,
+     "strut_lines": true,
+     "two_blade_left_nullities": true,
+     "two_blade_zero_products": true
+    },
+    "arithmetic": "exact rationals at mu = -1",
+    "dimension": 8,
+    "error": null,
+    "facts": {
+     "associator_signs": "ca290f7d8743aaf18af3554c388ed0459716d7984a31367912b24b7c2ac1bd2b",
+     "basis_signs": "6da025e3ac5edf1c8954dc7fe8c51e2620165df0dee5cb53a23c2b012def207a",
+     "strut_lines": "307e6cb4cab4f2c14c7b0297ccaf0d429975fc7fc787720de7371c2b1bf026c7",
+     "two_blade_left_nullities": "3a0a7b3f5ef63fb6df85a43e94d741e4618c5a41edcf8c0a25c08637ab94cc95",
+     "two_blade_zero_products": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "map": "identity",
+    "package": "hyprat",
+    "pinned_release": "0.2.0",
+    "retained_table": "8",
+    "role": "independent",
+    "traps": "signs name the algebra, lowest level first",
+    "version": "0.2.0"
+   },
+   "hyprat-split-8": {
+    "agrees_with_cd_core": {
+     "associator_signs": true,
+     "basis_signs": false,
+     "strut_lines": true,
+     "two_blade_left_nullities": false,
+     "two_blade_zero_products": false
+    },
+    "arithmetic": "exact rationals, Hy.from_array(signs=(-1, -1, 1))",
+    "dimension": 8,
+    "error": null,
+    "facts": {
+     "associator_signs": "ca290f7d8743aaf18af3554c388ed0459716d7984a31367912b24b7c2ac1bd2b",
+     "basis_signs": "3695f3b2167a7ba6dd021d9c3c0a544b14b9c335440e2c4405dee193a3e9a30e",
+     "strut_lines": "307e6cb4cab4f2c14c7b0297ccaf0d429975fc7fc787720de7371c2b1bf026c7",
+     "two_blade_left_nullities": "af5e2b8fd9f072b63323f90be33339fac6f13b5602fe31f0c4d0681c767f1993",
+     "two_blade_zero_products": "7f6d7d7e6c702b88887222b655c8926d8a44ba4efa8f0430cff107cbd59c6958"
+    },
+    "map": "split: signs (-1, -1, +1)",
+    "package": "hyprat",
+    "pinned_release": "0.2.0",
+    "retained_table": "split-8",
+    "role": "split control",
+    "traps": "signs (-1, -1, +1) give the split octonions",
+    "version": "0.2.0"
+   },
+   "octonion-8": {
+    "agrees_with_cd_core": {
+     "associator_signs": true,
+     "basis_signs": true,
+     "strut_lines": true,
+     "two_blade_left_nullities": true,
+     "two_blade_zero_products": true
+    },
+    "arithmetic": "torch float64 octonion_mul, integral coefficients required",
+    "dimension": 8,
+    "error": null,
+    "facts": {
+     "associator_signs": "ca290f7d8743aaf18af3554c388ed0459716d7984a31367912b24b7c2ac1bd2b",
+     "basis_signs": "6da025e3ac5edf1c8954dc7fe8c51e2620165df0dee5cb53a23c2b012def207a",
+     "strut_lines": "307e6cb4cab4f2c14c7b0297ccaf0d429975fc7fc787720de7371c2b1bf026c7",
+     "two_blade_left_nullities": "3a0a7b3f5ef63fb6df85a43e94d741e4618c5a41edcf8c0a25c08637ab94cc95",
+     "two_blade_zero_products": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "map": "signed relabeling pi = (0, 1, 2, 4, 3, 6, 7, 5), flip on its e6",
+    "package": "octonion",
+    "pinned_release": "0.1.0",
+    "retained_table": "8",
+    "role": "independent",
+    "traps": "index i is not cd_core e_i; float64 tensors against torch's float32 default; AGPL",
+    "version": "0.1.0"
+   },
+   "pyoctonion-8": {
+    "agrees_with_cd_core": {
+     "associator_signs": true,
+     "basis_signs": true,
+     "strut_lines": true,
+     "two_blade_left_nullities": true,
+     "two_blade_zero_products": true
+    },
+    "arithmetic": "Octonion over pyquaternion halves",
+    "dimension": 8,
+    "error": null,
+    "facts": {
+     "associator_signs": "ca290f7d8743aaf18af3554c388ed0459716d7984a31367912b24b7c2ac1bd2b",
+     "basis_signs": "6da025e3ac5edf1c8954dc7fe8c51e2620165df0dee5cb53a23c2b012def207a",
+     "strut_lines": "307e6cb4cab4f2c14c7b0297ccaf0d429975fc7fc787720de7371c2b1bf026c7",
+     "two_blade_left_nullities": "3a0a7b3f5ef63fb6df85a43e94d741e4618c5a41edcf8c0a25c08637ab94cc95",
+     "two_blade_zero_products": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "map": "identity",
+    "package": "pyoctonion",
+    "pinned_release": "3.12",
+    "retained_table": "8",
+    "role": "independent",
+    "traps": "cal_multiply prints every product, * is used; imports the undeclared pyquaternion",
+    "version": "3.12"
+   },
+   "sagemath-8-flip": {
+    "agrees_with_cd_core": {
+     "associator_signs": true,
+     "basis_signs": true,
+     "strut_lines": true,
+     "two_blade_left_nullities": true,
+     "two_blade_zero_products": true
+    },
+    "arithmetic": "exact rationals, OctonionAlgebra(QQ)",
+    "dimension": 8,
+    "error": null,
+    "facts": {
+     "associator_signs": "ca290f7d8743aaf18af3554c388ed0459716d7984a31367912b24b7c2ac1bd2b",
+     "basis_signs": "6da025e3ac5edf1c8954dc7fe8c51e2620165df0dee5cb53a23c2b012def207a",
+     "strut_lines": "307e6cb4cab4f2c14c7b0297ccaf0d429975fc7fc787720de7371c2b1bf026c7",
+     "two_blade_left_nullities": "3a0a7b3f5ef63fb6df85a43e94d741e4618c5a41edcf8c0a25c08637ab94cc95",
+     "two_blade_zero_products": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "map": "sign flip on e3, e5, e6 is an isomorphism onto cd_core",
+    "package": "sagemath",
+    "pinned_release": "SageMath version 10.10, Release Date: 2026-09-28",
+    "retained_table": "sage",
+    "role": "independent",
+    "traps": "ported code reverses every product unless mapped",
+    "version": "10.10"
+   },
+   "sagemath-8-opposite": {
+    "agrees_with_cd_core": {
+     "associator_signs": true,
+     "basis_signs": true,
+     "strut_lines": true,
+     "two_blade_left_nullities": true,
+     "two_blade_zero_products": true
+    },
+    "arithmetic": "exact rationals, OctonionAlgebra(QQ)",
+    "dimension": 8,
+    "error": null,
+    "facts": {
+     "associator_signs": "ca290f7d8743aaf18af3554c388ed0459716d7984a31367912b24b7c2ac1bd2b",
+     "basis_signs": "6da025e3ac5edf1c8954dc7fe8c51e2620165df0dee5cb53a23c2b012def207a",
+     "strut_lines": "307e6cb4cab4f2c14c7b0297ccaf0d429975fc7fc787720de7371c2b1bf026c7",
+     "two_blade_left_nullities": "3a0a7b3f5ef63fb6df85a43e94d741e4618c5a41edcf8c0a25c08637ab94cc95",
+     "two_blade_zero_products": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "map": "opposite algebra in natural order: e_a e_b (cd) = e_b e_a (Sage)",
+    "package": "sagemath",
+    "pinned_release": "SageMath version 10.10, Release Date: 2026-09-28",
+    "retained_table": "sage",
+    "role": "independent",
+    "traps": "ported code reverses every product unless mapped",
+    "version": "10.10"
+   },
+   "splitoct-8": {
+    "agrees_with_cd_core": {
+     "associator_signs": true,
+     "basis_signs": false,
+     "strut_lines": true,
+     "two_blade_left_nullities": false,
+     "two_blade_zero_products": false
+    },
+    "arithmetic": "SymPy-backed SplitOctonion, integral coefficients",
+    "dimension": 8,
+    "error": null,
+    "facts": {
+     "associator_signs": "ca290f7d8743aaf18af3554c388ed0459716d7984a31367912b24b7c2ac1bd2b",
+     "basis_signs": "3695f3b2167a7ba6dd021d9c3c0a544b14b9c335440e2c4405dee193a3e9a30e",
+     "strut_lines": "307e6cb4cab4f2c14c7b0297ccaf0d429975fc7fc787720de7371c2b1bf026c7",
+     "two_blade_left_nullities": "af5e2b8fd9f072b63323f90be33339fac6f13b5602fe31f0c4d0681c767f1993",
+     "two_blade_zero_products": "7f6d7d7e6c702b88887222b655c8926d8a44ba4efa8f0430cff107cbd59c6958"
+    },
+    "map": "split: identity on indices, e4..e7 square to +1",
+    "package": "splitoct",
+    "pinned_release": "commit e29e72f805c2",
+    "retained_table": "8",
+    "role": "split control",
+    "traps": "not the octonions; isotropic elements have no inverse; GPL",
+    "version": "0.16"
+   }
+  }
+ },
  "schema": "box-kite-census-v1",
  "theorem3_zero_sign_choices_over_49_planes": {
   "0": 1092,

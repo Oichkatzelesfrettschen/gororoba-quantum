@@ -3,7 +3,8 @@
 `census.json` is the exact census of the seven sedenion box-kites that the
 experiment program in [docs/notes/box_kites/experiment-program.md](../../notes/box_kites/experiment-program.md)
 cites. `scripts/box_kite_census.py` derives every entry from
-`gororoba_quantum/cd_core.py`: products are integer sums of
+`gororoba_quantum/cd_core.py`, then recomputes the basis-product, sign and
+zero-product facts through each Cayley-Dickson package (below): products are integer sums of
 `cd_sign(16, p, q)` terms, the Design B products are checked term for term
 against `cd_core.cd_multiply`, and the two-blade zero products are required to
 equal `cd_core.sedenion_zero_divisor_corpus()` row for row. Values are
@@ -21,14 +22,18 @@ floats, paths, timestamps or worker counts, so the pooled and serial
 Gates core-372 (`--check`) and core-373 (`--self-test`) run both in normal and
 optimized Python. `--check` recomputes the census and requires byte equality
 with the canonical JSON (sorted keys, indent 1, ASCII). `--self-test` applies
-fourteen mutations to the retained record (an edge sign type, a swapped strut,
+twenty mutations to the retained record (an edge sign type, a swapped strut,
 a dropped assessor, a Design B probability, a post-selected coherence, a face
 class, an annihilator dimension, a twist target, the uniform associator
 baseline, an associator class count, the twist mismatch count, two
-open_gororoba agreement counts and a non-kite plane) and requires `--check`
-to reject each.
+open_gororoba agreement counts, a non-kite plane, a package fact digest, a
+package agreement flag, a split-control verdict, a pinned release, a wrapper
+expression and a cd_core reference digest) and requires `--check` to reject
+each.
 
-Regeneration needs an open_gororoba checkout:
+Regeneration needs an open_gororoba checkout and the package stack on the
+build host (it multiplies through every package, about four minutes on 12
+CPUs):
 
 ```sh
 "$PYTHON" scripts/box_kite_census.py --write docs/evidence/box_kite_census/census.json \
@@ -51,6 +56,53 @@ Regeneration needs an open_gororoba checkout:
 | `associator` | omega classes of ordered kite index triples (identical in all 7 kites), the deterministic-class exemplars, the fixed-pair witness with uniform k (0 on 84 pairs, -1/2 on the 21 pairs (l, 8), (l, l^8), (8, h)), the fixed-i witness with uniform (j, k), and the uniform baseline 25/256 with P(c=1) = 231/512 |
 | `experiment_counts` | row and setting counts the experiment program budgets against |
 | `open_gororoba_comparison` | sha256 of the four de_marrais CSVs and the agreement counts under the identity map |
+
+## Package witnesses
+
+`package_witnesses` recomputes the box-kite facts through every package of
+the repository's Cayley-Dickson stack (root AGENTS.md, "Cayley-Dickson,
+quaternion and Clifford packages"; `docs/notes/packages/`) under the map the
+AGENTS.md table declares, with `scripts/box_kite_packages.py`. A fact is the
+sha256 of its canonical JSON, and a witness agrees when its digest equals
+cd_core's; packages are never polled against each other.
+
+| Witness | Map onto cd_core | Arithmetic |
+|---|---|---|
+| hypercomplex (D = 16, 8) | identity | exact Fraction, `cayley_dickson_algebra(n, fractions.Fraction)` |
+| hyprat (D = 16, 8) | identity, mu = -1 | exact rationals |
+| hypercomplex-engine (D = 16, 8) | identity | basis sign oracle `multiply("standard", ...)`, bilinear |
+| cayley-dickson (D = 16, 8) | identity | integer KD doubling objects |
+| Cayley-Calculator (D = 16) | identity | float64, every coefficient required integral |
+| Octonion-Sedenion (D = 16, 8) | identity | its own octonion module bound for the sedenion import |
+| pyoctonion (D = 8) | identity | `*` (not `cal_multiply`, which prints) |
+| octonion (D = 8) | signed relabeling pi = (0, 1, 2, 4, 3, 6, 7, 5), flip on its e6 | torch float64 `octonion_mul` |
+| sagemath (D = 8), two entries | opposite algebra in natural order; e3/e5/e6 sign flip | `OctonionAlgebra(QQ)` |
+| splitoct, hyprat signs (-1, -1, +1), engine split table (D = 8) | split relation | negative control |
+| hypercomplex-algebra | wrapper of the engine | three fixture expressions, not a witness |
+
+D = 16 facts: `two_blade_norms` (210 x 210), `kite_structure` (assessors,
+struts and edge zero sign sets derived from the norms), `design_b_products`
+(every census Design B row), `annihilator_nullities` (left and right, every
+two-blade), `twist_counts` and `associator_classes`. D = 8 facts:
+`two_blade_zero_products`, `two_blade_left_nullities`, `associator_signs`
+(512), `basis_signs` (64) and `strut_lines`, the 21 triples (u, v, S) of
+strut lows with u ^ v = S, required to be the kite struts and associative
+octonion triples. Every identity, relabeling and Sage witness must agree on
+every fact. Every split control must agree on `associator_signs` and
+`strut_lines` and differ on the two zero-product facts; `split_control`
+lists, per control, which facts it shares and which differ.
+
+CI imports no package. `--write` (build host, with `--open-gororoba`)
+multiplies with each package's own arithmetic and retains the digests, the
+installed version and the release pinned in
+`docs/evidence/algebra_packages/tables.json` (or the SageMath export's
+version line). `--check` and `--self-test` recompute every digest through
+the package's retained basis table under the same map (tables.json, and
+`sagemath_octonion_table.json` for both Sage entries) and require equality
+with the retained element verdicts; the wrapper's expressions are re-parsed
+against cd_core. A package that fails to import is retained with its error
+and no facts, and is rebuilt from its PKGBUILD (root AGENTS.md) before the
+record is regenerated.
 
 ## open_gororoba comparison
 
