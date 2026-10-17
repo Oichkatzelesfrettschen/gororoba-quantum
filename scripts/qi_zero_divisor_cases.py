@@ -34,15 +34,17 @@ three cases through the three regions (Latin square), so case and region
 separate. Circuit 4 measures every qubit prepared in |0> and circuit 5 every
 qubit prepared in |1>, giving each selector's readout assignment. A batch
 holds at most HARDWARE_BATCH_CIRCUITS circuits and a batch boundary is a
-calibration boundary, so the Latin square runs whole as batch-00, where its
-dark, bright and fixture contrasts share a calibration, and the readout pair
-runs as batch-01. Routing
+calibration boundary, so the series runs as batch-00..02, each holding one
+Latin circuit followed by readout-0 and readout-1. Each Latin circuit carries
+dark, bright and fixture in its three regions, so its contrasts share one
+calibration, and its readout correction uses the assignment measured in the
+same batch. Routing
 seeds are searched over SEEDS and the fewest-CZ result kept, so the circuits
 regenerate byte for byte under the pinned Qiskit.
 
 Preregistered analysis (fixed in cases.json before submission):
 - P(s = 0) per case and region, raw with a Wilson 95% interval, and corrected
-  for the selector's readout assignment from circuits 4 and 5.
+  for the selector's readout assignment from the readout pair of its own batch.
 - Contraction law: a visibility contraction V gives dark (1 - V)/2, bright
   (1 + V)/2 and fixture 1/2, so dark + bright - 1 and fixture - 1/2 are each
   consistent with zero at |z| < 3; a violation names a coherent or biased
@@ -59,7 +61,7 @@ emitted cQASM.
 series of batch-NN/ cases (circuits and cases.json) under a series cases.json;
 --check DIR regenerates both and compares bytes and file sets; --analyze
 RUN_DIR... [--out FILE] writes the analysis from the raw shots of every batch
-of one series; --replay RUN_DIR... recomputes retained single-batch analyses and
+of one series, keyed by (batch, file); --replay RUN_DIR... recomputes retained single-batch analyses and
 --replay-series FILE RUN_DIR... the analysis FILE of one batched series. Bit strings put qubit 0 at
 the rightmost character (Tuna).
 
@@ -383,17 +385,25 @@ def header(nqubits: int) -> list[str]:
 
 
 def finish(cases: dict[str, Any], texts: dict[str, str]) -> dict[str, str]:
-    """batch-NN/ directories of at most HARDWARE_BATCH_CIRCUITS circuits in manifest order, and the series cases.json.
+    """batch-NN/ directories of at most HARDWARE_BATCH_CIRCUITS circuits, and the series cases.json.
 
-    Each batch is a submittable case whose manifest carries every shared field,
-    so one batch's run directory names the full design.
+    Witness circuits fill each batch in manifest order and every batch ends
+    with the series' readout circuits, so a witness's readout correction uses
+    the assignment measured under its own batch's calibration. Each batch is a
+    submittable case whose manifest carries every shared field, so one batch's
+    run directory names the full design.
     """
     files: dict[str, str] = {}
     batches = []
     rows = cases.pop("circuits")
-    for start in range(0, len(rows), HARDWARE_BATCH_CIRCUITS):
-        name = f"batch-{start // HARDWARE_BATCH_CIRCUITS:02d}"
-        chunk = rows[start : start + HARDWARE_BATCH_CIRCUITS]
+    readout = [row for row in rows if row["kind"] == "readout"]
+    witness = [row for row in rows if row["kind"] != "readout"]
+    per_batch = HARDWARE_BATCH_CIRCUITS - len(readout)
+    if per_batch < 1:
+        raise SystemExit(f"{len(readout)} readout circuits leave no witness slot in a batch")
+    for index, start in enumerate(range(0, len(witness), per_batch)):
+        name = f"batch-{index:02d}"
+        chunk = [dict(row) for row in witness[start : start + per_batch] + readout]
         for row in chunk:
             row["sha256"] = hashlib.sha256(texts[row["file"]].encode()).hexdigest()
             files[f"{name}/{row['file']}"] = texts[row["file"]]
@@ -422,8 +432,8 @@ def build() -> dict[str, dict[str, str]]:
         "certificate": certify(),
         "preregistered": {
             "estimators": "P(s=0) raw with Wilson 95%; readout-corrected with the selector's assignment from "
-            "readout-0 and readout-1; contraction residuals dark+bright-1 and fixture-1/2 with |z| < 3 as "
-            "consistency",
+            "the readout-0 and readout-1 circuits of the same batch; contraction residuals dark+bright-1 and "
+            "fixture-1/2 with |z| < 3 as consistency",
             "comparison": KINGSTON,
         },
     }
@@ -527,7 +537,18 @@ def linear(weights: dict[str, float], mean: dict[str, float], cov: dict[tuple[st
     return {"value": value, "se": math.sqrt(max(variance, 0.0))}
 
 
-def secondary(replicas: list[dict[str, Any]], raw: dict[str, list[str]]) -> dict[str, Any]:
+Shots = dict[tuple[str, str], list[str]]
+# Linear tests on the pooled dark, bright and fixture means, with constant offsets.
+SECONDARY_TESTS = {
+    "contrast_B_minus_D": {"bright": 1.0, "dark": -1.0},
+    "sum_residual_D_plus_B_minus_1": {"dark": 1.0, "bright": 1.0},
+    "fixture_minus_endpoint_midpoint_H": {"fixture": 1.0, "dark": -0.5, "bright": -0.5},
+    "fixture_minus_half": {"fixture": 1.0},
+}
+SECONDARY_OFFSETS = {"sum_residual_D_plus_B_minus_1": -1.0, "fixture_minus_half": -0.5}
+
+
+def secondary(replicas: list[dict[str, Any]], raw: Shots, batch_of: dict[str, str]) -> dict[str, Any]:
     """Secondary analysis, fixed after the data: same-shot covariance and the common-affine fixture test.
 
     The three replicas of a Latin circuit share every shot, so their selector
@@ -540,16 +561,19 @@ def secondary(replicas: list[dict[str, Any]], raw: dict[str, list[str]]) -> dict
     ideal-1/2 fixture at the endpoint midpoint; F = 1/2 tests the fixture
     against its ideal instead. Raw quantities use the exact delta-method
     covariance from the per-circuit joint selector distribution. The
-    readout-corrected quantities resample each circuit's joint selector
-    outcomes and the joint selector readout of both calibration circuits
-    (multinomial, BOOTSTRAP_DRAWS draws, BOOTSTRAP_SEED), so the calibration's
-    own sampling error propagates.
+    readout-corrected quantities resample, per batch, the joint selector
+    readout of that batch's two calibration circuits and then each of its
+    witness circuits' joint selector outcomes (multinomial, BOOTSTRAP_DRAWS
+    draws, BOOTSTRAP_SEED), and correct every circuit with its own batch's
+    resampled assignment, so each calibration's sampling error propagates
+    into exactly the circuits it calibrates. raw and batch_of key shots by
+    (batch, file) and each witness file by its batch.
     """
     import numpy as np
 
     names = list(CASES)
-    files = sorted({r["file"] for r in replicas})
-    selectors = sorted({r["roles"]["selector"] for r in replicas})
+    batches = sorted({batch_of[r["file"]] for r in replicas})
+    files = {batch: sorted({r["file"] for r in replicas if batch_of[r["file"]] == batch}) for batch in batches}
 
     def indicator(shots: list[str], qubits: list[int]) -> Any:
         return np.array([[1 - bit(s, q) for q in qubits] for s in shots], dtype=float)
@@ -561,21 +585,15 @@ def secondary(replicas: list[dict[str, Any]], raw: dict[str, list[str]]) -> dict
     for name in names:
         rows = [r for r in replicas if r["case"] == name]
         mean[name] = sum(r["p_selector_zero"] for r in rows) / len(rows)
-    for file in files:
+    for batch, file in [(b, f) for b in batches for f in files[b]]:
         rows = [r for r in replicas if r["file"] == file]
-        z = indicator(raw[file], [r["roles"]["selector"] for r in rows])
+        z = indicator(raw[(batch, file)], [r["roles"]["selector"] for r in rows])
         c = np.atleast_2d(np.cov(z, rowvar=False, bias=True)) / len(z)
         for i, ri in enumerate(rows):
             for j, rj in enumerate(rows):
                 cov[(ri["case"], rj["case"])] += float(c[i, j]) / 9
             per_replica[(ri["case"], str(ri["region"]))] = (float(z[:, i].mean()), float(c[i, i]))
-    tests = {
-        "contrast_B_minus_D": {"bright": 1.0, "dark": -1.0},
-        "sum_residual_D_plus_B_minus_1": {"dark": 1.0, "bright": 1.0},
-        "fixture_minus_endpoint_midpoint_H": {"fixture": 1.0, "dark": -0.5, "bright": -0.5},
-        "fixture_minus_half": {"fixture": 1.0},
-    }
-    offsets = {"sum_residual_D_plus_B_minus_1": -1.0, "fixture_minus_half": -0.5}
+    tests, offsets = SECONDARY_TESTS, SECONDARY_OFFSETS
     raw_tests = {}
     for key, weights in tests.items():
         result: dict[str, Any] = linear(weights, mean, cov)
@@ -599,7 +617,6 @@ def secondary(replicas: list[dict[str, Any]], raw: dict[str, list[str]]) -> dict
 
     # Readout-corrected: parametric bootstrap of circuits and calibrations together.
     rng = np.random.default_rng(BOOTSTRAP_SEED)
-    have_readout = "readout-0.cq" in raw
 
     def joint_counts(shots: list[str], qubits: list[int]) -> tuple[Any, int]:
         codes = np.zeros(len(shots), dtype=int)
@@ -607,34 +624,43 @@ def secondary(replicas: list[dict[str, Any]], raw: dict[str, list[str]]) -> dict
             codes += np.array([bit(s, q) for s in shots]) << position
         return np.bincount(codes, minlength=1 << len(qubits)), len(shots)
 
-    circuit_counts = {}
-    for file in files:
-        rows = [r for r in replicas if r["file"] == file]
-        circuit_counts[file] = (rows, *joint_counts(raw[file], [r["roles"]["selector"] for r in rows]))
-    calibration = {}
-    if have_readout:
-        for name in ("readout-0.cq", "readout-1.cq"):
-            calibration[name] = joint_counts(raw[name], selectors)
+    selectors: dict[str, list[int]] = {}
+    circuit_counts: dict[str, list[tuple[list[dict[str, Any]], Any, int]]] = {}
+    calibration: dict[str, dict[str, tuple[Any, int]]] = {}
+    for batch in batches:
+        selectors[batch] = sorted({r["roles"]["selector"] for r in replicas if batch_of[r["file"]] == batch})
+        circuit_counts[batch] = []
+        for file in files[batch]:
+            rows = [r for r in replicas if r["file"] == file]
+            circuit_counts[batch].append(
+                (rows, *joint_counts(raw[(batch, file)], [r["roles"]["selector"] for r in rows]))
+            )
+        # The ideal QX twin carries no readout circuits; its assignment is exact.
+        calibration[batch] = {
+            name: joint_counts(raw[(batch, name)], selectors[batch])
+            for name in ("readout-0.cq", "readout-1.cq")
+            if (batch, "readout-0.cq") in raw
+        }
     draws: dict[str, list[float]] = {k: [] for k in tests}
     for _ in range(BOOTSTRAP_DRAWS):
-        e01: dict[int, float] = {q: 0.0 for q in selectors}
-        e10: dict[int, float] = {q: 0.0 for q in selectors}
-        if have_readout:
-            for name, (counts, n) in calibration.items():
+        corrected: dict[str, list[float]] = {n: [] for n in names}
+        for batch in batches:
+            e01: dict[int, float] = {q: 0.0 for q in selectors[batch]}
+            e10: dict[int, float] = {q: 0.0 for q in selectors[batch]}
+            for name, (counts, n) in calibration[batch].items():
                 sample = rng.multinomial(n, counts / n)
-                for position, q in enumerate(selectors):
+                for position, q in enumerate(selectors[batch]):
                     ones = sum(int(sample[code]) for code in range(len(sample)) if code >> position & 1) / n
                     if name == "readout-0.cq":
                         e01[q] = ones
                     else:
                         e10[q] = 1 - ones
-        corrected: dict[str, list[float]] = {n: [] for n in names}
-        for members, counts, total in circuit_counts.values():
-            sample = rng.multinomial(total, counts / total)
-            for position, member in enumerate(members):
-                p_zero = sum(int(sample[code]) for code in range(len(sample)) if not code >> position & 1) / total
-                q = member["roles"]["selector"]
-                corrected[member["case"]].append((p_zero - e10[q]) / (1 - e01[q] - e10[q]))
+            for members, counts, total in circuit_counts[batch]:
+                sample = rng.multinomial(total, counts / total)
+                for position, member in enumerate(members):
+                    p_zero = sum(int(sample[code]) for code in range(len(sample)) if not code >> position & 1) / total
+                    q = member["roles"]["selector"]
+                    corrected[member["case"]].append((p_zero - e10[q]) / (1 - e01[q] - e10[q]))
         m = {n: sum(v) / len(v) for n, v in corrected.items()}
         for key, weights in tests.items():
             draws[key].append(sum(w * m[k] for k, w in weights.items()) + offsets.get(key, 0.0))
@@ -657,15 +683,19 @@ def secondary(replicas: list[dict[str, Any]], raw: dict[str, list[str]]) -> dict
     }
 
 
-def load_series(run_dirs: list[Path]) -> tuple[dict[str, Any], dict[str, list[str]]]:
-    """The shared manifest fields and the raw shots of every circuit of one series, keyed by file name.
+def load_series(run_dirs: list[Path]) -> tuple[dict[str, Any], Shots, dict[str, str]]:
+    """The shared manifest fields, the raw shots keyed by (batch, file), and each witness file's batch.
 
-    A run directory holds one submitted batch; every batch manifest of a
-    series carries the same shared fields, and a circuit file name is unique
-    within the series.
+    A run directory holds one submitted batch, named by its manifest's batch
+    field; a retained run that predates batching has none and forms the single
+    batch "". Every batch manifest of a series carries the same shared fields.
+    The readout circuits repeat in every batch under the same file names, so a
+    shot list is identified by its batch and file; a witness file belongs to
+    exactly one batch of the series.
     """
     shared: dict[str, Any] | None = None
-    raw: dict[str, list[str]] = {}
+    raw: Shots = {}
+    batch_of: dict[str, str] = {}
     for run_dir in run_dirs:
         cases = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
         fields = {k: v for k, v in cases.items() if k not in {"batch", "circuits", "schema"}}
@@ -673,30 +703,47 @@ def load_series(run_dirs: list[Path]) -> tuple[dict[str, Any], dict[str, list[st
             shared = fields
         elif fields != shared:
             raise SystemExit(f"{run_dir}/cases.json describes a different series")
+        batch = cases.get("batch", "")
+        if not isinstance(batch, str):
+            raise SystemExit(f"{run_dir}/cases.json names a non-string batch")
         for row in cases["circuits"]:
-            if row["file"] in raw:
-                raise SystemExit(f"{run_dir}: {row['file']} appears twice in the series")
-            raw[row["file"]] = json.loads((run_dir / "raw" / f"{row['file']}.json").read_text(encoding="utf-8"))
+            key = (batch, row["file"])
+            if key in raw:
+                raise SystemExit(f"{run_dir}: {row['file']} appears twice in batch {batch!r} of the series")
+            if row["kind"] != "readout":
+                if row["file"] in batch_of:
+                    raise SystemExit(f"{run_dir}: witness {row['file']} appears in two batches of the series")
+                batch_of[row["file"]] = batch
+            raw[key] = json.loads((run_dir / "raw" / f"{row['file']}.json").read_text(encoding="utf-8"))
     if shared is None:
         raise SystemExit("a series needs at least one run directory")
-    return shared, raw
+    return shared, raw, batch_of
 
 
 def analyze(run_dirs: list[Path]) -> dict[str, Any]:
-    cases, raw = load_series(run_dirs)
+    return analyze_series(*load_series(run_dirs))
+
+
+def analyze_series(cases: dict[str, Any], raw: Shots, batch_of: dict[str, str]) -> dict[str, Any]:
+    """Preregistered and secondary analysis; each replica is corrected with its own batch's readout pair."""
     claim_kind = analysis_claim_kind(cases)
-    # The ideal QX twin carries no readout circuits and takes the assignment as
-    # exact; a hardware series is analyzed only with its readout batch.
-    if "twin_of" in cases:
-        zero, one = ["0" * cases["nqubits"]], ["1" * cases["nqubits"]]
-    elif "readout-0.cq" in raw and "readout-1.cq" in raw:
-        zero, one = raw["readout-0.cq"], raw["readout-1.cq"]
-    else:
-        raise SystemExit("the series lacks its readout-0/readout-1 batch; analyze every batch together")
+    for file in sorted({replica["file"] for replica in cases["replicas"]}):
+        if file not in batch_of:
+            raise SystemExit(f"the series lacks the batch holding {file}; analyze every batch together")
+        # The ideal QX twin carries no readout circuits and takes the assignment
+        # as exact; every hardware batch carries its own readout pair.
+        batch = batch_of[file]
+        if "twin_of" not in cases and not {(batch, "readout-0.cq"), (batch, "readout-1.cq")} <= raw.keys():
+            raise SystemExit(f"batch {batch!r} holding {file} lacks its readout-0/readout-1 pair")
     replicas = []
     for replica in cases["replicas"]:
         sel = replica["roles"]["selector"]
-        shots = raw[replica["file"]]
+        batch = batch_of[replica["file"]]
+        shots = raw[(batch, replica["file"])]
+        if "twin_of" in cases:
+            zero, one = ["0" * cases["nqubits"]], ["1" * cases["nqubits"]]
+        else:
+            zero, one = raw[(batch, "readout-0.cq")], raw[(batch, "readout-1.cq")]
         n = len(shots)
         k = sum(1 - bit(s, sel) for s in shots)
         # Assignment: e01 = P(read 1 | prepared 0), e10 = P(read 0 | prepared 1).
@@ -751,7 +798,7 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
         # The preregistered z-scores above use raw counts and treat replicas as
         # independent; the secondary block carries the same-shot covariance and
         # the readout-corrected uncertainty.
-        "secondary": secondary(replicas, raw),
+        "secondary": secondary(replicas, raw, batch_of),
     }
 
 
@@ -806,7 +853,123 @@ def self_test() -> None:
             rejected += 1
         else:
             raise AssertionError("inconsistent witness backend metadata was accepted")
-    print(f"qi zero-divisor contracts: catalogue admission and evidence classes pass; {rejected} mutations rejected")
+    batch_calibration_contract()
+    print(
+        "qi zero-divisor contracts: catalogue admission, evidence classes and per-batch readout calibration pass; "
+        f"{rejected} mutations rejected"
+    )
+
+
+CALIBRATION_SHOTS = 512
+
+
+def synthetic_series(readout_flips: dict[str, tuple[float, float]]) -> tuple[dict[str, Any], Shots, dict[str, str]]:
+    """The retained Tuna-17 series manifests with seeded synthetic shots.
+
+    Every Latin circuit receives the same witness shot list, and batch B's
+    readout-0 and readout-1 flip each bit with the probabilities
+    readout_flips[B], drawn from one seeded generator in batch order.
+    """
+    import random
+
+    root = ROOT / "results/quantum_inspire/cases/zero_divisor_tuna_17"
+    manifests = [json.loads(path.read_text(encoding="utf-8")) for path in sorted(root.glob("batch-*/cases.json"))]
+    cases = {k: v for k, v in manifests[0].items() if k not in {"batch", "circuits", "schema"}}
+    rng = random.Random(BOOTSTRAP_SEED)
+    witness = ["".join(rng.choice("01") for _ in range(NQUBITS)) for _ in range(CALIBRATION_SHOTS)]
+    raw: Shots = {}
+    batch_of: dict[str, str] = {}
+    for manifest in manifests:
+        batch = manifest["batch"]
+        for row in manifest["circuits"]:
+            if row["kind"] != "readout":
+                raw[(batch, row["file"])] = list(witness)
+                batch_of[row["file"]] = batch
+                continue
+            prepared = "0" if row["file"] == "readout-0.cq" else "1"
+            flip = readout_flips[batch][int(prepared)]
+            other = "1" if prepared == "0" else "0"
+            raw[(batch, row["file"])] = [
+                "".join(other if rng.random() < flip else prepared for _ in range(NQUBITS))
+                for _ in range(CALIBRATION_SHOTS)
+            ]
+    return cases, raw, batch_of
+
+
+def batch_calibration_contract() -> None:
+    """A readout change in one batch moves only that batch's corrected estimates and no raw estimate.
+
+    Two synthetic series share every witness shot and every calibration but
+    batch-01's readout-1. The raw estimates of both series are equal; the
+    corrected estimates of the latin-2 replicas differ between the series,
+    each equal to (p - e10_B)/(1 - e01_B - e10_B) from its own batch B, while
+    the latin-1 and latin-3 replicas keep their corrected values. Within one
+    series, a selector qubit shared by batch-00 and batch-01 reads the same
+    raw P(s = 0) from identical shots and two different corrected values. A
+    batch missing its readout pair is refused.
+    """
+    base = {"batch-00": (0.02, 0.05), "batch-01": (0.02, 0.05), "batch-02": (0.03, 0.04)}
+    first = analyze_series(*synthetic_series(base))
+    series = synthetic_series({**base, "batch-01": (0.02, 0.20)})
+    cases, raw, batch_of = series
+    second = analyze_series(*series)
+    raw_fields = ("shots", "selector_zero_count", "p_selector_zero", "p_selector_zero_ci95")
+    for one, two in zip(first["replicas"], second["replicas"], strict=True):
+        label = f"{two['file']} {two['case']}"
+        if any(one[k] != two[k] for k in raw_fields):
+            raise AssertionError(f"{label}: a batch-01 readout change moved a raw estimate")
+        batch, sel = batch_of[two["file"]], two["roles"]["selector"]
+        e01 = sum(bit(s, sel) for s in raw[(batch, "readout-0.cq")]) / CALIBRATION_SHOTS
+        e10 = sum(1 - bit(s, sel) for s in raw[(batch, "readout-1.cq")]) / CALIBRATION_SHOTS
+        expected = (two["p_selector_zero"] - e10) / (1 - e01 - e10)
+        if (two["selector_e01"], two["selector_e10"], two["p_selector_zero_readout_corrected"]) != (e01, e10, expected):
+            raise AssertionError(f"{label}: corrected with another batch's assignment")
+        moved = one["p_selector_zero_readout_corrected"] != two["p_selector_zero_readout_corrected"]
+        if moved != (batch == "batch-01"):
+            raise AssertionError(f"{label}: corrected estimate moved={moved} in {batch}")
+
+    def raw_view(analysis: dict[str, Any]) -> Any:
+        by_case = {
+            n: {k: v for k, v in row.items() if k != "readout_corrected"} for n, row in analysis["by_case"].items()
+        }
+        kept = ("raw", "raw_covariance", "by_region_raw", "endpoint_midpoint")
+        return by_case, analysis["contraction"], analysis["visibility"], [analysis["secondary"][k] for k in kept]
+
+    if raw_view(first) != raw_view(second):
+        raise AssertionError("a batch-01 readout change moved a pooled raw estimate")
+    if first["secondary"]["readout_corrected_bootstrap"] == second["secondary"]["readout_corrected_bootstrap"]:
+        raise AssertionError("the corrected bootstrap ignored batch-01's own calibration")
+    # The bootstrap centers on the point estimate from per-batch corrected
+    # replicas; resampling any circuit against another batch's assignment
+    # shifts the pooled tests by several bootstrap standard errors.
+    for analysis in (first, second):
+        corrected = {
+            n: sum(r["p_selector_zero_readout_corrected"] for r in analysis["replicas"] if r["case"] == n) / 3
+            for n in CASES
+        }
+        for key, weights in SECONDARY_TESTS.items():
+            point = sum(w * corrected[n] for n, w in weights.items()) + SECONDARY_OFFSETS.get(key, 0.0)
+            boot = analysis["secondary"]["readout_corrected_bootstrap"][key]
+            if abs(boot["mean"] - point) > 4 * boot["se"]:
+                raise AssertionError(f"{key}: bootstrap mean {boot['mean']} departs from the point estimate {point}")
+    by_batch = {(batch_of[r["file"]], r["roles"]["selector"]): r for r in second["replicas"]}
+    shared = {q for b, q in by_batch if b == "batch-00"} & {q for b, q in by_batch if b == "batch-01"}
+    if not shared:
+        raise AssertionError("batch-00 and batch-01 share no selector qubit")
+    for q in sorted(shared):
+        zero, one_ = by_batch[("batch-00", q)], by_batch[("batch-01", q)]
+        if zero["p_selector_zero"] != one_["p_selector_zero"]:
+            raise AssertionError(f"selector {q}: identical shots gave different raw estimates")
+        if zero["p_selector_zero_readout_corrected"] == one_["p_selector_zero_readout_corrected"]:
+            raise AssertionError(f"selector {q}: two batch calibrations gave one corrected estimate")
+    partial = {key: shots for key, shots in raw.items() if key != ("batch-01", "readout-1.cq")}
+    try:
+        analyze_series(cases, partial, batch_of)
+    except SystemExit as error:
+        if "readout" not in str(error):
+            raise AssertionError(f"a batch without its readout pair failed for another reason: {error}") from error
+    else:
+        raise AssertionError("a batch without its readout pair borrowed another batch's calibration")
 
 
 def main() -> int:
