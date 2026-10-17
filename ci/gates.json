@@ -3174,7 +3174,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error wheel_algebra.py --self-test && \"$PYTHON\" -B -O -W error wheel_algebra.py --self-test",
    "name": "core-493",
-   "seconds": 4.6,
+   "seconds": 3.8,
    "tier": "pr"
   }
  ],
