@@ -409,8 +409,15 @@ def edge_noise(series: list[dict[str, Any]]) -> dict[str, float]:
     return {"hardware": hw, "replay": rep}
 
 
-def bootstrap_sd(series: list[dict[str, Any]], rng: np.random.Generator) -> float:
-    """Standard deviation of log(b_hw / b_replay) over binomial redraws of every point at its probability and shots."""
+def bootstrap_sd(series: list[dict[str, Any]], rng: np.random.RandomState) -> float:
+    """Standard deviation of log(b_hw / b_replay) over binomial redraws of every point at its probability and shots.
+
+    The draws come from the legacy RandomState stream (Mersenne Twister with the
+    legacy binomial algorithm), which numpy freezes across releases. The
+    Generator.binomial algorithm changed between numpy 2.1 and 2.5, so a
+    Generator-seeded bootstrap differs by build and a retained record from
+    another host cannot replay byte for byte.
+    """
     rows = fringe_rows()
     shots = np.array([p["shots"] for p in series])
     draws = []
@@ -460,7 +467,7 @@ def lane_structure(backend: str, lane: int, series: acf.Series) -> dict[str, Any
     replay = np.array([math.log(2 * atlas.fringe([p["replay"] for p in series[key]])[0]) for key in included])
     sigma_hw = np.array([v["hardware"] for v in noise])
     seed = [BOOTSTRAP_SEED, sorted(acf.RUNS).index(backend), lane]
-    boot = np.array([bootstrap_sd(series[key], np.random.default_rng([*seed, e])) for e, key in enumerate(included)])
+    boot = np.array([bootstrap_sd(series[key], np.random.RandomState([*seed, e])) for e, key in enumerate(included)])
     ratio = boot / sigma
     return {
         "backend": backend,
