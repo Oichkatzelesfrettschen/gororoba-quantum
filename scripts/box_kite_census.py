@@ -32,7 +32,8 @@ products and then required to equal its closed form.
 - Twist. (B + b)(D + d) = 0 iff (B + d)(D - b) = 0 over all signed basis
   pairs with b, d low and B, D high; the twist sends an edge of kite S to an
   edge of kite S XOR b XOR d with the other sign type, and a strut to a pair
-  of (l, l XOR 8) planes; P(s = 0) is preserved on every signed pair.
+  of (l, l XOR 8) planes; P(s = 0) is preserved on every within-kite and
+  non-kite signed pair.
 - Annihilators. ker L_x and ker R_x have dimension 4 on each of the 84
   diagonals, spanned by their 4 two-blade partners, and 0 on every other
   two-blade.
@@ -87,10 +88,10 @@ DESIGN_B_COLUMNS = [
     "kite",
     "p_low",
     "p_high",
-    "s",
+    "x_sign",
     "q_low",
     "q_high",
-    "t",
+    "y_sign",
     "relation",
     "p_selector_zero",
     "label_0",
@@ -273,13 +274,22 @@ def associator_classes(strut: int) -> dict[str, list[int]]:
 
 
 def associator_exemplars(strut: int) -> dict[str, list[int]]:
-    """First triple (permutation order) of each class whose sign is constant, with that omega."""
+    """Cheapest triple of each class whose sign is constant: [i, j, k, omega, walk CNOTs, data bits].
+
+    The fixed-triple Hadamard test on a basis input walks the data register
+    k -> k^j -> k^j^i -> k under control, one CNOT per set bit of j, i and
+    i^j, over the popcount(i | j) data bits those indices touch; the cheapest
+    walk (then permutation order) represents the class.
+    """
     classes = associator_classes(strut)
     found: dict[str, list[int]] = {}
     for name, i, j, k in kite_triples(strut):
         negative, total = classes[name]
-        if negative in (0, total) and name not in found:
-            found[name] = [i, j, k, omega(i, j, k)]
+        if negative not in (0, total):
+            continue
+        cost = i.bit_count() + j.bit_count() + (i ^ j).bit_count()
+        if name not in found or cost < found[name][4]:
+            found[name] = [i, j, k, omega(i, j, k), cost, (i | j).bit_count()]
     return dict(sorted(found.items()))
 
 
@@ -650,7 +660,8 @@ def census() -> dict[str, Any]:
             "algebra": "sedenions, D = 16, cd_core.cd_sign, doubling (a,b)(c,d) = (ac - conj(d) b, da + b conj(c))",
             "basis": "e_k is basis state |k>, index bit b on register qubit b",
             "diagonal": "(L, U, s) is e_L + s e_U with L in 1..7 and U in 9..15",
-            "design_b": "P(s=0) = N(x y)/8 = ||x y||^2 / 2 for x = (e_L + s e_U)/sqrt2, y = (e_L' + t e_U')/sqrt2",
+            "design_b": "P(selector=0) = N(x y)/8 = ||x y||^2 / 2 for x = (e_L + x_sign e_U)/sqrt2, "
+            "y = (e_L' + y_sign e_U')/sqrt2",
         },
         "two_blades": {
             "count": len(BLADES),

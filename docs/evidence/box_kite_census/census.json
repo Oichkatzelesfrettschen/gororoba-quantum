@@ -4631,31 +4631,41 @@
      2,
      4,
      6,
-     1
+     1,
+     4,
+     2
     ],
     "ij-same-vertex-third-strut": [
      2,
      11,
      3,
-     -1
+     -1,
+     6,
+     3
     ],
     "ik-same-vertex-third-edge": [
      2,
      4,
      11,
-     1
+     1,
+     4,
+     2
     ],
     "ik-same-vertex-third-strut": [
      2,
      3,
      11,
-     -1
+     -1,
+     4,
+     2
     ],
     "jk-same-vertex-third-strut": [
      2,
      3,
      10,
-     -1
+     -1,
+     4,
+     2
     ]
    },
    "2": {
@@ -4663,31 +4673,41 @@
      1,
      4,
      5,
-     1
+     1,
+     4,
+     2
     ],
     "ij-same-vertex-third-strut": [
      1,
      11,
      3,
-     -1
+     -1,
+     6,
+     3
     ],
     "ik-same-vertex-third-edge": [
      1,
      4,
      11,
-     1
+     1,
+     4,
+     2
     ],
     "ik-same-vertex-third-strut": [
      1,
      3,
      11,
-     -1
+     -1,
+     4,
+     2
     ],
     "jk-same-vertex-third-strut": [
      1,
      3,
      9,
-     -1
+     -1,
+     4,
+     2
     ]
    },
    "3": {
@@ -4695,31 +4715,41 @@
      1,
      4,
      5,
-     1
+     1,
+     4,
+     2
     ],
     "ij-same-vertex-third-strut": [
      1,
      10,
      2,
-     -1
+     -1,
+     6,
+     3
     ],
     "ik-same-vertex-third-edge": [
      1,
      4,
      10,
-     1
+     1,
+     4,
+     2
     ],
     "ik-same-vertex-third-strut": [
      1,
      2,
      10,
-     -1
+     -1,
+     4,
+     2
     ],
     "jk-same-vertex-third-strut": [
      1,
      2,
      9,
-     -1
+     -1,
+     4,
+     2
     ]
    },
    "4": {
@@ -4727,31 +4757,41 @@
      1,
      2,
      3,
-     1
+     1,
+     4,
+     2
     ],
     "ij-same-vertex-third-strut": [
      1,
      13,
      5,
-     -1
+     -1,
+     6,
+     3
     ],
     "ik-same-vertex-third-edge": [
      1,
      2,
      13,
-     1
+     1,
+     4,
+     2
     ],
     "ik-same-vertex-third-strut": [
      1,
      5,
      13,
-     -1
+     -1,
+     4,
+     2
     ],
     "jk-same-vertex-third-strut": [
      1,
      5,
      9,
-     -1
+     -1,
+     4,
+     2
     ]
    },
    "5": {
@@ -4759,31 +4799,41 @@
      1,
      2,
      3,
-     1
+     1,
+     4,
+     2
     ],
     "ij-same-vertex-third-strut": [
      1,
      12,
      4,
-     -1
+     -1,
+     6,
+     3
     ],
     "ik-same-vertex-third-edge": [
      1,
      2,
      12,
-     1
+     1,
+     4,
+     2
     ],
     "ik-same-vertex-third-strut": [
      1,
      4,
      12,
-     -1
+     -1,
+     4,
+     2
     ],
     "jk-same-vertex-third-strut": [
      1,
      4,
      9,
-     -1
+     -1,
+     4,
+     2
     ]
    },
    "6": {
@@ -4791,31 +4841,41 @@
      1,
      2,
      3,
-     1
+     1,
+     4,
+     2
     ],
     "ij-same-vertex-third-strut": [
-     1,
-     15,
-     7,
-     -1
+     2,
+     12,
+     4,
+     -1,
+     6,
+     3
     ],
     "ik-same-vertex-third-edge": [
      1,
      2,
      15,
-     1
+     1,
+     4,
+     2
     ],
     "ik-same-vertex-third-strut": [
      1,
-     7,
+     9,
      15,
-     -1
+     -1,
+     4,
+     2
     ],
     "jk-same-vertex-third-strut": [
      1,
-     7,
      9,
-     -1
+     7,
+     -1,
+     4,
+     2
     ]
    },
    "7": {
@@ -4823,31 +4883,41 @@
      1,
      2,
      3,
-     1
+     1,
+     4,
+     2
     ],
     "ij-same-vertex-third-strut": [
      1,
      14,
      6,
-     -1
+     -1,
+     8,
+     4
     ],
     "ik-same-vertex-third-edge": [
      1,
      2,
      14,
-     1
+     1,
+     4,
+     2
     ],
     "ik-same-vertex-third-strut": [
      1,
-     6,
+     9,
      14,
-     -1
+     -1,
+     4,
+     2
     ],
     "jk-same-vertex-third-strut": [
      1,
-     6,
      9,
-     -1
+     6,
+     -1,
+     4,
+     2
     ]
    }
   },
@@ -5349,7 +5419,7 @@
  "convention": {
   "algebra": "sedenions, D = 16, cd_core.cd_sign, doubling (a,b)(c,d) = (ac - conj(d) b, da + b conj(c))",
   "basis": "e_k is basis state |k>, index bit b on register qubit b",
-  "design_b": "P(s=0) = N(x y)/8 = ||x y||^2 / 2 for x = (e_L + s e_U)/sqrt2, y = (e_L' + t e_U')/sqrt2",
+  "design_b": "P(selector=0) = N(x y)/8 = ||x y||^2 / 2 for x = (e_L + x_sign e_U)/sqrt2, y = (e_L' + y_sign e_U')/sqrt2",
   "diagonal": "(L, U, s) is e_L + s e_U with L in 1..7 and U in 9..15"
  },
  "design_b": {
@@ -5360,10 +5430,10 @@
    "kite",
    "p_low",
    "p_high",
-   "s",
+   "x_sign",
    "q_low",
    "q_high",
-   "t",
+   "y_sign",
    "relation",
    "p_selector_zero",
    "label_0",
