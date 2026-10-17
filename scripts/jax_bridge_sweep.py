@@ -39,6 +39,17 @@ and both caps; the scaled models change no other channel; the restructured
 programs reproduce the per-factor exports of the scaled noise models; and
 the sampled parity holds. ``--self-test --device cpu`` also replays the
 restructured programs in JAX and compares them with numpy.
+
+Kaggle. The sweep reads the retention audit, the calibration history and
+each audited run's record.json, isa.qpy and collect.json, about 93 MB that
+the gororoba-retained-runs dataset carries with the tree's digests; inline
+in run.py they exceed what SaveKernel accepts, so the push attaches the
+dataset:
+
+    "$PYTHON" scripts/kaggle_run.py push scripts/jax_bridge_sweep.py \\
+        --slug gororoba-jax-bridge-sweep-tpu --dataset gororoba-retained-runs \\
+        --machine TpuV5E8 --timeout 3600 -- \\
+        --device tpu --runs all --parity-sample 2 --out results/kaggle_out/jax-bridge-sweep-tpu.json
 """
 
 from __future__ import annotations
