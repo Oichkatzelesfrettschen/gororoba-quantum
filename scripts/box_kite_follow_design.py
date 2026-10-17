@@ -56,6 +56,8 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import box_kite_cases as cases  # noqa: E402
 
+import parallel  # noqa: E402
+
 SCHEMA = "box-kite-follow-design-v1"
 RUNS = ROOT / "results/quantum_inspire/runs"
 ZZ_ANALYSIS = ROOT / "results/quantum_inspire/coupler_zz_tuna_17_analysis.json"
@@ -204,22 +206,28 @@ def zz_terms(place: list[int], zz: dict[tuple[int, int], float], detuning: dict[
     return energy
 
 
-def walk_bloch(
-    triple: tuple[int, int, int], place: list[int], window: float, energy: np.ndarray
-) -> tuple[float, float]:
-    """<X_c> and <Y_c> of the walk control before its last H under the ZZ model."""
+Ops = tuple[tuple[str, tuple[int, ...]], ...]
+
+
+def walk_ops(triple: tuple[int, int, int]) -> Ops:
+    """The lowered walk's gates up to its last H, as (name, logical qubits) with the control on qubit 0."""
     exemplar = cases.walk_exemplar(cases.load_census(), triple)
     circuit = cases.lower_for_tuna(
         cases.associator_walk(exemplar["i"], exemplar["j"], exemplar["k"], exemplar["omega"], exemplar["bits"])
     )
+    return tuple(
+        (inst.operation.name, tuple(circuit.find_bit(q).index for q in inst.qubits)) for inst in circuit.data[:-1]
+    )
+
+
+def walk_bloch(ops: Ops, place: list[int], window: float, energy: np.ndarray) -> tuple[float, float]:
+    """<X_c> and <Y_c> of the walk control before its last H under the ZZ model."""
     n = len(place)
     psi = np.zeros(2**n, dtype=complex)
     psi[0] = 1
     index = np.arange(2**n)
     hadamard = np.array([[1, 1], [1, -1]]) / math.sqrt(2)
-    for instruction in circuit.data[:-1]:
-        name = instruction.operation.name
-        qubits = [circuit.find_bit(q).index for q in instruction.qubits]
+    for name, qubits in ops:
         if name == "cz":
             both = ((index >> qubits[0]) & 1) & ((index >> qubits[1]) & 1)
             psi = np.where(both == 1, -psi, psi)
@@ -235,25 +243,43 @@ def walk_bloch(
     return 2 * coherence.real, 2 * coherence.imag
 
 
+def placement_score(item: tuple[Ops, list[int], dict[tuple[int, int], float]]) -> float:
+    """The ZZ-only |<X_c>| of one walk placement, the worse of the two CZ windows."""
+    ops, place, zz = item
+    energy = zz_terms(place, zz, None)
+    return min(abs(walk_bloch(ops, place, w, energy)[0]) for w in CZ_WINDOWS)
+
+
+Pair = tuple[float, float, float, tuple[int, ...], tuple[int, ...]]
+
+
+def best_pair(pairs: list[Pair]) -> Pair:
+    """The (worse, star, path, star placement, path placement) row with the best worse score.
+
+    Ties go to the better star score, then the better path score, then the lexicographically first placement.
+    """
+    return max(pairs, key=lambda row: (row[0], row[1], row[2], [-q for q in row[3] + row[4]]))
+
+
 def placement(adj: dict[int, set[int]], zz: dict[tuple[int, int], float]) -> dict[str, Any]:
     """The separated star and path placements, scored by the ZZ-only |<X_c>| at both windows."""
-    star_triple, path_triple = (triple for triple, _ in cases.FOLLOW_WALKS)
+    star_ops, path_ops = (walk_ops(triple) for triple, _ in cases.FOLLOW_WALKS)
 
-    def walks(data_count: int) -> list[list[int]]:
-        return [[c, *d] for c in sorted(adj) for d in itertools.permutations(sorted(adj[c]), data_count)]
+    def walks(data_count: int) -> list[tuple[int, ...]]:
+        return [(c, *d) for c in sorted(adj) for d in itertools.permutations(sorted(adj[c]), data_count)]
 
-    def score(triple: tuple[int, int, int], place: list[int]) -> float:
-        energy = zz_terms(place, zz, None)
-        return min(abs(walk_bloch(triple, place, w, energy)[0]) for w in CZ_WINDOWS)
-
-    stars = {tuple(p): score(star_triple, p) for p in walks(3)}
-    paths = {tuple(p): score(path_triple, p) for p in walks(2)}
+    star_walks, path_walks = walks(3), walks(2)
+    scores = parallel.ordered_map(
+        placement_score, [(star_ops, list(p), zz) for p in star_walks] + [(path_ops, list(p), zz) for p in path_walks]
+    )
+    stars = dict(zip(star_walks, scores[: len(star_walks)], strict=True))
+    paths = dict(zip(path_walks, scores[len(star_walks) :], strict=True))
     pairs = [
         (min(stars[s], paths[p]), stars[s], paths[p], s, p) for s in stars for p in paths if separated([s, p], adj)
     ]
     if not pairs:
         raise SystemExit("no star and path walk fit on the admitted graph without a shared qubit or coupler")
-    best = max(pairs, key=lambda row: (row[1], row[2], [-q for q in row[3] + row[4]]))
+    best = best_pair(pairs)
     chosen = {
         "star_14": [best[3][0], list(best[3][1:])],
         "path_4": [best[4][0], list(best[4][1:])],
@@ -277,7 +303,7 @@ def phase_predictions(zz: dict[tuple[int, int], float], detuning: dict[int, floa
         rows = {}
         for window in CZ_WINDOWS:
             for model, det in (("zz", None), ("zz_detuning", detuning)):
-                x, y = walk_bloch(triple, place, window, zz_terms(place, zz, det))
+                x, y = walk_bloch(walk_ops(triple), place, window, zz_terms(place, zz, det))
                 rows[f"{model}_{window * 1e9:g}ns"] = {
                     "x": sig(x),
                     "y": sig(y),
@@ -347,13 +373,14 @@ def self_test() -> str:
     nodes, adj = admitted_graph()
     triple = cases.FOLLOW_WALKS[0][0]
     place = [cases.FOLLOW_WALK_LAYOUTS["star_14"][0], *cases.FOLLOW_WALK_LAYOUTS["star_14"][1]]
-    x, y = walk_bloch(triple, place, 6e-8, np.zeros(16))
+    ops = walk_ops(triple)
+    x, y = walk_bloch(ops, place, 6e-8, np.zeros(16))
     if abs(x + 1) > 1e-12 or abs(y) > 1e-12:
         raise AssertionError(f"the noiseless walk reads ({x}, {y}), not (omega, 0) = (-1, 0)")
     # A detuning on the control alone turns its Bloch vector by 2 pi omega T, T the time from its first H.
     omega = 1e5
     circuit = cases.lower_for_tuna(cases.associator_walk(2, 11, 3, -1, [0, 1, 3]))
-    x, y = walk_bloch(triple, place, 6e-8, zz_terms(place, {}, {place[0]: omega}))
+    x, y = walk_bloch(ops, place, 6e-8, zz_terms(place, {}, {place[0]: omega}))
     phase = math.atan2(y, -x)
     first_h = next(
         n
@@ -386,11 +413,16 @@ def self_test() -> str:
         cases.LCU_PAIRS = saved_pairs
     if rejected != 2:
         raise AssertionError(f"{2 - rejected} mutated selection inputs were accepted")
+    # A strong star beside a weak path loses to a pair whose worse score is higher.
+    lopsided: Pair = (0.5, 0.99, 0.5, (14, 11, 12, 16), (4, 1, 2))
+    balanced: Pair = (0.9, 0.95, 0.9, (14, 12, 11, 16), (4, 2, 1))
+    if best_pair([lopsided, balanced]) != balanced:
+        raise AssertionError("placement selection ranks a pair above one with a better worse score")
     if not separated([(1, 4), (10, 13)], adj) or separated([(1, 4), (2, 8)], adj):
         raise AssertionError("separated() misreads a shared coupler")
     if cases.TUNA_EXCLUDED[0] in nodes:
         raise AssertionError("an excluded qubit entered the admitted graph")
-    return "box-kite follow design: noiseless walk, control-detuning phase and both selection mutations pass"
+    return "box-kite follow design: noiseless walk, control-detuning phase, selection mutations and maximin rule pass"
 
 
 def main() -> int:

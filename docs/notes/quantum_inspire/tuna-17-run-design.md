@@ -99,7 +99,9 @@ Seven batches, 21 jobs, 16384 shots each:
   lambda^n / Pc(n); their rate ratio r_coh / r_pop separates dephasing
   (below 1) from depolarizing error. The phase slope per CZ is the data
   qubit's detuning phase over one CZ window plus the CZ's residual local
-  phase.
+  phase; the fit unwraps the phase along depth, so it identifies a slope
+  below pi / 4 rad per CZ in magnitude, since adjacent depths lie four CZs
+  apart.
 - **Walks.** walk-x reads the associator signs, walk-omit the branch-marked
   controls, walk-y the control's imaginary part; with walk-x it gives the
   control's phase and the coherence magnitude that T0's r cross-predicts.
@@ -120,8 +122,9 @@ execution.
   OpenSquirrel replay the platform's parse and compile passes
   (`qi_toolchain_check.py`); qxelarator runs the identical bytes locally
   before any QX or Tuna submission.
-- Enumeration with itertools is exact and immediate at this graph size (14
-  admitted qubits), so no graph library enters the design.
+- Enumeration with itertools is exact and immediate at this graph size (11
+  admitted qubits, 10 couplers), so no graph library enters the design; the
+  placement scores run through `parallel.ordered_map`.
 - stim models Pauli channels and cannot carry the coherent ZZ and detuning
   phases the design turns on. mthree's independent calibration equals the
   per-qubit tensor inversion at two qubits per replica, and no record shows

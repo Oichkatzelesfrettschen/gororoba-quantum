@@ -1663,7 +1663,8 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
             "and the population contrast 2 Pc(n) - 1 both equal lambda^n under a global depolarizing channel of "
             "rate lambda per CZ, so r_coh and r_pop are exp(slope) of ln J(n) and ln(2 Pc(n) - 1) on n and their "
             "ratio is 1 there, while dephasing lowers it and amplitude damping raises r_pop; the phase slope is "
-            "phi per CZ, the data qubit's detuning phase over one CZ window plus the CZ's residual local phase. "
+            "phi per CZ, the data qubit's detuning phase over one CZ window plus the CZ's residual local phase, with "
+            "phi(n) unwrapped along n before the fit, which identifies a slope below pi / 4 per CZ in magnitude. "
             "Each is an unweighted least-squares slope with a 99% parametric-bootstrap interval "
             f"({BOOTSTRAP_DRAWS} draws, seed {BOOTSTRAP_SEED}), reported as estimates",
             "walks": f"<X_c> = omega = -1 on both walks, 0 on both omit-last controls and 0 in Y. Falsifier: sign "

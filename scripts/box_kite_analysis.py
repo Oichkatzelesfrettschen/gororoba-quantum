@@ -90,7 +90,9 @@ Estimators, exactly as preregistered:
   r_coh = exp(slope ln J) of the joint coherence J(n) = Pc(n) m(n), r_pop =
   exp(slope ln(2 Pc(n) - 1)), their ratio (1 under a global depolarizing
   channel, where both equal lambda^n) and the phase per CZ, each reported
-  with its 99% interval; per walk, the sign of <X_c>
+  with its 99% interval; the phase is unwrapped along depth before its fit,
+  which identifies a phase per CZ below pi / 4 in magnitude (adjacent depths
+  lie four CZs apart); per walk, the sign of <X_c>
   against omega, each omit control against null_offset + sigma SE, <Y_c>,
   and the magnitude sqrt(<X_c>^2 + <Y_c>^2) against t0_r^n_CZ within
   cross_prediction_band and the phase atan2(<Y_c>, -<X_c>), both reported;
@@ -1149,6 +1151,11 @@ def analyze_follow(batches: dict[str, Batch], t: dict[str, Any], t0: dict[str, A
                    "joint_coherence": both(lambda v, n=n: joint_coherence(v, n)),
                    "population_contrast": both(lambda v, n=n: contrast(v, n))} for n in depths]  # fmt: skip
 
+        def unwrapped(v: Values) -> list[Any]:
+            # np.unwrap along depth carries the phase across the atan2 branch cut, row by row.
+            rows = np.unwrap(np.stack([phase(v, n) for n in depths], axis=-1), axis=-1)
+            return [rows[..., k] for k in range(len(depths))]
+
         def log_slope(v: Values, fn: Any) -> Any:
             return ols_slope(depths, [np.log(fn(v, n)) for n in depths])
 
@@ -1158,7 +1165,7 @@ def analyze_follow(batches: dict[str, Batch], t: dict[str, Any], t0: dict[str, A
             "r_coh": both(lambda v: np.exp(log_slope(v, joint_coherence)), pct),
             "r_pop": both(lambda v: np.exp(log_slope(v, contrast)), pct),
             "r_coh_over_r_pop": both(lambda v: np.exp(log_slope(v, joint_coherence) - log_slope(v, contrast)), pct),
-            "phase_slope_per_cz": both(lambda v: ols_slope(depths, [phase(v, n) for n in depths]), pct),
+            "phase_slope_per_cz": both(lambda v: ols_slope(depths, unwrapped(v)), pct),
         })  # fmt: skip
 
     # Walks: control expectations, falsifiers, magnitude and phase per walk.
@@ -1684,7 +1691,8 @@ HEALTHY = {0: (0.02, 0.06), 6: (0.02, 0.06), 9: (0.02, 0.06)}
 # r^n_CZ at T0's r.
 FOLLOW_MODEL = {"amplitude": 0.821, "r": 0.95, "walk_r": 0.9654}
 FOLLOW_ONLY = {"families": ["tuna_follow"], "readout": {}, **FOLLOW_MODEL}
-INJECTED_PHASE = 0.08
+# 0.4 rad per CZ puts depth 9 at 3.6 rad, past the atan2 branch cut, so the phase fit must unwrap.
+INJECTED_PHASE = 0.4
 SCENARIOS: dict[str, dict[str, Any]] = {
     "pass": {
         "families": [f for f in FAMILIES if f != "tuna_twins"], "readout": FAULT, "xx": UNDER_ROTATION_XX,

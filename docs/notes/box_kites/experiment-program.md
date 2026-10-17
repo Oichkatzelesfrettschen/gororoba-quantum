@@ -624,7 +624,8 @@ stops the Ry smoke subset analyzed beside it (alone, the smoke analysis
 records the ladder gate as unverified), the T0 end-program and resize
 scenarios that stop the follow series analyzed beside them, bracket drift
 as a stop, twist, coherence-sign, strut and omit-control refutations without
-a stop, and an injected phase per CZ that the ladder's interval recovers;
+a stop, and an injected phase per CZ that the ladder's interval recovers
+after depth 9 crosses the atan2 branch cut;
 every Ry fraction carries its count, binomial standard error and Wilson 95%
 interval. Seventeen mutations (digest, foreign cases.json receipt, missing
 receipt, swapped job id, foreign batch id, both shot counts, shot width,
