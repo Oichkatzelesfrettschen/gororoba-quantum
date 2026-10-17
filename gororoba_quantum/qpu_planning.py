@@ -24,12 +24,14 @@ import parallel
 from diagnostic_experiments import (
     N21_FAMILIES,
     PATCH_FAMILIES,
+    STATE_PREP_ARM_STEPS,
     STATE_PREP_FAMILY,
     STATE_PREP_SOURCE_RECORD,
     family_contracts,
     folded_group,
     n21_group,
     n21_orbit_rca_group,
+    state_prep_arms,
     state_prep_groups,
 )
 from experiment_optimizer import (
@@ -53,35 +55,40 @@ from qpe_diagnostics import ideal_compiled_probabilities
 def settings(args: Any) -> dict[str, Any]:
     """Approval-bound design inputs, distinct from fluctuating quota readings.
 
-    A declared preparation excitation joins them only when given, so a plan
-    without it keeps its settings unchanged.
+    A declared preparation excitation or state-prep arm selection joins them
+    only when given, so a plan without it keeps its settings unchanged.
     """
     excitation = getattr(args, "prep_excitation", None)
-    return {
-        name: getattr(args, name, default)
-        for name, default in (
-            ("family", None),
-            ("optimize", False),
-            ("objective", "minimum_charge"),
-            ("cost_scenarios", []),
-            ("shot_tiers", [2048, 4096, 8192, 16384]),
-            ("shot_allocation", "uniform"),
-            ("replica_tiers", [1, 2, 4]),
-            ("optimizer_candidates", 6),
-            ("model_shots", 32768),
-            ("precision", 0.08),
-            ("alpha", 0.05),
-            ("power", 0.8),
-            ("simulation_alpha", 0.01),
-            ("job_overhead_seconds", 2.3),
-            ("classical_latency_us", 20.0),
-            ("reserve_seconds", 0.0),
-            ("max_total_execution_seconds", None),
-            ("patch_qubits", None),
-            ("model_method", "sampled"),
-            ("replica_variance_bound", None),
-        )
-    } | ({"prep_excitation": excitation} if excitation is not None else {})
+    arms = getattr(args, "state_prep_arms", None)
+    return (
+        {
+            name: getattr(args, name, default)
+            for name, default in (
+                ("family", None),
+                ("optimize", False),
+                ("objective", "minimum_charge"),
+                ("cost_scenarios", []),
+                ("shot_tiers", [2048, 4096, 8192, 16384]),
+                ("shot_allocation", "uniform"),
+                ("replica_tiers", [1, 2, 4]),
+                ("optimizer_candidates", 6),
+                ("model_shots", 32768),
+                ("precision", 0.08),
+                ("alpha", 0.05),
+                ("power", 0.8),
+                ("simulation_alpha", 0.01),
+                ("job_overhead_seconds", 2.3),
+                ("classical_latency_us", 20.0),
+                ("reserve_seconds", 0.0),
+                ("max_total_execution_seconds", None),
+                ("patch_qubits", None),
+                ("model_method", "sampled"),
+                ("replica_variance_bound", None),
+            )
+        }
+        | ({"prep_excitation": excitation} if excitation is not None else {})
+        | ({"state_prep_arms": list(arms)} if arms is not None else {})
+    )
 
 
 def budget_plan(runtime: Any, choices: list[Any], args: Any, usage: dict[str, Any]) -> dict[str, Any]:
@@ -543,7 +550,12 @@ def state_prep_candidates(
         qubits, source = state_prep_layout(args)
     except (OSError, KeyError, ValueError) as error:
         raise runtime.LiveRunError(f"state-prep-control layout: {error}") from error
-    groups = state_prep_groups(qubits)
+    try:
+        arms = state_prep_arms(getattr(args, "state_prep_arms", None))
+    except ValueError as error:
+        raise runtime.LiveRunError(f"state-prep-control arms: {error}") from error
+    groups = state_prep_groups(qubits, arms)
+    expected_kinds = sorted(["static"] * len([arm for arm in arms if arm != "reset"]) + ["dynamic"] * ("reset" in arms))
     candidates = []
     for snapshot in snapshots:
         try:
@@ -586,8 +598,8 @@ def state_prep_candidates(
                 choices.append(choice)
             pubs = runtime.execution_pubs(choices)
             kinds = sorted(pub.kind for pub in pubs)
-            if kinds != ["dynamic", "static", "static"]:
-                raise runtime.LiveRunError(f"the arms fused into PUB kinds {kinds}, not two static and one dynamic")
+            if kinds != expected_kinds:
+                raise runtime.LiveRunError(f"the arms {list(arms)} fused into PUB kinds {kinds}, not {expected_kinds}")
         except (runtime.LiveRunError, QiskitError, ValueError) as error:
             trace.setdefault("family_rejections", []).append(
                 {"backend": snapshot.name, "qubits": qubits, "reason": str(error)}
@@ -600,7 +612,7 @@ def state_prep_candidates(
                     "name": STATE_PREP_FAMILY,
                     "qubits": qubits,
                     **source,
-                    "arms": {"prep0": "init, measure", "reset": "init, reset, measure", "x": "x, measure"},
+                    "arms": {arm: STATE_PREP_ARM_STEPS[arm] for arm in arms},
                     "placement_contract": (
                         "one pinned single-qubit placement per named qubit; every qubit runs each arm in the "
                         "same shots; static prep0 and x PUBs, dynamic reset PUB"

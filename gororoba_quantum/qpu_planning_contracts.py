@@ -1220,6 +1220,24 @@ def _verify_state_prep_family() -> None:
     rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
     _require([g.name for g in rebuilt] == [c.group.name for c in choices], "record_groups lost the per-qubit groups")
     _verify_shot_ceiling(snapshot, qubits)
+    subset_args = _args(
+        "state-prep-control",
+        layout=qubits[:7],
+        state_prep_arms=["prep0"],
+        optimize=True,
+        shot_tiers=[4096, 8192],
+        optimizer_candidates=1,
+        max_execution_seconds=60,
+        max_total_execution_seconds=120.0,
+        reserve_seconds=0.0,
+    )
+    subset = qpu_planning.family_candidates(live_run, [snapshot], subset_args, {})
+    _require(len(subset) == 1, "the prep0-only selection produced no candidate")
+    subset_choices, subset_configuration = subset[0]
+    _require(list(subset_configuration["arms"]) == ["prep0"], f"arms recorded {subset_configuration['arms']}")
+    _require([pub.kind for pub in live_run.execution_pubs(subset_choices)] == ["static"], "prep0 alone left one PUB")
+    _require(qpu_planning.settings(subset_args)["state_prep_arms"] == ["prep0"], "the policy lost the arm selection")
+    _require("state_prep_arms" not in qpu_planning.settings(args), "an omitted selection entered the policy")
 
 
 def _verify_shot_ceiling(snapshot: Any, qubits: list[int]) -> None:
