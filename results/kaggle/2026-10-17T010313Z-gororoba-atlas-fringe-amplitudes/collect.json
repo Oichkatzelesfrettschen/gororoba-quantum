@@ -1,0 +1,17 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-atlas-fringe-amplitudes/1",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-17T012542Z",
+ "files": {
+  "gororoba-atlas-fringe-amplitudes.log": "cc7110e396eef566dfe34b8ddb938e595d39660042d0fc239a16e0ac29b49442",
+  "output/datasets.json": "7695e461f9ca08e4d882c1f066436be2a350665d2672fa27a346482e2081153a",
+  "output/environment.json": "a67c975e7c04761b418e9372c3a9a590159969090d6cab50fe89736de0696b84",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "da0c90cbda515c14a81d75362d0294c881f5ab943485544cc7135a7c2b61ec43",
+  "output/pip.txt": "903d008bdad48c8b8d5ee4c49844c664b8890c907142bfae9f9526314d36441c",
+  "output/repo/results/kaggle_out/atlas_fringe_amplitudes.json": "094793cfddfd006583ce812290a0c32245e13591e65f540b4618dbcc31a573d5",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "d8fe1946835e453fb720bff44a7c603393cbd907027302c35e44b3502ae8b11a"
+ }
+}
