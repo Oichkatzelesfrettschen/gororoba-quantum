@@ -64,6 +64,23 @@ def active_qubits(compiled: QuantumCircuit) -> list[int]:
     )
 
 
+def restrict_circuit(compiled: QuantumCircuit) -> tuple[QuantumCircuit, list[int]]:
+    """compiled with its idle wires removed, on the active qubits in ascending physical order.
+
+    The remaining wires keep their order, so qubit k of the result is
+    active_qubits(compiled)[k], the numbering ``restrict`` gives the snapshot;
+    classical bits and control-flow blocks are unchanged. Aer then carries a
+    noise model of the active qubits only, which samples the same law.
+    """
+    from qiskit.converters import circuit_to_dag, dag_to_circuit
+
+    qubits = active_qubits(compiled)
+    keep = set(qubits)
+    dag = circuit_to_dag(compiled)
+    dag.remove_qubits(*[wire for wire in dag.qubits if compiled.find_bit(wire).index not in keep])
+    return dag_to_circuit(dag), qubits
+
+
 def _keep(operation: Instruction, qubits: list[int]) -> Instruction | None:
     return None if operation.name == "barrier" else operation
 

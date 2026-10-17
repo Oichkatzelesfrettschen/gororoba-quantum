@@ -1,0 +1,3097 @@
+{
+  "capture": "n21-linear-conjugation-challenger",
+  "compiler": {
+    "dt_seconds": 4e-09,
+    "optimization_level": 3,
+    "pass_manager": "candidate_pass_manager(target_flip_one_clean) for every circuit",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "target": "qiskit_ibm_runtime.fake_provider.FakeFez",
+    "versions": {
+      "numpy": "2.5.4",
+      "python": "3.14.7",
+      "qiskit": "2.5.2",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.50.0",
+      "rustworkx": "0.18.1",
+      "scipy": "1.18.1"
+    }
+  },
+  "duration_model": "estimate_duration over the true-branch gate-time view; a lower bound that omits classical feed-forward latency, common to every circuit through the shared dynamic skeleton",
+  "modulus": 21,
+  "problems": {
+    "ten_round": {
+      "admitted_coset_indices": [
+        281,
+        353,
+        15233,
+        315,
+        15265,
+        355,
+        308,
+        15241
+      ],
+      "arms": [
+        "feed_forward"
+      ],
+      "baseline": {
+        "arms": {
+          "feed_forward": {
+            "logical_qubits": 7,
+            "medians": {
+              "depth": 13662.0,
+              "routed_cz": 5422.0,
+              "scheduled_duration_dt": 131793.0
+            },
+            "runs": [
+              {
+                "active_physical_qubits": 7,
+                "depth": 13681,
+                "logical_qubits": 7,
+                "routed_cz": 5385,
+                "scheduled_duration_dt": 132000,
+                "seed_transpiler": 0
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 13651,
+                "logical_qubits": 7,
+                "routed_cz": 5419,
+                "scheduled_duration_dt": 131586,
+                "seed_transpiler": 1
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 13298,
+                "logical_qubits": 7,
+                "routed_cz": 5454,
+                "scheduled_duration_dt": 125442,
+                "seed_transpiler": 2
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 13673,
+                "logical_qubits": 7,
+                "routed_cz": 5404,
+                "scheduled_duration_dt": 132177,
+                "seed_transpiler": 3
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 13492,
+                "logical_qubits": 7,
+                "routed_cz": 5425,
+                "scheduled_duration_dt": 126978,
+                "seed_transpiler": 4
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 13712,
+                "logical_qubits": 7,
+                "routed_cz": 5588,
+                "scheduled_duration_dt": 132570,
+                "seed_transpiler": 5
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 13706,
+                "logical_qubits": 7,
+                "routed_cz": 5384,
+                "scheduled_duration_dt": 132246,
+                "seed_transpiler": 6
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 13290,
+                "logical_qubits": 7,
+                "routed_cz": 5482,
+                "scheduled_duration_dt": 125547,
+                "seed_transpiler": 7
+              }
+            ],
+            "source_operations": {
+              "ccx": 170,
+              "h": 20,
+              "if_else": 45,
+              "measure": 10,
+              "rccx": 512,
+              "reset": 9,
+              "x": 695
+            }
+          }
+        },
+        "columns": null,
+        "name": "target_flip_one_clean"
+      },
+      "best_admitted": 15241,
+      "challengers": [
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 9760.5,
+                "routed_cz": 3980.5,
+                "scheduled_duration_dt": 93555.0
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9760,
+                  "logical_qubits": 7,
+                  "routed_cz": 3978,
+                  "scheduled_duration_dt": 93525,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9760,
+                  "logical_qubits": 7,
+                  "routed_cz": 3978,
+                  "scheduled_duration_dt": 93525,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9760,
+                  "logical_qubits": 7,
+                  "routed_cz": 3978,
+                  "scheduled_duration_dt": 93525,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9791,
+                  "logical_qubits": 7,
+                  "routed_cz": 3983,
+                  "scheduled_duration_dt": 94011,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9761,
+                  "logical_qubits": 7,
+                  "routed_cz": 3984,
+                  "scheduled_duration_dt": 93585,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9761,
+                  "logical_qubits": 7,
+                  "routed_cz": 3984,
+                  "scheduled_duration_dt": 93585,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9761,
+                  "logical_qubits": 7,
+                  "routed_cz": 3984,
+                  "scheduled_duration_dt": 93585,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9760,
+                  "logical_qubits": 7,
+                  "routed_cz": 3978,
+                  "scheduled_duration_dt": 93525,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 112,
+                "h": 20,
+                "if_else": 45,
+                "measure": 10,
+                "rccx": 408,
+                "reset": 9,
+                "x": 495
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "2": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 222
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "initial_value": 1,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            1,
+            2,
+            5,
+            13,
+            25
+          ],
+          "coset_index": 281,
+          "name": "encoded_coset_281",
+          "surrogate": {
+            "s2": 222,
+            "s4": 186,
+            "ten_round_cost": 1896
+          }
+        },
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 9847.0,
+                "routed_cz": 3973.0,
+                "scheduled_duration_dt": 95925.0
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9847,
+                  "logical_qubits": 7,
+                  "routed_cz": 3973,
+                  "scheduled_duration_dt": 95925,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9847,
+                  "logical_qubits": 7,
+                  "routed_cz": 3973,
+                  "scheduled_duration_dt": 95925,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9847,
+                  "logical_qubits": 7,
+                  "routed_cz": 3973,
+                  "scheduled_duration_dt": 95925,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9847,
+                  "logical_qubits": 7,
+                  "routed_cz": 3973,
+                  "scheduled_duration_dt": 95925,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9847,
+                  "logical_qubits": 7,
+                  "routed_cz": 3973,
+                  "scheduled_duration_dt": 95925,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9847,
+                  "logical_qubits": 7,
+                  "routed_cz": 3973,
+                  "scheduled_duration_dt": 95925,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9847,
+                  "logical_qubits": 7,
+                  "routed_cz": 3973,
+                  "scheduled_duration_dt": 95925,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9847,
+                  "logical_qubits": 7,
+                  "routed_cz": 3973,
+                  "scheduled_duration_dt": 95925,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 116,
+                "h": 20,
+                "if_else": 45,
+                "measure": 10,
+                "rccx": 412,
+                "reset": 9,
+                "x": 437
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "2": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 258
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "initial_value": 1,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            1,
+            2,
+            5,
+            20,
+            25
+          ],
+          "coset_index": 353,
+          "name": "encoded_coset_353",
+          "surrogate": {
+            "s2": 258,
+            "s4": 186,
+            "ten_round_cost": 1932
+          }
+        },
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 9908.5,
+                "routed_cz": 4107.0,
+                "scheduled_duration_dt": 96498.0
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9958,
+                  "logical_qubits": 7,
+                  "routed_cz": 4217,
+                  "scheduled_duration_dt": 97317,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9891,
+                  "logical_qubits": 7,
+                  "routed_cz": 4066,
+                  "scheduled_duration_dt": 96060,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9969,
+                  "logical_qubits": 7,
+                  "routed_cz": 4219,
+                  "scheduled_duration_dt": 97308,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9861,
+                  "logical_qubits": 7,
+                  "routed_cz": 4124,
+                  "scheduled_duration_dt": 95925,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9878,
+                  "logical_qubits": 7,
+                  "routed_cz": 4066,
+                  "scheduled_duration_dt": 95961,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9926,
+                  "logical_qubits": 7,
+                  "routed_cz": 4090,
+                  "scheduled_duration_dt": 96585,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9859,
+                  "logical_qubits": 7,
+                  "routed_cz": 3913,
+                  "scheduled_duration_dt": 96411,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9971,
+                  "logical_qubits": 7,
+                  "routed_cz": 4235,
+                  "scheduled_duration_dt": 97605,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 126,
+                "h": 20,
+                "if_else": 45,
+                "measure": 10,
+                "rccx": 396,
+                "reset": 9,
+                "x": 468
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "2": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 270
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "initial_value": 6,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            2,
+            4,
+            5,
+            8,
+            17
+          ],
+          "coset_index": 15233,
+          "name": "encoded_coset_15233",
+          "surrogate": {
+            "s2": 270,
+            "s4": 186,
+            "ten_round_cost": 1944
+          }
+        },
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 10000.0,
+                "routed_cz": 3957.0,
+                "scheduled_duration_dt": 96357.0
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10013,
+                  "logical_qubits": 7,
+                  "routed_cz": 3910,
+                  "scheduled_duration_dt": 97029,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9997,
+                  "logical_qubits": 7,
+                  "routed_cz": 3926,
+                  "scheduled_duration_dt": 97413,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9967,
+                  "logical_qubits": 7,
+                  "routed_cz": 4035,
+                  "scheduled_duration_dt": 95886,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9972,
+                  "logical_qubits": 7,
+                  "routed_cz": 4023,
+                  "scheduled_duration_dt": 95433,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10002,
+                  "logical_qubits": 7,
+                  "routed_cz": 3981,
+                  "scheduled_duration_dt": 95568,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9998,
+                  "logical_qubits": 7,
+                  "routed_cz": 4027,
+                  "scheduled_duration_dt": 95274,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10017,
+                  "logical_qubits": 7,
+                  "routed_cz": 3916,
+                  "scheduled_duration_dt": 96828,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10054,
+                  "logical_qubits": 7,
+                  "routed_cz": 3933,
+                  "scheduled_duration_dt": 97020,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 122,
+                "h": 20,
+                "if_else": 45,
+                "measure": 10,
+                "rccx": 406,
+                "reset": 9,
+                "x": 511
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 192
+            },
+            "2": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 222
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 192
+            },
+            "initial_value": 1,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            1,
+            2,
+            5,
+            15,
+            27
+          ],
+          "coset_index": 315,
+          "name": "encoded_coset_315",
+          "surrogate": {
+            "s2": 222,
+            "s4": 192,
+            "ten_round_cost": 1950
+          }
+        },
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 9844.5,
+                "routed_cz": 3954.0,
+                "scheduled_duration_dt": 95713.5
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9859,
+                  "logical_qubits": 7,
+                  "routed_cz": 4136,
+                  "scheduled_duration_dt": 96465,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9852,
+                  "logical_qubits": 7,
+                  "routed_cz": 3954,
+                  "scheduled_duration_dt": 95676,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9928,
+                  "logical_qubits": 7,
+                  "routed_cz": 4139,
+                  "scheduled_duration_dt": 97215,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9789,
+                  "logical_qubits": 7,
+                  "routed_cz": 3928,
+                  "scheduled_duration_dt": 94968,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9868,
+                  "logical_qubits": 7,
+                  "routed_cz": 3938,
+                  "scheduled_duration_dt": 95751,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9826,
+                  "logical_qubits": 7,
+                  "routed_cz": 3954,
+                  "scheduled_duration_dt": 95283,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9580,
+                  "logical_qubits": 7,
+                  "routed_cz": 3814,
+                  "scheduled_duration_dt": 94188,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9837,
+                  "logical_qubits": 7,
+                  "routed_cz": 4100,
+                  "scheduled_duration_dt": 95874,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 126,
+                "h": 20,
+                "if_else": 45,
+                "measure": 10,
+                "rccx": 398,
+                "reset": 9,
+                "x": 508
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "2": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 276
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "initial_value": 6,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            2,
+            4,
+            5,
+            10,
+            17
+          ],
+          "coset_index": 15265,
+          "name": "encoded_coset_15265",
+          "surrogate": {
+            "s2": 276,
+            "s4": 186,
+            "ten_round_cost": 1950
+          }
+        },
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 10340.0,
+                "routed_cz": 4109.0,
+                "scheduled_duration_dt": 99454.5
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10283,
+                  "logical_qubits": 7,
+                  "routed_cz": 4003,
+                  "scheduled_duration_dt": 99480,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10284,
+                  "logical_qubits": 7,
+                  "routed_cz": 4011,
+                  "scheduled_duration_dt": 99429,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10326,
+                  "logical_qubits": 7,
+                  "routed_cz": 4153,
+                  "scheduled_duration_dt": 99057,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10212,
+                  "logical_qubits": 7,
+                  "routed_cz": 4167,
+                  "scheduled_duration_dt": 97128,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10354,
+                  "logical_qubits": 7,
+                  "routed_cz": 4153,
+                  "scheduled_duration_dt": 98673,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10373,
+                  "logical_qubits": 7,
+                  "routed_cz": 4157,
+                  "scheduled_duration_dt": 99768,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10356,
+                  "logical_qubits": 7,
+                  "routed_cz": 4010,
+                  "scheduled_duration_dt": 100122,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10390,
+                  "logical_qubits": 7,
+                  "routed_cz": 4065,
+                  "scheduled_duration_dt": 100686,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 124,
+                "h": 20,
+                "if_else": 45,
+                "measure": 10,
+                "rccx": 406,
+                "reset": 9,
+                "x": 439
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 192
+            },
+            "2": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 234
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 192
+            },
+            "initial_value": 1,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            1,
+            2,
+            5,
+            20,
+            27
+          ],
+          "coset_index": 355,
+          "name": "encoded_coset_355",
+          "surrogate": {
+            "s2": 234,
+            "s4": 192,
+            "ten_round_cost": 1962
+          }
+        },
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 10422.0,
+                "routed_cz": 4167.0,
+                "scheduled_duration_dt": 100578.0
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10421,
+                  "logical_qubits": 7,
+                  "routed_cz": 4166,
+                  "scheduled_duration_dt": 100605,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10384,
+                  "logical_qubits": 7,
+                  "routed_cz": 4164,
+                  "scheduled_duration_dt": 100362,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10423,
+                  "logical_qubits": 7,
+                  "routed_cz": 4186,
+                  "scheduled_duration_dt": 100845,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10716,
+                  "logical_qubits": 7,
+                  "routed_cz": 4384,
+                  "scheduled_duration_dt": 104082,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10401,
+                  "logical_qubits": 7,
+                  "routed_cz": 4156,
+                  "scheduled_duration_dt": 100494,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10463,
+                  "logical_qubits": 7,
+                  "routed_cz": 4168,
+                  "scheduled_duration_dt": 100551,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10425,
+                  "logical_qubits": 7,
+                  "routed_cz": 4194,
+                  "scheduled_duration_dt": 100971,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 10380,
+                  "logical_qubits": 7,
+                  "routed_cz": 4140,
+                  "scheduled_duration_dt": 100338,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 118,
+                "h": 20,
+                "if_else": 45,
+                "measure": 10,
+                "rccx": 420,
+                "reset": 9,
+                "x": 561
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "2": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 294
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "initial_value": 1,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            1,
+            2,
+            5,
+            15,
+            20
+          ],
+          "coset_index": 308,
+          "name": "encoded_coset_308",
+          "surrogate": {
+            "s2": 294,
+            "s4": 186,
+            "ten_round_cost": 1968
+          }
+        },
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 9847.0,
+                "routed_cz": 3933.0,
+                "scheduled_duration_dt": 96196.5
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9678,
+                  "logical_qubits": 7,
+                  "routed_cz": 3897,
+                  "scheduled_duration_dt": 91380,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9838,
+                  "logical_qubits": 7,
+                  "routed_cz": 3938,
+                  "scheduled_duration_dt": 96348,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9830,
+                  "logical_qubits": 7,
+                  "routed_cz": 3910,
+                  "scheduled_duration_dt": 96129,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9867,
+                  "logical_qubits": 7,
+                  "routed_cz": 3928,
+                  "scheduled_duration_dt": 96264,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9938,
+                  "logical_qubits": 7,
+                  "routed_cz": 4145,
+                  "scheduled_duration_dt": 97167,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9708,
+                  "logical_qubits": 7,
+                  "routed_cz": 3993,
+                  "scheduled_duration_dt": 92208,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9856,
+                  "logical_qubits": 7,
+                  "routed_cz": 3928,
+                  "scheduled_duration_dt": 96465,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 9877,
+                  "logical_qubits": 7,
+                  "routed_cz": 3944,
+                  "scheduled_duration_dt": 96018,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 123,
+                "h": 20,
+                "if_else": 45,
+                "measure": 10,
+                "rccx": 410,
+                "reset": 9,
+                "x": 512
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 192
+            },
+            "2": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 240
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 192
+            },
+            "initial_value": 6,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            2,
+            4,
+            5,
+            8,
+            25
+          ],
+          "coset_index": 15241,
+          "name": "encoded_coset_15241",
+          "surrogate": {
+            "s2": 240,
+            "s4": 192,
+            "ten_round_cost": 1968
+          }
+        }
+      ],
+      "circuit": "factor_order_finding(21, 2, 10)",
+      "ranking": "winners",
+      "round_multipliers": [
+        4,
+        16,
+        4,
+        16,
+        4,
+        16,
+        4,
+        16,
+        4,
+        2
+      ]
+    },
+    "two_round": {
+      "admitted_coset_indices": [
+        281,
+        353,
+        15233,
+        15265,
+        308,
+        315,
+        355,
+        15241
+      ],
+      "arms": [
+        "feed_forward",
+        "no_feed_forward"
+      ],
+      "baseline": {
+        "arms": {
+          "feed_forward": {
+            "logical_qubits": 7,
+            "medians": {
+              "depth": 2688.0,
+              "routed_cz": 1107.0,
+              "scheduled_duration_dt": 25734.0
+            },
+            "runs": [
+              {
+                "active_physical_qubits": 7,
+                "depth": 2688,
+                "logical_qubits": 7,
+                "routed_cz": 1107,
+                "scheduled_duration_dt": 25734,
+                "seed_transpiler": 0
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 2688,
+                "logical_qubits": 7,
+                "routed_cz": 1107,
+                "scheduled_duration_dt": 25734,
+                "seed_transpiler": 1
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 2688,
+                "logical_qubits": 7,
+                "routed_cz": 1107,
+                "scheduled_duration_dt": 25734,
+                "seed_transpiler": 2
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 2623,
+                "logical_qubits": 7,
+                "routed_cz": 1026,
+                "scheduled_duration_dt": 23973,
+                "seed_transpiler": 3
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 2688,
+                "logical_qubits": 7,
+                "routed_cz": 1107,
+                "scheduled_duration_dt": 25734,
+                "seed_transpiler": 4
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 2688,
+                "logical_qubits": 7,
+                "routed_cz": 1107,
+                "scheduled_duration_dt": 25734,
+                "seed_transpiler": 5
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 2623,
+                "logical_qubits": 7,
+                "routed_cz": 1023,
+                "scheduled_duration_dt": 24009,
+                "seed_transpiler": 6
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 2701,
+                "logical_qubits": 7,
+                "routed_cz": 1047,
+                "scheduled_duration_dt": 25572,
+                "seed_transpiler": 7
+              }
+            ],
+            "source_operations": {
+              "ccx": 34,
+              "h": 4,
+              "if_else": 1,
+              "measure": 2,
+              "rccx": 100,
+              "reset": 1,
+              "x": 137
+            }
+          },
+          "no_feed_forward": {
+            "logical_qubits": 7,
+            "medians": {
+              "depth": 2684.0,
+              "routed_cz": 1107.0,
+              "scheduled_duration_dt": 25734.0
+            },
+            "runs": [
+              {
+                "active_physical_qubits": 7,
+                "depth": 2684,
+                "logical_qubits": 7,
+                "routed_cz": 1107,
+                "scheduled_duration_dt": 25734,
+                "seed_transpiler": 0
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 2684,
+                "logical_qubits": 7,
+                "routed_cz": 1107,
+                "scheduled_duration_dt": 25734,
+                "seed_transpiler": 1
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 2684,
+                "logical_qubits": 7,
+                "routed_cz": 1107,
+                "scheduled_duration_dt": 25734,
+                "seed_transpiler": 2
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 2624,
+                "logical_qubits": 7,
+                "routed_cz": 1026,
+                "scheduled_duration_dt": 23973,
+                "seed_transpiler": 3
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 2684,
+                "logical_qubits": 7,
+                "routed_cz": 1107,
+                "scheduled_duration_dt": 25734,
+                "seed_transpiler": 4
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 2684,
+                "logical_qubits": 7,
+                "routed_cz": 1107,
+                "scheduled_duration_dt": 25734,
+                "seed_transpiler": 5
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 2624,
+                "logical_qubits": 7,
+                "routed_cz": 1023,
+                "scheduled_duration_dt": 24009,
+                "seed_transpiler": 6
+              },
+              {
+                "active_physical_qubits": 7,
+                "depth": 2699,
+                "logical_qubits": 7,
+                "routed_cz": 1047,
+                "scheduled_duration_dt": 25572,
+                "seed_transpiler": 7
+              }
+            ],
+            "source_operations": {
+              "ccx": 34,
+              "h": 4,
+              "measure": 2,
+              "rccx": 100,
+              "reset": 1,
+              "x": 137
+            }
+          }
+        },
+        "columns": null,
+        "name": "target_flip_one_clean"
+      },
+      "best_admitted": 15265,
+      "challengers": [
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 1970.0,
+                "routed_cz": 810.0,
+                "scheduled_duration_dt": 19107.0
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1970,
+                  "logical_qubits": 7,
+                  "routed_cz": 810,
+                  "scheduled_duration_dt": 19107,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1970,
+                  "logical_qubits": 7,
+                  "routed_cz": 810,
+                  "scheduled_duration_dt": 19107,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1967,
+                  "logical_qubits": 7,
+                  "routed_cz": 818,
+                  "scheduled_duration_dt": 19185,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1970,
+                  "logical_qubits": 7,
+                  "routed_cz": 810,
+                  "scheduled_duration_dt": 19107,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1970,
+                  "logical_qubits": 7,
+                  "routed_cz": 810,
+                  "scheduled_duration_dt": 19107,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1970,
+                  "logical_qubits": 7,
+                  "routed_cz": 810,
+                  "scheduled_duration_dt": 19107,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1970,
+                  "logical_qubits": 7,
+                  "routed_cz": 810,
+                  "scheduled_duration_dt": 19107,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1970,
+                  "logical_qubits": 7,
+                  "routed_cz": 810,
+                  "scheduled_duration_dt": 19107,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 22,
+                "h": 4,
+                "if_else": 1,
+                "measure": 2,
+                "rccx": 80,
+                "reset": 1,
+                "x": 97
+              }
+            },
+            "no_feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 1969.0,
+                "routed_cz": 810.0,
+                "scheduled_duration_dt": 19113.0
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1969,
+                  "logical_qubits": 7,
+                  "routed_cz": 810,
+                  "scheduled_duration_dt": 19113,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1969,
+                  "logical_qubits": 7,
+                  "routed_cz": 810,
+                  "scheduled_duration_dt": 19113,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1966,
+                  "logical_qubits": 7,
+                  "routed_cz": 818,
+                  "scheduled_duration_dt": 19191,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1969,
+                  "logical_qubits": 7,
+                  "routed_cz": 810,
+                  "scheduled_duration_dt": 19113,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1969,
+                  "logical_qubits": 7,
+                  "routed_cz": 810,
+                  "scheduled_duration_dt": 19113,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1969,
+                  "logical_qubits": 7,
+                  "routed_cz": 810,
+                  "scheduled_duration_dt": 19113,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1969,
+                  "logical_qubits": 7,
+                  "routed_cz": 810,
+                  "scheduled_duration_dt": 19113,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1969,
+                  "logical_qubits": 7,
+                  "routed_cz": 810,
+                  "scheduled_duration_dt": 19113,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 22,
+                "h": 4,
+                "measure": 2,
+                "rccx": 80,
+                "reset": 1,
+                "x": 97
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "initial_value": 1,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            1,
+            2,
+            5,
+            13,
+            25
+          ],
+          "coset_index": 281,
+          "name": "encoded_coset_281",
+          "surrogate": {
+            "s2": 222,
+            "s4": 186,
+            "ten_round_cost": 1896
+          }
+        },
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 1946.0,
+                "routed_cz": 763.0,
+                "scheduled_duration_dt": 18402.0
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1946,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1946,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1946,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1946,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1946,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1946,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1946,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1946,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 22,
+                "h": 4,
+                "if_else": 1,
+                "measure": 2,
+                "rccx": 80,
+                "reset": 1,
+                "x": 85
+              }
+            },
+            "no_feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 1947.0,
+                "routed_cz": 763.0,
+                "scheduled_duration_dt": 18402.0
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1947,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1947,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1947,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1947,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1947,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1947,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1947,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1947,
+                  "logical_qubits": 7,
+                  "routed_cz": 763,
+                  "scheduled_duration_dt": 18402,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 22,
+                "h": 4,
+                "measure": 2,
+                "rccx": 80,
+                "reset": 1,
+                "x": 85
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "initial_value": 1,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            1,
+            2,
+            5,
+            20,
+            25
+          ],
+          "coset_index": 353,
+          "name": "encoded_coset_353",
+          "surrogate": {
+            "s2": 258,
+            "s4": 186,
+            "ten_round_cost": 1932
+          }
+        },
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 1890.0,
+                "routed_cz": 770.5,
+                "scheduled_duration_dt": 18115.5
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1890,
+                  "logical_qubits": 7,
+                  "routed_cz": 794,
+                  "scheduled_duration_dt": 18012,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1873,
+                  "logical_qubits": 7,
+                  "routed_cz": 783,
+                  "scheduled_duration_dt": 18219,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1890,
+                  "logical_qubits": 7,
+                  "routed_cz": 794,
+                  "scheduled_duration_dt": 18012,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1887,
+                  "logical_qubits": 7,
+                  "routed_cz": 758,
+                  "scheduled_duration_dt": 18336,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1906,
+                  "logical_qubits": 7,
+                  "routed_cz": 756,
+                  "scheduled_duration_dt": 18564,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1895,
+                  "logical_qubits": 7,
+                  "routed_cz": 756,
+                  "scheduled_duration_dt": 18444,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1858,
+                  "logical_qubits": 7,
+                  "routed_cz": 745,
+                  "scheduled_duration_dt": 17964,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1890,
+                  "logical_qubits": 7,
+                  "routed_cz": 794,
+                  "scheduled_duration_dt": 18012,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 24,
+                "h": 4,
+                "if_else": 1,
+                "measure": 2,
+                "rccx": 76,
+                "reset": 1,
+                "x": 90
+              }
+            },
+            "no_feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 1886.0,
+                "routed_cz": 770.5,
+                "scheduled_duration_dt": 18115.5
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1886,
+                  "logical_qubits": 7,
+                  "routed_cz": 794,
+                  "scheduled_duration_dt": 18012,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1873,
+                  "logical_qubits": 7,
+                  "routed_cz": 783,
+                  "scheduled_duration_dt": 18219,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1886,
+                  "logical_qubits": 7,
+                  "routed_cz": 794,
+                  "scheduled_duration_dt": 18012,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1887,
+                  "logical_qubits": 7,
+                  "routed_cz": 758,
+                  "scheduled_duration_dt": 18336,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1906,
+                  "logical_qubits": 7,
+                  "routed_cz": 756,
+                  "scheduled_duration_dt": 18564,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1895,
+                  "logical_qubits": 7,
+                  "routed_cz": 756,
+                  "scheduled_duration_dt": 18444,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1856,
+                  "logical_qubits": 7,
+                  "routed_cz": 745,
+                  "scheduled_duration_dt": 17964,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1886,
+                  "logical_qubits": 7,
+                  "routed_cz": 794,
+                  "scheduled_duration_dt": 18012,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 24,
+                "h": 4,
+                "measure": 2,
+                "rccx": 76,
+                "reset": 1,
+                "x": 90
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "initial_value": 6,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            2,
+            4,
+            5,
+            8,
+            17
+          ],
+          "coset_index": 15233,
+          "name": "encoded_coset_15233",
+          "surrogate": {
+            "s2": 270,
+            "s4": 186,
+            "ten_round_cost": 1944
+          }
+        },
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 1839.0,
+                "routed_cz": 739.0,
+                "scheduled_duration_dt": 17607.0
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1839,
+                  "logical_qubits": 7,
+                  "routed_cz": 739,
+                  "scheduled_duration_dt": 17607,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1853,
+                  "logical_qubits": 7,
+                  "routed_cz": 744,
+                  "scheduled_duration_dt": 17583,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1839,
+                  "logical_qubits": 7,
+                  "routed_cz": 739,
+                  "scheduled_duration_dt": 17607,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1839,
+                  "logical_qubits": 7,
+                  "routed_cz": 739,
+                  "scheduled_duration_dt": 17607,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1867,
+                  "logical_qubits": 7,
+                  "routed_cz": 724,
+                  "scheduled_duration_dt": 17697,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1847,
+                  "logical_qubits": 7,
+                  "routed_cz": 745,
+                  "scheduled_duration_dt": 17727,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1811,
+                  "logical_qubits": 7,
+                  "routed_cz": 713,
+                  "scheduled_duration_dt": 17634,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1837,
+                  "logical_qubits": 7,
+                  "routed_cz": 735,
+                  "scheduled_duration_dt": 17505,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 24,
+                "h": 4,
+                "if_else": 1,
+                "measure": 2,
+                "rccx": 76,
+                "reset": 1,
+                "x": 98
+              }
+            },
+            "no_feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 1838.0,
+                "routed_cz": 739.0,
+                "scheduled_duration_dt": 17607.0
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1838,
+                  "logical_qubits": 7,
+                  "routed_cz": 739,
+                  "scheduled_duration_dt": 17607,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1854,
+                  "logical_qubits": 7,
+                  "routed_cz": 744,
+                  "scheduled_duration_dt": 17583,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1838,
+                  "logical_qubits": 7,
+                  "routed_cz": 739,
+                  "scheduled_duration_dt": 17607,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1838,
+                  "logical_qubits": 7,
+                  "routed_cz": 739,
+                  "scheduled_duration_dt": 17607,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1868,
+                  "logical_qubits": 7,
+                  "routed_cz": 724,
+                  "scheduled_duration_dt": 17697,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1846,
+                  "logical_qubits": 7,
+                  "routed_cz": 745,
+                  "scheduled_duration_dt": 17727,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1810,
+                  "logical_qubits": 7,
+                  "routed_cz": 713,
+                  "scheduled_duration_dt": 17634,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1836,
+                  "logical_qubits": 7,
+                  "routed_cz": 735,
+                  "scheduled_duration_dt": 17505,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 24,
+                "h": 4,
+                "measure": 2,
+                "rccx": 76,
+                "reset": 1,
+                "x": 98
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "initial_value": 6,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            2,
+            4,
+            5,
+            10,
+            17
+          ],
+          "coset_index": 15265,
+          "name": "encoded_coset_15265",
+          "surrogate": {
+            "s2": 276,
+            "s4": 186,
+            "ten_round_cost": 1950
+          }
+        },
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 1986.5,
+                "routed_cz": 784.5,
+                "scheduled_duration_dt": 18933.0
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1955,
+                  "logical_qubits": 7,
+                  "routed_cz": 768,
+                  "scheduled_duration_dt": 18312,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1956,
+                  "logical_qubits": 7,
+                  "routed_cz": 765,
+                  "scheduled_duration_dt": 18540,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2017,
+                  "logical_qubits": 7,
+                  "routed_cz": 812,
+                  "scheduled_duration_dt": 19326,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1953,
+                  "logical_qubits": 7,
+                  "routed_cz": 772,
+                  "scheduled_duration_dt": 18285,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2017,
+                  "logical_qubits": 7,
+                  "routed_cz": 812,
+                  "scheduled_duration_dt": 19326,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2050,
+                  "logical_qubits": 7,
+                  "routed_cz": 812,
+                  "scheduled_duration_dt": 19731,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1949,
+                  "logical_qubits": 7,
+                  "routed_cz": 767,
+                  "scheduled_duration_dt": 18399,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2073,
+                  "logical_qubits": 7,
+                  "routed_cz": 797,
+                  "scheduled_duration_dt": 19980,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 22,
+                "h": 4,
+                "if_else": 1,
+                "measure": 2,
+                "rccx": 80,
+                "reset": 1,
+                "x": 105
+              }
+            },
+            "no_feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 1985.0,
+                "routed_cz": 784.5,
+                "scheduled_duration_dt": 18933.0
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1954,
+                  "logical_qubits": 7,
+                  "routed_cz": 768,
+                  "scheduled_duration_dt": 18312,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1953,
+                  "logical_qubits": 7,
+                  "routed_cz": 765,
+                  "scheduled_duration_dt": 18540,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2016,
+                  "logical_qubits": 7,
+                  "routed_cz": 812,
+                  "scheduled_duration_dt": 19326,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1952,
+                  "logical_qubits": 7,
+                  "routed_cz": 772,
+                  "scheduled_duration_dt": 18285,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2016,
+                  "logical_qubits": 7,
+                  "routed_cz": 812,
+                  "scheduled_duration_dt": 19326,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2050,
+                  "logical_qubits": 7,
+                  "routed_cz": 812,
+                  "scheduled_duration_dt": 19731,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1949,
+                  "logical_qubits": 7,
+                  "routed_cz": 767,
+                  "scheduled_duration_dt": 18399,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2068,
+                  "logical_qubits": 7,
+                  "routed_cz": 797,
+                  "scheduled_duration_dt": 19980,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 22,
+                "h": 4,
+                "measure": 2,
+                "rccx": 80,
+                "reset": 1,
+                "x": 105
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 186
+            },
+            "initial_value": 1,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            1,
+            2,
+            5,
+            15,
+            20
+          ],
+          "coset_index": 308,
+          "name": "encoded_coset_308",
+          "surrogate": {
+            "s2": 294,
+            "s4": 186,
+            "ten_round_cost": 1968
+          }
+        },
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 1961.5,
+                "routed_cz": 761.5,
+                "scheduled_duration_dt": 18676.5
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1962,
+                  "logical_qubits": 7,
+                  "routed_cz": 757,
+                  "scheduled_duration_dt": 18243,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1961,
+                  "logical_qubits": 7,
+                  "routed_cz": 750,
+                  "scheduled_duration_dt": 18648,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1961,
+                  "logical_qubits": 7,
+                  "routed_cz": 750,
+                  "scheduled_duration_dt": 18648,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1996,
+                  "logical_qubits": 7,
+                  "routed_cz": 766,
+                  "scheduled_duration_dt": 19137,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1977,
+                  "logical_qubits": 7,
+                  "routed_cz": 772,
+                  "scheduled_duration_dt": 18996,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1963,
+                  "logical_qubits": 7,
+                  "routed_cz": 782,
+                  "scheduled_duration_dt": 18321,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1955,
+                  "logical_qubits": 7,
+                  "routed_cz": 769,
+                  "scheduled_duration_dt": 18708,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1957,
+                  "logical_qubits": 7,
+                  "routed_cz": 751,
+                  "scheduled_duration_dt": 18705,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 24,
+                "h": 4,
+                "if_else": 1,
+                "measure": 2,
+                "rccx": 80,
+                "reset": 1,
+                "x": 101
+              }
+            },
+            "no_feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 1957.5,
+                "routed_cz": 761.5,
+                "scheduled_duration_dt": 18676.5
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1963,
+                  "logical_qubits": 7,
+                  "routed_cz": 757,
+                  "scheduled_duration_dt": 18243,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1953,
+                  "logical_qubits": 7,
+                  "routed_cz": 750,
+                  "scheduled_duration_dt": 18648,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1953,
+                  "logical_qubits": 7,
+                  "routed_cz": 750,
+                  "scheduled_duration_dt": 18648,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1991,
+                  "logical_qubits": 7,
+                  "routed_cz": 766,
+                  "scheduled_duration_dt": 19137,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1974,
+                  "logical_qubits": 7,
+                  "routed_cz": 772,
+                  "scheduled_duration_dt": 18996,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1962,
+                  "logical_qubits": 7,
+                  "routed_cz": 782,
+                  "scheduled_duration_dt": 18321,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1951,
+                  "logical_qubits": 7,
+                  "routed_cz": 769,
+                  "scheduled_duration_dt": 18708,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1949,
+                  "logical_qubits": 7,
+                  "routed_cz": 751,
+                  "scheduled_duration_dt": 18705,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 24,
+                "h": 4,
+                "measure": 2,
+                "rccx": 80,
+                "reset": 1,
+                "x": 101
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 192
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 192
+            },
+            "initial_value": 1,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            1,
+            2,
+            5,
+            15,
+            27
+          ],
+          "coset_index": 315,
+          "name": "encoded_coset_315",
+          "surrogate": {
+            "s2": 222,
+            "s4": 192,
+            "ten_round_cost": 1950
+          }
+        },
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 2010.5,
+                "routed_cz": 777.0,
+                "scheduled_duration_dt": 19126.5
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2019,
+                  "logical_qubits": 7,
+                  "routed_cz": 803,
+                  "scheduled_duration_dt": 19014,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2007,
+                  "logical_qubits": 7,
+                  "routed_cz": 768,
+                  "scheduled_duration_dt": 19101,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2007,
+                  "logical_qubits": 7,
+                  "routed_cz": 768,
+                  "scheduled_duration_dt": 19101,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2005,
+                  "logical_qubits": 7,
+                  "routed_cz": 778,
+                  "scheduled_duration_dt": 19173,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2014,
+                  "logical_qubits": 7,
+                  "routed_cz": 778,
+                  "scheduled_duration_dt": 19245,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2026,
+                  "logical_qubits": 7,
+                  "routed_cz": 793,
+                  "scheduled_duration_dt": 18912,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2028,
+                  "logical_qubits": 7,
+                  "routed_cz": 776,
+                  "scheduled_duration_dt": 19377,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2005,
+                  "logical_qubits": 7,
+                  "routed_cz": 769,
+                  "scheduled_duration_dt": 19152,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 24,
+                "h": 4,
+                "if_else": 1,
+                "measure": 2,
+                "rccx": 80,
+                "reset": 1,
+                "x": 85
+              }
+            },
+            "no_feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 2008.5,
+                "routed_cz": 777.0,
+                "scheduled_duration_dt": 19126.5
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2019,
+                  "logical_qubits": 7,
+                  "routed_cz": 803,
+                  "scheduled_duration_dt": 19014,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1999,
+                  "logical_qubits": 7,
+                  "routed_cz": 768,
+                  "scheduled_duration_dt": 19101,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1999,
+                  "logical_qubits": 7,
+                  "routed_cz": 768,
+                  "scheduled_duration_dt": 19101,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2004,
+                  "logical_qubits": 7,
+                  "routed_cz": 778,
+                  "scheduled_duration_dt": 19173,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2013,
+                  "logical_qubits": 7,
+                  "routed_cz": 778,
+                  "scheduled_duration_dt": 19245,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2026,
+                  "logical_qubits": 7,
+                  "routed_cz": 793,
+                  "scheduled_duration_dt": 18912,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 2021,
+                  "logical_qubits": 7,
+                  "routed_cz": 776,
+                  "scheduled_duration_dt": 19377,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1997,
+                  "logical_qubits": 7,
+                  "routed_cz": 769,
+                  "scheduled_duration_dt": 19152,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 24,
+                "h": 4,
+                "measure": 2,
+                "rccx": 80,
+                "reset": 1,
+                "x": 85
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 192
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 192
+            },
+            "initial_value": 1,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            1,
+            2,
+            5,
+            20,
+            27
+          ],
+          "coset_index": 355,
+          "name": "encoded_coset_355",
+          "surrogate": {
+            "s2": 234,
+            "s4": 192,
+            "ten_round_cost": 1962
+          }
+        },
+        {
+          "admission": {
+            "clauses": {
+              "every_seed_no_worse_in_cz_depth_duration": true,
+              "logical_equivalence_and_workspace_checks_pass": true,
+              "logical_qubits_not_increased": true,
+              "median_routed_cz_strictly_lower": true,
+              "shared_dynamic_skeleton": true
+            },
+            "per_seed_regressions": [],
+            "verdict": "admitted"
+          },
+          "arms": {
+            "feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 1905.0,
+                "routed_cz": 762.0,
+                "scheduled_duration_dt": 17938.5
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1930,
+                  "logical_qubits": 7,
+                  "routed_cz": 762,
+                  "scheduled_duration_dt": 18474,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1852,
+                  "logical_qubits": 7,
+                  "routed_cz": 755,
+                  "scheduled_duration_dt": 17481,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1935,
+                  "logical_qubits": 7,
+                  "routed_cz": 776,
+                  "scheduled_duration_dt": 18336,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1848,
+                  "logical_qubits": 7,
+                  "routed_cz": 753,
+                  "scheduled_duration_dt": 17379,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1852,
+                  "logical_qubits": 7,
+                  "routed_cz": 755,
+                  "scheduled_duration_dt": 17481,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1893,
+                  "logical_qubits": 7,
+                  "routed_cz": 769,
+                  "scheduled_duration_dt": 17622,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1917,
+                  "logical_qubits": 7,
+                  "routed_cz": 762,
+                  "scheduled_duration_dt": 18255,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1948,
+                  "logical_qubits": 7,
+                  "routed_cz": 768,
+                  "scheduled_duration_dt": 18690,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 24,
+                "h": 4,
+                "if_else": 1,
+                "measure": 2,
+                "rccx": 80,
+                "reset": 1,
+                "x": 102
+              }
+            },
+            "no_feed_forward": {
+              "logical_qubits": 7,
+              "medians": {
+                "depth": 1905.0,
+                "routed_cz": 762.0,
+                "scheduled_duration_dt": 17938.5
+              },
+              "runs": [
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1930,
+                  "logical_qubits": 7,
+                  "routed_cz": 762,
+                  "scheduled_duration_dt": 18474,
+                  "seed_transpiler": 0
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1847,
+                  "logical_qubits": 7,
+                  "routed_cz": 755,
+                  "scheduled_duration_dt": 17481,
+                  "seed_transpiler": 1
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1935,
+                  "logical_qubits": 7,
+                  "routed_cz": 776,
+                  "scheduled_duration_dt": 18336,
+                  "seed_transpiler": 2
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1843,
+                  "logical_qubits": 7,
+                  "routed_cz": 753,
+                  "scheduled_duration_dt": 17379,
+                  "seed_transpiler": 3
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1847,
+                  "logical_qubits": 7,
+                  "routed_cz": 755,
+                  "scheduled_duration_dt": 17481,
+                  "seed_transpiler": 4
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1894,
+                  "logical_qubits": 7,
+                  "routed_cz": 769,
+                  "scheduled_duration_dt": 17622,
+                  "seed_transpiler": 5
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1916,
+                  "logical_qubits": 7,
+                  "routed_cz": 762,
+                  "scheduled_duration_dt": 18255,
+                  "seed_transpiler": 6
+                },
+                {
+                  "active_physical_qubits": 7,
+                  "depth": 1948,
+                  "logical_qubits": 7,
+                  "routed_cz": 768,
+                  "scheduled_duration_dt": 18690,
+                  "seed_transpiler": 7
+                }
+              ],
+              "source_operations": {
+                "ccx": 24,
+                "h": 4,
+                "measure": 2,
+                "rccx": 80,
+                "reset": 1,
+                "x": 102
+              }
+            }
+          },
+          "checks": {
+            "16": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 192
+            },
+            "4": {
+              "conjugation_exhaustive": true,
+              "controlled_network_both_branches_clean_workspace": true,
+              "cx_surrogate": 192
+            },
+            "initial_value": 6,
+            "pass": true,
+            "sampled_phase_total_variation": 0.0
+          },
+          "columns": [
+            2,
+            4,
+            5,
+            8,
+            25
+          ],
+          "coset_index": 15241,
+          "name": "encoded_coset_15241",
+          "surrogate": {
+            "s2": 240,
+            "s4": 192,
+            "ten_round_cost": 1968
+          }
+        }
+      ],
+      "circuit": "factor_order_finding(21, 4, 2)",
+      "ranking": "s4_winners",
+      "round_multipliers": [
+        16,
+        4
+      ]
+    }
+  },
+  "qpu_executed": false,
+  "replay_command": "\"$PYTHON\" gororoba_quantum/linear_conjugation_challenger.py --search docs/evidence/linear_conjugation/search.json --out results/kaggle_out/n21_linear_conjugation_challenger.json",
+  "rule": "admit a coset only when its equivalence and workspace checks pass, the dynamic skeleton matches, logical qubits do not increase, every seed of every arm is no worse in routed CZ, depth, and scheduled duration, and the median routed CZ is strictly lower on every arm",
+  "sampled_phase_check": {
+    "seed": 7,
+    "shots": 4000,
+    "total_variation_bound": 0.02
+  },
+  "schema_version": 2,
+  "search_record_sha256": "910f86c8f0631fa59e560d49ff479fb4aacce65765bf7b2f2b2b84e0a9058df3",
+  "source_files_sha256": {
+    "gororoba_quantum/compile_evidence.py": "f07e02204118623c79c6e99507f66f6320761ed704a219ee301f234547612635",
+    "gororoba_quantum/linear_conjugation_challenger.py": "b694a775a228fe71f321433b3c9e0174cab40e0cf356464c9aee2b2fc4abe1ed",
+    "gororoba_quantum/live_run.py": "ae359c9daf222b80fc08f556ed6c1c5179f49179f561b585dc60f2136128dcc6",
+    "gororoba_quantum/modular_arithmetic.py": "bb402d6c57b0d81fb3c53fee30e0c7764028aad3117b967d9670508b35b54725",
+    "gororoba_quantum/order_finding.py": "ef4661fe5e1fce3695ab56d22585aee8f2aae800828d7ae217aac047d619f412",
+    "gororoba_quantum/target_flip.py": "a609d56f188bca8b686c326964900dad9fd5312d1168adb0917e2e902b0e5fdc",
+    "requirements.txt": "e6e01e231c9c91dc77f5d5a30594760f6b0732d8c904d13654c327e24a5974eb",
+    "scripts/linear_conjugation_search.py": "8c057fcd810192b36b2b3ccd2ac55b49abd4cf9f4143e0bcf260e8af47b2cbcc"
+  }
+}

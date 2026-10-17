@@ -1,0 +1,15 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-aer-gpu-probe/1",
+ "state": "ERROR",
+ "collected_utc": "2026-10-16T204346Z",
+ "files": {
+  "gororoba-aer-gpu-probe.log": "0bbe87da21776adc38b2c4968ba8eb33c40bdc438ee9a3ec5570b6d2f4946dcc",
+  "output/environment.json": "b152ec69832a19db61315cd4ddd94172e042ad28804754288213b634c8e932ef",
+  "output/exit.json": "2d8cacad1acc05c33043db6787480685b54d79883398ef600d25d6806e5c8839",
+  "output/hypercomplex.json": "3278a8b238b6688b28ac456e715df507f0663f3d26bda261b81ea2a162fa0db1",
+  "output/pip.txt": "7326b74e69dbc94a6d60b1ef55000473148fee460147b3bf4b9b5c0c9a4a5b2f",
+  "output/stderr.txt": "7f4266f8f67313968f74434192662ba329b4be193ab9db53c12dabe0ac4d7869",
+  "output/stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ }
+}
