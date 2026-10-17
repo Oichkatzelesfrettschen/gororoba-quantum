@@ -2984,6 +2984,62 @@
    "name": "core-404",
    "seconds": 0.9,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error dynamic_density.py --self-test && \"$PYTHON\" -B -O -W error dynamic_density.py --self-test",
+   "name": "core-480",
+   "seconds": 20.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_model_validation.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_exact_model_validation.py --self-test",
+   "name": "core-481",
+   "seconds": 40.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error n21_exact_planning.py && \"$PYTHON\" -B -O -W error n21_exact_planning.py",
+   "name": "core-482",
+   "seconds": 15.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_replica_covariance.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_replica_covariance.py --self-test",
+   "name": "core-483",
+   "seconds": 4.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_usage_budget.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_usage_budget.py --check gororoba_quantum/N21_USAGE_BUDGET.md",
+   "name": "core-484",
+   "seconds": 16.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_model_validation.py --check docs/evidence/n21_exact_model/validation.json",
+   "name": "core-485",
+   "seconds": 25.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error replica_covariance_contracts.py && \"$PYTHON\" -B -O -W error replica_covariance_contracts.py",
+   "name": "core-486",
+   "seconds": 12.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

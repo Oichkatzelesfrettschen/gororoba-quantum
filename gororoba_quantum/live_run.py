@@ -68,7 +68,7 @@ import placement_feasibility
 import qpu_planning
 import variance
 from coherence_window import COHERENCE_PRECISION
-from diagnostic_experiments import FAMILY_NAMES, PATCH_FAMILIES, record_groups
+from diagnostic_experiments import FAMILY_NAMES, N21_FAMILIES, PATCH_FAMILIES, record_groups
 from experiments import (
     MIRROR_SUFFIX,
     Group,
@@ -127,15 +127,18 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "correction_statistics.py",
     "designs.py",
     "diagnostic_experiments.py",
+    "dynamic_density.py",
     "experiment_optimizer.py",
     "experiments.py",
     "factoring.py",
     "hybrid_shor.py",
     "integral_homology.py",
+    "jax_bridge.py",
     "live_run.py",
     "local_compute.py",
     "maximal_experiments.py",
     "modular_arithmetic.py",
+    "n21_exact_planning.py",
     "native_preflight.py",
     "order_finding.py",
     "packing.py",
@@ -4881,12 +4884,18 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             for name, distributions in family_measured.items()
         }
     if record.get("observable_contracts") or correction_family:
+        # A declared covariance bound is tested on the shot-ordered registers
+        # write_raw_result retained above, the bytes a replay reads.
+        bounded_pubs = {bound["pub_name"] for bound in record.get("covariance_bounds", [])}
         out[0]["family_analysis"] = qpu_planning.measured_family(
             record,
             family_measured,
             family_executed,
             sys.modules[__name__],
             correction_evidence=correction_evidence if correction_family else None,
+            replica_registers=(
+                qpu_planning.n21_exact_planning.retained_registers(run_dir, bounded_pubs) if bounded_pubs else None
+            ),
         )
     out[0]["invocation_usage"] = invocation_usage(record, jobs_out)
     checkpoint(out, final=True)
@@ -5038,6 +5047,19 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--model-shots", type=_positive_int, default=32768)
     parser.add_argument(
+        "--model-method",
+        choices=("sampled", "exact"),
+        default="sampled",
+        help="exact plans an N21 family on dynamic_density's branch-resolved law, validated against "
+        "--model-shots sampled shots; sampled keeps the finite-simulation allowance",
+    )
+    parser.add_argument(
+        "--replica-variance-bound",
+        type=float,
+        help="declared per-replica score variance bound with independent replicas (N21 families); "
+        "the planner applies it through Cantelli or Chebyshev and the collector after its falsifier passes",
+    )
+    parser.add_argument(
         "--precision",
         type=float,
         help="simultaneous half-width for family precision endpoints; default 0.08, and "
@@ -5181,6 +5203,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
     if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
         parser.error("the folded family uses one fixed physical placement per candidate; --max-replicas must be 1")
+    if (args.model_method != "sampled" or args.replica_variance_bound is not None) and (
+        args.family not in N21_FAMILIES
+    ):
+        parser.error("--model-method exact and --replica-variance-bound apply to the N21 families only")
     if args.patch_qubits is not None and args.family not in PATCH_FAMILIES:
         parser.error("--patch-qubits applies to the pinned-patch families only")
     if args.family in PATCH_FAMILIES and args.max_replicas not in (None, 1):
