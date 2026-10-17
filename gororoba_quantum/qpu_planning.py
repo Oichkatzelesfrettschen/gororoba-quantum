@@ -675,8 +675,14 @@ def family_candidates(
     return candidates
 
 
-def repetition_delay(backend: Any) -> float:
-    """Read seconds from the SDK attribute; configuration.to_dict uses wire microseconds."""
+def repetition_delay(backend: Any, requested: float | None = None) -> float:
+    """The repetition delay in seconds a job on backend runs at: requested, or the backend default.
+
+    The SDK attributes carry seconds; configuration.to_dict uses wire
+    microseconds. A requested value must lie in rep_delay_range, which IBM's
+    repetition-rate guide names the supported interval and which changes
+    over time, so every caller reads it from a fresh configuration.
+    """
     configuration = backend.configuration()
     value = getattr(configuration, "default_rep_delay", None)
     interval = getattr(configuration, "rep_delay_range", None)
@@ -690,7 +696,33 @@ def repetition_delay(backend: Any) -> float:
         or not interval[0] <= value <= interval[1]
     ):
         raise ValueError("cost planning requires a valid backend default repetition delay in seconds")
-    return float(value)
+    if requested is None:
+        return float(value)
+    low, high = float(interval[0]), float(interval[1])
+    if not math.isfinite(requested) or not low <= requested <= high:
+        raise ValueError(f"repetition delay {requested} s lies outside the backend range [{low}, {high}] s")
+    return float(requested)
+
+
+def repetition_delay_range(backend: Any) -> list[float] | None:
+    """backend's rep_delay_range in seconds, or None for a fixed repetition rate."""
+    configuration = backend.configuration()
+    interval = getattr(configuration, "rep_delay_range", None)
+    if not getattr(configuration, "dynamic_reprate_enabled", False) or interval is None or len(interval) != 2:
+        return None
+    return [float(interval[0]), float(interval[1])]
+
+
+def repetition_delay_violations(backend: Any, requested: float, planned_range: list[float] | None) -> list[str]:
+    """Why requested cannot run on backend's fresh configuration, or why its allowed range moved since planning."""
+    try:
+        repetition_delay(backend, requested)
+    except (ValueError, AttributeError) as error:
+        return [f"repetition delay: {error}"]
+    current = repetition_delay_range(backend)
+    if planned_range is not None and current != planned_range:
+        return [f"repetition delay range moved from {planned_range} s to {current} s since planning"]
+    return []
 
 
 def execution_contract(choices: list[Any], record: dict[str, Any]) -> dict[str, Any]:
@@ -705,6 +737,7 @@ def execution_contract(choices: list[Any], record: dict[str, Any]) -> dict[str, 
         ),
         {},
     )
+    requested = record.get("policy", {}).get("rep_delay_seconds")
     return {
         "backends": [
             {
@@ -712,6 +745,18 @@ def execution_contract(choices: list[Any], record: dict[str, Any]) -> dict[str, 
                 "repetition_delay_seconds": repetition_delay(backend)
                 if getattr(backend.configuration(), "dynamic_reprate_enabled", False)
                 else None,
+            }
+            if requested is None
+            else {
+                # A requested delay binds its value and the range it was admitted
+                # in, so a moved range differs from the approved contract.
+                "name": name,
+                "repetition_delay_seconds": requested,
+                "repetition_delay_source": "--rep-delay",
+                "default_repetition_delay_seconds": repetition_delay(backend)
+                if getattr(backend.configuration(), "dynamic_reprate_enabled", False)
+                else None,
+                "repetition_delay_range_seconds": repetition_delay_range(backend),
             }
             for name, backend in sorted(backends.items())
         ],
@@ -849,7 +894,9 @@ def prepare(
                                         for component in pub.components
                                     },
                                     scheduled_seconds=runtime.duration_s(pub.circuit, backend.target),
-                                    repetition_delay_seconds=repetition_delay(backend),
+                                    repetition_delay_seconds=repetition_delay(
+                                        backend, getattr(args, "rep_delay", None)
+                                    ),
                                     classical_latency_seconds=manifest["sequential_stage_count"]
                                     * args.classical_latency_us
                                     * 1e-6,
