@@ -95,15 +95,26 @@ p-adic solution.
 ## Parallelism and BLAS threads
 
 `gororoba_quantum/parallel.py` runs independent items on a spawn process
-pool sized to the CPUs the process may use. BLAS inside each worker picks
-its own thread count: AOCL-BLAS (BLIS) on the build host reports one thread,
-while OpenBLAS on CI and Kaggle defaults to every CPU. *Inferred:* a pool of
-N workers each running an N-thread OpenBLAS oversubscribes the CPUs, which
-fits the cross-check's `--check` running slower with
-`GOROROBA_WORKERS=2` (56.8 s) than serially (about 44 s). The probe that
-decides it times a BLAS-heavy gate under OpenBLAS with and without
-`threadpoolctl.threadpool_limits(1)` (or `OPENBLAS_NUM_THREADS=1`) in the
-pool initializer.
+pool sized to the CPUs the process may use. OpenBLAS (CI and Kaggle) and
+OpenMP start one thread per CPU in every process unless
+`OPENBLAS_NUM_THREADS` and `OMP_NUM_THREADS` say otherwise, so a pool of N
+workers asks for N times the CPUs' threads; AOCL-BLAS (BLIS) on the build
+host reports one thread. Measured on the build host (12 logical CPUs) under
+CI's OpenBLAS 0.3.34, the n21 cross-check replay (core-487) with six workers:
+
+| BLAS threads per worker | seconds |
+|---|---|
+| per-CPU default (12) | 65 to 99 |
+| 2 | 60 to 102 |
+| 1 | 9 to 11 on a lightly loaded host; 36 to 52 at load averages of 35 to 85 |
+
+One thread per worker is fastest because the matrices (128 x 128 for seven
+qubits) are too small to repay BLAS threading: the pool is the parallelism.
+`parallel.ordered_map` therefore sets the BLAS and OpenMP thread variables
+to 1 while it spawns workers, keeps any value the caller set, and leaves the
+calling process's own settings alone (gate core-520). A serial run
+(`GOROROBA_WORKERS=1`) keeps the libraries' defaults, where a single large
+BLAS call can use every CPU.
 
 ## Runtime packages
 
