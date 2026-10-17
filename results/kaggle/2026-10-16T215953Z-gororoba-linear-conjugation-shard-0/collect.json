@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-linear-conjugation-shard-0/2",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T222946Z",
+ "files": {
+  "gororoba-linear-conjugation-shard-0.log": "8ee8079ec71294036f3794bb9e2bceade6d3d910f261c5914b09da21cfbf52d3",
+  "output/environment.json": "18cff4e7c857457288d1c2067c40b48b3f0013b6a3215fd873335aaaf7349034",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "57cca7593ea9c96548cd5929de8ac77230417df744cef6eab11ac9120064efc5",
+  "output/pip.txt": "8083f04684f75ded5946df906fff8f4e19290d16e772f954c3d1cfa9388a1ff7",
+  "output/repo/results/kaggle_out/linear_conjugation_shard_0.json": "29e76850fce052e6d6390836b11a1635dc3ea0569b4e3e993347155ee026217d",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "1852f2ca1a4b385d1876979d8714a36148648e42c6d7c11ed786743e2db0a0ec"
+ }
+}

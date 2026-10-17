@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-n21-conjugation-noise-marrakesh/1",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T204839Z",
+ "files": {
+  "gororoba-n21-conjugation-noise-marrakesh.log": "65dff97b637f3c48596e024f67b3d6faed0ebab24b1f017854a4de191ba4ae17",
+  "output/environment.json": "0dfaa45dd20e8f8e10ddff6147b4c037f1a4de3f8c9d1fdbf549e86201cd4ae3",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "af7ea0866d806bac02bc4ce048ebbcbd1e0e96032119c8d60a47d3d1c3ddfda0",
+  "output/pip.txt": "e58599b12fedfb95d3c463d12061627bf3ad85aaca07ef7af485e398ece35695",
+  "output/repo/results/kaggle_out/n21_conjugation_noise_marrakesh.json": "a6cd610db2509f663f3fa289c9d2c0a321ad1c3d25684510c88f2c39c68e10b6",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "4cbfb238690a0b890c81e6d6d12e8967aa98fb0b6063f417e78b4ff53c805aa2"
+ }
+}

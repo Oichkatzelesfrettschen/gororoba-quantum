@@ -193,10 +193,30 @@ def aer_device() -> str:
     return device
 
 
-def noise_simulator(snapshot: dict[str, Any], device: str = "CPU") -> AerSimulator:
-    """Density-matrix AerSimulator with live_run.noise_simulator's noise, rebuilt from the snapshot."""
+# Aer's batched_shots_gpu runs many noisy shots in one GPU kernel launch and
+# spreads them over every visible GPU; Aer applies it only to circuits of at
+# most this many active qubits (its batched_shots_gpu_max_qubits default).
+BATCHED_SHOTS_MAX_QUBITS = 16
+
+
+def noise_simulator(
+    snapshot: dict[str, Any], device: str = "CPU", method: str = "density_matrix", batched_shots: bool = False
+) -> AerSimulator:
+    """AerSimulator with live_run.noise_simulator's noise, rebuilt from the snapshot.
+
+    method "density_matrix" evolves the channel exactly per shot; "statevector"
+    samples trajectories of the same channel. batched_shots enables Aer's
+    batched_shots_gpu on a GPU device and is ignored on the CPU; a seeded
+    batched run draws different samples than an unbatched one, so a record
+    states which sampler produced its counts. qiskit-aer-gpu-cu11 0.17.2
+    aborts a batched run of a circuit with control flow (its if_else lowers
+    to jump), so only static circuits batch (results/kaggle aer-gpu-probe).
+    """
     view, noise = noise_model(snapshot)
-    return AerSimulator.from_backend(view, noise_model=noise, method="density_matrix", device=device)
+    options: dict[str, Any] = {}
+    if device == "GPU" and batched_shots:
+        options = {"batched_shots_gpu": True, "batched_shots_gpu_max_qubits": BATCHED_SHOTS_MAX_QUBITS}
+    return AerSimulator.from_backend(view, noise_model=noise, method=method, device=device, **options)
 
 
 def channel_table(noise: NoiseModel) -> dict[str, Any]:

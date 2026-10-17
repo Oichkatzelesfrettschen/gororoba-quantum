@@ -17,7 +17,18 @@ from qiskit.quantum_info import Operator, Statevector
 from qiskit_aer import AerSimulator
 
 from factoring import MultiplierResource, OrderFindingPlan, decode_counts, make_order_finding_plan
-from modular_arithmetic import NONZERO_RESIDUES, append_controlled_modular_multiply, multiplier_profile
+from modular_arithmetic import (
+    NONZERO_RESIDUES,
+    _append_controlled_target_flips,
+    append_controlled_modular_multiply,
+    conjugated_permutation,
+    linear_encoding,
+    modular_permutation,
+    multiplier_profile,
+)
+from target_flip import target_flip_network
+
+ENCODED_STRATEGY = "target_flip_1_clean"
 
 
 def controlled_rotate(qc: QuantumCircuit, ctrl: int, work: list[int], steps: int) -> None:
@@ -140,8 +151,17 @@ def factor_order_finding(
     identity: bool = False,
     multiplier_strategy: str = "auto",
     feed_forward: bool = True,
+    work_columns: tuple[int, ...] | None = None,
 ) -> QuantumCircuit:
-    """Build one coherent order-finding attempt or a schedule-matched identity null."""
+    """Build one coherent order-finding attempt or a schedule-matched identity null.
+
+    work_columns names an invertible GF(2) matrix B by its columns and holds
+    the work register in the encoding x = B^-1 v: the register starts in
+    B^-1 |1> and every round applies the one-clean target-flip network of
+    B^-1 f B. The operations between rounds act on the control alone and the
+    work register is never measured, so the phase register's law is the
+    unencoded circuit's.
+    """
     plan = order_finding_plan(
         modulus,
         base,
@@ -161,19 +181,33 @@ def factor_order_finding(
     control_qubit = 0
     work_qubits = list(range(1, 1 + plan.work_qubits))
     scratch_qubits = list(range(1 + plan.work_qubits, plan.quantum_qubits))
-    circuit.x(work_qubits[0])
+    if work_columns is None:
+        circuit.x(work_qubits[0])
+    else:
+        if identity or multiplier_strategy != ENCODED_STRATEGY or plan.scratch_qubits != 1:
+            raise ValueError(f"an encoded work register needs the {ENCODED_STRATEGY} multiplier and no identity null")
+        initial = linear_encoding(work_columns).index(1)
+        for bit, qubit in enumerate(work_qubits):
+            if initial >> bit & 1:
+                circuit.x(qubit)
     for resource in plan.rounds[plan.leading_identity_rounds :]:
         circuit.h(control_qubit)
-        append_controlled_modular_multiply(
-            circuit,
-            control_qubit,
-            work_qubits,
-            scratch_qubits if resource.scratch_qubits else [],
-            modulus,
-            resource.multiplier,
-            multiplier_strategy,
-            input_domain=NONZERO_RESIDUES,
-        )
+        if work_columns is None:
+            append_controlled_modular_multiply(
+                circuit,
+                control_qubit,
+                work_qubits,
+                scratch_qubits if resource.scratch_qubits else [],
+                modulus,
+                resource.multiplier,
+                multiplier_strategy,
+                input_domain=NONZERO_RESIDUES,
+            )
+        else:
+            permutation = conjugated_permutation(modular_permutation(modulus, resource.multiplier), work_columns)
+            _append_controlled_target_flips(
+                circuit, control_qubit, work_qubits, scratch_qubits, target_flip_network(permutation)
+            )
         if feed_forward:
             for prior_round in range(plan.leading_identity_rounds, resource.round_index):
                 feedback_angle = -math.pi / (1 << (resource.round_index - prior_round))

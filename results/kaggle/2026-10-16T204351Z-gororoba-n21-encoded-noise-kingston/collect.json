@@ -1,0 +1,21 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-n21-encoded-noise-kingston/1",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T212929Z",
+ "files": {
+  "gororoba-n21-encoded-noise-kingston.log": "cd41645a4f0037cfd15721164b8ff73ead4f0b43dfda7bac71ffc1240f6733ab",
+  "output/ci-freeze.txt": "63c5eb3a77c3c9f478aff2cb79c7b33a82f29ed4dbc2b17fd02271dbabae8101",
+  "output/environment.json": "490660dd0d813d49b56f501c4829b806e509dc52277a3f771591924e2b74045e",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "683a4bb69ce78ffff6bb71de6cbaea5c203869a7204ecd40c42dc104e96c1786",
+  "output/install-pins.txt": "b12eee8d004e5f4ccde86e7bedeb02c31c83558a60999a51eee36ed1eb265431",
+  "output/pip.txt": "cc39f80fbd9edf4d55367ce1d6ab7b82b55ab098435afa908509f073c9dddde0",
+  "output/python-install.txt": "89d715524f554153187fcd1ec04d506cad5d7c4fa8a24597d8630f856038668e",
+  "output/repo/results/kaggle_out/n21_conjugation_noise_kingston.json": "b23e6bc824550b22fd656fa12230ad5fcbabe7e2abac9ae0b098f45cf4d646cb",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "81d4230743dc192a9fc59068d8d86f5b4301ab3ee8a67a7935ee231adf8cd882",
+  "output/uv-install.txt": "4bf45eefe59153f776c597377149dd47b5401277bc337849a55572b4eea9fd53",
+  "output/venv.txt": "c48758d995a48623a551e0e9f985c932e5fed775b217d7ed00f929890de3f00b"
+ }
+}

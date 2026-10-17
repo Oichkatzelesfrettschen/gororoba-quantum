@@ -461,7 +461,10 @@ def family_candidates(
             routed.sort(key=lambda choice: -choice.joint_score)
         else:
             routed = runtime.select_candidates(
-                n21_group(orbit=args.family == "n21-orbit-feedback"), snapshots, args.seeds, trace
+                n21_group(orbit=args.family == "n21-orbit-feedback", encoded=args.family == "n21-feedback-encoded"),
+                snapshots,
+                args.seeds,
+                trace,
             )
         tiers = args.replica_tiers if args.optimize else [args.max_replicas or 1]
         if args.family == "n21-orbit-rca":

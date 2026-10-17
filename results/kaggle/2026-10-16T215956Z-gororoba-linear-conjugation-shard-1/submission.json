@@ -1,0 +1,43 @@
+{
+ "schema": "kaggle-aer-submission-v1",
+ "kernel": "probablyeric/gororoba-linear-conjugation-shard-1",
+ "machine_shape": "cpu",
+ "entry": "scripts/linear_conjugation_search.py",
+ "args": [
+  "--start",
+  "16665",
+  "--stop",
+  "33331",
+  "--out",
+  "results/kaggle_out/linear_conjugation_shard_1.json"
+ ],
+ "smoke": false,
+ "git_commit": "4795bc5c6b17c2047128a268bec7dcbd917ca3c4",
+ "untracked_inputs": [],
+ "pins": [
+  "qiskit==2.5.2",
+  "qiskit-aer==0.17.2",
+  "qiskit-ibm-runtime==0.50.0"
+ ],
+ "ci_env": null,
+ "bundle": {
+  "docs/evidence/algebra_packages/tables.json": "3cefd88cfc84399c48a9eef488571c33e3a7e3b67f377be396ae0812f36194b2",
+  "gororoba_quantum/affine_residual.py": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec",
+  "gororoba_quantum/boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+  "gororoba_quantum/cd_core.py": "5ee4f9ff6744b8a8847d1396c000d91c4de1e84b2de110c017e1143e50fb9427",
+  "gororoba_quantum/factoring.py": "59d8bb783fa58e6079544874b689ee336c4d14b8b348c7f69864d4c9511918c4",
+  "gororoba_quantum/modular_arithmetic.py": "bb402d6c57b0d81fb3c53fee30e0c7764028aad3117b967d9670508b35b54725",
+  "gororoba_quantum/order_finding.py": "ef4661fe5e1fce3695ab56d22585aee8f2aae800828d7ae217aac047d619f412",
+  "gororoba_quantum/parallel.py": "f0d18ed619f99a1ea6f58a7c4d3b2be7450f82b9ac99831552281a5526b737d2",
+  "gororoba_quantum/qpe_diagnostics.py": "adfc4f9c86bfbb1b33cd223e86a2d67edd4231750b1ce8835ceab252d4f1c06c",
+  "gororoba_quantum/target_flip.py": "a609d56f188bca8b686c326964900dad9fd5312d1168adb0917e2e902b0e5fdc",
+  "kaggle_kernel/AGENTS.md": "d6b0f6667e0d33aff9ac3cd748bb6c38b6b0912af3a338e3860b50c98ef6af3d",
+  "kaggle_kernel/kernel_main.py": "4c35ed8c0b456fb0245c5b805ac62d877a4ecbb0b015936f306413ccd522efcd",
+  "scripts/algebra_package_tables.py": "983dc4d74e81f616bd95f1d0c10fd400f2a5e4abccff2bc1b5e27c87509b1528",
+  "scripts/linear_conjugation_search.py": "8c057fcd810192b36b2b3ccd2ac55b49abd4cf9f4143e0bcf260e8af47b2cbcc"
+ },
+ "datasets": {},
+ "run_py_sha256": "6fbb2209121f1b6308e9bcf6593ac559313473077fc4ece76081068c63b1f5bc",
+ "pushed_utc": "2026-10-16T215956Z",
+ "kernel_version": 2
+}

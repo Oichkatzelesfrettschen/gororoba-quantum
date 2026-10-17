@@ -1,0 +1,21 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-linear-conjugation-challenger/4",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T223534Z",
+ "files": {
+  "gororoba-linear-conjugation-challenger.log": "413a6858e1465bf04626266fec5305d44de95c71036b1e9fc34ca4429cbb13d1",
+  "output/ci-freeze.txt": "783e2ab1004bb7b1b1453978ae991e0b5f647d1cd4e42e714a598ed2c5b4b547",
+  "output/environment.json": "55ecadc824ef3331955d35d4d3e0f697158e9698ab16a8dcf4aca995e254d1ac",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "5e6671334909eb33a2d319047cd63abe82b34bc7d3c6a17b27c637560aef78be",
+  "output/install-pins.txt": "409b717732870cc6673791ba2ff24e89bc1df22635e2dc0e9583b9dffe2be47d",
+  "output/pip.txt": "980041af5645f1672c43717c305241f5e6b397a44b8517b80cb99c49634a29a8",
+  "output/python-install.txt": "5c58d3928067e30bedbbd985a089c858ce05689feb11941db5fcd23fdddc9cbf",
+  "output/repo/results/kaggle_out/n21_linear_conjugation_challenger.json": "a5c3a47a2a0448760c335b879773cee35b4ecc30a3af0b82f16600e7ef59434e",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "1ec2ba77b30d4ba11492a2915f8354852e3e1514c2c1f8a69f6182fcacd3d168",
+  "output/uv-install.txt": "8fb4fa6ef80f8c615ab86049fb1e022abcbbe52a5b2253a3083ff49ddfb4676d",
+  "output/venv.txt": "c48758d995a48623a551e0e9f985c932e5fed775b217d7ed00f929890de3f00b"
+ }
+}

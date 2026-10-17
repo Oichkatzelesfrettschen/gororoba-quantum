@@ -1,0 +1,10 @@
+{"circuit": "two_round_encoded_ff", "configuration": "cpu_statevector", "shots": 32768, "microseconds_per_shot": 2803.11, "failed": null}
+{"circuit": "two_round_encoded_ff", "configuration": "cpu_density_matrix", "shots": 266, "microseconds_per_shot": 444957.89, "failed": null}
+{"circuit": "two_round_encoded_ff", "configuration": "gpu_statevector", "shots": 5276, "microseconds_per_shot": 21674.57, "failed": null}
+{"circuit": "two_round_encoded_ff", "configuration": "gpu_statevector_batch", "shots": null, "microseconds_per_shot": null, "failed": -6}
+{"circuit": "two_round_encoded_ff", "configuration": "gpu_density_matrix_batch", "shots": null, "microseconds_per_shot": null, "failed": -6}
+{"circuit": "ten_round_encoded", "configuration": "cpu_statevector", "shots": 3227, "microseconds_per_shot": 36231.19, "failed": null}
+{"circuit": "ten_round_encoded", "configuration": "cpu_density_matrix", "shots": 54, "microseconds_per_shot": 2194641.18, "failed": null}
+{"circuit": "ten_round_encoded", "configuration": "gpu_statevector", "shots": 2051, "microseconds_per_shot": 54596.11, "failed": null}
+{"circuit": "ten_round_encoded", "configuration": "gpu_statevector_batch", "shots": null, "microseconds_per_shot": null, "failed": -6}
+{"circuit": "ten_round_encoded", "configuration": "gpu_density_matrix_batch", "shots": null, "microseconds_per_shot": null, "failed": -6}
