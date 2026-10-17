@@ -314,16 +314,12 @@ cd_core is unmeasured and no artifact claims one.
   qiskit-aer 0.17.2 (or qiskit-aer-gpu-cu11 0.17.2 on a GPU), proves the
   hypercomplex package stack before the entry runs, and retains the output
   under results/kaggle/.
-  A kernel runs on a CPU machine by default; a case requests a GPU
-  (`--machine NvidiaTeslaT4`) when its widest density matrix reaches
-  `local_compute.GPU_MIN_ACTIVE_QUBITS`, since narrower replays run slower
-  on a GPU and the weekly GPU quota is scarce (7-qubit dynamic circuits
-  sample 1.5 to 8 times faster on the CPU, and Aer's batched GPU shots abort
-  on control flow: `docs/notes/kaggle/substrates.md`). An entry whose record
-  a CI gate recompiles is pushed with `--ci-env`, which runs it under CI's
-  interpreter and pins. `kaggle_run.py shards`
-  replicates the CI gate shards for a commit on Kaggle CPU kernels in place
-  of the build host. `docs/notes/kaggle/` holds the workflow, the measured
+  A kernel runs on a CPU machine by default and on a GPU only when its
+  widest density matrix reaches `local_compute.GPU_MIN_ACTIVE_QUBITS`;
+  [Simulation on Kaggle](#simulation-on-kaggle-cpu-gpu-and-ci-replay)
+  gives the machine choice, the GPU setup and the CI replay rules.
+  `kaggle_run.py shards` replicates the CI gate shards for a commit on
+  Kaggle CPU kernels in place of the build host. `docs/notes/kaggle/` holds the workflow, the measured
   substrates and the package-stack guide. Kaggle allows two concurrent GPU
   and five concurrent CPU batch sessions per account. IBM hardware serves 15 or
   more qubits, or a smaller run whose question concerns the device itself
@@ -363,6 +359,66 @@ cd_core is unmeasured and no artifact claims one.
   Target and properties afresh in the process that decides, compiles,
   simulates, and submits; no calibration value is cached or read back from a
   file to drive a submission.
+
+## Simulation on Kaggle: CPU, GPU and CI replay
+
+`"$PYTHON" scripts/kaggle_run.py push ENTRY --slug SLUG -- ARGS` runs a
+repository script on a private Kaggle kernel, and `status` and `collect`
+retain its output under results/kaggle/. The kernel's own guide is
+`kaggle_kernel/AGENTS.md`. The measurements behind the choices below are in
+`docs/notes/kaggle/substrates.md`
+(`results/kaggle/2026-10-16T204620Z-gororoba-aer-gpu-probe`).
+
+- **Machine.**
+  - CPU, the default: every noisy simulation whose widest density matrix
+    stays below 11 qubits, and every small dynamic circuit.
+  - GPU (`--machine NvidiaTeslaT4`, two T4s): density matrices of 11 to 14
+    qubits and statevectors up to 29 qubits per T4.
+  - Measured on the 7-qubit N=21 order-finding circuits: statevector
+    trajectories took 2.8 and 36 ms per shot on the CPU against 21.7 and
+    54.6 ms on a T4.
+  - A dynamic circuit's density matrix evolves per shot, about 160 times
+    slower than trajectories of the same channel.
+- **A GPU push.** It carries `--timeout SECONDS` sized to the work, and
+  kaggle_run.py refuses an accelerator push without one. Read `kaggle quota`
+  before and after; the weekly 30 h resets at 00:00 UTC on Saturday. Two GPU
+  sessions run at once, and a version is never repushed while it runs. For
+  example:
+
+  ```sh
+  "$PYTHON" scripts/kaggle_run.py push --slug NAME --machine NvidiaTeslaT4 \
+      --timeout 3600 --include SNAPSHOT.json scripts/ENTRY.py -- ARGS
+  ```
+
+- **Inside the entry.**
+  1. The kernel installs qiskit-aer-gpu-cu11 0.17.2 and sets
+     `GOROROBA_AER_DEVICE=GPU`, and `calibration_snapshot.aer_device()`
+     reads it.
+  2. `calibration_snapshot.noise_simulator(snapshot, device,
+     method="density_matrix" | "statevector")` builds live_run's noise
+     channels.
+  3. `snapshot_laws.restrict_circuit(isa)` with `restrict(snapshot, qubits)`
+     keeps the circuit and the noise model at the active width.
+  4. `set_options(max_parallel_threads=parallel.workers())` uses every host
+     CPU.
+- **Batched GPU shots.** `noise_simulator(..., batched_shots=True)` enables
+  Aer's `batched_shots_gpu` for static circuits of at most 16 active qubits.
+  qiskit-aer-gpu-cu11 0.17.2 aborts it on any circuit with control flow
+  (`if_else` lowers to `jump`). Batched static runs have no measurement here
+  yet.
+- **CI replay.**
+  - Seeded GPU counts differ from CPU counts, so a gate re-derives a GPU
+    record from its retained counts and never resamples on CI.
+  - An entry whose output a CI gate recompiles is pushed with `--ci-env`,
+    on a CPU or a GPU machine. The kernel then builds CI's Python 3.14.7
+    with `ci/install_pins.sh` and runs the entry under CPU Aer, because the
+    image's Python 3.13 and numpy 2.1.3 change compiled depths and
+    durations.
+  - Replays hold routed CZ, layout and classical stages exact, and depth
+    and duration within a relative 0.002 across BLAS builds.
+- **Sessions.** Five CPU and two GPU batch sessions run per account. A GPU
+  machine's four host CPUs run CPU work, `--ci-env` included, when the CPU
+  pool is full, at the price of GPU quota.
 
 <!-- heron-execution-facts:begin -->
 ## Heron execution facts

@@ -19,6 +19,9 @@ result or an approval.
   Python 3.13 and runs on Kaggle's CUDA 12 driver, so GPU kernels install
   `qiskit==2.5.2` with `qiskit-aer-gpu-cu11==0.17.2`, and every kernel adds
   `qiskit-ibm-runtime==0.50.0` for the fake backends compile captures use.
+  The root AGENTS.md section "Simulation on Kaggle: CPU, GPU and CI replay"
+  says when a run takes the GPU and how an entry selects it; `push --ci-env`
+  runs an entry under CI's interpreter and pins.
   The Aer build runs
   statevector, density-matrix and unitary methods with
   `AerSimulator(device="GPU")`. Kaggle's own numpy and scipy (2.1.3 and
