@@ -163,6 +163,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "ripple_experiments.py",
     "runtime_contracts.py",
     "select_lcu.py",
+    "star_ramsey.py",
     "target_flip.py",
     "variance.py",
 )
@@ -2680,6 +2681,15 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                     raise LiveRunError("conditional_ramsey runs without dynamical decoupling; omit --dd")
                 if args.max_replicas != 1:
                     raise LiveRunError("conditional_ramsey runs one replica; pass --max-replicas 1")
+            if "star_ramsey" in campaigns and args.dd:
+                # The sector rates are free-evolution phase slopes, which echo pulses
+                # refocus. The replica count stays open: placement blocks every neighbor
+                # of a placed replica on the admitted CZ graph, so no two stars share an
+                # admitted coupler and a degree-three center's couplers all join its own
+                # leaves. A coupler the quality policy excluded still couples its
+                # endpoints, so a leaf's outside neighbor across one can belong to
+                # another star.
+                raise LiveRunError("star_ramsey runs without dynamical decoupling; omit --dd")
             if set(campaigns) & {"scaffold_ab", "readout_delay"}:
                 # Both compare members on one tile under one calibration: the idles
                 # must stay free of echo pulses, and a second replica is a second tile.

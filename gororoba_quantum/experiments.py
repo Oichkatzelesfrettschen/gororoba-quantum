@@ -401,12 +401,14 @@ def standalone_campaign_groups() -> list[Group]:
     from diagnostic_controls import readout_delay_group, scaffold_ab_group
     from maximal_experiments import spectator_wavefront_ramsey_group
     from qubit_baseline import qubit_baseline_group
+    from star_ramsey import star_ramsey_group
 
     return [
         spectator_wavefront_ramsey_group(),
         qubit_baseline_group(),
         crossed_group(),
         conditional_ramsey_group(),
+        star_ramsey_group(),
         scaffold_ab_group(),
         readout_delay_group(),
     ]
