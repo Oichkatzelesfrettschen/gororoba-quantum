@@ -120,14 +120,22 @@ Leave-one-out phase RMS in rad of the lane mean and each single family
 The host recompute of lane 4 and the Kaggle kernel's lane 4 differ in four
 numbers: two below 5e-16 rad and two by one unit of the last retained
 decimal (a fold condition number near 4.4e5 and a predicted log contrast in
-the ill-conditioned `axis_tilt_plus_mean` model). `--check` therefore allows
-one rounding unit, 1.5e-6, and 1e-6 relative on condition numbers. The host
-also reproduced all seven Fez lanes of the Kaggle result under that check.
+the ill-conditioned `axis_tilt_plus_mean` model). CI's OpenBLAS build moves
+five numbers of that model by one to three units (largest 3e-6 on a log
+ratio of -2.22) and reproduces every other model exactly. A least-squares
+solution with a nonzero residual carries roundoff of order eps * kappa^2
+(Golub and Van Loan, section 5.3.8), and Fez lane 4's worst fold has
+kappa = 4.4e5, so eps * kappa^2 is 4.3e-5 relative. `--check` therefore
+allows one rounding unit, 1.5e-6, 1e-6 relative on condition numbers, and
+inside each model eps * kappa^2 * |value| with kappa its retained
+fold_condition_max; a model whose kappa stays below about 8e4 keeps the
+one-unit floor for values near 1. The host also reproduced all seven Fez lanes of the Kaggle
+result under that check.
 
 ## Gate
 
 Gate core-329 runs `--check ../docs/evidence/atlas_coherent_families/result.json
 --runs ibm_fez,ibm_kingston --lanes 4` from `gororoba_quantum/` in normal and
 optimized Python. It recomputes both lanes, with every resimulation, and
-compares every number within 1e-6 absolute or 1e-9 relative. It runs in the
+compares every number within the tolerance above. It runs in the
 full tier, since one worker needs several minutes per mode.

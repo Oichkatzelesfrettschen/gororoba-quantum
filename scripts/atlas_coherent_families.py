@@ -220,6 +220,7 @@ REPRODUCTION_TOLERANCE = 1e-9
 CHECK_TOLERANCE = 1.5e-6
 CHECK_RELATIVE = 1e-9
 CONDITION_RELATIVE = 1e-6
+LSQ_ROUNDOFF = float(np.finfo(float).eps)
 CONDITION_KEYS = frozenset({"condition", "fold_condition_max"})
 CONTRADICTION_SIGMA = 3.0
 # A Column names one error parameter: (family, compact qubit index or coupler pair).
@@ -1011,22 +1012,49 @@ def self_test() -> int:
         mismatch = abs(atlas.wrap(EdgeResponse([])(points)["phase"] - summary["ideal_phase"]))
         print(f"ibm_kingston edge {key}: ideal mismatch {mismatch:.1e} rad, calibrations {summary['calibrations']}")
         require(mismatch < 1e-9, f"ibm_kingston {key}: replicas miss the ideal fringe by {mismatch:.2e} rad")
+    # The check admits roundoff scaled by a model's own conditioning and
+    # still rejects a change beyond it, on well- and ill-conditioned models.
+    for kappa, fresh, accepted in (
+        (10.0, 1.000001, True),
+        (10.0, 1.000003, False),
+        (4.4e5, 1.00003, True),
+        (4.4e5, 1.001, False),
+    ):
+        try:
+            compare({"fold_condition_max": kappa, "value": 1.0}, {"fold_condition_max": kappa, "value": fresh}, "model")
+            outcome = True
+        except SystemExit:
+            outcome = False
+        require(outcome == accepted, f"check tolerance at kappa {kappa:g} misjudges {fresh}")
     print("self-test passed")
     return 0
 
 
-def compare(retained: Any, fresh: Any, path: str) -> None:
+def compare(retained: Any, fresh: Any, path: str, conditioning: float = 0.0) -> None:
+    """Every retained number within the check tolerance of its recomputation.
+
+    A least-squares solution with a nonzero residual carries roundoff of
+    order eps * kappa^2 relative (Golub and Van Loan, Matrix Computations,
+    section 5.3.8), so the values of a model whose design or leave-one-out
+    fold is ill-conditioned move by that much between BLAS builds. Inside a
+    model entry the tolerance therefore also admits eps * kappa^2 * |value|
+    with kappa its retained fold_condition_max; a well-conditioned model keeps
+    the one-rounding-unit floor.
+    """
     if isinstance(retained, dict):
         require(isinstance(fresh, dict) and set(retained) == set(fresh), f"{path}: keys differ")
+        kappa = retained.get("fold_condition_max")
+        if isinstance(kappa, (int, float)) and not isinstance(kappa, bool):
+            conditioning = max(conditioning, LSQ_ROUNDOFF * float(kappa) ** 2)
         for key in retained:
-            compare(retained[key], fresh[key], f"{path}.{key}")
+            compare(retained[key], fresh[key], f"{path}.{key}", conditioning)
     elif isinstance(retained, list):
         require(isinstance(fresh, list) and len(retained) == len(fresh), f"{path}: lengths differ")
         for k, (a, b) in enumerate(zip(retained, fresh, strict=True)):
-            compare(a, b, f"{path}[{k}]")
+            compare(a, b, f"{path}[{k}]", conditioning)
     elif isinstance(retained, float) and isinstance(fresh, (int, float)) and not isinstance(fresh, bool):
         relative = CONDITION_RELATIVE if path.rsplit(".", 1)[-1] in CONDITION_KEYS else CHECK_RELATIVE
-        tolerance = max(CHECK_TOLERANCE, relative * abs(retained))
+        tolerance = max(CHECK_TOLERANCE, max(relative, conditioning) * abs(retained))
         require(abs(retained - fresh) <= tolerance, f"{path}: {retained} against {fresh}")
     else:
         require(retained == fresh, f"{path}: {retained!r} against {fresh!r}")
