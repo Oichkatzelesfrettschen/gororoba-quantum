@@ -1308,6 +1308,15 @@
       "retrieved_at_utc": "2026-10-17T05:20:16+00:00",
       "reading_scope": "arXiv:2406.07611v2 HTML rendering: Readout error mitigation for mid-circuit measurements: Falcon (ibm_algiers, ibmq_kolkata, ibm_mumbai) and Eagle (ibm_osaka, ibm_kyoto) device families",
       "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/html/2402.17833v2",
+      "note": "docs/notes/ibm_quantum/heron-r2-readout-resonator.md",
+      "sha256": "d2b35e662497248454e32924758a700f0d6f1ed48ec564cf5fa4aff0427616b8",
+      "bytes": 321568,
+      "retrieved_at_utc": "2026-10-17T05:32:36+00:00",
+      "reading_scope": "arXiv:2402.17833v2 HTML rendering: Carrera Vazquez et al., Eagle QPUs, appendix B.1 switch latency of the order of 0.5 us (reference [18] of arXiv:2604.25863v3)",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",

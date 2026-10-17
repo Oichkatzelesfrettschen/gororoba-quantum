@@ -39,6 +39,7 @@ Tags used below:
 - HERON-R2-OTHER: names a different Heron r2 device.
 - R2-REVISION-ONLY: says "Heron r2" with no device.
 - HERON-REV-UNSTATED: says "Heron" or names a device with no revision.
+- UNATTRIBUTED: names no family, revision or device.
 - OTHER-FAMILY: Eagle, Falcon, internal test device, non-IBM.
 - INFERENCE: mine.
 
@@ -123,9 +124,10 @@ split into pulse, integration window and ring-down. That split is not public.
   just above its upper end.
 - Feedback latency (section II-A): "IBM reports a 500ns feedback latency in
   their DQC experiment (20-30% of measurement duration) [18]." Reference [18]
-  as printed is Foss-Feig et al.; the device and revision of that IBM claim
-  are not stated in the sentence. HERON-REV-UNSTATED, not usable for our
-  devices.
+  in the paper's bibliography is Carrera Vazquez et al., "Combining quantum
+  processors with real-time classical communication" (Nature 636, 75-79),
+  arXiv:2402.17833; that experiment ran on 127-qubit Eagle QPUs (section 4h).
+  Tag: OTHER-FAMILY (Eagle), not Heron; not usable for our devices.
 
 ### 1c. ibm_kingston: Shirgure et al. (arXiv:2604.03360)
 
@@ -147,8 +149,9 @@ split into pulse, integration window and ring-down. That split is not public.
   is consistent with a different backend version or calibration date;
   INFERENCE.
 - The "approximately 600 ns" feed-forward latency is stated for "IBM
-  hardware" without device or revision. HERON-REV-UNSTATED; not a
-  device-matched value.
+  hardware" without device or revision, and the sentence attaches no
+  reference that could supply one. UNATTRIBUTED (no family, revision or
+  device); not a device-matched value.
 - "MCMs can also introduce errors on unmeasured spectator qubits through
   measurement-induced dephasing [36]." Qualitative, no number.
 
@@ -285,6 +288,12 @@ either interval; the search for papers naming ibm_aachen was not run (see
   ring-up and ring-down of the readout resonator". This is the closest IBM
   statement on measurement-induced Stark shift and dephasing, and it gives no
   decay-time of a post-measurement shift.
+- Fig. S1 caption (Ramsey with a driven readout resonator): the
+  pseudo-measurement tone lasts 5 us, "so the cavity is fully rung-up for the
+  entire Ramsey experiment", and "ended 500 ns before the measurement pulse to
+  let the cavity ring down." The 500 ns is a buffer the authors chose on the
+  IBM-internal test device. It is not a measured ring-down time constant and
+  gives no decay constant for any device. OTHER-FAMILY / no revision.
 
 ### 4b. Yoshioka et al., arXiv:2407.14431 (Krylov diagonalization)
 
@@ -329,7 +338,23 @@ either interval; the search for papers naming ibm_aachen was not run (see
   ibmq_kolkata, ibm_mumbai} hosting Falcon-family processors, and 127-qubit
   devices {ibm_osaka, ibm_kyoto} hosting Eagle-family processors." The
   main-text experiments of section IV use ibmq_kolkata and ibm_osaka; the
-  remaining three appear in appendix data. OTHER-FAMILY. States only:
+  remaining three appear in appendix data. OTHER-FAMILY. Readout times
+  (Table S2, "Readout Time (ns)"; the caption says the characteristics come
+  from "routine (~daily) calibration data of the machines, pulled over a
+  duration of two weeks in the middle of experiments"; the paper gives no
+  calendar dates):
+
+  | Device | Family (stated) | Readout time |
+  |---|---|---|
+  | ibm_osaka | Eagle | 1400 ns |
+  | ibm_kyoto | Eagle | 1400 ns |
+  | ibm_algiers | Falcon | 910 ns |
+  | ibmq_kolkata | Falcon | 640 ns |
+  | ibmq_mumbai | Falcon | 3513 ns |
+
+  The table prints ibmq_mumbai where the device list prints ibm_mumbai; the
+  paper uses both spellings for one device (INFERENCE). Feed-forward latency
+  of about 200 ns is quoted in section 6. The text states only:
   "waiting for mid-circuit measurements can incur considerable decoherence",
   "there may be measurement cross-talk", measurements take a small multiple
   of a CX duration. No resonator parameters.
@@ -381,6 +406,19 @@ either interval; the search for papers naming ibm_aachen was not run (see
   Table 2 assigns 5.8e-3 to Kyoto and 7.0e-3 to Brisbane. The error values
   are not used here.
 
+### 4h. Carrera Vazquez et al., arXiv:2402.17833 (LOCC between processors)
+
+- Provenance: 127-qubit Eagle QPUs (ibm_kyiv is named "an Eagle processor";
+  Fig. 1 caption: "two 127 qubit Eagle QPUs are connected with a real-time
+  classical link"), arXiv:2402.17833v2 (header "06 Jan 2025"), appendix B.1.
+  Authors are IBM Quantum. OTHER-FAMILY (Eagle); revision unstated.
+- Appendix B.1: the switch instruction's measurement outcomes are "collected
+  by a central processor, which in turn broadcasts the selected case ... to
+  all control instruments. This process results in a latency of the order of
+  0.5 us (independent of the selected case) during which no gates can be
+  applied". This is the source of the 500 ns feedback latency that MCMit
+  (section 1b) cites as its reference [18]. Context only.
+
 ### 4f. Non-IBM kappa and chi (to avoid confusion)
 
 Search surfaced Google (arXiv:2308.02079, model-based readout) and ETH
@@ -392,8 +430,11 @@ not IBM and are excluded.
 Evidence for what the account devices expose, from the live API read
 2026-10-17 (supplied) and IBM's qpu-information page:
 
-- `backend.configuration().hamiltonian` is None; `meas_kernels` and
-  `meas_levels` are None. So chi, wr, kappa, qubit frequencies are not exposed
+- `backend.configuration()` has no `hamiltonian` attribute and no
+  `hamiltonian` key in `to_dict()`; `meas_kernels` and `meas_levels` are None
+  (evidence: docs/evidence/heron_platform/backend_configuration.json,
+  produced by scripts/heron_backend_config_snapshot.py). So chi, wr, kappa,
+  qubit frequencies are not exposed
   on the account's three Heron r2 devices. Qubit properties contain T1, T2,
   init_error, prob_meas0_prep1, prob_meas1_prep0, readout_error,
   readout_length only; no `frequency` or `anharmonicity` (the IBM page's
@@ -411,11 +452,14 @@ Evidence for what the account devices expose, from the live API read
 - meas_lo_range, qubit_lo_range, rep_times: a read-only
   `service.backend(NAME).configuration()` call on 2026-10-17 returned a
   `QasmBackendConfiguration` for ibm_fez (1.3.37), ibm_kingston (1.0.0) and
-  ibm_marrakesh (1.0.21), all processor_type Heron r2, with no `meas_lo_range`,
-  `qubit_lo_range` or `rep_times` attribute; for ibm_fez `to_dict()` carries
-  no key containing "lo_range" and the only repetition fields are
-  `default_rep_delay` and `rep_delay_range`. Tag: DEVICE-MATCHED, stated by
-  the API (fields absent, so no LO range is exposed).
+  ibm_marrakesh (1.0.21), all processor_type Heron r2, whose `to_dict()` keys
+  include neither `meas_lo_range`, `qubit_lo_range` nor `rep_times`; the
+  repetition fields are `default_rep_delay` and `rep_delay_range`. The sorted
+  key names of all three backends are retained in
+  docs/evidence/heron_platform/backend_configuration.json, and
+  `scripts/heron_backend_config_snapshot.py --check` (gates core-388 and
+  core-389) verifies these claims offline. Tag: DEVICE-MATCHED, stated by the
+  API (fields absent, so no LO range is exposed).
 - `backend_version` is exposed as a string; no public changelog maps its
   values to calibrations (section 1g).
 
@@ -425,8 +469,8 @@ Feed-forward latency, for scheduling: the `measure_2` and `measure` durations
 above plus a latency that no public source states for the three account
 devices. Values nearby: roughly 0.7 us (ibm_sherbrooke / ibm_peekskill,
 revisions unstated, arXiv:2308.13065v2), approximately 600 ns ("IBM hardware",
-arXiv:2604.03360v2, device unstated), 500 ns (cited by MCMit, source device
-unstated), and approximately 200 ns (arXiv:2406.07611v2, appendix C.3: "the
+arXiv:2604.03360v2, device unstated), 500 ns (cited by MCMit; the source is arXiv:2402.17833v2 on Eagle QPUs,
+section 4h), and approximately 200 ns (arXiv:2406.07611v2, appendix C.3: "the
 superconducting quantum processors we utilized do not yet support pulse
 operations during the feedforward latency [70], that is, during the short
 period of time (~200 ns) that the mid-circuit measurement outcomes are
@@ -453,6 +497,10 @@ did not run that probe because it needs a job submission.
 | ibm_kingston `measure_2` vs `measure` | 65 percent shorter; `measure` 34x a 2q gate | ibm_kingston | Heron r2 | arXiv:2604.03360v2 (15 Sep 2026) | stated, device-matched, disagrees with snapshot (37 percent) | cannot tell; no backend version given |
 | Feed-forward latency | approx 600 ns | "IBM hardware", device unstated | unstated | arXiv:2604.03360v2 | not device-matched | n/a |
 | Feed-forward latency | approx 200 ns | ibm_algiers, ibmq_kolkata, ibm_mumbai, ibm_osaka, ibm_kyoto (no per-device split) | Falcon and Eagle, revisions unstated | arXiv:2406.07611v2, appendix C.3 | other-family | cannot tell |
+| Feed-forward latency | approx 500 ns | 127-qubit Eagle QPUs (ibm_kyiv named) | Eagle, revision unstated | arXiv:2402.17833v2, appendix B.1 (as cited by arXiv:2604.25863v3 [18]) | other-family | yes |
+| Readout time | 1400 / 1400 ns | ibm_osaka / ibm_kyoto | Eagle, revision unstated | arXiv:2406.07611v2, Table S2 (daily calibration over two weeks) | other-family | cannot tell |
+| Readout time | 910 / 640 / 3513 ns | ibm_algiers / ibmq_kolkata / ibmq_mumbai | Falcon, revision unstated | arXiv:2406.07611v2, Table S2 (same window) | other-family | cannot tell |
+| Chosen resonator ring-down buffer before measurement | 500 ns | IBM-internal test device | unstated | arXiv:2305.10508v1, Fig. S1 caption | context only; a chosen buffer, not a measured decay constant | n/a |
 | Feed-forward latency | roughly 0.7 us | ibm_sherbrooke, ibm_peekskill | unstated (likely Eagle / Falcon, inference) | arXiv:2308.13065v2 (18 Sep 2024), App. D | other-family | yes |
 | Ring-down / post-measurement buffer | none found | account devices | Heron r2 | none (not split out of readout_length) | not found | n/a |
 | Residual-photon Stark shift / dephasing vs delay, with decay time | none found | account devices | Heron r2 | none; arXiv:2606.00433v2 reports T1-dominated backaction, no photon figure | not found | n/a |
@@ -460,7 +508,7 @@ did not run that probe because it needs a job submission.
 | 2chi/2pi (ibm_brisbane q2 / ibm_kyoto q2) | 0.31 / 0.85 MHz | ibm_brisbane, ibm_kyoto | unstated (as above) | arXiv:2412.04053v2, main text | context only (other-family) | n/a |
 | Readout pulse + passive reset delay | 720 ns + 680 ns = 1400 ns | ibm_brisbane, ibm_kyoto | unstated (as above) | arXiv:2412.04053v2, main text | context only (other-family) | n/a |
 | Qualitative: MCM-induced spectator dephasing exists | no number | ibm_kingston (statement in paper) | Heron r2 | arXiv:2604.03360v2 section I-A | stated qualitatively | n/a |
-| configuration().hamiltonian, meas_kernels, meas_levels | None | each of the three | Heron r2 | live API 2026-10-17 | stated by API (not exposed) | no |
+| configuration().hamiltonian (absent), meas_kernels, meas_levels (None) | absent / None | each of the three | Heron r2 | live API 2026-10-17 | stated by API (not exposed) | no |
 | properties() fields | T1, T2, init_error, prob_meas*, readout_error, readout_length | each of the three | Heron r2 | live API 2026-10-17 | stated by API | no |
 | backend_version change log | none found | each of the three | Heron r2 | none | not found | n/a |
 
