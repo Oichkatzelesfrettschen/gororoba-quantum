@@ -343,8 +343,11 @@ RPC handler's `create_job` replaced by a recorder. `submit` repeats those
 checks under an flock beside the token file, writes
 `submission-state.json` before the POST to `/api/jobs` (Perceval 1.3.1
 still posts to the deprecated `/api/job`), and refuses any directory that
-holds a receipt or a checkpoint. `collect` waits for `completed`, `error` or
-`canceled` and parses the BSCount string itself: a result is service data,
+holds a receipt or a checkpoint. `submit` syncs the returned job id into the checkpoint before it writes the
+receipt, and `recover` writes a lost receipt from that checkpoint. `collect`
+waits for `completed`, `error` or `canceled`, retains a partial result of an
+error or canceled job (or records its absence), requires the result's job id
+and shots to match the receipt and status, and parses the BSCount string itself: a result is service data,
 and `perceval.serialization.deserialize` evaluates parameter expressions.
 
 ## Photonic box-kite family
@@ -374,8 +377,11 @@ s and t. Threshold detectors with `min_detected_photons` 2 keep only
 two-click samples, so each pair block preregisters the exact conditional
 label fraction f(V) = (V L_ind + (1 - V) L_dist) / (V T_ind + (1 - V) T_dist)
 from its `two_click` terms: 1/2 on an edge and 0 on a strut at V = 1, 1/6
-and 1/7 at V = 0. The suppressed blocks fit V, and the edges are tested
-against f_edge at that V; a two-mode hom job would read only (0, 1)
+and 1/7 at V = 0. Those terms are the g2 = 0 limit of the fit model, Perceval
+SLOS under the g2 read at submission with threshold detection, in which V is
+the only free parameter, so multiphoton emission (a strut floor of 0.0008 at
+g2 = 0.01) stays out of the fitted V. The suppressed blocks fit V, and the
+edges are tested against the model's f_edge at that V; a two-mode hom job would read only (0, 1)
 coincidences under that filter and carries no V. The census Design B rows reach 14 of the 16 sign matrices; the
 other two come from cd_core witness pairs outside those rows, so the family
 covers every two-label two-blade product. `scripts/cd_two_blade_blocks.py`

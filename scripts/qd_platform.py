@@ -53,12 +53,16 @@ Subcommands:
   it sends twice), posts the body to /api/jobs with the case's max_duration
   and retains job-body.json and submission.json with the approval, the plan
   and the usage report before the job.
+- recover RUN_DIR writes submission.json from a posted checkpoint, which
+  carries the returned job id before the receipt is written.
 - collect RUN_DIR waits for a terminal status, then retains the result
   answer byte for byte in raw/result.json (written once; a recollection
   must bring the same bytes) and results.json with the scrubbed
   status and job data, the usage report after the job and the counts that
   parse_counts reads from the serialized BSCount: plain Fock states only,
-  zipped or not, never through perceval.serialization.deserialize.
+  zipped or not, never through perceval.serialization.deserialize. The
+  result must name the submitted job and agree with the status shots; an
+  error or canceled job keeps a partial result or records its absence.
 - runs [--runs DIR] prints run_facts of every retained run, the rules
   scripts/research_state.py applies to the quandela provider.
 - --self-test proves check rejects a token id, a staff creator id, a missing
@@ -558,6 +562,8 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
 
 def plan(case_dir: Path, platform: str, max_credits: float) -> dict[str, Any]:
     """Every check submit makes, read-only: digests, platform, price ceiling, availability and the estimate."""
+    if not math.isfinite(max_credits) or max_credits < 0:
+        raise PlatformError(f"--max-credits {max_credits} is not a finite, non-negative credit ceiling")
     manifest, circuit, cases_sha256 = load_case(case_dir)
     if platform not in manifest["platforms"]:
         raise PlatformError(f"cases.json admits {manifest['platforms']}, not {platform}")
@@ -622,6 +628,12 @@ def submit(case_dir: Path, platform: str, approval: str, max_credits: float) -> 
             raise PlatformError(f"{case_dir} was submitted or holds an interrupted submission; never resubmit it")
         checked = plan(case_dir, platform, max_credits)
         usage_before = usage_rows(get("/api/tokens/usage/report"))
+        receipt = {
+            "schema": SUBMISSION_SCHEMA,
+            "approval": approval,
+            "usage_before": usage_before,
+            **{key: value for key, value in checked.items() if key != "body"},
+        }
         state = {
             "schema": STATE_SCHEMA,
             "phase": "post_outcome_unknown",
@@ -629,6 +641,7 @@ def submit(case_dir: Path, platform: str, approval: str, max_credits: float) -> 
             "platform": platform,
             "cases_sha256": checked["cases_sha256"],
             "body_sha256": checked["body_sha256"],
+            "receipt": receipt,
         }
         # The body and the checkpoint precede the request: a lost answer leaves
         # a case that submit refuses, never one a second invocation sends again.
@@ -642,18 +655,25 @@ def submit(case_dir: Path, platform: str, approval: str, max_credits: float) -> 
             raise
         if not isinstance(answer, dict) or not isinstance(answer.get("job_id"), str):
             raise PlatformError(f"POST /api/jobs answered without a job id: {answer!r}")
-        record = {
-            "schema": SUBMISSION_SCHEMA,
-            "approval": approval,
-            "submitted_utc": now(),
-            "job_id": answer["job_id"],
-            "usage_before": usage_before,
-            **{key: value for key, value in checked.items() if key != "body"},
-        }
-        write_json(case_dir / "submission.json", record, exclusive=True)
-        state.update(phase="posted", job_id=answer["job_id"])
+        # The job id reaches the synced checkpoint before the receipt, so
+        # recover can write the receipt of a job whose receipt write was lost.
+        state.update(phase="posted", job_id=answer["job_id"], submitted_utc=now())
         write_json(state_path, state)
-        return record
+        return recover(case_dir)
+
+
+def recover(case_dir: Path) -> dict[str, Any]:
+    """Write submission.json from a posted checkpoint; an existing receipt must equal it."""
+    state = json.loads((case_dir / "submission-state.json").read_text(encoding="utf-8"))
+    if state.get("schema") != STATE_SCHEMA or state.get("phase") != "posted":
+        raise PlatformError(f"{case_dir}: the checkpoint is {state.get('phase')}, not posted; nothing to recover")
+    record = {**state["receipt"], "job_id": state["job_id"], "submitted_utc": state["submitted_utc"]}
+    try:
+        write_json(case_dir / "submission.json", record, exclusive=True)
+    except FileExistsError:
+        if json.loads((case_dir / "submission.json").read_text(encoding="utf-8")) != record:
+            raise PlatformError(f"{case_dir}/submission.json differs from the posted checkpoint") from None
+    return record
 
 
 def parse_counts(results: str) -> dict[str, int]:
@@ -708,10 +728,17 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
         "data": scrub(request("GET", job_route(job, "data"))),
         "usage_after": usage_rows(get("/api/tokens/usage/report")),
     }
-    if status["status"] == "completed":
+    # An error or canceled job can still carry partial results; a refused
+    # /result is recorded as absent, and only a completed job must have one.
+    try:
         result_bytes = request("GET", job_route(job, "result"), raw=True)
+    except RefusedError as error:
+        if status["status"] == "completed":
+            raise
+        collected["result_absent"] = str(error)
+    else:
         collected["result_sha256"] = sha256_bytes(result_bytes)
-        collected.update(result_summary(result_bytes))
+        collected.update(result_summary(result_bytes, job, status, complete=status["status"] == "completed"))
         retain_bytes(raw_dir / "result.json", result_bytes)
     try:
         write_json(case_dir / "results.json", collected, exclusive=True)
@@ -740,15 +767,38 @@ def retain_bytes(path: Path, data: bytes) -> None:
             raise PlatformError(f"{path} differs from the recollected bytes; nothing was rewritten") from None
 
 
-def result_summary(result_bytes: bytes) -> dict[str, Any]:
-    """The counts and scalar fields of a raw /result answer, parsed without Perceval."""
+def result_summary(result_bytes: bytes, job: str, status: dict[str, Any], complete: bool = True) -> dict[str, Any]:
+    """The counts and scalar fields of a raw /result answer, parsed without Perceval and bound to its job.
+
+    The answer's job_id must be the submitted job and its shots must agree
+    with any non-null status shots. A partial result (error or canceled job)
+    without serialized counts is summarized as partial with no counts.
+    """
     answer = json.loads(result_bytes)
-    inner = json.loads(answer["results"])
+    if not isinstance(answer, dict) or answer.get("job_id") != job:
+        raise PlatformError(
+            f"the result answers job {answer.get('job_id') if isinstance(answer, dict) else None}, not {job}"
+        )
+    shots = answer.get("shots")
+    if not isinstance(shots, int) or shots < 0:
+        raise PlatformError(f"the result of job {job} carries shots {shots!r}")
+    if status.get("shots") is not None and status["shots"] != shots:
+        raise PlatformError(f"job {job}: status shots {status['shots']} differ from the result's {shots}")
+    serialized = answer.get("results")
+    inner = json.loads(serialized) if isinstance(serialized, str) and serialized else None
     if not isinstance(inner, dict) or not isinstance(inner.get("results"), str):
-        raise PlatformError("the result carries no serialized counts")
+        if complete:
+            raise PlatformError("the result carries no serialized counts")
+        return {"shots": shots, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}
     counts = parse_counts(inner["results"])
     scalars = {k: v for k, v in inner.items() if k != "results" and isinstance(v, int | float | str | None)}
-    return {"counts": counts, "samples": sum(counts.values()), "result_fields": scalars, "shots": answer.get("shots")}
+    return {
+        "shots": shots,
+        "partial": not complete,
+        "counts": counts,
+        "samples": sum(counts.values()),
+        "result_fields": scalars,
+    }
 
 
 def run_facts(directory: Path) -> dict[str, Any]:
@@ -783,18 +833,19 @@ def run_facts(directory: Path) -> dict[str, Any]:
     if status not in TERMINAL:
         raise PlatformError(f"{owner}: job status {status} is not terminal")
     raw = directory / "raw" / "result.json"
-    if status == "completed":
+    shots = 0
+    if status == "completed" or raw.exists():
         if not raw.is_file() or sha256_bytes(raw.read_bytes()) != collected.get("result_sha256"):
             raise PlatformError(f"{owner}: raw/result.json differs from its recorded sha256")
-        summary = result_summary(raw.read_bytes())
+        summary = result_summary(raw.read_bytes(), submission["job_id"], collected["status"], status == "completed")
         if any(collected.get(key) != value for key, value in summary.items()):
             raise PlatformError(f"{owner}: results.json differs from the raw result")
         modes = len(json.loads((directory / manifest["circuit"]["file"]).read_text(encoding="utf-8"))["input_state"])
         if any(len(state.split(",")) != modes for state in summary["counts"]):
             raise PlatformError(f"{owner}: a counted state has a mode count other than {modes}")
-    elif raw.exists():
-        raise PlatformError(f"{owner}: a {status} job holds a raw result")
-    shots = collected["status"].get("shots") or 0
+        shots = summary["shots"]
+    elif not isinstance(collected.get("result_absent"), str):
+        raise PlatformError(f"{owner}: a {status} job records neither a raw result nor its absence")
     return {
         "created_at": submission["submitted_utc"],
         "backends": [submission["platform"]],
@@ -822,7 +873,9 @@ def runner_self_test() -> int:
     dark, label = modes.copy(), modes.copy()
     dark[22], label[20] = "1", "1"
     counts = f":PCVL:BSCount:{{|{','.join(dark)}>=9990;|{','.join(label)}>=10}}"
-    result = json.dumps({"results": json.dumps({"results": zipped(counts), "global_perf": 1.0}), "shots": 10012})
+    result = json.dumps(
+        {"job_id": "job-a", "results": json.dumps({"results": zipped(counts), "global_perf": 1.0}), "shots": 10012}
+    )
     row = {field: None for field in PLATFORM_FIELDS} | {
         "name": "sim:belenos",
         "status": "available",
@@ -832,7 +885,14 @@ def runner_self_test() -> int:
     }
     idle = dict.fromkeys(AVAILABILITY_KEYS, 0)
     body = {"job_name": "gororoba-job-00", "payload": {"command": "sample_count"}, "platform_name": "sim:belenos"}
-    service: dict[str, Any] = {"row": row, "idle": idle, "estimate": 10000, "refuse": False, "result": result}
+    service: dict[str, Any] = {
+        "row": row,
+        "idle": idle,
+        "estimate": 10000,
+        "refuse": False,
+        "result": result,
+        "status": "completed",
+    }
 
     def fake_request(method: str, route: str, auth: bool = True, body: Any = None, raw: bool = False) -> Any:
         if (method, route) == ("POST", "/api/jobs"):
@@ -840,10 +900,12 @@ def runner_self_test() -> int:
                 raise RefusedError("POST /api/jobs: HTTP 422 unprocessable payload")
             return {"job_id": "job-a"}
         if route.endswith("/status"):
-            return {"status": "completed", "shots": 10012, "token_id": 7}
+            return {"status": service["status"], "shots": 10012, "token_id": 7}
         if route.endswith("/data"):
             return {"job_id": "job-a", "token_label": "secret-label", "status": "completed"}
         if route.endswith("/result"):
+            if service["result"] is None:
+                raise RefusedError(f"GET {route}: HTTP 404 no result")
             return str(service["result"]).encode("utf-8")
         if route == "/api/tokens/usage/report":
             return [{"total_jobs": 1, "usage": [{"job": "job-a", "token_label": "secret-label"}], "token_id": 7}]
@@ -880,6 +942,7 @@ def runner_self_test() -> int:
         for stub in stubs:
             stub.start()
         try:
+            refuse("a non-finite credit ceiling", lambda: plan(run, "sim:belenos", math.nan), "finite")
             refuse("a platform outside the case", lambda: plan(run, "qpu:ascella", 1.0), "admits")
             service["row"] = {**row, "status": "maintenance"}
             refuse("a platform under maintenance", lambda: plan(run, "sim:belenos", 1.0), "is maintenance")
@@ -907,9 +970,30 @@ def runner_self_test() -> int:
                     raise AssertionError(f"{name} retained {carried}")
             if collect(run, 0.0, 1.0)["counts"] != collected["counts"]:
                 raise AssertionError("a recollection changed the retained counts")
-            service["result"] = result.replace("10012", "10013")
+            service["result"] = result.replace("1.0}", "0.5}")
+            if service["result"] == result:
+                raise AssertionError("the recollection fixture did not change the result bytes")
             refuse("a recollection with other raw bytes", lambda: collect(run, 0.0, 1.0), "nothing was rewritten")
             service["result"] = result
+            lost = scratch / "lost-receipt"
+            shutil.copytree(run, lost)
+            (lost / "submission.json").unlink()
+            if recover(lost) != json.loads((run / "submission.json").read_text(encoding="utf-8")):
+                raise AssertionError("recover wrote a receipt other than submit's")
+            refuse("recovery from a refused checkpoint", functools.partial(recover, refused), "not posted")
+            for terminal, partial in (("canceled", None), ("error", result)):
+                stopped = scratch / f"stopped-{terminal}"
+                shutil.copytree(case, stopped)
+                submit(stopped, "sim:belenos", "approved", 0.0)
+                service["status"], service["result"] = terminal, partial
+                collect(stopped, 0.0, 1.0)
+                facts = run_facts(stopped)
+                if (
+                    facts["statuses"] != {terminal: 1}
+                    or (partial is not None) != (stopped / "raw/result.json").exists()
+                ):
+                    raise AssertionError(f"a {terminal} job was retained as {facts}")
+            service["status"], service["result"] = "completed", result
             if collected["counts"] != {",".join(dark): 9990, ",".join(label): 10}:
                 raise AssertionError(f"collect parsed {collected['counts']}")
             run_facts(run)
@@ -924,6 +1008,12 @@ def runner_self_test() -> int:
                 ("an edited job body", lambda d: _rewrite(d / "job-body.json", job_name="other"), "job-body"),
                 ("a retained token id", lambda d: _rewrite(d / "results.json", token_id=7), "carries"),
                 ("another job id", lambda d: _rewrite(d / "results.json", job_id="job-b"), "another job"),
+                ("a raw result of another job", _foreign_result, "not job-a"),
+                (
+                    "status shots off the result",
+                    lambda d: _rewrite(d / "results.json", status={"status": "completed", "shots": 5}),
+                    "differ from the result",
+                ),
                 ("an uncollected run", lambda d: (d / "results.json").unlink(), "collect the run"),
             ]
             for number, (label_text, mutate, expected) in enumerate(mutations):
@@ -942,6 +1032,14 @@ def runner_self_test() -> int:
     ):
         refuse(label_text, functools.partial(parse_counts, text), "")
     return rejected
+
+
+def _foreign_result(directory: Path) -> None:
+    """Replace the raw result with another job's answer and rebind its digest."""
+    raw = directory / "raw/result.json"
+    data = raw.read_bytes().replace(b'"job-a"', b'"job-b"')
+    raw.write_bytes(data)
+    _rewrite(directory / "results.json", result_sha256=sha256_bytes(data))
 
 
 def _rewrite(path: Path, **fields: Any) -> None:
@@ -1092,6 +1190,8 @@ def main() -> int:
         p.add_argument("--max-credits", type=float, required=True, help="the written case's credit ceiling")
         if name == "submit":
             p.add_argument("--approval", required=True, help="the user's approval, quoted, kept in submission.json")
+    p = sub.add_parser("recover")
+    p.add_argument("case_dir", type=Path)
     p = sub.add_parser("collect")
     p.add_argument("case_dir", type=Path)
     p.add_argument("--poll", type=float, default=10.0)
@@ -1110,7 +1210,7 @@ def main() -> int:
         check(args.directory, args.agents)
     elif args.command == "facts":
         print(facts_table(load(args.directory)), end="")
-    elif args.command in ("plan", "submit", "collect", "runs"):
+    elif args.command in ("plan", "submit", "recover", "collect", "runs"):
         try:
             if args.command == "plan":
                 checked = plan(args.case_dir, args.platform, args.max_credits)
@@ -1118,6 +1218,8 @@ def main() -> int:
             elif args.command == "submit":
                 record = submit(args.case_dir, args.platform, args.approval, args.max_credits)
                 print(f"job {record['job_id']} on {record['platform']}")
+            elif args.command == "recover":
+                print(f"job {recover(args.case_dir)['job_id']}: submission.json written from the checkpoint")
             elif args.command == "collect":
                 collected = collect(args.case_dir, args.poll, args.timeout)
                 print(

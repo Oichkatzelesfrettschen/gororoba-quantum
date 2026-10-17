@@ -457,8 +457,9 @@
   },
   "observable": "per job, the two-click samples (min_detected_photons 2, threshold detectors) by mode pair; the label fraction f is the share of two-click samples with one click on each label mode",
   "ideal": "two_click lists L (the label pair) and T (every a < b pair) for indistinguishable and distinguishable photons; at source indistinguishability V, f(V) = (V L_ind + (1 - V) L_dist) / (V T_ind + (1 - V) T_dist): 1/2 on an edge and 0 on a strut at V = 1, 1/6 and 1/7 at V = 0",
-  "calibration": "V is fitted from the suppressed (strut and non-kite) blocks, whose f falls from 1/7 at V = 0 to 0 at V = 1, and the catalogue's HOM figure is the prior it is compared with",
-  "hardware_report": "the fitted V with its interval, every constructive block's f against f_edge(V), every mode-pair frequency against pair_ideal mixed at V, with Wilson 95% intervals",
-  "falsifier": "a constructive block whose f lies more than 4.5 standard errors from f_edge at the fitted V, or suppressed blocks whose f values disagree with one V at that bound"
+  "model": "the fit model is Perceval SLOS of circuit.json under NoiseModel(indistinguishability=V, g2=the qpu:belenos g2 read at submission) with threshold detection and min_detected_photons 2, V its only free parameter; the exact two_click terms are its g2 = 0 limit, and at the retained g2 = 0.01 a suppressed block reads 0.0008 and a constructive block 0.4975 at V = 1, so multiphoton emission enters the model rather than the fitted V",
+  "calibration": "V is fitted from the suppressed (strut and non-kite) blocks, whose f falls from about 1/7 at V = 0 to the g2 floor at V = 1, and the catalogue's HOM figure is the prior it is compared with",
+  "hardware_report": "the fitted V with its interval, every constructive block's f against the model's f_edge(V), every mode-pair frequency against the model at V, with Wilson 95% intervals",
+  "falsifier": "a constructive block whose f lies more than 4.5 standard errors from the model's f_edge at the fitted V, or suppressed blocks whose f values disagree with one V at that bound"
  }
 }
