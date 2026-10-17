@@ -118,9 +118,9 @@ def wrap(angle: float) -> float:
 class Executed:
     """The run's archived circuits, its executed schedules, and its member map."""
 
-    def __init__(self) -> None:
-        record = json.loads((RUN / "record.json").read_text(encoding="utf-8"))
-        self.isas = {c.name: c for c in qpy.load(io.BytesIO((RUN / "isa.qpy").read_bytes()))}
+    def __init__(self, run: Path = RUN) -> None:
+        record = json.loads((run / "record.json").read_text(encoding="utf-8"))
+        self.isas = {c.name: c for c in qpy.load(io.BytesIO((run / "isa.qpy").read_bytes()))}
         self.components: dict[str, tuple[str, dict[str, Any]]] = {}
         for job in record["submission"]["planned_jobs"]:
             for pub in job["pubs"]:
@@ -128,7 +128,7 @@ class Executed:
                     self.components[component["member"]] = (pub["name"], component)
         self.members = {m["name"]: m for g in record["groups"] for m in g["members"]}
         self.timing: dict[str, list[list[str]]] = {}
-        for path in sorted(RUN.glob("raw/*/pub_*.json")):
+        for path in sorted(run.glob("raw/*/pub_*.json")):
             data = json.loads(path.read_text(encoding="utf-8"))
             table = data["metadata"]["compilation"]["scheduler_timing"]["timing"]
             self.timing[data["pub_name"]] = [row.split(",") for row in table.splitlines()]
