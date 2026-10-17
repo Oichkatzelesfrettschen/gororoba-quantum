@@ -794,13 +794,17 @@ def _stream_radii(stream: _PubObservable, tail: float, two_sided: bool, empirica
     variance = stream.sample_variance if empirical else None
     share = stream.bernstein_share if variance is not None else 0.0
     fixed_tail = tail * (1.0 - share)
-    hoeffding = stream.span * math.sqrt(math.log((2.0 if two_sided else 1.0) / fixed_tail) / (2 * stream.shots))
-    radius = min(hoeffding, stream.span)
-    if stream.variance_bound is not None:
-        multiplier = 1.0 / fixed_tail if two_sided else (1.0 - fixed_tail) / fixed_tail
-        covariance_radius = math.sqrt(stream.variance_bound / stream.shots * multiplier)
-        radius = min(radius, covariance_radius)
-    if variance is None or not share:
+    # A split tail that underflows to zero keeps the score range, the radius
+    # _radius returns when the union-bound allocation underflows.
+    radius = stream.span
+    if fixed_tail > 0:
+        hoeffding = stream.span * math.sqrt(math.log((2.0 if two_sided else 1.0) / fixed_tail) / (2 * stream.shots))
+        radius = min(hoeffding, stream.span)
+        if stream.variance_bound is not None:
+            multiplier = 1.0 / fixed_tail if two_sided else (1.0 - fixed_tail) / fixed_tail
+            covariance_radius = math.sqrt(stream.variance_bound / stream.shots * multiplier)
+            radius = min(radius, covariance_radius)
+    if variance is None or not share or not tail * share > 0:
         return radius, None
     return radius, empirical_bernstein_radius(variance, stream.span, stream.shots, tail * share, two_sided)
 

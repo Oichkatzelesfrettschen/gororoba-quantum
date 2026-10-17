@@ -232,6 +232,13 @@ def verify_methods() -> dict[str, float]:
     shots = 8192
     low_laws = {"feedback": ((0.9, 0.06, 0.0, 0.04),), "no_feedback": ((0.92, 0.04, 0.0, 0.04),)}
     high_laws = {"feedback": ((0.0, 0.5, 0.0, 0.5),), "no_feedback": ((0.0, 0.52, 0.0, 0.48),)}
+    # alpha 1e-323 leaves a nonzero per-PUB tail whose share products round to
+    # zero; every radius then keeps the score range rather than dividing by it.
+    (subnormal,) = analyze_observations(_observed(low_laws, shots), (_contract(alpha=1e-323),), (), DESIGN).observables
+    _require(
+        subnormal.confidence_half_width == 4.0 and subnormal.detection_radius == 4.0,
+        f"split tails that underflow left radii {subnormal.confidence_half_width}, {subnormal.detection_radius}",
+    )
     for label, laws, method in (("low", low_laws, "empirical_bernstein"), ("maximal", high_laws, "data_free")):
         pubs = _observed(laws, shots)
         (opted,) = analyze_observations(pubs, (contract,), (), DESIGN).observables
