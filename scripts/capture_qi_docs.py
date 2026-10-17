@@ -31,7 +31,11 @@ Five sources, each retained with its identity:
 Each writes MANIFEST.json beside the files (path, source URL, sha256); the
 site and spec manifests also list every unreachable URL with the pages that
 link it, and ``--check`` verifies every retained file against its manifest
-without network access.
+without network access. It also requires each captured directory's file set to equal its
+manifest's path set and that set to equal the inventory the capture defines (SDK_REPOS, the
+API and release lists, the site crawl set the manifest records, the spec rows' source URLs);
+``--self-test`` proves the check rejects a removed page with its row and an unlisted file on a
+temporary copy.
 """
 
 from __future__ import annotations
@@ -42,8 +46,10 @@ import html
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -780,8 +786,8 @@ def capture_releases() -> tuple[list[dict[str, Any]], dict[str, Any]]:
     return rows, {}
 
 
-def manifest_path(kind: str) -> Path:
-    return BASE / ("cqasm-spec" if kind == "spec" else kind) / "MANIFEST.json"
+def manifest_path(kind: str, base: Path = BASE) -> Path:
+    return base / ("cqasm-spec" if kind == "spec" else kind) / "MANIFEST.json"
 
 
 def write_manifest(kind: str, rows: list[dict[str, Any]], extra: dict[str, Any]) -> None:
@@ -790,16 +796,148 @@ def write_manifest(kind: str, rows: list[dict[str, Any]], extra: dict[str, Any])
     manifest_path(kind).write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
 
 
-def check() -> int:
+def captured_files(base: Path, kind: str, root: Path) -> set[str]:
+    """Root-relative path of every file under a kind's directory except its manifest."""
+    directory = manifest_path(kind, base).parent
+    return {
+        path.relative_to(root).as_posix()
+        for path in directory.rglob("*")
+        if path.is_file() and path.name != "MANIFEST.json"
+    }
+
+
+def expected_paths(kind: str, doc: dict[str, Any], base: Path, root: Path) -> set[str]:
+    """Paths the capture defines for a kind, from the fixed lists or the crawl the manifest records."""
+    prefix = base.relative_to(root).as_posix()
+    if kind == "sdk":
+        repos = {repo: {"tag": tag, "commit": commit} for repo, (tag, commit, _) in SDK_REPOS.items()}
+        if doc.get("repos") != repos:
+            raise SystemExit("sdk manifest repos differ from SDK_REPOS")
+        return {
+            f"{prefix}/sdk/{name}" if repo == "quantuminspire" else f"{prefix}/sdk/{repo}/{name}"
+            for repo, (_, _, files) in SDK_REPOS.items()
+            for name in files
+        }
+    if kind == "api":
+        return {f"{prefix}/api/openapi.json"}
+    if kind == "releases":
+        names = [*GITHUB_RELEASES, *(project.split("/")[-1] for project in GITLAB_RELEASES)]
+        return {f"{prefix}/releases/{name}.{ext}" for name in names for ext in ("json", "md")}
+    if kind == "spec":
+        # The crawl follows navigation links, so the page set is the one the manifest rows name;
+        # each row's path must be the one its source URL maps to.
+        out = set()
+        for row in doc["files"]:
+            if not row["source"].startswith(SPEC_BASE):
+                raise SystemExit(f"{row['path']}: source {row['source']} lies outside the spec site")
+            relative = row["source"][len(SPEC_BASE) :].removesuffix(".html") + ".md"
+            if row["path"] != f"{prefix}/cqasm-spec/{relative}":
+                raise SystemExit(f"{row['path']} does not match its source {row['source']}")
+            out.add(row["path"])
+        listed = {row["source"] for row in doc["files"]}
+        for item in (*doc["unreachable"], *doc["external_links"]):
+            for referrer in item["referrers"]:
+                if referrer not in listed:
+                    raise SystemExit(f"spec referrer {referrer} has no captured page")
+        return out
+    pages = doc["pages"]
+    names = [record["page"] for record in pages]
+    if doc["seeds"] != len(SITE_SEEDS) or set(names) != set(SITE_SEEDS) | set(doc["discovered_beyond_seed"]):
+        raise SystemExit("site manifest crawl set differs from SITE_SEEDS and its discovered pages")
+    if len(set(names)) != len(names):
+        raise SystemExit("site manifest lists a crawled page twice")
+    out = set()
+    for record in pages:
+        if "path" not in record:
+            continue
+        page = record["page"]
+        stem = (page or "home").replace("/", "_")
+        if record["url"] != page_url(page) or record["path"] != f"{prefix}/site/{stem}.md":
+            raise SystemExit(f"site page {page or '/'} records an inconsistent url or path")
+        out.add(record["path"])
+    return out
+
+
+def check_tree(root: Path) -> int:
+    """Verifies every kind under root: file set, manifest paths, defined inventory and sha256."""
+    base = root / BASE.relative_to(ROOT)
     count = 0
     for kind in KINDS:
-        doc = json.loads(manifest_path(kind).read_text(encoding="utf-8"))
+        doc = json.loads(manifest_path(kind, base).read_text(encoding="utf-8"))
+        rows = [row["path"] for row in doc["files"]]
+        listed = set(rows)
+        if len(listed) != len(rows):
+            raise SystemExit(f"{kind} manifest lists a path twice")
+        present = captured_files(base, kind, root)
+        if unlisted := sorted(present - listed):
+            raise SystemExit(f"{kind}: file {unlisted[0]} is not listed in its manifest")
+        if absent := sorted(listed - present):
+            raise SystemExit(f"{kind}: manifest row {absent[0]} has no captured file")
+        expected = expected_paths(kind, doc, base, root)
+        if missing := sorted(expected - listed):
+            raise SystemExit(f"{kind}: captured inventory path {missing[0]} has no manifest row")
+        if extra := sorted(listed - expected):
+            raise SystemExit(f"{kind}: manifest row {extra[0]} is outside the captured inventory")
         for row in doc["files"]:
-            data = (ROOT / row["path"]).read_bytes()
+            data = (root / row["path"]).read_bytes()
             if sha256(data) != row["sha256"]:
                 raise SystemExit(f"{row['path']} differs from its captured sha256")
             count += 1
+    return count
+
+
+def check() -> int:
+    count = check_tree(ROOT)
     print(f"quantum inspire docs: {count} captured files match their manifests")
+    return 0
+
+
+def self_test() -> int:
+    """Runs check_tree on a temporary copy of the retained capture and requires each mutation to fail."""
+    cases = 0
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        base = root / BASE.relative_to(ROOT)
+        shutil.copytree(BASE, base)
+        check_tree(root)
+
+        def expect(label: str, fragment: str) -> None:
+            nonlocal cases
+            try:
+                check_tree(root)
+            except SystemExit as error:
+                if fragment not in str(error):
+                    raise SystemExit(f"self-test {label}: rejected with {error!s}, wanted {fragment!r}") from error
+            else:
+                raise SystemExit(f"self-test {label}: mutation passed")
+            cases += 1
+
+        def drop_row(kind: str, suffix: str) -> None:
+            path = manifest_path(kind, base)
+            doc = json.loads(path.read_text(encoding="utf-8"))
+            doc["files"] = [row for row in doc["files"] if not row["path"].endswith(suffix)]
+            path.write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
+
+        for kind, name in (("site", "site/about-qi.md"), ("sdk", "sdk/README.md")):
+            victim = base / name
+            victim_bytes = victim.read_bytes()
+            manifest = manifest_path(kind, base)
+            manifest_bytes = manifest.read_bytes()
+            victim.unlink()
+            expect(f"{kind} file removed", "has no captured file")
+            drop_row(kind, "/" + name)
+            expect(f"{kind} file and manifest row removed", "has no manifest row")
+            manifest.write_bytes(manifest_bytes)
+            victim.write_bytes(victim_bytes)
+            unlisted = victim.parent / "unlisted.md"
+            unlisted.write_text("x\n", encoding="utf-8")
+            expect(f"{kind} unlisted file added", "is not listed in its manifest")
+            unlisted.unlink()
+            victim.write_bytes(victim_bytes + b"!")
+            expect(f"{kind} file altered", "differs from its captured sha256")
+            victim.write_bytes(victim_bytes)
+        check_tree(root)
+    print(f"capture_qi_docs self-test: {cases} mutations rejected")
     return 0
 
 
@@ -808,12 +946,15 @@ def main() -> int:
     for kind in KINDS:
         parser.add_argument(f"--{kind}", action="store_true")
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     if args.check:
         return check()
+    if args.self_test:
+        return self_test()
     chosen = [kind for kind in KINDS if getattr(args, kind)]
     if not chosen:
-        parser.error("give --site, --spec, --sdk, --api, --releases or --check")
+        parser.error("give --site, --spec, --sdk, --api, --releases, --check or --self-test")
     capture: dict[str, Callable[[], tuple[list[dict[str, Any]], dict[str, Any]]]] = {
         "site": capture_site,
         "spec": capture_spec,
