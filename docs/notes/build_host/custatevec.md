@@ -141,12 +141,13 @@ requires `cuquantum-cu11>=23.3.0,<24.11.0` (24.8.0, custatevec-cu11
 dependencies therefore already carry the library; the retained T4 probe
 imported the wheel and ran. Cubins cover sm_70 through sm_87 (T4 is sm_75).
 No retained run sets `cuStateVec_enable`, so the T4 path is unmeasured.
-`KERNEL_PINS` pins `cuquantum-cu11==24.8.0` and the kernel reports the
-three package versions in `environment.json`.
-`calibration_snapshot.noise_simulator(..., custatevec=True)` sets the
-option, and `scripts/aer_gpu_probe.py` carries the
-`gpu_statevector_custatevec` configuration and `--only`. The T4 push command
-is in `docs/notes/kaggle/substrates.md`.
+`KERNEL_PINS` pins `cuquantum-cu11==24.8.0` and `cutensor-cu11==2.2.0`, and
+the kernel reports the five cuQuantum-chain wheel versions in
+`environment.json`. `calibration_snapshot.noise_simulator(...,
+custatevec=True)` sets the option, and `scripts/aer_gpu_probe.py` carries the
+`gpu_statevector_custatevec` configuration and `--only`.
+`docs/notes/kaggle/custatevec.md` holds the wheel chain, the T4 push command
+and how to read its result.
 
 ## Build and install
 
