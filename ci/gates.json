@@ -2910,7 +2910,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/gl52_split_conjugators.py --check docs/evidence/gl52_split_conjugators/split.json && \"$PYTHON\" -B -O -W error scripts/gl52_split_conjugators.py --check docs/evidence/gl52_split_conjugators/split.json",
    "name": "core-491",
-   "seconds": 300.0,
+   "seconds": 410.0,
    "tier": "full"
   }
  ],

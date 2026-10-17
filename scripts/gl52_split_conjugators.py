@@ -49,10 +49,13 @@ Usage:
     "$PYTHON" scripts/gl52_split_conjugators.py --self-test PATH
 
 --check recomputes the distance tables, the dynamic program, the candidate
-lists and every exact equivalence check, re-derives every median and verdict
-from the retained runs, and recompiles the best single-B and best split of
-every problem on every target over seeds 0 to 7: routed CZ, qubit counts
-exact, depth and duration within REPLAY_TOLERANCE. --self-test runs the
+lists, the compiler contract and every exact equivalence check, re-derives
+every median and verdict from the retained runs (joined by transpiler seed),
+requires the holdout section to hold the decisive circuits, both arms and
+seeds 8 to 15, and recompiles the unencoded baseline, the best single-B, the
+best split and the incumbent of every problem on every target over seeds 0 to
+7: routed CZ, qubit counts exact, depth and duration within REPLAY_TOLERANCE.
+The decisive verdicts are re-derived from those fresh runs. --self-test runs the
 search on GL(3,2) against a brute-force search, checks the permutation-free
 identities and the coset-graph distance on seeded samples, and requires
 --check to reject corrupted copies of the record.
@@ -737,14 +740,23 @@ def judge(target_name: str, problem: str, block: dict[str, Any]) -> dict[str, An
         for arm in entry["arms"].values():
             arm["medians"] = medians(arm["runs"], target_name)
     baseline = block["baseline"]
+    labels = {arm_name(ff) for ff in arms(problem)}
+    for entry in [baseline, *block["single_b"], *block["split"]]:
+        _require(set(entry["arms"]) == labels, f"{target_name} {problem} {entry['name']}: arms {sorted(entry['arms'])}")
+        for label, arm in entry["arms"].items():
+            seeds = [run[0] for run in arm["runs"]]
+            _require(
+                seeds == list(SEEDS), f"{target_name} {problem} {entry['name']} {label}: seeds {seeds}, not {SEEDS}"
+            )
+    baseline_runs = {label: {run[0]: run for run in arm["runs"]} for label, arm in baseline["arms"].items()}
 
     def admitted(entry: dict[str, Any]) -> dict[str, Any]:
         regressions = [
             [arm_label, run[0], metric]
             for arm_label, arm in entry["arms"].items()
-            for run, base in zip(arm["runs"], baseline["arms"][arm_label]["runs"], strict=True)
+            for run in arm["runs"]
             for metric in metrics(target_name)
-            if run_value(run, metric) > run_value(base, metric)
+            if run_value(run, metric) > run_value(baseline_runs[arm_label][run[0]], metric)
         ]
         lower = all(
             arm["medians"]["routed_cz"] < baseline["arms"][label]["medians"]["routed_cz"]
@@ -927,7 +939,21 @@ def capture() -> dict[str, Any]:
     for problem, entry in record["candidates"].items():
         record["checks"][problem] = exact_checks(problem, entry["split"])
         record["checks"][problem]["sampled_phase_total_variation"] = sampled_checks(problem, entry["split"])
-    record["compiler"] = {
+    record["compiler"] = compiler_section()
+    record["routed"] = {
+        target_name: {
+            problem: routed_block(target_name, problem, entry["single_b"], entry["split"], SEEDS)
+            for problem, entry in record["candidates"].items()
+        }
+        for target_name in TARGETS
+    }
+    record["holdout"] = holdout(record)
+    return record
+
+
+def compiler_section() -> dict[str, Any]:
+    """The compile contract: pass-manager level and description, seeds, targets, run-field schema, versions."""
+    return {
         "optimization_level": OPTIMIZATION_LEVEL,
         "pass_manager": "generate_preset_pass_manager, no HLS config, as candidate_pass_manager(target_flip_one_clean)",
         "seeds": list(SEEDS),
@@ -943,15 +969,6 @@ def capture() -> dict[str, Any]:
         "run_fields": list(RUN_FIELDS),
         "versions": _versions(),
     }
-    record["routed"] = {
-        target_name: {
-            problem: routed_block(target_name, problem, entry["single_b"], entry["split"], SEEDS)
-            for problem, entry in record["candidates"].items()
-        }
-        for target_name in TARGETS
-    }
-    record["holdout"] = holdout(record)
-    return record
 
 
 def by_name(record: dict[str, Any], problem: str, name: str) -> dict[str, Any] | None:
@@ -1024,6 +1041,7 @@ def check_derived(record: dict[str, Any], recompute_exact: bool = True) -> None:
             retained = {name: field for name, field in retained.items() if name not in CATALOGUE_PROVENANCE}
             value = {name: field for name, field in value.items() if name not in CATALOGUE_PROVENANCE}
         _require(retained == value, f"retained {key} differs from the recomputed {key}")
+    _require(record.get("compiler") == compiler_section(), "retained compiler differs from the recomputed compiler")
     _require(expected["distance"]["identity_source"]["reached"] == GL52_ORDER, "the search misses GL(5,2) matrices")
     _require(set(record["checks"]) == set(PROBLEMS), f"checks cover {sorted(record['checks'])}")
     for section in ("routed", "holdout"):
@@ -1054,25 +1072,72 @@ def check_derived(record: dict[str, Any], recompute_exact: bool = True) -> None:
             _require(names == listed, f"{target_name} {problem}: routed entries differ from the candidates")
     for target_name, problems in record["holdout"].items():
         for problem, entries in problems.items():
+            expected_names = decisive_names(record, problem, record["routed"][target_name][problem])
+            where = f"holdout {target_name} {problem}"
+            _require(sorted(entries) == sorted(expected_names), f"{where}: entries {sorted(entries)}")
+            labels = {arm_name(ff) for ff in arms(problem)}
             for name, entry in entries.items():
+                _require(set(entry) == labels, f"{where} {name}: arms {sorted(entry)}")
                 for label, arm in entry.items():
+                    seeds = [run[0] for run in arm["runs"]]
+                    _require(seeds == list(HOLDOUT_SEEDS), f"{where} {name} {label}: seeds {seeds}")
+                    _require(
+                        all(len(run) == len(RUN_FIELDS) for run in arm["runs"]), f"{where} {name} {label}: run schema"
+                    )
                     _require(
                         arm["median_routed_cz"] == statistics.median(run[3] for run in arm["runs"]),
-                        f"holdout {target_name} {problem} {name} {label}: median differs from its runs",
+                        f"{where} {name} {label}: median differs from its runs",
                     )
 
 
-def replay_jobs(record: dict[str, Any]) -> list[tuple[tuple[str, str, dict[str, Any] | None, bool, int], list[Any]]]:
+Location = tuple[str, str, str]  # (target, problem, entry name)
+
+
+def routed_entry(block: dict[str, Any], name: str) -> dict[str, Any]:
+    if name == block["baseline"]["name"]:
+        return block["baseline"]
+    return next(e for e in block["single_b"] + block["split"] if e["name"] == name)
+
+
+def replay_jobs(
+    record: dict[str, Any],
+) -> list[tuple[Location, tuple[str, str, dict[str, Any] | None, bool, int], list[Any]]]:
+    """Every compilation behind a decisive verdict: the unencoded baseline and each decisive circuit."""
     jobs = []
     for target_name, problems in record["routed"].items():
         for problem, block in problems.items():
-            for name in decisive_names(record, problem, block):
-                candidate = by_name(record, problem, name)
-                entry = next(e for e in block["single_b"] + block["split"] if e["name"] == name)
+            names = [block["baseline"]["name"], *decisive_names(record, problem, block)]
+            for name in names:
+                candidate = None if name == block["baseline"]["name"] else by_name(record, problem, name)
+                entry = routed_entry(block, name)
                 for ff in arms(problem):
                     for run in entry["arms"][arm_name(ff)]["runs"]:
-                        jobs.append(((target_name, problem, candidate, ff, run[0]), run))
+                        jobs.append(((target_name, problem, name), (target_name, problem, candidate, ff, run[0]), run))
     return jobs
+
+
+def verify_verdicts(record: dict[str, Any], fresh: dict[Location, dict[str, list[list[Any]]]]) -> None:
+    """Re-derive the baseline medians and every decisive verdict with the fresh runs in place of the retained ones."""
+    for target_name, problems in record["routed"].items():
+        for problem, block in problems.items():
+            rebuilt = copy.deepcopy(block)
+            for (target, prob, name), arm_runs in fresh.items():
+                if (target, prob) == (target_name, problem):
+                    for label, rows in arm_runs.items():
+                        routed_entry(rebuilt, name)["arms"][label]["runs"] = rows
+            judge(target_name, problem, rebuilt)
+            where = f"{target_name} {problem}"
+            for label, arm in block["baseline"]["arms"].items():
+                _require(
+                    rebuilt["baseline"]["arms"][label]["medians"]["routed_cz"] == arm["medians"]["routed_cz"],
+                    f"{where}: baseline {label} median routed CZ differs from the fresh runs",
+                )
+            for key in ("best_single_b", "best_split"):
+                _require(rebuilt[key] == block[key], f"{where}: {key} differs from the fresh runs")
+            for name in decisive_names(record, problem, block):
+                kept, new = routed_entry(block, name), routed_entry(rebuilt, name)
+                for key in ("admission", "beats_best_single_b"):
+                    _require(kept.get(key) == new.get(key), f"{where} {name}: {key} differs from the fresh runs")
 
 
 def check(record: dict[str, Any], replay_limit: int | None = None) -> str:
@@ -1086,15 +1151,19 @@ def check(record: dict[str, Any], replay_limit: int | None = None) -> str:
     jobs = replay_jobs(record)
     if replay_limit is not None:
         jobs = jobs[:replay_limit]
-    recompiled = parallel.ordered_map(compile_job, [job for job, _ in jobs], min_items=2)
+    recompiled = parallel.ordered_map(compile_job, [job for _, job, _ in jobs], min_items=2)
     deviation = 0.0
-    for (job, kept), run in zip(jobs, recompiled, strict=True):
+    fresh: dict[Location, dict[str, list[list[Any]]]] = {}
+    for (location, job, kept), run in zip(jobs, recompiled, strict=True):
+        fresh.setdefault(location, {}).setdefault(arm_name(job[3]), []).append(run)
         matched = replay_matches(run, kept)
         if matched is None or matched > REPLAY_TOLERANCE:
             raise SystemExit(
                 f"gl52_split_conjugators: {job[0]} {job[1]} seed {job[4]}: recompiled {run} against {kept}"
             )
         deviation = max(deviation, matched)
+    if replay_limit is None:
+        verify_verdicts(record, fresh)
     ten = record["surrogate"]["ten_round"]
     two = record["surrogate"]["two_round"]
     return (
@@ -1198,6 +1267,29 @@ def self_test(record: dict[str, Any]) -> str:
         next(iter(r["checks"]["ten_round"]["splits"]))
     ].__setitem__("transition_exact", False)
     corruptions["missing target"] = lambda r: (r["routed"].pop("fake_kingston"), r["holdout"].pop("fake_kingston"))
+    two = "two_round"
+    fez = "fake_fez"
+
+    def first_holdout_entry(r: dict[str, Any]) -> dict[str, Any]:
+        return next(iter(r["holdout"][fez][two].values()))
+
+    corruptions["holdout omitted seed"] = lambda r: next(iter(first_holdout_entry(r).values()))["runs"].pop()
+    corruptions["holdout omitted arm"] = lambda r: first_holdout_entry(r).pop("no_feed_forward")
+    corruptions["holdout omitted entry"] = lambda r: r["holdout"][fez][two].pop(next(iter(r["holdout"][fez][two])))
+    corruptions["holdout extra entry"] = lambda r: r["holdout"][fez][two].__setitem__(
+        "coset_extra", copy.deepcopy(first_holdout_entry(r))
+    )
+    corruptions["compiler seeds"] = lambda r: r["compiler"]["seeds"].pop()
+    corruptions["compiler level"] = lambda r: r["compiler"].__setitem__("optimization_level", 2)
+    corruptions["compiler targets"] = lambda r: r["compiler"]["targets"].pop("fake_fez")
+    corruptions["compiler versions"] = lambda r: r["compiler"]["versions"].__setitem__("qiskit", "0.0.0")
+    corruptions["compiler removed"] = lambda r: r.pop("compiler")
+    corruptions["reordered seeds"] = lambda r: r["routed"][fez][two]["split"][0]["arms"]["feed_forward"][
+        "runs"
+    ].reverse()
+    corruptions["baseline reordered seeds"] = lambda r: r["routed"][fez][two]["baseline"]["arms"]["feed_forward"][
+        "runs"
+    ].reverse()
     check_derived(record, recompute_exact=False)
     refreshed = copy.deepcopy(record)
     refreshed["inputs"]["garnet_retrieved_utc"] = "2099-01-01T00:00:00+00:00"
@@ -1214,9 +1306,31 @@ def self_test(record: dict[str, Any]) -> str:
     block = record["routed"]["fake_fez"]["two_round"]
     best = next(e for e in block["single_b"] if e["name"] == block["best_single_b"])
     kept = best["arms"]["feed_forward"]["runs"][0]
-    job = next(job for job, row in replay_jobs(record) if row is kept)
+    job = next(job for _, job, row in replay_jobs(record) if row is kept)
     run = compile_job(job)
     _require(replay_matches(run, kept) is not None, "the replay rejects the retained run")
+    stale = copy.deepcopy(record)
+    stale_block = stale["routed"][fez][two]
+    for stale_arm in stale_block["baseline"]["arms"].values():
+        for stale_run in stale_arm["runs"]:
+            stale_run[3] += 7
+    judge(fez, two, stale_block)
+    check_derived(stale, recompute_exact=False)
+    baseline_location = (fez, two, "unencoded")
+    baseline_jobs = [(job, row) for loc, job, row in replay_jobs(stale) if loc == baseline_location]
+    _require(len(baseline_jobs) == len(SEEDS) * len(arms(two)), "the replay omits the unencoded baseline")
+    stale_job, stale_row = baseline_jobs[0]
+    _require(replay_matches(compile_job(stale_job), stale_row) is None, "the replay accepted a stale baseline run")
+    fresh_baseline: dict[Location, dict[str, list[list[Any]]]] = {baseline_location: {}}
+    for loc, job, row in replay_jobs(record):
+        if loc == baseline_location:
+            fresh_baseline[loc].setdefault(arm_name(job[3]), []).append(row)
+    try:
+        verify_verdicts(stale, fresh_baseline)
+    except SystemExit:
+        pass
+    else:
+        raise SystemExit("gl52_split_conjugators: the verdict replay accepted a stale baseline")
     layout = RUN_FIELDS.index("final_layout")
     replay_corruptions = {
         "routed CZ": lambda row: row.__setitem__(3, row[3] + 1),
@@ -1230,7 +1344,7 @@ def self_test(record: dict[str, Any]) -> str:
         damaged_row = copy.deepcopy(kept)
         corrupt_row(damaged_row)
         _require(replay_matches(run, damaged_row) is None, f"the replay accepted a corrupted {label}")
-    total = len(corruptions) + len(replay_corruptions)
+    total = len(corruptions) + len(replay_corruptions) + 2
     return f"GL(3,2) search, {SAMPLE_PAIRS} sampled coset pairs and {total} corruptions rejected"
 
 
