@@ -1,7 +1,12 @@
 # open_gororoba inventory: box-kites, assessors, zero divisors
 
-Compiled 2026-10-17 from a read-only search of ~/Github/open_gororoba. registry/claims.toml is the
-status authority. Nothing was built or run.
+Compiled 2026-10-17 from a read-only search of the open_gororoba repository
+(github.com/Oichkatzelesfrettschen/open_gororoba) at commit
+f540610412409004c4f8f0843dbee6352e6a293a; every path, count and claim id below
+refers to that tree, and registry/claims.toml at that commit is the status
+authority. Nothing was built or run. The census in docs/evidence/box_kite_census/
+recomputes the box-kite facts from cd_core, so a design input rests on the
+census and this inventory locates the sibling code.
 
 ## Code clusters
 
