@@ -4621,7 +4621,13 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         # The configuration identity is read once the charge is on disk and
         # before result(), so a job that ended in ERROR or CANCELLED keeps it;
         # a job with results adds the version at each execution start below.
-        backend = service.backend(job_entry["backend"])
+        # Identity is provenance: a backend the account no longer serves
+        # records None fields, and only a job with results needs the backend.
+        backend: Any = None
+        try:
+            backend = service.backend(job_entry["backend"])
+        except Exception:  # noqa: BLE001 - QiskitBackendNotFoundError and transport faults alike leave identity unread
+            backend = None
         job_out["backend_identity"] = execution_identity(backend, {})
         try:
             result = job.result()
@@ -4653,6 +4659,8 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             )
         spans = pub_windows(result, len(pub_manifests))
         twirled_readout = bool(job_entry.get("options", {}).get("twirling", {}).get("enable_measure"))
+        if backend is None:
+            backend = service.backend(job_entry["backend"])
         # One calibration fetch per distinct execution start: a PUB is replayed
         # under the Target and properties in force when its shots began, and
         # its scheduler residual is read against that Target's durations.

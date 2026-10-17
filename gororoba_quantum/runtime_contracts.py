@@ -1584,6 +1584,24 @@ def _verify_fused_collection() -> None:
                     f"a job that ended in {terminal} collects identity {job_record.get('backend_identity')}"
                 )
 
+        # A failed job on a backend the account no longer serves still
+        # collects its usage, with an unread identity.
+        class _RetiredBackendService(_CollectionProbeService):
+            def backend(self, name: str) -> _ProbeBackend:
+                raise RuntimeError(f"fixture backend {name} is not served")
+
+        retired = _ProbeResultJob(result, status="CANCELLED", usage=usage, charge=0.25)
+        retired.result = lambda: (_ for _ in ()).throw(RuntimeError("job failed on the service"))  # type: ignore[method-assign]
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(_RetiredBackendService(backend, {job_id: retired}), run_dir)
+        retired_record = json.loads((run_dir / "collect.json").read_text())[0]["jobs"][job_id]
+        if retired_record["usage"]["qpu_charge_time_seconds"] != "0.25" or retired_record.get("backend_identity") != {
+            "backend_version": None,
+            "processor_type": None,
+            "backend_version_at_execution": {},
+        }:
+            raise RuntimeError(f"a failed job on an unserved backend collects as {retired_record}")
+
         # A job still running at collection start that then fails keeps the
         # charge read after the failure.
         class _FailingRunningJob(_ProbeResultJob):
