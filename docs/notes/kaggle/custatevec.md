@@ -40,11 +40,17 @@ The full Aer GPU configuration probe carries the cuStateVec row:
 
 ```sh
 "$PYTHON" scripts/kaggle_run.py push scripts/aer_gpu_probe.py \
-    --slug gororoba-aer-gpu-config --machine NvidiaTeslaT4 --timeout 5400 \
+    --slug gororoba-aer-gpu-config --machine NvidiaTeslaT4 --timeout 10800 \
     --include docs/evidence/calibration/history/ibm_fez/20261016T1212520700.json \
     --include docs/evidence/calibration/ibm_kingston.json \
-    -- --out results/kaggle_out/aer_gpu_probe.json
+    -- --out /kaggle/working/output/aer_gpu_probe.json
 ```
+
+The probe rewrites `--out` after every row, and a session Kaggle ends at
+the timeout returns `/kaggle/working/output`, so the record keeps every
+row finished before the cut. A T4 host has four CPUs: the probe reruns each
+row whose load exceeded them at its start or end and waits up to `IDLE_WAIT_SECONDS`
+before each of its rows, so the full probe outlasts 5400 s there.
 
 `--workloads n21 --configurations
 cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec`
