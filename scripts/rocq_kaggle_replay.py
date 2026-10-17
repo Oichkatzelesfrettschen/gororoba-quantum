@@ -1,13 +1,20 @@
-"""Build the pinned Rocq toolchain on a Kaggle kernel and replay every retained proof receipt.
+"""Replay the retained Rocq proof receipts on a Kaggle kernel or a CI runner under the pinned toolchain.
 
-Hosted CI carries no Rocq, so the replay scripts under docs/evidence run only
-where a pinned toolchain exists. A Kaggle CPU kernel builds one from source:
+The replay scripts under docs/evidence run only where a pinned toolchain
+exists. A Kaggle CPU kernel builds one from source:
 opam (Ubuntu's package, sandboxing off) creates a switch on
 ocaml-base-compiler OCAML and installs rocq-runtime, rocq-core and
 rocq-stdlib at ROCQ_PACKAGES, then this script requires ``rocq --version`` to
 equal docs/evidence/c881_exhaustive/toolchain.txt before any replay runs.
 open_gororoba, whose sources three replays hash, is cloned at the commit
 ``--gororoba-commit`` names.
+
+The ci.yml job rocq-replay supplies the toolchain and the checkout itself:
+``--rocq PATH`` skips the build and keeps the version equality,
+``--gororoba-root DIR`` skips the clone and requires the checkout's HEAD to
+equal ``--gororoba-commit``, and ``--only NAME...`` selects replays by name
+(formal_certificates, c881_exhaustive, stiefel_witness, folding_proofs,
+TargetFlipN21; the default is the Kaggle set).
 
 Each replay runs unchanged, with ROCQ pointing at the built executable:
 
@@ -47,6 +54,7 @@ SYSTEM_PACKAGES = ("opam", "m4", "pkg-config", "libgmp-dev", "git", "make", "gcc
 GOROROBA_URL = "https://github.com/Oichkatzelesfrettschen/open_gororoba.git"
 SWITCH = "rocq-9.2"
 REPLAYS = ("formal_certificates", "c881_exhaustive", "stiefel_witness")
+SELECTABLE = (*REPLAYS, "folding_proofs", "TargetFlipN21")
 
 
 def run(
@@ -112,26 +120,40 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--gororoba-commit", required=True)
     parser.add_argument("--folding", action="store_true", help="also replay folding_proofs")
+    parser.add_argument("--rocq", type=Path, help="use this rocq executable and skip the opam build")
+    parser.add_argument("--gororoba-root", type=Path, help="use this open_gororoba checkout and skip the clone")
+    parser.add_argument("--only", nargs="+", choices=SELECTABLE, help="replay only these entries")
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
     steps: list[dict[str, Any]] = []
-    rocq = build_toolchain(steps)
+    rocq = args.rocq if args.rocq is not None else build_toolchain(steps)
     version = subprocess.run([str(rocq), "--version"], capture_output=True, text=True, check=True).stdout
     expected = TOOLCHAIN.read_text(encoding="utf-8")
     if version != expected:
-        raise SystemExit(f"built toolchain reports {version!r}, expected {expected!r}")
-    gororoba = Path(tempfile.mkdtemp()) / "open_gororoba"
-    steps.append(run(["git", "clone", "-q", "--filter=blob:none", GOROROBA_URL, str(gororoba)]))
-    steps.append(run(["git", "-C", str(gororoba), "checkout", "-q", args.gororoba_commit]))
-    if steps[-1]["returncode"]:
-        raise SystemExit(f"open_gororoba checkout failed\n{steps[-1]['tail']}")
+        raise SystemExit(f"toolchain reports {version!r}, expected {expected!r}")
+    if args.gororoba_root is not None:
+        gororoba = args.gororoba_root
+        head = subprocess.run(
+            ["git", "-C", str(gororoba), "rev-parse", "HEAD"], capture_output=True, text=True, check=True
+        ).stdout.strip()
+        if head != args.gororoba_commit:
+            raise SystemExit(f"open_gororoba HEAD {head} differs from --gororoba-commit {args.gororoba_commit}")
+    else:
+        gororoba = Path(tempfile.mkdtemp()) / "open_gororoba"
+        steps.append(run(["git", "clone", "-q", "--filter=blob:none", GOROROBA_URL, str(gororoba)]))
+        steps.append(run(["git", "-C", str(gororoba), "checkout", "-q", args.gororoba_commit]))
+        if steps[-1]["returncode"]:
+            raise SystemExit(f"open_gororoba checkout failed\n{steps[-1]['tail']}")
     env = dict(os.environ, ROCQ=str(rocq), GOROROBA_ROOT=str(gororoba))
+    selected = args.only or (*REPLAYS, *(("folding_proofs",) if args.folding else ()), "TargetFlipN21")
     replays: dict[str, Any] = {}
-    for name in (*REPLAYS, *(("folding_proofs",) if args.folding else ())):
+    for name in selected:
+        if name == "TargetFlipN21":
+            replays[name] = target_flip(rocq)
+            continue
         evidence = ROOT / "docs/evidence" / name
         retained = evidence / "rocq_replay.log" if name == "folding_proofs" else None
         replays[name] = run(["sh", str(evidence / "replay_rocq.sh")], env=env, cwd=ROOT, retained_log=retained)
-    replays["TargetFlipN21"] = target_flip(rocq)
     result = {
         "schema": "rocq-kaggle-replay-v2",
         "toolchain": version,
