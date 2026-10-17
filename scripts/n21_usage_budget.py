@@ -385,6 +385,17 @@ def drift_rows() -> list[tuple[str, str, str, float]]:
     return rows
 
 
+def assumption_text(design: Design) -> str:
+    parts = ["exact model" if design.model_shots is None else f"sampled model, {design.model_shots:,} shots"]
+    if design.variance_bound is not None and design.replicas > 1:
+        parts.append(f"independent replicas, variance <= {design.variance_bound}")
+    if design.equal:
+        parts.append("hypothetical equal replicas")
+    if design.rep_delay < 250e-6:
+        parts.append("state-prep error unmodeled")
+    return "; ".join(parts)
+
+
 def extension_shots(ref: Reference, kind: str, count: int = 1, alpha: float = 0.05) -> int:
     """Per-arm shots of finite-sample bounds experiment_optimizer does not implement (owner sign-off needed).
 
@@ -502,43 +513,69 @@ def render() -> str:
         f"**Shots and seconds.** Reference modeled contrast difference {c0:.4f} (ideal 0.25); alpha 0.05, "
         "power 0.8, one-sided, union bound over the two PUBs, as `family_contracts` declares.",
         "",
-        "| Configuration | admitted | shots per arm | planner charge (s) | measured-model charge (s) | "
-        "simulation allowance | QPU radius at that shot count |",
-        "| --- | --- | --- | --- | --- | --- | --- |",
+        "| Configuration | executions | planner charge (s) | measured-model charge (s) | smallest job ceiling (s) | "
+        "power | assumptions | simulation allowance | QPU radius |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for design in designs(ref):
         n, result = minimum_shots(ref, design)
         observable = result.observables[0]
+        assumptions = assumption_text(design)
         if n is None:
             lines.append(
-                f"| {design.label} | {'yes' if design.admitted else 'no'} | infeasible | - | - | "
+                f"| {design.label} | infeasible | - | - | - | - | {assumptions} | "
                 f"{observable.simulation_error_radius:.4f} | - |"
             )
             continue
         planner = result.estimated_charge_seconds
         measured = measured_charge(ref, n, design.rep_delay, excess, high)
         radius = (observable.detection_radius or 0.0) + (observable.power_radius or 0.0)
+        power = "0.8, admitted contract" if design.admitted else "unverified"
         lines.append(
-            f"| {design.label} | {'yes' if design.admitted else 'no (power unverified)'} | {n:,} | {planner:.1f} | "
-            f"{measured} | {observable.simulation_error_radius:.4f} | {radius:.4f} |"
+            f"| {design.label} | 2 x {n:,} | {planner:.1f} | {measured} | {math.ceil(planner)} | {power} | "
+            f"{assumptions} | {observable.simulation_error_radius:.4f} | {radius:.4f} |"
         )
     pair = sum(t + s * LATENCY_SECONDS + 250e-6 for _, _, t, s in ref.pubs)
-    for label, shots in (
-        ("extension: Bernstein with V=0.55, R=1", extension_shots(ref, "bernstein")),
+    for label, shots, power, assumptions in (
+        (
+            "extension: Bernstein with V=0.55, R=1",
+            extension_shots(ref, "bernstein"),
+            "0.8, contract change",
+            "exact model; variance <= 0.55",
+        ),
         *(
             (
                 f"extension: Hoeffding over independent replicas, R={count} {replica_label(ref, count)}",
                 extension_shots(ref, "independent", count),
+                "0.8, contract change",
+                "exact model; independent replicas",
             )
             for count in sorted(ref.replica_sets)
             if count > 1
         ),
-        ("normal approximation, one-sided alpha 0.05, pooled variance", normal_shots(ref)),
+        (
+            "normal approximation, one-sided alpha 0.05, pooled variance",
+            normal_shots(ref),
+            "0.8 asymptotic, contract change",
+            "exact model; normal limit",
+        ),
     ):
+        planner = OVERHEAD_SECONDS + shots * pair
         lines.append(
-            f"| {label} | no (contract change) | {shots:,} | {OVERHEAD_SECONDS + shots * pair:.1f} | "
-            f"{measured_charge(ref, shots, 250e-6, excess, high)} | 0.0000 | - |"
+            f"| {label} | 2 x {shots:,} | {planner:.1f} | {measured_charge(ref, shots, 250e-6, excess, high)} | "
+            f"{math.ceil(planner)} | {power} | {assumptions} | 0.0000 | - |"
         )
+    record = json.loads(REFERENCE.read_text())
+    selected = next(c for c in record["optimization"]["candidates"] if c["name"] == record["optimization"]["selected"])
+    lines += [
+        "",
+        f"Executions count shots summed over the two PUBs; replicas share a shot. The dry run selected "
+        f"`{selected['name']}` ({selected['proxy_metadata']['replicas']} replicas, "
+        f"{selected['jobs'][0]['pubs'][0]['shots']:,} shots per arm, {selected['estimated_charge_seconds']:.1f} s) "
+        f"under a {record['policy']['max_execution_seconds']} s job ceiling."
+        if record["optimization"].get("selected")
+        else "The reference dry run selected no candidate.",
+    ]
     lines += [
         "",
         "**CZ reduction (exact model, Hoeffding, R=1).** Removing k routed CZ scales the contrast by rho^-k; "
