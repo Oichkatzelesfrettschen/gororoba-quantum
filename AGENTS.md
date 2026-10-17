@@ -502,7 +502,9 @@ used; scripts/qi_mcp_server.py serves the same role on SDK 4.1.
 
 **Login.** `"$QI_ENV/bin/qi" login` runs the OAuth device flow: it prints a
 verification URL and code that the user approves in a browser, then stores
-access and refresh tokens in `~/.quantuminspire/config.json` (mode 600). The
+access and refresh tokens in `~/.quantuminspire/config.json`, which the CLI
+writes mode 644; `chmod 600` it after login, and scripts/qi_platform.py's
+client narrows it to mode 600 before reading it. The
 access token lives 3600 s; scripts/qi_platform.py renews it before expiry.
 An agent that finds no login prompts the user to run `qi login` and approve
 the code; tokens never enter a commit, a log or memory.
@@ -564,7 +566,15 @@ metered quota. `"$QI_PYTHON" scripts/qi_platform.py submit CASE_DIR
 --backend-type-id N --approval TEXT` verifies every circuit against its
 cases.json digest, refuses an offline backend or a limit breach, records the
 approval in submission.json and sends one batch; `collect CASE_DIR` writes
-the raw shots, job records and charged transactions. Runs live under
+the raw shots, job records and charged transactions. On hardware a batch
+holds at most three circuits and goes in only when none of the account's
+batches is queued, so at most three jobs are ever queued (the FAQ's limit
+under either reading of "job"); a series runs a QX dry run first, then
+submits each hardware batch only after the previous one is collected, passes
+its sanity checks and a pause. The case generators emit each experiment as
+a series of `batch-NN/` cases within that limit, and
+`scripts/check_qi_platform_retention.py` passes every generated batch through
+submit's checks up to the first request. Runs live under
 results/quantum_inspire/runs/. A question about the Tuna devices themselves
 (their crosstalk, coherent error, readout) is a hardware question; any
 simulation of 14 qubits or fewer still runs on Kaggle.
@@ -573,7 +583,8 @@ simulation of 14 qubits or fewer still runs on Kaggle.
 `quantum-inspire` for Claude Code and `quantum_inspire` for Codex, serves
 catalogue, queue, hardware status, usage ledger, jobs, results and local
 qxelarator emulation as read tools and asks before qi_compile (creates remote
-resources) and qi_submit (executes). Failures return isError with the
+resources) and qi_submit_case (executes through the retained-case runner).
+The legacy raw-string qi_submit refuses execution. Failures return isError with the
 service's message.
 
 **Gates.** core-325 (`capture_qi_docs.py --check`), core-326

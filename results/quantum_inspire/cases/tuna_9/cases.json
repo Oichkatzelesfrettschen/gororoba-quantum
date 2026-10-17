@@ -1,73 +1,22 @@
 {
- "schema": "qi-crosstalk-teleport-cases-v1",
+ "schema": "qi-crosstalk-teleport-series-v1",
  "backend": "tuna_9",
- "backend_type_id": 6,
- "nqubits": 9,
- "shots": 16384,
- "drive_pulses": 40,
- "wait_cycles": 40,
- "circuits": [
+ "batches": [
   {
-   "file": "additivity-none.cq",
-   "kind": "additivity",
-   "config": "none",
-   "sha256": "4997ee12bf3f3ffe510fd807c05baa716aae12b01ae184c37dd6aa911c9ac1dd"
+   "batch": "batch-00",
+   "files": [
+    "additivity-none.cq",
+    "additivity-A.cq",
+    "additivity-B.cq"
+   ]
   },
   {
-   "file": "additivity-A.cq",
-   "kind": "additivity",
-   "config": "A",
-   "sha256": "4ffe7835b61ce05c5f6fde7300caefc475cae621587d78fa18a649ccaaaa55f9"
-  },
-  {
-   "file": "additivity-B.cq",
-   "kind": "additivity",
-   "config": "B",
-   "sha256": "a93a5c3dc7c3499824b4265cab1bca1c615fd8865d4d8aee9c8de07a19998ec5"
-  },
-  {
-   "file": "additivity-AB.cq",
-   "kind": "additivity",
-   "config": "AB",
-   "sha256": "29965bb2e7f19bd19d7100ae75e862e66c7af55535978287831caf5ddb21abcb"
-  },
-  {
-   "file": "teleport.cq",
-   "kind": "teleport",
-   "sha256": "cbe8d725288a4b14a757d01b38b3354184a6bb2e041a80c8535a7fa7e8ff697d"
-  }
- ],
- "stars": [
-  {
-   "T": 0,
-   "A": 1,
-   "B": 2
-  },
-  {
-   "T": 6,
-   "A": 3,
-   "B": 4
-  },
-  {
-   "T": 7,
-   "A": 5,
-   "B": 8
-  }
- ],
- "paths": [
-  {
-   "I": 1,
-   "P1": 0,
-   "P2": 2,
-   "D": 4,
-   "input": "0"
-  },
-  {
-   "I": 3,
-   "P1": 6,
-   "P2": 8,
-   "D": 7,
-   "input": "1"
+   "batch": "batch-01",
+   "files": [
+    "additivity-none.cq",
+    "additivity-AB.cq",
+    "teleport.cq"
+   ]
   }
  ]
 }

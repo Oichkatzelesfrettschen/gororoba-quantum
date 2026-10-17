@@ -37,10 +37,14 @@ What the replay does:
   the undriven configuration, the additivity residual, driver P1, and
   corrected and post-selected teleport fidelity.
 
-Modes: --run writes the full replay JSON; --check replays one star and one
-path at reduced shots on the CPU and compares them with the retained JSON.
+Modes: --run writes the full replay JSON; --check requires the recorded
+cases and analysis digests and every measured Tuna-17 column to match the
+retained run, then replays one star and one path at reduced shots on the CPU
+and compares them with the retained JSON; --refresh-measured rewrites the
+measured columns, summary and analysis digest from the current analysis.json
+and leaves every Kingston prediction untouched.
 
-Usage: "$PYTHON" scripts/qi_ibm_noise_replay.py (--run | --check) [--out FILE]
+Usage: "$PYTHON" scripts/qi_ibm_noise_replay.py (--run | --check | --refresh-measured) [--out FILE]
 """
 
 from __future__ import annotations
@@ -491,6 +495,33 @@ def strip(row: dict[str, Any], keys: Sequence[str]) -> dict[str, Any]:
     return {k: v for k, v in row.items() if k not in keys}
 
 
+def measured(record: dict[str, Any]) -> dict[str, Any]:
+    """The record with its Tuna-17 measured blocks, summary and analysis digest taken from RUN_DIR/analysis.json.
+
+    The Kingston predictions depend only on the circuits and the calibration
+    snapshot; the measured columns beside them come from the current analysis,
+    so a changed analysis refreshes them without a new simulation.
+    """
+    analysis = json.loads((RUN_DIR / "analysis.json").read_text(encoding="utf-8"))
+    body = {
+        "additivity": [
+            {**row, "tuna_17": strip(next(m for m in analysis["additivity"] if m["T"] == row["T"]), ("T", "A", "B"))}
+            for row in record["additivity"]
+        ],
+        "teleport": [
+            {
+                **row,
+                "tuna_17": strip(
+                    next(m for m in analysis["teleport"] if m["I"] == row["I"]), ("I", "P1", "P2", "D", "input")
+                ),
+            }
+            for row in record["teleport"]
+        ],
+    }
+    source = {**record["source_run"], "analysis_sha256": sha256(RUN_DIR / "analysis.json")}
+    return {**record, "source_run": source, "summary": summarize(body), **body}
+
+
 def versions() -> dict[str, str]:
     import qiskit
     import qiskit_aer
@@ -563,9 +594,19 @@ def check(retained: Path) -> None:
     cases = json.loads((RUN_DIR / "cases.json").read_text(encoding="utf-8"))
     if record["source_run"]["cases_sha256"] != sha256(RUN_DIR / "cases.json"):
         raise SystemExit(f"{retained}: source cases differ from {RUN_DIR.name}")
+    if record["source_run"]["analysis_sha256"] != sha256(RUN_DIR / "analysis.json"):
+        raise SystemExit(
+            f"{retained}: recorded analysis digest differs from {RUN_DIR.name}/analysis.json; run --refresh-measured"
+        )
+    if record != measured(record):
+        raise SystemExit(f"{retained}: measured Tuna-17 columns differ from {RUN_DIR.name}/analysis.json")
+    # The replayed bytes, the manifest digest and the record's circuit map agree.
+    if set(record["source_run"]["circuits"]) != {row["file"] for row in cases["circuits"]}:
+        raise SystemExit(f"{retained}: recorded circuits differ from the {RUN_DIR.name} manifest")
     for row in cases["circuits"]:
         text = (RUN_DIR / row["file"]).read_text(encoding="utf-8")
-        if hashlib.sha256(text.encode()).hexdigest() != record["source_run"]["circuits"][row["file"]]:
+        digest = hashlib.sha256(text.encode()).hexdigest()
+        if not digest == row["sha256"] == record["source_run"]["circuits"][row["file"]]:
             raise SystemExit(f"{retained}: circuit {row['file']} differs from the replayed one")
     body = replay(RUN_DIR, snapshot, CHECK_SHOTS, SEED, 1, 1)
     star, path = body["additivity"][0], body["teleport"][0]
@@ -606,11 +647,16 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--run", action="store_true")
     mode.add_argument("--check", action="store_true")
+    mode.add_argument("--refresh-measured", action="store_true")
     parser.add_argument("--out", type=Path, default=OUT)
     parser.add_argument("--shots", type=int, default=None)
     args = parser.parse_args()
     if args.run:
         run(args.out, args.shots)
+    elif args.refresh_measured:
+        record = measured(json.loads(args.out.read_text(encoding="utf-8")))
+        args.out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+        print(f"refreshed the measured columns of {args.out}")
     else:
         check(args.out)
     return 0

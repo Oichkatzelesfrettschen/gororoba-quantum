@@ -19,13 +19,27 @@ its 3600 s lifetime ends, so a long-lived server keeps working.
 | `qi_results(job_id, include_raw=False)` | outcome counts, and every shot on request | read-only | allow |
 | `qi_run_local(cqasm, shots=1024)` | local qxelarator emulation, at most 24 qubits and 100000 shots | read-only, closed world | allow |
 | `qi_compile(cqasm, backend_type_id, stage="decomposition")` | remote compilation; creates project, algorithm, commit and file; executes nothing | mutating | ask |
-| `qi_submit(cqasm, backend_type_id, shots, approval, raw_data=True)` | one circuit as one batch job; executes on the backend; refuses an empty approval, an offline backend and an out-of-range shot count | mutating | ask |
+| `qi_submit_case(case_dir, backend_type_id, approval)` | one batch from retained `cases.json` and checked cQASM files; enables raw shots and uses the durable submission guard | mutating | ask |
+| `qi_submit(cqasm, backend_type_id, shots, approval, raw_data=True)` | legacy signature; refuses execution and names `qi_submit_case` as its replacement | refuses execution | no execution |
 
 A failed call raises `ToolError` with the service's message, so the client
 sees `isError: true` and the reason (an unknown instruction returns the
-libqasm analyzer error). A research run still goes through
-`qi_platform.py submit`, which binds circuits to cases.json digests and
-retains the records; `qi_submit` serves exploration.
+libqasm analyzer error). Every execution uses `qi_platform.py submit`,
+directly or through `qi_submit_case`, which binds circuits to cases.json
+digests and retains the records. The legacy raw-string tool no longer
+provides an unrecorded exploration path.
+
+To migrate a raw-string call, write its cQASM to a retained case directory
+and add `cases.json` with `backend`, `backend_type_id`, `shots` and the
+ordered `circuits` list of `file` and `sha256` entries. Pass that directory
+and the approval to `qi_submit_case`; the manifest supplies the shot count.
+The tool checks the current user's queue capacity before creating resources
+and returns a `qi-submission-v2` receipt with `state: enqueued`, the manifest's
+`cases_sha256`, and each uploaded job's circuit `sha256`.
+An uncertain enqueue response leaves `submission-state.json`, which blocks
+a retry. Use `qi_platform.py reconcile CASE_DIR` for read-only receipt
+recovery, then `qi_platform.py collect CASE_DIR` to retain the raw shots.
+The recovery and retention rules are in [usage.md](usage.md).
 
 ## Registration
 
@@ -45,7 +59,7 @@ working directory; the script adds its own directory to `sys.path` for
 
 Claude Code permission rules in `~/.claude/settings.json`: allow
 `mcp__quantum-inspire__qi_{backends,backend,hardware_status,usage,jobs,job,results,run_local}`,
-ask for `mcp__quantum-inspire__qi_compile` and `mcp__quantum-inspire__qi_submit`.
+ask for `mcp__quantum-inspire__qi_compile` and `mcp__quantum-inspire__qi_submit_case`.
 The shell launcher loads `CLAUDE_MCP_SERVERS` (default
 `kaggle,quantum-inspire`); `CLAUDE_MCP_SERVERS=` starts with none.
 
@@ -54,10 +68,17 @@ Claude's MCP OAuth do not replace `qi login`.
 
 ## Smoke test
 
-A Python MCP client over stdio negotiates protocol 2025-11-25, lists the ten
-tools with their annotations, runs `qi_run_local` on X q[0] (64 shots read
-`01`), returns isError with the analyzer message for an unknown instruction,
-and reads `qi_backends`, `qi_usage`, `qi_jobs` and `qi_job`.
+The original Python MCP smoke test over stdio negotiated protocol 2025-11-25,
+listed ten tools with their annotations, ran `qi_run_local` on X q[0] (64 shots read
+`01`), returned isError with the analyzer message for an unknown instruction,
+and read `qi_backends`, `qi_usage`, `qi_jobs` and `qi_job`.
+
+The case-directory migration adds the eleventh tool. The mock-only contract
+`scripts/check_qi_platform_retention.py` imports the server with SDK stubs,
+checks the legacy refusal and guarded submission, and verifies that a repeat
+submission becomes `ToolError` without terminating stdio or printing to it.
+These checks require neither the MCP SDK nor credentials. They do not rerun
+the original SDK transport smoke test.
 
 ## Community bridge, for comparison
 

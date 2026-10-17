@@ -6,7 +6,7 @@
  "source_run": {
   "backend": "tuna_17",
   "cases_sha256": "fccf64ee4f5e8d98bd0f7aca9c8d333da5d6b49d7b6ace5aa1202bc8c4e6e8fc",
-  "analysis_sha256": "615d88ddade7e89c5a09932784e351f852817b6920648610189e573515904a88",
+  "analysis_sha256": "4d67e170748e30a9b08dbce0190d47fc5ea030fd9238e85a93fde7ef31784f51",
   "circuits": {
    "additivity-none.cq": "04d932ba87693ceee8842a28849a04757c376d5ab348855eb5ccbb017e440409",
    "additivity-A.cq": "fb05d345bf309036d7824fcbf47d6c4bd643f20a0fc3a5450dd99571978aefc9",
@@ -142,6 +142,11 @@
      "B": 0.5552978515625,
      "AB": 0.50341796875
     },
+    "principal_branch": {
+     "max_abs_sin_phi": 0.1492919921875,
+     "margin_rad": 1.4209441250645916,
+     "branch_ambiguous": false
+    },
     "phase_rad": {
      "none": -0.02783562572021688,
      "A": -0.14985220173030497,
@@ -156,27 +161,78 @@
     "additivity_residual_rad": 0.01803015668120478,
     "residual_sigma_rad": 0.015625,
     "residual_z": 1.1539300275971058,
-    "driver_p1": {
-     "none": {
-      "1": 0.03021240234375,
-      "2": 0.02587890625
-     },
+    "drivers": {
      "A": {
-      "1": 0.06195068359375,
-      "2": 0.033203125
+      "qubit": 1,
+      "p1_driven_alone": 0.06195068359375,
+      "p1_driven_with_other": 0.25860595703125,
+      "simultaneous_change": 0.1966552734375,
+      "simultaneous_change_z": 48.51717378388978
      },
      "B": {
-      "1": 0.03082275390625,
-      "2": 0.04571533203125
-     },
-     "AB": {
-      "1": 0.25860595703125,
-      "2": 0.89263916015625
+      "qubit": 2,
+      "p1_driven_alone": 0.04571533203125,
+      "p1_driven_with_other": 0.89263916015625,
+      "simultaneous_change": 0.846923828125,
+      "simultaneous_change_z": 153.60172302477028
      }
     },
-    "driver_min_overrotation_rad_per_x": {
-     "1": 0.02667401741276944,
-     "2": 0.06184854627295731
+    "target_phase_by_driver_outcome": {
+     "none": {},
+     "A": {
+      "1": {
+       "0": {
+        "shots": 15369,
+        "target_p1": 0.4264428394820743,
+        "target_phase_rad": -0.14765021341462
+       },
+       "1": {
+        "shots": 1015,
+        "target_p1": 0.4088669950738916,
+        "target_phase_rad": -0.18329057506531007
+       }
+      }
+     },
+     "B": {
+      "2": {
+       "0": {
+        "shots": 15635,
+        "target_p1": 0.5551007355292613,
+        "target_phase_rad": 0.11042575339548347
+       },
+       "1": {
+        "shots": 749,
+        "target_p1": 0.5594125500667557,
+        "target_phase_rad": 0.11910651513558183
+       }
+      }
+     },
+     "AB": {
+      "1": {
+       "0": {
+        "shots": 12147,
+        "target_p1": 0.5014406849427843,
+        "target_phase_rad": 0.002881373872579318
+       },
+       "1": {
+        "shots": 4237,
+        "target_p1": 0.5090866178900165,
+        "target_phase_rad": 0.018174236263890586
+       }
+      },
+      "2": {
+       "0": {
+        "shots": 1759,
+        "target_p1": 0.5082433200682206,
+        "target_phase_rad": 0.016487387098169496
+       },
+       "1": {
+        "shots": 14625,
+        "target_p1": 0.5028376068376068,
+        "target_phase_rad": 0.0056752441402497175
+       }
+      }
+     }
     }
    }
   },
@@ -279,6 +335,11 @@
      "B": 0.46966552734375,
      "AB": 0.48028564453125
     },
+    "principal_branch": {
+     "max_abs_sin_phi": 0.1204833984375,
+     "margin_rad": 1.450019513099054,
+     "branch_ambiguous": false
+    },
     "phase_rad": {
      "none": -0.1207768136958425,
      "A": -0.0467699788390125,
@@ -293,27 +354,79 @@
     "additivity_residual_rad": -0.05273954441135748,
     "residual_sigma_rad": 0.015625,
     "residual_z": -3.375330842326879,
-    "driver_p1": {
-     "none": {
-      "5": 0.04052734375,
-      "6": 0.03607177734375
-     },
+    "drivers": {
      "A": {
-      "5": 0.15472412109375,
-      "6": 0.03448486328125
+      "qubit": 5,
+      "p1_driven_alone": 0.15472412109375,
+      "p1_driven_with_other": 0.13055419921875,
+      "simultaneous_change": -0.024169921875,
+      "simultaneous_change_z": -6.255600566940785
      },
      "B": {
-      "5": 0.04510498046875,
-      "6": 0.71685791015625
-     },
-     "AB": {
-      "5": 0.13055419921875,
-      "6": 0.7015380859375
+      "qubit": 6,
+      "p1_driven_alone": 0.71685791015625,
+      "p1_driven_with_other": 0.7015380859375,
+      "simultaneous_change": -0.01531982421875,
+      "simultaneous_change_z": -3.053277712027718,
+      "overrotation_lower_bound_rad_per_x": 0.05048522274642686
      }
     },
-    "driver_min_overrotation_rad_per_x": {
-     "5": 0.018484309806997244,
-     "6": 0.0496418004940153
+    "target_phase_by_driver_outcome": {
+     "none": {},
+     "A": {
+      "5": {
+       "0": {
+        "shots": 13849,
+        "target_p1": 0.4756300093869594,
+        "target_phase_rad": -0.04875929955240626
+       },
+       "1": {
+        "shots": 2535,
+        "target_p1": 0.48205128205128206,
+        "target_phase_rad": -0.03590515009922858
+       }
+      }
+     },
+     "B": {
+      "6": {
+       "0": {
+        "shots": 4639,
+        "target_p1": 0.4720845009700366,
+        "target_phase_rad": -0.05586004395815417
+       },
+       "1": {
+        "shots": 11745,
+        "target_p1": 0.46871008939974457,
+        "target_phase_rad": -0.0626207395563826
+       }
+      }
+     },
+     "AB": {
+      "5": {
+       "0": {
+        "shots": 14245,
+        "target_p1": 0.4827658827658828,
+        "target_phase_rad": -0.03447506317010932
+       },
+       "1": {
+        "shots": 2139,
+        "target_p1": 0.463768115942029,
+        "target_phase_rad": -0.07252733628562907
+       }
+      },
+      "6": {
+       "0": {
+        "shots": 4890,
+        "target_p1": 0.4754601226993865,
+        "target_phase_rad": -0.04909948005851068
+       },
+       "1": {
+        "shots": 11494,
+        "target_p1": 0.4823386114494519,
+        "target_phase_rad": -0.03533012659147238
+       }
+      }
+     }
     }
    }
   },
@@ -416,6 +529,11 @@
      "B": 0.49786376953125,
      "AB": 0.8067626953125
     },
+    "principal_branch": {
+     "max_abs_sin_phi": 0.613525390625,
+     "margin_rad": 0.9102790803317908,
+     "branch_ambiguous": false
+    },
     "phase_rad": {
      "none": -0.03430848801182409,
      "A": 0.5985880308451321,
@@ -430,27 +548,79 @@
     "additivity_residual_rad": 0.031893201541951396,
     "residual_sigma_rad": 0.015625,
     "residual_z": 2.0411648986848894,
-    "driver_p1": {
-     "none": {
-      "7": 0.02996826171875,
-      "8": 0.0333251953125
-     },
+    "drivers": {
      "A": {
-      "7": 0.27142333984375,
-      "8": 0.03497314453125
+      "qubit": 7,
+      "p1_driven_alone": 0.27142333984375,
+      "p1_driven_with_other": 0.274169921875,
+      "simultaneous_change": 0.00274658203125,
+      "simultaneous_change_z": 0.5581360878921209
      },
      "B": {
-      "7": 0.03204345703125,
-      "8": 0.764404296875
-     },
-     "AB": {
-      "7": 0.274169921875,
-      "8": 0.76470947265625
+      "qubit": 8,
+      "p1_driven_alone": 0.764404296875,
+      "p1_driven_with_other": 0.76470947265625,
+      "simultaneous_change": 0.00030517578125,
+      "simultaneous_change_z": 0.06510242072939545,
+      "overrotation_lower_bound_rad_per_x": 0.05319981359700796
      }
     },
-    "driver_min_overrotation_rad_per_x": {
-     "7": 0.027554277425583484,
-     "8": 0.05321779577096082
+    "target_phase_by_driver_outcome": {
+     "none": {},
+     "A": {
+      "7": {
+       "0": {
+        "shots": 11937,
+        "target_p1": 0.7829437882214962,
+        "target_phase_rad": 0.6015093819922315
+       },
+       "1": {
+        "shots": 4447,
+        "target_p1": 0.7785023611423432,
+        "target_phase_rad": 0.5907748645315887
+       }
+      }
+     },
+     "B": {
+      "8": {
+       "0": {
+        "shots": 3860,
+        "target_p1": 0.4979274611398964,
+        "target_phase_rad": -0.00414508959019144
+       },
+       "1": {
+        "shots": 12524,
+        "target_p1": 0.49784413925263493,
+        "target_phase_rad": -0.004311734854669454
+       }
+      }
+     },
+     "AB": {
+      "7": {
+       "0": {
+        "shots": 11892,
+        "target_p1": 0.810376723847965,
+        "target_phase_rad": 0.6697033610674
+       },
+       "1": {
+        "shots": 4492,
+        "target_p1": 0.7971950133570792,
+        "target_phase_rad": 0.6365069295409433
+       }
+      },
+      "8": {
+       "0": {
+        "shots": 3855,
+        "target_p1": 0.7981841763942932,
+        "target_phase_rad": 0.6389692359551312
+       },
+       "1": {
+        "shots": 12529,
+        "target_p1": 0.8094021869263309,
+        "target_phase_rad": 0.667219755396625
+       }
+      }
+     }
     }
    }
   },
@@ -553,6 +723,11 @@
      "B": 0.538330078125,
      "AB": 0.51837158203125
     },
+    "principal_branch": {
+     "max_abs_sin_phi": 0.07666015625,
+     "margin_rad": 1.4940608854727635,
+     "branch_ambiguous": false
+    },
     "phase_rad": {
      "none": -0.0760008784509689,
      "A": -0.062418452832733444,
@@ -567,27 +742,78 @@
     "additivity_residual_rad": -0.053566430271059395,
     "residual_sigma_rad": 0.015625,
     "residual_z": -3.4282515373478013,
-    "driver_p1": {
-     "none": {
-      "13": 0.0235595703125,
-      "14": 0.03594970703125
-     },
+    "drivers": {
      "A": {
-      "13": 0.18695068359375,
-      "14": 0.035400390625
+      "qubit": 13,
+      "p1_driven_alone": 0.18695068359375,
+      "p1_driven_with_other": 0.17779541015625,
+      "simultaneous_change": -0.0091552734375,
+      "simultaneous_change_z": -2.145894491164581
      },
      "B": {
-      "13": 0.023193359375,
-      "14": 0.05938720703125
-     },
-     "AB": {
-      "13": 0.17779541015625,
-      "14": 0.05987548828125
+      "qubit": 14,
+      "p1_driven_alone": 0.05938720703125,
+      "p1_driven_with_other": 0.05987548828125,
+      "simultaneous_change": 0.00048828125,
+      "simultaneous_change_z": 0.18662878799032584
      }
     },
-    "driver_min_overrotation_rad_per_x": {
-     "13": 0.021763648295271457,
-     "14": 0.012360239562868231
+    "target_phase_by_driver_outcome": {
+     "none": {},
+     "A": {
+      "13": {
+       "0": {
+        "shots": 13321,
+        "target_p1": 0.46918399519555587,
+        "target_phase_rad": -0.06167109470044172
+       },
+       "1": {
+        "shots": 3063,
+        "target_p1": 0.4671890303623898,
+        "target_phase_rad": -0.06566912806675086
+       }
+      }
+     },
+     "B": {
+      "14": {
+       "0": {
+        "shots": 15411,
+        "target_p1": 0.5368243462461878,
+        "target_phase_rad": 0.07371543554398141
+       },
+       "1": {
+        "shots": 973,
+        "target_p1": 0.5621788283658787,
+        "target_phase_rad": 0.12468043636526255
+       }
+      }
+     },
+     "AB": {
+      "13": {
+       "0": {
+        "shots": 13471,
+        "target_p1": 0.5185212679088412,
+        "target_phase_rad": 0.03705101236863758
+       },
+       "1": {
+        "shots": 2913,
+        "target_p1": 0.5176793683487814,
+        "target_phase_rad": 0.03536610866521049
+       }
+      },
+      "14": {
+       "0": {
+        "shots": 15403,
+        "target_p1": 0.5181458157501785,
+        "target_phase_rad": 0.03629960273793808
+       },
+       "1": {
+        "shots": 981,
+        "target_p1": 0.5219164118246687,
+        "target_phase_rad": 0.04384687191945923
+       }
+      }
+     }
     }
    }
   },
@@ -690,6 +916,11 @@
      "B": 0.46075439453125,
      "AB": 0.44989013671875
     },
+    "principal_branch": {
+     "max_abs_sin_phi": 0.1002197265625,
+     "margin_rad": 1.470408069676502,
+     "branch_ambiguous": false
+    },
     "phase_rad": {
      "none": -0.04176018350399324,
      "A": -0.08469594996004803,
@@ -704,27 +935,79 @@
     "additivity_residual_rad": 0.02111954023450574,
     "residual_sigma_rad": 0.015625,
     "residual_z": 1.3516505750083674,
-    "driver_p1": {
-     "none": {
-      "9": 0.01507568359375,
-      "15": 0.05078125
-     },
+    "drivers": {
      "A": {
-      "9": 0.8828125,
-      "15": 0.051513671875
+      "qubit": 9,
+      "p1_driven_alone": 0.8828125,
+      "p1_driven_with_other": 0.86376953125,
+      "simultaneous_change": -0.01904296875,
+      "simultaneous_change_z": -5.181391705059603,
+      "overrotation_lower_bound_rad_per_x": 0.06107021671555137
      },
      "B": {
-      "9": 0.01715087890625,
-      "15": 0.09222412109375
-     },
-     "AB": {
-      "9": 0.86376953125,
-      "15": 0.096923828125
+      "qubit": 15,
+      "p1_driven_alone": 0.09222412109375,
+      "p1_driven_with_other": 0.096923828125,
+      "simultaneous_change": 0.00469970703125,
+      "simultaneous_change_z": 1.4536285704111778
      }
     },
-    "driver_min_overrotation_rad_per_x": {
-     "9": 0.05963810988330724,
-     "15": 0.015829398676837893
+    "target_phase_by_driver_outcome": {
+     "none": {},
+     "A": {
+      "9": {
+       "0": {
+        "shots": 1920,
+        "target_p1": 0.4708333333333333,
+        "target_phase_rad": -0.05836646665557784
+       },
+       "1": {
+        "shots": 14464,
+        "target_p1": 0.4559596238938053,
+        "target_phase_rad": -0.08819504330285335
+       }
+      }
+     },
+     "B": {
+      "15": {
+       "0": {
+        "shots": 14873,
+        "target_p1": 0.45962482350568146,
+        "target_phase_rad": -0.08083836855070388
+       },
+       "1": {
+        "shots": 1511,
+        "target_p1": 0.47187293183322304,
+        "target_phase_rad": -0.05628384829420582
+       }
+      }
+     },
+     "AB": {
+      "9": {
+       "0": {
+        "shots": 2232,
+        "target_p1": 0.4475806451612903,
+        "target_phase_rad": -0.10503171557278075
+       },
+       "1": {
+        "shots": 14152,
+        "target_p1": 0.45025438100621823,
+        "target_phase_rad": -0.09965610921566354
+       }
+      },
+      "15": {
+       "0": {
+        "shots": 14796,
+        "target_p1": 0.44843200865098676,
+        "target_phase_rad": -0.10331970692961283
+       },
+       "1": {
+        "shots": 1588,
+        "target_p1": 0.4634760705289673,
+        "target_phase_rad": -0.07311297920046987
+       }
+      }
+     }
     }
    }
   }

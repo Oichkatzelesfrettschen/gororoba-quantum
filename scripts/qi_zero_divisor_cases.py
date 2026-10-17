@@ -29,7 +29,11 @@ Three disjoint 5-qubit regions of Tuna-17 (REGIONS, chosen for the fewest
 routed CZ, 67-70 per replica) run a replica each; circuits 1-3 rotate the
 three cases through the three regions (Latin square), so case and region
 separate. Circuit 4 measures every qubit prepared in |0> and circuit 5 every
-qubit prepared in |1>, giving each selector's readout assignment. Routing
+qubit prepared in |1>, giving each selector's readout assignment. A batch
+holds at most HARDWARE_BATCH_CIRCUITS circuits and a batch boundary is a
+calibration boundary, so the Latin square runs whole as batch-00, where its
+dark, bright and fixture contrasts share a calibration, and the readout pair
+runs as batch-01. Routing
 seeds are searched over SEEDS and the fewest-CZ result kept, so the circuits
 regenerate byte for byte under the pinned Qiskit.
 
@@ -48,12 +52,15 @@ The QX twin packs the same nine routed replicas two per 10-qubit circuit and
 runs them on the ideal emulator, which checks the platform's handling of the
 emitted cQASM.
 
---write DIR writes DIR/zero_divisor_tuna_17/ and DIR/zero_divisor_qx/ (circuits
-and cases.json); --check DIR regenerates both and compares bytes; --analyze RUN_DIR writes analysis.json from raw shots;
---replay RUN_DIR... recomputes retained analyses. Bit strings put qubit 0 at
+--write DIR writes DIR/zero_divisor_tuna_17/ and DIR/zero_divisor_qx/, each a
+series of batch-NN/ cases (circuits and cases.json) under a series cases.json;
+--check DIR regenerates both and compares bytes and file sets; --analyze
+RUN_DIR... [--out FILE] writes the analysis from the raw shots of every batch
+of one series; --replay RUN_DIR... recomputes retained single-batch analyses. Bit strings put qubit 0 at
 the rightmost character (Tuna).
 
-Usage: "$PYTHON" scripts/qi_zero_divisor_cases.py (--write DIR | --check DIR | --analyze RUN_DIR | --replay RUN_DIR...)
+Usage: "$PYTHON" scripts/qi_zero_divisor_cases.py
+       (--write DIR | --check DIR | --analyze RUN_DIR... [--out FILE] | --replay RUN_DIR...)
 """
 
 from __future__ import annotations
@@ -68,6 +75,9 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+from qi_platform import HARDWARE_BATCH_CIRCUITS  # noqa: E402
+
+import parallel  # noqa: E402
 from cd_core import _lmat, cd_multiply, cd_sign, sedenion_zero_divisor_corpus  # noqa: E402
 from select_lcu import anf_coefficients, joint_select_signs, sparse_pair_prep  # noqa: E402
 
@@ -226,24 +236,34 @@ def logical(case: str) -> Any:
     return qc
 
 
-def routed(case: str, region: tuple[int, ...]) -> tuple[Any, dict[str, int], int]:
-    """Fewest-CZ routing of a case onto a region; returns the circuit on region-local indices, roles, seed."""
-    from qiskit import transpile
-    from qiskit.transpiler import CouplingMap
+class Route:
+    """One seeded routing of a case onto a region; a module-level callable the process pool can pickle."""
 
-    local = {q: n for n, q in enumerate(region)}
-    edges = [[local[a], local[b]] for a, b in TUNA17 if a in local and b in local]
-    coupling = CouplingMap(edges + [[b, a] for a, b in edges])
-    best = None
-    for seed in SEEDS:
+    def __init__(self, case: str, region: tuple[int, ...]) -> None:
+        self.case = case
+        self.region = region
+
+    def __call__(self, seed: int) -> tuple[int, int, Any]:
+        from qiskit import transpile
+        from qiskit.transpiler import CouplingMap
+
+        local = {q: n for n, q in enumerate(self.region)}
+        edges = [[local[a], local[b]] for a, b in TUNA17 if a in local and b in local]
+        coupling = CouplingMap(edges + [[b, a] for a, b in edges])
         circuit = transpile(
-            logical(case), coupling_map=coupling, basis_gates=BASIS, optimization_level=2, seed_transpiler=seed
+            logical(self.case), coupling_map=coupling, basis_gates=BASIS, optimization_level=2, seed_transpiler=seed
         )
-        count = circuit.count_ops().get("cz", 0)
-        if best is None or count < best[0]:
-            best = (count, seed, circuit)
-    assert best is not None
-    _, seed, circuit = best
+        return circuit.count_ops().get("cz", 0), seed, circuit
+
+
+def routed(case: str, region: tuple[int, ...]) -> tuple[Any, dict[str, int], int]:
+    """Fewest-CZ routing of a case onto a region; returns the circuit on region-local indices, roles, seed.
+
+    The seeds route independently through parallel.ordered_map; the first
+    seed in SEEDS order among the fewest-CZ routings wins, as in a serial scan.
+    """
+    candidates = parallel.ordered_map(Route(case, region), list(SEEDS))
+    _, seed, circuit = min(candidates, key=lambda candidate: (candidate[0], candidate[1]))
     final = circuit.layout.final_index_layout()
     roles = {f"d{b}": region[final[b]] for b in DATA}
     roles["selector"] = region[final[SELECTOR]]
@@ -277,10 +297,26 @@ def header(nqubits: int) -> list[str]:
     return ["version 3.0", "", f"qubit[{nqubits}] q", f"bit[{nqubits}] b", ""]
 
 
-def finish(cases: dict[str, Any], files: dict[str, str]) -> dict[str, str]:
-    for row in cases["circuits"]:
-        row["sha256"] = hashlib.sha256(files[row["file"]].encode()).hexdigest()
-    files["cases.json"] = json.dumps(cases, indent=1) + "\n"
+def finish(cases: dict[str, Any], texts: dict[str, str]) -> dict[str, str]:
+    """batch-NN/ directories of at most HARDWARE_BATCH_CIRCUITS circuits in manifest order, and the series cases.json.
+
+    Each batch is a submittable case whose manifest carries every shared field,
+    so one batch's run directory names the full design.
+    """
+    files: dict[str, str] = {}
+    batches = []
+    rows = cases.pop("circuits")
+    for start in range(0, len(rows), HARDWARE_BATCH_CIRCUITS):
+        name = f"batch-{start // HARDWARE_BATCH_CIRCUITS:02d}"
+        chunk = rows[start : start + HARDWARE_BATCH_CIRCUITS]
+        for row in chunk:
+            row["sha256"] = hashlib.sha256(texts[row["file"]].encode()).hexdigest()
+            files[f"{name}/{row['file']}"] = texts[row["file"]]
+        manifest = {**cases, "schema": "qi-zero-divisor-cases-v2", "batch": name, "circuits": chunk}
+        files[f"{name}/cases.json"] = json.dumps(manifest, indent=1) + "\n"
+        batches.append({"batch": name, "files": [row["file"] for row in chunk]})
+    series = {"schema": "qi-zero-divisor-series-v1", "backend": cases["backend"], "batches": batches}
+    files["cases.json"] = json.dumps(series, indent=1) + "\n"
     return files
 
 
@@ -349,7 +385,8 @@ def build() -> dict[str, dict[str, str]]:
     cases["circuits"] += [{"file": "readout-0.cq", "kind": "readout"}, {"file": "readout-1.cq", "kind": "readout"}]
 
     # QX serves 10 qubits, so its twin packs the nine routed replicas two per
-    # circuit (register slots 0-4 and 5-9) into five circuits, one batch job.
+    # circuit (register slots 0-4 and 5-9) into five circuits, batched as the
+    # Tuna series is.
     qx: dict[str, str] = {}
     twin: dict[str, Any] = {
         "schema": "qi-zero-divisor-cases-v1",
@@ -528,9 +565,33 @@ def secondary(replicas: list[dict[str, Any]], raw: dict[str, list[str]]) -> dict
     }
 
 
-def analyze(run_dir: Path) -> dict[str, Any]:
-    cases = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
-    raw = {row["file"]: json.loads((run_dir / "raw" / f"{row['file']}.json").read_text()) for row in cases["circuits"]}
+def load_series(run_dirs: list[Path]) -> tuple[dict[str, Any], dict[str, list[str]]]:
+    """The shared manifest fields and the raw shots of every circuit of one series, keyed by file name.
+
+    A run directory holds one submitted batch; every batch manifest of a
+    series carries the same shared fields, and a circuit file name is unique
+    within the series.
+    """
+    shared: dict[str, Any] | None = None
+    raw: dict[str, list[str]] = {}
+    for run_dir in run_dirs:
+        cases = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+        fields = {k: v for k, v in cases.items() if k not in {"batch", "circuits", "schema"}}
+        if shared is None:
+            shared = fields
+        elif fields != shared:
+            raise SystemExit(f"{run_dir}/cases.json describes a different series")
+        for row in cases["circuits"]:
+            if row["file"] in raw:
+                raise SystemExit(f"{run_dir}: {row['file']} appears twice in the series")
+            raw[row["file"]] = json.loads((run_dir / "raw" / f"{row['file']}.json").read_text(encoding="utf-8"))
+    if shared is None:
+        raise SystemExit("a series needs at least one run directory")
+    return shared, raw
+
+
+def analyze(run_dirs: list[Path]) -> dict[str, Any]:
+    cases, raw = load_series(run_dirs)
     # Without readout circuits (the ideal QX twin) the assignment is taken as exact.
     zero, one = raw.get("readout-0.cq", ["0" * cases["nqubits"]]), raw.get("readout-1.cq", ["1" * cases["nqubits"]])
     replicas = []
@@ -600,28 +661,35 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", type=Path)
     mode.add_argument("--check", type=Path)
-    mode.add_argument("--analyze", type=Path)
+    mode.add_argument("--analyze", type=Path, nargs="+", metavar="RUN_DIR", help="the batches of one series")
     mode.add_argument("--replay", type=Path, nargs="+")
+    parser.add_argument("--out", type=Path, help="with --analyze: the analysis file (default RUN_DIR/analysis.json)")
     args = parser.parse_args()
     if args.analyze:
+        if len(args.analyze) > 1 and args.out is None:
+            parser.error("--analyze over several batches needs --out")
         text = json.dumps(analyze(args.analyze), indent=1) + "\n"
-        (args.analyze / "analysis.json").write_text(text, encoding="utf-8")
+        (args.out or args.analyze[0] / "analysis.json").write_text(text, encoding="utf-8")
         print(text, end="")
         return 0
     if args.replay:
         for run in args.replay:
-            if (run / "analysis.json").read_text(encoding="utf-8") != json.dumps(analyze(run), indent=1) + "\n":
+            if (run / "analysis.json").read_text(encoding="utf-8") != json.dumps(analyze([run]), indent=1) + "\n":
                 raise SystemExit(f"{run}/analysis.json differs from its recomputation")
         print(f"qi zero-divisor analyses: {len(args.replay)} runs reproduce their analysis.json")
         return 0
     directories = build()
     count = 0
     for directory, files in directories.items():
-        if args.write:
-            (args.write / directory).mkdir(parents=True, exist_ok=True)
+        if args.check:
+            root = args.check / directory
+            retained = {p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()}
+            if retained != set(files):
+                raise SystemExit(f"{root}: files {sorted(retained ^ set(files))} differ from the regeneration")
         for name, text in files.items():
             path = (args.write or args.check) / directory / name
             if args.write:
+                path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(text, encoding="utf-8")
             elif path.read_text(encoding="utf-8") != text:
                 raise SystemExit(f"{path} differs from its regeneration")

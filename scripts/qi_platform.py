@@ -24,17 +24,18 @@ Subcommands:
   heartbeat change minute to minute and stay out of the table.
 - submit CASE_DIR --backend-type-id N --approval TEXT (network, spends quota)
   creates one project, one algorithm, commit and file per circuit, one batch
-  job holding every circuit of cases.json, and enqueues it. It refuses a blank
-  approval, verifies each circuit's sha256 against cases.json, and refuses a
-  batch that would lift the account's queued jobs above queue_limit (three on
-  hardware, per the FAQ). submission.json (each job's circuit sha256 and the
-  cases.json digest) is written before the enqueue and updated after it, and a
-  case directory that already holds one sends nothing.
+  job holding every circuit of cases.json, and enqueues it. It verifies each
+  circuit's sha256 against cases.json first. An exclusive submission-state.json
+  is retained before the first remote write; either it or submission.json
+  prevents a repeat submission, including after an uncertain enqueue response.
+- reconcile CASE_DIR (network, read-only) reads the recorded batch and jobs.
+  Once the service confirms that the complete batch was enqueued, it recovers
+  submission.json for collection. It never enqueues or creates resources.
 - collect CASE_DIR (network, read-only) waits for the batch to finish and
-  writes raw/<file>.json (a repeated collection must reproduce the retained
-  raw files byte for byte and writes nothing) (the shot-ordered bit strings), results.json (shots
+  writes raw/<file>.json (the shot-ordered bit strings), results.json (shots
   requested and done, execution seconds, job timestamps and status) and the
-  transactions charged to the batch's jobs.
+  transactions charged to the batch's jobs. Existing raw shot order and bytes
+  are preserved; a conflicting recollection is rejected before publication.
 
 Usage: "$QI_PYTHON" scripts/qi_platform.py (snapshot --out DIR | submit CASE_DIR ... | collect CASE_DIR)
        "$PYTHON" scripts/qi_platform.py (check DIR [--agents AGENTS.md] | facts DIR)
@@ -47,20 +48,29 @@ import datetime
 import hashlib
 import importlib
 import json
+import os
 import sys
+import tempfile
 import time
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
 HOST = "https://api.quantum-inspire.com"
 CATALOGUE_SCHEMA = "qi-catalogue-v1"
 USAGE_SCHEMA = "qi-usage-v1"
+SUBMISSION_STATE_SCHEMA = "qi-submission-state-v1"
+SUBMISSION_SCHEMA = "qi-submission-v2"
+# The FAQ allows three queued jobs per hardware backend, and the API counts
+# its queue in batches. On hardware a batch holds at most three circuits and
+# waits for the account's queue to be empty, so at most three jobs are queued
+# under either reading of "job".
+HARDWARE_BATCH_CIRCUITS = 3
+HARDWARE_QUEUED_BATCHES = 1
 REDACTED = ("email", "full_name", "oidc_sub")
 TERMINAL = {"completed", "failed", "cancelled"}
+ENQUEUED_BATCH_STATUSES = {"queued", "reserved", "running", "finished"}
 REFRESH_MARGIN = 120.0
-# FAQ (quantum-inspire.com/faq): at most three queued jobs per hardware backend.
-HARDWARE_QUEUED_JOBS = 3
 
 
 def digest(value: object) -> str:
@@ -93,6 +103,11 @@ class Client:
         from quantuminspire.managers.auth_manager import AuthManager
         from quantuminspire.managers.config_manager import ConfigManager
 
+        # qi login writes the token file readable by every local user (mode 644);
+        # the client narrows it to the owner before reading tokens from it.
+        tokens = Path.home() / ".quantuminspire" / "config.json"
+        if tokens.exists() and tokens.stat().st_mode & 0o077:
+            tokens.chmod(0o600)
         self.config = ConfigManager()
         self.host = self.config.get("default_host")
         if str(self.host).rstrip("/") != HOST:
@@ -304,41 +319,109 @@ def check(directory: Path, agents: Path | None = None) -> None:
     if totals["execution_seconds"] != sum(j["execution_time_in_seconds"] for j in usage["jobs"]):
         raise SystemExit("execution seconds differ from the job rows")
     if totals["shots_done"] != sum(j["shots_done"] for j in usage["jobs"]):
-        raise SystemExit("shots done differ from the job rows")
+        raise SystemExit("completed shots differ from the job rows")
     if agents is not None:
         check_agents(catalogue, agents)
     print(f"qi snapshot: {len(catalogue['backend_types'])} backend types, {len(rows)} transactions consistent")
 
 
-def queue_limit(backend_type: dict[str, Any]) -> int:
-    """Jobs one user may hold queued on a backend type.
+def _write_json(path: Path, value: object, *, exclusive: bool = False) -> None:
+    """Publish a complete JSON file, optionally without replacing an existing one."""
+    temporary: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent, delete=False) as stream:
+            temporary = Path(stream.name)
+            json.dump(value, stream, indent=1)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        if exclusive:
+            os.link(temporary, path)
+        else:
+            os.replace(temporary, path)
+        # A synced file is not enough: the directory entry must also survive
+        # a crash before any remote resource creation or enqueue is attempted.
+        directory = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
-    The FAQ allows three queued jobs per hardware backend; the API's batch
-    limits (batchjobs_per_queue_limit batch jobs of max_jobs_per_batch_job
-    jobs) bound the emulators.
-    """
-    if backend_type["is_hardware"]:
-        return HARDWARE_QUEUED_JOBS
-    return int(backend_type["batchjobs_per_queue_limit"]) * int(backend_type["max_jobs_per_batch_job"])
+
+def _retained_matches(path: Path, value: object, *, ignore_collection_time: bool = False) -> None:
+    """Compare JSON values without normalizing or rewriting any retained bytes."""
+    if not path.exists():
+        return
+    retained = json.loads(path.read_text(encoding="utf-8"))
+    if ignore_collection_time and isinstance(retained, dict) and isinstance(value, dict):
+        retained = {key: item for key, item in retained.items() if key != "collected_utc"}
+        value = {key: item for key, item in value.items() if key != "collected_utc"}
+    if retained != value:
+        raise PlatformError(f"{path.name}: recollection conflicts with retained data; no retained file was replaced")
 
 
-def submit(case_dir: Path, backend_type_id: int, approval: str) -> None:
+def _retain_json(path: Path, value: object, *, ignore_collection_time: bool = False) -> None:
+    try:
+        _write_json(path, value, exclusive=True)
+    except FileExistsError:
+        _retained_matches(path, value, ignore_collection_time=ignore_collection_time)
+
+
+def _check_submission_manifest(case_dir: Path, record: dict[str, Any], *, require_enqueued: bool = False) -> None:
+    """Validate a v2 receipt's immutable manifest binding; keep v1 evidence readable."""
+    if record.get("schema") not in {"qi-submission-v1", SUBMISSION_SCHEMA}:
+        raise PlatformError("unexpected submission schema")
+    if record["schema"] == "qi-submission-v1" and "cases_sha256" not in record:
+        return
+    cases_bytes = (case_dir / "cases.json").read_bytes()
+    if record.get("cases_sha256") != hashlib.sha256(cases_bytes).hexdigest():
+        raise PlatformError("cases.json differs from the submission receipt digest")
+    cases = json.loads(cases_bytes)
+    if any(cases[key] != record[key] for key in ("backend", "backend_type_id", "shots")):
+        raise PlatformError("cases.json backend or shots differ from the submission receipt")
+    if sorted(row["file"] for row in cases["circuits"]) != sorted(row["file"] for row in record["jobs"]):
+        raise PlatformError("cases.json circuits differ from the submission receipt")
+    for row in cases["circuits"]:
+        if hashlib.sha256((case_dir / row["file"]).read_bytes()).hexdigest() != row["sha256"]:
+            raise PlatformError(f"{row['file']} differs from its cases.json sha256")
+    if record["schema"] == SUBMISSION_SCHEMA:
+        digests = {row["file"]: row["sha256"] for row in cases["circuits"]}
+        for row in record["jobs"]:
+            if row.get("sha256") != digests[row["file"]]:
+                raise PlatformError(f"{row['file']} differs from its submission receipt sha256")
+        if record.get("state") not in {"created", "enqueued"}:
+            raise PlatformError("unexpected submission receipt state")
+        if require_enqueued and record["state"] != "enqueued":
+            raise PlatformError("submission receipt is not enqueued; use read-only reconciliation")
+
+
+def submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any]:
+    if (case_dir / "submission.json").exists():
+        raise SystemExit(f"{case_dir}/submission.json exists; this case was submitted")
+    state_path = case_dir / "submission-state.json"
+    if state_path.exists():
+        raise SystemExit(f"{state_path} exists; run reconcile for read-only recovery, never repeat submit")
     if not approval.strip():
-        raise SystemExit("--approval is blank; a submission records the user's approval of its case")
-    receipt = case_dir / "submission.json"
-    if receipt.exists():
-        raise SystemExit(f"{receipt} exists; this case was submitted, and a created receipt names a batch to reconcile")
-    cases = json.loads((case_dir / "cases.json").read_text(encoding="utf-8"))
+        raise SystemExit("a nonempty approval is required")
+    cases_bytes = (case_dir / "cases.json").read_bytes()
+    cases = json.loads(cases_bytes)
     if cases["backend_type_id"] != backend_type_id:
         raise SystemExit(f"cases.json names backend type {cases['backend_type_id']}, not {backend_type_id}")
+    if not isinstance(cases["shots"], int) or isinstance(cases["shots"], bool) or cases["shots"] < 1:
+        raise SystemExit("shots must be a positive integer")
     sources = {}
     digests = {}
     for row in cases["circuits"]:
-        text = (case_dir / row["file"]).read_text(encoding="utf-8")
-        digests[row["file"]] = hashlib.sha256(text.encode()).hexdigest()
-        if digests[row["file"]] != row["sha256"]:
+        source_bytes = (case_dir / row["file"]).read_bytes()
+        if hashlib.sha256(source_bytes).hexdigest() != row["sha256"]:
             raise SystemExit(f"{row['file']} differs from its cases.json sha256")
-        sources[row["file"]] = text
+        sources[row["file"]] = source_bytes.decode("utf-8")
+        digests[row["file"]] = row["sha256"]
+    if not sources or len(sources) != len(cases["circuits"]):
+        raise SystemExit("cases.json needs at least one circuit and unique circuit filenames")
     client = Client()
     backend_type = client.get(f"/backend_types/{backend_type_id}")
     if backend_type["identifier"] != cases["backend"]:
@@ -349,19 +432,46 @@ def submit(case_dir: Path, backend_type_id: int, approval: str) -> None:
         raise SystemExit(f"{len(sources)} circuits exceed max_jobs_per_batch_job")
     if cases["shots"] > backend_type["max_number_of_shots"]:
         raise SystemExit("shots exceed max_number_of_shots")
-    queued = client.get(f"/backend_types/{backend_type_id}/queue", user_only=True)["number_of_jobs_in_queue"]
-    if queued + len(sources) > queue_limit(backend_type):
-        raise SystemExit(
-            f"{queued} queued jobs plus {len(sources)} new exceed the {queue_limit(backend_type)} this account may "
-            f"hold on {backend_type['name']}; wait for the queue to drain"
-        )
+    queue = client.get(f"/backend_types/{backend_type_id}/queue", user_only=True)
+    # The API names '(batch) job queue statistics'. Both retained five-circuit
+    # Tuna-17 receipts report queue count 2 before any child-job queued_at
+    # timestamp. Treat it as batches; the separate circuit limit is above.
+    queue_limit = backend_type["batchjobs_per_queue_limit"]
+    queued = queue["number_of_jobs_in_queue"]
+    if type(queue_limit) is not int or queue_limit < 0 or type(queued) is not int or queued < 0:
+        raise PlatformError("queue capacity or current-user queue count is invalid")
+    if backend_type["is_hardware"]:
+        if len(sources) > HARDWARE_BATCH_CIRCUITS:
+            raise SystemExit(f"{len(sources)} circuits exceed the {HARDWARE_BATCH_CIRCUITS} a hardware batch may hold")
+        queue_limit = min(queue_limit, HARDWARE_QUEUED_BATCHES)
+    if queued + 1 > queue_limit:
+        raise SystemExit(f"current-user queue has {queued} batches; adding one exceeds the limit {queue_limit}")
     language = next(lang for lang in client.pages("/languages") if lang["name"] == "cQASM" and lang["version"] == "3.0")
+    state: dict[str, Any] = {
+        "schema": SUBMISSION_STATE_SCHEMA,
+        "phase": "creating",
+        "started_utc": now(),
+        "approval": approval,
+        "backend": cases["backend"],
+        "backend_type_id": backend_type_id,
+        "cases_sha256": hashlib.sha256(cases_bytes).hexdigest(),
+        "shots": cases["shots"],
+        "jobs": [],
+    }
+    try:
+        _write_json(state_path, state, exclusive=True)
+    except FileExistsError:
+        raise SystemExit(f"{state_path} exists; another submission owns this case") from None
     name = f"gororoba-{case_dir.name}"[:32]
     project = client.post(
         "/projects", {"owner_id": client.member_id, "name": name, "description": name, "starred": False}
     )
+    state["project"] = project["id"]
+    _write_json(state_path, state)
     batch = client.post("/batch_jobs", {"backend_type_id": backend_type_id})
-    jobs = []
+    state["batch_job"] = batch["id"]
+    _write_json(state_path, state)
+    jobs: list[dict[str, Any]] = state["jobs"]
     for file_name, text in sources.items():
         algorithm = client.post(
             "/algorithms", {"project_id": project["id"], "type": "quantum", "shared": "private", "name": file_name}
@@ -388,36 +498,90 @@ def submit(case_dir: Path, backend_type_id: int, approval: str) -> None:
             },
         )
         jobs.append({"file": file_name, "job": job["id"], "sha256": digests[file_name]})
+        _write_json(state_path, state)
     record = {
-        "schema": "qi-submission-v2",
+        "schema": SUBMISSION_SCHEMA,
         "state": "created",
         "created_utc": now(),
         "approval": approval,
         "backend": cases["backend"],
         "backend_type_id": backend_type_id,
+        "cases_sha256": state["cases_sha256"],
         "backend_status_at_submit": backend_type["status"],
-        "user_queue_before": queued,
-        "cases_sha256": hashlib.sha256((case_dir / "cases.json").read_bytes()).hexdigest(),
+        "queue_at_submit": queue,
+        "queue_user_only": True,
+        "queue_limit_at_submit": queue_limit,
         "batch_job": batch["id"],
         "project": project["id"],
         "shots": cases["shots"],
         "jobs": jobs,
     }
-    # The receipt exists before the batch can execute, so a failure after
-    # enqueue leaves a receipt that refuses a second submission of the case.
-    receipt.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    state["submission"] = record
+    # Record uncertainty before sending: interruption or a lost response cannot
+    # leave an apparently unused case that a second invocation can enqueue.
+    state["phase"] = "enqueue_outcome_unknown"
+    _write_json(state_path, state)
     client.patch(f"/batch_jobs/{batch['id']}/enqueue")
-    record |= {
-        "state": "enqueued",
-        "submitted_utc": now(),
-        "queue_at_submit": client.get(f"/backend_types/{backend_type_id}/queue"),
-    }
-    receipt.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
-    print(f"batch {batch['id']}: jobs {[j['job'] for j in jobs]}")
+    record.update(state="enqueued", submitted_utc=now())
+    state["phase"] = "enqueued"
+    state["confirmed_utc"] = record["submitted_utc"]
+    _write_json(state_path, state)
+    _retain_json(case_dir / "submission.json", record)
+    return record
+
+
+def reconcile(case_dir: Path) -> None:
+    """Recover a receipt using only documented GET endpoints; never retry enqueue."""
+    state_path = case_dir / "submission-state.json"
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    if state.get("schema") != SUBMISSION_STATE_SCHEMA:
+        raise PlatformError("unexpected submission state schema")
+    if state.get("cases_sha256") != hashlib.sha256((case_dir / "cases.json").read_bytes()).hexdigest():
+        raise PlatformError("cases.json differs from the submission checkpoint")
+    cases = json.loads((case_dir / "cases.json").read_text(encoding="utf-8"))
+    for row in cases["circuits"]:
+        if hashlib.sha256((case_dir / row["file"]).read_bytes()).hexdigest() != row["sha256"]:
+            raise PlatformError(f"{row['file']} differs from its cases.json sha256")
+    batch_id = state.get("batch_job")
+    if batch_id is None:
+        raise PlatformError("no batch id was retained; the remote creation outcome is unknown; submit remains blocked")
+    record = state.get("submission")
+    if record is not None:
+        _check_submission_manifest(case_dir, record)
+    client = Client()
+    # The captured OpenAPI exposes GET /batch_jobs with an id filter, not
+    # GET /batch_jobs/{id}. Keep the read confined to the checkpointed batch.
+    batches = client.pages("/batch_jobs", id=batch_id)
+    if len(batches) != 1 or batches[0]["id"] != batch_id:
+        raise PlatformError("the service did not resolve exactly the recorded batch; submit remains blocked")
+    batch = batches[0]
+    if record is None:
+        raise PlatformError(
+            f"batch {batch_id} is {batch['status']}; resource creation was incomplete; submit remains blocked"
+        )
+    ids = [row["job"] for row in record["jobs"]]
+    if batch["backend_type_id"] != record["backend_type_id"] or sorted(batch["job_ids"]) != sorted(ids):
+        raise PlatformError("the service batch differs from the checkpointed backend or jobs")
+    for job_id in ids:
+        job = client.get(f"/jobs/{job_id}")
+        if job["id"] != job_id or job["batch_job_id"] != batch_id or job["number_of_shots"] != record["shots"]:
+            raise PlatformError(f"job {job_id} differs from the submission checkpoint")
+    if batch["status"] not in ENQUEUED_BATCH_STATUSES:
+        raise PlatformError(f"batch {batch_id} is {batch['status']}; enqueue is unconfirmed; submit remains blocked")
+    record["state"] = "enqueued"
+    # When an enqueue response was lost, this is the local confirmation time;
+    # retained job timestamps remain the source for execution chronology.
+    record.setdefault("submitted_utc", now())
+    state["phase"] = "enqueued"
+    state["reconciled_utc"] = now()
+    _write_json(state_path, state)
+    _retain_json(case_dir / "submission.json", record)
+    print(f"batch {batch_id}: {batch['status']}; recovered submission.json through read-only reconciliation")
 
 
 def collect(case_dir: Path, poll: float, timeout: float) -> None:
     record = json.loads((case_dir / "submission.json").read_text(encoding="utf-8"))
+    _check_submission_manifest(case_dir, record, require_enqueued=True)
     client = Client()
     deadline = time.monotonic() + timeout
     while True:
@@ -428,16 +592,35 @@ def collect(case_dir: Path, poll: float, timeout: float) -> None:
             raise SystemExit(f"jobs still running: { {k: v['status'] for k, v in states.items()} }")
         time.sleep(poll)
     raw_dir = case_dir / "raw"
+    raw: dict[str, list[str]] = {}
     rows = []
-    raw_texts: dict[str, str] = {}
     for row in record["jobs"]:
         job = states[row["job"]]
+        if job["id"] != row["job"] or job["batch_job_id"] != record["batch_job"]:
+            raise PlatformError(f"job {row['job']} differs from submission.json")
+        if job["number_of_shots"] != record["shots"]:
+            raise PlatformError(f"job {row['job']} shot count differs from submission.json")
         results = client.get(f"/results/job/{row['job']}", page=1, size=100)["items"]
         logs = None
         if job["status"] != "completed":
             logs = client.get(f"/jobs/{row['job']}/logs")
-        for result in results:
-            raw_texts[f"{row['file']}.json"] = json.dumps(result["raw_data"]) + "\n"
+            if results:
+                raise PlatformError(f"{job['status']} job {row['job']} unexpectedly holds results")
+        else:
+            if len(results) != 1:
+                raise PlatformError(f"completed job {row['job']} needs exactly one result")
+            result = results[0]
+            shots = result["raw_data"]
+            if (
+                result["job_id"] != row["job"]
+                or result["shots_requested"] != record["shots"]
+                or not isinstance(shots, list)
+                or len(shots) != result["shots_done"]
+                or not 0 <= result["shots_done"] <= record["shots"]
+                or Counter(shots) != Counter(result["results"])
+            ):
+                raise PlatformError(f"job {row['job']} raw shots or result metadata disagree")
+            raw[f"{row['file']}.json"] = shots
         rows.append(
             {
                 "file": row["file"],
@@ -446,19 +629,6 @@ def collect(case_dir: Path, poll: float, timeout: float) -> None:
                 "logs": logs,
             }
         )
-    # Retained raw files are never rewritten: a second collection must
-    # reproduce them byte for byte and then leaves the run untouched.
-    if (case_dir / "results.json").exists() or raw_dir.exists():
-        retained = {path.name: path.read_text(encoding="utf-8") for path in raw_dir.glob("*.json")}
-        if retained != raw_texts:
-            raise SystemExit(
-                f"{case_dir} holds a collection whose raw files differ from the service's; nothing written"
-            )
-        print(f"{case_dir}: already collected; the service returns identical raw files")
-        return
-    raw_dir.mkdir()
-    for name, text in raw_texts.items():
-        (raw_dir / name).write_text(text, encoding="utf-8")
     job_ids = {row["job"] for row in record["jobs"]}
     charged = [
         {
@@ -474,8 +644,17 @@ def collect(case_dir: Path, poll: float, timeout: float) -> None:
         if t["job"] in job_ids
     ]
     collected = {"schema": "qi-collection-v1", "collected_utc": now(), "jobs": rows, "transactions": charged}
-    text = json.dumps(collected, indent=1, sort_keys=True)
-    (case_dir / "results.json").write_text(text + "\n", encoding="utf-8")
+    if raw_dir.exists() and {path.name for path in raw_dir.iterdir()} - set(raw):
+        raise PlatformError("raw/ holds files outside the completed jobs; retained files were left intact")
+    # Validate the entire recollection before publishing any new file. Ordered
+    # list equality detects a permutation even when the histogram is unchanged.
+    for name, shots in raw.items():
+        _retained_matches(raw_dir / name, shots)
+    _retained_matches(case_dir / "results.json", collected, ignore_collection_time=True)
+    raw_dir.mkdir(exist_ok=True)
+    for name, shots in raw.items():
+        _retain_json(raw_dir / name, shots)
+    _retain_json(case_dir / "results.json", collected, ignore_collection_time=True)
     for row in rows:
         print(row["file"], row["job"]["status"], [r["shots_done"] for r in row["results"]])
 
@@ -494,6 +673,8 @@ def main() -> int:
     p.add_argument("case_dir", type=Path)
     p.add_argument("--backend-type-id", type=int, required=True)
     p.add_argument("--approval", required=True, help="the user's approval, quoted, recorded in submission.json")
+    p = sub.add_parser("reconcile")
+    p.add_argument("case_dir", type=Path)
     p = sub.add_parser("collect")
     p.add_argument("case_dir", type=Path)
     p.add_argument("--poll", type=float, default=20.0)
@@ -513,7 +694,10 @@ def run(args: argparse.Namespace) -> int:
     elif args.command == "facts":
         print(facts_table(json.loads((args.directory / "catalogue.json").read_text(encoding="utf-8"))), end="")
     elif args.command == "submit":
-        submit(args.case_dir, args.backend_type_id, args.approval)
+        record = submit(args.case_dir, args.backend_type_id, args.approval)
+        print(f"batch {record['batch_job']}: jobs {[row['job'] for row in record['jobs']]}")
+    elif args.command == "reconcile":
+        reconcile(args.case_dir)
     else:
         collect(args.case_dir, args.poll, args.timeout)
     return 0
