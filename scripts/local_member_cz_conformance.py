@@ -36,16 +36,40 @@ measurement that requires the scaffold.
 A member whose unitary entangles can still map its prepared input to a
 product state, so its observed law needs no two-qubit gate either. Such a
 member that executes CZ fails unless PRODUCT_OUTPUT_PROBES names it with
-what its circuit tests. Every declared pattern must match at least one
-member that executes CZ. Members with mid-circuit measurement, reset or
-control flow, and members wider than MAX_WIDTH qubits, are listed as
-unchecked with that reason. The per-member classification runs through
+what its circuit tests.
+
+A member with mid-circuit measurement, reset or control flow has no unitary;
+its ideal measured law is the joint distribution of its classical bits,
+which qpe_diagnostics.ideal_branch_probabilities enumerates exactly, one
+statevector per measurement and reset branch, with if_else selecting its
+block from the stored bit. The law is a point mass, a product of its
+single-bit marginals, or correlated across bits. A point-mass or product law
+carries no correlation between classical bits, the condition under which a
+product output already requires a declaration, so such a member that
+executes CZ anywhere in its ISA fails unless DYNAMIC_LAW_PROBES names it
+with the measurement its CZ serves. A correlated law passes. The audit
+records the label, the point-mass outcome and the CZ count, never a float.
+A member with more than MAX_BRANCH_OPS measurements and resets on one
+branch, or more classical bits, or with control flow other than a
+single-bit if_else, is listed as unchecked with that reason, as is a member
+wider than MAX_WIDTH qubits.
+
+Every declared pattern must match at least one member that executes CZ.
+The per-member classification, static and dynamic, runs through
 parallel.ordered_map, so GOROROBA_WORKERS caps it and the order is the
 serial one.
 
 ``--write`` stores the census in
 docs/evidence/walk-control-scaffolding/local_member_conformance.json;
 ``--check`` recomputes it, requires equality and enforces the declarations.
+``--self-test`` classifies synthetic dynamic circuits of every law and
+unchecked reason. ``--self-test-undeclared`` reruns the declaration check on
+the stored census with folded_qpe_null's declaration removed, and with a
+pattern that matches only a CZ-free member added, and requires each to fail
+naming that member or pattern. ``--cross-check-n21`` rebuilds the N=21
+members the census classifies as correlated and requires the enumerated law
+to equal qpe_diagnostics.n21_labeled_law, whose Fraction values do not
+factor over the two bits.
 """
 
 from __future__ import annotations
@@ -56,6 +80,7 @@ import hashlib
 import json
 import re
 import sys
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -63,7 +88,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import numpy as np  # noqa: E402
-from qiskit import QuantumCircuit, transpile  # noqa: E402
+from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, transpile  # noqa: E402
+from qiskit.circuit import Parameter  # noqa: E402
 from qiskit.circuit.library import get_standard_gate_name_mapping  # noqa: E402
 from qiskit.converters import circuit_to_dag  # noqa: E402
 from qiskit.quantum_info import Operator, Statevector, partial_trace  # noqa: E402
@@ -72,11 +98,16 @@ import parallel  # noqa: E402
 from diagnostic_experiments import record_groups  # noqa: E402
 from experiments import Group, Member, all_experiment_groups  # noqa: E402
 from live_run import OPT_LEVEL  # noqa: E402
+from qpe_diagnostics import ideal_branch_probabilities, n21_labeled_law  # noqa: E402
 
 OUTPUT = ROOT / "docs/evidence/walk-control-scaffolding/local_member_conformance.json"
 BASIS = ["cz", "id", "rz", "sx", "x"]
 SEED = 11
 MAX_WIDTH = 10
+# 2**12 branches of at most 2**MAX_WIDTH amplitudes bound the enumeration's
+# live statevectors at 64 MiB.
+MAX_BRANCH_OPS = 12
+DYNAMIC = "mid-circuit measurement, reset or control flow"
 TOLERANCE = 1e-9
 STANDARD = set(get_standard_gate_name_mapping()) | {"barrier", "delay", "measure", "reset"}
 CUTS = ("barrier", "delay", "measure")
@@ -110,6 +141,53 @@ PRODUCT_OUTPUT_PROBES: dict[str, str] = {
         "every depth it executes the shared walk template"
     ),
 }
+# Dynamic members whose ideal law is a point mass or a product over classical
+# bits and that execute CZ, each with the measurement the CZ serves.
+DYNAMIC_LAW_PROBES: dict[str, str] = {
+    r"(folded_qpe|qpe_archived)_s\d": (
+        "one-hot two-bit eigenphase readout of |u_s>: the controlled rotations "
+        "(order_finding.controlled_rotate) kick the eigenphase onto the control, so the CZ is the measured "
+        "phase transfer (order_finding.folded_qpe)"
+    ),
+    "folded_qpe_null": (
+        "identity-multiplier null of folded_qpe_mod15: it omits the controlled rotations and keeps "
+        "eigenstate_prep's CRY and CX, so every folded member carries the same preparation CZ and the "
+        "contrast with folded_qpe_s* isolates the controlled rotation; the control returns to |0> through "
+        "H-H and reads 00 (experiments._folded_qpe_mod15)"
+    ),
+    r"qpe_delay_s\d": (
+        "delay rung of the folded ladder: a calibration-bound delay replaces the first measurement and the "
+        "prepared label supplies the correction, so the terminal bit reads the second controlled rotation's "
+        "kickback (qpe_diagnostics.folded_diagnostic)"
+    ),
+    r"qpe_no_feed_forward_s\d": (
+        "feed-forward-off control of the archived circuit: even labels stay one-hot and odd labels spread "
+        "the terminal bit to a fair coin independent of b0; it executes the same controlled rotations, so "
+        "the contrast with qpe_archived_s* isolates the conditional phase (qpe_diagnostics.folded_diagnostic)"
+    ),
+    r"correction_(known|measured)_s[13]": (
+        "odd-label correction pair on one template (correction_circuits.correction_template): the measured "
+        "arm conditions the -pi/2 correction on the recorded first bit and the known arm applies it from the "
+        "label; both read the one-hot eigenphase the controlled rotations kick onto the control"
+    ),
+    "hybrid_shor_N15_a2": (
+        "eight-bit order finding for N=15, a=2: the pruned law is uniform over y in {0, 64, 128, 192}, a "
+        "product of the two top phase bits, which read the order-4 eigenphases the controlled "
+        "multiplications by 2 and 4 modulo 15 (order_finding.append_controlled_modular_multiply) kick onto "
+        "the control; hybrid_shor_N15_a2_null runs the schedule without them (experiments._hybrid_shor_mod15)"
+    ),
+    r"coherence_measure_reset_(xy|yx)": (
+        "imaginary-part arms of the branch-signed coherence C = (S_XX + S_YY + i (S_XY - S_YX)) / 4: the "
+        "round-1 orbit prefix's controlled swaps correlate b0 with the work pair, the ideal Im C = 0 leaves "
+        "S_XY = S_YX = 0 and a product law, and a coherent window phase rotates C into these arms "
+        "(coherence_window.coherence_circuit)"
+    ),
+}
+DECLARATIONS: dict[str, dict[str, str]] = {
+    "local_unitary": SCAFFOLD_CONTROLS,
+    "product_output": PRODUCT_OUTPUT_PROBES,
+    "dynamic_law": DYNAMIC_LAW_PROBES,
+}
 
 
 # A family configuration recorded before record_groups required a field
@@ -123,15 +201,23 @@ def require(condition: bool, message: str) -> None:
         raise SystemExit(message)
 
 
-def planned_groups() -> tuple[list[tuple[str, Group]], list[dict[str, str]]]:
-    """Every registered group, plus each distinct retained family configuration's groups."""
-    groups = [("registered", group) for group in all_experiment_groups()]
+def planned_groups(
+    families: frozenset[str] | None = None,
+) -> tuple[list[tuple[str, Group]], list[dict[str, str]]]:
+    """Every registered group, plus each distinct retained family configuration's groups.
+
+    families restricts the result to the retained configurations of those
+    families, without the registered groups.
+    """
+    groups = [("registered", group) for group in all_experiment_groups()] if families is None else []
     seen: set[str] = set()
     superseded = []
     for path in sorted(glob.glob(str(ROOT / "results/live/*/record.json"))):
         record = json.loads(Path(path).read_text(encoding="utf-8"))
         family = record.get("family_configuration")
         if not isinstance(family, dict) or "name" not in family:
+            continue
+        if families is not None and family["name"] not in families:
             continue
         key = json.dumps(family, sort_keys=True)
         if key in seen:
@@ -190,7 +276,7 @@ def unitary_part(member: Member) -> QuantumCircuit | str:
     for instruction in bound.data:
         operation = instruction.operation
         if operation.name in ("measure", "reset") or getattr(operation, "blocks", None):
-            return "mid-circuit measurement, reset or control flow"
+            return DYNAMIC
     return bound
 
 
@@ -284,6 +370,77 @@ def scaffold_cz(member: Member, isa: QuantumCircuit) -> tuple[int, int]:
     return total, local
 
 
+def branch_ops(circuit: QuantumCircuit) -> int:
+    """Measurements and resets on the longest classical path; an if_else runs one block per branch."""
+    count = 0
+    for instruction in circuit.data:
+        operation = instruction.operation
+        if operation.name in ("measure", "reset"):
+            count += 1
+        elif getattr(operation, "blocks", None):
+            count += max(branch_ops(block) for block in operation.blocks)
+    return count
+
+
+def cz_count(circuit: QuantumCircuit) -> int:
+    """CZ in the circuit and in every control-flow block, each of which executes on some branch."""
+    count = 0
+    for instruction in circuit.data:
+        operation = instruction.operation
+        if operation.name == "cz":
+            count += 1
+        for block in getattr(operation, "blocks", None) or ():
+            count += cz_count(block)
+    return count
+
+
+def branch_law(member: Member) -> tuple[float, ...] | str:
+    """The bound circuit's ideal law over its classical bits, or the reason it is not enumerated."""
+    bound = member.circuit.assign_parameters(member.binding) if member.binding else member.circuit
+    if max(branch_ops(bound), bound.num_clbits) > MAX_BRANCH_OPS:
+        return f"more than {MAX_BRANCH_OPS} mid-circuit measurements, resets or classical bits"
+    try:
+        return ideal_branch_probabilities(bound)
+    except ValueError as error:
+        return f"unsupported control flow: {error}"
+
+
+def law_kind(probabilities: tuple[float, ...], clbits: int) -> tuple[str, str | None]:
+    """point_mass with its outcome (clbit 0 rightmost), bit_product, or correlated.
+
+    The product test compares every joint entry with the product of the
+    single-bit marginals at TOLERANCE.
+    """
+    law = np.asarray(probabilities, dtype=float)
+    peak = int(np.argmax(law))
+    if law[peak] > 1 - TOLERANCE:
+        return "point_mass", format(peak, f"0{clbits}b") if clbits else ""
+    tensor = law.reshape((2,) * clbits)
+    product = np.ones(())
+    for axis in range(clbits):
+        product = np.multiply.outer(product, tensor.sum(axis=tuple(a for a in range(clbits) if a != axis)))
+    return ("bit_product" if np.allclose(product, tensor, atol=TOLERANCE, rtol=0) else "correlated"), None
+
+
+def classify_dynamic(member: Member) -> tuple[str, str | None, int] | str:
+    """Law label, point-mass outcome and ISA CZ count, or the reason the member stays unchecked.
+
+    The circuit object is lowered as live_run compiles it, unbound for a
+    shared template; a dynamic circuit has no unitary to split into local
+    components, so every CZ counts.
+    """
+    law = branch_law(member)
+    if isinstance(law, str):
+        return law
+    kind, outcome = law_kind(law, member.circuit.num_clbits)
+    isa = transpile(member.circuit, basis_gates=BASIS, optimization_level=OPT_LEVEL, seed_transpiler=SEED)
+    return kind, outcome, cz_count(isa)
+
+
+def declaration(row: dict[str, Any], declarations: dict[str, dict[str, str]]) -> str | None:
+    return next((pattern for pattern in declarations[row["kind"]] if re.fullmatch(pattern, row["member"])), None)
+
+
 def census() -> dict[str, Any]:
     groups, superseded = planned_groups()
     members: dict[tuple[str, str], tuple[str, Member]] = {}
@@ -294,12 +451,15 @@ def census() -> dict[str, Any]:
     kinds = parallel.ordered_map(classify, [member for _, (_source, member) in ordered], min_items=2)
     unchecked: dict[str, list[str]] = {}
     checked: list[tuple[str, str, str, Member]] = []
+    dynamic: list[tuple[str, str, Member]] = []
     entangling = 0
     for ((name, key), (_source, member)), kind in zip(ordered, kinds, strict=True):
         if kind in ("local", "product"):
             checked.append((kind, name, key, member))
         elif kind == "entangling":
             entangling += 1
+        elif kind == DYNAMIC:
+            dynamic.append((name, key, member))
         else:
             unchecked.setdefault(kind, []).append(name)
     compiled: dict[int, QuantumCircuit] = {}
@@ -310,20 +470,33 @@ def census() -> dict[str, Any]:
                 member.circuit, basis_gates=BASIS, optimization_level=OPT_LEVEL, seed_transpiler=SEED
             )
         total, scaffold = scaffold_cz(member, compiled[id(member.circuit)])
-        patterns = SCAFFOLD_CONTROLS if kind == "local" else PRODUCT_OUTPUT_PROBES
-        rows.append(
-            {
-                "member": name,
-                "digest": key,
-                "kind": "local_unitary" if kind == "local" else "product_output",
-                "templated": bool(member.binding),
-                "cz": total,
-                "cz_in_local_components": scaffold,
-                "declared": next((pattern for pattern in patterns if re.fullmatch(pattern, name)), None),
-            }
-        )
+        row: dict[str, Any] = {
+            "member": name,
+            "digest": key,
+            "kind": "local_unitary" if kind == "local" else "product_output",
+            "templated": bool(member.binding),
+            "cz": total,
+            "cz_in_local_components": scaffold,
+        }
+        rows.append(row | {"declared": declaration(row, DECLARATIONS)})
+    laws = parallel.ordered_map(classify_dynamic, [member for _name, _key, member in dynamic], min_items=2)
+    for (name, key, member), law in zip(dynamic, laws, strict=True):
+        if isinstance(law, str):
+            unchecked.setdefault(law, []).append(name)
+            continue
+        row = {
+            "member": name,
+            "digest": key,
+            "kind": "dynamic_law",
+            "templated": bool(member.binding),
+            "law": law[0],
+            "outcome": law[1],
+            "cz": law[2],
+        }
+        rows.append(row | {"declared": declaration(row, DECLARATIONS)})
+    rows.sort(key=lambda row: (row["member"], row["digest"]))
     return {
-        "schema": "local-member-cz-conformance-v2",
+        "schema": "local-member-cz-conformance-v3",
         "basis": BASIS,
         "optimization_level": OPT_LEVEL,
         "seed_transpiler": SEED,
@@ -337,19 +510,228 @@ def census() -> dict[str, Any]:
 
 
 def needs_declaration(row: dict[str, Any]) -> bool:
-    """A local unitary needs one for scaffold CZ, a product output for any CZ."""
+    """A local unitary needs one for scaffold CZ, a product output for any CZ, a dynamic member for
+    any CZ under an uncorrelated law."""
+    if row["kind"] == "dynamic_law":
+        return bool(row["cz"]) and row["law"] != "correlated"
     return bool(row["cz_in_local_components"] if row["kind"] == "local_unitary" else row["cz"])
 
 
-def enforce(result: dict[str, Any]) -> None:
-    rows = result["members"]
+def enforce(rows: list[dict[str, Any]], declarations: dict[str, dict[str, str]] = DECLARATIONS) -> None:
     violations = [r["member"] for r in rows if needs_declaration(r) and not r["declared"]]
     require(not violations, f"members executing CZ their law does not need, undeclared: {violations}")
-    for pattern in (*SCAFFOLD_CONTROLS, *PRODUCT_OUTPUT_PROBES):
-        require(
-            any(r["declared"] == pattern and needs_declaration(r) for r in rows),
-            f"declaration {pattern} matches no member that executes CZ",
+    for patterns in declarations.values():
+        for pattern in patterns:
+            require(
+                any(r["declared"] == pattern and needs_declaration(r) for r in rows),
+                f"declaration {pattern} matches no member that executes CZ",
+            )
+
+
+def _dynamic_member(name: str, circuit: QuantumCircuit, binding: dict[Parameter, float] | None = None) -> Member:
+    return Member(name, circuit, np.zeros(1 << circuit.num_clbits), binding)
+
+
+def _synthetic_members() -> list[tuple[Member, tuple[str, str | None, bool] | str]]:
+    """Dynamic circuits with their expected (law, outcome, executes CZ) or unchecked reason."""
+    cases: list[tuple[Member, tuple[str, str | None, bool] | str]] = []
+
+    bell = QuantumCircuit(2, 2)
+    bell.h(0)
+    bell.cx(0, 1)
+    bell.measure(0, 0)
+    bell.reset(0)
+    bell.measure(1, 1)
+    cases.append((_dynamic_member("bell_measured_together", bell), ("correlated", None, True)))
+
+    independent = QuantumCircuit(2, 2)
+    independent.h([0, 1])
+    independent.measure(0, 0)
+    independent.reset(0)
+    independent.measure(1, 1)
+    cases.append((_dynamic_member("independent_coins", independent), ("bit_product", None, False)))
+
+    # The unmeasured Bell pair keeps its CZ through the H that follows it.
+    spectator = QuantumCircuit(3, 1)
+    spectator.x(0)
+    spectator.measure(0, 0)
+    spectator.reset(0)
+    spectator.h(1)
+    spectator.cx(1, 2)
+    cases.append((_dynamic_member("point_mass_spectator_cz", spectator), ("point_mass", "1", True)))
+
+    remeasured = QuantumCircuit(1, 2)
+    remeasured.x(0)
+    remeasured.measure(0, 0)
+    remeasured.reset(0)
+    remeasured.measure(0, 1)
+    cases.append((_dynamic_member("reset_after_measure", remeasured), ("point_mass", "01", False)))
+
+    angle = Parameter("theta")
+    templated = QuantumCircuit(1, 2)
+    templated.rx(angle, 0)
+    templated.measure(0, 0)
+    templated.reset(0)
+    templated.measure(0, 1)
+    cases.append((_dynamic_member("bound_template", templated, {angle: np.pi}), ("point_mass", "01", False)))
+
+    forward = QuantumCircuit(2, 2)
+    forward.x(0)
+    forward.measure(0, 0)
+    with forward.if_test((forward.clbits[0], 1)):
+        forward.x(1)
+    forward.measure(1, 1)
+    cases.append((_dynamic_member("feed_forward_point_mass", forward), ("point_mass", "11", False)))
+
+    copy = QuantumCircuit(2, 2)
+    copy.h(0)
+    copy.measure(0, 0)
+    with copy.if_test((copy.clbits[0], 1)):
+        copy.x(1)
+    copy.measure(1, 1)
+    cases.append((_dynamic_member("feed_forward_classical_copy", copy), ("correlated", None, False)))
+
+    switch = QuantumCircuit(QuantumRegister(2), ClassicalRegister(2))
+    switch.h(0)
+    switch.measure(0, 0)
+    with switch.switch(switch.clbits[0]) as case:
+        with case(0):
+            switch.x(1)
+        with case(1):
+            switch.h(1)
+    switch.measure(1, 1)
+    cases.append(
+        (
+            _dynamic_member("switch_case", switch),
+            "unsupported control flow: unsupported exact-branch control flow switch_case",
         )
+    )
+
+    budget = QuantumCircuit(1, 1)
+    for _ in range(MAX_BRANCH_OPS):
+        budget.reset(0)
+    budget.measure(0, 0)
+    cases.append(
+        (
+            _dynamic_member("branch_budget", budget),
+            f"more than {MAX_BRANCH_OPS} mid-circuit measurements, resets or classical bits",
+        )
+    )
+    return cases
+
+
+def self_test() -> None:
+    cases = _synthetic_members()
+    members = [member for member, _expected in cases]
+    require(all(classify(member) == DYNAMIC for member in members), "a synthetic dynamic member left the dynamic path")
+    results = parallel.ordered_map(classify_dynamic, members, min_items=2)
+    for (member, expected), result in zip(cases, results, strict=True):
+        if isinstance(expected, str):
+            require(result == expected, f"{member.name}: {result!r}, expected {expected!r}")
+            continue
+        if isinstance(result, str):
+            raise SystemExit(f"{member.name}: unchecked as {result!r}")
+        law, outcome, cz = result
+        require(
+            (law, outcome, cz > 0) == expected,
+            f"{member.name}: law {law}, outcome {outcome}, {cz} CZ; expected {expected}",
+        )
+    wide = QuantumCircuit(MAX_WIDTH + 1, 1)
+    wide.measure(0, 0)
+    wide.reset(0)
+    wide.measure(0, 0)
+    require(
+        classify(_dynamic_member("wide", wide)) == f"wider than {MAX_WIDTH} qubits",
+        "a member wider than MAX_WIDTH reached the branch enumeration",
+    )
+    print(f"local-member conformance self-test: {len(cases) + 1} synthetic dynamic members classified")
+
+
+def _failure(check: Callable[[], None]) -> str:
+    try:
+        check()
+    except SystemExit as failure:
+        return str(failure)
+    raise SystemExit("the declaration check passed where it must fail")
+
+
+def self_test_undeclared() -> None:
+    """The stored census fails without folded_qpe_null's declaration and with a stale pattern."""
+    rows = json.loads(OUTPUT.read_text(encoding="utf-8"))["members"]
+    require(
+        all(row["declared"] == declaration(row, DECLARATIONS) for row in rows),
+        f"{OUTPUT.relative_to(ROOT)} declarations differ from the declared patterns",
+    )
+    enforce(rows)
+
+    def redeclared(declarations: dict[str, dict[str, str]]) -> list[dict[str, Any]]:
+        return [row | {"declared": declaration(row, declarations)} for row in rows]
+
+    dropped = DECLARATIONS | {
+        "dynamic_law": {p: text for p, text in DYNAMIC_LAW_PROBES.items() if p != "folded_qpe_null"}
+    }
+    message = _failure(lambda: enforce(redeclared(dropped), dropped))
+    expected = "members executing CZ their law does not need, undeclared: ['folded_qpe_null']"
+    require(message == expected, f"undeclared folded_qpe_null failed with {message!r}")
+    stale = DECLARATIONS | {"dynamic_law": DYNAMIC_LAW_PROBES | {"hybrid_shor_N15_a2_null": "CZ-free null"}}
+    message = _failure(lambda: enforce(redeclared(stale), stale))
+    expected = "declaration hybrid_shor_N15_a2_null matches no member that executes CZ"
+    require(message == expected, f"stale declaration failed with {message!r}")
+    print("local-member conformance: undeclared folded_qpe_null and a stale pattern both fail")
+
+
+# Retained families whose groups hold every N=21 orbit or feedback member.
+N21_FAMILIES = frozenset(
+    {"n21-feedback", "n21-feedback-encoded", "n21-orbit-feedback", "n21-orbit-rca", "patch-window"}
+)
+N21_MEMBER = re.compile(r"(n21|orbit)_\w*feedback")
+
+
+def _branch_law_and_kind(member: Member) -> tuple[tuple[float, ...] | str, str | None]:
+    law = branch_law(member)
+    return law, None if isinstance(law, str) else law_kind(law, member.circuit.num_clbits)[0]
+
+
+def cross_check_n21() -> None:
+    """The census's correlated N=21 members enumerate to n21_labeled_law, which does not factor."""
+    for feed_forward in (True, False):
+        exact = n21_labeled_law(feed_forward)
+        bit0 = exact[1] + exact[3]
+        bit1 = exact[2] + exact[3]
+        product = [(bit0 if k & 1 else 1 - bit0) * (bit1 if k & 2 else 1 - bit1) for k in range(4)]
+        require(
+            sum(exact) == 1 and max(exact) < 1 and list(exact) != product,
+            f"n21_labeled_law({feed_forward}) {exact} factors over its bits or is a point mass",
+        )
+    rows = json.loads(OUTPUT.read_text(encoding="utf-8"))["members"]
+    expected = {
+        (row["member"], row["digest"])
+        for row in rows
+        if row["kind"] == "dynamic_law" and row["law"] == "correlated" and N21_MEMBER.fullmatch(row["member"])
+    }
+    groups, _superseded = planned_groups(N21_FAMILIES)
+    members: dict[tuple[str, str], Member] = {}
+    for _source, group in groups:
+        for member in group.members:
+            if N21_MEMBER.fullmatch(member.name):
+                members.setdefault((member.name, digest(member)), member)
+    require(
+        set(members) == expected,
+        f"rebuilt N=21 members {sorted(set(members) - expected)} and census rows "
+        f"{sorted(expected - set(members))} differ",
+    )
+    ordered = sorted(members.items())
+    results = parallel.ordered_map(_branch_law_and_kind, [member for _key, member in ordered], min_items=2)
+    for ((name, _key), _member), (law, kind) in zip(ordered, results, strict=True):
+        if isinstance(law, str):
+            raise SystemExit(f"{name}: unchecked as {law!r}")
+        exact = n21_labeled_law(not name.endswith("no_feedback"))
+        require(
+            np.allclose(law, [float(value) for value in exact], atol=1e-11, rtol=0),
+            f"{name}: enumerated law {law} differs from n21_labeled_law {exact}",
+        )
+        require(kind == "correlated", f"{name}: classified {kind}")
+    print(f"local-member conformance: {len(ordered)} correlated N=21 members enumerate to n21_labeled_law")
 
 
 def main() -> int:
@@ -357,20 +739,33 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
+    mode.add_argument("--self-test", action="store_true")
+    mode.add_argument("--self-test-undeclared", action="store_true")
+    mode.add_argument("--cross-check-n21", action="store_true")
     args = parser.parse_args()
+    if args.self_test:
+        self_test()
+        return 0
+    if args.self_test_undeclared:
+        self_test_undeclared()
+        return 0
+    if args.cross_check_n21:
+        cross_check_n21()
+        return 0
     result = census()
-    enforce(result)
+    enforce(result["members"])
     text = json.dumps(result, indent=1) + "\n"
     if args.write:
         OUTPUT.write_text(text, encoding="utf-8")
     else:
         require(OUTPUT.read_text(encoding="utf-8") == text, f"{OUTPUT.relative_to(ROOT)} differs from the census")
     rows = result["members"]
-    local = sum(r["kind"] == "local_unitary" for r in rows)
+    count = {kind: sum(r["kind"] == kind for r in rows) for kind in DECLARATIONS}
     declared = sum(needs_declaration(r) for r in rows)
     print(
-        f"local-member conformance: {local} local unitaries, {len(rows) - local} product outputs, "
-        f"{declared} declared CZ executions, {result['entangling_members']} entangling"
+        f"local-member conformance: {count['local_unitary']} local unitaries, {count['product_output']} product "
+        f"outputs, {count['dynamic_law']} dynamic laws, {declared} declared CZ executions, "
+        f"{result['entangling_members']} entangling"
     )
     return 0
 

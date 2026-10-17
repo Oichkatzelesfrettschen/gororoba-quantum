@@ -102,7 +102,7 @@ rank-sector tile (2, 3, 4, 16), so device and tile both enter the gap.
 every member live_run can plan, the registered groups and the family groups
 rebuilt from each distinct retained `family_configuration`, and recomputes
 [local_member_conformance.json](local_member_conformance.json). Two kinds of
-member have a law that needs no two-qubit gate:
+member have a unitary whose law needs no two-qubit gate:
 
 - A **local unitary** has operator Schmidt rank 1 across every single-qubit
   cut. Its circuit object is lowered as live_run compiles it, unbound for a
@@ -115,18 +115,45 @@ member have a law that needs no two-qubit gate:
 - A **product output** has an entangling unitary that maps its prepared
   input to a product state, so every CZ it executes is optional for its law.
 
-Of 1452 distinct members, 418 are local unitaries, 20 product outputs and
-950 entangling; 64 member names carry mid-circuit measurement, reset or
-control flow and stay unchecked. Thirty members execute CZ their law does
-not need, and each matches a declaration naming what it measures. Ten local
+A member with mid-circuit measurement, reset or control flow has no unitary.
+Its ideal law over its classical bits is enumerated exactly, one statevector
+per measurement and reset branch with `if_else` selecting its block
+(`qpe_diagnostics.ideal_branch_probabilities`), and labeled a point mass, a
+product of its single-bit marginals, or correlated. A point-mass or product
+law has no cross-bit correlation, so a dynamic member with that law that
+executes any CZ needs a declaration (`DYNAMIC_LAW_PROBES`) naming the
+measurement its CZ serves; a correlated law passes. The audit cannot prove a
+dynamic member's CZ unnecessary, only that its law carries no correlation a
+CZ would be needed to produce.
+
+Of 1452 distinct members, 418 are local unitaries, 20 product outputs, 64
+dynamic and 950 entangling; none is unchecked. Of the 64 dynamic members, 17
+execute no CZ, 23 have a correlated law (the N=21 feedback, encoded and
+orbit pairs, the patch orbit pairs and the XX, YY and ZZ coherence arms) and
+24 execute CZ under a point-mass or product law. Fifty-four members execute
+CZ their law does not need, and each matches a declaration naming what it
+measures. Ten local
 unitaries carry 144 scaffold CZ each before routing (`SCAFFOLD_CONTROLS`):
 the four walk readout controls, the four depth-0 walk points and the two
 template arms of the scaffold A/B campaign. Twenty product outputs execute
 17 to 24 CZ, or 144 for walk points (`PRODUCT_OUTPUT_PROBES`): the sixteen
 rank-sector endpoint probes at parameter one with their references, and the
 four depth-1 walk points, where the walk sends its input to a product
-state. A new member that executes CZ its law does not need fails the gate
-until it states why.
+state. Twenty-four dynamic members execute 6 to 41 CZ: the folded QPE,
+archived, delay and feed-forward-off rungs and the odd-label correction
+pair, whose one-hot or product eigenphase readout is the phase the
+controlled rotations kick onto the control; `folded_qpe_null`, which keeps
+the eigenstate preparation's 6 CZ so the contrast with the folded members
+isolates the controlled rotation; `hybrid_shor_N15_a2` (35 CZ); and the XY
+and YX coherence arms, which read the imaginary part of the branch-signed
+coherence after the orbit prefix's controlled swaps. A new member that
+executes CZ its law does not need fails the gate until it states why.
+`--self-test` (gate core-406) classifies synthetic dynamic circuits of every
+law and unchecked reason, `--self-test-undeclared` (core-407) requires the
+stored census to fail naming `folded_qpe_null` once its declaration is
+removed, and `--cross-check-n21` (core-408) rebuilds the 20 correlated N=21
+members and requires their enumerated law to equal the Fraction law
+`qpe_diagnostics.n21_labeled_law`.
 
 ## Files
 

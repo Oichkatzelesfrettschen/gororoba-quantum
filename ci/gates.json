@@ -2276,6 +2276,30 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --self-test && \"$PYTHON\" -B -O -W error scripts/local_member_cz_conformance.py --self-test",
+   "name": "core-406",
+   "seconds": 11.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --self-test-undeclared && \"$PYTHON\" -B -O -W error scripts/local_member_cz_conformance.py --self-test-undeclared",
+   "name": "core-407",
+   "seconds": 7.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --cross-check-n21",
+   "name": "core-408",
+   "seconds": 9.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/calibration_snapshot.py --check docs/evidence/calibration/ibm_kingston.json",
    "name": "core-279",
    "seconds": 10.0,
