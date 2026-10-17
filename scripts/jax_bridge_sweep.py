@@ -209,11 +209,6 @@ Replay = Callable[[list[jax_bridge.Program]], tuple[np.ndarray, set[str]]]
 Evolve = Callable[[list[tuple[int, ...]], int, list[np.ndarray]], tuple[np.ndarray, set[str]]]
 
 
-def replay_numpy(programs: list[jax_bridge.Program]) -> tuple[np.ndarray, set[str]]:
-    """Register diagonals of programs in complex128 numpy, one evolution each."""
-    return np.array([np.real(np.diag(jax_bridge.evolve_numpy(p))) for p in programs]), set()
-
-
 def chunk_size(programs: list[jax_bridge.Program], ranks: list[int], batch_bytes: int) -> int:
     """Programs per replay call: as many as batch_bytes holds, at least one and at most all.
 
@@ -618,9 +613,8 @@ def self_test(device: str | None) -> dict[str, Any]:
 
         clock = time.perf_counter()
         replayed, _ = replay_all(flat, jax_replay(jax.devices(device)[0], BATCH_BYTES))
-        distance = max(
-            float(np.max(np.abs(a - b))) for a, b in zip(replayed, replay_all(flat, replay_numpy)[0], strict=True)
-        )
+        references = parallel.ordered_map(diagonal, flat)
+        distance = max(float(np.max(np.abs(a - b))) for a, b in zip(replayed, references, strict=True))
         require(distance <= JAX_TOLERANCE, f"JAX replay differs from numpy by {distance}")
         out["max_jax_minus_numpy_diagonal"] = distance
         chunked = jax_replay(jax.devices(device)[0], CHUNK_TEST_BYTES)(group)[0]

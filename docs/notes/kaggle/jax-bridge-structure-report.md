@@ -94,13 +94,14 @@ The case has 15 structure keys in all.
 | restructured vs per-factor export, factors 0.5, 1, 12, all readout factors (numpy) | 6.3e-15 | 1e-9 |
 | sampled parity vs Aer density matrix (numpy) | 1.9e-9 | 1e-8 |
 | chunked replay at 2^20 bytes, largest group (60 programs, 7 calls of 9, last partial): each call's stacks vs the whole group's complex64 rows, numpy diagonals vs one call | bit-identical (array_equal) | exact |
-| JAX CPU vs numpy diagonals (`--device cpu`, local only) | 2.9e-6 | 1e-5 |
+| JAX CPU vs numpy diagonals (`--device cpu`, local only; the numpy references run through `parallel.ordered_map`) | 2.9e-6 | 1e-5 |
 | chunked JAX CPU vs one call, same group (`--device cpu`, local only) | 0.0 | 1e-5 |
 
 The 72 couplers are those the case drives, plus every coupler whose
 reported error already exceeds 4/5. A self-test run takes 61 s on this
-host in either `-W error` or `-O` mode, and it imports no JAX, since no CI
-requirements file pins it.
+host in either `-W error` or `-O` mode before the chunking contract, which
+adds 4.1 s (its section timer, `GOROROBA_WORKERS=6`). The self-test
+imports no JAX, since no CI requirements file pins it.
 
 ## Reproduction of the earlier sweep's outputs
 
@@ -186,6 +187,9 @@ holds the slot.
 
 - The TPU run, for the slot reason above; the push command is not run.
 - The 2-vCPU CI seconds for core-327 and core-337. The 61 s recorded is this
-  12-thread host's measurement (59 s in each mode).
+  12-thread host's measurement (59 s in each mode) without the chunking
+  contract. With it, core-327 measured 73 and 98 s and core-337 69 and 75 s
+  under a concurrent load average of 8 to 22, so no quiet-host figure
+  exists for the gates as they stand.
 - A full sweep over all audited runs. Only 070847, 080216 and 070853 were
   rerun; the wide runs 025444 and 031229 (929 replicas each) are not timed.
