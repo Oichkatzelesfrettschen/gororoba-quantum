@@ -36,7 +36,11 @@ contrast sits 2.04 standard deviations below the exact value (two-sided
 p = 0.041 for one preplanned test). The pool cannot separate a model bias of
 about 9 percent of the contrast from sampling noise: the contrast radius is
 2.9 times the gap. If the sampled contrast were the model's, shots for the
-same power would grow by (0.03083 / 0.02817)^2 = 1.20. A pool about four
+same power would grow by (0.03083 / 0.02817)^2 = 1.20; at the reference
+plan of `gororoba_quantum/N21_USAGE_BUDGET.md` (05:40 Kingston calibration,
+R = 2 read through the variance upper confidence limit, alpha 0.049 after
+the covariance falsifier's 0.001) that is about 144,353 shots per arm,
+97.3 s, above the 95 s job ceiling. A pool about four
 times larger would put a bias of this size near four standard deviations; it
 has not been sampled. The kernels ran Kaggle's image Python with numpy
 2.1.3, qiskit 2.5.2 and qiskit-aer 0.17.2 on four CPUs; the collected runs

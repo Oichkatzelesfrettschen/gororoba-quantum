@@ -53,6 +53,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
+import n21_exact_planning  # noqa: E402
 from diagnostic_experiments import family_contracts  # noqa: E402
 from experiment_optimizer import (  # noqa: E402
     BudgetContract,
@@ -65,7 +66,7 @@ from experiment_optimizer import (  # noqa: E402
     evaluate_candidate,
 )
 
-REFERENCE = ROOT / "results/live/2026-10-17T114216.070396Z/record.json"
+REFERENCE = ROOT / "results/live/2026-10-17T130242.718497Z/record.json"
 TARGETS = ROOT / "docs/evidence/heron_platform/targets.json"
 # Exact-model dry runs of the same family, oldest calibration first, and the
 # Kaggle validation record of the retained 2026-10-17T003834Z ISA.
@@ -74,6 +75,7 @@ DRIFT_RECORDS = (
     ROOT / "results/live/2026-10-17T094344.639211Z/record.json",
     ROOT / "results/live/2026-10-17T101105.548987Z/record.json",
     ROOT / "results/live/2026-10-17T111902.183133Z/record.json",
+    ROOT / "results/live/2026-10-17T114216.070396Z/record.json",
     REFERENCE,
 )
 VALIDATION = ROOT / "docs/evidence/n21_exact_model/validation.json"
@@ -439,6 +441,8 @@ class Design:
     rep_delay: float = 250e-6
     admitted: bool = True
     candidate: str | None = None  # a reference candidate's own PUB rows and replica laws
+    ucl: bool = True  # False reads the declared projection with no allowance or falsifier tail
+    hoeffding_only: bool = False  # keep the bounds' alpha charge, never take Cantelli
 
 
 def design_inputs(
@@ -455,7 +459,6 @@ def design_inputs(
 def plan(ref: Reference, design: Design, shots: int) -> tuple[CandidatePlan, tuple[ObservableContract, ...]]:
     contracts = family_contracts("n21-feedback-encoded", 0.08, 0.05, 0.8)
     pubs = []
-    bounds = []
     rows, laws = design_inputs(ref, design)
     for name, member, seconds, stages in rows:
         replicas = laws[member]
@@ -471,19 +474,19 @@ def plan(ref: Reference, design: Design, shots: int) -> tuple[CandidatePlan, tup
                 classical_stage_count=stages,
             )
         )
-        if design.variance_bound is not None and len(replicas) > 1:
-            size = len(replicas)
-            bounds.append(
-                CovarianceBound(
-                    contracts[0].name,
-                    name,
-                    tuple(f"{member}/r{k}" for k in range(size)),
-                    tuple(tuple(design.variance_bound if i == j else 0.0 for j in range(size)) for i in range(size)),
-                    "independent replicas",
-                )
-            )
+    bounds: tuple[CovarianceBound, ...] = ()
+    if design.variance_bound is not None and design.replicas > 1:
+        # The collection rule: each bound's radius reads the declared projection
+        # plus the UCL allowance at these shots, and spends the falsifier tail.
+        bounds = n21_exact_planning.replica_covariance_bounds(pubs, contracts, design.variance_bound, shots)
+        if not design.ucl:
+            bounds = tuple(replace(bound, variance_allowance=0.0, falsifier_tail=0.0) for bound in bounds)
+        if design.hoeffding_only:
+            # A projection no Cantelli radius undercuts keeps the falsifier's
+            # alpha charge while every radius stays Hoeffding's.
+            bounds = tuple(replace(bound, variance_allowance=1e12) for bound in bounds)
     job = JobCandidate("kingston/dynamic/1", tuple(pubs), shots, OVERHEAD_SECONDS, 1e9, "declared 2.3 s")
-    return CandidatePlan("sizing", (job,), tuple(bounds)), contracts
+    return CandidatePlan("sizing", (job,), bounds), contracts
 
 
 def feasible(ref: Reference, design: Design, shots: int) -> tuple[bool, Any]:
@@ -535,7 +538,7 @@ def designs(ref: Reference) -> list[Design]:
         Design("exact model, Hoeffding, R=1", None, None),
         *(
             Design(
-                f"exact, Cantelli V=0.55, R={count} {replica_label(ref, count)}",
+                f"exact, Cantelli V=0.55 through its UCL, R={count} {replica_label(ref, count)}",
                 None,
                 None,
                 count,
@@ -544,6 +547,16 @@ def designs(ref: Reference) -> list[Design]:
             )
             for count in sorted(ref.replica_sets)
             if count > 1
+        ),
+        Design(
+            f"earlier rule: V=0.55 read as declared, no falsifier tail, R=2 {replica_label(ref, 2)}",
+            None,
+            None,
+            2,
+            False,
+            VARIANCE_BOUND,
+            admitted=False,
+            ucl=False,
         ),
         Design("exact, Cantelli V=0.55, R=4 equal replicas (hypothetical)", None, None, 4, True, VARIANCE_BOUND),
         Design("exact, Hoeffding, R=1, rep_delay 100 us", None, None, rep_delay=100e-6, admitted=False),
@@ -767,7 +780,7 @@ def render() -> str:
         observable = result.observables[0]
         radii = None
         if n is not None and design.variance_bound is not None and design.replicas > 1:
-            plain = feasible(ref, replace(design, variance_bound=None), n)[1].observables[0]
+            plain = feasible(ref, replace(design, hoeffding_only=True), n)[1].observables[0]
             radii = {
                 "detection": not math.isclose(observable.detection_radius, plain.detection_radius, rel_tol=1e-12),
                 "power": not math.isclose(observable.power_radius, plain.power_radius, rel_tol=1e-12),
@@ -903,8 +916,6 @@ def self_test() -> None:
 
 def exact_evidence_replay(record: dict[str, Any]) -> None:
     """validate_exact rerun on every candidate's retained exact and sampled laws reproduces the record."""
-    import n21_exact_planning
-
     contracts = tuple(
         ObservableContract(
             **{key: value for key, value in contract.items() if key != "terms"},

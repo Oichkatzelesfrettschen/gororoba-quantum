@@ -69,6 +69,22 @@ as (K / c)^2 for modeled contrast c.
   off-diagonals (independence). Per PUB at R = 2, n x radius^2 is
   (V / R)(1 - t) / t for Cantelli, 10.7 at the detection tail and 2.5 at
   the power tail, against 2 ln(1/t) for Hoeffding, 7.4 and 4.6.
+- **Variance upper confidence limit.** Failing to reject a declared
+  variance does not establish it, so the radius never reads the bare
+  declaration. Collection measures each bound's sample variance and adds
+  the allowance eps2 + D eps1 at tail 1e-3 / 2 per PUB (D = 2, about
+  0.030 at 122,880 shots): the radius reads the declared projection 0.275
+  only when that upper confidence limit (UCL) stays at or below it, and the
+  UCL otherwise, through Cantelli only where that beats Hoeffding. The
+  falsifier tail comes out of the endpoint's alpha, 0.05 = 0.001 + 0.049,
+  so the confidence and detection radii run at 0.049; the power tail stays
+  0.2. Planning sizes the run on the same rule: each bound's projection is
+  0.275 plus the allowance at the planned shots, the variance collection
+  reads when the sample variance meets the declaration, at alpha 0.049. At
+  the reference calibration that rule needs 120,625 shots per arm at R = 2
+  against 115,591 for the bare declaration (78.3 s, the earlier rule's
+  row), 3.3 s more; the R = 1 Hoeffding design reads no bound and keeps
+  alpha 0.05.
 - **Simulation allowance.** A sampled model of m shots adds
   2 x 2 x sqrt(ln(2C / 0.01) / (2m)) for the two members, where C counts
   every scored marginal across the whole candidate search. The dry run of
@@ -98,9 +114,9 @@ and the allowance is zero. Evidence that the exact law is Aer's law:
   probability within the simultaneous radius, and each arm's signed score
   and the endpoint contrast within their own Bernstein radii; a candidate
   that fails leaves the search with its reason in the trace. The reference
-  run's largest probability gap is 0.0043 against 0.0078, and its contrast
-  reads 0.0242 exact against 0.0278 sampled, inside a contrast radius of
-  0.0207. At 65,536 model shots that radius is about the effect itself, so
+  run's largest probability gap is 0.0044 against 0.0078, and its contrast
+  reads 0.0252 exact against 0.0240 sampled, inside a contrast radius of
+  0.0208. At 65,536 model shots that radius is about the effect itself, so
   the in-run check cannot see a bias of 10 percent of the contrast;
 - gate core-485: the retained Kingston ISA under the 2026-10-16 12:13
   snapshot, sampled on three Kaggle CPU kernels (589,824 shots per arm),
@@ -111,9 +127,9 @@ and the allowance is zero. Evidence that the exact law is Aer's law:
 
 **Bias sensitivity.** If the device-calibration model's true contrast were
 the Kaggle pool's fraction 0.914 of the exact one, the reference plan's
-effect would fall from 0.0242 to 0.0221 while its detection plus power
-radius at 131,072 shots is 0.0237: power 0.8 would then need about 150,070
-shots per arm, 101.0 s, above the 95 s job ceiling. The Kaggle pool used the
+effect would fall from 0.0252 to 0.0231 while its detection plus power
+radius at 122,880 shots is 0.0250: power 0.8 would then need about 144,353
+shots per arm, 97.3 s, above the 95 s job ceiling. The Kaggle pool used the
 12:13 snapshot, not the reference calibration, and cannot separate that bias
 from sampling noise; a pool about four times larger would.
 
@@ -124,40 +140,41 @@ The exact law costs about 3 s of CPU per circuit against about 50 s for
 
 The exact contrast of the same family on ibm_kingston fell from 0.0308
 (12:13 snapshot) through 0.0297 (01:53) and 0.0248 (02:30) to 0.0229 (03:41,
-unchanged at 04:20) within sixteen hours, and the 02:30 calibration moved the best
-placement from qubits 104-105-117-124-125-126-127 to 104-105-106-107-117-125-126.
-Seconds scale as c^-2, so the same one-replica design needs 67.7, 72.9, 103.7
-and 120.8 s at those four calibrations (generated table). A case sized at one calibration is
+unchanged at 04:20) and rose to 0.0249 at 05:40, within eighteen hours; the
+02:30 calibration moved the best placement from qubits
+104-105-117-124-125-126-127 to 104-105-106-107-117-125-126. Seconds scale as
+c^-2, so the same one-replica design needs 67.8, 72.9, 103.7, 120.8 and
+102.4 s at those five calibrations (generated table). A case sized at one calibration is
 re-planned at submission: the runner compares the fresh plan with the
 approved record and stops for renewed approval when it differs.
 
 ## Levers, ranked by seconds saved
 
-Seconds below are planner charges at the reference contrast 0.0229 (dry run
-2026-10-17T114216Z, Kingston calibration 04:20); the generated table carries
+Seconds below are planner charges at the reference contrast 0.0249 (dry run
+2026-10-17T130242Z, Kingston calibration 05:40); the generated table carries
 every row.
 
 1. **Simulation allowance: exact model.** The sampled search is infeasible at
    any shot count at 65,536 model shots; the 589,824 sampled shots the
-   Kaggle validation ran would leave a 0.0090 allowance and 324.5 s. The
-   exact model needs 180,205 shots per arm (120.8 s) with one replica. Cost
+   Kaggle validation ran would leave a 0.0090 allowance and 248.0 s. The
+   exact model needs 152,183 shots per arm (102.4 s) with one replica. Cost
    to the inference: none beyond the noise model the sampled path already
    assumed and the bias sensitivity above; control: the sampled falsifiers
    above.
 2. **Contract choice (a change to the preregistered test).** Hoeffding over a
-   span-2 score costs 16 times the shots of a normal-approximation test at
-   the same contrast (11,320 shots, 9.7 s). Bernstein with the declared
-   variance bound keeps a finite-sample guarantee and needs 100,503 shots
-   (68.4 s); Hoeffding over independent replicas at R = 2 needs 80,536
-   (55.3 s) against the admitted 125,359 (84.7 s) at the same R. Both rows
+   span-2 score costs 15 times the shots of a normal-approximation test at
+   the same contrast (9,858 shots, 8.8 s). Bernstein with the declared
+   variance bound keeps a finite-sample guarantee and needs 84,978 shots
+   (58.2 s); Hoeffding over independent replicas at R = 2 needs 74,260
+   (51.1 s) against the admitted 120,625 (81.6 s) at the same R. Both rows
    use independence: the extension treats the n x R replica scores as
    independent draws, so its sub-Gaussian radius shrinks as 1 / sqrt(R) on
    detection and power alike, while the admitted contract reaches
    independence only through Cantelli's heavier-tailed radius, which helps
    the power tail alone at R = 2. experiment_optimizer implements none of
    the three extensions; each needs the owner's sign-off.
-3. **Repetition delay.** 250 to 100 us saves 54 s (66.7 s), to 50 us saves
-   72 s (48.7 s), on the Heron r2 range 0 to 2 ms. Cost: state-preparation
+3. **Repetition delay.** 250 to 100 us saves 46 s (56.8 s), to 50 us saves
+   61 s (41.5 s), on the Heron r2 range 0 to 2 ms. Cost: state-preparation
    error rises as the delay falls and Aer does not model it, so the power at
    a shorter delay is unverified. Control: a prepare-and-measure null PUB on
    the seven qubits in the same job measures the excited-state population at
@@ -166,28 +183,24 @@ every row.
 4. **Replicas.** Disjoint one-hop-buffered placements of the encoded pattern
    on ibm_kingston scored 1, 0.598, 0.562, 0.332 and 0.325 of the best at the
    01:53 calibration; floor 0.55 admits the three above the gap between
-   0.562 and 0.332. Layout score is a poor contrast proxy: at 04:20 the
-   second placement (qubits 57, 65-70) models a contrast of 0.0256 against
-   0.0229 for the first, and the third models 0.0095, so R = 3 costs more
-   (115.1 s) than R = 2. Two replicas with the declared bound need 125,359
-   shots (84.7 s) against 180,205 (120.8 s) for one: 36 s saved, all of it
-   through the power radius. The optimizer chose R = 2 at the 131,072 tier
-   (88.5 s). Four equal replicas would need 61.2 s; the chip offers no such
-   set.
-   Control: collection tests the declared bound on the retained shot-ordered
-   replica registers before it applies it
+   0.562 and 0.332. Layout score is a poor contrast proxy: at 05:40 the
+   second placement (qubits 57, 65-70) models a contrast of 0.0255 against
+   0.0249 for the first. Two replicas with the bound read through its UCL
+   need 120,625 shots (81.6 s) against 152,183 (102.4 s) for one: 21 s
+   saved, all of it through the power radius. The optimizer chose R = 2 at
+   the 122,880 tier (83.1 s). Four equal replicas would need 65.3 s; the
+   chip offers no such set.
+   Control: collection reads each bound only through its variance UCL
    (`n21_exact_planning.COVARIANCE_FALSIFIER`, recorded in record.json and
-   the case): the sample variance of each PUB's replica-average score must
-   stay within the declared projection 0.275 plus a Hoeffding allowance
-   (0.0293 at 131,072 shots). A failure analyzes the endpoint under the
-   arbitrary-dependence Hoeffding radius: the rejection threshold is the
-   same in both branches, and the Hoeffding branch reports the endpoint
-   underpowered at these shots; collect.json records the branch, and
-   `scripts/n21_replica_covariance.py --run-dir` replays it from the raw
-   files.
+   the case) and records the UCL, the variance used, the branch and the
+   alpha split in collect.json; `scripts/n21_replica_covariance.py
+   --run-dir` replays it from the raw files. A UCL above the planned
+   projection widens the power radius and can leave the endpoint
+   underpowered, which collect.json reports; without retained registers
+   the endpoint takes the Hoeffding radius at the full alpha.
 5. **CZ count.** Removing k routed CZ multiplies the contrast by rho^-k,
-   rho between 0.99676 and 0.99745, so shots scale by rho^(2k): 100 fewer CZ
-   save 47 to 57 s, 200 fewer save 76 to 86 s (one replica). With a sampled
+   rho between 0.99687 and 0.99745, so shots scale by rho^(2k): 100 fewer CZ
+   save 40 to 47 s, 200 fewer save 64 to 72 s (one replica). With a sampled
    model of allowance a the required shots are (K / (c rho^-k - a))^2.
 6. **Backend.** Under the 2026-10-16 midday snapshots the encoded pair's
    modeled contrast is 0.0417 on Kingston, 0.0198 on Fez and 0.0135 on
@@ -204,22 +217,23 @@ every row.
 
 ## Minimum
 
-At the 04:20 Kingston calibration the admitted contract's cheapest
+At the 05:40 Kingston calibration the admitted contract's cheapest
 configuration is the exact model, two replicas (qubits 104-105-106-107-117-
-125-126 and 57-65-66-67-68-69-70) under the declared variance bound 0.55,
-250 us repetition delay, one job of two PUBs: 125,359 shots per arm at the
-minimum, 131,072 at the dry run's tier, 88.5 s planner charge against a 95 s
-job ceiling. The detection radius is Hoeffding's; the power rests on the
-declared bound and replica independence, which collection tests before it
-applies them. Without them the same contract needs one replica and 120.8 s,
-above the ceiling. The written case is
-`results/live/2026-10-17T114216.070396Z/UNAPPROVED_CASE.md`; the 02:30 case
-of 2026-10-17T101105Z and the 03:41 dry run 2026-10-17T111902Z, whose case
-text named the contrast radius wrongly, are superseded audit records.
+125-126 and 57-65-66-67-68-69-70) under the declared variance bound 0.55
+read through its UCL, 250 us repetition delay, one job of two PUBs: 120,625
+shots per arm at the minimum, 122,880 at the dry run's tier, 83.1 s planner
+charge against a 95 s job ceiling. The detection radius is Hoeffding's at
+alpha 0.049; the power rests on the bound and replica independence. One
+replica needs 102.4 s, above the ceiling. Under the same rule at the 04:20
+calibration R = 2 would need 130,627 shots (88.2 s; the 131,072 tier,
+88.5 s, still admits) and R = 1 180,205 (120.8 s). The written case is
+`results/live/2026-10-17T130242.718497Z/UNAPPROVED_CASE.md`; the dry runs
+2026-10-17T101105Z, 2026-10-17T111902Z and 2026-10-17T114216Z, planned
+under the declared-variance rule, are superseded audit records.
 
 <!-- n21-usage-budget:begin -->
 
-Generated by `scripts/n21_usage_budget.py --write`; reference record `results/live/2026-10-17T114216.070396Z/record.json` (ibm_kingston, calibration 2026-10-17T04:20:24-07:00).
+Generated by `scripts/n21_usage_budget.py --write`; reference record `results/live/2026-10-17T130242.718497Z/record.json` (ibm_kingston, calibration 2026-10-17T05:40:42-07:00).
 
 **Metered billing (retained jobs).**
 
@@ -233,55 +247,55 @@ Generated by `scripts/n21_usage_budget.py --write`; reference record `results/li
 
 | PUB | Target gate time (us) | feed-forward stages |
 | --- | --- | --- |
-| ibm_kingston_dynamic_pub_01 | 68.632 | 1 |
-| ibm_kingston_dynamic_pub_02 | 68.916 | 0 |
+| ibm_kingston_dynamic_pub_01 | 68.916 | 1 |
+| ibm_kingston_dynamic_pub_02 | 68.884 | 0 |
 
 | rep_delay (us) | planner seconds per pair (us) | measured-model seconds per pair (us) |
 | --- | --- | --- |
-| 250 | 657.5 | 656.0 |
-| 100 | 357.5 | 356.0 |
-| 50 | 257.5 | 256.0 |
-| 0 | 157.5 | 156.0 |
+| 250 | 657.8 | 656.3 |
+| 100 | 357.8 | 356.3 |
+| 50 | 257.8 | 256.3 |
+| 0 | 157.8 | 156.3 |
 
 **Calibration drift of the exact contrast (one replica, Hoeffding, 250 us).**
 
 | Source | calibration | layout qubits | exact contrast | shots per arm | planner charge (s) |
 | --- | --- | --- | --- | --- | --- |
-| calibration snapshot, retained ISA | 2026-10-16T12:13:36-07:00 | [104, 105, 117, 124, 125, 126, 127] | 0.0308 | 99,511 | 67.7 |
+| calibration snapshot, retained ISA | 2026-10-16T12:13:36-07:00 | [104, 105, 117, 124, 125, 126, 127] | 0.0308 | 99,511 | 67.8 |
 | dry run 2026-10-17T091514.662497Z | 2026-10-17T01:53:33-07:00 | [104, 105, 117, 124, 125, 126, 127] | 0.0297 | 107,348 | 72.9 |
 | dry run 2026-10-17T094344.639211Z | 2026-10-17T02:30:44-07:00 | [104, 105, 106, 107, 117, 125, 126] | 0.0248 | 154,202 | 103.7 |
 | dry run 2026-10-17T101105.548987Z | 2026-10-17T02:30:44-07:00 | [104, 105, 106, 107, 117, 125, 126] | 0.0248 | 154,202 | 103.7 |
 | dry run 2026-10-17T111902.183133Z | 2026-10-17T03:41:37-07:00 | [104, 105, 106, 107, 117, 125, 126] | 0.0229 | 180,205 | 120.8 |
 | dry run 2026-10-17T114216.070396Z | 2026-10-17T04:20:24-07:00 | [104, 105, 106, 107, 117, 125, 126] | 0.0229 | 180,205 | 120.8 |
+| dry run 2026-10-17T130242.718497Z | 2026-10-17T05:40:42-07:00 | [104, 105, 106, 107, 117, 125, 126] | 0.0249 | 152,183 | 102.4 |
 
-**Shots and seconds.** Reference modeled contrast difference 0.0229 (ideal 0.25); alpha 0.05, power 0.8, one-sided, union bound over the two PUBs, as `family_contracts` declares.
+**Shots and seconds.** Reference modeled contrast difference 0.0249 (ideal 0.25); alpha 0.05, power 0.8, one-sided, union bound over the two PUBs, as `family_contracts` declares.
 
 | Configuration | executions | planner charge (s) | measured-model charge (s) | smallest job ceiling (s) | power | assumptions | simulation allowance | QPU radius |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| sampled 65,536 across the dry run's 36 plans, Hoeffding, R=1 | infeasible | - | - | - | - | sampled model, 65,536 shots | 0.0342 | - |
+| sampled 65,536 across the dry run's 24 plans, Hoeffding, R=1 | infeasible | - | - | - | - | sampled model, 65,536 shots | 0.0335 | - |
 | sampled 65,536, one plan, Hoeffding, R=1 | infeasible | - | - | - | - | sampled model, 65,536 shots | 0.0270 | - |
-| sampled 589,824 (the Kaggle validation's size), one plan, Hoeffding, R=1 | 2 x 489,938 | 324.5 | 324 | 325 | 0.8, admitted contract | sampled model, 589,824 shots | 0.0090 | 0.0139 |
-| exact model, Hoeffding, R=1 | 2 x 180,205 | 120.8 | 120 | 121 | 0.8, admitted contract | exact model | 0.0000 | 0.0229 |
-| exact, Cantelli V=0.55, R=2 (replica contrasts 0.0229, 0.0256) | 2 x 125,359 | 84.7 | 84 | 85 | 0.8, admitted contract | exact model; power radius on independent replicas, variance <= 0.55; detection radius Hoeffding | 0.0000 | 0.0242 |
-| exact, Cantelli V=0.55, R=3 (replica contrasts 0.0229, 0.0256, 0.0095) | 2 x 167,967 | 115.1 | 115 | 116 | 0.8, admitted contract | exact model; detection and power radius on independent replicas, variance <= 0.55 | 0.0000 | 0.0193 |
-| exact, Cantelli V=0.55, R=4 equal replicas (hypothetical) | 2 x 89,583 | 61.2 | 61 | 62 | 0.8, admitted contract | exact model; detection and power radius on independent replicas, variance <= 0.55; hypothetical equal replicas | 0.0000 | 0.0229 |
-| exact, Hoeffding, R=1, rep_delay 100 us | 2 x 180,205 | 66.7 | 66 | 67 | unverified | exact model; state-prep error unmodeled | 0.0000 | 0.0229 |
-| exact, Hoeffding, R=1, rep_delay 50 us | 2 x 180,205 | 48.7 | 48 | 49 | unverified | exact model; state-prep error unmodeled | 0.0000 | 0.0229 |
-| extension: Bernstein with V=0.55, R=1 | 2 x 100,503 | 68.4 | 68 | 69 | 0.8, contract change | exact model; variance <= 0.55 | 0.0000 | - |
-| extension: Hoeffding over independent replicas, R=2 (replica contrasts 0.0229, 0.0256) | 2 x 80,536 | 55.3 | 55 | 56 | 0.8, contract change | exact model; independent replicas | 0.0000 | - |
-| extension: Hoeffding over independent replicas, R=3 (replica contrasts 0.0229, 0.0256, 0.0095) | 2 x 84,471 | 57.8 | 58 | 58 | 0.8, contract change | exact model; independent replicas | 0.0000 | - |
-| normal approximation, one-sided alpha 0.05, pooled variance | 2 x 11,320 | 9.7 | 10 | 10 | 0.8 asymptotic, contract change | exact model; normal limit | 0.0000 | - |
+| sampled 589,824 (the Kaggle validation's size), one plan, Hoeffding, R=1 | 2 x 373,449 | 248.0 | 247 | 248 | 0.8, admitted contract | sampled model, 589,824 shots | 0.0090 | 0.0159 |
+| exact model, Hoeffding, R=1 | 2 x 152,183 | 102.4 | 102 | 103 | 0.8, admitted contract | exact model | 0.0000 | 0.0249 |
+| exact, Cantelli V=0.55 through its UCL, R=2 (replica contrasts 0.0249, 0.0255) | 2 x 120,625 | 81.6 | 81 | 82 | 0.8, admitted contract | exact model; power radius on independent replicas, variance <= 0.55; detection radius Hoeffding | 0.0000 | 0.0252 |
+| earlier rule: V=0.55 read as declared, no falsifier tail, R=2 (replica contrasts 0.0249, 0.0255) | 2 x 115,591 | 78.3 | 78 | 79 | unverified | exact model; power radius on independent replicas, variance <= 0.55; detection radius Hoeffding | 0.0000 | 0.0252 |
+| exact, Cantelli V=0.55, R=4 equal replicas (hypothetical) | 2 x 95,825 | 65.3 | 65 | 66 | 0.8, admitted contract | exact model; detection and power radius on independent replicas, variance <= 0.55; hypothetical equal replicas | 0.0000 | 0.0249 |
+| exact, Hoeffding, R=1, rep_delay 100 us | 2 x 152,183 | 56.8 | 56 | 57 | unverified | exact model; state-prep error unmodeled | 0.0000 | 0.0249 |
+| exact, Hoeffding, R=1, rep_delay 50 us | 2 x 152,183 | 41.5 | 41 | 42 | unverified | exact model; state-prep error unmodeled | 0.0000 | 0.0249 |
+| extension: Bernstein with V=0.55, R=1 | 2 x 84,978 | 58.2 | 58 | 59 | 0.8, contract change | exact model; variance <= 0.55 | 0.0000 | - |
+| extension: Hoeffding over independent replicas, R=2 (replica contrasts 0.0249, 0.0255) | 2 x 74,260 | 51.1 | 51 | 52 | 0.8, contract change | exact model; independent replicas | 0.0000 | - |
+| normal approximation, one-sided alpha 0.05, pooled variance | 2 x 9,858 | 8.8 | 9 | 9 | 0.8 asymptotic, contract change | exact model; normal limit | 0.0000 | - |
 
-Executions count shots summed over the two PUBs; replicas share a shot. The dry run selected `candidate-001-shots-131072` (2 replicas, 131,072 shots per arm, 88.5 s) under a 95 s job ceiling.
+Executions count shots summed over the two PUBs; replicas share a shot. The dry run selected `candidate-001-shots-122880` (2 replicas, 122,880 shots per arm, 83.1 s) under a 95 s job ceiling.
 
 **CZ reduction (exact model, Hoeffding, R=1).** Removing k routed CZ scales the contrast by rho^-k; the two columns take rho from 1 - 4/3 x the Kingston median CZ error and from the reference contrast's own decay over its CZ count. Cells: shots per arm / planner seconds at 250 us.
 
-| k removed | rho = 0.99745 | rho = 0.99676 |
+| k removed | rho = 0.99745 | rho = 0.99687 |
 | --- | --- | --- |
-| 0 | 180,205 / 120.8 | 180,205 / 120.8 |
-| 25 | 158,614 / 106.6 | 153,232 / 103.1 |
-| 50 | 139,609 / 94.1 | 130,296 / 88.0 |
-| 100 | 108,159 / 73.4 | 94,210 / 64.2 |
-| 200 | 64,916 / 45.0 | 49,252 / 34.7 |
+| 0 | 152,183 / 102.4 | 152,183 / 102.4 |
+| 25 | 133,949 / 90.4 | 130,093 / 87.9 |
+| 50 | 117,900 / 79.9 | 111,209 / 75.5 |
+| 100 | 91,340 / 62.4 | 81,267 / 55.8 |
+| 200 | 54,822 / 38.4 | 43,398 / 30.8 |
 
 <!-- n21-usage-budget:end -->

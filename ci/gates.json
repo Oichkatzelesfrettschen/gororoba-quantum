@@ -2950,7 +2950,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error replica_covariance_contracts.py && \"$PYTHON\" -B -O -W error replica_covariance_contracts.py",
    "name": "core-486",
-   "seconds": 9.0,
+   "seconds": 12.0,
    "tier": "pr"
   }
  ],

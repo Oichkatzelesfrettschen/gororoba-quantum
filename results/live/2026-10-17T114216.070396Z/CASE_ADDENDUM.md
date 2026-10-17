@@ -1,7 +1,19 @@
 # Case addendum: n21-feedback-encoded at the 04:20 Kingston calibration
 
-Status: UNAPPROVED. This addendum accompanies `UNAPPROVED_CASE.md` and
-authorizes nothing. It supersedes the cases of the dry runs
+Status: UNAPPROVED and SUPERSEDED by `results/live/2026-10-17T130242.718497Z`
+(05:40 calibration, 122,880 shots, 83.1 s). This record's plan and its
+preregistered falsifier read the declared variance whenever the sample
+variance stayed within the allowance of it; a true variance above the
+declaration but inside the allowance then shrank the radii below their
+stated level. The superseding run reads each bound through its variance
+upper confidence limit and spends the falsifier tail from alpha (0.05 =
+0.001 + 0.049); under that rule this calibration needs 130,627 shots
+(88.2 s) at R = 2, so the 131,072 tier still admits, and 180,205 (120.8 s)
+at R = 1. The experiment digest has changed, so the runner refuses to submit
+against this record; it stays as an audit record.
+
+This addendum accompanies `UNAPPROVED_CASE.md` and authorizes nothing. It
+supersedes the cases of the dry runs
 2026-10-17T101105Z (02:30 calibration, 118,784 shots, 80.4 s) and
 2026-10-17T111902Z (03:41 calibration; its generated case named the
 contrast check's radius Hoeffding where the code computes Bernstein). Both
