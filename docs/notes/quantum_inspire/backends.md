@@ -17,7 +17,7 @@ Every number below comes from one of three sources, named on each line:
 Status, queue length and heartbeat are snapshot values that change between
 reads (Tuna-17 read `executing`, `calibrating` and `benchmarking` within half an hour); limits,
 gate sets, topology and compiler passes are the structural facts that
-AGENTS.md carries under gate core-326.
+AGENTS.md carries under gate core-347.
 
 ## Summary
 

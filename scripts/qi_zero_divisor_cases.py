@@ -84,6 +84,7 @@ from cd_core import _lmat, cd_multiply, cd_sign, sedenion_zero_divisor_corpus  #
 from select_lcu import anf_coefficients, joint_select_signs, sparse_pair_prep  # noqa: E402
 
 PACKAGE_TABLES = ROOT / "docs/evidence/algebra_packages/tables.json"
+CATALOGUE = ROOT / "docs/evidence/quantum_inspire/catalogue.json"
 # Packages whose retained D = 16 table is identical to cd_core
 # (root AGENTS.md, "Cayley-Dickson packages on the build host").
 IDENTICAL_PACKAGES = ("hypercomplex", "hypercomplex-engine", "Cayley-Calculator", "cayley-dickson")
@@ -322,8 +323,23 @@ def finish(cases: dict[str, Any], texts: dict[str, str]) -> dict[str, str]:
     return files
 
 
+def catalogue_check() -> None:
+    """The routing constants describe the retained catalogue's Tuna-17 and QX backend types."""
+    types = {row["id"]: row for row in json.loads(CATALOGUE.read_text(encoding="utf-8"))["backend_types"]}
+    tuna, qx = types.get(BACKEND_TYPE_ID), types.get(QX_BACKEND_TYPE_ID)
+    if tuna is None or (tuna["identifier"], tuna["nqubits"]) != (BACKEND, NQUBITS):
+        raise SystemExit(f"backend type {BACKEND_TYPE_ID} is no longer {BACKEND} with {NQUBITS} qubits")
+    if {tuple(sorted(edge)) for edge in tuna["topology"]} != set(TUNA17):
+        raise SystemExit(f"the catalogue's {BACKEND} coupling map differs from TUNA17")
+    if qx is None or qx["identifier"] != "QXsinglenodesimulator" or qx["nqubits"] < QX_QUBITS:
+        raise SystemExit(f"backend type {QX_BACKEND_TYPE_ID} no longer serves the {QX_QUBITS}-qubit QX twin")
+    if SHOTS > tuna["max_number_of_shots"] or QX_SHOTS > qx["max_number_of_shots"]:
+        raise SystemExit("the case shots exceed a catalogue shot limit")
+
+
 def build() -> dict[str, dict[str, str]]:
     """Case directory name -> files: the Tuna-17 Latin square and its QX twin."""
+    catalogue_check()
     common = {
         "a_pair": list(A_PAIR),
         "cases": {
@@ -646,7 +662,7 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
 
     return {
         "schema": "qi-zero-divisor-analysis-v1",
-        "claim_kind": "preregistered hardware inference",
+        "claim_kind": "preregistered emulator control" if "twin_of" in cases else "preregistered hardware inference",
         "replicas": replicas,
         "by_case": by_case,
         "visibility": bright["p_selector_zero"] - dark["p_selector_zero"],

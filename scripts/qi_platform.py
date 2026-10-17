@@ -49,6 +49,7 @@ import hashlib
 import importlib
 import json
 import os
+import re
 import sys
 import tempfile
 import time
@@ -415,6 +416,15 @@ def _check_submission_manifest(case_dir: Path, record: dict[str, Any], *, requir
             raise PlatformError("submission receipt is not enqueued; use read-only reconciliation")
 
 
+# Every qubit declaration of a cQASM 3.0 program: `qubit[n] name` or the scalar `qubit name`.
+QUBIT_DECLARATION = re.compile(r"^\s*qubit\s*(?:\[\s*(\d+)\s*\])?\s+[A-Za-z_]\w*", re.MULTILINE)
+
+
+def declared_qubits(cqasm: str) -> int:
+    """Total width of every qubit register the program declares; the platform allocates their sum."""
+    return sum(int(size) if size else 1 for size in QUBIT_DECLARATION.findall(cqasm)) or 1
+
+
 def submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any]:
     if (case_dir / "submission.json").exists():
         raise SystemExit(f"{case_dir}/submission.json exists; this case was submitted")
@@ -447,6 +457,11 @@ def submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any
         raise SystemExit(f"{backend_type['name']} is offline")
     if len(sources) > backend_type["max_jobs_per_batch_job"]:
         raise SystemExit(f"{len(sources)} circuits exceed max_jobs_per_batch_job")
+    for file, source in sources.items():
+        if declared_qubits(source) > backend_type["nqubits"]:
+            raise SystemExit(
+                f"{file} declares {declared_qubits(source)} qubits; the backend serves {backend_type['nqubits']}"
+            )
     if cases["shots"] > backend_type["max_number_of_shots"]:
         raise SystemExit("shots exceed max_number_of_shots")
     queue = client.get(f"/backend_types/{backend_type_id}/queue", user_only=True)
