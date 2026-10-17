@@ -379,15 +379,17 @@ def validate(run: dict[str, Any], index: dict[str, Any], grid: list[tuple[float,
     require(run["member_shots"] == {m: prepared["shots"][m] for m in members}, f"{name}: member shots differ")
     require(run["execution_snapshot"] == {m: execution[m] for m in members}, f"{name}: execution snapshots differ")
     require([(p["cz"], p["readout"]) for p in run["points"]] == grid, f"{name}: grid differs")
+    # The sampler groups members by execution snapshot, so a run that spans
+    # a calibration change keys its distances in group order.
     for point in run["points"]:
-        require(list(point["tvd"]) == members, f"{name}: {point['cz']}x{point['readout']} member coverage")
+        require(sorted(point["tvd"]) == sorted(members), f"{name}: {point['cz']}x{point['readout']} member coverage")
         for m, row in point["tvd"].items():
             require(len(row) == len(prepared["replicas"][m][1]), f"{name}: {m} replica count")
     require(run["mean_tvd"] == grid_means(run["points"], members), f"{name}: means differ from the distances")
     best = int(np.argmin(run["mean_tvd"]))
     floor = run["floor"]
     require((floor["cz"], floor["readout"]) == grid[best], f"{name}: resample floor is not at the minimizing point")
-    require(list(floor["tvd"]) == members, f"{name}: resample floor member coverage")
+    require(sorted(floor["tvd"]) == sorted(members), f"{name}: resample floor member coverage")
     for m, row in floor["tvd"].items():
         require(len(row) == len(prepared["replicas"][m][1]), f"{name}: {m} floor replica count")
     require(

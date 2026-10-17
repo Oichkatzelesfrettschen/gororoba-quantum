@@ -2468,6 +2468,54 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "ruff check scripts/ghost_idle_budget.py && ruff format --check scripts/ghost_idle_budget.py && MYPYPATH=gororoba_quantum mypy scripts/ghost_idle_budget.py",
+   "name": "core-330",
+   "seconds": 8.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_idle_budget.py --check docs/evidence/ghost_error_scale/idle_budget.json && \"$PYTHON\" -O -B -W error scripts/ghost_idle_budget.py --check docs/evidence/ghost_error_scale/idle_budget.json",
+   "name": "core-331",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "ruff check scripts/ghost_event_scale.py && ruff format --check scripts/ghost_event_scale.py && MYPYPATH=gororoba_quantum mypy scripts/ghost_event_scale.py",
+   "name": "core-332",
+   "seconds": 4.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_event_scale.py --self-test && \"$PYTHON\" -O -B -W error scripts/ghost_event_scale.py --self-test",
+   "name": "core-333",
+   "seconds": 11.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "cmp docs/evidence/ghost_error_scale/part_a.json results/kaggle/2026-10-16T160703Z-gororoba-ghost-error-scale-a/output/output/repo/results/kaggle_out/ghost_error_scale_a.json && cmp docs/evidence/ghost_error_scale/part_b.json results/kaggle/2026-10-16T160706Z-gororoba-ghost-error-scale-b/output/output/repo/results/kaggle_out/ghost_error_scale_b.json && cmp docs/evidence/ghost_error_scale/part_c.json results/kaggle/2026-10-16T160710Z-gororoba-ghost-error-scale-c/output/output/repo/results/kaggle_out/ghost_error_scale_c.json",
+   "name": "core-338",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json --runs results/live/2026-10-13T080216.451663Z",
+   "name": "core-339",
+   "seconds": 110.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "ruff check docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py docs/notes/packages/manual/checks/albert_algebra.py && ruff format --check docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py docs/notes/packages/manual/checks/albert_algebra.py && MYPYPATH=gororoba_quantum mypy docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py docs/notes/packages/manual/checks/albert_algebra.py",
    "name": "core-335",
    "seconds": 6.0,
