@@ -224,6 +224,13 @@
       "run": "results/quantum_inspire/runs/2026-10-17T042652Z-zero_divisor_qx-batch-00",
       "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
       "question": "Dry run of the two-region placement off Tuna-17 q0, q6 and q9: does the ideal QX emulator execute the rotated twin circuits exactly (dark 0, bright 1, fixture 1/2) before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-zero-divisor-visibility-floor-dry-run",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T044225Z-zero_divisor_qx-batch-00",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "Dry run of the placement off Tuna-17 q0, q5, q6, q7 and q9: does the ideal QX emulator execute the rotated twin circuits of regions {1,2,4,8,12} and {10,11,13,14,16} exactly (dark 0, bright 1, fixture 1/2) before any Tuna-17 submission?"
     }
   ],
   "claims": [
@@ -2917,8 +2924,7 @@
         "docs/notes/quantum_inspire/experiments.md"
       ],
       "gates": {
-        "core-330": "replay",
-        "core-348": "freshness"
+        "core-330": "replay"
       },
       "acquisitions": [
         "qi-tuna17-zero-divisor",
@@ -2997,7 +3003,7 @@
       "id": "qi-qx-zero-divisor-batched-twin",
       "statement": "Split into two QX batches, the nine routed Clifford+T zero-divisor replicas of the per-batch series read P(s = 0) = 0 in 6144 dark shots, 1 in 6144 bright shots and 0.498 [0.485, 0.510] fixture (1053, 998 and 1007 of 2048 per replica; fixture - 1/2 = -0.002, z = -0.36), so the emulator executes the batched series' emitted cQASM as certified.",
       "domain": "implementation",
-      "evidence_class": "preregistered hardware inference",
+      "evidence_class": "preregistered emulator control",
       "status": "established",
       "boundary": "The QX emulator is noiseless, so the run tests the platform's parsing and execution of the emitted circuits and the batch-keyed analysis, not device noise; the exact SELECT identity rests on the full-operator certificate in certify(), not on finite samples; 2048 shots per circuit.",
       "evidence": [
@@ -3018,8 +3024,7 @@
         "docs/notes/quantum_inspire/experiments.md"
       ],
       "gates": {
-        "core-330": "replay",
-        "core-348": "freshness"
+        "core-330": "replay"
       },
       "acquisitions": [
         "qi-qx-zero-divisor-batch-dry-run-0",
@@ -3034,7 +3039,7 @@
       "id": "qi-qx-zero-divisor-two-region-twin",
       "statement": "In one QX batch, the six routed Clifford+T zero-divisor replicas of the two-region series (regions {1,2,4,7,8} and {11,12,14,15,16}, rotated so each case runs once per region) read P(s = 0) = 0 in 4096 dark shots, 1 in 4096 bright shots and 0.486 [0.471, 0.501] fixture (986 and 1004 of 2048 per replica; fixture - 1/2 = -0.014, z = -1.81), so the emulator executes the regenerated series' emitted cQASM as certified.",
       "domain": "implementation",
-      "evidence_class": "preregistered hardware inference",
+      "evidence_class": "preregistered emulator control",
       "status": "established",
       "boundary": "The QX emulator is noiseless, so the run tests the platform's parsing and execution of the emitted circuits and the batch-keyed analysis, not device noise; the exact SELECT identity rests on the full-operator certificate in certify(), not on finite samples; 2048 shots per circuit.",
       "evidence": [
@@ -3051,11 +3056,42 @@
         "docs/notes/quantum_inspire/experiments.md"
       ],
       "gates": {
+        "core-330": "replay"
+      },
+      "acquisitions": [
+        "qi-qx-zero-divisor-two-region-dry-run"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-qx-zero-divisor-visibility-floor-twin",
+      "statement": "In one QX batch, the six routed Clifford+T zero-divisor replicas of the placement off Tuna-17 q0, q5, q6, q7 and q9 (regions {1,2,4,8,12} and {10,11,13,14,16}, rotated so each case runs once per region) read P(s = 0) = 0 in 4096 dark shots, 1 in 4096 bright shots and 0.506 [0.491, 0.521] fixture (1034 and 1038 of 2048 per replica; fixture - 1/2 = +0.006, z = +0.75), so the emulator executes the regenerated series' emitted cQASM as certified.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "The QX emulator is noiseless, so the run tests the platform's parsing and execution of the emitted circuits and the batch-keyed analysis, not device noise; the exact SELECT identity rests on the full-operator certificate in certify(), not on finite samples; 2048 shots per circuit.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/zero_divisor_qx_visibility_floor_analysis.json",
+          "sha256": "4c7673da6fcdd5d79f48a96e4d5c73bfdc11bbaec64a808457d9b286d587a331"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-17T044225Z-zero_divisor_qx-batch-00/results.json",
+          "sha256": "7cdfa441b89bc3aed0766eed263247c2a265619027ea558ca98c9bec6f6c9a2b"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
         "core-330": "replay",
         "core-348": "freshness"
       },
       "acquisitions": [
-        "qi-qx-zero-divisor-two-region-dry-run"
+        "qi-qx-zero-divisor-visibility-floor-dry-run"
       ],
       "assumptions": [],
       "depends_on": [],

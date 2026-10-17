@@ -378,6 +378,17 @@ class Route:
         return circuit.count_ops().get("cz", 0), seed, circuit
 
 
+class RouteCount:
+    """Routed CZ count of one (case, region, seed) item; a module-level callable the process pool can pickle."""
+
+    def __init__(self, topology: tuple[tuple[int, int], ...]) -> None:
+        self.topology = topology
+
+    def __call__(self, item: tuple[str, tuple[int, ...], int]) -> int:
+        case, region, seed = item
+        return Route(case, region, self.topology)(seed)[0]
+
+
 def routed(
     case: str, region: tuple[int, ...], topology: tuple[tuple[int, int], ...]
 ) -> tuple[Any, dict[str, int], int]:
@@ -584,17 +595,24 @@ def select_regions(topology: tuple[tuple[int, int], ...]) -> list[tuple[int, tup
     Each region runs every case once (ROTATION), so a pair costs the sum of the
     fewest-CZ routings of the three cases on each of its two regions. Joining
     couplers are the topology edges with one end in each region. REGIONS is
-    the first entry. Three disjoint regions need 15 qubits and the topology
+    the first entry. Every (region, case, seed) routing is independent and
+    runs in one parallel.ordered_map; the fewest-CZ count per (region, case)
+    equals routed()'s. Three disjoint regions need 15 qubits and the topology
     leaves 17 - len(EXCLUDED_QUBITS), so no triple exists here.
     """
     from itertools import combinations
 
     regions = connected_regions(topology)
     pairs = [pair for pair in combinations(regions, 2) if not set(pair[0]) & set(pair[1])]
-    cost = {
-        region: sum(routed(case, region, topology)[0].count_ops().get("cz", 0) for case in CASES)
-        for region in sorted({region for pair in pairs for region in pair})
-    }
+    placed = sorted({region for pair in pairs for region in pair})
+    items = [(case, region, seed) for region in placed for case in CASES for seed in SEEDS]
+    counts = iter(parallel.ordered_map(RouteCount(topology), items))
+    cost = {}
+    for region in placed:
+        total = 0
+        for _ in CASES:
+            total += min(next(counts) for _ in SEEDS)
+        cost[region] = total
     ranking = []
     for first, second in pairs:
         joining = sum(1 for a, b in topology if (a in first and b in second) or (a in second and b in first))

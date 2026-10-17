@@ -355,6 +355,27 @@ The fixture sits 0.014 below 1/2 (z = -1.81), inside the two-sided 95%
 sampling band, so the regenerated circuits execute as certified on the
 emulator.
 
+**Placement off q0, q5, q6, q7 and q9, QX dry run.** The twin of the current
+REGIONS, {1,2,4,8,12} and {10,11,13,14,16}, which avoid every Tuna-17 qubit
+below the Ramsey visibility floor, ran as one batch (twin-1..3, batch job
+870113, jobs 1527381-1527383), 2048 shots each, retained as
+results/quantum_inspire/runs/2026-10-17T044225Z-zero_divisor_qx-batch-00.
+`--analyze` writes results/quantum_inspire/zero_divisor_qx_visibility_floor_analysis.json,
+which gate core-330 replays with `--replay-series`; gate core-348 regenerates
+these cases. The earlier placements keep their own retained runs and replays.
+
+| Case | replicas {1,2,4,8,12}, {10,11,13,14,16} (count of 2048 at s = 0) | P(s=0) (95%) | ideal |
+|---|---|---|---|
+| dark | 0, 0 | 0.000 (0.000-0.001) | 0 |
+| bright | 2048, 2048 | 1.000 (0.999-1.000) | 1 |
+| fixture | 1034, 1038 | 0.506 (0.491-0.521) | 1/2 |
+
+The fixture sits 0.006 above 1/2 (z = +0.75), so the regenerated circuits
+execute as certified on the emulator. The research registry classes this run
+and the two before it as preregistered emulator controls: the noiseless
+emulator tests the platform's parsing and execution, and the hardware
+inference stays with the Tuna-17 run.
+
 ## Residual ZZ of every Tuna-17 coupler
 
 Each coupling-map edge carries a flux-tunable coupler that the control
