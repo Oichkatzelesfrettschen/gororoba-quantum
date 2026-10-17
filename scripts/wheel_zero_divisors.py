@@ -102,6 +102,14 @@ Vector = tuple[Fraction, ...]
 Matrix = list[list[Fraction]]
 GVector = tuple[gw.GaussianRational, ...]
 ZERO = Fraction(0)
+# Cayley-Dickson basis invariants under cd_core's convention: ordered pairs of imaginary units that
+# anticommute and basis triples whose associator is nonzero (AGENTS.md: 1848 of 4096 at D = 16).
+EXPECTED_BASIS_COUNTS = {
+    "4": {"ordered_noncommuting_pairs": 6, "nonassociating_triples": 0, "triples": 64},
+    "8": {"ordered_noncommuting_pairs": 42, "nonassociating_triples": 168, "triples": 512},
+    "16": {"ordered_noncommuting_pairs": 210, "nonassociating_triples": 1848, "triples": 4096},
+}
+GAUSSIAN_FIXTURES = ("e0+ie1", "e0-ie1", "e0", "zero")
 
 
 def require(condition: bool, message: str) -> None:
@@ -511,7 +519,7 @@ def draw(sizes: dict[str, int]) -> dict[str, Any]:
     gaussian: list[tuple[str, int, GVector]] = []
     for dim in (4, 8, 16):
         zero = gw.ZERO_Q
-        fixtures = {
+        fixtures: dict[str, dict[int, Any]] = {
             "e0+ie1": {0: gw.ONE_Q, 1: gw.I_Q},
             "e0-ie1": {0: gw.ONE_Q, 1: -gw.I_Q},
             "e0": {0: gw.ONE_Q},
@@ -634,8 +642,7 @@ def assemble(sizes: dict[str, int], rows: dict[str, Any], census: dict[str, int]
         and w1["corpus_pairs_ba_zero"] == w1["corpus_pairs"]
         and w1["frame_pairs_exact_zero"] == w1["frame_pairs"]
         and w1["inverse_two_sided"] == w1["cancellation_fails"] == w1["associator_equals_b"] == len(pairs)
-        and all(counts["nonassociating_triples"] > 0 for d, counts in w1["basis_counts"].items() if d != "4")
-        and all(counts["ordered_noncommuting_pairs"] > 0 for counts in w1["basis_counts"].values())
+        and w1["basis_counts"] == EXPECTED_BASIS_COUNTS
     )
 
     singular_rows = [row for row in sedenion + dimension32 if row["rank_q"] < row["dimension"]]
@@ -751,6 +758,7 @@ def assemble(sizes: dict[str, int], rows: dict[str, Any], census: dict[str, int]
             and table["rank_q_i_equals_realified_mod_p"] == len(members)
             and table["hermitian_gram_verdict_agrees_with_rank"] == len(members)
             and table["anisotropic_singular"] == (1 if dim == 16 else 0)
+            and sorted(row["name"] for row in members) == expected_gaussian_names(dim, sizes)
         )
     w4 = {"by_dimension": w4_tables, "pass": w4_pass}
 
@@ -802,10 +810,26 @@ def pyadic_cross_check(record: dict[str, Any]) -> dict[str, Any]:
                 tuple(gw.GaussianRational(v.real, v.imag) for v in a),
                 tuple(gw.GaussianRational(v.real, v.imag) for v in inverse),
             )
-            ok = ok and ours == tuple(gw.ONE_Q if k == 0 else gw.ZERO_Q for k in range(dim))
+            identity = tuple(gw.ONE_Q if k == 0 else gw.ZERO_Q for k in range(dim))
+            reverse = g_multiply(
+                dim,
+                tuple(gw.GaussianRational(v.real, v.imag) for v in inverse),
+                tuple(gw.GaussianRational(v.real, v.imag) for v in a),
+            )
+            ok = ok and ours == identity and reverse == identity
         checked += 1
         agree += ok
     return {"status": "run", "pyadic": importlib.metadata.version("pyadic"), "rows": checked, "agree": agree}
+
+
+def expected_gaussian_names(dim: int, sizes: dict[str, int]) -> list[str]:
+    """The Q(i) rows a dimension must hold: its fixtures and the configured isotropic and anisotropic samples."""
+    fixtures = [*GAUSSIAN_FIXTURES, *(("e1+e10",) if dim == 16 else ())]
+    return sorted(
+        [f"fixture:{name}" for name in fixtures]
+        + [f"isotropic:{i}" for i in range(sizes["gaussian_isotropic"])]
+        + [f"anisotropic:{i}" for i in range(sizes["gaussian_anisotropic"])]
+    )
 
 
 def render(record: dict[str, Any]) -> str:
