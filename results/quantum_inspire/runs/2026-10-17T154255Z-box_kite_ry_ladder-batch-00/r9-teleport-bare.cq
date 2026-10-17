@@ -1,0 +1,19 @@
+version 3.0
+
+qubit[9] q
+
+H q[0]
+CNOT q[0], q[2]
+CNOT q[2], q[3]
+CNOT q[3], q[2]
+CNOT q[2], q[3]
+CNOT q[1], q[0]
+H q[1]
+X q[5]
+H q[4]
+CNOT q[4], q[6]
+CNOT q[6], q[7]
+CNOT q[7], q[6]
+CNOT q[6], q[7]
+CNOT q[5], q[4]
+H q[5]

@@ -105,6 +105,10 @@ READOUT_RUNS = (
     "2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
     "2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
     "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-recal-053951",
+    "2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+    "2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+    "2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+    "2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
 )
 WAIT_LINE = re.compile(r"^wait\((\d+)\) q\[(\d+)\]$")
 FLIP_LINE = re.compile(r"^X q\[(\d+)\]$")
