@@ -1,0 +1,165 @@
+{
+ "schema": "qi-readout-ringdown-series-v1",
+ "backend": "tuna_17",
+ "profile": "tuna_17",
+ "series": "Q",
+ "targets": [
+  1,
+  2,
+  3,
+  7,
+  8,
+  9,
+  13,
+  14,
+  15
+ ],
+ "spectators": [
+  0,
+  4,
+  5,
+  6,
+  10,
+  11,
+  12,
+  16
+ ],
+ "edges": [
+  [
+   0,
+   1
+  ],
+  [
+   0,
+   2
+  ],
+  [
+   1,
+   4
+  ],
+  [
+   2,
+   4
+  ],
+  [
+   2,
+   5
+  ],
+  [
+   3,
+   5
+  ],
+  [
+   3,
+   6
+  ],
+  [
+   4,
+   7
+  ],
+  [
+   4,
+   8
+  ],
+  [
+   5,
+   8
+  ],
+  [
+   5,
+   9
+  ],
+  [
+   6,
+   9
+  ],
+  [
+   7,
+   10
+  ],
+  [
+   7,
+   11
+  ],
+  [
+   8,
+   11
+  ],
+  [
+   8,
+   12
+  ],
+  [
+   9,
+   12
+  ],
+  [
+   10,
+   13
+  ],
+  [
+   11,
+   13
+  ],
+  [
+   11,
+   14
+  ],
+  [
+   12,
+   14
+  ],
+  [
+   12,
+   15
+  ],
+  [
+   14,
+   16
+  ],
+  [
+   15,
+   16
+  ]
+ ],
+ "taus_cycles": [
+  0,
+  5,
+  15,
+  40,
+  100
+ ],
+ "delays_cycles": [
+  2,
+  77
+ ],
+ "measure_cycles": 40,
+ "cycle_seconds": 2e-08,
+ "quadratures": [
+  "x",
+  "y"
+ ],
+ "unambiguous_offset_hz": 333333.333333,
+ "t_bounds_cycles": [
+  5.0,
+  100.0
+ ],
+ "shots": 8192,
+ "execution_bound_seconds": 7.70048,
+ "job_execution_time_limit_seconds": 300.0,
+ "batch_limit": 3,
+ "circuits": 26,
+ "batches": [
+  "batch-00",
+  "batch-01",
+  "batch-02",
+  "batch-03",
+  "batch-04",
+  "batch-05",
+  "batch-06",
+  "batch-07",
+  "batch-08"
+ ],
+ "estimator": "Every rate and delta(tau) comes from all shots, read by qubit index; a target left in |1> after its mid-circuit readout scales both readout-corrected quadratures by (1 - 2 eps) and leaves the phase unbiased. Where the result carries the 2 n-bit register, the analysis also reports the estimate postselected on mid-circuit outcome 0 and each delta's difference from the all-shot estimate with standard error sqrt(se_post^2 - se_all^2).",
+ "decision_rule": "A target is usable when every arm reaches Ramsey visibility >= 0.3 at both delays. A usable target shows a readout tail when chi2(H1) - chi2(H2) >= 13.82 (the 2-degree-of-freedom chi-square quantile at p = 0.001), |A| >= 3 se(A), and the fitted T lies below its 100-cycle upper bound; meeting the first two with T at that bound classifies it as a static offset. A series reports 'readout tail detected' when at least 50% of its usable targets show a tail, and 'not detected' otherwise."
+}

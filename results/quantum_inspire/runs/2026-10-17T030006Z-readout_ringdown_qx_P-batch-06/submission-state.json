@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-17T03:02:45+00:00",
+ "approval": "User, 2026-10-17: \"approve the QX dry run for the ring-down pilot for #164\"",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "ad9e021d4f887304b8c853db3e60cefe7a1154b74a6acbe6a4dab00615171de8",
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "tau015-x-d077.cq",
+   "job": 1527197,
+   "sha256": "fc34882fc28ec4271a4d763ef532e7df40dded9cfd74e7dba88635a975743b5c"
+  },
+  {
+   "file": "tau040-x-d077.cq",
+   "job": 1527198,
+   "sha256": "e09a7bcab01a78fddac825314cca200cf8d58fae8f347d99f81a69eced139444"
+  },
+  {
+   "file": "tau100-x-d077.cq",
+   "job": 1527199,
+   "sha256": "5e2540c03765aa19910b849655330a060085ffaf4cef1b0d6159ed421155c962"
+  }
+ ],
+ "project": 765798,
+ "batch_job": 869994,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-17T03:02:48+00:00",
+  "approval": "User, 2026-10-17: \"approve the QX dry run for the ring-down pilot for #164\"",
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "cases_sha256": "ad9e021d4f887304b8c853db3e60cefe7a1154b74a6acbe6a4dab00615171de8",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 5,
+  "batch_job": 869994,
+  "project": 765798,
+  "shots": 2048,
+  "jobs": [
+   {
+    "file": "tau015-x-d077.cq",
+    "job": 1527197,
+    "sha256": "fc34882fc28ec4271a4d763ef532e7df40dded9cfd74e7dba88635a975743b5c"
+   },
+   {
+    "file": "tau040-x-d077.cq",
+    "job": 1527198,
+    "sha256": "e09a7bcab01a78fddac825314cca200cf8d58fae8f347d99f81a69eced139444"
+   },
+   {
+    "file": "tau100-x-d077.cq",
+    "job": 1527199,
+    "sha256": "5e2540c03765aa19910b849655330a060085ffaf4cef1b0d6159ed421155c962"
+   }
+  ],
+  "submitted_utc": "2026-10-17T03:02:49+00:00"
+ },
+ "confirmed_utc": "2026-10-17T03:02:49+00:00"
+}

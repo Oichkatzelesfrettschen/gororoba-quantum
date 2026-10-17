@@ -254,7 +254,7 @@ def _verify_isolation_contract() -> None:
         "PlacementJudge must accept a full placement whose core X duration matches",
     )
 
-    # The spectator wavefront, qubit baseline and conditional Ramsey are opt-in campaigns outside the default suite.
+    # The spectator wavefront, qubit baseline and both Ramsey designs are opt-in campaigns outside the default suite.
     default_names = {group.name for group in experiment_groups()}
     standalone_names = {group.name for group in standalone_campaign_groups()}
     _require(
@@ -264,6 +264,7 @@ def _verify_isolation_contract() -> None:
             "qubit_baseline",
             "crossed_tile_template",
             "conditional_ramsey",
+            "star_ramsey",
             "scaffold_ab",
             "readout_delay",
         }
@@ -281,6 +282,8 @@ def _verify_isolation_contract() -> None:
         ({"groups": ["conditional_ramsey", "design_a"]}, "isolated campaign"),
         ({"groups": ["conditional_ramsey"], "dd": "XX", "max_replicas": 1}, "dynamical decoupling"),
         ({"groups": ["conditional_ramsey"], "max_replicas": None}, "one replica"),
+        ({"groups": ["star_ramsey", "design_a"]}, "isolated campaign"),
+        ({"groups": ["star_ramsey"], "dd": "XX"}, "dynamical decoupling"),
         ({"groups": ["scaffold_ab", "design_a"]}, "isolated campaign"),
         ({"groups": ["scaffold_ab"], "dd": "XX", "max_replicas": 1}, "dynamical decoupling"),
         ({"groups": ["readout_delay"], "max_replicas": None}, "one replica"),

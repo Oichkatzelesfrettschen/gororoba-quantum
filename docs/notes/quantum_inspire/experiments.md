@@ -202,14 +202,31 @@ Tuna would round to the pi/36 grid. Its ANF factors as
 q0 + Maj(q1, q2, q3) + q1 q2 q3 + a(q0 + q2 + q3) + a(1 + q2) Maj(q0, q1, q3),
 so an in-place majority (Cuccaro MAJ) gives an exact SELECT of two Toffolis
 and two CCZ on five qubits, with every gate in H, S, T, Tdag and CZ. Routed
-onto Tuna-17 a replica takes 66-70 CZ and 26 T. Three disjoint regions,
-{0,1,2,4,5}, {7,8,10,11,13} and {9,12,14,15,16}, run the three cases in a 3x3
-Latin square (latin-1..3); readout-0 and readout-1 prepare every qubit in |0>
-and |1>. A batch boundary is a calibration boundary, so the generator emits
-three batches of three circuits, batch-00..02, each holding one Latin circuit
-followed by readout-0 and readout-1. A Latin circuit carries dark, bright and
-fixture in its three regions, so its contrasts share one calibration, and its
-readout correction uses the assignment measured in the same batch:
+onto Tuna-17 a replica takes 75-91 CZ and 26 T. The generator places two
+disjoint regions, {1,2,4,8,12} and {10,11,13,14,16}, and excludes qubits 0,
+5, 6, 7 and 9 (EXCLUDED_QUBITS) with every coupler on them. READOUT_EXCLUDED
+holds q9, which read P1 0.27-0.28 in a gate-free circuit, and q0 and q6,
+which read P1 0.39 and 0.14 prepared in |1> after the platform
+recalibration. The Ramsey visibility of the coupler-ZZ map
+(results/quantum_inspire/coupler_zz_tuna_17_analysis.json, `min_visibility`,
+minimum over neighbor sectors and the 0.5 us and 2 us delays) splits the 17
+qubits into 14 at 0.755 and above and q5, q6, q7 at 0.043, 0.270 and 0.084;
+no value lies between 0.30 and 0.755, so VISIBILITY_FLOOR = 0.5 excludes
+exactly {5, 6, 7}, which `visibility_excluded()` derives from the retained
+file and `--self-test` requires. The 12 remaining qubits
+fit two connected 5-qubit regions at most; of the 4 disjoint pairs,
+`--select-regions` ranks this one first by routed CZ over the three cases
+(494: 75, 75 and 79 for dark, bright and fixture on {1,2,4,8,12}; 87, 87 and
+91 on {10,11,13,14,16}), then by the 2 couplers joining the regions (the
+pair {1,2,4,8,12} with {11,13,14,15,16} also costs 494 and joins 3), then
+lexicographically. The cases rotate through the regions (latin-1..3): dark and bright, bright
+and fixture, fixture and dark, so every case runs once in each region and
+every pair of cases shares a circuit. readout-0 and readout-1 prepare every
+qubit in |0> and |1>. A batch boundary is a calibration boundary, so the
+generator emits three batches of three circuits, batch-00..02, each holding
+one witness circuit followed by readout-0 and readout-1. A witness circuit
+carries two cases in its two regions, so its contrast shares one calibration,
+and its readout correction uses the assignment measured in the same batch:
 `load_series` keys shots by (batch, file), and `secondary()` resamples each
 batch's readout pair and then its witness circuit, correcting every circuit
 with its own batch's assignment. A readout change between batches therefore
@@ -217,9 +234,13 @@ moves only that batch's corrected estimates and bootstrap intervals, while
 the raw estimators stay fixed (`--self-test`, gate core-348). Pooled means
 average circuits from three calibrations. The retained 221133Z runs predate
 batching and ran all five circuits as one batch, which forms the single
-calibration group of their replay. The estimators and the comparison were fixed in cases.json before
+calibration group of their replay; they executed three regions,
+{0,1,2,4,5}, {7,8,10,11,13} and {9,12,14,15,16}, in a 3x3 Latin square, and
+their analyses read the regions recorded with them, so the tables below
+describe that placement. The estimators and the comparison were fixed in cases.json before
 submission (claim class: preregistered hardware inference). The QX twin packs
-the same nine replicas two per 10-qubit circuit.
+the same six replicas two per 10-qubit circuit (the retained 221133Z twin
+ran the earlier nine).
 
 | Region | dark P(s=0) | bright | fixture | endpoint contrast B - D (95%) |
 |---|---|---|---|---|
@@ -296,6 +317,94 @@ stand.
   contrast. A common response with a shifted midpoint is a probability-level
   description; it identifies no unique channel acting on the five-qubit
   circuit.
+
+**Per-batch series, QX dry run.** The batched series' QX twin, generated
+before the placement above (three regions, nine replicas), ran as
+batch-00 (twin-1..3, batch job 870037, jobs 1527264, 1527266, 1527267) and
+batch-01 (twin-4..5, batch job 870040, jobs 1527269, 1527270), 2048 shots
+each, retained as results/quantum_inspire/runs/2026-10-17T034409Z-zero_divisor_qx-batch-00
+and -batch-01. `--analyze` over both batches writes
+results/quantum_inspire/zero_divisor_qx_analysis.json, and gate core-330
+replays it with `--replay-series`.
+
+| Case | replicas (count of 2048 at s = 0) | P(s=0) (95%) | ideal |
+|---|---|---|---|
+| dark | 0, 0, 0 | 0.000 (0.000-0.001) | 0 |
+| bright | 2048, 2048, 2048 | 1.000 (0.999-1.000) | 1 |
+| fixture | 1007, 998, 1053 | 0.498 (0.485-0.510) | 1/2 |
+
+The fixture sits 0.002 below 1/2 (z = -0.36), so the emulator executes the
+batched circuits as certified and the series analysis keys every replica to
+its batch.
+
+**Two-region placement, QX dry run.** The twin of the two-region placement
+(six replicas, two per 10-qubit circuit) ran as one batch (twin-1..3, batch
+job 870091, jobs 1527349, 1527350, 1527352), 2048 shots each, retained as
+results/quantum_inspire/runs/2026-10-17T042652Z-zero_divisor_qx-batch-00.
+`--analyze` writes results/quantum_inspire/zero_divisor_qx_two_region_analysis.json,
+which gate core-330 replays with `--replay-series`; gate core-374 reruns
+`--select-regions` and requires REGIONS to rank first.
+
+| Case | replicas {1,2,4,7,8}, {11,12,14,15,16} (count of 2048 at s = 0) | P(s=0) (95%) | ideal |
+|---|---|---|---|
+| dark | 0, 0 | 0.000 (0.000-0.001) | 0 |
+| bright | 2048, 2048 | 1.000 (0.999-1.000) | 1 |
+| fixture | 1004, 986 | 0.486 (0.471-0.501) | 1/2 |
+
+The fixture sits 0.014 below 1/2 (z = -1.81), inside the two-sided 95%
+sampling band, so the regenerated circuits execute as certified on the
+emulator.
+
+**Placement off q0, q5, q6, q7 and q9, QX dry run.** The twin of the current
+REGIONS, {1,2,4,8,12} and {10,11,13,14,16}, which avoid every Tuna-17 qubit
+below the Ramsey visibility floor, ran as one batch (twin-1..3, batch job
+870113, jobs 1527381-1527383), 2048 shots each, retained as
+results/quantum_inspire/runs/2026-10-17T044225Z-zero_divisor_qx-batch-00.
+`--analyze` writes results/quantum_inspire/zero_divisor_qx_visibility_floor_analysis.json,
+which gate core-330 replays with `--replay-series`; gate core-348 regenerates
+these cases. The earlier placements keep their own retained runs and replays.
+
+| Case | replicas {1,2,4,8,12}, {10,11,13,14,16} (count of 2048 at s = 0) | P(s=0) (95%) | ideal |
+|---|---|---|---|
+| dark | 0, 0 | 0.000 (0.000-0.001) | 0 |
+| bright | 2048, 2048 | 1.000 (0.999-1.000) | 1 |
+| fixture | 1034, 1038 | 0.506 (0.491-0.521) | 1/2 |
+
+The fixture sits 0.006 above 1/2 (z = +0.75), so the regenerated circuits
+execute as certified on the emulator. The research registry classes this run
+and the two before it as preregistered emulator controls: the noiseless
+emulator tests the platform's parsing and execution, and the hardware
+inference stays with the Tuna-17 run.
+
+**Placement off q0, q5, q6, q7 and q9, Tuna-17.** The same three Latin
+circuits ran as three hardware batches, each holding one witness circuit and
+the batch's own readout-0 and readout-1 calibration, 16384 shots per circuit,
+with the account-wide pause between batches: batch jobs 870122, 870127 and
+870133 (jobs 1527397-1527399, 1527404-1527406, 1527412-1527414), retained as
+results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00,
+...T052915Z...-batch-01 and ...T053226Z...-batch-02. Every batch read
+readout-0 P1 at most 0.053 and readout-1 P1 at least 0.901 on every used
+qubit. `--analyze` writes
+results/quantum_inspire/zero_divisor_tuna_17_visibility_floor_analysis.json,
+which gate core-330 replays with `--replay-series`.
+
+| Case | {1,2,4,8,12} (CZ) | {10,11,13,14,16} (CZ) | pooled P(s=0) (95%) | ideal |
+|---|---|---|---|---|
+| dark | 0.4835 (75) | 0.4874 (87) | 0.4854 (0.4800-0.4908) | 0 |
+| bright | 0.5339 (75) | 0.4774 (87) | 0.5056 (0.5002-0.5110) | 1 |
+| fixture | 0.5007 (79) | 0.4828 (91) | 0.4918 (0.4863-0.4972) | 1/2 |
+
+The endpoint contrast is 0.0202 +- 0.0039 (z = 5.2; readout-corrected
+bootstrap 0.022, 95% 0.014-0.031), half the 0.042 of the three-region
+placement through the excluded qubits. By region it is 0.0504 +- 0.0055 at
+75 routed CZ and -0.0100 +- 0.0055 at 87: avoiding the excluded qubits
+lengthened the routes from 66-70 CZ to 75-91 CZ, and the depth outweighs the
+cleaner qubits, so the next zero-divisor case on Tuna-17 shortens the circuit
+(the reduced two-label LCU of docs/notes/box_kites/experiment-program.md, one
+CZ) instead of moving it. dark + bright - 1 = -0.009 (z = -2.3) and
+fixture - 1/2 = -0.008 (z = -3.0) repeat the earlier series' shift toward
+selector 1. The comparison with the earlier placement changes depth and
+qubits together and does not separate them.
 
 ## Residual ZZ of every Tuna-17 coupler
 
@@ -403,6 +512,115 @@ zero-divisor witness kept no resolved contrast combines the second-strongest
 park, (1,4) at -19.3 kHz, (0,2) at -7.9 kHz, the short-coherence Q5, and the
 Q1/Q2 drive crosstalk: a repeated spatial association, not a demonstrated
 cause.
+
+## Post-readout frequency tail on Tuna-17 (preregistered)
+
+`scripts/qi_readout_ringdown_cases.py` asks whether a mid-circuit readout
+leaves a transient frequency shift on the measured qubit. Each target of one
+part of Tuna-17's bipartition (series P: Q0, Q4, Q5, Q6, Q10, Q11, Q12,
+Q16; series Q: the other nine) is read mid-circuit, waits tau in
+(0, 100, 300, 800, 2000) ns and runs a two-delay Ramsey (d = 2 and 77 cycles,
+|delta| < 333 kHz unambiguous) against a reference arm whose readout becomes
+an equal `wait(40)`. A residual-photon Stark shift predicts
+delta(tau) = A exp(-tau / T); a static detuning predicts delta = 0. Every
+circuit idles 2 us before its final readout so leftover photons cannot bias
+the final readout of the short-tau arms, and the readout-calibration
+circuits idle the same 2 us, so the in-batch calibration absorbs the decay
+during that wait. Rates come from all shots: a target left in |1> after its
+mid-circuit readout scales both quadratures by (1 - 2 eps) and keeps the
+phase ([qx-runs.md](qx-runs.md)); where the full register returns, the
+estimate postselected on the mid-circuit outcome is reported beside it. The
+decision rule is in the script's docstring and every `cases.json`.
+
+**QX dry run** (18 batches, 2026-10-17, approval quoted in each
+`submission.json`): every target usable at visibility 1.000, the largest
+|delta| 13.6 kHz against a standard error of 4.7 kHz, every chi-square
+difference below 13.82, verdict "not detected" on both series
+([P](../../../results/quantum_inspire/readout_ringdown_qx_P_analysis.json),
+[Q](../../../results/quantum_inspire/readout_ringdown_qx_Q_analysis.json)).
+QX returned 10-character measurement registers, so the dry run exercised
+the all-shot path only.
+
+**Tuna-17, batch P-00** (the readout calibration, batch job 870030, queued
+through a calibration from 03:20 UTC):
+
+- The result carried all 34 characters of `bit[34]` with every mid-circuit
+  outcome, so Tuna-17 returns the full bit register (C21).
+- After the 2 us wait, P(1 | prepared 1) read 0.83-0.89 on seven targets
+  and 0.670 on Q6; P(1 | prepared 0) stayed 0.005-0.051 on every qubit.
+  Q6 read 0.946 and 0.958 in the zero-divisor and coupler-ZZ runs, which
+  had no wait, so Q6 decays over the 2 us: T1 = 2 us / ln(0.946 / 0.670)
+  = 5.8 us if readout fidelity held (inferred). The other targets' loss
+  corresponds to T1 of tens of microseconds.
+- Q6's assignment error 0.330 exceeded the sanity guard of 0.2 and stopped
+  the series. The owner chose to continue with Q6 judged by the decision
+  rule; the guard for this series is 0.35 (`--sanity-readout-error`, noted
+  in every sanity output), and the circuits and rule are unchanged. A
+  decaying target cannot fake a tail: it sits in |0> through the pre-delay
+  and decays alike in every arm, so it lowers visibility, and the rule drops
+  any target below visibility 0.3.
+
+**What earlier Tuna-17 measurements predict for this case:**
+
+| Measured effect (section above) | Its effect on delta(tau) |
+|---|---|
+| Coherent over-rotation of at least 0.050, 0.053 and 0.061 rad per X on Q6, Q8 and Q9 | The X/Y fringe turns elliptical; for the X90-idle-X90/Y90 estimator at the measured lower bound of the over-rotation the rate-error spread over the 1.5 us span is 0.19, 0.21 and 0.28 kHz, against a delta standard error of 3-5 kHz, before the common-mode cancellation between arms; the crosstalk run bounds the over-rotation only from below, so these spreads are a scenario, not a cap |
+| Ramsey visibility 0.04, 0.27 and 0.08 at 2 us on Q5, Q6 and Q7; Q5 and Q6 idle near 323 kHz from their frames | Q5 (P) and Q7 (Q) are expected to fail the 0.3 rule and Q6 sits near it; delta is wrapped against the reference, so the alias edge enters the absolute rate only |
+| Residual ZZ, J from -31.4 to +11.7 kHz on the 24 couplers | Spectators stay in \|0> in every arm, so each target carries the same static offset in every arm and delta cancels it |
+| Simultaneous-drive crosstalk and neighbor-drive phase shifts | Every arm runs the same simultaneous X90 schedule, so the effect is common to all arms |
+| Other targets' simultaneous mid-circuit readouts | Present in every readout arm and absent from the reference, so a readout-induced shift of a neighbor counts as part of the measured tail |
+
+The per-target form of this table, computed from the retained analyses, is
+`results/quantum_inspire/readout_ringdown_tuna_17_device_context.json`
+(`scripts/qi_tuna17_device_context.py`, gate core-387); it is context for
+reading each verdict and leaves the preregistered rule unchanged.
+
+**Series P result** ([analysis](../../../results/quantum_inspire/readout_ringdown_tuna_17_P_analysis.json),
+gate core-386). The analysis reads P-00 (calibration, 03:39Z), P-01 to
+P-04 (d = 2, 03:46-03:59Z), P-06-rerun1 and P-05-rerun1 (d = 77, X, 04:15
+and 04:22Z) and P-07, P-08 (d = 77, Y, 04:30-04:34Z). P-05 (04:02Z) and
+P-06 (04:06Z) stay retained and outside the analysis: they straddle the
+04:04Z q9 change, and the reruns put every d = 77 X arm on the post-change
+device.
+
+| Target | min visibility | chi2 H1 (5 dof) | chi2 H2 (3 dof) | class | delta(tau) in kHz, tau = 0, 100, 300, 800, 2000 ns (se 2.2-3.2) |
+|---|---|---|---|---|---|
+| Q0 | 0.535 | 2.5 | 2.1 | none | 2.4, 4.7, 2.6, 1.4, 5.2 |
+| Q4 | 0.895 | 10.0 | 9.6 | none | 4.4, -0.2, 3.9, 5.9, 6.7 |
+| Q5 | 0.105 | 15.7 | 9.7 | unusable | 29.0, 38.4, 46.3, -8.7, 28.1 |
+| Q6 | 1.079 | 216.6 | 193.7 | tail | -5.9, -12.9, -18.1, -26.2, -22.2 |
+| Q10 | 0.863 | 103.7 | 64.9 | tail | -1.4, 0.9, -1.8, 9.3, 20.3 |
+| Q11 | 0.864 | 161.3 | 47.5 | offset | -25.1, -26.3, -33.2, -18.8, -23.6 |
+| Q12 | 0.836 | 174.0 | 150.0 | offset | -4.7, 10.7, 19.3, 19.4, -8.4 |
+| Q16 | 0.789 | 52.4 | 30.7 | tail | -11.3, -8.4, 8.8, -7.1, -2.7 |
+
+- The preregistered verdict is "not detected": 3 of 7 usable targets
+  classify as tails, below the 50% threshold. Q5 fails the visibility rule,
+  as the device context predicted.
+- No classified target fits H2: its chi-square runs from 30.7 to 193.7 on
+  3 degrees of freedom, so the arms scatter by 5-30 kHz beyond their shot
+  noise on Q6, Q10, Q11, Q12 and Q16. The rule compares H2 with H1 and
+  checks neither model's goodness of fit, so a tail or offset class here
+  marks structure that neither model describes; only Q0 and Q4 fit the
+  static model. Q6 and Q16 fit T at the 5-cycle lower bound, and Q10's
+  delta grows with tau, the opposite of a decaying tail.
+- Q11 is the one consistent pattern: every readout arm sits 19-33 kHz
+  below its reference out to 2 us. That is a readout-induced offset that
+  outlasts the ladder or a shift of the reference arm itself; the
+  reference's 800 ns wait in place of a readout cannot tell them apart.
+- Q6's visibility exceeds 1 because P-00's assignment (P(0|1) = 0.33) no
+  longer describes Q6 after the 04:12Z recalibration (0.86 at 04:25Z), so
+  its class rests on a stale correction. The preregistered analysis inverts
+  the series' batch-00 calibration for every batch; a time-nearest
+  calibration is a sensitivity analysis outside the rule.
+- The postselected estimates keep 95-99.5% of the shots and differ from the
+  all-shot estimates by at most 1.1 kHz on usable targets, below every
+  delta's standard error. The subset-difference error sqrt(se_post^2 -
+  se_all^2) collapses to 0 at that retention on most arms, so its z column
+  is undefined there and serves as no falsifier.
+- Series Q (targets Q1, Q2, Q3, Q7, Q8, Q9, Q13, Q14, Q15) is collected
+  through Q-03; its analysis and the remaining batches land with the rest
+  of the series.
 
 ## Next cases
 

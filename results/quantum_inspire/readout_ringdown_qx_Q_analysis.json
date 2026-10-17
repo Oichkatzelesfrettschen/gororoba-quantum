@@ -1,0 +1,464 @@
+{
+ "schema": "qi-readout-ringdown-analysis-v1",
+ "profile": "qx",
+ "series": "Q",
+ "runs": [
+  "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-00",
+  "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-01",
+  "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-02",
+  "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-03",
+  "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-04",
+  "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-05",
+  "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-06",
+  "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-07",
+  "results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-08"
+ ],
+ "estimator": "Every rate and delta(tau) comes from all shots, read by qubit index; a target left in |1> after its mid-circuit readout scales both readout-corrected quadratures by (1 - 2 eps) and leaves the phase unbiased. Where the result carries the 2 n-bit register, the analysis also reports the estimate postselected on mid-circuit outcome 0 and each delta's difference from the all-shot estimate with standard error sqrt(se_post^2 - se_all^2).",
+ "decision_rule": "A target is usable when every arm reaches Ramsey visibility >= 0.3 at both delays. A usable target shows a readout tail when chi2(H1) - chi2(H2) >= 13.82 (the 2-degree-of-freedom chi-square quantile at p = 0.001), |A| >= 3 se(A), and the fitted T lies below its 100-cycle upper bound; meeting the first two with T at that bound classifies it as a static offset. A series reports 'readout tail detected' when at least 50% of its usable targets show a tail, and 'not detected' otherwise.",
+ "mid_circuit_bits": "absent",
+ "arm_batches": {
+  "reference": [
+   1,
+   3,
+   5,
+   7
+  ],
+  "tau000": [
+   1,
+   3,
+   5,
+   7
+  ],
+  "tau005": [
+   1,
+   3,
+   5,
+   7
+  ],
+  "tau015": [
+   2,
+   4,
+   6,
+   8
+  ],
+  "tau040": [
+   2,
+   4,
+   6,
+   8
+  ],
+  "tau100": [
+   2,
+   4,
+   6,
+   8
+  ]
+ },
+ "readout_assignment": {
+  "1": [
+   0.0,
+   0.0
+  ],
+  "2": [
+   0.0,
+   0.0
+  ],
+  "3": [
+   0.0,
+   0.0
+  ],
+  "7": [
+   0.0,
+   0.0
+  ],
+  "8": [
+   0.0,
+   0.0
+  ],
+  "9": [
+   0.0,
+   0.0
+  ]
+ },
+ "targets": [
+  {
+   "target": 1,
+   "rate_hz": {
+    "reference": -1760.26129154,
+    "tau000": -2175.78257796,
+    "tau005": 3626.15448455,
+    "tau015": -103.566489539,
+    "tau040": -3108.19859526,
+    "tau100": 5379.88421487
+   },
+   "rate_se_hz": {
+    "reference": 3312.05839518,
+    "tau000": 3315.00488191,
+    "tau005": 3314.17995929,
+    "tau015": 3313.32662393,
+    "tau040": 3314.54261296,
+    "tau100": 3306.073231
+   },
+   "delta_hz": {
+    "0": -415.521286423,
+    "5": 5386.41577608,
+    "15": 1656.694802,
+    "40": -1347.93730372,
+    "100": 7140.14550641
+   },
+   "delta_se_hz": {
+    "0": 4686.04184576,
+    "5": 4685.45831437,
+    "15": 4684.85476082,
+    "40": 4685.71483834,
+    "100": 4679.72766535
+   },
+   "visibility": {
+    "reference": 1.00015448331,
+    "tau000": 1.00000762937,
+    "tau005": 1.00008058223,
+    "tau015": 1.00023076256,
+    "tau040": 1.00004768258,
+    "tau100": 1.00005769563
+   },
+   "min_visibility": 1.00000762937,
+   "h1": {
+    "chi2": 5.38492676736,
+    "dof": 5,
+    "rate_hz": 313.703380254
+   },
+   "h2": {
+    "chi2": 5.19572722295,
+    "dof": 3,
+    "rate_hz": 693.448916627,
+    "A_hz": -1608.95936778,
+    "A_se_hz": 3699.00598095,
+    "t_cycles": 5.0,
+    "t_se_cycles": null,
+    "t_at_bound": true,
+    "readout_end_shift_hz": -43975.7401487
+   },
+   "delta_chi2": 0.189199544417,
+   "usable": true,
+   "class": "none"
+  },
+  {
+   "target": 2,
+   "rate_hz": {
+    "reference": -4142.99194383,
+    "tau000": -6939.69657662,
+    "tau005": 4661.50257532,
+    "tau015": 828.924617127,
+    "tau040": 3211.46130956,
+    "tau100": 2175.5958853
+   },
+   "rate_se_hz": {
+    "reference": 3312.46537227,
+    "tau000": 3310.31497962,
+    "tau005": 3312.80706183,
+    "tau015": 3315.63312093,
+    "tau040": 3313.96267633,
+    "tau100": 3314.57844146
+   },
+   "delta_hz": {
+    "0": -2796.70463279,
+    "5": 8804.49451915,
+    "15": 4971.91656095,
+    "40": 7354.45325338,
+    "100": 6318.58782913
+   },
+   "delta_se_hz": {
+    "0": 4683.01314399,
+    "5": 4684.77507159,
+    "15": 4686.77392618,
+    "40": 4685.59232783,
+    "100": 4686.02785812
+   },
+   "visibility": {
+    "reference": 1.00000429153,
+    "tau000": 1.00040093967,
+    "tau005": 1.00006866219,
+    "tau015": 1.00000190735,
+    "tau040": 1.00000762937,
+    "tau100": 1.00000047684
+   },
+   "min_visibility": 1.00000047684,
+   "h1": {
+    "chi2": 9.37079729,
+    "dof": 5,
+    "rate_hz": -37.0922160751
+   },
+   "h2": {
+    "chi2": 6.37405976815,
+    "dof": 3,
+    "rate_hz": 1476.94276344,
+    "A_hz": -6398.05648109,
+    "A_se_hz": 3695.9298267,
+    "t_cycles": 5.0,
+    "t_se_cycles": null,
+    "t_at_bound": true,
+    "readout_end_shift_hz": -174870.338496
+   },
+   "delta_chi2": 2.99673752185,
+   "usable": true,
+   "class": "none"
+  },
+  {
+   "target": 3,
+   "rate_hz": {
+    "reference": -1243.11703492,
+    "tau000": -7557.78083994,
+    "tau005": -7145.77233529,
+    "tau015": -2797.48275057,
+    "tau040": 725.312498455,
+    "tau100": 103.541815169
+   },
+   "rate_se_hz": {
+    "reference": 3314.49053579,
+    "tau000": 3307.44506672,
+    "tau005": 3309.35437666,
+    "tau015": 3314.86248892,
+    "tau040": 3315.66869198,
+    "tau100": 3312.14213709
+   },
+   "delta_hz": {
+    "0": -6314.66380502,
+    "5": -5902.65530037,
+    "15": -1554.36571565,
+    "40": 1968.42953338,
+    "100": 1346.65885009
+   },
+   "delta_se_hz": {
+    "0": 4682.41821938,
+    "5": 4683.76706318,
+    "15": 4687.66048603,
+    "40": 4688.23062432,
+    "100": 4685.73719366
+   },
+   "visibility": {
+    "reference": 1.00003862306,
+    "tau000": 1.00012206286,
+    "tau005": 1.00023076256,
+    "tau015": 1.00008058223,
+    "tau040": 1.00000429153,
+    "tau100": 1.00034755389
+   },
+   "min_visibility": 1.00000429153,
+   "h1": {
+    "chi2": 5.89337007794,
+    "dof": 5,
+    "rate_hz": -2990.9960509
+   },
+   "h2": {
+    "chi2": 0.481715901514,
+    "dof": 3,
+    "rate_hz": -67.5635561878,
+    "A_hz": -8220.82700776,
+    "A_se_hz": 3552.13026475,
+    "t_cycles": 14.5362883575,
+    "t_se_cycles": 16.9678323476,
+    "t_at_bound": false,
+    "readout_end_shift_hz": -52439.0708694
+   },
+   "delta_chi2": 5.41165417643,
+   "usable": true,
+   "class": "none"
+  },
+  {
+   "target": 7,
+   "rate_hz": {
+    "reference": 4869.02684336,
+    "tau000": -725.298664753,
+    "tau005": 1761.34555945,
+    "tau015": -7043.00590197,
+    "tau040": -1243.36479248,
+    "tau100": -6830.07417049
+   },
+   "rate_se_hz": {
+    "reference": 3313.01420158,
+    "tau000": 3315.57383937,
+    "tau005": 3315.11867254,
+    "tau015": 3310.02015733,
+    "tau040": 3315.48136394,
+    "tau100": 3306.05323165
+   },
+   "delta_hz": {
+    "0": -5594.32550812,
+    "5": -3107.68128391,
+    "15": -11912.0327453,
+    "40": -6112.39163584,
+    "100": -11699.1010139
+   },
+   "delta_se_hz": {
+    "0": 4687.1199029,
+    "5": 4686.79793813,
+    "15": 4683.19298575,
+    "40": 4687.05448811,
+    "100": 4680.39005536
+   },
+   "visibility": {
+    "reference": 1.0001721234,
+    "tau000": 1.00000047684,
+    "tau005": 1.00000047684,
+    "tau015": 1.00034755389,
+    "tau040": 1.00000190735,
+    "tau100": 1.00000190735
+   },
+   "min_visibility": 1.00000047684,
+   "h1": {
+    "chi2": 10.1267614284,
+    "dof": 5,
+    "rate_hz": -1541.58621905
+   },
+   "h2": {
+    "chi2": 9.35016105354,
+    "dof": 3,
+    "rate_hz": 606.728233939,
+    "A_hz": -3349.42226764,
+    "A_se_hz": 3800.7657632,
+    "t_cycles": 100.0,
+    "t_se_cycles": null,
+    "t_at_bound": true,
+    "readout_end_shift_hz": -4906.00157137
+   },
+   "delta_chi2": 0.776600374824,
+   "usable": true,
+   "class": "none"
+  },
+  {
+   "target": 8,
+   "rate_hz": {
+    "reference": -6421.96184163,
+    "tau000": 7146.54771714,
+    "tau005": -2590.26839417,
+    "tau015": -4863.28089119,
+    "tau040": -414.155816287,
+    "tau100": 1552.84221043
+   },
+   "rate_se_hz": {
+    "reference": 3310.94300423,
+    "tau000": 3309.88980594,
+    "tau005": 3314.95735212,
+    "tau015": 3307.16544255,
+    "tau040": 3311.99301689,
+    "tau100": 3311.0544325
+   },
+   "delta_hz": {
+    "0": 13568.5095588,
+    "5": 3831.69344745,
+    "15": 1558.68095044,
+    "40": 6007.80602534,
+    "100": 7974.80405205
+   },
+   "delta_se_hz": {
+    "0": 4681.6358364,
+    "5": 4685.21993332,
+    "15": 4679.71012367,
+    "40": 4683.12303075,
+    "100": 4682.45929317
+   },
+   "visibility": {
+    "reference": 1.00027462049,
+    "tau000": 1.00037377048,
+    "tau005": 1.00004768258,
+    "tau015": 1.00006866219,
+    "tau040": 1.00032228998,
+    "tau100": 1.00025221505
+   },
+   "min_visibility": 1.00004768258,
+   "h1": {
+    "chi2": 10.9574804507,
+    "dof": 5,
+    "rate_hz": -931.767123827
+   },
+   "h2": {
+    "chi2": 4.93928878706,
+    "dof": 3,
+    "rate_hz": -3073.70621649,
+    "A_hz": 9063.79519934,
+    "A_se_hz": 3694.68209984,
+    "t_cycles": 5.0,
+    "t_se_cycles": null,
+    "t_at_bound": true,
+    "readout_end_shift_hz": 247729.750315
+   },
+   "delta_chi2": 6.01819166359,
+   "usable": true,
+   "class": "none"
+  },
+  {
+   "target": 9,
+   "rate_hz": {
+    "reference": 1657.37351707,
+    "tau000": -6516.58432473,
+    "tau005": -1968.52139236,
+    "tau015": 3313.78708097,
+    "tau040": 310.685648708,
+    "tau100": 621.61185359
+   },
+   "rate_se_hz": {
+    "reference": 3314.05470987,
+    "tau000": 3304.0603639,
+    "tau005": 3314.95751924,
+    "tau015": 3312.01120818,
+    "tau040": 3313.09919557,
+    "tau100": 3315.0024096
+   },
+   "delta_hz": {
+    "0": -8173.95784181,
+    "5": -3625.89490944,
+    "15": 1656.4135639,
+    "40": -1346.68786837,
+    "100": -1035.76166348
+   },
+   "delta_se_hz": {
+    "0": 4679.7193835,
+    "5": 4687.41954324,
+    "15": 4685.33636606,
+    "40": 4686.10551521,
+    "100": 4687.45128995
+   },
+   "visibility": {
+    "reference": 1.00003862306,
+    "tau000": 1.00002336475,
+    "tau005": 1.00000047684,
+    "tau015": 1.00002336475,
+    "tau040": 1.00023076256,
+    "tau100": 1.00003862306
+   },
+   "min_visibility": 1.00000047684,
+   "h1": {
+    "chi2": 5.43397313943,
+    "dof": 5,
+    "rate_hz": -435.533818859
+   },
+   "h2": {
+    "chi2": 0.670929154108,
+    "dof": 3,
+    "rate_hz": 1473.93131792,
+    "A_hz": -8054.99585807,
+    "A_se_hz": 3698.54414904,
+    "t_cycles": 5.0,
+    "t_se_cycles": 6.1431894232,
+    "t_at_bound": false,
+    "readout_end_shift_hz": -220157.458198
+   },
+   "delta_chi2": 4.76304398532,
+   "usable": true,
+   "class": "none"
+  }
+ ],
+ "decision": {
+  "usable_targets": [
+   1,
+   2,
+   3,
+   7,
+   8,
+   9
+  ],
+  "tail_targets": [],
+  "offset_targets": [],
+  "verdict": "not detected"
+ }
+}

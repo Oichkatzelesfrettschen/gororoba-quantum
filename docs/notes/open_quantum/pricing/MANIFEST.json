@@ -1,0 +1,18 @@
+{
+ "schema": "oq-docs-capture-v1",
+ "kind": "pricing",
+ "retrieved_utc": "2026-10-17T05:08Z",
+ "files": [
+  {
+   "path": "docs/evidence/open_quantum/pricing.json",
+   "source": "https://www.openquantum.com/pricing",
+   "sha256": "31658f3470d0423c0cc3988c963518a8ce3296aeaa38a2618c49cedb20c2c1fb"
+  },
+  {
+   "path": "docs/notes/open_quantum/pricing/sources.json",
+   "source": "https://www.openquantum.com/pricing",
+   "sha256": "681852a54c47701fc96a6a9303ade4e8ee730979004fd2ac25572729a58e0b2d"
+  }
+ ],
+ "unreachable": []
+}
