@@ -74,7 +74,8 @@ from d_locus_nullity import (  # noqa: E402
     left_rational,
     zero_divisor,
 )
-from moreno_stiefel_nullity import PRIME, rank_mod, rational_kernel  # noqa: E402
+from exact_rank import rank_mod, rational_kernel  # noqa: E402
+from moreno_stiefel_nullity import PRIME  # noqa: E402
 
 import parallel  # noqa: E402
 

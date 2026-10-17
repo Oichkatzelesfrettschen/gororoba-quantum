@@ -510,7 +510,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error complex_skew_contracts.py >/dev/null",
    "name": "core-063",
-   "seconds": 314.2,
+   "seconds": 142.6,
    "tier": "full"
   },
   {
@@ -518,8 +518,8 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -O -W error complex_skew_contracts.py >/dev/null",
    "name": "core-064",
-   "seconds": 210.2,
-   "tier": "full"
+   "seconds": 95.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
@@ -1334,15 +1334,15 @@
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/complex_skew/replay.py --check",
    "name": "sources-166",
-   "seconds": 142.2,
-   "tier": "full"
+   "seconds": 64.5,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/complex_skew/replay.py --check",
    "name": "sources-167",
-   "seconds": 265.1,
+   "seconds": 120.3,
    "tier": "full"
   },
   {
@@ -2542,7 +2542,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json --limit 20 && \"$PYTHON\" -B -O -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json --limit 20",
    "name": "core-323",
-   "seconds": 13.0,
+   "seconds": 2.6,
    "tier": "pr"
   },
   {
@@ -2550,8 +2550,8 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json && \"$PYTHON\" -B -O -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json",
    "name": "core-324",
-   "seconds": 372.6,
-   "tier": "full"
+   "seconds": 51.2,
+   "tier": "pr"
   },
   {
    "suite": "core",
@@ -2743,6 +2743,14 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_local_dimension.py --check docs/evidence/rank_locus_local_dimension/result.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_local_dimension.py --check docs/evidence/rank_locus_local_dimension/result.json",
    "name": "core-328",
    "seconds": 16.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/exact_rank.py --self-test && \"$PYTHON\" -B -O -W error scripts/exact_rank.py --self-test",
+   "name": "core-528",
+   "seconds": 5.0,
    "tier": "pr"
   },
   {
