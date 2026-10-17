@@ -1,0 +1,786 @@
+{
+ "retrieved_utc": "2026-10-17T05:24:54+00:00",
+ "rows": [
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "aqt:ibex-q1",
+   "shots": 1
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 4,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 2,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "aqt:ibex-q1",
+   "shots": 100
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 4,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 2,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "aqt:ibex-q1",
+   "shots": 128
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 29,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 15,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "aqt:ibex-q1",
+   "shots": 1000
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 30,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 15,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "aqt:ibex-q1",
+   "shots": 1024
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 57,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 29,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "aqt:ibex-q1",
+   "shots": 2000
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 10,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 5,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "ionq:forte-1",
+   "shots": 100
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 13,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 7,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "ionq:forte-1",
+   "shots": 128
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 97,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 49,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "ionq:forte-1",
+   "shots": 1000
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 99,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 50,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "ionq:forte-1",
+   "shots": 1024
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 394,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 197,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "ionq:forte-1",
+   "shots": 4096
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 481,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 241,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "ionq:forte-1",
+   "shots": 5000
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 10,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 5,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "ionq:forte-ent",
+   "shots": 100
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 13,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 7,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "ionq:forte-ent",
+   "shots": 128
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 97,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 49,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "ionq:forte-ent",
+   "shots": 1000
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 99,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 50,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "ionq:forte-ent",
+   "shots": 1024
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 394,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 197,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "ionq:forte-ent",
+   "shots": 4096
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 481,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 241,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "ionq:forte-ent",
+   "shots": 5000
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "iqm:emerald",
+   "shots": 1
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "iqm:emerald",
+   "shots": 100
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "iqm:emerald",
+   "shots": 128
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 3,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 2,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "iqm:emerald",
+   "shots": 1000
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 3,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 2,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "iqm:emerald",
+   "shots": 1024
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 9,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 5,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "iqm:emerald",
+   "shots": 4096
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 39,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 20,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "iqm:emerald",
+   "shots": 20000
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "iqm:garnet",
+   "shots": 1
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "iqm:garnet",
+   "shots": 100
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "iqm:garnet",
+   "shots": 128
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 3,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 2,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "iqm:garnet",
+   "shots": 1000
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 3,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 2,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "iqm:garnet",
+   "shots": 1024
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 8,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 4,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "iqm:garnet",
+   "shots": 4096
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 36,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 18,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "iqm:garnet",
+   "shots": 20000
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "rigetti:cepheus-1-108q",
+   "shots": 10
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "rigetti:cepheus-1-108q",
+   "shots": 100
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "rigetti:cepheus-1-108q",
+   "shots": 128
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "rigetti:cepheus-1-108q",
+   "shots": 1000
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 1,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "rigetti:cepheus-1-108q",
+   "shots": 1024
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 3,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 2,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "rigetti:cepheus-1-108q",
+   "shots": 4096
+  },
+  {
+   "plans": {
+    "Private Plan": {
+     "price": 26,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    },
+    "Public Plan": {
+     "price": 13,
+     "queue_priorities": {
+      "Priority Queue": 2,
+      "Standard Queue": 0
+     }
+    }
+   },
+   "short_code": "rigetti:cepheus-1-108q",
+   "shots": 50000
+  }
+ ],
+ "schema": "oq-estimates-v1"
+}

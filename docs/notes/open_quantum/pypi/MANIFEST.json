@@ -1,0 +1,38 @@
+{
+ "schema": "oq-docs-capture-v1",
+ "kind": "pypi",
+ "retrieved_utc": "2026-10-17T05:08Z",
+ "files": [
+  {
+   "path": "docs/notes/open_quantum/pypi/openquantum-sdk.json",
+   "source": "https://pypi.org/pypi/openquantum-sdk/1.0.0/json",
+   "sha256": "5ad203ad5e758e24f0934fde9cf2e98337ffd263c34745c1bec0027bf05f62ce"
+  },
+  {
+   "path": "docs/notes/open_quantum/pypi/openquantum-mcp.json",
+   "source": "https://pypi.org/pypi/openquantum-mcp/0.2.0/json",
+   "sha256": "2f6590547712325041deb859b414e6b5867ea95e94248d93c336e63eb00891cf"
+  },
+  {
+   "path": "docs/notes/open_quantum/pypi/openquantum-sdk-qiskit.json",
+   "source": "https://pypi.org/pypi/openquantum-sdk-qiskit/1.0.0/json",
+   "sha256": "76e2c7f85518102b2375eff46085ace4b503602dc86393bd1a653f0df63c1243"
+  },
+  {
+   "path": "docs/notes/open_quantum/pypi/openquantum-sdk-pennylane.json",
+   "source": "https://pypi.org/pypi/openquantum-sdk-pennylane/1.0.0/json",
+   "sha256": "d939448adb4c43e5862dce766134028edcba0e1cbd2f3e84bc5ff6560539fe33"
+  },
+  {
+   "path": "docs/notes/open_quantum/pypi/openquantum-sdk-cirq.json",
+   "source": "https://pypi.org/pypi/openquantum-sdk-cirq/0.5.0/json",
+   "sha256": "5e1a6c15f1cd0f1fb938e1054c002eceddf0f1055b38a60d7125111277824e20"
+  },
+  {
+   "path": "docs/notes/open_quantum/pypi/openquantum-sdk-qrisp.json",
+   "source": "https://pypi.org/pypi/openquantum-sdk-qrisp/0.5.0/json",
+   "sha256": "4a690429f43ede522e8f1e6af1a3f030d85b31084a52b7137000c375d5154ab7"
+  }
+ ],
+ "unreachable": []
+}
