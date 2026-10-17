@@ -2912,6 +2912,14 @@
    "name": "core-491",
    "seconds": 410.0,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/patch_window_analysis.py results/live/2026-10-13T201757.782152Z --check results/live/2026-10-13T201757.782152Z/patch-analysis.json && \"$PYTHON\" -B -O -W error scripts/patch_window_analysis.py results/live/2026-10-13T201757.782152Z --check results/live/2026-10-13T201757.782152Z/patch-analysis.json",
+   "name": "core-495",
+   "seconds": 62.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
