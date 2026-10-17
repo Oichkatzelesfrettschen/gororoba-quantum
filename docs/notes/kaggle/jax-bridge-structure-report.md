@@ -73,7 +73,7 @@ export sweep. On the 105-replica dark/bright run the CPU time drops from
     of stacks under whole-group stacking and holds 24 MB per call, and
     neither sets the process peak.
 
-## Contracts (`--self-test`, gates core-327 and core-337)
+## Contracts (`--self-test`, gates core-352 and core-353)
 
 The reduced case is 31 replicas from snapshot
 ibm_kingston/20261015T0003150700:
@@ -108,8 +108,8 @@ runs through `parallel.ordered_map`:
 - the reproduction's 186 evolutions, two of which the parity sample reuses;
 - the chunking contract's 123 batch rows of both budgets, in one map.
 
-With `GOROROBA_WORKERS=6` the gates take 41 s on this host (core-327
-41.4 s, core-337 41.2 s). The CZ-channel contract takes 16.8 s, the
+With `GOROROBA_WORKERS=6` the gates take 41 s on this host (core-352
+41.4 s, core-353 41.2 s). The CZ-channel contract takes 16.8 s, the
 reproduction 8.2 s and the chunking contract 1.0 s, against 33.0 s,
 11.2 s and 3.6 s under `GOROROBA_WORKERS=1`. The self-test imports no JAX,
 since no CI requirements file pins it.
@@ -197,7 +197,7 @@ holds the slot.
 ## Not done
 
 - The TPU run, for the slot reason above; the push command is not run.
-- The 2-vCPU CI seconds for core-327 and core-337. The 41 s above is this
+- The 2-vCPU CI seconds for core-352 and core-353. The 41 s above is this
   12-thread host's measurement.
 - A full sweep over all audited runs. Only 070847, 080216 and 070853 were
   rerun; the wide runs 025444 and 031229 (929 replicas each) are not timed.
