@@ -1,5 +1,5 @@
 """Contract for ci/run_gates.py: unique gate names, every CPU, keep-going past a launch failure,
-one child worker by default, --device.
+one child worker by default, --device, --max-seconds.
 """
 
 from __future__ import annotations
@@ -72,9 +72,23 @@ def main() -> None:
             text = output.getvalue()
             if status != 0 or f"gates in shard 0/1 on {expected_device}" not in text:
                 raise RuntimeError(f"{flag} did not give every gate GOROROBA_AER_DEVICE={expected_device}:\n{text}")
+    with TemporaryDirectory(prefix="ci-select-contract-") as temporary:
+        root = Path(temporary)
+        (root / "ci").mkdir()
+        listed = [
+            {"name": "fast", "cwd": ".", "cmd": "true", "seconds": 1.0},
+            {"name": "slow", "cwd": ".", "cmd": "true", "seconds": 9.0},
+            {"name": "unmeasured", "cwd": ".", "cmd": "true"},
+            {"name": "full-only", "cwd": ".", "cmd": "true", "seconds": 1.0, "tier": "full"},
+        ]
+        (root / "ci/gates.json").write_text(json.dumps({"gates": listed}))
+        for tier, limit, expected in (("pr", 5.0, ["fast"]), ("pr", None, ["fast", "slow", "unmeasured"])):
+            names = [gate["name"] for gate in run_gates.select(root, tier, limit)]
+            if names != expected:
+                raise RuntimeError(f"select({tier}, {limit}) chose {names}, not {expected}")
     print(
         "run_gates: unique gate names, every CPU, a launch failure keeps going with its diagnostic, "
-        "child workers default to one, --device GPU reaches every gate"
+        "child workers default to one, --device GPU reaches every gate, --max-seconds selects by measured seconds"
     )
 
 
