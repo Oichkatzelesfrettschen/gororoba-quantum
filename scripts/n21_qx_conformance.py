@@ -42,9 +42,10 @@ q[1].
 - ``--out FILE`` builds the forms, proves each stage's ideal law against the
   reference (dynamic_density with an empty noise model), writes the cQASM
   programs beside FILE, runs them and the reset probes on qxelarator through
-  ``$QI_PYTHON`` (QX_SHOTS per seed, the exact state of each deferred program,
-  single-shot native branch states), then writes the record and exits nonzero
-  unless require_verdicts holds.
+  qi_stack.run at ``$QI_PYTHON`` (QX_SHOTS per seed, the exact state of each
+  deferred program, single-shot native branch states), then writes the record
+  and exits nonzero unless require_verdicts holds. An unavailable stack stops
+  it with the probe's reason.
 - ``--check FILE`` runs without qxelarator: it recomputes the reference,
   deferred, lowered and parsed laws, regenerates the programs and requires
   their bytes and sha256s, re-parses the retained programs with
@@ -54,15 +55,22 @@ q[1].
   n21_exact_model_validation.compare (simultaneous Hoeffding radius at total
   tail TAIL, Bernstein radii on each arm score and the contrast), and the
   native counts fail the reference and pass the qxelarator reset model.
+  ``--live N`` adds, when qi_stack.live finds the stack at ``$QI_PYTHON``, a
+  rerun on qxelarator of every reset probe, deferred state and native branch
+  run plus N evenly spaced sample jobs at their retained seeds; histograms and
+  branch keys must equal the retained ones and amplitudes agree within
+  EXACT_TOL. Without the stack it prints one replay line, and
+  GOROROBA_QI_REQUIRED=1 turns that into a failure.
 - ``--self-test`` requires corrupted cQASM lines, dropped-control deferrals, a
   flipped bit order, swapped clbits, moved shots and native counts drawn from
   the reference law to fail, the reset models to reproduce the
   dynamic_density law and the phase drop, and the unsnapped qx export to
-  equal the snapped one on an on-grid circuit byte for byte.
+  equal the snapped one on an on-grid circuit byte for byte, and a moved
+  retained count, amplitude, branch key or probe to fail the live comparison.
 
 Usage:
     "$PYTHON" scripts/n21_qx_conformance.py --out docs/evidence/n21_qx_conformance/result.json
-    "$PYTHON" scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json
+    "$PYTHON" scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json [--live N]
     "$PYTHON" scripts/n21_qx_conformance.py --self-test
 """
 
@@ -77,19 +85,19 @@ import functools
 import hashlib
 import json
 import math
-import os
 import re
-import subprocess
 import sys
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import parallel  # noqa: E402
+import qi_stack  # noqa: E402
 
 SCHEMA = "n21-qx-conformance-v1"
 ISA = ROOT / "results/live/2026-10-17T003834.987727Z/isa.qpy"
@@ -112,7 +120,6 @@ TAIL = 1e-3
 # rounding; EXACT_TOL bounds every probability gap and 1 - fidelity.
 EXACT_TOL = 1e-9
 QXELARATOR = "0.10.0"
-QI_PYTHON_DEFAULT = Path.home() / ".local/share/quantuminspire/venv/bin/python"
 LOWERED = ("h", "s", "sdg", "x", "z", "cx", "cz", "rz")
 MEASURE_LINE = re.compile(r"b\[(\d+)\] = measure q\[(\d+)\]")
 RESET_LINE = re.compile(r"reset q\[(\d+)\]")
@@ -805,15 +812,19 @@ def sample_seed(position: int, n: int) -> int:
 
 
 def qx_jobs(texts: dict[str, str], forms: list[dict[str, Any]], seeds: int) -> list[dict[str, Any]]:
+    return program_jobs(texts, [(file_name(form), form["form"]) for form in forms], seeds)
+
+
+def program_jobs(texts: dict[str, str], programs: list[tuple[str, str]], seeds: int) -> list[dict[str, Any]]:
+    """The probe jobs, then per (file, form) program in order its state or branch jobs and `seeds` sample jobs."""
     jobs: list[dict[str, Any]] = [
         {"kind": "sample", "file": "reset-register-probe", "text": RESET_REGISTER_PROBE, "shots": 64,
          "seed": BASE_SEED}
     ]  # fmt: skip
     for name, text in RESET_PHASE_PROBES.items():
         jobs.append({"kind": "state", "file": f"reset-phase-probe-{name}", "text": text, "seed": BASE_SEED})
-    for position, form in enumerate(forms):
-        name = file_name(form)
-        if form["form"] == "deferred":
+    for position, (name, form) in enumerate(programs):
+        if form == "deferred":
             jobs.append({"kind": "state", "file": name, "text": state_program(texts[name]), "seed": BASE_SEED})
         else:
             for n in range(BRANCH_SEEDS):
@@ -829,18 +840,10 @@ def qx_jobs(texts: dict[str, str], forms: list[dict[str, Any]], seeds: int) -> l
 
 
 def run_qx(jobs: list[dict[str, Any]]) -> dict[str, Any]:
-    """The QX jobs on qxelarator under $QI_PYTHON in a subprocess: this file's --qx-worker mode."""
-    interpreter = os.environ.get("QI_PYTHON") or str(QI_PYTHON_DEFAULT)
-    completed = subprocess.run(
-        [interpreter, "-I", "-B", str(Path(__file__).resolve()), "--qx-worker"],
-        input=json.dumps(jobs),
-        capture_output=True,
-        text=True,
-        check=False,
+    """The QX jobs on qxelarator under $QI_PYTHON (qi_stack.run): this file's --qx-worker mode."""
+    result: dict[str, Any] = json.loads(
+        qi_stack.run(["-I", "-B", str(Path(__file__).resolve()), "--qx-worker"], json.dumps(jobs))
     )
-    if completed.returncode != 0:
-        raise SystemExit(f"qxelarator worker under {interpreter} failed:\n{completed.stderr}")
-    result: dict[str, Any] = json.loads(completed.stdout)
     return result
 
 
@@ -991,6 +994,9 @@ def require_reset_evidence(evidence: dict[str, Any], reference: list[float]) -> 
 
 
 def out(path: Path, seeds: int) -> dict[str, Any]:
+    stack = qi_stack.probe()
+    if not stack.available:
+        raise SystemExit(f"--out runs qxelarator under $QI_PYTHON: {stack.reason}")
     built = build()
     texts = {file_name(form): form["text"] for form in built["forms"]}
     staged = stages(built, texts)
@@ -1291,6 +1297,67 @@ def verify(record: dict[str, Any], directory: Path) -> dict[str, Any]:
     return {"comparison": comparison, "fidelities": fidelities}
 
 
+def live_picks(samples: list[int], count: int) -> list[int]:
+    """count entries spread evenly over the sample job indices, the first and last included."""
+    total = len(samples)
+    if count < 1:
+        return []
+    if count >= total:
+        return list(samples)
+    spread = {round(n * (total - 1) / (count - 1)) for n in range(count)} if count > 1 else {0}
+    return [samples[n] for n in sorted(spread)]
+
+
+def retained_result(record: dict[str, Any], job: dict[str, Any]) -> Any:
+    """The result the record retains for a QX job: probe counts or amplitudes, a branch run, or a sample histogram."""
+    qx = record["qx"]
+    name = job["file"]
+    if name == "reset-register-probe":
+        return qx["reset_register_probe"]["counts"]
+    if name.startswith("reset-phase-probe-"):
+        return qx["reset_phase_probes"][name.removeprefix("reset-phase-probe-")]["amplitudes"]
+    if job["kind"] == "state":
+        return qx["states"][name]["amplitudes"]
+    if job["kind"] == "branch":
+        run = qx["native_branches"][job["seed"] - BASE_SEED]
+        return {"results": run["results"], "state": run["state"]}
+    (run,) = [run for run in qx["samples"][name] if run["seed"] == job["seed"]]
+    return run["counts"]
+
+
+def live_check(record: dict[str, Any], directory: Path, count: int) -> int:
+    """Rerun the retained jobs on qxelarator under $QI_PYTHON; raises on any result the record lacks.
+
+    The jobs are program_jobs over the retained program files: every reset
+    probe, deferred state and native branch run, plus `count` sample jobs
+    spread over the sample list (each is QX_SHOTS shots of a program of several
+    thousand gates, minutes of qxelarator time, so the gate runs N = 0). Seeded qxelarator is deterministic, so
+    histograms and branch keys equal the retained ones and amplitudes agree
+    within EXACT_TOL.
+    """
+    qx = record["qx"]
+    texts = {row["file"]: (directory / row["file"]).read_text(encoding="utf-8") for row in record["programs"]}
+    for row in record["programs"]:
+        if sha256(texts[row["file"]].encode()) != row["sha256"]:
+            raise ValueError(f"{row['file']}: retained bytes differ from the record's sha256")
+    jobs = program_jobs(texts, [(row["file"], row["form"]) for row in record["programs"]], qx["seeds"])
+    sampled = [n for n, job in enumerate(jobs) if job["kind"] == "sample" and job["file"] in texts]
+    chosen = set(live_picks(sampled, count))
+    picks = [n for n, job in enumerate(jobs) if n in chosen or n not in sampled]
+    outcome = run_qx([jobs[n] for n in picks])
+    if len(outcome["results"]) != len(picks):
+        raise ValueError(f"the qxelarator worker returned {len(outcome['results'])} results for {len(picks)} jobs")
+    for n, result in zip(picks, outcome["results"], strict=True):
+        job = jobs[n]
+        if job["kind"] == "branch":
+            if sha256(job["text"].encode()) != qx["native_branches"][job["seed"] - BASE_SEED]["text_sha256"]:
+                raise ValueError(f"{job['file']}: branch program differs from the retained run")
+        found = _first_gap(retained_result(record, job), result)
+        if found is not None:
+            raise ValueError(f"{job['file']}: qxelarator at seed {job['seed']} differs from the record: {found}")
+    return len(picks)
+
+
 # ---------------------------------------------------------------- self-test
 
 
@@ -1308,6 +1375,87 @@ def qx_key(value: int, readout: list[int]) -> str:
     for k, q in enumerate(readout):
         key[QX_WIDTH - 1 - q] = str((value >> k) & 1)
     return "".join(key)
+
+
+def live_mutations() -> int:
+    """live_check on a synthetic record with a stub worker: equal results pass, a moved result fails."""
+    import tempfile
+
+    unit = {"0" * QX_WIDTH: [1.0, 0.0]}
+    names = {"deferred": "a-deferred.cq", "native": "b-native.cq"}
+    texts = {name: f"version 3.0\n// {name}\nH q[0]\nb[0] = measure q[0]\n" for name in names.values()}
+    seeds = 3
+    record: dict[str, Any] = {
+        "programs": [
+            {"file": name, "form": form, "sha256": sha256(texts[name].encode())} for form, name in names.items()
+        ],
+        "qx": {
+            "shots": QX_SHOTS,
+            "seeds": seeds,
+            "reset_register_probe": {"counts": {"01": 64}},
+            "reset_phase_probes": {name: {"amplitudes": dict(unit)} for name in RESET_PHASE_PROBES},
+            "states": {names["deferred"]: {"amplitudes": dict(unit)}},
+            "native_branches": [
+                {
+                    "seed": BASE_SEED + n,
+                    "text_sha256": sha256(branch_program(texts[names["native"]]).encode()),
+                    "results": {"0" * (QX_WIDTH - 1) + "1": 1},
+                    "state": dict(unit),
+                }
+                for n in range(BRANCH_SEEDS)
+            ],
+            "samples": {
+                name: [
+                    {"seed": sample_seed(position, n), "counts": {"0" * QX_WIDTH: QX_SHOTS - n, "1" * QX_WIDTH: n}}
+                    for n in range(seeds)
+                ]
+                for position, name in enumerate(names.values())
+            },
+        },
+    }
+
+    def worker(served: dict[str, Any]) -> Callable[..., str]:
+        def run(arguments: list[str], stdin: str | None = None) -> str:
+            jobs = json.loads(stdin or "[]")
+            return json.dumps({"environment": {}, "results": [retained_result(served, job) for job in jobs]})
+
+        return run
+
+    ones = "1" * QX_WIDTH
+    zeros = "0" * QX_WIDTH
+
+    def move_count(r: dict[str, Any]) -> None:
+        r["qx"]["samples"][names["native"]][1]["counts"][ones] = 9
+
+    def move_amplitude(r: dict[str, Any]) -> None:
+        r["qx"]["states"][names["deferred"]]["amplitudes"][zeros] = [0.9, 0.0]
+
+    def move_branch(r: dict[str, Any]) -> None:
+        r["qx"]["native_branches"][2]["results"] = {ones: 1}
+
+    def move_probe(r: dict[str, Any]) -> None:
+        r["qx"]["reset_register_probe"]["counts"] = {"00": 64}
+
+    moves: list[tuple[str, Callable[[dict[str, Any]], Any]]] = [
+        ("a moved sample count", move_count),
+        ("a moved state amplitude", move_amplitude),
+        ("a moved branch key", move_branch),
+        ("a moved register probe", move_probe),
+    ]
+    with tempfile.TemporaryDirectory() as scratch:
+        for name, text in texts.items():
+            (Path(scratch) / name).write_text(text, encoding="utf-8")
+        with patch.object(qi_stack, "run", worker(record)):
+            if live_check(record, Path(scratch), 2) != 1 + len(RESET_PHASE_PROBES) + 1 + BRANCH_SEEDS + 2:
+                raise AssertionError("the live job count differs from the probes, states, branches and sample picks")
+        rejected = 0
+        for label, move in moves:
+            moved = copy.deepcopy(record)
+            move(moved)
+            with patch.object(qi_stack, "run", worker(moved)):
+                _reject(label, functools.partial(live_check, record, Path(scratch), 2 * seeds))
+            rejected += 1
+    return rejected
 
 
 def self_test() -> None:
@@ -1496,11 +1644,13 @@ def self_test() -> None:
         mutate(mutated_shape)
         _reject(label, functools.partial(require_record_shape, mutated_shape))
     radius = record["comparison"]["deferred_pair"]["radius"]
+    live_rejected = live_mutations()
     print(
         "n21 QX conformance self-test: unsnapped export equals the snapped one on grid; record shape checks reject "
         f"{len(shape_mutations)} mutations; corrupted lines, dropped-control deferrals, "
         "a flipped bit order, swapped clbits, shifted shots and reference-law native counts rejected at radius "
-        f"{radius:.5f}; reset models reproduce the dynamic_density law and the qxelarator phase drop"
+        f"{radius:.5f}; reset models reproduce the dynamic_density law and the qxelarator phase drop; "
+        f"the live comparison rejects {live_rejected} moved retained results"
     )
 
 
@@ -1512,7 +1662,15 @@ def main() -> int:
     mode.add_argument("--self-test", action="store_true")
     mode.add_argument("--qx-worker", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--seeds", type=int, default=SEEDS, help="with --out: QX runs of QX_SHOTS per program")
+    parser.add_argument(
+        "--live",
+        type=int,
+        metavar="N",
+        help="with --check: rerun every probe, state and branch job plus N sample jobs under $QI_PYTHON",
+    )
     args = parser.parse_args()
+    if args.live is not None and (args.check is None or args.live < 0):
+        parser.error("--live takes a count N >= 0 and needs --check")
     if args.qx_worker:
         return qx_worker()
     if args.self_test:
@@ -1524,8 +1682,13 @@ def main() -> int:
         record = json.loads(args.check.read_text(encoding="utf-8"))
         try:
             verify(record, args.check.parent)
+            live_jobs = None
+            if args.live is not None and qi_stack.live("qxelarator", "replayed retained counts and states"):
+                live_jobs = live_check(record, args.check.parent, args.live)
         except ValueError as error:
             raise SystemExit(f"{args.check}: {error}") from error
+        if live_jobs is not None:
+            print(f"n21 QX conformance live: {live_jobs} jobs rerun on qxelarator equal the retained results")
     comparison = record["comparison"]
     native = comparison["native_vs_reference"]
     print(
