@@ -1,0 +1,13 @@
+{
+ "id": "probablyeric/gororoba-tpu-probe-verified",
+ "title": "gororoba-tpu-probe-verified",
+ "code_file": "run.ipynb",
+ "language": "python",
+ "kernel_type": "notebook",
+ "is_private": true,
+ "enable_gpu": false,
+ "enable_tpu": true,
+ "enable_internet": true,
+ "machine_shape": "TpuV5E8",
+ "docker_image_pinning_type": "latest"
+}
