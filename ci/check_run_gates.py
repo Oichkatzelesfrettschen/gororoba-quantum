@@ -82,10 +82,10 @@ def main() -> None:
             {"name": "full-only", "cwd": ".", "cmd": "true", "seconds": 1.0, "tier": "full"},
         ]
         (root / "ci/gates.json").write_text(json.dumps({"gates": listed}))
-        for tier, limit, expected in (("pr", 5.0, ["fast"]), ("pr", None, ["fast", "slow", "unmeasured"])):
+        for tier, limit, wanted in (("pr", 5.0, ["fast"]), ("pr", None, ["fast", "slow", "unmeasured"])):
             names = [gate["name"] for gate in run_gates.select(root, tier, limit)]
-            if names != expected:
-                raise RuntimeError(f"select({tier}, {limit}) chose {names}, not {expected}")
+            if names != wanted:
+                raise RuntimeError(f"select({tier}, {limit}) chose {names}, not {wanted}")
     print(
         "run_gates: unique gate names, every CPU, a launch failure keeps going with its diagnostic, "
         "child workers default to one, --device GPU reaches every gate, --max-seconds selects by measured seconds"
