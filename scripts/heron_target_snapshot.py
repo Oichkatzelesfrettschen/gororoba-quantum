@@ -2,10 +2,11 @@
 
 --out FILE (local, network) lists the account's hardware backends through
 QiskitRuntimeService and reads each one twice, plainly and with
-use_fractional_gates=True. It writes the processor type, calibration stamp,
-dt, timing constraints, repetition-delay default and range, basis gates,
-supported instructions, per-qubit durations and errors of the instructions in
-INSTRUCTIONS and FRACTIONAL, and a transpile probe that counts xslow in a
+use_fractional_gates=True. It writes the backend version and processor type
+the configuration reports, calibration stamp, dt, timing constraints,
+repetition-delay default and range, basis gates, supported instructions,
+per-qubit durations and errors of the instructions in INSTRUCTIONS and
+FRACTIONAL, and a transpile probe that counts xslow in a
 circuit of X, SX, RX and CX gates at optimization levels 1 to 3. No
 credential, instance or account identifier enters the file.
 
@@ -13,7 +14,9 @@ credential, instance or account identifier enters the file.
 ROSTER, recomputes every fact from the retained per-qubit values, requires
 each to hold on every backend, and requires the retained "facts" block to
 equal the recomputation, so a refreshed snapshot that contradicts AGENTS.md
-fails until the text changes with it.
+fails until the text changes with it. Each backend's backend_version, when
+present, is a nonempty string and its processor_type a string dictionary with
+family and revision; a snapshot without backend_version passes.
 
 Usage: "$PYTHON" scripts/heron_target_snapshot.py (--out FILE | --check FILE)
 """
@@ -102,6 +105,7 @@ def snapshot() -> dict[str, Any]:
         target = plain.target
         constraints = target.timing_constraints()
         backends[name] = {
+            "backend_version": config.backend_version,
             "processor_type": config.processor_type,
             "num_qubits": config.n_qubits,
             "calibration": plain.properties().last_update_date.isoformat(),
@@ -176,6 +180,17 @@ def check(path: Path) -> None:
         data["accessible_backends"] == list(ROSTER) and data["fractional_backends"] == list(ROSTER),
         f"snapshot roster {data['accessible_backends']} differs from the documented {list(ROSTER)}",
     )
+    for name, b in sorted(data["backends"].items()):
+        if "backend_version" in b:
+            version = b["backend_version"]
+            require(isinstance(version, str) and bool(version), f"{name}: backend_version {version!r}")
+        processor = b["processor_type"]
+        require(
+            isinstance(processor, dict)
+            and {"family", "revision"} <= set(processor)
+            and all(isinstance(v, str) for v in processor.values()),
+            f"{name}: processor_type {processor!r}",
+        )
     recomputed = facts(data)
     require(data["facts"] == recomputed, "retained facts differ from the recomputation")
     failing = [f"{name}:{fact}" for name, values in recomputed.items() for fact, holds in values.items() if not holds]
