@@ -945,23 +945,22 @@ def finish_package_section(section: dict[str, Any], record: dict[str, Any], refe
         require(all(line[3] is True and line[4] == 1 for line in lines), "a strut line is not an associative triple")
     split: dict[str, Any] = {}
     for name, entry in section["witnesses"].items():
+        # Every declared witness is evidence only through its mapped arithmetic, so a
+        # package that fails to import or evaluate fails the census.
+        require(entry["error"] is None, f"{name}: the declared witness failed: {entry['error']}")
         if entry["role"] == "wrapper":
-            if entry["error"] is None:
-                agree = {}
-                require(
-                    sorted(entry["expressions"]) == sorted(f"({a})({b})" for a, b in WRAPPER_EXPRESSIONS),
-                    f"{name}: expression set",
+            agree = {}
+            require(
+                sorted(entry["expressions"]) == sorted(f"({a})({b})" for a, b in WRAPPER_EXPRESSIONS),
+                f"{name}: expression set",
+            )
+            for a, b in WRAPPER_EXPRESSIONS:
+                text = entry["expressions"][f"({a})({b})"]
+                agree[f"({a})({b})"] = expression_terms(text) == checked_product(
+                    expression_terms(a), expression_terms(b)
                 )
-                for a, b in WRAPPER_EXPRESSIONS:
-                    text = entry["expressions"][f"({a})({b})"]
-                    agree[f"({a})({b})"] = expression_terms(text) == checked_product(
-                        expression_terms(a), expression_terms(b)
-                    )
-                entry["agrees_with_cd_core"] = agree
-            continue
-        if entry["error"] is not None:
-            require(entry.get("facts") is None, f"{name}: an import failure carries facts")
-            entry["agrees_with_cd_core"] = None
+            require(all(agree.values()), f"{name}: wrapper expressions differ from cd_core on {agree}")
+            entry["agrees_with_cd_core"] = agree
             continue
         ref = ref16 if entry["dimension"] == 16 else ref8
         require(sorted(entry["facts"]) == sorted(ref), f"{name}: fact set differs")
@@ -1015,8 +1014,7 @@ def verify_package_section(
             pinned = versions[package]["version"]
             require(entry["pinned_release"] == pinned, f"{name}: pinned release {entry['pinned_release']}")
             require(
-                pinned.startswith("commit ")
-                or entry["version"] in (pinned, *(["unavailable"] if entry["error"] else [])),
+                pinned.startswith("commit ") or entry["version"] == pinned,
                 f"{name}: installed version {entry['version']} against the pin {pinned}",
             )
         clean = {
@@ -1027,14 +1025,12 @@ def verify_package_section(
         }
         if role == "wrapper":
             clean["expressions"] = entry["expressions"]
-        elif entry["error"] is None:
+        else:
             require(
                 entry["facts"] == table_digests[name]["facts"],
                 f"{name}: retained verdict differs from its retained table",
             )
             clean["facts"] = entry["facts"]
-        else:
-            clean["facts"] = None
         rebuilt[name] = clean
     out = {"method": section["method"], "reference": section["reference"], "witnesses": rebuilt}
     finish_package_section(out, record, reference)
@@ -1161,6 +1157,13 @@ def self_test(path: Path) -> int:
         texts = r["package_witnesses"]["witnesses"]["hypercomplex-16-wrapper"]["expressions"]
         texts[next(iter(texts))] = "e5"
 
+    def witness_missing(r: dict[str, Any]) -> None:
+        entry = r["package_witnesses"]["witnesses"]["hypercomplex-16"]
+        entry["error"], entry["facts"], entry["agrees_with_cd_core"] = "ImportError: hypercomplex", None, None
+
+    def wrapper_missing(r: dict[str, Any]) -> None:
+        r["package_witnesses"]["witnesses"]["hypercomplex-16-wrapper"]["error"] = "ImportError: hypercomplex_algebra"
+
     def reference_digest(r: dict[str, Any]) -> None:
         r["package_witnesses"]["reference"]["cd_core-8"]["strut_lines"] = "f" * 64
 
@@ -1170,6 +1173,8 @@ def self_test(path: Path) -> int:
         split_control,
         witness_version,
         wrapper_expression,
+        witness_missing,
+        wrapper_missing,
         reference_digest,
         edge_type,
         strut_swap,

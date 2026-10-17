@@ -415,11 +415,13 @@ ladder measures r directly and replaces this model.
     Prediction: equal P.
   - Coherence (3 batches): a bright same-sign edge, a bright opposite-sign
     edge and a strut, X and Y settings on d in one circuit plus the reference.
-  - Associator walk (6 batches): kite 1 exemplars (2,11,3) omega -1 (6
-    CNOT, star 11), its omit-last-block control, (2,4,6) face-sail-xor0 +1,
-    (2,3,11) ik-same-vertex-third-strut -1 and (2,4,11)
-    ik-same-vertex-third-edge +1 (4 CNOT each, path 8-11-13), plus the
-    reference on a disjoint pair. Falsifier: sign(<Z_c>) opposite to omega at
+  - Associator walk (6 batches): the five kite 1 exemplars of
+    `census:associator.deterministic_exemplars["1"]`, (2,11,3)
+    ij-same-vertex-third-strut omega -1 (6 CNOT, star 11), (2,4,6)
+    face-sail-xor0 +1, (2,3,11) ik-same-vertex-third-strut -1, (2,4,11)
+    ik-same-vertex-third-edge +1 and (2,3,10) jk-same-vertex-third-strut -1
+    (4 CNOT each, path 8-11-13), and the omit-last-block control of
+    (2,11,3), one per batch, each plus the reference on a disjoint pair. Falsifier: sign(<Z_c>) opposite to omega at
     |z| > 3, or the control's |<Z_c>| above 0.1 + 3 sigma.
 
 **Per-batch procedure.** Before each Tuna-17 batch the identical cQASM runs on
