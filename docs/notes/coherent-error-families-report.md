@@ -11,7 +11,7 @@ and the Kaggle command for the full fit.
 | --- | --- | --- |
 | (1) Coherent forward model on the executed 84-edge atlas circuits | PARTIAL before this branch | `scripts/atlas_detuning_map.py`, `docs/evidence/atlas_detuning_map/` (gates core-285, core-293) |
 | (1a) Fringe phase offsets as the observable | DONE (Fez) | same; leave-one-edge-out RMS, shot-noise and leave-one-out floors |
-| (1b) Fringe amplitude ratios as an observable | ABSENT | the retained map fits phases only |
+| (1b) Fringe amplitude ratios as an observable | DONE (lane 4 of both runs; structure on all 14 lanes) | `scripts/atlas_fringe_amplitudes.py`, `docs/evidence/atlas_fringe_amplitudes/` (gates core-340, core-341) |
 | (1c) Frame detuning per qubit | DONE (Fez) | core-285 |
 | (1d) CZ conditional phase per coupler | DONE (Fez) | core-285 |
 | (1e) Static ZZ during idle | ABSENT | the CZ-phase family is per gate, not per unit time |
