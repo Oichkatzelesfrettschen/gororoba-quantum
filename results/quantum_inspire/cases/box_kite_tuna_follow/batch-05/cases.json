@@ -1,0 +1,412 @@
+{
+ "schema": "box-kite-cases-v1",
+ "family": "tuna_follow",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 16384,
+ "dialect": "tuna",
+ "bit_order": "qubit 0 at the rightmost character (Tuna)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "layout": {
+  "excluded": [
+   0,
+   5,
+   6,
+   7,
+   9
+  ],
+  "avoided": [
+   15
+  ],
+  "lcu_pairs": [
+   [
+    1,
+    4
+   ],
+   [
+    10,
+    13
+   ],
+   [
+    12,
+    14
+   ]
+  ],
+  "walks": {
+   "star_14": {
+    "control": 14,
+    "data": [
+     11,
+     12,
+     16
+    ]
+   },
+   "path_4": {
+    "control": 4,
+    "data": [
+     1,
+     2
+    ]
+   }
+  }
+ },
+ "encodings": {
+  "reduced": "selector a = the pair's first qubit, data d = its second; reduced two-label LCU with CNOT as H CZ H on d; setting X adds H on d and setting Y adds Sdag, H on d before the measurement; CZ depth n repeats CZ(a, d) (n - 1) times after the SELECT CZ, each after a per-qubit barrier run",
+  "walk": "control c and the data bits on the layout's data qubits in ascending bit order; CNOT as H CZ H on the data qubit; omega as Z on c after its first H; readout Y adds Sdag on c before its last H",
+  "readout": "readout-0 measures all 17 qubits in |0>, readout-1 after X on all 17"
+ },
+ "preregistered": {
+  "observable": "per LCU replica the selector success P(a = 0) and, for every populated selector branch b, the data expectation E_b = <S_d | a = b> = 2 P(d = 0 | a = b) - 1 in the replica's setting S (X: H on d; Y: Sdag, H on d); per walk the control expectation 2 P(c = 0) - 1, which reads <X_c> (readout X) or <Y_c> (readout Y: Sdag, H on c)",
+  "design": "seven batches in FOLLOW_PLAN order. lcu-{bright,dark}-{x,y}-{1,2}: 2 x 2 crossovers in which the edge (1,10)(4,15) of kite 3 at y_sign y and its census twist (4,10)(1,15) of kite 6 at -y trade the pairs (1, 4) and (10, 13) between circuits 1 and 2; (12, 14) holds the edge at both signs in the bright block and the strut (1,10)(2,9) at both signs in the dark block. depth-{5,9}-{x,y}: the bright edge at that CZ depth on all three pairs. walk-x, walk-omit, walk-y: the kite 1 exemplars (2,11,3) on star 14 {11, 12, 16} (6 CZ) and (2,3,10) on path 4 {1, 2} (4 CZ), read in X, with the last block omitted, and read in Y",
+  "readout": "readout-0 and readout-1 in batches 0, 3 and 6; each qubit's e01 and e10 at a witness job are interpolated linearly in job finish time between the two nearest brackets, with the binomial variance of both brackets; the bracket difference enters as a reported systematic. Pc = (p - e10) / (1 - e01 - e10) on the selector; E_b inverts the tensor product of the selector's and the data qubit's assignment matrices on the joint (a, d) counts",
+  "classification": "D = Pc(y_sign -1) - Pc(y_sign +1) per row and pair, pooled over the settings: D above +0.4 same-sign (twist), below -0.4 opposite-sign (edge), |D| below 0.2 strut, otherwise unresolved; a misclassified or unresolved row refutes the separation of its pair",
+  "twist": "per block (bright: edge +, twist -; dark: edge -, twist +) and setting, Delta = [(Pc(edge, pair 0, circuit 1) - Pc(twist, pair 0, circuit 2)) + (Pc(edge, pair 1, circuit 2) - Pc(twist, pair 1, circuit 1))] / 2, in which the pair and circuit offsets cancel; the census predicts Delta = 0, and |Delta| above 3 standard errors refutes twist equality for that block and setting. The edge and the twist differ only in their local Z, S and Sdag gates, so a refutation measures a gate-dependent error between them",
+  "strut": "D of the strut on (12, 14) per setting; |D| above 0.1 + 3 sigma exposes a pair-dependent bias",
+  "coherence": "census predictions: E_0 = -1 on the bright edge and twist in X, E_1 = +1 on the dark edge and twist in X, 0 in Y and 0 on both strut branches. Falsifier: an X expectation of sign opposite to the census at |z| > 3, or a strut |E_b| above 0.1 + 3 sigma. Cross-prediction: the depth-1 magnitude |E_b| in X equals T0's C(1) = 0.954 within 0.1, the value a depolarizing error of the two-qubit block gives",
+  "depth_ladder": "per pair, the bright edge at CZ depths 1 (the lcu-bright circuits), 5 and 9 gives the conditional magnitude m(n) = sqrt(E_X^2 + E_Y^2), the phase phi(n) = atan2(E_Y, -E_X) about the census value -1, and the population Pc(n) of the same replicas; the joint coherence J(n) = Pc(n) m(n) and the population contrast 2 Pc(n) - 1 both equal lambda^n under a global depolarizing channel of rate lambda per CZ, so r_coh and r_pop are exp(slope) of ln J(n) and ln(2 Pc(n) - 1) on n and their ratio is 1 there, while dephasing lowers it and amplitude damping raises r_pop; the phase slope is phi per CZ, the data qubit's detuning phase over one CZ window plus the CZ's residual local phase. Each is an unweighted least-squares slope with a 99% parametric-bootstrap interval (4000 draws, seed 20261017), reported as estimates",
+  "walks": "<X_c> = omega = -1 on both walks, 0 on both omit-last controls and 0 in Y. Falsifier: sign opposite to omega at |z| > 3, or a control's |<X_c>| above 0.1 + 3 sigma. Cross-prediction: sqrt(<X_c>^2 + <Y_c>^2) equals r^n_CZ for T0's r = 0.9654, 0.810 on the star and 0.869 on the path, within 0.1; the phase atan2(<Y_c>, -<X_c>) is reported",
+  "replication": "the depth-5 and depth-9 bright edge populations per pair against T0's values on the same pair and depth, reported as drift over the hours between the series",
+  "stop_rule": "each batch: every job completed with the manifest's shots; circuit digests equal cases.json; the account's queue empty; a 120 s pause before the next batch. At each readout bracket: readout-0 P1 at most 0.10 and readout-1 P1 at least 0.80 on every used qubit, and no used qubit's e01 or e10 moved more than 0.02 since the previous bracket; a failure stops the series. Every depth-1 deterministic LCU replica within 0.3 of its ideal raw P(selector = 0), and a walk read in X at raw P(c = 1) at least 0.7; every idle qubit at P1 at most 0.15 above its interpolated readout-0 P1",
+  "thresholds": {
+   "readout_0_p1_at_most": 0.1,
+   "readout_1_p1_at_least": 0.8,
+   "bright_p_selector_zero_at_least": 0.7,
+   "bright_floor_cz_depths": [
+    1
+   ],
+   "idle_p1_above_readout_0_at_most": 0.15,
+   "deterministic_floor_margin": 0.3,
+   "same_sign_above": 0.4,
+   "opposite_sign_below": -0.4,
+   "strut_abs_below": 0.2,
+   "null_offset": 0.1,
+   "sigma": 3.0,
+   "bracket_drift_max": 0.02,
+   "bracket_span": 2,
+   "cross_prediction_band": 0.1,
+   "t0_r": 0.9654,
+   "t0_c1": 0.954,
+   "depths": [
+    1,
+    5,
+    9
+   ],
+   "bootstrap_draws": 4000,
+   "bootstrap_seed": 20261017,
+   "interval_percentiles": [
+    0.5,
+    99.5
+   ]
+  }
+ },
+ "readout_calibration": "bracketed",
+ "batch": "batch-05",
+ "stage": "follow",
+ "circuits": [
+  {
+   "file": "lcu-dark-y-1.cq",
+   "kind": "witness",
+   "stage": "follow",
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "lcu",
+     "label": "edge-",
+     "census": "within_kite[245]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      -1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 1,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "0",
+     "setting": "Y",
+     "coherence_selector_1": "1/2",
+     "expectation_given_selector_one": "0",
+     "p_data_zero_given_selector_one": "1/2"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "label": "twist+",
+     "census": "within_kite[660]",
+     "kite": 6,
+     "p": [
+      4,
+      10,
+      1
+     ],
+     "q": [
+      1,
+      15,
+      1
+     ],
+     "relation": "edge_same",
+     "roles": {
+      "selector": 10,
+      "data": [
+       13
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "0",
+     "setting": "Y",
+     "coherence_selector_1": "1/2",
+     "expectation_given_selector_one": "0",
+     "p_data_zero_given_selector_one": "1/2"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "label": "strut+",
+     "census": "within_kite[240]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      2,
+      9,
+      1
+     ],
+     "relation": "strut",
+     "roles": {
+      "selector": 12,
+      "data": [
+       14
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "1/2",
+     "setting": "Y",
+     "coherence_selector_0": "0",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2",
+     "coherence_selector_1": "0",
+     "expectation_given_selector_one": "0",
+     "p_data_zero_given_selector_one": "1/2"
+    }
+   ],
+   "sha256": "5b7debd1b56aff49e3a75852345cfcb0c9dcc90b13757c30c1bdcf21540df25e"
+  },
+  {
+   "file": "lcu-dark-y-2.cq",
+   "kind": "witness",
+   "stage": "follow",
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "lcu",
+     "label": "twist+",
+     "census": "within_kite[660]",
+     "kite": 6,
+     "p": [
+      4,
+      10,
+      1
+     ],
+     "q": [
+      1,
+      15,
+      1
+     ],
+     "relation": "edge_same",
+     "roles": {
+      "selector": 1,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "0",
+     "setting": "Y",
+     "coherence_selector_1": "1/2",
+     "expectation_given_selector_one": "0",
+     "p_data_zero_given_selector_one": "1/2"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "label": "edge-",
+     "census": "within_kite[245]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      -1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 10,
+      "data": [
+       13
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "0",
+     "setting": "Y",
+     "coherence_selector_1": "1/2",
+     "expectation_given_selector_one": "0",
+     "p_data_zero_given_selector_one": "1/2"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "label": "strut-",
+     "census": "within_kite[241]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      2,
+      9,
+      -1
+     ],
+     "relation": "strut",
+     "roles": {
+      "selector": 12,
+      "data": [
+       14
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "1/2",
+     "setting": "Y",
+     "coherence_selector_0": "0",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2",
+     "coherence_selector_1": "0",
+     "expectation_given_selector_one": "0",
+     "p_data_zero_given_selector_one": "1/2"
+    }
+   ],
+   "sha256": "45ef77e44a7a24e9bdd4231d84629c7d806cc555db2b9cd93e486bb923c2a4a4"
+  },
+  {
+   "file": "depth-5-y.cq",
+   "kind": "witness",
+   "stage": "follow",
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "lcu",
+     "label": "edge+",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 1,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 5,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "label": "edge+",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 10,
+      "data": [
+       13
+      ]
+     },
+     "cz_depth": 5,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "label": "edge+",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 12,
+      "data": [
+       14
+      ]
+     },
+     "cz_depth": 5,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
+    }
+   ],
+   "sha256": "53fff96c4bff86a5a2cd69dd3f1b1e8a82385b754f3caeb54efe7a34821e0873"
+  }
+ ]
+}

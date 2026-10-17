@@ -139,3 +139,13 @@ batch passed its sanity checks, and the QX twins of the three witness
 circuits read every replica exactly. C(1) lies above its preregistered
 [0.72, 0.82] because that prediction carried the selector's readout factor
 (about 0.87) while C(n) is readout-corrected; 0.82 / 0.874 = 0.94.
+
+## Run design
+
+[tuna-17-run-design.md](tuna-17-run-design.md) holds the platform
+configuration that prices a Tuna-17 batch (decompose-only compilation, the
+fitted 3.0 s per job plus 0.49 ms per shot, no published calibration) and the
+box-kite follow series built on it: seven batches whose readout pairs bracket
+fifteen packed witnesses, sized from T0's r, the readout drift across the T0
+batches and the coupler-ZZ map (`docs/evidence/box_kite_follow_design/design.json`,
+gates core-439 and core-440).

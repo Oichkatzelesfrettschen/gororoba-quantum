@@ -3,8 +3,8 @@
 docs/notes/box_kites/experiment-program.md section 4(g) fixes the stages and
 scripts/box_kite_cases.py writes their case directories; every threshold this
 script applies comes from the `preregistered.thresholds` block of the run's
-own cases.json. The standard library and the repository suffice, so CI
-replays a retained analysis without the Quantum Inspire stack.
+own cases.json. The standard library, numpy and the repository suffice, so
+CI replays a retained analysis without the Quantum Inspire stack.
 
 A run directory holds one submitted batch as qi_platform.py leaves it:
 cases.json, the circuit files, submission.json, results.json and
@@ -16,12 +16,15 @@ digest, job id or batch job than cases.json and results.json (checked
 before any shot is read), whose jobs did not all complete with the
 manifest's shots (a failed Ry job is data: it names the factor the emulator
 rejects; a cancelled or other non-completed job is refused), whose shot strings have
-another width than the declared register, whose manifest states another bit
-order than its backend's (Tuna and QX put qubit 0 at the rightmost
-character, Ry at the leftmost), or, on Tuna-17, which lacks its readout-0 and
-readout-1 pair. Those are integrity failures and raise SystemExit.
+another width than the declared register or a character other than 0 and 1,
+whose manifest states another bit order than its backend's (Tuna and QX put
+qubit 0 at the rightmost character, Ry at the leftmost), or, on Tuna-17,
+which lacks its readout-0 and readout-1 pair. A bracketed series
+(readout_calibration "bracketed") carries that pair only in the batches its
+manifest lists it in, never one circuit of it alone, and every job of it
+names its finished_at. Those are integrity failures and raise SystemExit.
 
-Per-batch sanity on the T0, T1, coherence and walk stages: readout-0 P1 at
+Per-batch sanity on the T0 stage: readout-0 P1 at
 most readout_0_p1_at_most and readout-1 P1 at least readout_1_p1_at_least
 on every qubit a replica uses; raw P(selector = 0) of every bright or
 reference replica (census P = 1) whose cz_depth is in bright_floor_cz_depths
@@ -54,24 +57,57 @@ Estimators, exactly as preregistered:
   r = exp(slope) of the least-squares line of ln C(n) on n, weights
   C(n)^2 / Var C(n), and its percentile interval from a parametric bootstrap
   of every replica's selector count and each batch's readout counts.
-- t1: D = Pc(y_sign -1) - Pc(y_sign +1) per pair and its class; a strut
-  whose |D| exceeds null_offset + sigma SE records a stop (pair-dependent
-  bias). Twist equality of each batch's edge and twist replicas uses the
-  pair-location allowance |Pc_bright(q1, d) - Pc_bright(q10, d)| plus
-  twist_allowance_se_multiple standard errors of that difference, at the
-  shallowest CZ depth d where T0 runs analyzed in the same call place a
-  bright replica on both selectors (d = 5 in the generated Latin square). The
-  pair gap grows with depth, so the depth-d allowance bounds the depth-1 gap
-  of T1 from above; without such T0 runs the test stays undetermined.
-- coherence: P(d = 0 | a = 0) from the joint (a, d) counts corrected by the
-  inverse of the tensor product of the two qubits' assignment matrices,
-  <S_d | a = 0> = 2 P - 1, its standard error from a parametric bootstrap
-  of the joint counts and the readout counts.
-- walk: <Z_c> = 2 Pc(c = 0) - 1 with standard error 2 SE(Pc); the sign test
-  against omega and the omit-last null test.
-- T0 gate: T1, coherence and walk analyzed in the same call as T0 carry
-  T0's end-program or resize stop first in their stops, with their estimates
-  still computed; analyzed without T0 they record the gate as unverified.
+- follow: readout-0 and readout-1 bracket the series in batches 0, 3 and 6.
+  Each bracket gives every qubit's e01 and e10; at a witness job they are
+  interpolated linearly in job finish time between the two nearest
+  brackets, e01 on the readout-0 and e10 on the readout-1 finish times, a
+  job outside the bracket span taking the nearest bracket, with variance
+  (1 - w)^2 Var_a + w^2 Var_b of the two brackets' binomial terms. Every
+  bracket holds the readout limits on every qubit the layout uses, no used
+  qubit's e01 or e10 moves more than bracket_drift_max between consecutive
+  brackets, and at most bracket_span witness-only batches run without a
+  bracket; each bracket difference is reported, and so is each replica's
+  bracket systematic |Pc(bracket b) - Pc(bracket a)|. These bracket rules
+  also judge an incomplete series. Per-batch sanity: each depth-1
+  deterministic LCU replica within deterministic_floor_margin of its ideal
+  raw P(selector = 0), each walk read in X (last block kept) with at least
+  1 - deterministic_floor_margin of its shots on the ideal control outcome,
+  each idle qubit of each witness at P1 at most
+  idle_p1_above_readout_0_at_most above its interpolated readout-0 P1.
+  Estimators, each with the interpolated readout: Pc of each selector;
+  E_b = 2 P(d = 0 | a = b) - 1 of each populated branch from the joint
+  (a, d) frequencies corrected by inv(A_a) x inv(A_d); D = Pc(y_sign -1) -
+  Pc(y_sign +1) per row (edge, twist, strut) and pair at depth 1, the X and
+  Y replicas averaged, against same_sign_above, opposite_sign_below and
+  strut_abs_below; the crossover Delta per block and setting, refuted at
+  |Delta| > sigma SE; the strut D per setting against null_offset + sigma
+  SE; the X sign of each depth-1 edge and twist E_b at |z| > sigma, every
+  strut |E_b| against null_offset + sigma SE, and the depth-1 |E_X| against
+  t0_c1 within cross_prediction_band (reported); per pair, the bright edge
+  at depths 1, 5 and 9 with its X and Y replicas paired by (label, pair,
+  depth): conditional magnitude m(n), phase atan2(E_Y, -E_X), population
+  Pc(n) (X and Y averaged), and unweighted least-squares slopes on n giving
+  r_coh = exp(slope ln J) of the joint coherence J(n) = Pc(n) m(n), r_pop =
+  exp(slope ln(2 Pc(n) - 1)), their ratio (1 under a global depolarizing
+  channel, where both equal lambda^n) and the phase per CZ, each reported
+  with its 99% interval; per walk, the sign of <X_c>
+  against omega, each omit control against null_offset + sigma SE, <Y_c>,
+  and the magnitude sqrt(<X_c>^2 + <Y_c>^2) against t0_r^n_CZ within
+  cross_prediction_band and the phase atan2(<Y_c>, -<X_c>), both reported;
+  the depth-5 and depth-9 bright edge populations against T0's bright
+  replica on the same selector and depth, reported as drift. Standard
+  errors and intervals come from one numpy parametric bootstrap
+  (bootstrap_draws, bootstrap_seed): a draw redraws every bracket's readout
+  counts once, so replicas reading one qubit share it, then each replica's
+  joint or control counts; the point estimate runs through the same array
+  code as a one-row sample. Stops halt or invalidate the series: sanity,
+  bracket limits, drift, span and T0's carried gate. A refuted
+  classification, twist equality, X sign, strut D, strut E_b, walk sign or
+  omit control enters the separate refutations list and gives the stage the
+  verdict "refuted" when no stop stands; it never stops the series.
+- T0 gate: the follow series analyzed in the same call as T0 carries T0's
+  end-program or resize stop first in its stops, with its estimates still
+  computed; analyzed without T0 it records the gate as unverified.
   T0 reports r against its decision band (the falsifier's [0.87, 0.97]) and,
   separately, against its prediction (the predictions text's range, read
   from the manifest).
@@ -85,13 +121,13 @@ Estimators, exactly as preregistered:
   estimate, stops the series. Every Ry fraction carries its count, shots,
   binomial standard error and Wilson 95% interval.
 - tuna_twins: each relabeled QX twin on the ideal emulator; a deterministic
-  prediction (selector, control or the selector-0 conditional of a data
-  qubit) admits no shot off it, a P = 1/2 prediction stays inside the z
+  prediction (selector, control or a selector-0 or selector-1 conditional of
+  a data qubit) admits no shot off it, a P = 1/2 prediction stays inside the z
   limit its manifest's falsifier states, and the double-X twin reads 0 on
   every qubit of every shot. Twin batches are judged one by one, so a
   record may hold only the twins of the stages that ran.
 
-Bootstrap draws come from one seeded generator in a fixed order (batch,
+T0's bootstrap draws come from one seeded generator in a fixed order (batch,
 readout qubit, replica), all drawn before the per-draw estimates run through
 parallel.ordered_map, so a pooled run writes the bytes of a serial one.
 Floats are written rounded to 12 decimals with sorted keys.
@@ -118,8 +154,11 @@ import shutil
 import statistics
 import sys
 import tempfile
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, NoReturn
+
+import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
@@ -132,15 +171,13 @@ SCHEMA = "box-kite-analysis-v1"
 FAMILIES = {
     "tuna_pre": "box_kite_tuna_pre",
     "tuna_t0": "box_kite_tuna_t0",
-    "tuna_t1": "box_kite_tuna_t1",
-    "tuna_coherence": "box_kite_tuna_coherence",
-    "tuna_walk": "box_kite_tuna_walk",
+    "tuna_follow": "box_kite_tuna_follow",
     "ry_ladder": "box_kite_ry_ladder",
     "ry_smoke": "box_kite_ry_smoke",
     "tuna_twins": "box_kite_tuna_twins_qx",
 }
 # Stages that run only after T0; T0's stops carry into them when analyzed together.
-T0_DEPENDENT = ("tuna_t1", "tuna_coherence", "tuna_walk")
+T0_DEPENDENT = ("tuna_follow",)
 # Families whose batches each answer their own question; the others need every batch.
 INDEPENDENT_BATCHES = ("tuna_twins",)
 TWIN_Z_LIMIT = re.compile(r"\|z\| < ([0-9.]+)")
@@ -177,14 +214,19 @@ def dump(analysis: dict[str, Any]) -> str:
 # ---------------------------------------------------------------- loading and integrity
 
 
-def bit(shot: str, qubit: int, order: str) -> int:
-    return int(shot[qubit] if order == "leftmost" else shot[len(shot) - 1 - qubit])
+def bit_matrix(shots: list[str], width: int, order: str) -> np.ndarray | None:
+    """Shots as an (n, width) array of 0 and 1 whose column q is qubit q; None when a character is neither."""
+    try:
+        data = np.frombuffer("".join(shots).encode("ascii"), dtype=np.uint8).reshape(len(shots), width) - 48
+    except (UnicodeEncodeError, ValueError):
+        return None
+    if bool((data > 1).any()):
+        return None
+    return data if order == "leftmost" else data[:, ::-1]
 
 
-def zeros(shots: list[str], qubit: int, order: str) -> int:
-    if order == "leftmost":
-        return sum(s[qubit] == "0" for s in shots)
-    return sum(s[len(s) - 1 - qubit] == "0" for s in shots)
+def zeros(batch: Batch, file: str, qubit: int) -> int:
+    return int(batch["bits"][file].shape[0] - batch["bits"][file][:, qubit].sum(dtype=np.int64))
 
 
 def touched(text: str) -> set[int]:
@@ -261,8 +303,11 @@ def load_batch(run: Path, base: Path, cases_root: Path = CASES) -> Batch:
     jobs = check_receipt(run, manifest, cases_bytes, collected)
     texts: dict[str, str] = {}
     shots: dict[str, list[str]] = {}
+    bits: dict[str, np.ndarray] = {}
+    finished: dict[str, str] = {}
     status: dict[str, dict[str, Any]] = {}
     ry = manifest["dialect"] == "ry"
+    bracketed = manifest.get("readout_calibration") == "bracketed"
     for row in manifest["circuits"]:
         file = row["file"]
         data = (run / file).read_bytes()
@@ -291,8 +336,23 @@ def load_batch(run: Path, base: Path, cases_root: Path = CASES) -> Batch:
         width = row.get("nqubits", manifest["nqubits"])
         if any(len(s) != width for s in raw):
             fail(f"{run}/{file}: shot width differs from the declared register of {width}")
+        matrix = bit_matrix(raw, width, order)
+        if matrix is None:
+            fail(f"{run}/{file}: a shot string holds a character other than 0 and 1")
+        if bracketed:
+            stamp = job["job"].get("finished_at")
+            try:
+                datetime.fromisoformat(stamp)
+            except (TypeError, ValueError):
+                fail(f"{run}/{file}: the bracketed series interpolates in job finish time; finished_at is {stamp!r}")
+            finished[file] = stamp
         shots[file] = raw
-    if manifest["dialect"] == "tuna" and not {"readout-0.cq", "readout-1.cq"} <= shots.keys():
+        bits[file] = matrix
+    readouts = {"readout-0.cq", "readout-1.cq"}
+    listed = readouts & {row["file"] for row in manifest["circuits"]}
+    if bracketed and listed not in (set(), readouts):
+        fail(f"{run}: a readout bracket lists {sorted(listed)} without its pair")
+    if manifest["dialect"] == "tuna" and not (listed if bracketed else readouts) <= shots.keys():
         fail(f"{run}: the Tuna-17 batch lacks its readout-0 and readout-1 shots")
     return {
         "run": relative(run, base),
@@ -302,15 +362,17 @@ def load_batch(run: Path, base: Path, cases_root: Path = CASES) -> Batch:
         "order": order,
         "texts": texts,
         "shots": shots,
+        "bits": bits,
+        "finished": finished,
         "status": status,
     }
 
 
 def assignment(batch: Batch, qubit: int) -> dict[str, Any]:
-    zero, one = batch["shots"]["readout-0.cq"], batch["shots"]["readout-1.cq"]
-    k01 = len(zero) - zeros(zero, qubit, batch["order"])
-    k10 = zeros(one, qubit, batch["order"])
-    return {"e01": k01 / len(zero), "e10": k10 / len(one), "k01": k01, "k10": k10, "n0": len(zero), "n1": len(one)}
+    n0, n1 = len(batch["shots"]["readout-0.cq"]), len(batch["shots"]["readout-1.cq"])
+    k01 = n0 - zeros(batch, "readout-0.cq", qubit)
+    k10 = zeros(batch, "readout-1.cq", qubit)
+    return {"e01": k01 / n0, "e10": k10 / n1, "k01": k01, "k10": k10, "n0": n0, "n1": n1}
 
 
 def corrected(k: int, n: int, e01: float, e10: float, n0: int, n1: int) -> tuple[float, float]:
@@ -326,7 +388,7 @@ def corrected(k: int, n: int, e01: float, e10: float, n0: int, n1: int) -> tuple
 
 def selector_estimate(batch: Batch, file: str, qubit: int) -> dict[str, Any]:
     shots = batch["shots"][file]
-    k = zeros(shots, qubit, batch["order"])
+    k = zeros(batch, file, qubit)
     a = assignment(batch, qubit)
     pc, var = corrected(k, len(shots), a["e01"], a["e10"], a["n0"], a["n1"])
     return {
@@ -346,17 +408,16 @@ def witness_row(batch: Batch) -> dict[str, Any]:
 
 
 def sanity(batch: Batch, thresholds: dict[str, Any]) -> list[str]:
-    """Per-batch sanity problems of a T0, T1, coherence or walk batch (module docstring)."""
+    """Per-batch sanity problems of a T0 batch (module docstring)."""
     problems = []
     row = witness_row(batch)
-    order = batch["order"]
     used = sorted(
         {q for r in row["replicas"] for v in r["roles"].values() for q in (v if isinstance(v, list) else [v])}
     )
     zero, one = batch["shots"]["readout-0.cq"], batch["shots"]["readout-1.cq"]
     for q in used:
-        p0 = 1 - zeros(zero, q, order) / len(zero)
-        p1 = 1 - zeros(one, q, order) / len(one)
+        p0 = 1 - zeros(batch, "readout-0.cq", q) / len(zero)
+        p1 = 1 - zeros(batch, "readout-1.cq", q) / len(one)
         if p0 > thresholds["readout_0_p1_at_most"]:
             problems.append(f"readout-0 q{q} P1 {p0:.3f} above {thresholds['readout_0_p1_at_most']}")
         if p1 < thresholds["readout_1_p1_at_least"]:
@@ -365,7 +426,7 @@ def sanity(batch: Batch, thresholds: dict[str, Any]) -> list[str]:
     for replica in row["replicas"]:
         if replica.get("p_selector_zero") == "1" and replica.get("cz_depth") in thresholds["bright_floor_cz_depths"]:
             q = replica["roles"]["selector"]
-            p = zeros(shots, q, order) / len(shots)
+            p = zeros(batch, row["file"], q) / len(shots)
             if p < thresholds["bright_p_selector_zero_at_least"]:
                 problems.append(
                     f"slot {replica['slot']} bright selector q{q} raw P(0) {p:.3f} below "
@@ -373,8 +434,8 @@ def sanity(batch: Batch, thresholds: dict[str, Any]) -> list[str]:
                 )
     idle = sorted(set(range(batch["manifest"]["nqubits"])) - touched(batch["texts"][row["file"]]))
     for q in idle:
-        base = 1 - zeros(zero, q, order) / len(zero)
-        p = 1 - zeros(shots, q, order) / len(shots)
+        base = 1 - zeros(batch, "readout-0.cq", q) / len(zero)
+        p = 1 - zeros(batch, row["file"], q) / len(shots)
         if p > base + thresholds["idle_p1_above_readout_0_at_most"]:
             problems.append(
                 f"idle q{q} P1 {p:.3f} exceeds its readout-0 P1 {base:.3f} by more than "
@@ -429,52 +490,6 @@ class ContrastFit:
         return math.exp(wls_slope([float(n) for n in self.depths], [math.log(c) for c in contrasts], self.weights))
 
 
-def matrix_inverse_2(e01: float, e10: float) -> list[list[float]] | None:
-    """Inverse of the assignment matrix [[1 - e01, e10], [e01, 1 - e10]] (rows read, columns prepared)."""
-    det = (1 - e01) * (1 - e10) - e10 * e01
-    if det <= 0:
-        return None
-    return [[(1 - e10) / det, -e10 / det], [-e01 / det, (1 - e01) / det]]
-
-
-def conditional_zero(counts: list[int], a: tuple[float, float], d: tuple[float, float]) -> float | None:
-    """P(d = 0 | a = 0) of the joint counts indexed 2 a + d, corrected by inv(A_a) x inv(A_d)."""
-    inv_a, inv_d = matrix_inverse_2(*a), matrix_inverse_2(*d)
-    if inv_a is None or inv_d is None:
-        return None
-    total = sum(counts)
-    observed = [c / total for c in counts]
-    true = [
-        sum(inv_a[ta][oa] * inv_d[td][od] * observed[2 * oa + od] for oa in (0, 1) for od in (0, 1))
-        for ta in (0, 1)
-        for td in (0, 1)
-    ]
-    branch = true[0] + true[1]
-    return true[0] / branch if branch > 0 else None
-
-
-class CoherenceDraw:
-    """Per-draw corrected P(d = 0 | a = 0): draws hold e01, e10 of a, e01, e10 of d, then the four joint counts."""
-
-    def __init__(self, n0: int, n1: int):
-        self.n0, self.n1 = n0, n1
-
-    def __call__(self, draw: tuple[int, ...]) -> float | None:
-        a = (draw[0] / self.n0, draw[1] / self.n1)
-        d = (draw[2] / self.n0, draw[3] / self.n1)
-        return conditional_zero(list(draw[4:8]), a, d)
-
-
-def multinomial(rng: random.Random, n: int, probs: list[float]) -> list[int]:
-    out, left, mass = [], n, 1.0
-    for p in probs[:-1]:
-        k = rng.binomialvariate(left, min(1.0, max(0.0, p / mass))) if left > 0 and mass > 0 else 0
-        out.append(k)
-        left -= k
-        mass -= p
-    return [*out, left]
-
-
 # ---------------------------------------------------------------- stages
 
 
@@ -517,7 +532,6 @@ def sanity_block(batches: dict[str, Batch], thresholds: dict[str, Any]) -> tuple
 
 def analyze_pre(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
     batch = batches["batch-00"]
-    order = batch["order"]
     n = batch["manifest"]["nqubits"]
     xx_file = witness_row(batch)["file"]
 
@@ -525,7 +539,7 @@ def analyze_pre(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
         shots = batch["shots"][file]
         out = {}
         for q in range(n):
-            p = 1 - zeros(shots, q, order) / len(shots)
+            p = 1 - zeros(batch, file, q) / len(shots)
             out[str(q)] = {"p1": p, "se": math.sqrt(p * (1 - p) / len(shots))}
         return out
 
@@ -648,7 +662,7 @@ def analyze_t0(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
     elif interval[1] < low or interval[0] > high:
         r_verdict = f"outside the decision band {band}"
         resize = True
-        stops.append(f"resize T1, coherence and walk: r interval {interval} disjoint from {band}")
+        stops.append(f"resize the follow series: r interval {interval} disjoint from {band}")
     else:
         r_verdict = f"inside the decision band {band}"
     prediction = r_prediction(predictions)
@@ -669,168 +683,564 @@ def analyze_t0(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
 
 
 CLASSES = {"edge_same": "same-sign", "edge_opposite": "opposite-sign", "strut": "strut"}
+READOUT_FILES = ("readout-0.cq", "readout-1.cq")
+Values = dict[str, Any]
 
 
-def analyze_t1(batches: dict[str, Batch], t: dict[str, Any], t0: dict[str, Any] | None) -> dict[str, Any]:
-    by_pair: dict[int, dict[int, dict[str, Any]]] = {}
-    rows = []
+def job_time(batch: Batch, file: str) -> float:
+    return datetime.fromisoformat(batch["finished"][file]).timestamp()
+
+
+def witness_rows(batch: Batch) -> list[dict[str, Any]]:
+    return [row for row in batch["manifest"]["circuits"] if row["kind"] == "witness"]
+
+
+def follow_used(batches: dict[str, Batch]) -> list[int]:
+    """Every qubit the follow layout gives a role: both qubits of each LCU pair, each walk's control and data."""
+    layout = next(iter(batches.values()))["manifest"]["layout"]
+    used = {q for pair in layout["lcu_pairs"] for q in pair}
+    used |= {q for walk in layout["walks"].values() for q in [walk["control"], *walk["data"]]}
+    return sorted(used)
+
+
+def follow_brackets(batches: dict[str, Batch]) -> list[dict[str, Any]]:
+    """Readout brackets in batch order: per qubit k01 of n0 and k10 of n1, and each readout job's finish time."""
+    out: list[dict[str, Any]] = []
     for name, batch in batches.items():
-        row = witness_row(batch)
-        for r in row["replicas"]:
-            est = selector_estimate(batch, row["file"], r["roles"]["selector"])
-            record = {"batch": name, "slot": r["slot"], "relation": r["relation"], "y_sign": r["q"][2],
-                      "census": r["census"], "data": r["roles"]["data"][0], **est}  # fmt: skip
-            rows.append(record)
-            by_pair.setdefault(r["roles"]["selector"], {})[r["q"][2]] = record
-    classification = {}
-    stops = []
-    for selector, signs in sorted(by_pair.items()):
-        minus, plus = signs[-1], signs[1]
-        d = minus["p_zero_corrected"] - plus["p_zero_corrected"]
-        se = math.sqrt(minus["se"] ** 2 + plus["se"] ** 2)
-        if d > t["same_sign_above"]:
-            found = "same-sign"
-        elif d < t["opposite_sign_below"]:
-            found = "opposite-sign"
-        elif abs(d) < t["strut_abs_below"]:
-            found = "strut"
-        else:
-            found = "unresolved"
-        expected = CLASSES[plus["relation"]]
-        entry = {"pair": [selector, plus["data"]], "relation": plus["relation"], "D": d, "se": se,
-                 "class": found, "expected": expected,
-                 "verdict": "classified" if found == expected else "refuted"}  # fmt: skip
-        if expected == "strut":
-            entry["bias_limit"] = t["null_offset"] + t["sigma"] * se
-            entry["bias_flag"] = abs(d) > entry["bias_limit"]
-            if entry["bias_flag"]:
-                entry["verdict"] = "refuted: pair-dependent bias"
-                stops.append(
-                    f"pair {entry['pair']}: strut |D| {abs(d):.4f} above the bias limit {entry['bias_limit']:.4f}"
+        if READOUT_FILES[0] not in batch["bits"]:
+            continue
+        zero, one = batch["bits"][READOUT_FILES[0]], batch["bits"][READOUT_FILES[1]]
+        out.append({
+            "batch": name, "time_e01": job_time(batch, READOUT_FILES[0]), "time_e10": job_time(batch, READOUT_FILES[1]),
+            "k01": [int(v) for v in zero.sum(axis=0, dtype=np.int64)],
+            "k10": [int(v) for v in (one == 0).sum(axis=0, dtype=np.int64)],
+            "n0": int(zero.shape[0]), "n1": int(one.shape[0]),
+        })  # fmt: skip
+    for kind in ("time_e01", "time_e10"):
+        times = [b[kind] for b in out]
+        if any(later <= earlier for earlier, later in zip(times, times[1:], strict=False)):
+            fail(f"the follow readout brackets {[b['batch'] for b in out]} did not finish in batch order")
+    return out
+
+
+def bracket_weight(t: float, times: list[float]) -> tuple[int, int, float]:
+    """The two nearest brackets (a, b) and the weight w of b in (1 - w) e_a + w e_b; w clamps to [0, 1]."""
+    if len(times) == 1:
+        return 0, 0, 0.0
+    k = 0
+    while k < len(times) - 2 and t > times[k + 1]:
+        k += 1
+    return k, k + 1, min(1.0, max(0.0, (t - times[k]) / (times[k + 1] - times[k])))
+
+
+def interpolated(brackets: list[dict[str, Any]], weights: dict[str, tuple[int, int, float]], q: int) -> dict[str, Any]:
+    """e01 and e10 of qubit q at a job, with the variance (1 - w)^2 e_a(1 - e_a)/n_a + w^2 e_b(1 - e_b)/n_b."""
+    out: dict[str, Any] = {}
+    for kind, count, n in (("e01", "k01", "n0"), ("e10", "k10", "n1")):
+        a, b, w = weights[kind]
+        ea, eb = brackets[a][count][q] / brackets[a][n], brackets[b][count][q] / brackets[b][n]
+        var = (1 - w) ** 2 * ea * (1 - ea) / brackets[a][n] + w**2 * eb * (1 - eb) / brackets[b][n]
+        out |= {kind: (1 - w) * ea + w * eb, f"{kind}_se": math.sqrt(var), f"{kind}_brackets": [a, b, w]}
+    return out
+
+
+def bracket_block(batches: dict[str, Batch], t: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+    """Each bracket's rates on the used qubits, their differences, readout limits, drift and bracket span."""
+    brackets = follow_brackets(batches)
+    used = follow_used(batches)
+    problems = []
+    rates: dict[str, list[dict[str, Any]]] = {str(q): [] for q in used}
+    for b in brackets:
+        for q in used:
+            e01, e10 = b["k01"][q] / b["n0"], b["k10"][q] / b["n1"]
+            rates[str(q)].append({"batch": b["batch"], "e01": e01, "e10": e10,
+                                  "e01_se": math.sqrt(e01 * (1 - e01) / b["n0"]),
+                                  "e10_se": math.sqrt(e10 * (1 - e10) / b["n1"])})  # fmt: skip
+            if e01 > t["readout_0_p1_at_most"]:
+                problems.append(f"{b['batch']} readout-0 q{q} P1 {e01:.3f} above {t['readout_0_p1_at_most']}")
+            if 1 - e10 < t["readout_1_p1_at_least"]:
+                problems.append(f"{b['batch']} readout-1 q{q} P1 {1 - e10:.3f} below {t['readout_1_p1_at_least']}")
+    differences = []
+    for a, b in zip(brackets, brackets[1:], strict=False):
+        for q in used:
+            d01 = b["k01"][q] / b["n0"] - a["k01"][q] / a["n0"]
+            d10 = b["k10"][q] / b["n1"] - a["k10"][q] / a["n1"]
+            differences.append({"from": a["batch"], "to": b["batch"], "qubit": q, "e01": d01, "e10": d10})
+            if max(abs(d01), abs(d10)) > t["bracket_drift_max"]:
+                problems.append(
+                    f"q{q} moved e01 {d01:+.4f}, e10 {d10:+.4f} from {a['batch']} to {b['batch']}, beyond "
+                    f"{t['bracket_drift_max']}"
                 )
-        if found != expected:
-            stops.append(f"pair {entry['pair']}: D {d:.4f} reads {found}, census {expected}")
-        classification[str(selector)] = entry
-    allowance = None
-    allowance_record: dict[str, Any] | None = None
-    reason = "T0 runs were not analyzed with T1"
-    edge_pair = next(s for s, v in by_pair.items() if v[1]["relation"] == "edge_opposite")
-    twist_pair = next(s for s, v in by_pair.items() if v[1]["relation"] == "edge_same")
-    if t0 is not None:
-        bright = {(r["qubit"], r["depth"]): r for r in t0["replicas"] if r["role"] == "bright"}
-        depths = sorted(n for q, n in bright if q == edge_pair and (twist_pair, n) in bright)
-        if not depths:
-            reason = f"T0 holds no CZ depth with a bright replica on both selectors q{[edge_pair, twist_pair]}"
+    names = list(batches)
+    marks = [n for n, name in enumerate(names) if any(b["batch"] == name for b in brackets)]
+    gaps = [later - earlier - 1 for earlier, later in zip([-1, *marks], [*marks, len(names)], strict=True)]
+    if max(gaps) > t["bracket_span"]:
+        problems.append(f"{max(gaps)} witness-only batches without a readout bracket, above {t['bracket_span']}")
+    block = {"batches": [b["batch"] for b in brackets], "qubits": used, "rates": rates,
+             "differences": differences, "problems": problems}  # fmt: skip
+    return block, [f"bracket stop: {p}" for p in problems]
+
+
+def follow_items(batches: dict[str, Batch], brackets: list[dict[str, Any]]) -> tuple[list[Any], list[Any]]:
+    """LCU replicas with their joint (a, d) counts and walks with their control zeros, in batch, file, slot order."""
+    times = {kind: [b[f"time_{kind}"] for b in brackets] for kind in ("e01", "e10")}
+    lcu, walks = [], []
+    for name, batch in batches.items():
+        for row in witness_rows(batch):
+            stamp = job_time(batch, row["file"])
+            bits = batch["bits"][row["file"]]
+            weights = {kind: bracket_weight(stamp, times[kind]) for kind in times}
+            for r in row["replicas"]:
+                place = {"batch": name, "file": row["file"], "weights": weights, "replica": r, "shots": bits.shape[0]}
+                if r["kind"] == "walk":
+                    walks.append({**place, "zeros": int((bits[:, r["roles"]["control"]] == 0).sum())})
+                else:
+                    a, d = r["roles"]["selector"], r["roles"]["data"][0]
+                    joint = np.bincount(2 * bits[:, a].astype(np.int64) + bits[:, d], minlength=4)
+                    lcu.append({**place, "joint": [int(v) for v in joint]})
+    return lcu, walks
+
+
+def follow_sample(brackets: list[Any], lcu: list[Any], walks: list[Any], rng: Any = None, draws: int = 1) -> Values:
+    """Readout rates per bracket and replica frequencies: the observed values as one row, or parametric draws.
+
+    The draw order is fixed: each bracket's e01 then e10 counts over all qubits, then each LCU replica's
+    multinomial joint (a, d) counts, then each walk's binomial control zeros.
+    """
+
+    def rates(k: list[int], n: int) -> np.ndarray:
+        p = np.asarray(k, dtype=float) / n
+        return p[np.newaxis, :] if rng is None else rng.binomial(n, p, size=(draws, p.size)) / n
+
+    e01, e10 = [], []
+    for b in brackets:
+        e01.append(rates(b["k01"], b["n0"]))
+        e10.append(rates(b["k10"], b["n1"]))
+    joint = []
+    for item in lcu:
+        p = np.asarray(item["joint"], dtype=float) / item["shots"]
+        joint.append(p[np.newaxis, :] if rng is None else rng.multinomial(item["shots"], p, size=draws) / item["shots"])
+    control = []
+    for item in walks:
+        p = item["zeros"] / item["shots"]
+        control.append(np.array([p]) if rng is None else rng.binomial(item["shots"], p, size=draws) / item["shots"])
+    return {"e01": e01, "e10": e10, "joint": joint, "control": control}
+
+
+def rates_at(sample: Values, item: dict[str, Any], q: int, force: float | None = None) -> tuple[Any, Any]:
+    out = []
+    for kind in ("e01", "e10"):
+        a, b, w = item["weights"][kind]
+        w = w if force is None else force
+        out.append((1 - w) * sample[kind][a][:, q] + w * sample[kind][b][:, q])
+    return out[0], out[1]
+
+
+def corrected_zero(p: Any, e01: Any, e10: Any) -> Any:
+    d = 1 - e01 - e10
+    return np.where(d > 0, (p - e10) / np.where(d > 0, d, 1.0), np.nan)
+
+
+def conditional_expectation(sample: Values, item: dict[str, Any], index: int, branch: int, force: Any = None) -> Any:
+    """E_b = 2 P(d = 0 | a = b) - 1 of the joint frequencies corrected by inv(A_a) x inv(A_d), A = [[1 - e01, e10],
+    [e01, 1 - e10]] (rows read, columns prepared)."""
+    inverses = []
+    for q in (item["replica"]["roles"]["selector"], item["replica"]["roles"]["data"][0]):
+        e01, e10 = rates_at(sample, item, q, force)
+        det = 1 - e01 - e10
+        det = np.where(det > 0, det, np.nan)
+        inverses.append([[(1 - e10) / det, -e10 / det], [-e01 / det, (1 - e01) / det]])
+    inv_a, inv_d = inverses
+    q = sample["joint"][index]
+    true = [
+        sum(inv_a[branch][oa] * inv_d[td][od] * q[:, 2 * oa + od] for oa in (0, 1) for od in (0, 1)) for td in (0, 1)
+    ]
+    total = true[0] + true[1]
+    return np.where(total > 0, 2 * true[0] / np.where(total > 0, total, 1.0) - 1, np.nan)
+
+
+def branches(replica: dict[str, Any]) -> list[int]:
+    return [b for b, name in enumerate(("zero", "one")) if f"expectation_given_selector_{name}" in replica]
+
+
+def follow_values(sample: Values, lcu: list[Any], walks: list[Any]) -> Values:
+    """Per row of the sample: every LCU replica's Pc and populated-branch E_b, and every walk's 2 Pc(c = 0) - 1."""
+    pc, expectation, walk = [], {}, []
+    with np.errstate(all="ignore"):
+        for index, item in enumerate(lcu):
+            e01, e10 = rates_at(sample, item, item["replica"]["roles"]["selector"])
+            pc.append(corrected_zero(sample["joint"][index][:, 0] + sample["joint"][index][:, 1], e01, e10))
+            for b in branches(item["replica"]):
+                expectation[(index, b)] = conditional_expectation(sample, item, index, b)
+        for index, item in enumerate(walks):
+            e01, e10 = rates_at(sample, item, item["replica"]["roles"]["control"])
+            walk.append(2 * corrected_zero(sample["control"][index], e01, e10) - 1)
+    return {"pc": pc, "e": expectation, "walk": walk}
+
+
+def summary(point: Any, draws: Any, percentiles: list[float] | None = None) -> dict[str, Any]:
+    """Point value, bootstrap standard deviation, undefined-draw count and, when asked, the percentile interval."""
+    value = float(np.asarray(point).reshape(-1)[0])
+    draws = np.asarray(draws, dtype=float)
+    finite = draws[np.isfinite(draws)]
+    undefined = int(draws.size - finite.size)
+    out: dict[str, Any] = {
+        "value": value if math.isfinite(value) else None,
+        "se": float(np.std(finite, ddof=1)) if finite.size > 1 else None,
+        "undefined_draws": undefined,
+    }
+    if percentiles is not None:
+        low, high = percentiles
+        enough = finite.size > 0 and undefined <= draws.size * low / 100
+        out["interval"] = [float(np.percentile(finite, low)), float(np.percentile(finite, high))] if enough else None
+    return out
+
+
+def ols_slope(depths: list[int], values: list[Any]) -> Any:
+    """Least-squares slope of values (one array per depth, each over the sample rows) on depth, per row."""
+    x = np.asarray(depths, dtype=float)
+    x = x - x.mean()
+    stacked = np.stack(values, axis=-1)
+    return (stacked - stacked.mean(axis=-1, keepdims=True)) @ x / (x @ x)
+
+
+def signed_verdict(value: float | None, se: float | None, sign: float, sigma: float) -> str:
+    if value is None or not se:
+        return "undetermined"
+    z = value / se * sign
+    return "refuted" if z < -sigma else "supported" if z > sigma else "unresolved"
+
+
+def analyze_follow(batches: dict[str, Batch], t: dict[str, Any], t0: dict[str, Any] | None) -> dict[str, Any]:
+    """The follow series (module docstring): brackets, sanity, classification, twist, strut, coherence, ladder."""
+    block, stops = bracket_block(batches, t)
+    # Stops halt or invalidate the series; refutations are verdicts on the census predictions.
+    refutations: list[str] = []
+    brackets = follow_brackets(batches)
+    lcu, walks = follow_items(batches, brackets)
+    rng = np.random.default_rng(t["bootstrap_seed"])
+    observed = follow_sample(brackets, lcu, walks)
+    point = follow_values(observed, lcu, walks)
+    boot = follow_values(follow_sample(brackets, lcu, walks, rng, t["bootstrap_draws"]), lcu, walks)
+    pct = t["interval_percentiles"]
+    sigma, null = t["sigma"], t["null_offset"]
+
+    def both(fn: Any, percentiles: list[float] | None = None) -> dict[str, Any]:
+        with np.errstate(all="ignore"):
+            return summary(fn(point), fn(boot), percentiles)
+
+    # Per-batch sanity on raw frequencies and the interpolated readout-0 P1.
+    margin = t["deterministic_floor_margin"]
+    times = [b["time_e01"] for b in brackets]
+    batch_block: dict[str, Any] = {}
+    for name, batch in batches.items():
+        problems = []
+        for row in witness_rows(batch):
+            bits = batch["bits"][row["file"]]
+            n = bits.shape[0]
+            for r in row["replicas"]:
+                if r["kind"] == "walk":
+                    deterministic = r["readout"] == "X" and not r["omit_last_block"] and r["p_control_zero"] in "01"
+                    if deterministic:
+                        ideal = int(r["p_control_zero"] == "0")
+                        p = int((bits[:, r["roles"]["control"]] == ideal).sum()) / n
+                        if p < 1 - margin:
+                            problems.append(f"{row['file']} walk {r['triple']} raw P(c = {ideal}) {p:.3f} below "
+                                            f"{1 - margin:g}")  # fmt: skip
+                elif r["cz_depth"] in t["bright_floor_cz_depths"] and r["p_selector_zero"] in ("0", "1"):
+                    p = int((bits[:, r["roles"]["selector"]] == 0).sum()) / n
+                    if abs(p - float(r["p_selector_zero"])) > margin:
+                        problems.append(f"{row['file']} slot {r['slot']} {r['label']} raw P(a = 0) {p:.3f} beyond "
+                                        f"{margin:g} of {r['p_selector_zero']}")  # fmt: skip
+            a, b, w = bracket_weight(job_time(batch, row["file"]), times)
+            for q in sorted(set(range(batch["manifest"]["nqubits"])) - touched(batch["texts"][row["file"]])):
+                base = (1 - w) * brackets[a]["k01"][q] / brackets[a]["n0"] + w * brackets[b]["k01"][q] / brackets[b][
+                    "n0"
+                ]
+                p = int(bits[:, q].sum()) / n
+                if p > base + t["idle_p1_above_readout_0_at_most"]:
+                    problems.append(
+                        f"{row['file']} idle q{q} P1 {p:.3f} exceeds its interpolated readout-0 P1 {base:.3f} by more "
+                        f"than {t['idle_p1_above_readout_0_at_most']} (bit-order conformance)"
+                    )
+        batch_block[name] = {"run": batch["run"], "sanity": "pass" if not problems else "fail", "problems": problems}
+        if problems:
+            stops.append(f"sanity stop at {name}: {problems[0]}")
+
+    replicas = []
+    for index, item in enumerate(lcu):
+        r = item["replica"]
+        a, d = r["roles"]["selector"], r["roles"]["data"][0]
+        n = item["shots"]
+        raw = (item["joint"][0] + item["joint"][1]) / n
+        ends = [float(corrected_zero(raw, *rates_at(observed, item, a, force))[0]) for force in (0.0, 1.0)]
+        replicas.append({
+            "batch": item["batch"], "file": item["file"], "slot": r["slot"], "label": r["label"],
+            "relation": r["relation"], "setting": r["setting"], "cz_depth": r["cz_depth"], "pair": [a, d],
+            "joint_counts": item["joint"], "p_zero_raw": raw,
+            "readout": {"selector": interpolated(brackets, item["weights"], a),
+                        "data": interpolated(brackets, item["weights"], d)},
+            "p_zero_corrected": both(lambda v, i=index: v["pc"][i]),
+            "bracket_systematic": abs(ends[1] - ends[0]),
+        })  # fmt: skip
+
+    def pick(**want: Any) -> list[int]:
+        return [i for i, item in enumerate(lcu) if all(item["replica"].get(k) == v for k, v in want.items())]
+
+    def one(**want: Any) -> int:
+        found = pick(**want)
+        if len(found) != 1:
+            fail(f"the follow design holds {len(found)} LCU replicas with {want}, not one")
+        return found[0]
+
+    def mean(v: Values, indices: list[int]) -> Any:
+        return sum(v["pc"][i] for i in indices) / len(indices)
+
+    # Classification: D = Pc(y_sign -1) - Pc(y_sign +1) per row and pair at CZ depth 1, settings pooled by mean.
+    classification = []
+    groups: dict[tuple[str, int], dict[int, list[int]]] = {}
+    for i in pick(cz_depth=1):
+        r = lcu[i]["replica"]
+        groups.setdefault((r["label"][:-1], r["roles"]["selector"]), {}).setdefault(r["q"][2], []).append(i)
+    for (row_name, selector), signs in sorted(groups.items()):
+        if set(signs) != {-1, 1}:
+            fail(f"the follow {row_name} on selector q{selector} lacks a y_sign")
+        stat = both(lambda v, s=signs: mean(v, s[-1]) - mean(v, s[1]))
+        value = stat["value"]
+        if value is None:
+            reading = "undetermined"
+        elif value > t["same_sign_above"]:
+            reading = "same-sign"
+        elif value < t["opposite_sign_below"]:
+            reading = "opposite-sign"
+        elif abs(value) < t["strut_abs_below"]:
+            reading = "strut"
         else:
-            depth = depths[0]
-            a, b = bright[(edge_pair, depth)], bright[(twist_pair, depth)]
-            gap = abs(a["p_zero_corrected"] - b["p_zero_corrected"])
-            gap_se = math.sqrt(a["se"] ** 2 + b["se"] ** 2)
-            allowance = gap + t["twist_allowance_se_multiple"] * gap_se
-            allowance_record = {"depth": depth, "selectors": [edge_pair, twist_pair], "gap": gap, "gap_se": gap_se,
-                                "se_multiple": t["twist_allowance_se_multiple"], "value": allowance}  # fmt: skip
-    twist = {}
-    for name in batches:
-        edge = next(r for r in rows if r["batch"] == name and r["relation"] == "edge_opposite")
-        tw = next(r for r in rows if r["batch"] == name and r["relation"] == "edge_same")
-        diff = edge["p_zero_corrected"] - tw["p_zero_corrected"]
-        se = math.sqrt(edge["se"] ** 2 + tw["se"] ** 2)
-        if allowance is None:
-            verdict = f"undetermined: {reason}"
-        else:
-            verdict = "refuted" if abs(diff) > t["sigma"] * se + allowance else "consistent"
-        twist[name] = {"edge_y_sign": edge["y_sign"], "twist_y_sign": tw["y_sign"], "difference": diff, "se": se,
-                       "z": diff / se if se > 0 else None, "allowance": allowance, "verdict": verdict}  # fmt: skip
+            reading = "unresolved"
+        first = lcu[signs[1][0]]["replica"]
+        expected = CLASSES[first["relation"]]
+        verdict = "classified" if reading == expected else "refuted"
+        classification.append({"row": row_name, "pair": [selector, first["roles"]["data"][0]],
+                               "relation": first["relation"], "settings": sorted({lcu[i]["replica"]["setting"]
+                               for s in signs.values() for i in s}), "D": stat, "class": reading,
+                               "expected": expected, "verdict": verdict})  # fmt: skip
         if verdict == "refuted":
-            stops.append(f"{name}: twist equality refuted")
+            refutations.append(
+                f"{row_name} on q{[selector, first['roles']['data'][0]]}: D reads {reading}, census {expected}"
+            )
+
+    # Twist crossover per block and setting; pair and circuit offsets cancel in Delta.
+    twist = []
+    for block_name, edge, tw in (("bright", "edge+", "twist-"), ("dark", "edge-", "twist+")):
+        for setting in ("X", "Y"):
+            c1, c2 = (f"lcu-{block_name}-{setting.lower()}-{k}.cq" for k in (1, 2))
+            slots = {
+                key: one(label=label, slot=slot, setting=setting, cz_depth=1)
+                for key, label, slot in (("e0", edge, 0), ("t0", tw, 0), ("e1", edge, 1), ("t1", tw, 1))
+            }
+            files = {key: lcu[i]["file"] for key, i in slots.items()}
+            if files != {"e0": c1, "t0": c2, "e1": c2, "t1": c1}:
+                fail(f"the {block_name} {setting} crossover places its replicas in {files}")
+            stat = both(
+                lambda v, x=slots: ((v["pc"][x["e0"]] - v["pc"][x["t0"]]) + (v["pc"][x["e1"]] - v["pc"][x["t1"]])) / 2
+            )
+            value, se = stat["value"], stat["se"]
+            verdict = (
+                "undetermined" if value is None or not se else "refuted" if abs(value) > sigma * se else "consistent"
+            )
+            twist.append({"block": block_name, "setting": setting, "edge": edge, "twist": tw, "delta": stat,
+                          "z": value / se if value is not None and se else None, "verdict": verdict})  # fmt: skip
+            if verdict == "refuted":
+                refutations.append(f"twist equality refuted in the {block_name} block, setting {setting}")
+
+    # Strut D per setting against the null offset.
+    strut = []
+    for setting in ("X", "Y"):
+        plus = pick(relation="strut", setting=setting, cz_depth=1, label="strut+")
+        minus = pick(relation="strut", setting=setting, cz_depth=1, label="strut-")
+        if len(plus) != 1 or len(minus) != 1:
+            fail(f"the follow strut in setting {setting} needs one replica per y_sign")
+        stat = both(lambda v, m=minus[0], p=plus[0]: v["pc"][m] - v["pc"][p])
+        limit = null + sigma * stat["se"] if stat["se"] is not None else None
+        flag = stat["value"] is None or limit is None or abs(stat["value"]) > limit
+        roles = lcu[plus[0]]["replica"]["roles"]
+        strut.append({"setting": setting, "pair": [roles["selector"], roles["data"][0]], "D": stat,
+                      "bias_limit": limit, "bias_flag": flag})  # fmt: skip
+        if flag:
+            refutations.append(f"strut setting {setting}: |D| above the bias limit (pair-dependent bias)")
+
+    # Conditional coherence per replica and populated branch.
+    coherence = []
+    for index, item in enumerate(lcu):
+        r = item["replica"]
+        for b in branches(r):
+            name = ("zero", "one")[b]
+            prediction = fraction(r[f"expectation_given_selector_{name}"])
+            stat = both(lambda v, k=(index, b): v["e"][k])
+            value, se = stat["value"], stat["se"]
+            kept = item["joint"][2 * b : 2 * b + 2]
+            entry: dict[str, Any] = {"batch": item["batch"], "file": item["file"], "slot": r["slot"],
+                                     "label": r["label"], "setting": r["setting"], "cz_depth": r["cz_depth"],
+                                     "branch": b, "prediction": prediction,
+                                     "expectation_raw": 2 * kept[0] / sum(kept) - 1 if sum(kept) else None,
+                                     "expectation_corrected": stat,
+                                     "z": value / se if value is not None and se else None}  # fmt: skip
+            if r["relation"] == "strut":
+                limit = null + sigma * se if se is not None else None
+                entry["bound"] = limit
+                refuted = value is None or limit is None or abs(value) > limit
+                entry["verdict"] = "refuted" if refuted else "consistent"
+            elif r["cz_depth"] != 1:
+                entry["verdict"] = "depth ladder"
+            elif r["setting"] == "X" and prediction != 0:
+                entry["verdict"] = signed_verdict(value, se, math.copysign(1.0, prediction), sigma)
+                if value is not None:
+                    band = t["cross_prediction_band"]
+                    entry["cross_prediction"] = {"magnitude": abs(value), "target": t["t0_c1"], "band": band,
+                                                 "inside": abs(abs(value) - t["t0_c1"]) <= band}  # fmt: skip
+            else:
+                entry["verdict"] = "reported: the census predicts 0 and the falsifier names the X setting"
+            if entry["verdict"] == "refuted":
+                refutations.append(
+                    f"{item['file']} slot {r['slot']} {r['label']} branch {b}: E_b refutes {prediction:g}"
+                )
+            coherence.append(entry)
+
+    # Depth ladder per pair from the bright edge; X and Y replicas pair by (label, pair, depth).
+    depths = list(t["depths"])
+    ladder: list[dict[str, Any]] = []
+    for selector in sorted({lcu[i]["replica"]["roles"]["selector"] for i in pick(label="edge+")}):
+        cell: dict[tuple[int, str], int] = {}
+        for n in depths:
+            for s in ("X", "Y"):
+                matches = [
+                    i
+                    for i in pick(label="edge+", cz_depth=n, setting=s)
+                    if lcu[i]["replica"]["roles"]["selector"] == selector
+                ]
+                if len(matches) != 1:
+                    fail(f"the follow ladder holds {len(matches)} edge+ replicas on q{selector} at depth {n} in {s}")
+                cell[(n, s)] = matches[0]
+
+        def ex(v: Values, n: int, c: dict[tuple[int, str], int] = cell) -> Any:
+            return v["e"][(c[(n, "X")], 0)]
+
+        def ey(v: Values, n: int, c: dict[tuple[int, str], int] = cell) -> Any:
+            return v["e"][(c[(n, "Y")], 0)]
+
+        def magnitude(v: Values, n: int) -> Any:
+            return np.sqrt(ex(v, n) ** 2 + ey(v, n) ** 2)
+
+        def phase(v: Values, n: int) -> Any:
+            return np.arctan2(ey(v, n), -ex(v, n))
+
+        def population(v: Values, n: int, c: dict[tuple[int, str], int] = cell) -> Any:
+            return (v["pc"][c[(n, "X")]] + v["pc"][c[(n, "Y")]]) / 2
+
+        def joint_coherence(v: Values, n: int) -> Any:
+            return population(v, n) * magnitude(v, n)
+
+        def contrast(v: Values, n: int) -> Any:
+            return 2 * population(v, n) - 1
+
+        points = [{"cz_depth": n, "E_X": both(lambda v, n=n: ex(v, n)), "E_Y": both(lambda v, n=n: ey(v, n)),
+                   "magnitude": both(lambda v, n=n: magnitude(v, n)), "phase": both(lambda v, n=n: phase(v, n)),
+                   "population": both(lambda v, n=n: population(v, n)),
+                   "joint_coherence": both(lambda v, n=n: joint_coherence(v, n)),
+                   "population_contrast": both(lambda v, n=n: contrast(v, n))} for n in depths]  # fmt: skip
+
+        def log_slope(v: Values, fn: Any) -> Any:
+            return ols_slope(depths, [np.log(fn(v, n)) for n in depths])
+
+        data = lcu[cell[(depths[0], "X")]]["replica"]["roles"]["data"][0]
+        ladder.append({
+            "pair": [selector, data], "points": points,
+            "r_coh": both(lambda v: np.exp(log_slope(v, joint_coherence)), pct),
+            "r_pop": both(lambda v: np.exp(log_slope(v, contrast)), pct),
+            "r_coh_over_r_pop": both(lambda v: np.exp(log_slope(v, joint_coherence) - log_slope(v, contrast)), pct),
+            "phase_slope_per_cz": both(lambda v: ols_slope(depths, [phase(v, n) for n in depths]), pct),
+        })  # fmt: skip
+
+    # Walks: control expectations, falsifiers, magnitude and phase per walk.
+    walk_rows = []
+    for index, item in enumerate(walks):
+        r = item["replica"]
+        stat = both(lambda v, j=index: v["walk"][j])
+        value, se = stat["value"], stat["se"]
+        if r["readout"] == "Y":
+            verdict = "reported: the census predicts 0 and the falsifier names the X readout"
+        elif r["omit_last_block"]:
+            bound = null + sigma * se if se is not None else None
+            verdict = "refuted" if value is None or bound is None or abs(value) > bound else "consistent"
+        else:
+            verdict = signed_verdict(value, se, float(r["omega"]), sigma)
+        observable = "<Y_c>" if r["readout"] == "Y" else "<X_c>"
+        walk_rows.append({"batch": item["batch"], "file": item["file"], "triple": r["triple"], "layout": r["layout"],
+                          "omega": r["omega"], "omit_last_block": r["omit_last_block"], "readout": r["readout"],
+                          "cz": r["cz"], "zeros": item["zeros"], "shots": item["shots"],
+                          "readout_rates": interpolated(brackets, item["weights"], r["roles"]["control"]),
+                          "observable": observable, "expectation": stat,
+                          "z": value / se if value is not None and se else None, "verdict": verdict})  # fmt: skip
+        if verdict == "refuted":
+            refutations.append(f"{item['file']} walk {r['triple']}: {observable} refutes omega {r['omega']}")
+    walk_pairs = []
+    for layout in sorted({w["replica"]["layout"] for w in walks}):
+        same = [j for j, w in enumerate(walks) if w["replica"]["layout"] == layout]
+        x = [j for j in same if walks[j]["replica"]["readout"] == "X" and not walks[j]["replica"]["omit_last_block"]]
+        y = [j for j in same if walks[j]["replica"]["readout"] == "Y"]
+        if len(x) != 1 or len(y) != 1:
+            fail(f"the follow walk on {layout} needs one X and one Y readout")
+        jx, jy = x[0], y[0]
+        mag = both(lambda v, a=jx, b=jy: np.sqrt(v["walk"][a] ** 2 + v["walk"][b] ** 2))
+        target = t["t0_r"] ** walks[jx]["replica"]["cz"]
+        band = t["cross_prediction_band"]
+        walk_pairs.append({"layout": layout, "triple": walks[jx]["replica"]["triple"], "magnitude": mag,
+                           "prediction": target, "band": band,
+                           "inside": mag["value"] is not None and abs(mag["value"] - target) <= band,
+                           "phase": both(lambda v, a=jx, b=jy: np.arctan2(v["walk"][b], -v["walk"][a]))})  # fmt: skip
+
+    # Replication of the deeper bright edge populations against T0's.
+    replication: Any
+    if t0 is None:
+        replication = {"undetermined": "T0 runs were not analyzed with the follow series"}
+    else:
+        bright = {(r["qubit"], r["depth"]): r for r in t0["replicas"] if r["role"] == "bright"}
+        replication = []
+        for rung in ladder:
+            for point_entry in rung["points"]:
+                n = point_entry["cz_depth"]
+                if n == 1:
+                    continue
+                follow = point_entry["population"]
+                record: dict[str, Any] = {"pair": rung["pair"], "cz_depth": n, "follow": follow}
+                prior = bright.get((rung["pair"][0], n))
+                if prior is None or follow["value"] is None or follow["se"] is None:
+                    record["t0"] = "no T0 bright replica at this pair and depth"
+                else:
+                    record["t0"] = {"batch": prior["batch"], "p_zero_corrected": prior["p_zero_corrected"],
+                                    "se": prior["se"]}  # fmt: skip
+                    record["drift"] = follow["value"] - prior["p_zero_corrected"]
+                    record["drift_se"] = math.sqrt(follow["se"] ** 2 + prior["se"] ** 2)
+                replication.append(record)
     return {
-        "replicas": rows,
+        "batches": batch_block,
+        "brackets": block,
+        "replicas": replicas,
         "classification": classification,
-        "twist_allowance": allowance_record if allowance_record is not None else {"undetermined": reason},
-        "twist_equality": twist,
+        "twist": twist,
+        "strut": strut,
+        "coherence": coherence,
+        "depth_ladder": ladder,
+        "walks": walk_rows,
+        "walk_pairs": walk_pairs,
+        "replication": replication,
+        "uncertainty": f"standard errors are standard deviations and intervals the {pct[0]} and {pct[1]} "
+        f"percentiles of a parametric bootstrap ({t['bootstrap_draws']} draws, numpy seed {t['bootstrap_seed']}); "
+        "each draw redraws every bracket's readout counts once, so replicas reading one qubit share that draw, "
+        "and each replica's joint (a, d) or control counts",
+        "refutations": refutations,
         "stops": stops,
     }
-
-
-def analyze_coherence(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
-    rng = random.Random(t["bootstrap_seed"])
-    items = []
-    for name, batch in batches.items():
-        row = witness_row(batch)
-        shots = batch["shots"][row["file"]]
-        for r in row["replicas"]:
-            if r["kind"] != "coherence":
-                continue
-            a_q, d_q = r["roles"]["selector"], r["roles"]["data"][0]
-            counts = [0, 0, 0, 0]
-            for s in shots:
-                counts[2 * bit(s, a_q, batch["order"]) + bit(s, d_q, batch["order"])] += 1
-            ra, rd = assignment(batch, a_q), assignment(batch, d_q)
-            items.append((name, r, counts, ra, rd))
-    draws: list[list[tuple[int, ...]]] = []
-    for _, _, counts, ra, rd in items:
-        total = sum(counts)
-        block = []
-        for _ in range(t["bootstrap_draws"]):
-            block.append(
-                (
-                    rng.binomialvariate(ra["n0"], ra["e01"]),
-                    rng.binomialvariate(ra["n1"], ra["e10"]),
-                    rng.binomialvariate(rd["n0"], rd["e01"]),
-                    rng.binomialvariate(rd["n1"], rd["e10"]),
-                    *multinomial(rng, total, [c / total for c in counts]),
-                )
-            )
-        draws.append(block)
-    rows, stops = [], []
-    for (name, r, counts, ra, rd), block in zip(items, draws, strict=True):
-        values = parallel.ordered_map(CoherenceDraw(ra["n0"], ra["n1"]), block)
-        defined = [2 * v - 1 for v in values if v is not None]
-        point = conditional_zero(counts, (ra["e01"], ra["e10"]), (rd["e01"], rd["e10"]))
-        value = 2 * point - 1 if point is not None else None
-        se = statistics.stdev(defined) if len(defined) > 1 else None
-        prediction = fraction(r["expectation_given_selector_zero"])
-        branch = counts[0] + counts[1]
-        raw = 2 * counts[0] / branch - 1 if branch else None
-        verdict = "reported: the falsifier names the X setting only"
-        if r["setting"] == "X" and value is not None and se:
-            z = value / se
-            if prediction != 0:
-                signed = z * math.copysign(1.0, prediction)
-                verdict = "refuted" if signed < -t["sigma"] else "supported" if signed > t["sigma"] else "unresolved"
-            else:
-                verdict = "refuted" if abs(value) > t["null_offset"] + t["sigma"] * se else "consistent"
-        if verdict == "refuted":
-            stops.append(f"{name} slot {r['slot']} {r['relation']} <X_d> {value:.4f} refutes {prediction}")
-        rows.append({"batch": name, "slot": r["slot"], "relation": r["relation"], "setting": r["setting"],
-                     "pair": [r["roles"]["selector"], r["roles"]["data"][0]], "joint_counts": counts,
-                     "expectation_raw": raw, "expectation_corrected": value, "se": se,
-                     "z": value / se if value is not None and se else None, "prediction": prediction,
-                     "undefined_draws": len(values) - len(defined), "verdict": verdict})  # fmt: skip
-    return {"settings": rows, "stops": stops}
-
-
-def analyze_walk(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
-    rows, stops = [], []
-    for name, batch in batches.items():
-        row = witness_row(batch)
-        for r in row["replicas"]:
-            if r["kind"] != "walk":
-                continue
-            est = selector_estimate(batch, row["file"], r["roles"]["control"])
-            z_c = 2 * est["p_zero_corrected"] - 1
-            se = 2 * est["se"]
-            if r["omit_last_block"]:
-                verdict = "refuted" if abs(z_c) > t["null_offset"] + t["sigma"] * se else "consistent"
-            else:
-                signed = z_c / se * r["omega"]
-                verdict = "refuted" if signed < -t["sigma"] else "supported" if signed > t["sigma"] else "unresolved"
-            if verdict == "refuted":
-                stops.append(f"{name} walk {r['triple']} omit_last {r['omit_last_block']}: <Z_c> {z_c:.4f} refutes")
-            rows.append({"batch": name, "triple": r["triple"], "omega": r["omega"], "omit_last_block":
-                         r["omit_last_block"], "control": est, "z_c": z_c, "se": se,
-                         "z": z_c / se if se > 0 else None, "verdict": verdict})  # fmt: skip
-    return {"walks": rows, "stops": stops}
 
 
 def binomial_z(k: int, n: int, p: float) -> float | None:
@@ -906,7 +1316,7 @@ def analyze_ry_smoke(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, 
                 continue
             shots = batch["shots"][row["file"]]
             for r in row["replicas"]:
-                k = zeros(shots, r["roles"]["selector"], batch["order"])
+                k = zeros(batch, row["file"], r["roles"]["selector"])
                 p = fraction(r["p_selector_zero"])
                 entry: dict[str, Any] = {"batch": name, "file": row["file"], "slot": r["slot"],
                                          "pattern": r["pattern"], "prediction": r["p_selector_zero"], "zeros": k,
@@ -930,19 +1340,18 @@ def analyze_ry_smoke(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, 
     return {"replicas": rows, "stops": stops}
 
 
-def twin_checks(replica: dict[str, Any]) -> list[tuple[str, int, int | None, str]]:
-    """(name, qubit, conditioning qubit or None, P(qubit = 0) prediction) of one twin replica."""
+def twin_checks(replica: dict[str, Any]) -> list[tuple[str, int, int | None, int, str]]:
+    """(name, qubit, conditioning qubit or None, its conditioning value, P(qubit = 0) prediction) of one twin."""
     roles = replica["roles"]
     if "p_control_zero" in replica:
-        return [("p_control_zero", roles["control"], None, replica["p_control_zero"])]
-    checks: list[tuple[str, int, int | None, str]] = [
-        ("p_selector_zero", roles["selector"], None, replica["p_selector_zero"])
+        return [("p_control_zero", roles["control"], None, 0, replica["p_control_zero"])]
+    checks: list[tuple[str, int, int | None, int, str]] = [
+        ("p_selector_zero", roles["selector"], None, 0, replica["p_selector_zero"])
     ]
-    if "p_data_zero_given_selector_zero" in replica:
-        checks.append(
-            ("p_data_zero_given_selector_zero", roles["data"][0], roles["selector"],
-             replica["p_data_zero_given_selector_zero"])
-        )  # fmt: skip
+    for value, name in enumerate(("zero", "one")):
+        key = f"p_data_zero_given_selector_{name}"
+        if key in replica:
+            checks.append((key, roles["data"][0], roles["selector"], value, replica[key]))
     return checks
 
 
@@ -950,7 +1359,6 @@ def analyze_twins(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any
     """Each twin on the ideal QX emulator: a deterministic prediction admits no shot off it, P = 1/2 sits inside z."""
     rows, stops = [], []
     for name, batch in batches.items():
-        order = batch["order"]
         for row in batch["manifest"]["circuits"]:
             shots = batch["shots"][row["file"]]
             if row.get("ideal_p1") == "0":
@@ -962,18 +1370,20 @@ def analyze_twins(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any
                     stops.append(f"{name}/{row['file']}: {off} shots read a 1")
                 continue
             for replica in row["replicas"]:
-                for check_name, qubit, given, want in twin_checks(replica):
-                    kept = [s for s in shots if given is None or bit(s, given, order) == 0]
-                    k = zeros(kept, qubit, order)
+                bits = batch["bits"][row["file"]]
+                for check_name, qubit, given, value, want in twin_checks(replica):
+                    column = bits[:, qubit] if given is None else bits[bits[:, given] == value, qubit]
+                    kept = int(column.size)
+                    k = int((column == 0).sum())
                     p = fraction(want)
                     entry: dict[str, Any] = {"batch": name, "file": row["file"], "slot": replica["slot"],
                                              "check": check_name, "prediction": want, "zeros": k,
-                                             "shots": len(kept)}  # fmt: skip
+                                             "shots": kept}  # fmt: skip
                     if p in (0.0, 1.0):
-                        entry["off"] = len(kept) - k if p == 1.0 else k
+                        entry["off"] = kept - k if p == 1.0 else k
                         refuted = entry["off"] > t["deterministic_shots_off_at_most"]
                     else:
-                        entry["z"] = binomial_z(k, len(kept), p) if kept else None
+                        entry["z"] = binomial_z(k, kept, p) if kept else None
                         refuted = entry["z"] is None or abs(entry["z"]) >= t["z_limit"]
                     entry["verdict"] = "refuted" if refuted else "pass"
                     if refuted:
@@ -994,24 +1404,23 @@ def analyze(runs: list[Path], base: Path = ROOT, cases_root: Path = CASES) -> di
         out: dict[str, Any] = {"thresholds": t, "missing_batches": missing}
         sanity_stops: list[str] = []
         gate_stops: list[str] = []
-        if family in ("tuna_t0", "tuna_t1", "tuna_coherence", "tuna_walk"):
+        if family == "tuna_t0":
             out["batches"], sanity_stops = sanity_block(batches, t)
         elif family != "tuna_pre":
             out["batches"] = {name: {"run": b["run"]} for name, b in batches.items()}
         if missing and family not in INDEPENDENT_BATCHES:
             estimates: dict[str, Any] = {"stops": []}
+            if family == "tuna_follow":
+                # The bracket stop rule decides before each later batch, so the brackets run so far are judged.
+                estimates["brackets"], estimates["stops"] = bracket_block(batches, t)
             out["verdict"] = f"incomplete: {', '.join(missing)} not analyzed"
         else:
             if family == "tuna_pre":
                 estimates = analyze_pre(batches, t)
             elif family == "tuna_t0":
                 estimates = analyze_t0(batches, t)
-            elif family == "tuna_t1":
-                estimates = analyze_t1(batches, t, results.get("tuna_t0"))
-            elif family == "tuna_coherence":
-                estimates = analyze_coherence(batches, t)
-            elif family == "tuna_walk":
-                estimates = analyze_walk(batches, t)
+            elif family == "tuna_follow":
+                estimates = analyze_follow(batches, t, results.get("tuna_t0"))
             elif family == "ry_ladder":
                 estimates = analyze_ry_ladder(batches, t)
             elif family == "tuna_twins":
@@ -1051,7 +1460,7 @@ def analyze(runs: list[Path], base: Path = ROOT, cases_root: Path = CASES) -> di
         out.update(estimates)
         out["stops"] = stops
         if "verdict" not in out:
-            out["verdict"] = "stop" if stops else "continue"
+            out["verdict"] = "stop" if stops else "refuted" if out.get("refutations") else "continue"
         stages[family] = out
     return {
         "schema": SCHEMA,
@@ -1074,62 +1483,71 @@ def replay(record_path: Path, base: Path = ROOT, cases_root: Path = CASES) -> in
 
 # Synthetic readout model: every qubit reads |0> as 1 with SYN_E01 and |1>
 # as 0 with SYN_E10, independently per shot; a fault map overrides it per
-# qubit and circuit.
+# qubit and circuit, and a batch map per qubit and batch.
 SYN_E01 = 0.02
 SYN_E10 = 0.06
 SYN_VISIBILITY = 0.85
 
 
-def column(rng: random.Random, n: int, p_one: float) -> list[str]:
-    """n bits with exactly Binomial(n, p_one) ones at uniformly drawn positions."""
-    ones = rng.binomialvariate(n, p_one)
-    out = ["0"] * n
-    for position in rng.sample(range(n), ones):
-        out[position] = "1"
-    return out
-
-
-def read(rng: random.Random, true: list[str], e01: float, e10: float) -> list[str]:
-    out = list(true)
-    for position, value in enumerate(true):
-        flip = e01 if value == "0" else e10
-        if flip and rng.random() < flip:
-            out[position] = "1" if value == "0" else "0"
-    return out
-
-
-def synthetic_shots(item: tuple[int, int, int, dict[int, Any], dict[int, tuple[float, float]]]) -> list[str]:
+def synthetic_shots(item: tuple[int, int, int, dict[Any, Any], dict[int, tuple[float, float]]]) -> list[str]:
     """Pool worker: shots of one circuit from its seed, width, shot count, true model and readout model.
 
     model maps a qubit to its P(true 1), or a group key (a, d) to the four
-    joint probabilities indexed 2 a + d; unnamed qubits stay in |0>.
+    joint probabilities indexed 2 a + d; unnamed qubits stay in |0>. Each
+    qubit then reads |0> as 1 with its e01 and |1> as 0 with its e10.
     """
     seed, width, n, model, readout = item
-    rng = random.Random(seed)
-    columns = {q: ["0"] * n for q in range(width)}
+    rng = np.random.default_rng(seed)
+    true = np.zeros((n, width), dtype=np.uint8)
     for key, value in sorted(model.items(), key=lambda kv: str(kv[0])):
         if isinstance(key, tuple):
-            a, d = key
-            for s in range(n):
-                u, acc, outcome = rng.random(), 0.0, 3
-                for index, p in enumerate(value):
-                    acc += p
-                    if u < acc:
-                        outcome = index
-                        break
-                columns[a][s], columns[d][s] = str(outcome >> 1), str(outcome & 1)
+            outcome = np.minimum(np.searchsorted(np.cumsum(value), rng.random(n), side="right"), 3)
+            true[:, key[0]], true[:, key[1]] = outcome >> 1, outcome & 1
         else:
-            columns[key] = column(rng, n, value)
-    for q in range(width):
-        e01, e10 = readout.get(q, (SYN_E01, SYN_E10))
-        columns[q] = read(rng, columns[q], e01, e10)
-    order = list(range(width - 1, -1, -1))
-    return ["".join(columns[q][s] for q in order) for s in range(n)]
+            true[:, key] = rng.random(n) < value
+    rates = np.array([readout.get(q, (SYN_E01, SYN_E10)) for q in range(width)])
+    flip = rng.random((n, width)) < np.where(true == 0, rates[:, 0], rates[:, 1])
+    text = ((true ^ flip)[:, ::-1] + 48).astype(np.uint8).tobytes().decode("ascii")
+    return [text[s * width : (s + 1) * width] for s in range(n)]
 
 
-def lcu_model(replica: dict[str, Any], contrast: float) -> dict[Any, Any]:
+def lcu_model(replica: dict[str, Any], scenario: dict[str, Any], visibility: float) -> dict[Any, Any]:
+    """An LCU replica under a global depolarizing channel: lambda = amplitude r^n mixes the ideal state with I / 4.
+
+    Without a setting the selector alone carries P(a = 0) = 1/2 + (P - 1/2) lambda. With one, the ideal joint (a, d)
+    distribution has P(a = 0) = P and, on a populated branch with census X expectation e (2 x coherence),
+    E_X = e cos(theta), E_Y = -e sin(theta) for theta = phase_per_cz n, so atan2(E_Y, -E_X) = theta on the bright
+    edge; then P(a = 0) J and 2 P(a = 0) - 1 both decay as lambda. A strut or twist shift moves selector mass
+    between the branches after the channel.
+    """
+    depth = replica.get("cz_depth", 1)
+    decay = scenario.get("amplitude", visibility) * scenario.get("r", 1.0) ** depth
     p0 = fraction(replica["p_selector_zero"])
-    return {replica["roles"]["selector"]: 1 - (0.5 + (p0 - 0.5) * contrast), replica["roles"]["data"][0]: 0.5}
+    shift = 0.0
+    if replica.get("relation") == "strut" and replica["q"][2] == -1:
+        shift += scenario.get("strut_shift", 0.0)
+    if replica.get("label") == "twist-":
+        shift -= scenario.get("twist_shift", 0.0)
+    a, d = replica["roles"]["selector"], replica["roles"]["data"][0]
+    if "setting" not in replica:
+        return {a: 1 - (0.5 + (p0 - 0.5) * decay + shift), d: 0.5}
+    theta = scenario.get("phase_per_cz", 0.0) * depth
+    ideal = []
+    for branch, mass in (("0", p0), ("1", 1 - p0)):
+        coherence = replica.get(f"coherence_selector_{branch}")
+        value = 0.0
+        if coherence is not None:
+            e = 2 * fraction(coherence)
+            value = e * math.cos(theta) if replica["setting"] == "X" else -e * math.sin(theta)
+            if scenario.get("coherence_flipped") and replica["setting"] == "X" and depth == 1:
+                value = -value
+        ideal += [mass * (1 + value) / 2, mass * (1 - value) / 2]
+    joint = [decay * p + (1 - decay) / 4 for p in ideal]
+    if shift:
+        pa0 = joint[0] + joint[1]
+        scale = [(pa0 + shift) / pa0] * 2 + [(1 - pa0 - shift) / (1 - pa0)] * 2
+        joint = [p * k for p, k in zip(joint, scale, strict=True)]
+    return {(a, d): joint}
 
 
 def tuna_model(row: dict[str, Any], scenario: dict[str, Any]) -> dict[Any, Any]:
@@ -1138,22 +1556,16 @@ def tuna_model(row: dict[str, Any], scenario: dict[str, Any]) -> dict[Any, Any]:
     for r in row["replicas"]:
         if r["kind"] == "walk":
             omega = -r["omega"] if scenario.get("walk_sign_flipped") else r["omega"]
-            p0 = scenario.get("control_p0", 0.5) if r["omit_last_block"] else 0.5 + 0.5 * visibility * omega
+            g = scenario["walk_r"] ** r["cz"] if "walk_r" in scenario else visibility
+            if r["omit_last_block"]:
+                p0 = scenario.get("control_p0", 0.5)
+            elif r.get("readout", "X") == "Y":
+                p0 = 0.5 - 0.5 * omega * g * math.sin(scenario.get("walk_phase", 0.0))
+            else:
+                p0 = 0.5 + 0.5 * omega * g * math.cos(scenario.get("walk_phase", 0.0))
             model[r["roles"]["control"]] = 1 - p0
             continue
-        if r["kind"] == "coherence":
-            pa0 = 0.5 + (fraction(r["p_selector_zero"]) - 0.5) * visibility
-            pd0 = 0.5 + 0.5 * visibility * fraction(r["expectation_given_selector_zero"])
-            if scenario.get("coherence_flipped") and r["setting"] == "X":
-                pd0 = 1 - pd0
-            model[(r["roles"]["selector"], r["roles"]["data"][0])] = [
-                pa0 * pd0, pa0 * (1 - pd0), (1 - pa0) / 2, (1 - pa0) / 2]  # fmt: skip
-            continue
-        depth = r.get("cz_depth", 1)
-        contrast = scenario.get("amplitude", visibility) * scenario.get("r", 1.0) ** depth
-        model.update(lcu_model(r, contrast))
-        if r.get("relation") == "strut" and r["q"][2] == -1 and "strut_shift" in scenario:
-            model[r["roles"]["selector"]] -= scenario["strut_shift"]
+        model.update(lcu_model(r, scenario, visibility))
     return model
 
 
@@ -1166,13 +1578,17 @@ def write_run(root: Path, family: str, batch: str, shots: dict[str, list[str]], 
         shutil.copyfile(source / name, run / name)
     batch_job = int(sha256(f"{family}/{batch}".encode())[:6], 16)
     jobs, submitted = [], []
+    # Jobs finish 10 s apart within a batch and batches 600 s apart, in batch order.
+    start = datetime(2026, 1, 1, tzinfo=UTC) + timedelta(seconds=600 * int(batch.rsplit("-", 1)[1]))
     for index, row in enumerate(manifest["circuits"]):
         file = row["file"]
         job_id = batch_job * 10 + index
         state = "failed" if file in failed else "completed"
         results = [] if file in failed else [{"shots_requested": manifest["shots"], "shots_done": manifest["shots"]}]
+        finished = (start + timedelta(seconds=10 * index)).isoformat().replace("+00:00", "Z")
         jobs.append({"file": file, "job": {"id": job_id, "batch_job_id": batch_job, "status": state,
-                     "message": failed.get(file, "")}, "results": results, "logs": None})  # fmt: skip
+                     "message": failed.get(file, ""), "finished_at": finished}, "results": results,
+                     "logs": None})  # fmt: skip
         submitted.append({"file": file, "job": job_id, "sha256": row["sha256"]})
         if file not in failed:
             (run / "raw" / f"{file}.json").write_text(json.dumps(shots[file]), encoding="utf-8")
@@ -1197,7 +1613,10 @@ def scenario_jobs(name: str, scenario: dict[str, Any], seed: int) -> list[tuple[
                 seed += 1
                 file = row["file"]
                 failures = scenario.get("ry_failed", {}) if family.startswith("ry") else {}
-                readout = dict(scenario.get("readout", {}))
+                readout = {
+                    **scenario.get("readout", {}),
+                    **scenario.get("batch_readout", {}).get(f"{family}/{entry['batch']}", {}),
+                }
                 if family.startswith("ry"):
                     jobs.append((family, entry["batch"], file, ry_item(seed, manifest, row, scenario), failures))
                     continue
@@ -1260,21 +1679,31 @@ UNDER_ROTATION_XX = {0: (0.98, 0.98), 6: (0.52, 0.52)}
 MISASSIGNMENT_XX = {0: (0.038, 0.038), 6: (0.013, 0.013)}
 IDEAL_QX = {q: (0.0, 0.0) for q in range(10)}
 HEALTHY = {0: (0.02, 0.06), 6: (0.02, 0.06), 9: (0.02, 0.06)}
+# Follow model: global depolarizing at T0's amplitude and decay, lambda(1) = 0.78, whose depth-1 conditional
+# |E_X| = 2 lambda / (1 + lambda) = 0.876 lies inside the cross-prediction band of 0.954, and walk magnitudes
+# r^n_CZ at T0's r.
+FOLLOW_MODEL = {"amplitude": 0.821, "r": 0.95, "walk_r": 0.9654}
+FOLLOW_ONLY = {"families": ["tuna_follow"], "readout": {}, **FOLLOW_MODEL}
+INJECTED_PHASE = 0.08
 SCENARIOS: dict[str, dict[str, Any]] = {
     "pass": {
         "families": [f for f in FAMILIES if f != "tuna_twins"], "readout": FAULT, "xx": UNDER_ROTATION_XX,
-        "amplitude": 0.821, "r": 0.95,
+        **FOLLOW_MODEL,
         "ry_failed": {"r9-teleport-bare.cq": "Quantum backend error: error interpreting cQASM script"},
     },
     "twins": {"families": ["tuna_twins"], "readout": IDEAL_QX, "visibility": 1.0},
     "twins_refuted": {"families": ["tuna_twins"], "readout": IDEAL_QX, "visibility": 0.995},
-    "t0_end": {"families": ["tuna_t0", "tuna_t1"], "readout": {}, "amplitude": 0.316, "r": 0.95},
-    "t0_resize": {"families": ["tuna_t0", "tuna_walk"], "readout": {}, "amplitude": 0.975, "r": 0.80},
-    "walk_refuted": {"families": ["tuna_walk"], "readout": {}, "control_p0": 0.8, "walk_sign_flipped": True},
-    "coherence_refuted": {"families": ["tuna_coherence"], "readout": {}, "coherence_flipped": True},
+    "t0_end": {"families": ["tuna_t0", "tuna_follow"], "readout": {}, "amplitude": 0.316, "r": 0.95},
+    "t0_resize": {"families": ["tuna_t0", "tuna_follow"], "readout": {}, "amplitude": 0.975, "r": 0.80},
+    "follow_twist": {**FOLLOW_ONLY, "twist_shift": 0.06},
+    "follow_drift": {**FOLLOW_ONLY, "batch_readout": {"tuna_follow/batch-03": {13: (0.02, 0.10)}}},
+    "follow_coherence": {**FOLLOW_ONLY, "coherence_flipped": True},
+    "follow_walk": {**FOLLOW_ONLY, "walk_sign_flipped": True},
+    "follow_strut": {**FOLLOW_ONLY, "strut_shift": 0.16},
+    "follow_phase": {**FOLLOW_ONLY, "phase_per_cz": INJECTED_PHASE},
+    "follow_omit": {**FOLLOW_ONLY, "control_p0": 0.8},
     "pre_recovered": {"families": ["tuna_pre"], "readout": {**HEALTHY, 13: (0.02, 0.3)}, "xx": {}},
     "pre_misassignment": {"families": ["tuna_pre"], "readout": FAULT, "xx": MISASSIGNMENT_XX},
-    "t1_strut_bias": {"families": ["tuna_t1"], "readout": {}, "strut_shift": 0.16},
     "ry_gate": {"families": ["ry_ladder", "ry_smoke"],
                 "ry_failed": {"r1-width-9.cq": "Quantum backend error: error interpreting cQASM script"}},
     "ry_stopped": {"families": ["ry_ladder", "ry_smoke"], "ry_fidelity": 0.85,
@@ -1302,6 +1731,14 @@ def analyze_self_test() -> None:
         root = Path(scratch)
         runs = {name: build(root, name, s, 1000 * n) for n, (name, s) in enumerate(SCENARIOS.items())}
 
+        def refuted_only(stage: dict[str, Any], marker: str) -> bool:
+            """A refutation verdict whose list names the marker and which stops nothing."""
+            return (
+                stage["verdict"] == "refuted"
+                and not stage["stops"]
+                and any(marker in entry for entry in stage["refutations"])
+            )
+
         def stages(name: str) -> dict[str, Any]:
             return analyze(runs[name], root / name)["stages"]
 
@@ -1317,28 +1754,49 @@ def analyze_self_test() -> None:
             f"t0: {t0['stops']}",
         )
         check(t0["r_prediction"] == [0.87, 0.96] and t0["r_in_prediction"], "r 0.95 lies inside its prediction")
-        for dependent in ("tuna_t1", "tuna_coherence", "tuna_walk"):
-            check(good[dependent]["t0_gate"] == "passed", f"{dependent} T0 gate: {good[dependent]['t0_gate']}")
+        check(good["tuna_follow"]["t0_gate"] == "passed", f"follow T0 gate: {good['tuna_follow']['t0_gate']}")
         check(t0["r_interval"][0] <= 0.95 <= t0["r_interval"][1], f"t0 r interval {t0['r_interval']} misses 0.95")
         check(t0["c1_in_prediction"], f"t0 C(1) {t0['contrast']['1']}")
-        t1 = good["tuna_t1"]
-        check(all(c["verdict"] == "classified" for c in t1["classification"].values()), "t1 classification")
-        check(t1["verdict"] == "continue", f"t1 stops: {t1['stops']}")
+        follow = good["tuna_follow"]
         check(
-            t1["twist_allowance"].get("depth") == 5
-            and all(v["verdict"] == "consistent" for v in t1["twist_equality"].values()),
-            f"the T1 twist allowance reads T0 at depth 5: {t1['twist_allowance']}",
+            follow["verdict"] == "continue" and not follow["refutations"],
+            f"follow stops {follow['stops']}, refutations {follow['refutations']}",
         )
-        lone_t1 = analyze([r for r in runs["pass"] if "tuna_t1" in r.name], root / "pass")["stages"]["tuna_t1"]
+        check(not follow["brackets"]["problems"] and len(follow["brackets"]["batches"]) == 3, "follow brackets")
+        check(all(c["verdict"] == "classified" for c in follow["classification"]), "follow classification")
+        check(len(follow["classification"]) == 6, "edge on three pairs, twist on two, strut on one")
+        check(all(x["verdict"] == "consistent" for x in follow["twist"]) and len(follow["twist"]) == 4, "twist")
+        check(not any(x["bias_flag"] for x in follow["strut"]), "a strut bias flag without a bias")
+        x_depth_1 = [c for c in follow["coherence"] if c["verdict"] in ("supported", "unresolved", "refuted")]
         check(
-            all(v["verdict"].startswith("undetermined: T0 runs") for v in lone_t1["twist_equality"].values()),
-            "T1 without T0 runs judged twist equality",
+            len(x_depth_1) == 10 and all(c["verdict"] == "supported" for c in x_depth_1),
+            f"coherence X signs {[(c['file'], c['slot'], c['verdict']) for c in x_depth_1]}",
         )
-        coherence = good["tuna_coherence"]
-        x_verdicts = sorted(s["verdict"] for s in coherence["settings"] if s["setting"] == "X")
-        check(x_verdicts == ["consistent", "supported"], f"coherence X verdicts {x_verdicts}")
-        walk = good["tuna_walk"]
-        check(sorted(w["verdict"] for w in walk["walks"]) == ["consistent", "supported", "supported"], "walk verdicts")
+        check(all(c["cross_prediction"]["inside"] for c in x_depth_1), "depth-1 |E_X| inside the C(1) band")
+        check(
+            all(c["verdict"] == "consistent" for c in follow["coherence"] if c["label"].startswith("strut")),
+            "strut coherence bound",
+        )
+        check(
+            sorted(w["verdict"][:9] for w in follow["walks"])
+            == ["consisten", "consisten", "reported:", "reported:", "supported", "supported"],
+            f"walk verdicts {[w['verdict'] for w in follow['walks']]}",
+        )
+        check(all(w["inside"] for w in follow["walk_pairs"]), "walk magnitudes inside r^n_CZ")
+        for entry in follow["depth_ladder"]:
+            low, high = entry["phase_slope_per_cz"]["interval"]
+            check(low <= 0 <= high, f"pair {entry['pair']} phase slope interval {low, high} misses 0")
+            # Global depolarizing at r = 0.95 per CZ: J(n) and 2 Pc(n) - 1 both decay as r^n.
+            for key, value in (("r_coh", 0.95), ("r_pop", 0.95), ("r_coh_over_r_pop", 1.0)):
+                low, high = entry[key]["interval"]
+                check(low <= value <= high, f"pair {entry['pair']} {key} interval {low, high} misses {value}")
+        drifts = [r for r in follow["replication"] if "drift" in r]
+        check(
+            len(drifts) == 4
+            and len(follow["replication"]) == 6
+            and all(abs(r["drift"]) < 5 * r["drift_se"] for r in drifts),
+            "replication against T0's four bright depth-5 and depth-9 cells",
+        )
         ladder = good["ry_ladder"]
         check([c["verdict"] for c in ladder["circuits"]][:2] == ["conforms", "conforms"], "ry ladder R1, R2")
         check(ladder["circuits"][2]["verdict"].startswith("failed") and ladder["verdict"] == "continue", "ry R9")
@@ -1346,12 +1804,12 @@ def analyze_self_test() -> None:
 
         ended_stages = stages("t0_end")
         ended = ended_stages["tuna_t0"]
-        ended_t1 = ended_stages["tuna_t1"]
+        ended_follow = ended_stages["tuna_follow"]
         check(
-            ended_t1["verdict"] == "stop"
-            and ended_t1["stops"][0] == "T0 gate: the depth-1 bound ended the Tuna program"
-            and ended_t1["classification"],
-            f"a T0 end-program stop left T1 running or unestimated: {ended_t1['stops'][:2]}",
+            ended_follow["verdict"] == "stop"
+            and ended_follow["stops"][0] == "T0 gate: the depth-1 bound ended the Tuna program"
+            and ended_follow["classification"],
+            f"a T0 end-program stop left the follow series running or unestimated: {ended_follow['stops'][:2]}",
         )
         check(any(s.startswith("end the Tuna-17 program") for s in ended["stops"]), f"t0 end: {ended['stops']}")
         check(any(s.startswith("sanity stop") for s in ended["stops"]), "the bright floor stops a C(1) 0.3 batch")
@@ -1361,21 +1819,63 @@ def analyze_self_test() -> None:
             resized["r_verdict"] == "outside the decision band [0.87, 0.97]" and not resized["r_in_prediction"],
             f"t0 resize: {resized['r_verdict']}",
         )
-        resized_walk = resized_stages["tuna_walk"]
+        resized_follow = resized_stages["tuna_follow"]
         check(
-            resized_walk["verdict"] == "stop"
-            and resized_walk["stops"][0] == "T0 gate: resize before running"
-            and resized_walk["walks"],
-            f"a T0 resize left the walk running or unestimated: {resized_walk['stops'][:2]}",
+            resized_follow["verdict"] == "stop"
+            and resized_follow["stops"][0] == "T0 gate: resize before running"
+            and resized_follow["walks"],
+            f"a T0 resize left the follow series running or unestimated: {resized_follow['stops'][:2]}",
         )
         check(
             not any(s.startswith("sanity stop") for s in resized["stops"]),
             f"the bright floor reads depth 1 only, yet a low depth-9 bright replica stopped T0: {resized['stops']}",
         )
-        refuted = stages("walk_refuted")["tuna_walk"]
-        check([w["verdict"] for w in refuted["walks"]] == ["refuted", "refuted", "refuted"], "walk refutation")
-        flipped = stages("coherence_refuted")["tuna_coherence"]
-        check(any(s["verdict"] == "refuted" for s in flipped["settings"]), "coherence sign refutation")
+        twisted = stages("follow_twist")["tuna_follow"]
+        check(
+            [x["verdict"] for x in twisted["twist"]] == ["refuted", "refuted", "consistent", "consistent"]
+            and refuted_only(twisted, "twist equality refuted"),
+            f"a 0.06 twist shift in the bright block: {[x['verdict'] for x in twisted['twist']]}",
+        )
+        drifted = stages("follow_drift")["tuna_follow"]
+        check(
+            sum("q13 moved" in p for p in drifted["brackets"]["problems"]) == 2
+            and any(s.startswith("bracket stop: q13 moved") for s in drifted["stops"])
+            and drifted["verdict"] == "stop",
+            f"a 0.04 e10 drift at the middle bracket: {drifted['brackets']['problems']}",
+        )
+        flipped = stages("follow_coherence")["tuna_follow"]
+        check(
+            sum(c["verdict"] == "refuted" for c in flipped["coherence"]) == 10 and refuted_only(flipped, "E_b refutes"),
+            "coherence sign refutation",
+        )
+        walked = stages("follow_walk")["tuna_follow"]
+        check(
+            sorted(w["verdict"] for w in walked["walks"] if w["readout"] == "X" and not w["omit_last_block"])
+            == ["refuted", "refuted"]
+            and any("<X_c> refutes" in entry for entry in walked["refutations"])
+            # A flipped X walk also leaves the raw P(c = 1) floor, a sanity stop.
+            and walked["verdict"] == "stop"
+            and any(entry.startswith("sanity stop at batch-00: walk-x.cq walk") for entry in walked["stops"]),
+            f"walk sign refutation: {walked['stops']}",
+        )
+        biased = stages("follow_strut")["tuna_follow"]
+        check(
+            all(x["bias_flag"] for x in biased["strut"])
+            and all(c["class"] == "strut" for c in biased["classification"] if c["row"] == "strut")
+            and refuted_only(biased, "pair-dependent bias"),
+            f"a strut bias above 0.1 + 3 SE left the follow series running: {biased['strut']}",
+        )
+        phased = stages("follow_phase")["tuna_follow"]
+        for entry in phased["depth_ladder"]:
+            low, high = entry["phase_slope_per_cz"]["interval"]
+            check(low <= INJECTED_PHASE <= high, f"pair {entry['pair']} phase slope {low, high} misses the injection")
+        check(phased["verdict"] == "continue", f"a phase per CZ stops or refutes: {phased['refutations']}")
+        omitted = stages("follow_omit")["tuna_follow"]
+        check(
+            [w["verdict"] for w in omitted["walks"] if w["omit_last_block"]] == ["refuted", "refuted"]
+            and refuted_only(omitted, "<X_c> refutes"),
+            "an omit-last control above its bound passed",
+        )
         recovered = stages("pre_recovered")["tuna_pre"]
         check(recovered["precondition"] == "fault-recovered" and recovered["decision"] is None, "pre recovered")
         check(recovered["t0_layout"]["failing"] == [13] and recovered["verdict"] == "stop", "pre T0 layout stop")
@@ -1388,6 +1888,10 @@ def analyze_self_test() -> None:
             any(c["check"] == "all qubits 0" and c["verdict"] == "pass" for c in twins["checks"]),
             "the double-X twin was not judged",
         )
+        check(
+            any(c["check"] == "p_data_zero_given_selector_one" and c["verdict"] == "pass" for c in twins["checks"]),
+            "the selector-1 conditional twin check was not judged",
+        )
         noisy = stages("twins_refuted")["tuna_twins"]
         check(
             noisy["verdict"] == "stop" and any("p_selector_zero refuted" in s for s in noisy["stops"]),
@@ -1397,7 +1901,7 @@ def analyze_self_test() -> None:
             [r for r in runs["twins"] if r.name.endswith(("batch-00", "batch-04"))], root / "twins"
         )["stages"]["tuna_twins"]
         check(
-            partial_twins["missing_batches"] == ["batch-01", "batch-02", "batch-03"]
+            partial_twins["missing_batches"] == ["batch-01", "batch-02", "batch-03", "batch-05", "batch-06"]
             and partial_twins["verdict"] == "continue",
             "twin batches are judged one by one",
         )
@@ -1421,13 +1925,6 @@ def analyze_self_test() -> None:
         for c in good["ry_ladder"]["circuits"]:
             if c["status"] == "completed":
                 check("stray_fraction" in c and all("wilson95" in o for o in c["outcomes"].values()), "Ry ladder")
-        bias = stages("t1_strut_bias")["tuna_t1"]
-        strut = next(c for c in bias["classification"].values() if c["expected"] == "strut")
-        check(
-            strut["bias_flag"] and strut["class"] == "strut" and bias["verdict"] == "stop",
-            f"a strut bias above 0.1 + 3 SE left T1 running: {strut}",
-        )
-
         # Replay: an exact record reproduces; a changed byte does not.
         record = root / "analysis.json"
         record.write_text(dump(analyze(runs["pass"], root / "pass")), encoding="utf-8")
@@ -1548,8 +2045,40 @@ def analyze_self_test() -> None:
         )
         expect_exit("a cancelled Ry job", lambda: load_batch(cancelled, cancelled.parents[3]), "job cancelled")
         mutations += 1
-        t1_only = analyze([r for r in runs["pass"] if "tuna_walk" in r.name], root / "pass")["stages"]["tuna_walk"]
-        check(t1_only["t0_gate"] == "unverified: T0 runs not analyzed in this call", "walk alone read the T0 gate")
+        lone = analyze([r for r in runs["pass"] if "tuna_follow" in r.name], root / "pass")["stages"]["tuna_follow"]
+        check(lone["t0_gate"] == "unverified: T0 runs not analyzed in this call", "follow alone read the T0 gate")
+        check("undetermined" in lone["replication"], "follow alone replicated T0")
+        early = analyze(
+            [r for r in runs["follow_drift"] if r.name.endswith(("batch-00", "batch-01", "batch-02", "batch-03"))],
+            root / "follow_drift",
+        )["stages"]["tuna_follow"]
+        check(
+            early["verdict"].startswith("incomplete")
+            and any(s.startswith("bracket stop: q13") for s in early["stops"]),
+            "the bracket rule judges a partial follow series",
+        )
+        for last in ("batch-02", "batch-05"):
+            head = [r for r in runs["pass"] if "tuna_follow" in r.name and r.name[-8:] <= last]
+            partial_follow = analyze(head, root / "pass")["stages"]["tuna_follow"]
+            check(
+                partial_follow["verdict"].startswith("incomplete")
+                and not any(s.startswith("bracket stop") for s in partial_follow["stops"]),
+                f"a follow series through {last} read a bracket stop: {partial_follow['stops']}",
+            )
+        follow_source = next(r for r in runs["pass"] if r.name.endswith("tuna_follow-batch-01"))
+        unstamped = root / "mutations" / "unstamped" / "results/quantum_inspire/runs" / follow_source.name
+        shutil.copytree(follow_source, unstamped)
+        rewrite(
+            unstamped / "results.json",
+            lambda c: {
+                **c,
+                "jobs": [{**j, "job": {k: v for k, v in j["job"].items() if k != "finished_at"}} for j in c["jobs"]],
+            },
+        )
+        expect_exit(
+            "a follow job without finished_at", lambda: load_batch(unstamped, unstamped.parents[3]), "finished_at"
+        )
+        mutations += 1
 
         # Sanity mutations record a stop instead of an error.
         def reverse(r: Path) -> None:

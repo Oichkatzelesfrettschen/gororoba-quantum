@@ -15,27 +15,29 @@
   },
   {
    "batch": "batch-01",
-   "stage": "t1",
+   "stage": "follow",
    "files": [
-    "twin-t1-1.cq",
-    "twin-t1-2.cq"
+    "twin-walk-x.cq",
+    "twin-lcu-bright-x-1.cq",
+    "twin-lcu-bright-x-2.cq"
    ]
   },
   {
    "batch": "batch-02",
-   "stage": "coherence",
+   "stage": "follow",
    "files": [
-    "twin-coherence-1.cq",
-    "twin-coherence-2.cq"
+    "twin-depth-9-x.cq",
+    "twin-lcu-bright-y-1.cq",
+    "twin-lcu-bright-y-2.cq"
    ]
   },
   {
    "batch": "batch-03",
-   "stage": "walk",
+   "stage": "follow",
    "files": [
-    "twin-walk-1.cq",
-    "twin-walk-2.cq",
-    "twin-walk-3.cq"
+    "twin-depth-9-y.cq",
+    "twin-walk-omit.cq",
+    "twin-lcu-dark-x-1.cq"
    ]
   },
   {
@@ -43,6 +45,24 @@
    "stage": "pre",
    "files": [
     "twin-double-x.cq"
+   ]
+  },
+  {
+   "batch": "batch-05",
+   "stage": "follow",
+   "files": [
+    "twin-lcu-dark-x-2.cq",
+    "twin-depth-5-x.cq",
+    "twin-lcu-dark-y-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-06",
+   "stage": "follow",
+   "files": [
+    "twin-lcu-dark-y-2.cq",
+    "twin-depth-5-y.cq",
+    "twin-walk-y.cq"
    ]
   }
  ]
