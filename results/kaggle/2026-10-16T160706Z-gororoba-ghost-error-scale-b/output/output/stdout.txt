@@ -1,0 +1,5 @@
+{"run": "results/live/2026-10-13T020454.599853Z", "best": [5.0, 0.5], "mean_tvd": 0.018158}
+{"run": "results/live/2026-10-13T022433.333775Z", "best": [6.0, 0.5], "mean_tvd": 0.036835}
+{"run": "results/live/2026-10-13T080216.451663Z", "best": [5.0, 1.0], "mean_tvd": 0.02539}
+{"run": "results/live/2026-10-13T083417.634585Z", "best": [6.0, 3.0], "mean_tvd": 0.030792}
+{"run": "results/live/2026-10-13T201757.782152Z", "best": [2.0, 1.5], "mean_tvd": 0.025704}
