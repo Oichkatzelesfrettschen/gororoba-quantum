@@ -56,10 +56,9 @@ WORKER_THREAD_VARIABLES = (
     "BLIS_NUM_THREADS",
     "VECLIB_MAXIMUM_THREADS",
 )
-# BLAS and OpenMP threads per worker. Under CI's OpenBLAS 0.3.34 the
-# n21 cross-check replay (core-487) with six workers ran fastest with one
-# thread each, against two each or the per-CPU default; the measurement is in
-# docs/notes/numerics_best_practice.md.
+# BLAS and OpenMP threads per worker: the pool supplies the parallelism, and
+# the matrices a worker handles are too small to repay BLAS threading. core-520
+# checks that every spawned worker reads this value.
 WORKER_BLAS_THREADS = 1
 
 _pool: ProcessPoolExecutor | None = None
