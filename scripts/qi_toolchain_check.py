@@ -165,7 +165,7 @@ def generate() -> int:
     failures = 0
     for path, (sha, backend) in case_files().items():
         text = (ROOT / path).read_text(encoding="utf-8")
-        analysis = json.loads(v3.Analyzer().analyze_string_to_json(text))
+        analysis = json.loads(v3.Analyzer().analyze_string_to_json(text), strict=False)
         errors = [e["message"] for e in analysis.get("errors", [])]
         row: dict[str, Any] = {
             "case": path,

@@ -84,20 +84,28 @@ December 2025, Tuna-17 since April 2026.
   end; no mid-circuit measurement (KB).
 - **Shots**: default and maximum 1024. Execution limit 3600 s.
 - **Measured cost**: the 2-qubit X-only diagnostic took 16.26 s of execution
-  for 1024 shots (15.9 ms per shot), slower per shot than QX by two orders of
-  magnitude; no ledger transaction.
+  for 1024 shots, and the failed teleport job spent 16 s between `queued_at`
+  and `finished_at` with no shot done, so a fixed per-job cost of about 16 s
+  fits both runs; 15.9 ms per shot is an upper bound from one run, not a
+  per-shot rate. No ledger transaction.
 - **Result order** (Measured): qubit 0 is the **leftmost** character: X on
   q[0] read `10` in 1024 of 1024 shots
   (runs/2026-10-16T213823Z-Rydberg-diagnostic), the reverse of QX and Tuna.
-- **Failure mode** (Measured): a circuit with a `bit[9]` register, H, CNOT
-  and Rz(-pi/2) compiled remotely to decomposition (H became Rx-Rz-Rx, CNOT
-  kept) but failed at execution: the job's `message` reads "Quantum backend
-  error: RSP returned failure: error interpreting cQASM script" while its log
-  stays empty (runs/2026-10-16T211635Z-Rydberg). The X-only form of the KB
-  example ran, so the emulator's interpreter rejects part of that program's
-  syntax (bit register, H, CNOT or Rz).
+- **Failure mode** (Measured): a 9-qubit teleport circuit with an
+  unassigned `bit[9]` register, H (4), CNOT (10) and X (1), and no measure
+  statement or `INIT` block, failed at execution (OpenSquirrel 0.9.1 under
+  this configuration turns H into Rx-Rz-Rx and keeps CNOT, by a local
+  compile; no remote compile output is retained): the job's `message`
+  reads "Quantum backend error: RSP returned failure: error interpreting
+  cQASM script" while its log stays empty
+  (runs/2026-10-16T211635Z-Rydberg). libqasm 1.2.1 accepts the program, so
+  the emulator's own reader rejects it; the X-only form of the KB example
+  ran, which leaves the unassigned bit register, H, CNOT and the missing
+  `INIT` block as candidates ([ry-emulator.md](ry-emulator.md)).
 - **API classification**: `is_hardware` is true although the backend is an
-  emulator; code that filters on `is_hardware` must also read the name.
+  emulator; code that filters on `is_hardware` must also read the name, and
+  `qi_platform.py submit` applies the hardware batch rule (at most three
+  circuits, no batch while one of the account's batches is queued) to it.
 
 ## Tuna-5, Tuna-9, Tuna-17 (transmons)
 
