@@ -61,8 +61,18 @@ Connected induced subgraph counts:
 
 ## Tuna-17 qubit exclusions
 
-Spectator q9, idle in |0>, read P1 0.020-0.034 in ring-down batches from
-03:39 to 04:02Z on 2026-10-17 and 0.260-0.275 from 04:06Z, including a rerun
-after the platform's calibration window. Layouts exclude q9 and its couplers
-5-9, 6-9 and 9-12 until a fresh readout-calibration batch reads it back near
-its earlier value. The zero-divisor replica region {9,12,14,15,16} uses q9.
+Readout batches on 2026-10-17 (all qubits idle in readout-0, all flipped in
+readout-1) set the exclusions; a later batch showing recovery re-admits a
+qubit.
+
+| qubit | earlier (03:39Z) | after the ~04:12Z calibration (04:18:39Z) | reading |
+|---|---|---|---|
+| q9 | idle P1 0.03 | idle P1 0.27 in a gate-free circuit | intrinsic shift; couplers 5-9, 6-9, 9-12 carry a mixed ZZ shift onto q5, q6, q12 |
+| q0 | P1 0.85 prepared in 1 | P1 0.39 prepared in 1, idle below 0.04 | pi-pulse or T1 collapse, not readout |
+| q6 | P1 0.67 prepared in 1 | P1 0.14 prepared in 1, idle below 0.04 | pi-pulse or T1 collapse, not readout |
+
+q4, q5, q10, q11, q12 and q16 read 0.84-0.91 prepared in 1, and every other
+idle qubit reads at or below 0.05. Layouts use neither q0, q6 nor q9 as data
+or selector, and leave couplers 5-9, 6-9 and 9-12 idle. The zero-divisor
+replica regions {0,1,2,4,5} and {9,12,14,15,16} each contain an excluded
+qubit.
