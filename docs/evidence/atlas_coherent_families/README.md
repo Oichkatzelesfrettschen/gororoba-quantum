@@ -123,13 +123,18 @@ decimal (a fold condition number near 4.4e5 and a predicted log contrast in
 the ill-conditioned `axis_tilt_plus_mean` model). CI's OpenBLAS build moves
 five numbers of that model by one to three units (largest 3e-6 on a log
 ratio of -2.22) and reproduces every other model exactly. A least-squares
-solution with a nonzero residual carries roundoff of order eps * kappa^2
-(Golub and Van Loan, section 5.3.8), and Fez lane 4's worst fold has
-kappa = 4.4e5, so eps * kappa^2 is 4.3e-5 relative. `--check` therefore
-allows one rounding unit, 1.5e-6, 1e-6 relative on condition numbers, and
-inside each model eps * kappa^2 * |value| with kappa its retained
-fold_condition_max; a model whose kappa stays below about 8e4 keeps the
-one-unit floor for values near 1. The host also reproduced all seven Fez lanes of the Kaggle
+solution with a nonzero residual carries roundoff of order eps * kappa^2,
+and Fez lane 4's worst fold has kappa = 4.4e5, so eps * kappa^2 is 4.3e-5
+relative. The self-test (core-325) measures that law with
+`lsq_roundoff_scaling()`: on a 12 x 6 design with a residual of a tenth of
+the signal, perturbed at eps, the solution drift stays inside eps * kappa^2
+* |x| and exceeds 50 * eps * kappa * |x| at kappa 1e5 and 4.4e5 (measured
+0.2 % of the first and about 200 to 700 times the second on both the AOCL
+and OpenBLAS builds). `--check` therefore allows one rounding unit, 1.5e-6,
+1e-6 relative on condition numbers, and inside each model eps * kappa^2 *
+|value| on every fitted value, kappa its retained fold_condition_max; a
+model whose kappa stays below about 8e4 keeps the one-unit floor for values
+near 1. The host also reproduced all seven Fez lanes of the Kaggle
 result under that check.
 
 ## Gate

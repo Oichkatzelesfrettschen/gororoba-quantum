@@ -221,6 +221,7 @@ CHECK_TOLERANCE = 1.5e-6
 CHECK_RELATIVE = 1e-9
 CONDITION_RELATIVE = 1e-6
 LSQ_ROUNDOFF = float(np.finfo(float).eps)
+LSQ_PROBE_SEED = 20261017
 CONDITION_KEYS = frozenset({"condition", "fold_condition_max"})
 CONTRADICTION_SIGMA = 3.0
 # A Column names one error parameter: (family, compact qubit index or coupler pair).
@@ -1026,20 +1027,60 @@ def self_test() -> int:
         except SystemExit:
             outcome = False
         require(outcome == accepted, f"check tolerance at kappa {kappa:g} misjudges {fresh}")
+    # A condition number keeps its own relative tolerance inside an
+    # ill-conditioned model, so a moved fold_condition_max still fails.
+    try:
+        compare({"fold_condition_max": 4.4e5}, {"fold_condition_max": 4.4e5 + 1.0}, "model")
+    except SystemExit:
+        pass
+    else:
+        raise SystemExit("a fold_condition_max change of 1.0 at 4.4e5 passed the check")
+    # Least-squares roundoff grows as eps * kappa^2: it stays inside that bound
+    # and outgrows the eps * kappa bound by more than a factor of 50 at 1e5.
+    for kappa in (1e3, 1e5, 4.4e5):
+        drift, scale = lsq_roundoff_scaling(kappa)
+        require(drift <= LSQ_ROUNDOFF * kappa**2 * scale, f"kappa {kappa:g}: drift {drift:.2e} exceeds eps kappa^2")
+        if kappa >= 1e5:
+            require(drift > 50 * LSQ_ROUNDOFF * kappa * scale, f"kappa {kappa:g}: drift {drift:.2e} is kappa-linear")
     print("self-test passed")
     return 0
+
+
+def lsq_roundoff_scaling(kappa: float, trials: int = 40) -> tuple[float, float]:
+    """Largest solution drift under eps-sized perturbations of a least-squares design with condition kappa.
+
+    The design is 12 x 6 with singular values spaced geometrically from 1 to
+    1/kappa and a residual of a tenth of the fitted signal, the shape of a
+    lane fit; returns the drift and the solution's largest magnitude.
+    """
+    rng = np.random.default_rng(LSQ_PROBE_SEED)
+    u, _ = np.linalg.qr(rng.standard_normal((12, 12)))
+    v, _ = np.linalg.qr(rng.standard_normal((6, 6)))
+    design = u[:, :6] @ np.diag(np.geomspace(1.0, 1.0 / kappa, 6)) @ v.T
+    x = rng.standard_normal(6)
+    orthogonal = u[:, 6:] @ rng.standard_normal(6)
+    signal = design @ x
+    data = signal + 0.1 * np.linalg.norm(signal) * orthogonal / np.linalg.norm(orthogonal)
+    base = np.linalg.lstsq(design, data, rcond=None)[0]
+    drift = 0.0
+    for _ in range(trials):
+        noise = rng.standard_normal(design.shape)
+        noise *= LSQ_ROUNDOFF * np.linalg.norm(design, 2) / np.linalg.norm(noise, 2)
+        drift = max(drift, float(np.max(np.abs(np.linalg.lstsq(design + noise, data, rcond=None)[0] - base))))
+    return drift, float(np.max(np.abs(base)))
 
 
 def compare(retained: Any, fresh: Any, path: str, conditioning: float = 0.0) -> None:
     """Every retained number within the check tolerance of its recomputation.
 
     A least-squares solution with a nonzero residual carries roundoff of
-    order eps * kappa^2 relative (Golub and Van Loan, Matrix Computations,
-    section 5.3.8), so the values of a model whose design or leave-one-out
+    order eps * kappa^2 relative, which lsq_roundoff_scaling() measures in the
+    self-test, so the fitted values of a model whose design or leave-one-out
     fold is ill-conditioned move by that much between BLAS builds. Inside a
-    model entry the tolerance therefore also admits eps * kappa^2 * |value|
-    with kappa its retained fold_condition_max; a well-conditioned model keeps
-    the one-rounding-unit floor.
+    model entry a fitted value therefore also admits eps * kappa^2 * |value|
+    with kappa its retained fold_condition_max; the condition numbers keep
+    their own relative tolerance, and a well-conditioned model keeps the
+    one-rounding-unit floor.
     """
     if isinstance(retained, dict):
         require(isinstance(fresh, dict) and set(retained) == set(fresh), f"{path}: keys differ")
@@ -1053,8 +1094,11 @@ def compare(retained: Any, fresh: Any, path: str, conditioning: float = 0.0) -> 
         for k, (a, b) in enumerate(zip(retained, fresh, strict=True)):
             compare(a, b, f"{path}[{k}]", conditioning)
     elif isinstance(retained, float) and isinstance(fresh, (int, float)) and not isinstance(fresh, bool):
-        relative = CONDITION_RELATIVE if path.rsplit(".", 1)[-1] in CONDITION_KEYS else CHECK_RELATIVE
-        tolerance = max(CHECK_TOLERANCE, max(relative, conditioning) * abs(retained))
+        if path.rsplit(".", 1)[-1] in CONDITION_KEYS:
+            relative = CONDITION_RELATIVE
+        else:
+            relative = max(CHECK_RELATIVE, conditioning)
+        tolerance = max(CHECK_TOLERANCE, relative * abs(retained))
         require(abs(retained - fresh) <= tolerance, f"{path}: {retained} against {fresh}")
     else:
         require(retained == fresh, f"{path}: {retained!r} against {fresh!r}")
