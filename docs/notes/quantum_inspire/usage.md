@@ -64,7 +64,7 @@ account (<https://www.quantum-inspire.com/faq/>), stricter than the API's 5.
 | Tuna-17, readout only | 16384 | 10.69-10.88 s | 0.65-0.66 ms | same run, readout-0 and readout-1 |
 | QX emulator | 2048 | 0.028-0.289 s | 14-141 us | runs/2026-10-16T211635Z-QXsinglenodesimulator |
 | QX emulator, two 5-qubit witnesses | 2048 | 0.81-10.39 s | 0.4-5.1 ms | runs/2026-10-16T221133Z-zero_divisor_qx |
-| Ry emulator | 1024 | 16.26 s (2-qubit X-only diagnostic) | 15.9 ms | runs/2026-10-16T213823Z-Rydberg-diagnostic |
+| Ry emulator | 1024 | 16.26 s (2-qubit X-only diagnostic); a failed job with no shot also spent 16 s | at most 15.9 ms (a fixed per-job cost fits as well) | runs/2026-10-16T213823Z-Rydberg-diagnostic, runs/2026-10-16T211635Z-Rydberg |
 
 A Tuna shot is dominated by the 500 us initialization (KB tuna page), so
 the per-shot time barely depends on a short circuit's gates. Planning rule
