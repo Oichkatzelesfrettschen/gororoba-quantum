@@ -424,7 +424,9 @@ retain its output under results/kaggle/. The kernel's own guide is
   4. `set_options(max_parallel_threads=parallel.workers())` uses every host
      CPU.
 - **cuStateVec.** `noise_simulator(..., custatevec=True)` sets Aer's
-  `cuStateVec_enable` on a GPU statevector run. qiskit-aer-gpu-cu11 0.17.2
+  `cuStateVec_enable` on a GPU statevector or density-matrix run, and
+  `GOROROBA_AER_CUSTATEVEC=1` sets it for every GPU call that leaves
+  `custatevec` unset (`calibration_snapshot.aer_custatevec`). qiskit-aer-gpu-cu11 0.17.2
   links libcustatevec.so.1 and libcutensornet.so.2, which `cuquantum-cu11`
   24.8.0 and `cutensor-cu11` 2.2.0 (`KERNEL_PINS` entries) supply. Aer
   0.17.2 reports `cuStateVec_enable` False when `batched_shots_gpu` is also
