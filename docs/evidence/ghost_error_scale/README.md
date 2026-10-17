@@ -76,21 +76,28 @@ simulation fields of the three sweep kernels that ran commit 2298108
 run's per-snapshot diagnostics, which count every coupler once, and the
 `scaled` block with its separate `cz_cap` and `readout_cap` -- are
 regenerated on the build host by `ghost_error_scale.py
---regenerate-diagnostics` from the archived calibration and circuits. Gate
-core-349 is the provenance gate: `--provenance` requires each part to be,
-byte for byte, the regeneration of its kernel's output, and a plain `cmp`
+--regenerate-diagnostics` from the archived calibration and circuits.
+Gates core-349 and core-390 are the provenance gates: `--provenance`
+requires each part to be, byte for byte, the regeneration of its kernel's
+output. core-390 regenerates part c, the slowest of the three regenerations
+(143.5 s on a 2-vCPU runner), in the `full` tier; core-349 (112 s) runs the
+other clauses on pull requests, among them a plain `cmp` that
 requires `part_c.json` to equal the output of a second part c kernel, which
 ran commit dfb4384 with the per-coupler diagnostics
 (`results/kaggle/2026-10-17T004620Z-gororoba-ghost-error-scale-c`). That
 kernel resampled every grid point and wrote the same simulation bytes, so
 the identity shows that local regeneration reproduces a kernel's output.
-The same gate binds `part_b.json` run by run to five shard kernels that ran
+core-349 also binds `part_b.json` run by run to five shard kernels that ran
 commit 215b81d on Kaggle CPU sessions, one run each
 (`results/kaggle/2026-10-17T024808Z-gororoba-ghost-error-scale-b1` through
 `-b5` at 025050Z): `--provenance` with several kernel outputs requires equal
 headers, concatenates their runs in argument order and requires the
-regeneration of the merged part to equal `part_b.json` byte for byte, so
-every part b run has two independent kernel sources.
+regeneration of the merged part to equal `part_b.json` byte for byte. Both
+kernel sets sample under the fixed seed 20261016, so the identity shows that
+part b reproduces across sessions and commits; it is one deterministic
+computation run twice, not two independent samples. Gate core-389
+(`--self-test`) drives the merge on synthetic shards and requires swapped or
+missing shards, a differing header and a reserialized part to fail.
 The `bundle` digests in each run's `submission.json` record the files each
 kernel carried. Gate core-339 is the recomputation gate: it runs
 `ghost_error_scale.py --check` on the three parts, which rebuilds every

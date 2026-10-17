@@ -506,6 +506,41 @@
       "question": "Series Q batch-04 on Tuna-17 (tau 15, 40 and 100, quadrature Y, d = 2): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
     },
     {
+      "id": "qi-tuna17-readout-ringdown-Q-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q batch-05 on Tuna-17 (reference, tau 0 and tau 5, quadrature X, d = 77): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-Q-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q batch-06 on Tuna-17 (tau 15, 40 and 100, quadrature X, d = 77): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-Q-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q batch-07 on Tuna-17 (reference, tau 0 and tau 5, quadrature Y, d = 77): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-Q-batch-08",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q batch-08 on Tuna-17 (tau 15, 40 and 100, quadrature Y, d = 77): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-Q-recal-053951",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-recal-053951",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q recal-053951 on Tuna-17 (a repeated readout calibration): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
       "id": "qi-ry-probe-0",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-17T034952Z-ry_probe-batch-00",
@@ -3752,6 +3787,43 @@
       "superseded_by": null
     },
     {
+      "id": "qi-tuna17-readout-ringdown-Q",
+      "statement": "On Tuna-17 series Q (targets Q1, Q2, Q3, Q7, Q8, Q9, Q13, Q14, Q15, 8192 shots per circuit; delays d = 2 and d = 77) the preregistered rule reports 'not detected': 7 targets are usable (Q7 and Q8 fail the 0.3 visibility floor), 3 classify as tails (Q9, Q14, Q15) and none as a static offset, below the 50% threshold; Q15's tail class holds under the all-shot estimator only, and its postselected estimate classifies as none. Q9 fits H2 (chi2 6.95 on 3 degrees of freedom) while Q14 (146.8) and Q15 (39.3) do not; Q14's readout arms sit 43 to 61 kHz below its reference from tau = 100 ns out to 2 us.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One series on one device state, read against its batch-00 calibration as the rule fixes; Q15's visibility of 1.28 to 1.46 shows that calibration no longer describes Q15, so its class rests on a stale correction. The rule compares H2 with H1 and tests neither model's fit, so a tail class marks arm-to-arm structure beyond shot noise rather than a residual-photon decay. The postselection check bounds the shift from discarding mid-circuit-outcome shots at |z| <= 4.2 (Q13).",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/readout_ringdown_tuna_17_Q_analysis.json",
+          "sha256": "ca2f6f74180c5680437c7122bf8776fbd067efd441a48bcd9678eefb4d3e9602"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md",
+        "docs/notes/quantum_inspire/tuna-17.md"
+      ],
+      "gates": {
+        "core-430": "replay",
+        "core-362": "freshness"
+      },
+      "acquisitions": [
+        "qi-tuna17-readout-ringdown-Q-batch-00",
+        "qi-tuna17-readout-ringdown-Q-batch-01",
+        "qi-tuna17-readout-ringdown-Q-batch-02",
+        "qi-tuna17-readout-ringdown-Q-batch-03",
+        "qi-tuna17-readout-ringdown-Q-batch-04",
+        "qi-tuna17-readout-ringdown-Q-batch-05",
+        "qi-tuna17-readout-ringdown-Q-batch-06",
+        "qi-tuna17-readout-ringdown-Q-batch-07",
+        "qi-tuna17-readout-ringdown-Q-batch-08"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "qi-tuna17-register-and-readout-state",
       "statement": "Tuna-17 returns the full bit register: bit[34] circuits on qubit[17] came back as 34-character strings carrying every mid-circuit outcome. On 2026-10-17, Q9's idle P1 rose from 0.02-0.05 to 0.27-0.29 from 04:06Z and stayed there through 05:33Z, and after the 04:12Z platform calibration Q0 and Q6 prepared in |1> read 0.39 and 0.14 after a 2 us wait (0.85 and 0.67 at 03:39Z) while their idle P1 stayed below 0.04.",
       "domain": "hardware",
@@ -3761,12 +3833,13 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/readout_ringdown_tuna_17_device_context.json",
-          "sha256": "c5416928452446f298b2f44d4d4dd1fc67eb748894cf8ad51fc894ce5a9ffd10"
+          "sha256": "078d2483947f1356db8e16e002225c89b9723c591745e66c18042ae44ce64942"
         }
       ],
       "documents": [
         "docs/notes/quantum_inspire/qx-runs.md",
-        "docs/notes/quantum_inspire/experiments.md"
+        "docs/notes/quantum_inspire/experiments.md",
+        "docs/notes/quantum_inspire/tuna-17.md"
       ],
       "gates": {
         "core-387": "replay"
@@ -3776,7 +3849,8 @@
         "qi-tuna17-readout-ringdown-Q-batch-01",
         "qi-tuna17-readout-ringdown-Q-batch-02",
         "qi-tuna17-readout-ringdown-Q-batch-03",
-        "qi-tuna17-readout-ringdown-Q-batch-04"
+        "qi-tuna17-readout-ringdown-Q-batch-04",
+        "qi-tuna17-readout-ringdown-Q-recal-053951"
       ],
       "assumptions": [],
       "depends_on": [],

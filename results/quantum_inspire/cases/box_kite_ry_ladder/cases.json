@@ -1,0 +1,17 @@
+{
+ "schema": "box-kite-series-v1",
+ "family": "ry_ladder",
+ "backend": "Rydberg",
+ "census_sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "group": "ladder",
+   "files": [
+    "r1-width-9.cq",
+    "r2-comment.cq",
+    "r9-teleport-bare.cq"
+   ]
+  }
+ ]
+}

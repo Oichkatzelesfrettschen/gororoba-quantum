@@ -69,11 +69,16 @@ GPU matters for sweeps and batched trials, not for single circuits.
 - `dataset --slug SLUG --include FILE ...` uploads tracked files as a
   private dataset, one tar archive with its sha256 manifest, and records it
   under `results/kaggle/datasets/`; `push --dataset SLUG` attaches it, and
-  the kernel verifies every file against the manifest before ENTRY runs. A GPU or TPU push needs
+  the kernel verifies every file against the manifest before ENTRY runs.
+  Uploading the slug again publishes a new version and moves the earlier
+  archive digest, commit and file count into the record's `history`;
+  `verify` requires every retained run's attached archive to be the current
+  version or one in that history. A GPU or TPU push needs
   `--timeout SECONDS` (at most four hours) and refuses while any version
   of the slug is still running or queued (next section). `--with GROUP` adds an
   opt-in package group from `PIN_GROUPS` (`quantum-tools`,
-  `exact-arithmetic`) at the build host's versions, installed under a
+  `exact-arithmetic`, and `qx-emulator`, qxelarator at the Quantum Inspire
+  environment's version) at the build host's versions, installed under a
   constraints file that holds the core pins and the image's numpy, scipy
   and JAX fixed; `pin_groups.json` records what installed. Every bundle
   carries the usage guides in `KERNEL_DOCS` (docs/notes/kaggle,
