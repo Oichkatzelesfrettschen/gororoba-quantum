@@ -520,9 +520,11 @@ def main() -> int:
                     continue
                 old, new = summary["execution_mean_tvd"], fresh["summary"][relative]["execution_mean_tvd"]
                 own = [m for m, snapshot in run["execution_snapshot"].items() if snapshot == relative]
-                inverse_shots = float(np.mean([1 / run["member_shots"][m] for m in own]))
+                # The execution mean runs over every replica row of its members.
+                rows = [run["member_shots"][m] for m in own for _ in run["snapshots"][relative]["tvd"][m]]
+                inverse_shots = float(np.mean([1 / shots for shots in rows]))
                 require(
-                    abs(old - new) <= 5 * math.sqrt(2.0 * inverse_shots / len(own)) + 1e-3,
+                    abs(old - new) <= 5 * math.sqrt(2.0 * inverse_shots / len(rows)) + 1e-3,
                     f"{run['run']}: {old} vs {new}",
                 )
         require(checked > 0 and (named is None or checked == len(named)), "--runs names a run FILE lacks")

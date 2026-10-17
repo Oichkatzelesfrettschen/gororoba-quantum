@@ -61,6 +61,7 @@ from qiskit import QuantumCircuit  # noqa: E402
 from qiskit.quantum_info import average_gate_fidelity  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
+import parallel  # noqa: E402
 
 GHOST_RESULT = ROOT / "docs/evidence/ghost_runs/result.json"
 CZ_FACTORS = (0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 12.0)
@@ -108,9 +109,15 @@ def footprint(circuits: list[QuantumCircuit]) -> tuple[set[int], set[frozenset[i
 def diagnostics(snapshot: dict[str, Any], circuits: list[QuantumCircuit], infidelity: bool) -> dict[str, Any]:
     """Reported means, cap counts per factor and, with infidelity, the modeled mean CZ infidelity per factor."""
     qubits, couplers = footprint(circuits)
-    entries = [
-        e for e in snapshot["instructions"]["cz"] if frozenset(e["qargs"]) in couplers and e["error"] is not None
-    ]
+    # The Target lists every coupler in both orientations; a footprint edge
+    # counts once, under its first listed orientation.
+    entries = []
+    seen: set[frozenset[int]] = set()
+    for e in snapshot["instructions"]["cz"]:
+        edge = frozenset(e["qargs"])
+        if edge in couplers and edge not in seen and e["error"] is not None:
+            seen.add(edge)
+            entries.append(e)
     flips = [v for q in sorted(qubits) for v in (snapshot["qubits"][q]["e01"], snapshot["qubits"][q]["e10"])]
     cz_rows = []
     for factor in CZ_FACTORS:
@@ -152,6 +159,47 @@ def grid_means(points: list[dict[str, Any]], members: list[str]) -> list[float]:
     return [round(float(np.mean([v for m in members for v in p["tvd"][m]])), 6) for p in points]
 
 
+def aer_threads(items: int) -> int:
+    """Aer threads per pooled point, so the pool's workers share the CPUs without oversubscribing them."""
+    return max(1, parallel.available_cpus() // max(1, min(parallel.workers(), items)))
+
+
+class GridSampler:
+    """One snapshot group's TV distances at a (c, r) point; picklable, so the process pool maps it over the grid.
+
+    Aer counts do not depend on its thread count under a fixed seed, so the
+    pooled grid equals the serial one.
+    """
+
+    def __init__(
+        self,
+        snapshot: dict[str, Any],
+        device: str,
+        threads: int,
+        chosen: list[str],
+        replicas: dict[str, list[QuantumCircuit]],
+        measured: dict[str, list[np.ndarray]],
+        shots: dict[str, int],
+    ) -> None:
+        self.snapshot, self.device, self.threads = snapshot, device, threads
+        self.chosen, self.replicas = chosen, replicas
+        self.measured = {m: measured[m] for m in chosen}
+        self.circuits = [r for m in chosen for r in replicas[m]]
+        self.shots = [shots[m] for m in chosen for _ in replicas[m]]
+
+    def __call__(self, point: tuple[float, float]) -> dict[str, list[float]]:
+        simulator = calibration_snapshot.noise_simulator(scaled(self.snapshot, *point), self.device)
+        simulator.set_options(max_parallel_threads=self.threads)
+        counts = iter(ghost_run.sample(simulator, self.circuits, self.shots, SEED))
+        return {
+            m: [
+                round(ghost_run.tv(self.measured[m][k], ghost_run.distribution(next(counts), r.num_clbits)), 6)
+                for k, r in enumerate(self.replicas[m])
+            ]
+            for m in self.chosen
+        }
+
+
 def sweep_run(
     run_name: str,
     device: str,
@@ -178,14 +226,11 @@ def sweep_run(
         circuits = [replica for m in chosen for replica in replicas[m][1]]
         circuit_shots = [shots[m] for m in chosen for _ in replicas[m][1]]
         snapshots[relative] = {"members": len(chosen), **diagnostics(snapshot, circuits, infidelity=True)}
-        for point in points:
-            simulator = calibration_snapshot.noise_simulator(scaled(snapshot, point["cz"], point["readout"]), device)
-            counts = iter(ghost_run.sample(simulator, circuits, circuit_shots, SEED))
-            for m in chosen:
-                point["tvd"][m] = [
-                    round(ghost_run.tv(measured[m][k], ghost_run.distribution(next(counts), r.num_clbits)), 6)
-                    for k, r in enumerate(replicas[m][1])
-                ]
+        sampler = GridSampler(
+            snapshot, device, aer_threads(len(points)), chosen, {m: replicas[m][1] for m in chosen}, measured, shots
+        )
+        for point, distances in zip(points, parallel.ordered_map(sampler, grid, min_items=1), strict=True):
+            point["tvd"].update(distances)
     means = grid_means(points, members)
     best = int(np.argmin(means))
     cz, readout = floor_point or (points[best]["cz"], points[best]["readout"])
@@ -359,9 +404,14 @@ def uniform_tvd(run: dict[str, Any]) -> float:
 
 
 def tolerance(run: dict[str, Any], members: list[str]) -> float:
-    """ghost_run --check's bound: five standard errors of the difference of two independent draws."""
-    inverse_shots = float(np.mean([1 / run["member_shots"][m] for m in members]))
-    return 5 * math.sqrt(2.0 * inverse_shots / len(members)) + 1e-3
+    """Five standard errors of the difference of two independent draws of the mean over the members' replicas.
+
+    The mean runs over every replica row, so the sample count is the
+    members' replica count, each row weighted by its member's shots.
+    """
+    rows = [run["member_shots"][m] for m in members for _ in run["points"][0]["tvd"][m]]
+    inverse_shots = float(np.mean([1 / shots for shots in rows]))
+    return 5 * math.sqrt(2.0 * inverse_shots / len(rows)) + 1e-3
 
 
 def validate(run: dict[str, Any], index: dict[str, Any], grid: list[tuple[float, float]]) -> None:
@@ -478,7 +528,12 @@ def main() -> int:
         "max_qubits": ghost_run.MAX_QUBITS,
         "seed": SEED,
         "grid": [list(p) for p in grid],
-        "scaled": {"cz": "instructions.cz[].error", "readout": "qubits[].e01 and qubits[].e10", "cap": 1.0},
+        "scaled": {
+            "cz": "instructions.cz[].error",
+            "readout": "qubits[].e01 and qubits[].e10",
+            "cz_cap": CZ_CAP,
+            "readout_cap": FLIP_CAP,
+        },
         "versions": {"qiskit": qiskit.__version__, "qiskit_aer": qiskit_aer.__version__},
         "runs": [],
     }
