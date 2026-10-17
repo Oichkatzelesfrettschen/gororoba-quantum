@@ -21,7 +21,7 @@ Aer abort ends only that row. Three workload families run:
   chain of ibm_kingston qubits at WIDTH_SHOTS shots, static (terminal
   measurement only) and dynamic (one mid-circuit measurement and one
   if_test), on the GPU configurations of WIDTH_CONFIGURATIONS: 7, 10 and 14
-  qubits for the density matrix (WIDTHS) and up to 24 for the statevector
+  qubits for the density matrix (WIDTHS) and up to 20 for the statevector
   (STATEVECTOR_WIDTHS), whose GPU kernels stay underoccupied at 14 qubits.
   A series stops at the first width whose run exceeds BUDGET_SECONDS.
 
@@ -36,13 +36,23 @@ matrix, noise_simulator's GPU default through SnapshotSimulator.run
 batched sampler pinned to one GPU with target_gpus.
 
 Before each row the parent waits, up to IDLE_WAIT_SECONDS, until no GPU
-compute process outside the desktop graphics set runs, the 1-minute load is
-below the CPU count and other work holds at most FOREIGN_CPU_LIMIT CPUs, then
-records that reading and the GPU's utilization and memory as the row's
-baseline; during the row it samples the GPU every GPU_SAMPLE_MS, and after
-it reads the load again and the CPUs other processes held. A row whose load
-exceeded the CPU count at its start or end is contended and runs once more
-after the matrix. The parent creates no CUDA context.
+compute process outside the desktop graphics set runs and other work holds
+at most FOREIGN_CPU_LIMIT CPUs, then records that reading and the GPU's
+utilization and memory as the row's baseline; during the row it samples the
+GPU every GPU_SAMPLE_MS, and after it reads the CPUs other processes held.
+Foreign CPUs are host CPU time outside the probe's process tree
+(/proc/stat less the tree's own time), so the probe's previous row, which
+the 1-minute load average still counts, never marks the next one busy; the
+load average decides only where /proc/stat is unreadable. A row whose
+foreign CPUs exceeded FOREIGN_CPU_LIMIT before or during it is contended and
+runs once more after the matrix. The parent creates no CUDA context.
+
+``--require-gpu`` turns a CPU fallback into an error: the probe stops before
+any row when nvidia-smi lists no GPU, and after the first GPU row that
+reports another device in its result metadata, reports cuStateVec_enable
+false where its configuration enables it, or fails outside KNOWN_GPU_ABORTS.
+The record keeps every row up to that one and carries ``require_gpu``,
+which ``--check`` enforces again on the retained rows.
 
 ``--check FILE`` recomputes every derived value of a retained record (ms
 per shot, the per-row fit, utilization summaries, counts identity, speedups
@@ -55,6 +65,7 @@ byte while flipping or dropping the condition changes them.
 
 Usage:
     "$PYTHON" scripts/aer_gpu_probe.py --out PATH [--workloads toy,n21,width] [--configurations A,B]
+        [--widths 7,10] [--require-gpu]
     "$PYTHON" scripts/aer_gpu_probe.py --check PATH
 """
 
@@ -89,7 +100,7 @@ SEED = 20261016
 N21_CIRCUITS = {"two_round_encoded_ff": 32768, "two_round_encoded_noff": 32768, "ten_round_encoded": 16384}
 SHOT_TIERS = (32, 256, 2048, 16384, 32768)
 WIDTHS = (7, 10, 14)
-STATEVECTOR_WIDTHS = (7, 10, 14, 20, 24)
+STATEVECTOR_WIDTHS = (7, 10, 14, 20)
 WIDTH_SHOTS = 2048
 BUDGET_SECONDS = 60.0
 # A tier whose first run is shorter than this repeats REPEATS times in all
@@ -124,6 +135,10 @@ METADATA_KEYS = (
     "fusion",
 )
 BRANCHING = {"shot_branching_enable": True, "shot_branching_sampling_enable": True}
+NO_GPU = "no GPU on this machine"
+# qiskit-aer-gpu-cu11 0.17.2 aborts batched_shots_gpu on control flow
+# (if_else lowers to jump); the abort is a measured row on the GPU.
+KNOWN_GPU_ABORTS = frozenset({"gpu_statevector_batched_jump"})
 # label: (device, method, Aer options, lower if_else, needs two or more GPUs)
 CONFIGURATIONS: dict[str, tuple[str, str, dict[str, Any], bool, bool]] = {
     "cpu_statevector": ("CPU", "statevector", {}, False, False),
@@ -285,9 +300,9 @@ def foreign_cpus(window: float = IDLE_WINDOW_SECONDS) -> float | None:
 def wait_idle(cpus: int) -> dict[str, Any]:
     """The reading this row starts from, after waiting up to IDLE_WAIT_SECONDS for foreign load to clear.
 
-    Idle means no GPU compute process outside the desktop graphics set, a
-    1-minute load below the CPU count, and at most FOREIGN_CPU_LIMIT CPUs
-    of other work over IDLE_WINDOW_SECONDS.
+    Idle means no GPU compute process outside the desktop graphics set and
+    at most FOREIGN_CPU_LIMIT CPUs of other work over IDLE_WINDOW_SECONDS,
+    or a 1-minute load below the CPU count where /proc/stat is unreadable.
     """
     started = time.monotonic()
     while True:
@@ -295,7 +310,7 @@ def wait_idle(cpus: int) -> dict[str, Any]:
         load = os.getloadavg()[0]
         busy = foreign(apps)
         held = foreign_cpus()
-        quiet = not busy and load < cpus and (held is None or held <= FOREIGN_CPU_LIMIT)
+        quiet = not busy and (load < cpus if held is None else held <= FOREIGN_CPU_LIMIT)
         waited = time.monotonic() - started
         if quiet or waited >= IDLE_WAIT_SECONDS:
             return {
@@ -737,9 +752,13 @@ def attempt(spec: dict[str, Any], cpus: int, ngpus: int) -> dict[str, Any]:
 
 
 def contended(row: dict[str, Any]) -> bool:
-    """A 1-minute load above the CPU count at the row's start or end."""
+    """Other work above FOREIGN_CPU_LIMIT CPUs before or during the row; the 1-minute load where unread."""
     environment = row["environment"]
-    return bool(environment["load_1min"] > environment["cpus"] or environment["load_1min_end"] > environment["cpus"])
+    held = [environment.get("foreign_cpus_before_row"), environment.get("foreign_cpus_during_row")]
+    if None in held:
+        cpus = environment["cpus"]
+        return bool(environment["load_1min"] > cpus or environment["load_1min_end"] > cpus)
+    return any(value > FOREIGN_CPU_LIMIT for value in held)
 
 
 def run_row(spec: dict[str, Any], cpus: int, ngpus: int) -> dict[str, Any]:
@@ -751,10 +770,65 @@ def run_row(spec: dict[str, Any], cpus: int, ngpus: int) -> dict[str, Any]:
 def skip_reason(label: str, ngpus: int) -> str | None:
     device, _, _, _, two = {**CONFIGURATIONS, **TOY_CONFIGURATIONS}[label]
     if device == "GPU" and ngpus == 0:
-        return "no GPU on this machine"
+        return NO_GPU
     if two and ngpus < 2:
         return "needs two or more GPUs"
     return None
+
+
+def gpu_fallback(row: dict[str, Any]) -> str | None:
+    """Why a GPU row did not run on the GPU as its configuration asks, or None for a CPU row or a GPU run."""
+    device, _, options, _, _ = {**CONFIGURATIONS, **TOY_CONFIGURATIONS}[row["configuration"]]
+    if device != "GPU":
+        return None
+    if row.get("skipped") == NO_GPU:
+        return NO_GPU
+    if "skipped" in row:
+        return None
+    if "failed" in row:
+        return None if row["configuration"] in KNOWN_GPU_ABORTS else f"failed with exit {row['failed']}"
+    metadata = row.get("metadata", {})
+    if metadata.get("device") != "GPU":
+        return f"Aer reports device {metadata.get('device')!r}"
+    if options.get("cuStateVec_enable") and metadata.get("cuStateVec_enable") is not True:
+        return f"Aer reports cuStateVec_enable {metadata.get('cuStateVec_enable')!r}"
+    return None
+
+
+def numpy_build() -> dict[str, Any]:
+    """numpy's version, BLAS and LAPACK builds, SIMD baseline and dispatch, and the thread variables in force."""
+    import numpy
+
+    config: dict[str, Any] = json.loads(json.dumps(numpy.show_config(mode="dicts") or {}))
+    dependencies = config.get("Build Dependencies", {})
+    return {
+        "version": numpy.__version__,
+        **{lib: {key: dependencies.get(lib, {}).get(key) for key in ("name", "version")} for lib in ("blas", "lapack")},
+        "simd": config.get("SIMD Extensions", {}),
+        "thread_environment": {
+            name: os.environ.get(name) for name in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS")
+        },
+    }
+
+
+def aer_module() -> dict[str, Any]:
+    """The imported qiskit_aer's version and every distribution whose files include its __init__.py.
+
+    A CPU qiskit-aer installed after a GPU wheel overwrites the same
+    qiskit_aer/ files, so the owner names the build the probe runs.
+    """
+    import qiskit_aer
+
+    init = Path(qiskit_aer.__file__).resolve()
+    owners = sorted(
+        {
+            dist.metadata["Name"]
+            for dist in importlib.metadata.distributions()
+            for item in dist.files or ()
+            if item.as_posix() == "qiskit_aer/__init__.py" and Path(str(dist.locate_file(item))).resolve() == init
+        }
+    )
+    return {"version": qiskit_aer.__version__, "owners": owners}
 
 
 def main() -> int:
@@ -763,6 +837,8 @@ def main() -> int:
     parser.add_argument("--check", type=Path)
     parser.add_argument("--workloads", default="toy,n21,width")
     parser.add_argument("--configurations", default=",".join(CONFIGURATIONS))
+    parser.add_argument("--widths", help="comma-separated widths of the width workload; default every listed width")
+    parser.add_argument("--require-gpu", action="store_true", help="stop with an error at the first CPU fallback")
     parser.add_argument("--one", help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.one:
@@ -779,8 +855,13 @@ def main() -> int:
     unknown = sorted(set(labels) - set(CONFIGURATIONS))
     if unknown:
         parser.error(f"unknown configurations {unknown}")
+    chosen = None if args.widths is None else {int(width) for width in args.widths.split(",")}
+    if chosen is not None and not chosen <= set(WIDTHS) | set(STATEVECTOR_WIDTHS):
+        parser.error(f"unknown widths {sorted(chosen - set(WIDTHS) - set(STATEVECTOR_WIDTHS))}")
     cpus = parallel.available_cpus()
     devices = gpus()
+    if args.require_gpu and not devices:
+        raise SystemExit("aer_gpu_probe: --require-gpu and nvidia-smi lists no GPU")
     record: dict[str, Any] = {
         "schema": SCHEMA,
         "machine": {
@@ -794,7 +875,10 @@ def main() -> int:
             "cuda_driver_version": cuda_driver_version(),
             "python": platform.python_version(),
             "packages": package_versions(),
+            "numpy": numpy_build(),
+            "qiskit_aer": aer_module(),
         },
+        "require_gpu": args.require_gpu,
         "n21_snapshot": N21_SNAPSHOT,
         "width_snapshot": WIDTH_SNAPSHOT,
         "columns": list(COLUMNS),
@@ -815,6 +899,9 @@ def main() -> int:
         brief = {key: row.get(key) for key in ("workload", "circuit", "width", "configuration", "failed", "skipped")}
         brief["ms_per_shot"] = [tier.get("ms_per_shot") for tier in row.get("tiers", [])]
         print(json.dumps(brief), flush=True)
+        reason = gpu_fallback(row) if args.require_gpu else None
+        if reason:
+            raise SystemExit(f"aer_gpu_probe: --require-gpu and {brief} did not run on the GPU: {reason}")
 
     if "toy" in workloads:
         for label in TOY_LABELS:
@@ -832,7 +919,7 @@ def main() -> int:
             for label in (label for label in WIDTH_CONFIGURATIONS if label in labels):
                 stop = skip_reason(label, len(devices))
                 widths = STATEVECTOR_WIDTHS if CONFIGURATIONS[label][1] == "statevector" else WIDTHS
-                for width in widths:
+                for width in (width for width in widths if chosen is None or width in chosen):
                     spec = {"workload": "width", "circuit": circuit, "width": width, "configuration": label}
                     if stop is not None:
                         emit({**spec, "skipped": stop})
@@ -862,6 +949,9 @@ def main() -> int:
         derive(record)
         args.out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
         print(json.dumps({"rerun": spec, "kept_load": keep["environment"]["load_1min"]}), flush=True)
+        reason = gpu_fallback(keep) if args.require_gpu else None
+        if reason:
+            raise SystemExit(f"aer_gpu_probe: --require-gpu and the rerun of {spec} did not run on the GPU: {reason}")
     return 0
 
 
@@ -937,6 +1027,26 @@ def lowering_contract() -> str:
     return "lowered counts equal the if_else counts; flipped and dropped conditions differ; else bodies stay unlowered"
 
 
+def fallback_contract() -> str:
+    """gpu_fallback passes a GPU run, a CPU row and a known abort, and names every other way off the GPU."""
+    run: dict[str, Any] = {
+        "configuration": "gpu_statevector_custatevec",
+        "metadata": {"device": "GPU", "cuStateVec_enable": True},
+    }
+    passing: list[dict[str, Any]] = [run, {"configuration": "cpu_statevector", "metadata": {"device": "CPU"}}]
+    passing.append({"configuration": "gpu_statevector_batched_jump", "failed": -6})
+    passing.append({**run, "skipped": f"width 14 exceeded {BUDGET_SECONDS} s"})
+    falling: list[dict[str, Any]] = [
+        {**run, "metadata": {"device": "CPU", "cuStateVec_enable": True}},
+        {**run, "metadata": {"device": "GPU", "cuStateVec_enable": False}},
+        {**run, "skipped": NO_GPU},
+        {**run, "failed": 1},
+    ]
+    if any(gpu_fallback(row) for row in passing) or not all(gpu_fallback(row) for row in falling):
+        raise SystemExit("aer_gpu_probe: gpu_fallback misclassifies a GPU run, a CPU row, an abort or a fallback")
+    return "a CPU device, cuStateVec off, a missing GPU and an unknown failure count as GPU fallbacks"
+
+
 def check(path: Path) -> int:
     record = json.loads(path.read_text(encoding="utf-8"))
     if record.get("schema") != SCHEMA:
@@ -950,6 +1060,10 @@ def check(path: Path) -> int:
             if row != again
         ]
         raise SystemExit(f"aer_gpu_probe: derived values differ from the record on {len(bad)} rows, first {bad[:3]}")
+    if record.get("require_gpu"):
+        fallen = [(row["configuration"], gpu_fallback(row)) for row in record["rows"] if gpu_fallback(row)]
+        if fallen:
+            raise SystemExit(f"aer_gpu_probe: {path} requires the GPU and {len(fallen)} rows fell back: {fallen[:3]}")
     timed_rows = sum("tiers" in row for row in record["rows"])
     toy = [row for row in record["rows"] if row["workload"] == "toy" and "counts" in row]
     kept = sorted(row["configuration"] for row in toy if row["keeps_readout_law"])
@@ -967,7 +1081,8 @@ def check(path: Path) -> int:
         raise SystemExit(f"aer_gpu_probe: the CPU default breaks the readout toy law: {cpu['z_scores']}")
     print(
         f"{path}: {timed_rows} timed rows and {len(toy)} readout-toy rows reproduce their derived values; "
-        f"readout law kept by {', '.join(kept)}; the CPU default keeps it on replay; {lowering_contract()}"
+        f"readout law kept by {', '.join(kept)}; the CPU default keeps it on replay; {lowering_contract()}; "
+        f"{fallback_contract()}"
     )
     return 0
 
