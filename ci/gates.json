@@ -1742,16 +1742,16 @@
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z",
    "name": "core-443",
-   "seconds": 100,
-   "tier": "pr"
+   "seconds": 160,
+   "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z",
    "name": "core-449",
-   "seconds": 100,
-   "tier": "pr"
+   "seconds": 169,
+   "tier": "full"
   },
   {
    "suite": "core",

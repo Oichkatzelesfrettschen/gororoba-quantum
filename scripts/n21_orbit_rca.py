@@ -742,13 +742,16 @@ class CompiledLaw:
     physical qubit to (count, duration_us, rate_index) entries, each a Z
     rotation by rates[rate_index] x duration_us radians after that wire's
     count-th physical (non-virtual) instruction, the instruction count
-    _probed uses. round1 depolarizes every active wire where the first
-    measurement stands in instruction order and round2 where the second
-    does, the two multiplier rounds of distribution(); depolarizing commutes
-    with single-qubit rotations, so its place relative to an insertion on
-    the same wire is immaterial. The first measurement's assignment flip
+    _probed uses. A measurement is terminal when no later instruction acts
+    on its wire and mid-circuit otherwise, so extra_readout's repeated
+    write of the first bit before the reset is mid-circuit. round1
+    depolarizes every active wire where the first measurement stands in
+    instruction order and round2 where the first terminal one does, the two
+    multiplier rounds of distribution(); depolarizing commutes with
+    single-qubit rotations, so its place relative to an insertion on the
+    same wire is immaterial. A mid-circuit measurement's assignment flip
     (mid_e01, mid_e10) acts on the classical bit as it is written, so it
-    reaches the if_else condition; every later measurement uses end_e01 and
+    reaches the if_else condition; a terminal measurement uses end_e01 and
     end_e10.
     """
 
@@ -770,9 +773,15 @@ class CompiledLaw:
         pending = np.eye(self.size, dtype=complex)
         fused = False
         seen: Counter[int] = Counter()
-        measurements = 0
+        last = {
+            circuit.find_bit(bit).index: position
+            for position, instruction in enumerate(circuit.data)
+            if instruction.operation.name not in ("barrier", "delay")
+            for bit in instruction.qubits
+        }
+        rounds = 0
         placed = 0
-        for instruction in circuit.data:
+        for position, instruction in enumerate(circuit.data):
             name = instruction.operation.name
             wires = [circuit.find_bit(bit).index for bit in instruction.qubits]
             if name in ("barrier", "delay"):
@@ -781,11 +790,15 @@ class CompiledLaw:
                 self.program.append(("unitary", pending))
                 pending, fused = np.eye(self.size, dtype=complex), False
             if name == "measure":
-                if measurements < 2:
-                    self.program.append(("depolarize", measurements))
+                terminal = last[wires[0]] == position
+                if rounds == 0:
+                    self.program.append(("depolarize", rounds))
+                    rounds += 1
+                if terminal and rounds == 1:
+                    self.program.append(("depolarize", rounds))
+                    rounds += 1
                 clbit = circuit.find_bit(instruction.clbits[0]).index
-                self.program.append(("measure", self.local[wires[0]], clbit, min(measurements, 1)))
-                measurements += 1
+                self.program.append(("measure", self.local[wires[0]], clbit, int(terminal)))
             elif name == "reset":
                 self.program.append(("reset", self.local[wires[0]]))
             elif name == "if_else":
@@ -895,7 +908,7 @@ class CompileLaw:
         circuit, insertions, rates = item
         law = CompiledLaw(circuit, insertions, rates)
         rest = law(np.zeros(rates), 0.0, 0.0, _NO_READOUT_ERROR)
-        if not np.allclose(rest, ideal_compiled_probabilities(circuit), atol=1e-9):
+        if not np.allclose(rest, ideal_compiled_probabilities(circuit), rtol=0.0, atol=1e-9):
             raise RuntimeError(f"{circuit.name}: the compiled evaluator differs from the exact compiled law at rest")
         return law
 
@@ -1066,6 +1079,19 @@ def _insertions(
     }
 
 
+def unresolved_exposure(segments: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
+    """The skip record of a run whose segments omit an active wire's intervals, or None when every wire resolves.
+
+    window_segments leaves out a wire whose instructions do not map one to
+    one onto its pulses, so a fit over the remaining wires would describe a
+    reduced model.
+    """
+    unresolved = {name: entry["unresolved"] for name, entry in segments.items() if entry["unresolved"]}
+    if unresolved:
+        return {"skipped": "an active wire's idle intervals are unresolved", "unresolved": unresolved}
+    return None
+
+
 def piecewise_fit(
     run: Path, pairs: dict[str, dict[str, np.ndarray]], readouts: dict[str, dict[str, float]]
 ) -> dict[str, Any]:
@@ -1089,6 +1115,9 @@ def piecewise_fit(
         }
     except ValueError as error:
         return {"skipped": str(error)}
+    skipped = unresolved_exposure(segments)
+    if skipped:
+        return skipped
     dt, source = dt_source(run)
     dt_us = dt * 1e6
     qubits = sorted({qubit for entry in segments.values() for qubit in entry["intervals"]})
@@ -1380,7 +1409,9 @@ SYNTHETIC_MIN_TV = 0.1
 SYNTHETIC_RATE_TOLERANCE = 0.01
 
 
-def _window_member(closing: int, rates: tuple[float, float] | None = None) -> tuple[Any, dict[str, Any]]:
+def _window_member(
+    closing: int, rates: tuple[float, float] | None = None, extra_readout: bool = False, stray: bool = False
+) -> tuple[Any, dict[str, Any]]:
     """A three-qubit member and its returned schedule, with work qubit 1 pulsed inside the control's window.
 
     Qubit 0 measures at 10 dt, resets, and plays its feed-forward pulse at
@@ -1388,7 +1419,9 @@ def _window_member(closing: int, rates: tuple[float, float] | None = None) -> tu
     idle time splits into [8, 200] and [208, closing + 10], and qubit 2 idles
     over [8, closing + 10]. With rates, the circuit carries the static
     detuning rotation of every interval explicitly, independent of
-    window_segments and CompiledLaw.
+    window_segments and CompiledLaw. extra_readout measures qubit 0 into the
+    first bit a second time before its reset, as the extra_readout variant
+    does, and stray adds an sx on qubit 2 that the schedule omits.
     """
     from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 
@@ -1411,6 +1444,10 @@ def _window_member(closing: int, rates: tuple[float, float] | None = None) -> tu
     circuit.rz(math.pi / 2, 2)
     circuit.measure(0, 0)
     pulse("measure", 0, 10, 400)
+    if extra_readout:
+        circuit.measure(0, 0)
+    if stray:
+        circuit.sx(2)
     circuit.sx(1)
     pulse("sx", 1, 200)
     detune(1, closing - 198)
@@ -1458,7 +1495,7 @@ def _check_piecewise_exposure() -> None:
         planted = np.array(SYNTHETIC_RATES)
         truth = np.array(ideal_compiled_probabilities(_window_member(closing, SYNTHETIC_RATES)[0]))
         piecewise = laws["piecewise"][name](planted, 0.0, 0.0, _NO_READOUT_ERROR)
-        if not np.allclose(piecewise, truth, atol=1e-9):
+        if not np.allclose(piecewise, truth, rtol=0.0, atol=1e-9):
             raise RuntimeError(f"{name}: the piecewise law at the planted rates differs from the explicit circuit")
         distance = 0.5 * float(np.abs(piecewise - laws["single_gap"][name](planted, 0.0, 0.0, _NO_READOUT_ERROR)).sum())
         if distance < SYNTHETIC_MIN_TV:
@@ -1472,6 +1509,24 @@ def _check_piecewise_exposure() -> None:
         marginal = [sum(flipped[key] for key in range(16) if key & 3 == low) for low in range(4)]
         if marginal[0] > 1e-12 or not math.isclose(marginal[3], marginal[1], rel_tol=1e-9):
             raise RuntimeError(f"{name}: a mid-circuit assignment flip misses the feed-forward condition: {marginal}")
+        # A second readout of the projected control into the same bit draws
+        # a fresh mid-circuit assignment flip and leaves the law unchanged.
+        noisy = {"mid_e01": 0.2, "mid_e10": 0.3, "end_e01": 0.05, "end_e10": 0.07}
+        repeated = CompileLaw()(
+            (
+                _window_member(closing, extra_readout=True)[0],
+                _insertions(segments["intervals"], qubits, SYNTHETIC_DT_US),
+                2,
+            )
+        )
+        single = laws["piecewise"][name](planted, 0.1, 0.05, noisy)
+        if not np.allclose(repeated(planted, 0.1, 0.05, noisy), single, rtol=0.0, atol=1e-12):
+            raise RuntimeError(f"{name}: a repeated mid-circuit readout changes the law")
+        if unresolved_exposure({name: segments}) is not None:
+            raise RuntimeError(f"{name}: resolved segments skip the exposure fit")
+        stray = window_segments(*_window_member(closing, stray=True))
+        if 2 in stray["intervals"] or unresolved_exposure({name: stray}) is None:
+            raise RuntimeError(f"{name}: an unscheduled instruction on qubit 2 still enters the exposure fit")
     readouts = dict.fromkeys(members, _NO_READOUT_ERROR)
     fitted = exposure_models({"piecewise": laws["piecewise"]}, counts, readouts, qubits, {"piecewise": longest})
     found = fitted["piecewise"]["parameters"]
@@ -1609,7 +1664,7 @@ def build_report(run: Path, readout: tuple[float, float] | None) -> dict[str, An
     piecewise = piecewise_fit(run, pairs, readouts)
     report["piecewise"] = piecewise
     if "skipped" in piecewise:
-        print(f"exact-ISA window exposure skipped: {piecewise['skipped']}")
+        print(f"exact-ISA window exposure skipped: {piecewise['skipped']}; {piecewise.get('unresolved', {})}")
     else:
         for label in ("piecewise", "single_gap", "no_detuning"):
             model = piecewise["models"][label]
