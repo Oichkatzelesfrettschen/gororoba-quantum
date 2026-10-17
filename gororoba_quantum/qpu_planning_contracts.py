@@ -788,6 +788,99 @@ def _verify_patch_selection(snapshot: live_run.Snapshot) -> None:
     )
 
 
+def _measure_first(circuit: Any) -> Any:
+    """Move the first measurement directly after the last earlier operation on its qubit.
+
+    The moved measurement acts on another qubit than the operations it now
+    precedes, so the distribution is unchanged and only circuit.data order,
+    which is_dynamic reads, differs.
+    """
+    data = list(circuit.data)
+    first = next(index for index, instruction in enumerate(data) if instruction.operation.name == "measure")
+    qubit = data[first].qubits[0]
+    last = max(index for index in range(first) if qubit in data[index].qubits)
+    moved = circuit.copy_empty_like()
+    for index, instruction in enumerate(data):
+        if index != first:
+            moved.append(instruction)
+        if index == last:
+            moved.append(data[first])
+    return moved
+
+
+def _verify_static_group_admission(service: _ProbeService, snapshot: live_run.Snapshot) -> None:
+    """A static patch group holding a measure-then-gate member writes no planned record and names the member."""
+    import patch_characterization
+
+    original = patch_characterization.patch_groups
+    names: list[str] = []
+
+    def injected(*args: Any, **kwargs: Any) -> list[Any]:
+        static, *rest = original(*args, **kwargs)
+        member = static.members[0]
+        moved = dataclasses.replace(member, circuit=_measure_first(member.circuit))
+        _require(not local_compute.is_dynamic(member.circuit), f"{member.name}: the patch member is already dynamic")
+        _require(local_compute.is_dynamic(moved.circuit), f"{member.name}: the reordered member stays static")
+        names.append(member.name)
+        return [dataclasses.replace(static, members=(moved, *static.members[1:])), *rest]
+
+    patch_qubits = [142, 136, 143, 144, 123, 145]
+    args = _args("patch-window", patch_qubits=patch_qubits)
+    clean = qpu_planning.family_candidates(live_run, [snapshot], args, {})
+    _require(
+        len(qpu_planning.admitted_family_candidates(live_run, clean, {})) == 1, "admission rejects the static family"
+    )
+    with patch.object(patch_characterization, "patch_groups", injected):
+        trace: dict[str, Any] = {}
+        mixed = qpu_planning.family_candidates(live_run, [snapshot], args, trace)
+    _require(len(mixed) == 1 and bool(names), f"the injected patch family did not compile: {trace}")
+    expected = f"dynamic members {names[:1]}"
+    _require(not qpu_planning.admitted_family_candidates(live_run, mixed, trace), "a mixed static group was admitted")
+    _require(expected in trace["family_rejections"][-1]["reason"], f"admission omits {expected}: {trace}")
+    static_choice = mixed[0][0][0]
+    _require(
+        expected in live_run.choice_change_reasons(static_choice, snapshot),
+        "the pre-submit refresh reads another predicate than planning",
+    )
+    stderr = io.StringIO()
+    with (
+        tempfile.TemporaryDirectory(prefix="gororoba-planning-mixed-static-") as directory,
+        patch.object(patch_characterization, "patch_groups", injected),
+        patch.object(live_run, "QiskitRuntimeService", return_value=service),
+        patch.object(live_run, "simulate", side_effect=_forbid_service) as simulate,
+        patch.object(live_run, "evaluate", side_effect=_forbid_service) as evaluate,
+        patch.object(live_run, "write_archive", side_effect=_forbid_service) as write_archive,
+        patch.object(live_run, "submit", side_effect=_forbid_service) as submit,
+        patch.object(qpu_cases, "write_case", side_effect=_forbid_service) as write_case,
+        redirect_stdout(io.StringIO()),
+        redirect_stderr(stderr),
+    ):
+        status = live_run.main(
+            [
+                "--family",
+                "patch-window",
+                "--patch-qubits",
+                ",".join(map(str, patch_qubits)),
+                "--max-replicas",
+                "1",
+                "--replica-tiers",
+                "1",
+                "--no-isolated-reference",
+                "--max-execution-seconds",
+                "9",
+                "--max-total-execution-seconds",
+                "27",
+                "--out",
+                directory,
+            ]
+        )
+        _require(status == 1, f"a mixed static group changed the dry-run status to {status}")
+        _require(not list(Path(directory).iterdir()), "a mixed static group wrote a dry-run record")
+        for operation in (simulate, evaluate, write_archive, submit, write_case):
+            _require(operation.call_count == 0, f"a mixed static group reached {operation._mock_name}")
+    _require(expected in stderr.getvalue(), f"the dry-run refusal omits {expected}")
+
+
 def _forbid_service(*args: Any, **kwargs: Any) -> Any:
     del args, kwargs
     raise RuntimeError("credential-free planning contract reached a RuntimeService constructor")
@@ -814,6 +907,7 @@ def _verify() -> None:
         _verify_unrouted_family_diagnostics(service)
         _verify_coherence_readout(snapshot)
         _verify_patch_selection(snapshot)
+        _verify_static_group_admission(service, snapshot)
     _verify_control_timing()
     print(
         "QPU planning: matching, calibrated timing, budgets, shot optimization, "
@@ -822,5 +916,22 @@ def _verify() -> None:
     )
 
 
+def _verify_static_admission_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        service, snapshot = _fixture()
+        _verify_static_group_admission(service, snapshot)
+    print("QPU planning: a static group with a measure-then-gate member writes no planned record")
+
+
 if __name__ == "__main__":
-    _verify()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--static-group-admission", action="store_true", help="run only the static-group admission contract"
+    )
+    if parser.parse_args().static_group_admission:
+        _verify_static_admission_only()
+    else:
+        _verify()

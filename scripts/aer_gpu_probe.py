@@ -45,6 +45,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
+import qiskit_aer  # noqa: E402
 from n21_conjugation_noise import _backend, circuits  # noqa: E402
 from qiskit.transpiler import generate_preset_pass_manager  # noqa: E402
 
@@ -212,6 +213,8 @@ def main() -> int:
         "schema": "aer-gpu-probe-v1",
         "snapshot": str(args.snapshot),
         "calibration": snapshot["calibration"],
+        **calibration_snapshot.backend_identity(snapshot),
+        "qiskit_aer": qiskit_aer.__version__,
         "gpus": gpus,
         "workers": parallel.workers(),
         "columns": list(COLUMNS),
