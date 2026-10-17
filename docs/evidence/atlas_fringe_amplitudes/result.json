@@ -3283,8 +3283,7 @@
      "dof": 11,
      "leave_one_out_rms": 0.057033,
      "leave_one_out_noise_floor": 0.024909,
-     "accounts": false,
-     "refuted": true
+     "accounts": false
     },
     "measured_qubit": {
      "columns": 2,
@@ -3601,7 +3600,7 @@
      "chi2": 31.828252,
      "dof": 6,
      "leave_one_out_rms": 0.056839,
-     "leave_one_out_noise_floor": 0.037214,
+     "leave_one_out_noise_floor": 0.02799,
      "accounts": false,
      "fitted_columns": [
       0,
@@ -3661,8 +3660,8 @@
      "chi2": 20.573903,
      "dof": 7,
      "leave_one_out_rms": 0.048806,
-     "leave_one_out_noise_floor": 0.034507,
-     "accounts": true,
+     "leave_one_out_noise_floor": 0.028063,
+     "accounts": false,
      "fitted_columns": [
       [
        0,
@@ -3736,7 +3735,7 @@
      "chi2": 33.169032,
      "dof": 7,
      "leave_one_out_rms": 0.052792,
-     "leave_one_out_noise_floor": 0.028114,
+     "leave_one_out_noise_floor": 0.027979,
      "accounts": false,
      "fitted_columns": [
       [
@@ -3808,7 +3807,7 @@
      "chi2": 28.441814,
      "dof": 7,
      "leave_one_out_rms": 0.047385,
-     "leave_one_out_noise_floor": 0.026669,
+     "leave_one_out_noise_floor": 0.026975,
      "accounts": false,
      "fitted_columns": [
       [
@@ -3876,7 +3875,7 @@
      "chi2": 36.19674,
      "dof": 6,
      "leave_one_out_rms": 0.05644,
-     "leave_one_out_noise_floor": 0.027904,
+     "leave_one_out_noise_floor": 0.0295,
      "accounts": false,
      "fitted_columns": [
       0,
@@ -3939,7 +3938,7 @@
      "chi2": 25.529336,
      "dof": 6,
      "leave_one_out_rms": 0.0482,
-     "leave_one_out_noise_floor": 0.028893,
+     "leave_one_out_noise_floor": 0.031158,
      "accounts": false,
      "fitted_columns": [
       0,
@@ -4274,8 +4273,7 @@
      "dof": 9,
      "leave_one_out_rms": 0.055462,
      "leave_one_out_noise_floor": 0.021317,
-     "accounts": false,
-     "refuted": true
+     "accounts": false
     },
     "measured_qubit": {
      "columns": 2,
@@ -4572,7 +4570,7 @@
      "chi2": 8.752707,
      "dof": 4,
      "leave_one_out_rms": 0.038376,
-     "leave_one_out_noise_floor": 0.032121,
+     "leave_one_out_noise_floor": 0.035344,
      "accounts": true,
      "fitted_columns": [
       0,
@@ -4630,7 +4628,7 @@
      "chi2": 45.419245,
      "dof": 5,
      "leave_one_out_rms": 0.052179,
-     "leave_one_out_noise_floor": 0.024817,
+     "leave_one_out_noise_floor": 0.023949,
      "accounts": false,
      "fitted_columns": [
       [
@@ -4777,7 +4775,7 @@
      "chi2": 59.855841,
      "dof": 5,
      "leave_one_out_rms": 0.063854,
-     "leave_one_out_noise_floor": 0.023938,
+     "leave_one_out_noise_floor": 0.021896,
      "accounts": false,
      "fitted_columns": [
       [
@@ -4845,7 +4843,7 @@
      "chi2": 54.972336,
      "dof": 4,
      "leave_one_out_rms": 0.064528,
-     "leave_one_out_noise_floor": 0.024657,
+     "leave_one_out_noise_floor": 0.025554,
      "accounts": false,
      "fitted_columns": [
       0,
@@ -4908,7 +4906,7 @@
      "chi2": 32.70912,
      "dof": 4,
      "leave_one_out_rms": 0.047952,
-     "leave_one_out_noise_floor": 0.022926,
+     "leave_one_out_noise_floor": 0.024481,
      "accounts": false,
      "fitted_columns": [
       0,

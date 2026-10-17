@@ -121,7 +121,8 @@ Falsifiers, fixed before any fit ran:
 - a lane's ratios are consistent with a lane constant when Q lies at or
   below the 99th percentile of chi-square with n - 1 degrees of freedom
   (p >= 0.01); the model step then reduces to reporting that constant;
-- a model is refuted on a lane when its leave-one-out RMS is at or above the
+- a model other than the lane constant (the baseline, which carries no flag)
+  is refuted on a lane when its leave-one-out RMS is at or above the
   lane constant's, and accounts for the structure when its leave-one-out RMS
   is at most 1.5 times its own floor;
 - the parameter-free idle prediction is refuted when the chi-square of
@@ -429,6 +430,13 @@ def bootstrap_sd(series: list[dict[str, Any]], rng: np.random.RandomState) -> fl
     return float(np.std(draws[0] - draws[1], ddof=1))
 
 
+class EdgeBootstrap:
+    """Pool worker: the bootstrap standard deviation of one edge from its (series, seed) item."""
+
+    def __call__(self, item: tuple[list[dict[str, Any]], list[int]]) -> float:
+        return bootstrap_sd(item[0], np.random.RandomState(item[1]))
+
+
 def structure(y: np.ndarray, sigma: np.ndarray) -> dict[str, Any]:
     """Weighted mean, chi-square against a constant, its p-value and the DerSimonian-Laird excess scatter."""
     w = 1 / np.square(sigma)
@@ -467,7 +475,8 @@ def lane_structure(backend: str, lane: int, series: acf.Series) -> dict[str, Any
     replay = np.array([math.log(2 * atlas.fringe([p["replay"] for p in series[key]])[0]) for key in included])
     sigma_hw = np.array([v["hardware"] for v in noise])
     seed = [BOOTSTRAP_SEED, sorted(acf.RUNS).index(backend), lane]
-    boot = np.array([bootstrap_sd(series[key], np.random.RandomState([*seed, e])) for e, key in enumerate(included)])
+    items = [(series[key], [*seed, e]) for e, key in enumerate(included)]
+    boot = np.array(parallel.ordered_map(EdgeBootstrap(), items, min_items=2))
     ratio = boot / sigma
     return {
         "backend": backend,
@@ -536,12 +545,14 @@ def score(design: np.ndarray, target: np.ndarray, noise: np.ndarray, lower: np.n
         if "unidentified" in entry:
             return entry
     parameters = solve(design, target, lower) if p else np.zeros(0)
-    active = [j for j in range(p) if lower is None or not math.isfinite(lower[j]) or parameters[j] > ACTIVE]
     loo, variance = [], []
     for held in range(n):
         keep = [k for k in range(n) if k != held]
         fit = solve(design[keep], target[keep], lower) if p else np.zeros(0)
         loo.append(target[held] - design[held] @ fit)
+        # The prediction variance propagates through the columns the fold's own
+        # bounded fit leaves off their lower bound.
+        active = [j for j in range(p) if lower is None or not math.isfinite(lower[j]) or fit[j] > ACTIVE]
         weights = design[held, active] @ np.linalg.pinv(design[np.ix_(keep, active)]) if active else np.zeros(n - 1)
         variance.append(noise[held] ** 2 + float(np.sum(np.square(weights) * np.square(noise[keep]))))
     residual = target - design @ parameters
@@ -647,8 +658,8 @@ def lane_fit(
     }
     predicted["refuted"] = bool(predicted["p_value"] < STRUCTURE_P)
     reference = models["lane_constant"]["leave_one_out_rms"]
-    for entry in models.values():
-        if "leave_one_out_rms" in entry:
+    for name, entry in models.items():
+        if name != "lane_constant" and "leave_one_out_rms" in entry:
             entry["refuted"] = bool(entry["leave_one_out_rms"] >= reference)
     offsets = np.array(coherent["measured_offset_rad"])
     phase_reference = acf.rms(offsets - np.mean(offsets))
@@ -958,6 +969,10 @@ def main() -> int:
             fresh = run([backend], [lane for b, lane in selected if b == backend])
             unnamed = sorted(set(fresh["inputs"]) - set(retained["inputs"]))
             require(not unnamed, f"{args.check}: the rerun read files the result does not name: {unnamed}")
+            for block in ("bootstrap", "models"):
+                acf.compare(retained[block], fresh[block], f"{block}")
+            for name, path in fresh["runs"].items():
+                acf.compare(retained["runs"].get(name), path, f"runs.{name}")
             for kind in ("structure", "lanes"):
                 by_lane = {item["lane"]: item for item in fresh[kind]}
                 for item in retained[kind]:
