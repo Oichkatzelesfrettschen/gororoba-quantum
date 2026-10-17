@@ -142,7 +142,7 @@ quota and exited 0. Its `gpu_env.json` lists no failure, nvidia-smi listed
 both T4s, and both Bell runs report device GPU, the cuStateVec run with
 `cuStateVec_enable` true. All 35 rows ran uncontended, every GPU row reports
 device GPU, and every cuStateVec row reports `cuStateVec_enable` true; gate
-core-440 rechecks the record. The timings and the two-GPU metadata are in
+core-450 rechecks the record. The timings and the two-GPU metadata are in
 `docs/evidence/aer_gpu_configuration/README.md`.
 
 ## Reading the result

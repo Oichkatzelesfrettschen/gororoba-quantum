@@ -78,7 +78,7 @@ Tesla T4s (15,360 MiB each, compute capability 7.5, driver 580.178.04) with
 `qiskit_aer`, cuquantum-cu11 24.8.0 (custatevec-cu11 1.6.0.post1). The
 preflight in `gpu_env.json` lists no failure, and both Bell runs report
 device GPU. Every GPU row reports device GPU, every cuStateVec row
-`cuStateVec_enable` true, and no row is contended. Gate core-440 runs
+`cuStateVec_enable` true, and no row is contended. Gate core-450 runs
 `--check` on the record in normal and optimized mode.
 
 ms per shot at 2048 shots:
