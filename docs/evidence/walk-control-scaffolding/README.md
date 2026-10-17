@@ -115,8 +115,8 @@ member have a law that needs no two-qubit gate:
 - A **product output** has an entangling unitary that maps its prepared
   input to a product state, so every CZ it executes is optional for its law.
 
-Of 1304 distinct members, 272 are local unitaries, 20 product outputs and
-950 entangling; 62 member names carry mid-circuit measurement, reset or
+Of 1306 distinct members, 272 are local unitaries, 20 product outputs and
+950 entangling; 64 member names carry mid-circuit measurement, reset or
 control flow and stay unchecked. Thirty members execute CZ their law does
 not need, and each matches a declaration naming what it measures. Ten local
 unitaries carry 144 scaffold CZ each before routing (`SCAFFOLD_CONTROLS`):

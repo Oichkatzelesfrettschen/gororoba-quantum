@@ -9,7 +9,7 @@
  ],
  "optimization_level": 3,
  "seed_transpiler": 11,
- "groups": 161,
+ "groups": 162,
  "superseded_configurations": [
   {
    "run": "results/live/2026-10-13T163154.032617Z",
@@ -17,7 +17,7 @@
    "missing_field": "measure_dt"
   }
  ],
- "distinct_members": 1304,
+ "distinct_members": 1306,
  "entangling_members": 950,
  "unchecked": {
   "mid-circuit measurement, reset or control flow": [
@@ -37,6 +37,8 @@
    "folded_qpe_s3",
    "hybrid_shor_N15_a2",
    "hybrid_shor_N15_a2_null",
+   "n21_encoded_feedback",
+   "n21_encoded_no_feedback",
    "n21_feedback",
    "n21_no_feedback",
    "n21_orbit_extra_readout_feedback",
