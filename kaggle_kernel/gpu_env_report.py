@@ -1,11 +1,12 @@
-"""What the GPU entry environment holds, printed as one JSON line; kernel_main.gpu_interpreter runs it with -I.
+"""What the GPU entry environment holds, printed as one JSON line; kernel_main.gpu_interpreter runs it as the entry.
 
 argv[1] is a JSON list of distribution names. The report gives each name's
 installed version, the distributions whose files install the imported
 qiskit_aer/__init__.py, Aer's available devices, numpy's build
 configuration, and one seeded Bell circuit run on the GPU without and with
 cuStateVec_enable, each with the device and cuStateVec_enable its result
-metadata reports or the error it raised.
+metadata reports or the error it raised, and every sys.path entry outside
+the venv, the standard library and this script's directory.
 """
 
 from __future__ import annotations
@@ -14,6 +15,7 @@ import importlib.metadata
 import json
 import pathlib
 import sys
+import sysconfig
 from typing import Any
 
 
@@ -28,6 +30,20 @@ def owners(module_file: str) -> list[str]:
             and pathlib.Path(str(dist.locate_file(item))).resolve() == init
         }
     )
+
+
+def foreign_paths() -> list[str]:
+    """sys.path entries that are neither under the venv's prefix, the standard library, nor this script's directory."""
+    stdlib = pathlib.Path(sysconfig.get_paths()["stdlib"]).resolve()
+    allowed = {stdlib, stdlib / "lib-dynload", pathlib.Path(__file__).resolve().parent}
+    prefix = pathlib.Path(sys.prefix).resolve()
+    found = []
+    for entry in sys.path:
+        path = pathlib.Path(entry or ".").resolve()
+        if path in allowed or path.is_relative_to(prefix) or path.suffix == ".zip" and not path.exists():
+            continue
+        found.append(entry)
+    return found
 
 
 def bell_runs() -> dict[str, dict[str, Any]]:
@@ -72,6 +88,7 @@ def main() -> int:
         "qiskit_aer_version": qiskit_aer.__version__,
         "qiskit_aer_owners": owners(str(qiskit_aer.__file__)),
         "devices": list(AerSimulator().available_devices()),
+        "foreign_paths": foreign_paths(),
         "numpy": json.loads(json.dumps(numpy.show_config(mode="dicts") or {}, default=str)),
         "runs": bell_runs(),
     }

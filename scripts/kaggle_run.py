@@ -385,11 +385,14 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     gpu_env = None
     if getattr(args, "gpu_env", False):
         # A CPU machine lists no GPU, so its kernel stops at the preflight with
-        # exit 4: the run that proves the fallback error on Kaggle itself.
+        # exit 4: the run that proves the fallback error on Kaggle itself. The
+        # bootstrap installs --with groups into the image interpreter, which
+        # the venv's entry never imports.
         require(
             not args.machine.startswith("Tpu") and not smoke and ci_env is None,
             "--gpu-env runs an ENTRY on a GPU or CPU machine without --ci-env",
         )
+        require(not args.with_groups, "--gpu-env installs the repository's pins only; drop --with")
         files.extend(ROOT / name for name in CI_ENV_FILES)
         gpu_env = {"uv": UV_PIN, "aer_pins": list(GPU_ENV_AER_PINS), "gpus": MACHINE_GPUS.get(args.machine, 1)}
     bundled = sorted({path.relative_to(ROOT).as_posix() for path in files})
@@ -831,6 +834,7 @@ def _gpu_env_self_test(data: str) -> None:
         "installed": dict(pins),
         "qiskit_aer_owners": ["qiskit_aer_gpu_cu11"],
         "devices": ["CPU", "GPU"],
+        "foreign_paths": [],
         "runs": {"gpu": run, "custatevec": {**run, "cuStateVec_enable": True}},
     }
     passing = kernel_main.gpu_env_failures(pins, report, 2, 2)
@@ -843,9 +847,24 @@ def _gpu_env_self_test(data: str) -> None:
         "a CPU Bell run": ({**report, "runs": {**report["runs"], "gpu": {**run, "device": "CPU"}}}, 2),
         "cuStateVec off": ({**report, "runs": {**report["runs"], "custatevec": run}}, 2),
         "a raised run": ({**report, "runs": {**report["runs"], "custatevec": {"error": "RuntimeError"}}}, 2),
+        "an image path": ({**report, "foreign_paths": ["/usr/local/lib/python3.13/dist-packages"]}, 2),
+        "an unlisted sys.path": ({key: value for key, value in report.items() if key != "foreign_paths"}, 2),
     }
     for change, (changed, listed) in changes.items():
         require(bool(kernel_main.gpu_env_failures(pins, changed, 2, listed)), f"gpu_env_failures passes {change}")
+    with tempfile.TemporaryDirectory() as scratch:
+        try:
+            build_kernel(
+                argparse.Namespace(**{**vars(build_args), "with_groups": ["quantum-tools"]}),
+                Path(scratch) / "run",
+                "owner",
+                "2000-01-01T000000Z",
+                "0" * 40,
+            )
+        except SystemExit:
+            pass
+        else:
+            raise SystemExit("kaggle_run self-test: --gpu-env accepted a --with group")
 
 
 def _killed_entry_self_test() -> None:
