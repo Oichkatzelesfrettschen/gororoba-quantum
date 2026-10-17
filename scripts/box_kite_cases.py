@@ -14,9 +14,15 @@ from cd_core. Five products come out of one census read:
   SMOKE_PATTERNS predicate. A remote QX run establishes that the emitted
   cQASM passes the platform's parser, bit order, gate set and angle grid; the
   state-vector checks below already establish the unitary.
+- The Tuna-17 pre-T0 batch (box_kite_tuna_pre/: X, a per-qubit barrier run
+  and X on all 17 qubits, then readout-0 and readout-1), which separates an
+  under-rotated X from |1> misassignment on Q0 and Q6 and re-reads the
+  layout's readout before T0, and its 10-qubit QX twin.
 - The Tuna-17 series T0 (depth ladder), T1 (edge-sign classification and
   twist), coherence and walk, each batch one witness circuit plus readout-0
   and readout-1, and the relabeled QX twin of every witness circuit.
+  Each stage's preregistered block carries its numeric thresholds, which
+  scripts/box_kite_analysis.py reads from the retained manifests.
 - Families (d1)-(d3) and (e), exhaustive in memory (series_de(): 149 QX
   circuits, the associator-sign witnesses on fixed triples, fixed pairs with
   uniform k and fixed i with uniform (j, k), and the full-encoding coherence
@@ -106,6 +112,7 @@ import json
 import math
 import re
 import sys
+import tempfile
 from collections.abc import Callable
 from fractions import Fraction
 from pathlib import Path
@@ -116,10 +123,12 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from qi_platform import HARDWARE_BATCH_CIRCUITS, declared_qubits  # noqa: E402
 from qi_zero_divisor_cases import (  # noqa: E402
     EXCLUDED_QUBITS,
+    READOUT_EXCLUDED,
     TUNA17,
     catalogue_backends,
     header,
     readout_circuits,
+    visibility_excluded,
 )
 
 import parallel  # noqa: E402
@@ -250,8 +259,35 @@ WALKS = (
     ("walk_ij_strut_omit_last", (2, 11, 3), "star_11", True),
 )
 TUNA_STAGES = ("t0", "t1", "coherence", "walk")
+# Per-batch sanity limits of every Tuna-17 stage. An idle qubit of a witness
+# circuit reads within IDLE_MARGIN of its own readout-0 P1; a replica's
+# outcome moved onto an idle position (a reversed bit order) leaves it.
+READOUT_0_P1_MAX = 0.10
+READOUT_1_P1_MIN = 0.80
+BRIGHT_P_MIN = 0.7
+IDLE_MARGIN = 0.15
+# Two-sided 99% normal quantile; the T0 depth-1 bound is C(1) + Z99 SE.
+Z99 = 2.5758293035489004
+T0_C1_FLOOR = 0.5
+T0_R_RANGE = (0.87, 0.97)
+T0_C1_PREDICTION = (0.72, 0.82)
+BOOTSTRAP_DRAWS = 4000
+BOOTSTRAP_SEED = 20261017
+T1_SAME_ABOVE, T1_OPPOSITE_BELOW, T1_STRUT_BELOW = 0.4, -0.4, 0.2
+NULL_OFFSET, SIGMA = 0.1, 3.0
+RY_DETERMINISTIC_MIN = 0.9
+# Pre-T0 double-X batch (claim proposed-tuna17-q0-q6-double-x-discriminator).
+PRE_SHOTS = FOLLOW_SHOTS
+PRE_CLAIM = "proposed-tuna17-q0-q6-double-x-discriminator"
+RESEARCH_STATE = ROOT / "docs/state/research_state.json"
+PRE_PREDICTIONS = {"under_rotation": {"0": 0.98, "6": 0.52}, "misassignment": {"0": 0.038, "6": 0.013}}
+PRE_FAULT_P1_GIVEN_1_BELOW = {"0": 0.7, "6": 0.3}
+PRE_UNDER_ROTATION_ABOVE = {"0": 0.5, "6": 0.25}
+PRE_MISASSIGNMENT_BELOW = {"0": 0.1, "6": 0.1}
+PRE_READMISSION = (5, 6, 7, 9)
 CASE_DIRECTORIES = (
     "box_kite_a_qx",
+    "box_kite_tuna_pre",
     "box_kite_tuna_t0",
     "box_kite_tuna_t1",
     "box_kite_tuna_coherence",
@@ -1090,11 +1126,19 @@ def validate_series(files: dict[str, str], backend: dict[str, Any]) -> None:
             if row["kind"] == "readout" and row.get("replicas"):
                 raise ValueError(f"{name}/{row['file']}: a readout circuit carries replicas")
             if manifest["dialect"] == "tuna":
-                check_tuna_text(f"{name}/{row['file']}", text, witness=row["kind"] != "readout")
+                check_tuna_text(f"{name}/{row['file']}", text, witness=row["kind"] == "witness")
+            if row["kind"] == "diagnostic" and "ideal_p1" in row:
+                check_double_x(f"{name}/{row['file']}", text)
             listed.add(f"{name}/{row['file']}")
         if manifest["dialect"] == "tuna":
+            # A diagnostic circuit (the pre-T0 double X) addresses every qubit by design;
+            # a witness keeps to the admitted layout.
             kinds = [row["kind"] for row in circuits]
-            if kinds != ["witness", "readout", "readout"] or batch["files"][1:] != ["readout-0.cq", "readout-1.cq"]:
+            if (
+                kinds[0] not in ("witness", "diagnostic")
+                or kinds[1:] != ["readout", "readout"]
+                or batch["files"][1:] != ["readout-0.cq", "readout-1.cq"]
+            ):
                 raise ValueError(f"{name}: a Tuna batch is one witness circuit, then readout-0 and readout-1")
         listed.add(f"{name}/cases.json")
     if listed | {"cases.json"} != set(files):
@@ -1405,13 +1449,25 @@ def tuna_witnesses(census: dict[str, Any], rows: dict[str, list[Row]]) -> dict[s
     return stages
 
 
+def sanity_thresholds() -> dict[str, float]:
+    return {
+        "readout_0_p1_at_most": READOUT_0_P1_MAX,
+        "readout_1_p1_at_least": READOUT_1_P1_MIN,
+        "bright_p_selector_zero_at_least": BRIGHT_P_MIN,
+        "idle_p1_above_readout_0_at_most": IDLE_MARGIN,
+    }
+
+
 def tuna_preregistered() -> dict[str, dict[str, Any]]:
     stop = (
-        "each batch: every job completed with the manifest's shots; readout-0 P1 at most 0.10 and readout-1 P1 at "
-        "least 0.80 on every used qubit (a failure stops the series and re-plans the layout); every bright or "
-        "reference replica at P(selector = 0) at least 0.7; circuit digests equal cases.json; the account's queue "
-        "empty; a 120 s pause before the next batch"
+        f"each batch: every job completed with the manifest's shots; readout-0 P1 at most {READOUT_0_P1_MAX:.2f} "
+        f"and readout-1 P1 at least {READOUT_1_P1_MIN:.2f} on every used qubit (a failure stops the series and "
+        f"re-plans the layout); every bright or reference replica at raw P(selector = 0) at least {BRIGHT_P_MIN:g}; "
+        f"every qubit the witness leaves idle at P1 at most {IDLE_MARGIN:g} above its readout-0 P1 (bit-order "
+        "conformance); circuit digests equal cases.json; the account's queue empty; a 120 s pause before the next "
+        "batch"
     )
+    sanity = sanity_thresholds()
     corrected = (
         "P(selector = 0) corrected for the selector's readout assignment from the readout-0 and readout-1 circuits "
         "of the same batch"
@@ -1429,29 +1485,52 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
             "confound": "the dark replica of each depth sits on one pair in one batch and its brights on the other "
             "two, so C(n) carries that pair's and batch's offset against the mean of the others; the square "
             "balances pair and batch main effects across depths, and a pair x depth interaction stays inside r",
-            "fit": "r = exp(slope) of the weighted least-squares line of ln C(n) on n over n = 1, 5, 9; its 99% "
-            "interval from a parametric bootstrap of the binomial counts and each batch's readout pair",
-            "predictions": "C(1) in [0.72, 0.82]; C(9) / C(1) = r^8 with r in [0.87, 0.96], central 0.955",
-            "falsifier": "the pooled depth-1 contrast with its 99% upper bound below 0.5 refutes the shallow "
-            "admission and ends the Tuna-17 program; a 99% interval of r disjoint from [0.87, 0.97] refutes the "
-            "planning range and resizes T1, coherence and walk before they run",
+            "fit": "r = exp(slope) of the weighted least-squares line of ln C(n) on n over n = 1, 5, 9, weights "
+            "C(n)^2 / Var C(n); its two-sided 99% interval from the 0.5 and 99.5 percentiles of a parametric "
+            f"bootstrap ({BOOTSTRAP_DRAWS} draws, seed {BOOTSTRAP_SEED}) of the binomial counts and each batch's "
+            "readout pair",
+            "predictions": f"C(1) in [{T0_C1_PREDICTION[0]}, {T0_C1_PREDICTION[1]}]; C(9) / C(1) = r^8 with r in "
+            "[0.87, 0.96], central 0.955",
+            "falsifier": f"the pooled depth-1 contrast with its 99% upper bound C(1) + {Z99:.4f} SE below "
+            f"{T0_C1_FLOOR} refutes the shallow admission and ends the Tuna-17 program; a 99% interval of r disjoint "
+            f"from [{T0_R_RANGE[0]}, {T0_R_RANGE[1]}] refutes the planning range and resizes T1, coherence and walk "
+            "before they run",
             "stop_rule": stop,
+            "thresholds": {
+                **sanity,
+                "depths": list(T0_DEPTHS),
+                "depth_1_contrast_upper_bound_floor": T0_C1_FLOOR,
+                "upper_bound_z": Z99,
+                "r_planning_range": list(T0_R_RANGE),
+                "c1_prediction": list(T0_C1_PREDICTION),
+                "bootstrap_draws": BOOTSTRAP_DRAWS,
+                "bootstrap_seed": BOOTSTRAP_SEED,
+                "interval_percentiles": [0.5, 99.5],
+            },
         },
         "t1": {
             "observable": "zero-product success; classification statistic D = Pc(+, -) - Pc(+, +) per row from its "
-            "two replicas on one pair, batch-01 minus batch-00",
+            "two replicas on one pair, the y_sign -1 replica minus the y_sign +1 replica",
             "rows": "opposite-sign edge (1,10)(4,15) of kite 3 on (1, 4), its census twist the same-sign edge "
             "(4,10)(1,15) of kite 6 on (10, 13), strut (1,10)(2,9) of kite 3 on (12, 14); batch-00 holds the edge "
             "at y_sign +1, the twist at -1 and the strut at +1, batch-01 the opposite signs",
             "predictions": "D = -1 opposite edge, +1 twist (same-sign edge), 0 strut; P(edge, y) = P(twist, -y) "
             "under the twist map (L, U, x; L', U', y) -> (L', U, x; L, U', -y)",
-            "classification": "D above +0.4 same-sign, below -0.4 opposite-sign, |D| below 0.2 strut, otherwise "
-            "unresolved; predicted |D| on edges at least 0.72 (pessimistic)",
+            "classification": f"D above +{T1_SAME_ABOVE} same-sign, below {T1_OPPOSITE_BELOW} opposite-sign, |D| "
+            f"below {T1_STRUT_BELOW} strut, otherwise unresolved; predicted |D| on edges at least 0.72 (pessimistic)",
             "falsifier": "a row misclassified or unresolved refutes the separation estimate for its pair; a strut "
-            "with |D| > 0.1 + 3 sigma exposes a pair-dependent bias the analysis carries; a twist pair whose Pc "
-            "differ by more than 3 combined standard errors plus the pair-location allowance (the difference of "
-            "the two pairs' depth-1 bright Pc in T0) refutes twist equality for that layout",
+            f"with |D| > {NULL_OFFSET} + {SIGMA:g} sigma exposes a pair-dependent bias the analysis carries; a twist "
+            f"pair whose Pc differ by more than {SIGMA:g} combined standard errors plus the pair-location allowance "
+            "(the difference of the two pairs' depth-1 bright Pc in T0) refutes twist equality for that layout",
             "stop_rule": stop,
+            "thresholds": {
+                **sanity,
+                "same_sign_above": T1_SAME_ABOVE,
+                "opposite_sign_below": T1_OPPOSITE_BELOW,
+                "strut_abs_below": T1_STRUT_BELOW,
+                "null_offset": NULL_OFFSET,
+                "sigma": SIGMA,
+            },
         },
         "coherence": {
             "observable": "coherence reconstruction of the selector-0 branch: <X_d | a = 0> on setting X (H on d), "
@@ -1460,9 +1539,20 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
             "rows": "bright same-sign edge (4,10)+ x (1,15)- of kite 6 on (1, 4), strut (1,10)+ x (2,9)+ of kite 3 "
             "on (10, 13), the reference (1,10)+ x (4,15)+ (P = 1) on (12, 14)",
             "predictions": "edge <X_d> = 2 census coherence_selector_0 = -1 and <Y_d> = 0; strut <X_d> = <Y_d> = 0",
-            "falsifier": "sign(<X_d>) opposite to the census coherence at |z| > 3 on the edge, or |<X_d>| above "
-            "0.1 + 3 sigma on the strut",
+            "falsifier": f"sign(<X_d>) opposite to the census coherence at |z| > {SIGMA:g} on the edge, or |<X_d>| "
+            f"above {NULL_OFFSET} + {SIGMA:g} sigma on the strut",
+            "uncertainty": "the selector-0 conditional is corrected by inverting the tensor product of the selector's "
+            "and the data qubit's assignment matrices on the joint (a, d) counts; its standard error is the standard "
+            f"deviation of a parametric bootstrap ({BOOTSTRAP_DRAWS} draws, seed {BOOTSTRAP_SEED}) of the joint "
+            "counts and the batch's readout pair",
             "stop_rule": stop,
+            "thresholds": {
+                **sanity,
+                "null_offset": NULL_OFFSET,
+                "sigma": SIGMA,
+                "bootstrap_draws": BOOTSTRAP_DRAWS,
+                "bootstrap_seed": BOOTSTRAP_SEED,
+            },
         },
         "walk": {
             "observable": "associator-sign interference witness <Z_c> = 2 Pc(c = 0) - 1 of the fixed-triple walk",
@@ -1470,11 +1560,13 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
             "and (2,3,10) jk-same-vertex-third-strut omega -1 (4 CNOT, path 8-11-13), and the omit-last-block "
             "control of (2,11,3); each with the reference on (1, 4)",
             "predictions": "<Z_c> = omega = -1 on both walks, 0 on the control",
-            "falsifier": "sign(<Z_c>) opposite to omega at |z| > 3, or the control's |<Z_c>| above 0.1 + 3 sigma",
+            "falsifier": f"sign(<Z_c>) opposite to omega at |z| > {SIGMA:g}, or the control's |<Z_c>| above "
+            f"{NULL_OFFSET} + {SIGMA:g} sigma",
             "limit": "the walk carries omega as a compiled Z on the control; the hardware establishes coherent return "
             "of the walked register and reads a compiled sign, and an associator-sign witness cannot separate the "
             "octonions from the split octonions",
             "stop_rule": stop,
+            "thresholds": {**sanity, "null_offset": NULL_OFFSET, "sigma": SIGMA},
         },
     }
 
@@ -1496,7 +1588,7 @@ def tuna_series(census_path: Path = CENSUS) -> dict[str, dict[str, str]]:
         "lcu_pairs": [list(p) for p in LCU_PAIRS],
         "walks": {name: {"control": c, "data": list(d)} for name, (c, d) in WALK_LAYOUTS.items()},
     }
-    directories: dict[str, dict[str, str]] = {}
+    directories: dict[str, dict[str, str]] = {"box_kite_tuna_pre": pre_series(tuna, census_path, census, layout)}
     witness_jobs: list[tuple[str, str, list[tuple[str, tuple[int, ...], str]]]] = []
     twin_rows: list[dict[str, Any]] = []
     twin_texts: dict[str, str] = {}
@@ -1563,13 +1655,170 @@ def tuna_series(census_path: Path = CENSUS) -> dict[str, dict[str, str]]:
             f"outside |z| < {Z_LIMIT} at {QX_SHOTS} shots refutes it",
         },
     }
+    # The double-X twin follows the witness twins, so it adds a batch after theirs.
+    pre_row, pre_text = pre_twin()
+    twin_rows.append(pre_row)
+    twin_texts[pre_row["file"]] = pre_text
     twin_files = finish(twin_shared, twin_rows, twin_texts, group="stage")
     validate_series(twin_files, qx)
     directories["box_kite_tuna_twins_qx"] = twin_files
+    pre_text_17 = directories["box_kite_tuna_pre"][f"batch-00/{PRE_FILE}"]
     parallel.ordered_map(
-        verify_text, witness_jobs + [(row["file"], twin_texts[row["file"]], checks_of(row)) for row in twin_rows]
+        verify_text,
+        witness_jobs
+        + [(row["file"], twin_texts[row["file"]], checks_of(row)) for row in twin_rows]
+        + [(PRE_FILE, pre_text_17, double_x_checks(range(TUNA_QUBITS)))],
     )
     return directories
+
+
+PRE_FILE = "double-x.cq"
+
+
+def double_x_lines(qubits: list[int]) -> list[str]:
+    """X on each qubit, a per-qubit barrier run, X again: a merge pass that cancels adjacent X pairs meets a barrier."""
+    return [f"X q[{q}]" for q in qubits] + [f"barrier q[{q}]" for q in qubits] + [f"X q[{q}]" for q in qubits]
+
+
+def double_x_text(nqubits: int) -> str:
+    comment = "// double X on every qubit, a per-qubit barrier run between the two layers; ideal P1 0 on every qubit"
+    return "\n".join(
+        header(nqubits) + [comment, *double_x_lines(list(range(nqubits))), "", "barrier q", "b = measure q", ""]
+    )
+
+
+def check_double_x(file: str, text: str) -> None:
+    """Every declared qubit carries X, its own barrier, X, in that order, and nothing else before the measurement."""
+    sequence: dict[int, list[str]] = {q: [] for q in range(declared_qubits(text))}
+    for line in text.splitlines()[5:]:
+        if not line or line.startswith("//") or line in ("barrier q", "b = measure q"):
+            continue
+        match = GATE_LINE.fullmatch(line)
+        if match is None or match["b"] is not None or match["gate"] not in ("X", "barrier"):
+            raise ValueError(f"{file}: {line!r} is outside the double-X circuit")
+        sequence[int(match["a"])].append(match["gate"])
+    bad = [q for q, ops in sequence.items() if ops != ["X", "barrier", "X"]]
+    if bad:
+        raise ValueError(f"{file}: q{bad} lack the X, barrier, X sequence")
+
+
+def double_x_checks(qubits: Any) -> list[tuple[str, tuple[int, ...], str]]:
+    return [("p_zero", (q,), "1") for q in qubits]
+
+
+def pre_qubits() -> list[int]:
+    """The fault qubits Q0 and Q6 with every qubit of the LCU pairs and the walk layouts, ascending."""
+    used = {0, 6} | {q for pair in LCU_PAIRS for q in pair}
+    used |= {q for control, data in WALK_LAYOUTS.values() for q in (control, *data)}
+    return sorted(used)
+
+
+def pre_twin() -> tuple[dict[str, Any], str]:
+    """The double-X circuit on QX qubits 0-9 for the Tuna qubits pre_qubits() in ascending order."""
+    used = pre_qubits()
+    if len(used) != QX_QUBITS:
+        raise ValueError(f"the double-X twin needs {QX_QUBITS} Tuna qubits; pre_qubits() holds {len(used)}")
+    text = double_x_text(QX_QUBITS)
+    row = {
+        "file": f"twin-{PRE_FILE}",
+        "kind": "diagnostic",
+        "stage": "pre",
+        "tuna_case": f"box_kite_tuna_pre/batch-00/{PRE_FILE}",
+        "qubit_map": {str(q): n for n, q in enumerate(used)},
+        "dropped": [q for q in range(TUNA_QUBITS) if q not in used],
+        "ideal_p1": "0",
+        "falsifier": "any shot with a 1 on any qubit refutes the emitted cQASM",
+    }
+    verify_text((row["file"], text, double_x_checks(range(QX_QUBITS))))
+    return row, text
+
+
+def pre_claim(path: Path = RESEARCH_STATE) -> dict[str, Any]:
+    """The registry entry of PRE_CLAIM; its statement must carry every prediction of PRE_PREDICTIONS."""
+    matches = [c for c in json.loads(path.read_text(encoding="utf-8"))["claims"] if c.get("id") == PRE_CLAIM]
+    if len(matches) != 1:
+        raise ValueError(f"{path.relative_to(ROOT)} holds {len(matches)} claims {PRE_CLAIM}")
+    claim = matches[0]
+    for hypothesis in PRE_PREDICTIONS.values():
+        quoted = " and ".join(f"{hypothesis[q]:g}" for q in ("0", "6"))
+        if quoted not in claim["statement"]:
+            raise ValueError(f"claim {PRE_CLAIM} no longer states the predictions {quoted}")
+    return {"id": PRE_CLAIM, "registry": path.relative_to(ROOT).as_posix(), "statement": claim["statement"]}
+
+
+def pre_series(
+    tuna: dict[str, Any], census_path: Path, census: dict[str, Any], layout: dict[str, Any]
+) -> dict[str, str]:
+    """box_kite_tuna_pre/: one Tuna-17 batch of the double-X diagnostic, readout-0 and readout-1."""
+    lcu = sorted({q for pair in LCU_PAIRS for q in pair})
+    walk = sorted({q for control, data in WALK_LAYOUTS.values() for q in (control, *data)})
+    visibility = set(visibility_excluded())
+    basis = {
+        str(q): [name for name, members in (("readout", READOUT_EXCLUDED), ("visibility", visibility)) if q in members]
+        for q in PRE_READMISSION
+    }
+    if any(not reasons for reasons in basis.values()):
+        raise ValueError(f"a re-admission candidate of {PRE_READMISSION} carries no retained exclusion")
+    fault = ", ".join(f"Q{q} P(1|1) < {v}" for q, v in PRE_FAULT_P1_GIVEN_1_BELOW.items())
+    under = " and ".join(f"Q{q} P(1|XX) > {v}" for q, v in PRE_UNDER_ROTATION_ABOVE.items())
+    mis = " and ".join(f"Q{q} P(1|XX) < {v}" for q, v in PRE_MISASSIGNMENT_BELOW.items())
+    shared = {
+        "schema": CASES_SCHEMA,
+        "family": "tuna_pre",
+        "backend": tuna["identifier"],
+        "backend_type_id": tuna["id"],
+        "nqubits": tuna["nqubits"],
+        "shots": PRE_SHOTS,
+        "dialect": "tuna",
+        "bit_order": "qubit 0 at the rightmost character (Tuna)",
+        "census": census_record(census_path, census),
+        "layout": layout,
+        "encodings": {
+            "double_x": "X on all 17 qubits, a per-qubit barrier run, X on all 17 again, no wait, then the "
+            "measurement; ideal P1 0 on every qubit",
+            "readout": "readout-0 measures all 17 qubits in |0>, readout-1 after X on all 17",
+        },
+        "preregistered": {
+            "observable": "per-qubit raw P(1|0) from readout-0, P(1|1) from readout-1 and P(1|XX) from double-x, "
+            "each with its binomial standard error",
+            "claim": pre_claim(),
+            "predictions": "raw P(1|XX): Q0 0.98 and Q6 0.52 under X under-rotation by the angle the zero-wait "
+            "P(1|1) implies, Q0 0.038 and Q6 0.013 (the idle floor) under |1> misassignment",
+            "precondition": f"the batch's own readout pair still shows the fault ({fault}); otherwise the batch "
+            "reports fault-recovered and the discriminator is not read",
+            "decision": f"{under} favor under-rotation; {mis} favor |1> misassignment; otherwise unresolved",
+            "t0_stop_rule": f"any qubit of the LCU pairs {lcu} or of the walk set {walk} with readout-1 P1 below "
+            f"{READOUT_1_P1_MIN:.2f} or readout-0 P1 above {READOUT_0_P1_MAX:.2f} re-plans the layout before T0",
+            "readmission": f"each of q{', q'.join(map(str, PRE_READMISSION))} is readout-admissible when readout-0 P1 "
+            f"<= {READOUT_0_P1_MAX:.2f} and readout-1 P1 >= {READOUT_1_P1_MIN:.2f}; a qubit also excluded by the "
+            "Ramsey visibility floor stays excluded until a fresh Ramsey run clears it",
+            "limit": "the readout pair and the double X run at one calibration; leakage, whose X train plateaus "
+            "instead of oscillating, needs X trains of three and more",
+            "stop_rule": "each batch: every job completed with the manifest's shots; circuit digests equal "
+            "cases.json; the batch measures excluded qubits by design, so its readout limits act through the T0 "
+            "stop rule and the re-admission rule",
+            "thresholds": {
+                "fault_p1_given_1_below": PRE_FAULT_P1_GIVEN_1_BELOW,
+                "under_rotation_p1_xx_above": PRE_UNDER_ROTATION_ABOVE,
+                "misassignment_p1_xx_below": PRE_MISASSIGNMENT_BELOW,
+                "predictions_p1_xx": PRE_PREDICTIONS,
+                "readout_0_p1_at_most": READOUT_0_P1_MAX,
+                "readout_1_p1_at_least": READOUT_1_P1_MIN,
+                "t0_lcu_qubits": lcu,
+                "t0_walk_qubits": walk,
+                "readmission": basis,
+            },
+        },
+    }
+    texts = {PRE_FILE: double_x_text(TUNA_QUBITS), **readout_circuits(TUNA_QUBITS)}
+    chunk = [
+        {"file": PRE_FILE, "kind": "diagnostic", "stage": "pre", "ideal_p1": "0"},
+        {"file": "readout-0.cq", "kind": "readout", "stage": "pre", "prepared": 0},
+        {"file": "readout-1.cq", "kind": "readout", "stage": "pre", "prepared": 1},
+    ]
+    files = write_batches(shared, [chunk], texts, "stage")
+    validate_series(files, tuna)
+    return files
 
 
 def twin(witness: dict[str, Any], text: str, source: str) -> tuple[dict[str, Any], str]:
@@ -2079,9 +2328,10 @@ def ry_series(census_path: Path = CENSUS) -> dict[str, dict[str, str]]:
         "are settled",
         "preregistered": {
             "observable": "completion or failure of each job, and its counts read with qubit 0 leftmost",
-            "falsifier": "a completed job whose counts leave an expected outcome's |z| < 4.5 or show an outcome of "
-            "probability 0 is reported as an emulator rate; a failed job names its factor",
+            "falsifier": f"a completed job whose counts leave an expected outcome's |z| < {Z_LIMIT} or show an "
+            "outcome of probability 0 is reported as an emulator rate; a failed job names its factor",
             "stop_rule": "R1 failing stops the smoke subset, whose circuits declare qubit[9]",
+            "thresholds": {"z_limit": Z_LIMIT, "gating_factor": "R1"},
         },
     }
     ladder_files = finish(ladder, ladder_rows, ladder_texts, group="group")
@@ -2100,9 +2350,10 @@ def ry_series(census_path: Path = CENSUS) -> dict[str, dict[str, str]]:
         "at y_sign +-1, and the (1,10) full Design B dark, bright and fixture witnesses",
         "preregistered": {
             "observable": "zero-product success P(selector = 0) per replica, selector bits read with qubit 0 leftmost",
-            "falsifier": "a deterministic replica below 0.9 of its ideal outcome is reported with the emulator's "
-            "raw rates as an emulator rate, never as an algebraic result",
-            "stop_rule": "a deterministic replica below 0.9 of its ideal outcome stops the series",
+            "falsifier": f"a deterministic replica below {RY_DETERMINISTIC_MIN} of its ideal outcome is reported "
+            "with the emulator's raw rates as an emulator rate, never as an algebraic result",
+            "stop_rule": f"a deterministic replica below {RY_DETERMINISTIC_MIN} of its ideal outcome stops the series",
+            "thresholds": {"deterministic_ideal_fraction_at_least": RY_DETERMINISTIC_MIN, "z_limit": Z_LIMIT},
         },
     }
     smoke_files = finish(smoke, smoke_rows, smoke_texts, group="group")
@@ -2299,6 +2550,21 @@ def self_test() -> None:
     index["batches"][0]["files"] = [row["file"] for row in json.loads(swapped["batch-00/cases.json"])["circuits"]]
     swapped["cases.json"] = json.dumps(index, indent=1) + "\n"
     reject("a Tuna batch whose witness does not lead", lambda: validate_series(swapped, tuna))
+    pre = tuna_dirs["box_kite_tuna_pre"]
+    validate_series(pre, tuna)
+    pre_text = pre[f"batch-00/{PRE_FILE}"]
+    merged = pre_text.replace("\n".join(f"barrier q[{q}]" for q in range(TUNA_QUBITS)) + "\n", "", 1)
+    reject("a double X without its barrier run", lambda: check_double_x(PRE_FILE, merged))
+    reject("a double X read as a witness on the admitted layout", lambda: check_tuna_text(PRE_FILE, pre_text))
+    reject("a double X with one X dropped", lambda: check_double_x(PRE_FILE, pre_text.replace("X q[6]\n", "", 1)))
+    registry = json.loads(RESEARCH_STATE.read_text(encoding="utf-8"))
+    for claim in registry["claims"]:
+        if claim.get("id") == PRE_CLAIM:
+            claim["statement"] = claim["statement"].replace("0.98 and 0.52", "0.90 and 0.52")
+    with tempfile.TemporaryDirectory() as scratch:
+        altered_registry = Path(scratch) / "research_state.json"
+        altered_registry.write_text(json.dumps(registry), encoding="utf-8")
+        reject("a registry claim whose predictions moved", lambda: pre_claim(altered_registry))
     walk = tuna_dirs["box_kite_tuna_walk"]
     walk_row = json.loads(walk["batch-00/cases.json"])["circuits"][0]
     walk_text = walk["batch-00/walk-1.cq"]

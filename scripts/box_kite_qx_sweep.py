@@ -432,6 +432,9 @@ def emulate_cases(directories: list[Path]) -> dict[str, Any]:
             want = "0" if row["file"] == "readout-0.cq" else "1"
             ok = all(set(key) == {want} for key in outcome)
             checks.append({"check": f"readout all {want}", "verdict": "pass" if ok else "refuted"})
+        if row.get("ideal_p1") == "0":
+            ok = all(set(key) == {"0"} for key in outcome)
+            checks.append({"check": "double X all 0", "verdict": "pass" if ok else "refuted"})
         for replica in row.get("replicas", []):
             for kind, qubits, want in cases.replica_checks(replica):
                 if kind == "cz_count":

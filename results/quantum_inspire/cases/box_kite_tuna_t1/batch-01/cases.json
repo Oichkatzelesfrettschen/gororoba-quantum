@@ -61,12 +61,23 @@
   "readout": "readout-0 measures all 17 qubits in |0>, readout-1 after X on all 17"
  },
  "preregistered": {
-  "observable": "zero-product success; classification statistic D = Pc(+, -) - Pc(+, +) per row from its two replicas on one pair, batch-01 minus batch-00",
+  "observable": "zero-product success; classification statistic D = Pc(+, -) - Pc(+, +) per row from its two replicas on one pair, the y_sign -1 replica minus the y_sign +1 replica",
   "rows": "opposite-sign edge (1,10)(4,15) of kite 3 on (1, 4), its census twist the same-sign edge (4,10)(1,15) of kite 6 on (10, 13), strut (1,10)(2,9) of kite 3 on (12, 14); batch-00 holds the edge at y_sign +1, the twist at -1 and the strut at +1, batch-01 the opposite signs",
   "predictions": "D = -1 opposite edge, +1 twist (same-sign edge), 0 strut; P(edge, y) = P(twist, -y) under the twist map (L, U, x; L', U', y) -> (L', U, x; L, U', -y)",
   "classification": "D above +0.4 same-sign, below -0.4 opposite-sign, |D| below 0.2 strut, otherwise unresolved; predicted |D| on edges at least 0.72 (pessimistic)",
   "falsifier": "a row misclassified or unresolved refutes the separation estimate for its pair; a strut with |D| > 0.1 + 3 sigma exposes a pair-dependent bias the analysis carries; a twist pair whose Pc differ by more than 3 combined standard errors plus the pair-location allowance (the difference of the two pairs' depth-1 bright Pc in T0) refutes twist equality for that layout",
-  "stop_rule": "each batch: every job completed with the manifest's shots; readout-0 P1 at most 0.10 and readout-1 P1 at least 0.80 on every used qubit (a failure stops the series and re-plans the layout); every bright or reference replica at P(selector = 0) at least 0.7; circuit digests equal cases.json; the account's queue empty; a 120 s pause before the next batch"
+  "stop_rule": "each batch: every job completed with the manifest's shots; readout-0 P1 at most 0.10 and readout-1 P1 at least 0.80 on every used qubit (a failure stops the series and re-plans the layout); every bright or reference replica at raw P(selector = 0) at least 0.7; every qubit the witness leaves idle at P1 at most 0.15 above its readout-0 P1 (bit-order conformance); circuit digests equal cases.json; the account's queue empty; a 120 s pause before the next batch",
+  "thresholds": {
+   "readout_0_p1_at_most": 0.1,
+   "readout_1_p1_at_least": 0.8,
+   "bright_p_selector_zero_at_least": 0.7,
+   "idle_p1_above_readout_0_at_most": 0.15,
+   "same_sign_above": 0.4,
+   "opposite_sign_below": -0.4,
+   "strut_abs_below": 0.2,
+   "null_offset": 0.1,
+   "sigma": 3.0
+  }
  },
  "batch": "batch-01",
  "stage": "t1",
