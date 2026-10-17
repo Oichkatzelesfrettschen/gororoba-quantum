@@ -2720,6 +2720,22 @@
    "name": "core-353",
    "seconds": 43.1,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "ruff check scripts/aer_gpu_probe.py && ruff format --check scripts/aer_gpu_probe.py && MYPYPATH=gororoba_quantum mypy scripts/aer_gpu_probe.py",
+   "name": "core-366",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/aer_gpu_probe.py --check docs/evidence/aer_gpu_configuration/result.json && \"$PYTHON\" -B -O -W error scripts/aer_gpu_probe.py --check docs/evidence/aer_gpu_configuration/result.json",
+   "name": "core-367",
+   "seconds": 22.6,
+   "tier": "pr"
   }
  ],
  "excluded": [

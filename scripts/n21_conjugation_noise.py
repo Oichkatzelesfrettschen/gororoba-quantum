@@ -349,8 +349,9 @@ def run(challenger: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any
                 optimization_level=OPTIMIZATION_LEVEL, target=backend.target, seed_transpiler=chosen["seed_transpiler"]
             )
             active, qubits = snapshot_laws.restrict_circuit(manager.run(built[name]))
-            # Dynamic circuits stay unbatched: Aer's batched GPU sampler
-            # aborts on if_else (calibration_snapshot.noise_simulator).
+            # On a GPU the simulator batches shots of the circuits without
+            # control flow and runs the feed-forward ones shot by shot
+            # (calibration_snapshot.SnapshotSimulator).
             simulator = calibration_snapshot.noise_simulator(
                 snapshot_laws.restrict(snapshot, qubits), DEVICE, method="statevector"
             )
