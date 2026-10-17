@@ -228,7 +228,8 @@ at those versions, except the linters.
 |---|---|
 | python-qiskit | qiskit 2.5.2 |
 | python-qiskit-ibm-runtime | qiskit-ibm-runtime 0.50.0 |
-| python-qiskit-aer-cuda (provides python-qiskit-aer) | qiskit-aer 0.17.2 |
+| python-qiskit-aer-cuda (provides python-qiskit-aer) | qiskit-aer 0.17.2, pkgrel 2: CUDA Thrust backend for sm_89 with cuQuantum, so `AerSimulator(device="GPU", cuStateVec_enable=True)` runs |
+| cuquantum | cuquantum 26.09.0.8 for CUDA 13 (libcustatevec.so.1 1.15.0, libcutensornet.so.2 2.14.0), repackaged from the vendor archive |
 | python-samplomatic | samplomatic 0.21.0, the runtime 0.50 floor |
 | python-ibm-quantum-schemas | ibm-quantum-schemas 0.12.20260921, the runtime 0.50 floor |
 | python-numpy, python-scipy | numpy 2.5.4, scipy 1.18.1 |
@@ -249,7 +250,12 @@ has a local PKGBUILD over the PyPI sdist: the AUR builds the GitHub tag
 archive, which lacks the randomized-benchmarking `.npz` tables, so
 `qiskit_experiments.library` fails to import. After a rebuild,
 `"$PYTHON" -c "import qiskit, qiskit_ibm_runtime, qiskit_aer"` and a
-submit-free dry run confirm the stack. A Kaggle kernel installs qiskit 2.5.2,
+submit-free dry run confirm the stack. python-qiskit-aer-cuda builds against
+the cuquantum package of the same directory tree and installs in one
+`pacman -U` with it; its PKGBUILD links Aer's BLAS and LAPACK calls to the
+AOCL providers and builds the module as C++20, which CUDA 13's CCCL 3
+headers and fmt 12 require. `docs/notes/build_host/custatevec.md` holds the
+requirement list, the install command and the probe results. A Kaggle kernel installs qiskit 2.5.2,
 qiskit-ibm-runtime 0.50.0 (its fake backends, such as FakeFez, need no
 account) and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel
 stops at 0.15.1) over the Kaggle image's numpy and scipy, records every
