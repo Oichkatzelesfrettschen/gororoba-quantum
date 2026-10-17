@@ -200,7 +200,11 @@ BATCHED_SHOTS_MAX_QUBITS = 16
 
 
 def noise_simulator(
-    snapshot: dict[str, Any], device: str = "CPU", method: str = "density_matrix", batched_shots: bool = False
+    snapshot: dict[str, Any],
+    device: str = "CPU",
+    method: str = "density_matrix",
+    batched_shots: bool = False,
+    custatevec: bool = False,
 ) -> AerSimulator:
     """AerSimulator with live_run.noise_simulator's noise, rebuilt from the snapshot.
 
@@ -211,11 +215,20 @@ def noise_simulator(
     states which sampler produced its counts. qiskit-aer-gpu-cu11 0.17.2
     aborts a batched run of a circuit with control flow (its if_else lowers
     to jump), so only static circuits batch (results/kaggle aer-gpu-probe).
+    custatevec sets Aer's cuStateVec_enable on a GPU statevector run, which
+    routes gate application and sampling through libcustatevec; an Aer built
+    or wheeled without cuQuantum raises at run time. Aer 0.17.2 reports
+    cuStateVec_enable False on a run that also sets batched_shots_gpu, so
+    custatevec with batched_shots raises instead of falling back unseen.
     """
+    if custatevec and batched_shots:
+        raise ValueError("custatevec and batched_shots are exclusive Aer GPU options")
     view, noise = noise_model(snapshot)
     options: dict[str, Any] = {}
     if device == "GPU" and batched_shots:
         options = {"batched_shots_gpu": True, "batched_shots_gpu_max_qubits": BATCHED_SHOTS_MAX_QUBITS}
+    if device == "GPU" and custatevec:
+        options = {"cuStateVec_enable": True}
     return AerSimulator.from_backend(view, noise_model=noise, method=method, device=device, **options)
 
 
