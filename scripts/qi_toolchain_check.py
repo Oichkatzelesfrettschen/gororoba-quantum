@@ -32,11 +32,18 @@ passes this record runs, by the exporter in the platform's control stack;
 quantify-scheduler is absent from the Quantum Inspire environment, so the
 exporter does not run here and the record states only that it is importable.
 
---check runs on the standard library alone (CI): the record must name
-exactly the current case files with their current sha256, and every circuit
-must have analyzed and compiled, so a regenerated case without a rerun fails.
+--out FILE writes the record to FILE in place of the retained path.
 
-Usage: "$QI_PYTHON" scripts/qi_toolchain_check.py
+--check runs on the standard library alone: the record must name exactly
+the current case files with their current sha256, and every circuit must
+have analyzed and compiled, so a regenerated case without a rerun fails.
+When qi_stack.live finds the pinned stack under $QI_PYTHON, --check also
+regenerates the record into a temporary file and requires its bytes to equal
+the retained record's; libqasm's analysis and OpenSquirrel's passes are
+deterministic, so any difference is a changed toolchain or a stale record.
+Without the stack it prints the replay line and checks the record alone.
+
+Usage: "$QI_PYTHON" scripts/qi_toolchain_check.py [--out FILE]
        "$PYTHON" scripts/qi_toolchain_check.py --check
 """
 
@@ -48,11 +55,15 @@ import importlib
 import json
 import re
 import sys
+import tempfile
 import warnings
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+import qi_stack  # noqa: E402
+
 CASES = ROOT / "results/quantum_inspire/cases"
 CATALOGUE = ROOT / "docs/evidence/quantum_inspire/catalogue.json"
 RECORD = ROOT / "docs/evidence/quantum_inspire/toolchain_check.json"
@@ -160,7 +171,7 @@ def compile_circuit(text: str, config: dict[str, Any]) -> str:
     return str(circuit)
 
 
-def generate() -> int:
+def generate(out: Path = RECORD) -> int:
     from importlib.metadata import version
 
     # libqasm 1.2.1's SWIG module warns at import that its builtin types lack
@@ -231,11 +242,11 @@ def generate() -> int:
         },
         "circuits": rows,
     }
-    RECORD.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     changed = sum(not r.get("gate_sequence_preserved", True) for r in rows)
     print(
         f"qi toolchain: {len(rows)} circuits, {failures} failing, {changed} with a compiled gate sequence change "
-        f"-> {RECORD.relative_to(ROOT)}"
+        f"-> {out}"
     )
     return 1 if failures else 0
 
@@ -263,14 +274,31 @@ def check() -> int:
     if bad:
         raise SystemExit(f"{len(bad)} circuits failed analysis or compilation, first {bad[0]}")
     print(f"qi toolchain record: {len(current)} circuits match their bytes, backends and compiler configurations")
+    if qi_stack.live("libqasm and OpenSquirrel", "checked the retained record without recompiling"):
+        regenerate()
     return 0
+
+
+def regenerate() -> None:
+    """The record rebuilt under $QI_PYTHON into temporary storage must equal the retained bytes."""
+    with tempfile.TemporaryDirectory(prefix="qi-toolchain-") as temporary:
+        fresh = Path(temporary) / RECORD.name
+        qi_stack.run(["-B", "-W", "error", str(Path(__file__).resolve()), "--out", str(fresh)])
+        retained, rebuilt = RECORD.read_bytes(), fresh.read_bytes()
+    if rebuilt != retained:
+        old, new = json.loads(retained), json.loads(rebuilt)
+        changed = [row["case"] for row, again in zip(old["circuits"], new["circuits"], strict=True) if row != again]
+        detail = f"first changed circuit {changed[0]}" if changed else f"toolchain {new['toolchain']}"
+        raise SystemExit(f"{RECORD.relative_to(ROOT)} differs from the record regenerated under $QI_PYTHON: {detail}")
+    print(f"qi toolchain live: the record regenerated under $QI_PYTHON equals {RECORD.relative_to(ROOT)} byte for byte")
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--check", action="store_true", help="standard library only: compare the record with the cases")
+    parser.add_argument("--check", action="store_true", help="compare the record with the cases; recompile when live")
+    parser.add_argument("--out", type=Path, default=RECORD, help="where the regenerated record goes")
     args = parser.parse_args()
-    return check() if args.check else generate()
+    return check() if args.check else generate(args.out)
 
 
 if __name__ == "__main__":
