@@ -2888,6 +2888,22 @@
    "name": "core-373",
    "seconds": 15.7,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -O -W error scripts/box_kite_cases.py --check results/quantum_inspire/cases",
+   "name": "core-375",
+   "seconds": 6.3,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_cases.py --self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_cases.py --self-test",
+   "name": "core-376",
+   "seconds": 5.4,
+   "tier": "pr"
   }
  ],
  "excluded": [

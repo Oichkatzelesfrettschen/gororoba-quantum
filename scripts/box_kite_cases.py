@@ -1,11 +1,25 @@
-"""Box-kite zero-product cases for Quantum Inspire, generated from the retained box-kite census.
+"""Box-kite cases for Quantum Inspire, generated from the retained box-kite census.
 
-Family (a) of docs/notes/box_kites/experiment-program.md on the QX emulator:
-every Design B row of docs/evidence/box_kite_census/census.json (840
-within-kite rows, 168 cross-kite controls with the negative fixture
-(1,10)+ x (2,13)-, 168 ordered (l, l^8) pairs) in two encodings, each read
-through the selector's success outcome P(selector = 0) (root AGENTS.md,
-"Zero-product witnesses").
+docs/notes/box_kites/experiment-program.md fixes the design. Every sign comes
+from docs/evidence/box_kite_census/census.json; the generator recomputes none
+from cd_core. Three products come out of one census read:
+
+- Family (a), exhaustive, in memory only: every Design B row (840 within-kite
+  rows, 168 cross-kite controls with the negative fixture (1,10)+ x (2,13)-,
+  168 ordered (l, l^8) pairs) in the full and the reduced encoding, 848 QX
+  circuits. scripts/box_kite_qx_sweep.py runs them on the qxelarator
+  state-vector emulator, the ideal emulator the remote QX backend runs.
+- The QX smoke set, written to box_kite_a_qx/: one replica per gate pattern
+  of family (a), the first census row in census order that matches each
+  SMOKE_PATTERNS predicate. A remote QX run establishes that the emitted
+  cQASM passes the platform's parser, bit order, gate set and angle grid; the
+  state-vector checks below already establish the unitary.
+- The Tuna-17 series T0 (depth ladder), T1 (edge-sign classification and
+  twist), coherence and walk, each batch one witness circuit plus readout-0
+  and readout-1, and the relabeled QX twin of every witness circuit.
+
+Encodings, each read through the selector's success outcome P(selector = 0)
+(root AGENTS.md, "Zero-product witnesses"):
 
 - Full Design B (5 qubits, data 0-3 and selector 4) wraps
   designs.lcu_witness: (L_{e_L} + L_{e_U})/2 on y = (e_L' + y_sign e_U')/sqrt2,
@@ -25,33 +39,51 @@ through the selector's success outcome P(selector = 0) (root AGENTS.md,
   the branches orthogonal, so CNOT(a -> w) marks them and P = 1/2 for every
   sign; the census carries no phases for four-label rows, so the diagonal is
   the identity and the circuit depends on (x_sign, y_sign) alone.
+- Fixed-triple associator walk (control c and the walked data bits): the
+  Hadamard test of W_ij on the basis input |k> moves the data register
+  k -> k^j -> k^j^i -> k under control, one CNOT per set bit of j, i and i^j,
+  and omega(i, j, k) from census associator.deterministic_exemplars enters as
+  a Z on the control after its first H, so P(c = 0) = (1 + omega)/2. Dropping
+  the last block leaves the register branch-marked and P(c = 0) = 1/2.
 
-The generator reads every sign from census.json and recomputes none from
-cd_core. validate_census requires each two-label row's four phases to lie in
-{+1, -1}, to agree over the four sign rows of an ordered pair, to give the
-kite's edge or strut sign products, and to reproduce P, 1 - P and both
-post-selected coherences. Before emission every full Design B replica must
-reproduce its census amplitudes c0, c1, d0, d1 / (2 sqrt2) (the
-designs.lcu_witness state, built on cd_core, against the census), every
-reduced SELECT must equal its two-label restriction as a unitary, and every
-emitted cQASM file is parsed back and simulated by state vector: each packed
-replica's selector marginal must equal its census P. A mismatch raises.
+validate_census requires each two-label row's four phases to lie in {+1, -1},
+to agree over the four sign rows of an ordered pair, to give the kite's edge
+or strut sign products, and to reproduce P, 1 - P and both post-selected
+coherences. Before emission every full Design B replica must reproduce its
+census amplitudes c0, c1, d0, d1 / (2 sqrt2) (the designs.lcu_witness state,
+built on cd_core, against the census), every reduced SELECT must equal its
+two-label restriction as a unitary, and every emitted cQASM file is parsed
+back and simulated by state vector on the qubits it uses: each replica's
+selector (or control) marginal, each coherence setting's conditional data
+marginal and each padded replica's CZ count must equal the prediction. A
+mismatch raises.
 
 QX serves 10 qubits, so pack() places two full replicas (slots 0-4, 5-9),
-five reduced replicas or three cross-kite replicas per circuit. A batch holds
-at most qi_platform.HARDWARE_BATCH_CIRCUITS circuits, the cap every retained
-case directory meets, and batches never mix sub-families. Full Design B
+five reduced replicas or three cross-kite replicas per circuit. Full Design B
 compiles at optimization level 0 to H, X, Z, S, Sdag, Rz and CNOT; each Rz
 angle snaps to a multiple of pi/64 and prints from that integer, so the
-emitted bytes do not depend on the host's floating-point library. Bit strings
-put qubit 0 at the rightmost character (QX).
+emitted bytes do not depend on the host's floating-point library.
 
---write DIR writes DIR/box_kite_a_qx/ (batch-NNN/ cases and the series
-cases.json); --check DIR regenerates in memory and compares file sets and
-bytes; --self-test requires census, circuit, packing and manifest mutations
-to be rejected.
+Tuna-17 circuits declare qubit[17], use H, S, Sdag, Z, X and CZ (CNOT is
+H CZ H on the target), carry no rotation and no binary-controlled gate, and
+touch only the admitted layout: the LCU pairs of LCU_PAIRS (selector first),
+the walk star WALK_LAYOUTS["star_11"] and path WALK_LAYOUTS["path_8_11_13"],
+none of TUNA_EXCLUDED or TUNA_AVOIDED, every CZ on a TUNA17 coupler. Depth
+padding repeats CZ on the replica's own pair in identity pairs with a
+per-qubit barrier run before each repeat, so a compiler pass that cancels
+adjacent CZ pairs meets a barrier. A batch holds at most
+qi_platform.HARDWARE_BATCH_CIRCUITS circuits: one witness circuit, then
+qi_zero_divisor_cases.readout_circuits(17). twin() moves the identical gate
+list of each witness circuit onto QX qubits 0-9 (map recorded). Bit strings
+put qubit 0 at the rightmost character (QX and Tuna).
 
-Usage: "$PYTHON" scripts/box_kite_cases.py (--write DIR | --check DIR | --self-test)
+--write DIR writes every case directory of CASE_DIRECTORIES under DIR (each
+batch-NN/ cases and a series cases.json); --check DIR regenerates in memory
+and compares file sets and bytes; --summary prints circuits, batches, shots
+and replicas per directory; --self-test requires census, circuit, layout,
+packing and manifest mutations to be rejected.
+
+Usage: "$PYTHON" scripts/box_kite_cases.py (--write DIR | --check DIR | --summary | --self-test)
 """
 
 from __future__ import annotations
@@ -63,6 +95,7 @@ import json
 import math
 import re
 import sys
+from collections.abc import Callable
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
@@ -70,7 +103,13 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from qi_platform import HARDWARE_BATCH_CIRCUITS, declared_qubits  # noqa: E402
-from qi_zero_divisor_cases import header  # noqa: E402
+from qi_zero_divisor_cases import (  # noqa: E402
+    EXCLUDED_QUBITS,
+    TUNA17,
+    catalogue_backends,
+    header,
+    readout_circuits,
+)
 
 import parallel  # noqa: E402
 
@@ -84,6 +123,12 @@ QX_IDENTIFIER = "QXsinglenodesimulator"
 QX_BACKEND_TYPE_ID = 1
 QX_QUBITS = 10
 QX_SHOTS = 2048
+TUNA_IDENTIFIER = "tuna_17"
+TUNA_QUBITS = 17
+# T0 reads a contrast near 0.1 at depth 9 against binomial noise, so it takes
+# the larger shot count; the later stages read deterministic or 1/2 rates.
+T0_SHOTS = 16384
+FOLLOW_SHOTS = 4096
 # Rz angles of the compiled full Design B are multiples of pi/ANGLE_GRID.
 ANGLE_GRID = 64
 ANGLE_TOLERANCE = 1e-9
@@ -93,6 +138,7 @@ Z_LIMIT = 4.5
 FULL_BASIS = ["cx", "rz", "h", "x", "z", "s", "sdg"]
 DIALECTS: dict[str, dict[str, str]] = {
     "qx": {"h": "H", "x": "X", "z": "Z", "s": "S", "sdg": "Sdag", "cx": "CNOT", "cz": "CZ", "rz": "Rz"},
+    "tuna": {"h": "H", "x": "X", "z": "Z", "s": "S", "sdg": "Sdag", "cz": "CZ"},
 }
 TWO_QUBIT = {"cx", "cz"}
 SQRT8 = 2.0 * math.sqrt(2.0)
@@ -118,6 +164,79 @@ SUB_FAMILIES = (
 )
 
 Row = dict[str, Any]
+
+
+def is_edge(row: Row) -> bool:
+    return str(row["relation"]).startswith("edge_")
+
+
+def signs(row: Row, x: int, y: int) -> bool:
+    return bool(row["x_sign"] == x and row["y_sign"] == y)
+
+
+# Smoke patterns of family (a): (name, encoding, census source, selection
+# rule, predicate). The sign variants select edge rows because a strut gives
+# P = 1/2 at both signs (P(x_sign) + P(-x_sign) = 1), so a dropped selector Z
+# or a wrong data phase would read correctly there. Reduced non-kite rows
+# share the strut's Sdag-CNOT-S SELECT and P = 1/2 and add no pattern.
+SMOKE_PATTERNS: tuple[tuple[str, str, str, str, Callable[[Row], bool]], ...] = (
+    ("edge_dark", "full", "within_kite", "first edge row with signs (+, +) and P = 0",
+     lambda r: is_edge(r) and signs(r, 1, 1) and r["p_selector_zero"] == "0"),
+    ("edge_bright", "full", "within_kite", "first edge row with signs (+, +) and P = 1",
+     lambda r: is_edge(r) and signs(r, 1, 1) and r["p_selector_zero"] == "1"),
+    ("strut", "full", "within_kite", "first strut row with signs (+, +)",
+     lambda r: r["relation"] == "strut" and signs(r, 1, 1)),
+    ("edge_x_minus", "full", "within_kite", "first edge row with signs (-, +)",
+     lambda r: is_edge(r) and signs(r, -1, 1)),
+    ("edge_y_minus", "full", "within_kite", "first edge row with signs (+, -)",
+     lambda r: is_edge(r) and signs(r, 1, -1)),
+    ("cross_kite", "full", "cross_kite_controls", "first cross-kite control row", lambda r: True),
+    ("nonkite", "full", "nonkite_pairs", "first (l, l^8) row", lambda r: True),
+    ("fixture", "full", "negative_fixture", "the negative fixture (1,10)+ x (2,13)-", lambda r: True),
+    ("edge_dark", "reduced", "within_kite", "first edge row with signs (+, +) and P = 0 (local-Z SELECT)",
+     lambda r: is_edge(r) and signs(r, 1, 1) and r["p_selector_zero"] == "0"),
+    ("edge_bright", "reduced", "within_kite", "first edge row with signs (+, +) and P = 1 (local-Z SELECT)",
+     lambda r: is_edge(r) and signs(r, 1, 1) and r["p_selector_zero"] == "1"),
+    ("strut", "reduced", "within_kite", "first strut row with signs (+, +) (Sdag-CNOT-S SELECT)",
+     lambda r: r["relation"] == "strut" and signs(r, 1, 1)),
+    ("edge_x_minus", "reduced", "within_kite", "first edge row with signs (-, +)",
+     lambda r: is_edge(r) and signs(r, -1, 1)),
+    ("edge_y_minus", "reduced", "within_kite", "first edge row with signs (+, -)",
+     lambda r: is_edge(r) and signs(r, 1, -1)),
+    ("cross_kite", "reduced_cross", "cross_kite_controls", "first cross-kite control row", lambda r: True),
+    ("fixture", "reduced_cross", "negative_fixture", "the negative fixture (1,10)+ x (2,13)-", lambda r: True),
+)  # fmt: skip
+
+# Admitted Tuna-17 layout (program section 4(g)). TUNA_EXCLUDED must equal
+# qi_zero_divisor_cases.EXCLUDED_QUBITS, the readout and visibility exclusions
+# derived from the retained records; q15 reads P(0|1) 0.270 and stays out.
+TUNA_EXCLUDED = (0, 5, 6, 7, 9)
+TUNA_AVOIDED = (15,)
+LCU_PAIRS = ((1, 4), (10, 13), (12, 14))
+WALK_LAYOUTS: dict[str, tuple[int, tuple[int, ...]]] = {"star_11": (11, (8, 13, 14)), "path_8_11_13": (11, (8, 13))}
+# The walk circuits place the reference replica on the LCU pair that shares
+# the fewest couplers with the walk qubits: (1, 4) meets q8 through 4-8 only.
+WALK_REFERENCE_PAIR = 0
+T0_DEPTHS = (1, 5, 9)
+# Census rows by (kite, (p_low, p_high), x_sign, (q_low, q_high), y_sign).
+EDGE_K3 = (3, (1, 10), (4, 15))  # opposite-sign edge of kite 3, the acquired (1,10) witness pair
+TWIST_K6 = (6, (4, 10), (1, 15))  # its twist, a same-sign edge of kite 6 (census kites[2].twists[0])
+STRUT_K3 = (3, (1, 10), (2, 9))
+WALK_KITE = "1"
+WALKS = (
+    ("walk_ij_strut", (2, 11, 3), "star_11", False),
+    ("walk_jk_strut", (2, 3, 10), "path_8_11_13", False),
+    ("walk_ij_strut_omit_last", (2, 11, 3), "star_11", True),
+)
+TUNA_STAGES = ("t0", "t1", "coherence", "walk")
+CASE_DIRECTORIES = (
+    "box_kite_a_qx",
+    "box_kite_tuna_t0",
+    "box_kite_tuna_t1",
+    "box_kite_tuna_coherence",
+    "box_kite_tuna_walk",
+    "box_kite_tuna_twins_qx",
+)
 
 
 # ---------------------------------------------------------------- census
@@ -258,6 +377,48 @@ def validate_census(census: dict[str, Any]) -> dict[str, list[Row]]:
     return rows
 
 
+def find_row(rows: dict[str, list[Row]], spec: tuple[int, tuple[int, int], tuple[int, int]], x: int, y: int) -> Row:
+    """The one within-kite census row of kite spec[0] on planes spec[1] x spec[2] at signs (x, y)."""
+    kite, p, q = spec
+    found = [
+        row
+        for row in rows["within_kite"]
+        if (row["kite"], (row["p_low"], row["p_high"]), (row["q_low"], row["q_high"])) == (kite, p, q)
+        and signs(row, x, y)
+    ]
+    if len(found) != 1:
+        raise ValueError(f"census holds {len(found)} within-kite rows for kite {kite} {p} x {q} at ({x}, {y})")
+    return found[0]
+
+
+def check_twist(census: dict[str, Any]) -> None:
+    """TWIST_K6 is the census twist of EDGE_K3, of the other sign type."""
+    kite = next(k for k in census["kites"] if k["strut_constant"] == EDGE_K3[0])
+    twist = next((t for t in kite["twists"] if [tuple(p) for p in t["pair"]] == [EDGE_K3[1], EDGE_K3[2]]), None)
+    if (
+        twist is None
+        or [tuple(p) for p in twist["twisted"]] != [TWIST_K6[1], TWIST_K6[2]]
+        or twist["twisted_kite"] != TWIST_K6[0]
+        or {twist["relation"], twist["twisted_relation"]} != {"edge_opposite", "edge_same"}
+    ):
+        raise ValueError(f"census kites[].twists does not map {EDGE_K3} to {TWIST_K6} across sign types")
+
+
+def walk_exemplar(census: dict[str, Any], triple: tuple[int, int, int]) -> dict[str, Any]:
+    """[i, j, k, omega, CNOTs, data bits] of census associator.deterministic_exemplars[WALK_KITE]."""
+    entries = census["associator"]["deterministic_exemplars"][WALK_KITE]
+    found = [(name, e) for name, e in sorted(entries.items()) if tuple(e[:3]) == triple]
+    if len(found) != 1:
+        raise ValueError(f"census kite {WALK_KITE} exemplars hold {len(found)} entries for {triple}")
+    name, (i, j, k, omega, cnots, bits) = found[0]
+    walked = [b for b in range(4) if (i | j) >> b & 1]
+    if cnots != bin(j).count("1") + bin(i).count("1") + bin(i ^ j).count("1") or bits != len(walked):
+        raise ValueError(f"census exemplar {triple}: {cnots} CNOT and {bits} bits differ from the walk of i, j, i^j")
+    if omega not in (1, -1):
+        raise ValueError(f"census exemplar {triple}: omega {omega}")
+    return {"class": name, "i": i, "j": j, "k": k, "omega": omega, "cnots": cnots, "bits": walked}
+
+
 # ---------------------------------------------------------------- circuits
 
 
@@ -395,6 +556,75 @@ def basis_circuit(encoding: str, row: Row) -> Any:
     return transpile(circuit, basis_gates=FULL_BASIS, optimization_level=0)
 
 
+def lower_for_tuna(circuit: Any, pad_pairs: int = 0) -> Any:
+    """CNOT as H CZ H on its target; pad_pairs identity CZ pairs follow the first CZ on its own qubits.
+
+    Each padding CZ comes after a barrier on both of its qubits, so adjacent
+    CZ gates never meet without a barrier between them.
+    """
+    from qiskit import QuantumCircuit
+
+    out = QuantumCircuit(circuit.num_qubits, global_phase=circuit.global_phase)
+    padded = pad_pairs == 0
+    for instruction in circuit.data:
+        name = instruction.operation.name
+        qubits = [circuit.find_bit(q).index for q in instruction.qubits]
+        if name == "cx":
+            out.h(qubits[1])
+            out.cz(qubits[0], qubits[1])
+        elif name in DIALECTS["tuna"]:
+            out.append(instruction.operation, qubits)
+        else:
+            raise ValueError(f"{name} is outside the tuna gate set")
+        if name in TWO_QUBIT and not padded:
+            for _ in range(2 * pad_pairs):
+                out.barrier(*qubits)
+                out.cz(qubits[0], qubits[1])
+            padded = True
+        if name == "cx":
+            out.h(qubits[1])
+    if not padded:
+        raise ValueError("depth padding found no CZ to follow")
+    return out
+
+
+def coherence_setting(row: Row, setting: str) -> Any:
+    """reduced_lcu, then the data qubit rotated to read X (H) or Y (Sdag, H) in the computational basis."""
+    qc = reduced_lcu(row)
+    if setting == "Y":
+        qc.sdg(REDUCED_DATA)
+    elif setting != "X":
+        raise ValueError(f"coherence setting {setting!r} is not X or Y")
+    qc.h(REDUCED_DATA)
+    return qc
+
+
+def associator_walk(i: int, j: int, k: int, omega: int, bits: list[int], omit_last: bool = False) -> Any:
+    """Control 0 and data 1..len(bits), data qubit 1 + b carrying algebra bit bits[b].
+
+    X prepares the bits of k; H, then Z for omega = -1, on the control;
+    CNOT(c -> data) for every set bit of j, then of i, then of i^j unless
+    omit_last; H on the control. Bits of k outside `bits` are never walked.
+    """
+    from qiskit import QuantumCircuit
+
+    if any((mask & ~sum(1 << b for b in bits)) for mask in (i, j)):
+        raise ValueError(f"walk ({i}, {j}, {k}) moves bits outside {bits}")
+    qc = QuantumCircuit(1 + len(bits))
+    for slot, bit in enumerate(bits):
+        if k >> bit & 1:
+            qc.x(1 + slot)
+    qc.h(0)
+    if omega < 0:
+        qc.z(0)
+    for mask in (j, i) if omit_last else (j, i, i ^ j):
+        for slot, bit in enumerate(bits):
+            if mask >> bit & 1:
+                qc.cx(0, 1 + slot)
+    qc.h(0)
+    return qc
+
+
 # ---------------------------------------------------------------- checks
 
 
@@ -473,7 +703,9 @@ def emit(circuit: Any, place: dict[int, int], dialect: str = "qx") -> list[str]:
     """cQASM 3.0 lines of a basis-level replica; place maps its local qubits to register indices.
 
     The circuit's global phase is unobservable and is not written. Rz angles
-    print from their pi/ANGLE_GRID multiple.
+    print from their pi/ANGLE_GRID multiple. The tuna dialect writes a
+    barrier as one per-qubit barrier line per qubit, a run the platform's
+    scheduler aligns; the qx dialect omits barriers.
     """
     if dialect not in DIALECTS:
         raise ValueError(f"dialect {dialect!r} has no gate map")
@@ -483,6 +715,8 @@ def emit(circuit: Any, place: dict[int, int], dialect: str = "qx") -> list[str]:
         name = instruction.operation.name
         qubits = [place[circuit.find_bit(q).index] for q in instruction.qubits]
         if name == "barrier":
+            if dialect == "tuna":
+                lines += [f"barrier q[{q}]" for q in qubits]
             continue
         if name not in names:
             raise ValueError(f"{name} is outside the {dialect} gate map")
@@ -497,6 +731,7 @@ def emit(circuit: Any, place: dict[int, int], dialect: str = "qx") -> list[str]:
 
 
 GATE_LINE = re.compile(r"(?P<gate>[A-Za-z]+)(?:\((?P<angle>[-0-9.e+]+)\))? q\[(?P<a>\d+)\](?:, q\[(?P<b>\d+)\])?")
+QUBIT_REF = re.compile(r"q\[(\d+)\]")
 
 
 def parse_cqasm(text: str, dialect: str = "qx") -> Any:
@@ -512,10 +747,13 @@ def parse_cqasm(text: str, dialect: str = "qx") -> Any:
             not line
             or line.startswith("//")
             or line.startswith(("version ", "qubit[", "bit["))
-            or line == "b = measure q"
+            or line in ("b = measure q", "barrier q")
         ):
             continue
         match = GATE_LINE.fullmatch(line)
+        if match is not None and match["gate"] == "barrier" and match["b"] is None and match["angle"] is None:
+            qc.barrier(int(match["a"]))
+            continue
         if match is None or match["gate"] not in names:
             raise ValueError(f"unparsed cQASM line {line!r}")
         gate = names[match["gate"]]
@@ -527,6 +765,79 @@ def parse_cqasm(text: str, dialect: str = "qx") -> Any:
         else:
             getattr(qc, gate)(*qubits)
     return qc
+
+
+def restricted(circuit: Any) -> tuple[Any, dict[int, int]]:
+    """The circuit on the qubits its gates touch, renumbered in ascending order, and that map."""
+    from qiskit import QuantumCircuit
+
+    used = sorted({circuit.find_bit(q).index for inst in circuit.data for q in inst.qubits})
+    index = {q: n for n, q in enumerate(used)}
+    out = QuantumCircuit(len(used))
+    for instruction in circuit.data:
+        out.append(instruction.operation, [index[circuit.find_bit(q).index] for q in instruction.qubits])
+    return out, index
+
+
+def replica_checks(replica: dict[str, Any]) -> list[tuple[str, tuple[int, ...], str]]:
+    """(kind, register qubits, prediction) for one manifest replica.
+
+    p_zero: P(q = 0); p_zero_given_zero: P(d = 0 | a = 0); cz_count: CZ lines on the pair.
+    """
+    roles = replica["roles"]
+    checks: list[tuple[str, tuple[int, ...], str]] = []
+    if "p_control_zero" in replica:
+        checks.append(("p_zero", (roles["control"],), replica["p_control_zero"]))
+    else:
+        checks.append(("p_zero", (roles["selector"],), replica["p_selector_zero"]))
+    if "p_data_zero_given_selector_zero" in replica:
+        checks.append(
+            ("p_zero_given_zero", (roles["selector"], roles["data"][0]), replica["p_data_zero_given_selector_zero"])
+        )
+    if "cz_depth" in replica:
+        checks.append(("cz_count", (roles["selector"], roles["data"][0]), str(replica["cz_depth"])))
+    return checks
+
+
+def verify_text(item: tuple[str, str, list[tuple[str, tuple[int, ...], str]]]) -> None:
+    """Pool worker: an emitted text by state vector on the qubits it uses, against every check."""
+    from qiskit.quantum_info import Statevector
+
+    file, text, checks = item
+    circuit = parse_cqasm(text)
+    compact, index = restricted(circuit)
+    state = Statevector(compact)
+    measured: set[int] = set()
+    for kind, qubits, want in checks:
+        if kind == "cz_count":
+            pair = set(qubits)
+            count = sum(
+                inst.operation.name == "cz" and {circuit.find_bit(q).index for q in inst.qubits} == pair
+                for inst in circuit.data
+            )
+            if count != int(want):
+                raise ValueError(f"{file}: {count} CZ on q{sorted(pair)} against the declared depth {want}")
+            continue
+        if qubits[0] in measured and kind == "p_zero":
+            raise ValueError(f"{file}: q[{qubits[0]}] serves two replicas")
+        if any(q not in index for q in qubits):
+            raise ValueError(f"{file}: check {kind} reads q{list(qubits)}, which no gate touches")
+        if kind == "p_zero":
+            measured.add(qubits[0])
+            value = float(state.probabilities([index[qubits[0]]])[0])
+        elif kind == "p_zero_given_zero":
+            joint = state.probabilities([index[qubits[0]], index[qubits[1]]])
+            value = float(joint[0] / (joint[0] + joint[2]))
+        else:
+            raise ValueError(f"unknown check {kind!r}")
+        if abs(value - float(Fraction(want))) > PROBABILITY_TOLERANCE:
+            raise ValueError(f"{file}: {kind} on q{list(qubits)} = {value:.12f} against the prediction {want}")
+
+
+def verify_circuit(item: tuple[str, str, list[tuple[int, str]]]) -> None:
+    """Pool worker: each selector marginal of an emitted family (a) text equals its census P."""
+    file, text, selectors = item
+    verify_text((file, text, [("p_zero", (selector,), p) for selector, p in selectors]))
 
 
 def emit_circuit(item: tuple[str, list[tuple[str, Row, dict[int, int]]]]) -> str:
@@ -543,22 +854,6 @@ def emit_circuit(item: tuple[str, list[tuple[str, Row, dict[int, int]]]]) -> str
         )
         lines += emit(basis_circuit(encoding, row), place)
     return "\n".join(lines + ["", "b = measure q", ""])
-
-
-def verify_circuit(item: tuple[str, str, list[tuple[int, str]]]) -> None:
-    """Pool worker: the emitted text by state vector; each selector marginal equals its census P."""
-    from qiskit.quantum_info import Statevector
-
-    file, text, selectors = item
-    state = Statevector(parse_cqasm(text))
-    used: set[int] = set()
-    for selector, p in selectors:
-        if selector in used:
-            raise ValueError(f"{file}: selector q[{selector}] serves two replicas")
-        used.add(selector)
-        p0 = float(state.probabilities([selector])[0])
-        if abs(p0 - float(Fraction(p))) > PROBABILITY_TOLERANCE:
-            raise ValueError(f"{file}: selector q[{selector}] P(0) = {p0:.12f} against the census {p}")
 
 
 def replica_roles(encoding: str, place: dict[int, int]) -> dict[str, Any]:
@@ -609,7 +904,7 @@ def qx_backend(catalogue: Any) -> dict[str, Any]:
     if {tuple(edge) for edge in topology} != complete or len(topology) != len(complete):
         raise SystemExit(f"{QX_IDENTIFIER}: topology is no longer all-to-all; the packing needs review")
     gates = backend.get("gateset")
-    needed = set(DIALECTS["qx"].values()) | {"measure"}
+    needed = set(DIALECTS["qx"].values()) | {"measure", "barrier"}
     if not isinstance(gates, list) or not needed <= {g for g in gates if isinstance(g, str)}:
         raise SystemExit(f"{QX_IDENTIFIER}: catalogue lacks a required gate")
     if (
@@ -620,6 +915,43 @@ def qx_backend(catalogue: Any) -> dict[str, Any]:
     ):
         raise SystemExit(f"{QX_IDENTIFIER}: cases exceed the retained backend capacity")
     return backend
+
+
+def tuna_backend(catalogue: Any) -> dict[str, Any]:
+    """The Tuna-17 record admitted by qi_zero_divisor_cases.catalogue_backends, with this layout's gates and shots."""
+    backend, _ = catalogue_backends(catalogue)
+    if not set(DIALECTS["tuna"].values()) | {"barrier", "measure"} <= set(backend["gateset"]):
+        raise SystemExit(f"{TUNA_IDENTIFIER}: catalogue lacks a gate of the tuna dialect")
+    if backend["max_number_of_shots"] < T0_SHOTS:
+        raise SystemExit(f"{TUNA_IDENTIFIER}: {T0_SHOTS} shots exceed the retained backend capacity")
+    if tuple(EXCLUDED_QUBITS) != TUNA_EXCLUDED:
+        raise SystemExit(
+            f"the retained exclusions {EXCLUDED_QUBITS} differ from the admitted layout's {TUNA_EXCLUDED}; "
+            "re-rank the layout before generating"
+        )
+    return dict(backend)
+
+
+def check_tuna_text(file: str, text: str, witness: bool = True) -> None:
+    """Tuna dialect and admitted layout of one emitted circuit; raises on the first violation."""
+    if declared_qubits(text) != TUNA_QUBITS:
+        raise ValueError(f"{file}: Tuna circuits declare qubit[{TUNA_QUBITS}]")
+    couplers = {tuple(sorted(edge)) for edge in TUNA17}
+    single = {name for qk, name in DIALECTS["tuna"].items() if qk not in TWO_QUBIT} | {"barrier"}
+    for line in text.splitlines()[5:]:
+        if not line or line.startswith("//") or line in ("barrier q", "b = measure q"):
+            continue
+        match = GATE_LINE.fullmatch(line)
+        if match is None or match["angle"] is not None:
+            raise ValueError(f"{file}: {line!r} is outside the tuna dialect")
+        qubits = [int(match["a"])] + ([int(match["b"])] if match["b"] is not None else [])
+        if match["gate"] == "CZ" and len(qubits) == 2:
+            if (min(qubits), max(qubits)) not in couplers:
+                raise ValueError(f"{file}: CZ on q{qubits}, which no Tuna-17 coupler joins")
+        elif match["gate"] not in single or len(qubits) != 1:
+            raise ValueError(f"{file}: {line!r} is outside the tuna dialect")
+        if witness and set(qubits) & set(TUNA_EXCLUDED + TUNA_AVOIDED):
+            raise ValueError(f"{file}: {line!r} touches an excluded or avoided qubit")
 
 
 def preregistered(rows: list[tuple[str, Row]]) -> dict[str, Any]:
@@ -640,19 +972,29 @@ def preregistered(rows: list[tuple[str, Row]]) -> dict[str, Any]:
     }
 
 
-def finish(shared: dict[str, Any], circuits: list[dict[str, Any]], texts: dict[str, str]) -> dict[str, str]:
-    """batch-NNN/ directories of at most HARDWARE_BATCH_CIRCUITS circuits, and the series cases.json.
+def finish(
+    shared: dict[str, Any], circuits: list[dict[str, Any]], texts: dict[str, str], group: str = "sub_family"
+) -> dict[str, str]:
+    """batch-NN/ directories of at most HARDWARE_BATCH_CIRCUITS circuits, and the series cases.json.
 
-    Circuits fill batches in manifest order and a batch holds one sub-family.
-    Each batch manifest carries every shared field and only its own circuits
-    with their replicas, so one batch's run directory names the full design.
+    Circuits fill batches in manifest order and a batch holds one value of
+    the `group` field. Each batch manifest carries every shared field and
+    only its own circuits with their replicas, so one batch's run directory
+    names the full design.
     """
     chunks: list[list[dict[str, Any]]] = []
-    for sub_family in dict.fromkeys(row["sub_family"] for row in circuits):
-        rows = [row for row in circuits if row["sub_family"] == sub_family]
+    for value in dict.fromkeys(row[group] for row in circuits):
+        rows = [row for row in circuits if row[group] == value]
         chunks += [
             rows[start : start + HARDWARE_BATCH_CIRCUITS] for start in range(0, len(rows), HARDWARE_BATCH_CIRCUITS)
         ]
+    return write_batches(shared, chunks, texts, group)
+
+
+def write_batches(
+    shared: dict[str, Any], chunks: list[list[dict[str, Any]]], texts: dict[str, str], group: str
+) -> dict[str, str]:
+    """The batch-NN/ files of the given circuit chunks and the series index; texts are keyed by file name."""
     digits = max(2, len(str(len(chunks) - 1)))
     files: dict[str, str] = {}
     batches = []
@@ -660,27 +1002,28 @@ def finish(shared: dict[str, Any], circuits: list[dict[str, Any]], texts: dict[s
         name = f"batch-{index:0{digits}d}"
         rows = []
         for row in chunk:
-            rows.append({**row, "sha256": hashlib.sha256(texts[row["file"]].encode()).hexdigest()})
-            files[f"{name}/{row['file']}"] = texts[row["file"]]
-        manifest = {**shared, "batch": name, "sub_family": chunk[0]["sub_family"], "circuits": rows}
+            text = texts[row["file"]]
+            rows.append({**row, "sha256": hashlib.sha256(text.encode()).hexdigest()})
+            files[f"{name}/{row['file']}"] = text
+        manifest = {**shared, "batch": name, group: chunk[0][group], "circuits": rows}
         files[f"{name}/cases.json"] = json.dumps(manifest, indent=1) + "\n"
-        batches.append({"batch": name, "sub_family": chunk[0]["sub_family"], "files": [row["file"] for row in chunk]})
-    series = {
+        batches.append({"batch": name, group: chunk[0][group], "files": [row["file"] for row in chunk]})
+    series_index = {
         "schema": SERIES_SCHEMA,
         "family": shared["family"],
         "backend": shared["backend"],
         "census_sha256": shared["census"]["sha256"],
         "batches": batches,
     }
-    files["cases.json"] = json.dumps(series, indent=1) + "\n"
+    files["cases.json"] = json.dumps(series_index, indent=1) + "\n"
     return files
 
 
 def validate_series(files: dict[str, str], backend: dict[str, Any]) -> None:
     """Offline admission of a generated series: batch sizes, digests, widths, shots and the series index."""
-    series = json.loads(files["cases.json"])
+    series_index = json.loads(files["cases.json"])
     listed = set()
-    for batch in series["batches"]:
+    for batch in series_index["batches"]:
         name = batch["batch"]
         manifest = json.loads(files[f"{name}/cases.json"])
         circuits = manifest["circuits"]
@@ -690,16 +1033,26 @@ def validate_series(files: dict[str, str], backend: dict[str, Any]) -> None:
             raise ValueError(f"{name}: circuits differ from the series index")
         if manifest["shots"] > backend["max_number_of_shots"] or manifest["nqubits"] > backend["nqubits"]:
             raise ValueError(f"{name}: shots or width exceed the backend")
+        if manifest["backend"] != backend["identifier"] or manifest["backend_type_id"] != backend["id"]:
+            raise ValueError(f"{name}: manifest backend differs from the admitted record")
         for row in circuits:
             text = files[f"{name}/{row['file']}"]
             if hashlib.sha256(text.encode()).hexdigest() != row["sha256"]:
                 raise ValueError(f"{name}/{row['file']} differs from its cases.json sha256")
             if declared_qubits(text) != manifest["nqubits"]:
                 raise ValueError(f"{name}/{row['file']}: declared width differs from the manifest")
-            qubits = [q for replica in row["replicas"] for q in replica_qubits(replica["roles"])]
-            if len(set(qubits)) != len(qubits) or max(qubits) >= manifest["nqubits"]:
+            qubits = [q for replica in row.get("replicas", []) for q in replica_qubits(replica["roles"])]
+            if len(set(qubits)) != len(qubits) or any(q >= manifest["nqubits"] for q in qubits):
                 raise ValueError(f"{name}/{row['file']}: replicas overlap or leave the register")
+            if row["kind"] == "readout" and row.get("replicas"):
+                raise ValueError(f"{name}/{row['file']}: a readout circuit carries replicas")
+            if manifest["dialect"] == "tuna":
+                check_tuna_text(f"{name}/{row['file']}", text, witness=row["kind"] != "readout")
             listed.add(f"{name}/{row['file']}")
+        if manifest["dialect"] == "tuna":
+            kinds = [row["kind"] for row in circuits]
+            if kinds != ["witness", "readout", "readout"] or batch["files"][1:] != ["readout-0.cq", "readout-1.cq"]:
+                raise ValueError(f"{name}: a Tuna batch is one witness circuit, then readout-0 and readout-1")
         listed.add(f"{name}/cases.json")
     if listed | {"cases.json"} != set(files):
         raise ValueError("series files differ from the batches its cases.json lists")
@@ -709,12 +1062,81 @@ def replica_qubits(roles: dict[str, Any]) -> list[int]:
     return [q for value in roles.values() for q in (value if isinstance(value, list) else [value])]
 
 
+def census_record(census_path: Path, census: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "path": census_path.relative_to(ROOT).as_posix(),
+        "schema": census["schema"],
+        "sha256": hashlib.sha256(census_path.read_bytes()).hexdigest(),
+    }
+
+
+def qx_encodings() -> dict[str, str]:
+    return {
+        "full": "designs.lcu_witness: data 0-3, selector 4; x_sign = -1 adds Z on the selector after its first H; "
+        f"compiled at optimization level 0 to {', '.join(FULL_BASIS)} with Rz on the pi/{ANGLE_GRID} grid",
+        "reduced": "selector a = slot qubit 0, data d = slot qubit 1; SELECT = diag(g(L,L'), g(L,U'), g(U,L'), "
+        "g(U,U')) over (a, d) from the census coefficients, then CNOT(a -> d); x_sign = -1 adds Z on a after "
+        "its first H",
+        "reduced_cross": "selector a, data d, mark w = slot qubits 0, 1, 2; identity diagonal (the census carries "
+        "no phases for four-label rows, and P = 1/2 for every sign), CNOT(a -> d), CNOT(a -> w)",
+    }
+
+
+def replica_record(slot: int, encoding: str, row: Row, place: dict[int, int]) -> dict[str, Any]:
+    return {
+        "slot": slot,
+        "census": f"{row['source']}[{row['index']}]",
+        "kite": row["kite"],
+        "p": [row["p_low"], row["p_high"], row["x_sign"]],
+        "q": [row["q_low"], row["q_high"], row["y_sign"]],
+        "relation": row["relation"],
+        "roles": replica_roles(encoding, place),
+        "p_selector_zero": row["p_selector_zero"],
+    }
+
+
+def qx_circuits(
+    members: dict[str, list[tuple[str, Row]]], extra: Callable[[str, int], dict[str, Any]] | None = None
+) -> tuple[list[dict[str, Any]], dict[str, str]]:
+    """Packed QX circuit rows and texts of each named member list, each list packed at its encoding's width.
+
+    extra(name, position) adds fields to the replica at `position` of member list `name`.
+    """
+    circuits: list[dict[str, Any]] = []
+    jobs: list[tuple[str, list[tuple[str, Row, dict[int, int]]]]] = []
+    for sub_family, chosen in members.items():
+        if not chosen:
+            continue
+        encoding = chosen[0][0]
+        if any(enc != encoding for enc, _ in chosen):
+            raise ValueError(f"{sub_family}: one packed list holds one encoding")
+        position = 0
+        for number, group in enumerate(pack(chosen, WIDTH[encoding]), start=1):
+            file = f"{sub_family}-{number:03d}.cq"
+            jobs.append((file, [(enc, row, place) for (enc, row), place in group]))
+            replicas = []
+            for slot, ((enc, row), place) in enumerate(group):
+                replicas.append(
+                    {**replica_record(slot, enc, row, place), **(extra(sub_family, position) if extra else {})}
+                )
+                position += 1
+            circuits.append(
+                {"file": file, "kind": "witness", "sub_family": sub_family, "encoding": encoding, "replicas": replicas}
+            )
+    texts = dict(zip((file for file, _ in jobs), parallel.ordered_map(emit_circuit, jobs), strict=True))
+    parallel.ordered_map(verify_text, [(row["file"], texts[row["file"]], checks_of(row)) for row in circuits])
+    return circuits, texts
+
+
+def checks_of(row: dict[str, Any]) -> list[tuple[str, tuple[int, ...], str]]:
+    return [check for replica in row.get("replicas", []) for check in replica_checks(replica)]
+
+
 def series(family: str, backend_name: str, census_path: Path = CENSUS, limit: int | None = None) -> dict[str, str]:
-    """The case files of one family on one backend; limit keeps the first rows of each sub-family."""
+    """The exhaustive family (a) case files on QX; limit keeps the first rows of each sub-family."""
     if (family, backend_name) != ("a", "qx"):
         raise ValueError(f"series ({family!r}, {backend_name!r}) is not generated by this pass")
     backend = qx_backend(json.loads(CATALOGUE.read_text(encoding="utf-8")))
-    census_bytes = census_path.read_bytes()
     census = load_census(census_path)
     rows = validate_census(census)
 
@@ -724,53 +1146,18 @@ def series(family: str, backend_name: str, census_path: Path = CENSUS, limit: in
         members[sub_family] = chosen if limit is None else chosen[:limit]
     every = [item for chosen in members.values() for item in chosen]
     parallel.ordered_map(check_row, every)
-
-    circuits: list[dict[str, Any]] = []
-    jobs: list[tuple[str, list[tuple[str, Row, dict[int, int]]]]] = []
-    summary: dict[str, Any] = {}
-    for sub_family, sources, encoding in SUB_FAMILIES:
-        width = WIDTH[encoding]
-        groups = pack(members[sub_family], width)
-        for number, group in enumerate(groups, start=1):
-            file = f"{sub_family}-{number:03d}.cq"
-            jobs.append((file, [(enc, row, place) for (enc, row), place in group]))
-            circuits.append(
-                {
-                    "file": file,
-                    "kind": "witness",
-                    "sub_family": sub_family,
-                    "encoding": encoding,
-                    "replicas": [
-                        {
-                            "slot": slot,
-                            "census": f"{row['source']}[{row['index']}]",
-                            "kite": row["kite"],
-                            "p": [row["p_low"], row["p_high"], row["x_sign"]],
-                            "q": [row["q_low"], row["q_high"], row["y_sign"]],
-                            "relation": row["relation"],
-                            "roles": replica_roles(enc, place),
-                            "p_selector_zero": row["p_selector_zero"],
-                        }
-                        for slot, ((enc, row), place) in enumerate(group)
-                    ],
-                }
-            )
-        summary[sub_family] = {
+    circuits, texts = qx_circuits(members)
+    summary = {
+        sub_family: {
             "census": [f"design_b.{source}" for source in sources],
             "encoding": encoding,
-            "replica_qubits": width,
-            "replicas_per_circuit": QX_QUBITS // width,
+            "replica_qubits": WIDTH[encoding],
+            "replicas_per_circuit": QX_QUBITS // WIDTH[encoding],
             "replicas": len(members[sub_family]),
-            "circuits": len(groups),
+            "circuits": sum(row["sub_family"] == sub_family for row in circuits),
         }
-    texts = dict(zip((file for file, _ in jobs), parallel.ordered_map(emit_circuit, jobs), strict=True))
-    parallel.ordered_map(
-        verify_circuit,
-        [
-            (row["file"], texts[row["file"]], [(r["roles"]["selector"], r["p_selector_zero"]) for r in row["replicas"]])
-            for row in circuits
-        ],
-    )
+        for sub_family, sources, encoding in SUB_FAMILIES
+    }
     shared = {
         "schema": CASES_SCHEMA,
         "family": family,
@@ -780,26 +1167,426 @@ def series(family: str, backend_name: str, census_path: Path = CENSUS, limit: in
         "shots": QX_SHOTS,
         "dialect": backend_name,
         "bit_order": "qubit 0 at the rightmost character (QX)",
-        "census": {
-            "path": census_path.relative_to(ROOT).as_posix(),
-            "schema": census["schema"],
-            "sha256": hashlib.sha256(census_bytes).hexdigest(),
-        },
-        "encodings": {
-            "full": "designs.lcu_witness: data 0-3, selector 4; x_sign = -1 adds Z on the selector after its first H; "
-            f"compiled at optimization level 0 to {', '.join(FULL_BASIS)} with Rz on the pi/{ANGLE_GRID} grid",
-            "reduced": "selector a = slot qubit 0, data d = slot qubit 1; SELECT = diag(g(L,L'), g(L,U'), g(U,L'), "
-            "g(U,U')) over (a, d) from the census coefficients, then CNOT(a -> d); x_sign = -1 adds Z on a after "
-            "its first H",
-            "reduced_cross": "selector a, data d, mark w = slot qubits 0, 1, 2; identity diagonal (the census carries "
-            "no phases for four-label rows, and P = 1/2 for every sign), CNOT(a -> d), CNOT(a -> w)",
-        },
+        "census": census_record(census_path, census),
+        "encodings": qx_encodings(),
         "sub_families": summary,
         "preregistered": preregistered(every),
     }
     files = finish(shared, circuits, texts)
     validate_series(files, backend)
     return files
+
+
+def smoke_members(rows: dict[str, list[Row]]) -> tuple[dict[str, list[tuple[str, Row]]], dict[tuple[str, int], Any]]:
+    """Packed member lists per encoding and the (encoding, position) -> pattern record of each selected row."""
+    members: dict[str, list[tuple[str, Row]]] = {"smoke_full": [], "smoke_reduced": [], "smoke_reduced_cross": []}
+    patterns: dict[tuple[str, int], Any] = {}
+    for name, encoding, source, rule, predicate in SMOKE_PATTERNS:
+        row = next((r for r in rows[source] if predicate(r)), None)
+        if row is None:
+            raise ValueError(f"no census {source} row matches smoke pattern {encoding} {name}: {rule}")
+        key = f"smoke_{encoding}"
+        patterns[(key, len(members[key]))] = {"pattern": f"{encoding}_{name}", "selection": f"census {source}: {rule}"}
+        members[key].append((encoding, row))
+    return members, patterns
+
+
+def smoke_series(census_path: Path = CENSUS) -> dict[str, str]:
+    """box_kite_a_qx/: the QX smoke set of family (a), one replica per SMOKE_PATTERNS entry."""
+    backend = qx_backend(json.loads(CATALOGUE.read_text(encoding="utf-8")))
+    census = load_census(census_path)
+    rows = validate_census(census)
+    members, patterns = smoke_members(rows)
+    every = [item for chosen in members.values() for item in chosen]
+    parallel.ordered_map(check_row, every)
+    circuits, texts = qx_circuits(members, lambda name, position: dict(patterns[(name, position)]))
+    for row in circuits:
+        row["group"] = "smoke"
+    shared = {
+        "schema": CASES_SCHEMA,
+        "family": "a_smoke",
+        "backend": backend["identifier"],
+        "backend_type_id": backend["id"],
+        "nqubits": backend["nqubits"],
+        "shots": QX_SHOTS,
+        "dialect": "qx",
+        "bit_order": "qubit 0 at the rightmost character (QX)",
+        "census": census_record(census_path, census),
+        "encodings": qx_encodings(),
+        "role": "smoke run of the remote QX compile path (parser, bit order, gate set, angle grid); the exhaustive "
+        "family (a) runs on Kaggle CPU through scripts/box_kite_qx_sweep.py",
+        "preregistered": {
+            **preregistered(every),
+            "bonferroni": f"the exhaustive family's bound, z_limit {Z_LIMIT}, applies to every P = 1/2 replica",
+        },
+    }
+    files = finish(shared, circuits, texts, group="group")
+    validate_series(files, backend)
+    return files
+
+
+# ---------------------------------------------------------------- Tuna-17 series
+
+
+def lcu_replica(
+    slot: int, row: Row, pair: tuple[int, int], kind: str, depth: int = 1, setting: str | None = None
+) -> tuple[dict[str, Any], Any]:
+    """Manifest record and Tuna-level circuit of one reduced LCU replica on an LCU pair (selector first)."""
+    check_select("reduced", row)
+    check_amplitudes("reduced", row, reduced_lcu(row))
+    logical_circuit = reduced_lcu(row) if setting is None else coherence_setting(row, setting)
+    if depth % 2 != 1:
+        raise ValueError(f"CZ depth {depth} is not 1 plus identity pairs")
+    circuit = lower_for_tuna(logical_circuit, (depth - 1) // 2)
+    record: dict[str, Any] = {
+        "slot": slot,
+        "kind": kind,
+        "census": f"{row['source']}[{row['index']}]",
+        "kite": row["kite"],
+        "p": [row["p_low"], row["p_high"], row["x_sign"]],
+        "q": [row["q_low"], row["q_high"], row["y_sign"]],
+        "relation": row["relation"],
+        "roles": {"selector": pair[0], "data": [pair[1]]},
+        "cz_depth": depth,
+        "p_selector_zero": row["p_selector_zero"],
+    }
+    if setting is not None:
+        coh = row["coherence_selector_0"]
+        if coh is None:
+            raise ValueError(f"census {record['census']}: the selector-0 branch is empty and carries no coherence")
+        expectation = 2 * Fraction(coh) if setting == "X" else Fraction(0)
+        record["setting"] = setting
+        record["coherence_selector_0"] = coh
+        record["expectation_given_selector_zero"] = str(expectation)
+        record["p_data_zero_given_selector_zero"] = str((1 + expectation) / 2)
+    return record, circuit
+
+
+def walk_replica(
+    slot: int, census: dict[str, Any], triple: tuple[int, int, int], layout: str, omit_last: bool
+) -> tuple[dict[str, Any], Any]:
+    exemplar = walk_exemplar(census, triple)
+    control, data = WALK_LAYOUTS[layout]
+    if len(data) != len(exemplar["bits"]):
+        raise ValueError(f"walk {triple} needs {len(exemplar['bits'])} data qubits; {layout} holds {len(data)}")
+    i, j, k, omega = exemplar["i"], exemplar["j"], exemplar["k"], exemplar["omega"]
+    circuit = lower_for_tuna(associator_walk(i, j, k, omega, exemplar["bits"], omit_last))
+    record = {
+        "slot": slot,
+        "kind": "walk",
+        "census": f"associator.deterministic_exemplars[{WALK_KITE}].{exemplar['class']}",
+        "kite": int(WALK_KITE),
+        "triple": [i, j, k],
+        "omega": omega,
+        "omit_last_block": omit_last,
+        "layout": layout,
+        "roles": {"control": control, "data": list(data)},
+        "data_bits": {str(bit): q for bit, q in zip(exemplar["bits"], data, strict=True)},
+        "cz": exemplar["cnots"] - (bin(i ^ j).count("1") if omit_last else 0),
+        "p_control_zero": "1/2" if omit_last else str(Fraction(1 + omega, 2)),
+    }
+    return record, circuit
+
+
+def tuna_text(members: list[tuple[dict[str, Any], Any]]) -> str:
+    lines = header(TUNA_QUBITS)
+    for record, circuit in members:
+        roles = record["roles"]
+        if record["kind"] == "walk":
+            place = {0: roles["control"], **{1 + n: q for n, q in enumerate(roles["data"])}}
+            what = (
+                f"walk {tuple(record['triple'])} omega {record['omega']}"
+                f"{' omit-last-block' if record['omit_last_block'] else ''} control q[{roles['control']}] "
+                f"P(c=0) {record['p_control_zero']}"
+            )
+        else:
+            place = {0: roles["selector"], 1: roles["data"][0]}
+            setting = f" setting {record['setting']}" if "setting" in record else ""
+            what = (
+                f"{record['kind']} census {record['census']} kite {record['kite']} "
+                f"({record['p'][0]},{record['p'][1]}){'+' if record['p'][2] > 0 else '-'} x "
+                f"({record['q'][0]},{record['q'][1]}){'+' if record['q'][2] > 0 else '-'} {record['relation']} "
+                f"depth {record['cz_depth']}{setting} P {record['p_selector_zero']} selector q[{roles['selector']}]"
+            )
+        lines.append(f"// slot {record['slot']} {what}")
+        lines += emit(circuit, place, dialect="tuna")
+    return "\n".join(lines + ["", "barrier q", "b = measure q", ""])
+
+
+def tuna_witnesses(census: dict[str, Any], rows: dict[str, list[Row]]) -> dict[str, list[list[tuple[Any, Any]]]]:
+    """Per stage, the replica list of each witness circuit, one circuit per batch."""
+    check_twist(census)
+    edge = {y: find_row(rows, EDGE_K3, 1, y) for y in (1, -1)}
+    twist = {y: find_row(rows, TWIST_K6, 1, y) for y in (1, -1)}
+    strut = {y: find_row(rows, STRUT_K3, 1, y) for y in (1, -1)}
+    reference = edge[1]
+    if reference["p_selector_zero"] != "1" or edge[-1]["p_selector_zero"] != "0":
+        raise ValueError("the T0 edge rows lost their (P = 1, P = 0) pair")
+    stages: dict[str, list[list[tuple[Any, Any]]]] = {stage: [] for stage in TUNA_STAGES}
+    # T0: depth index (pair + batch) mod 3, and y_sign -1 on the diagonal pair == batch, so every
+    # depth, pair and batch holds one dark and two bright replicas.
+    for batch in range(3):
+        stages["t0"].append(
+            [
+                lcu_replica(p, edge[-1 if p == batch else 1], LCU_PAIRS[p], "lcu", T0_DEPTHS[(p + batch) % 3])
+                for p in range(3)
+            ]
+        )
+    # T1: each row keeps its pair in both batches, so D compares one pair across the two
+    # batches, and each twist pair (edge at y, twist at -y) shares a batch.
+    for y in (1, -1):
+        stages["t1"].append(
+            [
+                lcu_replica(0, edge[y], LCU_PAIRS[0], "lcu"),
+                lcu_replica(1, twist[-y], LCU_PAIRS[1], "lcu"),
+                lcu_replica(2, strut[y], LCU_PAIRS[2], "lcu"),
+            ]
+        )
+    # Coherence: the bright twist edge and the strut keep their pairs across the X and Y
+    # settings; the reference sits on the third pair.
+    for setting in ("X", "Y"):
+        stages["coherence"].append(
+            [
+                lcu_replica(0, twist[-1], LCU_PAIRS[0], "coherence", setting=setting),
+                lcu_replica(1, strut[1], LCU_PAIRS[1], "coherence", setting=setting),
+                lcu_replica(2, reference, LCU_PAIRS[2], "reference"),
+            ]
+        )
+    for _, triple, layout, omit_last in WALKS:
+        stages["walk"].append(
+            [
+                walk_replica(0, census, triple, layout, omit_last),
+                lcu_replica(1, reference, LCU_PAIRS[WALK_REFERENCE_PAIR], "reference"),
+            ]
+        )
+    return stages
+
+
+def tuna_preregistered() -> dict[str, dict[str, Any]]:
+    stop = (
+        "each batch: every job completed with the manifest's shots; readout-0 P1 at most 0.10 and readout-1 P1 at "
+        "least 0.80 on every used qubit (a failure stops the series and re-plans the layout); every bright or "
+        "reference replica at P(selector = 0) at least 0.7; circuit digests equal cases.json; the account's queue "
+        "empty; a 120 s pause before the next batch"
+    )
+    corrected = (
+        "P(selector = 0) corrected for the selector's readout assignment from the readout-0 and readout-1 circuits "
+        "of the same batch"
+    )
+    return {
+        "t0": {
+            "observable": "zero-product success P(selector = 0) of the reduced LCU of edge (1,10)(4,15) of kite 3 at "
+            f"CZ depths {list(T0_DEPTHS)} (1 plus identity CZ pairs on the replica's own pair)",
+            "design": "3 x 3 Latin square: batch b places depth index (pair + b) mod 3 on each pair of LCU_PAIRS, "
+            "and y_sign -1 (P = 0) on pair b, y_sign +1 (P = 1) on the other two; every depth, pair and batch "
+            "holds one dark and two bright replicas",
+            "contrast": f"C(n) = mean Pc(bright, n) - Pc(dark, n) with Pc the {corrected}. The difference cancels "
+            "a common additive shift of P (amplitude damping toward |0>, the measured common-shift offset), which "
+            "2 Pc(bright) - 1 alone would carry into C as a bias",
+            "confound": "the dark replica of each depth sits on one pair in one batch and its brights on the other "
+            "two, so C(n) carries that pair's and batch's offset against the mean of the others; the square "
+            "balances pair and batch main effects across depths, and a pair x depth interaction stays inside r",
+            "fit": "r = exp(slope) of the weighted least-squares line of ln C(n) on n over n = 1, 5, 9; its 99% "
+            "interval from a parametric bootstrap of the binomial counts and each batch's readout pair",
+            "predictions": "C(1) in [0.72, 0.82]; C(9) / C(1) = r^8 with r in [0.87, 0.96], central 0.955",
+            "falsifier": "the pooled depth-1 contrast with its 99% upper bound below 0.5 refutes the shallow "
+            "admission and ends the Tuna-17 program; a 99% interval of r disjoint from [0.87, 0.97] refutes the "
+            "planning range and resizes T1, coherence and walk before they run",
+            "stop_rule": stop,
+        },
+        "t1": {
+            "observable": "zero-product success; classification statistic D = Pc(+, -) - Pc(+, +) per row from its "
+            "two replicas on one pair, batch-01 minus batch-00",
+            "rows": "opposite-sign edge (1,10)(4,15) of kite 3 on (1, 4), its census twist the same-sign edge "
+            "(4,10)(1,15) of kite 6 on (10, 13), strut (1,10)(2,9) of kite 3 on (12, 14); batch-00 holds the edge "
+            "at y_sign +1, the twist at -1 and the strut at +1, batch-01 the opposite signs",
+            "predictions": "D = -1 opposite edge, +1 twist (same-sign edge), 0 strut; P(edge, y) = P(twist, -y) "
+            "under the twist map (L, U, x; L', U', y) -> (L', U, x; L, U', -y)",
+            "classification": "D above +0.4 same-sign, below -0.4 opposite-sign, |D| below 0.2 strut, otherwise "
+            "unresolved; predicted |D| on edges at least 0.72 (pessimistic)",
+            "falsifier": "a row misclassified or unresolved refutes the separation estimate for its pair; a strut "
+            "with |D| > 0.1 + 3 sigma exposes a pair-dependent bias the analysis carries; a twist pair whose Pc "
+            "differ by more than 3 combined standard errors plus the pair-location allowance (the difference of "
+            "the two pairs' depth-1 bright Pc in T0) refutes twist equality for that layout",
+            "stop_rule": stop,
+        },
+        "coherence": {
+            "observable": "coherence reconstruction of the selector-0 branch: <X_d | a = 0> on setting X (H on d), "
+            "<Y_d | a = 0> on setting Y (Sdag, H on d), each 2 P(d = 0 | a = 0) - 1 with the selector and data "
+            "readout corrected from the batch's readout pair",
+            "rows": "bright same-sign edge (4,10)+ x (1,15)- of kite 6 on (1, 4), strut (1,10)+ x (2,9)+ of kite 3 "
+            "on (10, 13), the reference (1,10)+ x (4,15)+ (P = 1) on (12, 14)",
+            "predictions": "edge <X_d> = 2 census coherence_selector_0 = -1 and <Y_d> = 0; strut <X_d> = <Y_d> = 0",
+            "falsifier": "sign(<X_d>) opposite to the census coherence at |z| > 3 on the edge, or |<X_d>| above "
+            "0.1 + 3 sigma on the strut",
+            "stop_rule": stop,
+        },
+        "walk": {
+            "observable": "associator-sign interference witness <Z_c> = 2 Pc(c = 0) - 1 of the fixed-triple walk",
+            "rows": "kite 1 exemplars (2,11,3) ij-same-vertex-third-strut omega -1 (6 CNOT, star 11 {8, 13, 14}) "
+            "and (2,3,10) jk-same-vertex-third-strut omega -1 (4 CNOT, path 8-11-13), and the omit-last-block "
+            "control of (2,11,3); each with the reference on (1, 4)",
+            "predictions": "<Z_c> = omega = -1 on both walks, 0 on the control",
+            "falsifier": "sign(<Z_c>) opposite to omega at |z| > 3, or the control's |<Z_c>| above 0.1 + 3 sigma",
+            "limit": "the walk carries omega as a compiled Z on the control; the hardware establishes coherent return "
+            "of the walked register and reads a compiled sign, and an associator-sign witness cannot separate the "
+            "octonions from the split octonions",
+            "stop_rule": stop,
+        },
+    }
+
+
+def tuna_series(census_path: Path = CENSUS) -> dict[str, dict[str, str]]:
+    """The four Tuna-17 case directories and the QX twin directory."""
+    catalogue = json.loads(CATALOGUE.read_text(encoding="utf-8"))
+    tuna = tuna_backend(catalogue)
+    qx = qx_backend(catalogue)
+    census = load_census(census_path)
+    rows = validate_census(census)
+    stages = tuna_witnesses(census, rows)
+    prereg = tuna_preregistered()
+    readout = readout_circuits(TUNA_QUBITS)
+    shots = {"t0": T0_SHOTS, "t1": FOLLOW_SHOTS, "coherence": FOLLOW_SHOTS, "walk": FOLLOW_SHOTS}
+    layout = {
+        "excluded": list(TUNA_EXCLUDED),
+        "avoided": list(TUNA_AVOIDED),
+        "lcu_pairs": [list(p) for p in LCU_PAIRS],
+        "walks": {name: {"control": c, "data": list(d)} for name, (c, d) in WALK_LAYOUTS.items()},
+    }
+    directories: dict[str, dict[str, str]] = {}
+    witness_jobs: list[tuple[str, str, list[tuple[str, tuple[int, ...], str]]]] = []
+    twin_rows: list[dict[str, Any]] = []
+    twin_texts: dict[str, str] = {}
+    for stage in TUNA_STAGES:
+        chunks: list[list[dict[str, Any]]] = []
+        texts: dict[str, str] = {}
+        for index, members in enumerate(stages[stage]):
+            file = f"{stage}-{index + 1}.cq"
+            text = tuna_text(members)
+            witness = {"file": file, "kind": "witness", "stage": stage, "replicas": [r for r, _ in members]}
+            texts[file] = text
+            witness_jobs.append((f"box_kite_tuna_{stage}/{file}", text, checks_of(witness)))
+            chunks.append(
+                [
+                    witness,
+                    {"file": "readout-0.cq", "kind": "readout", "stage": stage, "prepared": 0},
+                    {"file": "readout-1.cq", "kind": "readout", "stage": stage, "prepared": 1},
+                ]
+            )
+            twin_row, twin_text = twin(witness, text, f"box_kite_tuna_{stage}/batch-{index:02d}/{file}")
+            twin_rows.append(twin_row)
+            twin_texts[twin_row["file"]] = twin_text
+        texts.update(readout)
+        shared = {
+            "schema": CASES_SCHEMA,
+            "family": f"tuna_{stage}",
+            "backend": tuna["identifier"],
+            "backend_type_id": tuna["id"],
+            "nqubits": tuna["nqubits"],
+            "shots": shots[stage],
+            "dialect": "tuna",
+            "bit_order": "qubit 0 at the rightmost character (Tuna)",
+            "census": census_record(census_path, census),
+            "layout": layout,
+            "encodings": {
+                "reduced": "selector a = the pair's first qubit, data d = its second; reduced two-label LCU with "
+                "CNOT as H CZ H on d; CZ depth n repeats CZ(a, d) (n - 1) times after the SELECT CZ, each after "
+                "a per-qubit barrier run",
+                "walk": "control c on q11, data bits on the layout's data qubits in ascending bit order; CNOT as "
+                "H CZ H on the data qubit; omega as Z on c after its first H",
+                "readout": "readout-0 measures all 17 qubits in |0>, readout-1 after X on all 17",
+            },
+            "preregistered": prereg[stage],
+        }
+        files = write_batches(shared, chunks, texts, "stage")
+        validate_series(files, tuna)
+        directories[f"box_kite_tuna_{stage}"] = files
+    twin_shared = {
+        "schema": CASES_SCHEMA,
+        "family": "tuna_twins",
+        "backend": qx["identifier"],
+        "backend_type_id": qx["id"],
+        "nqubits": qx["nqubits"],
+        "shots": QX_SHOTS,
+        "dialect": "qx",
+        "bit_order": "qubit 0 at the rightmost character (QX)",
+        "census": census_record(census_path, census),
+        "twin_of": tuna["identifier"],
+        "role": "the gate list of each Tuna-17 witness circuit relabeled onto QX qubits 0-9 (qubit_map: Tuna "
+        "qubit -> QX qubit), run on the remote ideal emulator before its Tuna batch; the identical Tuna bytes run on "
+        "local qxelarator",
+        "preregistered": {
+            "falsifier": "any shot violating a deterministic replica refutes the emitted cQASM; a P = 1/2 replica "
+            f"outside |z| < {Z_LIMIT} at {QX_SHOTS} shots refutes it",
+        },
+    }
+    twin_files = finish(twin_shared, twin_rows, twin_texts, group="stage")
+    validate_series(twin_files, qx)
+    directories["box_kite_tuna_twins_qx"] = twin_files
+    parallel.ordered_map(
+        verify_text, witness_jobs + [(row["file"], twin_texts[row["file"]], checks_of(row)) for row in twin_rows]
+    )
+    return directories
+
+
+def twin(witness: dict[str, Any], text: str, source: str) -> tuple[dict[str, Any], str]:
+    """The witness circuit's gate list on QX qubits 0..n-1, Tuna qubits in ascending order, and its manifest row."""
+    lines = text.splitlines()
+    if lines[:5] != header(TUNA_QUBITS):
+        raise ValueError(f"{source}: twin() takes a Tuna witness circuit")
+    used = sorted({int(q) for line in lines[5:] if not line.startswith("//") for q in QUBIT_REF.findall(line)})
+    if len(used) > QX_QUBITS:
+        raise ValueError(f"{source}: {len(used)} active qubits exceed the QX register")
+    mapping = {q: n for n, q in enumerate(used)}
+    body = [QUBIT_REF.sub(lambda m: f"q[{mapping[int(m[1])]}]", line) for line in lines[5:]]
+    if not text.endswith("\n"):
+        raise ValueError(f"{source}: circuit text lacks its final newline")
+    twin_text = "\n".join(header(QX_QUBITS) + body) + "\n"
+
+    def moved(value: Any) -> Any:
+        return [mapping[q] for q in value] if isinstance(value, list) else mapping[value]
+
+    replicas = []
+    for replica in witness["replicas"]:
+        relabeled = {**replica, "roles": {role: moved(value) for role, value in replica["roles"].items()}}
+        if "data_bits" in replica:
+            relabeled["data_bits"] = {bit: mapping[q] for bit, q in replica["data_bits"].items()}
+        replicas.append(relabeled)
+    row = {
+        "file": f"twin-{witness['file']}",
+        "kind": "witness",
+        "stage": witness["stage"],
+        "tuna_case": source,
+        "qubit_map": {str(q): n for q, n in mapping.items()},
+        "replicas": replicas,
+    }
+    return row, twin_text
+
+
+def case_directories() -> dict[str, dict[str, str]]:
+    return {"box_kite_a_qx": smoke_series(), **tuna_series()}
+
+
+def summary(directories: dict[str, dict[str, str]]) -> list[dict[str, Any]]:
+    """Circuits, witness circuits, batches, shots per circuit and replicas of each case directory."""
+    out = []
+    for name, files in directories.items():
+        batches = json.loads(files["cases.json"])["batches"]
+        manifests = [json.loads(files[f"{b['batch']}/cases.json"]) for b in batches]
+        circuits = [row for m in manifests for row in m["circuits"]]
+        out.append(
+            {
+                "directory": name,
+                "backend": manifests[0]["backend"],
+                "batches": len(batches),
+                "circuits": len(circuits),
+                "witness_circuits": sum(row["kind"] == "witness" for row in circuits),
+                "replicas": sum(len(row.get("replicas", [])) for row in circuits),
+                "shots_per_circuit": manifests[0]["shots"],
+                "shots": sum(m["shots"] * len(m["circuits"]) for m in manifests),
+            }
+        )
+    return out
 
 
 # ---------------------------------------------------------------- self-test
@@ -839,7 +1626,8 @@ def self_test() -> None:
 
     census = load_census()
     rows = validate_census(census)
-    backend = qx_backend(json.loads(CATALOGUE.read_text(encoding="utf-8")))
+    catalogue = json.loads(CATALOGUE.read_text(encoding="utf-8"))
+    backend = qx_backend(catalogue)
     rejected = 0
 
     def reject(label: str, action: Any, *errors: type[BaseException]) -> None:
@@ -900,6 +1688,13 @@ def self_test() -> None:
         lambda: check_select("reduced_cross", rows["cross_kite_controls"][0], unmarked),
     )
 
+    # Smoke selection: every sign-variant pattern lands on a deterministic edge row.
+    members, patterns = smoke_members(rows)
+    for (key, position), record in patterns.items():
+        row = members[key][position][1]
+        if ("x_minus" in record["pattern"] or "y_minus" in record["pattern"]) and row["p_selector_zero"] == "1/2":
+            raise AssertionError(f"smoke pattern {record['pattern']} selected a P = 1/2 row")
+
     # Packing and batching.
     reject("three full replicas in one QX circuit", lambda: pack([0, 1, 2], 5, QX_QUBITS, per_circuit=3))
     files = series("a", "qx", limit=7)
@@ -922,11 +1717,80 @@ def self_test() -> None:
     reject("a circuit digest mismatch", lambda: validate_series(tampered, backend))
     stray = {**files, f"{first}/stray.cq": "version 3.0\n"}
     reject("a file outside the series index", lambda: validate_series(stray, backend))
-    reject("an unknown dialect", lambda: emit(logical("reduced", within[0]), {0: 0, 1: 1}, dialect="tuna"))
+    reject("an unknown dialect", lambda: emit(logical("reduced", within[0]), {0: 0, 1: 1}, dialect="ry"))
     reject("an off-grid Rz angle", lambda: snap_angle(math.pi / 3))
 
+    # Tuna dialect and layout.
+    reject("a CNOT in the tuna dialect", lambda: emit(logical("reduced", within[0]), {0: 1, 1: 4}, dialect="tuna"))
+    rz = QuantumCircuit(2)
+    rz.rz(math.pi / 2, 0)
+    reject("an Rz in the tuna dialect", lambda: lower_for_tuna(rz))
+    reject("padding without a CZ", lambda: lower_for_tuna(QuantumCircuit(2), 1))
+    tuna_dirs = tuna_series()
+    t0 = tuna_dirs["box_kite_tuna_t0"]
+    t0_manifest = json.loads(t0["batch-00/cases.json"])
+    t0_text = t0["batch-00/t0-1.cq"]
+    tuna = tuna_backend(catalogue)
+    deep = next(r for r in t0_manifest["circuits"][0]["replicas"] if r["cz_depth"] > 1)
+    pair = f"CZ q[{deep['roles']['selector']}], q[{deep['roles']['data'][0]}]"
+    short = t0_text.replace(pair + "\n", "", 1)
+    reject("a padded replica missing one CZ", lambda: verify_text(("t0", short, checks_of(t0_manifest["circuits"][0]))))
+    verify_text(("t0", t0_text, checks_of(t0_manifest["circuits"][0])))
+    reject("a CZ off the coupling graph", lambda: check_tuna_text("t0", t0_text.replace(pair, "CZ q[1], q[10]", 1)))
+    reject("an excluded qubit in a witness", lambda: check_tuna_text("t0", t0_text.replace("H q[4]", "H q[9]", 1)))
+    reject("a rotation in a Tuna circuit", lambda: check_tuna_text("t0", t0_text.replace("H q[4]", "Rz(0.1) q[4]", 1)))
+    wide = t0_text.replace("qubit[17] q", "qubit[10] q", 1)
+    reject("a Tuna circuit narrower than qubit[17]", lambda: check_tuna_text("t0", wide))
+    swapped = dict(t0)
+    swapped["batch-00/cases.json"] = (
+        json.dumps(
+            {
+                **t0_manifest,
+                "circuits": [t0_manifest["circuits"][1], t0_manifest["circuits"][0], *t0_manifest["circuits"][2:]],
+            },
+            indent=1,
+        )
+        + "\n"
+    )
+    index = json.loads(t0["cases.json"])
+    index["batches"][0]["files"] = [row["file"] for row in json.loads(swapped["batch-00/cases.json"])["circuits"]]
+    swapped["cases.json"] = json.dumps(index, indent=1) + "\n"
+    reject("a Tuna batch whose witness does not lead", lambda: validate_series(swapped, tuna))
+    walk = tuna_dirs["box_kite_tuna_walk"]
+    walk_row = json.loads(walk["batch-00/cases.json"])["circuits"][0]
+    walk_text = walk["batch-00/walk-1.cq"]
+    verify_text(("walk", walk_text, checks_of(walk_row)))
+    control_z = f"Z q[{walk_row['replicas'][0]['roles']['control']}]"
+    reject(
+        "a walk without its omega Z",
+        lambda: verify_text(("walk", walk_text.replace(control_z + "\n", "", 1), checks_of(walk_row))),
+    )
+    coherence_dir = tuna_dirs["box_kite_tuna_coherence"]
+    coh_row = json.loads(coherence_dir["batch-00/cases.json"])["circuits"][0]
+    coh_text = coherence_dir["batch-00/coherence-1.cq"]
+    verify_text(("coherence", coh_text, checks_of(coh_row)))
+    edge_data = coh_row["replicas"][0]["roles"]["data"][0]
+    lines = coh_text.splitlines()
+    last_h = max(n for n, line in enumerate(lines) if line == f"H q[{edge_data}]")
+    lines.insert(last_h, f"Z q[{edge_data}]")
+    reject(
+        "a coherence setting with its sign flipped",
+        lambda: verify_text(("coherence", "\n".join(lines), checks_of(coh_row))),
+    )
+    mutated = copy.deepcopy(census)
+    mutated["kites"][2]["twists"][0]["twisted_kite"] = 5
+    reject("a census twist that no longer maps the T1 edge", lambda: check_twist(mutated))
+    mutated = copy.deepcopy(census)
+    mutated["associator"]["deterministic_exemplars"][WALK_KITE]["ij-same-vertex-third-strut"][4] = 5
+    reject("an exemplar whose CNOT count leaves the walk", lambda: walk_exemplar(mutated, (2, 11, 3)))
+    twins = tuna_dirs["box_kite_tuna_twins_qx"]
+    twin_row = json.loads(twins["batch-00/cases.json"])["circuits"][0]
+    twin_text = twins[f"batch-00/{twin_row['file']}"]
+    verify_text(("twin", twin_text, checks_of(twin_row)))
+    moved = {**twin_row, "replicas": [{**r, "roles": {**r["roles"], "selector": 9}} for r in twin_row["replicas"][:1]]}
+    reject("a twin replica read on the wrong qubit", lambda: verify_text(("twin", twin_text, checks_of(moved))))
+
     # Catalogue admission.
-    catalogue = json.loads(CATALOGUE.read_text(encoding="utf-8"))
     for field, value in (("nqubits", 9), ("id", 2), ("is_hardware", True), ("topology", backend["topology"][1:])):
         altered = copy.deepcopy(catalogue)
         next(b for b in altered["backend_types"] if b["identifier"] == QX_IDENTIFIER)[field] = value
@@ -935,9 +1799,13 @@ def self_test() -> None:
     entry = next(b for b in altered["backend_types"] if b["identifier"] == QX_IDENTIFIER)
     entry["gateset"] = [g for g in entry["gateset"] if g != "Rz"]
     reject("a QX gate set without Rz", lambda: qx_backend(altered), SystemExit)
+    altered = copy.deepcopy(catalogue)
+    entry = next(b for b in altered["backend_types"] if b["identifier"] == TUNA_IDENTIFIER)
+    entry["gateset"] = [g for g in entry["gateset"] if g != "Sdag"]
+    reject("a Tuna-17 gate set without Sdag", lambda: tuna_backend(altered), SystemExit)
     print(
-        f"box-kite cases: census, SELECT, state-vector, packing, batch and catalogue contracts pass; "
-        f"{rejected} mutations rejected"
+        f"box-kite cases: census, SELECT, state-vector, packing, batch, Tuna layout, twin and catalogue contracts "
+        f"pass; {rejected} mutations rejected"
     )
 
 
@@ -949,15 +1817,21 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", type=Path, metavar="DIR")
     mode.add_argument("--check", type=Path, metavar="DIR")
+    mode.add_argument("--summary", action="store_true")
     mode.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     try:
         if args.self_test:
             self_test()
             return 0
-        directories = {"box_kite_a_qx": series("a", "qx")}
+        directories = case_directories()
     except ValueError as error:
         raise SystemExit(str(error)) from error
+    if list(directories) != list(CASE_DIRECTORIES):
+        raise SystemExit(f"generated directories {list(directories)} differ from CASE_DIRECTORIES")
+    if args.summary:
+        print(json.dumps(summary(directories), indent=1))
+        return 0
     count = 0
     for directory, files in directories.items():
         if args.check:

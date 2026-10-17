@@ -1,0 +1,41 @@
+version 3.0
+
+qubit[17] q
+bit[17] b
+
+// slot 0 coherence census within_kite[661] kite 6 (4,10)+ x (1,15)- edge_same depth 1 setting Y P 1 selector q[1]
+H q[4]
+Z q[4]
+H q[1]
+Z q[1]
+H q[4]
+CZ q[1], q[4]
+H q[4]
+H q[1]
+Sdag q[4]
+H q[4]
+// slot 1 coherence census within_kite[240] kite 3 (1,10)+ x (2,9)+ strut depth 1 setting Y P 1/2 selector q[10]
+H q[13]
+H q[10]
+Z q[13]
+Sdag q[13]
+H q[13]
+CZ q[10], q[13]
+H q[13]
+S q[13]
+Sdag q[10]
+H q[10]
+Sdag q[13]
+H q[13]
+// slot 2 reference census within_kite[244] kite 3 (1,10)+ x (4,15)+ edge_opposite depth 1 P 1 selector q[12]
+H q[14]
+H q[12]
+Z q[12]
+Z q[14]
+H q[14]
+CZ q[12], q[14]
+H q[14]
+H q[12]
+
+barrier q
+b = measure q

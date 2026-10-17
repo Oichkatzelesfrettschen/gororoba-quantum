@@ -1,0 +1,174 @@
+{
+ "schema": "box-kite-cases-v1",
+ "family": "tuna_t0",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 16384,
+ "dialect": "tuna",
+ "bit_order": "qubit 0 at the rightmost character (Tuna)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "layout": {
+  "excluded": [
+   0,
+   5,
+   6,
+   7,
+   9
+  ],
+  "avoided": [
+   15
+  ],
+  "lcu_pairs": [
+   [
+    1,
+    4
+   ],
+   [
+    10,
+    13
+   ],
+   [
+    12,
+    14
+   ]
+  ],
+  "walks": {
+   "star_11": {
+    "control": 11,
+    "data": [
+     8,
+     13,
+     14
+    ]
+   },
+   "path_8_11_13": {
+    "control": 11,
+    "data": [
+     8,
+     13
+    ]
+   }
+  }
+ },
+ "encodings": {
+  "reduced": "selector a = the pair's first qubit, data d = its second; reduced two-label LCU with CNOT as H CZ H on d; CZ depth n repeats CZ(a, d) (n - 1) times after the SELECT CZ, each after a per-qubit barrier run",
+  "walk": "control c on q11, data bits on the layout's data qubits in ascending bit order; CNOT as H CZ H on the data qubit; omega as Z on c after its first H",
+  "readout": "readout-0 measures all 17 qubits in |0>, readout-1 after X on all 17"
+ },
+ "preregistered": {
+  "observable": "zero-product success P(selector = 0) of the reduced LCU of edge (1,10)(4,15) of kite 3 at CZ depths [1, 5, 9] (1 plus identity CZ pairs on the replica's own pair)",
+  "design": "3 x 3 Latin square: batch b places depth index (pair + b) mod 3 on each pair of LCU_PAIRS, and y_sign -1 (P = 0) on pair b, y_sign +1 (P = 1) on the other two; every depth, pair and batch holds one dark and two bright replicas",
+  "contrast": "C(n) = mean Pc(bright, n) - Pc(dark, n) with Pc the P(selector = 0) corrected for the selector's readout assignment from the readout-0 and readout-1 circuits of the same batch. The difference cancels a common additive shift of P (amplitude damping toward |0>, the measured common-shift offset), which 2 Pc(bright) - 1 alone would carry into C as a bias",
+  "confound": "the dark replica of each depth sits on one pair in one batch and its brights on the other two, so C(n) carries that pair's and batch's offset against the mean of the others; the square balances pair and batch main effects across depths, and a pair x depth interaction stays inside r",
+  "fit": "r = exp(slope) of the weighted least-squares line of ln C(n) on n over n = 1, 5, 9; its 99% interval from a parametric bootstrap of the binomial counts and each batch's readout pair",
+  "predictions": "C(1) in [0.72, 0.82]; C(9) / C(1) = r^8 with r in [0.87, 0.96], central 0.955",
+  "falsifier": "the pooled depth-1 contrast with its 99% upper bound below 0.5 refutes the shallow admission and ends the Tuna-17 program; a 99% interval of r disjoint from [0.87, 0.97] refutes the planning range and resizes T1, coherence and walk before they run",
+  "stop_rule": "each batch: every job completed with the manifest's shots; readout-0 P1 at most 0.10 and readout-1 P1 at least 0.80 on every used qubit (a failure stops the series and re-plans the layout); every bright or reference replica at P(selector = 0) at least 0.7; circuit digests equal cases.json; the account's queue empty; a 120 s pause before the next batch"
+ },
+ "batch": "batch-00",
+ "stage": "t0",
+ "circuits": [
+  {
+   "file": "t0-1.cq",
+   "kind": "witness",
+   "stage": "t0",
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "lcu",
+     "census": "within_kite[245]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      -1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 1,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "0"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 10,
+      "data": [
+       13
+      ]
+     },
+     "cz_depth": 5,
+     "p_selector_zero": "1"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 12,
+      "data": [
+       14
+      ]
+     },
+     "cz_depth": 9,
+     "p_selector_zero": "1"
+    }
+   ],
+   "sha256": "cc06efa4752a1b2eac6c5f3e13d066a2b9d3abdc7b3e999a58281d38cab32b28"
+  },
+  {
+   "file": "readout-0.cq",
+   "kind": "readout",
+   "stage": "t0",
+   "prepared": 0,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout",
+   "stage": "t0",
+   "prepared": 1,
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  }
+ ]
+}
