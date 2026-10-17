@@ -26,7 +26,10 @@ each a gate:
   and the optimizer picks the inflated tier. qpu_planning.prepare and
   live_run.main refuse the opt-in outside the N21 families or without the
   exact model, and an opted-in plan records the rule, its designs and the
-  planned radii.
+  planned radii. live_run.approved_record_mismatches reports "policy
+  differs" when a fresh plan adds or drops the opt-in against a retained
+  approved record, so the service never receives a test other than the
+  approved one.
 - ``--default-identity``: every default-path output of the optimizer,
   collection, power radii, planner settings and a mocked
   qpu_planning.prepare serializes to the digests pinned below, which the
@@ -443,7 +446,37 @@ def verify_planner() -> dict[str, Any]:
         else:
             raise RuntimeError(f"{arguments}: the CLI accepted the opt-in")
         _require("--empirical-bernstein applies" in stderr.getvalue(), f"{arguments}: refusal lacks its reason")
+    _verify_approval_binding(live_run)
     return {"bare_shots": bare, "inflated_shots": inflated, "hoeffding_shots": hoeffding}
+
+
+# Retained submit-free n21-feedback-encoded records at 50 us: one planned
+# under the opt-in, one under the data-free rule.
+OPTED_RECORD = "2026-10-17T214153.170495Z"
+DATA_FREE_RECORD = "2026-10-17T203941.331080Z"
+
+
+def _verify_approval_binding(live_run: Any) -> None:
+    """The approved-record comparison stops a fresh plan that adds or drops the opt-in before any job."""
+    import copy
+
+    runs = Path(__file__).resolve().parent.parent / "results" / "live"
+    for name, label in ((OPTED_RECORD, "dropped"), (DATA_FREE_RECORD, "added")):
+        approved = runs / name
+        record = json.loads((approved / "record.json").read_text())
+        qpy = hashlib.sha256((approved / "isa.qpy").read_bytes()).hexdigest()
+        _require(
+            live_run.approved_record_mismatches(approved, record, qpy) == [],
+            f"{name}: the unchanged plan failed its own approval comparison",
+        )
+        fresh = copy.deepcopy(record)
+        design = fresh["policy"]["design"]
+        if label == "dropped":
+            del design["empirical_bernstein"]
+        else:
+            design["empirical_bernstein"] = True
+        mismatches = live_run.approved_record_mismatches(approved, fresh, qpy)
+        _require("policy differs" in mismatches, f"{name}: an opt-in {label} after approval passed: {mismatches}")
 
 
 def prepared(**overrides: Any) -> dict[str, Any]:

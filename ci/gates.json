@@ -3318,7 +3318,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --planner && \"$PYTHON\" -B -O -W error empirical_bernstein_contracts.py --planner",
    "name": "core-531",
-   "seconds": 2.9,
+   "seconds": 4.6,
    "tier": "pr"
   },
   {

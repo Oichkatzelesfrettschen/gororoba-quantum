@@ -1161,8 +1161,9 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
     plain = {row["name"]: row for row in analyze_observations(observed, endpoints, charged).as_dict()["observables"]}
     plain_power = observation_power_radii(observed, endpoints, charged, bernstein)
     fallback = analyze_observations(observed, endpoints).as_dict()["observables"]
-    power = observation_power_radii(observed, endpoints)
+    power = observation_power_radii(observed, endpoints, (), bernstein)
     planned = {endpoint["name"]: endpoint for endpoint in candidate["observables"]}
+    unbounded = _bernstein_fallback(record, contracts) if bernstein else {}
     lines.append("")
     for row in fallback:
         name = row["name"]
@@ -1170,7 +1171,8 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
             continue
         spent = sum(float(bound["falsifier_tail"]) for bound in bounds if bound["observable_name"] == name)
         alpha = _number(contracts[name]["alpha"], "alpha")
-        total = row["detection_radius"] + power[name]
+        detection = unbounded.get(name, row["detection_radius"])
+        total = detection + power[name]
         effect = _number(planned[name]["effect_used_for_power"], "effect used for power")
         assumptions = planned[name].get("covariance_assumptions") or []
         rests = []
@@ -1203,8 +1205,14 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
             ]
         )
         lines.append(
-            f"Without retained registers (the Hoeffding fallback, full alpha) `{_identifier(name, 'endpoint')}` "
-            f"rejects its null only above {_format_number(row['null_value'] + row['detection_radius'])}; detection "
+            (
+                "Without retained registers (no covariance bound; each PUB reads the smaller of Hoeffding and "
+                "empirical Bernstein at the full alpha split, here at the planned variances) "
+                if name in unbounded
+                else "Without retained registers (the Hoeffding fallback, full alpha) "
+            )
+            + f"`{_identifier(name, 'endpoint')}` "
+            f"rejects its null only above {_format_number(row['null_value'] + detection)}; detection "
             f"plus power radius {total:.6g} against the admitted effect {_format_number(effect)} "
             + (
                 "leaves the endpoint underpowered at these shots, and the collected analysis reports it so."
@@ -1215,6 +1223,30 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
     lines.append("")
     _require(bool(contracts) and set(planned) <= set(contracts), "falsifier endpoints differ from the contracts")
     return lines
+
+
+def _bernstein_fallback(record: dict[str, Any], contracts: dict[str, dict[str, Any]]) -> dict[str, float]:
+    """Each opted-in endpoint's detection radius once the covariance bounds drop: per PUB, the smaller of
+    Hoeffding and empirical Bernstein at the full alpha split, read at the planned variances."""
+    from experiment_optimizer import empirical_bernstein_radius
+
+    shares = {design["observable_name"]: design["share"] for design in record["empirical_bernstein"]["designs"]}
+    radii: dict[str, float] = {}
+    for detail in record["empirical_bernstein"]["planned"]:
+        name = detail["observable"]
+        if contracts[name].get("minimum_effect") is None:
+            continue
+        pubs = [row for row in detail["pubs"] if row["variance"] is not None]
+        tail = _number(contracts[name]["alpha"], "alpha") / len(detail["pubs"])
+        share = _number(shares[name], "empirical-Bernstein share")
+        total = 0.0
+        for row in pubs:
+            span, shots = _number(row["score_span"], "score span"), _count(row["shots"], "PUB shots")
+            hoeffding = min(span * math.sqrt(math.log(1.0 / (tail * (1 - share))) / (2 * shots)), span)
+            bernstein = empirical_bernstein_radius(row["variance"], span, shots, tail * share, two_sided=False)
+            total += min(hoeffding, bernstein)
+        radii[name] = total
+    return radii
 
 
 def _empirical_bernstein(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
@@ -2130,12 +2162,84 @@ def _verify_covariance_falsifier(record: dict[str, Any]) -> None:
             raise AssertionError(f"covariance falsifier case lacks {phrase!r}")
     if "### Replica covariance" in "\n".join(_endpoints(record, record["optimization"]["candidates"][0])):
         raise AssertionError("a record without declared bounds rendered a covariance falsifier")
+    _verify_bounded_bernstein(bounded)
     bounded["covariance_falsifier"]["tail"] = 0.01
     try:
         _endpoints(bounded, candidate)
     except ValueError:
         return
     raise AssertionError("a record falsifier that differs from the source specification rendered")
+
+
+def _verify_bounded_bernstein(bounded: dict[str, Any]) -> None:
+    """A two-replica record with covariance bounds and the opt-in names both rules and its unbounded fallback."""
+    from dataclasses import asdict
+
+    from experiment_optimizer import (
+        EMPIRICAL_BERNSTEIN,
+        CandidatePlan,
+        CovarianceBound,
+        EmpiricalBernsteinDesign,
+        JobCandidate,
+        ObservableContract,
+        ObservableTerm,
+        PubPrediction,
+        empirical_bernstein_radius,
+        planned_empirical_bernstein,
+    )
+
+    opted = copy.deepcopy(bounded)
+    design = EmpiricalBernsteinDesign("feedback_contrast")
+    contract = ObservableContract(
+        "feedback_contrast", (ObservableTerm("feedback", (0.0, 1.0)),), minimum_effect=0.0, alpha=0.05, power=0.8
+    )
+    bound = opted["covariance_bounds"][0]
+    covariance = CovarianceBound(
+        bound["observable_name"],
+        bound["pub_name"],
+        tuple(bound["labels"]),
+        tuple(tuple(row) for row in bound["matrix"]),
+        bound["assumption"],
+        bound["variance_allowance"],
+        bound["falsifier_tail"],
+    )
+    pub = PubPrediction("feedback_pub", {"feedback": ((0.9, 0.1), (0.9, 0.1))}, 0.001, 0.00025, "fixture")
+    plan = CandidatePlan(
+        "candidate-000-shots-2048",
+        (JobCandidate("ibm_fez/dynamic/1", (pub,), 2048, 2.3, 90.0, "fixture"),),
+        (covariance,),
+        empirical_bernstein=(design,),
+    )
+    (detail,) = planned_empirical_bernstein(plan, (contract,))
+    opted["empirical_bernstein"] = {
+        "specification": json.loads(json.dumps(EMPIRICAL_BERNSTEIN)),
+        "designs": [asdict(design)],
+        "planned": [json.loads(json.dumps(detail))],
+    }
+    candidate = opted["optimization"]["candidates"][0]
+    candidate["observables"][0].update(
+        confidence_half_width=detail["radii"]["confidence"]["used"],
+        detection_radius=detail["radii"]["detection"]["used"],
+        power_radius=detail["power_radius"],
+    )
+    text = "\n".join(_endpoints(opted, candidate))
+    row = detail["pubs"][0]
+    fallback = min(
+        math.sqrt(math.log(1.0 / 0.025) / (2 * 2048)),
+        empirical_bernstein_radius(row["variance"], 1.0, 2048, 0.025, two_sided=False),
+    )
+    for phrase in (
+        "### Replica covariance: variance upper confidence limit",
+        "### Empirical-Bernstein confidence and detection radii",
+        "sums, over PUBs, the smaller of the data-free radius and the empirical-Bernstein radius",
+        "Alpha split for `feedback_contrast`: 0.05 = falsifier tail 0.001 + data-free tail 0.0245 + "
+        "empirical-Bernstein tail 0.0245",
+        "Without retained registers (no covariance bound; each PUB reads the smaller of Hoeffding and empirical "
+        f"Bernstein at the full alpha split, here at the planned variances) `feedback_contrast` rejects its null "
+        f"only above {_format_number(fallback)}",
+    ):
+        if phrase not in text:
+            raise AssertionError(f"bounded empirical-Bernstein case lacks {phrase!r}")
 
 
 def _verify_empirical_bernstein(record: dict[str, Any]) -> None:
