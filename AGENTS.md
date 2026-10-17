@@ -429,16 +429,20 @@ retain its output under results/kaggle/. The kernel's own guide is
   24.8.0 and `cutensor-cu11` 2.2.0 (`KERNEL_PINS` entries) supply. Aer
   0.17.2 reports `cuStateVec_enable` False when `batched_shots_gpu` is also
   set.
-  `scripts/aer_gpu_probe.py --only cpu_statevector
-  gpu_statevector gpu_statevector_custatevec` records the three paths
+  `scripts/aer_gpu_probe.py --workloads n21 --configurations
+  cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec` records the three paths
   with Aer's reported `cuStateVec_enable`; a T4 result for it is not retained
   yet. `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
   the T4 check, and `docs/notes/build_host/custatevec.md` the host build.
-- **Batched GPU shots.** `noise_simulator(..., batched_shots=True)` enables
-  Aer's `batched_shots_gpu` for static circuits of at most 16 active qubits.
-  qiskit-aer-gpu-cu11 0.17.2 aborts it on any circuit with control flow
-  (`if_else` lowers to `jump`). Batched static runs have no measurement here
-  yet.
+- **Batched GPU shots.** On a GPU `noise_simulator` enables Aer's
+  `batched_shots_gpu` by default for circuits of at most
+  `BATCHED_SHOTS_MAX_QUBITS` (10) active qubits, and `batched_shots=False`
+  opts out. `SnapshotSimulator.run` runs any circuit with control flow
+  unbatched: the batched executor rejects `jump`, and with if_else lowered
+  to bfunc-conditioned gates it evaluates the condition before the readout
+  channel. Shot branching is never enabled, since Aer 0.17.2's shot
+  branching drops a mid-circuit measurement's readout channel
+  (`docs/evidence/aer_gpu_configuration/README.md`).
 - **CI replay.**
   - Seeded GPU counts differ from CPU counts, so a gate re-derives a GPU
     record from its retained counts and never resamples on CI.

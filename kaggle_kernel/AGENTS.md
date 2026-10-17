@@ -93,13 +93,16 @@ and what it must prove before its output counts.
   cutensor-cu11 2.2.0 and sets `GOROROBA_AER_DEVICE=GPU`.
 - **cuStateVec.** `noise_simulator(..., custatevec=True)` sets
   `cuStateVec_enable` on a GPU statevector run; `scripts/aer_gpu_probe.py
-  --only cpu_statevector gpu_statevector gpu_statevector_custatevec` records
+  --workloads n21 --configurations
+  cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec` records
   the three paths with Aer's reported `cuStateVec_enable`. The option excludes
   `batched_shots_gpu`. `docs/notes/kaggle/custatevec.md` holds the library
   chain, the T4 push command and how to read its result.
 - **Using it in an entry.** The entry passes
   `calibration_snapshot.aer_device()` to `noise_simulator(snapshot, device,
-  method=...)`.
+  method=...)`. On a GPU the simulator batches shots of circuits of at most
+  10 active qubits without control flow and runs feed-forward circuits shot
+  by shot (`calibration_snapshot.SnapshotSimulator`).
 - **Noise model width.** Restricting the snapshot and the circuit to the
   active qubits (`snapshot_laws.restrict` and `restrict_circuit`) keeps
   Aer's noise model at the circuit's width on either device.

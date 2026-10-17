@@ -37,10 +37,12 @@ clean measurement is the T4 rerun of the same probe.
   mid-circuit measurement on CPU and GPU, statevector and density matrix
   (toy z scores 100 to 2060); it changes the model and is excluded from
   every noisy replay, beyond being 2 to 5 times slower.
-- cuStateVec: the host build has no cuQuantum (`Simulation device "GPU" does
-  not support cuStateVec on this system`). qiskit-aer-gpu-cu11 0.17.2 on
-  Kaggle declares `cuquantum-cu11<24.11.0,>=23.3.0`, so the T4 rerun has a
-  cuStateVec row; it is unmeasured here.
+- cuStateVec: the 0.17.2-1 build this record ran on has no cuQuantum
+  (`Simulation device "GPU" does not support cuStateVec on this system`), so
+  its `gpu_statevector_custatevec` rows fail. python-qiskit-aer-cuda 0.17.2-2
+  links libcustatevec (`docs/notes/build_host/custatevec.md`), and the
+  Kaggle kernel's cu11 wheel loads cuquantum-cu11 24.8.0
+  (`docs/notes/kaggle/custatevec.md`), so the T4 rerun measures the row.
 - Two GPUs: `target_gpus` and batched shots spread over every visible GPU
   (`batched_shots_optimization_parallel_gpus`); the host has one GPU, so the
   `gpu_statevector_batched_gpu0` row runs only on the T4 x2.

@@ -36,15 +36,19 @@ so no retained record exercises the library.
 
 ## T4 check
 
+The full Aer GPU configuration probe carries the cuStateVec row:
+
 ```sh
-"$PYTHON" scripts/kaggle_run.py push --slug aer-custatevec-probe \
-    --machine NvidiaTeslaT4 --timeout 1800 \
+"$PYTHON" scripts/kaggle_run.py push scripts/aer_gpu_probe.py \
+    --slug gororoba-aer-gpu-config --machine NvidiaTeslaT4 --timeout 5400 \
+    --include docs/evidence/calibration/history/ibm_fez/20261016T1212520700.json \
     --include docs/evidence/calibration/ibm_kingston.json \
-    scripts/aer_gpu_probe.py -- \
-    --snapshot docs/evidence/calibration/ibm_kingston.json \
-    --out /kaggle/working/output/aer-gpu-probe.json \
-    --only cpu_statevector gpu_statevector gpu_statevector_custatevec
+    -- --out results/kaggle_out/aer_gpu_probe.json
 ```
+
+`--workloads n21 --configurations
+cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec`
+after `--` runs only the three statevector paths.
 
 Read `kaggle quota` before and after, then `status` and `collect` retain the
 output under results/kaggle/.
@@ -52,16 +56,18 @@ output under results/kaggle/.
 ## Reading the result
 
 - The check succeeds when every `gpu_statevector_custatevec` row carries
-  `cuStateVec_enable` true in `metadata`, no `failed` field, and a total
-  variation from the `cpu_statevector` row inside the row's
-  `sampling_scale`.
-- A `failed` row reading "does not support cuStateVec" means the library did
-  not load; the `environment.json` versions name the wheels the kernel
-  installed.
+  `cuStateVec_enable` true in `metadata`, no `failed` field, and a
+  `tvd_to_cpu_statevector` inside the row's `sampling_scale`.
+- A row's `failed` field holds the child's exit code and `stderr_tail` its
+  error. "does not support cuStateVec" there means the library did not load;
+  `machine.packages` in the record and `environment.json` name the wheels
+  the kernel installed.
 - Aer 0.17.2 reports `cuStateVec_enable` false on a run that also sets
   `batched_shots_gpu`, so `noise_simulator` raises ValueError on
-  `custatevec=True` with `batched_shots=True`, and the probe's cuStateVec
-  configuration runs unbatched.
+  `custatevec=True` with `batched_shots=True`; `custatevec=True` alone turns
+  the GPU's batched default off, and the probe's cuStateVec configuration
+  runs unbatched. Its plain-GPU comparison row is
+  `gpu_statevector_unbatched`.
 - Seeded GPU counts differ from CPU counts, so a CI gate re-derives a GPU
   record from its retained counts and never resamples (root AGENTS.md,
   "Simulation on Kaggle").
