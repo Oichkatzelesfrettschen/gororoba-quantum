@@ -510,7 +510,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error complex_skew_contracts.py >/dev/null",
    "name": "core-063",
-   "seconds": 314.2,
+   "seconds": 142.6,
    "tier": "full"
   },
   {
@@ -518,7 +518,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -O -W error complex_skew_contracts.py >/dev/null",
    "name": "core-064",
-   "seconds": 210.2,
+   "seconds": 95.4,
    "tier": "full"
   },
   {
@@ -1334,7 +1334,7 @@
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/complex_skew/replay.py --check",
    "name": "sources-166",
-   "seconds": 142.2,
+   "seconds": 64.5,
    "tier": "full"
   },
   {
@@ -1342,7 +1342,7 @@
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/complex_skew/replay.py --check",
    "name": "sources-167",
-   "seconds": 265.1,
+   "seconds": 120.3,
    "tier": "full"
   },
   {

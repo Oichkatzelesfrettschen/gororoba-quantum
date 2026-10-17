@@ -40,6 +40,9 @@ def coefficient_control(dimension: int) -> dict[str, int]:
     conjugation = sp.diag(1, *([-1] * (half - 1)))
     change = sp.diag(sp.eye(half), conjugation)
     complex_conjugation = sp.diag(sp.eye(half), -sp.eye(half))
+    # The intertwiner identity is checked on DomainMatrix forms over ZZ; every
+    # operand is an integer matrix.
+    change_ring, conjugation_ring = change.to_DM(), complex_conjugation.to_DM()
     for coordinate in range(dimension):
         if coordinate in (0, half):
             continue
@@ -47,7 +50,10 @@ def coefficient_control(dimension: int) -> dict[str, int]:
         full = sp.Matrix(multiplication_matrix(values))
         operator = complex_operator(values)
         require(operator.T == -operator, "complex skew identity fails")
-        require(change * full * change == realify(operator) * complex_conjugation, "intertwiner fails")
+        require(
+            change_ring * full.to_DM() * change_ring == realify(operator).to_DM() * conjugation_ring,
+            "intertwiner fails",
+        )
     symbols, matrix = symbolic_operator(dimension)
     require(matrix.T == -matrix, "symbolic skew identity fails")
     for first, second in pivot_cover(dimension):
