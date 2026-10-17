@@ -306,7 +306,8 @@ Regenerating the outputs needs a Rust toolchain:
 3. Run `cargo build --offline` and `cargo build --offline --release`.
 4. Run `target/debug/wheel-audit-harness > harness-debug.json` and
    `target/release/wheel-audit-harness qw8-overflow > harness-release-qw8.json`.
-5. Run `"$PYTHON" scripts/wheel_rust_audit.py --out DIR`.
+5. Run `"$PYTHON" scripts/wheel_rust_audit.py --out DIR`, which first requires
+   `DIR/src/wheel-0.1.0` to equal the vendored archive file for file.
 
 | File | Content |
 | --- | --- |

@@ -59,6 +59,7 @@ import random
 import struct
 import subprocess
 import sys
+import tarfile
 from collections.abc import Callable, Sequence
 from fractions import Fraction
 from pathlib import Path
@@ -758,6 +759,28 @@ def counts(classes: dict[str, Any]) -> dict[str, dict[str, int]]:
     return {name: dict(sorted(row.items())) for name, row in table.items()}
 
 
+def require_crate_tree(directory: Path) -> None:
+    """The crate the harness compiled (DIR/src/wheel-0.1.0) equals the vendored archive file for file."""
+    require(sha256_file(CRATE_ARCHIVE) == CRATE["crate_sha256"], "vendored crate digest")
+    tree = directory / "src" / "wheel-0.1.0"
+    require(tree.is_dir(), f"{tree} is absent; extract the vendored crate there before --out")
+    archived: dict[str, bytes] = {}
+    with tarfile.open(CRATE_ARCHIVE, "r:gz") as archive:
+        for member in archive.getmembers():
+            if member.isfile():
+                handle = archive.extractfile(member)
+                require(handle is not None, f"{member.name} does not read")
+                assert handle is not None
+                archived[member.name.removeprefix("wheel-0.1.0/")] = handle.read()
+    compiled = {path.relative_to(tree).as_posix(): path.read_bytes() for path in tree.rglob("*") if path.is_file()}
+    require(
+        sorted(compiled) == sorted(archived),
+        f"compiled crate files {sorted(set(compiled) ^ set(archived))} differ from the vendored archive's",
+    )
+    differing = sorted(name for name in archived if compiled[name] != archived[name])
+    require(not differing, f"compiled crate files {differing} differ from the vendored archive")
+
+
 def rust_toolchain() -> str:
     """The installed rustc and cargo versions, as TOOLCHAIN writes them."""
     versions = [
@@ -936,6 +959,7 @@ def main() -> int:
             toolchain == TOOLCHAIN,
             f"the installed toolchain is {toolchain!r}; the retained harness outputs pin {TOOLCHAIN!r}",
         )
+        require_crate_tree(args.out)
         (args.out / RECORD).write_text(dump(build_record(args.out, toolchain)))
         return check(args.out)
     if args.check is not None:
