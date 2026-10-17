@@ -102,19 +102,38 @@ for a fold.
 - **Fraction and p-adic give two independent exact references.**
   - Fraction elimination works in Q from the dyadic floats.
   - The Dixon solve works modulo a prime power.
-  - These share no intermediate value, and their solutions agree digest for
-    digest on every design.
+  - These share no intermediate value, and their solutions agree on every
+    design.
+  - `padic_witness.json` retains each design's lift, the residues of the
+    scaled solution modulo p^k. `--check` verifies it with integers alone:
+    the lift solves the scaled normal equations modulo p^k, and its
+    half-extended Euclid reconstruction equals the fresh Fraction solution.
+  - A witness computed some other way, as residues of the Fraction solution,
+    is the same certificate, because the lift of a rational below the bound
+    is unique. What the check rejects is any witness that differs from it:
+    one unit off, the residues of the float64 solution, too small a k, or
+    the wrong prime.
 - **Mod-p certifies rank.**
   - A full-column-rank reduction modulo a prime proves the integer design
     has full column rank over Q. A nonzero n x n minor mod p is nonzero
     over Z.
   - Three primes guard against the false negative: a prime that divides
     every maximal minor.
-- **The wheel totalizes division.**
-  - A singular or ill-posed fold shows up as bottom (0/0) or infinity (1/0)
-    in the solution. It does not raise an exception or return a huge float.
-  - Bottom marks an underdetermined system and infinity an inconsistent one.
-  - On a full-rank design, the wheel solve is Fraction elimination.
+- **The wheel totalizes division.** Carlstrom's wheel of fractions
+  ([source note](../../notes/wheels-carlstrom.md)) adjoins /0 and 0/0 to Q.
+  - Elimination over it returns bottom (0/0) where Fraction elimination
+    raises at a zero pivot. It does not raise an exception or return a huge
+    float.
+  - The study applies it only to normal equations: symmetric positive
+    semidefinite matrices whose right side lies in their column space.
+  - On that class every component is finite exactly when the matrix is
+    positive definite, where the solve equals Fraction elimination.
+    Otherwise every component is bottom.
+  - Outside that class bottom and infinity carry no consistency or kernel
+    information. `solve([[0, -1], [0, -1]], [-1, 0])` is inconsistent and
+    returns bottom. `solve([[1, 1], [1, 1]], [1, 2])` is inconsistent and
+    returns infinity. The wheel self-test keeps both as the documented
+    limitation.
 
 ## Method
 
@@ -164,6 +183,8 @@ core-489 past the pr tier's one minute.
 - The residual r* has p-adic valuation 0 in every component for all three
   primes. Its 2-adic valuations run from -71 to -20, the binary scale of
   the dyadic data.
+- The lifts of all 2716 designs fill `padic_witness.json` (4.5 MB, base64
+  integers), bound to `result.json` by its sha256.
 
 **P4 resimulation.**
 - For every fold of `axis_tilt_plus_mean` on the real lane-4 designs, the
@@ -173,6 +194,20 @@ core-489 past the pr tier's one minute.
   3.5e-13 ||A||, the worst design difference #161 measured.
 - It is resimulated again at 8 more of 1.3e-14 ||A||, the median measured
   difference.
+- The record retains the witness of each backend: the real design and
+  offsets, the seed, and all 17 resimulated log ratios per fold.
+- `--check` recomputes every P4 summary from that witness:
+  - The real design must round to the atlas record's nine-decimal slopes and
+    six-decimal offsets.
+  - Each unperturbed resimulation must lie within compare()'s contrast
+    tolerance of the retained prediction.
+  - The fold solutions and perturbations are solved again from the seed,
+    so the parameter drifts are fresh. They agree within 1e-2 relative,
+    since the perturbation, not LAPACK roundoff, sets them.
+  - The moves, ranks and moved-prediction values follow exactly from the
+    retained log ratios.
+- Rerunning the resimulation itself needs the captured lane designs, about
+  3 minutes on one worker, so the gate checks the witness instead.
 
 ## Results
 
@@ -336,7 +371,8 @@ the requirements.txt pins.
     finite, on all 448 full-fit and worst-fold designs.
   - The consistent rank-deficient control gives bottom in all four
     components where Fraction elimination raises ZeroDivisionError.
-  - An inconsistent singular system gives infinity.
+  - The wheel self-test also gives bottom in every component on 20 singular
+    consistent Gram systems, and equality with Q on 20 nonsingular ones.
 
 **Recommendation.**
 - Keep `np.linalg.lstsq` in float64.
@@ -377,13 +413,15 @@ the requirements.txt pins.
 
 ## Gates
 
-- core-489: `--check` in normal and optimized Python, pr tier, 58 s with one
-  worker.
-- core-492: `--self-test` in both modes, pr tier, 2.1 s.
+- core-489: `--check` in normal and optimized Python, pr tier, 64 s of CPU
+  time with one worker.
+- core-492: `--self-test` in both modes, pr tier, 2.3 s.
 - core-493: `gororoba_quantum/wheel_algebra.py --self-test` in both modes,
-  pr tier, 4.6 s.
+  pr tier, 3.8 s. Its axiom cases run in chunks through
+  `parallel.ordered_map`.
 
 `--check` recomputes everything but the pyadic lifting, the lane-4 bridge
-and the resimulation. Those need pyadic, which CI does not pin, and the
-captured real designs, which cost about 3 minutes on one worker. The
-check verifies the p-adic certificate with the standard library.
+and the resimulations. Those need pyadic, which CI does not pin, and the
+captured real designs, which cost about 3 minutes on one worker. The check
+verifies the p-adic witness with integers and recomputes the P4 summary from
+its retained witness.
