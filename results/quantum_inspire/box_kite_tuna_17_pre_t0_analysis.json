@@ -1,0 +1,651 @@
+{
+ "readout_correction": "Pc = (p - e10) / (1 - e01 - e10) with the batch's own readout pair; delta-method variance with the binomial variance of p, e01 and e10",
+ "runs": [
+  "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+  "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+  "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+  "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+  "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-00",
+  "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-04"
+ ],
+ "schema": "box-kite-analysis-v1",
+ "stages": {
+  "tuna_pre": {
+   "batches": {
+    "batch-00": {
+     "problems": [],
+     "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+     "sanity": "pass"
+    }
+   },
+   "decision": null,
+   "fault": {
+    "0": false,
+    "6": false
+   },
+   "missing_batches": [],
+   "per_qubit": {
+    "p1_after_xx": {
+     "0": {
+      "p1": 0.018798828125,
+      "se": 0.002122093151
+     },
+     "1": {
+      "p1": 0.06298828125,
+      "se": 0.003795966895
+     },
+     "10": {
+      "p1": 0.05029296875,
+      "se": 0.003414825288
+     },
+     "11": {
+      "p1": 0.0263671875,
+      "se": 0.002503511154
+     },
+     "12": {
+      "p1": 0.048095703125,
+      "se": 0.003343257355
+     },
+     "13": {
+      "p1": 0.0283203125,
+      "se": 0.002591973808
+     },
+     "14": {
+      "p1": 0.04248046875,
+      "se": 0.003151290911
+     },
+     "15": {
+      "p1": 0.063720703125,
+      "se": 0.00381648022
+     },
+     "16": {
+      "p1": 0.043212890625,
+      "se": 0.0031771253
+     },
+     "2": {
+      "p1": 0.069091796875,
+      "se": 0.003962658973
+     },
+     "3": {
+      "p1": 0.0263671875,
+      "se": 0.002503511154
+     },
+     "4": {
+      "p1": 0.052734375,
+      "se": 0.00349222982
+     },
+     "5": {
+      "p1": 0.04296875,
+      "se": 0.003168541834
+     },
+     "6": {
+      "p1": 0.110107421875,
+      "se": 0.004890993834
+     },
+     "7": {
+      "p1": 0.05712890625,
+      "se": 0.003626386936
+     },
+     "8": {
+      "p1": 0.149658203125,
+      "se": 0.005574001131
+     },
+     "9": {
+      "p1": 0.028564453125,
+      "se": 0.002602795088
+     }
+    },
+    "p1_given_0": {
+     "0": {
+      "p1": 0.01953125,
+      "se": 0.002162230174
+     },
+     "1": {
+      "p1": 0.02783203125,
+      "se": 0.002570177584
+     },
+     "10": {
+      "p1": 0.045166015625,
+      "se": 0.003244814322
+     },
+     "11": {
+      "p1": 0.018798828125,
+      "se": 0.002122093151
+     },
+     "12": {
+      "p1": 0.0048828125,
+      "se": 0.001089161205
+     },
+     "13": {
+      "p1": 0.02001953125,
+      "se": 0.002188546046
+     },
+     "14": {
+      "p1": 0.037109375,
+      "se": 0.00295359079
+     },
+     "15": {
+      "p1": 0.054931640625,
+      "se": 0.003560105949
+     },
+     "16": {
+      "p1": 0.032958984375,
+      "se": 0.002789519383
+     },
+     "2": {
+      "p1": 0.01318359375,
+      "se": 0.001782194555
+     },
+     "3": {
+      "p1": 0.013916015625,
+      "se": 0.001830351218
+     },
+     "4": {
+      "p1": 0.012451171875,
+      "se": 0.001732624412
+     },
+     "5": {
+      "p1": 0.04345703125,
+      "se": 0.003185681071
+     },
+     "6": {
+      "p1": 0.038330078125,
+      "se": 0.002999873176
+     },
+     "7": {
+      "p1": 0.056396484375,
+      "se": 0.003604465036
+     },
+     "8": {
+      "p1": 0.034423828125,
+      "se": 0.00284867483
+     },
+     "9": {
+      "p1": 0.017822265625,
+      "se": 0.002067266773
+     }
+    },
+    "p1_given_1": {
+     "0": {
+      "p1": 0.97265625,
+      "se": 0.002548172088
+     },
+     "1": {
+      "p1": 0.9697265625,
+      "se": 0.002677167478
+     },
+     "10": {
+      "p1": 0.975341796875,
+      "se": 0.002423143627
+     },
+     "11": {
+      "p1": 0.9560546875,
+      "se": 0.003202710416
+     },
+     "12": {
+      "p1": 0.973388671875,
+      "se": 0.002514759427
+     },
+     "13": {
+      "p1": 0.911865234375,
+      "se": 0.004429543613
+     },
+     "14": {
+      "p1": 0.9716796875,
+      "se": 0.002591973808
+     },
+     "15": {
+      "p1": 0.976318359375,
+      "se": 0.002375864384
+     },
+     "16": {
+      "p1": 0.97021484375,
+      "se": 0.00265615812
+     },
+     "2": {
+      "p1": 0.971435546875,
+      "se": 0.002602795088
+     },
+     "3": {
+      "p1": 0.959228515625,
+      "se": 0.003090006038
+     },
+     "4": {
+      "p1": 0.953369140625,
+      "se": 0.003294483075
+     },
+     "5": {
+      "p1": 0.9609375,
+      "se": 0.003027245305
+     },
+     "6": {
+      "p1": 0.957275390625,
+      "se": 0.003159930447
+     },
+     "7": {
+      "p1": 0.93310546875,
+      "se": 0.003903738347
+     },
+     "8": {
+      "p1": 0.952392578125,
+      "se": 0.003327096205
+     },
+     "9": {
+      "p1": 0.92626953125,
+      "se": 0.004083308689
+     }
+    }
+   },
+   "precondition": "fault-recovered",
+   "readmission": {
+    "5": "readout-admissible; the Ramsey visibility exclusion stands",
+    "6": "readout-admissible; the Ramsey visibility exclusion stands",
+    "7": "readout-admissible; the Ramsey visibility exclusion stands",
+    "9": "readout-admissible"
+   },
+   "stops": [],
+   "t0_layout": {
+    "failing": [],
+    "qubits": [
+     1,
+     4,
+     8,
+     10,
+     11,
+     12,
+     13,
+     14
+    ]
+   },
+   "thresholds": {
+    "fault_p1_given_1_below": {
+     "0": 0.7,
+     "6": 0.3
+    },
+    "misassignment_p1_xx_below": {
+     "0": 0.1,
+     "6": 0.1
+    },
+    "predictions_p1_xx": {
+     "misassignment": {
+      "0": 0.038,
+      "6": 0.013
+     },
+     "under_rotation": {
+      "0": 0.98,
+      "6": 0.52
+     }
+    },
+    "readmission": {
+     "5": [
+      "visibility"
+     ],
+     "6": [
+      "readout",
+      "visibility"
+     ],
+     "7": [
+      "visibility"
+     ],
+     "9": [
+      "readout"
+     ]
+    },
+    "readout_0_p1_at_most": 0.1,
+    "readout_1_p1_at_least": 0.8,
+    "t0_lcu_qubits": [
+     1,
+     4,
+     10,
+     12,
+     13,
+     14
+    ],
+    "t0_walk_qubits": [
+     8,
+     11,
+     13,
+     14
+    ],
+    "under_rotation_p1_xx_above": {
+     "0": 0.5,
+     "6": 0.25
+    }
+   },
+   "verdict": "continue"
+  },
+  "tuna_t0": {
+   "batches": {
+    "batch-00": {
+     "problems": [],
+     "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+     "sanity": "pass"
+    },
+    "batch-01": {
+     "problems": [],
+     "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+     "sanity": "pass"
+    },
+    "batch-02": {
+     "problems": [],
+     "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+     "sanity": "pass"
+    }
+   },
+   "c1_in_prediction": false,
+   "contrast": {
+    "1": {
+     "se": 0.002772937394,
+     "value": 0.953955111157
+    },
+    "5": {
+     "se": 0.003294973206,
+     "value": 0.856580954074
+    },
+    "9": {
+     "se": 0.003406876744,
+     "value": 0.710386126491
+    }
+   },
+   "depth_1_upper_bound": 0.961097724554,
+   "missing_batches": [],
+   "r": 0.965358043114,
+   "r_interval": [
+    0.96375745874,
+    0.967080897583
+   ],
+   "r_undefined_draws": 0,
+   "r_verdict": "inside the planning range",
+   "replicas": [
+    {
+     "batch": "batch-00",
+     "depth": 1,
+     "e01": 0.027526855469,
+     "e10": 0.030395507812,
+     "p_zero_corrected": 0.01179138322,
+     "p_zero_raw": 0.04150390625,
+     "qubit": 1,
+     "role": "dark",
+     "se": 0.002171485589,
+     "shots": 16384,
+     "slot": 0,
+     "zeros": 680
+    },
+    {
+     "batch": "batch-00",
+     "depth": 5,
+     "e01": 0.054443359375,
+     "e10": 0.021728515625,
+     "p_zero_corrected": 0.930562896406,
+     "p_zero_raw": 0.881408691406,
+     "qubit": 10,
+     "role": "bright",
+     "se": 0.003266594729,
+     "shots": 16384,
+     "slot": 1,
+     "zeros": 14441
+    },
+    {
+     "batch": "batch-00",
+     "depth": 9,
+     "e01": 0.004943847656,
+     "e10": 0.028259277344,
+     "p_zero_corrected": 0.692676767677,
+     "p_zero_raw": 0.697937011719,
+     "qubit": 12,
+     "role": "bright",
+     "se": 0.003753662533,
+     "shots": 16384,
+     "slot": 2,
+     "zeros": 11435
+    },
+    {
+     "batch": "batch-01",
+     "depth": 5,
+     "e01": 0.027770996094,
+     "e10": 0.029052734375,
+     "p_zero_corrected": 0.843913803145,
+     "p_zero_raw": 0.825012207031,
+     "qubit": 1,
+     "role": "bright",
+     "se": 0.003357328671,
+     "shots": 16384,
+     "slot": 0,
+     "zeros": 13517
+    },
+    {
+     "batch": "batch-01",
+     "depth": 9,
+     "e01": 0.05029296875,
+     "e10": 0.020324707031,
+     "p_zero_corrected": 0.035726013003,
+     "p_zero_raw": 0.053527832031,
+     "qubit": 10,
+     "role": "dark",
+     "se": 0.002211910075,
+     "shots": 16384,
+     "slot": 1,
+     "zeros": 877
+    },
+    {
+     "batch": "batch-01",
+     "depth": 1,
+     "e01": 0.004760742188,
+     "e10": 0.03125,
+     "p_zero_corrected": 0.955552741547,
+     "p_zero_raw": 0.952392578125,
+     "qubit": 12,
+     "role": "bright",
+     "se": 0.00180723244,
+     "shots": 16384,
+     "slot": 2,
+     "zeros": 15604
+    },
+    {
+     "batch": "batch-02",
+     "depth": 9,
+     "e01": 0.026184082031,
+     "e10": 0.029602050781,
+     "p_zero_corrected": 0.799547511312,
+     "p_zero_raw": 0.784545898438,
+     "qubit": 1,
+     "role": "bright",
+     "se": 0.003573103616,
+     "shots": 16384,
+     "slot": 0,
+     "zeros": 12854
+    },
+    {
+     "batch": "batch-02",
+     "depth": 1,
+     "e01": 0.054870605469,
+     "e10": 0.021728515625,
+     "p_zero_corrected": 0.975940247207,
+     "p_zero_raw": 0.922912597656,
+     "qubit": 10,
+     "role": "bright",
+     "se": 0.002937556708,
+     "shots": 16384,
+     "slot": 1,
+     "zeros": 15121
+    },
+    {
+     "batch": "batch-02",
+     "depth": 5,
+     "e01": 0.005187988281,
+     "e10": 0.029235839844,
+     "p_zero_corrected": 0.030657395702,
+     "p_zero_raw": 0.058837890625,
+     "qubit": 12,
+     "role": "dark",
+     "se": 0.002317600958,
+     "shots": 16384,
+     "slot": 2,
+     "zeros": 964
+    }
+   ],
+   "stops": [],
+   "thresholds": {
+    "bootstrap_draws": 4000,
+    "bootstrap_seed": 20261017,
+    "bright_floor_cz_depths": [
+     1
+    ],
+    "bright_p_selector_zero_at_least": 0.7,
+    "c1_prediction": [
+     0.72,
+     0.82
+    ],
+    "depth_1_contrast_upper_bound_floor": 0.5,
+    "depths": [
+     1,
+     5,
+     9
+    ],
+    "idle_p1_above_readout_0_at_most": 0.15,
+    "interval_percentiles": [
+     0.5,
+     99.5
+    ],
+    "r_planning_range": [
+     0.87,
+     0.97
+    ],
+    "readout_0_p1_at_most": 0.1,
+    "readout_1_p1_at_least": 0.8,
+    "upper_bound_z": 2.575829303549
+   },
+   "verdict": "continue"
+  },
+  "tuna_twins": {
+   "batches": {
+    "batch-00": {
+     "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-00"
+    },
+    "batch-04": {
+     "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-04"
+    }
+   },
+   "checks": [
+    {
+     "batch": "batch-00",
+     "check": "p_selector_zero",
+     "file": "twin-t0-1.cq",
+     "off": 0,
+     "prediction": "0",
+     "shots": 2048,
+     "slot": 0,
+     "verdict": "pass",
+     "zeros": 0
+    },
+    {
+     "batch": "batch-00",
+     "check": "p_selector_zero",
+     "file": "twin-t0-1.cq",
+     "off": 0,
+     "prediction": "1",
+     "shots": 2048,
+     "slot": 1,
+     "verdict": "pass",
+     "zeros": 2048
+    },
+    {
+     "batch": "batch-00",
+     "check": "p_selector_zero",
+     "file": "twin-t0-1.cq",
+     "off": 0,
+     "prediction": "1",
+     "shots": 2048,
+     "slot": 2,
+     "verdict": "pass",
+     "zeros": 2048
+    },
+    {
+     "batch": "batch-00",
+     "check": "p_selector_zero",
+     "file": "twin-t0-2.cq",
+     "off": 0,
+     "prediction": "1",
+     "shots": 2048,
+     "slot": 0,
+     "verdict": "pass",
+     "zeros": 2048
+    },
+    {
+     "batch": "batch-00",
+     "check": "p_selector_zero",
+     "file": "twin-t0-2.cq",
+     "off": 0,
+     "prediction": "0",
+     "shots": 2048,
+     "slot": 1,
+     "verdict": "pass",
+     "zeros": 0
+    },
+    {
+     "batch": "batch-00",
+     "check": "p_selector_zero",
+     "file": "twin-t0-2.cq",
+     "off": 0,
+     "prediction": "1",
+     "shots": 2048,
+     "slot": 2,
+     "verdict": "pass",
+     "zeros": 2048
+    },
+    {
+     "batch": "batch-00",
+     "check": "p_selector_zero",
+     "file": "twin-t0-3.cq",
+     "off": 0,
+     "prediction": "1",
+     "shots": 2048,
+     "slot": 0,
+     "verdict": "pass",
+     "zeros": 2048
+    },
+    {
+     "batch": "batch-00",
+     "check": "p_selector_zero",
+     "file": "twin-t0-3.cq",
+     "off": 0,
+     "prediction": "1",
+     "shots": 2048,
+     "slot": 1,
+     "verdict": "pass",
+     "zeros": 2048
+    },
+    {
+     "batch": "batch-00",
+     "check": "p_selector_zero",
+     "file": "twin-t0-3.cq",
+     "off": 0,
+     "prediction": "0",
+     "shots": 2048,
+     "slot": 2,
+     "verdict": "pass",
+     "zeros": 0
+    },
+    {
+     "batch": "batch-04",
+     "check": "all qubits 0",
+     "file": "twin-double-x.cq",
+     "off": 0,
+     "shots": 2048,
+     "verdict": "pass"
+    }
+   ],
+   "missing_batches": [
+    "batch-01",
+    "batch-02",
+    "batch-03"
+   ],
+   "stops": [],
+   "thresholds": {
+    "deterministic_shots_off_at_most": 0,
+    "z_limit": 4.5
+   },
+   "verdict": "continue"
+  }
+ }
+}

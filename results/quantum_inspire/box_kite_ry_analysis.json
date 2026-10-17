@@ -1,0 +1,298 @@
+{
+ "readout_correction": "Pc = (p - e10) / (1 - e01 - e10) with the batch's own readout pair; delta-method variance with the binomial variance of p, e01 and e10",
+ "runs": [
+  "results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_ladder-batch-00",
+  "results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_smoke-batch-00",
+  "results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_smoke-batch-01"
+ ],
+ "schema": "box-kite-analysis-v1",
+ "stages": {
+  "ry_ladder": {
+   "batches": {
+    "batch-00": {
+     "run": "results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_ladder-batch-00"
+    }
+   },
+   "circuits": [
+    {
+     "batch": "batch-00",
+     "file": "r1-width-9.cq",
+     "ladder": "R1",
+     "message": "",
+     "outcomes": {
+      "100000000": {
+       "count": 1024,
+       "z": null
+      }
+     },
+     "status": "completed",
+     "stray": 0,
+     "verdict": "conforms"
+    },
+    {
+     "batch": "batch-00",
+     "file": "r2-comment.cq",
+     "ladder": "R2",
+     "message": "",
+     "outcomes": {
+      "10": {
+       "count": 1024,
+       "z": null
+      }
+     },
+     "status": "completed",
+     "stray": 0,
+     "verdict": "conforms"
+    },
+    {
+     "batch": "batch-00",
+     "file": "r9-teleport-bare.cq",
+     "ladder": "R9",
+     "message": "",
+     "outcomes": {
+      "000000010": {
+       "count": 54,
+       "z": -1.290994448736
+      },
+      "000001010": {
+       "count": 48,
+       "z": -2.065591117977
+      },
+      "000010000": {
+       "count": 74,
+       "z": 1.290994448736
+      },
+      "000011000": {
+       "count": 62,
+       "z": -0.258198889747
+      },
+      "010000010": {
+       "count": 69,
+       "z": 0.645497224368
+      },
+      "010001010": {
+       "count": 68,
+       "z": 0.516397779494
+      },
+      "010010000": {
+       "count": 61,
+       "z": -0.387298334621
+      },
+      "010011000": {
+       "count": 60,
+       "z": -0.516397779494
+      },
+      "100100010": {
+       "count": 66,
+       "z": 0.258198889747
+      },
+      "100101010": {
+       "count": 53,
+       "z": -1.420093893609
+      },
+      "100110000": {
+       "count": 52,
+       "z": -1.549193338483
+      },
+      "100111000": {
+       "count": 52,
+       "z": -1.549193338483
+      },
+      "110100010": {
+       "count": 49,
+       "z": -1.936491673104
+      },
+      "110101010": {
+       "count": 63,
+       "z": -0.129099444874
+      },
+      "110110000": {
+       "count": 57,
+       "z": -0.903696114115
+      },
+      "110111000": {
+       "count": 59,
+       "z": -0.645497224368
+      }
+     },
+     "status": "completed",
+     "stray": 77,
+     "verdict": "emulator rate"
+    }
+   ],
+   "missing_batches": [],
+   "stops": [],
+   "thresholds": {
+    "gating_factor": "R1",
+    "z_limit": 4.5
+   },
+   "verdict": "continue"
+  },
+  "ry_smoke": {
+   "batches": {
+    "batch-00": {
+     "run": "results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_smoke-batch-00"
+    },
+    "batch-01": {
+     "run": "results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_smoke-batch-01"
+    }
+   },
+   "missing_batches": [],
+   "replicas": [
+    {
+     "batch": "batch-00",
+     "file": "ry-reduced-1.cq",
+     "ideal_fraction": 0.984375,
+     "p_zero": 0.015625,
+     "pattern": "reduced_edge_dark",
+     "prediction": "0",
+     "shots": 1024,
+     "slot": 0,
+     "verdict": "conforms",
+     "zeros": 16
+    },
+    {
+     "batch": "batch-00",
+     "file": "ry-reduced-1.cq",
+     "ideal_fraction": 0.9873046875,
+     "p_zero": 0.9873046875,
+     "pattern": "reduced_edge_bright",
+     "prediction": "1",
+     "shots": 1024,
+     "slot": 1,
+     "verdict": "conforms",
+     "zeros": 1011
+    },
+    {
+     "batch": "batch-00",
+     "file": "ry-reduced-1.cq",
+     "p_zero": 0.548828125,
+     "pattern": "reduced_strut",
+     "prediction": "1/2",
+     "shots": 1024,
+     "slot": 2,
+     "verdict": "conforms",
+     "z": 3.125,
+     "zeros": 562
+    },
+    {
+     "batch": "batch-00",
+     "file": "ry-reduced-1.cq",
+     "ideal_fraction": 0.978515625,
+     "p_zero": 0.021484375,
+     "pattern": "reduced_edge_x_minus",
+     "prediction": "0",
+     "shots": 1024,
+     "slot": 3,
+     "verdict": "conforms",
+     "zeros": 22
+    },
+    {
+     "batch": "batch-00",
+     "file": "ry-reduced-2.cq",
+     "ideal_fraction": 1.0,
+     "p_zero": 0.0,
+     "pattern": "reduced_edge_y_minus",
+     "prediction": "0",
+     "shots": 1024,
+     "slot": 0,
+     "verdict": "conforms",
+     "zeros": 0
+    },
+    {
+     "batch": "batch-00",
+     "file": "ry-reduced-2.cq",
+     "ideal_fraction": 0.9814453125,
+     "p_zero": 0.9814453125,
+     "pattern": "t1_edge_y+",
+     "prediction": "1",
+     "shots": 1024,
+     "slot": 1,
+     "verdict": "conforms",
+     "zeros": 1005
+    },
+    {
+     "batch": "batch-00",
+     "file": "ry-reduced-2.cq",
+     "ideal_fraction": 1.0,
+     "p_zero": 0.0,
+     "pattern": "t1_edge_y-",
+     "prediction": "0",
+     "shots": 1024,
+     "slot": 2,
+     "verdict": "conforms",
+     "zeros": 0
+    },
+    {
+     "batch": "batch-00",
+     "file": "ry-reduced-2.cq",
+     "ideal_fraction": 1.0,
+     "p_zero": 0.0,
+     "pattern": "t1_twist_y+",
+     "prediction": "0",
+     "shots": 1024,
+     "slot": 3,
+     "verdict": "conforms",
+     "zeros": 0
+    },
+    {
+     "batch": "batch-00",
+     "file": "ry-reduced-3.cq",
+     "ideal_fraction": 0.9814453125,
+     "p_zero": 0.9814453125,
+     "pattern": "t1_twist_y-",
+     "prediction": "1",
+     "shots": 1024,
+     "slot": 0,
+     "verdict": "conforms",
+     "zeros": 1005
+    },
+    {
+     "batch": "batch-01",
+     "file": "ry-full-witness-dark.cq",
+     "ideal_fraction": 0.73046875,
+     "p_zero": 0.26953125,
+     "pattern": "full_witness_dark",
+     "prediction": "0",
+     "shots": 1024,
+     "slot": 0,
+     "verdict": "emulator rate",
+     "zeros": 276
+    },
+    {
+     "batch": "batch-01",
+     "file": "ry-full-witness-bright.cq",
+     "ideal_fraction": 0.65625,
+     "p_zero": 0.65625,
+     "pattern": "full_witness_bright",
+     "prediction": "1",
+     "shots": 1024,
+     "slot": 0,
+     "verdict": "emulator rate",
+     "zeros": 672
+    },
+    {
+     "batch": "batch-01",
+     "file": "ry-full-negative-fixture.cq",
+     "p_zero": 0.486328125,
+     "pattern": "full_negative_fixture",
+     "prediction": "1/2",
+     "shots": 1024,
+     "slot": 0,
+     "verdict": "conforms",
+     "z": -0.875,
+     "zeros": 498
+    }
+   ],
+   "stops": [
+    "batch-01/ry-full-witness-dark.cq slot 0: ideal fraction 0.7305",
+    "batch-01/ry-full-witness-bright.cq slot 0: ideal fraction 0.6562"
+   ],
+   "thresholds": {
+    "deterministic_ideal_fraction_at_least": 0.9,
+    "z_limit": 4.5
+   },
+   "verdict": "stop"
+  }
+ }
+}

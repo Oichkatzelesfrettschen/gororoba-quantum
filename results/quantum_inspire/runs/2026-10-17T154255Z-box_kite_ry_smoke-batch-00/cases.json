@@ -1,0 +1,275 @@
+{
+ "schema": "box-kite-cases-v1",
+ "backend": "Rydberg",
+ "backend_type_id": 5,
+ "shots": 1024,
+ "dialect": "ry",
+ "bit_order": "qubit 0 at the leftmost character (Ry)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "family": "ry_smoke",
+ "nqubits": 9,
+ "encodings": {
+  "full": "designs.lcu_witness: data 0-3, selector 4; x_sign = -1 adds Z on the selector after its first H; compiled at optimization level 0 to cx, rz, h, x, z, s, sdg with Rz on the pi/64 grid",
+  "reduced": "selector a = slot qubit 0, data d = slot qubit 1; SELECT = diag(g(L,L'), g(L,U'), g(U,L'), g(U,U')) over (a, d) from the census coefficients, then CNOT(a -> d); x_sign = -1 adds Z on a after its first H",
+  "reduced_cross": "selector a, data d, mark w = slot qubits 0, 1, 2; identity diagonal (the census carries no phases for four-label rows, and P = 1/2 for every sign), CNOT(a -> d), CNOT(a -> w)",
+  "ry": "Sdag written as Rz(-pi/2); no bit register, measure or comment; the emulator measures every atom at the end"
+ },
+ "role": "smoke subset after R1 passes: the reduced smoke replicas of family (a), the T1 edge and its twist at y_sign +-1, and the (1,10) full Design B dark, bright and fixture witnesses",
+ "preregistered": {
+  "observable": "zero-product success P(selector = 0) per replica, selector bits read with qubit 0 leftmost",
+  "falsifier": "a deterministic replica below 0.9 of its ideal outcome is reported with the emulator's raw rates as an emulator rate, never as an algebraic result",
+  "stop_rule": "a deterministic replica below 0.9 of its ideal outcome stops the series",
+  "thresholds": {
+   "deterministic_ideal_fraction_at_least": 0.9,
+   "z_limit": 4.5
+  }
+ },
+ "batch": "batch-00",
+ "group": "smoke",
+ "circuits": [
+  {
+   "file": "ry-reduced-1.cq",
+   "kind": "witness",
+   "group": "smoke",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "within_kite[8]",
+     "kite": 1,
+     "p": [
+      2,
+      11,
+      1
+     ],
+     "q": [
+      5,
+      12,
+      1
+     ],
+     "relation": "edge_same",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "p_selector_zero": "0",
+     "pattern": "reduced_edge_dark"
+    },
+    {
+     "slot": 1,
+     "census": "within_kite[4]",
+     "kite": 1,
+     "p": [
+      2,
+      11,
+      1
+     ],
+     "q": [
+      4,
+      13,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 2,
+      "data": [
+       3
+      ]
+     },
+     "p_selector_zero": "1",
+     "pattern": "reduced_edge_bright"
+    },
+    {
+     "slot": 2,
+     "census": "within_kite[0]",
+     "kite": 1,
+     "p": [
+      2,
+      11,
+      1
+     ],
+     "q": [
+      3,
+      10,
+      1
+     ],
+     "relation": "strut",
+     "roles": {
+      "selector": 4,
+      "data": [
+       5
+      ]
+     },
+     "p_selector_zero": "1/2",
+     "pattern": "reduced_strut"
+    },
+    {
+     "slot": 3,
+     "census": "within_kite[6]",
+     "kite": 1,
+     "p": [
+      2,
+      11,
+      -1
+     ],
+     "q": [
+      4,
+      13,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 6,
+      "data": [
+       7
+      ]
+     },
+     "p_selector_zero": "0",
+     "pattern": "reduced_edge_x_minus"
+    }
+   ],
+   "sha256": "e36ea76b92a0b89af99c019adc5c635b2e402f774e21d21c213cfe0a7d11d788"
+  },
+  {
+   "file": "ry-reduced-2.cq",
+   "kind": "witness",
+   "group": "smoke",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "within_kite[5]",
+     "kite": 1,
+     "p": [
+      2,
+      11,
+      1
+     ],
+     "q": [
+      4,
+      13,
+      -1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "p_selector_zero": "0",
+     "pattern": "reduced_edge_y_minus"
+    },
+    {
+     "slot": 1,
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 2,
+      "data": [
+       3
+      ]
+     },
+     "p_selector_zero": "1",
+     "pattern": "t1_edge_y+"
+    },
+    {
+     "slot": 2,
+     "census": "within_kite[245]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      -1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 4,
+      "data": [
+       5
+      ]
+     },
+     "p_selector_zero": "0",
+     "pattern": "t1_edge_y-"
+    },
+    {
+     "slot": 3,
+     "census": "within_kite[660]",
+     "kite": 6,
+     "p": [
+      4,
+      10,
+      1
+     ],
+     "q": [
+      1,
+      15,
+      1
+     ],
+     "relation": "edge_same",
+     "roles": {
+      "selector": 6,
+      "data": [
+       7
+      ]
+     },
+     "p_selector_zero": "0",
+     "pattern": "t1_twist_y+"
+    }
+   ],
+   "sha256": "e20bbbe84ea2a58370529d6d9dc403417cfd1bae7c054916af6666aeac54df88"
+  },
+  {
+   "file": "ry-reduced-3.cq",
+   "kind": "witness",
+   "group": "smoke",
+   "replicas": [
+    {
+     "slot": 0,
+     "census": "within_kite[661]",
+     "kite": 6,
+     "p": [
+      4,
+      10,
+      1
+     ],
+     "q": [
+      1,
+      15,
+      -1
+     ],
+     "relation": "edge_same",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "p_selector_zero": "1",
+     "pattern": "t1_twist_y-"
+    }
+   ],
+   "sha256": "d131b7f7d278123e0dbf245f32e6ad9c0f5bd1c8cf6d40e280bef42affc2c67c"
+  }
+ ]
+}
