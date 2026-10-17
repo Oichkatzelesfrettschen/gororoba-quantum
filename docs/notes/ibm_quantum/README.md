@@ -16,3 +16,4 @@
 | [Repetition rate execution](repetition-rate-execution.md) | Repetition delays, execution order over shots, and state preparation error. | [Online Guide](https://quantum.cloud.ibm.com/docs/en/guides/repetition-rate-execution) |
 | [Calibration jobs](calibration-jobs.md) | Interleaved hourly calibration, CZ and RZZ calibration on Heron. | [Online Guide](https://quantum.cloud.ibm.com/docs/en/guides/calibration-jobs) |
 | [Estimate job run time](estimate-job-run-time.md) | Predicting QPU run time, sub-job splits, and billing mechanisms. | [Online Guide](https://quantum.cloud.ibm.com/docs/en/guides/estimate-job-run-time) |
+| [Heron r2 readout resonator](heron-r2-readout-resonator.md) | Readout durations of ibm_fez, ibm_kingston and ibm_marrakesh by backend version; public evidence for resonator linewidth, dispersive shift, ring-down and feed-forward latency, tagged by revision and device. | this repository |
