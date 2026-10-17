@@ -101,6 +101,10 @@ exempted qubit until the exemption reached that check.
   before that rule, such as an MCP server, holds stale tokens and restarts
   after `qi login`.
 - Sessions that share the account alternate hardware batches at Ramsey-pair
-  boundaries. Every batch keeps its in-batch readout calibration, and the
-  account-wide pause (`HARDWARE_PAUSE_SECONDS`) gives the platform room to
-  calibrate between batches.
+  boundaries, and the account-wide pause (`HARDWARE_PAUSE_SECONDS`) gives
+  the platform room to calibrate between batches. Series P and Q calibrate
+  readout once per series, in batch-00 and in separate recalibration runs;
+  batches Q-05 to Q-08 hold Ramsey arms only, so readout drift after the
+  last calibration enters their correction unseen, as the stale Q15
+  correction above shows. A series that must correct each batch for its
+  own readout state carries a readout-0/readout-1 pair in every batch.

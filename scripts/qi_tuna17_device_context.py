@@ -94,7 +94,6 @@ PILOT_SERIES = ("P", "Q")
 EDGE_WINDOW_HZ = 30e3
 PHASE_GRID = 2001
 NOWAIT_WINDOW = timedelta(hours=24)
-RUN_STAMP = re.compile(r"^(\d{4}-\d{2}-\d{2}T\d{6}Z)-")
 READOUT_RUNS = (
     "2026-10-16T221133Z-zero_divisor_tuna_17",
     "2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
@@ -102,10 +101,10 @@ READOUT_RUNS = (
     "2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
     "2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
     "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
-    "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-recal-053951",
     "2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
     "2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
     "2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+    "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-recal-053951",
 )
 WAIT_LINE = re.compile(r"^wait\((\d+)\) q\[(\d+)\]$")
 FLIP_LINE = re.compile(r"^X q\[(\d+)\]$")
@@ -199,10 +198,16 @@ def circuit_waits(text: str) -> tuple[dict[int, int], set[int]]:
 
 
 def run_time(run: Path) -> datetime:
-    stamp = RUN_STAMP.match(run.name)
-    if stamp is None:
-        raise SystemExit(f"{run.name} carries no UTC timestamp prefix")
-    return datetime.strptime(stamp.group(1), "%Y-%m-%dT%H%M%SZ")
+    """The earliest finished_at of the run's jobs in results.json.
+
+    A series directory carries the series start in its name, so a recalibration collected into it
+    hours later shares that prefix; the job records hold when the shots were taken.
+    """
+    jobs = read_json(run / "results.json").get("jobs") or []
+    stamps = [entry["job"]["finished_at"] for entry in jobs if entry.get("job", {}).get("finished_at")]
+    if not stamps:
+        raise SystemExit(f"{retained_path(run)} records no finished job")
+    return min(datetime.strptime(stamp, "%Y-%m-%dT%H:%M:%S.%fZ") for stamp in stamps)
 
 
 def has_readout_pair(run: Path) -> bool:
@@ -219,8 +224,8 @@ def unlisted_runs() -> list[str]:
 
 def readout_runs() -> list[dict[str, Any]]:
     """The READOUT_RUNS runs, oldest first; the earliest no-wait run is the implied-T1 reference."""
-    if list(READOUT_RUNS) != sorted(set(READOUT_RUNS)):
-        raise SystemExit("READOUT_RUNS must list distinct runs in timestamp order")
+    if len(set(READOUT_RUNS)) != len(READOUT_RUNS):
+        raise SystemExit("READOUT_RUNS must list distinct runs")
     found = []
     for name in READOUT_RUNS:
         run = RUNS / name
@@ -241,6 +246,9 @@ def readout_runs() -> list[dict[str, Any]]:
                 "p1_given_1": {q: sum(bit(s, q) for s in one) / len(one) for q in sorted(prepared)},
             }
         )
+    times = [run_time(RUNS / name) for name in READOUT_RUNS]
+    if times != sorted(times):
+        raise SystemExit("READOUT_RUNS must list runs in the order their jobs finished")
     return found
 
 
