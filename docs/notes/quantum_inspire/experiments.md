@@ -34,7 +34,9 @@ core-327 regenerates them byte for byte. Each backend is a series of
 batch-00 holds none, A and B, and batch-01 holds none, AB and teleport, so
 every phase shift subtracts the undriven reference measured in its own batch
 (a batch boundary is a calibration boundary).
-`--analyze RUN_DIR... --out FILE` merges the run directories of one series.
+`--analyze RUN_DIR... --out FILE` merges the run directories of one series,
+refuses a series that lacks a batch, and `--replay-series FILE RUN_DIR...`
+recomputes FILE from them.
 The retained 211635Z runs predate the split and ran all five circuits as one
 batch.
 
@@ -298,7 +300,8 @@ stand.
 - Teleportation with all six axial inputs on one path to give a channel's
   sphere average, and a direct-SWAP control without the Bell measurement.
 - Ry emulator: rebuild the teleport case in the Rydberg-native form (no bit
-  register, RYD blockade gates) and read results leftmost-first.
+  register, RYD blockade gates) and read results leftmost-first; until then
+  the generator emits no Ry case.
 - Zero-divisor depth series: the bright and dark witnesses with the SELECT
   repeated as SELECT, SELECT^dagger, SELECT pairs (identity padding) to fit
   the per-layer contraction directly, and a selector-only control to locate

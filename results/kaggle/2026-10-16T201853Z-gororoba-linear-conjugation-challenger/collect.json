@@ -1,0 +1,21 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-linear-conjugation-challenger/1",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T204827Z",
+ "files": {
+  "gororoba-linear-conjugation-challenger.log": "ff5324a9c2285709c708825a37f3b12d466ef258ec2b46afc56e7743d6c51134",
+  "output/ci-freeze.txt": "63c5eb3a77c3c9f478aff2cb79c7b33a82f29ed4dbc2b17fd02271dbabae8101",
+  "output/environment.json": "33c6cb3ea19243cbf9937f4698f186b5dc6a6d3604aa5b23f82b41795bd3383c",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "67f8d034c1c4c37c1c4309a1aeea19bad070916b57b82004a9e0db1a66765aa9",
+  "output/install-pins.txt": "a56047c581962da87baf48f79fc41f9bef5633ed6c34081da59f180d308f6e33",
+  "output/pip.txt": "8fb1ff310240362ff19903b1c93ef723d434ed81ee30e23632d40f32a97887aa",
+  "output/python-install.txt": "6192702c1cf277b0ee17be1ef8b73da4f27f97d8ee87670f8bc2ee237073b9dc",
+  "output/repo/results/kaggle_out/n21_linear_conjugation_challenger.json": "5b428d1cb0a093fbeaba88be80d498c47901690b56eae688510f5e300d3f8557",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "1ec2ba77b30d4ba11492a2915f8354852e3e1514c2c1f8a69f6182fcacd3d168",
+  "output/uv-install.txt": "e675e076d86b96c29e664e3720ac9d5483066658cd22242c8248b27937ec705e",
+  "output/venv.txt": "c48758d995a48623a551e0e9f985c932e5fed775b217d7ed00f929890de3f00b"
+ }
+}

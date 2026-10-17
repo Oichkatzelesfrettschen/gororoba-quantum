@@ -108,6 +108,31 @@ def modular_permutation(modulus: int, multiplier: int) -> tuple[int, ...]:
     return permutation
 
 
+def linear_encoding(columns: tuple[int, ...]) -> tuple[int, ...]:
+    """x -> B x over GF(2) for the invertible matrix whose column i is columns[i]."""
+    table = []
+    for value in range(1 << len(columns)):
+        image = 0
+        for bit, column in enumerate(columns):
+            if value >> bit & 1:
+                image ^= column
+        table.append(image)
+    if sorted(table) != list(range(len(table))):
+        raise ValueError(f"columns {columns} are not an invertible GF(2) matrix")
+    return tuple(table)
+
+
+def conjugated_permutation(permutation: tuple[int, ...], columns: tuple[int, ...]) -> tuple[int, ...]:
+    """B^-1 f B: f read in the work-register encoding x = B^-1 v of the residue v."""
+    table = linear_encoding(columns)
+    if len(table) != len(permutation):
+        raise ValueError(f"{len(columns)} columns do not encode a {len(permutation)}-entry permutation")
+    inverse = [0] * len(table)
+    for value, image in enumerate(table):
+        inverse[image] = value
+    return tuple(inverse[permutation[table[value]]] for value in range(len(table)))
+
+
 def xor_displacement_profile(permutation: tuple[int, ...]) -> XorDisplacementProfile:
     """Partition a power-of-two permutation by ``input XOR output``.
 

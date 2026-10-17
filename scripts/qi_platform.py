@@ -13,8 +13,9 @@ Subcommands:
   backend type the account sees with its limits, topology and queue, every
   backend's status and heartbeat, the languages) and usage.json (the account's
   transaction ledger aggregated by domain, backend type and job, beside each
-  job's shots and execution seconds). Team, member and user identifiers enter
-  only as a 12-hex sha256; names, e-mail addresses and OIDC subjects never do.
+  job's shots and execution seconds). Team, member and user identifiers,
+  names, e-mail addresses and OIDC subjects never enter either file: the ids
+  are small integers, so even a hash of one is recoverable by enumeration.
 - check DIR [--agents FILE] (offline) requires both files to carry their
   schema, the redacted identity form and a ledger whose aggregates equal the
   sum of its rows; with --agents it renders the structural backend table
@@ -49,6 +50,7 @@ import hashlib
 import importlib
 import json
 import os
+import re
 import sys
 import tempfile
 import time
@@ -68,13 +70,12 @@ SUBMISSION_SCHEMA = "qi-submission-v2"
 HARDWARE_BATCH_CIRCUITS = 3
 HARDWARE_QUEUED_BATCHES = 1
 REDACTED = ("email", "full_name", "oidc_sub")
+# Account ids are small integers; a hash of one reverses by enumeration, so no
+# form of them is retained.
+ACCOUNT_IDENTIFIERS = ("team", "member", "user", "team_id", "member_id", "user_id", "owner_id")
 TERMINAL = {"completed", "failed", "cancelled"}
 ENQUEUED_BATCH_STATUSES = {"queued", "reserved", "running", "finished"}
 REFRESH_MARGIN = 120.0
-
-
-def digest(value: object) -> str:
-    return hashlib.sha256(str(value).encode()).hexdigest()[:12]
 
 
 def now() -> str:
@@ -175,8 +176,6 @@ def ledger(client: Client) -> dict[str, Any]:
                 "change": row["change"],
                 "job": row["job"],
                 "backend_type_id": batch["backend_type_id"] if batch else None,
-                "team": digest(row["team_id"]),
-                "member": digest(row["member_id"]) if row["member_id"] is not None else None,
             }
         )
     job_rows = []
@@ -229,16 +228,8 @@ def snapshot(out: Path) -> None:
         "retrieved_utc": now(),
         "host": HOST,
         "account": {
-            "teams": [{"team": digest(t["id"]), "individual_user": t["individual_user"]} for t in teams],
-            "members": [
-                {
-                    "member": digest(m["id"]),
-                    "team": digest(m["team_id"]),
-                    "role": m["role"],
-                    "is_active": m["is_active"],
-                }
-                for m in members
-            ],
+            "teams": [{"individual_user": t["individual_user"]} for t in teams],
+            "members": [{"role": m["role"], "is_active": m["is_active"]} for m in members],
             "projects": len(client.pages("/projects")),
             "reservations": len(client.pages("/reservations")),
         },
@@ -280,14 +271,23 @@ def check_agents(catalogue: dict[str, Any], agents: Path) -> None:
         raise SystemExit(f"{agents}: the quantum-inspire-facts table differs from facts_table(catalogue.json)")
 
 
+def keys(value: Any) -> set[str]:
+    """Every mapping key at any depth of a JSON value."""
+    if isinstance(value, dict):
+        return set(value) | {k for item in value.values() for k in keys(item)}
+    if isinstance(value, list):
+        return {k for item in value for k in keys(item)}
+    return set()
+
+
 def check(directory: Path, agents: Path | None = None) -> None:
     catalogue = json.loads((directory / "catalogue.json").read_text(encoding="utf-8"))
     usage = json.loads((directory / "usage.json").read_text(encoding="utf-8"))
     if catalogue["schema"] != CATALOGUE_SCHEMA or usage["schema"] != USAGE_SCHEMA:
         raise SystemExit("unexpected schema")
-    text = json.dumps(catalogue) + json.dumps(usage)
-    for key in (*REDACTED, "access_token", "refresh_token", "team_id", "member_id", "user_id"):
-        if f'"{key}"' in text:
+    present = keys(catalogue) | keys(usage)
+    for key in (*REDACTED, *ACCOUNT_IDENTIFIERS, "access_token", "refresh_token"):
+        if key in present:
             raise SystemExit(f"snapshot carries {key}")
     for field in (
         "nqubits",
@@ -398,6 +398,75 @@ def _check_submission_manifest(case_dir: Path, record: dict[str, Any], *, requir
             raise PlatformError("submission receipt is not enqueued; use read-only reconciliation")
 
 
+def declared_qubits(cqasm: str) -> int:
+    """Count explicit quantum declarations without importing a compiler or rewriting source.
+
+    Admit literal cQASM 3 scalar/array declarations and the legacy `qubits N`
+    declaration. Expressions, duplicate names and mixed declaration styles
+    require explicit literal declarations for this width-only preflight.
+    Comment/string contents cannot introduce or hide a quantum declaration.
+    Validation failures raise ValueError so both CLI and MCP callers can report them.
+    """
+    tokens = re.compile(r'//[^\r\n]*|\#[^\r\n]*|/\*.*?\*/|"(?:\\.|[^"\\])*"', re.DOTALL)
+    stripped = tokens.sub(lambda match: "@" if match[0].startswith('"') else " ", cqasm)
+    if re.search(r'/\*|\*/|"', stripped):
+        raise ValueError("unterminated or ambiguous cQASM comment/string")
+    quantum = re.compile(r"qubit\s*(?:\[\s*([0-9]+)\s*\])?\s+([A-Za-z_][A-Za-z0-9_]*)")
+    legacy = re.compile(r"qubits\s+([0-9]+)", re.IGNORECASE)
+    names: set[str] = set()
+    count = 0
+    legacy_seen = False
+    for statement in re.split(r"[;\r\n]+", stripped):
+        statement = statement.strip()
+        if not re.search(r"\bqubits?\b", statement, re.IGNORECASE):
+            continue
+        if match := quantum.fullmatch(statement):
+            width = int(match[1]) if match[1] is not None else 1
+            name = match[2]
+            if legacy_seen or name in names:
+                raise ValueError("duplicate or mixed cQASM qubit declarations")
+            names.add(name)
+        elif match := legacy.fullmatch(statement):
+            if legacy_seen or names:
+                raise ValueError("duplicate or mixed cQASM qubit declarations")
+            width = int(match[1])
+            legacy_seen = True
+        else:
+            raise ValueError("malformed or nonliteral cQASM qubit declaration")
+        if width < 1:
+            raise ValueError("cQASM qubit declaration width must be positive")
+        count += width
+    if count < 1:
+        raise ValueError("no explicit cQASM qubit declaration")
+    return count
+
+
+def _case_qubit_widths(cases: dict[str, Any], sources: dict[str, str]) -> dict[str, int]:
+    """The batch width is its maximum; a narrower circuit must name its exact width."""
+    batch_width = cases.get("nqubits")
+    if type(batch_width) is not int or batch_width < 1:
+        raise SystemExit("cases.json nqubits must be a positive integer")
+    widths = {}
+    for row in cases["circuits"]:
+        file_name = row["file"]
+        try:
+            width = declared_qubits(sources[file_name])
+        except ValueError as error:
+            raise SystemExit(f"{file_name}: {error}") from error
+        claimed = row.get("nqubits", batch_width)
+        if type(claimed) is not int or claimed < 1:
+            raise SystemExit(f"{file_name}: manifest nqubits must be a positive integer")
+        if claimed != width:
+            raise SystemExit(
+                f"{file_name}: manifest nqubits {claimed} differs from declared width {width}; "
+                "mixed-width batches require exact per-circuit nqubits"
+            )
+        widths[file_name] = width
+    if max(widths.values()) != batch_width:
+        raise SystemExit("cases.json nqubits differs from the maximum declared circuit width")
+    return widths
+
+
 def submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any]:
     if (case_dir / "submission.json").exists():
         raise SystemExit(f"{case_dir}/submission.json exists; this case was submitted")
@@ -422,12 +491,19 @@ def submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any
         digests[row["file"]] = row["sha256"]
     if not sources or len(sources) != len(cases["circuits"]):
         raise SystemExit("cases.json needs at least one circuit and unique circuit filenames")
+    widths = _case_qubit_widths(cases, sources)
     client = Client()
     backend_type = client.get(f"/backend_types/{backend_type_id}")
     if backend_type["identifier"] != cases["backend"]:
         raise SystemExit(f"backend type {backend_type_id} is {backend_type['identifier']}, not {cases['backend']}")
     if backend_type["status"] == "offline":
         raise SystemExit(f"{backend_type['name']} is offline")
+    capacity = backend_type.get("nqubits")
+    if type(capacity) is not int or capacity < 1:
+        raise PlatformError("backend nqubits capacity is not a positive integer")
+    for file_name, width in widths.items():
+        if width > capacity:
+            raise SystemExit(f"{file_name}: declared width {width} exceeds backend nqubits {capacity}")
     if len(sources) > backend_type["max_jobs_per_batch_job"]:
         raise SystemExit(f"{len(sources)} circuits exceed max_jobs_per_batch_job")
     if cases["shots"] > backend_type["max_number_of_shots"]:
@@ -637,8 +713,6 @@ def collect(case_dir: Path, poll: float, timeout: float) -> None:
             "domain": t["domain"],
             "change": t["change"],
             "job": t["job"],
-            "team": digest(t["team_id"]),
-            "member": digest(t["member_id"]) if t["member_id"] is not None else None,
         }
         for t in client.pages("/transactions/")
         if t["job"] in job_ids

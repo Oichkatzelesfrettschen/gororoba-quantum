@@ -14,6 +14,7 @@ import io
 import json
 import os
 import stat
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -72,17 +73,25 @@ class FakeClient:
 
     def __init__(self, case_dir: Path, *, enqueue_timeout: bool = False, fail_create: bool = False) -> None:
         self.case_dir = case_dir
+        cases = json.loads((case_dir / "cases.json").read_text())
+        self.backend_type_id = cases["backend_type_id"]
         self.enqueue_timeout = enqueue_timeout
         self.fail_create = fail_create
         self.calls: list[tuple[str, str]] = []
         self.next_id = 100
         self.jobs: dict[int, dict[str, Any]] = {}
-        self.batch: dict[str, Any] = {"id": 100, "status": "planned", "backend_type_id": 7, "job_ids": []}
+        self.batch: dict[str, Any] = {
+            "id": 100,
+            "status": "planned",
+            "backend_type_id": self.backend_type_id,
+            "job_ids": [],
+        }
         self.results: dict[int, dict[str, Any]] = {}
         self.fail_queue = False
         self.queue_count = 0
         self.backend = {
-            "identifier": "tuna_17",
+            "identifier": cases["backend"],
+            "nqubits": 17,
             "status": "idle",
             "is_hardware": True,
             "max_jobs_per_batch_job": 5,
@@ -93,9 +102,9 @@ class FakeClient:
 
     def get(self, path: str, **params: Any) -> Any:
         self.calls.append(("GET", path))
-        if path == "/backend_types/7":
+        if path == f"/backend_types/{self.backend_type_id}":
             return self.backend
-        if path == "/backend_types/7/queue":
+        if path == f"/backend_types/{self.backend_type_id}/queue":
             if params != {"user_only": True}:
                 raise AssertionError("submission queue preflight did not select the current user")
             if self.fail_queue:
@@ -164,6 +173,8 @@ class PreflightClient:
 
     def __init__(self, cases: dict[str, Any]) -> None:
         self.cases = cases
+        catalogue = json.loads((ROOT / "docs/evidence/quantum_inspire/catalogue.json").read_text())
+        self.backend = next(row for row in catalogue["backend_types"] if row["id"] == cases["backend_type_id"])
 
     def get(self, path: str, **params: Any) -> Any:
         if path == f"/backend_types/{self.cases['backend_type_id']}":
@@ -172,6 +183,7 @@ class PreflightClient:
                 "name": self.cases["backend"],
                 "status": "idle",
                 "is_hardware": True,
+                "nqubits": self.backend["nqubits"],
                 "max_jobs_per_batch_job": 5,
                 "max_number_of_shots": self.cases["shots"],
                 "batchjobs_per_queue_limit": 5,
@@ -209,6 +221,16 @@ class GeneratedCaseChecks(unittest.TestCase):
                             platform.submit(case_dir, cases["backend_type_id"], "preflight fixture")
                     self.assertFalse((case_dir / "submission-state.json").exists())
 
+    def test_zero_divisor_routing_constants_follow_the_catalogue(self) -> None:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import qi_zero_divisor_cases as zero_divisor
+
+        zero_divisor.catalogue_check()
+        for name, value in (("TUNA17", zero_divisor.TUNA17[1:]), ("NQUBITS", 18), ("BACKEND_TYPE_ID", 6)):
+            with self.subTest(constant=name), patch.object(zero_divisor, name, value):
+                with self.assertRaises(SystemExit):
+                    zero_divisor.catalogue_check()
+
     def test_retained_zero_divisor_runs_reproduce_through_their_batched_series(self) -> None:
         sys.path.insert(0, str(ROOT / "scripts"))
         import qi_zero_divisor_cases as zero_divisor
@@ -228,6 +250,144 @@ class GeneratedCaseChecks(unittest.TestCase):
                 self.assertGreater(len(runs), 1)
                 text = json.dumps(zero_divisor.analyze(runs), indent=1) + "\n"
                 self.assertEqual(text, (retained / "analysis.json").read_text(encoding="utf-8"))
+                if name == "zero_divisor_tuna_17":
+                    with self.assertRaisesRegex(SystemExit, "readout"):
+                        zero_divisor.analyze(runs[:1])
+                analysis = Path(scratch) / "analysis.json"
+                analysis.write_text(text, encoding="utf-8")
+                command = [sys.executable, "-B", str(ROOT / "scripts/qi_zero_divisor_cases.py"), "--replay-series"]
+                replay = subprocess.run([*command, str(analysis), *map(str, runs)], capture_output=True, text=True)
+                self.assertEqual(replay.returncode, 0, replay.stderr)
+                analysis.write_text(text.replace('"shots": ', '"shots":  ', 1), encoding="utf-8")
+                replay = subprocess.run([*command, str(analysis), *map(str, runs)], capture_output=True, text=True)
+                self.assertIn("differs from the recomputation", replay.stderr)
+
+
+class RegisterWidthChecks(unittest.TestCase):
+    def setUp(self) -> None:
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        self.case_dir = Path(self.directory.name)
+
+    def fixture(
+        self,
+        programs: list[str],
+        batch_width: Any,
+        *,
+        row_widths: list[Any] | None = None,
+        backend_width: Any = 17,
+        backend: tuple[str, int] = ("tuna_17", 7),
+    ) -> FakeClient:
+        rows = []
+        for index, source in enumerate(programs):
+            name = f"width-{index}.cq"
+            (self.case_dir / name).write_bytes(source.encode())
+            row: dict[str, Any] = {"file": name, "sha256": hashlib.sha256(source.encode()).hexdigest()}
+            if row_widths is not None:
+                row["nqubits"] = row_widths[index]
+            rows.append(row)
+        cases = {
+            "backend": backend[0],
+            "backend_type_id": backend[1],
+            "nqubits": batch_width,
+            "shots": 4,
+            "circuits": rows,
+        }
+        (self.case_dir / "cases.json").write_text(json.dumps(cases))
+        client = FakeClient(self.case_dir)
+        client.backend.update(nqubits=backend_width, is_hardware=backend[1] != 1)
+        return client
+
+    def submit(self, client: FakeClient) -> None:
+        with patch.object(platform, "Client", return_value=client):
+            platform.submit(self.case_dir, client.backend_type_id, "width fixture approval")
+
+    def refused(self, client: FakeClient, pattern: str, error: type[BaseException] = SystemExit) -> None:
+        with self.assertRaisesRegex(error, pattern):
+            self.submit(client)
+        self.assertTrue(all(method == "GET" for method, _ in client.calls))
+        self.assertEqual(client.uploaded_sources, [])
+        self.assertFalse((self.case_dir / "submission-state.json").exists())
+        self.assertFalse((self.case_dir / "submission.json").exists())
+
+    def test_eighteen_qubits_cannot_reach_tuna17(self) -> None:
+        client = self.fixture(["version 3.0\nqubit[18] q\ninit q\n"], 18)
+        self.refused(client, "declared width 18 exceeds backend nqubits 17")
+        self.assertEqual(client.calls, [("GET", "/backend_types/7")])
+
+    def test_individual_registers_are_summed_against_capacity(self) -> None:
+        client = self.fixture(["version 3.0\nqubit[9] a\nqubit[9] b\n"], 18)
+        self.refused(client, "declared width 18 exceeds backend nqubits 17")
+
+    def test_backend_capacity_is_not_inferred_from_case_metadata(self) -> None:
+        client = self.fixture(["version 3.0\nqubit[17] q\n"], 17, backend_width=9)
+        self.refused(client, "declared width 17 exceeds backend nqubits 9")
+
+    def test_understated_overstated_and_invalid_manifest_widths_refuse_locally(self) -> None:
+        source = "version 3.0\nqubit[17] q\n"
+        for width in (16, 18, 0, -1, True, "17", None):
+            with self.subTest(nqubits=width):
+                client = self.fixture([source], width)
+                self.refused(client, "nqubits")
+                self.assertEqual(client.calls, [])
+
+    def test_mixed_qx_batch_retains_exact_widths_and_source_bytes(self) -> None:
+        sources = ["version 3.0\r\nqubit[2] q\r\n", "version 3.0\nqubit[8] q\n"]
+        client = self.fixture(sources, 8, row_widths=[2, 8], backend_width=10, backend=("QXsinglenodesimulator", 1))
+        self.submit(client)
+        self.assertEqual(client.uploaded_sources, sources)
+        self.assertEqual(sum(method == "PATCH" for method, _ in client.calls), 1)
+
+    def test_mixed_batch_rejects_missing_or_inexact_per_circuit_widths(self) -> None:
+        sources = ["version 3.0\nqubit[2] q\n", "version 3.0\nqubit[8] q\n"]
+        for row_widths, batch_width in ((None, 8), ([8, 8], 8), ([2, 7], 8), ([2, 8], 9), ([True, 8], 8)):
+            with self.subTest(row_widths=row_widths, batch_width=batch_width):
+                client = self.fixture(sources, batch_width, row_widths=row_widths)
+                self.refused(client, "nqubits")
+                self.assertEqual(client.calls, [])
+
+    def test_scalar_and_multiple_registers_ignore_commented_declarations(self) -> None:
+        source = (
+            "version 3.0\n// qubit[999] omitted\n/* qubit[99] omitted */\n"
+            "qubit[16] data; qubit ancilla // qubit[100] omitted\n"
+            '@name("qubit[999] text")\n'
+        )
+        client = self.fixture([source], 17)
+        self.submit(client)
+        self.assertEqual(client.uploaded_sources, [source])
+
+    def test_legacy_ry_qubits_declaration_remains_admissible(self) -> None:
+        source = "version 1.0\n# qubits 999\nQUBITS 9\nx q[0]\n"
+        client = self.fixture([source], 9, backend_width=9, backend=("Rydberg", 5))
+        self.submit(client)
+        self.assertEqual(client.uploaded_sources, [source])
+
+    def test_missing_malformed_and_ambiguous_declarations_refuse_locally(self) -> None:
+        declarations = (
+            "// qubit[2] q\nX q[0]",
+            "qubit[0] q",
+            "qubit[-2] q",
+            "qubit[1+1] q",
+            "qubit[N] q",
+            "qubit[2] q\nqubit[2] q",
+            "qubits 2\nqubit q",
+            "qubits 2\nqubits 2",
+            "qubit[2] q, other",
+            "qubit[2] q /* unterminated",
+            'qubit[2] q\n@name("unterminated)',
+        )
+        for declaration in declarations:
+            with self.subTest(declaration=declaration):
+                client = self.fixture([f"version 3.0\n{declaration}\n"], 2)
+                self.refused(client, "cQASM")
+                self.assertEqual(client.calls, [])
+
+    def test_invalid_backend_capacity_refuses_before_remote_mutation(self) -> None:
+        for capacity in (None, 0, -1, True, "17"):
+            with self.subTest(nqubits=capacity):
+                client = self.fixture(["version 3.0\nqubit[2] q\n"], 2, backend_width=capacity)
+                self.refused(client, "backend nqubits capacity", platform.PlatformError)
+                self.assertEqual(client.calls, [("GET", "/backend_types/7")])
 
 
 class RetentionChecks(unittest.TestCase):
@@ -240,6 +400,7 @@ class RetentionChecks(unittest.TestCase):
         self.cases: dict[str, Any] = {
             "backend": "tuna_17",
             "backend_type_id": 7,
+            "nqubits": 2,
             "shots": 4,
             "circuits": [{"file": "one.cq", "sha256": hashlib.sha256(source.encode()).hexdigest()}],
         }
@@ -336,6 +497,18 @@ class RetentionChecks(unittest.TestCase):
                     record = json.loads((self.case_dir / "submission.json").read_text())
                     self.assertEqual(len(record["jobs"]), 3)
                     self.assertEqual(sum(method == "PATCH" for method, _ in client.calls), 1)
+
+    def test_circuit_wider_than_backend_is_refused_before_remote_creation(self) -> None:
+        source = "version 3.0\nqubit[17] q\nqubit r\nX q[0]\n"
+        (self.case_dir / "one.cq").write_text(source)
+        self.cases["nqubits"] = 18
+        self.cases["circuits"][0]["sha256"] = hashlib.sha256(source.encode()).hexdigest()
+        (self.case_dir / "cases.json").write_text(json.dumps(self.cases))
+        client = FakeClient(self.case_dir)
+        with self.assertRaisesRegex(SystemExit, "declared width 18"):
+            self.submit(client)
+        self.assertTrue(all(method == "GET" for method, _ in client.calls))
+        self.assertFalse((self.case_dir / "submission-state.json").exists())
 
     def test_source_bytes_are_the_uploaded_program(self) -> None:
         source = (self.case_dir / "one.cq").read_bytes().replace(b"\n", b"\r\n")
@@ -604,6 +777,26 @@ class RetentionChecks(unittest.TestCase):
             with self.assertRaisesRegex(SystemExit, "nonempty approval"):
                 platform.submit(self.case_dir, 7, "  ")
 
+    def test_snapshot_rejects_every_form_of_account_identifier(self) -> None:
+        evidence = ROOT / "docs/evidence/quantum_inspire"
+        for name, key, value in (
+            ("catalogue.json", "team", "61cec6179092"),
+            ("catalogue.json", "member", 4321),
+            ("usage.json", "member", None),
+        ):
+            with self.subTest(file=name, key=key), tempfile.TemporaryDirectory() as scratch:
+                directory = Path(scratch)
+                for source in ("catalogue.json", "usage.json"):
+                    (directory / source).write_bytes((evidence / source).read_bytes())
+                snapshot = json.loads((directory / name).read_text(encoding="utf-8"))
+                if name == "usage.json":
+                    snapshot["transactions"].append({key: value})
+                else:
+                    snapshot["account"]["members"][0][key] = value
+                (directory / name).write_text(json.dumps(snapshot))
+                with self.assertRaisesRegex(SystemExit, f"snapshot carries {key}"):
+                    platform.check(directory)
+
     def test_snapshot_rejects_inconsistent_completed_shots(self) -> None:
         retained = Path(__file__).resolve().parents[1] / "docs/evidence/quantum_inspire"
         for name in ("catalogue.json", "usage.json"):
@@ -622,6 +815,22 @@ class RetentionChecks(unittest.TestCase):
         with patch.object(module, "client", side_effect=AssertionError("legacy tool reached the service")):
             with self.assertRaisesRegex(FakeToolError, "qi_submit_case"):
                 module.qi_submit("version 3.0", 7, 4, "fixture approval")
+
+    def test_mcp_shared_width_parser_reports_malformed_source_without_execution(self) -> None:
+        module = mcp_with_stubs()
+        emulator = ModuleType("qxelarator")
+
+        def unexpected_execution(*args: Any, **kwargs: Any) -> None:
+            raise AssertionError("malformed source reached the emulator")
+
+        emulator.execute_string = unexpected_execution  # type: ignore[attr-defined]
+        self.assertEqual(module.declared_qubits("version 3.0\nqubit[2] q\nqubit r\n"), 3)
+        for source in ("version 3.0\n", "version 3.0\nqubit[N] q\n", "version 3.0\nqubit[2] q /*"):
+            with self.subTest(source=source), patch.dict(sys.modules, {"qxelarator": emulator}):
+                with self.assertRaises(ValueError):
+                    module.declared_qubits(source)
+                with self.assertRaisesRegex(FakeToolError, "cQASM"):
+                    module.qi_run_local(source)
 
     def test_mcp_case_tool_uses_guard_and_does_not_print_to_stdio(self) -> None:
         module = mcp_with_stubs()

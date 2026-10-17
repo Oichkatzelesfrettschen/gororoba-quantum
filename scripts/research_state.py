@@ -228,8 +228,9 @@ class QuantumInspireRuns:
     def __init__(self) -> None:
         self.ledger: dict[str, Any] = load_json(QI_LEDGER)
         self.records: dict[str, dict[str, Any]] = {}
-        for submission in sorted(QI_RUNS.glob("*/submission.json")):
-            directory = submission.parent
+        # Every run directory is a retained run, so one without a receipt fails
+        # validation instead of leaving the run set.
+        for directory in sorted(path for path in QI_RUNS.iterdir() if path.is_dir()):
             cases = _optional_json(directory / "cases.json")
             circuits = {}
             for row in (cases or {}).get("circuits", []):
@@ -238,7 +239,8 @@ class QuantumInspireRuns:
             raw_dir = directory / "raw"
             raw = {path.name: load_json(path) for path in sorted(raw_dir.iterdir())} if raw_dir.is_dir() else {}
             self.records[directory.relative_to(ROOT).as_posix()] = {
-                "submission": load_json(submission),
+                "submission": _optional_json(directory / "submission.json"),
+                "interrupted": (directory / "submission-state.json").is_file(),
                 "cases": cases,
                 "cases_sha256": digest(directory / "cases.json") if cases is not None else None,
                 "results": _optional_json(directory / "results.json"),
@@ -249,6 +251,15 @@ class QuantumInspireRuns:
     def _run(self, run: str, record: dict[str, Any]) -> tuple[dict[str, Any], dict[int, tuple[Any, ...]]]:
         owner = f"Quantum Inspire run {run}"
         submission = record["submission"]
+        require(
+            isinstance(submission, dict),
+            f"{owner}: no submission.json"
+            + (
+                "; submission-state.json records an interrupted submit, run qi_platform.py reconcile"
+                if record["interrupted"]
+                else ""
+            ),
+        )
         require(
             submission.get("schema") in {"qi-submission-v1", "qi-submission-v2"},
             f"{owner}: submission.json schema differs",
@@ -979,10 +990,15 @@ def _qi_mutations() -> Iterable[tuple[str, Callable[[dict[str, dict[str, Any]], 
         bind_v2(target)
         del target["submission"]["jobs"][0]["sha256"]
 
+    def receipt_absent(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        target = record(records, "-Rydberg-diagnostic")
+        target["submission"], target["interrupted"] = None, True
+
     def legacy_receipt_manifest_changed(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
         record(records, "-tuna_17")["submission"]["cases_sha256"] = "0" * 64
 
     yield "circuit differing from its cases.json digest", circuit_digest, "digest differs from cases.json"
+    yield "run directory without its receipt", receipt_absent, "run qi_platform.py reconcile"
     yield "raw shot list shorter than shots done", raw_short, "length differs"
     yield "raw shots differing from the recorded histogram", raw_altered, "outcome histogram"
     yield "completed job without its raw file", raw_missing, "raw/ holds"

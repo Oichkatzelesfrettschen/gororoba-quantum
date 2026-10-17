@@ -1,0 +1,39 @@
+{
+ "identical": true,
+ "packages": {
+  "Cayley-Calculator": "1.3.1",
+  "SplitOct": "0.16",
+  "cayley-dickson": "0.1.0",
+  "hypercomplex": "0.3.4",
+  "hypercomplex-algebra": "0.2.0.2",
+  "hypercomplex-engine": "0.5.0",
+  "mathdunders": "0.4.2",
+  "numpy": "2.1.3",
+  "numpy-quaternion": "2024.0.13",
+  "octonion": "0.1.0",
+  "pandas": "2.3.3",
+  "qiskit": "2.5.2",
+  "qiskit-aer": "0.17.2",
+  "qiskit-aer-gpu-cu11": null,
+  "qiskit-ibm-runtime": "0.50.0",
+  "scipy": "1.16.3",
+  "sympy": "1.14.0",
+  "torch": "2.11.0+cpu"
+ },
+ "steps": {
+  "--extract": {
+   "returncode": 0,
+   "tail": "wrote docs/evidence/algebra_packages/tables.json\nalgebra package tables: 21 tables and sample sets match their declared relation to cd_core\n"
+  },
+  "--fetch": {
+   "returncode": 0,
+   "tail": "hypercomplex: hypercomplex-04241e5d01b3.tar.gz matches the pinned sha256\nhypercomplex-engine: hypercomplex-engine-05634d7421e1.tar.gz matches the pinned sha256\nhypercomplex-algebra: hypercomplex-algebra-aa043b53a004.tar.gz matches the pinned sha256\nCayley-Calculator: Cayley-Calculator-65922fc90cc0.tar.gz matches the pinned sha256\ncayley-dickson: cayley-dickson-446b43f2c955.tar.gz matches the pinned sha256\noctonion: octonion-01788b55497d.tar.gz matches the pinned sha256\nsplitoct: splitoct-a192a1d5d973.tar.gz matches the pinned sha256\nmathdunders: mathdunders-ff9b624725fa.tar.gz matches the pinned sha256\n"
+  },
+  "--install": {
+   "returncode": 0,
+   "tail": "   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 190.9/190.9 kB 5.6 MB/s eta 0:00:00\nhypercomplex: installed from hypercomplex-04241e5d01b3.tar.gz\nhypercomplex-engine: installed from hypercomplex-engine-05634d7421e1.tar.gz\nhypercomplex-algebra: installed from hypercomplex-algebra-aa043b53a004.tar.gz\nCayley-Calculator: installed from Cayley-Calculator-65922fc90cc0.tar.gz\ncayley-dickson: installed from cayley-dickson-446b43f2c955.tar.gz\noctonion: installed from octonion-01788b55497d.tar.gz\nsplitoct: installed from splitoct-a192a1d5d973.tar.gz\nmathdunders: installed from mathdunders-ff9b624725fa.tar.gz\n"
+  }
+ },
+ "tables_regenerated_sha256": "3cefd88cfc84399c48a9eef488571c33e3a7e3b67f377be396ae0812f36194b2",
+ "tables_retained_sha256": "3cefd88cfc84399c48a9eef488571c33e3a7e3b67f377be396ae0812f36194b2"
+}

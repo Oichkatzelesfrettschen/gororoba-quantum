@@ -7,7 +7,8 @@ emulator backends and storage for jobs and results (KB,
 [managing-your-account](site/kbase_managing-your-account.md),
 <https://www.quantum-inspire.com/kbase/managing-your-account/>). The API
 shows one team marked `individual_user` with one active member of role
-`member` (catalogue.json, identifiers stored only as 12-hex sha256).
+`member` (catalogue.json, which retains no team, member or user identifier
+in any form, since a hash of a small integer id reverses by enumeration).
 
 ## Metered usage: the transaction ledger
 

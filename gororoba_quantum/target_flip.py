@@ -16,6 +16,13 @@ from itertools import permutations
 
 MAX_TARGET_FLIP_WIDTH = 5
 CONTROLLED_CX_COST = (1, 6, 12, 18, 24)
+# Switch sub-permutations of at most this many entries recur across bit
+# orderings and across conjugates of one permutation; caching them changes no
+# result. Every predicate on at most four variables (2^16 + 2^8 + 2^4 + 2^2 + 2
+# truth tables) fits the predicate cache.
+CACHED_SWITCH_ENTRIES = 16
+SWITCH_CACHE_SIZE = 1 << 18
+PREDICATE_CACHE_SIZE = 1 << 17
 
 
 @dataclass(frozen=True)
@@ -31,6 +38,12 @@ class TargetCube:
 
 
 def _switch_layers(permutation: tuple[int, ...]) -> tuple[tuple[int, tuple[int, ...]], ...]:
+    if len(permutation) <= CACHED_SWITCH_ENTRIES:
+        return _cached_switch_layers(permutation)
+    return _compute_switch_layers(permutation)
+
+
+def _compute_switch_layers(permutation: tuple[int, ...]) -> tuple[tuple[int, tuple[int, ...]], ...]:
     width = len(permutation).bit_length() - 1
     if width == 1:
         return ((0, (int(permutation[0] == 1),)),)
@@ -84,6 +97,9 @@ def _switch_layers(permutation: tuple[int, ...]) -> tuple[tuple[int, tuple[int, 
     return tuple(layers)
 
 
+_cached_switch_layers = lru_cache(maxsize=SWITCH_CACHE_SIZE)(_compute_switch_layers)
+
+
 @lru_cache(maxsize=5)
 def _cube_distances(
     width: int,
@@ -121,7 +137,7 @@ def _cube_distances(
     return cubes, truth_masks, costs, tuple(distances)
 
 
-@lru_cache(maxsize=1024)
+@lru_cache(maxsize=PREDICATE_CACHE_SIZE)
 def _predicate_cubes(truth: tuple[int, ...]) -> tuple[tuple[int, int], ...]:
     """Choose a canonical shortest XOR-cube path through the full truth graph."""
     size = len(truth)

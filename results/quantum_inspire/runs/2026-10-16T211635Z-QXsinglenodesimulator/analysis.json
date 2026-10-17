@@ -1,7 +1,7 @@
 {
  "schema": "qi-crosstalk-teleport-analysis-v2",
  "backend": "QXsinglenodesimulator",
- "claim_kind": "exploratory reanalysis, hardware",
+ "claim_kind": "exploratory reanalysis, emulator control",
  "config_order_note": "the four configurations ran as sequential jobs, so drift between jobs enters every cross-configuration difference",
  "additivity": [
   {
