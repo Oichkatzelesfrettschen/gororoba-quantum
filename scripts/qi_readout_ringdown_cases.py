@@ -1875,6 +1875,51 @@ def arm_weights(row: dict[str, Any]) -> list[float]:
     return [1 / max(row["rate_se_hz"][arm] / TO_HZ, 1e-12) ** 2 for arm in ARMS]
 
 
+def observed_fields(row: dict[str, Any]) -> dict[str, Any]:
+    """The observed statistic of one analysis row, as the calibration record states it (without the null count)."""
+    a_se = row["h2"]["A_se_hz"]
+    return {
+        "delta_chi2": row["delta_chi2"],
+        "a_sigma": abs(row["h2"]["A_hz"]) / a_se if a_se else math.inf,
+        "preregistered_class": row["class"],
+    }
+
+
+def readjudication(verdict: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Preregistered against calibrated flags from the observed fields and the calibrated quantiles of the rows."""
+    calibrated = [
+        r["target"]
+        for r in rows
+        if r["observed"]["delta_chi2"] >= r["quantile"]["value"] and r["observed"]["a_sigma"] >= DETECT_SIGMA
+    ]
+    flagged = [r["target"] for r in rows if r["observed"]["preregistered_class"] != "none"]
+    return {
+        "preregistered_verdict": verdict,
+        "preregistered_flagged": flagged,
+        "calibrated_flagged": calibrated,
+        "dropped_by_calibration": sorted(set(flagged) - set(calibrated)),
+        "added_by_calibration": sorted(set(calibrated) - set(flagged)),
+    }
+
+
+def null_series(analysis: dict[str, Any], replicates: int) -> list[dict[str, Any]]:
+    """The calibrated target records of one series' usable targets."""
+    rows = []
+    for row in analysis["targets"]:
+        if not row["usable"]:
+            continue
+        stream = f"{NULL_SEED}/{analysis['series']}/{row['target']}"
+        rec = null_target_record(arm_weights(row), replicates, stream)
+        values = rec.pop("_values")
+        rec["target"] = row["target"]
+        rec["observed"] = {
+            **observed_fields(row),
+            "null_exceedances": sum(v >= row["delta_chi2"] for v in values),
+        }
+        rows.append(rec)
+    return rows
+
+
 def null_calibration(analyses: list[Path], replicates: int) -> dict[str, Any]:
     """The calibration record over the usable targets of the given analysis records, one per series."""
     series: dict[str, Any] = {}
@@ -1883,40 +1928,12 @@ def null_calibration(analyses: list[Path], replicates: int) -> dict[str, Any]:
         analysis = json.loads(text)
         if analysis["profile"] != "tuna_17" or analysis["series"] in series:
             raise SystemExit(f"{path}: expected one tuna_17 analysis per series")
-        rows = []
-        for row in analysis["targets"]:
-            if not row["usable"]:
-                continue
-            stream = f"{NULL_SEED}/{analysis['series']}/{row['target']}"
-            rec = null_target_record(arm_weights(row), replicates, stream)
-            values = rec.pop("_values")
-            observed = row["delta_chi2"]
-            a_sigma = abs(row["h2"]["A_hz"]) / row["h2"]["A_se_hz"] if row["h2"]["A_se_hz"] else math.inf
-            rec["target"] = row["target"]
-            rec["observed"] = {
-                "delta_chi2": observed,
-                "a_sigma": a_sigma,
-                "preregistered_class": row["class"],
-                "null_exceedances": sum(v >= observed for v in values),
-            }
-            rows.append(rec)
-        calibrated = [
-            r["target"]
-            for r in rows
-            if r["observed"]["delta_chi2"] >= r["quantile"]["value"] and r["observed"]["a_sigma"] >= DETECT_SIGMA
-        ]
-        flagged = [r["target"] for r in rows if r["observed"]["preregistered_class"] != "none"]
+        rows = null_series(analysis, replicates)
         series[analysis["series"]] = {
             "analysis": retained_path(path),
             "analysis_sha256": hashlib.sha256(text).hexdigest(),
             "targets": rows,
-            "readjudication": {
-                "preregistered_verdict": analysis["decision"]["verdict"],
-                "preregistered_flagged": flagged,
-                "calibrated_flagged": calibrated,
-                "dropped_by_calibration": sorted(set(flagged) - set(calibrated)),
-                "added_by_calibration": sorted(set(calibrated) - set(flagged)),
-            },
+            "readjudication": readjudication(analysis["decision"]["verdict"], rows),
         }
     return {
         "schema": NULL_SCHEMA,
@@ -1946,8 +1963,19 @@ def check_null_target(rec: dict[str, Any]) -> None:
         raise SystemExit(f"{rec['stream']}: the prefix length is not {count}")
     if sha(statistic_lines(null_statistics(rec["weights"], count, rec["stream"]))) != rec["prefix_sha256"]:
         raise SystemExit(f"{rec['stream']}: the first {count} replicates differ from their recomputation")
-    if rec["delta_exceedances"] / n != rec["delta_rate"] or rec["joint_exceedances"] / n != rec["joint_rate"]:
+    if rec["threshold"] != DETECT_DELTA_CHI2:
+        raise SystemExit(f"{rec['stream']}: the threshold is not DETECT_DELTA_CHI2 = {DETECT_DELTA_CHI2}")
+    over = rec["delta_exceedances"]
+    if DETECT_DELTA_CHI2 >= tail[0] and over != sum(v >= DETECT_DELTA_CHI2 for v in tail):
+        raise SystemExit(f"{rec['stream']}: the delta chi2 exceedance count differs from the kept tail")
+    if DETECT_DELTA_CHI2 < tail[0] and over < len(tail):
+        raise SystemExit(f"{rec['stream']}: the delta chi2 exceedance count is below the kept tail")
+    if over / n != rec["delta_rate"] or rec["joint_exceedances"] / n != rec["joint_rate"]:
         raise SystemExit(f"{rec['stream']}: an exceedance rate differs from its count")
+    if rec["delta_rate_interval"] != wilson(over, n) or rec["joint_rate_interval"] != wilson(
+        rec["joint_exceedances"], n
+    ):
+        raise SystemExit(f"{rec['stream']}: an exceedance-rate interval differs from its Wilson recomputation")
     if rec["joint_exceedances"] > rec["delta_exceedances"]:
         raise SystemExit(f"{rec['stream']}: the joint rule fires more often than its delta chi2 conjunct")
     observed = rec["observed"]["delta_chi2"]
@@ -1955,6 +1983,30 @@ def check_null_target(rec: dict[str, Any]) -> None:
         raise SystemExit(f"{rec['stream']}: the observed exceedance count differs from the kept tail")
     if observed < tail[0] and rec["observed"]["null_exceedances"] < len(tail):
         raise SystemExit(f"{rec['stream']}: the observed exceedance count is below the kept tail")
+
+
+def check_null_series(name: str, block: dict[str, Any], analysis: dict[str, Any]) -> int:
+    """Checks one series block against its analysis: observed fields, readjudication, then each target's replay."""
+    rows = {row["target"]: row for row in analysis["targets"] if row["usable"]}
+    if sorted(rows) != sorted(rec["target"] for rec in block["targets"]):
+        raise SystemExit(f"series {name}: the calibrated targets differ from the usable targets")
+    for rec in block["targets"]:
+        row = rows[rec["target"]]
+        if rec["stream"] != f"{NULL_SEED}/{name}/{rec['target']}":
+            raise SystemExit(f"series {name}: target {rec['target']} has a foreign stream")
+        if not all(math.isclose(a, b, rel_tol=1e-9) for a, b in zip(rec["weights"], arm_weights(row), strict=True)):
+            raise SystemExit(f"series {name}: target {rec['target']} weights differ from the analysis errors")
+        observed = rec["observed"]
+        if {k: v for k, v in observed.items() if k != "null_exceedances"} != observed_fields(row) or set(observed) != {
+            *observed_fields(row),
+            "null_exceedances",
+        }:
+            raise SystemExit(f"series {name}: target {rec['target']} observed fields differ from the analysis")
+    if block["readjudication"] != readjudication(analysis["decision"]["verdict"], block["targets"]):
+        raise SystemExit(f"series {name}: the readjudication differs from its recomputation")
+    for rec in block["targets"]:
+        check_null_target(rec)
+    return len(block["targets"])
 
 
 def check_null_record(record: dict[str, Any]) -> int:
@@ -1967,22 +2019,7 @@ def check_null_record(record: dict[str, Any]) -> int:
         text = path.read_bytes()
         if hashlib.sha256(text).hexdigest() != block["analysis_sha256"]:
             raise SystemExit(f"{path}: the analysis differs from the one the calibration used")
-        rows = {row["target"]: row for row in json.loads(text)["targets"] if row["usable"]}
-        if sorted(rows) != sorted(rec["target"] for rec in block["targets"]):
-            raise SystemExit(f"series {name}: the calibrated targets differ from the usable targets")
-        for rec in block["targets"]:
-            row = rows[rec["target"]]
-            if rec["stream"] != f"{NULL_SEED}/{name}/{rec['target']}":
-                raise SystemExit(f"series {name}: target {rec['target']} has a foreign stream")
-            if not all(math.isclose(a, b, rel_tol=1e-9) for a, b in zip(rec["weights"], arm_weights(row), strict=True)):
-                raise SystemExit(f"series {name}: target {rec['target']} weights differ from the analysis errors")
-            if (
-                rec["observed"]["delta_chi2"] != row["delta_chi2"]
-                or rec["observed"]["preregistered_class"] != row["class"]
-            ):
-                raise SystemExit(f"series {name}: target {rec['target']} observed statistic differs from the analysis")
-            check_null_target(rec)
-            checked += 1
+        checked += check_null_series(name, block, json.loads(text))
     return checked
 
 
@@ -2130,6 +2167,14 @@ def null_self_test() -> str:
         "tail": {**rec, "tail": rec["tail"][1:]},
         "weight": {**rec, "weights": [weights[0] * 1.001, *weights[1:]]},
         "tail value": {**rec, "tail": [*rec["tail"][:-1], rec["tail"][-1] + 0.5]},
+        "threshold": {**rec, "threshold": DETECT_DELTA_CHI2 + 1},
+        "delta count": {
+            **rec,
+            "delta_exceedances": rec["delta_exceedances"] + 1,
+            "delta_rate": (rec["delta_exceedances"] + 1) / rec["replicates"],
+        },
+        "delta interval": {**rec, "delta_rate_interval": wilson(rec["delta_exceedances"] + 1, rec["replicates"])},
+        "joint interval": {**rec, "joint_rate_interval": wilson(rec["joint_exceedances"] + 1, rec["replicates"])},
     }
     for name, bad in mutations.items():
         try:
@@ -2137,9 +2182,56 @@ def null_self_test() -> str:
         except SystemExit:
             continue
         raise SystemExit(f"null self-test: a mutated {name} is accepted")
+    sigma = [1 / math.sqrt(w) * TO_HZ for w in weights]
+    analysis: dict[str, Any] = {
+        "series": "S",
+        "decision": {"verdict": "not detected"},
+        "targets": [
+            {
+                "target": t,
+                "usable": True,
+                "class": cls,
+                "delta_chi2": delta,
+                "rate_se_hz": dict(zip(ARMS, sigma, strict=True)),
+                "h2": {"A_hz": 4.0, "A_se_hz": 1.0},
+            }
+            for t, cls, delta in ((0, "tail", 40.0), (1, "none", 2.0))
+        ],
+    }
+    block: dict[str, Any] = {"targets": null_series(analysis, 1000), "readjudication": {}}
+    block["readjudication"] = readjudication("not detected", block["targets"])
+    if block["readjudication"]["calibrated_flagged"] != [0] or block["readjudication"]["dropped_by_calibration"]:
+        raise SystemExit("null self-test: the synthetic readjudication is not the expected one")
+    check_null_series("S", block, analysis)
+
+    def edited(change: dict[str, Any], target: int | None = None) -> dict[str, Any]:
+        targets = [
+            {**r, "observed": {**r["observed"], **change}} if r["target"] == target else r for r in block["targets"]
+        ]
+        return (
+            {**block, "targets": targets}
+            if target is not None
+            else {**block, "readjudication": {**block["readjudication"], **change}}
+        )
+
+    series_mutations = {
+        "a_sigma": edited({"a_sigma": 9.0}, 0),
+        "observed delta": edited({"delta_chi2": 41.0}, 0),
+        "observed class": edited({"preregistered_class": "offset"}, 0),
+        "calibrated_flagged": edited({"calibrated_flagged": [0, 1]}),
+        "dropped_by_calibration": edited({"dropped_by_calibration": [0]}),
+        "added_by_calibration": edited({"added_by_calibration": [1]}),
+        "preregistered_verdict": edited({"preregistered_verdict": "readout tail detected"}),
+    }
+    for name, bad in series_mutations.items():
+        try:
+            check_null_series("S", bad, analysis)
+        except SystemExit:
+            continue
+        raise SystemExit(f"null self-test: a mutated {name} is accepted")
     return (
-        "null self-test: replay reproduces; mutated seed, dropped tail value and changed weight are rejected; "
-        + batch_self_test()
+        "null self-test: replay reproduces; mutated seed, dropped tail value, changed weight, threshold, "
+        "delta count, rate intervals, a_sigma and readjudication fields are rejected; " + batch_self_test()
     )
 
 
