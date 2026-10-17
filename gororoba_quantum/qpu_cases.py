@@ -298,6 +298,9 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         excitation = _number(design["prep_excitation"], "prep_excitation")
         _require(0 <= excitation < 1, "prep_excitation must lie in [0, 1)")
         arguments.extend(["--prep-excitation", str(design["prep_excitation"])])
+    if "empirical_bernstein" in design:
+        _require(design["empirical_bernstein"] is True, "empirical_bernstein is recorded only when declared")
+        arguments.append("--empirical-bernstein")
     arguments.extend(["--out", (Path("..") / location.parent).as_posix()])
     return arguments
 
@@ -1025,6 +1028,13 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
                 if record.get("covariance_bounds")
                 else "Hoeffding/union bounds allow arbitrary same-shot replica dependence. "
             )
+            + (
+                "Confidence and detection radii also take the empirical-Bernstein radius at its share of alpha "
+                "where smaller; the empirical-Bernstein section below states the split, the planned variances "
+                "and the radius each PUB reads. "
+                if record.get("empirical_bernstein")
+                else ""
+            )
             + "Independent stationary repetitions remain an assumption. Hardware-model discrepancy remains "
             "unquantified.",
             "",
@@ -1032,6 +1042,8 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
     )
     if record.get("covariance_falsifier") is not None:
         lines.extend(_covariance_falsifier(record, candidate))
+    if record.get("empirical_bernstein") is not None:
+        lines.extend(_empirical_bernstein(record, candidate))
     if directional:
         lines.extend(
             [
@@ -1138,8 +1150,16 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
         )
         for bound in bounds
     )
+    from experiment_optimizer import EmpiricalBernsteinDesign
+
+    # An opted-in endpoint plans its power radius at the miss probability
+    # less the variance tail; the Hoeffding comparator takes the same tail.
+    bernstein = tuple(
+        EmpiricalBernsteinDesign(**design) for design in record.get("empirical_bernstein", {}).get("designs", [])
+    )
+    opted = {design.observable_name for design in bernstein}
     plain = {row["name"]: row for row in analyze_observations(observed, endpoints, charged).as_dict()["observables"]}
-    plain_power = observation_power_radii(observed, endpoints, charged)
+    plain_power = observation_power_radii(observed, endpoints, charged, bernstein)
     fallback = analyze_observations(observed, endpoints).as_dict()["observables"]
     power = observation_power_radii(observed, endpoints)
     planned = {endpoint["name"]: endpoint for endpoint in candidate["observables"]}
@@ -1161,7 +1181,11 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
             rests.append(
                 f"the {label} radius {_format_number(admitted)} "
                 + (
-                    "equals the Hoeffding radius and needs no replica assumption"
+                    "sums, over PUBs, the smaller of the data-free radius and the empirical-Bernstein radius "
+                    f"at their alpha split (Hoeffding alone at the charged alpha gives {hoeffding:.6g}); the "
+                    "empirical-Bernstein section below names the radius each PUB reads"
+                    if label == "detection" and name in opted
+                    else "equals the Hoeffding radius and needs no replica assumption"
                     if math.isclose(admitted, hoeffding, rel_tol=1e-9, abs_tol=1e-15)
                     else f"rests on the bounds read through their UCL (Hoeffding alone gives {hoeffding:.6g})"
                 )
@@ -1190,6 +1214,103 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
         )
     lines.append("")
     _require(bool(contracts) and set(planned) <= set(contracts), "falsifier endpoints differ from the contracts")
+    return lines
+
+
+def _empirical_bernstein(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
+    """The preregistered empirical-Bernstein rule, its alpha split, planned variances and per-PUB radii."""
+    from experiment_optimizer import EMPIRICAL_BERNSTEIN
+
+    block = record["empirical_bernstein"]
+    specification = block["specification"]
+    _require(
+        specification == EMPIRICAL_BERNSTEIN,
+        "record empirical-Bernstein specification differs from experiment_optimizer.EMPIRICAL_BERNSTEIN",
+    )
+    planned = {endpoint["name"]: endpoint for endpoint in candidate["observables"]}
+    lines = [
+        "### Empirical-Bernstein confidence and detection radii",
+        "",
+        "Each opted-in endpoint reads, per PUB, the smaller of the data-free radius and the empirical-Bernstein "
+        "radius, preregistered here and in record.json `empirical_bernstein`.",
+        "",
+        f"- Source: {specification['source']}.",
+        f"- Inequality: {specification['inequality']}.",
+        f"- Alpha split: {specification['alpha_split']}.",
+        f"- Collection variance: {specification['collection_variance']}.",
+        f"- Planning variance: {specification['planning_variance']}.",
+        f"- Scope: {specification['scope']}.",
+        "",
+        "| Endpoint | PUB | Shots | Score span | Planned variance | Detection: data-free | Detection: "
+        "empirical Bernstein | Detection: read | Two-sided: read |",
+        "|---|---|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    details = block["planned"]
+    _require(
+        {detail["observable"] for detail in details} == {design["observable_name"] for design in block["designs"]},
+        "planned empirical-Bernstein details differ from the designs",
+    )
+    for detail in details:
+        name = _identifier(detail["observable"], "endpoint")
+        for row in detail["pubs"]:
+            detection = row.get("detection", {})
+            lines.append(
+                f"| {name} | {_identifier(row['pub'], 'PUB')} | {_count(row['shots'], 'PUB shots')} | "
+                f"{_number(row['score_span'], 'score span'):.6g} | "
+                + (f"{_number(row['variance'], 'planned variance'):.6g}" if row["variance"] is not None else "n/a")
+                + " | "
+                + (
+                    f"{_number(detection['data_free'], 'radius'):.6g} | "
+                    + (
+                        f"{_number(detection['empirical_bernstein'], 'radius'):.6g}"
+                        if detection["empirical_bernstein"] is not None
+                        else "n/a"
+                    )
+                    + f" | {_number(detection['used'], 'radius'):.6g}"
+                    if detection
+                    else "n/a | n/a | n/a"
+                )
+                + f" | {_number(row['confidence']['used'], 'radius'):.6g} |"
+            )
+    lines.append("")
+    for detail in details:
+        name = _identifier(detail["observable"], "endpoint")
+        endpoint = planned[name]
+        radii = detail["radii"]
+        _require(
+            math.isclose(radii["confidence"]["used"], endpoint["confidence_half_width"], rel_tol=1e-12, abs_tol=0.0),
+            f"{name}: planned empirical-Bernstein half-width differs from the admitted one",
+        )
+        lines.append(
+            f"Alpha split for `{name}`: {_format_number(detail['alpha'])} = falsifier tail "
+            f"{detail['falsifier_tail']:.6g} + data-free tail {detail['data_free_tail']:.6g} + empirical-Bernstein "
+            f"tail {detail['empirical_bernstein_tail']:.6g}. The planned two-sided half-width is "
+            f"{radii['confidence']['used']:.6g} against {radii['confidence']['without_empirical_bernstein']:.6g} "
+            "without the opt-in."
+        )
+        if "detection" in radii:
+            _require(
+                math.isclose(radii["detection"]["used"], endpoint["detection_radius"], rel_tol=1e-12, abs_tol=0.0)
+                and math.isclose(detail["power_radius"], endpoint["power_radius"], rel_tol=1e-12, abs_tol=0.0),
+                f"{name}: planned empirical-Bernstein radii differ from the admitted ones",
+            )
+            lines.extend(
+                [
+                    "",
+                    f"The planned detection radius is {radii['detection']['used']:.6g} against "
+                    f"{radii['detection']['without_empirical_bernstein']:.6g} under the data-free rule at the full "
+                    f"alpha; the power radius {detail['power_radius']:.6g} runs at tail "
+                    f"{detail['power_tail']:.6g}, the miss probability "
+                    f"{1 - _number(endpoint['power'], 'power'):.6g} less the variance tail "
+                    f"{detail['variance_tail']:.6g} (without the opt-in "
+                    f"{detail['power_radius_without_empirical_bernstein']:.6g}). The rejection threshold above "
+                    "reads the planned variances; collection recomputes each PUB's empirical-Bernstein radius from "
+                    "the measured frequencies and rejects only when the estimate exceeds the null plus the "
+                    "collected detection radius. A sample variance above its planned upper limit widens that "
+                    "radius and costs power, never coverage: the interval keeps its alpha whatever the variance.",
+                ]
+            )
+        lines.append("")
     return lines
 
 
@@ -2017,6 +2138,67 @@ def _verify_covariance_falsifier(record: dict[str, Any]) -> None:
     raise AssertionError("a record falsifier that differs from the source specification rendered")
 
 
+def _verify_empirical_bernstein(record: dict[str, Any]) -> None:
+    """An opted-in record preregisters the empirical-Bernstein rule, its alpha split and per-PUB radii."""
+    from dataclasses import asdict
+
+    from experiment_optimizer import (
+        EMPIRICAL_BERNSTEIN,
+        CandidatePlan,
+        EmpiricalBernsteinDesign,
+        JobCandidate,
+        ObservableContract,
+        ObservableTerm,
+        PubPrediction,
+        planned_empirical_bernstein,
+    )
+
+    opted = copy.deepcopy(record)
+    design = EmpiricalBernsteinDesign("feedback_contrast")
+    contract = ObservableContract(
+        "feedback_contrast", (ObservableTerm("feedback", (0.0, 1.0)),), minimum_effect=0.0, alpha=0.05, power=0.8
+    )
+    pub = PubPrediction("feedback_pub", {"feedback": ((0.95, 0.05),)}, 0.001, 0.00025, "fixture")
+    plan = CandidatePlan(
+        "candidate-000-shots-2048", (JobCandidate("ibm_fez/dynamic/1", (pub,), 2048, 2.3, 90.0, "fixture"),)
+    )
+    (detail,) = planned_empirical_bernstein(
+        CandidatePlan(plan.name, plan.jobs, empirical_bernstein=(design,)), (contract,)
+    )
+    opted["empirical_bernstein"] = {
+        "specification": json.loads(json.dumps(EMPIRICAL_BERNSTEIN)),
+        "designs": [asdict(design)],
+        "planned": [json.loads(json.dumps(detail))],
+    }
+    opted["policy"]["design"]["empirical_bernstein"] = True
+    candidate = opted["optimization"]["candidates"][0]
+    candidate["observables"][0].update(
+        confidence_half_width=detail["radii"]["confidence"]["used"],
+        detection_radius=detail["radii"]["detection"]["used"],
+        power_radius=detail["power_radius"],
+    )
+    text = "\n".join(_endpoints(opted, candidate))
+    for phrase in (
+        "### Empirical-Bernstein confidence and detection radii",
+        "Inequality: one-sided at tail d: mean - sample mean <= sqrt(2 V_n ln(2 / d) / n)",
+        "Alpha split for `feedback_contrast`: 0.05 = falsifier tail 0 + data-free tail 0.025 + empirical-Bernstein "
+        "tail 0.025",
+        "costs power, never coverage",
+        "the empirical-Bernstein section below states the split",
+        f"| feedback_contrast | feedback_pub | 2048 | 1 | {detail['pubs'][0]['variance']:.6g} |",
+    ):
+        if phrase not in text:
+            raise AssertionError(f"empirical-Bernstein case lacks {phrase!r}")
+    if "Empirical-Bernstein" in "\n".join(_endpoints(record, record["optimization"]["candidates"][0])):
+        raise AssertionError("a record without the opt-in rendered the empirical-Bernstein section")
+    opted["empirical_bernstein"]["specification"]["alpha_split"] = "unequal"
+    try:
+        _endpoints(opted, candidate)
+    except ValueError:
+        return
+    raise AssertionError("a record rule that differs from the source specification rendered")
+
+
 def _verify() -> None:
     record = _fixture()
     with tempfile.TemporaryDirectory(prefix="qpu-case-check-") as temporary:
@@ -2074,6 +2256,7 @@ def _verify() -> None:
         else:
             raise AssertionError("a cost ledger at another repetition delay passed the requested --rep-delay")
         _verify_covariance_falsifier(record)
+        _verify_empirical_bernstein(record)
         assert all((run_dir / name).read_bytes() == value for name, value in originals.items())
         for family, phrase in (("ripple", "box-kite phase atlas"), ("rank-sector", "coefficient-dependent LCU")):
             algebra = copy.deepcopy(record)
