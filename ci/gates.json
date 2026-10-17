@@ -2799,7 +2799,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_c.json results/kaggle/2026-10-16T160710Z-gororoba-ghost-error-scale-c/output/output/repo/results/kaggle_out/ghost_error_scale_c.json",
    "name": "core-390",
    "seconds": 100.0,
-   "tier": "full"
+   "tier": "pr"
   },
   {
    "suite": "core",

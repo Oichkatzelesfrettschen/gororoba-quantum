@@ -825,6 +825,14 @@ def dataset(args: argparse.Namespace) -> int:
     manifest = {path.relative_to(ROOT).as_posix(): sha256(path.read_bytes()) for path in files}
     owner = username()
     ref = f"{owner}/{args.slug}"
+    # The prior record is read and its ref checked before the upload, so a
+    # refused re-version leaves no unrecorded remote version behind.
+    path = DATASETS / f"{args.slug}.json"
+    previous = dict(json.loads(path.read_text(encoding="utf-8"))) if path.is_file() else None
+    require(
+        previous is None or previous["ref"] == ref,
+        f"dataset record {path.name} holds {previous and previous['ref']}, not {ref}",
+    )
     with tempfile.TemporaryDirectory() as scratch:
         staging = Path(scratch)
         with tarfile.open(staging / ARCHIVE, "w:gz") as archive:
@@ -848,8 +856,6 @@ def dataset(args: argparse.Namespace) -> int:
         "files": manifest,
         "reply": reply.strip()[-300:],
     }
-    path = DATASETS / f"{args.slug}.json"
-    previous = dict(json.loads(path.read_text(encoding="utf-8"))) if path.is_file() else None
     DATASETS.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(with_history(record, previous), indent=1) + "\n", encoding="utf-8")
     print(f"{ref}: {len(manifest)} files, archive {archive_sha256[:12]}")
