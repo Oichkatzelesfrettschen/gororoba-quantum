@@ -6,16 +6,19 @@ the retained inputs disagree, ``--write`` refreshes the block.
 
 Inputs and what each fixes:
 
-- every retained raw job under results/live/*/raw/: per job, the executions
-  (sum of PUB shots), the repetition delay, the scheduler circuit duration
-  per PUB, the metered ``circuits_execution_time_ns`` and the integer
-  ``qpu_charge_time_seconds``. The execution time equals
-  sum(shots x (rep_delay + scheduler duration)), and the charge equals
-  ceil(execution + c) for one constant c whose admissible interval the
-  script intersects over all jobs.
-- the same jobs' records: the scheduler duration minus the Target gate-time
-  lower bound per PUB, on ibm_kingston, without and with one feed-forward
-  stage.
+- the raw jobs ``BILLING_JOBS`` pins, each by run, job id and its
+  index.json sha256: per job, the executions (sum of PUB shots), the
+  repetition delay, the scheduler circuit duration per PUB, the metered
+  ``circuits_execution_time_ns`` and the integer ``qpu_charge_time_seconds``.
+  The execution time equals sum(shots x (rep_delay + scheduler duration)),
+  and the charge equals ceil(execution + c) for one constant c whose
+  admissible interval the script intersects over all jobs. Every file the
+  fit reads matches its digest in the pinned index (metrics through
+  ``metrics_sha256``), so a job retained later leaves the fit unchanged and
+  an altered input stops it.
+- the same jobs' records, pinned by sha256 in ``BILLING_RECORDS``: the
+  scheduler duration minus the Target gate-time lower bound per PUB, on
+  ibm_kingston, without and with one feed-forward stage.
 - docs/evidence/heron_platform/targets.json: each backend's rep_delay_range.
 - the reference dry-run record (``REFERENCE``): both PUBs' Target
   durations and the modeled outcome laws.
@@ -35,10 +38,14 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
+import os
+import shutil
 import statistics
 import sys
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -75,6 +82,145 @@ LATENCY_SECONDS = 20e-6
 SIGNED = (0.0, 1.0, 0.0, -1.0)
 UNIFORM = (0.25, 0.25, 0.25, 0.25)
 VARIANCE_BOUND = 0.55
+LIVE = ROOT / "results/live"
+# The billing fit's inputs: (run, job id, raw/<job id>/index.json sha256).
+# A job retained later stays outside the fit until it is added here and the
+# note re-rendered with --write.
+BILLING_JOBS = (
+    (
+        "2026-10-11T152922.787095Z",
+        "db5qmqclf4us73c4e1ug",
+        "765de1011cdfc314dd0475b319d2beaa35df683968c390e6447f9fd92fd7532a",
+    ),
+    (
+        "2026-10-12T055624.091217Z",
+        "db67fqsvf2bc73d0pk4g",
+        "a0208a96859cf149a0aad8a1151cfd7ab8affd490d318822708aff199bff8434",
+    ),
+    (
+        "2026-10-12T055624.091217Z",
+        "db67frimb58s738bci4g",
+        "97f4d3143d560296f3ab68f8ba16ba7f4ec7048c334205bddcdd546c177ad648",
+    ),
+    (
+        "2026-10-13T020454.599853Z",
+        "db6p55clf4us73c5nd9g",
+        "8ec617c333e73edc6e54bc6cd0858b557fe84b226c0bdc9fd982cd802abf4f82",
+    ),
+    (
+        "2026-10-13T022433.333775Z",
+        "db6pepklf4us73c5nqcg",
+        "5dcab6316835ffc7a5f76970140ca0156c609113d83e643ae3e2153505a03b1e",
+    ),
+    (
+        "2026-10-13T025444.603480Z",
+        "db6q2p2mb58s738c75gg",
+        "5052cccdc71534a3e51b2f391ad002419b7c3b30244d1a54d7ec4106552a67b6",
+    ),
+    (
+        "2026-10-13T025444.603480Z",
+        "db6q2rklf4us73c5oq90",
+        "4976e9881e4b70206b8214ff050d7f55c4f93fa8445d07a40af24a71a5ba1961",
+    ),
+    (
+        "2026-10-13T032011.664435Z",
+        "db6q9qo4qg6s73c57020",
+        "2b1d9a62f4adfa89c58502933480e14add27614bb895af7f2c16b0cd0dc08712",
+    ),
+    (
+        "2026-10-13T032011.664435Z",
+        "db6q9rsvf2bc73d1kpug",
+        "fa14060afed78b755744511c93c27b671582868df92c9abcc688cfa63d35244d",
+    ),
+    (
+        "2026-10-13T080216.451663Z",
+        "db6ub8svf2bc73d1rc50",
+        "31ecb334baf41e3716e2a189ab2011d4a7d8c9f94709d9ed97e63fd618f69794",
+    ),
+    (
+        "2026-10-13T083417.634585Z",
+        "db6uqdkvf2bc73d1sc80",
+        "099573bc579e0d96902a0bd787e55e4eae0ba8b9b3a031d7fe4bd7b17b9c272d",
+    ),
+    (
+        "2026-10-13T201757.782152Z",
+        "db794cmil99s73fnjlk0",
+        "f5c83da76aabe5bd2bc2a5d9251513b0bd09a7bed8bab1088f6998cb38818cfb",
+    ),
+    (
+        "2026-10-13T201757.782152Z",
+        "db794dor1c5c738k1a50",
+        "827b5827d3645de6c156e98deb9cff63dbfced53dc09c17ebd7d28c756d3c0b7",
+    ),
+    (
+        "2026-10-13T201757.782152Z",
+        "db794hmr6oqs73871tbg",
+        "d159b5dcedd5d51711031883ed9dfe4972ce60be293b8c0591ccc16c0041fdc1",
+    ),
+    (
+        "2026-10-15T030748.903241Z",
+        "db847nur6oqs7388nen0",
+        "87a51307053ff325d70a2bdebc4dcfb4f89bc136abed22e3468357262e99e1e5",
+    ),
+    (
+        "2026-10-15T030748.903241Z",
+        "db847oiraffc73fbmfk0",
+        "cea105c5ac92439fd4635b4d496e9b5ca8d2bb031c8ec40f0ca040f492dd5cdc",
+    ),
+    (
+        "2026-10-15T030903.235380Z",
+        "db848h6r6oqs7388nfm0",
+        "aed6460fb8a05597fd76f141f9e1519abed49a78651ab723163a3bea4301a698",
+    ),
+    (
+        "2026-10-15T030903.235380Z",
+        "db848hmil99s73fp99tg",
+        "428d447e89b9f68751ced42b471b4d17b4e54a6d2cdf3264eb4a1f916f749f18",
+    ),
+    (
+        "2026-10-15T031229.371738Z",
+        "db84dt6il99s73fp9gjg",
+        "2c1e68bf0c8eef92d629f10566415a613a84ef30290ff10da37e4a5744ab5cf7",
+    ),
+    (
+        "2026-10-15T031229.371738Z",
+        "db84dv2raffc73fbmnag",
+        "bbd42b3f39afeaa9f74fa4ccc2c4664e6d9abf7fd59743d49b6724bc8b65475f",
+    ),
+    (
+        "2026-10-15T070847.644554Z",
+        "db87o48r1c5c738lu8jg",
+        "15910378f2842d8b59b52fb1105ca0c0ae4d26a3b51c7fdb73e238fd73ea43af",
+    ),
+    (
+        "2026-10-15T070853.550532Z",
+        "db87o8or1c5c738lu910",
+        "6a5a047079a34fa78f4fb1dc3a5453d7f9742b36a9ce568f627bdd62d2cc0d91",
+    ),
+    (
+        "kingston-wide-control-result",
+        "db6qe7klf4us73c5pdc0",
+        "4eec8b6b5cdd397bfe328333732a596d8add6b7f142e32a307ae3a46b71f3dfa",
+    ),
+)
+# record.json sha256 of each billing run that carries one; the scheduler
+# excess reads its execution manifest's Target gate-time bounds.
+BILLING_RECORDS = {
+    "2026-10-11T152922.787095Z": "3b81e5b3ba59bf5041daeaae911d9c5b62063fe4186544c5ed79e9ef709c1e59",
+    "2026-10-12T055624.091217Z": "91145c3456e8670a19eea258416412d020ca5e3fa71aa37b91ce7a5cb7f74670",
+    "2026-10-13T020454.599853Z": "d9441a3b8c613c666657f3abdceb7eab9842db5d97310ec3af0319b21ad020ee",
+    "2026-10-13T022433.333775Z": "953925600a12666f406e56f7833be4bc2885c3904f5a64e82875ceeba56ffdad",
+    "2026-10-13T025444.603480Z": "dfe1e15a1a429c5625acac46a13f51dc4025619273b123ba969122a2a54dc83c",
+    "2026-10-13T032011.664435Z": "cde647e53a4a08164f71e474b63b36b60ad1417a850c48adb2907af050dc2368",
+    "2026-10-13T080216.451663Z": "c7a5c333f806f412b1966d467743a30828239ad1997fd5be0729dab3015d8b19",
+    "2026-10-13T083417.634585Z": "c0e20af610a17db49c41e8a8f979b5ed27ac793dbc5e2eed656897f9af97369d",
+    "2026-10-13T201757.782152Z": "5685faab1c278ee1078799612d2b61a97949f891eafde4038e4388f98fcc4868",
+    "2026-10-15T030748.903241Z": "c76f608cbf0fb253d5b93045ec47e254e2748182c76bc36a0277b7b5338aaea8",
+    "2026-10-15T030903.235380Z": "1e36e27c9e4f10a5fab1e0e37028c89c832717e06822d8bb17e5fd85b3eba1a0",
+    "2026-10-15T031229.371738Z": "044dd98ad5483accb0acfe3fa10841c7c06b1cac76f41fefe05fd89cc6645f07",
+    "2026-10-15T070847.644554Z": "9bb872bf20dd664489afa2b423aefe102042f4be2747abc60765b6947af45733",
+    "2026-10-15T070853.550532Z": "22c078143a9e266123ad0f9acba9f3c234ac1c6522aa3e669eb4a579aee32c65",
+}
 
 
 # ---------------------------------------------------------------- billing
@@ -91,14 +237,45 @@ class Job:
     charge: int
 
 
-def retained_jobs() -> list[Job]:
+def _verified(path: Path, digest: str) -> bytes:
+    payload = path.read_bytes()
+    if hashlib.sha256(payload).hexdigest() != digest:
+        raise ValueError(f"{path}: sha256 differs from its pinned digest")
+    return payload
+
+
+@dataclass(frozen=True)
+class PinnedJob:
+    run: Path
+    directory: Path
+    index: dict[str, Any]
+
+    def read(self, name: str) -> Any:
+        """A file of the job, checked against the pinned index's digest for it."""
+        if name in self.index["files"]:
+            return json.loads(_verified(self.directory / name, self.index["files"][name]))
+        position = self.index["metrics"].index(name)
+        return json.loads(_verified(self.directory / name, self.index["metrics_sha256"][position]))
+
+
+def pinned_jobs(live: Path) -> list[PinnedJob]:
+    """The BILLING_JOBS raw jobs under live, each index.json checked against its pinned sha256."""
     jobs = []
-    for index_path in sorted((ROOT / "results/live").glob("*/raw/*/index.json")):
-        directory = index_path.parent
-        index = json.loads(index_path.read_text())
-        metrics_name = index.get("metrics_latest") or sorted(index["metrics"])[-1]
-        metrics = json.loads((directory / metrics_name).read_text())
-        metadata = json.loads((directory / "result_metadata.json").read_text())
+    for run, job_id, digest in BILLING_JOBS:
+        directory = live / run / "raw" / job_id
+        index = json.loads(_verified(directory / "index.json", digest))
+        if index["job_id"] != job_id:
+            raise ValueError(f"{directory}: index names job {index['job_id']}")
+        jobs.append(PinnedJob(live / run, directory, index))
+    return jobs
+
+
+def retained_jobs(live: Path = LIVE) -> list[Job]:
+    jobs = []
+    for pinned in pinned_jobs(live):
+        directory, index = pinned.directory, pinned.index
+        metrics = pinned.read(index.get("metrics_latest") or sorted(index["metrics"])[-1])
+        metadata = pinned.read("result_metadata.json")
         rep_delay = metadata["options"]["execution"].get("rep_delay")
         # A job submitted without an explicit rep_delay ran at the backend default.
         rep_delay = 250e-6 if rep_delay is None else float(rep_delay)
@@ -107,7 +284,7 @@ def retained_jobs() -> list[Job]:
         for name in index["files"]:
             if not name.startswith("pub_"):
                 continue
-            pub = json.loads((directory / name).read_text())
+            pub = pinned.read(name)
             shots = {register["num_shots"] for register in pub["registers"].values()}
             if len(shots) != 1:
                 raise ValueError(f"{directory}/{name}: registers disagree on shots")
@@ -138,24 +315,23 @@ def ceil_interval(jobs: list[Job]) -> tuple[float, float]:
     return low, high
 
 
-def kingston_scheduler_excess() -> dict[int, list[int]]:
+def kingston_scheduler_excess(live: Path = LIVE) -> dict[int, list[int]]:
     """Scheduler circuit duration minus the Target gate-time bound (dt), by feed-forward stage count."""
     excess: dict[int, list[int]] = {}
-    for index_path in sorted((ROOT / "results/live").glob("*/raw/*/index.json")):
-        run = index_path.parent.parent.parent
-        record_path = run / "record.json"
-        if not record_path.exists():
+    for pinned in pinned_jobs(live):
+        digest = BILLING_RECORDS.get(pinned.run.name)
+        if digest is None:
             continue
-        record = json.loads(record_path.read_text())
+        record = json.loads(_verified(pinned.run / "record.json", digest))
         bounds = {
             pub["name"]: (pub.get("target_gate_lower_bound_dt"), pub.get("sequential_stage_count"))
             for pub in record.get("execution_pubs", [])
             if pub.get("backend") == "ibm_kingston"
         }
-        for name in json.loads(index_path.read_text())["files"]:
+        for name in pinned.index["files"]:
             if not name.startswith("pub_"):
                 continue
-            pub = json.loads((index_path.parent / name).read_text())
+            pub = pinned.read(name)
             bound, stages = bounds.get(pub["pub_name"], (None, None))
             if bound is None or stages is None:
                 continue
@@ -447,7 +623,7 @@ def cz_rows(ref: Reference, retentions: tuple[float, float]) -> list[str]:
 
 
 def render() -> str:
-    jobs = retained_jobs()
+    jobs = retained_jobs(LIVE)
     low, high = ceil_interval(jobs)
     worst = max(abs(job.metered_seconds - job.modeled_seconds) / job.executions for job in jobs)
     excess = kingston_scheduler_excess()
@@ -638,7 +814,70 @@ def self_test() -> None:
         feasible(ref, single, 8192)[1].observables[0].detection_radius
     ):
         raise AssertionError("replicas without a covariance bound must leave the Hoeffding radius unchanged")
-    print(f"n21 usage budget: sizing reproduces {checked} reference candidates' radii and charges")
+    pinned_inputs_test()
+    print(
+        f"n21 usage budget: sizing reproduces {checked} reference candidates' radii and charges; the billing fit "
+        "ignores an unpinned raw job and refuses an altered pinned index or PUB file"
+    )
+
+
+def billing(live: Path) -> tuple[list[Job], tuple[float, float], dict[int, list[int]]]:
+    jobs = retained_jobs(live)
+    return jobs, ceil_interval(jobs), kingston_scheduler_excess(live)
+
+
+def _mirror(live: Path, destination: Path) -> None:
+    """destination holds every pinned run's record and raw job as symbolic links into live."""
+    for run, job_id, _digest in BILLING_JOBS:
+        (destination / run / "raw").mkdir(parents=True, exist_ok=True)
+        os.symlink(live / run / "raw" / job_id, destination / run / "raw" / job_id)
+    for run in BILLING_RECORDS:
+        os.symlink(live / run / "record.json", destination / run / "record.json")
+
+
+def _expect_refusal(live: Path, label: str) -> None:
+    try:
+        billing(live)
+    except ValueError:
+        return
+    raise AssertionError(f"the billing fit read {label}")
+
+
+def pinned_inputs_test() -> None:
+    """The billing fit reads exactly BILLING_JOBS: an extra raw job leaves it unchanged, altered bytes stop it."""
+    reference_fit = billing(LIVE)
+    if [(job.run, job.job_id) for job in reference_fit[0]] != [(run, job) for run, job, _ in BILLING_JOBS]:
+        raise AssertionError("the billing fit's jobs differ from BILLING_JOBS")
+    smallest = min(
+        BILLING_JOBS,
+        key=lambda item: sum(path.stat().st_size for path in (LIVE / item[0] / "raw" / item[1]).iterdir()),
+    )
+    run, job_id, _digest = smallest
+    with tempfile.TemporaryDirectory(prefix="n21-usage-budget-") as scratch:
+        mirror = Path(scratch) / "live"
+        _mirror(LIVE, mirror)
+        if billing(mirror) != reference_fit:
+            raise AssertionError("the mirrored pinned inputs give a different billing fit")
+        # A job retained later: an unpinned run and an unpinned job beside a pinned one.
+        extra = mirror / "2099-01-01T000000.000000Z"
+        (extra / "raw").mkdir(parents=True)
+        os.symlink(LIVE / run / "raw" / job_id, extra / "raw" / job_id)
+        if BILLING_RECORDS.get(run):
+            os.symlink(LIVE / run / "record.json", extra / "record.json")
+        os.symlink(LIVE / run / "raw" / job_id, mirror / run / "raw" / "unpinned-job")
+        if billing(mirror) != reference_fit:
+            raise AssertionError("an unpinned raw job changed the billing fit")
+        target = mirror / run / "raw" / job_id
+        target.unlink()
+        shutil.copytree(LIVE / run / "raw" / job_id, target)
+        index = target / "index.json"
+        original = index.read_bytes()
+        index.write_bytes(original.replace(b'"files"', b'"files" ', 1))
+        _expect_refusal(mirror, "an index.json that differs from its pinned sha256")
+        index.write_bytes(original)
+        pub = target / sorted(json.loads(original)["files"])[0]
+        pub.write_bytes(pub.read_bytes() + b" ")
+        _expect_refusal(mirror, "a raw file that differs from its indexed digest")
 
 
 def main() -> int:

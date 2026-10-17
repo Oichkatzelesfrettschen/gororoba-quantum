@@ -17,14 +17,17 @@ This note decomposes the run's QPU seconds from IBM's usage model and the
 repository's retained jobs, ranks every lever by the seconds it saves, and
 names the cheapest configuration the admitted planning contract accepts.
 Every number in the generated block below comes from
-`scripts/n21_usage_budget.py`, which gate core-484 replays.
+`scripts/n21_usage_budget.py`, which gate core-484 replays. The billing fit
+reads the 23 jobs `BILLING_JOBS` pins by run, job id and raw index sha256,
+with every file it reads checked against that index, so a job retained later
+leaves the block unchanged until the list and the block change together.
 
 ## Usage model
 
 IBM bills QPU lock time (docs/notes/ibm_quantum/estimate-job-run-time.md):
 about 2 s per sub-job plus (rep_delay + circuit length) x executions, where
 executions are shots summed over the job's PUBs and circuits run column-wise
-over shots (repetition-rate-execution.md). The retained jobs pin both terms
+over shots (repetition-rate-execution.md). The pinned jobs fix both terms
 exactly: the metered `circuits_execution_time_ns` equals the sum over PUBs of
 shots x (rep_delay + scheduler circuit duration), and the integer
 `qpu_charge_time_seconds` equals the ceiling of that time plus a constant
