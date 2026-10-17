@@ -134,9 +134,13 @@ the signal, perturbed at eps, the solution drift stays inside eps * kappa^2
 0.2 % of the first and about 200 to 700 times the second on both the AOCL
 and OpenBLAS builds). `--check` therefore allows one rounding unit, 1.5e-6,
 1e-6 relative on condition numbers, and inside each model eps * kappa^2 *
-|value| on every other value, kappa its retained fold_condition_max; a
-model whose kappa stays below about 8e4 keeps the one-unit floor for values
-near 1. The probe bounds the drift normwise, against the solution's largest
+|value| on every other value, kappa the model's retained fold_condition_max
+for outputs of the leave-one-out fits (the leave-one-out RMS and noise
+floor values and the contrast block) and its full-design condition for the
+full-fit parameters and RMS values. On Fez lane 4's `axis_tilt_plus_mean`
+that is 4.3e-5 relative for the leave-one-out outputs and 1.1e-6 (full
+condition 7.0e4) for the full fit; a kappa below about 8e4 keeps the
+one-unit floor for values near 1. The probe bounds the drift normwise, against the solution's largest
 component, while `--check` applies the bound to each value's own magnitude;
 the componentwise form is the tighter one, so a substrate that moved a small
 component past it would fail the gate rather than hide a regression. The host also reproduced all seven Fez lanes of the Kaggle

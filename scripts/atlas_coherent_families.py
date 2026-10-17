@@ -151,9 +151,11 @@ retained decimals plus roundoff), or 1e-9 relative for larger values. A
 condition number agrees within 1e-6 relative: an SVD on a condition-kappa
 design carries relative roundoff of order kappa times the machine epsilon,
 which differs between BLAS builds at fold conditions near 5e5. Every other
-number inside a model entry also agrees within eps * kappa^2 * |value|, kappa
-the model's retained fold_condition_max (``compare``): 4.3e-5 relative on the
-ill-conditioned lane-4 model, and below the one-unit floor for values near 1
+number inside a model entry also agrees within eps * kappa^2 * |value|
+(``compare``), kappa the model's retained fold_condition_max for outputs of
+the leave-one-out fits and its full-design condition for the rest: on the
+Fez lane-4 axis-tilt model 4.3e-5 relative for the leave-one-out outputs and
+1.1e-6 for the full fit, and below the one-unit floor for values near 1
 wherever kappa stays under about 8e4.
 """
 
@@ -227,6 +229,11 @@ CONDITION_RELATIVE = 1e-6
 LSQ_ROUNDOFF = float(np.finfo(float).eps)
 LSQ_PROBE_SEED = 20261017
 CONDITION_KEYS = frozenset({"condition", "fold_condition_max"})
+# Model outputs computed from the leave-one-out fits; every other model output
+# comes from the full-design fit.
+FOLD_DERIVED_KEYS = frozenset(
+    {"leave_one_out_rms_rad", "leave_one_out_noise_floor_rad", "nonlinear_leave_one_out_rms_rad", "contrast"}
+)
 CONTRADICTION_SIGMA = 3.0
 # A Column names one error parameter: (family, compact qubit index or coupler pair).
 Column = tuple[str, Any]
@@ -1021,18 +1028,30 @@ def self_test() -> int:
     # rejects a change just beyond it: the one-unit floor 1.5e-6 at kappa 10
     # and eps * kappa^2 = 4.299e-5 at kappa 4.4e5, each bracketed within 3
     # percent so a rescaled coefficient fails.
-    for kappa, fresh, accepted in (
-        (10.0, 1.0 + 1.46e-6, True),
-        (10.0, 1.0 + 1.54e-6, False),
-        (4.4e5, 1.0 + 4.25e-5, True),
-        (4.4e5, 1.0 + 4.35e-5, False),
+    # A full-fit output takes the full design's condition and a leave-one-out
+    # output the worst fold's, so an ill-conditioned fold leaves the full-fit
+    # parameters at their own tolerance.
+    for full, fold, output, fresh, accepted in (
+        (10.0, 10.0, "parameters", 1.0 + 1.46e-6, True),
+        (10.0, 10.0, "parameters", 1.0 + 1.54e-6, False),
+        (4.4e5, 4.4e5, "parameters", 1.0 + 4.25e-5, True),
+        (4.4e5, 4.4e5, "parameters", 1.0 + 4.35e-5, False),
+        (10.0, 4.4e5, "parameters", 1.0 + 4.25e-5, False),
+        (10.0, 4.4e5, "fit_rms_rad", 1.0 + 4.25e-5, False),
+        (10.0, 4.4e5, "leave_one_out_rms_rad", 1.0 + 4.25e-5, True),
+        (10.0, 4.4e5, "contrast", 1.0 + 4.25e-5, True),
+        (10.0, 4.4e5, "contrast", 1.0 + 4.35e-5, False),
     ):
         try:
-            compare({"fold_condition_max": kappa, "value": 1.0}, {"fold_condition_max": kappa, "value": fresh}, "model")
+            compare(
+                {"condition": full, "fold_condition_max": fold, output: [1.0]},
+                {"condition": full, "fold_condition_max": fold, output: [fresh]},
+                "model",
+            )
             outcome = True
         except SystemExit:
             outcome = False
-        require(outcome == accepted, f"check tolerance at kappa {kappa:g} misjudges {fresh}")
+        require(outcome == accepted, f"check tolerance at kappa {full:g}/{fold:g} misjudges {output} {fresh}")
     # A condition number keeps its own relative tolerance inside an
     # ill-conditioned model, so a moved fold_condition_max still fails.
     try:
@@ -1083,21 +1102,24 @@ def compare(retained: Any, fresh: Any, path: str, conditioning: float = 0.0) -> 
     roundoff of order eps * kappa^2 * max|x|, which lsq_roundoff_scaling()
     measures in the self-test, so the values of a model whose design or
     leave-one-out fold is ill-conditioned move between BLAS builds. Inside a
-    model entry a value therefore also admits eps * kappa^2 * |value| with
-    kappa its retained fold_condition_max; the condition numbers keep their
-    own relative tolerance, and a well-conditioned model keeps the
-    one-rounding-unit floor. The componentwise form is tighter than the
-    normwise bound, so a substrate that moves a small component past it fails
-    the check rather than passing a regression; the AOCL, OpenBLAS and Kaggle
-    recomputes fall inside it (docs/evidence/atlas_coherent_families).
+    model entry a value therefore also admits eps * kappa^2 * |value|, with
+    kappa the retained fold_condition_max for an output of the leave-one-out
+    fits (FOLD_DERIVED_KEYS) and the retained full-design condition for every
+    other output; the condition numbers keep their own relative tolerance,
+    and a well-conditioned model keeps the one-rounding-unit floor. The
+    componentwise form is tighter than the normwise bound, so a substrate
+    that moves a small component past it fails the check rather than passing
+    a regression; the AOCL, OpenBLAS and Kaggle recomputes fall inside it
+    (docs/evidence/atlas_coherent_families).
     """
     if isinstance(retained, dict):
         require(isinstance(fresh, dict) and set(retained) == set(fresh), f"{path}: keys differ")
-        kappa = retained.get("fold_condition_max")
-        if isinstance(kappa, (int, float)) and not isinstance(kappa, bool):
-            conditioning = max(conditioning, LSQ_ROUNDOFF * float(kappa) ** 2)
         for key in retained:
-            compare(retained[key], fresh[key], f"{path}.{key}", conditioning)
+            kappa = retained.get("fold_condition_max" if key in FOLD_DERIVED_KEYS else "condition")
+            scale = conditioning
+            if isinstance(kappa, (int, float)) and not isinstance(kappa, bool):
+                scale = max(conditioning, LSQ_ROUNDOFF * float(kappa) ** 2)
+            compare(retained[key], fresh[key], f"{path}.{key}", scale)
     elif isinstance(retained, list):
         require(isinstance(fresh, list) and len(retained) == len(fresh), f"{path}: lengths differ")
         for k, (a, b) in enumerate(zip(retained, fresh, strict=True)):
