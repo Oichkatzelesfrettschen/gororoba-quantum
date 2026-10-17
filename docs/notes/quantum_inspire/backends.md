@@ -164,6 +164,10 @@ Common to all three (KB, [tuna-operational-specifics](site/kbase_tuna-operationa
   QCM modules for flux; each transmon has its own drive and flux line and its
   own Purcell-filtered readout resonator pair.
 - **Result order** (Measured): qubit 0 is the rightmost character.
+- **Result register** (Measured, Tuna-17): the full declared bit register,
+  one character per bit with b[0] rightmost, mid-circuit outcomes included
+  (`bit[34]` on `qubit[17]` returned 34 characters; batch job 870030), unlike
+  QX's per-qubit measurement register (C21).
 - **Calibration**: automated tuning runs between user jobs and can take from
   seconds to 30 minutes, adding to queue wait (KB, faq and
   displaying-and-downloading-your-results); no ledger transaction records it.

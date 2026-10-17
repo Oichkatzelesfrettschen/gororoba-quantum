@@ -66,9 +66,9 @@ in [knowledge-base.md](knowledge-base.md).
   correct characters.
 - Tuna returns results "as a shots x bits array in bit-register order"
   ([site/kbase_tuna-operational-specifics.md](site/kbase_tuna-operational-specifics.md)).
-  No retained Tuna run writes a bit beyond the qubit width, so that
-  statement is unverified for mid-circuit bits until a Tuna batch that does
-  so is collected. A QX dry run therefore cannot rehearse a Tuna analysis
+  Tuna-17 confirms it: `bit[34]` circuits on `qubit[17]` returned
+  34-character strings with every mid-circuit outcome present (batch job
+  870030, `results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00`). A QX dry run therefore cannot rehearse a Tuna analysis
   that reads mid-circuit bits.
 
 ### Resolution in the readout ring-down pilot

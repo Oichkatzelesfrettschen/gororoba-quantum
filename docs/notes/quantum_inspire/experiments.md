@@ -395,6 +395,68 @@ park, (1,4) at -19.3 kHz, (0,2) at -7.9 kHz, the short-coherence Q5, and the
 Q1/Q2 drive crosstalk: a repeated spatial association, not a demonstrated
 cause.
 
+## Post-readout frequency tail on Tuna-17 (preregistered)
+
+`scripts/qi_readout_ringdown_cases.py` asks whether a mid-circuit readout
+leaves a transient frequency shift on the measured qubit. Each target of one
+part of Tuna-17's bipartition (series P: Q0, Q4, Q5, Q6, Q10, Q11, Q12,
+Q16; series Q: the other nine) is read mid-circuit, waits tau in
+(0, 100, 300, 800, 2000) ns and runs a two-delay Ramsey (d = 2 and 77 cycles,
+|delta| < 333 kHz unambiguous) against a reference arm whose readout becomes
+an equal `wait(40)`. A residual-photon Stark shift predicts
+delta(tau) = A exp(-tau / T); a static detuning predicts delta = 0. Every
+circuit idles 2 us before its final readout so leftover photons cannot bias
+the final readout of the short-tau arms, and the readout-calibration
+circuits idle the same 2 us, so the in-batch calibration absorbs the decay
+during that wait. Rates come from all shots: a target left in |1> after its
+mid-circuit readout scales both quadratures by (1 - 2 eps) and keeps the
+phase ([qx-runs.md](qx-runs.md)); where the full register returns, the
+estimate postselected on the mid-circuit outcome is reported beside it. The
+decision rule is in the script's docstring and every `cases.json`.
+
+**QX dry run** (18 batches, 2026-10-17, approval quoted in each
+`submission.json`): every target usable at visibility 1.000, the largest
+|delta| 13.6 kHz against a standard error of 4.7 kHz, every chi-square
+difference below 13.82, verdict "not detected" on both series
+([P](../../../results/quantum_inspire/readout_ringdown_qx_P_analysis.json),
+[Q](../../../results/quantum_inspire/readout_ringdown_qx_Q_analysis.json)).
+QX returned 10-character measurement registers, so the dry run exercised
+the all-shot path only.
+
+**Tuna-17, batch P-00** (the readout calibration, batch job 870030, queued
+through a calibration from 03:20 UTC):
+
+- The result carried all 34 characters of `bit[34]` with every mid-circuit
+  outcome, so Tuna-17 returns the full bit register (C21).
+- After the 2 us wait, P(1 | prepared 1) read 0.83-0.89 on seven targets
+  and 0.670 on Q6; P(1 | prepared 0) stayed 0.005-0.051 on every qubit.
+  Q6 read 0.946 and 0.958 in the zero-divisor and coupler-ZZ runs, which
+  had no wait, so Q6 decays over the 2 us: T1 = 2 us / ln(0.946 / 0.670)
+  = 5.8 us if readout fidelity held (inferred). The other targets' loss
+  corresponds to T1 of tens of microseconds.
+- Q6's assignment error 0.330 exceeded the sanity guard of 0.2 and stopped
+  the series. The owner chose to continue with Q6 judged by the decision
+  rule; the guard for this series is 0.35 (`--sanity-readout-error`, noted
+  in every sanity output), and the circuits and rule are unchanged. A
+  decaying target cannot fake a tail: it sits in |0> through the pre-delay
+  and decays alike in every arm, so it lowers visibility, and the rule drops
+  any target below visibility 0.3.
+
+**What earlier Tuna-17 measurements predict for this case:**
+
+| Measured effect (section above) | Its effect on delta(tau) |
+|---|---|
+| Coherent over-rotation of at least 0.050, 0.053 and 0.061 rad per X on Q6, Q8 and Q9 | The X/Y fringe turns elliptical; for the X90-idle-X90/Y90 estimator the worst rate error over the 1.5 us span is 0.19, 0.21 and 0.28 kHz, against a delta standard error of 3-5 kHz, before the common-mode cancellation between arms |
+| Ramsey visibility 0.04, 0.27 and 0.08 at 2 us on Q5, Q6 and Q7; Q5 and Q6 idle near 323 kHz from their frames | Q5 (P) and Q7 (Q) are expected to fail the 0.3 rule and Q6 sits near it; delta is wrapped against the reference, so the alias edge enters the absolute rate only |
+| Residual ZZ, J from -31.4 to +11.7 kHz on the 24 couplers | Spectators stay in \|0> in every arm, so each target carries the same static offset in every arm and delta cancels it |
+| Simultaneous-drive crosstalk and neighbor-drive phase shifts | Every arm runs the same simultaneous X90 schedule, so the effect is common to all arms |
+| Other targets' simultaneous mid-circuit readouts | Present in every readout arm and absent from the reference, so a readout-induced shift of a neighbor counts as part of the measured tail |
+
+The per-target form of this table, computed from the retained analyses, is
+`results/quantum_inspire/readout_ringdown_tuna_17_device_context.json`
+(`scripts/qi_tuna17_device_context.py`); it is context for reading each
+verdict and leaves the preregistered rule unchanged.
+
 ## Next cases
 
 - Interleave the four configurations inside one job (disjoint stars per
