@@ -2,7 +2,7 @@
   "schema_version": 1,
   "repository": "https://github.com/Oichkatzelesfrettschen/open_gororoba",
   "commit": "c8be973cbfba724d281463e68d1ad4c56582819b",
-  "publication_state": "local_commit_pending_additional_pub_payload_approval",
+  "publication_state": "published",
   "acquisition": "local_git_worktree_snapshot",
   "recorded_at_utc": "2026-10-17T04:43:20Z",
   "source_base_commit": "4706d40eafa524957a9b20384a6a7346fe8536a1",
