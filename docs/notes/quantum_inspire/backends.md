@@ -29,6 +29,24 @@ AGENTS.md carries under gate core-347.
 | Tuna-9 (6) | 9 transmons, 12 tunable couplers | 9 | offline (heartbeat current) | 8192 / 131072 | 300 s | 8 jobs waiting 11-54 days |
 | Tuna-17 (7) | 17 transmons, 24 tunable couplers | 17 | executing, calibrating, benchmarking | 8192 / 131072 | 300 s | 2-8 jobs, 4-213 s wait |
 
+Coupling graphs (API `topology`, undirected), tested for a two-coloring:
+
+| Backend | Couplings | Bipartite | Parts | What a target/spectator design does there |
+|---|---|---|---|---|
+| QX emulator | 45, complete graph K10 | no (every triple is a triangle) | none | any qubit set may act as targets: the emulator has no couplers and no ZZ, so a partition only mirrors the hardware design it rehearses |
+| Ry emulator | 36, complete graph K9 | no | none | the all-to-all list states which pairs accept a two-qubit gate; the interaction itself depends on the `INIT(x, y)` geometry ([ry-emulator.md](ry-emulator.md)), so a partition is chosen from positions, not from the list |
+| Tuna-5 | 4, star around Q2 | yes | {Q0, Q1, Q3, Q4} and {Q2} | one center against four leaves |
+| Tuna-9 | 12 | yes | {Q0, Q3, Q4, Q5, Q8} and {Q1, Q2, Q6, Q7} | Q8 carries the TLS message ([tuna-9.md](tuna-9.md)) |
+| Tuna-17 | 24 | yes | {Q0, Q4, Q5, Q6, Q10, Q11, Q12, Q16} and the other nine | the coupler map and ring-down pilot use these parts |
+
+Status seen in every retained catalogue read (2026-10-16T22:13Z,
+2026-10-16T23:08Z, 2026-10-17T03:18Z) and the live read at 03:31Z: QX and
+the Ry emulator idle, Tuna-17 executing or calibrating, all three with
+current heartbeats; Tuna-9 offline with a current heartbeat, so its control
+system reports while the backend accepts no work; Tuna-5, Starmon-7 and
+Spin-2+ offline with heartbeats from 2026-03-09, 2026-03-27 and 2025-12-10.
+No retained read covers the hours before 2026-10-16T21:16Z.
+
 Every type reports `max_jobs_per_batch_job` 5 and `batchjobs_per_queue_limit`
 5 (API); the FAQ limits a user to 3 queued jobs per hardware backend (KB,
 [faq](site/faq.md), <https://www.quantum-inspire.com/faq/>). On hardware
