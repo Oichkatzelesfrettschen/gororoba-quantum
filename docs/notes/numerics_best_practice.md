@@ -46,7 +46,7 @@ p-adic solution.
 
 | Format | Significand | eps | Where it runs here |
 |---|---|---|---|
-| float32 / complex64 | 24 bits | 1.2e-7 | GPU storage in `jax_bridge` (matmuls at `Precision.HIGHEST`) |
+| float32 / complex64 | 24 bits | 1.2e-7 | `jax_bridge` storage on the CPU (matmuls at `Precision.HIGHEST`); a GPU or TPU run is an unqualified target |
 | float64 / complex128 | 53 bits | 2.2e-16 | the default: numpy, AOCL-BLAS or OpenBLAS, Aer `precision="double"` |
 | `np.longdouble` / `np.clongdouble` | 64 bits (x87 extended, stored in 128 bits) | 1.1e-19 | scalar x87 only: no SIMD, no BLAS or LAPACK; `einsum` accepts it |
 | double-double | about 106 bits | about 1e-32 | software (pairs of float64 with error-free transformations) |
@@ -113,16 +113,22 @@ OpenMP start one thread per CPU in every process unless
 `OPENBLAS_NUM_THREADS` and `OMP_NUM_THREADS` say otherwise, so a pool of N
 workers asks for N times the CPUs' threads; AOCL-BLAS (BLIS) on the build
 host reports one thread. Measured on the build host (12 logical CPUs) under
-CI's OpenBLAS 0.3.34, the n21 cross-check replay (core-487) with six workers:
+CI's OpenBLAS 0.3.34, the n21 cross-check replay (core-487) with six workers
+([observations](../evidence/blas_worker_threads/observations.json), single
+wall-clock runs on a host whose load average other jobs set between 27 and
+85):
 
-| BLAS threads per worker | seconds |
+| BLAS threads per worker | seconds, by series |
 |---|---|
-| per-CPU default (12) | 65 to 99 |
-| 2 | 60 to 102 |
-| 1 | 9 to 11 on a lightly loaded host; 36 to 52 at load averages of 35 to 85 |
+| per-CPU default (12) | 99 and 65 |
+| 2 | 45 to 102 |
+| 1 | 11 and 9; 43, 52 and 36 in the three interleaved series |
 
-One thread per worker is fastest because the matrices (128 x 128 for seven
-qubits) are too small to repay BLAS threading: the pool is the parallelism.
+Within every series that ran both, one thread per worker was fastest; the
+absolute seconds move with the host's load.
+
+The matrices (128 x 128 for seven qubits) are small enough that BLAS
+threading plausibly costs more than it saves; the pool is the parallelism.
 `parallel.ordered_map` therefore sets the BLAS and OpenMP thread variables
 to 1 while it spawns workers, keeps any value the caller set, and leaves the
 calling process's own settings alone (gate core-520). A serial run
@@ -142,7 +148,7 @@ stack, as core-489 does for pyadic. Versions below are the build host's.
 |---|---|---|---|
 | numpy | 2.5.4 (CI pin) | arrays, einsum, linalg through AOCL-BLAS 5.3.0 on the host | longdouble has no linalg |
 | scipy | 1.18.1 (CI pin) | `scipy.linalg` (QR with pivoting, `lstsq` drivers, `solve_triangular`), sparse, optimize | |
-| numba | 0.68.0 | JIT for scalar loops numpy cannot vectorize (shot-ordered register decoding, branch walks) | host only |
+| numba | 0.68.0 | JIT for scalar loops numpy cannot vectorize (shot-ordered register decoding, branch walks) | not in CI; Kaggle `quantum-tools` group |
 | jax / jaxlib | 0.9.0 | `jax_bridge` density-matrix sweeps, batched over error scales, on CPU | host only; complex64 storage; TPU is a target no retained run has qualified ([TPU research](kaggle/tpu-research.md)) |
 | cupy | 14.2.0 | numpy-shaped GPU arrays on the RTX 4070 Ti | host only; the GPU's nominal float64 throughput is 1/64 of float32 (a hardware ratio, not a measured workload speed) |
 | opt_einsum, cotengra, quimb | 3.4.0, 0.8.2, 1.15.0 | contraction order search and tensor networks | host only; quimb and cotengra are the `quantum-tools` Kaggle group |
