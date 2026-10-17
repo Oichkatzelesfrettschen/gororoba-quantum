@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (57 established, 25 exploratory, 3 open, 7 proposed, 2 superseded, 11 withdrawn) with its evidence class,
+registered claim (59 established, 26 exploratory, 3 open, 7 proposed, 2 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -77,10 +77,31 @@ acquisition of every provider:
 | [2026-10-17T030006Z-readout_ringdown_qx_Q-batch-06](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-06) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
 | [2026-10-17T030006Z-readout_ringdown_qx_Q-batch-07](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-07) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
 | [2026-10-17T030006Z-readout_ringdown_qx_Q-batch-08](results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-08) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 2 | 2 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T034952Z-ry_probe-batch-00](results/quantum_inspire/runs/2026-10-17T034952Z-ry_probe-batch-00) | Quantum Inspire | Ry emulator cQASM reader constructs | Rydberg | 3 | 3 | 1 completed, 2 failed | 0 ledger change |
+| [2026-10-17T034952Z-ry_probe-batch-01](results/quantum_inspire/runs/2026-10-17T034952Z-ry_probe-batch-01) | Quantum Inspire | Ry emulator cQASM reader constructs | Rydberg | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T034952Z-ry_probe-batch-02](results/quantum_inspire/runs/2026-10-17T034952Z-ry_probe-batch-02) | Quantum Inspire | Ry emulator cQASM reader constructs | Rydberg | 3 | 3 | 2 completed, 1 failed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 2 | 2 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 2 | 2 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 2 | 2 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-03](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-03) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-04](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-04) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
 
 The IBM service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 physical jobs with 334 settled seconds; the account then reported 334 of 600 s consumed in the rolling window ending 2026-10-15T07:13:13.771Z. That is an observation, not a current balance or an authorization.
 
-The Quantum Inspire ledger retrieved at 2026-10-17T03:19:03+00:00 lists 94 jobs with 476160 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+The Quantum Inspire ledger retrieved at 2026-10-17T05:35:42+00:00 lists 173 jobs with 1061888 shots done and a total ledger change of 0; 20 of them are declared unretained, belonging to run directories of other branches (11 on QXsinglenodesimulator, 9 on tuna_17), and every other listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 <!-- research-state:end -->
 
 ## Contents
