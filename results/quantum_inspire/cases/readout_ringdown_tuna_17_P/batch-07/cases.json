@@ -1,0 +1,35 @@
+{
+ "schema": "qi-readout-ringdown-cases-v1",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 8192,
+ "series": "P",
+ "targets": [
+  0,
+  4,
+  5,
+  6,
+  10,
+  11,
+  12,
+  16
+ ],
+ "circuits": [
+  {
+   "file": "reference-y-d077.cq",
+   "kind": "ramsey",
+   "sha256": "53ef9f4f96afe6c6593d8a79c1a660208b490918ca81c4dcd88646a6eb8b43b3"
+  },
+  {
+   "file": "tau000-y-d077.cq",
+   "kind": "ramsey",
+   "sha256": "5f4f50ad2e16c82ec25953160e56c98b0e359ac0cc90b9948a4a5788d2f154bd"
+  },
+  {
+   "file": "tau005-y-d077.cq",
+   "kind": "ramsey",
+   "sha256": "b9e688b94ef498976587565133873c4f9a10c9e65da09bc1f45cdf4e457421a7"
+  }
+ ]
+}
