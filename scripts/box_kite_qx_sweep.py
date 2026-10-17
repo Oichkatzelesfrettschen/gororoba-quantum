@@ -1,48 +1,55 @@
-"""Exhaustive box-kite family (a) on the qxelarator state-vector emulator, and its offline replay.
+"""Exhaustive box-kite families on the qxelarator state-vector emulator, and their offline replay.
 
 The remote QX backend runs the QX simulator, an ideal state-vector emulator,
-so a remote run of family (a) adds nothing beyond the platform's compile path,
-which the QX smoke set covers; the full family runs here, on qxelarator 0.10.0
-(the QX simulator's Python binding) on a Kaggle CPU kernel, under the
-repository rule that simulations of 14 qubits or fewer run on Kaggle.
+so a remote run of an exhaustive family adds nothing beyond the platform's
+compile path, which the QX smoke sets cover; the full families run here, on
+qxelarator 0.10.0 (the QX simulator's Python binding) on a Kaggle CPU
+kernel, under the repository rule that simulations of 14 qubits or fewer run
+on Kaggle. Two families exist:
 
---run OUT regenerates the 848 family (a) circuits in process
-(box_kite_cases.series("a", "qx"), the bytes gate core-420 regenerates),
-runs each cQASM text through qxelarator.execute_string at QX_SHOTS shots
-with seed BASE_SEED + its index in series order, and writes one JSON record:
-per circuit its series path, sha256, seed, the selector qubit of each replica
-and selector_counts, the histogram of the selector bits (character s of a key
-is the selector bit of replica slot s; qxelarator puts qubit 0 at the
-rightmost character of its keys), and per replica the census row, its
-p_selector_zero, the count of selector-0 shots, z and the verdict. The
-program's falsifier decides each verdict: one shot with selector 0 on a
-P = 0 replica or selector 1 on a P = 1 replica refutes it, and a P = 1/2
-replica with |z| >= Z_LIMIT (Bonferroni over the family's P = 1/2 replicas
-at family error 0.01) refutes it. qiskit and qxelarator run in one
-interpreter: the Kaggle image's Python 3.13 with the kernel's qiskit 2.5.2
-and the qx-emulator pin group, or the Quantum Inspire environment locally.
---limit N keeps the first N replicas of each sub-family.
+- a: the 848 family (a) circuits of box_kite_cases.series("a", "qx"), the
+  zero-product success of every Design B row in both encodings;
+- de: the 149 circuits of box_kite_cases.series_de(), the associator-sign
+  witnesses (d1)-(d3) and the full-encoding coherence settings (e).
+
+--run DIR [--family a de] regenerates each family's circuits in process
+(the bytes gate core-420's generator code emits, the same functions), runs
+each cQASM text through qxelarator.execute_string at QX_SHOTS shots with seed
+BASE_SEED + its index in series order, and writes DIR/family-<name>.json:
+per circuit its series path, sha256, seed, the readout qubits its checks
+read and the histogram of those bits (character n of a key is the bit of
+readout_qubits[n]; qxelarator puts qubit 0 at the rightmost character of
+its own keys), and per replica its census entry, parameters and checks
+(box_kite_cases.replica_checks): P(q = 0) of a selector or control, or
+P(data parity even | selector = 0) of a coherence setting, each with its
+prediction, the counted k of n, z and the verdict. The falsifier of the
+program decides each verdict: one shot off a deterministic prediction
+refutes it, and any other prediction refutes it at |z| >= Z_LIMIT. qiskit
+and qxelarator run in one interpreter: the Kaggle image's Python 3.13 with
+the kernel's qiskit 2.5.2 and the qx-emulator pin group, or the Quantum
+Inspire environment locally. --limit N keeps the first N replicas of each
+sub-family.
 
 --replay RECORD re-derives every verdict from the retained counts and the
-census alone: census digest, each replica's prediction against its census
-row, complete coverage of every sub-family's census rows in series order,
-seeds, shot totals, selector-0 counts, z, verdicts and the summary. --bind
-also regenerates the circuits and requires each sha256 and selector list to
-equal the record's, which binds the record to this checkout's generator.
---require-pass fails when any replica is refuted.
+census alone: census digest, each replica's census entry, parameters and
+predictions against the census in series order (complete coverage of every
+sub-family), seeds, shot totals, counts, z, verdicts and the summary. --bind
+also regenerates the circuits and requires each sha256 and each replica's
+checks, qubits included, to equal the record's, which binds the record to
+this checkout's generator and re-checks every prediction by state vector.
+--require-pass fails when any check is refuted.
 
 --emulate CASE_DIR... runs every circuit of the given case directories on
-qxelarator at its manifest's shots (seed BASE_SEED + its index) and applies
-the same falsifier to every replica check box_kite_cases.replica_checks
-derives (selector and control marginals, the coherence settings' conditional
-data marginals), and to the readout pair (readout-0 all zero, readout-1 all
+qxelarator at its manifest's shots (seed BASE_SEED + its index), applies the
+same falsifier to every replica check, to each Ry diagnostic's expected
+distribution and to the readout pair (readout-0 all zero, readout-1 all
 one); this is the local run of the identical Tuna-17 bytes before a batch.
 
---self-test builds a synthetic complete record from the census, requires the
-replay to accept it, and requires mutated counts, seeds, predictions,
-coverage and digests to be rejected.
+--self-test builds synthetic complete records of both families from the
+census, requires the replay to accept them, and requires mutated counts,
+seeds, predictions, coverage and digests to be rejected.
 
-Usage: "$PYTHON" scripts/box_kite_qx_sweep.py --run OUT [--limit N]
+Usage: "$PYTHON" scripts/box_kite_qx_sweep.py --run DIR [--family a de] [--limit N]
        "$PYTHON" scripts/box_kite_qx_sweep.py --replay RECORD [--bind] [--require-pass]
        "$PYTHON" scripts/box_kite_qx_sweep.py --emulate CASE_DIR... [--out FILE]
        "$PYTHON" scripts/box_kite_qx_sweep.py --self-test
@@ -58,6 +65,7 @@ import math
 import platform
 import sys
 import warnings
+from collections.abc import Callable
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
@@ -84,14 +92,17 @@ QXELARATOR = "0.10.0"
 BASE_SEED = 20261017
 SHOTS = cases.QX_SHOTS
 Z_LIMIT = cases.Z_LIMIT
+FAMILIES = ("a", "de")
+PARAMS = ("triple", "omit_last_block", "pair", "i", "pauli")
 FALSIFIER = (
-    "one shot with selector 0 on a P = 0 replica or selector 1 on a P = 1 replica refutes it; a P = 1/2 "
-    f"replica with |z| >= {Z_LIMIT}, z = (zeros - n/2) / sqrt(n/4), refutes it"
+    "one shot off a deterministic prediction (P = 0 or 1) refutes the circuit's implementation; any other "
+    f"prediction p refutes it at |z| >= {Z_LIMIT}, z = (k - n p) / sqrt(n p (1 - p))"
 )
+Check = dict[str, Any]
 
 
 def verdict(p: str, zeros: int, shots: int) -> tuple[str, float | None]:
-    """The falsifier on k selector-0 shots of n: deterministic rows exactly, others by binomial z."""
+    """The falsifier on k counted shots of n: deterministic predictions exactly, others by binomial z."""
     prob = Fraction(p)
     if prob in (0, 1):
         return ("pass" if zeros == prob * shots else "refuted"), None
@@ -101,30 +112,85 @@ def verdict(p: str, zeros: int, shots: int) -> tuple[str, float | None]:
     return ("pass" if abs(z) < Z_LIMIT else "refuted"), z
 
 
-def slot_zeros(histogram: dict[str, int], slot: int) -> int:
-    return sum(count for key, count in histogram.items() if key[slot] == "0")
+def count_check(kind: str, bits: Callable[[str], list[str]], histogram: dict[str, int]) -> tuple[int, int]:
+    """(k, n) of one check; bits(key) gives the check qubits' bits of an outcome key in check-qubit order."""
+    n = k = 0
+    for key, count in histogram.items():
+        values = bits(key)
+        if kind == "p_zero":
+            n += count
+            k += count * (values[0] == "0")
+        elif kind in ("p_zero_given_zero", "parity_zero_given_zero") and values[0] == "0":
+            n += count
+            if kind == "p_zero_given_zero":
+                k += count * (values[1] == "0")
+            else:
+                k += count * (values[1:].count("1") % 2 == 0)
+        elif kind not in ("p_zero_given_zero", "parity_zero_given_zero"):
+            raise ValueError(f"unknown check {kind!r}")
+    return k, n
 
 
-def family_circuits(limit: int | None) -> list[dict[str, Any]]:
-    """Series path, sub-family, text and replicas (census id, prediction, selector) of every family (a) circuit."""
-    files = cases.series("a", "qx", limit=limit)
+def bit(key: str, qubit: int) -> str:
+    """The bit of `qubit` in a QX or qxelarator key, qubit 0 at the rightmost character."""
+    return key[len(key) - 1 - qubit]
+
+
+def key_bits(places: list[int]) -> Callable[[str], list[str]]:
+    """Characters of a record counts key at the given positions."""
+    return lambda key: [key[i] for i in places]
+
+
+def qubit_bits(qubits: tuple[int, ...]) -> Callable[[str], list[str]]:
+    """Bits of the given qubits in a QX key, in the order given."""
+    return lambda key: [bit(key, q) for q in qubits]
+
+
+def family_files(family: str, limit: int | None) -> dict[str, str]:
+    if family == "a":
+        return cases.series("a", "qx", limit=limit)
+    if family == "de":
+        return cases.series_de(limit=limit)
+    raise ValueError(f"unknown family {family!r}")
+
+
+def replica_entry(replica: dict[str, Any]) -> dict[str, Any]:
+    """A manifest replica as the record keeps it: census entry, parameters and checks without counts."""
+    checks = [
+        {"kind": kind, "qubits": list(qubits), "prediction": want}
+        for kind, qubits, want in cases.replica_checks(replica)
+        if kind != "cz_count"
+    ]
+    params = {key: replica[key] for key in PARAMS if key in replica}
+    return {"slot": replica["slot"], "census": replica["census"], "params": params, "checks": checks}
+
+
+def readout_qubits(replicas: list[dict[str, Any]]) -> list[int]:
+    out: list[int] = []
+    for replica in replicas:
+        for check in replica["checks"]:
+            out += [q for q in check["qubits"] if q not in out]
+    return out
+
+
+def family_circuits(family: str, limit: int | None) -> list[dict[str, Any]]:
+    """Series path, sub-family, text and record replicas of every circuit of one family."""
+    files = family_files(family, limit)
     out = []
     for batch in json.loads(files["cases.json"])["batches"]:
         manifest = json.loads(files[f"{batch['batch']}/cases.json"])
         for row in manifest["circuits"]:
             path = f"{batch['batch']}/{row['file']}"
+            replicas = [replica_entry(r) for r in row["replicas"]]
             out.append(
                 {
                     "file": path,
                     "sub_family": row["sub_family"],
                     "text": files[path],
-                    "replicas": [
-                        {"slot": r["slot"], "census": r["census"], "p_selector_zero": r["p_selector_zero"],
-                         "selector": r["roles"]["selector"]}
-                        for r in row["replicas"]
-                    ],
+                    "readout_qubits": readout_qubits(replicas),
+                    "replicas": replicas,
                 }
-            )  # fmt: skip
+            )
     return out
 
 
@@ -139,66 +205,89 @@ def emulate(item: tuple[str, int, int]) -> dict[str, int]:
     return {str(key): int(value) for key, value in result.results.items()}
 
 
-def bit(key: str, qubit: int) -> str:
-    return key[len(key) - 1 - qubit]
-
-
-def selector_histogram(outcomes: dict[str, int], selectors: list[int]) -> dict[str, int]:
+def reduce_histogram(outcomes: dict[str, int], qubits: list[int]) -> dict[str, int]:
+    """The histogram of the given qubits' bits, character n the bit of qubits[n]."""
     histogram: dict[str, int] = {}
     for key, count in sorted(outcomes.items()):
-        reduced = "".join(bit(key, q) for q in selectors)
+        reduced = "".join(bit(key, q) for q in qubits)
         histogram[reduced] = histogram.get(reduced, 0) + count
     return dict(sorted(histogram.items()))
 
 
-def judge(circuit: dict[str, Any], shots: int) -> dict[str, Any]:
-    """Selector-0 counts, z and verdicts of one circuit's replicas from its selector_counts."""
+def judge(circuit: dict[str, Any]) -> dict[str, Any]:
+    """Counted k of n, z and verdict of every check of one circuit from its counts."""
+    position = {q: n for n, q in enumerate(circuit["readout_qubits"])}
     replicas = []
     for replica in circuit["replicas"]:
-        zeros = slot_zeros(circuit["selector_counts"], replica["slot"])
-        result, z = verdict(replica["p_selector_zero"], zeros, shots)
-        replicas.append({**replica, "selector_zeros": zeros, "z": z, "verdict": result})
+        checks = []
+        for check in replica["checks"]:
+            places = [position[q] for q in check["qubits"]]
+            k, n = count_check(check["kind"], key_bits(places), circuit["counts"])
+            result, z = verdict(check["prediction"], k, n)
+            checks.append({**check, "k": k, "n": n, "z": z, "verdict": result})
+        passed = all(c["verdict"] == "pass" for c in checks)
+        replicas.append({**replica, "checks": checks, "verdict": "pass" if passed else "refuted"})
     passed = all(r["verdict"] == "pass" for r in replicas)
     return {**circuit, "replicas": replicas, "verdict": "pass" if passed else "refuted"}
 
 
+def bare(circuit: dict[str, Any]) -> dict[str, Any]:
+    """A judged circuit with every derived field removed, the input judge() re-derives them from."""
+    replicas = [
+        {
+            **{k: v for k, v in r.items() if k != "verdict"},
+            "checks": [{k: v for k, v in c.items() if k in ("kind", "qubits", "prediction")} for c in r["checks"]],
+        }
+        for r in circuit["replicas"]
+    ]
+    return {**{k: v for k, v in circuit.items() if k != "verdict"}, "replicas": replicas}
+
+
 def summarize(circuits: list[dict[str, Any]]) -> dict[str, Any]:
-    replicas = [r for c in circuits for r in c["replicas"]]
-    refuted = [f"{c['file']} slot {r['slot']}" for c in circuits for r in c["replicas"] if r["verdict"] != "pass"]
+    checks = [c for circuit in circuits for r in circuit["replicas"] for c in r["checks"]]
+    refuted = [
+        f"{circuit['file']} slot {r['slot']} {c['kind']}"
+        for circuit in circuits
+        for r in circuit["replicas"]
+        for c in r["checks"]
+        if c["verdict"] != "pass"
+    ]
     return {
         "circuits": len(circuits),
-        "replicas": len(replicas),
-        "half_replicas": sum(Fraction(r["p_selector_zero"]) == Fraction(1, 2) for r in replicas),
-        "max_abs_z": max((abs(r["z"]) for r in replicas if r["z"] is not None), default=None),
+        "replicas": sum(len(circuit["replicas"]) for circuit in circuits),
+        "checks": len(checks),
+        "probabilistic_checks": sum(Fraction(c["prediction"]) not in (0, 1) for c in checks),
+        "max_abs_z": max((abs(c["z"]) for c in checks if c["z"] is not None), default=None),
         "refuted": refuted,
         "verdict": "pass" if not refuted else "refuted",
     }
 
 
-def run(out: Path, limit: int | None) -> dict[str, Any]:
+def run(directory: Path, family: str, limit: int | None) -> dict[str, Any]:
     from importlib import metadata
 
-    circuits = family_circuits(limit)
+    if metadata.version("qxelarator") != QXELARATOR:
+        raise SystemExit(f"qxelarator {metadata.version('qxelarator')} is installed; the sweep pins {QXELARATOR}")
+    circuits = family_circuits(family, limit)
     seeds = [BASE_SEED + index for index in range(len(circuits))]
     outcomes = parallel.ordered_map(emulate, [(c["text"], SHOTS, s) for c, s in zip(circuits, seeds, strict=True)])
     judged = []
     for circuit, seed, result in zip(circuits, seeds, outcomes, strict=True):
-        selectors = [r["selector"] for r in circuit["replicas"]]
         row = {
             "file": circuit["file"],
             "sub_family": circuit["sub_family"],
             "sha256": hashlib.sha256(circuit["text"].encode()).hexdigest(),
             "seed": seed,
-            "selectors": selectors,
-            "selector_counts": selector_histogram(result, selectors),
+            "readout_qubits": circuit["readout_qubits"],
+            "counts": reduce_histogram(result, circuit["readout_qubits"]),
             "replicas": circuit["replicas"],
         }
-        judged.append(judge(row, SHOTS))
+        judged.append(judge(row))
     census = cases.load_census()
     record: dict[str, Any] = {
         "schema": SCHEMA,
-        "family": "a",
-        "generator": "scripts/box_kite_cases.py series('a', 'qx')",
+        "family": family,
+        "generator": "scripts/box_kite_cases.py " + ("series('a', 'qx')" if family == "a" else "series_de()"),
         "census": cases.census_record(cases.CENSUS, census),
         "emulator": {"package": "qxelarator", "version": metadata.version("qxelarator")},
         "environment": {
@@ -213,74 +302,88 @@ def run(out: Path, limit: int | None) -> dict[str, Any]:
         "limit": limit,
         "z_limit": Z_LIMIT,
         "falsifier": FALSIFIER,
-        "counts_key": "character s of a selector_counts key is the selector bit of replica slot s",
+        "counts_key": "character n of a counts key is the bit of readout_qubits[n]",
         "circuits": judged,
         "summary": summarize(judged),
     }
-    if record["emulator"]["version"] != QXELARATOR:
-        raise SystemExit(f"qxelarator {record['emulator']['version']} is installed; the sweep pins {QXELARATOR}")
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    directory.mkdir(parents=True, exist_ok=True)
+    (directory / f"family-{family}.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     return record
 
 
-def expected_coverage(rows: dict[str, list[cases.Row]], limit: int | None) -> dict[str, list[str]]:
-    out = {}
-    for sub_family, sources, _ in cases.SUB_FAMILIES:
-        ids = [f"{source}[{row['index']}]" for source in sources for row in rows[source]]
-        out[sub_family] = ids if limit is None else ids[:limit]
+def expected_replicas(family: str, census: dict[str, Any], limit: int | None) -> dict[str, list[Any]]:
+    """Per sub-family, (census entry, parameters, [(kind, prediction)]) of every replica, from the census alone."""
+    rows = cases.validate_census(census)
+    out: dict[str, list[Any]] = {}
+    if family == "a":
+        for sub_family, sources, _ in cases.SUB_FAMILIES:
+            entries: list[Any] = [
+                (f"{source}[{row['index']}]", {}, [("p_zero", row["p_selector_zero"])])
+                for source in sources
+                for row in rows[source]
+            ]
+            out[sub_family] = entries if limit is None else entries[:limit]
+        return out
+    for sub_family, specs in cases.de_specs(census, rows).items():
+        entries = []
+        for spec in specs:
+            checks = [("p_zero", spec["p_selector_zero"])]
+            if "p_parity_even_given_selector_zero" in spec:
+                checks.append(("parity_zero_given_zero", spec["p_parity_even_given_selector_zero"]))
+            entries.append((spec["census"], {key: spec[key] for key in PARAMS if key in spec}, checks))
+        out[sub_family] = entries if limit is None else entries[:limit]
     return out
 
 
 def replay(record: dict[str, Any], bind: bool = False) -> dict[str, Any]:
     """Every verdict of a sweep record re-derived from its counts and the census; raises on a difference."""
-    if record.get("schema") != SCHEMA:
-        raise ValueError(f"record schema {record.get('schema')!r}, expected {SCHEMA}")
+    if record.get("schema") != SCHEMA or record.get("family") not in FAMILIES:
+        raise ValueError(f"record schema {record.get('schema')!r} or family {record.get('family')!r} is unknown")
     census_path = ROOT / record["census"]["path"]
     if hashlib.sha256(census_path.read_bytes()).hexdigest() != record["census"]["sha256"]:
         raise ValueError(f"{record['census']['path']} differs from the census the sweep ran against")
-    rows = cases.validate_census(cases.load_census(census_path))
-    by_id = {f"{source}[{row['index']}]": row for source, source_rows in rows.items() for row in source_rows}
+    census = cases.load_census(census_path)
     shots, limit = record["shots"], record["limit"]
     if (shots, record["z_limit"], record["base_seed"]) != (SHOTS, Z_LIMIT, BASE_SEED):
         raise ValueError("record shots, z_limit or base seed differ from the sweep's")
-    covered: dict[str, list[str]] = {}
+    covered: dict[str, list[Any]] = {}
     for index, circuit in enumerate(record["circuits"]):
         name = circuit["file"]
         if circuit["seed"] != BASE_SEED + index:
             raise ValueError(f"{name}: seed {circuit['seed']} breaks the seed rule")
-        histogram = circuit["selector_counts"]
-        width = len(circuit["replicas"])
+        histogram, width = circuit["counts"], len(circuit["readout_qubits"])
         if sum(histogram.values()) != shots or any(
             len(key) != width or set(key) - {"0", "1"} or type(count) is not int or count < 0
             for key, count in histogram.items()
         ):
-            raise ValueError(f"{name}: selector_counts do not hold {shots} shots over {width} selector bits")
-        if [r["selector"] for r in circuit["replicas"]] != circuit["selectors"] or len(
-            set(circuit["selectors"])
-        ) != width:
-            raise ValueError(f"{name}: replica selectors differ from the circuit's distinct selector list")
-        for slot, replica in enumerate(circuit["replicas"]):
-            row = by_id.get(replica["census"])
-            if replica["slot"] != slot or row is None or row["p_selector_zero"] != replica["p_selector_zero"]:
-                raise ValueError(f"{name} slot {slot}: prediction differs from census {replica['census']}")
-            covered.setdefault(circuit["sub_family"], []).append(replica["census"])
-        rejudged = judge({k: v for k, v in circuit.items() if k != "verdict"}, shots)
-        if rejudged != circuit:
-            raise ValueError(f"{name}: recorded selector-0 counts, z or verdicts differ from the counts")
-    if covered != expected_coverage(rows, limit):
-        raise ValueError("record replicas do not cover each sub-family's census rows once, in series order")
+            raise ValueError(f"{name}: counts do not hold {shots} shots over {width} readout bits")
+        replicas = circuit["replicas"]
+        if readout_qubits(replicas) != circuit["readout_qubits"]:
+            raise ValueError(f"{name}: readout qubits differ from the replicas' checks")
+        selectors = [r["checks"][0]["qubits"][0] for r in replicas]
+        if len(set(selectors)) != len(selectors):
+            raise ValueError(f"{name}: one selector serves two replicas")
+        for slot, replica in enumerate(replicas):
+            if replica["slot"] != slot:
+                raise ValueError(f"{name}: replica slots out of order")
+            covered.setdefault(circuit["sub_family"], []).append(
+                (replica["census"], replica["params"], [(c["kind"], c["prediction"]) for c in replica["checks"]])
+            )
+        if judge(bare(circuit)) != circuit:
+            raise ValueError(f"{name}: recorded counts, z or verdicts differ from the counts")
+    if covered != expected_replicas(record["family"], census, limit):
+        raise ValueError("record replicas do not match each sub-family's census entries and predictions in order")
     if summarize(record["circuits"]) != record["summary"]:
         raise ValueError("record summary differs from its circuits")
     if bind:
-        regenerated = family_circuits(limit)
+        regenerated = family_circuits(record["family"], limit)
         if [c["file"] for c in regenerated] != [c["file"] for c in record["circuits"]]:
             raise ValueError("regenerated circuit files differ from the record")
         for new, old in zip(regenerated, record["circuits"], strict=True):
             if hashlib.sha256(new["text"].encode()).hexdigest() != old["sha256"]:
                 raise ValueError(f"{old['file']}: regenerated bytes differ from the swept circuit")
-            if [r["selector"] for r in new["replicas"]] != old["selectors"]:
-                raise ValueError(f"{old['file']}: regenerated selectors differ from the record")
+            if new["replicas"] != bare(old)["replicas"]:
+                raise ValueError(f"{old['file']}: regenerated replica checks differ from the record")
     return record["summary"]
 
 
@@ -297,7 +400,7 @@ def measured(text: str) -> str:
 
 
 def emulate_cases(directories: list[Path]) -> dict[str, Any]:
-    """qxelarator runs of retained case circuits, judged replica by replica, and of their readout pairs."""
+    """qxelarator runs of retained case circuits, judged check by check, and of their readout pairs."""
     jobs = []
     for directory in directories:
         for manifest_path in sorted(directory.rglob("cases.json")):
@@ -315,7 +418,7 @@ def emulate_cases(directories: list[Path]) -> dict[str, Any]:
     )
     results = []
     for (path, row, _, shots), outcome in zip(jobs, outcomes, strict=True):
-        checks: list[dict[str, Any]] = []
+        checks: list[Check] = []
         if "expected_leftmost" in row:
             leftmost = {key[::-1]: count for key, count in outcome.items()}
             stray = sum(count for key, count in leftmost.items() if key not in row["expected_leftmost"])
@@ -333,11 +436,7 @@ def emulate_cases(directories: list[Path]) -> dict[str, Any]:
             for kind, qubits, want in cases.replica_checks(replica):
                 if kind == "cz_count":
                     continue
-                if kind == "p_zero":
-                    n, k = shots, sum(c for key, c in outcome.items() if bit(key, qubits[0]) == "0")
-                else:
-                    post = {key: c for key, c in outcome.items() if bit(key, qubits[0]) == "0"}
-                    n, k = sum(post.values()), sum(c for key, c in post.items() if bit(key, qubits[1]) == "0")
+                k, n = count_check(kind, qubit_bits(qubits), outcome)
                 result, z = verdict(want, k, n)
                 checks.append(
                     {"slot": replica["slot"], "check": kind, "qubits": list(qubits), "prediction": want,
@@ -358,40 +457,68 @@ def emulate_cases(directories: list[Path]) -> dict[str, Any]:
 # ---------------------------------------------------------------- self-test
 
 
-def synthetic_record() -> dict[str, Any]:
-    """A complete record whose counts follow the census predictions, packed as series('a', 'qx') packs."""
+def synthetic_shots(replica: dict[str, Any]) -> list[str]:
+    """Per-shot readout bits of one replica whose counts meet its predictions; non-deterministic ones off by -24."""
+    checks = {c["kind"]: c for c in replica["checks"]}
+    p = Fraction(checks["p_zero"]["prediction"])
+    zeros = int(p * SHOTS) if p in (0, 1) else int(p * SHOTS) - 24 + 7 * replica["slot"]
+    width = len(readout_qubits([replica]))
+    parity = checks.get("parity_zero_given_zero")
+    even = zeros
+    if parity is not None:
+        q = Fraction(parity["prediction"])
+        even = int(q * zeros) if q in (0, 1) else int(q * zeros) - 8
+    shots = []
+    for shot in range(SHOTS):
+        selector = "0" if shot < zeros else "1"
+        data = "0" * (width - 1) if shot < even or shot >= zeros else "1" + "0" * (width - 2)
+        shots.append(selector + data)
+    return shots
+
+
+def synthetic_record(family: str) -> dict[str, Any]:
+    """A complete record of one family whose counts follow the census predictions, packed as its series packs."""
     census = cases.load_census()
     rows = cases.validate_census(census)
-    circuits: list[dict[str, Any]] = []
-    batch = 0
-    for sub_family, sources, encoding in cases.SUB_FAMILIES:
-        members = [(encoding, row) for source in sources for row in rows[source]]
-        for number, group in enumerate(cases.pack(members, cases.WIDTH[encoding]), start=1):
-            replicas = [
-                {"slot": slot, "census": f"{row['source']}[{row['index']}]", "p_selector_zero": row["p_selector_zero"],
-                 "selector": cases.replica_roles(enc, place)["selector"]}
-                for slot, ((enc, row), place) in enumerate(group)
-            ]  # fmt: skip
-            # Shot s reads selector 0 on slot r while s < zeros(r); P = 1/2 replicas read 1000 + 7 r zeros.
-            zeros = [{"0": 0, "1": SHOTS}.get(r["p_selector_zero"], 1000 + 7 * r["slot"]) for r in replicas]
-            histogram: dict[str, int] = {}
-            for shot in range(SHOTS):
-                key = "".join("0" if shot < z else "1" for z in zeros)
-                histogram[key] = histogram.get(key, 0) + 1
-            row = {
-                "file": f"batch-{batch:03d}/{sub_family}-{number:03d}.cq",
-                "sub_family": sub_family,
-                "sha256": hashlib.sha256(f"{sub_family}-{number}".encode()).hexdigest(),
-                "seed": BASE_SEED + len(circuits),
-                "selectors": [r["selector"] for r in replicas],
-                "selector_counts": dict(sorted(histogram.items())),
-                "replicas": replicas,
-            }
-            circuits.append(judge(row, SHOTS))
-            batch += 1
+    groups: list[tuple[str, list[dict[str, Any]]]] = []
+    if family == "a":
+        for sub_family, sources, encoding in cases.SUB_FAMILIES:
+            members = [(encoding, row) for source in sources for row in rows[source]]
+            for group in cases.pack(members, cases.WIDTH[encoding]):
+                groups.append(
+                    (
+                        sub_family,
+                        [cases.replica_record(s, enc, row, place) for s, ((enc, row), place) in enumerate(group)],
+                    )
+                )
+    else:
+        for sub_family, specs in cases.de_specs(census, rows).items():
+            for group in cases.pack(specs, cases.de_width(sub_family)):
+                groups.append(
+                    (sub_family, [{"slot": s, **spec, "roles": cases.de_roles(sub_family, place)}
+                                  for s, (spec, place) in enumerate(group)])
+                )  # fmt: skip
+    circuits = []
+    for index, (sub_family, manifest_replicas) in enumerate(groups):
+        replicas = [replica_entry(r) for r in manifest_replicas]
+        per_replica = [synthetic_shots(r) for r in replicas]
+        histogram: dict[str, int] = {}
+        for shot in range(SHOTS):
+            key = "".join(shots[shot] for shots in per_replica)
+            histogram[key] = histogram.get(key, 0) + 1
+        row = {
+            "file": f"batch-{index:03d}/{sub_family}.cq",
+            "sub_family": sub_family,
+            "sha256": hashlib.sha256(f"{family}-{index}".encode()).hexdigest(),
+            "seed": BASE_SEED + index,
+            "readout_qubits": readout_qubits(replicas),
+            "counts": dict(sorted(histogram.items())),
+            "replicas": replicas,
+        }
+        circuits.append(judge(row))
     return {
         "schema": SCHEMA,
-        "family": "a",
+        "family": family,
         "census": cases.census_record(cases.CENSUS, census),
         "shots": SHOTS,
         "base_seed": BASE_SEED,
@@ -402,14 +529,26 @@ def synthetic_record() -> dict[str, Any]:
     }
 
 
-def self_test() -> None:
-    record = synthetic_record()
+def move_shot(record: dict[str, Any], circuit_index: int, position: int, to: str | None = None) -> None:
+    """Move one shot of a circuit to a key whose readout bit at `position` reads `to` (flipped when None)."""
+    circuit = record["circuits"][circuit_index]
+    source = next(k for k in sorted(circuit["counts"]) if k[position] != to)
+    to = to if to is not None else "1" if source[position] == "0" else "0"
+    target = source[:position] + to + source[position + 1 :]
+    circuit["counts"][source] -= 1
+    circuit["counts"][target] = circuit["counts"].get(target, 0) + 1
+    circuit["counts"] = {k: v for k, v in sorted(circuit["counts"].items()) if v}
+
+
+def family_mutations(family: str, circuits: int) -> int:
+    """Replay a synthetic record of one family and count the mutations its replay rejects."""
+    record = synthetic_record(family)
     summary = replay(record)
-    if summary["verdict"] != "pass" or summary["circuits"] != 848:
-        raise AssertionError(f"the synthetic record replays as {summary}")
+    if summary["verdict"] != "pass" or summary["circuits"] != circuits:
+        raise AssertionError(f"the synthetic family {family} record replays as {summary}")
     rejected = 0
 
-    def reject(label: str, mutate: Any) -> None:
+    def reject(label: str, mutate: Callable[[dict[str, Any]], Any]) -> None:
         nonlocal rejected
         mutated = copy.deepcopy(record)
         mutate(mutated)
@@ -418,88 +557,100 @@ def self_test() -> None:
         except ValueError:
             rejected += 1
             return
-        raise AssertionError(f"{label} was accepted")
+        raise AssertionError(f"family {family}: {label} was accepted")
 
-    dark = next(
-        (n, s)
-        for n, c in enumerate(record["circuits"])
-        for s, r in enumerate(c["replicas"])
-        if r["p_selector_zero"] == "0"
-    )
-    half = next(
-        (n, s)
-        for n, c in enumerate(record["circuits"])
-        for s, r in enumerate(c["replicas"])
-        if r["p_selector_zero"] == "1/2"
-    )
+    def first(prediction: str) -> tuple[int, int, int]:
+        """(circuit, readout position of the selector, slot) of the first replica predicting P(selector = 0)."""
+        return next(
+            (n, c["readout_qubits"].index(r["checks"][0]["qubits"][0]), s)
+            for n, c in enumerate(record["circuits"])
+            for s, r in enumerate(c["replicas"])
+            if r["checks"][0]["prediction"] == prediction
+        )
 
-    def move_shot(record_: dict[str, Any], position: tuple[int, int], to: str) -> None:
-        """Move one shot of the circuit to a key whose bit at the replica's slot reads `to`."""
-        circuit = record_["circuits"][position[0]]
-        source = next(k for k in sorted(circuit["selector_counts"]) if k[position[1]] != to)
-        target = source[: position[1]] + to + source[position[1] + 1 :]
-        circuit["selector_counts"][source] -= 1
-        circuit["selector_counts"][target] = circuit["selector_counts"].get(target, 0) + 1
-        circuit["selector_counts"] = {k: v for k, v in sorted(circuit["selector_counts"].items()) if v}
+    dark, half = first("0"), first("1/2")
+    reject("one selector-0 shot on a P = 0 replica", lambda r: move_shot(r, dark[0], dark[1], "0"))
 
-    reject("one selector-0 shot on a P = 0 replica", lambda r: move_shot(r, dark, "0"))
-
-    def skew(record_: dict[str, Any]) -> None:
+    def skew(r: dict[str, Any]) -> None:
         for _ in range(200):
-            move_shot(record_, half, "0")
+            move_shot(r, half[0], half[1], "0")
 
     reject("a P = 1/2 replica pushed past the z limit", skew)
-    reject(
-        "a lost shot",
-        lambda r: r["circuits"][0]["selector_counts"].update(
-            {"11": r["circuits"][0]["selector_counts"].get("11", 0) - 1}
-        ),
-    )
+    reject("a lost shot", lambda r: r["circuits"][0]["counts"].update({next(iter(r["circuits"][0]["counts"])): 0}))
     reject("a broken seed", lambda r: r["circuits"][3].update({"seed": BASE_SEED}))
     reject(
-        "a changed prediction", lambda r: r["circuits"][dark[0]]["replicas"][dark[1]].update({"p_selector_zero": "1"})
+        "a changed prediction",
+        lambda r: r["circuits"][dark[0]]["replicas"][dark[2]]["checks"][0].update({"prediction": "1"}),
     )
     reject("a dropped circuit", lambda r: (r["circuits"].pop(), r.update({"summary": summarize(r["circuits"])})))
     reject("a changed census digest", lambda r: r["census"].update({"sha256": "0" * 64}))
     reject("an edited summary", lambda r: r["summary"].update({"verdict": "refuted"}))
+    if family == "de":
+        parity = next(
+            (n, c["readout_qubits"].index(r["checks"][1]["qubits"][1]))
+            for n, c in enumerate(record["circuits"])
+            for r in c["replicas"]
+            if len(r["checks"]) > 1
+            and r["checks"][1]["prediction"] in ("0", "1")
+            and r["checks"][0]["prediction"] == "1"
+        )
+        reject("one coherence shot of the wrong parity", lambda r: move_shot(r, parity[0], parity[1]))
 
-    # An honest record of a refutation replays and reports the refuted replica.
+        def swap_setting(r: dict[str, Any]) -> None:
+            replica = next(rep for c in r["circuits"] for rep in c["replicas"] if rep["params"].get("pauli"))
+            replica["params"]["pauli"] = "XXXX"
+
+        reject("a swapped coherence setting", swap_setting)
+    # An honest record of a refutation replays and reports the refuted check.
     honest = copy.deepcopy(record)
-    move_shot(honest, dark, "0")
-    honest["circuits"][dark[0]] = judge({k: v for k, v in honest["circuits"][dark[0]].items() if k != "verdict"}, SHOTS)
+    move_shot(honest, dark[0], dark[1], "0")
+    honest["circuits"][dark[0]] = judge(bare(honest["circuits"][dark[0]]))
     honest["summary"] = summarize(honest["circuits"])
     if replay(honest)["verdict"] != "refuted":
         raise AssertionError("an honest refuted record replays as passing")
-    for p, zeros, want in (("0", 0, "pass"), ("0", 1, "refuted"), ("1", SHOTS, "pass"), ("1/2", 1024, "pass")):
-        if verdict(p, zeros, SHOTS)[0] != want:
-            raise AssertionError(f"verdict({p}, {zeros}) is not {want}")
+    return rejected
+
+
+def self_test() -> None:
+    rejected = family_mutations("a", 848) + family_mutations("de", 149)
+    for p, zeros, outcome in (("0", 0, "pass"), ("0", 1, "refuted"), ("1", SHOTS, "pass"), ("1/2", 1024, "pass")):
+        if verdict(p, zeros, SHOTS)[0] != outcome:
+            raise AssertionError(f"verdict({p}, {zeros}) is not {outcome}")
     edge = round(SHOTS / 2 + Z_LIMIT * math.sqrt(SHOTS / 4))
     if verdict("1/2", edge, SHOTS)[0] != "refuted" or verdict("1/2", edge - 2, SHOTS)[0] != "pass":
         raise AssertionError("the z limit does not separate the P = 1/2 verdicts")
-    print(f"box-kite QX sweep: synthetic 848-circuit record replays; {rejected} mutations rejected")
+    # Selector-0 keys 000 (3, data 00 even), 010 (1, odd), 011 (2, even): k = 5 of n = 6.
+    if count_check("parity_zero_given_zero", list, {"000": 3, "010": 1, "011": 2, "100": 5}) != (5, 6):
+        raise AssertionError("the parity count disagrees with its definition")
+    print(f"box-kite QX sweep: synthetic records of families a and de replay; {rejected} mutations rejected")
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
-    mode.add_argument("--run", type=Path, metavar="OUT")
+    mode.add_argument("--run", type=Path, metavar="DIR")
     mode.add_argument("--replay", type=Path, metavar="RECORD")
     mode.add_argument("--emulate", type=Path, nargs="+", metavar="CASE_DIR")
     mode.add_argument("--self-test", action="store_true")
+    parser.add_argument("--family", nargs="+", choices=FAMILIES, default=list(FAMILIES), help="with --run")
     parser.add_argument("--limit", type=int, help="with --run: the first N replicas of each sub-family")
     parser.add_argument("--bind", action="store_true", help="with --replay: regenerate and compare circuit bytes")
-    parser.add_argument("--require-pass", action="store_true", help="with --replay: fail on a refuted replica")
+    parser.add_argument("--require-pass", action="store_true", help="with --replay: fail on a refuted check")
     parser.add_argument("--out", type=Path, help="with --emulate: write the emulation record here")
     args = parser.parse_args()
     if args.self_test:
         self_test()
         return 0
     if args.run:
-        summary = run(args.run, args.limit)["summary"]
-        print(
-            f"box-kite QX sweep: {summary['circuits']} circuits, {summary['replicas']} replicas, {summary['verdict']}"
-        )
-        return 0 if summary["verdict"] == "pass" else 1
+        failed = False
+        for family in args.family:
+            summary = run(args.run, family, args.limit)["summary"]
+            failed |= summary["verdict"] != "pass"
+            print(
+                f"box-kite QX sweep {family}: {summary['circuits']} circuits, {summary['replicas']} replicas, "
+                f"{summary['checks']} checks, {summary['verdict']}"
+            )
+        return 1 if failed else 0
     if args.emulate:
         record = emulate_cases([path.resolve() for path in args.emulate])
         text = json.dumps(record, indent=1) + "\n"
@@ -516,7 +667,7 @@ def main() -> int:
         raise SystemExit(f"{args.replay}: {error}") from error
     print(
         f"box-kite QX sweep replay: {summary['circuits']} circuits, {summary['replicas']} replicas, "
-        f"max |z| {summary['max_abs_z']}, {summary['verdict']}"
+        f"{summary['checks']} checks, max |z| {summary['max_abs_z']}, {summary['verdict']}"
     )
     return 1 if args.require_pass and summary["verdict"] != "pass" else 0
 

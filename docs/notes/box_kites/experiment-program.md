@@ -278,9 +278,17 @@ falsifier fixed before the run, and the backends.
   elsewhere; the uniform baseline over all 16^3 triples is 25/256 with
   P(c = 1) = 231/512 (root AGENTS.md).
 - Observable: associator-sign interference witness <Z_c> after the final H.
-- Backends: remote QX runs smoke representatives (one circuit per
-  sub-family d1-d3); the full sets run on a Kaggle CPU kernel under
-  qxelarator, as family (a) does. Neither is generated yet (section 6).
+- Backends: remote QX runs smoke representatives, the first circuit of
+  each sub-family (results/quantum_inspire/cases/box_kite_de_qx/, with the
+  first (e) circuit: 4 circuits, 7 replicas, 2 batches); the full sets run
+  on a Kaggle CPU kernel under qxelarator (`box_kite_qx_sweep.py --run`,
+  family de: 149 circuits, 281 replicas), as family (a) does.
+- Construction: controlled W_ij is designs' L_{e_j}, L_{e_i} and
+  L_{e_{i^j}}^dagger as controlled sign diagonals (signs read from
+  `designs.left_mult_gate`'s operator) and CNOTs, with the sign of
+  e_i e_j as a Z on the control; d3 applies the diagonal of W_ij over the
+  (j, k) registers, assembled from the same operators. Every emitted circuit
+  reproduces its census value by state vector before emission.
 - Circuits and register counts:
   - d1, fixed triple, controlled-W: 4 data + 1 control; per kite the 5
     constant-sign exemplars plus one omit-last-block control (42 replicas).
@@ -313,11 +321,13 @@ falsifier fixed before the run, and the backends.
   (`census:experiment_counts.full_coherence_settings_by_kite`), plus one all-Z
   setting for the label populations. In the reduced encoding the two labels
   differ in d alone: settings X and Y on d, plus Z.
-- Circuits: full Design B per kite on one bright edge row and one strut row,
-  52 + 52 settings plus 14 all-Z settings, on a Kaggle CPU kernel under
-  qxelarator, with one kite's bright edge and strut settings as the remote QX
-  smoke representatives (not generated yet, section 6); the reduced form on
-  Tuna-17 is the coherence stage of (g).
+- Circuits: full Design B per kite on the first bright edge row and the
+  first strut row at (+, +), 52 + 52 settings plus 14 all-Z settings (118
+  replicas, 59 circuits), on a Kaggle CPU kernel under qxelarator, with the
+  first circuit (two kite 1 edge settings) as the remote QX smoke
+  representative; the reduced form on Tuna-17 is the coherence stage of (g).
+  Each setting reads P(data parity even | selector = 0) = (1 + <P>)/2, with
+  <P> computed from the row's census coefficients and labels.
 - Predictions: reduced <X_d | a = 0> = 2 c0 c1 / (c0^2 + c1^2) = +-1 on the
   bright edge, <Y_d> = 0, <Z_d> = 0; on the strut <X_d> = 0 and <Z_d> = +-1.
 - Falsifier: Kaggle sweep and QX smoke, a reconstructed coherence off the
@@ -349,25 +359,30 @@ passing circuit, each with a deterministic outcome read with q0 leftmost:
 
 The API flags the Ry emulator `is_hardware`, so `qi_platform.py submit`
 holds its batches to three circuits. The retained construct probe
-(`scripts/qi_ry_probe_cases.py`, results/quantum_inspire/cases/ry_probe/,
-9 circuits in 3 batches at 1024 shots) already covers R0 (x-baseline), R3
-(x-bitreg), R7 (x-measure), H, R5 (x-cnot) and R6 (rz-x), and adds H with
-CNOT, with and without a bit register, and an `INIT` block. The ladder
-therefore adds R1, R2, R8 and R9, 4 circuits in 2 batches, after the probe
-runs. The first factor whose circuit fails is the cause; if every
-single-factor circuit passes and R8 fails, a further batch runs the pairwise
-combinations of {width 9, comments, bit register, H, CNOT}. Falsifier for
-the documented cause: R7 completing. Uncertainty: low on which factor; the
-emulator's noise model is unpublished.
+(`scripts/qi_ry_probe_cases.py`, 9 circuits in 3 batches at 1024 shots,
+runs 2026-10-17T034952Z-ry_probe-batch-00..02,
+results/quantum_inspire/ry_probe_analysis.json) covers R0 (x-baseline), R3
+(x-bitreg), R7 (x-measure), R5 (x-cnot), R6 (rz-x) and a single H, and adds
+H with CNOT, with and without a bit register, and an `INIT` block. It
+completed X, H, CNOT and Rz and failed every program carrying a bit
+register ("error interpreting cQASM script", the failed teleport.cq's
+message) or a measure statement ("not in the primitive gate set"), so R3 is
+the cause, R7 refutes the documented cause the other way round, and R8's
+replication adds nothing. The ladder residue is therefore R1, R2 and R9, one
+batch of 3 circuits (results/quantum_inspire/cases/box_kite_ry_ladder/;
+R9 is teleport.cq read by its sha256 with the bit register and comment
+lines removed, predicted by state vector). Uncertainty: low on which
+factor; the emulator's noise model is unpublished.
 
 **Box-kite smoke subset** (only after the diagnostic names an accepted
 dialect; no measure statements, every atom read at the end, q0 the leftmost
 character): the five reduced smoke replicas of (a) (edge dark, edge bright,
-strut and the two sign variants), four 2-atom replicas per 9-atom circuit
-(2 circuits); the T1 edge and its twist at y_sign +-1 (4 replicas, 1
-circuit); and, if H and CNOT pass, the full Design B (1,10) dark, bright and
-fixture witnesses, one per circuit (3 circuits): 6 circuits in 2 batches at
-1024 shots, not generated yet. The ideal predictions come from the Kaggle
+strut and the two sign variants) and the T1 edge and its twist at y_sign
++-1, four 2-atom replicas per `qubit[9]` circuit (3 circuits), and the full
+Design B (1,10) dark, bright and fixture witnesses, one per circuit (3
+circuits): 12 replicas, 6 circuits in 2 batches at 1024 shots
+(results/quantum_inspire/cases/box_kite_ry_smoke/), which run only after R1
+passes. The ideal predictions come from the Kaggle
 sweep, so the Ry run measures only the emulator. Gates come from the Ry set
 X, Z, Rx, Rz, T, S, H, CNOT; Sdag is Rz(-pi/2) and a controlled-Y is S,
 CNOT, Sdag.
@@ -547,27 +562,30 @@ family, from `series("a", "qx")`.
 | Substrate | Set | Replicas | Circuits | Batches | Shots per circuit | Shots |
 |---|---|---|---|---|---|---|
 | Kaggle CPU, qxelarator | (a) exhaustive (1010 replicas at P = 1/2) | 2354 | 848 | one kernel | 2048 | 1736704 |
+| Kaggle CPU, qxelarator | (d1)-(d3) and (e) exhaustive | 281 | 149 | the same kernel | 2048 | 305152 |
 | remote QX | (a) smoke set | 15 | 6 | 2 | 2048 | 12288 |
+| remote QX | (d1)-(d3) and (e) smoke representatives | 7 | 4 | 2 | 2048 | 8192 |
 | remote QX | Tuna-17 witness twins | 27 | 10 | 4 | 2048 | 20480 |
 | Ry | construct probe (retained `ry_probe`) | -- | 9 | 3 | 1024 | 9216 |
-| Ry | ladder residue R1, R2, R8, R9 (not generated) | -- | 4 | 2 | 1024 | 4096 |
-| Ry | box-kite smoke subset (not generated) | 12 | 6 | 2 | 1024 | 6144 |
+| Ry | ladder residue R1, R2, R9 | -- | 3 | 1 | 1024 | 3072 |
+| Ry | box-kite smoke subset | 12 | 6 | 2 | 1024 | 6144 |
 | Tuna-17 | T0 depth ladder | 9 | 9 (3 witness, 6 readout) | 3 | 16384 | 147456 |
 | Tuna-17 | T1 classification and twist | 6 | 6 (2 witness) | 2 | 4096 | 24576 |
 | Tuna-17 | coherence | 6 | 6 (2 witness) | 2 | 4096 | 24576 |
 | Tuna-17 | walk | 6 | 9 (3 witness) | 3 | 4096 | 36864 |
 | Tuna-17 | total | 27 | 30 jobs (10 witness, 20 readout) | 10 | | 233472 |
 
-Families (b) and (c) need no circuits beyond (a); (d1)-(d3) and (e) are not
-generated, so their Kaggle sweep and QX smoke rows wait for the generator
-(section 6). qxelarator ran 0.14 to 0.23 s per family (a) circuit at 2048
-shots on the build host, so the sweep is minutes of CPU on a Kaggle kernel.
-Tuna-17 executes 233472 shots, 140 to 219 s at the measured 0.60-0.94 ms per
-shot, about 3 minutes, each job inside the 300 s limit; with queue,
-collection and the ten 120 s pauses the series takes about 45 minutes. QX
-2048 shots per circuit is its maximum and Ry 1024 its maximum. Quantum
-Inspire records no charge for this account; the limits are structural
-(catalogue in docs/evidence/quantum_inspire/catalogue.json).
+Families (b) and (c) need no circuits beyond (a). qxelarator re-simulates
+every shot: on the build host a family (a) circuit took 0.14 to 0.23 s at
+2048 shots, while a dense d2 or d3 circuit took about 215 s, so the de
+family costs about 15000 CPU-seconds and the whole sweep about an hour on a
+4-CPU Kaggle kernel. Tuna-17 executes 233472 shots,
+140 to 219 s at the measured 0.60-0.94 ms per shot, about 3 minutes, each
+job inside the 300 s limit; with queue, collection and the ten 120 s pauses
+the series takes about 45 minutes. QX 2048 shots per circuit is its maximum
+and Ry 1024 its maximum. Quantum Inspire records no charge for this account;
+the limits are structural (catalogue in
+docs/evidence/quantum_inspire/catalogue.json).
 
 ## 6. Generators
 
@@ -595,19 +613,23 @@ Built:
 `scripts/box_kite_qx_sweep.py` runs the exhaustive family on qxelarator
 (`--run`), replays a record from its counts and the census (`--replay`,
 `--bind`, `--require-pass`), runs retained case directories locally
-(`--emulate`), and self-tests on a synthetic record (gate core-422). A
+(`--emulate`), and self-tests on synthetic records of both families (gate
+core-422). A
 Kaggle CPU kernel installs qxelarator through the `qx-emulator` pin group of
 `scripts/kaggle_run.py`; qxelarator 0.10.0 ships cp313 wheels only, so the
 sweep runs on the image's Python and never under `--ci-env`, and the CI
 replay binds the record to CI's own regeneration instead.
 
-Not built: `controlled_w_fixed_pair(i, j)` and `controlled_w_fixed_i(i)`
-(from `designs.left_mult_gate` and `left_mult_adjoint_gate`, with the sign set
-before control as in `scripts/algebra_circuit_fixtures.py`) for (d1)-(d3);
-`coherence_settings(row, encoding)` for the full-encoding 2^w rule of (e);
-the ry dialect, the ladder residue and the Ry smoke subset; and `analyze`
-with its replay for the Tuna-17 stages (C(n) and r, D, twist pairs,
-coherences, <Z_c>).
+Also built: `de_specs` (the (d1)-(d3) and (e) replicas with their census
+predictions, standard library only, which the sweep replay reuses),
+`controlled_w` and `controlled_block` (designs' left multiplications as
+controlled sign diagonals and CNOTs, the sign set before control as in
+`scripts/algebra_circuit_fixtures.py`), `pauli_expectation` for the 2^w
+settings, `series_de()` and `de_smoke_series()`; the ry dialect with
+`lower_for_ry`, `ry_ladder()` and `ry_series()`.
+
+Not built: `analyze` with its replay for the Tuna-17 stages (C(n) and r,
+D, twist pairs, coherences, <Z_c>) and for the Ry runs.
 
 Reused unchanged: `qi_platform.py` (submit, collect, the three-circuit and
 one-queued-batch caps), `qi_zero_divisor_cases.py` (`header`,
@@ -623,10 +645,10 @@ passes), and the research-state registration of retained runs.
 | (a) full | `designs.lcu_witness`, `select_lcu.select_circuit`, `sparse_pair_prep` | `full_design_b`, `pack`, `emit` (qx) |
 | (a), (b), (c) reduced, (g) LCU stages | `qi_zero_divisor_cases.header`, `readout_circuits`, `catalogue_backends`, `qi_platform.py` | `reduced_lcu`, `reduced_cross_control`, `lower_for_tuna`, `twin`, `emit` (tuna) |
 | (b), (c) analysis | census.json rows and `kites[].twists` | `analyze` (not built) |
-| (d1)-(d3) | `designs.left_mult_gate`, `left_mult_adjoint_gate`, the controlled-block idiom of `algebra_circuit_fixtures.hadamard_test` | `controlled_w_fixed_pair`, `controlled_w_fixed_i` (not built) |
+| (d1)-(d3) | `designs.left_mult_gate`, the controlled-block idiom of `algebra_circuit_fixtures.hadamard_test` | `controlled_block`, `controlled_w`, `w_diagonal`, `de_logical` |
 | (d4) | the workspace control of `algebra_circuit_fixtures` | `associator_walk` |
-| (e) | the 2^w settings rule (root AGENTS.md) | `coherence_setting` (reduced); `coherence_settings` (full, not built) |
-| (f) | `qi_ry_probe_cases.py`, `qi_platform.py` submit and collect | `emit` (ry) and the ladder residue (not built) |
+| (e) | the 2^w settings rule (root AGENTS.md) | `coherence_setting` (reduced); `pauli_expectation`, `de_specs` (full) |
+| (f) | the retained `ry_probe` result, `qi_platform.py` submit and collect | `emit` (ry), `lower_for_ry`, `ry_ladder`, `ry_series` |
 
 **QX and Ry stop rules.** In the Kaggle sweep and on remote QX one shot
 violating a deterministic row stops that family's series until the circuit

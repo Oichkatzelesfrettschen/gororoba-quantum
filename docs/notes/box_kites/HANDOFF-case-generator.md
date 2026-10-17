@@ -2,9 +2,9 @@
 
 `scripts/box_kite_cases.py` generates, from
 `docs/evidence/box_kite_census/census.json`, the case directories of
-[experiment-program.md](experiment-program.md) sections 4(a) and 4(g), and
-`scripts/box_kite_qx_sweep.py` runs the exhaustive family (a) on qxelarator.
-Nothing has been submitted to any backend.
+[experiment-program.md](experiment-program.md) sections 4(a), (d), (e), (f)
+and (g), and `scripts/box_kite_qx_sweep.py` runs the exhaustive families on
+qxelarator. Nothing has been submitted to any backend.
 
 ## State
 
@@ -16,11 +16,17 @@ Nothing has been submitted to any backend.
 | box_kite_tuna_coherence | Tuna-17 | 2 | 6 (2 witness) | 6 | 4096 | 24576 |
 | box_kite_tuna_walk | Tuna-17 | 3 | 9 (3 witness) | 6 | 4096 | 36864 |
 | box_kite_tuna_twins_qx | QX | 4 | 10 | 27 | 2048 | 20480 |
+| box_kite_ry_ladder | Ry | 1 | 3 | -- | 1024 | 3072 |
+| box_kite_ry_smoke | Ry | 2 | 6 | 12 | 1024 | 6144 |
+| box_kite_de_qx (smoke representatives) | QX | 2 | 4 | 7 | 2048 | 8192 |
 
-The counts are `--summary` output. The exhaustive family (a), 848 circuits,
-2354 replicas (1010 at P = 1/2) in 284 batches, is generated in memory by
-`series("a", "qx")` and no longer retained as case files; its bytes equal
-the 1133 files the tree held before, which `git rm` removed.
+The counts are `--summary` output. The exhaustive families are generated in
+memory and not retained as case files: family a, `series("a", "qx")`, 848
+circuits, 2354 replicas (1010 at P = 1/2) in 284 batches, byte-identical to
+the 1133 files the tree held before, which `git rm` removed; family de,
+`series_de()`, 149 circuits and 281 replicas (d1 42, d2 105, d3 16, e 118)
+in 51 batches, each circuit checked by state vector against its census
+value.
 
 - Smoke selection: the first census row per `SMOKE_PATTERNS` predicate, with
   the predicate text in each replica's `selection` field. The x_sign = -1
@@ -32,10 +38,24 @@ the 1133 files the tree held before, which `git rm` removed.
   and the two walks plus the omit-last control, as program section 4(g)
   states. The twist (1,10)(4,15) of kite 3 to (4,10)(1,15) of kite 6 is
   `census:kites[2].twists[0]`; `check_twist` requires it.
+- Ry: the retained construct probe (results/quantum_inspire/ry_probe_analysis.json)
+  already names the cause of the failed program: any bit register fails,
+  and a measure statement fails compilation. The ladder residue is R1
+  (qubit[9]), R2 (comment line) and R9 (teleport.cq bare, read by its
+  sha256); R8 adds nothing and is not generated. The probe's single H is not
+  R4 (H H); R4 is not generated because H and its composition with CNOT
+  already completed. The Ry smoke subset declares qubit[9], so R1 gates it.
+- (d)/(e): controlled W_ij from designs' left multiplications as controlled
+  sign diagonals and CNOTs (the `.control()` form cost 306 CNOT per block,
+  this one about 90); d3 a 9-qubit diagonal over (j, k); (e) predictions
+  from census coefficients through `pauli_expectation`.
 - Kaggle: `scripts/kaggle_run.py` gains the `qx-emulator` pin group
-  (`qxelarator==0.10.0`). A locally built kernel (no push) bundles the entry,
-  its import closure, the three `--include` files and the kernel files in a
-  525124-byte run.py, below KERNEL_SOURCE_LIMIT (1000000).
+  (`qxelarator==0.10.0`). A locally built kernel (no push) bundles the
+  entry, its import closure, the three `--include` files and the kernel
+  files in a 525124-byte run.py, below KERNEL_SOURCE_LIMIT (1000000).
+- Gates core-420 (`--check`), core-421 (`--self-test`) and core-422 (sweep
+  `--self-test`), each in normal and optimized mode, from the range the
+  orchestrator assigned (core-420 to core-429).
 
 ## Checks
 
@@ -45,21 +65,25 @@ the 1133 files the tree held before, which `git rm` removed.
 | `GOROROBA_WORKERS=1 "$PYTHON" -B -W error scripts/box_kite_cases.py --check ...` (previous generator) | `1133 files match their regeneration`, 17.2 s |
 | `"$PYTHON" -B -O -W error scripts/check_qi_platform_retention.py` (previous cases) | `Ran 54 tests` / `OK`; 345 batch subtests, 284 of them box_kite_a_qx |
 | `series("a", "qx")` against the 1133 retained files, under `$PYTHON` and `$QI_PYTHON` (qiskit 2.3.1) | 0 mismatches each |
-| `--check results/quantum_inspire/cases`, normal, `-O`, `GOROROBA_WORKERS=1` | `68 files match their regeneration` |
-| `--self-test`, normal and `-O` | `... contracts pass; 36 mutations rejected` |
+| `series_de()` (all 149 circuits through `verify_text`) | passes, 26 s on 12 workers |
+| `--check results/quantum_inspire/cases`, normal, `-O`, `GOROROBA_WORKERS=1` | `89 files match their regeneration` |
+| `--self-test`, normal and `-O` | `... contracts pass; 44 mutations rejected` |
 | `"$PYTHON" -B -W error scripts/check_qi_platform_retention.py` | `Ran 54 tests` / `OK` |
 | `qi_zero_divisor_cases.py --check` and `--self-test` (core-348, after `readout_circuits` was factored out) | `18 files match`; `17 mutations rejected` |
-| `"$QI_PYTHON" scripts/qi_toolchain_check.py`, then `"$PYTHON" -B -W error scripts/qi_toolchain_check.py --check` (core-368) | `214 circuits, 0 failing, 15 with a compiled gate sequence change`; `214 circuits match` |
-| toolchain record, box-kite circuits | every Tuna and twin circuit keeps its gate sequence; the 4 full Design B smoke circuits differ only in Rz printed at 8 digits |
-| `box_kite_qx_sweep.py --self-test`, normal and `-O` (core-422) | `synthetic 848-circuit record replays; 8 mutations rejected` |
-| `"$QI_PYTHON" -B -W error scripts/box_kite_qx_sweep.py --run SCRATCH --limit 12` | `28 circuits, 72 replicas, pass` in 9.0 s; record 25992 bytes |
-| `"$PYTHON" -B -W error scripts/box_kite_qx_sweep.py --replay SCRATCH --bind --require-pass` | `28 circuits, 72 replicas, max abs z 2.740039, pass` |
-| `"$QI_PYTHON" -B -W error scripts/box_kite_qx_sweep.py --emulate` over the six directories (identical Tuna bytes, twins, smoke set) | `46 circuits, 97 checks, pass`; readout-0 all 0, readout-1 all 1, every deterministic replica exact |
+| `"$QI_PYTHON" scripts/qi_toolchain_check.py`, then `"$PYTHON" -B -W error scripts/qi_toolchain_check.py --check` (core-368) | `227 circuits, 0 failing, 27 with a compiled gate sequence change`; `227 circuits match` |
+| toolchain record, box-kite circuits | every Tuna and twin circuit keeps its gate sequence; the QX full Design B and (d)/(e) circuits differ only in Rz printed at 8 digits; the Ry circuits change under the Ry decomposition passes, as the retained probe's do |
+| `box_kite_qx_sweep.py --self-test`, normal and `-O` (core-422) | `synthetic records of families a and de replay; 18 mutations rejected` |
+| `"$QI_PYTHON" -B -W error scripts/box_kite_qx_sweep.py --run SCRATCH --family a --limit 12` | `28 circuits, 72 replicas, 72 checks, pass` |
+| `"$PYTHON" -B -W error scripts/box_kite_qx_sweep.py --replay SCRATCH/family-a.json --bind --require-pass` | `28 circuits, 72 replicas, 72 checks, max abs z 2.740039, pass` |
+| `"$QI_PYTHON" ... --run SCRATCH --family de --limit 2`, then `"$PYTHON" ... --replay SCRATCH/family-de.json --bind --require-pass` | `5 circuits, 8 replicas, 10 checks, pass` in 652.5 s; replay `max abs z 2.43068, pass` |
+| qxelarator time per circuit at 256 shots | d1 0.09 s, d2 10.9 s, d3 13.9 s, e 0.05 s: it re-simulates every shot; at 2048 shots the 3 dense circuits of the limited run took about 215 s each |
+| `"$QI_PYTHON" -B -W error scripts/box_kite_qx_sweep.py --emulate` over the Tuna, twin and QX smoke directories (identical Tuna bytes) | `46 circuits, 97 checks, pass`; readout-0 all 0, readout-1 all 1, every deterministic replica exact |
+| `--emulate` over box_kite_ry_ladder and box_kite_ry_smoke (measure appended for qxelarator only) | `9 circuits, 33 checks, pass` |
 | `kaggle_run.py self-test` | passes |
-| `uvx ruff@0.14.11 check` and `format --check` (core-000, core-001, core-002) | `All checks passed!`; `213 files already formatted` |
+| `uvx ruff@0.14.11 check` and `format --check` (core-000, core-001, core-002) | `All checks passed!`; every file formatted |
 | `mypy` on box_kite_cases.py, box_kite_qx_sweep.py, qi_zero_divisor_cases.py | `Success: no issues found` |
-| core-039 (full mypy command) on this host | 25 errors, 24 in scripts/cd_phase_degree.py and 1 at scripts/kaggle_run.py:427 (requests stubs absent on the host); both files' lines are unchanged from main |
-| full Kaggle sweep (848 circuits) | not run: the exhaustive sweep runs on a Kaggle CPU kernel, which the orchestrator pushes |
+| core-039 (full mypy command) on this host | 25 errors, 24 in scripts/cd_phase_degree.py and 1 at scripts/kaggle_run.py:427 (requests stubs absent on the host); both files' lines are unchanged from main, so CI is the authority for this gate |
+| full Kaggle sweep (both families) | not run: it runs on a Kaggle CPU kernel, which the orchestrator pushes |
 
 Under `-W error` qxelarator 0.10.0 crashes the interpreter at shutdown
 (SWIG builtin types without `__module__`); box_kite_qx_sweep.py filters
@@ -76,27 +100,30 @@ qxelarator ships cp313 wheels only:
     --include docs/evidence/box_kite_census/census.json \
     --include docs/evidence/quantum_inspire/catalogue.json \
     --include results/quantum_inspire/coupler_zz_tuna_17_analysis.json \
-    scripts/box_kite_qx_sweep.py -- --run docs/evidence/box_kite_qx_sweep/record.json
+    scripts/box_kite_qx_sweep.py -- --run docs/evidence/box_kite_qx_sweep
 ```
 
 The catalogue and the coupler analysis are read at import by
-box_kite_cases.py and qi_zero_divisor_cases.py. After `collect`, retain the
-record at docs/evidence/box_kite_qx_sweep/record.json and add the gate
-(the orchestrator assigns core-420 to core-429 to this work; core-423 is the next free one):
+box_kite_cases.py and qi_zero_divisor_cases.py. Expected cost: family a
+about 0.2 s per circuit, family de about 15000 CPU-seconds (69 dense d2 and
+d3 circuits at about 215 s each), so about an hour on the kernel's 4 CPUs,
+inside the CPU session limit. After
+`collect`, retain docs/evidence/box_kite_qx_sweep/family-a.json and
+family-de.json and add the replay gate (core-423, the next number of the
+assigned range):
 
 ```sh
-"$PYTHON" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/record.json --bind --require-pass && "$PYTHON" -B -O -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/record.json --bind --require-pass
+"$PYTHON" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a.json --bind --require-pass && "$PYTHON" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-de.json --bind --require-pass && "$PYTHON" -B -O -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a.json --bind --require-pass && "$PYTHON" -B -O -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-de.json --bind --require-pass
 ```
 
-`--bind` regenerates the 848 circuits on the CI runner and requires every
-sha256 to equal the record's, so a Kaggle-side qiskit difference fails the
-gate instead of entering the record silently.
+`--bind` regenerates the circuits on the CI runner and requires every
+sha256 and every replica's checks to equal the record's, so a Kaggle-side
+qiskit difference fails the gate instead of entering the record silently.
+CI cannot install the cp313-only qxelarator, so the gate re-derives every
+verdict from the retained counts and re-checks every prediction by state
+vector through `--bind`, and nothing resamples.
 
 ## Not started
 
-- (d1)-(d3) controlled-W circuits and (e) full-encoding coherence settings,
-  their QX smoke representatives and their Kaggle sweep.
-- The ry dialect, the Ry ladder residue (R1, R2, R8, R9; the retained
-  `ry_probe` cases of `scripts/qi_ry_probe_cases.py` already cover R0, R3,
-  R4, R5, R6 and R7) and the Ry smoke subset.
-- `analyze` and its replay for the Tuna-17 stages.
+- `analyze` and its replay for the Tuna-17 stages (C(n) and r, D, twist
+  pairs, coherences, <Z_c>) and for the Ry runs.

@@ -2,7 +2,7 @@
 
 docs/notes/box_kites/experiment-program.md fixes the design. Every sign comes
 from docs/evidence/box_kite_census/census.json; the generator recomputes none
-from cd_core. Four products come out of one census read:
+from cd_core. Five products come out of one census read:
 
 - Family (a), exhaustive, in memory only: every Design B row (840 within-kite
   rows, 168 cross-kite controls with the negative fixture (1,10)+ x (2,13)-,
@@ -17,6 +17,11 @@ from cd_core. Four products come out of one census read:
 - The Tuna-17 series T0 (depth ladder), T1 (edge-sign classification and
   twist), coherence and walk, each batch one witness circuit plus readout-0
   and readout-1, and the relabeled QX twin of every witness circuit.
+- Families (d1)-(d3) and (e), exhaustive in memory (series_de(): 149 QX
+  circuits, the associator-sign witnesses on fixed triples, fixed pairs with
+  uniform k and fixed i with uniform (j, k), and the full-encoding coherence
+  settings) for the same sweep, and their smoke representatives, the first
+  circuit of each sub-family, written to box_kite_de_qx/.
 - The Ry emulator ladder residue (R1 width 9, R2 a comment line, R9 the
   failed teleport.cq without its bit register and comments; the retained
   construct probe settled the rest) and the Ry smoke subset, written in the
@@ -96,6 +101,7 @@ from __future__ import annotations
 import argparse
 import copy
 import hashlib
+import itertools
 import json
 import math
 import re
@@ -154,6 +160,8 @@ DIALECTS: dict[str, dict[str, str]] = {
     "ry": {"h": "H", "x": "X", "z": "Z", "s": "S", "cx": "CNOT", "rz": "Rz"},
 }
 TWO_QUBIT = {"cx", "cz"}
+DE_SUB_FAMILIES = ("d1_fixed_triple", "d2_fixed_pair", "d3_fixed_i", "e_full_coherence")
+D3_WIDTH = 9
 SQRT8 = 2.0 * math.sqrt(2.0)
 
 # Local qubit roles of each encoding.
@@ -251,6 +259,7 @@ CASE_DIRECTORIES = (
     "box_kite_tuna_twins_qx",
     "box_kite_ry_ladder",
     "box_kite_ry_smoke",
+    "box_kite_de_qx",
 )
 
 
@@ -797,7 +806,8 @@ def restricted(circuit: Any) -> tuple[Any, dict[int, int]]:
 def replica_checks(replica: dict[str, Any]) -> list[tuple[str, tuple[int, ...], str]]:
     """(kind, register qubits, prediction) for one manifest replica.
 
-    p_zero: P(q = 0); p_zero_given_zero: P(d = 0 | a = 0); cz_count: CZ lines on the pair.
+    p_zero: P(q = 0); p_zero_given_zero: P(d = 0 | a = 0); parity_zero_given_zero: P(the data bits
+    have even parity | selector = 0); cz_count: CZ lines on the pair.
     """
     roles = replica["roles"]
     checks: list[tuple[str, tuple[int, ...], str]] = []
@@ -808,6 +818,14 @@ def replica_checks(replica: dict[str, Any]) -> list[tuple[str, tuple[int, ...], 
     if "p_data_zero_given_selector_zero" in replica:
         checks.append(
             ("p_zero_given_zero", (roles["selector"], roles["data"][0]), replica["p_data_zero_given_selector_zero"])
+        )
+    if "p_parity_even_given_selector_zero" in replica:
+        checks.append(
+            (
+                "parity_zero_given_zero",
+                (roles["selector"], *roles["data"]),
+                replica["p_parity_even_given_selector_zero"],
+            )
         )
     if "cz_depth" in replica:
         checks.append(("cz_count", (roles["selector"], roles["data"][0]), str(replica["cz_depth"])))
@@ -843,6 +861,10 @@ def verify_text(item: tuple[str, str, list[tuple[str, tuple[int, ...], str]]]) -
         elif kind == "p_zero_given_zero":
             joint = state.probabilities([index[qubits[0]], index[qubits[1]]])
             value = float(joint[0] / (joint[0] + joint[2]))
+        elif kind == "parity_zero_given_zero":
+            joint = state.probabilities([index[q] for q in qubits])
+            kept = [n for n in range(len(joint)) if n % 2 == 0]
+            value = float(sum(joint[n] for n in kept if bin(n >> 1).count("1") % 2 == 0) / sum(joint[n] for n in kept))
         else:
             raise ValueError(f"unknown check {kind!r}")
         if abs(value - float(Fraction(want))) > PROBABILITY_TOLERANCE:
@@ -1585,7 +1607,320 @@ def twin(witness: dict[str, Any], text: str, source: str) -> tuple[dict[str, Any
 
 
 def case_directories() -> dict[str, dict[str, str]]:
-    return {"box_kite_a_qx": smoke_series(), **tuna_series(), **ry_series()}
+    return {"box_kite_a_qx": smoke_series(), **tuna_series(), **ry_series(), "box_kite_de_qx": de_smoke_series()}
+
+
+# ---------------------------------------------------------------- families (d1)-(d3) and (e)
+
+
+def pauli_expectation(row: Row, pauli: str) -> Fraction:
+    """<P> on the selector-0 branch (c0 |label_0> + c1 |label_1>) / norm; pauli names data qubit b at position b.
+
+    X and Y flip exactly the bits of D = label_0 ^ label_1, so with any X or Y
+    the diagonal terms vanish and <P> = 2 c0 c1 Re(phi) / norm^2 with phi the
+    phase of P|label_0>: (-1)^{label_0 bit} for each Z, i (-1)^{bit} for each Y.
+    """
+    c0, c1, l0, l1 = row["c0"], row["c1"], row["label_0"], row["label_1"]
+    norm = c0 * c0 + c1 * c1
+    flips = sum(1 << b for b, op in enumerate(pauli) if op in "XY")
+    if flips == 0:
+        return Fraction(c0 * c0 * (-1) ** bin(l0).count("1") + c1 * c1 * (-1) ** bin(l1).count("1"), norm)
+    if flips != l0 ^ l1:
+        raise ValueError(f"setting {pauli} does not flip exactly the bits where the labels differ")
+    ys = [b for b, op in enumerate(pauli) if op == "Y"]
+    if len(ys) % 2:
+        return Fraction(0)
+    phase = (-1) ** (len(ys) // 2)
+    for b, op in enumerate(pauli):
+        if op in "ZY":
+            phase *= (-1) ** (l0 >> b & 1)
+    return Fraction(2 * c0 * c1 * phase, norm)
+
+
+def de_specs(census: dict[str, Any], rows: dict[str, list[Row]]) -> dict[str, list[dict[str, Any]]]:
+    """The replicas of (d1)-(d3) and (e) in run order with their census predictions; no circuit is built.
+
+    d1: per kite the five constant-sign exemplars of associator.deterministic_exemplars,
+    P(c = 0) = (1 + omega)/2, and the omit-last-block control of its
+    ij-same-vertex-third-strut exemplar (1/2). d2: the 105 pairs of
+    associator.fixed_pair_uniform_k and d3 the 16 values of fixed_i_uniform_jk,
+    P(c = 0) = (1 + <W>)/2. e: per kite the first bright edge row and the
+    first strut row at (+, +), every X/Y assignment on the w bits where the
+    labels differ (Z elsewhere) and the all-Z setting.
+    """
+    associator = census["associator"]
+    out: dict[str, list[dict[str, Any]]] = {name: [] for name in DE_SUB_FAMILIES}
+    for kite in sorted(associator["deterministic_exemplars"], key=int):
+        exemplars = associator["deterministic_exemplars"][kite]
+        for name in sorted(exemplars):
+            i, j, k, omega = exemplars[name][:4]
+            out["d1_fixed_triple"].append(
+                {"census": f"associator.deterministic_exemplars[{kite}].{name}", "triple": [i, j, k],
+                 "omega": omega, "omit_last_block": False, "p_selector_zero": str(Fraction(1 + omega, 2))}
+            )  # fmt: skip
+        i, j, k, omega = exemplars["ij-same-vertex-third-strut"][:4]
+        out["d1_fixed_triple"].append(
+            {"census": f"associator.deterministic_exemplars[{kite}].ij-same-vertex-third-strut", "triple": [i, j, k],
+             "omega": omega, "omit_last_block": True, "p_selector_zero": "1/2"}
+        )  # fmt: skip
+    pairs = sorted(
+        (tuple(pair), value) for value, listed in associator["fixed_pair_uniform_k"].items() for pair in listed
+    )
+    for (i, j), value in pairs:
+        out["d2_fixed_pair"].append(
+            {"census": f"associator.fixed_pair_uniform_k[{value}]", "pair": [i, j], "witness": value,
+             "p_selector_zero": str((1 + Fraction(value)) / 2)}
+        )  # fmt: skip
+    for i in range(16):
+        value = associator["fixed_i_uniform_jk"][str(i)]
+        out["d3_fixed_i"].append(
+            {"census": f"associator.fixed_i_uniform_jk[{i}]", "i": i, "witness": value,
+             "p_selector_zero": str((1 + Fraction(value)) / 2)}
+        )  # fmt: skip
+    for kite in range(1, 8):
+        chosen = [
+            next(r for r in rows["within_kite"] if r["kite"] == kite and is_edge(r) and r["p_selector_zero"] == "1"),
+            next(r for r in rows["within_kite"] if r["kite"] == kite and r["relation"] == "strut" and signs(r, 1, 1)),
+        ]
+        for row in chosen:
+            differ = [b for b in range(4) if (row["label_0"] ^ row["label_1"]) >> b & 1]
+            if 1 << len(differ) != row["full_coherence_settings"]:
+                raise ValueError(f"census within_kite[{row['index']}]: {len(differ)} differing bits against "
+                                 f"{row['full_coherence_settings']} settings")  # fmt: skip
+            settings = []
+            for choice in itertools.product("XY", repeat=len(differ)):
+                ops = ["Z"] * 4
+                for b, op in zip(differ, choice, strict=True):
+                    ops[b] = op
+                settings.append("".join(ops))
+            for pauli in [*settings, "ZZZZ"]:
+                out["e_full_coherence"].append(
+                    {"census": f"within_kite[{row['index']}]", "kite": kite, "relation": row["relation"],
+                     "p": [row["p_low"], row["p_high"], row["x_sign"]],
+                     "q": [row["q_low"], row["q_high"], row["y_sign"]],
+                     "pauli": pauli, "p_selector_zero": row["p_selector_zero"],
+                     "expectation_given_selector_zero": str(pauli_expectation(row, pauli)),
+                     "p_parity_even_given_selector_zero": str((1 + pauli_expectation(row, pauli)) / 2)}
+                )  # fmt: skip
+    counts = census["experiment_counts"]
+    want = {
+        "d1_fixed_triple": 6 * len(associator["deterministic_exemplars"]),
+        "d2_fixed_pair": counts["fixed_pair_witnesses"],
+        "d3_fixed_i": counts["fixed_i_witnesses"],
+        "e_full_coherence": sum(2 * (n + 1) for n in counts["full_coherence_settings_by_kite"].values()),
+    }
+    if {name: len(specs) for name, specs in out.items()} != want:
+        raise ValueError(f"family (d)/(e) replica counts {[len(v) for v in out.values()]} differ from {want}")
+    return out
+
+
+def left_mult_signs(m: int) -> list[int]:
+    """The sign diagonal D_m of designs.left_mult_gate(16, m): L_{e_m}|q> = D_m[q] |m ^ q>."""
+    from qiskit.quantum_info import Operator
+
+    from designs import left_mult_gate
+
+    matrix = Operator(left_mult_gate(16, m)).data
+    return [round(float(matrix[q ^ m, q].real)) for q in range(16)]
+
+
+def controlled_block(qc: Any, control: int, data: list[int], m: int, adjoint: bool) -> None:
+    """Controlled L_{e_m} (D_m, then X on the bits of m) or its adjoint (X, then D_m) on `data`."""
+    from qiskit.circuit.library import DiagonalGate
+
+    diagonal = DiagonalGate([1.0] * 16 + [float(sign) for sign in left_mult_signs(m)])
+    moves = [data[b] for b in range(4) if m >> b & 1]
+    if adjoint:
+        for q in moves:
+            qc.cx(control, q)
+    qc.append(diagonal, [*data, control])
+    if not adjoint:
+        for q in moves:
+            qc.cx(control, q)
+
+
+def controlled_w(qc: Any, control: int, data: list[int], i: int, j: int, omit_last: bool = False) -> None:
+    """Controlled W_ij = L_(e_i e_j)^dagger L_(e_i) L_(e_j) with e_i e_j = s e_{i^j}, s from designs' L_{e_i}.
+
+    The sign s is set before control: s = -1 is a Z on the control, the
+    relative phase the Hadamard test reads.
+    """
+    if left_mult_signs(i)[j] < 0:
+        qc.z(control)
+    controlled_block(qc, control, data, j, adjoint=False)
+    controlled_block(qc, control, data, i, adjoint=False)
+    if not omit_last:
+        controlled_block(qc, control, data, i ^ j, adjoint=True)
+
+
+def w_diagonal(i: int, j: int) -> list[float]:
+    """<k| W_ij |k> for every k, from the designs-built W_ij."""
+    from qiskit import QuantumCircuit
+    from qiskit.quantum_info import Operator
+
+    qc = QuantumCircuit(5)
+    controlled_w(qc, 4, [0, 1, 2, 3], i, j)
+    matrix = Operator(qc).data
+    return [float(matrix[16 + k, 16 + k].real) for k in range(16)]
+
+
+def de_logical(sub_family: str, spec: dict[str, Any]) -> Any:
+    """The logical circuit of one (d)/(e) replica: control or selector on its last qubit."""
+    from qiskit import QuantumCircuit
+    from qiskit.circuit.library import DiagonalGate
+
+    if sub_family == "d3_fixed_i":
+        qc = QuantumCircuit(D3_WIDTH)
+        for q in range(8):
+            qc.h(q)
+        qc.h(8)
+        entries = [1.0] * 256
+        for j in range(16):
+            entries[16 * j : 16 * j + 16] = w_diagonal(spec["i"], j)
+        qc.append(DiagonalGate([1.0] * 256 + entries), range(9))
+        qc.h(8)
+        return qc
+    if sub_family == "e_full_coherence":
+        row = {
+            "p_low": spec["p"][0], "p_high": spec["p"][1], "x_sign": spec["p"][2],
+            "q_low": spec["q"][0], "q_high": spec["q"][1], "y_sign": spec["q"][2],
+        }  # fmt: skip
+        qc = full_design_b(row)
+        for b, op in enumerate(spec["pauli"]):
+            if op == "Y":
+                qc.sdg(b)
+            if op in "XY":
+                qc.h(b)
+        return qc
+    qc = QuantumCircuit(5)
+    if sub_family == "d1_fixed_triple":
+        i, j, k = spec["triple"]
+        for b in range(4):
+            if k >> b & 1:
+                qc.x(b)
+        omit = spec["omit_last_block"]
+    else:
+        i, j = spec["pair"]
+        for b in range(4):
+            qc.h(b)
+        omit = False
+    qc.h(4)
+    controlled_w(qc, 4, [0, 1, 2, 3], i, j, omit)
+    qc.h(4)
+    return qc
+
+
+def de_width(sub_family: str) -> int:
+    return D3_WIDTH if sub_family == "d3_fixed_i" else 5
+
+
+def de_roles(sub_family: str, place: dict[int, int]) -> dict[str, Any]:
+    width = de_width(sub_family)
+    roles: dict[str, Any] = {"selector": place[width - 1], "data": [place[q] for q in range(4)]}
+    if sub_family == "d3_fixed_i":
+        roles["j"] = [place[q] for q in range(4, 8)]
+    return roles
+
+
+def emit_de_circuit(item: tuple[str, str, list[tuple[dict[str, Any], dict[int, int]]]]) -> str:
+    """Pool worker: one packed (d)/(e) QX circuit, compiled at optimization level 0 to FULL_BASIS."""
+    from qiskit import transpile
+
+    file, sub_family, members = item
+    lines = header(QX_QUBITS)
+    for slot, (spec, place) in enumerate(members):
+        what = {key: spec[key] for key in ("triple", "pair", "i", "pauli") if key in spec}
+        lines.append(f"// slot {slot} {sub_family} census {spec['census']} {json.dumps(what, sort_keys=True)} "
+                     f"P {spec['p_selector_zero']} selector q[{de_roles(sub_family, place)['selector']}]")  # fmt: skip
+        circuit = transpile(de_logical(sub_family, spec), basis_gates=FULL_BASIS, optimization_level=0)
+        lines += emit(circuit, place)
+    return "\n".join(lines + ["", "b = measure q", ""])
+
+
+def de_circuits(
+    census: dict[str, Any], rows: dict[str, list[Row]], limit: int | None = None
+) -> tuple[list[dict[str, Any]], dict[str, str]]:
+    specs = de_specs(census, rows)
+    circuits: list[dict[str, Any]] = []
+    jobs = []
+    for sub_family in DE_SUB_FAMILIES:
+        chosen = specs[sub_family] if limit is None else specs[sub_family][:limit]
+        width = de_width(sub_family)
+        for number, group in enumerate(pack(chosen, width), start=1):
+            file = f"{sub_family}-{number:03d}.cq"
+            jobs.append((file, sub_family, group))
+            replicas = [
+                {"slot": slot, **spec, "roles": de_roles(sub_family, place)} for slot, (spec, place) in enumerate(group)
+            ]
+            circuits.append({"file": file, "kind": "witness", "sub_family": sub_family, "replicas": replicas})
+    texts = dict(zip((file for file, _, _ in jobs), parallel.ordered_map(emit_de_circuit, jobs), strict=True))
+    parallel.ordered_map(verify_text, [(row["file"], texts[row["file"]], checks_of(row)) for row in circuits])
+    return circuits, texts
+
+
+def de_shared(backend: dict[str, Any], census_path: Path, census: dict[str, Any], family: str) -> dict[str, Any]:
+    return {
+        "schema": CASES_SCHEMA,
+        "family": family,
+        "backend": backend["identifier"],
+        "backend_type_id": backend["id"],
+        "nqubits": backend["nqubits"],
+        "shots": QX_SHOTS,
+        "dialect": "qx",
+        "bit_order": "qubit 0 at the rightmost character (QX)",
+        "census": census_record(census_path, census),
+        "encodings": {
+            "d1_fixed_triple": "data 0-3, control 4: X on the bits of k, H on c, controlled W_ij (designs' L_{e_j}, "
+            "L_{e_i}, L_{e_{i^j}}^dagger as controlled diagonals and CNOTs, e_i e_j's sign as Z on c), H on c",
+            "d2_fixed_pair": "as d1 with H on every data qubit in place of the basis input",
+            "d3_fixed_i": "k on 0-3, j on 4-7, control 8: H on 0-8, the diagonal of W_ij over (j, k) from designs' "
+            "operators on c = 1, H on c",
+            "e_full_coherence": "full Design B (selector 4), then per data qubit H for X, Sdag and H for Y, nothing "
+            "for Z; pauli names data qubit b at position b",
+            "compile": f"optimization level 0 to {', '.join(FULL_BASIS)} with Rz on the pi/{ANGLE_GRID} grid",
+        },
+        "preregistered": {
+            "observable": "d1-d3: associator-sign interference witness <Z_c> = 2 P(c = 0) - 1; e: coherence "
+            "reconstruction <P> = 2 P(data parity even | selector = 0) - 1 per setting",
+            "predictions": "d1 omega of census associator.deterministic_exemplars and 0 for the omit-last control; "
+            "d2 associator.fixed_pair_uniform_k; d3 associator.fixed_i_uniform_jk; e <P> from the census "
+            "coefficients c0, c1 and labels of each row",
+            "falsifier": f"a deterministic replica off its outcome in one shot, or any other replica outside "
+            f"|z| < {Z_LIMIT} at {QX_SHOTS} shots, refutes that circuit's implementation",
+            "limit": "an associator-sign witness cannot separate the octonions from the split octonions",
+        },
+    }
+
+
+def series_de(census_path: Path = CENSUS, limit: int | None = None) -> dict[str, str]:
+    """The exhaustive (d1)-(d3) and (e) case files on QX, in memory; limit keeps the first replicas of each."""
+    backend = qx_backend(json.loads(CATALOGUE.read_text(encoding="utf-8")))
+    census = load_census(census_path)
+    rows = validate_census(census)
+    circuits, texts = de_circuits(census, rows, limit)
+    files = finish(de_shared(backend, census_path, census, "de"), circuits, texts)
+    validate_series(files, backend)
+    return files
+
+
+def de_smoke_series(census_path: Path = CENSUS) -> dict[str, str]:
+    """box_kite_de_qx/: the first circuit of each (d)/(e) sub-family, the remote QX smoke representatives."""
+    backend = qx_backend(json.loads(CATALOGUE.read_text(encoding="utf-8")))
+    census = load_census(census_path)
+    rows = validate_census(census)
+    width = {name: QX_QUBITS // de_width(name) for name in DE_SUB_FAMILIES}
+    circuits, texts = de_circuits(census, rows, limit=max(width.values()))
+    first: dict[str, dict[str, Any]] = {}
+    for row in circuits:
+        first.setdefault(row["sub_family"], {**row, "group": "smoke"})
+    smoke = list(first.values())
+    files = finish(
+        {**de_shared(backend, census_path, census, "de_smoke"), "role": "smoke run of the remote QX compile path; "
+         "the exhaustive (d1)-(d3) and (e) sets run on Kaggle CPU through scripts/box_kite_qx_sweep.py"},
+        smoke, texts, group="group",
+    )  # fmt: skip
+    validate_series(files, backend)
+    return files
 
 
 # ---------------------------------------------------------------- Ry emulator
@@ -2034,6 +2369,35 @@ def self_test() -> None:
     entry["gateset"] = [g for g in entry["gateset"] if g != "CNOT"]
     reject("a Ry gate set without CNOT", lambda: ry_backend(altered), SystemExit)
 
+    # Families (d1)-(d3) and (e): every smoke representative against its census value, and two mutations.
+    de = de_smoke_series()
+    for batch in json.loads(de["cases.json"])["batches"]:
+        for row in json.loads(de[f"{batch['batch']}/cases.json"])["circuits"]:
+            text = de[f"{batch['batch']}/{row['file']}"]
+            verify_text((row["file"], text, checks_of(row)))
+            if row["sub_family"] == "d1_fixed_triple":
+                flipped_row = copy.deepcopy(row)
+                replica = next(r for r in flipped_row["replicas"] if r["p_selector_zero"] in ("0", "1"))
+                replica["p_selector_zero"] = "1" if replica["p_selector_zero"] == "0" else "0"
+                reject(
+                    "a d1 witness with omega negated",
+                    lambda t=text, r=flipped_row: verify_text(("d1", t, checks_of(r))),
+                )
+            if row["sub_family"] == "e_full_coherence":
+                swapped_row = copy.deepcopy(row)
+                replica = next(
+                    r for r in swapped_row["replicas"] if r["p_parity_even_given_selector_zero"] in ("0", "1")
+                )
+                replica["p_parity_even_given_selector_zero"] = (
+                    "1" if replica["p_parity_even_given_selector_zero"] == "0" else "0"
+                )
+                reject(
+                    "an (e) setting with its sign flipped",
+                    lambda t=text, r=swapped_row: verify_text(("e", t, checks_of(r))),
+                )
+    bright = next(r for r in within if is_edge(r) and r["p_selector_zero"] == "1")
+    reject("a coherence setting that misses a differing bit", lambda: pauli_expectation(bright, "ZZZX"))
+
     # Catalogue admission.
     for field, value in (("nqubits", 9), ("id", 2), ("is_hardware", True), ("topology", backend["topology"][1:])):
         altered = copy.deepcopy(catalogue)
@@ -2048,8 +2412,8 @@ def self_test() -> None:
     entry["gateset"] = [g for g in entry["gateset"] if g != "Sdag"]
     reject("a Tuna-17 gate set without Sdag", lambda: tuna_backend(altered), SystemExit)
     print(
-        f"box-kite cases: census, SELECT, state-vector, packing, batch, Tuna layout, twin, Ry and catalogue contracts "
-        f"pass; {rejected} mutations rejected"
+        "box-kite cases: census, SELECT, state-vector, packing, batch, Tuna layout, twin, Ry, (d)/(e) and "
+        f"catalogue contracts pass; {rejected} mutations rejected"
     )
 
 

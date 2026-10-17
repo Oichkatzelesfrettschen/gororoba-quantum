@@ -2894,7 +2894,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -O -W error scripts/box_kite_cases.py --check results/quantum_inspire/cases",
    "name": "core-420",
-   "seconds": 5.9,
+   "seconds": 41.0,
    "tier": "pr"
   },
   {
@@ -2902,7 +2902,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_cases.py --self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_cases.py --self-test",
    "name": "core-421",
-   "seconds": 9.5,
+   "seconds": 47.5,
    "tier": "pr"
   },
   {
@@ -2910,7 +2910,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_qx_sweep.py --self-test",
    "name": "core-422",
-   "seconds": 2.7,
+   "seconds": 25.4,
    "tier": "pr"
   }
  ],
