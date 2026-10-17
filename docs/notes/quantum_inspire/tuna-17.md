@@ -65,8 +65,9 @@ outside the rule.
   detected" (3 of 7 usable targets classify as tails); claim
   `qi-tuna17-readout-ringdown-P`, gate core-386.
 - Series Q, targets Q1, Q2, Q3, Q7, Q8, Q9, Q13, Q14, Q15: verdict "not
-  detected" (3 of 7 usable targets, Q9, Q14 and Q15, classify as tails; Q7
-  and Q8 fail the 0.3 visibility floor); claim `qi-tuna17-readout-ringdown-Q`,
+  detected" (3 of 7 usable targets, Q9, Q14 and Q15, classify as tails,
+  Q15 under the all-shot estimator only; Q7 and Q8 fail the 0.3 visibility
+  floor); claim `qi-tuna17-readout-ringdown-Q`,
   gate core-430. Series Q uses one readout batch (Q-batch-00); the
   Q-recal-053951 run is a repeated calibration outside the analysis, because
   duplicate readout files raise.

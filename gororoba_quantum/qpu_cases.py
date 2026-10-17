@@ -268,6 +268,16 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
             _number(value, name)
             argument = str(value)
         arguments.extend(["--" + name.replace("_", "-"), argument])
+    # The N21 exact-model and replica-covariance settings shape the plan the
+    # approval binds; a replay without them plans a different design.
+    model_method = design.get("model_method", "sampled")
+    _require(model_method in ("sampled", "exact"), "model method must be sampled or exact")
+    if model_method != "sampled":
+        arguments.extend(["--model-method", model_method])
+    variance_bound = design.get("replica_variance_bound")
+    if variance_bound is not None:
+        _number(variance_bound, "replica_variance_bound", positive=True)
+        arguments.extend(["--replica-variance-bound", str(variance_bound)])
     arguments.extend(["--out", (Path("..") / location.parent).as_posix()])
     return arguments
 
@@ -920,13 +930,23 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
                 len(coefficients) == len(members[member]["ideal"]), "score labels differ from the member ideal law"
             )
             lines.append(f"- `{member}`: sign {term['sign']:+d}, labeled score vector `{json.dumps(coefficients)}`.")
+        exact = record.get("exact_model")
+        model_sentence = (
+            f"The noise model predicts {_format_number(endpoint['predicted_value'])} from the exact "
+            "branch-resolved law (dynamic_density), so no finite-simulation allowance applies; each "
+            f"replica's exact law lies within {_format_number(exact['max_gap'])} of its "
+            f"{_count(exact['model_shots'], 'model shots')}-shot sampled marginal, inside the simultaneous "
+            f"radius {_format_number(exact['radius'])}." + _exact_contrast_sentence(exact, name)
+            if exact is not None
+            else f"The noise model predicts {_format_number(endpoint['predicted_value'])}; "
+            "the simultaneous finite-simulation allowance is "
+            f"+/-{_format_number(endpoint['simulation_error_radius'])}. "
+            f"The lower modeled value is {_format_number(endpoint['modeled_value_lower_bound'])}."
+        )
         lines.extend(
             [
                 "",
-                f"The noise model predicts {_format_number(endpoint['predicted_value'])}; "
-                "the simultaneous finite-simulation allowance is "
-                f"+/-{_format_number(endpoint['simulation_error_radius'])}. "
-                f"The lower modeled value is {_format_number(endpoint['modeled_value_lower_bound'])}.",
+                model_sentence,
                 "",
                 f"At alpha {_format_number(endpoint['alpha'])}, the two-sided confidence half-width is "
                 f"{_format_number(endpoint['confidence_half_width'])}; requested precision is "
@@ -972,11 +992,21 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
             "The search-wide simulation error probability is "
             f"{_format_number(record['optimization']['simulation_alpha'])} "
             f"across {record['optimization']['simulation_comparisons']} scored finite-shot marginals. "
-            "Hoeffding/union bounds allow arbitrary same-shot replica dependence. Independent stationary "
-            "repetitions remain an assumption. Hardware-model discrepancy remains unquantified.",
+            + (
+                "Each per-PUB radius is the smaller of the Hoeffding radius, valid under arbitrary same-shot "
+                "replica dependence, and the Cantelli radius under the variance each covariance bound reads "
+                "(the declared projection or its measured upper confidence limit, whichever is larger); the "
+                "replica covariance section below names which radius each endpoint takes and its alpha split. "
+                if record.get("covariance_bounds")
+                else "Hoeffding/union bounds allow arbitrary same-shot replica dependence. "
+            )
+            + "Independent stationary repetitions remain an assumption. Hardware-model discrepancy remains "
+            "unquantified.",
             "",
         ]
     )
+    if record.get("covariance_falsifier") is not None:
+        lines.extend(_covariance_falsifier(record, candidate))
     if directional:
         lines.extend(
             [
@@ -984,6 +1014,157 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
                 "",
             ]
         )
+    return lines
+
+
+def _exact_contrast_sentence(exact: dict[str, Any], name: str) -> str:
+    """The endpoint's exact contrast against its sampled estimate at the contrast's own radius."""
+    row = exact.get("contrasts", {}).get(name)
+    if row is None:
+        return ""
+    return (
+        f" The endpoint's exact contrast {_format_number(row['exact'])} sits "
+        f"{_format_number(row['gap'])} from its sampled estimate {_format_number(row['sampled'])}, inside the "
+        f"contrast's own Bernstein radius {_format_number(row['radius'])} at tail "
+        f"{_format_number(exact['score_tail'])}; a model bias smaller than that radius passes this check unseen."
+    )
+
+
+def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
+    """The preregistered variance upper-confidence rule, its planned projections, alpha split and fallback power."""
+    import n21_exact_planning
+    from experiment_optimizer import (
+        CovarianceBound,
+        ObservableContract,
+        ObservableTerm,
+        ObservedPub,
+        analyze_observations,
+        observation_power_radii,
+    )
+
+    specification = record["covariance_falsifier"]
+    _require(
+        specification == n21_exact_planning.COVARIANCE_FALSIFIER,
+        "record covariance falsifier differs from n21_exact_planning.COVARIANCE_FALSIFIER",
+    )
+    bounds = record["covariance_bounds"]
+    shots = {pub["name"]: _count(pub["shots"], "PUB shots") for job in candidate["jobs"] for pub in job["pubs"]}
+    contracts = {contract["name"]: contract for contract in record["observable_contracts"]}
+    lines = [
+        "### Replica covariance: variance upper confidence limit",
+        "",
+        "The power admission above rests on the declared covariance bounds. Collection measures each on the "
+        "retained shot-ordered replica registers before its radius reads it "
+        "(n21_exact_planning.covariance_falsifier, preregistered here and in record.json `covariance_falsifier`).",
+        "",
+        f"- Statistic: {specification['statistic']}.",
+        f"- Upper confidence limit: {specification['upper_confidence_limit']}; total tail "
+        f"{_format_number(specification['tail'])}.",
+        f"- Decision: {specification['decision']}.",
+        f"- Planning: {specification['planning']}.",
+        "",
+        "| Endpoint | PUB | Weights | Shots | Declared projection | UCL allowance at these shots | Projection the "
+        "plan reads | Falsifier tail |",
+        "|---|---|---|---:|---:|---:|---:|---:|",
+    ]
+    for bound in bounds:
+        terms = {term["member"]: term for term in contracts[bound["observable_name"]]["terms"]}
+        members = [label.rpartition("/r")[0] for label in bound["labels"]]
+        weights = [terms[member]["sign"] / members.count(member) for member in members]
+        matrix = bound["matrix"]
+        declared = sum(
+            weights[row] * matrix[row][column] * weights[column]
+            for row in range(len(weights))
+            for column in range(len(weights))
+        )
+        allowance = _number(bound["variance_allowance"], "variance allowance")
+        lines.append(
+            f"| {_identifier(bound['observable_name'], 'endpoint')} | {_identifier(bound['pub_name'], 'PUB')} | "
+            f"{', '.join(f'{weight:+.6g}' for weight in weights)} | {shots[bound['pub_name']]} | {declared:.6g} | "
+            f"{allowance:.6g} | {declared + allowance:.6g} | {_format_number(bound['falsifier_tail'])} |"
+        )
+    ideals = {member["name"]: member["ideal"] for group in record["groups"] for member in group["members"]}
+    by_pub: dict[str, dict[str, tuple[tuple[float, ...], ...]]] = {}
+    for pub in record["execution_pubs"]:
+        for component in pub["components"]:
+            ideal = tuple(float(value) for value in ideals[component["member"]])
+            by_pub.setdefault(pub["name"], {})[component["member"]] = (ideal,) * len(component["registers_by_replica"])
+    observed = tuple(ObservedPub(name, laws, shots[name]) for name, laws in by_pub.items())
+    endpoints = tuple(
+        ObservableContract(
+            **{key: value for key, value in contract.items() if key != "terms"},
+            terms=tuple(
+                ObservableTerm(term["member"], tuple(term["values"]), term["sign"]) for term in contract["terms"]
+            ),
+        )
+        for contract in record["observable_contracts"]
+    )
+    # The same falsifier tails with a projection no Cantelli radius undercuts:
+    # every radius Hoeffding's at the charged alpha.
+    charged = tuple(
+        CovarianceBound(
+            bound["observable_name"],
+            bound["pub_name"],
+            tuple(bound["labels"]),
+            tuple(tuple(float(value) for value in row) for row in bound["matrix"]),
+            bound["assumption"],
+            variance_allowance=1e12,
+            falsifier_tail=float(bound["falsifier_tail"]),
+        )
+        for bound in bounds
+    )
+    plain = {row["name"]: row for row in analyze_observations(observed, endpoints, charged).as_dict()["observables"]}
+    plain_power = observation_power_radii(observed, endpoints, charged)
+    fallback = analyze_observations(observed, endpoints).as_dict()["observables"]
+    power = observation_power_radii(observed, endpoints)
+    planned = {endpoint["name"]: endpoint for endpoint in candidate["observables"]}
+    lines.append("")
+    for row in fallback:
+        name = row["name"]
+        if name not in power:
+            continue
+        spent = sum(float(bound["falsifier_tail"]) for bound in bounds if bound["observable_name"] == name)
+        alpha = _number(contracts[name]["alpha"], "alpha")
+        total = row["detection_radius"] + power[name]
+        effect = _number(planned[name]["effect_used_for_power"], "effect used for power")
+        assumptions = planned[name].get("covariance_assumptions") or []
+        rests = []
+        for label, admitted, hoeffding in (
+            ("detection", planned[name]["detection_radius"], plain[name]["detection_radius"]),
+            ("power", planned[name]["power_radius"], plain_power[name]),
+        ):
+            rests.append(
+                f"the {label} radius {_format_number(admitted)} "
+                + (
+                    "equals the Hoeffding radius and needs no replica assumption"
+                    if math.isclose(admitted, hoeffding, rel_tol=1e-9, abs_tol=1e-15)
+                    else f"rests on the bounds read through their UCL (Hoeffding alone gives {hoeffding:.6g})"
+                )
+            )
+        lines.extend(
+            [
+                f"Alpha split for `{_identifier(name, 'endpoint')}`: {_format_number(alpha)} = falsifier tail "
+                f"{spent:.6g} + confidence and detection tail {alpha - spent:.6g}; the power tail stays "
+                f"{_format_number(1 - _number(contracts[name]['power'], 'power'))}.",
+                "",
+                f"Assumption in force for `{_identifier(name, 'endpoint')}`: {rests[0]}; {rests[1]}. A collected UCL "
+                "above the planned projection widens the radius it reads and can leave the endpoint underpowered; "
+                f"collect.json reports it. The declared bound reads: {'; '.join(sorted(set(assumptions))) or 'none'}.",
+                "",
+            ]
+        )
+        lines.append(
+            f"Without retained registers (the Hoeffding fallback, full alpha) `{_identifier(name, 'endpoint')}` "
+            f"rejects its null only above {_format_number(row['null_value'] + row['detection_radius'])}; detection "
+            f"plus power radius {total:.6g} against the admitted effect {_format_number(effect)} "
+            + (
+                "leaves the endpoint underpowered at these shots, and the collected analysis reports it so."
+                if total > effect
+                else "keeps the declared power at these shots."
+            )
+        )
+    lines.append("")
+    _require(bool(contracts) and set(planned) <= set(contracts), "falsifier endpoints differ from the contracts")
     return lines
 
 
@@ -1700,6 +1881,64 @@ def _fixture() -> dict[str, Any]:
     )
 
 
+def _verify_covariance_falsifier(record: dict[str, Any]) -> None:
+    """A record with declared replica bounds preregisters the falsifier, its thresholds and the fallback power."""
+    import n21_exact_planning
+
+    bounded = copy.deepcopy(record)
+    bounded["execution_pubs"] = [
+        {
+            "name": "feedback_pub",
+            "components": [{"member": "feedback", "registers_by_replica": [["g0_r0_c"], ["g0_r1_c"]]}],
+        }
+    ]
+    bounded["covariance_bounds"] = [
+        {
+            "observable_name": "feedback_contrast",
+            "pub_name": "feedback_pub",
+            "labels": ["feedback/r0", "feedback/r1"],
+            "matrix": [[0.55, 0.0], [0.0, 0.55]],
+            "assumption": "independent replicas",
+            "variance_allowance": n21_exact_planning.variance_allowance(2048, 1.0, 1e-3),
+            "falsifier_tail": 1e-3,
+        }
+    ]
+    bounded["covariance_falsifier"] = json.loads(json.dumps(n21_exact_planning.COVARIANCE_FALSIFIER))
+    bounded["observable_contracts"][0].update(minimum_effect=0.0, alpha=0.05, power=0.8)
+    candidate = bounded["optimization"]["candidates"][0]
+    candidate["observables"][0]["covariance_assumptions"] = ["independent replicas"]
+    bounded["exact_model"] = {
+        "max_gap": 0.004,
+        "model_shots": 65536,
+        "radius": 0.0078,
+        "score_tail": 0.005,
+        "contrasts": {"feedback_contrast": {"exact": 0.25, "sampled": 0.248, "gap": -0.002, "radius": 0.03}},
+    }
+    text = "\n".join(_endpoints(bounded, candidate))
+    allowance = n21_exact_planning.variance_allowance(2048, 1.0, 1e-3)
+    for phrase in (
+        "### Replica covariance: variance upper confidence limit",
+        "Statistic: biased sample variance over shots",
+        f"| feedback_contrast | feedback_pub | +0.5, +0.5 | 2048 | 0.275 | {allowance:.6g} | {0.275 + allowance:.6g} "
+        "| 0.001 |",
+        "Alpha split for `feedback_contrast`: 0.05 = falsifier tail 0.001 + confidence and detection tail 0.049",
+        "Without retained registers (the Hoeffding fallback, full alpha) `feedback_contrast` rejects its null",
+        "Assumption in force for `feedback_contrast`: the detection radius",
+        "the Cantelli radius under the variance each covariance bound reads",
+        "exact contrast 0.25 sits -0.002 from its sampled estimate 0.248",
+    ):
+        if phrase not in text:
+            raise AssertionError(f"covariance falsifier case lacks {phrase!r}")
+    if "### Replica covariance" in "\n".join(_endpoints(record, record["optimization"]["candidates"][0])):
+        raise AssertionError("a record without declared bounds rendered a covariance falsifier")
+    bounded["covariance_falsifier"]["tail"] = 0.01
+    try:
+        _endpoints(bounded, candidate)
+    except ValueError:
+        return
+    raise AssertionError("a record falsifier that differs from the source specification rendered")
+
+
 def _verify() -> None:
     record = _fixture()
     with tempfile.TemporaryDirectory(prefix="qpu-case-check-") as temporary:
@@ -1729,6 +1968,12 @@ def _verify() -> None:
         assert str(run_dir) not in text and "crn:" not in text
         assert "--submit" not in text.split("## Approval-only submission template")[0]
         assert write_case(run_dir, record) == destination and destination.read_text() == text
+        assert "--model-method" not in text and "--replica-variance-bound" not in text
+        exact = copy.deepcopy(record)
+        exact["policy"]["design"].update(model_method="exact", replica_variance_bound=0.55)
+        exact_arguments = _reproduction_arguments(exact, Path("results/live/fixture/record.json"))
+        assert "--model-method exact --replica-variance-bound 0.55" in " ".join(exact_arguments)
+        _verify_covariance_falsifier(record)
         assert all((run_dir / name).read_bytes() == value for name, value in originals.items())
         for family, phrase in (("ripple", "box-kite phase atlas"), ("rank-sector", "coefficient-dependent LCU")):
             algebra = copy.deepcopy(record)

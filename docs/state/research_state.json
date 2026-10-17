@@ -1718,7 +1718,7 @@
         },
         {
           "path": "results/live/2026-10-13T201757.782152Z/patch-analysis.json",
-          "sha256": "682600bda2319dc0b5c1548feddc11df91e9061a787f904a211a72503712052e"
+          "sha256": "541c2b0525914b37b8eea09e9b6bb7911a82fec6d13289d36a75cf19a16932d8"
         }
       ],
       "documents": [
@@ -3760,7 +3760,7 @@
         },
         {
           "path": "results/quantum_inspire/readout_ringdown_tuna_17_P_calibration_sensitivity.json",
-          "sha256": "cebd2515ad711ee58e5a3d8bb87f669fcd5d341fa8137f68f10cfa4098c91d14"
+          "sha256": "4092321399fd5c1129a7c90265fb0c23916debfd47723f5b9a34013b7193b728"
         },
         {
           "path": "results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json",
@@ -3798,7 +3798,7 @@
     },
     {
       "id": "qi-tuna17-readout-ringdown-Q",
-      "statement": "On Tuna-17 series Q (targets Q1, Q2, Q3, Q7, Q8, Q9, Q13, Q14, Q15, 8192 shots per circuit; delays d = 2 and d = 77) the preregistered rule reports 'not detected': 7 targets are usable (Q7 and Q8 fail the 0.3 visibility floor), 3 classify as tails (Q9, Q14, Q15) and none as a static offset, below the 50% threshold. Q9 fits H2 (chi2 6.95 on 3 degrees of freedom) while Q14 (146.8) and Q15 (39.3) do not; Q14's readout arms sit 43 to 61 kHz below its reference from tau = 100 ns out to 2 us.",
+      "statement": "On Tuna-17 series Q (targets Q1, Q2, Q3, Q7, Q8, Q9, Q13, Q14, Q15, 8192 shots per circuit; delays d = 2 and d = 77) the preregistered rule reports 'not detected': 7 targets are usable (Q7 and Q8 fail the 0.3 visibility floor), 3 classify as tails (Q9, Q14, Q15) and none as a static offset, below the 50% threshold; Q15's tail class holds under the all-shot estimator only, and its postselected estimate classifies as none. Q9 fits H2 (chi2 6.95 on 3 degrees of freedom) while Q14 (146.8) and Q15 (39.3) do not; Q14's readout arms sit 43 to 61 kHz below its reference from tau = 100 ns out to 2 us.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
@@ -3810,7 +3810,7 @@
         },
         {
           "path": "results/quantum_inspire/readout_ringdown_tuna_17_Q_calibration_sensitivity.json",
-          "sha256": "0d36113577c23edaf5bced669c24d962fad7bd0ab182610a8d9046d2e6b2cbf3"
+          "sha256": "6bda842b98ede1c464a7da2e744ca164b249eb30fff2df94e174f0a050510299"
         },
         {
           "path": "results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json",
