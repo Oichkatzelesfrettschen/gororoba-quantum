@@ -130,15 +130,11 @@ and 864 in the no-feedback arm (210 off-grid), with 126 distinct off-grid
 values. `result.json` `angle_grid.rows` lists each failing Rz: its circuit,
 instruction index, QX and physical qubit, and `repr` value.
 
-The programs are therefore written by `emit_qx_unsnapped`, a stopgap that
-reproduces `box_kite_cases.emit(circuit, place, dialect="qx", angle_grid=None)`:
-
-- the same gate names and line formats;
-- each Rz printed from its float with `.15f`.
-
-Once that opt-out lands in `box_kite_cases`, the call replaces the stopgap
-and every retained byte and sha256 stays the same. The self-test holds the
-stopgap to `emit` byte for byte on an on-grid circuit.
+The programs are therefore written with
+`box_kite_cases.emit(circuit, place, dialect="qx", angle_grid=None)`, which
+prints each Rz from its float with `.15f` in the qx dialect's gate names and
+line formats. The self-test holds that export to the snapped one byte for
+byte on an on-grid circuit.
 
 ## What this establishes
 

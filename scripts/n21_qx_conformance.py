@@ -57,8 +57,8 @@ q[1].
 - ``--self-test`` requires corrupted cQASM lines, dropped-control deferrals, a
   flipped bit order, swapped clbits, moved shots and native counts drawn from
   the reference law to fail, the reset models to reproduce the
-  dynamic_density law and the phase drop, and the stopgap writer to equal
-  box_kite_cases.emit on an on-grid circuit byte for byte.
+  dynamic_density law and the phase drop, and the unsnapped qx export to
+  equal the snapped one on an on-grid circuit byte for byte.
 
 Usage:
     "$PYTHON" scripts/n21_qx_conformance.py --out docs/evidence/n21_qx_conformance/result.json
@@ -328,39 +328,9 @@ def lower(circuit: Circuit) -> Circuit:
 # ---------------------------------------------------------------- cQASM
 
 
-def emit_qx_unsnapped(circuit: Circuit, place: dict[int, int]) -> list[str]:
-    """Stopgap for box_kite_cases.emit(circuit, place, dialect="qx", angle_grid=None).
-
-    box_kite_cases.emit snaps every Rz to the pi/ANGLE_GRID grid and raises off
-    it; the qx dialect's angle_grid=None opt-out prints each Rz angle from its
-    float with the same .15f format. This writer reproduces that call's lines
-    (DIALECTS["qx"] gate names, "G q[a], q[b]" for two-qubit gates, barriers
-    omitted) so that swapping in the real call leaves every retained byte and
-    sha256 unchanged; the self-test holds it to emit byte for byte on an
-    on-grid circuit.
-    """
-    import box_kite_cases as cases
-
-    names = cases.DIALECTS["qx"]
-    lines = []
-    for instruction in circuit.data:
-        name = instruction.operation.name
-        qubits = [place[circuit.find_bit(q).index] for q in instruction.qubits]
-        if name == "barrier":
-            continue
-        if name not in names:
-            raise ValueError(f"{name} is outside the qx gate map")
-        if name in cases.TWO_QUBIT:
-            lines.append(f"{names[name]} q[{qubits[0]}], q[{qubits[1]}]")
-        elif name == "rz":
-            lines.append(f"{names[name]}({float(instruction.operation.params[0]):.15f}) q[{qubits[0]}]")
-        else:
-            lines.append(f"{names[name]} q[{qubits[0]}]")
-    return lines
-
-
 def program(circuit: Circuit, comment: str) -> str:
     """Full QX program of a lowered circuit: header, gate segments, measure and reset lines in order."""
+    import box_kite_cases
     import qi_zero_divisor_cases
     from qiskit import QuantumCircuit
 
@@ -370,7 +340,7 @@ def program(circuit: Circuit, comment: str) -> str:
 
     def flush() -> None:
         nonlocal segment
-        lines.extend(emit_qx_unsnapped(segment, place))
+        lines.extend(box_kite_cases.emit(segment, place, dialect="qx", angle_grid=None))
         segment = QuantumCircuit(circuit.num_qubits)
 
     for inst in circuit.data:
@@ -1299,7 +1269,7 @@ def self_test() -> None:
     import numpy as np
     from qiskit import QuantumCircuit
 
-    # The stopgap equals box_kite_cases.emit on an on-grid circuit byte for byte.
+    # The unsnapped qx export equals the snapped one on an on-grid circuit byte for byte.
     grid = QuantumCircuit(3)
     grid.h(0)
     grid.x(1)
@@ -1311,8 +1281,8 @@ def self_test() -> None:
     for k in (-63, -17, -1, 0, 3, 32, 64, 127):
         grid.rz(k * math.pi / cases.ANGLE_GRID, k % 3)
     place = {0: 4, 1: 0, 2: 9}
-    if emit_qx_unsnapped(grid, place) != cases.emit(grid, place, dialect="qx"):
-        raise AssertionError("the stopgap writer differs from box_kite_cases.emit on an on-grid circuit")
+    if cases.emit(grid, place, dialect="qx", angle_grid=None) != cases.emit(grid, place, dialect="qx"):
+        raise AssertionError("the unsnapped qx export differs from the snapped one on an on-grid circuit")
     built = build()
     texts = {file_name(form): form["text"] for form in built["forms"]}
     staged = stages(built, texts)
@@ -1481,7 +1451,7 @@ def self_test() -> None:
         _reject(label, functools.partial(require_record_shape, mutated_shape))
     radius = record["comparison"]["deferred_pair"]["radius"]
     print(
-        "n21 QX conformance self-test: stopgap equals emit on grid; record shape checks reject "
+        "n21 QX conformance self-test: unsnapped export equals the snapped one on grid; record shape checks reject "
         f"{len(shape_mutations)} mutations; corrupted lines, dropped-control deferrals, "
         "a flipped bit order, swapped clbits, shifted shots and reference-law native counts rejected at radius "
         f"{radius:.5f}; reset models reproduce the dynamic_density law and the qxelarator phase drop"
