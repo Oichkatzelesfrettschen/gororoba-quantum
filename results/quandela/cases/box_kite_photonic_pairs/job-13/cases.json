@@ -100,6 +100,16 @@
     "0",
     "1/8"
    ],
+   "two_click": {
+    "label": [
+     "0",
+     "1/8"
+    ],
+    "total": [
+     "3/4",
+     "7/8"
+    ]
+   },
    "rows": [
     [
      "nonkite_pairs",
@@ -277,10 +287,10 @@
    "constructive pair": "a two-photon block on a kite edge: |perm M| = 2, det M = 0, label coincidence (perm M / 4)^2 = 1/4 for indistinguishable photons against 1/8 for distinguishable ones",
    "suppressed pair": "a two-photon block on a strut or an (l, l^8) pair: perm M = 0, |det M| = 2, label coincidence 0 for indistinguishable photons against 1/8 for distinguishable ones"
   },
-  "observable": "per job, the two-click samples (min_detected_photons 2, threshold detectors) by mode pair; the label coincidence is the fraction of two-click samples with one click on each label mode",
-  "ideal": "pair_ideal lists P(a, b) for indistinguishable and distinguishable photons; a source of indistinguishability V mixes them as V P_ind + (1 - V) P_dist before threshold conditioning, so an edge block reads (1 + V)/8 and a strut or non-kite block (1 - V)/8 on the label pair",
-  "calibration": "the hom job, a balanced splitter on the same two sources, reads P(1, 1) = (1 - V)/2 and fixes V for every pair block of the series",
-  "hardware_report": "the edge minus strut label-coincidence difference against V/4 from the hom job, the sign of perm M as the classifier of each block, and every mode-pair frequency against pair_ideal at the fitted V, with Wilson 95% intervals",
-  "falsifier": "a strut or non-kite block whose label coincidence exceeds the edge blocks' at the fitted V, or an edge minus strut difference outside V/4 by more than 4.5 standard errors"
+  "observable": "per job, the two-click samples (min_detected_photons 2, threshold detectors) by mode pair; the label fraction f is the share of two-click samples with one click on each label mode",
+  "ideal": "two_click lists L (the label pair) and T (every a < b pair) for indistinguishable and distinguishable photons; at source indistinguishability V, f(V) = (V L_ind + (1 - V) L_dist) / (V T_ind + (1 - V) T_dist): 1/2 on an edge and 0 on a strut at V = 1, 1/6 and 1/7 at V = 0",
+  "calibration": "V is fitted from the suppressed (strut and non-kite) blocks, whose f falls from 1/7 at V = 0 to 0 at V = 1, and the catalogue's HOM figure is the prior it is compared with",
+  "hardware_report": "the fitted V with its interval, every constructive block's f against f_edge(V), every mode-pair frequency against pair_ideal mixed at V, with Wilson 95% intervals",
+  "falsifier": "a constructive block whose f lies more than 4.5 standard errors from f_edge at the fitted V, or suppressed blocks whose f values disagree with one V at that bound"
  }
 }

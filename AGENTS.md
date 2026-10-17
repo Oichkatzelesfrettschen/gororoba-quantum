@@ -922,7 +922,7 @@ provider in the change that retains it.
 series under `results/quandela/cases/` from the box-kite census: single
 (32 one-photon two-label configurations, one four-label control, the
 one-hot 16D pair), packed (the 32 configurations six to a job) and pairs
-(the 16 sign blocks with two photons, then a hom job). Every unitary is the
+(the 16 sign blocks with two photons). Every unitary is the
 exact Halmos dilation over Q(sqrt2); a one-photon block reads the census P
 on its algebra modes, and a two-photon block reads (perm M / 4)^2 on its
 label pair, 1/4 on a kite edge and 0 on a strut. A dark block is

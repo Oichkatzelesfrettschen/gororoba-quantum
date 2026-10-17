@@ -907,6 +907,6 @@
   "ideal": "a equals the block's p_algebra; the per-mode ideal is the exact |U[k][0]|^2 of circuit.json",
   "simulator_stop_rule": "on sim:belenos, any algebra-mode sample of a dark block or dilation-mode sample of a bright block, or a half block outside |z| < 4.5 of its binomial, stops the series until the circuit, the compiler or the simulator's noise model explains it",
   "hardware_report": "on qpu:belenos, the dark floor a_dark, the bright ceiling a_bright, the contrast a_bright - a_dark, the total variation distance of each per-mode histogram from its ideal and the one-hot leakage into the 14 unreachable labels, each with a Wilson 95% interval and the dark counts of the detectors involved",
-  "layout": "blocks share a job and a block-diagonal unitary; inter-block crosstalk is a variable the single series lacks"
+  "layout": "blocks share a job and a block-diagonal unitary; inter-block crosstalk is a variable the single series lacks, and the block on modes 4-7 reads mode 5 (38.2 dark counts per second in the retained record) as label_1, a floor near 4e-3 of its samples"
  }
 }

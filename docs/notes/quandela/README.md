@@ -370,7 +370,13 @@ The two-photon series turns the box-kite edge/strut split into two-photon
 interference: perm M = g(L,L') g(L,U') (1 + p0 p1) and
 det M = g(L,L') g(L,U') (1 - p0 p1) for the kite phase products p0 and p1,
 so edges (p0 = p1) bunch and struts (p0 != p1) suppress, independent of
-s and t. The census Design B rows reach 14 of the 16 sign matrices; the
+s and t. Threshold detectors with `min_detected_photons` 2 keep only
+two-click samples, so each pair block preregisters the exact conditional
+label fraction f(V) = (V L_ind + (1 - V) L_dist) / (V T_ind + (1 - V) T_dist)
+from its `two_click` terms: 1/2 on an edge and 0 on a strut at V = 1, 1/6
+and 1/7 at V = 0. The suppressed blocks fit V, and the edges are tested
+against f_edge at that V; a two-mode hom job would read only (0, 1)
+coincidences under that filter and carries no V. The census Design B rows reach 14 of the 16 sign matrices; the
 other two come from cd_core witness pairs outside those rows, so the family
 covers every two-label two-blade product. `scripts/cd_two_blade_blocks.py`
 checks that at D = 16, 32 and 64 against the case files, retains the
@@ -384,7 +390,7 @@ reduces to.
 |---|---|---|---|---|---|
 | `box_kite_photonic_single` | 35 | 1 | 10000 | 10000 | 0.01 per job, 0.35 in all |
 | `box_kite_photonic_packed` | 6 | 6, 6, 6, 6, 6, 2 | 10000 per block | equal to samples | 0.32 in all |
-| `box_kite_photonic_pairs` | 17 | 2 | 5000 | 347113 | 0.35 per job, 5.9 in all |
+| `box_kite_photonic_pairs` | 16 | 2 | 5000 | 347113 | 0.35 per job, 5.6 in all |
 
 The estimates come from `plan` against the live platform on 2026-10-17 and
 exclude the offer's per-job price. Belenos practice the cases follow:

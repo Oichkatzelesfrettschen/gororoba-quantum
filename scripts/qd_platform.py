@@ -54,7 +54,8 @@ Subcommands:
   and retains job-body.json and submission.json with the approval, the plan
   and the usage report before the job.
 - collect RUN_DIR waits for a terminal status, then retains the result
-  answer byte for byte in raw/result.json and results.json with the scrubbed
+  answer byte for byte in raw/result.json (written once; a recollection
+  must bring the same bytes) and results.json with the scrubbed
   status and job data, the usage report after the job and the counts that
   parse_counts reads from the serialized BSCount: plain Fock states only,
   zipped or not, never through perceval.serialization.deserialize.
@@ -68,8 +69,9 @@ Subcommands:
   as mutating, on a temporary copy; and, against a stubbed service, that
   plan refuses a platform outside the case, one under maintenance, a ceiling
   above the case's credits, a busy token and an estimate above max_shots,
-  submit refuses an empty approval and a second submission, collect drops
-  token fields, run_facts refuses an edited raw result, case or job body, a
+  submit refuses an empty approval and a second submission and records a
+  refused POST as refused, collect drops token fields at any depth and
+  refuses a recollection whose bytes differ, run_facts refuses an edited raw result, case or job body, a
   missing approval, a token field, another job id and an uncollected run,
   and parse_counts refuses other tags, annotated or repeated states and an
   oversized zipped result.
@@ -170,6 +172,10 @@ class PlatformError(RuntimeError):
     """A Quandela Cloud read failed; the message carries the route and the service's answer."""
 
 
+class RefusedError(PlatformError):
+    """The service answered with an HTTP error status, so the request took no effect it reported."""
+
+
 def now() -> str:
     return datetime.datetime.now(datetime.UTC).isoformat(timespec="seconds")
 
@@ -218,7 +224,7 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
         detail = error.read()[:500].decode("utf-8", errors="replace")
         error.close()
         hint = STATUS_HINTS.get(error.code, "redirect refused" if 300 <= error.code < 400 else "")
-        raise PlatformError(f"{method} {route}: HTTP {error.code} {detail} {hint}".rstrip()) from None
+        raise RefusedError(f"{method} {route}: HTTP {error.code} {detail} {hint}".rstrip()) from None
     except (urllib.error.URLError, TimeoutError) as error:
         raise PlatformError(f"{method} {route}: {error}") from None
     if raw:
@@ -261,8 +267,9 @@ def scrub(value: Any) -> Any:
 
 
 def usage_rows(report: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """The token usage report without token ids."""
-    return [{k: v for k, v in row.items() if k not in FORBIDDEN_KEYS} for row in report]
+    """The token usage report without FORBIDDEN_KEYS at any depth."""
+    rows: list[dict[str, Any]] = scrub(report)
+    return rows
 
 
 def availability() -> dict[str, Any]:
@@ -611,7 +618,7 @@ def submit(case_dir: Path, platform: str, approval: str, max_credits: float) -> 
     with open(lock, "a", encoding="utf-8") as handle:
         fcntl.flock(handle, fcntl.LOCK_EX)
         state_path = case_dir / "submission-state.json"
-        if (case_dir / "submission.json").exists() or state_path.exists():
+        if any((case_dir / name).exists() for name in ("submission.json", "submission-state.json", "job-body.json")):
             raise PlatformError(f"{case_dir} was submitted or holds an interrupted submission; never resubmit it")
         checked = plan(case_dir, platform, max_credits)
         usage_before = usage_rows(get("/api/tokens/usage/report"))
@@ -623,10 +630,16 @@ def submit(case_dir: Path, platform: str, approval: str, max_credits: float) -> 
             "cases_sha256": checked["cases_sha256"],
             "body_sha256": checked["body_sha256"],
         }
-        # The checkpoint precedes the request: a lost answer leaves a case that
-        # submit refuses, never one a second invocation can send again.
+        # The body and the checkpoint precede the request: a lost answer leaves
+        # a case that submit refuses, never one a second invocation sends again.
+        write_json(case_dir / "job-body.json", checked["body"], exclusive=True)
         write_json(state_path, state, exclusive=True)
-        answer = request("POST", "/api/jobs", body=checked["body"])
+        try:
+            answer = request("POST", "/api/jobs", body=checked["body"])
+        except RefusedError as error:
+            state.update(phase="refused", error=str(error))
+            write_json(state_path, state)
+            raise
         if not isinstance(answer, dict) or not isinstance(answer.get("job_id"), str):
             raise PlatformError(f"POST /api/jobs answered without a job id: {answer!r}")
         record = {
@@ -637,7 +650,6 @@ def submit(case_dir: Path, platform: str, approval: str, max_credits: float) -> 
             "usage_before": usage_before,
             **{key: value for key, value in checked.items() if key != "body"},
         }
-        write_json(case_dir / "job-body.json", checked["body"], exclusive=True)
         write_json(case_dir / "submission.json", record, exclusive=True)
         state.update(phase="posted", job_id=answer["job_id"])
         write_json(state_path, state)
@@ -698,11 +710,34 @@ def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
     }
     if status["status"] == "completed":
         result_bytes = request("GET", job_route(job, "result"), raw=True)
-        (raw_dir / "result.json").write_bytes(result_bytes)
         collected["result_sha256"] = sha256_bytes(result_bytes)
         collected.update(result_summary(result_bytes))
-    write_json(case_dir / "results.json", collected)
+        retain_bytes(raw_dir / "result.json", result_bytes)
+    try:
+        write_json(case_dir / "results.json", collected, exclusive=True)
+    except FileExistsError:
+        retained = json.loads((case_dir / "results.json").read_text(encoding="utf-8"))
+        moving = ("collected_utc", "usage_after")
+        if {k: v for k, v in retained.items() if k not in moving} != {
+            k: v for k, v in collected.items() if k not in moving
+        }:
+            raise PlatformError(
+                f"{case_dir}/results.json differs from the recollection; nothing was rewritten"
+            ) from None
+        return dict(retained)
     return collected
+
+
+def retain_bytes(path: Path, data: bytes) -> None:
+    """Write a raw file once; a later collection must bring the same bytes and rewrites nothing."""
+    try:
+        with open(path, "xb") as stream:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+    except FileExistsError:
+        if path.read_bytes() != data:
+            raise PlatformError(f"{path} differs from the recollected bytes; nothing was rewritten") from None
 
 
 def result_summary(result_bytes: bytes) -> dict[str, Any]:
@@ -797,19 +832,21 @@ def runner_self_test() -> int:
     }
     idle = dict.fromkeys(AVAILABILITY_KEYS, 0)
     body = {"job_name": "gororoba-job-00", "payload": {"command": "sample_count"}, "platform_name": "sim:belenos"}
-    service: dict[str, Any] = {"row": row, "idle": idle, "estimate": 10000}
+    service: dict[str, Any] = {"row": row, "idle": idle, "estimate": 10000, "refuse": False, "result": result}
 
     def fake_request(method: str, route: str, auth: bool = True, body: Any = None, raw: bool = False) -> Any:
         if (method, route) == ("POST", "/api/jobs"):
+            if service["refuse"]:
+                raise RefusedError("POST /api/jobs: HTTP 422 unprocessable payload")
             return {"job_id": "job-a"}
         if route.endswith("/status"):
             return {"status": "completed", "shots": 10012, "token_id": 7}
         if route.endswith("/data"):
             return {"job_id": "job-a", "token_label": "secret-label", "status": "completed"}
         if route.endswith("/result"):
-            return result.encode("utf-8")
+            return str(service["result"]).encode("utf-8")
         if route == "/api/tokens/usage/report":
-            return [{"total_jobs": 1, "usage": [], "token_id": 7}]
+            return [{"total_jobs": 1, "usage": [{"job": "job-a", "token_label": "secret-label"}], "token_id": 7}]
         raise AssertionError(f"unexpected {method} {route}")
 
     def fake_payload(*_: Any) -> dict[str, Any]:
@@ -854,11 +891,25 @@ def runner_self_test() -> int:
             refuse("an estimate above max_shots", lambda: plan(run, "sim:belenos", 1.0), "estimates")
             service["estimate"] = 10000
             refuse("an empty approval", lambda: submit(run, "sim:belenos", " ", 1.0), "approval")
+            refused = scratch / "refused"
+            shutil.copytree(case, refused)
+            service["refuse"] = True
+            refuse("a refused POST", lambda: submit(refused, "sim:belenos", "approved", 0.0), "HTTP 422")
+            service["refuse"] = False
+            if json.loads((refused / "submission-state.json").read_text(encoding="utf-8"))["phase"] != "refused":
+                raise AssertionError("a refused POST left a checkpoint other than refused")
+            refuse("a resubmitted refusal", lambda: submit(refused, "sim:belenos", "again", 0.0), "never resubmit")
             submit(run, "sim:belenos", "approved in the written case", 0.0)
             refuse("a second submit", lambda: submit(run, "sim:belenos", "again", 0.0), "never resubmit")
             collected = collect(run, 0.0, 1.0)
-            if carried := sorted(set(FORBIDDEN_KEYS) & keys(collected)):
-                raise AssertionError(f"collect retained {carried}")
+            for name in ("results.json", "submission.json"):
+                if carried := sorted(set(FORBIDDEN_KEYS) & keys(json.loads((run / name).read_text(encoding="utf-8")))):
+                    raise AssertionError(f"{name} retained {carried}")
+            if collect(run, 0.0, 1.0)["counts"] != collected["counts"]:
+                raise AssertionError("a recollection changed the retained counts")
+            service["result"] = result.replace("10012", "10013")
+            refuse("a recollection with other raw bytes", lambda: collect(run, 0.0, 1.0), "nothing was rewritten")
+            service["result"] = result
             if collected["counts"] != {",".join(dark): 9990, ",".join(label): 10}:
                 raise AssertionError(f"collect parsed {collected['counts']}")
             run_facts(run)

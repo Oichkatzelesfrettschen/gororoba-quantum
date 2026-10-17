@@ -59,14 +59,15 @@ product of any dimension then maps to one circuit of the family
   p0 = g(L,L') g(U,U') and p1 = g(L,U') g(U,L'): an edge (p0 = p1) reads
   1/4 and a strut or (l, l^8) pair (p0 != p1) reads 0, independent of s
   and t. The box-kite edge/strut split is then a two-photon interference
-  contrast of V/4 for source indistinguishability V, which a hom job on
-  the same two sources calibrates.
+  contrast for source indistinguishability V. Threshold detection keeps the
+  two-click samples, so each block preregisters the exact conditional label
+  fraction f(V) from its two_click terms, and the suppressed blocks fit V.
 
 Three series land under results/quandela/cases/: box_kite_photonic_single
 (one block per job: the 32 two-label configurations, the four-label
 control and the one-hot pair), box_kite_photonic_packed (the 32 two-label
 configurations six to a job) and box_kite_photonic_pairs (the 16 sign
-blocks with two photons, then the hom job). Each job-NN/ holds cases.json
+blocks with two photons). Each job-NN/ holds cases.json
 and circuit.json; the series cases.json maps every census row to its job.
 
 --write DIR writes both series; --check DIR regenerates them in memory,
@@ -385,7 +386,6 @@ def configurations(census: dict[str, Any]) -> list[dict[str, Any]]:
     for t in (-1, 1):
         out.append({"kind": "one_hot", "t": t, "rows": [], "p_algebra": str(certify_one_hot(t))})
     out += list(pairs.values())
-    out.append({"kind": "hom", "rows": []})
     counts: Counter[str] = Counter()
     for config in out:
         if "m" in config:
@@ -403,8 +403,6 @@ def block_unitary(config: dict[str, Any]) -> Matrix:
         return four_label_block()
     if config["kind"] == "pair":
         return dilation([[q(Fraction(x, 2)) for x in r] for r in config["m"]])
-    if config["kind"] == "hom":
-        return [[INV_SQRT2, INV_SQRT2], [INV_SQRT2, neg(INV_SQRT2)]]
     return one_hot_block(config["t"])
 
 
@@ -413,9 +411,8 @@ ROLES = {
     "four_label": ["label", "label", "label", "label", "dilation", "dilation"],
     "one_hot": [f"e{k}" for k in range(DIM)] + ["dilation", "dilation"],
     "pair": ["label_0", "label_1", "dilation", "dilation"],
-    "hom": ["port_0", "port_1"],
 }
-TWO_PHOTON = ("pair", "hom")
+TWO_PHOTON = ("pair",)
 
 
 def photon_ports(kind: str) -> list[int]:
@@ -456,6 +453,18 @@ def label_coincidence(roles: list[str], table: list[list[Any]]) -> list[str]:
     """P(one photon on each of two distinct non-dilation modes), indistinguishable then distinguishable."""
     rows = [r for r in table if r[0] != r[1] and "dilation" not in (roles[r[0]], roles[r[1]])]
     return [str(sum((Fraction(r[k]) for r in rows), Fraction(0))) for k in (2, 3)]
+
+
+def two_click(roles: list[str], table: list[list[Any]]) -> dict[str, list[str]]:
+    """The two-click terms a < b: the label pair and their total, indistinguishable then distinguishable.
+
+    Threshold detectors with min_detected_photons 2 keep only a < b, so the
+    observable is f(V) = (V L_ind + (1 - V) L_dist) / (V T_ind + (1 - V) T_dist)
+    for source indistinguishability V; T_dist > 0 on every block.
+    """
+    apart = [r for r in table if r[0] != r[1]]
+    total = [str(sum((Fraction(r[k]) for r in apart), Fraction(0))) for k in (2, 3)]
+    return {"label": label_coincidence(roles, table), "total": total}
 
 
 def algebra_probability(roles: list[str], probabilities: list[Fraction]) -> Fraction:
@@ -538,6 +547,7 @@ def block_record(config: dict[str, Any], offset: int) -> dict[str, Any]:
             roles=roles,
             pair_ideal=table,
             label_coincidence=label_coincidence(roles, table),
+            two_click=two_click(roles, table),
             rows=[[row["source"], row["index"]] for row in config["rows"]],
         )
         return record
@@ -595,18 +605,24 @@ def preregistered(family: str) -> dict[str, Any]:
         return {
             "definitions": {k: DEFINITIONS[k] for k in ("constructive pair", "suppressed pair")},
             "observable": "per job, the two-click samples (min_detected_photons 2, threshold detectors) by mode "
-            "pair; the label coincidence is the fraction of two-click samples with one click on each label mode",
-            "ideal": "pair_ideal lists P(a, b) for indistinguishable and distinguishable photons; a source of "
-            "indistinguishability V mixes them as V P_ind + (1 - V) P_dist before threshold conditioning, so an "
-            "edge block reads (1 + V)/8 and a strut or non-kite block (1 - V)/8 on the label pair",
-            "calibration": "the hom job, a balanced splitter on the same two sources, reads P(1, 1) = (1 - V)/2 "
-            "and fixes V for every pair block of the series",
-            "hardware_report": "the edge minus strut label-coincidence difference against V/4 from the hom job, "
-            "the sign of perm M as the classifier of each block, and every mode-pair frequency against "
-            "pair_ideal at the fitted V, with Wilson 95% intervals",
-            "falsifier": "a strut or non-kite block whose label coincidence exceeds the edge blocks' at the "
-            "fitted V, or an edge minus strut difference outside V/4 by more than 4.5 standard errors",
+            "pair; the label fraction f is the share of two-click samples with one click on each label mode",
+            "ideal": "two_click lists L (the label pair) and T (every a < b pair) for indistinguishable and "
+            "distinguishable photons; at source indistinguishability V, f(V) = (V L_ind + (1 - V) L_dist) / "
+            "(V T_ind + (1 - V) T_dist): 1/2 on an edge and 0 on a strut at V = 1, 1/6 and 1/7 at V = 0",
+            "calibration": "V is fitted from the suppressed (strut and non-kite) blocks, whose f falls from 1/7 "
+            "at V = 0 to 0 at V = 1, and the catalogue's HOM figure is the prior it is compared with",
+            "hardware_report": "the fitted V with its interval, every constructive block's f against f_edge(V), "
+            "every mode-pair frequency against pair_ideal mixed at V, with Wilson 95% intervals",
+            "falsifier": "a constructive block whose f lies more than 4.5 standard errors from f_edge at the "
+            "fitted V, or suppressed blocks whose f values disagree with one V at that bound",
         }
+    layout = "single blocks share no job"
+    if family == PACKED:
+        layout = (
+            "blocks share a job and a block-diagonal unitary; inter-block crosstalk is a variable the single "
+            "series lacks, and the block on modes 4-7 reads mode 5 (38.2 dark counts per second in the retained "
+            "record) as label_1, a floor near 4e-3 of its samples"
+        )
     return {
         "definitions": {k: DEFINITIONS[k] for k in ("dark", "bright", "half")},
         "observable": "per block, the fraction a of detected samples whose photon lands on an algebra mode "
@@ -620,10 +636,7 @@ def preregistered(family: str) -> dict[str, Any]:
         "a_bright - a_dark, the total variation distance of each per-mode histogram from its ideal and the "
         "one-hot leakage into the 14 unreachable labels, each with a Wilson 95% interval and the dark counts "
         "of the detectors involved",
-        "layout": "single blocks share no job"
-        if family == SINGLE
-        else "blocks share a job and a block-diagonal unitary; inter-block crosstalk is a variable the single "
-        "series lacks",
+        "layout": layout,
     }
 
 
@@ -761,6 +774,7 @@ def admit(files: dict[str, str], census_path: Path = CENSUS, catalogue_path: Pat
                     require(table == block["pair_ideal"], f"{name} pair ideal differs from its unitary")
                     coincidence = label_coincidence(block["roles"], table)
                     require(coincidence == block["label_coincidence"], f"{name} label coincidence differs")
+                    require(two_click(block["roles"], table) == block["two_click"], f"{name} two-click terms differ")
                     if block["kind"] == "pair":
                         check_relation(name, block["m"], coincidence, block_rows)  # type: ignore[arg-type]
                 else:
@@ -876,6 +890,10 @@ def self_test() -> int:
         ("a one-hot block claiming another P", _edit(f"{last_single}/cases.json", _claim_bright)),
         ("a strut pair serving kite-edge rows", _swap_pair_rows),
         ("a pair whose sign block is an edge's", _edit(f"{PAIRS}/job-00/cases.json", _edge_block)),
+        (
+            "an edited two-click total",
+            _edit(f"{PAIRS}/job-00/cases.json", lambda m: m["blocks"][0]["two_click"]["total"].reverse()),
+        ),
     ]
     rejected = 0
     for label, mutate in file_mutations:
