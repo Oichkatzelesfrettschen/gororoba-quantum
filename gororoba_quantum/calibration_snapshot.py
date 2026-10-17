@@ -193,6 +193,19 @@ def aer_device() -> str:
     return device
 
 
+def aer_custatevec() -> bool:
+    """Whether GOROROBA_AER_CUSTATEVEC asks noise_simulator for cuStateVec; unset or 0 keeps it off.
+
+    1 sets cuStateVec_enable on every GPU run whose caller leaves custatevec
+    unset, so an entry that takes its device from aer_device() runs on
+    libcustatevec without an argument of its own; a CPU run ignores it.
+    """
+    value = os.environ.get("GOROROBA_AER_CUSTATEVEC", "0")
+    if value not in ("0", "1"):
+        raise SystemExit(f"GOROROBA_AER_CUSTATEVEC={value!r} is not 0 or 1")
+    return value == "1"
+
+
 # Aer's batched_shots_gpu applies each operation to every shot of a batch in
 # one GPU kernel launch. At 7 and 10 active qubits it ran a calibrated noisy
 # trajectory batch 2.7 to 3.8 times faster than the unbatched GPU executor,
@@ -235,7 +248,7 @@ def noise_simulator(
     device: str = "CPU",
     method: str = "density_matrix",
     batched_shots: bool | None = None,
-    custatevec: bool = False,
+    custatevec: bool | None = None,
 ) -> AerSimulator:
     """AerSimulator with live_run.noise_simulator's noise, rebuilt from the snapshot.
 
@@ -253,13 +266,16 @@ def noise_simulator(
     branching is never enabled: Aer 0.17.2's shot branching drops the
     readout channel of a mid-circuit measurement.
 
-    custatevec sets Aer's cuStateVec_enable on a GPU statevector run, which
-    routes gate application and sampling through libcustatevec; an Aer built
-    or wheeled without cuQuantum raises at run time. Aer 0.17.2 reports
+    custatevec sets Aer's cuStateVec_enable on a GPU run, statevector or
+    density matrix, which routes gate application and sampling through
+    libcustatevec; an Aer built or wheeled without cuQuantum raises at run
+    time. Left unset it follows aer_custatevec(). Aer 0.17.2 reports
     cuStateVec_enable False on a run that also sets batched_shots_gpu, so
     custatevec turns the batched default off and raises on an explicit
     batched_shots=True instead of falling back unseen.
     """
+    if custatevec is None:
+        custatevec = aer_custatevec()
     if custatevec and batched_shots:
         raise ValueError("custatevec and batched_shots are exclusive Aer GPU options")
     view, noise = noise_model(snapshot)

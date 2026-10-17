@@ -91,8 +91,9 @@ and what it must prove before its output counts.
   sized to the work; kaggle_run.py refuses an accelerator push without one.
   The kernel installs qiskit-aer-gpu-cu11 0.17.2, cuquantum-cu11 24.8.0 and
   cutensor-cu11 2.2.0 and sets `GOROROBA_AER_DEVICE=GPU`.
-- **cuStateVec.** `noise_simulator(..., custatevec=True)` sets
-  `cuStateVec_enable` on a GPU statevector run; `scripts/aer_gpu_probe.py
+- **cuStateVec.** `noise_simulator(..., custatevec=True)`, or
+  `GOROROBA_AER_CUSTATEVEC=1` in the entry's environment, sets
+  `cuStateVec_enable` on a GPU statevector or density-matrix run; `scripts/aer_gpu_probe.py
   --workloads n21 --configurations
   cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec` records
   the three paths with Aer's reported `cuStateVec_enable`. The option excludes
