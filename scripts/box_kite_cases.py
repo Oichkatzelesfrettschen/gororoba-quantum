@@ -756,20 +756,24 @@ def check_row(item: tuple[str, Row]) -> None:
 # ---------------------------------------------------------------- emission
 
 
-def snap_angle(theta: float) -> int:
-    k = round(theta * ANGLE_GRID / math.pi)
-    if abs(theta - k * math.pi / ANGLE_GRID) > ANGLE_TOLERANCE:
-        raise ValueError(f"Rz angle {theta!r} is off the pi/{ANGLE_GRID} grid")
+def snap_angle(theta: float, grid: int = ANGLE_GRID) -> int:
+    k = round(theta * grid / math.pi)
+    if abs(theta - k * math.pi / grid) > ANGLE_TOLERANCE:
+        raise ValueError(f"Rz angle {theta!r} is off the pi/{grid} grid")
     return k
 
 
-def emit(circuit: Any, place: dict[int, int], dialect: str = "qx") -> list[str]:
+def emit(circuit: Any, place: dict[int, int], dialect: str = "qx", angle_grid: int | None = ANGLE_GRID) -> list[str]:
     """cQASM 3.0 lines of a basis-level replica; place maps its local qubits to register indices.
 
     The circuit's global phase is unobservable and is not written. Rz angles
-    print from their pi/ANGLE_GRID multiple. The tuna dialect writes a
-    barrier as one per-qubit barrier line per qubit, a run the platform's
-    scheduler aligns; the qx dialect omits barriers.
+    print from their pi/angle_grid multiple, which rejects an angle off that
+    grid; angle_grid None prints the angle itself at the same 15 decimals.
+    The tuna dialect writes a barrier as one per-qubit barrier line per
+    qubit, a run the platform's scheduler aligns; the qx dialect omits
+    barriers. No dialect maps rz into tuna or reset into any backend, so a
+    Tuna text carries no angle to quantize and no text reaches qxelarator's
+    reset.
     """
     if dialect not in DIALECTS:
         raise ValueError(f"dialect {dialect!r} has no gate map")
@@ -787,8 +791,10 @@ def emit(circuit: Any, place: dict[int, int], dialect: str = "qx") -> list[str]:
         if name in TWO_QUBIT:
             lines.append(f"{names[name]} q[{qubits[0]}], q[{qubits[1]}]")
         elif name == "rz":
-            k = snap_angle(float(instruction.operation.params[0]))
-            lines.append(f"{names[name]}({k * math.pi / ANGLE_GRID:.15f}) q[{qubits[0]}]")
+            theta = float(instruction.operation.params[0])
+            if angle_grid is not None:
+                theta = snap_angle(theta, angle_grid) * math.pi / angle_grid
+            lines.append(f"{names[name]}({theta:.15f}) q[{qubits[0]}]")
         else:
             lines.append(f"{names[name]} q[{qubits[0]}]")
     return lines
@@ -2543,6 +2549,21 @@ def self_test() -> None:
     reject("a file outside the series index", lambda: validate_series(stray, backend))
     reject("an unknown dialect", lambda: emit(logical("reduced", within[0]), {0: 0, 1: 1}, dialect="ry"))
     reject("an off-grid Rz angle", lambda: snap_angle(math.pi / 3))
+    from qiskit import QuantumCircuit
+
+    off_grid = QuantumCircuit(1)
+    off_grid.rz(math.pi / 3, 0)
+    reject("an off-grid Rz angle in the default emit", lambda: emit(off_grid, {0: 0}))
+    if emit(off_grid, {0: 2}, angle_grid=None) != [f"Rz({math.pi / 3:.15f}) q[2]"]:
+        raise AssertionError("emit with angle_grid None does not print the angle itself")
+    on_grid = QuantumCircuit(1)
+    on_grid.rz(3 * math.pi / ANGLE_GRID, 0)
+    if emit(on_grid, {0: 0}, angle_grid=None) != emit(on_grid, {0: 0}):
+        raise AssertionError("an on-grid angle prints differently with and without snapping")
+    with_reset = QuantumCircuit(1)
+    with_reset.reset(0)
+    for dialect in DIALECTS:
+        reject(f"a reset in the {dialect} dialect", lambda d=dialect: emit(with_reset, {0: 0}, dialect=d))
 
     # Tuna dialect and layout.
     reject("a CNOT in the tuna dialect", lambda: emit(logical("reduced", within[0]), {0: 1, 1: 4}, dialect="tuna"))
