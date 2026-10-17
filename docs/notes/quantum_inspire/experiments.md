@@ -647,6 +647,30 @@ repeated calibration outside it.
 - The postselected estimates differ from the all-shot estimates by at most
   4.2 standard errors (Q13, tau = 800 ns).
 
+**Calibration sensitivity** (series
+[P](../../../results/quantum_inspire/readout_ringdown_tuna_17_P_calibration_sensitivity.json) and
+[Q](../../../results/quantum_inspire/readout_ringdown_tuna_17_Q_calibration_sensitivity.json),
+gates core-434 and core-435). The preregistered errors treat the batch-00
+assignment e01, e10 as constants. The sensitivity record carries their
+binomial variances from the readout-0 and readout-1 counts through every
+quadrature (analytic) and redraws all readout and Ramsey counts 2000 times
+(bootstrap), beside the preregistered standard errors; the verdicts stay as
+analyzed. The shared assignment largely cancels in delta: on usable targets
+the calibrated delta and rate errors exceed the preregistered ones by at
+most 9.5% (series P) and 3.6% (series Q); on Q6 the excess is at most
+0.14%, and the analytic, bootstrap and preregistered delta errors (1.8 to
+2.2 kHz) agree within the bootstrap spread of about 30 Hz. The calibration
+term is small against shot noise, so the quoted standard errors stand (the
+analytic A error differentiates the complete weighted fit, weights included,
+and exceeds the preregistered one by at most 5.7%, on Q14, where the bootstrap
+gives 5.5%); the
+stale Q6 and Q15 calibrations bias their phases, a shift this error model
+does not bound. One entry (Q15 delta at tau = 15) lies 3.5 spreads from its bootstrap
+error with the same gap in the shot-only bootstrap, a shot-noise
+linearization gap at visibility above 1. A (a three-parameter fit with T at
+a bound on several targets) and the minimum visibility have bootstrap errors
+well above their delta-method errors with or without the calibration term.
+
 ## Readout faults on Tuna-17, 2026-10-17
 
 `scripts/qi_tuna17_readout_faults.py` (gate core-400) tests the readout

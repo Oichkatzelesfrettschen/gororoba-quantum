@@ -1747,11 +1747,11 @@
       "evidence": [
         {
           "path": "results/live/2026-10-13T080216.451663Z/rca-mechanism-fit.json",
-          "sha256": "812f8b2f1695cb8d14fb2c2d4df09f426d5abf7e795d5c23d5520866d5539dd2"
+          "sha256": "21bba4121b743b2befbd2ef44569c711f00c6b57e60ac1a4f4e550262dcbd041"
         },
         {
           "path": "results/live/2026-10-13T083417.634585Z/rca-mechanism-fit.json",
-          "sha256": "29288e5dc32ce91ff33a26ea3fa51ad77e0b672e564f240eb47f4a3a9c4506fd"
+          "sha256": "e0dfb453d6192b0b5880921972993e84c9a81de434479e88a60e4f4608fc187f"
         }
       ],
       "documents": [
@@ -2523,7 +2523,7 @@
         },
         {
           "path": "results/live/2026-10-13T080216.451663Z/rca-mechanism-fit.json",
-          "sha256": "812f8b2f1695cb8d14fb2c2d4df09f426d5abf7e795d5c23d5520866d5539dd2"
+          "sha256": "21bba4121b743b2befbd2ef44569c711f00c6b57e60ac1a4f4e550262dcbd041"
         },
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
@@ -3820,6 +3820,10 @@
         {
           "path": "results/quantum_inspire/readout_ringdown_tuna_17_P_analysis.json",
           "sha256": "bf230bbf16104edc271f2dbf2dca32168aae568c21285384981ffa24c7056e56"
+        },
+        {
+          "path": "results/quantum_inspire/readout_ringdown_tuna_17_P_calibration_sensitivity.json",
+          "sha256": "4092321399fd5c1129a7c90265fb0c23916debfd47723f5b9a34013b7193b728"
         }
       ],
       "documents": [
@@ -3827,6 +3831,7 @@
       ],
       "gates": {
         "core-386": "replay",
+        "core-434": "replay",
         "core-362": "freshness"
       },
       "acquisitions": [
@@ -3860,6 +3865,10 @@
         {
           "path": "results/quantum_inspire/readout_ringdown_tuna_17_Q_analysis.json",
           "sha256": "ca2f6f74180c5680437c7122bf8776fbd067efd441a48bcd9678eefb4d3e9602"
+        },
+        {
+          "path": "results/quantum_inspire/readout_ringdown_tuna_17_Q_calibration_sensitivity.json",
+          "sha256": "6bda842b98ede1c464a7da2e744ca164b249eb30fff2df94e174f0a050510299"
         }
       ],
       "documents": [
@@ -3868,6 +3877,7 @@
       ],
       "gates": {
         "core-430": "replay",
+        "core-434": "replay",
         "core-362": "freshness"
       },
       "acquisitions": [

@@ -1739,6 +1739,30 @@
   },
   {
    "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z && PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z",
+   "name": "core-443",
+   "seconds": 49,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --check results/live/2026-10-13T083417.634585Z",
+   "name": "core-447",
+   "seconds": 190,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --check results/live/2026-10-13T083417.634585Z",
+   "name": "core-448",
+   "seconds": 199,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONWARNINGS=error \"$PYTHON\" patch_characterization.py",
    "name": "core-193",
@@ -2724,6 +2748,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/readout_ringdown_tuna_17_P_calibration_sensitivity.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08 --replay && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/readout_ringdown_tuna_17_P_calibration_sensitivity.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08 --replay && \"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/readout_ringdown_tuna_17_Q_calibration_sensitivity.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08 --replay && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/readout_ringdown_tuna_17_Q_calibration_sensitivity.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08 --replay",
+   "name": "core-434",
+   "seconds": 535.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity-self-test && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --sensitivity-self-test",
+   "name": "core-435",
+   "seconds": 7.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_tuna17_readout_faults.py --check && \"$PYTHON\" -B -O -W error scripts/qi_tuna17_readout_faults.py --check",
    "name": "core-400",
    "seconds": 2.0,
@@ -3111,6 +3151,22 @@
    "cmd": "\"$PYTHON\" -B -W error replica_covariance_contracts.py && \"$PYTHON\" -B -O -W error replica_covariance_contracts.py",
    "name": "core-486",
    "seconds": 12.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck.json && \"$PYTHON\" -B -O -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck.json",
+   "name": "core-487",
+   "seconds": 44.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_crosscheck.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_exact_crosscheck.py --self-test",
+   "name": "core-488",
+   "seconds": 1.6,
    "tier": "pr"
   },
   {
