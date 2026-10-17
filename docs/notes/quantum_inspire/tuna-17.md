@@ -133,7 +133,8 @@ shots per circuit, each corrected with its own batch's readout pair
 (`results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json`, gate
 core-425; claim `qi-tuna17-boxkite-t0-depth-ladder`): C(1) = 0.954, C(5) =
 0.857 and C(9) = 0.710 (standard errors 0.003), r = 0.9654 per CZ with 99%
-interval [0.9638, 0.9671], inside the planning range [0.87, 0.97]. Every
+interval [0.9638, 0.9671], inside the decision band [0.87, 0.97] as
+preregistered and above the prediction [0.87, 0.96]. Every
 batch passed its sanity checks, and the QX twins of the three witness
 circuits read every replica exactly. C(1) lies above its preregistered
 [0.72, 0.82] because that prediction carried the selector's readout factor

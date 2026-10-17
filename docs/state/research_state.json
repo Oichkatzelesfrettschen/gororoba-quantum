@@ -4061,7 +4061,7 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json",
-          "sha256": "0a3cbbb48780eeacbc5a9edeebaff270272d4fc37e8c8726fd17bf00714fdd3f"
+          "sha256": "b4836141978d8970caa3f8ca4942cb21e21e313786528ea2eda7d911dac5b2ab"
         }
       ],
       "documents": [
@@ -4083,7 +4083,7 @@
     },
     {
       "id": "qi-tuna17-boxkite-t0-depth-ladder",
-      "statement": "On Tuna-17 the reduced two-label LCU of edge (1,10)(4,15) of kite 3, corrected per batch with its own readout pair, keeps a contrast C(1) = 0.954 +- 0.003, C(5) = 0.857 +- 0.003 and C(9) = 0.710 +- 0.003 over a 3 x 3 Latin square of pairs {(1,4), (10,13), (12,14)} and batches at 16384 shots, so the per-CZ retention is r = 0.9654 with 99% bootstrap interval [0.9638, 0.9671], inside the planning range [0.87, 0.97]. The depth-1 upper bound 0.961 clears the 0.5 floor, so the program continues; C(1) misses its preregistered [0.72, 0.82] upward. The QX twins of the three witness circuits read every replica's predicted outcome in all 2048 shots.",
+      "statement": "On Tuna-17 the reduced two-label LCU of edge (1,10)(4,15) of kite 3, corrected per batch with its own readout pair, keeps a contrast C(1) = 0.954 +- 0.003, C(5) = 0.857 +- 0.003 and C(9) = 0.710 +- 0.003 over a 3 x 3 Latin square of pairs {(1,4), (10,13), (12,14)} and batches at 16384 shots, so the per-CZ retention is r = 0.9654 with 99% bootstrap interval [0.9638, 0.9671], inside the decision band [0.87, 0.97] as preregistered and above its prediction [0.87, 0.96]. The depth-1 upper bound 0.961 clears the 0.5 floor, so the program continues; C(1) and r both miss their predictions ([0.72, 0.82] and [0.87, 0.96]) upward. The QX twins of the three witness circuits read every replica's predicted outcome in all 2048 shots.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
@@ -4091,7 +4091,7 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json",
-          "sha256": "0a3cbbb48780eeacbc5a9edeebaff270272d4fc37e8c8726fd17bf00714fdd3f"
+          "sha256": "b4836141978d8970caa3f8ca4942cb21e21e313786528ea2eda7d911dac5b2ab"
         }
       ],
       "documents": [

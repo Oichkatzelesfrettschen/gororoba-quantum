@@ -426,8 +426,10 @@ per-CZ retention, V_q the 2 us visibility of each qubit active for t, and the
 readout factor of the measured qubit. The single depth point is the Design B
 witness: 0.0435 corrected contrast at about 68 CZ gives r = 0.955 (region
 values give 0.913 to 0.962); the teleport paths, 5 CZ at corrected fidelity
-0.746-0.862, bound r below by 0.87. The planning range is r in [0.87, 0.96],
-central 0.955; r already contains idle dephasing, so the visibility factor
+0.746-0.862, bound r below by 0.87. The prediction is r in [0.87, 0.96],
+central 0.955; the T0 decision band, which resizes the later stages only
+when the 99% interval of r leaves it, is [0.87, 0.97] as preregistered in
+the T0 falsifier. r already contains idle dephasing, so the visibility factor
 makes the estimate conservative. Readout factors 1 - P(1|0) - P(0|1) come
 from the peer readout batches of 2026-10-17 (P(1|0) at 04:36:37Z for every
 qubit; P(0|1) at 04:36:44Z for q1, q2, q3, q7, q8, q9, q13, q14, q15 and at
@@ -517,6 +519,10 @@ prose prints; the analysis reads only that block.
     bound C(1) + 2.5758 SE below 0.5 refutes the shallow admission and ends the Tuna-17
     program; a 99% interval of r disjoint from [0.87, 0.97] refutes the
     planning range and resizes T1, coherence and walk before they run.
+    [0.87, 0.97] is the decision band; the prediction of r, [0.87, 0.96],
+    is reported separately (`r_in_prediction`) and decides nothing. T1,
+    coherence and walk analyzed beside T0 carry either T0 stop first in
+    their own stops; analyzed alone they record the T0 gate as unverified.
 - T1, edge-sign classification and twist (2 batches, 4096 shots). The
   opposite-sign edge (1,10)(4,15) of kite 3 on (1,4), its census twist the
   same-sign edge (4,10)(1,15) of kite 6 on (10,13) (`census:kites[2].twists[0]`,
@@ -608,10 +614,15 @@ a readout model of e01 0.02 and e10 0.06 per qubit, and ideal QX twins) give
 their preregistered verdicts, among them a strut bias that stops T1 and an
 R1 failure that stops the Ry smoke subset analyzed beside it (alone, the
 smoke analysis records the ladder gate as unverified); every Ry fraction
-carries its count, binomial standard error and Wilson 95% interval. Twelve
-mutations (digest, receipt, both shot counts, shot width, missing readout raw and job, duplicate batch,
-reversed bit order, readout-1 outside the limit) are refused for their own
-reason. The twins stage judges each QX twin batch on its own: no shot off a
+carries its count, binomial standard error and Wilson 95% interval; the
+T0 end-program and resize scenarios also stop the T1 and walk stages
+analyzed beside them. Sixteen mutations (digest, foreign cases.json
+receipt, missing receipt, swapped job id, foreign batch id, both shot
+counts, shot width, missing readout raw and job, duplicate batch, a
+cancelled Ry job, reversed bit order, readout-1 outside the limit) are
+refused for their own reason. Every run needs its submission.json, whose
+batch job, job ids and circuit digests must equal results.json and
+cases.json before any shot is read; only a failed Ry job enters as data. The twins stage judges each QX twin batch on its own: no shot off a
 deterministic prediction, P = 1/2 inside |z| < 4.5, the double-X twin all 0.
 Gate core-425 replays the retained records.
 
@@ -625,15 +636,17 @@ and batch-04, every check exact, the double-X twin all 0 in 2048 shots).
   P(1|0) at most 0.045), and q5, q6, q7 and q9 are readout-admissible, with
   the visibility exclusion of q5, q6 and q7 standing.
 - T0: C(1) = 0.954, C(5) = 0.857, C(9) = 0.710 (SE 0.003 each),
-  r = 0.9654, 99% interval [0.9638, 0.9671], inside [0.87, 0.97]; the
-  depth-1 upper bound 0.961 clears 0.5, every batch passes sanity, verdict
-  continue.
+  r = 0.9654, 99% interval [0.9638, 0.9671], inside the decision band
+  [0.87, 0.97] as preregistered and wholly above the prediction
+  [0.87, 0.96], which r misses upward as C(1) does; the depth-1 upper bound
+  0.961 clears 0.5, every batch passes sanity, verdict continue.
 - C(1) misses its prediction [0.72, 0.82] upward. The separation model
   predicts the raw contrast, which carries the selector's readout factor
   1 - P(1|0) - P(0|1) (0.865 to 0.874 on q1, q10 and q12), while C(n) is
   readout-corrected: the central 0.82 divided by 0.874 is 0.94, against the
   measured 0.954. The prediction compared a raw-contrast model with a
-  corrected estimator; the decay r it planned for holds. No stop rule fires, so
+  corrected estimator. r also beats its prediction, so the device decayed
+  more slowly per CZ than planned. No stop rule fires, so
   T1, coherence and walk keep their design. Sizing with the measured r:
   T1's edge |D| sits near C(1), about 0.95, against the 0.4 threshold with
   a standard error near 0.01 at 4096 shots; the 6-CNOT walk (control

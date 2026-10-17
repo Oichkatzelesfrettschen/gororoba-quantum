@@ -10,9 +10,12 @@ A run directory holds one submitted batch as qi_platform.py leaves it:
 cases.json, the circuit files, submission.json, results.json and
 raw/<file>.json (shot-ordered bit strings). load_batch() refuses a batch
 whose cases.json differs from the retained case batch, whose circuit bytes
-differ from their cases.json sha256, whose receipt names another cases.json,
-whose jobs did not all complete with the manifest's shots (a failed Ry job
-is data: it names the factor the emulator rejects), whose shot strings have
+differ from their cases.json sha256, whose submission.json receipt is
+missing or names another cases.json, backend, shots, circuit set, circuit
+digest, job id or batch job than cases.json and results.json (checked
+before any shot is read), whose jobs did not all complete with the
+manifest's shots (a failed Ry job is data: it names the factor the emulator
+rejects; a cancelled or other non-completed job is refused), whose shot strings have
 another width than the declared register, whose manifest states another bit
 order than its backend's (Tuna and QX put qubit 0 at the rightmost
 character, Ry at the leftmost), or, on Tuna-17, which lacks its readout-0 and
@@ -66,6 +69,12 @@ Estimators, exactly as preregistered:
   of the joint counts and the readout counts.
 - walk: <Z_c> = 2 Pc(c = 0) - 1 with standard error 2 SE(Pc); the sign test
   against omega and the omit-last null test.
+- T0 gate: T1, coherence and walk analyzed in the same call as T0 carry
+  T0's end-program or resize stop first in their stops, with their estimates
+  still computed; analyzed without T0 they record the gate as unverified.
+  T0 reports r against its decision band (the falsifier's [0.87, 0.97]) and,
+  separately, against its prediction (the predictions text's range, read
+  from the manifest).
 - ry_ladder: completion or failure per circuit and, for a completed one, the
   z of every expected outcome (qubit 0 leftmost) and the count of outcomes
   of probability 0; the gating factor's failure stops the smoke subset, and
@@ -117,6 +126,8 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import parallel  # noqa: E402
 
 CASES = ROOT / "results/quantum_inspire/cases"
+# The receipt schema scripts/qi_platform.py submit writes.
+SUBMISSION_SCHEMA = "qi-submission-v2"
 SCHEMA = "box-kite-analysis-v1"
 FAMILIES = {
     "tuna_pre": "box_kite_tuna_pre",
@@ -128,6 +139,8 @@ FAMILIES = {
     "ry_smoke": "box_kite_ry_smoke",
     "tuna_twins": "box_kite_tuna_twins_qx",
 }
+# Stages that run only after T0; T0's stops carry into them when analyzed together.
+T0_DEPENDENT = ("tuna_t1", "tuna_coherence", "tuna_walk")
 # Families whose batches each answer their own question; the others need every batch.
 INDEPENDENT_BATCHES = ("tuna_twins",)
 TWIN_Z_LIMIT = re.compile(r"\|z\| < ([0-9.]+)")
@@ -191,6 +204,46 @@ def relative(path: Path, base: Path) -> str:
         fail(f"{path} lies outside {base}; the analysis records run paths relative to it")
 
 
+def check_receipt(run: Path, manifest: dict[str, Any], cases_bytes: bytes, collected: dict[str, Any]) -> dict[str, Any]:
+    """results.json's jobs by file, after binding them to the submission receipt that qi_platform.py submit writes.
+
+    The receipt (schema qi-submission-v2) must name this cases.json by sha256,
+    its backend, backend type and shots, exactly the manifest's circuit files
+    with their sha256, and one job id per file; results.json must hold one
+    job per file with that id and the receipt's batch_job as batch_job_id.
+    """
+    path = run / "submission.json"
+    if not path.exists():
+        fail(f"{run}: no submission.json receipt binds the run to its submitted batch")
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+    if receipt.get("schema") != SUBMISSION_SCHEMA:
+        fail(f"{run}: submission.json schema {receipt.get('schema')!r} is not {SUBMISSION_SCHEMA}")
+    if receipt.get("cases_sha256") != sha256(cases_bytes):
+        fail(f"{run}: submission.json names another cases.json sha256")
+    if any(receipt.get(key) != manifest[key] for key in ("backend", "backend_type_id", "shots")):
+        fail(f"{run}: submission.json backend, backend type or shots differ from cases.json")
+    digests = {row["file"]: row["sha256"] for row in manifest["circuits"]}
+    submitted = {row["file"]: row for row in receipt.get("jobs", [])}
+    if len(submitted) != len(receipt.get("jobs", [])) or set(submitted) != set(digests):
+        fail(f"{run}: submission.json jobs name other circuit files than cases.json")
+    if any(row.get("sha256") != digests[file] for file, row in submitted.items()):
+        fail(f"{run}: a submission.json circuit sha256 differs from cases.json")
+    jobs = {row["file"]: row for row in collected["jobs"]}
+    if len(jobs) != len(collected["jobs"]) or set(jobs) != set(digests):
+        fail(f"{run}: results.json jobs name other circuit files than cases.json")
+    for file, row in jobs.items():
+        if row["job"]["id"] != submitted[file]["job"]:
+            fail(
+                f"{run}/{file}: results.json job id {row['job']['id']} differs from the receipt's "
+                f"{submitted[file]['job']}"
+            )
+        if row["job"].get("batch_job_id") != receipt.get("batch_job"):
+            fail(
+                f"{run}/{file}: results.json batch job differs from the receipt's batch_job {receipt.get('batch_job')}"
+            )
+    return jobs
+
+
 def load_batch(run: Path, base: Path, cases_root: Path = CASES) -> Batch:
     """One run directory, checked for integrity (module docstring); raises SystemExit on the first failure."""
     cases_bytes = (run / "cases.json").read_bytes()
@@ -204,11 +257,8 @@ def load_batch(run: Path, base: Path, cases_root: Path = CASES) -> Batch:
     order = BIT_ORDER.get(manifest["backend"])
     if order is None or order not in manifest["bit_order"]:
         fail(f"{run}: bit order {manifest['bit_order']!r} differs from the {manifest['backend']} convention ({order})")
-    receipt = run / "submission.json"
-    if receipt.exists() and json.loads(receipt.read_text(encoding="utf-8")).get("cases_sha256") != sha256(cases_bytes):
-        fail(f"{run}: submission.json names another cases.json sha256")
     collected = json.loads((run / "results.json").read_text(encoding="utf-8"))
-    jobs = {row["file"]: row for row in collected["jobs"]}
+    jobs = check_receipt(run, manifest, cases_bytes, collected)
     texts: dict[str, str] = {}
     shots: dict[str, list[str]] = {}
     status: dict[str, dict[str, Any]] = {}
@@ -225,8 +275,11 @@ def load_batch(run: Path, base: Path, cases_root: Path = CASES) -> Batch:
         state = job["job"]["status"]
         status[file] = {"status": state, "message": job["job"].get("message", "")}
         if state != "completed":
-            if not ry:
-                fail(f"{run}/{file}: job {state}; every Tuna-17 job must complete before the batch is analyzed")
+            if not ry or state != "failed":
+                fail(
+                    f"{run}/{file}: job {state}; only a completed job, or a failed Ry job naming the construct the "
+                    "emulator rejects, enters the analysis"
+                )
             continue
         done = sum(r["shots_done"] for r in job["results"])
         raw_path = run / "raw" / f"{file}.json"
@@ -518,7 +571,19 @@ def analyze_pre(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+R_PREDICTION = re.compile(r"with r in \[([0-9.]+), ([0-9.]+)\]")
+
+
+def r_prediction(text: str) -> list[float]:
+    """The predicted range of r from the T0 manifest's predictions text, which carries it in prose only."""
+    match = R_PREDICTION.search(text)
+    if match is None:
+        fail("the T0 manifest's predictions state no range of r")
+    return [float(match[1]), float(match[2])]
+
+
 def analyze_t0(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
+    predictions = next(iter(batches.values()))["manifest"]["preregistered"]["predictions"]
     depths = list(t["depths"])
     replicas = []
     for name, batch in batches.items():
@@ -576,14 +641,21 @@ def analyze_t0(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
             f"end the Tuna-17 program: C(1) upper bound {upper:.4f} below {t['depth_1_contrast_upper_bound_floor']}"
         )
     low, high = t["r_planning_range"]
+    band = f"[{low}, {high}]"
+    resize = False
     if interval is None:
         r_verdict = "undetermined: a contrast is not positive in the point estimate or in too many draws"
     elif interval[1] < low or interval[0] > high:
-        r_verdict = "outside the planning range"
-        stops.append(f"resize T1, coherence and walk: r interval {interval} disjoint from {[low, high]}")
+        r_verdict = f"outside the decision band {band}"
+        resize = True
+        stops.append(f"resize T1, coherence and walk: r interval {interval} disjoint from {band}")
     else:
-        r_verdict = "inside the planning range"
+        r_verdict = f"inside the decision band {band}"
+    prediction = r_prediction(predictions)
     return {
+        "gate": {"end_program": upper < t["depth_1_contrast_upper_bound_floor"], "resize": resize},
+        "r_prediction": prediction,
+        "r_in_prediction": r_point is not None and prediction[0] <= r_point <= prediction[1],
         "replicas": replicas,
         "contrast": contrast,
         "depth_1_upper_bound": upper,
@@ -921,6 +993,7 @@ def analyze(runs: list[Path], base: Path = ROOT, cases_root: Path = CASES) -> di
         t = thresholds_of(batches)
         out: dict[str, Any] = {"thresholds": t, "missing_batches": missing}
         sanity_stops: list[str] = []
+        gate_stops: list[str] = []
         if family in ("tuna_t0", "tuna_t1", "tuna_coherence", "tuna_walk"):
             out["batches"], sanity_stops = sanity_block(batches, t)
         elif family != "tuna_pre":
@@ -954,8 +1027,27 @@ def analyze(runs: list[Path], base: Path = ROOT, cases_root: Path = CASES) -> di
                     estimates["stops"].insert(0, f"ladder gate: {factor} failed, which stops the Ry smoke subset")
                 else:
                     estimates["ladder_gate"] = f"passed: {ladder['gating_factor']['factor']} completed"
+            if family in T0_DEPENDENT:
+                t0 = results.get("tuna_t0")
+                if t0 is None:
+                    estimates["t0_gate"] = (
+                        "unverified: T0 runs incomplete in this call"
+                        if "tuna_t0" in stages
+                        else "unverified: T0 runs not analyzed in this call"
+                    )
+                else:
+                    gate = [
+                        message
+                        for flag, message in (
+                            ("end_program", "T0 gate: the depth-1 bound ended the Tuna program"),
+                            ("resize", "T0 gate: resize before running"),
+                        )
+                        if t0["gate"][flag]
+                    ]
+                    estimates["t0_gate"] = "; ".join(gate) if gate else "passed"
+                    gate_stops = gate
             results[family] = estimates
-        stops = sanity_stops + estimates.pop("stops")
+        stops = gate_stops + sanity_stops + estimates.pop("stops")
         out.update(estimates)
         out["stops"] = stops
         if "verdict" not in out:
@@ -1072,17 +1164,23 @@ def write_run(root: Path, family: str, batch: str, shots: dict[str, list[str]], 
     manifest = json.loads((source / "cases.json").read_text(encoding="utf-8"))
     for name in ["cases.json", *(row["file"] for row in manifest["circuits"])]:
         shutil.copyfile(source / name, run / name)
-    jobs = []
+    batch_job = int(sha256(f"{family}/{batch}".encode())[:6], 16)
+    jobs, submitted = [], []
     for index, row in enumerate(manifest["circuits"]):
         file = row["file"]
+        job_id = batch_job * 10 + index
         state = "failed" if file in failed else "completed"
         results = [] if file in failed else [{"shots_requested": manifest["shots"], "shots_done": manifest["shots"]}]
-        jobs.append({"file": file, "job": {"id": index, "status": state, "message": failed.get(file, "")},
-                     "results": results, "logs": None})  # fmt: skip
+        jobs.append({"file": file, "job": {"id": job_id, "batch_job_id": batch_job, "status": state,
+                     "message": failed.get(file, "")}, "results": results, "logs": None})  # fmt: skip
+        submitted.append({"file": file, "job": job_id, "sha256": row["sha256"]})
         if file not in failed:
             (run / "raw" / f"{file}.json").write_text(json.dumps(shots[file]), encoding="utf-8")
     (run / "results.json").write_text(json.dumps({"schema": "qi-collection-v1", "jobs": jobs}), encoding="utf-8")
-    receipt = {"cases_sha256": sha256((run / "cases.json").read_bytes())}
+    receipt = {"schema": SUBMISSION_SCHEMA, "state": "enqueued", "backend": manifest["backend"],
+               "backend_type_id": manifest["backend_type_id"], "shots": manifest["shots"],
+               "cases_sha256": sha256((run / "cases.json").read_bytes()), "batch_job": batch_job,
+               "jobs": submitted}  # fmt: skip
     (run / "submission.json").write_text(json.dumps(receipt), encoding="utf-8")
     return run
 
@@ -1170,8 +1268,8 @@ SCENARIOS: dict[str, dict[str, Any]] = {
     },
     "twins": {"families": ["tuna_twins"], "readout": IDEAL_QX, "visibility": 1.0},
     "twins_refuted": {"families": ["tuna_twins"], "readout": IDEAL_QX, "visibility": 0.995},
-    "t0_end": {"families": ["tuna_t0"], "readout": {}, "amplitude": 0.316, "r": 0.95},
-    "t0_resize": {"families": ["tuna_t0"], "readout": {}, "amplitude": 0.975, "r": 0.80},
+    "t0_end": {"families": ["tuna_t0", "tuna_t1"], "readout": {}, "amplitude": 0.316, "r": 0.95},
+    "t0_resize": {"families": ["tuna_t0", "tuna_walk"], "readout": {}, "amplitude": 0.975, "r": 0.80},
     "walk_refuted": {"families": ["tuna_walk"], "readout": {}, "control_p0": 0.8, "walk_sign_flipped": True},
     "coherence_refuted": {"families": ["tuna_coherence"], "readout": {}, "coherence_flipped": True},
     "pre_recovered": {"families": ["tuna_pre"], "readout": {**HEALTHY, 13: (0.02, 0.3)}, "xx": {}},
@@ -1214,7 +1312,13 @@ def analyze_self_test() -> None:
         check(pre["readmission"]["5"].endswith("visibility exclusion stands"), "q5 keeps its visibility exclusion")
         check(pre["verdict"] == "continue", f"pre stops: {pre['stops']}")
         t0 = good["tuna_t0"]
-        check(t0["verdict"] == "continue" and t0["r_verdict"] == "inside the planning range", f"t0: {t0['stops']}")
+        check(
+            t0["verdict"] == "continue" and t0["r_verdict"] == "inside the decision band [0.87, 0.97]",
+            f"t0: {t0['stops']}",
+        )
+        check(t0["r_prediction"] == [0.87, 0.96] and t0["r_in_prediction"], "r 0.95 lies inside its prediction")
+        for dependent in ("tuna_t1", "tuna_coherence", "tuna_walk"):
+            check(good[dependent]["t0_gate"] == "passed", f"{dependent} T0 gate: {good[dependent]['t0_gate']}")
         check(t0["r_interval"][0] <= 0.95 <= t0["r_interval"][1], f"t0 r interval {t0['r_interval']} misses 0.95")
         check(t0["c1_in_prediction"], f"t0 C(1) {t0['contrast']['1']}")
         t1 = good["tuna_t1"]
@@ -1240,11 +1344,30 @@ def analyze_self_test() -> None:
         check(ladder["circuits"][2]["verdict"].startswith("failed") and ladder["verdict"] == "continue", "ry R9")
         check(good["ry_smoke"]["verdict"] == "continue", f"ry smoke: {good['ry_smoke']['stops']}")
 
-        ended = stages("t0_end")["tuna_t0"]
+        ended_stages = stages("t0_end")
+        ended = ended_stages["tuna_t0"]
+        ended_t1 = ended_stages["tuna_t1"]
+        check(
+            ended_t1["verdict"] == "stop"
+            and ended_t1["stops"][0] == "T0 gate: the depth-1 bound ended the Tuna program"
+            and ended_t1["classification"],
+            f"a T0 end-program stop left T1 running or unestimated: {ended_t1['stops'][:2]}",
+        )
         check(any(s.startswith("end the Tuna-17 program") for s in ended["stops"]), f"t0 end: {ended['stops']}")
         check(any(s.startswith("sanity stop") for s in ended["stops"]), "the bright floor stops a C(1) 0.3 batch")
-        resized = stages("t0_resize")["tuna_t0"]
-        check(resized["r_verdict"] == "outside the planning range", f"t0 resize: {resized['r_verdict']}")
+        resized_stages = stages("t0_resize")
+        resized = resized_stages["tuna_t0"]
+        check(
+            resized["r_verdict"] == "outside the decision band [0.87, 0.97]" and not resized["r_in_prediction"],
+            f"t0 resize: {resized['r_verdict']}",
+        )
+        resized_walk = resized_stages["tuna_walk"]
+        check(
+            resized_walk["verdict"] == "stop"
+            and resized_walk["stops"][0] == "T0 gate: resize before running"
+            and resized_walk["walks"],
+            f"a T0 resize left the walk running or unestimated: {resized_walk['stops'][:2]}",
+        )
         check(
             not any(s.startswith("sanity stop") for s in resized["stops"]),
             f"the bright floor reads depth 1 only, yet a low depth-9 bright replica stopped T0: {resized['stops']}",
@@ -1385,7 +1508,48 @@ def analyze_self_test() -> None:
             rewrite(r / "results.json", lambda c: {**c, "jobs": [j for j in c["jobs"] if j["file"] != "readout-1.cq"]})
 
         run = mutated(drop_readout)
-        expect_exit("a batch without its readout-1 job", lambda: load_batch(run, mutation_root(run)), "no job")
+        expect_exit(
+            "a batch without its readout-1 job",
+            lambda: load_batch(run, mutation_root(run)),
+            "results.json jobs name other circuit files",
+        )
+
+        def swap_job_ids(r: Path) -> None:
+            def edit(receipt: dict[str, Any]) -> dict[str, Any]:
+                jobs = receipt["jobs"]
+                jobs[0]["job"], jobs[1]["job"] = jobs[1]["job"], jobs[0]["job"]
+                return receipt
+
+            rewrite(r / "submission.json", edit)
+
+        for label, edit, reason in (
+            ("a missing receipt", lambda r: (r / "submission.json").unlink(), "no submission.json receipt"),
+            ("a swapped job id", swap_job_ids, "differs from the receipt's"),
+            (
+                "a foreign batch id",
+                lambda r: rewrite(r / "submission.json", lambda c: {**c, "batch_job": c["batch_job"] + 1}),
+                "batch job differs from the receipt",
+            ),
+        ):
+            run = mutated(edit)
+            expect_exit(label, lambda r=run: load_batch(r, mutation_root(r)), reason)
+        ry_source = next(r for r in runs["pass"] if r.name.endswith("ry_ladder-batch-00"))
+        cancelled = root / "mutations" / "cancelled" / "results/quantum_inspire/runs" / ry_source.name
+        shutil.copytree(ry_source, cancelled)
+        rewrite(
+            cancelled / "results.json",
+            lambda c: {
+                **c,
+                "jobs": [
+                    {**j, "job": {**j["job"], "status": "cancelled"}} if j["file"] == "r9-teleport-bare.cq" else j
+                    for j in c["jobs"]
+                ],
+            },
+        )
+        expect_exit("a cancelled Ry job", lambda: load_batch(cancelled, cancelled.parents[3]), "job cancelled")
+        mutations += 1
+        t1_only = analyze([r for r in runs["pass"] if "tuna_walk" in r.name], root / "pass")["stages"]["tuna_walk"]
+        check(t1_only["t0_gate"] == "unverified: T0 runs not analyzed in this call", "walk alone read the T0 gate")
 
         # Sanity mutations record a stop instead of an error.
         def reverse(r: Path) -> None:

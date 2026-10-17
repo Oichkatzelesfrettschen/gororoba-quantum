@@ -348,14 +348,23 @@
     }
    },
    "depth_1_upper_bound": 0.961097724554,
+   "gate": {
+    "end_program": false,
+    "resize": false
+   },
    "missing_batches": [],
    "r": 0.965358043114,
+   "r_in_prediction": false,
    "r_interval": [
     0.96375745874,
     0.967080897583
    ],
+   "r_prediction": [
+    0.87,
+    0.96
+   ],
    "r_undefined_draws": 0,
-   "r_verdict": "inside the planning range",
+   "r_verdict": "inside the decision band [0.87, 0.97]",
    "replicas": [
     {
      "batch": "batch-00",

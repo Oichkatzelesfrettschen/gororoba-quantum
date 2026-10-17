@@ -3054,7 +3054,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_analysis.py --analyze-self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --analyze-self-test",
    "name": "core-424",
-   "seconds": 40.9,
+   "seconds": 48.5,
    "tier": "pr"
   },
   {

@@ -734,8 +734,9 @@ section 4(g); gate core-425 replays both records).
   (P(1|1) 0.973 and 0.957; Q9 P(1|0) 0.018), so the double-X discriminator
   is not read; the box-kite layout passes the T0 readout rule.
 - **Tuna-17 T0**: C(1) = 0.954, C(5) = 0.857, C(9) = 0.710, r = 0.9654 per
-  CZ (99% interval [0.9638, 0.9671]); C(1) lies above its preregistered
-  [0.72, 0.82], and the program continues to T1.
+  CZ (99% interval [0.9638, 0.9671]), inside the decision band [0.87, 0.97]
+  as preregistered; C(1) and r both miss their predictions ([0.72, 0.82] and
+  [0.87, 0.96]) upward, and the program continues to T1.
 - **Ry**: programs without a bit register run at width 9; one-CNOT replicas
   read their ideal outcome at 0.978 or more, R9 loses 7.5% of shots, and
   the 35-CNOT full Design B falls to contrast 0.387, which stops the Ry
