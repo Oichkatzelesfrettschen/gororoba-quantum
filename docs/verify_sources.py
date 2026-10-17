@@ -634,6 +634,14 @@ def source_archive_prefix(entry: dict[str, Any]) -> str:
     if github is not None:
         require(version.split(" ", 1)[0] == github[2], "archive pinned version")
         return f"{github[1]}-{github[2]}"
+    # A crates.io download is the registry's .crate tarball, rooted at NAME-VERSION.
+    crate = re.fullmatch(
+        r"https://static\.crates\.io/crates/([A-Za-z0-9_-]+)/\1-([0-9]+\.[0-9]+\.[0-9]+)\.crate",
+        source_url,
+    )
+    if crate is not None:
+        require(version == crate[2], "archive pinned version")
+        return f"{crate[1]}-{crate[2]}"
     interval = re.fullmatch(
         r"https://coqinterval\.gitlabpages\.inria\.fr/releases/interval-([0-9]+\.[0-9]+\.[0-9]+)\.tar\.gz",
         source_url,
@@ -668,7 +676,7 @@ def archive_member_bytes(
 def verify_archive_members(payload: bytes, entry: dict[str, Any], prefix: str) -> None:
     """Check inspected source and license bytes inside an unchanged archive."""
     identifier = require_text(entry.get("license_identifier"), "archive license identifier")
-    require(identifier in {"MIT", "CECILL-B", "CECILL-C"}, "archive license allowlist")
+    require(identifier in {"MIT", "CECILL-B", "CECILL-C", "Apache-2.0 OR MPL-2.0"}, "archive license allowlist")
     inspected = entry.get("inspected_files")
     if not isinstance(inspected, list) or not inspected:
         raise ValueError("archive inspected files")
@@ -696,6 +704,13 @@ def verify_archive_members(payload: bytes, entry: dict[str, Any], prefix: str) -
                     normalized.startswith((b"MIT License ", b"The MIT License (MIT) "))
                     and b"Permission is hereby granted, free of charge" in normalized
                     and b"The above copyright notice and this permission notice shall be included" in normalized,
+                    "archive license text identity",
+                )
+            elif identifier == "Apache-2.0 OR MPL-2.0":
+                # Either grant permits unchanged redistribution; the license member is the Apache text.
+                require(
+                    normalized.startswith(b"Apache License Version 2.0, January 2004 ")
+                    and b"TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION" in normalized,
                     "archive license text identity",
                 )
             else:
@@ -730,7 +745,7 @@ def verify_source_archives(root: Path, registry: dict[str, Any]) -> int:
         entry = require_mapping(candidate, "source archive entry")
         relative = require_text(entry.get("path"), "source archive path")
         require(
-            re.fullmatch(r"docs/source_archives/[A-Za-z0-9][A-Za-z0-9_.-]*\.tar\.gz", relative) is not None,
+            re.fullmatch(r"docs/source_archives/[A-Za-z0-9][A-Za-z0-9_.-]*\.(?:tar\.gz|crate)", relative) is not None,
             "source archive path",
         )
         require(relative not in registered, "duplicate source archive path")
