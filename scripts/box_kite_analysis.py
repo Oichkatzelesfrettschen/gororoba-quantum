@@ -67,6 +67,12 @@ Estimators, exactly as preregistered:
   of probability 0; the gating factor's failure stops the smoke subset.
 - ry_smoke: P(selector = 0) per replica, qubit 0 leftmost; a deterministic
   replica below the fraction floor of its ideal outcome stops the series.
+- tuna_twins: each relabeled QX twin on the ideal emulator; a deterministic
+  prediction (selector, control or the selector-0 conditional of a data
+  qubit) admits no shot off it, a P = 1/2 prediction stays inside the z
+  limit its manifest's falsifier states, and the double-X twin reads 0 on
+  every qubit of every shot. Twin batches are judged one by one, so a
+  record may hold only the twins of the stages that ran.
 
 Bootstrap draws come from one seeded generator in a fixed order (batch,
 readout qubit, replica), all drawn before the per-draw estimates run through
@@ -112,7 +118,11 @@ FAMILIES = {
     "tuna_walk": "box_kite_tuna_walk",
     "ry_ladder": "box_kite_ry_ladder",
     "ry_smoke": "box_kite_ry_smoke",
+    "tuna_twins": "box_kite_tuna_twins_qx",
 }
+# Families whose batches each answer their own question; the others need every batch.
+INDEPENDENT_BATCHES = ("tuna_twins",)
+TWIN_Z_LIMIT = re.compile(r"\|z\| < ([0-9.]+)")
 BIT_ORDER = {"tuna_17": "rightmost", "QXsinglenodesimulator": "rightmost", "Rydberg": "leftmost"}
 SHARED_EXEMPT = {"batch", "stage", "group", "circuits"}
 QUBIT_REF = re.compile(r"q\[(\d+)\]")
@@ -424,8 +434,14 @@ def stage_batches(batches: list[Batch], family: str, cases_root: Path) -> tuple[
 
 
 def thresholds_of(batches: dict[str, Batch]) -> dict[str, Any]:
-    first = next(iter(batches.values()))
-    return dict(first["manifest"]["preregistered"]["thresholds"])
+    """The manifest's thresholds block; the twin manifests state their z limit in the falsifier text only."""
+    prereg = next(iter(batches.values()))["manifest"]["preregistered"]
+    if "thresholds" in prereg:
+        return dict(prereg["thresholds"])
+    match = TWIN_Z_LIMIT.search(prereg["falsifier"])
+    if match is None:
+        fail("the twin manifest's falsifier states no |z| limit")
+    return {"deterministic_shots_off_at_most": 0, "z_limit": float(match[1])}
 
 
 def sanity_block(batches: dict[str, Batch], thresholds: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
@@ -787,6 +803,58 @@ def analyze_ry_smoke(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, 
     return {"replicas": rows, "stops": stops}
 
 
+def twin_checks(replica: dict[str, Any]) -> list[tuple[str, int, int | None, str]]:
+    """(name, qubit, conditioning qubit or None, P(qubit = 0) prediction) of one twin replica."""
+    roles = replica["roles"]
+    if "p_control_zero" in replica:
+        return [("p_control_zero", roles["control"], None, replica["p_control_zero"])]
+    checks: list[tuple[str, int, int | None, str]] = [
+        ("p_selector_zero", roles["selector"], None, replica["p_selector_zero"])
+    ]
+    if "p_data_zero_given_selector_zero" in replica:
+        checks.append(
+            ("p_data_zero_given_selector_zero", roles["data"][0], roles["selector"],
+             replica["p_data_zero_given_selector_zero"])
+        )  # fmt: skip
+    return checks
+
+
+def analyze_twins(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
+    """Each twin on the ideal QX emulator: a deterministic prediction admits no shot off it, P = 1/2 sits inside z."""
+    rows, stops = [], []
+    for name, batch in batches.items():
+        order = batch["order"]
+        for row in batch["manifest"]["circuits"]:
+            shots = batch["shots"][row["file"]]
+            if row.get("ideal_p1") == "0":
+                off = sum("1" in s for s in shots)
+                verdict = "pass" if off <= t["deterministic_shots_off_at_most"] else "refuted"
+                rows.append({"batch": name, "file": row["file"], "check": "all qubits 0", "shots": len(shots),
+                             "off": off, "verdict": verdict})  # fmt: skip
+                if verdict == "refuted":
+                    stops.append(f"{name}/{row['file']}: {off} shots read a 1")
+                continue
+            for replica in row["replicas"]:
+                for check_name, qubit, given, want in twin_checks(replica):
+                    kept = [s for s in shots if given is None or bit(s, given, order) == 0]
+                    k = zeros(kept, qubit, order)
+                    p = fraction(want)
+                    entry: dict[str, Any] = {"batch": name, "file": row["file"], "slot": replica["slot"],
+                                             "check": check_name, "prediction": want, "zeros": k,
+                                             "shots": len(kept)}  # fmt: skip
+                    if p in (0.0, 1.0):
+                        entry["off"] = len(kept) - k if p == 1.0 else k
+                        refuted = entry["off"] > t["deterministic_shots_off_at_most"]
+                    else:
+                        entry["z"] = binomial_z(k, len(kept), p) if kept else None
+                        refuted = entry["z"] is None or abs(entry["z"]) >= t["z_limit"]
+                    entry["verdict"] = "refuted" if refuted else "pass"
+                    if refuted:
+                        stops.append(f"{name}/{row['file']} slot {replica['slot']} {check_name} refuted")
+                    rows.append(entry)
+    return {"checks": rows, "stops": stops}
+
+
 def analyze(runs: list[Path], base: Path = ROOT, cases_root: Path = CASES) -> dict[str, Any]:
     """The analysis of the given run directories, grouped by stage; run paths are recorded relative to base."""
     loaded = [load_batch(run, base, cases_root) for run in runs]
@@ -802,7 +870,7 @@ def analyze(runs: list[Path], base: Path = ROOT, cases_root: Path = CASES) -> di
             out["batches"], sanity_stops = sanity_block(batches, t)
         elif family != "tuna_pre":
             out["batches"] = {name: {"run": b["run"]} for name, b in batches.items()}
-        if missing:
+        if missing and family not in INDEPENDENT_BATCHES:
             estimates: dict[str, Any] = {"stops": []}
             out["verdict"] = f"incomplete: {', '.join(missing)} not analyzed"
         else:
@@ -818,6 +886,8 @@ def analyze(runs: list[Path], base: Path = ROOT, cases_root: Path = CASES) -> di
                 estimates = analyze_walk(batches, t)
             elif family == "ry_ladder":
                 estimates = analyze_ry_ladder(batches, t)
+            elif family == "tuna_twins":
+                estimates = analyze_twins(batches, t)
             else:
                 estimates = analyze_ry_smoke(batches, t)
             results[family] = estimates
@@ -907,23 +977,24 @@ def lcu_model(replica: dict[str, Any], contrast: float) -> dict[Any, Any]:
 
 
 def tuna_model(row: dict[str, Any], scenario: dict[str, Any]) -> dict[Any, Any]:
+    visibility = scenario.get("visibility", SYN_VISIBILITY)
     model: dict[Any, Any] = {}
     for r in row["replicas"]:
         if r["kind"] == "walk":
             omega = -r["omega"] if scenario.get("walk_sign_flipped") else r["omega"]
-            p0 = scenario.get("control_p0", 0.5) if r["omit_last_block"] else 0.5 + 0.5 * SYN_VISIBILITY * omega
+            p0 = scenario.get("control_p0", 0.5) if r["omit_last_block"] else 0.5 + 0.5 * visibility * omega
             model[r["roles"]["control"]] = 1 - p0
             continue
         if r["kind"] == "coherence":
-            pa0 = 0.5 + (fraction(r["p_selector_zero"]) - 0.5) * SYN_VISIBILITY
-            pd0 = 0.5 + 0.5 * SYN_VISIBILITY * fraction(r["expectation_given_selector_zero"])
+            pa0 = 0.5 + (fraction(r["p_selector_zero"]) - 0.5) * visibility
+            pd0 = 0.5 + 0.5 * visibility * fraction(r["expectation_given_selector_zero"])
             if scenario.get("coherence_flipped") and r["setting"] == "X":
                 pd0 = 1 - pd0
             model[(r["roles"]["selector"], r["roles"]["data"][0])] = [
                 pa0 * pd0, pa0 * (1 - pd0), (1 - pa0) / 2, (1 - pa0) / 2]  # fmt: skip
             continue
         depth = r.get("cz_depth", 1)
-        contrast = scenario.get("amplitude", SYN_VISIBILITY) * scenario.get("r", 1.0) ** depth
+        contrast = scenario.get("amplitude", visibility) * scenario.get("r", 1.0) ** depth
         model.update(lcu_model(r, contrast))
     return model
 
@@ -969,7 +1040,7 @@ def scenario_jobs(name: str, scenario: dict[str, Any], seed: int) -> list[tuple[
                 if row["kind"] == "readout":
                     model = {q: float(row["prepared"]) for q in range(width)}
                     item = (seed, width, n, model, {**readout, **scenario.get(f"readout_{file}", {})})
-                elif family == "tuna_pre":
+                elif family == "tuna_pre" or row.get("ideal_p1") == "0":
                     model = {q: 0.0 for q in range(width)}
                     item = (seed, width, n, model, {**readout, **scenario.get("xx", {})})
                 else:
@@ -1023,12 +1094,16 @@ def build(root: Path, name: str, scenario: dict[str, Any], seed: int) -> list[Pa
 FAULT = {0: (0.04, 0.61), 6: (0.015, 0.86), 9: (0.27, 0.06)}
 UNDER_ROTATION_XX = {0: (0.98, 0.98), 6: (0.52, 0.52)}
 MISASSIGNMENT_XX = {0: (0.038, 0.038), 6: (0.013, 0.013)}
+IDEAL_QX = {q: (0.0, 0.0) for q in range(10)}
 HEALTHY = {0: (0.02, 0.06), 6: (0.02, 0.06), 9: (0.02, 0.06)}
 SCENARIOS: dict[str, dict[str, Any]] = {
     "pass": {
-        "families": list(FAMILIES), "readout": FAULT, "xx": UNDER_ROTATION_XX, "amplitude": 0.821, "r": 0.95,
+        "families": [f for f in FAMILIES if f != "tuna_twins"], "readout": FAULT, "xx": UNDER_ROTATION_XX,
+        "amplitude": 0.821, "r": 0.95,
         "ry_failed": {"r9-teleport-bare.cq": "Quantum backend error: error interpreting cQASM script"},
     },
+    "twins": {"families": ["tuna_twins"], "readout": IDEAL_QX, "visibility": 1.0},
+    "twins_refuted": {"families": ["tuna_twins"], "readout": IDEAL_QX, "visibility": 0.995},
     "t0_end": {"families": ["tuna_t0"], "readout": {}, "amplitude": 0.316, "r": 0.95},
     "t0_resize": {"families": ["tuna_t0"], "readout": {}, "amplitude": 0.975, "r": 0.80},
     "walk_refuted": {"families": ["tuna_walk"], "readout": {}, "control_p0": 0.8, "walk_sign_flipped": True},
@@ -1112,6 +1187,25 @@ def analyze_self_test() -> None:
         check(recovered["readmission"]["9"] == "readout-admissible", "a healthy q9 is readout-admissible")
         mis = stages("pre_misassignment")["tuna_pre"]
         check(mis["decision"] == "misassignment", f"pre misassignment: {mis['decision']}")
+        twins = stages("twins")["tuna_twins"]
+        check(twins["verdict"] == "continue" and twins["missing_batches"] == [], f"ideal twins: {twins['stops']}")
+        check(
+            any(c["check"] == "all qubits 0" and c["verdict"] == "pass" for c in twins["checks"]),
+            "the double-X twin was not judged",
+        )
+        noisy = stages("twins_refuted")["tuna_twins"]
+        check(
+            noisy["verdict"] == "stop" and any("p_selector_zero refuted" in s for s in noisy["stops"]),
+            "a twin replica off its deterministic prediction passed",
+        )
+        partial_twins = analyze(
+            [r for r in runs["twins"] if r.name.endswith(("batch-00", "batch-04"))], root / "twins"
+        )["stages"]["tuna_twins"]
+        check(
+            partial_twins["missing_batches"] == ["batch-01", "batch-02", "batch-03"]
+            and partial_twins["verdict"] == "continue",
+            "twin batches are judged one by one",
+        )
         ry = stages("ry_stopped")
         check(ry["ry_ladder"]["verdict"] == "stop" and ry["ry_smoke"]["verdict"] == "stop", "ry stop rules")
 
