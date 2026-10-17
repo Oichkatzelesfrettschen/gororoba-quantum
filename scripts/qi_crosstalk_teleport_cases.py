@@ -92,6 +92,12 @@ BACKENDS = {
     "QXsinglenodesimulator": (2048, True, "tuna"),
     "Rydberg": (1024, False, "rydberg"),
 }
+# The Ry emulator rejected the gate-model teleport case at execution; its
+# native form (no bit register, RYD blockade gates) is not built, so build()
+# emits no Ry case while analyze() still decodes the retained Ry runs.
+NOT_GENERATED = {"Rydberg"}
+# Emulators, whose analyses are controls rather than device results.
+EMULATORS = {"QXsinglenodesimulator", "Rydberg"}
 
 
 def edges(backend: dict[str, Any]) -> set[frozenset[int]]:
@@ -215,7 +221,7 @@ def build(catalogue: dict[str, Any]) -> dict[str, dict[str, str]]:
     out: dict[str, dict[str, str]] = {}
     for backend in catalogue["backend_types"]:
         ident = backend["identifier"]
-        if ident not in BACKENDS:
+        if ident not in BACKENDS or ident in NOT_GENERATED:
             continue
         shots, additivity, dialect = BACKENDS[ident]
         n = backend["nqubits"]
@@ -462,7 +468,7 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
         # The phase-domain residual, the driver crosstalk and conditioning
         # fields and their thresholds were fixed after the hardware data
         # arrived; cases.json preregistered the circuits only.
-        "claim_kind": "exploratory reanalysis, hardware",
+        "claim_kind": f"exploratory reanalysis, {'emulator control' if backend in EMULATORS else 'hardware'}",
         "config_order_note": "the four configurations ran as sequential jobs, so drift between jobs enters every "
         "cross-configuration difference",
     }

@@ -2500,9 +2500,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zero_divisor_cases.py --check results/quantum_inspire/cases",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zero_divisor_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -W error scripts/qi_zero_divisor_cases.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zero_divisor_cases.py --self-test",
    "name": "core-348",
-   "seconds": 4.0,
+   "seconds": 8.0,
    "tier": "pr"
   },
   {

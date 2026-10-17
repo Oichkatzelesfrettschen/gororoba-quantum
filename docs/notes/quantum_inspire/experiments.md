@@ -404,7 +404,8 @@ cause.
 - Teleportation with all six axial inputs on one path to give a channel's
   sphere average, and a direct-SWAP control without the Bell measurement.
 - Ry emulator: rebuild the teleport case in the Rydberg-native form (no bit
-  register, RYD blockade gates) and read results leftmost-first.
+  register, RYD blockade gates) and read results leftmost-first; until then
+  the generator emits no Ry case.
 - Zero-divisor depth series: the bright and dark witnesses with the SELECT
   repeated as SELECT, SELECT^dagger, SELECT pairs (identity padding) to fit
   the per-layer contraction directly, and a selector-only control to locate
