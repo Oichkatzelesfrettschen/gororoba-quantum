@@ -838,21 +838,22 @@ captured cloud guides, terms, privacy policies, OpenAPI descriptions, offer
 strings, Perceval 1.3 pages and PyPI records; the live pages stay the
 authority because they change.
 
-**Environment and token.** Perceval is an Arch package on the build host,
-so the repository's Python imports it: python-perceval-quandela 1.3.1
-(built from the GitHub tag v1.3.1), python-exqalibur 1.4.2 (binary wheel,
-CC BY-NC-ND 4.0) and python-scmver 1.10 come from PKGBUILDs in
+**Environment and token.** Perceval is an Arch package on the build host, so
+the repository's Python imports it: python-perceval-quandela 1.3.1 (built
+from the GitHub tag v1.3.1), python-exqalibur 1.4.2 (binary wheel, CC
+BY-NC-ND 4.0) and python-scmver 1.10 come from PKGBUILDs in
 `~/Github/PKGBUILDs`, and python-multipledispatch, python-latexcodec and
 python-drawsvg from the AUR through `paru`. perceval-interop is not
 installed: its Qiskit extra pins qiskit 2.1. Every API call carries a
 personal job token created on the portal's Tokens page; the account
-service's OAuth endpoints sign users into Quandela's own sites and register
-no third-party client. The token lives in `~/.config/quandela/cloud-token`
-(directory 700, file 600), outside every checkout, and each consumer names
-it by path through `QUANDELA_TOKEN_FILE`; Perceval code passes it as
-`token=` and never calls `RemoteConfig.save()`, which writes it in plain
-text. CI never imports Perceval: its gates read retained JSON and Markdown
-with the standard library.
+service's OAuth endpoints sign users into Quandela's own sites, take no
+scope, PKCE or device flow, and Quandela publishes no client registration.
+The token lives in `~/.config/quandela/cloud-token` (directory 700, file
+600), outside every checkout, and each consumer names it by path through
+`QUANDELA_TOKEN_FILE`; Perceval code passes it as `token=` and never calls
+`RemoteConfig.save()`, which writes it in plain text. CI never imports
+Perceval: its gates read retained JSON and Markdown with the standard
+library.
 
 **MCP.** `quandela` is registered at Claude Code user scope and in
 `~/.codex/config.toml` as `/usr/bin/python3 -I scripts/qd_mcp_server.py`
@@ -860,19 +861,21 @@ with the standard library.
 `QUANDELA_TOKEN_FILE`. Claude allows and Codex approves the seven read and
 local tools (platforms, platform, availability, usage, job status, job
 result, local simulation); `qd_cancel_job` asks every time. The server
-submits nothing.
+submits nothing and exposes no QRNG route; gate core-502 holds its tool set
+and annotations to the guide's table.
 
-**Submission.** Every remote job, simulator or QPU, and every portal
-notebook session waits for the user's approval of a written case, like an
-IBM, Quantum Inspire or Open Quantum run: what it measures, why a local
-Perceval simulation cannot answer it, platform, shots or samples, expected
-seconds against the 300 s per-job limit, and expected credits. Free credit
-is 200 credits a month under the Explorer offer, reset at the beginning of
-each calendar month and never carried over; QPUs charge 1e-06 credits per
-shot and simulators 0, and the offer's per-job, QRNG and per-second
-notebook prices are visible only to the logged-in portal. Content stays the
-user's; Quandela holds a license limited to providing the service (terms
-11.2 to 11.4), and the www privacy policy reserves processing raw
+**Submission.** Every remote job, simulator or QPU, every QRNG read
+(`/qt/qrng/bytes` and `/qt/qrng/ints` are GETs an offer can price per byte)
+and every portal notebook session waits for the user's approval of a written
+case, like an IBM, Quantum Inspire or Open Quantum run: what it measures,
+why a local Perceval simulation cannot answer it, platform, shots or
+samples, expected seconds against the 300 s per-job limit, and expected
+credits. Free credit is 200 credits a month under the Explorer offer, reset
+at the beginning of each calendar month and never carried over; QPUs charge
+1e-06 credits per shot and simulators 0, and the offer's per-job, QRNG and
+per-second notebook prices are visible only to the logged-in portal. Content
+stays the user's; Quandela holds a license limited to providing the service
+(terms 11.2 to 11.4), and the www privacy policy reserves processing raw
 computation data for quality.
 `"$PYTHON" scripts/qd_platform.py snapshot --out docs/evidence/quandela`
 (with `QUANDELA_TOKEN_FILE` set) refreshes the catalogue; gate core-502

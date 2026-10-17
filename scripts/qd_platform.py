@@ -27,18 +27,23 @@ Subcommands:
   schema and no account identifier (FORBIDDEN_KEYS at any depth), one
   processor record per Explorer platform, photon and mode limits that agree
   with each other and with the connected input modes, non-negative per-shot
-  prices and complete availability counters. With --agents it renders
+  prices and complete availability counters, and loads qd_mcp_server.py with
+  mcp replaced by recorders to require exactly the tools MCP_TOOLS names,
+  every one read-only except MCP_MUTATING. With --agents it renders
   facts_table and requires each FILE's quandela-facts markers to enclose
   exactly that table, so a refreshed snapshot that changes a limit, a
   command set or a price fails until AGENTS.md and the Quandela README change
-  with it. Status, performance figures, availability statistics, maintenance
+  with it, and a FILE whose table lists qd_ tools must list exactly
+  MCP_TOOLS. Status, performance figures, availability statistics, maintenance
   windows and software versions change between reads and stay out of the
   table.
 - facts DIR prints the table.
 - --self-test proves check rejects a token id, a staff creator id, a missing
   processor record, an input mode outside the chip, a photon limit off the
   connected modes, a negative price, a missing availability counter, an
-  edited table and a stale row inside the markers, on a temporary copy.
+  edited table, a stale row inside the markers, a tool table missing a tool,
+  a server that adds a submit tool, marks cancel read-only or marks a read
+  as mutating, on a temporary copy.
 
 Usage: QUANDELA_TOKEN_FILE=TOKEN "$PYTHON" scripts/qd_platform.py snapshot --out DIR
        "$PYTHON" scripts/qd_platform.py (check DIR [--agents FILE...] | facts DIR | --self-test)
@@ -49,6 +54,7 @@ from __future__ import annotations
 import argparse
 import datetime
 import importlib.metadata
+import importlib.util
 import json
 import os
 import shutil
@@ -59,7 +65,9 @@ import urllib.parse
 import urllib.request
 from collections.abc import Callable
 from pathlib import Path
+from types import ModuleType
 from typing import Any
+from unittest.mock import patch
 
 API = "https://api.cloud.quandela.com"
 CATALOGUE_SCHEMA = "qd-catalogue-v1"
@@ -90,6 +98,19 @@ PLATFORM_FIELDS = (
 )
 MAINTENANCE_FIELDS = ("maintenance_title", "start_time", "end_time", "time_zone")
 PACKAGES = ("perceval-quandela", "exqalibur")
+# The MCP server's tools; qd_cancel_job alone changes remote state.
+MCP_TOOLS = (
+    "qd_availability",
+    "qd_cancel_job",
+    "qd_job_result",
+    "qd_job_status",
+    "qd_platform",
+    "qd_platforms",
+    "qd_simulate_local",
+    "qd_usage",
+)
+MCP_MUTATING = ("qd_cancel_job",)
+MCP_SERVER = Path(__file__).with_name("qd_mcp_server.py")
 BEGIN = "<!-- quandela-facts:begin -->\n"
 END = "<!-- quandela-facts:end -->"
 
@@ -246,10 +267,60 @@ def facts_table(catalogue: dict[str, Any]) -> str:
     )
 
 
+class ToolRecorder:
+    """Stands in for FastMCP: records each tool's name and annotations."""
+
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.tools: dict[str, dict[str, Any]] = {}
+
+    def tool(self, annotations: dict[str, Any] | None = None) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+        def register(function: Callable[..., Any]) -> Callable[..., Any]:
+            self.tools[function.__name__] = dict(annotations or {})
+            return function
+
+        return register
+
+
+def mcp_surface(server: Path = MCP_SERVER) -> dict[str, dict[str, Any]]:
+    """Tool names and annotations of the MCP server, loaded with mcp replaced by recorders."""
+    modules = {
+        name: ModuleType(name)
+        for name in ("mcp", "mcp.server", "mcp.server.fastmcp", "mcp.server.fastmcp.exceptions", "mcp.types")
+    }
+    modules["mcp.server.fastmcp"].FastMCP = ToolRecorder  # type: ignore[attr-defined]
+    modules["mcp.server.fastmcp.exceptions"].ToolError = RuntimeError  # type: ignore[attr-defined]
+    modules["mcp.types"].ToolAnnotations = dict  # type: ignore[attr-defined]
+    spec = importlib.util.spec_from_file_location("qd_mcp_surface", server)
+    if spec is None or spec.loader is None:
+        raise SystemExit(f"cannot load {server}")
+    module = importlib.util.module_from_spec(spec)
+    with patch.dict(sys.modules, modules):
+        spec.loader.exec_module(module)
+    tools: dict[str, dict[str, Any]] = module.server.tools
+    return tools
+
+
+def check_mcp(server: Path = MCP_SERVER) -> None:
+    tools = mcp_surface(server)
+    if tuple(sorted(tools)) != MCP_TOOLS:
+        raise SystemExit(f"MCP tools {sorted(tools)} differ from {MCP_TOOLS}")
+    mutating = tuple(sorted(name for name, notes in tools.items() if notes.get("readOnlyHint") is not True))
+    if mutating != MCP_MUTATING:
+        raise SystemExit(f"MCP tools {mutating} change remote state, expected {MCP_MUTATING}")
+
+
+def tool_rows(text: str) -> list[str]:
+    """Tool names of the Markdown table rows that open with a backquoted qd_ name."""
+    return [line.split("`")[1] for line in text.splitlines() if line.startswith("| `qd_")]
+
+
 def check_agents(catalogue: dict[str, Any], files: list[Path]) -> None:
     table = facts_table(catalogue)
     for path in files:
         text = path.read_text(encoding="utf-8")
+        if (rows := tool_rows(text)) and tuple(sorted(rows)) != MCP_TOOLS:
+            raise SystemExit(f"{path}: MCP tool table {sorted(rows)} differs from {MCP_TOOLS}")
         if text.count(BEGIN) != 1 or text.count(END) != 1:
             raise SystemExit(f"{path}: needs one quandela-facts section")
         if text[text.index(BEGIN) + len(BEGIN) : text.index(END)] != table:
@@ -261,7 +332,7 @@ def load(directory: Path) -> dict[str, Any]:
     return value
 
 
-def check(directory: Path, agents: list[Path] | None = None) -> None:
+def check(directory: Path, agents: list[Path] | None = None, server: Path = MCP_SERVER) -> None:
     catalogue = load(directory)
     if catalogue["schema"] != CATALOGUE_SCHEMA:
         raise SystemExit(f"unexpected schema {catalogue['schema']}")
@@ -291,6 +362,7 @@ def check(directory: Path, agents: list[Path] | None = None) -> None:
             # A chip without multi-photon input carries one photon per source-connected mode.
             if not limits.get("support_multi_photon") and photons[1] != len(modes):
                 raise SystemExit(f"{name}: {photons[1]} photons over {len(modes)} connected input modes")
+    check_mcp(server)
     if agents is not None:
         check_agents(catalogue, agents)
     print(f"qd snapshot: {len(names)} Explorer platforms, {len(catalogue['public_platforms'])} public platforms")
@@ -299,31 +371,33 @@ def check(directory: Path, agents: list[Path] | None = None) -> None:
 def self_test() -> None:
     root = Path(__file__).resolve().parent.parent
     source = root / "docs" / "evidence" / "quandela"
-    agents = root / "AGENTS.md"
-    check(source, [agents])
+    guides = (root / "AGENTS.md", root / "docs" / "notes" / "quandela" / "README.md")
+    check(source, list(guides))
 
     def rewrite(path: Path, change: Callable[[Any], None]) -> None:
         value = json.loads(path.read_text(encoding="utf-8"))
         change(value)
         path.write_text(json.dumps(value), encoding="utf-8")
 
-    def catalogue(change: Callable[[dict[str, Any]], None]) -> Callable[[Path, Path], None]:
-        return lambda directory, _: rewrite(directory / "catalogue.json", change)
+    def catalogue(change: Callable[[dict[str, Any]], None]) -> Callable[[Path], None]:
+        return lambda scratch: rewrite(scratch / "quandela" / "catalogue.json", change)
+
+    def text(name: str, old: str, new: str) -> Callable[[Path], None]:
+        def edit(scratch: Path) -> None:
+            path = scratch / name
+            body = path.read_text(encoding="utf-8")
+            if old not in body:
+                raise AssertionError(f"self-test fixture lacks {old!r} in {name}")
+            path.write_text(body.replace(old, new, 1), encoding="utf-8")
+
+        return edit
 
     def qpu(c: dict[str, Any]) -> dict[str, Any]:
         name = next(r["name"] for r in c["explorer_platforms"] if r["type"] == "qpu")
         specs: dict[str, Any] = c["processors"][name]["specs"]
         return specs
 
-    def table(_: Path, copy: Path) -> None:
-        text = copy.read_text(encoding="utf-8")
-        copy.write_text(text.replace("| credits per shot |", "| price |", 1), encoding="utf-8")
-
-    def stale_row(_: Path, copy: Path) -> None:
-        text = copy.read_text(encoding="utf-8")
-        copy.write_text(text.replace(END, "| stale | row |\n" + END, 1), encoding="utf-8")
-
-    edits: dict[str, Callable[[Path, Path], None]] = {
+    edits: dict[str, Callable[[Path], None]] = {
         "token id": catalogue(lambda c: c["account"]["token_usage"].append({"token_id": 1})),
         "creator id": catalogue(lambda c: c["explorer_platforms"][0].update(maintenance={"creator_id": 1})),
         "missing processor": catalogue(lambda c: c["processors"].pop(c["explorer_platforms"][0]["name"])),
@@ -331,18 +405,30 @@ def self_test() -> None:
         "photons off the connected modes": catalogue(lambda c: qpu(c)["constraints"].update(max_photon_count=1)),
         "negative price": catalogue(lambda c: c["explorer_platforms"][0].update(price_per_shot=-1)),
         "missing availability counter": catalogue(lambda c: c["account"]["availability"].pop("max_jobs_in_queue")),
-        "edited table": table,
-        "stale row": stale_row,
+        "edited table": text("AGENTS.md", "| credits per shot |", "| price |"),
+        "stale row": text("AGENTS.md", END, "| stale | row |\n" + END),
+        "README table drops a tool": text("README.md", "| `qd_usage` |", "| usage |"),
+        "server adds a submit tool": text(
+            "qd_mcp_server.py",
+            'if __name__ == "__main__":',
+            '@server.tool(annotations=MUTATE)\ndef qd_submit() -> None:\n    pass\n\n\nif __name__ == "__main__":',
+        ),
+        "server marks cancel read-only": text(
+            "qd_mcp_server.py", "@server.tool(annotations=MUTATE)", "@server.tool(annotations=READ)"
+        ),
+        "server marks a read as mutating": text(
+            "qd_mcp_server.py", "@server.tool(annotations=READ)", "@server.tool(annotations=MUTATE)"
+        ),
     }
     for label, edit in edits.items():
-        with tempfile.TemporaryDirectory() as scratch:
-            directory = Path(scratch) / "quandela"
-            shutil.copytree(source, directory)
-            copy = Path(scratch) / "AGENTS.md"
-            shutil.copy(agents, copy)
-            edit(directory, copy)
+        with tempfile.TemporaryDirectory() as tmp:
+            scratch = Path(tmp)
+            shutil.copytree(source, scratch / "quandela")
+            for path in (*guides, MCP_SERVER, Path(__file__)):
+                shutil.copy(path, scratch / path.name)
+            edit(scratch)
             try:
-                check(directory, [copy])
+                check(scratch / "quandela", [scratch / g.name for g in guides], scratch / MCP_SERVER.name)
             except SystemExit:
                 continue
             raise AssertionError(f"check accepted {label}")

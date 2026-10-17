@@ -110,7 +110,7 @@ Routes (`api/cloud-openapi.json`, cloud API v2.10.1-rc1 at capture):
 | `GET /api/jobs/{id}/status`, `/result`, `/data` | job state, result, submitted payload | uses the deprecated `/api/job/status/{id}`, `/api/job/result/{id}` |
 | `POST /api/jobs/{id}/cancel`, `/rerun` | cancel or rerun | uses the deprecated `/api/job/cancel/{id}`, `/api/job/rerun/{id}` |
 | `GET /api/tokens/usage/report` | jobs and usage per token | not used |
-| `GET /qt/qrng/bytes`, `/qt/qrng/ints` | quantum random bytes and integers (`api/cloud-qt-openapi.json`) | not used |
+| `GET /qt/qrng/bytes`, `/qt/qrng/ints` | quantum random bytes and integers (`api/cloud-qt-openapi.json`); GETs an offer can price per byte, so gated like jobs | not used |
 
 ### MCP tools
 
@@ -134,8 +134,10 @@ Claude launcher in `~/.config/shell/codex-env.sh` loads it by default.
 | `qd_simulate_local` | `circuit` (from `perceval.serialization.serialize`), `input_state`, `backend` (SLOS, Naive, MPS) | local output probabilities, at most 24 modes and 12 photons; no credits | allow / approve |
 | `qd_cancel_job` | `job_id` | cancels a job | ask / prompt |
 
-The server submits nothing. A submission is a reviewed case run through
-Perceval, never a tool call.
+The server submits nothing and exposes no QRNG route. A submission is a
+reviewed case run through Perceval, never a tool call. Gate core-502 loads
+the server with `mcp` replaced by recorders and requires exactly the tools
+of this table, every one read-only except `qd_cancel_job`.
 
 ## Explorer plan, credits and notebooks
 
@@ -234,8 +236,8 @@ unpublished method enters a Quandela job only with that use accepted.
 
 ## Use in this repository
 
-- Every remote job, on a simulator or a QPU, and every notebook session
-  waits for the user's approval of a written case, as an IBM, Quantum
+- Every remote job, on a simulator or a QPU, every QRNG read and every
+  notebook session waits for the user's approval of a written case, as an IBM, Quantum
   Inspire or Open Quantum run does: what it measures, why a local Perceval
   simulation cannot answer it, the platform, shots or samples, the expected
   seconds against the 300 s limit, and the expected credits from the
