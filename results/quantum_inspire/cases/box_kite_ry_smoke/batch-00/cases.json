@@ -22,7 +22,11 @@
  "preregistered": {
   "observable": "zero-product success P(selector = 0) per replica, selector bits read with qubit 0 leftmost",
   "falsifier": "a deterministic replica below 0.9 of its ideal outcome is reported with the emulator's raw rates as an emulator rate, never as an algebraic result",
-  "stop_rule": "a deterministic replica below 0.9 of its ideal outcome stops the series"
+  "stop_rule": "a deterministic replica below 0.9 of its ideal outcome stops the series",
+  "thresholds": {
+   "deterministic_ideal_fraction_at_least": 0.9,
+   "z_limit": 4.5
+  }
  },
  "batch": "batch-00",
  "group": "smoke",

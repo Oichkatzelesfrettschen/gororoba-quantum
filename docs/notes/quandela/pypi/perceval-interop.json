@@ -1,0 +1,44 @@
+{
+ "name": "perceval-interop",
+ "version": "1.3.0",
+ "summary": "Interoperability packages between Perceval and other quantum computing frameworks",
+ "license": null,
+ "requires_python": "<3.15,>=3.9",
+ "requires_dist": [
+  "perceval-quandela<2.0.0,>=1.3.0",
+  "qiskit~=2.1.2; extra == \"qiskit\"",
+  "seaborn~=0.13; extra == \"qiskit\"",
+  "scipy<1.17; extra == \"qutip\"",
+  "qutip~=5.0.4; extra == \"qutip\"",
+  "myqlm~=1.13.7; extra == \"myqlm\"",
+  "libqasm==1.2.1; extra == \"cqasm\"",
+  "qiskit~=2.1.2; extra == \"all\"",
+  "seaborn~=0.13; extra == \"all\"",
+  "scipy<1.17; extra == \"all\"",
+  "qutip~=5.0.4; extra == \"all\"",
+  "myqlm~=1.13.7; extra == \"all\"",
+  "libqasm==1.2.1; extra == \"all\""
+ ],
+ "project_urls": {
+  "Documentation": "https://perceval.quandela.net/interopdocs/",
+  "Homepage": "https://github.com/Quandela/Perceval_Interop",
+  "Source": "https://github.com/Quandela/Perceval_Interop",
+  "Tracker": "https://github.com/Quandela/Perceval_Interop/issues"
+ },
+ "files": [
+  {
+   "filename": "perceval_interop-1.3.0-py3-none-any.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-10-07T07:23:58.843949Z",
+   "size": 45904,
+   "sha256": "398015bdb1ea79787be141f27cc7b2fe60d02aa0a9fa16d72d3a64fdfc38be59"
+  },
+  {
+   "filename": "perceval_interop-1.3.0.tar.gz",
+   "packagetype": "sdist",
+   "upload_time_iso_8601": "2026-10-07T07:23:59.999316Z",
+   "size": 38887,
+   "sha256": "68156076d1eb45d58f0dea7db5df8add551b0b0ae953ada68950b1c6b320b8be"
+  }
+ ]
+}

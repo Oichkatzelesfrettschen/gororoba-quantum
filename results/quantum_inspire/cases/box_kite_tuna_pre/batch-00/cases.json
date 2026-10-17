@@ -1,0 +1,156 @@
+{
+ "schema": "box-kite-cases-v1",
+ "family": "tuna_pre",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 4096,
+ "dialect": "tuna",
+ "bit_order": "qubit 0 at the rightmost character (Tuna)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "layout": {
+  "excluded": [
+   0,
+   5,
+   6,
+   7,
+   9
+  ],
+  "avoided": [
+   15
+  ],
+  "lcu_pairs": [
+   [
+    1,
+    4
+   ],
+   [
+    10,
+    13
+   ],
+   [
+    12,
+    14
+   ]
+  ],
+  "walks": {
+   "star_11": {
+    "control": 11,
+    "data": [
+     8,
+     13,
+     14
+    ]
+   },
+   "path_8_11_13": {
+    "control": 11,
+    "data": [
+     8,
+     13
+    ]
+   }
+  }
+ },
+ "encodings": {
+  "double_x": "X on all 17 qubits, a per-qubit barrier run, X on all 17 again, no wait, then the measurement; ideal P1 0 on every qubit",
+  "readout": "readout-0 measures all 17 qubits in |0>, readout-1 after X on all 17"
+ },
+ "preregistered": {
+  "observable": "per-qubit raw P(1|0) from readout-0, P(1|1) from readout-1 and P(1|XX) from double-x, each with its binomial standard error",
+  "claim": {
+   "id": "proposed-tuna17-q0-q6-double-x-discriminator",
+   "registry": "docs/state/research_state.json"
+  },
+  "predictions": "raw P(1|XX): Q0 0.98 and Q6 0.52 under X under-rotation by the angle the zero-wait P(1|1) implies, Q0 0.038 and Q6 0.013 (the idle floor) under |1> misassignment",
+  "precondition": "the batch's own readout pair still shows the fault (Q0 P(1|1) < 0.7, Q6 P(1|1) < 0.3); otherwise the batch reports fault-recovered and the discriminator is not read",
+  "decision": "Q0 P(1|XX) > 0.5 and Q6 P(1|XX) > 0.25 favor under-rotation; Q0 P(1|XX) < 0.1 and Q6 P(1|XX) < 0.1 favor |1> misassignment; otherwise unresolved",
+  "t0_stop_rule": "any qubit of the LCU pairs [1, 4, 10, 12, 13, 14] or of the walk set [8, 11, 13, 14] with readout-1 P1 below 0.80 or readout-0 P1 above 0.10 re-plans the layout before T0",
+  "readmission": "each of q5, q6, q7, q9 is readout-admissible when readout-0 P1 <= 0.10 and readout-1 P1 >= 0.80; a qubit also excluded by the Ramsey visibility floor stays excluded until a fresh Ramsey run clears it",
+  "limit": "the readout pair and the double X run at one calibration; leakage, whose X train plateaus instead of oscillating, needs X trains of three and more",
+  "stop_rule": "each batch: every job completed with the manifest's shots; circuit digests equal cases.json; the batch measures excluded qubits by design, so its readout limits act through the T0 stop rule and the re-admission rule",
+  "thresholds": {
+   "fault_p1_given_1_below": {
+    "0": 0.7,
+    "6": 0.3
+   },
+   "under_rotation_p1_xx_above": {
+    "0": 0.5,
+    "6": 0.25
+   },
+   "misassignment_p1_xx_below": {
+    "0": 0.1,
+    "6": 0.1
+   },
+   "predictions_p1_xx": {
+    "under_rotation": {
+     "0": 0.98,
+     "6": 0.52
+    },
+    "misassignment": {
+     "0": 0.038,
+     "6": 0.013
+    }
+   },
+   "readout_0_p1_at_most": 0.1,
+   "readout_1_p1_at_least": 0.8,
+   "t0_lcu_qubits": [
+    1,
+    4,
+    10,
+    12,
+    13,
+    14
+   ],
+   "t0_walk_qubits": [
+    8,
+    11,
+    13,
+    14
+   ],
+   "readmission": {
+    "5": [
+     "visibility"
+    ],
+    "6": [
+     "readout",
+     "visibility"
+    ],
+    "7": [
+     "visibility"
+    ],
+    "9": [
+     "readout"
+    ]
+   }
+  }
+ },
+ "batch": "batch-00",
+ "stage": "pre",
+ "circuits": [
+  {
+   "file": "double-x.cq",
+   "kind": "diagnostic",
+   "stage": "pre",
+   "ideal_p1": "0",
+   "sha256": "d015740f27103a3881c5f0ed5c98f2a8dd35f74de664be3f712bb739ca22f2c3"
+  },
+  {
+   "file": "readout-0.cq",
+   "kind": "readout",
+   "stage": "pre",
+   "prepared": 0,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout",
+   "stage": "pre",
+   "prepared": 1,
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  }
+ ]
+}

@@ -8,7 +8,7 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 | Location | Contents | Git treatment |
 | --- | --- | --- |
 | `docs/pdf/` | 23 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 84 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/local_source_cache/` | 85 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 4 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
@@ -119,6 +119,7 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Coste: semialgebraic triangulation and triviality](notes/coste-semialgebraic-geometry.md) | [PDF](http://nicolas.patrois.free.fr/maths/agr%C3%A9gation/documents/semialgebraic-geometry-Coste.pdf) | `coste-semialgebraic-geometry-2002.pdf` | [Rehosting permission unestablished](https://perso.univ-rennes1.fr/michel.coste/polyens/SAG.pdf) |
 | [Das et al. 2019 -- A Case for Multi-Programming Quantum Computers](notes/das-2019-multiprogramming.md) | [PDF](https://fast.cc.gatech.edu/papers/MICRO_2019_4.pdf) | `das-2019-multiprogramming.pdf` | [Server redistribution requires permission](https://fast.cc.gatech.edu/papers/MICRO_2019_4.pdf) |
 | [Hatcher: attachment and quotient topology](notes/hatcher-algebraic-topology.md) | [PDF](https://pi.math.cornell.edu/~hatcher/AT/ATch0.pdf) | `Hatcher-ATch0.pdf` | [Personal-copy permission](https://pi.math.cornell.edu/~hatcher/AT/ATcopyright.html) |
+| [Carlstrom 2001 -- Wheels: On Division by Zero (Stockholm Research Reports in Mathematics 2001:11)](notes/wheels-carlstrom.md) | [PDF](https://www2.math.su.se/reports/2001/11/2001-11.pdf) | `carlstrom-wheels-2001-11.pdf` | [Rehosting permission unestablished](https://www2.math.su.se/reports/2001/11/) |
 | [Biss, Dugger, Isaksen 2005 -- Large annihilators in Cayley-Dickson algebras (arXiv math/0511691)](notes/math-0511691.md) | [PDF](https://arxiv.org/pdf/math/0511691v1) | `math-0511691v1.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/math/0511691v1) |
 | [Moreno 2005 -- Constructing zero divisors in the higher dimensional Cayley-Dickson algebras (arXiv math/0512517)](notes/math-0512517.md) | [PDF](https://arxiv.org/pdf/math/0512517v1) | `math-0512517v1.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/math/0512517v1) |
 | [Biss, Christensen, Dugger, Isaksen 2007 -- Large annihilators in Cayley-Dickson algebras II (arXiv math/0702075)](notes/math-0702075.md) | [PDF](https://arxiv.org/pdf/math/0702075v2) | `math-0702075v2.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/math/0702075v2) |

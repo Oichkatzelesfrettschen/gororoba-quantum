@@ -647,6 +647,30 @@ repeated calibration outside it.
 - The postselected estimates differ from the all-shot estimates by at most
   4.2 standard errors (Q13, tau = 800 ns).
 
+**Calibration sensitivity** (series
+[P](../../../results/quantum_inspire/readout_ringdown_tuna_17_P_calibration_sensitivity.json) and
+[Q](../../../results/quantum_inspire/readout_ringdown_tuna_17_Q_calibration_sensitivity.json),
+gates core-434 and core-435). The preregistered errors treat the batch-00
+assignment e01, e10 as constants. The sensitivity record carries their
+binomial variances from the readout-0 and readout-1 counts through every
+quadrature (analytic) and redraws all readout and Ramsey counts 2000 times
+(bootstrap), beside the preregistered standard errors; the verdicts stay as
+analyzed. The shared assignment largely cancels in delta: on usable targets
+the calibrated delta and rate errors exceed the preregistered ones by at
+most 9.5% (series P) and 3.6% (series Q); on Q6 the excess is at most
+0.14%, and the analytic, bootstrap and preregistered delta errors (1.8 to
+2.2 kHz) agree within the bootstrap spread of about 30 Hz. The calibration
+term is small against shot noise, so the quoted standard errors stand (the
+analytic A error differentiates the complete weighted fit, weights included,
+and exceeds the preregistered one by at most 5.7%, on Q14, where the bootstrap
+gives 5.5%); the
+stale Q6 and Q15 calibrations bias their phases, a shift this error model
+does not bound. One entry (Q15 delta at tau = 15) lies 3.5 spreads from its bootstrap
+error with the same gap in the shot-only bootstrap, a shot-noise
+linearization gap at visibility above 1. A (a three-parameter fit with T at
+a bound on several targets) and the minimum visibility have bootstrap errors
+well above their delta-method errors with or without the calibration term.
+
 ## Readout faults on Tuna-17, 2026-10-17
 
 `scripts/qi_tuna17_readout_faults.py` (gate core-400) tests the readout
@@ -695,6 +719,33 @@ falsifier before its number.
   1527388-1527390, finished 05:23:12-05:23:27Z), whose opening readout of
   Q9 reads 0.238-0.243: a mid-circuit readout with nine targets read at
   once, a different observable from the readout-0 circuit's 0.27-0.29.
+
+## Box-kite results, 2026-10-17 (preregistered)
+
+`scripts/box_kite_cases.py` writes the cases and
+`scripts/box_kite_analysis.py` judges the runs with the thresholds each
+manifest carries (program: [experiment-program.md](../box_kites/experiment-program.md)
+section 4(g); gate core-425 replays both records).
+
+- **QX twins** (dry run): the three T0 witness circuits on QX qubits 0-9
+  read every replica's predicted P(selector = 0) in all 2048 shots, and the
+  double-X twin reads 0 on every qubit of every shot.
+- **Tuna-17 pre-T0**: the morning's Q0 and Q6 |1> readout fault is absent
+  (P(1|1) 0.973 and 0.957; Q9 P(1|0) 0.018), so the double-X discriminator
+  is not read; the box-kite layout passes the T0 readout rule.
+- **Tuna-17 T0**: C(1) = 0.954, C(5) = 0.857, C(9) = 0.710, r = 0.9654 per
+  CZ (99% interval [0.9638, 0.9671]), inside the decision band [0.87, 0.97]
+  as preregistered; C(1) and r both miss their predictions ([0.72, 0.82] and
+  [0.87, 0.96]) upward, and the program continues to T1.
+- **Ry**: programs without a bit register run at width 9; one-CNOT replicas
+  read their ideal outcome at 0.978 or more, R9 loses 7.5% of shots, and
+  the 35-CNOT full Design B falls to contrast 0.387, which stops the Ry
+  smoke series as an emulator rate ([ry-emulator.md](ry-emulator.md)).
+
+Records: results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json
+and results/quantum_inspire/box_kite_ry_analysis.json; claims
+`qi-tuna17-boxkite-pre-t0-readout-recovered`,
+`qi-tuna17-boxkite-t0-depth-ladder` and `qi-ry-emulator-boxkite-capability`.
 
 ## Next cases
 

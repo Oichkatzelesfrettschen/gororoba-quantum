@@ -1,0 +1,40 @@
+{
+ "schema": "qi-collection-v1",
+ "collected_utc": "2026-10-17T15:23:47+00:00",
+ "jobs": [
+  {
+   "file": "twin-double-x.cq",
+   "job": {
+    "id": 1528713,
+    "created_on": "2026-10-17T15:23:35.007603Z",
+    "file_id": 1539097,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 870712,
+    "queued_at": "2026-10-17T15:23:39.893368Z",
+    "finished_at": "2026-10-17T15:23:40.149698Z",
+    "number_of_shots": 2048,
+    "raw_data_enabled": true,
+    "session_id": "e7e3ef34-9790-4a32-be92-4a47a0cc8253",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1490706,
+     "created_on": "2026-10-17T15:23:40.057168Z",
+     "job_id": 1528713,
+     "execution_time_in_seconds": 0.025069,
+     "shots_requested": 2048,
+     "shots_done": 2048,
+     "results": {
+      "0000000000": 2048
+     }
+    }
+   ],
+   "logs": null
+  }
+ ],
+ "transactions": []
+}

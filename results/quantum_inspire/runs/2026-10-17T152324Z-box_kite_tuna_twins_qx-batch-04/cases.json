@@ -1,0 +1,54 @@
+{
+ "schema": "box-kite-cases-v1",
+ "family": "tuna_twins",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "dialect": "qx",
+ "bit_order": "qubit 0 at the rightmost character (QX)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "twin_of": "tuna_17",
+ "role": "the gate list of each Tuna-17 witness circuit relabeled onto QX qubits 0-9 (qubit_map: Tuna qubit -> QX qubit), run on the remote ideal emulator before its Tuna batch; the identical Tuna bytes run on local qxelarator",
+ "preregistered": {
+  "falsifier": "any shot violating a deterministic replica refutes the emitted cQASM; a P = 1/2 replica outside |z| < 4.5 at 2048 shots refutes it"
+ },
+ "batch": "batch-04",
+ "stage": "pre",
+ "circuits": [
+  {
+   "file": "twin-double-x.cq",
+   "kind": "diagnostic",
+   "stage": "pre",
+   "tuna_case": "box_kite_tuna_pre/batch-00/double-x.cq",
+   "qubit_map": {
+    "0": 0,
+    "1": 1,
+    "4": 2,
+    "6": 3,
+    "8": 4,
+    "10": 5,
+    "11": 6,
+    "12": 7,
+    "13": 8,
+    "14": 9
+   },
+   "dropped": [
+    2,
+    3,
+    5,
+    7,
+    9,
+    15,
+    16
+   ],
+   "ideal_p1": "0",
+   "falsifier": "any shot with a 1 on any qubit refutes the emitted cQASM",
+   "sha256": "bcf1aba2b39c083ee994e753edb7879a421d5222e776a3611feca5819f669ba3"
+  }
+ ]
+}
