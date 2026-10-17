@@ -1,0 +1,2117 @@
+{
+ "schema": "qi-readout-ringdown-device-context-v1",
+ "profile": "tuna_17",
+ "role": "context printed beside each ring-down verdict; the preregistered decision rule is untouched",
+ "pilot": {
+  "series_targets": {
+   "P": [
+    0,
+    4,
+    5,
+    6,
+    10,
+    11,
+    12,
+    16
+   ],
+   "Q": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9,
+    13,
+    14,
+    15
+   ]
+  },
+  "delays_cycles": [
+   2,
+   77
+  ],
+  "span_cycles": 75,
+  "cycle_seconds": 2e-08,
+  "alias_edge_hz": 333333.0,
+  "alias_edge_flag_window_hz": 30000.0,
+  "edge_scope": "absolute reference rate only; delta, its chi-square fits, A and T are unchanged",
+  "settle_wait_us": 2.0,
+  "min_visibility": 0.3
+ },
+ "coupler_map": {
+  "analysis": "results/quantum_inspire/coupler_zz_tuna_17_analysis.json",
+  "runs": [
+   "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+   "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-01",
+   "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-02",
+   "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-03"
+  ],
+  "delays_cycles": [
+   25,
+   100
+  ],
+  "alias_period_hz": 666667.0
+ },
+ "spectator_drive_run": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17",
+ "over_rotation_model": "X90 and the final X90 or Y90 turn through pi/2 + eps/2; the rate error is the phase-error spread over 2001 phases divided by 2 pi SPAN x 20 ns",
+ "common_mode": "Cancels in delta(tau), because the reference arm and every readout arm of a target share it: the static ZZ shift from neighbors that stay in |0> (every neighbor of a target is a spectator in |0>); the simultaneous-drive crosstalk of the shared X90 schedule, since every arm plays the same gates on the same targets at the same cycles; the coherent over-rotation, whose phase-estimate bias depends on the gate angle alone and is bounded above per qubit (over_rotation block); and the readout assignment, which the in-batch calibration inverts per target and which scales visibility without moving a phase. Does not cancel: the readout-induced effects of the other targets' simultaneous mid-circuit readouts, which the readout arms carry and the reference's wait does not, so they are part of what delta(tau) measures; and drift between batches, which the reference sharing a batch with tau 0 and tau 5 handles for those two arms and which moves delta(15), delta(40) and delta(100) together otherwise.",
+ "qubits": {
+  "0": {
+   "series": "P",
+   "coupler_map": {
+    "role": "P",
+    "usable_target": true,
+    "omega_hz": 18478.1,
+    "omega_se_hz": 1452.01,
+    "folded_detuning_hz": 18478.1,
+    "edge_distance_hz": 314855.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.974123,
+     0.755046
+    ],
+    "visibility_min_over_sectors": [
+     0.958634,
+     0.755046
+    ],
+    "max_abs_j_hz": 7902.75,
+    "couplers": [
+     {
+      "neighbor": 1,
+      "j_hz": -2206.89,
+      "j_se_hz": 895.989,
+      "usable_ends": 2,
+      "own_end_j_hz": -1942.94,
+      "own_end_j_se_hz": 1443.8
+     },
+     {
+      "neighbor": 2,
+      "j_hz": -7902.75,
+      "j_se_hz": 962.796,
+      "usable_ends": 2,
+      "own_end_j_hz": -7819.81,
+      "own_end_j_se_hz": 1440.12
+     }
+    ]
+   },
+   "spectator_drive": null,
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0161743,
+      "p1_given_1": 0.970398
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0160522,
+      "p1_given_1": 0.97052
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0186768,
+      "p1_given_1": 0.847412
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.034668,
+      "p1_given_1": 0.392944
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0351562,
+      "p1_given_1": 0.38855
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0386963,
+      "p1_given_1": null
+     }
+    ],
+    "implied_t1": {
+     "us": 2.18511,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 2.18511,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 2.18481
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.302322,
+    "visibility_calibration_absorbed": 0.755046,
+    "min_visibility": 0.3,
+    "clears_conservative": true,
+    "clears_calibration_absorbed": true
+   }
+  },
+  "1": {
+   "series": "Q",
+   "coupler_map": {
+    "role": "Q",
+    "usable_target": true,
+    "omega_hz": 55464.8,
+    "omega_se_hz": 1145.03,
+    "folded_detuning_hz": 55464.8,
+    "edge_distance_hz": 277869.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.985444,
+     0.957703
+    ],
+    "visibility_min_over_sectors": [
+     0.974807,
+     0.957703
+    ],
+    "max_abs_j_hz": 19281.8,
+    "couplers": [
+     {
+      "neighbor": 0,
+      "j_hz": -2206.89,
+      "j_se_hz": 895.989,
+      "usable_ends": 2,
+      "own_end_j_hz": -2372.21,
+      "own_end_j_se_hz": 1142.63
+     },
+     {
+      "neighbor": 4,
+      "j_hz": -19281.8,
+      "j_se_hz": 868.471,
+      "usable_ends": 2,
+      "own_end_j_hz": -19035.2,
+      "own_end_j_se_hz": 1143.43
+     }
+    ]
+   },
+   "spectator_drive": {
+    "partner": 2,
+    "p1_driven_alone": 0.0619507,
+    "p1_driven_with_partner": 0.258606,
+    "simultaneous_change_z": 48.5172,
+    "over_rotation": null
+   },
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0245972,
+      "p1_given_1": 0.969727
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0258789,
+      "p1_given_1": 0.96759
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0249023,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.024292,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0264893,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0257568,
+      "p1_given_1": 0.899536
+     }
+    ],
+    "implied_t1": {
+     "us": 26.6188,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 26.6188,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 27.4237
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.888383,
+    "visibility_calibration_absorbed": 0.957703,
+    "min_visibility": 0.3,
+    "clears_conservative": true,
+    "clears_calibration_absorbed": true
+   }
+  },
+  "2": {
+   "series": "Q",
+   "coupler_map": {
+    "role": "Q",
+    "usable_target": true,
+    "omega_hz": 6247.84,
+    "omega_se_hz": 1308.05,
+    "folded_detuning_hz": 6247.84,
+    "edge_distance_hz": 327085.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.968438,
+     0.897224
+    ],
+    "visibility_min_over_sectors": [
+     0.965748,
+     0.892391
+    ],
+    "max_abs_j_hz": 7902.75,
+    "couplers": [
+     {
+      "neighbor": 0,
+      "j_hz": -7902.75,
+      "j_se_hz": 962.796,
+      "usable_ends": 2,
+      "own_end_j_hz": -7969.78,
+      "own_end_j_se_hz": 1294.66
+     },
+     {
+      "neighbor": 4,
+      "j_hz": 4133.17,
+      "j_se_hz": 938.219,
+      "usable_ends": 2,
+      "own_end_j_hz": 4210.35,
+      "own_end_j_se_hz": 1305.2
+     },
+     {
+      "neighbor": 5,
+      "j_hz": 5310.32,
+      "j_se_hz": 1295.19,
+      "usable_ends": 1,
+      "own_end_j_hz": 5310.32,
+      "own_end_j_se_hz": 1295.19
+     }
+    ]
+   },
+   "spectator_drive": {
+    "partner": 1,
+    "p1_driven_alone": 0.0457153,
+    "p1_driven_with_partner": 0.892639,
+    "simultaneous_change_z": 153.602,
+    "over_rotation": null
+   },
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0111694,
+      "p1_given_1": 0.969177
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0105591,
+      "p1_given_1": 0.970093
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0128174,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0291748,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.027832,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0246582,
+      "p1_given_1": 0.880737
+     }
+    ],
+    "implied_t1": {
+     "us": 20.9012,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 20.9012,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 20.697
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.81535,
+    "visibility_calibration_absorbed": 0.897224,
+    "min_visibility": 0.3,
+    "clears_conservative": true,
+    "clears_calibration_absorbed": true
+   }
+  },
+  "3": {
+   "series": "Q",
+   "coupler_map": {
+    "role": "Q",
+    "usable_target": true,
+    "omega_hz": -21614.9,
+    "omega_se_hz": 1336.43,
+    "folded_detuning_hz": -21614.9,
+    "edge_distance_hz": 311718.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.95011,
+     0.878586
+    ],
+    "visibility_min_over_sectors": [
+     0.938098,
+     0.808744
+    ],
+    "max_abs_j_hz": 11730.8,
+    "couplers": [
+     {
+      "neighbor": 5,
+      "j_hz": 11730.8,
+      "j_se_hz": 1307.11,
+      "usable_ends": 1,
+      "own_end_j_hz": 11730.8,
+      "own_end_j_se_hz": 1307.11
+     },
+     {
+      "neighbor": 6,
+      "j_hz": -7823.68,
+      "j_se_hz": 1335.84,
+      "usable_ends": 1,
+      "own_end_j_hz": -7823.68,
+      "own_end_j_se_hz": 1335.84
+     }
+    ]
+   },
+   "spectator_drive": null,
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0178833,
+      "p1_given_1": 0.959656
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0135498,
+      "p1_given_1": 0.966431
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0123291,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0435791,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0412598,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0454102,
+      "p1_given_1": 0.804443
+     }
+    ],
+    "implied_t1": {
+     "us": 11.3363,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 11.3363,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 10.9016
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.736486,
+    "visibility_calibration_absorbed": 0.878586,
+    "min_visibility": 0.3,
+    "clears_conservative": true,
+    "clears_calibration_absorbed": true
+   }
+  },
+  "4": {
+   "series": "P",
+   "coupler_map": {
+    "role": "P",
+    "usable_target": true,
+    "omega_hz": 26688.5,
+    "omega_se_hz": 1384.59,
+    "folded_detuning_hz": 26688.5,
+    "edge_distance_hz": 306645.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.965908,
+     0.845515
+    ],
+    "visibility_min_over_sectors": [
+     0.917676,
+     0.838506
+    ],
+    "max_abs_j_hz": 19281.8,
+    "couplers": [
+     {
+      "neighbor": 1,
+      "j_hz": -19281.8,
+      "j_se_hz": 868.471,
+      "usable_ends": 2,
+      "own_end_j_hz": -19618.0,
+      "own_end_j_se_hz": 1335.14
+     },
+     {
+      "neighbor": 2,
+      "j_hz": 4133.17,
+      "j_se_hz": 938.219,
+      "usable_ends": 2,
+      "own_end_j_hz": 4050.65,
+      "own_end_j_se_hz": 1349.6
+     },
+     {
+      "neighbor": 7,
+      "j_hz": -2984.11,
+      "j_se_hz": 1339.13,
+      "usable_ends": 1,
+      "own_end_j_hz": -2984.11,
+      "own_end_j_se_hz": 1339.13
+     },
+     {
+      "neighbor": 8,
+      "j_hz": -4985.42,
+      "j_se_hz": 959.448,
+      "usable_ends": 2,
+      "own_end_j_hz": -3583.83,
+      "own_end_j_se_hz": 1364.81
+     }
+    ]
+   },
+   "spectator_drive": null,
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0141602,
+      "p1_given_1": 0.947937
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0144043,
+      "p1_given_1": 0.947449
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0109863,
+      "p1_given_1": 0.832397
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0136719,
+      "p1_given_1": 0.85083
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0107422,
+      "p1_given_1": 0.851562
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.012207,
+      "p1_given_1": null
+     }
+    ],
+    "implied_t1": {
+     "us": 18.6541,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 18.6541,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 18.7442
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.759554,
+    "visibility_calibration_absorbed": 0.845515,
+    "min_visibility": 0.3,
+    "clears_conservative": true,
+    "clears_calibration_absorbed": true
+   }
+  },
+  "5": {
+   "series": "P",
+   "coupler_map": {
+    "role": "P",
+    "usable_target": false,
+    "omega_hz": 321522.0,
+    "omega_se_hz": 9631.8,
+    "folded_detuning_hz": 321522.0,
+    "edge_distance_hz": 11811.1,
+    "pilot_alias_edge_flag": true,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.813396,
+     0.110761
+    ],
+    "visibility_min_over_sectors": [
+     0.789663,
+     0.0428577
+    ],
+    "max_abs_j_hz": 11730.8,
+    "couplers": [
+     {
+      "neighbor": 2,
+      "j_hz": 5310.32,
+      "j_se_hz": 1295.19,
+      "usable_ends": 1,
+      "own_end_j_hz": 25507.1,
+      "own_end_j_se_hz": 9104.29
+     },
+     {
+      "neighbor": 3,
+      "j_hz": 11730.8,
+      "j_se_hz": 1307.11,
+      "usable_ends": 1,
+      "own_end_j_hz": 8105.01,
+      "own_end_j_se_hz": 9414.22
+     },
+     {
+      "neighbor": 8,
+      "j_hz": -432.836,
+      "j_se_hz": 1344.54,
+      "usable_ends": 1,
+      "own_end_j_hz": -1875.4,
+      "own_end_j_se_hz": 9505.44
+     },
+     {
+      "neighbor": 9,
+      "j_hz": 28.797,
+      "j_se_hz": 1442.93,
+      "usable_ends": 1,
+      "own_end_j_hz": -5429.05,
+      "own_end_j_se_hz": 9582.81
+     }
+    ]
+   },
+   "spectator_drive": {
+    "partner": 6,
+    "p1_driven_alone": 0.154724,
+    "p1_driven_with_partner": 0.130554,
+    "simultaneous_change_z": -6.2556,
+    "over_rotation": null
+   },
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0372314,
+      "p1_given_1": 0.962219
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0388794,
+      "p1_given_1": 0.962097
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0415039,
+      "p1_given_1": 0.851929
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.036499,
+      "p1_given_1": 0.843506
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0371094,
+      "p1_given_1": 0.854004
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0367432,
+      "p1_given_1": null
+     }
+    ],
+    "implied_t1": {
+     "us": 16.7635,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 16.7635,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 16.7814
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.0983043,
+    "visibility_calibration_absorbed": 0.110761,
+    "min_visibility": 0.3,
+    "clears_conservative": false,
+    "clears_calibration_absorbed": false
+   }
+  },
+  "6": {
+   "series": "P",
+   "coupler_map": {
+    "role": "P",
+    "usable_target": false,
+    "omega_hz": 323668.0,
+    "omega_se_hz": 3381.74,
+    "folded_detuning_hz": 323668.0,
+    "edge_distance_hz": 9665.04,
+    "pilot_alias_edge_flag": true,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.686826,
+     0.294973
+    ],
+    "visibility_min_over_sectors": [
+     0.676376,
+     0.270355
+    ],
+    "max_abs_j_hz": 7823.68,
+    "couplers": [
+     {
+      "neighbor": 3,
+      "j_hz": -7823.68,
+      "j_se_hz": 1335.84,
+      "usable_ends": 1,
+      "own_end_j_hz": -11983.3,
+      "own_end_j_se_hz": 3390.14
+     },
+     {
+      "neighbor": 9,
+      "j_hz": 549.348,
+      "j_se_hz": 1463.09,
+      "usable_ends": 1,
+      "own_end_j_hz": -2934.29,
+      "own_end_j_se_hz": 3332.97
+     }
+    ]
+   },
+   "spectator_drive": {
+    "partner": 5,
+    "p1_driven_alone": 0.716858,
+    "p1_driven_with_partner": 0.701538,
+    "simultaneous_change_z": -3.05328,
+    "over_rotation": {
+     "lower_bound_rad_per_x": 0.0504852,
+     "phase_error_min_rad": -0.000901505,
+     "phase_error_max_rad": 0.000901505,
+     "worst_rate_error_khz": 0.191305
+    }
+   },
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0316772,
+      "p1_given_1": 0.945679
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0366821,
+      "p1_given_1": 0.958252
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0351562,
+      "p1_given_1": 0.67041
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0125732,
+      "p1_given_1": 0.143921
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0146484,
+      "p1_given_1": 0.140015
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0137939,
+      "p1_given_1": null
+     }
+    ],
+    "implied_t1": {
+     "us": 1.04703,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 1.04703,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 1.03984
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.0436728,
+    "visibility_calibration_absorbed": 0.294973,
+    "min_visibility": 0.3,
+    "clears_conservative": false,
+    "clears_calibration_absorbed": false
+   }
+  },
+  "7": {
+   "series": "Q",
+   "coupler_map": {
+    "role": "Q",
+    "usable_target": false,
+    "omega_hz": -115766.0,
+    "omega_se_hz": 8708.2,
+    "folded_detuning_hz": -115766.0,
+    "edge_distance_hz": 217568.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.809804,
+     0.0950932
+    ],
+    "visibility_min_over_sectors": [
+     0.754293,
+     0.0839768
+    ],
+    "max_abs_j_hz": 3143.19,
+    "couplers": [
+     {
+      "neighbor": 4,
+      "j_hz": -2984.11,
+      "j_se_hz": 1339.13,
+      "usable_ends": 1,
+      "own_end_j_hz": 3437.07,
+      "own_end_j_se_hz": 8842.5
+     },
+     {
+      "neighbor": 10,
+      "j_hz": 3143.19,
+      "j_se_hz": 1154.38,
+      "usable_ends": 1,
+      "own_end_j_hz": -7255.29,
+      "own_end_j_se_hz": 8742.74
+     },
+     {
+      "neighbor": 11,
+      "j_hz": -226.595,
+      "j_se_hz": 1270.3,
+      "usable_ends": 1,
+      "own_end_j_hz": -14774.1,
+      "own_end_j_se_hz": 8823.62
+     }
+    ]
+   },
+   "spectator_drive": {
+    "partner": 8,
+    "p1_driven_alone": 0.271423,
+    "p1_driven_with_partner": 0.27417,
+    "simultaneous_change_z": 0.558136,
+    "over_rotation": null
+   },
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0322266,
+      "p1_given_1": 0.898132
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0310059,
+      "p1_given_1": 0.941162
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0490723,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0374756,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.036499,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0610352,
+      "p1_given_1": 0.894287
+     }
+    ],
+    "implied_t1": {
+     "us": 466.142,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 466.142,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 39.1477
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.094686,
+    "visibility_calibration_absorbed": 0.0950932,
+    "min_visibility": 0.3,
+    "clears_conservative": false,
+    "clears_calibration_absorbed": false
+   }
+  },
+  "8": {
+   "series": "Q",
+   "coupler_map": {
+    "role": "Q",
+    "usable_target": true,
+    "omega_hz": 28630.3,
+    "omega_se_hz": 1356.74,
+    "folded_detuning_hz": 28630.3,
+    "edge_distance_hz": 304703.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.937788,
+     0.911532
+    ],
+    "visibility_min_over_sectors": [
+     0.913683,
+     0.857227
+    ],
+    "max_abs_j_hz": 6612.76,
+    "couplers": [
+     {
+      "neighbor": 4,
+      "j_hz": -4985.42,
+      "j_se_hz": 959.448,
+      "usable_ends": 2,
+      "own_end_j_hz": -6354.82,
+      "own_end_j_se_hz": 1349.05
+     },
+     {
+      "neighbor": 5,
+      "j_hz": -432.836,
+      "j_se_hz": 1344.54,
+      "usable_ends": 1,
+      "own_end_j_hz": -432.836,
+      "own_end_j_se_hz": 1344.54
+     },
+     {
+      "neighbor": 11,
+      "j_hz": 6612.76,
+      "j_se_hz": 934.895,
+      "usable_ends": 2,
+      "own_end_j_hz": 9709.97,
+      "own_end_j_se_hz": 1346.95
+     },
+     {
+      "neighbor": 12,
+      "j_hz": -707.214,
+      "j_se_hz": 913.312,
+      "usable_ends": 2,
+      "own_end_j_hz": -1654.28,
+      "own_end_j_se_hz": 1341.71
+     }
+    ]
+   },
+   "spectator_drive": {
+    "partner": 7,
+    "p1_driven_alone": 0.764404,
+    "p1_driven_with_partner": 0.764709,
+    "simultaneous_change_z": 0.0651024,
+    "over_rotation": {
+     "lower_bound_rad_per_x": 0.0531998,
+     "phase_error_min_rad": -0.00100111,
+     "phase_error_max_rad": 0.00100111,
+     "worst_rate_error_khz": 0.212441
+    }
+   },
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0310669,
+      "p1_given_1": 0.947876
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.029541,
+      "p1_given_1": 0.946838
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0339355,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0292969,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0305176,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.036377,
+      "p1_given_1": 0.857056
+     }
+    ],
+    "implied_t1": {
+     "us": 19.8569,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 19.8569,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 20.0752
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.824194,
+    "visibility_calibration_absorbed": 0.911532,
+    "min_visibility": 0.3,
+    "clears_conservative": true,
+    "clears_calibration_absorbed": true
+   }
+  },
+  "9": {
+   "series": "Q",
+   "coupler_map": {
+    "role": "Q",
+    "usable_target": true,
+    "omega_hz": -13435.6,
+    "omega_se_hz": 1466.42,
+    "folded_detuning_hz": -13435.6,
+    "edge_distance_hz": 319898.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.938599,
+     0.875596
+    ],
+    "visibility_min_over_sectors": [
+     0.881481,
+     0.838023
+    ],
+    "max_abs_j_hz": 3730.18,
+    "couplers": [
+     {
+      "neighbor": 5,
+      "j_hz": 28.797,
+      "j_se_hz": 1442.93,
+      "usable_ends": 1,
+      "own_end_j_hz": 28.797,
+      "own_end_j_se_hz": 1442.93
+     },
+     {
+      "neighbor": 6,
+      "j_hz": 549.348,
+      "j_se_hz": 1463.09,
+      "usable_ends": 1,
+      "own_end_j_hz": 549.348,
+      "own_end_j_se_hz": 1463.09
+     },
+     {
+      "neighbor": 12,
+      "j_hz": 3730.18,
+      "j_se_hz": 931.811,
+      "usable_ends": 2,
+      "own_end_j_hz": 3323.86,
+      "own_end_j_se_hz": 1440.51
+     }
+    ]
+   },
+   "spectator_drive": {
+    "partner": 15,
+    "p1_driven_alone": 0.882812,
+    "p1_driven_with_partner": 0.86377,
+    "simultaneous_change_z": -5.18139,
+    "over_rotation": {
+     "lower_bound_rad_per_x": 0.0610702,
+     "phase_error_min_rad": -0.00131942,
+     "phase_error_max_rad": 0.00131942,
+     "worst_rate_error_khz": 0.27999
+    }
+   },
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0183716,
+      "p1_given_1": 0.921021
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0264893,
+      "p1_given_1": 0.923279
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0273438,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.270874,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.273071,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.279297,
+      "p1_given_1": 0.891113
+     }
+    ],
+    "implied_t1": {
+     "us": 60.5863,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 60.5863,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 56.4021
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.847163,
+    "visibility_calibration_absorbed": 0.875596,
+    "min_visibility": 0.3,
+    "clears_conservative": true,
+    "clears_calibration_absorbed": true
+   }
+  },
+  "10": {
+   "series": "P",
+   "coupler_map": {
+    "role": "P",
+    "usable_target": true,
+    "omega_hz": 39154.5,
+    "omega_se_hz": 1160.83,
+    "folded_detuning_hz": 39154.5,
+    "edge_distance_hz": 294179.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.981375,
+     1.03364
+    ],
+    "visibility_min_over_sectors": [
+     0.955853,
+     0.977893
+    ],
+    "max_abs_j_hz": 3143.19,
+    "couplers": [
+     {
+      "neighbor": 7,
+      "j_hz": 3143.19,
+      "j_se_hz": 1154.38,
+      "usable_ends": 1,
+      "own_end_j_hz": 3143.19,
+      "own_end_j_se_hz": 1154.38
+     },
+     {
+      "neighbor": 13,
+      "j_hz": -382.501,
+      "j_se_hz": 870.124,
+      "usable_ends": 2,
+      "own_end_j_hz": 876.453,
+      "own_end_j_se_hz": 1144.78
+     }
+    ]
+   },
+   "spectator_drive": null,
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.046875,
+      "p1_given_1": 0.978027
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0487671,
+      "p1_given_1": 0.976074
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0511475,
+      "p1_given_1": 0.887939
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0539551,
+      "p1_given_1": 0.912842
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0493164,
+      "p1_given_1": 0.920288
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0551758,
+      "p1_given_1": null
+     }
+    ],
+    "implied_t1": {
+     "us": 32.8672,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 32.8672,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 33.9836
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.972615,
+    "visibility_calibration_absorbed": 1.03364,
+    "min_visibility": 0.3,
+    "clears_conservative": true,
+    "clears_calibration_absorbed": true
+   }
+  },
+  "11": {
+   "series": "P",
+   "coupler_map": {
+    "role": "P",
+    "usable_target": true,
+    "omega_hz": 7021.29,
+    "omega_se_hz": 1327.79,
+    "folded_detuning_hz": 7021.29,
+    "edge_distance_hz": 326312.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.95997,
+     0.853334
+    ],
+    "visibility_min_over_sectors": [
+     0.910857,
+     0.815901
+    ],
+    "max_abs_j_hz": 31434.1,
+    "couplers": [
+     {
+      "neighbor": 7,
+      "j_hz": -226.595,
+      "j_se_hz": 1270.3,
+      "usable_ends": 1,
+      "own_end_j_hz": -226.595,
+      "own_end_j_se_hz": 1270.3
+     },
+     {
+      "neighbor": 8,
+      "j_hz": 6612.76,
+      "j_se_hz": 934.895,
+      "usable_ends": 2,
+      "own_end_j_hz": 3733.67,
+      "own_end_j_se_hz": 1298.66
+     },
+     {
+      "neighbor": 13,
+      "j_hz": 7501.98,
+      "j_se_hz": 937.039,
+      "usable_ends": 2,
+      "own_end_j_hz": 8650.66,
+      "own_end_j_se_hz": 1294.73
+     },
+     {
+      "neighbor": 14,
+      "j_hz": -31434.1,
+      "j_se_hz": 944.188,
+      "usable_ends": 2,
+      "own_end_j_hz": -31402.3,
+      "own_end_j_se_hz": 1271.06
+     }
+    ]
+   },
+   "spectator_drive": null,
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0181274,
+      "p1_given_1": 0.953979
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0182495,
+      "p1_given_1": 0.956665
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0158691,
+      "p1_given_1": 0.871704
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0179443,
+      "p1_given_1": 0.884399
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0200195,
+      "p1_given_1": 0.881104
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0163574,
+      "p1_given_1": null
+     }
+    ],
+    "implied_t1": {
+     "us": 25.1677,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 25.1677,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 24.3078
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.788146,
+    "visibility_calibration_absorbed": 0.853334,
+    "min_visibility": 0.3,
+    "clears_conservative": true,
+    "clears_calibration_absorbed": true
+   }
+  },
+  "12": {
+   "series": "P",
+   "coupler_map": {
+    "role": "P",
+    "usable_target": true,
+    "omega_hz": -56571.8,
+    "omega_se_hz": 1251.19,
+    "folded_detuning_hz": -56571.8,
+    "edge_distance_hz": 276762.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.954619,
+     0.857017
+    ],
+    "visibility_min_over_sectors": [
+     0.920349,
+     0.795377
+    ],
+    "max_abs_j_hz": 10353.1,
+    "couplers": [
+     {
+      "neighbor": 8,
+      "j_hz": -707.214,
+      "j_se_hz": 913.312,
+      "usable_ends": 2,
+      "own_end_j_hz": 110.545,
+      "own_end_j_se_hz": 1246.75
+     },
+     {
+      "neighbor": 9,
+      "j_hz": 3730.18,
+      "j_se_hz": 931.811,
+      "usable_ends": 2,
+      "own_end_j_hz": 4022.53,
+      "own_end_j_se_hz": 1221.88
+     },
+     {
+      "neighbor": 14,
+      "j_hz": 10353.1,
+      "j_se_hz": 921.336,
+      "usable_ends": 2,
+      "own_end_j_hz": 10021.5,
+      "own_end_j_se_hz": 1217.88
+     },
+     {
+      "neighbor": 15,
+      "j_hz": 2952.29,
+      "j_se_hz": 912.811,
+      "usable_ends": 2,
+      "own_end_j_hz": 3659.2,
+      "own_end_j_se_hz": 1217.72
+     }
+    ]
+   },
+   "spectator_drive": null,
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.00488281,
+      "p1_given_1": 0.972534
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.00531006,
+      "p1_given_1": 0.971375
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.00524902,
+      "p1_given_1": 0.884888
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.00488281,
+      "p1_given_1": 0.88269
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.00427246,
+      "p1_given_1": 0.873535
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.00524902,
+      "p1_given_1": null
+     }
+    ],
+    "implied_t1": {
+     "us": 18.6295,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 18.6295,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 18.8388
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.769777,
+    "visibility_calibration_absorbed": 0.857017,
+    "min_visibility": 0.3,
+    "clears_conservative": true,
+    "clears_calibration_absorbed": true
+   }
+  },
+  "13": {
+   "series": "Q",
+   "coupler_map": {
+    "role": "Q",
+    "usable_target": true,
+    "omega_hz": -1476.64,
+    "omega_se_hz": 1357.91,
+    "folded_detuning_hz": -1476.64,
+    "edge_distance_hz": 331857.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     1.06273,
+     1.00208
+    ],
+    "visibility_min_over_sectors": [
+     0.947082,
+     0.875497
+    ],
+    "max_abs_j_hz": 7501.98,
+    "couplers": [
+     {
+      "neighbor": 10,
+      "j_hz": -382.501,
+      "j_se_hz": 870.124,
+      "usable_ends": 2,
+      "own_end_j_hz": -2104.85,
+      "own_end_j_se_hz": 1339.0
+     },
+     {
+      "neighbor": 11,
+      "j_hz": 7501.98,
+      "j_se_hz": 937.039,
+      "usable_ends": 2,
+      "own_end_j_hz": 6238.55,
+      "own_end_j_se_hz": 1357.87
+     }
+    ]
+   },
+   "spectator_drive": {
+    "partner": 14,
+    "p1_driven_alone": 0.186951,
+    "p1_driven_with_partner": 0.177795,
+    "simultaneous_change_z": -2.14589,
+    "over_rotation": null
+   },
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0203247,
+      "p1_given_1": 0.901978
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0198975,
+      "p1_given_1": 0.909668
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0189209,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0324707,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0229492,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0216064,
+      "p1_given_1": 0.829712
+     }
+    ],
+    "implied_t1": {
+     "us": 23.9489,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 23.9489,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 21.7389
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.921797,
+    "visibility_calibration_absorbed": 1.00208,
+    "min_visibility": 0.3,
+    "clears_conservative": true,
+    "clears_calibration_absorbed": true
+   }
+  },
+  "14": {
+   "series": "Q",
+   "coupler_map": {
+    "role": "Q",
+    "usable_target": true,
+    "omega_hz": 24573.5,
+    "omega_se_hz": 1415.93,
+    "folded_detuning_hz": 24573.5,
+    "edge_distance_hz": 308760.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.934678,
+     0.75936
+    ],
+    "visibility_min_over_sectors": [
+     0.934678,
+     0.757903
+    ],
+    "max_abs_j_hz": 31434.1,
+    "couplers": [
+     {
+      "neighbor": 11,
+      "j_hz": -31434.1,
+      "j_se_hz": 944.188,
+      "usable_ends": 2,
+      "own_end_j_hz": -31473.2,
+      "own_end_j_se_hz": 1410.34
+     },
+     {
+      "neighbor": 12,
+      "j_hz": 10353.1,
+      "j_se_hz": 921.336,
+      "usable_ends": 2,
+      "own_end_j_hz": 10796.8,
+      "own_end_j_se_hz": 1408.81
+     },
+     {
+      "neighbor": 16,
+      "j_hz": -3126.75,
+      "j_se_hz": 986.201,
+      "usable_ends": 2,
+      "own_end_j_hz": -2024.11,
+      "own_end_j_se_hz": 1414.3
+     }
+    ]
+   },
+   "spectator_drive": {
+    "partner": 13,
+    "p1_driven_alone": 0.0593872,
+    "p1_driven_with_partner": 0.0598755,
+    "simultaneous_change_z": 0.186629,
+    "over_rotation": null
+   },
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0350952,
+      "p1_given_1": 0.967102
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0362549,
+      "p1_given_1": 0.970337
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0374756,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0349121,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0340576,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0374756,
+      "p1_given_1": 0.837158
+     }
+    ],
+    "implied_t1": {
+     "us": 13.8609,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 13.8609,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 13.5474
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.65733,
+    "visibility_calibration_absorbed": 0.75936,
+    "min_visibility": 0.3,
+    "clears_conservative": true,
+    "clears_calibration_absorbed": true
+   }
+  },
+  "15": {
+   "series": "Q",
+   "coupler_map": {
+    "role": "Q",
+    "usable_target": true,
+    "omega_hz": -2541.46,
+    "omega_se_hz": 1383.62,
+    "folded_detuning_hz": -2541.46,
+    "edge_distance_hz": 330792.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.936266,
+     0.880542
+    ],
+    "visibility_min_over_sectors": [
+     0.936266,
+     0.873979
+    ],
+    "max_abs_j_hz": 5322.01,
+    "couplers": [
+     {
+      "neighbor": 12,
+      "j_hz": 2952.29,
+      "j_se_hz": 912.811,
+      "usable_ends": 2,
+      "own_end_j_hz": 2045.58,
+      "own_end_j_se_hz": 1379.1
+     },
+     {
+      "neighbor": 16,
+      "j_hz": 5322.01,
+      "j_se_hz": 974.82,
+      "usable_ends": 2,
+      "own_end_j_hz": 4836.47,
+      "own_end_j_se_hz": 1383.56
+     }
+    ]
+   },
+   "spectator_drive": {
+    "partner": 9,
+    "p1_driven_alone": 0.0922241,
+    "p1_driven_with_partner": 0.0969238,
+    "simultaneous_change_z": 1.45363,
+    "over_rotation": null
+   },
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0463257,
+      "p1_given_1": 0.978516
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0454102,
+      "p1_given_1": 0.976562
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0473633,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0494385,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0476074,
+      "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.052124,
+      "p1_given_1": 0.729736
+     }
+    ],
+    "implied_t1": {
+     "us": 6.81771,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 6.81771,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 6.86447
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.656672,
+    "visibility_calibration_absorbed": 0.880542,
+    "min_visibility": 0.3,
+    "clears_conservative": true,
+    "clears_calibration_absorbed": true
+   }
+  },
+  "16": {
+   "series": "P",
+   "coupler_map": {
+    "role": "P",
+    "usable_target": true,
+    "omega_hz": -1509.19,
+    "omega_se_hz": 1376.99,
+    "folded_detuning_hz": -1509.19,
+    "edge_distance_hz": 331824.0,
+    "pilot_alias_edge_flag": false,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.957892,
+     0.882093
+    ],
+    "visibility_min_over_sectors": [
+     0.928239,
+     0.851255
+    ],
+    "max_abs_j_hz": 5322.01,
+    "couplers": [
+     {
+      "neighbor": 14,
+      "j_hz": -3126.75,
+      "j_se_hz": 986.201,
+      "usable_ends": 2,
+      "own_end_j_hz": -4170.33,
+      "own_end_j_se_hz": 1375.89
+     },
+     {
+      "neighbor": 15,
+      "j_hz": 5322.01,
+      "j_se_hz": 974.82,
+      "usable_ends": 2,
+      "own_end_j_hz": 5800.65,
+      "own_end_j_se_hz": 1373.7
+     }
+    ]
+   },
+   "spectator_drive": null,
+   "readout": {
+    "runs": [
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0302124,
+      "p1_given_1": 0.967102
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0268555,
+      "p1_given_1": 0.966675
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0284424,
+      "p1_given_1": 0.859009
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0283203,
+      "p1_given_1": 0.86377
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+      "shots": 8192,
+      "wait_before_readout_us": 2.0,
+      "p1_given_0": 0.0311279,
+      "p1_given_1": 0.87146
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+      "shots": 8192,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0284424,
+      "p1_given_1": null
+     }
+    ],
+    "implied_t1": {
+     "us": 19.206,
+     "wait_us": 2.0,
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+     "us_by_no_wait_run": {
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 19.206,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 19.2878
+     },
+     "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
+    }
+   },
+   "visibility_at_d2_plus_wait": {
+    "label": "predicted",
+    "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
+    "visibility_conservative": 0.794858,
+    "visibility_calibration_absorbed": 0.882093,
+    "min_visibility": 0.3,
+    "clears_conservative": true,
+    "clears_calibration_absorbed": true
+   }
+  }
+ }
+}

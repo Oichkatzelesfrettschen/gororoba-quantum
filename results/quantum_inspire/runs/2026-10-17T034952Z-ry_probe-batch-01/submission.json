@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-17T03:51:58+00:00",
+ "approval": "User, 2026-10-17: \"and then approveal of the ry case.\" (Ry emulator construct probe, scripts/qi_ry_probe_cases.py, PR #164)",
+ "backend": "Rydberg",
+ "backend_type_id": 5,
+ "cases_sha256": "42874bb38ee88fd7a9ec06836d65df7f896e3aadab776f8d74acf20e927a8d76",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 870050,
+ "project": 765854,
+ "shots": 1024,
+ "jobs": [
+  {
+   "file": "h.cq",
+   "job": 1527285,
+   "sha256": "2f6ec6447e8a4ddd2c3f0218e5f912a1ee813c0bd933d61b13720dceae0845a5"
+  },
+  {
+   "file": "x-cnot.cq",
+   "job": 1527286,
+   "sha256": "50be05e59ce6bff730d8209a8cf1dc6f34af5876f33ebd74e59a80c47a4b325e"
+  },
+  {
+   "file": "rz-x.cq",
+   "job": 1527287,
+   "sha256": "ac4fddf938b2db7398c242db5e65d43dbea397b65e1f8232a5edd8136c74d8c5"
+  }
+ ],
+ "submitted_utc": "2026-10-17T03:51:58+00:00"
+}

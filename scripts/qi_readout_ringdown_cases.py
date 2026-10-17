@@ -898,7 +898,9 @@ def sanity(
     own guard, which the notes record; a qubit in exempt is reported instead); in a Ramsey circuit every spectator, held
     in |0>, reads 1 below SANITY_SPECTATOR_ONE (a qubit in exempt is reported
     in the notes instead) and, where the 2 n-bit register
-    returns, every target's mid-circuit outcome reads 1 below SANITY_MID_ONE. A
+    returns, every target's mid-circuit outcome reads 1 below SANITY_MID_ONE (an
+    exempt target is reported instead, since its readout error alone sets that
+    rate). A
     failure stops the series before it spends more device time.
     """
     case = json.loads((run / "cases.json").read_text(encoding="utf-8"))
@@ -938,7 +940,9 @@ def sanity(
         if present and not row["file"].startswith(REFERENCE):
             for t in meta["targets"]:
                 mid = sum(bit(s, n + t) for s in shots) / len(shots)
-                if mid > SANITY_MID_ONE:
+                if t in exempt:
+                    exempt_notes.append(f"{row['file']} exempt q{t}: mid-circuit P1 {mid:.3f}")
+                elif mid > SANITY_MID_ONE:
                     problems.append(f"{row['file']} q{t}: mid-circuit P1 {mid:.3f}")
         problems += [
             f"{row['file']} spectator q{q}: P1 {ones[q]:.3f}"

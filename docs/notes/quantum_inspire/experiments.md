@@ -454,8 +454,55 @@ through a calibration from 03:20 UTC):
 
 The per-target form of this table, computed from the retained analyses, is
 `results/quantum_inspire/readout_ringdown_tuna_17_device_context.json`
-(`scripts/qi_tuna17_device_context.py`); it is context for reading each
-verdict and leaves the preregistered rule unchanged.
+(`scripts/qi_tuna17_device_context.py`, gate core-387); it is context for
+reading each verdict and leaves the preregistered rule unchanged.
+
+**Series P result** ([analysis](../../../results/quantum_inspire/readout_ringdown_tuna_17_P_analysis.json),
+gate core-386). The analysis reads P-00 (calibration, 03:39Z), P-01 to
+P-04 (d = 2, 03:46-03:59Z), P-06-rerun1 and P-05-rerun1 (d = 77, X, 04:15
+and 04:22Z) and P-07, P-08 (d = 77, Y, 04:30-04:34Z). P-05 (04:02Z) and
+P-06 (04:06Z) stay retained and outside the analysis: they straddle the
+04:04Z q9 change, and the reruns put every d = 77 X arm on the post-change
+device.
+
+| Target | min visibility | chi2 H1 (5 dof) | chi2 H2 (3 dof) | class | delta(tau) in kHz, tau = 0, 100, 300, 800, 2000 ns (se 2.2-3.2) |
+|---|---|---|---|---|---|
+| Q0 | 0.535 | 2.5 | 2.1 | none | 2.4, 4.7, 2.6, 1.4, 5.2 |
+| Q4 | 0.895 | 10.0 | 9.6 | none | 4.4, -0.2, 3.9, 5.9, 6.7 |
+| Q5 | 0.105 | 15.7 | 9.7 | unusable | 29.0, 38.4, 46.3, -8.7, 28.1 |
+| Q6 | 1.079 | 216.6 | 193.7 | tail | -5.9, -12.9, -18.1, -26.2, -22.2 |
+| Q10 | 0.863 | 103.7 | 64.9 | tail | -1.4, 0.9, -1.8, 9.3, 20.3 |
+| Q11 | 0.864 | 161.3 | 47.5 | offset | -25.1, -26.3, -33.2, -18.8, -23.6 |
+| Q12 | 0.836 | 174.0 | 150.0 | offset | -4.7, 10.7, 19.3, 19.4, -8.4 |
+| Q16 | 0.789 | 52.4 | 30.7 | tail | -11.3, -8.4, 8.8, -7.1, -2.7 |
+
+- The preregistered verdict is "not detected": 3 of 7 usable targets
+  classify as tails, below the 50% threshold. Q5 fails the visibility rule,
+  as the device context predicted.
+- No classified target fits H2: its chi-square runs from 30.7 to 193.7 on
+  3 degrees of freedom, so the arms scatter by 5-30 kHz beyond their shot
+  noise on Q6, Q10, Q11, Q12 and Q16. The rule compares H2 with H1 and
+  checks neither model's goodness of fit, so a tail or offset class here
+  marks structure that neither model describes; only Q0 and Q4 fit the
+  static model. Q6 and Q16 fit T at the 5-cycle lower bound, and Q10's
+  delta grows with tau, the opposite of a decaying tail.
+- Q11 is the one consistent pattern: every readout arm sits 19-33 kHz
+  below its reference out to 2 us. That is a readout-induced offset that
+  outlasts the ladder or a shift of the reference arm itself; the
+  reference's 800 ns wait in place of a readout cannot tell them apart.
+- Q6's visibility exceeds 1 because P-00's assignment (P(0|1) = 0.33) no
+  longer describes Q6 after the 04:12Z recalibration (0.86 at 04:25Z), so
+  its class rests on a stale correction. The preregistered analysis inverts
+  the series' batch-00 calibration for every batch; a time-nearest
+  calibration is a sensitivity analysis outside the rule.
+- The postselected estimates keep 95-99.5% of the shots and differ from the
+  all-shot estimates by at most 1.1 kHz on usable targets, below every
+  delta's standard error. The subset-difference error sqrt(se_post^2 -
+  se_all^2) collapses to 0 at that retention on most arms, so its z column
+  is undefined there and serves as no falsifier.
+- Series Q (targets Q1, Q2, Q3, Q7, Q8, Q9, Q13, Q14, Q15) is collected
+  through Q-03; its analysis and the remaining batches land with the rest
+  of the series.
 
 ## Next cases
 
