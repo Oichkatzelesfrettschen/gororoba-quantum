@@ -18,6 +18,7 @@ import numpy as np
 from qiskit.exceptions import QiskitError
 
 import local_compute
+import n21_exact_planning
 import parallel
 from diagnostic_experiments import (
     N21_FAMILIES,
@@ -31,6 +32,7 @@ from experiment_optimizer import (
     BudgetContract,
     CandidatePlan,
     CostScenario,
+    CovarianceBound,
     JobCandidate,
     ObservableContract,
     ObservableTerm,
@@ -66,6 +68,8 @@ def settings(args: Any) -> dict[str, Any]:
             ("reserve_seconds", 0.0),
             ("max_total_execution_seconds", None),
             ("patch_qubits", None),
+            ("model_method", "sampled"),
+            ("replica_variance_bound", None),
         )
     }
 
@@ -562,10 +566,17 @@ def family_candidates(
         if not tiers:
             raise runtime.LiveRunError("replica tiers contain no placement within --max-replicas")
         for candidate in routed[: args.optimizer_candidates]:
+            placed: list[list[tuple[int, ...]]] = []
             for cap in sorted(set(tiers)):
                 trial = copy.copy(candidate)
                 policy = runtime.ReplicaPolicy(args.replica_floor, cap, False, True)
                 if runtime._prepare_individual_candidate(trial, trace, policy):
+                    # A cap above the floor-admitted replica count places the
+                    # same replicas as a smaller cap; one copy enters the search.
+                    replicas = [tuple(replica.qubits) for replica in trial.replicas]
+                    if replicas in placed:
+                        continue
+                    placed.append(replicas)
                     candidates.append(
                         ([trial], {"name": args.family, "replica_cap": cap, **windows.get(id(candidate), {})})
                     )
@@ -735,6 +746,11 @@ def prepare(
         raise runtime.LiveRunError("per-PUB shot allocation requires an optimized algebra or patch family")
     if not per_pub and hasattr(args, "pub_shots"):
         del args.pub_shots
+    model_method = getattr(args, "model_method", "sampled")
+    variance_bound = getattr(args, "replica_variance_bound", None)
+    if (model_method != "sampled" or variance_bound is not None) and args.family not in N21_FAMILIES:
+        raise runtime.LiveRunError("--model-method exact and --replica-variance-bound apply to the N21 families")
+    exact_evidence: dict[int, dict[str, Any]] = {}
     for choices, _configuration in candidates:
         for choice in choices:
             if id(choice.snap) not in simulators:
@@ -772,6 +788,17 @@ def prepare(
             predictions.update(
                 {name: tuple(tuple(map(float, dist)) for dist in replicas) for name, replicas in noisy.items()}
             )
+        if model_method == "exact":
+            try:
+                predictions, exact_evidence[candidate_index] = n21_exact_planning.exact_predictions(
+                    choices,
+                    {id(choice.snap): simulators[id(choice.snap)].options.noise_model for choice in choices},
+                    predictions,
+                    args.model_shots,
+                    args.simulation_alpha,
+                )
+            except ValueError as error:
+                raise runtime.LiveRunError(f"candidate {candidate_index}: {error}") from error
         for shots in [max(tiers)] if per_pub else tiers:
             jobs = []
             for backend_name in sorted({choice.snap.name for choice in choices}):
@@ -794,7 +821,7 @@ def prepare(
                                     classical_latency_seconds=manifest["sequential_stage_count"]
                                     * args.classical_latency_us
                                     * 1e-6,
-                                    simulation_shots=args.model_shots,
+                                    simulation_shots=None if model_method == "exact" else args.model_shots,
                                     classical_stage_count=manifest["sequential_stage_count"],
                                     duration_assumption=(
                                         "Target duration includes reset; dynamic classical latency is a declared "
@@ -820,10 +847,21 @@ def prepare(
                     f"{args.family}: {shots} shots require {len(jobs)} jobs; the static family requires one job"
                 )
             name = f"candidate-{candidate_index:03d}-shots-{shots}"
+            try:
+                covariance = (
+                    n21_exact_planning.replica_covariance_bounds(
+                        [pub for job in jobs for pub in job.pubs], contracts, variance_bound
+                    )
+                    if variance_bound is not None
+                    else ()
+                )
+            except ValueError as error:
+                raise runtime.LiveRunError(f"{name}: {error}") from error
             plans.append(
                 CandidatePlan(
                     name=name,
                     jobs=tuple(jobs),
+                    covariance_bounds=covariance,
                     proxy_metadata={
                         "backend": choices[0].snap.name,
                         "seed": choices[0].seed,
@@ -892,6 +930,8 @@ def prepare(
     # its state prevents that diagnostic archive from becoming a submission.
     retained = result.selected or plans[0].name
     choices, configuration, args.shots = ownership[retained]
+    retained_plan = next(plan for plan in plans if plan.name == retained)
+    retained_index = int(retained.split("-")[1])
     if per_pub:
         args.pub_shots = dict(allocation_audits[retained]["pub_shots"])
     metadata = {
@@ -910,6 +950,16 @@ def prepare(
             ),
         },
         "optimizer_settings": settings(args),
+        **(
+            {"exact_model": exact_evidence[retained_index] | {"retained_candidate": retained}}
+            if retained_index in exact_evidence
+            else {}
+        ),
+        **(
+            {"covariance_bounds": json.loads(json.dumps([asdict(bound) for bound in retained_plan.covariance_bounds]))}
+            if retained_plan.covariance_bounds
+            else {}
+        ),
         **({"pub_shots": args.pub_shots, "shot_allocation": allocation_audits[retained]} if per_pub else {}),
         "optimization_budget": asdict(budget),
         "local_simulation_batches": (
@@ -984,6 +1034,16 @@ def measured_family(
             pubs = tuple(ObservedPub(name, members, shot_map[name]) for name, members in by_pub.items())
         else:
             pubs = tuple(ObservedPub(name, members, int(record["shots"])) for name, members in by_pub.items())
-        return analyze_observations(pubs, endpoints).as_dict()
+        covariance = tuple(
+            CovarianceBound(
+                bound["observable_name"],
+                bound["pub_name"],
+                tuple(bound["labels"]),
+                tuple(tuple(float(value) for value in row) for row in bound["matrix"]),
+                bound["assumption"],
+            )
+            for bound in record.get("covariance_bounds", [])
+        )
+        return analyze_observations(pubs, endpoints, covariance).as_dict()
     except ValueError as error:
         return {"withheld": f"invalid measured family data: {error}"}

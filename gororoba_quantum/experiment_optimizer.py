@@ -641,15 +641,19 @@ def _evaluate_observable(plan: CandidatePlan, contract: ObservableContract, simu
 
 
 def analyze_observations(
-    pubs: tuple[ObservedPub, ...], contracts: tuple[ObservableContract, ...]
+    pubs: tuple[ObservedPub, ...],
+    contracts: tuple[ObservableContract, ...],
+    covariance_bounds: tuple[CovarianceBound, ...] = (),
 ) -> ObservationAnalysis:
     """Apply the planner's grouped bounds and directional test to measured data.
 
     No cost or model-prediction fields are needed. The two-sided confidence
     interval describes precision; reject_null applies the same one-sided alpha
     threshold used by the planner's power contract. Dependence within a PUB shot
-    remains arbitrary. Invalid identities or marginal distributions raise
-    ValueError so a collector can withhold the analysis explicitly.
+    remains arbitrary unless the plan declared a covariance bound for that
+    observable and PUB; the collector then applies the same bound the planner
+    did. Invalid identities or marginal distributions raise ValueError so a
+    collector can withhold the analysis explicitly.
     """
     _validate_observable_contracts(contracts)
     _require(bool(pubs), "at least one observed PUB is required")
@@ -674,7 +678,7 @@ def analyze_observations(
     for contract in contracts:
         for term in contract.terms:
             _require(term.member in members, f"{contract.name}: observed member {term.member!r} is absent")
-        estimate, _, streams = _observable_inputs(pubs, contract, simulation_tail=1.0)
+        estimate, _, streams = _observable_inputs(pubs, contract, 1.0, covariance_bounds)
         confidence = _radius(streams, contract.alpha, two_sided=True)
         detection = _radius(streams, contract.alpha, two_sided=False) if contract.minimum_effect is not None else None
         rows.append(
@@ -688,16 +692,24 @@ def analyze_observations(
                 contract.null_value,
                 detection,
                 estimate - detection > contract.null_value if detection is not None else None,
-                tuple("hoeffding_arbitrary_within_shot" for _ in streams),
+                tuple(
+                    "hoeffding_arbitrary_within_shot"
+                    if stream.variance_bound is None
+                    else "minimum_of_hoeffding_and_declared_covariance_cantelli_or_chebyshev"
+                    for stream in streams
+                ),
             )
         )
     return ObservationAnalysis(
         tuple(rows),
-        "shared planning/collection Hoeffding bounds grouped by immutable PUB identity",
+        "shared planning/collection Hoeffding bounds grouped by immutable PUB identity"
+        + ("; declared covariance bounds where the plan carried them" if covariance_bounds else ""),
         (
-            "independent stationary repetitions; arbitrary dependence among replicas and members within each PUB shot",
+            "independent stationary repetitions; arbitrary dependence among replicas and members within each PUB shot"
+            + (" unless a declared covariance bound applies" if covariance_bounds else ""),
             "union bounds across PUBs; no independence assumption between PUBs or jobs",
             "directional rejection uses the one-sided alpha radius; displayed intervals use the two-sided alpha radius",
+            *sorted({bound.assumption for bound in covariance_bounds}),
         ),
     )
 
@@ -1194,6 +1206,15 @@ def _verify() -> None:
         .observables[0]
         .confidence_half_width
         == evaluate_candidate(replicated, (precision,), budget).observables[0].confidence_half_width
+    )
+    planned = evaluate_candidate(independent, (precision,), budget).observables[0].confidence_half_width
+    observed_replicas = (ObservedPub("signal_pub", {"signal": ((0.2, 0.8),) * replicas}, independent.jobs[0].shots),)
+    collected = analyze_observations(observed_replicas, (precision,), (covariance,)).observables[0]
+    assert math.isclose(collected.confidence_half_width, planned, rel_tol=1e-12)
+    assert collected.bound_methods == ("minimum_of_hoeffding_and_declared_covariance_cantelli_or_chebyshev",)
+    assert (
+        analyze_observations(observed_replicas, (precision,)).observables[0].confidence_half_width
+        > collected.confidence_half_width
     )
     invalid_covariance = replace(covariance, matrix=((-1.0,),))
     assert not evaluate_candidate(

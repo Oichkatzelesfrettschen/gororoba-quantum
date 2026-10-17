@@ -2904,6 +2904,14 @@
    "name": "core-481",
    "seconds": 40.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error n21_exact_planning.py && \"$PYTHON\" -B -O -W error n21_exact_planning.py",
+   "name": "core-482",
+   "seconds": 15.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

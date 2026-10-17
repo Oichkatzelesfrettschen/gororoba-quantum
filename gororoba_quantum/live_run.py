@@ -127,15 +127,18 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "correction_statistics.py",
     "designs.py",
     "diagnostic_experiments.py",
+    "dynamic_density.py",
     "experiment_optimizer.py",
     "experiments.py",
     "factoring.py",
     "hybrid_shor.py",
     "integral_homology.py",
+    "jax_bridge.py",
     "live_run.py",
     "local_compute.py",
     "maximal_experiments.py",
     "modular_arithmetic.py",
+    "n21_exact_planning.py",
     "native_preflight.py",
     "order_finding.py",
     "packing.py",
@@ -4920,6 +4923,19 @@ def main(argv: list[str] | None = None) -> int:
         help="maximum routed family sets before replica and shot expansion",
     )
     parser.add_argument("--model-shots", type=_positive_int, default=32768)
+    parser.add_argument(
+        "--model-method",
+        choices=("sampled", "exact"),
+        default="sampled",
+        help="exact plans an N21 family on dynamic_density's branch-resolved law, validated against "
+        "--model-shots sampled shots; sampled keeps the finite-simulation allowance",
+    )
+    parser.add_argument(
+        "--replica-variance-bound",
+        type=float,
+        help="declared per-replica score variance bound with independent replicas (N21 families); "
+        "the planner and collector apply it through Cantelli or Chebyshev",
+    )
     parser.add_argument(
         "--precision",
         type=float,
