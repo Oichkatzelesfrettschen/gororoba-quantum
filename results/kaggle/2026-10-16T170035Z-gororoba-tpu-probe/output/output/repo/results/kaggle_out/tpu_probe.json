@@ -1,0 +1,20 @@
+{
+ "schema": "tpu-probe-v1",
+ "python": "3.12.13",
+ "versions": {
+  "jax": "0.7.2",
+  "jaxlib": "0.7.2",
+  "libtpu": null,
+  "libtpu-nightly": null,
+  "jax-cuda12-plugin": null
+ },
+ "default_backend": "cpu",
+ "devices": [
+  {
+   "platform": "cpu",
+   "kind": "cpu",
+   "id": 0
+  }
+ ],
+ "tpu_devices": "RuntimeError: Backend 'tpu' failed to initialize: INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory. Available backends are ['cpu']"
+}

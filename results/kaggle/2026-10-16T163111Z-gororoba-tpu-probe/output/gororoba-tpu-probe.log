@@ -1,0 +1,126 @@
+[{"stream_name":"stdout","time":45.359031883,"data":"# Kaggle kernel agent guide\n"}
+,{"stream_name":"stdout","time":45.359106946,"data":"\n"}
+,{"stream_name":"stdout","time":45.359112616,"data":"This file travels inside every kernel that `scripts/kaggle_run.py` pushes\n"}
+,{"stream_name":"stdout","time":45.359116112,"data":"and is printed at the top of its log. The repository's root AGENTS.md owns\n"}
+,{"stream_name":"stdout","time":45.359119075,"data":"every rule; this guide states what a Kaggle kernel is for, what it runs on,\n"}
+,{"stream_name":"stdout","time":45.359122024,"data":"and what it must prove before its output counts.\n"}
+,{"stream_name":"stdout","time":45.35912491,"data":"\n"}
+,{"stream_name":"stdout","time":45.359127717,"data":"## What runs where\n"}
+,{"stream_name":"stdout","time":45.359130522,"data":"\n"}
+,{"stream_name":"stdout","time":45.359133235,"data":"| Substrate | Runs | Never runs |\n"}
+,{"stream_name":"stdout","time":45.359136068,"data":"| --- | --- | --- |\n"}
+,{"stream_name":"stdout","time":45.359139172,"data":"| Kaggle GPU kernel (Aer on GPU) | every simulation of 14 qubits or fewer: noise simulations under a retained calibration export, design power analyses, parameter sweeps | IBM jobs; anything needing an IBM credential |\n"}
+,{"stream_name":"stdout","time":45.359143455,"data":"| Kaggle CPU in the same kernel | transpilation, package builds, the hypercomplex table extraction | |\n"}
+,{"stream_name":"stdout","time":45.359146528,"data":"| Kaggle TPU (`TpuV5E8`, `TpuV6E8`) | JAX code only; Aer has no TPU backend. Batch pushes requesting either ID ran on 4-core CPU machines without libtpu, so this account reaches no TPU through the CLI | Qiskit or Aer |\n"}
+,{"stream_name":"stdout","time":45.359149752,"data":"| Kaggle Gemma models (attached through `model_sources`) | text tasks on request | evidence: a language-model answer supports no physical or mathematical claim |\n"}
+,{"stream_name":"stdout","time":45.35915282,"data":"| IBM Heron (ibm_fez, ibm_kingston, ibm_marrakesh) | 15 or more qubits, or a question about a named device qubit, only after the owner approves a written case | simulations |\n"}
+,{"stream_name":"stdout","time":45.359155972,"data":"| GitHub Actions CPU | the CPU replay gate that re-derives a reduced case of each Kaggle result | GPU work |\n"}
+,{"stream_name":"stdout","time":45.35915906,"data":"| Build host (Arch, RTX 4070 Ti 12 GB; guide in the untracked `docs/local/`) | development, dry runs, calibration exports, CPU replays, the Arch-packaged hypercomplex stack and SageMath | runs the routing rule sends to Kaggle |\n"}
+,{"stream_name":"stdout","time":45.359162283,"data":"\n"}
+,{"stream_name":"stdout","time":45.359164994,"data":"## Every kernel's phases\n"}
+,{"stream_name":"stdout","time":45.359167834,"data":"\n"}
+,{"stream_name":"stdout","time":45.359170617,"data":"`kaggle_kernel/kernel_main.py` writes one JSON file per phase into\n"}
+,{"stream_name":"stdout","time":45.359173524,"data":"`/kaggle/working/output`:\n"}
+,{"stream_name":"stdout","time":45.359176318,"data":"\n"}
+,{"stream_name":"stdout","time":45.359179045,"data":"1. `environment.json`: Python and package versions, CPU model and cores,\n"}
+,{"stream_name":"stdout","time":45.359181985,"data":"   RAM, working disk, every GPU (name, memory, driver, compute capability),\n"}
+,{"stream_name":"stdout","time":45.359184906,"data":"   CUDA driver version, TPU devices, Aer devices and attached models.\n"}
+,{"stream_name":"stdout","time":45.359187787,"data":"2. `hypercomplex.json`: the hypercomplex stack. The kernel fetches the eight\n"}
+,{"stream_name":"stdout","time":45.359191963,"data":"   pinned archives (sha256-checked), installs them through the PKGBUILD\n"}
+,{"stream_name":"stdout","time":45.359221562,"data":"   recipes in `scripts/algebra_package_tables.py`, runs `--extract`, and\n"}
+,{"stream_name":"stdout","time":45.359225156,"data":"   stops with exit code 3 unless the regenerated\n"}
+,{"stream_name":"stdout","time":45.359228165,"data":"   `docs/evidence/algebra_packages/tables.json` equals the retained bytes.\n"}
+,{"stream_name":"stdout","time":45.359231061,"data":"   The build host passes the same test against its Arch packages, so a run\n"}
+,{"stream_name":"stdout","time":45.359234114,"data":"   that reaches its entry used the same algebra code as the host.\n"}
+,{"stream_name":"stdout","time":45.359236995,"data":"3. `capacity.json` (smoke kernels): the widest GHZ circuit each Aer method\n"}
+,{"stream_name":"stdout","time":45.359240001,"data":"   runs on the GPU.\n"}
+,{"stream_name":"stdout","time":45.359242873,"data":"4. The entry's stdout, stderr, exit code and changed files.\n"}
+,{"stream_name":"stdout","time":45.359245862,"data":"\n"}
+,{"stream_name":"stdout","time":45.359248667,"data":"## Package stack\n"}
+,{"stream_name":"stdout","time":45.359251486,"data":"\n"}
+,{"stream_name":"stdout","time":45.359254164,"data":"| Package | Pin | Kernel source |\n"}
+,{"stream_name":"stdout","time":45.359257026,"data":"| --- | --- | --- |\n"}
+,{"stream_name":"stdout","time":45.359259823,"data":"| qiskit | 2.5.2 | PyPI |\n"}
+,{"stream_name":"stdout","time":45.359262704,"data":"| qiskit-aer-gpu-cu11 | 0.17.2 (the CUDA 12 `qiskit-aer-gpu` stops at 0.15.1 and has no Python 3.13 wheel) | PyPI |\n"}
+,{"stream_name":"stdout","time":45.359265796,"data":"| hypercomplex, hypercomplex-engine, hypercomplex-algebra, Cayley-Calculator, octonion, mathdunders | 0.3.4, 0.5.0, 0.2.0.2, 1.3.1, 0.1.0, 0.4.2 | PyPI sdist, sha256-pinned |\n"}
+,{"stream_name":"stdout","time":45.359268967,"data":"| cayley-dickson, SplitOct | commits abf96e7, e29e72f | GitHub archive, sha256-pinned, PKGBUILD recipe |\n"}
+,{"stream_name":"stdout","time":45.359271944,"data":"| numpy-quaternion | 2024.0.13 | PyPI (Cayley-Calculator runtime) |\n"}
+,{"stream_name":"stdout","time":45.359274815,"data":"| numpy, scipy, sympy, pandas, torch | Kaggle image versions, recorded per run | Kaggle image |\n"}
+,{"stream_name":"stdout","time":45.359277832,"data":"| SageMath | 10.10 | build host only; a computation that needs Sage stays there |\n"}
+,{"stream_name":"stdout","time":45.359280756,"data":"\n"}
+,{"stream_name":"stdout","time":45.359283501,"data":"## Rules\n"}
+,{"stream_name":"stdout","time":45.359286341,"data":"\n"}
+,{"stream_name":"stdout","time":45.359289067,"data":"- A kernel is private, has GPU and internet enabled, and holds no IBM\n"}
+,{"stream_name":"stdout","time":45.359291993,"data":"  credential. Noise comes from a retained\n"}
+,{"stream_name":"stdout","time":45.359294856,"data":"  `gororoba_quantum/calibration_snapshot.py` export.\n"}
+,{"stream_name":"stdout","time":45.359297819,"data":"- The entry reads `GOROROBA_AER_DEVICE` and selects the GPU through it.\n"}
+,{"stream_name":"stdout","time":45.359300941,"data":"- An output is a numerical simulation. It enters\n"}
+,{"stream_name":"stdout","time":45.359303936,"data":"  `docs/state/research_state.json` only after a CPU replay gate re-derives\n"}
+,{"stream_name":"stdout","time":45.359306867,"data":"  a reduced case.\n"}
+,{"stream_name":"stdout","time":45.35930964,"data":"- The push selects hardware with `--accelerator`; `environment.json`\n"}
+,{"stream_name":"stdout","time":45.359312562,"data":"  records what actually ran.\n"}
+,{"stream_name":"stdout","time":45.359315552,"data":"- Measured limits of each machine shape, the qubit size guide and the\n"}
+,{"stream_name":"stdout","time":45.35932124,"data":"  captured Kaggle documentation are in `docs/notes/kaggle/`.\n"}
+,{"stream_name":"stdout","time":45.359324336,"data":"\n"}
+,{"stream_name":"stdout","time":45.366297666,"data":"usage guides in this kernel under /tmp/gororoba/repo:\n"}
+,{"stream_name":"stdout","time":45.366332391,"data":"  docs/notes/kaggle/README.md\n"}
+,{"stream_name":"stdout","time":45.366336368,"data":"  docs/notes/kaggle/cli/README.md\n"}
+,{"stream_name":"stdout","time":45.366339284,"data":"  docs/notes/kaggle/cli/benchmarks.md\n"}
+,{"stream_name":"stdout","time":45.366342044,"data":"  docs/notes/kaggle/cli/competition_creation.md\n"}
+,{"stream_name":"stdout","time":45.366344766,"data":"  docs/notes/kaggle/cli/competitions.md\n"}
+,{"stream_name":"stdout","time":45.366347263,"data":"  docs/notes/kaggle/cli/configuration.md\n"}
+,{"stream_name":"stdout","time":45.36634987,"data":"  docs/notes/kaggle/cli/datasets.md\n"}
+,{"stream_name":"stdout","time":45.366352384,"data":"  docs/notes/kaggle/cli/datasets_metadata.md\n"}
+,{"stream_name":"stdout","time":45.366355019,"data":"  docs/notes/kaggle/cli/forums.md\n"}
+,{"stream_name":"stdout","time":45.366357507000004,"data":"  docs/notes/kaggle/cli/kernels.md\n"}
+,{"stream_name":"stdout","time":45.366360117,"data":"  docs/notes/kaggle/cli/kernels_metadata.md\n"}
+,{"stream_name":"stdout","time":45.366362662,"data":"  docs/notes/kaggle/cli/model_variations.md\n"}
+,{"stream_name":"stdout","time":45.366365161,"data":"  docs/notes/kaggle/cli/model_variations_versions.md\n"}
+,{"stream_name":"stdout","time":45.366367767,"data":"  docs/notes/kaggle/cli/models.md\n"}
+,{"stream_name":"stdout","time":45.366370297,"data":"  docs/notes/kaggle/cli/models_metadata.md\n"}
+,{"stream_name":"stdout","time":45.366372818,"data":"  docs/notes/kaggle/cli/output_format.md\n"}
+,{"stream_name":"stdout","time":45.366375324,"data":"  docs/notes/kaggle/cli/search.md\n"}
+,{"stream_name":"stdout","time":45.366377969,"data":"  docs/notes/kaggle/cli/simulation_competitions.md\n"}
+,{"stream_name":"stdout","time":45.36638059,"data":"  docs/notes/kaggle/cli/tutorials.md\n"}
+,{"stream_name":"stdout","time":45.366383141,"data":"  docs/notes/kaggle/hypercomplex-stack.md\n"}
+,{"stream_name":"stdout","time":45.366385727,"data":"  docs/notes/kaggle/site/api.md\n"}
+,{"stream_name":"stdout","time":45.366388258,"data":"  docs/notes/kaggle/site/benchmarks.md\n"}
+,{"stream_name":"stdout","time":45.366390781,"data":"  docs/notes/kaggle/site/datasets.md\n"}
+,{"stream_name":"stdout","time":45.366393301,"data":"  docs/notes/kaggle/site/mcp.md\n"}
+,{"stream_name":"stdout","time":45.366395866,"data":"  docs/notes/kaggle/site/models.md\n"}
+,{"stream_name":"stdout","time":45.366398384,"data":"  docs/notes/kaggle/site/notebooks.md\n"}
+,{"stream_name":"stdout","time":45.366400905,"data":"  docs/notes/kaggle/site/packages.md\n"}
+,{"stream_name":"stdout","time":45.366403939,"data":"  docs/notes/kaggle/site/tpu.md\n"}
+,{"stream_name":"stdout","time":45.366406587,"data":"  docs/notes/kaggle/substrates.md\n"}
+,{"stream_name":"stdout","time":45.366409174,"data":"  docs/notes/kaggle/workflow.md\n"}
+,{"stream_name":"stdout","time":45.366411643,"data":"  docs/notes/packages/README.md\n"}
+,{"stream_name":"stdout","time":45.366414252,"data":"  docs/notes/packages/cayley-calculator.md\n"}
+,{"stream_name":"stdout","time":45.366416803999996,"data":"  docs/notes/packages/cayley-dickson.md\n"}
+,{"stream_name":"stdout","time":45.366419375,"data":"  docs/notes/packages/clifford.md\n"}
+,{"stream_name":"stdout","time":45.366421867,"data":"  docs/notes/packages/galgebra.md\n"}
+,{"stream_name":"stdout","time":45.366436892,"data":"  docs/notes/packages/hypercomplex-algebra.md\n"}
+,{"stream_name":"stdout","time":45.36643966,"data":"  docs/notes/packages/hypercomplex-engine.md\n"}
+,{"stream_name":"stdout","time":45.366442273,"data":"  docs/notes/packages/hypercomplex.md\n"}
+,{"stream_name":"stdout","time":45.366444778,"data":"  docs/notes/packages/kingdon.md\n"}
+,{"stream_name":"stdout","time":45.366447369,"data":"  docs/notes/packages/mathdunders.md\n"}
+,{"stream_name":"stdout","time":45.3664499,"data":"  docs/notes/packages/numpy-quaternion.md\n"}
+,{"stream_name":"stdout","time":45.36645251,"data":"  docs/notes/packages/octonion-sedenion.md\n"}
+,{"stream_name":"stdout","time":45.366455161,"data":"  docs/notes/packages/octonion.md\n"}
+,{"stream_name":"stdout","time":45.366457701,"data":"  docs/notes/packages/pyoctonion.md\n"}
+,{"stream_name":"stdout","time":45.366460349,"data":"  docs/notes/packages/pyquaternion.md\n"}
+,{"stream_name":"stdout","time":45.366462854,"data":"  docs/notes/packages/quaternionic.md\n"}
+,{"stream_name":"stdout","time":45.366465351,"data":"  docs/notes/packages/sagemath.md\n"}
+,{"stream_name":"stdout","time":45.366467887,"data":"  docs/notes/packages/splitoct.md\n"}
+,{"stream_name":"stdout","time":52.503561432,"data":"environment.json: {\"aer_devices\": [\"CPU\", \"GPU\"], \"affinity_cpus\": 4, \"attached_models\": [], \"cpu_model\": \"Intel(R) Xeon(R) CPU @ 2.20GHz\", \"cuda_driver_version\": null, \"gpus\": [], \"logical_cpus\": 4, \"packages\": {\"Cayley-Calculator\": null, \"SplitOct\": null, \"cayley-dickson\": null, \"hypercomplex\": null, \"hypercomplex-algebra\": null, \"hypercomplex-engine\": null, \"mathdunders\": null, \"numpy\": \"2.1.3\", \"numpy-quaternion\": null, \"octonion\": null, \"pandas\": \"2.3.3\", \"qiskit\": \"2.5.2\", \"qiskit-aer-gpu-cu11\": \"0.17.2\", \"scipy\": \"1.16.3\", \"sympy\": \"1.14.0\", \"torch\": \"2.11.0+cpu\"}, \"platform\": \"Linux-6.18.48+-x86_64-with-glibc2.39\", \"python\": \"3.13.15\", \"ram_available_gib\": 30.29, \"ram_total_gib\": 31.35, \"tpus\": {\"devices\": [], \"error\": \"RuntimeError: Backend 'tpu' failed to initialize: INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory. Available backends are ['cpu']\"}, \"working_disk_free_gib\": 19.5, \"working_disk_total_gib\": 19.52}\n"}
+,{"stream_name":"stdout","time":200.137871877,"data":"hypercomplex.json: {\"identical\": true, \"packages\": {\"Cayley-Calculator\": \"1.3.1\", \"SplitOct\": \"0.16\", \"cayley-dickson\": \"0.1.0\", \"hypercomplex\": \"0.3.4\", \"hypercomplex-algebra\": \"0.2.0.2\", \"hypercomplex-engine\": \"0.5.0\", \"mathdunders\": \"0.4.2\", \"numpy\": \"2.1.3\", \"numpy-quaternion\": \"2024.0.13\", \"octonion\": \"0.1.0\", \"pandas\": \"2.3.3\", \"qiskit\": \"2.5.2\", \"qiskit-aer-gpu-cu11\": \"0.17.2\", \"scipy\": \"1.16.3\", \"sympy\": \"1.14.0\", \"torch\": \"2.11.0+cpu\"}, \"steps\": {\"--extract\": {\"returncode\": 0, \"tail\": \"wrote docs/evidence/algebra_packages/tables.json\\nalgebra package tables: 30 tables and sample sets match their declared relation to cd_core\\n\"}, \"--fetch\": {\"returncode\": 0, \"tail\": \"hypercomplex: hypercomplex-04241e5d01b3.tar.gz matches the pinned sha256\\nhypercomplex-engine: hypercomplex-engine-05634d7421e1.tar.gz matches the pinned sha256\\nhypercomplex-algebra: hypercomplex-algebra-aa043b53a004.tar.gz matches the pinned sha256\\nCayley-Calculator: Cayley-Calculator-65922fc90cc0.tar.gz matches the pinned sha256\\ncayley-dickson: cayley-dickson-446b43f2c955.tar.gz matches the pinned sha256\\noctonion: octonion-01788b55497d.tar.gz matches the pinned sha256\\nsplitoct: splitoct-a192a1d5d973.tar.gz matches the pinned sha256\\nmathdunders: mathdunders-ff9b624725fa.tar.gz matches the pinned sha256\\nnumpy-quaternion: numpy-quaternion-e155853fefdf.tar.gz matches the pinned sha256\\nquaternionic: quaternionic-9c5ee261650a.tar.gz matches the pinned sha256\\npyquaternion: pyquaternion-b1f61af219cb.tar.gz matches the pinned sha256\\nclifford: clifford-3484b312cff0.tar.gz matches the pinned sha256\\nkingdon: kingdon-77e6f3442b30.tar.gz matches the pinned sha256\\ngalgebra: galgebra-2e8db0172286.tar.gz matches the pinned sha256\\npyoctonion: pyoctonion-a0ed5c58dc0f.tar.gz matches the pinned sha256\\nOctonion-Sedenion: octonion_sedenion-1.0.0-py3-none-any.whl matches the pinned sha256\\n\"}, \"--install\": {\"returncode\": 0, \"tail\": \"/259.4 kB 8.8 MB/s eta 0:00:00\\n   \\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501 317.3/317.3 kB 9.8 MB/s eta 0:00:00\\n   \\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501\\u2501 59.7/59.7 MB 28.6 MB/s eta 0:00:00\\nhypercomplex: installed from hypercomplex-04241e5d01b3.tar.gz\\nhypercomplex-engine: installed from hypercomplex-engine-05634d7421e1.tar.gz\\nhypercomplex-algebra: installed from hypercomplex-algebra-aa043b53a004.tar.gz\\nCayley-Calculator: installed from Cayley-Calculator-65922fc90cc0.tar.gz\\ncayley-dickson: installed from cayley-dickson-446b43f2c955.tar.gz\\noctonion: installed from octonion-01788b55497d.tar.gz\\nsplitoct: installed from splitoct-a192a1d5d973.tar.gz\\nmathdunders: installed from \n"}
+,{"stream_name":"stdout","time":203.349841117,"data":"{\"schema\": \"tpu-probe-v1\", \"python\": \"3.13.15\", \"versions\": {\"jax\": \"0.11.1\", \"jaxlib\": \"0.11.1\", \"libtpu\": null, \"libtpu-nightly\": null, \"jax-cuda12-plugin\": null}, \"default_backend\": \"cpu\", \"devices\": [{\"platform\": \"cpu\", \"kind\": \"cpu\", \"id\": 0}], \"tpu_devices\": \"RuntimeError: Backend 'tpu' failed to initialize: INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory. Available backends are ['cpu']\"}\n"}
+,{"stream_name":"stdout","time":203.34988238,"data":"\n"}
+,{"stream_name":"stdout","time":203.349886685,"data":"\n"}
+,{"stream_name":"stdout","time":203.356993993,"data":"exit.json: {\"returncode\": 0}\n"}
+,{"stream_name":"stderr","time":206.340487859,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":206.340587886,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":206.66423795,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":206.664268316,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":207.661246931,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":208.505066457,"data":"[NbConvertApp] Writing 531895 bytes to __results__.html\n"}
+]
