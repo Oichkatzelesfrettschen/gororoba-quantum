@@ -217,5 +217,8 @@ every problem on every target over seeds 0 to 7.
 - the permutation-free identities and the coset-graph distance, on 64
   seeded coset pairs;
 - the vectorized pair distance, on the same pairs;
-- rejection of eleven corrupted copies of the record, one carrying a
-  corrupted routed CZ that only recompilation exposes.
+- rejection of twelve corrupted copies of the record, one carrying a
+  corrupted routed CZ that only recompilation exposes;
+- acceptance of a copy whose catalogue timestamp and sha256 differ. A
+  catalogue refresh rewrites those fields, while the replay binds Garnet's
+  qubit count and coupling.

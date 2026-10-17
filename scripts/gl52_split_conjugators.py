@@ -121,6 +121,7 @@ SEARCH_RECORD = "docs/evidence/linear_conjugation/search.json"
 SEARCH_RECORD_SHA256 = "910f86c8f0631fa59e560d49ff479fb4aacce65765bf7b2f2b2b84e0a9058df3"
 CATALOGUE = "docs/evidence/open_quantum/catalogue.json"
 GARNET = "iqm:garnet"
+CATALOGUE_PROVENANCE = ("garnet_catalogue_sha256", "garnet_retrieved_utc")
 INCUMBENT_RECORD = "results/hw_estimate/n21_linear_conjugation_challenger.json"
 DEFAULT_OUTPUT = ROOT / "docs/evidence/gl52_split_conjugators/split.json"
 SEEDS = tuple(range(8))
@@ -930,7 +931,13 @@ def check_derived(record: dict[str, Any], recompute_exact: bool = True) -> None:
     _require(record.get("schema") == SCHEMA and record.get("qpu_executed") is False, "not a split-conjugator record")
     expected = static_record()
     for key, value in expected.items():
-        _require(record.get(key) == value, f"retained {key} differs from the recomputed {key}")
+        retained = record.get(key)
+        if key == "inputs" and isinstance(retained, dict):
+            # A catalogue refresh rewrites its timestamp, status and queue fields; the
+            # routed numbers depend only on Garnet's qubit count and coupling.
+            retained = {name: field for name, field in retained.items() if name not in CATALOGUE_PROVENANCE}
+            value = {name: field for name, field in value.items() if name not in CATALOGUE_PROVENANCE}
+        _require(retained == value, f"retained {key} differs from the recomputed {key}")
     _require(expected["distance"]["identity_source"]["reached"] == GL52_ORDER, "the search misses GL(5,2) matrices")
     for problem, checks in record["checks"].items():
         if recompute_exact:
@@ -1058,6 +1065,7 @@ def self_test(record: dict[str, Any]) -> str:
         ys = np.asarray([y for _, y in pairs])
         _require(bool(np.array_equal(graph[ys], pair_distances(x, ys))), f"coset-graph distance from {x}")
     corruptions = {
+        "garnet coupling": lambda r: r["inputs"]["garnet_coupling"].pop(),
         "identity histogram": lambda r: r["distance"]["identity_source"]["histogram"].__setitem__("12", 25),
         "table sha256": lambda r: r["distance"]["permutation_free"].__setitem__("table_sha256", "0" * 64),
         "split optimum": lambda r: r["surrogate"]["ten_round"].__setitem__("split_optimum", 1856),
@@ -1080,6 +1088,10 @@ def self_test(record: dict[str, Any]) -> str:
         next(iter(r["checks"]["ten_round"]["splits"]))
     ].__setitem__("transition_exact", False)
     check_derived(record, recompute_exact=False)
+    refreshed = copy.deepcopy(record)
+    refreshed["inputs"]["garnet_retrieved_utc"] = "2099-01-01T00:00:00+00:00"
+    refreshed["inputs"]["garnet_catalogue_sha256"] = "f" * 64
+    check_derived(refreshed, recompute_exact=False)
     for label, corrupt in corruptions.items():
         damaged = copy.deepcopy(record)
         corrupt(damaged)
