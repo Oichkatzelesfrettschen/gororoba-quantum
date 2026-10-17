@@ -3808,18 +3808,8 @@ def configure_sampler(
     return sampler
 
 
-def _is_dynamic(isa: QuantumCircuit) -> bool:
-    """Control flow, reset, or any measurement followed by later quantum work."""
-    measurement_seen = False
-    for inst in isa.data:
-        name = inst.operation.name
-        if isinstance(inst.operation, ControlFlowOp) or name == "reset":
-            return True
-        if measurement_seen and name not in ("measure", "barrier", "delay"):
-            return True
-        if name == "measure":
-            measurement_seen = True
-    return False
+# One classifier assigns IBM job kinds, group admission and the Aer method.
+_is_dynamic = local_compute.is_dynamic
 
 
 def _has_feed_forward(isa: QuantumCircuit) -> bool:

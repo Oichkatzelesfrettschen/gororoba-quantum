@@ -20,6 +20,7 @@ from typing import Any
 
 import numpy as np
 from qiskit import qpy
+from qiskit.circuit import ControlFlowOp
 from qiskit_aer import AerSimulator
 
 import aer_identity
@@ -33,19 +34,22 @@ import parallel
 # density matrix, which yields their exact final distribution in one pass.
 DYNAMIC_STATEVECTOR = "density_matrix_dynamic_statevector"
 QUALIFIED_METHODS = ("density_matrix", DYNAMIC_STATEVECTOR)
-CONTROL_FLOW = frozenset({"if_else", "while_loop", "for_loop", "switch_case"})
 
 
 def is_dynamic(circuit: Any) -> bool:
     """Control flow, reset, or any measurement followed by later quantum work.
 
-    The rule equals live_run._is_dynamic, which assigns IBM job kinds: a later
-    gate on any qubit counts, since Aer then samples the circuit shot by shot.
+    live_run binds _is_dynamic to this function, so the IBM job kind and the
+    Aer method read one rule: a later gate on any qubit counts, since Aer then
+    samples the circuit shot by shot. Every ControlFlowOp counts, box included.
+    The rule reads circuit.data order, so a source circuit can classify
+    dynamic while its routed ISA, which serializes the same DAG in another
+    order, classifies static.
     """
     measurement_seen = False
     for instruction in circuit.data:
         name = instruction.operation.name
-        if name in CONTROL_FLOW or name == "reset":
+        if isinstance(instruction.operation, ControlFlowOp) or name == "reset":
             return True
         if measurement_seen and name not in ("measure", "barrier", "delay"):
             return True
@@ -387,7 +391,11 @@ def _verify() -> None:
     later_work = QuantumCircuit(2, 1, name="later_work")
     later_work.measure(0, 0)
     later_work.x(1)
-    for candidate, expected in ((static, False), (reset_only, True), (branch_only, True), (later_work, True)):
+    boxed = QuantumCircuit(1, name="boxed")
+    with boxed.box():
+        boxed.x(0)
+    cases = ((static, False), (reset_only, True), (branch_only, True), (later_work, True), (boxed, True))
+    for candidate, expected in cases:
         if is_dynamic(candidate) != expected:
             raise RuntimeError(f"{candidate.name}: dynamic classification differs from {expected}")
     if (
