@@ -1,0 +1,85 @@
+> Full piece: [https://perceval.quandela.net/docs/v1.3/reference/providers/index.html](https://perceval.quandela.net/docs/v1.3/reference/providers/index.html)
+> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 6a6b8f0366e0352779dce0f2b21d21c48efa0e6c5aa9d28c0a94fb61531322cc.
+
+# providers
+
+Cloud providers are ways to send [Computations](https://perceval.quandela.net/docs/v1.3/reference/runtime/legacy/remote_processor.html#computation) to be executed remotely by a distant computer.
+
+They are all based on common principles: they provide a [CommunicationLayer](https://perceval.quandela.net/docs/v1.3/reference/runtime/communication_layer.html#communicationlayer) that can be inserted into a [RemoteComputer](https://perceval.quandela.net/docs/v1.3/reference/runtime/computer.html#remotecomputer).
+
+``` default
+>>> communication_layer = ProviderCommunicationLayer(...)  # Provider-specific arguments
+>>> computer = RemoteComputer(communication_layer)
+```
+
+Note that the [CommunicationLayer](https://perceval.quandela.net/docs/v1.3/reference/runtime/communication_layer.html#communicationlayer) is not intended to be used directly, but only accessed through the [RemoteComputer](https://perceval.quandela.net/docs/v1.3/reference/runtime/computer.html#remotecomputer) interface.
+
+Providers can also provide custom [RemoteConfig](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#remoteconfig) to be able to store their specific user credentials.
+
+- [Quandela](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html)
+  - [QuandelaCommunicationLayer](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#quandelacommunicationlayer)
+    - [`QuandelaCommunicationLayer`](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#perceval.providers.quandela.quandela_communication_layer.QuandelaCommunicationLayer)
+  - [RemoteConfig](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#remoteconfig)
+    - [`RemoteConfig`](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#perceval.providers.quandela.remote_config.RemoteConfig)
+      - [`RemoteConfig.clear_cache()`](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#perceval.providers.quandela.remote_config.RemoteConfig.clear_cache)
+      - [`RemoteConfig.get_proxies()`](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#perceval.providers.quandela.remote_config.RemoteConfig.get_proxies)
+      - [`RemoteConfig.get_token()`](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#perceval.providers.quandela.remote_config.RemoteConfig.get_token)
+      - [`RemoteConfig.get_token_env_var()`](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#perceval.providers.quandela.remote_config.RemoteConfig.get_token_env_var)
+      - [`RemoteConfig.get_url()`](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#perceval.providers.quandela.remote_config.RemoteConfig.get_url)
+      - [`RemoteConfig.save()`](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#perceval.providers.quandela.remote_config.RemoteConfig.save)
+      - [`RemoteConfig.set_proxies()`](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#perceval.providers.quandela.remote_config.RemoteConfig.set_proxies)
+      - [`RemoteConfig.set_token()`](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#perceval.providers.quandela.remote_config.RemoteConfig.set_token)
+      - [`RemoteConfig.set_token_env_var()`](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#perceval.providers.quandela.remote_config.RemoteConfig.set_token_env_var)
+      - [`RemoteConfig.set_url()`](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#perceval.providers.quandela.remote_config.RemoteConfig.set_url)
+  - [Legacy Session](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#legacy-session)
+    - [`Session`](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#perceval.providers.quandela.quandela_session.Session)
+      - [`Session.build_remote_processor()`](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html#perceval.providers.quandela.quandela_session.Session.build_remote_processor)
+- [Scaleway](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html)
+  - [Authentication](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#authentication)
+  - [ScalewayCommunicationLayer](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#scalewaycommunicationlayer)
+  - [Using an existing Scaleway QPU session](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#using-an-existing-scaleway-qpu-session)
+    - [`ScalewayCommunicationLayer`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_communication_layer.ScalewayCommunicationLayer)
+      - [`ScalewayCommunicationLayer.delete_session()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_communication_layer.ScalewayCommunicationLayer.delete_session)
+      - [`ScalewayCommunicationLayer.start_session()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_communication_layer.ScalewayCommunicationLayer.start_session)
+      - [`ScalewayCommunicationLayer.stop_session()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_communication_layer.ScalewayCommunicationLayer.stop_session)
+  - [ScalewayConfig](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#scalewayconfig)
+    - [`ScalewayConfig`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_config.ScalewayConfig)
+      - [`ScalewayConfig.clear_cache()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_config.ScalewayConfig.clear_cache)
+      - [`ScalewayConfig.get_provider()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_config.ScalewayConfig.get_provider)
+      - [`ScalewayConfig.get_proxies()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_config.ScalewayConfig.get_proxies)
+      - [`ScalewayConfig.get_token()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_config.ScalewayConfig.get_token)
+      - [`ScalewayConfig.get_token_env_var()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_config.ScalewayConfig.get_token_env_var)
+      - [`ScalewayConfig.get_url()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_config.ScalewayConfig.get_url)
+      - [`ScalewayConfig.save()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_config.ScalewayConfig.save)
+      - [`ScalewayConfig.set_provider()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_config.ScalewayConfig.set_provider)
+      - [`ScalewayConfig.set_proxies()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_config.ScalewayConfig.set_proxies)
+      - [`ScalewayConfig.set_token()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_config.ScalewayConfig.set_token)
+      - [`ScalewayConfig.set_token_env_var()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_config.ScalewayConfig.set_token_env_var)
+      - [`ScalewayConfig.set_url()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_config.ScalewayConfig.set_url)
+  - [Legacy Session](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#legacy-session)
+    - [`Session`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_session.Session)
+      - [`Session.build_remote_processor()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_session.Session.build_remote_processor)
+      - [`Session.start()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_session.Session.start)
+      - [`Session.stop()`](https://perceval.quandela.net/docs/v1.3/reference/providers/scaleway.html#perceval.providers.scaleway.scaleway_session.Session.stop)
+- [Kipu Quantum Hub](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html)
+  - [Installation](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#installation)
+  - [Authentication](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#authentication)
+  - [KipuCommunicationLayer](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#kipucommunicationlayer)
+    - [`KipuCommunicationLayer`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_communication_layer.KipuCommunicationLayer)
+  - [KipuConfig](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#kipuconfig)
+    - [`KipuConfig`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_config.KipuConfig)
+      - [`KipuConfig.clear_cache()`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_config.KipuConfig.clear_cache)
+      - [`KipuConfig.get_organization_id()`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_config.KipuConfig.get_organization_id)
+      - [`KipuConfig.get_proxies()`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_config.KipuConfig.get_proxies)
+      - [`KipuConfig.get_token()`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_config.KipuConfig.get_token)
+      - [`KipuConfig.get_token_env_var()`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_config.KipuConfig.get_token_env_var)
+      - [`KipuConfig.get_url()`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_config.KipuConfig.get_url)
+      - [`KipuConfig.save()`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_config.KipuConfig.save)
+      - [`KipuConfig.set_organization_id()`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_config.KipuConfig.set_organization_id)
+      - [`KipuConfig.set_proxies()`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_config.KipuConfig.set_proxies)
+      - [`KipuConfig.set_token()`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_config.KipuConfig.set_token)
+      - [`KipuConfig.set_token_env_var()`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_config.KipuConfig.set_token_env_var)
+      - [`KipuConfig.set_url()`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_config.KipuConfig.set_url)
+  - [Legacy Session](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#legacy-session)
+    - [`Session`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_session.Session)
+      - [`Session.build_remote_processor()`](https://perceval.quandela.net/docs/v1.3/reference/providers/kipu.html#perceval.providers.kipu.kipu_session.Session.build_remote_processor)

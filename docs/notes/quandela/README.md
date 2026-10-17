@@ -1,0 +1,256 @@
+# Quandela Cloud
+
+Quandela Cloud serves Quandela's photonic QPUs (Belenos, Ascella) and
+photonic simulators through one REST API, https://api.cloud.quandela.com,
+and one portal, https://cloud.quandela.com (dashboard, tokens, jobs,
+platforms, Jupyter notebooks, Quantum Toolbox, QRNG, Usage Explorer). The
+account, hub, community and training sites share one login at
+https://account.quandela.com. The repository reaches the cloud through
+Perceval, Quandela's SDK, installed as Arch packages, through
+`scripts/qd_platform.py` for account reads and through
+`scripts/qd_mcp_server.py`, an MCP server this repository owns, since
+Quandela publishes none. The live pages stay the authority because they
+change; the captures below record what they said when read.
+
+| Path | Content |
+|---|---|
+| `guide/` | the 32 English guides the webide bundle embeds: user guide, entity management, Quantum Toolbox (`scripts/capture_qd_docs.py --guide`) |
+| `legal/` | the cloud terms of service and privacy policy from the portal bundle, the www.quandela.com privacy policy and legal terms (`--legal`) |
+| `perceval/` | the 17 Perceval 1.3 pages on remote computing, providers and the runtime (`--perceval`) |
+| `api/` | the OpenAPI descriptions of the cloud API, its QRNG API and the account API (`--api`) |
+| `offer/` | the portal and webide strings that define offers and credits, with the bundle each sits in (`--offer`) |
+| `pypi/` | release metadata and file sha256 of perceval-quandela, exqalibur, perceval-interop and scmver (`--pypi`) |
+| `../../evidence/quandela/catalogue.json` | the account snapshot: Explorer platforms, processor records, job limits, token usage (`scripts/qd_platform.py snapshot`) |
+
+## Installation
+
+Perceval is a system package on the build host, so the repository's Python
+3.14 imports it directly and no separate environment exists. The AUR carries
+no Perceval package; `~/Github/PKGBUILDs` holds the local recipes, built and
+installed with `makepkg -si` in each directory, dependencies first.
+
+| Arch package | Version | Source | Note |
+|---|---|---|---|
+| python-scmver | 1.10 | PyPI wheel, sha256 786b4e6b...a539 | makedepend: Perceval's setup.py reads its version from the git tag through scmver |
+| python-exqalibur | 1.4.2 | PyPI cp314 manylinux x86_64 wheel, sha256 d1cec30b...a4f7 | Quandela's compiled simulation core; binary only, CC BY-NC-ND 4.0, installed unmodified |
+| python-perceval-quandela | 1.3.1 | `git+https://github.com/Quandela/Perceval.git#tag=v1.3.1` (commit 64ed82f9) | check() runs 836 tests, the long and rendering marks deselected |
+| python-pytest-responses | 0.6.0 | PyPI wheel | checkdepend: activates the `responses` HTTP mock the RPC tests assume |
+| python-multipledispatch, python-latexcodec, python-drawsvg | 1.0.0, 3.0.1, 2.4.2 | AUR through `paru` | runtime dependencies |
+
+Facts the recipes encode:
+
+- exqalibur's wheel metadata pins `protobuf==7.34.1`; the system's protobuf
+  runtime is 7.36.1, the same major version, which runs code generated for
+  7.34. Its import and a local SLOS run are the proof.
+- Perceval's tests save and chmod `PersistentData`, whose default directory
+  is platformdirs' user data directory (`~/.local/share/perceval-quandela`).
+  check() sets `XDG_DATA_HOME` inside srcdir, which also isolates
+  `test_remote_config_env_var_vs_cache` from proxy state that earlier tests
+  persist; run against the user directory, that test fails and the
+  directory ends at mode 0777.
+- perceval-interop 1.3.0 (Qiskit, myQLM, QuTiP and cQASM converters) is not
+  installed: its `qiskit` extra pins `qiskit~=2.1.2`, while the repository
+  runs qiskit 2.5.2. Its PyPI record is retained for the day a release
+  accepts 2.5.
+
+Acceptance: `"$PYTHON" -c "import perceval as pcvl; print(pcvl.__version__)"`
+prints 1.3.1, and a Hong-Ou-Mandel run on `pcvl.Processor("SLOS", pcvl.BS())`
+with input `|1,1>` gives probability 0.5 on each of `|2,0>` and `|0,2>`.
+
+## Credential
+
+Every API call carries a job token as `Authorization: Bearer TOKEN`
+(`api/cloud-openapi.json`, `securitySchemes.BearerAuth`). A job token is
+created on the portal's Tokens page with a name, a duration and per-platform
+permissions; a call on a platform the token does not grant raises an
+exception (`guide/user-guide/03-token-and-job-management.md`). It spends the
+account's credits, so it is a credential.
+
+The account service runs an OAuth 2.0 authorization endpoint
+(`GET https://api.account.quandela.com/oauth/authorize` with `client_id`,
+`redirect_uri`, `response_type`, `state`; `POST /oauth/token` with `code`;
+`api/account-openapi.json`). It signs users into Quandela's own sites and
+takes no scope, PKCE or device flow, and Quandela publishes no client
+registration, so a third-party tool authenticates with a job token. The
+browser login itself, including SSO, is that OAuth flow.
+
+The token lives outside every checkout in `~/.config/quandela/cloud-token`,
+directory mode 700 and file mode 600, written by the user. Every consumer
+names it by path through `QUANDELA_TOKEN_FILE`, so the token enters no MCP
+registration, command line, log or record. Perceval code passes it
+explicitly, for example
+`QuandelaCommunicationLayer(name, token=Path(os.environ["QUANDELA_TOKEN_FILE"]).read_text().strip())`.
+Perceval also reads `PCVL_CLOUD_TOKEN` and its persistent configuration;
+`RemoteConfig.save()` writes the token in plain text to
+`~/.local/share/perceval-quandela/config.json`, and `RemoteConfig.get_url()`
+takes the API URL from that file, so the repository never calls `save()`.
+
+A token reaches the job and token routes only. `GET /api/platforms`,
+`/api/user` and the offer, notebook and credit routes the portal calls
+answer 401 "Invalid token" or 404 to it; they take the portal session.
+
+## Interfaces
+
+| Interface | Entry | Reach |
+|---|---|---|
+| REST API | `https://api.cloud.quandela.com/api/...` | jobs (create, status, result, data, cancel, rerun), job availability, token management and usage report, QRNG bytes and integers |
+| Perceval | `pcvl.RemoteProcessor` (legacy), `QuandelaCommunicationLayer` with `RemoteComputer` (1.3 runtime) | platform specs, compilation, sampling, probabilities, job groups, error mitigation |
+| MCP | `/usr/bin/python3 -I scripts/qd_mcp_server.py` | the tools below |
+| Account reads | `scripts/qd_platform.py snapshot` | the catalogue |
+| Portal | https://cloud.quandela.com/webide | tokens, jobs, platforms, notebooks, Quantum Toolbox, QRNG, Usage Explorer, plan |
+
+Routes (`api/cloud-openapi.json`, cloud API v2.10.1-rc1 at capture):
+
+| Route | Use | Perceval 1.3.1 |
+|---|---|---|
+| `GET /api/platforms/public`, `/api/platforms/public/explorer` | platform list, Explorer platforms with price and limits; no token | not used |
+| `GET /api/platforms/{name}/processor` | processor record: specs, constraints, perfs, status | `fetch_platform_details` |
+| `GET /api/jobs/availability` | running and queued jobs against the token's limits | `get_job_availability` |
+| `POST /api/jobs` | create a job | uses the deprecated `POST /api/job` |
+| `GET /api/jobs/{id}/status`, `/result`, `/data` | job state, result, submitted payload | uses the deprecated `/api/job/status/{id}`, `/api/job/result/{id}` |
+| `POST /api/jobs/{id}/cancel`, `/rerun` | cancel or rerun | uses the deprecated `/api/job/cancel/{id}`, `/api/job/rerun/{id}` |
+| `GET /api/tokens/usage/report` | jobs and usage per token | not used |
+| `GET /qt/qrng/bytes`, `/qt/qrng/ints` | quantum random bytes and integers (`api/cloud-qt-openapi.json`) | not used |
+
+### MCP tools
+
+`scripts/qd_mcp_server.py` runs on the system interpreter, which carries
+mcp 1.29 (FastMCP), perceval-quandela and exqalibur, and sends the token to
+`qd_platform.API` only. It registers as `quandela` at Claude Code user scope
+and in `~/.codex/config.toml`, launching
+`/usr/bin/python3 -I "$REPO/scripts/qd_mcp_server.py"`, where `REPO` is the
+primary checkout, with `QUANDELA_TOKEN_FILE`; `-I` keeps the user site and
+`PYTHONPATH` out, and the server puts its own directory on `sys.path`. The
+Claude launcher in `~/.config/shell/codex-env.sh` loads it by default.
+
+| Tool | Parameters | Effect | Claude / Codex approval |
+|---|---|---|---|
+| `qd_platforms` | none | Explorer platforms with status, seconds per job, credits per shot, daily availability, next maintenance; the public list | allow / approve |
+| `qd_platform` | `name`, `include_bulk` | processor record; `include_bulk` adds the serialized chip and its HTML documentation | allow / approve |
+| `qd_availability` | none | the token's job limits and occupancy | allow / approve |
+| `qd_usage` | none | jobs and usage per token, token ids removed | allow / approve |
+| `qd_job_status` | `job_id` | one status read | allow / approve |
+| `qd_job_result` | `job_id`, `include_raw` | the result; string fields truncate at 8000 characters without `include_raw` | allow / approve |
+| `qd_simulate_local` | `circuit` (from `perceval.serialization.serialize`), `input_state`, `backend` (SLOS, Naive, MPS) | local output probabilities, at most 24 modes and 12 photons; no credits | allow / approve |
+| `qd_cancel_job` | `job_id` | cancels a job | ask / prompt |
+
+The server submits nothing. A submission is a reviewed case run through
+Perceval, never a tool call.
+
+## Explorer plan, credits and notebooks
+
+The account holds the free Explorer offer. Its plan page reads: low job
+priority, one running job at a time, one waiting job at a time, at most
+5 minutes per job, the embedded Jupyter notebook, the free simulator and
+free time slots on the QPU, and 200 free credits a month. The sources:
+
+| Fact | Value | Source |
+|---|---|---|
+| Free credit | 200 credits a month, "automatically reset at the beginning of the month", usable only under the Explorer offer | plan page; `offer/sources.json` (`free-credit-tooltip`, `monthly-quota-is`) |
+| Unused credit | not carried into a later month | `legal/cloud_terms-of-service.md` 13.3 |
+| Credit | "units of compute time" | `legal/cloud_terms-of-service.md` 1.6 |
+| Job limits | 1 running, 1 queued, 10 running Quantum Toolbox jobs | `catalogue.json`, `account.availability` |
+| Seconds per job | 300 on every Explorer platform | `catalogue.json`, `max_duration` |
+| Credits per shot | 1e-06 on `qpu:belenos` and `qpu:ascella`, 0 on every simulator | `catalogue.json`, `price_per_shot` |
+| Other prices an offer can carry | per job, per block of hours, per QRNG byte, per notebook second | `offer/sources.json` (`credits-for-one-job`, `credit-for-one-byte`, `credits-for-one-second`) |
+| Priority | Low; a token's priority runs 0 to 3 | plan page; `offer/sources.json` (`priorityTooltip`) |
+
+The calendar-month reset differs from IBM's rolling 28-day window: a credit
+spent on the last day of a month returns the next day.
+
+The Explorer offer's per-job price, its QRNG price and its notebook price
+are not readable here. The portal renders them from the offer record
+(`price_per_job`, `price_notebook_per_sec`), which the logged-in session
+reads; the public offer list the pricing page calls,
+`/api/public/offer/list`, answered 404 (`offer/sources.json`). A notebook is
+therefore metered per running second whenever its offer sets
+`price_notebook_per_sec` above zero, and the portal shows "free" otherwise.
+The Usage Explorer page shows the credits each job and notebook session
+took. Until the account's offer page shows the notebook price as free, a
+notebook session is spent compute: it waits for the same written case and
+approval as a job, and it is stopped as soon as its work ends.
+
+## Platforms
+
+`qd_platform.py facts docs/evidence/quandela` renders this table from the
+snapshot; gate core-502 holds the marked body here and in AGENTS.md equal to
+it:
+
+<!-- quandela-facts:begin -->
+| platform | kind | description | modes | photons | photon-source input modes | native commands | detector | max s per job | credits per shot |
+|---|---|---|---|---|---|---|---|---|---|
+| `qpu:belenos` | qpu | Belenos QPU | 1..24 | 1..12 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 | probs, samples, sample_count, entropy | threshold | 300 | 1e-06 |
+| `sim:belenos` | simulator | Belenos simulator | 1..24 | 1..12 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 | probs, samples, sample_count, entropy | threshold | 300 | 0 |
+| `qpu:ascella` | qpu | Ascella QPU | 1..12 | 1..6 | 0, 2, 4, 6, 8, 10 | probs, samples, sample_count, entropy | threshold | 300 | 1e-06 |
+| `sim:ascella` | simulator | Arcturus simulator | 1..12 | 1..6 | 0, 2, 4, 6, 8, 10 | probs, samples, sample_count | threshold | 300 | 0 |
+| `sim:slos` | simulator | Simulator with SLOS backend | - | 2..12 | - | probs, samples, sample_count | - | 300 | 0 |
+| `sim:sampling` | simulator | Boson sampler simulator with Clifford&Clifford 2017 backend | - | 2..12 | - | probs, samples, sample_count | - | 300 | 0 |
+| `sim:gpu:small` | simulator | Clifford on GPU | - | 2..24 | - | probs, samples, sample_count | - | 300 | 0 |
+| `sim:gpu:medium` | simulator | Clifford on GPU | - | 2..24 | - | samples, sample_count | - | 300 | 0 |
+
+Token job limits (/api/jobs/availability): 1 running, 1 queued, 10 running Quantum Toolbox jobs.
+
+Known error mitigations: CompilationAveraging, DetectorBalancing, DistinguishablePhoton, PhotonRecycling.
+
+Decommissioned at the snapshot: `sim:gpu:medium`.
+<!-- quandela-facts:end -->
+
+Reading it: a QPU's photon count equals its count of photon-source input
+modes, one photon per source, and the compiler routes a circuit's input
+state onto those modes (`guide/user-guide/04-compilation.md`). The
+`sim:belenos` and `sim:ascella` simulators mirror their QPUs' chips and
+input modes, so a circuit compiled there replays on the QPU from the
+result's `computed_circuit` and `computed_input` without a second
+compilation.
+`sim:slos`, `sim:sampling` and `sim:gpu:small` take any interferometer and
+accept multi-photon inputs. The detector column reads `threshold`, while
+the Belenos documentation states that some detectors are quasi
+number-resolving.
+
+Status, performance figures, availability statistics and maintenance live
+in `catalogue.json` and change between reads. At the snapshot,
+`qpu:belenos` reported HOM 94.2 %, a 4.94 MHz clock and a weekly
+maintenance window, and `qpu:ascella` read `calibration`. The Belenos
+documentation gives the n-photon coincidence rate as
+`Clock [MHz] x (Transmittance x Brightness)^n`, which sets how long a
+sampling job on n photons runs against the 300 s limit; a case computes it
+from a fresh `qd_platform` read.
+
+## Terms and data
+
+| Item | Rule | Source |
+|---|---|---|
+| Ownership | the user retains copyright and every other right in submitted Content (circuits and parameters) | `legal/cloud_terms-of-service.md` 1.3, 11.2 |
+| License to Quandela | limited, royalty-free, non-exclusive, to store, reproduce, transmit, adapt and publish Content "in order to provide you with the Services" | 11.3 |
+| Retention | Content is stored only to provide the Services and is not retained beyond them; not used to improve the Services | 4.7, 11.4 |
+| Privacy policy, cloud | computation data "is not stored permanently and not shared"; raw data and output are stored only to generate the computation | `legal/cloud_privacy-policy.md` 10 |
+| Privacy policy, www | computation data stays in the user workspace, is destroyed on account removal, and "Quandela might process the raw data for statistics reason and improvement of the quality of the processing" | `legal/www_privacy-policy.md` 10 |
+| Personal data | Content carries no personal data | `legal/cloud_terms-of-service.md` 7.9 |
+| Attribution | no citation or acknowledgement clause in either text | both terms texts |
+
+The terms read "Last Updated: November 1st, 2022" (`legal/MANIFEST.json`).
+The two privacy texts differ on processing raw data for quality, so an
+unpublished method enters a Quandela job only with that use accepted.
+
+## Use in this repository
+
+- Every remote job, on a simulator or a QPU, and every notebook session
+  waits for the user's approval of a written case, as an IBM, Quantum
+  Inspire or Open Quantum run does: what it measures, why a local Perceval
+  simulation cannot answer it, the platform, shots or samples, the expected
+  seconds against the 300 s limit, and the expected credits from the
+  per-shot price plus any per-job or per-second price the account's offer
+  page shows.
+- Local Perceval simulation (`qd_simulate_local`, or Perceval in a script)
+  spends nothing and needs no approval; a photonic question that a noiseless
+  or noise-model simulation answers stays local, and a QPU case states why
+  the hardware itself is the question (source distinguishability, loss,
+  detector behavior, a chip's calibration).
+- Before a case, read `qd_availability` (one running and one queued job) and
+  the platform's `status`, and re-snapshot; quote limits and prices from the
+  snapshot, never from memory.
+- A run retains the serialized experiment and its sha256, the processor
+  record at submission, the job id, status history, the full result and the
+  Perceval and exqalibur versions under `results/quandela/runs/`; the
+  research-state registry gains a `quandela` provider adapter in the change
+  that retains the first run.
