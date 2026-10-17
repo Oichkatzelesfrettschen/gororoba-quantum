@@ -142,6 +142,27 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.0386963,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0386353,
+      "p1_given_1": 0.565125
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0368652,
+      "p1_given_1": 0.571167
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0385132,
+      "p1_given_1": 0.565491
      }
     ],
     "implied_t1": {
@@ -258,6 +279,27 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.0257568,
       "p1_given_1": 0.899536
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0227051,
+      "p1_given_1": 0.968567
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0228882,
+      "p1_given_1": 0.96814
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0241699,
+      "p1_given_1": 0.970886
      }
     ],
     "implied_t1": {
@@ -382,6 +424,27 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.0246582,
       "p1_given_1": 0.880737
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0263062,
+      "p1_given_1": 0.960022
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0256958,
+      "p1_given_1": 0.956909
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0270996,
+      "p1_given_1": 0.96106
      }
     ],
     "implied_t1": {
@@ -492,6 +555,27 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.0454102,
       "p1_given_1": 0.804443
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0457153,
+      "p1_given_1": 0.975098
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0428467,
+      "p1_given_1": 0.97406
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0458374,
+      "p1_given_1": 0.973145
      }
     ],
     "implied_t1": {
@@ -618,6 +702,27 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.012207,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0108643,
+      "p1_given_1": 0.952881
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.012085,
+      "p1_given_1": 0.950256
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0116577,
+      "p1_given_1": 0.945251
      }
     ],
     "implied_t1": {
@@ -750,6 +855,27 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.0367432,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0365601,
+      "p1_given_1": 0.963013
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0397949,
+      "p1_given_1": 0.964233
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0396729,
+      "p1_given_1": 0.964539
      }
     ],
     "implied_t1": {
@@ -871,6 +997,27 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.0137939,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0142212,
+      "p1_given_1": 0.163086
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0131836,
+      "p1_given_1": 0.16571
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0124512,
+      "p1_given_1": 0.16156
      }
     ],
     "implied_t1": {
@@ -995,6 +1142,27 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.0610352,
       "p1_given_1": 0.894287
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0299072,
+      "p1_given_1": 0.904419
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0325928,
+      "p1_given_1": 0.939087
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0343628,
+      "p1_given_1": 0.944153
      }
     ],
     "implied_t1": {
@@ -1132,6 +1300,27 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.036377,
       "p1_given_1": 0.857056
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0343628,
+      "p1_given_1": 0.949402
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0332031,
+      "p1_given_1": 0.948853
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0316772,
+      "p1_given_1": 0.945435
      }
     ],
     "implied_t1": {
@@ -1261,6 +1450,27 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.279297,
       "p1_given_1": 0.891113
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.287964,
+      "p1_given_1": 0.934021
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.275818,
+      "p1_given_1": 0.932739
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.280396,
+      "p1_given_1": 0.932983
      }
     ],
     "implied_t1": {
@@ -1371,6 +1581,27 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.0551758,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0479126,
+      "p1_given_1": 0.979797
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0476685,
+      "p1_given_1": 0.978882
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0529785,
+      "p1_given_1": 0.978149
      }
     ],
     "implied_t1": {
@@ -1497,6 +1728,27 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.0163574,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0199585,
+      "p1_given_1": 0.952759
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0171509,
+      "p1_given_1": 0.949341
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0176392,
+      "p1_given_1": 0.951416
      }
     ],
     "implied_t1": {
@@ -1623,6 +1875,27 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.00524902,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.00427246,
+      "p1_given_1": 0.972595
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.00549316,
+      "p1_given_1": 0.971619
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.00585938,
+      "p1_given_1": 0.971436
      }
     ],
     "implied_t1": {
@@ -1739,6 +2012,27 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.0216064,
       "p1_given_1": 0.829712
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0214844,
+      "p1_given_1": 0.912231
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0209961,
+      "p1_given_1": 0.911865
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0213013,
+      "p1_given_1": 0.900513
      }
     ],
     "implied_t1": {
@@ -1863,6 +2157,27 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.0374756,
       "p1_given_1": 0.837158
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0351562,
+      "p1_given_1": 0.972046
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0368042,
+      "p1_given_1": 0.96936
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0357056,
+      "p1_given_1": 0.96936
      }
     ],
     "implied_t1": {
@@ -1979,6 +2294,27 @@
       "wait_before_readout_us": 2.0,
       "p1_given_0": 0.052124,
       "p1_given_1": 0.729736
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0446167,
+      "p1_given_1": 0.977478
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0441895,
+      "p1_given_1": 0.97467
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0473633,
+      "p1_given_1": 0.976624
      }
     ],
     "implied_t1": {
@@ -2089,6 +2425,27 @@
       "wait_before_readout_us": 0.0,
       "p1_given_0": 0.0284424,
       "p1_given_1": null
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0286255,
+      "p1_given_1": 0.967957
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.02948,
+      "p1_given_1": 0.966309
+     },
+     {
+      "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+      "shots": 16384,
+      "wait_before_readout_us": 0.0,
+      "p1_given_0": 0.0275269,
+      "p1_given_1": 0.966064
      }
     ],
     "implied_t1": {
