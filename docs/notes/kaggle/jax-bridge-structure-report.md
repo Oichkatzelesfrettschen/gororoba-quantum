@@ -48,10 +48,30 @@ export sweep. On the 105-replica dark/bright run the CPU time drops from
   `parity_checked` records each label with its deviation, and the Aer
   simulator is built once per snapshot.
 - **Replay.** The sweep groups every replica x factor program of a run by
-  (n, qargs sequence) and pads each group to its largest rank. It calls each
-  group in fixed-size chunks of at most `--batch-bytes` (default 2^28) of
-  complex64 states, so each structure compiles once. The output schema is
+  (n, qargs sequence) and reads each group's largest rank per operation from
+  the stack shapes (`jax_bridge.stack_ranks`). It calls each group in
+  fixed-size chunks of at most `--batch-bytes` (default 2^28): per program,
+  one complex64 density matrix plus its complex64 Kraus stacks padded to the
+  group's ranks. Each call builds the padded stacks of its own programs only
+  (`stack_programs(rows, ranks, complex64)`), so the host holds one call's
+  stacks at a time and each structure compiles once. The output schema is
   `jax-bridge-sweep-v2`.
+  - The padded Kraus stacks outweigh the density matrices 13x at n = 5
+    (107,584 against 8,192 bytes per program on 070853) and 314x at n = 4
+    (643,296 against 2,048 on 025444's 1998-operation groups).
+  - At the default budget every group of 070847, 070853, 025444 and 031229
+    fits one call, so the chunk sizes equal those of the state-only budget.
+  - The group with the largest stacks in the 929-replica runs holds 140
+    programs of 1998 operations: 90 MB of padded complex64 stacks in one
+    call at the default budget, and less per call under a smaller
+    `--batch-bytes`. Padding the whole group in complex128 before chunking
+    held 180 MB plus each call's 90 MB complex64 copy.
+  - Per-call stacks leave the sweep output of 070847 and 070853 at
+    `--parity-sample 2` byte-identical once `seconds` is removed. Peak RSS
+    of 070853 (`/usr/bin/time -v`) is 1,319,884 KB, against 1,310,348 KB
+    with whole-group stacking. Its largest group (220 programs) held 71 MB
+    of stacks under whole-group stacking and holds 24 MB per call, and
+    neither sets the process peak.
 
 ## Contracts (`--self-test`, gates core-327 and core-337)
 
@@ -73,7 +93,9 @@ The case has 15 structure keys in all.
 | non-CZ channels of the scaled models vs the factor-1 model | equal (QuantumError ==) | exact |
 | restructured vs per-factor export, factors 0.5, 1, 12, all readout factors (numpy) | 6.3e-15 | 1e-9 |
 | sampled parity vs Aer density matrix (numpy) | 1.9e-9 | 1e-8 |
+| chunked replay at 2^20 bytes, largest group (60 programs, 7 calls of 9, last partial): each call's stacks vs the whole group's complex64 rows, numpy diagonals vs one call | bit-identical (array_equal) | exact |
 | JAX CPU vs numpy diagonals (`--device cpu`, local only) | 2.9e-6 | 1e-5 |
+| chunked JAX CPU vs one call, same group (`--device cpu`, local only) | 0.0 | 1e-5 |
 
 The 72 couplers are those the case drives, plus every coupler whose
 reported error already exceeds 4/5. A self-test run takes 61 s on this
@@ -133,8 +155,9 @@ JAX_PLATFORMS=cpu "$PYTHON" -B -W error scripts/jax_bridge_sweep.py --self-test 
 ```
 
 A TPU kernel goes through `scripts/kaggle_run.py push`, which bundles the
-entry's imports (jax_bridge, ghost_run, ghost_error_scale,
-calibration_snapshot and packing). The sweep also reads at run time:
+entry's import closure (jax_bridge, ghost_run, ghost_error_scale,
+calibration_snapshot, parallel and packing among it). The sweep also reads
+at run time:
 
 - the retention audit that `--runs all` reads;
 - the calibration history and its index.json (2.5 MB);

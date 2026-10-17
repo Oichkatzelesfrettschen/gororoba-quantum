@@ -411,19 +411,35 @@ def probabilities(
     return out / out.sum()
 
 
-def stack_programs(programs: list[Program]) -> list[tuple[tuple[int, ...], np.ndarray]]:
-    """Per operation, the Kraus stacks of every program padded to a common rank: shape (batch, rank, d, d)."""
+def stack_ranks(programs: list[Program]) -> list[int]:
+    """Per operation, the largest Kraus rank over programs: the common rank stack_programs pads to."""
     structure = programs[0].structure()
     for program in programs[1:]:
         if program.structure() != structure:
             raise ValueError("programs differ in operation order or qargs and cannot share one evolver")
+    return [max(program.ops[position][1].shape[0] for program in programs) for position in range(len(structure))]
+
+
+def stack_programs(
+    programs: list[Program], ranks: list[int] | None = None, dtype: Any = np.complex128
+) -> list[tuple[tuple[int, ...], np.ndarray]]:
+    """Per operation, the Kraus stacks of every program zero-padded to ranks: shape (batch, rank, d, d).
+
+    ranks defaults to stack_ranks(programs). A slice of a larger group passes
+    the group's ranks, so every slice has the shapes of the whole group and
+    its rows equal the whole group's stack at the same programs.
+    """
+    own = stack_ranks(programs)
+    if ranks is None:
+        ranks = own
+    elif len(ranks) != len(own) or any(r < o for r, o in zip(ranks, own, strict=True)):
+        raise ValueError(f"ranks {ranks} do not cover the programs' Kraus ranks {own}")
     stacked = []
-    for position, qargs in enumerate(structure):
-        stacks = [program.ops[position][1] for program in programs]
-        rank = max(s.shape[0] for s in stacks)
-        d = stacks[0].shape[1]
-        padded = np.zeros((len(stacks), rank, d, d), dtype=np.complex128)
-        for b, s in enumerate(stacks):
+    for position, qargs in enumerate(programs[0].structure()):
+        d = programs[0].ops[position][1].shape[1]
+        padded = np.zeros((len(programs), ranks[position], d, d), dtype=dtype)
+        for b, program in enumerate(programs):
+            s = program.ops[position][1]
             padded[b, : s.shape[0]] = s
         stacked.append((qargs, padded))
     return stacked

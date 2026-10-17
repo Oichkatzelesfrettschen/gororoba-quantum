@@ -36,9 +36,12 @@ rescaled CZ stack of every coupler the case drives, and of every coupler
 whose reported error exceeds the 4/5 cap, equals the channel of a freshly
 built Aer noise model at four factors that reach the zero-depolarizing branch, the interior
 and both caps; the scaled models change no other channel; the restructured
-programs reproduce the per-factor exports of the scaled noise models; and
-the sampled parity holds. ``--self-test --device cpu`` also replays the
-restructured programs in JAX and compares them with numpy.
+programs reproduce the per-factor exports of the scaled noise models; under
+a small batch budget the largest replay group takes several calls whose
+padded stacks equal the whole group's rows and whose diagonals equal one
+call's; and the sampled parity holds. ``--self-test --device cpu`` also
+replays the restructured programs in JAX, compares them with numpy, and
+compares the chunked JAX replay with one call.
 
 Kaggle. The sweep reads the retention audit, the calibration history and
 each audited run's record.json, isa.qpy and collect.json, about 93 MB that
@@ -60,7 +63,7 @@ import importlib.metadata
 import json
 import sys
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -77,13 +80,19 @@ from qiskit.quantum_info import Kraus, SuperOp  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import jax_bridge  # noqa: E402
+import parallel  # noqa: E402
 
 SCHEMA = "jax-bridge-sweep-v2"
 PARITY_SAMPLE = 2
 PARITY_SEED = ghost_run.SEED
-# complex64 density-matrix bytes per replay call; the CZ contraction holds
-# about rank (16) times this in intermediates.
+# complex64 bytes per replay call: each program's density matrix plus its
+# padded Kraus stacks, which the host builds per call and transfers to the
+# device. The CZ contraction holds about rank (16) times the density-matrix
+# bytes in device intermediates.
 BATCH_BYTES = 2**28
+# A budget under which the self-test's largest replay group takes several
+# calls, the last one partial.
+CHUNK_TEST_BYTES = 2**20
 require = ghost_run.require
 
 # The reduced case: three members of the dark/bright design run whose
@@ -195,6 +204,9 @@ def parity_labels(labels: list[str], sample: int | None, seed: int, run_name: st
 
 
 Replay = Callable[[list[jax_bridge.Program]], tuple[np.ndarray, set[str]]]
+# (structure, n, per-operation Kraus stacks with a leading batch axis) to
+# the batch's register diagonals and the platforms that computed them.
+Evolve = Callable[[list[tuple[int, ...]], int, list[np.ndarray]], tuple[np.ndarray, set[str]]]
 
 
 def replay_numpy(programs: list[jax_bridge.Program]) -> tuple[np.ndarray, set[str]]:
@@ -202,46 +214,99 @@ def replay_numpy(programs: list[jax_bridge.Program]) -> tuple[np.ndarray, set[st
     return np.array([np.real(np.diag(jax_bridge.evolve_numpy(p))) for p in programs]), set()
 
 
-def jax_replay(device: Any, batch_bytes: int) -> Replay:
-    """Batched JAX replay of programs sharing one structure, at most batch_bytes of states per call.
+def chunk_size(programs: list[jax_bridge.Program], ranks: list[int], batch_bytes: int) -> int:
+    """Programs per replay call: as many as batch_bytes holds, at least one and at most all.
 
-    Every call of one group has the same batch size (the last chunk repeats
-    its first program), and every stack is padded to the group's largest
-    rank, so each structure compiles once.
+    Each program costs one complex64 density matrix plus its complex64 Kraus
+    stacks padded to ranks.
     """
-    import jax
+    per_program = 8 * 4 ** programs[0].n + sum(
+        8 * rank * kraus.shape[1] ** 2 for rank, (_, kraus) in zip(ranks, programs[0].ops, strict=True)
+    )
+    return max(1, min(len(programs), batch_bytes // per_program))
 
-    evolvers: dict[Any, Any] = {}
+
+def replay_chunks(
+    programs: list[jax_bridge.Program], batch_bytes: int
+) -> Iterator[tuple[list[int], int, list[np.ndarray]]]:
+    """Per replay call of programs sharing one structure: its program indices, the count it reports, its Kraus stacks.
+
+    Every call has the same batch size (the last one repeats its first
+    program after the count it reports), and every stack is complex64,
+    zero-padded to the group's largest rank (jax_bridge.stack_ranks). The
+    host holds the padded stacks of one call at a time, so peak host memory
+    follows batch_bytes.
+    """
+    ranks = jax_bridge.stack_ranks(programs)
+    chunk = chunk_size(programs, ranks, batch_bytes)
+    for start in range(0, len(programs), chunk):
+        count = min(chunk, len(programs) - start)
+        rows = list(range(start, start + count)) + [start] * (chunk - count)
+        stacked = jax_bridge.stack_programs([programs[k] for k in rows], ranks, np.complex64)
+        yield rows, count, [kraus for _, kraus in stacked]
+
+
+def chunked_replay(evolve: Evolve, batch_bytes: int) -> Replay:
+    """Replay of programs sharing one structure in replay_chunks calls of evolve, diagonals in program order."""
 
     def replay(programs: list[jax_bridge.Program]) -> tuple[np.ndarray, set[str]]:
         n, structure = programs[0].n, programs[0].structure()
-        key = (tuple(structure), n)
-        if key not in evolvers:
-            evolvers[key] = jax_bridge.make_jax_evolver(structure, n)
-        stacked = jax_bridge.stack_programs(programs)
-        chunk = max(1, min(len(programs), batch_bytes // (8 * 4**n)))
         platforms: set[str] = set()
         parts = []
-        for start in range(0, len(programs), chunk):
-            count = min(chunk, len(programs) - start)
-            rows = list(range(start, start + count)) + [start] * (chunk - count)
-            arrays = [jax.device_put(kraus[rows].astype(np.complex64), device) for _, kraus in stacked]
-            replayed = evolvers[key](arrays).block_until_ready()
-            platforms.update(d.platform for d in replayed.devices())
-            parts.append(np.asarray(replayed, dtype=np.float64)[:count])
+        for _, count, arrays in replay_chunks(programs, batch_bytes):
+            replayed, seen = evolve(structure, n, arrays)
+            platforms |= seen
+            parts.append(replayed[:count])
         return np.concatenate(parts), platforms
 
     return replay
 
 
-def replay_all(programs: list[jax_bridge.Program], replay: Replay) -> tuple[list[np.ndarray], set[str]]:
-    """Register diagonals of every program in input order, replayed in groups of equal (n, structure)."""
-    groups: dict[Any, list[int]] = {}
+def jax_replay(device: Any, batch_bytes: int) -> Replay:
+    """Batched JAX replay on device in replay_chunks calls; each (structure, n) compiles once, its batch size fixed."""
+    import jax
+
+    evolvers: dict[Any, Any] = {}
+
+    def evolve(structure: list[tuple[int, ...]], n: int, arrays: list[np.ndarray]) -> tuple[np.ndarray, set[str]]:
+        key = (tuple(structure), n)
+        if key not in evolvers:
+            evolvers[key] = jax_bridge.make_jax_evolver(structure, n)
+        replayed = evolvers[key]([jax.device_put(kraus, device) for kraus in arrays]).block_until_ready()
+        return np.asarray(replayed, dtype=np.float64), {d.platform for d in replayed.devices()}
+
+    return chunked_replay(evolve, batch_bytes)
+
+
+def row_diagonal(item: tuple[int, list[tuple[tuple[int, ...], np.ndarray]]]) -> np.ndarray:
+    """Register diagonal of one batch row, (n, per-operation Kraus stacks), evolved in complex128 numpy."""
+    n, ops = item
+    return diagonal(jax_bridge.Program(n=n, physical=list(range(n)), ops=ops))
+
+
+def evolve_numpy_rows(
+    structure: list[tuple[int, ...]], n: int, arrays: list[np.ndarray]
+) -> tuple[np.ndarray, set[str]]:
+    """Every batch row of arrays through row_diagonal, rows spread over parallel.ordered_map."""
+    rows = [
+        (n, [(qargs, kraus[b]) for qargs, kraus in zip(structure, arrays, strict=True)]) for b in range(len(arrays[0]))
+    ]
+    return np.array(parallel.ordered_map(row_diagonal, rows)), set()
+
+
+def replay_groups(programs: list[jax_bridge.Program]) -> dict[tuple[int, tuple[tuple[int, ...], ...]], list[int]]:
+    """Indices of programs grouped by (n, qargs sequence), in first-appearance order."""
+    groups: dict[tuple[int, tuple[tuple[int, ...], ...]], list[int]] = {}
     for k, program in enumerate(programs):
         groups.setdefault((program.n, tuple(program.structure())), []).append(k)
+    return groups
+
+
+def replay_all(programs: list[jax_bridge.Program], replay: Replay) -> tuple[list[np.ndarray], set[str]]:
+    """Register diagonals of every program in input order, replayed in groups of equal (n, structure)."""
     out: list[np.ndarray] = [np.zeros(0)] * len(programs)
     platforms: set[str] = set()
-    for (n, structure), members in groups.items():
+    for (n, structure), members in replay_groups(programs).items():
         if not structure:
             # A replica that only measures leaves |0...0> unchanged; readout alone acts.
             diagonals = np.zeros((len(members), 2**n))
@@ -491,6 +556,35 @@ def self_test(device: str | None) -> dict[str, Any]:
     require(reproduction <= REPRODUCTION_TOLERANCE, f"restructured programs differ by {reproduction}")
     timing["reproduction"] = time.perf_counter() - clock
 
+    # Chunking: under CHUNK_TEST_BYTES the largest replay group takes several
+    # calls, the last one partial. Each call's stacks equal the whole group's
+    # complex64 stack at the call's rows, and the chunked diagonals equal the
+    # one-call replay's.
+    clock = time.perf_counter()
+    flat = [program for programs in restructured.values() for program in programs]
+    members = max((m for (_, structure), m in replay_groups(flat).items() if structure), key=len)
+    group = [flat[k] for k in members]
+    ranks = jax_bridge.stack_ranks(group)
+    chunk = chunk_size(group, ranks, CHUNK_TEST_BYTES)
+    require(
+        chunk < len(group) and len(group) % chunk != 0 and chunk_size(group, ranks, BATCH_BYTES) == len(group),
+        f"{len(group)} programs take {chunk} and {chunk_size(group, ranks, BATCH_BYTES)} per call",
+    )
+    whole = [kraus.astype(np.complex64) for _, kraus in jax_bridge.stack_programs(group)]
+    calls = 0
+    for rows, _, arrays in replay_chunks(group, CHUNK_TEST_BYTES):
+        calls += 1
+        require(
+            all(a.dtype == np.complex64 and np.array_equal(a, w[rows]) for a, w in zip(arrays, whole, strict=True)),
+            f"call {calls}: padded stacks differ from the whole group's rows {rows}",
+        )
+    require(calls == -(-len(group) // chunk), f"{calls} calls for {len(group)} programs at {chunk} per call")
+    several = chunked_replay(evolve_numpy_rows, CHUNK_TEST_BYTES)(group)[0]
+    require(
+        np.array_equal(several, chunked_replay(evolve_numpy_rows, BATCH_BYTES)(group)[0]), "chunked diagonals differ"
+    )
+    timing["chunking"] = time.perf_counter() - clock
+
     # Sampled parity against Aer's density matrix, and the sample's determinism.
     clock = time.perf_counter()
     labels = [label for _, label, _ in replicas]
@@ -516,19 +610,23 @@ def self_test(device: str | None) -> dict[str, Any]:
         "cz_branches": branches,
         "max_cz_superop_minus_aer": channel_distance,
         "max_probability_minus_per_factor_export": reproduction,
+        "chunking": {"programs": len(group), "per_call": chunk, "calls": calls},
         "parity": parity,
     }
     if device is not None:
         import jax
 
         clock = time.perf_counter()
-        flat = [program for programs in restructured.values() for program in programs]
         replayed, _ = replay_all(flat, jax_replay(jax.devices(device)[0], BATCH_BYTES))
         distance = max(
             float(np.max(np.abs(a - b))) for a, b in zip(replayed, replay_all(flat, replay_numpy)[0], strict=True)
         )
         require(distance <= JAX_TOLERANCE, f"JAX replay differs from numpy by {distance}")
         out["max_jax_minus_numpy_diagonal"] = distance
+        chunked = jax_replay(jax.devices(device)[0], CHUNK_TEST_BYTES)(group)[0]
+        chunk_distance = float(np.max(np.abs(chunked - np.array([replayed[k] for k in members]))))
+        require(chunk_distance <= JAX_TOLERANCE, f"chunked JAX replay differs from one call by {chunk_distance}")
+        out["max_jax_chunked_minus_one_call"] = chunk_distance
         timing["jax"] = time.perf_counter() - clock
     out["seconds"] = {k: round(v, 2) for k, v in timing.items()}
     return out
