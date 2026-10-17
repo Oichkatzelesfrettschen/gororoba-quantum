@@ -1661,10 +1661,9 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
             "magnitude m(n) = sqrt(E_X^2 + E_Y^2), the phase phi(n) = atan2(E_Y, -E_X) about the census value -1, "
             "and the population Pc(n) of the same replicas; r_coh and r_pop are exp(slope) of ln m(n) and ln "
             "Pc(n) on n, and the phase slope is phi per CZ, each with a 99% parametric-bootstrap interval "
-            f"({BOOTSTRAP_DRAWS} draws, seed {BOOTSTRAP_SEED}). A pure depolarizing block gives r_coh / r_pop = 1; "
-            "the phase slope measures 2 pi Delta_f tau per CZ for the data qubit's detuning Delta_f and the CZ "
-            "window tau, and a slope above 0.06 rad per CZ on any pair refutes a 60 ns window at every detuning "
-            "below 160 kHz",
+            f"({BOOTSTRAP_DRAWS} draws, seed {BOOTSTRAP_SEED}), reported as estimates. A pure depolarizing block "
+            "gives r_coh / r_pop = 1 and dephasing lowers it; the phase slope is the data qubit's detuning phase "
+            "over one CZ window plus the CZ's residual local phase on the data qubit",
             "walks": f"<X_c> = omega = -1 on both walks, 0 on both omit-last controls and 0 in Y. Falsifier: sign "
             f"opposite to omega at |z| > {SIGMA:g}, or a control's |<X_c>| above {NULL_OFFSET} + {SIGMA:g} sigma. "
             "Cross-prediction: sqrt(<X_c>^2 + <Y_c>^2) equals r^n_CZ for T0's r = "
@@ -1693,7 +1692,6 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
                 "cross_prediction_band": CROSS_PREDICTION_BAND,
                 "t0_r": T0_R,
                 "t0_c1": 0.954,
-                "phase_slope_refutes_60ns_above": 0.06,
                 "depths": [1, *FOLLOW_DEPTHS],
                 "bootstrap_draws": BOOTSTRAP_DRAWS,
                 "bootstrap_seed": BOOTSTRAP_SEED,

@@ -2828,6 +2828,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_follow_design.py --check docs/evidence/box_kite_follow_design/design.json && \"$PYTHON\" -B -O -W error scripts/box_kite_follow_design.py --check docs/evidence/box_kite_follow_design/design.json",
+   "name": "core-439",
+   "seconds": 6.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_follow_design.py --self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_follow_design.py --self-test",
+   "name": "core-440",
+   "seconds": 4.3,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_tuna17_readout_faults.py --check && \"$PYTHON\" -B -O -W error scripts/qi_tuna17_readout_faults.py --check",
    "name": "core-400",
    "seconds": 2.0,
