@@ -631,6 +631,7 @@ def assemble(sizes: dict[str, int], rows: dict[str, Any], census: dict[str, int]
     }
     w1["pass"] = (
         w1["corpus_pairs_cd_core_zero"] == w1["corpus_pairs_exact_zero"] == w1["corpus_pairs"]
+        and w1["corpus_pairs_ba_zero"] == w1["corpus_pairs"]
         and w1["frame_pairs_exact_zero"] == w1["frame_pairs"]
         and w1["inverse_two_sided"] == w1["cancellation_fails"] == w1["associator_equals_b"] == len(pairs)
         and all(counts["nonassociating_triples"] > 0 for d, counts in w1["basis_counts"].items() if d != "4")
@@ -682,6 +683,7 @@ def assemble(sizes: dict[str, int], rows: dict[str, Any], census: dict[str, int]
         and w2["composition_gram_is_norm_identity"] == len(composition)
         and w2["sedenion"]["all_three_agree"] == w2["sedenion"]["rows"]
         and w2["singular_all_bottom"] == w2["singular_rows"]
+        and w2["singular_fraction_solve_raises"] == w2["singular_rows"]
         and w2["finite_equals_fraction_solve_and_inverse"] == w2["finite_rows"]
         and w2["frame_elements_singular"] == w2["frame_elements"]
         and w2["right_rank_equals_left"] == len(sedenion)
@@ -711,6 +713,7 @@ def assemble(sizes: dict[str, int], rows: dict[str, Any], census: dict[str, int]
         and len([k for k in w3["dimension32_nullity_by_verdict"] if k != "0"]) >= 3
         and all(set(json.loads(kind)) == {"bottom"} for kind in w3["kernel_rhs_kinds"])
         and w3["dimension32_rank_q_equals_mod_p"] == len(dimension32)
+        and w3["dimension32_sample"]["all_three_agree"] == w3["dimension32_sample"]["rows"]
     )
 
     w4_tables: dict[str, Any] = {}
@@ -880,7 +883,9 @@ def main() -> int:
         args.out.write_text(render(record))
         print(f"wrote {args.out}: {summary(record)}; pyadic {record['pyadic_cross_check']}")
         cross = record["pyadic_cross_check"]
-        pyadic_ok = cross.get("status") != "run" or cross.get("agree") == cross.get("rows")
+        pyadic_ok = cross.get("status") != "run" or cross.get("agree") == cross.get("rows") == len(
+            record["rows"]["gaussian"]
+        )
         return 0 if pyadic_ok and all(record[name]["pass"] for name in ("W1", "W2", "W3", "W4")) else 1
     retained = json.loads(args.check.read_text())
     differing = compare(record, retained)
@@ -888,9 +893,10 @@ def main() -> int:
     failing = [name for name in ("W1", "W2", "W3", "W4") if not record[name]["pass"]]
     require(not failing, f"{args.check} records failing predictions {failing}")
     cross = retained.get("pyadic_cross_check", {})
+    gaussian_rows = len(retained["rows"]["gaussian"])
     require(
-        cross.get("status") != "run" or cross.get("agree") == cross.get("rows"),
-        f"{args.check} records a pyadic cross-check that disagrees: {cross}",
+        cross.get("status") != "run" or cross.get("agree") == cross.get("rows") == gaussian_rows,
+        f"{args.check} records a pyadic cross-check that does not cover all {gaussian_rows} Gaussian rows: {cross}",
     )
     print(f"{args.check} matches: {summary(record)}")
     return 0
