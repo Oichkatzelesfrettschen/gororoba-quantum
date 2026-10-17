@@ -111,6 +111,17 @@ rule must report no tail.
 
 Analyses write every float at SIGNIFICANT digits (qi_coupler_zz_map).
 
+The preregistered errors treat the batch's assignment e01, e10 as constants.
+--sensitivity OUT RUN_DIR... writes a separate record that changes no verdict:
+per target, the preregistered standard error beside the analytic error with
+the binomial variances of e01 and e10 (from the readout-0 and readout-1
+counts) carried through every quadrature, and the standard deviation over
+CALIBRATION_REPLICATES joint resamplings of all readout and Ramsey counts.
+The replicates' counts are drawn first from one seeded generator and then
+analyzed through parallel.ordered_map, so pooled and serial runs write the
+same bytes; with --replay the record is compared with its recomputation.
+--sensitivity-self-test checks the contract on synthetic counts.
+
 --write DIR writes DIR/readout_ringdown_{tuna_17,qx}_{P,Q}/ (batch-NN/ case
 directories and cases.json); --check DIR regenerates them and compares
 bytes; --conformance schedules the emitted circuits ALAP, evolves them under
@@ -121,7 +132,8 @@ one series (--replay compares OUT with its recomputation); --sanity RUN_DIR
 checks one collected batch before the next is submitted.
 
 Usage: "$PYTHON" scripts/qi_readout_ringdown_cases.py
-       (--write DIR | --check DIR | --conformance | --analyze OUT RUN_DIR... [--replay] | --sanity RUN_DIR)
+       (--write DIR | --check DIR | --conformance | --analyze OUT RUN_DIR... [--replay] | --sanity RUN_DIR
+        | --sensitivity OUT RUN_DIR... [--replay] | --sensitivity-self-test)
        (DIR is the cases root, results/quantum_inspire/cases)
 """
 
@@ -135,7 +147,7 @@ import math
 import random
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 import numpy as np
 from qi_coupler_zz_map import (
@@ -456,8 +468,10 @@ def inverse(matrix: list[list[float]]) -> list[list[float]] | None:
     return [[cof[j][i] / det for j in range(3)] for i in range(3)] if det else None
 
 
-def h2_errors(taus: Taus, weights: list[float], a: float, tail: float) -> tuple[float, float | None]:
-    """se(A) and se(T) from the Fisher matrix of (c, A, T); T held fixed at a bound or when A vanishes."""
+def h2_design(
+    taus: Taus, weights: list[float], a: float, tail: float
+) -> tuple[list[list[float]], list[list[float]] | None, bool]:
+    """(design rows, covariance, T free): the Fisher inverse of (c, A, T), or of (c, A) with T at a bound or A zero."""
     rows = []
     for tau in taus:
         f = 0.0 if tau is None else math.exp(-tau / tail)
@@ -466,11 +480,19 @@ def h2_errors(taus: Taus, weights: list[float], a: float, tail: float) -> tuple[
     if T_BOUNDS[0] < tail < T_BOUNDS[1] and a != 0:
         covariance = inverse(fisher)
         if covariance is not None and covariance[1][1] > 0 and covariance[2][2] > 0:
-            return math.sqrt(covariance[1][1]), math.sqrt(covariance[2][2])
+            return rows, covariance, True
     fixed = inverse([row[:2] for row in fisher[:2]])
     if fixed is None or fixed[1][1] <= 0:
+        return rows, None, False
+    return rows, fixed, False
+
+
+def h2_errors(taus: Taus, weights: list[float], a: float, tail: float) -> tuple[float, float | None]:
+    """se(A) and se(T) from the Fisher matrix of (c, A, T); T held fixed at a bound or when A vanishes."""
+    _, covariance, free = h2_design(taus, weights, a, tail)
+    if covariance is None:
         return math.inf, None
-    return math.sqrt(fixed[1][1]), None
+    return math.sqrt(covariance[1][1]), math.sqrt(covariance[2][2]) if free else None
 
 
 def gain(tail: float) -> float:
@@ -961,7 +983,10 @@ def sanity(
     return problems, notes
 
 
-def analyze(runs: list[Path]) -> dict[str, Any]:
+def load_runs(
+    runs: list[Path],
+) -> tuple[str, dict[str, Any], list[tuple[str, str]], dict[str, list[str]], dict[str, int]]:
+    """(profile, meta, circuits, shots by file, batch index by file) of the listed batches of one series."""
     manifests = [json.loads((run / "cases.json").read_text(encoding="utf-8")) for run in runs]
     series_keys = ("schema", "backend", "backend_type_id", "nqubits", "shots", "series", "targets")
     for run, manifest in zip(runs, manifests, strict=True):
@@ -983,6 +1008,11 @@ def analyze(runs: list[Path]) -> dict[str, Any]:
     missing = sorted(name for name, _ in ordered if name not in shots)
     if missing:
         raise SystemExit(f"the listed batches lack {', '.join(missing)}")
+    return profile, meta, ordered, shots, batch_of
+
+
+def analyze(runs: list[Path]) -> dict[str, Any]:
+    profile, meta, ordered, shots, batch_of = load_runs(runs)
     zero, one = shots["readout-0.cq"], shots["readout-1.cq"]
     assignment = {
         t: (sum(bit(s, t) for s in zero) / len(zero), sum(1 - bit(s, t) for s in one) / len(one))
@@ -1005,6 +1035,483 @@ def analyze(runs: list[Path]) -> dict[str, Any]:
     }
 
 
+SENSITIVITY_METHOD = (
+    "Beside the preregistered verdict, which stays as analyzed: the readout-0 and readout-1 counts give e01 and e10 "
+    "binomial variances; the analytic column propagates them through every quadrature, phase, rate, delta and the "
+    "minimum visibility with the one assignment pair shared by all arms, and through A as the central-difference "
+    "derivative (half-step 1e-4) of the complete weighted fit, whose weights also depend on the assignment; "
+    "the bootstrap column redraws every readout "
+    "count and every Ramsey count binomially from the observed fractions, recomputes the assignment and the full "
+    "analysis per replicate, and reports the standard deviation of each quantity (rates and deltas as offsets on "
+    "the circle). The spread is the normal-theory standard deviation of a standard deviation over the replicates."
+)
+CALIBRATION_REPLICATES = 2000
+CALIBRATION_SEED = 182
+AGREEMENT_SIGMA = 3.0
+RATE_PERIOD_HZ = 2 * math.pi / SPAN * TO_HZ
+Counts = dict[int, tuple[int, int, int, int]]
+
+
+class PhaseTerms(NamedTuple):
+    """Phase and visibility of one arm and delay, each with its shot variance and its (e01, e10) gradient."""
+
+    phase: float
+    variance: float
+    d_phase: list[float]
+    visibility: float
+    visibility_variance: float
+    d_visibility: list[float]
+
+
+def calibration_counts(targets: list[int], zero: list[str], one: list[str]) -> Counts:
+    """(shots, ones) of readout-0 and (shots, zeros) of readout-1 per target: the counts behind e01 and e10."""
+    return {t: (len(zero), sum(bit(s, t) for s in zero), len(one), sum(1 - bit(s, t) for s in one)) for t in targets}
+
+
+def assignment_of(counts: Counts) -> dict[int, tuple[float, float]]:
+    return {t: (k0 / n0, k1 / n1) for t, (n0, k0, n1, k1) in counts.items()}
+
+
+def quadrature(p: float, kept: float, e01: float, e10: float) -> tuple[float, float, float, float]:
+    """(v, dv/de01, dv/de10, shot variance) of v = 2 (p - e01) / (1 - e01 - e10) - 1."""
+    scale = 1 - e01 - e10
+    centered = p - e01
+    return (
+        2 * centered / scale - 1,
+        2 * (centered - scale) / scale**2,
+        2 * centered / scale**2,
+        4 * p * (1 - p) / kept / scale**2,
+    )
+
+
+def phase_terms(table: Table, arm: str, delay: int, target: int, e01: float, e10: float) -> PhaseTerms | None:
+    """atan2 phase and visibility of one arm and delay with their shot variances and (e01, e10) gradients."""
+    values = {}
+    for q in QUADRATURES:
+        ones, kept, _ = table[(arm, q, delay, target)]
+        if kept <= 0:
+            return None
+        values[q] = quadrature(ones / kept, kept, e01, e10)
+    (x, xa, xb, xv), (y, ya, yb, yv) = values["x"], values["y"]
+    r2 = x * x + y * y
+    if r2 <= 0:
+        return PhaseTerms(math.atan2(y, x), math.inf, [math.inf] * 2, 0.0, math.inf, [math.inf] * 2)
+    r = math.sqrt(r2)
+    return PhaseTerms(
+        math.atan2(y, x),
+        (y * y * xv + x * x * yv) / r2**2,
+        [(-y * xa + x * ya) / r2, (-y * xb + x * yb) / r2],
+        r,
+        (x * x * xv + y * y * yv) / r2,
+        [(x * xa + y * ya) / r, (x * xb + y * yb) / r],
+    )
+
+
+FIT_STEP = 1e-4
+
+
+def fit_gradient(target: int, table: Table, e01: float, e10: float, field: str = "A_hz") -> list[float]:
+    """d/d(e01, e10) of one H2 fit output (Hz) by central differences of the complete analyze_target.
+
+    A change of e01 or e10 moves the rates and also every phase variance, hence
+    the weights of the fit, so the derivative of the estimator contains a weight
+    term that a gain vector at fixed weights lacks. Each component uses the
+    half-step FIT_STEP = 1e-4 (clipped at zero): the assignment errors are
+    0.005 to 0.3, so the O(step^2) truncation is below 1e-6 relative to the
+    scale of the fit, and the step stays far above the 1e-12 relative
+    tolerance of the golden-section search over T.
+    """
+    gradient = []
+    for e in range(2):
+        point = [e01, e10]
+        lo, hi = list(point), list(point)
+        lo[e] = max(point[e] - FIT_STEP, 0.0)
+        hi[e] = point[e] + FIT_STEP
+        low = analyze_target(target, table, (lo[0], lo[1]))["h2"][field]
+        high = analyze_target(target, table, (hi[0], hi[1]))["h2"][field]
+        gradient.append((high - low) / (hi[e] - lo[e]))
+    return gradient
+
+
+def calibrated_errors(
+    target: int, table: Table, counts: tuple[int, int, int, int], variance_scale: float = 1.0
+) -> dict[str, Any] | None:
+    """Standard errors of one target with the readout-assignment error carried alongside the shot noise.
+
+    e01 = k0 / n0 and e10 = k1 / n1 are binomial estimates from the batch's
+    readout-0 and readout-1 circuits, with variances e (1 - e) / n times
+    variance_scale. Every arm and delay inverts the same pair, so the
+    calibration shift of a rate is the Jacobian J of its phase turn over SPAN
+    times (d e01, d e10), common to the arms. A delta subtracts the
+    reference's Jacobian before squaring; A is differentiated through the
+    complete fit, weights included (fit_gradient), so its calibration variance
+    is sum_e (dA/de)^2 var(e); the minimum visibility carries the
+    gradient of its own arm and delay. Each calibrated variance adds that
+    term to the preregistered shot variance. variance_scale 0 returns the
+    preregistered errors, which analyze_target keeps as the verdict.
+    """
+    n0, k0, n1, k1 = counts
+    e01, e10 = k0 / n0, k1 / n1
+    variances = [variance_scale * e01 * (1 - e01) / n0, variance_scale * e10 * (1 - e10) / n1]
+    base = analyze_target(target, table, (e01, e10))
+    if "rate_hz" not in base:
+        return None
+    terms = {arm: [phase_terms(table, arm, d, target, e01, e10) for d in DELAYS] for arm in ARMS}
+    jacobian = {}
+    for arm in ARMS:
+        first, second = terms[arm]
+        assert first is not None and second is not None
+        jacobian[arm] = [(second.d_phase[e] - first.d_phase[e]) / SPAN for e in range(2)]
+    shot = {arm: base["rate_se_hz"][arm] / TO_HZ for arm in ARMS}
+
+    def calibration(vector: list[float]) -> float:
+        return sum(vector[e] ** 2 * variances[e] for e in range(2))
+
+    rate_se = {arm: math.sqrt(shot[arm] ** 2 + calibration(jacobian[arm])) * TO_HZ for arm in ARMS}
+    delta_se = {
+        str(arm_tau(arm)): math.sqrt(
+            shot[arm] ** 2
+            + shot[REFERENCE] ** 2
+            + calibration([jacobian[arm][e] - jacobian[REFERENCE][e] for e in range(2)])
+        )
+        * TO_HZ
+        for arm in ARMS[1:]
+    }
+    shift = fit_gradient(target, table, e01, e10)
+    a_se = math.sqrt(base["h2"]["A_se_hz"] ** 2 + sum(shift[e] ** 2 * variances[e] for e in range(2)))
+    lowest = min(
+        (term for pair in terms.values() for term in pair if term is not None), key=lambda term: term.visibility
+    )
+    return {
+        "rate_se_hz": rate_se,
+        "delta_se_hz": delta_se,
+        "A_se_hz": a_se,
+        "min_visibility_shot_se": math.sqrt(lowest.visibility_variance),
+        "min_visibility_se": math.sqrt(lowest.visibility_variance + calibration(lowest.d_visibility)),
+    }
+
+
+class Replicate:
+    """One joint resampling, analyzed twice on the same Ramsey counts, picklable for the pool.
+
+    "full" inverts the resampled assignment; "fixed" inverts the observed one,
+    so the pair differs by the calibration draw alone and its ratio isolates
+    the calibration term from the shot-noise error.
+    """
+
+    def __init__(self, targets: list[int], keys: list[tuple[str, str, int, int]], kept: list[float], shots: Counts):
+        self.targets, self.keys, self.kept, self.shots = targets, keys, kept, shots
+
+    def __call__(self, draw: tuple[list[tuple[int, int]], list[float]]) -> dict[str, dict[int, dict[str, Any]]]:
+        readout, ones = draw
+        table = {k: (o, n, n) for k, o, n in zip(self.keys, ones, self.kept, strict=True)}
+        out: dict[str, dict[int, dict[str, Any]]] = {"full": {}, "fixed": {}}
+        for t, (k0, k1) in zip(self.targets, readout, strict=True):
+            n0, observed0, n1, observed1 = self.shots[t]
+            for name, assignment in (("full", (k0 / n0, k1 / n1)), ("fixed", (observed0 / n0, observed1 / n1))):
+                row = analyze_target(t, table, assignment)
+                out[name][t] = (
+                    {
+                        "delta_hz": row["delta_hz"],
+                        "rate_hz": row["rate_hz"],
+                        "A_hz": row["h2"]["A_hz"],
+                        "min_visibility": row["min_visibility"],
+                        "class": row["class"],
+                    }
+                    if "rate_hz" in row
+                    else {}
+                )
+        return out
+
+
+def bootstrap_draws(
+    targets: list[int], table: Table, counts: Counts, replicates: int, rng: random.Random
+) -> tuple[list[tuple[str, str, int, int]], list[tuple[list[tuple[int, int]], list[float]]]]:
+    """Every replicate's counts, drawn in one pass in generator order before any analysis runs.
+
+    Readout counts follow Binomial(n0, e01) and Binomial(n1, e10) per target
+    in target order; each Ramsey entry follows Binomial(kept, ones / kept) in
+    sorted key order.
+    """
+    keys = sorted(k for k in table if k[3] in targets)
+    draws = []
+    for _ in range(replicates):
+        readout = []
+        for t in targets:
+            n0, k0, n1, k1 = counts[t]
+            readout.append((rng.binomialvariate(n0, k0 / n0), rng.binomialvariate(n1, k1 / n1)))
+        ones = [float(rng.binomialvariate(int(table[k][1]), table[k][0] / table[k][1])) for k in keys]
+        draws.append((readout, ones))
+    return keys, draws
+
+
+def circular_spread(values: list[float], observed: float, period: float | None) -> float:
+    """Standard deviation of values about their mean, each taken as the (wrapped) offset from observed."""
+    offsets = [v - observed for v in values]
+    if period is not None:
+        offsets = [(o + period / 2) % period - period / 2 for o in offsets]
+    mean = sum(offsets) / len(offsets)
+    return math.sqrt(sum((o - mean) ** 2 for o in offsets) / (len(offsets) - 1))
+
+
+def paired_spread(
+    full: list[dict[str, Any]],
+    fixed: list[dict[str, Any]],
+    field: str,
+    observed: float,
+    period: float | None,
+    arm: str | None = None,
+) -> tuple[float, float]:
+    """Spreads of one replicate field under the resampled and the observed assignment."""
+    return (
+        circular_spread([r[field] if arm is None else r[field][arm] for r in full], observed, period),
+        circular_spread([r[field] if arm is None else r[field][arm] for r in fixed], observed, period),
+    )
+
+
+def leaf(prereg: float, analytic: float, boot: float, fixed: float, replicates: int) -> dict[str, float]:
+    """One standard error under the estimators; spread is boot / sqrt(2 (B - 1)), the normal-theory sd of an sd.
+
+    bootstrap_shot_only redraws the Ramsey counts around the observed
+    assignment, so bootstrap / bootstrap_shot_only is the resampled
+    calibration term against analytic / preregistered.
+    """
+    spread = boot / math.sqrt(2 * (replicates - 1))
+    return {
+        "preregistered": prereg,
+        "analytic": analytic,
+        "bootstrap": boot,
+        "bootstrap_shot_only": fixed,
+        "bootstrap_spread": spread,
+        "analytic_minus_bootstrap_in_spreads": (analytic - boot) / spread if spread > 0 else 0.0,
+        "preregistered_minus_bootstrap_shot_only_in_spreads": (prereg - fixed) / spread if spread > 0 else 0.0,
+        "calibration_ratio_analytic": analytic / prereg if prereg > 0 else 1.0,
+        "calibration_ratio_bootstrap": boot / fixed if fixed > 0 else 1.0,
+    }
+
+
+def sensitivity(
+    meta: dict[str, Any], table: Table, counts: Counts, replicates: int = CALIBRATION_REPLICATES
+) -> dict[str, Any]:
+    """Per-target preregistered, analytic-calibrated and bootstrap standard errors of delta, rate, A and visibility."""
+    targets = list(meta["targets"])
+    rng = random.Random(CALIBRATION_SEED)
+    keys, draws = bootstrap_draws(targets, table, counts, replicates, rng)
+    kept = [table[k][1] for k in keys]
+    results = ordered_map(Replicate(targets, keys, kept, counts), draws, min_items=1)
+    assignment = assignment_of(counts)
+    rows = []
+    for t in targets:
+        base = analyze_target(t, table, assignment[t])
+        analytic = calibrated_errors(t, table, counts[t])
+        n0, k0, n1, k1 = counts[t]
+        row: dict[str, Any] = {
+            "target": t,
+            "usable": base["usable"],
+            "class": base["class"],
+            "readout_counts": {"shots_0": n0, "ones_in_0": k0, "shots_1": n1, "zeros_in_1": k1},
+            "e01": assignment[t][0],
+            "e10": assignment[t][1],
+            "e01_se": math.sqrt(assignment[t][0] * (1 - assignment[t][0]) / n0),
+            "e10_se": math.sqrt(assignment[t][1] * (1 - assignment[t][1]) / n1),
+        }
+        rows.append(row)
+        if analytic is None:
+            continue
+        full = [r["full"][t] for r in results]
+        fixed = [r["fixed"][t] for r in results]
+        row["class_fraction"] = sum(r["class"] == base["class"] for r in full) / replicates
+
+        row["min_visibility_se"] = leaf(
+            analytic["min_visibility_shot_se"],
+            analytic["min_visibility_se"],
+            *paired_spread(full, fixed, "min_visibility", base["min_visibility"], None),
+            replicates,
+        )
+        row["A_se_hz"] = leaf(
+            base["h2"]["A_se_hz"],
+            analytic["A_se_hz"],
+            *paired_spread(full, fixed, "A_hz", base["h2"]["A_hz"], None),
+            replicates,
+        )
+        row["rate_se_hz"] = {
+            arm: leaf(
+                base["rate_se_hz"][arm],
+                analytic["rate_se_hz"][arm],
+                *paired_spread(full, fixed, "rate_hz", base["rate_hz"][arm], RATE_PERIOD_HZ, arm),
+                replicates,
+            )
+            for arm in ARMS
+        }
+        row["delta_se_hz"] = {
+            tau: leaf(
+                base["delta_se_hz"][tau],
+                analytic["delta_se_hz"][tau],
+                *paired_spread(full, fixed, "delta_hz", base["delta_hz"][tau], RATE_PERIOD_HZ, tau),
+                replicates,
+            )
+            for tau in base["delta_se_hz"]
+        }
+    return {"targets": rows, "agreement": agreement(rows)}
+
+
+def agreement(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Analytic against bootstrap over every usable target's standard errors, and the calibration term's size.
+
+    Rates and deltas are linear in the phase turns, so the analytic and
+    bootstrap errors must agree within AGREEMENT_SIGMA spreads. A and the
+    minimum visibility are nonlinear (a fit with T at a bound, a minimum over
+    arms), so their entries also carry the preregistered-against-shot-only
+    gap, which exists without any calibration term.
+    """
+    groups: dict[str, list[tuple[str, dict[str, float]]]] = {"linear": [], "nonlinear": []}
+    for row in rows:
+        if not row["usable"] or "delta_se_hz" not in row:
+            continue
+        name = f"Q{row['target']}"
+        groups["linear"] += [(f"{name} delta {tau}", item) for tau, item in row["delta_se_hz"].items()]
+        groups["linear"] += [(f"{name} rate {arm}", item) for arm, item in row["rate_se_hz"].items()]
+        groups["nonlinear"] += [(f"{name} A", row["A_se_hz"]), (f"{name} min_visibility", row["min_visibility_se"])]
+    out: dict[str, Any] = {"agreement_sigma": AGREEMENT_SIGMA}
+    for kind, entries in groups.items():
+        z = [abs(item["analytic_minus_bootstrap_in_spreads"]) for _, item in entries]
+        baseline = [abs(item["preregistered_minus_bootstrap_shot_only_in_spreads"]) for _, item in entries]
+        ratios = [item["calibration_ratio_analytic"] for _, item in entries]
+        out[kind] = {
+            "entries": len(entries),
+            "analytic_beyond_agreement": [
+                name for (name, _), score in zip(entries, z, strict=True) if score > AGREEMENT_SIGMA
+            ],
+            "max_abs_analytic_minus_bootstrap_in_spreads": max(z, default=0.0),
+            "max_abs_preregistered_minus_bootstrap_shot_only_in_spreads": max(baseline, default=0.0),
+            "calibration_ratio_analytic": {"min": min(ratios, default=1.0), "max": max(ratios, default=1.0)},
+        }
+    return out
+
+
+def sensitivity_report(runs: list[Path]) -> dict[str, Any]:
+    profile, meta, ordered, shots, _ = load_runs(runs)
+    counts = calibration_counts(meta["targets"], shots["readout-0.cq"], shots["readout-1.cq"])
+    table, _ = tabulate(meta, {name: shots[name] for name, _ in ordered if not name.startswith("readout")})
+    return {
+        "schema": "qi-readout-ringdown-calibration-sensitivity-v1",
+        "profile": profile,
+        "series": meta["series"],
+        "runs": [retained_path(r) for r in runs],
+        "method": SENSITIVITY_METHOD,
+        "replicates": CALIBRATION_REPLICATES,
+        "seed": CALIBRATION_SEED,
+        **sensitivity(meta, table, counts),
+    }
+
+
+def synthetic_series() -> tuple[dict[str, Any], Table, Counts]:
+    """Two targets with exact Ramsey probabilities at known rates behind a known assignment channel."""
+    targets = [0, 1]
+    counts: Counts = {0: (8192, 246, 8192, 1229), 1: (8192, 123, 8192, 983)}
+    assignment = assignment_of(counts)
+    table: Table = {}
+    for t in targets:
+        e01, e10 = assignment[t]
+        for index, arm in enumerate(ARMS):
+            rate = 0.012 + 0.0025 * index + 0.004 * t
+            for delay in DELAYS:
+                phi = rate * (delay + 1) + 0.3
+                for q, trig in (("x", math.cos), ("y", math.sin)):
+                    p = e01 + (1 - e01 - e10) * (1 + 0.9 * trig(phi)) / 2
+                    table[(arm, q, delay, t)] = (float(round(8192 * p)), 8192.0, 8192.0)
+    return {"targets": targets, "series": "S"}, table, counts
+
+
+def frozen_weight_gradient(target: int, table: Table, e01: float, e10: float) -> list[float]:
+    """dA/d(e01, e10) with the fit weights held at their observed values: the rates move, the weights do not."""
+    base = analyze_target(target, table, (e01, e10))
+    taus: Taus = [arm_tau(arm) for arm in ARMS]
+    weights = [1 / max(base["rate_se_hz"][arm] / TO_HZ, 1e-12) ** 2 for arm in ARMS]
+    out = []
+    for e in range(2):
+        values = []
+        for sign in (-1, 1):
+            point = [e01, e10]
+            point[e] += sign * FIT_STEP
+            row = analyze_target(target, table, (point[0], point[1]))
+            rates = [row["rate_hz"][arm] / TO_HZ for arm in ARMS]
+            values.append(fit_h2(taus, rates, weights)[2] * TO_HZ)
+        out.append((values[1] - values[0]) / (2 * FIT_STEP))
+    return out
+
+
+def sensitivity_self_test() -> str:
+    """Contract of the sensitivity analysis on synthetic counts.
+
+    (a) variance_scale 0 returns the preregistered rate, delta and A errors and the
+    shot-only visibility error; (b) the calibration term of every delta equals
+    the finite-difference gradient of analyze_target's delta times the
+    binomial errors of e01 and e10; (c) the A calibration shift equals the central-difference
+    gradient of the complete fit, which differs from the gradient at frozen weights and does not
+    depend on the step; (d) a replay of the same counts is identical and a mutated readout count changes the record.
+    """
+    meta, table, counts = synthetic_series()
+    step = 1e-6
+    for t in meta["targets"]:
+        n0, k0, n1, k1 = counts[t]
+        e01, e10 = k0 / n0, k1 / n1
+        base = analyze_target(t, table, (e01, e10))
+        zero = calibrated_errors(t, table, counts[t], 0.0)
+        full = calibrated_errors(t, table, counts[t])
+        assert zero is not None and full is not None
+        pairs = [(zero["A_se_hz"], base["h2"]["A_se_hz"]), (zero["min_visibility_se"], zero["min_visibility_shot_se"])]
+        pairs += [(zero["rate_se_hz"][arm], base["rate_se_hz"][arm]) for arm in ARMS]
+        pairs += [(zero["delta_se_hz"][tau], base["delta_se_hz"][tau]) for tau in base["delta_se_hz"]]
+        for got, want in pairs:
+            if not math.isclose(got, want, rel_tol=1e-9):
+                raise SystemExit(f"sensitivity self-test: zero calibration variance gives {got}, preregistered {want}")
+        up = analyze_target(t, table, (e01 + step, e10))
+        right = analyze_target(t, table, (e01, e10 + step))
+        for tau, value in base["delta_hz"].items():
+            gradient = [(other["delta_hz"][tau] - value) / step for other in (up, right)]
+            variance = gradient[0] ** 2 * e01 * (1 - e01) / n0 + gradient[1] ** 2 * e10 * (1 - e10) / n1
+            expected = full["delta_se_hz"][tau] ** 2 - base["delta_se_hz"][tau] ** 2
+            if not math.isclose(variance, expected, rel_tol=1e-3):
+                raise SystemExit(
+                    f"sensitivity self-test: delta {tau} calibration variance {expected}, gradient {variance}"
+                )
+        gradient = fit_gradient(t, table, e01, e10)
+        coarse = [
+            (
+                analyze_target(t, table, (e01 + (e == 0) * 4e-4, e10 + (e == 1) * 4e-4))["h2"]["A_hz"]
+                - analyze_target(t, table, (e01 - (e == 0) * 4e-4, e10 - (e == 1) * 4e-4))["h2"]["A_hz"]
+            )
+            / 8e-4
+            for e in range(2)
+        ]
+        frozen = frozen_weight_gradient(t, table, e01, e10)
+        shift = math.sqrt(max(full["A_se_hz"] ** 2 - base["h2"]["A_se_hz"] ** 2, 0.0))
+        expected = math.sqrt(gradient[0] ** 2 * e01 * (1 - e01) / n0 + gradient[1] ** 2 * e10 * (1 - e10) / n1)
+        frozen_shift = math.sqrt(frozen[0] ** 2 * e01 * (1 - e01) / n0 + frozen[1] ** 2 * e10 * (1 - e10) / n1)
+        if not math.isclose(shift, expected, rel_tol=1e-6, abs_tol=1e-9):
+            raise SystemExit(
+                f"sensitivity self-test: A calibration shift {shift} differs from the fit gradient {expected}"
+            )
+        if any(not math.isclose(g, c, rel_tol=1e-3, abs_tol=1e-3) for g, c in zip(gradient, coarse, strict=True)):
+            raise SystemExit(f"sensitivity self-test: fit gradient {gradient} is step dependent ({coarse})")
+        if math.isclose(expected, frozen_shift, rel_tol=1e-3):
+            raise SystemExit("sensitivity self-test: the synthetic fit does not separate weight dependence")
+    first = sensitivity(meta, table, counts, 24)
+    if sensitivity(meta, table, counts, 24) != first:
+        raise SystemExit("sensitivity self-test: a replay of the same counts differs")
+    n0, k0, n1, k1 = counts[0]
+    changed = sensitivity(meta, table, {**counts, 0: (n0, k0, n1, k1 + 40)}, 24)
+    if changed == first or changed["targets"][0]["e10"] == first["targets"][0]["e10"]:
+        raise SystemExit("sensitivity self-test: a mutated readout count leaves the record unchanged")
+    if changed["targets"][0]["delta_se_hz"] == first["targets"][0]["delta_se_hz"]:
+        raise SystemExit("sensitivity self-test: a mutated readout count leaves the delta errors unchanged")
+    return (
+        "sensitivity self-test: zero calibration variance reproduces the preregistered errors; "
+        "gradients match; mutation changes the record"
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -1013,7 +1520,11 @@ def main() -> int:
     mode.add_argument("--conformance", action="store_true")
     mode.add_argument("--analyze", type=Path, nargs="+", metavar=("OUT", "RUN_DIR"))
     mode.add_argument("--sanity", type=Path, metavar="RUN_DIR")
-    parser.add_argument("--replay", action="store_true", help="with --analyze: compare OUT with the recomputation")
+    mode.add_argument("--sensitivity", type=Path, nargs="+", metavar=("OUT", "RUN_DIR"))
+    mode.add_argument("--sensitivity-self-test", action="store_true")
+    parser.add_argument(
+        "--replay", action="store_true", help="with --analyze or --sensitivity: compare OUT with the recomputation"
+    )
     parser.add_argument(
         "--sanity-exempt",
         type=lambda value: frozenset(int(item) for item in value.split(",")),
@@ -1039,6 +1550,22 @@ def main() -> int:
         rng = random.Random(23)
         for profile, series in itertools.product(PROFILES, SERIES):
             print(conformance_series(profile, series, rng))
+        return 0
+    if args.sensitivity_self_test:
+        print(sensitivity_self_test())
+        return 0
+    if args.sensitivity:
+        out, *runs = args.sensitivity
+        if not runs:
+            raise SystemExit("--sensitivity needs OUT and at least one RUN_DIR")
+        text = json.dumps(quantized(sensitivity_report(runs)), indent=1) + "\n"
+        if args.replay:
+            if out.read_text(encoding="utf-8") != text:
+                raise SystemExit(f"{out} differs from its recomputation")
+            print(f"{out}: sensitivity reproduces")
+            return 0
+        out.write_text(text, encoding="utf-8")
+        print(f"sensitivity -> {out}")
         return 0
     if args.analyze:
         out, *runs = args.analyze

@@ -828,6 +828,88 @@ admits only the jobs in the 1-credit column.
 docs/notes/open_quantum/README.md`) and
 core-383 (its `--self-test`).
 
+## Quandela Cloud
+
+Quandela Cloud is the fourth hardware service: photonic QPUs (Belenos,
+Ascella) and photonic simulators behind one REST API,
+https://api.cloud.quandela.com, on the free Explorer offer.
+[docs/notes/quandela/](docs/notes/quandela/README.md) holds the guide, the
+captured cloud guides, terms, privacy policies, OpenAPI descriptions, offer
+strings, Perceval 1.3 pages and PyPI records; the live pages stay the
+authority because they change.
+
+**Environment and token.** Perceval is an Arch package on the build host, so
+the repository's Python imports it: python-perceval-quandela 1.3.1 (built
+from the GitHub tag v1.3.1), python-exqalibur 1.4.2 (binary wheel, CC
+BY-NC-ND 4.0) and python-scmver 1.10 come from PKGBUILDs in
+`~/Github/PKGBUILDs`, and python-multipledispatch, python-latexcodec and
+python-drawsvg from the AUR through `paru`. perceval-interop is not
+installed: its Qiskit extra pins qiskit 2.1. Every API call carries a
+personal job token created on the portal's Tokens page; the account
+service's OAuth endpoints sign users into Quandela's own sites, take no
+scope, PKCE or device flow, and Quandela publishes no client registration.
+The token lives in `~/.config/quandela/cloud-token` (directory 700, file
+600), outside every checkout, and each consumer names it by path through
+`QUANDELA_TOKEN_FILE`; Perceval code passes it as `token=` and never calls
+`RemoteConfig.save()`, which writes it in plain text. CI never imports
+Perceval: its gates read retained JSON and Markdown with the standard
+library.
+
+**MCP.** `quandela` is registered at Claude Code user scope and in
+`~/.codex/config.toml` as `"$QD_PYTHON" -I scripts/qd_mcp_server.py` with
+`QD_PYTHON=${QD_PYTHON:-/usr/bin/python3}`, the system interpreter that
+carries mcp 1.29 and Perceval, and `QUANDELA_TOKEN_FILE`. Claude allows and Codex approves the seven read and
+local tools (platforms, platform, availability, usage, job status, job
+result, local simulation); `qd_cancel_job` asks every time. The server
+submits nothing and exposes no QRNG route; gate core-502 holds its tool set,
+annotations and the routes each tool may call to the guide's table. Its
+`qd_simulate_local` takes a unitary as JSON numbers, because Perceval's
+deserializer evaluates parameter expressions through sympy.
+
+**Submission.** Every remote job, simulator or QPU, every QRNG read
+(`/qt/qrng/bytes` and `/qt/qrng/ints` are GETs an offer can price per byte)
+and every portal notebook session waits for the user's approval of a written
+case, like an IBM, Quantum Inspire or Open Quantum run: what it measures,
+why a local Perceval simulation cannot answer it, platform, shots or
+samples, expected seconds against the 300 s per-job limit, and expected
+credits. Free credit is 200 credits a month under the Explorer offer, reset
+at the beginning of each calendar month and never carried over; QPUs charge
+1e-06 credits per shot and simulators 0, and the offer's per-job, QRNG and
+per-second notebook prices are visible only to the logged-in portal. Content
+stays the user's; Quandela holds a license limited to providing the service
+(terms 11.2 to 11.4), and the www privacy policy reserves processing raw
+computation data for quality.
+`"$PYTHON" scripts/qd_platform.py snapshot --out docs/evidence/quandela`
+(with `QUANDELA_TOKEN_FILE` set) refreshes the catalogue; gate core-502
+renders this table from it and fails when either changes alone:
+
+<!-- quandela-facts:begin -->
+| platform | kind | description | modes | photons | photon-source input modes | native commands | detector | max s per job | credits per shot |
+|---|---|---|---|---|---|---|---|---|---|
+| `qpu:ascella` | qpu | Ascella QPU | 1..12 | 1..6 | 0, 2, 4, 6, 8, 10 | probs, samples, sample_count, entropy | threshold | 300 | 1e-06 |
+| `qpu:belenos` | qpu | Belenos QPU | 1..24 | 1..12 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 | probs, samples, sample_count, entropy | threshold | 300 | 1e-06 |
+| `sim:ascella` | simulator | Arcturus simulator | 1..12 | 1..6 | 0, 2, 4, 6, 8, 10 | probs, samples, sample_count | threshold | 300 | 0 |
+| `sim:belenos` | simulator | Belenos simulator | 1..24 | 1..12 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 | probs, samples, sample_count, entropy | threshold | 300 | 0 |
+| `sim:gpu:medium` | simulator | Clifford on GPU | - | 2..24 | - | samples, sample_count | - | 300 | 0 |
+| `sim:gpu:small` | simulator | Clifford on GPU | - | 2..24 | - | probs, samples, sample_count | - | 300 | 0 |
+| `sim:sampling` | simulator | Boson sampler simulator with Clifford&Clifford 2017 backend | - | 2..12 | - | probs, samples, sample_count | - | 300 | 0 |
+| `sim:slos` | simulator | Simulator with SLOS backend | - | 2..12 | - | probs, samples, sample_count | - | 300 | 0 |
+
+Token job limits (/api/jobs/availability): 1 running, 1 queued, 10 running Quantum Toolbox jobs.
+
+Known error mitigations: CompilationAveraging, DetectorBalancing, DistinguishablePhoton, PhotonRecycling.
+
+Decommissioned at the snapshot: `sim:gpu:medium`.
+<!-- quandela-facts:end -->
+
+Status, performance figures, availability statistics and maintenance
+windows change between reads and live only in the catalogue.
+
+**Gates.** core-500 (`capture_qd_docs.py --check`), core-501 (its
+`--self-test`), core-502 (`qd_platform.py check docs/evidence/quandela
+--agents AGENTS.md docs/notes/quandela/README.md`) and core-503 (its
+`--self-test`).
+
 ## Qiskit skills
 
 The Qiskit agent skills come from https://github.com/Qiskit/skills, installed

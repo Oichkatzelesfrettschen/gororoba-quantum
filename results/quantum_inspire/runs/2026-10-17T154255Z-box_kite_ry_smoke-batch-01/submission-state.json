@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-17T15:57:02+00:00",
+ "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: 'Those cases are approved' for the Ry gate test and 6-circuit smoke set (box_kite_ry_ladder, box_kite_ry_smoke)",
+ "backend": "Rydberg",
+ "backend_type_id": 5,
+ "cases_sha256": "112fee1b79960b18f609f3e89eb0f4409a81e33c235cf7af3c04c56f56cb4f46",
+ "shots": 1024,
+ "jobs": [
+  {
+   "file": "ry-full-witness-dark.cq",
+   "job": 1528740,
+   "sha256": "e419b2d87d45ff4c666acfc45ae11e7b240de310adf05884356c1a23ab4fd512"
+  },
+  {
+   "file": "ry-full-witness-bright.cq",
+   "job": 1528741,
+   "sha256": "83ba79758267c87222e4fe8ffa6f1f69c9630052ff6867331e555a834444ba66"
+  },
+  {
+   "file": "ry-full-negative-fixture.cq",
+   "job": 1528742,
+   "sha256": "d17979684e07e2d14cae7805eeadfb7262f77bbfbb0e88e5973c047e5834d62e"
+  }
+ ],
+ "project": 766529,
+ "batch_job": 870727,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-17T15:57:05+00:00",
+  "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: 'Those cases are approved' for the Ry gate test and 6-circuit smoke set (box_kite_ry_ladder, box_kite_ry_smoke)",
+  "backend": "Rydberg",
+  "backend_type_id": 5,
+  "cases_sha256": "112fee1b79960b18f609f3e89eb0f4409a81e33c235cf7af3c04c56f56cb4f46",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 870727,
+  "project": 766529,
+  "shots": 1024,
+  "jobs": [
+   {
+    "file": "ry-full-witness-dark.cq",
+    "job": 1528740,
+    "sha256": "e419b2d87d45ff4c666acfc45ae11e7b240de310adf05884356c1a23ab4fd512"
+   },
+   {
+    "file": "ry-full-witness-bright.cq",
+    "job": 1528741,
+    "sha256": "83ba79758267c87222e4fe8ffa6f1f69c9630052ff6867331e555a834444ba66"
+   },
+   {
+    "file": "ry-full-negative-fixture.cq",
+    "job": 1528742,
+    "sha256": "d17979684e07e2d14cae7805eeadfb7262f77bbfbb0e88e5973c047e5834d62e"
+   }
+  ],
+  "submitted_utc": "2026-10-17T15:57:05+00:00"
+ },
+ "confirmed_utc": "2026-10-17T15:57:05+00:00"
+}

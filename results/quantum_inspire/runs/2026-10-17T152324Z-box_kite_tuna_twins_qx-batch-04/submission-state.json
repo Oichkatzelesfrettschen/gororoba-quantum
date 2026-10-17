@@ -1,0 +1,49 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-17T15:23:33+00:00",
+ "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: 'Approve pre-T0 + T0' of the written case for the Tuna-17 box-kite pre-T0 and T0 series at f445f33 (QX twins batch-00 and batch-04, pre batch-00, T0 batch-00 to batch-02)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "bafb2d8e7bfed349034b99c8e682c0ebcce78b58103f69072107570fdbd3413f",
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "twin-double-x.cq",
+   "job": 1528713,
+   "sha256": "bcf1aba2b39c083ee994e753edb7879a421d5222e776a3611feca5819f669ba3"
+  }
+ ],
+ "project": 766521,
+ "batch_job": 870712,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-17T15:23:35+00:00",
+  "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: 'Approve pre-T0 + T0' of the written case for the Tuna-17 box-kite pre-T0 and T0 series at f445f33 (QX twins batch-00 and batch-04, pre batch-00, T0 batch-00 to batch-02)",
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "cases_sha256": "bafb2d8e7bfed349034b99c8e682c0ebcce78b58103f69072107570fdbd3413f",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 1,
+   "min_wait_time_in_queue_secs": 5.0,
+   "avg_wait_time_in_queue_secs": 5.0,
+   "max_wait_time_in_queue_secs": 5.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 5,
+  "batch_job": 870712,
+  "project": 766521,
+  "shots": 2048,
+  "jobs": [
+   {
+    "file": "twin-double-x.cq",
+    "job": 1528713,
+    "sha256": "bcf1aba2b39c083ee994e753edb7879a421d5222e776a3611feca5819f669ba3"
+   }
+  ],
+  "submitted_utc": "2026-10-17T15:23:35+00:00"
+ },
+ "confirmed_utc": "2026-10-17T15:23:35+00:00"
+}

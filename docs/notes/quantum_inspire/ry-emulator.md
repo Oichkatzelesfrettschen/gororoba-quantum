@@ -38,6 +38,13 @@ marked "inferred" has no page or run behind it.
   the account's batches is queued, although the Ry emulator costs no metered
   quota ([usage.md](usage.md)). Code that filters backends on `is_hardware`
   must also read the identifier.
+- **Shared pause.** The same flag puts Ry under the account-wide hardware
+  guard of `submit`: a batch is refused while any job on an `is_hardware`
+  backend type, Ry or Tuna-17, is unfinished or finished less than
+  `HARDWARE_PAUSE_SECONDS` = 120 s ago. Ry and Tuna-17 batches therefore
+  interleave on one clock, and a Ry submit inside a Tuna batch's window is
+  refused before any remote write ("wait N more seconds") and retried, as
+  [tuna-17.md](tuna-17.md) describes.
 
 ## Qubits, geometry and topology
 
@@ -214,8 +221,8 @@ construct at a time to the X-only program on two qubits and names the cause:
 
 - The emulator's reader rejects every program that declares a bit register,
   assigned or not, so the declaration suffices to cause the teleport
-  failure; H, CNOT, Rz and the INIT block run. The probe used two qubits, so
-  whether the 9-qubit width also fails stays untested.
+  failure; H, CNOT, Rz and the INIT block run. The probe used two qubits;
+  the box-kite ladder below settles the 9-qubit width.
 - `measure` is outside the primitive gate set, so the platform's compile step
   rejects it before the emulator reads the program: the Ry emulator takes no
   measurement statement and measures every qubit at the end, as the KB
@@ -232,6 +239,30 @@ The repository's generator emits no Ry case because the native form of the
 teleport program (no bit register, `RYD` blockade gates) is not built
 ([experiments.md](experiments.md), `NOT_GENERATED` in
 `scripts/qi_crosstalk_teleport_cases.py`).
+
+## Box-kite runs, 2026-10-17
+
+`scripts/box_kite_cases.py` writes Ry cases with no bit register, no
+measure statement and no comment, and reads every result with qubit 0
+leftmost; `scripts/box_kite_analysis.py` judges them
+(`results/quantum_inspire/box_kite_ry_analysis.json`, gate core-425; claim
+`qi-ry-emulator-boxkite-capability`).
+
+- **The bit-register fix holds at width 9.** R1 (`qubit[9]`, X on q0) and
+  R2 (a `//` comment line) read their ideal outcome in all 1024 shots, and
+  R9, the failed `teleport.cq` with its bit register and comments removed,
+  completes: the reader error came from the declaration, not from width,
+  comments or the teleport gates.
+- **Error grows with depth.** Shallow reduced-LCU replicas (one CNOT each)
+  read their ideal outcome at a fraction of 0.978 to 1.000, and P = 1/2
+  replicas stay inside |z| < 4.5. R9 (10 CNOT) puts 77 of 1024 shots (7.5%)
+  outside its 16-outcome ideal support. The full Design B witness of
+  (1,10)(4,15) (35 CNOT) reads P(selector = 0) 0.270 dark and 0.656 bright,
+  a contrast of 0.387, below the 0.9 ideal-fraction floor, so the smoke
+  series stops there; the negative fixture (P = 1/2) conforms. The loss is
+  reported as an emulator rate: the error model is undocumented.
+- Execution took 15.2 to 23.5 s per 1024-shot job, again independent of
+  depth to within the spread.
 
 ## What experiments fit
 
