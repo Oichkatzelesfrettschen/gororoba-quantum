@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-17T23:05:18+00:00",
+ "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: conditional \"once designed the Tuna-17 run is then approved but only when highly optimizd and tweaked for maximal science per circuit per moment\", then \"Yes, submit\" (22:28Z) to the written case for the Tuna-17 box-kite follow series at main d29f634 (QX twins batch-01, 02, 03, 05, 06; follow batch-00 to batch-06)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "0f5ecf33dad7e2678e50fc5ff9cfc1ea66c66690bd6c4463e393a24d185f3f40",
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "twin-walk-omit.cq",
+   "job": 1530692,
+   "sha256": "aeed0a073bf744b7e8fe88aa8cab3b97f2f5ffb624fcec38669440d8713cddec"
+  },
+  {
+   "file": "twin-lcu-bright-x-1.cq",
+   "job": 1530693,
+   "sha256": "bec9acbeb6b856e42cde5564b38bb970435f932775457e3d9969e96af9b57484"
+  },
+  {
+   "file": "twin-lcu-bright-x-2.cq",
+   "job": 1530694,
+   "sha256": "d14de3cd6a2e60fcfdccf2556ab89d9a31d5d22a456a3c3c8d4d8e6e73c4f4c7"
+  }
+ ],
+ "project": 767518,
+ "batch_job": 871390,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-17T23:05:24+00:00",
+  "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: conditional \"once designed the Tuna-17 run is then approved but only when highly optimizd and tweaked for maximal science per circuit per moment\", then \"Yes, submit\" (22:28Z) to the written case for the Tuna-17 box-kite follow series at main d29f634 (QX twins batch-01, 02, 03, 05, 06; follow batch-00 to batch-06)",
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "cases_sha256": "0f5ecf33dad7e2678e50fc5ff9cfc1ea66c66690bd6c4463e393a24d185f3f40",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 5,
+  "batch_job": 871390,
+  "project": 767518,
+  "shots": 2048,
+  "jobs": [
+   {
+    "file": "twin-walk-omit.cq",
+    "job": 1530692,
+    "sha256": "aeed0a073bf744b7e8fe88aa8cab3b97f2f5ffb624fcec38669440d8713cddec"
+   },
+   {
+    "file": "twin-lcu-bright-x-1.cq",
+    "job": 1530693,
+    "sha256": "bec9acbeb6b856e42cde5564b38bb970435f932775457e3d9969e96af9b57484"
+   },
+   {
+    "file": "twin-lcu-bright-x-2.cq",
+    "job": 1530694,
+    "sha256": "d14de3cd6a2e60fcfdccf2556ab89d9a31d5d22a456a3c3c8d4d8e6e73c4f4c7"
+   }
+  ],
+  "submitted_utc": "2026-10-17T23:05:24+00:00"
+ },
+ "confirmed_utc": "2026-10-17T23:05:24+00:00"
+}

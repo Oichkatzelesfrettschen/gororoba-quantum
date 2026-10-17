@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-17T23:18:10+00:00",
+ "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: conditional \"once designed the Tuna-17 run is then approved but only when highly optimizd and tweaked for maximal science per circuit per moment\", then \"Yes, submit\" (22:28Z) to the written case for the Tuna-17 box-kite follow series at main d29f634 (QX twins batch-01, 02, 03, 05, 06; follow batch-00 to batch-06)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "c471ffa568487f87c0a6abbc474b08d65ce1da10a739713b9ab85fa1831f7afc",
+ "backend_status_at_submit": "executing",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 871421,
+ "project": 767547,
+ "shots": 16384,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1530739,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1530740,
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  },
+  {
+   "file": "walk-x.cq",
+   "job": 1530741,
+   "sha256": "8338b8067230752101d11330928463daceb30228a047decb7f4f835d227751f3"
+  }
+ ],
+ "submitted_utc": "2026-10-17T23:18:10+00:00"
+}
