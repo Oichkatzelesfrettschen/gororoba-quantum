@@ -44,7 +44,15 @@ and what it must prove before its output counts.
    seventeen algebra distributions; the byte comparison binds the rest.
 3. `capacity.json` (smoke kernels): the widest GHZ circuit each Aer method
    runs on the GPU.
-4. The entry's stdout, stderr, exit code and changed files.
+4. The entry's stdout and stderr, written to `stdout.txt` and `stderr.txt`
+   as the entry prints (`kernel_main.start_entry` sets
+   `PYTHONUNBUFFERED=1`), then its exit code and the repository files it
+   changed, which the kernel copies under `repo/` after the entry exits.
+   A session Kaggle ends at `--timeout` still returns
+   `/kaggle/working/output` but never reaches that copy, so an entry that
+   may outlive its timeout writes its record to an absolute path under
+   `/kaggle/working/output` and rewrites it after every finished unit of
+   work, as `scripts/aer_gpu_probe.py` does per row.
 
 ## Package stack
 

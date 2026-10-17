@@ -567,10 +567,12 @@ def self_test(args: argparse.Namespace) -> int:
         require(shard["tree"] == job["tree"] and job["python"] == CI_PYTHON, "shard job lacks the tree or CI's Python")
         py_compile.compile(str(Path(scratch) / "shard/kernel/run.py"), doraise=True)
     _overlay_self_test()
+    _killed_entry_self_test()
     _push_guard_self_test()
     print(
         f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private CPU, GPU and TPU kernels, "
         "a shard kernel bound to HEAD's tree, an overlay that rebuilds a directory-to-file change, run.py compiles, "
+        "an entry killed mid-run keeps its stdout and record, "
         "an accelerator push or shard run refused while an older version runs"
     )
     return 0
@@ -634,6 +636,35 @@ def _push_guard_self_test() -> None:
         raise SystemExit("an accelerator shard run starts beside an older running version")
     require(checked == [f"owner/{shard_slug(i, 6)}" for i in range(3)], f"shard slugs checked: {checked}")
     require_no_live_shard("owner", [0, 1], 6, [TPU_MACHINE], shard_guard)
+
+
+def _killed_entry_self_test() -> None:
+    """A stub entry prints, writes its record under the output directory and is killed: both survive."""
+    import os
+    import tempfile
+
+    sys.path.insert(0, str(ROOT / "kaggle_kernel"))
+    import kernel_main
+
+    stub = (
+        "import pathlib, sys, time\n"
+        "print('row 1')\n"
+        "pathlib.Path(sys.argv[1]).write_text('{\"rows\": [1]}', encoding='utf-8')\n"
+        "time.sleep(60)\n"
+    )
+    with tempfile.TemporaryDirectory() as scratch:
+        out = Path(scratch)
+        record = out / "record.json"
+        env = {key: value for key, value in os.environ.items() if key != "PYTHONUNBUFFERED"}
+        proc = kernel_main.start_entry([sys.executable, "-c", stub, str(record)], out, env, out)
+        deadline = time.monotonic() + 30
+        while not record.exists() and time.monotonic() < deadline and proc.poll() is None:
+            time.sleep(0.05)
+        proc.kill()
+        proc.wait()
+        stdout = (out / "stdout.txt").read_text(encoding="utf-8")
+        require(record.is_file(), "a killed entry's record under the output directory is missing")
+        require(stdout == "row 1\n", f"a killed entry's stdout reads {stdout!r}")
 
 
 def _overlay_self_test() -> None:

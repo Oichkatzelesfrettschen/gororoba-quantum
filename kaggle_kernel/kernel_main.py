@@ -389,6 +389,18 @@ def main() -> int:
     return code
 
 
+def start_entry(argv: list[str], cwd: Path, env: dict[str, str], out: Path) -> subprocess.Popen[bytes]:
+    """Start the entry with its stdout and stderr written to out as they arrive.
+
+    Kaggle returns /kaggle/working/output from a session it ends at the
+    timeout, and the entry's process dies with the session; PYTHONUNBUFFERED
+    puts every print in out/stdout.txt as it is made, so an entry that also
+    writes its record under out keeps every row it finished.
+    """
+    with open(out / "stdout.txt", "wb") as stdout, open(out / "stderr.txt", "wb") as stderr:
+        return subprocess.Popen(argv, cwd=cwd, env=dict(env, PYTHONUNBUFFERED="1"), stdout=stdout, stderr=stderr)
+
+
 def run_entry() -> int:
     job = json.loads((REPO / "kaggle_kernel/kernel_job.json").read_text(encoding="utf-8"))
     print((REPO / "kaggle_kernel/AGENTS.md").read_text(encoding="utf-8"), flush=True)
@@ -423,16 +435,15 @@ def run_entry() -> int:
     else:
         python = sys.executable
         env = dict(os.environ, GOROROBA_AER_DEVICE=job.get("device", "GPU"), PYTHON=python)
-    proc = subprocess.run([python, "-B", job["entry"], *job["args"]], cwd=REPO, env=env, capture_output=True, text=True)
-    (OUT / "stdout.txt").write_text(proc.stdout, encoding="utf-8")
-    (OUT / "stderr.txt").write_text(proc.stderr, encoding="utf-8")
-    print(proc.stdout[-4000:], proc.stderr[-4000:], sep="\n", flush=True)
+    returncode = start_entry([python, "-B", job["entry"], *job["args"]], REPO, env, OUT).wait()
+    for name in ("stdout.txt", "stderr.txt"):
+        print((OUT / name).read_text(encoding="utf-8", errors="replace")[-4000:], flush=True)
     for path in REPO.rglob("*"):
         if path.is_file() and path != TABLES and before.get(path) != sha256(path):
             target = OUT / "repo" / path.relative_to(REPO)
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(path.read_bytes())
-    return proc.returncode
+    return returncode
 
 
 if __name__ == "__main__":
