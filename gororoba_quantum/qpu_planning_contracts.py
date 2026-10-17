@@ -232,7 +232,8 @@ def _verify_window_control_durations(snapshot: live_run.Snapshot) -> None:
     candidates = qpu_planning.family_candidates(live_run, [heterogeneous], _args("n21-orbit-rca"), trace)
     _require(bool(candidates), f"the heterogeneous Target rejects every N=21 window family: {trace}")
     (choice,), configuration = candidates[0]
-    controls = qpu_planning.routed_controls(live_run, choice.isas)
+    sites = qpu_planning.control_sites(live_run, choice.isas)
+    controls = qpu_planning.window_controls(sites)
     _require(bool(controls) and slow not in controls, f"the control routed onto {controls}")
     expected = qpu_planning.window_durations(live_run, heterogeneous, controls)
     _require(expected == uniform, f"the control's durations {expected} differ from the uniform {uniform}")
@@ -248,6 +249,30 @@ def _verify_window_control_durations(snapshot: live_run.Snapshot) -> None:
             if instruction.operation.name == "delay"
         ]
         _require(uniform[0] in delays, f"the {arm} window delay {delays} differs from the control readout {uniform[0]}")
+    # Routing moves the control between the rounds, so the terminal readout
+    # sits on another qubit; slowing that qubit leaves the windows unchanged.
+    terminal = sorted({arm[-1][1] for arm in sites} - {arm[0][1] for arm in sites})
+    _require(bool(terminal), f"the routed fixture keeps its terminal readout on the window site: {sites}")
+    readout = copy.deepcopy(snapshot.backend.target)
+    for name in ("measure", "reset"):
+        for qubit in terminal:
+            properties = readout[name][(qubit,)]
+            readout.update_instruction_properties(
+                name, (qubit,), InstructionProperties(duration=3 * properties.duration, error=properties.error)
+            )
+    slow_terminal = dataclasses.replace(
+        snapshot, backend=_TargetOverride(snapshot.backend, readout), admission_target=None
+    )
+    relocated = copy.copy(choice)
+    relocated.snap = slow_terminal
+    terminal_bound = qpu_planning.window_durations(live_run, slow_terminal)
+    _require(terminal_bound[:2] != uniform[:2], "the slow terminal readout must raise the backend-wide bound")
+    resized, window = qpu_planning._control_windows(live_run, relocated, terminal_bound)
+    _require(
+        (window["window_delay_dt"], window["echo_half_dt"]) == uniform[:2],
+        f"the terminal readout on {terminal} set the windows {window} instead of {uniform[:2]}",
+    )
+    _require(qpu_planning.control_sites(live_run, resized.isas) == sites, "the resized arms moved their measure sites")
 
 
 def _verify_heterogeneous_measurement_duration() -> None:

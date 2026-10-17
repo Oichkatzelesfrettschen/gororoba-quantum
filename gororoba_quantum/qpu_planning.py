@@ -144,8 +144,8 @@ def budget_plan(runtime: Any, choices: list[Any], args: Any, usage: dict[str, An
 def window_durations(runtime: Any, snapshot: Any, controls: list[int] | None = None) -> tuple[int, int, float]:
     """Readout length and echo half-window in dt from the routed control's measure and reset.
 
-    controls names the physical qubits that measure and reset the routed
-    control; their slowest measure and reset set the window. With controls
+    controls names the physical qubits of the routed control's mid-circuit
+    measure and reset; their slowest measure and reset set the window. With controls
     None the backend's slowest qubit sets it, which bounds the window of every
     placement before routing names the control. The delay arm idles one
     readout length. The echo halves together cover 1.2 times the measure plus
@@ -178,25 +178,44 @@ def window_durations(runtime: Any, snapshot: Any, controls: list[int] | None = N
     return rounded(longest["measure"]), rounded(0.6 * (longest["measure"] + longest["reset"])), float(target.dt)
 
 
-def routed_controls(runtime: Any, isas: list[Any]) -> list[int]:
-    """Physical qubits that measure or reset in any compiled window arm.
+def control_sites(runtime: Any, isas: list[Any]) -> list[tuple[tuple[str, int], ...]]:
+    """Every measure and reset of each compiled window arm with its physical site, in instruction order.
 
-    Only the QPE control is measured and reset, so these are the sites the
-    routed control occupies at its readouts and resets.
+    Only the QPE control is measured and reset. Routing can move the control
+    between the rounds, so an arm's terminal readout can sit on another qubit
+    than its mid-circuit measure and reset.
     """
-    return sorted({qubits[0] for isa in isas for name, qubits in runtime._ops(isa) if name in ("measure", "reset")})
+    return [
+        tuple((name, qubits[0]) for name, qubits in runtime._ops(isa) if name in ("measure", "reset")) for isa in isas
+    ]
+
+
+def window_controls(sites: list[tuple[tuple[str, int], ...]]) -> list[int]:
+    """Physical qubits of the mid-circuit round: each arm's measures through its first reset.
+
+    The window spans the round-1 readout and the reset that follows it, so
+    the terminal readout's site stays out of the window durations.
+    """
+    window: set[int] = set()
+    for arm in sites:
+        names = [name for name, _ in arm]
+        if "reset" not in names or names.index("reset") == 0:
+            raise ValueError(f"a window arm lacks its mid-circuit measure and reset: {arm}")
+        window.update(qubit for _, qubit in arm[: names.index("reset") + 1])
+    return sorted(window)
 
 
 def _control_windows(runtime: Any, candidate: Any, bound: tuple[int, int, float]) -> tuple[Any, dict[str, float]]:
     """Resize one routed window candidate to its control's own measure and reset durations.
 
-    The candidate was routed with the backend-wide bound. When the control's
-    durations give the same windows, the routed candidate stands; otherwise
-    every arm rebuilds with the control's windows and recompiles on the same
-    seed and initial layout, and the recompiled arms must keep the control on
-    the same physical sites.
+    The candidate was routed with the backend-wide bound. The windows come
+    from the sites of the mid-circuit measure and reset. When they give the
+    same windows, the routed candidate stands; otherwise every arm rebuilds
+    with them and recompiles on the same seed and initial layout, and each
+    recompiled arm must keep its ordered measure and reset sites.
     """
-    controls = routed_controls(runtime, candidate.isas)
+    sites = control_sites(runtime, candidate.isas)
+    controls = window_controls(sites)
     window_dt, half_dt, dt = window_durations(runtime, candidate.snap, controls)
     windows = {"window_delay_dt": window_dt, "echo_half_dt": half_dt, "dt_seconds": dt}
     if (window_dt, half_dt) == bound[:2]:
@@ -208,9 +227,9 @@ def _control_windows(runtime: Any, candidate: Any, bound: tuple[int, int, float]
     violations = [reason for isa in isas for reason in runtime.compiled_violations(isa, candidate.snap)]
     if violations:
         raise runtime.LiveRunError(str(violations))
-    moved = routed_controls(runtime, isas)
-    if moved != controls:
-        raise runtime.LiveRunError(f"resized window arms moved the control from {controls} to {moved}")
+    moved = control_sites(runtime, isas)
+    if moved != sites:
+        raise runtime.LiveRunError(f"resized window arms moved the control from {sites} to {moved}")
     scores = [runtime.layout_score(isa, candidate.snap.backend.target) for isa in isas]
     if any(score <= 0 for score in scores):
         raise runtime.LiveRunError(f"{group.name}: layout score underflows to zero on layout {candidate.layout}")
