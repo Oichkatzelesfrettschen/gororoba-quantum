@@ -3232,6 +3232,14 @@
    "name": "core-525",
    "seconds": 8.8,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck_prep_excitation.json && \"$PYTHON\" -B -O -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck_prep_excitation.json",
+   "name": "core-526",
+   "seconds": 40.4,
+   "tier": "pr"
   }
  ],
  "excluded": [
