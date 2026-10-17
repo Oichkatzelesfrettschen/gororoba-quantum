@@ -91,6 +91,7 @@
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 14,
    "declared": null
   },
@@ -101,6 +102,7 @@
    "templated": false,
    "law": "bit_product",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
    "cz": 14,
    "declared": "coherence_measure_reset_(xy|yx)"
   },
@@ -111,6 +113,7 @@
    "templated": false,
    "law": "bit_product",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
    "cz": 14,
    "declared": "coherence_measure_reset_(xy|yx)"
   },
@@ -121,6 +124,7 @@
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 14,
    "declared": null
   },
@@ -131,46 +135,51 @@
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 14,
    "declared": null
   },
   {
    "member": "correction_known_s1",
-   "digest": "4deeb5dc0115f9e4",
+   "digest": "7f897c57fe7dddab",
    "kind": "dynamic_law",
    "templated": true,
    "law": "point_mass",
    "outcome": "01",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "correction_(known|measured)_s[13]"
   },
   {
    "member": "correction_known_s3",
-   "digest": "77835f8fcd67dbcc",
+   "digest": "f3a8b0be4358d7bd",
    "kind": "dynamic_law",
    "templated": true,
    "law": "point_mass",
    "outcome": "11",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "correction_(known|measured)_s[13]"
   },
   {
    "member": "correction_measured_s1",
-   "digest": "52ee5c11dd54d4e7",
+   "digest": "0dbcc0d8b4b58909",
    "kind": "dynamic_law",
    "templated": true,
    "law": "point_mass",
    "outcome": "01",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "correction_(known|measured)_s[13]"
   },
   {
    "member": "correction_measured_s3",
-   "digest": "ba309e562a259d20",
+   "digest": "b1490de5b83ad08c",
    "kind": "dynamic_law",
    "templated": true,
    "law": "point_mass",
    "outcome": "11",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "correction_(known|measured)_s[13]"
   },
@@ -698,81 +707,89 @@
   },
   {
    "member": "folded_qpe_null",
-   "digest": "e892845c4c121d9b",
+   "digest": "fc23131060da1d72",
    "kind": "dynamic_law",
    "templated": false,
    "law": "point_mass",
    "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 6,
    "declared": "folded_qpe_null"
   },
   {
    "member": "folded_qpe_s0",
-   "digest": "2f70724071176456",
+   "digest": "db4eae5cd801dcc1",
    "kind": "dynamic_law",
    "templated": false,
    "law": "point_mass",
    "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "(folded_qpe|qpe_archived)_s\\d"
   },
   {
    "member": "folded_qpe_s1",
-   "digest": "090c3f7c236791b5",
+   "digest": "8aa1638db712d930",
    "kind": "dynamic_law",
    "templated": false,
    "law": "point_mass",
    "outcome": "01",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "(folded_qpe|qpe_archived)_s\\d"
   },
   {
    "member": "folded_qpe_s2",
-   "digest": "2fcd58034ed34d05",
+   "digest": "c8157e784438e163",
    "kind": "dynamic_law",
    "templated": false,
    "law": "point_mass",
    "outcome": "10",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "(folded_qpe|qpe_archived)_s\\d"
   },
   {
    "member": "folded_qpe_s3",
-   "digest": "d1f055bd143e60ae",
+   "digest": "0beb01b916382617",
    "kind": "dynamic_law",
    "templated": false,
    "law": "point_mass",
    "outcome": "11",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "(folded_qpe|qpe_archived)_s\\d"
   },
   {
    "member": "hybrid_shor_N15_a2",
-   "digest": "3f05dbba91f2972b",
+   "digest": "78e396bb35744a0c",
    "kind": "dynamic_law",
    "templated": false,
    "law": "bit_product",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
    "cz": 35,
    "declared": "hybrid_shor_N15_a2"
   },
   {
    "member": "hybrid_shor_N15_a2_null",
-   "digest": "084047df34d478f3",
+   "digest": "a111b68626ac897f",
    "kind": "dynamic_law",
    "templated": false,
    "law": "point_mass",
    "outcome": "00000000",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
   {
    "member": "n21_encoded_feedback",
-   "digest": "25c00735236c0efe",
+   "digest": "5ce12390b4313d36",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 336,
    "declared": null
   },
@@ -783,16 +800,18 @@
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 336,
    "declared": null
   },
   {
    "member": "n21_feedback",
-   "digest": "27eb81266f8694c8",
+   "digest": "bc70885479ea06f3",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 484,
    "declared": null
   },
@@ -803,16 +822,18 @@
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 484,
    "declared": null
   },
   {
    "member": "n21_orbit_extra_readout_feedback",
-   "digest": "3cff5caf3a864f2f",
+   "digest": "100e71077138eb67",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 27,
    "declared": null
   },
@@ -823,16 +844,18 @@
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 27,
    "declared": null
   },
   {
    "member": "n21_orbit_feedback",
-   "digest": "1289de5b53d4d187",
+   "digest": "6dc38994d5b5b324",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 27,
    "declared": null
   },
@@ -843,16 +866,18 @@
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 27,
    "declared": null
   },
   {
    "member": "n21_orbit_nominal_feedback",
-   "digest": "1289de5b53d4d187",
+   "digest": "6dc38994d5b5b324",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 27,
    "declared": null
   },
@@ -863,16 +888,18 @@
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 27,
    "declared": null
   },
   {
    "member": "n21_orbit_window_delay_feedback",
-   "digest": "84088ac128997cfc",
+   "digest": "6b482b16425a9a33",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 27,
    "declared": null
   },
@@ -883,16 +910,18 @@
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 27,
    "declared": null
   },
   {
    "member": "n21_orbit_window_echo_feedback",
-   "digest": "d20898061cc79781",
+   "digest": "77d08e410145eb2f",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 28,
    "declared": null
   },
@@ -903,16 +932,18 @@
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 28,
    "declared": null
   },
   {
    "member": "orbit_nominal_feedback",
-   "digest": "b94505c7a90a2634",
+   "digest": "4e4e6a5b18f76649",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 27,
    "declared": null
   },
@@ -923,16 +954,18 @@
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 27,
    "declared": null
   },
   {
    "member": "orbit_window_barrier_feedback",
-   "digest": "a49a2a271d66a012",
+   "digest": "96b1efb7566f0cb1",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 28,
    "declared": null
   },
@@ -943,16 +976,18 @@
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 28,
    "declared": null
   },
   {
    "member": "orbit_window_echo_feedback",
-   "digest": "97d3537daa8b7f8a",
+   "digest": "fd7b0856607f62e1",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 28,
    "declared": null
   },
@@ -963,46 +998,51 @@
    "templated": false,
    "law": "correlated",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
    "cz": 28,
    "declared": null
   },
   {
    "member": "qpe_archived_s0",
-   "digest": "2f70724071176456",
+   "digest": "db4eae5cd801dcc1",
    "kind": "dynamic_law",
    "templated": false,
    "law": "point_mass",
    "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "(folded_qpe|qpe_archived)_s\\d"
   },
   {
    "member": "qpe_archived_s1",
-   "digest": "090c3f7c236791b5",
+   "digest": "8aa1638db712d930",
    "kind": "dynamic_law",
    "templated": false,
    "law": "point_mass",
    "outcome": "01",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "(folded_qpe|qpe_archived)_s\\d"
   },
   {
    "member": "qpe_archived_s2",
-   "digest": "2fcd58034ed34d05",
+   "digest": "c8157e784438e163",
    "kind": "dynamic_law",
    "templated": false,
    "law": "point_mass",
    "outcome": "10",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "(folded_qpe|qpe_archived)_s\\d"
   },
   {
    "member": "qpe_archived_s3",
-   "digest": "d1f055bd143e60ae",
+   "digest": "0beb01b916382617",
    "kind": "dynamic_law",
    "templated": false,
    "law": "point_mass",
    "outcome": "11",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "(folded_qpe|qpe_archived)_s\\d"
   },
@@ -1013,6 +1053,7 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "qpe_delay_s\\d"
   },
@@ -1023,6 +1064,7 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "qpe_delay_s\\d"
   },
@@ -1033,6 +1075,7 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "1",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "qpe_delay_s\\d"
   },
@@ -1043,6 +1086,7 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "1",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "qpe_delay_s\\d"
   },
@@ -1053,6 +1097,7 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "qpe_no_feed_forward_s\\d"
   },
@@ -1063,6 +1108,7 @@
    "templated": false,
    "law": "bit_product",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "qpe_no_feed_forward_s\\d"
   },
@@ -1073,6 +1119,7 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "10",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "qpe_no_feed_forward_s\\d"
   },
@@ -1083,6 +1130,7 @@
    "templated": false,
    "law": "bit_product",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
    "cz": 41,
    "declared": "qpe_no_feed_forward_s\\d"
   },
@@ -4450,6 +4498,7 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "000",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4460,6 +4509,7 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "000",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4470,6 +4520,7 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "000",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4480,6 +4531,7 @@
    "templated": false,
    "law": "bit_product",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4490,6 +4542,7 @@
    "templated": false,
    "law": "bit_product",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4500,6 +4553,7 @@
    "templated": false,
    "law": "bit_product",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4510,6 +4564,7 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "001",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4520,6 +4575,7 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "001",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4530,6 +4586,7 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "001",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4540,6 +4597,7 @@
    "templated": false,
    "law": "bit_product",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4550,6 +4608,7 @@
    "templated": false,
    "law": "bit_product",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4560,6 +4619,7 @@
    "templated": false,
    "law": "bit_product",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4570,6 +4630,7 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "000",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4580,6 +4641,7 @@
    "templated": false,
    "law": "bit_product",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4590,6 +4652,7 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "000",
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   },
@@ -4600,6 +4663,7 @@
    "templated": false,
    "law": "bit_product",
    "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null
   }

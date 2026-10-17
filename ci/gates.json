@@ -2300,6 +2300,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --check-dynamic && \"$PYTHON\" -B -O -W error scripts/local_member_cz_conformance.py --check-dynamic",
+   "name": "core-409",
+   "seconds": 72.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/calibration_snapshot.py --check docs/evidence/calibration/ibm_kingston.json",
    "name": "core-279",
    "seconds": 10.0,
