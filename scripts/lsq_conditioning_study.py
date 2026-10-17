@@ -27,8 +27,10 @@ study measures, per design:
   the margin, tolerance over error, under compare()'s per-value rule
   max(1.5e-6, 1e-9 |v|, eps kappa_rule^2 |v|), kappa_rule the retained
   condition (full fit) or fold_condition_max (fold);
-- the SVD solution's drift under seeded perturbations of 2-norm
-  3.5e-13 ||A||, the largest measured AOCL-to-OpenBLAS design difference;
+- the SVD solution's drift under seeded perturbations of the family slope
+  columns of 2-norm 3.5e-13 times their norm, the largest measured
+  AOCL-to-OpenBLAS design difference; the lane-constant ones column is
+  synthesized exactly and stays fixed (mutable_columns);
 - the rank of the integer-scaled design (every entry times a common power of
   two) modulo each prime of PRIMES, the residues of x* modulo each prime, and
   the 2-adic and p-adic valuations of r*.
@@ -40,7 +42,9 @@ significand bits, round to nearest even, unbounded exponent) at p = 53, 64,
 106 and 113, in Python floats and in np.longdouble; Python floats must equal
 p = 53 and longdouble must equal p = nmant + 1 bit for bit, and p = 53's R
 factor must match np.linalg.qr within m n eps ||A|| where kappa <= 100. The
-same designs are solved over the wheel of fractions (wheel_algebra.solve),
+p = 53 solution's predictions (the held-out row of a fold, every row of a full
+fit) are evaluated in p = 53 arithmetic against compare()'s tolerance, and P3
+reads their margins with the SVD ones. The same designs are solved over the wheel of fractions (wheel_algebra.solve),
 which must equal x*. A rank-deficient control (fourth column the sum of the
 first two) gives bottom in every wheel component, rank n - 1 modulo every
 prime, and a ZeroDivisionError in Fraction elimination.
@@ -224,6 +228,24 @@ def rebuilt_problems(source: dict[str, Any]) -> list[Problem]:
                 fold = (design[keep], data[keep])
                 out.append(((*key, name, held), *fold, held, float(model["fold_condition_max"])))
     return out
+
+
+def mutable_columns(name: str, width: int) -> int:
+    """The leading design columns a substrate can change: every family slope column.
+
+    fit_models appends the lane-constant ones column after the slope blocks
+    when the model carries a constant (atlas_coherent_families.MODELS); that
+    column is synthesized exactly, so no BLAS build or simulation changes it.
+    """
+    return width - int(acf.MODELS[name][1])
+
+
+def slope_noise(rng: np.random.Generator, block: np.ndarray, size: float) -> np.ndarray:
+    """Seeded Gaussian noise on a slope block, scaled to 2-norm size * ||block||_2; zero width draws nothing."""
+    if block.shape[1] == 0:
+        return np.zeros(block.shape)
+    noise = rng.standard_normal(block.shape)
+    return noise * (size * np.linalg.norm(block, 2) / np.linalg.norm(noise, 2))
 
 
 def held_row(source_designs: dict[tuple[str, int, str], np.ndarray], problem: Problem) -> np.ndarray | None:
@@ -684,10 +706,11 @@ class Measure:
         base = solutions["svd"]
         drift = np.zeros(n)
         pred_drift = 0.0
+        mutable = mutable_columns(name, n)
         for _ in range(TRIALS):
-            noise = rng.standard_normal(design.shape)
-            noise *= PERTURBATION * singular[0] / np.linalg.norm(noise, 2)
-            change = np.linalg.lstsq(design + noise, data, rcond=None)[0] - base
+            perturbed = design.copy()
+            perturbed[:, :mutable] += slope_noise(rng, design[:, :mutable], PERTURBATION)
+            change = np.linalg.lstsq(perturbed, data, rcond=None)[0] - base
             drift = np.maximum(drift, np.abs(change))
             pred_drift = max(pred_drift, float(np.max(np.abs(rows @ change))))
         tolerances = [tolerance(q, kappa_rule) for q in exact]
@@ -740,6 +763,8 @@ LADDER_FIELDS = [
     "n",
     "kappa",
     *[f"p{p}_{metric}" for p in LADDER for metric in ("rel", "abs", "norm", "margin")],
+    "p53_pred",
+    "p53_pred_margin",
     "python_float_equals_p53",
     "longdouble_bits",
     "longdouble_equals_emulated",
@@ -753,8 +778,8 @@ LADDER_FIELDS = [
 class Ladder:
     """Householder QR at every precision of the ladder, in hardware floats, and the wheel solve, on one design."""
 
-    def __call__(self, item: tuple[Problem, int]) -> list[Any]:
-        problem, longdouble_bits = item
+    def __call__(self, item: tuple[Problem, int, np.ndarray | None]) -> list[Any]:
+        problem, longdouble_bits, held = item
         (backend, lane, name, fold), design, data, _, kappa_rule = problem
         m, n = design.shape
         a = fractions_of(design)
@@ -780,6 +805,21 @@ class Ladder:
             rel = max((e / abs(float(q)) for e, q in zip(errors, exact, strict=True) if q), default=0.0)
             norm = math.sqrt(float(sum((d * d for d in diffs), Fraction(0)))) / exact_norm
             row += [sig(rel), sig(max(errors)), sig(norm), margin_of(tolerances, errors)]
+        # The prediction of each row the solve predicts (the held-out row of a
+        # fold, every row of a full fit), evaluated in the same p = 53
+        # arithmetic, against compare()'s tolerance on the exact prediction.
+        e53 = Emulated(53)
+        x53 = [e53.of(float(v)) for v in emulated[53]]
+        rows = design if held is None else held.reshape(1, -1)
+        pred_errors, pred_tolerances = [], []
+        for coefficients in rows:
+            total = e53.zero
+            for c, xv in zip(coefficients.tolist(), x53, strict=True):
+                total = e53.add(total, e53.mul(e53.of(c), xv))
+            truth = sum((Fraction(c) * q for c, q in zip(coefficients.tolist(), exact, strict=True)), Fraction(0))
+            pred_errors.append(abs(float(e53.fraction(total) - truth)))
+            pred_tolerances.append(tolerance(truth, kappa_rule))
+        row += [sig(max(pred_errors)), margin_of(pred_tolerances, pred_errors)]
         native = Native(float)
         x_float, _ = householder(design, data, native)
         row.append([native.fraction(v) for v in x_float] == emulated[53])
@@ -1016,24 +1056,43 @@ def exact_solution(design: np.ndarray, data: np.ndarray) -> list[Fraction]:
 LEVELS = {"worst": PERTURBATION, "median": MEDIAN_PERTURBATION}
 
 
+class FoldSolve:
+    """The least-squares solution of one fold, with its slope block perturbed by a pre-drawn noise array."""
+
+    def __call__(self, item: tuple[np.ndarray, np.ndarray, np.ndarray, int]) -> np.ndarray:
+        design, data, noise, mutable = item
+        perturbed = design.copy()
+        perturbed[:, :mutable] += noise
+        return np.linalg.lstsq(perturbed, data, rcond=None)[0]
+
+
 def perturbed_fold_solutions(
-    real: np.ndarray, offsets: np.ndarray, seed: list[int]
+    real: np.ndarray, offsets: np.ndarray, seed: list[int], mutable: int
 ) -> list[list[tuple[np.ndarray, str]]]:
-    """Per held-out edge: the fold solution, then TRIALS seeded perturbations at each LEVELS size, in draw order."""
+    """Per held-out edge: the fold solution, then TRIALS seeded perturbations at each LEVELS size.
+
+    Only the first `mutable` columns, the slope block, are perturbed, with
+    2-norm LEVELS times the fold's slope-block norm. Every noise array is
+    drawn first, in the seeded order (fold, level, trial), and the solves
+    are then mapped through parallel.ordered_map, so pooled and serial runs
+    return the same solutions.
+    """
     rng = np.random.default_rng(seed)
     n = len(offsets)
-    out = []
+    items, labels = [], []
     for held in range(n):
         keep = [k for k in range(n) if k != held]
-        fit = np.linalg.lstsq(real[keep], offsets[keep], rcond=None)[0]
-        solutions = [(fit, "base")]
-        norm = np.linalg.norm(real[keep], 2)
+        design, data = real[keep], offsets[keep]
+        items.append((design, data, np.zeros((len(keep), mutable)), mutable))
+        labels.append((held, "base"))
         for level, size in LEVELS.items():
             for _ in range(TRIALS):
-                noise = rng.standard_normal(real[keep].shape)
-                noise *= size * norm / np.linalg.norm(noise, 2)
-                solutions.append((np.linalg.lstsq(real[keep] + noise, offsets[keep], rcond=None)[0], level))
-        out.append(solutions)
+                items.append((design, data, slope_noise(rng, design[:, :mutable], size), mutable))
+                labels.append((held, level))
+    solved = parallel.ordered_map(FoldSolve(), items)
+    out: list[list[tuple[np.ndarray, str]]] = [[] for _ in range(n)]
+    for (held, level), solution in zip(labels, solved, strict=True):
+        out[held].append((solution, level))
     return out
 
 
@@ -1070,7 +1129,8 @@ def resimulation_summary(witness: dict[str, Any], lane: dict[str, Any]) -> dict[
     require(all(abs(d) <= contrast_tolerance for d in base_minus), "unperturbed resimulation misses the atlas contrast")
     drift: dict[str, list[float]] = {level: [] for level in LEVELS}
     move: dict[str, list[float]] = {level: [] for level in LEVELS}
-    for held, solutions in enumerate(perturbed_fold_solutions(real, offsets, witness["seed"])):
+    mutable = mutable_columns(RESIMULATED_MODEL, real.shape[1])
+    for held, solutions in enumerate(perturbed_fold_solutions(real, offsets, witness["seed"], mutable)):
         fit = solutions[0][0]
         for level in LEVELS:
             picks = [k for k, (_, name) in enumerate(solutions) if name == level]
@@ -1106,9 +1166,18 @@ def compare_resimulation(retained: dict[str, Any], fresh: dict[str, Any], path: 
 def check_resimulation(retained: dict[str, Any], source: dict[str, Any]) -> dict[str, Any]:
     """Recompute every backend's resimulation summary from its witness and compare it with the retained one."""
     lanes = {(lane["backend"], lane["lane"]): lane for lane in source["lanes"]}
+    require(
+        isinstance(retained, dict) and set(retained) == set(MOVED),
+        f"resimulation covers {sorted(retained) if isinstance(retained, dict) else retained}, not {sorted(MOVED)}",
+    )
     out = {}
     for backend, entry in retained.items():
         require(entry["model"] == RESIMULATED_MODEL and entry["moved_prediction"] == MOVED[backend], backend)
+        folds = len(lanes[backend, BRIDGE_LANE]["edges"])
+        for key in ("log_ratios", "real_design", "real_offsets"):
+            require(len(entry[key]) == folds, f"resimulation.{backend}.{key} holds {len(entry[key])} of {folds} folds")
+        for key in ("base_minus_retained", "moves", "median_moves", "parameter_drift"):
+            require(len(entry["summary"][key]) == folds, f"resimulation.{backend}.summary.{key} misses folds")
         witness = {k: v for k, v in entry.items() if k != "summary"}
         summary = resimulation_summary(witness, lanes[backend, BRIDGE_LANE])
         compare_resimulation(entry["summary"], summary, f"resimulation.{backend}.summary")
@@ -1162,7 +1231,8 @@ def bridge_and_resimulation(source: dict[str, Any]) -> tuple[dict[str, Any], dic
         )
         seed = [SEED, 1 if backend == "ibm_fez" else 2]
         items = []
-        for held, solutions in enumerate(perturbed_fold_solutions(real, offsets, seed)):
+        mutable = mutable_columns(RESIMULATED_MODEL, real.shape[1])
+        for held, solutions in enumerate(perturbed_fold_solutions(real, offsets, seed, mutable)):
             base = captured["bases"][held]
             for values, _ in solutions:
                 errors = acf.errors_of(columns, values[: len(columns)])
@@ -1266,6 +1336,7 @@ def verdicts(record: dict[str, Any]) -> dict[str, Any]:
             column(rows, fields, "svd_margin")
             + column(rows, fields, "svd_pred_margin")
             + column(ladder, lfields, "p53_margin")
+            + column(ladder, lfields, "p53_pred_margin")
         )
     ]
     largest_visible = max(visible, default=0.0)
@@ -1310,7 +1381,13 @@ def verdicts(record: dict[str, Any]) -> dict[str, Any]:
     equilibration_move = max(
         mover("qr_eq_margin"), mover("svd_eq_margin"), mover("qr_eq_pred_margin"), mover("svd_eq_pred_margin")
     )
-    precision_move = max((1 / v for v in finite_values(column(ladder, lfields, "p53_margin"))), default=0.0)
+    precision_move = max(
+        (
+            1 / v
+            for v in finite_values(column(ladder, lfields, "p53_margin") + column(ladder, lfields, "p53_pred_margin"))
+        ),
+        default=0.0,
+    )
     current_move = max(mover("svd_margin"), mover("svd_pred_margin"))
     movers = [
         name
@@ -1417,7 +1494,7 @@ def study(
             worst[key] = (row[ROW_FIELDS.index("kappa")], index)
     ladder_problems = [p for index, p in enumerate(problems) if p[0][3] < 0 or worst[p[0][:3]][1] == index]
     longdouble_bits = int(np.finfo(np.longdouble).nmant) + 1
-    ladder = parallel.ordered_map(Ladder(), [(p, longdouble_bits) for p in ladder_problems])
+    ladder = parallel.ordered_map(Ladder(), [(p, longdouble_bits, held_row(designs, p)) for p in ladder_problems])
     record: dict[str, Any] = {
         "schema": SCHEMA,
         "source": {"path": SOURCE.relative_to(ROOT).as_posix(), "sha256": sha256_bytes(SOURCE.read_bytes())},
@@ -1594,9 +1671,9 @@ def check(retained: dict[str, Any], fresh: dict[str, Any]) -> dict[str, Any]:
     require(retained["control"] == fresh["control"], f"control: {retained['control']} against {fresh['control']}")
     require(retained.get("padic") == fresh.get("padic"), f"padic: {retained.get('padic')} against {fresh.get('padic')}")
     resimulation = retained.get("resimulation")
-    if resimulation is not None:
+    if "resimulation" in retained:
         source = json.loads(SOURCE.read_text(encoding="utf-8"))
-        resimulation = check_resimulation(resimulation, source)
+        resimulation = check_resimulation(retained["resimulation"], source)
     fresh_verdicts = verdicts({**fresh, "resimulation": resimulation})
     compare_verdicts(retained["verdicts"], fresh_verdicts)
     return fresh_verdicts
@@ -1756,6 +1833,18 @@ def self_test() -> int:
         worst = max(range(1, 1 + TRIALS), key=lambda k: abs(row[k] - row[0]))
         row[worst] += 0.1 * (row[worst] - row[0])
 
+    def drop_backend(r: dict[str, Any]) -> None:
+        del r["ibm_kingston"]
+
+    def empty_mapping(r: dict[str, Any]) -> None:
+        r.clear()
+
+    def drop_fold(r: dict[str, Any]) -> None:
+        for key in ("log_ratios", "real_design", "real_offsets"):
+            r[moved][key].pop()
+        for key in ("base_minus_retained", "moves", "median_moves", "parameter_drift"):
+            r[moved]["summary"][key].pop()
+
     def shift_bases(r: dict[str, Any]) -> None:
         for row in r[moved]["log_ratios"]:
             row[0] += 1.0
@@ -1772,6 +1861,9 @@ def self_test() -> int:
         ),
         ("the perturbation seed", lambda r: r[moved].__setitem__("seed", [SEED, 7])),
         ("an unperturbed resimulation", shift_bases),
+        ("coverage: one backend dropped", drop_backend),
+        ("coverage: an empty mapping", empty_mapping),
+        ("coverage: one fold dropped", drop_fold),
     ]
     for label, corrupt in resim_corruptions:
         bad = json.loads(json.dumps(resimulation))

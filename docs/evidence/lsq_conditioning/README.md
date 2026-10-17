@@ -57,7 +57,9 @@ for a fold.
     p exceeds 100 * 2^-(p-53) times its error at p = 53.
   - Falsified if any float64 solution component (SVD, all designs; emulated
     QR at p = 53, ladder designs) differs from x* by tolerance / 10 or more,
-    or if any fold prediction a_held . x does.
+    or if any fold prediction a_held . x does. The predictions cover the SVD
+    solves of all designs and, on the ladder designs, the p = 53 solution's
+    predictions evaluated in p = 53 arithmetic (`p53_pred_margin`).
   - The emulator is validated, not falsified. It is required to reproduce
     the same Householder code run in Python floats bit for bit at p = 53,
     and in `np.longdouble` at the host's long-double precision (p = 64 on
@@ -76,6 +78,12 @@ for a fold.
     below 1e-7, a tenth of the smallest #161 move.
   - Falsified if any reaches 1e-6.
   - Inconclusive in between.
+  - Amended after the first measurement: a perturbation touches only the
+    family slope columns, scaled to 2-norm 3.5e-13 (or 1.3e-14) times the
+    slope block's norm. The lane-constant ones column that fit_models
+    synthesizes exactly stays fixed, because no BLAS build or simulation
+    changes it. The first measurement perturbed the whole design, constant
+    included; its numbers are kept below for comparison.
 - **P5.** The p-adic (Dixon and Hensel) solution of the integer-scaled
   normal equations, reconstructed as rationals, equals the Fraction solution
   on every design.
@@ -190,10 +198,15 @@ core-489 past the pr tier's one minute.
 - For every fold of `axis_tilt_plus_mean` on the real lane-4 designs, the
   held-out contrast prediction is resimulated at the fold solution
   (`atlas_coherent_families.Resimulate`).
-- It is resimulated again at 8 seeded perturbations of 2-norm
-  3.5e-13 ||A||, the worst design difference #161 measured.
-- It is resimulated again at 8 more of 1.3e-14 ||A||, the median measured
-  difference.
+- It is resimulated again at 8 seeded perturbations of the slope block of
+  2-norm 3.5e-13 times the block's norm, the worst design difference #161
+  measured. The lane-constant column stays fixed (`mutable_columns`).
+- It is resimulated again at 8 more of 1.3e-14 times the block's norm, the
+  median measured difference.
+- All noise arrays are drawn first, in the seeded (fold, level, trial)
+  order, and the fold solves run through `parallel.ordered_map`, so pooled
+  and serial runs give the same solutions. The per-design drift `p4_*`
+  fields perturb the same slope block.
 - The record retains the witness of each backend: the real design and
   offsets, the seed, and all 17 resimulated log ratios per fold.
 - `--check` recomputes every P4 summary from that witness:
@@ -268,17 +281,19 @@ designs:
 | | Fez | Kingston |
 | --- | ---: | ---: |
 | prediction that moved between substrates in #161 | `[1]` | `[0]` |
-| its move at 3.5e-13 \|\|A\|\| | 5.7e-4 | 1.9e-4 |
-| its move at 1.3e-14 \|\|A\|\| | 2.1e-5 | 7.7e-6 |
+| its move at 3.5e-13 of the slope block | 2.0e-4 | 3.5e-5 |
+| its move at 1.3e-14 of the slope block | 1.6e-5 | 1.1e-6 |
 | its rank among the lane's held-out edges, by move | 1 of 12 | 1 of 10 |
-| fold-parameter drift at 3.5e-13, that edge / median edge | 3.5e-4 / 8.9e-6 | 6.0e-4 / 6.9e-6 |
+| fold-parameter drift at 3.5e-13, that edge / median edge | 1.2e-4 / 4.7e-6 | 1.1e-4 / 4.6e-6 |
+| first measurement, whole design perturbed: move at 3.5e-13 / 1.3e-14 | 5.7e-4 / 2.1e-5 | 1.9e-4 / 7.7e-6 |
 | largest host-vs-retained difference of the unperturbed prediction | 9.2e-7 | 4.3e-7 |
 
 The two predictions that moved between AOCL, OpenBLAS and Kaggle in #161
-are the most sensitive fold of their lanes, by a factor of about 40 in
-parameter drift. Even at the median measured design difference, the least
-squares moves them by 8e-6 to 2e-5. That exceeds the observed moves of 1e-6
-to 3e-6.
+are the most sensitive fold of their lanes, by a factor of about 25 in
+parameter drift. Holding the constant column fixed removes 65 to 81 percent
+of the moves the first measurement reported. At the median measured design
+difference the least squares moves Kingston `[0]` by 1.1e-6, inside the
+observed 1e-6 to 3e-6, and Fez `[1]` by 1.6e-5, above it.
 
 The fold parameters behind them stay inside their own tolerance,
 eps kappa_fold^2 |x|, which is 1e-2 or more at |x| >= 337. The contrast
@@ -288,16 +303,20 @@ eps kappa_fold^2 max|vector|:
 | | Fez | Kingston |
 | --- | ---: | ---: |
 | contrast tolerance | 9.5e-5 | 7.3e-5 |
-| margin at the worst measured difference | 0.17 | 0.39 |
-| margin at the median measured difference | 4.5 | 9.5 |
+| margin at the worst measured difference | 0.47 | 2.1 |
+| margin at the median measured difference | 6.0 | 66 |
+| first measurement (whole design): worst / median | 0.17 / 4.5 | 0.39 / 9.5 |
 
-A substrate whose design moved by the worst measured amount on this model
-would fail core-329 on these contrasts, with every solver and every
+Kingston's margin at the worst measured difference changes class, from a
+core-329 failure (0.39) to a pass (2.1). Fez stays a failure (0.47): a
+substrate whose slope block moved by the worst measured amount on this model
+would still fail core-329 on Fez's contrasts, with every solver and every
 precision in this study.
 
-Over all 2716 designs, the worst-size perturbation leaves the smallest
-parameter margin at 1.26, on Fez lane 6 `zz_symmetric_plus_mean`, fold 4.
-That is the residual #161 already names.
+Over all 2716 designs, the worst-size slope perturbation leaves the smallest
+parameter margin at 2.49, on Fez lane 6 `detuning_and_axis_tilt`, fold 9.
+The whole-design perturbation gave 1.26, on Fez lane 6
+`zz_symmetric_plus_mean`, fold 4.
 
 **Ladder.**
 - The error at p = 64, 106 and 113 is at most 0.33 of 100 * 2^-(p-53) times
@@ -343,19 +362,23 @@ the requirements.txt pins.
   - Each precision step cuts the rounding error as 2^-(p-53).
   - The emulator is validated bit for bit against IEEE double and x87 long
     double.
-  - No float64 value is more than 1.8e-4 of its tolerance from x*. Extra
+  - No float64 value is more than 1.8e-4 of its tolerance from x*. The
+    p = 53 held-out predictions stay at margins of 8.1e4 or more. Extra
     precision therefore changes nothing a 1.5e-6 tolerance sees.
 - **P4 is falsified.**
-  - At the worst measured design difference, the least squares alone moves
-    the two #161 predictions by 5.7e-4 and 1.9e-4, over the 1e-6 falsifier.
-  - At the median difference, it still moves them by 2.1e-5 and 7.7e-6.
+  - At the worst measured design difference on the slope block, the least
+    squares alone moves the two #161 predictions by 2.0e-4 (Fez) and 3.5e-5
+    (Kingston), over the 1e-6 falsifier. The verdict is the same as with the
+    whole-design perturbation (5.7e-4 and 1.9e-4).
+  - At the median difference it moves them by 1.6e-5 and 1.1e-6 (first
+    measurement: 2.1e-5 and 7.7e-6).
   - Inference, rated likely: the cross-substrate contrast moves are
     least-squares amplification of the substrate's design differences.
     - For: the two moved predictions are the most sensitive fold of their
       lanes, rank 1 of 12 and rank 1 of 10.
-    - Unmeasured: the median-size moves exceed the observed 1e-6 to 3e-6, so
-      the real design difference on this model must be near 1e-15 or
-      smaller, and no one has measured it.
+    - Unmeasured: the actual design difference on this model. Kingston's
+      median-size move, 1.1e-6, matches the observed moves. Fez's, 1.6e-5,
+      exceeds them, so Fez's real difference must be near 1e-15 or smaller.
     - Falsifier: rebuild the real lane-4 designs under OpenBLAS numpy.
       Resimulate the OpenBLAS fold solution under AOCL, and the AOCL fold
       solution under OpenBLAS. The two runs split each move between the
@@ -384,7 +407,7 @@ the requirements.txt pins.
 - No step moves a retained value by tolerance / 10.
   - This covers parameters and linear predictions directly.
   - It covers resimulated contrasts through P4's measured amplification:
-    contrast move over parameter drift is at most 3.7 over every lane-4
+    contrast move over parameter drift is at most 3.6 over every lane-4
     fold of `axis_tilt_plus_mean`.
   - On those folds, every float64 solver lies within 1.8e-8 of x* in every
     parameter, so two solvers differ by at most about 4e-8. That bounds a
@@ -393,12 +416,12 @@ the requirements.txt pins.
 - The dominant error source is the conditioning of the models themselves.
   On `axis_tilt_plus_mean` the tilt block and the lane constant are nearly
   collinear. Its folds turn substrate design differences of 1e-14 to 1e-13
-  into contrast moves of 1e-5 to 1e-3.
+  into contrast moves of 1e-6 to 2e-4.
 - Neither a better-conditioned algorithm nor extra precision changes the
   sensitivity of the problem.
 - #207's normwise contrast rule admits the moves at the median measured
-  design difference (margins 4.5 and 9.5). At the worst measured difference
-  it does not (margins 0.17 and 0.39).
+  design difference (margins 6.0 and 66). At the worst measured difference it
+  admits Kingston's (margin 2.1) and not Fez's (margin 0.47).
 - The lever is the model or the tolerance, not the arithmetic.
   - An exact change of variables leaves x*, its sensitivity to the design,
     and the resimulated contrasts unchanged.
@@ -415,9 +438,9 @@ the requirements.txt pins.
 
 - core-489: `--check` in normal and optimized Python, pr tier, 64 s of CPU
   time with one worker.
-- core-492: `--self-test` in both modes, pr tier, 2.3 s.
+- core-492: `--self-test` in both modes, pr tier, 2.1 s.
 - core-493: `gororoba_quantum/wheel_algebra.py --self-test` in both modes,
-  pr tier, 3.8 s. Its axiom cases run in chunks through
+  pr tier, 3.9 s. Its axiom cases run in chunks through
   `parallel.ordered_map`.
 
 `--check` recomputes everything but the pyadic lifting, the lane-4 bridge
