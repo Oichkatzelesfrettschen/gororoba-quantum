@@ -64,7 +64,8 @@ or fewer on Kaggle, 15 or more on IBM):
 
 | Width | Noisy simulation | Ideal simulation | Hardware |
 | --- | --- | --- | --- |
-| 1 to 14 qubits | Kaggle GPU, double-precision density matrix (measured on one T4 to 14) | Kaggle GPU statevector | IBM only for a named-device question with an approved case |
+| 1 to 10 qubits | Kaggle CPU: statevector trajectories, or the density matrix of a static circuit | Kaggle CPU statevector | IBM only for a named-device question with an approved case |
+| 11 to 14 qubits | Kaggle GPU, double-precision density matrix (measured on one T4 to 14); a dynamic circuit stays on the CPU's trajectories unless a probe at its width shows the GPU faster | Kaggle GPU statevector | IBM only for a named-device question with an approved case |
 | 15 qubits or more | none on Kaggle: the 15-qubit density matrix was killed on a T4, and no measured mode extends it | Kaggle GPU statevector up to the measured 29 qubits, as design support for an IBM case | IBM after an approved case |
 
 ## T4 x2 GPU kernel

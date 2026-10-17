@@ -304,6 +304,9 @@ def push(args: argparse.Namespace) -> int:
     # machine it would record only that no GPU is attached.
     if args.smoke and args.machine == "cpu":
         args.machine = GPU_MACHINE
+    # An accelerator session spends the weekly quota until it ends, so every
+    # accelerator push names the run-time limit it may hold.
+    require(args.machine == "cpu" or args.timeout > 0, f"a {args.machine} push needs --timeout SECONDS")
     revision = git_commit()
     stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
     run_dir = RESULTS / f"{stamp}-{args.slug}"

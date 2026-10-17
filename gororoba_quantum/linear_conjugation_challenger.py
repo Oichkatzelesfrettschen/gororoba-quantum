@@ -262,6 +262,18 @@ def admission(baseline: dict[str, Any], challenger: dict[str, Any], checks_pass:
     }
 
 
+def best_admitted(challengers: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """The admitted challenger with the fewest median routed CZ summed over arms, then the lowest coset index."""
+    return min(
+        (record for record in challengers if record["admission"]["verdict"] == "admitted"),
+        key=lambda record: (
+            sum(arm["medians"]["routed_cz"] for arm in record["arms"].values()),
+            record["coset_index"],
+        ),
+        default=None,
+    )
+
+
 def _problem_record(problem: str, winners: list[dict[str, Any]], seeds: tuple[int, ...]) -> dict[str, Any]:
     arms = PROBLEMS[problem][2]
     cosets = [tuple(winner["columns"]) for winner in winners]
@@ -297,14 +309,7 @@ def _problem_record(problem: str, winners: list[dict[str, Any]], seeds: tuple[in
         record["admission"] = admission(baseline, record, check["pass"])
         challengers.append(record)
     admitted = [record for record in challengers if record["admission"]["verdict"] == "admitted"]
-    best = min(
-        admitted,
-        key=lambda record: (
-            sum(arm["medians"]["routed_cz"] for arm in record["arms"].values()),
-            record["coset_index"],
-        ),
-        default=None,
-    )
+    best = best_admitted(challengers)
     base, phase_bits, _, ranking = PROBLEMS[problem]
     return {
         "circuit": f"factor_order_finding({MODULUS}, {base}, {phase_bits})",
@@ -400,7 +405,11 @@ def check(record: dict[str, Any]) -> str:
     for problem, entry in record["problems"].items():
         arms = PROBLEMS[problem][2]
         circuits: list[tuple[dict[str, Any], tuple[int, ...] | None]] = [(entry["baseline"], None)]
-        best = next((c for c in entry["challengers"] if c["coset_index"] == entry["best_admitted"]), None)
+        best = best_admitted(entry["challengers"])
+        derived = best["coset_index"] if best is not None else None
+        _require(
+            entry["best_admitted"] == derived, f"{problem}: best_admitted {entry['best_admitted']} is not {derived}"
+        )
         if best is not None:
             circuits.append((best, tuple(best["columns"])))
             _require(equivalence_checks((problem, tuple(best["columns"])))["pass"], f"{problem}: best coset fails")
