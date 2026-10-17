@@ -1,0 +1,6 @@
+$ /usr/bin/python3 -m uv python install 3.14.7
+Downloading cpython-3.14.7-linux-x86_64-gnu (download) (34.6MiB)
+ Downloaded cpython-3.14.7-linux-x86_64-gnu (download)
+Installed Python 3.14.7 in 1.26s
+ + cpython-3.14.7-linux-x86_64-gnu (python3.14)
+warning: `/root/.local/bin` is not on your PATH. To use installed Python executables, run `export PATH="/root/.local/bin:$PATH"` or `uv python update-shell`.

@@ -208,7 +208,7 @@ script's `score` function records as `leave_one_out_rms`; a model beats
 `lane_constant` when its RMS is strictly below the constant's (the script
 marks `refuted` when it is at or above). The full run is the Kaggle CPU
 kernel retained under
-`results/kaggle/2026-10-17T010313Z-gororoba-atlas-fringe-amplitudes/`
+`results/kaggle/2026-10-17T021616Z-gororoba-atlas-fringe-amplitudes/`
 (`--runs ibm_fez,ibm_kingston --lanes all`).
 
 **`idle_relaxation_plus_constant` beats `lane_constant` on 4 of the 8
@@ -245,29 +245,27 @@ two, so the lane-4 coefficient of 2.6 to 3.2 does not generalize. The
 idle-relaxation column does not carry the amplitude structure of the other
 lanes.
 
-### Kaggle record against the retained file
+### Kaggle record against a host run
 
 The retained `result.json` covers lane 4 of both runs and the 14-lane
-structure. The Kaggle record equals it on `inputs`, `runs`, `models`,
-`bootstrap`, every `lanes` field and every `structure` field, except:
+structure. The bootstrap draws through `numpy.random.RandomState.binomial`,
+whose stream is frozen across numpy releases, so `bootstrap_over_propagated`
+is identical between the Kaggle record and a host run of the same 14 lanes.
+The kernel ran under `--ci-env` (CI's Python 3.14.7 and pins). Every field
+of the two records is equal except the bounded-solver parameters under
+`lanes/coherent_models/*/parameters`, which differ by the BLAS build:
 
-- **`bootstrap_over_propagated`** differs by 0.0 to 3.9 percent per edge. The
-  seeds and inputs are equal, so the likely cause is the binomial stream of
-  the kernel's numpy build (inferred, not isolated); the 10 percent falsifier holds on both (worst
-  departure 4.10 percent on Kaggle, 4.06 percent retained).
-- **The bounded detuning fit** (`detuning_curvature_plus_constant`
-  parameters) differs in the 11th significant digit, the solver's BLAS
-  tolerance.
-- **`fold_condition_max`** on a fold that falls below full rank is null. The
-  condition of a rank-deficient fold is the ratio of the largest singular
-  value to rounding noise, which is inf on one BLAS build and 1.27e16 on
-  another, so the script now reports null whenever a fold's rank is short of
-  the column count, and likewise `condition` for a rank-short design.
+| Model | values differing | max absolute | max relative |
+| --- | ---: | ---: | ---: |
+| `detuning_curvature_plus_constant` | 29 | 1.8e-6 | 2.0e-10 |
+| `zz_symmetric_curvature_plus_constant` | 10 | 4.7e-6 | 8.6e-11 |
+| `zz_curvature_plus_constant` | 5 | 3.5e-8 | 1.1e-11 |
 
-No gate compares the Kaggle record with `result.json`: the other Kaggle
-records are compared by byte `cmp` or are replayed by the script itself, and
-this record's `bootstrap_over_propagated` differs by build. The 14-lane
-verdict above is derived from the retained record.
+The verdict fields and `fold_condition_max` are identical. A comparison of
+the record with a host run therefore holds within 5e-6 absolute or 1e-9
+relative, and no byte-compare gate exists for the record because the solver
+parameters differ in the 10th to 11th significant digit across BLAS builds.
+The 14-lane verdict above is read from the retained record.
 
 ## Gates
 
