@@ -510,7 +510,7 @@ An agent that finds no login prompts the user to run `qi login` and approve
 the code; tokens never enter a commit, a log or memory.
 
 **Backends.** `scripts/qi_platform.py snapshot --out docs/evidence/quantum_inspire`
-reads the account's catalogue and ledger; gate core-326 renders this table
+reads the account's catalogue and ledger; gate core-347 renders this table
 from the retained catalogue and fails when either changes alone:
 
 <!-- quantum-inspire-facts:begin -->
@@ -587,10 +587,10 @@ resources) and qi_submit_case (executes through the retained-case runner).
 The legacy raw-string qi_submit refuses execution. Failures return isError with the
 service's message.
 
-**Gates.** core-325 (`capture_qi_docs.py --check`), core-326
+**Gates.** core-346 (`capture_qi_docs.py --check`), core-347
 (`qi_platform.py check docs/evidence/quantum_inspire --agents AGENTS.md`),
 core-327 (`qi_crosstalk_teleport_cases.py --check results/quantum_inspire/cases`),
-core-331 (`--replay` of every retained analysis.json), core-329 and core-330
+core-331 (`--replay` of every retained analysis.json), core-348 and core-330
 (`qi_zero_divisor_cases.py --check` and `--replay`), and core-340
 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of the Tuna-17
 cases).
