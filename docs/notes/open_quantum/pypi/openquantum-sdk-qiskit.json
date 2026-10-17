@@ -1,0 +1,32 @@
+{
+ "name": "openquantum-sdk-qiskit",
+ "version": "1.0.0",
+ "summary": "Qiskit Python SDK for Open Quantum",
+ "requires_python": ">=3.9",
+ "requires_dist": [
+  "openquantum-sdk>=1.0.0",
+  "qiskit>=2.0.0"
+ ],
+ "classifiers": [
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3"
+ ],
+ "project_urls": null,
+ "files": [
+  {
+   "filename": "openquantum_sdk_qiskit-1.0.0-py3-none-any.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-10-15T23:54:40.731833Z",
+   "size": 33080,
+   "sha256": "21b0814c706af8ab914eaeec6c60283718e7ee23f38483e59f5b3dde718953e6"
+  },
+  {
+   "filename": "openquantum_sdk_qiskit-1.0.0.tar.gz",
+   "packagetype": "sdist",
+   "upload_time_iso_8601": "2026-10-15T23:54:41.656603Z",
+   "size": 49537,
+   "sha256": "5a54b193c95ec67a12845cd4217854ec1deb9574a4026985be068f4f9758a690"
+  }
+ ]
+}

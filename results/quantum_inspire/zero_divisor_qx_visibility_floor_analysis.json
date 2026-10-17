@@ -1,0 +1,340 @@
+{
+ "schema": "qi-zero-divisor-analysis-v1",
+ "claim_kind": "preregistered emulator control",
+ "replicas": [
+  {
+   "file": "twin-1.cq",
+   "case": "dark",
+   "region": [
+    1,
+    2,
+    4,
+    8,
+    12
+   ],
+   "roles": {
+    "d0": 0,
+    "d1": 3,
+    "d2": 4,
+    "d3": 1,
+    "selector": 2
+   },
+   "seed": 0,
+   "cz": 75,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.0,
+   "shots": 2048,
+   "selector_zero_count": 0,
+   "p_selector_zero": 0.0,
+   "p_selector_zero_ci95": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "selector_e01": 0.0,
+   "selector_e10": 0.0,
+   "p_selector_zero_readout_corrected": 0.0
+  },
+  {
+   "file": "twin-1.cq",
+   "case": "bright",
+   "region": [
+    10,
+    11,
+    13,
+    14,
+    16
+   ],
+   "roles": {
+    "d0": 7,
+    "d1": 9,
+    "d2": 5,
+    "d3": 8,
+    "selector": 6
+   },
+   "seed": 0,
+   "cz": 87,
+   "t_count": 26,
+   "ideal_p_selector_zero": 1.0,
+   "shots": 2048,
+   "selector_zero_count": 2048,
+   "p_selector_zero": 1.0,
+   "p_selector_zero_ci95": [
+    0.9981277993949387,
+    1.0
+   ],
+   "selector_e01": 0.0,
+   "selector_e10": 0.0,
+   "p_selector_zero_readout_corrected": 1.0
+  },
+  {
+   "file": "twin-2.cq",
+   "case": "bright",
+   "region": [
+    1,
+    2,
+    4,
+    8,
+    12
+   ],
+   "roles": {
+    "d0": 0,
+    "d1": 3,
+    "d2": 4,
+    "d3": 1,
+    "selector": 2
+   },
+   "seed": 0,
+   "cz": 75,
+   "t_count": 26,
+   "ideal_p_selector_zero": 1.0,
+   "shots": 2048,
+   "selector_zero_count": 2048,
+   "p_selector_zero": 1.0,
+   "p_selector_zero_ci95": [
+    0.9981277993949387,
+    1.0
+   ],
+   "selector_e01": 0.0,
+   "selector_e10": 0.0,
+   "p_selector_zero_readout_corrected": 1.0
+  },
+  {
+   "file": "twin-2.cq",
+   "case": "fixture",
+   "region": [
+    10,
+    11,
+    13,
+    14,
+    16
+   ],
+   "roles": {
+    "d0": 7,
+    "d1": 9,
+    "d2": 5,
+    "d3": 6,
+    "selector": 8
+   },
+   "seed": 0,
+   "cz": 91,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.5,
+   "shots": 2048,
+   "selector_zero_count": 1038,
+   "p_selector_zero": 0.5068359375,
+   "p_selector_zero_ci95": [
+    0.4851906907780998,
+    0.5284555877292529
+   ],
+   "selector_e01": 0.0,
+   "selector_e10": 0.0,
+   "p_selector_zero_readout_corrected": 0.5068359375
+  },
+  {
+   "file": "twin-3.cq",
+   "case": "fixture",
+   "region": [
+    1,
+    2,
+    4,
+    8,
+    12
+   ],
+   "roles": {
+    "d0": 0,
+    "d1": 4,
+    "d2": 1,
+    "d3": 2,
+    "selector": 3
+   },
+   "seed": 0,
+   "cz": 79,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.5,
+   "shots": 2048,
+   "selector_zero_count": 1034,
+   "p_selector_zero": 0.5048828125,
+   "p_selector_zero_ci95": [
+    0.4832402338571049,
+    0.5265071079338612
+   ],
+   "selector_e01": 0.0,
+   "selector_e10": 0.0,
+   "p_selector_zero_readout_corrected": 0.5048828125
+  },
+  {
+   "file": "twin-3.cq",
+   "case": "dark",
+   "region": [
+    10,
+    11,
+    13,
+    14,
+    16
+   ],
+   "roles": {
+    "d0": 7,
+    "d1": 9,
+    "d2": 5,
+    "d3": 8,
+    "selector": 6
+   },
+   "seed": 0,
+   "cz": 87,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.0,
+   "shots": 2048,
+   "selector_zero_count": 0,
+   "p_selector_zero": 0.0,
+   "p_selector_zero_ci95": [
+    0.0,
+    0.0018722006050613785
+   ],
+   "selector_e01": 0.0,
+   "selector_e10": 0.0,
+   "p_selector_zero_readout_corrected": 0.0
+  }
+ ],
+ "by_case": {
+  "dark": {
+   "p_selector_zero": 0.0,
+   "ci95": [
+    0.0,
+    0.0009369774073651883
+   ],
+   "readout_corrected": 0.0,
+   "variance": 0.0
+  },
+  "bright": {
+   "p_selector_zero": 1.0,
+   "ci95": [
+    0.9990630225926348,
+    0.9999999999999999
+   ],
+   "readout_corrected": 1.0,
+   "variance": 0.0
+  },
+  "fixture": {
+   "p_selector_zero": 0.505859375,
+   "ci95": [
+    0.4905498915166627,
+    0.5211578782793449
+   ],
+   "readout_corrected": 0.505859375,
+   "variance": 6.102677434682846e-05
+  }
+ },
+ "visibility": 1.0,
+ "contraction": {
+  "dark_plus_bright_minus_one": 0.0,
+  "z": 0.0,
+  "fixture_minus_half": 0.005859375,
+  "fixture_z": 0.7500515037178661
+ },
+ "kingston_comparison": {
+  "dark": 0.182,
+  "dark_ci95": [
+   0.146,
+   0.217
+  ],
+  "bright": 0.828,
+  "claim": "hw-zero-divisor-floor"
+ },
+ "secondary": {
+  "claim_kind": "secondary analysis, fixed after the data",
+  "endpoint_midpoint": 0.5,
+  "raw": {
+   "contrast_B_minus_D": {
+    "value": 1.0,
+    "se": 0.0,
+    "z": null
+   },
+   "sum_residual_D_plus_B_minus_1": {
+    "value": 0.0,
+    "se": 0.0,
+    "z": null
+   },
+   "fixture_minus_endpoint_midpoint_H": {
+    "value": 0.005859375,
+    "se": 0.0078119486375797945,
+    "z": 0.7500529345281618
+   },
+   "fixture_minus_half": {
+    "value": 0.005859375,
+    "se": 0.0078119486375797945,
+    "z": 0.7500529345281618
+   }
+  },
+  "raw_covariance": {
+   "dark,dark": 0.0,
+   "dark,bright": 0.0,
+   "dark,fixture": 0.0,
+   "bright,dark": 0.0,
+   "bright,bright": 0.0,
+   "bright,fixture": 0.0,
+   "fixture,dark": 0.0,
+   "fixture,bright": 0.0,
+   "fixture,fixture": 6.102654151618481e-05
+  },
+  "readout_corrected_bootstrap": {
+   "contrast_B_minus_D": {
+    "mean": 1.0,
+    "se": 0.0,
+    "ci95": [
+     1.0,
+     1.0
+    ]
+   },
+   "sum_residual_D_plus_B_minus_1": {
+    "mean": 0.0,
+    "se": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "fixture_minus_endpoint_midpoint_H": {
+    "mean": 0.00609942626953125,
+    "se": 0.007795125073161831,
+    "ci95": [
+     -0.0087890625,
+     0.021002197265625022
+    ]
+   },
+   "fixture_minus_half": {
+    "mean": 0.00609942626953125,
+    "se": 0.007795125073161831,
+    "ci95": [
+     -0.0087890625,
+     0.021002197265625022
+    ]
+   }
+  },
+  "by_region_raw": {
+   "[1, 2, 4, 8, 12]": {
+    "contrast": 1.0,
+    "contrast_ci95": [
+     1.0,
+     1.0
+    ],
+    "H": 0.0048828125,
+    "H_se": 0.01104801660787208,
+    "H_z": 0.4419628131732562
+   },
+   "[10, 11, 13, 14, 16]": {
+    "contrast": 1.0,
+    "contrast_ci95": [
+     1.0,
+     1.0
+    ],
+    "H": 0.0068359375,
+    "H_se": 0.01104751080999344,
+    "H_z": 0.6187762671222097
+   }
+  },
+  "bootstrap": {
+   "draws": 4000,
+   "seed": 20261016
+  }
+ }
+}

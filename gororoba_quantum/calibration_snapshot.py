@@ -193,30 +193,82 @@ def aer_device() -> str:
     return device
 
 
-# Aer's batched_shots_gpu runs many noisy shots in one GPU kernel launch and
-# spreads them over every visible GPU; Aer applies it only to circuits of at
-# most this many active qubits (its batched_shots_gpu_max_qubits default).
-BATCHED_SHOTS_MAX_QUBITS = 16
+# Aer's batched_shots_gpu applies each operation to every shot of a batch in
+# one GPU kernel launch. At 7 and 10 active qubits it ran a calibrated noisy
+# trajectory batch 2.7 to 3.8 times faster than the unbatched GPU executor,
+# and at 14 qubits 2.2 times slower, since one 2**14 statevector already
+# fills the device (docs/evidence/aer_gpu_configuration); Aer batches only
+# circuits of at most batched_shots_gpu_max_qubits active qubits.
+BATCHED_SHOTS_MAX_QUBITS = 10
+CONTROL_FLOW = frozenset({"if_else", "while_loop", "for_loop", "switch_case"})
+
+
+def has_control_flow(circuit: Any) -> bool:
+    return isinstance(circuit, QuantumCircuit) and any(
+        instruction.operation.name in CONTROL_FLOW for instruction in circuit.data
+    )
+
+
+class SnapshotSimulator(AerSimulator):
+    """AerSimulator whose run keeps classical feed-forward off Aer's batched GPU executor.
+
+    The batched executor rejects the jump instruction AerCompiler emits for
+    if_else, and when a condition reaches it as a bfunc-gated operation it
+    evaluates the condition on the measured outcome before the readout
+    channel instead of the recorded bit (the readout toy of
+    docs/evidence/aer_gpu_configuration). A batch containing control flow
+    therefore runs with batched_shots_gpu off, the per-shot GPU executor,
+    which draws the CPU's samples. Every other run is AerSimulator.run.
+    """
+
+    def run(self, circuits: Any, parameter_binds: Any = None, **run_options: Any) -> Any:
+        options = {**self.options.__dict__, **run_options}
+        if options.get("device") == "GPU" and options.get("batched_shots_gpu"):
+            batch = circuits if isinstance(circuits, (list, tuple)) else [circuits]
+            if any(has_control_flow(circuit) for circuit in batch):
+                run_options["batched_shots_gpu"] = False
+        return super().run(circuits, parameter_binds=parameter_binds, **run_options)
 
 
 def noise_simulator(
-    snapshot: dict[str, Any], device: str = "CPU", method: str = "density_matrix", batched_shots: bool = False
+    snapshot: dict[str, Any],
+    device: str = "CPU",
+    method: str = "density_matrix",
+    batched_shots: bool | None = None,
+    custatevec: bool = False,
 ) -> AerSimulator:
     """AerSimulator with live_run.noise_simulator's noise, rebuilt from the snapshot.
 
     method "density_matrix" evolves the channel exactly per shot; "statevector"
-    samples trajectories of the same channel. batched_shots enables Aer's
-    batched_shots_gpu on a GPU device and is ignored on the CPU; a seeded
-    batched run draws different samples than an unbatched one, so a record
-    states which sampler produced its counts. qiskit-aer-gpu-cu11 0.17.2
-    aborts a batched run of a circuit with control flow (its if_else lowers
-    to jump), so only static circuits batch (results/kaggle aer-gpu-probe).
+    samples trajectories of the same channel. On a GPU device batched_shots
+    (default on; False opts out) enables Aer's batched_shots_gpu up to
+    BATCHED_SHOTS_MAX_QUBITS active qubits: the unbatched GPU executor runs
+    one shot at a time and pays a kernel launch per operation per shot, which
+    a narrow state cannot amortize. Circuits with control flow run unbatched
+    (SnapshotSimulator.run). For statevector trajectories of circuits
+    without control flow the batched, unbatched GPU and CPU executors drew
+    identical seeded counts in the retained measurement; a record still
+    names the sampler that produced its counts. On the CPU batched_shots is
+    ignored and the simulator carries Aer's default CPU options. Shot
+    branching is never enabled: Aer 0.17.2's shot branching drops the
+    readout channel of a mid-circuit measurement.
+
+    custatevec sets Aer's cuStateVec_enable on a GPU statevector run, which
+    routes gate application and sampling through libcustatevec; an Aer built
+    or wheeled without cuQuantum raises at run time. Aer 0.17.2 reports
+    cuStateVec_enable False on a run that also sets batched_shots_gpu, so
+    custatevec turns the batched default off and raises on an explicit
+    batched_shots=True instead of falling back unseen.
     """
+    if custatevec and batched_shots:
+        raise ValueError("custatevec and batched_shots are exclusive Aer GPU options")
     view, noise = noise_model(snapshot)
     options: dict[str, Any] = {}
-    if device == "GPU" and batched_shots:
+    if device == "GPU" and custatevec:
+        options = {"cuStateVec_enable": True}
+    elif device == "GPU" and batched_shots is not False:
         options = {"batched_shots_gpu": True, "batched_shots_gpu_max_qubits": BATCHED_SHOTS_MAX_QUBITS}
-    return AerSimulator.from_backend(view, noise_model=noise, method=method, device=device, **options)
+    return SnapshotSimulator.from_backend(view, noise_model=noise, method=method, device=device, **options)
 
 
 def channel_table(noise: NoiseModel) -> dict[str, Any]:

@@ -6,13 +6,22 @@
    "batch": "batch-00",
    "files": [
     "latin-1.cq",
-    "latin-2.cq",
-    "latin-3.cq"
+    "readout-0.cq",
+    "readout-1.cq"
    ]
   },
   {
    "batch": "batch-01",
    "files": [
+    "latin-2.cq",
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "files": [
+    "latin-3.cq",
     "readout-0.cq",
     "readout-1.cq"
    ]

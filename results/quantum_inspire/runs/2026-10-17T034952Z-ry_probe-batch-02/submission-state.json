@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-17T03:53:52+00:00",
+ "approval": "User, 2026-10-17: \"and then approveal of the ry case.\" (Ry emulator construct probe, scripts/qi_ry_probe_cases.py, PR #164)",
+ "backend": "Rydberg",
+ "backend_type_id": 5,
+ "cases_sha256": "04cdce6b9ba356d1b301db268e4be09f8ddfe108f5122bb9c5f9dd9bc3b928dd",
+ "shots": 1024,
+ "jobs": [
+  {
+   "file": "h-cnot.cq",
+   "job": 1527294,
+   "sha256": "642a4962d9e2eece2a6ba8e878459bbefc6fb85e2ca4ae30c152ea3e2ec565b6"
+  },
+  {
+   "file": "h-cnot-bits.cq",
+   "job": 1527295,
+   "sha256": "d1d07a4f7ae48fc86b589f3a88c089597ea088ef811d6c143a7cb8fac01fcf98"
+  },
+  {
+   "file": "init-h-cnot.cq",
+   "job": 1527296,
+   "sha256": "5121eaac9485132a09899e5a9e31d2d0020f1b7814fb743c93504ae3c76db57d"
+  }
+ ],
+ "project": 765859,
+ "batch_job": 870054,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-17T03:53:55+00:00",
+  "approval": "User, 2026-10-17: \"and then approveal of the ry case.\" (Ry emulator construct probe, scripts/qi_ry_probe_cases.py, PR #164)",
+  "backend": "Rydberg",
+  "backend_type_id": 5,
+  "cases_sha256": "04cdce6b9ba356d1b301db268e4be09f8ddfe108f5122bb9c5f9dd9bc3b928dd",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 870054,
+  "project": 765859,
+  "shots": 1024,
+  "jobs": [
+   {
+    "file": "h-cnot.cq",
+    "job": 1527294,
+    "sha256": "642a4962d9e2eece2a6ba8e878459bbefc6fb85e2ca4ae30c152ea3e2ec565b6"
+   },
+   {
+    "file": "h-cnot-bits.cq",
+    "job": 1527295,
+    "sha256": "d1d07a4f7ae48fc86b589f3a88c089597ea088ef811d6c143a7cb8fac01fcf98"
+   },
+   {
+    "file": "init-h-cnot.cq",
+    "job": 1527296,
+    "sha256": "5121eaac9485132a09899e5a9e31d2d0020f1b7814fb743c93504ae3c76db57d"
+   }
+  ],
+  "submitted_utc": "2026-10-17T03:53:56+00:00"
+ },
+ "confirmed_utc": "2026-10-17T03:53:56+00:00"
+}

@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-17T03:49:25+00:00",
+ "approval": "User, 2026-10-17: \"then you need to review the rules per machine and per the documentation in the repo for fair use and batch size and queuing then use the real TUNA-17 hardware\" (readout ring-down pilot, PR #164, after the QX dry run); after batch P-00: \"Continue, q6 judged by rule but also use all that we've learned from our calibration runs and measurement within this repo granularly to build accordingly to compensate.\" (sanity readout guard 0.35)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "6062780f127f0f007a72e7e1ab11d113212b1f0edb8dad3b88bf07816a6db57c",
+ "shots": 8192,
+ "jobs": [
+  {
+   "file": "tau015-x-d002.cq",
+   "job": 1527278,
+   "sha256": "c20f26c2c6b92fe57ecaa82e77676845f549797a2dece73931bbbd6ecfc0057f"
+  },
+  {
+   "file": "tau040-x-d002.cq",
+   "job": 1527279,
+   "sha256": "95e6a352e2a0b2666d9adeecb6dd8eeb8bf5f3a6b64118082e2df74feec065b5"
+  },
+  {
+   "file": "tau100-x-d002.cq",
+   "job": 1527280,
+   "sha256": "7a457077649098c2cc7b3665d776859fde59a02f7ae855431af3cb616d589cac"
+  }
+ ],
+ "project": 765850,
+ "batch_job": 870046,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-17T03:49:37+00:00",
+  "approval": "User, 2026-10-17: \"then you need to review the rules per machine and per the documentation in the repo for fair use and batch size and queuing then use the real TUNA-17 hardware\" (readout ring-down pilot, PR #164, after the QX dry run); after batch P-00: \"Continue, q6 judged by rule but also use all that we've learned from our calibration runs and measurement within this repo granularly to build accordingly to compensate.\" (sanity readout guard 0.35)",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "6062780f127f0f007a72e7e1ab11d113212b1f0edb8dad3b88bf07816a6db57c",
+  "backend_status_at_submit": "executing",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 870046,
+  "project": 765850,
+  "shots": 8192,
+  "jobs": [
+   {
+    "file": "tau015-x-d002.cq",
+    "job": 1527278,
+    "sha256": "c20f26c2c6b92fe57ecaa82e77676845f549797a2dece73931bbbd6ecfc0057f"
+   },
+   {
+    "file": "tau040-x-d002.cq",
+    "job": 1527279,
+    "sha256": "95e6a352e2a0b2666d9adeecb6dd8eeb8bf5f3a6b64118082e2df74feec065b5"
+   },
+   {
+    "file": "tau100-x-d002.cq",
+    "job": 1527280,
+    "sha256": "7a457077649098c2cc7b3665d776859fde59a02f7ae855431af3cb616d589cac"
+   }
+  ],
+  "submitted_utc": "2026-10-17T03:49:38+00:00"
+ },
+ "confirmed_utc": "2026-10-17T03:49:38+00:00"
+}
