@@ -14,7 +14,7 @@ The canonical source library lives under `docs/`: paper descriptions in
 `evidence/`. [SOURCES.json](SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
 license evidence. The library publishes 23 licensed PDFs and two aliases;
-84 external sources retain citations and optional ignored local reading copies.
+85 external sources retain citations and optional ignored local reading copies.
 Four licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](PDF_SHA256SUMS) verifies the published PDF set from the
@@ -134,6 +134,7 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [2602.03938](notes/2602.03938.md) | Wysocki et al., Interpretable mid-circuit measurement errors (2026 preprint) | high | none | none |
 | [Coste](notes/coste-semialgebraic-geometry.md) | Semialgebraic geometry: compatible triangulation, Hardt triviality and local conic structure (2002) | none | method | none |
 | [Hatcher](notes/hatcher-algebraic-topology.md) | Algebraic Topology, Chapter 0, attachment and quotient hypotheses | none | method | none |
+| [Carlstrom](notes/wheels-carlstrom.md) | Wheels: total division by zero, the wheel of fractions and its axioms (2001 report; MSCS 2004) | none | method | none |
 | [2403.09514](notes/2403.09514.md) | Baeumer et al., Quantum Fourier transform using dynamic circuits, PRL 133, 150602 (2024) | high | none | medium |
 | [2403.06852](notes/2403.06852.md) | Seif et al., Suppressing correlated noise via context-aware compiling, ISCA 2024 | high | none | low |
 | [1101.4707](notes/1101.4707.md) | Bylander et al., Noise spectroscopy through dynamical decoupling with a superconducting flux qubit, Nat. Phys. 7, 565 (2011) | medium | none | none |

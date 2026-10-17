@@ -1,0 +1,31 @@
+{
+ "schema": "qd-docs-capture-v1",
+ "kind": "legal",
+ "retrieved_utc": "2026-10-17T17:29Z",
+ "files": [
+  {
+   "path": "docs/notes/quandela/legal/cloud_terms-of-service.md",
+   "source": "https://cloud.quandela.com/terms-of-service",
+   "sha256": "ff04015e270bc8c62e08bf389a3c0eeaa89446f7ccfc7ee62819c435302f140d"
+  },
+  {
+   "path": "docs/notes/quandela/legal/cloud_privacy-policy.md",
+   "source": "https://cloud.quandela.com/privacy-policy",
+   "sha256": "3fd5ff63739a2547300ac0108a13ae4e8317eeb0548088fb94fb7bc37ed326bb"
+  },
+  {
+   "path": "docs/notes/quandela/legal/www_privacy-policy.md",
+   "source": "https://www.quandela.com/privacy-policy/",
+   "sha256": "10bd5373dbb83b7df58efa8755c4b82ee73714b834afd5b995d79cd74349029d"
+  },
+  {
+   "path": "docs/notes/quandela/legal/www_legal-terms.md",
+   "source": "https://www.quandela.com/legal-terms/",
+   "sha256": "5882194bf5cea34cfaabb5cbdd1dcf79c1f91eabc675907f207f334d38474310"
+  }
+ ],
+ "unreachable": [],
+ "bundle": "https://cloud.quandela.com/assets/index-a553ec1f.js",
+ "bundle_sha256": "8adf2d1dacdd90e3579ad9c36bc29377209339cd57cecd3d7c1d22132ecbfdf8",
+ "terms_last_updated": "Last Updated: November 1st, 2022"
+}

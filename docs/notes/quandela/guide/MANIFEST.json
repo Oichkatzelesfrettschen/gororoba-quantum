@@ -1,0 +1,170 @@
+{
+ "schema": "qd-docs-capture-v1",
+ "kind": "guide",
+ "retrieved_utc": "2026-10-17T17:27Z",
+ "files": [
+  {
+   "path": "docs/notes/quandela/guide/entity-manage-guide/00-introduction.md",
+   "source": "https://cloud.quandela.com/webide/guide/entity-manage-guide/00-introduction",
+   "sha256": "facaed33801156a6f68c146af69033604976d6602d56dcceac1c1ce64fe698a1"
+  },
+  {
+   "path": "docs/notes/quandela/guide/entity-manage-guide/01-cloud-entity-management.md",
+   "source": "https://cloud.quandela.com/webide/guide/entity-manage-guide/01-cloud-entity-management",
+   "sha256": "e87ec6c47a88dd5f42126e7abd9bc83074bfb770942bc9f68b4ba6822a20a275"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/chemistryvqe/01-api-documentation.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/chemistryvqe/01-api-documentation",
+   "sha256": "479de6a3c358ff483ade7655b6c678f6886c76b523429ca1317e28839a366737"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/chemistryvqe/02-job-creation.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/chemistryvqe/02-job-creation",
+   "sha256": "e43da925b0cdf795087809996437335c59a51f853f603e0be1c0c264a7a39ac4"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/chemistryvqe/03-job-estimator.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/chemistryvqe/03-job-estimator",
+   "sha256": "8a1f4b02a7ca553d9fd9d0b03499d403e044ec7054e59d16a1b740fc4e28fa41"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/chemistryvqe/04-job-results.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/chemistryvqe/04-job-results",
+   "sha256": "b384993be7b2faa2ddcd7d238480c99e22bc426b95e17ac99a45d76307d58ca4"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/customvqe/01-api-documentation.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/customvqe/01-api-documentation",
+   "sha256": "f588ca7d1fd25727a8e30817129f70ce085af5d12aa85ad69fa5b191e48bf47a"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/customvqe/02-job-creation.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/customvqe/02-job-creation",
+   "sha256": "1b50b448a69fdb3d7b0adf7b96ae530b01991a3cbf5296d2b5c1f73c7f40f5ab"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/customvqe/03-job-estimator.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/customvqe/03-job-estimator",
+   "sha256": "ab1a33d3109015ba83dbbe57d254c7dabfea8ad31bc76ad546f53d9f837e382b"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/customvqe/04-job-results.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/customvqe/04-job-results",
+   "sha256": "26a97bee0317b8a2d92ab06e4921c2e8fdb846110457bc76397b66cf49a2e25c"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/cvarvqe/01-api-documentation.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/cvarvqe/01-api-documentation",
+   "sha256": "b9a3ed3e9ac8f847255e4860612086b232c94cb2f6f6b98f0c73117527bd6ba7"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/cvarvqe/02-qubo-problem-formulation.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/cvarvqe/02-qubo-problem-formulation",
+   "sha256": "0d15e6d074399bbc701ad71443cbf6a152737f5ea4b5044cdaf80e78b0d515ef"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/cvarvqe/03-job-creation.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/cvarvqe/03-job-creation",
+   "sha256": "c58d66bb06a92eb8d6393e0dacfdaf5a97446efbcc7221bdac25c535c1e88341"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/cvarvqe/04-job-estimator.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/cvarvqe/04-job-estimator",
+   "sha256": "845b20f2f5381ab2e1de8df4e2b54376da759434cb7c658cd12d14686316dc26"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/cvarvqe/05-job-results.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/cvarvqe/05-job-results",
+   "sha256": "bf83a4a59919e8cc2f6afc16df4e46e8c30051b6f9f0dfbcd951f938402036b2"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/graphdsi/01-api-documentation.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/graphdsi/01-api-documentation",
+   "sha256": "ea978d693af564d247e2c66a53c1ac89a57e5f03c3489a0d9ad31229cf1a0880"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/graphdsi/02-job-creation.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/graphdsi/02-job-creation",
+   "sha256": "9e888d02b2360b5f5c00d06b2f1c22ac94f712d1b4c9a7e2793fa385effcf682"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/graphdsi/03-job-estimator.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/graphdsi/03-job-estimator",
+   "sha256": "3279ec060a7180a45fa077a179de780a68f5205d132e6e10796dcde6eac4728b"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/graphdsi/04-job-results.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/graphdsi/04-job-results",
+   "sha256": "95b5f18b7bf42d7ad677b83d994630eb69aee864177d9346c7dcd3553283887a"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/graphisomorphism/01-api-documentation.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/graphisomorphism/01-api-documentation",
+   "sha256": "c515ca603dec34029ad33ddac7d0ab6489fe26f0c7e2b39e4059dd6b623a21d7"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/graphisomorphism/02-job-creation.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/graphisomorphism/02-job-creation",
+   "sha256": "f24f3adfd84db2837947cf3da18794388e9b2d0d8715f945e1c2551239f00b03"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/graphisomorphism/03-job-estimator.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/graphisomorphism/03-job-estimator",
+   "sha256": "6d86c067b806d4f2d51e46c4d28413a357bd508780b98c90fe005e3fef44219a"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/graphisomorphism/04-job-results.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/graphisomorphism/04-job-results",
+   "sha256": "b463197b2a9ac935a87de27db45fc51e5e2fed2eb94fbafe9196f39c14c1f293"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/vqe/01-api-documentation.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/vqe/01-api-documentation",
+   "sha256": "81bc02247236574e3e71fd54c9dbc486bcadbe44ebdb35a05c3d0d44a58c535b"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/vqe/02-algorithm-explanation.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/vqe/02-algorithm-explanation",
+   "sha256": "65a3fdcaf338da43d02dd8db507ceee21e1f006cd671342944e55b7eb6d9025c"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/vqe/03-job-creation.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/vqe/03-job-creation",
+   "sha256": "7a28c4f69fa1965e1a6330cd8947c9f1717d7f51fd73eed2118dd1881122c645"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/vqe/04-job-estimator.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/vqe/04-job-estimator",
+   "sha256": "31df20197dacff7639eaae083d484a380af49039dba2b85239e84fd179fb6d33"
+  },
+  {
+   "path": "docs/notes/quandela/guide/quantum-toolbox-guide/vqe/05-job-results.md",
+   "source": "https://cloud.quandela.com/webide/guide/quantum-toolbox-guide/vqe/05-job-results",
+   "sha256": "b8bbb2eac40261dcc79c2c4019f0d1e22f78bac1e26e04d32a34cc9a98e600b0"
+  },
+  {
+   "path": "docs/notes/quandela/guide/user-guide/01-product-tour.md",
+   "source": "https://cloud.quandela.com/webide/guide/user-guide/01-product-tour",
+   "sha256": "0986e9c2b4780acb4da5a2934c1fe56f8b5738ca310115c2d8bf0105463ee39d"
+  },
+  {
+   "path": "docs/notes/quandela/guide/user-guide/02-understanding-platforms.md",
+   "source": "https://cloud.quandela.com/webide/guide/user-guide/02-understanding-platforms",
+   "sha256": "8e26cf53ac54a39c2ab3eb0ba39a6201cf22f22212093dad696988656d78438a"
+  },
+  {
+   "path": "docs/notes/quandela/guide/user-guide/03-token-and-job-management.md",
+   "source": "https://cloud.quandela.com/webide/guide/user-guide/03-token-and-job-management",
+   "sha256": "640de509d8bac559240a908872f6ccd0a167764377626ddf5aaf021f5786152e"
+  },
+  {
+   "path": "docs/notes/quandela/guide/user-guide/04-compilation.md",
+   "source": "https://cloud.quandela.com/webide/guide/user-guide/04-compilation",
+   "sha256": "b15b36450d5798e4279a89694a1140a6cab6a09b2500eef833b10909723fa9a3"
+  }
+ ],
+ "unreachable": [],
+ "bundle": "https://cloud.quandela.com/webide/assets/index-DrG4GsjV.js",
+ "bundle_sha256": "2f86182fa9ea5999d49645c2553e6b645e7d390249838c9261b2132f51051c7e"
+}

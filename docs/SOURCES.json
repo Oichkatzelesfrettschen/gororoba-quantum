@@ -4635,6 +4635,40 @@
         "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
         "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope."
       }
+    },
+    {
+      "title": "Wheels -- On Division by Zero",
+      "authors": [
+        "Jesper Carlström"
+      ],
+      "version": "Research Reports in Mathematics 2001:11, Department of Mathematics, Stockholm University, 2001-09-10 (licentiate thesis); version of record Math. Struct. in Comp. Science 14(1) (2004) 143-184",
+      "source_url": "https://www2.math.su.se/reports/2001/11/2001-11.pdf",
+      "note": "docs/notes/wheels-carlstrom.md",
+      "audited_at_utc": "2026-10-17T17:25:40+00:00",
+      "status": "external_only",
+      "sha256": "339fd916659b381dd8e03ca58164e533c15173b7700bb7f3b08d42ad7ed5319b",
+      "bytes": 350294,
+      "pages": 48,
+      "acquisition": "download",
+      "prior_note_hash_match": null,
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "339fd916659b381dd8e03ca58164e533c15173b7700bb7f3b08d42ad7ed5319b",
+        "verified_at_utc": "2026-10-17T17:25:40+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://www2.math.su.se/reports/2001/11/",
+        "evidence_sha256": "e41b113c4a39e08331bc721fddf9347ae73031b9302538b20d1e4092a45feeef",
+        "evidence_locator": "Report archive page for Research Reports in Mathematics 2001:11 and the PDF title and acknowledgements pages",
+        "reading_scope": "Report archive page (title, date, keywords, download links) and the PDF cover, title and acknowledgements pages; the note carries the content reading scope.",
+        "evidence_summary": "The report archive page offers PostScript and PDF downloads and states no license; the PDF carries the notice (c) 2001 Jesper Carlstrom and no redistribution grant."
+      },
+      "excluded_published_path": "docs/pdf/carlstrom-wheels-2001-11.pdf",
+      "local_cache_path": "docs/local_source_cache/carlstrom-wheels-2001-11.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Report archive page for Research Reports in Mathematics 2001:11 and the PDF title and acknowledgements pages",
+      "rights_reason": "The report archive page offers PostScript and PDF downloads and states no license; the PDF carries the notice (c) 2001 Jesper Carlstrom and no redistribution grant."
     }
   ],
   "local_cache_policy": "docs/local_source_cache/ preserves optional personal reading copies. Published inventories and Git-tracked files exclude that cache. Missing cache files are permitted; present registered copies must match their original PDF size and SHA-256.",

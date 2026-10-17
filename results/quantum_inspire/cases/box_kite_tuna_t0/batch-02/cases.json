@@ -65,10 +65,40 @@
   "design": "3 x 3 Latin square: batch b places depth index (pair + b) mod 3 on each pair of LCU_PAIRS, and y_sign -1 (P = 0) on pair b, y_sign +1 (P = 1) on the other two; every depth, pair and batch holds one dark and two bright replicas",
   "contrast": "C(n) = mean Pc(bright, n) - Pc(dark, n) with Pc the P(selector = 0) corrected for the selector's readout assignment from the readout-0 and readout-1 circuits of the same batch. The difference cancels a common additive shift of P (amplitude damping toward |0>, the measured common-shift offset), which 2 Pc(bright) - 1 alone would carry into C as a bias",
   "confound": "the dark replica of each depth sits on one pair in one batch and its brights on the other two, so C(n) carries that pair's and batch's offset against the mean of the others; the square balances pair and batch main effects across depths, and a pair x depth interaction stays inside r",
-  "fit": "r = exp(slope) of the weighted least-squares line of ln C(n) on n over n = 1, 5, 9; its 99% interval from a parametric bootstrap of the binomial counts and each batch's readout pair",
+  "fit": "r = exp(slope) of the weighted least-squares line of ln C(n) on n over n = 1, 5, 9, weights C(n)^2 / Var C(n); its two-sided 99% interval from the 0.5 and 99.5 percentiles of a parametric bootstrap (4000 draws, seed 20261017) of the binomial counts and each batch's readout pair",
   "predictions": "C(1) in [0.72, 0.82]; C(9) / C(1) = r^8 with r in [0.87, 0.96], central 0.955",
-  "falsifier": "the pooled depth-1 contrast with its 99% upper bound below 0.5 refutes the shallow admission and ends the Tuna-17 program; a 99% interval of r disjoint from [0.87, 0.97] refutes the planning range and resizes T1, coherence and walk before they run",
-  "stop_rule": "each batch: every job completed with the manifest's shots; readout-0 P1 at most 0.10 and readout-1 P1 at least 0.80 on every used qubit (a failure stops the series and re-plans the layout); every bright or reference replica at P(selector = 0) at least 0.7; circuit digests equal cases.json; the account's queue empty; a 120 s pause before the next batch"
+  "falsifier": "the pooled depth-1 contrast with its 99% upper bound C(1) + 2.5758 SE below 0.5 refutes the shallow admission and ends the Tuna-17 program; a 99% interval of r disjoint from [0.87, 0.97] refutes the planning range and resizes T1, coherence and walk before they run",
+  "stop_rule": "each batch: every job completed with the manifest's shots; readout-0 P1 at most 0.10 and readout-1 P1 at least 0.80 on every used qubit (a failure stops the series and re-plans the layout); every bright or reference replica at CZ depth 1 at raw P(selector = 0) at least 0.7 (deeper replicas enter only through C(n) and r); every qubit the witness leaves idle at P1 at most 0.15 above its readout-0 P1 (bit-order conformance); circuit digests equal cases.json; the account's queue empty; a 120 s pause before the next batch",
+  "thresholds": {
+   "readout_0_p1_at_most": 0.1,
+   "readout_1_p1_at_least": 0.8,
+   "bright_p_selector_zero_at_least": 0.7,
+   "bright_floor_cz_depths": [
+    1
+   ],
+   "idle_p1_above_readout_0_at_most": 0.15,
+   "depths": [
+    1,
+    5,
+    9
+   ],
+   "depth_1_contrast_upper_bound_floor": 0.5,
+   "upper_bound_z": 2.5758293035489004,
+   "r_planning_range": [
+    0.87,
+    0.97
+   ],
+   "c1_prediction": [
+    0.72,
+    0.82
+   ],
+   "bootstrap_draws": 4000,
+   "bootstrap_seed": 20261017,
+   "interval_percentiles": [
+    0.5,
+    99.5
+   ]
+  }
  },
  "batch": "batch-02",
  "stage": "t0",

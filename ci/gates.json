@@ -1740,17 +1740,25 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z && PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z",
    "name": "core-443",
-   "seconds": 49,
-   "tier": "pr"
+   "seconds": 160,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z",
+   "name": "core-449",
+   "seconds": 169,
+   "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --check results/live/2026-10-13T083417.634585Z",
    "name": "core-447",
-   "seconds": 190,
+   "seconds": 850,
    "tier": "full"
   },
   {
@@ -1758,7 +1766,7 @@
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --check results/live/2026-10-13T083417.634585Z",
    "name": "core-448",
-   "seconds": 199,
+   "seconds": 850,
    "tier": "full"
   },
   {
@@ -2596,6 +2604,38 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/capture_qd_docs.py --check",
+   "name": "core-500",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/capture_qd_docs.py --self-test && \"$PYTHON\" -B -O -W error scripts/capture_qd_docs.py --self-test",
+   "name": "core-501",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_platform.py check docs/evidence/quandela --agents AGENTS.md docs/notes/quandela/README.md",
+   "name": "core-502",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_platform.py --self-test && \"$PYTHON\" -B -O -W error scripts/qd_platform.py --self-test",
+   "name": "core-503",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test && \"$PYTHON\" -B -O -W error scripts/materialize_gororoba_csv.py --self-test",
    "name": "core-401",
    "seconds": 1.0,
@@ -3052,6 +3092,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_analysis.py --analyze-self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --analyze-self-test",
+   "name": "core-424",
+   "seconds": 48.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json && \"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_ry_analysis.json && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_ry_analysis.json",
+   "name": "core-425",
+   "seconds": 4.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/gl52_split_conjugators.py --self-test docs/evidence/gl52_split_conjugators/split.json && \"$PYTHON\" -B -O -W error scripts/gl52_split_conjugators.py --self-test docs/evidence/gl52_split_conjugators/split.json",
    "name": "core-490",
    "seconds": 30.0,
@@ -3167,6 +3223,30 @@
    "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --static-group-admission && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --static-group-admission",
    "name": "core-496",
    "seconds": 25.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/result.json && \"$PYTHON\" -B -O -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/result.json",
+   "name": "core-489",
+   "seconds": 64.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/lsq_conditioning_study.py --self-test && \"$PYTHON\" -B -O -W error scripts/lsq_conditioning_study.py --self-test",
+   "name": "core-492",
+   "seconds": 2.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error wheel_algebra.py --self-test && \"$PYTHON\" -B -O -W error wheel_algebra.py --self-test",
+   "name": "core-493",
+   "seconds": 3.9,
    "tier": "pr"
   },
   {
