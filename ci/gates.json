@@ -510,7 +510,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error complex_skew_contracts.py >/dev/null",
    "name": "core-063",
-   "seconds": 314.2,
+   "seconds": 142.6,
    "tier": "full"
   },
   {
@@ -518,8 +518,8 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -O -W error complex_skew_contracts.py >/dev/null",
    "name": "core-064",
-   "seconds": 210.2,
-   "tier": "full"
+   "seconds": 95.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
@@ -1334,15 +1334,15 @@
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/complex_skew/replay.py --check",
    "name": "sources-166",
-   "seconds": 142.2,
-   "tier": "full"
+   "seconds": 64.5,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/complex_skew/replay.py --check",
    "name": "sources-167",
-   "seconds": 265.1,
+   "seconds": 120.3,
    "tier": "full"
   },
   {
@@ -2542,7 +2542,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json --limit 20 && \"$PYTHON\" -B -O -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json --limit 20",
    "name": "core-323",
-   "seconds": 13.0,
+   "seconds": 2.6,
    "tier": "pr"
   },
   {
@@ -2550,8 +2550,8 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json && \"$PYTHON\" -B -O -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json",
    "name": "core-324",
-   "seconds": 372.6,
-   "tier": "full"
+   "seconds": 51.2,
+   "tier": "pr"
   },
   {
    "suite": "core",
@@ -2748,6 +2748,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/exact_rank.py --self-test && \"$PYTHON\" -B -O -W error scripts/exact_rank.py --self-test",
+   "name": "core-528",
+   "seconds": 5.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/check_qi_platform_retention.py && \"$PYTHON\" -B -O -W error scripts/check_qi_platform_retention.py",
    "name": "core-341",
    "seconds": 0.2,
@@ -2859,6 +2867,22 @@
    "name": "core-438",
    "seconds": 178.4,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_follow_design.py --check docs/evidence/box_kite_follow_design/design.json && \"$PYTHON\" -B -O -W error scripts/box_kite_follow_design.py --check docs/evidence/box_kite_follow_design/design.json",
+   "name": "core-439",
+   "seconds": 6.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_follow_design.py --self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_follow_design.py --self-test",
+   "name": "core-440",
+   "seconds": 4.3,
+   "tier": "pr"
   },
   {
    "suite": "core",
@@ -3167,7 +3191,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_analysis.py --analyze-self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --analyze-self-test",
    "name": "core-424",
-   "seconds": 48.5,
+   "seconds": 41.0,
    "tier": "pr"
   },
   {
@@ -3360,6 +3384,14 @@
    "cmd": "\"$PYTHON\" -B -W error diagnostic_experiments.py --self-test && \"$PYTHON\" -B -O -W error diagnostic_experiments.py --self-test && \"$PYTHON\" -B -W error qpu_planning_contracts.py --state-prep && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --state-prep",
    "name": "core-524",
    "seconds": 21.6,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json && \"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json && \"$PYTHON\" -B -O -W error scripts/n21_qx_conformance.py --self-test",
+   "name": "core-499",
+   "seconds": 50.5,
    "tier": "pr"
   },
   {

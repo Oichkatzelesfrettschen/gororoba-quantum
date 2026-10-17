@@ -575,6 +575,7 @@ at those versions, except the linters.
 | python-rustworkx, python-sympy | rustworkx 0.18.1, sympy 1.14.0 |
 | python-matplotlib | matplotlib 3.11.2 |
 | python-stim, python-mthree (with python-runningman), python-qiskit-experiments, python-quimb, python-cotengra, python-pyzx, python-galois | stim 1.16.0, mthree 3.0.0, qiskit-experiments 0.14.2, quimb 1.15.0, cotengra 0.8.2, pyzx 0.10.7, galois 0.4.11: the `quantum-tools` group a Kaggle kernel installs with `push --with quantum-tools` (`scripts/kaggle_run.py` PIN_GROUPS) |
+| python-flint | python-flint 0.9.0 (CI pin): exact rank modulo p (`nmod_mat`) and RREF null spaces (`fmpq_mat`) in `scripts/exact_rank.py`, and SymPy 1.14.0's ground types, which it selects when the version is on SymPy's tested list |
 | python-pytorch-opt-cuda, python-pandas | torch and pandas for python-octonion and python-cayley-dickson only |
 | python-ruff, mypy | newer than the CI pins ruff 0.14.11 and mypy 1.19.1; `uvx ruff@0.14.11` reproduces CI formatting |
 
@@ -692,17 +693,21 @@ type this account can submit to.
 
 **Execution facts.**
 - Tuna: native single-qubit gates last 20 ns, CZ 60 ns, measurement 800 ns,
-  initialization 200 or 500 us; rotation angles quantize to multiples of
-  pi/36; OpenSquirrel schedules as late as possible, `wait(n)` idles n
-  cycles of 20 ns, and mid-circuit measurement is allowed while binary-
-  controlled gates are not, so feed-forward is applied in post-processing.
+  initialization 200 or 500 us; H, CNOT and SWAP are decomposed, the other
+  gates of the tuna dialect are native; rotation angles quantize to
+  multiples of pi/36; the compiler passes decompose only, so a circuit runs
+  in the gate order written; OpenSquirrel schedules as late as possible,
+  `wait(n)` idles n cycles of 20 ns, and mid-circuit measurement is allowed
+  while binary-controlled gates are not, so feed-forward is applied in
+  post-processing ([tuna-17-run-design.md](docs/notes/quantum_inspire/tuna-17-run-design.md)).
 - Bit order: QX and Tuna results put qubit 0 at the rightmost character; the
   Ry emulator puts it at the leftmost (an X on q[0] read `10` in all 1024
   shots). An analysis states the order of the backend it reads.
 - The Ry emulator takes no measurement statements and measures every qubit
-  at the end; a circuit with a bit register, H and CNOT compiled remotely but
-  failed at execution with the job message "error interpreting cQASM script"
-  (its log stays empty), while the X-only form of its code example ran.
+  at the end; a circuit that declares a bit register compiles remotely and
+  fails at execution with the job message "error interpreting cQASM script"
+  (its log stays empty), while H, CNOT, Z, S and Rz run in a circuit without
+  one ([ry-emulator.md](docs/notes/quantum_inspire/ry-emulator.md)).
 - The Qiskit provider writes a multi-qubit barrier as per-qubit barriers, so
   a timing-sensitive case writes cQASM directly with explicit `wait`.
 
@@ -712,9 +717,10 @@ forty-two jobs of 2026-10-16 on QX, the Ry emulator and Tuna-17, so no metered s
 or credits apply to this account as observed; the limits are structural: the
 table's qubits, shots, per-job execution limit and batch and queue counts,
 plus the FAQ's three queued jobs per hardware backend, which is stricter than
-the API's five batch jobs. Tuna-17 executed 16384 shots in 9.9 to 15.4 s
-(0.60 to 0.94 ms per shot, deeper circuits slower); QX finished 2048 shots
-in 0.03 to 10.4 s.
+the API's five batch jobs. Tuna-17 execution time fits 3.0 s per job plus
+0.49 ms per shot over the retained jobs, so a 16384-shot job takes about 11 s
+and the 120 s pause, not the shots, sets a batch's cost; QX finished 2048
+shots in 0.03 to 10.4 s.
 Calibration and tuning run between user jobs (Tuna-17 read `calibrating`
 between two reads minutes apart), delay queued jobs and charge the account
 nothing. The general conditions license every uploaded algorithm, datum and
