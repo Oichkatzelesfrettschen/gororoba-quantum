@@ -1,0 +1,88 @@
+{
+ "schema": "qi-crosstalk-teleport-cases-v2",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 16384,
+ "drive_pulses": 40,
+ "wait_cycles": 40,
+ "batch_limit": 3,
+ "stars": [
+  {
+   "T": 0,
+   "A": 1,
+   "B": 2
+  },
+  {
+   "T": 3,
+   "A": 5,
+   "B": 6
+  },
+  {
+   "T": 4,
+   "A": 7,
+   "B": 8
+  },
+  {
+   "T": 11,
+   "A": 13,
+   "B": 14
+  },
+  {
+   "T": 12,
+   "A": 9,
+   "B": 15
+  }
+ ],
+ "paths": [
+  {
+   "I": 1,
+   "P1": 0,
+   "P2": 2,
+   "D": 4,
+   "input": "0"
+  },
+  {
+   "I": 5,
+   "P1": 3,
+   "P2": 6,
+   "D": 9,
+   "input": "1"
+  },
+  {
+   "I": 10,
+   "P1": 7,
+   "P2": 11,
+   "D": 8,
+   "input": "+"
+  },
+  {
+   "I": 14,
+   "P1": 12,
+   "P2": 15,
+   "D": 16,
+   "input": "+i"
+  }
+ ],
+ "batch": "batch-00",
+ "circuits": [
+  {
+   "file": "additivity-none.cq",
+   "kind": "additivity",
+   "config": "none",
+   "sha256": "04d932ba87693ceee8842a28849a04757c376d5ab348855eb5ccbb017e440409"
+  },
+  {
+   "file": "additivity-A.cq",
+   "kind": "additivity",
+   "config": "A",
+   "sha256": "fb05d345bf309036d7824fcbf47d6c4bd643f20a0fc3a5450dd99571978aefc9"
+  },
+  {
+   "file": "additivity-B.cq",
+   "kind": "additivity",
+   "config": "B",
+   "sha256": "1be73dd40bc110f5cd0c9931b939c65fc3c185b5f1a0ce942f06a9c7d13f5af1"
+  }
+ ]
+}

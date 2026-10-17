@@ -600,9 +600,13 @@ def check(retained: Path) -> None:
         )
     if record != measured(record):
         raise SystemExit(f"{retained}: measured Tuna-17 columns differ from {RUN_DIR.name}/analysis.json")
+    # The replayed bytes, the manifest digest and the record's circuit map agree.
+    if set(record["source_run"]["circuits"]) != {row["file"] for row in cases["circuits"]}:
+        raise SystemExit(f"{retained}: recorded circuits differ from the {RUN_DIR.name} manifest")
     for row in cases["circuits"]:
         text = (RUN_DIR / row["file"]).read_text(encoding="utf-8")
-        if hashlib.sha256(text.encode()).hexdigest() != record["source_run"]["circuits"][row["file"]]:
+        digest = hashlib.sha256(text.encode()).hexdigest()
+        if not digest == row["sha256"] == record["source_run"]["circuits"][row["file"]]:
             raise SystemExit(f"{retained}: circuit {row['file']} differs from the replayed one")
     body = replay(RUN_DIR, snapshot, CHECK_SHOTS, SEED, 1, 1)
     star, path = body["additivity"][0], body["teleport"][0]

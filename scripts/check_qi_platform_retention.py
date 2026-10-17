@@ -149,6 +149,87 @@ class FakeClient:
             raise TimeoutError("synthetic lost enqueue response after acceptance")
 
 
+ROOT = Path(__file__).resolve().parent.parent
+CASES = ROOT / "results/quantum_inspire/cases"
+
+
+class PreflightReached(Exception):
+    """Raised at submit's first request after every manifest and queue check passed."""
+
+
+class PreflightClient:
+    """A hardware backend that accepts the manifest's backend and shots and stops at the language lookup."""
+
+    member_id = 1
+
+    def __init__(self, cases: dict[str, Any]) -> None:
+        self.cases = cases
+
+    def get(self, path: str, **params: Any) -> Any:
+        if path == f"/backend_types/{self.cases['backend_type_id']}":
+            return {
+                "identifier": self.cases["backend"],
+                "name": self.cases["backend"],
+                "status": "idle",
+                "is_hardware": True,
+                "max_jobs_per_batch_job": 5,
+                "max_number_of_shots": self.cases["shots"],
+                "batchjobs_per_queue_limit": 5,
+            }
+        if path == f"/backend_types/{self.cases['backend_type_id']}/queue":
+            return {"number_of_jobs_in_queue": 0}
+        raise AssertionError(f"unexpected preflight GET {path}")
+
+    def pages(self, path: str, **params: Any) -> list[dict[str, Any]]:
+        raise PreflightReached(path)
+
+    def post(self, path: str, body: dict[str, Any]) -> dict[str, Any]:
+        raise AssertionError("a preflight check created a remote resource")
+
+
+class GeneratedCaseChecks(unittest.TestCase):
+    def test_every_generated_batch_passes_hardware_submission_checks(self) -> None:
+        manifests = [
+            path
+            for path in sorted(CASES.rglob("cases.json"))
+            if isinstance(json.loads(path.read_text(encoding="utf-8")).get("circuits"), list)
+        ]
+        self.assertTrue(manifests)
+        for manifest in manifests:
+            with self.subTest(case=manifest.parent.relative_to(CASES).as_posix()):
+                cases = json.loads(manifest.read_text(encoding="utf-8"))
+                self.assertLessEqual(len(cases["circuits"]), platform.HARDWARE_BATCH_CIRCUITS)
+                with tempfile.TemporaryDirectory() as scratch:
+                    case_dir = Path(scratch) / manifest.parent.name
+                    case_dir.mkdir()
+                    for name in ["cases.json", *(row["file"] for row in cases["circuits"])]:
+                        (case_dir / name).write_bytes((manifest.parent / name).read_bytes())
+                    with patch.object(platform, "Client", return_value=PreflightClient(cases)):
+                        with self.assertRaises(PreflightReached):
+                            platform.submit(case_dir, cases["backend_type_id"], "preflight fixture")
+                    self.assertFalse((case_dir / "submission-state.json").exists())
+
+    def test_retained_zero_divisor_runs_reproduce_through_their_batched_series(self) -> None:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import qi_zero_divisor_cases as zero_divisor
+
+        for name in ("zero_divisor_tuna_17", "zero_divisor_qx"):
+            with self.subTest(series=name), tempfile.TemporaryDirectory() as scratch:
+                retained = ROOT / f"results/quantum_inspire/runs/2026-10-16T221133Z-{name}"
+                runs = []
+                for manifest in sorted((CASES / name).glob("batch-*/cases.json")):
+                    run = Path(scratch) / manifest.parent.name
+                    (run / "raw").mkdir(parents=True)
+                    (run / "cases.json").write_bytes(manifest.read_bytes())
+                    for row in json.loads(manifest.read_text(encoding="utf-8"))["circuits"]:
+                        raw = f"raw/{row['file']}.json"
+                        (run / raw).write_bytes((retained / raw).read_bytes())
+                    runs.append(run)
+                self.assertGreater(len(runs), 1)
+                text = json.dumps(zero_divisor.analyze(runs), indent=1) + "\n"
+                self.assertEqual(text, (retained / "analysis.json").read_text(encoding="utf-8"))
+
+
 class RetentionChecks(unittest.TestCase):
     def setUp(self) -> None:
         self.directory = tempfile.TemporaryDirectory()
@@ -554,6 +635,14 @@ class RetentionChecks(unittest.TestCase):
             self.assertEqual(client.calls, before)
         self.assertEqual(self.output.getvalue(), "")
         self.assertEqual(len(module.server.tools), 11)
+
+    def test_mcp_compile_rejects_unknown_backend_before_remote_creation(self) -> None:
+        module = mcp_with_stubs()
+        client = FakeClient(self.case_dir)
+        with patch.object(module, "client", return_value=client):
+            with self.assertRaises(AssertionError):
+                module.qi_compile("version 3.0", 999)
+        self.assertEqual(client.calls, [("GET", "/backend_types/999")])
 
     def test_mcp_readonly_results_keep_their_interface(self) -> None:
         module = mcp_with_stubs()
