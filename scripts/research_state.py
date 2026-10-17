@@ -107,6 +107,11 @@ CLASSES: dict[str, dict[str, Any]] = {
         "excludes": "mechanisms the design does not isolate, and other devices or calibrations",
         "statuses": {"established", "superseded"},
     },
+    "preregistered emulator control": {
+        "establishes": "the registered exact outcomes of a noiseless emulator twin on the named acquisitions",
+        "excludes": "device noise and any hardware behavior; a hardware inference carries those",
+        "statuses": {"established", "superseded"},
+    },
     "exploratory reanalysis": {
         "establishes": "descriptive or post-selected summaries of retained data",
         "excludes": "confirmation; it motivates a prospective test",
@@ -130,7 +135,11 @@ NEEDS_REPRODUCING_GATE = {
     "numerical or stochastic simulation",
     "circuit-conformance check",
 }
-NEEDS_ACQUISITION = {"preregistered hardware inference", "exploratory reanalysis"}
+NEEDS_ACQUISITION = {
+    "preregistered hardware inference",
+    "preregistered emulator control",
+    "exploratory reanalysis",
+}
 # What a gate does for a claim: replay re-derives the claimed result, bytes
 # verifies retained files, freshness regenerates a source from its producer,
 # and admission exercises the replay procedure's failure paths.
@@ -936,6 +945,12 @@ def _mutations() -> Iterable[tuple[str, Callable[[dict[str, Any]], None], str]]:
     def hardware_without_acquisition(registry: dict[str, Any]) -> None:
         claim(registry, lambda c: c["evidence_class"] == "preregistered hardware inference")["acquisitions"] = []
 
+    def emulator_without_acquisition(registry: dict[str, Any]) -> None:
+        claim(registry, lambda c: c["evidence_class"] == "preregistered emulator control")["acquisitions"] = []
+
+    def emulator_exploratory(registry: dict[str, Any]) -> None:
+        claim(registry, lambda c: c["evidence_class"] == "preregistered emulator control")["status"] = "exploratory"
+
     def checksum_certificate(registry: dict[str, Any]) -> None:
         claim(registry, lambda c: c["evidence_class"] == "exact finite certificate")["gates"] = {"sources-242": "bytes"}
 
@@ -1008,6 +1023,8 @@ def _mutations() -> Iterable[tuple[str, Callable[[dict[str, Any]], None], str]]:
     yield "withdrawn claim names a missing successor", dangling_successor, "is not a claim"
     yield "successor omits the superseded claim", one_sided_supersession, "does not list it"
     yield "hardware inference without an acquisition", hardware_without_acquisition, "names its acquisitions"
+    yield "emulator control without an acquisition", emulator_without_acquisition, "names its acquisitions"
+    yield "emulator control marked exploratory", emulator_exploratory, "status"
     yield "certificate reproduced only by a checksum", checksum_certificate, "needs a replay gate"
     yield "lint gate counted as replay", lint_as_replay, "is a lint or byte check"
     yield "kernel receipt outside the pinned evidence", receipt_unpinned, "pinned as evidence"

@@ -9,13 +9,6 @@
     "twin-2.cq",
     "twin-3.cq"
    ]
-  },
-  {
-   "batch": "batch-01",
-   "files": [
-    "twin-4.cq",
-    "twin-5.cq"
-   ]
   }
  ]
 }
