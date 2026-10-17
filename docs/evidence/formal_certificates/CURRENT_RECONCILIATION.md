@@ -5,7 +5,7 @@ The current external theorem contracts extend open_gororoba base
 quantum commit `a3d95ab60b25c4a6f18e5ff7c0435b4947abceb8`.
 The [retained delta](observable-contracts-delta.txt) records the current proof
 scope and replay entry point. The [source snapshot](observable-contracts.tar.gz)
-retains 249 files: the complete 29-source receipt closure, 21 source-bound
+retains 254 files: the complete 29-source receipt closure, 21 source-bound
 witnesses and receipt specifications, 39 binding assets, the 160-declaration
 manifest, validator sources and raw compile/kernel/assumption logs.
 [Retrieval identity](observable-contracts-source.json) pins the external commit
