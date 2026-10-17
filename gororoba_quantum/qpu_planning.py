@@ -710,6 +710,30 @@ def execution_contract(choices: list[Any], record: dict[str, Any]) -> dict[str, 
     }
 
 
+def admitted_family_candidates(
+    runtime: Any, candidates: list[tuple[list[Any], dict[str, Any]]], trace: dict[str, Any]
+) -> list[tuple[list[Any], dict[str, Any]]]:
+    """Drop every candidate holding a group that runtime.group_admission_violations rejects on its snapshot.
+
+    Family builders construct Choices from direct compiles, outside
+    select_candidates, so this applies the predicate the pre-submit refresh
+    applies; each rejection names its backend, group and violations.
+    """
+    admitted = []
+    for choices, configuration in candidates:
+        rejected = [
+            f"{choice.group.name}: {'; '.join(violations)}"
+            for choice in choices
+            if (violations := runtime.group_admission_violations(choice.group, choice.snap.capabilities))
+        ]
+        if rejected:
+            backends = ",".join(sorted({choice.snap.name for choice in choices}))
+            trace.setdefault("family_rejections", []).append({"backend": backends, "reason": " | ".join(rejected)})
+            continue
+        admitted.append((choices, configuration))
+    return admitted
+
+
 def prepare(
     runtime: Any, snapshots: list[Any], args: Any, usage: dict[str, Any], trace: dict[str, Any]
 ) -> tuple[list[Any], dict[str, Any]]:
@@ -718,7 +742,7 @@ def prepare(
         import correction_planning
 
         return correction_planning.prepare(runtime, snapshots, args, usage, trace)
-    candidates = family_candidates(runtime, snapshots, args, trace)
+    candidates = admitted_family_candidates(runtime, family_candidates(runtime, snapshots, args, trace), trace)
     if not candidates:
         diagnostic = runtime._scrub_instances(runtime._jsonable(trace))
         raise runtime.LiveRunError(
