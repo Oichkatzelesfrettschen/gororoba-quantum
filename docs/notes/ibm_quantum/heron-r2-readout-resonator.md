@@ -435,9 +435,14 @@ Evidence for what the account devices expose, from the live API read
   (evidence: docs/evidence/heron_platform/backend_configuration.json,
   produced by scripts/heron_backend_config_snapshot.py). So chi, wr, kappa,
   qubit frequencies are not exposed
-  on the account's three Heron r2 devices. Qubit properties contain T1, T2,
-  init_error, prob_meas0_prep1, prob_meas1_prep0, readout_error,
-  readout_length only; no `frequency` or `anharmonicity` (the IBM page's
+  on the account's three Heron r2 devices. The retained inventory (same
+  file, read 2026-10-17) records for each of the three backends that
+  `backend.properties()` carries the per-qubit parameter names T1, T2,
+  init_error, prob_meas0_prep1, prob_meas1_prep0, readout_error and
+  readout_length only, with no `frequency` or `anharmonicity` name on any of
+  the 156 qubits, and that `backend.target.qubit_properties` lists 156
+  entries whose `frequency` is None on every qubit (`t1` and `t2` are
+  populated on 154 to 156 qubits). Values are not retained. (The IBM page's
   example output shows `frequency=None`, tagged as the page's own example,
   device unnamed).
 - IBM doc statement on durations: "For `measure`:
@@ -457,8 +462,8 @@ Evidence for what the account devices expose, from the live API read
   repetition fields are `default_rep_delay` and `rep_delay_range`. The sorted
   key names of all three backends are retained in
   docs/evidence/heron_platform/backend_configuration.json, and
-  `scripts/heron_backend_config_snapshot.py --check` (gates core-388 and
-  core-389) verifies these claims offline. Tag: DEVICE-MATCHED, stated by the
+  `scripts/heron_backend_config_snapshot.py --check` (gates sources-388 and
+  sources-389) verifies these claims offline. Tag: DEVICE-MATCHED, stated by the
   API (fields absent, so no LO range is exposed).
 - `backend_version` is exposed as a string; no public changelog maps its
   values to calibrations (section 1g).

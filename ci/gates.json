@@ -2066,18 +2066,18 @@
    "tier": "pr"
   },
   {
-   "suite": "core",
+   "suite": "sources",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -W error scripts/heron_backend_config_snapshot.py --check docs/evidence/heron_platform/backend_configuration.json",
-   "name": "core-388",
+   "name": "sources-388",
    "seconds": 0.3,
    "tier": "pr"
   },
   {
-   "suite": "core",
+   "suite": "sources",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -O -W error scripts/heron_backend_config_snapshot.py --check docs/evidence/heron_platform/backend_configuration.json",
-   "name": "core-389",
+   "name": "sources-389",
    "seconds": 0.3,
    "tier": "pr"
   },

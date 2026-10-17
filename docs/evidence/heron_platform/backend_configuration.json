@@ -58,6 +58,44 @@
    "processor_type": {
     "family": "Heron",
     "revision": "2"
+   },
+   "properties_qubit_parameters": {
+    "names": [
+     "T1",
+     "T2",
+     "init_error",
+     "prob_meas0_prep1",
+     "prob_meas1_prep0",
+     "readout_error",
+     "readout_length"
+    ],
+    "qubits_with_name": {
+     "T1": 156,
+     "T2": 155,
+     "init_error": 116,
+     "prob_meas0_prep1": 156,
+     "prob_meas1_prep0": 156,
+     "readout_error": 156,
+     "readout_length": 156
+    },
+    "qubits_with_non_none_value": {
+     "T1": 156,
+     "T2": 155,
+     "init_error": 116,
+     "prob_meas0_prep1": 156,
+     "prob_meas1_prep0": 156,
+     "readout_error": 156,
+     "readout_length": 156
+    }
+   },
+   "target_qubit_properties": {
+    "attribute_non_none_counts": {
+     "frequency": 0,
+     "t1": 156,
+     "t2": 155
+    },
+    "present": true,
+    "qubits": 156
    }
   },
   "ibm_kingston": {
@@ -118,6 +156,44 @@
    "processor_type": {
     "family": "Heron",
     "revision": "2"
+   },
+   "properties_qubit_parameters": {
+    "names": [
+     "T1",
+     "T2",
+     "init_error",
+     "prob_meas0_prep1",
+     "prob_meas1_prep0",
+     "readout_error",
+     "readout_length"
+    ],
+    "qubits_with_name": {
+     "T1": 155,
+     "T2": 154,
+     "init_error": 125,
+     "prob_meas0_prep1": 156,
+     "prob_meas1_prep0": 156,
+     "readout_error": 156,
+     "readout_length": 156
+    },
+    "qubits_with_non_none_value": {
+     "T1": 155,
+     "T2": 154,
+     "init_error": 125,
+     "prob_meas0_prep1": 156,
+     "prob_meas1_prep0": 156,
+     "readout_error": 156,
+     "readout_length": 156
+    }
+   },
+   "target_qubit_properties": {
+    "attribute_non_none_counts": {
+     "frequency": 0,
+     "t1": 155,
+     "t2": 154
+    },
+    "present": true,
+    "qubits": 156
    }
   },
   "ibm_marrakesh": {
@@ -178,10 +254,48 @@
    "processor_type": {
     "family": "Heron",
     "revision": "2"
+   },
+   "properties_qubit_parameters": {
+    "names": [
+     "T1",
+     "T2",
+     "init_error",
+     "prob_meas0_prep1",
+     "prob_meas1_prep0",
+     "readout_error",
+     "readout_length"
+    ],
+    "qubits_with_name": {
+     "T1": 154,
+     "T2": 152,
+     "init_error": 147,
+     "prob_meas0_prep1": 156,
+     "prob_meas1_prep0": 156,
+     "readout_error": 156,
+     "readout_length": 156
+    },
+    "qubits_with_non_none_value": {
+     "T1": 154,
+     "T2": 152,
+     "init_error": 147,
+     "prob_meas0_prep1": 156,
+     "prob_meas1_prep0": 156,
+     "readout_error": 156,
+     "readout_length": 156
+    }
+   },
+   "target_qubit_properties": {
+    "attribute_non_none_counts": {
+     "frequency": 0,
+     "t1": 154,
+     "t2": 152
+    },
+    "present": true,
+    "qubits": 156
    }
   }
  },
- "retrieved": "2026-10-17T05:33:40+00:00",
+ "retrieved": "2026-10-17T05:46:16+00:00",
  "versions": {
   "qiskit-ibm-runtime": "0.50.0"
  }
