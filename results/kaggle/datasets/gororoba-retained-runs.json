@@ -693,5 +693,12 @@
   "results/live/qpu-job-retention-audit.json": "7eb6a2458621aa96e1bcc04996aef2ce21a4c5c698fa47766b7cefb690534260",
   "results/ripple/measured-ripple.json": "066825757ae961e0b74652682248cf9d000674cb5f94589931f4c984d1f115b7"
  },
- "reply": "Starting upload for file repository-files.bundle\nUpload successful: repository-files.bundle (10MB)\nDataset version is being created. Please check progress at https://www.kaggle.com/datasets/probablyeric/gororoba-retained-runs"
+ "reply": "Starting upload for file repository-files.bundle\nUpload successful: repository-files.bundle (10MB)\nDataset version is being created. Please check progress at https://www.kaggle.com/datasets/probablyeric/gororoba-retained-runs",
+ "history": [
+  {
+   "archive_sha256": "3c89bc011d1ee8ce3b4ea5646876501d40ce1129f91a4c091530ab2a718b3df8",
+   "git_commit": "bc99a7bfb8d28530a8d7d688798246ee44273cbd",
+   "files": 659
+  }
+ ]
 }

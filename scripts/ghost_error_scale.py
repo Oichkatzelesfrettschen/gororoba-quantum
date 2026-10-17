@@ -46,6 +46,10 @@ the kernels' simulation fields unchanged and calibration-derived fields equal
 to a fresh recomputation; otherwise it names the first differing path.
 Several outputs are shard kernels, one or more runs each, whose headers
 (every field but ``runs``) agree; their runs concatenate into one part.
+``--self-test`` drives that comparison on synthetic parts with the
+regeneration replaced by the identity: shards in order pass, and swapped or
+missing shards, a differing header, a reserialized part and an empty kernel
+list each fail naming the first differing path.
 """
 
 from __future__ import annotations
@@ -57,6 +61,8 @@ import json
 import math
 import os
 import sys
+import tempfile
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -271,12 +277,18 @@ def merge_shards(shards: list[dict[str, Any]], names: list[str]) -> dict[str, An
     return merged
 
 
-def provenance(part_path: Path, kernel_paths: list[Path], index: dict[str, Any]) -> None:
-    """Require part_path's bytes to equal the regeneration of the kernel parts merged in order."""
+def provenance(
+    part_path: Path,
+    kernel_paths: list[Path],
+    index: dict[str, Any],
+    rebuild: Callable[[dict[str, Any], dict[str, Any]], dict[str, Any]] = regenerate,
+) -> None:
+    """Require part_path's bytes to equal rebuild() of the kernel parts merged in order."""
+    require(bool(kernel_paths), "--provenance needs PART and at least one KERNEL_OUTPUT")
     text = part_path.read_text(encoding="utf-8")
     names = [str(path) for path in kernel_paths]
     shards = [json.loads(path.read_text(encoding="utf-8")) for path in kernel_paths]
-    expected = regenerate(merge_shards(shards, names), index)
+    expected = rebuild(merge_shards(shards, names), index)
     source = " + ".join(names)
     if text != serialize(expected):
         where = first_difference(json.loads(text), expected)
@@ -286,6 +298,49 @@ def provenance(part_path: Path, kernel_paths: list[Path], index: dict[str, Any])
             else f"{part_path}: equal in value to the regeneration of {source} but serialized differently"
         )
     print(f"{part_path}: the regeneration of {source}")
+
+
+def expect_failure(action: Callable[[], Any], fragment: str) -> None:
+    try:
+        action()
+    except SystemExit as reason:
+        require(fragment in str(reason), f"self-test: failure {reason!s} lacks {fragment!r}")
+        return
+    raise SystemExit(f"self-test: expected a failure naming {fragment!r}")
+
+
+def self_test() -> None:
+    """--provenance on synthetic shards, with the identity in place of the archived-input regeneration."""
+    header = {"schema": SCHEMA, "device": "CPU", "max_qubits": 14, "seed": SEED, "grid": [[1.0, 1.0]]}
+    runs = [{"run": f"results/live/run-{k}", "tvd": [0.01 * k]} for k in range(3)]
+
+    def identity(part: dict[str, Any], _index: dict[str, Any]) -> dict[str, Any]:
+        return part
+
+    with tempfile.TemporaryDirectory() as scratch:
+        root = Path(scratch)
+        part = root / "part.json"
+        part.write_text(serialize({**header, "runs": runs}), encoding="utf-8")
+        shards = []
+        for k, run in enumerate(runs):
+            shards.append(root / f"shard-{k}.json")
+            shards[-1].write_text(serialize({**header, "runs": [run]}), encoding="utf-8")
+        whole = root / "whole.json"
+        whole.write_text(serialize({**header, "runs": runs}), encoding="utf-8")
+        foreign = root / "foreign.json"
+        foreign.write_text(serialize({**header, "device": "GPU", "runs": [runs[2]]}), encoding="utf-8")
+        spaced = root / "spaced.json"
+        spaced.write_text(json.dumps({**header, "runs": runs}, indent=1) + "\n", encoding="utf-8")
+
+        provenance(part, shards, {}, identity)
+        provenance(part, [whole], {}, identity)
+        expect_failure(lambda: provenance(part, [shards[1], shards[0], shards[2]], {}, identity), "at /runs[0]/run")
+        expect_failure(lambda: provenance(part, shards[:2], {}, identity), "at /runs[2]")
+        expect_failure(lambda: provenance(part, [*shards, shards[2]], {}, identity), "at /runs[3]")
+        expect_failure(lambda: provenance(part, [*shards[:2], foreign], {}, identity), "header differs from")
+        expect_failure(lambda: provenance(spaced, shards, {}, identity), "serialized differently")
+        expect_failure(lambda: provenance(part, [], {}, identity), "at least one KERNEL_OUTPUT")
+    print("ghost error-scale self-test: shard provenance merges in order and names every mismatch")
 
 
 def grid_means(points: list[dict[str, Any]], members: list[str]) -> list[float]:
@@ -661,7 +716,11 @@ def main() -> int:
         metavar="PATH",
         help="PART KERNEL_OUTPUT...: require PART to be the regeneration of the kernel parts merged in order",
     )
+    parser.add_argument("--self-test", action="store_true", help="exercise --provenance on synthetic shards")
     args = parser.parse_args()
+    if args.self_test:
+        self_test()
+        return 0
     if args.report:
         print(json.dumps(report(args.report), indent=1))
         return 0
@@ -670,7 +729,6 @@ def main() -> int:
         check(args.check, args.runs, index)
         return 0
     if args.provenance:
-        require(len(args.provenance) >= 2, "--provenance needs PART and at least one KERNEL_OUTPUT")
         provenance(args.provenance[0], args.provenance[1:], index)
         return 0
     if args.regenerate_diagnostics:
