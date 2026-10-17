@@ -39,12 +39,13 @@ import json
 import math
 import statistics
 import sys
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+sys.path.insert(0, str(ROOT / "scripts"))
 from diagnostic_experiments import family_contracts  # noqa: E402
 from experiment_optimizer import (  # noqa: E402
     BudgetContract,
@@ -56,8 +57,16 @@ from experiment_optimizer import (  # noqa: E402
     evaluate_candidate,
 )
 
-REFERENCE = ROOT / "results/live/2026-10-17T003834.987727Z/record.json"
+REFERENCE = ROOT / "results/live/2026-10-17T101105.548987Z/record.json"
 TARGETS = ROOT / "docs/evidence/heron_platform/targets.json"
+# Exact-model dry runs of the same family, oldest calibration first, and the
+# Kaggle validation record of the retained 2026-10-17T003834Z ISA.
+DRIFT_RECORDS = (
+    ROOT / "results/live/2026-10-17T091514.662497Z/record.json",
+    ROOT / "results/live/2026-10-17T094344.639211Z/record.json",
+    REFERENCE,
+)
+VALIDATION = ROOT / "docs/evidence/n21_exact_model/validation.json"
 BEGIN = "<!-- n21-usage-budget:begin -->"
 END = "<!-- n21-usage-budget:end -->"
 DT_SECONDS = 4e-9
@@ -66,9 +75,6 @@ LATENCY_SECONDS = 20e-6
 SIGNED = (0.0, 1.0, 0.0, -1.0)
 UNIFORM = (0.25, 0.25, 0.25, 0.25)
 VARIANCE_BOUND = 0.55
-# Disjoint one-hop-buffered placements of the encoded pattern on ibm_kingston,
-# layout score relative to the best (calibration 2026-10-17T01:53:33-07:00).
-KINGSTON_REPLICA_RATIOS = (1.0, 0.5983, 0.5619, 0.3324, 0.3251)
 
 
 # ---------------------------------------------------------------- billing
@@ -167,6 +173,8 @@ class Reference:
     laws: dict[str, tuple[float, ...]]
     calibration: str
     backend: str
+    # Exact laws of every replica of each replicated candidate, keyed by replica count.
+    replica_sets: dict[int, dict[str, tuple[tuple[float, ...], ...]]]
 
 
 def reference() -> Reference:
@@ -176,6 +184,7 @@ def reference() -> Reference:
         c for c in record["optimization"]["candidates"] if c["name"] == record["optimization"]["retained_candidate"]
     )
     rows = []
+    replica_sets: dict[int, dict[str, tuple[tuple[float, ...], ...]]] = {}
     for pub in candidate["jobs"][0]["pubs"]:
         member = pubs_by_name[pub["name"]]["components"][0]["member"]
         rows.append((pub["name"], member, float(pub["scheduled_seconds"]), int(pub["classical_stage_count"])))
@@ -184,13 +193,23 @@ def reference() -> Reference:
     exact = record.get("exact_model")
     if exact is not None:
         laws = {row["entry"]: tuple(row["exact"]) for row in exact["replicas"] if row["replica"] == 0}
+        counts = {
+            c["name"].rsplit("-shots-", 1)[0]: int(c["proxy_metadata"]["replicas"])
+            for c in record["optimization"]["candidates"]
+        }
+        for name, evidence in sorted(exact.get("candidates", {}).items()):
+            members: dict[str, list[tuple[float, ...]]] = {}
+            for row in evidence["replicas"]:
+                members.setdefault(row["entry"], []).append(tuple(row["exact"]))
+            replica_sets.setdefault(counts[name], {k: tuple(v) for k, v in members.items()})
     else:
         # A sampled record retains the optimizer's predicted contrast, not its
         # marginals; the group's laws, mixed toward uniform to that contrast,
         # stand in for them.
         ratio = candidate["observables"][0]["predicted_value"] / contrast(laws)
         laws = {name: toward_uniform(law, ratio) for name, law in laws.items()}
-    return Reference(tuple(rows), laws, group["calibration"], group["backend"])
+    replica_sets.setdefault(1, {name: (law,) for name, law in laws.items()})
+    return Reference(tuple(rows), laws, group["calibration"], group["backend"], replica_sets)
 
 
 def contrast(laws: dict[str, tuple[float, ...]]) -> float:
@@ -210,7 +229,8 @@ class Design:
     label: str
     model_shots: int | None  # None: exact model
     comparisons: int | None  # simulation comparisons the search counts
-    ratios: tuple[float, ...] = (1.0,)
+    replicas: int = 1
+    equal: bool = False  # every replica carries replica 0's law
     variance_bound: float | None = None
     rep_delay: float = 250e-6
     admitted: bool = True
@@ -221,7 +241,7 @@ def plan(ref: Reference, design: Design, shots: int) -> tuple[CandidatePlan, tup
     pubs = []
     bounds = []
     for name, member, seconds, stages in ref.pubs:
-        replicas = tuple(toward_uniform(ref.laws[member], ratio) for ratio in design.ratios)
+        replicas = (ref.laws[member],) * design.replicas if design.equal else ref.replica_sets[design.replicas][member]
         pubs.append(
             PubPrediction(
                 name,
@@ -282,15 +302,21 @@ def designs(ref: Reference) -> list[Design]:
     return [
         Design("as dry-run: sampled 65,536, 24 plans, Hoeffding, R=1", sampled, 48),
         Design("sampled 65,536, one plan, Hoeffding, R=1", sampled, 2),
-        Design("sampled 786,432 (Kaggle budget), one plan, Hoeffding, R=1", 786432, 2),
+        Design("sampled 589,824 (the Kaggle validation's size), one plan, Hoeffding, R=1", 589824, 2),
         Design("exact model, Hoeffding, R=1", None, None),
-        Design(
-            "exact, Cantelli V=0.55, R=2 (ratios 1, 0.598)", None, None, KINGSTON_REPLICA_RATIOS[:2], VARIANCE_BOUND
+        *(
+            Design(
+                f"exact, Cantelli V=0.55, R={count} {replica_label(ref, count)}",
+                None,
+                None,
+                count,
+                False,
+                VARIANCE_BOUND,
+            )
+            for count in sorted(ref.replica_sets)
+            if count > 1
         ),
-        Design(
-            "exact, Cantelli V=0.55, R=3 (1, 0.598, 0.562)", None, None, KINGSTON_REPLICA_RATIOS[:3], VARIANCE_BOUND
-        ),
-        Design("exact, Cantelli V=0.55, R=4 equal replicas", None, None, (1.0,) * 4, VARIANCE_BOUND),
+        Design("exact, Cantelli V=0.55, R=4 equal replicas (hypothetical)", None, None, 4, True, VARIANCE_BOUND),
         Design("exact, Hoeffding, R=1, rep_delay 100 us", None, None, rep_delay=100e-6, admitted=False),
         Design("exact, Hoeffding, R=1, rep_delay 50 us", None, None, rep_delay=50e-6, admitted=False),
     ]
@@ -308,7 +334,58 @@ def normal_shots(ref: Reference, alpha: float = 0.05, power: float = 0.8) -> int
     return math.ceil(z * z * variance / contrast(ref.laws) ** 2)
 
 
-def extension_shots(ref: Reference, kind: str, ratios: tuple[float, ...] = (1.0,), alpha: float = 0.05) -> int:
+def replica_contrasts(ref: Reference, count: int) -> list[float]:
+    feedback, control = (ref.replica_sets[count][name] for name in sorted(ref.replica_sets[count]))
+    return [(f[1] - f[3]) - (c[1] - c[3]) for f, c in zip(feedback, control, strict=True)]
+
+
+def replica_label(ref: Reference, count: int) -> str:
+    return "(replica contrasts " + ", ".join(f"{value:.4f}" for value in replica_contrasts(ref, count)) + ")"
+
+
+def detection_power_constant(alpha: float = 0.05, power: float = 0.8) -> float:
+    """K with detection plus power radius K / sqrt(n): Hoeffding, span 2, union over two PUBs."""
+    return 2 * sum(2 * math.sqrt(math.log(1 / tail) / 2) for tail in (alpha / 2, (1 - power) / 2))
+
+
+def drift_rows() -> list[tuple[str, str, str, float]]:
+    """The one-replica exact contrast of each retained source, with its calibration and layout."""
+    import n21_exact_model_validation
+
+    validation = json.loads(VALIDATION.read_text())
+    snapshot = json.loads((ROOT / validation["snapshot"]["path"]).read_text())
+    retained = json.loads((ROOT / "results/live/2026-10-17T003834.987727Z/record.json").read_text())
+    exact = n21_exact_model_validation.exact_laws(
+        ROOT / validation["snapshot"]["path"], ROOT / validation["isa"]["path"]
+    )
+    feedback, control = (exact[name] for name in sorted(exact))
+    qubits = retained["groups"][0]["replicas"][0]["physical_qubits"]
+    rows = [
+        (
+            "calibration snapshot, retained ISA",
+            snapshot["calibration"],
+            str(qubits),
+            (feedback[1] - feedback[3]) - (control[1] - control[3]),
+        )
+    ]
+    for path in DRIFT_RECORDS:
+        record = json.loads(path.read_text())
+        exact_rows = (
+            [row for row in record["exact_model"]["candidates"]["candidate-000"]["replicas"]]
+            if "candidates" in record["exact_model"]
+            else record["exact_model"]["replicas"]
+        )
+        laws_by_entry = {row["entry"]: row["exact"] for row in exact_rows if row["replica"] == 0}
+        feedback, control = (laws_by_entry[name] for name in sorted(laws_by_entry))
+        value = (feedback[1] - feedback[3]) - (control[1] - control[3])
+        group = record["groups"][0]
+        rows.append(
+            (f"dry run {path.parent.name}", group["calibration"], str(group["replicas"][0]["physical_qubits"]), value)
+        )
+    return rows
+
+
+def extension_shots(ref: Reference, kind: str, count: int = 1, alpha: float = 0.05) -> int:
     """Per-arm shots of finite-sample bounds experiment_optimizer does not implement (owner sign-off needed).
 
     "bernstein": Bernstein's inequality per PUB with the declared variance
@@ -318,7 +395,7 @@ def extension_shots(ref: Reference, kind: str, ratios: tuple[float, ...] = (1.0,
     detection (alpha / 2) and power (0.2 / 2) radii.
     """
     tails = (alpha / 2, 0.2 / 2)
-    effect = contrast(ref.laws) * math.fsum(ratios) / len(ratios)
+    effect = math.fsum(replica_contrasts(ref, count)) / count
 
     def radius(n: int) -> float:
         total = 0.0
@@ -327,7 +404,7 @@ def extension_shots(ref: Reference, kind: str, ratios: tuple[float, ...] = (1.0,
             if kind == "bernstein":
                 total += math.sqrt(2 * VARIANCE_BOUND * log / n) + 4 * log / (3 * n)
             else:
-                total += 2 * math.sqrt(log / (2 * n * len(ratios)))
+                total += 2 * math.sqrt(log / (2 * n * count))
         return 2 * total
 
     low, high = 1, 1 << 34
@@ -409,6 +486,19 @@ def render() -> str:
         lines.append(f"| {rep * 1e6:.0f} | {planner * 1e6:.1f} | {measured * 1e6:.1f} |")
     lines += [
         "",
+        "**Calibration drift of the exact contrast (one replica, Hoeffding, 250 us).**",
+        "",
+        "| Source | calibration | layout qubits | exact contrast | shots per arm | planner charge (s) |",
+        "| --- | --- | --- | --- | --- | --- |",
+    ]
+    for source, calibration, qubits, value in drift_rows():
+        shots = math.ceil((detection_power_constant() / value) ** 2)
+        lines.append(
+            f"| {source} | {calibration} | {qubits} | {value:.4f} | {shots:,} | "
+            f"{OVERHEAD_SECONDS + shots * sum(t + s * LATENCY_SECONDS + 250e-6 for _, _, t, s in ref.pubs):.1f} |"
+        )
+    lines += [
+        "",
         f"**Shots and seconds.** Reference modeled contrast difference {c0:.4f} (ideal 0.25); alpha 0.05, "
         "power 0.8, one-sided, union bound over the two PUBs, as `family_contracts` declares.",
         "",
@@ -435,9 +525,13 @@ def render() -> str:
     pair = sum(t + s * LATENCY_SECONDS + 250e-6 for _, _, t, s in ref.pubs)
     for label, shots in (
         ("extension: Bernstein with V=0.55, R=1", extension_shots(ref, "bernstein")),
-        (
-            "extension: Hoeffding over independent replicas, R=3 (1, 0.598, 0.562)",
-            extension_shots(ref, "independent", KINGSTON_REPLICA_RATIOS[:3]),
+        *(
+            (
+                f"extension: Hoeffding over independent replicas, R={count} {replica_label(ref, count)}",
+                extension_shots(ref, "independent", count),
+            )
+            for count in sorted(ref.replica_sets)
+            if count > 1
         ),
         ("normal approximation, one-sided alpha 0.05, pooled variance", normal_shots(ref)),
     ):
@@ -472,32 +566,42 @@ def splice(text: str, block: str) -> str:
 
 
 def self_test() -> None:
-    """The sizing path reproduces the reference dry run's own optimizer radii."""
+    """The sizing path reproduces every candidate of the reference dry run: prediction, radii and charge."""
     record = json.loads(REFERENCE.read_text())
     ref = reference()
-    if record.get("exact_model") is not None:
-        print("n21 usage budget: reference carries exact laws; radii comparison applies to sampled records")
-        return
-    design = Design(
-        "as dry-run",
-        int(record["policy"]["design"]["model_shots"]),
-        int(record["optimization"]["simulation_comparisons"]),
-    )
-    retained = next(
-        c for c in record["optimization"]["candidates"] if c["name"] == record["optimization"]["retained_candidate"]
-    )
-    shots = retained["jobs"][0]["pubs"][0]["shots"]
-    _ok, result = feasible(ref, design, shots)
-    mine, theirs = result.observables[0], retained["observables"][0]
-    for key in ("predicted_value", "simulation_error_radius", "detection_radius", "power_radius"):
-        if not math.isclose(getattr(mine, key), theirs[key], rel_tol=1e-9, abs_tol=1e-12):
-            raise AssertionError(f"{key}: {getattr(mine, key)} != {theirs[key]}")
-    if not math.isclose(result.estimated_charge_seconds, retained["estimated_charge_seconds"], rel_tol=1e-9):
-        raise AssertionError("charge differs from the retained candidate")
-    replicated = replace(design, ratios=(1.0, 1.0))
-    if feasible(ref, replicated, shots)[1].observables[0].detection_radius != mine.detection_radius:
+    design_settings = record["policy"]["design"]
+    exact = record.get("exact_model") is not None
+    checked = 0
+    for candidate in record["optimization"]["candidates"]:
+        count = int(candidate["proxy_metadata"]["replicas"])
+        if count not in ref.replica_sets:
+            continue
+        design = Design(
+            candidate["name"],
+            None if exact else int(design_settings["model_shots"]),
+            None if exact else int(record["optimization"]["simulation_comparisons"]),
+            count,
+            False,
+            design_settings.get("replica_variance_bound") if count > 1 else None,
+        )
+        shots = candidate["jobs"][0]["pubs"][0]["shots"]
+        _ok, result = feasible(ref, design, shots)
+        mine, theirs = result.observables[0], candidate["observables"][0]
+        for key in ("predicted_value", "simulation_error_radius", "detection_radius", "power_radius"):
+            if not math.isclose(getattr(mine, key), theirs[key], rel_tol=1e-9, abs_tol=1e-12):
+                raise AssertionError(f"{candidate['name']} {key}: {getattr(mine, key)} != {theirs[key]}")
+        if not math.isclose(result.estimated_charge_seconds, candidate["estimated_charge_seconds"], rel_tol=1e-9):
+            raise AssertionError(f"{candidate['name']}: charge differs from the record")
+        checked += 1
+    if checked == 0:
+        raise AssertionError("no reference candidate was reproduced")
+    unbounded = Design("unbounded", None, None, 4, True)
+    single = Design("single", None, None)
+    if feasible(ref, unbounded, 8192)[1].observables[0].detection_radius != (
+        feasible(ref, single, 8192)[1].observables[0].detection_radius
+    ):
         raise AssertionError("replicas without a covariance bound must leave the Hoeffding radius unchanged")
-    print("n21 usage budget: sizing reproduces the reference dry run's radii and charge")
+    print(f"n21 usage budget: sizing reproduces {checked} reference candidates' radii and charges")
 
 
 def main() -> int:
