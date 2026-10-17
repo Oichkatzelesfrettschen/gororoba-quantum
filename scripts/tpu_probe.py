@@ -17,7 +17,9 @@ and 330 GB RAM where a CPU session has 4 cores and 30 GB
 ``/dev/accel*`` or numbered ``/dev/vfio`` group nodes (``/dev/vfio/vfio`` is the
 control node any VFIO-capable host has) and as PCI functions of vendor 0x1ae0
 (Google), and Kaggle's TPU image sets ``ISTPUVM=1``. ``KAGGLE_DOCKER_IMAGE``
-names the image the session received.
+names the image the session received. The record is written to ``--out``
+after the hardware block and again after each later stage, so a session that
+fails inside JAX leaves the hardware facts.
 """
 
 from __future__ import annotations
@@ -134,11 +136,18 @@ def hardware() -> dict[str, Any]:
     }
 
 
+def save(out: dict[str, Any], path: Path) -> None:
+    """Write the record as it stands; each stage calls it so a later failure leaves the earlier facts."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
     out: dict[str, Any] = {"schema": "tpu-probe-v2", "python": platform.python_version(), "hardware": hardware()}
+    save(out, args.out)
     versions: dict[str, str | None] = {}
     for name in ("jax", "jaxlib", "libtpu", "libtpu-nightly", "jax-cuda12-plugin", "torch", "torch_xla"):
         try:
@@ -146,23 +155,25 @@ def main() -> int:
         except importlib.metadata.PackageNotFoundError:
             versions[name] = None
     out["versions"] = versions
+    save(out, args.out)
     try:
         import jax
     except ImportError as failure:
         out["jax_import"] = f"{type(failure).__name__}: {failure}"
-        args.out.parent.mkdir(parents=True, exist_ok=True)
-        args.out.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
+        save(out, args.out)
         return 0
     out["default_backend"] = jax.default_backend()
     out["devices"] = [
         {"platform": d.platform, "kind": getattr(d, "device_kind", None), "id": d.id} for d in jax.devices()
     ]
+    save(out, args.out)
     try:
         tpus = jax.devices("tpu")
         out["tpu_devices"] = [str(d) for d in tpus]
     except RuntimeError as failure:
         tpus = []
         out["tpu_devices"] = f"RuntimeError: {failure}"
+    save(out, args.out)
     if tpus:
         n = 3
         result, cold, warm = replay(n, tpus[0])
@@ -174,8 +185,7 @@ def main() -> int:
             "cold_seconds": round(cold, 4),
             "warm_seconds": round(warm, 6),
         }
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
+    save(out, args.out)
     print(json.dumps(out), flush=True)
     return 0
 
