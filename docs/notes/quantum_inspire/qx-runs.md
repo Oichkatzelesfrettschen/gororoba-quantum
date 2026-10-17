@@ -101,6 +101,15 @@ A local run needs no account, queue or approval and records nothing.
 4. Treat agreement as a syntax and plumbing check: qxelarator shares QX's
    simulator, so it reproduces QX's register shape but says nothing about
    Tuna's.
+5. Keep `reset` out of any circuit whose law qxelarator must reproduce.
+   qxelarator 0.10.0's `reset` on a qubit with weight on |1> discards the
+   relative phase of the rest of the register: with q0 in |1> and q1 in
+   |->, `reset q[0]` followed by H on q1 reads q1 = 0 in 1000 of 1000 shots,
+   where a phase-preserving reset reads 1 (the same program with X in place
+   of the reset reads q1 = 1 in 1000 of 1000). Issue #223 holds the
+   amplitude-level evidence; the remote QX backend is untested. No
+   box-kite dialect maps `reset` (`box_kite_cases.DIALECTS`), so `emit`
+   refuses it for every generated case.
 
 ## Do a QX dry run (remote emulator)
 
@@ -164,5 +173,6 @@ global rate. It follows the dry-run procedure with three changes:
 | pennylane-quantuminspire | 0.15.5 | not installed (PennyLane >= 0.43, < 0.46) |
 
 The repository's Python 3.14 stack never imports these (they cap Python
-below 3.14), and CI checks only retained JSON, so a toolchain check runs
-under `$QI_PYTHON` and retains its output for a CI gate to compare.
+below 3.14), so a toolchain check runs under `$QI_PYTHON` and retains its
+output; the gate shards compare the retained output, and CI's `qi-stack` job
+reruns the toolchain under `$QI_PYTHON` and requires the same bytes.

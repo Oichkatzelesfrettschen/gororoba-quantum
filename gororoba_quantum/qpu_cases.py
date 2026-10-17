@@ -35,6 +35,7 @@ FAMILIES = {
     "coherence-window",
     "ripple",
     "rank-sector",
+    "state-prep-control",
 }
 # Families that run on one pinned patch and carry its six physical qubits.
 PATCH_FAMILIES = ("patch-window", "coherence-window")
@@ -68,6 +69,8 @@ _MAPPING_FIELDS = (
     "measure_dt",
     "window_dt",
     "readout_qubits",
+    "qubits",
+    "source_replicas",
 )
 
 
@@ -241,6 +244,14 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
     if design["optimize"]:
         arguments.append("--optimize")
     arguments.extend(_patch_arguments(record))
+    configuration = record["family_configuration"]
+    if family == "state-prep-control" and configuration.get("layout_source") == "declared":
+        qubits = configuration["qubits"]
+        _require(
+            isinstance(qubits, list) and bool(qubits) and all(type(q) is int and q >= 0 for q in qubits),
+            "state-prep-control names nonnegative qubits",
+        )
+        arguments.extend(["--layout", ",".join(str(qubit) for qubit in qubits)])
     arguments.extend(["--backends", ",".join(backends), "--shots", str(_count(record["shots"], "shots"))])
     for backend_name, qubits in sorted(policy.get("operator_excluded_qubits", {}).items()):
         _require(
@@ -252,6 +263,11 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         value = policy[name]
         _number(value, name)
         arguments.extend(["--" + name.replace("_", "-"), str(value)])
+    # A requested repetition delay sets every job's Sampler rep_delay and its
+    # charge; the approval binds it, so the replay passes it.
+    if "rep_delay_seconds" in policy:
+        _require(_number(policy["rep_delay_seconds"], "rep_delay_seconds") >= 0, "rep_delay must be nonnegative")
+        arguments.extend(["--rep-delay", str(policy["rep_delay_seconds"])])
     for name in ("replica_floor", "max_replicas"):
         if policy[name] is not None:
             _number(policy[name], name, positive=True)
@@ -278,6 +294,10 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
     if variance_bound is not None:
         _number(variance_bound, "replica_variance_bound", positive=True)
         arguments.extend(["--replica-variance-bound", str(variance_bound)])
+    if "prep_excitation" in design:
+        excitation = _number(design["prep_excitation"], "prep_excitation")
+        _require(0 <= excitation < 1, "prep_excitation must lie in [0, 1)")
+        arguments.extend(["--prep-excitation", str(design["prep_excitation"])])
     arguments.extend(["--out", (Path("..") / location.parent).as_posix()])
     return arguments
 
@@ -354,6 +374,11 @@ def _validate_costs(candidate: dict[str, Any], record: dict[str, Any]) -> None:
                 )
             ]
             _require(all(value >= 0 for value in durations), "PUB duration components must be nonnegative")
+            if "rep_delay_seconds" in policy:
+                _require(
+                    pub["repetition_delay_seconds"] == policy["rep_delay_seconds"],
+                    "PUB repetition delay differs from the requested --rep-delay",
+                )
             expected = expected_shots * math.fsum(durations)
             _require(expected > 0, "PUB repetition duration must be positive")
             _require(
@@ -1308,6 +1333,47 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "reported only where |C| supports it.",
             "",
         ]
+    if family == "state-prep-control":
+        configuration = record["family_configuration"]
+        qubits = configuration["qubits"]
+        backends = ", ".join(sorted({_identifier(group["backend"], "backend") for group in record["groups"]}))
+        delay = record["policy"].get("rep_delay_seconds")
+        delay_text = (
+            f"a requested repetition delay of {_format_number(delay * 1e6)} us (`--rep-delay {delay}`)"
+            if delay is not None
+            else "the backend's default repetition delay"
+        )
+        origin = (
+            "the declared layout"
+            if configuration.get("layout_source") == "declared"
+            else f"the replica qubits of `{configuration['layout_source']}`"
+        )
+        return [
+            "## Scientific question and interpretation",
+            "",
+            f"The state-prep-control family measures, on {len(qubits)} qubits of {backends} ({origin}: "
+            f"{', '.join(str(q) for q in qubits)}), the excited fraction each qubit carries after the "
+            f"Sampler's implicit initialization at {delay_text}. Three PUBs measure every qubit in each "
+            "shot: A initializes and measures (residual excitation plus readout misassignment), B adds an "
+            "active reset before the measure, and C applies an X before the measure (the |1> column of the "
+            "assignment matrix). A and C share the static job; B, which the reset makes dynamic, runs in its "
+            "own job with twirling and dynamical decoupling off.",
+            "",
+            "Under the readout channel e10 = prob_meas1_prep0, e01 = prob_meas0_prep1, A reads "
+            "(1 - eps) e10 + eps (1 - e01), so the initial excitation is eps = (A - e10) / (1 - e01 - e10) "
+            "(diagnostic_experiments.state_prep_excitation), the value dynamic_density's prep_excitation and "
+            "live_run's --prep-excitation take. The reset benefit A - B is positive only where "
+            "initialization leaves more excitation than the reset's own misassignment. The calibration "
+            "noise model starts every qubit in |0>, so it prices A at the readout error alone; the residual "
+            "excitation is the device property this run measures, and only the device answers it.",
+            "",
+            f"Three two-sided precision contracts per qubit, {3 * len(qubits)} in all, split the family-wise "
+            "alpha evenly and admit the design: half-width 0.025 on A and on C, 0.05 on A - B, Hoeffding "
+            "radii valid under arbitrary dependence between the qubits of one shot. They price resolution, "
+            "not an effect. The comparison of A between two repetition delays spans two jobs, so it is "
+            "outside these contracts; the written addendum states that comparison and its decision rule.",
+            "",
+        ]
     if family == "patch-window":
         configuration = record["family_configuration"]
         roles = configuration.get("patch_roles") or [
@@ -1403,6 +1469,18 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "",
             ]
             if family == "n21-feedback-encoded"
+            else []
+        ),
+        *(
+            [
+                f"The model starts every active qubit with a declared excitation of "
+                f"{_format_number(record['policy']['design']['prep_excitation'])} "
+                "(`--prep-excitation`): the exact law and its sampled falsifier both apply that initial bit "
+                "flip, a planning assumption until a state-prep-control run measures it at the run's "
+                "repetition delay.",
+                "",
+            ]
+            if "prep_excitation" in record["policy"]["design"]
             else []
         ),
         "Gate noise, measurement/reset disturbance, conditional-control latency, routing changes, "
@@ -1973,6 +2051,28 @@ def _verify() -> None:
         exact["policy"]["design"].update(model_method="exact", replica_variance_bound=0.55)
         exact_arguments = _reproduction_arguments(exact, Path("results/live/fixture/record.json"))
         assert "--model-method exact --replica-variance-bound 0.55" in " ".join(exact_arguments)
+        assert "--rep-delay" not in text and "--prep-excitation" not in text
+        excited = copy.deepcopy(exact)
+        excited["policy"]["design"]["prep_excitation"] = 0.01
+        excited_arguments = _reproduction_arguments(excited, Path("results/live/fixture/record.json"))
+        assert "--prep-excitation 0.01" in " ".join(excited_arguments)
+        assert any("declared excitation of 0.01" in line for line in _scientific_case("n21-feedback", excited))
+        delayed = copy.deepcopy(record)
+        delayed["policy"]["rep_delay_seconds"] = 0.00025
+        delayed_arguments = _reproduction_arguments(delayed, Path("results/live/fixture/record.json"))
+        assert "--rep-delay 0.00025" in " ".join(delayed_arguments)
+        delayed["policy"]["rep_delay_seconds"] = 0.0001
+        selected = next(
+            candidate
+            for candidate in delayed["optimization"]["candidates"]
+            if candidate["name"] == delayed["optimization"]["selected"]
+        )
+        try:
+            _validate_costs(selected, delayed)
+        except ValueError as error:
+            assert "requested --rep-delay" in str(error)
+        else:
+            raise AssertionError("a cost ledger at another repetition delay passed the requested --rep-delay")
         _verify_covariance_falsifier(record)
         assert all((run_dir / name).read_bytes() == value for name, value in originals.items())
         for family, phrase in (("ripple", "box-kite phase atlas"), ("rank-sector", "coefficient-dependent LCU")):
