@@ -3395,6 +3395,30 @@
    "tier": "pr"
   },
   {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_zero_divisors.py --check docs/evidence/wheel_zero_divisors/result.json && \"$PYTHON\" -B -O -W error scripts/wheel_zero_divisors.py --check docs/evidence/wheel_zero_divisors/result.json",
+   "name": "core-494",
+   "seconds": 57.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_zero_divisors.py --self-test && \"$PYTHON\" -B -O -W error scripts/wheel_zero_divisors.py --self-test",
+   "name": "core-497",
+   "seconds": 5.8,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error gaussian_wheel.py --self-test && \"$PYTHON\" -B -O -W error gaussian_wheel.py --self-test",
+   "name": "core-498",
+   "seconds": 10.7,
+   "tier": "pr"
+  },
+  {
    "suite": "sources",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/wheel_rust_audit.py --check docs/evidence/wheel_rust_audit && \"$PYTHON\" -B -O -W error scripts/wheel_rust_audit.py --check docs/evidence/wheel_rust_audit",
