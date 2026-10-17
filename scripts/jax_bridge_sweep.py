@@ -437,6 +437,39 @@ def superop_distance(stack: np.ndarray, error: Any) -> float:
     return float(np.max(np.abs(SuperOp(Kraus(list(stack))).data - SuperOp(error.to_quantumchannel()).data)))
 
 
+def non_cz_channels(noise: Any) -> dict[str, Any]:
+    """calibration_snapshot.channel_table of noise without its cz entries."""
+    return {k: e for k, e in calibration_snapshot.channel_table(noise).items() if not k.startswith("cz[")}
+
+
+@dataclass
+class ScaledModelCheck:
+    """Builds snapshot's Aer noise model at one CZ factor (readout factor 1, ghost_error_scale.scaled) and checks it.
+
+    Returns whether every non-CZ channel equals base's, the model itself at
+    a factor in keep, and its CZ errors on couplers at a factor in contract.
+    """
+
+    snapshot: dict[str, Any]
+    base: dict[str, Any]
+    couplers: list[tuple[int, ...]]
+    keep: tuple[float, ...]
+    contract: tuple[float, ...]
+
+    def __call__(self, factor: float) -> tuple[bool, Any, dict[tuple[int, ...], Any]]:
+        model = calibration_snapshot.noise_model(ghost_error_scale.scaled(self.snapshot, factor, 1.0))[1]
+        others = non_cz_channels(model)
+        equal = others.keys() == self.base.keys() and all(others[k] == self.base[k] for k in others)
+        errors = model._local_quantum_errors["cz"]
+        cz = {qargs: errors[qargs] for qargs in self.couplers} if factor in self.contract else {}
+        return equal, model if factor in self.keep else None, cz
+
+
+def stack_distance(item: tuple[np.ndarray, Any]) -> float:
+    """superop_distance of one (rescaled CZ stack, Aer QuantumError) pair."""
+    return superop_distance(*item)
+
+
 def programs_equal(left: jax_bridge.Program, right: jax_bridge.Program) -> bool:
     return (
         left.n == right.n
@@ -511,36 +544,37 @@ def self_test(device: str | None) -> dict[str, Any]:
     # CZ channels: the rescaled stack of every coupler equals the channel of
     # a freshly built scaled noise model, and every other channel of that
     # model equals the factor-1 one.
+    # Each factor's build and comparison runs for seconds, so the six factors
+    # map with min_items=1. The models of REFERENCE_FACTORS return to this
+    # process, where the reproduction's exports key their Kraus caches by
+    # object id; the (coupler, factor) superop distances map as one list.
     clock = time.perf_counter()
-    models = {
-        c: calibration_snapshot.noise_model(ghost_error_scale.scaled(state.snapshot, c, 1.0))[1]
-        for c in sorted({*CONTRACT_FACTORS, *REFERENCE_FACTORS})
-    }
-    base_table = {k: e for k, e in calibration_snapshot.channel_table(state.noise).items() if not k.startswith("cz[")}
     # The couplers the reduced case drives, and every coupler whose reported
     # error already exceeds the 4/5 cap.
     couplers = sorted(
         {qargs for programs in restructured.values() for _, qargs in programs[0].cz}
         | {tuple(e["qargs"]) for e in state.snapshot["instructions"]["cz"] if (e["error"] or 0) > 4 / 5}
     )
+    factors = sorted({*CONTRACT_FACTORS, *REFERENCE_FACTORS})
+    check = ScaledModelCheck(
+        state.snapshot, non_cz_channels(state.noise), couplers, REFERENCE_FACTORS, CONTRACT_FACTORS
+    )
+    built = dict(zip(factors, parallel.ordered_map(check, factors, min_items=1), strict=True))
+    models = {factor: model for factor, (_, model, _) in built.items() if model is not None}
     branches = {"zero_depolarizing": 0, "interior": 0, "error_cap": 0, "depolarizing_cap": 0}
-    channel_distance = 0.0
-    for factor, model in models.items():
-        others = {k: e for k, e in calibration_snapshot.channel_table(model).items() if not k.startswith("cz[")}
-        require(
-            others.keys() == base_table.keys() and all(others[k] == base_table[k] for k in others),
-            f"factor {factor}: a channel other than cz differs from the factor-1 model",
-        )
+    checks: list[tuple[np.ndarray, Any]] = []
+    for factor, (equal, _, errors) in built.items():
+        require(equal, f"factor {factor}: a channel other than cz differs from the factor-1 model")
         if factor not in CONTRACT_FACTORS:
             continue
-        errors = model._local_quantum_errors["cz"]
         for qargs in couplers:
             channel, reported = state.channel(qargs)
             error = cz_error(reported, factor)
             p = channel.depolarizing(error)
             branches["zero_depolarizing" if p == 0 else "depolarizing_cap" if p == 16 / 15 else "interior"] += 1
             branches["error_cap"] += error is not None and error > 4 / 5
-            channel_distance = max(channel_distance, superop_distance(state.stack(qargs, factor), errors[qargs]))
+            checks.append((state.stack(qargs, factor), errors[qargs]))
+    channel_distance = max([0.0, *parallel.ordered_map(stack_distance, checks)])
     require(channel_distance <= CHANNEL_TOLERANCE, f"rescaled CZ channel differs from Aer's by {channel_distance}")
     require(all(branches.values()), f"the contract factors leave a branch unreached: {branches}")
     timing["cz_channels"] = time.perf_counter() - clock
