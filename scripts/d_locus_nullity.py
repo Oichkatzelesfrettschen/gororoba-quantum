@@ -32,7 +32,8 @@ then sets membership in V(a), by exact rank, against the A_5 nullity.
 Falsifier: a member with nullity other than 12, or a non-member with nullity
 other than 8. Nullity is certified as in moreno_stiefel_nullity.certify: the
 rank modulo 2^61 - 1 bounds the rational rank below and exact rational kernel
-vectors bound it above.
+vectors bound it above. scripts/exact_rank.py computes both through FLINT, and
+each kernel vector is checked in Python integer arithmetic.
 
 Usage:
     "$PYTHON" scripts/d_locus_nullity.py --out docs/evidence/d_locus_nullity/result.json
@@ -72,7 +73,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
-from moreno_stiefel_nullity import PRIME, cayley_frame, check_left_matrix, rank_mod, rational_kernel  # noqa: E402
+from exact_rank import rank_mod, rational_kernel  # noqa: E402
+from moreno_stiefel_nullity import PRIME, cayley_frame, check_left_matrix  # noqa: E402
 
 import parallel  # noqa: E402
 from cd_core import cd_sign  # noqa: E402
@@ -120,6 +122,13 @@ def span_rank(vectors: list[Vector]) -> int:
     return rank_mod(integer_rows(vectors), PRIME) if vectors else 0
 
 
+def annihilates(matrix: list[list[int]], vector: Vector) -> bool:
+    """matrix x = 0, checked on the integer vector lcm(denominators) x in Python integer arithmetic."""
+    common = math.lcm(*(value.denominator for value in vector))
+    scaled = [value.numerator * (common // value.denominator) for value in vector]
+    return all(sum(entry * x for entry, x in zip(row, scaled, strict=True)) == 0 for row in matrix)
+
+
 def nullity(dim: int, v: Vector) -> int:
     """Rank modulo PRIME bounds the rational rank below; verified kernel vectors bound it above."""
     matrix = integer_rows(left_rational(dim, v))
@@ -127,13 +136,7 @@ def nullity(dim: int, v: Vector) -> int:
     if rank == dim:
         return 0
     basis = rational_kernel(matrix)
-    _require(
-        all(
-            all(value == 0 for value in apply([[Fraction(x) for x in row] for row in matrix], vector))
-            for vector in basis
-        ),
-        "a rational kernel vector fails L_v x = 0",
-    )
+    _require(all(annihilates(matrix, vector) for vector in basis), "a rational kernel vector fails L_v x = 0")
     _require(rank + len(basis) == dim, f"rank {rank} modulo P and {len(basis)} kernel vectors do not bound the nullity")
     return dim - rank
 
