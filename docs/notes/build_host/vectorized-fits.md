@@ -7,8 +7,9 @@ One scalar fit evaluates `h2_at` about 607 times (a 401-point `T_GRID` scan,
 two-parameter least squares over 6 arms in pure Python. `fit_h2_batch` runs
 the same fit for a block of replicates at once and returns the scalar fit's
 bits for every replicate. The full record, 2.8 million fits, regenerates in
-163 s pooled and 573 s serial on the 12-CPU build host instead of about 2
-hours on a Kaggle CPU kernel, and its bytes equal the retained scalar record
+163 s pooled and 573 s serial on the 12-CPU build host, where the scalar
+code took 7317 s on a 4-CPU Kaggle kernel, and its bytes equal the retained
+scalar record
 (`results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json`,
 sha256 dd8e1ed2c2a5fd1f608b2396b820cdc2798b63286dcfa2cd641436d8a01e3153).
 
@@ -63,8 +64,10 @@ lies within `GRID_PRUNE` = 2^-30 (relative, plus `sw * 2^-1000` absolute for
 squares in the subnormal range) of the fast minimum, so only those grid
 points are recomputed with `math.pow`, and the first exact minimum among
 them is the first exact minimum of the whole grid. The golden section takes
-no such prune: after about a dozen steps `f_left` and `f_right` differ by
-less than any useful margin, so most branch decisions need the exact values.
+no such prune: in 300 null fits of target P/0, 68 to 95 (median 76) of the
+100 steps compare `f_left` and `f_right` within 2^-30 of each other, the
+first such step falling between steps 3 and 32 (median 24), so most branch
+decisions need the exact values.
 
 ## Equivalence gates
 
@@ -82,7 +85,12 @@ preregistered analyses (core-369, core-386, core-430) replay unchanged.
 - core-438 (`--null-equivalence`): the first `NULL_EQUIVALENCE` = 2000
   replicates of each of the 14 record streams, fitted by `NullFit` and by
   `NullBlock`; 28000 of 28000 fits (chi2, c, A, T compared by `float.hex`)
-  and statistics identical.
+  and statistics identical. It runs in the full tier, since its scalar half
+  costs about 154 CPU seconds.
+- core-436 (pr tier): its replay runs the first 5000 replicates of every
+  target through the batched path and compares their hash with the
+  `prefix_sha256` that the scalar Kaggle run wrote, so every pull request
+  keeps a stream-level equality check.
 - Record regeneration: at N = 5200 the batched run, the refactored scalar
   run and the scalar code before batching wrote the same bytes (sha256
   f30810ef5f1eddff54a25dae5e51fbc1ea174b20551a73b1df2388eb6bd0b865); at
@@ -105,12 +113,15 @@ per-replicate statistic.
 |---|---|---|---|
 | one fit, single process | 11 to 15 | 3182 to 3491 us | 141 to 159 us (block 2048) |
 | one fit, single process | 19 to 21 | 8805 to 10794 us | 405 to 584 us |
-| full record, N = 200000 x 14, pooled (12 workers) | 21 to 25 | about 2 h on a Kaggle CPU kernel | 163 s wall, 790 s user |
+| full record, N = 200000 x 14, pooled (12 workers) | 21 to 25 | 7317 s on 4 Kaggle CPUs (Intel Xeon 2.20 GHz), kernel log time at the record line | 163 s wall, 790 s user |
 | full record, `GOROROBA_WORKERS=1` | 17 falling to 10 | | 573 s wall, 461 s user |
 | N = 5200 x 14, pooled | 15 | 49 s (53 s before batching) | 8.6 s |
 | core-438, 2000 x 14 both paths, pooled | 13 | | 30 s wall, 154 s user |
 | core-436, cmp plus 5000-replicate prefix replay of 14 targets, normal and `-O` | 24 scalar, 14 batched | 679 s | 12.4 s |
 | core-437, normal and `-O` | 24 scalar, 22 batched | 51 s | 20.1 s, 817 scalar reference fits per mode included |
+| core-436, `GOROROBA_WORKERS=2` | 63 | | 61.5 s |
+| core-437, `GOROROBA_WORKERS=2` | 47 | | 27.0 s |
+| core-438, `GOROROBA_WORKERS=2` | 42 to 52 | | 178.4 s |
 
 The batched fit spends about 45 percent of its time in the libm map
 (roughly 1080 `math.exp` and `math.pow` calls per replicate, mostly in the
@@ -135,9 +146,9 @@ libm entry points the scalar code uses.
 
 core-434 (`--sensitivity ... --replay`, 535 to 1041 s) resamples the readout
 and Ramsey counts `CALIBRATION_REPLICATES` = 2000 times per series and calls
-`analyze_target` twice per usable target per replicate; `fit_h2` takes 0.147
-of the 0.149 s that 18 `analyze_target` calls spend on series Q, so the fit
-is 99 percent of that bootstrap's work. The same batching applies with one
+`analyze_target` twice per usable target per replicate. Profiled serially on
+series Q with 20 replicates, `fit_h2` takes 20.19 of the 20.74 s that
+`sensitivity` spends (97 percent), across 414 calls. The same batching applies with one
 difference: the arm errors, and therefore the weights, change with every
 resampled table, so `sw`, `sf`, `sff` and the determinant become
 `replicates x 401` arrays instead of T-only numbers. The batched path is not
