@@ -1739,6 +1739,30 @@
   },
   {
    "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z && PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z",
+   "name": "core-443",
+   "seconds": 49,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --check results/live/2026-10-13T083417.634585Z",
+   "name": "core-447",
+   "seconds": 190,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --check results/live/2026-10-13T083417.634585Z",
+   "name": "core-448",
+   "seconds": 199,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONWARNINGS=error \"$PYTHON\" patch_characterization.py",
    "name": "core-193",
@@ -3095,6 +3119,22 @@
    "cmd": "\"$PYTHON\" -B -W error replica_covariance_contracts.py && \"$PYTHON\" -B -O -W error replica_covariance_contracts.py",
    "name": "core-486",
    "seconds": 12.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck.json && \"$PYTHON\" -B -O -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck.json",
+   "name": "core-487",
+   "seconds": 44.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_crosscheck.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_exact_crosscheck.py --self-test",
+   "name": "core-488",
+   "seconds": 1.6,
    "tier": "pr"
   },
   {
