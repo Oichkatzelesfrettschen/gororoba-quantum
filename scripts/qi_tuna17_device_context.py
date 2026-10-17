@@ -102,6 +102,7 @@ READOUT_RUNS = (
     "2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
     "2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
     "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+    "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-recal-053951",
     "2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
     "2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
     "2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
