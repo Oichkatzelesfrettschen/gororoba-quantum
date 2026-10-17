@@ -3760,22 +3760,22 @@
     },
     {
       "id": "qi-tuna17-q9-readout-misassignment",
-      "statement": "Q9's elevated idle P1 on Tuna-17 from 04:06Z on 2026-10-17 is misassignment of |0> that leaves the qubit in |0>. Same-batch idle and X readouts bound e0 >= 0.21 in the three zero-wait batches (0.17 with a 2 us wait) against e0 <= 0.026 before the change, and the excited population p <= 0.10. In series Q, shots whose opening readout of Q9 gave 1 end an X90 pair at the level of opening-0 shots: excited fraction w = 0.021 +- 0.006 over 10249 opening-1 shots, where the other eight targets read 0.02 to 0.14.",
+      "statement": "Q9's elevated idle P1 on Tuna-17 from 04:06Z on 2026-10-17 is misassignment of |0> that leaves the qubit in |0>. Same-batch idle and X readouts bound, at one-sided 3-sigma binomial limits, e0 >= 0.19 in the three zero-wait batches (0.145 with a 2 us wait) against e0 <= 0.030 before the change, and the excited population p <= 0.115. In series Q at zero delay, shots whose opening readout of Q9 gave 1 end an X90 pair at the level of opening-0 shots: excited fraction w = 0.021 +- 0.013 over 2122 opening-1 shots, where the other eight targets read -0.10 to 0.20.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "The bounds assume p <= 1/2, an X that inverts at most fully and idle and X readouts from one batch; the herald test reads a mid-circuit readout taken with nine targets read at once, at 04:39-04:41Z.",
+      "boundary": "The bounds assume p <= 1/2, an X that inverts at most fully and idle and X readouts from one batch; the herald test reads the zero-delay arm, because relaxation during a longer delay pulls w toward 0, and its opening readout is a mid-circuit readout taken with nine targets read at once, at 04:39Z.",
       "evidence": [
         {
           "path": "results/quantum_inspire/tuna_17_readout_faults.json",
-          "sha256": "2bed28c87e970df08243db956c2da6934eecb7cb7680b5619ae1af58342d955b"
+          "sha256": "a2a5e64cdb3557ac1eb3b61fdb231d351764c4d80f41ffde19a12e29c537d682"
         }
       ],
       "documents": [
         "docs/notes/quantum_inspire/experiments.md"
       ],
       "gates": {
-        "core-389": "replay"
+        "core-400": "replay"
       },
       "acquisitions": [
         "qi-tuna17-zero-divisor",
@@ -3804,14 +3804,14 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/tuna_17_readout_faults.json",
-          "sha256": "2bed28c87e970df08243db956c2da6934eecb7cb7680b5619ae1af58342d955b"
+          "sha256": "a2a5e64cdb3557ac1eb3b61fdb231d351764c4d80f41ffde19a12e29c537d682"
         }
       ],
       "documents": [
         "docs/notes/quantum_inspire/experiments.md"
       ],
       "gates": {
-        "core-389": "replay"
+        "core-400": "replay"
       },
       "acquisitions": [
         "qi-tuna17-zero-divisor",

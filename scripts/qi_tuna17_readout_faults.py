@@ -9,7 +9,10 @@ unchanged. Four blocks:
   P(1|X) <= e0 + s (1 - p) for p <= 1/2; relaxation during a wait before
   readout only lowers P(1|X). Hence e0 >= P(1|idle) + P(1|X) - 1 whatever p
   and e1, e0 <= P(1|idle), s >= P(1|X) - P(1|idle), and
-  p <= (1 - P(1|X)) / (P(1|X) - P(1|idle)). Both readouts come from one batch.
+  p <= (1 - P(1|X)) / (P(1|X) - P(1|idle)). Both readouts come from one
+  batch, and each frequency enters at its one-sided Z_LIMIT-sigma binomial
+  limit in the direction that weakens the bound, so a bound holds at that
+  level for the device parameters rather than for the sampled frequencies.
 - Q9 herald conditioning. A series-Q arm measures every target into
   b[17 + q], waits tau, plays X90, two idle cycles and X90, and reads b[q].
   With two idle cycles the X90 pair acts as X, so a shot left in |0> by the
@@ -17,7 +20,10 @@ unchanged. Four blocks:
   idle floor A (batch-00 readout-0). The excited fraction among opening-1
   shots is w = (P(f|h0) - P(f|h1)) / (P(f|h0) - A); misassignment that leaves
   the qubit in |0> gives w = 0, and an excitation that the readout reports,
-  present before it or caused by it, gives w = 1.
+  present before it or caused by it, gives w = 1. A shot left excited can
+  relax during tau and reach the X90 pair in |0>, which pulls w toward 0 as
+  tau grows, so the falsifier reads the zero-delay arm alone and the longer
+  delays are listed per arm.
 - Q0 and Q6 short-T1 test. If the zero-wait loss of P(1|1) after the
   platform calibration were relaxation inside the readout window
   (READOUT_SECONDS, the Tuna measurement duration in
@@ -61,6 +67,7 @@ SCHEMA = "qi-tuna17-readout-faults-v1"
 SIGNIFICANT = 6
 NQUBITS = 17
 OPENING_OFFSET = 17
+Z_LIMIT = 3.0
 READOUT_SECONDS = 800e-9
 WAIT_SECONDS = 2e-6
 
@@ -82,6 +89,7 @@ HERALD_ARMS = (
     (Q_SERIES + "batch-02", "tau100-x-d002.cq"),
 )
 HERALD_FLOOR_RUN = Q_SERIES + "batch-00"
+HERALD_ZERO_DELAY = "tau000-x-d002.cq"
 ENDPOINT_RUN = Q_SERIES + "batch-04"
 RAMSEY_PAIRS = (
     ("reference", P_SERIES + "batch-05-rerun1", P_SERIES + "batch-07"),
@@ -126,6 +134,14 @@ def se(p: float, n: int) -> float:
     return math.sqrt(p * (1 - p) / n)
 
 
+def low(p: float, n: int) -> float:
+    return p - Z_LIMIT * se(p, n)
+
+
+def high(p: float, n: int) -> float:
+    return p + Z_LIMIT * se(p, n)
+
+
 def readout_pair(run: str, qubit: int) -> dict[str, Any]:
     p10, n = rate(shots(run, "readout-0.cq"), qubit)
     p11, _ = rate(shots(run, "readout-1.cq"), qubit)
@@ -137,34 +153,33 @@ def q9_assignment() -> dict[str, Any]:
     post = []
     for run in (Q9_WAIT_RUN, *POST_CALIBRATION_RUNS):
         row = readout_pair(run, Q9)
-        idle, flipped = row["p1_given_0"], row["p1_given_1"]
-        row["e0_lower"] = idle + flipped - 1
-        row["e0_upper"] = idle
-        row["scale_lower"] = flipped - idle
-        row["population_upper"] = (1 - flipped) / (flipped - idle)
+        idle, flipped, n = row["p1_given_0"], row["p1_given_1"], row["shots"]
+        row["e0_lower"] = low(idle, n) + low(flipped, n) - 1
+        row["scale_lower"] = low(flipped, n) - high(idle, n)
+        row["population_upper"] = (1 - low(flipped, n)) / row["scale_lower"]
         post.append(row)
     return {
         "assumptions": "p <= 1/2, X inverts at most fully, s > 0, idle and X readouts from one batch",
-        "pre_change": [{**row, "e0_upper": row["p1_given_0"]} for row in pre],
+        "limit_sigma": Z_LIMIT,
+        "pre_change": [{**row, "e0_upper": high(row["p1_given_0"], row["shots"])} for row in pre],
         "post_change": post,
         "e0_lower_min": min(row["e0_lower"] for row in post),
-        "e0_upper_pre_max": max(row["p1_given_0"] for row in pre),
+        "e0_upper_pre_max": max(high(row["p1_given_0"], row["shots"]) for row in pre),
         "population_upper_max": max(row["population_upper"] for row in post),
     }
 
 
 def herald(qubit: int, floor: float, floor_n: int) -> dict[str, Any]:
     rows = []
-    totals = {0: [0, 0], 1: [0, 0]}
+    zero: dict[int, list[str]] = {}
     for run, circuit in HERALD_ARMS:
         sample = shots(run, circuit)
         split: dict[int, list[str]] = {0: [], 1: []}
         for s in sample:
             split[bit(s, OPENING_OFFSET + qubit)].append(s)
         level = {h: rate(split[h], qubit)[0] for h in (0, 1)}
-        for h in (0, 1):
-            totals[h][0] += sum(bit(s, qubit) for s in split[h])
-            totals[h][1] += len(split[h])
+        if circuit == HERALD_ZERO_DELAY:
+            zero = split
         rows.append(
             {
                 "run": retained_path(RUNS / run),
@@ -175,8 +190,7 @@ def herald(qubit: int, floor: float, floor_n: int) -> dict[str, Any]:
                 "excited_fraction_w": (level[0] - level[1]) / (level[0] - floor),
             }
         )
-    h0, n0 = totals[0][0] / totals[0][1], totals[0][1]
-    h1, n1 = totals[1][0] / totals[1][1], totals[1][1]
+    (h0, n0), (h1, n1) = rate(zero[0], qubit), rate(zero[1], qubit)
     w = (h0 - h1) / (h0 - floor)
     # Delta-method standard error of w in the three independent binomial rates.
     gradient = ((h1 - floor) / (h0 - floor) ** 2, -1 / (h0 - floor), (h0 - h1) / (h0 - floor) ** 2)
@@ -186,7 +200,13 @@ def herald(qubit: int, floor: float, floor_n: int) -> dict[str, Any]:
         "qubit": qubit,
         "idle_floor": floor,
         "arms": rows,
-        "pooled": {"opening_0_shots": n0, "opening_1_shots": n1, "w": w, "w_se": w_se},
+        "zero_delay": {
+            "circuit": HERALD_ZERO_DELAY,
+            "opening_0_shots": n0,
+            "opening_1_shots": n1,
+            "w": w,
+            "w_se": w_se,
+        },
     }
 
 
@@ -199,7 +219,8 @@ def herald_block() -> dict[str, Any]:
         targets.append(herald(q, floor, floor_n))
     return {
         "floor_run": retained_path(RUNS / HERALD_FLOOR_RUN),
-        "falsifier": "w >= 0.5 for Q9 would put at least half of its opening-1 shots in |1>; w near 0 is misassignment",
+        "falsifier": "w >= 0.5 at zero delay for Q9 would put at least half of its opening-1 shots in |1>; "
+        "w near 0 is misassignment",
         "targets": targets,
     }
 

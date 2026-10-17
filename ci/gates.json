@@ -2661,7 +2661,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_tuna17_readout_faults.py --check && \"$PYTHON\" -B -O -W error scripts/qi_tuna17_readout_faults.py --check",
-   "name": "core-389",
+   "name": "core-400",
    "seconds": 2.0,
    "tier": "pr"
   },

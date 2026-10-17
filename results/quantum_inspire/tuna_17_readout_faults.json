@@ -3,20 +3,21 @@
  "profile": "tuna_17",
  "q9_assignment": {
   "assumptions": "p <= 1/2, X inverts at most fully, s > 0, idle and X readouts from one batch",
+  "limit_sigma": 3.0,
   "pre_change": [
    {
     "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
     "shots": 16384,
     "p1_given_0": 0.0183716,
     "p1_given_1": 0.921021,
-    "e0_upper": 0.0183716
+    "e0_upper": 0.021519
    },
    {
     "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
     "shots": 16384,
     "p1_given_0": 0.0264893,
     "p1_given_1": 0.923279,
-    "e0_upper": 0.0264893
+    "e0_upper": 0.030253
    }
   ],
   "post_change": [
@@ -25,49 +26,45 @@
     "shots": 8192,
     "p1_given_0": 0.279297,
     "p1_given_1": 0.891113,
-    "e0_lower": 0.17041,
-    "e0_upper": 0.279297,
-    "scale_lower": 0.611816,
-    "population_upper": 0.177973
+    "e0_lower": 0.145214,
+    "scale_lower": 0.586621,
+    "population_upper": 0.203217
    },
    {
     "run": "results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
     "shots": 16384,
     "p1_given_0": 0.287964,
     "p1_given_1": 0.934021,
-    "e0_lower": 0.221985,
-    "e0_upper": 0.287964,
-    "scale_lower": 0.646057,
-    "population_upper": 0.102126
+    "e0_lower": 0.205554,
+    "scale_lower": 0.629626,
+    "population_upper": 0.114032
    },
    {
     "run": "results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
     "shots": 16384,
     "p1_given_0": 0.275818,
     "p1_given_1": 0.932739,
-    "e0_lower": 0.208557,
-    "e0_upper": 0.275818,
-    "scale_lower": 0.656921,
-    "population_upper": 0.102388
+    "e0_lower": 0.192212,
+    "scale_lower": 0.640576,
+    "population_upper": 0.114165
    },
    {
     "run": "results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
     "shots": 16384,
     "p1_given_0": 0.280396,
     "p1_given_1": 0.932983,
-    "e0_lower": 0.213379,
-    "e0_upper": 0.280396,
-    "scale_lower": 0.652588,
-    "population_upper": 0.102694
+    "e0_lower": 0.19699,
+    "scale_lower": 0.636199,
+    "population_upper": 0.114551
    }
   ],
-  "e0_lower_min": 0.17041,
-  "e0_upper_pre_max": 0.0264893,
-  "population_upper_max": 0.177973
+  "e0_lower_min": 0.145214,
+  "e0_upper_pre_max": 0.030253,
+  "population_upper_max": 0.203217
  },
  "q9_herald": {
   "floor_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
-  "falsifier": "w >= 0.5 for Q9 would put at least half of its opening-1 shots in |1>; w near 0 is misassignment",
+  "falsifier": "w >= 0.5 at zero delay for Q9 would put at least half of its opening-1 shots in |1>; w near 0 is misassignment",
   "targets": [
    {
     "qubit": 1,
@@ -114,11 +111,12 @@
       "excited_fraction_w": 0.093001
      }
     ],
-    "pooled": {
-     "opening_0_shots": 39910,
-     "opening_1_shots": 1050,
-     "w": 0.131973,
-     "w_se": 0.0147104
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 7973,
+     "opening_1_shots": 219,
+     "w": 0.200065,
+     "w_se": 0.0345643
     }
    },
    {
@@ -166,11 +164,12 @@
       "excited_fraction_w": 0.110584
      }
     ],
-    "pooled": {
-     "opening_0_shots": 39889,
-     "opening_1_shots": 1071,
-     "w": 0.101541,
-     "w_se": 0.0144219
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 7986,
+     "opening_1_shots": 206,
+     "w": 0.112148,
+     "w_se": 0.0339861
     }
    },
    {
@@ -218,11 +217,12 @@
       "excited_fraction_w": -0.0117031
      }
     ],
-    "pooled": {
-     "opening_0_shots": 39137,
-     "opening_1_shots": 1823,
-     "w": 0.0286697,
-     "w_se": 0.0136687
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 7818,
+     "opening_1_shots": 374,
+     "w": 0.0466365,
+     "w_se": 0.030999
     }
    },
    {
@@ -270,11 +270,12 @@
       "excited_fraction_w": 0.0825891
      }
     ],
-    "pooled": {
-     "opening_0_shots": 39641,
-     "opening_1_shots": 1319,
-     "w": 0.0790306,
-     "w_se": 0.0182835
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 7935,
+     "opening_1_shots": 257,
+     "w": 0.0599006,
+     "w_se": 0.0429824
     }
    },
    {
@@ -322,11 +323,12 @@
       "excited_fraction_w": 0.0282336
      }
     ],
-    "pooled": {
-     "opening_0_shots": 39638,
-     "opening_1_shots": 1322,
-     "w": 0.074119,
-     "w_se": 0.0198915
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 7923,
+     "opening_1_shots": 269,
+     "w": 0.0961605,
+     "w_se": 0.0354431
     }
    },
    {
@@ -374,11 +376,12 @@
       "excited_fraction_w": 0.031671
      }
     ],
-    "pooled": {
-     "opening_0_shots": 30711,
-     "opening_1_shots": 10249,
-     "w": 0.0206727,
-     "w_se": 0.00645382
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 6070,
+     "opening_1_shots": 2122,
+     "w": 0.0208202,
+     "w_se": 0.01311
     }
    },
    {
@@ -426,11 +429,12 @@
       "excited_fraction_w": 0.112311
      }
     ],
-    "pooled": {
-     "opening_0_shots": 40129,
-     "opening_1_shots": 831,
-     "w": 0.138199,
-     "w_se": 0.0179314
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 8032,
+     "opening_1_shots": 160,
+     "w": 0.160957,
+     "w_se": 0.0422868
     }
    },
    {
@@ -478,11 +482,12 @@
       "excited_fraction_w": 0.0455585
      }
     ],
-    "pooled": {
-     "opening_0_shots": 39662,
-     "opening_1_shots": 1298,
-     "w": 0.019611,
-     "w_se": 0.0187681
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 7956,
+     "opening_1_shots": 236,
+     "w": -0.10393,
+     "w_se": 0.0486992
     }
    },
    {
@@ -530,11 +535,12 @@
       "excited_fraction_w": 0.0510703
      }
     ],
-    "pooled": {
-     "opening_0_shots": 39153,
-     "opening_1_shots": 1807,
-     "w": 0.0717914,
-     "w_se": 0.0107518
+    "zero_delay": {
+     "circuit": "tau000-x-d002.cq",
+     "opening_0_shots": 7833,
+     "opening_1_shots": 359,
+     "w": 0.0664938,
+     "w_se": 0.026809
     }
    }
   ]

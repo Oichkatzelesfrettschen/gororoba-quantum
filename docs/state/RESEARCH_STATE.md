@@ -628,16 +628,16 @@ circuit and charges the account ledger's change.
   Evidence: [readout_ringdown_tuna_17_device_context.json](../../results/quantum_inspire/readout_ringdown_tuna_17_device_context.json), [qx-runs.md](../notes/quantum_inspire/qx-runs.md), [experiments.md](../notes/quantum_inspire/experiments.md).
   Gates: replayed by core-387.
   Acquisitions: qi-tuna17-readout-ringdown-Q-batch-00, qi-tuna17-readout-ringdown-Q-batch-01, qi-tuna17-readout-ringdown-Q-batch-02, qi-tuna17-readout-ringdown-Q-batch-03, qi-tuna17-readout-ringdown-Q-batch-04.
-- **qi-tuna17-q9-readout-misassignment** (exploratory reanalysis, hardware). Q9's elevated idle P1 on Tuna-17 from 04:06Z on 2026-10-17 is misassignment of |0> that leaves the qubit in |0>. Same-batch idle and X readouts bound e0 >= 0.21 in the three zero-wait batches (0.17 with a 2 us wait) against e0 <= 0.026 before the change, and the excited population p <= 0.10. In series Q, shots whose opening readout of Q9 gave 1 end an X90 pair at the level of opening-0 shots: excited fraction w = 0.021 +- 0.006 over 10249 opening-1 shots, where the other eight targets read 0.02 to 0.14.
-  Boundary: The bounds assume p <= 1/2, an X that inverts at most fully and idle and X readouts from one batch; the herald test reads a mid-circuit readout taken with nine targets read at once, at 04:39-04:41Z.
+- **qi-tuna17-q9-readout-misassignment** (exploratory reanalysis, hardware). Q9's elevated idle P1 on Tuna-17 from 04:06Z on 2026-10-17 is misassignment of |0> that leaves the qubit in |0>. Same-batch idle and X readouts bound, at one-sided 3-sigma binomial limits, e0 >= 0.19 in the three zero-wait batches (0.145 with a 2 us wait) against e0 <= 0.030 before the change, and the excited population p <= 0.115. In series Q at zero delay, shots whose opening readout of Q9 gave 1 end an X90 pair at the level of opening-0 shots: excited fraction w = 0.021 +- 0.013 over 2122 opening-1 shots, where the other eight targets read -0.10 to 0.20.
+  Boundary: The bounds assume p <= 1/2, an X that inverts at most fully and idle and X readouts from one batch; the herald test reads the zero-delay arm, because relaxation during a longer delay pulls w toward 0, and its opening readout is a mid-circuit readout taken with nine targets read at once, at 04:39Z.
   Evidence: [tuna_17_readout_faults.json](../../results/quantum_inspire/tuna_17_readout_faults.json), [experiments.md](../notes/quantum_inspire/experiments.md).
-  Gates: replayed by core-389.
+  Gates: replayed by core-400.
   Acquisitions: qi-tuna17-zero-divisor, qi-tuna17-coupler-zz-0, qi-tuna17-readout-ringdown-Q-batch-00, qi-tuna17-readout-ringdown-Q-batch-01, qi-tuna17-readout-ringdown-Q-batch-02, qi-tuna17-zero-divisor-visibility-floor-batch-00, qi-tuna17-zero-divisor-visibility-floor-batch-01, qi-tuna17-zero-divisor-visibility-floor-batch-02.
   Depends on: qi-tuna17-register-and-readout-state.
 - **qi-tuna17-q0-q6-loss-not-readout-relaxation** (exploratory reanalysis, hardware). After the 04:12Z platform calibration of 2026-10-17, the zero-wait P(1|1) of Q0 and Q6 at 05:26-05:33Z keeps 0.55 and 0.16 of the excited scale read before the change, and that loss is not relaxation inside the 800 ns readout: relaxation would need T1 <= 1.36 and 0.44 us and leave P(1|1) <= 0.156 and 0.015 after a 2 us wait, where the 2 us wait runs read 0.389-0.393 and 0.140-0.144 (z >= 32).
   Boundary: Assumes the device is unchanged between the 2 us wait runs (04:15-04:24Z) and the zero-wait runs (05:26-05:33Z), and the assignment scale of the pre-change runs for the survival ratio.
   Evidence: [tuna_17_readout_faults.json](../../results/quantum_inspire/tuna_17_readout_faults.json), [experiments.md](../notes/quantum_inspire/experiments.md).
-  Gates: replayed by core-389.
+  Gates: replayed by core-400.
   Acquisitions: qi-tuna17-zero-divisor, qi-tuna17-coupler-zz-0, qi-tuna17-readout-ringdown-P-recal-041520, qi-tuna17-readout-ringdown-P-recal-042425, qi-tuna17-zero-divisor-visibility-floor-batch-00, qi-tuna17-zero-divisor-visibility-floor-batch-01, qi-tuna17-zero-divisor-visibility-floor-batch-02.
   Depends on: qi-tuna17-register-and-readout-state.
 

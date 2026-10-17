@@ -624,7 +624,7 @@ device.
 
 ## Readout faults on Tuna-17, 2026-10-17
 
-`scripts/qi_tuna17_readout_faults.py` (gate core-389) tests the readout
+`scripts/qi_tuna17_readout_faults.py` (gate core-400) tests the readout
 changes of that morning against named retained runs and writes
 results/quantum_inspire/tuna_17_readout_faults.json. Each test states its
 falsifier before its number.
@@ -632,14 +632,16 @@ falsifier before its number.
 - **Q9 reads |0> as 1 and stays in |0>.** With assignment errors e0, e1 and
   excited population p <= 1/2, an idle readout gives e0 + s p and an X at
   most e0 + s (1 - p), so e0 >= P(1|idle) + P(1|X) - 1 whatever p and e1.
-  The three zero-wait batches at 05:26-05:33Z give e0 >= 0.21 (the 2 us
-  wait batch Q-00, 0.17), against e0 <= 0.026 in the two runs of the
-  previous evening, and bound p <= 0.10. Series Q reads every target
+  With every frequency at its one-sided 3-sigma limit, the three zero-wait
+  batches at 05:26-05:33Z give e0 >= 0.19 (the 2 us wait batch Q-00,
+  0.145), against e0 <= 0.030 in the two runs of the previous evening, and
+  bound p <= 0.115. Series Q reads every target
   mid-circuit before an X90 pair two cycles apart: a shot left in |1> by
   that readout ends near the idle floor and a shot left in |0> near the X
-  level. Opening-1 shots of Q9 end where opening-0 shots do: the excited
-  fraction among them is w = 0.021 +- 0.006 over 10249 shots (falsifier
-  w >= 0.5), where the eight healthy targets read 0.02-0.14. An excitation
+  level. Relaxation during a longer delay pulls w toward 0, so the test
+  reads the zero-delay arm: opening-1 shots of Q9 end where opening-0 shots
+  do, excited fraction w = 0.021 +- 0.013 over 2122 shots (falsifier
+  w >= 0.5), where the eight healthy targets read -0.10 to 0.20. An excitation
   that the readout itself causes would also give w near 1, so it is
   excluded with the population.
 - **Q0 and Q6 lose |1> before the readout window, or misread it.** At
