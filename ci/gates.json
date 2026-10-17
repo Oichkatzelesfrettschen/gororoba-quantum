@@ -2636,6 +2636,38 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_cases.py --check results/quandela/cases",
+   "name": "core-504",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_cases.py --self-test && \"$PYTHON\" -B -O -W error scripts/qd_box_kite_cases.py --self-test",
+   "name": "core-505",
+   "seconds": 7.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/cd_two_blade_blocks.py --check docs/evidence/box_kite_census/two_blade_blocks.json",
+   "name": "core-506",
+   "seconds": 5.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/cd_two_blade_blocks.py --self-test && \"$PYTHON\" -B -O -W error scripts/cd_two_blade_blocks.py --self-test",
+   "name": "core-507",
+   "seconds": 9.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test && \"$PYTHON\" -B -O -W error scripts/materialize_gororoba_csv.py --self-test",
    "name": "core-401",
    "seconds": 1.0,
@@ -2800,6 +2832,30 @@
    "name": "core-435",
    "seconds": 7.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "cmp results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json results/kaggle/2026-10-17T150731Z-ringdown-null-calibration/output/output/repo/results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json && \"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --null-calibration results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json --replay && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --null-calibration results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json --replay",
+   "name": "core-436",
+   "seconds": 61.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --null-self-test && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --null-self-test",
+   "name": "core-437",
+   "seconds": 27.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --null-equivalence results/quantum_inspire/readout_ringdown_tuna_17_P_analysis.json results/quantum_inspire/readout_ringdown_tuna_17_Q_analysis.json",
+   "name": "core-438",
+   "seconds": 178.4,
+   "tier": "full"
   },
   {
    "suite": "core",

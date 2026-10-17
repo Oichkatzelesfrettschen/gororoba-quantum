@@ -85,6 +85,10 @@ to it. A case quotes the estimate of its own experiment from a fresh
 
 ## 5. Send a job (after an approved case)
 
+A retained case goes through the runner (README, "Runner"): `qd_platform.py
+plan`, then `submit --approval`, then `collect`. The Perceval calls below are
+what the runner wraps, for a notebook or an exploratory script.
+
 ```python
 factory.default_job_name = "case-name"
 qpu.start()

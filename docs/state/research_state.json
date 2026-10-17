@@ -3824,6 +3824,10 @@
         {
           "path": "results/quantum_inspire/readout_ringdown_tuna_17_P_calibration_sensitivity.json",
           "sha256": "4092321399fd5c1129a7c90265fb0c23916debfd47723f5b9a34013b7193b728"
+        },
+        {
+          "path": "results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json",
+          "sha256": "dd8e1ed2c2a5fd1f608b2396b820cdc2798b63286dcfa2cd641436d8a01e3153"
         }
       ],
       "documents": [
@@ -3832,7 +3836,8 @@
       "gates": {
         "core-386": "replay",
         "core-434": "replay",
-        "core-362": "freshness"
+        "core-362": "freshness",
+        "core-436": "replay"
       },
       "acquisitions": [
         "qi-tuna17-readout-ringdown-P-batch-00",
@@ -3869,6 +3874,10 @@
         {
           "path": "results/quantum_inspire/readout_ringdown_tuna_17_Q_calibration_sensitivity.json",
           "sha256": "6bda842b98ede1c464a7da2e744ca164b249eb30fff2df94e174f0a050510299"
+        },
+        {
+          "path": "results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json",
+          "sha256": "dd8e1ed2c2a5fd1f608b2396b820cdc2798b63286dcfa2cd641436d8a01e3153"
         }
       ],
       "documents": [
@@ -3878,7 +3887,8 @@
       "gates": {
         "core-430": "replay",
         "core-434": "replay",
-        "core-362": "freshness"
+        "core-362": "freshness",
+        "core-436": "replay"
       },
       "acquisitions": [
         "qi-tuna17-readout-ringdown-Q-batch-00",

@@ -122,6 +122,32 @@ analyzed through parallel.ordered_map, so pooled and serial runs write the
 same bytes; with --replay the record is compared with its recomputation.
 --sensitivity-self-test checks the contract on synthetic counts.
 
+The decision rule scans T over T_BOUNDS, and under H1 (A = 0) T is
+unidentified, so delta chi2 = chi2(H1) - chi2(H2) is a supremum over T whose
+null law Wilks' chi-square reference with 2 degrees of freedom does not give.
+--null-calibration OUT ANALYSIS... [--replicates N] simulates H1 per usable
+target of each retained analysis record: the arm rates are independent
+normals about one common rate with the preregistered per-arm errors of
+analyze_target (the weights of its fit), and every replicate runs the same
+fit_h2, h2_errors and both conjuncts of detects. The normal draws of a target
+come first, in order, from one generator seeded by the string
+NULL_SEED/series/target, then blocks of NULL_BLOCK replicates map through
+parallel.ordered_map, each block one fit_h2_batch call that returns
+fit_h2's bits for every replicate (docs/notes/build_host/vectorized-fits.md).
+OUT
+records the empirical 0.999 quantile with a binomial order-statistic
+interval, the null rate of the full rule at DETECT_DELTA_CHI2, the sha256 of
+the full statistic list, of its first NULL_PREFIX replicates and of the kept
+top NULL_TAIL fraction, and each target's observed statistic against its
+quantile; the preregistered verdict fields stay as analyzed. --replay
+recomputes the first NULL_PREFIX replicates from the recorded seeds and
+rebuilds every quantile from the kept tail; --null-self-test checks the
+contract on synthetic weights and fit_h2_batch against fit_h2 on adversarial
+rates; --null-equivalence ANALYSIS... [--replicates N] fits the first
+NULL_EQUIVALENCE replicates of every target stream with both and requires
+identical bits. calibrated_threshold(weights) returns the quantile for a
+future case.
+
 --write DIR writes DIR/readout_ringdown_{tuna_17,qx}_{P,Q}/ (batch-NN/ case
 directories and cases.json); --check DIR regenerates them and compares
 bytes; --conformance schedules the emitted circuits ALAP, evolves them under
@@ -133,7 +159,9 @@ checks one collected batch before the next is submitted.
 
 Usage: "$PYTHON" scripts/qi_readout_ringdown_cases.py
        (--write DIR | --check DIR | --conformance | --analyze OUT RUN_DIR... [--replay] | --sanity RUN_DIR
-        | --sensitivity OUT RUN_DIR... [--replay] | --sensitivity-self-test)
+        | --sensitivity OUT RUN_DIR... [--replay] | --sensitivity-self-test
+        | --null-calibration OUT [ANALYSIS...] [--replicates N] [--replay] | --null-self-test
+        | --null-equivalence ANALYSIS... [--replicates N])
        (DIR is the cases root, results/quantum_inspire/cases)
 """
 
@@ -150,6 +178,7 @@ from pathlib import Path
 from typing import Any, NamedTuple
 
 import numpy as np
+import numpy.typing as npt
 from qi_coupler_zz_map import (
     CYCLE_SECONDS,
     MIN_VISIBILITY,
@@ -208,6 +237,8 @@ ESTIMATOR = (
 TO_HZ = 1 / (2 * math.pi * CYCLE_SECONDS)
 Table = dict[tuple[str, str, int, int], tuple[float, float, float]]
 Taus = list[int | None]
+Fit = tuple[float, float, float, float]
+Floats = npt.NDArray[np.float64]
 
 
 def arm_tau(arm: str) -> int | None:
@@ -449,6 +480,132 @@ def fit_h2(taus: Taus, rates: list[float], weights: list[float]) -> tuple[float,
     return chi2, c, a, best
 
 
+# The batched fit repeats the arithmetic of h2_at and fit_h2 for many rate
+# vectors that share one weight pattern, and returns the scalar fit's bits.
+# Three rules carry the equality. Builtin sum() over floats is Neumaier-
+# compensated (CPython 3.12 and later), so fsum_rows repeats its update over
+# the arms in order. Python's x ** 2 calls libm pow, which differs from x * x
+# in the last place when the exact square lies near a rounding midpoint, and
+# numpy's exp and power dispatch to their own SIMD kernels on some CPUs, so
+# every exp and square that varies by replicate goes through math.exp and
+# math.pow. numpy's + - * / and comparisons are IEEE operations, identical to
+# Python's float operations.
+# Relative margin of the grid prune; libm pow and x * x differ by an ulp.
+GRID_PRUNE = 2.0**-30
+# Absolute margin per unit weight; it covers squares in the subnormal range.
+GRID_FLOOR = 2.0**-1000
+
+
+def fsum_rows(terms: list[Floats]) -> Floats:
+    """sum(terms) elementwise as builtin sum() evaluates it: 0 + the first term, then CPython's Neumaier update."""
+    total = 0.0 + terms[0]
+    comp = np.zeros_like(total)
+    for term in terms[1:]:
+        step = total + term
+        comp = comp + np.where(np.abs(total) >= np.abs(term), (total - step) + term, (term - step) + total)
+        total = step
+    return np.where((comp != 0) & np.isfinite(comp), total + comp, total)
+
+
+def libm_map(function: Any, values: Floats, *extra: float) -> Floats:
+    """function(value, *extra) for every element through the math module, the libm calls of the scalar code."""
+    flat = values.ravel().tolist()
+    mapped = map(function, flat, *(itertools.repeat(x) for x in extra))
+    return np.fromiter(mapped, np.float64, len(flat)).reshape(values.shape)
+
+
+def decay(tau: int | None, tails: Floats) -> Floats:
+    """exp(-tau / T) of h2_at for every element of tails; exp(0) is exactly 1 in every C99 libm."""
+    if tau is None:
+        return np.zeros_like(tails)
+    if tau == 0:
+        return np.ones_like(tails)
+    return libm_map(math.exp, -tau / tails)
+
+
+def h2_at_batch(
+    tails: Floats, taus: Taus, y: list[Floats], weights: list[float], sy: Floats
+) -> tuple[Floats, Floats, Floats]:
+    """h2_at(tails[n], taus, rates[n], weights) for every row n, from the arm columns y of rates and their sy."""
+    f = [decay(tau, tails) for tau in taus]
+    sw = sum(weights)
+    sf = fsum_rows([w * fi for w, fi in zip(weights, f, strict=True)])
+    sff = fsum_rows([w * fi * fi for w, fi in zip(weights, f, strict=True)])
+    sfy = fsum_rows([w * fi * yi for w, fi, yi in zip(weights, f, y, strict=True)])
+    det = sw * sff - sf * sf
+    if not det.all():
+        raise ZeroDivisionError("float division by zero")
+    a = (sw * sfy - sf * sy) / det
+    c = (sff * sy - sf * sfy) / det
+    chi2 = fsum_rows([w * libm_map(math.pow, yi - c - a * fi, 2.0) for w, yi, fi in zip(weights, y, f, strict=True)])
+    return chi2, c, a
+
+
+def grid_argmin(taus: Taus, rates: Floats, weights: list[float]) -> npt.NDArray[np.intp]:
+    """The first index of the minimum of h2_at over T_GRID for every row of rates.
+
+    The T-only sums come from builtin sum() over Python floats. The profile
+    is first evaluated with r * r for the squares; pow(r, 2) and r * r agree
+    to an ulp, so every exact minimizer lies within GRID_PRUNE of the fast
+    minimum, and only those grid points are recomputed with libm pow.
+    """
+    grid_f = [[0.0 if tau is None else math.exp(-tau / t) for tau in taus] for t in T_GRID]
+    sw = sum(weights)
+    sf = np.array([sum(w * fi for w, fi in zip(weights, row, strict=True)) for row in grid_f])
+    sff = np.array([sum(w * fi * fi for w, fi in zip(weights, row, strict=True)) for row in grid_f])
+    det = sw * sff - sf * sf
+    if not det.all():
+        raise ZeroDivisionError("float division by zero")
+    f = list(np.array(grid_f).T)
+    y = [column[:, None] for column in rates.T]
+    sy = fsum_rows([w * yi for w, yi in zip(weights, y, strict=True)])
+    sfy = fsum_rows([w * fi * yi for w, fi, yi in zip(weights, f, y, strict=True)])
+    a = (sw * sfy - sf * sy) / det
+    c = (sff * sy - sf * sfy) / det
+    residuals = [yi - c - a * fi for yi, fi in zip(y, f, strict=True)]
+    fast = fsum_rows([w * (r * r) for w, r in zip(weights, residuals, strict=True)])
+    near = fast <= fast.min(axis=1, keepdims=True) * (1 + GRID_PRUNE) + sw * GRID_FLOOR
+    exact = np.full(fast.shape, np.inf)
+    exact[near] = fsum_rows([w * libm_map(math.pow, r[near], 2.0) for w, r in zip(weights, residuals, strict=True)])
+    return np.argmin(exact, axis=1)
+
+
+def fit_h2_batch(taus: Taus, rates: Floats, weights: list[float]) -> tuple[Floats, Floats, Floats, Floats]:
+    """fit_h2 for every row of rates (replicates x arms): arrays of chi2, c, A and T.
+
+    The golden section runs every row's step at once; each row takes the
+    scalar branch f_left <= f_right, and np.argmin takes the first minimum
+    as min(..., key=...) does.
+    """
+    with np.errstate(over="raise", invalid="raise", divide="raise"):
+        y = [np.ascontiguousarray(column) for column in rates.T]
+        sy = fsum_rows([w * yi for w, yi in zip(weights, y, strict=True)])
+
+        def chi2_at(tails: Floats) -> Floats:
+            return h2_at_batch(tails, taus, y, weights, sy)[0]
+
+        grid = np.array(T_GRID)
+        k = grid_argmin(taus, rates, weights)
+        below, above = grid[np.maximum(k - 1, 0)], grid[np.minimum(k + 1, len(T_GRID) - 1)]
+        low, high = below, above
+        ratio = (math.sqrt(5) - 1) / 2
+        left, right = high - ratio * (high - low), low + ratio * (high - low)
+        f_left, f_right = chi2_at(left), chi2_at(right)
+        for _ in range(GOLDEN_STEPS):
+            shrink = f_left <= f_right
+            high = np.where(shrink, right, high)
+            low = np.where(shrink, low, left)
+            point = np.where(shrink, high - ratio * (high - low), low + ratio * (high - low))
+            value = chi2_at(point)
+            left, right = np.where(shrink, point, right), np.where(shrink, left, point)
+            f_left, f_right = np.where(shrink, value, f_right), np.where(shrink, f_left, value)
+        candidates = np.stack([grid[k], left, right, below, above], axis=1)
+        profile = np.stack([chi2_at(t) for t in candidates.T], axis=1)
+        best = candidates[np.arange(len(rates)), np.argmin(profile, axis=1)]
+        chi2, c, a = h2_at_batch(best, taus, y, weights, sy)
+    return chi2, c, a, best
+
+
 def inverse(matrix: list[list[float]]) -> list[list[float]] | None:
     """Inverse of a 2 x 2 or 3 x 3 matrix by cofactors, so a replay needs no BLAS; None when singular."""
     if len(matrix) == 2:
@@ -500,6 +657,11 @@ def gain(tail: float) -> float:
     return tail * (math.exp(-(DELAYS[0] + 1) / tail) - math.exp(-(DELAYS[1] + 1) / tail)) / SPAN
 
 
+def detects(delta_chi2: float, a: float, se_a: float) -> bool:
+    """Both conjuncts of the tail rule: the chi2 gain of H2 over H1 and the significance of A."""
+    return delta_chi2 >= DETECT_DELTA_CHI2 and abs(a) >= DETECT_SIGMA * se_a
+
+
 def analyze_target(target: int, table: Table, assignment: tuple[float, float]) -> dict[str, Any]:
     e01, e10 = assignment
     phases = {arm: [phase(table, arm, d, target, e01, e10) for d in DELAYS] for arm in ARMS}
@@ -523,7 +685,7 @@ def analyze_target(target: int, table: Table, assignment: tuple[float, float]) -
     se_a, se_t = h2_errors(taus, weights, a, tail)
     visibility = min(turns[arm][2] for arm in ARMS)
     usable = visibility >= MIN_VISIBILITY
-    significant = chi2_h1 - chi2_h2 >= DETECT_DELTA_CHI2 and abs(a) >= DETECT_SIGMA * se_a
+    significant = detects(chi2_h1 - chi2_h2, a, se_a)
     label = "none" if not (usable and significant) else "offset" if tail >= T_BOUNDS[1] else "tail"
     return {
         **row,
@@ -1512,6 +1674,567 @@ def sensitivity_self_test() -> str:
     )
 
 
+NULL_SCHEMA = "qi-readout-ringdown-null-calibration-v1"
+NULL_REPLICATES = 200000
+NULL_SEED = 183
+NULL_QUANTILE = (999, 1000)
+NULL_TAIL = 0.01
+NULL_PREFIX = 5000
+NULL_CONFIDENCE = 0.95
+NULL_DECIMALS = 6
+# Replicates per fit_h2_batch call: enough rows to amortize numpy's per-call
+# cost over the golden-section steps, few enough that the NULL_BLOCK x
+# len(T_GRID) grid arrays stay in cache.
+NULL_BLOCK = 2048
+# Replicates per target that --null-equivalence fits with both paths.
+NULL_EQUIVALENCE = 2000
+
+
+class NullFit:
+    """One H1 replicate: standard normals scaled by the per-arm errors, then the identical fit and both conjuncts.
+
+    The fit is invariant to the common rate c, so c = 0 loses no generality.
+    The statistic is rounded to NULL_DECIMALS so that records agree across
+    libm builds.
+    """
+
+    def __init__(self, weights: list[float]):
+        self.weights = weights
+        self.sigmas = [1 / math.sqrt(w) for w in weights]
+        self.taus: Taus = [arm_tau(arm) for arm in ARMS]
+
+    def rates(self, z: tuple[float, ...]) -> list[float]:
+        return [s * v for s, v in zip(self.sigmas, z, strict=True)]
+
+    def statistic(self, rates: list[float], fit: Fit) -> tuple[float, bool]:
+        """(rounded delta chi2, joint detection) of one replicate from its H2 fit."""
+        chi2_h2, _, a, tail = fit
+        c1 = sum(w * y for w, y in zip(self.weights, rates, strict=True)) / sum(self.weights)
+        chi2_h1 = sum(w * (y - c1) ** 2 for w, y in zip(self.weights, rates, strict=True))
+        se_a = h2_errors(self.taus, self.weights, a, tail)[0]
+        delta = chi2_h1 - chi2_h2
+        return round(delta, NULL_DECIMALS) + 0.0, detects(delta, a, se_a)
+
+    def __call__(self, z: tuple[float, ...]) -> tuple[tuple[float, bool], Fit]:
+        rates = self.rates(z)
+        fit = fit_h2(self.taus, rates, self.weights)
+        return self.statistic(rates, fit), fit
+
+
+class NullBlock(NullFit):
+    """NullFit over a block of replicates: one fit_h2_batch call, then the per-replicate statistic."""
+
+    def fit_rows(self, rows: list[list[float]]) -> list[tuple[tuple[float, bool], Fit]]:
+        columns = fit_h2_batch(self.taus, np.array(rows), self.weights)
+        fits: list[Fit] = list(zip(*(column.tolist() for column in columns), strict=True))
+        return [(self.statistic(rates, fit), fit) for rates, fit in zip(rows, fits, strict=True)]
+
+    def __call__(self, block: list[tuple[float, ...]]) -> list[tuple[tuple[float, bool], Fit]]:  # type: ignore[override]
+        return self.fit_rows([self.rates(z) for z in block])
+
+
+def null_draws(replicates: int, stream: str) -> list[tuple[float, ...]]:
+    """The standard normals of every replicate, drawn in order from Random(stream) before any fit."""
+    rng = random.Random(stream)
+    return [tuple(rng.gauss(0.0, 1.0) for _ in ARMS) for _ in range(replicates)]
+
+
+def null_fits(weights: list[float], replicates: int, stream: str) -> list[tuple[tuple[float, bool], Fit]]:
+    """(statistic, H2 fit) of each H1 replicate; NULL_BLOCK replicates share one batched fit."""
+    if len(weights) != len(ARMS):
+        raise SystemExit(f"null statistics need {len(ARMS)} arm weights, got {len(weights)}")
+    draws = null_draws(replicates, stream)
+    blocks = [draws[start : start + NULL_BLOCK] for start in range(0, replicates, NULL_BLOCK)]
+    return [item for block in ordered_map(NullBlock(weights), blocks, min_items=1) for item in block]
+
+
+def null_statistics(weights: list[float], replicates: int, stream: str) -> list[tuple[float, bool]]:
+    """(delta chi2, joint detection) of each H1 replicate; all normals are drawn first from Random(stream)."""
+    return [stat for stat, _ in null_fits(weights, replicates, stream)]
+
+
+def statistic_lines(stats: list[tuple[float, bool]]) -> str:
+    return "".join(f"{delta:.{NULL_DECIMALS}f} {int(joint)}\n" for delta, joint in stats)
+
+
+def sha(text: str) -> str:
+    return hashlib.sha256(text.encode("ascii")).hexdigest()
+
+
+def tail_text(values: list[float]) -> str:
+    return "".join(f"{v:.{NULL_DECIMALS}f}\n" for v in values)
+
+
+def binomial_ranks(n: int, p: float, confidence: float) -> tuple[int | None, int | None]:
+    """Ranks (l, u) with P(B < l) <= (1 - confidence) / 2 and P(B >= u) <= (1 - confidence) / 2 for B ~ Binomial(n, p).
+
+    B counts the observations at or below the true p-quantile, so the order
+    statistics X_(l) and X_(u) bracket it with at least `confidence`
+    coverage; None marks a side the n observations cannot bound.
+    """
+    sd = math.sqrt(n * p * (1 - p))
+    start = max(0, int(n * p - 60 * sd) - 5)
+    pmf = {
+        k: math.exp(
+            math.lgamma(n + 1)
+            - math.lgamma(k + 1)
+            - math.lgamma(n - k + 1)
+            + k * math.log(p)
+            + (n - k) * math.log1p(-p)
+        )
+        for k in range(start, n + 1)
+    }
+    half = (1 - confidence) / 2
+    lower: int | None = None
+    below = 0.0
+    for k in range(start, n + 1):
+        if below > half:
+            break
+        lower = k
+        below += pmf[k]
+    upper: int | None = None
+    above = 0.0
+    for k in range(n, start - 1, -1):
+        above += pmf[k]
+        if above > half:
+            break
+        upper = k
+    return lower, upper
+
+
+def wilson(count: int, n: int, z: float = 1.959964) -> list[float]:
+    p = count / n
+    centre = (p + z * z / (2 * n)) / (1 + z * z / n)
+    half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / (1 + z * z / n)
+    return [max(0.0, centre - half), min(1.0, centre + half)]
+
+
+def quantile_from_tail(tail: list[float], n: int) -> dict[str, Any]:
+    """The 0.999 order statistic and its binomial interval, read from the sorted top of the n statistics."""
+    base = n - len(tail)
+    rank = -(-n * NULL_QUANTILE[0] // NULL_QUANTILE[1])
+    lower, upper = binomial_ranks(n, NULL_QUANTILE[0] / NULL_QUANTILE[1], NULL_CONFIDENCE)
+    if rank <= base or lower is None or lower <= base:
+        raise SystemExit(f"the kept tail of {len(tail)} of {n} statistics does not reach the 0.999 interval")
+    return {
+        "rank": rank,
+        "value": tail[rank - 1 - base],
+        "rank_lower": lower,
+        "lower": tail[lower - 1 - base],
+        "rank_upper": upper,
+        "upper": None if upper is None else tail[upper - 1 - base],
+        "confidence": NULL_CONFIDENCE,
+    }
+
+
+def null_target_record(weights: list[float], replicates: int, stream: str) -> dict[str, Any]:
+    """The calibration of one weight pattern: quantile, exceedance counts, hashes and the kept tail."""
+    stats = null_statistics(weights, replicates, stream)
+    values = sorted(delta for delta, _ in stats)
+    kept = max(1, int(replicates * NULL_TAIL))
+    tail = values[-kept:]
+    over = sum(delta >= DETECT_DELTA_CHI2 for delta, _ in stats)
+    joint = sum(j for _, j in stats)
+    prefix = min(replicates, NULL_PREFIX)
+    return {
+        "weights": weights,
+        "stream": stream,
+        "replicates": replicates,
+        "quantile": quantile_from_tail(tail, replicates),
+        "threshold": DETECT_DELTA_CHI2,
+        "delta_exceedances": over,
+        "delta_rate": over / replicates,
+        "delta_rate_interval": wilson(over, replicates),
+        "joint_exceedances": joint,
+        "joint_rate": joint / replicates,
+        "joint_rate_interval": wilson(joint, replicates),
+        "statistic_sha256": sha(statistic_lines(stats)),
+        "prefix_replicates": prefix,
+        "prefix_sha256": sha(statistic_lines(stats[:prefix])),
+        "tail_sha256": sha(tail_text(tail)),
+        "tail": tail,
+        "_values": values,
+    }
+
+
+def calibrated_threshold(weights: list[float], replicates: int = NULL_REPLICATES, stream: str = "threshold") -> float:
+    """Empirical null 0.999 quantile of delta chi2 for the arm weights of a future case.
+
+    A new series case carries max(DETECT_DELTA_CHI2, this value) as its
+    preregistered threshold; replicates must be at least 1000 so that the
+    quantile has a bounded interval.
+    """
+    if replicates < 1000:
+        raise SystemExit("calibrated_threshold needs at least 1000 replicates")
+    values = sorted(delta for delta, _ in null_statistics(weights, replicates, stream))
+    return values[-(-replicates * NULL_QUANTILE[0] // NULL_QUANTILE[1]) - 1]
+
+
+def arm_weights(row: dict[str, Any]) -> list[float]:
+    """The fit weights of analyze_target, recovered from the retained per-arm errors."""
+    return [1 / max(row["rate_se_hz"][arm] / TO_HZ, 1e-12) ** 2 for arm in ARMS]
+
+
+def observed_fields(row: dict[str, Any]) -> dict[str, Any]:
+    """The observed statistic of one analysis row, as the calibration record states it (without the null count)."""
+    a_se = row["h2"]["A_se_hz"]
+    return {
+        "delta_chi2": row["delta_chi2"],
+        "a_sigma": abs(row["h2"]["A_hz"]) / a_se if a_se else math.inf,
+        "preregistered_class": row["class"],
+    }
+
+
+def readjudication(verdict: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Preregistered against calibrated flags from the observed fields and the calibrated quantiles of the rows."""
+    calibrated = [
+        r["target"]
+        for r in rows
+        if r["observed"]["delta_chi2"] >= r["quantile"]["value"] and r["observed"]["a_sigma"] >= DETECT_SIGMA
+    ]
+    flagged = [r["target"] for r in rows if r["observed"]["preregistered_class"] != "none"]
+    return {
+        "preregistered_verdict": verdict,
+        "preregistered_flagged": flagged,
+        "calibrated_flagged": calibrated,
+        "dropped_by_calibration": sorted(set(flagged) - set(calibrated)),
+        "added_by_calibration": sorted(set(calibrated) - set(flagged)),
+    }
+
+
+def null_series(analysis: dict[str, Any], replicates: int) -> list[dict[str, Any]]:
+    """The calibrated target records of one series' usable targets."""
+    rows = []
+    for row in analysis["targets"]:
+        if not row["usable"]:
+            continue
+        stream = f"{NULL_SEED}/{analysis['series']}/{row['target']}"
+        rec = null_target_record(arm_weights(row), replicates, stream)
+        values = rec.pop("_values")
+        rec["target"] = row["target"]
+        rec["observed"] = {
+            **observed_fields(row),
+            "null_exceedances": sum(v >= row["delta_chi2"] for v in values),
+        }
+        rows.append(rec)
+    return rows
+
+
+def null_calibration(analyses: list[Path], replicates: int) -> dict[str, Any]:
+    """The calibration record over the usable targets of the given analysis records, one per series."""
+    series: dict[str, Any] = {}
+    for path in analyses:
+        text = path.read_bytes()
+        analysis = json.loads(text)
+        if analysis["profile"] != "tuna_17" or analysis["series"] in series:
+            raise SystemExit(f"{path}: expected one tuna_17 analysis per series")
+        rows = null_series(analysis, replicates)
+        series[analysis["series"]] = {
+            "analysis": retained_path(path),
+            "analysis_sha256": hashlib.sha256(text).hexdigest(),
+            "targets": rows,
+            "readjudication": readjudication(analysis["decision"]["verdict"], rows),
+        }
+    return {
+        "schema": NULL_SCHEMA,
+        "method": (
+            "H1 replicates: independent normal arm rates about one common rate with the preregistered per-arm errors "
+            "of analyze_target, the identical fit_h2, h2_errors and both conjuncts of detects; the normal draws of a "
+            "target come first, in order, from Random(stream), then the fits map through parallel.ordered_map."
+        ),
+        "seed": NULL_SEED,
+        "quantile": NULL_QUANTILE[0] / NULL_QUANTILE[1],
+        "decimals": NULL_DECIMALS,
+        "series": dict(sorted(series.items())),
+    }
+
+
+def check_null_target(rec: dict[str, Any]) -> None:
+    """Replays the first replicates of one target and rebuilds its quantile, interval and tail hash from the tail."""
+    n, tail = rec["replicates"], rec["tail"]
+    if tail != sorted(tail) or len(tail) != max(1, int(n * NULL_TAIL)):
+        raise SystemExit(f"{rec['stream']}: the kept tail is not the sorted top {NULL_TAIL} of the statistics")
+    if sha(tail_text(tail)) != rec["tail_sha256"]:
+        raise SystemExit(f"{rec['stream']}: the kept tail does not match its hash")
+    if quantile_from_tail(tail, n) != rec["quantile"]:
+        raise SystemExit(f"{rec['stream']}: the quantile differs from its recomputation from the tail")
+    count = min(n, NULL_PREFIX)
+    if rec["prefix_replicates"] != count:
+        raise SystemExit(f"{rec['stream']}: the prefix length is not {count}")
+    if sha(statistic_lines(null_statistics(rec["weights"], count, rec["stream"]))) != rec["prefix_sha256"]:
+        raise SystemExit(f"{rec['stream']}: the first {count} replicates differ from their recomputation")
+    if rec["threshold"] != DETECT_DELTA_CHI2:
+        raise SystemExit(f"{rec['stream']}: the threshold is not DETECT_DELTA_CHI2 = {DETECT_DELTA_CHI2}")
+    over = rec["delta_exceedances"]
+    if DETECT_DELTA_CHI2 >= tail[0] and over != sum(v >= DETECT_DELTA_CHI2 for v in tail):
+        raise SystemExit(f"{rec['stream']}: the delta chi2 exceedance count differs from the kept tail")
+    if DETECT_DELTA_CHI2 < tail[0] and over < len(tail):
+        raise SystemExit(f"{rec['stream']}: the delta chi2 exceedance count is below the kept tail")
+    if over / n != rec["delta_rate"] or rec["joint_exceedances"] / n != rec["joint_rate"]:
+        raise SystemExit(f"{rec['stream']}: an exceedance rate differs from its count")
+    if rec["delta_rate_interval"] != wilson(over, n) or rec["joint_rate_interval"] != wilson(
+        rec["joint_exceedances"], n
+    ):
+        raise SystemExit(f"{rec['stream']}: an exceedance-rate interval differs from its Wilson recomputation")
+    if rec["joint_exceedances"] > rec["delta_exceedances"]:
+        raise SystemExit(f"{rec['stream']}: the joint rule fires more often than its delta chi2 conjunct")
+    observed = rec["observed"]["delta_chi2"]
+    if observed >= tail[0] and rec["observed"]["null_exceedances"] != sum(v >= observed for v in tail):
+        raise SystemExit(f"{rec['stream']}: the observed exceedance count differs from the kept tail")
+    if observed < tail[0] and rec["observed"]["null_exceedances"] < len(tail):
+        raise SystemExit(f"{rec['stream']}: the observed exceedance count is below the kept tail")
+
+
+def check_null_series(name: str, block: dict[str, Any], analysis: dict[str, Any]) -> int:
+    """Checks one series block against its analysis: observed fields, readjudication, then each target's replay."""
+    rows = {row["target"]: row for row in analysis["targets"] if row["usable"]}
+    if sorted(rows) != sorted(rec["target"] for rec in block["targets"]):
+        raise SystemExit(f"series {name}: the calibrated targets differ from the usable targets")
+    for rec in block["targets"]:
+        row = rows[rec["target"]]
+        if rec["stream"] != f"{NULL_SEED}/{name}/{rec['target']}":
+            raise SystemExit(f"series {name}: target {rec['target']} has a foreign stream")
+        if not all(math.isclose(a, b, rel_tol=1e-9) for a, b in zip(rec["weights"], arm_weights(row), strict=True)):
+            raise SystemExit(f"series {name}: target {rec['target']} weights differ from the analysis errors")
+        observed = rec["observed"]
+        if {k: v for k, v in observed.items() if k != "null_exceedances"} != observed_fields(row) or set(observed) != {
+            *observed_fields(row),
+            "null_exceedances",
+        }:
+            raise SystemExit(f"series {name}: target {rec['target']} observed fields differ from the analysis")
+    if block["readjudication"] != readjudication(analysis["decision"]["verdict"], block["targets"]):
+        raise SystemExit(f"series {name}: the readjudication differs from its recomputation")
+    for rec in block["targets"]:
+        check_null_target(rec)
+    return len(block["targets"])
+
+
+def check_null_record(record: dict[str, Any]) -> int:
+    """Replays a calibration record against its analysis records; returns the number of targets checked."""
+    if record["schema"] != NULL_SCHEMA or record["seed"] != NULL_SEED:
+        raise SystemExit("the calibration record has another schema or seed")
+    checked = 0
+    for name, block in record["series"].items():
+        path = ROOT / block["analysis"]
+        text = path.read_bytes()
+        if hashlib.sha256(text).hexdigest() != block["analysis_sha256"]:
+            raise SystemExit(f"{path}: the analysis differs from the one the calibration used")
+        checked += check_null_series(name, block, json.loads(text))
+    return checked
+
+
+def fit_bits(fit: Fit) -> tuple[str, ...]:
+    """The exact bits of a fit, signed zeros included."""
+    return tuple(float(v).hex() for v in fit)
+
+
+def compare_fits(name: str, scalar: list[Fit], batched: list[Fit]) -> int:
+    """The number of bit-identical fits; any difference stops with its largest absolute and relative size."""
+    same = sum(fit_bits(x) == fit_bits(y) for x, y in zip(scalar, batched, strict=True))
+    if same != len(scalar):
+        gaps = [
+            (abs(u - v), abs(u - v) / max(abs(u), abs(v)) if u != v else 0.0)
+            for x, y in zip(scalar, batched, strict=True)
+            for u, v in zip(x, y, strict=True)
+            if float(u).hex() != float(v).hex()
+        ]
+        raise SystemExit(
+            f"{name}: {len(scalar) - same} of {len(scalar)} batched fits differ from fit_h2; "
+            f"max abs {max(g[0] for g in gaps):.3e}, max rel {max(g[1] for g in gaps):.3e}"
+        )
+    return same
+
+
+def null_equivalence(weights: list[float], replicates: int, stream: str) -> int:
+    """Fits the first replicates of a stream with NullFit and with NullBlock; returns the equal count."""
+    scalar = ordered_map(NullFit(weights), null_draws(replicates, stream), min_items=1)
+    batched = null_fits(weights, replicates, stream)
+    same = compare_fits(stream, [fit for _, fit in scalar], [fit for _, fit in batched])
+    if [stat for stat, _ in scalar] != [stat for stat, _ in batched]:
+        raise SystemExit(f"{stream}: the batched statistics differ from NullFit")
+    return same
+
+
+def null_equivalence_report(analyses: list[Path], replicates: int) -> str:
+    """Bitwise equality of fit_h2_batch and fit_h2 on the record stream of every usable target."""
+    lines = []
+    for path in analyses:
+        analysis = json.loads(path.read_bytes())
+        for row in analysis["targets"]:
+            if row["usable"]:
+                stream = f"{NULL_SEED}/{analysis['series']}/{row['target']}"
+                same = null_equivalence(arm_weights(row), replicates, stream)
+                lines.append(f"{stream}: {same} of {replicates} fits and statistics bit-identical")
+    return "\n".join(lines)
+
+
+def fsum_cases() -> list[list[float]]:
+    """Sums whose builtin result depends on the compensation, the start value or the zero sign."""
+    rng = random.Random(f"{NULL_SEED}/fsum")
+    cases = [
+        [-0.0, -0.0, -0.0],
+        [0.0, -0.0, 1.0, -1.0],
+        [1e16, 1.0, -1e16, 1.0],
+        [1.0, 1e100, 1.0, -1e100],
+        [3.0, -3.0, 2.0**-1074, -(2.0**-1074)],
+        [1e308, -1e308, 1e-308, 2.0],
+    ]
+    cases += [[rng.gauss(0.0, 1.0) * 10 ** rng.uniform(-8, 8) for _ in ARMS] for _ in range(4000)]
+    return cases
+
+
+def batch_cases() -> list[tuple[str, list[float], list[list[float]]]]:
+    """(name, weights, rate rows) on which fit_h2_batch must reproduce fit_h2 bit for bit.
+
+    Null draws under three weight patterns (synthetic, equal, and one arm at
+    the 1e-12 error clamp of arm_weights), all-zero and constant rates whose
+    profile ties at every grid point and every golden step, and noise-free
+    and noisy decays at both T bounds and on a grid point.
+    """
+    taus = [arm_tau(arm) for arm in ARMS]
+    synthetic = [4.0e6, 3.0e6, 2.0e6, 2.5e6, 3.5e6, 1.5e6]
+    patterns = {"synthetic": synthetic, "equal": [1.0] * len(ARMS), "clamped": [1e24, *synthetic[1:]]}
+    cases = []
+    for name, weights in patterns.items():
+        fit = NullFit(weights)
+        cases.append((name, weights, [fit.rates(z) for z in null_draws(256, f"{NULL_SEED}/batch/{name}")]))
+    rng = random.Random(f"{NULL_SEED}/batch/shapes")
+    shapes = [[0.0] * len(ARMS), [-0.0] * len(ARMS), [1e-3] * len(ARMS), [-2.5e-4] * len(ARMS)]
+    for tail in (T_BOUNDS[0], T_GRID[200], T_BOUNDS[1], 2.0, 400.0):
+        decay_rates = [1e-4 + (0.0 if tau is None else 3e-3 * math.exp(-tau / tail)) for tau in taus]
+        shapes.append(decay_rates)
+        shapes += [[r + rng.gauss(0.0, 5e-4) for r in decay_rates] for _ in range(8)]
+    cases.append(("shapes", synthetic, shapes))
+    return cases
+
+
+def batch_self_test() -> str:
+    """fit_h2_batch and NullBlock against the scalar fit on batch_cases; fsum_rows against builtin sum."""
+    sums = fsum_cases()
+    for terms in sums:
+        mine = fsum_rows([np.array([t]) for t in terms])[0]
+        if float(mine).hex() != float(sum(terms)).hex():
+            raise SystemExit(f"null self-test: fsum_rows gives {mine!r} where sum() gives {sum(terms)!r} on {terms}")
+    taus: Taus = [arm_tau(arm) for arm in ARMS]
+    total = 0
+    for name, weights, rows in batch_cases():
+        block = NullBlock(weights)
+        scalar = [fit_h2(taus, rates, weights) for rates in rows]
+        batched = block.fit_rows(rows)
+        total += compare_fits(f"null self-test {name}", scalar, [fit for _, fit in batched])
+        if [stat for stat, _ in batched] != [block.statistic(r, fit) for r, fit in zip(rows, scalar, strict=True)]:
+            raise SystemExit(f"null self-test {name}: NullBlock statistics differ from the scalar fit")
+    singular = [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    raised = []
+    try:
+        fit_h2(taus, [0.0] * len(ARMS), singular)
+    except ZeroDivisionError:
+        raised.append("fit_h2")
+    try:
+        fit_h2_batch(taus, np.zeros((1, len(ARMS))), singular)
+    except ZeroDivisionError:
+        raised.append("fit_h2_batch")
+    if len(raised) != 2:
+        raise SystemExit(f"null self-test: only {raised} raise on a singular weight pattern")
+    return (
+        f"{total} batched fits and {len(sums)} sums bit-identical to fit_h2 and sum(); "
+        "a singular weight pattern raises in both paths"
+    )
+
+
+def null_self_test() -> str:
+    """Contract on synthetic weights: a record replays; a mutated seed, tail value or weight fails."""
+    weights = [4.0e6, 3.0e6, 2.0e6, 2.5e6, 3.5e6, 1.5e6]
+    stream = f"{NULL_SEED}/S/0"
+    rec = null_target_record(weights, 1000, stream)
+    rec.pop("_values")
+    rec["observed"] = {
+        "delta_chi2": rec["tail"][-1],
+        "a_sigma": 4.0,
+        "preregistered_class": "tail",
+        "null_exceedances": 1,
+    }
+    check_null_target(rec)
+    if null_statistics(weights, 40, stream) != null_statistics(weights, 40, stream):
+        raise SystemExit("null self-test: a replay of the same seed differs")
+    if not 0 <= rec["joint_exceedances"] <= rec["delta_exceedances"]:
+        raise SystemExit("null self-test: the joint rule fires more often than its conjunct")
+    lower, upper = binomial_ranks(1000, 0.999, NULL_CONFIDENCE)
+    if lower is None or upper is not None or not 990 < lower < 1000:
+        raise SystemExit(f"null self-test: ranks {lower}, {upper} are not the order-statistic interval of 1000")
+    mutations = {
+        "seed": {**rec, "stream": f"{NULL_SEED + 1}/S/0"},
+        "tail": {**rec, "tail": rec["tail"][1:]},
+        "weight": {**rec, "weights": [weights[0] * 1.001, *weights[1:]]},
+        "tail value": {**rec, "tail": [*rec["tail"][:-1], rec["tail"][-1] + 0.5]},
+        "threshold": {**rec, "threshold": DETECT_DELTA_CHI2 + 1},
+        "delta count": {
+            **rec,
+            "delta_exceedances": rec["delta_exceedances"] + 1,
+            "delta_rate": (rec["delta_exceedances"] + 1) / rec["replicates"],
+        },
+        "delta interval": {**rec, "delta_rate_interval": wilson(rec["delta_exceedances"] + 1, rec["replicates"])},
+        "joint interval": {**rec, "joint_rate_interval": wilson(rec["joint_exceedances"] + 1, rec["replicates"])},
+    }
+    for name, bad in mutations.items():
+        try:
+            check_null_target(bad)
+        except SystemExit:
+            continue
+        raise SystemExit(f"null self-test: a mutated {name} is accepted")
+    sigma = [1 / math.sqrt(w) * TO_HZ for w in weights]
+    analysis: dict[str, Any] = {
+        "series": "S",
+        "decision": {"verdict": "not detected"},
+        "targets": [
+            {
+                "target": t,
+                "usable": True,
+                "class": cls,
+                "delta_chi2": delta,
+                "rate_se_hz": dict(zip(ARMS, sigma, strict=True)),
+                "h2": {"A_hz": 4.0, "A_se_hz": 1.0},
+            }
+            for t, cls, delta in ((0, "tail", 40.0), (1, "none", 2.0))
+        ],
+    }
+    block: dict[str, Any] = {"targets": null_series(analysis, 1000), "readjudication": {}}
+    block["readjudication"] = readjudication("not detected", block["targets"])
+    if block["readjudication"]["calibrated_flagged"] != [0] or block["readjudication"]["dropped_by_calibration"]:
+        raise SystemExit("null self-test: the synthetic readjudication is not the expected one")
+    check_null_series("S", block, analysis)
+
+    def edited(change: dict[str, Any], target: int | None = None) -> dict[str, Any]:
+        targets = [
+            {**r, "observed": {**r["observed"], **change}} if r["target"] == target else r for r in block["targets"]
+        ]
+        return (
+            {**block, "targets": targets}
+            if target is not None
+            else {**block, "readjudication": {**block["readjudication"], **change}}
+        )
+
+    series_mutations = {
+        "a_sigma": edited({"a_sigma": 9.0}, 0),
+        "observed delta": edited({"delta_chi2": 41.0}, 0),
+        "observed class": edited({"preregistered_class": "offset"}, 0),
+        "calibrated_flagged": edited({"calibrated_flagged": [0, 1]}),
+        "dropped_by_calibration": edited({"dropped_by_calibration": [0]}),
+        "added_by_calibration": edited({"added_by_calibration": [1]}),
+        "preregistered_verdict": edited({"preregistered_verdict": "readout tail detected"}),
+    }
+    for name, bad in series_mutations.items():
+        try:
+            check_null_series("S", bad, analysis)
+        except SystemExit:
+            continue
+        raise SystemExit(f"null self-test: a mutated {name} is accepted")
+    return (
+        "null self-test: replay reproduces; mutated seed, dropped tail value, changed weight, threshold, "
+        "delta count, rate intervals, a_sigma and readjudication fields are rejected; " + batch_self_test()
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -1522,6 +2245,14 @@ def main() -> int:
     mode.add_argument("--sanity", type=Path, metavar="RUN_DIR")
     mode.add_argument("--sensitivity", type=Path, nargs="+", metavar=("OUT", "RUN_DIR"))
     mode.add_argument("--sensitivity-self-test", action="store_true")
+    mode.add_argument("--null-calibration", type=Path, nargs="+", metavar=("OUT", "ANALYSIS"))
+    mode.add_argument("--null-self-test", action="store_true")
+    mode.add_argument("--null-equivalence", type=Path, nargs="+", metavar="ANALYSIS")
+    parser.add_argument(
+        "--replicates",
+        type=int,
+        help=f"with --null-calibration (default {NULL_REPLICATES}) or --null-equivalence (default {NULL_EQUIVALENCE})",
+    )
     parser.add_argument(
         "--replay", action="store_true", help="with --analyze or --sensitivity: compare OUT with the recomputation"
     )
@@ -1550,6 +2281,24 @@ def main() -> int:
         rng = random.Random(23)
         for profile, series in itertools.product(PROFILES, SERIES):
             print(conformance_series(profile, series, rng))
+        return 0
+    if args.null_self_test:
+        print(null_self_test())
+        return 0
+    if args.null_equivalence:
+        print(null_equivalence_report(args.null_equivalence, args.replicates or NULL_EQUIVALENCE))
+        return 0
+    if args.null_calibration:
+        args.replicates = NULL_REPLICATES if args.replicates is None else args.replicates
+        out, *analyses = args.null_calibration
+        if args.replay:
+            checked = check_null_record(json.loads(out.read_text(encoding="utf-8")))
+            print(f"{out}: {checked} targets replay")
+            return 0
+        if not analyses or args.replicates < 1000:
+            raise SystemExit("--null-calibration needs OUT, at least one ANALYSIS and --replicates of at least 1000")
+        out.write_text(json.dumps(null_calibration(analyses, args.replicates), indent=1) + "\n", encoding="utf-8")
+        print(f"null calibration -> {out}")
         return 0
     if args.sensitivity_self_test:
         print(sensitivity_self_test())
