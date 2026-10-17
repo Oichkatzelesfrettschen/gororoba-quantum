@@ -25,28 +25,35 @@ exception messages are kept verbatim; messages of third-party exceptions
 that keeps the behavior keeps the inventory.
 
 ``--check FILE`` regenerates the inventory and requires FILE to equal it,
-requires each generated block of the hardware-controls note to equal
-``--render``, and validates the schema of the backend snapshot without
-comparing its values, which are live reads.
+requires the installed versions of the packages the probes exercise to equal
+the versions FILE records, requires each generated block of the
+hardware-controls note (the backend table included, rendered from the
+retained snapshot) to equal ``--render``, and validates the schema of the
+backend snapshot: its backend set equals ``accessible_backends`` and its
+qiskit-ibm-runtime version equals RUNTIME_VERSION.
 
 ``--render`` prints the generated blocks with their markers.
 
+``--self-test`` (offline) feeds each check a corrupted copy of the retained
+records and requires the matching rejection.
+
 ``--backends FILE`` (network, read-only) reads the account's backends through
-QiskitRuntimeService: ``backends()``, ``usage()``, and for each backend of
-ROSTER ``configuration()``, ``status()``, ``properties()`` and the Target,
+QiskitRuntimeService: ``backends()``, ``usage()``, and for each backend
+``backends()`` returns ``configuration()``, ``status()``, ``properties()`` and the Target,
 plainly and with ``use_fractional_gates=True``, then transpiles an
 out-of-range ``rzz`` locally against the fractional Target. Each call carries
 its UTC time. The instance appears only as the 12-hex sha256 of its CRN;
 ``instance_id`` and ``plan_id`` are dropped. Nothing is submitted.
 
 Usage: "$PYTHON" scripts/ibm_runtime_options_inventory.py
-       (--out FILE | --check FILE | --render | --backends FILE)
+       (--out FILE | --check FILE | --render | --backends FILE | --self-test)
 """
 
 from __future__ import annotations
 
 import argparse
 import ast
+import copy
 import datetime
 import hashlib
 import importlib
@@ -59,7 +66,7 @@ import sys
 import textwrap
 import unicodedata
 from collections.abc import Callable, Iterator
-from functools import cache
+from functools import cache, partial
 from pathlib import Path
 from typing import Any, Literal, get_args, get_origin
 
@@ -70,8 +77,8 @@ SCHEMA = "ibm-runtime-options-inventory-v1"
 BACKENDS_SCHEMA = "ibm-runtime-backend-controls-v1"
 RUNTIME_VERSION = "0.50.0"
 PACKAGE = "qiskit_ibm_runtime"
-# The backends the Heron execution facts section of AGENTS.md names.
-ROSTER = ("ibm_fez", "ibm_kingston", "ibm_marrakesh")
+# Distributions whose versions shape the probe outcomes; None records an absent one.
+PROBE_PACKAGES = ("qiskit", "samplomatic", "pydantic", "qiskit-mitigation")
 
 # (label, module, class, primitive that accepts the options)
 ROOTS = (
@@ -93,7 +100,7 @@ DEPRECATION_MODULES = (
 )
 REST_MODULES = ("runtime", "cloud_backend", "program_job", "runtime_session")
 TWIRL_SHOTS = (1024, 4096, 8192, 65536, 100000, 122880)
-BLOCKS = ("rest", "options", "behavior")
+BLOCKS = ("rest", "options", "behavior", "backends")
 ASCII = {
     "\u2013": "--",
     "\u2014": "--",
@@ -716,6 +723,32 @@ def requirements() -> list[str]:
     return sorted(rows)
 
 
+def probe_environment() -> dict[str, str | None]:
+    """Installed versions of the distributions the probes exercise."""
+    from importlib.metadata import PackageNotFoundError, version
+
+    versions: dict[str, str | None] = {}
+    for name in PROBE_PACKAGES:
+        try:
+            versions[name] = version(name)
+        except PackageNotFoundError:
+            versions[name] = None
+    return versions
+
+
+def check_environment(recorded: Any, installed: dict[str, str | None]) -> None:
+    """The probe outcomes byte-compare only under the versions the inventory was generated with."""
+    require(
+        isinstance(recorded, dict) and set(recorded) == set(PROBE_PACKAGES),
+        f"inventory probe_environment must name {', '.join(PROBE_PACKAGES)}",
+    )
+    for name in PROBE_PACKAGES:
+        require(
+            recorded[name] == installed[name],
+            f"{name} {installed[name]} is installed; the inventory was generated with {recorded[name]}",
+        )
+
+
 def inventory() -> dict[str, Any]:
     import qiskit_ibm_runtime
 
@@ -728,6 +761,7 @@ def inventory() -> dict[str, Any]:
         "schema": SCHEMA,
         "qiskit_ibm_runtime": RUNTIME_VERSION,
         "runtime_requirements": requirements(),
+        "probe_environment": probe_environment(),
         "roots": roots,
         "classes": classes,
         "effective_defaults": effective_defaults(),
@@ -893,8 +927,153 @@ def render_rest(data: dict[str, Any]) -> list[str]:
     return lines
 
 
-def render(data: dict[str, Any]) -> dict[str, str]:
-    blocks = {"rest": render_rest(data), "options": render_options(data), "behavior": render_behavior(data)}
+def ns(value: Any) -> str:
+    return "None" if value is None else f"{value:g} ns"
+
+
+def timing(row: dict[str, Any], error: bool = True) -> str:
+    """Median duration, with the median error when the Target carries one."""
+    text = ns(row["duration_ns_median"])
+    if error and row["error_median"] is not None:
+        text += f" / {row['error_median']:.5f}"
+    return text
+
+
+def render_backends(record: dict[str, Any]) -> list[str]:
+    """The section 4 table: one column per captured backend, every cell read from the snapshot."""
+    names = sorted(record["backends"])
+    entries = [record["backends"][name] for name in names]
+    versions = record["versions"]
+
+    def row(label: str, cells: Callable[[dict[str, Any]], str], source: str) -> str:
+        return f"| {label} | " + " | ".join(cells(entry) for entry in entries) + f" | {source} |"
+
+    def conf(key: str) -> Callable[[dict[str, Any]], str]:
+        return lambda entry: cell(entry["configuration"][key])
+
+    def listed(key: str) -> Callable[[dict[str, Any]], str]:
+        return lambda entry: ", ".join(entry["configuration"][key])
+
+    def instruction(name: str, error: bool = True) -> Callable[[dict[str, Any]], str]:
+        return lambda entry: timing(entry["instructions"][name], error)
+
+    def fractional(name: str) -> Callable[[dict[str, Any]], str]:
+        return lambda entry: timing(entry["fractional_instructions"][name])
+
+    def processor(entry: dict[str, Any]) -> str:
+        kind = entry["configuration"]["processor_type"]
+        return f"{kind['family']} r{kind['revision']}, {entry['configuration']['backend_version']}"
+
+    def durations(entry: dict[str, Any]) -> str:
+        table = entry["instructions"]
+        return ", ".join(f"{name} {ns(table[name]['duration_ns_median'])}" for name in ("x", "sx", "id", "xslow"))
+
+    def cz(entry: dict[str, Any]) -> str:
+        row_ = entry["instructions"]["cz"]
+        return f"{row_['duration_ns_median']:g} ({row_['duration_ns_max']:g}) ns / {row_['error_median']:.5f}"
+
+    def constraints(entry: dict[str, Any]) -> str:
+        return ", ".join(
+            f"{key} {value}" for key, value in sorted(entry["configuration"]["timing_constraints"].items())
+        )
+
+    def rep_delay(entry: dict[str, Any]) -> str:
+        c = entry["configuration"]
+        low, high = c["rep_delay_range"]
+        wire = entry["wire_units"]
+        w_low, w_high = wire["rep_delay_range"]
+        default = c["default_rep_delay"]
+        return f"[{low:g}, {high:g}], {default:g} (wire {w_low:g} to {w_high:g}, {wire['default_rep_delay']:g})"
+
+    def meas_map(entry: dict[str, Any]) -> str:
+        return f"{entry['meas_map']['groups']} group(s), largest {entry['meas_map']['largest_group']}"
+
+    def bounds(gate: str) -> Callable[[dict[str, Any]], str]:
+        def text(entry: dict[str, Any]) -> str:
+            info = entry["fractional_angle_bounds"][gate]
+            if not info["has_angle_bounds"]:
+                return "none"
+            ok = [angle for angle, flag in info["supported"].items() if flag]
+            bad = [angle for angle, flag in info["supported"].items() if not flag]
+            admitted = ", ".join(f"{float(a):.4g}" for a in ok)
+            refused = ", ".join(f"{float(a):.4g}" for a in bad)
+            return f"admitted {admitted}; refused {refused}"
+
+        return text
+
+    def status(entry: dict[str, Any]) -> str:
+        return f"{entry['status']['status_msg']}, {entry['status']['pending_jobs']} pending"
+
+    lines = [
+        "Generated by `scripts/ibm_runtime_options_inventory.py --render` from "
+        f"`docs/evidence/ibm_runtime_options/backends.json`, read {record['retrieved']} under "
+        f"qiskit {versions['qiskit']} and qiskit-ibm-runtime {versions['qiskit-ibm-runtime']}.",
+        "",
+        "| Control | " + " | ".join(names) + " | Source |",
+        "| --- | " + " | ".join("---" for _ in names) + " | --- |",
+        row("processor_type, backend_version", processor, "[M] `configuration()`"),
+        row("qubits", conf("n_qubits"), "[M]; [P] processor-types.md for the heavy-hex coupling"),
+        row("basis_gates", listed("basis_gates"), "[M]"),
+        row("supported_instructions", listed("supported_instructions"), "[M]"),
+        row("supported_features", listed("supported_features"), "[M]"),
+        row(
+            "`conditional` (legacy flag)",
+            conf("conditional"),
+            "[M]; `if_else` support comes from `supported_instructions` and `dynamic_circuits`, "
+            "and every backend listed in `dynamic_circuit_backends` accepts it",
+        ),
+        row("measure duration / median error", instruction("measure"), "[M] Target"),
+        row("measure_2 duration / median error", instruction("measure_2"), "[M] Target"),
+        row("reset duration", instruction("reset", False), "[M] Target"),
+        row("measure_reset duration", instruction("measure_reset", False), "[M] Target"),
+        row("reset_2 duration", instruction("reset_2", False), "[M] Target"),
+        row("measure_reset_2 duration", instruction("measure_reset_2", False), "[M] Target"),
+        row("x, sx, id, xslow duration", durations, "[M] Target"),
+        row("cz duration median (max) / median error", cz, "[M] Target"),
+        row("dt, dtm (s)", lambda e: f"{e['configuration']['dt']:g}, {e['configuration']['dtm']:g}", "[M]"),
+        row("timing_constraints", constraints, "[M]"),
+        row("rep_delay_range, default_rep_delay (SDK seconds)", rep_delay, "[M]; `to_dict()` reports microseconds"),
+        row("dynamic_reprate_enabled", conf("dynamic_reprate_enabled"), "[M]"),
+        row("max_shots", conf("max_shots"), "[M]"),
+        row(
+            "max_experiments; `backend.max_circuits`",
+            lambda e: f"{e['configuration']['max_experiments']}; {cell(e['max_circuits'])}",
+            "[M]; [S] `IBMBackend.max_circuits` returns None because `max_experiments` "
+            '"is no longer an accurate representation of backend circuit limits"',
+        ),
+        row("meas_map", meas_map, "[M]"),
+        row(
+            "meas_levels, meas_kernels, discriminators",
+            lambda e: ", ".join(cell(e["configuration"][k]) for k in ("meas_levels", "meas_kernels", "discriminators")),
+            "[M]",
+        ),
+        row(
+            "multi_meas_enabled, measure_esp_enabled",
+            lambda e: ", ".join(cell(e["configuration"][k]) for k in ("multi_meas_enabled", "measure_esp_enabled")),
+            "[M]",
+        ),
+        row(
+            "mcps, clops_h",
+            lambda e: f"{e['configuration']['mcps']}, {e['configuration']['clops_h']}",
+            "[M]",
+        ),
+        row("fractional `rzz` duration / median error", fractional("rzz"), "[M] fractional Target"),
+        row("fractional `rx` median error", fractional("rx"), '[M]; [P] qpu-information.md "RX error"'),
+        row("`rzz` angle bounds in the Target", bounds("rzz"), "[M] `supported_angle_bound`"),
+        row("`rx` angle bounds", bounds("rx"), '[M] `gate_has_angle_bounds`; [P] "any theta"'),
+        row("status at read", status, "[M] `status()`"),
+    ]
+    return lines
+
+
+def render(data: dict[str, Any], backends: dict[str, Any] | None = None) -> dict[str, str]:
+    snapshot = backends if backends is not None else json.loads(BACKENDS.read_text())
+    blocks = {
+        "rest": render_rest(data),
+        "options": render_options(data),
+        "behavior": render_behavior(data),
+        "backends": render_backends(snapshot),
+    }
     return {name: "\n".join(lines) for name, lines in blocks.items()}
 
 
@@ -1052,6 +1231,7 @@ def read_backends(out: Path) -> None:
     import qiskit_ibm_runtime
     from qiskit_ibm_runtime import QiskitRuntimeService
 
+    require_runtime_version(qiskit_ibm_runtime.__version__)
     reads: list[dict[str, str]] = []
 
     def stamp(call: str) -> None:
@@ -1073,7 +1253,7 @@ def read_backends(out: Path) -> None:
     budget["instance_sha256_12"] = sha12(instance)
     budget["usage_instance_is_active_instance"] = usage.get("instance_id") == instance
     backends: dict[str, Any] = {}
-    for name in ROSTER:
+    for name in names:
         backend = service.backend(name)
         stamp(f"service.backend({name!r})")
         configuration = backend.configuration()
@@ -1162,13 +1342,30 @@ def is_time(value: Any) -> bool:
     return True
 
 
+def require_runtime_version(found: Any) -> None:
+    require(
+        found == RUNTIME_VERSION,
+        f"qiskit-ibm-runtime {found} is recorded or installed; the inventory pins {RUNTIME_VERSION}",
+    )
+
+
 def check_backends(record: dict[str, Any]) -> None:
     """Schema of a backend snapshot: keys, types and hygiene, never the live values."""
     require(record.get("schema") == BACKENDS_SCHEMA, "backends snapshot schema")
     require(is_time(record.get("retrieved")), "backends snapshot retrieval time")
     for key in ("accessible_backends", "dynamic_circuit_backends", "fractional_backends"):
         require(isinstance(record.get(key), list) and all(isinstance(n, str) for n in record[key]), key)
-    require(sorted(record["backends"]) == sorted(ROSTER), "backends snapshot roster")
+    versions: Any = record.get("versions")
+    require(isinstance(versions, dict), "backends snapshot versions")
+    require_runtime_version(versions.get("qiskit-ibm-runtime"))
+    require(
+        sorted(record["backends"]) == sorted(record["accessible_backends"]),
+        "backends snapshot captures a backend set that differs from accessible_backends",
+    )
+    for key in ("dynamic_circuit_backends", "fractional_backends"):
+        require(
+            set(record[key]) <= set(record["accessible_backends"]), f"{key} names a backend outside accessible_backends"
+        )
     require(isinstance(record.get("usage"), dict), "usage block")
     usage: dict[str, Any] = record["usage"]
     require(re.fullmatch(r"[0-9a-f]{12}", str(usage.get("instance_sha256_12"))) is not None, "instance hash")
@@ -1195,18 +1392,68 @@ def check_backends(record: dict[str, Any]) -> None:
     scan_secrets(record)
 
 
+def check_note(text: str, rendered: dict[str, str]) -> None:
+    blocks = note_blocks(text)
+    for name, block in rendered.items():
+        require(blocks[name] == block, f"{NOTE.name}: block {name} differs from --render")
+
+
 def check(path: Path) -> None:
+    recorded = json.loads(path.read_text())
+    check_environment(recorded.get("probe_environment"), probe_environment())
     data = inventory()
     require(path.read_text() == dumps(data), f"{path} differs from the installed package; rerun --out")
-    blocks = note_blocks(NOTE.read_text())
-    for name, text in render(data).items():
-        require(blocks[name] == text, f"{NOTE.name}: block {name} differs from --render")
-    check_backends(json.loads(BACKENDS.read_text()))
+    snapshot = json.loads(BACKENDS.read_text())
+    check_backends(snapshot)
+    check_note(NOTE.read_text(), render(data, snapshot))
     counts = {record["class"]: len(record["fields"]) for record in data["classes"]}
     print(
         f"inventory matches qiskit-ibm-runtime {RUNTIME_VERSION}: {len(counts)} classes, "
         f"{sum(counts.values())} fields, {len(data['probes'])} probes; note blocks and backend schema hold"
     )
+
+
+def rejects(action: Callable[[], Any], fragment: str) -> None:
+    try:
+        action()
+    except RuntimeError as error:
+        require(fragment in str(error), f"rejected with {error!r}, expected {fragment!r}")
+        return
+    raise RuntimeError(f"accepted a corrupted record; expected a rejection naming {fragment!r}")
+
+
+def self_test() -> None:
+    snapshot = json.loads(BACKENDS.read_text())
+    check_backends(snapshot)
+
+    extra = copy.deepcopy(snapshot)
+    extra["accessible_backends"].append("ibm_extra")
+    rejects(lambda: check_backends(extra), "accessible_backends")
+    missing = copy.deepcopy(snapshot)
+    del missing["backends"][sorted(missing["backends"])[0]]
+    rejects(lambda: check_backends(missing), "accessible_backends")
+
+    older = copy.deepcopy(snapshot)
+    older["versions"]["qiskit-ibm-runtime"] = "0.49.0"
+    rejects(lambda: check_backends(older), "pins")
+    rejects(lambda: require_runtime_version("0.49.0"), "pins")
+
+    installed = probe_environment()
+    check_environment(dict(installed), installed)
+    for name in PROBE_PACKAGES:
+        drifted = dict(installed)
+        drifted[name] = "0.0.0"
+        rejects(partial(check_environment, drifted, installed), name)
+    rejects(lambda: check_environment({}, installed), "probe_environment")
+
+    changed = copy.deepcopy(snapshot)
+    first = sorted(changed["backends"])[0]
+    changed["backends"][first]["configuration"]["max_shots"] += 1
+    text = NOTE.read_text()
+    rendered = {"backends": "\n".join(render_backends(snapshot))}
+    check_note(text, rendered)
+    rejects(lambda: check_note(text, {"backends": "\n".join(render_backends(changed))}), "backends")
+    print("self-test: backend set, runtime version, probe environment and note drift each rejected")
 
 
 def main(argv: list[str]) -> int:
@@ -1216,12 +1463,15 @@ def main(argv: list[str]) -> int:
     group.add_argument("--check", type=Path)
     group.add_argument("--render", action="store_true")
     group.add_argument("--backends", type=Path)
+    group.add_argument("--self-test", action="store_true")
     args = parser.parse_args(argv)
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(dumps(inventory()))
     elif args.check:
         check(args.check)
+    elif args.self_test:
+        self_test()
     elif args.render:
         for name, text in render(inventory()).items():
             print(f"{marker(name, 'begin')}\n{text}\n{marker(name, 'end')}\n")

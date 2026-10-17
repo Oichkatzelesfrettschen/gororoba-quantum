@@ -2663,6 +2663,12 @@
    "signature": "(self, pubs: 'Iterable[EstimatorPubLike]', *, precision: 'float | None' = None, dry_run: 'bool' = False) -> 'RuntimeJobV2 | LocalRuntimeJob'"
   }
  ],
+ "probe_environment": {
+  "pydantic": "2.13.5",
+  "qiskit": "2.5.2",
+  "qiskit-mitigation": "0.1.1",
+  "samplomatic": "0.21.0"
+ },
  "probes": [
   {
    "accepted": true,
