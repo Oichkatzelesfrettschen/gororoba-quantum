@@ -137,7 +137,10 @@ GPU matters for sweeps and batched trials, not for single circuits.
   and `machine_shape`; whether a TPU VM image through that call reaches the
   TPU is untested. `shards --machine
   cpu,NvidiaTeslaT4` falls through to a GPU session when the CPU pool is
-  full; a GPU session runs the shard on its 4-core host.
+  full; a GPU session runs the shard on its 4-core host. Each shard slug
+  (`gororoba-ci-shard-I-of-N`) is fixed, so a machine list that names an
+  accelerator applies the push guard of the next section to every selected
+  shard slug before the first push, and one live version refuses the run.
 - The account runs at most two GPU batch sessions at once; a third push
   fails with "Maximum batch GPU session count of 2 reached", and `push`
   exits with that message and removes the unsent run directory, as it does
