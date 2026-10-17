@@ -642,7 +642,7 @@ def joint_quasistatic_fit(
 
     # About 400 grid evaluations bound the seed search for any qubit count.
     points = max(3, round(400 ** (1 / len(qubits))))
-    grid = list(itertools.product(np.linspace(-4.5, 4.5, points), repeat=len(qubits)))
+    grid = [tuple(map(float, means)) for means in itertools.product(np.linspace(-4.5, 4.5, points), repeat=len(qubits))]
     landscape = parallel.ordered_map(
         objective, [np.array([0.12, 0.0, *means, *([0.0] * len(qubits))]) for means in grid], min_items=2
     )
@@ -1483,8 +1483,18 @@ def _check_piecewise_exposure() -> None:
 
 def _check_differences() -> None:
     retained = {"law": [0.25, 0.75], "dof": 3, "flag": True, "source": "--readout"}
-    if differences(retained, {**retained, "law": [0.25 + 1e-12, 0.75]}):
+    if differences(retained, {**retained, "law": [0.25 + 1e-8, 0.75]}):
         raise RuntimeError("a rounding-level float change fails the regeneration check")
+    flat = {"improves_at_family_alpha": False, "parameters": {"round1": 0.1, "reset_failure": 0.07}}
+    sharp = {"improves_at_family_alpha": True, "parameters": {"round1": 0.1, "phase_one": 0.59}}
+    report = {"pairs": {"p": {"models": {"reset_failure": flat, "work_phase_one": sharp}}}}
+    moved = json.loads(json.dumps(report))
+    moved["pairs"]["p"]["models"]["reset_failure"]["parameters"]["reset_failure"] = 0.12
+    if differences(identified(report), identified(moved)):
+        raise RuntimeError("the regeneration check compares an unidentified model's parameters")
+    moved["pairs"]["p"]["models"]["work_phase_one"]["parameters"]["phase_one"] = 0.6
+    if not differences(identified(report), identified(moved)):
+        raise RuntimeError("the regeneration check ignores a supported model's parameters")
     for changed in ({"law": [0.26, 0.75]}, {"dof": 4}, {"flag": False}, {"dof": 3.0}, {"law": [0.25]}):
         if not differences(retained, {**retained, **changed}):
             raise RuntimeError(f"the regeneration check accepts {changed}")
@@ -1614,9 +1624,12 @@ def serialize(report: dict[str, Any]) -> str:
 
 
 # L-BFGS-B iterates through BLAS, so a fit regenerated under another BLAS
-# build moves its floats by rounding; every other value is exact.
+# build moves its floats; every other value is exact. A model that neither is
+# the baseline nor improves at family alpha has a flat deviance along its
+# added parameters, so its optimizer stops anywhere along that direction:
+# its law and deviance reproduce and its parameters do not (identified()).
 CHECK_REL_TOL = 1e-6
-CHECK_ABS_TOL = 1e-9
+CHECK_ABS_TOL = 1e-6
 
 
 def differences(retained: Any, regenerated: Any, path: str = "") -> list[str]:
@@ -1643,6 +1656,16 @@ def differences(retained: Any, regenerated: Any, path: str = "") -> list[str]:
     return []
 
 
+def identified(report: dict[str, Any]) -> dict[str, Any]:
+    """report with each unidentified model's parameter values replaced by None, keeping their names."""
+    view: dict[str, Any] = json.loads(json.dumps(report))
+    for pair in view["pairs"].values():
+        for name, model in pair["models"].items():
+            if name != "baseline_depolarizing" and not model["improves_at_family_alpha"]:
+                model["parameters"] = dict.fromkeys(model["parameters"])
+    return view
+
+
 def check(run: Path) -> None:
     """Regenerate RUN's rca-mechanism-fit.json from its archived raw files and require it to agree.
 
@@ -1657,10 +1680,10 @@ def check(run: Path) -> None:
         (first,) = {(entry["mid_e01"], entry["mid_e10"]) for entry in sources.values()}
         readout = first
     regenerated = json.loads(serialize(build_report(run, readout)))
-    found = differences(retained, regenerated)
+    found = differences(identified(retained), identified(regenerated))
     if found:
         raise SystemExit(f"{run / RETAINED} differs from the fit its archived raw files regenerate: {found[:5]}")
-    print(f"{run / RETAINED}: regenerated from the archived raw files, floats within {CHECK_REL_TOL:g} relative")
+    print(f"{run / RETAINED}: regenerated from the archived raw files, floats within {CHECK_ABS_TOL:g}")
 
 
 def main(argv: list[str] | None = None) -> int:
