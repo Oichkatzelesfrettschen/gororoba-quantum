@@ -886,13 +886,14 @@ SANITY_MID_ONE = 0.2
 SANITY_SPECTATOR_ONE = 0.2
 
 
-def sanity(run: Path) -> tuple[list[str], list[str]]:
+def sanity(run: Path, readout_error: float = SANITY_READOUT_ERROR) -> tuple[list[str], list[str]]:
     """Checks one collected batch must pass before the next batch is submitted, and what the result carried.
 
     Every job completed with its requested shots; every shot carries n
     characters (the measurement register) or the 2 n-bit register, and the
     notes record which; in a readout circuit every target's assignment error
-    stays below SANITY_READOUT_ERROR; in a Ramsey circuit every spectator, held
+    stays below readout_error (SANITY_READOUT_ERROR unless a series names its
+    own guard, which the notes record); in a Ramsey circuit every spectator, held
     in |0>, reads 1 below SANITY_SPECTATOR_ONE and, where the 2 n-bit register
     returns, every target's mid-circuit outcome reads 1 below SANITY_MID_ONE. A
     failure stops the series before it spends more device time.
@@ -924,7 +925,7 @@ def sanity(run: Path) -> tuple[list[str], list[str]]:
         if row["kind"] == "readout":
             error = ones if row["file"] == "readout-0.cq" else {q: 1 - p for q, p in ones.items()}
             problems += [
-                f"{row['file']} q{q}: error {error[q]:.3f}" for q in meta["targets"] if error[q] > SANITY_READOUT_ERROR
+                f"{row['file']} q{q}: error {error[q]:.3f}" for q in meta["targets"] if error[q] > readout_error
             ]
             continue
         if present and not row["file"].startswith(REFERENCE):
@@ -999,9 +1000,17 @@ def main() -> int:
     mode.add_argument("--analyze", type=Path, nargs="+", metavar=("OUT", "RUN_DIR"))
     mode.add_argument("--sanity", type=Path, metavar="RUN_DIR")
     parser.add_argument("--replay", action="store_true", help="with --analyze: compare OUT with the recomputation")
+    parser.add_argument(
+        "--sanity-readout-error",
+        type=float,
+        default=SANITY_READOUT_ERROR,
+        help="with --sanity: the readout-circuit assignment-error guard for this series",
+    )
     args = parser.parse_args()
     if args.sanity:
-        problems, notes = sanity(args.sanity)
+        problems, notes = sanity(args.sanity, args.sanity_readout_error)
+        if args.sanity_readout_error != SANITY_READOUT_ERROR:
+            notes.append(f"readout guard {args.sanity_readout_error} (default {SANITY_READOUT_ERROR})")
         for line in [*notes, *problems]:
             print(line)
         print(f"sanity {args.sanity.name}: {'FAIL' if problems else 'pass'}")
