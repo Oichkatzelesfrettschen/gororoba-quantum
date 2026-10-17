@@ -456,7 +456,7 @@ def conformance(profile: str) -> str:
     programs = [
         texts[f"targets-{role}-{quadrature}-d{delay:03d}.cq"].splitlines() for role, quadrature, delay in settings
     ]
-    evolved = ordered_map(Evolution(n, omega, coupling), programs)
+    evolved = ordered_map(Evolution(n, omega, coupling), programs, min_items=1)
     for (role, quadrature, delay), probabilities in zip(settings, evolved, strict=True):
         for target in meta["parts"][role]:
             one = ((index >> target) & 1) == 1
