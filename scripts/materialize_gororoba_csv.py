@@ -8,7 +8,9 @@ record naming it yields identical bytes whose sha256 and size equal the pins;
 files are staged in a temporary directory beside the target and renamed, so a
 mismatch leaves ROOT/data/csv unchanged. `--only NAME...` limits the run to
 CSVs whose file stem equals a NAME; the default covers every record that
-carries `rows`.
+carries `rows`. Records are parsed through parallel.ordered_map, in sorted
+path order, and a `source_csv` must name a file directly inside data/csv, so
+no record writes outside it.
 
     materialize_gororoba_csv.py ROOT [--only NAME...]
     materialize_gororoba_csv.py --self-test
@@ -21,7 +23,11 @@ import io
 import sys
 import tempfile
 import tomllib
-from pathlib import Path
+from pathlib import Path, PurePosixPath
+from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+import parallel  # noqa: E402
 
 REGISTRY = Path("registry/data/project_csv")
 CSV_PREFIX = "data/csv/"
@@ -29,6 +35,27 @@ CSV_PREFIX = "data/csv/"
 
 class MaterializeError(Exception):
     """A record whose rows cannot reproduce its pinned bytes."""
+
+
+def confined(source: str) -> bool:
+    """source names one file directly inside data/csv: no '..', no absolute path, no subdirectory."""
+    parts = PurePosixPath(source).parts
+    return len(parts) == 3 and parts[:2] == ("data", "csv") and parts[2] not in ("..", ".")
+
+
+def load(item: tuple[str, tuple[str, ...] | None]) -> dict[str, Any] | None:
+    """The [dataset] table of one record when it names a data/csv file the selection keeps."""
+    path, only = item
+    with open(path, "rb") as handle:
+        dataset = tomllib.load(handle).get("dataset")
+    if not isinstance(dataset, dict):
+        return None
+    source = dataset.get("source_csv")
+    if not isinstance(source, str) or not source.startswith(CSV_PREFIX):
+        return None
+    if only is not None and PurePosixPath(source).stem not in only:
+        return None
+    return dataset
 
 
 def render(record: dict[str, object], label: str) -> tuple[str, bytes]:
@@ -41,8 +68,8 @@ def render(record: dict[str, object], label: str) -> tuple[str, bytes]:
     rows = dataset.get("rows")
     sha256 = dataset.get("source_sha256")
     size = dataset.get("source_size_bytes")
-    if not isinstance(source, str) or not source.startswith(CSV_PREFIX):
-        raise MaterializeError(f"{label}: source_csv {source!r} is not under {CSV_PREFIX}")
+    if not isinstance(source, str) or not confined(source):
+        raise MaterializeError(f"{label}: source_csv {source!r} is not a file directly under {CSV_PREFIX}")
     if not isinstance(header, list) or not isinstance(rows, list):
         raise MaterializeError(f"{label}: original_header or rows missing")
     if not isinstance(sha256, str) or not isinstance(size, int):
@@ -67,17 +94,14 @@ def collect(root: Path, only: list[str] | None) -> dict[str, bytes]:
         raise MaterializeError(f"{registry} is not a directory")
     out: dict[str, bytes] = {}
     owner: dict[str, str] = {}
-    for path in sorted(registry.rglob("*.toml")):
-        with path.open("rb") as handle:
-            record = tomllib.load(handle)
-        dataset = record.get("dataset")
-        if not isinstance(dataset, dict):
+    paths = sorted(registry.rglob("*.toml"))
+    selection = tuple(only) if only is not None else None
+    datasets = parallel.ordered_map(load, [(str(path), selection) for path in paths])
+    for path, dataset in zip(paths, datasets, strict=True):
+        if dataset is None:
             continue
-        source = dataset.get("source_csv")
-        if not isinstance(source, str) or not source.startswith(CSV_PREFIX):
-            continue
-        if only is not None and Path(source).stem not in only:
-            continue
+        source = dataset["source_csv"]
+        record = {"dataset": dataset}
         if "rows" not in dataset:
             if only is None:
                 continue
@@ -175,6 +199,12 @@ def self_test() -> int:
         (bad / REGISTRY / "x.toml").write_text(_record("data/csv/t.csv", header, rows, sha="0" * 64))
         _expect_failure(bad, None, "pinned")
         _check(not (bad / "data").exists())
+
+        escape = root / "escape"
+        (escape / REGISTRY).mkdir(parents=True)
+        (escape / REGISTRY / "x.toml").write_text(_record("data/csv/../../escaped.csv", header, rows))
+        _expect_failure(escape, None, "not a file directly under")
+        _check(not (root / "escaped.csv").exists() and not (escape / "escaped.csv").exists())
 
         dup = root / "dup"
         (dup / REGISTRY).mkdir(parents=True)
