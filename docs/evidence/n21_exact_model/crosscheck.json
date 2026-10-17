@@ -1,0 +1,566 @@
+{
+ "fixture": {
+  "alternatives": [
+   {
+    "max_gap": 0.07586599743239522,
+    "semantics": {
+     "body_noise": true,
+     "recorded_condition": false,
+     "reset_error_after": true
+    }
+   },
+   {
+    "max_gap": 0.02417963118978006,
+    "semantics": {
+     "body_noise": true,
+     "recorded_condition": true,
+     "reset_error_after": false
+    }
+   },
+   {
+    "max_gap": 0.06630344461179759,
+    "semantics": {
+     "body_noise": true,
+     "recorded_condition": false,
+     "reset_error_after": false
+    }
+   },
+   {
+    "max_gap": 0.032072302468196145,
+    "semantics": {
+     "body_noise": false,
+     "recorded_condition": true,
+     "reset_error_after": true
+    }
+   },
+   {
+    "max_gap": 0.08703493372272744,
+    "semantics": {
+     "body_noise": false,
+     "recorded_condition": false,
+     "reset_error_after": true
+    }
+   },
+   {
+    "max_gap": 0.06152409296781641,
+    "semantics": {
+     "body_noise": false,
+     "recorded_condition": true,
+     "reset_error_after": false
+    }
+   },
+   {
+    "max_gap": 0.07930837042930772,
+    "semantics": {
+     "body_noise": false,
+     "recorded_condition": false,
+     "reset_error_after": false
+    }
+   }
+  ],
+  "default": {
+   "aer": [
+    0.1340381937576974,
+    0.09235718916826177,
+    0.1008352284734678,
+    0.12428799968327937,
+    0.049575770293942875,
+    0.034159508322507776,
+    0.03729522149018673,
+    0.045969534129432096,
+    0.021683690765475123,
+    0.1470927564044942,
+    0.01734775257906254,
+    0.09235718916826177,
+    0.008019995214627785,
+    0.05440417017700472,
+    0.006416292049790255,
+    0.03415950832250778
+   ],
+   "aer_trace_deficit": {
+    "end": 2.220446049250313e-16,
+    "pre0": 2.220446049250313e-16
+   },
+   "branch_weights": [
+    {
+     "outcomes": [
+      0
+     ],
+     "recorded": [
+      0
+     ],
+     "weight": 0.1773838715510215
+    },
+    {
+     "outcomes": [
+      0
+     ],
+     "recorded": [
+      1
+     ],
+     "weight": 0.031303036156062614
+    },
+    {
+     "outcomes": [
+      1
+     ],
+     "recorded": [
+      0
+     ],
+     "weight": 0.19782827307322898
+    },
+    {
+     "outcomes": [
+      1
+     ],
+     "recorded": [
+      1
+     ],
+     "weight": 0.5934848192196869
+    }
+   ],
+   "branches": 4,
+   "dropped_mass": 0.0,
+   "dynamic_density": [
+    0.13403819375769727,
+    0.09235718916826183,
+    0.10083522847346765,
+    0.12428799968327946,
+    0.04957577029394283,
+    0.034159508322507796,
+    0.03729522149018665,
+    0.04596953412943212,
+    0.02168369076547509,
+    0.1470927564044943,
+    0.01734775257906251,
+    0.09235718916826184,
+    0.008019995214627774,
+    0.054404170177004746,
+    0.006416292049790242,
+    0.03415950832250781
+   ],
+   "max_gap": 1.5265566588595902e-16,
+   "oracle_total": 1.0,
+   "saves": {
+    "end": {
+     "branches": 4,
+     "state_gap": 2.1915100536887046e-16,
+     "weight_gap": 4.440892098500626e-16
+    },
+    "pre0": {
+     "branches": 4,
+     "state_gap": 1.249000902703301e-16
+    }
+   },
+   "unvisited_weight": 0.0,
+   "visited": 4
+  }
+ },
+ "inputs": {
+  "isa": {
+   "path": "results/live/2026-10-17T003834.987727Z/isa.qpy",
+   "sha256": "b9a7b2c3a8adacde2cca9790504eea08733e011b2b7b337dffa5408be2592e44"
+  },
+  "record": {
+   "path": "results/live/2026-10-17T003834.987727Z/record.json",
+   "sha256": "bfa94947ac9225013570d3a912508e9a894bd7ec042d1b37915c3f2d6fac6012"
+  },
+  "snapshot": {
+   "path": "docs/evidence/calibration/history/ibm_kingston/20261016T1213360700.json",
+   "sha256": "69470d67f12ae90eaa3b0e078c1367f840a152a7d943987b769364536e9e2ec3"
+  }
+ },
+ "models": {
+  "cleaned": {
+   "arms": {
+    "n21_encoded_feedback": {
+     "aer": 0.004525708506434273,
+     "dynamic_density": 0.004525708506434523,
+     "gap": 2.498001805406602e-16
+    },
+    "n21_encoded_no_feedback": {
+     "aer": -0.02630084573854491,
+     "dynamic_density": -0.026300845738543632,
+     "gap": 1.27675647831893e-15
+    }
+   },
+   "circuits": {
+    "ibm_kingston_dynamic_pub_01": {
+     "aer": [
+      0.2833799521609084,
+      0.25128925109388417,
+      0.21856725415775757,
+      0.2467635425874499
+     ],
+     "aer_trace_deficit": {
+      "end": 1.4632739464559563e-13,
+      "pre0": 1.454392162258955e-13
+     },
+     "branch_weights": [
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.49779471435495737
+      },
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.001952136134725323
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.0041524919637086904
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.4961006575466088
+      }
+     ],
+     "branches": 4,
+     "dropped_mass": 0.0,
+     "dynamic_density": [
+      0.28337995216090855,
+      0.251289251093884,
+      0.21856725415775793,
+      0.24676354258744948
+     ],
+     "first_dropped": null,
+     "max_gap": 4.163336342344337e-16,
+     "member": "n21_encoded_feedback",
+     "oracle_total": 1.0,
+     "saves": {
+      "end": {
+       "branches": 4,
+       "state_gap": 1.3744480824275536e-15,
+       "weight_gap": 6.106226635438361e-16
+      },
+      "pre0": {
+       "branches": 4,
+       "state_gap": 2.7755840651303577e-16
+      }
+     },
+     "unvisited_weight": 0.0,
+     "visited": 4
+    },
+    "ibm_kingston_dynamic_pub_02": {
+     "aer": [
+      0.2833301693844946,
+      0.235856171796897,
+      0.21865664128316656,
+      0.2621570175354419
+     ],
+     "aer_trace_deficit": {
+      "end": 1.467714838554457e-13,
+      "pre0": 1.475486399726833e-13
+     },
+     "branch_weights": [
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.4978346515136079
+      },
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.0019522927510337565
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.004152159154053267
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.4960608965813051
+      }
+     ],
+     "branches": 4,
+     "dropped_mass": 0.0,
+     "dynamic_density": [
+      0.2833301693844951,
+      0.23585617179689705,
+      0.21865664128316722,
+      0.2621570175354407
+     ],
+     "first_dropped": null,
+     "max_gap": 1.2212453270876722e-15,
+     "member": "n21_encoded_no_feedback",
+     "oracle_total": 1.0,
+     "saves": {
+      "end": {
+       "branches": 4,
+       "state_gap": 1.7347284692173565e-15,
+       "weight_gap": 1.1657341758564144e-15
+      },
+      "pre0": {
+       "branches": 4,
+       "state_gap": 3.805794472812371e-16
+      }
+     },
+     "unvisited_weight": 0.0,
+     "visited": 4
+    }
+   },
+   "contrasts": {
+    "n21_encoded_feedback_contrast": {
+     "aer": 0.030826554244979182,
+     "dynamic_density": 0.030826554244978155,
+     "gap": -1.0269562977782698e-15
+    }
+   }
+  },
+  "raw": {
+   "arms": {
+    "n21_encoded_feedback": {
+     "aer": 0.004525708506434217,
+     "dynamic_density": 0.004525708477643747,
+     "gap": -2.8790470008033253e-11
+    },
+    "n21_encoded_no_feedback": {
+     "aer": -0.026300845738544187,
+     "dynamic_density": -0.026300843773561566,
+     "gap": 1.96498262106104e-09
+    }
+   },
+   "circuits": {
+    "ibm_kingston_dynamic_pub_01": {
+     "aer": [
+      0.28337995216090783,
+      0.2512892510938841,
+      0.21856725415775763,
+      0.2467635425874499
+     ],
+     "aer_trace_deficit": {
+      "end": 3.372581347527159e-08,
+      "pre0": 3.082359567585513e-08
+     },
+     "branch_weights": [
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.49779471435495687
+      },
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.0019521361347253211
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.00415249196370869
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.4961006575466087
+      }
+     ],
+     "branches": 4,
+     "dropped_mass": 6.454931160277334e-08,
+     "dynamic_density": [
+      0.2833799515013709,
+      0.2512892510042373,
+      0.2185672549677982,
+      0.24676354252659358
+     ],
+     "first_dropped": {
+      "dropped_mass": 1.8280594728943404e-10,
+      "gate": "x",
+      "index": 1,
+      "qubits": [
+       1
+      ],
+      "state_gap_after": 1.2175062580289595e-10,
+      "state_gap_before": 6.505213034913027e-19
+     },
+     "max_gap": 8.100405624045237e-10,
+     "member": "n21_encoded_feedback",
+     "oracle_total": 0.9999999999999994,
+     "saves": {
+      "end": {
+       "branches": 4,
+       "state_gap": 3.849271221212369e-09,
+       "weight_gap": 1.5176826462237614e-10
+      },
+      "pre0": {
+       "branches": 4,
+       "state_gap": 3.6386865104352204e-10
+      }
+     },
+     "unvisited_weight": 0.0,
+     "visited": 4
+    },
+    "ibm_kingston_dynamic_pub_02": {
+     "aer": [
+      0.28333016938449435,
+      0.2358561717968975,
+      0.21865664128316678,
+      0.2621570175354417
+     ],
+     "aer_trace_deficit": {
+      "end": 3.33602020452517e-08,
+      "pre0": 3.040461016290408e-08
+     },
+     "branch_weights": [
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.49783465151360773
+      },
+      {
+       "outcomes": [
+        0
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.0019522927510337558
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        0
+       ],
+       "weight": 0.004152159154053268
+      },
+      {
+       "outcomes": [
+        1
+       ],
+       "recorded": [
+        1
+       ],
+       "weight": 0.4960608965813052
+      }
+     ],
+     "branches": 4,
+     "dropped_mass": 6.376471556520539e-08,
+     "dynamic_density": [
+      0.28333016874051753,
+      0.23585617270082132,
+      0.21865664208427818,
+      0.2621570164743829
+     ],
+     "first_dropped": {
+      "dropped_mass": 1.5611982308433924e-10,
+      "gate": "cz",
+      "index": 5,
+      "qubits": [
+       1,
+       2
+      ],
+      "state_gap_after": 8.547684782200916e-11,
+      "state_gap_before": 5.721989676075423e-17
+     },
+     "max_gap": 1.0610587963810758e-09,
+     "member": "n21_encoded_no_feedback",
+     "oracle_total": 1.0000000000000002,
+     "saves": {
+      "end": {
+       "branches": 4,
+       "state_gap": 3.814284318948147e-09,
+       "weight_gap": 1.5845519341084469e-10
+      },
+      "pre0": {
+       "branches": 4,
+       "state_gap": 3.5976989761698944e-10
+      }
+     },
+     "unvisited_weight": 0.0,
+     "visited": 4
+    }
+   },
+   "contrasts": {
+    "n21_encoded_feedback_contrast": {
+     "aer": 0.030826554244978405,
+     "dynamic_density": 0.030826552251205314,
+     "gap": -1.993773091069073e-09
+    }
+   }
+  }
+ },
+ "oracle": {
+  "aer_threshold": 1e-10,
+  "method": "density_matrix",
+  "seed": 20261017,
+  "shot_branching_enable": true,
+  "shots": 32,
+  "simulator": "AerSimulator"
+ },
+ "raw_minus_cleaned": {
+  "ibm_kingston_dynamic_pub_01": {
+   "aer": 5.551115123125783e-16,
+   "dynamic_density": 8.100402570931919e-10
+  },
+  "ibm_kingston_dynamic_pub_02": {
+   "aer": 4.996003610813204e-16,
+   "dynamic_density": 1.0610577971803536e-09
+  }
+ },
+ "schema": "n21-exact-crosscheck-v1",
+ "tolerance": 1e-12,
+ "versions": {
+  "numpy": "2.5.4",
+  "python": "3.14.7",
+  "qiskit": "2.5.2",
+  "qiskit-aer": "0.17.2"
+ }
+}

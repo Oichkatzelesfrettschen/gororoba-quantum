@@ -1,0 +1,26 @@
+{
+ "schema": "box-kite-series-v1",
+ "family": "ry_smoke",
+ "backend": "Rydberg",
+ "census_sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "group": "smoke",
+   "files": [
+    "ry-reduced-1.cq",
+    "ry-reduced-2.cq",
+    "ry-reduced-3.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "group": "smoke",
+   "files": [
+    "ry-full-witness-dark.cq",
+    "ry-full-witness-bright.cq",
+    "ry-full-negative-fixture.cq"
+   ]
+  }
+ ]
+}

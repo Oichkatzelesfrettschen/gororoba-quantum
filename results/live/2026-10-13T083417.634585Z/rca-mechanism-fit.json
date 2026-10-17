@@ -107,7 +107,7 @@
         "baseline_depolarizing": {
           "added_parameters": 0,
           "deviance": 33.66050410697741,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.3250354617723634,
             0.24999141693115237,
@@ -129,7 +129,7 @@
         "control_phase": {
           "added_parameters": 1,
           "deviance": 13.124072064199197,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.3218012860790099,
             0.2711507910554962,
@@ -151,32 +151,32 @@
         },
         "mid_readout_assignment": {
           "added_parameters": 2,
-          "deviance": 25.149854207675904,
-          "family_wise_threshold": 10.15034763046766,
+          "deviance": 25.149854207676874,
+          "family_wise_threshold": 12.922936352707406,
           "feedback_law": [
-            0.3354492281983065,
-            0.24188756762690594,
-            0.18359374413188428,
-            0.23906946004290322
+            0.3354492291583921,
+            0.2418875678700601,
+            0.18359374268832332,
+            0.23906946028322448
           ],
           "improves_at_family_alpha": false,
           "no_feedback_law": [
-            0.3354492281983066,
-            0.21977507568934518,
-            0.18359374413188428,
-            0.26118195198046396
+            0.33544922915839215,
+            0.21977507650276978,
+            0.18359374268832335,
+            0.2611819516505148
           ],
           "parameters": {
-            "mid_e01": 0.028383118657956747,
-            "mid_e10": 0.06646906331833853,
-            "round1": 0.24532125221957626,
-            "round2": 0.02142710258849656
+            "mid_e01_excess": 0.0481367798076578,
+            "mid_e10_excess": 0.08036334850108882,
+            "round1": 0.2392349190576108,
+            "round2": 0.0
           }
         },
         "reset_failure": {
           "added_parameters": 1,
           "deviance": 33.66050410698266,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.32503546555471874,
             0.2499914169311524,
@@ -198,32 +198,32 @@
         },
         "terminal_readout_assignment": {
           "added_parameters": 2,
-          "deviance": 9.477046719499498,
-          "family_wise_threshold": 10.15034763046766,
+          "deviance": 9.477046719499057,
+          "family_wise_threshold": 12.922936352707406,
           "feedback_law": [
-            0.3255351470717903,
-            0.27528911261686284,
-            0.1773945404282096,
-            0.2217811998831372
+            0.32553514904328035,
+            0.275289112424636,
+            0.17739453845671965,
+            0.221781200075364
           ],
           "improves_at_family_alpha": true,
           "no_feedback_law": [
-            0.3255351470717903,
-            0.22828813646390236,
-            0.1773945404282096,
-            0.2687821760360977
+            0.32553514904328035,
+            0.22828813410569274,
+            0.17739453845671965,
+            0.26878217839430735
           ],
           "parameters": {
-            "end_e01": 0.21701862844801914,
-            "end_e10": 0.3246651955194045,
+            "end_e01_excess": 0.23662617297195634,
+            "end_e10_excess": 0.3384133642699023,
             "round1": 0.0,
-            "round2": 0.17394173126301937
+            "round2": 0.09453796301229742
           }
         },
         "window_amplitude_damping": {
           "added_parameters": 1,
           "deviance": 33.66050410698023,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.32503546652625476,
             0.2499914169311524,
@@ -246,7 +246,7 @@
         "window_dephasing": {
           "added_parameters": 1,
           "deviance": 33.660504106980454,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.3250354656733665,
             0.24999141693115234,
@@ -269,7 +269,7 @@
         "work_phase_one": {
           "added_parameters": 1,
           "deviance": 9.270487700825313,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.32464421674328314,
             0.2771799924048699,
@@ -292,7 +292,7 @@
         "work_phase_sixteen": {
           "added_parameters": 1,
           "deviance": 9.270487700829761,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.32464422080775374,
             0.27717998021797796,
@@ -339,7 +339,7 @@
         "baseline_depolarizing": {
           "added_parameters": 0,
           "deviance": 69.98176037214856,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.33048289397351216,
             0.2499914169311524,
@@ -361,7 +361,7 @@
         "control_phase": {
           "added_parameters": 1,
           "deviance": 3.8587368342958754,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.32788321140957827,
             0.292712679917508,
@@ -383,32 +383,32 @@
         },
         "mid_readout_assignment": {
           "added_parameters": 2,
-          "deviance": 67.7236201543448,
-          "family_wise_threshold": 10.15034763046766,
+          "deviance": 67.72362015436245,
+          "family_wise_threshold": 12.922936352707406,
           "feedback_law": [
-            0.33593751007933054,
-            0.2458167057155427,
-            0.17529296243966813,
-            0.24295282176545868
+            0.3359375184190785,
+            0.2458167062081958,
+            0.17529295312035348,
+            0.2429528222523722
           ],
           "improves_at_family_alpha": false,
           "no_feedback_law": [
-            0.3359375100793305,
-            0.19922804305628725,
-            0.17529296243966813,
-            0.2895414844247141
+            0.3359375184190785,
+            0.1992280473378462,
+            0.17529295312035348,
+            0.2895414811227219
           ],
           "parameters": {
-            "mid_e01": 0.08304141460731143,
-            "mid_e10": 0.10550235964530859,
-            "round1": 0.14244565721282068,
-            "round2": 0.018664326969215855
+            "mid_e01_excess": 0.07859527216544611,
+            "mid_e10_excess": 0.09519684024431005,
+            "round1": 0.14342054285220537,
+            "round2": 0.02482267388688329
           }
         },
         "reset_failure": {
           "added_parameters": 1,
           "deviance": 69.98176037206284,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.33048292014793984,
             0.24999141693115232,
@@ -430,32 +430,32 @@
         },
         "terminal_readout_assignment": {
           "added_parameters": 2,
-          "deviance": 24.992769652818843,
-          "family_wise_threshold": 10.15034763046766,
+          "deviance": 24.99276965281699,
+          "family_wise_threshold": 12.922936352707406,
           "feedback_law": [
-            0.3354066733073904,
-            0.27296479082969793,
-            0.16752301419260948,
-            0.2241055216703021
+            0.33540667338921243,
+            0.2729647889441245,
+            0.1675230141107874,
+            0.22410552355587565
           ],
           "improves_at_family_alpha": true,
           "no_feedback_law": [
-            0.3354066733073904,
-            0.21374056796885832,
-            0.16752301419260948,
-            0.2833297445311418
+            0.33540667338921243,
+            0.21374056409366265,
+            0.1675230141107874,
+            0.28332974840633757
           ],
           "parameters": {
-            "end_e01": 0.19329577171382725,
-            "end_e10": 0.29159025426632484,
+            "end_e01_excess": 0.19321079224146775,
+            "end_e10_excess": 0.2856458922072181,
             "round1": 0.0,
-            "round2": 0.07388476253736553
+            "round2": 0.07243229097007012
           }
         },
         "window_amplitude_damping": {
           "added_parameters": 1,
           "deviance": 69.98176037209174,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.3304829178912286,
             0.24999141693115234,
@@ -478,7 +478,7 @@
         "window_dephasing": {
           "added_parameters": 1,
           "deviance": 69.98176037206213,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.3304829343773652,
             0.24999141693115237,
@@ -501,7 +501,7 @@
         "work_phase_one": {
           "added_parameters": 1,
           "deviance": 2.353039303176068,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.3304399109285805,
             0.295431033630165,
@@ -524,7 +524,7 @@
         "work_phase_sixteen": {
           "added_parameters": 1,
           "deviance": 2.3530393031733965,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.3304399068990181,
             0.2954310384631646,
@@ -571,7 +571,7 @@
         "baseline_depolarizing": {
           "added_parameters": 0,
           "deviance": 16.95131876169173,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.3190162647481879,
             0.24999141693115234,
@@ -593,7 +593,7 @@
         "control_phase": {
           "added_parameters": 1,
           "deviance": 5.592127089434857,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.319016256721624,
             0.2687473376727858,
@@ -615,32 +615,32 @@
         },
         "mid_readout_assignment": {
           "added_parameters": 2,
-          "deviance": 15.579582016988677,
-          "family_wise_threshold": 10.15034763046766,
+          "deviance": 15.579582016992529,
+          "family_wise_threshold": 12.922936352707406,
           "feedback_law": [
-            0.3231201194723112,
-            0.2467375997856398,
-            0.18627929376944577,
-            0.2438629869726033
+            0.32312012581831373,
+            0.246737597787326,
+            0.18627929139678945,
+            0.24386298499757075
           ],
           "improves_at_family_alpha": false,
           "no_feedback_law": [
-            0.3231201194723112,
-            0.21008450891450098,
-            0.18627929376944577,
-            0.2805160778437421
+            0.3231201258183138,
+            0.21008451619831645,
+            0.18627929139678945,
+            0.28051606658658035
           ],
           "parameters": {
-            "mid_e01": 0.16102877445400546,
-            "mid_e10": 0.179827600937519,
-            "round1": 0.134608717535674,
-            "round2": 0.02879890115286422
+            "mid_e01_excess": 0.1493298010428077,
+            "mid_e10_excess": 0.1622692604730141,
+            "round1": 0.13786356962621113,
+            "round2": 0.050070282751019074
           }
         },
         "reset_failure": {
           "added_parameters": 1,
           "deviance": 16.951318761696896,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.31901626181287157,
             0.24999141693115234,
@@ -662,32 +662,32 @@
         },
         "terminal_readout_assignment": {
           "added_parameters": 2,
-          "deviance": 6.050098459853044,
-          "family_wise_threshold": 10.15034763046766,
+          "deviance": 6.050098459853623,
+          "family_wise_threshold": 12.922936352707406,
           "feedback_law": [
-            0.31974706585028784,
-            0.2655144595379308,
-            0.1831826216497121,
-            0.23155585296206935
+            0.3197470617227307,
+            0.2655144587574062,
+            0.18318262577726926,
+            0.23155585374259388
           ],
-          "improves_at_family_alpha": true,
+          "improves_at_family_alpha": false,
           "no_feedback_law": [
-            0.31974706585028784,
-            0.2144116896837812,
-            0.1831826216497121,
-            0.282658622816219
+            0.3197470617227307,
+            0.21441169224108847,
+            0.18318262577726926,
+            0.28265862025891164
           ],
           "parameters": {
-            "end_e01": 0.23869322656155104,
-            "end_e10": 0.3070107376296889,
+            "end_e01_excess": 0.21515969144691552,
+            "end_e10_excess": 0.2776178243745537,
             "round1": 0.0,
-            "round2": 0.09390343545974475
+            "round2": 0.17736387363632053
           }
         },
         "window_amplitude_damping": {
           "added_parameters": 1,
           "deviance": 16.951318761689016,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.31901626643488773,
             0.24999141693115234,
@@ -710,7 +710,7 @@
         "window_dephasing": {
           "added_parameters": 1,
           "deviance": 16.951318761688626,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.3190162641622503,
             0.24999141693115237,
@@ -733,7 +733,7 @@
         "work_phase_one": {
           "added_parameters": 1,
           "deviance": 5.592127089413447,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.3190162716974805,
             0.2687473617365099,
@@ -756,7 +756,7 @@
         "work_phase_sixteen": {
           "added_parameters": 1,
           "deviance": 5.592127089409836,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.31901626767270475,
             0.2687473562172584,
@@ -803,7 +803,7 @@
         "baseline_depolarizing": {
           "added_parameters": 0,
           "deviance": 10.997507450028806,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.3528796679809816,
             0.24999141693115237,
@@ -825,7 +825,7 @@
         "control_phase": {
           "added_parameters": 1,
           "deviance": 5.537754149561131,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.3522538781058842,
             0.2627624655380286,
@@ -847,32 +847,32 @@
         },
         "mid_readout_assignment": {
           "added_parameters": 2,
-          "deviance": 7.927387087693706,
-          "family_wise_threshold": 10.15034763046766,
+          "deviance": 7.948233170665414,
+          "family_wise_threshold": 12.922936352707406,
           "feedback_law": [
-            0.35691253080246754,
-            0.24554910606978975,
-            0.15485002334226117,
-            0.24268833978548154
+            0.35686690041793745,
+            0.24556112266542432,
+            0.15487176053469462,
+            0.24270021638194367
           ],
           "improves_at_family_alpha": false,
           "no_feedback_law": [
-            0.3569125308024676,
-            0.17074131212147747,
-            0.1548500233422612,
-            0.3174961337337939
+            0.35686690041793745,
+            0.17072477111091963,
+            0.15487176053469462,
+            0.31753656793644836
           ],
           "parameters": {
-            "mid_e01": 0.0,
-            "mid_e10": 0.0235251082894575,
-            "round1": 0.10510036995564019,
+            "mid_e01_excess": 0.0,
+            "mid_e10_excess": 0.017617946905264123,
+            "round1": 0.10482060880818118,
             "round2": 0.0
           }
         },
         "reset_failure": {
           "added_parameters": 1,
           "deviance": 10.949978325910301,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.3535197979781226,
             0.24999141693115234,
@@ -894,32 +894,32 @@
         },
         "terminal_readout_assignment": {
           "added_parameters": 2,
-          "deviance": 5.338905013901801,
-          "family_wise_threshold": 10.15034763046766,
+          "deviance": 5.3389050138565395,
+          "family_wise_threshold": 12.922936352707406,
           "feedback_law": [
-            0.353519817662308,
-            0.2632138910976197,
-            0.14940986983769192,
-            0.23385642140238042
+            0.3535198031375906,
+            0.2632139094918636,
+            0.14940988436240948,
+            0.23385640300813632
           ],
           "improves_at_family_alpha": false,
           "no_feedback_law": [
-            0.353519817662308,
-            0.17645997612589226,
-            0.14940986983769192,
-            0.32061033637410785
+            0.3535198031375907,
+            0.17645996157966526,
+            0.1494098843624095,
+            0.3206103509203346
           ],
           "parameters": {
-            "end_e01": 0.11236949136421251,
-            "end_e10": 0.17143049130119703,
-            "round1": 0.0025488514693127956,
-            "round2": 0.014253123671802452
+            "end_e01_excess": 0.11151048904061357,
+            "end_e10_excess": 0.16471218798822987,
+            "round1": 0.002548478994535367,
+            "round2": 0.015273557795045335
           }
         },
         "window_amplitude_damping": {
           "added_parameters": 1,
           "deviance": 10.949978325909555,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.3535198003698022,
             0.24999141693115237,
@@ -942,7 +942,7 @@
         "window_dephasing": {
           "added_parameters": 1,
           "deviance": 10.997507450027918,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.35287966846097446,
             0.24999141693115234,
@@ -965,7 +965,7 @@
         "work_phase_one": {
           "added_parameters": 1,
           "deviance": 5.478860971854488,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.352437293200522,
             0.262946575283756,
@@ -988,7 +988,7 @@
         "work_phase_sixteen": {
           "added_parameters": 1,
           "deviance": 5.478860971854168,
-          "family_wise_threshold": 7.47677266076695,
+          "family_wise_threshold": 10.003417483656738,
           "feedback_law": [
             0.35243729407953,
             0.26294658111003133,

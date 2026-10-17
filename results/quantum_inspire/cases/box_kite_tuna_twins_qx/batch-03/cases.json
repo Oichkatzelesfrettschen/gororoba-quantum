@@ -1,0 +1,234 @@
+{
+ "schema": "box-kite-cases-v1",
+ "family": "tuna_twins",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "dialect": "qx",
+ "bit_order": "qubit 0 at the rightmost character (QX)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "twin_of": "tuna_17",
+ "role": "the gate list of each Tuna-17 witness circuit relabeled onto QX qubits 0-9 (qubit_map: Tuna qubit -> QX qubit), run on the remote ideal emulator before its Tuna batch; the identical Tuna bytes run on local qxelarator",
+ "preregistered": {
+  "falsifier": "any shot violating a deterministic replica refutes the emitted cQASM; a P = 1/2 replica outside |z| < 4.5 at 2048 shots refutes it"
+ },
+ "batch": "batch-03",
+ "stage": "walk",
+ "circuits": [
+  {
+   "file": "twin-walk-1.cq",
+   "kind": "witness",
+   "stage": "walk",
+   "tuna_case": "box_kite_tuna_walk/batch-00/walk-1.cq",
+   "qubit_map": {
+    "1": 0,
+    "4": 1,
+    "8": 2,
+    "11": 3,
+    "13": 4,
+    "14": 5
+   },
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "walk",
+     "census": "associator.deterministic_exemplars[1].ij-same-vertex-third-strut",
+     "kite": 1,
+     "triple": [
+      2,
+      11,
+      3
+     ],
+     "omega": -1,
+     "omit_last_block": false,
+     "layout": "star_11",
+     "roles": {
+      "control": 3,
+      "data": [
+       2,
+       4,
+       5
+      ]
+     },
+     "data_bits": {
+      "0": 2,
+      "1": 4,
+      "3": 5
+     },
+     "cz": 6,
+     "p_control_zero": "0"
+    },
+    {
+     "slot": 1,
+     "kind": "reference",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "1"
+    }
+   ],
+   "sha256": "5e93c30d68e41266f695801ba93e87be2bea75e1304c3b773e29771f01862117"
+  },
+  {
+   "file": "twin-walk-2.cq",
+   "kind": "witness",
+   "stage": "walk",
+   "tuna_case": "box_kite_tuna_walk/batch-01/walk-2.cq",
+   "qubit_map": {
+    "1": 0,
+    "4": 1,
+    "8": 2,
+    "11": 3,
+    "13": 4
+   },
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "walk",
+     "census": "associator.deterministic_exemplars[1].jk-same-vertex-third-strut",
+     "kite": 1,
+     "triple": [
+      2,
+      3,
+      10
+     ],
+     "omega": -1,
+     "omit_last_block": false,
+     "layout": "path_8_11_13",
+     "roles": {
+      "control": 3,
+      "data": [
+       2,
+       4
+      ]
+     },
+     "data_bits": {
+      "0": 2,
+      "1": 4
+     },
+     "cz": 4,
+     "p_control_zero": "0"
+    },
+    {
+     "slot": 1,
+     "kind": "reference",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "1"
+    }
+   ],
+   "sha256": "b4d01677d9d51d7c1b7d4e1410996bd0f2882d6940f63d1407aaea6426ceb422"
+  },
+  {
+   "file": "twin-walk-3.cq",
+   "kind": "witness",
+   "stage": "walk",
+   "tuna_case": "box_kite_tuna_walk/batch-02/walk-3.cq",
+   "qubit_map": {
+    "1": 0,
+    "4": 1,
+    "8": 2,
+    "11": 3,
+    "13": 4,
+    "14": 5
+   },
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "walk",
+     "census": "associator.deterministic_exemplars[1].ij-same-vertex-third-strut",
+     "kite": 1,
+     "triple": [
+      2,
+      11,
+      3
+     ],
+     "omega": -1,
+     "omit_last_block": true,
+     "layout": "star_11",
+     "roles": {
+      "control": 3,
+      "data": [
+       2,
+       4,
+       5
+      ]
+     },
+     "data_bits": {
+      "0": 2,
+      "1": 4,
+      "3": 5
+     },
+     "cz": 4,
+     "p_control_zero": "1/2"
+    },
+    {
+     "slot": 1,
+     "kind": "reference",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "1"
+    }
+   ],
+   "sha256": "8ee787bb484d2400b85f53c383c7dd430c14d1fe97c756a6429c1e8948f68b33"
+  }
+ ]
+}

@@ -20,12 +20,14 @@ scheduled window idle begins identifies, through exact branch probabilities
 of the archived ISA, which qubit holds the work bit for 1 and which for 16.
 Routing can move logical qubits away from their initial layout.
 
-Usage: "$PYTHON" scripts/n21_orbit_rca.py RUN_DIR [--out FILE]
+Usage: "$PYTHON" scripts/n21_orbit_rca.py RUN_DIR [--out FILE]; --check RUN_DIR regenerates
+RUN_DIR/rca-mechanism-fit.json and requires it to agree (differences()).
 """
 
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import json
 import math
@@ -39,6 +41,8 @@ from scipy.optimize import minimize
 from scipy.stats import chi2
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+
+import parallel  # noqa: E402
 
 FAMILY_ALPHA = 0.05
 
@@ -54,21 +58,33 @@ _Z = np.diag([1.0, -1.0]).astype(complex)
 _H = np.array([[1, 1], [1, -1]], dtype=complex) / math.sqrt(2)
 
 
-def _embed(gate: np.ndarray, qubits: tuple[int, ...]) -> np.ndarray:
-    """Full 32x32 operator for a gate on qubits (little-endian, qubit 0 least significant)."""
+@functools.cache
+def _embedding(qubits: tuple[int, ...]) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Rows, columns, and local output and input indices of every entry a gate on qubits occupies."""
     count = len(qubits)
-    full = np.zeros((DIMENSION, DIMENSION), dtype=complex)
+    rows, columns, outs, ins = [], [], [], []
     for column in range(DIMENSION):
         local_in = sum(((column >> qubit) & 1) << index for index, qubit in enumerate(qubits))
         rest = column
         for qubit in qubits:
             rest &= ~(1 << qubit)
         for local_out in range(1 << count):
-            amplitude = gate[local_out, local_in]
-            if amplitude == 0:
-                continue
-            row = rest | sum(((local_out >> index) & 1) << qubit for index, qubit in enumerate(qubits))
-            full[row, column] += amplitude
+            rows.append(rest | sum(((local_out >> index) & 1) << qubit for index, qubit in enumerate(qubits)))
+            columns.append(column)
+            outs.append(local_out)
+            ins.append(local_in)
+    return np.array(rows), np.array(columns), np.array(outs), np.array(ins)
+
+
+def _embed(gate: np.ndarray, qubits: tuple[int, ...]) -> np.ndarray:
+    """Full 32x32 operator for a gate on qubits (little-endian, qubit 0 least significant).
+
+    Each (row, column) pair occurs once in the embedding, so the assignment
+    places every gate entry exactly.
+    """
+    rows, columns, outs, ins = _embedding(qubits)
+    full = np.zeros((DIMENSION, DIMENSION), dtype=complex)
+    full[rows, columns] = gate[outs, ins]
     return full
 
 
@@ -212,23 +228,51 @@ def _group(run: Path) -> dict[str, Any]:
 
 
 def raw_pubs(run: Path) -> list[dict[str, Any]]:
-    """Raw PUB payloads in member order, bound to the collection ledger and checked by sha256."""
+    """Raw PUB payloads in member order, bound to the submission manifest and the collection ledger.
+
+    record.json's submission names the one job the run sent, each PUB's name
+    and the member each PUB carries. collect.json, raw/<job>/index.json and
+    every raw PUB must name that job and those PUBs in manifest order, and
+    each raw file must match the sha256 collection retained, so a collection
+    or raw tree taken from another run with the same PUB count is refused.
+    """
+    submitted = json.loads((run / "record.json").read_text())["submission"]["jobs"]
+    if len(submitted) != 1:
+        raise RuntimeError(f"the RCA fit reads one job; the record submitted {len(submitted)}")
+    manifest = submitted[0]
+    pubs = manifest["pubs"]
+    members = [member["name"] for member in _group(run)["members"]]
+    carried = [[component["member"] for component in pub["components"]] for pub in pubs]
+    if carried != [[member] for member in members]:
+        raise RuntimeError(f"the submitted PUBs carry {carried}, not the members {members} one per PUB")
     jobs = json.loads((run / "collect.json").read_text())[0]["jobs"]
     (job,) = jobs
+    if job != manifest["job_id"]:
+        raise RuntimeError(f"collect.json names job {job}; the record submitted {manifest['job_id']}")
+    names = [pub["name"] for pub in pubs]
+    timing = jobs[job].get("pub_timing")
+    if timing is not None and sorted(timing) != sorted(names):
+        raise RuntimeError(f"collect.json times PUBs {sorted(timing)}; the record submitted {names}")
     directory = run / "raw" / job
     index = json.loads((directory / "index.json").read_text())
     indexed = index["files"]
     ledger = jobs[job].get("raw")
-    if index.get("job_id", job) != job or (ledger is not None and ledger["files"] != indexed):
+    if index.get("job_id") != job or (ledger is not None and ledger["files"] != indexed):
         raise RuntimeError(f"raw/{job}/index.json differs from the collection's raw ledger")
+    raw = sorted(name for name in indexed if name.startswith("pub_"))
+    if raw != [f"pub_{position:02d}.json" for position in range(len(names))]:
+        raise RuntimeError(f"raw/{job} holds {raw}; the record submitted {len(names)} PUBs")
     payloads = []
-    for index in range(len(_group(run)["members"])):
-        path = directory / f"pub_{index:02d}.json"
-        if hashlib.sha256(path.read_bytes()).hexdigest() != indexed.get(path.name):
+    for position, name in enumerate(names):
+        path = directory / f"pub_{position:02d}.json"
+        if hashlib.sha256(path.read_bytes()).hexdigest() != indexed[path.name]:
             raise RuntimeError(f"{path.name} differs from the sha256 retained by collection")
         payload = json.loads(path.read_text())
-        if payload.get("pub_index", index) != index:
-            raise RuntimeError(f"{path.name} carries PUB index {payload.get('pub_index')}")
+        if payload.get("pub_index") != position or payload.get("pub_name") != name:
+            raise RuntimeError(
+                f"{path.name} carries PUB {payload.get('pub_index')} {payload.get('pub_name')}; "
+                f"the manifest places {name} at {position}"
+            )
         payloads.append(payload)
     return payloads
 
@@ -472,6 +516,79 @@ def dt_seconds(run: Path) -> float:
     return float(QiskitRuntimeService().backend(record["groups"][0]["backend"]).target.dt)
 
 
+class JointObjective:
+    """Deviance of the joint quasi-static detuning model over every pair at one parameter vector."""
+
+    def __init__(
+        self,
+        pairs: dict[str, dict[str, np.ndarray]],
+        readouts: dict[str, dict[str, float]],
+        exposure: dict[str, dict[int, dict[int, float]]],
+        names: list[str],
+        dt_us: float,
+    ) -> None:
+        self.pairs, self.readouts, self.exposure, self.names, self.dt_us = pairs, readouts, exposure, names, dt_us
+
+    def member_params(self, vector: np.ndarray, member: str) -> dict[str, float]:
+        values = dict(zip(self.names, map(float, vector), strict=True))
+        params = self.readouts[member] | {"round1": values["round1"], "round2": values["round2"]}
+        for branch, entries in self.exposure[member].items():
+            times = {qubit: value * self.dt_us for qubit, value in entries.items()}
+            params[f"phase_b{branch}"] = sum(values[f"mean_{q}"] * t for q, t in times.items())
+            params[f"loss_b{branch}"] = 1.0 - math.exp(-sum((values[f"sd_{q}"] * t) ** 2 for q, t in times.items()) / 2)
+        return params
+
+    def __call__(self, vector: np.ndarray) -> float:
+        total = 0.0
+        for pair, counts in self.pairs.items():
+            for arm, feed_forward in (("feedback", True), ("no_feedback", False)):
+                observed = counts[arm]
+                law = distribution(self.member_params(vector, f"{pair}_{arm}"), feed_forward)
+                expected = np.clip(law, 1e-12, None) * observed.sum()
+                positive = observed > 0
+                total += 2 * float(np.sum(observed[positive] * np.log(observed[positive] / expected[positive])))
+        return total
+
+
+class LocalSearch:
+    """L-BFGS-B from one start inside fixed bounds: the minimum and its location."""
+
+    def __init__(self, objective: Any, bounds: list[tuple[float, float]]) -> None:
+        self.objective, self.bounds = objective, bounds
+
+    def __call__(self, start: list[float]) -> tuple[float, list[float]]:
+        result = minimize(self.objective, np.array(start), method="L-BFGS-B", bounds=self.bounds)
+        return float(result.fun), [float(value) for value in result.x]
+
+
+def _lowest(results: list[tuple[float, list[float]]]) -> tuple[float, list[float]]:
+    """The first result of least deviance, as a serial scan with a strict comparison keeps it."""
+    best = results[0]
+    for result in results[1:]:
+        if result[0] < best[0]:
+            best = result
+    return best
+
+
+def static_refit(
+    objective: Any,
+    bounds: list[tuple[float, float]],
+    winner: list[float],
+    seeds: list[tuple[float, ...]],
+    count: int,
+) -> tuple[float, list[float]]:
+    """The static-detuning-only optimum: spreads fixed at zero, searched from the full winner and every seed.
+
+    Exposures of several microseconds wrap each mean phase, so the static
+    model has a basin per period; a search from the full winner's means
+    alone stays in that winner's basin, while the grid seeds reach the others.
+    """
+    zeros = [0.0] * count
+    starts = [[*winner[: 2 + count], *zeros], *([0.12, 0.0, *means, *zeros] for means in seeds)]
+    search = LocalSearch(objective, bounds[: 2 + count] + [(0.0, 0.0)] * count)
+    return _lowest(parallel.ordered_map(search, starts, min_items=2))
+
+
 def joint_quasistatic_fit(
     run: Path, pairs: dict[str, dict[str, np.ndarray]], readouts: dict[str, dict[str, float]]
 ) -> dict[str, Any]:
@@ -487,30 +604,10 @@ def joint_quasistatic_fit(
     if unresolved:
         return {"skipped": "window state is not a branch phase on the work bit for 1", "unresolved": unresolved}
     exposure = signed_exposure(run, roles)
-    dt_us = dt_seconds(run) * 1e6
     qubits = sorted({qubit for member in exposure.values() for branch in member.values() for qubit in branch})
     names = ["round1", "round2", *(f"mean_{q}" for q in qubits), *(f"sd_{q}" for q in qubits)]
     bounds = [(0.0, 1.0), (0.0, 1.0), *([(-5.0, 5.0)] * len(qubits)), *([(0.0, 5.0)] * len(qubits))]
-
-    def member_params(vector: np.ndarray, member: str) -> dict[str, float]:
-        values = dict(zip(names, map(float, vector), strict=True))
-        params = readouts[member] | {"round1": values["round1"], "round2": values["round2"]}
-        for branch, entries in exposure[member].items():
-            times = {qubit: value * dt_us for qubit, value in entries.items()}
-            params[f"phase_b{branch}"] = sum(values[f"mean_{q}"] * t for q, t in times.items())
-            params[f"loss_b{branch}"] = 1.0 - math.exp(-sum((values[f"sd_{q}"] * t) ** 2 for q, t in times.items()) / 2)
-        return params
-
-    def objective(vector: np.ndarray) -> float:
-        total = 0.0
-        for pair, counts in pairs.items():
-            for arm, feed_forward in (("feedback", True), ("no_feedback", False)):
-                observed = counts[arm]
-                law = distribution(member_params(vector, f"{pair}_{arm}"), feed_forward)
-                expected = np.clip(law, 1e-12, None) * observed.sum()
-                positive = observed > 0
-                total += 2 * float(np.sum(observed[positive] * np.log(observed[positive] / expected[positive])))
-        return total
+    objective = JointObjective(pairs, readouts, exposure, names, dt_seconds(run) * 1e6)
 
     # Multi-microsecond exposures wrap the mean phase, so the mean rates have
     # many basins; a grid over both means seeds the local searches.
@@ -519,34 +616,21 @@ def joint_quasistatic_fit(
 
     # About 400 grid evaluations bound the seed search for any qubit count.
     points = max(3, round(400 ** (1 / len(qubits))))
-    grid = np.linspace(-4.5, 4.5, points)
-    seeds = heapq.nsmallest(
-        4,
-        (
-            (objective(np.array([0.12, 0.0, *means, *([0.0] * len(qubits))])), means)
-            for means in itertools.product(grid, repeat=len(qubits))
-        ),
-        key=lambda item: item[0],
+    grid = [tuple(map(float, means)) for means in itertools.product(np.linspace(-4.5, 4.5, points), repeat=len(qubits))]
+    landscape = parallel.ordered_map(
+        objective, [np.array([0.12, 0.0, *means, *([0.0] * len(qubits))]) for means in grid], min_items=2
     )
-    best: Any = None
-    for _value, means in seeds:
-        for spread in (0.0, 0.2):
-            start = np.array([0.12, 0.0, *means, *([spread] * len(qubits))])
-            result = minimize(objective, start, method="L-BFGS-B", bounds=bounds)
-            if best is None or result.fun < best.fun:
-                best = result
-    static = minimize(
-        objective,
-        np.concatenate([best.x[: 2 + len(qubits)], np.zeros(len(qubits))]),
-        method="L-BFGS-B",
-        bounds=bounds[: 2 + len(qubits)] + [(0.0, 0.0)] * len(qubits),
-    )
+    ranked = heapq.nsmallest(4, zip(landscape, grid, strict=True), key=lambda item: item[0])
+    seeds = [means for _value, means in ranked]
+    starts = [[0.12, 0.0, *means, *([spread] * len(qubits))] for means in seeds for spread in (0.0, 0.2)]
+    best = _lowest(parallel.ordered_map(LocalSearch(objective, bounds), starts, min_items=2))
+    static = static_refit(objective, bounds, best[1], seeds, len(qubits))
     cells = sum(len(counts) * 3 for counts in pairs.values())
     return {
-        "parameters_rad_per_us": dict(zip(names, map(float, best.x), strict=True)),
-        "deviance": float(best.fun),
+        "parameters_rad_per_us": dict(zip(names, best[1], strict=True)),
+        "deviance": best[0],
         "degrees_of_freedom": cells - len(names),
-        "static_detuning_only_deviance": float(static.fun),
+        "static_detuning_only_deviance": static[0],
         "signed_exposure_dt": {
             member: {str(branch): {str(q): t for q, t in entries.items()} for branch, entries in values.items()}
             for member, values in exposure.items()
@@ -724,9 +808,95 @@ def _check_exact_laws() -> None:
             raise RuntimeError(f"noiseless model law {law} differs from the exact N=21 law")
 
 
+class TwoBasins:
+    """A static landscape with a shallow basin at mean -2 and a deep one at +2, spread penalized."""
+
+    def __call__(self, vector: np.ndarray) -> float:
+        round1, round2, mean, spread = (float(value) for value in vector)
+        wells = 0.5 * math.exp(-((mean + 2) ** 2) / 0.1) + math.exp(-((mean - 2) ** 2) / 0.1)
+        return (round1 - 0.12) ** 2 + round2**2 + spread**2 + 1.0 - wells
+
+
+def _synthetic_run(directory: Path, collected: str, raw_names: list[str]) -> Path:
+    """A two-member run submitting job J1 as PUBs P1 and P2; collection and raw use the given job and names."""
+    directory.mkdir()
+    members = ["pair_feedback", "pair_no_feedback"]
+    pubs = [{"name": f"P{i + 1}", "components": [{"member": m}]} for i, m in enumerate(members)]
+    record = {
+        "groups": [{"replicas": [{}], "members": [{"name": m} for m in members]}],
+        "submission": {"jobs": [{"job_id": "J1", "pubs": pubs}]},
+    }
+    (directory / "record.json").write_text(json.dumps(record))
+    raw = directory / "raw" / collected
+    raw.mkdir(parents=True)
+    files: dict[str, str] = {}
+    for position, name in enumerate(raw_names):
+        path = raw / f"pub_{position:02d}.json"
+        path.write_text(json.dumps({"pub_index": position, "pub_name": name, "registers": {}}))
+        files[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+    (raw / "index.json").write_text(json.dumps({"job_id": collected, "files": files}))
+    timing: dict[str, dict[str, Any]] = {name: {} for name in raw_names}
+    (directory / "collect.json").write_text(
+        json.dumps([{"jobs": {collected: {"pub_timing": timing, "raw": {"files": files}}}}])
+    )
+    return directory
+
+
+def _check_manifest_binding() -> None:
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as scratch:
+        root = Path(scratch)
+        if [payload["pub_name"] for payload in raw_pubs(_synthetic_run(root / "bound", "J1", ["P1", "P2"]))] != [
+            "P1",
+            "P2",
+        ]:
+            raise RuntimeError("a run bound to its manifest reads the wrong PUBs")
+        for label, job, names in (("job", "J2", ["P1", "P2"]), ("order", "J1", ["P2", "P1"])):
+            try:
+                raw_pubs(_synthetic_run(root / label, job, names))
+            except RuntimeError:
+                continue
+            raise RuntimeError(f"raw_pubs accepts a collection whose {label} differs from the submission manifest")
+
+
+def _check_static_basins() -> None:
+    """The full winner sits in the shallow basin; the seeded static refit reaches the deep one."""
+    objective, bounds = TwoBasins(), [(0.0, 1.0), (0.0, 1.0), (-5.0, 5.0), (0.0, 5.0)]
+    winner = [0.12, 0.0, -2.0, 0.3]
+    single = LocalSearch(objective, bounds[:3] + [(0.0, 0.0)])([*winner[:3], 0.0])
+    seeded = static_refit(objective, bounds, winner, [(-2.0,), (2.0,)], 1)
+    if not single[0] - seeded[0] > 0.4 or abs(seeded[1][2] - 2.0) > 0.05:
+        raise RuntimeError(f"static refit from every seed returns {seeded}; the winner's start alone gives {single}")
+
+
+def _check_differences() -> None:
+    retained = {"law": [0.25, 0.75], "dof": 3, "flag": True, "source": "--readout"}
+    if differences(retained, {**retained, "law": [0.25 + 1e-8, 0.75]}):
+        raise RuntimeError("a rounding-level float change fails the regeneration check")
+    flat = {"improves_at_family_alpha": False, "parameters": {"round1": 0.1, "reset_failure": 0.07}}
+    sharp = {"improves_at_family_alpha": True, "parameters": {"round1": 0.1, "phase_one": 0.59}}
+    report = {"pairs": {"p": {"models": {"reset_failure": flat, "work_phase_one": sharp}}}}
+    moved = json.loads(json.dumps(report))
+    moved["pairs"]["p"]["models"]["reset_failure"]["parameters"]["reset_failure"] = 0.12
+    if differences(identified(report), identified(moved)):
+        raise RuntimeError("the regeneration check compares an unidentified model's parameters")
+    moved["pairs"]["p"]["models"]["work_phase_one"]["parameters"]["phase_one"] = 0.6
+    if not differences(identified(report), identified(moved)):
+        raise RuntimeError("the regeneration check ignores a supported model's parameters")
+    for changed in ({"law": [0.26, 0.75]}, {"dof": 4}, {"flag": False}, {"dof": 3.0}, {"law": [0.25]}):
+        if not differences(retained, {**retained, **changed}):
+            raise RuntimeError(f"the regeneration check accepts {changed}")
+    if not differences(retained, {key: value for key, value in retained.items() if key != "flag"}):
+        raise RuntimeError("the regeneration check accepts a dropped key")
+
+
 def self_check() -> None:
     """Recover a known work phase from exact expected counts and reject the depolarizing baseline."""
     _check_exact_laws()
+    _check_manifest_binding()
+    _check_static_basins()
+    _check_differences()
     readout = _readout(0.001, 0.006)
     truth = readout | {"round1": 0.1, "round2": 0.02, "phase_one": 0.5}
     counts = {
@@ -747,47 +917,52 @@ def self_check() -> None:
     half = distribution(readout | {"loss_b1": 0.5}, False)
     if np.allclose(half, distribution(readout, False), atol=1e-6):
         raise RuntimeError("branch dephasing leaves the no-feedback law unchanged")
-    print("N=21 orbit RCA: exact laws, planted-phase recovery, branch-window, and baseline rejection checks pass")
-
-
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("run", type=Path, nargs="?")
-    parser.add_argument("--out", type=Path)
-    parser.add_argument(
-        "--readout",
-        nargs=2,
-        type=float,
-        metavar=("P1G0", "P0G1"),
-        help="control-qubit P(1|0) and P(0|1); default reads IBM properties at the record's calibration",
+    print(
+        "N=21 orbit RCA: exact laws, manifest binding, seeded static basins, regeneration tolerance, "
+        "planted-phase recovery, "
+        "branch-window, and baseline rejection checks pass"
     )
-    parser.add_argument("--self-check", action="store_true")
-    arguments = parser.parse_args(argv)
-    if arguments.self_check:
-        self_check()
-        return 0
-    if arguments.run is None:
-        parser.error("a run directory is required")
+
+
+RETAINED = "rca-mechanism-fit.json"
+
+
+class PairFit:
+    """Every mechanism fit of one feed-forward pair and its work-phase interval."""
+
+    def __call__(
+        self, item: tuple[dict[str, np.ndarray], dict[str, dict[str, float]]]
+    ) -> tuple[dict[str, dict[str, Any]], list[list[float]]]:
+        counts, arms = item
+        models = {name: fit(counts, arms, extra) for name, extra in MECHANISMS.items()}
+        return models, phase_interval(counts, arms, models["work_phase_one"])
+
+
+def build_report(run: Path, readout: tuple[float, float] | None) -> dict[str, Any]:
+    """Every pair's mechanism fits and phase interval, and the joint fit, as rca-mechanism-fit.json holds them."""
     _check_exact_laws()
-    pairs = measured_pairs(arguments.run)
-    roles = window_roles(arguments.run)
-    if arguments.readout:
+    pairs = measured_pairs(run)
+    roles = window_roles(run)
+    if readout:
         writers = {qubit for role in roles.values() for qubit in (role["control"], role["terminal"])}
         if len(writers) != 1:
-            parser.error(f"--readout supplies one qubit's rates, but the members measure on {sorted(writers)}")
-        fixed = _readout(*arguments.readout)
+            raise SystemExit(f"--readout supplies one qubit's rates, but the members measure on {sorted(writers)}")
+        fixed = _readout(*readout)
         sources: dict[str, dict[str, Any]] = {name: fixed | {"source": "--readout"} for name in roles}
     else:
         sources = {
             name: entry | {"source": "retained placed-qubit calibration or properties at the record calibration"}
-            for name, entry in member_readouts(arguments.run, roles).items()
+            for name, entry in member_readouts(run, roles).items()
         }
     readouts = {name: _model_readout(entry) for name, entry in sources.items()}
     report: dict[str, Any] = {"member_readout": sources, "pairs": {}}
-    for pair, counts in pairs.items():
-        arms = {arm: readouts[f"{pair}_{arm}"] for arm in ("feedback", "no_feedback")}
-        models = {name: fit(counts, arms, extra) for name, extra in MECHANISMS.items()}
-        interval = phase_interval(counts, arms, models["work_phase_one"])
+    items = [
+        (counts, {arm: readouts[f"{pair}_{arm}"] for arm in ("feedback", "no_feedback")})
+        for pair, counts in pairs.items()
+    ]
+    for (pair, counts), (models, interval) in zip(
+        pairs.items(), parallel.ordered_map(PairFit(), items, min_items=2), strict=True
+    ):
         report["pairs"][pair] = {
             "measured_counts": {arm: values.astype(int).tolist() for arm, values in counts.items()},
             "models": models,
@@ -809,7 +984,7 @@ def main(argv: list[str] | None = None) -> int:
                 f"k+{model['added_parameters']}  {params}"
             )
     if len(pairs) > 1:
-        joint = joint_quasistatic_fit(arguments.run, pairs, readouts)
+        joint = joint_quasistatic_fit(run, pairs, readouts)
         report["joint_quasistatic_detuning"] = joint
         if "skipped" in joint:
             print(f"joint quasi-static detuning skipped: {joint['skipped']}; {joint['unresolved']}")
@@ -818,8 +993,101 @@ def main(argv: list[str] | None = None) -> int:
                 f"joint quasi-static detuning: G2={joint['deviance']:.2f} on {joint['degrees_of_freedom']} dof; "
                 f"static-only G2={joint['static_detuning_only_deviance']:.2f}; {joint['parameters_rad_per_us']}"
             )
+    return report
+
+
+def serialize(report: dict[str, Any]) -> str:
+    return json.dumps(report, indent=2, sort_keys=True) + "\n"
+
+
+# L-BFGS-B iterates through BLAS, so a fit regenerated under another BLAS
+# build moves its floats; every other value is exact. A model that neither is
+# the baseline nor improves at family alpha has a flat deviance along its
+# added parameters, so its optimizer stops anywhere along that direction:
+# its law and deviance reproduce and its parameters do not (identified()).
+CHECK_REL_TOL = 1e-6
+CHECK_ABS_TOL = 1e-6
+
+
+def differences(retained: Any, regenerated: Any, path: str = "") -> list[str]:
+    """Paths where regenerated departs from retained: structure, keys, strings, integers and booleans
+    exactly, floats within CHECK_REL_TOL or CHECK_ABS_TOL."""
+    if isinstance(retained, dict) and isinstance(regenerated, dict):
+        if retained.keys() != regenerated.keys():
+            return [f"{path or '/'}: keys {sorted(retained.keys() ^ regenerated.keys())}"]
+        return [item for key in retained for item in differences(retained[key], regenerated[key], f"{path}/{key}")]
+    if isinstance(retained, list) and isinstance(regenerated, list):
+        if len(retained) != len(regenerated):
+            return [f"{path}: length {len(retained)} against {len(regenerated)}"]
+        return [
+            item
+            for position, (old, new) in enumerate(zip(retained, regenerated, strict=True))
+            for item in differences(old, new, f"{path}/{position}")
+        ]
+    if isinstance(retained, float) and isinstance(regenerated, float):
+        if math.isclose(retained, regenerated, rel_tol=CHECK_REL_TOL, abs_tol=CHECK_ABS_TOL):
+            return []
+        return [f"{path}: {retained!r} against {regenerated!r}"]
+    if type(retained) is not type(regenerated) or retained != regenerated:
+        return [f"{path}: {retained!r} against {regenerated!r}"]
+    return []
+
+
+def identified(report: dict[str, Any]) -> dict[str, Any]:
+    """report with each unidentified model's parameter values replaced by None, keeping their names."""
+    view: dict[str, Any] = json.loads(json.dumps(report))
+    for pair in view["pairs"].values():
+        for name, model in pair["models"].items():
+            if name != "baseline_depolarizing" and not model["improves_at_family_alpha"]:
+                model["parameters"] = dict.fromkeys(model["parameters"])
+    return view
+
+
+def check(run: Path) -> None:
+    """Regenerate RUN's rca-mechanism-fit.json from its archived raw files and require it to agree.
+
+    The retained file's readout provenance selects the readout: a file made
+    with --readout supplies its own rates, and any other file reads the
+    record's retained placed-qubit calibration.
+    """
+    retained = json.loads((run / RETAINED).read_text())
+    sources = retained["member_readout"]
+    readout = None
+    if all(entry["source"] == "--readout" for entry in sources.values()):
+        (first,) = {(entry["mid_e01"], entry["mid_e10"]) for entry in sources.values()}
+        readout = first
+    regenerated = json.loads(serialize(build_report(run, readout)))
+    found = differences(identified(retained), identified(regenerated))
+    if found:
+        raise SystemExit(f"{run / RETAINED} differs from the fit its archived raw files regenerate: {found[:5]}")
+    print(f"{run / RETAINED}: regenerated from the archived raw files, floats within {CHECK_ABS_TOL:g}")
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("run", type=Path, nargs="?")
+    parser.add_argument("--out", type=Path)
+    parser.add_argument(
+        "--readout",
+        nargs=2,
+        type=float,
+        metavar=("P1G0", "P0G1"),
+        help="control-qubit P(1|0) and P(0|1); default reads IBM properties at the record's calibration",
+    )
+    parser.add_argument("--self-check", action="store_true")
+    parser.add_argument("--check", action="store_true", help=f"regenerate RUN_DIR/{RETAINED} and require it to agree")
+    arguments = parser.parse_args(argv)
+    if arguments.self_check:
+        self_check()
+        return 0
+    if arguments.run is None:
+        parser.error("a run directory is required")
+    if arguments.check:
+        check(arguments.run)
+        return 0
+    report = build_report(arguments.run, tuple(arguments.readout) if arguments.readout else None)
     if arguments.out:
-        arguments.out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+        arguments.out.write_text(serialize(report))
     return 0
 
 
