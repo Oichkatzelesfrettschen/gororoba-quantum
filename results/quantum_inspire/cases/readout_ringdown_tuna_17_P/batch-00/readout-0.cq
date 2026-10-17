@@ -1,0 +1,16 @@
+version 3.0
+
+qubit[17] q
+bit[34] b
+
+wait(100) q[0]
+wait(100) q[4]
+wait(100) q[5]
+wait(100) q[6]
+wait(100) q[10]
+wait(100) q[11]
+wait(100) q[12]
+wait(100) q[16]
+
+barrier q
+b[0:16] = measure q

@@ -1,0 +1,11 @@
+version 3.0
+
+qubit[2] q
+
+asm(Rydberg) '''
+    INIT(0, 0) q[0]
+    INIT(0, 1) q[1]
+'''
+
+H q[0]
+CNOT q[0], q[1]

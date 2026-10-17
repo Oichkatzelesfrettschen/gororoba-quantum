@@ -273,6 +273,43 @@ def verify() -> dict[str, Any]:
             rejected += 1
         else:
             raise RuntimeError("case admitted a dynamic PUB latency below its declared stages")
+        # A cost scenario prices the dynamic stages at its own classical
+        # latency while the nominal ledger keeps the declared latency.
+        scenario_dynamic = copy.deepcopy(record)
+        scenario_dynamic["family_configuration"]["name"] = "patch-window"
+        scenario_design = scenario_dynamic["policy"]["design"]
+        scenario_design["family"] = "patch-window"
+        nominal_us = scenario_design["classical_latency_us"]
+        stress_us = scenario_design["cost_scenarios"][0]["classical_latency_us"]
+        require(stress_us != nominal_us, "the scenario fixture must change the classical latency")
+        candidate = scenario_dynamic["optimization"]["candidates"][0]
+        for ledger, ledger_us in ((candidate, nominal_us), (candidate["cost_scenarios"][0], stress_us)):
+            ledger["jobs"][0]["name"] = "ibm_fez/dynamic/1"
+            ledger["jobs"][1]["name"] = "ibm_fez/static/1"
+            for pub in ledger["jobs"][0]["pubs"]:
+                pub["classical_stage_count"] = 2
+                pub["classical_latency_seconds"] = 2 * ledger_us * 1e-6
+        dynamic_job, static_job = scenario_dynamic["budget_plan"]["jobs"]
+        dynamic_job["kind"] = "dynamic"
+        static_job["batch_index"] = 1
+        for pub in scenario_dynamic["execution_pubs"]:
+            if pub["name"] in dynamic_job["pub_names"]:
+                pub["kind"] = "dynamic"
+        reprice(scenario_dynamic)
+        qpu_cases._validate_costs(candidate, scenario_dynamic)
+        qpu_cases._validate_allocated_scenarios(candidate, scenario_dynamic)
+        nominal_priced = copy.deepcopy(scenario_dynamic)
+        candidate = nominal_priced["optimization"]["candidates"][0]
+        for pub in candidate["cost_scenarios"][0]["jobs"][0]["pubs"]:
+            pub["classical_latency_seconds"] = 2 * nominal_us * 1e-6
+        reprice(nominal_priced)
+        try:
+            qpu_cases._validate_allocated_scenarios(candidate, nominal_priced)
+        except ValueError as error:
+            require("differs from its stages" in str(error), f"unexpected scenario latency rejection: {error}")
+            rejected += 1
+        else:
+            raise RuntimeError("case admitted a scenario ledger priced at the nominal classical latency")
         retain(record)
         require(qpu_cases.write_case(run_dir, record) == destination, "valid allocation stopped reproducing")
         require(destination.read_bytes() == case_bytes, "allocated case reproduction changed bytes")

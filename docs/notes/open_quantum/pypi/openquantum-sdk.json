@@ -1,0 +1,41 @@
+{
+ "name": "openquantum-sdk",
+ "version": "1.0.0",
+ "summary": "Python SDK for Open Quantum",
+ "requires_python": ">=3.8",
+ "requires_dist": [
+  "requests>=2.25.0",
+  "pytest>=7.0; extra == \"dev\"",
+  "pytest-cov; extra == \"dev\"",
+  "pytest-mock; extra == \"dev\"",
+  "requests-mock>=1.10.0; extra == \"dev\"",
+  "flake8; extra == \"dev\"",
+  "black; extra == \"dev\"",
+  "openquantum-sdk-qiskit>=1.0.0; extra == \"qiskit\"",
+  "openquantum-sdk-pennylane>=1.0.0; extra == \"pennylane\"",
+  "openquantum-sdk-cirq>=0.5.0; extra == \"cirq\"",
+  "openquantum-sdk-qrisp>=0.5.0; extra == \"qrisp\""
+ ],
+ "classifiers": [
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3"
+ ],
+ "project_urls": null,
+ "files": [
+  {
+   "filename": "openquantum_sdk-1.0.0-py3-none-any.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-10-15T23:54:34.658366Z",
+   "size": 48253,
+   "sha256": "a189be978d1e52682c362df1301e1e5185b415081ac0b58661824aff4467bdfc"
+  },
+  {
+   "filename": "openquantum_sdk-1.0.0.tar.gz",
+   "packagetype": "sdist",
+   "upload_time_iso_8601": "2026-10-15T23:54:35.900193Z",
+   "size": 61428,
+   "sha256": "e86f111d4752dcd60e3232a3a738568ec22200336e1ddfc5a175abea690afcd3"
+  }
+ ]
+}

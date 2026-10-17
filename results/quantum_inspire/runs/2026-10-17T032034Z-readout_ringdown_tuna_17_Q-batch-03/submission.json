@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-17T04:43:50+00:00",
+ "approval": "User, 2026-10-17: \"then you need to review the rules per machine and per the documentation in the repo for fair use and batch size and queuing then use the real TUNA-17 hardware\" (readout ring-down pilot, PR #164, after the QX dry run); after batch P-00: \"Continue, q6 judged by rule but also use all that we've learned from our calibration runs and measurement within this repo granularly to build accordingly to compensate.\" (sanity readout guard 0.35); after batch P-06: \"if it fails then grab the fresh calibration data dawg, you gotta iteratively recalibrate.\" and \"yeah add the calibration batch before P-07 so we have what we have so far\" (calibration batches of the series' readout-0 and readout-1 before P-07, after every 4 Ramsey batches and after any sanity failure, then one rerun); after the P-06 rerun: \"we can keep going even with that and then design without q9 for future runs and let the other agent know the same.\" (spectator q9 reported, not guarded); after the 04:18Z calibration batch (q9 idle 0.27, q0 and q6 prepared |1> at 0.39 and 0.14): continuing under that instruction with q0, q6 and q9 reported, and P-05 rerun on the post-change device",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "48121fcac9de24cdb1c420646db8042de15002343177eafd32f8a9f997378332",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 870114,
+ "project": 765919,
+ "shots": 8192,
+ "jobs": [
+  {
+   "file": "reference-y-d002.cq",
+   "job": 1527384,
+   "sha256": "a8a0b54f1fc4bb6aab8da7bd71cc0201b1ef7390b23c7570c76337ffd77cbc65"
+  },
+  {
+   "file": "tau000-y-d002.cq",
+   "job": 1527385,
+   "sha256": "ebe170d0acfb11134bf8bf218cda8a243fedc885b97b8ef0ceea1d96aa5347a5"
+  },
+  {
+   "file": "tau005-y-d002.cq",
+   "job": 1527386,
+   "sha256": "5bdb110e271cf123fafc80245f791993de805cc192481ae2ee4b40c103dc4f22"
+  }
+ ],
+ "submitted_utc": "2026-10-17T04:43:50+00:00"
+}

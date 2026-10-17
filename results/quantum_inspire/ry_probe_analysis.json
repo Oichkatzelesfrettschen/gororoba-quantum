@@ -1,0 +1,109 @@
+{
+ "schema": "qi-ry-probe-analysis-v1",
+ "circuits": [
+  {
+   "run": "2026-10-17T034952Z-ry_probe-batch-00",
+   "file": "x-baseline.cq",
+   "construct": "none: the program that ran",
+   "status": "completed",
+   "message": "",
+   "shots": 1024,
+   "counts": {
+    "10": 1024
+   },
+   "tv_from_expected": 0.0
+  },
+  {
+   "run": "2026-10-17T034952Z-ry_probe-batch-00",
+   "file": "x-bitreg.cq",
+   "construct": "an unassigned bit register",
+   "status": "failed",
+   "message": "Quantum backend error: RSP returned failure: error interpreting cQASM script"
+  },
+  {
+   "run": "2026-10-17T034952Z-ry_probe-batch-00",
+   "file": "x-measure.cq",
+   "construct": "a measure statement",
+   "status": "failed",
+   "message": "Compilation error:\nthe following gates are not in the primitive gate set: measure"
+  },
+  {
+   "run": "2026-10-17T034952Z-ry_probe-batch-01",
+   "file": "h.cq",
+   "construct": "H",
+   "status": "completed",
+   "message": "",
+   "shots": 1024,
+   "counts": {
+    "00": 501,
+    "10": 523
+   },
+   "tv_from_expected": 0.010742
+  },
+  {
+   "run": "2026-10-17T034952Z-ry_probe-batch-01",
+   "file": "x-cnot.cq",
+   "construct": "CNOT",
+   "status": "completed",
+   "message": "",
+   "shots": 1024,
+   "counts": {
+    "10": 24,
+    "11": 1000
+   },
+   "tv_from_expected": 0.023438
+  },
+  {
+   "run": "2026-10-17T034952Z-ry_probe-batch-01",
+   "file": "rz-x.cq",
+   "construct": "Rz",
+   "status": "completed",
+   "message": "",
+   "shots": 1024,
+   "counts": {
+    "10": 1024
+   },
+   "tv_from_expected": 0.0
+  },
+  {
+   "run": "2026-10-17T034952Z-ry_probe-batch-02",
+   "file": "h-cnot.cq",
+   "construct": "H with CNOT",
+   "status": "completed",
+   "message": "",
+   "shots": 1024,
+   "counts": {
+    "00": 541,
+    "10": 6,
+    "11": 477
+   },
+   "tv_from_expected": 0.03418
+  },
+  {
+   "run": "2026-10-17T034952Z-ry_probe-batch-02",
+   "file": "h-cnot-bits.cq",
+   "construct": "H, CNOT and a bit register",
+   "status": "failed",
+   "message": "Quantum backend error: RSP returned failure: error interpreting cQASM script"
+  },
+  {
+   "run": "2026-10-17T034952Z-ry_probe-batch-02",
+   "file": "init-h-cnot.cq",
+   "construct": "an INIT block with H and CNOT",
+   "status": "completed",
+   "message": "",
+   "shots": 1024,
+   "counts": {
+    "00": 493,
+    "10": 15,
+    "11": 516
+   },
+   "tv_from_expected": 0.018555
+  }
+ ],
+ "rejected_constructs": [
+  "an unassigned bit register",
+  "a measure statement",
+  "H, CNOT and a bit register"
+ ]
+}

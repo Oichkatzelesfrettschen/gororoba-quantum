@@ -19,7 +19,12 @@ and a timestamp (API schema, [api/openapi.json](api/openapi.json)).
 `"$QI_PYTHON" scripts/qi_platform.py snapshot` writes it to
 [usage.json](../../evidence/quantum_inspire/usage.json) aggregated by domain
 and backend type, beside each job's requested and completed shots and the
-execution seconds its results report.
+execution seconds its results report, and the sorted ids of the ledger jobs
+that no run directory of the tree retains (`unretained`, schema
+`qi-usage-v2`). The ledger covers the whole account, so jobs that another
+branch's runs hold appear there and are declared by id; `research_state.py`
+checks the retained jobs against their ledger rows and every other ledger
+job against that list.
 
 Observed: the ledger held no row before the first job and still held none
 after forty-two jobs on 2026-10-16 (QX, the Ry emulator and Tuna-17;
@@ -59,7 +64,7 @@ account (<https://www.quantum-inspire.com/faq/>), stricter than the API's 5.
 | Tuna-17, readout only | 16384 | 10.69-10.88 s | 0.65-0.66 ms | same run, readout-0 and readout-1 |
 | QX emulator | 2048 | 0.028-0.289 s | 14-141 us | runs/2026-10-16T211635Z-QXsinglenodesimulator |
 | QX emulator, two 5-qubit witnesses | 2048 | 0.81-10.39 s | 0.4-5.1 ms | runs/2026-10-16T221133Z-zero_divisor_qx |
-| Ry emulator | 1024 | 16.26 s (2-qubit X-only diagnostic) | 15.9 ms | runs/2026-10-16T213823Z-Rydberg-diagnostic |
+| Ry emulator | 1024 | 16.26 s (2-qubit X-only diagnostic); a failed job with no shot also spent 16 s | at most 15.9 ms (a fixed per-job cost fits as well) | runs/2026-10-16T213823Z-Rydberg-diagnostic, runs/2026-10-16T211635Z-Rydberg |
 
 A Tuna shot is dominated by the 500 us initialization (KB tuna page), so
 the per-shot time barely depends on a short circuit's gates. Planning rule
@@ -127,7 +132,10 @@ From the general conditions of use (6 Feb 2025,
   hardware rule bounds both. Those two five-circuit Tuna-17 batches predate
   the rule and held five queued circuits. Between hardware batches a series
   collects the previous batch, passes its sanity checks and pauses before
-  submitting the next.
+  submitting the next. `submit` enforces the pause account-wide: it refuses a
+  hardware batch while any account job on a hardware backend type is
+  unfinished or finished less than `HARDWARE_PAUSE_SECONDS` (120 s) ago, so
+  concurrent sessions alternate and the platform can calibrate between batches.
 - The case directory acquires an exclusive `submission-state.json` before
   the client creates any remote resource. It checkpoints the batch and job
   IDs and the enqueue intent; either this state or `submission.json` blocks

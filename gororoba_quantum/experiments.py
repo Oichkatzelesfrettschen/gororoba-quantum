@@ -31,7 +31,12 @@ from factoring import distribution_success, ideal_phase_distribution, reference_
 from order_finding import factor_order_finding, folded_qpe
 
 Summary = Callable[[dict[str, np.ndarray]], dict[str, float]]
+# Readout-inverted quasi-probabilities and each circuit's one-shot covariance.
+CovarianceSummary = Callable[[dict[str, np.ndarray], dict[str, np.ndarray]], dict[str, float]]
 Admission = Callable[[list[dict[str, float]], int], dict[str, Any]]
+# Every member's routed ISA in member order and the Target they compiled
+# against, to the reasons the candidate is rejected.
+RoutedCheck = Callable[[list[QuantumCircuit], Any], list[str]]
 
 
 @dataclass(frozen=True)
@@ -75,6 +80,13 @@ class Group:
     execution_rows assigns each member an explicit global PUB row; sparse
     rows preserve isolated workloads without inserting idle measurements.
     Explicit schedules prohibit automatic mirrors and replica references.
+    summarize_with_covariance, when set, summarizes readout-inverted
+    quasi-probabilities M p together with each circuit's one-shot covariance
+    M (diag(p) - p p^T) M^T, so a summary that propagates the multinomial
+    covariance itself stays exact through live_run.corrected_summary.
+    routed_violations, when set, rejects a candidate whose routed members
+    break a physical-placement invariant of the group's model
+    (live_run.select_candidates).
     """
 
     name: str
@@ -85,6 +97,8 @@ class Group:
     rate_keys: frozenset[str] = frozenset()
     replica_floor: float | None = None
     execution_rows: tuple[int, ...] | None = None
+    summarize_with_covariance: CovarianceSummary | None = None
+    routed_violations: RoutedCheck | None = None
 
     def __post_init__(self) -> None:
         if self.execution_rows is None:
@@ -401,12 +415,14 @@ def standalone_campaign_groups() -> list[Group]:
     from diagnostic_controls import readout_delay_group, scaffold_ab_group
     from maximal_experiments import spectator_wavefront_ramsey_group
     from qubit_baseline import qubit_baseline_group
+    from star_ramsey import star_ramsey_group
 
     return [
         spectator_wavefront_ramsey_group(),
         qubit_baseline_group(),
         crossed_group(),
         conditional_ramsey_group(),
+        star_ramsey_group(),
         scaffold_ab_group(),
         readout_delay_group(),
     ]

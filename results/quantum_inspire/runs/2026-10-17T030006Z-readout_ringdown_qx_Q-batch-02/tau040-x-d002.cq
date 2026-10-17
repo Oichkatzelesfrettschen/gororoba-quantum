@@ -1,0 +1,46 @@
+version 3.0
+
+qubit[10] q
+bit[20] b
+
+barrier q
+b[11] = measure q[1]
+b[12] = measure q[2]
+b[13] = measure q[3]
+b[17] = measure q[7]
+b[18] = measure q[8]
+b[19] = measure q[9]
+barrier q
+wait(40) q[1]
+X90 q[1]
+wait(2) q[1]
+X90 q[1]
+wait(100) q[1]
+wait(40) q[2]
+X90 q[2]
+wait(2) q[2]
+X90 q[2]
+wait(100) q[2]
+wait(40) q[3]
+X90 q[3]
+wait(2) q[3]
+X90 q[3]
+wait(100) q[3]
+wait(40) q[7]
+X90 q[7]
+wait(2) q[7]
+X90 q[7]
+wait(100) q[7]
+wait(40) q[8]
+X90 q[8]
+wait(2) q[8]
+X90 q[8]
+wait(100) q[8]
+wait(40) q[9]
+X90 q[9]
+wait(2) q[9]
+X90 q[9]
+wait(100) q[9]
+
+barrier q
+b[0:9] = measure q

@@ -76,7 +76,7 @@
   "select_equals_left_multiplication": true
  },
  "preregistered": {
-  "estimators": "P(s=0) raw with Wilson 95%; readout-corrected with the selector's assignment from readout-0 and readout-1; contraction residuals dark+bright-1 and fixture-1/2 with |z| < 3 as consistency",
+  "estimators": "P(s=0) raw with Wilson 95%; readout-corrected with the selector's assignment from the readout-0 and readout-1 circuits of the same batch; contraction residuals dark+bright-1 and fixture-1/2 with |z| < 3 as consistency",
   "comparison": {
    "dark": 0.182,
    "dark_ci95": [
@@ -89,24 +89,17 @@
  },
  "regions": [
   [
-   0,
    1,
    2,
    4,
-   5
+   8,
+   12
   ],
   [
-   7,
-   8,
    10,
    11,
-   13
-  ],
-  [
-   9,
-   12,
+   13,
    14,
-   15,
    16
   ]
  ],
@@ -115,153 +108,109 @@
    "file": "latin-1.cq",
    "case": "dark",
    "region": [
-    0,
     1,
     2,
     4,
-    5
-   ],
-   "roles": {
-    "d0": 0,
-    "d1": 4,
-    "d2": 1,
-    "d3": 5,
-    "selector": 2
-   },
-   "seed": 0,
-   "cz": 66,
-   "t_count": 26,
-   "ideal_p_selector_zero": 0.0
-  },
-  {
-   "file": "latin-1.cq",
-   "case": "bright",
-   "region": [
-    7,
     8,
-    10,
-    11,
-    13
+    12
    ],
    "roles": {
-    "d0": 7,
-    "d1": 13,
-    "d2": 10,
-    "d3": 8,
-    "selector": 11
-   },
-   "seed": 0,
-   "cz": 66,
-   "t_count": 26,
-   "ideal_p_selector_zero": 1.0
-  },
-  {
-   "file": "latin-1.cq",
-   "case": "fixture",
-   "region": [
-    9,
-    12,
-    14,
-    15,
-    16
-   ],
-   "roles": {
-    "d0": 15,
-    "d1": 14,
-    "d2": 16,
-    "d3": 9,
-    "selector": 12
-   },
-   "seed": 2,
-   "cz": 70,
-   "t_count": 26,
-   "ideal_p_selector_zero": 0.5
-  },
-  {
-   "file": "latin-2.cq",
-   "case": "bright",
-   "region": [
-    0,
-    1,
-    2,
-    4,
-    5
-   ],
-   "roles": {
-    "d0": 0,
-    "d1": 4,
-    "d2": 1,
-    "d3": 5,
-    "selector": 2
-   },
-   "seed": 0,
-   "cz": 66,
-   "t_count": 26,
-   "ideal_p_selector_zero": 1.0
-  },
-  {
-   "file": "latin-2.cq",
-   "case": "fixture",
-   "region": [
-    7,
-    8,
-    10,
-    11,
-    13
-   ],
-   "roles": {
-    "d0": 7,
-    "d1": 13,
-    "d2": 10,
-    "d3": 8,
-    "selector": 11
-   },
-   "seed": 0,
-   "cz": 70,
-   "t_count": 26,
-   "ideal_p_selector_zero": 0.5
-  },
-  {
-   "file": "latin-2.cq",
-   "case": "dark",
-   "region": [
-    9,
-    12,
-    14,
-    15,
-    16
-   ],
-   "roles": {
-    "d0": 14,
-    "d1": 15,
-    "d2": 16,
-    "d3": 9,
-    "selector": 12
-   },
-   "seed": 0,
-   "cz": 66,
-   "t_count": 26,
-   "ideal_p_selector_zero": 0.0
-  },
-  {
-   "file": "latin-3.cq",
-   "case": "fixture",
-   "region": [
-    0,
-    1,
-    2,
-    4,
-    5
-   ],
-   "roles": {
-    "d0": 0,
-    "d1": 5,
-    "d2": 1,
+    "d0": 1,
+    "d1": 8,
+    "d2": 12,
     "d3": 2,
     "selector": 4
    },
-   "seed": 1,
-   "cz": 70,
+   "seed": 0,
+   "cz": 75,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.0
+  },
+  {
+   "file": "latin-1.cq",
+   "case": "bright",
+   "region": [
+    10,
+    11,
+    13,
+    14,
+    16
+   ],
+   "roles": {
+    "d0": 13,
+    "d1": 16,
+    "d2": 10,
+    "d3": 14,
+    "selector": 11
+   },
+   "seed": 0,
+   "cz": 87,
+   "t_count": 26,
+   "ideal_p_selector_zero": 1.0
+  },
+  {
+   "file": "latin-2.cq",
+   "case": "bright",
+   "region": [
+    1,
+    2,
+    4,
+    8,
+    12
+   ],
+   "roles": {
+    "d0": 1,
+    "d1": 8,
+    "d2": 12,
+    "d3": 2,
+    "selector": 4
+   },
+   "seed": 0,
+   "cz": 75,
+   "t_count": 26,
+   "ideal_p_selector_zero": 1.0
+  },
+  {
+   "file": "latin-2.cq",
+   "case": "fixture",
+   "region": [
+    10,
+    11,
+    13,
+    14,
+    16
+   ],
+   "roles": {
+    "d0": 13,
+    "d1": 16,
+    "d2": 10,
+    "d3": 11,
+    "selector": 14
+   },
+   "seed": 0,
+   "cz": 91,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.5
+  },
+  {
+   "file": "latin-3.cq",
+   "case": "fixture",
+   "region": [
+    1,
+    2,
+    4,
+    8,
+    12
+   ],
+   "roles": {
+    "d0": 1,
+    "d1": 12,
+    "d2": 2,
+    "d3": 4,
+    "selector": 8
+   },
+   "seed": 0,
+   "cz": 79,
    "t_count": 26,
    "ideal_p_selector_zero": 0.5
   },
@@ -269,45 +218,23 @@
    "file": "latin-3.cq",
    "case": "dark",
    "region": [
-    7,
-    8,
     10,
     11,
-    13
-   ],
-   "roles": {
-    "d0": 7,
-    "d1": 13,
-    "d2": 10,
-    "d3": 8,
-    "selector": 11
-   },
-   "seed": 0,
-   "cz": 66,
-   "t_count": 26,
-   "ideal_p_selector_zero": 0.0
-  },
-  {
-   "file": "latin-3.cq",
-   "case": "bright",
-   "region": [
-    9,
-    12,
+    13,
     14,
-    15,
     16
    ],
    "roles": {
-    "d0": 14,
-    "d1": 15,
-    "d2": 16,
-    "d3": 9,
-    "selector": 12
+    "d0": 13,
+    "d1": 16,
+    "d2": 10,
+    "d3": 14,
+    "selector": 11
    },
    "seed": 0,
-   "cz": 66,
+   "cz": 87,
    "t_count": 26,
-   "ideal_p_selector_zero": 1.0
+   "ideal_p_selector_zero": 0.0
   }
  ],
  "batch": "batch-00",
@@ -315,17 +242,17 @@
   {
    "file": "latin-1.cq",
    "kind": "witness",
-   "sha256": "eda55cbb27c923c77a7cae243d219f5100ac8ea957abe524aa38e30912b9c269"
+   "sha256": "ebabcb40228f64a1ad3ce45263c603da815ff4a77fae7ae91817ce683db42c9f"
   },
   {
-   "file": "latin-2.cq",
-   "kind": "witness",
-   "sha256": "9c0af8833707d78e4dd00c3575b32d253e57800a860aed83a4048e20ef2a7def"
+   "file": "readout-0.cq",
+   "kind": "readout",
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
   },
   {
-   "file": "latin-3.cq",
-   "kind": "witness",
-   "sha256": "f4eda667ba1f9412727140a47704c792e6fbb42514365cdd05b8845633dc5695"
+   "file": "readout-1.cq",
+   "kind": "readout",
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
   }
  ]
 }
