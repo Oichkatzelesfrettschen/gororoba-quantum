@@ -1,0 +1,36 @@
+{
+ "name": "openquantum-sdk-pennylane",
+ "version": "1.0.0",
+ "summary": "PennyLane Python SDK for Open Quantum",
+ "requires_python": ">=3.10",
+ "requires_dist": [
+  "openquantum-sdk>=1.0.0",
+  "pennylane>=0.38",
+  "pytest>=7.0; extra == \"dev\"",
+  "pytest-cov; extra == \"dev\"",
+  "pytest-mock>=3.10; extra == \"dev\"",
+  "tomli; python_version < \"3.11\" and extra == \"dev\""
+ ],
+ "classifiers": [
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3"
+ ],
+ "project_urls": null,
+ "files": [
+  {
+   "filename": "openquantum_sdk_pennylane-1.0.0-py3-none-any.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-10-15T23:54:46.615153Z",
+   "size": 18527,
+   "sha256": "bdc3c667f6d010bd96ebbf54e094a73cacc6d544f51c05aea12e614a3c41f3b6"
+  },
+  {
+   "filename": "openquantum_sdk_pennylane-1.0.0.tar.gz",
+   "packagetype": "sdist",
+   "upload_time_iso_8601": "2026-10-15T23:54:47.404992Z",
+   "size": 22909,
+   "sha256": "f9f9110b2643bb79a3c750402891e1ee26ca9bdf8bc047fd6139616da4ee30c7"
+  }
+ ]
+}

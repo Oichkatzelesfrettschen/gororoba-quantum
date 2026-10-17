@@ -1,0 +1,258 @@
+{
+ "schema": "qi-zero-divisor-cases-v2",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 16384,
+ "a_pair": [
+  1,
+  10
+ ],
+ "cases": {
+  "dark": {
+   "b_pair": [
+    4,
+    15
+   ],
+   "phase": 3.141592653589793,
+   "ideal_p_selector_zero": 0.0
+  },
+  "bright": {
+   "b_pair": [
+    4,
+    15
+   ],
+   "phase": 0.0,
+   "ideal_p_selector_zero": 1.0
+  },
+  "fixture": {
+   "b_pair": [
+    2,
+    13
+   ],
+   "phase": 3.141592653589793,
+   "ideal_p_selector_zero": 0.5
+  }
+ },
+ "certificate": {
+  "products": {
+   "dark": {
+    "b": {
+     "4": 1,
+     "15": -1
+    },
+    "product": {}
+   },
+   "bright": {
+    "b": {
+     "4": 1,
+     "15": 1
+    },
+    "product": {
+     "5": 2,
+     "14": -2
+    }
+   },
+   "fixture": {
+    "b": {
+     "2": 1,
+     "13": -1
+    },
+    "product": {
+     "3": 1,
+     "7": 1,
+     "8": 1,
+     "12": -1
+    }
+   }
+  },
+  "package_tables": [
+   "hypercomplex",
+   "hypercomplex-engine",
+   "Cayley-Calculator",
+   "cayley-dickson"
+  ],
+  "dark_in_cd_core_corpus": true,
+  "select_equals_left_multiplication": true
+ },
+ "preregistered": {
+  "estimators": "P(s=0) raw with Wilson 95%; readout-corrected with the selector's assignment from the readout-0 and readout-1 circuits of the same batch; contraction residuals dark+bright-1 and fixture-1/2 with |z| < 3 as consistency",
+  "comparison": {
+   "dark": 0.182,
+   "dark_ci95": [
+    0.146,
+    0.217
+   ],
+   "bright": 0.828,
+   "claim": "hw-zero-divisor-floor"
+  }
+ },
+ "regions": [
+  [
+   1,
+   2,
+   4,
+   8,
+   12
+  ],
+  [
+   10,
+   11,
+   13,
+   14,
+   16
+  ]
+ ],
+ "replicas": [
+  {
+   "file": "latin-1.cq",
+   "case": "dark",
+   "region": [
+    1,
+    2,
+    4,
+    8,
+    12
+   ],
+   "roles": {
+    "d0": 1,
+    "d1": 8,
+    "d2": 12,
+    "d3": 2,
+    "selector": 4
+   },
+   "seed": 0,
+   "cz": 75,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.0
+  },
+  {
+   "file": "latin-1.cq",
+   "case": "bright",
+   "region": [
+    10,
+    11,
+    13,
+    14,
+    16
+   ],
+   "roles": {
+    "d0": 13,
+    "d1": 16,
+    "d2": 10,
+    "d3": 14,
+    "selector": 11
+   },
+   "seed": 0,
+   "cz": 87,
+   "t_count": 26,
+   "ideal_p_selector_zero": 1.0
+  },
+  {
+   "file": "latin-2.cq",
+   "case": "bright",
+   "region": [
+    1,
+    2,
+    4,
+    8,
+    12
+   ],
+   "roles": {
+    "d0": 1,
+    "d1": 8,
+    "d2": 12,
+    "d3": 2,
+    "selector": 4
+   },
+   "seed": 0,
+   "cz": 75,
+   "t_count": 26,
+   "ideal_p_selector_zero": 1.0
+  },
+  {
+   "file": "latin-2.cq",
+   "case": "fixture",
+   "region": [
+    10,
+    11,
+    13,
+    14,
+    16
+   ],
+   "roles": {
+    "d0": 13,
+    "d1": 16,
+    "d2": 10,
+    "d3": 11,
+    "selector": 14
+   },
+   "seed": 0,
+   "cz": 91,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.5
+  },
+  {
+   "file": "latin-3.cq",
+   "case": "fixture",
+   "region": [
+    1,
+    2,
+    4,
+    8,
+    12
+   ],
+   "roles": {
+    "d0": 1,
+    "d1": 12,
+    "d2": 2,
+    "d3": 4,
+    "selector": 8
+   },
+   "seed": 0,
+   "cz": 79,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.5
+  },
+  {
+   "file": "latin-3.cq",
+   "case": "dark",
+   "region": [
+    10,
+    11,
+    13,
+    14,
+    16
+   ],
+   "roles": {
+    "d0": 13,
+    "d1": 16,
+    "d2": 10,
+    "d3": 14,
+    "selector": 11
+   },
+   "seed": 0,
+   "cz": 87,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.0
+  }
+ ],
+ "batch": "batch-00",
+ "circuits": [
+  {
+   "file": "latin-1.cq",
+   "kind": "witness",
+   "sha256": "ebabcb40228f64a1ad3ce45263c603da815ff4a77fae7ae91817ce683db42c9f"
+  },
+  {
+   "file": "readout-0.cq",
+   "kind": "readout",
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout",
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  }
+ ]
+}
