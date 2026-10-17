@@ -89,8 +89,12 @@ commit 215b81d on Kaggle CPU sessions, one run each
 (`results/kaggle/2026-10-17T024808Z-gororoba-ghost-error-scale-b1` through
 `-b5` at 025050Z): `--provenance` with several kernel outputs requires equal
 headers, concatenates their runs in argument order and requires the
-regeneration of the merged part to equal `part_b.json` byte for byte, so
-every part b run has two independent kernel sources.
+regeneration of the merged part to equal `part_b.json` byte for byte. Both
+kernel sets sample under the fixed seed 20261016, so the identity shows that
+part b reproduces across sessions and commits; it is one deterministic
+computation run twice, not two independent samples. Gate core-389
+(`--self-test`) drives the merge on synthetic shards and requires swapped or
+missing shards, a differing header and a reserialized part to fail.
 The `bundle` digests in each run's `submission.json` record the files each
 kernel carried. Gate core-339 is the recomputation gate: it runs
 `ghost_error_scale.py --check` on the three parts, which rebuilds every
