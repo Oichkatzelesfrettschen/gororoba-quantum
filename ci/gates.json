@@ -3168,6 +3168,14 @@
    "name": "core-496",
    "seconds": 25.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error parallel.py --self-test && \"$PYTHON\" -B -O -W error parallel.py --self-test",
+   "name": "core-520",
+   "seconds": 1.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
