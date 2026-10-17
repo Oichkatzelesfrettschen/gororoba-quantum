@@ -204,10 +204,11 @@ to reproduce, or where the category table departs from the wheel.
 |---|---|---|---|---|---|
 | w64 | operations | 7285 | 4869 (4111 `i`, 340 `o`, 146 `u`, 272 `d`) | 56 (`c`) | 0 |
 | w64 | laws | 89431 | 0 | 2729 (1007 `i`, 466 `o`, 1256 `c`) | 0 |
-| qw64 | operations | 826 | 0 | 0 | 0 |
+| qw64 | operations | 812 | 0 | 0 | 0 |
+| qw64 | constructor checks | 14 | 0 | 0 | 0 |
 | qw64 | laws | 49392 | 0 | 0 | 0 |
 
-The qw8 probes are structural wherever their i8 arithmetic overflows.
+The qw8 probes classified `p` or `s` are structural: their i8 arithmetic overflows into a wrong element or a panic. The two release-profile equality probes overflow in their cross-multiplications yet return the exact booleans, so they classify `a`.
 `classification.json` holds every case's letter and these counts
 (`task_counts`), and `--check` recomputes them.
 

@@ -418,13 +418,19 @@
  "qw64": {
   "task_counts": {
    "operations": {
-    "agree": 826,
+    "agree": 812,
     "rounding": 0,
     "structural": 0,
     "unexplained": 0
    },
    "laws": {
     "agree": 49392,
+    "rounding": 0,
+    "structural": 0,
+    "unexplained": 0
+   },
+   "constructor_checks": {
+    "agree": 14,
     "rounding": 0,
     "structural": 0,
     "unexplained": 0

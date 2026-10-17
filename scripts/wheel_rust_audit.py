@@ -57,6 +57,7 @@ import hashlib
 import json
 import random
 import struct
+import subprocess
 import sys
 from collections.abc import Callable, Sequence
 from fractions import Fraction
@@ -589,6 +590,10 @@ def holds_flags(text: str, count: int) -> list[bool]:
 def law_cases(section: dict[str, Any], count: int, laws: Sequence[str], parse: Callable[[Any], Any]) -> list[Any]:
     failures: dict[tuple[int, int], tuple[Any, Any]] = {}
     for law, t, left, right in section["failures"]:
+        require(
+            isinstance(law, int) and isinstance(t, int) and 0 <= law < len(laws) and 0 <= t < count,
+            f"failure row ({law}, {t}) lies outside {len(laws)} laws x {count} triples",
+        )
         require((law, t) not in failures, "duplicate failure row")
         failures[(law, t)] = (parse(left), parse(right))
     rows = []
@@ -707,13 +712,22 @@ def task_counts(classes: dict[str, Any]) -> dict[str, dict[str, int]]:
     operations = {"agree": 0, "rounding": 0, "structural": 0, "unexplained": 0}
     laws = dict(operations)
     for name, value in classes.items():
+        if name == "corpus":
+            continue
         texts = list(value.values()) if name == "laws" else value if isinstance(value, list) else [value]
         table, mapping = (laws, LAW_CLASSES) if name == "laws" else (operations, OPERATION_CLASSES)
         for text in texts:
             for letter in text:
                 table[mapping[letter]] += 1
                 table["unexplained"] += letter == "s"
-    return {"operations": operations, "laws": laws}
+    totals: dict[str, dict[str, int]] = {"operations": operations, "laws": laws}
+    if "corpus" in classes:
+        corpus = {"agree": 0, "rounding": 0, "structural": 0, "unexplained": 0}
+        for letter in classes["corpus"]:
+            corpus[OPERATION_CLASSES[letter]] += 1
+            corpus["unexplained"] += letter == "s"
+        totals["constructor_checks"] = corpus
+    return totals
 
 
 def counts(classes: dict[str, Any]) -> dict[str, dict[str, int]]:
@@ -736,7 +750,16 @@ def counts(classes: dict[str, Any]) -> dict[str, dict[str, int]]:
     return {name: dict(sorted(row.items())) for name, row in table.items()}
 
 
-def build_record(directory: Path) -> dict[str, Any]:
+def rust_toolchain() -> str:
+    """The installed rustc and cargo versions, as TOOLCHAIN writes them."""
+    versions = [
+        subprocess.run([tool, "--version"], capture_output=True, text=True, check=True).stdout.strip()
+        for tool in ("rustc", "cargo")
+    ]
+    return ", ".join(versions)
+
+
+def build_record(directory: Path, toolchain: str = TOOLCHAIN) -> dict[str, Any]:
     full_path, release_path = directory / FULL_OUTPUT, directory / RELEASE_OUTPUT
     full = json.loads(full_path.read_text())
     release = json.loads(release_path.read_text())
@@ -751,7 +774,7 @@ def build_record(directory: Path) -> dict[str, Any]:
     record = {
         "schema": SCHEMA,
         "crate": CRATE,
-        "toolchain": TOOLCHAIN,
+        "toolchain": toolchain,
         "sources": {name: sha256_file(directory / name) for name in (*HARNESS_FILES, FULL_OUTPUT, RELEASE_OUTPUT)},
         "laws": laws,
         "corpus_size": len(full["w64"]["corpus"]),
@@ -807,6 +830,13 @@ def check(directory: Path) -> int:
 
 def self_test() -> int:
     rng = random.Random(SEED)
+    # A failure row outside the law-by-triple grid is refused when the harness output is read.
+    for bad_row in ([1, 0, None, None], [0, 4, None, None], [-1, 0, None, None]):
+        try:
+            law_cases({"failures": [bad_row], "holds": ["0"]}, 4, ["law"], lambda value: value)
+        except SystemExit:
+            continue
+        raise SystemExit(f"the failure row {bad_row} outside 1 law x 4 triples was accepted")
     # round_binary64 equals CPython's correctly rounded float(Fraction) in range.
     samples = [Fraction(1, 3), Fraction(-2, 3), Fraction(1, 10), Fraction(2**53 + 1), Fraction(-(2**53) - 3)]
     samples += [Fraction(rng.randint(-(10**30), 10**30), rng.randint(1, 10**30)) for _ in range(3000)]
@@ -893,7 +923,12 @@ def main() -> int:
     group.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     if args.out is not None:
-        (args.out / RECORD).write_text(dump(build_record(args.out)))
+        toolchain = rust_toolchain()
+        require(
+            toolchain == TOOLCHAIN,
+            f"the installed toolchain is {toolchain!r}; the retained harness outputs pin {TOOLCHAIN!r}",
+        )
+        (args.out / RECORD).write_text(dump(build_record(args.out, toolchain)))
         return check(args.out)
     if args.check is not None:
         return check(args.check)
