@@ -22,7 +22,7 @@ and choosing Q realizes d_perm(T) = min_P d(P T) = min_P d(T P) with no SWAP
 and no relabeling, because a permutation conjugates a CNOT into a CNOT. The
 permutation-free table comes from the same search seeded with the 120
 permutation matrices. Coset distance is the graph distance on the 83,328
-cosets B S_5, whose 20 neighbours replace one column c_a by c_a ^ c_b.
+cosets B S_5, whose 20 neighbors replace one column c_a by c_a ^ c_b.
 
 Optimization. Round costs depend on the coset only (s(B^-1 f_16 B) =
 s(B^-1 f_4 B) since 16 = 4^-1 mod 21 and the synthesis minimizes over reversed
@@ -258,12 +258,12 @@ def coset_array() -> np.ndarray:
 
 @lru_cache(maxsize=1)
 def coset_graph() -> np.ndarray:
-    """(cosets, 20) neighbour indices: column a replaced by column a ^ column b."""
+    """(cosets, 20) neighbor indices: column a replaced by column a ^ column b."""
     columns = coset_array()
     keys = np.bitwise_or.reduce(np.left_shift(1, columns), axis=1)
     order = np.argsort(keys)
     sorted_keys = keys[order]
-    neighbours = []
+    neighbors = []
     for a in range(WIDTH):
         for b in range(WIDTH):
             if a == b:
@@ -271,9 +271,9 @@ def coset_graph() -> np.ndarray:
             replaced = columns[:, a] ^ columns[:, b]
             moved = keys ^ np.left_shift(1, columns[:, a]) ^ np.left_shift(1, replaced)
             position = np.searchsorted(sorted_keys, moved)
-            _require(bool(np.all(sorted_keys[position] == moved)), "a neighbour column set is not a coset")
-            neighbours.append(order[position])
-    return np.stack(neighbours, axis=1)
+            _require(bool(np.all(sorted_keys[position] == moved)), "a neighbor column set is not a coset")
+            neighbors.append(order[position])
+    return np.stack(neighbors, axis=1)
 
 
 def relax(values: np.ndarray) -> np.ndarray:
