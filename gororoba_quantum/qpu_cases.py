@@ -1157,7 +1157,7 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
     bernstein = tuple(
         EmpiricalBernsteinDesign(**design) for design in record.get("empirical_bernstein", {}).get("designs", [])
     )
-    opted = {design.observable_name for design in bernstein}
+    tails = {design.observable_name: design.variance_tail for design in bernstein}
     plain = {row["name"]: row for row in analyze_observations(observed, endpoints, charged).as_dict()["observables"]}
     plain_power = observation_power_radii(observed, endpoints, charged, bernstein)
     fallback = analyze_observations(observed, endpoints).as_dict()["observables"]
@@ -1171,6 +1171,7 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
             continue
         spent = sum(float(bound["falsifier_tail"]) for bound in bounds if bound["observable_name"] == name)
         alpha = _number(contracts[name]["alpha"], "alpha")
+        miss = 1 - _number(contracts[name]["power"], "power")
         detection = unbounded.get(name, row["detection_radius"])
         total = detection + power[name]
         effect = _number(planned[name]["effect_used_for_power"], "effect used for power")
@@ -1186,7 +1187,7 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
                     "sums, over PUBs, the smaller of the data-free radius and the empirical-Bernstein radius "
                     f"at their alpha split (Hoeffding alone at the charged alpha gives {hoeffding:.6g}); the "
                     "empirical-Bernstein section below names the radius each PUB reads"
-                    if label == "detection" and name in opted
+                    if label == "detection" and name in tails
                     else "equals the Hoeffding radius and needs no replica assumption"
                     if math.isclose(admitted, hoeffding, rel_tol=1e-9, abs_tol=1e-15)
                     else f"rests on the bounds read through their UCL (Hoeffding alone gives {hoeffding:.6g})"
@@ -1195,8 +1196,13 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
         lines.extend(
             [
                 f"Alpha split for `{_identifier(name, 'endpoint')}`: {_format_number(alpha)} = falsifier tail "
-                f"{spent:.6g} + confidence and detection tail {alpha - spent:.6g}; the power tail stays "
-                f"{_format_number(1 - _number(contracts[name]['power'], 'power'))}.",
+                f"{spent:.6g} + confidence and detection tail {alpha - spent:.6g}; "
+                + (
+                    f"the power tail is {miss - tails[name]:.6g}, the miss probability {miss:.6g} less the "
+                    f"variance tail {tails[name]:.6g}."
+                    if name in tails
+                    else f"the power tail stays {_format_number(miss)}."
+                ),
                 "",
                 f"Assumption in force for `{_identifier(name, 'endpoint')}`: {rests[0]}; {rests[1]}. A collected UCL "
                 "above the planned projection widens the radius it reads and can leave the endpoint underpowered; "
@@ -2152,7 +2158,8 @@ def _verify_covariance_falsifier(record: dict[str, Any]) -> None:
         "Statistic: biased sample variance over shots",
         f"| feedback_contrast | feedback_pub | +0.5, +0.5 | 2048 | 0.275 | {allowance:.6g} | {0.275 + allowance:.6g} "
         "| 0.001 |",
-        "Alpha split for `feedback_contrast`: 0.05 = falsifier tail 0.001 + confidence and detection tail 0.049",
+        "Alpha split for `feedback_contrast`: 0.05 = falsifier tail 0.001 + confidence and detection tail 0.049; "
+        "the power tail stays 0.2.",
         "Without retained registers (the Hoeffding fallback, full alpha) `feedback_contrast` rejects its null",
         "Assumption in force for `feedback_contrast`: the detection radius",
         "the Cantelli radius under the variance each covariance bound reads",
@@ -2234,12 +2241,16 @@ def _verify_bounded_bernstein(bounded: dict[str, Any]) -> None:
         "sums, over PUBs, the smaller of the data-free radius and the empirical-Bernstein radius",
         "Alpha split for `feedback_contrast`: 0.05 = falsifier tail 0.001 + data-free tail 0.0245 + "
         "empirical-Bernstein tail 0.0245",
+        "confidence and detection tail 0.049; the power tail is 0.199, the miss probability 0.2 less the variance "
+        "tail 0.001.",
         "Without retained registers (no covariance bound; each PUB reads the smaller of Hoeffding and empirical "
         f"Bernstein at the full alpha split, here at the planned variances) `feedback_contrast` rejects its null "
         f"only above {_format_number(fallback)}",
     ):
         if phrase not in text:
             raise AssertionError(f"bounded empirical-Bernstein case lacks {phrase!r}")
+    if "the power tail stays" in text:
+        raise AssertionError("an opted-in endpoint rendered the undiminished power tail beside its comparator")
 
 
 def _verify_empirical_bernstein(record: dict[str, Any]) -> None:

@@ -1263,7 +1263,9 @@ def measured_family(
     the falsifier rows and each directional endpoint's power condition at
     the observed shots under the applied radius. A record that carries an
     ``empirical_bernstein`` block applies its designs to the confidence and
-    detection radii and reports every radius they compose under that key.
+    detection radii and reports every radius they compose under that key,
+    and withholds the analysis when the block's ``specification`` differs
+    from experiment_optimizer.EMPIRICAL_BERNSTEIN.
     """
     if record.get("family_configuration", {}).get("name") == "folded-correction":
         import correction_collection
@@ -1314,9 +1316,15 @@ def measured_family(
             pubs = tuple(ObservedPub(name, members, shot_map[name]) for name, members in by_pub.items())
         else:
             pubs = tuple(ObservedPub(name, members, int(record["shots"])) for name, members in by_pub.items())
-        bernstein = tuple(
-            EmpiricalBernsteinDesign(**design) for design in record.get("empirical_bernstein", {}).get("designs", [])
-        )
+        # The designs apply only under the rule the record preregistered; a
+        # record whose rule differs from EMPIRICAL_BERNSTEIN withholds its
+        # analysis, as the case renderer refuses to state it.
+        block = record.get("empirical_bernstein")
+        if block is not None and (not isinstance(block, dict) or block.get("specification") != EMPIRICAL_BERNSTEIN):
+            raise ValueError(
+                "record empirical-Bernstein specification differs from experiment_optimizer.EMPIRICAL_BERNSTEIN"
+            )
+        bernstein = tuple(EmpiricalBernsteinDesign(**design) for design in (block or {}).get("designs", []))
         bounds = record.get("covariance_bounds", [])
         if not bounds:
             analysis = analyze_observations(pubs, endpoints, (), bernstein).as_dict()

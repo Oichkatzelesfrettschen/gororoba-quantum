@@ -128,7 +128,7 @@ class CovarianceBound:
 
 @dataclass(frozen=True)
 class EmpiricalBernsteinDesign:
-    """Opt-in empirical-Bernstein confidence and detection radii for one endpoint.
+    """Opt-in empirical-Bernstein confidence and detection radii for one directional endpoint.
 
     Each PUB's per-shot score Y is bounded by its span and i.i.d. over shots,
     the conditions Hoeffding's radius already requires. Maurer and Pontil
@@ -485,6 +485,19 @@ def _validate_plan(plan: CandidatePlan, contracts: tuple[ObservableContract, ...
             f"{plan.name}: covariance bound names an unknown observable or PUB",
         )
     _validate_bernstein(plan.empirical_bernstein, contracts)
+    # Theorem 10 (4) bounds the sample variance about the modeled law's own
+    # variance; a law read from Monte Carlo frequencies carries sampling error
+    # that allowance does not cover, so an opted-in endpoint plans on exact
+    # probabilities only.
+    terms = {contract.name: {term.member for term in contract.terms} for contract in contracts}
+    for design in plan.empirical_bernstein:
+        for job in plan.jobs:
+            for pub in job.pubs:
+                _require(
+                    pub.simulation_shots is None or not terms[design.observable_name] & pub.member_distributions.keys(),
+                    f"{design.observable_name}/{pub.name}: an empirical-Bernstein plan reads exact model "
+                    "probabilities; simulation_shots must be None",
+                )
 
 
 def _validate_bernstein(
@@ -492,17 +505,24 @@ def _validate_bernstein(
 ) -> None:
     names = [design.observable_name for design in designs]
     _require(len(set(names)) == len(names), "empirical-Bernstein designs must name distinct observables")
-    powers = {contract.name: contract.power for contract in contracts}
+    by_name = {contract.name: contract for contract in contracts}
     for design in designs:
+        contract = by_name.get(design.observable_name)
+        if contract is None:
+            raise ValueError(f"{design.observable_name}: empirical-Bernstein design names no contract")
+        # The variance tail comes out of the power miss probability, which only
+        # a directional endpoint carries.
         _require(
-            design.observable_name in powers, f"{design.observable_name}: empirical-Bernstein design names no contract"
+            contract.minimum_effect is not None,
+            f"{design.observable_name}: empirical-Bernstein designs apply to directional endpoints with a power "
+            "contract; a precision-only endpoint has no miss probability to spend the variance tail from",
         )
         _require(
             _finite(design.share) and 0 < design.share < 1,
             f"{design.observable_name}: empirical-Bernstein share must lie in (0, 1)",
         )
         _require(
-            _finite(design.variance_tail) and 0 < design.variance_tail < 1 - powers[design.observable_name],
+            _finite(design.variance_tail) and 0 < design.variance_tail < 1 - contract.power,
             f"{design.observable_name}: variance tail must lie in (0, 1 - power)",
         )
 

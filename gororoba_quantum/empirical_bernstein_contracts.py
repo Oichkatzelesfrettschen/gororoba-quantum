@@ -42,6 +42,7 @@ Explicit failures remain active under optimized Python.
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import io
 import json
@@ -275,6 +276,15 @@ def verify_methods() -> dict[str, float]:
         except ValueError:
             continue
         raise RuntimeError(f"designs {designs} passed validation")
+    # A precision-only endpoint has no power miss probability to spend the
+    # variance tail from, so the opt-in refuses it.
+    precision = ObservableContract("contrast", contract.terms, precision_half_width=0.1)
+    try:
+        analyze_observations(_observed(low_laws, shots), (precision,), (), DESIGN)
+    except ValueError as error:
+        _require("directional endpoints" in str(error), f"precision-only refused for another reason: {error}")
+    else:
+        raise RuntimeError("a precision-only endpoint accepted an empirical-Bernstein design")
 
     # The Minkowski bound on two correlated replicas' averaged score against
     # the shot-level sample variance, and equality for one replica.
@@ -286,7 +296,7 @@ def verify_methods() -> dict[str, float]:
     rows = tuple(tuple(np.bincount(outcomes[:, k], minlength=4) / outcomes.shape[0]) for k in range(2))
     for replicas, statistic in ((rows, exact), (rows[:1], single)):
         pub = ObservedPub("feedback_pub", {"feedback": replicas}, outcomes.shape[0])
-        mean_contract = ObservableContract("mean", (ObservableTerm("feedback", SIGNED),), precision_half_width=0.1)
+        mean_contract = ObservableContract("mean", (ObservableTerm("feedback", SIGNED),), minimum_effect=0.0)
         (detail,) = observed_empirical_bernstein((pub,), (mean_contract,), (), (EmpiricalBernsteinDesign("mean"),))
         bound = detail["pubs"][0]["variance"]
         if len(replicas) == 1:
@@ -335,6 +345,24 @@ def verify_methods() -> dict[str, float]:
         math.isclose(power["power_radius"], detail["power_radius"]) and math.isclose(detail["power_tail"], 0.199),
         "collection power radius left the variance-tail rule",
     )
+    # A record whose preregistered rule differs from EMPIRICAL_BERNSTEIN
+    # withholds its analysis rather than applying the designs under it.
+    for tamper in ("alpha_split", None):
+        tampered = copy.deepcopy(record)
+        if tamper is None:
+            del tampered["empirical_bernstein"]["specification"]
+        else:
+            tampered["empirical_bernstein"]["specification"][tamper] = "unequal"
+        for bounded in (True, False):
+            if not bounded:
+                del tampered["covariance_bounds"]
+            withheld = qpu_planning.measured_family(
+                tampered, distributions, executed, rcc.RUNTIME, replica_registers=registers
+            )
+            _require(
+                "EMPIRICAL_BERNSTEIN" in withheld.get("withheld", "") and "observables" not in withheld,
+                f"specification {tamper or 'absent'} (bounded={bounded}) was analyzed: {sorted(withheld)}",
+            )
     unopted_record = rcc._record()
     unopted = qpu_planning.measured_family(
         unopted_record, distributions, executed, rcc.RUNTIME, replica_registers=registers
@@ -401,6 +429,7 @@ def verify_planner() -> dict[str, Any]:
     tiers = tuple(replace(_plan(f"tier-{n}", n, laws), empirical_bernstein=DESIGN) for n in (bare, inflated))
     selected = optimize(tiers, (contract,), BudgetContract(1e6, 0.0, 1e6)).selected
     _require(selected == f"tier-{inflated}", f"the optimizer selected {selected}, not the inflated tier")
+    _verify_planner_scope(laws)
 
     import live_run
 
@@ -450,6 +479,42 @@ def verify_planner() -> dict[str, Any]:
     return {"bare_shots": bare, "inflated_shots": inflated, "hoeffding_shots": hoeffding}
 
 
+def _verify_planner_scope(laws: tuple[tuple[float, ...], ...]) -> None:
+    """An opted-in plan refuses Monte Carlo model frequencies and precision-only endpoints."""
+    budget = BudgetContract(1e6, 0.0, 1e6)
+    plan = replace(_plan("scope", 98304, laws), empirical_bernstein=DESIGN)
+    sampled_job = replace(
+        plan.jobs[0],
+        pubs=(replace(plan.jobs[0].pubs[0], simulation_shots=32768), *plan.jobs[0].pubs[1:]),
+    )
+    sampled = replace(plan, jobs=(sampled_job,))
+    precision = ObservableContract("contrast", _contract().terms, precision_half_width=0.1)
+    for candidate, contracts, phrase in (
+        (sampled, (_contract(),), "simulation_shots must be None"),
+        (plan, (precision,), "directional endpoints"),
+    ):
+        result = evaluate_candidate(candidate, contracts, budget)
+        _require(
+            not result.feasible and any(phrase in reason for reason in result.rejection_reasons),
+            f"evaluate_candidate admitted an opted-in plan outside its scope: {result.rejection_reasons}",
+        )
+        try:
+            planned_empirical_bernstein(candidate, contracts)
+        except ValueError as error:
+            _require(phrase in str(error), f"planned detail refused for another reason: {error}")
+        else:
+            raise RuntimeError(f"planned_empirical_bernstein accepted a plan outside its scope ({phrase})")
+    # The same Monte Carlo frequencies stay admissible without the opt-in.
+    unopted = replace(sampled, empirical_bernstein=())
+    _require(
+        not any(
+            "simulation_shots" in reason
+            for reason in evaluate_candidate(unopted, (_contract(),), budget).rejection_reasons
+        ),
+        "the exact-probability rule reached a plan without the opt-in",
+    )
+
+
 # Retained submit-free n21-feedback-encoded records at 50 us: one planned
 # under the opt-in, one under the data-free rule.
 OPTED_RECORD = "2026-10-17T214153.170495Z"
@@ -458,8 +523,6 @@ DATA_FREE_RECORD = "2026-10-17T203941.331080Z"
 
 def _verify_approval_binding(live_run: Any) -> None:
     """The approved-record comparison stops a fresh plan that adds or drops the opt-in before any job."""
-    import copy
-
     runs = Path(__file__).resolve().parent.parent / "results" / "live"
     for name, label in ((OPTED_RECORD, "dropped"), (DATA_FREE_RECORD, "added")):
         approved = runs / name

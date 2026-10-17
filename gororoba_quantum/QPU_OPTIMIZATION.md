@@ -266,6 +266,13 @@ at a total tail of 0.001, the sample-variance upper limit collection meets
 with probability at least 0.999 under the model, and spends that 0.001
 from the power miss probability (power radius at tail 0.199 for power 0.8).
 A plan whose variance assumption fails loses power and never coverage.
+The opt-in therefore applies to directional endpoints only, whose power
+contract supplies that miss probability, and plans on exact model
+probabilities (`simulation_shots=None` on every PUB the endpoint scores),
+since Monte Carlo frequencies carry sampling error the allowance does not
+cover; plan validation rejects either violation. Collection withholds the
+analysis of a record whose preregistered `specification` differs from
+`EMPIRICAL_BERNSTEIN`.
 `empirical_bernstein_contracts.py` (gates core-529 to core-532) checks the
 coverage on seeded collections, the method choice, the planned variances
 and the byte identity of every default-path output.
