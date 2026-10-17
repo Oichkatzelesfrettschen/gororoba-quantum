@@ -119,7 +119,7 @@ counts:
 | `run.isTpuEnabled` in ListKernelVersions | absent | `true` |
 | `docker_image` in `kaggle kernels pull -m` seconds after the push | `gcr.io/kaggle-images/python@sha256:81b1e7c4...` | empty |
 | a second TPU push while the first is live | accepted: `-tpuv5e8` and `-tpuv6e8` went in 1.8 s apart and both ran | refused: "Maximum batch TPU session count of 1 reached" (a TpuV6E8 probe at 21:31 UTC) |
-| status | ran on the CPU worker | `QUEUED`, with an empty session log, at every read from 1 h 40 min to 5 h 43 min after the push (section 3, "Queue behavior") |
+| status | ran on the CPU worker | `QUEUED`, with an empty session log, at every read through 7 h 08 min after the push, the timestamped read at 03:15:52 UTC on 2026-10-17 (section 3, "Queue behavior") |
 
 `tpu_quota.time_used` and `time_reserved` stay at 0 while the version
 queues. The web method `kernels.KernelsService/GetKernelSessionLog` takes
@@ -136,15 +136,15 @@ session starts, closes it.
 One queue wait underlies every figure here. The version was pushed at
 20:07 UTC on 2026-10-16 (`pushed_utc` "2026-10-16T200737Z" at line 131 of
 `results/kaggle/2026-10-16T200737Z-gororoba-tpu-probe-verified/submission.json`)
-and read `QUEUED` at each later look. The "1 h 40 min" row is the first read,
-committed in 4c9e295 at 21:44 UTC (14:44 -0700), 1 h 37 min after the push;
-the "5.5 h" reading is the second, committed in f930a62 at 01:33 UTC
-(18:33 -0700), 5 h 26 min after it; the interactive measurement below at
-01:50 UTC, 5 h 43 min after the push, still found the batch version
-`QUEUED`. The readings are successive lower bounds on one wait that had not
-ended at the last read; they do not conflict. The queued version's own status
-reads are in no tracked file, so the intervals rest on the push time and the
-commit timestamps.
+and read `QUEUED` at each later look. The one timestamped observation is a
+`kaggle kernels status` read at 03:15:52 UTC on 2026-10-17, 7 h 08 min after
+the push, which answered `KernelWorkerStatus.QUEUED`; that interval is the
+lower bound on a wait that had not ended. The earlier "1 h 40 min" and
+"5.5 h" readings were recorded in 4c9e295 (21:44 UTC) and f930a62 (01:33
+UTC) without their own timestamps; a commit follows its read, so a commit
+time bounds the read time from above and those two figures are approximate.
+The timestamped read supersedes them; the interactive measurement below ran
+at 01:50 UTC and also found the batch version `QUEUED`.
 
 A QUEUED TPU version is the documented normal state of a busy pool. Kaggle's
 notebooks documentation says "Free TPU availability is limited: in busy
@@ -157,7 +157,7 @@ Kaggle staff call it a demand and supply issue, with T4 almost never
 queued and TPUs queued now and again, and other threads report positions
 such as #323 and a 13 h wait. These pages render client-side, so only the
 titles and search summaries were readable; no thread body was fetched. The
-queue here, 5 h 43 min and counting at the last read, sits inside the reported range of 2 h to more than 14 h.
+queue here, 7 h 08 min and counting at the timestamped read, sits inside the reported range of 2 h to more than 14 h.
 Inferred: the queue is a shared FIFO-like pool whose drain rate is set by
 the 9 h session cap of the sessions ahead, so waits of hours persist while
 public GLM-serving notebooks hold slots (the claim of topic 745817).
@@ -169,7 +169,7 @@ a position. A batch version shows "Queued..." with no position, and the
 session-log method returns an empty body, as measured above (batch row).
 No Kaggle page states whether queued time counts against the 20 h weekly
 quota; the measured `time_used` and `time_reserved` of 0 through
-5 h 43 min of queueing show that a queued batch session neither consumes nor reserves
+7 h 08 min of queueing show that a queued batch session neither consumes nor reserves
 quota here. The slot cap is separate from quota: the queued version holds
 the account's one TPU batch slot (kaggle-api issue 1197 and the
 refused second push above), so a queued session blocks later TPU pushes
