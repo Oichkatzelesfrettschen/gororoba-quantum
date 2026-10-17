@@ -21,7 +21,8 @@ readout-1 pair. Those are integrity failures and raise SystemExit.
 Per-batch sanity on the T0, T1, coherence and walk stages: readout-0 P1 at
 most readout_0_p1_at_most and readout-1 P1 at least readout_1_p1_at_least
 on every qubit a replica uses; raw P(selector = 0) of every bright or
-reference replica (census P = 1) at least bright_p_selector_zero_at_least;
+reference replica (census P = 1) whose cz_depth is in bright_floor_cz_depths
+at least bright_p_selector_zero_at_least;
 every qubit the witness text leaves idle at P1 at most
 idle_p1_above_readout_0_at_most above its own readout-0 P1, which a replica's
 outcome moved onto an idle position by a reversed bit order violates. A
@@ -291,7 +292,7 @@ def sanity(batch: Batch, thresholds: dict[str, Any]) -> list[str]:
             problems.append(f"readout-1 q{q} P1 {p1:.3f} below {thresholds['readout_1_p1_at_least']}")
     shots = batch["shots"][row["file"]]
     for replica in row["replicas"]:
-        if replica.get("p_selector_zero") == "1":
+        if replica.get("p_selector_zero") == "1" and replica.get("cz_depth") in thresholds["bright_floor_cz_depths"]:
             q = replica["roles"]["selector"]
             p = zeros(shots, q, order) / len(shots)
             if p < thresholds["bright_p_selector_zero_at_least"]:
@@ -1097,6 +1098,10 @@ def analyze_self_test() -> None:
         check(any(s.startswith("sanity stop") for s in ended["stops"]), "the bright floor stops a C(1) 0.3 batch")
         resized = stages("t0_resize")["tuna_t0"]
         check(resized["r_verdict"] == "outside the planning range", f"t0 resize: {resized['r_verdict']}")
+        check(
+            not any(s.startswith("sanity stop") for s in resized["stops"]),
+            f"the bright floor reads depth 1 only, yet a low depth-9 bright replica stopped T0: {resized['stops']}",
+        )
         refuted = stages("walk_refuted")["tuna_walk"]
         check([w["verdict"] for w in refuted["walks"]] == ["refuted", "refuted", "refuted"], "walk refutation")
         flipped = stages("coherence_refuted")["tuna_coherence"]

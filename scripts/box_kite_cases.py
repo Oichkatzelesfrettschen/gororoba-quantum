@@ -265,6 +265,9 @@ TUNA_STAGES = ("t0", "t1", "coherence", "walk")
 READOUT_0_P1_MAX = 0.10
 READOUT_1_P1_MIN = 0.80
 BRIGHT_P_MIN = 0.7
+# The floor reads state preparation where the contrast is highest; deeper T0 replicas enter only
+# through C(n) and r, whose pessimistic range puts a depth-9 bright replica near 0.6.
+BRIGHT_FLOOR_CZ_DEPTHS = (1,)
 IDLE_MARGIN = 0.15
 # Two-sided 99% normal quantile; the T0 depth-1 bound is C(1) + Z99 SE.
 Z99 = 2.5758293035489004
@@ -1449,11 +1452,12 @@ def tuna_witnesses(census: dict[str, Any], rows: dict[str, list[Row]]) -> dict[s
     return stages
 
 
-def sanity_thresholds() -> dict[str, float]:
+def sanity_thresholds() -> dict[str, Any]:
     return {
         "readout_0_p1_at_most": READOUT_0_P1_MAX,
         "readout_1_p1_at_least": READOUT_1_P1_MIN,
         "bright_p_selector_zero_at_least": BRIGHT_P_MIN,
+        "bright_floor_cz_depths": list(BRIGHT_FLOOR_CZ_DEPTHS),
         "idle_p1_above_readout_0_at_most": IDLE_MARGIN,
     }
 
@@ -1462,7 +1466,8 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
     stop = (
         f"each batch: every job completed with the manifest's shots; readout-0 P1 at most {READOUT_0_P1_MAX:.2f} "
         f"and readout-1 P1 at least {READOUT_1_P1_MIN:.2f} on every used qubit (a failure stops the series and "
-        f"re-plans the layout); every bright or reference replica at raw P(selector = 0) at least {BRIGHT_P_MIN:g}; "
+        "re-plans the layout); every bright or reference replica at CZ depth 1 at raw P(selector = 0) at least "
+        f"{BRIGHT_P_MIN:g} (deeper replicas enter only through C(n) and r); "
         f"every qubit the witness leaves idle at P1 at most {IDLE_MARGIN:g} above its readout-0 P1 (bit-order "
         "conformance); circuit digests equal cases.json; the account's queue empty; a 120 s pause before the next "
         "batch"

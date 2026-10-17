@@ -131,4 +131,5 @@ vector through `--bind`, and nothing resamples.
 directories, with the thresholds each manifest carries; gate core-424 runs
 its synthetic self-test. experiment-program.md section 4(g), **Analysis**,
 gives the commands and rules, and section 7 the preregistration points the
-owner decides (the T0 bright floor, the T1 twist allowance).
+owner decides (the T1 twist allowance; the bright floor reads CZ depth 1
+only).

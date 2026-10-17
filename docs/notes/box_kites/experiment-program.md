@@ -574,7 +574,8 @@ approved. Then submit through `qi_platform.py submit`, collect, and check
 before a 120 s pause: every job completed with the manifest's shots;
 readout-0 P1 at most 0.10 and readout-1 P1 at least 0.80 on every used qubit
 (a failure stops the series and re-plans the layout); every bright or
-reference replica at raw P(selector = 0) at least 0.7; every qubit the
+reference replica at CZ depth 1 at raw P(selector = 0) at least 0.7
+(deeper T0 replicas enter only through C(n) and r); every qubit the
 witness leaves idle at P1 at most 0.15 above its own readout-0 P1, which a
 reversed bit order violates; circuit digests equal cases.json; the
 account's queue empty.
@@ -736,11 +737,10 @@ is written as S S S, which keeps every reduced circuit on the Ry gate set.
   reported as an emulator rate, not interpreted.
 - The Tuna-17 separation estimates rest on one depth point; T0 replaces them.
 - The bright floor of the per-batch sanity rule (raw P(selector = 0) at
-  least 0.7) meets T0's own predictions: a pessimistic C(9) of 0.23 puts the
-  depth-9 bright replica near 0.6, and any C(1) whose upper bound falls
-  below 0.5 also fails the floor. The analysis applies the rule as written
-  and reports its stop beside the T0 verdicts; whether it binds T0 is the
-  owner's decision.
+  least 0.7) reads CZ depth 1 only: a pessimistic C(9) of 0.23 puts the
+  depth-9 bright replica near 0.6, which C(n) and r judge. Any C(1) whose
+  upper bound falls below 0.5 still fails the floor, and the analysis
+  reports that stop beside the T0 verdicts.
 - The T1 twist allowance has no T0 source on (1,4) (section 4(g), T1).
 - The pre-T0 precondition reads Q0 and Q6; the claim's experiments note
   also names Q9 idle P1 above 0.2, and its later batches add 2 us waits and
