@@ -682,7 +682,7 @@ batches and the pre-T0, T0 and twin runs above; brackets moved at most
   0.008 rad per CZ, walk phases 0.297 and 0.052 rad. The depth-9 X and Y
   replicas, in consecutive batches, differ by 0.024 to 0.033 on every pair,
   beyond shot noise, so these intervals understate the uncertainty.
-- Drift against T0 across a platform calibration: -0.209 on (12,14) at
+- Drift against T0, seven and a half hours earlier: -0.209 on (12,14) at
   depth 9 and -0.106 on (10,13) at depth 5. The all-qubit readout-1
   bracket overstates q13's e10 in the witness context (two (10,13)
   coherences correct to |E| = 1.10).

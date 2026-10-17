@@ -153,7 +153,7 @@ gates core-439 and core-440). The series ran on 2026-10-17 from 23:08Z to
 classification rows, twist equality at |z| at most 2.44 in all four
 crossovers, every depth-1 X coherence sign and both walk signs. Its results
 section records the depth-9 batch-to-batch scatter of about 0.03, the drift
-against T0 across a platform calibration (-0.209 on (12,14) at depth 9) and
+against T0 seven and a half hours earlier (-0.209 on (12,14) at depth 9) and
 the context-dependent q13 readout error (claims
 `qi-tuna17-boxkite-follow-crossover` and
 `qi-tuna17-boxkite-follow-ladder-drift`).

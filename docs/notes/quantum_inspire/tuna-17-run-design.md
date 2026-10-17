@@ -171,7 +171,7 @@ gate core-425; claims `qi-tuna17-boxkite-follow-crossover` and
   noise only, so r_coh / r_pop = 1.040 and 1.047 on (1,4) and (10,13) and
   the (12,14) depth-9 population 0.483 are not established; depths 1 and 9
   in X share batch-01, which a within-batch ladder can use.
-- Against T0, across the platform calibration at about 22:26Z, the
+- Against T0, seven and a half hours earlier, the
   bright-edge populations fell by 0.209 on (12,14) at depth 9 and by 0.106
   on (10,13) at depth 5.
 - q13: the readout-1 bracket gives e10 = 0.091, and the bright (10,13)
