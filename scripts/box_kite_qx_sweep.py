@@ -7,7 +7,7 @@ which the QX smoke set covers; the full family runs here, on qxelarator 0.10.0
 repository rule that simulations of 14 qubits or fewer run on Kaggle.
 
 --run OUT regenerates the 848 family (a) circuits in process
-(box_kite_cases.series("a", "qx"), the bytes core-375's generator emits),
+(box_kite_cases.series("a", "qx"), the bytes gate core-420 regenerates),
 runs each cQASM text through qxelarator.execute_string at QX_SHOTS shots
 with seed BASE_SEED + its index in series order, and writes one JSON record:
 per circuit its series path, sha256, seed, the selector qubit of each replica

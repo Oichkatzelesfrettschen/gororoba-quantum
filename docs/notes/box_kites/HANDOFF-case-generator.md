@@ -51,7 +51,7 @@ the 1133 files the tree held before, which `git rm` removed.
 | `qi_zero_divisor_cases.py --check` and `--self-test` (core-348, after `readout_circuits` was factored out) | `18 files match`; `17 mutations rejected` |
 | `"$QI_PYTHON" scripts/qi_toolchain_check.py`, then `"$PYTHON" -B -W error scripts/qi_toolchain_check.py --check` (core-368) | `214 circuits, 0 failing, 15 with a compiled gate sequence change`; `214 circuits match` |
 | toolchain record, box-kite circuits | every Tuna and twin circuit keeps its gate sequence; the 4 full Design B smoke circuits differ only in Rz printed at 8 digits |
-| `box_kite_qx_sweep.py --self-test`, normal and `-O` (core-377) | `synthetic 848-circuit record replays; 8 mutations rejected` |
+| `box_kite_qx_sweep.py --self-test`, normal and `-O` (core-422) | `synthetic 848-circuit record replays; 8 mutations rejected` |
 | `"$QI_PYTHON" -B -W error scripts/box_kite_qx_sweep.py --run SCRATCH --limit 12` | `28 circuits, 72 replicas, pass` in 9.0 s; record 25992 bytes |
 | `"$PYTHON" -B -W error scripts/box_kite_qx_sweep.py --replay SCRATCH --bind --require-pass` | `28 circuits, 72 replicas, max abs z 2.740039, pass` |
 | `"$QI_PYTHON" -B -W error scripts/box_kite_qx_sweep.py --emulate` over the six directories (identical Tuna bytes, twins, smoke set) | `46 circuits, 97 checks, pass`; readout-0 all 0, readout-1 all 1, every deterministic replica exact |
@@ -82,7 +82,7 @@ qxelarator ships cp313 wheels only:
 The catalogue and the coupler analysis are read at import by
 box_kite_cases.py and qi_zero_divisor_cases.py. After `collect`, retain the
 record at docs/evidence/box_kite_qx_sweep/record.json and add the gate
-(free numbers: core-378, core-384, core-388 onward):
+(the orchestrator assigns core-420 to core-429 to this work; core-423 is the next free one):
 
 ```sh
 "$PYTHON" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/record.json --bind --require-pass && "$PYTHON" -B -O -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/record.json --bind --require-pass

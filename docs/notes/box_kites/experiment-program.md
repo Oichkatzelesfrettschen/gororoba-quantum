@@ -589,13 +589,13 @@ Built:
   coherence setting's conditional data marginal and each padded replica's
   CZ count;
 - `series("a", "qx")` (the exhaustive family, in memory), `smoke_series()`,
-  `tuna_series()`, `--summary` and `self_test()`; gates core-375 (`--check`)
-  and core-376 (`--self-test`), each in normal and optimized mode.
+  `tuna_series()`, `--summary` and `self_test()`; gates core-420 (`--check`)
+  and core-421 (`--self-test`), each in normal and optimized mode.
 
 `scripts/box_kite_qx_sweep.py` runs the exhaustive family on qxelarator
 (`--run`), replays a record from its counts and the census (`--replay`,
 `--bind`, `--require-pass`), runs retained case directories locally
-(`--emulate`), and self-tests on a synthetic record (gate core-377). A
+(`--emulate`), and self-tests on a synthetic record (gate core-422). A
 Kaggle CPU kernel installs qxelarator through the `qx-emulator` pin group of
 `scripts/kaggle_run.py`; qxelarator 0.10.0 ships cp313 wheels only, so the
 sweep runs on the image's Python and never under `--ci-env`, and the CI
