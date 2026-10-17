@@ -982,7 +982,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "Receipts record Rocq 9.1.1; the full Cayley-Dickson scalar embedding, tower and zero-product bridge remain open obligations.",
+      "boundary": "The retained verification receipt pins Rocq 9.2 / OCaml 5.5.0 after renewal of the initial 9.1.1 receipts. The scalar proof alone leaves the general Cayley-Dickson embedding and tower bridge open; open_gororoba separately formalizes a concrete 16D average/detail transport retaining all coordinates. Current external builds use Rocq 9.3.0; historical receipts keep their recorded identity.",
       "evidence": [
         {
           "path": "proofs/FoldAverageDescent.v",
