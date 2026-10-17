@@ -1,0 +1,10 @@
+ibm_fez two_round_baseline_ff: cz=1023 sim=169.878s
+ibm_fez two_round_baseline_noff: cz=1023 sim=170.308s
+ibm_fez two_round_encoded_ff: cz=810 sim=133.64s
+ibm_fez two_round_encoded_noff: cz=810 sim=134.294s
+ibm_fez ten_round_baseline: cz=5384 sim=437.852s
+ibm_fez ten_round_encoded: cz=3978 sim=321.239s
+ibm_fez two-round baseline: contrast 0.0000 +/- 0.0054, shots/arm for power 0.8: None
+ibm_fez two-round encoded: contrast -0.0047 +/- 0.0055, shots/arm for power 0.8: None
+ibm_fez ten-round baseline: order recovery 0.1378
+ibm_fez ten-round encoded: order recovery 0.1298

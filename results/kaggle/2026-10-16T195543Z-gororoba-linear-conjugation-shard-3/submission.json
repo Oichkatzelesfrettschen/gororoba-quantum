@@ -1,0 +1,41 @@
+{
+ "schema": "kaggle-aer-submission-v1",
+ "kernel": "probablyeric/gororoba-linear-conjugation-shard-3",
+ "machine_shape": "cpu",
+ "entry": "scripts/linear_conjugation_search.py",
+ "args": [
+  "--start",
+  "49996",
+  "--stop",
+  "66662",
+  "--out",
+  "results/kaggle_out/linear_conjugation_shard_3.json"
+ ],
+ "smoke": false,
+ "git_commit": "f7dd38a7affaa1edb4eb47aa38cdb87080877530",
+ "untracked_inputs": [],
+ "pins": [
+  "qiskit==2.5.2",
+  "qiskit-aer==0.17.2"
+ ],
+ "bundle": {
+  "docs/evidence/algebra_packages/tables.json": "3cefd88cfc84399c48a9eef488571c33e3a7e3b67f377be396ae0812f36194b2",
+  "gororoba_quantum/affine_residual.py": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec",
+  "gororoba_quantum/boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+  "gororoba_quantum/cd_core.py": "5ee4f9ff6744b8a8847d1396c000d91c4de1e84b2de110c017e1143e50fb9427",
+  "gororoba_quantum/factoring.py": "59d8bb783fa58e6079544874b689ee336c4d14b8b348c7f69864d4c9511918c4",
+  "gororoba_quantum/modular_arithmetic.py": "bb402d6c57b0d81fb3c53fee30e0c7764028aad3117b967d9670508b35b54725",
+  "gororoba_quantum/order_finding.py": "ef4661fe5e1fce3695ab56d22585aee8f2aae800828d7ae217aac047d619f412",
+  "gororoba_quantum/parallel.py": "f0d18ed619f99a1ea6f58a7c4d3b2be7450f82b9ac99831552281a5526b737d2",
+  "gororoba_quantum/qpe_diagnostics.py": "adfc4f9c86bfbb1b33cd223e86a2d67edd4231750b1ce8835ceab252d4f1c06c",
+  "gororoba_quantum/target_flip.py": "a609d56f188bca8b686c326964900dad9fd5312d1168adb0917e2e902b0e5fdc",
+  "kaggle_kernel/AGENTS.md": "2dfd07c07c3df08682378a697aa11e9757baceff13d6ef38958650d55407aa56",
+  "kaggle_kernel/kernel_main.py": "2904d5ded959b771840eb526a0bab34ad19e5284f7daf2dcb1127fb069373f9c",
+  "scripts/algebra_package_tables.py": "983dc4d74e81f616bd95f1d0c10fd400f2a5e4abccff2bc1b5e27c87509b1528",
+  "scripts/linear_conjugation_search.py": "17895c93a1304f3458c1288de40fce3b5058285c07107396a8c8267234f28a7e"
+ },
+ "datasets": {},
+ "run_py_sha256": "35cbeeb58842f863443dd152bce9d196ad9027e86319394ecc9003f8e16f7c5e",
+ "pushed_utc": "2026-10-16T195543Z",
+ "kernel_version": 1
+}

@@ -1,0 +1,18 @@
+ten_round target_flip_one_clean: feed_forward cz=5422.0 depth=13662.0 dt=131793.0 baseline
+ten_round encoded_coset_281: feed_forward cz=3980.5 depth=9760.5 dt=93555.0 admitted
+ten_round encoded_coset_353: feed_forward cz=3973.0 depth=9847.0 dt=95925.0 admitted
+ten_round encoded_coset_15233: feed_forward cz=4107.0 depth=9908.5 dt=96498.0 admitted
+ten_round encoded_coset_315: feed_forward cz=3957.0 depth=10000.0 dt=96357.0 admitted
+ten_round encoded_coset_15265: feed_forward cz=3954.0 depth=9844.5 dt=95713.5 admitted
+ten_round encoded_coset_355: feed_forward cz=4109.0 depth=10340.0 dt=99454.5 admitted
+ten_round encoded_coset_308: feed_forward cz=4167.0 depth=10422.0 dt=100578.0 admitted
+ten_round encoded_coset_15241: feed_forward cz=3933.0 depth=9847.0 dt=96196.5 admitted
+two_round target_flip_one_clean: feed_forward cz=1107.0 depth=2688.0 dt=25734.0; no_feed_forward cz=1107.0 depth=2684.0 dt=25734.0 baseline
+two_round encoded_coset_281: feed_forward cz=810.0 depth=1970.0 dt=19107.0; no_feed_forward cz=810.0 depth=1969.0 dt=19113.0 admitted
+two_round encoded_coset_353: feed_forward cz=763.0 depth=1946.0 dt=18402.0; no_feed_forward cz=763.0 depth=1947.0 dt=18402.0 admitted
+two_round encoded_coset_15233: feed_forward cz=770.5 depth=1890.0 dt=18115.5; no_feed_forward cz=770.5 depth=1886.0 dt=18115.5 admitted
+two_round encoded_coset_15265: feed_forward cz=739.0 depth=1839.0 dt=17607.0; no_feed_forward cz=739.0 depth=1838.0 dt=17607.0 admitted
+two_round encoded_coset_308: feed_forward cz=784.5 depth=1986.5 dt=18933.0; no_feed_forward cz=784.5 depth=1985.0 dt=18933.0 admitted
+two_round encoded_coset_315: feed_forward cz=761.5 depth=1961.5 dt=18676.5; no_feed_forward cz=761.5 depth=1957.5 dt=18676.5 admitted
+two_round encoded_coset_355: feed_forward cz=777.0 depth=2010.5 dt=19126.5; no_feed_forward cz=777.0 depth=2008.5 dt=19126.5 admitted
+two_round encoded_coset_15241: feed_forward cz=762.0 depth=1905.0 dt=17938.5; no_feed_forward cz=762.0 depth=1905.0 dt=17938.5 admitted

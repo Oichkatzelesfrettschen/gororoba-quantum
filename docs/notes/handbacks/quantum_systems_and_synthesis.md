@@ -96,7 +96,12 @@ remaining checks.
 - [A] Candidate new result: conjugating by an uncontrolled B. Work-register
   gates commute with the control-only operations between rounds, so
   adjacent conjugators merge, the first and last vanish, and with one B for
-  all multipliers the boundary cost is zero. No B has been searched.
+  all multipliers the boundary cost is zero. Done: the exhaustive search over
+  the 83,328 cosets of GL(5,2)/S_5 finds a unique ten-round optimum of 1,896
+  against 2,556. The routed admission on FakeFez admits cosets cutting the
+  median routed CZ by 27.5 percent (ten rounds) and 33.2 percent (the
+  two-round diagnostic). Both cuts are new implementation or measurement
+  ([MODULAR_SYNTHESIS.md](../../../gororoba_quantum/MODULAR_SYNTHESIS.md#linear-work-register-encoding)).
 
 ## Gilyen, Su, Low, Wiebe 2018 (1806.01838)
 

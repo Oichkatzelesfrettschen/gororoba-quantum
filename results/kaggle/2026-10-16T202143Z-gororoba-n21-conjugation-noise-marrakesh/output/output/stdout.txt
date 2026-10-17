@@ -1,0 +1,10 @@
+ibm_marrakesh two_round_baseline_ff: cz=1023 sim=128.793s
+ibm_marrakesh two_round_baseline_noff: cz=1023 sim=128.617s
+ibm_marrakesh two_round_encoded_ff: cz=810 sim=102.133s
+ibm_marrakesh two_round_encoded_noff: cz=810 sim=101.734s
+ibm_marrakesh ten_round_baseline: cz=5384 sim=345.68s
+ibm_marrakesh ten_round_encoded: cz=3978 sim=251.411s
+ibm_marrakesh two-round baseline: contrast -0.0028 +/- 0.0055, shots/arm for power 0.8: None
+ibm_marrakesh two-round encoded: contrast 0.0039 +/- 0.0055, shots/arm for power 0.8: 497734
+ibm_marrakesh ten-round baseline: order recovery 0.1390
+ibm_marrakesh ten-round encoded: order recovery 0.1290

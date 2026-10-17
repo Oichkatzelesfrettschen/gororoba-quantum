@@ -10,8 +10,10 @@ the supplied eigenstate label as an observed first bit.
 
 from __future__ import annotations
 
+import json
 import math
 from fractions import Fraction
+from pathlib import Path
 
 import numpy as np
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, transpile
@@ -21,7 +23,7 @@ from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit.quantum_info import Statevector
 from qiskit_aer import AerSimulator
 
-from order_finding import controlled_rotate, eigenstate_prep, factor_order_finding, folded_qpe
+from order_finding import ENCODED_STRATEGY, controlled_rotate, eigenstate_prep, factor_order_finding, folded_qpe
 
 FOLDED_RUNGS = ("archived", "delay", "no_feed_forward", "coherent")
 FOLDED_CONTROL = 0
@@ -137,6 +139,34 @@ def n21_diagnostic(feed_forward: bool = True) -> QuantumCircuit:
     circuit = factor_order_finding(21, 4, 2, feed_forward=feed_forward)
     circuit.name = "n21_a4_two_bit_" + ("feed_forward" if feed_forward else "no_feed_forward")
     return circuit
+
+
+# The linear work-register encoding of the two-round circuit with the fewest
+# median routed CZ among the admitted cosets (coset 15265 of GL(5,2)/S_5,
+# results/hw_estimate/n21_linear_conjugation_challenger.json, which _verify
+# binds). The phase register keeps n21_labeled_law exactly.
+N21_ENCODED_COLUMNS = (2, 4, 5, 10, 17)
+N21_CHALLENGER_RECORD = (
+    Path(__file__).resolve().parents[1] / "results/hw_estimate/n21_linear_conjugation_challenger.json"
+)
+
+
+def n21_encoded_diagnostic(feed_forward: bool = True) -> QuantumCircuit:
+    """n21_diagnostic with the work register encoded by N21_ENCODED_COLUMNS (factor_order_finding work_columns)."""
+    circuit = factor_order_finding(
+        21, 4, 2, multiplier_strategy=ENCODED_STRATEGY, feed_forward=feed_forward, work_columns=N21_ENCODED_COLUMNS
+    )
+    circuit.name = "n21_a4_two_bit_encoded_" + ("feed_forward" if feed_forward else "no_feed_forward")
+    return circuit
+
+
+def _check_encoded_binding() -> None:
+    """N21_ENCODED_COLUMNS is the challenger record's best admitted two-round coset."""
+    record = json.loads(N21_CHALLENGER_RECORD.read_text(encoding="utf-8"))
+    entry = record["problems"]["two_round"]
+    best = next(c for c in entry["challengers"] if c["coset_index"] == entry["best_admitted"])
+    if tuple(best["columns"]) != N21_ENCODED_COLUMNS:
+        raise RuntimeError(f"N21_ENCODED_COLUMNS {N21_ENCODED_COLUMNS} is not the admitted {best['columns']}")
 
 
 # Bits 0, 2 and 4 of the binary work register hold the orbit 1, 4, 16 of
@@ -375,6 +405,8 @@ def _verify() -> None:
             raise RuntimeError(f"N=21 exact branch law changed: {expected}")
         circuits.append(n21_diagnostic(feed_forward))
         expected_laws.append(expected)
+        circuits.append(n21_encoded_diagnostic(feed_forward))
+        expected_laws.append(expected)
         for variant in N21_ORBIT_BUILDABLE:
             circuits.append(n21_orbit_diagnostic(feed_forward, variant, window_delay_dt=416, echo_half_dt=512))
             expected_laws.append(expected)
@@ -387,7 +419,8 @@ def _verify() -> None:
         padded.barrier(*padded.qubits)
         if not np.allclose(ideal_compiled_probabilities(padded), observed, atol=1e-11, rtol=0):
             raise RuntimeError(f"{circuit.name}: removing idle physical wires changed the labeled law")
-    for original in (n21_diagnostic(), n21_orbit_diagnostic()):
+    _check_encoded_binding()
+    for original in (n21_diagnostic(), n21_encoded_diagnostic(), n21_orbit_diagnostic()):
         permuted = QuantumCircuit(original.num_qubits, 2)
         permuted.compose(original, clbits=[1, 0], inplace=True)
         if np.allclose(ideal_branch_probabilities(permuted), [float(value) for value in n21_labeled_law()]):
@@ -416,7 +449,7 @@ def _verify() -> None:
         except ValueError:
             continue
         raise RuntimeError(f"delay arm accepted invalid duration {invalid_delay}")
-    print("QPE diagnostics: 16 folded laws and twelve N=21 laws match exact circuit branches and sampled labels")
+    print("QPE diagnostics: 16 folded laws and fourteen N=21 laws match exact circuit branches and sampled labels")
 
 
 if __name__ == "__main__":

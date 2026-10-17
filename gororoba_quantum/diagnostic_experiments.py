@@ -19,6 +19,7 @@ from qpe_diagnostics import (
     folded_ideal,
     folded_terminal_weights,
     n21_diagnostic,
+    n21_encoded_diagnostic,
     n21_labeled_law,
     n21_orbit_diagnostic,
 )
@@ -27,6 +28,7 @@ FAMILY_NAMES = (
     "folded-qpe",
     "folded-correction",
     "n21-feedback",
+    "n21-feedback-encoded",
     "n21-orbit-feedback",
     "n21-orbit-rca",
     "patch-window",
@@ -36,7 +38,9 @@ FAMILY_NAMES = (
 )
 # Families that run on one pinned patch (--patch-qubits, patch_characterization.PATCH_ROLES).
 PATCH_FAMILIES = ("patch-window", "coherence-window")
-N21_FAMILIES = ("n21-feedback", "n21-orbit-feedback")
+N21_FAMILIES = ("n21-feedback", "n21-feedback-encoded", "n21-orbit-feedback")
+# Member and observable prefix of each N21 family's matched pair.
+N21_PREFIXES = {"n21-feedback": "n21", "n21-feedback-encoded": "n21_encoded", "n21-orbit-feedback": "n21_orbit"}
 
 
 def correction_group() -> Group:
@@ -86,14 +90,18 @@ def folded_group(rungs: tuple[str, ...], measurement_delay_dt: int | dict[int, i
     )
 
 
-def n21_group(orbit: bool = False) -> Group:
+def n21_group(orbit: bool = False, encoded: bool = False) -> Group:
     """Pair the feed-forward arm with its omitted-correction control.
 
-    orbit selects the multipliers compiled on the orbit of |1>; both variants
-    share the exact labeled law, weights, and contrast.
+    orbit selects the multipliers compiled on the orbit of |1>; encoded
+    selects the complete multipliers in the linear work-register encoding
+    (qpe_diagnostics.N21_ENCODED_COLUMNS). Every variant shares the exact
+    labeled law, weights, and contrast.
     """
-    prefix = "n21_orbit" if orbit else "n21"
-    build = n21_orbit_diagnostic if orbit else n21_diagnostic
+    if orbit and encoded:
+        raise ValueError("the orbit and encoded N21 variants are separate families")
+    prefix = "n21_orbit" if orbit else "n21_encoded" if encoded else "n21"
+    build = n21_orbit_diagnostic if orbit else n21_encoded_diagnostic if encoded else n21_diagnostic
     members = tuple(
         Member(
             f"{prefix}_feedback" if feedback else f"{prefix}_no_feedback",
@@ -192,7 +200,7 @@ def family_contracts(family: str, precision: float, alpha: float, power: float) 
         )
     if family in N21_FAMILIES:
         values = _SIGNED
-        prefix = "n21_orbit" if family == "n21-orbit-feedback" else "n21"
+        prefix = N21_PREFIXES[family]
         return (
             ObservableContract(
                 f"{prefix}_feedback_contrast",
@@ -257,5 +265,7 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
     if family.get("name") == "n21-orbit-rca":
         return [n21_orbit_rca_group(int(family["window_delay_dt"]), int(family["echo_half_dt"]))]
     if family.get("name") in N21_FAMILIES:
-        return [n21_group(orbit=family["name"] == "n21-orbit-feedback")]
+        return [
+            n21_group(orbit=family["name"] == "n21-orbit-feedback", encoded=family["name"] == "n21-feedback-encoded")
+        ]
     return []

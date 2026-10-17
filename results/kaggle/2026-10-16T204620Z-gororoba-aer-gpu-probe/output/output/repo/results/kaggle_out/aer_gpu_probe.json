@@ -1,0 +1,188 @@
+{
+ "schema": "aer-gpu-probe-v1",
+ "snapshot": "docs/evidence/calibration/history/ibm_fez/20261016T1212520700.json",
+ "calibration": "2026-10-16T12:12:52-07:00",
+ "gpus": 2,
+ "workers": 4,
+ "columns": [
+  1,
+  2,
+  5,
+  13,
+  25
+ ],
+ "budget_seconds": 120.0,
+ "rows": [
+  {
+   "circuit": "two_round_encoded_ff",
+   "configuration": "cpu_statevector",
+   "device": "CPU",
+   "method": "statevector",
+   "batched_shots_gpu": false,
+   "shots": 32768,
+   "reduced": false,
+   "seconds": 91.852,
+   "microseconds_per_shot": 2803.11,
+   "routed_cz": 810,
+   "metadata": {
+    "method": "statevector",
+    "device": "CPU",
+    "batched_shots_optimization": false,
+    "num_bind_params": 1,
+    "parallel_shots": 4
+   },
+   "distribution": [
+    0.27587890625,
+    0.25128173828125,
+    0.224273681640625,
+    0.248565673828125
+   ],
+   "tvd_to_cpu_statevector": 0.0,
+   "sampling_scale": 0.0078125
+  },
+  {
+   "circuit": "two_round_encoded_ff",
+   "configuration": "cpu_density_matrix",
+   "device": "CPU",
+   "method": "density_matrix",
+   "batched_shots_gpu": false,
+   "shots": 266,
+   "reduced": true,
+   "seconds": 118.359,
+   "microseconds_per_shot": 444957.89,
+   "routed_cz": 810,
+   "metadata": {
+    "method": "density_matrix",
+    "device": "CPU",
+    "batched_shots_optimization": false,
+    "num_bind_params": 1,
+    "parallel_shots": 4
+   },
+   "distribution": [
+    0.2781954887218045,
+    0.3007518796992481,
+    0.20676691729323307,
+    0.21428571428571427
+   ],
+   "tvd_to_cpu_statevector": 0.05178672388980263,
+   "sampling_scale": 0.06156229425846312
+  },
+  {
+   "circuit": "two_round_encoded_ff",
+   "configuration": "gpu_statevector",
+   "device": "GPU",
+   "method": "statevector",
+   "batched_shots_gpu": false,
+   "shots": 5276,
+   "reduced": true,
+   "seconds": 114.355,
+   "microseconds_per_shot": 21674.57,
+   "routed_cz": 810,
+   "metadata": {
+    "method": "statevector",
+    "device": "GPU",
+    "batched_shots_optimization": false,
+    "num_bind_params": 1,
+    "parallel_shots": 4
+   },
+   "distribution": [
+    0.2795678544351782,
+    0.2467778620166793,
+    0.2247915087187263,
+    0.2488627748294162
+   ],
+   "tvd_to_cpu_statevector": 0.004503876264570689,
+   "sampling_scale": 0.014834254499489661
+  },
+  {
+   "circuit": "two_round_encoded_ff",
+   "configuration": "gpu_statevector_batch",
+   "failed": -6,
+   "stderr_tail": [
+    "terminate called without an active exception"
+   ]
+  },
+  {
+   "circuit": "two_round_encoded_ff",
+   "configuration": "gpu_density_matrix_batch",
+   "failed": -6,
+   "stderr_tail": [
+    "terminate called without an active exception"
+   ]
+  },
+  {
+   "circuit": "ten_round_encoded",
+   "configuration": "cpu_statevector",
+   "device": "CPU",
+   "method": "statevector",
+   "batched_shots_gpu": false,
+   "shots": 3227,
+   "reduced": true,
+   "seconds": 116.918,
+   "microseconds_per_shot": 36231.19,
+   "routed_cz": 3978,
+   "metadata": {
+    "method": "statevector",
+    "device": "CPU",
+    "batched_shots_optimization": false,
+    "num_bind_params": 1,
+    "parallel_shots": 4
+   }
+  },
+  {
+   "circuit": "ten_round_encoded",
+   "configuration": "cpu_density_matrix",
+   "device": "CPU",
+   "method": "density_matrix",
+   "batched_shots_gpu": false,
+   "shots": 54,
+   "reduced": true,
+   "seconds": 118.511,
+   "microseconds_per_shot": 2194641.18,
+   "routed_cz": 3978,
+   "metadata": {
+    "method": "density_matrix",
+    "device": "CPU",
+    "batched_shots_optimization": false,
+    "num_bind_params": 1,
+    "parallel_shots": 4
+   }
+  },
+  {
+   "circuit": "ten_round_encoded",
+   "configuration": "gpu_statevector",
+   "device": "GPU",
+   "method": "statevector",
+   "batched_shots_gpu": false,
+   "shots": 2051,
+   "reduced": true,
+   "seconds": 111.977,
+   "microseconds_per_shot": 54596.11,
+   "routed_cz": 3978,
+   "metadata": {
+    "method": "statevector",
+    "device": "GPU",
+    "batched_shots_optimization": false,
+    "num_bind_params": 1,
+    "parallel_shots": 4
+   }
+  },
+  {
+   "circuit": "ten_round_encoded",
+   "configuration": "gpu_statevector_batch",
+   "failed": -6,
+   "stderr_tail": [
+    "terminate called without an active exception"
+   ]
+  },
+  {
+   "circuit": "ten_round_encoded",
+   "configuration": "gpu_density_matrix_batch",
+   "failed": -6,
+   "stderr_tail": [
+    "terminate called after throwing an instance of 'std::invalid_argument'",
+    "  what():  DensityMatrix::State::invalid instruction 'jump'."
+   ]
+  }
+ ]
+}
