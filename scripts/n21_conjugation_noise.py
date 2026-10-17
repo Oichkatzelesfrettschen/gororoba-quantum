@@ -64,6 +64,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
+import qiskit_aer  # noqa: E402
 from linear_conjugation_search import coset_columns  # noqa: E402
 from qiskit import QuantumCircuit  # noqa: E402
 from qiskit.circuit import IfElseOp  # noqa: E402
@@ -391,6 +392,7 @@ def run(challenger: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any
             {
                 "backend": snapshot["backend"],
                 "calibration": snapshot["calibration"],
+                **calibration_snapshot.backend_identity(snapshot),
                 "snapshot": str(path.relative_to(ROOT)),
                 "snapshot_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
                 "circuits": results,
@@ -413,6 +415,7 @@ def run(challenger: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any
         "simulation": {
             "method": "statevector trajectories",
             "device": DEVICE,
+            "qiskit_aer": qiskit_aer.__version__,
             "seed_base": SIMULATOR_SEED,
             "workers": parallel.workers(),
         },

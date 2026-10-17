@@ -18,6 +18,7 @@ import numpy as np
 from qiskit.exceptions import QiskitError
 
 import local_compute
+import n21_exact_planning
 import parallel
 from diagnostic_experiments import (
     N21_FAMILIES,
@@ -31,12 +32,14 @@ from experiment_optimizer import (
     BudgetContract,
     CandidatePlan,
     CostScenario,
+    CovarianceBound,
     JobCandidate,
     ObservableContract,
     ObservableTerm,
     ObservedPub,
     PubPrediction,
     analyze_observations,
+    observation_power_radii,
     optimize,
 )
 from packing import Replica
@@ -66,6 +69,8 @@ def settings(args: Any) -> dict[str, Any]:
             ("reserve_seconds", 0.0),
             ("max_total_execution_seconds", None),
             ("patch_qubits", None),
+            ("model_method", "sampled"),
+            ("replica_variance_bound", None),
         )
     }
 
@@ -562,10 +567,17 @@ def family_candidates(
         if not tiers:
             raise runtime.LiveRunError("replica tiers contain no placement within --max-replicas")
         for candidate in routed[: args.optimizer_candidates]:
+            replica_sets: list[list[tuple[int, ...]]] = []
             for cap in sorted(set(tiers)):
                 trial = copy.copy(candidate)
                 policy = runtime.ReplicaPolicy(args.replica_floor, cap, False, True)
                 if runtime._prepare_individual_candidate(trial, trace, policy):
+                    # A cap above the floor-admitted replica count places the
+                    # same replicas as a smaller cap; one copy enters the search.
+                    replicas = [tuple(replica.qubits) for replica in trial.replicas]
+                    if replicas in replica_sets:
+                        continue
+                    replica_sets.append(replicas)
                     candidates.append(
                         ([trial], {"name": args.family, "replica_cap": cap, **windows.get(id(candidate), {})})
                     )
@@ -735,6 +747,11 @@ def prepare(
         raise runtime.LiveRunError("per-PUB shot allocation requires an optimized algebra or patch family")
     if not per_pub and hasattr(args, "pub_shots"):
         del args.pub_shots
+    model_method = getattr(args, "model_method", "sampled")
+    variance_bound = getattr(args, "replica_variance_bound", None)
+    if (model_method != "sampled" or variance_bound is not None) and args.family not in N21_FAMILIES:
+        raise runtime.LiveRunError("--model-method exact and --replica-variance-bound apply to the N21 families")
+    exact_evidence: dict[int, dict[str, Any]] = {}
     for choices, _configuration in candidates:
         for choice in choices:
             if id(choice.snap) not in simulators:
@@ -772,6 +789,24 @@ def prepare(
             predictions.update(
                 {name: tuple(tuple(map(float, dist)) for dist in replicas) for name, replicas in noisy.items()}
             )
+        if model_method == "exact":
+            # A candidate whose exact law fails its sampled falsifier leaves the
+            # search; the trace keeps the reason and the run continues.
+            try:
+                predictions, exact_evidence[candidate_index] = n21_exact_planning.exact_predictions(
+                    choices,
+                    {id(choice.snap): simulators[id(choice.snap)].options.noise_model for choice in choices},
+                    predictions,
+                    args.model_shots,
+                    args.simulation_alpha,
+                    contracts,
+                )
+            except n21_exact_planning.ExactModelRejected as error:
+                exact_evidence[candidate_index] = error.evidence
+                trace.setdefault("model_rejections", []).append(
+                    {"candidate": f"candidate-{candidate_index:03d}", "reason": str(error)}
+                )
+                continue
         for shots in [max(tiers)] if per_pub else tiers:
             jobs = []
             for backend_name in sorted({choice.snap.name for choice in choices}):
@@ -794,7 +829,7 @@ def prepare(
                                     classical_latency_seconds=manifest["sequential_stage_count"]
                                     * args.classical_latency_us
                                     * 1e-6,
-                                    simulation_shots=args.model_shots,
+                                    simulation_shots=None if model_method == "exact" else args.model_shots,
                                     classical_stage_count=manifest["sequential_stage_count"],
                                     duration_assumption=(
                                         "Target duration includes reset; dynamic classical latency is a declared "
@@ -820,10 +855,22 @@ def prepare(
                     f"{args.family}: {shots} shots require {len(jobs)} jobs; the static family requires one job"
                 )
             name = f"candidate-{candidate_index:03d}-shots-{shots}"
+            try:
+                covariance = (
+                    n21_exact_planning.replica_covariance_bounds(
+                        [pub for job in jobs for pub in job.pubs], contracts, variance_bound, shots
+                    )
+                    if variance_bound is not None
+                    else ()
+                )
+            except ValueError as error:
+                trace.setdefault("model_rejections", []).append({"candidate": name, "reason": str(error)})
+                continue
             plans.append(
                 CandidatePlan(
                     name=name,
                     jobs=tuple(jobs),
+                    covariance_bounds=covariance,
                     proxy_metadata={
                         "backend": choices[0].snap.name,
                         "seed": choices[0].seed,
@@ -834,6 +881,10 @@ def prepare(
                 )
             )
             ownership[name] = choices, configuration, shots
+    if not plans:
+        raise runtime.LiveRunError(
+            f"every candidate failed its model or covariance admission: {trace.get('model_rejections')}"
+        )
     remaining = usage.get("usage_remaining_seconds")
     budget = BudgetContract(
         float(remaining) if remaining is not None else args.max_total_execution_seconds + args.reserve_seconds,
@@ -892,6 +943,8 @@ def prepare(
     # its state prevents that diagnostic archive from becoming a submission.
     retained = result.selected or plans[0].name
     choices, configuration, args.shots = ownership[retained]
+    retained_plan = next(plan for plan in plans if plan.name == retained)
+    retained_index = int(retained.split("-")[1])
     if per_pub:
         args.pub_shots = dict(allocation_audits[retained]["pub_shots"])
     metadata = {
@@ -910,6 +963,33 @@ def prepare(
             ),
         },
         "optimizer_settings": settings(args),
+        **(
+            {
+                "exact_model": exact_evidence[retained_index]
+                | {
+                    "retained_candidate": retained,
+                    "candidates": {
+                        f"candidate-{index:03d}": {
+                            key: evidence[key]
+                            for key in ("max_gap", "passed", "failures", "arms", "contrasts", "replicas")
+                        }
+                        for index, evidence in sorted(exact_evidence.items())
+                    },
+                }
+            }
+            if retained_index in exact_evidence
+            else {}
+        ),
+        **(
+            {
+                "covariance_bounds": json.loads(
+                    json.dumps([asdict(bound) for bound in retained_plan.covariance_bounds])
+                ),
+                "covariance_falsifier": dict(n21_exact_planning.COVARIANCE_FALSIFIER),
+            }
+            if retained_plan.covariance_bounds
+            else {}
+        ),
         **({"pub_shots": args.pub_shots, "shot_allocation": allocation_audits[retained]} if per_pub else {}),
         "optimization_budget": asdict(budget),
         "local_simulation_batches": (
@@ -933,8 +1013,19 @@ def measured_family(
     runtime: Any,
     *,
     correction_evidence: list[dict[str, Any]] | None = None,
+    replica_registers: dict[str, dict[str, list[str]]] | None = None,
 ) -> dict[str, Any]:
-    """Raw measured contrasts with simultaneous bounded-shot intervals across jobs."""
+    """Raw measured contrasts with simultaneous bounded-shot intervals across jobs.
+
+    A record that declares covariance bounds carries an assumption the
+    analysis tests on its own data: n21_exact_planning.covariance_falsifier
+    reads replica_registers, each PUB's shot-ordered registers. The declared
+    bounds apply only when every bound passes; otherwise, and whenever the
+    registers are absent, every endpoint takes the Hoeffding
+    arbitrary-dependence radius. ``replica_covariance`` records the branch,
+    the falsifier rows and each directional endpoint's power condition at
+    the observed shots under the applied radius.
+    """
     if record.get("family_configuration", {}).get("name") == "folded-correction":
         import correction_collection
 
@@ -984,6 +1075,80 @@ def measured_family(
             pubs = tuple(ObservedPub(name, members, shot_map[name]) for name, members in by_pub.items())
         else:
             pubs = tuple(ObservedPub(name, members, int(record["shots"])) for name, members in by_pub.items())
-        return analyze_observations(pubs, endpoints).as_dict()
+        bounds = record.get("covariance_bounds", [])
+        if not bounds:
+            return analyze_observations(pubs, endpoints).as_dict()
+        falsifier = n21_exact_planning.covariance_falsifier(record, replica_registers, distributions)
+        # The record's planned allowance sized the run; collection replaces it
+        # with the measured excess of the UCL over the declared projection.
+        covariance = (
+            ()
+            if falsifier["branch"] == "hoeffding_fallback"
+            else tuple(
+                CovarianceBound(
+                    bound["observable_name"],
+                    bound["pub_name"],
+                    tuple(bound["labels"]),
+                    tuple(tuple(float(value) for value in row) for row in bound["matrix"]),
+                    bound["assumption"],
+                    variance_allowance=row["variance_used"] - row["declared_projection"],
+                    falsifier_tail=row["tail"],
+                )
+                for bound, row in zip(bounds, falsifier["bounds"], strict=True)
+            )
+        )
+        analysis = analyze_observations(pubs, endpoints, covariance).as_dict()
+        analysis["replica_covariance"] = falsifier | {
+            "alpha_split": [
+                {
+                    "name": endpoint.name,
+                    "alpha": endpoint.alpha,
+                    "falsifier_tail": (
+                        spent := math.fsum(b.falsifier_tail for b in covariance if b.observable_name == endpoint.name)
+                    ),
+                    "confidence_tail": endpoint.alpha - spent,
+                }
+                for endpoint in endpoints
+            ],
+            "power": _power_status(record, pubs, endpoints, covariance, analysis),
+        }
+        return analysis
     except ValueError as error:
         return {"withheld": f"invalid measured family data: {error}"}
+
+
+def _power_status(
+    record: dict[str, Any],
+    pubs: tuple[ObservedPub, ...],
+    endpoints: tuple[ObservableContract, ...],
+    covariance: tuple[CovarianceBound, ...],
+    analysis: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """Each directional endpoint's detection plus power radius at the observed shots against its planned effect."""
+    optimization = record.get("optimization", {})
+    planned = {
+        observable["name"]: observable
+        for candidate in optimization.get("candidates", [])
+        if candidate["name"] == optimization.get("selected")
+        for observable in candidate["observables"]
+    }
+    radii = observation_power_radii(pubs, endpoints, covariance)
+    contracts = {contract.name: contract for contract in endpoints}
+    rows = []
+    for row in analysis["observables"]:
+        name = row["name"]
+        if name not in radii:
+            continue
+        effect = planned.get(name, {}).get("effect_used_for_power")
+        total = row["detection_radius"] + radii[name]
+        rows.append(
+            {
+                "name": name,
+                "power": contracts[name].power,
+                "planned_effect": effect,
+                "detection_radius": row["detection_radius"],
+                "power_radius": radii[name],
+                "underpowered": None if effect is None else total > effect,
+            }
+        )
+    return rows

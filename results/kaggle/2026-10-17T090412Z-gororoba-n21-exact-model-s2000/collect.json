@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-n21-exact-model-s2000/1",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-17T094355Z",
+ "files": {
+  "gororoba-n21-exact-model-s2000.log": "7917eeb508aa7471061ca8e5ed5a5076dbbc0e06315067ad22121cbb8a3bd6fc",
+  "output/environment.json": "5a74331cfd2febdb73aa8659a17a830e1bd9568ff141f64f13eae13e8969b775",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "d4611bdd24b61b104dca7ab548c05bddf462ad59bf1c7d6a6c14156df36c3cb1",
+  "output/pip.txt": "be16f5928fe05c570ac951352a5f298b4ce8ab60c21111747a7bfdf6b6247c79",
+  "output/repo/results/kaggle_out/n21_exact_model_validation_s2000.json": "e809816557b4a8b1e12c0266e5da52336b9487a2ab40021d232ed5138fb1e608",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ }
+}
