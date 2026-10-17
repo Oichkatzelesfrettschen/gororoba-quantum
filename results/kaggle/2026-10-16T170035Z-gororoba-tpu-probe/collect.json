@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-tpu-probe/2",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-17T030858Z",
+ "files": {
+  "gororoba-tpu-probe.log": "865d2ae827d95adccf1b2af167284fb740b0ce447c14b8a0a1e7302d4ea43b3a",
+  "output/environment.json": "fdb98b69c0607fdc8ead5bb7a7e8eef50d21b3ef177175fd0bf3fc857779cdf4",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "f9278a11b7b9764faf614016f75bd0733ec6afb220be453f214a4a611240df3e",
+  "output/pip.txt": "074948438d3c67189240a1d63a20e6ce465ac38d0ee2abf2de93293de9b9cb48",
+  "output/repo/results/kaggle_out/tpu_probe.json": "4db9cd1493315485725d775f2883c9b000bcbdaee56aaea036c96d3d06db6830",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "0b1cc4fca39640b37347813aaf9c5b559d102a08ef7dbe86a510e0abfd1fda6b"
+ }
+}

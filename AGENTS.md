@@ -269,7 +269,7 @@ workspace fixtures on the circuit builders of `designs.py`.
 - IBM removed pulse-level control on 3 February 2025; designs use the gate
   set, fractional gates and dynamic circuits.
 
-**Cayley-Dickson packages on the build host.**
+**Cayley-Dickson, quaternion and Clifford packages.**
 `gororoba_quantum/cd_core.py` is the specification. A package result enters
 evidence only through a declared map onto it, identity or a signed
 relabeling checked on every basis pair; majority agreement is never the
@@ -281,10 +281,13 @@ package. Each package is an Arch package; a broken or missing one is rebuilt
 and reinstalled from its PKGBUILD in `~/Github/PKGBUILDs` (`makepkg -si
 --nocheck` in the package directory), never patched in place, and the note's
 pinned digest is checked again after the rebuild. A Kaggle kernel builds the
-same eight packages from the same pinned archives (`--fetch` and `--install`
-apply the PKGBUILD recipes) and runs its entry only after `--extract`
-regenerates `tables.json` byte for byte; SageMath stays on the build host
-(`docs/notes/kaggle/hypercomplex-stack.md`).
+same seventeen packages from the same pinned archives (`--fetch` and
+`--install` apply the PKGBUILD recipes) and runs its entry only after
+`--extract` regenerates `tables.json` byte for byte; SageMath stays on the
+build host (`docs/notes/kaggle/hypercomplex-stack.md`). A Clifford algebra
+is associative, so clifford, kingdon and galgebra reach cd_core only through
+Cl(0,1) and Cl(0,2) (the complex numbers and quaternions); an octonion or
+sedenion statement never rests on them.
 
 | Arch package | Import | Version | Relation to cd_core | Use it for | Trap |
 |---|---|---|---|---|---|
@@ -297,9 +300,15 @@ regenerates `tables.json` byte for byte; SageMath stays on the build host
 | python-octonion | `octonion` | 0.1.0 | signed relabeling from a Fano labeling, `pi = (0, 1, 2, 4, 3, 6, 7, 5)` with a flip on e6 | batched octonion tensors in PyTorch | index i is not cd_core e_i; its tensors are float64 while torch defaults to float32; owns the `octonion` module name; AGPL |
 | python-splitoct | `SplitOct` | 0.16 (commit e29e72f) | split octonions: the same 512 associator signs, signature (4, 4) | negative control for associator-only tests; SymPy symbolics | not the octonions; isotropic elements have no inverse; GPL |
 | python-mathdunders | `mathdunders` | 0.4.2 | none | operator plumbing for python-hypercomplex | contributes no algebra evidence |
-
-Octonion-Sedenion and pyoctonion are not installed, so their relation to
-cd_core is unmeasured and no artifact claims one.
+| python-pyoctonion | `pyoctonion` | 3.12 | identical table at D = 8 (doubling over pyquaternion) | a further independent octonion check | `cal_multiply` prints every product, use `*`; imports the undeclared pyquaternion; no license |
+| python-octonion-sedenion | `Octonion_Sedenion` | 1.0.0 (wheel only) | identical tables at D = 8, 16 | a fourth independent sedenion table | `sedenion.py` imports the top-level `octonion`, which python-octonion owns, and fails as installed; no license |
+| python-numpy-quaternion | `quaternion` | 2024.0.13 | identical table at D = 4 | quaternion arrays as a compiled numpy dtype | compiled: Kaggle takes the pinned wheel |
+| python-quaternionic | `quaternionic` | 1.0.18 | identical table at D = 4 | numba quaternion arrays, rotations | `q[1]` on one quaternion raises; read `q.ndarray` |
+| python-pyquaternion | `pyquaternion` | 0.9.9 | identical table at D = 4 | scalar rotation quaternions | the PyPI sdist lacks the VERSION.txt its setup.py reads; the recipe writes it |
+| python-clifford | `clifford` | 1.5.1 | Cl(0,2) on (1, e1, e2, e12) identical at D = 4 | numerical geometric algebra: rotors, spinors, conformal GA | associative; `Cl(p, q)` puts the p positive squares first; numba compiles on first use |
+| python-kingdon | `kingdon` | 3.0.0 | Cl(0,2) identical at D = 4 | geometric algebra on numpy, sympy or torch from one code path | product `keys()` are blade bitmasks; imports anywidget |
+| python-galgebra | `galgebra` | 0.6.0 | Cl(0,2) identical at D = 4 | symbolic geometric algebra and calculus | a one-generator algebra needs coordinates; a scalar needs `sympy.S.One` |
+| python-hyprat | `hyprat` | 0.2.0 (GitHub tag) | identical at D = 8, 16 (measured to 32) at mu = -1; signs (-1, -1, +1) give the split octonions | exact rational Cayley-Dickson algebras with a doubling parameter, Hurwitz quaternions | `Hy.from_array(coeffs, signs=...)` names the algebra, lowest level first |
 <!-- algebra-circuit-rules:end -->
 
 ## QPU time and calibration
@@ -509,6 +518,7 @@ at those versions, except the linters.
 | python-numpy, python-scipy | numpy 2.5.4, scipy 1.18.1 |
 | python-rustworkx, python-sympy | rustworkx 0.18.1, sympy 1.14.0 |
 | python-matplotlib | matplotlib 3.11.2 |
+| python-stim, python-mthree (with python-runningman), python-qiskit-experiments, python-quimb, python-cotengra, python-pyzx, python-galois | stim 1.16.0, mthree 3.0.0, qiskit-experiments 0.14.2, quimb 1.15.0, cotengra 0.8.2, pyzx 0.10.7, galois 0.4.11: the `quantum-tools` group a Kaggle kernel installs with `push --with quantum-tools` (`scripts/kaggle_run.py` PIN_GROUPS) |
 | python-pytorch-opt-cuda, python-pandas | torch and pandas for python-octonion and python-cayley-dickson only |
 | python-ruff, mypy | newer than the CI pins ruff 0.14.11 and mypy 1.19.1; `uvx ruff@0.14.11` reproduces CI formatting |
 
@@ -518,7 +528,10 @@ directory: python-qiskit-aer and python-samplomatic before
 python-qiskit-ibm-runtime. Those PKGBUILDs replace `blas-openblas` with the
 `blas` and `lapack` virtuals that the installed AMD AOCL libraries provide,
 which leaves AOCL in place; a package without a local PKGBUILD comes from
-the distribution repositories through pacman or paru. After a rebuild,
+the distribution repositories through pacman or paru. python-qiskit-experiments
+has a local PKGBUILD over the PyPI sdist: the AUR builds the GitHub tag
+archive, which lacks the randomized-benchmarking `.npz` tables, so
+`qiskit_experiments.library` fails to import. After a rebuild,
 `"$PYTHON" -c "import qiskit, qiskit_ibm_runtime, qiskit_aer"` and a
 submit-free dry run confirm the stack. A Kaggle kernel installs qiskit 2.5.2,
 qiskit-ibm-runtime 0.50.0 (its fake backends, such as FakeFez, need no
@@ -569,6 +582,15 @@ access and refresh tokens in `~/.quantuminspire/config.json`, which the CLI
 writes mode 644; `chmod 600` it after login, and scripts/qi_platform.py's
 client narrows it to mode 600 before reading it. The
 access token lives 3600 s; scripts/qi_platform.py renews it before expiry.
+The SDK exchanges the refresh token only within 5 s of access-token expiry,
+and its `refresh_tokens` keeps the rotated tokens in memory only. Every
+process on the account read invalid_grant after one such expiry (2026-10-17,
+two sessions and several MCP servers live); rotation with reuse detection is
+the inferred mechanism, unconfirmed by a probe. `Client.refresh` therefore
+holds an flock on `~/.quantuminspire/config.json.lock`, rereads the file,
+exchanges only near expiry and writes the rotated tokens back atomically. A
+long-lived process (an MCP server) started before that rule restarts before
+QI work resumes.
 An agent that finds no login prompts the user to run `qi login` and approve
 the code; tokens never enter a commit, a log or memory.
 
@@ -634,7 +656,12 @@ holds at most three circuits and goes in only when none of the account's
 batches is queued, so at most three jobs are ever queued (the FAQ's limit
 under either reading of "job"); a series runs a QX dry run first, then
 submits each hardware batch only after the previous one is collected, passes
-its sanity checks and a pause. The case generators emit each experiment as
+its sanity checks and a pause. `submit` also refuses a hardware batch while
+any job of the account on a hardware backend type (`is_hardware`, whichever
+session submitted it) is unfinished or finished less than
+`HARDWARE_PAUSE_SECONDS` = 120 s ago, so sessions that share the account
+alternate with that pause and the platform can calibrate between batches;
+emulator batches skip the check. The case generators emit each experiment as
 a series of `batch-NN/` cases within that limit, and
 `scripts/check_qi_platform_retention.py` passes every generated batch through
 submit's checks up to the first request. Runs live under
@@ -813,7 +840,17 @@ unresolveReviewThread.
   list per completed job, failed jobs included) bound to the ledger in
   docs/evidence/quantum_inspire/usage.json. A retained run therefore enters
   the registry, with a claim citing it and a refreshed ledger or inventory,
-  in the change that retains it.
+  in the change that retains it. The ledger is account-wide, so sessions
+  that share the account land runs from separate branches: `qi_platform.py
+  snapshot` writes `unretained`, the sorted ids of the ledger jobs that no
+  run directory of the tree holds, and research_state.py requires every
+  retained job to match its ledger row, every ledger job to be retained or
+  declared, and every declared job to appear in the ledger. A job both
+  retained and declared passes (its run landed after the snapshot), and the
+  transaction rows of declared-only jobs belong to the other branch and stay
+  uncompared. A branch merging main re-snapshots only when its own retained
+  jobs are missing from the snapshot it carries; a `qi-usage-v1` ledger
+  declares no unretained job.
 - A record names an IBM Cloud instance only by a 12-hex sha256 of its CRN.
 - Tokens, account identifiers, and local absolute paths stay out of every
   commit. The IBM credential lives in the qiskit account store,

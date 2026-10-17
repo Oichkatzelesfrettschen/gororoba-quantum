@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-substrate-crossover-t4-gpu/2",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T214844Z",
+ "files": {
+  "gororoba-substrate-crossover-t4-gpu.log": "f15f9a7f09230b7a7c0060cd86e7557ed9eaf2323371f18fa5d923ea791c9ae6",
+  "output/environment.json": "b0343bcf73a3c92f4292d037cbe8234c96fe289047e137cdc750c41cb47b3346",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "63848a2b29a3aec780b44a02f49d3c82dbb50e879abc28e1fb4f32596fdecef9",
+  "output/pip.txt": "bde8cac5c8e02a7a49258a726630d9313bd904cc47131df92464ed045b58c8ae",
+  "output/repo/results/kaggle_out/substrate_crossover.json": "e0da0e6a5f16df4f4123222bdf381f3de19bba2d0eaa2fd66688a24b7b41dbd7",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "75f78ca4b547e5f43e3a838fb680a61c759067e84a5d2cda1ce33d1f5a5d89f6"
+ }
+}

@@ -76,7 +76,7 @@
   "select_equals_left_multiplication": true
  },
  "preregistered": {
-  "estimators": "P(s=0) raw with Wilson 95%; readout-corrected with the selector's assignment from readout-0 and readout-1; contraction residuals dark+bright-1 and fixture-1/2 with |z| < 3 as consistency",
+  "estimators": "P(s=0) raw with Wilson 95%; readout-corrected with the selector's assignment from the readout-0 and readout-1 circuits of the same batch; contraction residuals dark+bright-1 and fixture-1/2 with |z| < 3 as consistency",
   "comparison": {
    "dark": 0.182,
    "dark_ci95": [
@@ -318,14 +318,14 @@
    "sha256": "eda55cbb27c923c77a7cae243d219f5100ac8ea957abe524aa38e30912b9c269"
   },
   {
-   "file": "latin-2.cq",
-   "kind": "witness",
-   "sha256": "9c0af8833707d78e4dd00c3575b32d253e57800a860aed83a4048e20ef2a7def"
+   "file": "readout-0.cq",
+   "kind": "readout",
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
   },
   {
-   "file": "latin-3.cq",
-   "kind": "witness",
-   "sha256": "f4eda667ba1f9412727140a47704c792e6fbb42514365cdd05b8845633dc5695"
+   "file": "readout-1.cq",
+   "kind": "readout",
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
   }
  ]
 }
