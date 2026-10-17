@@ -689,7 +689,7 @@
    "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
    "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425"
   ],
-  "degeneracy": "an X of angle 2 beta gives raw quadratures sin^2(beta) (1 + cos phi) / 2 and sin^2(beta) (1 + sin phi) / 2, the readout-scale form, so the inverted visibility does not separate under-rotation from |1> misassignment",
+  "degeneracy": "X and X90 sharing one under-rotation (X turning 2 beta, X90 beta) give raw quadratures sin^2(beta) (1 + cos phi) / 2 and sin^2(beta) (1 + sin phi) / 2, the readout-scale form, so the inverted visibility does not separate that fault from |1> misassignment",
   "targets": {
    "0": {
     "calibration_p1_given_0": 0.0349121,
@@ -1122,6 +1122,21 @@
       "phase_deg": 6.73405
      }
     ]
+   }
+  }
+ },
+ "x_only_fault": {
+  "hypothesis": "the fault is confined to native X; X90 and the readout keep the earlier scale",
+  "qubits": {
+   "0": {
+    "raw_quadrature_mean": 0.286987,
+    "x_only_lower_bound": 0.174673,
+    "x_only_excluded": false
+   },
+   "6": {
+    "raw_quadrature_mean": 0.0642598,
+    "x_only_lower_bound": 0.148017,
+    "x_only_excluded": true
    }
   }
  },

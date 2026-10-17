@@ -649,15 +649,23 @@ falsifier before its number.
   excited scale. Relaxation inside the 800 ns readout would need
   T1 <= 1.36 and 0.44 us and leave at most 0.156 and 0.015 after a 2 us
   wait; the 2 us wait runs of 04:15-04:24Z read 0.39 and 0.14 (z >= 32).
-  The test assumes the device did not change between 04:24Z and 05:26Z.
+  A qubit that survives the whole window reads 1 at the earlier scale
+  whatever the discriminator does with a decay inside it, so the bound
+  holds for every such response. The test assumes the device did not
+  change between 04:24Z and 05:26Z.
 - **What separates under-rotation from |1> misassignment.** Inverting the
   post-calibration Ramsey arms (P-05-rerun1 to P-08, d = 77) with the
   matched readout pair gives Q0 visibility 0.81-0.87, like its healthy
-  neighbors, and Q6 0.28-0.38. That inversion cannot decide: an X of angle
-  2 beta gives raw quadratures sin^2(beta) (1 + cos phi) / 2 and
-  sin^2(beta) (1 + sin phi) / 2, the form a readout scale gives. P1 after
-  X X does decide: under-rotation by the implied beta predicts 0.98 on Q0
-  and 0.52 on Q6, misassignment the floor, 0.038 and 0.013.
+  neighbors, and Q6 0.28-0.38. When X and X90 share one under-rotation,
+  that inversion cannot decide: the raw quadratures take the readout-scale
+  form sin^2(beta) (1 + cos phi) / 2. X and X90 are separate native
+  operations, and a fault confined to X keeps the X90 Ramsey at the earlier
+  scale, where the mean of the two raw quadratures is at least
+  P10 + S_pre (1 - 1/sqrt 2) / 2 at every phase: Q6's 0.064 against 0.148
+  excludes that fault, Q0's 0.287 against 0.175 does not. P1 after X X
+  decides between under-rotation of X, either kind, which predicts 0.98 on
+  Q0 and 0.52 on Q6, and misassignment, which predicts the floor, 0.038
+  and 0.013.
 - The 05:23Z endpoint for Q9 is the last job of Q-04 (jobs
   1527388-1527390, finished 05:23:12-05:23:27Z), whose opening readout of
   Q9 reads 0.238-0.243: a mid-circuit readout with nine targets read at

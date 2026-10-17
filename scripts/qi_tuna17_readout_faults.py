@@ -29,19 +29,27 @@ unchanged. Four blocks:
   (READOUT_SECONDS, the Tuna measurement duration in
   docs/notes/quantum_inspire/cqasm.md) at the earlier assignment scale, then
   the excited survival r = (P11 - P10) / (P11_pre - P10_pre) bounds
-  T1 <= READOUT_SECONDS / ln(1 / r), and a 2 us wait before readout keeps at
-  most P10 + (P11 - P10) exp(-2 us / T1_max). The test compares that ceiling
+  T1 <= READOUT_SECONDS / ln(1 / r): a qubit that survives the whole window
+  reads 1 at the earlier scale whatever the discriminator assigns to a decay
+  inside it, so r >= exp(-READOUT_SECONDS / T1) for every such response. A
+  2 us wait before readout then keeps at most
+  P10 + (P11 - P10) exp(-2 us / T1_max). The test compares that ceiling
   with the wait runs; it assumes the device stayed unchanged between the wait
   runs and the later zero-wait runs.
 - Q0 and Q6 Ramsey under the matched calibration. Post-calibration X and Y
   arms at d = 77 are inverted with the post-calibration readout pair, whose
-  2 us wait matches the arms'. An X whose rotation angle is 2 beta instead of
-  pi gives raw quadratures sin^2(beta) (1 + cos phi) / 2 and
-  sin^2(beta) (1 + sin phi) / 2, the form a readout scale gives, so the
-  inverted visibility separates neither under-rotation from |1>
-  misassignment; the record lists it as context and states the discriminator
-  a hardware run needs: P1 after X X, which under-rotation predicts at
-  P10 + S_pre sin^2(2 beta) and misassignment at P10.
+  2 us wait matches the arms'. When X and X90 share one under-rotation
+  (X90 turning beta where X turns 2 beta), the raw quadratures are
+  sin^2(beta) (1 + cos phi) / 2 and sin^2(beta) (1 + sin phi) / 2, the form
+  a readout scale gives, so the inverted visibility separates that fault
+  from |1> misassignment neither. X and X90 are separate native operations
+  (docs/notes/quantum_inspire/backends.md), and a fault confined to native X
+  leaves the X90 Ramsey at the earlier scale S_pre, where the mean of the two
+  raw quadratures is at least P10 + S_pre (1 - 1/sqrt 2) / 2 for every phase
+  and visibility; a mean below that bound excludes the X-only fault. The
+  discriminator a hardware run needs is P1 after X X, which any
+  under-rotation of native X predicts at P10 + S_pre sin^2(2 beta) and
+  misassignment at P10.
 
 The 05:23Z endpoint is the last job of series-Q batch-04, whose opening
 readout of Q9 (b[26]) is listed beside the jobs' finish times.
@@ -300,10 +308,31 @@ def ramsey() -> dict[str, Any]:
         "x_runs": sorted({retained_path(RUNS / x) for _, x, _ in RAMSEY_PAIRS}),
         "y_runs": sorted({retained_path(RUNS / y) for _, _, y in RAMSEY_PAIRS}),
         "calibration_runs": [retained_path(RUNS / run) for run in WAIT_RUNS],
-        "degeneracy": "an X of angle 2 beta gives raw quadratures sin^2(beta) (1 + cos phi) / 2 and "
-        "sin^2(beta) (1 + sin phi) / 2, the readout-scale form, so the inverted visibility does not separate "
-        "under-rotation from |1> misassignment",
+        "degeneracy": "X and X90 sharing one under-rotation (X turning 2 beta, X90 beta) give raw quadratures "
+        "sin^2(beta) (1 + cos phi) / 2 and sin^2(beta) (1 + sin phi) / 2, the readout-scale form, so the inverted "
+        "visibility does not separate that fault from |1> misassignment",
         "targets": out,
+    }
+
+
+def x_only_fault(t1: dict[str, Any], ramsey_block: dict[str, Any]) -> dict[str, Any]:
+    out = {}
+    for q in FAULT_QUBITS:
+        block = t1["qubits"][str(q)]
+        pre_scale = sum(r["p1_given_1"] - r["p1_given_0"] for r in block["pre_change"]) / len(block["pre_change"])
+        target = ramsey_block["targets"][str(q)]
+        floor = target["calibration_p1_given_0"]
+        values = [v for arm in target["arms"] for v in (arm["raw_x"], arm["raw_y"])]
+        mean = sum(values) / len(values)
+        bound = floor + pre_scale * (1 - 1 / math.sqrt(2)) / 2
+        out[str(q)] = {
+            "raw_quadrature_mean": mean,
+            "x_only_lower_bound": bound,
+            "x_only_excluded": mean < bound,
+        }
+    return {
+        "hypothesis": "the fault is confined to native X; X90 and the readout keep the earlier scale",
+        "qubits": out,
     }
 
 
@@ -339,13 +368,15 @@ def endpoint() -> dict[str, Any]:
 
 def build() -> dict[str, Any]:
     t1 = short_t1()
+    ramsey_block = ramsey()
     return {
         "schema": SCHEMA,
         "profile": "tuna_17",
         "q9_assignment": q9_assignment(),
         "q9_herald": herald_block(),
         "short_t1": t1,
-        "ramsey_matched_calibration": ramsey(),
+        "ramsey_matched_calibration": ramsey_block,
+        "x_only_fault": x_only_fault(t1, ramsey_block),
         "xx_discriminator": discriminator(t1),
         "q9_endpoint": endpoint(),
     }

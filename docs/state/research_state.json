@@ -3768,7 +3768,7 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/tuna_17_readout_faults.json",
-          "sha256": "a2a5e64cdb3557ac1eb3b61fdb231d351764c4d80f41ffde19a12e29c537d682"
+          "sha256": "d687b32b3b5fe17f6fecaa9400c8d21ee723cc4507597fb6c10fb08caea59f95"
         }
       ],
       "documents": [
@@ -3800,11 +3800,11 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "Assumes the device is unchanged between the 2 us wait runs (04:15-04:24Z) and the zero-wait runs (05:26-05:33Z), and the assignment scale of the pre-change runs for the survival ratio.",
+      "boundary": "Assumes the device is unchanged between the 2 us wait runs (04:15-04:24Z) and the zero-wait runs (05:26-05:33Z), and that a qubit surviving the whole readout window reads 1 at the pre-change scale, which bounds T1 for any discriminator response.",
       "evidence": [
         {
           "path": "results/quantum_inspire/tuna_17_readout_faults.json",
-          "sha256": "a2a5e64cdb3557ac1eb3b61fdb231d351764c4d80f41ffde19a12e29c537d682"
+          "sha256": "d687b32b3b5fe17f6fecaa9400c8d21ee723cc4507597fb6c10fb08caea59f95"
         }
       ],
       "documents": [
@@ -3831,7 +3831,7 @@
     },
     {
       "id": "proposed-tuna17-q0-q6-double-x-discriminator",
-      "statement": "P1 after X X with no wait, beside a readout-0 and readout-1 pair in one Tuna-17 batch, separates an under-rotated X from |1> misassignment on Q0 and Q6: under-rotation by the angle their zero-wait P(1|1) implies predicts 0.98 and 0.52, misassignment 0.038 and 0.013. Ramsey inverted with the matched calibration cannot separate them, because an X of angle 2 beta gives raw quadratures of the readout-scale form sin^2(beta) (1 + cos phi) / 2.",
+      "statement": "P1 after X X with no wait, beside a readout-0 and readout-1 pair in one Tuna-17 batch, separates an under-rotated X from |1> misassignment on Q0 and Q6: under-rotation by the angle their zero-wait P(1|1) implies predicts 0.98 and 0.52, misassignment 0.038 and 0.013. Ramsey inverted with the matched calibration cannot separate them when X and X90 share the under-rotation, because the raw quadratures then take the readout-scale form sin^2(beta) (1 + cos phi) / 2; a fault confined to native X keeps the X90 Ramsey at the earlier scale, which Q6's raw quadrature mean (0.064 against a floor of 0.148) excludes and Q0's (0.287 against 0.175) does not.",
       "domain": "hardware",
       "evidence_class": "proposed experiment",
       "status": "proposed",
