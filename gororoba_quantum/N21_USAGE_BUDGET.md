@@ -85,6 +85,25 @@ as (K / c)^2 for modeled contrast c.
   against 115,591 for the bare declaration (78.3 s, the earlier rule's
   row), 3.3 s more; the R = 1 Hoeffding design reads no bound and keeps
   alpha 0.05.
+- **Empirical-Bernstein detection (`--empirical-bernstein`).** The score
+  (0, 1, 0, -1) has variance P(s != 0) - E[s]^2, near 0.5 against the
+  span-2 maximum of 1, so Hoeffding pays for a range the score barely
+  uses. With the opt-in each PUB's confidence and detection radius is the
+  smaller of the Hoeffding radius and the Maurer-Pontil radius
+  sqrt(2 V_n ln(2/t) / n) + 14 ln(2/t) / (3 (n - 1)), V_n the sample
+  variance, each at half of alpha: 0.05 = 0.025 + 0.025, t = 0.0125 per
+  PUB for detection (QPU_OPTIMIZATION.md, "Statistical admission"). The
+  union bound over the two methods keeps coverage at 0.05 whatever the
+  variance. Planning reads the exact law's per-PUB variance raised by
+  Maurer-Pontil Theorem 10 (4) at total tail 0.001, 2 sqrt(2 ln(2000) /
+  (n - 1)) = 0.0260 on the standard deviation at 90,112 shots (variance
+  0.508 modeled, 0.546 planned), and spends that 0.001 from the miss
+  probability: power radius at tail 0.199. A sample variance above that limit widens the collected radius
+  and costs power, never coverage. At 90,112 shots per arm the detection
+  radius falls from 0.01810 (Hoeffding at 0.05) to 0.01620; the power
+  radius rises from 0.01430 to 0.01431. Detection plus power times sqrt(n)
+  is 9.16 against Hoeffding's 9.72 at that n (the 1/n term makes it grow
+  slowly as n falls), so shots fall by about 11 percent.
 - **Simulation allowance.** A sampled model of m shots adds
   2 x 2 x sqrt(ln(2C / 0.01) / (2m)) for the two members, where C counts
   every scored marginal across the whole candidate search. The dry run of
@@ -172,7 +191,12 @@ every row.
    detection and power alike, while the admitted contract reaches
    independence only through Cantelli's heavier-tailed radius, which helps
    the power tail alone at R = 2. experiment_optimizer implements none of
-   the three extensions; each needs the owner's sign-off.
+   the three extensions; each needs the owner's sign-off. The
+   empirical-Bernstein opt-in keeps the admitted contract's finite-sample
+   coverage and needs no variance or independence assumption: at the
+   13:50 Kingston calibration it plans 89,088 shots per arm at the minimum
+   against 100,352 under Hoeffding (90,112 against 106,496 on the dry
+   run's tiers).
 3. **Repetition delay.** 250 to 100 us saves 46 s (56.8 s), to 50 us saves
    61 s (41.5 s), on the Heron r2 range 0 to 2 ms. Cost: state-preparation
    error rises as the delay falls and Aer does not model it, so the power at
@@ -230,6 +254,21 @@ calibration R = 2 would need 130,627 shots (88.2 s; the 131,072 tier,
 `results/live/2026-10-17T130242.718497Z/UNAPPROVED_CASE.md`; the dry runs
 2026-10-17T101105Z, 2026-10-17T111902Z and 2026-10-17T114216Z, planned
 under the declared-variance rule, are superseded audit records.
+
+**Under the empirical-Bernstein opt-in.** Two submit-free dry runs of the
+same command with `--empirical-bernstein` and `--prep-excitation 0.01`
+(`results/live/2026-10-17T214153.170495Z` at 50 us,
+`results/live/2026-10-17T214839.779704Z` at 250 us) plan one replica on
+qubits 104-106, 117, 124-126 of ibm_kingston, exact contrast 0.03073 with
+eps = 0.01, at 90,112 shots per arm: 25.48 s at 50 us (ceiling 30 s) and
+61.53 s at 250 us (ceiling 71 s). PR #229's records of the same command
+under Hoeffding plan 98,304 shots, 27.73 s and 67.05 s, at the 13:18
+calibration; re-planned from those records under the opt-in they need
+90,112 shots, 25.61 s and 61.65 s. At the new runs' own calibration
+Hoeffding needs the 106,496 tier, 29.70 s and 72.29 s, so the opt-in saves
+4.2 s at 50 us and 10.8 s at 250 us at a fixed calibration. Both cases
+stay unapproved sizing cases: the excitation is still the placeholder the
+state-prep-control pair replaces.
 
 <!-- n21-usage-budget:begin -->
 
