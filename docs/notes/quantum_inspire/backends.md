@@ -31,8 +31,10 @@ AGENTS.md carries under gate core-326.
 
 Every type reports `max_jobs_per_batch_job` 5 and `batchjobs_per_queue_limit`
 5 (API); the FAQ limits a user to 3 queued jobs per hardware backend (KB,
-[faq](site/faq.md), <https://www.quantum-inspire.com/faq/>). The stricter
-FAQ rule governs planning until a refusal at 4 queued jobs is observed.
+[faq](site/faq.md), <https://www.quantum-inspire.com/faq/>). On hardware
+the repository applies the reading that satisfies the FAQ whether its "job"
+means a batch or a circuit: at most three circuits per batch and one queued
+batch at a time (`qi_platform.py submit`, root AGENTS.md "Quantum Inspire").
 
 Backend instances behind the types (API `/backends`): QX emulator (Cloud),
 Spin-2+ (TU Delft, offline, last heartbeat 2025-12-10), Starmon-7 (TU Delft,

@@ -568,7 +568,7 @@ The live API catalogue ([catalogue.json](../../evidence/quantum_inspire/catalogu
 ### C1 Queue limit
 
 - Sources: FAQ: at most 3 jobs in the queue per hardware backend. Catalogue: `batchjobs_per_queue_limit` 5 and `max_jobs_per_batch_job` 5 on every backend type; OpenAPI defines the first as the "maximum allowed number of batchjobs per a specific user and a backend type" and the second as the maximum jobs in one batch job.
-- Reconciliation: The catalogue governs: up to 5 queued batch jobs of up to 5 jobs each per backend type. The FAQ counts a different unit and predates batch jobs.
+- Reconciliation: The catalogue states what the service accepts: up to 5 queued batch jobs of up to 5 jobs each per backend type. The FAQ binds users and may count circuits rather than batch jobs, so on hardware `qi_platform.py submit` holds a batch to 3 circuits and refuses a batch while one of the account's batches is queued, which keeps at most 3 jobs queued under either unit (root AGENTS.md, "Quantum Inspire").
 
 ### C2 Number of hardware backends
 

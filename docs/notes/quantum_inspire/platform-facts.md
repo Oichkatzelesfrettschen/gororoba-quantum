@@ -20,7 +20,7 @@ pages stay the authority, since they change without notice;
 | Shots max (default) | 2048 (1024) | 131072 (8192) | 1024 (1024) | catalogue |
 | Job execution time limit | 3600 s | 300 s | 3600 s | catalogue `job_execution_time_limit`; terms: over-limit runs are aborted |
 | Batch jobs queued per user and backend type | 5 | 5 | 5 | catalogue `batchjobs_per_queue_limit`, OpenAPI definition (C1) |
-| Jobs per batch job | 5 | 5 | 5 | catalogue `max_jobs_per_batch_job` |
+| Jobs per batch job | 5 | 5 | 5 | catalogue `max_jobs_per_batch_job`; on hardware the repository submits at most 3 per batch, one queued batch at a time (C1) |
 | Raw (per-shot) data | yes | yes | yes | catalogue `supports_raw_data` |
 | Default compiler passes | none | SWAP2CZDecomposer, CZDecomposer | CNOTDecomposer, XZXDecomposer | catalogue `default_compiler_config` |
 | `is_hardware`, location | false, Cloud | true, TU Delft | true (an emulator), TU/eindhoven | catalogue `backend_types`, `backends` (C2) |
