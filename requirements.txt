@@ -4,6 +4,11 @@ numpy==2.5.4
 qiskit==2.5.2
 qiskit-aer==0.17.2
 qiskit-ibm-runtime==0.50.0
+# Runtime's lower-bounded dependencies whose option models and prepare() paths
+# scripts/ibm_runtime_options_inventory.py records and byte-compares.
+pydantic==2.13.5
+qiskit-mitigation==0.1.1
+samplomatic==0.21.0
 # Replica placement (rustworkx.vf2_mapping) and replicate statistics (scipy.stats).
 rustworkx==0.18.1
 scipy==1.18.1
