@@ -49,7 +49,9 @@ Usage: "$QI_PYTHON" scripts/qi_platform.py (snapshot --out DIR | submit CASE_DIR
 from __future__ import annotations
 
 import argparse
+import contextlib
 import datetime
+import fcntl
 import hashlib
 import importlib
 import json
@@ -60,6 +62,7 @@ import sys
 import tempfile
 import time
 from collections import Counter, defaultdict
+from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
@@ -90,6 +93,23 @@ ACCOUNT_IDENTIFIERS = ("team", "member", "user", "team_id", "member_id", "user_i
 TERMINAL = {"completed", "failed", "cancelled"}
 ENQUEUED_BATCH_STATUSES = {"queued", "reserved", "running", "finished"}
 REFRESH_MARGIN = 120.0
+TOKEN_FILE = Path.home() / ".quantuminspire" / "config.json"
+# Every process that refreshes the shared OAuth tokens holds this lock while it
+# reads, exchanges and writes them.
+TOKEN_LOCK = TOKEN_FILE.with_name("config.json.lock")
+
+
+@contextlib.contextmanager
+def token_lock(path: Path | None = None) -> Iterator[None]:
+    """Hold an exclusive flock on the token lock file for the duration of the block."""
+    lock = TOKEN_LOCK if path is None else path
+    lock.parent.mkdir(parents=True, exist_ok=True)
+    descriptor = os.open(lock, os.O_RDWR | os.O_CREAT, 0o600)
+    try:
+        fcntl.flock(descriptor, fcntl.LOCK_EX)
+        yield
+    finally:
+        os.close(descriptor)
 
 
 def now() -> str:
@@ -129,19 +149,30 @@ class Client:
     A request that still answers 401 refreshes once and is sent again; the
     service rejects a 401 request before creating anything, so the retry
     cannot duplicate a POST.
+
+    The authorization server rotates the refresh token on every exchange, so a
+    process that exchanges a refresh token another process already spent
+    loses the login. refresh() therefore holds token_lock() while it reloads
+    the token file, exchanges and writes the rotated tokens back atomically:
+    a process that waited on the lock reads the tokens its predecessor wrote
+    and exchanges only if those are near expiry.
     """
 
     def __init__(self) -> None:
         # importlib keeps one typing outcome whether or not requests ships stubs.
         requests = importlib.import_module("requests")
+        self.session = requests.Session()
+        self.refresh()
+        self.member_id = self.config.user_settings.auths[self.host].team_member_id
+
+    def _load(self) -> None:
         from quantuminspire.managers.auth_manager import AuthManager
         from quantuminspire.managers.config_manager import ConfigManager
 
         # qi login writes the token file readable by every local user (mode 644);
         # the client narrows it to the owner before reading tokens from it.
-        tokens = Path.home() / ".quantuminspire" / "config.json"
-        if tokens.exists() and tokens.stat().st_mode & 0o077:
-            tokens.chmod(0o600)
+        if TOKEN_FILE.exists() and TOKEN_FILE.stat().st_mode & 0o077:
+            TOKEN_FILE.chmod(0o600)
         self.config = ConfigManager()
         self.host = self.config.get("default_host")
         if str(self.host).rstrip("/") != HOST:
@@ -149,12 +180,27 @@ class Client:
         self.auth = AuthManager(user_settings=self.config.user_settings)
         if self.auth.login_required(self.host):
             raise PlatformError("no Quantum Inspire login; run `qi login` in the Quantum Inspire environment")
-        self.member_id = self.config.user_settings.auths[self.host].team_member_id
-        self.session = requests.Session()
-        self.refresh()
 
     def refresh(self) -> None:
-        self.auth.refresh_tokens(self.host)
+        with token_lock():
+            self._load()
+            settings = self.config.user_settings
+            spent = settings.auths[self.host].tokens.refresh_token
+            self.auth.refresh_tokens(self.host)
+            if settings.auths[self.host].tokens.refresh_token != spent:
+                # AuthManager.refresh_tokens keeps the rotated tokens in memory
+                # only; the next process would otherwise read the spent refresh
+                # token from disk and present it.
+                path = Path(type(settings).json_file())
+                fd, temporary = tempfile.mkstemp(dir=path.parent, prefix=".config.", suffix=".json")
+                try:
+                    with os.fdopen(fd, "w", encoding="utf-8") as handle:
+                        handle.write(settings.model_dump_json(indent=4))
+                    os.chmod(temporary, 0o600)
+                    os.replace(temporary, path)
+                except BaseException:
+                    os.unlink(temporary)
+                    raise
         tokens = self.config.user_settings.auths[self.host].tokens
         self.expires = tokens.generated_at + tokens.expires_in
         self.session.headers["Authorization"] = f"Bearer {tokens.access_token}"

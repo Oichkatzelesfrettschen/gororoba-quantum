@@ -1024,5 +1024,124 @@ class RetentionChecks(unittest.TestCase):
         self.assertTrue(all(method == "GET" for method, _ in client.calls))
 
 
+class TokenRefreshChecks(unittest.TestCase):
+    """Client.refresh against a stand-in SDK whose authorization server rotates refresh tokens.
+
+    The stand-in mirrors quantuminspire 4.1: ConfigManager reads the token file,
+    AuthManager.refresh_tokens exchanges only near expiry and keeps the rotated
+    tokens in memory, and the server revokes the login when a spent refresh
+    token is presented again.
+    """
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.file = Path(self.tmp.name) / "config.json"
+        self.server: dict[str, Any] = {"live": "r0", "revoked": False, "exchanges": 0}
+        self.clock = [1000.0]
+        tokens = {"access_token": "a0", "refresh_token": "r0", "generated_at": 1000.0 - 3600, "expires_in": 3600}
+        auths = {platform.HOST: {"tokens": tokens, "team_member_id": 1}}
+        self.file.write_text(json.dumps({"default_host": platform.HOST, "auths": auths}), encoding="utf-8")
+
+    def sdk(self) -> dict[str, ModuleType]:
+        test = self
+
+        class Tokens:
+            def __init__(self, data: dict[str, Any]) -> None:
+                self.access_token: str = data["access_token"]
+                self.refresh_token: str = data["refresh_token"]
+                self.generated_at: float = data["generated_at"]
+                self.expires_in: int = data["expires_in"]
+
+        class Auth:
+            def __init__(self, data: dict[str, Any]) -> None:
+                self.tokens = Tokens(data["tokens"])
+                self.team_member_id = data["team_member_id"]
+
+        class Settings:
+            def __init__(self) -> None:
+                data = json.loads(test.file.read_text(encoding="utf-8"))
+                self.auths = {host: Auth(value) for host, value in data["auths"].items()}
+
+            @classmethod
+            def json_file(cls) -> Path:
+                return test.file
+
+            def model_dump_json(self, indent: int = 4) -> str:
+                auths = {
+                    h: {"tokens": vars(a.tokens), "team_member_id": a.team_member_id} for h, a in self.auths.items()
+                }
+                return json.dumps({"default_host": platform.HOST, "auths": auths}, indent=indent)
+
+        class ConfigManager:
+            def __init__(self) -> None:
+                self.user_settings = Settings()
+
+            def get(self, key: str) -> str:
+                return platform.HOST
+
+        class AuthManager:
+            def __init__(self, user_settings: Settings) -> None:
+                self.settings = user_settings
+
+            def login_required(self, host: str) -> bool:
+                return False
+
+            def refresh_tokens(self, host: str) -> None:
+                tokens = self.settings.auths[host].tokens
+                if tokens.generated_at + tokens.expires_in > test.clock[0] + 5:
+                    return
+                if tokens.refresh_token != test.server["live"]:
+                    test.server["revoked"] = True
+                    raise RuntimeError("invalid_grant: Unknown or invalid refresh token")
+                test.server["exchanges"] += 1
+                n = test.server["exchanges"]
+                test.server["live"] = f"r{n}"
+                fresh = {
+                    "access_token": f"a{n}",
+                    "refresh_token": f"r{n}",
+                    "generated_at": test.clock[0],
+                    "expires_in": 3600,
+                }
+                self.settings.auths[host].tokens = Tokens(fresh)
+
+        auth_module = ModuleType("quantuminspire.managers.auth_manager")
+        auth_module.AuthManager = AuthManager  # type: ignore[attr-defined]
+        config_module = ModuleType("quantuminspire.managers.config_manager")
+        config_module.ConfigManager = ConfigManager  # type: ignore[attr-defined]
+        requests = ModuleType("requests")
+        requests.Session = lambda: type("Session", (), {"headers": {}})()  # type: ignore[attr-defined]
+        return {
+            "quantuminspire": ModuleType("quantuminspire"),
+            "quantuminspire.managers": ModuleType("quantuminspire.managers"),
+            "quantuminspire.managers.auth_manager": auth_module,
+            "quantuminspire.managers.config_manager": config_module,
+            "requests": requests,
+        }
+
+    def stored_refresh_token(self) -> str:
+        return str(json.loads(self.file.read_text(encoding="utf-8"))["auths"][platform.HOST]["tokens"]["refresh_token"])
+
+    def test_rotated_tokens_reach_disk_and_a_second_process_adopts_them(self) -> None:
+        with (
+            patch.dict(sys.modules, self.sdk()),
+            patch.object(platform, "TOKEN_FILE", self.file),
+            patch.object(platform, "TOKEN_LOCK", self.file.with_name("config.json.lock")),
+            patch.object(platform.time, "time", side_effect=lambda: self.clock[0]),
+        ):
+            first = platform.Client()
+            self.assertEqual((self.server["exchanges"], self.stored_refresh_token()), (1, "r1"))
+            self.assertEqual(stat.S_IMODE(self.file.stat().st_mode), 0o600)
+            second = platform.Client()
+            self.assertEqual(self.server["exchanges"], 1)
+            self.assertEqual(second.session.headers["Authorization"], "Bearer a1")
+            self.clock[0] += 3600
+            first.refresh()
+            second.refresh()
+            self.assertEqual((self.server["exchanges"], self.stored_refresh_token()), (2, "r2"))
+            self.assertFalse(self.server["revoked"])
+            self.assertEqual(second.session.headers["Authorization"], "Bearer a2")
+
+
 if __name__ == "__main__":
     unittest.main()
