@@ -320,15 +320,20 @@ q5, q6 and q7 fall under a Ramsey visibility floor of 0.5 (minimum over
 neighbor sectors at 2 us, results/quantum_inspire/coupler_zz_tuna_17_analysis.json,
 runs 2026-10-16T224924Z-coupler_zz_tuna_17-batch-00..03): q5 0.043, q6 0.270,
 q7 0.084, every other qubit 0.755-0.978, an empty gap between 0.30 and 0.755.
-A later readout-0/readout-1 batch showing recovery, or the fresh series
-visibilities, re-admits a qubit. q3 keeps no usable neighbor, so the usable
+A later readout-0/readout-1 batch showing recovery, or the fresh 1.5 us
+Ramsey visibilities expected after about 05:15Z on 2026-10-17, re-admits a
+qubit and re-ranks the layouts. q3 keeps no usable neighbor, so the usable
 coupling graph is the 12 couplers 1-4, 2-4, 4-8, 8-11, 8-12, 10-13, 11-13,
 11-14, 12-14, 12-15, 14-16, 15-16. Its largest induced matching (no coupler
-between the members of different pairs) has 3 pairs; the one with the
-highest visibility product is M = {(1,4), (10,13), (15,16)}. Stars for the
-walks: centre 8 {4, 11, 12}, 11 {8, 13, 14}, 12 {8, 14, 15}, 14 {11, 12, 16};
-centre 4 {1, 2, 8} is avoided because simultaneous drive of q1 and q2 raised
-q2's P1 from 0.046 to 0.893. Every circuit declares `qubit[17] q`, uses only
+between the members of different pairs) has 3 pairs, and 14 such matchings
+exist. Ranked by the predicted contrast below, the best one that avoids q15
+(readout P(0|1) 0.270) is M = {(1,4), (10,13), (12,14)} with selectors q1,
+q10 and q12 (minimum pair contrast 0.789 central); the best one through q15,
+{(1,4), (10,13), (12,15)}, reaches 0.800, equal within the model, so q15
+stays out. The walks use the star centred on 11 {8, 13, 14} and the path
+8-11-13; the star on 12 {8, 14, 15} carries q15, and the star on 4 {1, 2, 8}
+is avoided because simultaneous drive of q1 and q2 raised q2's P1 from 0.046
+to 0.893. Every circuit declares `qubit[17] q`, uses only
 H, S, Sdag, Z, X and CZ (on the pi/36 grid), applies no binary-controlled
 gate, leaves post-selection to the analysis, and reads q0 at the rightmost
 character.
@@ -341,10 +346,16 @@ witness: 0.0435 corrected contrast at about 68 CZ gives r = 0.955 (region
 values give 0.913 to 0.962); the teleport paths, 5 CZ at corrected fidelity
 0.746-0.862, bound r below by 0.87. The planning range is r in [0.87, 0.96],
 central 0.955; r already contains idle dephasing, so the visibility factor
-makes the estimate conservative. Readout factors: q1 0.942, q13 0.890, q15
-0.932 (assignment of 2026-10-16 22:49Z, coupler-map run), and at most 0.86 on
-q4, q10, q11, q12, q16, which read 0.84-0.91 in |1> at 04:18:39Z; the selector
-sits on the better-read end. The floor is 0.10: five standard errors of a
+makes the estimate conservative. Readout factors 1 - P(1|0) - P(0|1) come
+from the peer readout batches of 2026-10-17 (P(1|0) at 04:36:37Z for every
+qubit; P(0|1) at 04:36:44Z for q1, q2, q3, q7, q8, q9, q13, q14, q15 and at
+04:25:39Z for the rest, each with 2 us of idle before readout, so the
+no-wait factor is somewhat higher): q1 0.874, q2 0.856, q4 0.840, q8 0.821,
+q10 0.865, q11 0.865, q12 0.869, q13 0.808, q14 0.800, q15 0.678, q16 0.843.
+The visibilities are the 2 us minima of the coupler-map run of 2026-10-16
+(22:49-23:07Z). The selector sits on the better-read end of its pair; the
+zero-product statistic reads the selector alone, while the coherence settings
+also read the data qubit and carry its factor. The floor is 0.10: five standard errors of a
 16384-shot contrast (0.028) plus the measured readout and common-shift
 offsets (sum residual -0.042 after correction). A candidate enters Tuna-17
 when its pessimistic C is at least 0.20. Uncertainty: low to moderate; one
@@ -354,13 +365,13 @@ ladder measures r directly and replaces this model.
 
 | Candidate | CZ | layout (selector first) | C central | C pessimistic | verdict |
 |---|---|---|---|---|---|
-| reduced edge or strut LCU | 1 | q1-q4 | 0.88 | 0.80 | Tuna-17 |
-| same | 1 | q13-q10 | 0.84 | 0.76 | Tuna-17 |
-| same | 1 | q15-q16 | 0.86 | 0.79 | Tuna-17 |
-| reduced LCU, depth ladder n = 9 | 9 | q1-q4 | 0.61 | 0.26 | Tuna-17 (T0 only) |
-| associator walk, 6 CNOT, 3 data bits | 6 | star 8 {4, 11, 12} | 0.55 | 0.31 | Tuna-17 |
-| associator walk, 4 CNOT, 2 data bits | 4 | path 4-8-12 | 0.68 | 0.47 | Tuna-17 |
-| reduced coherence (X, Y on d) | 1 | as the LCU | 0.84-0.88 | 0.76-0.80 | Tuna-17 |
+| reduced edge or strut LCU | 1 | q1-q4 | 0.82 | 0.74 | Tuna-17 |
+| same | 1 | q10-q13 | 0.81 | 0.74 | Tuna-17 |
+| same | 1 | q12-q14 | 0.79 | 0.72 | Tuna-17 |
+| reduced LCU, depth ladder n = 9 | 9 | q1-q4 | 0.54 | 0.23 | Tuna-17 (T0 only) |
+| associator walk, 6 CNOT, 3 data bits | 6 | star 11 {8, 13, 14} | 0.51 | 0.29 | Tuna-17 |
+| associator walk, 4 CNOT, 2 data bits | 4 | path 8-11-13 | 0.65 | 0.45 | Tuna-17 |
+| reduced coherence (X, Y on d) | 1 | as the LCU, data read too | 0.63-0.69 | 0.58-0.63 | Tuna-17 |
 | full Design B | 66-70 | 5-qubit region | 0.042 measured | below 0.001 | QX only |
 | full-encoding coherence (2^w settings) | 66-70 | -- | below floor | -- | QX only |
 | controlled W, uniform data (d2, d3) | degree-4 phases off the pi/36 grid | -- | -- | -- | QX only |
@@ -374,7 +385,7 @@ ladder measures r directly and replaces this model.
   joins the earlier full Design B run: depths n = 1, 5,
   9 (CZ-pair identity padding on the same pair) on the three pairs of M in a
   Latin rotation, y_sign + in batches 0-2 and - in batches 3-5. Predictions:
-  C(1) in [0.76, 0.88]; C(9)/C(1) = r^8. Falsifier, fixed now: the pooled
+  C(1) in [0.72, 0.82]; C(9)/C(1) = r^8. Falsifier, fixed now: the pooled
   depth-1 contrast with its 99% upper bound below 0.5 refutes the shallow
   admission and ends the Tuna-17 program; a fitted r outside [0.87, 0.97] at
   99% refutes the planning range and resizes every later stage before it runs.
@@ -383,7 +394,7 @@ ladder measures r directly and replaces this model.
   at y_sign + (ideal 1) on the third, rotating the pair roles by item index.
   Classification rule fixed now: D above +0.4 is same-sign, below -0.4
   opposite-sign, |D| below 0.2 strut, otherwise unresolved. Predicted |D| on
-  edges at least 0.76. Falsifier: any item misclassified or unresolved
+  edges at least 0.72 (pessimistic, readout of 2026-10-17 04:25-04:36Z). Falsifier: any item misclassified or unresolved
   refutes the separation estimate for its layout; a strut with
   |D| > 0.1 + 3 sigma exposes a pair-dependent bias the analysis must carry.
 - T2, twist, coherence and associator (17 batches).
@@ -396,9 +407,9 @@ ladder measures r directly and replaces this model.
   - Coherence (3 batches): a bright same-sign edge, a bright opposite-sign
     edge and a strut, X and Y settings on d in one circuit plus the reference.
   - Associator walk (6 batches): kite 1 exemplars (2,11,3) omega -1 (6
-    CNOT, star 8), its omit-last-block control, (2,4,6) face-sail-xor0 +1,
+    CNOT, star 11), its omit-last-block control, (2,4,6) face-sail-xor0 +1,
     (2,3,11) ik-same-vertex-third-strut -1 and (2,4,11)
-    ik-same-vertex-third-edge +1 (4 CNOT each, path 4-8-12), plus the
+    ik-same-vertex-third-edge +1 (4 CNOT each, path 8-11-13), plus the
     reference on a disjoint pair. Falsifier: sign(<Z_c>) opposite to omega at
     |z| > 3, or the control's |<Z_c>| above 0.1 + 3 sigma.
 
