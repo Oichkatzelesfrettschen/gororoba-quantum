@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/qubit-register/](https://www.quantum-inspire.com/kbase/qubit-register/)
-> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 eae8d9951be0364b5eab495ee55bcf7c927a0a7d85813d8dea79f45474a79dd7.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 e3ca7a2861d3299af10688fe5fd2eaf5fc7a714d682a13754a93ca0a3da62481.
 
 # Qubit register
 
@@ -11,6 +11,16 @@ The qubits in a quantum computer are conceptually grouped together in the qubit 
 Each qubit can be addressed in qubit operations by using the qubit index.
 
 When writing an algorithm in Quantum Inspire you can use one or more qubit registers. These are referred to a *virtual* qubit registers. They are not (yet) linked to the physical qubits on a chip. As an example take the following [qubit register declarations](https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/variable_declarations/qubit_register_declaration.html):
+
+```cqasm
+version 3
+
+qubit north[2]  // Qubit register declaration of a register containing 2 qubits, named 'north'
+qubit left  // Single qubit declaration of a qubit named 'left'
+qubit center  // Single qubit declaration of a qubit named 'center'
+qubit right  // Single qubit declaration of a qubit named 'right'
+qubit south[2]  // Qubit register declaration of a register containing 2 qubits, named 'north'
+```
 
 In this example, 5 individual virtual qubit registers are defined, which can all be used in the quantum algorithm. When this algorithm is executed on an actual quantum backend, the Quantum Inspire platform will map these virtual qubits onto physical qubits, simply using the order of declaration. So the mapping that will be done is:
 

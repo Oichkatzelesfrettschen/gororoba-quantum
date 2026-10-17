@@ -31,8 +31,10 @@ AGENTS.md carries under gate core-347.
 
 Every type reports `max_jobs_per_batch_job` 5 and `batchjobs_per_queue_limit`
 5 (API); the FAQ limits a user to 3 queued jobs per hardware backend (KB,
-[faq](site/faq.md), <https://www.quantum-inspire.com/faq/>). The stricter
-FAQ rule governs planning until a refusal at 4 queued jobs is observed.
+[faq](site/faq.md), <https://www.quantum-inspire.com/faq/>). On hardware
+the repository applies the reading that satisfies the FAQ whether its "job"
+means a batch or a circuit: at most three circuits per batch and one queued
+batch at a time (`qi_platform.py submit`, root AGENTS.md "Quantum Inspire").
 
 Backend instances behind the types (API `/backends`): QX emulator (Cloud),
 Spin-2+ (TU Delft, offline, last heartbeat 2025-12-10), Starmon-7 (TU Delft,
@@ -84,8 +86,11 @@ December 2025, Tuna-17 since April 2026.
   (runs/2026-10-16T213823Z-Rydberg-diagnostic), the reverse of QX and Tuna.
 - **Failure mode** (Measured): a circuit with a `bit[9]` register, H, CNOT
   and Rz(-pi/2) compiled remotely to decomposition (H became Rx-Rz-Rx, CNOT
-  kept) but failed at execution with an empty job log and no result
-  (runs/2026-10-16T211635Z-Rydberg). The X-only form of the KB example ran.
+  kept) but failed at execution: the job's `message` reads "Quantum backend
+  error: RSP returned failure: error interpreting cQASM script" while its log
+  stays empty (runs/2026-10-16T211635Z-Rydberg). The X-only form of the KB
+  example ran, so the emulator's interpreter rejects part of that program's
+  syntax (bit register, H, CNOT or Rz).
 - **API classification**: `is_hardware` is true although the backend is an
   emulator; code that filters on `is_hardware` must also read the name.
 

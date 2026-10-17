@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/starmon-7-operational-specifics/](https://www.quantum-inspire.com/kbase/starmon-7-operational-specifics/)
-> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 c64084fd268f18d622df1894fe632a87e73809684334b966ef0cee0e48691429.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 805fb476fcff629fee341827786d6fde3d6937e00b2f2bbf339cfd424e7cced0.
 
 # Starmon-7: Operational specifics
 
@@ -53,7 +53,15 @@ Programs submitted to Starmon-7 undergo a step of scheduling upon compilation us
 
 Users can influence the scheduling of a program through the `barrier` and `wait` instructions. The `wait` instruction allows a user to specify how many cycles a qubit should be idled. The instruction takes as arguments a qubit target (q\[6\] or q\[0:6\], for example) and the number of cycles (in steps of 20 ns) that the target should be left idling. Please note that `wait` instructions applied on multiple qubits are scheduled independently for each qubit.
 
+```cqasm
+1.    wait q[0:6], 11
+```
+
 The `barrier` instruction is an operation that prevents any optimization or commutation through. Therefore, the instruction can be used to define a scheduling domain within which ALAP scheduling will also take place. The barrier acts as an *n*-qubit identity gate with zero duration that only applies to the qubits it operates on.
+
+```cqasm
+barrier q[0:6]
+```
 
 ## Compiling user programs: gate decomposition and quantization
 

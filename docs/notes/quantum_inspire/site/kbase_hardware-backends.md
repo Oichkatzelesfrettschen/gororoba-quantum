@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/hardware-backends/](https://www.quantum-inspire.com/kbase/hardware-backends/)
-> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 2fb1797a0892fc8ba5435db2cc38222b2eddf817ef2bd07df550f9948951e87d.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 079503f71e9c01f301ed20a678adfdfda837427525a42a695c161df8a715487e.
 
 # Overview of hardware backends
 

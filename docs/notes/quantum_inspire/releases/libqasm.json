@@ -1,0 +1,223 @@
+{
+ "component": "libqasm",
+ "source": "https://github.com/QuTech-Delft/libqasm/releases",
+ "retrieved_utc": "2026-10-16T22:27Z",
+ "releases": [
+  {
+   "name": "Release 1.6.0",
+   "tag": "1.6.0",
+   "date": "2026-10-14T13:34:10Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/1.6.0",
+   "body": "### Added\r\n- Support for Python 3.14."
+  },
+  {
+   "name": "Release 1.5.0",
+   "tag": "1.5.0",
+   "date": "2026-10-02T09:12:13Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/1.5.0",
+   "body": "### Added\r\n- `CCX`, `CCNOT`, and `CSWAP` unitary instructions.\r\n"
+  },
+  {
+   "name": "Release 1.4.1",
+   "tag": "1.4.1",
+   "date": "2026-06-15T11:19:21Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/1.4.1",
+   "body": "### Fixed\r\n- Aliases `measureX`, `measureY`, and `measureZ`, for the `measure` instruction, recognized as tokens by the lexer."
+  },
+  {
+   "name": "Release 1.4.0",
+   "tag": "1.4.0",
+   "date": "2026-06-05T14:26:14Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/1.4.0",
+   "body": "### Added\r\n- `CV`, `CY`, `DCNOT`, `ECR`, `ISWAP`, `InvSqrtSWAP`, `M`, `MS`, `SqrtISWAP`, and `SqrtSWAP` unitary instructions.\r\n- Aliases `measureX`, `measureY`, and `measureZ`, for the `measure` instruction along the respective axes.\r\n "
+  },
+  {
+   "name": "Release 1.3.0",
+   "tag": "1.3.0",
+   "date": "2026-04-14T13:28:29Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/1.3.0",
+   "body": "### Added\r\n- `U`, `Z90`, and `mZ90` unitary instructions.\r\n- The `measure` instruction also accepts (3 float) parameters to specify measurement axis."
+  },
+  {
+   "name": "Release 1.2.1",
+   "tag": "1.2.1",
+   "date": "2025-07-28T13:45:05Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/1.2.1",
+   "body": "### Added\r\n- Support for Python 3.13.\r\n\r\n### Fixed\r\n- Semantic analyzer throws exception if the number of provided instruction parameters are incorrect.\r\n"
+  },
+  {
+   "name": "Release 1.2.0",
+   "tag": "1.2.0",
+   "date": "2025-03-27T16:08:00Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/1.2.0",
+   "body": "### Added\r\n- Semantic analyzer check for same number of indices in each qubit operand."
+  },
+  {
+   "name": "Release 1.1.0",
+   "tag": "1.1.0",
+   "date": "2025-03-13T16:58:19Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/1.1.0",
+   "body": "### Added\r\n- Assembly declaration.\r\n- `Rn` unitary instruction.\r\n- Publish WASM binaries to npm.\r\n\r\n### Changed\r\n- Update to `mkdocs-material/9.6.5` and `mkdocstrings/0.28.2` versions in `requirements.txt`.\r\n- Do not hardcode `CMAKE_CXX_STANDARD`.\r\n- Rename `ast` to `syntactic`.\r\n\r\n### Fixed\r\n- Setting of `build_type` in Conan profiles.\r\n- `cibw-wheels` GitHub Actions job was building wheels only for Linux/ARM64.\r\n\r\n## Removed\r\n- Upload WASM binaries as release assets."
+  },
+  {
+   "name": "Release 1.0.0",
+   "tag": "1.0.0",
+   "date": "2025-01-31T14:42:25Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/1.0.0",
+   "body": "### Added\r\n- `.clang-tidy`.\r\n- Python Linux/ARM64 GitHub Actions job.\r\n\r\n### Changed\r\n- Error when redeclaring a variable.\r\n- Change Linux/ARM64 jobs to use GitHub-hosted runners.\r\n\r\n### Fixed\r\n- clang/Linux/x64 GitHub Actions jobs (which use Ubuntu 24.04.1 since 2025)."
+  },
+  {
+   "name": "Release 0.6.9",
+   "tag": "0.6.9",
+   "date": "2024-11-14T14:13:55Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.6.9",
+   "body": "### Added\r\n- `SWAP` unitary instruction.\r\n- `init`, `barrier`, and `wait` non-unitary instructions.\r\n\r\n### Changed\r\n\r\n### Removed\r\n- `reset` without qubit operands form."
+  },
+  {
+   "name": "Release 0.6.8",
+   "tag": "0.6.8",
+   "date": "2024-10-18T10:28:54Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.6.8",
+   "body": "### Added\r\n- Gate modifiers: `inv`, `pow`, and `ctrl`.\r\n- C++ linters GitHub Actions job (just running clang-format at the moment).\r\n\r\n### Changed\r\n- Fix bug: empty lists are written out to JSON as `\"[]\"` instead of `[]`.\r\n- Fix bug: CRk and CZ parameter types were interchanged in the instruction set.\r\n- More descriptive and consistent (snake case) file names. \r\n- Minor fixes and tweaks to documentation.\r\n\r\n### Removed"
+  },
+  {
+   "name": "Release 0.6.7",
+   "tag": "0.6.7",
+   "date": "2024-08-26T20:34:49Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.6.7",
+   "body": "### Added\r\n- `pyproject.toml`.\r\n- GitHub pages.\r\n\r\n### Changed\r\n- Fix building of tests in Conan profiles and `setup.py`.\r\n- Fix Python MacOS/x64 (with Python > 3.11) packages.\r\n- Fix deserialization of CBOR strings.\r\n\r\n### Removed\r\n- Python 3.8 packages generation."
+  },
+  {
+   "name": "Release 0.6.6",
+   "tag": "0.6.6",
+   "date": "2024-05-14T13:16:07Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.6.6",
+   "body": "### Added\r\n- Allow multiple qubit/bit (register) definitions and mid-circuit measurements.\r\n- Python MacOS/arm64 jobs.\r\n- `python/test_libqasm.py` to test Python jobs.\r\n\r\n### Changed\r\n- Fix Python MacOS/arm64 packages.\r\n- Fix `scripts/generate_antlr_parser.py`.\r\n- MacOS/x64 jobs now run in macos-13, and MacOS/arm64 jobs in macos-14, both GitHub runners.\r\n- Python module name from `libQasm` to `libqasm`.\r\n\r\n### Removed\r\n- `python/module/libQasm` folder."
+  },
+  {
+   "name": "Release 0.6.5",
+   "tag": "0.6.5",
+   "date": "2024-04-24T11:00:18Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.6.5",
+   "body": "### Added\r\n\r\n### Changed\r\n\r\n- Updated emscripten compilation flags.\r\n- Changed GitHub Actions `js-emscripten-wasm` job to work with `deno` instead of `node`.\r\n\r\n### Removed"
+  },
+  {
+   "name": "Release 0.6.4",
+   "tag": "0.6.4",
+   "date": "2024-04-23T14:46:27Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.6.4",
+   "body": "### Added\r\n\r\n### Changed\r\n\r\n- Fixed CMake install.\r\n- `generate_antlr_parser.py` writes output include files in a given `include` folder. \r\n\r\n### Removed"
+  },
+  {
+   "name": "Release 0.6.3",
+   "tag": "0.6.3",
+   "date": "2024-04-15T20:31:30Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.6.3",
+   "body": "### Added\r\n\r\n- `cpp-linux-x64-release-shared` test job.\r\n\r\n### Changed\r\n\r\n- Allow multiple `measure` instructions at the end of a program.\r\n\r\n### Removed"
+  },
+  {
+   "name": "Release 0.6.2",
+   "tag": "0.6.2",
+   "date": "2024-04-12T09:00:08Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.6.2",
+   "body": "### Added\r\n\r\n- `.clang-format`.\r\n- `emscripten-wasm` assets job.\r\n\r\n### Changed\r\n\r\n- Fix shared library build.\r\n\r\n### Removed\r\n\r\n- `TREEN_GEN_BUILD_TESTS` option."
+  },
+  {
+   "name": "Release 0.6.1",
+   "tag": "0.6.1",
+   "date": "2024-04-08T16:33:51Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.6.1",
+   "body": "### Added\r\n\r\n### Changed\r\n\r\n- Fix Python interface.\r\n- Update GitHub Actions versions.\r\n\r\n### Removed\r\n\r\n- `m4` dependency."
+  },
+  {
+   "name": "Release 0.6.0",
+   "tag": "0.6.0",
+   "date": "2024-03-28T15:06:39Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.6.0",
+   "body": "### Added\r\n\r\n- cQasm 3.0 parser. MVP (Minimum Viable Product) implemented.\r\n- Conan as package manager.\r\n\r\n### Changed\r\n\r\n- Different upgrades: C++20, CMake 3.12, Python 3.8 to 3.12.\r\n\r\n### Removed\r\n\r\n- cQasm 1.x support.\r\n- Git submodules."
+  },
+  {
+   "name": "Release 0.4",
+   "tag": "0.4.0",
+   "date": "2021-07-15T08:10:35Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.4.0",
+   "body": " - Add barrier instruction to default instruction set, all the way back to cQASM 1.0\r\n - Add `@@LINE` token to grammar to allow modification of line number information, similar to #line in the C preprocessor (this was needed for OpenQL)\r\n - Various bugfixes along the way\r\n"
+  },
+  {
+   "name": "Release 0.3",
+   "tag": "0.3.0",
+   "date": "2021-06-16T10:48:05Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.3.0",
+   "body": " - Add cQASM 1.1 and 1.2 support.\r\n - Add new Python API that supports all 1.x versions (`import cqasm.v1`), while maintaining the legacy 1.0-only API (`import libQasm`).\r\n - Python 3.9 support.\r\n - Various bugfixes along the way."
+  },
+  {
+   "name": "Release 0.2.0",
+   "tag": "0.2.0",
+   "date": "2020-08-31T15:32:58Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.2.0",
+   "body": " - New C++ API implemented that allows the instruction set to be modified, rather than it being hardcoded in the grammar.\r\n - Various improvements to the cQASM language:\r\n    - expressions & API-configurable constant propagation;\r\n    - additional semantic checks;\r\n    - fewer keywords/reserved names;\r\n    - no more restrictions on whitespace and existing comment style, addition of block comments;\r\n    - new U matrix syntax;\r\n    - annotation support.\r\n - Multiple cQASM syntax/semantic errors can be reported at once, and all error messages have line & column numbers attached.\r\n - Vast improvements to the CMake and Python build systems. The former allows libqasm to be used as a submodule in an external project with only two CMake directives (add_subdirectory and target_link_libraries).\r\n - Additional tests and continuous integration for all supported platforms to ensure that the releases actually work.\r\n - First release to PyPI and Anaconda cloud (though the Python API still follows the old one).\r\n"
+  },
+  {
+   "name": "Minor Fixes and Features",
+   "tag": "0.1.4",
+   "date": "2019-07-23T10:28:40Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.1.4",
+   "body": "- licensed repo \r\n- new style jenkings\r\n- changed python version\r\n- fixed stateful behavior"
+  },
+  {
+   "name": "Bugfix release 0.1.3",
+   "tag": "0.1.3",
+   "date": "2018-12-13T13:06:04Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.1.3",
+   "body": "Bugs fixed:\r\n\r\n* Remove `-u 0` from Jenkinsfile again"
+  },
+  {
+   "name": "Bugfix release 0.1.2",
+   "tag": "0.1.2",
+   "date": "2018-12-13T12:48:51Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.1.2",
+   "body": "Bugs fixed:\r\n* Single qubit operations now accept integers as arguments. Previously it required floats similar to the previous problem solved in release 0.1.1."
+  },
+  {
+   "name": "Bugfix release 0.1.1",
+   "tag": "0.1.1",
+   "date": "2018-07-27T10:47:29Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.1.1",
+   "body": "Bugs fixed:\r\n\r\n* Line with single space in between version and qubits is not parsed\r\n* Float without part after the decimal seperator is not accepted (for eg. `1.`)\r\n\r\nImprovements:\r\n\r\n* Jenkinsfile for CI setup added\r\n* Add line number and column number of syntax error to exception\r\n"
+  },
+  {
+   "name": "Initial release",
+   "tag": "0.1.0",
+   "date": "2018-06-15T11:14:46Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/libqasm/releases/tag/0.1.0",
+   "body": "Initial release.\r\n\r\nKnown issues:\r\n* Grammar accepts invalid syntax"
+  }
+ ]
+}

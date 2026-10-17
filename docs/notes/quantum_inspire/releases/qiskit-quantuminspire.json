@@ -1,0 +1,263 @@
+{
+ "component": "qiskit-quantuminspire",
+ "source": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases",
+ "retrieved_utc": "2026-10-16T22:27Z",
+ "releases": [
+  {
+   "name": "Release 0.18.5",
+   "tag": "0.18.5",
+   "date": "2026-10-05T08:13:53Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.18.5",
+   "body": "Release 0.18.5"
+  },
+  {
+   "name": "Release 0.18.4",
+   "tag": "0.18.4",
+   "date": "2026-09-17T08:38:08Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.18.4",
+   "body": "Release 0.18.4"
+  },
+  {
+   "name": "Release 0.18.3",
+   "tag": "0.18.3",
+   "date": "2026-09-15T12:25:53Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.18.3",
+   "body": ""
+  },
+  {
+   "name": "Release 0.18.2",
+   "tag": "0.18.2",
+   "date": "2026-07-31T09:37:56Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.18.2",
+   "body": "Release 0.18.2"
+  },
+  {
+   "name": "Release 0.18.1",
+   "tag": "0.18.1",
+   "date": "2026-06-09T11:19:28Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.18.1",
+   "body": "Release 0.18.1"
+  },
+  {
+   "name": "Release 0.18.0",
+   "tag": "0.18.0",
+   "date": "2026-05-29T09:18:55Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.18.0",
+   "body": "Release 0.18.0"
+  },
+  {
+   "name": "Release 0.17.1",
+   "tag": "0.17.1",
+   "date": "2026-05-07T12:20:07Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.17.1",
+   "body": "Release 0.17.1"
+  },
+  {
+   "name": "Release 0.17.0",
+   "tag": "0.17.0",
+   "date": "2026-05-06T08:52:25Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.17.0",
+   "body": "Release 0.17.0"
+  },
+  {
+   "name": "Release 0.16.0",
+   "tag": "0.16.0",
+   "date": "2026-01-19T12:36:36Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.16.0",
+   "body": "Release 0.16.0"
+  },
+  {
+   "name": "Release 0.15.0",
+   "tag": "0.15.0",
+   "date": "2026-01-12T14:46:44Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.15.0",
+   "body": "Release 0.15.0"
+  },
+  {
+   "name": "Release 0.14.0",
+   "tag": "0.14.0",
+   "date": "2025-12-15T09:58:38Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.14.0",
+   "body": "Release 0.14.0"
+  },
+  {
+   "name": "Feature release 0.13.0",
+   "tag": "0.13.0",
+   "date": "2025-10-22T13:17:46Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.13.0",
+   "body": "- [QI2-1580] Update qiskit to 2.1.x (#266)"
+  },
+  {
+   "name": "Release 0.12.1",
+   "tag": "0.12.1",
+   "date": "2025-10-03T10:06:07Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.12.1",
+   "body": "Release 0.12.1 fixes asm declarations bug while running hybrid algorithms"
+  },
+  {
+   "name": "Release 0.12.0",
+   "tag": "0.12.0",
+   "date": "2025-06-24T08:34:57Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.12.0",
+   "body": "Release 0.12.0 has support for asm declarations"
+  },
+  {
+   "name": "Release 0.11.3",
+   "tag": "0.11.3",
+   "date": "2025-05-30T08:16:54Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.11.3",
+   "body": "## What's Changed\r\n* Bump pydantic from 2.11.3 to 2.11.4 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/175\r\n* Bump ruff from 0.11.7 to 0.11.8 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/176\r\n* Bump docformatter from 1.7.5 to 1.7.6 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/177\r\n* Bump docformatter from 1.7.6 to 1.7.7 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/178\r\n* Bump ruff from 0.11.8 to 0.11.9 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/179\r\n* Bump types-requests from 2.32.0.20250328 to 2.32.0.20250515 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/180\r\n* Bump ruff from 0.11.9 to 0.11.10 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/181\r\n* Bump coverage from 7.8.0 to 7.8.1 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/182\r\n* Bump ruff from 0.11.10 to 0.11.11 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/183\r\n* Bump pydantic from 2.11.4 to 2.11.5 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/184\r\n* Bump pytest-mock from 3.14.0 to 3.14.1 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/187\r\n* Bump freezegun from 1.5.1 to 1.5.2 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/185\r\n* Bump coverage from 7.8.1 to 7.8.2 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/186\r\n* Bump ruff from 0.11.11 to 0.11.12 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/189\r\n* Bump mypy from 1.15.0 to 1.16.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/190\r\n* [QI2-1609] Updated opensquirrel to support asm block by @NischalQuTech in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/188\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/compare/0.11.2...0.11.3"
+  },
+  {
+   "name": "Release 0.11.2",
+   "tag": "0.11.2",
+   "date": "2025-04-29T11:14:37Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.11.2",
+   "body": "Release 0.11.2"
+  },
+  {
+   "name": "Bugfix release 0.11.1",
+   "tag": "0.11.1",
+   "date": "2025-04-25T09:28:33Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.11.1",
+   "body": "## What's Changed\r\n* Bump ruff from 0.11.0 to 0.11.1 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/156\r\n* Bump ruff from 0.11.1 to 0.11.2 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/158\r\n* Bump coverage from 7.7.0 to 7.7.1 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/157\r\n* Bump pytest-asyncio from 0.25.3 to 0.26.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/159\r\n* Bump types-requests from 2.32.0.20250306 to 2.32.0.20250328 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/160\r\n* Bump pydantic from 2.10.6 to 2.11.1 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/161\r\n* Bump coverage from 7.7.1 to 7.8.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/162\r\n* Bump pytest-cov from 6.0.0 to 6.1.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/163\r\n* Bump ruff from 0.11.2 to 0.11.3 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/164\r\n* Bump pydantic from 2.11.1 to 2.11.2 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/165\r\n* Bump ruff from 0.11.3 to 0.11.4 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/166\r\n* Bump pydantic from 2.11.2 to 2.11.3 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/168\r\n* Bump pytest-cov from 6.1.0 to 6.1.1 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/167\r\n* Bump ruff from 0.11.4 to 0.11.5 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/169\r\n* Bump ruff from 0.11.5 to 0.11.6 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/170\r\n* [QI2-1574] Update API client by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/174\r\n* Bump ruff from 0.11.6 to 0.11.7 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/173\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/compare/0.11.0...0.11.1"
+  },
+  {
+   "name": "Feature release 0.11.0",
+   "tag": "0.11.0",
+   "date": "2025-03-19T12:14:36Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.11.0",
+   "body": "## What's Changed\r\n* Bump coverage from 7.6.11 to 7.6.12 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/142\r\n* [QI2-1432] Update notebook instructions on qi installation by @eliasKA in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/141\r\n* Bump ruff from 0.9.6 to 0.9.7 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/143\r\n* Bump ruff from 0.9.7 to 0.9.8 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/144\r\n* [QI2-1230] Added name to quantum circuit by @NischalQuTech in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/145\r\n* Bump types-requests from 2.32.0.20241016 to 2.32.0.20250301 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/146\r\n* Bump pytest from 8.3.4 to 8.3.5 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/147\r\n* Bump ruff from 0.9.8 to 0.9.9 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/148\r\n* Bump types-requests from 2.32.0.20250301 to 2.32.0.20250306 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/149\r\n* Bump ruff from 0.9.9 to 0.9.10 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/150\r\n* Bump responses from 0.25.6 to 0.25.7 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/151\r\n* Bump ruff from 0.9.10 to 0.10.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/152\r\n* Bump ruff from 0.10.0 to 0.11.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/153\r\n* Bump coverage from 7.6.12 to 7.7.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/154\r\n* [QI2-1507] Use run_async instead of asyncio.run() by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/155\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/compare/0.10.0...0.11.0"
+  },
+  {
+   "name": "0.10.0",
+   "tag": "0.10.0",
+   "date": "2025-02-11T08:18:47Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.10.0",
+   "body": "Release 0.10.0"
+  },
+  {
+   "name": "Feature release 0.9.0",
+   "tag": "0.9.0",
+   "date": "2025-02-05T08:15:33Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.9.0",
+   "body": ""
+  },
+  {
+   "name": "Release 0.8.2",
+   "tag": "0.8.2",
+   "date": "2025-02-03T10:35:53Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.8.2",
+   "body": "## What's Changed\r\n* [QI2-1412] Correctly raise error on unsupported time unit by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/129\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/compare/0.8.1...0.8.2"
+  },
+  {
+   "name": "Release 0.8.1",
+   "tag": "0.8.1",
+   "date": "2025-02-02T12:16:35Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.8.1",
+   "body": "## What's Changed\r\n* [QI2-1394] Add issue templates by @oschusler in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/126\r\n* [QI2-1400] Fix swap gate conversion with opensquirrel update by @eliasKA in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/127\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/compare/0.8.0...0.8.1"
+  },
+  {
+   "name": "Release 0.8.0",
+   "tag": "0.8.0",
+   "date": "2025-01-31T10:40:48Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.8.0",
+   "body": "## What's Changed\r\n* Bump black from 24.10.0 to 25.1.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/122\r\n* Bump pytest-asyncio from 0.25.2 to 0.25.3 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/123\r\n* [QI2-1314] Failed jobs report error by @NischalQuTech in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/120\r\n* Bump ruff from 0.9.3 to 0.9.4 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/125\r\n* [QI-1392] Bump Opensquirrel version by @eliasKA in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/124\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/compare/0.7.0...0.8.0"
+  },
+  {
+   "name": "Release 0.7.0",
+   "tag": "0.7.0",
+   "date": "2025-01-27T16:24:31Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.7.0",
+   "body": "## What's Changed\r\n* [QI2-1318] Update compute api client by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/115\r\n* [QI2-1341] Barrier and wait support by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/116\r\n* Bump pydantic from 2.10.5 to 2.10.6 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/118\r\n* Bump ruff from 0.9.2 to 0.9.3 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/117\r\n* [QI2-1362] Raw Data by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/119\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/compare/0.6.1...0.7.0"
+  },
+  {
+   "name": "Release 0.6.1",
+   "tag": "0.6.1",
+   "date": "2025-01-20T12:56:54Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.6.1",
+   "body": "## What's Changed\r\n* [QI2-1355] Update OpenSquirrel by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/114\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/compare/0.6.0...0.6.1"
+  },
+  {
+   "name": "Release 0.6.0",
+   "tag": "0.6.0",
+   "date": "2025-01-20T08:41:25Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.6.0",
+   "body": "## What's Changed\r\n* [QI2-1348] Fix dependency issues in platform by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/113\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/compare/0.5.0...0.6.0"
+  },
+  {
+   "name": "Release 0.5.0",
+   "tag": "0.5.0",
+   "date": "2025-01-17T10:19:31Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.5.0",
+   "body": "## What's Changed\r\n* [QI2-1325] Changed enum to str in RuntimeError message by @NischalQuTech in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/109\r\n* Bump responses from 0.25.5 to 0.25.6 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/110\r\n* Bump ruff from 0.9.1 to 0.9.2 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/112\r\n* [QI2-1307] Hybrid by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/111\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/compare/0.4.0...0.5.0"
+  },
+  {
+   "name": "Release 0.4.0",
+   "tag": "0.4.0",
+   "date": "2025-01-13T09:25:16Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.4.0",
+   "body": "## What's Changed\r\n* Bump types-requests from 2.31.0.6 to 2.32.0.20241016 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/88\r\n* Bump pydantic from 2.10.3 to 2.10.4 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/90\r\n* Bump ruff from 0.8.3 to 0.8.4 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/93\r\n* [QI2-1220] Call composite actions and workflows by @oschusler in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/91\r\n* [QI2-1220] Make repository name lowercase by @oschusler in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/94\r\n* [QI2-1220] Make group reference lowercase by @oschusler in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/95\r\n* Bump mypy from 1.13.0 to 1.14.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/96\r\n* [QI2-1220] Extract PyPI upload via GH artifacts by @oschusler in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/97\r\n* [QI2-1223] Remove duplicated e2e login code by @oschusler in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/92\r\n* Bump coverage from 7.6.9 to 7.6.10 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/99\r\n* [QI2-1194] Added status to QIBackend by @NischalQuTech in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/98\r\n* [QI2-1277] Centralize API helper code by @eliasKA in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/89\r\n* Bump mypy from 1.14.0 to 1.14.1 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/100\r\n* Bump pytest-asyncio from 0.25.0 to 0.25.1 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/101\r\n* Bump ruff from 0.8.4 to 0.8.5 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/102\r\n* Bump ruff from 0.8.5 to 0.8.6 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/103\r\n* Bump pytest-asyncio from 0.25.1 to 0.25.2 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/104\r\n* Bump ruff from 0.8.6 to 0.9.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/106\r\n* Bump pydantic from 2.10.4 to 2.10.5 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/105\r\n* Bump ruff from 0.9.0 to 0.9.1 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/107\r\n* Bump responses from 0.25.3 to 0.25.5 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/108\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/compare/0.3.0...0.4.0"
+  },
+  {
+   "name": "Release 0.3.0",
+   "tag": "0.3.0",
+   "date": "2024-12-16T11:36:47Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.3.0",
+   "body": "## What's Changed\r\n* Bump coverage from 7.6.1 to 7.6.7 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/64\r\n* Bump ruff from 0.7.0 to 0.7.4 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/65\r\n* Bump mypy from 1.12.1 to 1.13.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/45\r\n* Bump pytest-cov from 5.0.0 to 6.0.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/49\r\n* Bump peaceiris/actions-gh-pages from 3 to 4 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/59\r\n* Bump actions/checkout from 3 to 4 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/60\r\n* [QI2-1205] Fix link by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/68\r\n* [QI2-1207] Define backend options by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/71\r\n* [QI2-1071] Change client_id for E2E tests by @eliasKA in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/69\r\n* Bump pydantic from 2.9.2 to 2.10.2 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/75\r\n* Bump ruff from 0.7.4 to 0.8.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/73\r\n* Bump coverage from 7.6.7 to 7.6.8 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/72\r\n* [QI2-1140] add example notebooks by @napocornejo in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/66\r\n* [QI2-1214] Fail dependabot PR on e2e failure by @oschusler in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/74\r\n* Bump tomli from 2.1.0 to 2.2.1 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/76\r\n* Bump ruff from 0.8.0 to 0.8.1 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/77\r\n* Bump pytest from 8.3.3 to 8.3.4 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/78\r\n* Bump pydantic from 2.10.2 to 2.10.3 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/79\r\n* [QI2-1220] Trigger reusable workflow by @oschusler in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/80\r\n* Bump ruff from 0.8.1 to 0.8.2 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/82\r\n* Bump coverage from 7.6.8 to 7.6.9 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/83\r\n* Revert \"[QI2-1220] Trigger reusable workflow\" by @oschusler in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/85\r\n* [QI2-1208] Raw data by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/87\r\n* Bump ruff from 0.8.2 to 0.8.3 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/84\r\n* Bump pytest-asyncio from 0.24.0 to 0.25.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/86\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/compare/0.2.0...0.3.0"
+  },
+  {
+   "name": "Release 0.2.0",
+   "tag": "0.2.0",
+   "date": "2024-11-12T13:55:50Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.2.0",
+   "body": "## What's Changed\r\n* Bump ruff from 0.6.8 to 0.7.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/38\r\n* Bump black from 24.8.0 to 24.10.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/26\r\n* Add repr for QiBackend by @eendebakpt in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/35\r\n* [QI2-1147] Remove reviewers for dependabot PR by @oschusler in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/46\r\n* [QI2-1150] Made shots configurable by @NischalQuTech in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/48\r\n* [QI2-1132] Documentation by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/50\r\n* [QI2-1180] Use one client_id for authenticating by @eliasKA in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/58\r\n* Permissions by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/57\r\n* [QI2-1185] Link to docs by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/62\r\n* Bump tomli from 2.0.2 to 2.1.0 by @dependabot in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/61\r\n\r\n## New Contributors\r\n* @eendebakpt made their first contribution in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/35\r\n* @eliasKA made their first contribution in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/58\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/compare/0.1.1...0.2.0"
+  },
+  {
+   "name": "Bugfix release 0.1.1",
+   "tag": "0.1.1",
+   "date": "2024-10-22T11:18:09Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.1.1",
+   "body": "## What's Changed\r\n* Fix authentication in Qiskit-QI E2E test by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/42\r\n* [QI2-1119] Support running in an existing event loop (i.e. jupyter notebook) by @napocornejo in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/36\r\n* [QI2-1120] Provided option to wait for results by @NischalQuTech in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/39\r\n* [QI2-1137] add jupyter notebook demo by @napocornejo in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/43\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/compare/0.1.0...0.1.1"
+  },
+  {
+   "name": "Feature release 0.1.0",
+   "tag": "0.1.0",
+   "date": "2024-10-16T09:07:02Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases/tag/0.1.0",
+   "body": "## What's Changed\r\n* [QI2-1067] Set up repository by @oschusler in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/1\r\n* [QI2-1068] Added skeleton code for qiskit qi plugin by @NischalQuTech in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/5\r\n* [QI2 1079] Rudimentary authentication by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/6\r\n* [QI2-1076] Backend construction by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/11\r\n* [QI2-1081] Implemented job result fetching by @NischalQuTech in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/12\r\n* [QI2-1077] cQASM writing by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/13\r\n* [QI2-1078] add sequence to run jobs by @napocornejo in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/15\r\n* [QI2-1080] add job status fetching by @napocornejo in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/19\r\n* [QI2-1011] Fetch old job by @Mythir in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/20\r\n* [QI2-1087] Added E2E tests by @NischalQuTech in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/21\r\n* [QI2-1102] check for language version by @napocornejo in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/24\r\n* [QI2-1092] workflow for releases by @napocornejo in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/27\r\n* [QI2-1092] release to pypi fallback version by @napocornejo in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/28\r\n* [QI2-1112] Debug TestPyPI by @oschusler in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/29\r\n* [QI2-1112] Tweak development versioning by @oschusler in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/30\r\n* [QI2-1113] update opensquirrel version to PyPi by @napocornejo in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/32\r\n\r\n## New Contributors\r\n* @oschusler made their first contribution in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/1\r\n* @dependabot made their first contribution in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/2\r\n* @NischalQuTech made their first contribution in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/5\r\n* @Mythir made their first contribution in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/6\r\n* @napocornejo made their first contribution in https://github.com/QuTech-Delft/qiskit-quantuminspire/pull/15\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/qiskit-quantuminspire/commits/0.1.0"
+  }
+ ]
+}

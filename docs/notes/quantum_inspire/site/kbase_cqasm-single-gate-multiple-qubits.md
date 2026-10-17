@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/cqasm-single-gate-multiple-qubits/](https://www.quantum-inspire.com/kbase/cqasm-single-gate-multiple-qubits/)
-> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 018ce1be6fff7ea54ddb8b2d9dcc60e61d630d6e50feeae9260791e2e039e1bc.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 6e067abc8530ac1e8e7c477e1a66f7cc6c9c7035d61f7a5ecf0ecb7fcab16c95.
 
 # cQASM: Single Gate Multiple-Qubits
 
@@ -14,16 +14,20 @@ SGMQ notation works both for single-qubit instructions and multi-qubit instructi
 
 Below a few examples of allowed constructions:
 
-Close
+```cqasm
+version 3.0
+qubit[8] q
+bit[8] b
 
-## Export visualization
+//The following SGMQ constructions are allowed
 
-File format SVG PNG
+X q[0,2:3] //single-qubit unitary instructions
+CRk(2) q[0,2,4,6],q[1,3,5,7] //...with parameters
+Z q[0:3, 5:7] //slices
+CNOT q[0,1],q[2,3] //two-qubit instructions
 
-Layout Horizontal Vertical
+H q[0,0,0] //will unpack as 3 times H q[0], but not correctly visualized (overlap)
+CNOT q[0,1,0], q[1,0,1] //will unpack as three CNOTs and is equivalent to a SWAP operation, but not correctly visualized (overlap)
 
-Theme Light Dark
-
-Download
-
-Export
+b[0:7] = measure q[0:7] //non-unitary instructions
+```

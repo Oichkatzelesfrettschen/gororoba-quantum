@@ -1,137 +1,2956 @@
 {
- "schema": "qi-docs-capture-v1",
+ "schema": "qi-docs-capture-v2",
  "kind": "site",
- "retrieved_utc": "2026-10-16T22:19Z",
+ "retrieved_utc": "2026-10-16T22:27Z",
  "files": [
   {
-   "path": "docs/notes/quantum_inspire/site/kbase_hardware-backends.md",
-   "source": "https://www.quantum-inspire.com/kbase/hardware-backends/",
-   "sha256": "457607d4debbe5aa725851cb3c3a454fcecf90e1826ba1d457a8e8c44af515ef"
+   "path": "docs/notes/quantum_inspire/site/about-qi.md",
+   "source": "https://www.quantum-inspire.com/about-qi/",
+   "sha256": "b00f424e7f390ba4a8e633f356d7a2f41b0202868e5bdc7e74b2e30ce850878e"
   },
   {
-   "path": "docs/notes/quantum_inspire/site/kbase_tuna-operational-specifics.md",
-   "source": "https://www.quantum-inspire.com/kbase/tuna-operational-specifics/",
-   "sha256": "dba291ba2c719f80e73e79a572deaffad179a34e8d6897ea4c0b5014bf70d9d9"
+   "path": "docs/notes/quantum_inspire/site/backends.md",
+   "source": "https://www.quantum-inspire.com/backends/",
+   "sha256": "e100c2181c3d6d21d8b0ae895e3a792ba8d4a627637ecae025eb44815333fe1e"
   },
   {
-   "path": "docs/notes/quantum_inspire/site/kbase_starmon-7-operational-specifics.md",
-   "source": "https://www.quantum-inspire.com/kbase/starmon-7-operational-specifics/",
-   "sha256": "981e1834c161e21259e66d8b5e6fd87d16484527c77a2466d44fc2112f27783f"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_spin-2-plus-operational-specifics.md",
-   "source": "https://www.quantum-inspire.com/kbase/spin-2-plus-operational-specifics/",
-   "sha256": "4f72b2e8070c552bea3ea29f6447ca7d6a069bfc62c6b8484927862f422b7b62"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_ry-emulator-operational-specifics.md",
-   "source": "https://www.quantum-inspire.com/kbase/ry-emulator-operational-specifics/",
-   "sha256": "b768f5ce615880a770c3975b1e40477f50364e8ae1d06579b0a7b61699201af0"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_emulator-backends.md",
-   "source": "https://www.quantum-inspire.com/kbase/emulator-backends/",
-   "sha256": "0b2f526052fcb582f3a39e9b067e17d133106afbd1e0a2777e3960769d27fa87"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_code-example-getting-started-with-transmons.md",
-   "source": "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-transmons/",
-   "sha256": "7931a7046df9d87b68bd4251e31187348db5706d87f53c31a0b8ca4cddcd2faf"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_code-example-getting-started-with-the-neutral-atom-platform.md",
-   "source": "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-the-neutral-atom-platform/",
-   "sha256": "bcfbfbd3c4b4436082c352d8264bc4e16637dc2eca004c9ded3ca511cadb944f"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_software-development-kit.md",
-   "source": "https://www.quantum-inspire.com/kbase/software-development-kit/",
-   "sha256": "fbc5e24d9d2578d914df9d242f8d1cbde18228ea72be90a53ae52b93a803dfd7"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_qi-tool.md",
-   "source": "https://www.quantum-inspire.com/kbase/qi-tool/",
-   "sha256": "5ec0c0a8366f4dec1350544c73158c68febd4ee716afe983619b9ab7c80873e2"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_low-level-api.md",
-   "source": "https://www.quantum-inspire.com/kbase/low-level-api/",
-   "sha256": "ba69de542dbc74c9f237117c19676bee285a89deb8a42bb0e20e1ef60e251617"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_compilation.md",
-   "source": "https://www.quantum-inspire.com/kbase/compilation/",
-   "sha256": "67b48c2566fd89c4a3253664d102d64dd3dd73034b2d902392bbe39aaa5854ab"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_opensquirrel.md",
-   "source": "https://www.quantum-inspire.com/kbase/opensquirrel/",
-   "sha256": "63a047c8d3abbd97e2d8ea44619b5f8306b287c17c367af67453f2612a7b2d1d"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_cqasm.md",
-   "source": "https://www.quantum-inspire.com/kbase/cqasm/",
-   "sha256": "525d2f7364c09791309dcb3c153f14ce412825bba0ae2748e169d1835bd98ac8"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_cqasm-single-gate-multiple-qubits.md",
-   "source": "https://www.quantum-inspire.com/kbase/cqasm-single-gate-multiple-qubits/",
-   "sha256": "7a178e827a2004f7009d4d646ea397bf170d8619ca6a4435bde3b458c59677bd"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_executing-your-algorithm.md",
-   "source": "https://www.quantum-inspire.com/kbase/executing-your-algorithm/",
-   "sha256": "78628cae4f717a7d1e8383f31468a8cfcdb99c59af59a904a61cfe738d3a68f1"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_displaying-and-downloading-your-results.md",
-   "source": "https://www.quantum-inspire.com/kbase/displaying-and-downloading-your-results/",
-   "sha256": "00d7efaf91a4659b761d674625bd88873095a1795b67e39deceaeedce832a826"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_managing-your-account.md",
-   "source": "https://www.quantum-inspire.com/kbase/managing-your-account/",
-   "sha256": "af497ecce2bd1191e5cf7aac36c3384d044d5ceadab9bbbed5f698b915739a14"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_managing-your-projects.md",
-   "source": "https://www.quantum-inspire.com/kbase/managing-your-projects/",
-   "sha256": "d8b1d3e664390abd1dd442660e088ad186305f370db15352ae70a95b712d5912"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_qubit-register.md",
-   "source": "https://www.quantum-inspire.com/kbase/qubit-register/",
-   "sha256": "ca95f654de136473752dc9ea976d5b4c876747251b3a9b7773cc99191f31d570"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/kbase_binary-register.md",
-   "source": "https://www.quantum-inspire.com/kbase/binary-register/",
-   "sha256": "00d74f7e47935e29a2d77d68671575c617061adcbbec2c0341f1654c9be36a18"
-  },
-  {
-   "path": "docs/notes/quantum_inspire/site/backends_transmons.md",
-   "source": "https://www.quantum-inspire.com/backends/transmons/",
-   "sha256": "aa75c7dac8b887527a6904d6417d0b43983617dec6ff1b0f906d5379ac25db00"
+   "path": "docs/notes/quantum_inspire/site/backends_qx-simulator.md",
+   "source": "https://www.quantum-inspire.com/backends/qx-simulator/",
+   "sha256": "bb781cc59c12f1e407ae857052a303dc6e87e0f22cb631c9f78ac92a8b213cf3"
   },
   {
    "path": "docs/notes/quantum_inspire/site/backends_spin-2-plus.md",
    "source": "https://www.quantum-inspire.com/backends/spin-2-plus/",
-   "sha256": "b0ea9df3f88b815515814995d1d68dab924c6c52c61dd73558378a9ad26cee19"
+   "sha256": "4a7d5a76d6dd49e1835b3447c158052ad6eeb9371fc471e05b1f40e3daaf8a93"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/backends_transmons.md",
+   "source": "https://www.quantum-inspire.com/backends/transmons/",
+   "sha256": "9e7eb1118641589999665ecbd85f6b407d9d73e44e41dccbdc8b16ed0b906ffb"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/contact.md",
+   "source": "https://www.quantum-inspire.com/contact/",
+   "sha256": "e860af971ebf3606de5f2827e61e68c7269602166a3cc9da5922eb66a6160470"
   },
   {
    "path": "docs/notes/quantum_inspire/site/faq.md",
    "source": "https://www.quantum-inspire.com/faq/",
-   "sha256": "a9a5e96523d54a16865c39f5628df28721e881aa63fa26b7056681bb815351e9"
+   "sha256": "b226dff70c0f3973c874efa1be347f7216a446add6271123e6dde21e5b689621"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/home.md",
+   "source": "https://www.quantum-inspire.com/",
+   "sha256": "d4aac99f223379d893966bea9873a3751817392d75ed0a0cc7a822c95f69410a"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase.md",
+   "source": "https://www.quantum-inspire.com/kbase/",
+   "sha256": "5f7c765f05f298764eb5ce35847c46eb6c9715ca3f7b4681f7cc55018a45e53a"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_advanced-guide.md",
+   "source": "https://www.quantum-inspire.com/kbase/advanced-guide/",
+   "sha256": "b0e6d35bee8c3ab7147e1e10a9466b094bf97a513e6544fcb0fca531c109f9e2"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_bell-states.md",
+   "source": "https://www.quantum-inspire.com/kbase/bell-states/",
+   "sha256": "a71caf75bdd1bf3a29747adc509b412afa017adb6f69f310d8690220e9a7141c"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_binary-register.md",
+   "source": "https://www.quantum-inspire.com/kbase/binary-register/",
+   "sha256": "0542df6bdf919474ffd7e5816aa009ae02258842d867eb462117f43092bb57e3"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_bloch-sphere.md",
+   "source": "https://www.quantum-inspire.com/kbase/bloch-sphere/",
+   "sha256": "456152574fd398453833717392e77e8db575cb6fb2809f0aae18f4d29d881206"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_code-example-getting-started-with-the-neutral-atom-platform.md",
+   "source": "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-the-neutral-atom-platform/",
+   "sha256": "8c0f499852e2fb9c071c8a0cf7c370473a05ab23a53d9591f42e27ec45e14f1d"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_code-example-getting-started-with-transmons.md",
+   "source": "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-transmons/",
+   "sha256": "b548be146a339cbdac805b17be41f3a2c026e1ba7cbb1586ed43f083fa575649"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_code-example-the-maximum-independent-set.md",
+   "source": "https://www.quantum-inspire.com/kbase/code-example-the-maximum-independent-set/",
+   "sha256": "52d1dfc81c33cbda384ec9cec652ca18f71d82edf802fef6125fc1c262151fa8"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_compilation.md",
+   "source": "https://www.quantum-inspire.com/kbase/compilation/",
+   "sha256": "733a11de9374d0dc0a380a356c4a05e173b5bc6eb4f6765fdb6308cb6119086b"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_cqasm-binary-controlled-gates.md",
+   "source": "https://www.quantum-inspire.com/kbase/cqasm-binary-controlled-gates/",
+   "sha256": "ac74bbdccb6930f31be7dc6e1b7c3bff612b69c86ccce62bbd12595b7ac091e8"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_cqasm-error-models.md",
+   "source": "https://www.quantum-inspire.com/kbase/cqasm-error-models/",
+   "sha256": "11caacbfcd396634b73ff418f3a582c116d48cea8aa7f4e67bcb958686cdb183"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_cqasm-qubit-initialization-and-measurement.md",
+   "source": "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/",
+   "sha256": "639023246845755051a5e4de3b799b2e3728dc5379cbcc1daec95a848ad42358"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_cqasm-single-gate-multiple-qubits.md",
+   "source": "https://www.quantum-inspire.com/kbase/cqasm-single-gate-multiple-qubits/",
+   "sha256": "5fd46b10770da0ce0d61017c125e09b6de62ef9a1c3b894627675079b24fa7ca"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_cqasm.md",
+   "source": "https://www.quantum-inspire.com/kbase/cqasm/",
+   "sha256": "d22d706457919ede25cad0d901f03eeb2ecab6627f1e2fade113f19d633bd148"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_creating-a-new-project.md",
+   "source": "https://www.quantum-inspire.com/kbase/creating-a-new-project/",
+   "sha256": "2640d691a21c4a73a6fdd13ba58d5f293660e61669dc12b2d041be806891e7f9"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_deutsch-jozsa-algorithm.md",
+   "source": "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/",
+   "sha256": "aa93dc26d4b8e8ef17a4b9ec985fec1dba0cf459f10c29b938808670c731ab38"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_displaying-and-downloading-your-results.md",
+   "source": "https://www.quantum-inspire.com/kbase/displaying-and-downloading-your-results/",
+   "sha256": "1d2f2846c31cd343b94fced71b8ccff386c0ea4b55afff569dce6fc064619c6f"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_emulator-backends.md",
+   "source": "https://www.quantum-inspire.com/kbase/emulator-backends/",
+   "sha256": "c98007190ab70d27fa8ceb615f1c811f4a4dea6f53e981652b7f4cc141b0bd5d"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_executing-your-algorithm.md",
+   "source": "https://www.quantum-inspire.com/kbase/executing-your-algorithm/",
+   "sha256": "269908d715b4aeebd5a3e28bfed05e18de03eefd279e8c0dbdaf07fb6cb49e08"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_full-adder.md",
+   "source": "https://www.quantum-inspire.com/kbase/full-adder/",
+   "sha256": "ec89ea9a2ebf20cb24f4f20ca2524069541bf1246cb5482b0cbd7e1ac9e39659"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_grover-algorithm.md",
+   "source": "https://www.quantum-inspire.com/kbase/grover-algorithm/",
+   "sha256": "5b4a82a794436efbbcdf7abfae3f454e6e26cdb757dac8cf18111dd9bbabcd94"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_hardware-backends.md",
+   "source": "https://www.quantum-inspire.com/kbase/hardware-backends/",
+   "sha256": "9aaa471b4508cfea5c3d524cdeeae38a638cf87c57a6a28f000b29cc18b2e946"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_hello-quantum-world.md",
+   "source": "https://www.quantum-inspire.com/kbase/hello-quantum-world/",
+   "sha256": "dad9e513b5fdd13afc23440f5fa910601b1448a64ebfbab7b70f4b605e66d0b2"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_introduction-to-quantum-computing.md",
+   "source": "https://www.quantum-inspire.com/kbase/introduction-to-quantum-computing/",
+   "sha256": "bf76651f532397c7d0513685cc989aecdd70c976247d35fa77e878b53baebbd8"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_libket.md",
+   "source": "https://www.quantum-inspire.com/kbase/libket/",
+   "sha256": "3d4bb3939b2bfc228fc6ef3574e5d9eed641ddfd15e3d7fd5abd2aa73b35de5b"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_low-level-api.md",
+   "source": "https://www.quantum-inspire.com/kbase/low-level-api/",
+   "sha256": "6e4a0345a540110b2ed9b9f74327f20bde9fa8b8c62848535fa6d45ec27ba660"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_managing-your-account.md",
+   "source": "https://www.quantum-inspire.com/kbase/managing-your-account/",
+   "sha256": "90fbf10239ea81a537d97d457ba34025ccfd219bdf7ac71d367bfde60d7a571c"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_managing-your-projects.md",
+   "source": "https://www.quantum-inspire.com/kbase/managing-your-projects/",
+   "sha256": "912d9a0166d8204e4c4f01d8511769228feec2804289bbb196096160638b4eff"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_measure-all.md",
+   "source": "https://www.quantum-inspire.com/kbase/measure-all/",
+   "sha256": "619ebd61efbdb4be22bf83b6350b8b4611aa2ebaef1a07df6a9935d63d709679"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_measure-x.md",
+   "source": "https://www.quantum-inspire.com/kbase/measure-x/",
+   "sha256": "41f2eaf9969fade7349da0e6921a76c7b19e731d86e063fc543c6165ece2e781"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_measure-y.md",
+   "source": "https://www.quantum-inspire.com/kbase/measure-y/",
+   "sha256": "006cdc70249b67d9d9bdcdb51c21da46b93eb109eaf40009178201d5436d2f2c"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_measure.md",
+   "source": "https://www.quantum-inspire.com/kbase/measure/",
+   "sha256": "bdf11d32ec143161a5cb105b8233d124df553352f4621da97826a665b3c8a5a0"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_number-of-shots.md",
+   "source": "https://www.quantum-inspire.com/kbase/number-of-shots/",
+   "sha256": "2d04ffad2ac06c891d7abc1ed9758a41620c4e1996510090696e11af26a18278"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_opensquirrel.md",
+   "source": "https://www.quantum-inspire.com/kbase/opensquirrel/",
+   "sha256": "88604c29ee8ad471d3e8faed92f0bf1c8700949af28f6824a95793ccd09984b8"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_optimization-of-simulations.md",
+   "source": "https://www.quantum-inspire.com/kbase/optimization-of-simulations/",
+   "sha256": "8b9571cf2780a54f50314e3828c03c373ee97a5b7d3da09624f7a43a03497f68"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_prep-x.md",
+   "source": "https://www.quantum-inspire.com/kbase/prep-x/",
+   "sha256": "29e784890f383cffb8ce56f714c519bd9be53b3c124b78baaa5588228debaded"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_prep-y.md",
+   "source": "https://www.quantum-inspire.com/kbase/prep-y/",
+   "sha256": "c214416bbbfed72a6eb8fba329072f69bc423c64262b81c725c6f6363092ff71"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_prep-z.md",
+   "source": "https://www.quantum-inspire.com/kbase/prep-z/",
+   "sha256": "4d90c4cfe25fc8e186ac77e6f1a481bd5e30fef262dc14ba7184359bf0c81504"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_qi-tool.md",
+   "source": "https://www.quantum-inspire.com/kbase/qi-tool/",
+   "sha256": "0a365a90de830202c0dadc1491cc378cb838f8c011c017229dc5f6b5fffdb36e"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_quantum-classification.md",
+   "source": "https://www.quantum-inspire.com/kbase/quantum-classification/",
+   "sha256": "ce67832ca294b758485697c64ce8227d53c7d9139972d468eaf987ea5481e2e5"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_qubit-basis-states.md",
+   "source": "https://www.quantum-inspire.com/kbase/qubit-basis-states/",
+   "sha256": "9498296b8d2961506e69ddad186641d971c7f7d57e3e3c7757040491dc354362"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_qubit-register.md",
+   "source": "https://www.quantum-inspire.com/kbase/qubit-register/",
+   "sha256": "8ff98ba9737d79c1c317ade9c988eee688f7dcd13304276d9594625afe19a08a"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_quick-guide.md",
+   "source": "https://www.quantum-inspire.com/kbase/quick-guide/",
+   "sha256": "24035f59fd767164f0f92cab89c2772e59ebf1fb8cdc31011aa757239f0334db"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_repetition-code.md",
+   "source": "https://www.quantum-inspire.com/kbase/repetition-code/",
+   "sha256": "843ebd936c6879df472bcf6676b57f82aa76e7b87179bf9325bf6acf6bf82023"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_ry-emulator-operational-specifics.md",
+   "source": "https://www.quantum-inspire.com/kbase/ry-emulator-operational-specifics/",
+   "sha256": "672822400e3b3125dd07b40e6825b53729c092052849316a0fafbdb300562133"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_software-development-kit.md",
+   "source": "https://www.quantum-inspire.com/kbase/software-development-kit/",
+   "sha256": "7b301b38fb9420b139c01de5b97874973a938da1af0d9c397fee216d940ed9f9"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_spin-2-plus-operational-specifics.md",
+   "source": "https://www.quantum-inspire.com/kbase/spin-2-plus-operational-specifics/",
+   "sha256": "fbcd877ee4ea386baf545bb99d401514b33b41e3b29dffdcbed1addd0698865c"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_starmon-7-operational-specifics.md",
+   "source": "https://www.quantum-inspire.com/kbase/starmon-7-operational-specifics/",
+   "sha256": "00450f1951fbdeaacc1a166a6fc60640cf0d2d5ca8d30bebb7fbbb0f31aae35e"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_superposition-and-entanglement.md",
+   "source": "https://www.quantum-inspire.com/kbase/superposition-and-entanglement/",
+   "sha256": "df15da7092fe8006107f5b44e6a0076f0840415972831cbf4b3bde96d28b816d"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_three-qubit-gates.md",
+   "source": "https://www.quantum-inspire.com/kbase/three-qubit-gates/",
+   "sha256": "8c4b5ae145ee0edf96e5dc8763ff04c574239f65e1952a0998eb0e12d76cc773"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_tuna-operational-specifics.md",
+   "source": "https://www.quantum-inspire.com/kbase/tuna-operational-specifics/",
+   "sha256": "f6f0e603b73b1693c7fce17d85f9388067d914485d85e957b633ed585ef2f8ca"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_what-is-a-quantum-algorithm.md",
+   "source": "https://www.quantum-inspire.com/kbase/what-is-a-quantum-algorithm/",
+   "sha256": "244f6f383068beb703fdfcb41c64e6498787e24db90cccb8b70ab6f2c4bccccc"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_what-is-a-qubit.md",
+   "source": "https://www.quantum-inspire.com/kbase/what-is-a-qubit/",
+   "sha256": "0341c4aaf04e5b81be274e2694325b9232b25d6eed4a04fa87078097d6841f80"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_working-with-the-editor.md",
+   "source": "https://www.quantum-inspire.com/kbase/working-with-the-editor/",
+   "sha256": "dd9fdc2962fb4bf7d1b389c4bd50dfeb898e70391af02c65ad387ee45c637f80"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/partners.md",
+   "source": "https://www.quantum-inspire.com/partners/",
+   "sha256": "aaa8e00c7ff5499efb4056fbaea8b8397e865ad5083b16fd0497896d719fd637"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/reference.md",
+   "source": "https://www.quantum-inspire.com/reference/",
+   "sha256": "9f38125014ba1626616166a64130f66c16ce4f0e1a2ce7c9e5e73ed4ea04d3b1"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/release-notes-old.md",
+   "source": "https://www.quantum-inspire.com/release-notes-old/",
+   "sha256": "77b85d41654b90b72da32ba08aee99daa5afcaecefd8da7f5576417bb28755a8"
   },
   {
    "path": "docs/notes/quantum_inspire/site/release-notes.md",
    "source": "https://www.quantum-inspire.com/release-notes/",
-   "sha256": "36169b9ed275068b6080019fb45a87beca1043c0492fdaab9849ab296f48a817"
+   "sha256": "8121081f6f004b08eff03343a1c9374637c53e4543ad731d4547acf6a7e177f1"
   },
   {
    "path": "docs/notes/quantum_inspire/site/terms-and-conditions.md",
    "source": "https://www.quantum-inspire.com/terms-and-conditions/",
-   "sha256": "7ff72cd3ba11768bdb7904a1bf0971de0e9ba6bcae5386039ac3fa079e2017f9"
+   "sha256": "0d467874ba5fe400c38caeb2600632319933effd7ec67f11c472eb2fb73cbd5b"
+  }
+ ],
+ "seeds": 53,
+ "hosted_documents": [
+  {
+   "url": "https://www.datocms-assets.com/119587/1738752183-4-technical-fact-sheet-quantum-inspire-spin-2-plus.pdf",
+   "sha256": "aeaa1513ecebc7d8918066d11915fd74f13fd77362268b58c5c5e006f1811594",
+   "bytes": 1536485,
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/",
+    "https://www.quantum-inspire.com/backends/spin-2-plus/"
+   ]
+  },
+  {
+   "url": "https://www.datocms-assets.com/119587/1740490348-2025-02-06-terms-and-conditions-quantum-inspire.pdf",
+   "sha256": "64c49043f5467a61a9c2cf9f49713935d47e9bce0ada1faec938c99b33582b97",
+   "bytes": 248021,
+   "referrers": [
+    "https://www.quantum-inspire.com/terms-and-conditions/"
+   ]
+  }
+ ],
+ "discovered_beyond_seed": [
+  "account",
+  "backends/qx-simulator",
+  "backends/spin-2",
+  "backends/starmon-7",
+  "kbase/bell-states",
+  "kbase/bloch-sphere",
+  "kbase/cqasm-binary-controlled-gates",
+  "kbase/cqasm-error-models",
+  "kbase/cqasm-qubit-initialization-and-measurement",
+  "kbase/deutsch-jozsa-algorithm/kbase/spin-2-operational-specifics",
+  "kbase/full-adder/kbase/spin-2-operational-specifics",
+  "kbase/grover-algorithm/kbase/spin-2-operational-specifics",
+  "kbase/hardware",
+  "kbase/managing-your-account/kbase/software-development-kit",
+  "kbase/measure",
+  "kbase/measure-all",
+  "kbase/measure-x",
+  "kbase/measure-y",
+  "kbase/measure-z",
+  "kbase/optimization-of-simulations",
+  "kbase/prep-x",
+  "kbase/prep-y",
+  "kbase/prep-z",
+  "kbase/quantum-classification/kbase/spin-2-operational-specifics",
+  "kbase/spin-2-operational-specifics"
+ ],
+ "pages": [
+  {
+   "page": "",
+   "url": "https://www.quantum-inspire.com/",
+   "status": 200,
+   "content_class": "page-content",
+   "figures": 7,
+   "figure_images": "unmapped (0 ImageRecords)",
+   "payload_assets": [
+    "https://www.datocms-assets.com/119587/1598466864-interface-visual.png"
+   ],
+   "path": "docs/notes/quantum_inspire/site/home.md"
+  },
+  {
+   "page": "about-qi",
+   "url": "https://www.quantum-inspire.com/about-qi/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 2,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/about-qi.md"
+  },
+  {
+   "page": "account",
+   "url": "https://www.quantum-inspire.com/account/",
+   "status": 404
+  },
+  {
+   "page": "backends",
+   "url": "https://www.quantum-inspire.com/backends/",
+   "status": 200,
+   "content_class": "layout-container",
+   "figures": 3,
+   "figure_images": "unmapped (0 ImageRecords)",
+   "payload_assets": [
+    "https://www.datocms-assets.com/119587/1585561911-logoqutech.svg",
+    "https://www.datocms-assets.com/119587/1585561912-logotno.svg",
+    "https://www.datocms-assets.com/119587/1585561913-logotu-delft.svg",
+    "https://www.datocms-assets.com/119587/1586164747-applicationcolor.svg",
+    "https://www.datocms-assets.com/119587/1586164748-compilercolor.svg",
+    "https://www.datocms-assets.com/119587/1586164749-devicecolor.svg",
+    "https://www.datocms-assets.com/119587/1586164750-electronicscolor.svg",
+    "https://www.datocms-assets.com/119587/1586164750-languagecolor.svg",
+    "https://www.datocms-assets.com/119587/1586265602-spin-2uspextensible-architecture.svg",
+    "https://www.datocms-assets.com/119587/1586265603-spin-2usplong-coherence-time.svg",
+    "https://www.datocms-assets.com/119587/1586265604-spin-2uspnanosize.svg",
+    "https://www.datocms-assets.com/119587/1586265605-startmon-5uspconnectivity.svg",
+    "https://www.datocms-assets.com/119587/1586265606-startmon-5uspextensible-architecture.svg",
+    "https://www.datocms-assets.com/119587/1586265606-startmon-5uspfast.svg",
+    "https://www.datocms-assets.com/119587/1598466864-interface-visual.png",
+    "https://www.datocms-assets.com/119587/1738752183-4-technical-fact-sheet-quantum-inspire-spin-2-plus.pdf"
+   ],
+   "path": "docs/notes/quantum_inspire/site/backends.md"
+  },
+  {
+   "page": "backends/qx-simulator",
+   "url": "https://www.quantum-inspire.com/backends/qx-simulator/",
+   "status": 200,
+   "content_class": "layout-container",
+   "figures": 1,
+   "figure_images": "unmapped (0 ImageRecords)",
+   "payload_assets": [
+    "https://www.datocms-assets.com/119587/1530867781-qx-logo.jpg",
+    "https://www.datocms-assets.com/119587/1585819003-20181016copyrightmariekedelorijn4003d.jpg",
+    "https://www.datocms-assets.com/119587/1586164747-applicationcolor.svg",
+    "https://www.datocms-assets.com/119587/1586164748-compilercolor.svg",
+    "https://www.datocms-assets.com/119587/1586164750-electronicscolor.svg",
+    "https://www.datocms-assets.com/119587/1586164750-languagecolor.svg",
+    "https://www.datocms-assets.com/119587/1586250729-startmon-5uspextensible-architecturegrad.svg",
+    "https://www.datocms-assets.com/119587/1586250730-startmon-5uspfastgrad.svg",
+    "https://www.datocms-assets.com/119587/1586252831-spin-2uspsemiconductorgrad.svg",
+    "https://www.datocms-assets.com/119587/1586258730-spin-2.svg"
+   ],
+   "path": "docs/notes/quantum_inspire/site/backends_qx-simulator.md"
+  },
+  {
+   "page": "backends/spin-2",
+   "url": "https://www.quantum-inspire.com/backends/spin-2/",
+   "status": 404
+  },
+  {
+   "page": "backends/spin-2-plus",
+   "url": "https://www.quantum-inspire.com/backends/spin-2-plus/",
+   "status": 200,
+   "content_class": "layout-container",
+   "figures": 1,
+   "figure_images": "unmapped (0 ImageRecords)",
+   "payload_assets": [
+    "https://www.datocms-assets.com/119587/1586164747-applicationcolor.svg",
+    "https://www.datocms-assets.com/119587/1586164748-compilercolor.svg",
+    "https://www.datocms-assets.com/119587/1586164750-electronicscolor.svg",
+    "https://www.datocms-assets.com/119587/1586164750-languagecolor.svg",
+    "https://www.datocms-assets.com/119587/1586250727-spin-2usplong-coherence-timegrad.svg",
+    "https://www.datocms-assets.com/119587/1586250728-spin-2uspnanosizegrad.svg",
+    "https://www.datocms-assets.com/119587/1586252831-spin-2uspsemiconductorgrad.svg",
+    "https://www.datocms-assets.com/119587/1586258730-spin-2.svg",
+    "https://www.datocms-assets.com/119587/1586512997-tsk2picture25feb16.jpg",
+    "https://www.datocms-assets.com/119587/1738752183-4-technical-fact-sheet-quantum-inspire-spin-2-plus.pdf",
+    "https://www.datocms-assets.com/119587/1739459051-spin-2-plus-large-border.svg"
+   ],
+   "path": "docs/notes/quantum_inspire/site/backends_spin-2-plus.md"
+  },
+  {
+   "page": "backends/starmon-7",
+   "url": "https://www.quantum-inspire.com/backends/starmon-7/",
+   "status": 404
+  },
+  {
+   "page": "backends/transmons",
+   "url": "https://www.quantum-inspire.com/backends/transmons/",
+   "status": 200,
+   "content_class": "layout-container",
+   "figures": 1,
+   "figure_images": "unmapped (0 ImageRecords)",
+   "payload_assets": [
+    "https://www.datocms-assets.com/119587/1586164747-applicationcolor.svg",
+    "https://www.datocms-assets.com/119587/1586164748-compilercolor.svg",
+    "https://www.datocms-assets.com/119587/1586164749-devicecolor.svg",
+    "https://www.datocms-assets.com/119587/1586164750-electronicscolor.svg",
+    "https://www.datocms-assets.com/119587/1586164750-languagecolor.svg",
+    "https://www.datocms-assets.com/119587/1586181001-starmon5-border.svg",
+    "https://www.datocms-assets.com/119587/1586250728-startmon-5uspconnectivitygrad.svg",
+    "https://www.datocms-assets.com/119587/1586250729-startmon-5uspextensible-architecturegrad.svg",
+    "https://www.datocms-assets.com/119587/1586250730-startmon-5uspfastgrad.svg",
+    "https://www.datocms-assets.com/119587/1738681695-fwm.jpeg",
+    "https://www.datocms-assets.com/119587/1766393003-tuna-5_schematic.svg",
+    "https://www.datocms-assets.com/119587/1766393015-tuna-9_schematic.svg",
+    "https://www.datocms-assets.com/119587/1766432737-starmon-7_schematic.svg",
+    "https://www.datocms-assets.com/119587/1772648307-tuna-17_schematic-svg.svg"
+   ],
+   "path": "docs/notes/quantum_inspire/site/backends_transmons.md"
+  },
+  {
+   "page": "contact",
+   "url": "https://www.quantum-inspire.com/contact/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 1,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/contact.md"
+  },
+  {
+   "page": "faq",
+   "url": "https://www.quantum-inspire.com/faq/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 1,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/faq.md"
+  },
+  {
+   "page": "kbase",
+   "url": "https://www.quantum-inspire.com/kbase/",
+   "status": 200,
+   "content_class": "page-layout__sidebar",
+   "path": "docs/notes/quantum_inspire/site/kbase.md"
+  },
+  {
+   "page": "kbase/advanced-guide",
+   "url": "https://www.quantum-inspire.com/kbase/advanced-guide/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_advanced-guide.md"
+  },
+  {
+   "page": "kbase/bell-states",
+   "url": "https://www.quantum-inspire.com/kbase/bell-states/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_bell-states.md"
+  },
+  {
+   "page": "kbase/binary-register",
+   "url": "https://www.quantum-inspire.com/kbase/binary-register/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_binary-register.md"
+  },
+  {
+   "page": "kbase/bloch-sphere",
+   "url": "https://www.quantum-inspire.com/kbase/bloch-sphere/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 1,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_bloch-sphere.md"
+  },
+  {
+   "page": "kbase/code-example-getting-started-with-the-neutral-atom-platform",
+   "url": "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-the-neutral-atom-platform/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 8,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_code-example-getting-started-with-the-neutral-atom-platform.md"
+  },
+  {
+   "page": "kbase/code-example-getting-started-with-transmons",
+   "url": "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-transmons/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_code-example-getting-started-with-transmons.md"
+  },
+  {
+   "page": "kbase/code-example-the-maximum-independent-set",
+   "url": "https://www.quantum-inspire.com/kbase/code-example-the-maximum-independent-set/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 11,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_code-example-the-maximum-independent-set.md"
+  },
+  {
+   "page": "kbase/compilation",
+   "url": "https://www.quantum-inspire.com/kbase/compilation/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_compilation.md"
+  },
+  {
+   "page": "kbase/cqasm",
+   "url": "https://www.quantum-inspire.com/kbase/cqasm/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_cqasm.md"
+  },
+  {
+   "page": "kbase/cqasm-binary-controlled-gates",
+   "url": "https://www.quantum-inspire.com/kbase/cqasm-binary-controlled-gates/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_cqasm-binary-controlled-gates.md"
+  },
+  {
+   "page": "kbase/cqasm-error-models",
+   "url": "https://www.quantum-inspire.com/kbase/cqasm-error-models/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 1,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_cqasm-error-models.md"
+  },
+  {
+   "page": "kbase/cqasm-qubit-initialization-and-measurement",
+   "url": "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_cqasm-qubit-initialization-and-measurement.md"
+  },
+  {
+   "page": "kbase/cqasm-single-gate-multiple-qubits",
+   "url": "https://www.quantum-inspire.com/kbase/cqasm-single-gate-multiple-qubits/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_cqasm-single-gate-multiple-qubits.md"
+  },
+  {
+   "page": "kbase/creating-a-new-project",
+   "url": "https://www.quantum-inspire.com/kbase/creating-a-new-project/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 3,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_creating-a-new-project.md"
+  },
+  {
+   "page": "kbase/deutsch-jozsa-algorithm",
+   "url": "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_deutsch-jozsa-algorithm.md"
+  },
+  {
+   "page": "kbase/deutsch-jozsa-algorithm/kbase/spin-2-operational-specifics",
+   "url": "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/kbase/spin-2-operational-specifics/",
+   "status": 404
+  },
+  {
+   "page": "kbase/displaying-and-downloading-your-results",
+   "url": "https://www.quantum-inspire.com/kbase/displaying-and-downloading-your-results/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_displaying-and-downloading-your-results.md"
+  },
+  {
+   "page": "kbase/emulator-backends",
+   "url": "https://www.quantum-inspire.com/kbase/emulator-backends/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_emulator-backends.md"
+  },
+  {
+   "page": "kbase/executing-your-algorithm",
+   "url": "https://www.quantum-inspire.com/kbase/executing-your-algorithm/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_executing-your-algorithm.md"
+  },
+  {
+   "page": "kbase/full-adder",
+   "url": "https://www.quantum-inspire.com/kbase/full-adder/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 2,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_full-adder.md"
+  },
+  {
+   "page": "kbase/full-adder/kbase/spin-2-operational-specifics",
+   "url": "https://www.quantum-inspire.com/kbase/full-adder/kbase/spin-2-operational-specifics/",
+   "status": 404
+  },
+  {
+   "page": "kbase/grover-algorithm",
+   "url": "https://www.quantum-inspire.com/kbase/grover-algorithm/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 1,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_grover-algorithm.md"
+  },
+  {
+   "page": "kbase/grover-algorithm/kbase/spin-2-operational-specifics",
+   "url": "https://www.quantum-inspire.com/kbase/grover-algorithm/kbase/spin-2-operational-specifics/",
+   "status": 404
+  },
+  {
+   "page": "kbase/hardware",
+   "url": "https://www.quantum-inspire.com/kbase/hardware/",
+   "status": 404
+  },
+  {
+   "page": "kbase/hardware-backends",
+   "url": "https://www.quantum-inspire.com/kbase/hardware-backends/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_hardware-backends.md"
+  },
+  {
+   "page": "kbase/hello-quantum-world",
+   "url": "https://www.quantum-inspire.com/kbase/hello-quantum-world/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_hello-quantum-world.md"
+  },
+  {
+   "page": "kbase/introduction-to-quantum-computing",
+   "url": "https://www.quantum-inspire.com/kbase/introduction-to-quantum-computing/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 2,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_introduction-to-quantum-computing.md"
+  },
+  {
+   "page": "kbase/libket",
+   "url": "https://www.quantum-inspire.com/kbase/libket/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_libket.md"
+  },
+  {
+   "page": "kbase/low-level-api",
+   "url": "https://www.quantum-inspire.com/kbase/low-level-api/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_low-level-api.md"
+  },
+  {
+   "page": "kbase/managing-your-account",
+   "url": "https://www.quantum-inspire.com/kbase/managing-your-account/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_managing-your-account.md"
+  },
+  {
+   "page": "kbase/managing-your-account/kbase/software-development-kit",
+   "url": "https://www.quantum-inspire.com/kbase/managing-your-account/kbase/software-development-kit/",
+   "status": 404
+  },
+  {
+   "page": "kbase/managing-your-projects",
+   "url": "https://www.quantum-inspire.com/kbase/managing-your-projects/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 2,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_managing-your-projects.md"
+  },
+  {
+   "page": "kbase/measure",
+   "url": "https://www.quantum-inspire.com/kbase/measure/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_measure.md"
+  },
+  {
+   "page": "kbase/measure-all",
+   "url": "https://www.quantum-inspire.com/kbase/measure-all/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_measure-all.md"
+  },
+  {
+   "page": "kbase/measure-x",
+   "url": "https://www.quantum-inspire.com/kbase/measure-x/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_measure-x.md"
+  },
+  {
+   "page": "kbase/measure-y",
+   "url": "https://www.quantum-inspire.com/kbase/measure-y/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_measure-y.md"
+  },
+  {
+   "page": "kbase/measure-z",
+   "url": "https://www.quantum-inspire.com/kbase/measure-z/",
+   "status": 500
+  },
+  {
+   "page": "kbase/number-of-shots",
+   "url": "https://www.quantum-inspire.com/kbase/number-of-shots/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_number-of-shots.md"
+  },
+  {
+   "page": "kbase/opensquirrel",
+   "url": "https://www.quantum-inspire.com/kbase/opensquirrel/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_opensquirrel.md"
+  },
+  {
+   "page": "kbase/optimization-of-simulations",
+   "url": "https://www.quantum-inspire.com/kbase/optimization-of-simulations/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_optimization-of-simulations.md"
+  },
+  {
+   "page": "kbase/prep-x",
+   "url": "https://www.quantum-inspire.com/kbase/prep-x/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 1,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_prep-x.md"
+  },
+  {
+   "page": "kbase/prep-y",
+   "url": "https://www.quantum-inspire.com/kbase/prep-y/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 1,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_prep-y.md"
+  },
+  {
+   "page": "kbase/prep-z",
+   "url": "https://www.quantum-inspire.com/kbase/prep-z/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 1,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_prep-z.md"
+  },
+  {
+   "page": "kbase/qi-tool",
+   "url": "https://www.quantum-inspire.com/kbase/qi-tool/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_qi-tool.md"
+  },
+  {
+   "page": "kbase/quantum-classification",
+   "url": "https://www.quantum-inspire.com/kbase/quantum-classification/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 1,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_quantum-classification.md"
+  },
+  {
+   "page": "kbase/quantum-classification/kbase/spin-2-operational-specifics",
+   "url": "https://www.quantum-inspire.com/kbase/quantum-classification/kbase/spin-2-operational-specifics/",
+   "status": 404
+  },
+  {
+   "page": "kbase/qubit-basis-states",
+   "url": "https://www.quantum-inspire.com/kbase/qubit-basis-states/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 1,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_qubit-basis-states.md"
+  },
+  {
+   "page": "kbase/qubit-register",
+   "url": "https://www.quantum-inspire.com/kbase/qubit-register/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_qubit-register.md"
+  },
+  {
+   "page": "kbase/quick-guide",
+   "url": "https://www.quantum-inspire.com/kbase/quick-guide/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_quick-guide.md"
+  },
+  {
+   "page": "kbase/repetition-code",
+   "url": "https://www.quantum-inspire.com/kbase/repetition-code/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_repetition-code.md"
+  },
+  {
+   "page": "kbase/ry-emulator-operational-specifics",
+   "url": "https://www.quantum-inspire.com/kbase/ry-emulator-operational-specifics/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_ry-emulator-operational-specifics.md"
+  },
+  {
+   "page": "kbase/software-development-kit",
+   "url": "https://www.quantum-inspire.com/kbase/software-development-kit/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_software-development-kit.md"
+  },
+  {
+   "page": "kbase/spin-2-operational-specifics",
+   "url": "https://www.quantum-inspire.com/kbase/spin-2-operational-specifics/",
+   "status": 404
+  },
+  {
+   "page": "kbase/spin-2-plus-operational-specifics",
+   "url": "https://www.quantum-inspire.com/kbase/spin-2-plus-operational-specifics/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_spin-2-plus-operational-specifics.md"
+  },
+  {
+   "page": "kbase/starmon-7-operational-specifics",
+   "url": "https://www.quantum-inspire.com/kbase/starmon-7-operational-specifics/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_starmon-7-operational-specifics.md"
+  },
+  {
+   "page": "kbase/superposition-and-entanglement",
+   "url": "https://www.quantum-inspire.com/kbase/superposition-and-entanglement/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_superposition-and-entanglement.md"
+  },
+  {
+   "page": "kbase/three-qubit-gates",
+   "url": "https://www.quantum-inspire.com/kbase/three-qubit-gates/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_three-qubit-gates.md"
+  },
+  {
+   "page": "kbase/tuna-operational-specifics",
+   "url": "https://www.quantum-inspire.com/kbase/tuna-operational-specifics/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_tuna-operational-specifics.md"
+  },
+  {
+   "page": "kbase/what-is-a-quantum-algorithm",
+   "url": "https://www.quantum-inspire.com/kbase/what-is-a-quantum-algorithm/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_what-is-a-quantum-algorithm.md"
+  },
+  {
+   "page": "kbase/what-is-a-qubit",
+   "url": "https://www.quantum-inspire.com/kbase/what-is-a-qubit/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "figures": 3,
+   "figure_images": "mapped",
+   "path": "docs/notes/quantum_inspire/site/kbase_what-is-a-qubit.md"
+  },
+  {
+   "page": "kbase/working-with-the-editor",
+   "url": "https://www.quantum-inspire.com/kbase/working-with-the-editor/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/kbase_working-with-the-editor.md"
+  },
+  {
+   "page": "partners",
+   "url": "https://www.quantum-inspire.com/partners/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/partners.md"
+  },
+  {
+   "page": "reference",
+   "url": "https://www.quantum-inspire.com/reference/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/reference.md"
+  },
+  {
+   "page": "release-notes",
+   "url": "https://www.quantum-inspire.com/release-notes/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/release-notes.md",
+   "bare_host_links": [
+    "quantify-os.org"
+   ]
+  },
+  {
+   "page": "release-notes-old",
+   "url": "https://www.quantum-inspire.com/release-notes-old/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/release-notes-old.md"
+  },
+  {
+   "page": "terms-and-conditions",
+   "url": "https://www.quantum-inspire.com/terms-and-conditions/",
+   "status": 200,
+   "content_class": "page-layout__content",
+   "path": "docs/notes/quantum_inspire/site/terms-and-conditions.md",
+   "bare_host_links": [
+    "www.quantum-inspire.com"
+   ]
+  }
+ ],
+ "unreachable": [
+  {
+   "url": "https://www.quantum-inspire.com/account/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes-old/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/backends/spin-2/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/backends/starmon-7/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/full-adder/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/full-adder/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/grover-algorithm/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/grover-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/hardware/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/hello-quantum-world/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/managing-your-account/kbase/software-development-kit/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/managing-your-account/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/measure-z/",
+   "status": "500",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/",
+    "https://www.quantum-inspire.com/kbase/measure/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/quantum-classification/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/quantum-classification/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/quantum-classification/"
+   ]
+  }
+ ],
+ "body_links": [
+  {
+   "url": "http://davidbkemp.github.io/animated-qubits/grover.html",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/grover-algorithm/"
+   ]
+  },
+  {
+   "url": "http://openql.org/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  },
+  {
+   "url": "http://projectq.ch/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  },
+  {
+   "url": "http://quantumdelft.nl/",
+   "status": "error:[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1082)",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  },
+  {
+   "url": "http://www.quiprocone.org/Protected/Lecture_6.htm",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/grover-algorithm/"
+   ]
+  },
+  {
+   "url": "https://api.quantum-inspire.com/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/",
+    "https://www.quantum-inspire.com/kbase/low-level-api/"
+   ]
+  },
+  {
+   "url": "https://api.quantum-inspire.com/docs",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/low-level-api/"
+   ]
+  },
+  {
+   "url": "https://arxiv.org/abs/1612.00858",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/spin-2-plus-operational-specifics/"
+   ]
+  },
+  {
+   "url": "https://arxiv.org/abs/1805.09607",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  },
+  {
+   "url": "https://arxiv.org/abs/2004.10426",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/quantum-classification/"
+   ]
+  },
+  {
+   "url": "https://arxiv.org/abs/2503.13225",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/transmons/"
+   ]
+  },
+  {
+   "url": "https://arxiv.org/abs/2602.18388",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/transmons/"
+   ]
+  },
+  {
+   "url": "https://arxiv.org/pdf/2004.10426.pdf",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/reference/"
+   ]
+  },
+  {
+   "url": "https://commons.wikimedia.org/wiki/File:Quantum_Full_Adder.png",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/full-adder/"
+   ]
+  },
+  {
+   "url": "https://compute.quantum-inspire.com",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/hello-quantum-world/",
+    "https://www.quantum-inspire.com/kbase/managing-your-account/"
+   ]
+  },
+  {
+   "url": "https://compute.quantum-inspire.com/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/"
+   ]
+  },
+  {
+   "url": "https://compute.quantum-inspire.com/auth/account/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/managing-your-account/"
+   ]
+  },
+  {
+   "url": "https://dashboard.quantum-inspire.com",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/"
+   ]
+  },
+  {
+   "url": "https://digitaleweltmagazin.de/2020/02/07/implementation-and-compact-data-representation-in-variational-quantum-machine-learning/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/reference/"
+   ]
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Bell_state",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/bell-states/"
+   ]
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Bloch_sphere",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/bloch-sphere/",
+    "https://www.quantum-inspire.com/kbase/what-is-a-qubit/"
+   ]
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Deutsch%E2%80%93Jozsa_algorithm",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/"
+   ]
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Fredkin_gate",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/three-qubit-gates/"
+   ]
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Grover%27s_algorithm",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/grover-algorithm/"
+   ]
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/No-cloning_theorem",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/repetition-code/"
+   ]
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Quantum_error_correction",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/repetition-code/"
+   ]
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Representational_state_transfer",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/low-level-api/"
+   ]
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Toffoli_gate",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/three-qubit-gates/"
+   ]
+  },
+  {
+   "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R0328",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/terms-and-conditions/"
+   ]
+  },
+  {
+   "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:L:2022:048:TOC",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/terms-and-conditions/"
+   ]
+  },
+  {
+   "url": "https://github.com/DiCarloLab-Delft/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-transmons/"
+   ]
+  },
+  {
+   "url": "https://github.com/DiCarloLab-Delft/QuantumInspireUtilities/blob/main/qi_utilities/notebook_guides/0.0_getting_started_starmon7.ipynb",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-transmons/"
+   ]
+  },
+  {
+   "url": "https://github.com/DiCarloLab-Delft/QuantumInspireUtilities/blob/main/qi_utilities/notebook_guides/0.1_getting_started_tuna_devices.ipynb",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-transmons/"
+   ]
+  },
+  {
+   "url": "https://github.com/QE-Lab",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/qx-simulator/"
+   ]
+  },
+  {
+   "url": "https://github.com/QE-Lab/OpenQL",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/qx-simulator/"
+   ]
+  },
+  {
+   "url": "https://github.com/QE-Lab/cQASM-spec",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/qx-simulator/"
+   ]
+  },
+  {
+   "url": "https://github.com/QE-Lab/libqasm",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/qx-simulator/"
+   ]
+  },
+  {
+   "url": "https://github.com/QE-Lab/qx-simulator",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/qx-simulator/"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes/"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/OpenSquirrel/releases",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes/"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/cQASM-spec/releases",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes/"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/libqasm",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/transmons/"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/libqasm/releases",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes/"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes/"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes/"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/quantuminspire",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/",
+    "https://www.quantum-inspire.com/kbase/optimization-of-simulations/",
+    "https://www.quantum-inspire.com/kbase/qi-tool/",
+    "https://www.quantum-inspire.com/kbase/software-development-kit/"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/quantuminspire/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes-old/"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes-old/",
+    "https://www.quantum-inspire.com/release-notes/"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/1.4.0",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes-old/"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes/"
+   ]
+  },
+  {
+   "url": "https://github.com/qutech/qupulse",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/spin-2-plus/"
+   ]
+  },
+  {
+   "url": "https://github.com/rigetti/pyquil",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/libket/"
+   ]
+  },
+  {
+   "url": "https://gitlab.com/mmoelle1/LibKet",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/libket/"
+   ]
+  },
+  {
+   "url": "https://gitlab.com/quantify-os/quantify-scheduler/-/releases",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes/"
+   ]
+  },
+  {
+   "url": "https://gitlab.tue.nl/20235021/ry-emulator-examples",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/code-example-the-maximum-independent-set/"
+   ]
+  },
+  {
+   "url": "https://ir.cwi.nl/pub/28632/28632.pdf",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/reference/"
+   ]
+  },
+  {
+   "url": "https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.79.325",
+   "status": "blocked:403",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/grover-algorithm/"
+   ]
+  },
+  {
+   "url": "https://medium.com/qiskit/quantum-inspire-and-qiskit-f1be608f8955",
+   "status": "blocked:403",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  },
+  {
+   "url": "https://monitoring.qutech.support/public-dashboards/0d4f32302c0d4e88aa951268a1882f6d?orgId=1",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/spin-2-plus/"
+   ]
+  },
+  {
+   "url": "https://nl.wikipedia.org/wiki/Adder_(elektronica)",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/full-adder/"
+   ]
+  },
+  {
+   "url": "https://openql.readthedocs.io/en/latest/gen/reference_passes.html",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/starmon-7-operational-specifics/"
+   ]
+  },
+  {
+   "url": "https://pennylane.ai/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/qi-tool/",
+    "https://www.quantum-inspire.com/kbase/software-development-kit/"
+   ]
+  },
+  {
+   "url": "https://projectq.ch/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  },
+  {
+   "url": "https://publications.tno.nl/publication/34641481/Akx9mV/TNO-2023-11868.pdf",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/partners/"
+   ]
+  },
+  {
+   "url": "https://pypi.org/project/pennylane-quantuminspire",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/qi-tool/",
+    "https://www.quantum-inspire.com/kbase/software-development-kit/"
+   ]
+  },
+  {
+   "url": "https://pypi.org/project/qi-compute-api-client/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/low-level-api/"
+   ]
+  },
+  {
+   "url": "https://pypi.org/project/qiskit-quantuminspire",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/qi-tool/",
+    "https://www.quantum-inspire.com/kbase/software-development-kit/"
+   ]
+  },
+  {
+   "url": "https://pypi.org/project/qiskit-quantuminspire/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/software-development-kit/"
+   ]
+  },
+  {
+   "url": "https://pypi.org/project/quantuminspire/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/qi-tool/",
+    "https://www.quantum-inspire.com/kbase/software-development-kit/"
+   ]
+  },
+  {
+   "url": "https://qcs.rigetti.com/request-access",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/libket/"
+   ]
+  },
+  {
+   "url": "https://qiskit.org/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/",
+    "https://www.quantum-inspire.com/kbase/libket/",
+    "https://www.quantum-inspire.com/kbase/qi-tool/",
+    "https://www.quantum-inspire.com/kbase/software-development-kit/"
+   ]
+  },
+  {
+   "url": "https://qt.eu/projects/computing/opensuperqplus.php",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/partners/"
+   ]
+  },
+  {
+   "url": "https://qt.eu/projects/computing/qlsi",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/partners/"
+   ]
+  },
+  {
+   "url": "https://quantify-os.org",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes/"
+   ]
+  },
+  {
+   "url": "https://quantify-os.org/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/transmons/",
+    "https://www.quantum-inspire.com/kbase/tuna-operational-specifics/"
+   ]
+  },
+  {
+   "url": "https://quantumdelta.nl/",
+   "status": "error:[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1082)",
+   "referrers": [
+    "https://www.quantum-inspire.com/partners/"
+   ]
+  },
+  {
+   "url": "https://quantumdelta.nl/accelerate-in-detail/",
+   "status": "error:[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1082)",
+   "referrers": [
+    "https://www.quantum-inspire.com/partners/"
+   ]
+  },
+  {
+   "url": "https://qutech-delft.github.io/OpenSquirrel/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/compilation/",
+    "https://www.quantum-inspire.com/kbase/opensquirrel/",
+    "https://www.quantum-inspire.com/kbase/tuna-operational-specifics/"
+   ]
+  },
+  {
+   "url": "https://qutech-delft.github.io/OpenSquirrel/index.html",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/cqasm/"
+   ]
+  },
+  {
+   "url": "https://qutech-delft.github.io/cQASM-spec/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/cqasm/"
+   ]
+  },
+  {
+   "url": "https://qutech-delft.github.io/cQASM-spec/latest/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/transmons/",
+    "https://www.quantum-inspire.com/kbase/hello-quantum-world/",
+    "https://www.quantum-inspire.com/kbase/spin-2-plus-operational-specifics/"
+   ]
+  },
+  {
+   "url": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/control_instructions/barrier_instruction.html",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/tuna-operational-specifics/"
+   ]
+  },
+  {
+   "url": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/control_instructions/wait_instruction.html",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/tuna-operational-specifics/"
+   ]
+  },
+  {
+   "url": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/single-gate-multiple-qubit-notation.html",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/cqasm-single-gate-multiple-qubits/"
+   ]
+  },
+  {
+   "url": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/variable_declarations/qubit_register_declaration.html",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/qubit-register/"
+   ]
+  },
+  {
+   "url": "https://qutech-delft.github.io/libqasm/latest/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/compilation/",
+    "https://www.quantum-inspire.com/kbase/opensquirrel/"
+   ]
+  },
+  {
+   "url": "https://qutech-delft.github.io/pennylane-quantuminspire2",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/software-development-kit/"
+   ]
+  },
+  {
+   "url": "https://qutech-delft.github.io/qiskit-quantuminspire",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/software-development-kit/"
+   ]
+  },
+  {
+   "url": "https://qutech-delft.github.io/qx-simulator/latest/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/qx-simulator/",
+    "https://www.quantum-inspire.com/kbase/emulator-backends/"
+   ]
+  },
+  {
+   "url": "https://qutech-delft.github.io/qx-simulator/latest/index.html",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/compilation/"
+   ]
+  },
+  {
+   "url": "https://qutech.nl/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/introduction-to-quantum-computing/",
+    "https://www.quantum-inspire.com/partners/"
+   ]
+  },
+  {
+   "url": "https://qutech.nl/academy/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/what-is-a-qubit/"
+   ]
+  },
+  {
+   "url": "https://qutech.nl/cryo-chip-overcomes-obstacle-to-large-scale-quantum-computers/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  },
+  {
+   "url": "https://qutech.nl/wp-content/uploads/2016/01/2017-Interfacing-s41534-017-0038-y.pdf",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/reference/"
+   ]
+  },
+  {
+   "url": "https://qutech.nl/wp-content/uploads/2016/01/nature25766.pdf",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/reference/"
+   ]
+  },
+  {
+   "url": "https://qutech.nl/wp-content/uploads/2017/05/Plattegrond_TUDelft.pdf",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/contact/"
+   ]
+  },
+  {
+   "url": "https://qutech.nl/wp-content/uploads/2020/03/2019_08_PhysicsToday_pt.3.4270.pdf",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/reference/"
+   ]
+  },
+  {
+   "url": "https://support.twilio.com/hc/en-us/articles/360051805394-Measures-Twilio-Takes-to-Safeguard-the-Privacy-of-Customer-Personal-Data",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/terms-and-conditions/"
+   ]
+  },
+  {
+   "url": "https://userinfo.surfsara.nl/",
+   "status": "401",
+   "referrers": [
+    "https://www.quantum-inspire.com/terms-and-conditions/"
+   ]
+  },
+  {
+   "url": "https://vimeo.com/324171082",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/about-qi/"
+   ]
+  },
+  {
+   "url": "https://www.datocms-assets.com/119587/1738752183-4-technical-fact-sheet-quantum-inspire-spin-2-plus.pdf",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/",
+    "https://www.quantum-inspire.com/backends/spin-2-plus/"
+   ]
+  },
+  {
+   "url": "https://www.datocms-assets.com/119587/1740490348-2025-02-06-terms-and-conditions-quantum-inspire.pdf",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/terms-and-conditions/"
+   ]
+  },
+  {
+   "url": "https://www.facebook.com/QuTechnews",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/contact/"
+   ]
+  },
+  {
+   "url": "https://www.ibm.com/quantum-computing/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/libket/"
+   ]
+  },
+  {
+   "url": "https://www.linkedin.com/company/qutech?trk=top_nav_home",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/contact/"
+   ]
+  },
+  {
+   "url": "https://www.nationaalgroeifonds.nl/overzicht-lopende-projecten/thema-sleuteltechnologieen-en-valorisatie/quantum-delta-nl",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/partners/"
+   ]
+  },
+  {
+   "url": "https://www.nationaalgroeifonds.nl/projecten-ronde-1/quantum-delta-nl",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/partners/"
+   ]
+  },
+  {
+   "url": "https://www.nwo.nl/en/projects/nwa129219194",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/partners/"
+   ]
+  },
+  {
+   "url": "https://www.python.org/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/low-level-api/"
+   ]
+  },
+  {
+   "url": "https://www.quantiki.org/wiki/grovers-search-algorithm",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/grover-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/terms-and-conditions/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/quick-guide/",
+    "https://www.quantum-inspire.com/reference/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/about-qi/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/account",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes-old/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/backends/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/backends/qx-simulator",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/backends/qx-simulator/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/backends/spin-2-plus/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/",
+    "https://www.quantum-inspire.com/kbase/hardware-backends/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/backends/spin-2/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/backends/starmon-7/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/backends/transmons/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/",
+    "https://www.quantum-inspire.com/kbase/hardware-backends/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/contact",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/about-qi/",
+    "https://www.quantum-inspire.com/terms-and-conditions/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/icon-sprite.svg",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/",
+    "https://www.quantum-inspire.com/backends/qx-simulator/",
+    "https://www.quantum-inspire.com/backends/spin-2-plus/",
+    "https://www.quantum-inspire.com/backends/transmons/",
+    "https://www.quantum-inspire.com/kbase/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/advanced-guide/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/",
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/hello-quantum-world/",
+    "https://www.quantum-inspire.com/kbase/quick-guide/",
+    "https://www.quantum-inspire.com/kbase/software-development-kit/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/bell-states/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/binary-register/",
+    "https://www.quantum-inspire.com/kbase/cqasm/",
+    "https://www.quantum-inspire.com/kbase/full-adder/",
+    "https://www.quantum-inspire.com/kbase/hello-quantum-world/",
+    "https://www.quantum-inspire.com/kbase/managing-your-projects/",
+    "https://www.quantum-inspire.com/kbase/superposition-and-entanglement/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/binary-register/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/",
+    "https://www.quantum-inspire.com/kbase/displaying-and-downloading-your-results/",
+    "https://www.quantum-inspire.com/kbase/hardware-backends/",
+    "https://www.quantum-inspire.com/kbase/qubit-basis-states/",
+    "https://www.quantum-inspire.com/kbase/qubit-register/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/bloch-sphere",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/qubit-basis-states/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-the-neutral-atom-platform",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/code-example-the-maximum-independent-set/",
+    "https://www.quantum-inspire.com/kbase/ry-emulator-operational-specifics/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-the-neutral-atom-platform/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-transmons/",
+    "https://www.quantum-inspire.com/kbase/code-example-the-maximum-independent-set/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-transmons/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-the-neutral-atom-platform/",
+    "https://www.quantum-inspire.com/kbase/repetition-code/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/code-example-the-maximum-independent-set/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-the-neutral-atom-platform/",
+    "https://www.quantum-inspire.com/kbase/quantum-classification/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/compilation",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/executing-your-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/compilation/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/opensquirrel/",
+    "https://www.quantum-inspire.com/kbase/software-development-kit/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/cqasm",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/about-qi/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/cqasm-binary-controlled-gates/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/repetition-code/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/cqasm-error-models",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes-old/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/cqasm-error-models/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/optimization-of-simulations/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/optimization-of-simulations/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/cqasm-single-gate-multiple-qubits/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/cqasm-binary-controlled-gates/",
+    "https://www.quantum-inspire.com/kbase/cqasm/",
+    "https://www.quantum-inspire.com/kbase/opensquirrel/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/cqasm/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/qubit-basis-states/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/creating-a-new-project/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/managing-your-projects/",
+    "https://www.quantum-inspire.com/kbase/quick-guide/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/full-adder/",
+    "https://www.quantum-inspire.com/kbase/libket/",
+    "https://www.quantum-inspire.com/kbase/quick-guide/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/displaying-and-downloading-your-results/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/",
+    "https://www.quantum-inspire.com/kbase/executing-your-algorithm/",
+    "https://www.quantum-inspire.com/kbase/hardware-backends/",
+    "https://www.quantum-inspire.com/kbase/managing-your-account/",
+    "https://www.quantum-inspire.com/kbase/quick-guide/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/emulator-backends",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/full-adder/",
+    "https://www.quantum-inspire.com/kbase/grover-algorithm/",
+    "https://www.quantum-inspire.com/kbase/quantum-classification/",
+    "https://www.quantum-inspire.com/kbase/repetition-code/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/emulator-backends/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/",
+    "https://www.quantum-inspire.com/kbase/repetition-code/",
+    "https://www.quantum-inspire.com/kbase/ry-emulator-operational-specifics/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/executing-your-algorithm/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/",
+    "https://www.quantum-inspire.com/kbase/displaying-and-downloading-your-results/",
+    "https://www.quantum-inspire.com/kbase/managing-your-projects/",
+    "https://www.quantum-inspire.com/kbase/quick-guide/",
+    "https://www.quantum-inspire.com/kbase/working-with-the-editor/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/full-adder",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes-old/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/full-adder/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/",
+    "https://www.quantum-inspire.com/kbase/grover-algorithm/",
+    "https://www.quantum-inspire.com/kbase/quick-guide/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/full-adder/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/full-adder/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/grover-algorithm/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/full-adder/",
+    "https://www.quantum-inspire.com/kbase/quick-guide/",
+    "https://www.quantum-inspire.com/kbase/repetition-code/",
+    "https://www.quantum-inspire.com/kbase/what-is-a-quantum-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/grover-algorithm/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/grover-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/hardware-backends/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/binary-register/",
+    "https://www.quantum-inspire.com/kbase/executing-your-algorithm/",
+    "https://www.quantum-inspire.com/kbase/quantum-classification/",
+    "https://www.quantum-inspire.com/kbase/tuna-operational-specifics/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/hardware/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/hello-quantum-world/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/hello-quantum-world/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/managing-your-projects/",
+    "https://www.quantum-inspire.com/kbase/optimization-of-simulations/",
+    "https://www.quantum-inspire.com/kbase/quick-guide/",
+    "https://www.quantum-inspire.com/kbase/what-is-a-quantum-algorithm/",
+    "https://www.quantum-inspire.com/kbase/working-with-the-editor/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/introduction-to-quantum-computing/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/",
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/what-is-a-qubit/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/libket",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/compilation/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/libket/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/",
+    "https://www.quantum-inspire.com/kbase/low-level-api/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/low-level-api/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/libket/",
+    "https://www.quantum-inspire.com/kbase/opensquirrel/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/managing-your-account/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/displaying-and-downloading-your-results/",
+    "https://www.quantum-inspire.com/kbase/hello-quantum-world/",
+    "https://www.quantum-inspire.com/kbase/qubit-register/",
+    "https://www.quantum-inspire.com/kbase/quick-guide/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/managing-your-account/kbase/software-development-kit/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/managing-your-account/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/managing-your-projects/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/creating-a-new-project/",
+    "https://www.quantum-inspire.com/kbase/quick-guide/",
+    "https://www.quantum-inspire.com/kbase/working-with-the-editor/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/measure-all/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/measure-x/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/measure-y/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/measure-z",
+   "status": "500",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/measure/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/measure-z/",
+   "status": "500",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/measure/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/number-of-shots",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/executing-your-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/opensquirrel/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/compilation/",
+    "https://www.quantum-inspire.com/kbase/low-level-api/",
+    "https://www.quantum-inspire.com/kbase/three-qubit-gates/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/optimization-of-simulations/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/cqasm-binary-controlled-gates/",
+    "https://www.quantum-inspire.com/kbase/cqasm-error-models/",
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/",
+    "https://www.quantum-inspire.com/kbase/displaying-and-downloading-your-results/",
+    "https://www.quantum-inspire.com/kbase/full-adder/",
+    "https://www.quantum-inspire.com/kbase/optimization-of-simulations/",
+    "https://www.quantum-inspire.com/kbase/quantum-classification/",
+    "https://www.quantum-inspire.com/kbase/repetition-code/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/prep-x/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/prep-y/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/prep-z/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/quantum-classification/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/code-example-the-maximum-independent-set/",
+    "https://www.quantum-inspire.com/kbase/hardware-backends/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/quantum-classification/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/quantum-classification/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/qubit-basis-states/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/binary-register/",
+    "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/",
+    "https://www.quantum-inspire.com/kbase/displaying-and-downloading-your-results/",
+    "https://www.quantum-inspire.com/kbase/prep-x/",
+    "https://www.quantum-inspire.com/kbase/prep-y/",
+    "https://www.quantum-inspire.com/kbase/prep-z/",
+    "https://www.quantum-inspire.com/kbase/qubit-register/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/qubit-register/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/binary-register/",
+    "https://www.quantum-inspire.com/kbase/managing-your-account/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/quick-guide",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/about-qi/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/quick-guide/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/",
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/creating-a-new-project/",
+    "https://www.quantum-inspire.com/kbase/hello-quantum-world/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/repetition-code",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes-old/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/repetition-code/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-transmons/",
+    "https://www.quantum-inspire.com/kbase/grover-algorithm/",
+    "https://www.quantum-inspire.com/kbase/quick-guide/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/ry-emulator-operational-specifics/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/",
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/emulator-backends/",
+    "https://www.quantum-inspire.com/kbase/starmon-7-operational-specifics/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/software-development-kit/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/advanced-guide/",
+    "https://www.quantum-inspire.com/kbase/compilation/",
+    "https://www.quantum-inspire.com/kbase/executing-your-algorithm/",
+    "https://www.quantum-inspire.com/kbase/low-level-api/",
+    "https://www.quantum-inspire.com/kbase/working-with-the-editor/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/quantum-classification/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/spin-2-plus-operational-specifics/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/hardware-backends/",
+    "https://www.quantum-inspire.com/kbase/opensquirrel/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/starmon-7-operational-specifics",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/full-adder/",
+    "https://www.quantum-inspire.com/kbase/grover-algorithm/",
+    "https://www.quantum-inspire.com/kbase/quantum-classification/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/starmon-7-operational-specifics/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/",
+    "https://www.quantum-inspire.com/kbase/hardware-backends/",
+    "https://www.quantum-inspire.com/kbase/opensquirrel/",
+    "https://www.quantum-inspire.com/kbase/ry-emulator-operational-specifics/",
+    "https://www.quantum-inspire.com/kbase/tuna-operational-specifics/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/superposition-and-entanglement/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/displaying-and-downloading-your-results/",
+    "https://www.quantum-inspire.com/kbase/full-adder/",
+    "https://www.quantum-inspire.com/kbase/what-is-a-quantum-algorithm/",
+    "https://www.quantum-inspire.com/kbase/what-is-a-qubit/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/three-qubit-gates/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/advanced-guide/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/tuna-operational-specifics/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/hardware-backends/",
+    "https://www.quantum-inspire.com/kbase/starmon-7-operational-specifics/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/what-is-a-quantum-algorithm/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/hello-quantum-world/",
+    "https://www.quantum-inspire.com/kbase/superposition-and-entanglement/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/what-is-a-qubit/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/introduction-to-quantum-computing/",
+    "https://www.quantum-inspire.com/kbase/superposition-and-entanglement/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/working-with-the-editor/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/",
+    "https://www.quantum-inspire.com/kbase/displaying-and-downloading-your-results/",
+    "https://www.quantum-inspire.com/kbase/executing-your-algorithm/",
+    "https://www.quantum-inspire.com/kbase/managing-your-projects/",
+    "https://www.quantum-inspire.com/kbase/quick-guide/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/reference/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes-old/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/release-notes-old",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes/"
+   ]
+  },
+  {
+   "url": "https://www.qutech.nl/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/about-qi/"
+   ]
+  },
+  {
+   "url": "https://www.qutube.nl/quantum-algorithms/deutsch-jozsa-algorithm",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.qutube.nl/quantum-algorithms/grovers-algorithm-124",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/grover-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.spiedigitallibrary.org/conference-proceedings-of-spie/11324/2551853/Quantum-Inspire--QuTechs-platform-for-co-development-and-collaboration/10.1117/12.2551853.short",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/reference/"
+   ]
+  },
+  {
+   "url": "https://www.springerprofessional.de/en/hybrid-helmholtz-machines-a-gate-based-quantum-circuit-implement/17920606",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/reference/"
+   ]
+  },
+  {
+   "url": "https://www.surf.nl/en/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/partners/"
+   ]
+  },
+  {
+   "url": "https://www.tno.nl/en/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/partners/",
+    "https://www.quantum-inspire.com/terms-and-conditions/"
+   ]
+  },
+  {
+   "url": "https://www.tno.nl/en/focus-areas/industry/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/about-qi/"
+   ]
+  },
+  {
+   "url": "https://www.tno.nl/nl/over-tno/contact/corporate-legal/privacystatement/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/terms-and-conditions/"
+   ]
+  },
+  {
+   "url": "https://www.tudelft.nl/en/",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/about-qi/",
+    "https://www.quantum-inspire.com/partners/",
+    "https://www.quantum-inspire.com/terms-and-conditions/"
+   ]
+  },
+  {
+   "url": "https://www.tudelft.nl/en/privacy-statement",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/terms-and-conditions/"
+   ]
+  },
+  {
+   "url": "https://www.tudelft.nl/ewi/onderzoek/quantum-computing/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  },
+  {
+   "url": "https://www.youtube.com/@QuTechChannel",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/contact/"
+   ]
+  },
+  {
+   "url": "https://www.youtube.com/watch?v=5hNlpAxv3Gw&feature=youtu.be",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/what-is-a-qubit/"
+   ]
+  },
+  {
+   "url": "https://www.youtube.com/watch?v=wdIea5uGMW0",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/introduction-to-quantum-computing/"
+   ]
+  },
+  {
+   "url": "https://youtu.be/92wwlzjwHEY",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/superposition-and-entanglement/"
+   ]
+  },
+  {
+   "url": "https://youtu.be/JYNRvYhgUeY",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/superposition-and-entanglement/"
+   ]
+  },
+  {
+   "url": "https://youtu.be/V0ssQZBS8-U",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/what-is-a-quantum-algorithm/"
+   ]
+  },
+  {
+   "url": "https://youtu.be/qphV5z8oI9M",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/superposition-and-entanglement/"
+   ]
+  },
+  {
+   "url": "https://youtu.be/wdIea5uGMW0",
+   "status": "200",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  }
+ ],
+ "body_links_unreachable": [
+  {
+   "url": "http://quantumdelft.nl/",
+   "status": "error:[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1082)",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  },
+  {
+   "url": "http://www.quiprocone.org/Protected/Lecture_6.htm",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/grover-algorithm/"
+   ]
+  },
+  {
+   "url": "https://api.quantum-inspire.com/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/",
+    "https://www.quantum-inspire.com/kbase/low-level-api/"
+   ]
+  },
+  {
+   "url": "https://github.com/DiCarloLab-Delft/QuantumInspireUtilities/blob/main/qi_utilities/notebook_guides/0.0_getting_started_starmon7.ipynb",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-transmons/"
+   ]
+  },
+  {
+   "url": "https://github.com/DiCarloLab-Delft/QuantumInspireUtilities/blob/main/qi_utilities/notebook_guides/0.1_getting_started_tuna_devices.ipynb",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-transmons/"
+   ]
+  },
+  {
+   "url": "https://qt.eu/projects/computing/opensuperqplus.php",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/partners/"
+   ]
+  },
+  {
+   "url": "https://quantumdelta.nl/",
+   "status": "error:[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1082)",
+   "referrers": [
+    "https://www.quantum-inspire.com/partners/"
+   ]
+  },
+  {
+   "url": "https://quantumdelta.nl/accelerate-in-detail/",
+   "status": "error:[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1082)",
+   "referrers": [
+    "https://www.quantum-inspire.com/partners/"
+   ]
+  },
+  {
+   "url": "https://userinfo.surfsara.nl/",
+   "status": "401",
+   "referrers": [
+    "https://www.quantum-inspire.com/terms-and-conditions/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/account",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/release-notes-old/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/backends/spin-2/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/backends/starmon-7/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/full-adder/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/full-adder/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/grover-algorithm/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/grover-algorithm/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/hardware/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/hello-quantum-world/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/managing-your-account/kbase/software-development-kit/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/managing-your-account/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/measure-z",
+   "status": "500",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/measure/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/measure-z/",
+   "status": "500",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/quantum-classification/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/quantum-classification/"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/spin-2-operational-specifics/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/kbase/quantum-classification/"
+   ]
+  },
+  {
+   "url": "https://www.tudelft.nl/ewi/onderzoek/quantum-computing/",
+   "status": "404",
+   "referrers": [
+    "https://www.quantum-inspire.com/backends/"
+   ]
   }
  ]
 }

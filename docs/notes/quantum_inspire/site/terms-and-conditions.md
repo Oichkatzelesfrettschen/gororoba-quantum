@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/terms-and-conditions/](https://www.quantum-inspire.com/terms-and-conditions/)
-> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 b738eed5c67bf6672be34166732a12087444be9e07c28e608b9afd51ea899b9d.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 12ca9d53056efab3f292cd786f6227c58a7d400216f79814d9e4d3e21ab98a15.
 
 # General conditions of use
 

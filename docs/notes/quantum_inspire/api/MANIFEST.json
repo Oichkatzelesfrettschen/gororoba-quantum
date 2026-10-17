@@ -1,7 +1,7 @@
 {
- "schema": "qi-docs-capture-v1",
+ "schema": "qi-docs-capture-v2",
  "kind": "api",
- "retrieved_utc": "2026-10-16T21:20Z",
+ "retrieved_utc": "2026-10-16T21:50Z",
  "files": [
   {
    "path": "docs/notes/quantum_inspire/api/openapi.json",
