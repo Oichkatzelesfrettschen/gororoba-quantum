@@ -17,6 +17,7 @@
    "case": "results/quantum_inspire/cases/QXsinglenodesimulator/batch-00/additivity-none.cq",
    "sha256": "9c91f8d29792827b6b6e4aa60650e35248f825957a76712a548305577531f141",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -30,6 +31,7 @@
    "case": "results/quantum_inspire/cases/QXsinglenodesimulator/batch-00/additivity-A.cq",
    "sha256": "b2024ab3cf0329978c9c5fb5f57dccb91bc62a62a3384f8264638b411fdccd74",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -43,6 +45,7 @@
    "case": "results/quantum_inspire/cases/QXsinglenodesimulator/batch-00/additivity-B.cq",
    "sha256": "9b7835975e30d6f18fba4187ea0fbfb2a7954bc32eb2b11ff7f39016917a8e7e",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -56,6 +59,7 @@
    "case": "results/quantum_inspire/cases/QXsinglenodesimulator/batch-01/additivity-none.cq",
    "sha256": "9c91f8d29792827b6b6e4aa60650e35248f825957a76712a548305577531f141",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -69,6 +73,7 @@
    "case": "results/quantum_inspire/cases/QXsinglenodesimulator/batch-01/additivity-AB.cq",
    "sha256": "1f02a3f057da78fc2641439836fa116fe1cd1e7002295ef3447c8a8bfb5dcfec",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -82,6 +87,7 @@
    "case": "results/quantum_inspire/cases/QXsinglenodesimulator/batch-01/teleport.cq",
    "sha256": "5b5d8f450bd67c0d83f059126eb3f324fde19ca3b8818fb796f53f88e89f0171",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -95,6 +101,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_qx/batch-00/readout-0.cq",
    "sha256": "2d78d57b89ecf2b806fba508734b560ae7042f4b0c1df8cfe1dc7f519285c28c",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -108,6 +115,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_qx/batch-00/readout-1.cq",
    "sha256": "60ecbe81d641021373451a90b7e12fcab073c703403f4316f89bae05c8b85938",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -121,6 +129,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_qx/batch-01/targets-P-x-d025.cq",
    "sha256": "9ef35ad40489e187a9eb1ed65dcdbfae7e99ddabd80baa8ab6f4827f378a5ded",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -134,6 +143,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_qx/batch-01/targets-P-y-d025.cq",
    "sha256": "8ddd6c9c596672d860f572c9baf503548949c98771efffaa457d72b25fa485d7",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -147,6 +157,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_qx/batch-02/targets-P-x-d100.cq",
    "sha256": "7d23f5ae2ec39ef4769878ee13d92bbecb5baec63af48eba1f9b54018554af69",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -160,6 +171,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_qx/batch-02/targets-P-y-d100.cq",
    "sha256": "4ec1d10c61324632d26d4f88df5398ff42ec2bcd5aba37276b9ab2e37b2dbb56",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -173,6 +185,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_qx/batch-03/targets-Q-x-d025.cq",
    "sha256": "21d38a892d511dc741edb3fbc09255efc6e60561904c9ca65cb2cdb6a2451a82",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -186,6 +199,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_qx/batch-03/targets-Q-y-d025.cq",
    "sha256": "219ffa64232acf31ab90de57217a0709e3e936e6123860d1a6ee6f9a4eb59ccd",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -199,6 +213,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_qx/batch-04/targets-Q-x-d100.cq",
    "sha256": "0d3c614a08b8c3528ffde59a024c7a9cd527d3617b48f6877efc0dbc4313e6bd",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -212,6 +227,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_qx/batch-04/targets-Q-y-d100.cq",
    "sha256": "c1d6f0d32aa6f40dde3594bf465382a42796ce76a9e9f441906a0117f32be0c6",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -225,6 +241,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_tuna_17/batch-00/readout-0.cq",
    "sha256": "a36928ee64d24ae0e45618bfb9192a49f1d6993a9b320bae474cd5ea7a75a74d",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -241,6 +258,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_tuna_17/batch-00/readout-1.cq",
    "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -257,6 +275,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_tuna_17/batch-01/targets-P-x-d025.cq",
    "sha256": "5fbab405cc913452b798caf40cf532855bc93af27fdb9abb1fbc779e1f560af9",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -273,6 +292,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_tuna_17/batch-01/targets-P-y-d025.cq",
    "sha256": "3be8d5cb6f6cd483a0e3a0b045e07e95ec79f948433357eb850a6933a1758124",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -289,6 +309,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_tuna_17/batch-02/targets-P-x-d100.cq",
    "sha256": "f742a39b1784de0a5da2ce7e6b7b4f484f374d5464308ed915e2e68e8f3628e9",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -305,6 +326,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_tuna_17/batch-02/targets-P-y-d100.cq",
    "sha256": "bcc898a07aafc4c8cfd33f75d5c004dfd6d2bf00ea77cad2135f27742fb121ac",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -321,6 +343,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_tuna_17/batch-03/targets-Q-x-d025.cq",
    "sha256": "d28ec50119da2b62e2ea24c1e24a42834a07d408a548aab5b57e741bb7e00373",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -337,6 +360,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_tuna_17/batch-03/targets-Q-y-d025.cq",
    "sha256": "18368ab3f9ac26330ce1aa21d502d250c9ff9872ab690a6c0ba01d1cfe88ce0c",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -353,6 +377,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_tuna_17/batch-04/targets-Q-x-d100.cq",
    "sha256": "544d75c42efec9e95e4cc463c79f14c73789f0b09f074b1f11dcdc2d98017e11",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -369,6 +394,7 @@
    "case": "results/quantum_inspire/cases/coupler_zz_tuna_17/batch-04/targets-Q-y-d100.cq",
    "sha256": "22f279701817f41c803cf0507be810d7b331650af5b89ebf92de0a047d06be55",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -385,6 +411,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-00/readout-0.cq",
    "sha256": "465d496d83a2716c6341dee71174e45e966077868068d14c67977780d74aede9",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -398,6 +425,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-00/readout-1.cq",
    "sha256": "bf9996b57c3b36b61af5fcb6b477811f2758c08b581a599eafa0061e9d68f578",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -411,6 +439,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-01/reference-x-d002.cq",
    "sha256": "6ddd7fe86451e9c14dc29b65259560475b7e6563e21157f1fafd55afab4982af",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -424,6 +453,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-01/tau000-x-d002.cq",
    "sha256": "3b24d2720e4f59256e7a7af274ef61f1a3ce20da548546765a6399bf26ff17c1",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -437,6 +467,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-01/tau005-x-d002.cq",
    "sha256": "c71340bbc5f98a23ae29ddae372434f90b58bf1462097547ad5060f3e825dbd1",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -450,6 +481,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-02/tau015-x-d002.cq",
    "sha256": "2feaed5a3ecc85518b490af3cc4e89a032808883b3dbec8dd2bef6f027d4cee2",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -463,6 +495,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-02/tau040-x-d002.cq",
    "sha256": "644a0a4bdcb0c7df2c239cdfe8aaa5c62d9a3a7f721ca482b4953209d8eaa959",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -476,6 +509,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-02/tau100-x-d002.cq",
    "sha256": "3136fd4bdb8d6190bd89d30bfa6244071b233a3e8e2a24c8089e5a9cf995ed6a",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -489,6 +523,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-03/reference-y-d002.cq",
    "sha256": "6b973f404293ecda508a8b55c59303dcb5b4c60dfb8abaac2fc1db84900b611a",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -502,6 +537,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-03/tau000-y-d002.cq",
    "sha256": "2e4b8495fe965481a50a5419d394195bbf66065478c51c7291485a97dd048603",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -515,6 +551,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-03/tau005-y-d002.cq",
    "sha256": "f4efd139a24a908ab57faaec013e003c7ce335695da38b6b503755e826727e2b",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -528,6 +565,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-04/tau015-y-d002.cq",
    "sha256": "c809ecec41a5937b5c14718f7162757bc2bd9b05d470cd7b72390dad5056ca1f",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -541,6 +579,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-04/tau040-y-d002.cq",
    "sha256": "92b6b6d6b9d9d232248b9576b186ae90770ee392c6e9c384fd7938aa5871ce95",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -554,6 +593,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-04/tau100-y-d002.cq",
    "sha256": "956636e80be738bcbd413c09ce84be21d72bf147c48e1479d60916fe870eae72",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -567,6 +607,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-05/reference-x-d077.cq",
    "sha256": "18ec8eb099f2fe97c79b9bd2ea09796a87366a81f91ee08579addf918dfdbd4f",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -580,6 +621,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-05/tau000-x-d077.cq",
    "sha256": "d1689015d0a9c2f0ba995d1aab91be6eb517a2a2be1d5d4b320dbbf74fbb0c25",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -593,6 +635,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-05/tau005-x-d077.cq",
    "sha256": "dc7a1731b9a9f405bf301fe3872833bd4bfc5ab8b49250ecaa5e3f65324810ea",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -606,6 +649,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-06/tau015-x-d077.cq",
    "sha256": "fc34882fc28ec4271a4d763ef532e7df40dded9cfd74e7dba88635a975743b5c",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -619,6 +663,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-06/tau040-x-d077.cq",
    "sha256": "e09a7bcab01a78fddac825314cca200cf8d58fae8f347d99f81a69eced139444",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -632,6 +677,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-06/tau100-x-d077.cq",
    "sha256": "5e2540c03765aa19910b849655330a060085ffaf4cef1b0d6159ed421155c962",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -645,6 +691,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-07/reference-y-d077.cq",
    "sha256": "6885a3b24adea551cfbcc9c47293cd4825f8dfde41acc116e0b6b63a269d491a",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -658,6 +705,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-07/tau000-y-d077.cq",
    "sha256": "7d6f62eebe21cdffb6f1a375c66d52b3a68851e80a0f348740acc43f21d5072f",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -671,6 +719,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-07/tau005-y-d077.cq",
    "sha256": "f8926cfdf9fac5c22748605f0fd0e44d060b5078fc58838aadbfdfa4a2992f94",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -684,6 +733,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-08/tau015-y-d077.cq",
    "sha256": "01393fd0972a7e385999bfc41aa753c3adbc8001e93faa688583d39b0d59296c",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -697,6 +747,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-08/tau040-y-d077.cq",
    "sha256": "4c901bc848d47f1789da74d61cb82a231e19897042930c0ba28d4012a615101f",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -710,6 +761,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-08/tau100-y-d077.cq",
    "sha256": "4af8f4417f0643bda54f6197aa9e044c2726fcad845643581edc0ac47d3de94b",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -723,6 +775,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-00/readout-0.cq",
    "sha256": "79eb27c82e8658a5131fbb65c75d1ec91d1ce83a628ee08712bb669d74a1220b",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -736,6 +789,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-00/readout-1.cq",
    "sha256": "3373ca8775d931df2b9c4c332729d0a63a5260576172f9b0d9edf5abb67a4e2c",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -749,6 +803,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-01/reference-x-d002.cq",
    "sha256": "1ad204fa897fb611c3721d321f61ae551dcf355ecbed52e325c3d04a08c59340",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -762,6 +817,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-01/tau000-x-d002.cq",
    "sha256": "8f301b1df4e9368e77c356cd461dd944f68a04fab1cb19ba0cfa1841392d8439",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -775,6 +831,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-01/tau005-x-d002.cq",
    "sha256": "168d2d170fb8d8737059c58eda34eda04572fa5df06bc3dabc5c44ed5fdea892",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -788,6 +845,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-02/tau015-x-d002.cq",
    "sha256": "55cff7414020d369f4871e50bc4b774cce41ba4d71941b80e16891cbb599d2f3",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -801,6 +859,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-02/tau040-x-d002.cq",
    "sha256": "91c16c280fba561e8f50f42e4fe190bd8e56369eb6fe3f6a73d4369fda07bd6d",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -814,6 +873,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-02/tau100-x-d002.cq",
    "sha256": "e9ad072a9f5c848016eae7467f0d229c53841cb226d99961c8349284438f26db",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -827,6 +887,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-03/reference-y-d002.cq",
    "sha256": "545da433569ba3f71cdc210491ec609b8d4d15c7c3d54fb4bd68594ace4c6866",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -840,6 +901,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-03/tau000-y-d002.cq",
    "sha256": "878b710cf8115ad52bada9434e5ddd50d2e0c43cd57168af811385e2f40c506e",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -853,6 +915,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-03/tau005-y-d002.cq",
    "sha256": "d579c46a901d0c3e63ee08d7bb0223259f56c11cf7d716bc4ebd0155fd5fff13",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -866,6 +929,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-04/tau015-y-d002.cq",
    "sha256": "afcebe2d35d65737d3fabe02344ddbf87f123f0839267b990e8578ade181d6fd",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -879,6 +943,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-04/tau040-y-d002.cq",
    "sha256": "20e3f3aadda522594d111b52e5606eb161500a46d6294c93f842537076a9aaf7",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -892,6 +957,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-04/tau100-y-d002.cq",
    "sha256": "3652db4a9f54adf5140398f2b7498bb42c9917b46b8d1b6569f56114743dde7e",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -905,6 +971,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-05/reference-x-d077.cq",
    "sha256": "6ef058577824c8083aee35c5821d02bd8780a39d211509b2f027f616d179ebb1",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -918,6 +985,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-05/tau000-x-d077.cq",
    "sha256": "c7b1200b5d25dad81243732268319955554566404d3a58102e148250de591fd0",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -931,6 +999,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-05/tau005-x-d077.cq",
    "sha256": "ee4bf5a99c395804dfb4b0bf320f3e41a4b3ea5b1e2ac756f9be20764cf91cf7",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -944,6 +1013,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-06/tau015-x-d077.cq",
    "sha256": "acadb6e8b3f2e06454d6916d5b125a05b8648513ede99a37940f3d09d8071e70",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -957,6 +1027,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-06/tau040-x-d077.cq",
    "sha256": "9deeda70c0873e242f48030b8249447c0ac5a43be6e37a555f21004595f3bba7",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -970,6 +1041,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-06/tau100-x-d077.cq",
    "sha256": "73aa43c466199e129469ae216a9cd7dda577e07bf7fd2aa2eac58fd62e4bfe9d",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -983,6 +1055,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-07/reference-y-d077.cq",
    "sha256": "4599368155aa1daee170c22fcf848295c0b61d4e145f312bda1c5b09b0ace52c",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -996,6 +1069,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-07/tau000-y-d077.cq",
    "sha256": "fee692a9690d3e6b3a4894353e3706def8eb47c3b9afdd965f47a28a3dcccc89",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -1009,6 +1083,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-07/tau005-y-d077.cq",
    "sha256": "6c67d6e5ae7f3832a3714c949348f1ca06284af16a103131594db09a42bc2623",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -1022,6 +1097,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-08/tau015-y-d077.cq",
    "sha256": "6440e1136f3ef4f192e6af42078398af658b1a05bd34a77314569b62d4ec2980",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -1035,6 +1111,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-08/tau040-y-d077.cq",
    "sha256": "686b6df6e0c1d11a9500612634f13865d24354d2bab31a5c34e8be44562ec3b6",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -1048,6 +1125,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_Q/batch-08/tau100-y-d077.cq",
    "sha256": "9cf17da2e6aad4968dde37ab37e4dc61630854bbeee234c5b43775cd80cd600f",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -1061,6 +1139,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-00/readout-0.cq",
    "sha256": "26bca2366191407c550349601304d5be4ff0b1f5c5a9366969a523d2ad18f109",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1077,6 +1156,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-00/readout-1.cq",
    "sha256": "f5896f0922c24a529ff4ecaabb14d1d6527f78a88bcb6a6b2f78fc29d6539b0e",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1093,6 +1173,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-01/reference-x-d002.cq",
    "sha256": "d313b0dda9943685bad7387344d204ea696e883c69a44f59feadbb88f4543bba",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1109,6 +1190,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-01/tau000-x-d002.cq",
    "sha256": "40b1357ff6d3eb4475c6a12ef79637368b555df2374ebe7410e6bf7be9411dfd",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1125,6 +1207,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-01/tau005-x-d002.cq",
    "sha256": "de8322e359820672f3996f7735622929abfcb48006af2d61f0d89d7e193d316b",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1141,6 +1224,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-02/tau015-x-d002.cq",
    "sha256": "c20f26c2c6b92fe57ecaa82e77676845f549797a2dece73931bbbd6ecfc0057f",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1157,6 +1241,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-02/tau040-x-d002.cq",
    "sha256": "95e6a352e2a0b2666d9adeecb6dd8eeb8bf5f3a6b64118082e2df74feec065b5",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1173,6 +1258,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-02/tau100-x-d002.cq",
    "sha256": "7a457077649098c2cc7b3665d776859fde59a02f7ae855431af3cb616d589cac",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1189,6 +1275,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-03/reference-y-d002.cq",
    "sha256": "b0cf7503fb1afea7ece0b2c8bd68a98ad2cc5cfd2ec5bcba0b54921f8b7f05a7",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1205,6 +1292,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-03/tau000-y-d002.cq",
    "sha256": "c3a046f8cc2aa6356e8a5de12f4f004e1f3ad0faa244e86ebc9be62650bcc8c9",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1221,6 +1309,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-03/tau005-y-d002.cq",
    "sha256": "2ddd1b24fdcacd04e60c3b1fa095ff1102a50fa97de6a09dfb02cab40d1165be",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1237,6 +1326,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-04/tau015-y-d002.cq",
    "sha256": "5e442598eec7de142a4b500901deae45547196b68790957aca0592c8310f9126",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1253,6 +1343,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-04/tau040-y-d002.cq",
    "sha256": "111e393341446cc90c1a91e8c08334ac25685241c1dea45bde6b204c7f74a389",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1269,6 +1360,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-04/tau100-y-d002.cq",
    "sha256": "d583b3578cab7e18b2e2d122b201b4b8a90da93b305340eab5353b0515e2fb42",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1285,6 +1377,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-05/reference-x-d077.cq",
    "sha256": "29a99628d382985f62be3aee6d7988f64fab66b4c6f11a451f92be96b629ece5",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1301,6 +1394,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-05/tau000-x-d077.cq",
    "sha256": "d445e53696076b5e77613bd8b8bd6a538fb772852979df1aff177ba6cc9b8aad",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1317,6 +1411,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-05/tau005-x-d077.cq",
    "sha256": "7fd0029a981ef6816b16a849c5c84ddb990b863c8473271bb8ddd043cd2bd1dc",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1333,6 +1428,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-06/tau015-x-d077.cq",
    "sha256": "8b947413153682b8fe8b11186f58ab6e088d3898a69a9175c31b37b6603789e7",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1349,6 +1445,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-06/tau040-x-d077.cq",
    "sha256": "86d0376a9b93947f46a83b9fe26cd28ab4c62ff42a1fe932268ff3f1cffb41c6",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1365,6 +1462,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-06/tau100-x-d077.cq",
    "sha256": "1939d531d5a232742b10ddce247b68d9fcfff329f3bd06e9c10763313c719827",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1381,6 +1479,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-07/reference-y-d077.cq",
    "sha256": "53ef9f4f96afe6c6593d8a79c1a660208b490918ca81c4dcd88646a6eb8b43b3",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1397,6 +1496,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-07/tau000-y-d077.cq",
    "sha256": "5f4f50ad2e16c82ec25953160e56c98b0e359ac0cc90b9948a4a5788d2f154bd",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1413,6 +1513,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-07/tau005-y-d077.cq",
    "sha256": "b9e688b94ef498976587565133873c4f9a10c9e65da09bc1f45cdf4e457421a7",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1429,6 +1530,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-08/tau015-y-d077.cq",
    "sha256": "4d6f4ec57202f0998ad7cdae5f4fec7137225613d3cbea499a738714c0211dc2",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1445,6 +1547,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-08/tau040-y-d077.cq",
    "sha256": "8c93ebd3bc56da959711f0937912140ad1f2d259b1c68c1901c4ec1e1527f08f",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1461,6 +1564,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_P/batch-08/tau100-y-d077.cq",
    "sha256": "e8be9b4c871425bc18b95c6609b3924fdaefe07ef8f17a7cd5a9244ca4e96b68",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1477,6 +1581,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-00/readout-0.cq",
    "sha256": "87039fee7acf5ca9e591f13fa76ec3f0504947ea9b6a981a06ec9856979671c6",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1493,6 +1598,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-00/readout-1.cq",
    "sha256": "14061bdf38bd70c9b39bacd0ec34e87e53787dc619f620d5f3a3348925729d2a",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1509,6 +1615,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-01/reference-x-d002.cq",
    "sha256": "8e63d3a20ee77cfcb3c5f9690601a256d55785f11ac3b2ca177e085844117541",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1525,6 +1632,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-01/tau000-x-d002.cq",
    "sha256": "b7399c66199c92052816ea0806f8c9b9362df8f2d13c178646318f9491bf3c58",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1541,6 +1649,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-01/tau005-x-d002.cq",
    "sha256": "8d5002f3f229f6ad3cc62d8e68aa866e6850e74bbdd72687eedb65529bdc2bc1",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1557,6 +1666,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-02/tau015-x-d002.cq",
    "sha256": "7468d3543cdfca1590185f6c692604c97819314165aac5bbc7ed1ae8590c4471",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1573,6 +1683,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-02/tau040-x-d002.cq",
    "sha256": "a81f5aa0fa17aaa19ed9261e69f1e8ff934a53921113d513221a41f21bd59fd1",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1589,6 +1700,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-02/tau100-x-d002.cq",
    "sha256": "ccd7687ecfe938697952568b3a6bd431e54ba7f163fe826d7458fd4738683148",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1605,6 +1717,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-03/reference-y-d002.cq",
    "sha256": "a8a0b54f1fc4bb6aab8da7bd71cc0201b1ef7390b23c7570c76337ffd77cbc65",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1621,6 +1734,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-03/tau000-y-d002.cq",
    "sha256": "ebe170d0acfb11134bf8bf218cda8a243fedc885b97b8ef0ceea1d96aa5347a5",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1637,6 +1751,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-03/tau005-y-d002.cq",
    "sha256": "5bdb110e271cf123fafc80245f791993de805cc192481ae2ee4b40c103dc4f22",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1653,6 +1768,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-04/tau015-y-d002.cq",
    "sha256": "47d8a2cc84e79b3c17b1220d83188b6a8dc073e1a78e4f399280b99e7736b48d",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1669,6 +1785,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-04/tau040-y-d002.cq",
    "sha256": "fc7e1b0dd01dfa341d485d6eba226c3a100cbb30f95c37736ac38ba3748ba64e",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1685,6 +1802,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-04/tau100-y-d002.cq",
    "sha256": "e016952a36957e9a7e2966078986f40da967f498eeba6ce9229c962ad55fdc1c",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1701,6 +1819,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-05/reference-x-d077.cq",
    "sha256": "ed9f62a155f3b734e9deb3542b77f7d893c4ab2816101f9241f7b026bc18535e",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1717,6 +1836,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-05/tau000-x-d077.cq",
    "sha256": "66334f6550e6506b14df2995b0c776b9aabe85e3bcee9e8dbdb7e94d9864a751",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1733,6 +1853,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-05/tau005-x-d077.cq",
    "sha256": "0540aa0ff00bd7485d156e2ed5d3347fcc521483662d420f491ea3f56081c817",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1749,6 +1870,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-06/tau015-x-d077.cq",
    "sha256": "9b11fcdd68ca897734f0dabb2ae0a5c706bc19c9449dc6d42e159f67424bdedd",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1765,6 +1887,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-06/tau040-x-d077.cq",
    "sha256": "6dbd5bd2b335fd0af5f7685183c69a3f5531cbd8207bd3c7cede07758483ffa7",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1781,6 +1904,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-06/tau100-x-d077.cq",
    "sha256": "b7da7e766186aae8c10e914d4cd1db31b77cc773185c11f1b76d5f26358b799f",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1797,6 +1921,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-07/reference-y-d077.cq",
    "sha256": "cca21891df7976c091ac131dfe9afca293ca6c505d65187e800925315d32401a",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1813,6 +1938,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-07/tau000-y-d077.cq",
    "sha256": "16d6848a1662c35c2c2b11694a78c100792de12b3f3da42652e7e19b05e8939b",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1829,6 +1955,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-07/tau005-y-d077.cq",
    "sha256": "a7fc362eb6cfdba84e5f0190933312c19de14b00c23f892d4a9fb1972cc2d5c3",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1845,6 +1972,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-08/tau015-y-d077.cq",
    "sha256": "e29f9b5a4107335ddfbbcfb2108e7ffbde7fa45fff956a0c185bd3e57bd0042e",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1861,6 +1989,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-08/tau040-y-d077.cq",
    "sha256": "885546e8b901a436a4518fd9d3dcf42294782d169fae8ce4827ff5e47a3e0fd6",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1877,6 +2006,7 @@
    "case": "results/quantum_inspire/cases/readout_ringdown_tuna_17_Q/batch-08/tau100-y-d077.cq",
    "sha256": "52f8d85bd0fb49ff61df28a31b7b7c040087b5019c35808ccc747619c6bcefdf",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -1893,6 +2023,7 @@
    "case": "results/quantum_inspire/cases/ry_probe/batch-00/x-baseline.cq",
    "sha256": "bd08a6b8a6749768d9c7375dd3f2ec0785918ceeccc609d7926a2e51c875bd96",
    "backend": "Rydberg",
+   "compiler_config_sha256": "17053238a07f5ef108666741b4eda2d2fdb46c89c4a8a7d91535c9c731b607d9",
    "passes": [
     "opensquirrel.passes.decomposer.cnot_decomposer.CNOTDecomposer",
     "opensquirrel.passes.decomposer.aba_decomposer.XZXDecomposer"
@@ -1922,6 +2053,7 @@
    "case": "results/quantum_inspire/cases/ry_probe/batch-00/x-bitreg.cq",
    "sha256": "ffd9f0e57e0956b9d60c19bc1f16611f1a289f7d8899b5b6bb1b7a7611821f7e",
    "backend": "Rydberg",
+   "compiler_config_sha256": "17053238a07f5ef108666741b4eda2d2fdb46c89c4a8a7d91535c9c731b607d9",
    "passes": [
     "opensquirrel.passes.decomposer.cnot_decomposer.CNOTDecomposer",
     "opensquirrel.passes.decomposer.aba_decomposer.XZXDecomposer"
@@ -1951,6 +2083,7 @@
    "case": "results/quantum_inspire/cases/ry_probe/batch-00/x-measure.cq",
    "sha256": "5284b4aaf17ce28ad83d1de2a7c74ba1d7b6a2c91ca03e08ae9dde2df084f586",
    "backend": "Rydberg",
+   "compiler_config_sha256": "17053238a07f5ef108666741b4eda2d2fdb46c89c4a8a7d91535c9c731b607d9",
    "passes": [
     "opensquirrel.passes.decomposer.cnot_decomposer.CNOTDecomposer",
     "opensquirrel.passes.decomposer.aba_decomposer.XZXDecomposer"
@@ -1980,6 +2113,7 @@
    "case": "results/quantum_inspire/cases/ry_probe/batch-01/h.cq",
    "sha256": "2f6ec6447e8a4ddd2c3f0218e5f912a1ee813c0bd933d61b13720dceae0845a5",
    "backend": "Rydberg",
+   "compiler_config_sha256": "17053238a07f5ef108666741b4eda2d2fdb46c89c4a8a7d91535c9c731b607d9",
    "passes": [
     "opensquirrel.passes.decomposer.cnot_decomposer.CNOTDecomposer",
     "opensquirrel.passes.decomposer.aba_decomposer.XZXDecomposer"
@@ -2015,6 +2149,7 @@
    "case": "results/quantum_inspire/cases/ry_probe/batch-01/x-cnot.cq",
    "sha256": "50be05e59ce6bff730d8209a8cf1dc6f34af5876f33ebd74e59a80c47a4b325e",
    "backend": "Rydberg",
+   "compiler_config_sha256": "17053238a07f5ef108666741b4eda2d2fdb46c89c4a8a7d91535c9c731b607d9",
    "passes": [
     "opensquirrel.passes.decomposer.cnot_decomposer.CNOTDecomposer",
     "opensquirrel.passes.decomposer.aba_decomposer.XZXDecomposer"
@@ -2050,6 +2185,7 @@
    "case": "results/quantum_inspire/cases/ry_probe/batch-01/rz-x.cq",
    "sha256": "ac4fddf938b2db7398c242db5e65d43dbea397b65e1f8232a5edd8136c74d8c5",
    "backend": "Rydberg",
+   "compiler_config_sha256": "17053238a07f5ef108666741b4eda2d2fdb46c89c4a8a7d91535c9c731b607d9",
    "passes": [
     "opensquirrel.passes.decomposer.cnot_decomposer.CNOTDecomposer",
     "opensquirrel.passes.decomposer.aba_decomposer.XZXDecomposer"
@@ -2085,6 +2221,7 @@
    "case": "results/quantum_inspire/cases/ry_probe/batch-02/h-cnot.cq",
    "sha256": "642a4962d9e2eece2a6ba8e878459bbefc6fb85e2ca4ae30c152ea3e2ec565b6",
    "backend": "Rydberg",
+   "compiler_config_sha256": "17053238a07f5ef108666741b4eda2d2fdb46c89c4a8a7d91535c9c731b607d9",
    "passes": [
     "opensquirrel.passes.decomposer.cnot_decomposer.CNOTDecomposer",
     "opensquirrel.passes.decomposer.aba_decomposer.XZXDecomposer"
@@ -2126,6 +2263,7 @@
    "case": "results/quantum_inspire/cases/ry_probe/batch-02/h-cnot-bits.cq",
    "sha256": "d1d07a4f7ae48fc86b589f3a88c089597ea088ef811d6c143a7cb8fac01fcf98",
    "backend": "Rydberg",
+   "compiler_config_sha256": "17053238a07f5ef108666741b4eda2d2fdb46c89c4a8a7d91535c9c731b607d9",
    "passes": [
     "opensquirrel.passes.decomposer.cnot_decomposer.CNOTDecomposer",
     "opensquirrel.passes.decomposer.aba_decomposer.XZXDecomposer"
@@ -2167,6 +2305,7 @@
    "case": "results/quantum_inspire/cases/ry_probe/batch-02/init-h-cnot.cq",
    "sha256": "5121eaac9485132a09899e5a9e31d2d0020f1b7814fb743c93504ae3c76db57d",
    "backend": "Rydberg",
+   "compiler_config_sha256": "17053238a07f5ef108666741b4eda2d2fdb46c89c4a8a7d91535c9c731b607d9",
    "passes": [
     "opensquirrel.passes.decomposer.cnot_decomposer.CNOTDecomposer",
     "opensquirrel.passes.decomposer.aba_decomposer.XZXDecomposer"
@@ -2214,6 +2353,7 @@
    "case": "results/quantum_inspire/cases/tuna_17/batch-00/additivity-none.cq",
    "sha256": "04d932ba87693ceee8842a28849a04757c376d5ab348855eb5ccbb017e440409",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2230,6 +2370,7 @@
    "case": "results/quantum_inspire/cases/tuna_17/batch-00/additivity-A.cq",
    "sha256": "fb05d345bf309036d7824fcbf47d6c4bd643f20a0fc3a5450dd99571978aefc9",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2246,6 +2387,7 @@
    "case": "results/quantum_inspire/cases/tuna_17/batch-00/additivity-B.cq",
    "sha256": "1be73dd40bc110f5cd0c9931b939c65fc3c185b5f1a0ce942f06a9c7d13f5af1",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2262,6 +2404,7 @@
    "case": "results/quantum_inspire/cases/tuna_17/batch-01/additivity-none.cq",
    "sha256": "04d932ba87693ceee8842a28849a04757c376d5ab348855eb5ccbb017e440409",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2278,6 +2421,7 @@
    "case": "results/quantum_inspire/cases/tuna_17/batch-01/additivity-AB.cq",
    "sha256": "392bf5e3e06f8651df53d53093165b4e76a68816d861c90d47186ed963a9645c",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2294,6 +2438,7 @@
    "case": "results/quantum_inspire/cases/tuna_17/batch-01/teleport.cq",
    "sha256": "cb1e5e34c89423d0fa088fa56077a87e4df1e086fae8654cadb2b9cc637a9a02",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2809,6 +2954,7 @@
    "case": "results/quantum_inspire/cases/tuna_5/batch-00/additivity-none.cq",
    "sha256": "d9ff321859be6851803aee96991ba056c0439a9b5841aae0d695f9f490e9b656",
    "backend": "tuna_5",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2825,6 +2971,7 @@
    "case": "results/quantum_inspire/cases/tuna_5/batch-00/additivity-A.cq",
    "sha256": "e2c15c85fcf1e86f4721c19430788fe573a1a8b3f979145f2649386d9bc4d6b3",
    "backend": "tuna_5",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2841,6 +2988,7 @@
    "case": "results/quantum_inspire/cases/tuna_5/batch-00/additivity-B.cq",
    "sha256": "d63d1bbb25a855d6ff55b43c36f16ecc4d81a9d1a2cd1bfa593e59998d700051",
    "backend": "tuna_5",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2857,6 +3005,7 @@
    "case": "results/quantum_inspire/cases/tuna_5/batch-01/additivity-none.cq",
    "sha256": "d9ff321859be6851803aee96991ba056c0439a9b5841aae0d695f9f490e9b656",
    "backend": "tuna_5",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2873,6 +3022,7 @@
    "case": "results/quantum_inspire/cases/tuna_5/batch-01/additivity-AB.cq",
    "sha256": "27f877f3bf543db5775bf0b5a619010f8e83bc32f8c9a8a480801a99119042cd",
    "backend": "tuna_5",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2889,6 +3039,7 @@
    "case": "results/quantum_inspire/cases/tuna_9/batch-00/additivity-none.cq",
    "sha256": "4997ee12bf3f3ffe510fd807c05baa716aae12b01ae184c37dd6aa911c9ac1dd",
    "backend": "tuna_9",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2905,6 +3056,7 @@
    "case": "results/quantum_inspire/cases/tuna_9/batch-00/additivity-A.cq",
    "sha256": "4ffe7835b61ce05c5f6fde7300caefc475cae621587d78fa18a649ccaaaa55f9",
    "backend": "tuna_9",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2921,6 +3073,7 @@
    "case": "results/quantum_inspire/cases/tuna_9/batch-00/additivity-B.cq",
    "sha256": "a93a5c3dc7c3499824b4265cab1bca1c615fd8865d4d8aee9c8de07a19998ec5",
    "backend": "tuna_9",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2937,6 +3090,7 @@
    "case": "results/quantum_inspire/cases/tuna_9/batch-01/additivity-none.cq",
    "sha256": "4997ee12bf3f3ffe510fd807c05baa716aae12b01ae184c37dd6aa911c9ac1dd",
    "backend": "tuna_9",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2953,6 +3107,7 @@
    "case": "results/quantum_inspire/cases/tuna_9/batch-01/additivity-AB.cq",
    "sha256": "29965bb2e7f19bd19d7100ae75e862e66c7af55535978287831caf5ddb21abcb",
    "backend": "tuna_9",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -2969,6 +3124,7 @@
    "case": "results/quantum_inspire/cases/tuna_9/batch-01/teleport.cq",
    "sha256": "cbe8d725288a4b14a757d01b38b3354184a6bb2e041a80c8535a7fa7e8ff697d",
    "backend": "tuna_9",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -3220,6 +3376,7 @@
    "case": "results/quantum_inspire/cases/zero_divisor_qx/batch-00/twin-1.cq",
    "sha256": "989ee827c747fa10fe4944294b81877cf74fd3121afdac152a5e1cc0abee56e3",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -3233,6 +3390,7 @@
    "case": "results/quantum_inspire/cases/zero_divisor_qx/batch-00/twin-2.cq",
    "sha256": "f4798a007717e4e11fdf005c510ff8be1741f2841a368518877955f3e6ffd6ee",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -3246,6 +3404,7 @@
    "case": "results/quantum_inspire/cases/zero_divisor_qx/batch-00/twin-3.cq",
    "sha256": "b35f98e5ef1621955f42beb48ec385b46e4e248b9f1b1c93b29dfe14faccb458",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -3259,6 +3418,7 @@
    "case": "results/quantum_inspire/cases/zero_divisor_qx/batch-01/twin-4.cq",
    "sha256": "db54792a0a1a6be9bdaef74b868353b6fe2b6411787b9044f2407685dad0b643",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -3272,6 +3432,7 @@
    "case": "results/quantum_inspire/cases/zero_divisor_qx/batch-01/twin-5.cq",
    "sha256": "cdd119d89a947b37acba9b04fa0d33e6c2dbc116e3c01f12da7b0411b72155bf",
    "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
    "passes": [],
    "libqasm": "ok",
    "compiled": "ok",
@@ -3285,6 +3446,7 @@
    "case": "results/quantum_inspire/cases/zero_divisor_tuna_17/batch-00/latin-1.cq",
    "sha256": "eda55cbb27c923c77a7cae243d219f5100ac8ea957abe524aa38e30912b9c269",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -3301,6 +3463,7 @@
    "case": "results/quantum_inspire/cases/zero_divisor_tuna_17/batch-00/readout-0.cq",
    "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -3317,6 +3480,7 @@
    "case": "results/quantum_inspire/cases/zero_divisor_tuna_17/batch-00/readout-1.cq",
    "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -3333,6 +3497,7 @@
    "case": "results/quantum_inspire/cases/zero_divisor_tuna_17/batch-01/latin-2.cq",
    "sha256": "9c0af8833707d78e4dd00c3575b32d253e57800a860aed83a4048e20ef2a7def",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -3349,6 +3514,7 @@
    "case": "results/quantum_inspire/cases/zero_divisor_tuna_17/batch-01/readout-0.cq",
    "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -3365,6 +3531,7 @@
    "case": "results/quantum_inspire/cases/zero_divisor_tuna_17/batch-01/readout-1.cq",
    "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -3381,6 +3548,7 @@
    "case": "results/quantum_inspire/cases/zero_divisor_tuna_17/batch-02/latin-3.cq",
    "sha256": "f4eda667ba1f9412727140a47704c792e6fbb42514365cdd05b8845633dc5695",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -3397,6 +3565,7 @@
    "case": "results/quantum_inspire/cases/zero_divisor_tuna_17/batch-02/readout-0.cq",
    "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"
@@ -3413,6 +3582,7 @@
    "case": "results/quantum_inspire/cases/zero_divisor_tuna_17/batch-02/readout-1.cq",
    "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff",
    "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
    "passes": [
     "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
     "opensquirrel.passes.decomposer.CZDecomposer"

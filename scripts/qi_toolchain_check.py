@@ -137,6 +137,16 @@ def differences(source: Sequence, compiled: Sequence) -> dict[str, dict[str, Any
     }
 
 
+def compiler_configs() -> dict[str, dict[str, Any]]:
+    catalogue = json.loads(CATALOGUE.read_text(encoding="utf-8"))
+    return {b["identifier"]: b["default_compiler_config"] for b in catalogue["backend_types"]}
+
+
+def config_digest(config: dict[str, Any]) -> str:
+    """sha256 of a backend's default_compiler_config in canonical JSON, the passes compile_circuit applies."""
+    return digest(json.dumps(config, sort_keys=True, separators=(",", ":")).encode())
+
+
 def compile_circuit(text: str, config: dict[str, Any]) -> str:
     from opensquirrel import Circuit
 
@@ -159,8 +169,7 @@ def generate() -> int:
     warnings.filterwarnings("ignore", r"builtin type \w+ has no __module__ attribute", DeprecationWarning)
     import cqasm.v3x as v3
 
-    catalogue = json.loads(CATALOGUE.read_text(encoding="utf-8"))
-    configs = {b["identifier"]: b["default_compiler_config"] for b in catalogue["backend_types"]}
+    configs = compiler_configs()
     rows = []
     failures = 0
     for path, (sha, backend) in case_files().items():
@@ -171,6 +180,7 @@ def generate() -> int:
             "case": path,
             "sha256": sha,
             "backend": backend,
+            "compiler_config_sha256": config_digest(configs[backend]),
             "passes": [step["path"] for stage in configs[backend].values() for step in stage],
             "libqasm": "ok" if not errors else errors,
         }
@@ -234,17 +244,25 @@ def check() -> int:
     record = json.loads(RECORD.read_text(encoding="utf-8"))
     if record.get("schema") != SCHEMA:
         raise SystemExit(f"{RECORD.relative_to(ROOT)}: schema differs")
-    current = {path: sha for path, (sha, _) in case_files().items()}
-    recorded = {row["case"]: row["sha256"] for row in record["circuits"]}
+    # A circuit's compilation evidence holds while its bytes, its manifest's backend and that
+    # backend's default_compiler_config all match the record.
+    configs = {name: config_digest(config) for name, config in compiler_configs().items()}
+    current = {path: (sha, backend, configs.get(backend)) for path, (sha, backend) in case_files().items()}
+    recorded = {
+        row["case"]: (row["sha256"], row["backend"], row.get("compiler_config_sha256")) for row in record["circuits"]
+    }
     if len(recorded) != len(record["circuits"]):
         raise SystemExit("the record names a circuit twice")
     stale = sorted(p for p in current.keys() | recorded.keys() if current.get(p) != recorded.get(p))
     if stale:
-        raise SystemExit(f"{len(stale)} circuits differ from the record, first {stale[0]}; rerun under $QI_PYTHON")
+        raise SystemExit(
+            f"{len(stale)} circuits differ from the record in bytes, backend or compiler configuration, "
+            f"first {stale[0]}; rerun under $QI_PYTHON"
+        )
     bad = [row["case"] for row in record["circuits"] if row["libqasm"] != "ok" or row["compiled"] != "ok"]
     if bad:
         raise SystemExit(f"{len(bad)} circuits failed analysis or compilation, first {bad[0]}")
-    print(f"qi toolchain record: {len(current)} circuits match their current bytes")
+    print(f"qi toolchain record: {len(current)} circuits match their bytes, backends and compiler configurations")
     return 0
 
 

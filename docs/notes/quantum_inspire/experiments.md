@@ -455,7 +455,7 @@ through a calibration from 03:20 UTC):
 
 | Measured effect (section above) | Its effect on delta(tau) |
 |---|---|
-| Coherent over-rotation of at least 0.050, 0.053 and 0.061 rad per X on Q6, Q8 and Q9 | The X/Y fringe turns elliptical; for the X90-idle-X90/Y90 estimator the worst rate error over the 1.5 us span is 0.19, 0.21 and 0.28 kHz, against a delta standard error of 3-5 kHz, before the common-mode cancellation between arms |
+| Coherent over-rotation of at least 0.050, 0.053 and 0.061 rad per X on Q6, Q8 and Q9 | The X/Y fringe turns elliptical; for the X90-idle-X90/Y90 estimator at the measured lower bound of the over-rotation the rate-error spread over the 1.5 us span is 0.19, 0.21 and 0.28 kHz, against a delta standard error of 3-5 kHz, before the common-mode cancellation between arms; the crosstalk run bounds the over-rotation only from below, so these spreads are a scenario, not a cap |
 | Ramsey visibility 0.04, 0.27 and 0.08 at 2 us on Q5, Q6 and Q7; Q5 and Q6 idle near 323 kHz from their frames | Q5 (P) and Q7 (Q) are expected to fail the 0.3 rule and Q6 sits near it; delta is wrapped against the reference, so the alias edge enters the absolute rate only |
 | Residual ZZ, J from -31.4 to +11.7 kHz on the 24 couplers | Spectators stay in \|0> in every arm, so each target carries the same static offset in every arm and delta cancels it |
 | Simultaneous-drive crosstalk and neighbor-drive phase shifts | Every arm runs the same simultaneous X90 schedule, so the effect is common to all arms |

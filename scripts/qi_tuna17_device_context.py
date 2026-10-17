@@ -26,7 +26,9 @@ decision rule untouched. Four blocks per qubit:
   or Y; the estimator phi_hat = atan2(2 P1(Y) - 1, 2 P1(X) - 1) minus its
   eps = 0 value is evaluated on a grid of 2001 phases phi, and the rate error
   is the phase-error spread (max - min) over the pilot's SPAN. The two delays
-  see the same bounded phase error, so the spread bounds the difference.
+  see the same phase error, so the spread bounds the difference at that eps.
+  The crosstalk run gives eps only a lower bound, so the block is the
+  scenario at the measured lower bound; a larger eps gives a larger spread.
 - Readout (the readout-0 and readout-1 circuits of every retained Tuna-17
   run): P(1|0) and P(1|1) per run, and the wait before readout parsed from the
   circuit text. Where a run waits before the readout of a prepared |1>
@@ -98,7 +100,8 @@ COMMON_MODE = (
     "the static ZZ shift from neighbors that stay in |0> (every neighbor of a target is a spectator "
     "in |0>); the simultaneous-drive crosstalk of the shared X90 schedule, since every arm plays the "
     "same gates on the same targets at the same cycles; the coherent over-rotation, whose phase-estimate "
-    "bias depends on the gate angle alone and is bounded above per qubit (over_rotation block); and "
+    "bias depends on the gate angle alone (over_rotation block: the scenario at the measured lower bound of the "
+    "over-rotation, which bounds nothing above it); and "
     "the readout assignment, which the in-batch calibration inverts per target and which scales "
     "visibility without moving a phase. Does not cancel: the readout-induced effects of the other "
     "targets' simultaneous mid-circuit readouts, which the readout arms carry and the reference's "
@@ -155,7 +158,7 @@ def estimate(phi: float, eps: float) -> float:
 
 
 def over_rotation_bias(eps: float) -> dict[str, float]:
-    """Phase-estimate error range over phi and the worst rate error across the pilot's SPAN."""
+    """Phase-estimate error range over phi and the rate-error spread across the pilot's SPAN at eps."""
     phis = np.linspace(0, 2 * np.pi, PHASE_GRID)
     reference = [estimate(float(p), 0.0) for p in phis]
     errors = [wrap(estimate(float(p), eps) - r) for p, r in zip(phis, reference, strict=True)]
@@ -164,7 +167,7 @@ def over_rotation_bias(eps: float) -> dict[str, float]:
     return {
         "phase_error_min_rad": low,
         "phase_error_max_rad": high,
-        "worst_rate_error_khz": (high - low) / (2 * math.pi * seconds) / 1e3,
+        "rate_error_spread_at_eps_khz": (high - low) / (2 * math.pi * seconds) / 1e3,
     }
 
 
@@ -214,14 +217,21 @@ def readout_runs() -> list[dict[str, Any]]:
     return found
 
 
-def implied_t1(wait_us: float, no_wait: float, waited: float) -> float | None:
-    """wait / ln(P1_nowait / P1_wait); None when the wait run reads no lower P(1|1)."""
-    if not (0 < waited < no_wait):
+def implied_t1(
+    wait_us: float, no_wait: float, waited: float, floor_no_wait: float, floor_waited: float
+) -> float | None:
+    """wait / ln((P1_nowait - floor) / (P1_wait - floor)), each run's P(1|0) as its floor.
+
+    Under one assignment channel the observed P(1|1) is P(1|0) + scale * P(excited), so the
+    additive floor comes off before the survival ratio; None when the wait run reads no lower.
+    """
+    high, low = no_wait - floor_no_wait, waited - floor_waited
+    if not (0 < low < high):
         return None
-    return wait_us / math.log(no_wait / waited)
+    return wait_us / math.log(high / low)
 
 
-def readout_block(qubit: int, runs: list[dict[str, Any]]) -> dict[str, Any]:
+def readout_block(qubit: int, runs: list[dict[str, Any]], series: str) -> dict[str, Any]:
     rows = []
     for r in runs:
         wait_us = r["waits"].get(qubit, 0) * CYCLE_SECONDS * 1e6
@@ -238,7 +248,10 @@ def readout_block(qubit: int, runs: list[dict[str, Any]]) -> dict[str, Any]:
     waited = [r for r in runs if r["waits"].get(qubit, 0) > 0 and qubit in r["p1_given_1"]]
     t1: dict[str, Any] | None = None
     if waited:
-        wait_run = waited[-1]
+        # The series' batch-00 calibration is the one its verdict inverts, so the T1 beside the verdict
+        # comes from that device state; a series without one falls back to its earliest waited run.
+        own = [r for r in waited if r["run"].endswith(f"_{series}-batch-00")]
+        wait_run = (own or waited)[0]
         wait_us = wait_run["waits"][qubit] * CYCLE_SECONDS * 1e6
         candidates = [
             r
@@ -248,7 +261,14 @@ def readout_block(qubit: int, runs: list[dict[str, Any]]) -> dict[str, Any]:
             and timedelta(0) < wait_run["time"] - r["time"] <= NOWAIT_WINDOW
         ]
         by_run = {
-            r["run"]: implied_t1(wait_us, r["p1_given_1"][qubit], wait_run["p1_given_1"][qubit]) for r in candidates
+            r["run"]: implied_t1(
+                wait_us,
+                r["p1_given_1"][qubit],
+                wait_run["p1_given_1"][qubit],
+                r["p1_given_0"][qubit],
+                wait_run["p1_given_0"][qubit],
+            )
+            for r in candidates
         }
         if candidates:
             reference = candidates[0]
@@ -350,7 +370,7 @@ def build() -> dict[str, Any]:
         check = min(vis["min_sector"])
         if abs(check - targets[q]["min_visibility"]) > 1e-9 * max(1.0, check):
             raise SystemExit(f"qubit {q}: recomputed map visibility {check} differs from the analysis")
-        readout = readout_block(q, runs)
+        readout = readout_block(q, runs, series_of[q])
         t1 = readout["implied_t1"]
         prediction: dict[str, Any] | None = None
         if t1 is not None and t1["us"] is not None:

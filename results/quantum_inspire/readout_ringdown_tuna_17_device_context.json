@@ -54,7 +54,7 @@
  },
  "spectator_drive_run": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17",
  "over_rotation_model": "X90 and the final X90 or Y90 turn through pi/2 + eps/2; the rate error is the phase-error spread over 2001 phases divided by 2 pi SPAN x 20 ns",
- "common_mode": "Cancels in delta(tau), because the reference arm and every readout arm of a target share it: the static ZZ shift from neighbors that stay in |0> (every neighbor of a target is a spectator in |0>); the simultaneous-drive crosstalk of the shared X90 schedule, since every arm plays the same gates on the same targets at the same cycles; the coherent over-rotation, whose phase-estimate bias depends on the gate angle alone and is bounded above per qubit (over_rotation block); and the readout assignment, which the in-batch calibration inverts per target and which scales visibility without moving a phase. Does not cancel: the readout-induced effects of the other targets' simultaneous mid-circuit readouts, which the readout arms carry and the reference's wait does not, so they are part of what delta(tau) measures; and drift between batches, which the reference sharing a batch with tau 0 and tau 5 handles for those two arms and which moves delta(15), delta(40) and delta(100) together otherwise.",
+ "common_mode": "Cancels in delta(tau), because the reference arm and every readout arm of a target share it: the static ZZ shift from neighbors that stay in |0> (every neighbor of a target is a spectator in |0>); the simultaneous-drive crosstalk of the shared X90 schedule, since every arm plays the same gates on the same targets at the same cycles; the coherent over-rotation, whose phase-estimate bias depends on the gate angle alone (over_rotation block: the scenario at the measured lower bound of the over-rotation, which bounds nothing above it); and the readout assignment, which the in-batch calibration inverts per target and which scales visibility without moving a phase. Does not cancel: the readout-induced effects of the other targets' simultaneous mid-circuit readouts, which the readout arms carry and the reference's wait does not, so they are part of what delta(tau) measures; and drift between batches, which the reference sharing a batch with tau 0 and tau 5 handles for those two arms and which moves delta(15), delta(40) and delta(100) together otherwise.",
  "qubits": {
   "0": {
    "series": "P",
@@ -145,13 +145,13 @@
      }
     ],
     "implied_t1": {
-     "us": 2.18511,
+     "us": 14.1847,
      "wait_us": 2.0,
-     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 2.18511,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 2.18481
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 14.1847,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 14.159
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -159,7 +159,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.302322,
+    "visibility_conservative": 0.655751,
     "visibility_calibration_absorbed": 0.755046,
     "min_visibility": 0.3,
     "clears_conservative": true,
@@ -261,13 +261,13 @@
      }
     ],
     "implied_t1": {
-     "us": 26.6188,
+     "us": 25.4796,
      "wait_us": 2.0,
      "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 26.6188,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 27.4237
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 25.4796,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 26.7126
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -275,7 +275,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.888383,
+    "visibility_conservative": 0.885404,
     "visibility_calibration_absorbed": 0.957703,
     "min_visibility": 0.3,
     "clears_conservative": true,
@@ -385,13 +385,13 @@
      }
     ],
     "implied_t1": {
-     "us": 20.9012,
+     "us": 17.7789,
      "wait_us": 2.0,
      "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 20.9012,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 20.697
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 17.7789,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 17.5308
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -399,7 +399,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.81535,
+    "visibility_conservative": 0.801763,
     "visibility_calibration_absorbed": 0.897224,
     "min_visibility": 0.3,
     "clears_conservative": true,
@@ -495,13 +495,13 @@
      }
     ],
     "implied_t1": {
-     "us": 11.3363,
+     "us": 9.27136,
      "wait_us": 2.0,
      "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 11.3363,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 10.9016
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 9.27136,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 8.79336
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -509,7 +509,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.736486,
+    "visibility_conservative": 0.708108,
     "visibility_calibration_absorbed": 0.878586,
     "min_visibility": 0.3,
     "clears_conservative": true,
@@ -621,13 +621,13 @@
      }
     ],
     "implied_t1": {
-     "us": 18.6541,
+     "us": 15.599,
      "wait_us": 2.0,
-     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 18.6541,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 18.7442
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 15.599,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 15.695
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -635,7 +635,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.759554,
+    "visibility_conservative": 0.74377,
     "visibility_calibration_absorbed": 0.845515,
     "min_visibility": 0.3,
     "clears_conservative": true,
@@ -753,13 +753,13 @@
      }
     ],
     "implied_t1": {
-     "us": 16.7635,
+     "us": 15.1261,
      "wait_us": 2.0,
-     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 16.7635,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 16.7814
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 15.1261,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 15.3484
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -767,7 +767,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.0983043,
+    "visibility_conservative": 0.0970428,
     "visibility_calibration_absorbed": 0.110761,
     "min_visibility": 0.3,
     "clears_conservative": false,
@@ -825,7 +825,7 @@
      "lower_bound_rad_per_x": 0.0504852,
      "phase_error_min_rad": -0.000901505,
      "phase_error_max_rad": 0.000901505,
-     "worst_rate_error_khz": 0.191305
+     "rate_error_spread_at_eps_khz": 0.191305
     }
    },
    "readout": {
@@ -874,13 +874,13 @@
      }
     ],
     "implied_t1": {
-     "us": 1.04703,
+     "us": 5.49741,
      "wait_us": 2.0,
-     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 1.04703,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 1.03984
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 5.49741,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 5.37557
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -888,7 +888,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.0436728,
+    "visibility_conservative": 0.205013,
     "visibility_calibration_absorbed": 0.294973,
     "min_visibility": 0.3,
     "clears_conservative": false,
@@ -998,13 +998,13 @@
      }
     ],
     "implied_t1": {
-     "us": 466.142,
+     "us": 52.0291,
      "wait_us": 2.0,
      "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 466.142,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 39.1477
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 52.0291,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 22.6551
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -1012,7 +1012,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.094686,
+    "visibility_conservative": 0.0915072,
     "visibility_calibration_absorbed": 0.0950932,
     "min_visibility": 0.3,
     "clears_conservative": false,
@@ -1086,7 +1086,7 @@
      "lower_bound_rad_per_x": 0.0531998,
      "phase_error_min_rad": -0.00100111,
      "phase_error_max_rad": 0.00100111,
-     "worst_rate_error_khz": 0.212441
+     "rate_error_spread_at_eps_khz": 0.212441
     }
    },
    "readout": {
@@ -1135,13 +1135,13 @@
      }
     ],
     "implied_t1": {
-     "us": 19.8569,
+     "us": 18.0558,
      "wait_us": 2.0,
      "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 19.8569,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 20.0752
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 18.0558,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 17.9695
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -1149,7 +1149,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.824194,
+    "visibility_conservative": 0.815955,
     "visibility_calibration_absorbed": 0.911532,
     "min_visibility": 0.3,
     "clears_conservative": true,
@@ -1215,7 +1215,7 @@
      "lower_bound_rad_per_x": 0.0610702,
      "phase_error_min_rad": -0.00131942,
      "phase_error_max_rad": 0.00131942,
-     "worst_rate_error_khz": 0.27999
+     "rate_error_spread_at_eps_khz": 0.27999
     }
    },
    "readout": {
@@ -1264,13 +1264,13 @@
      }
     ],
     "implied_t1": {
-     "us": 60.5863,
+     "us": 5.14269,
      "wait_us": 2.0,
      "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 60.5863,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 56.4021
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 5.14269,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 5.23028
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -1278,7 +1278,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.847163,
+    "visibility_conservative": 0.59348,
     "visibility_calibration_absorbed": 0.875596,
     "min_visibility": 0.3,
     "clears_conservative": true,
@@ -1374,13 +1374,13 @@
      }
     ],
     "implied_t1": {
-     "us": 32.8672,
+     "us": 18.7183,
      "wait_us": 2.0,
-     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 32.8672,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 33.9836
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 18.7183,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 19.4724
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -1388,7 +1388,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.972615,
+    "visibility_conservative": 0.928891,
     "visibility_calibration_absorbed": 1.03364,
     "min_visibility": 0.3,
     "clears_conservative": true,
@@ -1500,13 +1500,13 @@
      }
     ],
     "implied_t1": {
-     "us": 25.1677,
+     "us": 22.3764,
      "wait_us": 2.0,
-     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 25.1677,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 24.3078
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 22.3764,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 21.7119
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -1514,7 +1514,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.788146,
+    "visibility_conservative": 0.780372,
     "visibility_calibration_absorbed": 0.853334,
     "min_visibility": 0.3,
     "clears_conservative": true,
@@ -1626,13 +1626,13 @@
      }
     ],
     "implied_t1": {
-     "us": 18.6295,
+     "us": 20.973,
      "wait_us": 2.0,
-     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 18.6295,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 18.8388
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 20.973,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 21.3403
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -1640,7 +1640,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.769777,
+    "visibility_conservative": 0.779067,
     "visibility_calibration_absorbed": 0.857017,
     "min_visibility": 0.3,
     "clears_conservative": true,
@@ -1742,13 +1742,13 @@
      }
     ],
     "implied_t1": {
-     "us": 23.9489,
+     "us": 22.9606,
      "wait_us": 2.0,
      "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 23.9489,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 21.7389
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 22.9606,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 20.7747
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -1756,7 +1756,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.921797,
+    "visibility_conservative": 0.918489,
     "visibility_calibration_absorbed": 1.00208,
     "min_visibility": 0.3,
     "clears_conservative": true,
@@ -1866,13 +1866,13 @@
      }
     ],
     "implied_t1": {
-     "us": 13.8609,
+     "us": 13.0612,
      "wait_us": 2.0,
      "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 13.8609,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 13.5474
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 13.0612,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 12.8742
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -1880,7 +1880,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.65733,
+    "visibility_conservative": 0.651548,
     "visibility_calibration_absorbed": 0.75936,
     "min_visibility": 0.3,
     "clears_conservative": true,
@@ -1982,13 +1982,13 @@
      }
     ],
     "implied_t1": {
-     "us": 6.81771,
+     "us": 6.27035,
      "wait_us": 2.0,
      "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 6.81771,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 6.86447
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 6.27035,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 6.29232
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -1996,7 +1996,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.656672,
+    "visibility_conservative": 0.640069,
     "visibility_calibration_absorbed": 0.880542,
     "min_visibility": 0.3,
     "clears_conservative": true,
@@ -2092,13 +2092,13 @@
      }
     ],
     "implied_t1": {
-     "us": 19.206,
+     "us": 16.6033,
      "wait_us": 2.0,
-     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+     "wait_run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
      "no_wait_run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
      "us_by_no_wait_run": {
-      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 19.206,
-      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 19.2878
+      "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17": 16.6033,
+      "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00": 16.1839
      },
      "assumption": "The implied T1 assumes the P(1|1) drop between the no-wait and the wait run comes only from T1 decay during the wait and that readout fidelity stayed constant between the runs; a readout-fidelity drift between the runs enters T1 directly."
     }
@@ -2106,7 +2106,7 @@
    "visibility_at_d2_plus_wait": {
     "label": "predicted",
     "basis": "map zero-sector visibility at 2 us (conservative for the pilot's d2 of 1.54 us)",
-    "visibility_conservative": 0.794858,
+    "visibility_conservative": 0.781989,
     "visibility_calibration_absorbed": 0.882093,
     "min_visibility": 0.3,
     "clears_conservative": true,
