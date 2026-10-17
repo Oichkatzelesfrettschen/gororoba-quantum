@@ -1630,6 +1630,11 @@ def serialize(report: dict[str, Any]) -> str:
 # its law and deviance reproduce and its parameters do not (identified()).
 CHECK_REL_TOL = 1e-6
 CHECK_ABS_TOL = 1e-6
+# A fit's total deviance is stationary in its parameters at the optimum, so it
+# reproduces to rounding, while its split across members and pairs moves at
+# first order with the parameters' own rounding.
+SPLIT_KEYS = ("member_deviance", "pair_deviance")
+SPLIT_ABS_TOL = 1e-3
 
 
 def differences(retained: Any, regenerated: Any, path: str = "") -> list[str]:
@@ -1648,7 +1653,10 @@ def differences(retained: Any, regenerated: Any, path: str = "") -> list[str]:
             for item in differences(old, new, f"{path}/{position}")
         ]
     if isinstance(retained, float) and isinstance(regenerated, float):
-        if math.isclose(retained, regenerated, rel_tol=CHECK_REL_TOL, abs_tol=CHECK_ABS_TOL):
+        split = any(f"/{key}/" in path for key in SPLIT_KEYS)
+        if math.isclose(
+            retained, regenerated, rel_tol=CHECK_REL_TOL, abs_tol=SPLIT_ABS_TOL if split else CHECK_ABS_TOL
+        ):
             return []
         return [f"{path}: {retained!r} against {regenerated!r}"]
     if type(retained) is not type(regenerated) or retained != regenerated:
@@ -1657,12 +1665,22 @@ def differences(retained: Any, regenerated: Any, path: str = "") -> list[str]:
 
 
 def identified(report: dict[str, Any]) -> dict[str, Any]:
-    """report with each unidentified model's parameter values replaced by None, keeping their names."""
+    """report with each unidentified model's parameter values replaced by None, keeping their names.
+
+    The exposure models' rates are periodic, with basins of nearly equal
+    deviance in several phase periods, so their values are masked as well,
+    and so is the count of distinct grid seeds, which a near-tie among the
+    lowest grid points decides; their deviances stay compared.
+    """
     view: dict[str, Any] = json.loads(json.dumps(report))
     for pair in view["pairs"].values():
         for name, model in pair["models"].items():
             if name != "baseline_depolarizing" and not model["improves_at_family_alpha"]:
                 model["parameters"] = dict.fromkeys(model["parameters"])
+    for name, model in view.get("piecewise", {}).get("models", {}).items():
+        if name != "no_detuning":
+            model["parameters"] = dict.fromkeys(model["parameters"])
+            model["starts"] = None
     return view
 
 
