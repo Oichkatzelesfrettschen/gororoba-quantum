@@ -1,0 +1,1357 @@
+{
+ "schema": "qi-readout-ringdown-calibration-sensitivity-v1",
+ "profile": "tuna_17",
+ "series": "P",
+ "runs": [
+  "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+  "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01",
+  "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02",
+  "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03",
+  "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04",
+  "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1",
+  "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1",
+  "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07",
+  "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08"
+ ],
+ "method": "Beside the preregistered verdict, which stays as analyzed: the readout-0 and readout-1 counts give e01 and e10 binomial variances; the analytic column propagates them through every quadrature, phase, rate, delta and the minimum visibility with the one assignment pair shared by all arms, and through A as the central-difference derivative (half-step 1e-4) of the complete weighted fit, whose weights also depend on the assignment; the bootstrap column redraws every readout count and every Ramsey count binomially from the observed fractions, recomputes the assignment and the full analysis per replicate, and reports the standard deviation of each quantity (rates and deltas as offsets on the circle). The spread is the normal-theory standard deviation of a standard deviation over the replicates.",
+ "replicates": 2000,
+ "seed": 182,
+ "targets": [
+  {
+   "target": 0,
+   "usable": true,
+   "class": "none",
+   "readout_counts": {
+    "shots_0": 8192,
+    "ones_in_0": 153,
+    "shots_1": 8192,
+    "zeros_in_1": 1250
+   },
+   "e01": 0.0186767578125,
+   "e10": 0.152587890625,
+   "e01_se": 0.00149575965306,
+   "e10_se": 0.00397294356231,
+   "class_fraction": 0.996,
+   "min_visibility_se": {
+    "preregistered": 0.0112469203134,
+    "analytic": 0.0121990311054,
+    "bootstrap": 0.0109857126449,
+    "bootstrap_shot_only": 0.00995367453271,
+    "bootstrap_spread": 0.000173742809523,
+    "analytic_minus_bootstrap_in_spreads": 6.9834168321,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": 7.44344922368,
+    "calibration_ratio_analytic": 1.08465524477,
+    "calibration_ratio_bootstrap": 1.10368413281
+   },
+   "A_se_hz": {
+    "preregistered": 3244.09723403,
+    "analytic": 3244.47673731,
+    "bootstrap": 4015.68889206,
+    "bootstrap_shot_only": 4012.56382189,
+    "bootstrap_spread": 63.5094957269,
+    "analytic_minus_bootstrap_in_spreads": -12.1432574126,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": -12.1000266034,
+    "calibration_ratio_analytic": 1.00011698271,
+    "calibration_ratio_bootstrap": 1.0007788213
+   },
+   "rate_se_hz": {
+    "reference": {
+     "preregistered": 2884.9945726,
+     "analytic": 2888.26252273,
+     "bootstrap": 2911.73755639,
+     "bootstrap_shot_only": 2901.8401574,
+     "bootstrap_spread": 46.0501271054,
+     "analytic_minus_bootstrap_in_spreads": -0.509771310891,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.36580973523,
+     "calibration_ratio_analytic": 1.00113274048,
+     "calibration_ratio_bootstrap": 1.00341073197
+    },
+    "tau000": {
+     "preregistered": 2757.82630718,
+     "analytic": 2758.8666577,
+     "bootstrap": 2735.99674412,
+     "bootstrap_shot_only": 2732.76155508,
+     "bootstrap_spread": 43.2707259451,
+     "analytic_minus_bootstrap_in_spreads": 0.528530850504,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.579254254547,
+     "calibration_ratio_analytic": 1.0003772357,
+     "calibration_ratio_bootstrap": 1.00118385339
+    },
+    "tau005": {
+     "preregistered": 2757.69108261,
+     "analytic": 2759.17734432,
+     "bootstrap": 2721.45966165,
+     "bootstrap_shot_only": 2713.8639918,
+     "bootstrap_spread": 43.040817005,
+     "analytic_minus_bootstrap_in_spreads": 0.876323576052,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 1.01826809665,
+     "calibration_ratio_analytic": 1.00053895149,
+     "calibration_ratio_bootstrap": 1.00279883954
+    },
+    "tau015": {
+     "preregistered": 2807.37613776,
+     "analytic": 2808.58296931,
+     "bootstrap": 2809.70716406,
+     "bootstrap_shot_only": 2809.07341011,
+     "bootstrap_spread": 44.4364814919,
+     "analytic_minus_bootstrap_in_spreads": -0.0252989145848,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.0381954710881,
+     "calibration_ratio_analytic": 1.00042987882,
+     "calibration_ratio_bootstrap": 1.00022560961
+    },
+    "tau040": {
+     "preregistered": 2671.05843047,
+     "analytic": 2671.5420371,
+     "bootstrap": 2680.70830313,
+     "bootstrap_shot_only": 2680.88013601,
+     "bootstrap_spread": 42.3963203074,
+     "analytic_minus_bootstrap_in_spreads": -0.216204282966,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.231664103649,
+     "calibration_ratio_analytic": 1.00018105431,
+     "calibration_ratio_bootstrap": 0.999935904305
+    },
+    "tau100": {
+     "preregistered": 2749.51655263,
+     "analytic": 2750.89890239,
+     "bootstrap": 2750.26113006,
+     "bootstrap_shot_only": 2744.75873329,
+     "bootstrap_spread": 43.4963220961,
+     "analytic_minus_bootstrap_in_spreads": 0.0146626726084,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.109384405682,
+     "calibration_ratio_analytic": 1.00050276102,
+     "calibration_ratio_bootstrap": 1.00200469233
+    }
+   },
+   "delta_se_hz": {
+    "0": {
+     "preregistered": 3991.09002961,
+     "analytic": 3991.56534988,
+     "bootstrap": 4021.33296388,
+     "bootstrap_shot_only": 4017.41514821,
+     "bootstrap_spread": 63.5987586565,
+     "analytic_minus_bootstrap_in_spreads": -0.468053380786,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.413925038152,
+     "calibration_ratio_analytic": 1.00011909535,
+     "calibration_ratio_bootstrap": 1.00097520807
+    },
+    "5": {
+     "preregistered": 3990.99659121,
+     "analytic": 3991.27103825,
+     "bootstrap": 3969.98273109,
+     "bootstrap_shot_only": 3966.55727328,
+     "bootstrap_spread": 62.7866371308,
+     "analytic_minus_bootstrap_in_spreads": 0.339057929082,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.389243938531,
+     "calibration_ratio_analytic": 1.00006876654,
+     "calibration_ratio_bootstrap": 1.00086358461
+    },
+    "15": {
+     "preregistered": 4025.48810243,
+     "analytic": 4025.86423241,
+     "bootstrap": 4091.48549637,
+     "bootstrap_shot_only": 4083.95217525,
+     "bootstrap_spread": 64.7082449942,
+     "analytic_minus_bootstrap_in_spreads": -1.01410977784,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.903502680757,
+     "calibration_ratio_analytic": 1.00009343711,
+     "calibration_ratio_bootstrap": 1.00184461541
+    },
+    "40": {
+     "preregistered": 3931.6341161,
+     "analytic": 3932.58611506,
+     "bootstrap": 3935.52667198,
+     "bootstrap_shot_only": 3929.18348259,
+     "bootstrap_spread": 62.2417027502,
+     "analytic_minus_bootstrap_in_spreads": -0.0472441592768,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.0393728545959,
+     "calibration_ratio_analytic": 1.00024213824,
+     "calibration_ratio_bootstrap": 1.00161437851
+    },
+    "100": {
+     "preregistered": 3985.35255117,
+     "analytic": 3985.6681742,
+     "bootstrap": 4010.22030695,
+     "bootstrap_shot_only": 4007.25555855,
+     "bootstrap_spread": 63.4230081797,
+     "analytic_minus_bootstrap_in_spreads": -0.387117127681,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.345347973993,
+     "calibration_ratio_analytic": 1.00007919576,
+     "calibration_ratio_bootstrap": 1.0007398451
+    }
+   }
+  },
+  {
+   "target": 4,
+   "usable": true,
+   "class": "none",
+   "readout_counts": {
+    "shots_0": 8192,
+    "ones_in_0": 90,
+    "shots_1": 8192,
+    "zeros_in_1": 1373
+   },
+   "e01": 0.010986328125,
+   "e10": 0.167602539062,
+   "e01_se": 0.00115168168053,
+   "e10_se": 0.00412677412077,
+   "class_fraction": 0.9985,
+   "min_visibility_se": {
+    "preregistered": 0.010990091705,
+    "analytic": 0.0147201958103,
+    "bootstrap": 0.0130494012364,
+    "bootstrap_shot_only": 0.00847509665472,
+    "bootstrap_spread": 0.000206380751681,
+    "analytic_minus_bootstrap_in_spreads": 8.09568993387,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": 12.1861899899,
+    "calibration_ratio_analytic": 1.33940609464,
+    "calibration_ratio_bootstrap": 1.53973479808
+   },
+   "A_se_hz": {
+    "preregistered": 2187.89284601,
+    "analytic": 2188.18041925,
+    "bootstrap": 3410.58127275,
+    "bootstrap_shot_only": 3409.5118018,
+    "bootstrap_spread": 53.939511399,
+    "analytic_minus_bootstrap_in_spreads": -22.6624383832,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": -22.6479425584,
+    "calibration_ratio_analytic": 1.00013143845,
+    "calibration_ratio_bootstrap": 1.00031367275
+   },
+   "rate_se_hz": {
+    "reference": {
+     "preregistered": 2009.69030896,
+     "analytic": 2011.18285125,
+     "bootstrap": 1975.5167441,
+     "bootstrap_shot_only": 1972.07358804,
+     "bootstrap_spread": 31.2434741809,
+     "analytic_minus_bootstrap_in_spreads": 1.14155381528,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 1.20398649322,
+     "calibration_ratio_analytic": 1.00074267278,
+     "calibration_ratio_bootstrap": 1.00174595719
+    },
+    "tau000": {
+     "preregistered": 2021.78845514,
+     "analytic": 2022.22185737,
+     "bootstrap": 2038.94224473,
+     "bootstrap_shot_only": 2037.41746068,
+     "bootstrap_spread": 32.246570205,
+     "analytic_minus_bootstrap_in_spreads": -0.518516768058,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.484671871858,
+     "calibration_ratio_analytic": 1.00021436577,
+     "calibration_ratio_bootstrap": 1.00074839059
+    },
+    "tau005": {
+     "preregistered": 2079.83459762,
+     "analytic": 2082.22813124,
+     "bootstrap": 2094.98366661,
+     "bootstrap_shot_only": 2090.65736935,
+     "bootstrap_spread": 33.1328844934,
+     "analytic_minus_bootstrap_in_spreads": -0.384981131605,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.326647434825,
+     "calibration_ratio_analytic": 1.00115082883,
+     "calibration_ratio_bootstrap": 1.00206934781
+    },
+    "tau015": {
+     "preregistered": 2087.20025041,
+     "analytic": 2088.31281973,
+     "bootstrap": 2015.85286115,
+     "bootstrap_shot_only": 2015.45268188,
+     "bootstrap_spread": 31.8814036925,
+     "analytic_minus_bootstrap_in_spreads": 2.27279699715,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 2.25045199474,
+     "calibration_ratio_analytic": 1.00053304388,
+     "calibration_ratio_bootstrap": 1.00019855553
+    },
+    "tau040": {
+     "preregistered": 2157.60339405,
+     "analytic": 2157.64239313,
+     "bootstrap": 2131.07521689,
+     "bootstrap_shot_only": 2131.02113581,
+     "bootstrap_spread": 33.7036847272,
+     "analytic_minus_bootstrap_in_spreads": 0.788257321396,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.788704809461,
+     "calibration_ratio_analytic": 1.00001807519,
+     "calibration_ratio_bootstrap": 1.00002537801
+    },
+    "tau100": {
+     "preregistered": 2104.32532896,
+     "analytic": 2104.35591289,
+     "bootstrap": 2099.90937831,
+     "bootstrap_shot_only": 2099.32407363,
+     "bootstrap_spread": 33.2107863117,
+     "analytic_minus_bootstrap_in_spreads": 0.133888265548,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.150591295308,
+     "calibration_ratio_analytic": 1.00001453384,
+     "calibration_ratio_bootstrap": 1.00027880625
+    }
+   },
+   "delta_se_hz": {
+    "0": {
+     "preregistered": 2850.69880823,
+     "analytic": 2850.92112825,
+     "bootstrap": 2827.78447559,
+     "bootstrap_shot_only": 2827.23252638,
+     "bootstrap_spread": 44.7223803676,
+     "analytic_minus_bootstrap_in_spreads": 0.517339472354,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.524710036731,
+     "calibration_ratio_analytic": 1.0000779879,
+     "calibration_ratio_bootstrap": 1.00019522597
+    },
+    "5": {
+     "preregistered": 2892.15613191,
+     "analytic": 2892.2424254,
+     "bootstrap": 2921.04829613,
+     "bootstrap_shot_only": 2920.68579413,
+     "bootstrap_spread": 46.1973796446,
+     "analytic_minus_bootstrap_in_spreads": -0.623539061273,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.617560182741,
+     "calibration_ratio_analytic": 1.00002983708,
+     "calibration_ratio_bootstrap": 1.00012411537
+    },
+    "15": {
+     "preregistered": 2897.45751017,
+     "analytic": 2897.47246725,
+     "bootstrap": 2797.85074449,
+     "bootstrap_shot_only": 2796.85121312,
+     "bootstrap_spread": 44.2489681541,
+     "analytic_minus_bootstrap_in_spreads": 2.25139086659,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 2.27364165184,
+     "calibration_ratio_analytic": 1.00000516214,
+     "calibration_ratio_bootstrap": 1.00035737738
+    },
+    "40": {
+     "preregistered": 2948.57720671,
+     "analytic": 2949.28249174,
+     "bootstrap": 2892.03534646,
+     "bootstrap_shot_only": 2890.49833851,
+     "bootstrap_spread": 45.7385299049,
+     "analytic_minus_bootstrap_in_spreads": 1.25161751797,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 1.26980181309,
+     "calibration_ratio_analytic": 1.00023919504,
+     "calibration_ratio_bootstrap": 1.00053174497
+    },
+    "100": {
+     "preregistered": 2909.81790289,
+     "analytic": 2911.17297396,
+     "bootstrap": 2912.172213,
+     "bootstrap_shot_only": 2908.98728002,
+     "bootstrap_spread": 46.0570013487,
+     "analytic_minus_bootstrap_in_spreads": -0.0216957035951,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.0180346712366,
+     "calibration_ratio_analytic": 1.0004656893,
+     "calibration_ratio_bootstrap": 1.00109485972
+    }
+   }
+  },
+  {
+   "target": 5,
+   "usable": false,
+   "class": "none",
+   "readout_counts": {
+    "shots_0": 8192,
+    "ones_in_0": 340,
+    "shots_1": 8192,
+    "zeros_in_1": 1213
+   },
+   "e01": 0.04150390625,
+   "e10": 0.148071289062,
+   "e01_se": 0.00220366050717,
+   "e10_se": 0.00392411823324,
+   "class_fraction": 1.0,
+   "min_visibility_se": {
+    "preregistered": 0.0136299479025,
+    "analytic": 0.0148594068809,
+    "bootstrap": 0.012350115444,
+    "bootstrap_shot_only": 0.0102749102468,
+    "bootstrap_spread": 0.000195321307278,
+    "analytic_minus_bootstrap_in_spreads": 12.8469928441,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": 17.1770182294,
+    "calibration_ratio_analytic": 1.09020276432,
+    "calibration_ratio_bootstrap": 1.20196820676
+   },
+   "A_se_hz": {
+    "preregistered": 13284.2647797,
+    "analytic": 13393.8380271,
+    "bootstrap": 14005.9718758,
+    "bootstrap_shot_only": 13778.0646979,
+    "bootstrap_spread": 221.509244093,
+    "analytic_minus_bootstrap_in_spreads": -2.76346863639,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": -2.22925196745,
+    "calibration_ratio_analytic": 1.00824834864,
+    "calibration_ratio_bootstrap": 1.01654130554
+   },
+   "rate_se_hz": {
+    "reference": {
+     "preregistered": 11691.1151276,
+     "analytic": 12343.8840352,
+     "bootstrap": 12251.9584265,
+     "bootstrap_shot_only": 11682.463345,
+     "bootstrap_spread": 193.768920414,
+     "analytic_minus_bootstrap_in_spreads": 0.474408426885,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.0446500014838,
+     "calibration_ratio_analytic": 1.05583461462,
+     "calibration_ratio_bootstrap": 1.04874785947
+    },
+    "tau000": {
+     "preregistered": 11770.9169814,
+     "analytic": 12050.8384256,
+     "bootstrap": 12105.0177173,
+     "bootstrap_shot_only": 11680.6692392,
+     "bootstrap_spread": 191.445002752,
+     "analytic_minus_bootstrap_in_spreads": -0.283001859473,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.471402966719,
+     "calibration_ratio_analytic": 1.02378076785,
+     "calibration_ratio_bootstrap": 1.03632912374
+    },
+    "tau005": {
+     "preregistered": 11343.7529379,
+     "analytic": 11470.8893661,
+     "bootstrap": 11521.860236,
+     "bootstrap_shot_only": 11249.017558,
+     "bootstrap_spread": 182.222167377,
+     "analytic_minus_bootstrap_in_spreads": -0.279718272533,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.519889436491,
+     "calibration_ratio_analytic": 1.01120761612,
+     "calibration_ratio_bootstrap": 1.02425480062
+    },
+    "tau015": {
+     "preregistered": 11323.1183539,
+     "analytic": 11393.7531694,
+     "bootstrap": 11632.2935777,
+     "bootstrap_shot_only": 11518.3796608,
+     "bootstrap_spread": 183.968708514,
+     "analytic_minus_bootstrap_in_spreads": -1.29663577117,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -1.06138325597,
+     "calibration_ratio_analytic": 1.00623810626,
+     "calibration_ratio_bootstrap": 1.00988975188
+    },
+    "tau040": {
+     "preregistered": 13739.5381033,
+     "analytic": 14619.6180151,
+     "bootstrap": 14706.015844,
+     "bootstrap_shot_only": 13669.2327073,
+     "bootstrap_spread": 232.580679307,
+     "analytic_minus_bootstrap_in_spreads": -0.371474660671,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.302283904795,
+     "calibration_ratio_analytic": 1.06405454864,
+     "calibration_ratio_bootstrap": 1.07584793959
+    },
+    "tau100": {
+     "preregistered": 11137.2201065,
+     "analytic": 11358.5875717,
+     "bootstrap": 11526.4464164,
+     "bootstrap_shot_only": 11150.7588255,
+     "bootstrap_spread": 182.294699391,
+     "analytic_minus_bootstrap_in_spreads": -0.920810343162,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.0742683084628,
+     "calibration_ratio_analytic": 1.01987636619,
+     "calibration_ratio_bootstrap": 1.03369166142
+    }
+   },
+   "delta_se_hz": {
+    "0": {
+     "preregistered": 16590.25797,
+     "analytic": 16647.4449898,
+     "bootstrap": 16667.9189353,
+     "bootstrap_shot_only": 16517.4103118,
+     "bootstrap_spread": 263.608848905,
+     "analytic_minus_bootstrap_in_spreads": -0.0776678993071,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.276347544904,
+     "calibration_ratio_analytic": 1.00344702414,
+     "calibration_ratio_bootstrap": 1.00911211992
+    },
+    "5": {
+     "preregistered": 16289.9632794,
+     "analytic": 16445.6942784,
+     "bootstrap": 16326.1724685,
+     "bootstrap_shot_only": 16126.749698,
+     "bootstrap_spread": 258.204011439,
+     "analytic_minus_bootstrap_in_spreads": 0.462896797309,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.632110943775,
+     "calibration_ratio_analytic": 1.00955993555,
+     "calibration_ratio_bootstrap": 1.01236596178
+    },
+    "15": {
+     "preregistered": 16275.6008241,
+     "analytic": 16497.0945588,
+     "bootstrap": 16438.8184142,
+     "bootstrap_shot_only": 16180.8221331,
+     "bootstrap_spread": 259.985545666,
+     "analytic_minus_bootstrap_in_spreads": 0.224151479429,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.364553693524,
+     "calibration_ratio_analytic": 1.01360894367,
+     "calibration_ratio_bootstrap": 1.01594457185
+    },
+    "40": {
+     "preregistered": 18040.4290475,
+     "analytic": 18070.0861187,
+     "bootstrap": 18229.6865027,
+     "bootstrap_shot_only": 18111.9628059,
+     "bootstrap_spread": 288.308738094,
+     "analytic_minus_bootstrap_in_spreads": -0.553574564168,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.248115124159,
+     "calibration_ratio_analytic": 1.00164392272,
+     "calibration_ratio_bootstrap": 1.00649977576
+    },
+    "100": {
+     "preregistered": 16146.8215023,
+     "analytic": 16239.1725928,
+     "bootstrap": 15965.9545895,
+     "bootstrap_shot_only": 15897.072755,
+     "bootstrap_spread": 252.507042262,
+     "analytic_minus_bootstrap_in_spreads": 1.08202132039,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.989076364332,
+     "calibration_ratio_analytic": 1.00571945943,
+     "calibration_ratio_bootstrap": 1.00433298857
+    }
+   }
+  },
+  {
+   "target": 6,
+   "usable": true,
+   "class": "tail",
+   "readout_counts": {
+    "shots_0": 8192,
+    "ones_in_0": 288,
+    "shots_1": 8192,
+    "zeros_in_1": 2700
+   },
+   "e01": 0.03515625,
+   "e10": 0.32958984375,
+   "e01_se": 0.0020348612156,
+   "e10_se": 0.00519352505256,
+   "class_fraction": 0.5415,
+   "min_visibility_se": {
+    "preregistered": 0.0162613441738,
+    "analytic": 0.0249087642734,
+    "bootstrap": 0.0241536957335,
+    "bootstrap_shot_only": 0.0149093061927,
+    "bootstrap_spread": 0.000381998973826,
+    "analytic_minus_bootstrap_in_spreads": 1.97662452432,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": 3.53937595067,
+    "calibration_ratio_analytic": 1.5317776936,
+    "calibration_ratio_bootstrap": 1.62004156473
+   },
+   "A_se_hz": {
+    "preregistered": 1534.0155864,
+    "analytic": 1540.03028246,
+    "bootstrap": 8512.92479636,
+    "bootstrap_shot_only": 8513.39279793,
+    "bootstrap_spread": 134.634822445,
+    "analytic_minus_bootstrap_in_spreads": -51.791166559,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": -51.8393167888,
+    "calibration_ratio_analytic": 1.00392088328,
+    "calibration_ratio_bootstrap": 0.999945027608
+   },
+   "rate_se_hz": {
+    "reference": {
+     "preregistered": 1287.92769273,
+     "analytic": 1410.17385238,
+     "bootstrap": 1456.8811259,
+     "bootstrap_shot_only": 1337.85798719,
+     "bootstrap_spread": 23.0410741786,
+     "analytic_minus_bootstrap_in_spreads": -2.02713090361,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -2.1670124437,
+     "calibration_ratio_analytic": 1.0949169432,
+     "calibration_ratio_bootstrap": 1.08896545063
+    },
+    "tau000": {
+     "preregistered": 1298.66934481,
+     "analytic": 1407.59528662,
+     "bootstrap": 1384.97833995,
+     "bootstrap_shot_only": 1279.55784448,
+     "bootstrap_spread": 21.9039069826,
+     "analytic_minus_bootstrap_in_spreads": 1.03255308237,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.872515589957,
+     "calibration_ratio_analytic": 1.0838750389,
+     "calibration_ratio_bootstrap": 1.08238822177
+    },
+    "tau005": {
+     "preregistered": 1300.80256092,
+     "analytic": 1386.01141286,
+     "bootstrap": 1348.22055555,
+     "bootstrap_shot_only": 1275.47080759,
+     "bootstrap_spread": 21.322570028,
+     "analytic_minus_bootstrap_in_spreads": 1.7723406355,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 1.18802533159,
+     "calibration_ratio_analytic": 1.06550483102,
+     "calibration_ratio_bootstrap": 1.05703756411
+    },
+    "tau015": {
+     "preregistered": 1792.58221501,
+     "analytic": 1913.11800841,
+     "bootstrap": 1885.71843102,
+     "bootstrap_shot_only": 1778.4925365,
+     "bootstrap_spread": 29.8232830918,
+     "analytic_minus_bootstrap_in_spreads": 0.918731090328,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.472438881768,
+     "calibration_ratio_analytic": 1.06724143104,
+     "calibration_ratio_bootstrap": 1.06029032583
+    },
+    "tau040": {
+     "preregistered": 1831.07526556,
+     "analytic": 1938.53808341,
+     "bootstrap": 1949.34988061,
+     "bootstrap_shot_only": 1825.48188367,
+     "bootstrap_spread": 30.8296362692,
+     "analytic_minus_bootstrap_in_spreads": -0.350694932003,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.181428734576,
+     "calibration_ratio_analytic": 1.05868836736,
+     "calibration_ratio_bootstrap": 1.06785495821
+    },
+    "tau100": {
+     "preregistered": 1699.11851361,
+     "analytic": 1798.46530852,
+     "bootstrap": 1780.5617376,
+     "bootstrap_shot_only": 1677.62253149,
+     "bootstrap_spread": 28.1601939556,
+     "analytic_minus_bootstrap_in_spreads": 0.635775838085,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.763346380413,
+     "calibration_ratio_analytic": 1.05846960886,
+     "calibration_ratio_bootstrap": 1.06136017143
+    }
+   },
+   "delta_se_hz": {
+    "0": {
+     "preregistered": 1829.0160767,
+     "analytic": 1829.28510606,
+     "bootstrap": 1845.19834283,
+     "bootstrap_shot_only": 1844.40199126,
+     "bootstrap_spread": 29.1824440137,
+     "analytic_minus_bootstrap_in_spreads": -0.545301714966,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.527231871127,
+     "calibration_ratio_analytic": 1.00014708966,
+     "calibration_ratio_bootstrap": 1.00043176681
+    },
+    "5": {
+     "preregistered": 1830.5313557,
+     "analytic": 1833.03821162,
+     "bootstrap": 1842.62308276,
+     "bootstrap_shot_only": 1837.76907847,
+     "bootstrap_spread": 29.1417153934,
+     "analytic_minus_bootstrap_in_spreads": -0.328905522776,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.248362962741,
+     "calibration_ratio_analytic": 1.00136946899,
+     "calibration_ratio_bootstrap": 1.00264124821
+    },
+    "15": {
+     "preregistered": 2207.28537785,
+     "analytic": 2209.28699863,
+     "bootstrap": 2228.87272525,
+     "bootstrap_shot_only": 2229.31273442,
+     "bootstrap_spread": 35.2503858303,
+     "analytic_minus_bootstrap_in_spreads": -0.555617368661,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.624882708479,
+     "calibration_ratio_analytic": 1.00090682464,
+     "calibration_ratio_bootstrap": 0.999802625639
+    },
+    "40": {
+     "preregistered": 2238.65905619,
+     "analytic": 2239.52184542,
+     "bootstrap": 2224.12829776,
+     "bootstrap_shot_only": 2221.51689704,
+     "bootstrap_spread": 35.175351084,
+     "analytic_minus_bootstrap_in_spreads": 0.437623142019,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.48733441512,
+     "calibration_ratio_analytic": 1.00038540448,
+     "calibration_ratio_bootstrap": 1.00117550342
+    },
+    "100": {
+     "preregistered": 2132.07914135,
+     "analytic": 2132.1330273,
+     "bootstrap": 2111.02147393,
+     "bootstrap_shot_only": 2110.33953282,
+     "bootstrap_spread": 33.3865279114,
+     "analytic_minus_bootstrap_in_spreads": 0.632337493313,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.651149127921,
+     "calibration_ratio_analytic": 1.0000252739,
+     "calibration_ratio_bootstrap": 1.00032314284
+    }
+   }
+  },
+  {
+   "target": 10,
+   "usable": true,
+   "class": "tail",
+   "readout_counts": {
+    "shots_0": 8192,
+    "ones_in_0": 419,
+    "shots_1": 8192,
+    "zeros_in_1": 918
+   },
+   "e01": 0.0511474609375,
+   "e10": 0.112060546875,
+   "e01_se": 0.00243397677506,
+   "e10_se": 0.00348516282975,
+   "class_fraction": 0.993,
+   "min_visibility_se": {
+    "preregistered": 0.0106425003701,
+    "analytic": 0.0139110660119,
+    "bootstrap": 0.014037638953,
+    "bootstrap_shot_only": 0.0107686720407,
+    "bootstrap_spread": 0.000222010069771,
+    "analytic_minus_bootstrap_in_spreads": -0.570122523216,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": -0.568315079975,
+    "calibration_ratio_analytic": 1.30712384572,
+    "calibration_ratio_bootstrap": 1.30356267699
+   },
+   "A_se_hz": {
+    "preregistered": 2119.19124634,
+    "analytic": 2122.1198117,
+    "bootstrap": 2150.32265571,
+    "bootstrap_shot_only": 2150.4924077,
+    "bootstrap_spread": 34.008089567,
+    "analytic_minus_bootstrap_in_spreads": -0.829298098434,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": -0.920403402773,
+    "calibration_ratio_analytic": 1.00138192594,
+    "calibration_ratio_bootstrap": 0.999921063664
+   },
+   "rate_se_hz": {
+    "reference": {
+     "preregistered": 1973.99185421,
+     "analytic": 1978.49800724,
+     "bootstrap": 1979.86316694,
+     "bootstrap_shot_only": 1980.51761025,
+     "bootstrap_spread": 31.3122143474,
+     "analytic_minus_bootstrap_in_spreads": -0.0435983124633,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.208409279705,
+     "calibration_ratio_analytic": 1.00228276171,
+     "calibration_ratio_bootstrap": 0.999669559459
+    },
+    "tau000": {
+     "preregistered": 2125.69206443,
+     "analytic": 2129.11677982,
+     "bootstrap": 2132.5675128,
+     "bootstrap_shot_only": 2130.09988445,
+     "bootstrap_spread": 33.7272858984,
+     "analytic_minus_bootstrap_in_spreads": -0.102312797603,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.130690030408,
+     "calibration_ratio_analytic": 1.00161110607,
+     "calibration_ratio_bootstrap": 1.00115845664
+    },
+    "tau005": {
+     "preregistered": 1992.45731808,
+     "analytic": 1999.1506634,
+     "bootstrap": 1976.9905428,
+     "bootstrap_shot_only": 1971.22113102,
+     "bootstrap_spread": 31.2667828124,
+     "analytic_minus_bootstrap_in_spreads": 0.708743228358,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.679193225147,
+     "calibration_ratio_analytic": 1.00335934188,
+     "calibration_ratio_bootstrap": 1.00292682119
+    },
+    "tau015": {
+     "preregistered": 1934.28531887,
+     "analytic": 1939.38136557,
+     "bootstrap": 1960.09267089,
+     "bootstrap_shot_only": 1952.5651534,
+     "bootstrap_spread": 30.9995371784,
+     "analytic_minus_bootstrap_in_spreads": -0.668116598098,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.589680885381,
+     "calibration_ratio_analytic": 1.00263458894,
+     "calibration_ratio_bootstrap": 1.00385519401
+    },
+    "tau040": {
+     "preregistered": 1910.09627904,
+     "analytic": 1926.53294277,
+     "bootstrap": 1929.64122411,
+     "bootstrap_shot_only": 1927.80155623,
+     "bootstrap_spread": 30.5179371139,
+     "analytic_minus_bootstrap_in_spreads": -0.101850964755,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.58015969856,
+     "calibration_ratio_analytic": 1.00860514934,
+     "calibration_ratio_bootstrap": 1.00095428281
+    },
+    "tau100": {
+     "preregistered": 1878.02252334,
+     "analytic": 1902.73121503,
+     "bootstrap": 1927.82449024,
+     "bootstrap_shot_only": 1903.84093748,
+     "bootstrap_spread": 30.4892048453,
+     "analytic_minus_bootstrap_in_spreads": -0.823021634766,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.84680509939,
+     "calibration_ratio_analytic": 1.01315676004,
+     "calibration_ratio_bootstrap": 1.01259745617
+    }
+   },
+   "delta_se_hz": {
+    "0": {
+     "preregistered": 2900.89823904,
+     "analytic": 2900.92622999,
+     "bootstrap": 2899.30062863,
+     "bootstrap_shot_only": 2899.98891507,
+     "bootstrap_spread": 45.8534328317,
+     "analytic_minus_bootstrap_in_spreads": 0.0354521189492,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.0198310991214,
+     "calibration_ratio_analytic": 1.00000964906,
+     "calibration_ratio_bootstrap": 0.999762658941
+    },
+    "5": {
+     "preregistered": 2804.73349979,
+     "analytic": 2804.89391607,
+     "bootstrap": 2844.91335638,
+     "bootstrap_shot_only": 2844.0669291,
+     "bootstrap_spread": 44.9932794862,
+     "analytic_minus_bootstrap_in_spreads": -0.889453730964,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.874206764949,
+     "calibration_ratio_analytic": 1.00005719484,
+     "calibration_ratio_bootstrap": 1.00029761159
+    },
+    "15": {
+     "preregistered": 2763.7119125,
+     "analytic": 2763.72089021,
+     "bootstrap": 2782.71866064,
+     "bootstrap_shot_only": 2782.18496488,
+     "bootstrap_spread": 44.0096490633,
+     "analytic_minus_bootstrap_in_spreads": -0.431672845232,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.419750049593,
+     "calibration_ratio_analytic": 1.00000324843,
+     "calibration_ratio_bootstrap": 1.00019182613
+    },
+    "40": {
+     "preregistered": 2746.83665981,
+     "analytic": 2749.355651,
+     "bootstrap": 2779.03052301,
+     "bootstrap_shot_only": 2778.82439349,
+     "bootstrap_spread": 43.951319903,
+     "analytic_minus_bootstrap_in_spreads": -0.675175900905,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.727799159436,
+     "calibration_ratio_analytic": 1.00091705169,
+     "calibration_ratio_bootstrap": 1.00007417868
+    },
+    "100": {
+     "preregistered": 2724.63069767,
+     "analytic": 2730.06605829,
+     "bootstrap": 2746.37638234,
+     "bootstrap_shot_only": 2735.90385354,
+     "bootstrap_spread": 43.4348834801,
+     "analytic_minus_bootstrap_in_spreads": -0.375512094075,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.259541524459,
+     "calibration_ratio_analytic": 1.00199489811,
+     "calibration_ratio_bootstrap": 1.00382781317
+    }
+   }
+  },
+  {
+   "target": 11,
+   "usable": true,
+   "class": "offset",
+   "readout_counts": {
+    "shots_0": 8192,
+    "ones_in_0": 130,
+    "shots_1": 8192,
+    "zeros_in_1": 1051
+   },
+   "e01": 0.015869140625,
+   "e10": 0.128295898438,
+   "e01_se": 0.00138072808122,
+   "e10_se": 0.00369484274369,
+   "class_fraction": 0.93,
+   "min_visibility_se": {
+    "preregistered": 0.0102758024399,
+    "analytic": 0.0125303002095,
+    "bootstrap": 0.0126435020283,
+    "bootstrap_shot_only": 0.0104214368668,
+    "bootstrap_spread": 0.000199961316631,
+    "analytic_minus_bootstrap_in_spreads": -0.566118590882,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": -0.728313002456,
+    "calibration_ratio_analytic": 1.21939870708,
+    "calibration_ratio_bootstrap": 1.21322061342
+   },
+   "A_se_hz": {
+    "preregistered": 2283.37510469,
+    "analytic": 2285.76934063,
+    "bootstrap": 2334.12751932,
+    "bootstrap_shot_only": 2328.13897698,
+    "bootstrap_spread": 36.9150264622,
+    "analytic_minus_bootstrap_in_spreads": -1.30998629358,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": -1.21261926588,
+    "calibration_ratio_analytic": 1.0010485513,
+    "calibration_ratio_bootstrap": 1.00257224436
+   },
+   "rate_se_hz": {
+    "reference": {
+     "preregistered": 1971.60289991,
+     "analytic": 1972.09451986,
+     "bootstrap": 1985.84979523,
+     "bootstrap_shot_only": 1984.01100037,
+     "bootstrap_spread": 31.4068949249,
+     "analytic_minus_bootstrap_in_spreads": -0.437969923542,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.395075682784,
+     "calibration_ratio_analytic": 1.00024935039,
+     "calibration_ratio_bootstrap": 1.00092680679
+    },
+    "tau000": {
+     "preregistered": 1982.51544957,
+     "analytic": 1983.01075901,
+     "bootstrap": 1946.23083877,
+     "bootstrap_shot_only": 1945.12662858,
+     "bootstrap_spread": 30.7803075538,
+     "analytic_minus_bootstrap_in_spreads": 1.19491724311,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 1.21469939569,
+     "calibration_ratio_analytic": 1.00024983888,
+     "calibration_ratio_bootstrap": 1.00056768036
+    },
+    "tau005": {
+     "preregistered": 1996.41482937,
+     "analytic": 1999.39380216,
+     "bootstrap": 2028.38354148,
+     "bootstrap_shot_only": 2025.88894521,
+     "bootstrap_spread": 32.0795806953,
+     "analytic_minus_bootstrap_in_spreads": -0.90368198998,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.918781206018,
+     "calibration_ratio_analytic": 1.00149216122,
+     "calibration_ratio_bootstrap": 1.00123135885
+    },
+    "tau015": {
+     "preregistered": 2094.79255746,
+     "analytic": 2101.29317256,
+     "bootstrap": 2123.78627556,
+     "bootstrap_shot_only": 2116.5250079,
+     "bootstrap_spread": 33.5884076226,
+     "analytic_minus_bootstrap_in_spreads": -0.669668632273,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.647022350171,
+     "calibration_ratio_analytic": 1.00310322618,
+     "calibration_ratio_bootstrap": 1.00343074976
+    },
+    "tau040": {
+     "preregistered": 1988.94955593,
+     "analytic": 1989.90324565,
+     "bootstrap": 1985.61895543,
+     "bootstrap_shot_only": 1984.95450485,
+     "bootstrap_spread": 31.4032441144,
+     "analytic_minus_bootstrap_in_spreads": 0.13642826874,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.127217782716,
+     "calibration_ratio_analytic": 1.00047949417,
+     "calibration_ratio_bootstrap": 1.00033474348
+    },
+    "tau100": {
+     "preregistered": 2038.39183293,
+     "analytic": 2041.52391908,
+     "bootstrap": 2062.68434366,
+     "bootstrap_shot_only": 2062.36288571,
+     "bootstrap_spread": 32.6220596343,
+     "analytic_minus_bootstrap_in_spreads": -0.648653850174,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.734811138478,
+     "calibration_ratio_analytic": 1.00153654763,
+     "calibration_ratio_bootstrap": 1.00015586876
+    }
+   },
+   "delta_se_hz": {
+    "0": {
+     "preregistered": 2795.99454626,
+     "analytic": 2797.39009544,
+     "bootstrap": 2792.75347932,
+     "bootstrap_shot_only": 2788.79738842,
+     "bootstrap_spread": 44.168353159,
+     "analytic_minus_bootstrap_in_spreads": 0.10497597914,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.162948295002,
+     "calibration_ratio_analytic": 1.00049912443,
+     "calibration_ratio_bootstrap": 1.00141856519
+    },
+    "5": {
+     "preregistered": 2805.86709697,
+     "analytic": 2810.04276704,
+     "bootstrap": 2881.0390457,
+     "bootstrap_shot_only": 2874.16065482,
+     "bootstrap_spread": 45.5646196407,
+     "analytic_minus_bootstrap_in_spreads": -1.55814487689,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -1.49882866108,
+     "calibration_ratio_analytic": 1.00148819239,
+     "calibration_ratio_bootstrap": 1.00239318247
+    },
+    "15": {
+     "preregistered": 2876.6949532,
+     "analytic": 2884.29093482,
+     "bootstrap": 2941.98132965,
+     "bootstrap_shot_only": 2929.11808659,
+     "bootstrap_spread": 46.5284427419,
+     "analytic_minus_bootstrap_in_spreads": -1.23989524324,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -1.12669004815,
+     "calibration_ratio_analytic": 1.00264052385,
+     "calibration_ratio_bootstrap": 1.00439150716
+    },
+    "40": {
+     "preregistered": 2800.56036018,
+     "analytic": 2802.55177714,
+     "bootstrap": 2769.55119901,
+     "bootstrap_shot_only": 2764.86394301,
+     "bootstrap_spread": 43.801401146,
+     "analytic_minus_bootstrap_in_spreads": 0.7534137553,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.814960622877,
+     "calibration_ratio_analytic": 1.00071107804,
+     "calibration_ratio_bootstrap": 1.00169529355
+    },
+    "100": {
+     "preregistered": 2835.88773746,
+     "analytic": 2840.23443665,
+     "bootstrap": 2881.76776098,
+     "bootstrap_shot_only": 2876.85140859,
+     "bootstrap_spread": 45.5761445224,
+     "analytic_minus_bootstrap_in_spreads": -0.911295256676,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.898796323267,
+     "calibration_ratio_analytic": 1.00153274727,
+     "calibration_ratio_bootstrap": 1.00170893511
+    }
+   }
+  },
+  {
+   "target": 12,
+   "usable": true,
+   "class": "offset",
+   "readout_counts": {
+    "shots_0": 8192,
+    "ones_in_0": 43,
+    "shots_1": 8192,
+    "zeros_in_1": 943
+   },
+   "e01": 0.0052490234375,
+   "e10": 0.115112304688,
+   "e01_se": 0.000798364966621,
+   "e10_se": 0.00352622468054,
+   "class_fraction": 0.442,
+   "min_visibility_se": {
+    "preregistered": 0.00981778447108,
+    "analytic": 0.0123916608756,
+    "bootstrap": 0.0110419207247,
+    "bootstrap_shot_only": 0.00800864640931,
+    "bootstrap_spread": 0.000174631759563,
+    "analytic_minus_bootstrap_in_spreads": 7.72906460001,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": 10.3597310494,
+    "calibration_ratio_analytic": 1.26216468818,
+    "calibration_ratio_bootstrap": 1.37874993605
+   },
+   "A_se_hz": {
+    "preregistered": 2350.7143098,
+    "analytic": 2350.88041992,
+    "bootstrap": 12035.4200187,
+    "bootstrap_shot_only": 12040.3843539,
+    "bootstrap_spread": 190.344291302,
+    "analytic_minus_bootstrap_in_spreads": -50.8790651537,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": -50.906018656,
+    "calibration_ratio_analytic": 1.00007066368,
+    "calibration_ratio_bootstrap": 0.999587692964
+   },
+   "rate_se_hz": {
+    "reference": {
+     "preregistered": 2047.46169687,
+     "analytic": 2050.95320166,
+     "bootstrap": 2047.96593118,
+     "bootstrap_shot_only": 2047.35414734,
+     "bootstrap_spread": 32.3892828978,
+     "analytic_minus_bootstrap_in_spreads": 0.0922302137252,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.00332052828563,
+     "calibration_ratio_analytic": 1.00170528455,
+     "calibration_ratio_bootstrap": 1.00029881681
+    },
+    "tau000": {
+     "preregistered": 2039.67071304,
+     "analytic": 2044.02528229,
+     "bootstrap": 2017.6738958,
+     "bootstrap_shot_only": 2015.27547613,
+     "bootstrap_spread": 31.9102039795,
+     "analytic_minus_bootstrap_in_spreads": 0.825798120844,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.764496426526,
+     "calibration_ratio_analytic": 1.00213493738,
+     "calibration_ratio_bootstrap": 1.00119012001
+    },
+    "tau005": {
+     "preregistered": 2104.70839955,
+     "analytic": 2106.39623899,
+     "bootstrap": 2163.32400582,
+     "bootstrap_shot_only": 2160.78107966,
+     "bootstrap_spread": 34.2137103736,
+     "analytic_minus_bootstrap_in_spreads": -1.66388755286,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -1.6388950364,
+     "calibration_ratio_analytic": 1.00080193505,
+     "calibration_ratio_bootstrap": 1.00117685507
+    },
+    "tau015": {
+     "preregistered": 2090.93549948,
+     "analytic": 2091.70201208,
+     "bootstrap": 2079.1945689,
+     "bootstrap_shot_only": 2078.92078107,
+     "bootstrap_spread": 32.8831745033,
+     "analytic_minus_bootstrap_in_spreads": 0.380359967363,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.365375867462,
+     "calibration_ratio_analytic": 1.00036658835,
+     "calibration_ratio_bootstrap": 1.00013169709
+    },
+    "tau040": {
+     "preregistered": 2113.24436528,
+     "analytic": 2114.07051604,
+     "bootstrap": 2121.43921,
+     "bootstrap_shot_only": 2122.30239624,
+     "bootstrap_spread": 33.5512879767,
+     "analytic_minus_bootstrap_in_spreads": -0.219624771483,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.269975655414,
+     "calibration_ratio_analytic": 1.00039093953,
+     "calibration_ratio_bootstrap": 0.999593278391
+    },
+    "tau100": {
+     "preregistered": 1977.21465273,
+     "analytic": 1981.74732473,
+     "bootstrap": 2007.40502945,
+     "bootstrap_shot_only": 2002.95102926,
+     "bootstrap_spread": 31.7477983397,
+     "analytic_minus_bootstrap_in_spreads": -0.808172725773,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.810650749661,
+     "calibration_ratio_analytic": 1.00229245317,
+     "calibration_ratio_bootstrap": 1.00222371897
+    }
+   },
+   "delta_se_hz": {
+    "0": {
+     "preregistered": 2890.04429339,
+     "analytic": 2890.07690284,
+     "bootstrap": 2861.66466467,
+     "bootstrap_shot_only": 2862.2832768,
+     "bootstrap_spread": 45.2582071663,
+     "analytic_minus_bootstrap_in_spreads": 0.627780903283,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.613391875912,
+     "calibration_ratio_analytic": 1.00001128337,
+     "calibration_ratio_bootstrap": 0.999783874596
+    },
+    "5": {
+     "preregistered": 2936.30666779,
+     "analytic": 2936.5190379,
+     "bootstrap": 3041.25842835,
+     "bootstrap_shot_only": 3042.40327006,
+     "bootstrap_spread": 48.0985440733,
+     "analytic_minus_bootstrap_in_spreads": -2.17760001823,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -2.20581733437,
+     "calibration_ratio_analytic": 1.00007232559,
+     "calibration_ratio_bootstrap": 0.999623704812
+    },
+    "15": {
+     "preregistered": 2926.45018121,
+     "analytic": 2927.12824834,
+     "bootstrap": 2919.21832237,
+     "bootstrap_shot_only": 2920.19117507,
+     "bootstrap_spread": 46.1684379825,
+     "analytic_minus_bootstrap_in_spreads": 0.171327563086,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.135568938669,
+     "calibration_ratio_analytic": 1.00023170295,
+     "calibration_ratio_bootstrap": 0.999666853077
+    },
+    "40": {
+     "preregistered": 2942.43116275,
+     "analytic": 2943.05361622,
+     "bootstrap": 2905.83227092,
+     "bootstrap_shot_only": 2905.02466794,
+     "bootstrap_spread": 45.9567329925,
+     "analytic_minus_bootstrap_in_spreads": 0.809921482133,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.813950260852,
+     "calibration_ratio_analytic": 1.00021154394,
+     "calibration_ratio_bootstrap": 1.00027800211
+    },
+    "100": {
+     "preregistered": 2846.30939694,
+     "analytic": 2846.34549398,
+     "bootstrap": 2879.98536664,
+     "bootstrap_shot_only": 2880.19613394,
+     "bootstrap_spread": 45.5479553453,
+     "analytic_minus_bootstrap_in_spreads": -0.738559445925,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.743979323287,
+     "calibration_ratio_analytic": 1.00001268205,
+     "calibration_ratio_bootstrap": 0.999926821896
+    }
+   }
+  },
+  {
+   "target": 16,
+   "usable": true,
+   "class": "tail",
+   "readout_counts": {
+    "shots_0": 8192,
+    "ones_in_0": 233,
+    "shots_1": 8192,
+    "zeros_in_1": 1155
+   },
+   "e01": 0.0284423828125,
+   "e10": 0.140991210938,
+   "e01_se": 0.00183663263677,
+   "e10_se": 0.00384503105837,
+   "class_fraction": 0.842,
+   "min_visibility_se": {
+    "preregistered": 0.0111747549722,
+    "analytic": 0.0139993420204,
+    "bootstrap": 0.0126459608021,
+    "bootstrap_shot_only": 0.00942485480827,
+    "bootstrap_spread": 0.000200000202982,
+    "analytic_minus_bootstrap_in_spreads": 6.7668992237,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": 8.74949193957,
+    "calibration_ratio_analytic": 1.25276500964,
+    "calibration_ratio_bootstrap": 1.34176717407
+   },
+   "A_se_hz": {
+    "preregistered": 2455.74921158,
+    "analytic": 2461.43227552,
+    "bootstrap": 2368.17632161,
+    "bootstrap_shot_only": 2366.00980598,
+    "bootstrap_spread": 37.4535199366,
+    "analytic_minus_bootstrap_in_spreads": 2.48991160411,
+    "preregistered_minus_bootstrap_shot_only_in_spreads": 2.39602060797,
+    "calibration_ratio_analytic": 1.00231418742,
+    "calibration_ratio_bootstrap": 1.00091568329
+   },
+   "rate_se_hz": {
+    "reference": {
+     "preregistered": 2113.03388568,
+     "analytic": 2113.91873022,
+     "bootstrap": 2089.15759942,
+     "bootstrap_shot_only": 2086.2164533,
+     "bootstrap_spread": 33.0407432447,
+     "analytic_minus_bootstrap_in_spreads": 0.749412040012,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.811647370695,
+     "calibration_ratio_analytic": 1.00041875549,
+     "calibration_ratio_bootstrap": 1.00140979912
+    },
+    "tau000": {
+     "preregistered": 2181.01033903,
+     "analytic": 2181.0184461,
+     "bootstrap": 2123.10049445,
+     "bootstrap_shot_only": 2124.22862007,
+     "bootstrap_spread": 33.5775617595,
+     "analytic_minus_bootstrap_in_spreads": 1.72490045768,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 1.69106141082,
+     "calibration_ratio_analytic": 1.00000371712,
+     "calibration_ratio_bootstrap": 0.999468924575
+    },
+    "tau005": {
+     "preregistered": 2130.82188295,
+     "analytic": 2130.84423703,
+     "bootstrap": 2172.19170798,
+     "bootstrap_shot_only": 2171.46946876,
+     "bootstrap_spread": 34.3539561216,
+     "analytic_minus_bootstrap_in_spreads": -1.20357232799,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -1.18319956124,
+     "calibration_ratio_analytic": 1.00001049083,
+     "calibration_ratio_bootstrap": 1.0003326039
+    },
+    "tau015": {
+     "preregistered": 2291.61862693,
+     "analytic": 2308.25839281,
+     "bootstrap": 2252.5729523,
+     "bootstrap_shot_only": 2237.84397664,
+     "bootstrap_spread": 35.6252130417,
+     "analytic_minus_bootstrap_in_spreads": 1.56309073691,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 1.50945484115,
+     "calibration_ratio_analytic": 1.00726114096,
+     "calibration_ratio_bootstrap": 1.00658177059
+    },
+    "tau040": {
+     "preregistered": 2353.87345207,
+     "analytic": 2359.2256728,
+     "bootstrap": 2333.39398647,
+     "bootstrap_shot_only": 2324.77095547,
+     "bootstrap_spread": 36.9034253889,
+     "analytic_minus_bootstrap_in_spreads": 0.699980721544,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.788612338783,
+     "calibration_ratio_analytic": 1.00227379289,
+     "calibration_ratio_bootstrap": 1.00370919595
+    },
+    "tau100": {
+     "preregistered": 2318.33578901,
+     "analytic": 2322.53238571,
+     "bootstrap": 2375.4734688,
+     "bootstrap_shot_only": 2371.73962469,
+     "bootstrap_spread": 37.5689268196,
+     "analytic_minus_bootstrap_in_spreads": -1.409172089,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -1.42148951806,
+     "calibration_ratio_analytic": 1.00181017639,
+     "calibration_ratio_bootstrap": 1.00157430608
+    }
+   },
+   "delta_se_hz": {
+    "0": {
+     "preregistered": 3036.72822311,
+     "analytic": 3037.46954335,
+     "bootstrap": 3003.24692578,
+     "bootstrap_shot_only": 3002.80533519,
+     "bootstrap_spread": 47.4973791363,
+     "analytic_minus_bootstrap_in_spreads": 0.720515914603,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.71420546851,
+     "calibration_ratio_analytic": 1.00024411807,
+     "calibration_ratio_bootstrap": 1.00014705935
+    },
+    "5": {
+     "preregistered": 3000.88555245,
+     "analytic": 3001.32566089,
+     "bootstrap": 3061.94392174,
+     "bootstrap_shot_only": 3059.64466703,
+     "bootstrap_spread": 48.4256922388,
+     "analytic_minus_bootstrap_in_spreads": -1.25177892248,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -1.21338718892,
+     "calibration_ratio_analytic": 1.00014665952,
+     "calibration_ratio_bootstrap": 1.00075147769
+    },
+    "15": {
+     "preregistered": 3117.1185626,
+     "analytic": 3124.55912246,
+     "bootstrap": 3081.49698229,
+     "bootstrap_shot_only": 3079.51112859,
+     "bootstrap_spread": 48.7349305909,
+     "analytic_minus_bootstrap_in_spreads": 0.883599086915,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 0.771673080454,
+     "calibration_ratio_analytic": 1.00238699931,
+     "calibration_ratio_bootstrap": 1.00064486005
+    },
+    "40": {
+     "preregistered": 3163.16810025,
+     "analytic": 3164.67558262,
+     "bootstrap": 3086.60493923,
+     "bootstrap_shot_only": 3085.13862219,
+     "bootstrap_spread": 48.8157146801,
+     "analytic_minus_bootstrap_in_spreads": 1.59929325835,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": 1.59844997793,
+     "calibration_ratio_analytic": 1.00047657359,
+     "calibration_ratio_bootstrap": 1.000475284
+    },
+    "100": {
+     "preregistered": 3136.81255937,
+     "analytic": 3137.7921218,
+     "bootstrap": 3221.48309829,
+     "bootstrap_shot_only": 3221.90086772,
+     "bootstrap_spread": 50.948858979,
+     "analytic_minus_bootstrap_in_spreads": -1.64264672799,
+     "preregistered_minus_bootstrap_shot_only_in_spreads": -1.67007289366,
+     "calibration_ratio_analytic": 1.00031227955,
+     "calibration_ratio_bootstrap": 0.999870334489
+    }
+   }
+  }
+ ],
+ "agreement": {
+  "agreement_sigma": 3.0,
+  "linear": {
+   "entries": 77,
+   "analytic_beyond_agreement": [],
+   "max_abs_analytic_minus_bootstrap_in_spreads": 2.27279699715,
+   "max_abs_preregistered_minus_bootstrap_shot_only_in_spreads": 2.27364165184,
+   "calibration_ratio_analytic": {
+    "min": 1.00000324843,
+    "max": 1.0949169432
+   }
+  },
+  "nonlinear": {
+   "entries": 14,
+   "analytic_beyond_agreement": [
+    "Q0 A",
+    "Q0 min_visibility",
+    "Q4 A",
+    "Q4 min_visibility",
+    "Q6 A",
+    "Q12 A",
+    "Q12 min_visibility",
+    "Q16 min_visibility"
+   ],
+   "max_abs_analytic_minus_bootstrap_in_spreads": 51.791166559,
+   "max_abs_preregistered_minus_bootstrap_shot_only_in_spreads": 51.8393167888,
+   "calibration_ratio_analytic": {
+    "min": 1.00007066368,
+    "max": 1.5317776936
+   }
+  }
+ }
+}

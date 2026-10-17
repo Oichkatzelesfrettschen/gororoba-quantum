@@ -27,7 +27,9 @@ the only path from the repository to Kaggle:
   base with REMOTE's main plus the bundled files changed since then with their modes and
   deletions; it requires git write-tree to equal HEAD's tree, installs CI's
   Python and pins (ci/install_pins.sh), and runs ci/run_gates.py on that
-  shard. Shard runs live under the ignored
+  shard. Its submission.json records the CPU Aer device every shard runs
+  under and the identity of every calibration snapshot the overlay carries.
+  Shard runs live under the ignored
   .kaggle-shards/ and are iteration records, never evidence;
   ``shards-report RUN_DIR...`` prints each collected shard's summary and
   failures.
@@ -44,8 +46,10 @@ network access and checks its bundle digests, metadata and generated code.
 and statevector GHZ circuits the GPU runs.
 
 Each run directory, results/kaggle/<UTC stamp>-<slug>/, holds submission.json
-(entry, arguments, git commit, bundle file digests, pins, machine shape) and
-the generated kernel. A Kaggle output is a numerical simulation: it enters
+(entry, arguments, git commit, bundle file digests, pins, machine shape, the
+Aer device the entry sees, and the backend, calibration, backend version and
+processor type of every bundled calibration snapshot) and the generated
+kernel. A Kaggle output is a numerical simulation: it enters
 docs/state/research_state.json only through a CPU replay gate on a reduced
 case. Credentials stay in the Kaggle CLI's own store (``kaggle auth login``).
 """
@@ -136,6 +140,11 @@ PIN_GROUPS: dict[str, tuple[str, ...]] = {
     # matrices (exact rank and nullspace) and p-adic fields; neither defines
     # a Cayley-Dickson table, so neither enters tables.json.
     "exact-arithmetic": ("python-flint==0.9.0", "pyadic==0.3.0"),
+    # The QX simulator's Python binding at the Quantum Inspire environment's
+    # version (docs/notes/quantum_inspire/requirements-qi.txt), the emulator
+    # the remote QX backend runs; its wheels are cp313 only, so an entry that
+    # needs it runs on the image's Python, never under --ci-env.
+    "qx-emulator": ("qxelarator==0.10.0",),
 }
 MAX_ACCELERATOR_SECONDS = 4 * 3600
 SMOKE_TIMEOUT_SECONDS = 1800
@@ -156,6 +165,8 @@ REMOTE_REFS = "refs/kaggle-shards/remote"
 # kernel, and the shellcheck the shellcheck gates call when the image lacks one.
 CI_PYTHON = "3.14.7"
 UV_PIN = "uv==0.13.0"
+# calibration_snapshot.SCHEMA without its version suffix, so every snapshot schema version is recognized.
+CALIBRATION_SCHEMA_PREFIX = "gororoba-calibration-snapshot-"
 SHELLCHECK_PIN = "shellcheck-py==0.10.0.1"
 SLOT_POLL_SECONDS = 90
 # What ci/install_pins.sh reads; --ci-env bundles them with the entry.
@@ -314,6 +325,32 @@ def kernel_docs() -> list[Path]:
     ]
 
 
+def calibration_identity(content: bytes) -> dict[str, Any] | None:
+    """Backend identity of one calibration snapshot's bytes (calibration_snapshot.describe), or None for other files.
+
+    backend_version and processor_type appear when the snapshot holds them, and
+    every identity names the backend and calibration.
+    """
+    try:
+        data = json.loads(content)
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return None
+    if not (isinstance(data, dict) and str(data.get("schema", "")).startswith(CALIBRATION_SCHEMA_PREFIX)):
+        return None
+    fields = ("backend", "calibration", "backend_version", "processor_type")
+    return {key: data[key] for key in fields if key in data}
+
+
+def bundled_calibrations(bundled: dict[str, bytes]) -> dict[str, dict[str, Any]]:
+    """calibration_identity of every bundled JSON file that is a calibration snapshot, by bundle path."""
+    identities: dict[str, dict[str, Any]] = {}
+    for rel, content in sorted(bundled.items()):
+        identity = calibration_identity(content) if rel.endswith(".json") else None
+        if identity is not None:
+            identities[rel] = identity
+    return identities
+
+
 def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str, revision: str) -> dict[str, Any]:
     """Write run_dir/kernel (run.py and kernel-metadata.json) and run_dir/submission.json."""
     smoke = args.entry is None
@@ -348,11 +385,13 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         revision += "-dirty"
     buffer = io.BytesIO()
     digests: dict[str, str] = {}
+    contents: dict[str, bytes] = {}
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as bundle:
         for path in sorted(set(files)):
             rel = path.relative_to(ROOT).as_posix()
             data = path.read_bytes()
             digests[rel] = sha256(data)
+            contents[rel] = data
             bundle.writestr(rel, data)
         device = "CPU" if args.machine == "cpu" or args.machine.startswith("Tpu") else "GPU"
         datasets = [dataset_record(slug) for slug in getattr(args, "dataset", [])]
@@ -414,6 +453,9 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "pins": list(kernel_pins(args.machine)),
         "pin_groups": {group: list(PIN_GROUPS[group]) for group in getattr(args, "with_groups", [])},
         "ci_env": ci_env,
+        # kernel_main.entry_aer_device: CI's CPU under --ci-env, else the machine's device.
+        "aer_device": "CPU" if ci_env else device,
+        "calibration_snapshots": bundled_calibrations(contents),
         "bundle": digests,
         "datasets": {d["ref"]: d["archive_sha256"] for d in datasets},
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
@@ -547,6 +589,37 @@ def push(args: argparse.Namespace) -> int:
     return 0
 
 
+def _dataset_history_self_test() -> None:
+    """Three uploads of one dataset keep every archive; a foreign digest or ref is refused."""
+    ref = "owner/data"
+
+    def upload(digest: str, files: int) -> dict[str, Any]:
+        return {
+            "ref": ref,
+            "archive_sha256": digest,
+            "git_commit": digest[:7],
+            "files": {str(k): "" for k in range(files)},
+        }
+
+    first = with_history(upload("a" * 64, 1), None)
+    third = with_history(upload("c" * 64, 3), with_history(upload("b" * 64, 2), first))
+    require(first["history"] == [], "a first upload carries history")
+    require([entry["files"] for entry in third["history"]] == [2, 1], f"history out of order {third['history']}")
+    for digest in ("a", "b", "c"):
+        require_dataset_version("run", ref, digest * 64, third)
+    for action, fragment in (
+        (lambda: require_dataset_version("run", ref, "d" * 64, third), "is no recorded version"),
+        (lambda: require_dataset_version("run", "owner/other", "c" * 64, third), "has the record of"),
+        (lambda: with_history({**upload("e" * 64, 1), "ref": "owner/other"}, third), "replaced by"),
+    ):
+        try:
+            action()
+        except SystemExit as reason:
+            require(fragment in str(reason), f"dataset history: {reason} lacks {fragment!r}")
+            continue
+        raise SystemExit(f"dataset history: expected a failure naming {fragment!r}")
+
+
 def self_test(args: argparse.Namespace) -> int:
     """Build the Design C kernel (CPU and GPU) and a shard kernel offline, and check bundles, metadata and code."""
     import py_compile
@@ -565,17 +638,79 @@ def self_test(args: argparse.Namespace) -> int:
         require(job["mode"] == "shards" and job["shard"] == 2 and job["count"] == 6, f"shard job {job}")
         require(job["modes"] == {} and job["deleted"] == [], "HEAD against itself carries an overlay")
         require(shard["tree"] == job["tree"] and job["python"] == CI_PYTHON, "shard job lacks the tree or CI's Python")
+        require(
+            shard["aer_device"] == "CPU" and shard["calibration_snapshots"] == {},
+            f"shard without an overlay records Aer device {shard['aer_device']} and {shard['calibration_snapshots']}",
+        )
         py_compile.compile(str(Path(scratch) / "shard/kernel/run.py"), doraise=True)
+        _shard_identity_self_test(Path(scratch), head.stdout.strip(), data)
     _overlay_self_test()
     _killed_entry_self_test()
     _push_guard_self_test()
+    _dataset_history_self_test()
     print(
-        f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private CPU, GPU and TPU kernels, "
-        "a shard kernel bound to HEAD's tree, an overlay that rebuilds a directory-to-file change, run.py compiles, "
+        f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private CPU, GPU and TPU kernels "
+        "with their Aer device and bundled calibration identity, "
+        "a shard kernel bound to HEAD's tree with CI's CPU Aer and its overlaid calibration identity, "
+        "an overlay that rebuilds a directory-to-file change, run.py compiles, "
         "an entry killed mid-run keeps its stdout and record, "
-        "an accelerator push or shard run refused while an older version runs"
+        "an accelerator push or shard run refused while an older version runs, "
+        "a re-versioned dataset that keeps every earlier archive"
     )
     return 0
+
+
+def _shard_identity_self_test(scratch: Path, head: str, data: str) -> None:
+    """A shard whose base lacks a calibration snapshot overlays it and records its identity and CI's CPU Aer device.
+
+    The base is HEAD's tree without the snapshot, written through a scratch
+    index, so the check needs no commit beyond HEAD and runs in a depth-1
+    checkout. calibration_identity is also checked on a snapshot carrying
+    backend_version and processor_type, and on bytes that are no snapshot.
+    """
+    import os
+
+    sys.path.insert(0, str(ROOT / "kaggle_kernel"))
+    import kernel_main
+
+    env = dict(os.environ, GIT_INDEX_FILE=str(scratch / "identity-index"))
+
+    def indexed(*args: str) -> str:
+        return subprocess.run(["git", *args], cwd=ROOT, env=env, capture_output=True, text=True, check=True).stdout
+
+    indexed("read-tree", head)
+    indexed("update-index", "--force-remove", "--", data)
+    base = indexed("write-tree").strip()
+    shard = build_shard_kernel(scratch / "identity-shard", "owner", "2000-01-01T000000Z", base, head, "pr", 0, 6)
+    job = bundled_job(scratch / "identity-shard/kernel/run.py")
+    require(set(job["modes"]) == {data} and job["deleted"] == [], f"identity shard overlay {job['modes']}")
+    blob = subprocess.run(["git", "cat-file", "blob", f"{head}:{data}"], cwd=ROOT, capture_output=True, check=True)
+    snapshot = json.loads(blob.stdout)
+    require(
+        shard["aer_device"] == kernel_main.entry_aer_device(job) == "CPU",
+        f"shard Aer device {shard['aer_device']}, kernel {kernel_main.entry_aer_device(job)}",
+    )
+    overlaid = {
+        key: snapshot[key] for key in ("backend", "calibration", "backend_version", "processor_type") if key in snapshot
+    }
+    require(
+        shard["calibration_snapshots"] == {f"overlay/{data}": overlaid} and set(overlaid) >= {"backend", "calibration"},
+        f"overlaid calibration identity {shard['calibration_snapshots']}",
+    )
+    synthetic = {
+        "schema": f"{CALIBRATION_SCHEMA_PREFIX}v2",
+        "backend": "ibm_fixture",
+        "calibration": "2000-01-01T00:00:00+00:00",
+        "backend_version": "1.2.3",
+        "processor_type": {"family": "Heron", "revision": "2"},
+        "instructions": {},
+    }
+    expected = {key: synthetic[key] for key in ("backend", "calibration", "backend_version", "processor_type")}
+    require(calibration_identity(json.dumps(synthetic).encode()) == expected, "snapshot identity fields")
+    require(
+        calibration_identity(b'{"schema": "kaggle-ci-shard-v1"}') is None and calibration_identity(b"\xff") is None,
+        "a file that is no calibration snapshot yields an identity",
+    )
 
 
 def _push_guard_self_test() -> None:
@@ -779,6 +914,19 @@ def _self_test_kernel(entry: str, data: str, machine: str) -> dict[str, Any]:
                 f"TPU kernel pins an image: {metadata} {notebook['metadata']}",
             )
         require(submission["untracked_inputs"] == [], f"untracked bundled inputs {submission['untracked_inputs']}")
+        device = bundled_job(run_dir / "kernel/run.py")["device"]
+        require(submission["aer_device"] == device == ("GPU" if gpu else "CPU"), f"{machine}: Aer device {device}")
+        snapshot = json.loads((ROOT / data).read_text(encoding="utf-8"))
+        identity = submission["calibration_snapshots"].get(data, {})
+        require(
+            set(submission["calibration_snapshots"]) == {data}
+            and identity.get("backend") == snapshot["backend"]
+            and identity.get("calibration") == snapshot["calibration"]
+            and all(
+                identity.get(key) == snapshot[key] for key in ("backend_version", "processor_type") if key in snapshot
+            ),
+            f"{machine}: bundled calibration identity {submission['calibration_snapshots']}",
+        )
     return submission
 
 
@@ -790,6 +938,23 @@ def dataset_record(slug: str) -> dict[str, Any]:
     path = DATASETS / f"{slug}.json"
     require(path.is_file(), f"no retained dataset record {path.relative_to(ROOT)}; run `dataset` first")
     return dict(json.loads(path.read_text(encoding="utf-8")))
+
+
+def with_history(record: dict[str, Any], previous: dict[str, Any] | None) -> dict[str, Any]:
+    """The record with every earlier version, newest first, as its archive digest, commit and file count."""
+    history: list[dict[str, Any]] = []
+    if previous is not None:
+        require(previous["ref"] == record["ref"], f"dataset record {previous['ref']} replaced by {record['ref']}")
+        entry = {"archive_sha256": previous["archive_sha256"], "git_commit": previous["git_commit"]}
+        history = [{**entry, "files": len(previous["files"])}, *previous.get("history", [])]
+    return {**record, "history": history}
+
+
+def require_dataset_version(run: str, ref: str, digest: str, record: dict[str, Any]) -> None:
+    """A run's attached archive is the record's current version or one its history names."""
+    versions = {record["archive_sha256"], *(entry["archive_sha256"] for entry in record.get("history", []))}
+    require(record["ref"] == ref, f"{run}: dataset {ref} has the record of {record['ref']}")
+    require(digest in versions, f"{run}: dataset {ref} archive {digest[:12]} is no recorded version")
 
 
 def dataset(args: argparse.Namespace) -> int:
@@ -819,6 +984,14 @@ def dataset(args: argparse.Namespace) -> int:
     manifest = {path.relative_to(ROOT).as_posix(): sha256(path.read_bytes()) for path in files}
     owner = username()
     ref = f"{owner}/{args.slug}"
+    # The prior record is read and its ref checked before the upload, so a
+    # refused re-version leaves no unrecorded remote version behind.
+    path = DATASETS / f"{args.slug}.json"
+    previous = dict(json.loads(path.read_text(encoding="utf-8"))) if path.is_file() else None
+    require(
+        previous is None or previous["ref"] == ref,
+        f"dataset record {path.name} holds {previous and previous['ref']}, not {ref}",
+    )
     with tempfile.TemporaryDirectory() as scratch:
         staging = Path(scratch)
         with tarfile.open(staging / ARCHIVE, "w:gz") as archive:
@@ -843,7 +1016,7 @@ def dataset(args: argparse.Namespace) -> int:
         "reply": reply.strip()[-300:],
     }
     DATASETS.mkdir(parents=True, exist_ok=True)
-    (DATASETS / f"{args.slug}.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(with_history(record, previous), indent=1) + "\n", encoding="utf-8")
     print(f"{ref}: {len(manifest)} files, archive {archive_sha256[:12]}")
     return 0
 
@@ -885,12 +1058,14 @@ def build_shard_kernel(
     deleted: list[str] = []
     buffer = io.BytesIO()
     digests: dict[str, str] = {}
+    contents: dict[str, bytes] = {}
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as bundle:
         for always in KERNEL_FILES:
             for path in import_closure(ROOT / always) if always.endswith(".py") else [ROOT / always]:
                 rel = path.relative_to(ROOT).as_posix()
                 data = path.read_bytes()
                 digests[rel] = sha256(data)
+                contents[rel] = data
                 bundle.writestr(rel, data)
         for status_code, rel in zip(changes[0:-1:2], changes[1::2], strict=True):
             if status_code == "D":
@@ -900,6 +1075,7 @@ def build_shard_kernel(
             data = subprocess.run(["git", "cat-file", "blob", blob], cwd=ROOT, capture_output=True, check=True).stdout
             modes[rel] = mode
             digests[f"overlay/{rel}"] = sha256(data)
+            contents[f"overlay/{rel}"] = data
             bundle.writestr(f"kaggle_kernel/overlay/{rel}", data)
         job = {
             "mode": "shards",
@@ -955,6 +1131,9 @@ def build_shard_kernel(
         "overlay_files": len(modes),
         "deleted_files": len(deleted),
         "pins": list(pins),
+        # kernel_main.entry_aer_device runs every shard under CI's CPU Aer.
+        "aer_device": "CPU",
+        "calibration_snapshots": bundled_calibrations(contents),
         "bundle": digests,
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
         "pushed_utc": stamp,
@@ -1204,8 +1383,10 @@ def verify(args: argparse.Namespace) -> int:
             "kernel_version" not in submission or "output/exit.json" in record["files"],
             f"{run_dir.name}: a versioned run's ledger lacks output/exit.json",
         )
+        for ref, digest in submission.get("datasets", {}).items():
+            require_dataset_version(run_dir.name, ref, digest, dataset_record(ref.split("/")[1]))
     require(bool(runs), f"no collect.json under {RESULTS.relative_to(ROOT)}")
-    print(f"kaggle runs: {len(runs)} collected outputs match their sha256 ledgers")
+    print(f"kaggle runs: {len(runs)} collected outputs match their sha256 ledgers and recorded dataset versions")
     return 0
 
 

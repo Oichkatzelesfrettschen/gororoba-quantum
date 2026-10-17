@@ -1,0 +1,190 @@
+{
+ "name": "exqalibur",
+ "version": "1.4.2",
+ "summary": "Cutting-edge optimization for Perceval",
+ "license": "CC BY-NC-ND 4.0",
+ "requires_python": ">=3.10",
+ "requires_dist": [
+  "protobuf==7.34.1"
+ ],
+ "project_urls": {
+  "Homepage": "https://perceval.quandela.net"
+ },
+ "files": [
+  {
+   "filename": "exqalibur-1.4.2-cp310-cp310-macosx_10_15_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:51:52.914431Z",
+   "size": 2321186,
+   "sha256": "90e576638d9606dd7f1fe86787891e0fa0b3a191b4914854cdabd79daaf0ab21"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp310-cp310-macosx_11_0_arm64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:51:54.449447Z",
+   "size": 2040966,
+   "sha256": "17a71185459647c886f779579a982b44892f08d5bafd66d0d06b0d3539cd0849"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp310-cp310-manylinux_2_26_aarch64.manylinux_2_28_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:51:55.840565Z",
+   "size": 2553855,
+   "sha256": "587885a6094e7e0b619c65a2649d68273076b236c6374894c2f65eaa0479f2fc"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:51:57.497191Z",
+   "size": 2814739,
+   "sha256": "7bc13e9e8804c1f616094a9f31a2270dc385bf2d3ffdbbdd615d26a5cd5c7bb8"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp310-cp310-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:51:59.180768Z",
+   "size": 1965109,
+   "sha256": "187233b4b7d95d5a4dea7af65a763eaba1c2a481e05d3da194b2bfd37c505cb6"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp311-cp311-macosx_10_15_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:00.631081Z",
+   "size": 2322809,
+   "sha256": "75e1d44291494a0d2abac8c8ec4667c4a5a9a11ac101f512940313b16f3a5f04"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp311-cp311-macosx_11_0_arm64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:01.862115Z",
+   "size": 2041422,
+   "sha256": "cc28deaa7d570b662d533d842ff8194b4234b3a819079d1268ccf5026caca1b2"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp311-cp311-manylinux_2_26_aarch64.manylinux_2_28_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:03.277511Z",
+   "size": 2554568,
+   "sha256": "3fa1f7e67971262e62348db84d83c899c749c793e819393912c0fe8a1ef7e020"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:05.042472Z",
+   "size": 2815241,
+   "sha256": "ff8c1c0743636d8e392e3c86f9e8475e41aeb1e7b4c3bf4d62d7d6c8b0b7d10a"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp311-cp311-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:06.558114Z",
+   "size": 1965898,
+   "sha256": "c373ff9962c768ec37fa7713e8a4ad45bf3e6672403a47c66a206b58de4f1aba"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp312-cp312-macosx_10_15_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:08.323547Z",
+   "size": 2355706,
+   "sha256": "7d537f8f6d1a7f79ec97d34c151c390aa581795eb32a70e1160e1a09585817fc"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp312-cp312-macosx_11_0_arm64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:10.220963Z",
+   "size": 2055177,
+   "sha256": "64f08ba9768d311a63f1933c671fbd5e18ecc83bba8ff146ed31ff2651717fd7"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp312-cp312-manylinux_2_26_aarch64.manylinux_2_28_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:11.625338Z",
+   "size": 2551903,
+   "sha256": "558eaaa830baf98cc8359f6fee0150c4a47f7fa7ae9fcf8bbd6ff696881fbc62"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:13.004786Z",
+   "size": 2819044,
+   "sha256": "82354c25c3723d7854bb7088b74ec70fdda0c429f802a02111c53a6bfd12e499"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp312-cp312-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:14.536255Z",
+   "size": 1969413,
+   "sha256": "ca18bffdab68a4635689fafcceb0bfd6642804c1e97b0c3ff776c599ec3b0ba6"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp313-cp313-macosx_10_15_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:15.973190Z",
+   "size": 2355897,
+   "sha256": "d23b138a02484fa185e519f70c2fff5a53a1e8ec9bc21feed2fdfdd03da5bb8b"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp313-cp313-macosx_11_0_arm64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:17.625216Z",
+   "size": 2055643,
+   "sha256": "8ce619645e5c205133c339ffeffaa4b82f98afc6280c89961e5fdd01c002c28b"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp313-cp313-manylinux_2_26_aarch64.manylinux_2_28_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:18.987393Z",
+   "size": 2552202,
+   "sha256": "4fec570addd0c7c06e4253016c5ad9c8bf3d7a07faef8e6a371ae24350ec8d52"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:20.680027Z",
+   "size": 2818975,
+   "sha256": "5976862f2d5f1bdf160aca3456568c788de2cd9b53842c83ef7517f65ae51ff1"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp313-cp313-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:22.173261Z",
+   "size": 1969474,
+   "sha256": "603fd6d3f63f0f1068c3313fe3d0c1b5a19a2f32ad46f832eee04be3a123aef6"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp314-cp314-macosx_10_15_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:23.742714Z",
+   "size": 2355024,
+   "sha256": "1e5ebe174599de36d0c061968a04fecd44bc66252179597c4baf4f05e73213c6"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp314-cp314-macosx_11_0_arm64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:25.272670Z",
+   "size": 2058703,
+   "sha256": "9c3910a8633d39c229b2eff694eef6332d5d53ff50492d361fa5cae46abb93fa"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp314-cp314-manylinux_2_26_aarch64.manylinux_2_28_aarch64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:26.608265Z",
+   "size": 2554194,
+   "sha256": "f1c8a56529eec3093090e23b6b7585bd2070756944d307ce4096a8244d99960c"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:28.356927Z",
+   "size": 2820190,
+   "sha256": "d1cec30be1aa59a17722299c3e065912f00b5bac036e3bdce18012dee4d5a4f7"
+  },
+  {
+   "filename": "exqalibur-1.4.2-cp314-cp314-win_amd64.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-09-07T11:52:29.941557Z",
+   "size": 2030599,
+   "sha256": "b81ed7235ca84fe26b954ff9e36c0b31fc642d8602e3980c97cdff6686f7c312"
+  }
+ ]
+}

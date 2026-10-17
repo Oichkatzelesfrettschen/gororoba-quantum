@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-17T15:23:28+00:00",
+ "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: 'Approve pre-T0 + T0' of the written case for the Tuna-17 box-kite pre-T0 and T0 series at f445f33 (QX twins batch-00 and batch-04, pre batch-00, T0 batch-00 to batch-02)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "93d51a10ea7fd644e30c957c55a501b209ff373abe4eaf19e1992a3dd2d48a3d",
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "twin-t0-1.cq",
+   "job": 1528710,
+   "sha256": "0fc32e66414804a97f32de68e012a323459319c17bd38801e8de3b808d418638"
+  },
+  {
+   "file": "twin-t0-2.cq",
+   "job": 1528711,
+   "sha256": "65e610372c8f19f1d1556ba88aa9e735505be85dc4221e151c141fa53cd6ab40"
+  },
+  {
+   "file": "twin-t0-3.cq",
+   "job": 1528712,
+   "sha256": "373221a8c30977bc348d8c770cebc21d3878c0cd1e0977505c85398460a6b58c"
+  }
+ ],
+ "project": 766520,
+ "batch_job": 870711,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-17T15:23:31+00:00",
+  "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: 'Approve pre-T0 + T0' of the written case for the Tuna-17 box-kite pre-T0 and T0 series at f445f33 (QX twins batch-00 and batch-04, pre batch-00, T0 batch-00 to batch-02)",
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "cases_sha256": "93d51a10ea7fd644e30c957c55a501b209ff373abe4eaf19e1992a3dd2d48a3d",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 5,
+  "batch_job": 870711,
+  "project": 766520,
+  "shots": 2048,
+  "jobs": [
+   {
+    "file": "twin-t0-1.cq",
+    "job": 1528710,
+    "sha256": "0fc32e66414804a97f32de68e012a323459319c17bd38801e8de3b808d418638"
+   },
+   {
+    "file": "twin-t0-2.cq",
+    "job": 1528711,
+    "sha256": "65e610372c8f19f1d1556ba88aa9e735505be85dc4221e151c141fa53cd6ab40"
+   },
+   {
+    "file": "twin-t0-3.cq",
+    "job": 1528712,
+    "sha256": "373221a8c30977bc348d8c770cebc21d3878c0cd1e0977505c85398460a6b58c"
+   }
+  ],
+  "submitted_utc": "2026-10-17T15:23:31+00:00"
+ },
+ "confirmed_utc": "2026-10-17T15:23:31+00:00"
+}

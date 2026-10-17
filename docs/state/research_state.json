@@ -506,6 +506,41 @@
       "question": "Series Q batch-04 on Tuna-17 (tau 15, 40 and 100, quadrature Y, d = 2): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
     },
     {
+      "id": "qi-tuna17-readout-ringdown-Q-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q batch-05 on Tuna-17 (reference, tau 0 and tau 5, quadrature X, d = 77): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-Q-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q batch-06 on Tuna-17 (tau 15, 40 and 100, quadrature X, d = 77): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-Q-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q batch-07 on Tuna-17 (reference, tau 0 and tau 5, quadrature Y, d = 77): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-Q-batch-08",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q batch-08 on Tuna-17 (tau 15, 40 and 100, quadrature Y, d = 77): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
+      "id": "qi-tuna17-readout-ringdown-Q-recal-053951",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-recal-053951",
+      "family": "post-readout frequency tail (mid-circuit readout and pre-delay ladder)",
+      "question": "Series Q recal-053951 on Tuna-17 (a repeated readout calibration): does a mid-circuit readout leave a frequency offset on the read qubit that decays with the pre-delay tau?"
+    },
+    {
       "id": "qi-ry-probe-0",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-17T034952Z-ry_probe-batch-00",
@@ -525,6 +560,69 @@
       "run": "results/quantum_inspire/runs/2026-10-17T034952Z-ry_probe-batch-02",
       "family": "Ry emulator cQASM reader constructs",
       "question": "Ry probe batch 2 (H with CNOT, the same with a bit register, an INIT block): which cQASM construct does the Ry emulator reject?"
+    },
+    {
+      "id": "qi-boxkite-qx-twins-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-00",
+      "family": "box-kite Tuna-17 dry run on the ideal QX emulator",
+      "question": "Twin batch-00 on QX (the three T0 witness circuits relabeled onto qubits 0-9): does every replica read its census P(selector = 0) exactly?"
+    },
+    {
+      "id": "qi-boxkite-qx-twins-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-04",
+      "family": "box-kite Tuna-17 dry run on the ideal QX emulator",
+      "question": "Twin batch-04 on QX (the double-X diagnostic on 10 qubits): does every shot read 0 on every qubit?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-pre-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+      "family": "box-kite Tuna-17 pre-T0 readout and double X",
+      "question": "Pre-T0 batch on Tuna-17 (double X on all 17 qubits, readout-0, readout-1): does the Q0 and Q6 readout fault persist, and does the admitted layout's readout pass before T0?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-t0-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+      "family": "box-kite Tuna-17 T0 depth ladder",
+      "question": "T0 batch-00 on Tuna-17 (dark at depth 1 on (1, 4), brights at depths 5 and 9): how does the reduced-LCU contrast decay with CZ depth?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-t0-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+      "family": "box-kite Tuna-17 T0 depth ladder",
+      "question": "T0 batch-01 on Tuna-17 (dark at depth 9 on (10, 13), brights at depths 1 and 5): how does the reduced-LCU contrast decay with CZ depth?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-t0-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+      "family": "box-kite Tuna-17 T0 depth ladder",
+      "question": "T0 batch-02 on Tuna-17 (dark at depth 5 on (12, 14), brights at depths 9 and 1): how does the reduced-LCU contrast decay with CZ depth?"
+    },
+    {
+      "id": "qi-boxkite-ry-ladder-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_ladder-batch-00",
+      "family": "box-kite Ry emulator capability",
+      "question": "Ry ladder residue (R1 width 9, R2 a comment line, R9 teleport.cq without bit register): which factor does the Ry emulator reject, and at what rate does a completed one depart from its ideal distribution?"
+    },
+    {
+      "id": "qi-boxkite-ry-smoke-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_smoke-batch-00",
+      "family": "box-kite Ry emulator capability",
+      "question": "Ry smoke batch-00 (reduced two-label LCU replicas, four per 9-atom circuit): do shallow box-kite replicas read their census P(selector = 0) on Ry?"
+    },
+    {
+      "id": "qi-boxkite-ry-smoke-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_smoke-batch-01",
+      "family": "box-kite Ry emulator capability",
+      "question": "Ry smoke batch-01 (full Design B dark and bright witnesses of (1,10)(4,15) and the negative fixture): does the 5-qubit encoding keep its contrast on Ry?"
     }
   ],
   "claims": [
@@ -936,7 +1034,8 @@
       "boundary": "Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.",
       "evidence": [],
       "documents": [
-        "docs/RESEARCH_ROADMAP.md"
+        "docs/RESEARCH_ROADMAP.md",
+        "docs/notes/rank_locus_two_dimension_gap.md"
       ],
       "gates": {},
       "acquisitions": [],
@@ -1304,7 +1403,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "Receipts record Rocq 9.1.1; the full Cayley-Dickson scalar embedding, tower and zero-product bridge remain open obligations.",
+      "boundary": "The retained verification receipt pins Rocq 9.2 / OCaml 5.5.0 after renewal of the initial 9.1.1 receipts. The scalar proof alone leaves the general Cayley-Dickson embedding and tower bridge open; open_gororoba separately formalizes a concrete 16D average/detail transport retaining all coordinates. Current external builds use Rocq 9.3.0; historical receipts keep their recorded identity.",
       "evidence": [
         {
           "path": "proofs/FoldAverageDescent.v",
@@ -1648,11 +1747,11 @@
       "evidence": [
         {
           "path": "results/live/2026-10-13T080216.451663Z/rca-mechanism-fit.json",
-          "sha256": "812f8b2f1695cb8d14fb2c2d4df09f426d5abf7e795d5c23d5520866d5539dd2"
+          "sha256": "7e4a43bddcf319d1c682f51669c116cfef6b0eb91fd72ade82c15a05f50b4281"
         },
         {
           "path": "results/live/2026-10-13T083417.634585Z/rca-mechanism-fit.json",
-          "sha256": "29288e5dc32ce91ff33a26ea3fa51ad77e0b672e564f240eb47f4a3a9c4506fd"
+          "sha256": "0ccf8cf1f48496a507d27cd75322389b6e5b057c6f2d02f1ba3794580c5b7f11"
         }
       ],
       "documents": [
@@ -1682,7 +1781,7 @@
         },
         {
           "path": "results/live/2026-10-13T201757.782152Z/patch-analysis.json",
-          "sha256": "682600bda2319dc0b5c1548feddc11df91e9061a787f904a211a72503712052e"
+          "sha256": "541c2b0525914b37b8eea09e9b6bb7911a82fec6d13289d36a75cf19a16932d8"
         }
       ],
       "documents": [
@@ -2026,7 +2125,7 @@
       "domain": "hardware",
       "evidence_class": "proposed experiment",
       "status": "proposed",
-      "boundary": "Each rate needs resolved quadratures, qualified exposure, phase-reference controls and delay diversity against winding.",
+      "boundary": "Each rate needs resolved quadratures, qualified exposure, phase-reference controls and delay diversity against winding. The ibm_kingston pair cases (68, 67) and (67, 66) are retired without a run (docs/state/QPU_RUN_CENSUS.md). The Tuna-17 coupler map (qi-tuna17-coupler-zz-map) runs the conditional-arm fit for J and omega on another device; no run collects the Bell odd and even coherence rates or the nu_odd + nu_even falsifier.",
       "evidence": [],
       "documents": [],
       "gates": {},
@@ -2424,7 +2523,7 @@
         },
         {
           "path": "results/live/2026-10-13T080216.451663Z/rca-mechanism-fit.json",
-          "sha256": "812f8b2f1695cb8d14fb2c2d4df09f426d5abf7e795d5c23d5520866d5539dd2"
+          "sha256": "7e4a43bddcf319d1c682f51669c116cfef6b0eb91fd72ade82c15a05f50b4281"
         },
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
@@ -3265,6 +3364,30 @@
       "superseded_by": null
     },
     {
+      "id": "a5-nonzero-divisor-two-dimension-gap",
+      "statement": "At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.",
+      "domain": "geometry",
+      "evidence_class": "mathematical theorem",
+      "status": "open",
+      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound; a second-order obstruction on the two transverse directions would refute the statement, and an explicit curve family of the larger dimension would establish it.",
+      "evidence": [],
+      "documents": [
+        "docs/notes/rank_locus_two_dimension_gap.md",
+        "docs/evidence/rank_locus_local_dimension/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "a5-rank-locus-local-dimension",
+        "nullity-twelve-cone"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "qi-tuna17-zero-divisor-common-response",
       "statement": "Readout-corrected with a seeded bootstrap over the joint selector outcomes and both calibration circuits, the Tuna-17 witness gives dark + bright - 1 = -0.042 (95 % -0.049 to -0.036), fixture - 1/2 = -0.016 (-0.021 to -0.012) and H = fixture - (dark + bright)/2 = +0.005 (-0.001 to 0.011): every selector misreads |1> more often than |0>, so readout hides part of the asymmetry rather than producing it, and the three preparations follow one affine response shifted toward selector 1, which disfavors circuit-dependent symmetric contractions; by region the common response holds on two regions and fails on qubits 0, 1, 2, 4, 5 (H = 0.027, z = 5.6).",
       "domain": "hardware",
@@ -3697,6 +3820,10 @@
         {
           "path": "results/quantum_inspire/readout_ringdown_tuna_17_P_analysis.json",
           "sha256": "bf230bbf16104edc271f2dbf2dca32168aae568c21285384981ffa24c7056e56"
+        },
+        {
+          "path": "results/quantum_inspire/readout_ringdown_tuna_17_P_calibration_sensitivity.json",
+          "sha256": "4092321399fd5c1129a7c90265fb0c23916debfd47723f5b9a34013b7193b728"
         }
       ],
       "documents": [
@@ -3704,6 +3831,7 @@
       ],
       "gates": {
         "core-386": "replay",
+        "core-434": "replay",
         "core-362": "freshness"
       },
       "acquisitions": [
@@ -3727,8 +3855,50 @@
       "superseded_by": null
     },
     {
+      "id": "qi-tuna17-readout-ringdown-Q",
+      "statement": "On Tuna-17 series Q (targets Q1, Q2, Q3, Q7, Q8, Q9, Q13, Q14, Q15, 8192 shots per circuit; delays d = 2 and d = 77) the preregistered rule reports 'not detected': 7 targets are usable (Q7 and Q8 fail the 0.3 visibility floor), 3 classify as tails (Q9, Q14, Q15) and none as a static offset, below the 50% threshold; Q15's tail class holds under the all-shot estimator only, and its postselected estimate classifies as none. Q9 fits H2 (chi2 6.95 on 3 degrees of freedom) while Q14 (146.8) and Q15 (39.3) do not; Q14's readout arms sit 43 to 61 kHz below its reference from tau = 100 ns out to 2 us.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One series on one device state, read against its batch-00 calibration as the rule fixes; Q15's visibility of 1.28 to 1.46 shows that calibration no longer describes Q15, so its class rests on a stale correction. The rule compares H2 with H1 and tests neither model's fit, so a tail class marks arm-to-arm structure beyond shot noise rather than a residual-photon decay. The postselection check bounds the shift from discarding mid-circuit-outcome shots at |z| <= 4.2 (Q13).",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/readout_ringdown_tuna_17_Q_analysis.json",
+          "sha256": "ca2f6f74180c5680437c7122bf8776fbd067efd441a48bcd9678eefb4d3e9602"
+        },
+        {
+          "path": "results/quantum_inspire/readout_ringdown_tuna_17_Q_calibration_sensitivity.json",
+          "sha256": "6bda842b98ede1c464a7da2e744ca164b249eb30fff2df94e174f0a050510299"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md",
+        "docs/notes/quantum_inspire/tuna-17.md"
+      ],
+      "gates": {
+        "core-430": "replay",
+        "core-434": "replay",
+        "core-362": "freshness"
+      },
+      "acquisitions": [
+        "qi-tuna17-readout-ringdown-Q-batch-00",
+        "qi-tuna17-readout-ringdown-Q-batch-01",
+        "qi-tuna17-readout-ringdown-Q-batch-02",
+        "qi-tuna17-readout-ringdown-Q-batch-03",
+        "qi-tuna17-readout-ringdown-Q-batch-04",
+        "qi-tuna17-readout-ringdown-Q-batch-05",
+        "qi-tuna17-readout-ringdown-Q-batch-06",
+        "qi-tuna17-readout-ringdown-Q-batch-07",
+        "qi-tuna17-readout-ringdown-Q-batch-08"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "qi-tuna17-register-and-readout-state",
-      "statement": "Tuna-17 returns the full bit register: bit[34] circuits on qubit[17] came back as 34-character strings carrying every mid-circuit outcome. On 2026-10-17, Q9's idle P1 rose from 0.02-0.05 to 0.27-0.29 from 04:06Z and stayed there through 05:23Z, and after the 04:12Z platform calibration Q0 and Q6 prepared in |1> read 0.39 and 0.14 after a 2 us wait (0.85 and 0.67 at 03:39Z) while their idle P1 stayed below 0.04.",
+      "statement": "Tuna-17 returns the full bit register: bit[34] circuits on qubit[17] came back as 34-character strings carrying every mid-circuit outcome. On 2026-10-17, Q9's idle P1 rose from 0.02-0.05 to 0.27-0.29 from 04:06Z and stayed there through 05:33Z, and after the 04:12Z platform calibration Q0 and Q6 prepared in |1> read 0.39 and 0.14 after a 2 us wait (0.85 and 0.67 at 03:39Z) while their idle P1 stayed below 0.04.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -3736,12 +3906,13 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/readout_ringdown_tuna_17_device_context.json",
-          "sha256": "6aefcee80f338c2a2baed0845fe427cee8b87402d13c913097fa07e1c3cc57bb"
+          "sha256": "293a97af8c510d022e8e90b3949a54ab779ee23317ed776a5de43811e6bd798c"
         }
       ],
       "documents": [
         "docs/notes/quantum_inspire/qx-runs.md",
-        "docs/notes/quantum_inspire/experiments.md"
+        "docs/notes/quantum_inspire/experiments.md",
+        "docs/notes/quantum_inspire/tuna-17.md"
       ],
       "gates": {
         "core-387": "replay"
@@ -3751,10 +3922,102 @@
         "qi-tuna17-readout-ringdown-Q-batch-01",
         "qi-tuna17-readout-ringdown-Q-batch-02",
         "qi-tuna17-readout-ringdown-Q-batch-03",
-        "qi-tuna17-readout-ringdown-Q-batch-04"
+        "qi-tuna17-readout-ringdown-Q-batch-04",
+        "qi-tuna17-readout-ringdown-Q-recal-053951"
       ],
       "assumptions": [],
       "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-q9-readout-misassignment",
+      "statement": "Q9's elevated idle P1 on Tuna-17 from 04:06Z on 2026-10-17 is misassignment of |0> that leaves the qubit in |0>. Same-batch idle and X readouts bound, at one-sided 3-sigma binomial limits, e0 >= 0.19 in the three zero-wait batches (0.145 with a 2 us wait) against e0 <= 0.030 before the change, and the excited population p <= 0.115. In series Q at zero delay, shots whose opening readout of Q9 gave 1 end an X90 pair at the level of opening-0 shots: excited fraction w = 0.021 +- 0.013 over 2122 opening-1 shots, where the other eight targets read -0.10 to 0.20.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The bounds assume p <= 1/2, an X that inverts at most fully and idle and X readouts from one batch; the herald test reads the zero-delay arm, because relaxation during a longer delay pulls w toward 0, and its opening readout is a mid-circuit readout taken with nine targets read at once, at 04:39Z.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/tuna_17_readout_faults.json",
+          "sha256": "d687b32b3b5fe17f6fecaa9400c8d21ee723cc4507597fb6c10fb08caea59f95"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-400": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna17-zero-divisor",
+        "qi-tuna17-coupler-zz-0",
+        "qi-tuna17-readout-ringdown-Q-batch-00",
+        "qi-tuna17-readout-ringdown-Q-batch-01",
+        "qi-tuna17-readout-ringdown-Q-batch-02",
+        "qi-tuna17-zero-divisor-visibility-floor-batch-00",
+        "qi-tuna17-zero-divisor-visibility-floor-batch-01",
+        "qi-tuna17-zero-divisor-visibility-floor-batch-02"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qi-tuna17-register-and-readout-state"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-q0-q6-loss-not-readout-relaxation",
+      "statement": "After the 04:12Z platform calibration of 2026-10-17, the zero-wait P(1|1) of Q0 and Q6 at 05:26-05:33Z keeps 0.55 and 0.16 of the excited scale read before the change, and that loss is not relaxation inside the 800 ns readout: relaxation would need T1 <= 1.36 and 0.44 us and leave P(1|1) <= 0.156 and 0.015 after a 2 us wait, where the 2 us wait runs read 0.389-0.393 and 0.140-0.144 (z >= 32).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Assumes the device is unchanged between the 2 us wait runs (04:15-04:24Z) and the zero-wait runs (05:26-05:33Z), and that a qubit surviving the whole readout window reads 1 at the pre-change scale, which bounds T1 for any discriminator response.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/tuna_17_readout_faults.json",
+          "sha256": "d687b32b3b5fe17f6fecaa9400c8d21ee723cc4507597fb6c10fb08caea59f95"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-400": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna17-zero-divisor",
+        "qi-tuna17-coupler-zz-0",
+        "qi-tuna17-readout-ringdown-P-recal-041520",
+        "qi-tuna17-readout-ringdown-P-recal-042425",
+        "qi-tuna17-zero-divisor-visibility-floor-batch-00",
+        "qi-tuna17-zero-divisor-visibility-floor-batch-01",
+        "qi-tuna17-zero-divisor-visibility-floor-batch-02"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qi-tuna17-register-and-readout-state"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "proposed-tuna17-q0-q6-double-x-discriminator",
+      "statement": "P1 after X X with no wait, beside a readout-0 and readout-1 pair in one Tuna-17 batch, separates an under-rotated X from |1> misassignment on Q0 and Q6: under-rotation by the angle their zero-wait P(1|1) implies predicts 0.98 and 0.52, misassignment 0.038 and 0.013. Ramsey inverted with the matched calibration cannot separate them when X and X90 share the under-rotation, because the raw quadratures then take the readout-scale form sin^2(beta) (1 + cos phi) / 2; a fault confined to native X keeps the X90 Ramsey at the earlier scale, which Q6's raw quadrature mean (0.064 against a floor of 0.148) excludes and Q0's (0.287 against 0.175) does not.",
+      "domain": "hardware",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "The predictions use the 05:26-05:33Z state; Tuna recalibrates between user jobs, so a run first checks that its readout pair still shows the fault, and leakage, whose X train plateaus instead of oscillating, needs X trains of three and more.",
+      "evidence": [],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "qi-tuna17-q0-q6-loss-not-readout-relaxation"
+      ],
       "supersedes": [],
       "superseded_by": null
     },
@@ -3785,6 +4048,102 @@
       ],
       "assumptions": [],
       "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-boxkite-pre-t0-readout-recovered",
+      "statement": "In the pre-T0 batch on Tuna-17 (4096 shots per circuit, jobs finished 15:38Z) the Q0 and Q6 readout fault of the morning is absent: Q0 reads P(1|1) 0.973 and Q6 0.957 against the precondition limits 0.7 and 0.3, and Q9 reads P(1|0) 0.018, so the precondition reports fault-recovered and the double-X discriminator is not read. Every qubit of the admitted layout {1, 4, 8, 10, 11, 12, 13, 14} passes the T0 readout rule (readout-1 P1 0.912 to 0.975, readout-0 P1 at most 0.045), and q5, q6, q7 and q9 are readout-admissible; q5, q6 and q7 keep their Ramsey visibility exclusion.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One batch on one calibration, taken after the platform benchmarking the operator observed at 15:34Z; the readout state can change at the next calibration. The double-X P1 values it records (Q0 0.019, Q6 0.110) are not a discriminator reading, since the precondition failed, and the proposed discriminator claim proposed-tuna17-q0-q6-double-x-discriminator stays untested. Readout admission lifts no visibility exclusion.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json",
+          "sha256": "b4836141978d8970caa3f8ca4942cb21e21e313786528ea2eda7d911dac5b2ab"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/tuna-17.md",
+        "docs/notes/box_kites/experiment-program.md"
+      ],
+      "gates": {
+        "core-425": "replay",
+        "core-420": "freshness"
+      },
+      "acquisitions": [
+        "qi-boxkite-tuna17-pre-batch-00",
+        "qi-boxkite-qx-twins-batch-04"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-boxkite-t0-depth-ladder",
+      "statement": "On Tuna-17 the reduced two-label LCU of edge (1,10)(4,15) of kite 3, corrected per batch with its own readout pair, keeps a contrast C(1) = 0.954 +- 0.003, C(5) = 0.857 +- 0.003 and C(9) = 0.710 +- 0.003 over a 3 x 3 Latin square of pairs {(1,4), (10,13), (12,14)} and batches at 16384 shots, so the per-CZ retention is r = 0.9654 with 99% bootstrap interval [0.9638, 0.9671], inside the decision band [0.87, 0.97] as preregistered and above its prediction [0.87, 0.96]. The depth-1 upper bound 0.961 clears the 0.5 floor, so the program continues; C(1) and r both miss their predictions ([0.72, 0.82] and [0.87, 0.96]) upward. The QX twins of the three witness circuits read every replica's predicted outcome in all 2048 shots.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration, three pairs and one edge; the dark replica of each depth sits on one pair and batch, so C(n) carries that pair's offset, and a pair x depth interaction stays inside r. The upward miss of C(1) comes from the prediction, which carried the selector's raw readout factor (about 0.87) while C(n) is readout-corrected; 0.82 / 0.874 = 0.94. Every bright replica cleared the depth-1 bright floor.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json",
+          "sha256": "b4836141978d8970caa3f8ca4942cb21e21e313786528ea2eda7d911dac5b2ab"
+        }
+      ],
+      "documents": [
+        "docs/notes/box_kites/experiment-program.md",
+        "docs/notes/quantum_inspire/tuna-17.md",
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-425": "replay",
+        "core-420": "freshness"
+      },
+      "acquisitions": [
+        "qi-boxkite-tuna17-t0-batch-00",
+        "qi-boxkite-tuna17-t0-batch-01",
+        "qi-boxkite-tuna17-t0-batch-02",
+        "qi-boxkite-qx-twins-batch-00",
+        "qi-boxkite-qx-twins-batch-04"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-ry-emulator-boxkite-capability",
+      "statement": "Programs of H, CNOT, Z, S, X and Rz on up to 9 atoms run on the Ry emulator when they carry no bit register and no measure statement, the cause of the earlier 'error interpreting cQASM script' failures. Shallow reduced-LCU replicas (one CNOT) read their ideal outcome at a fraction of 0.978 or more and the P = 1/2 replicas sit inside |z| < 4.5; the 9-atom teleport program R9 completes with 77 of 1024 shots (7.5%) outside its ideal support; the full Design B witness of (1,10)(4,15) reads P(selector = 0) 0.270 dark and 0.656 bright, a contrast of 0.387, below the 0.9 ideal-fraction floor, so the smoke series stops there as an emulator rate.",
+      "domain": "implementation",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One run per circuit on the emulator as served on 2026-10-17 at 1024 shots; the Ry error model is undocumented, so the loss with depth is reported as an emulator rate and never as an algebraic result.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/box_kite_ry_analysis.json",
+          "sha256": "c24d5e901bdb374d70cfb144a7d99715ae858b73fbe8878449f0d9808b44da3d"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/ry-emulator.md"
+      ],
+      "gates": {
+        "core-425": "replay",
+        "core-420": "freshness"
+      },
+      "acquisitions": [
+        "qi-boxkite-ry-ladder-batch-00",
+        "qi-boxkite-ry-smoke-batch-00",
+        "qi-boxkite-ry-smoke-batch-01"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qi-ry-emulator-reader-constructs"
+      ],
       "supersedes": [],
       "superseded_by": null
     }

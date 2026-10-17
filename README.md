@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (63 established, 26 exploratory, 3 open, 7 proposed, 2 superseded, 11 withdrawn) with its evidence class,
+registered claim (67 established, 28 exploratory, 4 open, 8 proposed, 2 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -105,10 +105,24 @@ acquisition of every provider:
 | [2026-10-17T052547Z-zero_divisor_tuna_17-batch-00](results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00) | Quantum Inspire | sedenion zero-divisor witness (Design B, exact Clifford+T) | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-17T052915Z-zero_divisor_tuna_17-batch-01](results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01) | Quantum Inspire | sedenion zero-divisor witness (Design B, exact Clifford+T) | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-17T053226Z-zero_divisor_tuna_17-batch-02](results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02) | Quantum Inspire | sedenion zero-divisor witness (Design B, exact Clifford+T) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-recal-053951](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-recal-053951) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 2 | 2 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-00](results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-00) | Quantum Inspire | box-kite Tuna-17 dry run on the ideal QX emulator | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-04](results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-04) | Quantum Inspire | box-kite Tuna-17 dry run on the ideal QX emulator | QXsinglenodesimulator | 1 | 1 | completed | 0 ledger change |
+| [2026-10-17T152324Z-box_kite_tuna_pre-batch-00](results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00) | Quantum Inspire | box-kite Tuna-17 pre-T0 readout and double X | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T152324Z-box_kite_tuna_t0-batch-00](results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00) | Quantum Inspire | box-kite Tuna-17 T0 depth ladder | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T152324Z-box_kite_tuna_t0-batch-01](results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01) | Quantum Inspire | box-kite Tuna-17 T0 depth ladder | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T152324Z-box_kite_tuna_t0-batch-02](results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02) | Quantum Inspire | box-kite Tuna-17 T0 depth ladder | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T154255Z-box_kite_ry_ladder-batch-00](results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_ladder-batch-00) | Quantum Inspire | box-kite Ry emulator capability | Rydberg | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T154255Z-box_kite_ry_smoke-batch-00](results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_smoke-batch-00) | Quantum Inspire | box-kite Ry emulator capability | Rydberg | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T154255Z-box_kite_ry_smoke-batch-01](results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_smoke-batch-01) | Quantum Inspire | box-kite Ry emulator capability | Rydberg | 3 | 3 | completed | 0 ledger change |
 
 The IBM service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 physical jobs with 334 settled seconds; the account then reported 334 of 600 s consumed in the rolling window ending 2026-10-15T07:13:13.771Z. That is an observation, not a current balance or an authorization.
 
-The Quantum Inspire ledger retrieved at 2026-10-17T05:53:53+00:00 lists 184 jobs with 1152000 shots done and a total ledger change of 0; 11 of them are declared unretained, belonging to run directories of other branches (11 on tuna_17), and every other listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+The Quantum Inspire ledger retrieved at 2026-10-17T16:04:23+00:00 lists 212 jobs with 1353728 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 <!-- research-state:end -->
 
 ## Contents

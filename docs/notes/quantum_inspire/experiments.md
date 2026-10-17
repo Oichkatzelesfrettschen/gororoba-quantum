@@ -618,11 +618,142 @@ device.
   delta's standard error. The subset-difference error sqrt(se_post^2 -
   se_all^2) collapses to 0 at that retention on most arms, so its z column
   is undefined there and serves as no falsifier.
-- Series Q (targets Q1, Q2, Q3, Q7, Q8, Q9, Q13, Q14, Q15) is collected
-  through Q-03; its analysis and the remaining batches land with the rest
-  of the series.
+
+**Series Q result** ([analysis](../../../results/quantum_inspire/readout_ringdown_tuna_17_Q_analysis.json),
+gate core-430). The analysis reads Q-batch-00 (calibration) and Q-01 to Q-08
+(d = 2 in Q-01 to Q-04, d = 77 in Q-05 to Q-08); the Q-recal-053951 run is a
+repeated calibration outside it.
+
+| Target | min visibility | chi2 H1 (5 dof) | chi2 H2 (3 dof) | class |
+|---|---|---|---|---|
+| Q1 | 0.930 | 31.7 | 25.6 | none |
+| Q2 | 0.908 | 6.0 | 4.9 | none |
+| Q3 | 0.865 | 62.4 | 50.5 | none |
+| Q7 | 0.091 | 581.6 | 408.5 | unusable |
+| Q8 | 0.212 | 419.8 | 398.4 | unusable |
+| Q9 | 0.744 | 28.3 | 7.0 | tail |
+| Q13 | 1.012 | 38.1 | 32.5 | none |
+| Q14 | 0.315 | 297.7 | 146.8 | tail |
+| Q15 | 1.284 | 55.2 | 39.3 | tail |
+
+- The preregistered verdict is "not detected": 3 of 7 usable targets
+  classify as tails, below the 50% threshold, and none as a static offset.
+- Only Q9 fits H2. Q14's readout arms sit 43 to 61 kHz below its reference
+  from tau = 100 ns to 2 us (8 kHz at tau = 0); Q15's tail class rests on
+  a visibility of 1.28 to 1.46, which shows its batch-00 calibration no
+  longer describes it ([tuna-17.md](tuna-17.md)), and holds under the
+  all-shot estimator only: the postselected estimate of Q15 classifies as
+  none, while Q9 and Q14 read tail under both.
+- The postselected estimates differ from the all-shot estimates by at most
+  4.2 standard errors (Q13, tau = 800 ns).
+
+**Calibration sensitivity** (series
+[P](../../../results/quantum_inspire/readout_ringdown_tuna_17_P_calibration_sensitivity.json) and
+[Q](../../../results/quantum_inspire/readout_ringdown_tuna_17_Q_calibration_sensitivity.json),
+gates core-434 and core-435). The preregistered errors treat the batch-00
+assignment e01, e10 as constants. The sensitivity record carries their
+binomial variances from the readout-0 and readout-1 counts through every
+quadrature (analytic) and redraws all readout and Ramsey counts 2000 times
+(bootstrap), beside the preregistered standard errors; the verdicts stay as
+analyzed. The shared assignment largely cancels in delta: on usable targets
+the calibrated delta and rate errors exceed the preregistered ones by at
+most 9.5% (series P) and 3.6% (series Q); on Q6 the excess is at most
+0.14%, and the analytic, bootstrap and preregistered delta errors (1.8 to
+2.2 kHz) agree within the bootstrap spread of about 30 Hz. The calibration
+term is small against shot noise, so the quoted standard errors stand (the
+analytic A error differentiates the complete weighted fit, weights included,
+and exceeds the preregistered one by at most 5.7%, on Q14, where the bootstrap
+gives 5.5%); the
+stale Q6 and Q15 calibrations bias their phases, a shift this error model
+does not bound. One entry (Q15 delta at tau = 15) lies 3.5 spreads from its bootstrap
+error with the same gap in the shot-only bootstrap, a shot-noise
+linearization gap at visibility above 1. A (a three-parameter fit with T at
+a bound on several targets) and the minimum visibility have bootstrap errors
+well above their delta-method errors with or without the calibration term.
+
+## Readout faults on Tuna-17, 2026-10-17
+
+`scripts/qi_tuna17_readout_faults.py` (gate core-400) tests the readout
+changes of that morning against named retained runs and writes
+results/quantum_inspire/tuna_17_readout_faults.json. Each test states its
+falsifier before its number.
+
+- **Q9 reads |0> as 1 and stays in |0>.** With assignment errors e0, e1 and
+  excited population p <= 1/2, an idle readout gives e0 + s p and an X at
+  most e0 + s (1 - p), so e0 >= P(1|idle) + P(1|X) - 1 whatever p and e1.
+  With every frequency at its one-sided 3-sigma limit, the three zero-wait
+  batches at 05:26-05:33Z give e0 >= 0.19 (the 2 us wait batch Q-00,
+  0.145), against e0 <= 0.030 in the two runs of the previous evening, and
+  bound p <= 0.115. Series Q reads every target
+  mid-circuit before an X90 pair two cycles apart: a shot left in |1> by
+  that readout ends near the idle floor and a shot left in |0> near the X
+  level. Relaxation during a longer delay pulls w toward 0, so the test
+  reads the zero-delay arm: opening-1 shots of Q9 end where opening-0 shots
+  do, excited fraction w = 0.021 +- 0.013 over 2122 shots (falsifier
+  w >= 0.5), where the eight healthy targets read -0.10 to 0.20. An excitation
+  that the readout itself causes would also give w near 1, so it is
+  excluded with the population.
+- **Q0 and Q6 lose |1> before the readout window, or misread it.** At
+  zero wait their P(1|1) keeps 0.55 and 0.16 of the previous evening's
+  excited scale. Relaxation inside the 800 ns readout would need
+  T1 <= 1.36 and 0.44 us and leave at most 0.156 and 0.015 after a 2 us
+  wait; the 2 us wait runs of 04:15-04:24Z read 0.39 and 0.14 (z >= 32).
+  A qubit that survives the whole window reads 1 at the earlier scale
+  whatever the discriminator does with a decay inside it, so the bound
+  holds for every such response. The test assumes the device did not
+  change between 04:24Z and 05:26Z.
+- **What separates under-rotation from |1> misassignment.** Inverting the
+  post-calibration Ramsey arms (P-05-rerun1 to P-08, d = 77) with the
+  matched readout pair gives Q0 visibility 0.81-0.87, like its healthy
+  neighbors, and Q6 0.28-0.38. When X and X90 share one under-rotation,
+  that inversion cannot decide: the raw quadratures take the readout-scale
+  form sin^2(beta) (1 + cos phi) / 2. X and X90 are separate native
+  operations, and a fault confined to X keeps the X90 Ramsey at the earlier
+  scale, where the mean of the two raw quadratures is at least
+  P10 + S_pre (1 - 1/sqrt 2) / 2 at every phase: Q6's 0.064 against 0.148
+  excludes that fault, Q0's 0.287 against 0.175 does not. P1 after X X
+  decides between under-rotation of X, either kind, which predicts 0.98 on
+  Q0 and 0.52 on Q6, and misassignment, which predicts the floor, 0.038
+  and 0.013.
+- The 05:23Z endpoint for Q9 is the last job of Q-04 (jobs
+  1527388-1527390, finished 05:23:12-05:23:27Z), whose opening readout of
+  Q9 reads 0.238-0.243: a mid-circuit readout with nine targets read at
+  once, a different observable from the readout-0 circuit's 0.27-0.29.
+
+## Box-kite results, 2026-10-17 (preregistered)
+
+`scripts/box_kite_cases.py` writes the cases and
+`scripts/box_kite_analysis.py` judges the runs with the thresholds each
+manifest carries (program: [experiment-program.md](../box_kites/experiment-program.md)
+section 4(g); gate core-425 replays both records).
+
+- **QX twins** (dry run): the three T0 witness circuits on QX qubits 0-9
+  read every replica's predicted P(selector = 0) in all 2048 shots, and the
+  double-X twin reads 0 on every qubit of every shot.
+- **Tuna-17 pre-T0**: the morning's Q0 and Q6 |1> readout fault is absent
+  (P(1|1) 0.973 and 0.957; Q9 P(1|0) 0.018), so the double-X discriminator
+  is not read; the box-kite layout passes the T0 readout rule.
+- **Tuna-17 T0**: C(1) = 0.954, C(5) = 0.857, C(9) = 0.710, r = 0.9654 per
+  CZ (99% interval [0.9638, 0.9671]), inside the decision band [0.87, 0.97]
+  as preregistered; C(1) and r both miss their predictions ([0.72, 0.82] and
+  [0.87, 0.96]) upward, and the program continues to T1.
+- **Ry**: programs without a bit register run at width 9; one-CNOT replicas
+  read their ideal outcome at 0.978 or more, R9 loses 7.5% of shots, and
+  the 35-CNOT full Design B falls to contrast 0.387, which stops the Ry
+  smoke series as an emulator rate ([ry-emulator.md](ry-emulator.md)).
+
+Records: results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json
+and results/quantum_inspire/box_kite_ry_analysis.json; claims
+`qi-tuna17-boxkite-pre-t0-readout-recovered`,
+`qi-tuna17-boxkite-t0-depth-ladder` and `qi-ry-emulator-boxkite-capability`.
 
 ## Next cases
+
+- Q0 and Q6 double X (claim proposed-tuna17-q0-q6-double-x-discriminator):
+  one batch of readout-0, readout-1 and X X on every qubit, with 0 and 2 us
+  waits and X trains of three and more in later batches, after the first
+  batch confirms the fault persists (Q0 P(1|1) < 0.7, Q6 < 0.3, Q9 idle
+  P1 > 0.2); a train that plateaus instead of oscillating marks leakage.
 
 - Interleave the four configurations inside one job (disjoint stars per
   configuration) so drift cancels between them.

@@ -1,0 +1,2 @@
+box-kite QX sweep a: 848 circuits, 2354 replicas, 2354 checks, pass
+box-kite QX sweep de: 149 circuits, 281 replicas, 399 checks, pass

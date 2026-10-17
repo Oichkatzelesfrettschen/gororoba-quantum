@@ -25,7 +25,8 @@ and what it must prove before its output counts.
 
 1. `environment.json`: Python and package versions, CPU model and cores,
    RAM, working disk, every GPU (name, memory, driver, compute capability),
-   CUDA driver version, TPU devices, Aer devices and attached models.
+   CUDA driver version, TPU devices, Aer devices, the Aer device the entry
+   runs on (`entry_aer_device`) and attached models.
 2. `hypercomplex.json`: the hypercomplex stack, built and proved by
    `scripts/algebra_package_tables.py`. `--fetch` downloads the seventeen
    archives `RELEASES` pins and keeps each only if its sha256 matches.

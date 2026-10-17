@@ -1,0 +1,49 @@
+{
+ "schema": "box-kite-series-v1",
+ "family": "tuna_twins",
+ "backend": "QXsinglenodesimulator",
+ "census_sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "stage": "t0",
+   "files": [
+    "twin-t0-1.cq",
+    "twin-t0-2.cq",
+    "twin-t0-3.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "stage": "t1",
+   "files": [
+    "twin-t1-1.cq",
+    "twin-t1-2.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "stage": "coherence",
+   "files": [
+    "twin-coherence-1.cq",
+    "twin-coherence-2.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "stage": "walk",
+   "files": [
+    "twin-walk-1.cq",
+    "twin-walk-2.cq",
+    "twin-walk-3.cq"
+   ]
+  },
+  {
+   "batch": "batch-04",
+   "stage": "pre",
+   "files": [
+    "twin-double-x.cq"
+   ]
+  }
+ ]
+}

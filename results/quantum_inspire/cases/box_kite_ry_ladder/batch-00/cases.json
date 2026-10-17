@@ -1,0 +1,80 @@
+{
+ "schema": "box-kite-cases-v1",
+ "backend": "Rydberg",
+ "backend_type_id": 5,
+ "shots": 1024,
+ "dialect": "ry",
+ "bit_order": "qubit 0 at the leftmost character (Ry)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "family": "ry_ladder",
+ "nqubits": 9,
+ "role": "the diagnostic factors the construct probe (results/quantum_inspire/ry_probe_analysis.json) leaves open; that probe completed X, H, CNOT and Rz and failed every program with a bit register (error interpreting cQASM script) or a measure statement (not in the primitive gate set), so R3, R7 and R8 are settled",
+ "preregistered": {
+  "observable": "completion or failure of each job, and its counts read with qubit 0 leftmost",
+  "falsifier": "a completed job whose counts leave an expected outcome's |z| < 4.5 or show an outcome of probability 0 is reported as an emulator rate; a failed job names its factor",
+  "stop_rule": "R1 failing stops the smoke subset, whose circuits declare qubit[9]",
+  "thresholds": {
+   "z_limit": 4.5,
+   "gating_factor": "R1"
+  }
+ },
+ "batch": "batch-00",
+ "group": "ladder",
+ "circuits": [
+  {
+   "file": "r1-width-9.cq",
+   "kind": "diagnostic",
+   "group": "ladder",
+   "nqubits": 9,
+   "ladder": "R1",
+   "factor": "qubit[9] around the program that ran (X on q[0])",
+   "expected_leftmost": {
+    "100000000": "1"
+   },
+   "sha256": "186f8390b849bc3cbe62b22f194d12591ed0f4e5131ab15aacb83ffc5ea32c8c"
+  },
+  {
+   "file": "r2-comment.cq",
+   "kind": "diagnostic",
+   "group": "ladder",
+   "nqubits": 2,
+   "ladder": "R2",
+   "factor": "one // comment line in the program that ran",
+   "expected_leftmost": {
+    "10": "1"
+   },
+   "sha256": "2415fbf9b710e6ce7240c7c0f7c803bfa8b9d934fc0c584d5c894f9fe85fd98e"
+  },
+  {
+   "file": "r9-teleport-bare.cq",
+   "kind": "diagnostic",
+   "group": "ladder",
+   "nqubits": 9,
+   "ladder": "R9",
+   "factor": "teleport.cq without its bit register and comments",
+   "expected_leftmost": {
+    "000000010": "1/16",
+    "000001010": "1/16",
+    "000010000": "1/16",
+    "000011000": "1/16",
+    "010000010": "1/16",
+    "010001010": "1/16",
+    "010010000": "1/16",
+    "010011000": "1/16",
+    "100100010": "1/16",
+    "100101010": "1/16",
+    "100110000": "1/16",
+    "100111000": "1/16",
+    "110100010": "1/16",
+    "110101010": "1/16",
+    "110110000": "1/16",
+    "110111000": "1/16"
+   },
+   "sha256": "29094166005ac7fbd8114ff342ca910d47301222ee0aeaac7a0ee3739b351746"
+  }
+ ]
+}

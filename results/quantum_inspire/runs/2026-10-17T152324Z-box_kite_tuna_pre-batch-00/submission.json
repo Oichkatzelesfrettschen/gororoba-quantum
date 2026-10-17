@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-17T15:24:19+00:00",
+ "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: 'Approve pre-T0 + T0' of the written case for the Tuna-17 box-kite pre-T0 and T0 series at f445f33 (QX twins batch-00 and batch-04, pre batch-00, T0 batch-00 to batch-02)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "fdba0085f9062e3c5f3ae816de15e3008daedf723086cbe03df108c0082150e0",
+ "backend_status_at_submit": "benchmarking",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 870713,
+ "project": 766522,
+ "shots": 4096,
+ "jobs": [
+  {
+   "file": "double-x.cq",
+   "job": 1528714,
+   "sha256": "d015740f27103a3881c5f0ed5c98f2a8dd35f74de664be3f712bb739ca22f2c3"
+  },
+  {
+   "file": "readout-0.cq",
+   "job": 1528715,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1528716,
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  }
+ ],
+ "submitted_utc": "2026-10-17T15:24:19+00:00"
+}

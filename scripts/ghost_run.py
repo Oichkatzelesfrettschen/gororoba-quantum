@@ -287,6 +287,7 @@ def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) ->
                 ]
         results[relative] = {
             "calibration": snapshot["calibration"],
+            **calibration_snapshot.backend_identity(snapshot),
             "current": relative == current,
             "tvd": distances,
             "seconds": round(time.time() - start, 2),
