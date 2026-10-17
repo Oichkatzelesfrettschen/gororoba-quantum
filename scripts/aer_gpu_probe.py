@@ -136,6 +136,9 @@ METADATA_KEYS = (
 )
 BRANCHING = {"shot_branching_enable": True, "shot_branching_sampling_enable": True}
 NO_GPU = "no GPU on this machine"
+# Aer 0.17.2 takes target_gpus only as a run option (aer_compiler's run
+# options); the constructor and set_options raise "Invalid option target_gpus".
+RUN_OPTIONS = frozenset({"target_gpus"})
 # qiskit-aer-gpu-cu11 0.17.2 aborts batched_shots_gpu on control flow
 # (if_else lowers to jump); the abort is a measured row on the GPU.
 KNOWN_GPU_ABORTS = frozenset({"gpu_statevector_batched_jump"})
@@ -509,7 +512,11 @@ def simulator_for(snapshot: dict[str, Any], label: str) -> Any:
     simulator = calibration_snapshot.noise_simulator(
         snapshot, device, method=method, batched_shots=batched, custatevec=custatevec
     )
-    extra = {key: value for key, value in options.items() if key not in ("batched_shots_gpu", "cuStateVec_enable")}
+    extra = {
+        key: value
+        for key, value in options.items()
+        if key not in ("batched_shots_gpu", "cuStateVec_enable") and key not in RUN_OPTIONS
+    }
     simulator.set_options(max_parallel_threads=parallel.workers(), **extra)
     return simulator
 
@@ -576,20 +583,23 @@ def execute(simulator: Any, label: str, circuits: Any, shots: int) -> Any:
 
     SnapshotSimulator.run turns batching off for circuits with control flow,
     so a configuration that times Aer's own batched program
-    (gpu_statevector_batched_jump) calls AerSimulator.run directly.
+    (gpu_statevector_batched_jump) calls AerSimulator.run directly. The
+    configuration's RUN_OPTIONS travel with the run call.
     """
     from qiskit_aer import AerSimulator
 
-    if {**CONFIGURATIONS, **TOY_CONFIGURATIONS}[label][3]:
+    _, _, options, lower, _ = {**CONFIGURATIONS, **TOY_CONFIGURATIONS}[label]
+    extra = {key: value for key, value in options.items() if key in RUN_OPTIONS}
+    if lower:
         batch = circuits if isinstance(circuits, list) else [circuits]
         lowered = [lower_conditionals(circuit) for circuit in batch]
         if any(circuit is None for circuit in lowered):
             raise RuntimeError("a circuit has no bfunc-conditioned form")
         circuits = lowered if isinstance(circuits, list) else lowered[0]
     if label == "gpu_statevector_default":
-        return simulator.run(circuits, shots=shots, seed_simulator=SEED).result()
+        return simulator.run(circuits, shots=shots, seed_simulator=SEED, **extra).result()
     run = AerSimulator.run.__get__(simulator)
-    return run(circuits, shots=shots, seed_simulator=SEED).result()
+    return run(circuits, shots=shots, seed_simulator=SEED, **extra).result()
 
 
 def warm_up(simulator: Any, label: str) -> float:
@@ -688,7 +698,8 @@ def measure_toy(label: str) -> dict[str, Any]:
     device, method, options, _, _ = {**CONFIGURATIONS, **TOY_CONFIGURATIONS}[label]
     noise = NoiseModel()
     noise.add_readout_error(ReadoutError([[1 - TOY_E10, TOY_E10], [TOY_E01, 1 - TOY_E01]]), [0])
-    simulator = calibration_snapshot.SnapshotSimulator(noise_model=noise, method=method, device=device, **options)
+    constructed = {key: value for key, value in options.items() if key not in RUN_OPTIONS}
+    simulator = calibration_snapshot.SnapshotSimulator(noise_model=noise, method=method, device=device, **constructed)
     result = execute(simulator, label, toy_circuit(), TOY_SHOTS)
     return {"counts": dict(sorted(result.get_counts().items())), "metadata": metadata_of(result)}
 
