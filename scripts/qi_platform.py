@@ -280,6 +280,20 @@ def check_agents(catalogue: dict[str, Any], agents: Path) -> None:
         raise SystemExit(f"{agents}: the quantum-inspire-facts table differs from facts_table(catalogue.json)")
 
 
+HEX = "0123456789abcdef"
+PSEUDONYMS = ("team", "member")
+
+
+def pseudonyms(value: Any) -> list[Any]:
+    """Every value stored under a team or member key, at any depth; digest() writes each as 12 hex digits."""
+    if isinstance(value, dict):
+        found = [item for key, item in value.items() if key in PSEUDONYMS]
+        return found + [x for item in value.values() for x in pseudonyms(item)]
+    if isinstance(value, list):
+        return [x for item in value for x in pseudonyms(item)]
+    return []
+
+
 def check(directory: Path, agents: Path | None = None) -> None:
     catalogue = json.loads((directory / "catalogue.json").read_text(encoding="utf-8"))
     usage = json.loads((directory / "usage.json").read_text(encoding="utf-8"))
@@ -289,6 +303,9 @@ def check(directory: Path, agents: Path | None = None) -> None:
     for key in (*REDACTED, "access_token", "refresh_token", "team_id", "member_id", "user_id"):
         if f'"{key}"' in text:
             raise SystemExit(f"snapshot carries {key}")
+    for value in pseudonyms(catalogue) + pseudonyms(usage):
+        if not (value is None or (isinstance(value, str) and len(value) == 12 and set(value) <= set(HEX))):
+            raise SystemExit(f"snapshot carries an account identifier that is not a 12-hex digest: {value!r}")
     for field in (
         "nqubits",
         "topology",

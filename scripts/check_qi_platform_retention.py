@@ -14,6 +14,7 @@ import io
 import json
 import os
 import stat
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -228,6 +229,17 @@ class GeneratedCaseChecks(unittest.TestCase):
                 self.assertGreater(len(runs), 1)
                 text = json.dumps(zero_divisor.analyze(runs), indent=1) + "\n"
                 self.assertEqual(text, (retained / "analysis.json").read_text(encoding="utf-8"))
+                if name == "zero_divisor_tuna_17":
+                    with self.assertRaisesRegex(SystemExit, "readout"):
+                        zero_divisor.analyze(runs[:1])
+                analysis = Path(scratch) / "analysis.json"
+                analysis.write_text(text, encoding="utf-8")
+                command = [sys.executable, "-B", str(ROOT / "scripts/qi_zero_divisor_cases.py"), "--replay-series"]
+                replay = subprocess.run([*command, str(analysis), *map(str, runs)], capture_output=True, text=True)
+                self.assertEqual(replay.returncode, 0, replay.stderr)
+                analysis.write_text(text.replace('"shots": ', '"shots":  ', 1), encoding="utf-8")
+                replay = subprocess.run([*command, str(analysis), *map(str, runs)], capture_output=True, text=True)
+                self.assertIn("differs from the recomputation", replay.stderr)
 
 
 class RetentionChecks(unittest.TestCase):
@@ -603,6 +615,22 @@ class RetentionChecks(unittest.TestCase):
         with patch.object(platform, "Client", side_effect=AssertionError("empty approval reached the service")):
             with self.assertRaisesRegex(SystemExit, "nonempty approval"):
                 platform.submit(self.case_dir, 7, "  ")
+
+    def test_snapshot_rejects_unhashed_account_identifiers(self) -> None:
+        evidence = ROOT / "docs/evidence/quantum_inspire"
+        for name, identifier in (("catalogue.json", 4321), ("usage.json", "4321")):
+            with self.subTest(file=name), tempfile.TemporaryDirectory() as scratch:
+                directory = Path(scratch)
+                for source in ("catalogue.json", "usage.json"):
+                    (directory / source).write_bytes((evidence / source).read_bytes())
+                snapshot = json.loads((directory / name).read_text(encoding="utf-8"))
+                if name == "usage.json":
+                    snapshot["transactions"].append({"team": identifier, "member": None})
+                else:
+                    snapshot["account"]["teams"][0]["team"] = identifier
+                (directory / name).write_text(json.dumps(snapshot))
+                with self.assertRaisesRegex(SystemExit, "12-hex digest"):
+                    platform.check(directory)
 
     def test_snapshot_rejects_inconsistent_completed_shots(self) -> None:
         retained = Path(__file__).resolve().parents[1] / "docs/evidence/quantum_inspire"

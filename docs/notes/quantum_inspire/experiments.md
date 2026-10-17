@@ -34,7 +34,9 @@ core-327 regenerates them byte for byte. Each backend is a series of
 batch-00 holds none, A and B, and batch-01 holds none, AB and teleport, so
 every phase shift subtracts the undriven reference measured in its own batch
 (a batch boundary is a calibration boundary).
-`--analyze RUN_DIR... --out FILE` merges the run directories of one series.
+`--analyze RUN_DIR... --out FILE` merges the run directories of one series,
+refuses a series that lacks a batch, and `--replay-series FILE RUN_DIR...`
+recomputes FILE from them.
 The retained 211635Z runs predate the split and ran all five circuits as one
 batch.
 
