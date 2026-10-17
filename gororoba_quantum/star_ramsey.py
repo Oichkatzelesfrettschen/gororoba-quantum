@@ -41,10 +41,14 @@ all three leaves, so its layout puts C on a degree-three qubit with the leaves
 on its couplers, and each Bell arm's CX compiles onto one of those couplers
 without routing, so the pattern is the star C-L1, C-L2, C-L3 and every
 replica lands on three real couplers. A member that touched only one coupler
-would leave the other leaves free to land off the star. When Sabre panics on
-a fragmented admission Target, live_run._compile_primary falls back to a
-breadth-first layout (component_layouts), which routing can extend with SWAPs
-into a pattern other than the star.
+would leave the other leaves free to land off the star. A layout off a
+degree-three center -- the breadth-first fallback live_run._compile_primary
+takes when Sabre panics on a fragmented admission Target, or any Target
+without an admitted three-coupler star -- routes the arms with SWAPs, each
+arm on its own path from the shared initial layout, so C idles on different
+physical qubits in different sectors. routed_star_violations rejects every
+candidate whose members do not hold C, L1, L2, L3 on one physical star at
+every idle and every readout (Group.routed_violations).
 
 Each sector is a four-qubit circuit measured into the clbit of the same index.
 A conditional arm prepares the leaves in its bit pattern, puts C on the
@@ -57,18 +61,25 @@ nonzero delay sets the unambiguous range |nu| < pi / FIRST_DELAY_DT; the GHZ
 rate sums all four frequencies and is the largest rate of the design.
 Dynamical decoupling would refocus the free evolution these arms measure.
 
-A conditional arm keeps only the shots in which all three leaves read their
-prepared bits. A leaf in |1> that relaxes during the idle moves C to another
-sector's rate from the jump onward, and the leaf's own readout heralds the
-jump. A Bell or GHZ arm keeps every shot, as conditional_ramsey's Bell arms
-do: a relaxed branch is orthogonal to the coherent pair and lowers C's
-visibility without moving its phase.
+A conditional arm keeps the leaves' prepared pattern. A leaf in |1> that
+relaxes during the idle moves C to another sector's rate from the jump
+onward, and the leaf's own state at readout heralds the jump. A misread leaf
+would let relaxed shots into the kept pattern, so the summary first inverts
+the three leaves' assignment channels on the sixteen-outcome law and then
+keeps the two prepared-pattern cells (conditioned). A Bell or GHZ arm keeps
+every shot, as conditional_ramsey's Bell arms do: a relaxed branch is
+orthogonal to the coherent pair and lowers C's visibility without moving its
+phase.
 
-Two calibration circuits read all four qubits prepared in |0> and in |1>. The
-summary inverts C's measured assignment channel before taking phases and
-reports every rate, parameter and falsifier with a delta-method standard
-error at one shot per circuit (divide by sqrt(shots)), propagated through the
-calibration, the phase fits and the exact least-squares reconstruction.
+Two calibration circuits read all four qubits prepared in |0> and in |1>, and
+their marginals give each qubit's flips (assignment_flips). The summary
+inverts the leaves' channels before conditioning and C's channel before
+taking phases, and reports every rate, parameter and falsifier with a
+delta-method standard error at one shot per circuit (divide by sqrt(shots)),
+propagated through the calibration, the phase fits and the exact
+least-squares reconstruction. On readout-inverted input from
+live_run.corrected_summary the propagation uses the inverted one-shot
+covariance M (diag(p) - p p^T) M^T (summarize_with_covariance).
 """
 
 from __future__ import annotations
@@ -76,6 +87,7 @@ from __future__ import annotations
 import math
 from collections.abc import Callable, Mapping
 from fractions import Fraction
+from typing import Any
 
 import numpy as np
 from qiskit import QuantumCircuit
@@ -334,49 +346,77 @@ def c_expectation(distribution: np.ndarray) -> float:
     return float(1.0 - 2.0 * np.sum(distribution[1::2]))
 
 
-def c_assignment(distributions: Mapping[str, np.ndarray]) -> tuple[float, float]:
-    """C's flips from the in-job calibration: e10 = P(1 | prepared 0), e01 = P(0 | prepared 1).
+Flips = tuple[tuple[float, float], ...]
+# Raw-bit conditioning: the leaves' outcomes taken as their states.
+UNCORRECTED_LEAVES: Flips = ((0.0, 0.0),) * len(LEAVES)
 
-    The channel maps a true expectation q to (1 - e10 - e01) q + (e01 - e10)
-    in both quadratures; the common offset moves the center of the Ramsey
-    circle, so the summary inverts it before taking phases.
+
+def assignment_flips(distributions: Mapping[str, np.ndarray]) -> Flips:
+    """Every qubit's flips from the in-job calibration, qubit 0 (C) first: (e10, e01) = (P(1 | 0), P(0 | 1)).
+
+    Each qubit's flips are the marginals of the all-|0> and all-|1>
+    calibration circuits on that qubit. C's channel maps a true expectation q
+    to (1 - e10 - e01) q + (e01 - e10) in both quadratures; the common offset
+    moves the center of the Ramsey circle, so the summary inverts it before
+    taking phases.
     """
     zero, one = distributions[READOUT_MEMBERS[0]], distributions[READOUT_MEMBERS[1]]
-    return float(np.sum(zero[1::2])), float(np.sum(one[0::2]))
+    outcomes = np.arange(1 << QUBITS)
+    return tuple(
+        (float(np.sum(zero[(outcomes >> qubit) & 1 == 1])), float(np.sum(one[(outcomes >> qubit) & 1 == 0])))
+        for qubit in range(QUBITS)
+    )
 
 
-def conditioned(distribution: np.ndarray, sector: str) -> np.ndarray:
-    """A conditional arm's law restricted to all leaves read as prepared and renormalized; others unchanged.
+def leaf_inverse(leaf_flips: Flips) -> np.ndarray:
+    """Inverse of the leaves' per-qubit channels [[1 - e10, e01], [e10, 1 - e01]], identity on C's bit."""
+    inverse: np.ndarray = np.eye(2)
+    for e10, e01 in leaf_flips:
+        inverse = np.kron(np.linalg.inv(np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])), inverse)
+    return inverse
 
-    The assignment channels are per-qubit, so discarding on the leaves'
-    outcomes leaves C's assignment channel, and the in-job correction of it,
-    as they were.
+
+def conditioned(distribution: np.ndarray, sector: str, leaf_flips: Flips) -> np.ndarray:
+    """A conditional arm's law on the leaves' prepared pattern, renormalized; other arms unchanged.
+
+    The leaves' assignment channels are inverted first, so the two kept cells
+    estimate the joint law of C's outcome with the leaves' end-of-circuit
+    state equal to the prepared bits, not with their read bits: a relaxed
+    leaf misread as prepared leaves the kept cells. The cells are
+    quasi-probabilities and their ratio is a consistent estimator under
+    per-qubit, state-independent assignment equal to the in-job calibration's;
+    correlated readout error and decay that differs between a calibration
+    circuit and an arm remain in it. C's own channel stays in the kept law,
+    and the summary inverts it once afterwards (corrected_expectation).
     """
     if sector not in CONDITIONAL_SECTORS:
         return distribution
+    corrected = leaf_inverse(leaf_flips) @ distribution
     leaves = leaf_readout(sector)
     kept = np.zeros(len(distribution))
-    kept[leaves], kept[leaves | 1] = distribution[leaves], distribution[leaves | 1]
+    kept[leaves], kept[leaves | 1] = corrected[leaves], corrected[leaves | 1]
     return kept / kept.sum()
 
 
-def leaf_preparation_error(distribution: np.ndarray, sector: str) -> float:
-    """Probability that the leaves read anything but their expected bits."""
+def leaf_preparation_error(distribution: np.ndarray, sector: str, leaf_flips: Flips) -> float:
+    """Assignment-corrected probability that the leaves end in anything but their expected bits."""
+    corrected = leaf_inverse(leaf_flips) @ distribution
     leaves = leaf_readout(sector)
-    return float(1.0 - distribution[leaves] - distribution[leaves | 1])
+    return float(1.0 - corrected[leaves] - corrected[leaves | 1])
 
 
 def sector_phases(
-    distributions: Mapping[str, np.ndarray], sector: str, e10: float, e01: float, postselect: bool = True
+    distributions: Mapping[str, np.ndarray], sector: str, flips: Flips, postselect: bool = True
 ) -> tuple[list[float], list[float]]:
     """C's phase and visibility at every delay from assignment-corrected X and Y expectations."""
+    (e10, e01), leaf_flips = flips[0], flips[1:]
     phases, visibilities = [], []
     for delay in DELAYS_DT:
         quadratures = []
         for quadrature in QUADRATURES:
             law = distributions[member_name(sector, quadrature, delay)]
             if postselect:
-                law = conditioned(law, sector)
+                law = conditioned(law, sector, leaf_flips)
             quadratures.append(corrected_expectation(c_expectation(law), e10, e01))
         x, y = quadratures
         phases.append(math.atan2(y, x))
@@ -384,8 +424,8 @@ def sector_phases(
     return phases, visibilities
 
 
-def sector_rate(distributions: Mapping[str, np.ndarray], sector: str, e10: float, e01: float) -> float:
-    return fit_rate(DELAYS_DT, sector_phases(distributions, sector, e10, e01)[0])[0]
+def sector_rate(distributions: Mapping[str, np.ndarray], sector: str, flips: Flips) -> float:
+    return fit_rate(DELAYS_DT, sector_phases(distributions, sector, flips)[0])[0]
 
 
 def reconstruct(rates: Mapping[str, float]) -> dict[str, float]:
@@ -404,17 +444,28 @@ def reconstruct(rates: Mapping[str, float]) -> dict[str, float]:
     return out
 
 
-def point_summary(distributions: Mapping[str, np.ndarray], postselect: bool = True) -> dict[str, float]:
+def point_summary(
+    distributions: Mapping[str, np.ndarray], postselect: bool = True, correct_leaves: bool = True
+) -> dict[str, float]:
     """Phases, fitted rates and reconstructed parameters on assignment-corrected expectations.
 
-    ``postselect=False`` reads the conditional arms without discarding on the
-    leaves, the estimator that leaf relaxation biases.
+    ``postselect=False`` reads the conditional arms without conditioning on
+    the leaves, the estimator that leaf relaxation biases;
+    ``correct_leaves=False`` conditions on the leaves' raw read bits, which
+    leaf misassignment of relaxed shots biases.
     """
-    e10, e01 = c_assignment(distributions)
+    flips = assignment_flips(distributions)
+    leaf_flips = flips[1:]
+    if not correct_leaves:
+        flips = (flips[0], *UNCORRECTED_LEAVES)
+    e10, e01 = flips[0]
     summary: dict[str, float] = {"c_assignment_e10": e10, "c_assignment_e01": e01}
+    for leaf, (leaf_e10, leaf_e01) in zip(LEAVES, leaf_flips, strict=True):
+        summary[f"l{leaf}_assignment_e10"] = leaf_e10
+        summary[f"l{leaf}_assignment_e01"] = leaf_e01
     rates: dict[str, float] = {}
     for sector in SECTORS:
-        phases, visibilities = sector_phases(distributions, sector, e10, e01, postselect)
+        phases, visibilities = sector_phases(distributions, sector, flips, postselect)
         for delay, phase, visibility in zip(DELAYS_DT, phases, visibilities, strict=True):
             summary[f"{sector}_{delay}dt_phase"] = phase
             summary[f"{sector}_{delay}dt_visibility"] = visibility
@@ -424,7 +475,7 @@ def point_summary(distributions: Mapping[str, np.ndarray], postselect: bool = Tr
         summary[f"{sector}_leaf_preparation_error"] = float(
             np.mean(
                 [
-                    leaf_preparation_error(distributions[member_name(sector, quadrature, delay)], sector)
+                    leaf_preparation_error(distributions[member_name(sector, quadrature, delay)], sector, leaf_flips)
                     for delay in DELAYS_DT
                     for quadrature in QUADRATURES
                 ]
@@ -438,12 +489,15 @@ class RateGradient:
     """Central-difference gradient of every sector rate with respect to one circuit's outcome probabilities.
 
     A sector member moves only its own sector's rate; a calibration member
-    moves every rate through C's assignment correction. Outcomes of zero
-    probability carry zero multinomial covariance and are skipped.
+    moves every rate through the four qubits' assignment correction. Outcomes
+    whose one-shot variance is zero carry no covariance and are skipped.
     """
 
-    def __init__(self, distributions: Mapping[str, np.ndarray], step: float) -> None:
+    def __init__(
+        self, distributions: Mapping[str, np.ndarray], covariances: Mapping[str, np.ndarray], step: float
+    ) -> None:
         self.base = dict(distributions)
+        self.support = {name: np.flatnonzero(np.diag(covariance)) for name, covariance in covariances.items()}
         self.step = step
 
     def __call__(self, name: str) -> np.ndarray:
@@ -456,34 +510,60 @@ class RateGradient:
             sectors = ()
         rows = [SECTORS.index(sector) for sector in sectors]
         gradient = np.zeros((len(SECTORS), len(dist)))
-        for outcome in np.flatnonzero(dist):
+        for outcome in self.support[name]:
             shifted = []
             for sign in (1.0, -1.0):
                 moved = dict(self.base)
                 moved[name] = dist.copy()
                 moved[name][outcome] += sign * self.step
-                e10, e01 = c_assignment(moved)
-                shifted.append([sector_rate(moved, sector, e10, e01) for sector in sectors])
+                flips = assignment_flips(moved)
+                shifted.append([sector_rate(moved, sector, flips) for sector in sectors])
             gradient[rows, outcome] = (np.asarray(shifted[0]) - np.asarray(shifted[1])) / (2.0 * self.step)
         return gradient
 
 
-def one_shot_standard_errors(distributions: Mapping[str, np.ndarray], step: float = 1e-6) -> dict[str, float]:
+def one_shot_standard_errors(
+    distributions: Mapping[str, np.ndarray],
+    covariances: Mapping[str, np.ndarray] | None = None,
+    step: float = 1e-6,
+) -> dict[str, float]:
     """Delta-method standard errors at one shot per circuit; divide by sqrt(shots).
 
     Every circuit is an independent multinomial with covariance
-    (diag(p) - p p^T) / N. Each output is linear in the sector rates
+    (diag(p) - p p^T) / N. A readout-inverted input M p passes its own
+    one-shot covariance M (diag(p) - p p^T) M^T in covariances, since the
+    multinomial form of a quasi-probability vector understates the variance
+    the inversion adds. Each output is linear in the sector rates
     (OUTPUT_MAP), so the per-circuit rate gradients, the calibration circuits
     included, carry the whole error budget; parallel.ordered_map computes
     them circuit by circuit.
     """
     base = {name: np.asarray(dist, dtype=float) for name, dist in distributions.items()}
+    one_shot = multinomial_covariances(base) if covariances is None else dict(covariances)
+    return propagated_standard_errors(rate_gradients(base, one_shot, step), one_shot)
+
+
+def multinomial_covariances(distributions: Mapping[str, np.ndarray]) -> dict[str, np.ndarray]:
+    return {name: np.diag(dist) - np.outer(dist, dist) for name, dist in distributions.items()}
+
+
+def rate_gradients(
+    distributions: Mapping[str, np.ndarray], covariances: Mapping[str, np.ndarray], step: float = 1e-6
+) -> dict[str, np.ndarray]:
+    """Every circuit's sector-rate gradient (RateGradient) over the outcomes its covariance supports."""
+    base = {name: np.asarray(dist, dtype=float) for name, dist in distributions.items()}
     names = list(base)
-    gradients = parallel.ordered_map(RateGradient(base, step), names)
+    gradients = parallel.ordered_map(RateGradient(base, covariances, step), names)
+    return dict(zip(names, gradients, strict=True))
+
+
+def propagated_standard_errors(
+    gradients: Mapping[str, np.ndarray], covariances: Mapping[str, np.ndarray]
+) -> dict[str, float]:
+    """One-shot standard error of every SE_KEYS output from per-circuit rate gradients and covariances."""
     variance = np.zeros(len(SE_KEYS))
-    for name, gradient in zip(names, gradients, strict=True):
-        dist = base[name]
-        covariance = np.diag(dist) - np.outer(dist, dist)
+    for name, gradient in gradients.items():
+        covariance = np.asarray(covariances[name], dtype=float)
         projected = OUTPUT_MAP @ gradient
         variance += np.einsum("ko,op,kp->k", projected, covariance, projected)
     return {
@@ -501,9 +581,72 @@ def summarize_distributions(distributions: Mapping[str, np.ndarray]) -> dict[str
     return summary
 
 
+def summarize_with_covariance(
+    distributions: Mapping[str, np.ndarray], covariances: Mapping[str, np.ndarray]
+) -> dict[str, float]:
+    """summarize_distributions on readout-inverted laws, errors propagated through their covariances."""
+    summary = point_summary(distributions)
+    summary.update(one_shot_standard_errors(distributions, covariances))
+    return summary
+
+
+def _sites(circuit: QuantumCircuit) -> tuple[list[tuple[int, ...]], tuple[int, ...]]:
+    """Physical qubits of (C, L1, L2, L3) at every four-qubit barrier, and the qubit read into each clbit."""
+    barriers = [
+        tuple(circuit.find_bit(qubit).index for qubit in instruction.qubits)
+        for instruction in circuit.data
+        if instruction.operation.name == "barrier" and len(instruction.qubits) == QUBITS
+    ]
+    reads = {
+        circuit.find_bit(instruction.clbits[0]).index: circuit.find_bit(instruction.qubits[0]).index
+        for instruction in circuit.data
+        if instruction.operation.name == "measure"
+    }
+    return barriers, tuple(reads.get(clbit, -1) for clbit in range(QUBITS))
+
+
+def routed_star_violations(isas: list[QuantumCircuit], target: Any) -> list[str]:
+    """Reasons the routed members fail to hold C, L1, L2, L3 on one physical star at every idle and readout.
+
+    Layout and routing keep a barrier's logical argument order, so the
+    barriers that bracket each idle name the physical qubits of C, L1, L2 and
+    L3 during it, and each measurement names the physical qubit read into its
+    clbit. Every member, the calibration circuits included, must show one
+    common tuple at every barrier and every readout: a routing SWAP moves a
+    logical qubit between sites, and the in-job calibration describes only
+    the sites it read. The tuple's center must share an admitted CZ coupler
+    of the compiled Target with each leaf, so the sector rates share the
+    seven frequencies and couplers of one star.
+    """
+    observed: set[tuple[int, ...]] = set()
+    for isa in isas:
+        barriers, reads = _sites(isa)
+        observed.update(barriers)
+        observed.add(reads)
+    if len(observed) != 1:
+        return [f"members place C, L1, L2, L3 on {len(observed)} physical tuples: {sorted(observed)}"]
+    (sites,) = observed
+    if len(set(sites)) != QUBITS or min(sites) < 0:
+        return [f"members read C, L1, L2, L3 from {sites}"]
+    couplers: set[frozenset[int]] = set()
+    if "cz" in target.operation_names:
+        couplers = {frozenset(qargs) for qargs in target.qargs_for_operation_name("cz")}
+    center = sites[0]
+    missing = [leaf for leaf in sites[1:] if frozenset((center, leaf)) not in couplers]
+    if missing:
+        return [f"center {center} shares no admitted CZ coupler with leaves {missing}"]
+    return []
+
+
 def star_ramsey_group() -> Group:
     members = tuple(Member(name, circuit, ideal) for name, circuit, ideal in circuits())
-    return Group("star_ramsey", members, summarize_distributions)
+    return Group(
+        "star_ramsey",
+        members,
+        summarize_distributions,
+        summarize_with_covariance=summarize_with_covariance,
+        routed_violations=routed_star_violations,
+    )
 
 
 def hamiltonian_evolution(
@@ -550,19 +693,19 @@ def exact_distributions(evolve: Evolution) -> dict[str, np.ndarray]:
     return {name: _probabilities(circuit) for name, circuit, _ in circuits(evolve)}
 
 
-def with_assignment(
-    distributions: Mapping[str, np.ndarray],
-    c_flips: tuple[float, float],
-    leaf_flips: tuple[tuple[float, float], tuple[float, float], tuple[float, float]],
-) -> dict[str, np.ndarray]:
-    """Pass every outcome law through per-qubit channels [[1 - e10, e01], [e10, 1 - e01]]."""
-
-    def channel(e10: float, e01: float) -> np.ndarray:
-        return np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])
-
+def assignment_channel(c_flips: tuple[float, float], leaf_flips: Flips) -> np.ndarray:
+    """Kronecker product of per-qubit channels [[1 - e10, e01], [e10, 1 - e01]], qubit 0 least significant."""
     joint = np.ones((1, 1))
-    for flips in (c_flips, *leaf_flips):
-        joint = np.kron(channel(*flips), joint)
+    for e10, e01 in (c_flips, *leaf_flips):
+        joint = np.kron(np.array([[1.0 - e10, e01], [e10, 1.0 - e01]]), joint)
+    return joint
+
+
+def with_assignment(
+    distributions: Mapping[str, np.ndarray], c_flips: tuple[float, float], leaf_flips: Flips
+) -> dict[str, np.ndarray]:
+    """Pass every outcome law through the per-qubit assignment channel."""
+    joint = assignment_channel(c_flips, leaf_flips)
     return {name: joint @ np.asarray(dist) for name, dist in distributions.items()}
 
 
@@ -577,6 +720,53 @@ def _two_qubit_pairs(circuit: QuantumCircuit) -> set[tuple[int, int]]:
         for instruction in circuit.data
         if instruction.operation.num_qubits == 2 and instruction.operation.name != "barrier"
     }
+
+
+def _routing_check() -> int:
+    """Members routed from a star layout pass routed_star_violations; from a layout off the star they fail.
+
+    The Target is a heavy-hex fragment: physical 0 couples to 1, 2 and 3,
+    and 1 continues through 4 to 5. Placing C on the degree-two qubit 1
+    makes the GHZ arm swap C onto 0 while a conditional arm idles C on 1,
+    the split placement the rejection exists for.
+    """
+    from qiskit import transpile
+    from qiskit.transpiler import CouplingMap, Target
+
+    edges = [(0, 1), (0, 2), (0, 3), (1, 4), (4, 5)]
+    target = Target.from_configuration(
+        basis_gates=["cz", "rz", "sx", "x", "measure", "delay"],
+        coupling_map=CouplingMap([*edges, *((b, a) for a, b in edges)]),
+        dt=4e-9,
+    )
+    delay = DELAYS_DT[1]
+    probes = (
+        sector_circuit("ghz", "x", delay),
+        sector_circuit("even2", "y", delay),
+        sector_circuit("all1", "x", delay),
+        readout_circuit(1),
+    )
+
+    def routed(layout: list[int]) -> list[QuantumCircuit]:
+        return [
+            transpile(circuit, target=target, optimization_level=3, seed_transpiler=11, initial_layout=layout)
+            for circuit in probes
+        ]
+
+    on_star = routed([0, 1, 2, 3])
+    _require(routed_star_violations(on_star, target) == [], "members routed from a star layout must be admitted")
+    off_star = routed([1, 0, 2, 3])
+    centers = {_sites(isa)[0][0][0] for isa in off_star if _sites(isa)[0]}
+    _require(len(centers) > 1, f"arms routed off the star must idle C on different qubits, got {sorted(centers)}")
+    rejected = routed_star_violations(off_star, target)
+    _require(len(rejected) == 1 and "physical tuples" in rejected[0], f"off-star routing is admitted: {rejected}")
+    unrouted = [off_star[2], off_star[3]]
+    rejected = routed_star_violations(unrouted, target)
+    _require(
+        len(rejected) == 1 and "no admitted CZ coupler" in rejected[0],
+        f"a common placement off a three-coupler center is admitted: {rejected}",
+    )
+    return len(centers)
 
 
 def self_check() -> str:
@@ -733,6 +923,47 @@ def self_check() -> str:
         abs(unconditioned["falsifier_all1"]) > 1e3 * tolerance,
         "leaf relaxation must move the unconditioned all1 falsifier",
     )
+    # With leaf misassignment a relaxed L2 read as 1 enters the raw-bit
+    # pattern; inverting the leaves' channels before conditioning removes it.
+    relaxed_misread = with_assignment(relaxed, c_flips, leaf_flips)
+    leaf_corrected = point_summary(relaxed_misread)
+    _require(
+        abs(leaf_corrected["all1_rate_rad_per_dt"] - expected["all1"]) < tolerance
+        and abs(leaf_corrected["falsifier_all1"]) < tolerance,
+        "leaf-assignment correction before conditioning must remove relaxation under misassignment",
+    )
+    raw_bits = point_summary(relaxed_misread, correct_leaves=False)
+    leaf_bias = abs(raw_bits["all1_rate_rad_per_dt"] - expected["all1"])
+    _require(
+        leaf_bias > 1e3 * tolerance and abs(raw_bits["falsifier_all1"]) > 1e3 * tolerance,
+        "conditioning on raw leaf bits must keep misread relaxed shots",
+    )
+
+    # live_run.corrected_summary hands the summary M p with covariance
+    # M (diag(p) - p p^T) M^T. The in-job calibration absorbs any per-qubit
+    # channel, so the summary of M p equals the summary of p, and the errors
+    # propagated through the inverted covariance must equal the raw ones,
+    # while the multinomial form of M p understates them.
+    inverse = np.linalg.inv(assignment_channel((0.03, 0.05), ((0.02, 0.04), (0.01, 0.03), (0.02, 0.02))))
+    inverted = {name: inverse @ law for name, law in misread.items()}
+    inverted_cov = {name: inverse @ (np.diag(law) - np.outer(law, law)) @ inverse.T for name, law in misread.items()}
+    raw_se = one_shot_standard_errors(misread)
+    gradients = rate_gradients(inverted, inverted_cov)
+    propagated = propagated_standard_errors(gradients, inverted_cov)
+    naive = propagated_standard_errors(gradients, multinomial_covariances(inverted))
+    inverted_point, raw_point = point_summary(inverted), point_summary(misread)
+    for key in ("zz_j1", "omega_c", "falsifier_ghz"):
+        name = f"{key}_se_one_shot"
+        _require(
+            abs(inverted_point[key] - raw_point[key]) < 1e-12 * scale,
+            f"{key}: the summary of M p must equal the summary of p",
+        )
+        _require(
+            abs(propagated[name] - raw_se[name]) < 1e-5 * raw_se[name],
+            f"{name}: inverted covariance gives {propagated[name]} against raw {raw_se[name]}",
+        )
+    understated = min(raw_se[name] / naive[name] for name in raw_se)
+    _require(understated > 1.02, f"the multinomial form of M p must understate the errors, ratio {understated}")
 
     rng = np.random.default_rng(20261016)
     shots = 1024
@@ -755,10 +986,14 @@ def self_check() -> str:
             abs(float(np.mean(draws)) - truth.get(key, 0.0)) < 4.0 * predicted_se / math.sqrt(len(draws)),
             f"{key} estimate is biased",
         )
+    split_centers = _routing_check()
     return (
         f"star Ramsey: {len(members)} circuits; GHZ arm first on couplers (0,1), (0,2), (0,3); "
+        f"off-star routing splits C over {split_centers} qubits and is rejected; "
         f"conditional rank 4 -> design rank 7 over {len(SECTORS)} rows, {len(FALSIFIERS)} falsifiers at 0; "
         f"assignment bias {rate_hz(raw_bias, dt):.0f} Hz removed by the in-job calibration; "
+        f"raw-bit leaf conditioning bias {rate_hz(leaf_bias, dt):.1f} Hz removed by leaf correction; "
+        f"inverted-covariance errors exceed the multinomial form by {understated:.3f}x; "
         f"propagated J1 error {rate_hz(standard_error(exact, 'zz_j1', shots), dt):.0f} Hz at {shots} shots; "
         f"unwrap bound {rate_hz(bound, dt) / 1e3:.0f} kHz"
     )

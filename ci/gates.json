@@ -2214,7 +2214,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error star_ramsey.py && \"$PYTHON\" -B -O -W error star_ramsey.py",
    "name": "core-361",
-   "seconds": 7.0,
+   "seconds": 26.0,
    "tier": "pr"
   },
   {
