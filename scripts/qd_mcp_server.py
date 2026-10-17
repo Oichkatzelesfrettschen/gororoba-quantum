@@ -159,14 +159,20 @@ async def qd_job_status(job_id: JobId) -> dict[str, Any]:
 @server.tool(annotations=READ)
 @reported
 async def qd_job_result(job_id: JobId, include_raw: bool = False) -> dict[str, Any]:
-    """Result of one finished job; each string field truncates at RESULT_CHARACTERS unless include_raw."""
+    """Result of one finished job; every string at any depth truncates at RESULT_CHARACTERS unless include_raw."""
     result: dict[str, Any] = await threaded(lambda: get(job_route(job_id, "result")))
-    if include_raw:
-        return result
-    return {
-        k: (v[:RESULT_CHARACTERS] + "...") if isinstance(v, str) and len(v) > RESULT_CHARACTERS else v
-        for k, v in result.items()
-    }
+    return result if include_raw else truncated(result)
+
+
+def truncated(value: Any) -> Any:
+    """A JSON value whose strings, at any depth, end after RESULT_CHARACTERS characters."""
+    if isinstance(value, str):
+        return value[:RESULT_CHARACTERS] + "..." if len(value) > RESULT_CHARACTERS else value
+    if isinstance(value, dict):
+        return {k: truncated(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [truncated(v) for v in value]
+    return value
 
 
 def simulate(
@@ -185,7 +191,7 @@ def simulate(
     if len(photons) != modes or any(not 0 <= n <= 1 for n in photons):
         raise ValueError("input_photons must give 0 or 1 photon for each mode")
     unitary = np.array(real, dtype=complex) + (1j * np.array(imag) if imag is not None else 0)
-    if not np.allclose(unitary.conj().T @ unitary, np.eye(modes), atol=UNITARY_TOLERANCE):
+    if not np.allclose(unitary.conj().T @ unitary, np.eye(modes), rtol=0, atol=UNITARY_TOLERANCE):
         raise ValueError("the matrix is not unitary within 1e-9")
     count = sum(photons)
     space = math.comb(modes + count - 1, count)
