@@ -203,6 +203,20 @@
       "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-03",
       "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
       "question": "Batch 3 of 4: what residual ZZ does each of Tuna-17's 24 parked flux-tunable couplers leave, measured from both of its ends, and what frame frequency does each qubit carry?"
+    },
+    {
+      "id": "qi-qx-zero-divisor-batch-dry-run-0",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T034409Z-zero_divisor_qx-batch-00",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "Dry run, batch 0 of 2: does the ideal QX emulator execute the batched twin circuits of the per-batch zero-divisor series exactly (dark 0, bright 1, fixture 1/2) before any Tuna-17 submission?"
+    },
+    {
+      "id": "qi-qx-zero-divisor-batch-dry-run-1",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T034409Z-zero_divisor_qx-batch-01",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "Dry run, batch 1 of 2: does the ideal QX emulator execute the batched twin circuits of the per-batch zero-divisor series exactly (dark 0, bright 1, fixture 1/2) before any Tuna-17 submission?"
     }
   ],
   "claims": [
@@ -2969,6 +2983,43 @@
       "depends_on": [
         "qi-tuna17-zero-divisor-contraction"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-qx-zero-divisor-batched-twin",
+      "statement": "Split into two QX batches, the nine routed Clifford+T zero-divisor replicas of the per-batch series read P(s = 0) = 0 in 6144 dark shots, 1 in 6144 bright shots and 0.498 [0.485, 0.510] fixture (1053, 998 and 1007 of 2048 per replica; fixture - 1/2 = -0.002, z = -0.36), so the emulator executes the batched series' emitted cQASM as certified.",
+      "domain": "implementation",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The QX emulator is noiseless, so the run tests the platform's parsing and execution of the emitted circuits and the batch-keyed analysis, not device noise; the exact SELECT identity rests on the full-operator certificate in certify(), not on finite samples; 2048 shots per circuit.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/zero_divisor_qx_analysis.json",
+          "sha256": "301341f1308b5ac23bd2745b20fe54fd265b48e1fbcf526bb2197c5c04d60324"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-17T034409Z-zero_divisor_qx-batch-00/results.json",
+          "sha256": "1b6df6c01d0819362d3bd8043a0871d354fcc3a7eefa0e8e53c7e2f57d2637b6"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-17T034409Z-zero_divisor_qx-batch-01/results.json",
+          "sha256": "389acdb0910a77c18143b1660e81ec09f7eb1014e589796bc7b1a08c1aee5725"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-330": "replay",
+        "core-348": "freshness"
+      },
+      "acquisitions": [
+        "qi-qx-zero-divisor-batch-dry-run-0",
+        "qi-qx-zero-divisor-batch-dry-run-1"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     },
