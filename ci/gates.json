@@ -2742,15 +2742,15 @@
    "cwd": ".",
    "cmd": "cmp results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json results/kaggle/2026-10-17T150731Z-ringdown-null-calibration/output/output/repo/results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json && \"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --null-calibration results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json --replay && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --null-calibration results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json --replay",
    "name": "core-436",
-   "seconds": 679.0,
-   "tier": "full"
+   "seconds": 12.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --null-self-test && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --null-self-test",
    "name": "core-437",
-   "seconds": 51.1,
+   "seconds": 20.1,
    "tier": "pr"
   },
   {
@@ -2758,7 +2758,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --null-equivalence results/quantum_inspire/readout_ringdown_tuna_17_P_analysis.json results/quantum_inspire/readout_ringdown_tuna_17_Q_analysis.json",
    "name": "core-438",
-   "seconds": 80.0,
+   "seconds": 29.7,
    "tier": "pr"
   },
   {
