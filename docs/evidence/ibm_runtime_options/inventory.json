@@ -2664,6 +2664,7 @@
   }
  ],
  "probe_environment": {
+  "ibm-quantum-schemas": "0.12.20260921",
   "pydantic": "2.13.5",
   "qiskit": "2.5.2",
   "qiskit-mitigation": "0.1.1",
