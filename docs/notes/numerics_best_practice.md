@@ -20,11 +20,12 @@ p-adic solution.
   `rho = ||r|| / (||A|| ||x||)`; the kappa^2 rho term belongs to the problem
   whenever the fit has a residual, and no solver removes it.
 - **Equilibrate columns when their norms differ by orders of magnitude.**
-  Scaling each column by a power of two to unit norm (`A D`, then
-  `x = D y`) is exact in binary floating point and cut kappa a median 341
-  times on the 854 designs whose column norms spread by 100 or more (Van der
-  Sluis: unit-norm columns are within sqrt(n) of the optimal diagonal
-  scaling). Householder QR is invariant under such scaling, so equilibration
+  Scaling each column by the power of two that puts its norm in
+  [2^-1/2, 2^1/2) (`A D`, then `x = D y`; `equilibration()` in the study)
+  is exact in binary floating point and cut kappa a median 341 times on the
+  854 designs whose column norms spread by 100 or more. Van der Sluis bounds
+  unit-norm columns within sqrt(n) of the optimal diagonal scaling; the
+  power-of-two rounding adds at most a factor of 2 to that bound. Householder QR is invariant under such scaling, so equilibration
   matters for the condition number a tolerance reads, not for QR's answer.
 - **Collinearity is a model defect, not an arithmetic one.** The atlas
   `axis_tilt_plus_mean` model keeps kappa near 4.7e5 after equilibration
@@ -35,9 +36,11 @@ p-adic solution.
   design (#213); more digits change nothing.
 - **Bound small components componentwise.** A normwise bound
   `eps kappa^2 max|x|` admits errors far larger than a small component;
-  `atlas_coherent_families.compare()` uses a per-value rule, and the study
-  measures every float64 value within 1.8e-4 of its tolerance of the exact
-  solution.
+  `atlas_coherent_families.compare()` uses a per-value rule. The study
+  measures every SVD, QR and equilibrated float64 value within 1.8e-4 of its
+  tolerance of the exact solution; the float64 normal equations reach 0.26
+  of tolerance on a component and 0.75 on a held-out prediction (margins
+  3.9 and 1.3).
 
 ## Precision
 
@@ -48,29 +51,37 @@ p-adic solution.
 | `np.longdouble` / `np.clongdouble` | 64 bits (x87 extended, stored in 128 bits) | 1.1e-19 | scalar x87 only: no SIMD, no BLAS or LAPACK; `einsum` accepts it |
 | double-double | about 106 bits | about 1e-32 | software (pairs of float64 with error-free transformations) |
 | IEEE binary128 | 113 bits | 1.9e-34 | software only on x86 (libquadmath, MPFR, mpmath) |
-| `Fraction`, p-adic, mod p | exact | 0 | stdlib `fractions`, pyadic, python-flint, galois |
+| `Fraction`, mod p | exact | 0 | stdlib `fractions`, pyadic `ModP`, python-flint, galois |
+| p-adic `PAdic` | fixed precision p^k | capped at O(p^k) | pyadic; exact only through a certified lift plus rational reconstruction |
 
 - **float64 is enough wherever sampling sets the error.** The n21 exact
-  model agrees with Aer's exact density-matrix law to 1.2e-15
-  ([cross-check](../evidence/n21_exact_model/README.md), core-487), and an
-  80-bit `clongdouble` run of `dynamic_density` moves its laws by at most
-  4.4e-16 while running 2 to 9 times slower; the run's statistical radii are
-  about 1e-2. Aer accepts only `precision="double"` and `"single"`.
+  model agrees with Aer's exact density-matrix law to 1.2e-15 under the
+  cleaned noise model; under the raw calibration model the gap is 1.06e-9
+  per outcome and 2.0e-9 in the contrast, which is Aer's own truncation of
+  noise components at 1e-10, not rounding
+  ([cross-check](../evidence/n21_exact_model/README.md), core-487). The
+  run's statistical radii are about 1e-2. Aer accepts only
+  `precision="double"` and `"single"`.
 - **Extra precision reduces rounding by 2^-(p-53) and nothing else.** The
   study's emulated p-bit Householder QR (bit-identical to Python doubles at
   p = 53 and to x87 `np.longdouble` at p = 64) shows the predicted scaling at
   p = 64, 106 and 113 with no retained value moving.
 - **Certificates use exact arithmetic, not wide floats.** Rank and nullity
-  claims run in `Fraction`, modulo a prime (2^61 - 1), or p-adically with
-  rational reconstruction (pyadic `rationalise`); two independent exact
+  claims run in `Fraction` or modulo a prime (2^61 - 1). A p-adic value is
+  exact only once a lift to precision p^k above a proved reconstruction bound
+  (core-489: p^k > 2 max(N, D)^2) is rationally reconstructed and checked
+  against the system; a fixed-precision `PAdic` result alone is an
+  approximation. Two independent exact
   paths that agree (core-489's Fraction and p-adic solutions on all 2716
   designs) outrank any finite precision.
 - **A total arithmetic replaces divide-and-check.**
   `gororoba_quantum/wheel_algebra.py` (core-493) implements the wheel of
   fractions over Q: 1/0 is infinity and 0/0 is bottom, so elimination on a
-  singular symmetric positive semidefinite system returns bottom instead of
-  raising. Bottom carries no kernel or consistency information; nullity
-  still comes from exact rank.
+  consistent singular symmetric positive semidefinite system (right side in
+  the column space, as rank-deficient normal equations are) returns bottom
+  instead of raising; an inconsistent one can return infinity
+  (`solve([[0]], [1])`). Bottom carries no kernel or consistency
+  information; nullity still comes from exact rank.
 
 ## Vectorization in numpy
 
@@ -78,11 +89,13 @@ p-adic solution.
   `np.einsum`, batched `@` over leading axes and `np.linalg` on stacked
   matrices run in compiled loops; a Python loop over array elements pays
   interpreter dispatch on every element.
-- **Contract tensors with a planned order.** `np.einsum(..., optimize=True)`
-  chooses a pairwise order; `dynamic_density` and `jax_bridge` precompute
-  their subscript strings per qubit tuple, which keeps the plan out of the
-  inner loop. For networks beyond a few tensors, opt_einsum or cotengra
-  (both on the build host) find better orders.
+- **Contract tensors with a planned order.** `np.einsum(..., optimize=...)`
+  chooses a pairwise order on every call. `dynamic_density` caches only its
+  subscript strings per qubit tuple and calls `np.einsum(..., optimize="greedy")`
+  per operation, so the path search repeats; `np.einsum_path` computed once
+  per (subscripts, shapes) and passed as `optimize=path` would move it out of
+  the inner loop (unmeasured). For networks beyond a few tensors,
+  opt_einsum or cotengra find better orders.
 - **Keep dtypes concrete.** Object arrays (Fractions, wheels, p-adics)
   run element by element in Python; keep them to exact certificates and
   small designs, and keep float work in float64 or complex128.
@@ -118,9 +131,10 @@ BLAS call can use every CPU.
 
 ## Runtime packages
 
-CI imports only the pins in `requirements.txt` and
+`ci/install_pins.sh` defines CI's stack: the pins in `requirements.txt` and
 `ci/requirements-ci.txt` (numpy, scipy, sympy, qiskit, qiskit-aer,
-qiskit-ibm-runtime, rustworkx, matplotlib, mypy, ruff). A gate that needs
+qiskit-ibm-runtime, rustworkx, matplotlib, mypy, ruff), then mpmath 1.4.1
+with `--no-deps` and the sympy 1.14.0 patch that pair needs. A gate that needs
 anything else retains its result at `--out` and checks it with the pinned
 stack, as core-489 does for pyadic. Versions below are the build host's.
 
@@ -129,15 +143,15 @@ stack, as core-489 does for pyadic. Versions below are the build host's.
 | numpy | 2.5.4 (CI pin) | arrays, einsum, linalg through AOCL-BLAS 5.3.0 on the host | longdouble has no linalg |
 | scipy | 1.18.1 (CI pin) | `scipy.linalg` (QR with pivoting, `lstsq` drivers, `solve_triangular`), sparse, optimize | |
 | numba | 0.68.0 | JIT for scalar loops numpy cannot vectorize (shot-ordered register decoding, branch walks) | host only |
-| jax / jaxlib | 0.9.0 | `jax_bridge` density-matrix sweeps, batched over error scales; TPU | host only; complex64 storage |
-| cupy | 14.2.0 | numpy-shaped GPU arrays on the RTX 4070 Ti | host only; float64 runs at 1/64 of float32 speed on that GPU |
+| jax / jaxlib | 0.9.0 | `jax_bridge` density-matrix sweeps, batched over error scales, on CPU | host only; complex64 storage; TPU is a target no retained run has qualified ([TPU research](kaggle/tpu-research.md)) |
+| cupy | 14.2.0 | numpy-shaped GPU arrays on the RTX 4070 Ti | host only; the GPU's nominal float64 throughput is 1/64 of float32 (a hardware ratio, not a measured workload speed) |
 | opt_einsum, cotengra, quimb | 3.4.0, 0.8.2, 1.15.0 | contraction order search and tensor networks | host only; quimb and cotengra are the `quantum-tools` Kaggle group |
 | threadpoolctl | 3.6.0 | limit BLAS threads per process | host only |
-| python-flint | 0.9.0 | fast exact `fmpz_mat` / `fmpq_mat` rank, solve and determinants | host only |
+| python-flint | 0.9.0 | fast exact `fmpz_mat` / `fmpq_mat` rank, solve and determinants | not in CI; Kaggle `exact-arithmetic` group |
 | gmpy2 | 2.3.2 | fast big integers and rationals where `Fraction` dominates a profile | host only |
-| pyadic | 0.3.0 | `ModP`, `PAdic`, rational reconstruction | host only; [note](packages/manual/pyadic.md) |
+| pyadic | 0.3.0 | `ModP`, `PAdic`, rational reconstruction | not in CI; Kaggle `exact-arithmetic` group; [note](packages/manual/pyadic.md) |
 | galois | 0.4.11 | finite-field numpy arrays and linear algebra | `quantum-tools` group |
-| mpmath | 1.4.1 | arbitrary-precision reals and complexes | sympy's dependency |
+| mpmath | 1.4.1 | arbitrary-precision reals and complexes | CI pin through `ci/install_pins.sh` |
 | cython | 3.3.0 | compiled extensions | no compiled module in the tree |
 | torch | 2.14.1 | python-octonion's tensors only | not a numerics backend here |
 | dask, joblib | 2026.8.0, 1.6.0 | none: `parallel.py` is the repository's pool | |
