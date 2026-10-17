@@ -32,7 +32,7 @@ Kaggle session with the build host.
 | CPU only | Kaggle CPU session (4 cores, 30 GB); build host (Ryzen 5 5600X3D, 12 threads, 62 GiB) | transpilation, package builds, Aer CPU methods (stabilizer, matrix product state, extended stabilizer are CPU-only in Aer), the CPU replay of a reduced case |
 | GPU (with its host CPU) | Kaggle GPU sessions (4 cores, 29 GB RAM); build host RTX 4070 Ti | Aer `device="GPU"` statevector, density matrix, unitary, superop and tensor network; the host CPU transpiles meanwhile |
 | Two GPUs in one session | Kaggle `NvidiaTeslaT4` (2 x T4) | either independent experiments on separate GPUs (one process per GPU through `CUDA_VISIBLE_DEVICES`), or one state split across both with Aer chunking (`blocking_enable`, `blocking_qubits`), which moves the double-precision density matrix from 14 to 15 qubits and the statevector from 29 to 30 (estimate, not measured) |
-| TPU (with its host CPU) | Kaggle `TpuV5E8`, `TpuV6E8` | JAX only; Aer has no TPU backend, so a TPU session would serve the repository as a large CPU host (96 cores and 330 GB RAM on the documented v3-8 VM). Batch pushes with either ID, through `--accelerator` or metadata, ran on 4-core Xeon CPU machines whose JAX found no libtpu, so no TPU is reachable from the CLI on this account |
+| TPU (with its host CPU) | Kaggle `TpuV5E8`, `TpuV6E8` | JAX only; Aer has no TPU backend, so a TPU session would serve the repository as a large CPU host (96 cores and 330 GB RAM on the documented v3-8 VM). Every batch request with either ID (CLI, MCP, the editor's commit) ran on a 4-core Xeon CPU machine on the CPU image without libtpu, with the TPU accelerator recorded server-side and TPU quota unused, with Persona identity verification, which the editor names as a TPU requirement, absent on the account; [tpu-research.md](tpu-research.md) holds the routes and the root-cause analysis |
 | CPU + GPU + TPU at once | not inside one Kaggle session | across sessions: Kaggle GPU kernels for Aer, a Kaggle TPU session for CPU-heavy Aer or JAX, the build host for dry runs, calibration exports and replay gates |
 | Any of the above + IBM | only after an approved case | IBM answers device questions; every substrate above feeds its design, never its result |
 
@@ -67,6 +67,48 @@ or fewer on Kaggle, 15 or more on IBM):
 | 1 to 10 qubits | Kaggle CPU: statevector trajectories, or the density matrix of a static circuit | Kaggle CPU statevector | IBM only for a named-device question with an approved case |
 | 11 to 14 qubits | Kaggle GPU, double-precision density matrix (measured on one T4 to 14); a dynamic circuit stays on the CPU's trajectories unless a probe at its width shows the GPU faster | Kaggle GPU statevector | IBM only for a named-device question with an approved case |
 | 15 qubits or more | none on Kaggle: the 15-qubit density matrix was killed on a T4, and no measured mode extends it | Kaggle GPU statevector up to the measured 29 qubits, as design support for an IBM case | IBM after an approved case |
+
+## CPU against T4
+
+`scripts/substrate_crossover.py` times Aer density-matrix runs of one
+workload by active width on each device of a kernel: ISA circuits on a
+connected chain of physical qubits, 8 layers of rz and sx on every qubit
+and CZ on alternating pairs, under the noise rebuilt from the retained
+`ibm_kingston` snapshot; a batch of 8 circuits at 2048 shots, the best of
+2 repeats, and no wider width once one exceeds 180 s. The dynamic variant
+adds one mid-circuit measurement with a conditioned X, which makes Aer
+simulate shot by shot.
+Runs `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu`
+(Intel Xeon 2.20 GHz, 4 CPUs) and
+`results/kaggle/2026-10-16T212614Z-gororoba-substrate-crossover-t4-gpu`
+(2 x Tesla T4; Intel Xeon 2.00 GHz, 4 CPUs), both qiskit 2.5.2 with the
+`qiskit-aer-gpu-cu11==0.17.2` build (each run's `submission.json` pins and
+`environment.json`; the CPU run predates `CPU_KERNEL_PINS`, so its CPU
+timings come from the cu11 build's CPU path):
+
+| Active qubits | Static, CPU | Static, T4 | Dynamic, CPU | Dynamic, T4 |
+| --- | --- | --- | --- | --- |
+| 2 | 2.9 s | 2.4 s | 4.3 s | 6.1 s |
+| 4 | 3.0 s | 2.5 s | 7.3 s | 9.2 s |
+| 6 | 3.1 s | 2.6 s | 69.6 s | 24.3 s |
+| 8 | 3.4 s | 2.6 s | 548.3 s | 19.4 s |
+| 10 | 8.5 s | 3.0 s | not run | 309.3 s |
+| 12 | 105.4 s | 8.3 s | not run | not run |
+| 14 | 1955.2 s | 110.8 s | not run | not run |
+
+Static circuits through 8 qubits cost the per-call overhead on both
+devices; the T4 is 2.8 times faster at 10 qubits, 12.8 at 12 and 17.7 at
+14. With mid-circuit measurement the CPU leads through 4 qubits and the T4
+is 2.9 times faster at 6 and 28 at 8. The routing rule takes the widths
+where the gain passes 10: 12 static qubits and 8 dynamic ones. The dynamic
+threshold rests on one best-of-2 point that is not monotone in width: the
+T4 ran 8 dynamic qubits in 19.4 s and 6 in 24.3 s. Each device ran once on
+one machine draw, and the CPU machine (Intel Xeon 2.20 GHz) differs from
+the CPU probe's (AMD EPYC 7B12), so Kaggle's CPU pool is heterogeneous and
+a repeat can move both thresholds. The build
+host's crossover is a different measurement on different hardware and
+sets `local_compute.GPU_MIN_ACTIVE_QUBITS` for local runs only
+(`gororoba_quantum/LOCAL_COMPUTE.md`).
 
 ## T4 x2 GPU kernel
 
