@@ -25,7 +25,8 @@ gororoba_quantum/designs.py:
 - design_a_associator(i, j) -> (QuantumCircuit, int, int, int): ancilla-free three-qubit octonion associator phase construction (QuantumCircuit(3, 1), gororoba_quantum/DESIGN_NOTES.md:119-141), a different construction from the controlled 4 data + 1 control fixed-pair test that AGENTS.md counts.
 - lcu_witness(a_pair, b_pair, phase) -> QuantumCircuit: (L_ei + L_ej)/2 on a superposition (4 data qubits plus the ancilla on qubit index 4, five qubits in all).
 - design_b_zero_divisor(a_pair, b_pair, s) -> QuantumCircuit: zero-product LCU; P(selector=0) = 0 dark (e1+e10)(e4-e15), 1 bright (e1+e10)(e4+e15); 4 data + 1 selector.
-- design_d_phase_sweep, design_c_associator_spectrum: Walsh spectrum of W = L_{e_i e_j}^dag L_{e_i} L_{e_j}.
+- design_d_phase_sweep(a_pair, b_pair, phase) -> QuantumCircuit: lcu_witness on b = (e_k + e^{i phase} e_l)/sqrt2, one point of Design B's phase-resolved zero-product fringe (designs.py:144-148, DESIGN_NOTES.md:278-293).
+- design_c_associator_spectrum(dim, i, j, *, omit_adjoint, flip) -> QuantumCircuit: Walsh spectrum of W = L_{e_i e_j}^dag L_{e_i} L_{e_j}, the multi-bit associator distribution (DESIGN_NOTES.md:223-240).
 
 gororoba_quantum/cd_core.py: cd_sign(dim,p,q); cd_multiply(dim,a,b); basis(dim,index,scale); left_mult_matrix_check(i,j); associator(dim,x,y,z); triple_sign(dim,i,j,k); classify_octonion_triples(); fano_completion(i,j); sedenion_zero_divisor_corpus() (336-row corpus of 6-tuples); sedenion_zero_divisors() (pairs); left_mult_matrix(dim,v); sedenion_counterexamples().
 
