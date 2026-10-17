@@ -1,0 +1,28 @@
+{
+ "schema": "qi-readout-ringdown-cases-v1",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "series": "Q",
+ "targets": [
+  1,
+  2,
+  3,
+  7,
+  8,
+  9
+ ],
+ "circuits": [
+  {
+   "file": "readout-0.cq",
+   "kind": "readout",
+   "sha256": "79eb27c82e8658a5131fbb65c75d1ec91d1ce83a628ee08712bb669d74a1220b"
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout",
+   "sha256": "3373ca8775d931df2b9c4c332729d0a63a5260576172f9b0d9edf5abb67a4e2c"
+  }
+ ]
+}

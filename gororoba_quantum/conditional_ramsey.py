@@ -45,7 +45,9 @@ because an asymmetric channel adds a common offset to both quadratures that
 the slope would absorb as a delay-dependent phase error. It reports each
 rate, parameter and the falsifier residual with a delta-method standard
 error at one shot per circuit (divide by sqrt(shots)), propagated through
-the calibration, the phase fits and the reconstruction.
+the calibration, the phase fits and the reconstruction. On readout-inverted
+input from live_run.corrected_summary the propagation uses the inverted
+one-shot covariance M (diag(p) - p p^T) M^T (summarize_with_covariance).
 """
 
 from __future__ import annotations
@@ -297,11 +299,18 @@ def point_summary(distributions: Mapping[str, np.ndarray], postselect: bool = Tr
     return summary
 
 
-def one_shot_standard_errors(distributions: Mapping[str, np.ndarray], step: float = 1e-6) -> dict[str, float]:
+def one_shot_standard_errors(
+    distributions: Mapping[str, np.ndarray],
+    covariances: Mapping[str, np.ndarray] | None = None,
+    step: float = 1e-6,
+) -> dict[str, float]:
     """Delta-method standard errors at one shot per circuit; divide by sqrt(shots).
 
     Every circuit is an independent multinomial with covariance
-    (diag(p) - p p^T) / N. Central differences give the gradient of each
+    (diag(p) - p p^T) / N. A readout-inverted input M p passes its own
+    one-shot covariance M (diag(p) - p p^T) M^T in covariances, since the
+    multinomial form of a quasi-probability vector understates the variance
+    the inversion adds. Central differences give the gradient of each
     SE_KEYS output with respect to every outcome probability, the in-job
     calibration circuits included, so the error budget carries the
     assignment correction as well as the Ramsey arms.
@@ -319,7 +328,9 @@ def one_shot_standard_errors(distributions: Mapping[str, np.ndarray], step: floa
                 values = point_summary(moved)
                 shifted.append([values[key] for key in SE_KEYS])
             gradient[:, outcome] = (np.asarray(shifted[0]) - np.asarray(shifted[1])) / (2.0 * step)
-        covariance = np.diag(dist) - np.outer(dist, dist)
+        covariance = (
+            np.diag(dist) - np.outer(dist, dist) if covariances is None else np.asarray(covariances[name], dtype=float)
+        )
         for index, key in enumerate(SE_KEYS):
             variance[key] += float(gradient[index] @ covariance @ gradient[index])
     return {f"{key}_se_one_shot": math.sqrt(max(value, 0.0)) for key, value in variance.items()}
@@ -335,9 +346,20 @@ def summarize_distributions(distributions: Mapping[str, np.ndarray]) -> dict[str
     return summary
 
 
+def summarize_with_covariance(
+    distributions: Mapping[str, np.ndarray], covariances: Mapping[str, np.ndarray]
+) -> dict[str, float]:
+    """summarize_distributions on readout-inverted laws, errors propagated through their covariances."""
+    summary = point_summary(distributions)
+    summary.update(one_shot_standard_errors(distributions, covariances))
+    return summary
+
+
 def conditional_ramsey_group() -> Group:
     members = tuple(Member(name, circuit, ideal) for name, circuit, ideal in circuits())
-    return Group("conditional_ramsey", members, summarize_distributions)
+    return Group(
+        "conditional_ramsey", members, summarize_distributions, summarize_with_covariance=summarize_with_covariance
+    )
 
 
 def hamiltonian_evolution(omega_a: float, omega_b: float, zz: float, stark_conditional: float = 0.0) -> Evolution:
@@ -484,11 +506,35 @@ def self_check() -> str:
             abs(float(np.mean(samples[key])) - truth) < 4.0 * predicted / math.sqrt(len(samples[key])),
             f"{key} estimate is biased",
         )
+
+    # live_run.corrected_summary hands the summary M p with covariance
+    # M (diag(p) - p p^T) M^T. With M inverting A's channel alone, the in-job
+    # calibration absorbs it and the summary of M p equals the summary of p,
+    # so the errors propagated through the inverted covariance must equal the
+    # raw ones, while the multinomial form of M p understates them.
+    a_inverse = np.linalg.inv(np.array([[0.97, 0.05], [0.03, 0.95]]))
+    inverse = np.kron(np.eye(2), a_inverse)
+    inverted = {name: inverse @ law for name, law in misread.items()}
+    inverted_cov = {name: inverse @ (np.diag(law) - np.outer(law, law)) @ inverse.T for name, law in misread.items()}
+    raw_se = one_shot_standard_errors(misread)
+    through = summarize_with_covariance(inverted, inverted_cov)
+    naive = one_shot_standard_errors(inverted)
+    for key in ("zz_j", "falsifier_residual"):
+        name = f"{key}_se_one_shot"
+        _require(abs(through[key] - corrected[key]) < 1e-12, f"{key}: the summary of M p must equal the summary of p")
+        _require(
+            abs(through[name] - raw_se[name]) < 1e-5 * raw_se[name],
+            f"{name}: inverted covariance gives {through[name]} against raw {raw_se[name]}",
+        )
+    understated = min(raw_se[name] / naive[name] for name in raw_se)
+    _require(understated > 1.02, f"the multinomial form of M p must understate the errors, ratio {understated}")
+
     spread = standard_error(propagated, "zz_j", shots)
     return (
         f"conditional Ramsey: {len(circuits())} circuits; design rank 2 -> 3; J recovered exactly, "
         f"assignment bias {rate_hz(raw_bias, dt):.0f} Hz removed by the in-job calibration, "
         f"propagated J error {rate_hz(spread, dt):.0f} Hz at {shots} shots; "
+        f"inverted-covariance errors exceed the multinomial form by {understated:.3f}x; "
         f"unwrap bound {rate_hz(unambiguous_rate_bound(), dt) / 1e3:.0f} kHz"
     )
 

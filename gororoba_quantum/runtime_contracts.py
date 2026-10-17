@@ -418,6 +418,40 @@ def _verify_dynamic_mitigation_boundaries() -> None:
     if reset_summary != {"p0": 1.0}:
         raise RuntimeError(f"reset-only terminal readout correction reports {reset_summary}")
 
+    # A group that propagates covariance receives M p and M (diag(p) - p p^T) M^T.
+    class AsymmetricReadout:
+        def qubit_property(self, qubit: int, name: str) -> tuple[float]:
+            del qubit
+            return ({"prob_meas1_prep0": 0.1, "prob_meas0_prep1": 0.2}[name],)
+
+    measured = QuantumCircuit(1, 1, name="measured")
+    measured.measure(0, 0)
+    raw = np.array([0.7, 0.3])
+    inverse = np.linalg.inv(np.array([[0.9, 0.2], [0.1, 0.8]]))
+    covariance_group = Group(
+        "covariance_aware",
+        (),
+        lambda distributions: {"p0": float(distributions["measured"][0]), "variance": -1.0},
+        summarize_with_covariance=lambda distributions, covariances: {
+            "p0": float(distributions["measured"][0]),
+            "variance": float(covariances["measured"][0, 0]),
+        },
+    )
+    covariance_summary = corrected_summary(
+        covariance_group,
+        [_synthetic_entry("measured", measured, np.array([1.0, 0.0]))],
+        {"measured": [raw]},
+        AsymmetricReadout(),
+    )
+    expected_p0 = float((inverse @ raw)[0])
+    expected_variance = float((inverse @ (np.diag(raw) - np.outer(raw, raw)) @ inverse.T)[0, 0])
+    if not (
+        math.isclose(covariance_summary["p0"], expected_p0, rel_tol=1e-12)
+        and math.isclose(covariance_summary["variance"], expected_variance, rel_tol=1e-12)
+        and expected_variance > expected_p0 * (1.0 - expected_p0)
+    ):
+        raise RuntimeError(f"readout-inverted covariance reaches the summary as {covariance_summary}")
+
 
 def _verify_nested_operations() -> None:
     nested = QuantumCircuit(2, 1)

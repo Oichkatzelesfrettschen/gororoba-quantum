@@ -29,6 +29,24 @@ AGENTS.md carries under gate core-347.
 | Tuna-9 (6) | 9 transmons, 12 tunable couplers | 9 | offline (heartbeat current) | 8192 / 131072 | 300 s | 8 jobs waiting 11-54 days |
 | Tuna-17 (7) | 17 transmons, 24 tunable couplers | 17 | executing, calibrating, benchmarking | 8192 / 131072 | 300 s | 2-8 jobs, 4-213 s wait |
 
+Coupling graphs (API `topology`, undirected), tested for a two-coloring:
+
+| Backend | Couplings | Bipartite | Parts | What a target/spectator design does there |
+|---|---|---|---|---|
+| QX emulator | 45, complete graph K10 | no (every triple is a triangle) | none | any qubit set may act as targets: the emulator has no couplers and no ZZ, so a partition only mirrors the hardware design it rehearses |
+| Ry emulator | 36, complete graph K9 | no | none | the all-to-all list states which pairs accept a two-qubit gate; the interaction itself depends on the `INIT(x, y)` geometry ([ry-emulator.md](ry-emulator.md)), so a partition is chosen from positions, not from the list |
+| Tuna-5 | 4, star around Q2 | yes | {Q0, Q1, Q3, Q4} and {Q2} | one center against four leaves |
+| Tuna-9 | 12 | yes | {Q0, Q3, Q4, Q5, Q8} and {Q1, Q2, Q6, Q7} | Q8 carries the TLS message ([tuna-9.md](tuna-9.md)) |
+| Tuna-17 | 24 | yes | {Q0, Q4, Q5, Q6, Q10, Q11, Q12, Q16} and the other nine | the coupler map and ring-down pilot use these parts |
+
+Status seen in every retained catalogue read (2026-10-16T22:13Z,
+2026-10-16T23:08Z, 2026-10-17T03:18Z) and the live read at 03:31Z: QX and
+the Ry emulator idle, Tuna-17 executing or calibrating, all three with
+current heartbeats; Tuna-9 offline with a current heartbeat, so its control
+system reports while the backend accepts no work; Tuna-5, Starmon-7 and
+Spin-2+ offline with heartbeats from 2026-03-09, 2026-03-27 and 2025-12-10.
+No retained read covers the hours before 2026-10-16T21:16Z.
+
 Every type reports `max_jobs_per_batch_job` 5 and `batchjobs_per_queue_limit`
 5 (API); the FAQ limits a user to 3 queued jobs per hardware backend (KB,
 [faq](site/faq.md), <https://www.quantum-inspire.com/faq/>). On hardware
@@ -62,6 +80,11 @@ December 2025, Tuna-17 since April 2026.
 - **Measured cost**: 2048 shots in 0.028-0.289 s of execution
   (results/quantum_inspire/runs/2026-10-16T211635Z-QXsinglenodesimulator);
   no ledger transaction.
+- **Result register** (Measured): one character per qubit, ordered by qubit
+  index, each the qubit's last outcome (0 if unmeasured); the bit a
+  measurement names is ignored, so mid-circuit outcomes and bit
+  assignments other than `b[k] = measure q[k]` do not survive (C21,
+  [qx-runs.md](qx-runs.md)).
 - **Local twin**: qxelarator 0.10.0 runs the same cQASM locally
   (`qi_run_local` on the MCP server).
 
@@ -79,20 +102,31 @@ December 2025, Tuna-17 since April 2026.
   end; no mid-circuit measurement (KB).
 - **Shots**: default and maximum 1024. Execution limit 3600 s.
 - **Measured cost**: the 2-qubit X-only diagnostic took 16.26 s of execution
-  for 1024 shots (15.9 ms per shot), slower per shot than QX by two orders of
-  magnitude; no ledger transaction.
+  for 1024 shots, and the failed teleport job spent 16 s between `queued_at`
+  and `finished_at` with no shot done, so a fixed per-job cost of about 16 s
+  fits both runs; 15.9 ms per shot is an upper bound from one run, not a
+  per-shot rate. No ledger transaction.
 - **Result order** (Measured): qubit 0 is the **leftmost** character: X on
   q[0] read `10` in 1024 of 1024 shots
   (runs/2026-10-16T213823Z-Rydberg-diagnostic), the reverse of QX and Tuna.
-- **Failure mode** (Measured): a circuit with a `bit[9]` register, H, CNOT
-  and Rz(-pi/2) compiled remotely to decomposition (H became Rx-Rz-Rx, CNOT
-  kept) but failed at execution: the job's `message` reads "Quantum backend
-  error: RSP returned failure: error interpreting cQASM script" while its log
-  stays empty (runs/2026-10-16T211635Z-Rydberg). The X-only form of the KB
-  example ran, so the emulator's interpreter rejects part of that program's
-  syntax (bit register, H, CNOT or Rz).
+- **Failure mode** (Measured): a 9-qubit teleport circuit with an
+  unassigned `bit[9]` register, H (4), CNOT (10) and X (1), and no measure
+  statement or `INIT` block, failed at execution (OpenSquirrel 0.9.1 under
+  this configuration turns H into Rx-Rz-Rx and keeps CNOT, by a local
+  compile; no remote compile output is retained): the job's `message`
+  reads "Quantum backend error: RSP returned failure: error interpreting
+  cQASM script" while its log stays empty
+  (runs/2026-10-16T211635Z-Rydberg). libqasm 1.2.1 accepts the program, so
+  the emulator's own reader rejects it. The construct probe (runs
+  2026-10-17T034952Z-ry_probe-batch-00 to -02) shows the cause: any `bit`
+  declaration, assigned or not, fails in the reader, and `measure` fails at
+  compile ("not in the primitive gate set"), while H, CNOT, Rz and an
+  `asm(Rydberg)` INIT block run; a Ry case declares no bit register
+  ([ry-emulator.md](ry-emulator.md)).
 - **API classification**: `is_hardware` is true although the backend is an
-  emulator; code that filters on `is_hardware` must also read the name.
+  emulator; code that filters on `is_hardware` must also read the name, and
+  `qi_platform.py submit` applies the hardware batch rule (at most three
+  circuits, no batch while one of the account's batches is queued) to it.
 
 ## Tuna-5, Tuna-9, Tuna-17 (transmons)
 
@@ -109,10 +143,19 @@ Common to all three (KB, [tuna-operational-specifics](site/kbase_tuna-operationa
   multiple of pi/36 (5 degrees).
 - **Durations**: single-qubit gate 20 ns, CZ 60 ns, measurement 800 ns,
   initialization 500 or 200 us.
-- **Scheduling**: OpenSquirrel schedules as late as possible; `wait(n) q[i]`
-  idles qubit i for n cycles of 20 ns (per qubit, independently);
-  `barrier` bounds a scheduling domain. Measurements on several qubits are
-  scheduled too, so parallel readout needs a barrier.
+- **Scheduling**: as late as possible (KB); `wait(n) q[i]` idles qubit i
+  for n cycles of 20 ns (per qubit, independently); `barrier` bounds a
+  scheduling domain. Measurements on several qubits are scheduled too, so
+  parallel readout needs a barrier. In OpenSquirrel 0.9.1 the ALAP schedule
+  comes from `QuantifySchedulerExporter`, which no backend's
+  `default_compiler_config` lists, so the platform applies it after
+  compilation; the exporter gives every operation one cycle unless the
+  caller supplies operation lengths, so the 800 ns measurement in the
+  executed schedule rests on the platform's own length table, which no local
+  check reproduces. Compilation rewrites `barrier q` as one barrier per
+  qubit in the same order, which the exporter aligns as a run
+  (`scripts/qi_toolchain_check.py`,
+  [toolchain_check.json](../../evidence/quantum_inspire/toolchain_check.json)).
 - **Compiler** (API): SWAP2CZDecomposer then CZDecomposer; the configuration
   lists no mapping and no routing pass, so a circuit keeps every two-qubit
   gate on a coupled pair itself.
@@ -124,6 +167,10 @@ Common to all three (KB, [tuna-operational-specifics](site/kbase_tuna-operationa
   QCM modules for flux; each transmon has its own drive and flux line and its
   own Purcell-filtered readout resonator pair.
 - **Result order** (Measured): qubit 0 is the rightmost character.
+- **Result register** (Measured, Tuna-17): the full declared bit register,
+  one character per bit with b[0] rightmost, mid-circuit outcomes included
+  (`bit[34]` on `qubit[17]` returned 34 characters; batch job 870030), unlike
+  QX's per-qubit measurement register (C21).
 - **Calibration**: automated tuning runs between user jobs and can take from
   seconds to 30 minutes, adding to queue wait (KB, faq and
   displaying-and-downloading-your-results); no ledger transaction records it.

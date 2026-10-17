@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-17T03:44:12+00:00",
+ "approval": "User 2026-10-17: \"QPU Restriction lifted for CI QX and Ry emulator systems; try runs and real; then dry run and real on tuna\" -- QX dry run of the per-batch zero-divisor series (#153)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "3866a593feb7e3c5af5f4c7b8b1ae4d2cc8d4aa99859e899ba3f07b9e78859c1",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 870037,
+ "project": 765841,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "twin-1.cq",
+   "job": 1527264,
+   "sha256": "989ee827c747fa10fe4944294b81877cf74fd3121afdac152a5e1cc0abee56e3"
+  },
+  {
+   "file": "twin-2.cq",
+   "job": 1527266,
+   "sha256": "f4798a007717e4e11fdf005c510ff8be1741f2841a368518877955f3e6ffd6ee"
+  },
+  {
+   "file": "twin-3.cq",
+   "job": 1527267,
+   "sha256": "b35f98e5ef1621955f42beb48ec385b46e4e248b9f1b1c93b29dfe14faccb458"
+  }
+ ],
+ "submitted_utc": "2026-10-17T03:44:13+00:00"
+}
