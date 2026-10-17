@@ -1719,7 +1719,7 @@ def pre_twin() -> tuple[dict[str, Any], str]:
     if len(used) != QX_QUBITS:
         raise ValueError(f"the double-X twin needs {QX_QUBITS} Tuna qubits; pre_qubits() holds {len(used)}")
     text = double_x_text(QX_QUBITS)
-    row = {
+    row: dict[str, Any] = {
         "file": f"twin-{PRE_FILE}",
         "kind": "diagnostic",
         "stage": "pre",
@@ -1811,7 +1811,7 @@ def pre_series(
         },
     }
     texts = {PRE_FILE: double_x_text(TUNA_QUBITS), **readout_circuits(TUNA_QUBITS)}
-    chunk = [
+    chunk: list[dict[str, Any]] = [
         {"file": PRE_FILE, "kind": "diagnostic", "stage": "pre", "ideal_p1": "0"},
         {"file": "readout-0.cq", "kind": "readout", "stage": "pre", "prepared": 0},
         {"file": "readout-1.cq", "kind": "readout", "stage": "pre", "prepared": 1},
