@@ -164,5 +164,6 @@ global rate. It follows the dry-run procedure with three changes:
 | pennylane-quantuminspire | 0.15.5 | not installed (PennyLane >= 0.43, < 0.46) |
 
 The repository's Python 3.14 stack never imports these (they cap Python
-below 3.14), and CI checks only retained JSON, so a toolchain check runs
-under `$QI_PYTHON` and retains its output for a CI gate to compare.
+below 3.14), so a toolchain check runs under `$QI_PYTHON` and retains its
+output; the gate shards compare the retained output, and CI's `qi-stack` job
+reruns the toolchain under `$QI_PYTHON` and requires the same bytes.
