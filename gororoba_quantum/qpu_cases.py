@@ -28,6 +28,7 @@ FAMILIES = {
     "folded-qpe",
     "folded-correction",
     "n21-feedback",
+    "n21-feedback-encoded",
     "n21-orbit-feedback",
     "n21-orbit-rca",
     "patch-window",
@@ -1206,6 +1207,19 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "",
             ]
             if family in ("n21-orbit-feedback", "n21-orbit-rca")
+            else []
+        ),
+        *(
+            [
+                "The encoded family runs the complete multipliers on a work register encoded by one "
+                "uncontrolled linear map B (columns 2, 4, 5, 10, 17; coset 15265 of GL(5,2)/S_5): it prepares "
+                "B^-1 |1> and applies the target-flip network of B^-1 f B each round, which leaves the phase "
+                "register's law exactly that of n21-feedback while routing about a third fewer CZ "
+                "(docs/evidence/linear_conjugation/). It changes the circuit, not the question, and carries "
+                "the same order-recovery boundary.",
+                "",
+            ]
+            if family == "n21-feedback-encoded"
             else []
         ),
         "Gate noise, measurement/reset disturbance, conditional-control latency, routing changes, "
