@@ -1,0 +1,32 @@
+{
+ "schema": "qi-crosstalk-teleport-cases-v1",
+ "backend": "Rydberg",
+ "backend_type_id": 5,
+ "nqubits": 9,
+ "shots": 1024,
+ "drive_pulses": 40,
+ "wait_cycles": 40,
+ "circuits": [
+  {
+   "file": "teleport.cq",
+   "kind": "teleport",
+   "sha256": "e4df1064cc91a908cb0ad12c253464ca9d441f2a3e36b9bef0be6f3346134f08"
+  }
+ ],
+ "paths": [
+  {
+   "I": 1,
+   "P1": 0,
+   "P2": 2,
+   "D": 3,
+   "input": "0"
+  },
+  {
+   "I": 5,
+   "P1": 4,
+   "P2": 6,
+   "D": 7,
+   "input": "1"
+  }
+ ]
+}

@@ -1,0 +1,21 @@
+version 3.0
+
+qubit[9] q
+bit[9] b
+
+// path I=1 P1=0 P2=2 D=4 input=0
+H q[0]
+CNOT q[0], q[2]
+SWAP q[2], q[4]
+CNOT q[1], q[0]
+H q[1]
+// path I=3 P1=6 P2=8 D=7 input=1
+X q[3]
+H q[6]
+CNOT q[6], q[8]
+SWAP q[8], q[7]
+CNOT q[3], q[6]
+H q[3]
+
+barrier q
+b = measure q

@@ -249,8 +249,10 @@ has a local PKGBUILD over the PyPI sdist: the AUR builds the GitHub tag
 archive, which lacks the randomized-benchmarking `.npz` tables, so
 `qiskit_experiments.library` fails to import. After a rebuild,
 `"$PYTHON" -c "import qiskit, qiskit_ibm_runtime, qiskit_aer"` and a
-submit-free dry run confirm the stack. A Kaggle kernel installs qiskit 2.5.2
-and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel stops at
-0.15.1) over the Kaggle image's numpy and scipy, records every version in
-`environment.json`, and holds no IBM credential (`kaggle_kernel/AGENTS.md`).
+submit-free dry run confirm the stack. A Kaggle kernel installs qiskit 2.5.2,
+qiskit-ibm-runtime 0.50.0 (its fake backends, such as FakeFez, need no
+account) and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel
+stops at 0.15.1) over the Kaggle image's numpy and scipy, records every
+version in `environment.json`, and holds no IBM credential
+(`kaggle_kernel/AGENTS.md`).
 <!-- heron-execution-facts:end -->

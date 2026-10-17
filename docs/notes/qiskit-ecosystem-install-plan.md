@@ -49,8 +49,9 @@ The group install runs `pip install -c constraints.txt` with `KERNEL_PINS`
 and the frozen image numpy and scipy, so every pin below must admit those
 two versions. They do.
 
-1. Add explicit pins to `PIN_GROUPS["quantum-tools"]` in
-   `scripts/kaggle_run.py`, matching the host Arch packages:
+1. Explicit pins in `PIN_GROUPS["quantum-tools"]` of
+   `scripts/kaggle_run.py`, matching the host Arch packages (all six are in
+   the group; no kernel has installed them yet):
 
    | Pin | Reason |
    |---|---|
@@ -59,16 +60,17 @@ two versions. They do.
    | `qiskit-mitigation==0.1.1` | hard dependency of runtime 0.50.0 (`>=0.1.1`) |
    | `qiskit-qasm3-import==0.6.0` | `qiskit.qasm3.loads`; requires `openqasm3[parser]<2.0,>=0.4` |
    | `openqasm3==1.0.1` | matches the host; its `parser` extra needs `antlr4-python3-runtime<4.14` |
-   | `antlr4-python3-runtime==4.13.2` | satisfies the `<4.14` bound; confirm the host version before pinning |
+   | `antlr4-python3-runtime==4.13.2` | satisfies the `<4.14` bound; the host's python-antlr4 is 4.13.2 |
 
    Constraint check: samplomatic needs numpy>=1.26 and qiskit>=2.3.0;
    mitigation needs numpy>=1.26, scipy>=1.10; none moves numpy 2.1.3 or
    scipy 1.16.3. The kernel's existing "stop unless every pin is installed
    at its version" check then covers them.
-2. Extend `kaggle_kernel/kernel_main.py` so `environment.json` records the
-   installed version of every `PIN_GROUPS` member that was requested. The
-   retained records list a fixed set and show no group package, so group
-   installs cannot be audited after the fact.
+2. `kaggle_kernel/kernel_main.py` writes `pin_groups.json` with the
+   installed version of every requested `PIN_GROUPS` member, beside the
+   fixed set of `environment.json`;
+   `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu`
+   retains one for the twelve-pin group.
 3. Optional, with `python-qiskit-noise-learning`: fetch the commit-pinned
    source archive with a recorded sha256, in the manner of the algebra
    packages (not a pip pin, since no release exists), plus `xarray>=2025.7`
@@ -91,5 +93,5 @@ two versions. They do.
 | qiskit 2.6 block | qiskit-fermions 0.2.0 (`~=2.5.0`) | blocks a later core bump |
 | scipy margin | quimb 1.15.0 (`scipy>=1.16.0`) | Kaggle scipy 1.16.3 leaves no room for an older image |
 | wheel gap | mthree 3.0.0 (no cp313 or cp314 wheel) | Kaggle compiles the sdist (cython>=3.0.10, C++ toolchain) |
-| schemas drift | runtime `ibm-quantum-schemas<1` | Kaggle resolves 0.13.20261016 unless pinned (step 1) |
+| schemas drift | runtime `ibm-quantum-schemas<1` | an unpinned kernel resolves 0.13.20261016; the group pins 0.12.20260921 (step 1) |
 | GPU wheel | qiskit-aer-gpu-cu11 0.17.2 has a cp313 wheel only | moving Kaggle to Python 3.14 drops GPU Aer |

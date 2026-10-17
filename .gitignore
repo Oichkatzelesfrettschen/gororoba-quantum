@@ -36,3 +36,6 @@ qiskit-ibm.json
 # Kaggle CPU replicas of the CI shards (scripts/kaggle_run.py shards): iteration
 # runs bound to a commit's tree, never evidence.
 /.kaggle-shards/
+
+# A local SDK credential file; secrets stay out of every commit.
+/SDK_KEY.md

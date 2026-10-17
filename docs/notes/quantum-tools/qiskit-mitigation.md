@@ -15,7 +15,7 @@ from qiskit_mitigation import TREX, PEC, PEA, GateFolding, MitigationTask
 | Substrate | Status |
 | --- | --- |
 | Build host | python-qiskit-mitigation 0.1.1 (Arch) |
-| Kaggle | not installed by the repository |
+| Kaggle | `qiskit-mitigation==0.1.1` in the `quantum-tools` group (`scripts/kaggle_run.py` `PIN_GROUPS`); one of the seven pins added to the group after the retained CPU kernel run `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu`, whose `pin_groups.json` records the twelve earlier members only; not yet installed on a kernel |
 
 ## CAPABILITIES IN THIS REPOSITORY
 

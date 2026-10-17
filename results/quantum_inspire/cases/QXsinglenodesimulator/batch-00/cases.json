@@ -1,0 +1,64 @@
+{
+ "schema": "qi-crosstalk-teleport-cases-v2",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "drive_pulses": 40,
+ "wait_cycles": 40,
+ "batch_limit": 3,
+ "stars": [
+  {
+   "T": 0,
+   "A": 1,
+   "B": 2
+  },
+  {
+   "T": 3,
+   "A": 4,
+   "B": 5
+  },
+  {
+   "T": 6,
+   "A": 7,
+   "B": 8
+  }
+ ],
+ "paths": [
+  {
+   "I": 1,
+   "P1": 0,
+   "P2": 2,
+   "D": 3,
+   "input": "0"
+  },
+  {
+   "I": 5,
+   "P1": 4,
+   "P2": 6,
+   "D": 7,
+   "input": "1"
+  }
+ ],
+ "batch": "batch-00",
+ "circuits": [
+  {
+   "file": "additivity-none.cq",
+   "kind": "additivity",
+   "config": "none",
+   "sha256": "9c91f8d29792827b6b6e4aa60650e35248f825957a76712a548305577531f141"
+  },
+  {
+   "file": "additivity-A.cq",
+   "kind": "additivity",
+   "config": "A",
+   "sha256": "b2024ab3cf0329978c9c5fb5f57dccb91bc62a62a3384f8264638b411fdccd74"
+  },
+  {
+   "file": "additivity-B.cq",
+   "kind": "additivity",
+   "config": "B",
+   "sha256": "9b7835975e30d6f18fba4187ea0fbfb2a7954bc32eb2b11ff7f39016917a8e7e"
+  }
+ ]
+}

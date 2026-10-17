@@ -1,0 +1,452 @@
+{
+ "schema": "qi-docs-capture-v2",
+ "kind": "spec",
+ "retrieved_utc": "2026-10-16T21:54Z",
+ "files": [
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/appendices/spin_2plus.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/appendices/spin_2plus.html",
+   "sha256": "9fd45ea401d9ca331120b50238433c61e0e3652eeaa160c6f6bad707f2fac898"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/index.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/index.html",
+   "sha256": "bc87eea82c9cba8dcde01c214d92875f2af8f1c24f5ebe7d8ab4a79f31d46d30"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/introduction/acknowledgements.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/introduction/acknowledgements.html",
+   "sha256": "c64d8a7214fd80152ab9f28a843e688d0a39b486c7dfbcfdb54384494109f24f"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/introduction/context.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/introduction/context.html",
+   "sha256": "4444aec2f20b620082b667b4ea4761a9f46c4094a4f1948516d0f86ddf029a58"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/introduction/history.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/introduction/history.html",
+   "sha256": "86910b86a52812104ea46f3b8d8e8974642f4af2795902cd4e486a821277ebe3"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/expressions/builtin_functions.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/expressions/builtin_functions.html",
+   "sha256": "54c5badf3f8b920e8c010bc03b9132775902cfb95cd9d0a918b522274e36daff"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/expressions/indices.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/expressions/indices.html",
+   "sha256": "c03cfae8d05d818bb010ed9753aaae5c95d4252f28f41db85719aaada2ef3c13"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/expressions/predefined_constants.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/expressions/predefined_constants.html",
+   "sha256": "b2c135d5c29db5b5f349422053119431b815e640ecc6e15e9049be891d38d62b"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/index.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/index.html",
+   "sha256": "fae93ace0033203743f96ff836f2e2ca495b9ce20d1aa1bd4a2766544f03b063"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/statements/assembly_declaration.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/assembly_declaration.html",
+   "sha256": "ada6ec96a1fd9fb72ed9974a912123c531c060a4f10c77f91152ce6313d2134c"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/statements/instructions/control_instructions/barrier_instruction.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/control_instructions/barrier_instruction.html",
+   "sha256": "0a72042c0b55cac29b25687cdeb8327e3dde14f5237db0d08c65f27ac725d442"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/statements/instructions/control_instructions/wait_instruction.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/control_instructions/wait_instruction.html",
+   "sha256": "b9310d17235638e6a06478d86471505286e2cd96ec986cb084a9253c34c4677e"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/statements/instructions/non_unitary_instructions/init_instruction.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/non_unitary_instructions/init_instruction.html",
+   "sha256": "a02a32a30f537a26e06c2e1dcb0c8936ae7c599e80aaa17efb17a2d210a359e8"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/statements/instructions/non_unitary_instructions/measure_instruction.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/non_unitary_instructions/measure_instruction.html",
+   "sha256": "36f24eaeb67c4900085fd5fae5a0b891eb85cd2c1a919a808db4abbfd70d8c7e"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/statements/instructions/non_unitary_instructions/reset_instruction.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/non_unitary_instructions/reset_instruction.html",
+   "sha256": "10809b71cb41fced13281dae1f4b312e59c0e3be934ff45b4068e3657e6ab360"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/statements/instructions/single-gate-multiple-qubit-notation.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/single-gate-multiple-qubit-notation.html",
+   "sha256": "8b8504e852ffb2ab989ae8e5ad66ebc4411aae22a7f342a28a8555479ca9c428"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/statements/instructions/unitary_instructions.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/unitary_instructions.html",
+   "sha256": "00bc3e0479bd0d3b9a8bb670d908c057dd4698dc108adb1bfd9e4301ff847a5a"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/statements/variable_declarations/bit_register_declaration.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/variable_declarations/bit_register_declaration.html",
+   "sha256": "a7a7b255dde8c455c9934e31f03062a9bc06985a9401babb357a738030b021ec"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/statements/variable_declarations/qubit_register_declaration.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/variable_declarations/qubit_register_declaration.html",
+   "sha256": "4fd4c4b08e5ab29a80bf3df952be65faaa455906d868332f629fa4b575a3c3c6"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/statements/version_statement.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/version_statement.html",
+   "sha256": "1c667f73141162bd5bbc9eb04264fa1f9a1b8c39fb4a80a6cd3222c45a759e0a"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/tokens/identifiers.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/tokens/identifiers.html",
+   "sha256": "454fb481b522c1f93cbfc8659f2896612bbf021a6b660120a3f1169b5c75ccc4"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/tokens/keywords.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/tokens/keywords.html",
+   "sha256": "a260bddb3328b6d90fd9ad104d8e30502772660a6ed85be590d7e61ae82b9c6c"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/tokens/literals.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/tokens/literals.html",
+   "sha256": "1ac45e1648618864b465f4dbea05ba78eb35d5d1698ee1a238f17ca7074c2959"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/tokens/newlines.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/tokens/newlines.html",
+   "sha256": "2d0cf059b5f07c8d9671601219a56ee5e1c2f82bf14165f1c36edb1f121f413e"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/tokens/operators_and_punctuators.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/tokens/operators_and_punctuators.html",
+   "sha256": "472a31f36a505219c0ee7a57fed678c4b05bdef8b180de5b03035513978b5bfe"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/tokens/raw_text_string.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/tokens/raw_text_string.html",
+   "sha256": "16274022f3101ecb47cee6c5c9a58807dec43f6f98b1fa209a166b5652fce673"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/tokens/whitespace_and_comments.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/tokens/whitespace_and_comments.html",
+   "sha256": "0e721430b1e62cc109572e6d79ebbc743148acdf8a307d8a8b1b82f0f7f2ffa5"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/language_specification/types.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/language_specification/types.html",
+   "sha256": "de8ad385552db0e70b5ed05d5bbfd096b8f80db26329146ea4338f8e33e4ea13"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/index.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/index.html",
+   "sha256": "331af436f199146d318f51412914bc851b5f1bf6a78b72b4cba52e205cb2edaf"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_CCX.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CCX.html",
+   "sha256": "4103ba01dca8ab0fbd326688e663f05514e13d711d4bf534c87c815ce185c46d"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_CNOT.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CNOT.html",
+   "sha256": "89949e6d232efe14c1c90150a7f680ff688eecffddd269f55a9aca54f5a5ca7a"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_CR.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CR.html",
+   "sha256": "7c3890993bb666626d78e1e3c5aa340a631e00935c0c56dd84abb7a237148982"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_CRk.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CRk.html",
+   "sha256": "3ead192b4c5f495962e89638055fc002bab384c88c00f8e2ec4ada95bce6931c"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_CSWAP.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CSWAP.html",
+   "sha256": "0bbf059c3141d7d1285b12c0cb4698f318571c295c61c795c94931aae576d2d7"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_CV.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CV.html",
+   "sha256": "9ad97c57866b1f3ab0d52b4a2f32afffe66903b534a1c563e27a25e72225f755"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_CY.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CY.html",
+   "sha256": "b2061da28b32ebfca7b672ca152574332f7db9e16f3dd08a208378c3854190e1"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_CZ.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CZ.html",
+   "sha256": "3b6e884c8bd61dbbfb3896f193785d0bb634ff1cf52c9fe46148207e7352e76e"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_DCNOT.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_DCNOT.html",
+   "sha256": "5c331cb5e8f3137a5fdb2624ba42f87e0f761376117a2c4dfcf713367bfb430e"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_ECR.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_ECR.html",
+   "sha256": "d1d17e580415f0d795d91c16bf4681c5f13a442a74a4808908a23b5edeb7545e"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_ISWAP.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_ISWAP.html",
+   "sha256": "7c8d8d07c790e163cfe13fda8e68556f6d46760818e8b8e755b55bb863f6f5c8"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_InvSqrtSWAP.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_InvSqrtSWAP.html",
+   "sha256": "da78e50cda2ad03bc14c286179a9550a806e874c8e1a18320309b9b8ae17c4c5"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_M.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_M.html",
+   "sha256": "572f9bdb89ba6da21cc9998fc648ded7f3984dade1b7b822891594d0423fb98c"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_MS.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_MS.html",
+   "sha256": "6705853436345c810b8177c95a6dd0557f8cf7acc87d8b01662da8b26100c67b"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_SWAP.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_SWAP.html",
+   "sha256": "ea7dddfb5ed83757d0b24a68414229e22c7a3744ddc90d1350953959bb85c7cd"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_SqrtISWAP.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_SqrtISWAP.html",
+   "sha256": "55b21bc8135ac28630a159dc32f503aeff4972f2bcdb6da6430999e811075718"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/multi_qubit/mq_SqrtSWAP.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_SqrtSWAP.html",
+   "sha256": "c86a705b68a7166d8d78639e57cdd395d6c333e9424865cb8c975906e410ffe9"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_H.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_H.html",
+   "sha256": "38810214357157f2dfc18d568a1c04b9d9eac5229db036387767e1d5e9c34c91"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_I.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_I.html",
+   "sha256": "793c332abf05b860eb86fed49e314755a9beddbbb8637dec2ca80a0fdfbfcd49"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_Rn.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Rn.html",
+   "sha256": "117356ab2ef232e6a428791d194fabb64f78b5a9b7bf1d11adaf8ae004a4ce45"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_Rx.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Rx.html",
+   "sha256": "810c4a9623678c6531cc48681e48d4d73be483ebceced0bb92785adf53d63f57"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_Ry.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Ry.html",
+   "sha256": "a54044cf6f67450228d2f8cc136bfdaf37ae615b626aaa92d632bf0e40c97e7a"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_Rz.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Rz.html",
+   "sha256": "cec84f826b82c3d7e3c5d5c41cb515570d3134abd0c895d32a4a7a508070b08f"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_S.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_S.html",
+   "sha256": "d821f0c12e17b11d8d717e21ade4abf8711ca732fb22e7d06964ec9fc3335a02"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_Sdag.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Sdag.html",
+   "sha256": "505b259fdec2f08b16c94d468313f1c6847c08ccefccf77664b628fbc6569d6e"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_T.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_T.html",
+   "sha256": "f4d1c9a49a28b09d1cc691c6ca815373221db0fe73b7c79139b5296d8294d161"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_Tdag.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Tdag.html",
+   "sha256": "dad9e424f778030e7bf2082e8784e753c41e0f400c39845bcd3cb6bcdbdd6133"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_U.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_U.html",
+   "sha256": "c7acb24f38723bed81290de5d791c730e1d4cf0359866792d14fe4cda6ed6152"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_X.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_X.html",
+   "sha256": "92b5806bddfdc1fd9e1e327b2a88eda341de323e8f3c594e559f29b4f81ecb66"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_X90.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_X90.html",
+   "sha256": "9571a438b105c3f8ec729ea75a6f16f7ac403a63ddfddcce00d9b61771d8e7ba"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_Y.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Y.html",
+   "sha256": "0c7b025875a51b075988d571a4f7cb221ea506e939f03999e4e74095522b6f53"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_Y90.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Y90.html",
+   "sha256": "dc611389f43808a382dc39fdba4ee3a12f5c4d285a10de0c7b34dbdd02f7cf1a"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_Z.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Z.html",
+   "sha256": "1343dc8e10dde1717a414dfefa484df3f39c0615ed626dd9bd300c755c1fe303"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_Z90.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Z90.html",
+   "sha256": "8085e179f896b4d161cfb1ba8bec47b46165d29705cacd336e71bd810af5ac01"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_mX90.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_mX90.html",
+   "sha256": "3bb139624e147ff3c0b96d06673e8b91c459d9ac23f86603d69ac16fc156c44a"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_mY90.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_mY90.html",
+   "sha256": "b1a58bb7f49ac49b78cea748f39055f34cb8edccaed37120b8e6c2b0f9e28cba"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/cqasm-spec/standard_gate_set/single_qubit/sq_mZ90.md",
+   "source": "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_mZ90.html",
+   "sha256": "710e4fc807c3c4252db74d5b1dbc7588c38aa3cc612f0b48579d2ec690a0559b"
+  }
+ ],
+ "gh_pages_commit": "91cff84b22553062cdb2aeebd968a1dd2a6a3ef6",
+ "unreachable": [],
+ "external_links": [
+  {
+   "url": "https://en.wikipedia.org/wiki/Clifford_gates",
+   "status": "200",
+   "referrers": [
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CNOT.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CY.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CZ.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_ISWAP.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_SWAP.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_H.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_I.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_S.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Sdag.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_X.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_X90.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Y.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Y90.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Z.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Z90.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_mX90.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_mY90.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_mZ90.html"
+   ]
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Involutory_matrix",
+   "status": "200",
+   "referrers": [
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CCX.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CNOT.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CSWAP.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CZ.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_DCNOT.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_SWAP.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_H.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_I.html"
+   ]
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/NOP_(code)",
+   "status": "200",
+   "referrers": [
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_I.html"
+   ]
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Quantum_logic_gate",
+   "status": "200",
+   "referrers": [
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CCX.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CNOT.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CSWAP.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CV.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CY.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CZ.html"
+   ]
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Special_unitary_group",
+   "status": "200",
+   "referrers": [
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_I.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Rn.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Rx.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Ry.html",
+    "https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/single_qubit/sq_Rz.html"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/OpenSquirrel",
+   "status": "200",
+   "referrers": [
+    "https://qutech-delft.github.io/cQASM-spec/latest/index.html"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/cQASM-spec/tree/2.0-draft-2",
+   "status": "200",
+   "referrers": [
+    "https://qutech-delft.github.io/cQASM-spec/latest/index.html"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/libqasm",
+   "status": "200",
+   "referrers": [
+    "https://qutech-delft.github.io/cQASM-spec/latest/index.html"
+   ]
+  },
+  {
+   "url": "https://github.com/QuTech-Delft/qx-simulator",
+   "status": "200",
+   "referrers": [
+    "https://qutech-delft.github.io/cQASM-spec/latest/index.html"
+   ]
+  },
+  {
+   "url": "https://libqasm.readthedocs.io/en/latest/",
+   "status": "200",
+   "referrers": [
+    "https://qutech-delft.github.io/cQASM-spec/latest/index.html"
+   ]
+  },
+  {
+   "url": "https://www.quantum-inspire.com/",
+   "status": "200",
+   "referrers": [
+    "https://qutech-delft.github.io/cQASM-spec/latest/introduction/context.html"
+   ]
+  }
+ ],
+ "external_links_unreachable": []
+}

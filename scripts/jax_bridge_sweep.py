@@ -24,7 +24,9 @@ Before its distances count, a seeded sample of each run's replicas (sorted
 its factor-1 distribution compared with Aer's own density matrix
 (calibration_snapshot.noise_simulator with save_density_matrix in place of
 the terminal measurements) on the CPU; the output records each checked
-label with its largest probability difference. Replicas with reset,
+label with its largest probability difference. A sampled replica whose
+difference exceeds PARITY_TOLERANCE is listed as skipped with the gap, its
+distances do not count, and the script exits 1. Replicas with reset,
 mid-circuit measurement or classical control are listed as skipped with the
 reason. ``--device`` names the JAX platform the replay must use (cpu, gpu or
 tpu); a missing platform raises instead of falling back, and the output
@@ -39,9 +41,10 @@ and both caps; the scaled models change no other channel; the restructured
 programs reproduce the per-factor exports of the scaled noise models; under
 a small batch budget the largest replay group takes several calls whose
 padded stacks equal the whole group's rows and whose diagonals equal one
-call's; and the sampled parity holds. ``--self-test --device cpu`` also
-replays the restructured programs in JAX, compares them with numpy, and
-compares the chunked JAX replay with one call.
+call's; the sampled parity holds in numpy complex128; and parity_failure
+passes a gap at PARITY_TOLERANCE and fails one above it.
+``--self-test --device cpu`` also replays the restructured programs in JAX,
+compares them with numpy, and compares the chunked JAX replay with one call.
 
 Kaggle. The sweep reads the retention audit, the calibration history and
 each audited run's record.json, isa.qpy and collect.json, about 93 MB that
@@ -114,8 +117,18 @@ CONTRACT_FACTORS = (1e-3, 0.5, 12.0, 1000.0)
 REFERENCE_FACTORS = (0.5, 1.0, 12.0)
 CHANNEL_TOLERANCE = 1e-12
 REPRODUCTION_TOLERANCE = 1e-9
-PARITY_TOLERANCE = 1e-8
-JAX_TOLERANCE = 1e-5
+# Largest admitted |p_numpy - p_Aer| over a factor-1 distribution when both
+# evolve in complex128, so only the order of floating-point operations
+# separates them.
+NUMPY_PARITY_TOLERANCE = 1e-8
+# Largest admitted difference of a JAX replay from a complex128 reference,
+# Aer's factor-1 distribution in the sweep or the numpy diagonal in the
+# self-test. The JAX replay stores complex64 (unit roundoff 2^-24, about
+# 6e-8) and contracts at Precision.HIGHEST, so its rounding grows with the op
+# count from that floor; 1e-5 leaves two orders of magnitude above the
+# complex64 floor and still fails an export, ordering or readout defect,
+# which moves probabilities by far more.
+PARITY_TOLERANCE = 1e-5
 
 
 def cz_error(reported: float | None, factor: float) -> float | None:
@@ -201,6 +214,13 @@ def parity_labels(labels: list[str], sample: int | None, seed: int, run_name: st
         return ordered
     rng = np.random.default_rng([seed, int(hashlib.sha256(run_name.encode()).hexdigest()[:8], 16)])
     return sorted(ordered[k] for k in rng.choice(len(ordered), size=sample, replace=False))
+
+
+def parity_failure(gap: float) -> str | None:
+    """The skip reason of a replica whose factor-1 distribution differs from Aer's by more than PARITY_TOLERANCE."""
+    if gap > PARITY_TOLERANCE:
+        return f"factor-1 probabilities differ from Aer by {gap:.3g} > {PARITY_TOLERANCE:g}"
+    return None
 
 
 Replay = Callable[[list[jax_bridge.Program]], tuple[np.ndarray, set[str]]]
@@ -379,9 +399,15 @@ def sweep_run(
             model = jax_bridge.probabilities(program, by_label[label][base])
             checked[label] = float(np.max(np.abs(model - reference)))
     checked = dict(sorted(checked.items()))
+    for label, gap in checked.items():
+        failure = parity_failure(gap)
+        if failure is not None:
+            skipped[label] = failure
     seconds["parity"] += time.perf_counter() - start
     tvd: dict[str, list[list[list[float]]]] = {}
     for label in labels:
+        if label in skipped:
+            continue
         m, position = label.rsplit("#", 1)
         measured = prepared["measured"][m][int(position)]
         tvd.setdefault(m, []).append(
@@ -656,7 +682,9 @@ def self_test(device: str | None) -> dict[str, Any]:
         )
         for label, (_, program), reference in zip(chosen, pairs, aer_probabilities(pairs, state.aer()), strict=True)
     }
-    require(max(parity.values()) <= PARITY_TOLERANCE, f"parity against Aer {parity}")
+    require(max(parity.values()) <= NUMPY_PARITY_TOLERANCE, f"parity against Aer {parity}")
+    require(parity_failure(PARITY_TOLERANCE) is None, "a gap at the tolerance passes")
+    require(parity_failure(2 * PARITY_TOLERANCE) is not None, "a gap above the tolerance fails")
     timing["parity"] = time.perf_counter() - clock
 
     out: dict[str, Any] = {
@@ -677,11 +705,11 @@ def self_test(device: str | None) -> dict[str, Any]:
         replayed, _ = replay_all(flat, jax_replay(jax.devices(device)[0], BATCH_BYTES))
         references = parallel.ordered_map(diagonal, flat)
         distance = max(float(np.max(np.abs(a - b))) for a, b in zip(replayed, references, strict=True))
-        require(distance <= JAX_TOLERANCE, f"JAX replay differs from numpy by {distance}")
+        require(distance <= PARITY_TOLERANCE, f"JAX replay differs from numpy by {distance}")
         out["max_jax_minus_numpy_diagonal"] = distance
         chunked = jax_replay(jax.devices(device)[0], CHUNK_TEST_BYTES)(group)[0]
         chunk_distance = float(np.max(np.abs(chunked - np.array([replayed[k] for k in members]))))
-        require(chunk_distance <= JAX_TOLERANCE, f"chunked JAX replay differs from one call by {chunk_distance}")
+        require(chunk_distance <= PARITY_TOLERANCE, f"chunked JAX replay differs from one call by {chunk_distance}")
         out["max_jax_chunked_minus_one_call"] = chunk_distance
         timing["jax"] = time.perf_counter() - clock
     out["seconds"] = {k: round(v, 2) for k, v in timing.items()}
@@ -714,6 +742,7 @@ def main() -> int:
         "grid": {"cz": list(ghost_error_scale.CZ_FACTORS), "readout": list(ghost_error_scale.READOUT_FACTORS)},
         "precision": "complex64 storage, Precision.HIGHEST contractions",
         "parity": {"sample": "all" if args.parity_sample is None else args.parity_sample, "seed": args.parity_seed},
+        "parity_tolerance": PARITY_TOLERANCE,
         "batch_bytes": args.batch_bytes,
         "versions": versions(),
         "runs": [],
@@ -724,6 +753,10 @@ def main() -> int:
     for run in runs:
         out["runs"].append(sweep_run(run, replay, index, states, args.parity_sample, args.parity_seed))
         args.out.write_text(json.dumps(out) + "\n", encoding="utf-8")
+    failed = [run["run"] for run in out["runs"] if run.get("max_abs_probability_minus_aer", 0.0) > PARITY_TOLERANCE]
+    if failed:
+        print(f"Aer parity above {PARITY_TOLERANCE:g} in {', '.join(failed)}", file=sys.stderr)
+        return 1
     return 0
 
 

@@ -435,47 +435,72 @@ def member_pubs(record: dict[str, Any]) -> dict[str, str]:
     }
 
 
+class RunInputs:
+    """ghost_run.prepare restricted to members with an execution snapshot, plus each replica's padding item."""
+
+    def __init__(self, index: dict[str, Any]) -> None:
+        self.index = index
+
+    def __call__(self, run_name: str) -> tuple[dict[str, Any], list[Any]]:
+        prepared = ghost_run.prepare(run_name, self.index)
+        require("skipped" not in prepared, f"{run_name}: {prepared.get('skipped')}")
+        run = ROOT / run_name
+        execution = prepared["execution"]
+        members = [m for m in prepared["members"] if m in execution]
+        record = json.loads((run / "record.json").read_text(encoding="utf-8"))
+        pubs = member_pubs(record)
+        executed = ghost_run.measured_members(run)[1]
+        timings = pub_timings(run)
+        snapshots = {
+            relative: json.loads((ROOT / relative).read_text(encoding="utf-8"))
+            for relative in sorted(set(execution[m] for m in members))
+        }
+        durations = {relative: target_durations(snapshot) for relative, snapshot in snapshots.items()}
+        items = []
+        for m in members:
+            require(
+                executed[m]["pub"] == pubs[m], f"{run_name}: {m} executed in {executed[m]['pub']}, planned {pubs[m]}"
+            )
+            rows = schedule_rows(timings[pubs[m]])
+            items += [(replica, rows, durations[execution[m]]) for replica in prepared["replicas"][m][1]]
+        base = {
+            "backend": prepared["backend"],
+            "members": members,
+            "shots": {m: prepared["shots"][m] for m in members},
+            "execution": {m: execution[m] for m in members},
+            "snapshots": snapshots,
+            "pubs": {m: pubs[m] for m in members},
+            "measured": {m: prepared["measured"][m] for m in members},
+            "replicas": {m: prepared["replicas"][m][1] for m in members},
+            "events": {m: [event_count(r) for r in prepared["replicas"][m][1]] for m in members},
+        }
+        return base, items
+
+
+def prepare_runs(run_names: list[str], index: dict[str, Any]) -> list[dict[str, Any]]:
+    """prepare() over every named run.
+
+    The runs' inputs rebuild in one pool and every replica of every run pads
+    in a second, so no pool worker starts a pool of its own.
+    """
+    inputs = parallel.ordered_map(RunInputs(index), run_names, min_items=2)
+    results = iter(parallel.ordered_map(pad_item, [item for _, items in inputs for item in items]))
+    prepared = []
+    for base, _ in inputs:
+        padded: dict[str, list[QuantumCircuit]] = {}
+        padding: dict[str, list[dict[str, Any]]] = {}
+        for m in base["members"]:
+            done = [next(results) for _ in base["replicas"][m]]
+            padded[m] = [circuit for circuit, _ in done]
+            padding[m] = [summary for _, summary in done]
+        events = base.pop("events")
+        prepared.append({**base, "padded": padded, "padding": padding, "events": events})
+    return prepared
+
+
 def prepare(run_name: str, index: dict[str, Any]) -> dict[str, Any]:
     """ghost_run.prepare restricted to members with an execution snapshot, plus each replica padded."""
-    prepared = ghost_run.prepare(run_name, index)
-    require("skipped" not in prepared, f"{run_name}: {prepared.get('skipped')}")
-    run = ROOT / run_name
-    execution = prepared["execution"]
-    members = [m for m in prepared["members"] if m in execution]
-    record = json.loads((run / "record.json").read_text(encoding="utf-8"))
-    pubs = member_pubs(record)
-    executed = ghost_run.measured_members(run)[1]
-    timings = pub_timings(run)
-    snapshots = {
-        relative: json.loads((ROOT / relative).read_text(encoding="utf-8"))
-        for relative in sorted(set(execution[m] for m in members))
-    }
-    durations = {relative: target_durations(snapshot) for relative, snapshot in snapshots.items()}
-    padded: dict[str, list[QuantumCircuit]] = {}
-    padding: dict[str, list[dict[str, Any]]] = {}
-    items = []
-    for m in members:
-        require(executed[m]["pub"] == pubs[m], f"{run_name}: {m} executed in {executed[m]['pub']}, planned {pubs[m]}")
-        rows = schedule_rows(timings[pubs[m]])
-        items += [(replica, rows, durations[execution[m]]) for replica in prepared["replicas"][m][1]]
-    results = iter(parallel.ordered_map(pad_item, items))
-    for m in members:
-        done = [next(results) for _ in prepared["replicas"][m][1]]
-        padded[m] = [circuit for circuit, _ in done]
-        padding[m] = [summary for _, summary in done]
-    return {
-        "backend": prepared["backend"],
-        "members": members,
-        "shots": {m: prepared["shots"][m] for m in members},
-        "execution": {m: execution[m] for m in members},
-        "snapshots": snapshots,
-        "pubs": {m: pubs[m] for m in members},
-        "measured": {m: prepared["measured"][m] for m in members},
-        "replicas": {m: prepared["replicas"][m][1] for m in members},
-        "padded": padded,
-        "padding": padding,
-        "events": {m: [event_count(r) for r in prepared["replicas"][m][1]] for m in members},
-    }
+    return prepare_runs([run_name], index)[0]
 
 
 class RunSampler:
@@ -916,10 +941,9 @@ def report(paths: list[Path]) -> dict[str, Any]:
     }
 
 
-def validate(run: dict[str, Any], index: dict[str, Any], fits: dict[str, Any]) -> dict[str, Any]:
-    """Require every field the archived inputs and the retained distances determine; return the rebuild."""
+def validate(run: dict[str, Any], prepared: dict[str, Any], fits: dict[str, Any]) -> None:
+    """Require every field the archived inputs, rebuilt by prepare(), and the retained distances determine."""
     name = run["run"]
-    prepared = prepare(name, index)
     members = prepared["members"]
     grid = run_grid(readout_axis(name, fits))
     require(run["backend"] == prepared["backend"], f"{name}: backend differs")
@@ -955,15 +979,14 @@ def validate(run: dict[str, Any], index: dict[str, Any], fits: dict[str, Any]) -
             for m, row in floor[key].items():
                 require(len(row) == len(prepared["replicas"][m]), f"{name}: floor {key} {m} replica count")
             require(floor[f"mean_{key}"] == mean_of(floor[key]), f"{name}: floor {key} mean differs")
-    return prepared
 
 
 def check(paths: list[Path], runs: str, index: dict[str, Any]) -> None:
     retained = load(paths)
     fits = readout_fits()
     ghosts = {r["run"]: r for r in json.loads(ghost_error_scale.GHOST_RESULT.read_text(encoding="utf-8"))["runs"]}
-    for run in retained:
-        validate(run, index, fits)
+    for run, prepared in zip(retained, prepare_runs([run["run"] for run in retained], index), strict=True):
+        validate(run, prepared, fits)
         # The anchor (padding off, c 1, m 0, r 1) is the unmodified replay,
         # so its execution means agree with the ghost runs' execution means.
         anchor = run_grid(tuple(run["readout_axis"])).index((False, 1.0, 0.0, 1.0))
@@ -1154,8 +1177,8 @@ def record_laws() -> None:
 def self_test() -> None:
     start = time.time()
     index = json.loads(ghost_run.INDEX.read_text(encoding="utf-8"))
-    for run_name in DEFAULT_RUNS:
-        require(padding_summary(prepare(run_name, index))["delays"] > 0, f"self-test: {run_name} pads nothing")
+    for run_name, prepared in zip(DEFAULT_RUNS, prepare_runs(list(DEFAULT_RUNS), index), strict=True):
+        require(padding_summary(prepared)["delays"] > 0, f"self-test: {run_name} pads nothing")
     # A real PUB: a dropped row, a relabeled row and a pulse inside an
     # if_else block each break the match.
     run = ROOT / DYNAMIC_RUNS[2]

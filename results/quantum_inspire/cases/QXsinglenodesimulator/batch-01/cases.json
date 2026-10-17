@@ -1,0 +1,63 @@
+{
+ "schema": "qi-crosstalk-teleport-cases-v2",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "drive_pulses": 40,
+ "wait_cycles": 40,
+ "batch_limit": 3,
+ "stars": [
+  {
+   "T": 0,
+   "A": 1,
+   "B": 2
+  },
+  {
+   "T": 3,
+   "A": 4,
+   "B": 5
+  },
+  {
+   "T": 6,
+   "A": 7,
+   "B": 8
+  }
+ ],
+ "paths": [
+  {
+   "I": 1,
+   "P1": 0,
+   "P2": 2,
+   "D": 3,
+   "input": "0"
+  },
+  {
+   "I": 5,
+   "P1": 4,
+   "P2": 6,
+   "D": 7,
+   "input": "1"
+  }
+ ],
+ "batch": "batch-01",
+ "circuits": [
+  {
+   "file": "additivity-none.cq",
+   "kind": "additivity",
+   "config": "none",
+   "sha256": "9c91f8d29792827b6b6e4aa60650e35248f825957a76712a548305577531f141"
+  },
+  {
+   "file": "additivity-AB.cq",
+   "kind": "additivity",
+   "config": "AB",
+   "sha256": "1f02a3f057da78fc2641439836fa116fe1cd1e7002295ef3447c8a8bfb5dcfec"
+  },
+  {
+   "file": "teleport.cq",
+   "kind": "teleport",
+   "sha256": "5b5d8f450bd67c0d83f059126eb3f324fde19ca3b8818fb796f53f88e89f0171"
+  }
+ ]
+}

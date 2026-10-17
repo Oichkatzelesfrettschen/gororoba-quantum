@@ -22,7 +22,7 @@ fails instead of reaching the service.
 | Substrate | Status |
 | --- | --- |
 | Build host | python-qiskit-ibm-runtime 0.50.0, python-samplomatic 0.21.0, python-ibm-quantum-schemas 0.12.20260921 (Arch) |
-| Kaggle | `qiskit-ibm-runtime==0.50.0` in the `quantum-tools` group (not installed otherwise); a kernel holds no IBM credential, so it uses only the local aspects below |
+| Kaggle | `qiskit-ibm-runtime==0.50.0` in the `quantum-tools` group (not installed otherwise), installed at 0.50.0 on the CPU kernel run `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu` (`pin_groups.json`); a kernel holds no IBM credential, so it uses only the local aspects below |
 
 ## CAPABILITIES IN THIS REPOSITORY
 

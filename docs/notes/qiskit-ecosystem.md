@@ -4,8 +4,9 @@ Scope: Python packages that bear on noise simulation of circuits up to 14
 qubits against IBM Heron r2 calibration, dynamic circuits, readout
 mitigation, characterization, transpilation, algebra circuits and sampling
 statistics. The pinned core is qiskit 2.5.2, qiskit-ibm-runtime 0.50.0,
-qiskit-aer 0.17.2 (host `python-qiskit-aer-cuda`; Kaggle
-`qiskit-aer-gpu-cu11`), samplomatic 0.21.0 and ibm-quantum-schemas
+qiskit-aer 0.17.2 (host `python-qiskit-aer-cuda`; Kaggle GPU kernels
+`qiskit-aer-gpu-cu11`, CPU and TPU kernels `qiskit-aer`), samplomatic 0.21.0
+and ibm-quantum-schemas
 0.12.20260921. The host runs Python 3.14 (Arch); a Kaggle kernel runs Python
 3.13.15 with numpy 2.1.3 and scipy 1.16.3.
 
@@ -15,31 +16,34 @@ GitHub REST API (repository, releases, tags, archived flag) were read on
 availability. The conda-forge column comes from the anaconda.org package API
 (HTTP 404 means no package of that exact name). Host versions come from
 `importlib.metadata`. Kaggle state comes from `scripts/kaggle_run.py`
-(`KERNEL_PINS`, `PIN_GROUPS`) and the retained `environment.json` and
-`submission.json` records of earlier kernel runs. Admission of the pinned
+(`KERNEL_PINS`, `CPU_KERNEL_PINS`, `PIN_GROUPS`) and the retained
+`environment.json`, `pin_groups.json` and `submission.json` records of kernel
+runs. Admission of the pinned
 core is computed by evaluating each `requires_dist` specifier against the pin
 (prereleases allowed); an extra-only requirement is ignored.
 
 ## Findings that change a decision
 
-1. The Kaggle `quantum-tools` group leaves `samplomatic`,
-   `ibm-quantum-schemas` and `qiskit-mitigation` unpinned. They arrive as
-   hard dependencies of `qiskit-ibm-runtime==0.50.0`, whose
-   `requires_dist` reads `ibm-quantum-schemas<1,>=0.12.20260921`,
-   `samplomatic>=0.21.0` and `qiskit-mitigation>=0.1.1`. ibm-quantum-schemas
-   0.13.20261016 was uploaded on 2026-10-16, so a kernel started now resolves
-   0.13.20261016 while the host holds 0.12.20260921. The two substrates then
-   import different schema releases.
-2. `qiskit-qasm3-import` and `openqasm3` are on the host and in no Kaggle pin.
-   `qiskit.qasm3.loads` needs the importer, so a kernel entry that parses
-   OpenQASM 3 fails there.
-3. The retained `environment.json` records list a fixed package set (qiskit,
-   qiskit-aer-gpu-cu11, numpy, scipy, sympy, pandas, torch and the algebra
-   packages). No group package (stim, mthree, qiskit-ibm-runtime, ...)
-   appears in any retained record, and the four substrate-crossover
-   submissions that declare `quantum-tools` carry no retained output. The
-   installed state of the group in a real kernel is therefore declared and
-   unverified.
+1. `qiskit-ibm-runtime==0.50.0` hard-requires
+   `ibm-quantum-schemas<1,>=0.12.20260921`, `samplomatic>=0.21.0` and
+   `qiskit-mitigation>=0.1.1`, and ibm-quantum-schemas 0.13.20261016 was
+   uploaded on 2026-10-16, so an unpinned kernel resolves a newer schema
+   release than the host's 0.12.20260921. `PIN_GROUPS["quantum-tools"]` pins
+   all three at the host versions (`samplomatic==0.21.0`,
+   `ibm-quantum-schemas==0.12.20260921`, `qiskit-mitigation==0.1.1`), so a
+   group kernel imports the host's releases.
+2. `qiskit.qasm3.loads` needs `qiskit-qasm3-import`, which needs `openqasm3`
+   with its antlr4 parser. The group pins `qiskit-qasm3-import==0.6.0`,
+   `openqasm3==1.0.1` and `antlr4-python3-runtime==4.13.2`, so a kernel
+   pushed `--with quantum-tools` parses OpenQASM 3.
+3. `environment.json` lists a fixed package set (qiskit, the Aer build,
+   numpy, scipy, sympy, pandas, torch and the algebra packages), and a kernel
+   pushed `--with GROUP` also writes `pin_groups.json` with the installed
+   version of every group member. The CPU kernel run
+   `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu` declared the group when it
+   held twelve pins, and its `pin_groups.json` records all twelve at their
+   versions. The seven pins added since (findings 1 and 2, plus
+   `qiskit-addon-utils==0.4.0`) have not been installed on a kernel.
 4. qiskit 2.6.0 was uploaded on 2026-10-16 (abi3 manylinux wheel). Runtime
    0.50.0 (`qiskit<3,>=2.3.0`), aer 0.17.2, samplomatic, mitigation,
    experiments, mthree, addon-utils and schemas all admit it. qiskit-fermions
@@ -67,7 +71,8 @@ core is computed by evaluating each `requires_dist` specifier against the pin
 Columns: Host = Arch package and importlib version; Kaggle = how a kernel
 gets it; PyPI = latest release and first upload date; Beyond PyPI =
 GitHub-only or IBM-hosted releases, Arch repo or AUR, conda-forge.
-"KP" is `KERNEL_PINS`; "QT" is the opt-in `quantum-tools` group
+"KP" is `KERNEL_PINS` (GPU kernels); "CP" is `CPU_KERNEL_PINS` (CPU and TPU
+kernels); "QT" is the opt-in `quantum-tools` group
 (`push --with quantum-tools`).
 
 ### Core
@@ -75,15 +80,15 @@ GitHub-only or IBM-hosted releases, Arch repo or AUR, conda-forge.
 | Package | Host | Kaggle | PyPI | Beyond PyPI |
 |---|---|---|---|---|
 | qiskit | python-qiskit 1:2.5.2-1 / 2.5.2 | KP `qiskit==2.5.2` | 2.6.0 (2026-10-16) | GitHub release 2.6.0; AUR 1:2.5.2-1; conda-forge 2.5.2 |
-| qiskit-aer | python-qiskit-aer-cuda 0.17.2-1 / 0.17.2 (devices CPU, GPU) | not installed (GPU build replaces it) | 0.17.2 (2025-09-17); cp313 and cp314 wheels | GitHub release 0.17.2; AUR python-qiskit-aer 0.17.2-3; local PKGBUILD; conda-forge 0.17.2 |
-| qiskit-aer-gpu-cu11 | none | KP `==0.17.2` | 0.17.2 (2025-09-17); cp313 wheel only | none |
+| qiskit-aer | python-qiskit-aer-cuda 0.17.2-1 / 0.17.2 (devices CPU, GPU) | CP `==0.17.2` on CPU and TPU kernels | 0.17.2 (2025-09-17); cp313 and cp314 wheels | GitHub release 0.17.2; AUR python-qiskit-aer 0.17.2-3; local PKGBUILD; conda-forge 0.17.2 |
+| qiskit-aer-gpu-cu11 | none | KP `==0.17.2` on GPU kernels | 0.17.2 (2025-09-17); cp313 wheel only | none |
 | qiskit-aer-gpu | none | not used (CUDA 12 build stops at 0.15.1, no Python 3.13 wheel) | 0.15.1 (2024-09-13); no cp313 or cp314 wheel | none |
 | qiskit-ibm-runtime | python-qiskit-ibm-runtime 0.50.0-1 / 0.50.0 | QT `==0.50.0` | 0.50.0 (2026-09-24) | GitHub release 0.50.0; AUR 0.50.0-1; local PKGBUILD; conda-forge 0.50.0 |
-| samplomatic | python-samplomatic 0.21.0-1 / 0.21.0 | transitive of runtime, unpinned | 0.21.0 (2026-08-25) | GitHub release 0.21.0; AUR 0.21.0-1; local PKGBUILD; conda-forge 0.21.0 |
-| ibm-quantum-schemas | python-ibm-quantum-schemas 0.12.20260921-1 / 0.12.20260921 | transitive of runtime, unpinned (resolves 0.13.20261016) | 0.13.20261016 (2026-10-16) | GitHub release 0.13.20261016; AUR 0.12.20260921-1 |
-| qiskit-mitigation | python-qiskit-mitigation 0.1.1-1 / 0.1.1 | transitive of runtime, unpinned | 0.1.1 (2026-09-24) | GitHub release 0.1.1 with a wheel asset; AUR 0.1.1-1; conda-forge 0.1.1 |
-| qiskit-qasm3-import | python-qiskit-qasm3-import 0.6.0-1 / 0.6.0 | absent | 0.6.0 (2025-06-10) | GitHub latest release is v0.5.0 (2024-06-18), behind PyPI; AUR 0.6.0-1; conda-forge 0.6.0 |
-| openqasm3 | python-openqasm3 1.0.1-1 / 1.0.1 | absent | 1.0.1 (2025-02-19) | AUR 1.0.1-1; conda-forge 1.0.1 |
+| samplomatic | python-samplomatic 0.21.0-1 / 0.21.0 | QT `==0.21.0` | 0.21.0 (2026-08-25) | GitHub release 0.21.0; AUR 0.21.0-1; local PKGBUILD; conda-forge 0.21.0 |
+| ibm-quantum-schemas | python-ibm-quantum-schemas 0.12.20260921-1 / 0.12.20260921 | QT `==0.12.20260921` | 0.13.20261016 (2026-10-16) | GitHub release 0.13.20261016; AUR 0.12.20260921-1 |
+| qiskit-mitigation | python-qiskit-mitigation 0.1.1-1 / 0.1.1 | QT `==0.1.1` | 0.1.1 (2026-09-24) | GitHub release 0.1.1 with a wheel asset; AUR 0.1.1-1; conda-forge 0.1.1 |
+| qiskit-qasm3-import | python-qiskit-qasm3-import 0.6.0-1 / 0.6.0 | QT `==0.6.0` | 0.6.0 (2025-06-10) | GitHub latest release is v0.5.0 (2024-06-18), behind PyPI; AUR 0.6.0-1; conda-forge 0.6.0 |
+| openqasm3 | python-openqasm3 1.0.1-1 / 1.0.1 | QT `==1.0.1`, with QT `antlr4-python3-runtime==4.13.2` | 1.0.1 (2025-02-19) | AUR 1.0.1-1; conda-forge 1.0.1 |
 | rustworkx | python-rustworkx 0.18.1-1 / 0.18.1 | image-supplied (not recorded) | 0.18.1 (2026-07-30); cp314 and abi3 wheels | AUR 0.18.1-1; conda-forge 0.18.1 |
 
 ### Characterization, mitigation, simulation tools
@@ -108,7 +113,7 @@ GitHub-only or IBM-hosted releases, Arch repo or AUR, conda-forge.
 
 | Package | Host | Kaggle | PyPI | Beyond PyPI |
 |---|---|---|---|---|
-| qiskit-addon-utils | none | none | 0.4.0 (2026-07-15) | AUR 0.4.0-1; no conda-forge package |
+| qiskit-addon-utils | python-qiskit-addon-utils 0.4.0-1 / 0.4.0 | QT `==0.4.0` | 0.4.0 (2026-07-15) | AUR 0.4.0-1; no conda-forge package |
 | qiskit-addon-obp | none | none | 0.3.0 (2025-05-22) | AUR 0.3.0-1; no conda-forge package |
 | qiskit-addon-mpf | none | none | 0.3.0 (2025-03-20) | AUR 0.3.0-1; no conda-forge package |
 | qiskit-addon-aqc-tensor | none | none | 0.3.1 (2026-07-16) | no AUR package; no conda-forge package |
@@ -164,14 +169,14 @@ skip.
 | Package | requires_python | Wheels | qiskit 2.5.2 | runtime 0.50.0 | Moves core | License | Repo status | Recommendation and reason |
 |---|---|---|---|---|---|---|---|---|
 | qiskit | >=3.10 | abi3 | self | requires <3,>=2.3.0: yes | no | Apache-2.0 | active | both, 2.5.2 (hold below 2.6.0 until a host package and gates exist) |
-| qiskit-aer | >=3.7 | cp313+cp314 | >=1.1.0: yes | - | no | Apache-2.0 | active | host (CUDA build); Kaggle uses the cu11 build |
-| qiskit-aer-gpu-cu11 | >=3.7 | cp313 only | >=1.1.0: yes | - | no | Apache-2.0 | active | Kaggle only, 0.17.2; a Python 3.14 kernel would lose GPU Aer |
+| qiskit-aer | >=3.7 | cp313+cp314 | >=1.1.0: yes | - | no | Apache-2.0 | active | host (CUDA build); Kaggle CPU and TPU kernels, 0.17.2 |
+| qiskit-aer-gpu-cu11 | >=3.7 | cp313 only | >=1.1.0: yes | - | no | Apache-2.0 | active | Kaggle GPU kernels only, 0.17.2; a Python 3.14 kernel would lose GPU Aer |
 | qiskit-ibm-runtime | >=3.10 | pure | <3,>=2.3.0: yes | self | no | Apache-2.0 | active | both, 0.50.0; import for local option and fake-backend objects, never a service call in Kaggle |
-| samplomatic | >=3.10 | pure | >=2.3.0: yes | requires >=0.21.0: yes | no | Apache-2.0 | active | both, add explicit Kaggle pin 0.21.0 |
-| ibm-quantum-schemas | >=3.10 | pure | <3.0.0,>=2.3.0: yes | requires <1,>=0.12.20260921: 0.13.20261016 also admitted | no | Apache-2.0 | active | both, add explicit Kaggle pin 0.12.20260921 to match the host |
-| qiskit-mitigation | >=3.10 | pure | <3,>=2.3.0: yes | hard dependency of runtime | no | Apache-2.0 | active | both, add explicit Kaggle pin 0.1.1 |
-| qiskit-qasm3-import | none | pure | >=0.37.0: yes | - | no | Apache-2.0 | active (latest GitHub release lags PyPI) | both, add Kaggle pin 0.6.0 |
-| openqasm3 | none | pure | - | - | no | Apache-2.0 | active | both, add Kaggle pin 1.0.1 with `antlr4-python3-runtime<4.14` (extra `parser`) |
+| samplomatic | >=3.10 | pure | >=2.3.0: yes | requires >=0.21.0: yes | no | Apache-2.0 | active | both, 0.21.0 (QT pin) |
+| ibm-quantum-schemas | >=3.10 | pure | <3.0.0,>=2.3.0: yes | requires <1,>=0.12.20260921: 0.13.20261016 also admitted | no | Apache-2.0 | active | both, 0.12.20260921 (QT pin, matches the host) |
+| qiskit-mitigation | >=3.10 | pure | <3,>=2.3.0: yes | hard dependency of runtime | no | Apache-2.0 | active | both, 0.1.1 (QT pin) |
+| qiskit-qasm3-import | none | pure | >=0.37.0: yes | - | no | Apache-2.0 | active (latest GitHub release lags PyPI) | both, 0.6.0 (QT pin) |
+| openqasm3 | none | pure | - | - | no | Apache-2.0 | active | both, 1.0.1 (QT pin, with `antlr4-python3-runtime==4.13.2` for the `parser` extra) |
 | rustworkx | >=3.10 | cp314+abi3 | requires >=0.15.0 | - | no | Apache-2.0 | active | both; Kaggle keeps the image copy, 0.18.1 on host |
 | qiskit-experiments | >=3.10 | pure | >=1.3: yes | >=0.34.0: yes | no | Apache-2.0 | active | both, 0.14.2 (RB, readout-error and coherence experiments run on Aer) |
 | mthree | >=3.9 | cp310 to cp312 only | >=1.0: yes | - | no | Apache-2.0 | active | both, 3.0.0 (matrix-free readout mitigation; `M3Mitigation` is the class name) |
@@ -191,7 +196,7 @@ skip.
 
 | Package | requires_python | Wheels | qiskit 2.5.2 | runtime 0.50.0 | Moves core | License | Repo status | Recommendation and reason |
 |---|---|---|---|---|---|---|---|---|
-| qiskit-addon-utils 0.4.0 | >=3.10 | pure | <3,>=2.2: yes | - | no | Apache-2.0 | active | host only, optional: circuit slicing and coupling-map helpers; add when a case imports it |
+| qiskit-addon-utils 0.4.0 | >=3.10 | pure | <3,>=2.2: yes | - | no | Apache-2.0 | active | both, 0.4.0 (QT pin): circuit slicing and coupling-map helpers |
 | qiskit-addon-obp 0.3.0 | >=3.9 | pure | <3,>=1.2: yes | >=0.27: yes | no | Apache-2.0 | active | skip: operator backpropagation targets observable estimation of Trotter circuits |
 | qiskit-addon-mpf 0.3.0 | >=3.9 | pure | <3,>=1.2: yes | - | cvxpy | Apache-2.0 | active | skip: Trotter error reduction, pulls cvxpy (not installed) |
 | qiskit-addon-aqc-tensor 0.3.1 | >=3.9 | pure | <3,>=1.3.0: yes | - | no | Apache-2.0 | active | skip: approximate quantum compilation with tensor networks; quimb and cotengra already cover contraction |
@@ -283,14 +288,17 @@ constructing a service or submitting a job is not.
 | qiskit-mitigation | none (post-processing; hard dependency of runtime) | mitigation numerics | allowed |
 | qiskit-noise-learning | experiments run through primitives on a backend | fitting and analysis | allowed with Aer backends only |
 | qiskit-addon-cutting, qiskit-addon-obp | import `qiskit-ibm-runtime` primitives | cutting, reconstruction and backpropagation numerics | not installed |
-| qiskit-addon-sqd, -slc, -pna, -utils, -mpf, -aqc-tensor, pauli-prop, qiskit-paulice | none | local numerics (chemistry, mitigation, tensor networks) | not installed |
+| qiskit-addon-utils | none | circuit slicing and coupling-map helpers | allowed; QT pin 0.4.0 |
+| qiskit-addon-sqd, -slc, -pna, -mpf, -aqc-tensor, pauli-prop, qiskit-paulice | none | local numerics (chemistry, mitigation, tensor networks) | not installed |
 | MCP server family | network calls to IBM services | none | never |
 
 ## Retained Kaggle environment records
 
 The records under `results/kaggle/*/output/output/environment.json` report
 Python 3.13.15, numpy 2.1.3, scipy 1.16.3, sympy 1.14.0, pandas 2.3.3,
-torch 2.11.0+cpu, qiskit 2.5.2 and qiskit-aer-gpu-cu11 0.17.2. The package
-list is a fixed key set and omits every `quantum-tools` member, so a kernel
-log (`pip.txt`) or an extended `environment.json` is the only way to confirm
-the group's installed versions. The install plan lists the change.
+torch 2.11.0 (`+cpu` on CPU machines, `+cu128` on T4s), qiskit 2.5.2 and
+either qiskit-aer-gpu-cu11 0.17.2 or, on CPU kernels pushed after
+`CPU_KERNEL_PINS`, qiskit-aer 0.17.2. The package list is a fixed key set;
+a kernel pushed `--with GROUP` writes `pin_groups.json` beside it with every
+group member's installed version, as `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu` does for the twelve-pin
+group.

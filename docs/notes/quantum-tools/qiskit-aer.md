@@ -18,7 +18,7 @@ sim.run(transpiled, shots=20000, seed_simulator=4).result().get_counts()
 | Substrate | Status |
 | --- | --- |
 | Build host | python-qiskit-aer-cuda 0.17.2 (Arch, CUDA build; provides python-qiskit-aer); `available_devices()` returns `('CPU', 'GPU')` and the RTX 4070 Ti runs the GPU path |
-| Kaggle | `qiskit-aer-gpu-cu11==0.17.2` in `KERNEL_PINS`; it lists `GPU` in `available_devices()` even on a CPU-only kernel, so check `environment.json` |
+| Kaggle | `scripts/kaggle_run.py` `kernel_pins`: a GPU kernel installs `qiskit-aer-gpu-cu11==0.17.2` (`KERNEL_PINS`), a CPU or TPU kernel `qiskit-aer==0.17.2` (`CPU_KERNEL_PINS`). Both retained crossover runs (`results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu`, `results/kaggle/2026-10-16T212614Z-gororoba-substrate-crossover-t4-gpu`) installed the cu11 build, which listed `GPU` in `available_devices()` on the CPU kernel too (`environment.json` `aer_devices`); a CPU kernel on the CPU build lists `CPU` only (`results/kaggle/2026-10-16T222749Z-gororoba-atlas-coherent-families`) |
 
 ## CAPABILITIES IN THIS REPOSITORY
 
@@ -207,9 +207,9 @@ The 156-qubit Target did not enlarge the state in any example here: 2- to
 
 ## TRAPS
 
-- `AerSimulator.available_devices()` lists `GPU` on a CPU-only Kaggle kernel; a
-  run then fails (`RuntimeError: No CUDA device available!` is what a host run
-  with `CUDA_VISIBLE_DEVICES=""` printed here).
+- `qiskit-aer-gpu-cu11`'s `AerSimulator.available_devices()` lists `GPU` on a
+  CPU-only Kaggle kernel; a GPU run then fails (`RuntimeError: No CUDA device
+  available!` is what a host run with `CUDA_VISIBLE_DEVICES=""` printed here).
 - The snapshot's `e10` and `e01` are reported backend properties, so the replay applies the reported readout channel and not the measured one. `results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md` records Kingston qubits 0 and 1 misassigning the ground state 39 and 27 percent of the time and the excited state 14 and 12 percent on a device run, against reported readout errors below 1 percent, with Ramsey visibilities near readout factors of 0.47 and 0.60. A replay therefore carries no information about that fault. Mitigating or interpreting a retained job needs assignment matrices from that job's own preparation baselines.
 - A noisy 15-qubit density matrix was killed on a T4 and needs 16 GiB; the
   routing rule sends 15 qubits and more to IBM.

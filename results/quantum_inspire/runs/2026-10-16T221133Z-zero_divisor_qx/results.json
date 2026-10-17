@@ -1,0 +1,221 @@
+{
+ "collected_utc": "2026-10-16T22:12:40+00:00",
+ "jobs": [
+  {
+   "file": "twin-1.cq",
+   "job": {
+    "algorithm_type": "quantum",
+    "batch_job_id": 869645,
+    "created_on": "2026-10-16T22:11:45.754510Z",
+    "file_id": 1537199,
+    "finished_at": "2026-10-16T22:12:07.969373Z",
+    "id": 1526821,
+    "message": "",
+    "number_of_shots": 2048,
+    "queued_at": "2026-10-16T22:12:04.698945Z",
+    "raw_data_enabled": true,
+    "session_id": "32b545ae-b4da-487d-b247-1bd2d061e6d4",
+    "source": "",
+    "status": "completed",
+    "trace_id": ""
+   },
+   "logs": null,
+   "results": [
+    {
+     "created_on": "2026-10-16T22:12:07.868556Z",
+     "execution_time_in_seconds": 2.965838,
+     "id": 1488823,
+     "job_id": 1526821,
+     "results": {
+      "0010100111": 521,
+      "0010111110": 504,
+      "1011000111": 529,
+      "1011011110": 494
+     },
+     "shots_done": 2048,
+     "shots_requested": 2048
+    }
+   ]
+  },
+  {
+   "file": "twin-2.cq",
+   "job": {
+    "algorithm_type": "quantum",
+    "batch_job_id": 869645,
+    "created_on": "2026-10-16T22:11:46.621169Z",
+    "file_id": 1537200,
+    "finished_at": "2026-10-16T22:12:15.620423Z",
+    "id": 1526822,
+    "message": "",
+    "number_of_shots": 2048,
+    "queued_at": "2026-10-16T22:12:08.029459Z",
+    "raw_data_enabled": true,
+    "session_id": "32b545ae-b4da-487d-b247-1bd2d061e6d4",
+    "source": "",
+    "status": "completed",
+    "trace_id": ""
+   },
+   "logs": null,
+   "results": [
+    {
+     "created_on": "2026-10-16T22:12:15.506206Z",
+     "execution_time_in_seconds": 7.262098,
+     "id": 1488825,
+     "job_id": 1526822,
+     "results": {
+      "0001100001": 139,
+      "0001100011": 146,
+      "0001101100": 130,
+      "0001101110": 137,
+      "0001110001": 125,
+      "0001110011": 129,
+      "0001111100": 134,
+      "0001111110": 112,
+      "1101000001": 130,
+      "1101000011": 134,
+      "1101001100": 97,
+      "1101001110": 121,
+      "1101010001": 103,
+      "1101010011": 135,
+      "1101011100": 139,
+      "1101011110": 137
+     },
+     "shots_done": 2048,
+     "shots_requested": 2048
+    }
+   ]
+  },
+  {
+   "file": "twin-3.cq",
+   "job": {
+    "algorithm_type": "quantum",
+    "batch_job_id": 869645,
+    "created_on": "2026-10-16T22:11:47.453907Z",
+    "file_id": 1537201,
+    "finished_at": "2026-10-16T22:12:04.653718Z",
+    "id": 1526823,
+    "message": "",
+    "number_of_shots": 2048,
+    "queued_at": "2026-10-16T22:11:54.316572Z",
+    "raw_data_enabled": true,
+    "session_id": "32b545ae-b4da-487d-b247-1bd2d061e6d4",
+    "source": "",
+    "status": "completed",
+    "trace_id": ""
+   },
+   "logs": null,
+   "results": [
+    {
+     "created_on": "2026-10-16T22:12:04.532901Z",
+     "execution_time_in_seconds": 10.013868,
+     "id": 1488822,
+     "job_id": 1526823,
+     "results": {
+      "1011000010": 135,
+      "1011000110": 121,
+      "1011001010": 157,
+      "1011001110": 135,
+      "1011010001": 119,
+      "1011010101": 119,
+      "1011011001": 110,
+      "1011011101": 124,
+      "1101100010": 117,
+      "1101100110": 137,
+      "1101101010": 113,
+      "1101101110": 137,
+      "1101110001": 135,
+      "1101110101": 142,
+      "1101111001": 114,
+      "1101111101": 133
+     },
+     "shots_done": 2048,
+     "shots_requested": 2048
+    }
+   ]
+  },
+  {
+   "file": "twin-4.cq",
+   "job": {
+    "algorithm_type": "quantum",
+    "batch_job_id": 869645,
+    "created_on": "2026-10-16T22:11:48.239290Z",
+    "file_id": 1537202,
+    "finished_at": "2026-10-16T22:12:26.389061Z",
+    "id": 1526824,
+    "message": "",
+    "number_of_shots": 2048,
+    "queued_at": "2026-10-16T22:12:15.669292Z",
+    "raw_data_enabled": true,
+    "session_id": "32b545ae-b4da-487d-b247-1bd2d061e6d4",
+    "source": "",
+    "status": "completed",
+    "trace_id": ""
+   },
+   "logs": null,
+   "results": [
+    {
+     "created_on": "2026-10-16T22:12:26.297442Z",
+     "execution_time_in_seconds": 10.387302,
+     "id": 1488827,
+     "job_id": 1526824,
+     "results": {
+      "0110100100": 127,
+      "0110100110": 114,
+      "0110101100": 148,
+      "0110101110": 126,
+      "0110110001": 117,
+      "0110110011": 106,
+      "0110111001": 149,
+      "0110111011": 113,
+      "1111000100": 121,
+      "1111000110": 134,
+      "1111001100": 141,
+      "1111001110": 125,
+      "1111010001": 146,
+      "1111010011": 121,
+      "1111011001": 129,
+      "1111011011": 131
+     },
+     "shots_done": 2048,
+     "shots_requested": 2048
+    }
+   ]
+  },
+  {
+   "file": "twin-5.cq",
+   "job": {
+    "algorithm_type": "quantum",
+    "batch_job_id": 869645,
+    "created_on": "2026-10-16T22:11:49.098078Z",
+    "file_id": 1537203,
+    "finished_at": "2026-10-16T22:12:27.511346Z",
+    "id": 1526825,
+    "message": "",
+    "number_of_shots": 2048,
+    "queued_at": "2026-10-16T22:12:26.433331Z",
+    "raw_data_enabled": true,
+    "session_id": "32b545ae-b4da-487d-b247-1bd2d061e6d4",
+    "source": "",
+    "status": "completed",
+    "trace_id": ""
+   },
+   "logs": null,
+   "results": [
+    {
+     "created_on": "2026-10-16T22:12:27.420921Z",
+     "execution_time_in_seconds": 0.814116,
+     "id": 1488828,
+     "job_id": 1526825,
+     "results": {
+      "0000010100": 1000,
+      "0000011001": 1048
+     },
+     "shots_done": 2048,
+     "shots_requested": 2048
+    }
+   ]
+  }
+ ],
+ "schema": "qi-collection-v1",
+ "transactions": []
+}

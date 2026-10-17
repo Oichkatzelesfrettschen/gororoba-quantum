@@ -7,7 +7,9 @@ python or sh block, then a fenced text block holding its exact output. The pytho
 compared merged. Absolute site-packages and checkout paths read as `site-packages/` and `./`.
 
 --check (local, needs the host package stack) fails on any difference; --write replaces each text
-block with the output of the run. CI has no package stack, so this replay runs on the build host.
+block with the output of the run. An example whose process exits nonzero fails in both modes, and
+--write keeps its retained block, so a crash never becomes its own expected output. CI has no
+package stack, so this replay runs on the build host.
 """
 
 from __future__ import annotations
@@ -40,7 +42,7 @@ def scrub(text: str) -> str:
     return re.sub(r" at 0x[0-9a-f]+", " at 0x...", text)
 
 
-def run(lang: str, code: str) -> str:
+def run(lang: str, code: str) -> tuple[str, int]:
     env = dict(os.environ, PYTHONPATH="gororoba_quantum", PYTHONWARNINGS="ignore", PYTHONDONTWRITEBYTECODE="1")
     python = os.environ.get("PYTHON", "python3")
     argv = [python, "-c", code] if lang == "python" else ["sh", "-c", code]
@@ -48,10 +50,10 @@ def run(lang: str, code: str) -> str:
         argv, cwd=ROOT, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, check=False
     )
     output = scrub(completed.stdout)
-    return output if not output or output.endswith("\n") else output + "\n"
+    return (output if not output or output.endswith("\n") else output + "\n"), completed.returncode
 
 
-def run_example(example: tuple[str, str]) -> str:
+def run_example(example: tuple[str, str]) -> tuple[str, int]:
     """run() on one (lang, code) pair, a picklable callable for parallel.ordered_map."""
     return run(*example)
 
@@ -75,10 +77,15 @@ def main() -> int:
     failures = 0
     for page in pages:
         pieces, last = [], 0
-        for (owner, match), output in zip(jobs, outputs, strict=True):
+        for (owner, match), (output, returncode) in zip(jobs, outputs, strict=True):
             if owner != page:
                 continue
-            if output != match["out"]:
+            if returncode != 0:
+                failures += 1
+                print(f"{page.name}: example at offset {match.start()} exited {returncode}")
+                print(f"--- ran\n{output}")
+                output = match["out"]
+            elif output != match["out"]:
                 failures += 1
                 if args.check:
                     print(f"{page.name}: example at offset {match.start()} differs")
@@ -89,8 +96,9 @@ def main() -> int:
         pieces.append(texts[page][last:])
         if args.write:
             page.write_text("".join(pieces))
-    print(f"package manual examples: {len(jobs)} run, {failures} differ")
-    return 1 if args.check and failures else 0
+    crashed = sum(1 for _, returncode in outputs if returncode != 0)
+    print(f"package manual examples: {len(jobs)} run, {failures - crashed} differ, {crashed} exited nonzero")
+    return 1 if crashed or (args.check and failures) else 0
 
 
 if __name__ == "__main__":

@@ -19,7 +19,10 @@ re-import the script under the host's `forkserver` start method.
 
 ## Index
 
-Quantum-tools group (`push --with quantum-tools`):
+Quantum-tools group (`push --with quantum-tools`; the group also pins
+qiskit-ibm-runtime, samplomatic, ibm-quantum-schemas, qiskit-mitigation,
+qiskit-qasm3-import with openqasm3 and its antlr4 parser, and
+qiskit-addon-utils, listed under the core stack below):
 
 | Manual | Package | Pin |
 | --- | --- | --- |
@@ -53,16 +56,23 @@ Core stack and neighbors:
 | --- | --- | --- |
 | Host | the build host: 12 threads, 62 GiB RAM, RTX 4070 Ti (12 GiB) | density matrix 15 qubits on RAM and 14 on the GPU, statevector 29 on the GPU (`docs/notes/kaggle/substrates.md`); the only substrate with the IBM credential |
 | Kaggle CPU kernel | `push --machine cpu` | 4 cores, about 30 GB RAM, Python 3.13 |
-| Kaggle GPU kernel | `push` default `NvidiaTeslaT4` | 2 x T4, 15 GiB each, density matrix 14 and statevector 29 on one T4; two concurrent GPU sessions per account |
+| Kaggle GPU kernel | `push --machine NvidiaTeslaT4` (the default machine is `cpu`, `DEFAULT_MACHINE` in `scripts/kaggle_run.py`) | 2 x T4, 15 GiB each, density matrix 14 and statevector 29 on one T4; two concurrent GPU sessions per account |
 
-Kaggle installs `KERNEL_PINS` (`qiskit==2.5.2`, `qiskit-aer-gpu-cu11==0.17.2`),
-whatever `--with` groups name, the pip dependencies of those packages, and
-the image (numpy 2.1.3, scipy 1.16.3, sympy 1.14.0, pandas 2.3.3, torch 2.11.0
-in the recorded probes). No kernel with the `quantum-tools` group has run
-yet, so the availability of its wheels on Kaggle's Python is derived from the
-pins and not measured. `scripts/kaggle_run.py self-test` builds such a kernel
-without network access and confirmed the bundle (56 files) and that `run.py`
-compiles.
+A GPU kernel installs `KERNEL_PINS` (`qiskit==2.5.2`,
+`qiskit-aer-gpu-cu11==0.17.2`) and a CPU or TPU kernel `CPU_KERNEL_PINS`
+(`qiskit==2.5.2`, `qiskit-aer==0.17.2`), plus whatever `--with` groups name,
+the pip dependencies of those packages, and the image (numpy 2.1.3, scipy
+1.16.3, sympy 1.14.0, pandas 2.3.3, torch 2.11.0 in the recorded probes). The
+CPU kernel run
+`results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu` pushed
+`--with quantum-tools` when the group held twelve pins, and its
+`output/output/pin_groups.json` records all twelve installed at their
+versions. The group now holds nineteen pins; the seven added since (the
+runtime dependencies samplomatic, ibm-quantum-schemas and qiskit-mitigation,
+the qasm3-import, openqasm3 and antlr4 parser trio, and qiskit-addon-utils)
+have not been installed on a kernel. `scripts/kaggle_run.py self-test` builds
+a group kernel without network access and checks that `run.py` carries every
+group pin.
 
 ## Decision table
 
@@ -105,18 +115,19 @@ PYTHON=${PYTHON:-python3}
 "$PYTHON" scripts/kaggle_run.py collect results/kaggle/RUN_DIR
 ```
 
-- `--with quantum-tools` adds the twelve pins of `PIN_GROUPS["quantum-tools"]`
-  to the `pip install` under a constraints file that holds `KERNEL_PINS` and
-  the image's numpy and scipy fixed; the kernel stops unless every pin
+- `--with quantum-tools` adds the nineteen pins of `PIN_GROUPS["quantum-tools"]`
+  to the `pip install` under a constraints file that holds the machine's
+  Qiskit pins and the image's numpy and scipy fixed; the kernel stops unless every pin
   installed at its version.
 - `--machine cpu` for stim, pyzx, galois, lmfit, mthree, qiskit-experiments and
-  CPU quimb; omit it for the default `NvidiaTeslaT4` kernel when Aer
+  CPU quimb (the default machine); pass `--machine NvidiaTeslaT4` when Aer
   `device="GPU"` or torch contraction is the point. The GPU kernel is
   entered with `GOROROBA_AER_DEVICE=GPU`.
 - Entries that call `.run()` of qiskit-experiments or `transpile` of many
   circuits keep the `__main__` guard.
 - A kernel holds no IBM credential; it reads the retained snapshot.
-- The push was not run for this manual.
+- The group push ran once, at twelve pins, as
+  `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu`.
 
 ## Interop summary (qiskit 2.5.2, verified on the host)
 
@@ -131,16 +142,20 @@ PYTHON=${PYTHON:-python3}
 | lmfit | via NumPy arrays | none | none |
 | cotengra | `HyperOptimizer(seed=...)` | n/a | `create_study() got an unexpected keyword argument 'seed'` with the default `optuna` |
 
-## Kaggle install compatibility (package metadata only)
+## Kaggle install compatibility
 
 The runner holds numpy 2.1.3 and scipy 1.16.3 fixed and stops if pip cannot
 satisfy the constraints. The direct numpy and scipy requirements of the twelve
-group pins, read from the host's package metadata, all admit those versions:
+original group pins, read from the host's package metadata, all admit those
+versions:
 quimb needs `scipy>=1.16.0` (tightest, met by 1.16.3), numba needs
 `numpy<2.6,>=1.22`, mthree `scipy>=1.11.1`, lmfit `scipy>=1.10.0`. Transitive
-bounds, the wheel availability of each pin for Python 3.13 and the cython build
-of mthree were not checked, so the status stays "metadata-compatible, not
-installed".
+bounds were not read from metadata. All twelve installed at their pins under
+those constraints on
+`results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu`
+(`pin_groups.json`), mthree among them although PyPI carries no cp313 wheel
+for it (`docs/notes/qiskit-ecosystem.md` finding 7). The seven later pins have
+not been installed on a kernel.
 
 ## Regenerating an example
 
@@ -172,11 +187,12 @@ Package-level gaps in what is installed:
 - `galois` 0.4.11 has no `ReedMuller` class (the Reed-Muller comparison in
   `docs/evidence/ccz-reduction/` uses repository code).
 - `qiskit-qasm3-import` is an optional extra of qiskit; the `quantum-tools`
-  group does not install it, so `qasm3.loads` on a Kaggle kernel needs it added
-  (the group lives in `scripts/kaggle_run.py`; this manual does not change it).
+  group pins it with `openqasm3` and `antlr4-python3-runtime`, so `qasm3.loads`
+  on a Kaggle kernel needs `--with quantum-tools`.
 - cupy and jax are installed on the host and pinned nowhere for Kaggle; the
   host jaxlib has no CUDA support.
-- No Kaggle kernel has exercised the `quantum-tools` group (above).
+- The seven group pins added after the twelve-pin kernel run have not been
+  installed on a kernel (above).
 
 Other installed packages with a quantum-adjacent role, not given manuals:
 networkx 3.7 (graphs), opt_einsum 3.4.0 (contraction paths; cotengra's

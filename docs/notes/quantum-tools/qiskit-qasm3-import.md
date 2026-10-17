@@ -18,7 +18,7 @@ ast = openqasm3.parse(text)   # AST: ast.statements
 | Substrate | Status |
 | --- | --- |
 | Build host | python-qiskit-qasm3-import 0.6.0 and python-openqasm3 1.0.1 (Arch) |
-| Kaggle | not installed by KERNEL_PINS or the `quantum-tools` group: it is the `qasm3-import` extra of qiskit and appears in no hard requirement of the group's packages (host package metadata). A kernel that calls `qasm3.loads` needs it added (gap; see the README) |
+| Kaggle | `qiskit-qasm3-import==0.6.0`, `openqasm3==1.0.1` and `antlr4-python3-runtime==4.13.2` (the parser `openqasm3` needs) in the `quantum-tools` group (`scripts/kaggle_run.py` `PIN_GROUPS`), so `qasm3.loads` works on a kernel pushed `--with quantum-tools`; one of the seven pins added to the group after the retained CPU kernel run `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu`, whose `pin_groups.json` records the twelve earlier members only; not yet installed on a kernel |
 
 ## CAPABILITIES IN THIS REPOSITORY
 

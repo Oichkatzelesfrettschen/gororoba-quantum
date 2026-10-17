@@ -1,0 +1,31 @@
+{
+ "collected_utc": "2026-10-16T21:17:07+00:00",
+ "jobs": [
+  {
+   "file": "teleport.cq",
+   "job": {
+    "algorithm_type": "quantum",
+    "batch_job_id": 869576,
+    "created_on": "2026-10-16T21:16:45.878819Z",
+    "file_id": 1537116,
+    "finished_at": "2026-10-16T21:17:03.337390Z",
+    "id": 1526744,
+    "message": "Quantum backend error: RSP returned failure: error interpreting cQASM script",
+    "number_of_shots": 1024,
+    "queued_at": "2026-10-16T21:16:47.296310Z",
+    "raw_data_enabled": true,
+    "session_id": "a572b622-c44d-4a5b-ae72-e3786d45907b",
+    "source": "",
+    "status": "failed",
+    "trace_id": "6635b119-9ff9-40d0-8267-816afe14fafe"
+   },
+   "logs": {
+    "logs": [],
+    "next_start": null
+   },
+   "results": []
+  }
+ ],
+ "schema": "qi-collection-v1",
+ "transactions": []
+}

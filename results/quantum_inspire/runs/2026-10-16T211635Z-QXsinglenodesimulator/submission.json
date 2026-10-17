@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v1",
+ "submitted_utc": "2026-10-16T21:16:42+00:00",
+ "approval": "User, 2026-10-16: EMULATOR PLUS EACH GRANULAR PIECE OF PHYSICAL HARDWARE AVAILABLE FOR A TEST (so many one run each)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 2,
+  "min_wait_time_in_queue_secs": 4.0,
+  "avg_wait_time_in_queue_secs": 9887.0,
+  "max_wait_time_in_queue_secs": 19769.0
+ },
+ "batch_job": 869574,
+ "project": 765384,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "additivity-none.cq",
+   "job": 1526738
+  },
+  {
+   "file": "additivity-A.cq",
+   "job": 1526739
+  },
+  {
+   "file": "additivity-B.cq",
+   "job": 1526740
+  },
+  {
+   "file": "additivity-AB.cq",
+   "job": 1526741
+  },
+  {
+   "file": "teleport.cq",
+   "job": 1526742
+  }
+ ]
+}

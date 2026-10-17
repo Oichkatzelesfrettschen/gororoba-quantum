@@ -3,93 +3,206 @@
   "acquisitions": [
     {
       "id": "kingston-mod15-pilot",
+      "provider": "ibm",
       "run": "results/live/2026-10-11T152922.787095Z",
       "family": "hybrid Shor and folded QPE, mod 15",
       "question": "Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?"
     },
     {
       "id": "kingston-folded-qpe-ladder",
+      "provider": "ibm",
       "run": "results/live/2026-10-12T055624.091217Z",
       "family": "folded-QPE intervention ladder",
       "question": "How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?"
     },
     {
       "id": "kingston-correction-first",
+      "provider": "ibm",
       "run": "results/live/2026-10-13T020454.599853Z",
       "family": "folded correction",
       "question": "Does known-label correction beat measured-bit correction by more than 0.01 on both odd labels?"
     },
     {
       "id": "kingston-correction-second",
+      "provider": "ibm",
       "run": "results/live/2026-10-13T022433.333775Z",
       "family": "folded correction",
       "question": "Repeat of the correction decision under a later calibration."
     },
     {
       "id": "fez-ripple-atlas",
+      "provider": "ibm",
       "run": "results/live/2026-10-13T025444.603480Z",
       "family": "ripple box-kite atlas",
       "question": "Do the 84 box-kite bright-minus-dark contrasts and the depth-4 class return appear on hardware?"
     },
     {
       "id": "fez-rank-sectors",
+      "provider": "ibm",
       "run": "results/live/2026-10-13T032011.664435Z",
       "family": "rank sectors",
       "question": "Do the 8 sector contrasts and 12 pulse-difference contrasts of the rank-sector family appear on hardware?"
     },
     {
       "id": "kingston-wide-control",
+      "provider": "ibm",
       "run": "results/live/kingston-wide-control-result",
       "family": "wide Ramsey and carpet control",
       "question": "What do a nominal 156-qubit Ramsey PUB and a 29-replica carpet show about spectators and support violations? Recovered retrospectively."
     },
     {
       "id": "fez-n21-orbit-feedback",
+      "provider": "ibm",
       "run": "results/live/2026-10-13T080216.451663Z",
       "family": "N=21 orbit feed-forward",
       "question": "Does the N=21 orbit's measured feed-forward match its exact law, and which mechanism explains the deviation?"
     },
     {
       "id": "fez-n21-orbit-window",
+      "provider": "ibm",
       "run": "results/live/2026-10-13T083417.634585Z",
       "family": "N=21 orbit window arms",
       "question": "How do delay, extra-readout and echo window arms change the fitted orbit phase?"
     },
     {
       "id": "fez-patch-window",
+      "provider": "ibm",
       "run": "results/live/2026-10-13T201757.782152Z",
       "family": "patch-window Ramsey characterization",
       "question": "Does the orbit's idle window leave a resolved phase on the work qubits under matched Ramsey probes?"
     },
     {
       "id": "kingston-coherence-window",
+      "provider": "ibm",
       "run": "results/live/2026-10-15T030748.903241Z",
       "family": "branch-signed coherence window",
       "question": "How do a matched idle and a mid-circuit measure-and-reset change the branch-signed work coherence?"
     },
     {
       "id": "kingston-rank-sectors",
+      "provider": "ibm",
       "run": "results/live/2026-10-15T030903.235380Z",
       "family": "rank sectors",
       "question": "Do the Fez rank-sector rejections transfer to a second Heron r2 processor?"
     },
     {
       "id": "kingston-ripple-atlas",
+      "provider": "ibm",
       "run": "results/live/2026-10-15T031229.371738Z",
       "family": "ripple box-kite atlas",
       "question": "Do the Fez ripple rejections transfer to a second Heron r2 processor?"
     },
     {
       "id": "kingston-corner-baseline",
+      "provider": "ibm",
       "run": "results/live/2026-10-15T070847.644554Z",
       "family": "corner qubit baseline",
       "question": "Do readout, relaxation and Ramsey on Kingston qubits 0-4 and 16 match their reported calibration?"
     },
     {
       "id": "kingston-zero-divisor-fringe",
+      "provider": "ibm",
       "run": "results/live/2026-10-15T070853.550532Z",
       "family": "zero-divisor fringe (Design B and D)",
       "question": "How large is the Design B dark floor off the corner, and which fringe term carries its excess over the model?"
+    },
+    {
+      "id": "qi-qx-crosstalk-teleport-reference",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T211635Z-QXsinglenodesimulator",
+      "family": "spectator-drive additivity and transported-pair teleportation, ideal reference",
+      "question": "Does the analysis recover the ideal law on the noiseless QX emulator: target phases within sampling of zero shift and zero pairwise residual, drivers at 0, and unit teleportation fidelity after the Pauli-frame correction?"
+    },
+    {
+      "id": "qi-tuna17-crosstalk-teleport",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17",
+      "family": "spectator-drive additivity and transported-pair teleportation",
+      "question": "Does driving a neighbor shift a Tuna-17 target's idle phase, do the pairwise shifts add under simultaneous drive, does simultaneous drive change the drivers' own gates, and how faithfully does a Bell pair whose half a SWAP carries teleport Pauli eigenstates?"
+    },
+    {
+      "id": "qi-rydberg-teleport",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T211635Z-Rydberg",
+      "family": "transported-pair teleportation",
+      "question": "Does the transported-pair teleport circuit, with its bit register and measurements, execute on the Ry emulator? The job failed at execution."
+    },
+    {
+      "id": "qi-rydberg-x-diagnostic",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T213823Z-Rydberg-diagnostic",
+      "family": "Ry emulator execution diagnostic",
+      "question": "Does an X on q[0] with no bit register and no measurement, the form of the Rydberg code example, execute on the Ry emulator, separating an unavailable backend from an unsupported circuit, and which outcome character carries q[0]?"
+    },
+    {
+      "id": "qi-qx-zero-divisor-twin",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_qx",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "Does the platform execute the nine routed Clifford+T zero-divisor replicas exactly on the ideal QX emulator (dark 0, bright 1, fixture 1/2)?"
+    },
+    {
+      "id": "qi-tuna17-zero-divisor",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "What dark floor, bright level and visibility does Tuna-17 give the exact (e1 + e10)(e4 -+ e15) witness across three regions in a Latin square, and does the symmetric contraction law hold?"
+    },
+    {
+      "id": "qi-qx-coupler-zz-dry-run-0",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-00",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Dry run, batch 0 of 4: does the ideal QX emulator return vanishing coupler and frequency rates for the 10-qubit Tuna-17 subgraph before any hardware submission?"
+    },
+    {
+      "id": "qi-qx-coupler-zz-dry-run-1",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-01",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Dry run, batch 1 of 4: does the ideal QX emulator return vanishing coupler and frequency rates for the 10-qubit Tuna-17 subgraph before any hardware submission?"
+    },
+    {
+      "id": "qi-qx-coupler-zz-dry-run-2",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-02",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Dry run, batch 2 of 4: does the ideal QX emulator return vanishing coupler and frequency rates for the 10-qubit Tuna-17 subgraph before any hardware submission?"
+    },
+    {
+      "id": "qi-qx-coupler-zz-dry-run-3",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-03",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Dry run, batch 3 of 4: does the ideal QX emulator return vanishing coupler and frequency rates for the 10-qubit Tuna-17 subgraph before any hardware submission?"
+    },
+    {
+      "id": "qi-tuna17-coupler-zz-0",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Batch 0 of 4: what residual ZZ does each of Tuna-17's 24 parked flux-tunable couplers leave, measured from both of its ends, and what frame frequency does each qubit carry?"
+    },
+    {
+      "id": "qi-tuna17-coupler-zz-1",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-01",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Batch 1 of 4: what residual ZZ does each of Tuna-17's 24 parked flux-tunable couplers leave, measured from both of its ends, and what frame frequency does each qubit carry?"
+    },
+    {
+      "id": "qi-tuna17-coupler-zz-2",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-02",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Batch 2 of 4: what residual ZZ does each of Tuna-17's 24 parked flux-tunable couplers leave, measured from both of its ends, and what frame frequency does each qubit carry?"
+    },
+    {
+      "id": "qi-tuna17-coupler-zz-3",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-03",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Batch 3 of 4: what residual ZZ does each of Tuna-17's 24 parked flux-tunable couplers leave, measured from both of its ends, and what frame frequency does each qubit carry?"
     }
   ],
   "claims": [
@@ -2562,6 +2675,242 @@
       "superseded_by": null
     },
     {
+      "id": "qi-tuna17-neighbor-drive-phase",
+      "statement": "Driving a Tuna-17 neighbor with 40 X gates inside an 800 ns target idle shifts the target's idle phase by up to 0.633 rad (Q7 on Q4) and 0.695 rad under simultaneous drive (Q7 and Q8 on Q4), against undriven idle phases of -0.03 to -0.12 rad; the pairwise residual phi(AB) - phi(A) - phi(B) + phi(none) departs from zero beyond |z| = 3.29 on targets 3 (z = -3.38) and 11 (z = -3.43) and stays within |z| < 2.1 on targets 0, 4 and 12, and conditioning a target on its driver's final outcome leaves its phase within a few hundredths of a radian. The QX reference reads residuals of 0.012 to 0.077 rad against a 0.044 rad sigma.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The circuits, shots and qubit roles were fixed in cases.json before submission, while the analysis (phase-domain residual, driver and conditioning fields, every threshold) was fixed after the data arrived; the batch's five jobs (four additivity configurations, then teleport) ran sequentially about 11 s apart, so drift between jobs is not cancelled and enters every cross-job difference; each star and each path occupies its own qubits, so every value is a per-star or per-path input and forms no device-wide average; the counts carry no state-preparation or readout correction; one 16384-shot run on one Tuna-17 calibration. A ZZ phase from a driver's time-averaged excitation during its X train is not separated from a drive-induced Stark shift.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/analysis.json",
+          "sha256": "4d67e170748e30a9b08dbce0190d47fc5ea030fd9238e85a93fde7ef31784f51"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/results.json",
+          "sha256": "ed84f4c4aa1fa549cb4c81a2320161c2ba12a0a3b89284baa9ea75a205bd92a9"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T211635Z-QXsinglenodesimulator/analysis.json",
+          "sha256": "0daf1959bcc8078e6ced6444cb001f93f08a47d733d97e691d0029845cce2615"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-331": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna17-crosstalk-teleport",
+        "qi-qx-crosstalk-teleport-reference"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-simultaneous-drive-degradation",
+      "statement": "Driving Tuna-17 qubits Q1 and Q2, which share no coupler, with 40 X gates each at the same time raises Q2's P1 after the even X train from 0.046 (driven alone) to 0.893 (z = 153.6) and Q1's from 0.062 to 0.259 (z = 48.5); the other eight drivers change P1 by at most 0.025 under simultaneous drive.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The circuits, shots and qubit roles were fixed in cases.json before submission, while the analysis (phase-domain residual, driver and conditioning fields, every threshold) was fixed after the data arrived; the batch's five jobs (four additivity configurations, then teleport) ran sequentially about 11 s apart, so drift between jobs is not cancelled and enters every cross-job difference; each star and each path occupies its own qubits, so every value is a per-star or per-path input and forms no device-wide average; the counts carry no state-preparation or readout correction; one 16384-shot run on one Tuna-17 calibration. The design does not isolate the mechanism (drive-line crosstalk, a shared control resource or a classical scheduling effect); the 0.85 change on Q2 exceeds the drift any other driver shows, which does not exclude drift on Q2 alone.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/analysis.json",
+          "sha256": "4d67e170748e30a9b08dbce0190d47fc5ea030fd9238e85a93fde7ef31784f51"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/results.json",
+          "sha256": "ed84f4c4aa1fa549cb4c81a2320161c2ba12a0a3b89284baa9ea75a205bd92a9"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-331": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna17-crosstalk-teleport"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-driver-overrotation",
+      "statement": "Driven alone, Tuna-17 drivers Q6, Q8 and Q9 read P1 = 0.717, 0.764 and 0.883 after 40 X gates (ideal 0), above the 1/2 that depolarizing, relaxation and readout error reach from |0>; a pure per-gate over-rotation needs at least 0.050, 0.053 and 0.061 rad per X.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The circuits, shots and qubit roles were fixed in cases.json before submission, while the analysis (phase-domain residual, driver and conditioning fields, every threshold) was fixed after the data arrived; the batch's five jobs (four additivity configurations, then teleport) ran sequentially about 11 s apart, so drift between jobs is not cancelled and enters every cross-job difference; each star and each path occupies its own qubits, so every value is a per-star or per-path input and forms no device-wide average; the counts carry no state-preparation or readout correction; one 16384-shot run on one Tuna-17 calibration. The bound assumes a pure over-rotation and a readout assignment error below 1/2; Q5, Q13 and Q15 are consistent with coherent error without bounding it, and each driver's value comes from one configuration job.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/analysis.json",
+          "sha256": "4d67e170748e30a9b08dbce0190d47fc5ea030fd9238e85a93fde7ef31784f51"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/results.json",
+          "sha256": "ed84f4c4aa1fa549cb4c81a2320161c2ba12a0a3b89284baa9ea75a205bd92a9"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-331": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna17-crosstalk-teleport"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-transported-pair-teleport",
+      "statement": "Teleporting Pauli eigenstates through a Bell pair whose half a SWAP carries to the destination, with the Pauli-frame correction X^m(P1) Z^m(I) applied to the recorded bit, gives raw Tuna-17 fidelities 0.746 (|0>), 0.827 (|1>), 0.844 (|+>) and 0.862 (|+i>), and 0.768 to 0.864 on the post-selected m(I) = m(P1) = 0 subset at fractions 0.230 to 0.268; the QX reference reads 1.0 on both of its paths.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The circuits, shots and qubit roles were fixed in cases.json before submission, while the analysis (phase-domain residual, driver and conditioning fields, every threshold) was fixed after the data arrived; the batch's five jobs (four additivity configurations, then teleport) ran sequentially about 11 s apart, so drift between jobs is not cancelled and enters every cross-job difference; each star and each path occupies its own qubits, so every value is a per-star or per-path input and forms no device-wide average; the counts carry no state-preparation or readout correction; one 16384-shot run on one Tuna-17 calibration. Each input ran on its own path, so no single channel has a Bloch-sphere average and the 0.831 cross-axis mean assumes a path-independent channel; measure-and-prepare reaches the |0> and |1> rows, so only the |+> and |+i> rows test phase transport; the correction is applied in post-processing because the backend has no feed-forward, and the raw values are not comparable to a SPAM-corrected process fidelity.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/analysis.json",
+          "sha256": "4d67e170748e30a9b08dbce0190d47fc5ea030fd9238e85a93fde7ef31784f51"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/results.json",
+          "sha256": "ed84f4c4aa1fa549cb4c81a2320161c2ba12a0a3b89284baa9ea75a205bd92a9"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T211635Z-QXsinglenodesimulator/analysis.json",
+          "sha256": "0daf1959bcc8078e6ced6444cb001f93f08a47d733d97e691d0029845cce2615"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-331": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna17-crosstalk-teleport",
+        "qi-qx-crosstalk-teleport-reference"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-ry-emulator-bit-order",
+      "statement": "The Quantum Inspire Ry emulator returns qubit 0 as the leftmost outcome character: an X on q[0] of a two-qubit circuit with no bit register read `10` in all 1024 shots, the reverse of QX and Tuna, which put qubit 0 rightmost. The transported-pair teleport circuit, with a bit register and measurements, failed at execution with an empty log and the message 'error interpreting cQASM script'.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One diagnostic circuit and one failed circuit, one run each, read after the teleport failure motivated the diagnostic; the failure's log is empty, so which construct the emulator rejects (bit register, measurement statement, H or CNOT) is not isolated, and the bit order is observed on the one-hot outcome of this two-qubit register only.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T213823Z-Rydberg-diagnostic/results.json",
+          "sha256": "628b78ea3b039e57554dbfba60c4b42a540830c26698905dacdb36e40a249bae"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T213823Z-Rydberg-diagnostic/raw/x-only.cq.json",
+          "sha256": "069bc9ad40d30608f9228480febcbb512fc95b20e13a2519993145be2e59f045"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T211635Z-Rydberg/results.json",
+          "sha256": "3cd41475aea7585abcaa769b3fd94ef403f3e1f559af6e606a34b15f37665746"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qi-rydberg-x-diagnostic",
+        "qi-rydberg-teleport"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-kingston-noise-null",
+      "statement": "Rebuilt from the retained Tuna-17 cQASM on disjoint IBM Kingston embeddings and simulated as exact density matrices under the retained Kingston noise model (independent per-gate depolarizing and thermal relaxation, per-qubit readout), the cases predict a neighbor-driven target phase shift of at most 1.2e-14 rad, a pairwise residual of at most 1.3e-15 rad, driver P1 of at most 0.012 after 40 X gates, and corrected teleportation fidelities 0.971 to 0.986 at post-selected fractions 0.252 to 0.253.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "Gate core-340 re-derives one star and one path at 2048 shots against the retained record; the other stars, paths and the 16384-shot samples come from the retained Kaggle CPU run. The model class holds no coherent error, crosstalk or leakage, so its zero shift is a property of the model, and Kingston's 32 ns X stretches the driver train to 1.28 us against the target's 0.8 us wait.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/ibm_noise_replay/tuna_17-ibm_kingston.json",
+          "sha256": "082fdb7e7fee5ecef61775dcd7cad23a14370379bbe8d85ee17d386dc9228a26"
+        },
+        {
+          "path": "docs/evidence/calibration/ibm_kingston.json",
+          "sha256": "2417655318d2d61de2c97361c42d3e0eba769f7613473b8df38b5e1cb9900346"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-340": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-zero-divisor-contraction",
+      "statement": "On Tuna-17 the exact Clifford+T Design B witness of (e1 + e10)(e4 - e15) = 0 reads P(s = 0) = 0.471 [0.466, 0.475] dark, 0.512 [0.508, 0.517] bright and 0.499 fixture over three regions in a Latin square, an endpoint contrast of 0.042 (4.2 % of ideal, 6.5 % of Kingston's 0.646) with dark below bright by about 13 standard errors; the fixture agrees with 1/2 (z = -0.42); the endpoints straddle 1/2 with midpoint 0.4915, so dark + bright - 1 = -0.017 (z = -5.3) rejects the preregistered shared symmetric-contraction model; the region on qubits 0, 1, 2, 4, 5 shows no resolved contrast (0.002, 95 % -0.009 to 0.013); the QX twin reads 0, 1 and 0.490.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One 16384-shot run per circuit on one Tuna-17 calibration; the three Latin circuits ran as sequential jobs, so drift between them enters the case contrasts; the routed replicas carry 66-70 CZ and 26 T against about 45 CZ with continuous rotations on Kingston, so the visibility gap compares implementations, not devices alone; the readout correction uses the all-|0> and all-|1> circuits, which omit readout crosstalk under the witness's state. Rejecting one shared contraction leaves circuit-dependent contractions and readout asymmetry as alternatives the preregistered tests do not separate.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/analysis.json",
+          "sha256": "c523ab54bb74ee985f30eca9bf66603b929cdb694eeaf5a0608105cbe989ae49"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/results.json",
+          "sha256": "7d046cd51ba7a99430d88b3dd74e82dde9ac79b34f9ef7aa5132d96d845905d8"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_qx/analysis.json",
+          "sha256": "9a4b87972fbebe60f661c112fa2d5d4712e2726e74981457ab4c92bf04668015"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-330": "replay",
+        "core-348": "freshness"
+      },
+      "acquisitions": [
+        "qi-tuna17-zero-divisor",
+        "qi-qx-zero-divisor-twin"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-zero-divisor-floor"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "a5-rank-locus-local-dimension",
       "statement": "At exact witnesses, the A_5 rank loci have local dimension 11 on D_(5,16) ({a,0}, a a zero divisor), 17 on D_(5,12) (both entries zero divisors on the D-locus) and 23 on D_(5,8) (both zero divisors off the D-locus): each family's dimension meets the exact upper bound dim{y : U^T L_y V = 0} - 1, so at those witnesses the tangent cone lies in H_5^perp. Every family with a non-zero-divisor coordinate (nullities 12, 8, 4) sits exactly two below its bound, and the listed witnesses outside H_5^perp carry upper bounds only: 15 at Proposition 8.2's nullity-12 (i_4, e_p) and 27 at Moreno's nullity-4 e_1 + e_10 + 2 e_24.",
       "domain": "geometry",
@@ -2590,6 +2939,236 @@
       ],
       "depends_on": [
         "a5-d-locus-nullity"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-zero-divisor-common-response",
+      "statement": "Readout-corrected with a seeded bootstrap over the joint selector outcomes and both calibration circuits, the Tuna-17 witness gives dark + bright - 1 = -0.042 (95 % -0.049 to -0.036), fixture - 1/2 = -0.016 (-0.021 to -0.012) and H = fixture - (dark + bright)/2 = +0.005 (-0.001 to 0.011): every selector misreads |1> more often than |0>, so readout hides part of the asymmetry rather than producing it, and the three preparations follow one affine response shifted toward selector 1, which disfavors circuit-dependent symmetric contractions; by region the common response holds on two regions and fails on qubits 0, 1, 2, 4, 5 (H = 0.027, z = 5.6).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The H test, the same-shot covariance and the bootstrap were fixed after the data; the readout correction uses all-|0> and all-|1> calibration, which omits readout crosstalk under the witness's state; a common affine response in the selector probability identifies no unique channel on the five-qubit circuit; one run on one calibration.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/analysis.json",
+          "sha256": "c523ab54bb74ee985f30eca9bf66603b929cdb694eeaf5a0608105cbe989ae49"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-330": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna17-zero-divisor"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qi-tuna17-zero-divisor-contraction"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-coupler-zz-map",
+      "statement": "Conditional Ramsey over Tuna-17's bipartite coupling map gives every parked coupler's residual ZZ: (11,14) J = -31.4 +- 0.9 kHz, measured -31.40 and -31.47 kHz from its two ends, (1,4) -19.3 kHz, (12,14) +10.4 kHz, (3,5) +11.7 kHz (one end), (0,2) -7.9 kHz, (3,6) -7.8 kHz (one end) and (11,13) +7.5 kHz, and the remaining 17 couplers lie within 0.03 to 6.6 kHz in magnitude; the 15 couplers with two usable ends agree within |z| 1.7 except (8,11) at z = -3.2; the QX dry run on the 10-qubit subgraph reads every J consistent with zero (largest |z| 1.73).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The data-taking design (bipartite roles, delays 0.5 and 2 us, quadratures, neighbor conditioning, readout correction) was fixed before submission; the end-quality rule (visibility at least 0.3, additivity p at least 1e-3) was fixed after the Tuna-17 data; one 16384-shot run per circuit on one calibration, the four batches minutes apart; a spectator's measured Z labels its state during the idle only up to its decay in the 2 us window, which shrinks J toward zero; neighbor readout error mixes sectors and shrinks J by about the neighbor's 1 - e01 - e10; the P-role 0.5 us and Q-role 2 us x/y quadrature pairs ran in adjacent batches minutes apart, so a calibration change between those batches enters their phases; both readout references ran in batch 00 and correct all four batches, and refitting with no readout correction moves no J by more than 0.76 standard errors; a frame change between the two delays' batches shifts omega only, while a coupler retuned between batches would enter J.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/coupler_zz_tuna_17_analysis.json",
+          "sha256": "adb913b31b49f8371c0e3bbdfc00823330bda1eb0fb8024afbe41789d0ea4375"
+        },
+        {
+          "path": "results/quantum_inspire/coupler_zz_qx_analysis.json",
+          "sha256": "553f898da0216a8f0b0b272ce8366021787f941c03f2bb71e6386c97c5bb8546"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-333": "replay",
+        "core-332": "freshness"
+      },
+      "acquisitions": [
+        "qi-tuna17-coupler-zz-0",
+        "qi-tuna17-coupler-zz-1",
+        "qi-tuna17-coupler-zz-2",
+        "qi-tuna17-coupler-zz-3",
+        "qi-qx-coupler-zz-dry-run-0",
+        "qi-qx-coupler-zz-dry-run-1",
+        "qi-qx-coupler-zz-dry-run-2",
+        "qi-qx-coupler-zz-dry-run-3"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-q5-q6-q7-short-coherence",
+      "statement": "As Ramsey targets, Tuna-17 qubits 5, 6 and 7 lose visibility to 0.04, 0.27 and 0.08 by 2 us, while every other qubit keeps visibility of at least 0.75; qubits 5 and 6 idle 322 and 324 kHz from their frames (modulo the 666.7 kHz alias period of the two-delay rate) and qubit 7 at -116 kHz, and with every sector on one alias branch the pairwise-additive rate model holds on all three (chi2 16.4 on 11, 0.26 on 1 and 0.13 on 4 degrees of freedom); their couplers take J from the other end only.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The data-taking design (bipartite roles, delays 0.5 and 2 us, quadratures, neighbor conditioning, readout correction) was fixed before submission; the end-quality rule (visibility at least 0.3, additivity p at least 1e-3) was fixed after the Tuna-17 data; one 16384-shot run per circuit on one calibration, the four batches minutes apart; a spectator's measured Z labels its state during the idle only up to its decay in the 2 us window, which shrinks J toward zero; neighbor readout error mixes sectors and shrinks J by about the neighbor's 1 - e01 - e10; the P-role 0.5 us and Q-role 2 us x/y quadrature pairs ran in adjacent batches minutes apart, so a calibration change between those batches enters their phases; both readout references ran in batch 00 and correct all four batches, and refitting with no readout correction moves no J by more than 0.76 standard errors; a frame change between the two delays' batches shifts omega only, while a coupler retuned between batches would enter J.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/coupler_zz_tuna_17_analysis.json",
+          "sha256": "adb913b31b49f8371c0e3bbdfc00823330bda1eb0fb8024afbe41789d0ea4375"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-333": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna17-coupler-zz-0",
+        "qi-tuna17-coupler-zz-1",
+        "qi-tuna17-coupler-zz-2",
+        "qi-tuna17-coupler-zz-3"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-spectator-shift-zz-split",
+      "statement": "The coupler map accounts for the whole neighbor-drive phase shift where coupler ZZ dominates: driving Q14 moved Q11 by +0.153 rad against +0.158 +- 0.005 rad predicted from J(11,14) = -31.4 kHz with the driver excited half of the 800 ns window, and Q8 on Q4 by +0.030 against +0.025; the residuals beyond coupler ZZ are drive crosstalk of +0.618 rad for Q7 on Q4, -0.133 for Q1 on Q0, +0.133 for Q5 on Q3, +0.099 for Q2 on Q0 and +0.051 for Q13 on Q11.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Inference fixed after both data sets; the half-excited driver is a model of a 40-X train, not a measurement; the crosstalk run and the coupler map ran about 90 minutes apart on possibly different calibrations; the measured shifts carry about 0.011 rad of sampling error.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/spectator_zz_split.json",
+          "sha256": "9a06ea04e9090b18822898f3c21b3813a9453cd8d0e8e045acca7be644e88f79"
+        },
+        {
+          "path": "results/quantum_inspire/coupler_zz_tuna_17_analysis.json",
+          "sha256": "adb913b31b49f8371c0e3bbdfc00823330bda1eb0fb8024afbe41789d0ea4375"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/analysis.json",
+          "sha256": "4d67e170748e30a9b08dbce0190d47fc5ea030fd9238e85a93fde7ef31784f51"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-333": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna17-crosstalk-teleport",
+        "qi-tuna17-coupler-zz-0",
+        "qi-tuna17-coupler-zz-1",
+        "qi-tuna17-coupler-zz-2",
+        "qi-tuna17-coupler-zz-3"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qi-tuna17-coupler-zz-map",
+        "qi-tuna17-neighbor-drive-phase"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "n21-linear-encoding-surrogate",
+      "statement": "Over all 83,328 cosets B S_5 of GL(5,2), conjugating every N=21, a=2 order-finding multiplier by one uncontrolled linear B gives a ten-round phase-controlled CX surrogate 9 s(4) + s(2) whose unique minimum is 1,896 at columns (1, 2, 5, 13, 25), against 2,556 at B = I; 2,750 cosets beat B = I, and s(B^-1 f_16 B) = s(B^-1 f_4 B) on every one of 1,000 sampled cosets as 16 = 4^-1 mod 21 predicts.",
+      "domain": "implementation",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exhaustive over the linear family under target_flip_network's surrogate weights 1/6/12/18/24; the surrogate ranks candidates for routed admission and is not a routed or hardware cost. Arbitrary-permutation encodings are excluded as compiled-answer constructions (1301.7007).",
+      "evidence": [
+        {
+          "path": "docs/evidence/linear_conjugation/search.json",
+          "sha256": "910f86c8f0631fa59e560d49ff479fb4aacce65765bf7b2f2b2b84e0a9058df3"
+        }
+      ],
+      "documents": [
+        "docs/evidence/linear_conjugation/README.md",
+        "gororoba_quantum/MODULAR_SYNTHESIS.md"
+      ],
+      "gates": {
+        "core-335": "replay",
+        "core-338": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "target_flip.target_flip_network and its CONTROLLED_CX_COST weights"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "n21-linear-encoding-routed",
+      "statement": "On FakeFez over transpiler seeds 0-7 with the target_flip_one_clean pass manager, the N=21 order-finding circuits encoded by the admitted linear cosets beat the unencoded circuits on every seed in routed CZ, depth and scheduled duration while sampling the identical phase law: the ten-round circuit at coset 15241 has median routed CZ 3,933 against 5,422 (27.5 percent fewer), and the two-round n21-feedback diagnostic at coset 15265 has 739 against 1,107 on both its feed-forward and no-feed-forward arms (33.2 percent fewer).",
+      "domain": "implementation",
+      "evidence_class": "circuit-conformance check",
+      "status": "established",
+      "boundary": "Compiled counts on one captured fake backend, which bound no fidelity or hardware outcome; the encoded circuits' noisy contrasts are separate simulation records, and every hardware use needs its own approved case.",
+      "evidence": [
+        {
+          "path": "results/hw_estimate/n21_linear_conjugation_challenger.json",
+          "sha256": "a5c3a47a2a0448760c335b879773cee35b4ecc30a3af0b82f16600e7ef59434e"
+        }
+      ],
+      "documents": [
+        "docs/evidence/linear_conjugation/README.md",
+        "gororoba_quantum/MODULAR_SYNTHESIS.md"
+      ],
+      "gates": {
+        "core-336": "replay",
+        "core-338": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "the work register is never measured and the operations between rounds act on the control alone"
+      ],
+      "depends_on": [
+        "n21-linear-encoding-surrogate"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "n21-linear-encoding-noise",
+      "statement": "Under the ibm_fez, ibm_kingston and ibm_marrakesh noise models of 2026-10-16 (12:12, 12:13 and 11:51 -07:00), the coset-15265 encoding of the two-round N=21 n21-feedback diagnostic routes 713 CZ against 1,023 and raises the modeled feed-forward contrast difference (ideal 1/4) from -0.0046, 0.0067 and -0.0018 to 0.0198, 0.0417 and 0.0135 (sampling error 0.0055 at 32,768 shots per arm); the ten-round circuit's order recovery stays at 0.129-0.139 in both forms, at or below the depolarized 0.1445 against the noiseless 0.334.",
+      "domain": "hardware",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "Statevector trajectories of live_run's calibrated noise channels on each circuit's active qubits under one retained snapshot per backend; the model omits crosstalk, leakage, drift and the scheduler's feed-forward residual, its shot counts omit live_run's simulation allowance, and admission and any hardware run need a fresh live_run dry run and an approved case.",
+      "evidence": [
+        {
+          "path": "docs/evidence/linear_conjugation/noise.json",
+          "sha256": "dcc1a50436339a5edf980b7df3f01fb45d0c8f01c18d9fa24f321cec746feada"
+        }
+      ],
+      "documents": [
+        "docs/evidence/linear_conjugation/README.md"
+      ],
+      "gates": {
+        "core-337": "replay",
+        "core-338": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "calibration_snapshot.noise_model equals live_run's noise model channel for channel (checked at export)"
+      ],
+      "depends_on": [
+        "n21-linear-encoding-routed"
       ],
       "supersedes": [],
       "superseded_by": null

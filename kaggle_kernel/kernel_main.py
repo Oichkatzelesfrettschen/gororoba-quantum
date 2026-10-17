@@ -49,6 +49,7 @@ REPORTED_PACKAGES = (
     "qiskit",
     "qiskit-aer",
     "qiskit-aer-gpu-cu11",
+    "qiskit-ibm-runtime",
     "numpy",
     "scipy",
     "sympy",
@@ -306,6 +307,25 @@ def apply_overlay(tree: Path, overlay: Path, modes: dict[str, str], deleted: lis
             target.chmod(0o755 if mode == "100755" else 0o644)
 
 
+def ci_interpreter(tree: Path, uv: str, version: str) -> tuple[str, dict[str, str]]:
+    """CI's Python with CI's pins (ci/install_pins.sh run in tree), and the environment its runs use."""
+    checked("uv-install", sys.executable, "-m", "pip", "install", "-q", uv)
+    checked("python-install", sys.executable, "-m", "uv", "python", "install", version)
+    checked("venv", sys.executable, "-m", "uv", "venv", "-q", "--seed", "--python", version, str(CI_VENV))
+    python = str(CI_VENV / "bin/python")
+    env = dict(
+        os.environ,
+        PATH=f"{CI_VENV / 'bin'}:{os.environ['PATH']}",
+        PYTHON=python,
+        PYTHONHASHSEED="0",
+        MPLBACKEND="Agg",
+        GOROROBA_AER_DEVICE="CPU",
+    )
+    checked("install-pins", "sh", "ci/install_pins.sh", cwd=tree, env=env)
+    checked("ci-freeze", python, "-m", "pip", "freeze", env=env)
+    return python, env
+
+
 def run_shard(job: dict[str, Any]) -> int:
     """One CI shard on the tree job["tree"], under CI's interpreter and pins.
 
@@ -327,19 +347,7 @@ def run_shard(job: dict[str, Any]) -> int:
     if tree != job["tree"]:
         print(f"the assembled tree {tree} differs from the head's {job['tree']}; no gate runs", flush=True)
         return 4
-    checked("uv-install", sys.executable, "-m", "pip", "install", "-q", job["uv"])
-    checked("python-install", sys.executable, "-m", "uv", "python", "install", job["python"])
-    checked("venv", sys.executable, "-m", "uv", "venv", "-q", "--seed", "--python", job["python"], str(CI_VENV))
-    python = str(CI_VENV / "bin/python")
-    env = dict(
-        os.environ,
-        PATH=f"{CI_VENV / 'bin'}:{os.environ['PATH']}",
-        PYTHON=python,
-        PYTHONHASHSEED="0",
-        MPLBACKEND="Agg",
-        GOROROBA_AER_DEVICE="CPU",
-    )
-    checked("install-pins", "sh", "ci/install_pins.sh", cwd=CI_TREE, env=env)
+    python, env = ci_interpreter(CI_TREE, job["uv"], job["python"])
     if shutil.which("shellcheck", path=env["PATH"]) is None:
         checked("shellcheck-install", python, "-m", "pip", "install", "-q", job["shellcheck"], env=env)
     checked("runner-specs", python, "ci/runner_specs.py", cwd=CI_TREE, env=env)
@@ -404,10 +412,14 @@ def run_entry() -> int:
     if job["smoke"]:
         capacity()
         return 0
-    env = dict(os.environ, GOROROBA_AER_DEVICE=job.get("device", "GPU"), PYTHON=sys.executable)
-    proc = subprocess.run(
-        [sys.executable, "-B", job["entry"], *job["args"]], cwd=REPO, env=env, capture_output=True, text=True
-    )
+    if job.get("ci_env"):
+        # CI's interpreter and pins, so CI replays the entry's retained record
+        # byte for byte; the image's numpy and Python change compiled circuits.
+        python, env = ci_interpreter(REPO, job["ci_env"]["uv"], job["ci_env"]["python"])
+    else:
+        python = sys.executable
+        env = dict(os.environ, GOROROBA_AER_DEVICE=job.get("device", "GPU"), PYTHON=python)
+    proc = subprocess.run([python, "-B", job["entry"], *job["args"]], cwd=REPO, env=env, capture_output=True, text=True)
     (OUT / "stdout.txt").write_text(proc.stdout, encoding="utf-8")
     (OUT / "stderr.txt").write_text(proc.stderr, encoding="utf-8")
     print(proc.stdout[-4000:], proc.stderr[-4000:], sep="\n", flush=True)

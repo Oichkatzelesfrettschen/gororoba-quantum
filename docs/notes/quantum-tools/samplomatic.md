@@ -19,7 +19,7 @@ out = samplex.sample(num_randomizations=3, rng=1)   # SamplexOutput
 | Substrate | Status |
 | --- | --- |
 | Build host | python-samplomatic 0.21.0 (Arch) |
-| Kaggle | not pinned by name; `samplomatic>=0.21.0` is a hard requirement of `qiskit-ibm-runtime` (host package metadata), so the `quantum-tools` group pulls it in through pip; not measured on a kernel |
+| Kaggle | `samplomatic==0.21.0` in the `quantum-tools` group (`scripts/kaggle_run.py` `PIN_GROUPS`), the host's version and the floor `qiskit-ibm-runtime` requires; one of the seven pins added to the group after the retained CPU kernel run `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu`, whose `pin_groups.json` records the twelve earlier members only; not yet installed on a kernel |
 
 ## CAPABILITIES IN THIS REPOSITORY
 

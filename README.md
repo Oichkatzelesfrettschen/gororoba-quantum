@@ -24,29 +24,45 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (51 established, 16 exploratory, 3 open, 7 proposed, 2 superseded, 11 withdrawn) with its evidence class,
-boundary, pinned evidence and reproducing gates. Every retained physical
-acquisition:
+registered claim (56 established, 25 exploratory, 3 open, 7 proposed, 2 superseded, 11 withdrawn) with its evidence class,
+boundary, pinned evidence and reproducing gates. Every retained
+acquisition of every provider:
 
-| Run | Family | Backend | Jobs | PUBs | Settled s |
-| --- | --- | --- | ---: | ---: | ---: |
-| [2026-10-11T152922.787095Z](results/live/2026-10-11T152922.787095Z) | hybrid Shor and folded QPE, mod 15 | ibm_kingston | 1 | 6 | 9 |
-| [2026-10-12T055624.091217Z](results/live/2026-10-12T055624.091217Z) | folded-QPE intervention ladder | ibm_kingston | 2 | 16 | 40 |
-| [2026-10-13T020454.599853Z](results/live/2026-10-13T020454.599853Z) | folded correction | ibm_kingston | 1 | 4 | 11 |
-| [2026-10-13T022433.333775Z](results/live/2026-10-13T022433.333775Z) | folded correction | ibm_kingston | 1 | 4 | 11 |
-| [2026-10-13T025444.603480Z](results/live/2026-10-13T025444.603480Z) | ripple box-kite atlas | ibm_fez | 2 | 146 | 66 |
-| [2026-10-13T032011.664435Z](results/live/2026-10-13T032011.664435Z) | rank sectors | ibm_fez | 2 | 36 | 31 |
-| [kingston-wide-control-result](results/live/kingston-wide-control-result) | wide Ramsey and carpet control | ibm_kingston | 1 | 2 | 2 |
-| [2026-10-13T080216.451663Z](results/live/2026-10-13T080216.451663Z) | N=21 orbit feed-forward | ibm_fez | 1 | 2 | 4 |
-| [2026-10-13T083417.634585Z](results/live/2026-10-13T083417.634585Z) | N=21 orbit window arms | ibm_fez | 1 | 8 | 11 |
-| [2026-10-13T201757.782152Z](results/live/2026-10-13T201757.782152Z) | patch-window Ramsey characterization | ibm_fez | 3 | 46 | 25 |
-| [2026-10-15T030748.903241Z](results/live/2026-10-15T030748.903241Z) | branch-signed coherence window | ibm_kingston | 2 | 15 | 13 |
-| [2026-10-15T030903.235380Z](results/live/2026-10-15T030903.235380Z) | rank sectors | ibm_kingston | 2 | 36 | 31 |
-| [2026-10-15T031229.371738Z](results/live/2026-10-15T031229.371738Z) | ripple box-kite atlas | ibm_kingston | 2 | 146 | 66 |
-| [2026-10-15T070847.644554Z](results/live/2026-10-15T070847.644554Z) | corner qubit baseline | ibm_kingston | 1 | 7 | 4 |
-| [2026-10-15T070853.550532Z](results/live/2026-10-15T070853.550532Z) | zero-divisor fringe (Design B and D) | ibm_kingston | 1 | 14 | 10 |
+| Run | Provider | Family | Backend | Jobs | PUBs or circuits | Status | Charge |
+| --- | --- | --- | --- | ---: | ---: | --- | ---: |
+| [2026-10-11T152922.787095Z](results/live/2026-10-11T152922.787095Z) | IBM Quantum | hybrid Shor and folded QPE, mod 15 | ibm_kingston | 1 | 6 | DONE | 9 s |
+| [2026-10-12T055624.091217Z](results/live/2026-10-12T055624.091217Z) | IBM Quantum | folded-QPE intervention ladder | ibm_kingston | 2 | 16 | DONE | 40 s |
+| [2026-10-13T020454.599853Z](results/live/2026-10-13T020454.599853Z) | IBM Quantum | folded correction | ibm_kingston | 1 | 4 | DONE | 11 s |
+| [2026-10-13T022433.333775Z](results/live/2026-10-13T022433.333775Z) | IBM Quantum | folded correction | ibm_kingston | 1 | 4 | DONE | 11 s |
+| [2026-10-13T025444.603480Z](results/live/2026-10-13T025444.603480Z) | IBM Quantum | ripple box-kite atlas | ibm_fez | 2 | 146 | DONE | 66 s |
+| [2026-10-13T032011.664435Z](results/live/2026-10-13T032011.664435Z) | IBM Quantum | rank sectors | ibm_fez | 2 | 36 | DONE | 31 s |
+| [kingston-wide-control-result](results/live/kingston-wide-control-result) | IBM Quantum | wide Ramsey and carpet control | ibm_kingston | 1 | 2 | DONE | 2 s |
+| [2026-10-13T080216.451663Z](results/live/2026-10-13T080216.451663Z) | IBM Quantum | N=21 orbit feed-forward | ibm_fez | 1 | 2 | DONE | 4 s |
+| [2026-10-13T083417.634585Z](results/live/2026-10-13T083417.634585Z) | IBM Quantum | N=21 orbit window arms | ibm_fez | 1 | 8 | DONE | 11 s |
+| [2026-10-13T201757.782152Z](results/live/2026-10-13T201757.782152Z) | IBM Quantum | patch-window Ramsey characterization | ibm_fez | 3 | 46 | DONE | 25 s |
+| [2026-10-15T030748.903241Z](results/live/2026-10-15T030748.903241Z) | IBM Quantum | branch-signed coherence window | ibm_kingston | 2 | 15 | DONE | 13 s |
+| [2026-10-15T030903.235380Z](results/live/2026-10-15T030903.235380Z) | IBM Quantum | rank sectors | ibm_kingston | 2 | 36 | DONE | 31 s |
+| [2026-10-15T031229.371738Z](results/live/2026-10-15T031229.371738Z) | IBM Quantum | ripple box-kite atlas | ibm_kingston | 2 | 146 | DONE | 66 s |
+| [2026-10-15T070847.644554Z](results/live/2026-10-15T070847.644554Z) | IBM Quantum | corner qubit baseline | ibm_kingston | 1 | 7 | DONE | 4 s |
+| [2026-10-15T070853.550532Z](results/live/2026-10-15T070853.550532Z) | IBM Quantum | zero-divisor fringe (Design B and D) | ibm_kingston | 1 | 14 | DONE | 10 s |
+| [2026-10-16T211635Z-QXsinglenodesimulator](results/quantum_inspire/runs/2026-10-16T211635Z-QXsinglenodesimulator) | Quantum Inspire | spectator-drive additivity and transported-pair teleportation, ideal reference | QXsinglenodesimulator | 5 | 5 | completed | 0 ledger change |
+| [2026-10-16T211635Z-Rydberg](results/quantum_inspire/runs/2026-10-16T211635Z-Rydberg) | Quantum Inspire | transported-pair teleportation | Rydberg | 1 | 1 | failed | 0 ledger change |
+| [2026-10-16T211635Z-tuna_17](results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17) | Quantum Inspire | spectator-drive additivity and transported-pair teleportation | tuna_17 | 5 | 5 | completed | 0 ledger change |
+| [2026-10-16T213823Z-Rydberg-diagnostic](results/quantum_inspire/runs/2026-10-16T213823Z-Rydberg-diagnostic) | Quantum Inspire | Ry emulator execution diagnostic | Rydberg | 1 | 1 | completed | 0 ledger change |
+| [2026-10-16T221133Z-zero_divisor_tuna_17](results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17) | Quantum Inspire | sedenion zero-divisor witness (Design B, exact Clifford+T) | tuna_17 | 5 | 5 | completed | 0 ledger change |
+| [2026-10-16T221133Z-zero_divisor_qx](results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_qx) | Quantum Inspire | sedenion zero-divisor witness (Design B, exact Clifford+T) | QXsinglenodesimulator | 5 | 5 | completed | 0 ledger change |
+| [2026-10-16T224534Z-coupler_zz_qx-batch-00](results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-00) | Quantum Inspire | coupler residual-ZZ map (bipartite conditional Ramsey) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-16T224534Z-coupler_zz_qx-batch-01](results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-01) | Quantum Inspire | coupler residual-ZZ map (bipartite conditional Ramsey) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-16T224534Z-coupler_zz_qx-batch-02](results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-02) | Quantum Inspire | coupler residual-ZZ map (bipartite conditional Ramsey) | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-16T224534Z-coupler_zz_qx-batch-03](results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-03) | Quantum Inspire | coupler residual-ZZ map (bipartite conditional Ramsey) | QXsinglenodesimulator | 1 | 1 | completed | 0 ledger change |
+| [2026-10-16T224924Z-coupler_zz_tuna_17-batch-00](results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00) | Quantum Inspire | coupler residual-ZZ map (bipartite conditional Ramsey) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-16T224924Z-coupler_zz_tuna_17-batch-01](results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-01) | Quantum Inspire | coupler residual-ZZ map (bipartite conditional Ramsey) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-16T224924Z-coupler_zz_tuna_17-batch-02](results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-02) | Quantum Inspire | coupler residual-ZZ map (bipartite conditional Ramsey) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-16T224924Z-coupler_zz_tuna_17-batch-03](results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-03) | Quantum Inspire | coupler residual-ZZ map (bipartite conditional Ramsey) | tuna_17 | 1 | 1 | completed | 0 ledger change |
 
-The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 physical jobs with 334 settled seconds; the account then reported 334 of 600 s consumed in the rolling window ending 2026-10-15T07:13:13.771Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 physical jobs with 334 settled seconds; the account then reported 334 of 600 s consumed in the rolling window ending 2026-10-15T07:13:13.771Z. That is an observation, not a current balance or an authorization.
+
+The Quantum Inspire ledger retrieved at 2026-10-16T23:09:01+00:00 lists 42 jobs with 369664 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 <!-- research-state:end -->
 
 ## Contents
