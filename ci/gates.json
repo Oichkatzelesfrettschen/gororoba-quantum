@@ -3228,9 +3228,9 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error dynamic_density.py --prep-excitation-test && \"$PYTHON\" -B -O -W error dynamic_density.py --prep-excitation-test",
+   "cmd": "\"$PYTHON\" -B -W error dynamic_density.py --prep-excitation-test && \"$PYTHON\" -B -O -W error dynamic_density.py --prep-excitation-test && \"$PYTHON\" -B -W error qpu_planning_contracts.py --prep-excitation && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --prep-excitation",
    "name": "core-525",
-   "seconds": 8.8,
+   "seconds": 31.4,
    "tier": "pr"
   },
   {

@@ -294,6 +294,10 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
     if variance_bound is not None:
         _number(variance_bound, "replica_variance_bound", positive=True)
         arguments.extend(["--replica-variance-bound", str(variance_bound)])
+    if "prep_excitation" in design:
+        excitation = _number(design["prep_excitation"], "prep_excitation")
+        _require(0 <= excitation < 1, "prep_excitation must lie in [0, 1)")
+        arguments.extend(["--prep-excitation", str(design["prep_excitation"])])
     arguments.extend(["--out", (Path("..") / location.parent).as_posix()])
     return arguments
 
@@ -1467,6 +1471,18 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             if family == "n21-feedback-encoded"
             else []
         ),
+        *(
+            [
+                f"The model starts every active qubit with a declared excitation of "
+                f"{_format_number(record['policy']['design']['prep_excitation'])} "
+                "(`--prep-excitation`): the exact law and its sampled falsifier both apply that initial bit "
+                "flip, a planning assumption until a state-prep-control run measures it at the run's "
+                "repetition delay.",
+                "",
+            ]
+            if "prep_excitation" in record["policy"]["design"]
+            else []
+        ),
         "Gate noise, measurement/reset disturbance, conditional-control latency, routing changes, "
         "replica correlations, and calibration drift can change the contrast. Calibration-based Aer "
         "simulation supplies a conditional model and power admission. Future hardware observations "
@@ -2035,7 +2051,12 @@ def _verify() -> None:
         exact["policy"]["design"].update(model_method="exact", replica_variance_bound=0.55)
         exact_arguments = _reproduction_arguments(exact, Path("results/live/fixture/record.json"))
         assert "--model-method exact --replica-variance-bound 0.55" in " ".join(exact_arguments)
-        assert "--rep-delay" not in text
+        assert "--rep-delay" not in text and "--prep-excitation" not in text
+        excited = copy.deepcopy(exact)
+        excited["policy"]["design"]["prep_excitation"] = 0.01
+        excited_arguments = _reproduction_arguments(excited, Path("results/live/fixture/record.json"))
+        assert "--prep-excitation 0.01" in " ".join(excited_arguments)
+        assert any("declared excitation of 0.01" in line for line in _scientific_case("n21-feedback", excited))
         delayed = copy.deepcopy(record)
         delayed["policy"]["rep_delay_seconds"] = 0.00025
         delayed_arguments = _reproduction_arguments(delayed, Path("results/live/fixture/record.json"))

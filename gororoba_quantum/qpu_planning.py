@@ -51,7 +51,12 @@ from qpe_diagnostics import ideal_compiled_probabilities
 
 
 def settings(args: Any) -> dict[str, Any]:
-    """Approval-bound design inputs, distinct from fluctuating quota readings."""
+    """Approval-bound design inputs, distinct from fluctuating quota readings.
+
+    A declared preparation excitation joins them only when given, so a plan
+    without it keeps its settings unchanged.
+    """
+    excitation = getattr(args, "prep_excitation", None)
     return {
         name: getattr(args, name, default)
         for name, default in (
@@ -76,7 +81,7 @@ def settings(args: Any) -> dict[str, Any]:
             ("model_method", "sampled"),
             ("replica_variance_bound", None),
         )
-    }
+    } | ({"prep_excitation": excitation} if excitation is not None else {})
 
 
 def budget_plan(runtime: Any, choices: list[Any], args: Any, usage: dict[str, Any]) -> dict[str, Any]:
@@ -916,6 +921,9 @@ def prepare(
         import correction_planning
 
         return correction_planning.prepare(runtime, snapshots, args, usage, trace)
+    excitation = getattr(args, "prep_excitation", None)
+    if excitation is not None and args.family not in N21_FAMILIES:
+        raise runtime.LiveRunError("--prep-excitation applies to the N21 families")
     candidates = admitted_family_candidates(runtime, family_candidates(runtime, snapshots, args, trace), trace)
     if not candidates:
         diagnostic = runtime._scrub_instances(runtime._jsonable(trace))
@@ -956,11 +964,15 @@ def prepare(
     # pool runs only as many simulators as fit in the available CPUs. Each task
     # owns a simulator built from the snapshot's cached noise model; its batch
     # evidence joins the snapshot simulator in serial order.
+    # A declared initial excitation enters the sampled model and the exact
+    # law alike, so the sampled falsifier tests the law the plan prices.
+    excited = {"prep_excitation": excitation} if excitation else {}
+
     def simulate_choice(choice: Any) -> tuple[Any, dict[str, Any]]:
         simulator = runtime.noise_simulator(
             choice.snap.name, choice.snap.backend.target, choice.snap.properties, local_compute.settings(args)
         )
-        return simulator, runtime.simulate(choice, simulator, args.model_shots)
+        return simulator, runtime.simulate(choice, simulator, args.model_shots, **excited)
 
     ordered = [choice for choices, _configuration in candidates for choice in choices]
     concurrent = max(1, parallel.workers() // local_compute.settings(args)["threads"])
@@ -992,6 +1004,7 @@ def prepare(
                     args.model_shots,
                     args.simulation_alpha,
                     contracts,
+                    **excited,
                 )
             except n21_exact_planning.ExactModelRejected as error:
                 exact_evidence[candidate_index] = error.evidence

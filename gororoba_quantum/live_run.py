@@ -2241,13 +2241,27 @@ def noise_simulator(name: str, target: Any, props: Any, compute_policy: dict[str
     return simulator
 
 
-def simulate(choice: Choice, noise: Any, shots: int = SHOTS) -> dict[str, list[np.ndarray]]:
+def simulate(
+    choice: Choice, noise: Any, shots: int = SHOTS, prep_excitation: float = 0.0
+) -> dict[str, list[np.ndarray]]:
     """Noisy distribution of every entry's every replica, each simulated as its own single-replica circuit.
 
     The noise model carries no crosstalk between replicas, so a replica alone
-    and a replica inside the packed circuit share one distribution.
+    and a replica inside the packed circuit share one distribution. A
+    declared prep_excitation runs each replica behind a leading X error of
+    that probability on every active qubit (dynamic_density.with_prep_excitation).
     """
-    return simulate_entries(noise, choice.entries, shots, SEED_SIMULATOR)
+    if not prep_excitation:
+        return simulate_entries(noise, choice.entries, shots, SEED_SIMULATOR)
+    from dynamic_density import with_prep_excitation
+
+    excited = [
+        dataclasses.replace(
+            entry, replicas=[with_prep_excitation(replica, prep_excitation) for replica in entry.replicas]
+        )
+        for entry in choice.entries
+    ]
+    return simulate_entries(noise, excited, shots, SEED_SIMULATOR)
 
 
 def replay_entries(
@@ -2971,7 +2985,12 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
                 choice.snap.calibration,
             )
         sim, cal = sims[key]
-        noisy = simulate(choice, sim, int(record["shots"]))
+        excitation = record.get("policy", {}).get("design", {}).get("prep_excitation")
+        noisy = (
+            simulate(choice, sim, int(record["shots"]), prep_excitation=excitation)
+            if excitation
+            else simulate(choice, sim, int(record["shots"]))
+        )
         entry = _choice_record(choice, noisy, cal, int(record["shots"]), scopes)
         record["groups"].append(entry)
         cz = [m["cz"] for m in entry["members"]]
@@ -5145,6 +5164,13 @@ def main(argv: list[str] | None = None) -> int:
         "the planner applies it through Cantelli or Chebyshev and the collector after its falsifier passes",
     )
     parser.add_argument(
+        "--prep-excitation",
+        type=float,
+        metavar="EPS",
+        help="declared initial excitation per active qubit (N21 families): the exact law and the sampled "
+        "falsifier start every qubit in (1 - EPS)|0><0| + EPS|1><1|; the policy binds it",
+    )
+    parser.add_argument(
         "--precision",
         type=float,
         help="simultaneous half-width for family precision endpoints; default 0.08, and "
@@ -5305,6 +5331,11 @@ def main(argv: list[str] | None = None) -> int:
         args.family not in N21_FAMILIES
     ):
         parser.error("--model-method exact and --replica-variance-bound apply to the N21 families only")
+    if args.prep_excitation is not None:
+        if args.family not in N21_FAMILIES:
+            parser.error("--prep-excitation applies to the N21 families only")
+        if not math.isfinite(args.prep_excitation) or not 0 <= args.prep_excitation < 1:
+            parser.error("--prep-excitation must lie in [0, 1)")
     if args.patch_qubits is not None and args.family not in PATCH_FAMILIES:
         parser.error("--patch-qubits applies to the pinned-patch families only")
     if args.family in PATCH_FAMILIES and args.max_replicas not in (None, 1):

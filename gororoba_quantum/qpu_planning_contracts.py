@@ -1221,6 +1221,65 @@ def _verify_state_prep_family() -> None:
     _require([g.name for g in rebuilt] == [c.group.name for c in choices], "record_groups lost the per-qubit groups")
 
 
+def _verify_prep_excitation() -> None:
+    """--prep-excitation is an N21 planning assumption the policy binds and both model paths apply."""
+    import numpy as np
+    from qiskit_aer import AerSimulator
+
+    import dynamic_density
+    import n21_exact_planning
+    from packing import Replica
+
+    for argv, label in (
+        (["--family", "folded-qpe", "--prep-excitation", "0.01"], "a non-N21 family"),
+        (["--family", "n21-feedback-encoded", "--prep-excitation", "1.0"], "an excitation of 1"),
+        (["--family", "n21-feedback-encoded", "--prep-excitation", "nan"], "a NaN excitation"),
+    ):
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            try:
+                live_run.main([*argv, "--max-execution-seconds", "60", "--max-total-execution-seconds", "60"])
+            except SystemExit as error:
+                _require(error.code == 2, f"{label} produced CLI status {error.code}")
+            else:
+                raise RuntimeError(f"the CLI accepted {label}")
+        _require("--prep-excitation" in stderr.getvalue(), f"the CLI rejection of {label} did not name the flag")
+    _require("prep_excitation" not in qpu_planning.settings(_args("n21-feedback")), "a default plan binds epsilon")
+    _require(
+        qpu_planning.settings(_args("n21-feedback", prep_excitation=0.01))["prep_excitation"] == 0.01,
+        "the design settings omit the declared excitation",
+    )
+    try:
+        qpu_planning.prepare(live_run, [], _args("folded-qpe", prep_excitation=0.01), {}, {})
+    except live_run.LiveRunError as error:
+        _require("N21" in str(error), f"the planner refused a non-N21 excitation for another reason: {error}")
+    except Exception as error:  # an empty snapshot list reaches no other refusal first
+        raise RuntimeError(f"the planner did not refuse a non-N21 excitation: {error!r}") from error
+    # The planner's sampled path (live_run.simulate) and its exact law
+    # (n21_exact_planning.exact_predictions) apply one channel.
+    circuit, noise = dynamic_density._fixture()
+    entry = live_run._entry("fixture", circuit, np.zeros(2**circuit.num_clbits), [Replica(0, {0: 0, 1: 1, 2: 2}, 1.0)])
+    snap = object()
+    choice = SimpleNamespace(snap=snap, entries=[entry])
+    simulator = AerSimulator(method="density_matrix", noise_model=noise)
+    shots = 200_000
+    epsilon = 0.25
+    excited = live_run.simulate(cast(Any, choice), simulator, shots, prep_excitation=epsilon)
+    sampled = {"fixture": tuple(tuple(map(float, dist)) for dist in excited["fixture"])}
+    exact, evidence = n21_exact_planning.exact_predictions(
+        [choice], {id(snap): noise}, sampled, shots, 0.01, prep_excitation=epsilon
+    )
+    _require(evidence["passed"] and evidence["prep_excitation"] == epsilon, f"excited planning failed: {evidence}")
+    expected = dynamic_density.probabilities(entry.replicas[0], noise, prep_excitation=epsilon)
+    _require(np.allclose(exact["fixture"][0], expected, rtol=0, atol=1e-15), "the exact law left dynamic_density")
+    try:
+        n21_exact_planning.exact_predictions([choice], {id(snap): noise}, sampled, shots, 0.01)
+    except n21_exact_planning.ExactModelRejected:
+        pass
+    else:
+        raise RuntimeError("an excited sample validated against the unexcited exact law")
+
+
 def _forbid_service(*args: Any, **kwargs: Any) -> Any:
     del args, kwargs
     raise RuntimeError("credential-free planning contract reached a RuntimeService constructor")
@@ -1250,6 +1309,7 @@ def _verify() -> None:
         _verify_patch_selection(snapshot)
         _verify_static_group_admission(service, snapshot)
         _verify_state_prep_family()
+        _verify_prep_excitation()
     _verify_control_timing()
     with patch.object(live_run, "QiskitRuntimeService", _forbid_service):
         _verify_rep_delay_range()
@@ -1258,6 +1318,18 @@ def _verify() -> None:
         "QPU planning: matching, calibrated timing, budgets, shot optimization, "
         "approval, infeasible archives, unrouted rejection diagnostics, coherence readout maps, calibrated "
         "patch selection and the requested repetition delay checked"
+    )
+
+
+def _verify_prep_excitation_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _verify_prep_excitation()
+    print(
+        "QPU planning: --prep-excitation refuses outside the N21 families and [0, 1), joins the design settings "
+        "only when declared, and enters the sampled model and the exact law alike"
     )
 
 
@@ -1307,6 +1379,9 @@ if __name__ == "__main__":
     )
     parser.add_argument("--rep-delay", action="store_true", help="run only the requested repetition-delay contracts")
     parser.add_argument("--state-prep", action="store_true", help="run only the state-prep-control planning contract")
+    parser.add_argument(
+        "--prep-excitation", action="store_true", help="run only the declared initial-excitation contracts"
+    )
     parsed = parser.parse_args()
     if parsed.static_group_admission:
         _verify_static_admission_only()
@@ -1314,5 +1389,7 @@ if __name__ == "__main__":
         _verify_rep_delay_only()
     elif parsed.state_prep:
         _verify_state_prep_only()
+    elif parsed.prep_excitation:
+        _verify_prep_excitation_only()
     else:
         _verify()
