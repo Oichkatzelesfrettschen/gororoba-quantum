@@ -89,21 +89,14 @@
  },
  "regions": [
   [
-   0,
    1,
    2,
    4,
-   5
-  ],
-  [
    7,
-   8,
-   10,
-   11,
-   13
+   8
   ],
   [
-   9,
+   11,
    12,
    14,
    15,
@@ -115,150 +108,84 @@
    "file": "latin-1.cq",
    "case": "dark",
    "region": [
-    0,
     1,
     2,
     4,
-    5
-   ],
-   "roles": {
-    "d0": 0,
-    "d1": 4,
-    "d2": 1,
-    "d3": 5,
-    "selector": 2
-   },
-   "seed": 0,
-   "cz": 66,
-   "t_count": 26,
-   "ideal_p_selector_zero": 0.0
-  },
-  {
-   "file": "latin-1.cq",
-   "case": "bright",
-   "region": [
     7,
-    8,
-    10,
-    11,
-    13
+    8
    ],
    "roles": {
-    "d0": 7,
-    "d1": 13,
-    "d2": 10,
-    "d3": 8,
-    "selector": 11
-   },
-   "seed": 0,
-   "cz": 66,
-   "t_count": 26,
-   "ideal_p_selector_zero": 1.0
-  },
-  {
-   "file": "latin-1.cq",
-   "case": "fixture",
-   "region": [
-    9,
-    12,
-    14,
-    15,
-    16
-   ],
-   "roles": {
-    "d0": 15,
-    "d1": 14,
-    "d2": 16,
-    "d3": 9,
-    "selector": 12
-   },
-   "seed": 2,
-   "cz": 70,
-   "t_count": 26,
-   "ideal_p_selector_zero": 0.5
-  },
-  {
-   "file": "latin-2.cq",
-   "case": "bright",
-   "region": [
-    0,
-    1,
-    2,
-    4,
-    5
-   ],
-   "roles": {
-    "d0": 0,
-    "d1": 4,
-    "d2": 1,
-    "d3": 5,
-    "selector": 2
-   },
-   "seed": 0,
-   "cz": 66,
-   "t_count": 26,
-   "ideal_p_selector_zero": 1.0
-  },
-  {
-   "file": "latin-2.cq",
-   "case": "fixture",
-   "region": [
-    7,
-    8,
-    10,
-    11,
-    13
-   ],
-   "roles": {
-    "d0": 7,
-    "d1": 13,
-    "d2": 10,
-    "d3": 8,
-    "selector": 11
-   },
-   "seed": 0,
-   "cz": 70,
-   "t_count": 26,
-   "ideal_p_selector_zero": 0.5
-  },
-  {
-   "file": "latin-2.cq",
-   "case": "dark",
-   "region": [
-    9,
-    12,
-    14,
-    15,
-    16
-   ],
-   "roles": {
-    "d0": 14,
-    "d1": 15,
-    "d2": 16,
-    "d3": 9,
-    "selector": 12
-   },
-   "seed": 0,
-   "cz": 66,
-   "t_count": 26,
-   "ideal_p_selector_zero": 0.0
-  },
-  {
-   "file": "latin-3.cq",
-   "case": "fixture",
-   "region": [
-    0,
-    1,
-    2,
-    4,
-    5
-   ],
-   "roles": {
-    "d0": 0,
-    "d1": 5,
-    "d2": 1,
-    "d3": 2,
+    "d0": 1,
+    "d1": 2,
+    "d2": 8,
+    "d3": 7,
     "selector": 4
+   },
+   "seed": 0,
+   "cz": 66,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.0
+  },
+  {
+   "file": "latin-1.cq",
+   "case": "bright",
+   "region": [
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "roles": {
+    "d0": 16,
+    "d1": 11,
+    "d2": 15,
+    "d3": 14,
+    "selector": 12
+   },
+   "seed": 0,
+   "cz": 66,
+   "t_count": 26,
+   "ideal_p_selector_zero": 1.0
+  },
+  {
+   "file": "latin-2.cq",
+   "case": "bright",
+   "region": [
+    1,
+    2,
+    4,
+    7,
+    8
+   ],
+   "roles": {
+    "d0": 1,
+    "d1": 2,
+    "d2": 8,
+    "d3": 7,
+    "selector": 4
+   },
+   "seed": 0,
+   "cz": 66,
+   "t_count": 26,
+   "ideal_p_selector_zero": 1.0
+  },
+  {
+   "file": "latin-2.cq",
+   "case": "fixture",
+   "region": [
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "roles": {
+    "d0": 12,
+    "d1": 11,
+    "d2": 15,
+    "d3": 14,
+    "selector": 16
    },
    "seed": 1,
    "cz": 70,
@@ -267,47 +194,47 @@
   },
   {
    "file": "latin-3.cq",
-   "case": "dark",
+   "case": "fixture",
    "region": [
+    1,
+    2,
+    4,
     7,
-    8,
-    10,
-    11,
-    13
+    8
    ],
    "roles": {
-    "d0": 7,
-    "d1": 13,
-    "d2": 10,
-    "d3": 8,
-    "selector": 11
+    "d0": 8,
+    "d1": 1,
+    "d2": 2,
+    "d3": 7,
+    "selector": 4
    },
    "seed": 0,
-   "cz": 66,
+   "cz": 67,
    "t_count": 26,
-   "ideal_p_selector_zero": 0.0
+   "ideal_p_selector_zero": 0.5
   },
   {
    "file": "latin-3.cq",
-   "case": "bright",
+   "case": "dark",
    "region": [
-    9,
+    11,
     12,
     14,
     15,
     16
    ],
    "roles": {
-    "d0": 14,
-    "d1": 15,
-    "d2": 16,
-    "d3": 9,
+    "d0": 16,
+    "d1": 11,
+    "d2": 15,
+    "d3": 14,
     "selector": 12
    },
    "seed": 0,
    "cz": 66,
    "t_count": 26,
-   "ideal_p_selector_zero": 1.0
+   "ideal_p_selector_zero": 0.0
   }
  ],
  "batch": "batch-01",
@@ -315,7 +242,7 @@
   {
    "file": "latin-2.cq",
    "kind": "witness",
-   "sha256": "9c0af8833707d78e4dd00c3575b32d253e57800a860aed83a4048e20ef2a7def"
+   "sha256": "faae381e74394b358ba9e43447f6b706e9380278b01410741cb1d37f68a2b43e"
   },
   {
    "file": "readout-0.cq",

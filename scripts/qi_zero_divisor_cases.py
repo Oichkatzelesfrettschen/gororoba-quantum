@@ -1,4 +1,4 @@
-"""Exact Clifford+T zero-divisor witness for Tuna-17: Design B's dark, bright and fixture cases in a Latin square.
+"""Exact Clifford+T zero-divisor witness for Tuna-17: Design B's dark, bright and fixture cases in a balanced rotation.
 
 The fixed-operand LCU of Design B (root AGENTS.md, "Zero-product
 witnesses") applies (L_{e1} + L_{e10})/2 to b = (e_k + e^{i phase} e_l)/sqrt2
@@ -28,17 +28,22 @@ Generation first validates backend identities, widths, directed topologies,
 gate support and capacity against the retained QI catalogue. A changed
 catalogue requires review of this fixed routing contract before generation.
 
-Three disjoint 5-qubit regions of Tuna-17 (REGIONS, chosen for the fewest
-routed CZ, 67-70 per replica) run a replica each; circuits 1-3 rotate the
-three cases through the three regions (Latin square), so case and region
-separate. Circuit 4 measures every qubit prepared in |0> and circuit 5 every
-qubit prepared in |1>, giving each selector's readout assignment. A batch
-holds at most HARDWARE_BATCH_CIRCUITS circuits and a batch boundary is a
-calibration boundary, so the series runs as batch-00..02, each holding one
-Latin circuit followed by readout-0 and readout-1. Each Latin circuit carries
-dark, bright and fixture in its three regions, so its contrasts share one
-calibration, and its readout correction uses the assignment measured in the
-same batch. Routing
+Two disjoint 5-qubit regions of Tuna-17 (REGIONS) run a replica each. The
+qubits of EXCLUDED_QUBITS appear in no region, so 14 qubits remain and fit two
+connected 5-qubit regions at most. Of the disjoint region pairs, REGIONS has
+the fewest routed CZ summed over the three cases (`--select-regions` recomputes
+the choice), then the fewest couplers joining the two regions (spectator
+adjacency), then the lexicographically least pair. Circuits 1-3 (files
+latin-1..3.cq) rotate the cases through the regions cyclically, dark and
+bright, bright and fixture, fixture and dark, so every case runs once in each
+region, every pair of cases shares one circuit, and case and region separate.
+Circuit 4 measures every qubit prepared in |0> and circuit 5 every qubit
+prepared in |1>, giving each selector's readout assignment. A batch holds at
+most HARDWARE_BATCH_CIRCUITS circuits and a batch boundary is a calibration
+boundary, so the series runs as batch-00..02, each holding one witness circuit
+followed by readout-0 and readout-1. Each witness circuit carries two cases,
+so its contrast shares one calibration, and its readout correction uses the
+assignment measured in the same batch. Routing
 seeds are searched over SEEDS and the fewest-CZ result kept, so the circuits
 regenerate byte for byte under the pinned Qiskit.
 
@@ -53,10 +58,11 @@ Preregistered analysis (fixed in cases.json before submission):
   (hw-zero-divisor-floor) is the comparison; Kingston ran the same witness
   with continuous rotations in about 45 CZ, so the routed depths differ.
 
-The QX twin packs the same nine routed replicas two per 10-qubit circuit and
+The QX twin packs the same six routed replicas two per 10-qubit circuit and
 runs them on the ideal emulator, which checks the platform's handling of the
 emitted cQASM.
 
+--select-regions prints the REGIONS choice rule's ranking without writing.
 --write DIR writes DIR/zero_divisor_tuna_17/ and DIR/zero_divisor_qx/, each a
 series of batch-NN/ cases (circuits and cases.json) under a series cases.json;
 --check DIR regenerates both and compares bytes and file sets; --analyze
@@ -66,7 +72,7 @@ of one series, keyed by (batch, file); --replay RUN_DIR... recomputes retained s
 the rightmost character (Tuna).
 
 Usage: "$PYTHON" scripts/qi_zero_divisor_cases.py
-       (--write DIR | --check DIR | --analyze RUN_DIR... [--out FILE] | --replay RUN_DIR...
+       (--write DIR | --check DIR | --select-regions | --analyze RUN_DIR... [--out FILE] | --replay RUN_DIR...
         | --replay-series FILE RUN_DIR... | --self-test)
 """
 
@@ -109,7 +115,10 @@ TUNA17 = (
     (7, 10), (7, 11), (8, 11), (8, 12), (9, 12), (10, 13), (11, 13), (11, 14), (12, 14), (12, 15),
     (14, 16), (15, 16),
 )  # fmt: skip
-REGIONS = ((0, 1, 2, 4, 5), (7, 8, 10, 11, 13), (9, 12, 14, 15, 16))
+# Qubits no replica uses as a data or selector qubit, with every coupler on
+# them; REGIONS avoids all of them.
+EXCLUDED_QUBITS = (0, 6, 9)
+REGIONS = ((1, 2, 4, 7, 8), (11, 12, 14, 15, 16))
 SEEDS = range(16)
 A_PAIR = (1, 10)
 CASES = {
@@ -117,7 +126,10 @@ CASES = {
     "bright": ((4, 15), 0.0, 1.0),
     "fixture": ((2, 13), math.pi, 0.5),
 }
-LATIN = (("dark", "bright", "fixture"), ("bright", "fixture", "dark"), ("fixture", "dark", "bright"))
+# Cyclic rotation of the cases through REGIONS: circuit i holds ROTATION[i] in
+# REGIONS order, so each case meets each region once and each pair of cases
+# shares one circuit.
+ROTATION = (("dark", "bright"), ("bright", "fixture"), ("fixture", "dark"))
 DATA, SELECTOR = (0, 1, 2, 3), 4
 ANF_MONOMIALS = {0b1, 0b110, 0b1010, 0b1100, 0b1110, 0b10001, 0b10100, 0b11000}
 ANF_MONOMIALS |= {0b10011, 0b11001, 0b11010, 0b10111, 0b11101, 0b11110}
@@ -421,7 +433,7 @@ def catalogue_check() -> tuple[dict[str, Any], dict[str, Any]]:
 
 
 def build() -> dict[str, dict[str, str]]:
-    """Case directory name -> files: the Tuna-17 Latin square and its QX twin."""
+    """Case directory name -> files: the Tuna-17 case rotation and its QX twin."""
     tuna_backend, qx_backend = catalogue_check()
     topology = tuple(sorted({tuple(sorted(edge)) for edge in tuna_backend["topology"]}))
     common = {
@@ -437,8 +449,11 @@ def build() -> dict[str, dict[str, str]]:
             "comparison": KINGSTON,
         },
     }
+    for region in REGIONS:
+        if set(region) & set(EXCLUDED_QUBITS):
+            raise SystemExit(f"region {region} uses an excluded qubit of {EXCLUDED_QUBITS}")
     replicas = []
-    for index, assignment in enumerate(LATIN, start=1):
+    for index, assignment in enumerate(ROTATION, start=1):
         for region, case in zip(REGIONS, assignment, strict=True):
             circuit, roles, seed = routed(case, region, topology)
             p0 = ideal_selector_zero(circuit, roles, region)
@@ -471,7 +486,7 @@ def build() -> dict[str, dict[str, str]]:
         "circuits": [],
         "replicas": [],
     }
-    for index in range(1, len(LATIN) + 1):
+    for index in range(1, len(ROTATION) + 1):
         name = f"latin-{index}.cq"
         lines = header(NQUBITS)
         for _, region, case, circuit, roles, seed, p0 in (r for r in replicas if r[0] == index):
@@ -486,8 +501,8 @@ def build() -> dict[str, dict[str, str]]:
     )
     cases["circuits"] += [{"file": "readout-0.cq", "kind": "readout"}, {"file": "readout-1.cq", "kind": "readout"}]
 
-    # QX serves 10 qubits, so its twin packs the nine routed replicas two per
-    # circuit (register slots 0-4 and 5-9) into five circuits, batched as the
+    # QX serves 10 qubits, so its twin packs the six routed replicas two per
+    # circuit (register slots 0-4 and 5-9) into three circuits, batched as the
     # Tuna series is.
     qx: dict[str, str] = {}
     twin: dict[str, Any] = {
@@ -513,6 +528,53 @@ def build() -> dict[str, dict[str, str]]:
         qx[name] = "\n".join(lines + ["", "b = measure q", ""])
         twin["circuits"].append({"file": name, "kind": "witness"})
     return {"zero_divisor_tuna_17": finish(cases, tuna), "zero_divisor_qx": finish(twin, qx)}
+
+
+def connected_regions(topology: tuple[tuple[int, int], ...], size: int = 5) -> list[tuple[int, ...]]:
+    """Every connected `size`-qubit set of the topology that avoids EXCLUDED_QUBITS, in lexicographic order."""
+    from itertools import combinations
+
+    qubits = [q for q in range(NQUBITS) if q not in EXCLUDED_QUBITS]
+    adjacent: dict[int, set[int]] = {q: set() for q in qubits}
+    for a, b in topology:
+        if a in adjacent and b in adjacent:
+            adjacent[a].add(b)
+            adjacent[b].add(a)
+    found = []
+    for members in combinations(qubits, size):
+        inside = set(members)
+        reached, frontier = {members[0]}, [members[0]]
+        while frontier:
+            for q in adjacent[frontier.pop()] & inside - reached:
+                reached.add(q)
+                frontier.append(q)
+        if reached == inside:
+            found.append(members)
+    return found
+
+
+def select_regions(topology: tuple[tuple[int, int], ...]) -> list[tuple[int, tuple[tuple[int, ...], ...], int]]:
+    """Disjoint region pairs ranked by (routed CZ over all cases and both regions, joining couplers, regions).
+
+    Each region runs every case once (ROTATION), so a pair costs the sum of the
+    fewest-CZ routings of the three cases on each of its two regions. Joining
+    couplers are the topology edges with one end in each region. REGIONS is
+    the first entry. Three disjoint regions need 15 qubits and the topology
+    leaves 17 - len(EXCLUDED_QUBITS), so no triple exists here.
+    """
+    from itertools import combinations
+
+    regions = connected_regions(topology)
+    pairs = [pair for pair in combinations(regions, 2) if not set(pair[0]) & set(pair[1])]
+    cost = {
+        region: sum(routed(case, region, topology)[0].count_ops().get("cz", 0) for case in CASES)
+        for region in sorted({region for pair in pairs for region in pair})
+    }
+    ranking = []
+    for first, second in pairs:
+        joining = sum(1 for a, b in topology if (a in first and b in second) or (a in second and b in first))
+        ranking.append((cost[first] + cost[second], (first, second), joining))
+    return sorted(ranking, key=lambda row: (row[0], row[2], row[1]))
 
 
 def bit(shot: str, qubit: int) -> int:
@@ -551,11 +613,11 @@ SECONDARY_OFFSETS = {"sum_residual_D_plus_B_minus_1": -1.0, "fixture_minus_half"
 def secondary(replicas: list[dict[str, Any]], raw: Shots, batch_of: dict[str, str]) -> dict[str, Any]:
     """Secondary analysis, fixed after the data: same-shot covariance and the common-affine fixture test.
 
-    The three replicas of a Latin circuit share every shot, so their selector
+    The replicas of a witness circuit share every shot, so their selector
     outcomes can correlate; the pooled dark (D), bright (B) and fixture (F)
-    means each average three replicas from three circuits, and Cov(D, B)
-    collects the same-shot covariances of the dark and bright replicas that
-    share a circuit. The contrast B - D and the sum residual D + B - 1 take
+    means each average the replicas of their case across circuits, and
+    Cov(D, B) collects the same-shot covariances of the dark and bright
+    replicas that share a circuit. The contrast B - D and the sum residual D + B - 1 take
     that covariance with opposite signs. H = F - (D + B)/2 tests one affine
     response p_obs = u + v p_ideal for all three preparations, which places an
     ideal-1/2 fixture at the endpoint midpoint; F = 1/2 tests the fixture
@@ -582,6 +644,7 @@ def secondary(replicas: list[dict[str, Any]], raw: Shots, batch_of: dict[str, st
     mean: dict[str, float] = {}
     cov: dict[tuple[str, str], float] = {(a, b): 0.0 for a in names for b in names}
     per_replica: dict[tuple[str, str], tuple[float, float]] = {}
+    counts = {name: sum(1 for r in replicas if r["case"] == name) for name in names}
     for name in names:
         rows = [r for r in replicas if r["case"] == name]
         mean[name] = sum(r["p_selector_zero"] for r in rows) / len(rows)
@@ -591,7 +654,7 @@ def secondary(replicas: list[dict[str, Any]], raw: Shots, batch_of: dict[str, st
         c = np.atleast_2d(np.cov(z, rowvar=False, bias=True)) / len(z)
         for i, ri in enumerate(rows):
             for j, rj in enumerate(rows):
-                cov[(ri["case"], rj["case"])] += float(c[i, j]) / 9
+                cov[(ri["case"], rj["case"])] += float(c[i, j]) / (counts[ri["case"]] * counts[rj["case"]])
             per_replica[(ri["case"], str(ri["region"]))] = (float(z[:, i].mean()), float(c[i, i]))
     tests, offsets = SECONDARY_TESTS, SECONDARY_OFFSETS
     raw_tests = {}
@@ -601,13 +664,16 @@ def secondary(replicas: list[dict[str, Any]], raw: Shots, batch_of: dict[str, st
         result["z"] = result["value"] / result["se"] if result["se"] else None
         raw_tests[key] = result
     by_region = {}
-    for region in REGIONS:
-        d, b, f = (per_replica[(n, str(list(region)))] for n in ("dark", "bright", "fixture"))
+    # The regions come from the recorded replicas, in order of first appearance:
+    # a retained run keeps the placement it executed.
+    recorded = list(dict.fromkeys(str(r["region"]) for r in replicas))
+    for region in recorded:
+        d, b, f = (per_replica[(n, region)] for n in ("dark", "bright", "fixture"))
         h = f[0] - (d[0] + b[0]) / 2
         se = math.sqrt(f[1] + (d[1] + b[1]) / 4)
         contrast = b[0] - d[0]
         cse = math.sqrt(b[1] + d[1])
-        by_region[str(list(region))] = {
+        by_region[region] = {
             "contrast": contrast,
             "contrast_ci95": [contrast - 1.959963984540054 * cse, contrast + 1.959963984540054 * cse],
             "H": h,
@@ -853,6 +919,11 @@ def self_test() -> None:
             rejected += 1
         else:
             raise AssertionError("inconsistent witness backend metadata was accepted")
+    placed = [set(region) for region in REGIONS]
+    if any(a & b for i, a in enumerate(placed) for b in placed[:i]) or any(set(EXCLUDED_QUBITS) & a for a in placed):
+        raise AssertionError("REGIONS overlap or use an excluded qubit")
+    if not all(region in connected_regions(TUNA17) for region in REGIONS):
+        raise AssertionError("a region is disconnected in the Tuna-17 topology")
     batch_calibration_contract()
     print(
         "qi zero-divisor contracts: catalogue admission, evidence classes and per-batch readout calibration pass; "
@@ -866,7 +937,7 @@ CALIBRATION_SHOTS = 512
 def synthetic_series(readout_flips: dict[str, tuple[float, float]]) -> tuple[dict[str, Any], Shots, dict[str, str]]:
     """The retained Tuna-17 series manifests with seeded synthetic shots.
 
-    Every Latin circuit receives the same witness shot list, and batch B's
+    Every witness circuit receives the same witness shot list, and batch B's
     readout-0 and readout-1 flip each bit with the probabilities
     readout_flips[B], drawn from one seeded generator in batch order.
     """
@@ -943,10 +1014,10 @@ def batch_calibration_contract() -> None:
     # replicas; resampling any circuit against another batch's assignment
     # shifts the pooled tests by several bootstrap standard errors.
     for analysis in (first, second):
-        corrected = {
-            n: sum(r["p_selector_zero_readout_corrected"] for r in analysis["replicas"] if r["case"] == n) / 3
-            for n in CASES
-        }
+        corrected = {}
+        for n in CASES:
+            rows = [r["p_selector_zero_readout_corrected"] for r in analysis["replicas"] if r["case"] == n]
+            corrected[n] = sum(rows) / len(rows)
         for key, weights in SECONDARY_TESTS.items():
             point = sum(w * corrected[n] for n, w in weights.items()) + SECONDARY_OFFSETS.get(key, 0.0)
             boot = analysis["secondary"]["readout_corrected_bootstrap"][key]
@@ -978,6 +1049,7 @@ def main() -> int:
     mode.add_argument("--write", type=Path)
     mode.add_argument("--check", type=Path)
     mode.add_argument("--self-test", action="store_true")
+    mode.add_argument("--select-regions", action="store_true", help="rank the region pairs REGIONS is chosen from")
     mode.add_argument("--analyze", type=Path, nargs="+", metavar="RUN_DIR", help="the batches of one series")
     mode.add_argument(
         "--replay-series",
@@ -992,6 +1064,12 @@ def main() -> int:
     if args.self_test:
         self_test()
         return 0
+    if args.select_regions:
+        ranking = select_regions(TUNA17)
+        for cz, pair, joining in ranking[:10]:
+            print(f"cz {cz} joining {joining} regions {[list(r) for r in pair]}")
+        print(f"{len(ranking)} disjoint pairs; REGIONS {'is' if ranking[0][1] == REGIONS else 'is not'} the first")
+        return 0 if ranking[0][1] == REGIONS else 1
     if args.analyze:
         if len(args.analyze) > 1 and args.out is None:
             parser.error("--analyze over several batches needs --out")

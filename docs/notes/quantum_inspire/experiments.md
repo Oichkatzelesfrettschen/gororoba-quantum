@@ -202,14 +202,20 @@ Tuna would round to the pi/36 grid. Its ANF factors as
 q0 + Maj(q1, q2, q3) + q1 q2 q3 + a(q0 + q2 + q3) + a(1 + q2) Maj(q0, q1, q3),
 so an in-place majority (Cuccaro MAJ) gives an exact SELECT of two Toffolis
 and two CCZ on five qubits, with every gate in H, S, T, Tdag and CZ. Routed
-onto Tuna-17 a replica takes 66-70 CZ and 26 T. Three disjoint regions,
-{0,1,2,4,5}, {7,8,10,11,13} and {9,12,14,15,16}, run the three cases in a 3x3
-Latin square (latin-1..3); readout-0 and readout-1 prepare every qubit in |0>
-and |1>. A batch boundary is a calibration boundary, so the generator emits
-three batches of three circuits, batch-00..02, each holding one Latin circuit
-followed by readout-0 and readout-1. A Latin circuit carries dark, bright and
-fixture in its three regions, so its contrasts share one calibration, and its
-readout correction uses the assignment measured in the same batch:
+onto Tuna-17 a replica takes 66-70 CZ and 26 T. The generator places two
+disjoint regions, {1,2,4,7,8} and {11,12,14,15,16}, and excludes qubits 0, 6
+and 9 (EXCLUDED_QUBITS) with every coupler on them. The 14 remaining qubits
+fit two connected 5-qubit regions at most; of the 341 disjoint pairs,
+`--select-regions` ranks this one first by routed CZ over the three cases
+(401), then by the 3 couplers joining the regions, then lexicographically.
+The cases rotate through the regions (latin-1..3): dark and bright, bright
+and fixture, fixture and dark, so every case runs once in each region and
+every pair of cases shares a circuit. readout-0 and readout-1 prepare every
+qubit in |0> and |1>. A batch boundary is a calibration boundary, so the
+generator emits three batches of three circuits, batch-00..02, each holding
+one witness circuit followed by readout-0 and readout-1. A witness circuit
+carries two cases in its two regions, so its contrast shares one calibration,
+and its readout correction uses the assignment measured in the same batch:
 `load_series` keys shots by (batch, file), and `secondary()` resamples each
 batch's readout pair and then its witness circuit, correcting every circuit
 with its own batch's assignment. A readout change between batches therefore
@@ -217,9 +223,13 @@ moves only that batch's corrected estimates and bootstrap intervals, while
 the raw estimators stay fixed (`--self-test`, gate core-348). Pooled means
 average circuits from three calibrations. The retained 221133Z runs predate
 batching and ran all five circuits as one batch, which forms the single
-calibration group of their replay. The estimators and the comparison were fixed in cases.json before
+calibration group of their replay; they executed three regions,
+{0,1,2,4,5}, {7,8,10,11,13} and {9,12,14,15,16}, in a 3x3 Latin square, and
+their analyses read the regions recorded with them, so the tables below
+describe that placement. The estimators and the comparison were fixed in cases.json before
 submission (claim class: preregistered hardware inference). The QX twin packs
-the same nine replicas two per 10-qubit circuit.
+the same six replicas two per 10-qubit circuit (the retained 221133Z twin
+ran the earlier nine).
 
 | Region | dark P(s=0) | bright | fixture | endpoint contrast B - D (95%) |
 |---|---|---|---|---|
@@ -297,7 +307,8 @@ stand.
   description; it identifies no unique channel acting on the five-qubit
   circuit.
 
-**Per-batch series, QX dry run.** The batched series' QX twin ran as
+**Per-batch series, QX dry run.** The batched series' QX twin, generated
+before the placement above (three regions, nine replicas), ran as
 batch-00 (twin-1..3, batch job 870037, jobs 1527264, 1527266, 1527267) and
 batch-01 (twin-4..5, batch job 870040, jobs 1527269, 1527270), 2048 shots
 each, retained as results/quantum_inspire/runs/2026-10-17T034409Z-zero_divisor_qx-batch-00
