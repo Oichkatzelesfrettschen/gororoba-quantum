@@ -2904,6 +2904,14 @@
    "name": "core-376",
    "seconds": 5.4,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_qx_sweep.py --self-test",
+   "name": "core-377",
+   "seconds": 2.7,
+   "tier": "pr"
   }
  ],
  "excluded": [

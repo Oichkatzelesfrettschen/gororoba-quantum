@@ -123,6 +123,11 @@ PIN_GROUPS: dict[str, tuple[str, ...]] = {
     # matrices (exact rank and nullspace) and p-adic fields; neither defines
     # a Cayley-Dickson table, so neither enters tables.json.
     "exact-arithmetic": ("python-flint==0.9.0", "pyadic==0.3.0"),
+    # The QX simulator's Python binding at the Quantum Inspire environment's
+    # version (docs/notes/quantum_inspire/requirements-qi.txt), the emulator
+    # the remote QX backend runs; its wheels are cp313 only, so an entry that
+    # needs it runs on the image's Python, never under --ci-env.
+    "qx-emulator": ("qxelarator==0.10.0",),
 }
 MAX_ACCELERATOR_SECONDS = 4 * 3600
 SMOKE_TIMEOUT_SECONDS = 1800
