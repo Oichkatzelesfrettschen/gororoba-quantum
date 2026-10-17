@@ -951,7 +951,16 @@ def prepare(
         },
         "optimizer_settings": settings(args),
         **(
-            {"exact_model": exact_evidence[retained_index] | {"retained_candidate": retained}}
+            {
+                "exact_model": exact_evidence[retained_index]
+                | {
+                    "retained_candidate": retained,
+                    "candidates": {
+                        f"candidate-{index:03d}": {"max_gap": evidence["max_gap"], "replicas": evidence["replicas"]}
+                        for index, evidence in sorted(exact_evidence.items())
+                    },
+                }
+            }
             if retained_index in exact_evidence
             else {}
         ),
