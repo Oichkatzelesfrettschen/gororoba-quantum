@@ -3324,6 +3324,101 @@ def _verify_backend_identity_records() -> None:
             raise RuntimeError(f"a backend version change refuses the approved record: {mismatches}")
 
 
+class _VersionedProbeBackend(_ProbeBackend):
+    """A probe backend whose configuration reports the backend_version the contract sets."""
+
+    def __init__(self, name: str, backend: FakeFez, version: str):
+        super().__init__(name, backend)
+        self.version = version
+
+    def configuration(self) -> Any:
+        configuration = super().configuration()
+        configuration.backend_version = self.version
+        return configuration
+
+
+class _QuotaProbeService(_ProbeService):
+    """A probe service reporting a fixed remaining quota, which unchanged_since_planning compares."""
+
+    def __init__(self, backends: list[_ProbeBackend], remaining_seconds: float | None):
+        super().__init__(backends)
+        self.remaining_seconds = remaining_seconds
+
+    def usage(self) -> dict[str, Any]:
+        return {"usage_limit_reached": False, "usage_remaining_seconds": self.remaining_seconds}
+
+
+def _verify_submit_refreshes_backend_identity() -> None:
+    """A backend_version bump between plan and approved submit lands in the submitted record's provenance.
+
+    A fixed quota reuses the plan (unchanged_since_planning) and an unreported
+    quota rebuilds it without reselection; on both paths the approval holds,
+    the batch runs, and backends, system_inventory and every group carry the
+    version the refresh read.
+    """
+    for remaining, rebuilt in ((500.0, False), (None, True)):
+        _submit_after_version_bump(remaining, rebuilt)
+
+
+def _submit_after_version_bump(remaining: float | None, rebuilt: bool) -> None:
+    """Plan at backend_version 1.0.0, bump it to 9.9.9, and submit against the approved plan."""
+    backend = _VersionedProbeBackend("viable", FakeFez(), "1.0.0")
+    service = _QuotaProbeService([backend], remaining)
+    args = _fixture_args(groups=["hybrid_shor_mod15"])
+    choices, record = live_run_module.plan(service, args)
+    live_run_module.evaluate(choices, record)
+    planned_identity = live_run_module.backend_identity(backend)
+    runs: list[int] = []
+
+    def probe_sampler(
+        backend: Any,
+        kind: str,
+        twirl: bool,
+        dd: str | None,
+        tags: list[str],
+        shots: int = 4096,
+        max_execution_seconds: int | None = None,
+    ) -> Any:
+        del backend, twirl, dd
+        return _ProbeSampler(
+            kind, tags, shots, lambda circuits: runs.append(len(circuits)), None, max_execution_seconds
+        )
+
+    with tempfile.TemporaryDirectory(prefix="gororoba-identity-refresh-") as directory:
+        approved_dir, run_dir = Path(directory) / "approved", Path(directory) / "run"
+        approved_dir.mkdir()
+        run_dir.mkdir()
+        write_archive(approved_dir, choices)
+        write_json(approved_dir, record)
+        args.approved_record = approved_dir
+        args.approved_record_sha256 = hashlib.sha256((approved_dir / "record.json").read_bytes()).hexdigest()
+        backend.version = "9.9.9"
+        submitted = copy.deepcopy(record)
+        with patch.object(live_run_module, "configure_sampler", probe_sampler), redirect_stdout(io.StringIO()):
+            live_run_module.submit(
+                service, list(choices), args, submitted, lambda: write_archive(run_dir, choices), lambda: None
+            )
+    label = "rebuilt" if rebuilt else "reused"
+    if (
+        not runs
+        or submitted["state"] == "approval_required"
+        or submitted["revalidation"][-1]["rebuilt"] is not rebuilt
+        or submitted["approved_record"]["mismatches"]
+    ):
+        raise RuntimeError(f"{label} plan: a backend version bump changes the submission: {submitted['state']}")
+    if record["backends"]["viable"]["backend_version"] != "1.0.0":
+        raise RuntimeError(f"{label} plan records {record['backends']['viable']['backend_version']} at planning")
+    entries = [
+        ("backends", submitted["backends"]["viable"]),
+        ("system_inventory", submitted["system_inventory"]["viable"]),
+        *((f"group {group['group']}", group) for group in submitted["groups"]),
+    ]
+    for name, entry in entries:
+        recorded = {key: entry.get(key) for key in live_run_module.BACKEND_IDENTITY_FIELDS}
+        if recorded != planned_identity | {"backend_version": "9.9.9"}:
+            raise RuntimeError(f"{label} plan: submitted {name} keeps identity {recorded}")
+
+
 def _verify() -> None:
     _verify_dynamic_classification()
     _verify_dynamic_mitigation_boundaries()
@@ -3346,6 +3441,7 @@ def _verify() -> None:
     _verify_worker_quota()
     _verify_unchanged_since_planning()
     _verify_backend_identity_records()
+    _verify_submit_refreshes_backend_identity()
     _verify_replay_seed_independence()
     _verify_fused_collection()
     _verify_joint_fusion_placement()

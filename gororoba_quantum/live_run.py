@@ -3184,6 +3184,33 @@ def unchanged_since_planning(
     return True
 
 
+def refresh_backend_identity(record: dict[str, Any], inventory: Mapping[str, Any]) -> None:
+    """Copy each refreshed backend's version and processor type into the record's provenance entries.
+
+    unchanged_since_planning and the approved-record comparison skip these
+    fields, so a plan reused or rebuilt without reselection keeps its
+    planning-time backends, system_inventory and group entries; the refresh
+    writes the fresh values into each entry that names a probed backend, and
+    leaves every other field and every unprobed backend as planned.
+    """
+    fresh = {
+        name: {key: entry[key] for key in BACKEND_IDENTITY_FIELDS if key in entry}
+        for name, entry in inventory.items()
+        if isinstance(entry, Mapping)
+    }
+    entries = [
+        *(
+            (name, entry)
+            for section in ("backends", "system_inventory")
+            for name, entry in record.get(section, {}).items()
+        ),
+        *((group.get("backend"), group) for group in record.get("groups", [])),
+    ]
+    for name, entry in entries:
+        if isinstance(entry, dict) and fresh.get(name):
+            entry.update(fresh[name])
+
+
 def choice_reselection_reasons(current: Choice, fresh: Choice) -> list[str]:
     """Reasons full fresh selection changes an existing executable choice."""
     reasons = choice_change_reasons(current, fresh.snap)
@@ -3664,6 +3691,7 @@ def submit(
             "selection_trace": attempt_trace,
         }
     )
+    refresh_backend_identity(record, inventory)
     if reselected:
         record["system_inventory"] = inventory
         record["backends"] = {snapshot.name: snapshot.summary() for snapshot in fresh_snapshots}
