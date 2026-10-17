@@ -1,0 +1,21 @@
+{
+ "schema": "qi-zero-divisor-series-v1",
+ "backend": "QXsinglenodesimulator",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "twin-1.cq",
+    "twin-2.cq",
+    "twin-3.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "files": [
+    "twin-4.cq",
+    "twin-5.cq"
+   ]
+  }
+ ]
+}

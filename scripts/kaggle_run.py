@@ -69,8 +69,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results/kaggle"
 MODULE_DIRS = ("gororoba_quantum", "scripts")
-KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer-gpu-cu11==0.17.2")
-CPU_KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer==0.17.2")
+KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer-gpu-cu11==0.17.2", "qiskit-ibm-runtime==0.50.0")
+CPU_KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer==0.17.2", "qiskit-ibm-runtime==0.50.0")
 DEFAULT_MACHINE = "cpu"
 GPU_MACHINE = "NvidiaTeslaT4"
 SHARDS = ROOT / ".kaggle-shards"
@@ -82,6 +82,13 @@ CI_PYTHON = "3.14.7"
 UV_PIN = "uv==0.13.0"
 SHELLCHECK_PIN = "shellcheck-py==0.10.0.1"
 SLOT_POLL_SECONDS = 90
+# What ci/install_pins.sh reads; --ci-env bundles them with the entry.
+CI_ENV_FILES = (
+    "requirements.txt",
+    "ci/requirements-ci.txt",
+    "ci/install_pins.sh",
+    "ci/patches/sympy-1.14.0-mpmath-1.4.patch",
+)
 # Kaggle's SaveKernel accepts a 706,414-byte run.py and refuses a 1,662,849-byte
 # one with HTTP 400 (2026-10-16); the guard sits between the two.
 KERNEL_SOURCE_LIMIT = 1_000_000
@@ -214,6 +221,13 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         files.extend(import_closure(ROOT / always) if always.endswith(".py") else [ROOT / always])
     for include in args.include:
         files.extend(tracked_files(include))
+    ci_env = None
+    if getattr(args, "ci_env", False):
+        # CI's pins carry CPU Aer, so a GPU machine's host CPUs run the entry
+        # exactly as a CPU machine does; a TPU VM has no x86 Python build.
+        require(not args.machine.startswith("Tpu") and not smoke, "--ci-env runs an ENTRY on a CPU or GPU machine")
+        files.extend(ROOT / name for name in CI_ENV_FILES)
+        ci_env = {"python": CI_PYTHON, "uv": UV_PIN}
     bundled = sorted({path.relative_to(ROOT).as_posix() for path in files})
     listed = subprocess.run(
         ["git", "ls-files", "-z", "--", *bundled], cwd=ROOT, capture_output=True, text=True, check=True
@@ -239,6 +253,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
             "smoke": smoke,
             "device": device,
             "datasets": [{"ref": d["ref"], "archive": d["archive"], "files": d["files"]} for d in datasets],
+            "ci_env": ci_env,
         }
         bundle.writestr("kaggle_kernel/kernel_job.json", json.dumps(job, indent=1) + "\n")
     kernel_dir = run_dir / "kernel"
@@ -274,6 +289,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "git_commit": revision,
         "untracked_inputs": untracked,
         "pins": list(kernel_pins(args.machine)),
+        "ci_env": ci_env,
         "bundle": digests,
         "datasets": {d["ref"]: d["archive_sha256"] for d in datasets},
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
@@ -288,6 +304,9 @@ def push(args: argparse.Namespace) -> int:
     # machine it would record only that no GPU is attached.
     if args.smoke and args.machine == "cpu":
         args.machine = GPU_MACHINE
+    # An accelerator session spends the weekly quota until it ends, so every
+    # accelerator push names the run-time limit it may hold.
+    require(args.machine == "cpu" or args.timeout > 0, f"a {args.machine} push needs --timeout SECONDS")
     revision = git_commit()
     stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
     run_dir = RESULTS / f"{stamp}-{args.slug}"
@@ -795,6 +814,11 @@ def main() -> int:
     push_parser.add_argument("--machine", default=DEFAULT_MACHINE, help="machine_shape, or cpu")
     push_parser.add_argument("--timeout", type=int, default=0, help="kernel run-time limit in seconds")
     push_parser.add_argument("--dataset", action="append", default=[], help="retained dataset slug to attach")
+    push_parser.add_argument(
+        "--ci-env",
+        action="store_true",
+        help="run ENTRY under CI's Python and pins (CPU Aer on a CPU or GPU machine) for a CI-replayed record",
+    )
     push_parser.set_defaults(func=push)
     sub.add_parser("self-test").set_defaults(func=self_test)
     dataset_parser = sub.add_parser("dataset")

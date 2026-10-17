@@ -1,0 +1,295 @@
+{
+ "schema": "qi-crosstalk-teleport-analysis-v2",
+ "backend": "QXsinglenodesimulator",
+ "claim_kind": "exploratory reanalysis, emulator control",
+ "config_order_note": "the four configurations ran as sequential jobs, so drift between jobs enters every cross-configuration difference",
+ "additivity": [
+  {
+   "T": 0,
+   "A": 1,
+   "B": 2,
+   "p1": {
+    "none": 0.494140625,
+    "A": 0.50390625,
+    "B": 0.51171875,
+    "AB": 0.52734375
+   },
+   "principal_branch": {
+    "max_abs_sin_phi": 0.0546875,
+    "margin_rad": 1.5160815308524718,
+    "branch_ambiguous": false
+   },
+   "phase_rad": {
+    "none": -0.011719018237478385,
+    "A": 0.007812579475042568,
+    "B": 0.02343964629780272,
+    "AB": 0.0547147959424247
+   },
+   "phase_shift_rad": {
+    "A": 0.019531597712520953,
+    "B": 0.0351586645352811,
+    "AB": 0.06643381417990309
+   },
+   "additivity_residual_rad": 0.011743551932101026,
+   "residual_sigma_rad": 0.04419417382415922,
+   "residual_z": 0.2657262466049605,
+   "drivers": {
+    "A": {
+     "qubit": 1,
+     "p1_driven_alone": 0.0,
+     "p1_driven_with_other": 0.0,
+     "simultaneous_change": 0.0,
+     "simultaneous_change_z": 0.0
+    },
+    "B": {
+     "qubit": 2,
+     "p1_driven_alone": 0.0,
+     "p1_driven_with_other": 0.0,
+     "simultaneous_change": 0.0,
+     "simultaneous_change_z": 0.0
+    }
+   },
+   "target_phase_by_driver_outcome": {
+    "none": {},
+    "A": {
+     "1": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.50390625,
+       "target_phase_rad": 0.007812579475042568
+      }
+     }
+    },
+    "B": {
+     "2": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.51171875,
+       "target_phase_rad": 0.02343964629780272
+      }
+     }
+    },
+    "AB": {
+     "1": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.52734375,
+       "target_phase_rad": 0.0547147959424247
+      }
+     },
+     "2": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.52734375,
+       "target_phase_rad": 0.0547147959424247
+      }
+     }
+    }
+   }
+  },
+  {
+   "T": 3,
+   "A": 4,
+   "B": 5,
+   "p1": {
+    "none": 0.50146484375,
+    "A": 0.49072265625,
+    "B": 0.4853515625,
+    "AB": 0.51318359375
+   },
+   "principal_branch": {
+    "max_abs_sin_phi": 0.029296875,
+    "margin_rad": 1.541495259223778,
+    "branch_ambiguous": false
+   },
+   "phase_rad": {
+    "none": 0.002929691690967773,
+    "A": -0.01855575232189835,
+    "B": -0.029301067571118413,
+    "AB": 0.026370243659930976
+   },
+   "phase_shift_rad": {
+    "A": -0.021485444012866124,
+    "B": -0.032230759262086184,
+    "AB": 0.023440551968963202
+   },
+   "additivity_residual_rad": 0.0771567552439155,
+   "residual_sigma_rad": 0.04419417382415922,
+   "residual_z": 1.7458580751143475,
+   "drivers": {
+    "A": {
+     "qubit": 4,
+     "p1_driven_alone": 0.0,
+     "p1_driven_with_other": 0.0,
+     "simultaneous_change": 0.0,
+     "simultaneous_change_z": 0.0
+    },
+    "B": {
+     "qubit": 5,
+     "p1_driven_alone": 0.0,
+     "p1_driven_with_other": 0.0,
+     "simultaneous_change": 0.0,
+     "simultaneous_change_z": 0.0
+    }
+   },
+   "target_phase_by_driver_outcome": {
+    "none": {},
+    "A": {
+     "4": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.49072265625,
+       "target_phase_rad": -0.01855575232189835
+      }
+     }
+    },
+    "B": {
+     "5": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.4853515625,
+       "target_phase_rad": -0.029301067571118413
+      }
+     }
+    },
+    "AB": {
+     "4": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.51318359375,
+       "target_phase_rad": 0.026370243659930976
+      }
+     },
+     "5": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.51318359375,
+       "target_phase_rad": 0.026370243659930976
+      }
+     }
+    }
+   }
+  },
+  {
+   "T": 6,
+   "A": 7,
+   "B": 8,
+   "p1": {
+    "none": 0.51220703125,
+    "A": 0.4736328125,
+    "B": 0.50634765625,
+    "AB": 0.4765625
+   },
+   "principal_branch": {
+    "max_abs_sin_phi": 0.052734375,
+    "margin_rad": 1.5180374795279874,
+    "branch_ambiguous": false
+   },
+   "phase_rad": {
+    "none": 0.024416488469956924,
+    "A": -0.05275884726690921,
+    "B": 0.012695653544018193,
+    "AB": -0.04689218313328187
+   },
+   "phase_shift_rad": {
+    "A": -0.07717533573686614,
+    "B": -0.011720834925938731,
+    "AB": -0.0713086716032388
+   },
+   "additivity_residual_rad": 0.01758749905956607,
+   "residual_sigma_rad": 0.04419417382415922,
+   "residual_z": 0.3979596751721982,
+   "drivers": {
+    "A": {
+     "qubit": 7,
+     "p1_driven_alone": 0.0,
+     "p1_driven_with_other": 0.0,
+     "simultaneous_change": 0.0,
+     "simultaneous_change_z": 0.0
+    },
+    "B": {
+     "qubit": 8,
+     "p1_driven_alone": 0.0,
+     "p1_driven_with_other": 0.0,
+     "simultaneous_change": 0.0,
+     "simultaneous_change_z": 0.0
+    }
+   },
+   "target_phase_by_driver_outcome": {
+    "none": {},
+    "A": {
+     "7": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.4736328125,
+       "target_phase_rad": -0.05275884726690921
+      }
+     }
+    },
+    "B": {
+     "8": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.50634765625,
+       "target_phase_rad": 0.012695653544018193
+      }
+     }
+    },
+    "AB": {
+     "7": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.4765625,
+       "target_phase_rad": -0.04689218313328187
+      }
+     },
+     "8": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.4765625,
+       "target_phase_rad": -0.04689218313328187
+      }
+     }
+    }
+   }
+  }
+ ],
+ "teleport": [
+  {
+   "I": 1,
+   "P1": 0,
+   "P2": 2,
+   "D": 3,
+   "input": "0",
+   "corrected_fidelity": 1.0,
+   "corrected_ci95": [
+    0.9981277993949387,
+    1.0
+   ],
+   "postselected_fidelity": 1.0,
+   "postselected_ci95": [
+    0.9923907619836377,
+    0.9999999999999999
+   ],
+   "postselected_fraction": 0.24462890625
+  },
+  {
+   "I": 5,
+   "P1": 4,
+   "P2": 6,
+   "D": 7,
+   "input": "1",
+   "corrected_fidelity": 1.0,
+   "corrected_ci95": [
+    0.9981277993949387,
+    1.0
+   ],
+   "postselected_fidelity": 1.0,
+   "postselected_ci95": [
+    0.9924207880909499,
+    1.0
+   ],
+   "postselected_fraction": 0.24560546875
+  }
+ ]
+}

@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v1",
+ "submitted_utc": "2026-10-16T22:11:49+00:00",
+ "approval": "User, 2026-10-16: Approve plus QX twin but use our repo's hypercomplex cayley-dickson, sedenions, and python libraries (Tuna-17 zero-divisor Latin square, 5 circuits x 16384 shots; QX twin 5 circuits x 2048)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 2,
+  "min_wait_time_in_queue_secs": 5.0,
+  "avg_wait_time_in_queue_secs": 11540.0,
+  "max_wait_time_in_queue_secs": 23076.0
+ },
+ "batch_job": 869645,
+ "project": 765458,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "twin-1.cq",
+   "job": 1526821
+  },
+  {
+   "file": "twin-2.cq",
+   "job": 1526822
+  },
+  {
+   "file": "twin-3.cq",
+   "job": 1526823
+  },
+  {
+   "file": "twin-4.cq",
+   "job": 1526824
+  },
+  {
+   "file": "twin-5.cq",
+   "job": 1526825
+  }
+ ]
+}

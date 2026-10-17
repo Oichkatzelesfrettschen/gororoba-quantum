@@ -1,0 +1,215 @@
+{
+ "collected_utc": "2026-10-16T21:17:08+00:00",
+ "jobs": [
+  {
+   "file": "additivity-none.cq",
+   "job": {
+    "algorithm_type": "quantum",
+    "batch_job_id": 869574,
+    "created_on": "2026-10-16T21:16:39.206720Z",
+    "file_id": 1537110,
+    "finished_at": "2026-10-16T21:16:48.239264Z",
+    "id": 1526738,
+    "message": "",
+    "number_of_shots": 2048,
+    "queued_at": "2026-10-16T21:16:48.007359Z",
+    "raw_data_enabled": true,
+    "session_id": "6050fac3-5cc8-4e61-9ec5-f1c94d1a1232",
+    "source": "",
+    "status": "completed",
+    "trace_id": ""
+   },
+   "logs": null,
+   "results": [
+    {
+     "created_on": "2026-10-16T21:16:48.171880Z",
+     "execution_time_in_seconds": 0.027859,
+     "id": 1488746,
+     "job_id": 1526738,
+     "results": {
+      "0000000000": 249,
+      "0000000001": 245,
+      "0000001000": 264,
+      "0000001001": 241,
+      "0001000000": 271,
+      "0001000001": 256,
+      "0001001000": 252,
+      "0001001001": 270
+     },
+     "shots_done": 2048,
+     "shots_requested": 2048
+    }
+   ]
+  },
+  {
+   "file": "additivity-A.cq",
+   "job": {
+    "algorithm_type": "quantum",
+    "batch_job_id": 869574,
+    "created_on": "2026-10-16T21:16:39.969207Z",
+    "file_id": 1537111,
+    "finished_at": "2026-10-16T21:16:48.713659Z",
+    "id": 1526739,
+    "message": "",
+    "number_of_shots": 2048,
+    "queued_at": "2026-10-16T21:16:48.284406Z",
+    "raw_data_enabled": true,
+    "session_id": "6050fac3-5cc8-4e61-9ec5-f1c94d1a1232",
+    "source": "",
+    "status": "completed",
+    "trace_id": ""
+   },
+   "logs": null,
+   "results": [
+    {
+     "created_on": "2026-10-16T21:16:48.647224Z",
+     "execution_time_in_seconds": 0.170331,
+     "id": 1488747,
+     "job_id": 1526739,
+     "results": {
+      "0000000000": 273,
+      "0000000001": 267,
+      "0000001000": 278,
+      "0000001001": 260,
+      "0001000000": 251,
+      "0001000001": 252,
+      "0001001000": 214,
+      "0001001001": 253
+     },
+     "shots_done": 2048,
+     "shots_requested": 2048
+    }
+   ]
+  },
+  {
+   "file": "additivity-B.cq",
+   "job": {
+    "algorithm_type": "quantum",
+    "batch_job_id": 869574,
+    "created_on": "2026-10-16T21:16:40.728670Z",
+    "file_id": 1537112,
+    "finished_at": "2026-10-16T21:16:49.182604Z",
+    "id": 1526740,
+    "message": "",
+    "number_of_shots": 2048,
+    "queued_at": "2026-10-16T21:16:48.758063Z",
+    "raw_data_enabled": true,
+    "session_id": "6050fac3-5cc8-4e61-9ec5-f1c94d1a1232",
+    "source": "",
+    "status": "completed",
+    "trace_id": ""
+   },
+   "logs": null,
+   "results": [
+    {
+     "created_on": "2026-10-16T21:16:49.075268Z",
+     "execution_time_in_seconds": 0.157248,
+     "id": 1488748,
+     "job_id": 1526740,
+     "results": {
+      "0000000000": 241,
+      "0000000001": 267,
+      "0000001000": 246,
+      "0000001001": 257,
+      "0001000000": 265,
+      "0001000001": 281,
+      "0001001000": 248,
+      "0001001001": 243
+     },
+     "shots_done": 2048,
+     "shots_requested": 2048
+    }
+   ]
+  },
+  {
+   "file": "additivity-AB.cq",
+   "job": {
+    "algorithm_type": "quantum",
+    "batch_job_id": 869574,
+    "created_on": "2026-10-16T21:16:41.499844Z",
+    "file_id": 1537113,
+    "finished_at": "2026-10-16T21:16:47.602405Z",
+    "id": 1526741,
+    "message": "",
+    "number_of_shots": 2048,
+    "queued_at": "2026-10-16T21:16:46.920921Z",
+    "raw_data_enabled": true,
+    "session_id": "6050fac3-5cc8-4e61-9ec5-f1c94d1a1232",
+    "source": "",
+    "status": "completed",
+    "trace_id": ""
+   },
+   "logs": null,
+   "results": [
+    {
+     "created_on": "2026-10-16T21:16:47.445891Z",
+     "execution_time_in_seconds": 0.289349,
+     "id": 1488744,
+     "job_id": 1526741,
+     "results": {
+      "0000000000": 260,
+      "0000000001": 267,
+      "0000001000": 251,
+      "0000001001": 294,
+      "0001000000": 217,
+      "0001000001": 253,
+      "0001001000": 240,
+      "0001001001": 266
+     },
+     "shots_done": 2048,
+     "shots_requested": 2048
+    }
+   ]
+  },
+  {
+   "file": "teleport.cq",
+   "job": {
+    "algorithm_type": "quantum",
+    "batch_job_id": 869574,
+    "created_on": "2026-10-16T21:16:42.253259Z",
+    "file_id": 1537114,
+    "finished_at": "2026-10-16T21:16:47.961933Z",
+    "id": 1526742,
+    "message": "",
+    "number_of_shots": 2048,
+    "queued_at": "2026-10-16T21:16:47.647308Z",
+    "raw_data_enabled": true,
+    "session_id": "6050fac3-5cc8-4e61-9ec5-f1c94d1a1232",
+    "source": "",
+    "status": "completed",
+    "trace_id": ""
+   },
+   "logs": null,
+   "results": [
+    {
+     "created_on": "2026-10-16T21:16:47.818680Z",
+     "execution_time_in_seconds": 0.037502,
+     "id": 1488745,
+     "job_id": 1526742,
+     "results": {
+      "0000010000": 119,
+      "0000010010": 137,
+      "0000011001": 112,
+      "0000011011": 132,
+      "0000110000": 117,
+      "0000110010": 125,
+      "0000111001": 136,
+      "0000111011": 138,
+      "0010000000": 132,
+      "0010000010": 115,
+      "0010001001": 146,
+      "0010001011": 110,
+      "0010100000": 133,
+      "0010100010": 138,
+      "0010101001": 137,
+      "0010101011": 121
+     },
+     "shots_done": 2048,
+     "shots_requested": 2048
+    }
+   ]
+  }
+ ],
+ "schema": "qi-collection-v1",
+ "transactions": []
+}

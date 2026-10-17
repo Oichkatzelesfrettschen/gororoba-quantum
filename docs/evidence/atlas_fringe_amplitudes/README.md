@@ -185,7 +185,7 @@ other structured lanes: Fez 0, 1, 2, 3, 5 and 6, and Kingston 0 and 1.
 
 ## Gates
 
-- **core-340** (pr tier, 83 s for both modes at one worker): `--self-test`.
+- **core-359** (pr tier, 83 s for both modes at one worker): `--self-test`.
   It checks:
   - the thermal and depolarizing channels against qiskit_aer;
   - qubit order;
@@ -195,7 +195,7 @@ other structured lanes: Fez 0, 1, 2, 3, 5 and 6, and Kingston 0 and 1.
     relaxation is flagged and its coefficient recovered within 3 standard
     errors, and a planted sx amplitude of -0.02 on qubit 58 is recovered in
     magnitude, sign and constant.
-- **core-341** (full tier, 395 s for both modes at one worker: 227 s normal, 168 s optimized):
+- **core-360** (full tier, 395 s for both modes at one worker: 227 s normal, 168 s optimized):
   `--check result.json --runs ibm_fez,ibm_kingston --lanes 4`. It recomputes
   both lanes and the 14-lane structure block, and compares every number
   within 1.5e-6 absolute or 1e-9 relative.

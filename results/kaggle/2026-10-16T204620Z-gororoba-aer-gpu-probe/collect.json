@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-aer-gpu-probe/2",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T212942Z",
+ "files": {
+  "gororoba-aer-gpu-probe.log": "0997328e4ce443d0d94bfdc6a7c4a2de3f4c633154e8ea3ea76dd1d36ea8b621",
+  "output/environment.json": "81480eec33d08f8eb2a8eb0a59fba5cb4ba0b5dc5eaf2344d16fedb6128ab5c6",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "ea87bff0c5de9f4639f74761bd3a37e2d19c212644269dfbeee0c388dd26f82b",
+  "output/pip.txt": "bdb2f63d5e66b740486d3307631b2c52440696462d108420cb945f01db1e833d",
+  "output/repo/results/kaggle_out/aer_gpu_probe.json": "75c4920af3a81b1655415de099c9349b6f531d734def58bf3cc44c2ceab86b4f",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "c11267a9fb5a2cd00fb5af2349ac620de323195f750346e309ff049f59fb5d64"
+ }
+}

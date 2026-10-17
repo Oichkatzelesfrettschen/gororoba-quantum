@@ -1,0 +1,38 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-16T22:56:15+00:00",
+ "approval": "User, 2026-10-16: do your dry runs on qx ... and then and only then run on a real quantum processor tuna; series continued per the user's 3-per-batch, delay, analyze strategy (batch 00 passed its sanity gate)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "backend_status_at_submit": "executing",
+ "user_queue_before": 0,
+ "cases_sha256": "269ae4a6d9b1d4f52a41b165ab7b8b5707819f4b39646def7bb8a257bc660d5a",
+ "batch_job": 869708,
+ "project": 765521,
+ "shots": 16384,
+ "jobs": [
+  {
+   "file": "targets-P-x-d100.cq",
+   "job": 1526896,
+   "sha256": "f742a39b1784de0a5da2ce7e6b7b4f484f374d5464308ed915e2e68e8f3628e9"
+  },
+  {
+   "file": "targets-P-y-d025.cq",
+   "job": 1526897,
+   "sha256": "3be8d5cb6f6cd483a0e3a0b045e07e95ec79f948433357eb850a6933a1758124"
+  },
+  {
+   "file": "targets-P-y-d100.cq",
+   "job": 1526898,
+   "sha256": "bcc898a07aafc4c8cfd33f75d5c004dfd6d2bf00ea77cad2135f27742fb121ac"
+  }
+ ],
+ "submitted_utc": "2026-10-16T22:56:15+00:00",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 3,
+  "min_wait_time_in_queue_secs": 3.0,
+  "avg_wait_time_in_queue_secs": 31.0,
+  "max_wait_time_in_queue_secs": 63.0
+ }
+}
