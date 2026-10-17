@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-17T15:53:37+00:00",
+ "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: 'Those cases are approved' for the Ry gate test and 6-circuit smoke set (box_kite_ry_ladder, box_kite_ry_smoke)",
+ "backend": "Rydberg",
+ "backend_type_id": 5,
+ "cases_sha256": "5bbc0a30cffa4a185ba08c74d6c47989b91b9a9169f95a441ea4e5b53d9e21c4",
+ "shots": 1024,
+ "jobs": [
+  {
+   "file": "ry-reduced-1.cq",
+   "job": 1528736,
+   "sha256": "e36ea76b92a0b89af99c019adc5c635b2e402f774e21d21c213cfe0a7d11d788"
+  },
+  {
+   "file": "ry-reduced-2.cq",
+   "job": 1528737,
+   "sha256": "e20bbbe84ea2a58370529d6d9dc403417cfd1bae7c054916af6666aeac54df88"
+  },
+  {
+   "file": "ry-reduced-3.cq",
+   "job": 1528738,
+   "sha256": "d131b7f7d278123e0dbf245f32e6ad9c0f5bd1c8cf6d40e280bef42affc2c67c"
+  }
+ ],
+ "project": 766528,
+ "batch_job": 870725,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-17T15:53:40+00:00",
+  "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: 'Those cases are approved' for the Ry gate test and 6-circuit smoke set (box_kite_ry_ladder, box_kite_ry_smoke)",
+  "backend": "Rydberg",
+  "backend_type_id": 5,
+  "cases_sha256": "5bbc0a30cffa4a185ba08c74d6c47989b91b9a9169f95a441ea4e5b53d9e21c4",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 870725,
+  "project": 766528,
+  "shots": 1024,
+  "jobs": [
+   {
+    "file": "ry-reduced-1.cq",
+    "job": 1528736,
+    "sha256": "e36ea76b92a0b89af99c019adc5c635b2e402f774e21d21c213cfe0a7d11d788"
+   },
+   {
+    "file": "ry-reduced-2.cq",
+    "job": 1528737,
+    "sha256": "e20bbbe84ea2a58370529d6d9dc403417cfd1bae7c054916af6666aeac54df88"
+   },
+   {
+    "file": "ry-reduced-3.cq",
+    "job": 1528738,
+    "sha256": "d131b7f7d278123e0dbf245f32e6ad9c0f5bd1c8cf6d40e280bef42affc2c67c"
+   }
+  ],
+  "submitted_utc": "2026-10-17T15:53:40+00:00"
+ },
+ "confirmed_utc": "2026-10-17T15:53:40+00:00"
+}

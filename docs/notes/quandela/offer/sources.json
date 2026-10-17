@@ -1,0 +1,146 @@
+{
+ "schema": "qd-offer-sources-v1",
+ "retrieved_utc": "2026-10-17T17:28Z",
+ "bundles": [
+  {
+   "url": "https://cloud.quandela.com/assets/index-a553ec1f.js",
+   "sha256": "8adf2d1dacdd90e3579ad9c36bc29377209339cd57cecd3d7c1d22132ecbfdf8"
+  },
+  {
+   "url": "https://cloud.quandela.com/webide/assets/index-DrG4GsjV.js",
+   "sha256": "2f86182fa9ea5999d49645c2553e6b645e7d390249838c9261b2132f51051c7e"
+  }
+ ],
+ "statements": [
+  {
+   "text": "\"monthly-quota-is\":\"Monthly quota is $credit credits\"",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js",
+    "https://cloud.quandela.com/webide/assets/index-DrG4GsjV.js"
+   ]
+  },
+  {
+   "text": "\"One-waiting-job-at-a-time\":\"One waiting job at a time\"",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js"
+   ]
+  },
+  {
+   "text": "\"One-running-job-at-a-time\":\"One running job at a time\"",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js"
+   ]
+  },
+  {
+   "text": "\"Access-jupyter-notebook\":\"Access to embedded Jupyter Notebook\"",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js",
+    "https://cloud.quandela.com/webide/assets/index-DrG4GsjV.js"
+   ]
+  },
+  {
+   "text": "\"Access-quantum-toolbox\":\"Access to the Quantum Toolbox\"",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js",
+    "https://cloud.quandela.com/webide/assets/index-DrG4GsjV.js"
+   ]
+  },
+  {
+   "text": "\"access-to-free-simulators\":\"Access to the free simulator and free time slots on QPU\"",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js"
+   ]
+  },
+  {
+   "text": "\"max-duration\":\"Max $max_duration per job\"",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js",
+    "https://cloud.quandela.com/webide/assets/index-DrG4GsjV.js"
+   ]
+  },
+  {
+   "text": "\"credits-for-one-second\":\"credits for 1 second of usage\"",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js"
+   ]
+  },
+  {
+   "text": "\"credits-for-one-shot\":\"credits for using 1 shot\"",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js"
+   ]
+  },
+  {
+   "text": "\"credits-for-one-job\":\"credits for using 1 job\"",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js"
+   ]
+  },
+  {
+   "text": "\"credit-for-one-byte\":\"credits for using 1 byte\"",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js"
+   ]
+  },
+  {
+   "text": "\"note-book\":\"Jupyter Notebook\"",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js"
+   ]
+  },
+  {
+   "text": "\"free-credit-tooltip\":\"Free credit is only available when using $offer_name offer. It will be automatically reset at the beginning of the month.\"",
+   "found_in": [
+    "https://cloud.quandela.com/webide/assets/index-DrG4GsjV.js"
+   ]
+  },
+  {
+   "text": "\"credit-tooltip\":\"These credits are unavailable when using $offer_name offer.\"",
+   "found_in": [
+    "https://cloud.quandela.com/webide/assets/index-DrG4GsjV.js"
+   ]
+  },
+  {
+   "text": "\"is-explorer-token\":\"Is Explorer Token\"",
+   "found_in": [
+    "https://cloud.quandela.com/webide/assets/index-DrG4GsjV.js"
+   ]
+  },
+  {
+   "text": "priorityTooltip:\"Priority value from 0 to 3 ~ ascending priority\"",
+   "found_in": [
+    "https://cloud.quandela.com/webide/assets/index-DrG4GsjV.js"
+   ]
+  }
+ ],
+ "offer_code": [
+  {
+   "text": "e.offer.price_notebook_per_sec>0?e.offer.price_notebook_per_sec:n.$t(\"billing-offer.free\")",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js"
+   ]
+  },
+  {
+   "text": "e.offer.price_per_job>0?e.offer.price_per_job:n.$t(\"billing-offer.free\")",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js"
+   ]
+  },
+  {
+   "text": "a.price_per_shot>0?a.price_per_shot:n.$t(\"billing-offer.free\")",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js"
+   ]
+  },
+  {
+   "text": "list(){return Wo.get(\"api/public/offer/list\")}",
+   "found_in": [
+    "https://cloud.quandela.com/assets/index-a553ec1f.js"
+   ]
+  }
+ ],
+ "public_offer_list": {
+  "url": "https://api.cloud.quandela.com/api/public/offer/list",
+  "status": 404
+ }
+}
