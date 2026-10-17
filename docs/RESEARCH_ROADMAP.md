@@ -220,8 +220,12 @@ The mathematical chain has the following acceptance gates.
    `collect.json`: `retain_measured_correction`. The reviewed acquisition in
    PR #53 satisfies the results-availability milestone. New proof work still
    requires its own compiler/kernel receipts. The latest C881 closure now has
-   fresh Rocq 9.2/OCaml 5.5.0 receipts; the other retained proof bundles still
-   record their own Rocq 9.1.1 toolchain and require separate refreshes.
+   fresh Rocq 9.2/OCaml 5.5.0 receipts. The retained folding, terminal and
+   Stiefel bundles also record their renewed Rocq 9.2 identities; historical
+   9.1.1 receipts retain their original scope. Current external builds use
+   Rocq 9.3.0/OCaml 5.5.1. The
+   [current observable delta](evidence/formal_certificates/CURRENT_RECONCILIATION.md)
+   records the new concentration and signed-coherence contracts.
    Preserve full average/detail coordinates or all XOR sectors when information
    matters; average-only multiplication fails. The
    [complex skew certificate](notes/complex_skew_rank_geometry.md) supplies

@@ -4,7 +4,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "ruff check ci && ruff format --check ci && mypy ci/run_gates.py ci/runner_specs.py",
+   "cmd": "ruff check ci && ruff format --check ci && mypy ci/run_gates.py ci/runner_specs.py ci/premerge_gates.py",
    "name": "core-000",
    "seconds": 3.0,
    "tier": "pr"
@@ -12,7 +12,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "ruff check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py",
+   "cmd": "ruff check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py",
    "name": "core-001",
    "seconds": 0.3,
    "tier": "pr"
@@ -20,7 +20,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "ruff format --check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py",
+   "cmd": "ruff format --check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py",
    "name": "core-002",
    "seconds": 0.4,
    "tier": "pr"
@@ -316,7 +316,7 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "mypy . ../scripts ../ci ../kaggle_kernel ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py",
+   "cmd": "mypy . ../scripts ../ci ../kaggle_kernel ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py",
    "name": "core-039",
    "seconds": 23.6,
    "tier": "pr"
@@ -2003,6 +2003,14 @@
   },
   {
    "suite": "core",
+   "cwd": "ci",
+   "cmd": "\"$PYTHON\" -B -W error premerge_gates.py --self-test && \"$PYTHON\" -B -O -W error premerge_gates.py --self-test",
+   "name": "core-388",
+   "seconds": 0.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/calibration_scoped_family_analysis.py results/live/2026-10-15T031229.371738Z --check results/live/2026-10-15T031229.371738Z/calibration-scoped-analysis.json && \"$PYTHON\" -B -O -W error scripts/calibration_scoped_family_analysis.py results/live/2026-10-15T031229.371738Z --check results/live/2026-10-15T031229.371738Z/calibration-scoped-analysis.json",
    "name": "core-266",
@@ -2780,7 +2788,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_a.json results/kaggle/2026-10-16T160703Z-gororoba-ghost-error-scale-a/output/output/repo/results/kaggle_out/ghost_error_scale_a.json && \"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_b.json results/kaggle/2026-10-16T160706Z-gororoba-ghost-error-scale-b/output/output/repo/results/kaggle_out/ghost_error_scale_b.json && \"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_c.json results/kaggle/2026-10-16T160710Z-gororoba-ghost-error-scale-c/output/output/repo/results/kaggle_out/ghost_error_scale_c.json && cmp docs/evidence/ghost_error_scale/part_c.json results/kaggle/2026-10-17T004620Z-gororoba-ghost-error-scale-c/output/output/repo/results/kaggle_out/ghost_error_scale_c.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_a.json results/kaggle/2026-10-16T160703Z-gororoba-ghost-error-scale-a/output/output/repo/results/kaggle_out/ghost_error_scale_a.json && \"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_b.json results/kaggle/2026-10-16T160706Z-gororoba-ghost-error-scale-b/output/output/repo/results/kaggle_out/ghost_error_scale_b.json && \"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_c.json results/kaggle/2026-10-16T160710Z-gororoba-ghost-error-scale-c/output/output/repo/results/kaggle_out/ghost_error_scale_c.json && \"$PYTHON\" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part_b.json results/kaggle/2026-10-17T024808Z-gororoba-ghost-error-scale-b1/output/output/repo/results/kaggle_out/ghost-error-scale-b1.json results/kaggle/2026-10-17T024812Z-gororoba-ghost-error-scale-b2/output/output/repo/results/kaggle_out/ghost-error-scale-b2.json results/kaggle/2026-10-17T024815Z-gororoba-ghost-error-scale-b3/output/output/repo/results/kaggle_out/ghost-error-scale-b3.json results/kaggle/2026-10-17T025046Z-gororoba-ghost-error-scale-b4/output/output/repo/results/kaggle_out/ghost-error-scale-b4.json results/kaggle/2026-10-17T025050Z-gororoba-ghost-error-scale-b5/output/output/repo/results/kaggle_out/ghost-error-scale-b5.json && cmp docs/evidence/ghost_error_scale/part_c.json results/kaggle/2026-10-17T004620Z-gororoba-ghost-error-scale-c/output/output/repo/results/kaggle_out/ghost_error_scale_c.json",
    "name": "core-349",
    "seconds": 89.7,
    "tier": "pr"

@@ -40,10 +40,12 @@ grid's top corner, each within five standard errors.
 calibration-derived fields (each run's per-snapshot diagnostics and the
 ``scaled`` block) from the archived calibration and circuits, keeps every
 other field, and writes OUT in the sweep's own serialization.
-``--provenance PART KERNEL_OUTPUT`` passes when PART is byte for byte the
-regeneration of KERNEL_OUTPUT, so PART carries the kernel's simulation
-fields unchanged and calibration-derived fields equal to a fresh
-recomputation; otherwise it names the first differing path.
+``--provenance PART KERNEL_OUTPUT...`` passes when PART is byte for byte the
+regeneration of the kernel outputs merged in argument order, so PART carries
+the kernels' simulation fields unchanged and calibration-derived fields equal
+to a fresh recomputation; otherwise it names the first differing path.
+Several outputs are shard kernels, one or more runs each, whose headers
+(every field but ``runs``) agree; their runs concatenate into one part.
 """
 
 from __future__ import annotations
@@ -257,18 +259,33 @@ def first_difference(a: Any, b: Any, path: str = "") -> str | None:
     return None if a == b else (path or "/")
 
 
-def provenance(part_path: Path, kernel_path: Path, index: dict[str, Any]) -> None:
-    """Require part_path's bytes to equal the regeneration of kernel_path's part."""
+def merge_shards(shards: list[dict[str, Any]], names: list[str]) -> dict[str, Any]:
+    """One part from shard parts with equal headers, their runs concatenated in shard order."""
+    merged = dict(shards[0])
+    for shard, name in zip(shards[1:], names[1:], strict=True):
+        header = {key: value for key, value in shard.items() if key != "runs"}
+        expected = {key: value for key, value in merged.items() if key != "runs"}
+        where = first_difference(header, expected)
+        require(where is None, f"{name}: header differs from {names[0]} at {where}")
+    merged["runs"] = [run for shard in shards for run in shard["runs"]]
+    return merged
+
+
+def provenance(part_path: Path, kernel_paths: list[Path], index: dict[str, Any]) -> None:
+    """Require part_path's bytes to equal the regeneration of the kernel parts merged in order."""
     text = part_path.read_text(encoding="utf-8")
-    expected = regenerate(json.loads(kernel_path.read_text(encoding="utf-8")), index)
+    names = [str(path) for path in kernel_paths]
+    shards = [json.loads(path.read_text(encoding="utf-8")) for path in kernel_paths]
+    expected = regenerate(merge_shards(shards, names), index)
+    source = " + ".join(names)
     if text != serialize(expected):
         where = first_difference(json.loads(text), expected)
         raise SystemExit(
-            f"{part_path}: differs from the regeneration of {kernel_path} at {where}"
+            f"{part_path}: differs from the regeneration of {source} at {where}"
             if where is not None
-            else f"{part_path}: equal in value to the regeneration of {kernel_path} but serialized differently"
+            else f"{part_path}: equal in value to the regeneration of {source} but serialized differently"
         )
-    print(f"{part_path}: the regeneration of {kernel_path}")
+    print(f"{part_path}: the regeneration of {source}")
 
 
 def grid_means(points: list[dict[str, Any]], members: list[str]) -> list[float]:
@@ -640,9 +657,9 @@ def main() -> int:
     parser.add_argument(
         "--provenance",
         type=Path,
-        nargs=2,
-        metavar=("PART", "KERNEL_OUTPUT"),
-        help="require PART to be the regeneration of a kernel's part",
+        nargs="+",
+        metavar="PATH",
+        help="PART KERNEL_OUTPUT...: require PART to be the regeneration of the kernel parts merged in order",
     )
     args = parser.parse_args()
     if args.report:
@@ -653,8 +670,8 @@ def main() -> int:
         check(args.check, args.runs, index)
         return 0
     if args.provenance:
-        part_path, kernel_path = args.provenance
-        provenance(part_path, kernel_path, index)
+        require(len(args.provenance) >= 2, "--provenance needs PART and at least one KERNEL_OUTPUT")
+        provenance(args.provenance[0], args.provenance[1:], index)
         return 0
     if args.regenerate_diagnostics:
         require(args.out is not None, "--out is required")

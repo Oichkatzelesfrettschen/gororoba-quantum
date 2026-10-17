@@ -1304,7 +1304,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "Receipts record Rocq 9.1.1; the full Cayley-Dickson scalar embedding, tower and zero-product bridge remain open obligations.",
+      "boundary": "The retained verification receipt pins Rocq 9.2 / OCaml 5.5.0 after renewal of the initial 9.1.1 receipts. The scalar proof alone leaves the general Cayley-Dickson embedding and tower bridge open; open_gororoba separately formalizes a concrete 16D average/detail transport retaining all coordinates. Current external builds use Rocq 9.3.0; historical receipts keep their recorded identity.",
       "evidence": [
         {
           "path": "proofs/FoldAverageDescent.v",
@@ -3728,7 +3728,7 @@
     },
     {
       "id": "qi-tuna17-register-and-readout-state",
-      "statement": "Tuna-17 returns the full bit register: bit[34] circuits on qubit[17] came back as 34-character strings carrying every mid-circuit outcome. On 2026-10-17, Q9's idle P1 rose from 0.02-0.05 to 0.27-0.29 from 04:06Z and stayed there through 05:23Z, and after the 04:12Z platform calibration Q0 and Q6 prepared in |1> read 0.39 and 0.14 after a 2 us wait (0.85 and 0.67 at 03:39Z) while their idle P1 stayed below 0.04.",
+      "statement": "Tuna-17 returns the full bit register: bit[34] circuits on qubit[17] came back as 34-character strings carrying every mid-circuit outcome. On 2026-10-17, Q9's idle P1 rose from 0.02-0.05 to 0.27-0.29 from 04:06Z and stayed there through 05:33Z, and after the 04:12Z platform calibration Q0 and Q6 prepared in |1> read 0.39 and 0.14 after a 2 us wait (0.85 and 0.67 at 03:39Z) while their idle P1 stayed below 0.04.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -3736,7 +3736,7 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/readout_ringdown_tuna_17_device_context.json",
-          "sha256": "6aefcee80f338c2a2baed0845fe427cee8b87402d13c913097fa07e1c3cc57bb"
+          "sha256": "c5416928452446f298b2f44d4d4dd1fc67eb748894cf8ad51fc894ce5a9ffd10"
         }
       ],
       "documents": [
