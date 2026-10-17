@@ -519,7 +519,7 @@
    "cmd": "\"$PYTHON\" -O -W error complex_skew_contracts.py >/dev/null",
    "name": "core-064",
    "seconds": 95.4,
-   "tier": "full"
+   "tier": "pr"
   },
   {
    "suite": "core",
@@ -1335,7 +1335,7 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/complex_skew/replay.py --check",
    "name": "sources-166",
    "seconds": 64.5,
-   "tier": "full"
+   "tier": "pr"
   },
   {
    "suite": "sources",
@@ -2551,7 +2551,7 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json && \"$PYTHON\" -B -O -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json",
    "name": "core-324",
    "seconds": 51.2,
-   "tier": "full"
+   "tier": "pr"
   },
   {
    "suite": "core",
