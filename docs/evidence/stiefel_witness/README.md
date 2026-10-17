@@ -54,7 +54,9 @@ fails CI until a successful replay refreshes `repo_sources.sha256` and the
 receipts. A retained receipt records this run; a later kernel check is a
 fresh replay.
 
-open_gororoba's own build pins Rocq 9.1.1 with Flocq through
-`proofs/Makefile.rocq.conf`. Neither `C1474_FuelAdequacy.v` nor this proof
-imports anything beyond Stdlib, so both compile directly under 9.2 with
-explicit `-R` and `-Q` mappings, without that configuration.
+The retained witness replay pins Rocq 9.2 / OCaml 5.5.0. The current
+open_gororoba build uses Rocq 9.3.0 / OCaml 5.5.1 and Stdlib 9.2.0; its
+current pin does not change this historical receipt's identity. Neither
+`C1474_FuelAdequacy.v` nor this proof imports anything beyond Stdlib, so the
+recorded replay compiles both directly under 9.2 with explicit `-R` and
+`-Q` mappings, independently of the external checkout's Make configuration.

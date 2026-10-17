@@ -563,6 +563,7 @@ def run(out: Path, shots: int | None) -> None:
         "schema": SCHEMA,
         "backend": snapshot["backend"],
         "calibration": snapshot["calibration"],
+        **calibration_snapshot.backend_identity(snapshot),
         "snapshot_sha256": sha256(SNAPSHOT),
         "source_run": {
             "backend": cases["backend"],
