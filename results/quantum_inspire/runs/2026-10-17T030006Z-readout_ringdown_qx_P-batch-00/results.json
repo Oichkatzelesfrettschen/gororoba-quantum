@@ -1,0 +1,73 @@
+{
+ "schema": "qi-collection-v1",
+ "collected_utc": "2026-10-17T03:00:30+00:00",
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": {
+    "id": 1527176,
+    "created_on": "2026-10-17T03:00:10.267559Z",
+    "file_id": 1537553,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 869984,
+    "queued_at": "2026-10-17T03:00:16.043963Z",
+    "finished_at": "2026-10-17T03:00:16.258479Z",
+    "number_of_shots": 2048,
+    "raw_data_enabled": true,
+    "session_id": "0c7cfa00-1c6d-4bcc-9ed2-51e4b409434d",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1489171,
+     "created_on": "2026-10-17T03:00:16.178784Z",
+     "job_id": 1527176,
+     "execution_time_in_seconds": 0.005944,
+     "shots_requested": 2048,
+     "shots_done": 2048,
+     "results": {
+      "0000000000": 2048
+     }
+    }
+   ],
+   "logs": null
+  },
+  {
+   "file": "readout-1.cq",
+   "job": {
+    "id": 1527177,
+    "created_on": "2026-10-17T03:00:11.039845Z",
+    "file_id": 1537554,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 869984,
+    "queued_at": "2026-10-17T03:00:15.748893Z",
+    "finished_at": "2026-10-17T03:00:15.996007Z",
+    "number_of_shots": 2048,
+    "raw_data_enabled": true,
+    "session_id": "0c7cfa00-1c6d-4bcc-9ed2-51e4b409434d",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1489170,
+     "created_on": "2026-10-17T03:00:15.900067Z",
+     "job_id": 1527177,
+     "execution_time_in_seconds": 0.011051,
+     "shots_requested": 2048,
+     "shots_done": 2048,
+     "results": {
+      "0001110001": 2048
+     }
+    }
+   ],
+   "logs": null
+  }
+ ],
+ "transactions": []
+}

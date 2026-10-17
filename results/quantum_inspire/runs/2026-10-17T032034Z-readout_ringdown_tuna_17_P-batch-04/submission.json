@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-17T03:57:20+00:00",
+ "approval": "User, 2026-10-17: \"then you need to review the rules per machine and per the documentation in the repo for fair use and batch size and queuing then use the real TUNA-17 hardware\" (readout ring-down pilot, PR #164, after the QX dry run); after batch P-00: \"Continue, q6 judged by rule but also use all that we've learned from our calibration runs and measurement within this repo granularly to build accordingly to compensate.\" (sanity readout guard 0.35)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "870dfaaea878dca08864e337ab67a87ae4d085158d6b936b20f7c68e526cd124",
+ "backend_status_at_submit": "executing",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 870059,
+ "project": 765864,
+ "shots": 8192,
+ "jobs": [
+  {
+   "file": "tau015-y-d002.cq",
+   "job": 1527301,
+   "sha256": "5e442598eec7de142a4b500901deae45547196b68790957aca0592c8310f9126"
+  },
+  {
+   "file": "tau040-y-d002.cq",
+   "job": 1527302,
+   "sha256": "111e393341446cc90c1a91e8c08334ac25685241c1dea45bde6b204c7f74a389"
+  },
+  {
+   "file": "tau100-y-d002.cq",
+   "job": 1527303,
+   "sha256": "d583b3578cab7e18b2e2d122b201b4b8a90da93b305340eab5353b0515e2fb42"
+  }
+ ],
+ "submitted_utc": "2026-10-17T03:57:20+00:00"
+}

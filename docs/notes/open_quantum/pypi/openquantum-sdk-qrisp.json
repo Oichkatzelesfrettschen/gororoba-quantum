@@ -1,0 +1,37 @@
+{
+ "name": "openquantum-sdk-qrisp",
+ "version": "0.5.0",
+ "summary": "Qrisp Python SDK for Open Quantum",
+ "requires_python": ">=3.11",
+ "requires_dist": [
+  "openquantum-sdk>=1.0.0",
+  "openquantum-sdk-qiskit>=1.0.0",
+  "qrisp>=0.9",
+  "pytest>=7.0; extra == \"dev\"",
+  "pytest-cov; extra == \"dev\"",
+  "pytest-mock>=3.10; extra == \"dev\""
+ ],
+ "classifiers": [
+  "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3"
+ ],
+ "project_urls": null,
+ "files": [
+  {
+   "filename": "openquantum_sdk_qrisp-0.5.0-py3-none-any.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-10-15T23:55:04.012289Z",
+   "size": 9453,
+   "sha256": "73356cf9e64632042e27cca69b367d4f8256915a14a17ce11ab4f86b2bc47dc1"
+  },
+  {
+   "filename": "openquantum_sdk_qrisp-0.5.0.tar.gz",
+   "packagetype": "sdist",
+   "upload_time_iso_8601": "2026-10-15T23:55:05.226475Z",
+   "size": 12496,
+   "sha256": "e59dd2d43ca50bc2a0f0e8213b4f6910fbda1a1bc154beeb6cad281ff7614a4b"
+  }
+ ]
+}
