@@ -16,11 +16,13 @@ The external build uses Rocq 9.3.0, OCaml 5.5.1 and Stdlib 9.2.0.
 
 The external manifest binds 160 declarations across 11 scoped sources to basis,
 normalization, original-byte circuit archive digests, little-endian register
-maps and observables. Declaration-level contracts classify 133 reusable results as mathematical-only
-with physical fields inapplicable, and 27 results as conditional fixture
-applications. Coverage, retained-margin arithmetic and null rejection carry
-separate premise sets; the coverage result assumes neither a common terminal
-channel nor its own conclusion. QPY byte identity proves archive provenance; circuit semantic
+maps and observables. The schema-v2 manifest keeps all 160 theorem records mathematical. Seven
+typed terminal applications and one coherence application bind formal results
+to circuit/decoder identities, observables and physical assumptions. Every
+coherence identity retains mathematical-only status; the separate application
+references all 27 identities and 12 Pauli decoders. Coverage, count arithmetic
+and null rejection retain separate premises, and coverage assumes neither a
+common terminal channel nor its own conclusion. QPY byte identity proves archive provenance; circuit semantic
 correspondence remains an explicit obligation.
 
 The terminal certificate proves a finite Bernoulli degree-ten concentration
