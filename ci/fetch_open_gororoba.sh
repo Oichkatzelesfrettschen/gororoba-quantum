@@ -45,6 +45,10 @@ git -C "$dest" sparse-checkout init --cone
 git -C "$dest" sparse-checkout set "$@"
 retry git -C "$dest" fetch -q --filter=blob:none origin "$pin"
 git -C "$dest" checkout -q --detach "$pin"
+# A reused DEST can hold edited tracked files or stray untracked ones; the
+# reset and clean leave exactly the pinned tree in the sparse paths.
+git -C "$dest" reset -q --hard "$pin"
+git -C "$dest" clean -q -ffdx
 head=$(git -C "$dest" rev-parse HEAD)
 [ "$head" = "$pin" ] || {
   echo "fetch_open_gororoba: HEAD $head differs from pin $pin" >&2
