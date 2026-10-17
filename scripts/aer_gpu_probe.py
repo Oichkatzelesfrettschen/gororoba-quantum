@@ -758,7 +758,9 @@ def attempt(spec: dict[str, Any], cpus: int, ngpus: int) -> dict[str, Any]:
         row.update(json.loads(outcome["stdout"].strip().splitlines()[-1]))
     else:
         row["failed"] = outcome["returncode"]
-        row["stderr_tail"] = outcome["stderr"].strip().splitlines()[-3:]
+        # Traceback lines name files by absolute path; the record keeps them
+        # relative to the repository root.
+        row["stderr_tail"] = [line.replace(f"{ROOT}/", "") for line in outcome["stderr"].strip().splitlines()[-3:]]
     return row
 
 

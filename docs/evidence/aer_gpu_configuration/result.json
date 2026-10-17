@@ -11170,7 +11170,7 @@
    "process_wall_seconds": 13.056,
    "failed": 1,
    "stderr_tail": [
-    "  File \"/home/eirikr/worktrees/IBMQuantum/sim/aer-gpu-configuration/scripts/aer_gpu_probe.py\", line 484, in timed",
+    "  File \"scripts/aer_gpu_probe.py\", line 484, in timed",
     "    raise RuntimeError(str(result.status))",
     "RuntimeError: ERROR:  [Experiment 0] QubitVector::State::invalid instruction 'jump'."
    ],
@@ -43923,7 +43923,7 @@
    "process_wall_seconds": 12.035,
    "failed": 1,
    "stderr_tail": [
-    "  File \"/home/eirikr/worktrees/IBMQuantum/sim/aer-gpu-configuration/scripts/aer_gpu_probe.py\", line 484, in timed",
+    "  File \"scripts/aer_gpu_probe.py\", line 484, in timed",
     "    raise RuntimeError(str(result.status))",
     "RuntimeError: ERROR:  [Experiment 0] QubitVector::State::invalid instruction 'jump'."
    ],
