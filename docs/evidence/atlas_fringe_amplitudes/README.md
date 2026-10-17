@@ -10,6 +10,10 @@ the noise propagation, the predictors, the scores and the falsifiers.
   sigma_y propagates the binomial noise of both fringes.
 - **Structure.** The `structure` block covers all 14 lanes and needs no
   simulation.
+- **Separate script.** The script imports `atlas_coherent_families` as a
+  library for the series, observables, timed replicas, gate bounds and
+  contrast curvatures. That script's output schema stays fixed, because
+  its byte `cmp` gate (core-334) and recompute gate bind it.
 - **Fits.** The `lanes` block fits lane 4 of each run. Fez fits 12 edges on
   qubits 50, 51, 52, 58 and 71. Kingston fits 10 edges on qubits 138 and
   150-153; 2 of its edges span a calibration change and are excluded.
@@ -56,7 +60,7 @@ Columns, by group:
 | kingston | 6 | 10 | -0.123 | 0.025 | 0.020 | 13.6/9 | 0.14 | 0.014 | 2.57 | 0.019 | 0.03 |
 
 - **The shot-noise floor holds on every lane.** The bootstrap departs from
-  the propagated sigma by at most 4 percent, inside the 10 percent
+  the propagated sigma by at most 4.1 percent, inside the 10 percent
   falsifier.
 - **Ten lanes carry amplitude structure beyond shot noise (p < 0.01):** all
   seven Fez lanes and Kingston lanes 0, 1 and 4. Their excess scatter is
@@ -182,6 +186,88 @@ other structured lanes: Fez 0, 1, 2, 3, 5 and 6, and Kingston 0 and 1.
 - **The kappa = 1 prediction is refuted** on every lane where the
   chi-square of y - Lambda exceeds its 99th percentile. It is already
   refuted on lane 4 of both runs.
+
+## Falsifier verdicts on lane 4
+
+| Falsifier | Fez | Kingston |
+| --- | --- | --- |
+| Noise floor (bootstrap within 10 percent) | holds | holds |
+| Consistent with a constant (p >= 0.01) | no; structure | no; structure |
+| idle relaxation beats lane constant | yes; accounts without a constant | ties without a constant; refuted with one |
+| kappa = 1 idle prediction | refuted | refuted |
+| CZ, sx, readout and replay-loss scale models | refuted | refuted |
+| Coherent: within the gate-error bound | sx and tilt exceed; cz_phase within | sx, tilt and cz_phase exceed |
+| Coherent: contrast reach at the bound covers tau | sx no (0.042 < 0.046); tilt and cz_phase yes | sx no; tilt and cz_phase yes |
+| Coherent: phase consistency | all refuted | all refuted |
+| Diagonal second-order model holds | axis_tilt and zz_symmetric only | cz_phase, zz and zz_symmetric only |
+
+## 14-lane result
+
+The criterion scores a model by the leave-one-edge-out RMS of y that the
+script's `score` function records as `leave_one_out_rms`; a model beats
+`lane_constant` when its RMS is strictly below the constant's (the script
+marks `refuted` when it is at or above). The full run is the Kaggle CPU
+kernel retained under
+`results/kaggle/2026-10-17T010313Z-gororoba-atlas-fringe-amplitudes/`
+(`--runs ibm_fez,ibm_kingston --lanes all`).
+
+**`idle_relaxation_plus_constant` beats `lane_constant` on 4 of the 8
+confirming lanes (Fez 0, 1 and 6, Kingston 1). The confirmation criterion
+needed 6, so the prediction is refuted.** Fez 2, 3 and 5 and Kingston 0 lose.
+Across all 14 lanes it wins on 6; the lane-4 result on Fez, where it scored
+0.040 against 0.057, does not extend to the other lanes.
+
+**The kappa = 1 prediction is refuted on 13 of 14 lanes.** Kingston 3 is the
+exception (chi-square 16.6 over 10 edges, below the 99th percentile), and that
+lane is consistent with a lane constant, so the prediction cannot be
+distinguished from it there.
+
+| Backend | Lane | n | idle + constant LOO RMS | lane constant LOO RMS | beats | kappa | chi2 of y - Lambda | kappa = 1 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| fez | 0 | 12 | 0.202 | 0.235 | yes | 12.18 | 1332.3 / 12 | refuted |
+| fez | 1 | 12 | 0.044 | 0.048 | yes | 1.70 | 30.9 / 12 | refuted |
+| fez | 2 | 12 | 0.049 | 0.048 | no | 1.19 | 235.6 / 12 | refuted |
+| fez | 3 | 12 | 0.139 | 0.110 | no | -1.00 | 655.7 / 12 | refuted |
+| fez | 4 | 12 | 0.040 | 0.057 | yes | 3.23 | 436.9 / 12 | refuted |
+| fez | 5 | 12 | 0.052 | 0.050 | no | 0.98 | 530.4 / 12 | refuted |
+| fez | 6 | 12 | 0.042 | 0.047 | yes | 2.05 | 152.8 / 12 | refuted |
+| kingston | 0 | 10 | 0.069 | 0.060 | no | -0.14 | 205.7 / 10 | refuted |
+| kingston | 1 | 10 | 0.035 | 0.041 | yes | 2.51 | 258.2 / 10 | refuted |
+| kingston | 2 | 10 | 0.035 | 0.030 | no | 1.33 | 87.4 / 10 | refuted |
+| kingston | 3 | 10 | 0.021 | 0.021 | yes | 1.12 | 16.6 / 10 | not refuted |
+| kingston | 4 | 10 | 0.059 | 0.055 | no | 1.67 | 244.6 / 10 | refuted |
+| kingston | 5 | 10 | 0.023 | 0.022 | no | 1.24 | 98.0 / 10 | refuted |
+| kingston | 6 | 10 | 0.028 | 0.026 | no | 0.83 | 110.2 / 10 | refuted |
+
+Lane 4 of each run is the selection lane and lies outside the confirming set.
+The fitted kappa ranges from -1.0 to 12.2 across lanes and changes sign on
+two, so the lane-4 coefficient of 2.6 to 3.2 does not generalize. The
+idle-relaxation column does not carry the amplitude structure of the other
+lanes.
+
+### Kaggle record against the retained file
+
+The retained `result.json` covers lane 4 of both runs and the 14-lane
+structure. The Kaggle record equals it on `inputs`, `runs`, `models`,
+`bootstrap`, every `lanes` field and every `structure` field, except:
+
+- **`bootstrap_over_propagated`** differs by 0.0 to 3.9 percent per edge. The
+  seeds and inputs are equal, so the likely cause is the binomial stream of
+  the kernel's numpy build (inferred, not isolated); the 10 percent falsifier holds on both (worst
+  departure 4.10 percent on Kaggle, 4.06 percent retained).
+- **The bounded detuning fit** (`detuning_curvature_plus_constant`
+  parameters) differs in the 11th significant digit, the solver's BLAS
+  tolerance.
+- **`fold_condition_max`** on a fold that falls below full rank is null. The
+  condition of a rank-deficient fold is the ratio of the largest singular
+  value to rounding noise, which is inf on one BLAS build and 1.27e16 on
+  another, so the script now reports null whenever a fold's rank is short of
+  the column count, and likewise `condition` for a rank-short design.
+
+No gate compares the Kaggle record with `result.json`: the other Kaggle
+records are compared by byte `cmp` or are replayed by the script itself, and
+this record's `bootstrap_over_propagated` differs by build. The 14-lane
+verdict above is derived from the retained record.
 
 ## Gates
 
