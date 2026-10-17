@@ -618,9 +618,32 @@ device.
   delta's standard error. The subset-difference error sqrt(se_post^2 -
   se_all^2) collapses to 0 at that retention on most arms, so its z column
   is undefined there and serves as no falsifier.
-- Series Q (targets Q1, Q2, Q3, Q7, Q8, Q9, Q13, Q14, Q15) is collected
-  through Q-03; its analysis and the remaining batches land with the rest
-  of the series.
+
+**Series Q result** ([analysis](../../../results/quantum_inspire/readout_ringdown_tuna_17_Q_analysis.json),
+gate core-390). The analysis reads Q-batch-00 (calibration) and Q-01 to Q-08
+(d = 2 in Q-01 to Q-04, d = 77 in Q-05 to Q-08); the Q-recal-053951 run is a
+repeated calibration outside it.
+
+| Target | min visibility | chi2 H1 (5 dof) | chi2 H2 (3 dof) | class |
+|---|---|---|---|---|
+| Q1 | 0.930 | 31.7 | 25.6 | none |
+| Q2 | 0.908 | 6.0 | 4.9 | none |
+| Q3 | 0.865 | 62.4 | 50.5 | none |
+| Q7 | 0.091 | 581.6 | 408.5 | unusable |
+| Q8 | 0.212 | 419.8 | 398.4 | unusable |
+| Q9 | 0.744 | 28.3 | 7.0 | tail |
+| Q13 | 1.012 | 38.1 | 32.5 | none |
+| Q14 | 0.315 | 297.7 | 146.8 | tail |
+| Q15 | 1.284 | 55.2 | 39.3 | tail |
+
+- The preregistered verdict is "not detected": 3 of 7 usable targets
+  classify as tails, below the 50% threshold, and none as a static offset.
+- Only Q9 fits H2. Q14's readout arms sit 43 to 61 kHz below its reference
+  from tau = 100 ns to 2 us (8 kHz at tau = 0); Q15's tail class rests on
+  a visibility of 1.28 to 1.46, which shows its batch-00 calibration no
+  longer describes it ([tuna-17.md](tuna-17.md)).
+- The postselected estimates differ from the all-shot estimates by at most
+  4.2 standard errors (Q13, tau = 800 ns).
 
 ## Next cases
 
