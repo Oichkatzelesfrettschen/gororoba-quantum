@@ -208,7 +208,7 @@ script's `score` function records as `leave_one_out_rms`; a model beats
 `lane_constant` when its RMS is strictly below the constant's (the script
 marks `refuted` when it is at or above). The full run is the Kaggle CPU
 kernel retained under
-`results/kaggle/2026-10-17T021616Z-gororoba-atlas-fringe-amplitudes/`
+`results/kaggle/2026-10-17T030918Z-gororoba-atlas-fringe-amplitudes/`
 (`--runs ibm_fez,ibm_kingston --lanes all`).
 
 **`idle_relaxation_plus_constant` beats `lane_constant` on 4 of the 8
@@ -261,7 +261,11 @@ of the two records is equal except the bounded-solver parameters under
 | `zz_symmetric_curvature_plus_constant` | 10 | 4.7e-6 | 8.6e-11 |
 | `zz_curvature_plus_constant` | 5 | 3.5e-8 | 1.1e-11 |
 
-The verdict fields and `fold_condition_max` are identical. A comparison of
+The `schema`, `runs`, `inputs`, `bootstrap`, `models` and `structure` blocks
+are byte-identical, and the host run's lane 4 of both runs equals `result.json`
+byte for byte. Against `result.json` the kernel's lane-4 records differ only in
+five `detuning_curvature_plus_constant` parameters (at most 2.1e-7 absolute,
+2.6e-11 relative). The verdict fields and `fold_condition_max` are identical. A comparison of
 the record with a host run therefore holds within 5e-6 absolute or 1e-9
 relative, and no byte-compare gate exists for the record because the solver
 parameters differ in the 10th to 11th significant digit across BLAS builds.
