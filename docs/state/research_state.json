@@ -623,6 +623,55 @@
       "run": "results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_smoke-batch-01",
       "family": "box-kite Ry emulator capability",
       "question": "Ry smoke batch-01 (full Design B dark and bright witnesses of (1,10)(4,15) and the negative fixture): does the 5-qubit encoding keep its contrast on Ry?"
+    },
+    {
+      "id": "qd-sim-belenos-pairs-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-00",
+      "family": "box-kite photonic S1",
+      "question": "two-photon strut block: label fraction against f_strut(V); the V it implies?"
+    },
+    {
+      "id": "qd-sim-belenos-pairs-job-02",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-02",
+      "family": "box-kite photonic S1",
+      "question": "two-photon edge block: label fraction of two-click samples against f_edge(V)?"
+    },
+    {
+      "id": "qd-sim-belenos-single-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-00",
+      "family": "box-kite photonic S1",
+      "question": "strut block (1,1;1,-1): a = 1/2 with per-mode ideal 1/2, 0, 1/4, 1/4?"
+    },
+    {
+      "id": "qd-sim-belenos-single-job-04",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-04",
+      "family": "box-kite photonic S1",
+      "question": "bright block (1,1;-1,-1), t = +1: does the cloud path return the exact ideal a = 1?"
+    },
+    {
+      "id": "qd-sim-belenos-single-job-05",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-05",
+      "family": "box-kite photonic S1",
+      "question": "dark block, same sign block, t = -1: is a = 0 exactly (the zero divisor)?"
+    },
+    {
+      "id": "qd-sim-belenos-single-job-33",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-33",
+      "family": "box-kite photonic S1",
+      "question": "one-hot 16D dark pair (e1+e10)(e4-e15) on 18 modes: zero clicks on all 16 algebra labels?"
+    },
+    {
+      "id": "qd-qpu-belenos-single-job-04",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04",
+      "family": "box-kite photonic Q1 bright",
+      "question": "bright block (1,1;-1,-1) on qpu:belenos, the same compiled circuit as sim job e12075f3: a and in-block routing on hardware?"
     }
   ],
   "claims": [
@@ -4153,6 +4202,89 @@
       "assumptions": [],
       "depends_on": [
         "qi-ry-emulator-reader-constructs"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-sim-belenos-boxkite-ideals",
+      "statement": "On sim:belenos (its default noise model g2 0.003, indistinguishability 0.92, transmittance 0.06) the six S1 box-kite circuits reproduce their exact Q(sqrt2) ideals: bright a = 1 (5003/4996/0/0), dark a = 0 (Wilson upper bound 0.00038), strut a = 0.506 against 1/2, the one-hot 16D dark pair 0 clicks on all 16 algebra labels, and two-photon label fractions of 0.472 (edge) and 0.0134 (strut), whose strut inversion gives V = 0.918 against the simulator's 0.92.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "One job per circuit on sim:belenos as served on 2026-10-17; the simulator applies its own noise model and Quandela's transpiler, so agreement shows the cases, runner and compilation path are correct, never that hardware reaches the ideal.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-00/analysis.json",
+          "sha256": "275260b3891d78443550f201918902ab8fc9d8adb516e32179b447844d38de33"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-02/analysis.json",
+          "sha256": "2ef6dea06742cb2fa5b8b84e63c1b277d14407c93e5db9e865f89a1c96631360"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-00/analysis.json",
+          "sha256": "19f7e09e2a7828eeb29782a13e54c8a9921904fd15f53797c5a3b991a2489391"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-04/analysis.json",
+          "sha256": "0743e4f8b3178790caa304d96ce06adce4dfd698347df82ed071fcec72b8108f"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-05/analysis.json",
+          "sha256": "b3918b553479d32e3a59dab4bb262755e087de27c327f5751f1bff4af90eaf2d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-33/analysis.json",
+          "sha256": "f08ec9b517ae82a1e3529e23f8552073ff43adc480439dd6efd8fd940f802bdf"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-508": "replay",
+        "core-504": "freshness"
+      },
+      "acquisitions": [
+        "qd-sim-belenos-pairs-job-00",
+        "qd-sim-belenos-pairs-job-02",
+        "qd-sim-belenos-single-job-00",
+        "qd-sim-belenos-single-job-04",
+        "qd-sim-belenos-single-job-05",
+        "qd-sim-belenos-single-job-33"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bright-block-routing-deficit",
+      "statement": "On qpu:belenos the bright block that sim:belenos reproduces exactly, sent as a 4-mode unitary inside a 24-mode identity and compiled to the same 552-beam-splitter circuit, keeps 0.470 (Wilson 0.460 to 0.480) of one-click samples on its four modes, and of those an algebra share a = 0.256 (0.244 to 0.269) against the ideal 1; the leaked clicks fall mostly on modes 14 to 19, whose dark counts are below 0.2 per second.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One 10000-sample job at the 2026-10-17 calibration (HOM 92.6 %, g2 1 %); the cause (24-mode fit, chip routing or gate form) is untested, and belenos_diagnostics and belenos_fringe carry the falsifiers.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/analysis.json",
+          "sha256": "202ee822ae4b5b4ce320607a38dfccc8e4333891460967f822cf21877f58337a"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-508": "replay",
+        "core-504": "freshness"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-single-job-04"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-sim-belenos-boxkite-ideals"
       ],
       "supersedes": [],
       "superseded_by": null

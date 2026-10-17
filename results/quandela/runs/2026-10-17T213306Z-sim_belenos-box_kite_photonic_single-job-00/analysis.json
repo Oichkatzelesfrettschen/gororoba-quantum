@@ -1,0 +1,42 @@
+{
+ "blocks": [
+  {
+   "a": 0.505550555,
+   "a_wilson95": [
+    0.495750599,
+    0.515346248
+   ],
+   "config": "two_label-00",
+   "in_block": 1.0,
+   "in_block_wilson95": [
+    0.999615963,
+    1.0
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 1,
+   "one_click_by_mode": [
+    5055,
+    0,
+    2465,
+    2479
+   ],
+   "one_click_outside_block": 0,
+   "one_click_outside_by_mode": {},
+   "other_multi_click": 0,
+   "p_algebra": "1/2",
+   "total_variation_from_ideal": 0.005550555
+  }
+ ],
+ "cases_sha256": "2a5a9f2cf21f5a9d99a76297711cb81c1639a9201aa4503c5ee47fa1c50b6b59",
+ "job_id": "77860077-f711-4005-ad73-384466a9b705",
+ "logical_perf": 0.9999999596509077,
+ "noise": ":PCVL:NoiseModel:{\"g2\": 0.003, \"indistinguishability\": 0.92, \"transmittance\": 0.06}",
+ "physical_perf": 0.06008485475576641,
+ "platform": "sim:belenos",
+ "result_sha256": "44bd762597cb97077c3469c0fb0dc7ddb1a85bbd8925f527692f70b3b38a5969",
+ "run": "2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-00",
+ "samples": 10000,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 10001,
+ "status": "completed"
+}

@@ -1,0 +1,56 @@
+{
+ "blocks": [
+  {
+   "a": 0.0,
+   "a_wilson95": [
+    0.0,
+    0.000384075
+   ],
+   "config": "one_hot-00",
+   "in_block": 1.0,
+   "in_block_wilson95": [
+    0.999615925,
+    1.0
+   ],
+   "kind": "one_hot",
+   "multi_click_in_block": 2,
+   "one_click_by_mode": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    4917,
+    5081
+   ],
+   "one_click_outside_block": 0,
+   "one_click_outside_by_mode": {},
+   "other_multi_click": 0,
+   "p_algebra": "0",
+   "total_variation_from_ideal": 0.00820164
+  }
+ ],
+ "cases_sha256": "3135d7709c4e82c3ab9653adf7bc899065d1fd531b638e5fe7fba7dfd3185bb1",
+ "job_id": "14b5364b-02e5-4507-a5d6-ec0af07a3334",
+ "logical_perf": 0.9999999525883624,
+ "noise": ":PCVL:NoiseModel:{\"g2\": 0.003, \"indistinguishability\": 0.92, \"transmittance\": 0.06}",
+ "physical_perf": 0.060084854755766415,
+ "platform": "sim:belenos",
+ "result_sha256": "d1947f12fc6d13ec9ba5e63603f688954b1b43f80272acc77a01e1ebc2c94212",
+ "run": "2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-33",
+ "samples": 10000,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 10000,
+ "status": "completed"
+}

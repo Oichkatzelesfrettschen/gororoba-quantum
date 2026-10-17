@@ -354,6 +354,11 @@ error or canceled job (or records its absence), requires the result's job id
 and shots to match the receipt and status, and parses the BSCount string itself: a result is service data,
 and `perceval.serialization.deserialize` evaluates parameter expressions.
 
+## Strategy guide
+
+[strategy.md](strategy.md) is the living guide to cost, platform behavior,
+native circuits, analysis and open conjectures on Belenos, with the run log.
+
 ## Photonic box-kite family
 
 `scripts/qd_box_kite_cases.py` builds every circuit from

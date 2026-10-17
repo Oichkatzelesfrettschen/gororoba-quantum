@@ -476,6 +476,9 @@ COLLECTION_SCHEMA = "qd-collection-v1"
 TERMINAL = ("completed", "error", "canceled")
 # Perceval 1.3.1 is the client whose payload format the runner captures.
 RUNNER_PERCEVAL = "1.3.1"
+# POST /api/jobs stores job_name in a varchar(50); a longer name answers
+# HTTP 424 "value too long for type character varying(50)".
+JOB_NAME_LIMIT = 50
 # A decompressed result larger than this is refused rather than parsed.
 RESULT_LIMIT = 64 << 20
 STATE_PATTERN = re.compile(r"\|(\d+(?:,\d+)*)>=(\d+)")
@@ -511,9 +514,48 @@ def experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> Any:
     import perceval as pcvl
 
     chip = pcvl.Circuit(circuit["modes"])
+    expected = numpy.eye(circuit["modes"], dtype=complex)
+    phases: list[tuple[int, Any]] = []
     for component in circuit["components"]:
         matrix = numpy.array([[real(x) for x in row] for row in component["unitary"]], dtype=complex)
-        chip.add(component["at"], pcvl.Unitary(pcvl.Matrix(matrix)))
+        at, width = component["at"], len(matrix)
+        expected[at : at + width, at : at + width] = matrix
+        if manifest.get("gate_form", "unitary") == "native":
+            block = pcvl.Circuit(width)
+            if "prep_phase" in component:
+                # BS.H then PS(phi) on port 1 prepares (|0> + e^{i phi}|1>)/sqrt2 ahead of the block.
+                parameter = pcvl.P(component["prep_phase"])
+                block.add(0, pcvl.BS.H())
+                block.add(1, pcvl.PS(parameter))
+                phases.append((at, parameter))
+            for op in component["native"]:
+                if op[0] == "BS.H":
+                    block.add(op[1], pcvl.BS.H())
+                elif op[0] == "PS":
+                    block.add(op[1], pcvl.PS(math.pi))
+                elif op[0] == "PERM":
+                    block.add(0, pcvl.PERM(op[1]))
+                else:
+                    raise PlatformError(f"unknown native op {op!r}")
+            chip.add(at, block)
+        else:
+            chip.add(at, pcvl.Unitary(pcvl.Matrix(matrix)))
+    # Perceval's conventions must reproduce the exact case unitary before anything
+    # is sent, at every iteration value of a parameterized preparation phase.
+    values = [k * math.pi / 4 for k in range(manifest.get("iterations", 1))] if phases else [0.0]
+    for value in values:
+        target = expected.copy()
+        for at, parameter in phases:
+            parameter.set_value(value)
+            prep = numpy.eye(circuit["modes"], dtype=complex)
+            prep[at : at + 2, at : at + 2] = numpy.array([[1, 1], [numpy.exp(1j * value), -numpy.exp(1j * value)]])
+            prep[at : at + 2, at : at + 2] /= math.sqrt(2)
+            target = expected @ prep
+        deviation = float(numpy.max(numpy.abs(numpy.array(chip.compute_unitary()) - target)))
+        if deviation > 1e-12:
+            raise PlatformError(f"the Perceval circuit deviates from the case unitary by {deviation:.2e} at {value}")
+    for _, parameter in phases:
+        parameter.reset()
     built = pcvl.Experiment(chip)
     built.with_input(pcvl.BasicState(circuit["input_state"]))
     built.min_detected_photons_filter(manifest["min_detected_photons"])
@@ -542,12 +584,33 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
         raise PlatformError(f"perceval-quandela {found.get('perceval-quandela')} is installed, not {RUNNER_PERCEVAL}")
     layer = QuandelaCommunicationLayer(platform, token=token())
     computer = RemoteComputer(layer)
-    factory = ExecutionFactory(computer, experiment(manifest, circuit), max_shots_per_call=manifest["max_shots"])
-    computation = factory.build_computation(manifest["command"])
-    computation.add_params(max_samples=manifest["max_samples"])
-    computation.job_name = f"gororoba-{case_dir.name}"[:64]
+    built = experiment(manifest, circuit)
+    steps = manifest.get("iterations", 1)
+    # Iterations split the case's sample and shot budgets evenly; each one sets
+    # the preparation phase phi = k pi/4 and pins compilation_seed 0.
+    per_samples, per_shots = manifest["max_samples"] // steps, manifest["max_shots"] // steps
+    factory = ExecutionFactory(computer, built, max_shots_per_call=per_shots)
+    base = factory.build_computation(manifest["command"])
+    base.add_params(max_samples=per_samples)
+    params = {"phi": 0.0} if steps > 1 else None
+    estimate = computer.estimate_required_shots(base, nsamples=per_samples, param_values=params)
+    estimate = None if estimate is None else estimate * steps
+    if steps > 1:
+        for k in range(steps):
+            factory.add_iteration(
+                circuit_params={"phi": k * math.pi / 4},
+                max_samples=per_samples,
+                max_shots=per_shots,
+                compilation_seed=0,
+            )
+        computation = factory.build_computation(manifest["command"])
+        computation.add_params(max_samples=per_samples)
+    else:
+        computation = base
+    computation.job_name = f"{manifest['family']}/{manifest['job']}"
+    if len(computation.job_name) > JOB_NAME_LIMIT:
+        raise PlatformError(f"job name {computation.job_name!r} exceeds the service's {JOB_NAME_LIMIT} characters")
     computer.validate_single(computation)
-    estimate = computer.estimate_required_shots(computation, nsamples=manifest["max_samples"])
     captured: dict[str, Any] = {}
 
     def record(cloud_data: dict[str, Any]) -> str:
@@ -819,21 +882,60 @@ def result_summary(result_bytes: bytes, job: str, status: dict[str, Any], comple
         raise PlatformError(f"job {job}: status shots {status['shots']} differ from the result's {shots}")
     serialized = answer.get("results")
     inner = json.loads(serialized) if isinstance(serialized, str) and serialized else None
-    if not isinstance(inner, dict) or not isinstance(inner.get("results"), str):
+    iterations = None
+    if isinstance(inner, dict) and isinstance(inner.get("results_list"), list):
+        # An iterated job answers one entry per iteration; counts add up, and
+        # each entry keeps its own counts and its iteration's scalar fields.
+        iterations = []
+        merged: dict[str, int] = {}
+        for entry in inner["results_list"]:
+            if not isinstance(entry, dict) or not isinstance(entry.get("results"), str):
+                raise PlatformError(f"job {job}: an iteration result carries no serialized counts")
+            part = parse_counts(entry["results"])
+            for state, n in part.items():
+                merged[state] = merged.get(state, 0) + n
+            iteration = entry.get("iteration") if isinstance(entry.get("iteration"), dict) else {}
+            fields = {k: v for k, v in entry.items() if k not in ("results", "iteration")}
+            iterations.append(
+                {
+                    "iteration": scalar_tree(iteration),
+                    "counts": part,
+                    "samples": sum(part.values()),
+                    "result_fields": scalar_tree(fields),
+                }
+            )
+        inner = {**{k: v for k, v in inner.items() if k != "results_list"}, "results": None}
+        counts = merged
+    elif not isinstance(inner, dict) or not isinstance(inner.get("results"), str):
         if complete:
             raise PlatformError("the result carries no serialized counts")
         return {"shots": shots, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}
-    counts = parse_counts(inner["results"])
+    else:
+        counts = parse_counts(inner["results"])
     if sum(counts.values()) > shots:
         raise PlatformError(f"job {job}: {sum(counts.values())} samples exceed its {shots} shots")
     scalars = {k: v for k, v in inner.items() if k != "results" and isinstance(v, int | float | str | None)}
-    return {
+    summary = {
         "shots": shots,
         "partial": not complete,
         "counts": counts,
         "samples": sum(counts.values()),
         "result_fields": scalars,
     }
+    if iterations is not None:
+        summary["iterations"] = iterations
+    return summary
+
+
+def scalar_tree(value: Any) -> Any:
+    """JSON scalars and nested dicts and lists of them; anything else becomes its type name."""
+    if isinstance(value, dict):
+        return {str(k): scalar_tree(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [scalar_tree(v) for v in value]
+    if value is None or isinstance(value, bool | int | float | str):
+        return value
+    return type(value).__name__
 
 
 def run_facts(directory: Path) -> dict[str, Any]:
@@ -1086,6 +1188,27 @@ def runner_self_test() -> int:
         finally:
             for stub in reversed(stubs):
                 stub.stop()
+    iterated = json.dumps(
+        {
+            "job_id": "job-i",
+            "shots": 9,
+            "results": json.dumps(
+                {
+                    "results_list": [
+                        {"results": ":PCVL:BSCount:{|1,0>=3;|0,1>=1}", "iteration": {"circuit_params": {"phi": 0.0}}},
+                        {"results": zipped(":PCVL:BSCount:{|0,1>=4}"), "iteration": {"circuit_params": {"phi": 3.14}}},
+                    ]
+                }
+            ),
+        }
+    ).encode()
+    summary = result_summary(iterated, "job-i", {"shots": 9})
+    if summary["counts"] != {"1,0": 3, "0,1": 5} or [it["samples"] for it in summary["iterations"]] != [4, 4]:
+        raise AssertionError(f"an iterated result parsed as {summary}")
+    broken = iterated.replace(b"|1,0>=3", b"|{_:0},0>=3")
+    if broken == iterated:
+        raise AssertionError("the annotated-state fixture did not change the iterated result")
+    refuse("an iteration with an annotated state", functools.partial(result_summary, broken, "job-i", {}), "")
     for label_text, text in (
         ("a BasicState tag", ":PCVL:BasicState:|1,0>"),
         ("an annotated state", ":PCVL:BSCount:{|{_:0},0>=3}"),

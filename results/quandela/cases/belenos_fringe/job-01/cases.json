@@ -1,0 +1,270 @@
+{
+ "schema": "qd-box-kite-cases-v1",
+ "family": "belenos_fringe",
+ "job": "job-01",
+ "platforms": [
+  "sim:belenos",
+  "qpu:belenos"
+ ],
+ "command": "sample_count",
+ "gate_form": "native",
+ "min_detected_photons": 1,
+ "max_samples": 20000,
+ "max_shots": 40000,
+ "parameter": {
+  "name": "phi",
+  "unit": "pi/4"
+ },
+ "iterations": 8,
+ "max_duration": 300,
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "circuit": {
+  "file": "circuit.json",
+  "sha256": "80448583dd490fdd47414ffaed1eab836f78994e1aba6f11c9cfdae245a1486a"
+ },
+ "blocks": [
+  {
+   "config": "fringe-strut",
+   "kind": "fringe",
+   "offset": 0,
+   "photons": [
+    0
+   ],
+   "reference": "two_label-00",
+   "m": [
+    [
+     1,
+     1
+    ],
+    [
+     1,
+     -1
+    ]
+   ],
+   "roles": [
+    "label_0",
+    "label_1",
+    "dilation",
+    "dilation"
+   ],
+   "iterations": [
+    {
+     "phi_quarter_pi": 0,
+     "ideal": [
+      [
+       "1/2",
+       "0"
+      ],
+      [
+       "0",
+       "0"
+      ],
+      [
+       "1/4",
+       "0"
+      ],
+      [
+       "1/4",
+       "0"
+      ]
+     ],
+     "p_algebra": [
+      "1/2",
+      "0"
+     ]
+    },
+    {
+     "phi_quarter_pi": 1,
+     "ideal": [
+      [
+       "1/4",
+       "1/8"
+      ],
+      [
+       "1/4",
+       "-1/8"
+      ],
+      [
+       "1/4",
+       "0"
+      ],
+      [
+       "1/4",
+       "0"
+      ]
+     ],
+     "p_algebra": [
+      "1/2",
+      "0"
+     ]
+    },
+    {
+     "phi_quarter_pi": 2,
+     "ideal": [
+      [
+       "1/4",
+       "0"
+      ],
+      [
+       "1/4",
+       "0"
+      ],
+      [
+       "1/4",
+       "0"
+      ],
+      [
+       "1/4",
+       "0"
+      ]
+     ],
+     "p_algebra": [
+      "1/2",
+      "0"
+     ]
+    },
+    {
+     "phi_quarter_pi": 3,
+     "ideal": [
+      [
+       "1/4",
+       "-1/8"
+      ],
+      [
+       "1/4",
+       "1/8"
+      ],
+      [
+       "1/4",
+       "0"
+      ],
+      [
+       "1/4",
+       "0"
+      ]
+     ],
+     "p_algebra": [
+      "1/2",
+      "0"
+     ]
+    },
+    {
+     "phi_quarter_pi": 4,
+     "ideal": [
+      [
+       "0",
+       "0"
+      ],
+      [
+       "1/2",
+       "0"
+      ],
+      [
+       "1/4",
+       "0"
+      ],
+      [
+       "1/4",
+       "0"
+      ]
+     ],
+     "p_algebra": [
+      "1/2",
+      "0"
+     ]
+    },
+    {
+     "phi_quarter_pi": 5,
+     "ideal": [
+      [
+       "1/4",
+       "-1/8"
+      ],
+      [
+       "1/4",
+       "1/8"
+      ],
+      [
+       "1/4",
+       "0"
+      ],
+      [
+       "1/4",
+       "0"
+      ]
+     ],
+     "p_algebra": [
+      "1/2",
+      "0"
+     ]
+    },
+    {
+     "phi_quarter_pi": 6,
+     "ideal": [
+      [
+       "1/4",
+       "0"
+      ],
+      [
+       "1/4",
+       "0"
+      ],
+      [
+       "1/4",
+       "0"
+      ],
+      [
+       "1/4",
+       "0"
+      ]
+     ],
+     "p_algebra": [
+      "1/2",
+      "0"
+     ]
+    },
+    {
+     "phi_quarter_pi": 7,
+     "ideal": [
+      [
+       "1/4",
+       "1/8"
+      ],
+      [
+       "1/4",
+       "-1/8"
+      ],
+      [
+       "1/4",
+       "0"
+      ],
+      [
+       "1/4",
+       "0"
+      ]
+     ],
+     "p_algebra": [
+      "1/2",
+      "0"
+     ]
+    }
+   ],
+   "rows": []
+  }
+ ],
+ "preregistered": {
+  "definitions": {
+   "dark": "a one-photon block whose ideal algebra-mode probability p_algebra is 0: x y = 0, so the photon leaves only through the dilation ports and any algebra-mode detection is implementation error",
+   "bright": "a one-photon block with p_algebra = 1: ||x y||^2 = 2, so the photon never reaches a dilation port",
+   "half": "a strut, non-kite or four-label block with p_algebra = 1/2, independent of the signs s and t"
+  },
+  "observable": "per iteration phi = k pi/4, a(phi): the algebra-mode share of one-click samples in the block; the fit a(phi) = A + B cos(phi - phi0) over the eight iterations",
+  "ideal": "P(phi) = [4 + 2 cos phi (m00 m01 + m10 m11)] / 8: an edge block (job-00) follows (1 + cos phi)/2, bright at phi = 0 and dark at phi = pi; a strut block (job-01) is flat at 1/2 because m00 m01 + m10 m11 = 0; every iteration's per-mode ideal is exact over Q(sqrt2)",
+  "hardware_report": "fringe visibility B/A against 1 (edge) and 0 (strut), phase offset phi0, a_dark = a(pi) and a_bright = a(0) on one compiled mesh, with binomial intervals per iteration",
+  "falsifier": "on sim:belenos a fitted B more than 4.5 standard errors from 1/2 (edge) or 0 (strut); on qpu:belenos the edge-minus-strut visibility difference is the chip's zero-divisor contrast",
+  "server": "the job sends one ComputationIterator; a result without results_list, or one computed_circuit per iteration, shows how the platform executes iterations"
+ }
+}

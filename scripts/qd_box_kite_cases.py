@@ -118,7 +118,23 @@ MAX_DURATION = 300
 SINGLE = "box_kite_photonic_single"
 PACKED = "box_kite_photonic_packed"
 PAIRS = "box_kite_photonic_pairs"
-FAMILIES = (SINGLE, PACKED, PAIRS)
+DIAGNOSTICS = "belenos_diagnostics"
+FRINGE = "belenos_fringe"
+FAMILIES = (SINGLE, PACKED, PAIRS, DIAGNOSTICS, FRINGE)
+# A fringe job scans the input phase phi = k pi/4, k = 0..7, through one
+# compiled circuit as Perceval iterations; FRINGE_BLOCKS names its sign blocks.
+FRINGE_STEPS = 8
+FRINGE_SAMPLES = 2_500
+FRINGE_BLOCKS = (("edge", "two_label-04"), ("strut", "two_label-00"))
+# Diagnostic jobs separate chip routing, circuit width and gate form on one
+# bright and one dark block: (config, reference, offset, circuit modes, gate form).
+DIAGNOSTIC_JOBS = (
+    ("identity", None, 20, CHIP_MODES, "unitary"),
+    ("two_label", "two_label-04", 0, 4, "unitary"),
+    ("two_label", "two_label-04", 0, 4, "native"),
+    ("two_label", "two_label-04", 20, CHIP_MODES, "native"),
+    ("two_label", "two_label-05", 0, 4, "native"),
+)
 SINGLE_OFFSET = {4: 20, 6: 18, 18: 6}
 # Two photons enter adjacent connected modes 8 and 9; their detectors read
 # dark counts of 0.1 and 0.6 per second in the retained record.
@@ -142,6 +158,21 @@ Matrix = list[list[Q2]]
 ZERO: Q2 = (Fraction(0), Fraction(0))
 ONE: Q2 = (Fraction(1), Fraction(0))
 INV_SQRT2: Q2 = (Fraction(0), Fraction(1, 2))
+
+
+def cos_quarter(k: int) -> tuple[Fraction, Fraction]:
+    """cos(k pi / 4) as a + b sqrt2."""
+    half_root = Fraction(1, 2)
+    return [
+        (Fraction(1), Fraction(0)),
+        (Fraction(0), half_root),
+        (Fraction(0), Fraction(0)),
+        (Fraction(0), -half_root),
+        (Fraction(-1), Fraction(0)),
+        (Fraction(0), -half_root),
+        (Fraction(0), Fraction(0)),
+        (Fraction(0), half_root),
+    ][k % 8]
 
 
 def require(condition: bool, message: str) -> None:
@@ -395,6 +426,75 @@ def configurations(census: dict[str, Any]) -> list[dict[str, Any]]:
     return out
 
 
+# ---------------------------------------------------------------- native gates
+
+# Perceval's BS.H() is (1/sqrt2)[[1, 1], [1, -1]] on two adjacent modes, PS(pi)
+# negates one mode and PERM(p) sends mode i to p[i]; a native op is
+# ["BS.H", a] (modes a, a + 1), ["PS", k] or ["PERM", p], applied in list order.
+SWAP_1_3 = [0, 3, 2, 1]
+SWAP_1_2 = [0, 2, 1, 3]
+EDGE_CORE: list[list[Any]] = [["BS.H", 0], ["BS.H", 2], ["PERM", SWAP_1_3], ["PS", 2], ["BS.H", 0], ["BS.H", 2]]
+STRUT_CORE: list[list[Any]] = [
+    ["BS.H", 2],
+    ["PERM", SWAP_1_2],
+    ["BS.H", 0],
+    ["BS.H", 2],
+    ["PERM", SWAP_1_2],
+    ["BS.H", 0],
+]
+
+
+def op_matrix(n: int, op: list[Any]) -> Matrix:
+    g = identity(n)
+    if op[0] == "BS.H":
+        a = op[1]
+        g[a][a], g[a][a + 1], g[a + 1][a], g[a + 1][a + 1] = INV_SQRT2, INV_SQRT2, INV_SQRT2, neg(INV_SQRT2)
+    elif op[0] == "PS":
+        g[op[1]][op[1]] = q(-1)
+    elif op[0] == "PERM":
+        g = [[ZERO] * n for _ in range(n)]
+        for i, j in enumerate(op[1]):
+            g[j][i] = ONE
+    else:
+        raise ValueError(f"unknown native op {op!r}")
+    return g
+
+
+def native_unitary(n: int, ops: list[list[Any]]) -> Matrix:
+    u = identity(n)
+    for op in ops:
+        u = matmul(op_matrix(n, op), u)
+    return u
+
+
+def native_ops(config: dict[str, Any]) -> list[list[Any]]:
+    """The block as balanced beam splitters, pi phases and one permutation, from M = D1 K D2.
+
+    D1 = diag(M00, M10) and D2 = diag(1, M00 M01) make K's first row and
+    column +1, so K is the edge core [[1, 1], [1, 1]] or the strut core
+    [[1, 1], [1, -1]]. The dilation carries the diagonals through:
+    dil(D1 K D2) = diag(D1, D2) dil(K / 2) diag(D2, D1). The edge core is
+    (BS.H_01 BS.H_23) PS_2 SWAP_13 (BS.H_01 BS.H_23) and the strut core
+    BS.H_01 BS.H_02 BS.H_13 BS.H_23, the non-adjacent pair written as
+    SWAP_12 (BS.H_01 BS.H_23) SWAP_12. A one-photon block first prepares y
+    with BS.H_01 and, for t = -1, PS_1.
+    """
+    m = config["m"]
+    d1 = (m[0][0], m[1][0])
+    d2 = (1, m[0][0] * m[0][1])
+    k = [[d1[i] * m[i][j] * d2[j] for j in range(2)] for i in range(2)]
+    core = EDGE_CORE if k == [[1, 1], [1, 1]] else STRUT_CORE
+    if k not in ([[1, 1], [1, 1]], [[1, 1], [1, -1]]):
+        raise ValueError(f"{config['id']}: sign block {m} normalizes to {k}")
+    ops: list[list[Any]] = []
+    if config["kind"] == "two_label":
+        ops += [["BS.H", 0]] + ([["PS", 1]] if config["t"] < 0 else [])
+    ops += [["PS", mode] for mode, sign in enumerate(d2 + d1) if sign < 0]
+    ops += [list(op) for op in core]
+    ops += [["PS", mode] for mode, sign in enumerate(d1 + d2) if sign < 0]
+    return ops
+
+
 def block_unitary(config: dict[str, Any]) -> Matrix:
     if config["kind"] == "two_label":
         m = tuple(tuple(r) for r in config["m"])
@@ -402,6 +502,10 @@ def block_unitary(config: dict[str, Any]) -> Matrix:
     if config["kind"] == "four_label":
         return four_label_block()
     if config["kind"] == "pair":
+        return dilation([[q(Fraction(x, 2)) for x in r] for r in config["m"]])
+    if config["kind"] == "identity":
+        return [[ONE]]
+    if config["kind"] == "fringe":
         return dilation([[q(Fraction(x, 2)) for x in r] for r in config["m"]])
     return one_hot_block(config["t"])
 
@@ -411,7 +515,34 @@ ROLES = {
     "four_label": ["label", "label", "label", "label", "dilation", "dilation"],
     "one_hot": [f"e{k}" for k in range(DIM)] + ["dilation", "dilation"],
     "pair": ["label_0", "label_1", "dilation", "dilation"],
+    "identity": ["target"],
+    "fringe": ["label_0", "label_1", "dilation", "dilation"],
 }
+
+
+def fringe_ideal(u: Matrix, k: int) -> list[Q2]:
+    """P(mode) for (|0> + e^{i k pi/4} |1>)/sqrt2 into U: (U_k0^2 + U_k1^2 + 2 U_k0 U_k1 cos phi) / 2."""
+    c = cos_quarter(k)
+    out = []
+    for row in u:
+        value = add(add(mul(row[0], row[0]), mul(row[1], row[1])), mul(q(2), mul(mul(row[0], row[1]), c)))
+        out.append(mul(value, q(Fraction(1, 2))))
+    return out
+
+
+def fringe_iterations(config: dict[str, Any]) -> list[dict[str, Any]]:
+    u = block_unitary(config)
+    out = []
+    for k in range(FRINGE_STEPS):
+        probabilities = fringe_ideal(u, k)
+        algebra = ZERO
+        for role, value in zip(ROLES["fringe"], probabilities, strict=True):
+            if role != "dilation":
+                algebra = add(algebra, value)
+        out.append({"phi_quarter_pi": k, "ideal": [text(x) for x in probabilities], "p_algebra": text(algebra)})
+    return out
+
+
 TWO_PHOTON = ("pair",)
 
 
@@ -477,6 +608,8 @@ def check_config(config: dict[str, Any]) -> None:
     require(matmul(u, transpose(u)) == identity(len(u)), f"{config['id']}: the block is not orthogonal")
     if "witness" in config:
         certify_witness(config["id"], config["witness"], [list(r) for r in config["m"]])
+    if config["kind"] in ("two_label", "pair", "fringe"):
+        require(native_unitary(len(u), native_ops(config)) == u, f"{config['id']}: native gates differ from the block")
     if config["kind"] in TWO_PHOTON:
         table = pair_ideal(u)
         for k in (2, 3):
@@ -537,8 +670,13 @@ def block_record(config: dict[str, Any], offset: int) -> dict[str, Any]:
         record.update(m=config["m"], t=config["t"])
     if "witness" in config:
         record.update(witness=config["witness"])
+    if "reference" in config:
+        record.update(reference=config["reference"])
     if config["kind"] == "one_hot":
         record.update(x=list(ONE_HOT_X), y=list(ONE_HOT_Y), t=config["t"])
+    if config["kind"] == "fringe":
+        record.update(m=config["m"], roles=ROLES["fringe"], iterations=fringe_iterations(config), rows=[])
+        return record
     if config["kind"] in TWO_PHOTON:
         table = pair_ideal(u)
         if config["kind"] == "pair":
@@ -561,18 +699,23 @@ def block_record(config: dict[str, Any], offset: int) -> dict[str, Any]:
     return record
 
 
-def circuit_text(blocks: list[tuple[dict[str, Any], int]]) -> str:
-    input_state = [0] * CHIP_MODES
+def circuit_text(blocks: list[tuple[dict[str, Any], int]], modes: int = CHIP_MODES) -> str:
+    input_state = [0] * modes
     components: list[dict[str, Any]] = []
     for config, offset in blocks:
         u = block_unitary(config)
-        require(offset + len(u) <= CHIP_MODES, f"{config['id']} at {offset} leaves the chip")
+        require(offset + len(u) <= modes, f"{config['id']} at {offset} leaves the circuit")
         for port in photon_ports(config["kind"]):
             input_state[offset + port] = 1
-        components.append({"at": offset, "unitary": [[text(x) for x in row] for row in u]})
+        component: dict[str, Any] = {"at": offset, "unitary": [[text(x) for x in row] for row in u]}
+        if config["kind"] in ("two_label", "pair", "fringe"):
+            component["native"] = native_ops(config)
+        if config["kind"] == "fringe":
+            component["prep_phase"] = "phi"
+        components.append(component)
     head = {
         "schema": CIRCUIT_SCHEMA,
-        "modes": CHIP_MODES,
+        "modes": modes,
         "number_field": "each unitary entry [a, b] is the real number a + b sqrt(2)",
         "input_state": input_state,
     }
@@ -581,7 +724,10 @@ def circuit_text(blocks: list[tuple[dict[str, Any], int]]) -> str:
     lines.append(' "components": [')
     for number, component in enumerate(components):
         rows = component["unitary"]
-        lines.append(f'  {{"at": {component["at"]}, "unitary": [')
+        native = f', "native": {json.dumps(component["native"])}' if "native" in component else ""
+        if "prep_phase" in component:
+            native = f', "prep_phase": {json.dumps(component["prep_phase"])}' + native
+        lines.append(f'  {{"at": {component["at"]}{native}, "unitary": [')
         lines += [f"   {json.dumps(row)}" + ("," if k < len(rows) - 1 else "") for k, row in enumerate(rows)]
         lines.append("  ]}" + ("," if number < len(components) - 1 else ""))
     lines += [" ]", "}"]
@@ -601,6 +747,40 @@ DEFINITIONS = {
 
 
 def preregistered(family: str) -> dict[str, Any]:
+    if family == FRINGE:
+        return {
+            "definitions": {k: DEFINITIONS[k] for k in ("dark", "bright", "half")},
+            "observable": "per iteration phi = k pi/4, a(phi): the algebra-mode share of one-click samples in the "
+            "block; the fit a(phi) = A + B cos(phi - phi0) over the eight iterations",
+            "ideal": "P(phi) = [4 + 2 cos phi (m00 m01 + m10 m11)] / 8: an edge block (job-00) follows "
+            "(1 + cos phi)/2, bright at phi = 0 and dark at phi = pi; a strut block (job-01) is flat at 1/2 because "
+            "m00 m01 + m10 m11 = 0; every iteration's per-mode ideal is exact over Q(sqrt2)",
+            "hardware_report": "fringe visibility B/A against 1 (edge) and 0 (strut), phase offset phi0, a_dark "
+            "= a(pi) and a_bright = a(0) on one compiled mesh, with binomial intervals per iteration",
+            "falsifier": "on sim:belenos a fitted B more than 4.5 standard errors from 1/2 (edge) or 0 (strut); "
+            "on qpu:belenos the edge-minus-strut visibility difference is the chip's zero-divisor contrast",
+            "server": "the job sends one ComputationIterator; a result without results_list, or one computed_circuit "
+            "per iteration, shows how the platform executes iterations",
+        }
+    if family == DIAGNOSTICS:
+        return {
+            "definitions": {k: DEFINITIONS[k] for k in ("dark", "bright")},
+            "observable": "per job, in_block: the share of one-click samples on the block's modes, and a, the "
+            "algebra-mode share of those, with the per-mode histogram against the exact ideal",
+            "hypotheses": {
+                "routing": "job-00 sends one photon through the identity on 24 modes; in_block below 0.9 on "
+                "qpu:belenos places the bright block's leakage in the chip's realization of the identity",
+                "width": "job-01 compiles the bright block as a 4-mode circuit, whose unused chip modes the "
+                "transpiler sets as mirrors; in_block and a above the 24-mode single/job-04 result by more than "
+                "4.5 standard errors attribute the leakage to the 24-mode fit",
+                "gate_form": "job-02 and job-03 send the exact native BS.H / PS / PERM gates; a computed_circuit "
+                "equal to the unitary form's, or counts within 4.5 standard errors of job-01 and single/job-04, "
+                "show that the transpiler re-fits native gates as a unitary",
+                "dark_floor": "job-04 is the dark block in the best form; its a is the chip's dark floor",
+            },
+            "simulator_stop_rule": "on sim:belenos every job reads in_block 1 and its exact ideal within the "
+            "simulator's g2 floor",
+        }
     if family == PAIRS:
         return {
             "definitions": {k: DEFINITIONS[k] for k in ("constructive pair", "suppressed pair")},
@@ -645,20 +825,49 @@ def preregistered(family: str) -> dict[str, Any]:
     }
 
 
-def family_jobs(configs: list[dict[str, Any]]) -> dict[str, list[list[tuple[dict[str, Any], int]]]]:
+Job = dict[str, Any]
+
+
+def family_jobs(configs: list[dict[str, Any]]) -> dict[str, list[Job]]:
+    """Each family's jobs: blocks with offsets, the circuit width and the gate form the runner sends."""
     one_photon = [c for c in configs if c["kind"] in ("two_label", "four_label", "one_hot")]
     pairs = [c for c in configs if c["kind"] == "two_label"]
+    by_id = {c["id"]: c for c in configs}
+
+    def job(blocks: list[tuple[dict[str, Any], int]], modes: int = CHIP_MODES, form: str = "unitary") -> Job:
+        return {"blocks": blocks, "modes": modes, "gate_form": form}
+
+    diagnostics = []
+    for number, (kind, reference, offset, modes, form) in enumerate(DIAGNOSTIC_JOBS):
+        if kind == "identity":
+            config: dict[str, Any] = {"kind": "identity", "id": f"identity-{number:02d}", "rows": []}
+        else:
+            source = by_id[str(reference)]
+            config = {**source, "rows": [], "reference": source["id"], "id": f"{source['id']}-{form}-{modes}"}
+        diagnostics.append(job([(config, offset)], modes, form))
     return {
-        SINGLE: [[(c, SINGLE_OFFSET[len(ROLES[c["kind"]])])] for c in one_photon],
+        SINGLE: [job([(c, SINGLE_OFFSET[len(ROLES[c["kind"]])])]) for c in one_photon],
         PACKED: [
-            [(c, PACK_OFFSETS[k]) for k, c in enumerate(pairs[start : start + len(PACK_OFFSETS)])]
+            job([(c, PACK_OFFSETS[k]) for k, c in enumerate(pairs[start : start + len(PACK_OFFSETS)])])
             for start in range(0, len(pairs), len(PACK_OFFSETS))
         ],
-        PAIRS: [[(c, PAIR_OFFSET)] for c in configs if c["kind"] in TWO_PHOTON],
+        PAIRS: [job([(c, PAIR_OFFSET)]) for c in configs if c["kind"] in TWO_PHOTON],
+        DIAGNOSTICS: diagnostics,
+        FRINGE: [
+            job(
+                [({**by_id[ref], "kind": "fringe", "rows": [], "reference": ref, "id": f"fringe-{name}"}, 0)],
+                4,
+                "native",
+            )
+            for name, ref in FRINGE_BLOCKS
+        ],
     }
 
 
 def budget(family: str, blocks: int) -> dict[str, int]:
+    if family == FRINGE:
+        samples = FRINGE_SAMPLES * FRINGE_STEPS
+        return {"min_detected_photons": 1, "max_samples": samples, "max_shots": SHOT_HEADROOM * samples}
     if family == PAIRS:
         return {"min_detected_photons": 2, "max_samples": PAIR_SAMPLES, "max_shots": PAIR_MAX_SHOTS}
     samples = SAMPLES_PER_BLOCK * blocks
@@ -674,19 +883,26 @@ def series(census_path: Path = CENSUS, catalogue_path: Path = CATALOGUE) -> dict
     files: dict[str, str] = {}
     for family, jobs in family_jobs(configs).items():
         index = []
-        for number, blocks in enumerate(jobs):
+        for number, spec in enumerate(jobs):
             name = f"job-{number:02d}"
+            blocks = spec["blocks"]
             for config, offset in blocks:
                 for port in photon_ports(config["kind"]):
                     require(offset + port in connected, f"{config['id']}: mode {offset + port} has no photon source")
-            circuit = circuit_text(blocks)
+            circuit = circuit_text(blocks, spec["modes"])
             manifest = {
                 "schema": SCHEMA,
                 "family": family,
                 "job": name,
                 "platforms": list(PLATFORMS),
                 "command": COMMAND,
+                "gate_form": spec["gate_form"],
                 **budget(family, len(blocks)),
+                **(
+                    {"parameter": {"name": "phi", "unit": "pi/4"}, "iterations": FRINGE_STEPS}
+                    if family == FRINGE
+                    else {}
+                ),
                 "max_duration": MAX_DURATION,
                 "census": {"path": census_path.relative_to(ROOT).as_posix(), "sha256": census_sha256},
                 "circuit": {"file": "circuit.json", "sha256": hashlib.sha256(circuit.encode()).hexdigest()},
@@ -697,8 +913,8 @@ def series(census_path: Path = CENSUS, catalogue_path: Path = CATALOGUE) -> dict
             files[f"{family}/{name}/cases.json"] = json.dumps(manifest, indent=1) + "\n"
             index.append({"job": name, "configs": [config["id"] for config, _ in blocks]})
         summary: dict[str, dict[str, int]] = {}
-        for blocks in jobs:
-            for config, _ in blocks:
+        for spec in jobs:
+            for config, _ in spec["blocks"]:
                 label = f"{config['kind']}_witness" if "witness" in config else config["kind"]
                 entry = summary.setdefault(label, {"configs": 0, "rows": 0})
                 entry["configs"] += 1
@@ -744,7 +960,11 @@ def admit(files: dict[str, str], census_path: Path = CENSUS, catalogue_path: Pat
                 f"{base}: circuit.json differs from its cases.json sha256",
             )
             circuit = json.loads(circuit_bytes)
-            require(circuit["modes"] == CHIP_MODES, f"{base}: circuit modes differ from the chip")
+            width = circuit["modes"]
+            require(
+                isinstance(width, int) and 0 < width <= CHIP_MODES and len(circuit["input_state"]) == width,
+                f"{base}: circuit modes {width} do not fit the chip or the input state",
+            )
             blocks = manifest["blocks"]
             require(len(circuit["components"]) == len(blocks), f"{base}: components and blocks differ in number")
             occupied: set[int] = set()
@@ -754,7 +974,7 @@ def admit(files: dict[str, str], census_path: Path = CENSUS, catalogue_path: Pat
                 u = [[parse(x) for x in row] for row in component["unitary"]]
                 span = set(range(at, at + len(u)))
                 require(
-                    at == block["offset"] and not occupied & span and max(span) < CHIP_MODES,
+                    at == block["offset"] and not occupied & span and max(span) < width,
                     f"{name} overlaps another block or leaves the chip",
                 )
                 occupied |= span
@@ -765,11 +985,35 @@ def admit(files: dict[str, str], census_path: Path = CENSUS, catalogue_path: Pat
                 for mode in block["photons"]:
                     require(mode in connected, f"{name} input mode {mode} has no photon source")
                 require(matmul(u, transpose(u)) == identity(len(u)), f"{name} is not orthogonal")
+                if block["kind"] in ("two_label", "pair", "fringe"):
+                    require(
+                        native_unitary(len(u), component.get("native", [])) == u,
+                        f"{name} native gates differ from its unitary",
+                    )
+                if block["kind"] == "fringe":
+                    require(component.get("prep_phase") == "phi", f"{name} lacks its phi phase shifter")
+                    require(
+                        block["iterations"] == fringe_iterations({"kind": "fringe", "m": block["m"]}),
+                        f"{name} iteration ideals differ from its sign block",
+                    )
+                    require(
+                        block_unitary({"kind": "fringe", "m": block["m"]}) == u,
+                        f"{name} differs from its sign block",
+                    )
+                    continue
                 if "witness" in block:
                     require(not block["rows"], f"{name} carries both census rows and a witness")
                     certify_witness(name, block["witness"], block["m"])
                     if block["kind"] == "two_label":
                         require(block["witness"][5] == block["t"], f"{name} witness t differs from the block's")
+                elif "reference" in block:
+                    require(
+                        family == DIAGNOSTICS and not block["rows"], f"{name} references a block outside diagnostics"
+                    )
+                    require(
+                        block_unitary({"kind": block["kind"], "m": block["m"], "t": block["t"]}) == u,
+                        f"{name} differs from the sign block it references",
+                    )
                 elif block["kind"] in ("two_label", "pair"):
                     require(block["rows"], f"{name} serves no census row and carries no witness")
                 block_rows = [by_key.get((source, number)) for source, number in block["rows"]]
@@ -796,6 +1040,9 @@ def admit(files: dict[str, str], census_path: Path = CENSUS, catalogue_path: Pat
                 f"{base}: input_state differs from the block photons",
             )
         require(len(set(served)) == len(served), f"{family}: a census row is served twice")
+        if family in (DIAGNOSTICS, FRINGE):
+            require(not served, f"{family}: a diagnostic job serves census rows")
+            continue
         kinds = [json.loads(files[f"{family}/{e['job']}/cases.json"])["blocks"] for e in index["jobs"]]
         keys = [
             (json.dumps(b["m"]), b.get("t")) for blocks in kinds for b in blocks if b["kind"] in ("two_label", "pair")
@@ -895,6 +1142,7 @@ def self_test() -> int:
         ("a one-hot block claiming another P", _edit(f"{last_single}/cases.json", _claim_bright)),
         ("a strut pair serving kite-edge rows", _swap_pair_rows),
         ("a pair whose sign block is an edge's", _edit(f"{PAIRS}/job-00/cases.json", _edge_block)),
+        ("an edited native gate", _edit_native),
         (
             "an edited two-click total",
             _edit(f"{PAIRS}/job-00/cases.json", lambda m: m["blocks"][0]["two_click"]["total"].reverse()),
@@ -942,6 +1190,17 @@ def self_test() -> int:
         ONE_HOT_Y = saved
     print(f"self-test: {rejected} mutations rejected")
     return 0
+
+
+def _edit_native(files: dict[str, str]) -> None:
+    """Move one beam splitter of the first single job's native gates and rebind the circuit digest."""
+    base = f"{SINGLE}/job-00"
+    circuit = files[f"{base}/circuit.json"]
+    edited = circuit.replace('["BS.H", 2]', '["BS.H", 1]', 1)
+    if edited == circuit:
+        raise ValueError("the native-gate fixture holds no BS.H on modes 2 and 3")
+    files[f"{base}/circuit.json"] = edited
+    _rehash(base)(files)
 
 
 def _pair_jobs(files: dict[str, str]) -> tuple[str, str]:

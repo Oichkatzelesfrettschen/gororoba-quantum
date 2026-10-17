@@ -30,7 +30,7 @@ The IBM service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 
 
 The Quantum Inspire ledger retrieved at 2026-10-17T16:04:23+00:00 lists 212 jobs with 1353728 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-17T17:53:31+00:00 counts 0 jobs, and 0 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-17T17:53:31+00:00 counts 0 jobs, and 7 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one
 circuit and charges the account ledger's change.
@@ -126,6 +126,13 @@ circuit and charges the account ledger's change.
 | [2026-10-17T154255Z-box_kite_ry_ladder-batch-00](../../results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_ladder-batch-00) | Quantum Inspire | box-kite Ry emulator capability | Rydberg | 3 | 3 | completed | 0 ledger change | qi-ry-emulator-boxkite-capability |
 | [2026-10-17T154255Z-box_kite_ry_smoke-batch-00](../../results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_smoke-batch-00) | Quantum Inspire | box-kite Ry emulator capability | Rydberg | 3 | 3 | completed | 0 ledger change | qi-ry-emulator-boxkite-capability |
 | [2026-10-17T154255Z-box_kite_ry_smoke-batch-01](../../results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_smoke-batch-01) | Quantum Inspire | box-kite Ry emulator capability | Rydberg | 3 | 3 | completed | 0 ledger change | qi-ry-emulator-boxkite-capability |
+| [2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-04](../../results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-04) | Quandela Cloud | box-kite photonic S1 | sim:belenos | 1 | 1 | completed | 0.0 credits | qd-sim-belenos-boxkite-ideals |
+| [2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04](../../results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04) | Quandela Cloud | box-kite photonic Q1 bright | qpu:belenos | 1 | 1 | completed | 0.01 credits | qd-belenos-bright-block-routing-deficit |
+| [2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-05](../../results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-05) | Quandela Cloud | box-kite photonic S1 | sim:belenos | 1 | 1 | completed | 0.0 credits | qd-sim-belenos-boxkite-ideals |
+| [2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-00](../../results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-00) | Quandela Cloud | box-kite photonic S1 | sim:belenos | 1 | 1 | completed | 0.0 credits | qd-sim-belenos-boxkite-ideals |
+| [2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-33](../../results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-33) | Quandela Cloud | box-kite photonic S1 | sim:belenos | 1 | 1 | completed | 0.0 credits | qd-sim-belenos-boxkite-ideals |
+| [2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-02](../../results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-02) | Quandela Cloud | box-kite photonic S1 | sim:belenos | 1 | 1 | completed | 0.0 credits | qd-sim-belenos-boxkite-ideals |
+| [2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-00](../../results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-00) | Quandela Cloud | box-kite photonic S1 | sim:belenos | 1 | 1 | completed | 0.0 credits | qd-sim-belenos-boxkite-ideals |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -216,6 +223,13 @@ circuit and charges the account ledger's change.
 - **qi-boxkite-ry-ladder-batch-00** (2026-10-17T154255Z-box_kite_ry_ladder-batch-00, batch job 870723, 3072 of 3072 shots done): Ry ladder residue (R1 width 9, R2 a comment line, R9 teleport.cq without bit register): which factor does the Ry emulator reject, and at what rate does a completed one depart from its ideal distribution?
 - **qi-boxkite-ry-smoke-batch-00** (2026-10-17T154255Z-box_kite_ry_smoke-batch-00, batch job 870725, 3072 of 3072 shots done): Ry smoke batch-00 (reduced two-label LCU replicas, four per 9-atom circuit): do shallow box-kite replicas read their census P(selector = 0) on Ry?
 - **qi-boxkite-ry-smoke-batch-01** (2026-10-17T154255Z-box_kite_ry_smoke-batch-01, batch job 870727, 3072 of 3072 shots done): Ry smoke batch-01 (full Design B dark and bright witnesses of (1,10)(4,15) and the negative fixture): does the 5-qubit encoding keep its contrast on Ry?
+- **qd-sim-belenos-single-job-04** (2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-04, job e12075f3-394b-4aa0-8b92-15dbcb34f165, 10000 samples, 10000 shots): bright block (1,1;-1,-1), t = +1: does the cloud path return the exact ideal a = 1?
+- **qd-qpu-belenos-single-job-04** (2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04, job 7419efb8-7424-462d-89f9-9bd2b8fab334, 10000 samples, 10000 shots): bright block (1,1;-1,-1) on qpu:belenos, the same compiled circuit as sim job e12075f3: a and in-block routing on hardware?
+- **qd-sim-belenos-single-job-05** (2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-05, job 53c51a6a-b04a-4434-a9e7-8ec4ea08cbaf, 10000 samples, 10001 shots): dark block, same sign block, t = -1: is a = 0 exactly (the zero divisor)?
+- **qd-sim-belenos-single-job-00** (2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-00, job 77860077-f711-4005-ad73-384466a9b705, 10000 samples, 10001 shots): strut block (1,1;1,-1): a = 1/2 with per-mode ideal 1/2, 0, 1/4, 1/4?
+- **qd-sim-belenos-single-job-33** (2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-33, job 14b5364b-02e5-4507-a5d6-ec0af07a3334, 10000 samples, 10000 shots): one-hot 16D dark pair (e1+e10)(e4-e15) on 18 modes: zero clicks on all 16 algebra labels?
+- **qd-sim-belenos-pairs-job-02** (2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-02, job 8878720f-cdcc-4393-8cd4-2719fdca5e4d, 5000 samples, 164253 shots): two-photon edge block: label fraction of two-click samples against f_edge(V)?
+- **qd-sim-belenos-pairs-job-00** (2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-00, job 4420d79b-4300-46b1-9a30-621162035261, 5000 samples, 162604 shots): two-photon strut block: label fraction against f_strut(V); the V it implies?
 
 ## Established claims
 
@@ -458,6 +472,11 @@ circuit and charges the account ledger's change.
   Gates: replayed by core-425; source regenerated by core-420.
   Acquisitions: qi-boxkite-ry-ladder-batch-00, qi-boxkite-ry-smoke-batch-00, qi-boxkite-ry-smoke-batch-01.
   Depends on: qi-ry-emulator-reader-constructs.
+- **qd-sim-belenos-boxkite-ideals** (preregistered emulator control, implementation). On sim:belenos (its default noise model g2 0.003, indistinguishability 0.92, transmittance 0.06) the six S1 box-kite circuits reproduce their exact Q(sqrt2) ideals: bright a = 1 (5003/4996/0/0), dark a = 0 (Wilson upper bound 0.00038), strut a = 0.506 against 1/2, the one-hot 16D dark pair 0 clicks on all 16 algebra labels, and two-photon label fractions of 0.472 (edge) and 0.0134 (strut), whose strut inversion gives V = 0.918 against the simulator's 0.92.
+  Boundary: One job per circuit on sim:belenos as served on 2026-10-17; the simulator applies its own noise model and Quandela's transpiler, so agreement shows the cases, runner and compilation path are correct, never that hardware reaches the ideal.
+  Evidence: [analysis.json](../../results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-00/analysis.json), [analysis.json](../../results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-02/analysis.json), [analysis.json](../../results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-00/analysis.json), [analysis.json](../../results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-04/analysis.json), [analysis.json](../../results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-05/analysis.json), [analysis.json](../../results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-33/analysis.json), [strategy.md](../notes/quandela/strategy.md).
+  Gates: replayed by core-508; source regenerated by core-504.
+  Acquisitions: qd-sim-belenos-pairs-job-00, qd-sim-belenos-pairs-job-02, qd-sim-belenos-single-job-00, qd-sim-belenos-single-job-04, qd-sim-belenos-single-job-05, qd-sim-belenos-single-job-33.
 - **hw-mod15-pilot** (preregistered hardware inference, hardware). Hybrid Shor mod 15 factor yield 0.4971 [0.4726, 0.5216] against the exact uniform null 0.2969; packed replica 0 differs from its isolated reference by +0.0020 (Shor) and -0.0037 (folded QPE), both inside the 0.03 Newcombe equivalence margin.
   Boundary: The order-4 law is the same with and without the conditional phases, so the feed-forward is untested; the Hoeffding view leaves folded-QPE equivalence unresolved.
   Evidence: [collect.json](../../results/live/2026-10-11T152922.787095Z/collect.json), [adjudication-05b97e57a73f-seed20261011.json](../../results/live/2026-10-11T152922.787095Z/adjudication-05b97e57a73f-seed20261011.json), [CAMPAIGN_FINDINGS.md](../../results/live/CAMPAIGN_FINDINGS.md).
@@ -540,6 +559,12 @@ circuit and charges the account ledger's change.
   Evidence: [box_kite_tuna_17_pre_t0_analysis.json](../../results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json), [experiment-program.md](../notes/box_kites/experiment-program.md), [tuna-17.md](../notes/quantum_inspire/tuna-17.md), [experiments.md](../notes/quantum_inspire/experiments.md).
   Gates: replayed by core-425; source regenerated by core-420.
   Acquisitions: qi-boxkite-tuna17-t0-batch-00, qi-boxkite-tuna17-t0-batch-01, qi-boxkite-tuna17-t0-batch-02, qi-boxkite-qx-twins-batch-00, qi-boxkite-qx-twins-batch-04.
+- **qd-belenos-bright-block-routing-deficit** (preregistered hardware inference, hardware). On qpu:belenos the bright block that sim:belenos reproduces exactly, sent as a 4-mode unitary inside a 24-mode identity and compiled to the same 552-beam-splitter circuit, keeps 0.470 (Wilson 0.460 to 0.480) of one-click samples on its four modes, and of those an algebra share a = 0.256 (0.244 to 0.269) against the ideal 1; the leaked clicks fall mostly on modes 14 to 19, whose dark counts are below 0.2 per second.
+  Boundary: One 10000-sample job at the 2026-10-17 calibration (HOM 92.6 %, g2 1 %); the cause (24-mode fit, chip routing or gate form) is untested, and belenos_diagnostics and belenos_fringe carry the falsifiers.
+  Evidence: [analysis.json](../../results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/analysis.json), [strategy.md](../notes/quandela/strategy.md).
+  Gates: replayed by core-508; source regenerated by core-504.
+  Acquisitions: qd-qpu-belenos-single-job-04.
+  Depends on: qd-sim-belenos-boxkite-ideals.
 
 ## Exploratory claims
 

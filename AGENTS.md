@@ -951,8 +951,18 @@ one of these configurations, and that the signed zero products (336, 5040,
 `--self-test`, the runner's stubbed-service contract included), core-504
 (`qd_box_kite_cases.py --check results/quandela/cases`), core-505 (its
 `--self-test`), core-506 (`cd_two_blade_blocks.py --check
-docs/evidence/box_kite_census/two_blade_blocks.json`) and core-507 (its
-`--self-test`).
+docs/evidence/box_kite_census/two_blade_blocks.json`), core-507 (its
+`--self-test`), core-508 (`qd_box_kite_analysis.py --check` over every
+retained run) and core-509 (its `--self-test`).
+
+**Strategy guide.** [docs/notes/quandela/strategy.md](docs/notes/quandela/strategy.md)
+is the living record of what a credit buys on Belenos: the measured cost
+model (1 credit per job plus 1e-06 per QPU shot), platform behavior
+(job-name limit, the simulator's own noise model, rates and dark counts,
+compiled-circuit structure, iterations and compilation seeds), the native
+BS.H / PS / PERM decomposition of every sign block, the analysis rules, the
+open conjectures with their falsifiers and the run log. Every run updates it
+in the change that retains the run.
 
 ## Qiskit skills
 

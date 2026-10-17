@@ -1,0 +1,26 @@
+{
+ "schema": "qd-box-kite-series-v1",
+ "family": "belenos_fringe",
+ "census_sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2",
+ "census_sign_blocks": 14,
+ "summary": {
+  "fringe": {
+   "configs": 2,
+   "rows": 0
+  }
+ },
+ "jobs": [
+  {
+   "job": "job-00",
+   "configs": [
+    "fringe-edge"
+   ]
+  },
+  {
+   "job": "job-01",
+   "configs": [
+    "fringe-strut"
+   ]
+  }
+ ]
+}
