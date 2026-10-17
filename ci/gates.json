@@ -3248,6 +3248,22 @@
    "name": "core-493",
    "seconds": 3.9,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_rust_audit.py --check docs/evidence/wheel_rust_audit && \"$PYTHON\" -B -O -W error scripts/wheel_rust_audit.py --check docs/evidence/wheel_rust_audit",
+   "name": "core-521",
+   "seconds": 9.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_rust_audit.py --self-test && \"$PYTHON\" -B -O -W error scripts/wheel_rust_audit.py --self-test",
+   "name": "core-522",
+   "seconds": 0.4,
+   "tier": "pr"
   }
  ],
  "excluded": [

@@ -1,0 +1,16 @@
+[package]
+name = "wheel-audit-harness"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+wheel = { path = "../src/wheel-0.1.0" }
+
+# Root profiles govern the path dependency too, so these pin the integer
+# overflow behavior of the audited FractionWheel types.
+[profile.dev]
+overflow-checks = true
+
+[profile.release]
+overflow-checks = false
