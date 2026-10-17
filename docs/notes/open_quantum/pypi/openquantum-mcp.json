@@ -1,0 +1,49 @@
+{
+ "name": "openquantum-mcp",
+ "version": "0.2.0",
+ "summary": "Model Context Protocol server for Open Quantum \u2014 run quantum jobs from AI coding agents",
+ "requires_python": ">=3.10",
+ "requires_dist": [
+  "openquantum-sdk>=1.0.0",
+  "mcp<2,>=1.6.0",
+  "pytest>=7.0; extra == \"dev\"",
+  "pytest-cov>=4.0; extra == \"dev\"",
+  "pytest-mock>=3.10; extra == \"dev\"",
+  "build>=1.0; extra == \"dev\""
+ ],
+ "classifiers": [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Physics",
+  "Topic :: Software Development :: Libraries"
+ ],
+ "project_urls": {
+  "Bug Tracker": "https://github.com/Quantum-Rings/openquantum-platform/issues",
+  "Documentation": "https://docs.openquantum.com/mcp/overview/",
+  "Homepage": "https://www.openquantum.com",
+  "Source": "https://github.com/Quantum-Rings/openquantum-platform/tree/main/mcp"
+ },
+ "files": [
+  {
+   "filename": "openquantum_mcp-0.2.0-py3-none-any.whl",
+   "packagetype": "bdist_wheel",
+   "upload_time_iso_8601": "2026-10-15T23:54:52.108673Z",
+   "size": 24792,
+   "sha256": "8973ac5a120d85daabda89d0acb227109c4febda1684c89f2c85d34632226f4d"
+  },
+  {
+   "filename": "openquantum_mcp-0.2.0.tar.gz",
+   "packagetype": "sdist",
+   "upload_time_iso_8601": "2026-10-15T23:54:53.201052Z",
+   "size": 28626,
+   "sha256": "6e3835e4660f15f33d3b0a3dc149935f9d751c8490fd32720dc1420068fca5ff"
+  }
+ ]
+}
