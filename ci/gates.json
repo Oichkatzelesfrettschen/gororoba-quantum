@@ -2717,7 +2717,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/exact_rank.py --self-test && \"$PYTHON\" -B -O -W error scripts/exact_rank.py --self-test",
-   "name": "core-540",
+   "name": "core-528",
    "seconds": 5.0,
    "tier": "pr"
   },
