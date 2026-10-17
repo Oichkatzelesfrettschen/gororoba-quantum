@@ -1,0 +1,41 @@
+{
+ "counts": {
+  "ibm_kingston_dynamic_pub_01": [
+   55593,
+   49332,
+   43002,
+   48681
+  ],
+  "ibm_kingston_dynamic_pub_02": [
+   55976,
+   46325,
+   43072,
+   51235
+  ]
+ },
+ "device": "CPU",
+ "isa": {
+  "path": "results/live/2026-10-17T003834.987727Z/isa.qpy",
+  "sha256": "b9a7b2c3a8adacde2cca9790504eea08733e011b2b7b337dffa5408be2592e44"
+ },
+ "method": "statevector",
+ "schema": "n21-exact-model-validation-v1",
+ "seeds": [
+  1000
+ ],
+ "shots": 196608,
+ "snapshot": {
+  "path": "docs/evidence/calibration/history/ibm_kingston/20261016T1213360700.json",
+  "sha256": "69470d67f12ae90eaa3b0e078c1367f840a152a7d943987b769364536e9e2ec3"
+ },
+ "versions": {
+  "numpy": "2.1.3",
+  "qiskit": "2.5.2",
+  "qiskit-aer": "0.17.2"
+ },
+ "wall_seconds": {
+  "ibm_kingston_dynamic_pub_01": 576.182375115,
+  "ibm_kingston_dynamic_pub_02": 587.948163011
+ },
+ "workers": 4
+}
