@@ -1,0 +1,446 @@
+{
+ "schema": "qi-zero-divisor-analysis-v1",
+ "claim_kind": "preregistered hardware inference",
+ "replicas": [
+  {
+   "file": "latin-1.cq",
+   "case": "dark",
+   "region": [
+    0,
+    1,
+    2,
+    4,
+    5
+   ],
+   "roles": {
+    "d0": 0,
+    "d1": 4,
+    "d2": 1,
+    "d3": 5,
+    "selector": 2
+   },
+   "seed": 0,
+   "cz": 66,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.0,
+   "shots": 16384,
+   "selector_zero_count": 8042,
+   "p_selector_zero": 0.4908447265625,
+   "p_selector_zero_ci95": [
+    0.4831929438220793,
+    0.49850080146134695
+   ],
+   "selector_e01": 0.01116943359375,
+   "selector_e10": 0.03082275390625,
+   "p_selector_zero_readout_corrected": 0.48018603465851173
+  },
+  {
+   "file": "latin-1.cq",
+   "case": "bright",
+   "region": [
+    7,
+    8,
+    10,
+    11,
+    13
+   ],
+   "roles": {
+    "d0": 7,
+    "d1": 13,
+    "d2": 10,
+    "d3": 8,
+    "selector": 11
+   },
+   "seed": 0,
+   "cz": 66,
+   "t_count": 26,
+   "ideal_p_selector_zero": 1.0,
+   "shots": 16384,
+   "selector_zero_count": 8478,
+   "p_selector_zero": 0.5174560546875,
+   "p_selector_zero_ci95": [
+    0.5098014165248689,
+    0.5251025091347318
+   ],
+   "selector_e01": 0.01812744140625,
+   "selector_e10": 0.0460205078125,
+   "p_selector_zero_readout_corrected": 0.5037500815235114
+  },
+  {
+   "file": "latin-1.cq",
+   "case": "fixture",
+   "region": [
+    9,
+    12,
+    14,
+    15,
+    16
+   ],
+   "roles": {
+    "d0": 15,
+    "d1": 14,
+    "d2": 16,
+    "d3": 9,
+    "selector": 12
+   },
+   "seed": 2,
+   "cz": 70,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.5,
+   "shots": 16384,
+   "selector_zero_count": 7888,
+   "p_selector_zero": 0.4814453125,
+   "p_selector_zero_ci95": [
+    0.4737997215535072,
+    0.48909960222090326
+   ],
+   "selector_e01": 0.0048828125,
+   "selector_e10": 0.0274658203125,
+   "p_selector_zero_readout_corrected": 0.4691560489466381
+  },
+  {
+   "file": "latin-2.cq",
+   "case": "bright",
+   "region": [
+    0,
+    1,
+    2,
+    4,
+    5
+   ],
+   "roles": {
+    "d0": 0,
+    "d1": 4,
+    "d2": 1,
+    "d3": 5,
+    "selector": 2
+   },
+   "seed": 0,
+   "cz": 66,
+   "t_count": 26,
+   "ideal_p_selector_zero": 1.0,
+   "shots": 16384,
+   "selector_zero_count": 8070,
+   "p_selector_zero": 0.4925537109375,
+   "p_selector_zero_ci95": [
+    0.48490109325251946,
+    0.5002098195780006
+   ],
+   "selector_e01": 0.01116943359375,
+   "selector_e10": 0.03082275390625,
+   "p_selector_zero_readout_corrected": 0.4819699286442406
+  },
+  {
+   "file": "latin-2.cq",
+   "case": "fixture",
+   "region": [
+    7,
+    8,
+    10,
+    11,
+    13
+   ],
+   "roles": {
+    "d0": 7,
+    "d1": 13,
+    "d2": 10,
+    "d3": 8,
+    "selector": 11
+   },
+   "seed": 0,
+   "cz": 70,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.5,
+   "shots": 16384,
+   "selector_zero_count": 8147,
+   "p_selector_zero": 0.49725341796875,
+   "p_selector_zero_ci95": [
+    0.48959896533250064,
+    0.5049091582525271
+   ],
+   "selector_e01": 0.01812744140625,
+   "selector_e10": 0.0460205078125,
+   "p_selector_zero_readout_corrected": 0.48216265570990674
+  },
+  {
+   "file": "latin-2.cq",
+   "case": "dark",
+   "region": [
+    9,
+    12,
+    14,
+    15,
+    16
+   ],
+   "roles": {
+    "d0": 14,
+    "d1": 15,
+    "d2": 16,
+    "d3": 9,
+    "selector": 12
+   },
+   "seed": 0,
+   "cz": 66,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.0,
+   "shots": 16384,
+   "selector_zero_count": 7455,
+   "p_selector_zero": 0.45501708984375,
+   "p_selector_zero_ci95": [
+    0.4474034580294731,
+    0.4626518104630942
+   ],
+   "selector_e01": 0.0048828125,
+   "selector_e10": 0.0274658203125,
+   "p_selector_zero_readout_corrected": 0.44184432950674907
+  },
+  {
+   "file": "latin-3.cq",
+   "case": "fixture",
+   "region": [
+    0,
+    1,
+    2,
+    4,
+    5
+   ],
+   "roles": {
+    "d0": 0,
+    "d1": 5,
+    "d2": 1,
+    "d3": 2,
+    "selector": 4
+   },
+   "seed": 1,
+   "cz": 70,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.5,
+   "shots": 16384,
+   "selector_zero_count": 8494,
+   "p_selector_zero": 0.5184326171875,
+   "p_selector_zero_ci95": [
+    0.5107782869225208,
+    0.5260783059068477
+   ],
+   "selector_e01": 0.01416015625,
+   "selector_e10": 0.05206298828125,
+   "p_selector_zero_readout_corrected": 0.4994444081312504
+  },
+  {
+   "file": "latin-3.cq",
+   "case": "dark",
+   "region": [
+    7,
+    8,
+    10,
+    11,
+    13
+   ],
+   "roles": {
+    "d0": 7,
+    "d1": 13,
+    "d2": 10,
+    "d3": 8,
+    "selector": 11
+   },
+   "seed": 0,
+   "cz": 66,
+   "t_count": 26,
+   "ideal_p_selector_zero": 0.0,
+   "shots": 16384,
+   "selector_zero_count": 7643,
+   "p_selector_zero": 0.46649169921875,
+   "p_selector_zero_ci95": [
+    0.45886154788308336,
+    0.4741375598542565
+   ],
+   "selector_e01": 0.01812744140625,
+   "selector_e10": 0.0460205078125,
+   "p_selector_zero_readout_corrected": 0.4492923759212157
+  },
+  {
+   "file": "latin-3.cq",
+   "case": "bright",
+   "region": [
+    9,
+    12,
+    14,
+    15,
+    16
+   ],
+   "roles": {
+    "d0": 14,
+    "d1": 15,
+    "d2": 16,
+    "d3": 9,
+    "selector": 12
+   },
+   "seed": 0,
+   "cz": 66,
+   "t_count": 26,
+   "ideal_p_selector_zero": 1.0,
+   "shots": 16384,
+   "selector_zero_count": 8632,
+   "p_selector_zero": 0.52685546875,
+   "p_selector_zero_ci95": [
+    0.5192050091619544,
+    0.5344933380066621
+   ],
+   "selector_e01": 0.0048828125,
+   "selector_e10": 0.0274658203125,
+   "p_selector_zero_readout_corrected": 0.5160842689542071
+  }
+ ],
+ "by_case": {
+  "dark": {
+   "p_selector_zero": 0.4707845052083333,
+   "ci95": [
+    0.4663742556487876,
+    0.47519932106628177
+   ],
+   "readout_corrected": 0.4571075800288255,
+   "variance": 5.068897600587527e-06
+  },
+  "bright": {
+   "p_selector_zero": 0.5122884114583334,
+   "ci95": [
+    0.5078687020919088,
+    0.51670620018114
+   ],
+   "readout_corrected": 0.5006014263739864,
+   "variance": 5.0831908151007225e-06
+  },
+  "fixture": {
+   "p_selector_zero": 0.4990437825520833,
+   "ci95": [
+    0.494623781309528,
+    0.503463933248695
+   ],
+   "readout_corrected": 0.48358770426259845,
+   "variance": 5.086244418298183e-06
+  }
+ },
+ "visibility": 0.041503906250000056,
+ "contraction": {
+  "dark_plus_bright_minus_one": -0.01692708333333326,
+  "z": -5.312567199638982,
+  "fixture_minus_half": -0.0009562174479166852,
+  "fixture_z": -0.4239923792932455
+ },
+ "kingston_comparison": {
+  "dark": 0.182,
+  "dark_ci95": [
+   0.146,
+   0.217
+  ],
+  "bright": 0.828,
+  "claim": "hw-zero-divisor-floor"
+ },
+ "secondary": {
+  "claim_kind": "secondary analysis, fixed after the data",
+  "endpoint_midpoint": 0.49153645833333337,
+  "raw": {
+   "contrast_B_minus_D": {
+    "value": 0.041503906250000056,
+    "se": 0.0031974508502636374,
+    "z": 12.980310939440386
+   },
+   "sum_residual_D_plus_B_minus_1": {
+    "value": -0.01692708333333326,
+    "se": 0.0031722046214788615,
+    "z": -5.336062881543235
+   },
+   "fixture_minus_endpoint_midpoint_H": {
+    "value": 0.007507324218749972,
+    "se": 0.002757431878947659,
+    "z": 2.7225783077604273
+   },
+   "fixture_minus_half": {
+    "value": -0.0009562174479166852,
+    "se": 0.002254234445106028,
+    "z": -0.42418722240388335
+   }
+  },
+  "raw_covariance": {
+   "dark,dark": 5.064357588303715e-06,
+   "dark,bright": -4.020244482995218e-08,
+   "dark,fixture": 4.007256393379067e-08,
+   "bright,dark": -4.020244482995218e-08,
+   "bright,bright": 5.078929461888038e-06,
+   "bright,fixture": -4.620965733516237e-08,
+   "fixture,dark": 4.007256393379067e-08,
+   "fixture,bright": -4.620965733516237e-08,
+   "fixture,fixture": 5.0815729335024825e-06
+  },
+  "readout_corrected_bootstrap": {
+   "contrast_B_minus_D": {
+    "mean": 0.04350206162434229,
+    "se": 0.0033237233194110113,
+    "ci95": [
+     0.03688707902173131,
+     0.049988312322890624
+    ]
+   },
+   "sum_residual_D_plus_B_minus_1": {
+    "mean": -0.04227933325630848,
+    "se": 0.003524576361399868,
+    "ci95": [
+     -0.04932504533442997,
+     -0.035508193147146684
+    ]
+   },
+   "fixture_minus_endpoint_midpoint_H": {
+    "mean": 0.004677328613911419,
+    "se": 0.0029718372786066184,
+    "ci95": [
+     -0.00116105817856004,
+     0.010545842756504506
+    ]
+   },
+   "fixture_minus_half": {
+    "mean": -0.016462338014242826,
+    "se": 0.0024829254732189098,
+    "ci95": [
+     -0.021400210236826128,
+     -0.011735969387700749
+    ]
+   }
+  },
+  "by_region_raw": {
+   "[0, 1, 2, 4, 5]": {
+    "contrast": 0.001708984375,
+    "contrast_ci95": [
+     -0.009116881259968552,
+     0.012534850009968552
+    ],
+    "H": 0.0267333984375,
+    "H_se": 0.004781769669346714,
+    "H_z": 5.59069137287667
+   },
+   "[7, 8, 10, 11, 13]": {
+    "contrast": 0.05096435546875,
+    "contrast_ci95": [
+     0.04015244918200019,
+     0.06177626175549981
+    ],
+    "H": 0.005279541015625,
+    "H_se": 0.004781834473764229,
+    "H_z": 1.104082762502856
+   },
+   "[9, 12, 14, 15, 16]": {
+    "contrast": 0.07183837890625,
+    "contrast_ci95": [
+     0.06104076383215742,
+     0.08263599398034258
+    ],
+    "H": -0.009490966796875,
+    "H_se": 0.004777582041084128,
+    "H_z": -1.9865628083952926
+   }
+  },
+  "bootstrap": {
+   "draws": 4000,
+   "seed": 20261016
+  }
+ }
+}

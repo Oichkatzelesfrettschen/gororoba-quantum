@@ -13,7 +13,7 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 21 licensed PDFs and two aliases;
+license evidence. The library publishes 23 licensed PDFs and two aliases;
 84 external sources retain citations and optional ignored local reading copies.
 Four licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
@@ -29,8 +29,10 @@ bytes. Per-paper notes retain the scope and dates of their original readings;
 older references to an ignored/local cache describe that acquisition history.
 The registry records the retained copies and their fresh hash checks.
 
-The Nature articles are paywalled. The retained arXiv preprints remain distinct
+Most Nature articles are paywalled. The retained arXiv preprints remain distinct
 from the versions of record, including the two explicitly named PDF aliases.
+Two open-access Nature-family versions of record (s41586-026-10423-9 and
+s41567-026-03466-2) carry article-level CC BY 4.0 grants and are retained.
 HTML-only sources and their reading scopes appear in the registry and notes.
 Explicit CC BY 4.0 or CC0 permission supports the published PDFs. ArXiv-only
 hosting grants, personal-copy permissions, and sources without an established
@@ -77,6 +79,8 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | note | paper | (a) | (b) | (c) |
 |---|---|---|---|---|
 | s41567-023-02340-9 | Glick et al., Covariant quantum kernels for data with group structure, Nat. Phys. 20, 479 (2024); preprint arXiv:2105.03406 | medium | low | low |
+| [s41586-026-10423-9](notes/s41586-026-10423-9.md) | Matsumoto et al., Two-qubit logic and teleportation with mobile spin qubits in silicon, Nature 653, 391 (2026) | low | none | none |
+| [s41567-026-03466-2](notes/s41567-026-03466-2.md) | Wu et al., Simultaneous high-fidelity single-qubit gates in a spin qubit array, Nat. Phys. (2026) | low | none | none |
 | [2102.01682](notes/2102.01682.md) | Corcoles et al., Exploiting dynamic quantum circuits in a quantum algorithm with superconducting qubits, PRL 127, 100501 (2021) | high | none | low |
 | 2411.05760 | Deshpande et al., Dynamic parameterized quantum circuits | low | none | none |
 | s42254-024-00770-9 | Abbas et al., Challenges and opportunities in quantum optimization, Nat. Rev. Phys. 6, 718 (2024); preprint arXiv:2312.02279 | high | none | low |

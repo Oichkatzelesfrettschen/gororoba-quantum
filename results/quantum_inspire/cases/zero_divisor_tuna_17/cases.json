@@ -1,0 +1,21 @@
+{
+ "schema": "qi-zero-divisor-series-v1",
+ "backend": "tuna_17",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "latin-1.cq",
+    "latin-2.cq",
+    "latin-3.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  }
+ ]
+}

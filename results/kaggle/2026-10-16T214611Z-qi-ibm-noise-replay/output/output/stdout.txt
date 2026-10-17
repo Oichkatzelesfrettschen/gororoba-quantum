@@ -1,0 +1,20 @@
+{
+ "max_abs_exact_phase_shift_rad": 1.1548054179577605e-14,
+ "max_abs_exact_additivity_residual_rad": 1.3322676295501878e-15,
+ "max_exact_driver_p1_after_40_x": 0.011643907538954952,
+ "max_abs_tuna_phase_shift_rad": 0.6948257344749298,
+ "max_abs_tuna_additivity_residual_rad": 0.053566430271059395,
+ "exact_corrected_fidelity": {
+  "0": 0.9861204378316136,
+  "1": 0.9805066201075109,
+  "+": 0.9815716308866143,
+  "+i": 0.9705273050461464
+ },
+ "tuna_corrected_fidelity": {
+  "0": 0.74560546875,
+  "1": 0.8265380859375,
+  "+": 0.84442138671875,
+  "+i": 0.86224365234375
+ }
+}
+wrote /tmp/gororoba/repo/results/quantum_inspire/ibm_noise_replay/tuna_17-ibm_kingston.json

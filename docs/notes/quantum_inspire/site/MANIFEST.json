@@ -1,0 +1,137 @@
+{
+ "schema": "qi-docs-capture-v1",
+ "kind": "site",
+ "retrieved_utc": "2026-10-16T22:19Z",
+ "files": [
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_hardware-backends.md",
+   "source": "https://www.quantum-inspire.com/kbase/hardware-backends/",
+   "sha256": "457607d4debbe5aa725851cb3c3a454fcecf90e1826ba1d457a8e8c44af515ef"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_tuna-operational-specifics.md",
+   "source": "https://www.quantum-inspire.com/kbase/tuna-operational-specifics/",
+   "sha256": "dba291ba2c719f80e73e79a572deaffad179a34e8d6897ea4c0b5014bf70d9d9"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_starmon-7-operational-specifics.md",
+   "source": "https://www.quantum-inspire.com/kbase/starmon-7-operational-specifics/",
+   "sha256": "981e1834c161e21259e66d8b5e6fd87d16484527c77a2466d44fc2112f27783f"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_spin-2-plus-operational-specifics.md",
+   "source": "https://www.quantum-inspire.com/kbase/spin-2-plus-operational-specifics/",
+   "sha256": "4f72b2e8070c552bea3ea29f6447ca7d6a069bfc62c6b8484927862f422b7b62"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_ry-emulator-operational-specifics.md",
+   "source": "https://www.quantum-inspire.com/kbase/ry-emulator-operational-specifics/",
+   "sha256": "b768f5ce615880a770c3975b1e40477f50364e8ae1d06579b0a7b61699201af0"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_emulator-backends.md",
+   "source": "https://www.quantum-inspire.com/kbase/emulator-backends/",
+   "sha256": "0b2f526052fcb582f3a39e9b067e17d133106afbd1e0a2777e3960769d27fa87"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_code-example-getting-started-with-transmons.md",
+   "source": "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-transmons/",
+   "sha256": "7931a7046df9d87b68bd4251e31187348db5706d87f53c31a0b8ca4cddcd2faf"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_code-example-getting-started-with-the-neutral-atom-platform.md",
+   "source": "https://www.quantum-inspire.com/kbase/code-example-getting-started-with-the-neutral-atom-platform/",
+   "sha256": "bcfbfbd3c4b4436082c352d8264bc4e16637dc2eca004c9ded3ca511cadb944f"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_software-development-kit.md",
+   "source": "https://www.quantum-inspire.com/kbase/software-development-kit/",
+   "sha256": "fbc5e24d9d2578d914df9d242f8d1cbde18228ea72be90a53ae52b93a803dfd7"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_qi-tool.md",
+   "source": "https://www.quantum-inspire.com/kbase/qi-tool/",
+   "sha256": "5ec0c0a8366f4dec1350544c73158c68febd4ee716afe983619b9ab7c80873e2"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_low-level-api.md",
+   "source": "https://www.quantum-inspire.com/kbase/low-level-api/",
+   "sha256": "ba69de542dbc74c9f237117c19676bee285a89deb8a42bb0e20e1ef60e251617"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_compilation.md",
+   "source": "https://www.quantum-inspire.com/kbase/compilation/",
+   "sha256": "67b48c2566fd89c4a3253664d102d64dd3dd73034b2d902392bbe39aaa5854ab"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_opensquirrel.md",
+   "source": "https://www.quantum-inspire.com/kbase/opensquirrel/",
+   "sha256": "63a047c8d3abbd97e2d8ea44619b5f8306b287c17c367af67453f2612a7b2d1d"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_cqasm.md",
+   "source": "https://www.quantum-inspire.com/kbase/cqasm/",
+   "sha256": "525d2f7364c09791309dcb3c153f14ce412825bba0ae2748e169d1835bd98ac8"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_cqasm-single-gate-multiple-qubits.md",
+   "source": "https://www.quantum-inspire.com/kbase/cqasm-single-gate-multiple-qubits/",
+   "sha256": "7a178e827a2004f7009d4d646ea397bf170d8619ca6a4435bde3b458c59677bd"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_executing-your-algorithm.md",
+   "source": "https://www.quantum-inspire.com/kbase/executing-your-algorithm/",
+   "sha256": "78628cae4f717a7d1e8383f31468a8cfcdb99c59af59a904a61cfe738d3a68f1"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_displaying-and-downloading-your-results.md",
+   "source": "https://www.quantum-inspire.com/kbase/displaying-and-downloading-your-results/",
+   "sha256": "00d7efaf91a4659b761d674625bd88873095a1795b67e39deceaeedce832a826"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_managing-your-account.md",
+   "source": "https://www.quantum-inspire.com/kbase/managing-your-account/",
+   "sha256": "af497ecce2bd1191e5cf7aac36c3384d044d5ceadab9bbbed5f698b915739a14"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_managing-your-projects.md",
+   "source": "https://www.quantum-inspire.com/kbase/managing-your-projects/",
+   "sha256": "d8b1d3e664390abd1dd442660e088ad186305f370db15352ae70a95b712d5912"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_qubit-register.md",
+   "source": "https://www.quantum-inspire.com/kbase/qubit-register/",
+   "sha256": "ca95f654de136473752dc9ea976d5b4c876747251b3a9b7773cc99191f31d570"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/kbase_binary-register.md",
+   "source": "https://www.quantum-inspire.com/kbase/binary-register/",
+   "sha256": "00d74f7e47935e29a2d77d68671575c617061adcbbec2c0341f1654c9be36a18"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/backends_transmons.md",
+   "source": "https://www.quantum-inspire.com/backends/transmons/",
+   "sha256": "aa75c7dac8b887527a6904d6417d0b43983617dec6ff1b0f906d5379ac25db00"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/backends_spin-2-plus.md",
+   "source": "https://www.quantum-inspire.com/backends/spin-2-plus/",
+   "sha256": "b0ea9df3f88b815515814995d1d68dab924c6c52c61dd73558378a9ad26cee19"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/faq.md",
+   "source": "https://www.quantum-inspire.com/faq/",
+   "sha256": "a9a5e96523d54a16865c39f5628df28721e881aa63fa26b7056681bb815351e9"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/release-notes.md",
+   "source": "https://www.quantum-inspire.com/release-notes/",
+   "sha256": "36169b9ed275068b6080019fb45a87beca1043c0492fdaab9849ab296f48a817"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/site/terms-and-conditions.md",
+   "source": "https://www.quantum-inspire.com/terms-and-conditions/",
+   "sha256": "7ff72cd3ba11768bdb7904a1bf0971de0e9ba6bcae5386039ac3fa079e2017f9"
+  }
+ ]
+}

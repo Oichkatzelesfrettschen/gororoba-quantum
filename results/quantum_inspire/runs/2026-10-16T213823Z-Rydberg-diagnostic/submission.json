@@ -1,0 +1,23 @@
+{
+ "schema": "qi-submission-v1",
+ "submitted_utc": "2026-10-16T21:38:28+00:00",
+ "approval": "User, 2026-10-16: Yes, one diagnostic (Recommended) -- one zero-cost Ry emulator rerun, 2-qubit X-only circuit, no bit register",
+ "backend": "Rydberg",
+ "backend_type_id": 5,
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 1,
+  "min_wait_time_in_queue_secs": 1.0,
+  "avg_wait_time_in_queue_secs": 1.0,
+  "max_wait_time_in_queue_secs": 1.0
+ },
+ "batch_job": 869597,
+ "project": 765410,
+ "shots": 1024,
+ "jobs": [
+  {
+   "file": "x-only.cq",
+   "job": 1526769
+  }
+ ]
+}

@@ -528,6 +528,136 @@ version in `environment.json`, and holds no IBM credential
 (`kaggle_kernel/AGENTS.md`).
 <!-- heron-execution-facts:end -->
 
+## Quantum Inspire
+
+Quantum Inspire (QuTech, TU Delft and TNO) is the second hardware service the
+repository reaches: one free account type with access to every listed
+hardware and emulator backend. [docs/notes/quantum_inspire/](docs/notes/quantum_inspire/README.md)
+holds the guides, the captured knowledge base, cQASM specification, SDK
+documentation, release notes and OpenAPI description; the live pages at
+https://www.quantum-inspire.com/kbase/ stay the authority because they change.
+
+**Environment.** The quantuminspire SDK requires Python < 3.14 and
+qiskit-quantuminspire caps Qiskit below 2.4, so the Quantum Inspire stack
+lives in its own environment, never in the repository's Python 3.14 stack:
+`QI_ENV=$HOME/.local/share/quantuminspire/venv`, interpreter
+`QI_PYTHON=${QI_PYTHON:-$QI_ENV/bin/python}`, built with
+`uv venv --python 3.13 "$QI_ENV"` and
+`VIRTUAL_ENV="$QI_ENV" uv pip install -r docs/notes/quantum_inspire/requirements-qi.txt`.
+No Arch package carries the stack. CI never imports it: every gate checks
+retained JSON or regenerates text with the standard library.
+
+| Package | Version | Role |
+|---|---|---|
+| quantuminspire | 4.1.0 | `qi` CLI, `quantuminspire.api.Api`, OAuth device login |
+| qi-compute-api-client | 0.63.0 | generated client of the compute job manager REST API |
+| qiskit-quantuminspire | 0.18.5 | `QIProvider`, Qiskit backends, cQASM writer (per-qubit barriers) |
+| qiskit | 2.3.1 | the newest release below the provider's < 2.4 cap; the repository runs 2.5.2 |
+| opensquirrel | 0.9.1 | compiler: decomposition, mapping, routing, ALAP scheduling |
+| libqasm | 1.2.1 | cQASM 3.0 parser and analyzer |
+| qxelarator | 0.10.0 | local QX state-vector emulator |
+| mcp | 2.3.0 | MCP server SDK for scripts/qi_mcp_server.py |
+
+pennylane-quantuminspire 0.15.5 (PennyLane >= 0.43, < 0.46) is not
+installed. The community bridge quantum-vibecoding-mcp 0.1.0 imports
+quantuminspire 3.x and mcp 1.x modules absent from these pins and is not
+used; scripts/qi_mcp_server.py serves the same role on SDK 4.1.
+
+**Login.** `"$QI_ENV/bin/qi" login` runs the OAuth device flow: it prints a
+verification URL and code that the user approves in a browser, then stores
+access and refresh tokens in `~/.quantuminspire/config.json`, which the CLI
+writes mode 644; `chmod 600` it after login, and scripts/qi_platform.py's
+client narrows it to mode 600 before reading it. The
+access token lives 3600 s; scripts/qi_platform.py renews it before expiry.
+An agent that finds no login prompts the user to run `qi login` and approve
+the code; tokens never enter a commit, a log or memory.
+
+**Backends.** `scripts/qi_platform.py snapshot --out docs/evidence/quantum_inspire`
+reads the account's catalogue and ledger; gate core-347 renders this table
+from the retained catalogue and fails when either changes alone:
+
+<!-- quantum-inspire-facts:begin -->
+| Backend type (id) | identifier | is_hardware | qubits | couplings | shots default / max | job limit (s) | jobs per batch | batch jobs queued |
+|---|---|---|---|---|---|---|---|---|
+| QX emulator (1) | QXsinglenodesimulator | false | 10 | 45 | 1024 / 2048 | 3600 | 5 | 5 |
+| Tuna-5 (4) | tuna_5 | true | 5 | 4 | 8192 / 131072 | 300 | 5 | 5 |
+| Ry emulator (5) | Rydberg | true | 9 | 36 | 1024 / 1024 | 3600 | 5 | 5 |
+| Tuna-9 (6) | tuna_9 | true | 9 | 12 | 8192 / 131072 | 300 | 5 | 5 |
+| Tuna-17 (7) | tuna_17 | true | 17 | 24 | 8192 / 131072 | 300 | 5 | 5 |
+
+Backend instances: QX emulator (Cloud), Spin-2+ (TU Delft), Starmon-7 (TU Delft), Tuna-5 (TU Delft), Ry emulator (TU/eindhoven), Tuna-9 (TU Delft), Tuna-17 (TU Delft).
+<!-- quantum-inspire-facts:end -->
+
+Status, queue length and heartbeat change between reads and live only in the
+snapshot. Spin-2+ and Starmon-7 appear as backend instances without a backend
+type this account can submit to.
+
+**Execution facts.**
+- Tuna: native single-qubit gates last 20 ns, CZ 60 ns, measurement 800 ns,
+  initialization 200 or 500 us; rotation angles quantize to multiples of
+  pi/36; OpenSquirrel schedules as late as possible, `wait(n)` idles n
+  cycles of 20 ns, and mid-circuit measurement is allowed while binary-
+  controlled gates are not, so feed-forward is applied in post-processing.
+- Bit order: QX and Tuna results put qubit 0 at the rightmost character; the
+  Ry emulator puts it at the leftmost (an X on q[0] read `10` in all 1024
+  shots). An analysis states the order of the backend it reads.
+- The Ry emulator takes no measurement statements and measures every qubit
+  at the end; a circuit with a bit register, H and CNOT compiled remotely but
+  failed at execution with no log, while the X-only form of its code example
+  ran.
+- The Qiskit provider writes a multi-qubit barrier as per-qubit barriers, so
+  a timing-sensitive case writes cQASM directly with explicit `wait`.
+
+**Usage and cost.** The account's transaction ledger (`/transactions/`,
+`qi_platform.py snapshot` writes usage.json) recorded no entry for the
+twenty-two jobs of 2026-10-16 on QX, the Ry emulator and Tuna-17, so no metered seconds
+or credits apply to this account as observed; the limits are structural: the
+table's qubits, shots, per-job execution limit and batch and queue counts,
+plus the FAQ's three queued jobs per hardware backend, which is stricter than
+the API's five batch jobs. Tuna-17 executed 16384 shots in 9.9 to 15.4 s
+(0.60 to 0.94 ms per shot, deeper circuits slower); QX finished 2048 shots
+in 0.03 to 10.4 s.
+Calibration and tuning run between user jobs (Tuna-17 read `calibrating`
+between two reads minutes apart), delay queued jobs and charge the account
+nothing. The general conditions license every uploaded algorithm, datum and
+code to QuTech for its own and third-party use, so nothing confidential is
+submitted.
+
+**Submission.** A Quantum Inspire hardware or emulator submission waits for
+the user's approval of a written case, like an IBM run, though it spends no
+metered quota. `"$QI_PYTHON" scripts/qi_platform.py submit CASE_DIR
+--backend-type-id N --approval TEXT` verifies every circuit against its
+cases.json digest, refuses an offline backend or a limit breach, records the
+approval in submission.json and sends one batch; `collect CASE_DIR` writes
+the raw shots, job records and charged transactions. On hardware a batch
+holds at most three circuits and goes in only when none of the account's
+batches is queued, so at most three jobs are ever queued (the FAQ's limit
+under either reading of "job"); a series runs a QX dry run first, then
+submits each hardware batch only after the previous one is collected, passes
+its sanity checks and a pause. The case generators emit each experiment as
+a series of `batch-NN/` cases within that limit, and
+`scripts/check_qi_platform_retention.py` passes every generated batch through
+submit's checks up to the first request. Runs live under
+results/quantum_inspire/runs/. A question about the Tuna devices themselves
+(their crosstalk, coherent error, readout) is a hardware question; any
+simulation of 14 qubits or fewer still runs on Kaggle.
+
+**MCP.** scripts/qi_mcp_server.py, registered at user scope as
+`quantum-inspire` for Claude Code and `quantum_inspire` for Codex, serves
+catalogue, queue, hardware status, usage ledger, jobs, results and local
+qxelarator emulation as read tools and asks before qi_compile (creates remote
+resources) and qi_submit_case (executes through the retained-case runner).
+The legacy raw-string qi_submit refuses execution. Failures return isError with the
+service's message.
+
+**Gates.** core-346 (`capture_qi_docs.py --check`), core-347
+(`qi_platform.py check docs/evidence/quantum_inspire --agents AGENTS.md`),
+core-327 (`qi_crosstalk_teleport_cases.py --check results/quantum_inspire/cases`),
+core-331 (`--replay` of every retained analysis.json), core-348 and core-330
+(`qi_zero_divisor_cases.py --check` and `--replay`), and core-340
+(`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of the Tuna-17
+cases).
+
 ## Qiskit skills
 
 The Qiskit agent skills come from https://github.com/Qiskit/skills, installed
@@ -673,6 +803,15 @@ unresolveReviewThread.
   analysis of the same raw files named by its own analysis digest, beside
   any earlier one. Raw files
   are never rewritten by a later collection or analysis.
+- docs/state/research_state.json registers every acquisition under its
+  provider, and scripts/research_state.py holds one adapter per provider
+  whose run set the registry matches exactly: `ibm` runs come from the
+  retained-run audit, `quantum_inspire` runs from the directories under
+  results/quantum_inspire/runs/ (circuits matching cases.json, one raw shot
+  list per completed job, failed jobs included) bound to the ledger in
+  docs/evidence/quantum_inspire/usage.json. A retained run therefore enters
+  the registry, with a claim citing it and a refreshed ledger or inventory,
+  in the change that retains it.
 - A record names an IBM Cloud instance only by a 12-hex sha256 of its CRN.
 - Tokens, account identifiers, and local absolute paths stay out of every
   commit. The IBM credential lives in the qiskit account store,
