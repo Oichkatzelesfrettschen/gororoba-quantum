@@ -141,23 +141,34 @@ def budget_plan(runtime: Any, choices: list[Any], args: Any, usage: dict[str, An
     }
 
 
-def window_durations(runtime: Any, snapshot: Any) -> tuple[int, int, float]:
-    """Readout length and echo half-window in dt from the backend's slowest measure and reset.
+def window_durations(runtime: Any, snapshot: Any, controls: list[int] | None = None) -> tuple[int, int, float]:
+    """Readout length and echo half-window in dt from the routed control's measure and reset.
 
-    The delay arm idles one readout length. The echo halves together cover
-    1.2 times the longest measure plus reset, so the second X precedes the
-    second round and no tail of the window stays unechoed.
+    controls names the physical qubits that measure and reset the routed
+    control; their slowest measure and reset set the window. With controls
+    None the backend's slowest qubit sets it, which bounds the window of every
+    placement before routing names the control. The delay arm idles one
+    readout length. The echo halves together cover 1.2 times the measure plus
+    reset, so the second X precedes the second round and no tail of the window
+    stays unechoed.
     """
     target = snapshot.backend.target
     granularity = max(1, int(target.granularity))
     longest = {}
     for name in ("measure", "reset"):
+        table = target[name] if name in target.operation_names else {}
+        sites = table.values() if controls is None else [table.get((qubit,)) for qubit in controls]
         durations = [
             float(properties.duration)
-            for properties in target[name].values()
+            for properties in sites
             if properties is not None and properties.duration is not None
         ]
-        if not durations or target.dt is None or target.dt <= 0:
+        if (
+            not durations
+            or (controls is not None and len(durations) != len(controls))
+            or target.dt is None
+            or target.dt <= 0
+        ):
             raise runtime.LiveRunError(f"the N=21 window arms need a calibrated {name} duration and dt")
         longest[name] = max(durations) / float(target.dt)
 
@@ -165,6 +176,47 @@ def window_durations(runtime: Any, snapshot: Any) -> tuple[int, int, float]:
         return granularity * math.ceil(value / granularity)
 
     return rounded(longest["measure"]), rounded(0.6 * (longest["measure"] + longest["reset"])), float(target.dt)
+
+
+def routed_controls(runtime: Any, isas: list[Any]) -> list[int]:
+    """Physical qubits that measure or reset in any compiled window arm.
+
+    Only the QPE control is measured and reset, so these are the sites the
+    routed control occupies at its readouts and resets.
+    """
+    return sorted({qubits[0] for isa in isas for name, qubits in runtime._ops(isa) if name in ("measure", "reset")})
+
+
+def _control_windows(runtime: Any, candidate: Any, bound: tuple[int, int, float]) -> tuple[Any, dict[str, float]]:
+    """Resize one routed window candidate to its control's own measure and reset durations.
+
+    The candidate was routed with the backend-wide bound. When the control's
+    durations give the same windows, the routed candidate stands; otherwise
+    every arm rebuilds with the control's windows and recompiles on the same
+    seed and initial layout, and the recompiled arms must keep the control on
+    the same physical sites.
+    """
+    controls = routed_controls(runtime, candidate.isas)
+    window_dt, half_dt, dt = window_durations(runtime, candidate.snap, controls)
+    windows = {"window_delay_dt": window_dt, "echo_half_dt": half_dt, "dt_seconds": dt}
+    if (window_dt, half_dt) == bound[:2]:
+        return candidate, windows
+    group = n21_orbit_rca_group(window_dt, half_dt)
+    isas = [
+        runtime._compile(member.circuit, candidate.snap, candidate.seed, candidate.layout) for member in group.members
+    ]
+    violations = [reason for isa in isas for reason in runtime.compiled_violations(isa, candidate.snap)]
+    if violations:
+        raise runtime.LiveRunError(str(violations))
+    moved = routed_controls(runtime, isas)
+    if moved != controls:
+        raise runtime.LiveRunError(f"resized window arms moved the control from {controls} to {moved}")
+    scores = [runtime.layout_score(isa, candidate.snap.backend.target) for isa in isas]
+    if any(score <= 0 for score in scores):
+        raise runtime.LiveRunError(f"{group.name}: layout score underflows to zero on layout {candidate.layout}")
+    joint = math.exp(sum(math.log(score) for score in scores) / len(scores))
+    resized = runtime.Choice(group, candidate.snap, candidate.seed, candidate.layout, isas, scores, joint)
+    return resized, windows
 
 
 def control_timing_dt(target: Any, control: int) -> tuple[float, float]:
@@ -437,23 +489,39 @@ def family_candidates(
     candidates: list[tuple[list[Any], dict[str, Any]]] = []
     if args.family in (*N21_FAMILIES, "n21-orbit-rca"):
         routed = []
-        windows: dict[str, dict[str, float]] = {}
+        windows: dict[int, dict[str, float]] = {}
         if args.family == "n21-orbit-rca":
             # Window durations come from each backend's calibration, so each
             # snapshot routes its own group; per-snapshot traces merge by group.
             # A backend that lacks calibrated durations or rejects the group
             # leaves the others in the search; the trace records its reason.
+            # Routing uses the backend-wide bound, and each routed candidate
+            # then takes its control's own measure and reset durations.
             for snapshot in snapshots:
                 local: dict[str, Any] = {}
                 try:
-                    window_dt, half_dt, dt = window_durations(runtime, snapshot)
-                    group = n21_orbit_rca_group(window_dt, half_dt)
-                    routed += runtime.select_candidates(group, [snapshot], args.seeds, local)
+                    bound = window_durations(runtime, snapshot)
+                    group = n21_orbit_rca_group(bound[0], bound[1])
+                    placed = runtime.select_candidates(group, [snapshot], args.seeds, local)
                 except (runtime.LiveRunError, QiskitError, ValueError) as error:
                     trace.setdefault("family_rejections", []).append({"backend": snapshot.name, "reason": str(error)})
                     continue
-                windows[snapshot.name] = {"window_delay_dt": window_dt, "echo_half_dt": half_dt, "dt_seconds": dt}
                 trace.setdefault(group.name, {}).update(local.get(group.name, {}))
+                for placement in placed:
+                    try:
+                        choice, window = _control_windows(runtime, placement, bound)
+                    except (runtime.LiveRunError, QiskitError, ValueError) as error:
+                        trace.setdefault("family_rejections", []).append(
+                            {
+                                "backend": snapshot.name,
+                                "seed": placement.seed,
+                                "layout": placement.layout,
+                                "reason": str(error),
+                            }
+                        )
+                        continue
+                    routed.append(choice)
+                    windows[id(choice)] = window
             if not routed:
                 raise runtime.LiveRunError(
                     f"no backend routes the N=21 window family: {trace.get('family_rejections')}"
@@ -480,7 +548,7 @@ def family_candidates(
                 policy = runtime.ReplicaPolicy(args.replica_floor, cap, False, True)
                 if runtime._prepare_individual_candidate(trial, trace, policy):
                     candidates.append(
-                        ([trial], {"name": args.family, "replica_cap": cap, **windows.get(candidate.snap.name, {})})
+                        ([trial], {"name": args.family, "replica_cap": cap, **windows.get(id(candidate), {})})
                     )
         return candidates
     if args.family in PATCH_FAMILIES:

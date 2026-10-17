@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import dataclasses
 import hashlib
 import io
 import json
@@ -186,6 +187,67 @@ def _verify_family_layouts(snapshot: live_run.Snapshot) -> tuple[list[live_run.C
         ]
         _require(len(echoed) == 2, f"the {arm} echo lost its delay-X-delay-X sequence on the work wires: {echoed}")
     return choices, configuration
+
+
+class _TargetOverride:
+    """Backend view that serves a replacement Target and delegates every other attribute."""
+
+    def __init__(self, backend: Any, target: Target) -> None:
+        self._backend = backend
+        self.target = target
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._backend, name)
+
+
+def _verify_window_control_durations(snapshot: live_run.Snapshot) -> None:
+    """The N=21 window arms take the routed control's measure and reset, not the slowest qubit's.
+
+    The fixture lengthens measure and reset on an excluded qubit, which no
+    placement can route the control onto, so the backend-wide maximum exceeds
+    the routed control's durations.
+    """
+    slow = 113
+    _require(slow in snapshot.excluded_qubits, "the slow fixture qubit must stay excluded from placement")
+    uniform = qpu_planning.window_durations(live_run, snapshot)
+    target = copy.deepcopy(snapshot.backend.target)
+    for name in ("measure", "reset"):
+        properties = target[name][(slow,)]
+        target.update_instruction_properties(
+            name, (slow,), InstructionProperties(duration=3 * properties.duration, error=properties.error)
+        )
+    heterogeneous = dataclasses.replace(
+        snapshot, backend=_TargetOverride(snapshot.backend, target), admission_target=None
+    )
+    bound = qpu_planning.window_durations(live_run, heterogeneous)
+    _require(
+        bound[0] > uniform[0] and bound[1] > uniform[1],
+        f"the slow qubit must raise the backend-wide window bound: {bound} against {uniform}",
+    )
+    _require(
+        qpu_planning.window_durations(live_run, heterogeneous, [slow])[:2] == bound[:2],
+        "the slow qubit's own durations must set the bound",
+    )
+    trace: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(live_run, [heterogeneous], _args("n21-orbit-rca"), trace)
+    _require(bool(candidates), f"the heterogeneous Target rejects every N=21 window family: {trace}")
+    (choice,), configuration = candidates[0]
+    controls = qpu_planning.routed_controls(live_run, choice.isas)
+    _require(bool(controls) and slow not in controls, f"the control routed onto {controls}")
+    expected = qpu_planning.window_durations(live_run, heterogeneous, controls)
+    _require(expected == uniform, f"the control's durations {expected} differ from the uniform {uniform}")
+    _require(
+        (configuration["window_delay_dt"], configuration["echo_half_dt"]) == uniform[:2],
+        f"window configuration {configuration} kept the backend-wide bound {bound}",
+    )
+    arms = dict(zip((member.name for member in choice.group.members), choice.isas, strict=True))
+    for arm in ("feedback", "no_feedback"):
+        delays = [
+            int(instruction.operation.duration)
+            for instruction in arms[f"n21_orbit_window_delay_{arm}"].data
+            if instruction.operation.name == "delay"
+        ]
+        _require(uniform[0] in delays, f"the {arm} window delay {delays} differs from the control readout {uniform[0]}")
 
 
 def _verify_heterogeneous_measurement_duration() -> None:
@@ -714,6 +776,7 @@ def _verify() -> None:
         service, snapshot = _fixture()
         choices, configuration = _verify_family_layouts(snapshot)
         _verify_heterogeneous_measurement_duration()
+        _verify_window_control_durations(snapshot)
         _verify_budget_reservation(choices)
         _verify_mixed_noise_batch(choices)
         metadata = _verify_optimizer(snapshot, choices, configuration)
