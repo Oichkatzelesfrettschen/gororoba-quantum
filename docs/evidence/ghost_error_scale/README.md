@@ -79,9 +79,9 @@ regenerated on the build host by `ghost_error_scale.py
 --regenerate-diagnostics` from the archived calibration and circuits.
 Gates core-349 and core-390 are the provenance gates: `--provenance`
 requires each part to be, byte for byte, the regeneration of its kernel's
-output. core-390 regenerates part c, the slowest of the three regenerations,
-as its own gate so each stays under the two-minute pull-request line;
-core-349 runs the other clauses, among them a plain `cmp` that
+output. core-390 regenerates part c, the slowest of the three regenerations
+(143.5 s on a 2-vCPU runner), in the `full` tier; core-349 (112 s) runs the
+other clauses on pull requests, among them a plain `cmp` that
 requires `part_c.json` to equal the output of a second part c kernel, which
 ran commit dfb4384 with the per-coupler diagnostics
 (`results/kaggle/2026-10-17T004620Z-gororoba-ghost-error-scale-c`). That
