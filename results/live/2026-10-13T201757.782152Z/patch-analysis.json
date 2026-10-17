@@ -1,6 +1,17 @@
 {
+  "calibrations": {
+    "db794cmil99s73fnjlk0": "2026-10-13T13:41:52-07:00",
+    "db794dor1c5c738k1a50": "2026-10-13T13:41:52-07:00",
+    "db794hmr6oqs73871tbg": "2026-10-13T13:41:52-07:00"
+  },
   "conditions": {
     "ramsey_echo/work_a": {
+      "calibration": {
+        "changed_during_shots": false,
+        "stamps": [
+          "2026-10-13T13:41:52-07:00"
+        ]
+      },
       "exposure": "unsigned idle; the fit is an effective response descriptor, not a static detuning",
       "fit": {
         "assignment_offset": -0.034658040493306765,
@@ -64,6 +75,12 @@
       ]
     },
     "ramsey_echo/work_b": {
+      "calibration": {
+        "changed_during_shots": false,
+        "stamps": [
+          "2026-10-13T13:41:52-07:00"
+        ]
+      },
       "exposure": "unsigned idle; the fit is an effective response descriptor, not a static detuning",
       "fit": {
         "assignment_offset": 0.004930510397384637,
@@ -127,6 +144,12 @@
       ]
     },
     "ramsey_plain/work_a": {
+      "calibration": {
+        "changed_during_shots": false,
+        "stamps": [
+          "2026-10-13T13:41:52-07:00"
+        ]
+      },
       "fit": {
         "assignment_offset": -0.008732031407951098,
         "compatible_alias_deltas_mhz": [
@@ -200,6 +223,12 @@
       ]
     },
     "ramsey_plain/work_b": {
+      "calibration": {
+        "changed_during_shots": false,
+        "stamps": [
+          "2026-10-13T13:41:52-07:00"
+        ]
+      },
       "fit": {
         "assignment_offset": 0.0001889530486029369,
         "compatible_alias_deltas_mhz": [
@@ -273,6 +302,12 @@
       ]
     },
     "window_c0/work_a": {
+      "calibration": {
+        "changed_during_shots": false,
+        "stamps": [
+          "2026-10-13T13:41:52-07:00"
+        ]
+      },
       "fit": {
         "assignment_offset": -0.0001717776721479211,
         "compatible_alias_deltas_mhz": [
@@ -334,6 +369,12 @@
       ]
     },
     "window_c0/work_b": {
+      "calibration": {
+        "changed_during_shots": false,
+        "stamps": [
+          "2026-10-13T13:41:52-07:00"
+        ]
+      },
       "fit": {
         "assignment_offset": 0.008857272266864552,
         "compatible_alias_deltas_mhz": [
@@ -396,6 +437,12 @@
       ]
     },
     "window_c1/work_a": {
+      "calibration": {
+        "changed_during_shots": false,
+        "stamps": [
+          "2026-10-13T13:41:52-07:00"
+        ]
+      },
       "fit": {
         "assignment_offset": 0.04057200562352258,
         "compatible_alias_deltas_mhz": [
@@ -458,6 +505,12 @@
       ]
     },
     "window_c1/work_b": {
+      "calibration": {
+        "changed_during_shots": false,
+        "stamps": [
+          "2026-10-13T13:41:52-07:00"
+        ]
+      },
       "fit": {
         "assignment_offset": 0.010869912442684789,
         "compatible_alias_deltas_mhz": [
@@ -691,25 +744,54 @@
   },
   "orbit": {
     "nominal": {
+      "calibration": "2026-10-13T13:41:52-07:00",
       "contrast_difference": 0.201416015625,
+      "members": [
+        "orbit_nominal_feedback",
+        "orbit_nominal_no_feedback"
+      ],
       "se": 0.015135105012426571
     },
     "window_barrier": {
+      "calibration": "2026-10-13T13:41:52-07:00",
       "contrast_difference": 0.1591796875,
+      "members": [
+        "orbit_window_barrier_feedback",
+        "orbit_window_barrier_no_feedback"
+      ],
       "se": 0.015084232385271686
     },
     "window_echo": {
+      "calibration": "2026-10-13T13:41:52-07:00",
       "contrast_difference": 0.18408203125,
+      "members": [
+        "orbit_window_echo_feedback",
+        "orbit_window_echo_no_feedback"
+      ],
       "se": 0.015154565588209231
     }
   },
   "orbit_between_context": {
     "orbit_barrier_minus_nominal": {
+      "calibration": "2026-10-13T13:41:52-07:00",
       "difference": -0.042236328125,
+      "members": [
+        "orbit_window_barrier_feedback",
+        "orbit_window_barrier_no_feedback",
+        "orbit_nominal_feedback",
+        "orbit_nominal_no_feedback"
+      ],
       "se": 0.0213683286756372
     },
     "orbit_echo_minus_barrier": {
+      "calibration": "2026-10-13T13:41:52-07:00",
       "difference": 0.02490234375,
+      "members": [
+        "orbit_window_echo_feedback",
+        "orbit_window_echo_no_feedback",
+        "orbit_window_barrier_feedback",
+        "orbit_window_barrier_no_feedback"
+      ],
       "se": 0.02138211693963473
     }
   },
@@ -723,20 +805,199 @@
   ],
   "reference_comparisons": {
     "work_a_measured_minus_reset_only_y": {
+      "calibration": "2026-10-13T13:41:52-07:00",
       "difference": -0.0078125,
+      "members": [
+        "window_measure_reset_c1_y_d1400",
+        "window_reset_only_c1_y_d1400"
+      ],
       "se": 0.04417225202595856
     },
     "work_a_paired_minus_single_y": {
+      "calibration": "2026-10-13T13:41:52-07:00",
       "difference": -0.025390625,
+      "members": [
+        "ramsey_plain_y_d1900",
+        "ramsey_plain_y_d1900_only_work_a"
+      ],
       "se": 0.0439999981874769
     },
     "work_b_measured_minus_reset_only_y": {
+      "calibration": "2026-10-13T13:41:52-07:00",
       "difference": 0.0546875,
+      "members": [
+        "window_measure_reset_c1_y_d1400",
+        "window_reset_only_c1_y_d1400"
+      ],
       "se": 0.04412060849217157
     },
     "work_b_paired_minus_single_y": {
+      "calibration": "2026-10-13T13:41:52-07:00",
       "difference": -0.005859375,
+      "members": [
+        "ramsey_plain_y_d1900",
+        "ramsey_plain_y_d1900_only_work_b"
+      ],
       "se": 0.04418081125302463
     }
+  },
+  "registered_endpoints": {
+    "endpoints": [
+      {
+        "alpha": 0.005,
+        "bound_methods": [
+          "hoeffding_arbitrary_within_shot",
+          "hoeffding_arbitrary_within_shot"
+        ],
+        "confidence_half_width": 0.22852467946024052,
+        "detection_radius": null,
+        "estimate": -0.08203125,
+        "hi": 0.14649342946024052,
+        "lo": -0.3105559294602405,
+        "name": "work_a_echo_minus_plain_y",
+        "null_value": 0.0,
+        "reject_null": null
+      },
+      {
+        "alpha": 0.005,
+        "bound_methods": [
+          "hoeffding_arbitrary_within_shot",
+          "hoeffding_arbitrary_within_shot"
+        ],
+        "confidence_half_width": 0.22852467946024052,
+        "detection_radius": null,
+        "estimate": -0.009765625,
+        "hi": 0.21875905446024052,
+        "lo": -0.23829030446024052,
+        "name": "work_b_echo_minus_plain_y",
+        "null_value": 0.0,
+        "reject_null": null
+      },
+      {
+        "alpha": 0.005,
+        "bound_methods": [
+          "hoeffding_arbitrary_within_shot",
+          "hoeffding_arbitrary_within_shot"
+        ],
+        "confidence_half_width": 0.22852467946024052,
+        "detection_radius": null,
+        "estimate": -0.087890625,
+        "hi": 0.14063405446024052,
+        "lo": -0.3164153044602405,
+        "name": "work_a_window_minus_plain_y",
+        "null_value": 0.0,
+        "reject_null": null
+      },
+      {
+        "alpha": 0.005,
+        "bound_methods": [
+          "hoeffding_arbitrary_within_shot",
+          "hoeffding_arbitrary_within_shot"
+        ],
+        "confidence_half_width": 0.22852467946024052,
+        "detection_radius": null,
+        "estimate": -0.033203125,
+        "hi": 0.19532155446024052,
+        "lo": -0.2617278044602405,
+        "name": "work_b_window_minus_plain_y",
+        "null_value": 0.0,
+        "reject_null": null
+      },
+      {
+        "alpha": 0.005,
+        "bound_methods": [
+          "hoeffding_arbitrary_within_shot",
+          "hoeffding_arbitrary_within_shot"
+        ],
+        "confidence_half_width": 0.22852467946024052,
+        "detection_radius": null,
+        "estimate": 0.0546875,
+        "hi": 0.2832121794602405,
+        "lo": -0.17383717946024052,
+        "name": "work_a_control_one_minus_zero_y",
+        "null_value": 0.0,
+        "reject_null": null
+      },
+      {
+        "alpha": 0.005,
+        "bound_methods": [
+          "hoeffding_arbitrary_within_shot",
+          "hoeffding_arbitrary_within_shot"
+        ],
+        "confidence_half_width": 0.22852467946024052,
+        "detection_radius": null,
+        "estimate": -0.0078125,
+        "hi": 0.22071217946024052,
+        "lo": -0.23633717946024052,
+        "name": "work_a_measured_minus_reset_only_y",
+        "null_value": 0.0,
+        "reject_null": null
+      },
+      {
+        "alpha": 0.005,
+        "bound_methods": [
+          "hoeffding_arbitrary_within_shot",
+          "hoeffding_arbitrary_within_shot"
+        ],
+        "confidence_half_width": 0.22852467946024052,
+        "detection_radius": null,
+        "estimate": -0.025390625,
+        "hi": 0.20313405446024052,
+        "lo": -0.2539153044602405,
+        "name": "work_a_paired_minus_single_y",
+        "null_value": 0.0,
+        "reject_null": null
+      },
+      {
+        "alpha": 0.005,
+        "bound_methods": [
+          "hoeffding_arbitrary_within_shot",
+          "hoeffding_arbitrary_within_shot"
+        ],
+        "confidence_half_width": 0.11426233973012026,
+        "detection_radius": null,
+        "estimate": 0.0,
+        "hi": 0.11426233973012026,
+        "lo": -0.11426233973012026,
+        "name": "spectator_excess_from_work_a",
+        "null_value": 0.0,
+        "reject_null": null
+      },
+      {
+        "alpha": 0.005,
+        "bound_methods": [
+          "hoeffding_arbitrary_within_shot",
+          "hoeffding_arbitrary_within_shot",
+          "hoeffding_arbitrary_within_shot",
+          "hoeffding_arbitrary_within_shot"
+        ],
+        "confidence_half_width": 0.24008069782998018,
+        "detection_radius": null,
+        "estimate": -0.042236328125,
+        "hi": 0.19784436970498018,
+        "lo": -0.2823170259549802,
+        "name": "orbit_barrier_minus_nominal",
+        "null_value": 0.0,
+        "reject_null": null
+      },
+      {
+        "alpha": 0.005,
+        "bound_methods": [
+          "hoeffding_arbitrary_within_shot",
+          "hoeffding_arbitrary_within_shot",
+          "hoeffding_arbitrary_within_shot",
+          "hoeffding_arbitrary_within_shot"
+        ],
+        "confidence_half_width": 0.24008069782998018,
+        "detection_radius": null,
+        "estimate": 0.02490234375,
+        "hi": 0.2649830415799802,
+        "lo": -0.21517835407998018,
+        "name": "orbit_echo_minus_barrier",
+        "null_value": 0.0,
+        "reject_null": null
+      }
+    ],
+    "method": "shared planning/collection Hoeffding bounds grouped by immutable PUB identity"
   }
 }
