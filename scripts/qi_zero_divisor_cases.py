@@ -56,11 +56,13 @@ emitted cQASM.
 series of batch-NN/ cases (circuits and cases.json) under a series cases.json;
 --check DIR regenerates both and compares bytes and file sets; --analyze
 RUN_DIR... [--out FILE] writes the analysis from the raw shots of every batch
-of one series; --replay RUN_DIR... recomputes retained single-batch analyses. Bit strings put qubit 0 at
+of one series; --replay RUN_DIR... recomputes retained single-batch analyses and
+--replay-series FILE RUN_DIR... the analysis FILE of one batched series. Bit strings put qubit 0 at
 the rightmost character (Tuna).
 
 Usage: "$PYTHON" scripts/qi_zero_divisor_cases.py
-       (--write DIR | --check DIR | --analyze RUN_DIR... [--out FILE] | --replay RUN_DIR...)
+       (--write DIR | --check DIR | --analyze RUN_DIR... [--out FILE] | --replay RUN_DIR...
+        | --replay-series FILE RUN_DIR...)
 """
 
 from __future__ import annotations
@@ -592,8 +594,14 @@ def load_series(run_dirs: list[Path]) -> tuple[dict[str, Any], dict[str, list[st
 
 def analyze(run_dirs: list[Path]) -> dict[str, Any]:
     cases, raw = load_series(run_dirs)
-    # Without readout circuits (the ideal QX twin) the assignment is taken as exact.
-    zero, one = raw.get("readout-0.cq", ["0" * cases["nqubits"]]), raw.get("readout-1.cq", ["1" * cases["nqubits"]])
+    # The ideal QX twin carries no readout circuits and takes the assignment as
+    # exact; a hardware series is analyzed only with its readout batch.
+    if "twin_of" in cases:
+        zero, one = ["0" * cases["nqubits"]], ["1" * cases["nqubits"]]
+    elif "readout-0.cq" in raw and "readout-1.cq" in raw:
+        zero, one = raw["readout-0.cq"], raw["readout-1.cq"]
+    else:
+        raise SystemExit("the series lacks its readout-0/readout-1 batch; analyze every batch together")
     replicas = []
     for replica in cases["replicas"]:
         sel = replica["roles"]["selector"]
@@ -662,6 +670,13 @@ def main() -> int:
     mode.add_argument("--write", type=Path)
     mode.add_argument("--check", type=Path)
     mode.add_argument("--analyze", type=Path, nargs="+", metavar="RUN_DIR", help="the batches of one series")
+    mode.add_argument(
+        "--replay-series",
+        type=Path,
+        nargs="+",
+        metavar="FILE RUN_DIR",
+        help="recompute the analysis FILE over the run directories of one series and compare bytes",
+    )
     mode.add_argument("--replay", type=Path, nargs="+")
     parser.add_argument("--out", type=Path, help="with --analyze: the analysis file (default RUN_DIR/analysis.json)")
     args = parser.parse_args()
@@ -671,6 +686,14 @@ def main() -> int:
         text = json.dumps(analyze(args.analyze), indent=1) + "\n"
         (args.out or args.analyze[0] / "analysis.json").write_text(text, encoding="utf-8")
         print(text, end="")
+        return 0
+    if args.replay_series:
+        out, *runs = args.replay_series
+        if not runs:
+            parser.error("--replay-series needs FILE and at least one RUN_DIR")
+        if out.read_text(encoding="utf-8") != json.dumps(analyze(runs), indent=1) + "\n":
+            raise SystemExit(f"{out} differs from the recomputation over its {len(runs)} batches")
+        print(f"{out}: {len(runs)} batches reproduce their series analysis")
         return 0
     if args.replay:
         for run in args.replay:

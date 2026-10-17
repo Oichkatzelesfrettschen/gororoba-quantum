@@ -41,13 +41,15 @@ compares bytes and file sets, offline. --analyze RUN_DIR... [--out FILE]
 writes the additivity and teleportation estimates from the collected raw
 shots of every batch of one series.
 
---replay RUN_DIR... recomputes each retained analysis.json from its raw
-shots and compares bytes, offline. --self-test checks the additivity-only
+--replay RUN_DIR... recomputes each retained single-batch analysis.json from
+its raw shots and compares bytes, offline; --replay-series FILE RUN_DIR...
+does the same for the analysis FILE of one batched series. --self-test checks the additivity-only
 case, both retained backend bit-order conventions and the reduction of a
 batched series to its single-batch analysis, using synthetic shots.
 
 Usage: "$PYTHON" scripts/qi_crosstalk_teleport_cases.py
-       (--write DIR | --check DIR | --analyze RUN_DIR... [--out FILE] | --replay RUN_DIR... | --self-test)
+       (--write DIR | --check DIR | --analyze RUN_DIR... [--out FILE] | --replay RUN_DIR...
+        | --replay-series FILE RUN_DIR... | --self-test)
        [--catalogue FILE]
 """
 
@@ -471,6 +473,9 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
         )
     if "stars" in cases:
         additivity = [a for a in acquisitions if a[1]["kind"] == "additivity"]
+        configs = {row["config"] for _, row, _ in additivity}
+        if configs != set(CONFIGS):
+            raise SystemExit(f"the series holds configurations {sorted(configs)}; analyze every batch together")
         report["additivity"] = [star_report(star, additivity, backend) for star in cases["stars"]]
     tele = []
     # Tuna-5's star graph has no four-qubit path. Missing teleport data is
@@ -569,12 +574,13 @@ def series_fixture(directory: Path) -> None:
         star.pop("residual_sigma_rad")
     if merged != alone:
         raise AssertionError("a series with equal references differs from its single-batch analysis")
-    try:
-        analyze([runs[0], runs[0]])
-    except SystemExit:
-        pass
-    else:
-        raise AssertionError("a series accepted the same batch twice")
+    for partial in ([runs[0], runs[0]], runs[:1]):
+        try:
+            analyze(partial)
+        except SystemExit:
+            pass
+        else:
+            raise AssertionError("a series accepted a repeated or missing batch")
 
 
 def regression_fixture(backend: str) -> str:
@@ -659,6 +665,13 @@ def main() -> int:
     mode.add_argument("--write", type=Path)
     mode.add_argument("--check", type=Path)
     mode.add_argument("--analyze", type=Path, nargs="+", metavar="RUN_DIR", help="the batches of one series")
+    mode.add_argument(
+        "--replay-series",
+        type=Path,
+        nargs="+",
+        metavar="FILE RUN_DIR",
+        help="recompute the analysis FILE over the run directories of one series and compare bytes",
+    )
     mode.add_argument("--replay", type=Path, nargs="+", help="recompute each run's analysis.json and compare bytes")
     parser.add_argument("--out", type=Path, help="with --analyze: the analysis file (default RUN_DIR/analysis.json)")
     mode.add_argument("--self-test", action="store_true")
@@ -673,6 +686,14 @@ def main() -> int:
         text = json.dumps(analyze(args.analyze), indent=1) + "\n"
         (args.out or args.analyze[0] / "analysis.json").write_text(text, encoding="utf-8")
         print(text, end="")
+        return 0
+    if args.replay_series:
+        out, *runs = args.replay_series
+        if not runs:
+            parser.error("--replay-series needs FILE and at least one RUN_DIR")
+        if out.read_text(encoding="utf-8") != json.dumps(analyze(runs), indent=1) + "\n":
+            raise SystemExit(f"{out} differs from the recomputation over its {len(runs)} batches")
+        print(f"{out}: {len(runs)} batches reproduce their series analysis")
         return 0
     if args.replay:
         for run in args.replay:
