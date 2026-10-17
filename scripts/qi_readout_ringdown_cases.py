@@ -131,7 +131,10 @@ normals about one common rate with the preregistered per-arm errors of
 analyze_target (the weights of its fit), and every replicate runs the same
 fit_h2, h2_errors and both conjuncts of detects. The normal draws of a target
 come first, in order, from one generator seeded by the string
-NULL_SEED/series/target, then the fits map through parallel.ordered_map. OUT
+NULL_SEED/series/target, then blocks of NULL_BLOCK replicates map through
+parallel.ordered_map, each block one fit_h2_batch call that returns
+fit_h2's bits for every replicate (docs/notes/build_host/vectorized-fits.md).
+OUT
 records the empirical 0.999 quantile with a binomial order-statistic
 interval, the null rate of the full rule at DETECT_DELTA_CHI2, the sha256 of
 the full statistic list, of its first NULL_PREFIX replicates and of the kept
@@ -139,8 +142,11 @@ top NULL_TAIL fraction, and each target's observed statistic against its
 quantile; the preregistered verdict fields stay as analyzed. --replay
 recomputes the first NULL_PREFIX replicates from the recorded seeds and
 rebuilds every quantile from the kept tail; --null-self-test checks the
-contract on synthetic weights. calibrated_threshold(weights) returns the
-quantile for a future case.
+contract on synthetic weights and fit_h2_batch against fit_h2 on adversarial
+rates; --null-equivalence ANALYSIS... [--replicates N] fits the first
+NULL_EQUIVALENCE replicates of every target stream with both and requires
+identical bits. calibrated_threshold(weights) returns the quantile for a
+future case.
 
 --write DIR writes DIR/readout_ringdown_{tuna_17,qx}_{P,Q}/ (batch-NN/ case
 directories and cases.json); --check DIR regenerates them and compares
@@ -154,7 +160,8 @@ checks one collected batch before the next is submitted.
 Usage: "$PYTHON" scripts/qi_readout_ringdown_cases.py
        (--write DIR | --check DIR | --conformance | --analyze OUT RUN_DIR... [--replay] | --sanity RUN_DIR
         | --sensitivity OUT RUN_DIR... [--replay] | --sensitivity-self-test
-        | --null-calibration OUT [ANALYSIS...] [--replicates N] [--replay] | --null-self-test)
+        | --null-calibration OUT [ANALYSIS...] [--replicates N] [--replay] | --null-self-test
+        | --null-equivalence ANALYSIS... [--replicates N])
        (DIR is the cases root, results/quantum_inspire/cases)
 """
 
@@ -171,6 +178,7 @@ from pathlib import Path
 from typing import Any, NamedTuple
 
 import numpy as np
+import numpy.typing as npt
 from qi_coupler_zz_map import (
     CYCLE_SECONDS,
     MIN_VISIBILITY,
@@ -229,6 +237,8 @@ ESTIMATOR = (
 TO_HZ = 1 / (2 * math.pi * CYCLE_SECONDS)
 Table = dict[tuple[str, str, int, int], tuple[float, float, float]]
 Taus = list[int | None]
+Fit = tuple[float, float, float, float]
+Floats = npt.NDArray[np.float64]
 
 
 def arm_tau(arm: str) -> int | None:
@@ -467,6 +477,132 @@ def fit_h2(taus: Taus, rates: list[float], weights: list[float]) -> tuple[float,
     candidates = [T_GRID[k], left, right, T_GRID[max(k - 1, 0)], T_GRID[min(k + 1, len(T_GRID) - 1)]]
     best = min(candidates, key=lambda t: h2_at(t, taus, rates, weights)[0])
     chi2, c, a = h2_at(best, taus, rates, weights)
+    return chi2, c, a, best
+
+
+# The batched fit repeats the arithmetic of h2_at and fit_h2 for many rate
+# vectors that share one weight pattern, and returns the scalar fit's bits.
+# Three rules carry the equality. Builtin sum() over floats is Neumaier-
+# compensated (CPython 3.12 and later), so fsum_rows repeats its update over
+# the arms in order. Python's x ** 2 calls libm pow, which differs from x * x
+# in the last place when the exact square lies near a rounding midpoint, and
+# numpy's exp and power dispatch to their own SIMD kernels on some CPUs, so
+# every exp and square that varies by replicate goes through math.exp and
+# math.pow. numpy's + - * / and comparisons are IEEE operations, identical to
+# Python's float operations.
+# Relative margin of the grid prune; libm pow and x * x differ by an ulp.
+GRID_PRUNE = 2.0**-30
+# Absolute margin per unit weight; it covers squares in the subnormal range.
+GRID_FLOOR = 2.0**-1000
+
+
+def fsum_rows(terms: list[Floats]) -> Floats:
+    """sum(terms) elementwise as builtin sum() evaluates it: 0 + the first term, then CPython's Neumaier update."""
+    total = 0.0 + terms[0]
+    comp = np.zeros_like(total)
+    for term in terms[1:]:
+        step = total + term
+        comp = comp + np.where(np.abs(total) >= np.abs(term), (total - step) + term, (term - step) + total)
+        total = step
+    return np.where((comp != 0) & np.isfinite(comp), total + comp, total)
+
+
+def libm_map(function: Any, values: Floats, *extra: float) -> Floats:
+    """function(value, *extra) for every element through the math module, the libm calls of the scalar code."""
+    flat = values.ravel().tolist()
+    mapped = map(function, flat, *(itertools.repeat(x) for x in extra))
+    return np.fromiter(mapped, np.float64, len(flat)).reshape(values.shape)
+
+
+def decay(tau: int | None, tails: Floats) -> Floats:
+    """exp(-tau / T) of h2_at for every element of tails; exp(0) is exactly 1 in every C99 libm."""
+    if tau is None:
+        return np.zeros_like(tails)
+    if tau == 0:
+        return np.ones_like(tails)
+    return libm_map(math.exp, -tau / tails)
+
+
+def h2_at_batch(
+    tails: Floats, taus: Taus, y: list[Floats], weights: list[float], sy: Floats
+) -> tuple[Floats, Floats, Floats]:
+    """h2_at(tails[n], taus, rates[n], weights) for every row n, from the arm columns y of rates and their sy."""
+    f = [decay(tau, tails) for tau in taus]
+    sw = sum(weights)
+    sf = fsum_rows([w * fi for w, fi in zip(weights, f, strict=True)])
+    sff = fsum_rows([w * fi * fi for w, fi in zip(weights, f, strict=True)])
+    sfy = fsum_rows([w * fi * yi for w, fi, yi in zip(weights, f, y, strict=True)])
+    det = sw * sff - sf * sf
+    if not det.all():
+        raise ZeroDivisionError("float division by zero")
+    a = (sw * sfy - sf * sy) / det
+    c = (sff * sy - sf * sfy) / det
+    chi2 = fsum_rows([w * libm_map(math.pow, yi - c - a * fi, 2.0) for w, yi, fi in zip(weights, y, f, strict=True)])
+    return chi2, c, a
+
+
+def grid_argmin(taus: Taus, rates: Floats, weights: list[float]) -> npt.NDArray[np.intp]:
+    """The first index of the minimum of h2_at over T_GRID for every row of rates.
+
+    The T-only sums come from builtin sum() over Python floats. The profile
+    is first evaluated with r * r for the squares; pow(r, 2) and r * r agree
+    to an ulp, so every exact minimizer lies within GRID_PRUNE of the fast
+    minimum, and only those grid points are recomputed with libm pow.
+    """
+    grid_f = [[0.0 if tau is None else math.exp(-tau / t) for tau in taus] for t in T_GRID]
+    sw = sum(weights)
+    sf = np.array([sum(w * fi for w, fi in zip(weights, row, strict=True)) for row in grid_f])
+    sff = np.array([sum(w * fi * fi for w, fi in zip(weights, row, strict=True)) for row in grid_f])
+    det = sw * sff - sf * sf
+    if not det.all():
+        raise ZeroDivisionError("float division by zero")
+    f = list(np.array(grid_f).T)
+    y = [column[:, None] for column in rates.T]
+    sy = fsum_rows([w * yi for w, yi in zip(weights, y, strict=True)])
+    sfy = fsum_rows([w * fi * yi for w, fi, yi in zip(weights, f, y, strict=True)])
+    a = (sw * sfy - sf * sy) / det
+    c = (sff * sy - sf * sfy) / det
+    residuals = [yi - c - a * fi for yi, fi in zip(y, f, strict=True)]
+    fast = fsum_rows([w * (r * r) for w, r in zip(weights, residuals, strict=True)])
+    near = fast <= fast.min(axis=1, keepdims=True) * (1 + GRID_PRUNE) + sw * GRID_FLOOR
+    exact = np.full(fast.shape, np.inf)
+    exact[near] = fsum_rows([w * libm_map(math.pow, r[near], 2.0) for w, r in zip(weights, residuals, strict=True)])
+    return np.argmin(exact, axis=1)
+
+
+def fit_h2_batch(taus: Taus, rates: Floats, weights: list[float]) -> tuple[Floats, Floats, Floats, Floats]:
+    """fit_h2 for every row of rates (replicates x arms): arrays of chi2, c, A and T.
+
+    The golden section runs every row's step at once; each row takes the
+    scalar branch f_left <= f_right, and np.argmin takes the first minimum
+    as min(..., key=...) does.
+    """
+    with np.errstate(over="raise", invalid="raise", divide="raise"):
+        y = [np.ascontiguousarray(column) for column in rates.T]
+        sy = fsum_rows([w * yi for w, yi in zip(weights, y, strict=True)])
+
+        def chi2_at(tails: Floats) -> Floats:
+            return h2_at_batch(tails, taus, y, weights, sy)[0]
+
+        grid = np.array(T_GRID)
+        k = grid_argmin(taus, rates, weights)
+        below, above = grid[np.maximum(k - 1, 0)], grid[np.minimum(k + 1, len(T_GRID) - 1)]
+        low, high = below, above
+        ratio = (math.sqrt(5) - 1) / 2
+        left, right = high - ratio * (high - low), low + ratio * (high - low)
+        f_left, f_right = chi2_at(left), chi2_at(right)
+        for _ in range(GOLDEN_STEPS):
+            shrink = f_left <= f_right
+            high = np.where(shrink, right, high)
+            low = np.where(shrink, low, left)
+            point = np.where(shrink, high - ratio * (high - low), low + ratio * (high - low))
+            value = chi2_at(point)
+            left, right = np.where(shrink, point, right), np.where(shrink, left, point)
+            f_left, f_right = np.where(shrink, value, f_right), np.where(shrink, f_left, value)
+        candidates = np.stack([grid[k], left, right, below, above], axis=1)
+        profile = np.stack([chi2_at(t) for t in candidates.T], axis=1)
+        best = candidates[np.arange(len(rates)), np.argmin(profile, axis=1)]
+        chi2, c, a = h2_at_batch(best, taus, y, weights, sy)
     return chi2, c, a, best
 
 
@@ -1546,6 +1682,12 @@ NULL_TAIL = 0.01
 NULL_PREFIX = 5000
 NULL_CONFIDENCE = 0.95
 NULL_DECIMALS = 6
+# Replicates per fit_h2_batch call: enough rows to amortize numpy's per-call
+# cost over the golden-section steps, few enough that the NULL_BLOCK x
+# len(T_GRID) grid arrays stay in cache.
+NULL_BLOCK = 2048
+# Replicates per target that --null-equivalence fits with both paths.
+NULL_EQUIVALENCE = 2000
 
 
 class NullFit:
@@ -1561,23 +1703,54 @@ class NullFit:
         self.sigmas = [1 / math.sqrt(w) for w in weights]
         self.taus: Taus = [arm_tau(arm) for arm in ARMS]
 
-    def __call__(self, z: tuple[float, ...]) -> tuple[float, bool]:
-        rates = [s * v for s, v in zip(self.sigmas, z, strict=True)]
+    def rates(self, z: tuple[float, ...]) -> list[float]:
+        return [s * v for s, v in zip(self.sigmas, z, strict=True)]
+
+    def statistic(self, rates: list[float], fit: Fit) -> tuple[float, bool]:
+        """(rounded delta chi2, joint detection) of one replicate from its H2 fit."""
+        chi2_h2, _, a, tail = fit
         c1 = sum(w * y for w, y in zip(self.weights, rates, strict=True)) / sum(self.weights)
         chi2_h1 = sum(w * (y - c1) ** 2 for w, y in zip(self.weights, rates, strict=True))
-        chi2_h2, _, a, tail = fit_h2(self.taus, rates, self.weights)
         se_a = h2_errors(self.taus, self.weights, a, tail)[0]
         delta = chi2_h1 - chi2_h2
         return round(delta, NULL_DECIMALS) + 0.0, detects(delta, a, se_a)
 
+    def __call__(self, z: tuple[float, ...]) -> tuple[tuple[float, bool], Fit]:
+        rates = self.rates(z)
+        fit = fit_h2(self.taus, rates, self.weights)
+        return self.statistic(rates, fit), fit
+
+
+class NullBlock(NullFit):
+    """NullFit over a block of replicates: one fit_h2_batch call, then the per-replicate statistic."""
+
+    def fit_rows(self, rows: list[list[float]]) -> list[tuple[tuple[float, bool], Fit]]:
+        columns = fit_h2_batch(self.taus, np.array(rows), self.weights)
+        fits: list[Fit] = list(zip(*(column.tolist() for column in columns), strict=True))
+        return [(self.statistic(rates, fit), fit) for rates, fit in zip(rows, fits, strict=True)]
+
+    def __call__(self, block: list[tuple[float, ...]]) -> list[tuple[tuple[float, bool], Fit]]:  # type: ignore[override]
+        return self.fit_rows([self.rates(z) for z in block])
+
+
+def null_draws(replicates: int, stream: str) -> list[tuple[float, ...]]:
+    """The standard normals of every replicate, drawn in order from Random(stream) before any fit."""
+    rng = random.Random(stream)
+    return [tuple(rng.gauss(0.0, 1.0) for _ in ARMS) for _ in range(replicates)]
+
+
+def null_fits(weights: list[float], replicates: int, stream: str) -> list[tuple[tuple[float, bool], Fit]]:
+    """(statistic, H2 fit) of each H1 replicate; NULL_BLOCK replicates share one batched fit."""
+    if len(weights) != len(ARMS):
+        raise SystemExit(f"null statistics need {len(ARMS)} arm weights, got {len(weights)}")
+    draws = null_draws(replicates, stream)
+    blocks = [draws[start : start + NULL_BLOCK] for start in range(0, replicates, NULL_BLOCK)]
+    return [item for block in ordered_map(NullBlock(weights), blocks, min_items=1) for item in block]
+
 
 def null_statistics(weights: list[float], replicates: int, stream: str) -> list[tuple[float, bool]]:
     """(delta chi2, joint detection) of each H1 replicate; all normals are drawn first from Random(stream)."""
-    if len(weights) != len(ARMS):
-        raise SystemExit(f"null statistics need {len(ARMS)} arm weights, got {len(weights)}")
-    rng = random.Random(stream)
-    draws = [tuple(rng.gauss(0.0, 1.0) for _ in ARMS) for _ in range(replicates)]
-    return ordered_map(NullFit(weights), draws, min_items=1)
+    return [stat for stat, _ in null_fits(weights, replicates, stream)]
 
 
 def statistic_lines(stats: list[tuple[float, bool]]) -> str:
@@ -1850,6 +2023,125 @@ def check_null_record(record: dict[str, Any]) -> int:
     return checked
 
 
+def fit_bits(fit: Fit) -> tuple[str, ...]:
+    """The exact bits of a fit, signed zeros included."""
+    return tuple(float(v).hex() for v in fit)
+
+
+def compare_fits(name: str, scalar: list[Fit], batched: list[Fit]) -> int:
+    """The number of bit-identical fits; any difference stops with its largest absolute and relative size."""
+    same = sum(fit_bits(x) == fit_bits(y) for x, y in zip(scalar, batched, strict=True))
+    if same != len(scalar):
+        gaps = [
+            (abs(u - v), abs(u - v) / max(abs(u), abs(v)) if u != v else 0.0)
+            for x, y in zip(scalar, batched, strict=True)
+            for u, v in zip(x, y, strict=True)
+            if float(u).hex() != float(v).hex()
+        ]
+        raise SystemExit(
+            f"{name}: {len(scalar) - same} of {len(scalar)} batched fits differ from fit_h2; "
+            f"max abs {max(g[0] for g in gaps):.3e}, max rel {max(g[1] for g in gaps):.3e}"
+        )
+    return same
+
+
+def null_equivalence(weights: list[float], replicates: int, stream: str) -> int:
+    """Fits the first replicates of a stream with NullFit and with NullBlock; returns the equal count."""
+    scalar = ordered_map(NullFit(weights), null_draws(replicates, stream), min_items=1)
+    batched = null_fits(weights, replicates, stream)
+    same = compare_fits(stream, [fit for _, fit in scalar], [fit for _, fit in batched])
+    if [stat for stat, _ in scalar] != [stat for stat, _ in batched]:
+        raise SystemExit(f"{stream}: the batched statistics differ from NullFit")
+    return same
+
+
+def null_equivalence_report(analyses: list[Path], replicates: int) -> str:
+    """Bitwise equality of fit_h2_batch and fit_h2 on the record stream of every usable target."""
+    lines = []
+    for path in analyses:
+        analysis = json.loads(path.read_bytes())
+        for row in analysis["targets"]:
+            if row["usable"]:
+                stream = f"{NULL_SEED}/{analysis['series']}/{row['target']}"
+                same = null_equivalence(arm_weights(row), replicates, stream)
+                lines.append(f"{stream}: {same} of {replicates} fits and statistics bit-identical")
+    return "\n".join(lines)
+
+
+def fsum_cases() -> list[list[float]]:
+    """Sums whose builtin result depends on the compensation, the start value or the zero sign."""
+    rng = random.Random(f"{NULL_SEED}/fsum")
+    cases = [
+        [-0.0, -0.0, -0.0],
+        [0.0, -0.0, 1.0, -1.0],
+        [1e16, 1.0, -1e16, 1.0],
+        [1.0, 1e100, 1.0, -1e100],
+        [3.0, -3.0, 2.0**-1074, -(2.0**-1074)],
+        [1e308, -1e308, 1e-308, 2.0],
+    ]
+    cases += [[rng.gauss(0.0, 1.0) * 10 ** rng.uniform(-8, 8) for _ in ARMS] for _ in range(4000)]
+    return cases
+
+
+def batch_cases() -> list[tuple[str, list[float], list[list[float]]]]:
+    """(name, weights, rate rows) on which fit_h2_batch must reproduce fit_h2 bit for bit.
+
+    Null draws under three weight patterns (synthetic, equal, and one arm at
+    the 1e-12 error clamp of arm_weights), all-zero and constant rates whose
+    profile ties at every grid point and every golden step, and noise-free
+    and noisy decays at both T bounds and on a grid point.
+    """
+    taus = [arm_tau(arm) for arm in ARMS]
+    synthetic = [4.0e6, 3.0e6, 2.0e6, 2.5e6, 3.5e6, 1.5e6]
+    patterns = {"synthetic": synthetic, "equal": [1.0] * len(ARMS), "clamped": [1e24, *synthetic[1:]]}
+    cases = []
+    for name, weights in patterns.items():
+        fit = NullFit(weights)
+        cases.append((name, weights, [fit.rates(z) for z in null_draws(256, f"{NULL_SEED}/batch/{name}")]))
+    rng = random.Random(f"{NULL_SEED}/batch/shapes")
+    shapes = [[0.0] * len(ARMS), [-0.0] * len(ARMS), [1e-3] * len(ARMS), [-2.5e-4] * len(ARMS)]
+    for tail in (T_BOUNDS[0], T_GRID[200], T_BOUNDS[1], 2.0, 400.0):
+        decay_rates = [1e-4 + (0.0 if tau is None else 3e-3 * math.exp(-tau / tail)) for tau in taus]
+        shapes.append(decay_rates)
+        shapes += [[r + rng.gauss(0.0, 5e-4) for r in decay_rates] for _ in range(8)]
+    cases.append(("shapes", synthetic, shapes))
+    return cases
+
+
+def batch_self_test() -> str:
+    """fit_h2_batch and NullBlock against the scalar fit on batch_cases; fsum_rows against builtin sum."""
+    sums = fsum_cases()
+    for terms in sums:
+        mine = fsum_rows([np.array([t]) for t in terms])[0]
+        if float(mine).hex() != float(sum(terms)).hex():
+            raise SystemExit(f"null self-test: fsum_rows gives {mine!r} where sum() gives {sum(terms)!r} on {terms}")
+    taus: Taus = [arm_tau(arm) for arm in ARMS]
+    total = 0
+    for name, weights, rows in batch_cases():
+        block = NullBlock(weights)
+        scalar = [fit_h2(taus, rates, weights) for rates in rows]
+        batched = block.fit_rows(rows)
+        total += compare_fits(f"null self-test {name}", scalar, [fit for _, fit in batched])
+        if [stat for stat, _ in batched] != [block.statistic(r, fit) for r, fit in zip(rows, scalar, strict=True)]:
+            raise SystemExit(f"null self-test {name}: NullBlock statistics differ from the scalar fit")
+    singular = [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    raised = []
+    try:
+        fit_h2(taus, [0.0] * len(ARMS), singular)
+    except ZeroDivisionError:
+        raised.append("fit_h2")
+    try:
+        fit_h2_batch(taus, np.zeros((1, len(ARMS))), singular)
+    except ZeroDivisionError:
+        raised.append("fit_h2_batch")
+    if len(raised) != 2:
+        raise SystemExit(f"null self-test: only {raised} raise on a singular weight pattern")
+    return (
+        f"{total} batched fits and {len(sums)} sums bit-identical to fit_h2 and sum(); "
+        "a singular weight pattern raises in both paths"
+    )
+
+
 def null_self_test() -> str:
     """Contract on synthetic weights: a record replays; a mutated seed, tail value or weight fails."""
     weights = [4.0e6, 3.0e6, 2.0e6, 2.5e6, 3.5e6, 1.5e6]
@@ -1939,7 +2231,7 @@ def null_self_test() -> str:
         raise SystemExit(f"null self-test: a mutated {name} is accepted")
     return (
         "null self-test: replay reproduces; mutated seed, dropped tail value, changed weight, threshold, "
-        "delta count, rate intervals, a_sigma and readjudication fields are rejected"
+        "delta count, rate intervals, a_sigma and readjudication fields are rejected; " + batch_self_test()
     )
 
 
@@ -1955,7 +2247,12 @@ def main() -> int:
     mode.add_argument("--sensitivity-self-test", action="store_true")
     mode.add_argument("--null-calibration", type=Path, nargs="+", metavar=("OUT", "ANALYSIS"))
     mode.add_argument("--null-self-test", action="store_true")
-    parser.add_argument("--replicates", type=int, default=NULL_REPLICATES, help="with --null-calibration")
+    mode.add_argument("--null-equivalence", type=Path, nargs="+", metavar="ANALYSIS")
+    parser.add_argument(
+        "--replicates",
+        type=int,
+        help=f"with --null-calibration (default {NULL_REPLICATES}) or --null-equivalence (default {NULL_EQUIVALENCE})",
+    )
     parser.add_argument(
         "--replay", action="store_true", help="with --analyze or --sensitivity: compare OUT with the recomputation"
     )
@@ -1988,7 +2285,11 @@ def main() -> int:
     if args.null_self_test:
         print(null_self_test())
         return 0
+    if args.null_equivalence:
+        print(null_equivalence_report(args.null_equivalence, args.replicates or NULL_EQUIVALENCE))
+        return 0
     if args.null_calibration:
+        args.replicates = NULL_REPLICATES if args.replicates is None else args.replicates
         out, *analyses = args.null_calibration
         if args.replay:
             checked = check_null_record(json.loads(out.read_text(encoding="utf-8")))

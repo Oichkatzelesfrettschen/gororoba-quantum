@@ -67,6 +67,18 @@ runners keep the CPU; a gate that passes locally and fails on CI exposes a
 device-dependent result. Contracts that compare seeded shot counts keep
 Aer's CPU sampler, whose counts their records retain.
 
+A classical estimator evaluated over many synthetic replicates (a null
+calibration, a parametric or resampling bootstrap) is batched across
+replicates with numpy before it is pooled or sharded: one call fits a block
+of replicates, and parallel.py maps the blocks. The scalar form stays as the
+reference that analyses call, and a gate proves that the batched path
+returns the reference's bits on the record's own streams and on adversarial
+inputs. The bits agree when the batched code keeps the scalar arithmetic
+order, repeats builtin `sum()`'s Neumaier compensation, and sends every
+replicate-dependent `exp` and `** 2` through `math.exp` and `math.pow`;
+[vectorized-fits.md](docs/notes/build_host/vectorized-fits.md) gives the
+rules, the equivalence gates and the measured speedup.
+
 A change to live_run.py or experiments.py also gets a dry run,
 `"$PYTHON" live_run.py --out ../results/live`, whose audit record lands under
 results/live/.
