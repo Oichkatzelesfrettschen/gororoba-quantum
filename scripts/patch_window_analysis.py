@@ -13,7 +13,13 @@ leaves its phase undefined. Populations carry Wilson intervals, which stay
 finite at zero or full counts. Orbit contrasts use the multinomial variance.
 
 Usage: "$PYTHON" scripts/patch_window_analysis.py RUN_DIR [--out FILE]
+       "$PYTHON" scripts/patch_window_analysis.py RUN_DIR --check FILE
        "$PYTHON" scripts/patch_window_analysis.py --self-check
+
+Each member executes under the calibration collect.json records in its
+family_measurements execution block. A comparison across members reports a
+difference only when every member carries one stamp with no change during its
+shots; otherwise it reports {"withheld": reason, "members": [...]}.
 """
 
 from __future__ import annotations
@@ -39,6 +45,63 @@ CONDITIONS = {
     "window_c0": ("window_measure_reset_c0_{q}_d{d}", 1),
     "window_c1": ("window_measure_reset_c1_{q}_d{d}", 1),
 }
+
+
+UNAVAILABLE = "unavailable"
+Calibrations = dict[str, "tuple[str | None, bool | None]"]
+
+
+def _member_calibrations(run: Path) -> Calibrations:
+    """Member -> (calibration stamp, changed during shots) from collect.json; absent values read None (unknown)."""
+    path = run / "collect.json"
+    if not path.exists():
+        return {}
+    measurements = json.loads(path.read_text())[0].get("family_measurements", {})
+    result: Calibrations = {}
+    for member, entry in measurements.items():
+        execution = entry.get("execution") or {}
+        result[member] = (execution.get("calibration"), execution.get("calibration_changed_during_shots"))
+    return result
+
+
+def _shared_calibration(members: list[str], calibrations: Calibrations) -> tuple[str | None, str | None]:
+    """The one stamp every member executed under, or (None, the reason no shared stamp exists)."""
+    known = [calibrations.get(member, (None, None)) for member in members]
+    if any(stamp is None or changed is None for stamp, changed in known):
+        return None, "stamp unavailable"
+    if any(changed for _stamp, changed in known):
+        return None, "calibration changed during shots"
+    stamps = sorted({str(stamp) for stamp, _changed in known})
+    if len(stamps) > 1:
+        return None, "stamps differ: " + " vs ".join(stamps)
+    return stamps[0], None
+
+
+def _gated(members: list[str], calibrations: Calibrations, value: Any) -> dict[str, Any]:
+    """The comparison value with its members and shared stamp, or the withheld reason."""
+    stamp, reason = _shared_calibration(members, calibrations)
+    if reason is not None:
+        return {"withheld": reason, "members": members}
+    return {**value(), "members": members, "calibration": stamp}
+
+
+def _stamp_set(members: list[str], calibrations: Calibrations) -> dict[str, Any]:
+    """Stamps a within-condition fit spans; its points are kept whatever they hold."""
+    known = [calibrations.get(member, (None, None)) for member in members]
+    return {
+        "stamps": sorted({UNAVAILABLE if stamp is None else str(stamp) for stamp, _changed in known}),
+        "changed_during_shots": any(changed is not False for _stamp, changed in known),
+    }
+
+
+def _job_calibrations(run: Path, calibrations: Calibrations) -> dict[str, Any]:
+    """Job -> shared stamp of its members, or the withheld reason."""
+    jobs = json.loads((run / "record.json").read_text())["submission"]["jobs"]
+    result: dict[str, Any] = {}
+    for job in jobs:
+        stamp, reason = _shared_calibration(list(job["members"]), calibrations)
+        result[job["job_id"]] = stamp if reason is None else {"withheld": reason}
+    return result
 
 
 def wilson(successes: int, trials: int) -> tuple[float, float, float]:
@@ -231,46 +294,12 @@ def ramsey_points(
     return points
 
 
-def analyze(run: Path) -> dict[str, Any]:
-    record = json.loads((run / "record.json").read_text())
-    family = record["family_configuration"]
-    delays = [int(delay) for delay in family["delays_dt"]]
-    dt = float(family["dt_seconds"])
-    patch = [int(qubit) for qubit in family["patch_qubits"]]
-    counts = _bound_counts(run)
-    report: dict[str, Any] = {"patch_qubits": patch, "delays_dt": delays, "dt_seconds": dt, "conditions": {}}
-    for condition, (pattern, offset) in CONDITIONS.items():
-        for role, clbit, qubit in (("work_a", 0, patch[1]), ("work_b", 1, patch[3])):
-            points = ramsey_points(
-                counts, pattern, offset, clbit, [0, *delays] if condition == "ramsey_plain" else delays, qubit, dt
-            )
-            if not points:
-                continue
-            # Physical fits use only points whose X and Y circuits executed the
-            # same idle and whose coherence is resolved from zero; requested
-            # delays never stand in for executed timing.
-            timed = [point for point in points if point["timing_qualified"]]
-            qualified = [point for point in timed if point["phase_rad"] is not None]
-            distinct = sorted({round(point["t_us"], 2) for point in qualified})
-            entry: dict[str, Any] = {"points": points}
-            if len(distinct) >= 2 and len(qualified) >= 3:
-                entry["fit"] = fit_ramsey(qualified)
-            elif len(timed) > len(qualified):
-                entry["fit"] = {"status": "unresolved: visibility not resolved from zero", "times_us": distinct}
-            else:
-                entry["fit"] = {"status": "unresolved: executed timing unavailable or collapsed", "times_us": distinct}
-            if condition == "ramsey_echo":
-                entry["exposure"] = "unsigned idle; the fit is an effective response descriptor, not a static detuning"
-            report["conditions"][f"{condition}/{role}"] = entry
-    populations = {}
-    for name, histogram in counts.items():
-        if name.startswith("exchange_"):
-            populations[name] = {
-                role: wilson(*_ones(histogram, clbit))
-                for clbit, role in enumerate(("work_a", "spectator", "work_b", "neighbor_a", "neighbor_b"))
-            }
-    report["exchange_populations"] = populations
-    orbit = {}
+def cross_job_comparisons(
+    counts: dict[str, Counter[str]], delays: list[int], calibrations: Calibrations
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    """Orbit contrasts, between-context differences and reference comparisons, each gated on a shared calibration."""
+    orbit: dict[str, Any] = {}
+    arm_values: dict[str, tuple[float, float]] = {}
     for context in ("nominal", "window_barrier", "window_echo"):
         arms = {}
         for arm in ("feedback", "no_feedback"):
@@ -283,24 +312,36 @@ def analyze(run: Path) -> dict[str, Any]:
             contrast = law[1] - law[3]
             arms[arm] = (contrast, (law[1] + law[3] - contrast**2) / total)
         if len(arms) == 2:
-            difference = arms["feedback"][0] - arms["no_feedback"][0]
-            orbit[context] = {
-                "contrast_difference": difference,
-                "se": math.sqrt(arms["feedback"][1] + arms["no_feedback"][1]),
-            }
-    report["orbit"] = orbit
+            members = [f"orbit_{context}_feedback", f"orbit_{context}_no_feedback"]
+
+            def contrast_value(arms: dict[str, tuple[float, float]] = arms) -> dict[str, Any]:
+                return {
+                    "contrast_difference": arms["feedback"][0] - arms["no_feedback"][0],
+                    "se": math.sqrt(arms["feedback"][1] + arms["no_feedback"][1]),
+                }
+
+            orbit[context] = _gated(members, calibrations, contrast_value)
+            arm_values[context] = (
+                arms["feedback"][0] - arms["no_feedback"][0],
+                math.sqrt(arms["feedback"][1] + arms["no_feedback"][1]),
+            )
     contexts = {
         "orbit_barrier_minus_nominal": ("window_barrier", "nominal"),
         "orbit_echo_minus_barrier": ("window_echo", "window_barrier"),
     }
-    report["orbit_between_context"] = {
-        name: {
-            "difference": orbit[first]["contrast_difference"] - orbit[second]["contrast_difference"],
-            "se": math.hypot(orbit[first]["se"], orbit[second]["se"]),
-        }
-        for name, (first, second) in contexts.items()
-        if first in orbit and second in orbit
-    }
+    between = {}
+    for name, (first, second) in contexts.items():
+        if first not in orbit or second not in orbit:
+            continue
+        members = orbit[first]["members"] + orbit[second]["members"]
+
+        def between_value(first: str = first, second: str = second) -> dict[str, Any]:
+            return {
+                "difference": arm_values[first][0] - arm_values[second][0],
+                "se": math.hypot(arm_values[first][1], arm_values[second][1]),
+            }
+
+        between[name] = _gated(members, calibrations, between_value)
     middle, longest = sorted(delays)[len(delays) // 2], max(delays)
     references = {}
     for role, clbit in (("work_a", 0), ("work_b", 1)):
@@ -320,16 +361,72 @@ def analyze(run: Path) -> dict[str, Any]:
         }
         for name, (first, second, first_bit, second_bit) in pairs.items():
             if first in counts and second in counts:
-                values = []
-                for member, bit in ((first, first_bit), (second, second_bit)):
-                    ones, shots = _ones(counts[member], bit)
-                    mean = 1 - 2 * ones / shots
-                    values.append((mean, (1 - mean * mean) / shots))
-                references[name] = {
-                    "difference": values[0][0] - values[1][0],
-                    "se": math.sqrt(values[0][1] + values[1][1]),
-                }
-    report["reference_comparisons"] = references
+
+                def reference_value(
+                    first: str = first, second: str = second, first_bit: int = first_bit, second_bit: int = second_bit
+                ) -> dict[str, Any]:
+                    values = []
+                    for member, bit in ((first, first_bit), (second, second_bit)):
+                        ones, shots = _ones(counts[member], bit)
+                        mean = 1 - 2 * ones / shots
+                        values.append((mean, (1 - mean * mean) / shots))
+                    return {
+                        "difference": values[0][0] - values[1][0],
+                        "se": math.sqrt(values[0][1] + values[1][1]),
+                    }
+
+                references[name] = _gated([first, second], calibrations, reference_value)
+    return orbit, between, references
+
+
+def analyze(run: Path) -> dict[str, Any]:
+    record = json.loads((run / "record.json").read_text())
+    family = record["family_configuration"]
+    delays = [int(delay) for delay in family["delays_dt"]]
+    dt = float(family["dt_seconds"])
+    patch = [int(qubit) for qubit in family["patch_qubits"]]
+    counts = _bound_counts(run)
+    calibrations = _member_calibrations(run)
+    report: dict[str, Any] = {"patch_qubits": patch, "delays_dt": delays, "dt_seconds": dt, "conditions": {}}
+    for condition, (pattern, offset) in CONDITIONS.items():
+        for role, clbit, qubit in (("work_a", 0, patch[1]), ("work_b", 1, patch[3])):
+            points = ramsey_points(
+                counts, pattern, offset, clbit, [0, *delays] if condition == "ramsey_plain" else delays, qubit, dt
+            )
+            if not points:
+                continue
+            # Physical fits use only points whose X and Y circuits executed the
+            # same idle and whose coherence is resolved from zero; requested
+            # delays never stand in for executed timing.
+            timed = [point for point in points if point["timing_qualified"]]
+            qualified = [point for point in timed if point["phase_rad"] is not None]
+            distinct = sorted({round(point["t_us"], 2) for point in qualified})
+            pattern_y = pattern.format(q="y", d="{d}")
+            members = [
+                name for point in points for name in (point["member"], pattern_y.format(d=point["requested_dt"]))
+            ]
+            entry: dict[str, Any] = {"points": points, "calibration": _stamp_set(members, calibrations)}
+            if len(distinct) >= 2 and len(qualified) >= 3:
+                entry["fit"] = fit_ramsey(qualified)
+            elif len(timed) > len(qualified):
+                entry["fit"] = {"status": "unresolved: visibility not resolved from zero", "times_us": distinct}
+            else:
+                entry["fit"] = {"status": "unresolved: executed timing unavailable or collapsed", "times_us": distinct}
+            if condition == "ramsey_echo":
+                entry["exposure"] = "unsigned idle; the fit is an effective response descriptor, not a static detuning"
+            report["conditions"][f"{condition}/{role}"] = entry
+    populations = {}
+    for name, histogram in counts.items():
+        if name.startswith("exchange_"):
+            populations[name] = {
+                role: wilson(*_ones(histogram, clbit))
+                for clbit, role in enumerate(("work_a", "spectator", "work_b", "neighbor_a", "neighbor_b"))
+            }
+    report["exchange_populations"] = populations
+    report["orbit"], report["orbit_between_context"], report["reference_comparisons"] = cross_job_comparisons(
+        counts, delays, calibrations
+    )
+    report["calibrations"] = _job_calibrations(run, calibrations)
     report["registered_endpoints"] = registered_endpoints(run, record)
     return report
 
@@ -393,16 +490,81 @@ def self_check() -> None:
     p, low, high = wilson(0, 1024)
     if not (p == 0 and low == 0 and high > 0):
         raise RuntimeError("a zero-count Wilson interval collapsed")
+    _self_check_calibration()
     print(
         f"patch window analysis: planted detuning covered in {covered} of {trials} fits; "
-        "aliases kept; boundary intervals finite"
+        "aliases kept; boundary intervals finite; mixed calibrations withhold every cross-job comparison"
     )
+
+
+def _self_check_calibration() -> None:
+    """Cross-job comparisons withhold on differing, changed or missing stamps and report on a shared one."""
+    delays = [100, 200, 300]
+    counts: dict[str, Counter[str]] = {}
+    for context in ("nominal", "window_barrier", "window_echo"):
+        counts[f"orbit_{context}_feedback"] = Counter({"01": 700, "00": 200, "11": 100})
+        counts[f"orbit_{context}_no_feedback"] = Counter({"01": 600, "00": 250, "11": 100, "10": 50})
+    reference_members = [
+        "window_measure_reset_c1_y_d200",
+        "window_reset_only_c1_y_d200",
+        "ramsey_plain_y_d300",
+        "ramsey_plain_y_d300_only_work_a",
+        "ramsey_plain_y_d300_only_work_b",
+    ]
+    for member in reference_members:
+        counts[member] = Counter({"000": 600, "111": 400})
+    stamp_a, stamp_b = "2026-10-13T13:41:52-07:00", "2026-10-13T14:42:10-07:00"
+
+    def sections(calibrations: Calibrations) -> list[dict[str, Any]]:
+        orbit, between, references = cross_job_comparisons(counts, delays, calibrations)
+        found = [*orbit.values(), *between.values(), *references.values()]
+        if len(between) != 2 or len(references) != 4 or len(orbit) != 3:
+            raise RuntimeError("the synthetic run lost a cross-job comparison")
+        return found
+
+    shared: Calibrations = {member: (stamp_a, False) for member in counts}
+    for entry in sections(shared):
+        if (
+            "withheld" in entry
+            or entry["calibration"] != stamp_a
+            or "difference" not in entry
+            and "contrast_difference" not in entry
+        ):
+            raise RuntimeError("a shared-calibration comparison was not reported")
+    later = {"orbit_window_barrier_feedback", "orbit_window_barrier_no_feedback", *reference_members[:4:2]}
+    mixed: Calibrations = {member: (stamp_b if member in later else stamp_a, False) for member in counts}
+    entries = sections(mixed)
+    crossing = [entry for entry in entries if len({mixed[member][0] for member in entry["members"]}) > 1]
+    if len(crossing) != 2 + 4:
+        raise RuntimeError("the mixed-stamp run does not cross stamps in every cross-job comparison")
+    for entry in entries:
+        spans = entry in crossing
+        if spans != ("withheld" in entry) or (spans and ("difference" in entry or "contrast_difference" in entry)):
+            raise RuntimeError("a comparison spanning stamps reported a difference")
+        if spans and not entry["withheld"].startswith("stamps differ: "):
+            raise RuntimeError("a stamp mismatch carried the wrong reason")
+    changed = {**shared, "orbit_nominal_feedback": (stamp_a, True)}
+    if _shared_calibration(["orbit_nominal_feedback", "orbit_nominal_no_feedback"], changed)[1] != (
+        "calibration changed during shots"
+    ):
+        raise RuntimeError("a calibration change during shots did not withhold")
+    if _shared_calibration(["absent_member"], shared)[1] != "stamp unavailable":
+        raise RuntimeError("a missing stamp did not withhold")
+    if any("withheld" not in entry for entry in sections({})):
+        raise RuntimeError("an absent calibration record reported a difference")
+
+
+def render(report: dict[str, Any]) -> str:
+    return json.dumps(report, indent=2, sort_keys=True, default=str) + "\n"
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run", type=Path, nargs="?")
     parser.add_argument("--out", type=Path)
+    parser.add_argument(
+        "--check", type=Path, metavar="FILE", help="regenerate the analysis and byte-compare it to FILE"
+    )
     parser.add_argument("--self-check", action="store_true")
     arguments = parser.parse_args(argv)
     if arguments.self_check:
@@ -411,6 +573,11 @@ def main(argv: list[str] | None = None) -> int:
     if arguments.run is None:
         parser.error("a run directory is required")
     report = analyze(arguments.run)
+    if arguments.check is not None:
+        if arguments.check.read_bytes() != render(report).encode():
+            raise SystemExit(f"{arguments.check} differs from the regenerated analysis of {arguments.run}")
+        print(f"patch window analysis: {arguments.check} equals the regenerated analysis")
+        return 0
     for key, entry in report["conditions"].items():
         fit = entry["fit"]
         if "status" in fit:
@@ -419,10 +586,13 @@ def main(argv: list[str] | None = None) -> int:
         interval = ["open" if value is None else round(value * 1e3, 1) for value in fit["delta_95_mhz"]]
         print(f"{key:24s} delta {fit['delta_mhz'] * 1e3:+7.1f} kHz 95% {interval} V0 {fit['visibility0']:.3f}")
     for context, entry in report["orbit"].items():
+        if "withheld" in entry:
+            print(f"orbit {context:15s} withheld: {entry['withheld']}")
+            continue
         half = Z95 * entry["se"]
         print(f"orbit {context:15s} contrast difference {entry['contrast_difference']:+.3f} +/- {half:.3f}")
     if arguments.out:
-        arguments.out.write_text(json.dumps(report, indent=2, sort_keys=True, default=str) + "\n")
+        arguments.out.write_text(render(report))
     return 0
 
 
