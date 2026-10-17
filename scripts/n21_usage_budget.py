@@ -64,13 +64,14 @@ from experiment_optimizer import (  # noqa: E402
     evaluate_candidate,
 )
 
-REFERENCE = ROOT / "results/live/2026-10-17T101105.548987Z/record.json"
+REFERENCE = ROOT / "results/live/2026-10-17T111902.183133Z/record.json"
 TARGETS = ROOT / "docs/evidence/heron_platform/targets.json"
 # Exact-model dry runs of the same family, oldest calibration first, and the
 # Kaggle validation record of the retained 2026-10-17T003834Z ISA.
 DRIFT_RECORDS = (
     ROOT / "results/live/2026-10-17T091514.662497Z/record.json",
     ROOT / "results/live/2026-10-17T094344.639211Z/record.json",
+    ROOT / "results/live/2026-10-17T101105.548987Z/record.json",
     REFERENCE,
 )
 VALIDATION = ROOT / "docs/evidence/n21_exact_model/validation.json"
@@ -351,8 +352,11 @@ class Reference:
     laws: dict[str, tuple[float, ...]]
     calibration: str
     backend: str
-    # Exact laws of every replica of each replicated candidate, keyed by replica count.
+    # Exact laws of every replica of each replicated candidate, keyed by replica count
+    # (the first candidate of that count), and every candidate's own PUB rows and laws.
     replica_sets: dict[int, dict[str, tuple[tuple[float, ...], ...]]]
+    replica_pubs: dict[int, tuple[tuple[str, str, float, int], ...]]
+    candidates: dict[str, tuple[tuple[tuple[str, str, float, int], ...], dict[str, tuple[tuple[float, ...], ...]]]]
 
 
 def reference() -> Reference:
@@ -361,11 +365,22 @@ def reference() -> Reference:
     candidate = next(
         c for c in record["optimization"]["candidates"] if c["name"] == record["optimization"]["retained_candidate"]
     )
-    rows = []
     replica_sets: dict[int, dict[str, tuple[tuple[float, ...], ...]]] = {}
-    for pub in candidate["jobs"][0]["pubs"]:
-        member = pubs_by_name[pub["name"]]["components"][0]["member"]
-        rows.append((pub["name"], member, float(pub["scheduled_seconds"]), int(pub["classical_stage_count"])))
+    replica_pubs: dict[int, tuple[tuple[str, str, float, int], ...]] = {}
+    candidates: dict[str, Any] = {}
+
+    def pub_rows(planned: dict[str, Any]) -> tuple[tuple[str, str, float, int], ...]:
+        return tuple(
+            (
+                pub["name"],
+                pubs_by_name[pub["name"]]["components"][0]["member"],
+                float(pub["scheduled_seconds"]),
+                int(pub["classical_stage_count"]),
+            )
+            for pub in planned["jobs"][0]["pubs"]
+        )
+
+    rows = pub_rows(candidate)
     group = record["groups"][0]
     laws = {member["name"]: tuple(member["replicas"][0]["noisy"]) for member in group["members"]}
     exact = record.get("exact_model")
@@ -375,14 +390,19 @@ def reference() -> Reference:
             c["name"].rsplit("-shots-", 1)[0]: int(c["proxy_metadata"]["replicas"])
             for c in record["optimization"]["candidates"]
         }
+        planned_rows = {c["name"].rsplit("-shots-", 1)[0]: pub_rows(c) for c in record["optimization"]["candidates"]}
         for name, evidence in sorted(exact.get("candidates", {}).items()):
-            # A candidate the exact-model falsifier rejected never reached the optimizer.
-            if evidence.get("passed") is False:
+            # A candidate rejected by the exact-model falsifier or by its covariance
+            # declaration never reached the optimizer.
+            if evidence.get("passed") is False or name not in counts:
                 continue
             members: dict[str, list[tuple[float, ...]]] = {}
             for row in evidence["replicas"]:
                 members.setdefault(row["entry"], []).append(tuple(row["exact"]))
-            replica_sets.setdefault(counts[name], {k: tuple(v) for k, v in members.items()})
+            laws_by_member = {k: tuple(v) for k, v in members.items()}
+            candidates[name] = (planned_rows[name], laws_by_member)
+            replica_sets.setdefault(counts[name], laws_by_member)
+            replica_pubs.setdefault(counts[name], planned_rows[name])
     else:
         # A sampled record retains the optimizer's predicted contrast, not its
         # marginals; the group's laws, mixed toward uniform to that contrast,
@@ -390,7 +410,8 @@ def reference() -> Reference:
         ratio = candidate["observables"][0]["predicted_value"] / contrast(laws)
         laws = {name: toward_uniform(law, ratio) for name, law in laws.items()}
     replica_sets.setdefault(1, {name: (law,) for name, law in laws.items()})
-    return Reference(tuple(rows), laws, group["calibration"], group["backend"], replica_sets)
+    replica_pubs.setdefault(1, rows)
+    return Reference(rows, laws, group["calibration"], group["backend"], replica_sets, replica_pubs, candidates)
 
 
 def contrast(laws: dict[str, tuple[float, ...]]) -> float:
@@ -415,14 +436,27 @@ class Design:
     variance_bound: float | None = None
     rep_delay: float = 250e-6
     admitted: bool = True
+    candidate: str | None = None  # a reference candidate's own PUB rows and replica laws
+
+
+def design_inputs(
+    ref: Reference, design: Design
+) -> tuple[tuple[tuple[str, str, float, int], ...], dict[str, tuple[tuple[float, ...], ...]]]:
+    """The PUB rows and per-member replica laws a design sizes."""
+    if design.candidate is not None:
+        return ref.candidates[design.candidate]
+    if design.equal:
+        return ref.pubs, {member: (law,) * design.replicas for member, law in ref.laws.items()}
+    return ref.replica_pubs[design.replicas], ref.replica_sets[design.replicas]
 
 
 def plan(ref: Reference, design: Design, shots: int) -> tuple[CandidatePlan, tuple[ObservableContract, ...]]:
     contracts = family_contracts("n21-feedback-encoded", 0.08, 0.05, 0.8)
     pubs = []
     bounds = []
-    for name, member, seconds, stages in ref.pubs:
-        replicas = (ref.laws[member],) * design.replicas if design.equal else ref.replica_sets[design.replicas][member]
+    rows, laws = design_inputs(ref, design)
+    for name, member, seconds, stages in rows:
+        replicas = laws[member]
         pubs.append(
             PubPrediction(
                 name,
@@ -470,18 +504,30 @@ def minimum_shots(ref: Reference, design: Design, ceiling: int = 1 << 34) -> tup
     return low, feasible(ref, design, low)[1]
 
 
-def measured_charge(ref: Reference, shots: int, rep_delay: float, excess: dict[int, list[int]], c_high: float) -> int:
+def measured_charge(
+    rows: tuple[tuple[str, str, float, int], ...],
+    shots: int,
+    rep_delay: float,
+    excess: dict[int, list[int]],
+    c_high: float,
+) -> int:
     """ceil(executions x (Target bound + measured scheduler excess + rep_delay) + c) at the interval's top."""
     seconds = 0.0
-    for _name, _member, target, stages in ref.pubs:
+    for _name, _member, target, stages in rows:
         seconds += shots * (target + statistics.median(excess[stages]) * DT_SECONDS + rep_delay)
     return math.ceil(seconds + c_high)
 
 
 def designs(ref: Reference) -> list[Design]:
     sampled = 65536
+    # Each plan scores two finite-shot marginals, one per arm, in a sampled search.
+    plans = len(json.loads(REFERENCE.read_text())["optimization"]["candidates"])
     return [
-        Design("as dry-run: sampled 65,536, 24 plans, Hoeffding, R=1", sampled, 48),
+        Design(
+            f"sampled 65,536 across the dry run's {plans} plans, Hoeffding, R=1",
+            sampled,
+            2 * plans,
+        ),
         Design("sampled 65,536, one plan, Hoeffding, R=1", sampled, 2),
         Design("sampled 589,824 (the Kaggle validation's size), one plan, Hoeffding, R=1", 589824, 2),
         Design("exact model, Hoeffding, R=1", None, None),
@@ -732,7 +778,7 @@ def render() -> str:
             )
             continue
         planner = result.estimated_charge_seconds
-        measured = measured_charge(ref, n, design.rep_delay, excess, high)
+        measured = measured_charge(design_inputs(ref, design)[0], n, design.rep_delay, excess, high)
         radius = (observable.detection_radius or 0.0) + (observable.power_radius or 0.0)
         power = "0.8, admitted contract" if design.admitted else "unverified"
         lines.append(
@@ -766,7 +812,7 @@ def render() -> str:
     ):
         planner = OVERHEAD_SECONDS + shots * pair
         lines.append(
-            f"| {label} | 2 x {shots:,} | {planner:.1f} | {measured_charge(ref, shots, 250e-6, excess, high)} | "
+            f"| {label} | 2 x {shots:,} | {planner:.1f} | {measured_charge(ref.pubs, shots, 250e-6, excess, high)} | "
             f"{math.ceil(planner)} | {power} | {assumptions} | 0.0000 | - |"
         )
     record = json.loads(REFERENCE.read_text())
@@ -815,7 +861,8 @@ def self_test() -> None:
     checked = 0
     for candidate in record["optimization"]["candidates"]:
         count = int(candidate["proxy_metadata"]["replicas"])
-        if count not in ref.replica_sets:
+        prefix = candidate["name"].rsplit("-shots-", 1)[0]
+        if exact and prefix not in ref.candidates or not exact and count not in ref.replica_sets:
             continue
         design = Design(
             candidate["name"],
@@ -824,6 +871,7 @@ def self_test() -> None:
             count,
             False,
             design_settings.get("replica_variance_bound") if count > 1 else None,
+            candidate=prefix if exact else None,
         )
         shots = candidate["jobs"][0]["pubs"][0]["shots"]
         _ok, result = feasible(ref, design, shots)
