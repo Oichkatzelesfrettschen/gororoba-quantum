@@ -73,6 +73,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import functools
 import hashlib
 import json
 import math
@@ -921,6 +922,74 @@ def reset_evidence(record: dict[str, Any], texts: dict[str, str]) -> dict[str, A
     }
 
 
+QI_LOCK = ROOT / "docs" / "notes" / "quantum_inspire" / "requirements-qi.txt"
+UNIT_NORM_TOL = 1e-9
+
+
+def qi_lock_environment() -> dict[str, str]:
+    """The Python minor version and the qxelarator, libqasm and qiskit pins of the Quantum Inspire lock."""
+    text = QI_LOCK.read_text(encoding="utf-8")
+    found = re.search(r"Python (\d+\.\d+)\.\d+", text)
+    if found is None:
+        raise ValueError(f"{QI_LOCK} names no Python version")
+    pins = dict(re.findall(r"^(qxelarator|libqasm|qiskit)==(\S+)$", text, flags=re.MULTILINE))
+    if set(pins) != {"qxelarator", "libqasm", "qiskit"}:
+        raise ValueError(f"{QI_LOCK} lacks a qxelarator, libqasm or qiskit pin")
+    return {"python_minor": found.group(1), **pins}
+
+
+def require_state(state: Any, where: str) -> None:
+    """A retained state: QX_WIDTH-bit keys, pairs of finite floats, unit norm."""
+    if not isinstance(state, dict) or not state:
+        raise ValueError(f"{where}: the state is empty or not a mapping")
+    total = 0.0
+    for key, value in state.items():
+        if not (isinstance(key, str) and len(key) == QX_WIDTH and set(key) <= {"0", "1"}):
+            raise ValueError(f"{where}: basis key {key!r} is not a {QX_WIDTH}-bit string")
+        if not (
+            isinstance(value, list)
+            and len(value) == 2
+            and all(isinstance(part, float) and math.isfinite(part) for part in value)
+        ):
+            raise ValueError(f"{where}: amplitude {value!r} at {key} is not a finite (re, im) pair")
+        total += value[0] ** 2 + value[1] ** 2
+    if abs(total - 1.0) > UNIT_NORM_TOL:
+        raise ValueError(f"{where}: the state's norm squared is {total}, not 1")
+
+
+def require_record_shape(record: dict[str, Any]) -> None:
+    """The retained QX section holds the pinned environment and every run the experiment constants require."""
+    qx = record["qx"]
+    lock = qi_lock_environment()
+    environment = qx["environment"]
+    if not str(environment.get("python", "")).startswith(lock["python_minor"] + "."):
+        raise ValueError(f"QX ran under Python {environment.get('python')!r}; the lock pins {lock['python_minor']}")
+    for name in ("qxelarator", "libqasm", "qiskit"):
+        if environment.get(name) != lock[name]:
+            raise ValueError(f"QX ran {name} {environment.get(name)!r}; the lock pins {lock[name]}")
+    if lock["qxelarator"] != QXELARATOR:
+        raise ValueError(f"the lock pins qxelarator {lock['qxelarator']}; this check pins {QXELARATOR}")
+    if (qx["seeds"], qx["shots"]) != (SEEDS, QX_SHOTS):
+        raise ValueError(f"QX samples declare {qx['seeds']} seeds of {qx['shots']} shots, not {SEEDS} of {QX_SHOTS}")
+    for name, runs in qx["samples"].items():
+        if len(runs) != SEEDS:
+            raise ValueError(f"{name}: {len(runs)} sampled runs, not {SEEDS}")
+    if set(qx["reset_phase_probes"]) != set(RESET_PHASE_PROBES):
+        raise ValueError(f"reset phase probes {sorted(qx['reset_phase_probes'])} are not {sorted(RESET_PHASE_PROBES)}")
+    for name, probe in qx["reset_phase_probes"].items():
+        require_state(probe["amplitudes"], f"reset phase probe {name}")
+    for name, state in qx["states"].items():
+        require_state(state["amplitudes"], f"QX state {name}")
+    if len(qx["native_branches"]) != BRANCH_SEEDS:
+        raise ValueError(f"{len(qx['native_branches'])} native branch runs, not {BRANCH_SEEDS}")
+    for n, run in enumerate(qx["native_branches"]):
+        results = run["results"]
+        (key,) = results if len(results) == 1 else (None,)
+        if key is None or len(key) != QX_WIDTH or set(key) > {"0", "1"} or results[key] != 1:
+            raise ValueError(f"native branch run {n}: results {results} are not one {QX_WIDTH}-bit shot")
+        require_state(run["state"], f"native branch run {n}")
+
+
 def require_reset_evidence(evidence: dict[str, Any], reference: list[float]) -> None:
     """The qxelarator model reproduces every retained QX state; the ideal reset differs where weight sat on 1."""
     for name, row in evidence["probes"].items():
@@ -1135,6 +1204,7 @@ def verify(record: dict[str, Any], directory: Path) -> dict[str, Any]:
     """Every claim of a record from the current circuits and the retained programs; raises on a difference."""
     if record.get("schema") != SCHEMA:
         raise ValueError(f"schema {record.get('schema')!r} is not {SCHEMA}")
+    require_record_shape(record)
     for key, path in (("isa", ISA), ("record", RECORD)):
         if record[key]["sha256"] != sha256(path.read_bytes()):
             raise ValueError(f"{record[key]['path']} differs from the input the record was built from")
@@ -1362,9 +1432,49 @@ def self_test() -> None:
     )
     if abs(record["comparison"]["reference_contrast"] - 0.25) > EXACT_TOL:
         raise AssertionError(f"reference contrast {record['comparison']['reference_contrast']} is not 1/4")
+    # Retained-record shape: the lock's environment, the experiment's seed and shot constants, the full
+    # probe and branch sets, unit-norm well-keyed states and one-shot branch results.
+    unit = {"0" * QX_WIDTH: [math.sqrt(0.5), 0.0], "0" * (QX_WIDTH - 1) + "1": [0.0, math.sqrt(0.5)]}
+    lock = qi_lock_environment()
+    shaped = {
+        "qx": {
+            "environment": {
+                "python": lock["python_minor"] + ".15",
+                **{k: lock[k] for k in ("qxelarator", "libqasm", "qiskit")},
+            },
+            "seeds": SEEDS,
+            "shots": QX_SHOTS,
+            "samples": {"program": [{} for _ in range(SEEDS)]},
+            "reset_phase_probes": {name: {"amplitudes": dict(unit)} for name in RESET_PHASE_PROBES},
+            "states": {"program": {"amplitudes": dict(unit)}},
+            "native_branches": [{"results": {"0" * QX_WIDTH: 1}, "state": dict(unit)} for _ in range(BRANCH_SEEDS)],
+        }
+    }
+    require_record_shape(shaped)
+    shape_mutations: list[tuple[str, Callable[[dict[str, Any]], Any]]] = [
+        ("another qxelarator version", lambda r: r["qx"]["environment"].__setitem__("qxelarator", "0.11.0")),
+        ("another Python minor version", lambda r: r["qx"]["environment"].__setitem__("python", "3.14.7")),
+        ("one declared seed", lambda r: r["qx"].__setitem__("seeds", 1)),
+        ("a truncated sample list", lambda r: r["qx"]["samples"]["program"].pop()),
+        ("another shot count", lambda r: r["qx"].__setitem__("shots", QX_SHOTS // 2)),
+        ("a dropped reset phase probe", lambda r: r["qx"]["reset_phase_probes"].pop("general")),
+        ("a truncated branch list", lambda r: r["qx"]["native_branches"].pop()),
+        ("a zero-count branch", lambda r: r["qx"]["native_branches"][0].__setitem__("results", {"0" * QX_WIDTH: 0})),
+        ("a two-outcome branch", lambda r: r["qx"]["native_branches"][0]["results"].__setitem__("1" * QX_WIDTH, 1)),
+        (
+            "an unnormalized branch state",
+            lambda r: r["qx"]["native_branches"][0]["state"].__setitem__("1" * QX_WIDTH, [0.5, 0.0]),
+        ),  # fmt: skip
+        ("a malformed state key", lambda r: r["qx"]["states"]["program"]["amplitudes"].__setitem__("2", [0.0, 0.0])),
+    ]
+    for label, mutate in shape_mutations:
+        mutated_shape = copy.deepcopy(shaped)
+        mutate(mutated_shape)
+        _reject(label, functools.partial(require_record_shape, mutated_shape))
     radius = record["comparison"]["deferred_pair"]["radius"]
     print(
-        "n21 QX conformance self-test: stopgap equals emit on grid; corrupted lines, dropped-control deferrals, "
+        "n21 QX conformance self-test: stopgap equals emit on grid; record shape checks reject "
+        f"{len(shape_mutations)} mutations; corrupted lines, dropped-control deferrals, "
         "a flipped bit order, swapped clbits, shifted shots and reference-law native counts rejected at radius "
         f"{radius:.5f}; reset models reproduce the dynamic_density law and the qxelarator phase drop"
     )
