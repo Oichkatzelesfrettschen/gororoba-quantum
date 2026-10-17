@@ -929,7 +929,16 @@ code-review quota, the owner decides how the PR proceeds.
   run on every branch the merge touched.
 
 **Merging.** A PR merges when its latest review is clean, every thread is
-resolved, and GitHub reports mergeable_state clean. Bottom-up, for each PR:
+resolved, GitHub reports mergeable_state clean, and
+`"$PYTHON" ci/premerge_gates.py BRANCH` exits 0. That script merges the
+branch into origin/main in a scratch worktree and runs every pr-tier gate
+measured at 5 s or less there and on origin/main, each tree through its own
+ci/run_gates.py; it fails on a gate the merge breaks. A gate over a
+whole-tree record (core-368 over every case circuit, core-270 over every
+retained run) can pass on two branches separately and fail on their merge,
+and a PR's CI ran against main as it stood then. Full-tier record gates such
+as core-289 (every retained family configuration) run only on main's full
+CI run. Bottom-up, for each PR:
 1. Merge it with a merge commit:
    `gh api -X PUT repos/OWNER/REPO/pulls/PR/merge -f merge_method=merge`.
 2. Retarget the next PR to main: `gh api -X PATCH repos/OWNER/REPO/pulls/NEXT -f base=main`.
