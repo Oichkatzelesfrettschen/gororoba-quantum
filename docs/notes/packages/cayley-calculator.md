@@ -1,6 +1,6 @@
 # Cayley-Calculator 1.3.1
 
-- Release: [PyPI Cayley-Calculator 1.3.1](https://pypi.org/project/Cayley-Calculator/1.3.1/), sdist sha256 `65922fc90cc0d8159830e5d90424cb7cda6c6306824bea628542c647f364d55b`; source [Kadelka/Cayley_Calculator](https://github.com/Kadelka/Cayley_Calculator); MIT per its build recipe.
+- Release: [PyPI Cayley-Calculator 1.3.1](https://pypi.org/project/Cayley-Calculator/1.3.1/), sdist sha256 `65922fc90cc0d8159830e5d90424cb7cda6c6306824bea628542c647f364d55b`; source [Kadelka/Cayley_Calculator](https://github.com/Kadelka/Cayley_Calculator); its build recipe declares MIT, while the installed dist-info carries no license field.
 - Modules: `Cayley_Calculator` plus top-level `compl`, `quat`, `octonion`, `sedenion`, `pathion`, `chingon`, `routon` placed on `sys.path` when `import Cayley_Calculator` appends the package directory and runs `site.addsitedir` on it, whose `.pth` files add `Linear`, `Mods`, `Special` and `Test`.
 
 ## What it implements

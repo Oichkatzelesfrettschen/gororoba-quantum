@@ -1,0 +1,18 @@
+{
+ "schema": "kaggle-dataset-v1",
+ "ref": "probablyeric/gororoba-ghost-error-scale-parts",
+ "archive": "repository-files.bundle",
+ "archive_sha256": "e43c65f822962717009931c100ea584fda71cc4c45dad9dc4a485daa5d714b55",
+ "git_commit": "d7b7b72bf0a8cc3d737695192daab7e98c760508",
+ "includes": [
+  "docs/evidence/ghost_error_scale/part_a.json",
+  "docs/evidence/ghost_error_scale/part_b.json",
+  "docs/evidence/ghost_error_scale/part_c.json"
+ ],
+ "files": {
+  "docs/evidence/ghost_error_scale/part_a.json": "6e5f304d028cc88c7f0e4c4d4544b777bea006dce6f249aabb19776997f641c8",
+  "docs/evidence/ghost_error_scale/part_b.json": "f1c5e15c8382f409bb44135050fd1a1ca234236abaf97d384fb4513cb9439454",
+  "docs/evidence/ghost_error_scale/part_c.json": "a3b1ac56f9da4a47c2985ae1434759daff6b5e39cd5196a72b806a0c122f20f2"
+ },
+ "reply": "Starting upload for file repository-files.bundle\nUpload successful: repository-files.bundle (724KB)\nYour private Dataset is being created. Please check progress at https://www.kaggle.com/datasets/probablyeric/gororoba-ghost-error-scale-parts"
+}

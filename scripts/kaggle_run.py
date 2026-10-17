@@ -3,9 +3,10 @@
 Simulations of 14 qubits or fewer run on Kaggle; IBM hardware serves 15 or
 more qubits or a question about the device itself. A kernel runs on a CPU
 machine unless ``--machine`` names an accelerator, which a case requests when
-its widest density matrix reaches local_compute.GPU_MIN_ACTIVE_QUBITS: below
-that width a GPU spends its per-call overhead on states the CPU evolves
-faster, and the weekly GPU quota goes to the runs that need it. This script is
+its widest density matrix reaches 12 qubits, or 8 with mid-circuit
+measurement: below those widths a T4 is at most 3 times faster than the
+kernel's 4 CPUs (docs/notes/kaggle/substrates.md), and the weekly GPU quota
+goes to the runs that need it. This script is
 the only path from the repository to Kaggle:
 
 - ``push ENTRY --slug SLUG [-- ARGS]`` (ARGS after ``--`` go to ENTRY) resolves ENTRY's repository imports
@@ -62,6 +63,7 @@ import subprocess
 import sys
 import time
 import zipfile
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -70,9 +72,67 @@ ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results/kaggle"
 MODULE_DIRS = ("gororoba_quantum", "scripts")
 KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer-gpu-cu11==0.17.2", "qiskit-ibm-runtime==0.50.0")
+# A CPU or TPU host has no NVIDIA GPU, and the cu11 wheel ships cp313 only,
+# so those kernels take the CPU build of the same Aer release.
 CPU_KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer==0.17.2", "qiskit-ibm-runtime==0.50.0")
+# Usage guides every bundle carries, so an agent or author inside a kernel
+# reads the same package manuals, workflow and substrate notes as the host:
+# every tracked file under each directory.
+KERNEL_DOCS = (
+    "docs/notes/kaggle",
+    "docs/notes/packages",
+    "docs/notes/quantum-tools",
+    "docs/notes/qiskit-ecosystem.md",
+    "docs/notes/qiskit-ecosystem-install-plan.md",
+)
+# Opt-in package groups (``push --with GROUP``), each pinned to the version of
+# the build host's Arch package, so a kernel and the host import the same
+# releases. The kernel installs them under a constraints file that holds
+# KERNEL_PINS and the image's numpy and scipy fixed, and stops unless every
+# pin is installed at its version. The algebra packages are not a group: every
+# kernel builds them through scripts/algebra_package_tables.py.
+PIN_GROUPS: dict[str, tuple[str, ...]] = {
+    "quantum-tools": (
+        "stim==1.16.0",
+        "mthree==3.0.0",
+        "runningman==2.3.0",
+        "qiskit-ibm-runtime==0.50.0",
+        # Runtime's own dependencies, held at the host's versions: unpinned,
+        # a kernel resolves ibm-quantum-schemas 0.13 while the host has 0.12.
+        "samplomatic==0.21.0",
+        "ibm-quantum-schemas==0.12.20260921",
+        "qiskit-mitigation==0.1.1",
+        # qiskit.qasm3.loads needs the importer and its parser.
+        "qiskit-qasm3-import==0.6.0",
+        "openqasm3==1.0.1",
+        "antlr4-python3-runtime==4.13.2",
+        "qiskit-addon-utils==0.4.0",
+        "qiskit-experiments==0.14.2",
+        "lmfit==1.3.4",
+        "quimb==1.15.0",
+        "cotengra==0.8.2",
+        "autoray==0.11.0",
+        "pyzx==0.10.7",
+        "galois==0.4.11",
+        "numba==0.68.0",
+    ),
+    # Exact arithmetic beside cd_core: FLINT integers, rationals and
+    # matrices (exact rank and nullspace) and p-adic fields; neither defines
+    # a Cayley-Dickson table, so neither enters tables.json.
+    "exact-arithmetic": ("python-flint==0.9.0", "pyadic==0.3.0"),
+}
+MAX_ACCELERATOR_SECONDS = 4 * 3600
+SMOKE_TIMEOUT_SECONDS = 1800
+# A TPU VM session carries no docker image on Kaggle's backend, and a
+# docker_image in kernel-metadata.json or a dockerImageVersionId in the
+# notebook pins a CPU/GPU image that overrides it (kaggle-api issue 1197).
+# A TPU push therefore names no image, asks for the latest pinning, and
+# writes a notebook without a "kaggle" metadata block. The session's
+# hardware is read from its own output (scripts/tpu_probe.py); the request
+# fields establish nothing about it (docs/notes/kaggle/tpu-research.md).
 DEFAULT_MACHINE = "cpu"
 GPU_MACHINE = "NvidiaTeslaT4"
+TPU_MACHINE = "TpuV5E8"
 SHARDS = ROOT / ".kaggle-shards"
 REMOTE = "https://github.com/Oichkatzelesfrettschen/gororoba-quantum.git"
 REMOTE_REFS = "refs/kaggle-shards/remote"
@@ -109,15 +169,35 @@ RUNNER = r"""
 import base64, io, subprocess, sys, zipfile
 from pathlib import Path
 
+import importlib.metadata as metadata
+
 PINS = {pins!r}
+EXTRA = {extra!r}
 BUNDLE = "{bundle}"
 
 out = Path("/kaggle/working/output")
 out.mkdir(parents=True, exist_ok=True)
-pip = subprocess.run([sys.executable, "-m", "pip", "install", "-q", *PINS], capture_output=True, text=True)
+# The image's numpy and scipy, and its JAX and libtpu where present, stay
+# fixed while the pins install.
+frozen = []
+for name in ("numpy", "scipy", "jax", "jaxlib", "libtpu"):
+    try:
+        frozen.append(f"{{name}}=={{metadata.version(name)}}")
+    except metadata.PackageNotFoundError:
+        pass
+Path("/tmp/constraints.txt").write_text("\n".join([*PINS, *frozen]) + "\n")
+pip = subprocess.run(
+    [sys.executable, "-m", "pip", "install", "-q", "-c", "/tmp/constraints.txt", *PINS, *EXTRA],
+    capture_output=True,
+    text=True,
+)
 (out / "pip.txt").write_text(pip.stdout + pip.stderr)
 if pip.returncode:
     raise SystemExit(f"pip install failed: {{pip.returncode}}")
+for pin in [*PINS, *EXTRA, *frozen]:
+    name, wanted = pin.split("==")
+    if metadata.version(name) != wanted:
+        raise SystemExit(f"{{name}} is {{metadata.version(name)}}, pinned {{wanted}}")
 repo = Path("/tmp/gororoba/repo")
 zipfile.ZipFile(io.BytesIO(base64.b64decode(BUNDLE))).extractall(repo)
 raise SystemExit(subprocess.run([sys.executable, "-B", "kaggle_kernel/kernel_main.py"], cwd=repo).returncode)
@@ -125,7 +205,8 @@ raise SystemExit(subprocess.run([sys.executable, "-B", "kaggle_kernel/kernel_mai
 
 
 def kernel_pins(machine: str) -> tuple[str, ...]:
-    return CPU_KERNEL_PINS if machine == "cpu" else KERNEL_PINS
+    """The CPU Aer build on CPU and TPU machines, the cu11 GPU build on an NVIDIA machine."""
+    return CPU_KERNEL_PINS if machine == "cpu" or machine.startswith("Tpu") else KERNEL_PINS
 
 
 def require(condition: bool, message: str) -> None:
@@ -219,6 +300,8 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         files = import_closure(entry)
     for always in KERNEL_FILES:
         files.extend(import_closure(ROOT / always) if always.endswith(".py") else [ROOT / always])
+    for docs in KERNEL_DOCS:
+        files.extend(tracked_files(docs))
     for include in args.include:
         files.extend(tracked_files(include))
     ci_env = None
@@ -245,30 +328,42 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
             data = path.read_bytes()
             digests[rel] = sha256(data)
             bundle.writestr(rel, data)
-        device = "CPU" if args.machine == "cpu" else "GPU"
+        device = "CPU" if args.machine == "cpu" or args.machine.startswith("Tpu") else "GPU"
         datasets = [dataset_record(slug) for slug in getattr(args, "dataset", [])]
         job = {
             "entry": entry_rel,
             "args": list(args.args),
             "smoke": smoke,
             "device": device,
+            "pin_groups": {group: list(PIN_GROUPS[group]) for group in getattr(args, "with_groups", [])},
             "datasets": [{"ref": d["ref"], "archive": d["archive"], "files": d["files"]} for d in datasets],
             "ci_env": ci_env,
         }
         bundle.writestr("kaggle_kernel/kernel_job.json", json.dumps(job, indent=1) + "\n")
     kernel_dir = run_dir / "kernel"
     kernel_dir.mkdir(parents=True)
+    extra = [pin for group in getattr(args, "with_groups", []) for pin in PIN_GROUPS[group]]
     runner = RUNNER.format(
-        pins=list(kernel_pins(args.machine)), bundle=base64.b64encode(buffer.getvalue()).decode("ascii")
+        pins=list(kernel_pins(args.machine)), extra=extra, bundle=base64.b64encode(buffer.getvalue()).decode("ascii")
     )
     (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
+    tpu = args.machine.startswith("Tpu")
+    if tpu:
+        # The same program as the notebook's single code cell.
+        notebook = {
+            "cells": [{"cell_type": "code", "execution_count": None, "metadata": {}, "outputs": [], "source": runner}],
+            "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}},
+            "nbformat": 4,
+            "nbformat_minor": 5,
+        }
+        (kernel_dir / "run.ipynb").write_text(json.dumps(notebook, indent=1) + "\n", encoding="utf-8")
     kernel_id = f"{owner}/{args.slug}"
     metadata = {
         "id": kernel_id,
         "title": args.slug,
-        "code_file": "run.py",
+        "code_file": "run.ipynb" if tpu else "run.py",
         "language": "python",
-        "kernel_type": "script",
+        "kernel_type": "notebook" if tpu else "script",
         "is_private": True,
         "enable_gpu": args.machine != "cpu" and not args.machine.startswith("Tpu"),
         "enable_tpu": args.machine.startswith("Tpu"),
@@ -276,6 +371,8 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     }
     if args.machine != "cpu":
         metadata["machine_shape"] = args.machine
+    if tpu:
+        metadata["docker_image_pinning_type"] = "latest"
     if datasets:
         metadata["dataset_sources"] = [d["ref"] for d in datasets]
     (kernel_dir / "kernel-metadata.json").write_text(json.dumps(metadata, indent=1) + "\n", encoding="utf-8")
@@ -289,6 +386,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "git_commit": revision,
         "untracked_inputs": untracked,
         "pins": list(kernel_pins(args.machine)),
+        "pin_groups": {group: list(PIN_GROUPS[group]) for group in getattr(args, "with_groups", [])},
         "ci_env": ci_env,
         "bundle": digests,
         "datasets": {d["ref"]: d["archive_sha256"] for d in datasets},
@@ -299,14 +397,88 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     return submission
 
 
+def latest_state(ref: str) -> str | None:
+    """The KernelWorkerStatus name of the kernel's latest version; None when the account holds no kernel at ref.
+
+    GetKernelSessionStatus answers a slug that holds no kernel with HTTP 403
+    or 404 (the Kaggle CLI's kernels_status reports a 401 or 403 as a wrong
+    slug); every other failure raises, so the push that asked refuses.
+    """
+    from kaggle.api.kaggle_api_extended import KaggleApi
+    from kagglesdk.kernels.types.kernels_api_service import ApiGetKernelSessionStatusRequest
+    from requests.exceptions import HTTPError
+
+    owner, slug = ref.split("/")
+    api = KaggleApi()
+    api.authenticate()
+    request = ApiGetKernelSessionStatusRequest()
+    request.user_name = owner
+    request.kernel_slug = slug
+    try:
+        with api.build_kaggle_client() as client:
+            response = client.kernels.kernels_api_client.get_kernel_session_status(request)
+    except HTTPError as error:
+        if error.response is not None and error.response.status_code in (403, 404):
+            return None
+        raise
+    return str(response.status.name)
+
+
+def require_no_live_version(
+    ref: str,
+    state: Callable[[str], str | None] = latest_state,
+    versions: Callable[[str], list[dict[str, Any]]] | None = None,
+) -> None:
+    """Refuse while any version of ref runs or queues; Kaggle answers status for the latest version only.
+
+    A new version leaves every older version's session running, each billing
+    its accelerator, so the latest state alone misses an older live session.
+    ListKernelVersions (scripts/kaggle_sessions.py) returns every version's
+    session; a slug Kaggle does not hold has none. A listing that fails
+    refuses the push, since no version's state is then known.
+    """
+    import kaggle_sessions
+
+    latest = state(ref)
+    if latest is None:
+        return
+    remedy = f"cancel every live version (scripts/kaggle_sessions.py cancel-running {ref}) or push under a new slug"
+    require(latest not in kaggle_sessions.LIVE, f"{ref}: the latest version is {latest}; {remedy}")
+
+    def browser_listing(name: str) -> list[dict[str, Any]]:
+        return kaggle_sessions.list_versions(name, kaggle_sessions.default_profile())
+
+    try:
+        rows = (versions or browser_listing)(ref)
+    except Exception as error:
+        raise SystemExit(f"{ref}: cannot list its versions ({error!r}); the accelerator push refuses") from error
+    live = kaggle_sessions.live_sessions(rows)
+    require(
+        not live,
+        f"{ref}: "
+        + ", ".join(f"version {row['version']} is {row['status']} (session {row['session_id']})" for row in live)
+        + f"; {remedy}",
+    )
+
+
 def push(args: argparse.Namespace) -> int:
     # The smoke probe measures the widest circuits a GPU runs; on a CPU
-    # machine it would record only that no GPU is attached.
+    # machine it would record only that no GPU is attached. It finishes in
+    # minutes, so it carries a short ceiling when none is given.
     if args.smoke and args.machine == "cpu":
         args.machine = GPU_MACHINE
-    # An accelerator session spends the weekly quota until it ends, so every
-    # accelerator push names the run-time limit it may hold.
-    require(args.machine == "cpu" or args.timeout > 0, f"a {args.machine} push needs --timeout SECONDS")
+    if args.smoke and not args.timeout:
+        args.timeout = SMOKE_TIMEOUT_SECONDS
+    # An accelerator session bills its whole wall time against the weekly
+    # quota and runs to the 12-hour limit unless it ends or is cancelled by
+    # its session id (scripts/kaggle_sessions.py), so a GPU or TPU push states
+    # its ceiling; Kaggle ends the session at --timeout.
+    require(
+        args.machine == "cpu" or 0 < args.timeout <= MAX_ACCELERATOR_SECONDS,
+        f"a {args.machine} push needs --timeout SECONDS (at most {MAX_ACCELERATOR_SECONDS})",
+    )
+    if args.machine != "cpu":
+        require_no_live_version(f"{username()}/{args.slug}")
     revision = git_commit()
     stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
     run_dir = RESULTS / f"{stamp}-{args.slug}"
@@ -347,7 +519,7 @@ def self_test(args: argparse.Namespace) -> int:
 
     entry = "scripts/design_c_cubic_noise.py"
     data = "docs/evidence/calibration/ibm_kingston.json"
-    for machine in (DEFAULT_MACHINE, GPU_MACHINE):
+    for machine in (DEFAULT_MACHINE, GPU_MACHINE, TPU_MACHINE):
         submission = _self_test_kernel(entry, data, machine)
     with tempfile.TemporaryDirectory() as scratch:
         head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True)
@@ -360,11 +532,73 @@ def self_test(args: argparse.Namespace) -> int:
         require(shard["tree"] == job["tree"] and job["python"] == CI_PYTHON, "shard job lacks the tree or CI's Python")
         py_compile.compile(str(Path(scratch) / "shard/kernel/run.py"), doraise=True)
     _overlay_self_test()
+    _push_guard_self_test()
     print(
-        f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private CPU and GPU kernels, "
-        "a shard kernel bound to HEAD's tree, an overlay that rebuilds a directory-to-file change, run.py compiles"
+        f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private CPU, GPU and TPU kernels, "
+        "a shard kernel bound to HEAD's tree, an overlay that rebuilds a directory-to-file change, run.py compiles, "
+        "an accelerator push or shard run refused while an older version runs"
     )
     return 0
+
+
+def _push_guard_self_test() -> None:
+    """require_no_live_version over stubbed states and version listings; no Kaggle call."""
+
+    def row(version: int, status: str) -> dict[str, Any]:
+        return {"session_id": 100 + version, "version": version, "status": status, "created": None, "kernel_id": 7}
+
+    def refused(latest: str | None, rows: list[dict[str, Any]]) -> str | None:
+        listed: list[str] = []
+
+        def versions(ref: str) -> list[dict[str, Any]]:
+            listed.append(ref)
+            return rows
+
+        try:
+            require_no_live_version("owner/slug", lambda ref: latest, versions)
+        except SystemExit as stop:
+            return str(stop)
+        require(listed == ([] if latest is None else ["owner/slug"]), f"listing calls {listed}")
+        return None
+
+    older = refused("COMPLETE", [row(1, "RUNNING"), row(2, "COMPLETE")])
+    require(older is not None and "version 1 is RUNNING (session 101)" in older, f"older running version: {older}")
+    queued = refused("ERROR", [row(1, "COMPLETE"), row(2, "QUEUED"), row(3, "ERROR")])
+    require(queued is not None and "version 2 is QUEUED" in queued, f"older queued version: {queued}")
+    latest = refused("RUNNING", [row(1, "RUNNING")])
+    require(latest is not None and "the latest version is RUNNING" in latest, f"latest running version: {latest}")
+    require(refused("COMPLETE", [row(1, "ERROR"), row(2, "COMPLETE")]) is None, "finished versions refuse the push")
+    require(refused(None, []) is None, "a new slug refuses the push")
+
+    def failing(ref: str) -> list[dict[str, Any]]:
+        raise RuntimeError("no browser")
+
+    try:
+        require_no_live_version("owner/slug", lambda ref: "COMPLETE", failing)
+    except SystemExit as stop:
+        require("cannot list its versions" in str(stop), f"failed listing: {stop}")
+    else:
+        raise SystemExit("a failed version listing lets the push through")
+
+    # Shard 2's slug holds an older running version: the shard guard refuses
+    # after reading every slug in --only and before any push.
+    checked: list[str] = []
+    tables = {f"owner/{shard_slug(2, 6)}": [row(1, "RUNNING"), row(2, "COMPLETE")]}
+
+    def shard_guard(ref: str) -> None:
+        checked.append(ref)
+        require_no_live_version(ref, lambda name: "COMPLETE", lambda name: tables.get(name, []))
+
+    require_no_live_shard("owner", [0, 1, 2], 6, ["cpu"], shard_guard)
+    require(checked == [], f"a CPU-only shard run reads versions: {checked}")
+    try:
+        require_no_live_shard("owner", [0, 1, 2], 6, ["cpu", GPU_MACHINE], shard_guard)
+    except SystemExit as stop:
+        require("version 1 is RUNNING" in str(stop), f"shard refusal: {stop}")
+    else:
+        raise SystemExit("an accelerator shard run starts beside an older running version")
+    require(checked == [f"owner/{shard_slug(i, 6)}" for i in range(3)], f"shard slugs checked: {checked}")
+    require_no_live_shard("owner", [0, 1], 6, [TPU_MACHINE], shard_guard)
 
 
 def _overlay_self_test() -> None:
@@ -429,7 +663,13 @@ def _self_test_kernel(entry: str, data: str, machine: str) -> dict[str, Any]:
     import tempfile
 
     build_args = argparse.Namespace(
-        entry=entry, smoke=False, include=[data], args=["--pairs", "1,16"], slug="self-test", machine=machine
+        entry=entry,
+        smoke=False,
+        include=[data],
+        args=["--pairs", "1,16"],
+        slug="self-test",
+        machine=machine,
+        with_groups=["quantum-tools"],
     )
     with tempfile.TemporaryDirectory() as scratch:
         run_dir = Path(scratch) / "run"
@@ -440,15 +680,37 @@ def _self_test_kernel(entry: str, data: str, machine: str) -> dict[str, Any]:
         for rel, digest in submission["bundle"].items():
             require(digest == sha256((ROOT / rel).read_bytes()), f"bundle digest of {rel} differs from the tree")
         metadata = json.loads((run_dir / "kernel/kernel-metadata.json").read_text(encoding="utf-8"))
-        gpu = machine != "cpu"
+        gpu = machine not in ("cpu",) and not machine.startswith("Tpu")
         require(
             metadata["is_private"] is True and metadata["enable_gpu"] is gpu, f"{machine}: kernel metadata {metadata}"
         )
-        require(("machine_shape" in metadata) is gpu, f"{machine}: machine_shape {metadata.get('machine_shape')}")
+        require(
+            ("machine_shape" in metadata) is (machine != "cpu"),
+            f"{machine}: machine_shape {metadata.get('machine_shape')}",
+        )
         require(metadata["id"] == "owner/self-test", f"kernel id {metadata['id']}")
         py_compile.compile(str(run_dir / "kernel/run.py"), doraise=True)
         runner = (run_dir / "kernel/run.py").read_text(encoding="utf-8")
         require(all(pin in runner for pin in kernel_pins(machine)), f"{machine}: run.py lacks a pin")
+        require(all(pin in runner for pin in PIN_GROUPS["quantum-tools"]), f"{machine}: run.py lacks a group pin")
+        for docs in KERNEL_DOCS:
+            for path in tracked_files(docs):
+                require(path.relative_to(ROOT).as_posix() in submission["bundle"], f"bundle lacks {path}")
+        require(
+            submission["pin_groups"] == {"quantum-tools": list(PIN_GROUPS["quantum-tools"])},
+            f"{machine}: submission does not record the pin group",
+        )
+        if machine.startswith("Tpu"):
+            notebook = json.loads((run_dir / "kernel/run.ipynb").read_text(encoding="utf-8"))
+            require(notebook["cells"][0]["source"] == runner, "the TPU notebook cell differs from run.py")
+            require(
+                metadata["kernel_type"] == "notebook"
+                and "docker_image" not in metadata
+                and metadata["docker_image_pinning_type"] == "latest"
+                and "kaggle" not in notebook["metadata"]
+                and "dockerImageVersionId" not in json.dumps(notebook["metadata"]),
+                f"TPU kernel pins an image: {metadata} {notebook['metadata']}",
+            )
         require(submission["untracked_inputs"] == [], f"untracked bundled inputs {submission['untracked_inputs']}")
     return submission
 
@@ -523,6 +785,30 @@ def git(*args: str) -> str:
     return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True, check=True).stdout
 
 
+def shard_slug(shard: int, count: int) -> str:
+    """The fixed kernel slug of one CI shard; every machine type pushes it as a new version."""
+    return f"gororoba-ci-shard-{shard}-of-{count}"
+
+
+def require_no_live_shard(
+    owner: str,
+    shards: list[int],
+    count: int,
+    machines: list[str],
+    guard: Callable[[str], None] = require_no_live_version,
+) -> None:
+    """Apply the all-version guard to every shard slug when any machine in the list is an accelerator.
+
+    A shard may fall through to any machine in the preference list, and each
+    shard slug is fixed, so every slug is checked before the first push and a
+    refusal sends nothing.
+    """
+    if all(machine == "cpu" for machine in machines):
+        return
+    for shard in shards:
+        guard(f"{owner}/{shard_slug(shard, count)}")
+
+
 def build_shard_kernel(
     run_dir: Path, owner: str, stamp: str, base: str, head: str, tier: str, shard: int, count: int, machine: str = "cpu"
 ) -> dict[str, Any]:
@@ -572,9 +858,9 @@ def build_shard_kernel(
     kernel_dir = run_dir / "kernel"
     kernel_dir.mkdir(parents=True)
     pins = kernel_pins(machine)
-    runner = RUNNER.format(pins=list(pins), bundle=base64.b64encode(buffer.getvalue()).decode("ascii"))
+    runner = RUNNER.format(pins=list(pins), extra=[], bundle=base64.b64encode(buffer.getvalue()).decode("ascii"))
     (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
-    slug = f"gororoba-ci-shard-{shard}-of-{count}"
+    slug = shard_slug(shard, count)
     metadata = {
         "id": f"{owner}/{slug}",
         "title": slug,
@@ -643,6 +929,12 @@ def shards(args: argparse.Namespace) -> int:
     only = [int(x) for x in args.only.split(",")] if args.only else list(range(args.count))
     require(all(0 <= i < args.count for i in only), f"--only {args.only} lies outside 0..{args.count - 1}")
     machines = args.machine.split(",")
+    # A shard that falls through to an accelerator bills it like any push.
+    require(
+        all(m == "cpu" for m in machines) or 0 < args.timeout <= MAX_ACCELERATOR_SECONDS,
+        f"shards on {args.machine} need --timeout SECONDS (at most {MAX_ACCELERATOR_SECONDS})",
+    )
+    require_no_live_shard(owner, only, args.count, machines)
     for shard in only:
         waited = 0
         while True:
@@ -723,6 +1015,52 @@ def status(args: argparse.Namespace) -> int:
     return 0
 
 
+def download_version(owner: str, slug: str, version: int, target: Path) -> list[str]:
+    """Every output file and the log of one kernel version, laid out as `kaggle kernels output` lays them out.
+
+    The Kaggle CLI parses OWNER/SLUG/N and then sends no version, so it
+    returns the slug's latest version whatever N says; kagglesdk's
+    ListKernelSessionOutput takes the version as version_label "vN".
+    """
+    import urllib.request
+
+    from kaggle.api.kaggle_api_extended import KaggleApi
+    from kagglesdk.kernels.types.kernels_api_service import ApiListKernelSessionOutputRequest
+
+    api = KaggleApi()
+    api.authenticate()
+    written: list[str] = []
+    token: str | None = None
+    log: str | None = None
+    with api.build_kaggle_client() as client:
+        while True:
+            request = ApiListKernelSessionOutputRequest()
+            request.user_name = owner
+            request.kernel_slug = slug
+            request.version_label = f"v{version}"
+            request.page_size = 50
+            if token:
+                request.page_token = token
+            response = client.kernels.kernels_api_client.list_kernel_session_output(request)
+            for item in response.files or []:
+                path = target / item.file_name
+                require(
+                    path.resolve().is_relative_to(target.resolve()), f"output path {item.file_name} escapes {target}"
+                )
+                path.parent.mkdir(parents=True, exist_ok=True)
+                with urllib.request.urlopen(item.url, timeout=300) as download:
+                    path.write_bytes(download.read())
+                written.append(item.file_name)
+            log = log or response.log
+            token = response.next_page_token
+            if not token:
+                break
+    if log:
+        (target / f"{slug}.log").write_text(log, encoding="utf-8")
+        written.append(f"{slug}.log")
+    return written
+
+
 def collect(args: argparse.Namespace) -> int:
     """Download the run's own kernel version and record the sha256 of every returned file.
 
@@ -744,7 +1082,8 @@ def collect(args: argparse.Namespace) -> int:
     if out.exists():
         shutil.rmtree(out)
     out.mkdir()
-    kaggle("kernels", "output", versioned, "-p", str(out))
+    owner, slug = submission["kernel"].split("/")
+    download_version(owner, slug, int(submission["kernel_version"]), out)
     for stray in out.iterdir():
         # The kernel's results live in output/ and its log beside it; anything
         # else under /kaggle/working is scratch that Kaggle also returns.
@@ -814,6 +1153,14 @@ def main() -> int:
     push_parser.add_argument("--machine", default=DEFAULT_MACHINE, help="machine_shape, or cpu")
     push_parser.add_argument("--timeout", type=int, default=0, help="kernel run-time limit in seconds")
     push_parser.add_argument("--dataset", action="append", default=[], help="retained dataset slug to attach")
+    push_parser.add_argument(
+        "--with",
+        dest="with_groups",
+        action="append",
+        default=[],
+        choices=sorted(PIN_GROUPS),
+        help="opt-in package group the kernel installs at the host's versions",
+    )
     push_parser.add_argument(
         "--ci-env",
         action="store_true",

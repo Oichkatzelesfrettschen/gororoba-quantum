@@ -9,10 +9,10 @@ and what it must prove before its output counts.
 
 | Substrate | Runs | Never runs |
 | --- | --- | --- |
-| Kaggle CPU kernel (the default) | every simulation of 14 qubits or fewer whose widest density matrix stays below `local_compute.GPU_MIN_ACTIVE_QUBITS`, and the CI gate shards (`kaggle_run.py shards`) | IBM jobs; anything needing an IBM credential |
-| Kaggle GPU kernel (Aer on GPU, `--machine NvidiaTeslaT4`) | simulations whose widest density matrix reaches `local_compute.GPU_MIN_ACTIVE_QUBITS` | IBM jobs; narrow replays the CPU runs faster |
+| Kaggle CPU kernel (the default) | every simulation of 14 qubits or fewer whose widest density matrix stays below 12 qubits (8 with mid-circuit measurement), and the CI gate shards (`kaggle_run.py shards`) | IBM jobs; anything needing an IBM credential |
+| Kaggle GPU kernel (Aer on GPU, `--machine NvidiaTeslaT4`) | simulations whose widest density matrix reaches 12 qubits, or 8 with mid-circuit measurement (docs/notes/kaggle/substrates.md, "CPU against T4") | IBM jobs; narrow replays, which the T4 speeds up by at most 3 times |
 | Kaggle CPU in the same kernel | transpilation, package builds, the hypercomplex table extraction | |
-| Kaggle TPU (`TpuV5E8`, `TpuV6E8`) | JAX code only; Aer has no TPU backend. Batch pushes requesting either ID ran on 4-core CPU machines without libtpu, so this account reaches no TPU through the CLI | Qiskit or Aer |
+| Kaggle TPU (`TpuV5E8`, `TpuV6E8`) | JAX code only; Aer has no TPU backend. An account without Persona identity verification gets a 4-core CPU machine for every TPU request; a verified account's request queues for a TPU, one batch session at a time (docs/notes/kaggle/tpu-research.md) | Qiskit or Aer |
 | Kaggle Gemma models (attached through `model_sources`) | text tasks on request | evidence: a language-model answer supports no physical or mathematical claim |
 | IBM Heron (ibm_fez, ibm_kingston, ibm_marrakesh) | 15 or more qubits, or a question about a named device qubit, only after the owner approves a written case | simulations |
 | GitHub Actions CPU | the CPU replay gate that re-derives a reduced case of each Kaggle result | GPU work |
@@ -26,13 +26,22 @@ and what it must prove before its output counts.
 1. `environment.json`: Python and package versions, CPU model and cores,
    RAM, working disk, every GPU (name, memory, driver, compute capability),
    CUDA driver version, TPU devices, Aer devices and attached models.
-2. `hypercomplex.json`: the hypercomplex stack. The kernel fetches the eight
-   pinned archives (sha256-checked), installs them through the PKGBUILD
-   recipes in `scripts/algebra_package_tables.py`, runs `--extract`, and
-   stops with exit code 3 unless the regenerated
-   `docs/evidence/algebra_packages/tables.json` equals the retained bytes.
-   The build host passes the same test against its Arch packages, so a run
-   that reaches its entry used the same algebra code as the host.
+2. `hypercomplex.json`: the hypercomplex stack, built and proved by
+   `scripts/algebra_package_tables.py`. `--fetch` downloads the seventeen
+   archives `RELEASES` pins and keeps each only if its sha256 matches.
+   `--install` installs sixteen of them with `pip install --no-deps`,
+   applying `BUILD_RECIPES` (the cayley-dickson, SplitOct and pyquaternion
+   PKGBUILD `prepare()` steps) and taking the Octonion-Sedenion wheel as
+   published, then installs `RUNTIME_PINS`: numpy-quaternion, the
+   seventeenth, as its pinned compiled wheel, and numba, sparse and
+   anywidget. `--extract` binds all seventeen
+   installed distributions to their archives and regenerates
+   `docs/evidence/algebra_packages/tables.json`; the kernel stops with exit
+   code 3 unless those bytes equal the retained ones. The build host passes
+   the same test against its Arch packages, so a run that reaches its entry
+   used the same algebra code as the host. The file's `packages` field
+   records the versions `kernel_main.REPORTED_PACKAGES` names, nine of the
+   seventeen algebra distributions; the byte comparison binds the rest.
 3. `capacity.json` (smoke kernels): the widest GHZ circuit each Aer method
    runs on the GPU.
 4. The entry's stdout, stderr, exit code and changed files.
@@ -45,8 +54,13 @@ and what it must prove before its output counts.
 | qiskit-aer-gpu-cu11 | 0.17.2 (the CUDA 12 `qiskit-aer-gpu` stops at 0.15.1 and has no Python 3.13 wheel) | PyPI |
 | qiskit-ibm-runtime | 0.50.0 (fake backends such as FakeFez; no account or credential) | PyPI |
 | hypercomplex, hypercomplex-engine, hypercomplex-algebra, Cayley-Calculator, octonion, mathdunders | 0.3.4, 0.5.0, 0.2.0.2, 1.3.1, 0.1.0, 0.4.2 | PyPI sdist, sha256-pinned |
+| quaternionic, clifford, kingdon, galgebra, pyoctonion | 1.0.18, 1.5.1, 3.0.0, 0.6.0, 3.12 | PyPI sdist, sha256-pinned |
+| pyquaternion | 0.9.9 | PyPI sdist, sha256-pinned, PKGBUILD recipe (writes the VERSION.txt the sdist omits) |
 | cayley-dickson, SplitOct | commits abf96e7, e29e72f | GitHub archive, sha256-pinned, PKGBUILD recipe |
-| numpy-quaternion | 2024.0.13 | PyPI (Cayley-Calculator runtime) |
+| hyprat | 0.2.0 | GitHub tag archive, sha256-pinned |
+| Octonion-Sedenion | 1.0.0 | PyPI wheel (its only release form), sha256-pinned |
+| numpy-quaternion | 2024.0.13 | PyPI compiled wheel at the pin; `--extract` binds its Python files to the sha256-pinned sdist (Octonion-Sedenion builds on it) |
+| numba, sparse, anywidget | 0.68.0, 0.17.0, 0.11.0 | PyPI (`RUNTIME_PINS`; runtime dependencies of quaternionic, clifford and kingdon) |
 | numpy, scipy, sympy, pandas, torch | Kaggle image versions, recorded per run | Kaggle image |
 | SageMath | 10.10 | build host only; a computation that needs Sage stays there |
 

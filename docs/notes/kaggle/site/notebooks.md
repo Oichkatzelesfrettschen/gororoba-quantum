@@ -1,90 +1,6 @@
-> Full piece: [https://www.kaggle.com/docs/notebooks](https://www.kaggle.com/docs/notebooks)
-> Retrieved 2026-10-16T03:13Z by scripts/capture_kaggle_docs.py --site (headless Chromium, pandoc);
-> rendered HTML sha256 f6624935c96068e5e1b18a135790a6d86afb8ee6ca3a8042aeb54903f655ea47.
+# Notebooks
 
-Kaggle uses cookies from Google to deliver and enhance the quality of its services and to analyze traffic.
-
-[](https://www.kaggle.com/cookies)
-
-Learn more
-
-OK, Got it.
-
-# How to Use Kaggle
-
-keyboard_arrow_right[Competitions](https://www.kaggle.com/docs/competitions)
-
-keyboard_arrow_right[Datasets](https://www.kaggle.com/docs/datasets)
-
-[Efficient GPU Usage Tips](https://www.kaggle.com/docs/efficient-gpu-usage)
-
-keyboard_arrow_right[Tensor Processing Units (TPUs)](https://www.kaggle.com/docs/tpu)
-
-keyboard_arrow_right[Models](https://www.kaggle.com/docs/models)
-
-keyboard_arrow_right[Competitions Setup](https://www.kaggle.com/docs/competitions-setup)
-
-keyboard_arrow_right[Organizations](https://www.kaggle.com/docs/organizations)
-
-keyboard_arrow_right[Groups](https://www.kaggle.com/docs/groups)
-
-keyboard_arrow_right[Kaggle Packages](https://www.kaggle.com/docs/packages)
-
-keyboard_arrow_down
-
-Notebooks
-
-keyboard_arrow_right
-
-[Types of Notebooks](#types-of-notebooks)
-
-keyboard_arrow_right
-
-[Searching for Notebooks](#searching-for-notebooks)
-
-keyboard_arrow_right
-
-[Using the Notebook Editor](#using-the-notebooks-editor)
-
-keyboard_arrow_right
-
-[Adding Data Sources](#adding-data-sources)
-
-keyboard_arrow_right
-
-[Collaborating on Notebooks](#collaborating-on-notebooks)
-
-keyboard_arrow_right
-
-[The Notebook Environment](#the-notebooks-environment)
-
-keyboard_arrow_right
-
-[Connecting Kaggle Notebooks to Google Cloud Services](#connecting-kaggle-notebooks-to-google-cloud-services)
-
-[Scheduling Notebooks](#scheduling-notebooks)
-
-keyboard_arrow_right
-
-[\[EXPERIMENTAL\] Kaggle Jupyter Server](#kaggle-jupyter-server)
-
-[Technical Specifications](#technical-specifications)
-
-[\[EXPERIMENTAL\] Increase GPU compute with Colab Pro](#increase-gpu-compute-with-colab-pro)
-
-keyboard_arrow_right[MCP Server](https://www.kaggle.com/docs/mcp)
-
-keyboard_arrow_right[Benchmarks](https://www.kaggle.com/docs/benchmarks)
-
-keyboard_arrow_right[Public API](https://www.kaggle.com/docs/api)
-
-## Notebooks
-
-Explore and run machine learning code with Kaggle Notebooks, a cloud computational environment that enables reproducible and collaborative analysis
-
-content_copyCopy as Markdown
-
-------------------------------------------------------------------------
+***
 
 ### Types of Notebooks
 
@@ -110,7 +26,7 @@ RMarkdown scripts are a special type of script that executes not just R code, bu
 
 The RMarkdown editor is the same one used for basic R or Python scripts, except that it uses the special RMarkdown syntax. To start editing an RMarkdown script, create a new notebook, change the file type to "Script" under `File > Editor Type` and then change the language under `File > Language`
 
-------------------------------------------------------------------------
+***
 
 ### Searching for Notebooks
 
@@ -164,11 +80,11 @@ Tags are the most advanced of the searching options available in the Notebook li
 
 Searching by tags allow you to search for Notebooks by topical area or technique. For example, if you are interested in learning new techniques for tackling classification problems you might try a search with the tag “classification” (`tag:classification`); if you are interested in an analysis of police records maybe a search with “crime” (`tag:crime`) would do the trick.
 
-Alternatively, you can achieve the same thing by visiting the related tag pages. For example, the crime and classification tags live at <https://www.kaggle.com/tags/crime> and <https://www.kaggle.com/tags/classification>, respectively.
+Alternatively, you can achieve the same thing by visiting the related tag pages. For example, the crime and classification tags live at [https://www.kaggle.com/tags/crime](https://www.kaggle.com/tags/crime) and [https://www.kaggle.com/tags/classification](https://www.kaggle.com/tags/classification), respectively.
 
 Tag pages include a section listing the most popular pages with the given tag, making them a great way of searching for Notebooks by content.
 
-------------------------------------------------------------------------
+***
 
 ### Using the Notebook Editor
 
@@ -206,11 +122,11 @@ In the expanded editor, the Settings pane takes up the right side of the screen.
 - **Output**: view output files created by the Notebook.
 - **Table of contents**: see and navigate the headings of the Notebook.
 - **Session options**: configure how the Notebook will run, including language, internet, acccelerator, and docker image settings. See more info in the [The Notebook Environment](#the-notebooks-environment) section below.
-- **Scheduling options**: a notebook may be configured to run automatically. See more info in the [Scheduling Notebooks](https://www.kaggle.com/docs/scheduling-notebooks) section below.
+- **Scheduling options**: a notebook may be configured to run automatically. See more info in the [Scheduling Notebooks](scheduling-notebooks) section below.
 
 Other sections may also be available, depending on the Notebook's configurations.
 
-------------------------------------------------------------------------
+***
 
 ### Adding Data Sources
 
@@ -250,7 +166,7 @@ By chaining Notebooks as data sources in this way, it’s possible to build pipe
 
 “[Minimal LSTM + NB-SVM baseline ensemble](https://www.kaggle.com/code/minimal-lstm-nb-svm-baseline-ensemble/notebook)”, written by Jeremy Howard, is one example of a great Notebook using this feature. Click on the “Input” tab to view the data sources he uses.
 
-------------------------------------------------------------------------
+***
 
 ### Collaborating on Notebooks
 
@@ -274,7 +190,7 @@ Datasets created on Kaggle also have privacy settings, and these settings are di
 
 To learn more about how to use Datasets collaboratively, read more [here.](https://www.kaggle.com/docs/datasets#collaborating-on-datasets)
 
-------------------------------------------------------------------------
+***
 
 ### The Notebook Environment
 
@@ -332,7 +248,7 @@ Note: Notebooks still need to have internet disabled to be submitted into select
 
 You can add a single NVIDIA Tesla P100 to your Notebook for free. GPU environments have lower CPU and main memory, but are a great way to achieve significant speed-ups for certain types of work like training neural networks on image data. One of the major benefits to using Notebooks as opposed to a local machine or your own VM is that the Notebook environment is already pre-configured with GPU-ready software and packages which can be time consuming and frustrating to set-up. Free GPU availability is limited: in busy times, you might be placed in a queue.
 
-To add a GPU, navigate to the “Settings” pane from the Notebook editor and click the “Accelerator" \> GPU option. Your session will restart which may take a few moments to several minutes if you don’t need to wait in a queue to access a GPU-enabled machine.
+To add a GPU, navigate to the “Settings” pane from the Notebook editor and click the “Accelerator" &gt; GPU option. Your session will restart which may take a few moments to several minutes if you don’t need to wait in a queue to access a GPU-enabled machine.
 
 To learn more about getting the most out of using a GPU in Notebooks, check out this [tutorial Notebook by Dan Becker](https://www.kaggle.com/dansbecker/running-kaggle-kernels-with-a-gpu).
 
@@ -340,9 +256,9 @@ To learn more about getting the most out of using a GPU in Notebooks, check out 
 
 You can add a TPU v3-8 to your Notebook for free. TPUs are hardware accelerators specialized in deep learning tasks. They are supported in Tensorflow 2.1 both through the Keras high-level API and, at a lower level, in models using a custom training loop. Free TPU availability is limited: in busy times, you might be placed in a queue. To learn more about getting the most out of using a TPU in Notebooks, check out this [in depth guide](https://www.kaggle.com/docs/tpu).
 
-To add a TPU, navigate to the “Settings” pane from the Notebook editor and click the “Accelerator" \> TPU v3-8 option. Your session will restart which may take a few moments to several minutes if you don’t need to wait in a queue to access a TPU-enabled machine.
+To add a TPU, navigate to the “Settings” pane from the Notebook editor and click the “Accelerator" &gt; TPU v3-8 option. Your session will restart which may take a few moments to several minutes if you don’t need to wait in a queue to access a TPU-enabled machine.
 
-------------------------------------------------------------------------
+***
 
 ### Connecting Kaggle Notebooks to Google Cloud Services
 
@@ -350,7 +266,7 @@ To add a TPU, navigate to the “Settings” pane from the Notebook editor and c
 
 Kaggle currently has integrations with the Google Cloud Storage, BigQuery, and AutoML products. To enable these integrations, click on the “Add-ons” menu in the notebook editor and select “Google Cloud Services”. Once on the “Google Cloud Services” page you will need to attach your account to your notebook and you will need to select which of the integrations you want to enable. After enabling these integrations, you will be provided with a code snippet that can be copied and pasted into your notebook.
 
-Each line of this code snippet corresponds to a different Google Cloud Services Integration where `PROJECT_ID` should be an existing Google Cloud Project. Per AutoML docs (linked below), AutoML currently requires that the location (`COMPUTE_REGION`) must be \`us-central1\` for your GCS Bucket.
+Each line of this code snippet corresponds to a different Google Cloud Services Integration where `PROJECT_ID` should be an existing Google Cloud Project. Per AutoML docs (linked below), AutoML currently requires that the location (`COMPUTE_REGION`) must be `us-central1` for your GCS Bucket.
 
 For more information on how to use these services, please refer to [Google Cloud Documentation](https://cloud.google.com/docs/) or any of the specific product documentation.
 
@@ -362,10 +278,10 @@ Google BigQuery is a fully managed, petabyte scale, low cost analytics data ware
 
 Google BigQuery can be accessed using Kaggle’s free-tier account to query [public data](https://console.cloud.google.com/marketplace/browse?filter=solution-type:dataset&_ga=2.188761902.446093747.1583860775-118720642.1583860775) but requires a [billing-enabled](https://cloud.google.com/billing/docs/how-to/modify-project) GCP account to query any data that isn’t publicly released by BigQuery. You should carefully review the prices of BigQuery before trying the integration in Kaggle Notebooks, as it can be easy to incur charges.
 
-`# Set your own project id here`\
-`PROJECT_ID = 'your-google-cloud-project'`\
-`from google.cloud import bigquery`\
-`bigquery_client = bigquery.Client(project=PROJECT_ID)`\
+`# Set your own project id here
+PROJECT_ID = 'your-google-cloud-project'
+from google.cloud import bigquery
+bigquery_client = bigquery.Client(project=PROJECT_ID)`
 
 For a more in-depth walkthrough of using the integration, please refer to the following notebooks:
 
@@ -380,10 +296,10 @@ Google Cloud Storage allows for storage and retrieval of data at any time across
 
 Google Cloud Storage is a paid service and requires a [billing-enabled](https://cloud.google.com/billing/docs/how-to/modify-project) GCP account. You should carefully review the prices of GCS before trying the integration in Kaggle Notebooks, as it can be easy to incur charges.
 
-`# Set your own project id here`\
-`PROJECT_ID = 'your-google-cloud-project'`\
-`from google.cloud import storage`\
-`storage_client = storage.Client(project=PROJECT_ID)`\
+`# Set your own project id here
+PROJECT_ID = 'your-google-cloud-project'
+from google.cloud import storage
+storage_client = storage.Client(project=PROJECT_ID)`
 
 For a more in-depth walkthrough of using the integration, please refer to the following notebooks:
 
@@ -401,13 +317,13 @@ Google AutoML is a paid service and requires a [billing-enabled](https://cloud.g
 - [AutoML Vision Pricing](https://cloud.google.com/vision/automl/pricing)
 - [AutoML Natural Language Pricing](https://cloud.google.com/natural-language/automl/pricing)
 
-\
-`# Set your own project id and compute region here`\
-`PROJECT_ID = 'your-google-cloud-project'`\
-`` COMPUTE_REGION = 'us-central1' # must be `us-central1` to use AutoML (see docs) ``\
-`from google.cloud import automl_v1beta1 as automl`\
-`automl_client = automl.AutoMlClient()`\
-`project_location = automl_client.location_path(PROJECT_ID, COMPUTE_REGION)`\
+  
+``# Set your own project id and compute region here
+PROJECT_ID = 'your-google-cloud-project'
+COMPUTE_REGION = 'us-central1'  # must be `us-central1` to use AutoML (see docs)
+from google.cloud import automl_v1beta1 as automl
+automl_client = automl.AutoMlClient()
+project_location = automl_client.location_path(PROJECT_ID, COMPUTE_REGION)``
 
 For a more in-depth walkthrough of using the integration, please refer to the following notebooks:
 
@@ -423,7 +339,7 @@ For a more detailed description of how to export your Kaggle Notebooks to Google
 
 - [\[Feature Launch\] Upgrade to Notebooks on Google Cloud for more compute!](https://www.kaggle.com/product-feedback/159602)
 
-------------------------------------------------------------------------
+***
 
 ### Scheduling Notebooks
 
@@ -436,9 +352,9 @@ A Notebook can be scheduled in either the Editor or the Viewer. In the Notebook 
 
 Note that there are limits to the number of notebooks you can have scheduled. See the Active Events pane for a listing of all your scheduled notebooks.
 
-------------------------------------------------------------------------
+***
 
-### \[EXPERIMENTAL\] Kaggle Jupyter Server
+### [EXPERIMENTAL] Kaggle Jupyter Server
 
 Notebook workloads are executed on a backing *Kaggle Jupyter Server*, sometimes referred to as a *Session*.
 
@@ -448,15 +364,15 @@ We are continually working on deeper integrations with external notebook environ
 
 #### Open a Notebook in Colab and automatically connect to a Kaggle Jupyter Server
 
-Within the Kaggle notebook editor, the **Run \> Kaggle Jupyter Server** menu item opens a side panel titled *Kaggle Jupyter Server*.
+Within the Kaggle notebook editor, the **Run &gt; Kaggle Jupyter Server** menu item opens a side panel titled *Kaggle Jupyter Server*.
 
-![...](https://www.kaggle.com/static/images/docs/notebooks/kaggle-jupyter-server-panel.png)
+![...](/static/images/docs/notebooks/kaggle-jupyter-server-panel.png)
 
 This panel includes an *"Open in Colab"* button. The *"Open in Colab"* button is enabled only when a *Kaggle Jupyter Server* session is active; **users need to start a Kaggle session before the button becomes clickable**. Clicking the *"Open in Colab"* button initiates the following: the current Kaggle notebook (.ipynb file) is copied to a new tab in Colab, and is automatically configured to connect the new Colab notebook to the user's running *Kaggle Jupyter Server* session.
 
-When opening and connecting Colab notebooks in a new tab, the notebook file (.ipynb) is copied, not synchronized. Modifications made in Colab will *not* be reflected in the original Kaggle notebook, and vice versa. Only the backend Jupyter Server and its execution environment are shared between Kaggle and Colab.
+When opening and connecting Colab notebooks in a new tab, the notebook file (.ipynb) is <string>copied</string>, not synchronized. Modifications made in Colab will *not* be reflected in the original Kaggle notebook, and vice versa. Only the backend Jupyter Server and its execution environment are shared between Kaggle and Colab.
 
-The notebook in your newly opened Colab tab will not save automatically. To avoid losing your work, be sure to backup your Colab notebook - for example, using Colab’s **File \> Save a copy in Drive** menu option.
+The notebook in your newly opened Colab tab will not save automatically. To avoid losing your work, be sure to backup your Colab notebook - for example, using Colab’s **File &gt; Save a copy in Drive** menu option.
 
 **If your Kaggle Jupyter Server shuts down** - for example, due to inactivity - **then your connected Colab editor will silently disconnect** from that backing session. The next section will show how to reconnect those disconnected sessions to a new *Kaggle Jupyter Server*.
 
@@ -464,12 +380,14 @@ The notebook in your newly opened Colab tab will not save automatically. To avoi
 
 The *Kaggle Jupyter Server* panel provides a "Manually Connect" section. This section displays a "Colab Compatible URL" that users can copy to their clipboard. To reconnect an existing Colab notebook to Kaggle:
 
-1.  begin by starting a *Kaggle Jupyter Server* session,
-2.  copy the "Colab Compatible URL" from the *Kaggle Jupyter Server* panel,
-3.  in the Colab notebook navigate to **Reconnect \> Connect to a local runtime**,
-    ![...](https://www.kaggle.com/static/images/docs/notebooks/colab-connect-to-local-runtime.png)
-4.  paste the copied URL into the provided text field, and click the "Connect" button.
-    ![...](https://www.kaggle.com/static/images/docs/notebooks/colab-backend-url.png)
+1. begin by starting a *Kaggle Jupyter Server* session,
+2. copy the "Colab Compatible URL" from the *Kaggle Jupyter Server* panel,
+3. in the Colab notebook navigate to **Reconnect &gt; Connect to a local runtime**,
+
+   ![...](/static/images/docs/notebooks/colab-connect-to-local-runtime.png)
+4. paste the copied URL into the provided text field, and click the "Connect" button.
+
+   ![...](/static/images/docs/notebooks/colab-backend-url.png)
 
 This process connects the Colab notebook to the *Kaggle Jupyter Server*. Click [here](https://research.google.com/colaboratory/local-runtimes.html) to learn more about Colab’s local runtimes feature.
 
@@ -481,7 +399,7 @@ The "Manually Connect" section also provides a "VS Code Compatible URL." Users c
 
 Users can also paste the "Colab Compatible URL" into their browser's address bar to access the Jupyter Server's `/tree` interface directly.
 
-------------------------------------------------------------------------
+***
 
 ### Technical Specifications
 
@@ -535,13 +453,13 @@ Once you are satisfied with the contents of the Notebook you can click "Save Ver
 
 - **Save & Run All** creates a new session with a completely clean state and runs your notebook from top to bottom. This is perfect for major milestones or when you want to share your work, as it gives you (and anyone else who reads your notebook) the confidence that your notebook can be run reproducibly. In order to save successfully, the entire Notebook must execute within 12 hours (9 hours for TPU notebooks). Save & Run All is identical to the “Commit” behavior you may have used previously on Kaggle.
 
-### \[EXPERIMENTAL\] Increase GPU compute with Colab Pro
+### [EXPERIMENTAL] Increase GPU compute with Colab Pro
 
 We're introducing an experimental feature that gives you access to additional GPU hours on Kaggle if you are a Colab Pro customer. This is a limited time promotion and we expect it to modify and graduate to a sustainable, long term pay to scale feature on Kaggle.
 
 **How it works**
 
-- You may link your Colab Account in the Notebook editor via the \`File\` menu and clicking the \`Link to Colab\` option. User who have linked their account previously are automatically enrolled into this promotion.
+- You may link your Colab Account in the Notebook editor via the `File` menu and clicking the `Link to Colab` option. User who have linked their account previously are automatically enrolled into this promotion.
 
 - Colab Pro and Pro+ users will get **15 and 30 hours of extra GPU hours per week** respectively on Kaggle. To claim this benefit, you will verify your Colab subscription by **linking** your Kaggle account with an active Colab Pro account.
 

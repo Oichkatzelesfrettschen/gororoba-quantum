@@ -1,0 +1,17 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-ghost-error-scale-b/1",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T213142Z",
+ "files": {
+  "gororoba-ghost-error-scale-b.log": "042480d70acc1bad381927e3221d515350a9d51bb40d550a8dd60042ae1ecb2b",
+  "output/datasets.json": "7695e461f9ca08e4d882c1f066436be2a350665d2672fa27a346482e2081153a",
+  "output/environment.json": "be72a8cd1a6110203a1a46186578efafa942ebdf6bb5956015269a2339b2e489",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "2f1676287dd74d7346c6dafbad357bf85983cc735c171f04dc4634a72e3b28d7",
+  "output/pip.txt": "bad662ebd52df409c819efcf4d234b7e64c4012e66188208fd0abc14e4e1c51f",
+  "output/repo/results/kaggle_out/ghost_error_scale_b.json": "f1c5e15c8382f409bb44135050fd1a1ca234236abaf97d384fb4513cb9439454",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "90f6fcbd525c35ff940c19701f63b5da3e67a75e9e28d12dc0f70438c056549e"
+ }
+}

@@ -1,0 +1,108 @@
+{
+ "schema": "substrate-crossover-v1",
+ "machine": {
+  "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+  "logical_cpus": 4,
+  "gpus": [
+   "Tesla T4",
+   "Tesla T4"
+  ],
+  "python": "3.13.15"
+ },
+ "versions": {
+  "qiskit": "2.5.2",
+  "qiskit_aer": "0.17.2"
+ },
+ "snapshot": "docs/evidence/calibration/ibm_kingston.json",
+ "workload": {
+  "layers": 8,
+  "batch": 8,
+  "shots": 2048,
+  "repeats": 2,
+  "budget": 180.0
+ },
+ "runs": [
+  {
+   "device": "GPU",
+   "dynamic": false,
+   "noise_model_build_seconds": 5.229,
+   "widths": [
+    {
+     "width": 2,
+     "seconds": 2.411,
+     "seconds_per_circuit": 0.3013
+    },
+    {
+     "width": 4,
+     "seconds": 2.455,
+     "seconds_per_circuit": 0.3068
+    },
+    {
+     "width": 6,
+     "seconds": 2.593,
+     "seconds_per_circuit": 0.3241
+    },
+    {
+     "width": 8,
+     "seconds": 2.585,
+     "seconds_per_circuit": 0.3231
+    },
+    {
+     "width": 10,
+     "seconds": 3.044,
+     "seconds_per_circuit": 0.3804
+    },
+    {
+     "width": 12,
+     "seconds": 8.254,
+     "seconds_per_circuit": 1.0318
+    },
+    {
+     "width": 14,
+     "seconds": 110.768,
+     "seconds_per_circuit": 13.846
+    }
+   ]
+  },
+  {
+   "device": "GPU",
+   "dynamic": true,
+   "noise_model_build_seconds": 5.356,
+   "widths": [
+    {
+     "width": 2,
+     "seconds": 6.111,
+     "seconds_per_circuit": 0.7639
+    },
+    {
+     "width": 4,
+     "seconds": 9.166,
+     "seconds_per_circuit": 1.1458
+    },
+    {
+     "width": 6,
+     "seconds": 24.312,
+     "seconds_per_circuit": 3.039
+    },
+    {
+     "width": 8,
+     "seconds": 19.434,
+     "seconds_per_circuit": 2.4293
+    },
+    {
+     "width": 10,
+     "seconds": 309.317,
+     "seconds_per_circuit": 38.6647
+    },
+    {
+     "width": 12,
+     "not_run": "the previous width took 309.3 s"
+    },
+    {
+     "width": 14,
+     "not_run": "the previous width took 309.3 s"
+    }
+   ]
+  }
+ ]
+}
