@@ -36,31 +36,64 @@ so no retained record exercises the library.
 
 ## T4 check
 
-The full Aer GPU configuration probe carries the cuStateVec row:
+The kernel runs the probe under `--gpu-env`. The venv uses the image's
+Python 3.13 and installs requirements.txt and ci/requirements-ci.txt, with
+the wheels above taking qiskit-aer's place. Before the entry starts, the
+kernel requires all of the following and otherwise exits 4:
+
+- every pin at its version;
+- qiskit-aer-gpu-cu11 as the only owner of `qiskit_aer/__init__.py`;
+- both T4s listed by nvidia-smi;
+- GPU Bell runs that report device GPU, and `cuStateVec_enable` true on the
+  cuStateVec run.
+
+The probe's `--require-gpu` then stops at the first row that leaves the
+GPU. The push carries the two calibration snapshots the probe reads:
 
 ```sh
 "$PYTHON" scripts/kaggle_run.py push scripts/aer_gpu_probe.py \
-    --slug gororoba-aer-gpu-config --machine NvidiaTeslaT4 --timeout 10800 \
+    --slug gororoba-aer-gpu-config --machine NvidiaTeslaT4 --gpu-env --timeout 3600 \
     --include docs/evidence/calibration/history/ibm_fez/20261016T1212520700.json \
     --include docs/evidence/calibration/ibm_kingston.json \
-    -- --out /kaggle/working/output/aer_gpu_probe.json
+    -- --out /kaggle/working/output/aer_gpu_probe.json --workloads toy,width --widths 7,10 --require-gpu
 ```
 
-The probe rewrites `--out` after every row, and a session Kaggle ends at
-the timeout returns `/kaggle/working/output`, so the record keeps every
-row finished before the cut. A T4 host has four CPUs: the probe reruns each
-row whose load exceeded them at its start or end and waits up to `IDLE_WAIT_SECONDS`
-before each of its rows, so the full probe outlasts 5400 s there.
+The same push with `--machine cpu` stops at the preflight, which tests the
+fallback error on Kaggle at no GPU cost.
 
-`--workloads n21 --configurations
-cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec`
-after `--` runs only the three statevector paths.
+**Sizing the timeout.** The build host ran exactly this entry in the same
+pinned venv (Python 3.13.15, numpy 2.5.4 on scipy-openblas 0.3.34, the cu11
+wheels on an RTX 4070 Ti):
+
+| Rows | Process seconds |
+| --- | --- |
+| 11 readout-toy rows | 47 |
+| 24 width rows | 1,226 |
+| of which the three 10-qubit dynamic density-matrix rows | 769 |
+
+At two to three times the host's GPU time on a T4, plus the venv install,
+the work fits 3600 s.
+
+The probe runs every static row before any dynamic row, and the 10-qubit
+dynamic density-matrix rows come last. A timeout therefore cuts only those
+rows, and the record keeps every row finished before the cut.
+
+**Contention.** A row counts as contended when processes outside the
+probe's own process tree held more than FOREIGN_CPU_LIMIT CPUs before or
+during it; the probe's own Aer threads never count. On the build host, the
+1-minute load-average rule marked every row of a four-CPU probe busy,
+because that average still counts the previous row. Each row then waited
+IDLE_WAIT_SECONDS and ran again, which is how the first T4 push overran
+5400 s without one finished row.
 
 Read `kaggle quota` before and after, then `status` and `collect` retain the
 output under results/kaggle/.
 
 ## Reading the result
 
+- `gpu_env.json` comes first. A nonempty `failures` list names each pin,
+  owner, GPU or Bell-run difference, and the kernel ran no entry.
+  `install-pins.txt` and `gpu-env-report.txt` hold the commands' output.
 - The check succeeds when every `gpu_statevector_custatevec` row carries
   `cuStateVec_enable` true in `metadata`, no `failed` field, and a
   `tvd_to_cpu_statevector` inside the row's `sampling_scale`.

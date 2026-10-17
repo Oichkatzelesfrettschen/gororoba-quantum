@@ -2644,7 +2644,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "shellcheck -S error ci/fetch_open_gororoba.sh",
+   "cmd": "shellcheck -S error ci/fetch_open_gororoba.sh ci/install_pins.sh",
    "name": "core-402",
    "seconds": 1.0,
    "tier": "pr"

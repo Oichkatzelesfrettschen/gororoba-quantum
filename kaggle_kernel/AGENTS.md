@@ -108,6 +108,21 @@ and what it must prove before its output counts.
   the three paths with Aer's reported `cuStateVec_enable`. The option excludes
   `batched_shots_gpu`. `docs/notes/kaggle/custatevec.md` holds the library
   chain, the T4 push command and how to read its result.
+- **Pinned GPU environment.** A push with `--gpu-env` runs the entry in
+  /tmp/gororoba/gpu-venv:
+  - The venv runs the image's Python with the repository's pins and the GPU
+    Aer wheels in qiskit-aer's place.
+  - Before the entry, gpu_env.json records each pin's installed version, the
+    owners of `qiskit_aer/__init__.py`, Aer's devices, and two seeded Bell
+    runs on the GPU.
+  - A nonempty `failures` list stops the kernel with exit 4, before the
+    entry starts. Each failure names what to fix:
+    - a pin that resolved to another version;
+    - a CPU qiskit-aer that shares the qiskit_aer/ files;
+    - a GPU that nvidia-smi does not list;
+    - a Bell run that raised, ran on another device, or left cuStateVec off.
+  - Read gpu-env-report.txt and install-pins.txt in the output for the
+    commands' own output.
 - **Using it in an entry.** The entry passes
   `calibration_snapshot.aer_device()` to `noise_simulator(snapshot, device,
   method=...)`. On a GPU the simulator batches shots of circuits of at most

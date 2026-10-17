@@ -469,6 +469,23 @@ retain its output under results/kaggle/. The kernel's own guide is
     durations.
   - Replays hold routed CZ, layout and classical stages exact, and depth
     and duration within a relative 0.002 across BLAS builds.
+- **Pinned GPU environment.** `push --gpu-env` on `NvidiaTeslaT4` runs the
+  entry in a venv on the image's Python 3.13, the newest Python the cu11
+  wheel ships, holding requirements.txt and ci/requirements-ci.txt with
+  `GPU_ENV_AER_PINS` in qiskit-aer's place (`ci/install_pins.sh` with
+  `AER_PINS`).
+  - Before the entry, `kernel_main.gpu_interpreter` requires every pin at its
+    version, qiskit-aer-gpu-cu11 as the only owner of
+    `qiskit_aer/__init__.py`, both T4s in nvidia-smi, and seeded Bell runs
+    on the GPU that report device GPU, the cuStateVec one with
+    `cuStateVec_enable` true.
+  - A miss lists its reasons under `failures` in gpu_env.json, and the kernel
+    exits 4 without running the entry.
+  - `aer_gpu_probe.py --require-gpu` then stops at the first row that leaves
+    the GPU.
+  - Only Python itself differs from CI's 3.14.7.
+  - On a CPU machine the same push stops at the preflight, which proves the
+    error path at no GPU cost.
 - **Sessions.** Five CPU and two GPU batch sessions run per account. A GPU
   machine's four host CPUs run CPU work, `--ci-env` included, when the CPU
   pool is full, at the price of GPU quota.

@@ -89,6 +89,12 @@ KERNEL_PINS = (
     "cutensor-cu11==2.2.0",
     "qiskit-ibm-runtime==0.50.0",
 )
+# --gpu-env installs these in requirements.txt's qiskit-aer place inside a
+# venv on the image's Python 3.13, the newest Python the cu11 wheel ships for.
+GPU_ENV_AER_PINS = tuple(pin for pin in KERNEL_PINS if not pin.startswith(("qiskit==", "qiskit-ibm-runtime==")))
+# GPUs each accelerator machine carries; kernel_main.gpu_env_failures requires
+# nvidia-smi to list them all.
+MACHINE_GPUS = {"NvidiaTeslaT4": 2}
 # A CPU or TPU host has no NVIDIA GPU, and the cu11 wheel ships cp313 only,
 # so those kernels take the CPU build of the same Aer release.
 CPU_KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer==0.17.2", "qiskit-ibm-runtime==0.50.0")
@@ -187,6 +193,7 @@ CI_SHARDS = {"pr": 6, "full": 12}
 # hypercomplex stack check with the tables it must reproduce.
 KERNEL_FILES = (
     "kaggle_kernel/kernel_main.py",
+    "kaggle_kernel/gpu_env_report.py",
     "kaggle_kernel/AGENTS.md",
     "scripts/algebra_package_tables.py",
     "docs/evidence/algebra_packages/tables.json",
@@ -374,6 +381,16 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         require(not args.machine.startswith("Tpu") and not smoke, "--ci-env runs an ENTRY on a CPU or GPU machine")
         files.extend(ROOT / name for name in CI_ENV_FILES)
         ci_env = {"python": CI_PYTHON, "uv": UV_PIN}
+    gpu_env = None
+    if getattr(args, "gpu_env", False):
+        # A CPU machine lists no GPU, so its kernel stops at the preflight with
+        # exit 4: the run that proves the fallback error on Kaggle itself.
+        require(
+            not args.machine.startswith("Tpu") and not smoke and ci_env is None,
+            "--gpu-env runs an ENTRY on a GPU or CPU machine without --ci-env",
+        )
+        files.extend(ROOT / name for name in CI_ENV_FILES)
+        gpu_env = {"uv": UV_PIN, "aer_pins": list(GPU_ENV_AER_PINS), "gpus": MACHINE_GPUS.get(args.machine, 1)}
     bundled = sorted({path.relative_to(ROOT).as_posix() for path in files})
     listed = subprocess.run(
         ["git", "ls-files", "-z", "--", *bundled], cwd=ROOT, capture_output=True, text=True, check=True
@@ -403,6 +420,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
             "pin_groups": {group: list(PIN_GROUPS[group]) for group in getattr(args, "with_groups", [])},
             "datasets": [{"ref": d["ref"], "archive": d["archive"], "files": d["files"]} for d in datasets],
             "ci_env": ci_env,
+            "gpu_env": gpu_env,
         }
         bundle.writestr("kaggle_kernel/kernel_job.json", json.dumps(job, indent=1) + "\n")
     kernel_dir = run_dir / "kernel"
@@ -453,6 +471,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "pins": list(kernel_pins(args.machine)),
         "pin_groups": {group: list(PIN_GROUPS[group]) for group in getattr(args, "with_groups", [])},
         "ci_env": ci_env,
+        "gpu_env": gpu_env,
         # kernel_main.entry_aer_device: CI's CPU under --ci-env, else the machine's device.
         "aer_device": "CPU" if ci_env else device,
         "calibration_snapshots": bundled_calibrations(contents),
@@ -646,6 +665,7 @@ def self_test(args: argparse.Namespace) -> int:
         _shard_identity_self_test(Path(scratch), head.stdout.strip(), data)
     _overlay_self_test()
     _killed_entry_self_test()
+    _gpu_env_self_test(data)
     _push_guard_self_test()
     _dataset_history_self_test()
     print(
@@ -654,6 +674,7 @@ def self_test(args: argparse.Namespace) -> int:
         "a shard kernel bound to HEAD's tree with CI's CPU Aer and its overlaid calibration identity, "
         "an overlay that rebuilds a directory-to-file change, run.py compiles, "
         "an entry killed mid-run keeps its stdout and record, "
+        "a GPU-environment kernel whose pin and GPU checks name every fallback, "
         "an accelerator push or shard run refused while an older version runs, "
         "a re-versioned dataset that keeps every earlier archive"
     )
@@ -771,6 +792,61 @@ def _push_guard_self_test() -> None:
         raise SystemExit("an accelerator shard run starts beside an older running version")
     require(checked == [f"owner/{shard_slug(i, 6)}" for i in range(3)], f"shard slugs checked: {checked}")
     require_no_live_shard("owner", [0, 1], 6, [TPU_MACHINE], shard_guard)
+
+
+def _gpu_env_self_test(data: str) -> None:
+    """A --gpu-env kernel bundles the pin files and its spec, and gpu_env_failures names every fallback.
+
+    A report holding every pin, the GPU Aer as the only owner of
+    qiskit_aer/__init__.py, both GPUs, and GPU Bell runs with cuStateVec
+    passes; each single change away from it is named.
+    """
+    import tempfile
+
+    sys.path.insert(0, str(ROOT / "kaggle_kernel"))
+    import kernel_main
+
+    build_args = argparse.Namespace(
+        entry="scripts/aer_gpu_probe.py",
+        smoke=False,
+        include=[data],
+        args=["--require-gpu"],
+        slug="self-test",
+        machine=GPU_MACHINE,
+        with_groups=[],
+        gpu_env=True,
+    )
+    with tempfile.TemporaryDirectory() as scratch:
+        submission = build_kernel(build_args, Path(scratch) / "run", "owner", "2000-01-01T000000Z", "0" * 40)
+        job = bundled_job(Path(scratch) / "run/kernel/run.py")
+    spec: dict[str, Any] = {"uv": UV_PIN, "aer_pins": list(GPU_ENV_AER_PINS), "gpus": MACHINE_GPUS[GPU_MACHINE]}
+    require(job["gpu_env"] == submission["gpu_env"] == spec, f"GPU environment spec {job['gpu_env']}")
+    require(all(name in submission["bundle"] for name in CI_ENV_FILES), "a --gpu-env bundle lacks the pin files")
+    pins = kernel_main.pinned(ROOT, spec["aer_pins"])
+    require(
+        "qiskit-aer" not in pins and pins["qiskit-aer-gpu-cu11"] == "0.17.2" and pins["numpy"] == "2.5.4",
+        f"GPU environment pins {pins}",
+    )
+    run = {"success": True, "device": "GPU", "cuStateVec_enable": False}
+    report: dict[str, Any] = {
+        "installed": dict(pins),
+        "qiskit_aer_owners": ["qiskit_aer_gpu_cu11"],
+        "devices": ["CPU", "GPU"],
+        "runs": {"gpu": run, "custatevec": {**run, "cuStateVec_enable": True}},
+    }
+    passing = kernel_main.gpu_env_failures(pins, report, 2, 2)
+    require(passing == [], f"a GPU environment that holds every pin fails: {passing}")
+    changes = {
+        "a version": ({**report, "installed": {**pins, "numpy": "2.1.3"}}, 2),
+        "the CPU Aer owner": ({**report, "qiskit_aer_owners": ["qiskit-aer", "qiskit-aer-gpu-cu11"]}, 2),
+        "a missing GPU": (report, 1),
+        "the device list": ({**report, "devices": ["CPU"]}, 2),
+        "a CPU Bell run": ({**report, "runs": {**report["runs"], "gpu": {**run, "device": "CPU"}}}, 2),
+        "cuStateVec off": ({**report, "runs": {**report["runs"], "custatevec": run}}, 2),
+        "a raised run": ({**report, "runs": {**report["runs"], "custatevec": {"error": "RuntimeError"}}}, 2),
+    }
+    for change, (changed, listed) in changes.items():
+        require(bool(kernel_main.gpu_env_failures(pins, changed, 2, listed)), f"gpu_env_failures passes {change}")
 
 
 def _killed_entry_self_test() -> None:
@@ -1413,6 +1489,11 @@ def main() -> int:
         "--ci-env",
         action="store_true",
         help="run ENTRY under CI's Python and pins (CPU Aer on a CPU or GPU machine) for a CI-replayed record",
+    )
+    push_parser.add_argument(
+        "--gpu-env",
+        action="store_true",
+        help="run ENTRY in a venv of the repository's pins with GPU Aer; the kernel stops unless Aer reaches the GPU",
     )
     push_parser.set_defaults(func=push)
     sub.add_parser("self-test").set_defaults(func=self_test)

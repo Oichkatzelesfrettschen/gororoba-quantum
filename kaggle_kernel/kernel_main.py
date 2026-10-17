@@ -34,6 +34,7 @@ import hashlib
 import json
 import os
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -336,6 +337,101 @@ def ci_interpreter(tree: Path, uv: str, version: str) -> tuple[str, dict[str, st
     return python, env
 
 
+GPU_VENV = Path("/tmp/gororoba/gpu-venv")
+
+
+def normalized(name: str) -> str:
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+
+def pinned(tree: Path, aer_pins: list[str]) -> dict[str, str]:
+    """Every exact pin the GPU entry environment holds, by normalized name.
+
+    requirements.txt without qiskit-aer, ci/requirements-ci.txt, the GPU Aer
+    pins that ci/install_pins.sh installs in qiskit-aer's place through
+    AER_PINS, and the --no-deps pins that script installs after them.
+    """
+    lines = [
+        *(tree / "requirements.txt").read_text(encoding="utf-8").splitlines(),
+        *(tree / "ci/requirements-ci.txt").read_text(encoding="utf-8").splitlines(),
+    ]
+    pins = [line.strip() for line in lines if "==" in line and not line.lstrip().startswith("#")]
+    pins = [pin for pin in pins if normalized(pin.split("==")[0]) != "qiskit-aer"]
+    pins += [*aer_pins, *re.findall(r"--no-deps (\S+==\S+)", (tree / "ci/install_pins.sh").read_text(encoding="utf-8"))]
+    return {normalized(name): version for name, version in (pin.split("==", 1) for pin in pins)}
+
+
+def gpu_env_failures(pins: dict[str, str], report: dict[str, Any], expected_gpus: int, listed_gpus: int) -> list[str]:
+    """Each way the GPU entry environment differs from its pins or leaves the GPU; empty when it holds both.
+
+    The imported qiskit_aer must belong to the GPU Aer distribution alone,
+    since a CPU qiskit-aer installed beside it overwrites the same files.
+    """
+    failures = [
+        f"{name} is {report['installed'].get(name)}, pinned {version}"
+        for name, version in pins.items()
+        if report["installed"].get(name) != version
+    ]
+    aer = [name for name in pins if name.startswith("qiskit-aer-gpu")]
+    found = sorted(normalized(name) for name in report["qiskit_aer_owners"])
+    if found != aer:
+        failures.append(f"qiskit_aer/__init__.py belongs to {found}, not {aer}")
+    if listed_gpus < expected_gpus:
+        failures.append(f"nvidia-smi lists {listed_gpus} GPUs; the machine carries {expected_gpus}")
+    if "GPU" not in report["devices"]:
+        failures.append(f"Aer lists devices {report['devices']} without GPU")
+    for label in ("gpu", "custatevec"):
+        run = report["runs"].get(label, {"error": "not run"})
+        if "error" in run:
+            failures.append(f"the {label} Bell run raised {run['error']}")
+        elif not run["success"] or run["device"] != "GPU":
+            failures.append(f"the {label} Bell run reports success {run['success']} on device {run['device']!r}")
+        elif label == "custatevec" and run["cuStateVec_enable"] is not True:
+            failures.append(f"the custatevec Bell run reports cuStateVec_enable {run['cuStateVec_enable']!r}")
+    return failures
+
+
+def gpu_interpreter(
+    tree: Path, spec: dict[str, Any], venv: Path = GPU_VENV
+) -> tuple[str, dict[str, str], dict[str, Any]]:
+    """The image's Python in an isolated venv holding the repository's pins with the GPU Aer build, and its proof.
+
+    The venv starts empty, so the image's own numpy, scipy and Aer stay out
+    of the entry while the hypercomplex stage keeps the image's packages;
+    ci/install_pins.sh installs requirements.txt and the CI tools with
+    spec["aer_pins"] in qiskit-aer's place, and gpu_env_report.py reads the
+    result back. The record's failures name every difference from the pins
+    and every way the venv's Aer leaves the GPU.
+    """
+    checked("uv-install", sys.executable, "-m", "pip", "install", "-q", spec["uv"])
+    checked("gpu-venv", sys.executable, "-m", "uv", "venv", "-q", "--seed", "--python", sys.executable, str(venv))
+    python = str(venv / "bin/python")
+    env = dict(
+        os.environ,
+        PATH=f"{venv / 'bin'}:{os.environ['PATH']}",
+        PYTHON=python,
+        PYTHONHASHSEED="0",
+        MPLBACKEND="Agg",
+        GOROROBA_AER_DEVICE="GPU",
+    )
+    checked("install-pins", "sh", "ci/install_pins.sh", cwd=tree, env=dict(env, AER_PINS=" ".join(spec["aer_pins"])))
+    checked("gpu-freeze", python, "-m", "pip", "freeze", env=env)
+    pins = pinned(tree, spec["aer_pins"])
+    script = str(tree / "kaggle_kernel/gpu_env_report.py")
+    report = json.loads(
+        checked("gpu-env-report", python, "-I", script, json.dumps(sorted(pins)), env=env).splitlines()[-1]
+    )
+    listed = len(gpus())
+    record = {
+        "pins": pins,
+        "expected_gpus": spec["gpus"],
+        "listed_gpus": listed,
+        "report": report,
+        "failures": gpu_env_failures(pins, report, spec["gpus"], listed),
+    }
+    return python, env, record
+
+
 def run_shard(job: dict[str, Any]) -> int:
     """One CI shard on the tree job["tree"], under CI's interpreter and pins.
 
@@ -438,6 +534,17 @@ def run_entry() -> int:
         # CI's interpreter and pins, so CI replays the entry's retained record
         # byte for byte; the image's numpy and Python change compiled circuits.
         python, env = ci_interpreter(REPO, job["ci_env"]["uv"], job["ci_env"]["python"])
+    elif job.get("gpu_env"):
+        python, env, record = gpu_interpreter(REPO, job["gpu_env"])
+        write("gpu_env.json", record)
+        if record["failures"]:
+            print(
+                "the GPU environment fails its checks; the entry does not run:",
+                *record["failures"],
+                sep="\n  ",
+                flush=True,
+            )
+            return 4
     else:
         python = sys.executable
         env = dict(os.environ, GOROROBA_AER_DEVICE=entry_aer_device(job), PYTHON=python)
