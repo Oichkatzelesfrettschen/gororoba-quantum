@@ -509,14 +509,28 @@ def declaration(row: dict[str, Any], declarations: dict[str, dict[str, str]]) ->
     return next((pattern for pattern in declarations[row["kind"]] if re.fullmatch(pattern, row["member"])), None)
 
 
-def dynamic_rows(dynamic: list[tuple[str, str, Member]]) -> tuple[list[dict[str, Any]], dict[str, list[str]]]:
+def unchecked_entry(name: str, key: str) -> dict[str, str]:
+    """An unchecked member by name and digest, so a changed circuit under one name changes the census."""
+    return {"member": name, "digest": key}
+
+
+def unchecked_table(unchecked: dict[str, list[dict[str, str]]]) -> dict[str, list[dict[str, str]]]:
+    return {
+        reason: sorted(entries, key=lambda entry: (entry["member"], entry["digest"]))
+        for reason, entries in sorted(unchecked.items())
+    }
+
+
+def dynamic_rows(
+    dynamic: list[tuple[str, str, Member]],
+) -> tuple[list[dict[str, Any]], dict[str, list[dict[str, str]]]]:
     """Record rows of the dynamic members, in their given order, and the unchecked ones by reason."""
     laws = parallel.ordered_map(classify_dynamic, [member for _name, _key, member in dynamic], min_items=2)
     rows: list[dict[str, Any]] = []
-    unchecked: dict[str, list[str]] = {}
+    unchecked: dict[str, list[dict[str, str]]] = {}
     for (name, key, member), law in zip(dynamic, laws, strict=True):
         if isinstance(law, str):
-            unchecked.setdefault(law, []).append(name)
+            unchecked.setdefault(law, []).append(unchecked_entry(name, key))
             continue
         row = {
             "member": name,
@@ -540,7 +554,7 @@ def census() -> dict[str, Any]:
             members.setdefault((member.name, digest(member)), (f"{source}/{group.name}", member))
     ordered = sorted(members.items())
     kinds = parallel.ordered_map(classify, [member for _, (_source, member) in ordered], min_items=2)
-    unchecked: dict[str, list[str]] = {}
+    unchecked: dict[str, list[dict[str, str]]] = {}
     checked: list[tuple[str, str, str, Member]] = []
     dynamic: list[tuple[str, str, Member]] = []
     entangling = 0
@@ -552,7 +566,7 @@ def census() -> dict[str, Any]:
         elif kind == DYNAMIC:
             dynamic.append((name, key, member))
         else:
-            unchecked.setdefault(kind, []).append(name)
+            unchecked.setdefault(kind, []).append(unchecked_entry(name, key))
     compiled: dict[int, QuantumCircuit] = {}
     rows = []
     for kind, name, key, member in checked:
@@ -584,7 +598,7 @@ def census() -> dict[str, Any]:
         "superseded_configurations": superseded,
         "distinct_members": len(members),
         "entangling_members": entangling,
-        "unchecked": {reason: sorted(set(names)) for reason, names in sorted(unchecked.items())},
+        "unchecked": unchecked_table(unchecked),
         "members": rows,
     }
 
@@ -606,16 +620,19 @@ def check_dynamic() -> None:
     routed = parallel.ordered_map(routes_dynamic, [member for _key, member in ordered], min_items=2)
     dynamic = [(name, key, member) for ((name, key), member), flag in zip(ordered, routed, strict=True) if flag]
     rows, unchecked = dynamic_rows(dynamic)
+    # Width is read from the circuit alone, so the over-width members of every
+    # kind join the comparison without the static classification.
+    for (name, key), member in ordered:
+        if member.circuit.num_qubits > MAX_WIDTH:
+            unchecked.setdefault(f"wider than {MAX_WIDTH} qubits", []).append(unchecked_entry(name, key))
     stored = json.loads(OUTPUT.read_text(encoding="utf-8"))
-    width = f"wider than {MAX_WIDTH} qubits"
     require(
         rows == [row for row in stored["members"] if row["kind"] == "dynamic_law"],
         f"{OUTPUT.relative_to(ROOT)} dynamic rows differ from the recomputed branch laws",
     )
     require(
-        {reason: sorted(set(names)) for reason, names in sorted(unchecked.items())}
-        == {reason: names for reason, names in stored["unchecked"].items() if reason != width},
-        f"{OUTPUT.relative_to(ROOT)} unchecked dynamic members differ from the recomputed ones",
+        unchecked_table(unchecked) == stored["unchecked"],
+        f"{OUTPUT.relative_to(ROOT)} unchecked members differ from the recomputed dynamic and width ones",
     )
     enforce(rows, {"dynamic_law": DYNAMIC_LAW_PROBES})
     declared = sum(needs_declaration(row) for row in rows)
