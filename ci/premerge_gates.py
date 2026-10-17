@@ -9,7 +9,8 @@ regenerates an input the record does not yet cover, and git merges both
 without a textual conflict. This script builds that combination before the
 merge: it checks out BASE (default origin/main) and the merge of REF into
 BASE in two detached worktrees, runs the pr-tier gates whose measured
-seconds are at most --max-seconds in each tree through run_gates, and
+seconds are at most --max-seconds in each tree through that tree's own
+ci/run_gates.py, with $PYTHON resolved to an absolute interpreter, and
 reports every gate that passes on BASE and fails on the merge, or that the
 merge adds and that fails. Gates that fail on both trees are host or main
 failures and are listed without failing the run, so a lint or type gate
@@ -17,8 +18,9 @@ whose local toolchain differs from CI's does not mask the comparison. A
 textual conflict stops the run with the conflicted paths.
 
 The worktrees live under --worktrees (default ~/worktrees/<repository>/premerge,
-<repository> naming the primary checkout) and are removed on exit. Exit status: 0 when the merge introduces no failure,
-1 when it does, 2 on a merge conflict.
+<repository> naming the primary checkout) and are removed on exit. Exit
+status: 0 when the merge introduces no failure, 1 when it does, 2 on a merge
+conflict.
 
 Usage: "$PYTHON" ci/premerge_gates.py REF [--base origin/main] [--max-seconds 5] [--no-fetch]
        "$PYTHON" ci/premerge_gates.py --self-test
@@ -30,6 +32,9 @@ import argparse
 import contextlib
 import io
 import json
+import os
+import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -37,13 +42,14 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
-import run_gates
-
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MAX_SECONDS = 5.0
 TAIL_LINES = 20
-# The merge commit lives only in the scratch worktree and is never pushed.
-MERGE_IDENTITY = ["-c", "user.name=premerge", "-c", "user.email=premerge@localhost"]
+# The merge commit lives only in the scratch worktree and is never pushed, so it
+# carries a local identity and no signature.
+MERGE_IDENTITY = ["-c", "user.name=premerge", "-c", "user.email=premerge@localhost", "-c", "commit.gpgSign=false"]
+VERDICT = re.compile(r"^(PASS|FAIL) (\S+) ")
+FAILURE_TAIL = re.compile(r"^=== (\S+) exit ")
 
 
 def git(repo: Path, *args: str, check: bool = True) -> str:
@@ -70,10 +76,40 @@ def worktree(repo: Path, path: Path, commit: str) -> Iterator[Path]:
         git(repo, "worktree", "prune", check=False)
 
 
+def interpreter() -> str:
+    """$PYTHON as an absolute path, since every gate runs with its cwd inside a scratch worktree."""
+    named = os.environ.get("PYTHON", sys.executable)
+    found = shutil.which(named)
+    if found is None:
+        raise SystemExit(f"PYTHON={named} names no executable")
+    return os.path.abspath(found)
+
+
 def results(root: Path, max_seconds: float) -> dict[str, tuple[int, str]]:
-    environment = run_gates.environment_for(None)
-    gates = run_gates.select(root, "pr", max_seconds)
-    return {gate["name"]: (status, output) for gate, status, _, output in run_gates.run_all(gates, environment, root)}
+    """Each gate's status and failure output from the tree's own ci/run_gates.py."""
+    python = interpreter()
+    environment = {**os.environ, "PYTHON": python}
+    completed = subprocess.run(
+        [python, "-B", str(root / "ci/run_gates.py"), "--tier", "pr", "--max-seconds", str(max_seconds)],
+        cwd=root,
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    lines = completed.stdout.splitlines()
+    statuses = {m.group(2): 0 if m.group(1) == "PASS" else 1 for m in map(VERDICT.match, lines) if m}
+    if not statuses:
+        raise SystemExit(f"{root / 'ci/run_gates.py'} reported no gate:\n{completed.stdout}{completed.stderr}")
+    tails: dict[str, list[str]] = {}
+    current: str | None = None
+    for line in lines:
+        if heading := FAILURE_TAIL.match(line):
+            current = heading.group(1)
+            tails[current] = []
+        elif current is not None:
+            tails[current].append(line)
+    return {name: (status, "\n".join(tails.get(name, []))) for name, status in statuses.items()}
 
 
 def compare(base: dict[str, tuple[int, str]], merged: dict[str, tuple[int, str]]) -> tuple[list[str], list[str]]:
@@ -141,7 +177,8 @@ def self_test() -> None:
 
         record_gate = {"name": "record", "cwd": ".", "cmd": 'test "$(cat input)" = "$(cat record)"', "seconds": 0.1}
         host_gate = {"name": "host", "cwd": ".", "cmd": "false", "seconds": 0.1}
-        commit({"ci/gates.json": gates(host_gate), "input": "v1\n"}, "base")
+        runner = (ROOT / "ci/run_gates.py").read_text(encoding="utf-8")
+        commit({"ci/gates.json": gates(host_gate), "ci/run_gates.py": runner, "input": "v1\n"}, "base")
         git(repo, "branch", "adds-record")
         git(repo, "branch", "consistent")
         git(repo, "switch", "-q", "adds-record")
