@@ -117,9 +117,12 @@ December 2025, Tuna-17 since April 2026.
   reads "Quantum backend error: RSP returned failure: error interpreting
   cQASM script" while its log stays empty
   (runs/2026-10-16T211635Z-Rydberg). libqasm 1.2.1 accepts the program, so
-  the emulator's own reader rejects it; the X-only form of the KB example
-  ran, which leaves the unassigned bit register, H, CNOT and the missing
-  `INIT` block as candidates ([ry-emulator.md](ry-emulator.md)).
+  the emulator's own reader rejects it. The construct probe (runs
+  2026-10-17T034952Z-ry_probe-batch-00 to -02) shows the cause: any `bit`
+  declaration, assigned or not, fails in the reader, and `measure` fails at
+  compile ("not in the primitive gate set"), while H, CNOT, Rz and an
+  `asm(Rydberg)` INIT block run; a Ry case declares no bit register
+  ([ry-emulator.md](ry-emulator.md)).
 - **API classification**: `is_hardware` is true although the backend is an
   emulator; code that filters on `is_hardware` must also read the name, and
   `qi_platform.py submit` applies the hardware batch rule (at most three

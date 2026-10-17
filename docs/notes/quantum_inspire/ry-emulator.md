@@ -194,20 +194,39 @@ The program differs from the completed one in every dimension at once:
 | `asm(Rydberg)` block, `INIT` | none | none |
 | Measure statement | none | none |
 
-Both are accepted by libqasm. The error text comes from the Ry emulator's own
-reader ("interpreting cQASM script"), after the job was queued and after a
-wait comparable to a full run. The remaining candidates are the bit
-declaration, H, CNOT, the 9-qubit width, the missing `INIT` positions and any
-combination. The X-only form of the KB example ran, which rules out an
-unavailable backend and an unsupported `version 3.0` header. Unknown, and
-not decidable from retained data:
+Both are accepted by libqasm. The construct probe
+(`scripts/qi_ry_probe_cases.py`, runs
+`results/quantum_inspire/runs/2026-10-17T034952Z-ry_probe-batch-00` to
+`-02`, analysis `results/quantum_inspire/ry_probe_analysis.json`) adds one
+construct at a time to the X-only program on two qubits and names the cause:
 
-- which of the five properties causes the error;
-- whether any `H`, `CNOT` or `bit` declaration runs on this backend;
-- whether the compile step on the platform changes the program before the
-  emulator reads it (the remote compile output is not retained; the
-  Rx-Rz-Rx note in [backends.md](backends.md) has no artifact in the run);
-- why the failure arrives after about 16 s.
+| Circuit | Construct added | Result |
+|---|---|---|
+| x-baseline | none | completed: `10` in 1024 of 1024 |
+| x-bitreg | `bit[2] b`, never assigned | failed: "Quantum backend error: RSP returned failure: error interpreting cQASM script" |
+| x-measure | `bit[2] b` and `b = measure q` | failed: "Compilation error: the following gates are not in the primitive gate set: measure" |
+| h | H | completed: `00` 501, `10` 523 |
+| x-cnot | X, CNOT | completed: `11` 1000, `10` 24 |
+| rz-x | Rz(pi/2), X | completed: `10` in 1024 of 1024 |
+| h-cnot | H, CNOT | completed: `00` 541, `11` 477, `10` 6 |
+| h-cnot-bits | H, CNOT, `bit[2] b` | failed: the reader error above |
+| init-h-cnot | `asm(Rydberg)` INIT block, H, CNOT | completed: `00` 493, `11` 516, `10` 15 |
+
+- The emulator's reader rejects every program that declares a bit register,
+  assigned or not, so the declaration suffices to cause the teleport
+  failure; H, CNOT, Rz and the INIT block run. The probe used two qubits, so
+  whether the 9-qubit width also fails stays untested.
+- `measure` is outside the primitive gate set, so the platform's compile step
+  rejects it before the emulator reads the program: the Ry emulator takes no
+  measurement statement and measures every qubit at the end, as the KB
+  states.
+- The emulator is noisy: CNOT on `10` leaves the target unflipped in 24 of
+  1024 shots (2.3 %), and the Bell pairs carry 0.6 % and 1.5 % of `10`.
+- A failed job still spends about 16 s between `queued_at` and
+  `finished_at`, so the reader runs after the job's setup.
+
+A Ry case therefore declares no bit register and no measure statement, and
+reads the result as the whole register with qubit 0 leftmost.
 
 The repository's generator emits no Ry case because the native form of the
 teleport program (no bit register, `RYD` blockade gates) is not built
@@ -279,18 +298,18 @@ a written case (root AGENTS.md, "Quantum Inspire").
 
 ## Unmeasured capabilities and the smallest probe for each
 
-The probes are proposals; none has run.
+Rows marked measured ran in the construct probe of 2026-10-17; every other probe is a proposal.
 
 | Capability | Why it is open | Smallest probe |
 |---|---|---|
-| Which property triggers "error interpreting cQASM script" | five properties changed together | 2 qubits, `X q[0]` plus `bit[2] b`, nothing else; then one program adding only `H q[0]` |
-| H runs | API lists it, KB omits it, failing program held it | `qubit[2] q`, `H q[0]` only; expect about half `00`/`10` under qubit 0 leftmost |
-| CNOT runs | same | `qubit[2] q`, `X q[0]`, `CNOT q[0], q[1]`; expect `11` in every shot if CNOT is ideal |
+| Which property triggers "error interpreting cQASM script" | measured: a `bit` declaration (construct probe, 2026-10-17) | none |
+| H runs | measured: yes, `00` 501 and `10` 523 of 1024 | none |
+| CNOT runs | measured: yes, with `10` left in 24 of 1024 shots (2.3 %) | none |
 | Width 9 runs | the failure used 9 | `qubit[9] q`, `X q[0]` only; the string should have 9 characters with 1 first |
 | Result order at width 9 | order measured at width 2 only | the same program; the position of the 1 |
-| Bit register is the cause | declared and unassigned in the failure | `qubit[2] q`, `bit[2] b`, `X q[0]` |
+| Bit register is the cause | measured: yes, `bit[2] b` alone fails | none |
 | Time per shot versus fixed cost | failed and completed jobs both took 16 s | the X-only program at 1, 64 and 1024 shots in one batch of 3 |
-| `INIT` positions accepted and used | no run placed an atom | the KB two-qubit example verbatim (two `INIT`, ten `RYD`, two X) |
+| `INIT` positions accepted and used | accepted (measured: init-h-cnot completed); whether the positions change the result is unmeasured, since no run used `RYD` | the KB two-qubit example verbatim (two `INIT`, ten `RYD`, two X) |
 | Blockade depends on distance | geometry versus all-to-all graph | the KB example at `INIT` separations 1 and 4, both atoms driven; compare the `11` fraction |
 | `RYD` pulse area and sign convention | no unit stated | one `RYD(1, 0, dt)` step at a few `dt` after an X-prepared atom; read the oscillation of P1 |
 | Measure statement accepted or rejected | generator comment unsourced | X-only program plus `b = measure q` and `bit[2] b` |
