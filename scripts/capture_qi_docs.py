@@ -846,6 +846,8 @@ def expected_paths(kind: str, doc: dict[str, Any], base: Path, root: Path) -> se
     out = set()
     for record in pages:
         page = record["page"]
+        if record["url"] != page_url(page):
+            raise SystemExit(f"site page {page or '/'} records an inconsistent url")
         if record["status"] != 200 or "uncaptured" in record:
             if "path" in record:
                 raise SystemExit(f"site page {page or '/'} records a failed capture with a path")
@@ -853,8 +855,8 @@ def expected_paths(kind: str, doc: dict[str, Any], base: Path, root: Path) -> se
         if "path" not in record:
             raise SystemExit(f"site page {page or '/'} records a successful capture without a path")
         stem = (page or "home").replace("/", "_")
-        if record["url"] != page_url(page) or record["path"] != f"{prefix}/site/{stem}.md":
-            raise SystemExit(f"site page {page or '/'} records an inconsistent url or path")
+        if record["path"] != f"{prefix}/site/{stem}.md":
+            raise SystemExit(f"site page {page or '/'} records an inconsistent path")
         out.add(record["path"])
     return out
 
@@ -944,6 +946,12 @@ def self_test() -> int:
         del record["path"]
         manifest.write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
         expect("site page record without its path", "successful capture without a path")
+        manifest.write_bytes(manifest_bytes)
+        doc = json.loads(manifest_bytes)
+        failed = next(record for record in doc["pages"] if record["status"] != 200 or "uncaptured" in record)
+        failed["url"] += "x/"
+        manifest.write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
+        expect("failed site page record with another url", "records an inconsistent url")
         manifest.write_bytes(manifest_bytes)
         nested = base / "site" / "nested" / "MANIFEST.json"
         nested.parent.mkdir()

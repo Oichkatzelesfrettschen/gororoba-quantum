@@ -1075,20 +1075,20 @@ def _qi_row_mutations() -> Iterable[tuple[str, Callable[[dict[str, dict[str, Any
         del first_row(records)["domain"]
 
     def ledger_field_missing(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
-        del ledger["transactions"][0]["timestamp"]
+        del ledger["transactions"][-1]["timestamp"]
 
     def run_zero_duplicate(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
         run = next(run for run in records.values() if run["results"]["transactions"])
         run["results"]["transactions"].append({**first_row(records), "id": 9000, "change": 0})
 
     def ledger_zero_duplicate(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
-        ledger["transactions"].append({**ledger["transactions"][0], "id": 9000, "change": 0})
+        ledger["transactions"].append({**ledger["transactions"][-1], "id": 9000, "change": 0})
 
     def ledger_dropped(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
         ledger["transactions"].pop()
 
     def ledger_dangling(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
-        ledger["transactions"].append({**ledger["transactions"][0], "id": 9001, "job": 1, "change": 0})
+        ledger["transactions"].append({**ledger["transactions"][-1], "id": 9001, "job": 1, "change": 0})
 
     yield "run transaction id changed", run_id, "transaction rows of the retained jobs differ"
     yield "run transaction timestamp changed", run_timestamp, "transaction rows of the retained jobs differ"

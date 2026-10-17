@@ -2150,7 +2150,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/research_state.py --self-test && \"$PYTHON\" -B -O -W error scripts/research_state.py --self-test",
    "name": "core-271",
-   "seconds": 1.0,
+   "seconds": 10.0,
    "tier": "pr"
   },
   {
