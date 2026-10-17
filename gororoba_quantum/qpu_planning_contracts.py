@@ -31,7 +31,7 @@ import local_compute
 import native_preflight
 import qpu_cases
 import qpu_planning
-from runtime_contracts import _fixture_args, _ProbeBackend, _ProbeService
+from runtime_contracts import _fixture_args, _ProbeBackend, _ProbeSampler, _ProbeService
 
 
 def _require(condition: bool, message: str) -> None:
@@ -881,6 +881,284 @@ def _verify_static_group_admission(service: _ProbeService, snapshot: live_run.Sn
     _require(expected in stderr.getvalue(), f"the dry-run refusal omits {expected}")
 
 
+class _RangeBackend(_ProbeBackend):
+    """FakeFez whose rep_delay_range the contract can move between configuration reads."""
+
+    rep_delay_range: list[float] | None = None
+
+    def configuration(self) -> Any:
+        configuration = super().configuration()
+        if self.rep_delay_range is not None:
+            configuration.rep_delay_range = list(self.rep_delay_range)
+        return configuration
+
+
+def _verify_rep_delay_range() -> None:
+    """--rep-delay outside rep_delay_range refuses in the CLI, the planner, the charge model and the Sampler."""
+    backend = _RangeBackend("rep_delay_fixture", FakeFez())
+    low, high = backend.configuration().rep_delay_range
+    _require(qpu_planning.repetition_delay(backend) == 0.00025, "the default repetition delay moved")
+    _require(qpu_planning.repetition_delay(backend, 0.00005) == 0.00005, "an in-range request was not honored")
+    for outside in (high + 1e-6, -1e-6, float("nan")):
+        try:
+            qpu_planning.repetition_delay(backend, outside)
+        except ValueError:
+            pass
+        else:
+            raise RuntimeError(f"the charge model accepted a repetition delay {outside} outside [{low}, {high}]")
+        _require(
+            bool(qpu_planning.repetition_delay_violations(backend, outside, None)),
+            f"repetition_delay_violations admitted {outside}",
+        )
+    service = _ProbeService([backend])
+    try:
+        with redirect_stdout(io.StringIO()):
+            live_run.plan(
+                cast(Any, service), _fixture_args(groups=["hybrid_shor_mod15"], max_replicas=1, rep_delay=high * 2)
+            )
+    except live_run.LiveRunError as error:
+        _require("--rep-delay" in str(error), f"the planner refused for another reason: {error}")
+    else:
+        raise RuntimeError("the planner admitted a repetition delay outside the backend range")
+    # The client-side Sampler takes a Backend instance; FakeFez carries the same range.
+    sampler_backend = FakeFez()
+    default = live_run.configure_sampler(sampler_backend, "dynamic", False, None, [], 64, 60)
+    _require(default.options.execution.rep_delay == 0.00025, "the Sampler default left the backend default")
+    requested = live_run.configure_sampler(sampler_backend, "dynamic", False, None, [], 64, 60, rep_delay=0.00005)
+    _require(requested.options.execution.rep_delay == 0.00005, "the Sampler omitted the requested rep_delay")
+    try:
+        live_run.configure_sampler(sampler_backend, "dynamic", False, None, [], 64, 60, rep_delay=high * 2)
+    except live_run.LiveRunError:
+        pass
+    else:
+        raise RuntimeError("the Sampler accepted a repetition delay outside the backend range")
+    for value in ("-0.0001", "nan", "inf"):
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            try:
+                live_run.main(["--rep-delay", value, "--out", "/tmp/rep-delay-contract-unused"])
+            except SystemExit as error:
+                _require(error.code == 2, f"--rep-delay {value} produced CLI status {error.code}")
+            else:
+                raise RuntimeError(f"the CLI accepted --rep-delay {value}")
+        _require("--rep-delay" in stderr.getvalue(), f"the CLI rejection of {value} did not name --rep-delay")
+
+
+def _ideal_predictions(choice: Any, noise: Any, shots: int) -> dict[str, list[Any]]:
+    del noise, shots
+    return {entry.name: [entry.ideal for _ in entry.replicas] for entry in choice.entries}
+
+
+def _verify_rep_delay_charge(snapshot: live_run.Snapshot, choices: list[Any], configuration: dict[str, Any]) -> None:
+    """Every PUB's charge per shot moves by exactly the requested repetition-delay change."""
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 130.0}
+    ledgers: dict[float | None, list[dict[str, Any]]] = {}
+    for delay in (None, 0.0001, 0.0004):
+        args = _args("folded-qpe", rep_delay=delay)
+        # The charge reads circuit durations and the delay, never the outcome
+        # model, so each replica predicts its ideal law.
+        with (
+            patch.object(qpu_planning, "family_candidates", return_value=[(choices, configuration)]),
+            patch.object(live_run, "simulate", _ideal_predictions),
+        ):
+            _selected, metadata = qpu_planning.prepare(live_run, [snapshot], args, usage, {})
+        candidates = metadata["optimization"]["candidates"]
+        _require(len(candidates) == 1, "the fixed-tier plan searched more than one candidate")
+        ledgers[delay] = candidates[0]["jobs"]
+    default = qpu_planning.repetition_delay(snapshot.backend)
+    for delay in (0.0001, 0.0004):
+        for job, base in zip(ledgers[delay], ledgers[None], strict=True):
+            change = math.fsum(
+                pub["estimated_execution_seconds"] - other["estimated_execution_seconds"]
+                for pub, other in zip(job["pubs"], base["pubs"], strict=True)
+            )
+            shots = sum(pub["shots"] for pub in job["pubs"])
+            for pub, other in zip(job["pubs"], base["pubs"], strict=True):
+                _require(pub["repetition_delay_seconds"] == delay, f"{pub['name']}: the charge left --rep-delay")
+                _require(other["repetition_delay_seconds"] == default, f"{pub['name']}: the default delay moved")
+                per_shot = (pub["estimated_execution_seconds"] - other["estimated_execution_seconds"]) / pub["shots"]
+                _require(
+                    math.isclose(per_shot, delay - default, rel_tol=1e-9, abs_tol=1e-15),
+                    f"{pub['name']}: charge per shot moved {per_shot} s for a {delay - default} s delay change",
+                )
+            _require(
+                math.isclose(
+                    job["estimated_charge_seconds"] - base["estimated_charge_seconds"],
+                    change,
+                    rel_tol=1e-9,
+                    abs_tol=1e-12,
+                ),
+                f"{job['name']}: the job charge moved by more than its PUBs' repetition change",
+            )
+            _require(
+                math.isclose(change, shots * (delay - default), rel_tol=1e-9, abs_tol=1e-12),
+                f"{job['name']}: the charge moved {change} s, not shots x delay change",
+            )
+
+
+class _UnsentSampler(_ProbeSampler):
+    def run(self, circuits: list[Any]) -> Any:
+        raise RuntimeError(f"a refused repetition delay reached Sampler.run with {len(circuits)} circuits")
+
+
+def _unsent_sampler(
+    backend: Any, kind: str, twirl: bool, dd: str | None, tags: list[str], *args: Any, **kwargs: Any
+) -> Any:
+    del backend, twirl, dd
+    return _UnsentSampler(kind, tags, int(args[0]) if args else 4096, None, None, args[1] if len(args) > 1 else None)
+
+
+def _verify_rep_delay_approval() -> None:
+    """The policy and execution contract bind --rep-delay; a changed delay or range stops before any job."""
+    backend = _RangeBackend("rep_delay_fixture", FakeFez())
+    service = _ProbeService([backend])
+    args = _fixture_args(groups=["hybrid_shor_mod15"], max_replicas=1, rep_delay=0.0001)
+    with redirect_stdout(io.StringIO()):
+        choices, record = live_run.plan(cast(Any, service), args)
+        live_run.evaluate(choices, record)
+        default_choices, default_record = live_run.plan(
+            cast(Any, service), _fixture_args(groups=["hybrid_shor_mod15"], max_replicas=1)
+        )
+    _require(record["policy"]["rep_delay_seconds"] == 0.0001, "the policy omitted the requested repetition delay")
+    _require("rep_delay_seconds" not in default_record["policy"], "a default plan recorded a repetition delay")
+    _require(
+        default_record["execution_contract"]["backends"]
+        == [{"name": backend.name, "repetition_delay_seconds": 0.00025}],
+        "the default execution contract changed shape",
+    )
+    bound = record["execution_contract"]["backends"][0]
+    _require(
+        bound["repetition_delay_seconds"] == 0.0001
+        and bound["default_repetition_delay_seconds"] == 0.00025
+        and bound["repetition_delay_range_seconds"] == [0.0, 0.0005],
+        f"the execution contract does not bind the requested delay and its range: {bound}",
+    )
+    del default_choices
+    with tempfile.TemporaryDirectory(prefix="gororoba-rep-delay-approval-") as directory:
+        approved = Path(directory) / "approved"
+        approved.mkdir()
+        live_run.write_archive(approved, choices)
+        live_run.write_json(approved, record)
+        qpy_digest = hashlib.sha256((approved / "isa.qpy").read_bytes()).hexdigest()
+        record_digest = hashlib.sha256((approved / "record.json").read_bytes()).hexdigest()
+        _require(not live_run.approved_record_mismatches(approved, record, qpy_digest), "an unchanged plan mismatches")
+        moved = copy.deepcopy(record)
+        moved["policy"]["rep_delay_seconds"] = 0.00005
+        _require(
+            "policy differs" in live_run.approved_record_mismatches(approved, moved, qpy_digest),
+            "the approval accepted a changed repetition delay",
+        )
+        ranged = copy.deepcopy(record)
+        ranged["execution_contract"]["backends"][0]["repetition_delay_range_seconds"] = [0.0, 0.001]
+        _require(
+            "execution_contract differs" in live_run.approved_record_mismatches(approved, ranged, qpy_digest),
+            "the approval accepted a moved repetition-delay range",
+        )
+        run_dir = Path(directory) / "run"
+        run_dir.mkdir()
+
+        def attempt(submit_args: argparse.Namespace, label: str) -> dict[str, Any]:
+            # submit compares the refreshed choices, so the fresh plan needs no evaluation.
+            with redirect_stdout(io.StringIO()):
+                fresh_choices, fresh_record = live_run.plan(cast(Any, service), submit_args)
+            submit_args.approved_record = approved
+            submit_args.approved_record_sha256 = record_digest
+            try:
+                with patch.object(live_run, "configure_sampler", _unsent_sampler), redirect_stdout(io.StringIO()):
+                    live_run.submit(
+                        cast(Any, service),
+                        fresh_choices,
+                        submit_args,
+                        fresh_record,
+                        lambda: live_run.write_archive(run_dir, fresh_choices),
+                        lambda: None,
+                    )
+            except live_run.LiveRunError:
+                pass
+            else:
+                raise RuntimeError(f"{label}: the submission completed")
+            _require(fresh_record["state"] == "approval_required", f"{label}: left {fresh_record['state']}")
+            _require(not (approved / live_run.APPROVAL_CONSUMED_FILE).exists(), f"{label}: consumed the approval")
+            return fresh_record
+
+        differing = attempt(
+            _fixture_args(groups=["hybrid_shor_mod15"], max_replicas=1, rep_delay=0.00005), "a differing --rep-delay"
+        )
+        _require(
+            "policy differs" in differing["renewed_approval"]["mismatches"],
+            f"a differing --rep-delay stopped for {differing['renewed_approval']}",
+        )
+        omitted = attempt(_fixture_args(groups=["hybrid_shor_mod15"], max_replicas=1), "an omitted --rep-delay")
+        _require("policy differs" in omitted["renewed_approval"]["mismatches"], "an omitted --rep-delay passed")
+
+        # The range moves between planning and the pre-submission refresh.
+        submit_args = _fixture_args(groups=["hybrid_shor_mod15"], max_replicas=1, rep_delay=0.0001)
+        with redirect_stdout(io.StringIO()):
+            fresh_choices, fresh_record = live_run.plan(cast(Any, service), submit_args)
+        backend.rep_delay_range = [0.0, 0.001]
+        submit_args.approved_record = approved
+        submit_args.approved_record_sha256 = record_digest
+        try:
+            with patch.object(live_run, "configure_sampler", _unsent_sampler), redirect_stdout(io.StringIO()):
+                live_run.submit(
+                    cast(Any, service),
+                    fresh_choices,
+                    submit_args,
+                    fresh_record,
+                    lambda: live_run.write_archive(run_dir, fresh_choices),
+                    lambda: None,
+                )
+        except live_run.LiveRunError:
+            pass
+        else:
+            raise RuntimeError("a moved repetition-delay range reached submission")
+        finally:
+            backend.rep_delay_range = None
+        reasons = fresh_record.get("renewed_approval", {}).get("changed_groups", {}).get("repetition_delay")
+        _require(
+            fresh_record["state"] == "approval_required" and reasons is not None,
+            f"a range moved before the refresh left {fresh_record['state']}: {fresh_record.get('renewed_approval')}",
+        )
+
+        # The range moves after the approved-record check, before the batch.
+        submit_args = _fixture_args(groups=["hybrid_shor_mod15"], max_replicas=1, rep_delay=0.0001)
+        with redirect_stdout(io.StringIO()):
+            fresh_choices, fresh_record = live_run.plan(cast(Any, service), submit_args)
+        submit_args.approved_record = approved
+        submit_args.approved_record_sha256 = record_digest
+        original_drift = live_run.approved_calibration_drift
+
+        def drift_then_move(record_: dict[str, Any], name: str, calibration: str) -> str | None:
+            backend.rep_delay_range = [0.0, 0.00008]
+            return original_drift(record_, name, calibration)
+
+        try:
+            with (
+                patch.object(live_run, "configure_sampler", _unsent_sampler),
+                patch.object(live_run, "approved_calibration_drift", drift_then_move),
+                redirect_stdout(io.StringIO()),
+            ):
+                live_run.submit(
+                    cast(Any, service),
+                    fresh_choices,
+                    submit_args,
+                    fresh_record,
+                    lambda: live_run.write_archive(run_dir, fresh_choices),
+                    lambda: None,
+                )
+        except live_run.LiveRunError as error:
+            _require("repetition delay" in str(error), f"the batch stopped for another reason: {error}")
+        else:
+            raise RuntimeError("a repetition delay outside the batch-time range reached Sampler.run")
+        finally:
+            backend.rep_delay_range = None
+        _require(
+            fresh_record["state"] == "approval_required" and not fresh_record["submission"]["jobs"],
+            f"a batch-time range change left {fresh_record['state']}",
+        )
+        _require(not (approved / live_run.APPROVAL_CONSUMED_FILE).exists(), "the refused batch consumed the approval")
+
+
 def _forbid_service(*args: Any, **kwargs: Any) -> Any:
     del args, kwargs
     raise RuntimeError("credential-free planning contract reached a RuntimeService constructor")
@@ -899,6 +1177,7 @@ def _verify() -> None:
         _verify_mixed_noise_batch(choices)
         metadata = _verify_optimizer(snapshot, choices, configuration)
         _verify_approval_mutations(choices, metadata)
+        _verify_rep_delay_charge(snapshot, choices, configuration)
         _verify_cli_approval_boundary()
         _verify_precision_defaults()
         _verify_compute_boundary()
@@ -909,10 +1188,30 @@ def _verify() -> None:
         _verify_patch_selection(snapshot)
         _verify_static_group_admission(service, snapshot)
     _verify_control_timing()
+    with patch.object(live_run, "QiskitRuntimeService", _forbid_service):
+        _verify_rep_delay_range()
+        _verify_rep_delay_approval()
     print(
         "QPU planning: matching, calibrated timing, budgets, shot optimization, "
-        "approval, infeasible archives, unrouted rejection diagnostics, coherence readout maps and calibrated "
-        "patch selection checked"
+        "approval, infeasible archives, unrouted rejection diagnostics, coherence readout maps, calibrated "
+        "patch selection and the requested repetition delay checked"
+    )
+
+
+def _verify_rep_delay_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        choices, configuration = _verify_family_layouts(snapshot)
+        _verify_rep_delay_charge(snapshot, choices, configuration)
+    with patch.object(live_run, "QiskitRuntimeService", _forbid_service):
+        _verify_rep_delay_range()
+        _verify_rep_delay_approval()
+    print(
+        "QPU planning: --rep-delay refuses outside rep_delay_range, moves each PUB's charge per shot by the delay "
+        "change, binds the policy and execution contract, and stops a changed delay or range before any job"
     )
 
 
@@ -931,7 +1230,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "--static-group-admission", action="store_true", help="run only the static-group admission contract"
     )
-    if parser.parse_args().static_group_admission:
+    parser.add_argument("--rep-delay", action="store_true", help="run only the requested repetition-delay contracts")
+    parsed = parser.parse_args()
+    if parsed.static_group_admission:
         _verify_static_admission_only()
+    elif parsed.rep_delay:
+        _verify_rep_delay_only()
     else:
         _verify()

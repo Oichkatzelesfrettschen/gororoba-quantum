@@ -3240,6 +3240,14 @@
    "name": "core-526",
    "seconds": 40.4,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --rep-delay && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --rep-delay",
+   "name": "core-523",
+   "seconds": 158.8,
+   "tier": "full"
   }
  ],
  "excluded": [

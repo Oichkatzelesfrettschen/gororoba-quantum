@@ -252,6 +252,11 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         value = policy[name]
         _number(value, name)
         arguments.extend(["--" + name.replace("_", "-"), str(value)])
+    # A requested repetition delay sets every job's Sampler rep_delay and its
+    # charge; the approval binds it, so the replay passes it.
+    if "rep_delay_seconds" in policy:
+        _require(_number(policy["rep_delay_seconds"], "rep_delay_seconds") >= 0, "rep_delay must be nonnegative")
+        arguments.extend(["--rep-delay", str(policy["rep_delay_seconds"])])
     for name in ("replica_floor", "max_replicas"):
         if policy[name] is not None:
             _number(policy[name], name, positive=True)
@@ -354,6 +359,11 @@ def _validate_costs(candidate: dict[str, Any], record: dict[str, Any]) -> None:
                 )
             ]
             _require(all(value >= 0 for value in durations), "PUB duration components must be nonnegative")
+            if "rep_delay_seconds" in policy:
+                _require(
+                    pub["repetition_delay_seconds"] == policy["rep_delay_seconds"],
+                    "PUB repetition delay differs from the requested --rep-delay",
+                )
             expected = expected_shots * math.fsum(durations)
             _require(expected > 0, "PUB repetition duration must be positive")
             _require(
@@ -1973,6 +1983,23 @@ def _verify() -> None:
         exact["policy"]["design"].update(model_method="exact", replica_variance_bound=0.55)
         exact_arguments = _reproduction_arguments(exact, Path("results/live/fixture/record.json"))
         assert "--model-method exact --replica-variance-bound 0.55" in " ".join(exact_arguments)
+        assert "--rep-delay" not in text
+        delayed = copy.deepcopy(record)
+        delayed["policy"]["rep_delay_seconds"] = 0.00025
+        delayed_arguments = _reproduction_arguments(delayed, Path("results/live/fixture/record.json"))
+        assert "--rep-delay 0.00025" in " ".join(delayed_arguments)
+        delayed["policy"]["rep_delay_seconds"] = 0.0001
+        selected = next(
+            candidate
+            for candidate in delayed["optimization"]["candidates"]
+            if candidate["name"] == delayed["optimization"]["selected"]
+        )
+        try:
+            _validate_costs(selected, delayed)
+        except ValueError as error:
+            assert "requested --rep-delay" in str(error)
+        else:
+            raise AssertionError("a cost ledger at another repetition delay passed the requested --rep-delay")
         _verify_covariance_falsifier(record)
         assert all((run_dir / name).read_bytes() == value for name, value in originals.items())
         for family, phrase in (("ripple", "box-kite phase atlas"), ("rank-sector", "coefficient-dependent LCU")):

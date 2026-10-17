@@ -214,6 +214,7 @@ def qualify(runtime: Any, service: Any, choices: list[Any], record: dict[str, An
             twirl=policy["twirl"],
             dd=policy["dd"],
             max_execution_seconds=policy["max_execution_seconds"],
+            rep_delay=policy.get("rep_delay_seconds"),
         )
         plan, batches = runtime.build_submission_plan(choices, args, binding["files"]["isa.qpy"])
         _require(bool(batches), "native qualification requires at least one batch")
@@ -236,7 +237,14 @@ def qualify(runtime: Any, service: Any, choices: list[Any], record: dict[str, An
             selected_shots = planned.get("shots", args.shots)
             tags = ["gororoba-native-dry-run", f"native-{identifier}", f"native-batch-{plan_index}"]
             sampler = runtime.configure_sampler(
-                fresh.backend, kind, args.twirl, args.dd, tags, selected_shots, args.max_execution_seconds
+                fresh.backend,
+                kind,
+                args.twirl,
+                args.dd,
+                tags,
+                selected_shots,
+                args.max_execution_seconds,
+                **runtime.sampler_rep_delay(args),
             )
             options = sampler.options.model_dump(mode="json")
             _require(
