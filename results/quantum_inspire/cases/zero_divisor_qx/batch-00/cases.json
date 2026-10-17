@@ -96,18 +96,18 @@
     1,
     2,
     4,
-    7,
-    8
+    8,
+    12
    ],
    "roles": {
     "d0": 0,
-    "d1": 1,
+    "d1": 3,
     "d2": 4,
-    "d3": 3,
+    "d3": 1,
     "selector": 2
    },
    "seed": 0,
-   "cz": 66,
+   "cz": 75,
    "t_count": 26,
    "ideal_p_selector_zero": 0.0
   },
@@ -115,21 +115,21 @@
    "file": "twin-1.cq",
    "case": "bright",
    "region": [
+    10,
     11,
-    12,
+    13,
     14,
-    15,
     16
    ],
    "roles": {
-    "d0": 9,
-    "d1": 5,
-    "d2": 8,
-    "d3": 7,
+    "d0": 7,
+    "d1": 9,
+    "d2": 5,
+    "d3": 8,
     "selector": 6
    },
    "seed": 0,
-   "cz": 66,
+   "cz": 87,
    "t_count": 26,
    "ideal_p_selector_zero": 1.0
   },
@@ -140,18 +140,18 @@
     1,
     2,
     4,
-    7,
-    8
+    8,
+    12
    ],
    "roles": {
     "d0": 0,
-    "d1": 1,
+    "d1": 3,
     "d2": 4,
-    "d3": 3,
+    "d3": 1,
     "selector": 2
    },
    "seed": 0,
-   "cz": 66,
+   "cz": 75,
    "t_count": 26,
    "ideal_p_selector_zero": 1.0
   },
@@ -159,21 +159,21 @@
    "file": "twin-2.cq",
    "case": "fixture",
    "region": [
+    10,
     11,
-    12,
+    13,
     14,
-    15,
     16
    ],
    "roles": {
-    "d0": 6,
-    "d1": 5,
-    "d2": 8,
-    "d3": 7,
-    "selector": 9
+    "d0": 7,
+    "d1": 9,
+    "d2": 5,
+    "d3": 6,
+    "selector": 8
    },
-   "seed": 1,
-   "cz": 70,
+   "seed": 0,
+   "cz": 91,
    "t_count": 26,
    "ideal_p_selector_zero": 0.5
   },
@@ -184,18 +184,18 @@
     1,
     2,
     4,
-    7,
-    8
+    8,
+    12
    ],
    "roles": {
-    "d0": 4,
-    "d1": 0,
+    "d0": 0,
+    "d1": 4,
     "d2": 1,
-    "d3": 3,
-    "selector": 2
+    "d3": 2,
+    "selector": 3
    },
    "seed": 0,
-   "cz": 67,
+   "cz": 79,
    "t_count": 26,
    "ideal_p_selector_zero": 0.5
   },
@@ -203,21 +203,21 @@
    "file": "twin-3.cq",
    "case": "dark",
    "region": [
+    10,
     11,
-    12,
+    13,
     14,
-    15,
     16
    ],
    "roles": {
-    "d0": 9,
-    "d1": 5,
-    "d2": 8,
-    "d3": 7,
+    "d0": 7,
+    "d1": 9,
+    "d2": 5,
+    "d3": 8,
     "selector": 6
    },
    "seed": 0,
-   "cz": 66,
+   "cz": 87,
    "t_count": 26,
    "ideal_p_selector_zero": 0.0
   }
@@ -227,17 +227,17 @@
   {
    "file": "twin-1.cq",
    "kind": "witness",
-   "sha256": "afa85d4513e457a2e853f87bf363e98925bbd966ca605180cd1c11409f5f0509"
+   "sha256": "038bb910e0ea70a345451ad7274495a5886f62d24a3717c764934ec80157b316"
   },
   {
    "file": "twin-2.cq",
    "kind": "witness",
-   "sha256": "cdc90f025da883afc7855750426a0e49337a9a0247a9a2301ad45704e14d3a49"
+   "sha256": "53f9f12ed3160b5955c6c0159f4813ba770abbb8e5a545197f269ec04b27ac36"
   },
   {
    "file": "twin-3.cq",
    "kind": "witness",
-   "sha256": "70d6f01ddb8e257cacdb1d100702d23014d0594b115924acf4e9d9f85d6cf4e4"
+   "sha256": "e9e5cf6c21815ca5433d1ec280e1a804dd154badd3451e8408cfc3f27b9ba1d5"
   }
  ]
 }

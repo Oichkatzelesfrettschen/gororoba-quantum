@@ -29,7 +29,7 @@ gate support and capacity against the retained QI catalogue. A changed
 catalogue requires review of this fixed routing contract before generation.
 
 Two disjoint 5-qubit regions of Tuna-17 (REGIONS) run a replica each. The
-qubits of EXCLUDED_QUBITS appear in no region, so 14 qubits remain and fit two
+qubits of EXCLUDED_QUBITS appear in no region, so 12 qubits remain and fit two
 connected 5-qubit regions at most. Of the disjoint region pairs, REGIONS has
 the fewest routed CZ summed over the three cases (`--select-regions` recomputes
 the choice), then the fewest couplers joining the two regions (spectator
@@ -116,9 +116,34 @@ TUNA17 = (
     (14, 16), (15, 16),
 )  # fmt: skip
 # Qubits no replica uses as a data or selector qubit, with every coupler on
-# them; REGIONS avoids all of them.
-EXCLUDED_QUBITS = (0, 6, 9)
-REGIONS = ((1, 2, 4, 7, 8), (11, 12, 14, 15, 16))
+# them; REGIONS avoids all of them. The set is the union of two declared
+# parts. READOUT_EXCLUDED holds q9, whose gate-free circuit reads P1 0.27-0.28
+# on the idle qubit, and q0 and q6, which read P1 0.39 and 0.14 when prepared
+# in |1> after a platform recalibration (pi-pulse and T1 collapse).
+# visibility_excluded() holds the qubits whose Ramsey visibility, minimum over
+# neighbor sectors and the 0.5 us and 2 us delays, falls below VISIBILITY_FLOOR
+# in the coupler-ZZ map analysis; its targets split into a cluster at 0.755 and above
+# and a cluster at 0.30 and below with no value between.
+READOUT_EXCLUDED = (0, 6, 9)
+VISIBILITY_FLOOR = 0.5
+COUPLER_ZZ_ANALYSIS = ROOT / "results/quantum_inspire/coupler_zz_tuna_17_analysis.json"
+EXPECTED_VISIBILITY_EXCLUDED = (5, 6, 7)
+
+
+def visibility_excluded(path: Path = COUPLER_ZZ_ANALYSIS, floor: float = VISIBILITY_FLOOR) -> tuple[int, ...]:
+    """Targets of the retained coupler-ZZ analysis whose min_visibility is below `floor`, ascending.
+
+    min_visibility is the smallest Ramsey visibility over the sectors of a
+    target at both delays of qi_coupler_zz_map (DELAYS, 0.5 us and 2 us).
+    """
+    targets = json.loads(path.read_text(encoding="utf-8"))["targets"]
+    if sorted(row["target"] for row in targets) != list(range(NQUBITS)):
+        raise SystemExit(f"{path} does not hold one row per Tuna-17 qubit")
+    return tuple(sorted(row["target"] for row in targets if row["min_visibility"] < floor))
+
+
+EXCLUDED_QUBITS = tuple(sorted(set(READOUT_EXCLUDED) | set(visibility_excluded())))
+REGIONS = ((1, 2, 4, 8, 12), (10, 11, 13, 14, 16))
 SEEDS = range(16)
 A_PAIR = (1, 10)
 CASES = {
@@ -919,6 +944,11 @@ def self_test() -> None:
             rejected += 1
         else:
             raise AssertionError("inconsistent witness backend metadata was accepted")
+    if visibility_excluded() != EXPECTED_VISIBILITY_EXCLUDED or EXCLUDED_QUBITS != (0, 5, 6, 7, 9):
+        raise AssertionError("the retained Ramsey visibilities no longer exclude exactly q5, q6 and q7 at the floor")
+    rows = json.loads(COUPLER_ZZ_ANALYSIS.read_text(encoding="utf-8"))["targets"]
+    if any(0.30 < row["min_visibility"] < 0.755 for row in rows):
+        raise AssertionError("a visibility lies inside the gap between the two clusters")
     placed = [set(region) for region in REGIONS]
     if any(a & b for i, a in enumerate(placed) for b in placed[:i]) or any(set(EXCLUDED_QUBITS) & a for a in placed):
         raise AssertionError("REGIONS overlap or use an excluded qubit")

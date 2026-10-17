@@ -92,14 +92,14 @@
    1,
    2,
    4,
-   7,
-   8
+   8,
+   12
   ],
   [
+   10,
    11,
-   12,
+   13,
    14,
-   15,
    16
   ]
  ],
@@ -111,18 +111,18 @@
     1,
     2,
     4,
-    7,
-    8
+    8,
+    12
    ],
    "roles": {
     "d0": 1,
-    "d1": 2,
-    "d2": 8,
-    "d3": 7,
+    "d1": 8,
+    "d2": 12,
+    "d3": 2,
     "selector": 4
    },
    "seed": 0,
-   "cz": 66,
+   "cz": 75,
    "t_count": 26,
    "ideal_p_selector_zero": 0.0
   },
@@ -130,21 +130,21 @@
    "file": "latin-1.cq",
    "case": "bright",
    "region": [
+    10,
     11,
-    12,
+    13,
     14,
-    15,
     16
    ],
    "roles": {
-    "d0": 16,
-    "d1": 11,
-    "d2": 15,
+    "d0": 13,
+    "d1": 16,
+    "d2": 10,
     "d3": 14,
-    "selector": 12
+    "selector": 11
    },
    "seed": 0,
-   "cz": 66,
+   "cz": 87,
    "t_count": 26,
    "ideal_p_selector_zero": 1.0
   },
@@ -155,18 +155,18 @@
     1,
     2,
     4,
-    7,
-    8
+    8,
+    12
    ],
    "roles": {
     "d0": 1,
-    "d1": 2,
-    "d2": 8,
-    "d3": 7,
+    "d1": 8,
+    "d2": 12,
+    "d3": 2,
     "selector": 4
    },
    "seed": 0,
-   "cz": 66,
+   "cz": 75,
    "t_count": 26,
    "ideal_p_selector_zero": 1.0
   },
@@ -174,21 +174,21 @@
    "file": "latin-2.cq",
    "case": "fixture",
    "region": [
+    10,
     11,
-    12,
+    13,
     14,
-    15,
     16
    ],
    "roles": {
-    "d0": 12,
-    "d1": 11,
-    "d2": 15,
-    "d3": 14,
-    "selector": 16
+    "d0": 13,
+    "d1": 16,
+    "d2": 10,
+    "d3": 11,
+    "selector": 14
    },
-   "seed": 1,
-   "cz": 70,
+   "seed": 0,
+   "cz": 91,
    "t_count": 26,
    "ideal_p_selector_zero": 0.5
   },
@@ -199,18 +199,18 @@
     1,
     2,
     4,
-    7,
-    8
+    8,
+    12
    ],
    "roles": {
-    "d0": 8,
-    "d1": 1,
+    "d0": 1,
+    "d1": 12,
     "d2": 2,
-    "d3": 7,
-    "selector": 4
+    "d3": 4,
+    "selector": 8
    },
    "seed": 0,
-   "cz": 67,
+   "cz": 79,
    "t_count": 26,
    "ideal_p_selector_zero": 0.5
   },
@@ -218,21 +218,21 @@
    "file": "latin-3.cq",
    "case": "dark",
    "region": [
+    10,
     11,
-    12,
+    13,
     14,
-    15,
     16
    ],
    "roles": {
-    "d0": 16,
-    "d1": 11,
-    "d2": 15,
+    "d0": 13,
+    "d1": 16,
+    "d2": 10,
     "d3": 14,
-    "selector": 12
+    "selector": 11
    },
    "seed": 0,
-   "cz": 66,
+   "cz": 87,
    "t_count": 26,
    "ideal_p_selector_zero": 0.0
   }
@@ -242,7 +242,7 @@
   {
    "file": "latin-1.cq",
    "kind": "witness",
-   "sha256": "d4d1eb24b728d876884efbae2ed2bc98ef38609992274ab612a4d3c9c1efc810"
+   "sha256": "ebabcb40228f64a1ad3ce45263c603da815ff4a77fae7ae91817ce683db42c9f"
   },
   {
    "file": "readout-0.cq",

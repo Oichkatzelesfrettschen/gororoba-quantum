@@ -202,13 +202,24 @@ Tuna would round to the pi/36 grid. Its ANF factors as
 q0 + Maj(q1, q2, q3) + q1 q2 q3 + a(q0 + q2 + q3) + a(1 + q2) Maj(q0, q1, q3),
 so an in-place majority (Cuccaro MAJ) gives an exact SELECT of two Toffolis
 and two CCZ on five qubits, with every gate in H, S, T, Tdag and CZ. Routed
-onto Tuna-17 a replica takes 66-70 CZ and 26 T. The generator places two
-disjoint regions, {1,2,4,7,8} and {11,12,14,15,16}, and excludes qubits 0, 6
-and 9 (EXCLUDED_QUBITS) with every coupler on them. The 14 remaining qubits
-fit two connected 5-qubit regions at most; of the 341 disjoint pairs,
+onto Tuna-17 a replica takes 75-91 CZ and 26 T. The generator places two
+disjoint regions, {1,2,4,8,12} and {10,11,13,14,16}, and excludes qubits 0,
+5, 6, 7 and 9 (EXCLUDED_QUBITS) with every coupler on them. READOUT_EXCLUDED
+holds q9, which read P1 0.27-0.28 in a gate-free circuit, and q0 and q6,
+which read P1 0.39 and 0.14 prepared in |1> after the platform
+recalibration. The Ramsey visibility of the coupler-ZZ map
+(results/quantum_inspire/coupler_zz_tuna_17_analysis.json, `min_visibility`,
+minimum over neighbor sectors and the 0.5 us and 2 us delays) splits the 17
+qubits into 14 at 0.755 and above and q5, q6, q7 at 0.043, 0.270 and 0.084;
+no value lies between 0.30 and 0.755, so VISIBILITY_FLOOR = 0.5 excludes
+exactly {5, 6, 7}, which `visibility_excluded()` derives from the retained
+file and `--self-test` requires. The 12 remaining qubits
+fit two connected 5-qubit regions at most; of the 4 disjoint pairs,
 `--select-regions` ranks this one first by routed CZ over the three cases
-(401), then by the 3 couplers joining the regions, then lexicographically.
-The cases rotate through the regions (latin-1..3): dark and bright, bright
+(494: 75, 75 and 79 for dark, bright and fixture on {1,2,4,8,12}; 87, 87 and
+91 on {10,11,13,14,16}), then by the 2 couplers joining the regions (the
+pair {1,2,4,8,12} with {11,13,14,15,16} also costs 494 and joins 3), then
+lexicographically. The cases rotate through the regions (latin-1..3): dark and bright, bright
 and fixture, fixture and dark, so every case runs once in each region and
 every pair of cases shares a circuit. readout-0 and readout-1 prepare every
 qubit in |0> and |1>. A batch boundary is a calibration boundary, so the
