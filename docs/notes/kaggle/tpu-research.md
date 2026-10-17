@@ -129,6 +129,102 @@ The four rows together move the identity gate from the leading cause to
 the measured one for allocation; a TPU VM's hardware block, when the
 session starts, closes it.
 
+### Queue behavior
+
+A QUEUED TPU version is the documented normal state of a busy pool. Kaggle's
+notebooks documentation says "Free TPU availability is limited: in busy
+times, you might be placed in a queue" (the sentence predates v5e-8 and
+names the v3-8). Forum reports of the same condition: "TPU session queued
+for 14+ hours" (topic 745817, v5e-8, 2026-10-04), "TPU queue times are
+getting really long" (743783), "Very long TPU queues" (664302) and "Long
+TPU task waiting time (~ 2hrs)" (271777); in a search summary of the last,
+Kaggle staff call it a demand and supply issue, with T4 almost never
+queued and TPUs queued now and again, and other threads report positions
+such as #323 and a 13 h wait. These pages render client-side, so only the
+titles and search summaries were readable; no thread body was fetched. The
+5.5 h queue here sits inside the reported range of 2 h to more than 14 h.
+Inferred: the queue is a shared FIFO-like pool whose drain rate is set by
+the 9 h session cap of the sessions ahead, so waits of hours persist while
+public GLM-serving notebooks hold slots (the claim of topic 745817).
+
+Queue position appears in one place. The older interactive editor message
+"You are #n in the queue. You can wait, try connecting again later" is the
+title of product-feedback thread 318562, so an interactive request can show
+a position. A batch version shows "Queued..." with no position, and the
+session-log method returns an empty body, as measured above (batch row).
+No Kaggle page states whether queued time counts against the 20 h weekly
+quota; the measured `time_used` and `time_reserved` of 0 after 5.5 h of
+queueing show that a queued batch session neither consumes nor reserves
+quota here. The slot cap is separate from quota: the queued version holds
+the account's one TPU batch slot (kaggle-api issue 1197 and the
+refused second push above), so a queued session blocks later TPU pushes
+until it starts or is cancelled.
+
+### Whether libtpu is in the TPU image
+
+Finding, rated high: the CPU-session reading is correct. The TPU image
+installs libtpu itself, so a granted TPU VM has `libtpu` and a CPU session
+lacks it for the reason that it is a different image on a different
+machine. Stated: Kaggle's docker-python `tpu/Dockerfile` ends with `uv pip
+install --system --force-reinstall libtpu==0.0.17` and the comment "We
+install a libtpu version compatible with both jax 0.7.2 and torch 2.8.0.
+Why? tunix latest -> flax 0.12 -> jax 0.7.2 -> libtpu 0.0.23. However, that
+libtpu causes pjrt api errors for torch 2.8.0"; `tpu/config.txt` pins
+Python 3.12, torch 2.8.0, torchvision 0.23.0 and TensorFlow 2.20.0, and
+`tpu/requirements.in` lists the TPU jax and torch_xla. The build script
+tags the image `kaggle/python-tpuvm-build`; no source names a registry path
+`gcr.io/kaggle-images/python-tpu`, and staff state that a TPU VM session
+carries a null dockerImage on the backend (kaggle-api issue 1197), so the
+image is chosen server side from the accelerator rather than pinned by
+reference. `TPU_DOCKER_IMAGE` does not occur in this tree's
+`scripts/kaggle_run.py`, and the staff recipe pins no image anyway.
+https://raw.githubusercontent.com/Kaggle/docker-python/main/tpu/Dockerfile ,
+https://raw.githubusercontent.com/Kaggle/docker-python/main/tpu/config.txt ,
+https://raw.githubusercontent.com/Kaggle/docker-python/main/tpu/build
+
+Versions the TPU image ships: Python 3.12, jax 0.7.2, libtpu 0.0.17, torch
+2.8.0 (CPU build, with torch_xla for the TPU). The measured TPU-image
+session (`gororoba-tpu-probe` v2: Python 3.12.13, jax 0.7.2, glibc 2.35)
+matches the jax and Python of the TPU image except that it had no libtpu
+and 4 cores, and its torch was 2.10.0+cpu, so that run used an older CPU
+image (`dafd4ce5`) whose versions overlap the TPU image's (inferred),
+which section 3 already attributes to the image pin. The default image
+(Python 3.13.15, jax 0.11.1, torch 2.11.0+cpu, no libtpu) is the CPU image.
+Neither lacks libtpu through a broken TPU install: libtpu is absent in the
+CPU images by design. The kaggle docs give the TPU VM as 96 cores and 330
+GB, against 4 cores and 30 GB on the CPU machine measured here.
+
+Does `pip install "jax[tpu]"` help or hurt on a granted TPU VM: it hurts. It
+replaces the matched jax 0.7.2 and libtpu 0.0.17 pair with the latest
+jax and its libtpu, and the Dockerfile comment records that a newer libtpu
+(0.0.23) breaks torch 2.8.0's PJRT plugin; for JAX alone the upgrade
+may work but it forfeits the tested pair (inferred). The JAX AI Stack
+tutorial runs on the image as shipped (`jax.devices()` lists 8 devices
+after installing only `jax-ai-stack[grain]`). The `libtpu_releases.html`
+find-links index serves nightlies only. On a CPU session `jax[tpu]` is
+inert: it installs libtpu with no device to open. A 96-core host with
+`/dev/accel*` and a missing libtpu is the only case where the install is a
+repair, and no source reports it.
+
+### Interactive versus batch
+
+No source states that an interactive session gets a TPU faster than a
+batch commit, and none describes a separate interactive TPU queue. Stated:
+the notebooks documentation applies the same wording ("you might be placed
+in a queue", "may take a few moments to several minutes") to the
+editor's accelerator switch, and gives interactive and Save & Run All
+sessions the same 9 h TPU cap; the Save & Run All session is "a separate
+session from your interactive session". Stated (staff, issue 1197):
+pushed batch TPU runs "can queue and start more slowly than interactive
+ones". Inferred: batch sessions queue behind a per-user cap of one and
+carry no position display, interactive sessions can show a position, but
+whether they draw from a different pool is unsupported by any source read.
+Here the interactive route never reached a TPU for the verification
+reason in the summary, so it gives no timing.
+https://www.kaggle.com/docs/notebooks.md ,
+https://www.kaggle.com/docs/efficient-gpu-usage.md (separate batch and
+interactive sessions; interactive sessions idle out)
+
 ## 4. Sources
 
 Stated items carry their source; inferences are marked.
@@ -174,6 +270,12 @@ Stated items carry their source; inferences are marked.
   of which the Kaggle search lists. A queue of hours is therefore the
   expected wait for a v5e-8 batch session.
   https://www.kaggle.com/discussions/general/745817
+- Kaggle forum threads on TPU queues: https://www.kaggle.com/general/745817 ,
+  https://www.kaggle.com/discussions/general/743783 ,
+  https://www.kaggle.com/general/664302 ,
+  https://www.kaggle.com/product-feedback/271777 ,
+  https://www.kaggle.com/product-feedback/318562 (titles and search
+  summaries only; bodies unreadable).
 - Inferred: on a TPU VM, reinstalling jax or libtpu replaces the image's
   matched pair; `pip install "jax[tpu]"` is a repair for a TPU VM whose
   libtpu is missing, a state no source describes. On a CPU session it
