@@ -38,33 +38,72 @@ Subcommands:
   windows and software versions change between reads and stay out of the
   table.
 - facts DIR prints the table.
+- plan RUN_DIR --platform NAME --max-credits C (network, read-only) runs
+  every check submit makes and prints the result: the circuit matches its
+  cases.json sha256, the platform is one the case admits, is available and
+  allows the case's max_duration, max_shots times the live price per shot
+  stays within C, the token has no running or queued job, and Perceval's
+  estimate_required_shots for max_samples stays within max_shots. It builds
+  the job body through Perceval's own RemoteComputer.prepare_payload and
+  communication-layer send with create_job replaced by a recorder, so the
+  body is exactly Perceval's and nothing leaves.
+- submit RUN_DIR --platform NAME --max-credits C --approval TEXT repeats
+  plan under an flock beside the token file, writes submission-state.json
+  before the request (a lost answer leaves a case submit refuses, never one
+  it sends twice), posts the body to /api/jobs with the case's max_duration
+  and retains job-body.json and submission.json with the approval, the plan
+  and the usage report before the job.
+- collect RUN_DIR waits for a terminal status, then retains the result
+  answer byte for byte in raw/result.json and results.json with the scrubbed
+  status and job data, the usage report after the job and the counts that
+  parse_counts reads from the serialized BSCount: plain Fock states only,
+  zipped or not, never through perceval.serialization.deserialize.
+- runs [--runs DIR] prints run_facts of every retained run, the rules
+  scripts/research_state.py applies to the quandela provider.
 - --self-test proves check rejects a token id, a staff creator id, a missing
   processor record, an input mode outside the chip, a photon limit off the
   connected modes, a negative price, a missing availability counter, an
   edited table, a stale row inside the markers, a tool table missing a tool,
   a server that adds a submit tool, marks cancel read-only or marks a read
-  as mutating, on a temporary copy.
+  as mutating, on a temporary copy; and, against a stubbed service, that
+  plan refuses a platform outside the case, one under maintenance, a ceiling
+  above the case's credits, a busy token and an estimate above max_shots,
+  submit refuses an empty approval and a second submission, collect drops
+  token fields, run_facts refuses an edited raw result, case or job body, a
+  missing approval, a token field, another job id and an uncollected run,
+  and parse_counts refuses other tags, annotated or repeated states and an
+  oversized zipped result.
 
 Usage: QUANDELA_TOKEN_FILE=TOKEN "$PYTHON" scripts/qd_platform.py snapshot --out DIR
-       "$PYTHON" scripts/qd_platform.py (check DIR [--agents FILE...] | facts DIR | --self-test)
+       QUANDELA_TOKEN_FILE=TOKEN "$PYTHON" scripts/qd_platform.py (plan | submit | collect) RUN_DIR ...
+       "$PYTHON" scripts/qd_platform.py (check DIR [--agents FILE...] | facts DIR | runs | --self-test)
 """
 
 from __future__ import annotations
 
 import argparse
 import ast
+import base64
 import datetime
+import fcntl
+import functools
+import hashlib
 import importlib.metadata
 import importlib.util
 import json
+import math
 import os
+import re
 import shutil
 import sys
 import tempfile
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import zlib
 from collections.abc import Callable
+from fractions import Fraction
 from pathlib import Path
 from types import ModuleType
 from typing import Any
@@ -78,7 +117,16 @@ TOKEN_ENV = "QUANDELA_TOKEN_FILE"
 USER_AGENT = "gororoba-quantum qd_platform"
 # Keys that identify the account, its tokens or Quandela staff; the snapshot
 # drops them and check refuses a catalogue that carries one at any depth.
-FORBIDDEN_KEYS = ("token", "token_id", "token_value", "creator_id", "user_id", "entity_id", "email")
+FORBIDDEN_KEYS = (
+    "token",
+    "token_id",
+    "token_label",
+    "token_value",
+    "creator_id",
+    "user_id",
+    "entity_id",
+    "email",
+)
 AVAILABILITY_KEYS = (
     "max_concurrent_jobs",
     "max_jobs_in_queue",
@@ -153,15 +201,19 @@ STATUS_HINTS = {
 }
 
 
-def request(method: str, route: str, auth: bool = True) -> Any:
-    """JSON answer of one API call; any failure raises PlatformError naming the route and the cause."""
+def request(method: str, route: str, auth: bool = True, body: Any = None, raw: bool = False) -> Any:
+    """JSON answer (or raw bytes) of one API call; any failure raises PlatformError naming the route and the cause."""
     headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
     if auth:
         headers["Authorization"] = f"Bearer {token()}"
-    call = urllib.request.Request(API + route, headers=headers, method=method)
+    data = None
+    if body is not None:
+        data = json.dumps(body).encode("utf-8")
+        headers["Content-Type"] = "application/json"
+    call = urllib.request.Request(API + route, data=data, headers=headers, method=method)
     try:
         with OPENER.open(call, timeout=60) as response:
-            body = response.read()
+            answer = response.read()
     except urllib.error.HTTPError as error:
         detail = error.read()[:500].decode("utf-8", errors="replace")
         error.close()
@@ -169,10 +221,12 @@ def request(method: str, route: str, auth: bool = True) -> Any:
         raise PlatformError(f"{method} {route}: HTTP {error.code} {detail} {hint}".rstrip()) from None
     except (urllib.error.URLError, TimeoutError) as error:
         raise PlatformError(f"{method} {route}: {error}") from None
+    if raw:
+        return answer
     try:
-        return json.loads(body) if body else None
+        return json.loads(answer) if answer else None
     except json.JSONDecodeError:
-        raise PlatformError(f"{method} {route}: answer is not JSON: {body[:200]!r}") from None
+        raise PlatformError(f"{method} {route}: answer is not JSON: {answer[:200]!r}") from None
 
 
 def get(route: str, auth: bool = True) -> Any:
@@ -397,6 +451,454 @@ def check_agents(catalogue: dict[str, Any], files: list[Path]) -> None:
         raise SystemExit("no --agents file carries the MCP tool table")
 
 
+# ---------------------------------------------------------------- case runner
+
+ROOT = Path(__file__).resolve().parent.parent
+RUNS = ROOT / "results/quandela/runs"
+CASES_SCHEMAS = ("qd-box-kite-cases-v1",)
+CIRCUIT_SCHEMA = "qd-circuit-v1"
+STATE_SCHEMA = "qd-submission-state-v1"
+SUBMISSION_SCHEMA = "qd-submission-v1"
+COLLECTION_SCHEMA = "qd-collection-v1"
+TERMINAL = ("completed", "error", "canceled")
+# Perceval 1.3.1 is the client whose payload format the runner captures.
+RUNNER_PERCEVAL = "1.3.1"
+# A decompressed result larger than this is refused rather than parsed.
+RESULT_LIMIT = 64 << 20
+STATE_PATTERN = re.compile(r"\|(\d+(?:,\d+)*)>=(\d+)")
+
+
+def sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def load_case(case_dir: Path) -> tuple[dict[str, Any], dict[str, Any], str]:
+    """cases.json, circuit.json and the cases.json sha256; raises when the circuit differs from its digest."""
+    cases_bytes = (case_dir / "cases.json").read_bytes()
+    manifest: dict[str, Any] = json.loads(cases_bytes)
+    if manifest.get("schema") not in CASES_SCHEMAS:
+        raise PlatformError(f"{case_dir}/cases.json schema {manifest.get('schema')!r} is not a Quandela case")
+    circuit_bytes = (case_dir / manifest["circuit"]["file"]).read_bytes()
+    if sha256_bytes(circuit_bytes) != manifest["circuit"]["sha256"]:
+        raise PlatformError(f"{case_dir}: circuit.json differs from its cases.json sha256")
+    circuit: dict[str, Any] = json.loads(circuit_bytes)
+    if circuit.get("schema") != CIRCUIT_SCHEMA:
+        raise PlatformError(f"{case_dir}: circuit schema {circuit.get('schema')!r}")
+    return manifest, circuit, sha256_bytes(cases_bytes)
+
+
+def real(entry: list[str]) -> float:
+    """The float of an exact entry [a, b] = a + b sqrt(2)."""
+    return float(Fraction(entry[0])) + float(Fraction(entry[1])) * math.sqrt(2.0)
+
+
+def experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> Any:
+    """The Perceval Experiment of a case: one Unitary per component, the input state, the photon filter."""
+    import numpy
+    import perceval as pcvl
+
+    chip = pcvl.Circuit(circuit["modes"])
+    for component in circuit["components"]:
+        matrix = numpy.array([[real(x) for x in row] for row in component["unitary"]], dtype=complex)
+        chip.add(component["at"], pcvl.Unitary(pcvl.Matrix(matrix)))
+    built = pcvl.Experiment(chip)
+    built.with_input(pcvl.BasicState(circuit["input_state"]))
+    built.min_detected_photons_filter(manifest["min_detected_photons"])
+    return built
+
+
+def explorer_row(platform: str) -> dict[str, Any]:
+    rows = [row for row in get("/api/platforms/public/explorer", auth=False) if row.get("name") == platform]
+    if len(rows) != 1:
+        raise PlatformError(f"{platform} is not one Explorer platform")
+    return platform_row(rows[0])
+
+
+def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], platform: str) -> dict[str, Any]:
+    """Perceval's job body for the case and its live shot estimate, built without sending anything.
+
+    RemoteComputer.prepare_payload and RPCBasedCommunicationLayer.send build
+    the body exactly as Perceval sends it; the RPC handler's create_job is
+    replaced by a recorder, so the body comes back instead of leaving.
+    Perceval reads the platform's processor record with the token to do so.
+    """
+    from perceval import ExecutionFactory, QuandelaCommunicationLayer, RemoteComputer
+
+    found = versions()
+    if found.get("perceval-quandela") != RUNNER_PERCEVAL:
+        raise PlatformError(f"perceval-quandela {found.get('perceval-quandela')} is installed, not {RUNNER_PERCEVAL}")
+    layer = QuandelaCommunicationLayer(platform, token=token())
+    computer = RemoteComputer(layer)
+    factory = ExecutionFactory(computer, experiment(manifest, circuit), max_shots_per_call=manifest["max_shots"])
+    computation = factory.build_computation(manifest["command"])
+    computation.add_params(max_samples=manifest["max_samples"])
+    computation.job_name = f"gororoba-{case_dir.name}"[:64]
+    computer.validate_single(computation)
+    estimate = computer.estimate_required_shots(computation, nsamples=manifest["max_samples"])
+    captured: dict[str, Any] = {}
+
+    def record(cloud_data: dict[str, Any]) -> str:
+        captured["body"] = cloud_data
+        return "recorded"
+
+    layer._rpc_handler.create_job = record
+    layer.send(computer.prepare_payload(computation))
+    body: dict[str, Any] = {**captured["body"], "max_duration": manifest["max_duration"]}
+    if token() in json.dumps(body):
+        raise PlatformError("the job body carries the token")
+    return {"body": body, "estimated_shots": estimate, "versions": found}
+
+
+def plan(case_dir: Path, platform: str, max_credits: float) -> dict[str, Any]:
+    """Every check submit makes, read-only: digests, platform, price ceiling, availability and the estimate."""
+    manifest, circuit, cases_sha256 = load_case(case_dir)
+    if platform not in manifest["platforms"]:
+        raise PlatformError(f"cases.json admits {manifest['platforms']}, not {platform}")
+    row = explorer_row(platform)
+    if row["status"] != "available":
+        raise PlatformError(f"{platform} is {row['status']}")
+    if manifest["max_duration"] > row["max_duration"]:
+        raise PlatformError(f"max_duration {manifest['max_duration']} exceeds the platform's {row['max_duration']}")
+    ceiling = row["price_per_shot"] * manifest["max_shots"]
+    if ceiling > max_credits:
+        raise PlatformError(f"{manifest['max_shots']} shots cost up to {ceiling:g} credits, above {max_credits:g}")
+    counters = availability()
+    if counters["num_concurrent_jobs"] or counters["num_jobs_in_queue"]:
+        raise PlatformError(f"the token has a running or queued job: {counters}")
+    built = payload(case_dir, manifest, circuit, platform)
+    estimate = built["estimated_shots"]
+    if estimate is None or estimate > manifest["max_shots"]:
+        raise PlatformError(f"Perceval estimates {estimate} shots for {manifest['max_samples']} samples")
+    return {
+        "case": case_dir.name,
+        "cases_sha256": cases_sha256,
+        "platform": platform,
+        "platform_at_plan": row,
+        "availability_at_plan": counters,
+        "max_samples": manifest["max_samples"],
+        "max_shots": manifest["max_shots"],
+        "estimated_shots": estimate,
+        "credit_ceiling": ceiling,
+        "estimated_credits": row["price_per_shot"] * estimate,
+        "max_credits": max_credits,
+        "body": built["body"],
+        "body_sha256": sha256_bytes(json.dumps(built["body"], sort_keys=True).encode()),
+        "versions": built["versions"],
+    }
+
+
+def write_json(path: Path, value: object, exclusive: bool = False) -> None:
+    """Publish a complete JSON file with an atomic rename, or an atomic link when it must not exist."""
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as stream:
+        stream.write(json.dumps(value, indent=1, sort_keys=True) + "\n")
+        stream.flush()
+        os.fsync(stream.fileno())
+    temporary = Path(stream.name)
+    try:
+        if exclusive:
+            os.link(temporary, path)
+        else:
+            os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def submit(case_dir: Path, platform: str, approval: str, max_credits: float) -> dict[str, Any]:
+    """Send one approved case as one job while holding the token's submit lock beside the token file."""
+    if not approval.strip():
+        raise PlatformError("a nonempty approval is required")
+    lock = Path(os.environ.get(TOKEN_ENV, "")).with_name("submit.lock")
+    with open(lock, "a", encoding="utf-8") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        state_path = case_dir / "submission-state.json"
+        if (case_dir / "submission.json").exists() or state_path.exists():
+            raise PlatformError(f"{case_dir} was submitted or holds an interrupted submission; never resubmit it")
+        checked = plan(case_dir, platform, max_credits)
+        usage_before = usage_rows(get("/api/tokens/usage/report"))
+        state = {
+            "schema": STATE_SCHEMA,
+            "phase": "post_outcome_unknown",
+            "started_utc": now(),
+            "platform": platform,
+            "cases_sha256": checked["cases_sha256"],
+            "body_sha256": checked["body_sha256"],
+        }
+        # The checkpoint precedes the request: a lost answer leaves a case that
+        # submit refuses, never one a second invocation can send again.
+        write_json(state_path, state, exclusive=True)
+        answer = request("POST", "/api/jobs", body=checked["body"])
+        if not isinstance(answer, dict) or not isinstance(answer.get("job_id"), str):
+            raise PlatformError(f"POST /api/jobs answered without a job id: {answer!r}")
+        record = {
+            "schema": SUBMISSION_SCHEMA,
+            "approval": approval,
+            "submitted_utc": now(),
+            "job_id": answer["job_id"],
+            "usage_before": usage_before,
+            **{key: value for key, value in checked.items() if key != "body"},
+        }
+        write_json(case_dir / "job-body.json", checked["body"], exclusive=True)
+        write_json(case_dir / "submission.json", record, exclusive=True)
+        state.update(phase="posted", job_id=answer["job_id"])
+        write_json(state_path, state)
+        return record
+
+
+def parse_counts(results: str) -> dict[str, int]:
+    """Counts of a serialized Perceval BSCount, ':PCVL:BSCount:{|..>=n;...}', optionally zipped.
+
+    Only plain Fock states with integer counts are accepted; any other tag or
+    annotation raises, because perceval.serialization.deserialize evaluates
+    parameter expressions through sympy and never sees service data here.
+    """
+    text = results
+    if text.startswith(":PCVL:zip:"):
+        stream = zlib.decompressobj()
+        raw = stream.decompress(base64.b64decode(text[len(":PCVL:zip:") :], validate=True), RESULT_LIMIT)
+        if stream.unconsumed_tail:
+            raise PlatformError(f"a zipped result exceeds {RESULT_LIMIT} bytes")
+        text = raw.decode("ascii")
+    prefix = ":PCVL:BSCount:"
+    if not text.startswith(prefix) or not (text.endswith("}") and text[len(prefix)] == "{"):
+        raise PlatformError(f"result is not a BSCount: {text[:80]!r}")
+    body = text[len(prefix) + 1 : -1]
+    counts: dict[str, int] = {}
+    for item in body.split(";") if body else []:
+        match = STATE_PATTERN.fullmatch(item)
+        if match is None or match[1] in counts:
+            raise PlatformError(f"result entry {item[:80]!r} is not a unique Fock state count")
+        counts[match[1]] = int(match[2])
+    return counts
+
+
+def collect(case_dir: Path, poll: float, timeout: float) -> dict[str, Any]:
+    """Wait for the job, then retain its status, result and job data; the raw result keeps its bytes."""
+    submission = json.loads((case_dir / "submission.json").read_text(encoding="utf-8"))
+    _, _, cases_sha256 = load_case(case_dir)
+    if submission.get("schema") != SUBMISSION_SCHEMA or submission["cases_sha256"] != cases_sha256:
+        raise PlatformError("cases.json differs from the submission receipt")
+    job = submission["job_id"]
+    deadline = time.monotonic() + timeout
+    while True:
+        status = request("GET", job_route(job, "status"))
+        if status.get("status") in TERMINAL:
+            break
+        if time.monotonic() > deadline:
+            raise PlatformError(f"job {job} is still {status.get('status')}")
+        time.sleep(poll)
+    raw_dir = case_dir / "raw"
+    raw_dir.mkdir(exist_ok=True)
+    collected: dict[str, Any] = {
+        "schema": COLLECTION_SCHEMA,
+        "collected_utc": now(),
+        "job_id": job,
+        "status": scrub(status),
+        "data": scrub(request("GET", job_route(job, "data"))),
+        "usage_after": usage_rows(get("/api/tokens/usage/report")),
+    }
+    if status["status"] == "completed":
+        result_bytes = request("GET", job_route(job, "result"), raw=True)
+        (raw_dir / "result.json").write_bytes(result_bytes)
+        collected["result_sha256"] = sha256_bytes(result_bytes)
+        collected.update(result_summary(result_bytes))
+    write_json(case_dir / "results.json", collected)
+    return collected
+
+
+def result_summary(result_bytes: bytes) -> dict[str, Any]:
+    """The counts and scalar fields of a raw /result answer, parsed without Perceval."""
+    answer = json.loads(result_bytes)
+    inner = json.loads(answer["results"])
+    if not isinstance(inner, dict) or not isinstance(inner.get("results"), str):
+        raise PlatformError("the result carries no serialized counts")
+    counts = parse_counts(inner["results"])
+    scalars = {k: v for k, v in inner.items() if k != "results" and isinstance(v, int | float | str | None)}
+    return {"counts": counts, "samples": sum(counts.values()), "result_fields": scalars, "shots": answer.get("shots")}
+
+
+def run_facts(directory: Path) -> dict[str, Any]:
+    """Offline rules of one retained run: receipt, digests, approval, collection and raw result bytes."""
+    owner = f"Quandela run {directory.name}"
+    if not (directory / "submission.json").is_file():
+        hint = (
+            "; submission-state.json records an interrupted submit"
+            if (directory / "submission-state.json").is_file()
+            else ""
+        )
+        raise PlatformError(f"{owner}: no submission.json{hint}")
+    submission = json.loads((directory / "submission.json").read_text(encoding="utf-8"))
+    manifest, _, cases_sha256 = load_case(directory)
+    if submission.get("schema") != SUBMISSION_SCHEMA or submission.get("cases_sha256") != cases_sha256:
+        raise PlatformError(f"{owner}: cases.json differs from submission.json")
+    if not isinstance(submission.get("approval"), str) or not submission["approval"].strip():
+        raise PlatformError(f"{owner}: submission.json records no approval")
+    body = json.loads((directory / "job-body.json").read_text(encoding="utf-8"))
+    if sha256_bytes(json.dumps(body, sort_keys=True).encode()) != submission["body_sha256"]:
+        raise PlatformError(f"{owner}: job-body.json differs from the body the receipt sent")
+    if submission["platform"] not in manifest["platforms"]:
+        raise PlatformError(f"{owner}: platform {submission['platform']} is outside cases.json")
+    if not (directory / "results.json").is_file():
+        raise PlatformError(f"{owner}: results.json is missing; collect the run")
+    collected = json.loads((directory / "results.json").read_text(encoding="utf-8"))
+    if collected.get("schema") != COLLECTION_SCHEMA or collected.get("job_id") != submission["job_id"]:
+        raise PlatformError(f"{owner}: results.json names another job or schema")
+    if carried := sorted(set(FORBIDDEN_KEYS) & keys(collected)):
+        raise PlatformError(f"{owner}: results.json carries {carried}")
+    status = collected["status"]["status"]
+    if status not in TERMINAL:
+        raise PlatformError(f"{owner}: job status {status} is not terminal")
+    raw = directory / "raw" / "result.json"
+    if status == "completed":
+        if not raw.is_file() or sha256_bytes(raw.read_bytes()) != collected.get("result_sha256"):
+            raise PlatformError(f"{owner}: raw/result.json differs from its recorded sha256")
+        summary = result_summary(raw.read_bytes())
+        if any(collected.get(key) != value for key, value in summary.items()):
+            raise PlatformError(f"{owner}: results.json differs from the raw result")
+        modes = len(json.loads((directory / manifest["circuit"]["file"]).read_text(encoding="utf-8"))["input_state"])
+        if any(len(state.split(",")) != modes for state in summary["counts"]):
+            raise PlatformError(f"{owner}: a counted state has a mode count other than {modes}")
+    elif raw.exists():
+        raise PlatformError(f"{owner}: a {status} job holds a raw result")
+    shots = collected["status"].get("shots") or 0
+    return {
+        "created_at": submission["submitted_utc"],
+        "backends": [submission["platform"]],
+        "jobs": 1,
+        "circuits": len(manifest["blocks"]),
+        "statuses": {status: 1},
+        "charge": shots * submission["platform_at_plan"]["price_per_shot"],
+        "detail": f"job {submission['job_id']}, {collected.get('samples', 0)} samples, {shots} shots",
+    }
+
+
+def run_directories(runs: Path = RUNS) -> list[Path]:
+    return sorted(path for path in runs.iterdir() if path.is_dir()) if runs.is_dir() else []
+
+
+def zipped(text: str) -> str:
+    return ":PCVL:zip:" + base64.b64encode(zlib.compress(text.encode("ascii"))).decode("ascii")
+
+
+def runner_self_test() -> int:
+    """Offline rules of plan, submit, collect and run_facts against a stubbed service; returns the rejections."""
+    root = Path(__file__).resolve().parent.parent
+    case = root / "results/quandela/cases/box_kite_photonic_single/job-00"
+    modes = ["0"] * 24
+    dark, label = modes.copy(), modes.copy()
+    dark[22], label[20] = "1", "1"
+    counts = f":PCVL:BSCount:{{|{','.join(dark)}>=9990;|{','.join(label)}>=10}}"
+    result = json.dumps({"results": json.dumps({"results": zipped(counts), "global_perf": 1.0}), "shots": 10012})
+    row = {field: None for field in PLATFORM_FIELDS} | {
+        "name": "sim:belenos",
+        "status": "available",
+        "max_duration": 300,
+        "price_per_shot": 0.0,
+        "maintenance": None,
+    }
+    idle = dict.fromkeys(AVAILABILITY_KEYS, 0)
+    body = {"job_name": "gororoba-job-00", "payload": {"command": "sample_count"}, "platform_name": "sim:belenos"}
+    service: dict[str, Any] = {"row": row, "idle": idle, "estimate": 10000}
+
+    def fake_request(method: str, route: str, auth: bool = True, body: Any = None, raw: bool = False) -> Any:
+        if (method, route) == ("POST", "/api/jobs"):
+            return {"job_id": "job-a"}
+        if route.endswith("/status"):
+            return {"status": "completed", "shots": 10012, "token_id": 7}
+        if route.endswith("/data"):
+            return {"job_id": "job-a", "token_label": "secret-label", "status": "completed"}
+        if route.endswith("/result"):
+            return result.encode("utf-8")
+        if route == "/api/tokens/usage/report":
+            return [{"total_jobs": 1, "usage": [], "token_id": 7}]
+        raise AssertionError(f"unexpected {method} {route}")
+
+    def fake_payload(*_: Any) -> dict[str, Any]:
+        return {"body": body, "estimated_shots": service["estimate"], "versions": {"perceval-quandela": "1.3.1"}}
+
+    rejected = 0
+
+    def refuse(label: str, action: Callable[[], Any], expected: str) -> None:
+        nonlocal rejected
+        try:
+            action()
+        except PlatformError as error:
+            if expected not in str(error):
+                raise AssertionError(f"{label} failed for another reason: {error}") from None
+            rejected += 1
+            return
+        raise AssertionError(f"runner accepted {label}")
+
+    with tempfile.TemporaryDirectory() as tmp:
+        scratch = Path(tmp)
+        (scratch / "token").write_text("token-value\n", encoding="utf-8")
+        run = scratch / "run"
+        shutil.copytree(case, run)
+        stubs = (
+            patch.dict(os.environ, {TOKEN_ENV: str(scratch / "token")}),
+            patch(f"{__name__}.request", fake_request),
+            patch(f"{__name__}.explorer_row", lambda _: service["row"]),
+            patch(f"{__name__}.availability", lambda: service["idle"]),
+            patch(f"{__name__}.payload", fake_payload),
+        )
+        for stub in stubs:
+            stub.start()
+        try:
+            refuse("a platform outside the case", lambda: plan(run, "qpu:ascella", 1.0), "admits")
+            service["row"] = {**row, "status": "maintenance"}
+            refuse("a platform under maintenance", lambda: plan(run, "sim:belenos", 1.0), "is maintenance")
+            service["row"] = {**row, "price_per_shot": 1e-6}
+            refuse("a ceiling above the case's credits", lambda: plan(run, "sim:belenos", 0.0), "above")
+            service["row"], service["idle"] = row, {**idle, "num_jobs_in_queue": 1}
+            refuse("a token with a queued job", lambda: plan(run, "sim:belenos", 1.0), "running or queued")
+            service["idle"], service["estimate"] = idle, 10**9
+            refuse("an estimate above max_shots", lambda: plan(run, "sim:belenos", 1.0), "estimates")
+            service["estimate"] = 10000
+            refuse("an empty approval", lambda: submit(run, "sim:belenos", " ", 1.0), "approval")
+            submit(run, "sim:belenos", "approved in the written case", 0.0)
+            refuse("a second submit", lambda: submit(run, "sim:belenos", "again", 0.0), "never resubmit")
+            collected = collect(run, 0.0, 1.0)
+            if carried := sorted(set(FORBIDDEN_KEYS) & keys(collected)):
+                raise AssertionError(f"collect retained {carried}")
+            if collected["counts"] != {",".join(dark): 9990, ",".join(label): 10}:
+                raise AssertionError(f"collect parsed {collected['counts']}")
+            run_facts(run)
+            mutations: list[tuple[str, Callable[[Path], object], str]] = [
+                (
+                    "an edited raw result",
+                    lambda d: (d / "raw/result.json").write_text("{}", encoding="utf-8"),
+                    "sha256",
+                ),
+                ("a missing approval", lambda d: _rewrite(d / "submission.json", approval=""), "approval"),
+                ("an edited case", lambda d: _rewrite(d / "cases.json", max_shots=1), "differs from submission"),
+                ("an edited job body", lambda d: _rewrite(d / "job-body.json", job_name="other"), "job-body"),
+                ("a retained token id", lambda d: _rewrite(d / "results.json", token_id=7), "carries"),
+                ("another job id", lambda d: _rewrite(d / "results.json", job_id="job-b"), "another job"),
+                ("an uncollected run", lambda d: (d / "results.json").unlink(), "collect the run"),
+            ]
+            for number, (label_text, mutate, expected) in enumerate(mutations):
+                mutated = scratch / f"mutated-{number}"
+                shutil.copytree(run, mutated)
+                mutate(mutated)
+                refuse(label_text, functools.partial(run_facts, mutated), expected)
+        finally:
+            for stub in reversed(stubs):
+                stub.stop()
+    for label_text, text in (
+        ("a BasicState tag", ":PCVL:BasicState:|1,0>"),
+        ("an annotated state", ":PCVL:BSCount:{|{_:0},0>=3}"),
+        ("a repeated state", ":PCVL:BSCount:{|1,0>=3;|1,0>=4}"),
+        ("an oversized zipped result", zipped(":PCVL:BSCount:{" + "0" * (RESULT_LIMIT + 1) + "}")),
+    ):
+        refuse(label_text, functools.partial(parse_counts, text), "")
+    return rejected
+
+
+def _rewrite(path: Path, **fields: Any) -> None:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value.update(fields)
+    path.write_text(json.dumps(value), encoding="utf-8")
+
+
 def load(directory: Path) -> dict[str, Any]:
     value: dict[str, Any] = json.loads((directory / "catalogue.json").read_text(encoding="utf-8"))
     return value
@@ -518,7 +1020,7 @@ def self_test() -> None:
             except SystemExit:
                 continue
             raise AssertionError(f"check accepted {label}")
-    print(f"qd_platform self-test: {len(edits)} rejections")
+    print(f"qd_platform self-test: {len(edits)} catalogue rejections, {runner_self_test()} runner rejections")
 
 
 def main() -> int:
@@ -532,6 +1034,19 @@ def main() -> int:
     p.add_argument("--agents", type=Path, nargs="+", help="files carrying the quandela-facts section")
     p = sub.add_parser("facts")
     p.add_argument("directory", type=Path)
+    for name in ("plan", "submit"):
+        p = sub.add_parser(name)
+        p.add_argument("case_dir", type=Path)
+        p.add_argument("--platform", required=True)
+        p.add_argument("--max-credits", type=float, required=True, help="the written case's credit ceiling")
+        if name == "submit":
+            p.add_argument("--approval", required=True, help="the user's approval, quoted, kept in submission.json")
+    p = sub.add_parser("collect")
+    p.add_argument("case_dir", type=Path)
+    p.add_argument("--poll", type=float, default=10.0)
+    p.add_argument("--timeout", type=float, default=1800.0)
+    p = sub.add_parser("runs")
+    p.add_argument("--runs", type=Path, default=RUNS)
     args = parser.parse_args()
     if args.self_test:
         self_test()
@@ -544,6 +1059,24 @@ def main() -> int:
         check(args.directory, args.agents)
     elif args.command == "facts":
         print(facts_table(load(args.directory)), end="")
+    elif args.command in ("plan", "submit", "collect", "runs"):
+        try:
+            if args.command == "plan":
+                checked = plan(args.case_dir, args.platform, args.max_credits)
+                print(json.dumps({k: v for k, v in checked.items() if k != "body"}, indent=1, sort_keys=True))
+            elif args.command == "submit":
+                record = submit(args.case_dir, args.platform, args.approval, args.max_credits)
+                print(f"job {record['job_id']} on {record['platform']}")
+            elif args.command == "collect":
+                collected = collect(args.case_dir, args.poll, args.timeout)
+                print(
+                    f"job {collected['job_id']}: {collected['status']['status']}, {collected.get('samples', 0)} samples"
+                )
+            else:
+                for directory in run_directories(args.runs):
+                    print(directory.name, json.dumps(run_facts(directory), sort_keys=True))
+        except PlatformError as error:
+            raise SystemExit(str(error)) from None
     else:
         parser.error("a subcommand or --self-test is required")
     return 0

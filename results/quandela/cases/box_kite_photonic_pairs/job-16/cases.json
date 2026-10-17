@@ -1,0 +1,73 @@
+{
+ "schema": "qd-box-kite-cases-v1",
+ "family": "box_kite_photonic_pairs",
+ "job": "job-16",
+ "platforms": [
+  "sim:belenos",
+  "qpu:belenos"
+ ],
+ "command": "sample_count",
+ "min_detected_photons": 2,
+ "max_samples": 5000,
+ "max_shots": 2000000,
+ "max_duration": 300,
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "circuit": {
+  "file": "circuit.json",
+  "sha256": "45fe224f20c37fcc0422ddfdb89c982d00fca7d91020464665434c294f87a9b7"
+ },
+ "blocks": [
+  {
+   "config": "hom-00",
+   "kind": "hom",
+   "offset": 8,
+   "photons": [
+    8,
+    9
+   ],
+   "roles": [
+    "port_0",
+    "port_1"
+   ],
+   "pair_ideal": [
+    [
+     0,
+     0,
+     "1/2",
+     "1/4"
+    ],
+    [
+     0,
+     1,
+     "0",
+     "1/2"
+    ],
+    [
+     1,
+     1,
+     "1/2",
+     "1/4"
+    ]
+   ],
+   "label_coincidence": [
+    "0",
+    "1/2"
+   ],
+   "rows": []
+  }
+ ],
+ "preregistered": {
+  "definitions": {
+   "constructive pair": "a two-photon block on a kite edge: |perm M| = 2, det M = 0, label coincidence (perm M / 4)^2 = 1/4 for indistinguishable photons against 1/8 for distinguishable ones",
+   "suppressed pair": "a two-photon block on a strut or an (l, l^8) pair: perm M = 0, |det M| = 2, label coincidence 0 for indistinguishable photons against 1/8 for distinguishable ones"
+  },
+  "observable": "per job, the two-click samples (min_detected_photons 2, threshold detectors) by mode pair; the label coincidence is the fraction of two-click samples with one click on each label mode",
+  "ideal": "pair_ideal lists P(a, b) for indistinguishable and distinguishable photons; a source of indistinguishability V mixes them as V P_ind + (1 - V) P_dist before threshold conditioning, so an edge block reads (1 + V)/8 and a strut or non-kite block (1 - V)/8 on the label pair",
+  "calibration": "the hom job, a balanced splitter on the same two sources, reads P(1, 1) = (1 - V)/2 and fixes V for every pair block of the series",
+  "hardware_report": "the edge minus strut label-coincidence difference against V/4 from the hom job, the sign of perm M as the classifier of each block, and every mode-pair frequency against pair_ideal at the fitted V, with Wilson 95% intervals",
+  "falsifier": "a strut or non-kite block whose label coincidence exceeds the edge blocks' at the fitted V, or an edge minus strut difference outside V/4 by more than 4.5 standard errors"
+ }
+}

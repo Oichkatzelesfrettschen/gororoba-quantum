@@ -122,3 +122,29 @@ labeling of `strut_table.rs`. Without `--open-gororoba`, `--check` binds the
 retained comparison to the census totals (42, 42, 7, 7, 84) and to the
 consistency of its disagreement list; the digests are re-verified only
 against a checkout.
+
+## Two-blade sign blocks at D = 16, 32 and 64
+
+`two_blade_blocks.json` (`scripts/cd_two_blade_blocks.py`) classifies every
+ordered pair of signed two-blades x = e_i + s e_j, y = e_k + t e_l by its
+product labels. A two-label pair (i^j = k^l) restricts to the sign block
+M = [[g(i,k), s g(j,l)], [s g(j,k), g(i,l)]] with P = ||M (1, t)||^2 / 8;
+every other pair has four distinct labels and P = 1/2.
+
+| D | two-label pairs (same plane, edge type, strut type) | four-label pairs | zero products | annihilator nullity sum |
+|---|---|---|---|---|
+| 16 | 420, 672, 1848 | 41160 | 336 | 336 |
+| 32 | 1860, 10080, 15960 | 837000 | 5040 | 5040 |
+| 64 | 7812, 104160, 130200 | 15014664 | 52080 | 52080 |
+
+Every dimension uses all 16 sign matrices and all 32 (M, t) configurations,
+each of which is a job of the photonic series under
+`results/quandela/cases/` (the record's `photonic_coverage`). The zero
+products equal the nullity sums of `results/hw_estimate/annihilator_strata.json`,
+so through D = 64 each two-blade kernel is spanned by two-blade partners, and
+they equal open_gororoba's `EXACT_ALTERNATOR_COUNTS` (336, 5040, 52080).
+The census Design B rows reach 14 of the 16 sign matrices; the other two
+occur on two-label pairs outside them. `--write` builds the
+hypercomplex-engine 0.5.0 standard tables and retains their sha256 beside
+cd_core's; gates core-506 (`--check`, cd_core only) and core-507
+(`--self-test`) require them equal.

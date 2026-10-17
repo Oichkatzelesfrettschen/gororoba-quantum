@@ -315,8 +315,99 @@ unpublished method enters a Quandela job only with that use accepted.
 - Before a case, read `qd_availability` (one running and one queued job) and
   the platform's `status`, and re-snapshot; quote limits and prices from the
   snapshot, never from memory.
-- A run retains the serialized experiment and its sha256, the processor
-  record at submission, the job id, status history, the full result and the
-  Perceval and exqalibur versions under `results/quandela/runs/`; the
-  research-state registry gains a `quandela` provider adapter in the change
-  that retains the first run.
+- A run directory under `results/quandela/runs/` holds the case
+  (`cases.json`, `circuit.json`), the body Perceval built (`job-body.json`),
+  `submission.json` (approval, plan, platform record and availability at
+  submission, Perceval and exqalibur versions, usage report before),
+  `results.json` (scrubbed status and job data, counts, usage report after)
+  and `raw/result.json` byte for byte. scripts/research_state.py reads every
+  run through `qd_platform.run_facts` as the `quandela` provider.
+
+## Runner
+
+```sh
+export QUANDELA_TOKEN_FILE="$HOME/.config/quandela/cloud-token"
+RUN=results/quandela/runs/$(date -u +%Y-%m-%dT%H%M%SZ)-sim_belenos-box_kite_photonic_single-job-00
+mkdir -p "$RUN" && cp results/quandela/cases/box_kite_photonic_single/job-00/*.json "$RUN"/
+"$PYTHON" scripts/qd_platform.py plan "$RUN" --platform sim:belenos --max-credits 0
+"$PYTHON" scripts/qd_platform.py submit "$RUN" --platform sim:belenos --max-credits 0 --approval "TEXT"
+"$PYTHON" scripts/qd_platform.py collect "$RUN"
+```
+
+`plan` reads only: it checks the digests, the platform's status and
+duration limit, the credit ceiling (max_shots times the live price per
+shot) against `--max-credits`, the token's availability and Perceval's
+`estimate_required_shots`, and builds the job body through Perceval's
+`RemoteComputer.prepare_payload` and communication-layer `send` with the
+RPC handler's `create_job` replaced by a recorder. `submit` repeats those
+checks under an flock beside the token file, writes
+`submission-state.json` before the POST to `/api/jobs` (Perceval 1.3.1
+still posts to the deprecated `/api/job`), and refuses any directory that
+holds a receipt or a checkpoint. `collect` waits for `completed`, `error` or
+`canceled` and parses the BSCount string itself: a result is service data,
+and `perceval.serialization.deserialize` evaluates parameter expressions.
+
+## Photonic box-kite family
+
+`scripts/qd_box_kite_cases.py` builds every circuit from
+`docs/evidence/box_kite_census/census.json` and certifies the one-hot pair
+and every witness with `cd_core`. A photon carries the Design B product
+x y, x = (e_L + s e_U)/sqrt2 and y = (e_L' + t e_U')/sqrt2. The
+contraction V = L_x on span{e_L', e_U'} divided by sqrt2 gives
+||V y||^2 = ||x y||^2 / 2, the census `p_selector_zero`. On a two-label row
+V = M / 2 with the sign block M = [[g(L,L'), s g(U,U')], [s g(U,L'), g(L,U')]],
+and the circuit is its Halmos dilation, exact over Q(sqrt2).
+
+| Term | Meaning |
+|---|---|
+| dark | one-photon block with p_algebra 0: x y = 0, the photon leaves only through the dilation ports |
+| bright | one-photon block with p_algebra 1: ||x y||^2 = 2, the photon never reaches a dilation port |
+| half | strut, non-kite or four-label block with p_algebra 1/2 for every sign |
+| constructive pair | two photons on an edge block: perm M = +-2, label coincidence 1/4 (indistinguishable) against 1/8 |
+| suppressed pair | two photons on a strut or (l, l^8) block: perm M = 0, label coincidence 0 against 1/8 |
+
+The two-photon series turns the box-kite edge/strut split into two-photon
+interference: perm M = g(L,L') g(L,U') (1 + p0 p1) and
+det M = g(L,L') g(L,U') (1 - p0 p1) for the kite phase products p0 and p1,
+so edges (p0 = p1) bunch and struts (p0 != p1) suppress, independent of
+s and t. The census Design B rows reach 14 of the 16 sign matrices; the
+other two come from cd_core witness pairs outside those rows, so the family
+covers every two-label two-blade product. `scripts/cd_two_blade_blocks.py`
+checks that at D = 16, 32 and 64 against the case files, retains the
+hypercomplex-engine 0.5.0 table digests (equal to cd_core's), and records
+336, 5040 and 52080 signed zero products, equal to the annihilator nullity
+sums of `results/hw_estimate/annihilator_strata.json`. A one-hot embedding
+of D = 32 needs 34 modes; the family reaches D = 32 through the block it
+reduces to.
+
+| Series | Jobs | Photons per job | Samples per job | qpu:belenos shots (Perceval estimate) | qpu:belenos credits for shots |
+|---|---|---|---|---|---|
+| `box_kite_photonic_single` | 35 | 1 | 10000 | 10000 | 0.01 per job, 0.35 in all |
+| `box_kite_photonic_packed` | 6 | 6, 6, 6, 6, 6, 2 | 10000 per block | equal to samples | 0.32 in all |
+| `box_kite_photonic_pairs` | 17 | 2 | 5000 | 347113 | 0.35 per job, 5.9 in all |
+
+The estimates come from `plan` against the live platform on 2026-10-17 and
+exclude the offer's per-job price. Belenos practice the cases follow:
+
+- Every photon enters a connected input mode, so input adaptation adds no
+  routing permutation (guide `04-compilation`).
+- `min_detected_photons` is the physical post-selection: 1 for one-photon
+  blocks, 2 for pairs.
+- Single blocks sit on modes 18 to 23 (6 to 23 for the one-hot pair) and
+  pairs on modes 8 and 9, whose detectors read dark counts of at most
+  2 per second against 19.6 and 38.2 on modes 0 and 5.
+- A simulator result carries `computed_circuit` and `computed_input`;
+  reusing them makes a QPU job run the compilation the simulator ran. The
+  runner retains them in `raw/result.json`; sending them back needs a parser
+  for the serialized circuit, written against the first retained result.
+- The transpiler fits the whole 24-mode unitary; identity on the idle
+  modes is part of what it fits, so the one-hot pair's leakage into the 14
+  unreachable labels measures it.
+
+Local Perceval SLOS with the catalogue's source figures (indistinguishability
+0.942, g2 0.01) predicts a dark block's algebra fraction 0 and a bright
+block's 1 exactly, so a dark detection on the QPU measures the chip's
+unitary error, crosstalk or dark counts, never the source. Among two-click
+samples the label pair carries 0.4975 of an edge block and 0.0008 of a
+strut block at indistinguishability 1, 0.4696 and 0.0104 at 0.942, and
+0.1667 and 0.1431 at 0.
