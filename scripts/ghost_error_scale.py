@@ -458,6 +458,17 @@ def validate(run: dict[str, Any], index: dict[str, Any], grid: list[tuple[float,
         require(retained == {"members": len(chosen), **rebuilt}, f"{name}: {relative} diagnostics differ")
 
 
+class RunValidator:
+    """validate() over one retained run, for the process pool."""
+
+    def __init__(self, index: dict[str, Any], grid: list[tuple[float, float]]) -> None:
+        self.index = index
+        self.grid = grid
+
+    def __call__(self, run: dict[str, Any]) -> None:
+        validate(run, self.index, self.grid)
+
+
 def check(paths: list[Path], runs: str, index: dict[str, Any]) -> None:
     retained = load(paths)
     grid = full_grid()
@@ -466,8 +477,8 @@ def check(paths: list[Path], runs: str, index: dict[str, Any]) -> None:
         sorted(listed) == ghost_run.audited_runs() and len(set(listed)) == len(listed),
         "the files do not hold each audited run exactly once",
     )
-    for run in retained["runs"]:
-        validate(run, index, grid)
+    # Results return in run order, so the first failing run raises as in a serial loop.
+    parallel.ordered_map(RunValidator(index, grid), retained["runs"], min_items=2)
     # The (1, 1) point is the unscaled noise model, so its execution means
     # agree with the ghost runs' execution-state means.
     ghosts = {run["run"]: run for run in json.loads(GHOST_RESULT.read_text(encoding="utf-8"))["runs"]}
