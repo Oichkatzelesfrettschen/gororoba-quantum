@@ -143,9 +143,16 @@ Seconds below are planner charges at the reference contrast 0.0248 (dry run
    declared bound need 116,331 shots (78.8 s) against 154,202 (103.7 s) for
    one: 25 s saved. The optimizer chose R = 2 at the 118,784 tier (80.4 s).
    Four equal replicas would need 52.7 s; the chip offers no such set.
-   Control: `scripts/n21_replica_covariance.py` tests the declared bound on
-   the collected shot-ordered registers; a failure sends the analysis back to
-   the arbitrary-dependence Hoeffding radius.
+   Control: collection tests the declared bound on the retained shot-ordered
+   replica registers before it applies it
+   (`n21_exact_planning.COVARIANCE_FALSIFIER`, recorded in record.json and
+   the case): the sample variance of each PUB's replica-average score must
+   stay within the declared projection 0.275 plus a Hoeffding allowance
+   (0.0308 at 118,784 shots). A failure analyzes the endpoint under the
+   arbitrary-dependence Hoeffding radius, which at the same shots leaves it
+   underpowered; collect.json records the branch, and
+   `scripts/n21_replica_covariance.py --run-dir` replays it from the raw
+   files.
 5. **CZ count.** Removing k routed CZ multiplies the contrast by rho^-k,
    rho between 0.99687 and 0.99745, so shots scale by rho^(2k): 100 fewer CZ
    save 40 to 47 s, 200 fewer save 65 to 72 s (one replica). With a sampled

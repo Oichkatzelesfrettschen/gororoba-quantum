@@ -2936,6 +2936,14 @@
    "name": "core-485",
    "seconds": 25.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error replica_covariance_contracts.py && \"$PYTHON\" -B -O -W error replica_covariance_contracts.py",
+   "name": "core-486",
+   "seconds": 3.2,
+   "tier": "pr"
   }
  ],
  "excluded": [

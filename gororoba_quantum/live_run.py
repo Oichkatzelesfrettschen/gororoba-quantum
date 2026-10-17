@@ -4767,12 +4767,18 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             for name, distributions in family_measured.items()
         }
     if record.get("observable_contracts") or correction_family:
+        # A declared covariance bound is tested on the shot-ordered registers
+        # write_raw_result retained above, the bytes a replay reads.
+        bounded_pubs = {bound["pub_name"] for bound in record.get("covariance_bounds", [])}
         out[0]["family_analysis"] = qpu_planning.measured_family(
             record,
             family_measured,
             family_executed,
             sys.modules[__name__],
             correction_evidence=correction_evidence if correction_family else None,
+            replica_registers=(
+                qpu_planning.n21_exact_planning.retained_registers(run_dir, bounded_pubs) if bounded_pubs else None
+            ),
         )
     out[0]["invocation_usage"] = invocation_usage(record, jobs_out)
     checkpoint(out, final=True)

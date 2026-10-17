@@ -1,22 +1,19 @@
-"""Measured replica score covariance against a run's declared covariance bound.
+"""Replay of a collected run's replica covariance falsifier from its retained raw registers.
 
 A plan that declares ``--replica-variance-bound V`` asserts, for every
-contract and PUB with replicated members, that the per-replica scores of one
-shot have variance at most V and are independent across replicas
-(n21_exact_planning). The collector's Cantelli or Chebyshev radius rests on
-that bound, so this script tests it on the shot-ordered registers a
-collection retains under ``raw/<job_id>/pub_NN.json``.
+contract and PUB with replicated members, that the replica scores of one shot
+have variance at most V and are independent across replicas
+(n21_exact_planning). The collector tests that assertion before it applies
+the bound: qpu_planning.measured_family runs
+n21_exact_planning.covariance_falsifier on the shot-ordered registers
+raw/<job_id>/pub_NN.json retains and records the branch it took under
+collect.json's ``family_analysis.replica_covariance``.
 
-For each declared bound it scores every shot of every replica register named
-in the record's execution manifest and compares the variance of the
-replica-average score, the only projection of the matrix the optimizer's
-radius reads (weights 1/R), with the declared projection. The estimate
-carries a Hoeffding allowance at tail ``TAIL``: the mean square and the mean
-of a score in [-1, 1] each sit within e = 2 sqrt(ln(6/tail) / (2n)) of their
-expectations, so the variance estimate sits within 3e + e^2. The bound fails
-when the estimate exceeds the declared projection by more than that
-allowance; the analysis then belongs to the arbitrary-dependence Hoeffding
-radius. The full sample covariance matrix is reported beside it.
+``--run-dir`` reruns the same falsifier from the run directory alone: it reads
+record.json and the raw files (each checked against its index digest),
+recomputes every bound's statistic and threshold, and, when collect.json
+exists, requires the collector's verdict, branch and per-bound statistics to
+match. It prints the replayed rows and exits 1 on a disagreement.
 
 Usage:
     "$PYTHON" scripts/n21_replica_covariance.py --run-dir results/live/RUN
@@ -26,114 +23,174 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import copy
+import hashlib
 import json
 import math
+import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 
-TAIL = 1e-3
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+import n21_exact_planning  # noqa: E402
+
+COMPARED = ("statistic", "declared_projection", "allowance", "threshold")
 
 
-def allowance(shots: int, entries: int, tail: float = TAIL) -> float:
-    """Simultaneous deviation allowance of entries sample (co)variances of [-1, 1] scores."""
-    spread = 2 * math.sqrt(math.log(6 * entries / tail) / (2 * shots))
-    return spread + 2 * spread + spread**2
-
-
-def score_matrix(bitstrings: list[list[str]], values: tuple[float, ...]) -> np.ndarray:
-    """(shots, replicas) scores from each replica register's shot-ordered bitstrings."""
-    columns = [np.asarray([values[int(bits, 2)] for bits in register], dtype=float) for register in bitstrings]
-    if len({column.size for column in columns}) != 1:
-        raise ValueError("replica registers hold different shot counts")
-    return np.stack(columns, axis=1)
-
-
-def compare(scores: np.ndarray, declared: np.ndarray) -> dict[str, Any]:
-    """The replica-average score variance, the projection the optimizer uses, against the declared one."""
-    shots, replicas = scores.shape
-    estimate = np.atleast_2d(np.cov(scores, rowvar=False, bias=True))
-    weights = np.full(replicas, 1.0 / replicas)
-    realized = float(np.var(scores @ weights))
-    bound = float(weights @ declared @ weights)
-    tolerance = allowance(shots, 1)
-    return {
-        "shots": shots,
-        "replicas": replicas,
-        "covariance_estimate": estimate.round(6).tolist(),
-        "declared": declared.tolist(),
-        "average_variance": realized,
-        "declared_average_variance": bound,
-        "allowance": tolerance,
-        "holds": realized <= bound + tolerance,
-    }
-
-
-def check_run(run_dir: Path) -> list[dict[str, Any]]:
+def replay(run_dir: Path) -> dict[str, Any]:
     record = json.loads((run_dir / "record.json").read_text())
     bounds = record.get("covariance_bounds", [])
     if not bounds:
         raise SystemExit(f"{run_dir}: the record declares no covariance bound")
-    registers: dict[str, list[str]] = {}
-    for pub in record["execution_pubs"]:
-        for component in pub["components"]:
-            registers[component["member"]] = [
-                f"{component['register_prefix']}{name}" for names in component["registers_by_replica"] for name in names
-            ]
-    by_pub: dict[str, dict[str, Any]] = {}
-    for path in sorted(run_dir.glob("raw/*/pub_*.json")):
-        data = json.loads(path.read_text())
-        by_pub[data["pub_name"]] = data["registers"]
-    values = {
-        term["member"]: tuple(term["values"])
-        for contract in record["observable_contracts"]
-        for term in contract["terms"]
+    registers = n21_exact_planning.retained_registers(run_dir, {bound["pub_name"] for bound in bounds})
+    return n21_exact_planning.covariance_falsifier(record, registers)
+
+
+def disagreements(replayed: dict[str, Any], collected: dict[str, Any]) -> list[str]:
+    """Differences between the replayed falsifier and the collector's recorded one."""
+    problems = []
+    branch = "declared_covariance" if replayed["holds"] else "hoeffding_fallback"
+    if collected.get("holds") != replayed["holds"] or collected.get("branch") != branch:
+        problems.append(f"verdict: collected {collected.get('holds')}/{collected.get('branch')}, replayed {branch}")
+    rows = collected.get("bounds", [])
+    if len(rows) != len(replayed["bounds"]):
+        return [*problems, "the collected and replayed bound lists differ in length"]
+    for mine, theirs in zip(replayed["bounds"], rows, strict=True):
+        label = f"{mine['observable']}/{mine['pub']}"
+        if (mine["observable"], mine["pub"], mine["holds"]) != (theirs["observable"], theirs["pub"], theirs["holds"]):
+            problems.append(f"{label}: identity or verdict differs")
+            continue
+        for key in COMPARED:
+            if key in mine and not math.isclose(mine[key], theirs.get(key, math.nan), rel_tol=1e-12, abs_tol=1e-15):
+                problems.append(f"{label} {key}: collected {theirs.get(key)}, replayed {mine[key]}")
+    return problems
+
+
+def check_run(run_dir: Path) -> tuple[dict[str, Any], list[str]]:
+    replayed = replay(run_dir)
+    collect_path = run_dir / "collect.json"
+    if not collect_path.exists():
+        return replayed, []
+    collected = json.loads(collect_path.read_text())[0].get("family_analysis", {}).get("replica_covariance")
+    if collected is None:
+        return replayed, ["collect.json carries no replica_covariance analysis"]
+    return replayed, disagreements(replayed, collected)
+
+
+# ---------------------------------------------------------------- self-test
+
+
+def _bits(outcomes: np.ndarray, width: int) -> list[str]:
+    return [format(int(value), f"0{width}b") for value in outcomes]
+
+
+def _fixture_run(directory: Path, outcomes: np.ndarray) -> dict[str, Any]:
+    """A two-replica single-PUB run whose replica r1 splits its two bits over two registers."""
+    signed = [0.0, 1.0, 0.0, -1.0]
+    record = {
+        "observable_contracts": [
+            {"name": "contrast", "terms": [{"member": "m", "values": signed, "sign": 1}], "minimum_effect": 0.0}
+        ],
+        "execution_pubs": [
+            {
+                "name": "pub_a",
+                "components": [
+                    {"member": "m", "registers_by_replica": [["g0_r0_phase"], ["g0_r1_low", "g0_r1_high"]]},
+                ],
+            }
+        ],
+        "covariance_bounds": [
+            {
+                "observable_name": "contrast",
+                "pub_name": "pub_a",
+                "labels": ["m/r0", "m/r1"],
+                "matrix": [[0.55, 0.0], [0.0, 0.55]],
+                "assumption": "fixture",
+            }
+        ],
     }
-    rows = []
-    for bound in bounds:
-        members = []
-        for label in bound["labels"]:
-            member = label.rsplit("/r", 1)[0]
-            if member not in members:
-                members.append(member)
-        if len(members) != 1:
-            raise SystemExit(f"{bound['pub_name']}: one replicated member per declared bound is supported")
-        raw = by_pub.get(bound["pub_name"])
-        if raw is None:
-            raise SystemExit(f"{run_dir}: no raw registers for {bound['pub_name']}")
-        names = registers[members[0]]
-        scores = score_matrix([raw[name]["bitstrings"] for name in names], values[members[0]])
-        result = compare(scores, np.asarray(bound["matrix"], dtype=float))
-        rows.append({"observable": bound["observable_name"], "pub": bound["pub_name"], **result})
-    return rows
+    replica1 = _bits(outcomes[:, 1], 2)
+    registers = {
+        "g0_r0_phase": _bits(outcomes[:, 0], 2),
+        # join_data reads registers right to left: the later register holds the high bit.
+        "g0_r1_low": [bits[1] for bits in replica1],
+        "g0_r1_high": [bits[0] for bits in replica1],
+    }
+    raw = directory / "raw" / "job0"
+    raw.mkdir(parents=True)
+    payload = {
+        "pub_index": 0,
+        "pub_name": "pub_a",
+        "registers": {
+            name: {"bitstrings": bits, "num_bits": len(bits[0]), "num_shots": len(bits)}
+            for name, bits in registers.items()
+        },
+    }
+    text = json.dumps(payload, indent=1, sort_keys=True) + "\n"
+    (raw / "pub_00.json").write_text(text)
+    index = {"job_id": "job0", "files": {"pub_00.json": hashlib.sha256(text.encode()).hexdigest()}}
+    (raw / "index.json").write_text(json.dumps(index, indent=1, sort_keys=True) + "\n")
+    (directory / "record.json").write_text(json.dumps(record))
+    return record
+
+
+def _write_collected(run: Path, collected: dict[str, Any]) -> None:
+    (run / "collect.json").write_text(json.dumps([{"family_analysis": {"replica_covariance": collected}}]))
 
 
 def self_test() -> None:
     generator = np.random.default_rng(20261017)
-    values = (0.0, 1.0, 0.0, -1.0)
     law = np.array([0.28, 0.25, 0.22, 0.25])
-    shots, replicas = 65536, 3
-    outcomes = generator.choice(4, size=(shots, replicas), p=law)
-    independent = [[format(int(o), "02b") for o in outcomes[:, r]] for r in range(replicas)]
-    declared = np.diag([0.55] * replicas)
-    accepted = compare(score_matrix(independent, values), declared)
-    if not accepted["holds"]:
-        raise AssertionError(f"independent replicas rejected: {accepted}")
-    copied = outcomes.copy()
+    shots = 65536
+    independent = generator.choice(4, size=(shots, 2), p=law)
+    correlated = independent.copy()
     shared = generator.random(shots) < 0.8
-    copied[shared, 1] = copied[shared, 0]
-    copied[shared, 2] = copied[shared, 0]
-    correlated = [[format(int(o), "02b") for o in copied[:, r]] for r in range(replicas)]
-    rejected = compare(score_matrix(correlated, values), declared)
-    if rejected["holds"]:
-        raise AssertionError("replicas sharing 0.8 of their shots passed the independence bound")
-    tight = compare(score_matrix(independent, values), np.diag([0.3] * replicas))
-    if tight["holds"]:
-        raise AssertionError("a variance bound below the realized variance passed")
+    correlated[shared, 1] = correlated[shared, 0]
+    verdicts = {}
+    with tempfile.TemporaryDirectory() as scratch:
+        for label, outcomes in (("independent", independent), ("correlated", correlated)):
+            run = Path(scratch) / label
+            run.mkdir()
+            record = _fixture_run(run, outcomes)
+            replayed, problems = check_run(run)
+            if problems:
+                raise AssertionError(f"{label}: replay without collect.json reported {problems}")
+            verdicts[label] = replayed
+            marginals = {"m": [np.bincount(outcomes[:, k], minlength=4) / shots for k in range(2)]}
+            registers = n21_exact_planning.retained_registers(run, {"pub_a"})
+            joined = n21_exact_planning.covariance_falsifier(record, registers, marginals)
+            if joined["holds"] != replayed["holds"] or "differ from the collected marginal" in joined["reason"]:
+                raise AssertionError(f"{label}: register join order disagrees with the replica marginals: {joined}")
+            branch = "declared_covariance" if replayed["holds"] else "hoeffding_fallback"
+            collected = copy.deepcopy(replayed) | {"branch": branch}
+            _write_collected(run, collected)
+            if check_run(run)[1]:
+                raise AssertionError(f"{label}: replay disagrees with an identical collected verdict")
+            collected["bounds"][0]["statistic"] += 1e-3
+            _write_collected(run, collected)
+            if not check_run(run)[1]:
+                raise AssertionError(f"{label}: replay accepted an altered collected statistic")
+        if not verdicts["independent"]["holds"]:
+            raise AssertionError(f"independent replicas rejected: {verdicts['independent']}")
+        if verdicts["correlated"]["holds"]:
+            raise AssertionError("replicas sharing 0.8 of their shots passed the declared bound")
+        pub = Path(scratch) / "independent" / "raw" / "job0" / "pub_00.json"
+        pub.write_text(pub.read_text().replace('"pub_a"', '"pub_b"', 1))
+        try:
+            replay(Path(scratch) / "independent")
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("a raw PUB file that differs from its index digest was read")
+    row = verdicts["independent"]["bounds"][0]
     print(
-        f"n21 replica covariance: independent replicas accepted (allowance {accepted['allowance']:.4f}); "
-        "shared shots and an undersized variance bound rejected"
+        f"n21 replica covariance: independent replicas pass (statistic {row['statistic']:.4f} <= threshold "
+        f"{row['threshold']:.4f}); shared shots fail; the replay matches an identical collected verdict, "
+        "rejects an altered one and refuses a raw file off its index digest"
     )
 
 
@@ -146,9 +203,11 @@ def main() -> int:
     if args.self_test:
         self_test()
         return 0
-    rows = check_run(args.run_dir)
-    print(json.dumps(rows, indent=1))
-    return 0 if all(row["holds"] for row in rows) else 1
+    replayed, problems = check_run(args.run_dir)
+    print(json.dumps(replayed, indent=1))
+    for problem in problems:
+        print(f"disagreement: {problem}", file=sys.stderr)
+    return 1 if problems else 0
 
 
 if __name__ == "__main__":

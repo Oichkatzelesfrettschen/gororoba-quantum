@@ -714,6 +714,27 @@ def analyze_observations(
     )
 
 
+def observation_power_radii(
+    pubs: tuple[ObservedPub, ...],
+    contracts: tuple[ObservableContract, ...],
+    covariance_bounds: tuple[CovarianceBound, ...] = (),
+) -> dict[str, float]:
+    """The planner's one-sided power radius at tail 1 - power for each directional contract, at the observed shots.
+
+    Detection plus this radius covering the planned effect is the power
+    condition evaluate_candidate admits; collection reports it for the bound
+    family its analysis applied.
+    """
+    _validate_observable_contracts(contracts)
+    radii: dict[str, float] = {}
+    for contract in contracts:
+        if contract.minimum_effect is None:
+            continue
+        _, _, streams = _observable_inputs(pubs, contract, 1.0, covariance_bounds)
+        radii[contract.name] = _radius(streams, 1 - contract.power, two_sided=False)
+    return radii
+
+
 def _simulation_comparisons(plans: tuple[CandidatePlan, ...], contracts: tuple[ObservableContract, ...]) -> int:
     return sum(
         len(pub.member_distributions.get(term.member, ()))

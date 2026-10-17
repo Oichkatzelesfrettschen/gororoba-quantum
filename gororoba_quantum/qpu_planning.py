@@ -39,6 +39,7 @@ from experiment_optimizer import (
     ObservedPub,
     PubPrediction,
     analyze_observations,
+    observation_power_radii,
     optimize,
 )
 from packing import Replica
@@ -965,7 +966,12 @@ def prepare(
             else {}
         ),
         **(
-            {"covariance_bounds": json.loads(json.dumps([asdict(bound) for bound in retained_plan.covariance_bounds]))}
+            {
+                "covariance_bounds": json.loads(
+                    json.dumps([asdict(bound) for bound in retained_plan.covariance_bounds])
+                ),
+                "covariance_falsifier": dict(n21_exact_planning.COVARIANCE_FALSIFIER),
+            }
             if retained_plan.covariance_bounds
             else {}
         ),
@@ -992,8 +998,19 @@ def measured_family(
     runtime: Any,
     *,
     correction_evidence: list[dict[str, Any]] | None = None,
+    replica_registers: dict[str, dict[str, list[str]]] | None = None,
 ) -> dict[str, Any]:
-    """Raw measured contrasts with simultaneous bounded-shot intervals across jobs."""
+    """Raw measured contrasts with simultaneous bounded-shot intervals across jobs.
+
+    A record that declares covariance bounds carries an assumption the
+    analysis tests on its own data: n21_exact_planning.covariance_falsifier
+    reads replica_registers, each PUB's shot-ordered registers. The declared
+    bounds apply only when every bound passes; otherwise, and whenever the
+    registers are absent, every endpoint takes the Hoeffding
+    arbitrary-dependence radius. ``replica_covariance`` records the branch,
+    the falsifier rows and each directional endpoint's power condition at
+    the observed shots under the applied radius.
+    """
     if record.get("family_configuration", {}).get("name") == "folded-correction":
         import correction_collection
 
@@ -1043,7 +1060,7 @@ def measured_family(
             pubs = tuple(ObservedPub(name, members, shot_map[name]) for name, members in by_pub.items())
         else:
             pubs = tuple(ObservedPub(name, members, int(record["shots"])) for name, members in by_pub.items())
-        covariance = tuple(
+        declared = tuple(
             CovarianceBound(
                 bound["observable_name"],
                 bound["pub_name"],
@@ -1053,6 +1070,52 @@ def measured_family(
             )
             for bound in record.get("covariance_bounds", [])
         )
-        return analyze_observations(pubs, endpoints, covariance).as_dict()
+        if not declared:
+            return analyze_observations(pubs, endpoints).as_dict()
+        falsifier = n21_exact_planning.covariance_falsifier(record, replica_registers, distributions)
+        covariance = declared if falsifier["holds"] else ()
+        analysis = analyze_observations(pubs, endpoints, covariance).as_dict()
+        analysis["replica_covariance"] = falsifier | {
+            "branch": "declared_covariance" if falsifier["holds"] else "hoeffding_fallback",
+            "power": _power_status(record, pubs, endpoints, covariance, analysis),
+        }
+        return analysis
     except ValueError as error:
         return {"withheld": f"invalid measured family data: {error}"}
+
+
+def _power_status(
+    record: dict[str, Any],
+    pubs: tuple[ObservedPub, ...],
+    endpoints: tuple[ObservableContract, ...],
+    covariance: tuple[CovarianceBound, ...],
+    analysis: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """Each directional endpoint's detection plus power radius at the observed shots against its planned effect."""
+    optimization = record.get("optimization", {})
+    planned = {
+        observable["name"]: observable
+        for candidate in optimization.get("candidates", [])
+        if candidate["name"] == optimization.get("selected")
+        for observable in candidate["observables"]
+    }
+    radii = observation_power_radii(pubs, endpoints, covariance)
+    contracts = {contract.name: contract for contract in endpoints}
+    rows = []
+    for row in analysis["observables"]:
+        name = row["name"]
+        if name not in radii:
+            continue
+        effect = planned.get(name, {}).get("effect_used_for_power")
+        total = row["detection_radius"] + radii[name]
+        rows.append(
+            {
+                "name": name,
+                "power": contracts[name].power,
+                "planned_effect": effect,
+                "detection_radius": row["detection_radius"],
+                "power_radius": radii[name],
+                "underpowered": None if effect is None else total > effect,
+            }
+        )
+    return rows
