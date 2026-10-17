@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/qi-ibm-noise-replay/1",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T215028Z",
+ "files": {
+  "output/environment.json": "d53e5a0d03a3d73b196270577560708fbba4075a409b7eca8be6a2701a2cbdd7",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "a3e80297af17df76b760c2a6c4802a3153e822627a9350f2a68be0f267525273",
+  "output/pip.txt": "c1835f6d81c9c70ee5562e23f25ab0f6abdd7bd75193c45b3ad4fcc991ad3971",
+  "output/repo/results/quantum_inspire/ibm_noise_replay/tuna_17-ibm_kingston.json": "63e04c2367d50ca5c48e6aa66e29f04b7dfa84fcffb475f4a5d3f129408898f3",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "fe561b49d02c65b5a6df8b123f21a1cd2955a8e226fba5a0abf6ccd50d7aea2d",
+  "qi-ibm-noise-replay.log": "06e7604b754706979fd718b262f0743036b10b36934ba4672558cec3253d56b5"
+ }
+}

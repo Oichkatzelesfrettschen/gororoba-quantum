@@ -321,6 +321,89 @@ def verify_dagstuhl_evidence(root: Path, entry: dict[str, Any], identifier: str)
     require(parser.fields["citation_pdf_url"] == [entry["source_url"]], "captured Dagstuhl PDF identity")
 
 
+class NatureRightsParser(HTMLParser):
+    """Read article-specific publisher metadata and the structured-data license."""
+
+    FIELD_NAMES = {"citation_doi", "citation_title", "citation_pdf_url"}
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.fields: dict[str, list[str]] = {name: [] for name in self.FIELD_NAMES}
+        self.canonical_urls: list[str] = []
+        self.structured_data: list[str] = []
+        self._structured = False
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag == "script" and ("type", "application/ld+json") in attrs:
+            self._structured = True
+            self.structured_data.append("")
+            return
+        names = [value for key, value in attrs if key == "name" and value in self.FIELD_NAMES]
+        canonical = tag == "link" and ("rel", "canonical") in attrs
+        if (tag == "meta" and names) or canonical:
+            require(len({key for key, _ in attrs}) == len(attrs), "captured Nature duplicate attributes")
+            attributes = dict(attrs)
+            if canonical:
+                self.canonical_urls.append(require_text(attributes.get("href"), "captured Nature canonical URL"))
+            else:
+                field = require_text(attributes.get("name"), "captured Nature field name")
+                self.fields[field].append(require_text(attributes.get("content"), "captured Nature field value"))
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.handle_starttag(tag, attrs)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "script":
+            self._structured = False
+
+    def handle_data(self, data: str) -> None:
+        if self._structured:
+            self.structured_data[-1] += data
+
+
+def verify_nature_evidence(root: Path, entry: dict[str, Any], article: str) -> None:
+    """Bind a publisher PDF to its exact DOI, download link and article license."""
+    rights = require_mapping(entry.get("rights"), "source rights object")
+    relative = f"docs/evidence/source_rights/nature-{article}.html"
+    require(rights.get("evidence_path") == relative, "captured Nature evidence path")
+    source = root / relative
+    require(
+        source.is_file() and not source.is_symlink() and source.resolve() == root.resolve() / relative,
+        "captured Nature evidence file",
+    )
+    require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured Nature retrieval timestamp")
+    raw_response = source.read_bytes()
+    require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured Nature evidence SHA-256")
+    try:
+        html = raw_response.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ValueError("captured Nature HTML encoding") from error
+    parser = NatureRightsParser()
+    parser.feed(html)
+    parser.close()
+    require(rights.get("license_identifier") == "CC-BY-4.0", "captured Nature supported license")
+    license_url = "http://creativecommons.org/licenses/by/4.0/"
+    require(rights.get("observed_license_url") == license_url, "captured Nature observed license identity")
+    require(len(parser.structured_data) == 1, "captured Nature structured data identity")
+    try:
+        structured = json.loads(parser.structured_data[0])
+    except json.JSONDecodeError as error:
+        raise ValueError("captured Nature structured data encoding") from error
+    article_data = require_mapping(
+        require_mapping(structured, "captured Nature structured data identity").get("mainEntity"),
+        "captured Nature structured data identity",
+    )
+    doi = f"10.1038/{article}"
+    require(article_data.get("license") == license_url, "captured Nature license identity")
+    require(article_data.get("sameAs") == f"https://doi.org/{doi}", "captured Nature DOI link identity")
+    require(parser.fields["citation_doi"] == [doi], "captured Nature DOI identity")
+    title = require_text(rights.get("publisher_title"), "captured Nature registered title")
+    require(parser.fields["citation_title"] == [title], "captured Nature title identity")
+    require(parser.canonical_urls == [rights["evidence_url"]], "captured Nature canonical identity")
+    require(entry["source_url"] == f"{rights['evidence_url']}.pdf", "captured Nature publisher download route")
+    require(parser.fields["citation_pdf_url"] == [entry["source_url"]], "captured Nature PDF identity")
+
+
 def verify_zenodo_evidence(root: Path, rights: dict[str, Any], licensed_file: dict[str, Any], record_id: str) -> None:
     """Bind the declared license and deposit identity to the retained endpoint response."""
     relative = f"docs/evidence/source_rights/zenodo-record-{record_id}.json"
@@ -419,6 +502,13 @@ def verify_source_rights(
         if document is None:
             raise ValueError("published Dagstuhl evidence route")
         verify_dagstuhl_evidence(root, entry, document[1])
+    elif published and urlsplit(rights["evidence_url"]).netloc == "www.nature.com":
+        article = re.fullmatch(
+            r"https://www\.nature\.com/articles/(s415[0-9]{2}-[0-9]{3}-[0-9]{5}-[0-9x])", rights["evidence_url"]
+        )
+        if article is None:
+            raise ValueError("published Nature evidence route")
+        verify_nature_evidence(root, entry, article[1])
     elif published:
         record = re.fullmatch(r"https://zenodo\.org/api/records/([1-9]\d*)", rights["evidence_url"])
         if record is None:

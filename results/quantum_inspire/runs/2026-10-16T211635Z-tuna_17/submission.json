@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v1",
+ "submitted_utc": "2026-10-16T21:16:52+00:00",
+ "approval": "User, 2026-10-16: EMULATOR PLUS EACH GRANULAR PIECE OF PHYSICAL HARDWARE AVAILABLE FOR A TEST (so many one run each)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "backend_status_at_submit": "executing",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 2,
+  "min_wait_time_in_queue_secs": 4.0,
+  "avg_wait_time_in_queue_secs": 7.0,
+  "max_wait_time_in_queue_secs": 10.0
+ },
+ "batch_job": 869577,
+ "project": 765387,
+ "shots": 16384,
+ "jobs": [
+  {
+   "file": "additivity-none.cq",
+   "job": 1526745
+  },
+  {
+   "file": "additivity-A.cq",
+   "job": 1526746
+  },
+  {
+   "file": "additivity-B.cq",
+   "job": 1526747
+  },
+  {
+   "file": "additivity-AB.cq",
+   "job": 1526748
+  },
+  {
+   "file": "teleport.cq",
+   "job": 1526749
+  }
+ ]
+}

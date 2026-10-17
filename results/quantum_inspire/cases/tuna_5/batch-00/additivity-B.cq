@@ -1,0 +1,53 @@
+version 3.0
+
+qubit[5] q
+bit[5] b
+
+// star T=2 A=0 B=1 config=B
+X90 q[2]
+wait(40) q[2]
+Y90 q[2]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+X q[1]
+wait(1) q[1]
+
+barrier q
+b = measure q

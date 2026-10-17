@@ -10,7 +10,7 @@ own environment and these tables describe the probes, not a guarantee.
 
 | Work | Substrate | Reason |
 | --- | --- | --- |
-| Noise simulation, power analysis, parameter sweeps of 14 qubits or fewer | Kaggle CPU kernel; a T4 kernel from 12 density-matrix qubits, or 8 with mid-circuit measurement | measured crossover, "CPU against T4" below |
+| Noise simulation, power analysis, parameter sweeps of 14 qubits or fewer | Kaggle CPU kernel; a GPU kernel when the widest density matrix reaches `local_compute.GPU_MIN_ACTIVE_QUBITS` (11) | routing rule (root AGENTS.md); small dynamic circuits sample faster on the CPU (below) |
 | Statevector simulation beyond the density-matrix limit | Kaggle GPU kernel, `method="statevector"` | ideal semantics only; a noisy question needs the density matrix or trajectories |
 | Hypercomplex package builds and table extraction | every kernel's CPU, then the host | `docs/notes/kaggle/hypercomplex-stack.md` |
 | Transpilation against a calibration export | kernel CPU | about 0.06 s per Design C pair (three 5-qubit circuits) on the build host; the pair's three 20,000-shot density-matrix simulations take about 4 s on the build host CPU and about 8 s on a Kaggle T4, so a 5-qubit noise run is simulation-bound and the GPU does not speed it up |
@@ -64,7 +64,8 @@ or fewer on Kaggle, 15 or more on IBM):
 
 | Width | Noisy simulation | Ideal simulation | Hardware |
 | --- | --- | --- | --- |
-| 1 to 14 qubits | Kaggle GPU, double-precision density matrix (measured on one T4 to 14) | Kaggle GPU statevector | IBM only for a named-device question with an approved case |
+| 1 to 10 qubits | Kaggle CPU: statevector trajectories, or the density matrix of a static circuit | Kaggle CPU statevector | IBM only for a named-device question with an approved case |
+| 11 to 14 qubits | Kaggle GPU, double-precision density matrix (measured on one T4 to 14); a dynamic circuit stays on the CPU's trajectories unless a probe at its width shows the GPU faster | Kaggle GPU statevector | IBM only for a named-device question with an approved case |
 | 15 qubits or more | none on Kaggle: the 15-qubit density matrix was killed on a T4, and no measured mode extends it | Kaggle GPU statevector up to the measured 29 qubits, as design support for an IBM case | IBM after an approved case |
 
 ## CPU against T4
@@ -128,6 +129,42 @@ Each width ran in its own process, so the killed trials ended only
 themselves. Both failures sit where the state first exceeds one T4's 15 GiB
 (16 GiB at density matrix 15 and statevector 30), which places the single-GPU
 limits exactly at the memory estimate.
+
+## Small dynamic circuits: CPU against GPU
+
+`results/kaggle/2026-10-16T204620Z-gororoba-aer-gpu-probe`
+(`scripts/aer_gpu_probe.py`).
+
+The probe ran on a T4 x2 host with 4 CPUs, using the ibm_fez calibration
+of 2026-10-16T12:12:52-07:00, restricted to each circuit's 7 active qubits.
+It compares five samplers on two circuits, both in the coset-281 encoding
+(columns 1, 2, 5, 13, 25, the surrogate optimum; 3,978 routed CZ for ten
+rounds):
+- the two-round N=21 n21-feedback diagnostic (one mid-circuit measurement
+  and if_else);
+- the ten-round circuit (nine of each).
+
+Each configuration ran in its own process. A configuration whose full shot
+count would exceed 120 s ran fewer shots, and the table gives the count it
+ran.
+
+| Sampler | Two-round, per shot | Ten-round, per shot | Agreement with CPU trajectories (two-round) |
+| --- | --- | --- | --- |
+| CPU statevector trajectories | 2.8 ms (32,768 shots) | 36 ms (3,227) | reference |
+| CPU density matrix | 445 ms (266) | 2.19 s (54) | total variation 0.052 against a sampling scale of 0.062 |
+| GPU statevector, unbatched | 21.7 ms (5,276) | 54.6 ms (2,051) | total variation 0.0045 against 0.015 |
+| GPU statevector, `batched_shots_gpu` | aborted (signal 6) | aborted | none |
+| GPU density matrix, `batched_shots_gpu` | aborted | Aer error: invalid instruction `jump` | none |
+
+- **Speed.** CPU trajectories are the fastest sampler for these circuits,
+  1.5 to 8 times faster than the unbatched GPU.
+- **Density matrix.** A dynamic circuit's density matrix evolves per shot,
+  which makes it about 160 times slower than trajectories of the same
+  channel.
+- **Batched shots.** Aer 0.17.2's batched GPU sampler does not run control
+  flow.
+- **Agreement.** Every sampler that completed agrees with the CPU
+  trajectories within its sampling scale.
 
 ## CPU-only kernel
 

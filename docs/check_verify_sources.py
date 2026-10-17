@@ -266,6 +266,129 @@ class SourceRightsChecks(unittest.TestCase):
         self.dagstuhl_path.write_bytes(payload)
         self.entry["rights"]["evidence_sha256"] = hashlib.sha256(payload).hexdigest()
 
+    def use_nature(self) -> None:
+        article = "s41586-026-10423-9"
+        self.entry["source_url"] = f"https://www.nature.com/articles/{article}.pdf"
+        self.entry["rights"].update(
+            evidence_url=f"https://www.nature.com/articles/{article}",
+            evidence_path=f"docs/evidence/source_rights/nature-{article}.html",
+            observed_license_url="http://creativecommons.org/licenses/by/4.0/",
+            publisher_title="Two-qubit logic and teleportation with mobile spin qubits in silicon",
+            evidence_retrieved_at_utc="2026-10-16T21:50:07+00:00",
+        )
+        self.nature_path = self.root / self.entry["rights"]["evidence_path"]
+        structured = {
+            "mainEntity": {
+                "@type": "ScholarlyArticle",
+                "license": "http://creativecommons.org/licenses/by/4.0/",
+                "sameAs": f"https://doi.org/10.1038/{article}",
+            }
+        }
+        self.nature_html = (
+            '<html><head><link rel="canonical" href="' + self.entry["rights"]["evidence_url"] + '">'
+            '<meta name="citation_doi" content="10.1038/' + article + '">'
+            '<meta name="citation_title" content="' + self.entry["rights"]["publisher_title"] + '">'
+            '<meta name="citation_pdf_url" content="' + self.entry["source_url"] + '">'
+            '<script type="application/ld+json">' + json.dumps(structured) + "</script></head>"
+            "<body><footer>CC0 site footer</footer></body></html>"
+        )
+        self.write_nature_capture()
+
+    def write_nature_capture(self) -> None:
+        payload = self.nature_html.encode()
+        self.nature_path.write_bytes(payload)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(payload).hexdigest()
+
+    def test_nature_source_specific_grant_passes(self) -> None:
+        self.use_nature()
+        self.verify()
+
+    def test_nature_changed_capture_hash_is_rejected(self) -> None:
+        self.use_nature()
+        self.nature_path.write_text(self.nature_html + " ")
+        self.reject("captured Nature evidence SHA-256")
+
+    def test_nature_substituted_metadata_is_rejected(self) -> None:
+        substitutions = (
+            ("http://creativecommons.org/licenses/by/4.0/", "https://example.org/license", "license identity"),
+            ('content="10.1038/s41586-026-10423-9"', 'content="10.1038/s41586-026-10423-8"', "DOI identity"),
+            ("Two-qubit logic and teleportation", "Different paper", "title identity"),
+            ('name="citation_pdf_url" content="https:', 'name="citation_pdf_url" content="http:', "PDF identity"),
+            ('rel="canonical" href="https:', 'rel="canonical" href="http:', "canonical identity"),
+            ("https://doi.org/10.1038/s41586-026-10423-9", "https://doi.org/10.1038/other", "DOI link identity"),
+        )
+        for original, replacement, error in substitutions:
+            with self.subTest(error=error):
+                self.use_nature()
+                self.nature_html = self.nature_html.replace(original, replacement)
+                self.write_nature_capture()
+                self.reject("captured Nature " + error)
+
+    def test_nature_duplicate_or_missing_metadata_is_rejected(self) -> None:
+        for field, error in (
+            ("citation_doi", "DOI"),
+            ("citation_title", "title"),
+            ("citation_pdf_url", "PDF"),
+        ):
+            for copies in (0, 2):
+                with self.subTest(field=field, copies=copies):
+                    self.use_nature()
+                    pattern = r'<meta name="' + re.escape(field) + r'" content="[^"]*">'
+                    match = re.search(pattern, self.nature_html)
+                    if match is None:
+                        self.fail("missing test fixture field")
+                    self.nature_html = self.nature_html.replace(match[0], match[0] * copies)
+                    self.write_nature_capture()
+                    self.reject("captured Nature " + error + " identity")
+
+    def test_nature_missing_or_duplicate_structured_data_is_rejected(self) -> None:
+        for copies in (0, 2):
+            with self.subTest(copies=copies):
+                self.use_nature()
+                match = re.search(r'<script type="application/ld\+json">.*?</script>', self.nature_html)
+                if match is None:
+                    self.fail("missing test fixture structured data")
+                self.nature_html = self.nature_html.replace(match[0], match[0] * copies)
+                self.write_nature_capture()
+                self.reject("captured Nature structured data identity")
+
+    def test_nature_duplicate_attributes_are_rejected(self) -> None:
+        self.use_nature()
+        self.nature_html = self.nature_html.replace('name="citation_doi"', 'name="citation_doi" name="citation_doi"')
+        self.write_nature_capture()
+        self.reject("captured Nature duplicate attributes")
+
+    def test_nature_footer_license_cannot_replace_article_grant(self) -> None:
+        self.use_nature()
+        self.nature_html = self.nature_html.replace('"license"', '"site-license"')
+        self.write_nature_capture()
+        self.reject("captured Nature license identity")
+
+    def test_nature_other_download_host_is_rejected(self) -> None:
+        self.use_nature()
+        original = self.entry["source_url"]
+        self.entry["source_url"] = original.replace("www.nature.com", "example.org")
+        self.nature_html = self.nature_html.replace(original, self.entry["source_url"])
+        self.write_nature_capture()
+        self.reject("captured Nature publisher download route")
+
+    def test_nature_other_evidence_host_is_rejected(self) -> None:
+        self.use_nature()
+        self.entry["rights"]["evidence_url"] = "https://www.nature.com/news/s41586-026-10423-9"
+        self.reject("published Nature evidence route")
+
+    def test_nature_path_traversal_is_rejected(self) -> None:
+        self.use_nature()
+        self.entry["rights"]["evidence_path"] = "docs/evidence/source_rights/../unexpected.html"
+        self.reject("captured Nature evidence path")
+
+    def test_nature_invalid_encoding_is_rejected(self) -> None:
+        self.use_nature()
+        payload = b"\xff"
+        self.nature_path.write_bytes(payload)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(payload).hexdigest()
+        self.reject("captured Nature HTML encoding")
+
     def test_dagstuhl_source_specific_grant_passes(self) -> None:
         self.use_dagstuhl()
         self.verify()

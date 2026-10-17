@@ -1,0 +1,11 @@
+{
+ "id": "probablyeric/qi-ibm-noise-replay",
+ "title": "qi-ibm-noise-replay",
+ "code_file": "run.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": false,
+ "enable_tpu": false,
+ "enable_internet": true
+}
