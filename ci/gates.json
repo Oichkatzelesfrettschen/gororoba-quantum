@@ -3072,6 +3072,38 @@
    "name": "core-496",
    "seconds": 25.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zero_divisor_secondary.py --check results/quantum_inspire/secondary --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zero_divisor_secondary.py --check results/quantum_inspire/secondary --self-test",
+   "name": "core-497",
+   "seconds": 4.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz_map_tuna_17 && \"$PYTHON\" -B -W error scripts/qi_zz_map.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map.py --self-test",
+   "name": "core-498",
+   "seconds": 4.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map_analysis.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map_analysis.py --self-test",
+   "name": "core-499",
+   "seconds": 8.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz_map_qx && \"$PYTHON\" -B -W error scripts/qi_zz_map_qx.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map_qx.py --self-test",
+   "name": "core-500",
+   "seconds": 4.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
