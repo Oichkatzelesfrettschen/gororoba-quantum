@@ -1164,6 +1164,27 @@ def require_verdicts(record: dict[str, Any]) -> None:
         raise ValueError("native QX counts pass the reference, which the qxelarator reset model excludes")
 
 
+def _first_gap(a: Any, b: Any, tol: float = EXACT_TOL, path: str = "$") -> str | None:
+    """The first path where two retained structures differ beyond tol, with both values, or None."""
+    if isinstance(a, dict) and isinstance(b, dict):
+        if a.keys() != b.keys():
+            return f"{path}: keys {sorted(set(a) ^ set(b))} differ"
+        for key in a:
+            found = _first_gap(a[key], b[key], tol, f"{path}.{key}")
+            if found is not None:
+                return found
+        return None
+    if isinstance(a, list) and isinstance(b, list):
+        if len(a) != len(b):
+            return f"{path}: length {len(a)} against {len(b)}"
+        for index, (x, y) in enumerate(zip(a, b, strict=True)):
+            found = _first_gap(x, y, tol, f"{path}[{index}]")
+            if found is not None:
+                return found
+        return None
+    return None if _close(a, b, tol) else f"{path}: retained {a!r}, recomputed {b!r}"
+
+
 def _close(a: Any, b: Any, tol: float = EXACT_TOL) -> bool:
     if isinstance(a, dict) and isinstance(b, dict):
         return a.keys() == b.keys() and all(_close(a[k], b[k], tol) for k in a)
@@ -1224,7 +1245,10 @@ def verify(record: dict[str, Any], directory: Path) -> dict[str, Any]:
     member = {arm["member"]: arm["reference_law"] for arm in record["arms"]}[native["member"]]
     require_reset_evidence(evidence, member)
     if not _close(evidence, record["reset_model"]):
-        raise ValueError("the retained reset-model evidence differs from the recomputed one")
+        raise ValueError(
+            "the retained reset-model evidence differs from the recomputed one: "
+            f"{_first_gap(record['reset_model'], evidence)}"
+        )
     jobs = []
     for name, state in sorted(qx["states"].items()):
         text = state_program(texts[name])
@@ -1240,7 +1264,9 @@ def verify(record: dict[str, Any], directory: Path) -> dict[str, Any]:
         fidelities[name] = value
     comparison = compare_qx(record)
     if not _close(comparison, record["comparison"]):
-        raise ValueError("the retained comparison differs from the recomputed one")
+        raise ValueError(
+            f"the retained comparison differs from the recomputed one: {_first_gap(record['comparison'], comparison)}"
+        )
     require_verdicts(record)
     return {"comparison": comparison, "fidelities": fidelities}
 
