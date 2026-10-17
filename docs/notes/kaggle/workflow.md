@@ -54,11 +54,17 @@ GPU matters for sweeps and batched trials, not for single circuits.
   CPU machine by default) and pushes it. The kernel records its
   environment, runs ENTRY with `GOROROBA_AER_DEVICE` set to its device, and
   returns every file the run created under the repository root. A case
-  passes `--machine NvidiaTeslaT4` only when its widest density matrix
-  reaches `local_compute.GPU_MIN_ACTIVE_QUBITS` (11): the 2- to 7-qubit
-  replays ran slower on a GPU than on the CPU on the build host
-  (ghost-run replay 67 s on the CPU, 106 s on the RTX 4070 Ti), and the
-  weekly GPU quota goes to the runs that need it. A GPU or TPU push needs
+  passes `--machine NvidiaTeslaT4` when its widest density matrix reaches
+  12 qubits, or 8 in a circuit with mid-circuit measurement: below that a
+  Kaggle CPU kernel matches or beats a T4 (substrates.md, "CPU against
+  T4"), and the weekly GPU quota goes to the runs that need it. The bundle
+  travels inside run.py, and SaveKernel answers a bare 400 once run.py
+  reaches about 1.35 MB while 0.63 MB pushes, so a data file of megabytes
+  goes as a dataset instead.
+- `dataset --slug SLUG --include FILE ...` uploads tracked files as a
+  private dataset, one tar archive with its sha256 manifest, and records it
+  under `results/kaggle/datasets/`; `push --dataset SLUG` attaches it, and
+  the kernel verifies every file against the manifest before ENTRY runs. A GPU or TPU push needs
   `--timeout SECONDS` (at most four hours) and refuses while the slug's
   latest version is still running (next section). `--with GROUP` adds an
   opt-in package group from `PIN_GROUPS` (`quantum-tools`,
