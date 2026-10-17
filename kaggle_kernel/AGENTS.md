@@ -123,6 +123,8 @@ and what it must prove before its output counts.
     - a Bell run that raised, ran on another device, or left cuStateVec off.
   - Read gpu-env-report.txt and install-pins.txt in the output for the
     commands' own output.
+  - "Keeping the run on the GPU" in `docs/notes/kaggle/custatevec.md` maps
+    each route to the CPU to the check that closes it.
 - **Using it in an entry.** The entry passes
   `calibration_snapshot.aer_device()` to `noise_simulator(snapshot, device,
   method=...)`. On a GPU the simulator batches shots of circuits of at most
