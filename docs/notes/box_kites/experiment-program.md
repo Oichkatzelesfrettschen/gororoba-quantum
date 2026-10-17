@@ -601,11 +601,41 @@ corrected with its own batch's pair, Pc = (p - e10) / (1 - e01 - e10), with
 the delta-method variance [p(1 - p)/n + Pc^2 e01(1 - e01)/n0 +
 (1 - Pc)^2 e10(1 - e10)/n1] / (1 - e01 - e10)^2. `--replay` recomputes a
 retained analysis from the runs it names and compares bytes. Gate
-core-424 runs the self-test: eight synthetic scenarios (seeded shots under a
-readout model of e01 0.02 and e10 0.06 per qubit) give their preregistered
-verdicts, and twelve mutations (digest, receipt, both shot counts, shot
-width, missing readout raw and job, duplicate batch, reversed bit order,
-readout-1 outside the limit) are refused for their own reason.
+core-424 runs the self-test: ten synthetic scenarios (seeded shots under a
+readout model of e01 0.02 and e10 0.06 per qubit, and ideal QX twins) give
+their preregistered verdicts, and twelve mutations (digest, receipt, both
+shot counts, shot width, missing readout raw and job, duplicate batch,
+reversed bit order, readout-1 outside the limit) are refused for their own
+reason. The twins stage judges each QX twin batch on its own: no shot off a
+deterministic prediction, P = 1/2 inside |z| < 4.5, the double-X twin all 0.
+Gate core-425 replays the retained records.
+
+**Results, 2026-10-17.** results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json
+holds the pre-T0 batch, the three T0 batches and their QX twins (batch-00
+and batch-04, every check exact, the double-X twin all 0 in 2048 shots).
+
+- Pre-T0: the fault is gone (Q0 P(1|1) 0.973, Q6 0.957, Q9 P(1|0) 0.018),
+  so the precondition reports fault-recovered and the discriminator is not
+  read; the layout passes the T0 readout rule (P(1|1) 0.912 to 0.975,
+  P(1|0) at most 0.045), and q5, q6, q7 and q9 are readout-admissible, with
+  the visibility exclusion of q5, q6 and q7 standing.
+- T0: C(1) = 0.954, C(5) = 0.857, C(9) = 0.710 (SE 0.003 each),
+  r = 0.9654, 99% interval [0.9638, 0.9671], inside [0.87, 0.97]; the
+  depth-1 upper bound 0.961 clears 0.5, every batch passes sanity, verdict
+  continue.
+- C(1) misses its prediction [0.72, 0.82] upward. The separation model
+  predicts the raw contrast, which carries the selector's readout factor
+  1 - P(1|0) - P(0|1) (0.865 to 0.874 on q1, q10 and q12), while C(n) is
+  readout-corrected: the central 0.82 divided by 0.874 is 0.94, against the
+  measured 0.954. The prediction compared a raw-contrast model with a
+  corrected estimator; the decay r it planned for holds. No stop rule fires, so
+  T1, coherence and walk keep their design. Sizing with the measured r:
+  T1's edge |D| sits near C(1), about 0.95, against the 0.4 threshold with
+  a standard error near 0.01 at 4096 shots; the 6-CNOT walk (control
+  through 6 CZ) predicts |<Z_c>| near C(1) r^5, about 0.80, and the 4-CNOT
+  path about 0.86, each over 30 standard errors from 0. The shot counts
+  stay as preregistered; the margins leave room for the device to degrade
+  again between stages.
 
 ## 5. Run order and budget
 

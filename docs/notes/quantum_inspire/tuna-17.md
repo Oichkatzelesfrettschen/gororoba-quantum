@@ -52,6 +52,14 @@ only to the interval between two retained runs.
   no record carries their durations). The account-wide pause in
   `qi_platform.py submit` leaves room for them between batches.
 
+- The fault cleared by the afternoon. The box-kite pre-T0 batch (jobs
+  finished 15:38Z, after the platform benchmarking the operator observed at
+  15:34Z) reads Q0 P(1|1) 0.973, Q6 0.957 and Q9 P(1|0) 0.018, against the
+  morning's 0.39, 0.14 and 0.27 to 0.29; every qubit of the box-kite layout
+  reads P(1|1) 0.912 to 0.975 and P(1|0) at most 0.045. Its double-X
+  discriminator was not read, because its precondition requires the fault
+  (claim `qi-tuna17-boxkite-pre-t0-readout-recovered`).
+
 Consequence for the ring-down analysis: the preregistered rule inverts the
 series' batch-00 readout assignment for every batch. Where the device drifts
 after batch-00, a target's Ramsey visibility leaves [0, 1] (q6 at 1.08 in
@@ -109,3 +117,24 @@ exempted qubit until the exemption reached that check.
   last calibration enters their correction unseen, as the stale Q15
   correction above shows. A series that must correct each batch for its
   own readout state carries a readout-0/readout-1 pair in every batch.
+- The pause guard refuses an early submit before any remote write and prints
+  the seconds left; the guard counts Ry jobs too, since Ry reports
+  `is_hardware: true` ([ry-emulator.md](ry-emulator.md)). A series runner
+  therefore retries a refused submit every 30 s, at most 10 times, and
+  stops the series when the tenth attempt is refused; a retry never
+  duplicates a batch, because the refusal precedes the submission-state
+  checkpoint.
+
+## Box-kite T0 depth ladder
+
+Three batches of the reduced two-label LCU of edge (1,10)(4,15) of kite 3
+at CZ depths 1, 5 and 9 on the pairs (1,4), (10,13) and (12,14), 16384
+shots per circuit, each corrected with its own batch's readout pair
+(`results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json`, gate
+core-425; claim `qi-tuna17-boxkite-t0-depth-ladder`): C(1) = 0.954, C(5) =
+0.857 and C(9) = 0.710 (standard errors 0.003), r = 0.9654 per CZ with 99%
+interval [0.9638, 0.9671], inside the planning range [0.87, 0.97]. Every
+batch passed its sanity checks, and the QX twins of the three witness
+circuits read every replica exactly. C(1) lies above its preregistered
+[0.72, 0.82] because that prediction carried the selector's readout factor
+(about 0.87) while C(n) is readout-corrected; 0.82 / 0.874 = 0.94.

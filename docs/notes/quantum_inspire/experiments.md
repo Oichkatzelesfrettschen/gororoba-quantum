@@ -696,6 +696,32 @@ falsifier before its number.
   Q9 reads 0.238-0.243: a mid-circuit readout with nine targets read at
   once, a different observable from the readout-0 circuit's 0.27-0.29.
 
+## Box-kite results, 2026-10-17 (preregistered)
+
+`scripts/box_kite_cases.py` writes the cases and
+`scripts/box_kite_analysis.py` judges the runs with the thresholds each
+manifest carries (program: [experiment-program.md](../box_kites/experiment-program.md)
+section 4(g); gate core-425 replays both records).
+
+- **QX twins** (dry run): the three T0 witness circuits on QX qubits 0-9
+  read every replica's predicted P(selector = 0) in all 2048 shots, and the
+  double-X twin reads 0 on every qubit of every shot.
+- **Tuna-17 pre-T0**: the morning's Q0 and Q6 |1> readout fault is absent
+  (P(1|1) 0.973 and 0.957; Q9 P(1|0) 0.018), so the double-X discriminator
+  is not read; the box-kite layout passes the T0 readout rule.
+- **Tuna-17 T0**: C(1) = 0.954, C(5) = 0.857, C(9) = 0.710, r = 0.9654 per
+  CZ (99% interval [0.9638, 0.9671]); C(1) lies above its preregistered
+  [0.72, 0.82], and the program continues to T1.
+- **Ry**: programs without a bit register run at width 9; one-CNOT replicas
+  read their ideal outcome at 0.978 or more, R9 loses 7.5% of shots, and
+  the 35-CNOT full Design B falls to contrast 0.387, which stops the Ry
+  smoke series as an emulator rate ([ry-emulator.md](ry-emulator.md)).
+
+Records: results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json
+and results/quantum_inspire/box_kite_ry_analysis.json; claims
+`qi-tuna17-boxkite-pre-t0-readout-recovered`,
+`qi-tuna17-boxkite-t0-depth-ladder` and `qi-ry-emulator-boxkite-capability`.
+
 ## Next cases
 
 - Q0 and Q6 double X (claim proposed-tuna17-q0-q6-double-x-discriminator):
