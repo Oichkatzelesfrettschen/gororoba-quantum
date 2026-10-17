@@ -18,54 +18,26 @@
   "falsifier": "any shot violating a deterministic replica refutes the emitted cQASM; a P = 1/2 replica outside |z| < 4.5 at 2048 shots refutes it"
  },
  "batch": "batch-03",
- "stage": "walk",
+ "stage": "follow",
  "circuits": [
   {
-   "file": "twin-walk-1.cq",
+   "file": "twin-depth-9-y.cq",
    "kind": "witness",
-   "stage": "walk",
-   "tuna_case": "box_kite_tuna_walk/batch-00/walk-1.cq",
+   "stage": "follow",
+   "tuna_case": "box_kite_tuna_follow/batch-02/depth-9-y.cq",
    "qubit_map": {
     "1": 0,
     "4": 1,
-    "8": 2,
-    "11": 3,
+    "10": 2,
+    "12": 3,
     "13": 4,
     "14": 5
    },
    "replicas": [
     {
      "slot": 0,
-     "kind": "walk",
-     "census": "associator.deterministic_exemplars[1].ij-same-vertex-third-strut",
-     "kite": 1,
-     "triple": [
-      2,
-      11,
-      3
-     ],
-     "omega": -1,
-     "omit_last_block": false,
-     "layout": "star_11",
-     "roles": {
-      "control": 3,
-      "data": [
-       2,
-       4,
-       5
-      ]
-     },
-     "data_bits": {
-      "0": 2,
-      "1": 4,
-      "3": 5
-     },
-     "cz": 6,
-     "p_control_zero": "0"
-    },
-    {
-     "slot": 1,
-     "kind": "reference",
+     "kind": "lcu",
+     "label": "edge+",
      "census": "within_kite[244]",
      "kite": 3,
      "p": [
@@ -85,27 +57,123 @@
        1
       ]
      },
-     "cz_depth": 1,
-     "p_selector_zero": "1"
+     "cz_depth": 9,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "label": "edge+",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 2,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 9,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "label": "edge+",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 3,
+      "data": [
+       5
+      ]
+     },
+     "cz_depth": 9,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
     }
    ],
-   "sha256": "5e93c30d68e41266f695801ba93e87be2bea75e1304c3b773e29771f01862117"
+   "sha256": "98d191732c29aeeb3de733017fb188a8d53bcaec9d9e4a4038f42ccb996aa236"
   },
   {
-   "file": "twin-walk-2.cq",
+   "file": "twin-walk-x.cq",
    "kind": "witness",
-   "stage": "walk",
-   "tuna_case": "box_kite_tuna_walk/batch-01/walk-2.cq",
+   "stage": "follow",
+   "tuna_case": "box_kite_tuna_follow/batch-03/walk-x.cq",
    "qubit_map": {
     "1": 0,
-    "4": 1,
-    "8": 2,
+    "2": 1,
+    "4": 2,
     "11": 3,
-    "13": 4
+    "12": 4,
+    "14": 5,
+    "16": 6
    },
    "replicas": [
     {
      "slot": 0,
+     "kind": "walk",
+     "census": "associator.deterministic_exemplars[1].ij-same-vertex-third-strut",
+     "kite": 1,
+     "triple": [
+      2,
+      11,
+      3
+     ],
+     "omega": -1,
+     "omit_last_block": false,
+     "readout": "X",
+     "layout": "star_14",
+     "roles": {
+      "control": 5,
+      "data": [
+       3,
+       4,
+       6
+      ]
+     },
+     "data_bits": {
+      "0": 3,
+      "1": 4,
+      "3": 6
+     },
+     "cz": 6,
+     "p_control_zero": "0"
+    },
+    {
+     "slot": 1,
      "kind": "walk",
      "census": "associator.deterministic_exemplars[1].jk-same-vertex-third-strut",
      "kite": 1,
@@ -116,61 +184,38 @@
      ],
      "omega": -1,
      "omit_last_block": false,
-     "layout": "path_8_11_13",
+     "readout": "X",
+     "layout": "path_4",
      "roles": {
-      "control": 3,
+      "control": 2,
       "data": [
-       2,
-       4
-      ]
-     },
-     "data_bits": {
-      "0": 2,
-      "1": 4
-     },
-     "cz": 4,
-     "p_control_zero": "0"
-    },
-    {
-     "slot": 1,
-     "kind": "reference",
-     "census": "within_kite[244]",
-     "kite": 3,
-     "p": [
-      1,
-      10,
-      1
-     ],
-     "q": [
-      4,
-      15,
-      1
-     ],
-     "relation": "edge_opposite",
-     "roles": {
-      "selector": 0,
-      "data": [
+       0,
        1
       ]
      },
-     "cz_depth": 1,
-     "p_selector_zero": "1"
+     "data_bits": {
+      "0": 0,
+      "1": 1
+     },
+     "cz": 4,
+     "p_control_zero": "0"
     }
    ],
-   "sha256": "b4d01677d9d51d7c1b7d4e1410996bd0f2882d6940f63d1407aaea6426ceb422"
+   "sha256": "e1f1c73a3fbb3f3e2ab96ba1a91eae54771f8526be4c6347e1d216bf89578663"
   },
   {
-   "file": "twin-walk-3.cq",
+   "file": "twin-walk-y.cq",
    "kind": "witness",
-   "stage": "walk",
-   "tuna_case": "box_kite_tuna_walk/batch-02/walk-3.cq",
+   "stage": "follow",
+   "tuna_case": "box_kite_tuna_follow/batch-04/walk-y.cq",
    "qubit_map": {
     "1": 0,
-    "4": 1,
-    "8": 2,
+    "2": 1,
+    "4": 2,
     "11": 3,
-    "13": 4,
-    "14": 5
+    "12": 4,
+    "14": 5,
+    "16": 6
    },
    "replicas": [
     {
@@ -184,51 +229,55 @@
       3
      ],
      "omega": -1,
-     "omit_last_block": true,
-     "layout": "star_11",
+     "omit_last_block": false,
+     "readout": "Y",
+     "layout": "star_14",
      "roles": {
-      "control": 3,
+      "control": 5,
       "data": [
-       2,
+       3,
        4,
-       5
+       6
       ]
      },
      "data_bits": {
-      "0": 2,
+      "0": 3,
       "1": 4,
-      "3": 5
+      "3": 6
      },
-     "cz": 4,
+     "cz": 6,
      "p_control_zero": "1/2"
     },
     {
      "slot": 1,
-     "kind": "reference",
-     "census": "within_kite[244]",
-     "kite": 3,
-     "p": [
-      1,
-      10,
-      1
+     "kind": "walk",
+     "census": "associator.deterministic_exemplars[1].jk-same-vertex-third-strut",
+     "kite": 1,
+     "triple": [
+      2,
+      3,
+      10
      ],
-     "q": [
-      4,
-      15,
-      1
-     ],
-     "relation": "edge_opposite",
+     "omega": -1,
+     "omit_last_block": false,
+     "readout": "Y",
+     "layout": "path_4",
      "roles": {
-      "selector": 0,
+      "control": 2,
       "data": [
+       0,
        1
       ]
      },
-     "cz_depth": 1,
-     "p_selector_zero": "1"
+     "data_bits": {
+      "0": 0,
+      "1": 1
+     },
+     "cz": 4,
+     "p_control_zero": "1/2"
     }
    ],
-   "sha256": "8ee787bb484d2400b85f53c383c7dd430c14d1fe97c756a6429c1e8948f68b33"
+   "sha256": "d3698afcf9a5658e0376061b0f213f5ee2230d9c449d6c851ff9c63e50f220f3"
   }
  ]
 }
