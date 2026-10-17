@@ -64,14 +64,17 @@ runs.
 The conditional Ramsey cases on ibm_kingston pairs (68, 67) and (67, 66)
 (records `results/live/2026-10-15T224704.122016Z` and
 `results/live/2026-10-15T224725.179602Z`, 50 x 1024 shots, 15.8 s nominal
-each) are retired without a submission. The design they carry, Ramsey on
-one qubit grouped by its neighbor's Z outcome so a weighted fit
+each) are retired without a submission. Their conditional-arm part, Ramsey
+on one qubit grouped by its neighbor's Z outcome so a weighted fit
 nu(z) = omega + sum_k J_k s_k returns every incident residual ZZ, ran on
 Tuna-17 as the coupler map (`qi-tuna17-coupler-zz-map`) at no metered cost.
 What the Kingston cases alone would add is the detuning pair behind the
 -1.130 rad coherence-window rotation on three named Kingston qubits, a
-device-specific question the reserved IBM seconds do not cover. The records
-stay as retained dry runs; neither submit command is valid.
+device-specific question the reserved IBM seconds do not cover. The
+Bell-rate test of `proposed-conditional-ramsey-hamiltonian` (odd and even
+coherence rates and the nu_odd + nu_even falsifier) stays proposed with no
+case. The records stay as retained dry runs; neither submit command is
+valid.
 
 ## IBM hardware: proposals without a case
 

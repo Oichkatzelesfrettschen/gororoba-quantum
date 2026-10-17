@@ -43,27 +43,36 @@ any center whose kernel frame is exact.
    e_24} has rank 2 at every non-zero-divisor witness. Falsifier: rank
    below 2 at any witness refutes the "leaves through e_8 and e_24" part
    of the conjecture while leaving the dimension question open.
-2. **Second-order compatibility on the complement.** Run the centered Schur
-   construction of `nullity_twelve_locus.py` at the nullity-12 witnesses
-   {a, 0} (then the nullity-8 and nullity-4 witnesses): `Dmap`, its
-   nullspace K, the obstruction space C and the quadratic system
-   `C^T upper_triangle(Q(K z)) = 0`, restricted to directions transverse to
-   the family. Two outcomes decide the question:
-   - the real zero set on the complement is {0}: no curve leaves the family
-     to second order, the local dimension equals the family dimension, and
-     the conjecture is refuted at that nullity;
-   - a nonzero real solution exists: build an actual curve through it (a
-     rational slice as for A15, or an exact flow) and certify its nullity
-     along the curve; the family grows by the dimension the curves span.
-   A sum-of-squares identity, as at x0, is the certificate in the first
-   outcome; an explicit curve with exact nullity at rational parameter
-   values is the certificate in the second.
-3. **Join A15 to the {a, 0} family.** Sample exact rational points of the
-   A15 slice near x0, compute their nullity and their bracket coordinates,
-   and test whether {a, 0} witnesses with a not a zero divisor lie in the
-   closure of A15-type pieces. A positive answer names the larger piece the
-   conjecture asks for; a negative one separates the two 15-dimensional
-   phenomena.
+2. **Second-order compatibility with the family variables kept.** Run the
+   centered Schur construction of `nullity_twelve_locus.py` at the
+   nullity-12 witnesses {a, 0} (then the nullity-8 and nullity-4
+   witnesses): `Dmap`, its nullspace K over all of T(x), the obstruction
+   space C and the quadratic system `C^T upper_triangle(Q(K z)) = 0`. The
+   system is quadratic, so a mixed vector `t + z` with `t` tangent to the
+   family and `z` transverse can satisfy it through cross terms while every
+   pure transverse vector fails; restricting to a complement decides
+   nothing. The computation keeps every variable and decides whether the
+   real zero set V lies inside the family's tangent space T_F, by the route
+   that settled x0: reduce the generators, find the sum-of-squares identities
+   that split V into linear pieces, and compare each piece with T_F.
+   - V inside T_F: every second-order compatible velocity, hence the
+     tangent cone, lies in T_F, so the local dimension equals the family
+     dimension and the conjecture is refuted at that nullity. The
+     certificate is the generator reduction plus the identities that place
+     every real solution in T_F.
+   - A real solution with nonzero component outside T_F: build an actual
+     curve with that velocity (a rational slice as for A15, or an exact
+     flow) and certify its nullity at rational parameter values; the local
+     dimension rises by the dimension such curves span.
+3. **Relate A15 to the {a, 0} family.** Closure is decided exactly or not
+   at all. A positive answer is an explicit curve or parameterization of
+   nullity-12 points, certified exactly along its parameter, whose limit is
+   an {a, 0} witness with a not a zero divisor. A negative answer is a
+   semialgebraic elimination showing that the A15-type piece and the {a, 0}
+   family meet in no common component near such a witness. Exact rational
+   points of the A15 slice serve only to choose the curve or the
+   elimination; neither finding nor missing sampled points decides the
+   attachment.
 
 Every computation is a loop over independent witnesses or sample points
 and runs through `parallel.py`. Each joins `ci/gates.json` with `--check`
