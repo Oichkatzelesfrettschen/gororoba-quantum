@@ -2025,8 +2025,8 @@
       "statement": "Add Ramsey of qubit A conditioned on B in |0> and |1> to the Bell odd and even coherence rates: the design matrix for H/hbar = (omega_A Z_A + omega_B Z_B + J Z_A Z_B)/2 rises from rank 2 to 3, J = (nu_A|0 - nu_A|1)/2, and nu_odd + nu_even = nu_A|0 + nu_A|1 is the falsifier of the reduced diagonal model.",
       "domain": "hardware",
       "evidence_class": "proposed experiment",
-      "status": "proposed",
-      "boundary": "Each rate needs resolved quadratures, qualified exposure, phase-reference controls and delay diversity against winding.",
+      "status": "superseded",
+      "boundary": "Each rate needs resolved quadratures, qualified exposure, phase-reference controls and delay diversity against winding. The ibm_kingston pair cases (68, 67) and (67, 66) are retired without a run (docs/state/QPU_RUN_CENSUS.md); the conditional-Ramsey fit ran on Tuna-17 as qi-tuna17-coupler-zz-map, and the Kingston detunings behind the -1.130 rad window rotation stay unmeasured.",
       "evidence": [],
       "documents": [],
       "gates": {},
@@ -2038,7 +2038,7 @@
       "supersedes": [
         "withdrawn-interleaving-verified"
       ],
-      "superseded_by": null
+      "superseded_by": "qi-tuna17-coupler-zz-map"
     },
     {
       "id": "proposed-signed-kernel-probe",
@@ -3428,7 +3428,9 @@
       ],
       "assumptions": [],
       "depends_on": [],
-      "supersedes": [],
+      "supersedes": [
+        "proposed-conditional-ramsey-hamiltonian"
+      ],
       "superseded_by": null
     },
     {

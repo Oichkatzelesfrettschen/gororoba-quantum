@@ -14,24 +14,19 @@ rolling 28-day window; every dry run below confirmed the 266 s.
 
 Each case asks about named qubits of ibm_kingston, so noise simulation
 cannot answer it: the simulator only replays the calibration the question
-tests. All five were dry-run again against the calibration of
-2026-10-15T15:29:07-07:00. The two conditional Ramsey records carry the
-summary that predates postselecting the conditional arms on B
-(`docs/evidence/conditional_ramsey_power/README.md`), so their submit
-commands are valid only after a fresh dry run under the current summary. Nominal seconds are the sum over PUBs of shots x
+tests. All three were dry-run again against the calibration of
+2026-10-15T15:29:07-07:00. Nominal seconds are the sum over PUBs of shots x
 (250 us repetition delay + scheduled circuit duration) plus 2.3 s of job
 overhead; the ceiling is the `max_execution_time` the service enforces.
 
 | Case | Qubits | Why the device | PUBs x shots | Nominal s | Ceiling s | Fresh record | record.json sha256 |
 | --- | --- | --- | --- | ---: | ---: | --- | --- |
-| Conditional Ramsey, pair (68, 67) | 2 | measures the detunings and Z Z behind the -1.130 rad window rotation | 50 x 1024 | 15.8 | 20 | `results/live/2026-10-15T224704.122016Z` | `b29c0a3825f09f1c90c078d244beb875739d8c97fbcb85ce328e64ed8f1707b5` |
-| Conditional Ramsey, pair (67, 66) | 2 | the second pair of the same prediction | 50 x 1024 | 15.8 | 20 | `results/live/2026-10-15T224725.179602Z` | `fceebffbb3376d6c9676da907a1077719f412622ae2ad5f0199335517f597b0f` |
 | Crossed tile x template | 4 + 4 | separates the Kingston qubit 0/1 readout fault from the template | 40 x 512 | 7.5 | 15 | `results/live/2026-10-15T224747.140174Z` | `8c7764d2e40c3e102b3cd089e956a951c3d19c7650a4ec9fd1b8e27d9372d030` |
 | Walk scaffold A/B | 4 | the 252-CZ readout floor against measure-only on qubits 80-83 | 4 x 1024 | 3.4 | 10 | `results/live/2026-10-15T224805.443398Z` | `960baeef4f53830a75fb46eb4d8a718c5b7f4251262a9ba42e0aafdcef944a02` |
 | Qubit-79 delayed readout | 1 | whether the 11 % first-bit effect is relaxation of qubit 79 | 4 x 1024 | 3.4 | 10 | `results/live/2026-10-15T224821.527684Z` | `a0f865be93b024fbcf4ba9a49bca5e818cf429490b245d1a003cda8268ef0c43` |
-| **Total** | | | | **45.9** | **75** | | |
+| **Total** | | | | **14.3** | **35** | | |
 
-Running all five leaves at least 191 s of the 266 s.
+Running all three leaves at least 231 s of the 266 s.
 
 **Qubit 79 prediction.** The fresh calibration gives qubit 79 T1 = 191.6 us,
 T2 = 75.7 us and P(read 0 | prepared 1) = 0.0085. The noise model predicts
@@ -54,8 +49,6 @@ comparison write `approval_required` and send nothing:
 
 ```sh
 cd gororoba_quantum
-"$PYTHON" live_run.py --groups conditional_ramsey --backends ibm_kingston --exclude-qubits ibm_kingston:0-66,69-155 --shots 1024 --max-replicas 1 --no-isolated-reference --max-pending 100 --max-execution-seconds 20 --max-total-execution-seconds 20 --reserve-seconds 60 --min-remaining-seconds 60 --out ../results/live --approved-record ../results/live/2026-10-15T224704.122016Z --approved-record-sha256 b29c0a3825f09f1c90c078d244beb875739d8c97fbcb85ce328e64ed8f1707b5 --submit
-"$PYTHON" live_run.py --groups conditional_ramsey --backends ibm_kingston --exclude-qubits ibm_kingston:0-65,68-155 --shots 1024 --max-replicas 1 --no-isolated-reference --max-pending 100 --max-execution-seconds 20 --max-total-execution-seconds 20 --reserve-seconds 60 --min-remaining-seconds 60 --out ../results/live --approved-record ../results/live/2026-10-15T224725.179602Z --approved-record-sha256 fceebffbb3376d6c9676da907a1077719f412622ae2ad5f0199335517f597b0f --submit
 "$PYTHON" live_run.py --groups crossed_tile_template --backends ibm_kingston --exclude-qubits ibm_kingston:4-103,108-155 --shots 512 --max-replicas 2 --no-isolated-reference --max-pending 100 --max-execution-seconds 15 --max-total-execution-seconds 15 --reserve-seconds 60 --min-remaining-seconds 60 --out ../results/live --approved-record ../results/live/2026-10-15T224747.140174Z --approved-record-sha256 8c7764d2e40c3e102b3cd089e956a951c3d19c7650a4ec9fd1b8e27d9372d030 --submit
 "$PYTHON" live_run.py --groups scaffold_ab --backends ibm_kingston --exclude-qubits ibm_kingston:0-79,84-155 --shots 1024 --max-replicas 1 --no-isolated-reference --max-pending 100 --max-execution-seconds 10 --max-total-execution-seconds 10 --reserve-seconds 60 --min-remaining-seconds 60 --out ../results/live --approved-record ../results/live/2026-10-15T224805.443398Z --approved-record-sha256 960baeef4f53830a75fb46eb4d8a718c5b7f4251262a9ba42e0aafdcef944a02 --submit
 "$PYTHON" live_run.py --groups readout_delay --backends ibm_kingston --exclude-qubits ibm_kingston:0-78,80-155 --shots 1024 --max-replicas 1 --no-isolated-reference --max-pending 100 --max-execution-seconds 10 --max-total-execution-seconds 10 --reserve-seconds 60 --min-remaining-seconds 60 --out ../results/live --approved-record ../results/live/2026-10-15T224821.527684Z --approved-record-sha256 a0f865be93b024fbcf4ba9a49bca5e818cf429490b245d1a003cda8268ef0c43 --submit
@@ -65,6 +58,20 @@ Every earlier family (folded QPE, folded correction, ripple atlas, rank
 sectors, N21 orbit, patch window, coherence window) has a consumed approval
 and a retained acquisition; their older held records are superseded dry
 runs.
+
+## IBM hardware: retired cases
+
+The conditional Ramsey cases on ibm_kingston pairs (68, 67) and (67, 66)
+(records `results/live/2026-10-15T224704.122016Z` and
+`results/live/2026-10-15T224725.179602Z`, 50 x 1024 shots, 15.8 s nominal
+each) are retired without a submission. The design they carry, Ramsey on
+one qubit grouped by its neighbor's Z outcome so a weighted fit
+nu(z) = omega + sum_k J_k s_k returns every incident residual ZZ, ran on
+Tuna-17 as the coupler map (`qi-tuna17-coupler-zz-map`) at no metered cost.
+What the Kingston cases alone would add is the detuning pair behind the
+-1.130 rad coherence-window rotation on three named Kingston qubits, a
+device-specific question the reserved IBM seconds do not cover. The records
+stay as retained dry runs; neither submit command is valid.
 
 ## IBM hardware: proposals without a case
 
