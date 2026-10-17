@@ -879,10 +879,19 @@ def main() -> int:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(render(record))
         print(f"wrote {args.out}: {summary(record)}; pyadic {record['pyadic_cross_check']}")
-        return 0 if all(record[name]["pass"] for name in ("W1", "W2", "W3", "W4")) else 1
+        cross = record["pyadic_cross_check"]
+        pyadic_ok = cross.get("status") != "run" or cross.get("agree") == cross.get("rows")
+        return 0 if pyadic_ok and all(record[name]["pass"] for name in ("W1", "W2", "W3", "W4")) else 1
     retained = json.loads(args.check.read_text())
     differing = compare(record, retained)
     require(not differing, f"{args.check} differs from the recomputation in {differing}")
+    failing = [name for name in ("W1", "W2", "W3", "W4") if not record[name]["pass"]]
+    require(not failing, f"{args.check} records failing predictions {failing}")
+    cross = retained.get("pyadic_cross_check", {})
+    require(
+        cross.get("status") != "run" or cross.get("agree") == cross.get("rows"),
+        f"{args.check} records a pyadic cross-check that disagrees: {cross}",
+    )
     print(f"{args.check} matches: {summary(record)}")
     return 0
 

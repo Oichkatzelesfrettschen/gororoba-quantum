@@ -34,6 +34,8 @@ import random
 from collections.abc import Callable, Sequence
 from fractions import Fraction
 
+import parallel
+
 SELF_TEST_SEED = 20041028
 RANDOM_TRIPLES = 2000
 
@@ -88,7 +90,8 @@ class GaussianRational:
         return isinstance(other, GaussianRational) and self.re == other.re and self.im == other.im
 
     def __hash__(self) -> int:
-        return hash((self.re, self.im))
+        # Equal to an int or Fraction when the imaginary part is zero, so it hashes as that scalar.
+        return hash(self.re) if not self.im else hash((self.re, self.im))
 
     def __str__(self) -> str:
         sign = "-" if self.im < 0 else "+"
@@ -189,8 +192,26 @@ Ops = tuple[
 Triple = tuple[GaussianWheel, GaussianWheel, GaussianWheel]
 
 
+# (law, triple) cases per ordered_map item, as wheel_algebra.CASES_PER_CHUNK.
+CASES_PER_CHUNK = 2048
+
+
+def collapse(w: GaussianWheel) -> GaussianWheel:
+    """The mutation the self-test rejects: bottom mapped to zero."""
+    return ZERO if w.bottom else w
+
+
+def operations(name: str) -> Ops:
+    """The wheel operations ("standard") or the bottom-collapsed mutation ("collapsed")."""
+    if name == "standard":
+        return (lambda a, b: a + b, lambda a, b: a * b, lambda a: a.inv())
+    if name == "collapsed":
+        return (lambda a, b: collapse(a + b), lambda a, b: collapse(a * b), lambda a: collapse(a.inv()))
+    raise ValueError(f"unknown operations {name!r}")
+
+
 def standard_ops() -> Ops:
-    return (lambda a, b: a + b, lambda a, b: a * b, lambda a: a.inv())
+    return operations("standard")
 
 
 def axioms(ops: Ops) -> dict[str, Callable[[GaussianWheel, GaussianWheel, GaussianWheel], bool]]:
@@ -228,10 +249,32 @@ def axioms(ops: Ops) -> dict[str, Callable[[GaussianWheel, GaussianWheel, Gaussi
     }
 
 
-def axiom_failures(triples: Sequence[Triple], ops: Ops | None = None) -> dict[str, int]:
-    """Per axiom name, the number of triples on which it fails."""
-    laws = axioms(ops or standard_ops())
-    return {name: sum(1 for t in triples if not law(*t)) for name, law in laws.items()}
+class AxiomCases:
+    """The failing laws among one chunk of (law, triple) cases, under the named operations."""
+
+    def __init__(self, ops: str) -> None:
+        self.ops = ops
+
+    def __call__(self, chunk: list[tuple[str, Triple]]) -> list[str]:
+        laws = axioms(operations(self.ops))
+        return [law for law, triple in chunk if not laws[law](*triple)]
+
+
+def axiom_failures(triples: Sequence[Triple], ops: str = "standard") -> dict[str, int]:
+    """Per axiom name, the number of triples on which it fails.
+
+    The cases are generated law by law in the given triple order, then mapped
+    in fixed chunks through parallel.ordered_map, so a pooled run counts
+    exactly what the serial loop counts.
+    """
+    names = list(axioms(operations(ops)))
+    cases = [(law, triple) for law in names for triple in triples]
+    chunks = [cases[start : start + CASES_PER_CHUNK] for start in range(0, len(cases), CASES_PER_CHUNK)]
+    failures = dict.fromkeys(names, 0)
+    for failed in parallel.ordered_map(AxiomCases(ops), chunks, min_items=2):
+        for law in failed:
+            failures[law] += 1
+    return failures
 
 
 Matrix = Sequence[Sequence[GaussianRational]]
@@ -350,14 +393,16 @@ def self_test() -> int:
     require(not any(failures.values()), f"wheel axioms fail over Q(i): {[k for k, v in failures.items() if v]}")
     print(f"{len(failures)} wheel axioms hold over Q(i) on {len(triples)} triples")
 
-    def collapse(w: GaussianWheel) -> GaussianWheel:
-        return ZERO if w.bottom else w
-
-    broken: Ops = (lambda a, b: collapse(a + b), lambda a, b: collapse(a * b), lambda a: collapse(a.inv()))
-    rejected = sorted(name for name, count in axiom_failures(triples, broken).items() if count)
+    rejected = sorted(name for name, count in axiom_failures(triples, "collapsed").items() if count)
     require(bool(rejected), "the axioms accept a Q(i) wheel with bottom collapsed to zero")
     print(f"bottom collapsed to zero breaks {len(rejected)} axioms: {rejected}")
 
+    require(
+        GaussianRational(1) == 1
+        and 1 in {GaussianRational(1)}
+        and Fraction(1, 2) in {GaussianRational(Fraction(1, 2))},
+        "a real Gaussian rational equals its scalar but hashes apart from it",
+    )
     require(INFINITY == ONE / ZERO and BOTTOM == ZERO / ZERO, "1/0 or 0/0 is not canonical")
     require(ZERO * INFINITY == BOTTOM and INFINITY - INFINITY == BOTTOM, "0 * infinity or infinity - infinity")
     require(IMAGINARY * INFINITY == INFINITY and -INFINITY == INFINITY, "i * infinity or -infinity is not infinity")
