@@ -288,11 +288,115 @@ stand.
   description; it identifies no unique channel acting on the five-qubit
   circuit.
 
+## Residual ZZ of every Tuna-17 coupler
+
+Each coupling-map edge carries a flux-tunable coupler that the control
+system parks between gates; the park leaves a residual diagonal coupling J,
+half the shift of a qubit's frequency when its neighbor flips. Pulse and
+flux control are not exposed, so the map reads the couplers through gates.
+`scripts/qi_coupler_zz_map.py` builds it from one property of Tuna-17's
+coupling graph: it is bipartite (P = {0,4,5,6,10,11,12,16},
+Q = {1,2,3,7,8,9,13,14,15}), and a diagonal Hamiltonian conserves every Z.
+One configuration therefore runs Ramsey on every qubit of one part (X90,
+idle, X90 or Y90) while the other part sits in |+> and is read in Z;
+grouping each target's shots by its neighbors' outcomes gives every
+conditional sector at once, and a weighted fit
+nu(z) = omega + sum_k J_k s_k returns every incident coupler with a residual
+that tests the pairwise, additive form. The rate comes from two delays,
+0.5 and 2 us, so each sector's fixed phase cancels and a rate is known
+modulo 666.7 kHz. Every sector of a target takes the alias branch nearest
+the circular mean of its sectors, so J reads differences on one branch and
+omega carries any common alias; a target detuned near 333 kHz would otherwise
+split its sectors across branches and fail the additivity test spuriously.
+The role swap measures every coupler again from its other end. The case is
+10 circuits (2 roles x 2 quadratures x 2 delays, plus two readout circuits),
+run as five batches: both readout references together, then one batch per
+delay's x and y pair. A frame change between the two delays' batches adds
+the same rate to every sector of a target and lands in omega, never in J;
+`--conformance`
+evolves all 17 qubits under injected frequencies, one of them at 320 kHz
+across the alias edge, and all 24 couplings through the ALAP-scheduled
+circuits and recovers them to 1e-10 Hz.
+
+**Submission under the conditions of use.** The FAQ allows three queued
+jobs per hardware backend, so the series ran as four batches of at most three
+circuits, each submitted only after the previous one was collected, its
+sanity gate passed (completed shots, readout error below 0.2, spectators near
+P1 = 1/2) and a 120 s pause elapsed, with the account's own queue confirmed
+empty; `qi_platform.py submit` refuses any batch that would lift the queued
+jobs above three. A QX dry run on the 10-qubit subgraph {0..9} (12 couplers)
+preceded any hardware submission: all ten jobs completed and every J and
+frequency read consistent with zero (largest |z| 1.73 and 2.0) at
+visibility 1.000. On Tuna-17 the four batches ran from 22:52 to 23:07 UTC,
+10.2 to 14.3 s per 16384-shot job.
+
+**Map** (results/quantum_inspire/coupler_zz_tuna_17_analysis.json; claim
+kind exploratory reanalysis). Qubits 5, 6 and 7 fail as Ramsey targets on
+visibility alone: it falls to 0.04, 0.27 and 0.08 by 2 us, while every other
+qubit keeps at least 0.75. Qubits 5 and 6 idle 322 and 324 kHz from their
+frames (modulo 666.7 kHz) and qubit 7 at -116 kHz; on one alias branch the
+additive fit holds on all three (chi2 16.4/11, 0.26/1, 0.13/4) and on every
+other target (smallest p 0.034, qubit 2). An end-quality rule fixed after the
+data (visibility at least 0.3, additivity p at least 1e-3) excludes those
+ends, so their couplers take J from the other end; every coupler keeps one
+usable end. The retained run predates the paired batching: its P-role 0.5 us
+and Q-role 2 us x/y pairs ran in adjacent batches, so a calibration change
+between those batches enters their phases (`quadrature_pairs_across_batches`
+in the analysis).
+
+| Coupler | J (kHz) | ends | | Coupler | J (kHz) | ends |
+|---|---|---|---|---|---|---|
+| (11,14) | -31.4 +- 0.9 | 2 (-31.40, -31.47) | | (2,4) | +4.1 +- 0.9 | 2 |
+| (1,4) | -19.3 +- 0.9 | 2 (-19.6, -19.0) | | (9,12) | +3.7 +- 0.9 | 2 |
+| (3,5) | +11.7 +- 1.3 | 1 (Q3) | | (7,10) | +3.1 +- 1.2 | 1 (Q10) |
+| (12,14) | +10.4 +- 0.9 | 2 | | (14,16) | -3.1 +- 1.0 | 2 |
+| (0,2) | -7.9 +- 1.0 | 2 | | (4,7) | -3.0 +- 1.3 | 1 (Q4) |
+| (3,6) | -7.8 +- 1.3 | 1 (Q3) | | (12,15) | +3.0 +- 0.9 | 2 |
+| (11,13) | +7.5 +- 0.9 | 2 | | (0,1) | -2.2 +- 0.9 | 2 |
+| (8,11) | +6.6 +- 0.9 | 2 (z -3.2) | | (8,12) | -0.7 +- 0.9 | 2 |
+| (15,16) | +5.3 +- 1.0 | 2 | | (6,9) | +0.5 +- 1.5 | 1 (Q9) |
+| (2,5) | +5.3 +- 1.3 | 1 (Q2) | | (5,8) | -0.4 +- 1.3 | 1 (Q8) |
+| (4,8) | -5.0 +- 1.0 | 2 | | (10,13) | -0.4 +- 0.9 | 2 |
+| | | | | (7,11) | -0.2 +- 1.3 | 1 (Q11) |
+| | | | | (5,9) | +0.0 +- 1.4 | 1 (Q9) |
+
+The 15 couplers with two usable ends agree within |z| 1.7 except (8,11)
+(z -3.2, with Q11's additive fit at chi2 19.1/11). Two parks leave a
+frequency shift above 35 kHz on flip (2J): (11,14) at -63 kHz and (1,4) at
+-39 kHz. Two caveats bound every value: a spectator's Z outcome labels its
+state through the 2 us idle only up to its decay, and neighbor readout error
+mixes sectors; both shrink J toward zero, the second by about the neighbor's
+1 - e01 - e10 (0.87 to 0.96 here).
+
+**What the map explains.** `--explain-spectators` splits each neighbor-drive
+shift of the earlier crosstalk run into the part the map predicts (a driver
+toggled through 40 X gates is excited about half of the 800 ns window, so the
+target's phase moves by -2 (2 pi J) (1/2) t) and a residual
+(results/quantum_inspire/spectator_zz_split.json):
+
+| Target, driver | measured (rad) | coupler ZZ predicted | residual (drive crosstalk) |
+|---|---|---|---|
+| Q11, Q14 | +0.153 | +0.158 +- 0.005 | -0.005 |
+| Q4, Q8 | +0.030 | +0.025 | +0.005 |
+| Q3, Q6 | +0.060 | +0.039 | +0.021 |
+| Q12, Q9 | -0.043 | -0.019 | -0.024 |
+| Q12, Q15 | -0.037 | -0.015 | -0.022 |
+| Q11, Q13 | +0.014 | -0.038 | +0.051 |
+| Q0, Q2 | +0.139 | +0.040 | +0.099 |
+| Q0, Q1 | -0.122 | +0.011 | -0.133 |
+| Q3, Q5 | +0.074 | -0.059 | +0.133 |
+| Q4, Q7 | +0.633 | +0.015 | +0.618 |
+
+Coupler ZZ accounts for the whole shift Q14 imposes on Q11 and Q8 on Q4; the
+large shifts elsewhere, above all Q7 on Q4, are drive crosstalk the parked
+coupler does not carry. The corner on qubits 0, 1, 2, 4, 5 where the
+zero-divisor witness kept no resolved contrast combines the second-strongest
+park, (1,4) at -19.3 kHz, (0,2) at -7.9 kHz, the short-coherence Q5, and the
+Q1/Q2 drive crosstalk: a repeated spatial association, not a demonstrated
+cause.
+
 ## Next cases
 
-- Static-|1> control: hold each driver in |1> (X before and after the
-  window, no drive inside it) to measure the ZZ phase alone and separate it
-  from the drive-induced shift.
 - Interleave the four configurations inside one job (disjoint stars per
   configuration) so drift cancels between them.
 - Drive amplitude series (1, 2, 4 X-pair densities) to test the quadratic

@@ -1,0 +1,600 @@
+{
+ "schema": "qi-coupler-zz-analysis-v1",
+ "profile": "qx",
+ "runs": [
+  "results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-00",
+  "results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-01",
+  "results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-02",
+  "results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-03"
+ ],
+ "quadrature_pairs_across_batches": [
+  "P-d025",
+  "Q-d100"
+ ],
+ "readout_batches": [
+  0
+ ],
+ "readout_assignment": {
+  "0": [
+   0.0,
+   0.0
+  ],
+  "1": [
+   0.0,
+   0.0
+  ],
+  "2": [
+   0.0,
+   0.0
+  ],
+  "3": [
+   0.0,
+   0.0
+  ],
+  "4": [
+   0.0,
+   0.0
+  ],
+  "5": [
+   0.0,
+   0.0
+  ],
+  "6": [
+   0.0,
+   0.0
+  ],
+  "7": [
+   0.0,
+   0.0
+  ],
+  "8": [
+   0.0,
+   0.0
+  ],
+  "9": [
+   0.0,
+   0.0
+  ]
+ },
+ "readout_correction_sensitivity": {
+  "max_abs_j_shift_over_se": 0.0,
+  "edge": [
+   6,
+   9
+  ]
+ },
+ "targets": [
+  {
+   "target": 0,
+   "role": "P",
+   "neighbors": [
+    1,
+    2
+   ],
+   "omega_hz": -1099.18206388,
+   "omega_se_hz": 3310.85719041,
+   "j_hz": {
+    "1": -2385.9973151,
+    "2": -564.203008578
+   },
+   "j_se_hz": {
+    "1": 3310.83936882,
+    "2": 3310.63404332
+   },
+   "sectors": 4,
+   "additivity_chi2": 0.704283575208,
+   "additivity_dof": 1,
+   "min_visibility": 1.0000020572,
+   "usable": true
+  },
+  {
+   "target": 4,
+   "role": "P",
+   "neighbors": [
+    1,
+    2,
+    7,
+    8
+   ],
+   "omega_hz": -972.397399478,
+   "omega_se_hz": 3301.48328985,
+   "j_hz": {
+    "1": -659.747928934,
+    "2": 1885.30328392,
+    "7": -1021.23785416,
+    "8": -3067.7441279
+   },
+   "j_se_hz": {
+    "1": 3301.7826253,
+    "2": 3301.13944605,
+    "7": 3301.88192641,
+    "8": 3301.32718972
+   },
+   "sectors": 16,
+   "additivity_chi2": 9.23312915667,
+   "additivity_dof": 11,
+   "min_visibility": 1.0,
+   "usable": true
+  },
+  {
+   "target": 5,
+   "role": "P",
+   "neighbors": [
+    2,
+    3,
+    8,
+    9
+   ],
+   "omega_hz": 3309.07176599,
+   "omega_se_hz": 3284.21221989,
+   "j_hz": {
+    "2": 2913.05848324,
+    "3": 690.265156218,
+    "8": -2672.79199784,
+    "9": -5720.08084193
+   },
+   "j_se_hz": {
+    "2": 3283.14447102,
+    "3": 3284.28526475,
+    "8": 3284.67007921,
+    "9": 3283.5492744
+   },
+   "sectors": 16,
+   "additivity_chi2": 9.58190676169,
+   "additivity_dof": 11,
+   "min_visibility": 1.00002826575,
+   "usable": true
+  },
+  {
+   "target": 6,
+   "role": "P",
+   "neighbors": [
+    3,
+    9
+   ],
+   "omega_hz": 6752.64991911,
+   "omega_se_hz": 3300.51954065,
+   "j_hz": {
+    "3": 1078.0639707,
+    "9": 8066.12079085
+   },
+   "j_se_hz": {
+    "3": 3300.48866788,
+    "9": 3300.4424955
+   },
+   "sectors": 4,
+   "additivity_chi2": 0.640560627701,
+   "additivity_dof": 1,
+   "min_visibility": 1.00001608043,
+   "usable": true
+  },
+  {
+   "target": 1,
+   "role": "Q",
+   "neighbors": [
+    0,
+    4
+   ],
+   "omega_hz": 1149.0504058,
+   "omega_se_hz": 3310.7950743,
+   "j_hz": {
+    "0": -3480.59797608,
+    "4": 798.705145855
+   },
+   "j_se_hz": {
+    "0": 3309.8728474,
+    "4": 3309.93509611
+   },
+   "sectors": 4,
+   "additivity_chi2": 0.0475118487269,
+   "additivity_dof": 1,
+   "min_visibility": 1.00000832983,
+   "usable": true
+  },
+  {
+   "target": 2,
+   "role": "Q",
+   "neighbors": [
+    0,
+    4,
+    5
+   ],
+   "omega_hz": 3241.99149106,
+   "omega_se_hz": 3303.35137606,
+   "j_hz": {
+    "0": -1358.88569471,
+    "4": -4678.60496319,
+    "5": 5171.21713969
+   },
+   "j_se_hz": {
+    "0": 3302.79624297,
+    "4": 3302.74490629,
+    "5": 3302.31860428
+   },
+   "sectors": 8,
+   "additivity_chi2": 2.21277256374,
+   "additivity_dof": 4,
+   "min_visibility": 1.00006920176,
+   "usable": true
+  },
+  {
+   "target": 3,
+   "role": "Q",
+   "neighbors": [
+    5,
+    6
+   ],
+   "omega_hz": 427.131229529,
+   "omega_se_hz": 3303.58772508,
+   "j_hz": {
+    "5": -4810.38966148,
+    "6": 5239.67614925
+   },
+   "j_se_hz": {
+    "5": 3305.56274649,
+    "6": 3305.50344471
+   },
+   "sectors": 4,
+   "additivity_chi2": 0.526264598236,
+   "additivity_dof": 1,
+   "min_visibility": 1.00004367098,
+   "usable": true
+  },
+  {
+   "target": 7,
+   "role": "Q",
+   "neighbors": [
+    4
+   ],
+   "omega_hz": -2222.0387821,
+   "omega_se_hz": 3311.24494662,
+   "j_hz": {
+    "4": 2019.83166723
+   },
+   "j_se_hz": {
+    "4": 3311.24494662
+   },
+   "sectors": 2,
+   "additivity_chi2": 0.0,
+   "additivity_dof": 0,
+   "min_visibility": 1.0,
+   "usable": true
+  },
+  {
+   "target": 8,
+   "role": "Q",
+   "neighbors": [
+    4,
+    5
+   ],
+   "omega_hz": -4737.12604413,
+   "omega_se_hz": 3303.82234719,
+   "j_hz": {
+    "4": -4153.29378424,
+    "5": 3447.51978153
+   },
+   "j_se_hz": {
+    "4": 3303.96775854,
+    "5": 3302.90426728
+   },
+   "sectors": 4,
+   "additivity_chi2": 0.230499642478,
+   "additivity_dof": 1,
+   "min_visibility": 1.00001696658,
+   "usable": true
+  },
+  {
+   "target": 9,
+   "role": "Q",
+   "neighbors": [
+    5,
+    6
+   ],
+   "omega_hz": -3615.45997877,
+   "omega_se_hz": 3306.87891983,
+   "j_hz": {
+    "5": 1106.99676723,
+    "6": -5892.12350623
+   },
+   "j_se_hz": {
+    "5": 3308.68904623,
+    "6": 3308.80348683
+   },
+   "sectors": 4,
+   "additivity_chi2": 0.425622886895,
+   "additivity_dof": 1,
+   "min_visibility": 1.0000433463,
+   "usable": true
+  }
+ ],
+ "edges": [
+  {
+   "edge": [
+    0,
+    1
+   ],
+   "j_hz": -2933.45744033,
+   "j_se_hz": 2340.77517736,
+   "zz_shift_hz": -5866.91488066,
+   "usable_ends": 2,
+   "ends": {
+    "0": {
+     "j_hz": -2385.9973151,
+     "j_se_hz": 3310.83936882,
+     "usable": true
+    },
+    "1": {
+     "j_hz": -3480.59797608,
+     "j_se_hz": 3309.8728474,
+     "usable": true
+    }
+   },
+   "end_difference_hz": 1094.60066098,
+   "end_difference_z": 0.233811564841
+  },
+  {
+   "edge": [
+    0,
+    2
+   ],
+   "j_hz": -962.486155705,
+   "j_se_hz": 2338.19577502,
+   "zz_shift_hz": -1924.97231141,
+   "usable_ends": 2,
+   "ends": {
+    "0": {
+     "j_hz": -564.203008578,
+     "j_se_hz": 3310.63404332,
+     "usable": true
+    },
+    "2": {
+     "j_hz": -1358.88569471,
+     "j_se_hz": 3302.79624297,
+     "usable": true
+    }
+   },
+   "end_difference_hz": 794.682686137,
+   "end_difference_z": 0.169934541474
+  },
+  {
+   "edge": [
+    1,
+    4
+   ],
+   "j_hz": 67.6802893942,
+   "j_se_hz": 2337.58988704,
+   "zz_shift_hz": 135.360578788,
+   "usable_ends": 2,
+   "ends": {
+    "4": {
+     "j_hz": -659.747928934,
+     "j_se_hz": 3301.7826253,
+     "usable": true
+    },
+    "1": {
+     "j_hz": 798.705145855,
+     "j_se_hz": 3309.93509611,
+     "usable": true
+    }
+   },
+   "end_difference_hz": -1458.45307479,
+   "end_difference_z": -0.311955627482
+  },
+  {
+   "edge": [
+    2,
+    4
+   ],
+   "j_hz": -1395.05509802,
+   "j_se_hz": 2334.82549687,
+   "zz_shift_hz": -2790.11019605,
+   "usable_ends": 2,
+   "ends": {
+    "4": {
+     "j_hz": 1885.30328392,
+     "j_se_hz": 3301.13944605,
+     "usable": true
+    },
+    "2": {
+     "j_hz": -4678.60496319,
+     "j_se_hz": 3302.74490629,
+     "usable": true
+    }
+   },
+   "end_difference_hz": 6563.90824711,
+   "end_difference_z": 1.40565268797
+  },
+  {
+   "edge": [
+    2,
+    5
+   ],
+   "j_hz": 4035.56304711,
+   "j_se_hz": 2328.28319225,
+   "zz_shift_hz": 8071.12609421,
+   "usable_ends": 2,
+   "ends": {
+    "5": {
+     "j_hz": 2913.05848324,
+     "j_se_hz": 3283.14447102,
+     "usable": true
+    },
+    "2": {
+     "j_hz": 5171.21713969,
+     "j_se_hz": 3302.31860428,
+     "usable": true
+    }
+   },
+   "end_difference_hz": -2258.15865645,
+   "end_difference_z": -0.484932498332
+  },
+  {
+   "edge": [
+    3,
+    5
+   ],
+   "j_hz": -2042.30177287,
+   "j_se_hz": 2329.82667372,
+   "zz_shift_hz": -4084.60354573,
+   "usable_ends": 2,
+   "ends": {
+    "5": {
+     "j_hz": 690.265156218,
+     "j_se_hz": 3284.28526475,
+     "usable": true
+    },
+    "3": {
+     "j_hz": -4810.38966148,
+     "j_se_hz": 3305.56274649,
+     "usable": true
+    }
+   },
+   "end_difference_hz": 5500.6548177,
+   "end_difference_z": 1.18046123102
+  },
+  {
+   "edge": [
+    3,
+    6
+   ],
+   "j_hz": 3155.71087602,
+   "j_se_hz": 2335.56889075,
+   "zz_shift_hz": 6311.42175204,
+   "usable_ends": 2,
+   "ends": {
+    "6": {
+     "j_hz": 1078.0639707,
+     "j_se_hz": 3300.48866788,
+     "usable": true
+    },
+    "3": {
+     "j_hz": 5239.67614925,
+     "j_se_hz": 3305.50344471,
+     "usable": true
+    }
+   },
+   "end_difference_hz": -4161.61217855,
+   "end_difference_z": -0.890919424084
+  },
+  {
+   "edge": [
+    4,
+    7
+   ],
+   "j_hz": 494.991297575,
+   "j_se_hz": 2338.08639813,
+   "zz_shift_hz": 989.98259515,
+   "usable_ends": 2,
+   "ends": {
+    "4": {
+     "j_hz": -1021.23785416,
+     "j_se_hz": 3301.88192641,
+     "usable": true
+    },
+    "7": {
+     "j_hz": 2019.83166723,
+     "j_se_hz": 3311.24494662,
+     "usable": true
+    }
+   },
+   "end_difference_hz": -3041.06952139,
+   "end_difference_z": -0.650330400933
+  },
+  {
+   "edge": [
+    4,
+    8
+   ],
+   "j_hz": -3610.08499087,
+   "j_se_hz": 2335.32386501,
+   "zz_shift_hz": -7220.16998175,
+   "usable_ends": 2,
+   "ends": {
+    "4": {
+     "j_hz": -3067.7441279,
+     "j_se_hz": 3301.32718972,
+     "usable": true
+    },
+    "8": {
+     "j_hz": -4153.29378424,
+     "j_se_hz": 3303.96775854,
+     "usable": true
+    }
+   },
+   "end_difference_hz": 1085.54965635,
+   "end_difference_z": 0.232419435618
+  },
+  {
+   "edge": [
+    5,
+    8
+   ],
+   "j_hz": 370.42320091,
+   "j_se_hz": 2329.03247949,
+   "zz_shift_hz": 740.84640182,
+   "usable_ends": 2,
+   "ends": {
+    "5": {
+     "j_hz": -2672.79199784,
+     "j_se_hz": 3284.67007921,
+     "usable": true
+    },
+    "8": {
+     "j_hz": 3447.51978153,
+     "j_se_hz": 3302.90426728,
+     "usable": true
+    }
+   },
+   "end_difference_hz": -6120.31177936,
+   "end_difference_z": -1.31389709047
+  },
+  {
+   "edge": [
+    5,
+    9
+   ],
+   "j_hz": -2332.57699984,
+   "j_se_hz": 2330.65736672,
+   "zz_shift_hz": -4665.15399968,
+   "usable_ends": 2,
+   "ends": {
+    "5": {
+     "j_hz": -5720.08084193,
+     "j_se_hz": 3283.5492744,
+     "usable": true
+    },
+    "9": {
+     "j_hz": 1106.99676723,
+     "j_se_hz": 3308.68904623,
+     "usable": true
+    }
+   },
+   "end_difference_hz": -6827.07760916,
+   "end_difference_z": -1.46458229679
+  },
+  {
+   "edge": [
+    6,
+    9
+   ],
+   "j_hz": 1104.65641644,
+   "j_se_hz": 2336.71571701,
+   "zz_shift_hz": 2209.31283289,
+   "usable_ends": 2,
+   "ends": {
+    "6": {
+     "j_hz": 8066.12079085,
+     "j_se_hz": 3300.4424955,
+     "usable": true
+    },
+    "9": {
+     "j_hz": -5892.12350623,
+     "j_se_hz": 3308.80348683,
+     "usable": true
+    }
+   },
+   "end_difference_hz": 13958.2442971,
+   "end_difference_z": 2.98671325736
+  }
+ ]
+}

@@ -22,9 +22,9 @@ and backend type, beside each job's requested and completed shots and the
 execution seconds its results report.
 
 Observed: the ledger held no row before the first job and still held none
-after twenty-two jobs on 2026-10-16 (ten on QX, two on the Ry emulator, ten
-on Tuna-17; 185344 shots completed, 166.48 s of reported execution; snapshot
-2026-10-16T22:13Z). The account
+after forty-two jobs on 2026-10-16 (QX, the Ry emulator and Tuna-17;
+369664 shots completed, 285.9 s of reported execution; snapshot
+2026-10-16T23:09Z). The account
 therefore spends no metered seconds, credits or minutes as observed; the
 `change` unit stays unmeasured until a row appears. Recheck with a fresh
 snapshot before stating a quota: `qi_usage` on the MCP server returns the

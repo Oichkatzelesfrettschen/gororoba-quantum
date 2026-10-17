@@ -147,6 +147,62 @@
       "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
       "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
       "question": "What dark floor, bright level and visibility does Tuna-17 give the exact (e1 + e10)(e4 -+ e15) witness across three regions in a Latin square, and does the symmetric contraction law hold?"
+    },
+    {
+      "id": "qi-qx-coupler-zz-dry-run-0",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-00",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Dry run, batch 0 of 4: does the ideal QX emulator return vanishing coupler and frequency rates for the 10-qubit Tuna-17 subgraph before any hardware submission?"
+    },
+    {
+      "id": "qi-qx-coupler-zz-dry-run-1",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-01",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Dry run, batch 1 of 4: does the ideal QX emulator return vanishing coupler and frequency rates for the 10-qubit Tuna-17 subgraph before any hardware submission?"
+    },
+    {
+      "id": "qi-qx-coupler-zz-dry-run-2",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-02",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Dry run, batch 2 of 4: does the ideal QX emulator return vanishing coupler and frequency rates for the 10-qubit Tuna-17 subgraph before any hardware submission?"
+    },
+    {
+      "id": "qi-qx-coupler-zz-dry-run-3",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224534Z-coupler_zz_qx-batch-03",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Dry run, batch 3 of 4: does the ideal QX emulator return vanishing coupler and frequency rates for the 10-qubit Tuna-17 subgraph before any hardware submission?"
+    },
+    {
+      "id": "qi-tuna17-coupler-zz-0",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Batch 0 of 4: what residual ZZ does each of Tuna-17's 24 parked flux-tunable couplers leave, measured from both of its ends, and what frame frequency does each qubit carry?"
+    },
+    {
+      "id": "qi-tuna17-coupler-zz-1",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-01",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Batch 1 of 4: what residual ZZ does each of Tuna-17's 24 parked flux-tunable couplers leave, measured from both of its ends, and what frame frequency does each qubit carry?"
+    },
+    {
+      "id": "qi-tuna17-coupler-zz-2",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-02",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Batch 2 of 4: what residual ZZ does each of Tuna-17's 24 parked flux-tunable couplers leave, measured from both of its ends, and what frame frequency does each qubit carry?"
+    },
+    {
+      "id": "qi-tuna17-coupler-zz-3",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T224924Z-coupler_zz_tuna_17-batch-03",
+      "family": "coupler residual-ZZ map (bipartite conditional Ramsey)",
+      "question": "Batch 3 of 4: what residual ZZ does each of Tuna-17's 24 parked flux-tunable couplers leave, measured from both of its ends, and what frame frequency does each qubit carry?"
     }
   ],
   "claims": [
@@ -2912,6 +2968,117 @@
       "assumptions": [],
       "depends_on": [
         "qi-tuna17-zero-divisor-contraction"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-coupler-zz-map",
+      "statement": "Conditional Ramsey over Tuna-17's bipartite coupling map gives every parked coupler's residual ZZ: (11,14) J = -31.4 +- 0.9 kHz, measured -31.40 and -31.47 kHz from its two ends, (1,4) -19.3 kHz, (12,14) +10.4 kHz, (3,5) +11.7 kHz (one end), (0,2) -7.9 kHz, (3,6) -7.8 kHz (one end) and (11,13) +7.5 kHz, and the remaining 17 couplers lie within 0.03 to 6.6 kHz in magnitude; the 15 couplers with two usable ends agree within |z| 1.7 except (8,11) at z = -3.2; the QX dry run on the 10-qubit subgraph reads every J consistent with zero (largest |z| 1.73).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The data-taking design (bipartite roles, delays 0.5 and 2 us, quadratures, neighbor conditioning, readout correction) was fixed before submission; the end-quality rule (visibility at least 0.3, additivity p at least 1e-3) was fixed after the Tuna-17 data; one 16384-shot run per circuit on one calibration, the four batches minutes apart; a spectator's measured Z labels its state during the idle only up to its decay in the 2 us window, which shrinks J toward zero; neighbor readout error mixes sectors and shrinks J by about the neighbor's 1 - e01 - e10; the P-role 0.5 us and Q-role 2 us x/y quadrature pairs ran in adjacent batches minutes apart, so a calibration change between those batches enters their phases; both readout references ran in batch 00 and correct all four batches, and refitting with no readout correction moves no J by more than 0.76 standard errors; a frame change between the two delays' batches shifts omega only, while a coupler retuned between batches would enter J.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/coupler_zz_tuna_17_analysis.json",
+          "sha256": "adb913b31b49f8371c0e3bbdfc00823330bda1eb0fb8024afbe41789d0ea4375"
+        },
+        {
+          "path": "results/quantum_inspire/coupler_zz_qx_analysis.json",
+          "sha256": "553f898da0216a8f0b0b272ce8366021787f941c03f2bb71e6386c97c5bb8546"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-333": "replay",
+        "core-332": "freshness"
+      },
+      "acquisitions": [
+        "qi-tuna17-coupler-zz-0",
+        "qi-tuna17-coupler-zz-1",
+        "qi-tuna17-coupler-zz-2",
+        "qi-tuna17-coupler-zz-3",
+        "qi-qx-coupler-zz-dry-run-0",
+        "qi-qx-coupler-zz-dry-run-1",
+        "qi-qx-coupler-zz-dry-run-2",
+        "qi-qx-coupler-zz-dry-run-3"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-q5-q6-q7-short-coherence",
+      "statement": "As Ramsey targets, Tuna-17 qubits 5, 6 and 7 lose visibility to 0.04, 0.27 and 0.08 by 2 us, while every other qubit keeps visibility of at least 0.75; qubits 5 and 6 idle 322 and 324 kHz from their frames (modulo the 666.7 kHz alias period of the two-delay rate) and qubit 7 at -116 kHz, and with every sector on one alias branch the pairwise-additive rate model holds on all three (chi2 16.4 on 11, 0.26 on 1 and 0.13 on 4 degrees of freedom); their couplers take J from the other end only.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The data-taking design (bipartite roles, delays 0.5 and 2 us, quadratures, neighbor conditioning, readout correction) was fixed before submission; the end-quality rule (visibility at least 0.3, additivity p at least 1e-3) was fixed after the Tuna-17 data; one 16384-shot run per circuit on one calibration, the four batches minutes apart; a spectator's measured Z labels its state during the idle only up to its decay in the 2 us window, which shrinks J toward zero; neighbor readout error mixes sectors and shrinks J by about the neighbor's 1 - e01 - e10; the P-role 0.5 us and Q-role 2 us x/y quadrature pairs ran in adjacent batches minutes apart, so a calibration change between those batches enters their phases; both readout references ran in batch 00 and correct all four batches, and refitting with no readout correction moves no J by more than 0.76 standard errors; a frame change between the two delays' batches shifts omega only, while a coupler retuned between batches would enter J.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/coupler_zz_tuna_17_analysis.json",
+          "sha256": "adb913b31b49f8371c0e3bbdfc00823330bda1eb0fb8024afbe41789d0ea4375"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-333": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna17-coupler-zz-0",
+        "qi-tuna17-coupler-zz-1",
+        "qi-tuna17-coupler-zz-2",
+        "qi-tuna17-coupler-zz-3"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-spectator-shift-zz-split",
+      "statement": "The coupler map accounts for the whole neighbor-drive phase shift where coupler ZZ dominates: driving Q14 moved Q11 by +0.153 rad against +0.158 +- 0.005 rad predicted from J(11,14) = -31.4 kHz with the driver excited half of the 800 ns window, and Q8 on Q4 by +0.030 against +0.025; the residuals beyond coupler ZZ are drive crosstalk of +0.618 rad for Q7 on Q4, -0.133 for Q1 on Q0, +0.133 for Q5 on Q3, +0.099 for Q2 on Q0 and +0.051 for Q13 on Q11.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Inference fixed after both data sets; the half-excited driver is a model of a 40-X train, not a measurement; the crosstalk run and the coupler map ran about 90 minutes apart on possibly different calibrations; the measured shifts carry about 0.011 rad of sampling error.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/spectator_zz_split.json",
+          "sha256": "9a06ea04e9090b18822898f3c21b3813a9453cd8d0e8e045acca7be644e88f79"
+        },
+        {
+          "path": "results/quantum_inspire/coupler_zz_tuna_17_analysis.json",
+          "sha256": "adb913b31b49f8371c0e3bbdfc00823330bda1eb0fb8024afbe41789d0ea4375"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/analysis.json",
+          "sha256": "4d67e170748e30a9b08dbce0190d47fc5ea030fd9238e85a93fde7ef31784f51"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-333": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna17-crosstalk-teleport",
+        "qi-tuna17-coupler-zz-0",
+        "qi-tuna17-coupler-zz-1",
+        "qi-tuna17-coupler-zz-2",
+        "qi-tuna17-coupler-zz-3"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qi-tuna17-coupler-zz-map",
+        "qi-tuna17-neighbor-drive-phase"
       ],
       "supersedes": [],
       "superseded_by": null

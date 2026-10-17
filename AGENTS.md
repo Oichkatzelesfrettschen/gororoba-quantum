@@ -610,7 +610,7 @@ type this account can submit to.
 
 **Usage and cost.** The account's transaction ledger (`/transactions/`,
 `qi_platform.py snapshot` writes usage.json) recorded no entry for the
-twenty-two jobs of 2026-10-16 on QX, the Ry emulator and Tuna-17, so no metered seconds
+forty-two jobs of 2026-10-16 on QX, the Ry emulator and Tuna-17, so no metered seconds
 or credits apply to this account as observed; the limits are structural: the
 table's qubits, shots, per-job execution limit and batch and queue counts,
 plus the FAQ's three queued jobs per hardware backend, which is stricter than
@@ -654,7 +654,9 @@ service's message.
 (`qi_platform.py check docs/evidence/quantum_inspire --agents AGENTS.md`),
 core-327 (`qi_crosstalk_teleport_cases.py --check results/quantum_inspire/cases`),
 core-331 (`--replay` of every retained analysis.json), core-348 and core-330
-(`qi_zero_divisor_cases.py --check` and `--replay`), and core-340
+(`qi_zero_divisor_cases.py --check` and `--replay`), core-332 and core-333
+(`qi_coupler_zz_map.py` case regeneration with conformance, and the replay of
+the coupler map, its QX dry run and the spectator split), and core-340
 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of the Tuna-17
 cases).
 
