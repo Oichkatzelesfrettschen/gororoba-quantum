@@ -1,9 +1,15 @@
 # Audit: tools/kaggle-aer-runner (adb795d) vs main and kaggle/substrate-routing-libraries
 
+Inputs: branch tools/kaggle-aer-runner at adb795d (now retained as archive/kaggle-aer-runner), main at
+942319f, and kaggle/substrate-routing-libraries at c3ca5d6. `git diff --name-status 942319f adb795d`
+reproduces the 1131 entries below.
+
 Method: content, not subjects. Read-only. Scratch lists in the same directory (class.txt, files.txt, uniq_objs.txt).
 
 Why `git diff main branch` is misleading: 1051 of its 1131 entries are deletions (230 commits of main the branch lacks), 78 modifications
-are main's newer versions, 0 additions. The branch's own work is `git log --no-merges main..branch`: 13 wip commits touching 153 paths.
+are main's newer versions, 2 are R100 renames and there are 0 additions. The renames are the Rocq 9.1.1
+logs docs/evidence/folding_proofs/{assumptions,kernel-check}.log, which main moved byte for byte to
+docs/evidence/folding_proofs/history/abbf13c-rocq-9.1.1/ (394cad3), so their content is on main. The branch's own work is `git log main..branch`: 13 commits, 10 of them non-merge wip commits, touching 153 paths.
 
 ## Result by path (153 paths touched by the branch's non-merge commits)
 - 129 paths: the branch tip blob is byte-identical to main's blob. These include all 95 results/kaggle files (substrate probes, T4/TPU

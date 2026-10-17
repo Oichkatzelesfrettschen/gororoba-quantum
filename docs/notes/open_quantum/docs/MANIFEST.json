@@ -1,0 +1,289 @@
+{
+ "schema": "oq-docs-capture-v1",
+ "kind": "docs",
+ "retrieved_utc": "2026-10-17T05:33Z",
+ "files": [
+  {
+   "path": "docs/notes/open_quantum/docs/index.md",
+   "source": "https://docs.openquantum.com/",
+   "sha256": "12d3673ba411a246402373c8988d4bda5c7d70f5f642b4d6d53cf5d410d27eb9"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/api-reference.md",
+   "source": "https://docs.openquantum.com/api-reference/",
+   "sha256": "b7c9da99bda2b548d6c03c993df3e1381521e7a55ca953e075c8c1aeda332af6"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/cirq-plugin/examples.md",
+   "source": "https://docs.openquantum.com/cirq-plugin/examples/",
+   "sha256": "7d09bf8c21dfc88600f6da2712db786a704f8ada667e775720cdfec55e9ff85e"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/cirq-plugin/getting-started.md",
+   "source": "https://docs.openquantum.com/cirq-plugin/getting-started/",
+   "sha256": "c3e031183779dffbcbb8405b02974220ab1bb2f5530228e1783480150a94c67c"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/cirq-plugin/overview.md",
+   "source": "https://docs.openquantum.com/cirq-plugin/overview/",
+   "sha256": "2388e4b8b1ef2f35b7c0bfe203e3420a0b516f44e0f637489cea696a44e4c905"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/cirq-plugin/supported-operations.md",
+   "source": "https://docs.openquantum.com/cirq-plugin/supported-operations/",
+   "sha256": "f238fc8c9c12db0251c744a525116479a13eb8605c068dc37469a6eeffb1b18d"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/cirq-plugin/troubleshooting.md",
+   "source": "https://docs.openquantum.com/cirq-plugin/troubleshooting/",
+   "sha256": "af4070afdc3c0e80cb1d4fa62416056493d16fca891cabaa735dfdb4b5cb450d"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/concepts/backends.md",
+   "source": "https://docs.openquantum.com/concepts/backends/",
+   "sha256": "28084e9d1df93137419b434688f1133db5d51141d70628127d352ebccb81cc4f"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/concepts/credits.md",
+   "source": "https://docs.openquantum.com/concepts/credits/",
+   "sha256": "4f43332f722df56e422b649d64eace404b2d6770520c369e9570a7dbd637d5d6"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/concepts/job-lifecycle.md",
+   "source": "https://docs.openquantum.com/concepts/job-lifecycle/",
+   "sha256": "410aeb5277a3dcf3e96965071d1b4368400ce48bd8c924ce0bb815a7b8446ed8"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/concepts/overview.md",
+   "source": "https://docs.openquantum.com/concepts/overview/",
+   "sha256": "5e9ea6d5edb97f0b1107ace309c56eb6088f7641735cf1812960191961a19c5b"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/core-sdk/authentication.md",
+   "source": "https://docs.openquantum.com/core-sdk/authentication/",
+   "sha256": "d339d7e18d7cf6e86defcf6b73e2aa8f621e7863226f67aacdef3d218c3c9d62"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/core-sdk/backend-discovery.md",
+   "source": "https://docs.openquantum.com/core-sdk/backend-discovery/",
+   "sha256": "d1d66442ac7eba79788e422961507ba547b5fb0cbc2d2ce3af137e95f4e0bdfe"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/core-sdk/examples.md",
+   "source": "https://docs.openquantum.com/core-sdk/examples/",
+   "sha256": "dda5175059300ac1567d1f16fb021bb6477022f684cbc508293ff02ccde9a45c"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/core-sdk/installation.md",
+   "source": "https://docs.openquantum.com/core-sdk/installation/",
+   "sha256": "eb3e3440774c13a6203009340a85b5eebeecab442c8c942cf328bb96cd390c0c"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/core-sdk/job-submission.md",
+   "source": "https://docs.openquantum.com/core-sdk/job-submission/",
+   "sha256": "726a5a83415bac618b270c125a9df5007b3c3ca2a38ca39f532c5c9859b8ca77"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/core-sdk/overview.md",
+   "source": "https://docs.openquantum.com/core-sdk/overview/",
+   "sha256": "107d668862cdb001fe6d90acf435a1ed05338ca9b4656b35f5cc02bbb158290f"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/core-sdk/quickstart.md",
+   "source": "https://docs.openquantum.com/core-sdk/quickstart/",
+   "sha256": "e0c7f6b667571bfe7d03e0ae085030d30d82f7967e468513d3bbf0332f900bab"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/getting-started/resources.md",
+   "source": "https://docs.openquantum.com/getting-started/resources/",
+   "sha256": "781e115e12215d733e9bec6f6c0ec4c083622478c5b192fa7d0168f2bf853315"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/integrations.md",
+   "source": "https://docs.openquantum.com/integrations/",
+   "sha256": "e4ff0e0b3ae63ee3e13015b4dc84928316948cf2ce7ec31d5c42cb02c8f9cf48"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/mcp/client-setup.md",
+   "source": "https://docs.openquantum.com/mcp/client-setup/",
+   "sha256": "8a76c35906d82cb067dfe7fc1c64c3dcb24b10870acf3e95ca9b31cfeb3fef87"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/mcp/installation.md",
+   "source": "https://docs.openquantum.com/mcp/installation/",
+   "sha256": "f3193f7be702a5fc1c0ac7f3a2055a03db4d740b830c88af5a3d8a8179f2ab1f"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/mcp/overview.md",
+   "source": "https://docs.openquantum.com/mcp/overview/",
+   "sha256": "a93c03c3ccb1f06136128d88dc22618489c678f146812b6e5296b0ade5ef483b"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/mcp/tools.md",
+   "source": "https://docs.openquantum.com/mcp/tools/",
+   "sha256": "60a37d95634e9b5fd91e261088aa7000ded8ee9c7f284a7720cd1644a256ca8b"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/pennylane-plugin/device-options.md",
+   "source": "https://docs.openquantum.com/pennylane-plugin/device-options/",
+   "sha256": "4d5a4f388d50f7f7ed8b8a88adf7932cbff4f11f932a46645a348cd16942bda7"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/pennylane-plugin/overview.md",
+   "source": "https://docs.openquantum.com/pennylane-plugin/overview/",
+   "sha256": "f3fe4daf1378b014e95e5e13521ee6e9e6cc2cc0814eebdf340963b8797d9c2d"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/pennylane-plugin/supported-operations.md",
+   "source": "https://docs.openquantum.com/pennylane-plugin/supported-operations/",
+   "sha256": "c7cf0f06daf134cfecad8dcc62f3765d0d0a61731f5d16fc0a3afa2c96e5629a"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/pennylane-plugin/troubleshooting.md",
+   "source": "https://docs.openquantum.com/pennylane-plugin/troubleshooting/",
+   "sha256": "ea5f0dc69136bbc57f473cc397df1ea34f1d59290a5629f843fe3a76454185ba"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/pennylane-plugin/examples/backend-selection.md",
+   "source": "https://docs.openquantum.com/pennylane-plugin/examples/backend-selection/",
+   "sha256": "d965b76fc6eca1fc91e17d217e771ac6d95d44fa3655a4f1504569fca37cbbf1"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/pennylane-plugin/examples/basic-circuits.md",
+   "source": "https://docs.openquantum.com/pennylane-plugin/examples/basic-circuits/",
+   "sha256": "bd821cce95a10f843f9f46c4354c08d0e00b27b476095f0a4535b52f586aace8"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/pennylane-plugin/examples/qml-workflow.md",
+   "source": "https://docs.openquantum.com/pennylane-plugin/examples/qml-workflow/",
+   "sha256": "2e7bc663aa9ce35411688e9f1771f86ea85318c87b7702eabe498e55cf2d2a95"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/pennylane-plugin/examples/vqe.md",
+   "source": "https://docs.openquantum.com/pennylane-plugin/examples/vqe/",
+   "sha256": "c986256aa26f6b22146b71a260fb365d33a5ba2595c7d2e6feb2fc1a9e3d958d"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/portal/account.md",
+   "source": "https://docs.openquantum.com/portal/account/",
+   "sha256": "e8af858764e107da898b448d26641f497508530fe995502bbc6252b89ba90a41"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/portal/credits-billing.md",
+   "source": "https://docs.openquantum.com/portal/credits-billing/",
+   "sha256": "22e0011b7786a6aff66c4c9a777c9757e2740f12ff3752e9120d9fc244d97ff8"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/portal/monitoring-jobs.md",
+   "source": "https://docs.openquantum.com/portal/monitoring-jobs/",
+   "sha256": "9f192541fb9865297d5ed3c90c2b21b312881568c8c8984267f741c5ce9b9aef"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/portal/organizations.md",
+   "source": "https://docs.openquantum.com/portal/organizations/",
+   "sha256": "c358846ec229e225c3273ca9ede7ea17e906f8896515d76837a79b4f3520db30"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/portal/overview.md",
+   "source": "https://docs.openquantum.com/portal/overview/",
+   "sha256": "6b568507bffcbab0831b341f341926694964dadc845203714467720834006f16"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/portal/sdk-keys.md",
+   "source": "https://docs.openquantum.com/portal/sdk-keys/",
+   "sha256": "8ba81411b1e6b93e6b96f76e107fa50055be1fa9a91dd814b43b7d6500a59fa6"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/portal/submitting-jobs.md",
+   "source": "https://docs.openquantum.com/portal/submitting-jobs/",
+   "sha256": "669f43d38ed813f12b40d9aac143280231158086bdd02c56bc3ed531dab17cf2"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/qbraid/backends-targets.md",
+   "source": "https://docs.openquantum.com/qbraid/backends-targets/",
+   "sha256": "dd36b1fb0f87984955ce8d329cc2263d4b0362b5f9fea90f9a371261aa0c2c29"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/qbraid/examples.md",
+   "source": "https://docs.openquantum.com/qbraid/examples/",
+   "sha256": "b66228c3dd862d57c47d36f517ae12addba0f50a8ad31f8a9b9e085ce3f4a91c"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/qbraid/installation.md",
+   "source": "https://docs.openquantum.com/qbraid/installation/",
+   "sha256": "185586c985f54e4c634e9ef6047e84a92b884881f0bb370a241efaee0dbe6db3"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/qbraid/overview.md",
+   "source": "https://docs.openquantum.com/qbraid/overview/",
+   "sha256": "28cea87137cd132a8dde32100e5c27b7119ca9cb7c453887ea1ed21171a431fe"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/qiskit-plugin/backends-targets.md",
+   "source": "https://docs.openquantum.com/qiskit-plugin/backends-targets/",
+   "sha256": "245d325c96fae3c525825c0837a6919c0b4f0bcfc78151bdfe880c2ef5c03568"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/qiskit-plugin/examples.md",
+   "source": "https://docs.openquantum.com/qiskit-plugin/examples/",
+   "sha256": "68426111b7914d59d92f48ed2f01fb669195b2bf1c62f7be9dfdfda152f2ea91"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/qiskit-plugin/getting-started.md",
+   "source": "https://docs.openquantum.com/qiskit-plugin/getting-started/",
+   "sha256": "c233785e278eaa0326058741d86a2d074e281b4fb5bcf6ecd2009f7051344388"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/qiskit-plugin/overview.md",
+   "source": "https://docs.openquantum.com/qiskit-plugin/overview/",
+   "sha256": "18d03c04b3201120e835d4481d4c40866d07345860a33f31ab7ec8d6144ca0f9"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/qiskit-plugin/sampler-estimator.md",
+   "source": "https://docs.openquantum.com/qiskit-plugin/sampler-estimator/",
+   "sha256": "7af1abf2c459ba3c218ee52d7abf01b48983fc422022cf65e95763429a240e08"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/qrisp-plugin/examples.md",
+   "source": "https://docs.openquantum.com/qrisp-plugin/examples/",
+   "sha256": "f173bef90074b51d87ecbacd437439529abfbf58428ff2fbde2ae1607f0b1949"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/qrisp-plugin/getting-started.md",
+   "source": "https://docs.openquantum.com/qrisp-plugin/getting-started/",
+   "sha256": "01b3bc2c30d98dbb0bdf497a17a1f6758bfad19e80d6a9fe3cc04481baf15770"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/qrisp-plugin/overview.md",
+   "source": "https://docs.openquantum.com/qrisp-plugin/overview/",
+   "sha256": "b40ea505ca295f2f3fc89dfa65c51057874126e723a7943b84f15d96d3743273"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/qrisp-plugin/supported-operations.md",
+   "source": "https://docs.openquantum.com/qrisp-plugin/supported-operations/",
+   "sha256": "f1c1539d8a4e95b0394498dda6b627e44e177a145da3dca1d77018658716703e"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/qrisp-plugin/troubleshooting.md",
+   "source": "https://docs.openquantum.com/qrisp-plugin/troubleshooting/",
+   "sha256": "772521af0012f802c07777e7b218d4badc9288bc7ef5a358acad0c5588da82f0"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/vscode/features.md",
+   "source": "https://docs.openquantum.com/vscode/features/",
+   "sha256": "7706f3642ebd192b13e4804212dc6ddb5551346363cf5d0f225392cae39931e8"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/vscode/installation.md",
+   "source": "https://docs.openquantum.com/vscode/installation/",
+   "sha256": "51202935015fd6d41d8843b99f118b4f414ba641c1c6670c06239c696641b091"
+  },
+  {
+   "path": "docs/notes/open_quantum/docs/vscode/overview.md",
+   "source": "https://docs.openquantum.com/vscode/overview/",
+   "sha256": "701148be07a1ae24e08fa2298861cd8d95e8c8b6a5fe42d7beb1781cbd5accd8"
+  }
+ ],
+ "unreachable": [],
+ "sitemap_sha256": "57b8eebb6d6e0ffe5cf34aef9985b2076be54b81e26eec950079cb11b28e66cf"
+}

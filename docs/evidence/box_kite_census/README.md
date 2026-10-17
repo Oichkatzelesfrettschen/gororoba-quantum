@@ -32,11 +32,12 @@ expression and a cd_core reference digest) and requires `--check` to reject
 each.
 
 Regeneration needs an open_gororoba checkout and the package stack on the
-build host (it multiplies through every package, 6.5 minutes on 12 CPUs):
+build host (it multiplies through every package, 6.5 minutes on 12 CPUs);
+`OPEN_GOROROBA` names the open_gororoba checkout:
 
 ```sh
 "$PYTHON" scripts/box_kite_census.py --write docs/evidence/box_kite_census/census.json \
-    --open-gororoba ~/Github/open_gororoba
+    --open-gororoba "$OPEN_GOROROBA"
 ```
 
 ## Contents

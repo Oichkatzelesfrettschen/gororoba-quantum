@@ -1,0 +1,101 @@
+{
+ "schema": "qi-collection-v1",
+ "collected_utc": "2026-10-17T03:54:46+00:00",
+ "jobs": [
+  {
+   "file": "h-cnot.cq",
+   "job": {
+    "id": 1527294,
+    "created_on": "2026-10-17T03:53:54.087989Z",
+    "file_id": 1537672,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 870054,
+    "queued_at": "2026-10-17T03:54:14.889546Z",
+    "finished_at": "2026-10-17T03:54:29.606067Z",
+    "number_of_shots": 1024,
+    "raw_data_enabled": true,
+    "session_id": "a3930bd6-46b6-47b8-a702-328557d53c0c",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1489285,
+     "created_on": "2026-10-17T03:54:29.568145Z",
+     "job_id": 1527294,
+     "execution_time_in_seconds": 14.474231,
+     "shots_requested": 1024,
+     "shots_done": 1024,
+     "results": {
+      "00": 541,
+      "10": 6,
+      "11": 477
+     }
+    }
+   ],
+   "logs": null
+  },
+  {
+   "file": "h-cnot-bits.cq",
+   "job": {
+    "id": 1527295,
+    "created_on": "2026-10-17T03:53:54.893130Z",
+    "file_id": 1537673,
+    "algorithm_type": "quantum",
+    "status": "failed",
+    "batch_job_id": 870054,
+    "queued_at": "2026-10-17T03:54:29.640648Z",
+    "finished_at": "2026-10-17T03:54:41.487327Z",
+    "number_of_shots": 1024,
+    "raw_data_enabled": true,
+    "session_id": "a3930bd6-46b6-47b8-a702-328557d53c0c",
+    "trace_id": "0b0ecf8c-7e21-478e-846e-7c1aeb64c8d3",
+    "message": "Quantum backend error: RSP returned failure: error interpreting cQASM script",
+    "source": ""
+   },
+   "results": [],
+   "logs": {
+    "logs": [],
+    "next_start": null
+   }
+  },
+  {
+   "file": "init-h-cnot.cq",
+   "job": {
+    "id": 1527296,
+    "created_on": "2026-10-17T03:53:55.714314Z",
+    "file_id": 1537674,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 870054,
+    "queued_at": "2026-10-17T03:53:56.792614Z",
+    "finished_at": "2026-10-17T03:54:14.852989Z",
+    "number_of_shots": 1024,
+    "raw_data_enabled": true,
+    "session_id": "a3930bd6-46b6-47b8-a702-328557d53c0c",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1489284,
+     "created_on": "2026-10-17T03:54:14.811431Z",
+     "job_id": 1527296,
+     "execution_time_in_seconds": 17.944208,
+     "shots_requested": 1024,
+     "shots_done": 1024,
+     "results": {
+      "00": 493,
+      "10": 15,
+      "11": 516
+     }
+    }
+   ],
+   "logs": null
+  }
+ ],
+ "transactions": []
+}

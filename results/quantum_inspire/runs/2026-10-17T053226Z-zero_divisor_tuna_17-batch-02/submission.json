@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-17T05:32:33+00:00",
+ "approval": "User 2026-10-17: \"Tuna 17 permissed for you to run your three batches. So work with your Re-place zero-divisor regions by visibility floor and do submit those, announce to the other agent first to coordinate appropriately.\" -- Tuna-17 zero-divisor series, placement off q0, q5, q6, q7 and q9, after its QX dry run, in a slot between the peer series batches",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "3e71989698199c0645312926466ecc5a3bad93ef10576dca68f87c7a802c7738",
+ "backend_status_at_submit": "executing",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 870133,
+ "project": 765938,
+ "shots": 16384,
+ "jobs": [
+  {
+   "file": "latin-3.cq",
+   "job": 1527412,
+   "sha256": "632d6ae34a80c282bcdb15c00cc7452c2f6d4e0840a7dba41ce4e2d65ce066c0"
+  },
+  {
+   "file": "readout-0.cq",
+   "job": 1527413,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1527414,
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  }
+ ],
+ "submitted_utc": "2026-10-17T05:32:33+00:00"
+}

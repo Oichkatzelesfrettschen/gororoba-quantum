@@ -32,7 +32,7 @@ gororoba_quantum/cd_core.py: cd_sign(dim,p,q); cd_multiply(dim,a,b); basis(dim,i
 
 scripts/algebra_circuit_fixtures.py: zero_products(); hadamard_test(i,j,k,*,leak,cleanup); measurement_basis_and_workspace(); sage_convention(); product(dim,x,y); omega(dim,i,j,k). Gates core-251/252.
 
-scripts/qi_zero_divisor_cases.py: certify(); select_exact(i,j); logical(case), routed(...) -> cQASM; build() (4 data qubits plus 1 selector per 5-qubit replica region, Latin square of dark/bright/fixture); analyze(run_dirs); analyze_series(...); wilson(k,n); self_test().
+scripts/qi_zero_divisor_cases.py: certify(); select_exact(i,j); logical(case) -> QuantumCircuit (logical witness), routed(...) -> QuantumCircuit (routed on a region); emit(circuit, place) -> cQASM lines; build() (4 data qubits plus 1 selector per 5-qubit replica region, Latin square of dark/bright/fixture); analyze(run_dirs); analyze_series(...); wilson(k,n); self_test().
 
 scripts/qi_crosstalk_teleport_cases.py: disjoint_stars(backend), disjoint_paths(backend, limit) (Tuna-17 topology layouts); additivity_circuit(n, stars, config), teleport_circuit(n, paths, dialect) -> cQASM; build(catalogue); analyze(run_dirs).
 

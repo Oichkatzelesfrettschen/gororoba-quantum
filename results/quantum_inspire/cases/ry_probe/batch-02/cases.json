@@ -1,0 +1,37 @@
+{
+ "schema": "qi-ry-probe-cases-v1",
+ "backend": "Rydberg",
+ "backend_type_id": 5,
+ "nqubits": 2,
+ "shots": 1024,
+ "purpose": "Ry construct probe: each circuit adds one construct to the X-only program that ran, so the first failing circuit names what the emulator's reader rejects. Expected outcomes read q[0] as the leftmost character.",
+ "circuits": [
+  {
+   "file": "h-cnot.cq",
+   "construct": "H with CNOT",
+   "expected": {
+    "00": 0.5,
+    "11": 0.5
+   },
+   "sha256": "642a4962d9e2eece2a6ba8e878459bbefc6fb85e2ca4ae30c152ea3e2ec565b6"
+  },
+  {
+   "file": "h-cnot-bits.cq",
+   "construct": "H, CNOT and a bit register",
+   "expected": {
+    "00": 0.5,
+    "11": 0.5
+   },
+   "sha256": "d1d07a4f7ae48fc86b589f3a88c089597ea088ef811d6c143a7cb8fac01fcf98"
+  },
+  {
+   "file": "init-h-cnot.cq",
+   "construct": "an INIT block with H and CNOT",
+   "expected": {
+    "00": 0.5,
+    "11": 0.5
+   },
+   "sha256": "5121eaac9485132a09899e5a9e31d2d0020f1b7814fb743c93504ae3c76db57d"
+  }
+ ]
+}

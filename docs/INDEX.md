@@ -309,6 +309,12 @@ fractional gates, stretch, circuit timing, processor types, dynamic circuits, ru
 The [Heron and ISA reference guides](notes/ibm_quantum/README.md) retain transcribed Markdown reference copies of the core
 guides covering processor architectures, backend instruction sets, transpilation to ISA circuits, dynamic circuits, fractional gates,
 timing, and calibration, each with an upstream link to the full online piece.
+The [Heron r2 readout resonator note](notes/ibm_quantum/heron-r2-readout-resonator.md) records the public evidence
+for ibm_fez, ibm_kingston and ibm_marrakesh readout, each source and value tagged by processor revision, and binds
+nine arXiv HTML renderings (2604.25863v3, 2604.03360v2, 2606.00433v2, 2412.04053v2, 2305.10508v1, 2407.14431v3,
+2308.13065v2, 2406.07611v2, 2402.17833v2) by SHA-256 in [SOURCES.json](SOURCES.json); the retained
+[backend configuration snapshot](evidence/heron_platform/backend_configuration.json) holds the sorted configuration
+key names of the three account backends.
 The [Heron tile packing note](notes/heron_spatial_multiprogramming.md) packs guard-banded tiles on the
 snapshot coupling map, composes one circuit per tile into one wide circuit, and states per-backend RZZ and
 repetition-delay arithmetic from Target values, audited in
