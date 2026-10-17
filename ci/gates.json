@@ -2504,6 +2504,14 @@
    "name": "core-340",
    "seconds": 83.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_fringe_amplitudes.py --check ../docs/evidence/atlas_fringe_amplitudes/result.json --runs ibm_fez,ibm_kingston --lanes 4 && \"$PYTHON\" -B -O -W error ../scripts/atlas_fringe_amplitudes.py --check ../docs/evidence/atlas_fringe_amplitudes/result.json --runs ibm_fez,ibm_kingston --lanes 4",
+   "name": "core-341",
+   "seconds": 455.0,
+   "tier": "full"
   }
  ],
  "excluded": [
