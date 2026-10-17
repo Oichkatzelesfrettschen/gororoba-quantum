@@ -44,12 +44,16 @@ other field (seed, frame count, kinds,
 source, convention, certificate method, summary) must equal what this script
 writes for those rows.
 
-Under --limit the rows past the first K frames bind to the data frame_draws
-fixes without rank work: the key set, the frame index, the kind order, and the
-seeded a_scale and b_scale of each row, drawn for all FRAMES frames in the
-generator's order. Their length_ratio_squared, member and nullity stay bound
-by the summary check, and their element_sha256 and b_nullity_a4 are bound only
-by the full replay (no --limit), which the full-tier gate runs.
+Under --limit the rows past the first K frames bind to data computable without
+the exact rank work: the key set, the frame index, the kind order, the seeded
+a_scale and b_scale of each row (frame_draws, drawn for all FRAMES frames in the
+generator's order), and, for the self, swap and generic kinds, length_ratio_squared,
+which follows from the scales and the norms of the Cayley-frame zero divisors
+(self and swap reuse a, so the ratio is b_scale squared).
+member and nullity are bound to the kind by the summary check (violations == 0).
+The length_ratio_squared of locus and annihilator rows (a seeded combination of
+a kernel basis), element_sha256 and b_nullity_a4 are bound only by the full
+replay (no --limit), which the full-tier gate runs.
 """
 
 from __future__ import annotations
@@ -286,23 +290,43 @@ ROW_KEYS = frozenset(
 )
 
 
+def frame_norms(frame: int) -> tuple[Fraction, Fraction]:
+    """|a|^2 and |b|^2 of the unscaled Cayley-frame zero divisors of one frame."""
+    a, b = zero_divisor(A_SEED_BASE + frame), zero_divisor(B_SEED_BASE + frame)
+    return dot(a, a), dot(b, b)
+
+
 def suffix_mismatch(draws: list[dict[str, Any]], start: int, rows: list[dict[str, Any]]) -> str | None:
-    """First retained row from index start whose key set, frame, kind, a_scale or b_scale departs from the draws."""
+    """First retained row from index start that departs from what the draws fix without rank work.
+
+    Checked: key set, frame, kind, a_scale, b_scale, and for self, swap and
+    generic rows length_ratio_squared.
+    """
+    first = start // len(KINDS)
+    frames = range(first, len(draws))
+    norms = dict(zip(frames, parallel.ordered_map(frame_norms, frames, min_items=2), strict=True))
     for index in range(start, len(rows)):
         draw = draws[index // len(KINDS)]
         slot = index % len(KINDS)
+        kind = KINDS[slot]
+        a_scale, b_scale = draw["a_scale"], draw["b_scales"][slot]
         expected = {
             "frame": draw["frame"],
-            "kind": KINDS[slot],
-            "a_scale": str(draw["a_scale"]),
-            "b_scale": str(draw["b_scales"][slot]),
+            "kind": kind,
+            "a_scale": str(a_scale),
+            "b_scale": str(b_scale),
         }
+        if kind in ("self", "swap"):
+            expected["length_ratio_squared"] = str(b_scale**2)
+        elif kind == "generic":
+            norm_a, norm_b = norms[draw["frame"]]
+            expected["length_ratio_squared"] = str(b_scale**2 * norm_b / (a_scale**2 * norm_a))
         row = rows[index]
         if set(row) != ROW_KEYS:
             return f"retained row {index} has keys {sorted(row)}"
         for key, value in expected.items():
             if row[key] != value:
-                return f"retained row {index} {key} is {row[key]!r}, the seeded draw is {value!r}"
+                return f"retained row {index} {key} is {row[key]!r}, the seeded draw gives {value!r}"
     return None
 
 
