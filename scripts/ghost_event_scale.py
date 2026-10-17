@@ -14,15 +14,22 @@ readout factor r as a fourth axis:
    (raw/JOB/pub_NN.json metadata.compilation.scheduler_timing), and
    NoiseModel.from_backend relaxes each delay at the qubit's T1 and T2
    (RelaxationNoisePass, zero temperature).
-2. A per-event error m: a single-qubit depolarizing channel of probability m,
-   ``(1 - m) rho + m I / 2``, on the measured qubit immediately after every
-   mid-circuit measurement (a measure followed by a later non-barrier
-   instruction on its qubit) and after every reset. The channel is appended
-   to the circuit as an Aer QuantumError instruction; in density-matrix mode
-   it acts as a superoperator and draws no random number. A terminal
-   measurement gets no channel, since nothing after it reaches a recorded
-   bit. On a qubit measured and then reset, the post-measurement channel is
-   inert because the reset erases it.
+2. A per-event assignment error m: an X flip of probability m on the
+   measured qubit immediately before every mid-circuit measurement (a
+   measure followed by a later non-barrier instruction on its qubit) and
+   immediately after every reset. The flip before a measurement changes the
+   outcome the circuit records and its feed-forward reads; in the retained
+   runs the qubit is reset next (all but two measurements of
+   2026-10-13T083417, whose qubit is measured again and keeps the flipped
+   state), so the flip acts as an assignment error. A reset is a measurement
+   followed by a conditional flip, so the flip after it is that internal
+   assignment failing and leaving the qubit excited. m is therefore excess
+   mid-circuit assignment error beyond the snapshot's readout flips, which
+   the replay already applies to every measurement and which r scales. The
+   flip is appended to the circuit as an Aer QuantumError instruction; in
+   density-matrix mode it acts as a superoperator and draws no random
+   number. A terminal measurement gets no flip, since r already covers its
+   assignment.
 3. The CZ factor c and the readout factor r, applied as
    ghost_error_scale.scaled does. A static control sweeps the full readout
    axis STATIC_READOUT; a dynamic run sweeps r = 1 and the factor the
@@ -184,7 +191,7 @@ import qiskit  # noqa: E402
 import qiskit_aer  # noqa: E402
 from qiskit import QuantumCircuit  # noqa: E402
 from qiskit.circuit import Delay  # noqa: E402
-from qiskit_aer.noise import depolarizing_error  # noqa: E402
+from qiskit_aer.noise import pauli_error  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import parallel  # noqa: E402
@@ -387,14 +394,17 @@ def event_positions(circuit: QuantumCircuit) -> list[tuple[int, int]]:
 
 
 def with_events(circuit: QuantumCircuit, probability: float) -> QuantumCircuit:
-    """The circuit with a depolarizing channel of the given probability after each event."""
+    """The circuit with an X flip of the given probability before each mid-circuit measure and after each reset."""
     positions = dict(event_positions(circuit))
     out = QuantumCircuit(*circuit.qregs, *circuit.cregs, name=circuit.name)
-    error = depolarizing_error(probability, 1)
+    error = pauli_error([("X", probability), ("I", 1.0 - probability)])
     for position, inst in enumerate(circuit.data):
+        event = positions.get(position)
+        if event is not None and inst.operation.name == "measure":
+            out.append(error, [circuit.qubits[event]])
         out.append(inst)
-        if position in positions:
-            out.append(error, [circuit.qubits[positions[position]]])
+        if event is not None and inst.operation.name == "reset":
+            out.append(error, [circuit.qubits[event]])
     return out
 
 
@@ -1154,6 +1164,16 @@ def self_test() -> None:
     require(delays == expected, f"self-test: delays {delays} differ from the planted {expected}")
     require(summary["pad_dt"] == sum(expected) - 400, "self-test: pad total differs")
     require(event_count(circuit) == 2, "self-test: the synthetic circuit carries a mid-circuit measure and a reset")
+    # On an ideal measure, reset, measure circuit a certain flip reports 1
+    # from the mid-circuit measure and leaves the reset qubit excited.
+    probe = QuantumCircuit(1, 2)
+    probe.measure(0, 0)
+    probe.reset(0)
+    probe.measure(0, 1)
+    ideal = qiskit_aer.AerSimulator(method="density_matrix")
+    require(ideal.run(probe, shots=64, seed_simulator=SEED).result().get_counts() == {"00": 64}, "self-test: probe")
+    flipped = ideal.run(with_events(probe, 1.0), shots=64, seed_simulator=SEED).result().get_counts()
+    require(flipped == {"11": 64}, f"self-test: a certain event flip gives {flipped}, not 11 on every shot")
     simulator = calibration_snapshot.noise_simulator(ghost_error_scale.scaled(snapshot, 2.0, 1.0), "CPU")
     shots = [1000]
     unmodified = ghost_run.sample(simulator, [circuit], shots, SEED)[0]
