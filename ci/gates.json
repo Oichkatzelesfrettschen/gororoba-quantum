@@ -2068,6 +2068,22 @@
   {
    "suite": "sources",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -W error scripts/heron_backend_config_snapshot.py --check docs/evidence/heron_platform/backend_configuration.json",
+   "name": "sources-388",
+   "seconds": 0.3,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -O -W error scripts/heron_backend_config_snapshot.py --check docs/evidence/heron_platform/backend_configuration.json",
+   "name": "sources-389",
+   "seconds": 0.3,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -I -W error docs/evidence/reviewer_associator_audit/audit.py | cmp - docs/evidence/reviewer_associator_audit/audit_results.json",
    "name": "sources-240",
    "seconds": 1.0,
@@ -2207,6 +2223,14 @@
    "cmd": "\"$PYTHON\" -B -W error conditional_ramsey.py && \"$PYTHON\" -B -O -W error conditional_ramsey.py",
    "name": "core-272",
    "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error star_ramsey.py && \"$PYTHON\" -B -O -W error star_ramsey.py",
+   "name": "core-361",
+   "seconds": 26.0,
    "tier": "pr"
   },
   {
@@ -2476,6 +2500,38 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/capture_oq_docs.py --check",
+   "name": "core-380",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/capture_oq_docs.py --self-test && \"$PYTHON\" -B -O -W error scripts/capture_oq_docs.py --self-test",
+   "name": "core-381",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/oq_platform.py check docs/evidence/open_quantum --agents AGENTS.md docs/notes/open_quantum/README.md",
+   "name": "core-382",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/oq_platform.py --self-test && \"$PYTHON\" -B -O -W error scripts/oq_platform.py --self-test",
+   "name": "core-383",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_platform.py check docs/evidence/quantum_inspire --agents AGENTS.md",
    "name": "core-347",
    "seconds": 1.0,
@@ -2551,6 +2607,62 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_coupler_zz_map.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -W error scripts/qi_coupler_zz_map.py --conformance",
    "name": "core-332",
    "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --conformance",
+   "name": "core-362",
+   "seconds": 11.3,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_toolchain_check.py --check",
+   "name": "core-368",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_ry_probe_cases.py --check results/quantum_inspire/cases",
+   "name": "core-370",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_ry_probe_cases.py --analyze results/quantum_inspire/ry_probe_analysis.json results/quantum_inspire/runs/2026-10-17T034952Z-ry_probe-batch-00 results/quantum_inspire/runs/2026-10-17T034952Z-ry_probe-batch-01 results/quantum_inspire/runs/2026-10-17T034952Z-ry_probe-batch-02 --replay",
+   "name": "core-385",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --analyze results/quantum_inspire/readout_ringdown_tuna_17_P_analysis.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08 --replay",
+   "name": "core-386",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_tuna17_device_context.py --check",
+   "name": "core-387",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --analyze results/quantum_inspire/readout_ringdown_qx_P_analysis.json results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-00 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-01 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-02 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-03 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-04 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-05 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-06 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-07 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_P-batch-08 --replay && \"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --analyze results/quantum_inspire/readout_ringdown_qx_Q_analysis.json results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-00 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-01 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-02 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-03 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-04 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-05 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-06 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-07 results/quantum_inspire/runs/2026-10-17T030006Z-readout_ringdown_qx_Q-batch-08 --replay",
+   "name": "core-369",
+   "seconds": 0.3,
    "tier": "pr"
   },
   {
