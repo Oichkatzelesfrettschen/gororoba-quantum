@@ -2150,7 +2150,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/research_state.py --self-test && \"$PYTHON\" -B -O -W error scripts/research_state.py --self-test",
    "name": "core-271",
-   "seconds": 1.0,
+   "seconds": 10.0,
    "tier": "pr"
   },
   {
@@ -2468,6 +2468,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/capture_qi_docs.py --self-test && \"$PYTHON\" -B -O -W error scripts/capture_qi_docs.py --self-test",
+   "name": "core-371",
+   "seconds": 1.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_platform.py check docs/evidence/quantum_inspire --agents AGENTS.md",
    "name": "core-347",
    "seconds": 1.0,
@@ -2608,6 +2616,14 @@
    "name": "core-338",
    "seconds": 2.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/noise.json --all-seeds && \"$PYTHON\" -B -O -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/noise.json --all-seeds",
+   "name": "core-379",
+   "seconds": 1281.7,
+   "tier": "full"
   },
   {
    "suite": "core",
