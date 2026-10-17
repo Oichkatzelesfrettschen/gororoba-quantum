@@ -2704,6 +2704,22 @@
    "name": "core-351",
    "seconds": 0.2,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/jax_bridge_sweep.py --self-test >/dev/null",
+   "name": "core-352",
+   "seconds": 44.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -O -W error scripts/jax_bridge_sweep.py --self-test >/dev/null",
+   "name": "core-353",
+   "seconds": 43.1,
+   "tier": "pr"
   }
  ],
  "excluded": [

@@ -150,7 +150,13 @@ and requires every number to agree within 1.5e-6 (one unit of the six
 retained decimals plus roundoff), or 1e-9 relative for larger values. A
 condition number agrees within 1e-6 relative: an SVD on a condition-kappa
 design carries relative roundoff of order kappa times the machine epsilon,
-which differs between BLAS builds at fold conditions near 5e5.
+which differs between BLAS builds at fold conditions near 5e5. Every other
+number inside a model entry also agrees within eps * kappa^2 * |value|
+(``compare``), kappa the model's retained fold_condition_max for outputs of
+the leave-one-out fits and its full-design condition for the rest: on the
+Fez lane-4 axis-tilt model 4.3e-5 relative for the leave-one-out outputs and
+1.1e-6 for the full fit, and below the one-unit floor for values near 1
+wherever kappa stays under about 8e4.
 """
 
 from __future__ import annotations
@@ -220,7 +226,14 @@ REPRODUCTION_TOLERANCE = 1e-9
 CHECK_TOLERANCE = 1.5e-6
 CHECK_RELATIVE = 1e-9
 CONDITION_RELATIVE = 1e-6
+LSQ_ROUNDOFF = float(np.finfo(float).eps)
+LSQ_PROBE_SEED = 20261017
 CONDITION_KEYS = frozenset({"condition", "fold_condition_max"})
+# Model outputs computed from the leave-one-out fits; every other model output
+# comes from the full-design fit.
+FOLD_DERIVED_KEYS = frozenset(
+    {"leave_one_out_rms_rad", "leave_one_out_noise_floor_rad", "nonlinear_leave_one_out_rms_rad", "contrast"}
+)
 CONTRADICTION_SIGMA = 3.0
 # A Column names one error parameter: (family, compact qubit index or coupler pair).
 Column = tuple[str, Any]
@@ -1011,21 +1024,111 @@ def self_test() -> int:
         mismatch = abs(atlas.wrap(EdgeResponse([])(points)["phase"] - summary["ideal_phase"]))
         print(f"ibm_kingston edge {key}: ideal mismatch {mismatch:.1e} rad, calibrations {summary['calibrations']}")
         require(mismatch < 1e-9, f"ibm_kingston {key}: replicas miss the ideal fringe by {mismatch:.2e} rad")
+    # The check admits roundoff scaled by a model's own conditioning and
+    # rejects a change just beyond it: the one-unit floor 1.5e-6 at kappa 10
+    # and eps * kappa^2 = 4.299e-5 at kappa 4.4e5, each bracketed within 3
+    # percent so a rescaled coefficient fails.
+    # A full-fit output takes the full design's condition and a leave-one-out
+    # output the worst fold's, so an ill-conditioned fold leaves the full-fit
+    # parameters at their own tolerance.
+    for full, fold, output, fresh, accepted in (
+        (10.0, 10.0, "parameters", 1.0 + 1.46e-6, True),
+        (10.0, 10.0, "parameters", 1.0 + 1.54e-6, False),
+        (4.4e5, 4.4e5, "parameters", 1.0 + 4.25e-5, True),
+        (4.4e5, 4.4e5, "parameters", 1.0 + 4.35e-5, False),
+        (10.0, 4.4e5, "parameters", 1.0 + 4.25e-5, False),
+        (10.0, 4.4e5, "fit_rms_rad", 1.0 + 4.25e-5, False),
+        (10.0, 4.4e5, "leave_one_out_rms_rad", 1.0 + 4.25e-5, True),
+        (10.0, 4.4e5, "contrast", 1.0 + 4.25e-5, True),
+        (10.0, 4.4e5, "contrast", 1.0 + 4.35e-5, False),
+    ):
+        try:
+            compare(
+                {"condition": full, "fold_condition_max": fold, output: [1.0]},
+                {"condition": full, "fold_condition_max": fold, output: [fresh]},
+                "model",
+            )
+            outcome = True
+        except SystemExit:
+            outcome = False
+        require(outcome == accepted, f"check tolerance at kappa {full:g}/{fold:g} misjudges {output} {fresh}")
+    # A condition number keeps its own relative tolerance inside an
+    # ill-conditioned model, so a moved fold_condition_max still fails.
+    try:
+        compare({"fold_condition_max": 4.4e5}, {"fold_condition_max": 4.4e5 + 1.0}, "model")
+    except SystemExit:
+        pass
+    else:
+        raise SystemExit("a fold_condition_max change of 1.0 at 4.4e5 passed the check")
+    # Least-squares roundoff grows as eps * kappa^2: it stays inside that bound
+    # and outgrows the eps * kappa bound by more than a factor of 50 at 1e5.
+    for kappa in (1e3, 1e5, 4.4e5):
+        drift, scale = lsq_roundoff_scaling(kappa)
+        require(drift <= LSQ_ROUNDOFF * kappa**2 * scale, f"kappa {kappa:g}: drift {drift:.2e} exceeds eps kappa^2")
+        if kappa >= 1e5:
+            require(drift > 50 * LSQ_ROUNDOFF * kappa * scale, f"kappa {kappa:g}: drift {drift:.2e} is kappa-linear")
     print("self-test passed")
     return 0
 
 
-def compare(retained: Any, fresh: Any, path: str) -> None:
+def lsq_roundoff_scaling(kappa: float, trials: int = 40) -> tuple[float, float]:
+    """Largest solution drift under eps-sized perturbations of a least-squares design with condition kappa.
+
+    The design is 12 x 6 with singular values spaced geometrically from 1 to
+    1/kappa and a residual of a tenth of the fitted signal, the shape of a
+    lane fit; returns the drift and the solution's largest magnitude.
+    """
+    rng = np.random.default_rng(LSQ_PROBE_SEED)
+    u, _ = np.linalg.qr(rng.standard_normal((12, 12)))
+    v, _ = np.linalg.qr(rng.standard_normal((6, 6)))
+    design = u[:, :6] @ np.diag(np.geomspace(1.0, 1.0 / kappa, 6)) @ v.T
+    x = rng.standard_normal(6)
+    orthogonal = u[:, 6:] @ rng.standard_normal(6)
+    signal = design @ x
+    data = signal + 0.1 * np.linalg.norm(signal) * orthogonal / np.linalg.norm(orthogonal)
+    base = np.linalg.lstsq(design, data, rcond=None)[0]
+    drift = 0.0
+    for _ in range(trials):
+        noise = rng.standard_normal(design.shape)
+        noise *= LSQ_ROUNDOFF * np.linalg.norm(design, 2) / np.linalg.norm(noise, 2)
+        drift = max(drift, float(np.max(np.abs(np.linalg.lstsq(design + noise, data, rcond=None)[0] - base))))
+    return drift, float(np.max(np.abs(base)))
+
+
+def compare(retained: Any, fresh: Any, path: str, conditioning: float = 0.0) -> None:
+    """Every retained number within the check tolerance of its recomputation.
+
+    A least-squares solution with a nonzero residual carries normwise
+    roundoff of order eps * kappa^2 * max|x|, which lsq_roundoff_scaling()
+    measures in the self-test, so the values of a model whose design or
+    leave-one-out fold is ill-conditioned move between BLAS builds. Inside a
+    model entry a value therefore also admits eps * kappa^2 * |value|, with
+    kappa the retained fold_condition_max for an output of the leave-one-out
+    fits (FOLD_DERIVED_KEYS) and the retained full-design condition for every
+    other output; the condition numbers keep their own relative tolerance,
+    and a well-conditioned model keeps the one-rounding-unit floor. The
+    componentwise form is tighter than the normwise bound, so a substrate
+    that moves a small component past it fails the check rather than passing
+    a regression; the AOCL, OpenBLAS and Kaggle recomputes fall inside it
+    (docs/evidence/atlas_coherent_families).
+    """
     if isinstance(retained, dict):
         require(isinstance(fresh, dict) and set(retained) == set(fresh), f"{path}: keys differ")
         for key in retained:
-            compare(retained[key], fresh[key], f"{path}.{key}")
+            kappa = retained.get("fold_condition_max" if key in FOLD_DERIVED_KEYS else "condition")
+            scale = conditioning
+            if isinstance(kappa, (int, float)) and not isinstance(kappa, bool):
+                scale = max(conditioning, LSQ_ROUNDOFF * float(kappa) ** 2)
+            compare(retained[key], fresh[key], f"{path}.{key}", scale)
     elif isinstance(retained, list):
         require(isinstance(fresh, list) and len(retained) == len(fresh), f"{path}: lengths differ")
         for k, (a, b) in enumerate(zip(retained, fresh, strict=True)):
-            compare(a, b, f"{path}[{k}]")
+            compare(a, b, f"{path}[{k}]", conditioning)
     elif isinstance(retained, float) and isinstance(fresh, (int, float)) and not isinstance(fresh, bool):
-        relative = CONDITION_RELATIVE if path.rsplit(".", 1)[-1] in CONDITION_KEYS else CHECK_RELATIVE
+        if path.rsplit(".", 1)[-1] in CONDITION_KEYS:
+            relative = CONDITION_RELATIVE
+        else:
+            relative = max(CHECK_RELATIVE, conditioning)
         tolerance = max(CHECK_TOLERANCE, relative * abs(retained))
         require(abs(retained - fresh) <= tolerance, f"{path}: {retained} against {fresh}")
     else:
