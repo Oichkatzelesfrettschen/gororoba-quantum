@@ -101,6 +101,15 @@ A local run needs no account, queue or approval and records nothing.
 4. Treat agreement as a syntax and plumbing check: qxelarator shares QX's
    simulator, so it reproduces QX's register shape but says nothing about
    Tuna's.
+5. Keep `reset` out of any circuit whose law qxelarator must reproduce.
+   qxelarator 0.10.0's `reset` on a qubit with weight on |1> discards the
+   relative phase of the rest of the register: with q0 in |1> and q1 in
+   |->, `reset q[0]` followed by H on q1 reads q1 = 0 in 1000 of 1000 shots,
+   where a phase-preserving reset reads 1 (the same program with X in place
+   of the reset reads q1 = 1 in 1000 of 1000). Issue #223 holds the
+   amplitude-level evidence; the remote QX backend is untested. No
+   box-kite dialect maps `reset` (`box_kite_cases.DIALECTS`), so `emit`
+   refuses it for every generated case.
 
 ## Do a QX dry run (remote emulator)
 

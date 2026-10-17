@@ -1,0 +1,44 @@
+{
+  "schema": "blas-worker-threads-observations-v1",
+  "command": "GOROROBA_WORKERS=W [OPENBLAS_NUM_THREADS=T OMP_NUM_THREADS=T] \"$PYTHON\" -B -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck.json",
+  "gate": "core-487",
+  "environment": {
+    "host_cpu": "AMD Ryzen 5 5600X3D, 6 cores, 12 logical CPUs",
+    "python": "3.14.7",
+    "numpy": "2.5.4",
+    "blas": "OpenBLAS 0.3.34.106.0 (scipy-openblas wheel), default 12 threads per process",
+    "qiskit_aer": "0.17.2",
+    "venv": "uv venv with requirements.txt and ci/requirements-ci.txt pins"
+  },
+  "note": "Wall seconds of single runs on a shared host whose load average other jobs set; each series lists its load average at start. 'pool_default' is parallel.py before the worker thread rule; 'pool_rule_2' is a variant that gave each of six workers 2 threads; forced settings export the variables for the whole process tree.",
+  "series": [
+    {"load_average": 54.28, "runs": [
+      {"workers": 1, "threads": "default", "seconds": 194.27},
+      {"workers": 6, "threads": "default", "seconds": 99.25},
+      {"workers": 6, "threads": "1 forced", "seconds": 11.10},
+      {"workers": 1, "threads": "default", "seconds": 31.56},
+      {"workers": 6, "threads": "default", "seconds": 64.95},
+      {"workers": 6, "threads": "1 forced", "seconds": 8.70}
+    ]},
+    {"load_average": 26.79, "runs": [
+      {"workers": 6, "threads": "pool_rule_2", "seconds": 45.46},
+      {"workers": 6, "threads": "pool_rule_2", "seconds": 47.35},
+      {"workers": 1, "threads": "default", "seconds": 209.14}
+    ]},
+    {"load_average": 35.15, "runs": [
+      {"workers": 6, "threads": "pool_rule_2", "seconds": 64.17},
+      {"workers": 6, "threads": "1 forced", "seconds": 42.80},
+      {"workers": 6, "threads": "2 forced", "seconds": 97.90}
+    ]},
+    {"load_average": 69.17, "runs": [
+      {"workers": 6, "threads": "pool_rule_2", "seconds": 102.00},
+      {"workers": 6, "threads": "1 forced", "seconds": 52.36},
+      {"workers": 6, "threads": "2 forced", "seconds": 82.74}
+    ]},
+    {"load_average": 85.28, "runs": [
+      {"workers": 6, "threads": "pool_rule_2", "seconds": 63.72},
+      {"workers": 6, "threads": "1 forced", "seconds": 35.85},
+      {"workers": 6, "threads": "2 forced", "seconds": 60.26}
+    ]}
+  ]
+}
