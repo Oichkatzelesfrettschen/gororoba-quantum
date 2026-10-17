@@ -29,7 +29,7 @@ and the captures with `"$PYTHON" scripts/capture_qi_docs.py`.
 
 `scripts/capture_qi_docs.py` keeps each source under a header naming its
 URL, retrieval time and digest, with `MANIFEST.json` in each directory;
-gate core-325 rechecks every byte offline.
+gate core-346 rechecks every byte offline.
 
 | Directory | Source |
 |---|---|
@@ -42,7 +42,8 @@ gate core-325 rechecks every byte offline.
 ## Evidence and records
 
 - [docs/evidence/quantum_inspire/](../../evidence/quantum_inspire/): the
-  account catalogue and usage ledger snapshot (identifiers hashed).
+  account catalogue and usage ledger snapshot, which retains no team,
+  member or user identifier in any form.
 - [results/quantum_inspire/](../../../results/quantum_inspire/): generated
   cases under `cases/` and every submitted run under `runs/`, each with its
   circuits, digests, receipt, raw shots, results and analysis.

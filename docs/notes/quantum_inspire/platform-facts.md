@@ -138,8 +138,8 @@ https://www.datocms-assets.com/119587/1740490348-2025-02-06-terms-and-conditions
 
 ## Gate list entries
 
-The platform branch at `da293a8` registers the script in `ci/gates.json` as
-core-001 (ruff check), core-002 (ruff format), core-039 (mypy) and core-325
-(`"$PYTHON" -B -W error scripts/capture_qi_docs.py --check`); this branch's
-script passes all four and `docs/verify_sources.py` in normal and `-O`
+`ci/gates.json` runs `scripts/capture_qi_docs.py` under core-001 (ruff
+check), core-002 (ruff format), core-039 (mypy) and core-346
+(`"$PYTHON" -B -W error scripts/capture_qi_docs.py --check`, every captured
+byte offline); `docs/verify_sources.py` checks the links in normal and `-O`
 modes.
