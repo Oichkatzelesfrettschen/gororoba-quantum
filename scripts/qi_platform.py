@@ -92,6 +92,10 @@ REDACTED = ("email", "full_name", "oidc_sub")
 ACCOUNT_IDENTIFIERS = ("team", "member", "user", "team_id", "member_id", "user_id", "owner_id")
 TERMINAL = {"completed", "failed", "cancelled"}
 ENQUEUED_BATCH_STATUSES = {"queued", "reserved", "running", "finished"}
+# A batch still 'planned' was never enqueued, so its jobs never run. Within this
+# many seconds of its creation it is a submission in progress on some host;
+# after it, an interrupted submit that reconcile leaves blocked.
+ABANDONED_PLANNING_SECONDS = 600
 REFRESH_MARGIN = 120.0
 TOKEN_FILE = Path.home() / ".quantuminspire" / "config.json"
 # Every process that refreshes the shared OAuth tokens holds this lock while it
@@ -193,16 +197,7 @@ class Client:
                 # AuthManager.refresh_tokens keeps the rotated tokens in memory
                 # only; the next process would otherwise read the spent refresh
                 # token from disk and present it.
-                path = Path(type(settings).json_file())
-                fd, temporary = tempfile.mkstemp(dir=path.parent, prefix=".config.", suffix=".json")
-                try:
-                    with os.fdopen(fd, "w", encoding="utf-8") as handle:
-                        handle.write(settings.model_dump_json(indent=4))
-                    os.chmod(temporary, 0o600)
-                    os.replace(temporary, path)
-                except BaseException:
-                    os.unlink(temporary)
-                    raise
+                _publish_text(Path(type(settings).json_file()), settings.model_dump_json(indent=4), mode=0o600)
         tokens = self.config.user_settings.auths[self.host].tokens
         self.expires = tokens.generated_at + tokens.expires_in
         self.session.headers["Authorization"] = f"Bearer {tokens.access_token}"
@@ -416,14 +411,20 @@ def check(directory: Path, agents: Path | None = None) -> None:
 
 def _write_json(path: Path, value: object, *, exclusive: bool = False) -> None:
     """Publish a complete JSON file, optionally without replacing an existing one."""
+    _publish_text(path, json.dumps(value, indent=1) + "\n", exclusive=exclusive)
+
+
+def _publish_text(path: Path, text: str, *, mode: int | None = None, exclusive: bool = False) -> None:
+    """Publish a complete file durably: synced contents, an atomic rename or link, a synced directory."""
     temporary: Path | None = None
     try:
         with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent, delete=False) as stream:
             temporary = Path(stream.name)
-            json.dump(value, stream, indent=1)
-            stream.write("\n")
+            stream.write(text)
             stream.flush()
             os.fsync(stream.fileno())
+        if mode is not None:
+            os.chmod(temporary, mode)
         if exclusive:
             os.link(temporary, path)
         else:
@@ -560,11 +561,21 @@ def hardware_pause_left(client: Client) -> int:
     """Whole seconds before the account's hardware jobs have all been finished for HARDWARE_PAUSE_SECONDS.
 
     A job counts when its batch runs on a backend type with is_hardware set. An
-    unfinished job (a status outside TERMINAL) refuses the batch outright.
+    unfinished job (a status outside TERMINAL) refuses the batch outright,
+    except in a batch that stayed un-enqueued for ABANDONED_PLANNING_SECONDS.
     """
     hardware = {row["id"] for row in client.pages("/backend_types/") if row["is_hardware"]}
-    batches = {row["id"] for row in client.pages("/batch_jobs") if row["backend_type_id"] in hardware}
     at = utc_now()
+    batches = set()
+    for row in client.pages("/batch_jobs"):
+        if row["backend_type_id"] not in hardware:
+            continue
+        if row["status"] == "planned":
+            age = (at - datetime.datetime.fromisoformat(row["created_on"])).total_seconds()
+            if age < ABANDONED_PLANNING_SECONDS:
+                raise SystemExit(f"hardware batch {row['id']} is being planned; wait until it is enqueued")
+            continue
+        batches.add(row["id"])
     left = 0.0
     for job in client.pages("/jobs"):
         if job["batch_job_id"] not in batches:

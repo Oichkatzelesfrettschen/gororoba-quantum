@@ -514,7 +514,14 @@ class RetentionChecks(unittest.TestCase):
         """A client whose account holds one job per (backend type, status, seconds since it finished) row."""
         client = FakeClient(self.case_dir)
         for index, (type_id, status, age) in enumerate(jobs):
-            client.account_batches.append({"id": 900 + index, "backend_type_id": type_id})
+            client.account_batches.append(
+                {
+                    "id": 900 + index,
+                    "backend_type_id": type_id,
+                    "status": "finished" if status in platform.TERMINAL else "queued",
+                    "created_on": (now - datetime.timedelta(seconds=3600)).isoformat(),
+                }
+            )
             finished = None if age is None else (now - datetime.timedelta(seconds=age)).isoformat()
             client.account_jobs.append(
                 {"id": 800 + index, "batch_job_id": 900 + index, "status": status, "finished_at": finished}
@@ -557,6 +564,27 @@ class RetentionChecks(unittest.TestCase):
                         self.submit(client)
                     self.assertTrue(all(method == "GET" for method, _ in client.calls))
                     self.assertFalse((self.case_dir / "submission-state.json").exists())
+
+    def test_un_enqueued_hardware_batch_blocks_only_while_recent(self) -> None:
+        now = datetime.datetime(2026, 10, 17, 12, 0, 0, tzinfo=datetime.UTC)
+        limit = platform.ABANDONED_PLANNING_SECONDS
+        with patch.object(platform, "utc_now", return_value=now):
+            for age, refused in ((30, True), (limit - 1, True), (limit, False), (86400, False)):
+                with self.subTest(age=age):
+                    client = self.paused_client([(7, "completed", 3600), (7, "planned", None)], now=now)
+                    batch = client.account_batches[1]
+                    batch["status"] = "planned"
+                    batch["created_on"] = (now - datetime.timedelta(seconds=age)).isoformat()
+                    if refused:
+                        with self.assertRaisesRegex(SystemExit, "hardware batch 901 is being planned"):
+                            self.submit(client)
+                        self.assertTrue(all(method == "GET" for method, _ in client.calls))
+                    else:
+                        # An interrupted submit's planned jobs never run, so they hold no device time.
+                        self.submit(client)
+                        self.assertEqual(sum(method == "PATCH" for method, _ in client.calls), 1)
+                        for name in ("submission.json", "submission-state.json"):
+                            (self.case_dir / name).unlink()
 
     def test_terminal_hardware_job_without_finish_time_refuses(self) -> None:
         now = datetime.datetime(2026, 10, 17, 12, 0, 0, tzinfo=datetime.UTC)
