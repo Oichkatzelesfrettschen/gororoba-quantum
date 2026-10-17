@@ -594,33 +594,48 @@ repository only, so CI replays it) implements these estimators and rules:
 "$PYTHON" scripts/box_kite_analysis.py --analyze-self-test
 ```
 
-`--analyze` takes the run directories of any set of stages (T1 reads the
-twist allowance from T0 runs given in the same call) and writes sorted-key
-JSON with floats at 12 decimals. It refuses a batch whose cases.json
-differs from the retained case, whose circuits differ from their sha256,
-whose receipt names another cases.json, whose jobs did not complete with
-the manifest's shots (a failed Ry job is data), whose shot width or bit
-order differs from the backend's, or which lacks its readout pair; a
-sanity failure records a stop beside the estimates. Each replica is
-corrected with its own batch's pair, Pc = (p - e10) / (1 - e01 - e10), with
-the delta-method variance [p(1 - p)/n + Pc^2 e01(1 - e01)/n0 +
-(1 - Pc)^2 e10(1 - e10)/n1] / (1 - e01 - e10)^2. `--replay` recomputes a
-retained analysis from the runs it names and compares bytes. Gate
-core-424 runs the self-test: twelve synthetic scenarios (seeded shots under
-a readout model of e01 0.02 and e10 0.06 per qubit, and ideal QX twins) give
-their preregistered verdicts, among them a strut bias that stops T1 and an
-R1 failure that stops the Ry smoke subset analyzed beside it (alone, the
-smoke analysis records the ladder gate as unverified); every Ry fraction
-carries its count, binomial standard error and Wilson 95% interval; the
-T0 end-program and resize scenarios also stop the T1 and walk stages
-analyzed beside them. Sixteen mutations (digest, foreign cases.json
-receipt, missing receipt, swapped job id, foreign batch id, both shot
-counts, shot width, missing readout raw and job, duplicate batch, a
-cancelled Ry job, reversed bit order, readout-1 outside the limit) are
+`--analyze` takes the run directories of any set of stages and writes
+sorted-key JSON with floats at 12 decimals. It refuses a batch whose
+cases.json differs from the retained case, whose circuits differ from their
+sha256, whose receipt names another cases.json, whose jobs did not complete
+with the manifest's shots (a failed Ry job is data), whose shot width or bit
+order differs from the backend's, whose readout pair is missing where its
+manifest lists one, or whose job lacks its finish time; a sanity failure
+records a stop beside the estimates. A pre-T0 or T0 replica is corrected
+with its own batch's pair, Pc = (p - e10) / (1 - e01 - e10), with the
+delta-method variance [p(1 - p)/n + Pc^2 e01(1 - e01)/n0 +
+(1 - Pc)^2 e10(1 - e10)/n1] / (1 - e01 - e10)^2. A follow replica takes
+each qubit's e01 and e10 interpolated in job finish time between its two
+nearest brackets and reports the difference between the two corrections as a
+systematic; its conditional coherence inverts the tensor product of the
+selector's and data qubit's assignment matrices on the joint (a, d) counts;
+one numpy parametric bootstrap (4000 draws, seed 20261017) resamples each
+bracket's readout counts once, every replica's joint counts and every walk's
+control counts, and gives every follow standard error and interval. The
+follow stage separates stops (sanity, bracket limits, drift, span, T0's
+carried gate), which halt the series, from refutations (twist, X sign,
+classification, strut, walk sign, omit control), which are its verdicts.
+`--replay` recomputes a retained analysis from the runs it names and
+compares bytes. Gate core-424 runs the self-test: sixteen synthetic
+scenarios (seeded shots under a readout model of e01 0.02 and e10 0.06 per
+qubit, a global depolarizing channel on the follow replicas, and ideal QX
+twins) give their preregistered verdicts, among them an R1 failure that
+stops the Ry smoke subset analyzed beside it (alone, the smoke analysis
+records the ladder gate as unverified), the T0 end-program and resize
+scenarios that stop the follow series analyzed beside them, bracket drift
+as a stop, twist, coherence-sign, strut and omit-control refutations without
+a stop, and an injected phase per CZ that the ladder's interval recovers;
+every Ry fraction carries its count, binomial standard error and Wilson 95%
+interval. Seventeen mutations (digest, foreign cases.json receipt, missing
+receipt, swapped job id, foreign batch id, both shot counts, shot width,
+missing readout raw and job, duplicate batch, a cancelled Ry job, reversed
+bit order, readout-1 outside the limit, a job without its finish time) are
 refused for their own reason. Every run needs its submission.json, whose
 batch job, job ids and circuit digests must equal results.json and
-cases.json before any shot is read; only a failed Ry job enters as data. The twins stage judges each QX twin batch on its own: no shot off a
-deterministic prediction, P = 1/2 inside |z| < 4.5, the double-X twin all 0.
+cases.json before any shot is read; only a failed Ry job enters as data.
+The twins stage judges each QX twin batch on its own: no shot off a
+deterministic prediction (both selector branches of a follow twin
+included), P = 1/2 inside |z| < 4.5, the double-X twin all 0.
 Gate core-425 replays the retained records.
 
 **Results, 2026-10-17.** results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json

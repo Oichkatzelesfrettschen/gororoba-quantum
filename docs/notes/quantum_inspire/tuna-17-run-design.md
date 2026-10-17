@@ -93,9 +93,13 @@ Seven batches, 21 jobs, 16384 shots each:
   (E_1 = +1), the strut both (0); Y reads the imaginary part, 0 for every row.
 - **Coherence depth ladder.** The bright edge at CZ depths 1, 5 and 9 in X
   and Y on all three pairs gives magnitude and phase against depth beside the
-  population of the same replicas: r_coh / r_pop separates dephasing from
-  depolarizing error, and the phase slope per CZ is the data qubit's detuning
-  phase over one CZ window plus the CZ's residual local phase.
+  population of the same replicas. The joint coherence Pc(n) m(n) and the
+  population contrast 2 Pc(n) - 1 both decay as lambda^n under a global
+  depolarizing channel, while the conditional magnitude m(n) alone decays as
+  lambda^n / Pc(n); their rate ratio r_coh / r_pop separates dephasing
+  (below 1) from depolarizing error. The phase slope per CZ is the data
+  qubit's detuning phase over one CZ window plus the CZ's residual local
+  phase.
 - **Walks.** walk-x reads the associator signs, walk-omit the branch-marked
   controls, walk-y the control's imaginary part; with walk-x it gives the
   control's phase and the coherence magnitude that T0's r cross-predicts.

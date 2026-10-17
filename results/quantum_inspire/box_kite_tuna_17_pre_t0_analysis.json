@@ -647,7 +647,9 @@
    "missing_batches": [
     "batch-01",
     "batch-02",
-    "batch-03"
+    "batch-03",
+    "batch-05",
+    "batch-06"
    ],
    "stops": [],
    "thresholds": {

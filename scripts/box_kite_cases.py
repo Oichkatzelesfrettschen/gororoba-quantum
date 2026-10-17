@@ -1658,12 +1658,14 @@ def tuna_preregistered() -> dict[str, dict[str, Any]]:
             f"Cross-prediction: the depth-1 magnitude |E_b| in X equals T0's C(1) = 0.954 within "
             f"{CROSS_PREDICTION_BAND}, the value a depolarizing error of the two-qubit block gives",
             "depth_ladder": "per pair, the bright edge at CZ depths 1 (the lcu-bright circuits), 5 and 9 gives the "
-            "magnitude m(n) = sqrt(E_X^2 + E_Y^2), the phase phi(n) = atan2(E_Y, -E_X) about the census value -1, "
-            "and the population Pc(n) of the same replicas; r_coh and r_pop are exp(slope) of ln m(n) and ln "
-            "Pc(n) on n, and the phase slope is phi per CZ, each with a 99% parametric-bootstrap interval "
-            f"({BOOTSTRAP_DRAWS} draws, seed {BOOTSTRAP_SEED}), reported as estimates. A pure depolarizing block "
-            "gives r_coh / r_pop = 1 and dephasing lowers it; the phase slope is the data qubit's detuning phase "
-            "over one CZ window plus the CZ's residual local phase on the data qubit",
+            "conditional magnitude m(n) = sqrt(E_X^2 + E_Y^2), the phase phi(n) = atan2(E_Y, -E_X) about the "
+            "census value -1, and the population Pc(n) of the same replicas; the joint coherence J(n) = Pc(n) m(n) "
+            "and the population contrast 2 Pc(n) - 1 both equal lambda^n under a global depolarizing channel of "
+            "rate lambda per CZ, so r_coh and r_pop are exp(slope) of ln J(n) and ln(2 Pc(n) - 1) on n and their "
+            "ratio is 1 there, while dephasing lowers it and amplitude damping raises r_pop; the phase slope is "
+            "phi per CZ, the data qubit's detuning phase over one CZ window plus the CZ's residual local phase. "
+            "Each is an unweighted least-squares slope with a 99% parametric-bootstrap interval "
+            f"({BOOTSTRAP_DRAWS} draws, seed {BOOTSTRAP_SEED}), reported as estimates",
             "walks": f"<X_c> = omega = -1 on both walks, 0 on both omit-last controls and 0 in Y. Falsifier: sign "
             f"opposite to omega at |z| > {SIGMA:g}, or a control's |<X_c>| above {NULL_OFFSET} + {SIGMA:g} sigma. "
             "Cross-prediction: sqrt(<X_c>^2 + <Y_c>^2) equals r^n_CZ for T0's r = "
