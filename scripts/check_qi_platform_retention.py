@@ -248,11 +248,28 @@ class GeneratedCaseChecks(unittest.TestCase):
                         (run / raw).write_bytes((retained / raw).read_bytes())
                     runs.append(run)
                 self.assertGreater(len(runs), 1)
-                text = json.dumps(zero_divisor.analyze(runs), indent=1) + "\n"
-                self.assertEqual(text, (retained / "analysis.json").read_text(encoding="utf-8"))
-                if name == "zero_divisor_tuna_17":
-                    with self.assertRaisesRegex(SystemExit, "readout"):
+                record = zero_divisor.analyze(runs)
+                text = json.dumps(record, indent=1) + "\n"
+                if name == "zero_divisor_qx":
+                    self.assertEqual(text, (retained / "analysis.json").read_text(encoding="utf-8"))
+                else:
+                    # Every batch resamples its own copy of the retained readout
+                    # pair, so only the corrected bootstrap block departs from
+                    # the single-batch record; every point estimate is equal.
+                    expected = json.loads((retained / "analysis.json").read_text(encoding="utf-8"))
+                    for analysis_record in (record, expected):
+                        analysis_record["secondary"].pop("readout_corrected_bootstrap")
+                    self.assertEqual(record, expected)
+                    with self.assertRaisesRegex(SystemExit, "analyze every batch together"):
                         zero_divisor.analyze(runs[:1])
+                    manifest_path = runs[1] / "cases.json"
+                    original = manifest_path.read_bytes()
+                    manifest = json.loads(original)
+                    manifest["circuits"] = [row for row in manifest["circuits"] if row["file"] != "readout-1.cq"]
+                    manifest_path.write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
+                    with self.assertRaisesRegex(SystemExit, "readout"):
+                        zero_divisor.analyze(runs)
+                    manifest_path.write_bytes(original)
                 analysis = Path(scratch) / "analysis.json"
                 analysis.write_text(text, encoding="utf-8")
                 command = [sys.executable, "-B", str(ROOT / "scripts/qi_zero_divisor_cases.py"), "--replay-series"]
