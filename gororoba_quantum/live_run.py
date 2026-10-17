@@ -68,7 +68,7 @@ import placement_feasibility
 import qpu_planning
 import variance
 from coherence_window import COHERENCE_PRECISION
-from diagnostic_experiments import FAMILY_NAMES, PATCH_FAMILIES, record_groups
+from diagnostic_experiments import FAMILY_NAMES, N21_FAMILIES, PATCH_FAMILIES, record_groups
 from experiments import (
     MIRROR_SUFFIX,
     Group,
@@ -4940,7 +4940,7 @@ def main(argv: list[str] | None = None) -> int:
         "--replica-variance-bound",
         type=float,
         help="declared per-replica score variance bound with independent replicas (N21 families); "
-        "the planner and collector apply it through Cantelli or Chebyshev",
+        "the planner applies it through Cantelli or Chebyshev and the collector after its falsifier passes",
     )
     parser.add_argument(
         "--precision",
@@ -5086,6 +5086,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
     if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
         parser.error("the folded family uses one fixed physical placement per candidate; --max-replicas must be 1")
+    if (args.model_method != "sampled" or args.replica_variance_bound is not None) and (
+        args.family not in N21_FAMILIES
+    ):
+        parser.error("--model-method exact and --replica-variance-bound apply to the N21 families only")
     if args.patch_qubits is not None and args.family not in PATCH_FAMILIES:
         parser.error("--patch-qubits applies to the pinned-patch families only")
     if args.family in PATCH_FAMILIES and args.max_replicas not in (None, 1):

@@ -790,6 +790,8 @@ def prepare(
                 {name: tuple(tuple(map(float, dist)) for dist in replicas) for name, replicas in noisy.items()}
             )
         if model_method == "exact":
+            # A candidate whose exact law fails its sampled falsifier leaves the
+            # search; the trace keeps the reason and the run continues.
             try:
                 predictions, exact_evidence[candidate_index] = n21_exact_planning.exact_predictions(
                     choices,
@@ -797,9 +799,14 @@ def prepare(
                     predictions,
                     args.model_shots,
                     args.simulation_alpha,
+                    contracts,
                 )
-            except ValueError as error:
-                raise runtime.LiveRunError(f"candidate {candidate_index}: {error}") from error
+            except n21_exact_planning.ExactModelRejected as error:
+                exact_evidence[candidate_index] = error.evidence
+                trace.setdefault("model_rejections", []).append(
+                    {"candidate": f"candidate-{candidate_index:03d}", "reason": str(error)}
+                )
+                continue
         for shots in [max(tiers)] if per_pub else tiers:
             jobs = []
             for backend_name in sorted({choice.snap.name for choice in choices}):
@@ -857,7 +864,8 @@ def prepare(
                     else ()
                 )
             except ValueError as error:
-                raise runtime.LiveRunError(f"{name}: {error}") from error
+                trace.setdefault("model_rejections", []).append({"candidate": name, "reason": str(error)})
+                continue
             plans.append(
                 CandidatePlan(
                     name=name,
@@ -873,6 +881,10 @@ def prepare(
                 )
             )
             ownership[name] = choices, configuration, shots
+    if not plans:
+        raise runtime.LiveRunError(
+            f"every candidate failed its model or covariance admission: {trace.get('model_rejections')}"
+        )
     remaining = usage.get("usage_remaining_seconds")
     budget = BudgetContract(
         float(remaining) if remaining is not None else args.max_total_execution_seconds + args.reserve_seconds,
@@ -957,7 +969,10 @@ def prepare(
                 | {
                     "retained_candidate": retained,
                     "candidates": {
-                        f"candidate-{index:03d}": {"max_gap": evidence["max_gap"], "replicas": evidence["replicas"]}
+                        f"candidate-{index:03d}": {
+                            key: evidence[key]
+                            for key in ("max_gap", "passed", "failures", "arms", "contrasts", "replicas")
+                        }
                         for index, evidence in sorted(exact_evidence.items())
                     },
                 }

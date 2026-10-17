@@ -9,7 +9,8 @@ the Hoeffding branch and reproduce analyze_observations without them. At the
 n21-feedback-encoded allocation (118,784 shots per PUB, two replicas) the
 declared branch meets the planned power condition and the Hoeffding branch
 reports the endpoint underpowered. Explicit failures remain active under
-optimized Python.
+optimized Python. live_run.main refuses the model flags outside the N21
+families before any planning.
 """
 
 from __future__ import annotations
@@ -168,7 +169,52 @@ def _check_branch(
     return test
 
 
+def _verify_model_flags() -> None:
+    """live_run.main refuses --model-method exact and --replica-variance-bound outside the N21 families."""
+    import io
+    from contextlib import redirect_stderr
+    from unittest.mock import patch
+
+    import live_run
+
+    class _Parsed(Exception):
+        pass
+
+    ceilings = ["--max-execution-seconds", "9", "--max-total-execution-seconds", "18"]
+    for arguments in (
+        ["--family", "folded-correction", "--model-method", "exact"],
+        ["--family", "folded-qpe", "--replica-variance-bound", "0.55"],
+        ["--model-method", "exact"],
+        ["--replica-variance-bound", "0.55"],
+    ):
+        stderr = io.StringIO()
+        try:
+            with redirect_stderr(stderr):
+                live_run.main([*ceilings, *arguments])
+        except SystemExit as error:
+            _require(error.code == 2, f"{arguments}: CLI status {error.code}")
+        else:
+            raise RuntimeError(f"{arguments}: model flags outside the N21 families passed")
+        _require("N21 families only" in stderr.getvalue(), f"{arguments}: refusal lacks its reason")
+    with patch.object(live_run.local_compute, "settings", side_effect=_Parsed):
+        try:
+            live_run.main(
+                [
+                    *ceilings,
+                    "--family",
+                    "n21-feedback-encoded",
+                    "--model-method",
+                    "exact",
+                    "--replica-variance-bound",
+                    "0.55",
+                ]
+            )
+        except _Parsed:
+            pass
+
+
 def _verify() -> None:
+    _verify_model_flags()
     generator = np.random.default_rng(20261017)
     record = _record()
     independent = {member: _outcomes(generator, law, 0.0) for member, law in LAWS.items()}

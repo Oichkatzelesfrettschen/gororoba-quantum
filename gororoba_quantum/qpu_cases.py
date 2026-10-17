@@ -936,7 +936,7 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
             "branch-resolved law (dynamic_density), so no finite-simulation allowance applies; each "
             f"replica's exact law lies within {_format_number(exact['max_gap'])} of its "
             f"{_count(exact['model_shots'], 'model shots')}-shot sampled marginal, inside the simultaneous "
-            f"radius {_format_number(exact['radius'])}."
+            f"radius {_format_number(exact['radius'])}." + _exact_contrast_sentence(exact, name)
             if exact is not None
             else f"The noise model predicts {_format_number(endpoint['predicted_value'])}; "
             "the simultaneous finite-simulation allowance is "
@@ -992,8 +992,15 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
             "The search-wide simulation error probability is "
             f"{_format_number(record['optimization']['simulation_alpha'])} "
             f"across {record['optimization']['simulation_comparisons']} scored finite-shot marginals. "
-            "Hoeffding/union bounds allow arbitrary same-shot replica dependence. Independent stationary "
-            "repetitions remain an assumption. Hardware-model discrepancy remains unquantified.",
+            + (
+                "Each per-PUB radius is the smaller of the Hoeffding radius, valid under arbitrary same-shot "
+                "replica dependence, and the Cantelli radius under the declared covariance bounds; the "
+                "falsifier section below names which radius each endpoint takes. "
+                if record.get("covariance_bounds")
+                else "Hoeffding/union bounds allow arbitrary same-shot replica dependence. "
+            )
+            + "Independent stationary repetitions remain an assumption. Hardware-model discrepancy remains "
+            "unquantified.",
             "",
         ]
     )
@@ -1007,6 +1014,19 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
             ]
         )
     return lines
+
+
+def _exact_contrast_sentence(exact: dict[str, Any], name: str) -> str:
+    """The endpoint's exact contrast against its sampled estimate at the contrast's own radius."""
+    row = exact.get("contrasts", {}).get(name)
+    if row is None:
+        return ""
+    return (
+        f" The endpoint's exact contrast {_format_number(row['exact'])} sits "
+        f"{_format_number(row['gap'])} from its sampled estimate {_format_number(row['sampled'])}, inside the "
+        f"contrast's own Hoeffding radius {_format_number(row['radius'])} at tail "
+        f"{_format_number(exact['score_tail'])}; that radius bounds a model bias no tighter than itself."
+    )
 
 
 def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
@@ -1032,7 +1052,7 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
     lines = [
         "### Replica covariance falsifier",
         "",
-        "The declared covariance bounds hold the power above. Collection tests them on the retained "
+        "The power admission above rests on the declared covariance bounds. Collection tests them on the retained "
         "shot-ordered replica registers before it applies them (n21_exact_planning.covariance_falsifier, "
         "preregistered here and in record.json `covariance_falsifier`).",
         "",
@@ -1090,6 +1110,27 @@ def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> 
             continue
         total = row["detection_radius"] + power[name]
         effect = _number(planned[name]["effect_used_for_power"], "effect used for power")
+        assumptions = planned[name].get("covariance_assumptions") or []
+        rests = []
+        for label, admitted, plain in (
+            ("detection", planned[name]["detection_radius"], row["detection_radius"]),
+            ("power", planned[name]["power_radius"], power[name]),
+        ):
+            rests.append(
+                f"the {label} radius {_format_number(admitted)} "
+                + (
+                    "equals the Hoeffding radius and needs no replica assumption"
+                    if math.isclose(admitted, plain, rel_tol=1e-9, abs_tol=1e-15)
+                    else f"rests on the declared bounds (Hoeffding alone gives {plain:.6g})"
+                )
+            )
+        lines.extend(
+            [
+                f"Assumption in force for `{_identifier(name, 'endpoint')}`: {rests[0]}; {rests[1]}. The declared "
+                f"bound reads: {'; '.join(sorted(set(assumptions))) or 'none'}.",
+                "",
+            ]
+        )
         lines.append(
             f"Under the Hoeffding fallback `{_identifier(name, 'endpoint')}` rejects its null only above "
             f"{_format_number(row['null_value'] + row['detection_radius'])}; detection plus power radius "
@@ -1842,6 +1883,13 @@ def _verify_covariance_falsifier(record: dict[str, Any]) -> None:
     bounded["observable_contracts"][0].update(minimum_effect=0.0, alpha=0.05, power=0.8)
     candidate = bounded["optimization"]["candidates"][0]
     candidate["observables"][0]["covariance_assumptions"] = ["independent replicas"]
+    bounded["exact_model"] = {
+        "max_gap": 0.004,
+        "model_shots": 65536,
+        "radius": 0.0078,
+        "score_tail": 0.005,
+        "contrasts": {"feedback_contrast": {"exact": 0.25, "sampled": 0.248, "gap": -0.002, "radius": 0.03}},
+    }
     text = "\n".join(_endpoints(bounded, candidate))
     allowance = n21_exact_planning.variance_allowance(2048, 1.0, 1e-3)
     for phrase in (
@@ -1849,6 +1897,9 @@ def _verify_covariance_falsifier(record: dict[str, Any]) -> None:
         "Statistic: biased sample variance over shots",
         f"| feedback_contrast | feedback_pub | +0.5, +0.5 | 2048 | 0.275 | {allowance:.6g} | {0.275 + allowance:.6g} |",
         "Under the Hoeffding fallback `feedback_contrast` rejects its null only above",
+        "Assumption in force for `feedback_contrast`: the detection radius",
+        "the Cantelli radius under the declared covariance bounds",
+        "exact contrast 0.25 sits -0.002 from its sampled estimate 0.248",
     ):
         if phrase not in text:
             raise AssertionError(f"covariance falsifier case lacks {phrase!r}")

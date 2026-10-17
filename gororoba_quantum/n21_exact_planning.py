@@ -84,18 +84,39 @@ def _serialized(circuit: Any) -> bytes:
     return buffer.getvalue()
 
 
+def bernstein_radius(law: np.ndarray, values: np.ndarray, shots: int, tail: float) -> float:
+    """Two-sided Bernstein radius at tail of the mean of shots scores drawn from law."""
+    mean = float(law @ values)
+    variance = float(law @ (values - mean) ** 2)
+    reach = float(np.max(np.abs(values - mean)))
+    log = math.log(2.0 / tail)
+    return math.sqrt(2 * variance * log / shots) + 2 * reach * log / (3 * shots)
+
+
+class ExactModelRejected(ValueError):
+    """An exact law that fails validate_exact; ``evidence`` holds the full validation record."""
+
+    def __init__(self, evidence: dict[str, Any]) -> None:
+        super().__init__(f"exact model leaves the sampled radius: {'; '.join(evidence['failures'])}")
+        self.evidence = evidence
+
+
 def exact_predictions(
     choices: list[Any],
     noise_models: dict[int, Any],
     sampled: Mapping[str, tuple[tuple[float, ...], ...]],
     model_shots: int,
     simulation_alpha: float,
+    contracts: tuple[ObservableContract, ...] = (),
 ) -> tuple[dict[str, tuple[tuple[float, ...], ...]], dict[str, Any]]:
     """Exact replica laws of every entry in choices, validated against their sampled marginals.
 
     noise_models maps id(choice.snap) to the Aer noise model the sampled
     simulation used. Returns the exact predictions keyed like sampled and the
-    validation evidence the record retains.
+    validation evidence the record retains, which carries each replica's
+    sampled frequencies so validate_exact replays from the record alone.
+    Raises ExactModelRejected, carrying that evidence, when validate_exact
+    rejects.
     """
     keys: list[tuple[str, int]] = []
     items: list[tuple[bytes, Any]] = []
@@ -106,29 +127,107 @@ def exact_predictions(
                 keys.append((entry.name, index))
                 items.append((_serialized(replica), noise))
     laws = parallel.ordered_map(_exact_law, items, min_items=2)
-    outcomes = sum(len(law) for law in laws)
-    radius = dynamic_density.hoeffding_radius(model_shots, outcomes, simulation_alpha)
     exact: dict[str, list[tuple[float, ...]]] = {}
     rows = []
-    worst = 0.0
     for (name, index), law in zip(keys, laws, strict=True):
-        frequency = np.asarray(sampled[name][index], dtype=float)
-        gap = float(np.max(np.abs(frequency - np.asarray(law))))
-        worst = max(worst, gap)
         exact.setdefault(name, []).append(tuple(law))
-        rows.append({"entry": name, "replica": index, "exact": law, "max_gap": gap})
+        rows.append({"entry": name, "replica": index, "exact": law, "sampled": list(map(float, sampled[name][index]))})
     evidence = {
         "method": "dynamic_density branch-resolved density matrix under the sampled run's Aer noise model",
-        "validation": "every exact probability within the simultaneous Hoeffding radius of its sampled frequency",
+        **validate_exact(rows, contracts, model_shots, simulation_alpha),
+    }
+    if not evidence["passed"]:
+        raise ExactModelRejected(evidence)
+    return {name: tuple(values) for name, values in exact.items()}, evidence
+
+
+def validate_exact(
+    rows: list[dict[str, Any]],
+    contracts: tuple[ObservableContract, ...],
+    model_shots: int,
+    simulation_alpha: float,
+) -> dict[str, Any]:
+    """The exact laws of rows against their sampled frequencies: probabilities, endpoint arms and contrasts.
+
+    Each row holds one replica's ``exact`` law and ``sampled`` frequencies of
+    model_shots shots. Every probability must lie within the simultaneous
+    Hoeffding radius at tail simulation_alpha. An endpoint combines several
+    probabilities, so a bias below the probability radius can still move it:
+    each contract term's arm (the replica-average score of its member) and
+    each contract's signed contrast are checked at their own radii. Under the
+    hypothesis that the sampled shots follow the exact law, a replica score's
+    variance v and range M = max |score - mean| are known, and Bernstein's
+    inequality bounds its sampled mean at tail u by
+    sqrt(2 v ln(2 / u) / n) + 2 M ln(2 / u) / (3 n). An arm takes the mean of
+    its replicas' radii at u = t / replicas, a contrast the sum of its arms'
+    radii, and simulation_alpha splits evenly over the arm and contrast
+    checks as t.
+    """
+    outcomes = sum(len(row["exact"]) for row in rows)
+    radius = dynamic_density.hoeffding_radius(model_shots, outcomes, simulation_alpha)
+    failures: list[str] = []
+    worst = 0.0
+    replicas: dict[str, list[dict[str, Any]]] = {}
+    out_rows = []
+    for row in rows:
+        gap = float(np.max(np.abs(np.asarray(row["sampled"], dtype=float) - np.asarray(row["exact"], dtype=float))))
+        worst = max(worst, gap)
+        replicas.setdefault(row["entry"], []).append(row)
+        out_rows.append(row | {"max_gap": gap})
+    if worst > radius:
+        failures.append(f"probability gap {worst} > {radius}")
+    terms = {term.member: term for contract in contracts for term in contract.terms if term.member in replicas}
+    scored = [contract for contract in contracts if all(term.member in replicas for term in contract.terms)]
+    checks = len(terms) + len(scored)
+    tail = simulation_alpha / checks if checks else simulation_alpha
+    arms: dict[str, dict[str, float]] = {}
+    for member, term in sorted(terms.items()):
+        values = np.asarray(term.values, dtype=float)
+        exact_score = float(np.mean([values @ np.asarray(row["exact"], dtype=float) for row in replicas[member]]))
+        sampled_score = float(np.mean([values @ np.asarray(row["sampled"], dtype=float) for row in replicas[member]]))
+        arm_radius = float(
+            np.mean(
+                [
+                    bernstein_radius(
+                        np.asarray(row["exact"], dtype=float), values, model_shots, tail / len(replicas[member])
+                    )
+                    for row in replicas[member]
+                ]
+            )
+        )
+        arms[member] = {"exact": exact_score, "sampled": sampled_score, "gap": sampled_score - exact_score}
+        arms[member]["radius"] = arm_radius
+        if abs(sampled_score - exact_score) > arm_radius:
+            failures.append(f"{member} score gap {sampled_score - exact_score} exceeds {arm_radius}")
+    contrasts: dict[str, dict[str, float]] = {}
+    for contract in scored:
+        exact_value = math.fsum(term.sign * arms[term.member]["exact"] for term in contract.terms)
+        sampled_value = math.fsum(term.sign * arms[term.member]["sampled"] for term in contract.terms)
+        contrast_radius = math.fsum(arms[term.member]["radius"] for term in contract.terms)
+        contrasts[contract.name] = {
+            "exact": exact_value,
+            "sampled": sampled_value,
+            "gap": sampled_value - exact_value,
+            "radius": contrast_radius,
+        }
+        if abs(sampled_value - exact_value) > contrast_radius:
+            failures.append(f"{contract.name} contrast gap {sampled_value - exact_value} exceeds {contrast_radius}")
+    return {
+        "validation": (
+            "every exact probability within the simultaneous Hoeffding radius of its sampled frequency; each "
+            "endpoint arm score and contrast within its own Hoeffding radius"
+        ),
         "model_shots": model_shots,
         "tail": simulation_alpha,
         "radius": radius,
         "max_gap": worst,
-        "replicas": rows,
+        "score_tail": tail,
+        "arms": arms,
+        "contrasts": contrasts,
+        "passed": not failures,
+        "failures": failures,
+        "replicas": out_rows,
     }
-    if worst > radius:
-        raise ValueError(f"exact model leaves the sampled radius: max gap {worst} > {radius}")
-    return {name: tuple(values) for name, values in exact.items()}, evidence
 
 
 def score_variance(distribution: tuple[float, ...], values: tuple[float, ...]) -> float:
@@ -369,9 +468,27 @@ def self_test() -> None:
         pass
     else:
         raise AssertionError("a 0.05 shift of the sampled law must stop planning")
+    # A coherent score bias below the probability radius: each member moves d
+    # of mass from label 11 to label 01, shifting its signed score by 2 d.
+    model_shots = 65536
+    probability_radius = dynamic_density.hoeffding_radius(model_shots, 4 * 4, 0.01)
+    shift = 0.95 * probability_radius
+    rows = [
+        {"entry": member, "replica": index, "exact": list(law), "sampled": [0.25, 0.25 + shift, 0.25, 0.25 - shift]}
+        for member in ("a", "b")
+        for index in range(2)
+    ]
+    biased = validate_exact(rows, (contract,), model_shots, 0.01)
+    if biased["passed"] or biased["max_gap"] > biased["radius"] or "a score gap" not in biased["failures"][0]:
+        raise AssertionError(f"a score bias inside the probability radius passed: {biased['failures']}")
+    unbiased = validate_exact([row | {"sampled": list(law)} for row in rows], (contract,), model_shots, 0.01)
+    if not unbiased["passed"] or unbiased["contrasts"]["contrast"]["radius"] != 2 * unbiased["arms"]["a"]["radius"]:
+        raise AssertionError(f"exact sampled frequencies failed validation: {unbiased['failures']}")
     print(
         f"n21 exact planning: covariance rules hold; fixture exact law within {evidence['max_gap']:.5f} "
-        f"of {shots} sampled shots (radius {evidence['radius']:.5f}); shifted law refused"
+        f"of {shots} sampled shots (radius {evidence['radius']:.5f}); shifted law refused; a score bias of "
+        f"{2 * shift:.5f} inside the probability radius {probability_radius:.5f} refused at the arm radius "
+        f"{biased['arms']['a']['radius']:.5f}"
     )
 
 

@@ -4,10 +4,14 @@ The n21-feedback-encoded planning prediction comes from
 gororoba_quantum/dynamic_density.py, which evolves the classical-quantum state
 of each dynamic circuit exactly under live_run's noise channels. This script
 is that prediction's falsifier: it samples the same ISA circuits under the
-same calibration snapshot with Aer statevector trajectories (the sampler
-live_run's planning uses for dynamic circuits) and requires every exact
-outcome probability to lie within the simultaneous Hoeffding radius of the
-pooled sampled frequencies.
+same calibration snapshot with Aer statevector trajectories (the method
+local_compute's density_matrix_dynamic_statevector policy selects for a
+dynamic batch; live_run.noise_simulator's density_matrix default applies to
+the others) and applies n21_exact_planning.validate_exact: every exact
+outcome probability within the simultaneous Hoeffding radius of the pooled
+sampled frequencies, and each endpoint arm's signed score and the endpoint
+contrast within their own Hoeffding radii, the members and contracts read
+from the record retained beside the ISA.
 
 - ``--sample`` restricts each circuit of an ISA archive and the snapshot to
   the active qubits (snapshot_laws.restrict_circuit and restrict, the same
@@ -17,7 +21,10 @@ pooled sampled frequencies.
   distinct seeds, in seed order.
 - ``--check`` recomputes the exact laws from the retained inputs, samples
   nothing, and fails when any probability leaves the radius at total tail
-  ``TAIL`` across every outcome of every circuit.
+  ``TAIL`` across every outcome of every circuit, or when an arm score or the
+  contrast leaves its radius at ``TAIL`` split over those checks; it prints
+  each arm's and the contrast's gap with its normal z score beside the
+  Hoeffding verdict.
 - ``--self-test`` checks multinomial draws from the exact laws (accepted)
   and a draw that moves 0.02 of one circuit's mass (rejected).
 
@@ -47,8 +54,10 @@ from qiskit import QuantumCircuit, qpy  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import dynamic_density  # noqa: E402
+import n21_exact_planning  # noqa: E402
 import parallel  # noqa: E402
 import snapshot_laws  # noqa: E402
+from experiment_optimizer import ObservableContract, ObservableTerm  # noqa: E402
 
 SCHEMA = "n21-exact-model-validation-v1"
 TAIL = 1e-3
@@ -153,30 +162,72 @@ def merge(records: list[dict[str, Any]]) -> dict[str, Any]:
     )
 
 
-def compare(record: dict[str, Any], laws: dict[str, list[float]]) -> dict[str, Any]:
-    """Every exact probability against the pooled frequency at a simultaneous Hoeffding radius."""
-    if set(record["counts"]) != set(laws):
-        raise ValueError("record circuits differ from the ISA archive")
-    outcomes = sum(len(vector) for vector in record["counts"].values())
+def endpoint(record_path: Path) -> tuple[dict[str, str], tuple[ObservableContract, ...]]:
+    """Circuit name to member, and the observable contracts, of the retained record beside the ISA."""
+    retained = json.loads(record_path.read_text())
+    members = {}
+    for pub in retained["execution_pubs"]:
+        if len(pub["components"]) != 1 or len(pub["components"][0]["registers_by_replica"]) != 1:
+            raise ValueError(f"{pub['name']}: validation needs one single-replica component per circuit")
+        members[pub["name"]] = pub["components"][0]["member"]
+    contracts = tuple(
+        ObservableContract(
+            **{key: value for key, value in contract.items() if key != "terms"},
+            terms=tuple(ObservableTerm(t["member"], tuple(t["values"]), t["sign"]) for t in contract["terms"]),
+        )
+        for contract in retained["observable_contracts"]
+    )
+    return members, contracts
+
+
+def compare(
+    record: dict[str, Any],
+    laws: dict[str, list[float]],
+    members: dict[str, str],
+    contracts: tuple[ObservableContract, ...],
+) -> dict[str, Any]:
+    """validate_exact on the pooled counts, with each score check's normal z score from the exact law."""
+    if set(record["counts"]) != set(laws) or set(laws) != set(members):
+        raise ValueError("record circuits differ from the ISA archive or its record")
     shots = int(record["shots"])
-    radius = dynamic_density.hoeffding_radius(shots, outcomes, TAIL)
-    rows = {}
-    passed = True
+    rows = []
+    circuits = {}
     for name, vector in sorted(record["counts"].items()):
         if sum(vector) != shots:
             raise ValueError(f"{name}: counts sum to {sum(vector)}, not {shots}")
         frequency = np.asarray(vector, dtype=float) / shots
         law = np.asarray(laws[name], dtype=float)
-        gap = float(np.max(np.abs(frequency - law)))
-        passed &= gap <= radius
-        rows[name] = {
+        rows.append({"entry": members[name], "replica": 0, "exact": law.tolist(), "sampled": frequency.tolist()})
+        circuits[name] = {
+            "member": members[name],
             "exact": [round(float(value), 12) for value in law],
             "sampled": [round(float(value), 12) for value in frequency],
-            "max_gap": gap,
-            "signed_contrast_exact": float(law[1] - law[3]),
-            "signed_contrast_sampled": float(frequency[1] - frequency[3]),
+            "max_gap": float(np.max(np.abs(frequency - law))),
         }
-    return {"shots": shots, "tail": TAIL, "radius": radius, "passed": bool(passed), "circuits": rows}
+    result = n21_exact_planning.validate_exact(rows, contracts, shots, TAIL)
+    exact_by_member = {row["entry"]: np.asarray(row["exact"]) for row in rows}
+    variances = {}
+    for contract in contracts:
+        for term in contract.terms:
+            values = np.asarray(term.values, dtype=float)
+            law = exact_by_member[term.member]
+            variances[term.member] = float(law @ values**2 - (law @ values) ** 2) / shots
+    for member, arm in result["arms"].items():
+        arm["z"] = arm["gap"] / math.sqrt(variances[member])
+    for contract in contracts:
+        row = result["contrasts"].get(contract.name)
+        if row is not None:
+            row["z"] = row["gap"] / math.sqrt(math.fsum(variances[term.member] for term in contract.terms))
+    return {
+        "shots": shots,
+        "tail": TAIL,
+        "radius": result["radius"],
+        "passed": result["passed"],
+        "failures": result["failures"],
+        "arms": result["arms"],
+        "contrasts": result["contrasts"],
+        "circuits": circuits,
+    }
 
 
 def check(path: Path) -> dict[str, Any]:
@@ -185,7 +236,8 @@ def check(path: Path) -> dict[str, Any]:
     isa = ROOT / record["isa"]["path"]
     if _sha256(snapshot) != record["snapshot"]["sha256"] or _sha256(isa) != record["isa"]["sha256"]:
         raise SystemExit(f"{path}: retained input digests differ")
-    result = compare(record, exact_laws(snapshot, isa))
+    members, contracts = endpoint(isa.parent / "record.json")
+    result = compare(record, exact_laws(snapshot, isa), members, contracts)
     if not result["passed"]:
         raise SystemExit(f"{path}: exact law leaves the sampled radius: {json.dumps(result, indent=1)}")
     return result
@@ -202,22 +254,38 @@ SELF_TEST_ISA = ROOT / "results/live/2026-10-17T003834.987727Z/isa.qpy"
 
 def self_test() -> None:
     laws = exact_laws(SELF_TEST_SNAPSHOT, SELF_TEST_ISA)
+    members, contracts = endpoint(SELF_TEST_ISA.parent / "record.json")
     shots = 2_000_000
     generator = np.random.default_rng(20261017)
     counts = {name: [int(v) for v in generator.multinomial(shots, law)] for name, law in laws.items()}
     record = {"shots": shots, "counts": counts}
-    accepted = compare(record, laws)
+    accepted = compare(record, laws, members, contracts)
     _require(accepted["passed"], f"multinomial draw rejected: {accepted}")
     name = sorted(counts)[0]
     shifted = list(counts[name])
     moved = int(0.02 * shots)
     shifted[0] -= moved
     shifted[1] += moved
-    rejected = compare({"shots": shots, "counts": dict(counts, **{name: shifted})}, laws)
+    rejected = compare({"shots": shots, "counts": dict(counts, **{name: shifted})}, laws, members, contracts)
     _require(not rejected["passed"], "a 0.02 mass shift passed the check")
+    # A score bias inside the probability radius: move 0.9 of the probability
+    # radius from label 11 to label 01 of one arm, a signed-score shift of 1.8
+    # probability radii, which the arm's Bernstein radius refuses.
+    moved = int(0.9 * accepted["radius"] * shots)
+    biased = list(counts[name])
+    biased[1] += moved
+    biased[3] -= moved
+    scored = compare({"shots": shots, "counts": dict(counts, **{name: biased})}, laws, members, contracts)
+    _require(
+        not scored["passed"] and all("probability gap" not in failure for failure in scored["failures"]),
+        f"a score bias inside the probability radius passed or tripped the probability check: {scored['failures']}",
+    )
     for law in laws.values():
         _require(math.isclose(math.fsum(law), 1.0, abs_tol=1e-9), "an exact law is unnormalized")
-    print(f"n21 exact model validation: multinomial draw accepted at radius {accepted['radius']:.5f}; shift rejected")
+    print(
+        f"n21 exact model validation: multinomial draw accepted at radius {accepted['radius']:.5f}; shift rejected; "
+        "a score bias inside the probability radius rejected at the arm radius"
+    )
 
 
 def main() -> int:
@@ -238,7 +306,7 @@ def main() -> int:
         return 0
     if args.check is not None:
         result = check(args.check)
-        print(json.dumps({key: result[key] for key in ("shots", "radius", "passed")}))
+        print(json.dumps({key: result[key] for key in ("shots", "radius", "passed", "arms", "contrasts")}))
         return 0
     if args.out is None:
         raise SystemExit("--out is required")
