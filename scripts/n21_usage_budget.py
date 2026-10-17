@@ -46,7 +46,7 @@ import shutil
 import statistics
 import sys
 import tempfile
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
@@ -235,6 +235,7 @@ class Job:
     modeled_seconds: float
     metered_seconds: float
     charge: int
+    chunks: int
 
 
 def _verified(path: Path, digest: str) -> bytes:
@@ -301,6 +302,7 @@ def retained_jobs(live: Path = LIVE) -> list[Job]:
                 modeled,
                 metrics["circuits_execution_time_ns"] * 1e-9,
                 int(metrics["usage"]["qpu_charge_time_seconds"]),
+                len(metadata["executor"]["chunk_timing"]),
             )
         )
     return jobs
@@ -374,6 +376,9 @@ def reference() -> Reference:
             for c in record["optimization"]["candidates"]
         }
         for name, evidence in sorted(exact.get("candidates", {}).items()):
+            # A candidate the exact-model falsifier rejected never reached the optimizer.
+            if evidence.get("passed") is False:
+                continue
             members: dict[str, list[tuple[float, ...]]] = {}
             for row in evidence["replicas"]:
                 members.setdefault(row["entry"], []).append(tuple(row["exact"]))
@@ -561,10 +566,19 @@ def drift_rows() -> list[tuple[str, str, str, float]]:
     return rows
 
 
-def assumption_text(design: Design) -> str:
+def assumption_text(design: Design, radii: dict[str, bool] | None = None) -> str:
+    """The model and replica assumptions a row needs; radii names which radius takes the declared covariance."""
     parts = ["exact model" if design.model_shots is None else f"sampled model, {design.model_shots:,} shots"]
     if design.variance_bound is not None and design.replicas > 1:
-        parts.append(f"independent replicas, variance <= {design.variance_bound}")
+        bounded = [name for name, uses in (radii or {}).items() if uses]
+        plain = [name for name, uses in (radii or {}).items() if not uses]
+        parts.append(
+            f"{' and '.join(bounded)} radius on independent replicas, variance <= {design.variance_bound}"
+            if bounded
+            else "declared covariance unused: Hoeffding is tighter"
+        )
+        if bounded and plain:
+            parts.append(f"{' and '.join(plain)} radius Hoeffding")
     if design.equal:
         parts.append("hypothetical equal replicas")
     if design.rep_delay < 250e-6:
@@ -625,7 +639,12 @@ def cz_rows(ref: Reference, retentions: tuple[float, float]) -> list[str]:
 def render() -> str:
     jobs = retained_jobs(LIVE)
     low, high = ceil_interval(jobs)
-    worst = max(abs(job.metered_seconds - job.modeled_seconds) / job.executions for job in jobs)
+    residuals = [(job.metered_seconds - job.modeled_seconds) * 1e6 for job in jobs]
+    rep_delays = {job.rep_delay for job in jobs}
+    if len(rep_delays) != 1:
+        raise ValueError(f"pinned jobs mix repetition delays {sorted(rep_delays)}")
+    (rep_delay_us,) = (value * 1e6 for value in rep_delays)
+    chunks = sorted({job.chunks for job in jobs})
     excess = kingston_scheduler_excess()
     targets = json.loads(TARGETS.read_text())
     ref = reference()
@@ -638,10 +657,12 @@ def render() -> str:
         "",
         "**Metered billing (retained jobs).**",
         "",
-        f"- Jobs: {len(jobs)}, one sub-job each; executions {min(j.executions for j in jobs):,} to "
+        f"- Jobs: {len(jobs)}; the result metadata's executor `chunk_timing` lists "
+        f"{' or '.join(map(str, chunks))} chunk(s) per job; executions {min(j.executions for j in jobs):,} to "
         f"{max(j.executions for j in jobs):,}.",
-        f"- `circuits_execution_time_ns` equals sum(shots x (rep_delay + scheduler circuit duration)) within "
-        f"{worst * 1e6:.2f} us per execution on every job.",
+        f"- `circuits_execution_time_ns` minus sum(shots x (rep_delay + scheduler circuit duration)) is a per-job "
+        f"constant, {min(residuals):.1f} to {max(residuals):.1f} us across those executions: one {rep_delay_us:.0f} us "
+        f"rep_delay plus {-max(residuals) - rep_delay_us:.1f} to {-min(residuals) - rep_delay_us:.1f} us.",
         f"- `qpu_charge_time_seconds` is an integer, equal to ceil(execution + c) on every job for c in "
         f"({low:.3f}, {high:.3f}] s.",
         "- ibm_kingston scheduler duration minus the Target gate-time bound: "
@@ -696,7 +717,14 @@ def render() -> str:
     for design in designs(ref):
         n, result = minimum_shots(ref, design)
         observable = result.observables[0]
-        assumptions = assumption_text(design)
+        radii = None
+        if n is not None and design.variance_bound is not None and design.replicas > 1:
+            plain = feasible(ref, replace(design, variance_bound=None), n)[1].observables[0]
+            radii = {
+                "detection": not math.isclose(observable.detection_radius, plain.detection_radius, rel_tol=1e-12),
+                "power": not math.isclose(observable.power_radius, plain.power_radius, rel_tol=1e-12),
+            }
+        assumptions = assumption_text(design, radii)
         if n is None:
             lines.append(
                 f"| {design.label} | infeasible | - | - | - | - | {assumptions} | "
