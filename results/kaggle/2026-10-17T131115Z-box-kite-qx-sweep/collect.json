@@ -1,0 +1,18 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/box-kite-qx-sweep/1",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-17T150746Z",
+ "files": {
+  "box-kite-qx-sweep.log": "48a57c76ba760eb78d8838eb928ca79bc74feeea02f7d197438faf64e83451fe",
+  "output/environment.json": "80e1be3c01e563384daabf151d596270ebaddcb82f342f7668b751b21a2bb1e4",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "1dc08ce559e314889acd78d8168c6ab6e92895aa5063b0429de2cbf29ac4b675",
+  "output/pin_groups.json": "fbdacca48601fe7089ff180f4a210103b55cac3754575066d181fa53605677c1",
+  "output/pip.txt": "0e0812d7648fb5a0ef0454a86596f548bfde4f1894dcb5ed0a3c247ced660fa8",
+  "output/repo/docs/evidence/box_kite_qx_sweep/family-a.json": "fdb44a909c417d00e7cb4e93a9d0882af5308fb43e5fc08d15509f85a95a749a",
+  "output/repo/docs/evidence/box_kite_qx_sweep/family-de.json": "95a475854023b853b3f30086c17eb0826b996215f860c66e6bd6aaac53cfe137",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "12cd154e4e2bf18312bada68c103b9c9309056c53328edf38862b21e35452703"
+ }
+}

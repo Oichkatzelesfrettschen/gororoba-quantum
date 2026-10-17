@@ -70,6 +70,20 @@ without versioned URLs, so a later reading checks the live page.
 - [I] live_run.py already sets `max_execution_time` at the Sampler's top
   level, records the timing constraints in the calibration identity, and
   replays collected PUBs under the calibration at their execution start.
+- [I] Backend identity is recorded data. qiskit-ibm-runtime 0.50.0 reports
+  `backend_version` (X.Y.Z) on the backend configuration, the properties and
+  the status, and `processor_type` (`family`, `revision`, optional
+  `segment`) on the configuration only; `IBMBackend.refresh()` replaces the
+  configuration and leaves the `BackendV2.backend_version` read at
+  construction. `live_run.backend_identity` therefore reads both from
+  `backend.configuration()`, and every backend summary (`backends`,
+  `system_inventory`) and group record carries them; `--collect` adds each
+  job's `backend_identity` with the properties' `backend_version` at every
+  execution start. Neither field enters the approved-record comparison or
+  the pre-submission reuse check, so a version change alone refuses nothing.
+  `heron_target_snapshot.py --out` and `calibration_snapshot.py --export`
+  write the same fields. The retained targets.json and calibration
+  snapshots carry neither, and each checker accepts a snapshot without them.
 - [I] The repetition-rate guide's ordering statements are why a shot-array
   lag statistic is not an inter-shot memory measurement
   (results/live/KINGSTON_ALGEBRA_CASES.md).

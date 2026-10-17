@@ -90,6 +90,7 @@ import parallel  # noqa: E402
 SCHEMA = "box-kite-qx-sweep-v1"
 EMULATE_SCHEMA = "box-kite-qx-emulation-v1"
 QXELARATOR = "0.10.0"
+EMULATOR = {"package": "qxelarator", "version": QXELARATOR}
 BASE_SEED = 20261017
 SHOTS = cases.QX_SHOTS
 Z_LIMIT = cases.Z_LIMIT
@@ -290,7 +291,7 @@ def run(directory: Path, family: str, limit: int | None) -> dict[str, Any]:
         "family": family,
         "generator": "scripts/box_kite_cases.py " + ("series('a', 'qx')" if family == "a" else "series_de()"),
         "census": cases.census_record(cases.CENSUS, census),
-        "emulator": {"package": "qxelarator", "version": metadata.version("qxelarator")},
+        "emulator": EMULATOR,
         "environment": {
             "python": platform.python_version(),
             "qiskit": metadata.version("qiskit"),
@@ -348,6 +349,8 @@ def replay(record: dict[str, Any], bind: bool = False, exhaustive: bool = False)
     if hashlib.sha256(census_path.read_bytes()).hexdigest() != record["census"]["sha256"]:
         raise ValueError(f"{record['census']['path']} differs from the census the sweep ran against")
     census = cases.load_census(census_path)
+    if record.get("emulator") != EMULATOR:
+        raise ValueError(f"record emulator {record.get('emulator')!r} is not the pinned {EMULATOR}")
     shots, limit = record["shots"], record["limit"]
     if exhaustive and limit is not None:
         raise ValueError(f"record ran with --limit {limit}, so it covers only part of each sub-family")
@@ -530,6 +533,7 @@ def synthetic_record(family: str) -> dict[str, Any]:
         "schema": SCHEMA,
         "family": family,
         "census": cases.census_record(cases.CENSUS, census),
+        "emulator": EMULATOR,
         "shots": SHOTS,
         "base_seed": BASE_SEED,
         "limit": None,
@@ -594,6 +598,8 @@ def family_mutations(family: str, circuits: int) -> int:
     )
     reject("a dropped circuit", lambda r: (r["circuits"].pop(), r.update({"summary": summarize(r["circuits"])})))
     reject("a changed census digest", lambda r: r["census"].update({"sha256": "0" * 64}))
+    reject("another emulator release", lambda r: r["emulator"].update({"version": "0.9.0"}))
+    reject("a dropped emulator field", lambda r: r.pop("emulator"))
     reject("an edited summary", lambda r: r["summary"].update({"verdict": "refuted"}))
     if family == "de":
         parity = next(
