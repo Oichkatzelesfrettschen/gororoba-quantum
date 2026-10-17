@@ -571,7 +571,10 @@ holds at most three circuits and goes in only when none of the account's
 batches is queued, so at most three jobs are ever queued (the FAQ's limit
 under either reading of "job"); a series runs a QX dry run first, then
 submits each hardware batch only after the previous one is collected, passes
-its sanity checks and a pause. Runs live under
+its sanity checks and a pause. The case generators emit each experiment as
+a series of `batch-NN/` cases within that limit, and
+`scripts/check_qi_platform_retention.py` passes every generated batch through
+submit's checks up to the first request. Runs live under
 results/quantum_inspire/runs/. A question about the Tuna devices themselves
 (their crosstalk, coherent error, readout) is a hardware question; any
 simulation of 14 qubits or fewer still runs on Kaggle.

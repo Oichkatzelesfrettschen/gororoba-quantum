@@ -1,0 +1,33 @@
+{
+ "schema": "qi-crosstalk-teleport-cases-v2",
+ "backend": "tuna_5",
+ "backend_type_id": 4,
+ "nqubits": 5,
+ "shots": 16384,
+ "drive_pulses": 40,
+ "wait_cycles": 40,
+ "batch_limit": 3,
+ "stars": [
+  {
+   "T": 2,
+   "A": 0,
+   "B": 1
+  }
+ ],
+ "paths": [],
+ "batch": "batch-01",
+ "circuits": [
+  {
+   "file": "additivity-none.cq",
+   "kind": "additivity",
+   "config": "none",
+   "sha256": "d9ff321859be6851803aee96991ba056c0439a9b5841aae0d695f9f490e9b656"
+  },
+  {
+   "file": "additivity-AB.cq",
+   "kind": "additivity",
+   "config": "AB",
+   "sha256": "27f877f3bf543db5775bf0b5a619010f8e83bc32f8c9a8a480801a99119042cd"
+  }
+ ]
+}

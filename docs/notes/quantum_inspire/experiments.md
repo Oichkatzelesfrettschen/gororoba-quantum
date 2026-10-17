@@ -29,13 +29,20 @@ Tuna-17 for the device answer, QX for the ideal reference.
 
 `scripts/qi_crosstalk_teleport_cases.py --write results/quantum_inspire/cases`
 generates every backend's cQASM 3.0 from the catalogue topology; gate
-core-327 regenerates them byte for byte.
+core-327 regenerates them byte for byte. Each backend is a series of
+`batch-NN/` cases of at most three circuits, each submittable on its own:
+batch-00 holds none, A and B, and batch-01 holds none, AB and teleport, so
+every phase shift subtracts the undriven reference measured in its own batch
+(a batch boundary is a calibration boundary).
+`--analyze RUN_DIR... --out FILE` merges the run directories of one series.
+The retained 211635Z runs predate the split and ran all five circuits as one
+batch.
 
 - **Spectator-drive additivity.** Target T: X90, `wait(40)` (800 ns), Y90,
   so P1 = (1 + sin phi)/2 reads the Rz(phi) accumulated in the idle with
   standard error 1/sqrt(shots) on phi. Drivers A and B (both coupled to T):
   40 X gates then `wait(1)`, an identity that sits inside T's idle under ALAP
-  scheduling. Four circuits (none, A, B, AB) in one batch job; every disjoint
+  scheduling. Four configurations (none, A, B, AB); every disjoint
   star of the coupling map runs in parallel (Tuna-17: T=0 (1,2), 3 (5,6),
   4 (7,8), 11 (13,14), 12 (9,15)). Pairwise falsifier:
   phi(AB) - phi(A) - phi(B) + phi(none) = 0.
@@ -196,7 +203,10 @@ and two CCZ on five qubits, with every gate in H, S, T, Tdag and CZ. Routed
 onto Tuna-17 a replica takes 66-70 CZ and 26 T. Three disjoint regions,
 {0,1,2,4,5}, {7,8,10,11,13} and {9,12,14,15,16}, run the three cases in a 3x3
 Latin square (latin-1..3); readout-0 and readout-1 prepare every qubit in |0>
-and |1>. The estimators and the comparison were fixed in cases.json before
+and |1>. The generator emits the Latin square whole as batch-00, so its dark,
+bright and fixture contrasts share one calibration, and the readout pair as
+batch-01; the retained 221133Z runs predate the split and ran all five
+circuits as one batch. The estimators and the comparison were fixed in cases.json before
 submission (claim class: preregistered hardware inference). The QX twin packs
 the same nine replicas two per 10-qubit circuit.
 

@@ -212,9 +212,11 @@ def qi_compile(cqasm: str, backend_type_id: int, stage: str = "decomposition") -
 
     Creates a project, algorithm, commit and file in the account; executes nothing.
     """
-    # The stage is checked before the first mutation, so a rejected value leaves no remote resource.
+    # The stage and the backend type are checked before the first mutation, so a
+    # rejected value leaves no remote resource.
     if stage not in COMPILE_STAGES:
         raise ValueError(f"stage must be one of {', '.join(COMPILE_STAGES)}, not {stage!r}")
+    client().get(f"/backend_types/{backend_type_id}")
     commit = _commit("mcp-compile")
     client().post(
         "/files",
