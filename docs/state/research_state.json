@@ -936,7 +936,8 @@
       "boundary": "Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.",
       "evidence": [],
       "documents": [
-        "docs/RESEARCH_ROADMAP.md"
+        "docs/RESEARCH_ROADMAP.md",
+        "docs/notes/rank_locus_two_dimension_gap.md"
       ],
       "gates": {},
       "acquisitions": [],
@@ -2026,7 +2027,7 @@
       "domain": "hardware",
       "evidence_class": "proposed experiment",
       "status": "proposed",
-      "boundary": "Each rate needs resolved quadratures, qualified exposure, phase-reference controls and delay diversity against winding.",
+      "boundary": "Each rate needs resolved quadratures, qualified exposure, phase-reference controls and delay diversity against winding. The ibm_kingston pair cases (68, 67) and (67, 66) are retired without a run (docs/state/QPU_RUN_CENSUS.md). The Tuna-17 coupler map (qi-tuna17-coupler-zz-map) runs the conditional-arm fit for J and omega on another device; no run collects the Bell odd and even coherence rates or the nu_odd + nu_even falsifier.",
       "evidence": [],
       "documents": [],
       "gates": {},
@@ -3260,6 +3261,30 @@
       ],
       "depends_on": [
         "a5-d-locus-nullity"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "a5-nonzero-divisor-two-dimension-gap",
+      "statement": "At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.",
+      "domain": "geometry",
+      "evidence_class": "mathematical theorem",
+      "status": "open",
+      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound; a second-order obstruction on the two transverse directions would refute the statement, and an explicit curve family of the larger dimension would establish it.",
+      "evidence": [],
+      "documents": [
+        "docs/notes/rank_locus_two_dimension_gap.md",
+        "docs/evidence/rank_locus_local_dimension/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "a5-rank-locus-local-dimension",
+        "nullity-twelve-cone"
       ],
       "supersedes": [],
       "superseded_by": null

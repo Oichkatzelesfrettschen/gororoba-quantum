@@ -644,8 +644,13 @@ circuit and charges the account ledger's change.
 - **dimension32-global-topology** (mathematical theorem, geometry). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants.
   Boundary: Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
-  Evidence: [RESEARCH_ROADMAP.md](../RESEARCH_ROADMAP.md).
+  Evidence: [RESEARCH_ROADMAP.md](../RESEARCH_ROADMAP.md), [rank_locus_two_dimension_gap.md](../notes/rank_locus_two_dimension_gap.md).
   Depends on: four-support-topology, principal-skew-atlas, kernel-limit-slice, nullity-twelve-cone.
+- **a5-nonzero-divisor-two-dimension-gap** (mathematical theorem, geometry). At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.
+  Boundary: The certificate bounds the local dimension between the family dimension and the tangent bound; a second-order obstruction on the two transverse directions would refute the statement, and an explicit curve family of the larger dimension would establish it.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
+  Evidence: [rank_locus_two_dimension_gap.md](../notes/rank_locus_two_dimension_gap.md), [README.md](../evidence/rank_locus_local_dimension/README.md).
+  Depends on: a5-rank-locus-local-dimension, nullity-twelve-cone.
 
 ## Proposed claims
 
@@ -658,7 +663,7 @@ circuit and charges the account ledger's change.
   Boundary: Priced against direct counting before any hardware case; no universal speedup follows.
   Depends on: algebra-circuit-fixtures.
 - **proposed-conditional-ramsey-hamiltonian** (proposed experiment, hardware). Add Ramsey of qubit A conditioned on B in |0> and |1> to the Bell odd and even coherence rates: the design matrix for H/hbar = (omega_A Z_A + omega_B Z_B + J Z_A Z_B)/2 rises from rank 2 to 3, J = (nu_A|0 - nu_A|1)/2, and nu_odd + nu_even = nu_A|0 + nu_A|1 is the falsifier of the reduced diagonal model.
-  Boundary: Each rate needs resolved quadratures, qualified exposure, phase-reference controls and delay diversity against winding.
+  Boundary: Each rate needs resolved quadratures, qualified exposure, phase-reference controls and delay diversity against winding. The ibm_kingston pair cases (68, 67) and (67, 66) are retired without a run (docs/state/QPU_RUN_CENSUS.md). The Tuna-17 coupler map (qi-tuna17-coupler-zz-map) runs the conditional-arm fit for J and omega on another device; no run collects the Bell odd and even coherence rates or the nu_odd + nu_even falsifier.
   Depends on: hw-coherence-window.
   Supersedes: withdrawn-interleaving-verified.
 - **proposed-crossed-tile-template** (proposed experiment, hardware). Cross {affected template, reference template} x {candidate weak tile, reference tile}, optionally x {isolated, packed}, to separate tile, template and interaction effects on the weak-lane loss.

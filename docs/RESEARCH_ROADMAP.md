@@ -57,7 +57,7 @@ owns the link from literature and observations to the next intervention.
 ### Open and proposed claims
 
 [RESEARCH_STATE.md](state/RESEARCH_STATE.md) records every registered claim
-(63 established, 26 exploratory, 3 open, 7 proposed, 2 superseded, 11 withdrawn) and every executed acquisition. Open and
+(63 established, 26 exploratory, 4 open, 7 proposed, 2 superseded, 11 withdrawn) and every executed acquisition. Open and
 proposed work, in dependency order:
 
 - **cd-moving-pair-walsh-proof** (open, mathematical theorem). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32. Depends on cd-associator-census.
@@ -70,6 +70,7 @@ proposed work, in dependency order:
 - **proposed-echo-matched-dilation** (proposed, proposed experiment). Compare U Z U^dagger Z U against U U^dagger U at equal non-virtual gates and duration, with a per-edge CZ-phase reference whose X-quadrature arms calibrate its visibility and common phase, and an incoherent control on the same compile, to measure the error the dark probe carries and bound its conditional-phase share under the uniform-phase model. Depends on echo-pair-coherent-sign, singular-sector-split.
 - **proposed-scaffold-ab** (proposed, proposed experiment). Run the walk template bound to readout0 and readout1 beside measure-only and X-then-measure circuits on one tile under one calibration, isolating the scaffold's loss. Depends on hw-walk-scaffold-floor.
 - **proposed-census-frequency** (proposed, proposed experiment). Read a per-triple associator witness on the 3360 sedenion triples with i and j nonzero and unequal: P(c = 1) = (1 - V+)/2 + f (V+ + V-)/2 gives their dark fraction f = 1848/3360, where pooled bright (omega = +1) and dark (omega = -1) references fix V+ and V-; the other 736 triples are bright exactly, so the census is f x 3360/4096 = 231/512, a test of how faithfully hardware carries the sign function. Depends on cd-associator-census.
+- **a5-nonzero-divisor-two-dimension-gap** (open, mathematical theorem). At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24. Depends on a5-rank-locus-local-dimension, nullity-twelve-cone.
 <!-- research-state:end -->
 
 The correction pilot, coherence window, ripple and rank-sector transfers,
