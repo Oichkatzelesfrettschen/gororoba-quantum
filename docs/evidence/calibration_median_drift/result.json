@@ -1,0 +1,2296 @@
+{
+ "schema": "calibration-median-drift-v2",
+ "policy_thresholds": {
+  "max_readout_error": 0.08,
+  "max_cz_error": 0.03,
+  "max_sx_error": 0.01,
+  "min_t1_us": 20.0,
+  "min_t2_us": 20.0
+ },
+ "records": {
+  "2026-10-10T165944+0000": "422067b2789d8beb33f29d4816ff5998c7a736000ac63dd5cf25efa477d5b461",
+  "2026-10-10T171827+0000": "3fe90ccf9893aedf4aa67130417b92f989a956a00e4f7550988954006d02863c",
+  "2026-10-10T172316+0000": "ee4a9f31f60b2f672d2d8f7c29f4df6a27206ed71332df48665ebc13e4e84c49",
+  "2026-10-10T173416.028543Z": "0bdb560ea06102608804229f07e177acc357c22c9b8ace177068b1a1a3fe73a9",
+  "2026-10-10T174036.860138Z": "3faedc850ab24c06757cdebe5e9b0fd1d39d8599bbc467b1185fe50d4f7c6c40",
+  "2026-10-10T174235.045010Z": "fa66c1e7e3fcf6fc06e5f86bc4dd2200f99bc0271401ae1dd5134afbdcbf0cfe",
+  "2026-10-10T175925.891919Z": "5f3b34e3ca01d1123a5fb9bf575d9661909d222e4e0f659ca44e5fc728040408",
+  "2026-10-10T183023.567277Z": "89a3edeb0a29fe1dd0ddd1824e8fe8e2417f3da12027f27301133ac016f7b0ab",
+  "2026-10-10T183325.225102Z": "892ac44d1c2517128a200bfb2bf76ba7310e25e5ef063f8c516be5ba5ca5ec52",
+  "2026-10-10T183549.443333Z": "a0ae8d166ab8ff30f9103cd87e2779da7c5f13362fcd48dd41e377aee89a5e6d",
+  "2026-10-10T193949.352436Z": "1eacca6b2c9081ca6bd81528a4f4df293efabbe488792c4a718c7da8dceb57ef",
+  "2026-10-10T194700.095769Z": "b54b7dfcd19ba8c5dfde6ec37ae3f739374a33dc096501115ac7c580076d09e7",
+  "2026-10-10T195204.086678Z": "2a3ad5b1fe611eba7ef02631457ad11784255c016f69c11b85c90627150b4df3",
+  "2026-10-10T200646.447516Z": "361710c4529f85ab13fa9d917f8d99b889bbecc50331429ce6b5828d7d6eba68",
+  "2026-10-10T213145.298421Z": "7db1e6e31109c6cbdf06d42351fddf96d39f642436da879f33d75ead59525cc4",
+  "2026-10-10T214318.070235Z": "c35125c69a8be85106dfb8f8b3cdf3c506c8acdd09df2aff8f4e0f24853012b9",
+  "2026-10-10T215434.847324Z": "9ccd56e545fcbcd473095bc05b6898338d3e91cd0bd513076813a65c94eb4bf0",
+  "2026-10-10T220435.034757Z": "0beed75edbbdd25cb6c718a1f8f5fd2d171c98c500407d3d2b7b4d498bf97939",
+  "2026-10-10T220438.712726Z": "df4a78449671817ccc700781e0d277f1e3e7ae0787a33314cff2b78ba997efa3",
+  "2026-10-10T221412.255180Z": "104b45b40147ecfa913fefbafea6d37103bf4588003fd410c4f66be6a13676f9",
+  "2026-10-10T222132.627032Z": "9b9b29d5e8ce78f90fc3179c083bef1b1f9741dfa54a181698b70ad8c69f7e4e",
+  "2026-10-10T223619.798923Z": "6c347e70e0ea22de682fc935d810612287bbb984d1a3ac551b367f550d5f0f7c",
+  "2026-10-10T230646.694665Z": "8452d0751b1aa505c2abf02f19c3d17184b6f8585c39cec5c27f6c58a4a2b09b",
+  "2026-10-10T232219.919322Z": "0c5b57a2db2d4e246908c5a05ccf1eadc0aa87629e2ac3950586f38ef7c55744",
+  "2026-10-11T062204.877756Z": "813be4a7e9e654c5a0043c596f900d4f3537c010d5bc9a863037f77163f4ae50",
+  "2026-10-11T071616.724800Z": "54946d4b19b9ec9ff92d7c536ff050ba4dbdd0e3504d7f4e621ff70198682524",
+  "2026-10-11T082455.919602Z": "503cc3da9d08f2426b80a145bf6091dc18405ea416d33aef0621777c66e188ef",
+  "2026-10-11T085437.294823Z": "522e3bf7f765cda7a0139a326147a54b966a38188e104030de660e8653fb8e75",
+  "2026-10-11T090500.749224Z": "6c0d04b9cc4e7417ccd872af39ebe8935a3d5b3c301b0870df251d7df0607472",
+  "2026-10-11T091019.824103Z": "96318b9b46ca355089b99011136311b4f6d8ee252ea87b6d93e69a4586b253cd",
+  "2026-10-11T091715.073826Z": "79e35c6a8a6bef2e215bb4ea07e450370c74fc8622612cc0d14db3255ec8bd58",
+  "2026-10-11T093336.320234Z": "2245c42f8eb4f853c93fdf672c3979760eba85a96708394eb4db27627e2b58c0",
+  "2026-10-11T093445.248590Z": "54c1705b70e1b7884cff4ebfc5610e3af090df0303f92689e8b67d0eb521fb23",
+  "2026-10-11T094055.608273Z": "3734874afce712274a239478ad6b17e6564befff66116f6f54647bbbe6e8e64d",
+  "2026-10-11T095108.705673Z": "4836ac0086cf84e5f2cff1837c9d4423ac2af00833cfa3c82d3adbda7663415a",
+  "2026-10-11T095541.923847Z": "4b5e61dcaa5e87c5a76a7cbccf7bf85e5ef115951d87fe118a5b8b4fd5f28dfa",
+  "2026-10-11T095547.705434Z": "534a8d51a414e70019ef4ab4994101b8e5cef4c9510d69d804cce801e7c99e31",
+  "2026-10-11T100158.375275Z": "2d54cb68e1fd04465eb6753f8a40a250a197bdade6210ef6b5c9659b48418a92",
+  "2026-10-11T100526.684788Z": "d7400b165b2089d5081167bf60d56e6638c9fd8e11786f8f00e6ce3ffaab4f92",
+  "2026-10-11T101630.331262Z": "277204b26629986b77622943ddb765500e6afc3c27972966e70fb872e0a48adf",
+  "2026-10-11T102037.475268Z": "5f8ec0bf35d0f30ee35db204203f1b84df764da9c9dcc20de863bd9e4075a270",
+  "2026-10-11T111237.410777Z": "b7223494e0b11a7672a0949007c04952e0156ab19b7d6d7da028ae5d98051aed",
+  "2026-10-11T111555.975109Z": "6e75d92d50ecd7bf7201e45c751973b91eae7089ef574326f32c490cab903f65",
+  "2026-10-11T113111.266543Z": "2e08db3de61e25e1c272bafafe74034cb00291367a4da2d7ad9675f6bd728553",
+  "2026-10-11T114048.080610Z": "d18c0ef542b10260bc9affc275c9a4eae6a963a9719fa85a2b3881a2162792af",
+  "2026-10-11T114958.902835Z": "9c4285d7a293ea52fb5364494aaae14f896d5e610efc8d9d782330bfe71dbdde",
+  "2026-10-11T120803.085652Z": "0f06c5ef86bfd24a2b773f9a0de96a36a505c0806728b666bc5bfb3b681b843c",
+  "2026-10-11T121402.617901Z": "807f1856b54abc7aaec1a311a999d0c6f8fd197ccf385488bc153531432c447b",
+  "2026-10-11T152922.787095Z": "3b81e5b3ba59bf5041daeaae911d9c5b62063fe4186544c5ed79e9ef709c1e59",
+  "2026-10-11T163812.041836Z": "3042735c391ade3a8741b214242989bddfba2877ee0b22d341e42e302ca5d2d2",
+  "2026-10-11T200341.410400Z": "dbd522bc3e14f7d32c275ba4c95f33e5ed06d094be19a0f84aa887b9a60beb99",
+  "2026-10-11T203420.747793Z": "8c0c5c3b17f6ba529cf079ef047dcc933c74126b407d845337568efad5f9c10d",
+  "2026-10-11T203535.690679Z": "505ffcd719f966d59b26c34581d3d4a805f6292c1658f22b162713f90198c08e",
+  "2026-10-12T011109.792785Z": "2a6d02ebc703ec81e1cbe4383f6215331b97add27ca823a16dfe6110b692aabb",
+  "2026-10-12T011110.481425Z": "0f05e1e687adc7f247ec05fb93e8af648ae78b80dc8c447383b7d87f2e88549c",
+  "2026-10-12T014428.093689Z": "6bf8f0ce211d42c804276cf206cf8c3cf55b9d19c15a69d9c14d3fb9be0364d2",
+  "2026-10-12T014450.672483Z": "e43c3e5bca12795a77d4148ff958735354271635430e2114f3b10233f9032d98",
+  "2026-10-12T020459.130482Z": "1d4bf7040c71b3a53c096825be34f37f694ed0b61f9bc1bbb4e488bbbbad7fef",
+  "2026-10-12T024756.245948Z": "f8006ac659b43224f67eee85928987ae32ad9409e117d7802e97d78579438f2d",
+  "2026-10-12T054229.702537Z": "b4774b596656865edf75ff9eae32cf0d2630a06477d2d1547f498d102bc66cef",
+  "2026-10-12T055017.711575Z": "aea22a9ddaa54be03481d8ea34dbce5479262d2a9cd8ea4e980d56dfb9d7a01d",
+  "2026-10-12T055017.711575Z-prepared": "2f87de38661a484bb0e09625b25e363acdc1eed1aba408ef5c2bea1bd6a1092a",
+  "2026-10-12T055624.091217Z": "91145c3456e8670a19eea258416412d020ca5e3fa71aa37b91ce7a5cb7f74670",
+  "2026-10-12T062505.208379Z": "bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038",
+  "2026-10-12T062505.552988Z": "f38dfe635415d264eea754e4d699080092ca7272f65e42304fac08f5b4f5fe7d",
+  "2026-10-12T074042.840320Z": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
+  "2026-10-12T153635.004894Z": "315bac0dd8fa61ed2ee0c91506d58b2f6efc76cab534b37fa5f0d0181f8c0207",
+  "2026-10-12T163354.210407Z": "d6e778473789716b423d0941ec83b8920046a07db4f75143ab08b2576ab8f522",
+  "2026-10-12T163354.247043Z": "0ee3146cccce74abdd580380cca3d684106036d4fdc27bdc2bb4ccf340991a8a",
+  "2026-10-12T163354.310138Z": "f0cdf8b3e69e6294878ac35a3a82e2ad3563e09e5aab3b6ba9667e79251cab87",
+  "2026-10-12T170742.727534Z": "471b821d0a6fe4945fd26fccef4cfee0364dc75c729b3c4d5676db9accb9d1a8",
+  "2026-10-12T174739.912595Z": "88a1e9a95feb80bf39bd44998ac4507fc66d46cb53b8496f6b97337b68b913e3",
+  "2026-10-12T174740.017449Z": "bca843fb99dff39c5ac9a8b2c9ea453cdaa53c25be37da529f1f89c9782d0bea",
+  "2026-10-12T185136.764695Z": "3a66462d5f62b8e74e1946754d38d4b2eb699dc8000a66c6419bcc3ea1a09d92",
+  "2026-10-12T195043.912458Z": "7bb6ace345f10c0c45b0ce8cea4a5b8959d629a85e34e0842d0961a91cf8e0c7",
+  "2026-10-12T195828.029302Z": "74ac892864d222180125f1050e148293e264b194f0b66d0bd892d6f05d6284b2",
+  "2026-10-12T200830.246684Z": "8dc6d11f7e8d5683bf10214b976fa76e686fafacf35562c2f8e8ffe922c8d9ae",
+  "2026-10-12T202604.294879Z": "7159448f76a68c3e1bd71576cb9f55542f91d5dfdb437ed8a882f452fbc0722f",
+  "2026-10-12T202752.126072Z": "66546b751fadf5d2a5917a9c006e3460b0ede0caae8226b4f235841c5f42954c",
+  "2026-10-12T203301.342941Z": "f380511031e2161632801e20b9794caabecb52e9ba33d46941530f39539e0fe9",
+  "2026-10-12T205014.933900Z": "d8ee86531c7317e62505730f9487bde056d4ed64d3e1153dbdd44bfecb5278b3",
+  "2026-10-12T210043.972363Z": "bc709f774aecd68fdfaa1612ea05db6a0326217df9ef1da2f0535c17371846e1",
+  "2026-10-12T210111.066250Z": "6d4de1692e84f5d8b8b9308fcd387aac59a74490133360ebad19e04b624967b7",
+  "2026-10-12T210733.761428Z": "76c1f472a1bcd71bd2e1660355f14c119e47b5ccfb5143e6ca0d9503a998241d",
+  "2026-10-12T210815.657132Z": "9ddec6264db827947babe29967f68690814d7510cc01f2af5e0aff55334ec877",
+  "2026-10-12T213459.470118Z": "603f6e975f53d792d8d5c2fe3682b77c882994251b4daec49815aab06943034f",
+  "2026-10-12T215030.944608Z": "8b7832967064aa55bdd00d5cc376653611dd809a9ab7241a71795abc610205c2",
+  "2026-10-12T215030.995079Z": "2807a634ff3fbdac979e3092d0a1b5a802aa0483ccaaa19af6ecdfcffa50da1f",
+  "2026-10-12T215031.046514Z": "b0a647ea218dd907988f6046a11b7163aa853e23591f8e263bf9c67017a5858a",
+  "2026-10-12T221651.485791Z": "58bd3573f173bc6b1ee6835c1809af05e9013bd6cfe6da26ff2b4b71afd00450",
+  "2026-10-12T225019.585504Z": "46199b32e1b36f424111b19d6fb87fe5c0d3d9f5220b4337b51797519b056226",
+  "2026-10-13T020255.180301Z": "f90f9715f6938d4ece1b58221e18ff912f92f715777b30dd382001ac4e6a252e",
+  "2026-10-13T020454.599853Z": "d9441a3b8c613c666657f3abdceb7eab9842db5d97310ec3af0319b21ad020ee",
+  "2026-10-13T022211.257292Z": "78d17752b78b7e11424b9a92bdff201cda6afa319ed6717b0c83f308b5e5467b",
+  "2026-10-13T022433.333775Z": "953925600a12666f406e56f7833be4bc2885c3904f5a64e82875ceeba56ffdad",
+  "2026-10-13T024407.448597Z": "8c9bd292a6d6f976f2e7014fe49fd99ed7327ad79a982bdfb8ae641a64877c4d",
+  "2026-10-13T025444.603480Z": "dfe1e15a1a429c5625acac46a13f51dc4025619273b123ba969122a2a54dc83c",
+  "2026-10-13T031726.380783Z": "5563c7e59b7e3a90d49cecefed223d354afcbbbacc121d7d2f3899455c6e37f6",
+  "2026-10-13T032011.664435Z": "cde647e53a4a08164f71e474b63b36b60ad1417a850c48adb2907af050dc2368",
+  "2026-10-13T072413.099286Z": "ed8e194c3343e3d4129ee906650d85a8157e2a2250a0988b6f391406d978fc68",
+  "2026-10-13T074504.229783Z": "aa23407dcf902fab3b349cb6db6cea9e7db1fc241446518f676da65b70f1de18",
+  "2026-10-13T074533.144752Z": "362a0c5b613889091e4005029f63c3c795a6545efa444dae07d2baaaa8c85bc0",
+  "2026-10-13T074651.134471Z": "7282ba8b66a60741854a18e27b47f4fa308abd93cde5ba7333adad810b8456fe",
+  "2026-10-13T080216.451663Z": "c7a5c333f806f412b1966d467743a30828239ad1997fd5be0729dab3015d8b19",
+  "2026-10-13T082319.041879Z": "8a4210408c159bd44f2926636abc5736a2117c863a8c8beca081bff88f7dbff5",
+  "2026-10-13T083417.634585Z": "c0e20af610a17db49c41e8a8f979b5ed27ac793dbc5e2eed656897f9af97369d",
+  "2026-10-13T160858.135475Z": "949fa3388aec338bd16f8dc0535708f7c0ac6c79196ec9048183e345e1c9e0a8",
+  "2026-10-13T163154.032617Z": "a0ed332e83cd69c404be983b197d92e36bbd70aac3f96de9e8a4666b8b90c58e",
+  "2026-10-13T185452.264685Z": "2e460547555c65eb00e7401c03b63c069d6b248b273e6e3beece79dc4fa24fa7",
+  "2026-10-13T185600.943502Z": "0b94d46168f459cc687415548d021fd93cd36e3bd67d272612c08c3e4c00025f",
+  "2026-10-13T185653.169839Z": "4edd657a7ef481d43cfd96a3c65826592dfefc6cb3b6be7152605566c267bb2c",
+  "2026-10-13T185758.378350Z": "7344197bf181835805f3f45095a901f3befbf7f56ee6f019a45434bcc16729b7",
+  "2026-10-13T190357.049286Z": "c8a80a5a3f9a36afa4ffcbbbadf0950b371e58c1c84c64893b4fb176e7fc8878",
+  "2026-10-13T190502.456251Z": "810458f8aa7adf5a1f09fb2f679a49808f899fc97b0135154f24dcd48d62ef81",
+  "2026-10-13T190549.596960Z": "bd25957acf984ead5240a487e11923d5a618b49a545733c31d99802be8edc875",
+  "2026-10-13T190634.658358Z": "ce18b65218051a2a1d3bd13977fc134735bf83d9c980e5d801526e1c278588bf",
+  "2026-10-13T192048.384019Z": "58860fcf21e3d21ab8155b8e42325ddb8cb83912c0811c5f41f3d3c913cb1997",
+  "2026-10-13T195251.183877Z": "50d512b5b40ad31f920d3cbfadc0f20e299a549b1570f0f1d2c20a031b723a70",
+  "2026-10-13T201059.920197Z": "69d36d3a6bc58c5885604f2f20e7a95bae1e33b4f2f5db28c8be1d50f396378c",
+  "2026-10-13T201228.119505Z": "425b426c5efd2c14450f850537aea1c97b1ac8ace9dbd45b3aae79300d21dc83",
+  "2026-10-13T201314.868415Z": "539839c678c2c0e591c5365814f83919d5391e7f3a1494792eae635015e8ec1e",
+  "2026-10-13T201455.521932Z": "47b53e9c77448ed4e112e8638c1ee316f8c56cccb8027f33e0322ada6b37e59f",
+  "2026-10-13T201529.748272Z": "9ee906654cf5f3c102b946b6d09e1b7545e58c6a4351507228530a39a2e7cebe",
+  "2026-10-13T201720.224397Z": "ec6e86629948407640b5e7a66a2306cca8bd7d1004227f66de50aedee898cc2f",
+  "2026-10-13T201757.782152Z": "5685faab1c278ee1078799612d2b61a97949f891eafde4038e4388f98fcc4868",
+  "2026-10-14T055711.938217Z": "9ca39ad47c1833903111c344b29ff1467e12c3728c7cd93d5f1fc35af7255138",
+  "2026-10-14T055754.499747Z": "f88c01a1394116dc154271c8dd8205fa020d44e6d2fcd79df26da308c7a9d571",
+  "2026-10-14T060826.976518Z": "fdef1edf58c0a0872ee36201d649245525bfab55eae0b66406c7b0ef994a32a6",
+  "2026-10-14T103147.847414Z": "f22c7213ac1066d59848bfcd0ca682eb47d8e204af24b0148eff86861166a182",
+  "2026-10-14T113012.109467Z": "c10b99918f8c68fee09746bb5351b41bc7c3a5c104cd77329ee9dbd005c845db",
+  "2026-10-14T113945.518703Z": "e39aaccec1c6cd3c64cb034602ac52089688633a4b167d1d20143f5c88c38c8b",
+  "2026-10-14T204144.526374Z": "036237e0bae40cc7e65c3055a4a919300242b857f6c56d1ed5599600c7e211a1",
+  "2026-10-15T013255.787315Z": "94226058c08db80bffb66bde56e766673b533fdb2a317554eef2d1a0b82dea68",
+  "2026-10-15T013256.246642Z": "e0f9a714718630091fca5d6353df1497c6733e332d78a09de68aae945cd562be",
+  "2026-10-15T013528.988943Z": "0bd6b15dc32492e90734c302ab2739d1caf267392f70cf2bfa14b5cdd4652309",
+  "2026-10-15T013647.977610Z": "b57fb093b3a88d60d9b2f06711d16c6379c2b13cd591b520aa0483d376d1a546",
+  "2026-10-15T024845.723885Z": "e38d8b06d28d44ae8b633dc94754ab17e20a0b73dddc36aa2d63af90ba2f4197",
+  "2026-10-15T030638.132007Z": "fbc8826e6dfcd3924ab57f076912b7cc7edbf3675916e5dea7d2e9c18415f6e9",
+  "2026-10-15T030638.321696Z": "9f0d50a404b7596b35cb495a72b0b5d4a48173434179437696e7093e24cb1e7f",
+  "2026-10-15T030638.929111Z": "135dcac7e2c98c04f5a699926f506567a90ee0535ce35c280f880672384d7781",
+  "2026-10-15T030748.903241Z": "c76f608cbf0fb253d5b93045ec47e254e2748182c76bc36a0277b7b5338aaea8",
+  "2026-10-15T030903.235380Z": "1e36e27c9e4f10a5fab1e0e37028c89c832717e06822d8bb17e5fd85b3eba1a0",
+  "2026-10-15T031229.371738Z": "044dd98ad5483accb0acfe3fa10841c7c06b1cac76f41fefe05fd89cc6645f07",
+  "2026-10-15T070828.127101Z": "b9fd50af55c51fd2a9e22795a765642e4b32a4225a5af69f2ecd5fb719836cc8",
+  "2026-10-15T070828.397109Z": "341fcc11bdfc2e9ebb6e86a59792051a3027db992b1bcb98bc4df7259506174e",
+  "2026-10-15T070847.644554Z": "9bb872bf20dd664489afa2b423aefe102042f4be2747abc60765b6947af45733",
+  "2026-10-15T070853.550532Z": "22c078143a9e266123ad0f9acba9f3c234ac1c6522aa3e669eb4a579aee32c65",
+  "2026-10-15T164003.621261Z": "48e6495e70f494c08d0abcefba51f29cb8bfea87eb5e7806d4d37cafb8003d1d",
+  "2026-10-15T204407.674235Z": "ab00c568d4bd00b5044ec3f2a021e3126b13c33a8a0a19e5ac48c8568a1b43e5",
+  "2026-10-15T204427.864020Z": "f41b6a0b980ea11cf6ac7354675c505a3bb4a041f02dc8d1d489d579cac8d029",
+  "2026-10-15T212000.401292Z": "d4691778749bc672381ea2ee7490d8086a4742d8ffe95c14c67c964fa036d786",
+  "2026-10-15T212016.630328Z": "4f791d581fc13d04d450409fcbb6de25653564339279b56281b5f01ffb04c86e",
+  "2026-10-15T224704.122016Z": "b29c0a3825f09f1c90c078d244beb875739d8c97fbcb85ce328e64ed8f1707b5",
+  "2026-10-15T224725.179602Z": "fceebffbb3376d6c9676da907a1077719f412622ae2ad5f0199335517f597b0f",
+  "2026-10-15T224747.140174Z": "8c7764d2e40c3e102b3cd089e956a951c3d19c7650a4ec9fd1b8e27d9372d030",
+  "2026-10-15T224805.443398Z": "960baeef4f53830a75fb46eb4d8a718c5b7f4251262a9ba42e0aafdcef944a02",
+  "2026-10-15T224821.527684Z": "a0f865be93b024fbcf4ba9a49bca5e818cf429490b245d1a003cda8268ef0c43"
+ },
+ "snapshots": {
+  "docs/evidence/calibration/history/ibm_fez/20261012T1920460700.json": "f5260cfb997a9d23e2231eea3f0f8b856377a8f448bcb39491e792e492f732dd",
+  "docs/evidence/calibration/history/ibm_fez/20261012T2327110700.json": "8a9dba4cb267dc0d710813cac8376705432d47355ef3572b181686a5553337b1",
+  "docs/evidence/calibration/history/ibm_fez/20261013T0101230700.json": "23b5cec99ad7428aafe6de707c0681248411a54b549ae19d3b7fc364d916480c",
+  "docs/evidence/calibration/history/ibm_fez/20261013T1341520700.json": "5f024c3b6a95a84f2668b8ad7700d9c0c09ddabf6f35346a17ccf3e61ffa9edf",
+  "docs/evidence/calibration/history/ibm_fez/20261015T2031280700.json": "b244e7b16f771b3d0ee4e2263d8c63b337476c0445a323c90981ee0ac6c5d684",
+  "docs/evidence/calibration/history/ibm_fez/20261016T0851170700.json": "2a575e56132a68ced554ee699669eba91c4b8f3db2833661f90820be78e55595",
+  "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json": "68f18a24d412e0a753406c660dde6954cbcd67bf2b88d206f6ba7dbbc186f675",
+  "docs/evidence/calibration/history/ibm_kingston/20261011T2236250700.json": "184fe35eb5c4aca5b42f37666c99cd2cf3b9d49d8dc022786c4872b8c2304362",
+  "docs/evidence/calibration/history/ibm_kingston/20261012T1847310700.json": "dd47b94150f3ba4f59933780aa44d1afef70b46b048ea5fb0d0b944f696ad0ff",
+  "docs/evidence/calibration/history/ibm_kingston/20261012T1915550700.json": "24f3fda21cf2a10f44a660cd8c461e1bbbcd14a142bed0ff01b6ae0cfe333920",
+  "docs/evidence/calibration/history/ibm_kingston/20261014T1947440700.json": "211608ee3dfb7297d7671fcb74f0a24570d5b2a5b16918629d964e50605ada84",
+  "docs/evidence/calibration/history/ibm_kingston/20261014T2025340700.json": "ac3345f4ac23aea6fcce32ef74b86085b92f25fa2bb596dfadd9d2d979f59e92",
+  "docs/evidence/calibration/history/ibm_kingston/20261015T0003150700.json": "65cafecb72250647b0801d5a9405964c51bea203821bf672bffd94b99e9daf6e",
+  "docs/evidence/calibration/history/ibm_kingston/20261015T2035330700.json": "1b96aa950e86733f287b80d4a88bd737276a4f4e136f5cfc1ea180c9f69f1865",
+  "docs/evidence/calibration/history/ibm_kingston/20261016T0909010700.json": "277f1497d6670f1b0fa531fe66dc3f57ac6642dbda302cb4963e98988042cc7e",
+  "docs/evidence/calibration/history/ibm_marrakesh/20261015T2046350700.json": "6c8c75217326e2dbb03b74d7b5d5df47496176790e4a285b58a048c71bbc166c",
+  "docs/evidence/calibration/history/ibm_marrakesh/20261016T0808140700.json": "23f5f44f30cf019c65245ce96309ea0d1ca59f8db9146e21551cbe3979935a58"
+ },
+ "backends": {
+  "ibm_fez": {
+   "identities": [
+    {
+     "calibration": "2026-10-10T09:38:22-07:00",
+     "device_wide_records": 3,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 137.88416827818574,
+      "t2_us": 97.55520575049113,
+      "readout_error": 0.009521484375,
+      "cz_error": 0.0027316297220564556
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T10:07:12-07:00",
+     "device_wide_records": 7,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 137.88416827818574,
+      "t2_us": 97.55520575049113,
+      "readout_error": 0.009521484375,
+      "cz_error": 0.0027316297220564556
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T12:28:32-07:00",
+     "device_wide_records": 4,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 137.76064253538982,
+      "t2_us": 97.83042965093227,
+      "readout_error": 0.01025390625,
+      "cz_error": 0.0027316297220564556
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T13:07:38-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 137.76064253538982,
+      "t2_us": 97.83042965093227,
+      "readout_error": 0.01025390625,
+      "cz_error": 0.0027316297220564556
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T14:23:35-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 137.76064253538982,
+      "t2_us": 97.83042965093227,
+      "readout_error": 0.01025390625,
+      "cz_error": 0.0027316297220564556
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T14:41:29-07:00",
+     "device_wide_records": 4,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 137.76064253538982,
+      "t2_us": 97.83042965093227,
+      "readout_error": 0.01025390625,
+      "cz_error": 0.0027316297220564556
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T15:20:54-07:00",
+     "device_wide_records": 3,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 137.76064253538982,
+      "t2_us": 97.83042965093227,
+      "readout_error": 0.01025390625,
+      "cz_error": 0.0027316297220564556
+     },
+     "admitted_qubits": 145
+    },
+    {
+     "calibration": "2026-10-10T22:00:42-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 129.42836519253427,
+      "t2_us": 97.24005476090232,
+      "readout_error": 0.0106201171875,
+      "cz_error": 0.0027316297220564556
+     },
+     "admitted_qubits": 140
+    },
+    {
+     "calibration": "2026-10-10T23:28:53-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 129.42836519253427,
+      "t2_us": 97.24005476090232,
+      "readout_error": 0.0106201171875,
+      "cz_error": 0.0027413012213221982
+     },
+     "admitted_qubits": 140
+    },
+    {
+     "calibration": "2026-10-11T00:27:34-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 129.42836519253427,
+      "t2_us": 97.24005476090232,
+      "readout_error": 0.0106201171875,
+      "cz_error": 0.0027413012213221982
+     },
+     "admitted_qubits": 140
+    },
+    {
+     "calibration": "2026-10-11T01:21:37-07:00",
+     "device_wide_records": 3,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 129.42836519253427,
+      "t2_us": 97.24005476090232,
+      "readout_error": 0.0106201171875,
+      "cz_error": 0.0027413012213221982
+     },
+     "admitted_qubits": 140
+    },
+    {
+     "calibration": "2026-10-11T01:57:27-07:00",
+     "device_wide_records": 4,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 129.42836519253427,
+      "t2_us": 97.24005476090232,
+      "readout_error": 0.0106201171875,
+      "cz_error": 0.0027413012213221982
+     },
+     "admitted_qubits": 140
+    },
+    {
+     "calibration": "2026-10-11T02:30:39-07:00",
+     "device_wide_records": 7,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 129.42836519253427,
+      "t2_us": 97.24005476090232,
+      "readout_error": 0.0106201171875,
+      "cz_error": 0.0027413012213221982
+     },
+     "admitted_qubits": 140
+    },
+    {
+     "calibration": "2026-10-11T03:42:30-07:00",
+     "device_wide_records": 4,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 129.42836519253427,
+      "t2_us": 97.24005476090232,
+      "readout_error": 0.0106201171875,
+      "cz_error": 0.0027413012213221982
+     },
+     "admitted_qubits": 140
+    },
+    {
+     "calibration": "2026-10-11T04:10:35-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 129.42836519253427,
+      "t2_us": 97.24005476090232,
+      "readout_error": 0.0106201171875,
+      "cz_error": 0.0027413012213221982
+     },
+     "admitted_qubits": 140
+    },
+    {
+     "calibration": "2026-10-11T09:19:16-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 130.593091349723,
+      "t2_us": 97.24005476090232,
+      "readout_error": 0.0101318359375,
+      "cz_error": 0.0027413012213221982
+     },
+     "admitted_qubits": 144
+    },
+    {
+     "calibration": "2026-10-11T12:18:18-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 129.42836519253427,
+      "t2_us": 97.24005476090232,
+      "readout_error": 0.00958251953125,
+      "cz_error": 0.0027413012213221982
+     },
+     "admitted_qubits": 142
+    },
+    {
+     "calibration": "2026-10-11T12:57:40-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 129.42836519253427,
+      "t2_us": 97.24005476090232,
+      "readout_error": 0.00958251953125,
+      "cz_error": 0.0027413012213221982
+     },
+     "admitted_qubits": 142
+    },
+    {
+     "calibration": "2026-10-11T17:53:19-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 130.593091349723,
+      "t2_us": 97.24005476090232,
+      "readout_error": 0.009033203125,
+      "cz_error": 0.0027413012213221982
+     },
+     "admitted_qubits": 144
+    },
+    {
+     "calibration": "2026-10-11T18:07:56-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 130.593091349723,
+      "t2_us": 97.24005476090232,
+      "readout_error": 0.009033203125,
+      "cz_error": 0.0027413012213221982
+     },
+     "admitted_qubits": 144
+    },
+    {
+     "calibration": "2026-10-12T00:22:25-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 140.61969389833428,
+      "t2_us": 101.72586827123205,
+      "readout_error": 0.0098876953125,
+      "cz_error": 0.00267585872484985
+     },
+     "admitted_qubits": 139
+    },
+    {
+     "calibration": "2026-10-12T07:27:19-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 140.96307867508685,
+      "t2_us": 99.90506534230825,
+      "readout_error": 0.009033203125,
+      "cz_error": 0.00267585872484985
+     },
+     "admitted_qubits": 141
+    },
+    {
+     "calibration": "2026-10-12T08:24:52-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 140.96307867508685,
+      "t2_us": 99.90506534230825,
+      "readout_error": 0.009033203125,
+      "cz_error": 0.00267585872484985
+     },
+     "admitted_qubits": 141
+    },
+    {
+     "calibration": "2026-10-12T09:22:41-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 140.96307867508685,
+      "t2_us": 99.90506534230825,
+      "readout_error": 0.009033203125,
+      "cz_error": 0.00267585872484985
+     },
+     "admitted_qubits": 141
+    },
+    {
+     "calibration": "2026-10-12T10:25:25-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 140.96307867508685,
+      "t2_us": 99.90506534230825,
+      "readout_error": 0.009033203125,
+      "cz_error": 0.00267585872484985
+     },
+     "admitted_qubits": 141
+    },
+    {
+     "calibration": "2026-10-12T11:53:19-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 140.96307867508685,
+      "t2_us": 99.90506534230825,
+      "readout_error": 0.009033203125,
+      "cz_error": 0.00267585872484985
+     },
+     "admitted_qubits": 141
+    },
+    {
+     "calibration": "2026-10-12T13:09:29-07:00",
+     "device_wide_records": 12,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 140.96307867508685,
+      "t2_us": 99.90506534230825,
+      "readout_error": 0.009033203125,
+      "cz_error": 0.00267585872484985
+     },
+     "admitted_qubits": 141
+    },
+    {
+     "calibration": "2026-10-12T14:40:23-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 140.96307867508685,
+      "t2_us": 99.90506534230825,
+      "readout_error": 0.009033203125,
+      "cz_error": 0.00267585872484985
+     },
+     "admitted_qubits": 141
+    },
+    {
+     "calibration": "2026-10-12T18:37:05-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 140.61969389833428,
+      "t2_us": 99.82387376564705,
+      "readout_error": 0.010498046875,
+      "cz_error": 0.00267585872484985
+     },
+     "admitted_qubits": 139
+    },
+    {
+     "calibration": "2026-10-12T18:58:01-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 140.61969389833428,
+      "t2_us": 99.82387376564705,
+      "readout_error": 0.010498046875,
+      "cz_error": 0.00267585872484985
+     },
+     "admitted_qubits": 139
+    },
+    {
+     "calibration": "2026-10-12T19:20:46-07:00",
+     "device_wide_records": 4,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 130.46622743499975,
+      "t2_us": 89.57350930894756,
+      "readout_error": 0.0107421875,
+      "cz_error": 0.00267585872484985
+     },
+     "admitted_qubits": 141,
+     "snapshot": "docs/evidence/calibration/history/ibm_fez/20261012T1920460700.json",
+     "assignment_minus_readout_error": 0.0
+    },
+    {
+     "calibration": "2026-10-12T23:27:11-07:00",
+     "device_wide_records": 5,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 124.4722086391195,
+      "t2_us": 89.9288431180972,
+      "readout_error": 0.01025390625,
+      "cz_error": 0.00267585872484985
+     },
+     "admitted_qubits": 141,
+     "snapshot": "docs/evidence/calibration/history/ibm_fez/20261012T2327110700.json",
+     "assignment_minus_readout_error": 0.000366211
+    },
+    {
+     "calibration": "2026-10-13T01:01:23-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 124.4722086391195,
+      "t2_us": 89.9288431180972,
+      "readout_error": 0.01025390625,
+      "cz_error": 0.0027307687343220977
+     },
+     "admitted_qubits": 141,
+     "snapshot": "docs/evidence/calibration/history/ibm_fez/20261013T0101230700.json",
+     "assignment_minus_readout_error": 0.000366211
+    },
+    {
+     "calibration": "2026-10-13T08:12:39-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 124.4722086391195,
+      "t2_us": 89.9288431180972,
+      "readout_error": 0.01025390625,
+      "cz_error": 0.0027307687343220977
+     },
+     "admitted_qubits": 141
+    },
+    {
+     "calibration": "2026-10-13T09:08:33-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 124.4722086391195,
+      "t2_us": 89.9288431180972,
+      "readout_error": 0.01025390625,
+      "cz_error": 0.0027307687343220977
+     },
+     "admitted_qubits": 141
+    },
+    {
+     "calibration": "2026-10-13T10:32:21-07:00",
+     "device_wide_records": 8,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 124.4722086391195,
+      "t2_us": 89.9288431180972,
+      "readout_error": 0.01025390625,
+      "cz_error": 0.0027307687343220977
+     },
+     "admitted_qubits": 141
+    },
+    {
+     "calibration": "2026-10-13T11:56:54-07:00",
+     "device_wide_records": 3,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 124.4722086391195,
+      "t2_us": 89.9288431180972,
+      "readout_error": 0.01025390625,
+      "cz_error": 0.0027307687343220977
+     },
+     "admitted_qubits": 141
+    },
+    {
+     "calibration": "2026-10-13T12:57:03-07:00",
+     "device_wide_records": 6,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 124.4722086391195,
+      "t2_us": 89.9288431180972,
+      "readout_error": 0.01025390625,
+      "cz_error": 0.0027307687343220977
+     },
+     "admitted_qubits": 141
+    },
+    {
+     "calibration": "2026-10-13T22:42:00-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 138.31503871204626,
+      "t2_us": 95.29168593312066,
+      "readout_error": 0.01055908203125,
+      "cz_error": 0.0027307687343220977
+     },
+     "admitted_qubits": 142
+    },
+    {
+     "calibration": "2026-10-13T22:55:28-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 138.17553969831943,
+      "t2_us": 95.02169558276891,
+      "readout_error": 0.010986328125,
+      "cz_error": 0.0027307687343220977
+     },
+     "admitted_qubits": 143
+    },
+    {
+     "calibration": "2026-10-14T02:49:52-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 138.17553969831943,
+      "t2_us": 95.02169558276891,
+      "readout_error": 0.0111083984375,
+      "cz_error": 0.0026350914097418854
+     },
+     "admitted_qubits": 143
+    },
+    {
+     "calibration": "2026-10-14T06:30:22-07:00",
+     "device_wide_records": 8,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 137.71169528089064,
+      "t2_us": 95.29168593312066,
+      "readout_error": 0.01055908203125,
+      "cz_error": 0.0026350914097418854
+     },
+     "admitted_qubits": 142
+    },
+    {
+     "calibration": "2026-10-14T23:12:22-07:00",
+     "device_wide_records": 0,
+     "operator_scoped_records": [
+      {
+       "record": "2026-10-15T070828.397109Z",
+       "admitted_qubits": 46
+      },
+      {
+       "record": "2026-10-15T070853.550532Z",
+       "admitted_qubits": 46
+      }
+     ],
+     "medians": null,
+     "admitted_qubits": null
+    }
+   ],
+   "series_summary": {
+    "t1_us": {
+     "min": 124.472208639,
+     "max": 140.963078675,
+     "max_over_min": 1.132486,
+     "steps": 41,
+     "steps_with_change": 13,
+     "median_changed_step_relative_change": 0.008999,
+     "largest_step_relative_change": 0.111212
+    },
+    "t2_us": {
+     "min": 89.573509309,
+     "max": 101.725868271,
+     "max_over_min": 1.135669,
+     "steps": 41,
+     "steps_with_change": 10,
+     "median_changed_step_relative_change": 0.005001,
+     "largest_step_relative_change": 0.102684
+    },
+    "readout_error": {
+     "min": 0.009033203,
+     "max": 0.011108398,
+     "max_over_min": 1.22973,
+     "steps": 41,
+     "steps_with_change": 14,
+     "median_changed_step_relative_change": 0.047714,
+     "largest_step_relative_change": 0.162162
+    },
+    "cz_error": {
+     "min": 0.002635091,
+     "max": 0.002741301,
+     "max_over_min": 1.040306,
+     "steps": 41,
+     "steps_with_change": 4,
+     "median_changed_step_relative_change": 0.022197,
+     "largest_step_relative_change": 0.035037
+    }
+   },
+   "paired_snapshot_drift": [
+    {
+     "before": "2026-10-12T19:20:46-07:00",
+     "after": "2026-10-12T23:27:11-07:00",
+     "hours": 4.107,
+     "common_qubits": 137,
+     "common_couplers": 128,
+     "relative_change": {
+      "t1": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "t2": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "assignment_error": {
+       "median": 0.011628,
+       "median_abs": 0.23,
+       "p90_abs": 0.72861
+      },
+      "cz_error": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      }
+     }
+    },
+    {
+     "before": "2026-10-12T23:27:11-07:00",
+     "after": "2026-10-13T01:01:23-07:00",
+     "hours": 1.57,
+     "common_qubits": 141,
+     "common_couplers": 140,
+     "relative_change": {
+      "t1": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "t2": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "assignment_error": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "cz_error": {
+       "median": 0.023175,
+       "median_abs": 0.12906,
+       "p90_abs": 0.515116
+      }
+     }
+    },
+    {
+     "before": "2026-10-13T01:01:23-07:00",
+     "after": "2026-10-13T13:41:52-07:00",
+     "hours": 12.675,
+     "common_qubits": 138,
+     "common_couplers": 133,
+     "relative_change": {
+      "t1": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "t2": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "assignment_error": {
+       "median": 0.027427,
+       "median_abs": 0.269979,
+       "p90_abs": 0.735207
+      },
+      "cz_error": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      }
+     }
+    },
+    {
+     "before": "2026-10-13T13:41:52-07:00",
+     "after": "2026-10-15T20:31:28-07:00",
+     "hours": 54.827,
+     "common_qubits": 139,
+     "common_couplers": 134,
+     "relative_change": {
+      "t1": {
+       "median": 0.07808,
+       "median_abs": 0.223744,
+       "p90_abs": 0.734681
+      },
+      "t2": {
+       "median": 0.013853,
+       "median_abs": 0.172178,
+       "p90_abs": 0.694947
+      },
+      "assignment_error": {
+       "median": -0.035398,
+       "median_abs": 0.25,
+       "p90_abs": 0.571514
+      },
+      "cz_error": {
+       "median": 0.004036,
+       "median_abs": 0.233322,
+       "p90_abs": 1.036867
+      }
+     }
+    },
+    {
+     "before": "2026-10-15T20:31:28-07:00",
+     "after": "2026-10-16T08:51:17-07:00",
+     "hours": 12.33,
+     "common_qubits": 139,
+     "common_couplers": 133,
+     "relative_change": {
+      "t1": {
+       "median": 0.019534,
+       "median_abs": 0.246299,
+       "p90_abs": 0.650131
+      },
+      "t2": {
+       "median": 0.030604,
+       "median_abs": 0.177413,
+       "p90_abs": 0.68924
+      },
+      "assignment_error": {
+       "median": 0.025641,
+       "median_abs": 0.190476,
+       "p90_abs": 0.92913
+      },
+      "cz_error": {
+       "median": -0.041062,
+       "median_abs": 0.159089,
+       "p90_abs": 0.566391
+      }
+     }
+    }
+   ]
+  },
+  "ibm_kingston": {
+   "identities": [
+    {
+     "calibration": "2026-10-10T09:25:28-07:00",
+     "device_wide_records": 3,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 242.03597759762638,
+      "t2_us": 137.35923084043276,
+      "readout_error": 0.00909423828125,
+      "cz_error": 0.0019327694667603673
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T09:59:46-07:00",
+     "device_wide_records": 4,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 242.03597759762638,
+      "t2_us": 137.35923084043276,
+      "readout_error": 0.00909423828125,
+      "cz_error": 0.0019327694667603673
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T11:10:26-07:00",
+     "device_wide_records": 3,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 242.03597759762638,
+      "t2_us": 137.35923084043276,
+      "readout_error": 0.00909423828125,
+      "cz_error": 0.0019327694667603673
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T12:19:27-07:00",
+     "device_wide_records": 3,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 242.03597759762638,
+      "t2_us": 137.35923084043276,
+      "readout_error": 0.00909423828125,
+      "cz_error": 0.0019327694667603673
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T12:54:29-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 243.26281958826902,
+      "t2_us": 138.23019904253394,
+      "readout_error": 0.009765625,
+      "cz_error": 0.0019327694667603673
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T13:54:45-07:00",
+     "device_wide_records": 8,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 243.26281958826902,
+      "t2_us": 138.23019904253394,
+      "readout_error": 0.009765625,
+      "cz_error": 0.0019327694667603673
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T15:34:50-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 243.26281958826902,
+      "t2_us": 138.23019904253394,
+      "readout_error": 0.009765625,
+      "cz_error": 0.0019327694667603673
+     },
+     "admitted_qubits": 149
+    },
+    {
+     "calibration": "2026-10-10T21:52:40-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 246.7229984392147,
+      "t2_us": 135.92713738232797,
+      "readout_error": 0.00830078125,
+      "cz_error": 0.0019327694667603673
+     },
+     "admitted_qubits": 147
+    },
+    {
+     "calibration": "2026-10-10T23:32:27-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 248.51313993353097,
+      "t2_us": 136.08428731048335,
+      "readout_error": 0.0089111328125,
+      "cz_error": 0.0019327694667603673
+     },
+     "admitted_qubits": 147
+    },
+    {
+     "calibration": "2026-10-11T01:09:33-07:00",
+     "device_wide_records": 3,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 248.51313993353097,
+      "t2_us": 136.08428731048335,
+      "readout_error": 0.0089111328125,
+      "cz_error": 0.0019013454255936424
+     },
+     "admitted_qubits": 147
+    },
+    {
+     "calibration": "2026-10-11T01:45:49-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 248.51313993353097,
+      "t2_us": 136.08428731048335,
+      "readout_error": 0.0089111328125,
+      "cz_error": 0.0019013454255936424
+     },
+     "admitted_qubits": 147
+    },
+    {
+     "calibration": "2026-10-11T02:01:27-07:00",
+     "device_wide_records": 11,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 248.51313993353097,
+      "t2_us": 136.08428731048335,
+      "readout_error": 0.0089111328125,
+      "cz_error": 0.0019013454255936424
+     },
+     "admitted_qubits": 147
+    },
+    {
+     "calibration": "2026-10-11T03:48:01-07:00",
+     "device_wide_records": 7,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 248.51313993353097,
+      "t2_us": 136.08428731048335,
+      "readout_error": 0.0089111328125,
+      "cz_error": 0.0019013454255936424
+     },
+     "admitted_qubits": 147
+    },
+    {
+     "calibration": "2026-10-11T07:57:41-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 248.51313993353097,
+      "t2_us": 136.08428731048335,
+      "readout_error": 0.0089111328125,
+      "cz_error": 0.0019013454255936424
+     },
+     "admitted_qubits": 147,
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json",
+     "assignment_minus_readout_error": -0.00012207
+    },
+    {
+     "calibration": "2026-10-11T08:55:36-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 248.51313993353097,
+      "t2_us": 136.08428731048335,
+      "readout_error": 0.0089111328125,
+      "cz_error": 0.0019013454255936424
+     },
+     "admitted_qubits": 147
+    },
+    {
+     "calibration": "2026-10-11T12:18:00-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 247.61806918637285,
+      "t2_us": 136.00571234640566,
+      "readout_error": 0.00909423828125,
+      "cz_error": 0.0019013454255936424
+     },
+     "admitted_qubits": 148
+    },
+    {
+     "calibration": "2026-10-11T13:17:39-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 247.61806918637285,
+      "t2_us": 136.00571234640566,
+      "readout_error": 0.00909423828125,
+      "cz_error": 0.0019013454255936424
+     },
+     "admitted_qubits": 148
+    },
+    {
+     "calibration": "2026-10-11T17:40:20-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 247.61806918637285,
+      "t2_us": 136.00571234640566,
+      "readout_error": 0.0089111328125,
+      "cz_error": 0.0019013454255936424
+     },
+     "admitted_qubits": 148
+    },
+    {
+     "calibration": "2026-10-11T18:14:09-07:00",
+     "device_wide_records": 3,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 247.61806918637285,
+      "t2_us": 136.00571234640566,
+      "readout_error": 0.0089111328125,
+      "cz_error": 0.0019013454255936424
+     },
+     "admitted_qubits": 148
+    },
+    {
+     "calibration": "2026-10-11T19:25:19-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 246.7229984392147,
+      "t2_us": 135.92713738232797,
+      "readout_error": 0.0081787109375,
+      "cz_error": 0.0019013454255936424
+     },
+     "admitted_qubits": 147
+    },
+    {
+     "calibration": "2026-10-11T22:25:34-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 246.04876282936812,
+      "t2_us": 141.71607437554428,
+      "readout_error": 0.008056640625,
+      "cz_error": 0.0019013454255936424
+     },
+     "admitted_qubits": 148
+    },
+    {
+     "calibration": "2026-10-11T22:36:25-07:00",
+     "device_wide_records": 5,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 245.93568202532947,
+      "t2_us": 141.11982932545106,
+      "readout_error": 0.0081787109375,
+      "cz_error": 0.0019013454255936424
+     },
+     "admitted_qubits": 149,
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261011T2236250700.json",
+     "assignment_minus_readout_error": 0.0
+    },
+    {
+     "calibration": "2026-10-12T00:11:00-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 245.93568202532947,
+      "t2_us": 141.11982932545106,
+      "readout_error": 0.0081787109375,
+      "cz_error": 0.0019013454255936424
+     },
+     "admitted_qubits": 149
+    },
+    {
+     "calibration": "2026-10-12T07:55:47-07:00",
+     "device_wide_records": 5,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 245.93568202532947,
+      "t2_us": 142.3123194256375,
+      "readout_error": 0.00830078125,
+      "cz_error": 0.0019402906314269774
+     },
+     "admitted_qubits": 149
+    },
+    {
+     "calibration": "2026-10-12T10:17:10-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 245.93568202532947,
+      "t2_us": 142.3123194256375,
+      "readout_error": 0.00830078125,
+      "cz_error": 0.0019402906314269774
+     },
+     "admitted_qubits": 149
+    },
+    {
+     "calibration": "2026-10-12T10:47:16-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 245.93568202532947,
+      "t2_us": 142.3123194256375,
+      "readout_error": 0.00830078125,
+      "cz_error": 0.0019402906314269774
+     },
+     "admitted_qubits": 149
+    },
+    {
+     "calibration": "2026-10-12T12:14:06-07:00",
+     "device_wide_records": 6,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 245.93568202532947,
+      "t2_us": 142.3123194256375,
+      "readout_error": 0.00830078125,
+      "cz_error": 0.0019402906314269774
+     },
+     "admitted_qubits": 149
+    },
+    {
+     "calibration": "2026-10-12T13:41:56-07:00",
+     "device_wide_records": 10,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 245.93568202532947,
+      "t2_us": 142.3123194256375,
+      "readout_error": 0.00830078125,
+      "cz_error": 0.0019402906314269774
+     },
+     "admitted_qubits": 149
+    },
+    {
+     "calibration": "2026-10-12T15:27:03-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 245.93568202532947,
+      "t2_us": 142.3123194256375,
+      "readout_error": 0.00830078125,
+      "cz_error": 0.0019402906314269774
+     },
+     "admitted_qubits": 149
+    },
+    {
+     "calibration": "2026-10-12T18:47:31-07:00",
+     "device_wide_records": 4,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 245.93568202532947,
+      "t2_us": 142.3123194256375,
+      "readout_error": 0.00927734375,
+      "cz_error": 0.0019402906314269774
+     },
+     "admitted_qubits": 149,
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261012T1847310700.json",
+     "assignment_minus_readout_error": 0.0
+    },
+    {
+     "calibration": "2026-10-12T19:15:55-07:00",
+     "device_wide_records": 4,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 245.93568202532947,
+      "t2_us": 142.3123194256375,
+      "readout_error": 0.00927734375,
+      "cz_error": 0.0019402906314269774
+     },
+     "admitted_qubits": 149,
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261012T1915550700.json",
+     "assignment_minus_readout_error": 0.0
+    },
+    {
+     "calibration": "2026-10-12T23:25:48-07:00",
+     "device_wide_records": 5,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 244.34294993366694,
+      "t2_us": 141.34053144495516,
+      "readout_error": 0.00927734375,
+      "cz_error": 0.0019402906314269774
+     },
+     "admitted_qubits": 148
+    },
+    {
+     "calibration": "2026-10-13T00:58:04-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 243.9664341622737,
+      "t2_us": 141.25949813367376,
+      "readout_error": 0.010986328125,
+      "cz_error": 0.0019402906314269774
+     },
+     "admitted_qubits": 149
+    },
+    {
+     "calibration": "2026-10-13T01:16:58-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 244.34294993366694,
+      "t2_us": 141.34053144495516,
+      "readout_error": 0.01031494140625,
+      "cz_error": 0.0019402906314269774
+     },
+     "admitted_qubits": 148
+    },
+    {
+     "calibration": "2026-10-13T22:29:34-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 243.9664341622737,
+      "t2_us": 141.25949813367376,
+      "readout_error": 0.008544921875,
+      "cz_error": 0.002207627936929399
+     },
+     "admitted_qubits": 147
+    },
+    {
+     "calibration": "2026-10-14T03:51:35-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 245.98286205340767,
+      "t2_us": 137.8054075981342,
+      "readout_error": 0.00921630859375,
+      "cz_error": 0.0020950229277399424
+     },
+     "admitted_qubits": 148
+    },
+    {
+     "calibration": "2026-10-14T13:06:33-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 245.3928419551087,
+      "t2_us": 137.09501290923689,
+      "readout_error": 0.009033203125,
+      "cz_error": 0.0020950229277399424
+     },
+     "admitted_qubits": 147
+    },
+    {
+     "calibration": "2026-10-14T17:05:34-07:00",
+     "device_wide_records": 3,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 246.57288215170664,
+      "t2_us": 138.5158022870315,
+      "readout_error": 0.0093994140625,
+      "cz_error": 0.0020950229277399424
+     },
+     "admitted_qubits": 147
+    },
+    {
+     "calibration": "2026-10-14T18:27:34-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 246.57288215170664,
+      "t2_us": 138.5158022870315,
+      "readout_error": 0.0093994140625,
+      "cz_error": 0.0020950229277399424
+     },
+     "admitted_qubits": 147
+    },
+    {
+     "calibration": "2026-10-14T19:47:44-07:00",
+     "device_wide_records": 6,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 246.57288215170664,
+      "t2_us": 138.5158022870315,
+      "readout_error": 0.0093994140625,
+      "cz_error": 0.0020950229277399424
+     },
+     "admitted_qubits": 147,
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261014T1947440700.json",
+     "assignment_minus_readout_error": 0.0
+    },
+    {
+     "calibration": "2026-10-15T00:03:15-07:00",
+     "device_wide_records": 0,
+     "operator_scoped_records": [
+      {
+       "record": "2026-10-15T070828.127101Z",
+       "admitted_qubits": 6
+      },
+      {
+       "record": "2026-10-15T070828.397109Z",
+       "admitted_qubits": 141
+      },
+      {
+       "record": "2026-10-15T070847.644554Z",
+       "admitted_qubits": 6
+      },
+      {
+       "record": "2026-10-15T070853.550532Z",
+       "admitted_qubits": 141
+      }
+     ],
+     "medians": null,
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-15T08:49:10-07:00",
+     "device_wide_records": 0,
+     "operator_scoped_records": [
+      {
+       "record": "2026-10-15T164003.621261Z",
+       "admitted_qubits": 8
+      }
+     ],
+     "medians": null,
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-15T13:25:14-07:00",
+     "device_wide_records": 0,
+     "operator_scoped_records": [
+      {
+       "record": "2026-10-15T204407.674235Z",
+       "admitted_qubits": 2
+      },
+      {
+       "record": "2026-10-15T204427.864020Z",
+       "admitted_qubits": 2
+      }
+     ],
+     "medians": null,
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-15T13:55:38-07:00",
+     "device_wide_records": 0,
+     "operator_scoped_records": [
+      {
+       "record": "2026-10-15T212000.401292Z",
+       "admitted_qubits": 4
+      },
+      {
+       "record": "2026-10-15T212016.630328Z",
+       "admitted_qubits": 1
+      }
+     ],
+     "medians": null,
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-15T15:29:07-07:00",
+     "device_wide_records": 0,
+     "operator_scoped_records": [
+      {
+       "record": "2026-10-15T224704.122016Z",
+       "admitted_qubits": 2
+      },
+      {
+       "record": "2026-10-15T224725.179602Z",
+       "admitted_qubits": 2
+      },
+      {
+       "record": "2026-10-15T224747.140174Z",
+       "admitted_qubits": 8
+      },
+      {
+       "record": "2026-10-15T224805.443398Z",
+       "admitted_qubits": 4
+      },
+      {
+       "record": "2026-10-15T224821.527684Z",
+       "admitted_qubits": 1
+      }
+     ],
+     "medians": null,
+     "admitted_qubits": null
+    }
+   ],
+   "series_summary": {
+    "t1_us": {
+     "min": 242.035977598,
+     "max": 248.513139934,
+     "max_over_min": 1.026761,
+     "steps": 39,
+     "steps_with_change": 14,
+     "median_changed_step_relative_change": 0.003608,
+     "largest_step_relative_change": 0.014224
+    },
+    "t2_us": {
+     "min": 135.927137382,
+     "max": 142.312319426,
+     "max_over_min": 1.046975,
+     "steps": 39,
+     "steps_with_change": 15,
+     "median_changed_step_relative_change": 0.005155,
+     "largest_step_relative_change": 0.042589
+    },
+    "readout_error": {
+     "min": 0.008056641,
+     "max": 0.010986328,
+     "max_over_min": 1.363636,
+     "steps": 39,
+     "steps_with_change": 16,
+     "median_changed_step_relative_change": 0.06732,
+     "largest_step_relative_change": 0.184211
+    },
+    "cz_error": {
+     "min": 0.001901345,
+     "max": 0.002207628,
+     "max_over_min": 1.161087,
+     "steps": 39,
+     "steps_with_change": 4,
+     "median_changed_step_relative_change": 0.035745,
+     "largest_step_relative_change": 0.137782
+    }
+   },
+   "paired_snapshot_drift": [
+    {
+     "before": "2026-10-11T07:57:41-07:00",
+     "after": "2026-10-11T22:36:25-07:00",
+     "hours": 14.646,
+     "common_qubits": 146,
+     "common_couplers": 150,
+     "relative_change": {
+      "t1": {
+       "median": 0.0,
+       "median_abs": 0.248432,
+       "p90_abs": 0.700091
+      },
+      "t2": {
+       "median": 0.01086,
+       "median_abs": 0.149831,
+       "p90_abs": 0.639659
+      },
+      "assignment_error": {
+       "median": 0.035255,
+       "median_abs": 0.230139,
+       "p90_abs": 0.635234
+      },
+      "cz_error": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      }
+     }
+    },
+    {
+     "before": "2026-10-11T22:36:25-07:00",
+     "after": "2026-10-12T18:47:31-07:00",
+     "hours": 20.185,
+     "common_qubits": 148,
+     "common_couplers": 155,
+     "relative_change": {
+      "t1": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "t2": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "assignment_error": {
+       "median": 0.05584,
+       "median_abs": 0.285191,
+       "p90_abs": 0.750547
+      },
+      "cz_error": {
+       "median": 0.002771,
+       "median_abs": 0.114872,
+       "p90_abs": 0.413189
+      }
+     }
+    },
+    {
+     "before": "2026-10-12T18:47:31-07:00",
+     "after": "2026-10-12T19:15:55-07:00",
+     "hours": 0.473,
+     "common_qubits": 149,
+     "common_couplers": 159,
+     "relative_change": {
+      "t1": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "t2": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "assignment_error": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "cz_error": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      }
+     }
+    },
+    {
+     "before": "2026-10-12T19:15:55-07:00",
+     "after": "2026-10-14T19:47:44-07:00",
+     "hours": 48.53,
+     "common_qubits": 146,
+     "common_couplers": 154,
+     "relative_change": {
+      "t1": {
+       "median": 0.030276,
+       "median_abs": 0.209538,
+       "p90_abs": 0.756044
+      },
+      "t2": {
+       "median": 0.011595,
+       "median_abs": 0.136113,
+       "p90_abs": 0.50095
+      },
+      "assignment_error": {
+       "median": -0.021568,
+       "median_abs": 0.257359,
+       "p90_abs": 0.765
+      },
+      "cz_error": {
+       "median": 0.027268,
+       "median_abs": 0.152499,
+       "p90_abs": 0.576699
+      }
+     }
+    },
+    {
+     "before": "2026-10-14T19:47:44-07:00",
+     "after": "2026-10-14T20:25:34-07:00",
+     "hours": 0.631,
+     "common_qubits": 147,
+     "common_couplers": 157,
+     "relative_change": {
+      "t1": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "t2": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "assignment_error": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "cz_error": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      }
+     }
+    },
+    {
+     "before": "2026-10-14T20:25:34-07:00",
+     "after": "2026-10-15T00:03:15-07:00",
+     "hours": 3.628,
+     "common_qubits": 146,
+     "common_couplers": 156,
+     "relative_change": {
+      "t1": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "t2": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      },
+      "assignment_error": {
+       "median": -0.061496,
+       "median_abs": 0.251852,
+       "p90_abs": 0.71131
+      },
+      "cz_error": {
+       "median": 0.0,
+       "median_abs": 0.0,
+       "p90_abs": 0.0
+      }
+     }
+    },
+    {
+     "before": "2026-10-15T00:03:15-07:00",
+     "after": "2026-10-15T20:35:33-07:00",
+     "hours": 20.538,
+     "common_qubits": 147,
+     "common_couplers": 157,
+     "relative_change": {
+      "t1": {
+       "median": 0.0,
+       "median_abs": 0.180059,
+       "p90_abs": 0.498583
+      },
+      "t2": {
+       "median": 0.025401,
+       "median_abs": 0.119616,
+       "p90_abs": 0.503617
+      },
+      "assignment_error": {
+       "median": -0.066667,
+       "median_abs": 0.191781,
+       "p90_abs": 0.578755
+      },
+      "cz_error": {
+       "median": -0.034119,
+       "median_abs": 0.206434,
+       "p90_abs": 0.544776
+      }
+     }
+    },
+    {
+     "before": "2026-10-15T20:35:33-07:00",
+     "after": "2026-10-16T09:09:01-07:00",
+     "hours": 12.558,
+     "common_qubits": 152,
+     "common_couplers": 160,
+     "relative_change": {
+      "t1": {
+       "median": -0.039351,
+       "median_abs": 0.148695,
+       "p90_abs": 0.510169
+      },
+      "t2": {
+       "median": -0.02271,
+       "median_abs": 0.140527,
+       "p90_abs": 0.471902
+      },
+      "assignment_error": {
+       "median": 0.045946,
+       "median_abs": 0.269751,
+       "p90_abs": 0.906
+      },
+      "cz_error": {
+       "median": -0.061228,
+       "median_abs": 0.180932,
+       "p90_abs": 0.456261
+      }
+     }
+    }
+   ]
+  },
+  "ibm_marrakesh": {
+   "identities": [
+    {
+     "calibration": "2026-10-10T09:41:22-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 180.12481465289096,
+      "t2_us": 92.75032535683962,
+      "readout_error": 0.0142822265625,
+      "cz_error": 0.0027096970174465967
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T09:46:49-07:00",
+     "device_wide_records": 5,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 180.12481465289096,
+      "t2_us": 92.75032535683962,
+      "readout_error": 0.0142822265625,
+      "cz_error": 0.0027096970174465967
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T10:36:28-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 180.12481465289096,
+      "t2_us": 92.75032535683962,
+      "readout_error": 0.0142822265625,
+      "cz_error": 0.0027096970174465967
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T11:07:26-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 180.12481465289096,
+      "t2_us": 92.75032535683962,
+      "readout_error": 0.0142822265625,
+      "cz_error": 0.0027096970174465967
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T11:26:15-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 180.12481465289096,
+      "t2_us": 92.75032535683962,
+      "readout_error": 0.0142822265625,
+      "cz_error": 0.0027096970174465967
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T12:26:54-07:00",
+     "device_wide_records": 3,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 180.12481465289096,
+      "t2_us": 92.75032535683962,
+      "readout_error": 0.0142822265625,
+      "cz_error": 0.0027096970174465967
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T13:47:23-07:00",
+     "device_wide_records": 5,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 180.12481465289096,
+      "t2_us": 91.82444114005094,
+      "readout_error": 0.0164794921875,
+      "cz_error": 0.0027096970174465967
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T14:32:06-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 180.12481465289096,
+      "t2_us": 91.82444114005094,
+      "readout_error": 0.0164794921875,
+      "cz_error": 0.0027096970174465967
+     },
+     "admitted_qubits": null
+    },
+    {
+     "calibration": "2026-10-10T15:16:51-07:00",
+     "device_wide_records": 3,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 180.12481465289096,
+      "t2_us": 91.82444114005094,
+      "readout_error": 0.0164794921875,
+      "cz_error": 0.0027096970174465967
+     },
+     "admitted_qubits": 125
+    },
+    {
+     "calibration": "2026-10-10T22:30:47-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 164.43445537521757,
+      "t2_us": 90.84081432106066,
+      "readout_error": 0.01708984375,
+      "cz_error": 0.0027701940305657757
+     },
+     "admitted_qubits": 134
+    },
+    {
+     "calibration": "2026-10-11T00:02:32-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 164.43445537521757,
+      "t2_us": 90.84081432106066,
+      "readout_error": 0.01708984375,
+      "cz_error": 0.0027701940305657757
+     },
+     "admitted_qubits": 134
+    },
+    {
+     "calibration": "2026-10-11T00:44:51-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 164.43445537521757,
+      "t2_us": 90.84081432106066,
+      "readout_error": 0.01708984375,
+      "cz_error": 0.0027701940305657757
+     },
+     "admitted_qubits": 134
+    },
+    {
+     "calibration": "2026-10-11T01:27:27-07:00",
+     "device_wide_records": 8,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 164.43445537521757,
+      "t2_us": 90.84081432106066,
+      "readout_error": 0.01708984375,
+      "cz_error": 0.0027701940305657757
+     },
+     "admitted_qubits": 134
+    },
+    {
+     "calibration": "2026-10-11T02:39:31-07:00",
+     "device_wide_records": 4,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 165.71435395681527,
+      "t2_us": 92.50900379471632,
+      "readout_error": 0.0150146484375,
+      "cz_error": 0.0027701940305657757
+     },
+     "admitted_qubits": 128
+    },
+    {
+     "calibration": "2026-10-11T03:01:28-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 165.71435395681527,
+      "t2_us": 92.50900379471632,
+      "readout_error": 0.0150146484375,
+      "cz_error": 0.0027701940305657757
+     },
+     "admitted_qubits": 128
+    },
+    {
+     "calibration": "2026-10-11T03:15:29-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 165.71435395681527,
+      "t2_us": 92.50900379471632,
+      "readout_error": 0.0150146484375,
+      "cz_error": 0.0027701940305657757
+     },
+     "admitted_qubits": 128
+    },
+    {
+     "calibration": "2026-10-11T04:17:44-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 165.71435395681527,
+      "t2_us": 92.50900379471632,
+      "readout_error": 0.0150146484375,
+      "cz_error": 0.0027701940305657757
+     },
+     "admitted_qubits": 128
+    },
+    {
+     "calibration": "2026-10-11T04:28:15-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 165.71435395681527,
+      "t2_us": 92.50900379471632,
+      "readout_error": 0.0150146484375,
+      "cz_error": 0.0027701940305657757
+     },
+     "admitted_qubits": 128
+    },
+    {
+     "calibration": "2026-10-11T09:08:23-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 163.83067874401763,
+      "t2_us": 92.32062662870479,
+      "readout_error": 0.0137939453125,
+      "cz_error": 0.0027701940305657757
+     },
+     "admitted_qubits": 127
+    },
+    {
+     "calibration": "2026-10-11T12:45:56-07:00",
+     "device_wide_records": 3,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 165.71435395681527,
+      "t2_us": 92.50900379471632,
+      "readout_error": 0.01751708984375,
+      "cz_error": 0.0027701940305657757
+     },
+     "admitted_qubits": 128
+    },
+    {
+     "calibration": "2026-10-11T17:49:49-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 165.71435395681527,
+      "t2_us": 90.84081432106066,
+      "readout_error": 0.0120849609375,
+      "cz_error": 0.0027701940305657757
+     },
+     "admitted_qubits": 136
+    },
+    {
+     "calibration": "2026-10-11T18:05:47-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 165.71435395681527,
+      "t2_us": 90.84081432106066,
+      "readout_error": 0.0120849609375,
+      "cz_error": 0.0027701940305657757
+     },
+     "admitted_qubits": 136
+    },
+    {
+     "calibration": "2026-10-11T23:48:37-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 165.92061323226687,
+      "t2_us": 76.18263223571482,
+      "readout_error": 0.0125732421875,
+      "cz_error": 0.0028551404558680715
+     },
+     "admitted_qubits": 130
+    },
+    {
+     "calibration": "2026-10-12T07:58:35-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 163.51658536631686,
+      "t2_us": 74.03962885962875,
+      "readout_error": 0.01220703125,
+      "cz_error": 0.0028551404558680715
+     },
+     "admitted_qubits": 126
+    },
+    {
+     "calibration": "2026-10-12T09:04:44-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 163.51658536631686,
+      "t2_us": 74.03962885962875,
+      "readout_error": 0.01220703125,
+      "cz_error": 0.0028551404558680715
+     },
+     "admitted_qubits": 126
+    },
+    {
+     "calibration": "2026-10-12T09:13:58-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 163.51658536631686,
+      "t2_us": 74.03962885962875,
+      "readout_error": 0.01220703125,
+      "cz_error": 0.0028551404558680715
+     },
+     "admitted_qubits": 126
+    },
+    {
+     "calibration": "2026-10-12T11:10:00-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 163.51658536631686,
+      "t2_us": 74.03962885962875,
+      "readout_error": 0.01220703125,
+      "cz_error": 0.0028551404558680715
+     },
+     "admitted_qubits": 126
+    },
+    {
+     "calibration": "2026-10-12T12:53:05-07:00",
+     "device_wide_records": 5,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 164.6706098018448,
+      "t2_us": 75.79570949841978,
+      "readout_error": 0.0120849609375,
+      "cz_error": 0.0028551404558680715
+     },
+     "admitted_qubits": 133
+    },
+    {
+     "calibration": "2026-10-12T13:46:44-07:00",
+     "device_wide_records": 5,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 162.3476909598091,
+      "t2_us": 76.18263223571482,
+      "readout_error": 0.0135498046875,
+      "cz_error": 0.0028551404558680715
+     },
+     "admitted_qubits": 130
+    },
+    {
+     "calibration": "2026-10-12T14:33:28-07:00",
+     "device_wide_records": 3,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 167.17061666268899,
+      "t2_us": 76.56955497300986,
+      "readout_error": 0.013427734375,
+      "cz_error": 0.0028551404558680715
+     },
+     "admitted_qubits": 131
+    },
+    {
+     "calibration": "2026-10-12T15:03:27-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 165.92061323226687,
+      "t2_us": 76.8727120316647,
+      "readout_error": 0.0133056640625,
+      "cz_error": 0.0028551404558680715
+     },
+     "admitted_qubits": 132
+    },
+    {
+     "calibration": "2026-10-12T17:42:02-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 165.92061323226687,
+      "t2_us": 79.56195085780365,
+      "readout_error": 0.01190185546875,
+      "cz_error": 0.0028551404558680715
+     },
+     "admitted_qubits": 130
+    },
+    {
+     "calibration": "2026-10-12T19:10:18-07:00",
+     "device_wide_records": 6,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 164.6706098018448,
+      "t2_us": 75.79570949841978,
+      "readout_error": 0.0130615234375,
+      "cz_error": 0.0028551404558680715
+     },
+     "admitted_qubits": 131
+    },
+    {
+     "calibration": "2026-10-13T22:45:24-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 160.81911615982762,
+      "t2_us": 83.50770928297564,
+      "readout_error": 0.01458740234375,
+      "cz_error": 0.0027737665851828297
+     },
+     "admitted_qubits": 134
+    },
+    {
+     "calibration": "2026-10-14T17:59:39-07:00",
+     "device_wide_records": 4,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 151.31466904936178,
+      "t2_us": 79.79167958249192,
+      "readout_error": 0.012451171875,
+      "cz_error": 0.002692882663983903
+     },
+     "admitted_qubits": 136
+    },
+    {
+     "calibration": "2026-10-14T19:26:53-07:00",
+     "device_wide_records": 1,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 151.31466904936178,
+      "t2_us": 79.79167958249192,
+      "readout_error": 0.012451171875,
+      "cz_error": 0.002692882663983903
+     },
+     "admitted_qubits": 136
+    },
+    {
+     "calibration": "2026-10-14T19:45:31-07:00",
+     "device_wide_records": 6,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 151.31466904936178,
+      "t2_us": 80.05002377439864,
+      "readout_error": 0.01593017578125,
+      "cz_error": 0.002692882663983903
+     },
+     "admitted_qubits": 128
+    },
+    {
+     "calibration": "2026-10-14T23:37:09-07:00",
+     "device_wide_records": 2,
+     "operator_scoped_records": [],
+     "medians": {
+      "t1_us": 151.31466904936178,
+      "t2_us": 79.79167958249192,
+      "readout_error": 0.01348876953125,
+      "cz_error": 0.002692882663983903
+     },
+     "admitted_qubits": 134
+    }
+   ],
+   "series_summary": {
+    "t1_us": {
+     "min": 151.314669049,
+     "max": 180.124814653,
+     "max_over_min": 1.190399,
+     "steps": 37,
+     "steps_with_change": 13,
+     "median_changed_step_relative_change": 0.011498,
+     "largest_step_relative_change": 0.087108
+    },
+    "t2_us": {
+     "min": 74.03962886,
+     "max": 92.750325357,
+     "max_over_min": 1.252712,
+     "steps": 37,
+     "steps_with_change": 18,
+     "median_changed_step_relative_change": 0.014372,
+     "largest_step_relative_change": 0.161361
+    },
+    "readout_error": {
+     "min": 0.011901855,
+     "max": 0.01751709,
+     "max_over_min": 1.471795,
+     "steps": 37,
+     "steps_with_change": 18,
+     "median_changed_step_relative_change": 0.111164,
+     "largest_step_relative_change": 0.310105
+    },
+    "cz_error": {
+     "min": 0.002692883,
+     "max": 0.00285514,
+     "max_over_min": 1.060254,
+     "steps": 37,
+     "steps_with_change": 4,
+     "median_changed_step_relative_change": 0.028831,
+     "largest_step_relative_change": 0.030664
+    }
+   },
+   "paired_snapshot_drift": [
+    {
+     "before": "2026-10-15T20:46:35-07:00",
+     "after": "2026-10-16T08:08:14-07:00",
+     "hours": 11.361,
+     "common_qubits": 110,
+     "common_couplers": 87,
+     "relative_change": {
+      "t1": {
+       "median": -0.01218,
+       "median_abs": 0.202325,
+       "p90_abs": 0.688749
+      },
+      "t2": {
+       "median": 0.016107,
+       "median_abs": 0.303939,
+       "p90_abs": 0.756294
+      },
+      "assignment_error": {
+       "median": -0.084524,
+       "median_abs": 0.451028,
+       "p90_abs": 2.484354
+      },
+      "cz_error": {
+       "median": 0.015925,
+       "median_abs": 0.164409,
+       "p90_abs": 0.466556
+      }
+     }
+    }
+   ]
+  }
+ }
+}
