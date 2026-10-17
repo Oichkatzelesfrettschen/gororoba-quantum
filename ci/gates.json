@@ -2654,7 +2654,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json --runs results/live/2026-10-13T080216.451663Z",
    "name": "core-339",
-   "seconds": 110.0,
+   "seconds": 49.2,
    "tier": "pr"
   },
   {
