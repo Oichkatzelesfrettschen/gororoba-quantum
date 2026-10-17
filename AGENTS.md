@@ -20,8 +20,11 @@ nightly schedule and manual runs add the `full` tier's long simulation
 contracts on twelve shards. Runners are 2-vCPU, 8 GB machines on Python 3.14
 with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
 the plotting-only `matplotlib==3.11.2`). A pull request merges when every
-shard and the `external-ground-truth` job are green and its review threads
-are resolved; a red main or nightly run is fixed in the next change. The
+shard and the `qi-stack` and `external-ground-truth` jobs are green and its
+review threads are resolved; a red main or nightly run is fixed in the next
+change. The `qi-stack` job runs, at the same tier, the gates that ci/gates.json
+tags `"requires": ["qi"]`, under the Quantum Inspire interpreter
+([Quantum Inspire](#quantum-inspire)). The
 `external-ground-truth` job runs `verify.py` over the open_gororoba commit
 named in [ci/open_gororoba.pin](ci/open_gororoba.pin):
 `ci/fetch_open_gororoba.sh` sparse-checks out the paths it is given, and
@@ -620,8 +623,18 @@ lives in its own environment, never in the repository's Python 3.14 stack:
 `QI_PYTHON=${QI_PYTHON:-$QI_ENV/bin/python}`, built with
 `uv venv --python 3.13 "$QI_ENV"` and
 `VIRTUAL_ENV="$QI_ENV" uv pip install -r docs/notes/quantum_inspire/requirements-qi.txt`.
-No Arch package carries the stack. CI never imports it: every gate checks
-retained JSON or regenerates text with the standard library.
+No Arch package carries the stack. CI's `qi-stack` job installs the lock
+exactly (`pip install --no-deps` and `pip check`) under Python 3.13.15 beside
+Python 3.14.7 and exports `QI_PYTHON`; there qxelarator, libqasm and
+OpenSquirrel run locally with no credential, and no SDK call reaches the
+network. gororoba_quantum/qi_stack.py reads `QI_PYTHON` from the environment
+alone and probes it once per process for the three modules at the lock's
+versions. A gate tagged `"requires": ["qi"]` compares a live run with its
+retained record where that probe passes; everywhere else (the gate shards,
+premerge, Kaggle shard replicas, a shell that has not exported `QI_PYTHON`)
+it replays the record and prints one line naming the replay.
+`ci/run_gates.py --requires qi` runs the tagged gates alone with
+`GOROROBA_QI_REQUIRED=1`, which makes a replay a failure.
 
 | Package | Version | Role |
 |---|---|---|
@@ -750,10 +763,14 @@ the coupler map, its QX dry run and the spectator split), core-362
 (`qi_readout_ringdown_cases.py` case regeneration with the post-readout
 tail and excitation conformance), core-369 (the replay of its QX dry-run
 analyses), core-368 (`qi_toolchain_check.py --check`: the libqasm and
-OpenSquirrel record names every current case circuit at its sha256; the
-record itself is regenerated under `$QI_PYTHON`), and core-340
-(`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of the Tuna-17
-cases).
+OpenSquirrel record names every current case circuit at its sha256, and
+under the stack the record regenerates byte for byte), core-527 and core-423
+(`box_kite_qx_sweep.py --replay --live N`: the sweep records replay, and
+under the stack 24 evenly spaced family a circuits plus each sub-family's
+first rerun on qxelarator at their recorded seeds and must reproduce the
+retained counts exactly; core-423 adds 8 family de circuits on the full tier),
+and core-340 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of
+the Tuna-17 cases).
 
 ## Open Quantum
 

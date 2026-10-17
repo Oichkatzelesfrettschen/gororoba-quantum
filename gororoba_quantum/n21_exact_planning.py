@@ -82,10 +82,12 @@ COVARIANCE_FALSIFIER = {
 }
 
 
-def _exact_law(item: tuple[bytes, Any]) -> list[float]:
-    payload, noise_model = item
+def _exact_law(item: tuple[bytes, Any, float]) -> list[float]:
+    payload, noise_model, prep_excitation = item
     circuit = qpy.load(io.BytesIO(payload))[0]
-    return [float(value) for value in dynamic_density.probabilities(circuit, noise_model)]
+    return [
+        float(value) for value in dynamic_density.probabilities(circuit, noise_model, prep_excitation=prep_excitation)
+    ]
 
 
 def _serialized(circuit: Any) -> bytes:
@@ -118,24 +120,26 @@ def exact_predictions(
     model_shots: int,
     simulation_alpha: float,
     contracts: tuple[ObservableContract, ...] = (),
+    prep_excitation: float = 0.0,
 ) -> tuple[dict[str, tuple[tuple[float, ...], ...]], dict[str, Any]]:
     """Exact replica laws of every entry in choices, validated against their sampled marginals.
 
     noise_models maps id(choice.snap) to the Aer noise model the sampled
-    simulation used. Returns the exact predictions keyed like sampled and the
+    simulation used; prep_excitation is the declared initial excitation per
+    active qubit, which the sampled run must carry too. Returns the exact predictions keyed like sampled and the
     validation evidence the record retains, which carries each replica's
     sampled frequencies so validate_exact replays from the record alone.
     Raises ExactModelRejected, carrying that evidence, when validate_exact
     rejects.
     """
     keys: list[tuple[str, int]] = []
-    items: list[tuple[bytes, Any]] = []
+    items: list[tuple[bytes, Any, float]] = []
     for choice in choices:
         noise = noise_models[id(choice.snap)]
         for entry in choice.entries:
             for index, replica in enumerate(entry.replicas):
                 keys.append((entry.name, index))
-                items.append((_serialized(replica), noise))
+                items.append((_serialized(replica), noise, prep_excitation))
     laws = parallel.ordered_map(_exact_law, items, min_items=2)
     exact: dict[str, list[tuple[float, ...]]] = {}
     rows = []
@@ -144,6 +148,17 @@ def exact_predictions(
         rows.append({"entry": name, "replica": index, "exact": law, "sampled": list(map(float, sampled[name][index]))})
     evidence = {
         "method": "dynamic_density branch-resolved density matrix under the sampled run's Aer noise model",
+        **(
+            {
+                "prep_excitation": prep_excitation,
+                "prep_excitation_channel": (
+                    "declared initial bit flip of this probability on |0> of every active qubit, in the exact "
+                    "law (dynamic_density prep_excitation) and the sampled run (leading X errors)"
+                ),
+            }
+            if prep_excitation
+            else {}
+        ),
         **validate_exact(rows, contracts, model_shots, simulation_alpha),
     }
     if not evidence["passed"]:
