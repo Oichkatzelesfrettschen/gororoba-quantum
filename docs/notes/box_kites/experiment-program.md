@@ -60,6 +60,11 @@ is never the criterion.
   nullities must differ. The census requires both, which also fixes a limit
   of family (d): an associator-sign witness cannot tell the octonions from the
   split octonions.
+- No witness: the D = 4 quaternion and Clifford packages (numpy-quaternion,
+  quaternionic, pyquaternion, clifford, kingdon, galgebra) and mathdunders.
+  They carry no D = 8 or D = 16 product, and root AGENTS.md rests no octonion
+  or sedenion statement on a Clifford algebra, so no box-kite fact has a
+  witness among them.
 
 The fact bundle at D = 16 is the 210 x 210 two-blade norm table, the kite
 structure derived from it, the Design B products of every census row, the
@@ -100,16 +105,20 @@ with 66-70 routed CZ and 26 T per replica, kept an endpoint contrast of 0.0415
 kite the four product terms land on two labels, L^L' = U^U' (data d = 0) and
 L^U' = U^L' (d = 1). Restricted to span{e_L', e_U'}, the LCU is a selector a
 and one data qubit d: SELECT = CNOT(a -> d) after the diagonal phases
-g(L,L'), g(L,U') on a = 0 and x_sign g(U,L'), x_sign g(U,U') on a = 1. The
-census requires this restriction to reproduce P exactly on all 840 rows
-(columns `c0`, `c1` and the selector-1 branch `d0`, `d1`). The product of the
+g(L,L'), g(L,U') on a = 0 and g(U,L'), g(U,U') on a = 1, and x_sign = -1 adds
+a Z on the selector after its first H, the convention of full Design B; x_sign
+enters once. The resulting branch coefficients are the census columns `c0`,
+`c1` (selector 0) and `d0`, `d1` (selector 1), and the census requires this
+restriction to reproduce P exactly on all 840 rows. The product of the
 four phases is p0 p1 (`census:kites[].edges[].sign_products`,
 `strut_sign_products`): +1 on every edge, so the diagonal is local Z gates and
 SELECT costs one CZ; -1 on every strut, so SELECT is CNOT times CZ, which
 equals Sdag on a times a controlled-Y, again one CZ. Edge and strut circuits
-therefore have the same two-qubit depth. Preparation is H (and Z for
-y_sign = -1) on d and H (and Z after it for x_sign = -1) on a; the final H on
-a precedes measurement. The circuit is a sign-pattern interference test: its
+therefore have the same two-qubit depth. No gate checks that compile yet: the
+generator verifies each emitted SELECT by unitary against the two-label
+restriction, besides the state-vector check of every circuit against its
+census row. Preparation is H (and Z for
+y_sign = -1) on d and H on a; the final H on a precedes measurement. The circuit is a sign-pattern interference test: its
 signs are compiled from cd_sign and it does not exercise the 16-dimensional
 left multiplication.
 
@@ -444,7 +453,7 @@ QX has passed it.
 | QX | Tuna-17 twins (one per Tuna batch) | | | 132 | 44 | 270336 |
 | Ry | (f) diagnostic | 10 | 1 | 10 | 2 (+2 adaptive) | 10240 |
 | Ry | (f) box-kite subset | 53 | 4 or 1 | 16 | 4 | 16384 |
-| Tuna-17 | T0 + T1 + T2 | | 3 or 4 replicas | 132 (44 witness, 88 readout) | 44 (3 jobs) | 2162688 |
+| Tuna-17 | T0 + T1 + T2 | | 3 LCU replicas, or one walk plus the reference | 132 (44 witness, 88 readout) | 44 (3 jobs) | 2162688 |
 
 Families (b) and (c) need no circuits beyond (a) on QX. Shots: QX 2048 per
 circuit (its maximum), Ry 1024 (its maximum), Tuna-17 16384 (about 11 s per
@@ -459,8 +468,10 @@ docs/evidence/quantum_inspire/catalogue.json).
 One generator, `scripts/box_kite_cases.py`, reads census.json and never
 recomputes a sign:
 
-- `reduced_lcu(row)`, `reduced_cross_control(row)`, `full_design_b(row)`
-  (wrapping `designs.lcu_witness`, adding the selector Z for x_sign = -1);
+- `reduced_lcu(row)` and `reduced_cross_control(row)` (x_sign-free SELECT
+  phases, selector Z for x_sign = -1, SELECT verified by unitary), and
+  `full_design_b(row)` (wrapping `designs.lcu_witness`, adding the selector Z
+  for x_sign = -1);
 - `associator_walk(i, j, k, omit_last)`, `controlled_w_fixed_pair(i, j)` and
   `controlled_w_fixed_i(i)` (from `designs.left_mult_gate` and
   `left_mult_adjoint_gate`, with the sign set before control as in
@@ -482,6 +493,28 @@ registration of retained runs. Each generated circuit is required to
 reproduce its census row by state vector before emission, and the generator
 joins ci/gates.json with `--check` and `--self-test` gates in the change that
 adds it.
+
+Reuse per family:
+
+| Family | Reuses | New in `box_kite_cases.py` |
+|---|---|---|
+| (a) full | `designs.lcu_witness`, `select_lcu.select_circuit`, `sparse_pair_prep`, the batching of `qi_zero_divisor_cases` | `full_design_b`, `pack`, `emit` (qx) |
+| (a), (b), (c) reduced, (g) T0-T2 LCU | `qi_zero_divisor_cases.finish`, `header`, `wilson`, readout-0/readout-1 circuits, `qi_platform.py` | `reduced_lcu`, `reduced_cross_control`, `twin`, `emit` (tuna, ry) |
+| (b), (c) analysis | census.json rows and `kites[].twists` | `analyze` (edge classification statistic D, twist pairing) |
+| (d1)-(d3) | `designs.left_mult_gate`, `left_mult_adjoint_gate`, the controlled-block idiom of `algebra_circuit_fixtures.hadamard_test` | `controlled_w_fixed_pair`, `controlled_w_fixed_i` and the fixed-triple form |
+| (d4) | the workspace control of `algebra_circuit_fixtures` | `associator_walk` |
+| (e) | the 2^w settings rule (root AGENTS.md) | `coherence_settings` |
+| (f) | `qi_platform.py` submit and collect, leftmost-q0 parsing of the Ry diagnostic run | `ry_diagnostic_ladder`, `emit` (ry) |
+
+**QX and Ry stop rules.** On QX one shot violating a deterministic row stops
+that family's series until the circuit is explained, and a P = 1/2 row
+outside the Bonferroni bound of (a) does the same; each batch also checks
+completed jobs, 2048 shots per job and circuit digests against cases.json.
+On Ry the diagnostic's first failing factor stops the ladder and fixes the
+dialect; in the box-kite subset a deterministic row below 0.9 of its ideal
+outcome stops the series, and the result is reported as an emulator rate. If
+R6 shows Rz rejected, Sdag is written as S S S, which keeps every reduced
+circuit on the Ry gate set.
 
 ## 7. Open points
 

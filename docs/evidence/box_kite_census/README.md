@@ -32,8 +32,7 @@ expression and a cd_core reference digest) and requires `--check` to reject
 each.
 
 Regeneration needs an open_gororoba checkout and the package stack on the
-build host (it multiplies through every package, about four minutes on 12
-CPUs):
+build host (it multiplies through every package, 6.5 minutes on 12 CPUs):
 
 ```sh
 "$PYTHON" scripts/box_kite_census.py --write docs/evidence/box_kite_census/census.json \
@@ -79,6 +78,10 @@ cd_core's; packages are never polled against each other.
 | sagemath (D = 8), two entries | opposite algebra in natural order; e3/e5/e6 sign flip | `OctonionAlgebra(QQ)` |
 | splitoct, hyprat signs (-1, -1, +1), engine split table (D = 8) | split relation | negative control |
 | hypercomplex-algebra | wrapper of the engine | three fixture expressions, not a witness |
+
+numpy-quaternion, quaternionic, pyquaternion, clifford, kingdon, galgebra and
+mathdunders are not witnesses: they carry no D = 8 or D = 16 product, and
+root AGENTS.md rests no octonion or sedenion statement on a Clifford algebra.
 
 D = 16 facts: `two_blade_norms` (210 x 210), `kite_structure` (assessors,
 struts and edge zero sign sets derived from the norms), `design_b_products`
