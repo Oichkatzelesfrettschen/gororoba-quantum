@@ -53,6 +53,10 @@ from pathlib import Path
 from typing import Any, Protocol
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+
+import parallel  # noqa: E402
+
 REGISTRY = ROOT / "docs/state/research_state.json"
 STATE_DOCUMENT = ROOT / "docs/state/RESEARCH_STATE.md"
 RETENTION_AUDIT = ROOT / "results/live/qpu-job-retention-audit.json"
@@ -215,6 +219,9 @@ def _optional_json(path: Path) -> Any:
 
 
 TRANSACTION_FIELDS = ("id", "timestamp", "domain", "change", "job")
+# Ids of the +5 and -5 rows the self-test adds to a retained run and to the ledger.
+SYNTHETIC_ROW_ID = 10**9 + 1
+SYNTHETIC_OFFSET_ID = SYNTHETIC_ROW_ID + 1
 
 
 def _ledger_backend(owner: str, row: dict[str, Any]) -> Any:
@@ -1092,7 +1099,7 @@ def _qi_row_mutations() -> Iterable[tuple[str, Callable[[dict[str, dict[str, Any
     def duplicate_everywhere(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
         # Both sides repeat one +5 row; the job charge and the totals follow, so only the id rule can reject it.
         run = next(run for run in records.values() if run["results"]["transactions"])
-        row = next(row for row in ledger["transactions"] if row["change"] == 5)
+        row = next(row for row in ledger["transactions"] if row["id"] == SYNTHETIC_ROW_ID)
         run["results"]["transactions"].append({key: row[key] for key in TRANSACTION_FIELDS})
         ledger["transactions"].append(copy.deepcopy(row))
         next(job for job in ledger["jobs"] if job["job"] == row["job"])["charged"] += 5
@@ -1113,84 +1120,128 @@ def _qi_row_mutations() -> Iterable[tuple[str, Callable[[dict[str, dict[str, Any
     yield "run transaction without its domain", run_field_missing, "lacks domain"
     yield "ledger transaction without its timestamp", ledger_field_missing, "lacks timestamp"
     yield "zero-change row added to a run", run_zero_duplicate, "transaction rows of the retained jobs differ"
-    yield "synthetic row repeated in the run and the ledger", duplicate_everywhere, "transaction id 10"
+    yield (
+        "synthetic row repeated in the run and the ledger",
+        duplicate_everywhere,
+        f"transaction id {SYNTHETIC_ROW_ID} repeats",
+    )
     yield "zero-change row added to the ledger", ledger_zero_duplicate, "transaction rows of the retained jobs differ"
     yield "ledger transaction row dropped", ledger_dropped, "transaction rows of the retained jobs differ"
     yield "ledger transaction charging an unretained job", ledger_dangling, "charge jobs outside the runs"
 
 
-def _qi_ledger_rows_self_test(registry: dict[str, Any], context: Context, qi: QuantumInspireRuns) -> int:
-    """Runs the row mutations on a baseline of the retained rows plus a synthetic pair.
+def _with_synthetic_rows(
+    records: dict[str, dict[str, Any]], ledger: dict[str, Any]
+) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
+    """Copies of the retained records and ledger plus a synthetic +5/-5 transaction pair.
 
     The pair charges one retained job a +5 and a -5 row, which leaves every
     per-job charge unchanged while the run results and the ledger carry the
     same two added rows.
     """
-    records, ledger = qi.records, qi.ledger
+    records, ledger = copy.deepcopy(records), copy.deepcopy(ledger)
     run = next(iter(records))
     submission = records[run]["submission"]
     job = submission["jobs"][0]["job"]
     stamp = "2026-10-16T21:16:40.000000Z"
     rows = [
-        {"id": 10**9 + 1, "timestamp": stamp, "domain": "compute", "change": 5, "job": job},
-        {"id": 10**9 + 2, "timestamp": stamp, "domain": "compute", "change": -5, "job": job},
+        {"id": SYNTHETIC_ROW_ID, "timestamp": stamp, "domain": "compute", "change": 5, "job": job},
+        {"id": SYNTHETIC_OFFSET_ID, "timestamp": stamp, "domain": "compute", "change": -5, "job": job},
     ]
-    count = 0
-    try:
-        qi.records, qi.ledger = copy.deepcopy(records), copy.deepcopy(ledger)
-        qi.records[run]["results"]["transactions"].extend(copy.deepcopy(rows))
-        qi.ledger["transactions"].extend({**row, "backend_type_id": submission["backend_type_id"]} for row in rows)
-        baseline_records, baseline_ledger = qi.records, qi.ledger
-        validate(copy.deepcopy(registry), context)
-        for name, mutate_rows, expected in _qi_row_mutations():
-            qi.records, qi.ledger = copy.deepcopy(baseline_records), copy.deepcopy(baseline_ledger)
-            mutate_rows(qi.records, qi.ledger)
-            _rejects(name, expected, copy.deepcopy(registry), context)
-            count += 1
-    finally:
-        qi.records, qi.ledger = records, ledger
-    return count
+    records[run]["results"]["transactions"].extend(copy.deepcopy(rows))
+    ledger["transactions"].extend({**row, "backend_type_id": submission["backend_type_id"]} for row in rows)
+    return records, ledger
 
 
-def _rejects(name: str, expected: str, registry: dict[str, Any], context: Context) -> None:
-    try:
-        validate(registry, context)
-    except ValueError as error:
-        require(expected in str(error), f"mutation {name!r} failed for another reason: {error}")
-    else:
-        raise ValueError(f"mutation {name!r} passed validation")
+# One self-test case: name, the rejection text its validation must contain (None
+# for a baseline that must pass), the registry, and the quantum_inspire run records
+# and ledger to install (None keeps the retained ones).
+Case = tuple[str, str | None, dict[str, Any], dict[str, dict[str, Any]] | None, dict[str, Any] | None]
 
 
-def self_test(registry: dict[str, Any], context: Context) -> int:
-    validate(copy.deepcopy(registry), context)
+class CaseVerdict:
+    """Validates one self-test case and returns the ValueError text, or None when it validates.
+
+    The serial path reuses the caller's context. A pickled copy carries none
+    and each pool worker loads its own once, so every process validates against
+    the repository facts of its own Context.
+    """
+
+    def __init__(self, context: Context | None = None) -> None:
+        self._loaded: tuple[Context, QuantumInspireRuns, dict[str, dict[str, Any]], dict[str, Any]] | None = None
+        if context is not None:
+            self._loaded = self._adopt(context)
+
+    def __getstate__(self) -> dict[str, Any]:
+        return {"_loaded": None}
+
+    @staticmethod
+    def _adopt(context: Context) -> tuple[Context, QuantumInspireRuns, dict[str, dict[str, Any]], dict[str, Any]]:
+        qi = context.providers["quantum_inspire"]
+        if not isinstance(qi, QuantumInspireRuns):
+            raise ValueError("the quantum_inspire provider is not the run-directory adapter")
+        return context, qi, qi.records, qi.ledger
+
+    def __call__(self, case: Case) -> str | None:
+        _, _, registry, records, ledger = case
+        if self._loaded is None:
+            self._loaded = self._adopt(Context())
+        context, qi, retained_records, retained_ledger = self._loaded
+        qi.records = retained_records if records is None else records
+        qi.ledger = retained_ledger if ledger is None else ledger
+        try:
+            validate(registry, context)
+        except ValueError as error:
+            return str(error)
+        finally:
+            qi.records, qi.ledger = retained_records, retained_ledger
+        return None
+
+
+def _cases(registry: dict[str, Any], qi: QuantumInspireRuns) -> list[Case]:
+    """Every self-test case in the order the rules are exercised, each on its own deep copies."""
+    records, ledger = qi.records, qi.ledger
+    cases: list[Case] = [("retained state", None, copy.deepcopy(registry), None, None)]
     for name, mutate, expected in _mutations():
         candidate = copy.deepcopy(registry)
         mutate(candidate)
-        _rejects(name, expected, candidate, context)
-    qi = context.providers["quantum_inspire"]
-    if not isinstance(qi, QuantumInspireRuns):
-        raise ValueError("the quantum_inspire provider is not the run-directory adapter")
-    records, ledger = qi.records, qi.ledger
-    qi.records = copy.deepcopy(records)
-    for record in qi.records.values():
+        cases.append((name, expected, candidate, None, None))
+    receipts = copy.deepcopy(records)
+    for record in receipts.values():
         record["submission"]["schema"] = "qi-submission-v2"
         record["submission"]["state"] = "enqueued"
         record["submission"]["cases_sha256"] = record["cases_sha256"]
         for row in record["submission"]["jobs"]:
             row["sha256"] = record["circuits"][row["file"]]
-    try:
-        validate(copy.deepcopy(registry), context)
-    finally:
-        qi.records = records
+    cases.append(("v2 receipts", None, copy.deepcopy(registry), receipts, None))
     for name, mutate_files, expected in _qi_mutations():
-        qi.records, qi.ledger = copy.deepcopy(records), copy.deepcopy(ledger)
-        mutate_files(qi.records, qi.ledger)
-        try:
-            _rejects(name, expected, copy.deepcopy(registry), context)
-        finally:
-            qi.records, qi.ledger = records, ledger
-    ledger_cases = _qi_ledger_rows_self_test(registry, context, qi)
-    return len(list(_mutations())) + len(list(_qi_mutations())) + ledger_cases
+        mutated_records, mutated_ledger = copy.deepcopy(records), copy.deepcopy(ledger)
+        mutate_files(mutated_records, mutated_ledger)
+        cases.append((name, expected, copy.deepcopy(registry), mutated_records, mutated_ledger))
+    baseline_records, baseline_ledger = _with_synthetic_rows(records, ledger)
+    cases.append(("synthetic transaction rows", None, copy.deepcopy(registry), baseline_records, baseline_ledger))
+    for name, mutate_rows, expected in _qi_row_mutations():
+        mutated_records, mutated_ledger = copy.deepcopy(baseline_records), copy.deepcopy(baseline_ledger)
+        mutate_rows(mutated_records, mutated_ledger)
+        cases.append((name, expected, copy.deepcopy(registry), mutated_records, mutated_ledger))
+    return cases
+
+
+def self_test(registry: dict[str, Any], context: Context) -> int:
+    qi = context.providers["quantum_inspire"]
+    if not isinstance(qi, QuantumInspireRuns):
+        raise ValueError("the quantum_inspire provider is not the run-directory adapter")
+    cases = _cases(registry, qi)
+    verdicts = parallel.ordered_map(CaseVerdict(context), cases, min_items=2)
+    for (name, expected, *_), verdict in zip(cases, verdicts, strict=True):
+        if expected is None:
+            if verdict is not None:
+                raise ValueError(verdict)
+        elif verdict is None:
+            raise ValueError(f"mutation {name!r} passed validation")
+        else:
+            require(expected in verdict, f"mutation {name!r} failed for another reason: {verdict}")
+    return sum(1 for case in cases if case[1] is not None)
 
 
 def main() -> int:

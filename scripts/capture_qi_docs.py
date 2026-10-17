@@ -860,11 +860,8 @@ def render_releases(name: str, page: str, stamp: str, releases: list[dict[str, A
     return "\n".join(lines)
 
 
-def capture_releases() -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    out = BASE / "releases"
-    out.mkdir(parents=True, exist_ok=True)
-    stamp = now()
-    rows = []
+def release_sources() -> list[tuple[str, str, str, Callable[[], list[dict[str, Any]]]]]:
+    """Component name, releases page, blob root and reader of every tracked release feed."""
     sources: list[tuple[str, str, str, Callable[[], list[dict[str, Any]]]]] = []
     for repo in GITHUB_RELEASES:
         home = f"https://github.com/QuTech-Delft/{repo}"
@@ -874,6 +871,15 @@ def capture_releases() -> tuple[list[dict[str, Any]], dict[str, Any]]:
         sources.append(
             (project.split("/")[-1], f"{home}/-/releases", f"{home}/-/blob", partial(gitlab_releases, project))
         )
+    return sources
+
+
+def capture_releases() -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    out = BASE / "releases"
+    out.mkdir(parents=True, exist_ok=True)
+    stamp = now()
+    rows = []
+    sources = release_sources()
     for name, page, tree, read in sources:
         releases = sorted(read(), key=lambda item: (item["date"], item["tag"]), reverse=True)
         doc = {"component": name, "source": page, "retrieved_utc": stamp, "releases": releases}
@@ -920,6 +926,13 @@ def captured_files(base: Path, kind: str, root: Path) -> set[str]:
     return {path.relative_to(root).as_posix() for path in directory.rglob("*") if path.is_file() and path != manifest}
 
 
+def require_sources(doc: dict[str, Any], sources: dict[str, str]) -> None:
+    """Requires each manifest row to name the retrieval URL the capture fetches for its path."""
+    for row in doc["files"]:
+        if row["path"] in sources and row["source"] != sources[row["path"]]:
+            raise SystemExit(f"{row['path']}: source {row['source']} differs from the pinned {sources[row['path']]}")
+
+
 def expected_paths(kind: str, doc: dict[str, Any], base: Path, root: Path) -> set[str]:
     """Paths the capture defines for a kind, from the fixed lists or the crawl the manifest records."""
     prefix = base.relative_to(root).as_posix()
@@ -934,17 +947,17 @@ def expected_paths(kind: str, doc: dict[str, Any], base: Path, root: Path) -> se
             for repo, (_, commit, files) in SDK_REPOS.items()
             for name in files
         }
-        for row in doc["files"]:
-            if row["path"] in sources and row["source"] != sources[row["path"]]:
-                raise SystemExit(
-                    f"{row['path']}: source {row['source']} differs from the pinned {sources[row['path']]}"
-                )
+        require_sources(doc, sources)
         return set(sources)
     if kind == "api":
+        require_sources(doc, {f"{prefix}/api/openapi.json": OPENAPI})
         return {f"{prefix}/api/openapi.json"}
     if kind == "releases":
-        names = [*GITHUB_RELEASES, *(project.split("/")[-1] for project in GITLAB_RELEASES)]
-        return {f"{prefix}/releases/{name}.{ext}" for name in names for ext in ("json", "md")}
+        pages = {
+            f"{prefix}/releases/{name}.{ext}": page for name, page, _, _ in release_sources() for ext in ("json", "md")
+        }
+        require_sources(doc, pages)
+        return set(pages)
     if kind == "spec":
         # SPEC_PAGES fixes the page set; each row's path and source must be the ones it maps to.
         out = {f"{prefix}/cqasm-spec/{page.removesuffix('.html')}.md" for page in SPEC_PAGES}
@@ -1099,6 +1112,14 @@ def self_test() -> int:
         sdk_manifest.write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
         expect("sdk row with another source", "differs from the pinned")
         sdk_manifest.write_bytes(sdk_bytes)
+        for kind, suffix in (("api", "/api/openapi.json"), ("releases", "/releases/libqasm.json")):
+            kind_manifest = manifest_path(kind, base)
+            kind_bytes = kind_manifest.read_bytes()
+            doc = json.loads(kind_bytes)
+            next(row for row in doc["files"] if row["path"].endswith(suffix))["source"] = "https://example.invalid/"
+            kind_manifest.write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
+            expect(f"{kind} row with another source", "differs from the pinned")
+            kind_manifest.write_bytes(kind_bytes)
         spec_page = base / "cqasm-spec" / "appendices" / "spin_2plus.md"
         spec_bytes = spec_page.read_bytes()
         spec_manifest = manifest_path("spec", base)
