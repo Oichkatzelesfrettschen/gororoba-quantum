@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/concepts/job-lifecycle/](https://docs.openquantum.com/concepts/job-lifecycle/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 d8f236d51d24b559fa2cf88fafcfaf2161196e31395170c317b26039f318aff5.
 
 # Job Lifecycle
@@ -49,7 +49,9 @@ Jobs can only be canceled from the **Pending** state:
 
 Core SDKPortal
 
-[](#__codelineno-0-1)`scheduler``.``cancel_job``(``"job-uuid"``)`\
+``` python
+scheduler.cancel_job("job-uuid")
+```
 
 Cancel jobs from the [Open Quantum Portal](https://www.openquantum.com) under **Jobs**.
 

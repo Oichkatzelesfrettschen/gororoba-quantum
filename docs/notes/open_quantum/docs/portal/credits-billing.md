@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/portal/credits-billing/](https://docs.openquantum.com/portal/credits-billing/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 c348b89044333ab0edf55960c945cd4ac0e20446bc8e8d170e3fb9312f91069d.
 
 # Credits & Billing

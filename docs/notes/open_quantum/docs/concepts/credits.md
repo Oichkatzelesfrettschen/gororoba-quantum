@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/concepts/credits/](https://docs.openquantum.com/concepts/credits/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 f30ad8f5fa2c479a02b15b232a544428d6aa7d33fe7260d8ad9cab05ca59492c.
 
 # Credits
@@ -40,18 +40,22 @@ Open Quantum offers two execution paths:
 
 Core SDKPennyLane Plugin
 
-[](#__codelineno-0-1)`from`` ``openquantum_sdk.enums`` ``import`` ``ExecutionPlanType`\
-[](#__codelineno-0-2)\
-[](#__codelineno-0-3)`config`` ``=`` ``JobSubmissionConfig``(`\
-[](#__codelineno-0-4)`    ``backend_class_id``=``"ionq:forte-1"``,`\
-[](#__codelineno-0-5)`    ``name``=``"My Job"``,`\
-[](#__codelineno-0-6)`    ``job_subcategory_id``=``"oth:oth"``,`\
-[](#__codelineno-0-7)`    ``shots``=``1024``,`\
-[](#__codelineno-0-8)`    ``execution_plan``=``ExecutionPlanType``.``PUBLIC``,`\
-[](#__codelineno-0-9)`)`\
+``` python
+from openquantum_sdk.enums import ExecutionPlanType
 
-[](#__codelineno-1-1)`dev`` ``=`` ``qml``.``device``(``"openquantum.device"``,`` ``wires``=``2``,`` ``shots``=``1024``,`\
-[](#__codelineno-1-2)`                  ``backend``=``"ionq:forte-1"``,`` ``execution_plan``=``"public"``)`\
+config = JobSubmissionConfig(
+    backend_class_id="ionq:forte-1",
+    name="My Job",
+    job_subcategory_id="oth:oth",
+    shots=1024,
+    execution_plan=ExecutionPlanType.PUBLIC,
+)
+```
+
+``` python
+dev = qml.device("openquantum.device", wires=2, shots=1024,
+                  backend="ionq:forte-1", execution_plan="public")
+```
 
 ## Queue Priorities
 

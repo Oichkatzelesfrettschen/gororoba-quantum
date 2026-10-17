@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/integrations/](https://docs.openquantum.com/integrations/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 14a180122ace4994b2c1f70d70705d8337fbdbbdc03b563a074308cc886c284c.
 
 # Integrations

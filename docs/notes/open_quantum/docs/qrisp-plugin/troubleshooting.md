@@ -1,14 +1,16 @@
 > Full piece: [https://docs.openquantum.com/qrisp-plugin/troubleshooting/](https://docs.openquantum.com/qrisp-plugin/troubleshooting/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 7b7f584877ea69fdac143e2a33d852fde1e545cb615a1177132828fac1af6333.
 
 # Troubleshooting
 
 ## Authentication required
 
-[](#__codelineno-0-1)`AuthenticationError: Authentication required. Provide a token or`\
-[](#__codelineno-0-2)`client_id+client_secret (or OPENQUANTUM_TOKEN / OPENQUANTUM_CLIENT_ID +`\
-[](#__codelineno-0-3)`OPENQUANTUM_CLIENT_SECRET / OPENQUANTUM_SDK_KEY).`\
+```
+AuthenticationError: Authentication required. Provide a token or
+client_id+client_secret (or OPENQUANTUM_TOKEN / OPENQUANTUM_CLIENT_ID +
+OPENQUANTUM_CLIENT_SECRET / OPENQUANTUM_SDK_KEY).
+```
 
 No credentials were found. `OpenQuantumBackend` calls `OpenQuantumService.from_env()`. Set `OPENQUANTUM_CLIENT_ID` and `OPENQUANTUM_CLIENT_SECRET`, set `OPENQUANTUM_TOKEN` or `OPENQUANTUM_SDK_KEY`, or pass `token=`, `client_id=` + `client_secret=`, or a pre-built `service=`. See [Authentication](https://docs.openquantum.com/core-sdk/authentication/).
 
@@ -16,21 +18,25 @@ No credentials were found. `OpenQuantumBackend` calls `OpenQuantumService.from_e
 
 The target backend requires extra configuration that was not supplied. The Quantum Rings simulator, for example, requires an `engine`:
 
-[](#__codelineno-1-1)`oq`` ``=`` ``OpenQuantumBackend``(`\
-[](#__codelineno-1-2)`    ``backend``=``"qr:gpu-gb10"``,`\
-[](#__codelineno-1-3)`    ``shots``=``1024``,`\
-[](#__codelineno-1-4)`    ``configuration_data``=``{``"engine"``:`` ``"amber_quantum_rings"``},`\
-[](#__codelineno-1-5)`)`\
+``` python
+oq = OpenQuantumBackend(
+    backend="qr:gpu-gb10",
+    shots=1024,
+    configuration_data={"engine": "amber_quantum_rings"},
+)
+```
 
 ## `configuration_data validation failed: ... must match "else" schema`
 
 A backend's configuration schema can be conditional. The Quantum Rings simulator only permits `threshold` when `performance="CUSTOM"`. Send such fields only when they apply:
 
-[](#__codelineno-2-1)`# Valid: no threshold unless performance is CUSTOM`\
-[](#__codelineno-2-2)`configuration_data``=``{``"engine"``:`` ``"amber_quantum_rings"``}`\
-[](#__codelineno-2-3)\
-[](#__codelineno-2-4)`# Valid: threshold allowed because performance is CUSTOM`\
-[](#__codelineno-2-5)`configuration_data``=``{``"engine"``:`` ``"amber_quantum_rings"``,`` ``"performance"``:`` ``"CUSTOM"``,`` ``"threshold"``:`` ``128``}`\
+``` python
+# Valid: no threshold unless performance is CUSTOM
+configuration_data={"engine": "amber_quantum_rings"}
+
+# Valid: threshold allowed because performance is CUSTOM
+configuration_data={"engine": "amber_quantum_rings", "performance": "CUSTOM", "threshold": 128}
+```
 
 ## `QASM precompilation failed: At most one qubit register allowed`
 

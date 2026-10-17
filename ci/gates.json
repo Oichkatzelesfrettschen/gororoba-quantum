@@ -2492,7 +2492,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/oq_platform.py check docs/evidence/open_quantum --agents AGENTS.md",
+   "cmd": "\"$PYTHON\" -B -W error scripts/oq_platform.py check docs/evidence/open_quantum --agents AGENTS.md docs/notes/open_quantum/README.md",
    "name": "core-382",
    "seconds": 1.0,
    "tier": "pr"

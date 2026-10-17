@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/cirq-plugin/overview/](https://docs.openquantum.com/cirq-plugin/overview/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 b84c0e7f72b29d11261c3f2d8b2c581299742ef0e59879338801615d4810f8c9.
 
 # Cirq Plugin Overview
@@ -14,7 +14,9 @@ Cirq is an open-source Python framework for writing, manipulating, and optimizin
 
 ## Installation
 
-[](#__codelineno-0-1)`pip`` ``install`` ``"openquantum-sdk[cirq]"`\
+``` bash
+pip install "openquantum-sdk[cirq]"
+```
 
 This pulls in `cirq-core` and `openquantum-sdk`. There is no entry-point registration step: you import `OpenQuantumSampler` and use it anywhere a `cirq.Sampler` is accepted.
 
@@ -31,25 +33,27 @@ Because it implements `run_sweep`, the standard `cirq.Sampler` methods — `run`
 
 ## Quick Example
 
-[](#__codelineno-1-1)`import`` ``cirq`\
-[](#__codelineno-1-2)`from`` ``cirq_openquantum`` ``import`` ``OpenQuantumSampler`\
-[](#__codelineno-1-3)\
-[](#__codelineno-1-4)`sampler`` ``=`` ``OpenQuantumSampler``(`\
-[](#__codelineno-1-5)`    ``backend``=``"rigetti:cepheus-1-108q"``,`\
-[](#__codelineno-1-6)`    ``client_id``=``"s_your_client_id"``,`\
-[](#__codelineno-1-7)`    ``client_secret``=``"your_client_secret"``,`\
-[](#__codelineno-1-8)`)`\
-[](#__codelineno-1-9)\
-[](#__codelineno-1-10)`q`` ``=`` ``cirq``.``LineQubit``.``range``(``2``)`\
-[](#__codelineno-1-11)`circuit`` ``=`` ``cirq``.``Circuit``([`\
-[](#__codelineno-1-12)`    ``cirq``.``H``(``q``[``0``]),`\
-[](#__codelineno-1-13)`    ``cirq``.``CNOT``(``q``[``0``],`` ``q``[``1``]),`\
-[](#__codelineno-1-14)`    ``cirq``.``measure``(``*``q``,`` ``key``=``"m"``),`\
-[](#__codelineno-1-15)`])`\
-[](#__codelineno-1-16)\
-[](#__codelineno-1-17)`result`` ``=`` ``sampler``.``run``(``circuit``,`` ``repetitions``=``1024``)`\
-[](#__codelineno-1-18)`print``(``result``.``histogram``(``key``=``"m"``))`\
-[](#__codelineno-1-19)`# Counter({0: ~512, 3: ~512})   # 00 and 11`\
+``` python
+import cirq
+from cirq_openquantum import OpenQuantumSampler
+
+sampler = OpenQuantumSampler(
+    backend="rigetti:cepheus-1-108q",
+    client_id="s_your_client_id",
+    client_secret="your_client_secret",
+)
+
+q = cirq.LineQubit.range(2)
+circuit = cirq.Circuit([
+    cirq.H(q[0]),
+    cirq.CNOT(q[0], q[1]),
+    cirq.measure(*q, key="m"),
+])
+
+result = sampler.run(circuit, repetitions=1024)
+print(result.histogram(key="m"))
+# Counter({0: ~512, 3: ~512})   # 00 and 11
+```
 
 Tip
 

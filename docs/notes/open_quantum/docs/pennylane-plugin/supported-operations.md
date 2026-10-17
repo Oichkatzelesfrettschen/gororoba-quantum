@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/pennylane-plugin/supported-operations/](https://docs.openquantum.com/pennylane-plugin/supported-operations/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 4917143176ea494754a172b4be978e865b39acf6136fb3bf36967970afab5cbc.
 
 # Supported Operations
@@ -97,37 +97,39 @@ All measurements require finite shots (`shots > 0`).
 
 ### Measurement Examples
 
-[](#__codelineno-0-1)`import`` ``pennylane`` ``as`` ``qml`\
-[](#__codelineno-0-2)\
-[](#__codelineno-0-3)`dev`` ``=`` ``qml``.``device``(``"openquantum.device"``,`` ``wires``=``2``,`` ``shots``=``128``,`` ``backend``=``"rigetti:cepheus-1-108q"``)`\
-[](#__codelineno-0-4)\
-[](#__codelineno-0-5)`@qml``.``qnode``(``dev``)`\
-[](#__codelineno-0-6)`def`` ``circuit_counts``():`\
-[](#__codelineno-0-7)`    ``qml``.``Hadamard``(``wires``=``0``)`\
-[](#__codelineno-0-8)`    ``qml``.``CNOT``(``wires``=``[``0``,`` ``1``])`\
-[](#__codelineno-0-9)`    ``return`` ``qml``.``counts``()`\
-[](#__codelineno-0-10)`# Returns: {'00': 512, '11': 512}`\
-[](#__codelineno-0-11)\
-[](#__codelineno-0-12)`@qml``.``qnode``(``dev``)`\
-[](#__codelineno-0-13)`def`` ``circuit_expval``():`\
-[](#__codelineno-0-14)`    ``qml``.``Hadamard``(``wires``=``0``)`\
-[](#__codelineno-0-15)`    ``qml``.``CNOT``(``wires``=``[``0``,`` ``1``])`\
-[](#__codelineno-0-16)`    ``return`` ``qml``.``expval``(``qml``.``PauliZ``(``0``))`\
-[](#__codelineno-0-17)`# Returns: 0.0 (approximately)`\
-[](#__codelineno-0-18)\
-[](#__codelineno-0-19)`@qml``.``qnode``(``dev``)`\
-[](#__codelineno-0-20)`def`` ``circuit_probs``():`\
-[](#__codelineno-0-21)`    ``qml``.``Hadamard``(``wires``=``0``)`\
-[](#__codelineno-0-22)`    ``qml``.``CNOT``(``wires``=``[``0``,`` ``1``])`\
-[](#__codelineno-0-23)`    ``return`` ``qml``.``probs``(``wires``=``[``0``,`` ``1``])`\
-[](#__codelineno-0-24)`# Returns: [0.5, 0.0, 0.0, 0.5] (approximately)`\
-[](#__codelineno-0-25)\
-[](#__codelineno-0-26)`@qml``.``qnode``(``dev``)`\
-[](#__codelineno-0-27)`def`` ``circuit_multi``():`\
-[](#__codelineno-0-28)`    ``qml``.``Hadamard``(``wires``=``0``)`\
-[](#__codelineno-0-29)`    ``qml``.``CNOT``(``wires``=``[``0``,`` ``1``])`\
-[](#__codelineno-0-30)`    ``return`` ``qml``.``expval``(``qml``.``PauliZ``(``0``)),`` ``qml``.``probs``(``wires``=``[``0``,`` ``1``])`\
-[](#__codelineno-0-31)`# Returns: (0.0, [0.5, 0.0, 0.0, 0.5]) (approximately)`\
+``` python
+import pennylane as qml
+
+dev = qml.device("openquantum.device", wires=2, shots=128, backend="rigetti:cepheus-1-108q")
+
+@qml.qnode(dev)
+def circuit_counts():
+    qml.Hadamard(wires=0)
+    qml.CNOT(wires=[0, 1])
+    return qml.counts()
+# Returns: {'00': 512, '11': 512}
+
+@qml.qnode(dev)
+def circuit_expval():
+    qml.Hadamard(wires=0)
+    qml.CNOT(wires=[0, 1])
+    return qml.expval(qml.PauliZ(0))
+# Returns: 0.0 (approximately)
+
+@qml.qnode(dev)
+def circuit_probs():
+    qml.Hadamard(wires=0)
+    qml.CNOT(wires=[0, 1])
+    return qml.probs(wires=[0, 1])
+# Returns: [0.5, 0.0, 0.0, 0.5] (approximately)
+
+@qml.qnode(dev)
+def circuit_multi():
+    qml.Hadamard(wires=0)
+    qml.CNOT(wires=[0, 1])
+    return qml.expval(qml.PauliZ(0)), qml.probs(wires=[0, 1])
+# Returns: (0.0, [0.5, 0.0, 0.0, 0.5]) (approximately)
+```
 
 ## Unsupported Features
 

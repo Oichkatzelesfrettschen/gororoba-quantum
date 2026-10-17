@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/qiskit-plugin/overview/](https://docs.openquantum.com/qiskit-plugin/overview/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 890b7d2cdad29f61a6325cf8c5a1d37fe9a565531320f37d57a41d26ac4294ff.
 
 # Qiskit Plugin Overview

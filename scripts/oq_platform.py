@@ -26,25 +26,27 @@ Subcommands:
   shot bounds: every execution plan's price in credits and every queue
   priority's increase. The snapshot uploads no circuit and creates no
   preparation or job.
-- check DIR [--agents FILE] (offline) requires catalogue.json,
-  estimates.json and pricing.json to carry their schema, no organization
-  identity, a constraint document and shot schema on every backend whose
-  limits agree with each other, a pricing row for every backend, and every
-  estimate to equal ceil(per_task + shots * per_shot) of its plan's
-  USD-equivalent rates, one credit per USD-equivalent dollar; with --agents
-  it renders facts_table and requires FILE to carry it verbatim between the
-  open-quantum-facts markers as the whole marked body, so a refreshed catalogue, estimate or price list
-  that changes a limit, a rate or the credit rule fails until AGENTS.md
-  changes with it. Status, accepting_jobs and queue depth change between
-  reads and stay out of the table.
+- check DIR [--agents FILE...] (offline) requires catalogue.json,
+  estimates.json and pricing.json to carry their schema and no organization
+  identity; a constraint document and shot schema on every backend whose
+  limits agree with each other; exactly one pricing row per catalogue
+  backend, each Private rate twice its Public rate; and every estimate to
+  equal ceil(per_task + shots * per_shot) of its plan's USD-equivalent
+  rates, one credit per USD-equivalent dollar. With --agents it renders
+  facts_table and requires each FILE's open-quantum-facts markers to enclose
+  exactly that table, so a refreshed catalogue, estimate or price list that
+  changes a limit, a rate or the credit rule fails until AGENTS.md and the
+  Open Quantum README change with it. Status, accepting_jobs and queue depth
+  change between reads and stay out of the table; a fixed shot column a
+  backend's bounds exclude renders as a dash.
 - facts DIR prints the table.
 - --self-test proves check rejects an organization id, a shot limit that
-  disagrees with its schema, a backend without a price, an estimate off the
-  credit rule, an edited table and a stale row inside the markers, on a
-  temporary copy.
+  disagrees with its schema, a missing and an extra pricing row, a Private
+  rate off twice Public, an estimate off the credit rule, an edited table
+  and a stale row inside the markers, on a temporary copy.
 
 Usage: OPENQUANTUM_SDK_KEY=KEY.json "$OQ_PYTHON" scripts/oq_platform.py snapshot --out DIR
-       "$PYTHON" scripts/oq_platform.py (check DIR [--agents AGENTS.md] | facts DIR | --self-test)
+       "$PYTHON" scripts/oq_platform.py (check DIR [--agents FILE...] | facts DIR | --self-test)
 """
 
 from __future__ import annotations
@@ -248,7 +250,7 @@ def facts_table(catalogue: dict[str, Any], quotes: dict[str, Any], pricing: dict
         code, data = b["short_code"], b["constraint_data"]
         low, default, high = shot_bounds(b)
         price = prices[code]
-        cost = [measured[(code, n)] for n in (*TABLE_SHOTS, high)]
+        cost = [measured.get((code, n)) for n in (*TABLE_SHOTS, high)]
         native = ", ".join(sorted(op["name"] for op in data["native_ops"] if op["name"] != "barrier"))
         per_job = data["limits"]["max_qubits_per_job"]
         qubits = f"{data['n_qubits']}" if per_job == data["n_qubits"] else f"{data['n_qubits']} ({per_job} per job)"
@@ -256,8 +258,8 @@ def facts_table(catalogue: dict[str, Any], quotes: dict[str, Any], pricing: dict
             f"| {b['name']} (`{code}`) | {price['provider_name']}, {price['modality']} "
             f"| {qubits} | {native} | {low} / {default} / {high} | {data['limits']['max_circuits']} "
             f"| {usd(price['per_task_public'])} + {usd(price['per_shot_public'])} "
-            f"| {' / '.join(map(str, cost))} | {one_credit_shots(price, low, high)} "
-            f"| {SPARK_GRANT_CREDITS // cost[1]} |"
+            f"| {' / '.join('-' if c is None else str(c) for c in cost)} | {one_credit_shots(price, low, high)} "
+            f"| {'-' if cost[1] is None else SPARK_GRANT_CREDITS // cost[1]} |"
         )
     features = sorted({f for b in catalogue["backend_classes"] for f in b["constraint_data"]["features"]})
     rows = [
@@ -283,13 +285,14 @@ def facts_table(catalogue: dict[str, Any], quotes: dict[str, Any], pricing: dict
     )
 
 
-def check_agents(catalogue: dict[str, Any], quotes: dict[str, Any], pricing: dict[str, Any], agents: Path) -> None:
-    text = agents.read_text(encoding="utf-8")
-    if text.count(BEGIN) != 1 or text.count(END) != 1:
-        raise SystemExit(f"{agents}: needs one open-quantum-facts section")
-    body = text[text.index(BEGIN) + len(BEGIN) : text.index(END)]
-    if body != facts_table(catalogue, quotes, pricing):
-        raise SystemExit(f"{agents}: the open-quantum-facts table differs from facts_table of the snapshot")
+def check_agents(catalogue: dict[str, Any], quotes: dict[str, Any], pricing: dict[str, Any], files: list[Path]) -> None:
+    table = facts_table(catalogue, quotes, pricing)
+    for path in files:
+        text = path.read_text(encoding="utf-8")
+        if text.count(BEGIN) != 1 or text.count(END) != 1:
+            raise SystemExit(f"{path}: needs one open-quantum-facts section")
+        if text[text.index(BEGIN) + len(BEGIN) : text.index(END)] != table:
+            raise SystemExit(f"{path}: the open-quantum-facts table differs from facts_table of the snapshot")
 
 
 def load(directory: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
@@ -298,7 +301,7 @@ def load(directory: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any
     return values[0], values[1], pricing
 
 
-def check(directory: Path, agents: Path | None = None) -> None:
+def check(directory: Path, agents: list[Path] | None = None) -> None:
     catalogue, quotes, pricing = load(directory)
     schemas = (catalogue["schema"], quotes["schema"], pricing["schema"])
     if schemas != (CATALOGUE_SCHEMA, ESTIMATES_SCHEMA, PRICING_SCHEMA):
@@ -310,6 +313,17 @@ def check(directory: Path, agents: Path | None = None) -> None:
     if len(catalogue["mcp_tools"]) != MCP_TOOLS:
         raise SystemExit(f"catalogue lists {len(catalogue['mcp_tools'])} MCP tools, expected {MCP_TOOLS}")
     prices = {row["short_code"]: row for row in pricing["backends"]}
+    if len(prices) != len(pricing["backends"]):
+        raise SystemExit("pricing.json lists a backend twice")
+    listed = {b["short_code"] for b in catalogue["backend_classes"]}
+    if set(prices) != listed:
+        raise SystemExit(f"pricing rows {sorted(set(prices) ^ listed)} differ from the catalogue's backend classes")
+    for code, row in prices.items():
+        # The guides read the "$50" grant as 25 credits at the Private rate.
+        for part in ("task", "shot"):
+            public, private = (Decimal(str(row[f"per_{part}_{plan}"])) for plan in ("public", "private"))
+            if private != 2 * public:
+                raise SystemExit(f"{code}: Private per_{part} {private} is not twice Public {public}")
     quoted = {(r["short_code"], r["shots"]): r["plans"] for r in quotes["rows"]}
     for b in catalogue["backend_classes"]:
         name, data = b["short_code"], b["constraint_data"]
@@ -324,8 +338,6 @@ def check(directory: Path, agents: Path | None = None) -> None:
         for edge in data["topology"]["coupling_map"]:
             if len(edge) != 2 or not all(0 <= q < data["n_qubits"] for q in edge):
                 raise SystemExit(f"{name}: coupling edge {edge}")
-        if name not in prices:
-            raise SystemExit(f"{name}: no pricing row")
         for shots in estimate_grid(b):
             plans = quoted.get((name, shots))
             if plans is None or set(plans) != set(PLANS):
@@ -348,7 +360,7 @@ def self_test() -> None:
     root = Path(__file__).resolve().parent.parent
     source = root / "docs" / "evidence" / "open_quantum"
     agents = root / "AGENTS.md"
-    check(source, agents)
+    check(source, [agents])
 
     def rewrite(path: Path, change: Callable[[Any], None]) -> None:
         value = json.loads(path.read_text(encoding="utf-8"))
@@ -367,6 +379,12 @@ def self_test() -> None:
     def unpriced(directory: Path, _: Path) -> None:
         rewrite(directory / "pricing.json", lambda p: p["backends"].pop())
 
+    def extra_price(directory: Path, _: Path) -> None:
+        rewrite(directory / "pricing.json", lambda p: p["backends"].append({**p["backends"][0], "short_code": "x:y"}))
+
+    def private_rate(directory: Path, _: Path) -> None:
+        rewrite(directory / "pricing.json", lambda p: p["backends"][0].update(per_shot_private=1))
+
     def off_rule(directory: Path, _: Path) -> None:
         def change(quotes: dict[str, Any]) -> None:
             quotes["rows"][0]["plans"]["Public Plan"]["price"] += 1
@@ -381,7 +399,7 @@ def self_test() -> None:
         text = copy.read_text(encoding="utf-8")
         copy.write_text(text.replace(END, "| stale | row |\n" + END, 1), encoding="utf-8")
 
-    edits = (organization_id, shot_limit, unpriced, off_rule, table, stale_row)
+    edits = (organization_id, shot_limit, unpriced, extra_price, private_rate, off_rule, table, stale_row)
     for edit in edits:
         with tempfile.TemporaryDirectory() as scratch:
             directory = Path(scratch) / "open_quantum"
@@ -390,7 +408,7 @@ def self_test() -> None:
             shutil.copy(agents, copy)
             edit(directory, copy)
             try:
-                check(directory, copy)
+                check(directory, [copy])
             except SystemExit:
                 continue
             raise AssertionError(f"check accepted {edit.__name__}")
@@ -405,7 +423,7 @@ def main() -> int:
     p.add_argument("--out", type=Path, required=True)
     p = sub.add_parser("check")
     p.add_argument("directory", type=Path)
-    p.add_argument("--agents", type=Path)
+    p.add_argument("--agents", type=Path, nargs="+", help="files carrying the open-quantum-facts section")
     p = sub.add_parser("facts")
     p.add_argument("directory", type=Path)
     args = parser.parse_args()

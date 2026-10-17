@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/core-sdk/overview/](https://docs.openquantum.com/core-sdk/overview/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 290892138723a1a751907af2e2a1712826ab1f4fb882a10fd0eff94985bd8145.
 
 # Python SDK Overview
@@ -42,45 +42,49 @@ The typical workflow with the Core SDK is:
 3.  Submit a job
 4.  Download results
 
-[](#__codelineno-0-1)`from`` ``openquantum_sdk.auth`` ``import`` ``ClientCredentials``,`` ``ClientCredentialsAuth`\
-[](#__codelineno-0-2)`from`` ``openquantum_sdk.clients`` ``import`` ``SchedulerClient``,`` ``JobSubmissionConfig`\
-[](#__codelineno-0-3)\
-[](#__codelineno-0-4)`# 1. Set up auth`\
-[](#__codelineno-0-5)`auth`` ``=`` ``ClientCredentialsAuth``(`\
-[](#__codelineno-0-6)`    ``creds``=``ClientCredentials``(`\
-[](#__codelineno-0-7)`        ``client_id``=``"s_your_client_id"``,`\
-[](#__codelineno-0-8)`        ``client_secret``=``"your_client_secret"``,`\
-[](#__codelineno-0-9)`    ``),`\
-[](#__codelineno-0-10)`)`\
-[](#__codelineno-0-11)\
-[](#__codelineno-0-12)`# 2. Create client`\
-[](#__codelineno-0-13)`scheduler`` ``=`` ``SchedulerClient``(``auth``=``auth``)`\
-[](#__codelineno-0-14)\
-[](#__codelineno-0-15)`# 3. Submit a job`\
-[](#__codelineno-0-16)`config`` ``=`` ``JobSubmissionConfig``(`\
-[](#__codelineno-0-17)`    ``backend_class_id``=``"rigetti:cepheus-1-108q"``,`\
-[](#__codelineno-0-18)`    ``name``=``"My Quantum Job"``,`\
-[](#__codelineno-0-19)`    ``job_subcategory_id``=``"oth:oth"``,`\
-[](#__codelineno-0-20)`    ``shots``=``128``,`\
-[](#__codelineno-0-21)`)`\
-[](#__codelineno-0-22)`job`` ``=`` ``scheduler``.``submit_job``(``config``,`` ``file_path``=``"circuit.qasm"``)`\
-[](#__codelineno-0-23)\
-[](#__codelineno-0-24)`# 4. Download results (and calibration if tagged)`\
-[](#__codelineno-0-25)`output`` ``=`` ``scheduler``.``download_job_output``(``job``)`\
-[](#__codelineno-0-26)`print``(``output``)`\
-[](#__codelineno-0-27)`if`` ``job``.``calibration_data_url``:`\
-[](#__codelineno-0-28)`    ``cal`` ``=`` ``scheduler``.``download_job_calibration``(``job``)`\
-[](#__codelineno-0-29)`    ``print``(``cal``)`\
-[](#__codelineno-0-30)\
-[](#__codelineno-0-31)`scheduler``.``close``()`\
+``` python
+from openquantum_sdk.auth import ClientCredentials, ClientCredentialsAuth
+from openquantum_sdk.clients import SchedulerClient, JobSubmissionConfig
+
+# 1. Set up auth
+auth = ClientCredentialsAuth(
+    creds=ClientCredentials(
+        client_id="s_your_client_id",
+        client_secret="your_client_secret",
+    ),
+)
+
+# 2. Create client
+scheduler = SchedulerClient(auth=auth)
+
+# 3. Submit a job
+config = JobSubmissionConfig(
+    backend_class_id="rigetti:cepheus-1-108q",
+    name="My Quantum Job",
+    job_subcategory_id="oth:oth",
+    shots=128,
+)
+job = scheduler.submit_job(config, file_path="circuit.qasm")
+
+# 4. Download results (and calibration if tagged)
+output = scheduler.download_job_output(job)
+print(output)
+if job.calibration_data_url:
+    cal = scheduler.download_job_calibration(job)
+    print(cal)
+
+scheduler.close()
+```
 
 ## SchedulerClient
 
 `SchedulerClient` handles the full job lifecycle.
 
-[](#__codelineno-1-1)`from`` ``openquantum_sdk.clients`` ``import`` ``SchedulerClient`\
-[](#__codelineno-1-2)\
-[](#__codelineno-1-3)`scheduler`` ``=`` ``SchedulerClient``(``auth``=``auth``)`\
+``` python
+from openquantum_sdk.clients import SchedulerClient
+
+scheduler = SchedulerClient(auth=auth)
+```
 
 Key methods:
 
@@ -104,9 +108,11 @@ Key methods:
 
 `ManagementClient` handles backend discovery and platform administration.
 
-[](#__codelineno-2-1)`from`` ``openquantum_sdk.clients`` ``import`` ``ManagementClient`\
-[](#__codelineno-2-2)\
-[](#__codelineno-2-3)`management`` ``=`` ``ManagementClient``(``auth``=``auth``)`\
+``` python
+from openquantum_sdk.clients import ManagementClient
+
+management = ManagementClient(auth=auth)
+```
 
 Key methods:
 

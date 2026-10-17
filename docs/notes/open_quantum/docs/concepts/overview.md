@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/concepts/overview/](https://docs.openquantum.com/concepts/overview/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 c05ddd1e5dc7fd1a9ac8ffa67987ce3c0b4a05c95e1176a4b7160d143a84db66.
 
 # How Open Quantum Works

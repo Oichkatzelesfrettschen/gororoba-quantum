@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/api-reference/](https://docs.openquantum.com/api-reference/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 2253b66c0188fab3ca3e4afa0a8196103c19f59cbb92c8e25fefbccff5471918.
 
 # API Reference
@@ -419,13 +419,15 @@ Use as a context manager to close HTTP sessions on exit.
 
 Example
 
-[](#__codelineno-0-1)`from`` ``openquantum_sdk_qiskit`` ``import`` ``OpenQuantumService`\
-[](#__codelineno-0-2)\
-[](#__codelineno-0-3)`service`` ``=`` ``OpenQuantumService``(``token``=``"oq_tok_..."``)`\
-[](#__codelineno-0-4)`backends`` ``=`` ``service``.``backends``(``online``=``True``)`\
-[](#__codelineno-0-5)`backend`` ``=`` ``service``.``return_backend``(``"rigetti:ankaa-3"``)`\
-[](#__codelineno-0-6)`sampler`` ``=`` ``service``.``create_sampler``(``backend``=``backend``,`` ``job_subcategory_id``=``"oth:oth"``)`\
-[](#__codelineno-0-7)`service``.``close``()`\
+``` python
+from openquantum_sdk_qiskit import OpenQuantumService
+
+service = OpenQuantumService(token="oq_tok_...")
+backends = service.backends(online=True)
+backend = service.return_backend("rigetti:ankaa-3")
+sampler = service.create_sampler(backend=backend, job_subcategory_id="oth:oth")
+service.close()
+```
 
 Attributes:
 
@@ -497,7 +499,9 @@ This backend is typically obtained via :meth:`OpenQuantumService.return_backend`
 
 Example
 
-[](#__codelineno-0-1)`backend`` ``=`` ``service``.``return_backend``(``"rigetti:ankaa-3"``)`\
+``` python
+backend = service.return_backend("rigetti:ankaa-3")
+```
 
 ### `__init__``(``name``,`` ``*``,`` ``capabilities``=``None``,`` ``scheduler``=``None``,`` ``config``=``None``,`` ``export_format``=``'qasm3'``,`` ``configuration_schema``=``None``,`` ``verbose``=``None``,`` ``job_timeout_seconds``=``None``,`` ``**``kwargs``)` [¶](#openquantum_sdk_qiskit.oq_backend.OpenQuantumBackend.__init__ "Permanent link")
 
@@ -545,13 +549,15 @@ Typically obtained via :meth:`OpenQuantumService.create_sampler` rather than con
 
 Example
 
-[](#__codelineno-0-1)`sampler`` ``=`` ``service``.``create_sampler``(`\
-[](#__codelineno-0-2)`    ``backend``=``backend``,`\
-[](#__codelineno-0-3)`    ``job_subcategory_id``=``"oth:oth"``,`\
-[](#__codelineno-0-4)`)`\
-[](#__codelineno-0-5)`pub`` ``=`` ``(``circuit``,`` ``shots``)`\
-[](#__codelineno-0-6)`job`` ``=`` ``sampler``.``run``([``pub``])`\
-[](#__codelineno-0-7)`result`` ``=`` ``job``.``result``()`\
+``` python
+sampler = service.create_sampler(
+    backend=backend,
+    job_subcategory_id="oth:oth",
+)
+pub = (circuit, shots)
+job = sampler.run([pub])
+result = job.result()
+```
 
 ### `__init__``(``*``,`` ``backend``,`` ``options``=``None``,`` ``scheduler``=``None``,`` ``config``=``None``,`` ``export_format``=``'qasm3'``,`` ``verbose``=``None``,`` ``job_timeout_seconds``=``None``)` [¶](#openquantum_sdk_qiskit.oq_sampler.OQSampler.__init__ "Permanent link")
 
@@ -597,13 +603,15 @@ Typically obtained via :meth:`OpenQuantumService.create_estimator` rather than c
 
 Example
 
-[](#__codelineno-0-1)`estimator`` ``=`` ``service``.``create_estimator``(`\
-[](#__codelineno-0-2)`    ``backend``=``backend``,`\
-[](#__codelineno-0-3)`    ``job_subcategory_id``=``"oth:oth"``,`\
-[](#__codelineno-0-4)`)`\
-[](#__codelineno-0-5)`pub`` ``=`` ``(``circuit``,`` ``observable``)`\
-[](#__codelineno-0-6)`job`` ``=`` ``estimator``.``run``([``pub``])`\
-[](#__codelineno-0-7)`result`` ``=`` ``job``.``result``()`\
+``` python
+estimator = service.create_estimator(
+    backend=backend,
+    job_subcategory_id="oth:oth",
+)
+pub = (circuit, observable)
+job = estimator.run([pub])
+result = job.result()
+```
 
 ### `__init__``(``*``,`` ``backend``,`` ``options``=``None``,`` ``scheduler``=``None``,`` ``config``=``None``,`` ``export_format``=``'qasm3'``,`` ``verbose``=``None``,`` ``job_timeout_seconds``=``None``)` [¶](#openquantum_sdk_qiskit.oq_estimator.OQEstimator.__init__ "Permanent link")
 
@@ -733,12 +741,14 @@ Cirq sampler that executes circuits on the Open Quantum platform.
 
 Use it anywhere a `cirq.Sampler` is accepted::
 
-`sampler = OpenQuantumSampler(`\
-`    backend="qr:gpu-gb10",`\
-`    configuration_data={"engine": "amber_quantum_rings"},`\
-`)`\
-`result = sampler.run(circuit, repetitions=1024)`\
-`print(result.histogram(key="m"))`\
+```
+sampler = OpenQuantumSampler(
+    backend="qr:gpu-gb10",
+    configuration_data={"engine": "amber_quantum_rings"},
+)
+result = sampler.run(circuit, repetitions=1024)
+print(result.histogram(key="m"))
+```
 
 Authentication mirrors the other Open Quantum plugins and is resolved in this order:
 

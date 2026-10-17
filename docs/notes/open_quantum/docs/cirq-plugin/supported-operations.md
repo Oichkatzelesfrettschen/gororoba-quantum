@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/cirq-plugin/supported-operations/](https://docs.openquantum.com/cirq-plugin/supported-operations/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 b389b5d7b1b5b19a37799190d6d73f52d8e269427a50322ec5cc3f05c23c3869.
 
 # Supported Operations
@@ -20,9 +20,11 @@ The platform precompiler allows at most one qubit register. Cirq maps all qubits
 
 The platform is shot-based: every execution returns measurement counts. Your circuit must contain at least one `cirq.measure(...)`; the QASM exporter does **not** add measurements for you.
 
-[](#__codelineno-0-1)`q`` ``=`` ``cirq``.``LineQubit``.``range``(``2``)`\
-[](#__codelineno-0-2)`circuit`` ``=`` ``cirq``.``Circuit``([``cirq``.``H``(``q``[``0``]),`` ``cirq``.``CNOT``(``q``[``0``],`` ``q``[``1``]),`` ``cirq``.``measure``(``*``q``,`` ``key``=``"m"``)])`\
-[](#__codelineno-0-3)`result`` ``=`` ``sampler``.``run``(``circuit``,`` ``repetitions``=``1024``)`\
+``` python
+q = cirq.LineQubit.range(2)
+circuit = cirq.Circuit([cirq.H(q[0]), cirq.CNOT(q[0], q[1]), cirq.measure(*q, key="m")])
+result = sampler.run(circuit, repetitions=1024)
+```
 
 Results come back as a standard `cirq.Result`:
 
@@ -42,7 +44,9 @@ The platform returns counts little-endian (the first classical bit is the rightm
 
 Set `reverse_bits=False` only for a backend that returns counts big-endian:
 
-[](#__codelineno-1-1)`sampler`` ``=`` ``OpenQuantumSampler``(``backend``=``"..."``,`` ``reverse_bits``=``False``)`\
+``` python
+sampler = OpenQuantumSampler(backend="...", reverse_bits=False)
+```
 
 When trying a new backend for the first time, verify ordering with an asymmetric state (apply `X` to one qubit and confirm which bit flips).
 
@@ -50,4 +54,6 @@ When trying a new backend for the first time, verify ordering with an asymmetric
 
 Circuits are serialized as OpenQASM 3.0 by default, matching the other Open Quantum plugins. Pass `export_format="qasm2"` to emit OpenQASM 2.0 instead:
 
-[](#__codelineno-2-1)`sampler`` ``=`` ``OpenQuantumSampler``(``backend``=``"..."``,`` ``export_format``=``"qasm2"``)`\
+``` python
+sampler = OpenQuantumSampler(backend="...", export_format="qasm2")
+```

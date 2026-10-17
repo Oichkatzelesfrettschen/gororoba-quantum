@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/vscode/overview/](https://docs.openquantum.com/vscode/overview/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 65f328b3a4bbed4b5df270d936f164542e9659ae31cf560abc3836607c2a8e5d.
 
 # Visual Studio
@@ -20,14 +20,16 @@ Run your OpenQASM circuits on real QPUs and simulators without leaving your edit
 
 ## Example
 
-[](#__codelineno-0-1)`OPENQASM 3.0;`\
-[](#__codelineno-0-2)`include "stdgates.inc";`\
-[](#__codelineno-0-3)`qubit[2] q;`\
-[](#__codelineno-0-4)`bit[2] c;`\
-[](#__codelineno-0-5)`h q[0];`\
-[](#__codelineno-0-6)`cx q[0], q[1];`\
-[](#__codelineno-0-7)`c[0] = measure q[0];`\
-[](#__codelineno-0-8)`c[1] = measure q[1];`\
+```
+OPENQASM 3.0;
+include "stdgates.inc";
+qubit[2] q;
+bit[2] c;
+h q[0];
+cx q[0], q[1];
+c[0] = measure q[0];
+c[1] = measure q[1];
+```
 
 Open a circuit like this one, pick a backend, and submit. The job opens in the Jobs explorer, and the results pane shows the counts as a chart or a table the moment the job completes.
 

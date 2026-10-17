@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/portal/submitting-jobs/](https://docs.openquantum.com/portal/submitting-jobs/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 3e52146fde5fba704bdcd88acb273f98fd095f91ad7c5d4529db296c7cb5f60c.
 
 # Submitting Jobs
@@ -18,14 +18,16 @@ The portal accepts OpenQASM uploads. Some backends support additional formats th
 
 Here's a minimal Bell state circuit you can save as `bell.qasm`:
 
-[](#__codelineno-0-1)`OPENQASM 2.0;`\
-[](#__codelineno-0-2)`include "qelib1.inc";`\
-[](#__codelineno-0-3)`qreg q[2];`\
-[](#__codelineno-0-4)`creg c[2];`\
-[](#__codelineno-0-5)`h q[0];`\
-[](#__codelineno-0-6)`cx q[0],q[1];`\
-[](#__codelineno-0-7)`measure q[0] -> c[0];`\
-[](#__codelineno-0-8)`measure q[1] -> c[1];`\
+```
+OPENQASM 2.0;
+include "qelib1.inc";
+qreg q[2];
+creg c[2];
+h q[0];
+cx q[0],q[1];
+measure q[0] -> c[0];
+measure q[1] -> c[1];
+```
 
 Tip
 

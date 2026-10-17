@@ -1,44 +1,54 @@
 > Full piece: [https://docs.openquantum.com/cirq-plugin/troubleshooting/](https://docs.openquantum.com/cirq-plugin/troubleshooting/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 aaf5ad0fd56e563b647302b302299a6d1c5dacea600a34433ec39c597f5a6dfc.
 
 # Troubleshooting
 
 ## Authentication required
 
-[](#__codelineno-0-1)`AuthenticationError: Authentication required. Provide a token or`\
-[](#__codelineno-0-2)`client_id+client_secret (or OPENQUANTUM_TOKEN / OPENQUANTUM_CLIENT_ID +`\
-[](#__codelineno-0-3)`OPENQUANTUM_CLIENT_SECRET / OPENQUANTUM_SDK_KEY).`\
+```
+AuthenticationError: Authentication required. Provide a token or
+client_id+client_secret (or OPENQUANTUM_TOKEN / OPENQUANTUM_CLIENT_ID +
+OPENQUANTUM_CLIENT_SECRET / OPENQUANTUM_SDK_KEY).
+```
 
 No credentials were found. `OpenQuantumSampler` calls `OpenQuantumClient.from_env()`. Set `OPENQUANTUM_CLIENT_ID` and `OPENQUANTUM_CLIENT_SECRET`, set `OPENQUANTUM_TOKEN` or `OPENQUANTUM_SDK_KEY`, or pass `token=`, `client_id=` + `client_secret=`, or a pre-built `client=`. See [Authentication](https://docs.openquantum.com/core-sdk/authentication/).
 
 ## `Circuit has no measurement gates`
 
-[](#__codelineno-1-1)`CircuitValidationError: Circuit has no measurement gates; add cirq.measure(...)`\
-[](#__codelineno-1-2)`before sampling on the Open Quantum platform.`\
+```
+CircuitValidationError: Circuit has no measurement gates; add cirq.measure(...)
+before sampling on the Open Quantum platform.
+```
 
 The platform is shot-based and Cirq's QASM exporter does not add measurements. Append a measurement to your circuit:
 
-[](#__codelineno-2-1)`circuit``.``append``(``cirq``.``measure``(``*``cirq``.``LineQubit``.``range``(``2``),`` ``key``=``"m"``))`\
+``` python
+circuit.append(cirq.measure(*cirq.LineQubit.range(2), key="m"))
+```
 
 ## `configuration_data validation failed: ... required property 'engine'`
 
 The target backend requires extra configuration that was not supplied. The Quantum Rings simulator, for example, requires an `engine`:
 
-[](#__codelineno-3-1)`sampler`` ``=`` ``OpenQuantumSampler``(`\
-[](#__codelineno-3-2)`    ``backend``=``"qr:gpu-gb10"``,`\
-[](#__codelineno-3-3)`    ``configuration_data``=``{``"engine"``:`` ``"amber_quantum_rings"``},`\
-[](#__codelineno-3-4)`)`\
+``` python
+sampler = OpenQuantumSampler(
+    backend="qr:gpu-gb10",
+    configuration_data={"engine": "amber_quantum_rings"},
+)
+```
 
 ## `configuration_data validation failed: ... must match "else" schema`
 
 A backend's configuration schema can be conditional. The Quantum Rings simulator only permits `threshold` when `performance="CUSTOM"`. Send such fields only when they apply:
 
-[](#__codelineno-4-1)`# Valid: no threshold unless performance is CUSTOM`\
-[](#__codelineno-4-2)`configuration_data``=``{``"engine"``:`` ``"amber_quantum_rings"``}`\
-[](#__codelineno-4-3)\
-[](#__codelineno-4-4)`# Valid: threshold allowed because performance is CUSTOM`\
-[](#__codelineno-4-5)`configuration_data``=``{``"engine"``:`` ``"amber_quantum_rings"``,`` ``"performance"``:`` ``"CUSTOM"``,`` ``"threshold"``:`` ``128``}`\
+``` python
+# Valid: no threshold unless performance is CUSTOM
+configuration_data={"engine": "amber_quantum_rings"}
+
+# Valid: threshold allowed because performance is CUSTOM
+configuration_data={"engine": "amber_quantum_rings", "performance": "CUSTOM", "threshold": 128}
+```
 
 ## Results look bit-reversed
 
@@ -48,7 +58,9 @@ The platform returns counts little-endian (first classical bit rightmost), while
 
 Cirq could not express an operation in OpenQASM. Decompose it before sampling:
 
-[](#__codelineno-5-1)`circuit`` ``=`` ``cirq``.``Circuit``(``cirq``.``decompose``(``circuit``))`\
+``` python
+circuit = cirq.Circuit(cirq.decompose(circuit))
+```
 
 ## Shots are required
 

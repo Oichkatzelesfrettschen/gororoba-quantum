@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/qrisp-plugin/overview/](https://docs.openquantum.com/qrisp-plugin/overview/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 2cf384c7cc0d26a6cee5bc6bd55c3afce0187d5970ae353ea99774ed825797b6.
 
 # Qrisp Plugin Overview
@@ -14,7 +14,9 @@ Qrisp is an open-source, high-level quantum programming language — an Eclipse 
 
 ## Installation
 
-[](#__codelineno-0-1)`pip`` ``install`` ``"openquantum-sdk[qrisp]"`\
+``` bash
+pip install "openquantum-sdk[qrisp]"
+```
 
 This pulls in `qrisp`, `openquantum-sdk`, and `openquantum-sdk-qiskit`. There is no entry-point registration step: you import `OpenQuantumBackend` and pass it to Qrisp at call time.
 
@@ -30,22 +32,24 @@ Qrisp already depends on Qiskit and can convert any program to a Qiskit circuit 
 
 ## Quick Example
 
-[](#__codelineno-1-1)`from`` ``qrisp`` ``import`` ``QuantumVariable``,`` ``h``,`` ``cx`\
-[](#__codelineno-1-2)`from`` ``qrisp_openquantum`` ``import`` ``OpenQuantumBackend`\
-[](#__codelineno-1-3)\
-[](#__codelineno-1-4)`oq`` ``=`` ``OpenQuantumBackend``(`\
-[](#__codelineno-1-5)`    ``backend``=``"rigetti:cepheus-1-108q"``,`\
-[](#__codelineno-1-6)`    ``shots``=``1024``,`\
-[](#__codelineno-1-7)`    ``client_id``=``"s_your_client_id"``,`\
-[](#__codelineno-1-8)`    ``client_secret``=``"your_client_secret"``,`\
-[](#__codelineno-1-9)`)`\
-[](#__codelineno-1-10)\
-[](#__codelineno-1-11)`qv`` ``=`` ``QuantumVariable``(``2``)`\
-[](#__codelineno-1-12)`h``(``qv``[``0``])`\
-[](#__codelineno-1-13)`cx``(``qv``[``0``],`` ``qv``[``1``])`\
-[](#__codelineno-1-14)\
-[](#__codelineno-1-15)`print``(``qv``.``get_measurement``(``backend``=``oq``,`` ``shots``=``1024``))`\
-[](#__codelineno-1-16)`# {'00': 0.51, '11': 0.49}`\
+``` python
+from qrisp import QuantumVariable, h, cx
+from qrisp_openquantum import OpenQuantumBackend
+
+oq = OpenQuantumBackend(
+    backend="rigetti:cepheus-1-108q",
+    shots=1024,
+    client_id="s_your_client_id",
+    client_secret="your_client_secret",
+)
+
+qv = QuantumVariable(2)
+h(qv[0])
+cx(qv[0], qv[1])
+
+print(qv.get_measurement(backend=oq, shots=1024))
+# {'00': 0.51, '11': 0.49}
+```
 
 Tip
 

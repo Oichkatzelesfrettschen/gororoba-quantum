@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/core-sdk/installation/](https://docs.openquantum.com/core-sdk/installation/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 f7dd5272638c3c2ca37e8c77d9fc1708272eb6d0ba3c0c4a32171c37bdd21c5d.
 
 # Installation
@@ -12,13 +12,15 @@
 
 Open Quantum provides a core SDK with optional framework plugins. Install the one that matches your workflow:
 
-[](#__codelineno-0-1)`pip`` ``install`` ``openquantum-sdk``                      ``# Core SDK only`\
-[](#__codelineno-0-2)`pip`` ``install`` ``"openquantum-sdk[qiskit]"``            ``# Core SDK + Qiskit plugin`\
-[](#__codelineno-0-3)`pip`` ``install`` ``"openquantum-sdk[pennylane]"``         ``# Core SDK + PennyLane plugin`\
-[](#__codelineno-0-4)`pip`` ``install`` ``"openquantum-sdk[qiskit,pennylane]"``  ``# Core SDK + Qiskit and PennyLane`\
-[](#__codelineno-0-5)`pip`` ``install`` ``"openquantum-sdk[cirq]"``              ``# Core SDK + Cirq plugin`\
-[](#__codelineno-0-6)`pip`` ``install`` ``"openquantum-sdk[qrisp]"``             ``# Core SDK + Qrisp plugin`\
-[](#__codelineno-0-7)`pip`` ``install`` ``openquantum-mcp``                      ``# MCP server for AI agents (pulls in openquantum-sdk)`\
+``` bash
+pip install openquantum-sdk                      # Core SDK only
+pip install "openquantum-sdk[qiskit]"            # Core SDK + Qiskit plugin
+pip install "openquantum-sdk[pennylane]"         # Core SDK + PennyLane plugin
+pip install "openquantum-sdk[qiskit,pennylane]"  # Core SDK + Qiskit and PennyLane
+pip install "openquantum-sdk[cirq]"              # Core SDK + Cirq plugin
+pip install "openquantum-sdk[qrisp]"             # Core SDK + Qrisp plugin
+pip install openquantum-mcp                      # MCP server for AI agents (pulls in openquantum-sdk)
+```
 
 Note
 
@@ -40,27 +42,39 @@ Core, Qiskit, and PennyLane are **1.0.0**. Cirq and Qrisp are **0.5.0**. The MCP
 
 ### Core SDK
 
-[](#__codelineno-1-1)`python`` ``-c`` ``"import openquantum_sdk; print(openquantum_sdk.__version__)"`\
+``` bash
+python -c "import openquantum_sdk; print(openquantum_sdk.__version__)"
+```
 
 ### Qiskit Plugin
 
-[](#__codelineno-2-1)`python`` ``-c`` ``"import openquantum_sdk_qiskit; print(openquantum_sdk_qiskit.__version__)"`\
+``` bash
+python -c "import openquantum_sdk_qiskit; print(openquantum_sdk_qiskit.__version__)"
+```
 
 ### PennyLane Plugin
 
-[](#__codelineno-3-1)`python`` ``-c`` ``"import pennylane_openquantum; print(pennylane_openquantum.__version__)"`\
+``` bash
+python -c "import pennylane_openquantum; print(pennylane_openquantum.__version__)"
+```
 
 You can verify that the plugin is installed and PennyLane recognizes it:
 
-[](#__codelineno-4-1)`python`` ``-``c`` ``"from pennylane_openquantum import OpenQuantumDevice; print('Plugin OK')"`\
+``` python
+python -c "from pennylane_openquantum import OpenQuantumDevice; print('Plugin OK')"
+```
 
 ### Cirq Plugin
 
-[](#__codelineno-5-1)`python`` ``-c`` ``"import cirq_openquantum; print(cirq_openquantum.__version__)"`\
+``` bash
+python -c "import cirq_openquantum; print(cirq_openquantum.__version__)"
+```
 
 ### Qrisp Plugin
 
-[](#__codelineno-6-1)`python`` ``-c`` ``"import qrisp_openquantum; print(qrisp_openquantum.__version__)"`\
+``` bash
+python -c "import qrisp_openquantum; print(qrisp_openquantum.__version__)"
+```
 
 Note
 

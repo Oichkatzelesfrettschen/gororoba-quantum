@@ -1,12 +1,14 @@
 > Full piece: [https://docs.openquantum.com/mcp/installation/](https://docs.openquantum.com/mcp/installation/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 c4fa5583dbc6b2cfda5429a2e62787d4f46604edfdf029247dddd0f444427baa.
 
 # Installation
 
 ## Install from PyPI
 
-[](#__codelineno-0-1)`pip`` ``install`` ``openquantum-mcp`\
+``` bash
+pip install openquantum-mcp
+```
 
 This installs **`openquantum-mcp` 0.2.0** and its dependency **`openquantum-sdk`** (`>=1.0.0`).
 
@@ -14,19 +16,25 @@ Requires **Python 3.10 or later** (the official MCP Python library requires 3.10
 
 Optional explicit install of both packages:
 
-[](#__codelineno-1-1)`pip`` ``install`` ``openquantum-sdk`` ``openquantum-mcp`\
+``` bash
+pip install openquantum-sdk openquantum-mcp
+```
 
 ## Verify
 
-[](#__codelineno-2-1)`python`` ``-c`` ``"import openquantum_mcp; print(openquantum_mcp.__version__)"`\
-[](#__codelineno-2-2)`python`` ``-m`` ``openquantum_mcp`` ``--version`\
-[](#__codelineno-2-3)`python`` ``-m`` ``openquantum_mcp`` ``--help`\
+``` bash
+python -c "import openquantum_mcp; print(openquantum_mcp.__version__)"
+python -m openquantum_mcp --version
+python -m openquantum_mcp --help
+```
 
 These commands should print the package version and a short usage message, then exit. Do **not** start the server from a bare terminal for day-to-day use — it speaks MCP over stdio and is meant to be launched by an MCP client.
 
 Confirm the console entry point is on your PATH (or use `python -m openquantum_mcp` in client config):
 
-[](#__codelineno-3-1)`which`` ``openquantum-mcp`` ``||`` ``which`` ``python`\
+``` bash
+which openquantum-mcp || which python
+```
 
 ## Credentials
 
@@ -34,12 +42,16 @@ Create an SDK key in the portal: [SDK Keys](https://www.openquantum.com/keys). S
 
 Set one of:
 
-[](#__codelineno-4-1)`export`` ``OPENQUANTUM_CLIENT_ID``=``"s_..."`\
-[](#__codelineno-4-2)`export`` ``OPENQUANTUM_CLIENT_SECRET``=``"..."`\
+``` bash
+export OPENQUANTUM_CLIENT_ID="s_..."
+export OPENQUANTUM_CLIENT_SECRET="..."
+```
 
 or:
 
-[](#__codelineno-5-1)`export`` ``OPENQUANTUM_SDK_KEY``=``"/path/to/sdk-key.json"`\
+``` bash
+export OPENQUANTUM_SDK_KEY="/path/to/sdk-key.json"
+```
 
 The JSON key file must contain `client_id` and `client_secret`. If `OPENQUANTUM_SDK_KEY` is set but the path does not exist, the server fails with a clear error (it does not silently fall back).
 

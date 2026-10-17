@@ -38,6 +38,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import html
 import json
 import re
 import shutil
@@ -58,6 +59,8 @@ BASE = ROOT / "docs/notes/open_quantum"
 EVIDENCE = ROOT / "docs/evidence/open_quantum"
 KINDS = ("docs", "site", "pricing", "pypi")
 DOCS = "https://docs.openquantum.com/"
+CODE_ARTIFACT = b"(#__codelineno-"
+CODE_BLOCK = re.compile(r'<div class="(?:language-([\w+-]+) )?highlight"><pre>.*?<code>(.*?)</code></pre></div>', re.S)
 SITE = "https://www.openquantum.com/"
 TERMS_HOST = "https://www.quantumrings.com/"
 PYPI = "https://pypi.org/pypi/"
@@ -252,12 +255,22 @@ def to_markdown(fragment: str) -> str:
     return PICTOGRAPH.sub("", markdown)
 
 
+def plain_code(match: re.Match[str]) -> str:
+    """A Pygments block as one <pre><code> of its source text, which pandoc writes as a fence."""
+    language = match.group(1) or "text"
+    source = html.unescape(re.sub(r"<[^>]+>", "", match.group(2)))
+    return f'<pre><code class="{language}">{html.escape(source)}</code></pre>'
+
+
 def docs_fragment(page: str) -> str:
     match = re.search(r'<article class="md-content__inner md-typeset">(.*)</article>', page, re.S)
     if not match:
         raise SystemExit("docs page carries no md-content__inner article")
     # MkDocs permalink anchors render as a pilcrow after every heading.
-    return re.sub(r'<a class="headerlink"[^>]*>.*?</a>', "", match.group(1), flags=re.S)
+    fragment = re.sub(r'<a class="headerlink"[^>]*>.*?</a>', "", match.group(1), flags=re.S)
+    # Pygments wraps each code line in spans and a line anchor; pandoc keeps
+    # those as links and inline code unless the block is reduced to its text.
+    return CODE_BLOCK.sub(plain_code, fragment)
 
 
 def site_fragment(page: str) -> str:
@@ -505,8 +518,11 @@ def check_tree(root: Path) -> int:
             path = root / row["path"]
             if not path.is_file():
                 raise SystemExit(f"{kind}: manifest row {row['path']} has no captured file")
-            if sha256(path.read_bytes()) != row["sha256"]:
+            data = path.read_bytes()
+            if sha256(data) != row["sha256"]:
                 raise SystemExit(f"{row['path']} differs from its captured sha256")
+            if path.suffix == ".md" and CODE_ARTIFACT in data:
+                raise SystemExit(f"{row['path']}: a code block kept its line anchors instead of a fence")
             count += 1
     return count
 
@@ -577,6 +593,18 @@ def self_test() -> int:
             original = edit_manifest(kind, partial(move_source, name))
             expect(f"{kind} row with another source", "differs from the pinned")
             manifest_path(kind, base).write_bytes(original)
+        victim = base / "docs" / "concepts" / "credits.md"
+        victim_bytes = victim.read_bytes()
+        anchored = victim_bytes + b"[](#__codelineno-0-1)`x`\n"
+        victim.write_bytes(anchored)
+
+        def rehash(doc: dict[str, Any]) -> None:
+            next(row for row in doc["files"] if row["path"] == rel(victim, root))["sha256"] = sha256(anchored)
+
+        original = edit_manifest("docs", rehash)
+        expect("code block with line anchors", "kept its line anchors")
+        manifest_path("docs", base).write_bytes(original)
+        victim.write_bytes(victim_bytes)
         pricing = evidence / "pricing.json"
         pricing_bytes = pricing.read_bytes()
         pricing.write_bytes(pricing_bytes.replace(b"0.18", b"0.19", 1))

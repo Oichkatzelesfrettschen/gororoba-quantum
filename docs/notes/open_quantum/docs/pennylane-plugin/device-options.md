@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/pennylane-plugin/device-options/](https://docs.openquantum.com/pennylane-plugin/device-options/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 7b7fc69adc06a0033fa9ea690e3221c449d57403041e7a9d27250903fc2e8032.
 
 # Device Options
@@ -8,14 +8,16 @@ This page documents all parameters available when creating an `openquantum.devic
 
 ## Basic Usage
 
-[](#__codelineno-0-1)`import`` ``pennylane`` ``as`` ``qml`\
-[](#__codelineno-0-2)\
-[](#__codelineno-0-3)`dev`` ``=`` ``qml``.``device``(`\
-[](#__codelineno-0-4)`    ``"openquantum.device"``,`\
-[](#__codelineno-0-5)`    ``wires``=``4``,`\
-[](#__codelineno-0-6)`    ``shots``=``128``,`\
-[](#__codelineno-0-7)`    ``backend``=``"ionq:forte-1"``,`\
-[](#__codelineno-0-8)`)`\
+``` python
+import pennylane as qml
+
+dev = qml.device(
+    "openquantum.device",
+    wires=4,
+    shots=128,
+    backend="ionq:forte-1",
+)
+```
 
 ## Required Parameters
 
@@ -64,24 +66,28 @@ Before executing circuits, the device:
 | `auto_confirm` | `bool` | `False` | If `True`, skip the confirmation prompt (terminal) and backend-unavailable warnings. |
 | `verbose` | `bool` | `False` | Print submission progress and the credit cost. Same default on every Open Quantum plugin. |
 
-[](#__codelineno-1-1)`# Default: prints the cost and prompts in the terminal. No status spinner.`\
-[](#__codelineno-1-2)`dev`` ``=`` ``qml``.``device``(``"openquantum.device"``,`` ``wires``=``2``,`` ``shots``=``128``,`` ``backend``=``"ionq:forte-1"``)`\
-[](#__codelineno-1-3)`# Output:`\
-[](#__codelineno-1-4)`#   [Open Quantum] Batch: 1 circuit(s) × 2 credit(s) each = 2 credit(s) total`\
-[](#__codelineno-1-5)`#   [Open Quantum] Proceed? [y/N]`\
-[](#__codelineno-1-6)\
-[](#__codelineno-1-7)`# Skip prompts and stay quiet (recommended for iterative algorithms)`\
-[](#__codelineno-1-8)`dev`` ``=`` ``qml``.``device``(``"openquantum.device"``,`` ``wires``=``2``,`` ``shots``=``128``,`` ``backend``=``"ionq:forte-1"``,`\
-[](#__codelineno-1-9)`                  ``auto_confirm``=``True``)`\
-[](#__codelineno-1-10)`# No progress lines. dev.total_credits_used still updates.`\
-[](#__codelineno-1-11)\
-[](#__codelineno-1-12)`# Skip the prompt but print progress and the credit cost`\
-[](#__codelineno-1-13)`dev`` ``=`` ``qml``.``device``(``"openquantum.device"``,`` ``wires``=``2``,`` ``shots``=``128``,`` ``backend``=``"ionq:forte-1"``,`\
-[](#__codelineno-1-14)`                  ``auto_confirm``=``True``,`` ``verbose``=``True``)`\
+``` python
+# Default: prints the cost and prompts in the terminal. No status spinner.
+dev = qml.device("openquantum.device", wires=2, shots=128, backend="ionq:forte-1")
+# Output:
+#   [Open Quantum] Batch: 1 circuit(s) × 2 credit(s) each = 2 credit(s) total
+#   [Open Quantum] Proceed? [y/N]
+
+# Skip prompts and stay quiet (recommended for iterative algorithms)
+dev = qml.device("openquantum.device", wires=2, shots=128, backend="ionq:forte-1",
+                  auto_confirm=True)
+# No progress lines. dev.total_credits_used still updates.
+
+# Skip the prompt but print progress and the credit cost
+dev = qml.device("openquantum.device", wires=2, shots=128, backend="ionq:forte-1",
+                  auto_confirm=True, verbose=True)
+```
 
 You can check cumulative credits spent at any time:
 
-[](#__codelineno-2-1)`print``(``dev``.``total_credits_used``)``  ``# e.g., 160`\
+``` python
+print(dev.total_credits_used)  # e.g., 160
+```
 
 Cancelling in Jupyter
 
@@ -100,16 +106,18 @@ In Jupyter notebooks, the confirmation prompt is skipped (since `input()` can ha
 
 ### Listing Categories
 
-[](#__codelineno-3-1)`from`` ``openquantum_sdk.clients`` ``import`` ``SchedulerClient`\
-[](#__codelineno-3-2)`scheduler`` ``=`` ``SchedulerClient``(``auth``=``auth``)`\
-[](#__codelineno-3-3)\
-[](#__codelineno-3-4)`categories`` ``=`` ``scheduler``.``get_job_categories``()`\
-[](#__codelineno-3-5)`for`` ``cat`` ``in`` ``categories``.``categories``:`\
-[](#__codelineno-3-6)`    ``print``(``f``"``{``cat``.``id``}``: ``{``cat``.``name``}`` (``{``cat``.``short_code``}``)"``)`\
-[](#__codelineno-3-7)\
-[](#__codelineno-3-8)`    ``subcategories`` ``=`` ``scheduler``.``get_job_subcategories``(``category_id``=``cat``.``id``)`\
-[](#__codelineno-3-9)`    ``for`` ``sub`` ``in`` ``subcategories``.``categories``:`\
-[](#__codelineno-3-10)`        ``print``(``f``"  ``{``sub``.``id``}``: ``{``sub``.``name``}`` (``{``sub``.``short_code``}``)"``)`\
+``` python
+from openquantum_sdk.clients import SchedulerClient
+scheduler = SchedulerClient(auth=auth)
+
+categories = scheduler.get_job_categories()
+for cat in categories.categories:
+    print(f"{cat.id}: {cat.name} ({cat.short_code})")
+
+    subcategories = scheduler.get_job_subcategories(category_id=cat.id)
+    for sub in subcategories.categories:
+        print(f"  {sub.id}: {sub.name} ({sub.short_code})")
+```
 
 ## Environment Variable Reference
 
@@ -129,34 +137,40 @@ In Jupyter notebooks, the confirmation prompt is skipped (since `input()` can ha
 
 ### Minimal (credentials from environment)
 
-[](#__codelineno-4-1)`dev`` ``=`` ``qml``.``device``(`\
-[](#__codelineno-4-2)`    ``"openquantum.device"``,`\
-[](#__codelineno-4-3)`    ``wires``=``2``,`\
-[](#__codelineno-4-4)`    ``shots``=``128``,`\
-[](#__codelineno-4-5)`    ``backend``=``"ionq:forte-1"``,`\
-[](#__codelineno-4-6)`)`\
+``` python
+dev = qml.device(
+    "openquantum.device",
+    wires=2,
+    shots=128,
+    backend="ionq:forte-1",
+)
+```
 
 ### Explicit credentials
 
-[](#__codelineno-5-1)`dev`` ``=`` ``qml``.``device``(`\
-[](#__codelineno-5-2)`    ``"openquantum.device"``,`\
-[](#__codelineno-5-3)`    ``wires``=``4``,`\
-[](#__codelineno-5-4)`    ``shots``=``2048``,`\
-[](#__codelineno-5-5)`    ``backend``=``"ionq:forte-1"``,`\
-[](#__codelineno-5-6)`    ``client_id``=``"s_abc123def456"``,`\
-[](#__codelineno-5-7)`    ``client_secret``=``"your_secret_here"``,`\
-[](#__codelineno-5-8)`    ``organization_id``=``"550e8400-e29b-41d4-a716-446655440000"``,`\
-[](#__codelineno-5-9)`)`\
+``` python
+dev = qml.device(
+    "openquantum.device",
+    wires=4,
+    shots=2048,
+    backend="ionq:forte-1",
+    client_id="s_abc123def456",
+    client_secret="your_secret_here",
+    organization_id="550e8400-e29b-41d4-a716-446655440000",
+)
+```
 
 ### Auto-confirm for iterative algorithms
 
-[](#__codelineno-6-1)`dev`` ``=`` ``qml``.``device``(`\
-[](#__codelineno-6-2)`    ``"openquantum.device"``,`\
-[](#__codelineno-6-3)`    ``wires``=``2``,`\
-[](#__codelineno-6-4)`    ``shots``=``4096``,`\
-[](#__codelineno-6-5)`    ``backend``=``"ionq:forte-1"``,`\
-[](#__codelineno-6-6)`    ``auto_confirm``=``True``,``  ``# skip prompt on every VQE step`\
-[](#__codelineno-6-7)`)`\
+``` python
+dev = qml.device(
+    "openquantum.device",
+    wires=2,
+    shots=4096,
+    backend="ionq:forte-1",
+    auto_confirm=True,  # skip prompt on every VQE step
+)
+```
 
 ## Related Pages
 

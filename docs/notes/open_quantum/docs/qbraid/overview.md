@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/qbraid/overview/](https://docs.openquantum.com/qbraid/overview/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 0ea9fe8c8f7615f4891195740230e364d16685ea1c733e03bd8f225676af6f57.
 
 # qBraid Integration
@@ -12,10 +12,12 @@ The integration is available inside [qBraid Lab](https://www.qbraid.com/lab) not
 
 Once your qBraid and Open Quantum accounts are linked, Open Quantum backends appear as qBraid devices and can be selected with the standard qBraid runtime API:
 
-[](#__codelineno-0-1)`from`` ``qbraid.runtime`` ``import`` ``QbraidProvider`\
-[](#__codelineno-0-2)\
-[](#__codelineno-0-3)`provider`` ``=`` ``QbraidProvider``(``api_key``=``"YOUR_QBRAID_API_KEY"``)`\
-[](#__codelineno-0-4)`device`` ``=`` ``provider``.``get_device``(``"openquantum:iqm:qpu:garnet"``)`\
+``` python
+from qbraid.runtime import QbraidProvider
+
+provider = QbraidProvider(api_key="YOUR_QBRAID_API_KEY")
+device = provider.get_device("openquantum:iqm:qpu:garnet")
+```
 
 Open Quantum handles transpilation, routing, and result formatting, and bills the job to your Open Quantum credits. You do **not** need qBraid credits to run on Open Quantum backends.
 

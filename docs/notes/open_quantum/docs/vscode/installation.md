@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/vscode/installation/](https://docs.openquantum.com/vscode/installation/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 b2254a783d98f177a3ac10fafe269149bf8ea071c2fff4686755401a344ee59a.
 
 # Installation & Setup
@@ -15,7 +15,9 @@ Install from the Visual Studio Code Marketplace:
 
 You can also install it from the [Marketplace listing](https://marketplace.visualstudio.com/items?itemName=quantum-rings.openquantum-vscode) in your browser, or from the Command Palette with:
 
-[](#__codelineno-0-1)`ext install quantum-rings.openquantum-vscode`\
+```
+ext install quantum-rings.openquantum-vscode
+```
 
 Highlighting and error underlines for `.qasm`, `.qasm2`, `.qasm3`, and `.openqasm` files are active immediately.
 

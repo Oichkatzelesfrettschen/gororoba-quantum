@@ -196,28 +196,30 @@ Credits only.
 ## Backends, shots and price
 
 `docs/evidence/open_quantum/pricing.json` holds the pricing page's
-USD-equivalent rates: a 0.18 task fee on every backend (0.36 Private) plus a
-per-shot rate, Private exactly twice Public. The page publishes no
+USD-equivalent rates: a task fee and a per-shot rate per backend and plan
+(the table shows the Public pair), Private exactly twice Public, which
+`oq_platform.py check` requires. The page publishes no
 credit-to-dollar rate. The scheduler's circuit-free estimate
 (`POST /v1/pricing/estimate` with a backend class and shots, the call the
 pricing calculator makes; it uploads nothing) answers in credits, and
 `estimates.json` retains it at each backend's minimum and maximum shots and
-at 100, 128, 1000, 1024 and 4096 inside those bounds. Every one of the 39 estimates, on
-both plans, equals
+at 100, 128, 1000, 1024 and 4096 inside those bounds. Every retained
+estimate, on both plans, equals
 
     credits = ceil(per_task + shots * per_shot)
 
 at one credit per USD-equivalent dollar, with Standard queue at +0 and
-Priority queue at +2 credits on either plan; no Instant priority was
+the Priority surcharge the table's last line gives; no Instant priority was
 offered. `oq_platform.py check` holds every retained estimate to that rule.
 So 25 Spark Credits buy 25 USD-equivalent of Public compute; the site's
 "$50" equals the same work at the Private rate, twice the Public one. Every
 job costs at least one whole credit, so a grant is at most 25 jobs.
 
 The table is the AGENTS.md facts table, rendered by
-`oq_platform.py facts docs/evidence/open_quantum` (gate core-382 holds the
-two equal):
+`oq_platform.py facts docs/evidence/open_quantum`; gate core-382 holds the
+marked body here and in AGENTS.md equal to it:
 
+<!-- open-quantum-facts:begin -->
 | backend (short code) | provider, modality | qubits (per job) | native ops | shots min / default / max | circuits per job | Public USD task + per shot | Public credits at 128 / 1024 / max shots | shots in a 1-credit job | 1024-shot jobs per 25 Spark |
 |---|---|---|---|---|---|---|---|---|---|
 | IBEX Q1 (`aqt:ibex-q1`) | AQT, Trapped-ion | 12 | prx, rz, xx | 1 / 100 / 2000 | 1024 | 0.18 + 0.0141 | 2 / 15 / 29 | 58 | 1 |
@@ -230,28 +232,20 @@ two equal):
 Features by backend: barriers: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q; defcal: rigetti:cepheus-1-108q; dynamic_circuits: iqm:emerald, iqm:garnet; measure: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q; mid_circuit_measure: ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet; physical_qubits: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q; result_pragmas: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q; verbatim_boxes: aqt:ibex-q1, ionq:forte-1, ionq:forte-ent, iqm:emerald, iqm:garnet, rigetti:cepheus-1-108q.
 
 Queue priority increases in credits: Private Plan Priority Queue +2, Private Plan Standard Queue +0, Public Plan Priority Queue +2, Public Plan Standard Queue +0.
+<!-- open-quantum-facts:end -->
 
-Reading it for a free budget of 25 Spark Credits:
+Reading it for a free budget of 25 Spark Credits: a backend's 1-credit
+column is the most shots one credit buys (a dash where its minimum shot
+count already costs more), and the last column is how many 1024-shot jobs
+one grant pays for. The MCP cap of 1 credit admits only 1-credit jobs; a
+larger job needs `OPENQUANTUM_MCP_MAX_CREDITS` raised in both
+registrations, a configuration change made with the case that needs it.
+Whether a backend accepts jobs (`accepting_jobs`) changes between reads and
+lives in `catalogue.json`, never in the table.
 
-- Rigetti Cepheus-1-108Q runs up to 3215 shots for 1 credit, so 25 jobs of
-  up to 3215 shots, or one 50000-shot job for 13 credits.
-- IQM Garnet and Emerald run 942 and 854 shots for 1 credit and 1024 shots
-  for 2, so 12 jobs of 1024 shots; both read `accepting_jobs: false` in the
-  snapshot.
-- AQT IBEX Q1 runs 58 shots for 1 credit and 1024 shots for 15; it also read
-  `accepting_jobs: false`.
-- IonQ Forte-1 and Forte Enterprise take at least 100 shots (5 credits) and
-  1024 shots cost 50 credits, beyond one grant.
-- The MCP cap of 1 credit admits only the 1-credit column; a larger job
-  needs `OPENQUANTUM_MCP_MAX_CREDITS` raised in both registrations, which is
-  a configuration change made with the case that needs it.
-
-The platform accepts OpenQASM only (`supported_formats`), up to 1024
-circuits per job on every backend; the constraint documents in
-`catalogue.json` carry each backend's coupling map, supported operation set
-and features. `dynamic_circuits` appears on IQM only and
-`mid_circuit_measure` on IQM and IonQ; Rigetti alone lists `defcal`. The
-documents carry no gate durations (`timing.durations` is empty) and no noise
+The platform accepts OpenQASM only (`supported_formats`); the constraint
+documents in `catalogue.json` carry each backend's coupling map, supported
+operation set and the features the table lists. The documents carry no gate durations (`timing.durations` is empty) and no noise
 figures; `get_job_calibration` returns a calibration snapshot only for a
 completed job on a backend that tags one.
 

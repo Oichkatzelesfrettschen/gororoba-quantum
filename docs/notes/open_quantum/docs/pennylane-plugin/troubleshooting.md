@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/pennylane-plugin/troubleshooting/](https://docs.openquantum.com/pennylane-plugin/troubleshooting/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 fc79933e76278291c673029952bab05746dce5daf54b376eb1b80007af1a7314.
 
 # Troubleshooting
@@ -25,9 +25,11 @@ Pass `client=`, `token=` / `OPENQUANTUM_TOKEN`, `client_id`+`client_secret` / `O
 - **SDK key is disabled.** Log in to the [Open Quantum Portal](https://www.openquantum.com) and check that your SDK key is enabled on the [SDK Keys](https://www.openquantum.com/keys) page.
 - **SDK key was deleted.** Create a new SDK key in the portal.
 
-[](#__codelineno-0-1)`# Verify environment variables are set`\
-[](#__codelineno-0-2)`echo`` ``$OPENQUANTUM_CLIENT_ID`\
-[](#__codelineno-0-3)`echo`` ``$OPENQUANTUM_CLIENT_SECRET`\
+``` bash
+# Verify environment variables are set
+echo $OPENQUANTUM_CLIENT_ID
+echo $OPENQUANTUM_CLIENT_SECRET
+```
 
 ### Authorization Error (HTTP 403)
 
@@ -77,13 +79,15 @@ The job did not complete within the `job_timeout_seconds` window (default: 86400
 - Check the job status in the portal -- the job may still be running.
 - QPU backends may have long queue times during peak usage. Consider choosing a backend with a shorter queue.
 
-[](#__codelineno-1-1)`dev`` ``=`` ``qml``.``device``(`\
-[](#__codelineno-1-2)`    ``"openquantum.device"``,`\
-[](#__codelineno-1-3)`    ``wires``=``2``,`\
-[](#__codelineno-1-4)`    ``shots``=``128``,`\
-[](#__codelineno-1-5)`    ``backend``=``"rigetti:cepheus-1-108q"``,`\
-[](#__codelineno-1-6)`    ``job_timeout_seconds``=``600``,``  ``# Wait up to 10 minutes`\
-[](#__codelineno-1-7)`)`\
+``` python
+dev = qml.device(
+    "openquantum.device",
+    wires=2,
+    shots=128,
+    backend="rigetti:cepheus-1-108q",
+    job_timeout_seconds=600,  # Wait up to 10 minutes
+)
+```
 
 ------------------------------------------------------------------------
 
@@ -95,11 +99,13 @@ Open Quantum is a shot-based execution platform. Analytic mode is not supported.
 
 **Solution**: Always specify a positive integer for `shots`:
 
-[](#__codelineno-2-1)`# Incorrect`\
-[](#__codelineno-2-2)`dev`` ``=`` ``qml``.``device``(``"openquantum.device"``,`` ``wires``=``2``,`` ``shots``=``None``,`` ``backend``=``"rigetti:cepheus-1-108q"``)`\
-[](#__codelineno-2-3)\
-[](#__codelineno-2-4)`# Correct`\
-[](#__codelineno-2-5)`dev`` ``=`` ``qml``.``device``(``"openquantum.device"``,`` ``wires``=``2``,`` ``shots``=``128``,`` ``backend``=``"rigetti:cepheus-1-108q"``)`\
+``` python
+# Incorrect
+dev = qml.device("openquantum.device", wires=2, shots=None, backend="rigetti:cepheus-1-108q")
+
+# Correct
+dev = qml.device("openquantum.device", wires=2, shots=128, backend="rigetti:cepheus-1-108q")
+```
 
 ------------------------------------------------------------------------
 
@@ -135,19 +141,21 @@ PennyLane automatically decomposes unsupported gates into supported ones. If you
 
 Use PennyLane's device tracker to monitor circuit executions:
 
-[](#__codelineno-3-1)`dev`` ``=`` ``qml``.``device``(``"openquantum.device"``,`` ``wires``=``2``,`` ``shots``=``128``,`` ``backend``=``"rigetti:cepheus-1-108q"``)`\
-[](#__codelineno-3-2)\
-[](#__codelineno-3-3)`@qml``.``qnode``(``dev``)`\
-[](#__codelineno-3-4)`def`` ``circuit``():`\
-[](#__codelineno-3-5)`    ``qml``.``Hadamard``(``wires``=``0``)`\
-[](#__codelineno-3-6)`    ``qml``.``CNOT``(``wires``=``[``0``,`` ``1``])`\
-[](#__codelineno-3-7)`    ``return`` ``qml``.``counts``()`\
-[](#__codelineno-3-8)\
-[](#__codelineno-3-9)`with`` ``qml``.``Tracker``(``dev``)`` ``as`` ``tracker``:`\
-[](#__codelineno-3-10)`    ``result`` ``=`` ``circuit``()`\
-[](#__codelineno-3-11)\
-[](#__codelineno-3-12)`print``(``f``"Executions: ``{``tracker``.``totals``[``'executions'``]``}``"``)`\
-[](#__codelineno-3-13)`print``(``f``"Shots: ``{``tracker``.``totals``[``'shots'``]``}``"``)`\
+``` python
+dev = qml.device("openquantum.device", wires=2, shots=128, backend="rigetti:cepheus-1-108q")
+
+@qml.qnode(dev)
+def circuit():
+    qml.Hadamard(wires=0)
+    qml.CNOT(wires=[0, 1])
+    return qml.counts()
+
+with qml.Tracker(dev) as tracker:
+    result = circuit()
+
+print(f"Executions: {tracker.totals['executions']}")
+print(f"Shots: {tracker.totals['shots']}")
+```
 
 ### Check Job Status in the Portal
 
@@ -162,26 +170,30 @@ If a job seems stuck or fails unexpectedly:
 
 To inspect the QASM that the plugin generates, you can serialize a tape manually:
 
-[](#__codelineno-4-1)`import`` ``pennylane`` ``as`` ``qml`\
-[](#__codelineno-4-2)`from`` ``pennylane_openquantum.qasm_serializer`` ``import`` ``circuit_to_qasm`\
-[](#__codelineno-4-3)\
-[](#__codelineno-4-4)`with`` ``qml``.``tape``.``QuantumTape``()`` ``as`` ``tape``:`\
-[](#__codelineno-4-5)`    ``qml``.``Hadamard``(``wires``=``0``)`\
-[](#__codelineno-4-6)`    ``qml``.``CNOT``(``wires``=``[``0``,`` ``1``])`\
-[](#__codelineno-4-7)\
-[](#__codelineno-4-8)`qasm`` ``=`` ``circuit_to_qasm``(``tape``,`` ``num_wires``=``2``)`\
-[](#__codelineno-4-9)`print``(``qasm``)`\
+``` python
+import pennylane as qml
+from pennylane_openquantum.qasm_serializer import circuit_to_qasm
+
+with qml.tape.QuantumTape() as tape:
+    qml.Hadamard(wires=0)
+    qml.CNOT(wires=[0, 1])
+
+qasm = circuit_to_qasm(tape, num_wires=2)
+print(qasm)
+```
 
 Expected output:
 
-[](#__codelineno-5-1)`OPENQASM 2.0;`\
-[](#__codelineno-5-2)`include "qelib1.inc";`\
-[](#__codelineno-5-3)`qreg q[2];`\
-[](#__codelineno-5-4)`creg c[2];`\
-[](#__codelineno-5-5)`h q[0];`\
-[](#__codelineno-5-6)`cx q[0],q[1];`\
-[](#__codelineno-5-7)`measure q[0] -> c[0];`\
-[](#__codelineno-5-8)`measure q[1] -> c[1];`\
+```
+OPENQASM 2.0;
+include "qelib1.inc";
+qreg q[2];
+creg c[2];
+h q[0];
+cx q[0],q[1];
+measure q[0] -> c[0];
+measure q[1] -> c[1];
+```
 
 ## Getting Help
 

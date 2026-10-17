@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/vscode/features/](https://docs.openquantum.com/vscode/features/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 3212358ccc0a9ceaef058cc099299f2fa7da175762f394a01325d78d9f982db5.
 
 # Features & Usage

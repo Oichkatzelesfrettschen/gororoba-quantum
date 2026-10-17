@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/qbraid/backends-targets/](https://docs.openquantum.com/qbraid/backends-targets/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 2fc5d77a2bc0a97d4894ebef1a5484a332af1bd28a0c2d0ee6bebff307a1d36f.
 
 # Backends & Targets
@@ -10,7 +10,9 @@ Open Quantum exposes its QPUs to qBraid as devices. This page covers how to disc
 
 qBraid device ids are hierarchical, colon-separated strings of the form `provider:vendor:type:device`. Open Quantum devices use the `openquantum` provider. For example, to target IQM Garnet:
 
-[](#__codelineno-0-1)`openquantum:iqm:qpu:garnet`\
+```
+openquantum:iqm:qpu:garnet
+```
 
 The following Open Quantum backends are available through qBraid:
 
@@ -29,16 +31,18 @@ The following Open Quantum backends are available through qBraid:
 
 Use `QbraidProvider` to enumerate the devices available to your linked account:
 
-[](#__codelineno-1-1)`from`` ``qbraid.runtime`` ``import`` ``QbraidProvider`\
-[](#__codelineno-1-2)\
-[](#__codelineno-1-3)`provider`` ``=`` ``QbraidProvider``(``api_key``=``"YOUR_QBRAID_API_KEY"``)`\
-[](#__codelineno-1-4)\
-[](#__codelineno-1-5)`# All devices visible to your account`\
-[](#__codelineno-1-6)`for`` ``device`` ``in`` ``provider``.``get_devices``():`\
-[](#__codelineno-1-7)`    ``print``(``device``.``id``)`\
-[](#__codelineno-1-8)\
-[](#__codelineno-1-9)`# Fetch a specific Open Quantum backend`\
-[](#__codelineno-1-10)`device`` ``=`` ``provider``.``get_device``(``"openquantum:iqm:qpu:garnet"``)`\
+``` python
+from qbraid.runtime import QbraidProvider
+
+provider = QbraidProvider(api_key="YOUR_QBRAID_API_KEY")
+
+# All devices visible to your account
+for device in provider.get_devices():
+    print(device.id)
+
+# Fetch a specific Open Quantum backend
+device = provider.get_device("openquantum:iqm:qpu:garnet")
+```
 
 ### From the qBraid Website
 

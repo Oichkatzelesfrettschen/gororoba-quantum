@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/qbraid/installation/](https://docs.openquantum.com/qbraid/installation/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 54a71366c933a0ec00afc32d3959c0a4df5cad0985ab6bafa35597a4b6061113.
 
 # Installation & Authentication
@@ -25,19 +25,25 @@ Account linking is a one-time step done from **qBraid's** website:
 
 Install the qBraid SDK and provide your qBraid API key. You can find or generate the key in your qBraid account settings.
 
-[](#__codelineno-0-1)`pip`` ``install`` ``qbraid`\
+``` bash
+pip install qbraid
+```
 
-[](#__codelineno-1-1)`from`` ``qbraid.runtime`` ``import`` ``QbraidProvider`\
-[](#__codelineno-1-2)\
-[](#__codelineno-1-3)`provider`` ``=`` ``QbraidProvider``(``api_key``=``"YOUR_QBRAID_API_KEY"``)`\
+``` python
+from qbraid.runtime import QbraidProvider
+
+provider = QbraidProvider(api_key="YOUR_QBRAID_API_KEY")
+```
 
 ### In qBraid Lab
 
 In [qBraid Lab](https://www.qbraid.com/lab), the qBraid SDK is preinstalled and your qBraid API key is detected automatically, so you can skip entering credentials:
 
-[](#__codelineno-2-1)`from`` ``qbraid.runtime`` ``import`` ``QbraidProvider`\
-[](#__codelineno-2-2)\
-[](#__codelineno-2-3)`provider`` ``=`` ``QbraidProvider``()``  ``# API key auto-detected in qBraid Lab`\
+``` python
+from qbraid.runtime import QbraidProvider
+
+provider = QbraidProvider()  # API key auto-detected in qBraid Lab
+```
 
 The same code runs in qBraid Lab and locally; the only difference is whether the API key is auto-detected or supplied explicitly.
 

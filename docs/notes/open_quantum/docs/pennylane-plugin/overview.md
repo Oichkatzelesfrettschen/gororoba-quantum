@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/pennylane-plugin/overview/](https://docs.openquantum.com/pennylane-plugin/overview/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 e8cf235ef548a270b0567311ef2251265c8e239099d017dc4d267025d7a5103f.
 
 # PennyLane Plugin Overview
@@ -8,7 +8,9 @@ The `openquantum-sdk[pennylane]` plugin connects [PennyLane](https://pennylane.a
 
 ## Installation
 
-[](#__codelineno-0-1)`pip`` ``install`` ``"openquantum-sdk[pennylane]"`\
+``` bash
+pip install "openquantum-sdk[pennylane]"
+```
 
 The plugin automatically registers itself with PennyLane via Python entry points. Just `import pennylane as qml` and use `qml.device("openquantum.device", ...)`.
 
@@ -28,26 +30,28 @@ The plugin registers an `openquantum.device` with PennyLane. When you execute a 
 
 Run a Bell state circuit on Open Quantum hardware with PennyLane:
 
-[](#__codelineno-1-1)`import`` ``pennylane`` ``as`` ``qml`\
-[](#__codelineno-1-2)\
-[](#__codelineno-1-3)`dev`` ``=`` ``qml``.``device``(`\
-[](#__codelineno-1-4)`    ``"openquantum.device"``,`\
-[](#__codelineno-1-5)`    ``wires``=``2``,`\
-[](#__codelineno-1-6)`    ``shots``=``128``,`\
-[](#__codelineno-1-7)`    ``backend``=``"rigetti:cepheus-1-108q"``,`\
-[](#__codelineno-1-8)`    ``client_id``=``"s_your_client_id"``,`\
-[](#__codelineno-1-9)`    ``client_secret``=``"your_client_secret"``,`\
-[](#__codelineno-1-10)`)`\
-[](#__codelineno-1-11)\
-[](#__codelineno-1-12)`@qml``.``qnode``(``dev``)`\
-[](#__codelineno-1-13)`def`` ``bell_state``():`\
-[](#__codelineno-1-14)`    ``qml``.``Hadamard``(``wires``=``0``)`\
-[](#__codelineno-1-15)`    ``qml``.``CNOT``(``wires``=``[``0``,`` ``1``])`\
-[](#__codelineno-1-16)`    ``return`` ``qml``.``counts``()`\
-[](#__codelineno-1-17)\
-[](#__codelineno-1-18)`result`` ``=`` ``bell_state``()`\
-[](#__codelineno-1-19)`print``(``result``)`\
-[](#__codelineno-1-20)`# {'00': 507, '11': 517}`\
+``` python
+import pennylane as qml
+
+dev = qml.device(
+    "openquantum.device",
+    wires=2,
+    shots=128,
+    backend="rigetti:cepheus-1-108q",
+    client_id="s_your_client_id",
+    client_secret="your_client_secret",
+)
+
+@qml.qnode(dev)
+def bell_state():
+    qml.Hadamard(wires=0)
+    qml.CNOT(wires=[0, 1])
+    return qml.counts()
+
+result = bell_state()
+print(result)
+# {'00': 507, '11': 517}
+```
 
 Tip
 
@@ -76,11 +80,13 @@ To see all available backends, use the [Core SDK](https://docs.openquantum.com/c
 
 Open Quantum is a shot-based execution platform. Every circuit execution requires a finite number of shots.
 
-[](#__codelineno-2-1)`# Correct: specify shots`\
-[](#__codelineno-2-2)`dev`` ``=`` ``qml``.``device``(``"openquantum.device"``,`` ``wires``=``2``,`` ``shots``=``128``,`` ``backend``=``"rigetti:cepheus-1-108q"``)`\
-[](#__codelineno-2-3)\
-[](#__codelineno-2-4)`# Incorrect: shots=None is not supported`\
-[](#__codelineno-2-5)`dev`` ``=`` ``qml``.``device``(``"openquantum.device"``,`` ``wires``=``2``,`` ``shots``=``None``,`` ``backend``=``"rigetti:cepheus-1-108q"``)`\
+``` python
+# Correct: specify shots
+dev = qml.device("openquantum.device", wires=2, shots=128, backend="rigetti:cepheus-1-108q")
+
+# Incorrect: shots=None is not supported
+dev = qml.device("openquantum.device", wires=2, shots=None, backend="rigetti:cepheus-1-108q")
+```
 
 Note
 

@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/mcp/tools/](https://docs.openquantum.com/mcp/tools/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 76ffa725adfcd2f52f953cb7ea78baeaf2062c8c49525ef41e82ce8ea3e5bed4.
 
 # Tools & spend policy

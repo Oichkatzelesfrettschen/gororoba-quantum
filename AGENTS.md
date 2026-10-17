@@ -754,7 +754,8 @@ admits only the jobs in the 1-credit column.
 
 **Gates.** core-380 (`capture_oq_docs.py --check`), core-381 (its
 `--self-test`), core-382
-(`oq_platform.py check docs/evidence/open_quantum --agents AGENTS.md`) and
+(`oq_platform.py check docs/evidence/open_quantum --agents AGENTS.md
+docs/notes/open_quantum/README.md`) and
 core-383 (its `--self-test`).
 
 ## Qiskit skills

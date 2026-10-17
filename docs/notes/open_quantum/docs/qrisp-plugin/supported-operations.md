@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/qrisp-plugin/supported-operations/](https://docs.openquantum.com/qrisp-plugin/supported-operations/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 8ff5f4b8570d79b9272260cbdf93bdd8fb8368bf613ad0b62544f5c03bab2712.
 
 # Supported Operations
@@ -36,7 +36,9 @@ Analytic (shot-free) execution is not supported.
 
 The platform returns bitstrings in Qiskit's little-endian convention. Qrisp reconciles bit order during measurement decoding, so the default (`reverse_bits=False`) returns correct results — a `QuantumFloat` set to 6 measures as 6, not the bit-reversed 3. You should not normally need to change this. If a particular backend ever returns counts in the opposite order for your program, construct the backend with `reverse_bits=True`:
 
-[](#__codelineno-0-1)`oq`` ``=`` ``OpenQuantumBackend``(``backend``=``"..."``,`` ``shots``=``1024``,`` ``reverse_bits``=``True``)`\
+``` python
+oq = OpenQuantumBackend(backend="...", shots=1024, reverse_bits=True)
+```
 
 When trying a new backend, confirm ordering with an asymmetric value (set a `QuantumFloat` to a non-palindromic number such as 6) rather than a symmetric state, which cannot reveal the ordering.
 
@@ -44,4 +46,6 @@ When trying a new backend, confirm ordering with an asymmetric value (set a `Qua
 
 Circuits are serialized as OpenQASM 3 by default. Pass `export_format="qasm2"` to emit OpenQASM 2 instead:
 
-[](#__codelineno-1-1)`oq`` ``=`` ``OpenQuantumBackend``(``backend``=``"..."``,`` ``shots``=``1024``,`` ``export_format``=``"qasm2"``)`\
+``` python
+oq = OpenQuantumBackend(backend="...", shots=1024, export_format="qasm2")
+```

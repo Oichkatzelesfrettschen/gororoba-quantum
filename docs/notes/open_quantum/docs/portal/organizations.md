@@ -1,5 +1,5 @@
 > Full piece: [https://docs.openquantum.com/portal/organizations/](https://docs.openquantum.com/portal/organizations/)
-> Retrieved 2026-10-17T05:09Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
+> Retrieved 2026-10-17T05:33Z by scripts/capture_oq_docs.py --docs (urllib, pandoc);
 > fetched HTML sha256 d375fd01d1a15927c66e057112354c0d90ef15baa2e301711d0e6719a5b5fec7.
 
 # Organizations
