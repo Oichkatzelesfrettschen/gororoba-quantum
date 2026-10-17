@@ -13,7 +13,7 @@
   "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07",
   "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08"
  ],
- "method": "Beside the preregistered verdict, which stays as analyzed: the readout-0 and readout-1 counts give e01 and e10 binomial variances; the analytic column propagates them through every quadrature, phase, rate, delta, A and the minimum visibility with the one assignment pair shared by all arms; the bootstrap column redraws every readout count and every Ramsey count binomially from the observed fractions, recomputes the assignment and the full analysis per replicate, and reports the standard deviation of each quantity (rates and deltas as offsets on the circle). The spread is the normal-theory standard deviation of a standard deviation over the replicates.",
+ "method": "Beside the preregistered verdict, which stays as analyzed: the readout-0 and readout-1 counts give e01 and e10 binomial variances; the analytic column propagates them through every quadrature, phase, rate, delta and the minimum visibility with the one assignment pair shared by all arms, and through A as the central-difference derivative (half-step 1e-4) of the complete weighted fit, whose weights also depend on the assignment; the bootstrap column redraws every readout count and every Ramsey count binomially from the observed fractions, recomputes the assignment and the full analysis per replicate, and reports the standard deviation of each quantity (rates and deltas as offsets on the circle). The spread is the normal-theory standard deviation of a standard deviation over the replicates.",
  "replicates": 2000,
  "seed": 182,
  "targets": [
@@ -45,13 +45,13 @@
    },
    "A_se_hz": {
     "preregistered": 2186.04852808,
-    "analytic": 2186.19854445,
+    "analytic": 2186.18310569,
     "bootstrap": 2795.29533248,
     "bootstrap_shot_only": 2793.88271468,
     "bootstrap_spread": 44.2085534376,
-    "analytic_minus_bootstrap_in_spreads": -13.7778040824,
+    "analytic_minus_bootstrap_in_spreads": -13.778153308,
     "preregistered_minus_bootstrap_shot_only_in_spreads": -13.749243966,
-    "calibration_ratio_analytic": 1.00006862445,
+    "calibration_ratio_analytic": 1.00006156204,
     "calibration_ratio_bootstrap": 1.00050561099
    },
    "rate_se_hz": {
@@ -208,13 +208,13 @@
    },
    "A_se_hz": {
     "preregistered": 2222.91264373,
-    "analytic": 2222.95170916,
+    "analytic": 2222.95185679,
     "bootstrap": 2603.40341079,
     "bootstrap_shot_only": 2605.16269107,
     "bootstrap_spread": 41.1737169479,
-    "analytic_minus_bootstrap_in_spreads": -9.24015925283,
+    "analytic_minus_bootstrap_in_spreads": -9.24015566729,
     "preregistered_minus_bootstrap_shot_only_in_spreads": -9.28383628395,
-    "calibration_ratio_analytic": 1.00001757398,
+    "calibration_ratio_analytic": 1.0000176404,
     "calibration_ratio_bootstrap": 0.999324694657
    },
    "rate_se_hz": {
@@ -371,13 +371,13 @@
    },
    "A_se_hz": {
     "preregistered": 2469.91345303,
-    "analytic": 2469.98455673,
+    "analytic": 2470.03472265,
     "bootstrap": 3327.52547082,
     "bootstrap_shot_only": 3316.58719893,
     "bootstrap_spread": 52.6259554339,
-    "analytic_minus_bootstrap_in_spreads": -16.2950184376,
+    "analytic_minus_bootstrap_in_spreads": -16.2940651832,
     "preregistered_minus_bootstrap_shot_only_in_spreads": -16.0885201783,
-    "calibration_ratio_analytic": 1.00002878793,
+    "calibration_ratio_analytic": 1.00004909873,
     "calibration_ratio_bootstrap": 1.00329805045
    },
    "rate_se_hz": {
@@ -534,13 +534,13 @@
    },
    "A_se_hz": {
     "preregistered": 5642.7776521,
-    "analytic": 5826.82251138,
+    "analytic": 5657.82509476,
     "bootstrap": 6616.64583116,
     "bootstrap_shot_only": 6577.96680578,
     "bootstrap_spread": 104.644520887,
-    "analytic_minus_bootstrap_in_spreads": -7.54767964049,
+    "analytic_minus_bootstrap_in_spreads": -9.16264634094,
     "preregistered_minus_bootstrap_shot_only_in_spreads": -8.93681910675,
-    "calibration_ratio_analytic": 1.03261600414,
+    "calibration_ratio_analytic": 1.00266667297,
     "calibration_ratio_bootstrap": 1.00588008826
    },
    "rate_se_hz": {
@@ -697,13 +697,13 @@
    },
    "A_se_hz": {
     "preregistered": 2808.30144171,
-    "analytic": 2830.60531675,
+    "analytic": 2813.40918412,
     "bootstrap": 8317.90021951,
     "bootstrap_shot_only": 8320.78201684,
     "bootstrap_spread": 131.550441941,
-    "analytic_minus_bootstrap_in_spreads": -41.7124779043,
+    "analytic_minus_bootstrap_in_spreads": -41.8431968314,
     "preregistered_minus_bootstrap_shot_only_in_spreads": -41.9039304909,
-    "calibration_ratio_analytic": 1.00794212285,
+    "calibration_ratio_analytic": 1.00181880133,
     "calibration_ratio_bootstrap": 0.999653662681
    },
    "rate_se_hz": {
@@ -860,13 +860,13 @@
    },
    "A_se_hz": {
     "preregistered": 3104.3880668,
-    "analytic": 3115.57506225,
+    "analytic": 3115.83844999,
     "bootstrap": 3156.65867771,
     "bootstrap_shot_only": 3149.62094145,
     "bootstrap_spread": 49.9236385566,
-    "analytic_minus_bootstrap_in_spreads": -0.822929110369,
+    "analytic_minus_bootstrap_in_spreads": -0.817653298076,
     "preregistered_minus_bootstrap_shot_only_in_spreads": -0.906041225355,
-    "calibration_ratio_analytic": 1.00360360728,
+    "calibration_ratio_analytic": 1.00368845098,
     "calibration_ratio_bootstrap": 1.00223447087
    },
    "rate_se_hz": {
@@ -1023,13 +1023,13 @@
    },
    "A_se_hz": {
     "preregistered": 2213.64673649,
-    "analytic": 2213.66490054,
+    "analytic": 2213.66415539,
     "bootstrap": 5776.91648048,
     "bootstrap_shot_only": 5774.70639866,
     "bootstrap_spread": 91.3639134886,
-    "analytic_minus_bootstrap_in_spreads": -39.0006452645,
+    "analytic_minus_bootstrap_in_spreads": -39.0006534203,
     "preregistered_minus_bootstrap_shot_only_in_spreads": -38.9766541974,
-    "calibration_ratio_analytic": 1.00000820549,
+    "calibration_ratio_analytic": 1.00000786887,
     "calibration_ratio_bootstrap": 1.00038271761
    },
    "rate_se_hz": {
@@ -1186,13 +1186,13 @@
    },
    "A_se_hz": {
     "preregistered": 3290.03953219,
-    "analytic": 3414.33923106,
+    "analytic": 3477.10259892,
     "bootstrap": 3535.64479668,
     "bootstrap_shot_only": 3352.08762431,
     "bootstrap_spread": 55.9174338805,
-    "analytic_minus_bootstrap_in_spreads": -2.16936932187,
+    "analytic_minus_bootstrap_in_spreads": -1.04693999172,
     "preregistered_minus_bootstrap_shot_only_in_spreads": -1.10963768916,
-    "calibration_ratio_analytic": 1.03778060952,
+    "calibration_ratio_analytic": 1.0568573918,
     "calibration_ratio_bootstrap": 1.0547590615
    },
    "rate_se_hz": {
@@ -1349,13 +1349,13 @@
    },
    "A_se_hz": {
     "preregistered": 1965.12235782,
-    "analytic": 1966.06462276,
+    "analytic": 1966.13567709,
     "bootstrap": 2412.12718911,
     "bootstrap_shot_only": 2438.41568751,
     "bootstrap_spread": 38.1486179649,
-    "analytic_minus_bootstrap_in_spreads": -11.6927582215,
+    "analytic_minus_bootstrap_in_spreads": -11.6908956551,
     "preregistered_minus_bootstrap_shot_only_in_spreads": -12.4065655568,
-    "calibration_ratio_analytic": 1.00047949428,
+    "calibration_ratio_analytic": 1.000515652,
     "calibration_ratio_bootstrap": 0.989219025068
    },
    "rate_se_hz": {
@@ -1513,10 +1513,10 @@
     "Q14 min_visibility",
     "Q15 A"
    ],
-   "max_abs_analytic_minus_bootstrap_in_spreads": 39.0006452645,
+   "max_abs_analytic_minus_bootstrap_in_spreads": 39.0006534203,
    "max_abs_preregistered_minus_bootstrap_shot_only_in_spreads": 38.9766541974,
    "calibration_ratio_analytic": {
-    "min": 1.00000820549,
+    "min": 1.00000786887,
     "max": 1.71765295557
    }
   }

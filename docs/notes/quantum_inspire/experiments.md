@@ -660,7 +660,10 @@ the calibrated delta and rate errors exceed the preregistered ones by at
 most 9.5% (series P) and 3.6% (series Q); on Q6 the excess is at most
 0.14%, and the analytic, bootstrap and preregistered delta errors (1.8 to
 2.2 kHz) agree within the bootstrap spread of about 30 Hz. The calibration
-term is small against shot noise, so the quoted standard errors stand; the
+term is small against shot noise, so the quoted standard errors stand (the
+analytic A error differentiates the complete weighted fit, weights included,
+and exceeds the preregistered one by at most 5.7%, on Q14, where the bootstrap
+gives 5.5%); the
 stale Q6 and Q15 calibrations bias their phases, a shift this error model
 does not bound. One entry (Q15 delta at tau = 15) lies 3.5 spreads from its bootstrap
 error with the same gap in the shot-only bootstrap, a shot-noise
