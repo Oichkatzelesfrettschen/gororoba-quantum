@@ -1557,23 +1557,32 @@ def _verify_fused_collection() -> None:
         if pending != json.loads(first):
             raise RuntimeError("pending and final collections differ outside job and invocation usage")
 
-        # A job that ended in ERROR keeps its usage and its reason; collection
-        # continues without its results.
-        failed = _ProbeResultJob(result, status="ERROR", usage=usage, charge=0.25)
-        failed.result = lambda: (_ for _ in ()).throw(RuntimeError("job failed on the service"))  # type: ignore[method-assign]
-        with redirect_stdout(io.StringIO()):
-            _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: failed}), run_dir)
-        errored = json.loads((run_dir / "collect.json").read_text())
-        job_record = errored[0]["jobs"][job_id]
-        if (
-            job_record["usage"]["usage_status"] != "final"
-            or job_record["usage"]["qpu_charge_time_seconds"] != "0.25"
-            or job_record["usage"]["pub_shots_per_qpu_second"] is not None
-            or "job failed on the service" not in job_record["result_unavailable"]
-            or len(errored) != 1
-            or (run_dir / "collect.partial.json").exists()
-        ):
-            raise RuntimeError(f"a failed job collects as {job_record}")
+        # A job that ended in ERROR or CANCELLED keeps its usage, its reason
+        # and its backend's configuration identity, with no execution start;
+        # collection continues without its results.
+        configured_identity = live_run_module.backend_identity(backend)
+        for terminal in ("ERROR", "CANCELLED"):
+            failed = _ProbeResultJob(result, status=terminal, usage=usage, charge=0.25)
+            failed.result = lambda: (_ for _ in ()).throw(RuntimeError("job failed on the service"))  # type: ignore[method-assign]
+            with redirect_stdout(io.StringIO()):
+                _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: failed}), run_dir)
+            errored = json.loads((run_dir / "collect.json").read_text())
+            job_record = errored[0]["jobs"][job_id]
+            if (
+                job_record["usage"]["usage_status"] != "final"
+                or job_record["usage"]["qpu_charge_time_seconds"] != "0.25"
+                or job_record["usage"]["pub_shots_per_qpu_second"] is not None
+                or "job failed on the service" not in job_record["result_unavailable"]
+                or len(errored) != 1
+                or (run_dir / "collect.partial.json").exists()
+            ):
+                raise RuntimeError(f"a job that ended in {terminal} collects as {job_record}")
+            if job_record.get("backend_identity") != configured_identity | {"backend_version_at_execution": {}} or (
+                configured_identity["processor_type"] is None
+            ):
+                raise RuntimeError(
+                    f"a job that ended in {terminal} collects identity {job_record.get('backend_identity')}"
+                )
 
         # A job still running at collection start that then fails keeps the
         # charge read after the failure.
