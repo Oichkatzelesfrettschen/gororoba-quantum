@@ -46,7 +46,7 @@ docs/sources/open_gororoba/check_signed_kite_switching.py: characteristic_polyno
 
 - docs/evidence/cd_associator_defect_census/census.json: classical census (triples, subspaces, pairs, walsh, blocks, lifting).
 - docs/evidence/reviewer_associator_audit/: 256 basis products agree across two implementations; (e1+e10)/sqrt2 (e2-e13)/sqrt2 = (e3+e7+e8-e12)/2; (e4-e15) gives zero; M M^dag = 16 I.
-- results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17 (16384 shots per replica): P(s=0) dark 0.4908/0.455/0.4665 (ideal 0), bright 0.5175/0.4926/0.5269 (ideal 1), fixture 0.4814/0.4973/0.5184 (ideal 0.5); readout-corrected dark 0.480. Contrast compressed to about 0.5; no zero-product separation clears the fixture on Tuna-17.
+- results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17 (16384 shots per replica): P(s=0) dark 0.4908/0.455/0.4665 (ideal 0), bright 0.5175/0.4926/0.5269 (ideal 1), fixture 0.4814/0.4973/0.5184 (ideal 0.5); pooled over the three replicas (analysis.json by_case): dark 0.4708 [0.4664, 0.4752], fixture 0.4990 [0.4946, 0.5035], bright 0.5123 [0.5079, 0.5167]; readout-corrected 0.4571, 0.4836, 0.5006. The dark-fixture and bright-fixture contrasts are resolved but small (about 0.03 and 0.01 against ideal 0.5 each), so the endpoints compress to about 0.5.
 - results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_qx (2048 shots): dark 0.0, bright 1.0, fixture 0.4814 to 0.5005.
 - results/quantum_inspire/runs/2026-10-17T034409Z-zero_divisor_qx-batch-00/-01 (per-batch series, on branch qi/zero-divisor-per-batch-runs): dark 0, bright 1, fixture 0.4977.
 - Coupler ZZ map and crosstalk/teleport runs of 2026-10-16 (not algebra witnesses).
