@@ -37,18 +37,25 @@ any center whose kernel frame is exact.
 
 ## Design: three exact computations, cheapest first
 
+The certificate's T(x) = {y : U^T L_y V = 0} is tangent to the cone S_k
+and contains x, and the tangent bound is dim T(x) - 1 for the unit locus.
+Every computation below therefore works in T_1(x) = T(x) intersected with x^perp, compares
+against the unit family's tangent space T_F, a subspace of x^perp, and carries the norm
+row <x, y> = 0 in its equations; the radial direction x is rank-preserving
+and is never evidence of the gap.
+
 1. **Locate the extra directions.** At each certified witness, complete
-   the family's tangent space to T(x) and record the 2-dimensional
-   complement in coordinates. Prediction: its projection onto span{e_8,
-   e_24} has rank 2 at every non-zero-divisor witness. Falsifier: rank
-   below 2 at any witness refutes the "leaves through e_8 and e_24" part
-   of the conjecture while leaving the dimension question open.
+   T_F to T_1(x) and record the 2-dimensional complement in coordinates.
+   Prediction: its projection onto span{e_8, e_24} has rank 2 at every
+   non-zero-divisor witness. Falsifier: rank below 2 at any witness refutes
+   the "leaves through e_8 and e_24" part of the conjecture while leaving
+   the dimension question open.
 2. **Second-order compatibility with the family variables kept.** Run the
    centered Schur construction of `nullity_twelve_locus.py` at the
    nullity-12 witnesses {a, 0} (then the nullity-8 and nullity-4
    witnesses): `Dmap`, its nullspace K over all of T(x), the obstruction
-   space C and the quadratic system `C^T upper_triangle(Q(K z)) = 0`. The
-   system is quadratic, so a mixed vector `t + z` with `t` tangent to the
+   space C and the quadratic system `C^T upper_triangle(Q(K z)) = 0`, with
+   K spanning the kernel inside T_1(x). The system is quadratic, so a mixed vector `t + z` with `t` tangent to the
    family and `z` transverse can satisfy it through cross terms while every
    pure transverse vector fails; restricting to a complement decides
    nothing. The computation keeps every variable and decides whether the
@@ -60,10 +67,16 @@ any center whose kernel frame is exact.
      dimension and the conjecture is refuted at that nullity. The
      certificate is the generator reduction plus the identities that place
      every real solution in T_F.
-   - A real solution with nonzero component outside T_F: build an actual
-     curve with that velocity (a rational slice as for A15, or an exact
-     flow) and certify its nullity at rational parameter values; the local
-     dimension rises by the dimension such curves span.
+   - A real solution with nonzero component outside T_F: the solution
+     names a candidate direction and raises nothing by itself. Curves
+     through x with transverse velocities form a union of one-dimensional
+     germs, whose velocity span bounds no local dimension from below. The
+     local dimension rises to m only through a certified m-dimensional
+     piece of D_(5,k) through x: an explicit parameterization (a rational
+     slice as for A15, or an exact flow family) whose nullity holds exactly
+     on an open set of parameters and whose differential has rank m at x,
+     or a proof that the tangent cone contains a semialgebraic subset of
+     dimension m.
 3. **Relate A15 to the {a, 0} family.** Closure is decided exactly or not
    at all. A positive answer is an explicit curve or parameterization of
    nullity-12 points, certified exactly along its parameter, whose limit is
