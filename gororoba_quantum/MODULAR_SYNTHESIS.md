@@ -221,7 +221,7 @@ sampled cosets). The ten-round schedule [4, 16, 4, 16, 4, 16, 4, 16, 4, 2]
 therefore costs `9 s(4) + s(2)`, 2,556 at B = I.
 
 `scripts/linear_conjugation_search.py` evaluated every coset on five Kaggle
-CPU kernels, in 899 to 1,116 s each.
+CPU kernels (two of them on T4 hosts' CPUs), in 785 to 1,094 s each.
 - **Ten-round optimum.** It is unique: the columns (1, 2, 5, 13, 25) give
   s(4) = 186 and s(2) = 222, for a total of 1,896, 25.8 percent below the
   baseline.

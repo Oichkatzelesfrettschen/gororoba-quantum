@@ -399,6 +399,7 @@ def check(record: dict[str, Any]) -> str:
     keep its verdict.
     """
     _require(record.get("capture") == "n21-linear-conjugation-challenger", "not a challenger record")
+    _require(set(record["problems"]) == set(PROBLEMS), f"the record covers {sorted(record['problems'])}")
     seeds = tuple(record["compiler"]["seeds"])
     replayed = 0
     deviation = 0.0
