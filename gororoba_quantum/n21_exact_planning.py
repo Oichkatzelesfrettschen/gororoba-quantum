@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import io
 import math
+from collections.abc import Mapping
 from typing import Any
 
 import numpy as np
@@ -59,7 +60,7 @@ def _serialized(circuit: Any) -> bytes:
 def exact_predictions(
     choices: list[Any],
     noise_models: dict[int, Any],
-    sampled: dict[str, tuple[tuple[float, ...], ...]],
+    sampled: Mapping[str, tuple[tuple[float, ...], ...]],
     model_shots: int,
     simulation_alpha: float,
 ) -> tuple[dict[str, tuple[tuple[float, ...], ...]], dict[str, Any]]:

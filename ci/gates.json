@@ -2912,6 +2912,22 @@
    "name": "core-482",
    "seconds": 15.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_replica_covariance.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_replica_covariance.py --self-test",
+   "name": "core-483",
+   "seconds": 5.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_usage_budget.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_usage_budget.py --check gororoba_quantum/N21_USAGE_BUDGET.md",
+   "name": "core-484",
+   "seconds": 20.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

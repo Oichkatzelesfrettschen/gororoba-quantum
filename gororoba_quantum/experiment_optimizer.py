@@ -1207,10 +1207,10 @@ def _verify() -> None:
         .confidence_half_width
         == evaluate_candidate(replicated, (precision,), budget).observables[0].confidence_half_width
     )
-    planned = evaluate_candidate(independent, (precision,), budget).observables[0].confidence_half_width
+    planned_half_width = evaluate_candidate(independent, (precision,), budget).observables[0].confidence_half_width
     observed_replicas = (ObservedPub("signal_pub", {"signal": ((0.2, 0.8),) * replicas}, independent.jobs[0].shots),)
     collected = analyze_observations(observed_replicas, (precision,), (covariance,)).observables[0]
-    assert math.isclose(collected.confidence_half_width, planned, rel_tol=1e-12)
+    assert math.isclose(collected.confidence_half_width, planned_half_width, rel_tol=1e-12)
     assert collected.bound_methods == ("minimum_of_hoeffding_and_declared_covariance_cantelli_or_chebyshev",)
     assert (
         analyze_observations(observed_replicas, (precision,)).observables[0].confidence_half_width

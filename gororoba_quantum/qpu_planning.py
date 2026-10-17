@@ -566,7 +566,7 @@ def family_candidates(
         if not tiers:
             raise runtime.LiveRunError("replica tiers contain no placement within --max-replicas")
         for candidate in routed[: args.optimizer_candidates]:
-            placed: list[list[tuple[int, ...]]] = []
+            replica_sets: list[list[tuple[int, ...]]] = []
             for cap in sorted(set(tiers)):
                 trial = copy.copy(candidate)
                 policy = runtime.ReplicaPolicy(args.replica_floor, cap, False, True)
@@ -574,9 +574,9 @@ def family_candidates(
                     # A cap above the floor-admitted replica count places the
                     # same replicas as a smaller cap; one copy enters the search.
                     replicas = [tuple(replica.qubits) for replica in trial.replicas]
-                    if replicas in placed:
+                    if replicas in replica_sets:
                         continue
-                    placed.append(replicas)
+                    replica_sets.append(replicas)
                     candidates.append(
                         ([trial], {"name": args.family, "replica_cap": cap, **windows.get(id(candidate), {})})
                     )
