@@ -44,8 +44,10 @@ network access and checks its bundle digests, metadata and generated code.
 and statevector GHZ circuits the GPU runs.
 
 Each run directory, results/kaggle/<UTC stamp>-<slug>/, holds submission.json
-(entry, arguments, git commit, bundle file digests, pins, machine shape) and
-the generated kernel. A Kaggle output is a numerical simulation: it enters
+(entry, arguments, git commit, bundle file digests, pins, machine shape, the
+Aer device the entry sees, and the backend, calibration, backend version and
+processor type of every bundled calibration snapshot) and the generated
+kernel. A Kaggle output is a numerical simulation: it enters
 docs/state/research_state.json only through a CPU replay gate on a reduced
 case. Credentials stay in the Kaggle CLI's own store (``kaggle auth login``).
 """
@@ -143,6 +145,8 @@ REMOTE_REFS = "refs/kaggle-shards/remote"
 # kernel, and the shellcheck the shellcheck gates call when the image lacks one.
 CI_PYTHON = "3.14.7"
 UV_PIN = "uv==0.13.0"
+# calibration_snapshot.SCHEMA without its version suffix, so every snapshot schema version is recognized.
+CALIBRATION_SCHEMA_PREFIX = "gororoba-calibration-snapshot-"
 SHELLCHECK_PIN = "shellcheck-py==0.10.0.1"
 SLOT_POLL_SECONDS = 90
 # What ci/install_pins.sh reads; --ci-env bundles them with the entry.
@@ -301,6 +305,26 @@ def kernel_docs() -> list[Path]:
     ]
 
 
+def bundled_calibrations(bundled: list[str]) -> dict[str, dict[str, Any]]:
+    """Backend identity of every bundled calibration snapshot (calibration_snapshot.describe), by path.
+
+    backend_version and processor_type appear when the snapshot holds them, and
+    every entry names the backend and calibration.
+    """
+    identities: dict[str, dict[str, Any]] = {}
+    for rel in bundled:
+        if not rel.endswith(".json"):
+            continue
+        try:
+            data = json.loads((ROOT / rel).read_text(encoding="utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            continue
+        if isinstance(data, dict) and str(data.get("schema", "")).startswith(CALIBRATION_SCHEMA_PREFIX):
+            fields = ("backend", "calibration", "backend_version", "processor_type")
+            identities[rel] = {key: data[key] for key in fields if key in data}
+    return identities
+
+
 def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str, revision: str) -> dict[str, Any]:
     """Write run_dir/kernel (run.py and kernel-metadata.json) and run_dir/submission.json."""
     smoke = args.entry is None
@@ -401,6 +425,9 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "pins": list(kernel_pins(args.machine)),
         "pin_groups": {group: list(PIN_GROUPS[group]) for group in getattr(args, "with_groups", [])},
         "ci_env": ci_env,
+        # kernel_main.entry_aer_device: CI's CPU under --ci-env, else the machine's device.
+        "aer_device": "CPU" if ci_env else device,
+        "calibration_snapshots": bundled_calibrations(sorted(digests)),
         "bundle": digests,
         "datasets": {d["ref"]: d["archive_sha256"] for d in datasets},
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
@@ -556,7 +583,8 @@ def self_test(args: argparse.Namespace) -> int:
     _overlay_self_test()
     _push_guard_self_test()
     print(
-        f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private CPU, GPU and TPU kernels, "
+        f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private CPU, GPU and TPU kernels "
+        "with their Aer device and bundled calibration identity, "
         "a shard kernel bound to HEAD's tree, an overlay that rebuilds a directory-to-file change, run.py compiles, "
         "an accelerator push or shard run refused while an older version runs"
     )
@@ -735,6 +763,19 @@ def _self_test_kernel(entry: str, data: str, machine: str) -> dict[str, Any]:
                 f"TPU kernel pins an image: {metadata} {notebook['metadata']}",
             )
         require(submission["untracked_inputs"] == [], f"untracked bundled inputs {submission['untracked_inputs']}")
+        device = bundled_job(run_dir / "kernel/run.py")["device"]
+        require(submission["aer_device"] == device == ("GPU" if gpu else "CPU"), f"{machine}: Aer device {device}")
+        snapshot = json.loads((ROOT / data).read_text(encoding="utf-8"))
+        identity = submission["calibration_snapshots"].get(data, {})
+        require(
+            set(submission["calibration_snapshots"]) == {data}
+            and identity.get("backend") == snapshot["backend"]
+            and identity.get("calibration") == snapshot["calibration"]
+            and all(
+                identity.get(key) == snapshot[key] for key in ("backend_version", "processor_type") if key in snapshot
+            ),
+            f"{machine}: bundled calibration identity {submission['calibration_snapshots']}",
+        )
     return submission
 
 

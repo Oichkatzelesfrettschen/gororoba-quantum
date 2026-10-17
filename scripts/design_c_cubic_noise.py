@@ -127,7 +127,11 @@ def run(pairs: list[tuple[int, int]], device: str, shots: int) -> dict[str, Any]
         print(json.dumps(entry), flush=True)
     return {
         "schema": "design-c-cubic-noise-v1",
-        "snapshot": {"path": SNAPSHOT.relative_to(ROOT).as_posix(), "calibration": snapshot["calibration"]},
+        "snapshot": {
+            "path": SNAPSHOT.relative_to(ROOT).as_posix(),
+            "calibration": snapshot["calibration"],
+            **calibration_snapshot.backend_identity(snapshot),
+        },
         "device": device,
         "shots": shots,
         "seed_transpiler": SEED,

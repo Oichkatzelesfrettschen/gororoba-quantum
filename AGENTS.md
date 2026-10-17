@@ -827,6 +827,18 @@ unresolveReviewThread.
   docs/evidence/quantum_inspire/usage.json. A retained run therefore enters
   the registry, with a claim citing it and a refreshed ledger or inventory,
   in the change that retains it.
+- Every run record carries the identity of the system that ran or would
+  run it as data: live_run.py records each backend's `backend_version` and
+  `processor_type` from its configuration in `backends`, `system_inventory`
+  and each group, and the properties' `backend_version` at each execution
+  start in collect.json. Calibration and Heron Target snapshots carry the
+  same fields; a simulation record that copies a snapshot's calibration
+  stamp copies them too (`calibration_snapshot.backend_identity`) beside the
+  Aer version and device, and one that names its snapshot by path reaches
+  them through that file. A Kaggle submission.json records the entry's Aer
+  device and every bundled snapshot's identity. The approved-record
+  comparison reads none of these fields, and every checker accepts a
+  record without them.
 - A record names an IBM Cloud instance only by a 12-hex sha256 of its CRN.
 - Tokens, account identifiers, and local absolute paths stay out of every
   commit. The IBM credential lives in the qiskit account store,
