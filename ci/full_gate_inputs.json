@@ -3,21 +3,11 @@
   "gates": {
     "core-063": [],
     "core-069": [],
-    "core-080": [
-      "gororoba_quantum/**"
-    ],
-    "core-089": [
-      "gororoba_quantum/**"
-    ],
-    "core-094": [
-      "gororoba_quantum/**"
-    ],
-    "core-523": [
-      "gororoba_quantum/**"
-    ],
-    "core-074": [
-      "gororoba_quantum/**"
-    ],
+    "core-080": [],
+    "core-089": [],
+    "core-094": [],
+    "core-523": [],
+    "core-074": [],
     "sources-146": [
       "docs/evidence/principal_skew_atlas/**",
       "docs/notes/principal_skew_atlas.md"
@@ -60,8 +50,7 @@
     ],
     "core-289": [
       "docs/evidence/walk-control-scaffolding/local_member_conformance.json",
-      "results/live/*/record.json",
-      "gororoba_quantum/**"
+      "results/live/*/record.json"
     ],
     "core-434": [
       "results/quantum_inspire/readout_ringdown_tuna_17_*_calibration_sensitivity.json",
@@ -74,18 +63,18 @@
       "docs/evidence/atlas_coherent_families/**",
       "docs/evidence/atlas_detuning_map/**",
       "docs/evidence/calibration/history/**",
-      "results/live/**",
       "results/ripple/measured-ripple.json",
-      "gororoba_quantum/**"
+      "results/live/2026-10-13T025444.603480Z/**",
+      "results/live/2026-10-15T031229.371738Z/**"
     ],
     "core-360": [
       "docs/evidence/atlas_coherent_families/**",
       "docs/evidence/atlas_detuning_map/**",
       "docs/evidence/calibration/history/**",
-      "results/live/**",
       "results/ripple/measured-ripple.json",
       "docs/evidence/atlas_fringe_amplitudes/**",
-      "gororoba_quantum/**"
+      "results/live/2026-10-13T025444.603480Z/**",
+      "results/live/2026-10-15T031229.371738Z/**"
     ],
     "core-337": [
       "docs/evidence/linear_conjugation/noise.json",
@@ -99,8 +88,14 @@
       "docs/evidence/ghost_error_scale/**",
       "results/kaggle/2026-10-16T160710Z-gororoba-ghost-error-scale-c/**",
       "docs/evidence/calibration/history/**",
-      "results/live/**",
-      "gororoba_quantum/**"
+      "results/live/2026-10-13T025444.603480Z/**",
+      "results/live/2026-10-13T032011.664435Z/**",
+      "results/live/2026-10-15T030748.903241Z/**",
+      "results/live/2026-10-15T030903.235380Z/**",
+      "results/live/2026-10-15T031229.371738Z/**",
+      "results/live/2026-10-15T070847.644554Z/**",
+      "results/live/2026-10-15T070853.550532Z/**",
+      "results/live/kingston-wide-control-result/**"
     ],
     "core-423": [
       "docs/evidence/box_kite_qx_sweep/**",
@@ -112,8 +107,7 @@
       "docs/evidence/gl52_split_conjugators/**",
       "docs/evidence/linear_conjugation/search.json",
       "docs/evidence/open_quantum/catalogue.json",
-      "results/hw_estimate/n21_linear_conjugation_challenger.json",
-      "gororoba_quantum/**"
+      "results/hw_estimate/n21_linear_conjugation_challenger.json"
     ]
   }
 }

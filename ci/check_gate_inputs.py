@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import patch
 
+import gate_inputs
 import run_gates
 
 
@@ -145,6 +146,40 @@ class SelectionTests(unittest.TestCase):
             flags = changed_paths.select(self.root, "pull_request", "base", destination)
             self.assertEqual(flags, {"rocq": False, "full": False, "limited": True})
             self.assertEqual(destination.read_bytes(), paths)
+
+    def test_repository_source_manifest_closure(self) -> None:
+        import ast
+
+        root = Path(__file__).resolve().parent.parent
+        gates = json.loads((root / "ci/gates.json").read_text())["gates"]
+        expected = {gate["name"] for gate in gates if gate["tier"] == "full"}
+        self.assertEqual(gate_inputs.affected_full(root, gates, ["requirements.txt"]), expected)
+        tree = ast.parse((root / "gororoba_quantum/live_run.py").read_text())
+        declaration = next(
+            node
+            for node in tree.body
+            if isinstance(node, ast.Assign)
+            and any(
+                isinstance(target, ast.Name) and target.id == "EXPERIMENT_SOURCE_MANIFEST" for target in node.targets
+            )
+        )
+        sources = {"gororoba_quantum/" + name for name in ast.literal_eval(declaration.value)}
+        modules = gate_inputs.module_index(root)
+        references: dict[Path, ast.Module] = {}
+        for gate in gates:
+            if gate["name"] in {
+                "core-074",
+                "core-080",
+                "core-089",
+                "core-094",
+                "core-523",
+                "core-289",
+                "core-329",
+                "core-360",
+                "core-390",
+                "core-491",
+            }:
+                self.assertLessEqual(sources, gate_inputs.dependencies(root, gate, modules, references), gate["name"])
 
     def test_thread_defaults_and_explicit_override(self) -> None:
         with patch.dict("os.environ", {}, clear=True):
