@@ -70,7 +70,8 @@ class SelectionTests(unittest.TestCase):
         }
         report = analyze_timings.analyze(
             [job],
-            "gates 0/1\tRun shard\tPASS fast 7.0s  command\ngates 0/1\tRun shard\tPASS long 8.0s  command\n",
+            "gates 0/1\tRun shard\tPASS fast 7.0s  command\ngates 0/1\tRun shard\tPASS long 8.0s  command\n"
+            "gates 0/1\tRunner specs\tlogical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none\n",
             {"gates": [dict(gate, seconds=1) for gate in self.gates]},
         )
         self.assertEqual(report["workflow_seconds"], 12)
