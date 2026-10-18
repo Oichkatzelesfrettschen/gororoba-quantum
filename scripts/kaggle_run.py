@@ -62,6 +62,7 @@ import base64
 import hashlib
 import io
 import json
+import lzma
 import re
 import subprocess
 import sys
@@ -89,6 +90,12 @@ KERNEL_PINS = (
     "cutensor-cu11==2.2.0",
     "qiskit-ibm-runtime==0.50.0",
 )
+# --gpu-env installs these in requirements.txt's qiskit-aer place inside a
+# venv on the image's Python 3.13, the newest Python the cu11 wheel ships for.
+GPU_ENV_AER_PINS = tuple(pin for pin in KERNEL_PINS if not pin.startswith(("qiskit==", "qiskit-ibm-runtime==")))
+# GPUs each accelerator machine carries; kernel_main.gpu_env_failures requires
+# nvidia-smi to list them all.
+MACHINE_GPUS = {"NvidiaTeslaT4": 2}
 # A CPU or TPU host has no NVIDIA GPU, and the cu11 wheel ships cp313 only,
 # so those kernels take the CPU build of the same Aer release.
 CPU_KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer==0.17.2", "qiskit-ibm-runtime==0.50.0")
@@ -187,13 +194,14 @@ CI_SHARDS = {"pr": 6, "full": 12}
 # hypercomplex stack check with the tables it must reproduce.
 KERNEL_FILES = (
     "kaggle_kernel/kernel_main.py",
+    "kaggle_kernel/gpu_env_report.py",
     "kaggle_kernel/AGENTS.md",
     "scripts/algebra_package_tables.py",
     "docs/evidence/algebra_packages/tables.json",
 )
 
 RUNNER = r"""
-import base64, io, subprocess, sys, zipfile
+import base64, io, lzma, subprocess, sys, zipfile
 from pathlib import Path
 
 import importlib.metadata as metadata
@@ -226,7 +234,7 @@ for pin in [*PINS, *EXTRA, *frozen]:
     if metadata.version(name) != wanted:
         raise SystemExit(f"{{name}} is {{metadata.version(name)}}, pinned {{wanted}}")
 repo = Path("/tmp/gororoba/repo")
-zipfile.ZipFile(io.BytesIO(base64.b64decode(BUNDLE))).extractall(repo)
+zipfile.ZipFile(io.BytesIO(lzma.decompress(base64.b64decode(BUNDLE)))).extractall(repo)
 raise SystemExit(subprocess.run([sys.executable, "-B", "kaggle_kernel/kernel_main.py"], cwd=repo).returncode)
 """
 
@@ -374,6 +382,19 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         require(not args.machine.startswith("Tpu") and not smoke, "--ci-env runs an ENTRY on a CPU or GPU machine")
         files.extend(ROOT / name for name in CI_ENV_FILES)
         ci_env = {"python": CI_PYTHON, "uv": UV_PIN}
+    gpu_env = None
+    if getattr(args, "gpu_env", False):
+        # A CPU machine lists no GPU, so its kernel stops at the preflight with
+        # exit 4: the run that proves the fallback error on Kaggle itself. The
+        # bootstrap installs --with groups into the image interpreter, which
+        # the venv's entry never imports.
+        require(
+            not args.machine.startswith("Tpu") and not smoke and ci_env is None,
+            "--gpu-env runs an ENTRY on a GPU or CPU machine without --ci-env",
+        )
+        require(not args.with_groups, "--gpu-env installs the repository's pins only; drop --with")
+        files.extend(ROOT / name for name in CI_ENV_FILES)
+        gpu_env = {"uv": UV_PIN, "aer_pins": list(GPU_ENV_AER_PINS), "gpus": MACHINE_GPUS.get(args.machine, 1)}
     bundled = sorted({path.relative_to(ROOT).as_posix() for path in files})
     listed = subprocess.run(
         ["git", "ls-files", "-z", "--", *bundled], cwd=ROOT, capture_output=True, text=True, check=True
@@ -386,7 +407,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     buffer = io.BytesIO()
     digests: dict[str, str] = {}
     contents: dict[str, bytes] = {}
-    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as bundle:
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_STORED) as bundle:
         for path in sorted(set(files)):
             rel = path.relative_to(ROOT).as_posix()
             data = path.read_bytes()
@@ -403,14 +424,13 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
             "pin_groups": {group: list(PIN_GROUPS[group]) for group in getattr(args, "with_groups", [])},
             "datasets": [{"ref": d["ref"], "archive": d["archive"], "files": d["files"]} for d in datasets],
             "ci_env": ci_env,
+            "gpu_env": gpu_env,
         }
         bundle.writestr("kaggle_kernel/kernel_job.json", json.dumps(job, indent=1) + "\n")
     kernel_dir = run_dir / "kernel"
     kernel_dir.mkdir(parents=True)
     extra = [pin for group in getattr(args, "with_groups", []) for pin in PIN_GROUPS[group]]
-    runner = RUNNER.format(
-        pins=list(kernel_pins(args.machine)), extra=extra, bundle=base64.b64encode(buffer.getvalue()).decode("ascii")
-    )
+    runner = RUNNER.format(pins=list(kernel_pins(args.machine)), extra=extra, bundle=pack_bundle(buffer.getvalue()))
     (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
     tpu = args.machine.startswith("Tpu")
     if tpu:
@@ -453,6 +473,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "pins": list(kernel_pins(args.machine)),
         "pin_groups": {group: list(PIN_GROUPS[group]) for group in getattr(args, "with_groups", [])},
         "ci_env": ci_env,
+        "gpu_env": gpu_env,
         # kernel_main.entry_aer_device: CI's CPU under --ci-env, else the machine's device.
         "aer_device": "CPU" if ci_env else device,
         "calibration_snapshots": bundled_calibrations(contents),
@@ -645,6 +666,8 @@ def self_test(args: argparse.Namespace) -> int:
         py_compile.compile(str(Path(scratch) / "shard/kernel/run.py"), doraise=True)
         _shard_identity_self_test(Path(scratch), head.stdout.strip(), data)
     _overlay_self_test()
+    _killed_entry_self_test()
+    _gpu_env_self_test(data)
     _push_guard_self_test()
     _dataset_history_self_test()
     print(
@@ -652,6 +675,8 @@ def self_test(args: argparse.Namespace) -> int:
         "with their Aer device and bundled calibration identity, "
         "a shard kernel bound to HEAD's tree with CI's CPU Aer and its overlaid calibration identity, "
         "an overlay that rebuilds a directory-to-file change, run.py compiles, "
+        "an entry killed mid-run keeps its stdout and record, "
+        "a GPU-environment kernel whose pin and GPU checks name every fallback, "
         "an accelerator push or shard run refused while an older version runs, "
         "a re-versioned dataset that keeps every earlier archive"
     )
@@ -771,6 +796,106 @@ def _push_guard_self_test() -> None:
     require_no_live_shard("owner", [0, 1], 6, [TPU_MACHINE], shard_guard)
 
 
+def _gpu_env_self_test(data: str) -> None:
+    """A --gpu-env kernel bundles the pin files and its spec, and gpu_env_failures names every fallback.
+
+    A report holding every pin, the GPU Aer as the only owner of
+    qiskit_aer/__init__.py, both GPUs, and GPU Bell runs with cuStateVec
+    passes; each single change away from it is named.
+    """
+    import tempfile
+
+    sys.path.insert(0, str(ROOT / "kaggle_kernel"))
+    import kernel_main
+
+    build_args = argparse.Namespace(
+        entry="scripts/aer_gpu_probe.py",
+        smoke=False,
+        include=[data],
+        args=["--require-gpu"],
+        slug="self-test",
+        machine=GPU_MACHINE,
+        with_groups=[],
+        gpu_env=True,
+    )
+    with tempfile.TemporaryDirectory() as scratch:
+        submission = build_kernel(build_args, Path(scratch) / "run", "owner", "2000-01-01T000000Z", "0" * 40)
+        job = bundled_job(Path(scratch) / "run/kernel/run.py")
+    spec: dict[str, Any] = {"uv": UV_PIN, "aer_pins": list(GPU_ENV_AER_PINS), "gpus": MACHINE_GPUS[GPU_MACHINE]}
+    require(job["gpu_env"] == submission["gpu_env"] == spec, f"GPU environment spec {job['gpu_env']}")
+    require(all(name in submission["bundle"] for name in CI_ENV_FILES), "a --gpu-env bundle lacks the pin files")
+    pins = kernel_main.pinned(ROOT, spec["aer_pins"])
+    require(
+        "qiskit-aer" not in pins and pins["qiskit-aer-gpu-cu11"] == "0.17.2" and pins["numpy"] == "2.5.4",
+        f"GPU environment pins {pins}",
+    )
+    run = {"success": True, "device": "GPU", "cuStateVec_enable": False}
+    report: dict[str, Any] = {
+        "installed": dict(pins),
+        "qiskit_aer_owners": ["qiskit_aer_gpu_cu11"],
+        "devices": ["CPU", "GPU"],
+        "foreign_paths": [],
+        "runs": {"gpu": run, "custatevec": {**run, "cuStateVec_enable": True}},
+    }
+    passing = kernel_main.gpu_env_failures(pins, report, 2, 2)
+    require(passing == [], f"a GPU environment that holds every pin fails: {passing}")
+    changes = {
+        "a version": ({**report, "installed": {**pins, "numpy": "2.1.3"}}, 2),
+        "the CPU Aer owner": ({**report, "qiskit_aer_owners": ["qiskit-aer", "qiskit-aer-gpu-cu11"]}, 2),
+        "a missing GPU": (report, 1),
+        "the device list": ({**report, "devices": ["CPU"]}, 2),
+        "a CPU Bell run": ({**report, "runs": {**report["runs"], "gpu": {**run, "device": "CPU"}}}, 2),
+        "cuStateVec off": ({**report, "runs": {**report["runs"], "custatevec": run}}, 2),
+        "a raised run": ({**report, "runs": {**report["runs"], "custatevec": {"error": "RuntimeError"}}}, 2),
+        "an image path": ({**report, "foreign_paths": ["/usr/local/lib/python3.13/dist-packages"]}, 2),
+        "an unlisted sys.path": ({key: value for key, value in report.items() if key != "foreign_paths"}, 2),
+    }
+    for change, (changed, listed) in changes.items():
+        require(bool(kernel_main.gpu_env_failures(pins, changed, 2, listed)), f"gpu_env_failures passes {change}")
+    with tempfile.TemporaryDirectory() as scratch:
+        try:
+            build_kernel(
+                argparse.Namespace(**{**vars(build_args), "with_groups": ["quantum-tools"]}),
+                Path(scratch) / "run",
+                "owner",
+                "2000-01-01T000000Z",
+                "0" * 40,
+            )
+        except SystemExit:
+            pass
+        else:
+            raise SystemExit("kaggle_run self-test: --gpu-env accepted a --with group")
+
+
+def _killed_entry_self_test() -> None:
+    """A stub entry prints, writes its record under the output directory and is killed: both survive."""
+    import os
+    import tempfile
+
+    sys.path.insert(0, str(ROOT / "kaggle_kernel"))
+    import kernel_main
+
+    stub = (
+        "import pathlib, sys, time\n"
+        "print('row 1')\n"
+        "pathlib.Path(sys.argv[1]).write_text('{\"rows\": [1]}', encoding='utf-8')\n"
+        "time.sleep(60)\n"
+    )
+    with tempfile.TemporaryDirectory() as scratch:
+        out = Path(scratch)
+        record = out / "record.json"
+        env = {key: value for key, value in os.environ.items() if key != "PYTHONUNBUFFERED"}
+        proc = kernel_main.start_entry([sys.executable, "-c", stub, str(record)], out, env, out)
+        deadline = time.monotonic() + 30
+        while not record.exists() and time.monotonic() < deadline and proc.poll() is None:
+            time.sleep(0.05)
+        proc.kill()
+        proc.wait()
+        stdout = (out / "stdout.txt").read_text(encoding="utf-8")
+        require(record.is_file(), "a killed entry's record under the output directory is missing")
+        require(stdout == "row 1\n", f"a killed entry's stdout reads {stdout!r}")
+
+
 def _overlay_self_test() -> None:
     """A commit that turns a directory into a file and adds a symlink: the kernel's overlay rebuilds its tree."""
     import os
@@ -819,12 +944,22 @@ def _overlay_self_test() -> None:
         require(run("write-tree").strip() == expected, "the overlay does not rebuild a directory-to-file change")
 
 
+def pack_bundle(archive: bytes) -> str:
+    """A stored zip as one xz stream in base64, the BUNDLE string run.py embeds.
+
+    Per-member deflate compresses each file alone; one xz stream over the
+    stored archive also removes the redundancy between files, which keeps
+    run.py about a third smaller under KERNEL_SOURCE_LIMIT.
+    """
+    return base64.b64encode(lzma.compress(archive, preset=9 | lzma.PRESET_EXTREME)).decode("ascii")
+
+
 def bundled_job(run_py: Path) -> dict[str, Any]:
     """The kernel_job.json inside a generated run.py's embedded bundle."""
     found = re.search(r'BUNDLE = "([^"]+)"', run_py.read_text(encoding="utf-8"))
     require(found is not None, f"{run_py} embeds no bundle")
     assert found is not None
-    archive = zipfile.ZipFile(io.BytesIO(base64.b64decode(found.group(1))))
+    archive = zipfile.ZipFile(io.BytesIO(lzma.decompress(base64.b64decode(found.group(1)))))
     return dict(json.loads(archive.read("kaggle_kernel/kernel_job.json")))
 
 
@@ -861,6 +996,17 @@ def _self_test_kernel(entry: str, data: str, machine: str) -> dict[str, Any]:
         require(metadata["id"] == "owner/self-test", f"kernel id {metadata['id']}")
         py_compile.compile(str(run_dir / "kernel/run.py"), doraise=True)
         runner = (run_dir / "kernel/run.py").read_text(encoding="utf-8")
+        # run.py's own decoding, so the kernel unpacks exactly the bundled bytes.
+        embedded = re.search(r'BUNDLE = "([^"]+)"', runner)
+        require(embedded is not None, f"{machine}: run.py embeds no bundle")
+        assert embedded is not None
+        unpacked = zipfile.ZipFile(io.BytesIO(lzma.decompress(base64.b64decode(embedded.group(1)))))
+        members = {name: sha256(unpacked.read(name)) for name in unpacked.namelist()}
+        require(
+            {name: members.get(name) for name in submission["bundle"]} == submission["bundle"],
+            f"{machine}: run.py's bundle differs from the tree",
+        )
+        require(len(runner.encode("utf-8")) <= KERNEL_SOURCE_LIMIT, f"{machine}: run.py exceeds KERNEL_SOURCE_LIMIT")
         require(all(pin in runner for pin in kernel_pins(machine)), f"{machine}: run.py lacks a pin")
         require(all(pin in runner for pin in PIN_GROUPS["quantum-tools"]), f"{machine}: run.py lacks a group pin")
         for path in kernel_docs():
@@ -1028,7 +1174,7 @@ def build_shard_kernel(
     buffer = io.BytesIO()
     digests: dict[str, str] = {}
     contents: dict[str, bytes] = {}
-    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as bundle:
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_STORED) as bundle:
         for always in KERNEL_FILES:
             for path in import_closure(ROOT / always) if always.endswith(".py") else [ROOT / always]:
                 rel = path.relative_to(ROOT).as_posix()
@@ -1070,7 +1216,7 @@ def build_shard_kernel(
     kernel_dir = run_dir / "kernel"
     kernel_dir.mkdir(parents=True)
     pins = kernel_pins(machine)
-    runner = RUNNER.format(pins=list(pins), extra=[], bundle=base64.b64encode(buffer.getvalue()).decode("ascii"))
+    runner = RUNNER.format(pins=list(pins), extra=[], bundle=pack_bundle(buffer.getvalue()))
     (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
     slug = shard_slug(shard, count)
     metadata = {
@@ -1382,6 +1528,11 @@ def main() -> int:
         "--ci-env",
         action="store_true",
         help="run ENTRY under CI's Python and pins (CPU Aer on a CPU or GPU machine) for a CI-replayed record",
+    )
+    push_parser.add_argument(
+        "--gpu-env",
+        action="store_true",
+        help="run ENTRY in a venv of the repository's pins with GPU Aer; the kernel stops unless Aer reaches the GPU",
     )
     push_parser.set_defaults(func=push)
     sub.add_parser("self-test").set_defaults(func=self_test)

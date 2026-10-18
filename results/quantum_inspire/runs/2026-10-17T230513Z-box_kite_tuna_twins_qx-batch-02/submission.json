@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-17T23:06:04+00:00",
+ "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: conditional \"once designed the Tuna-17 run is then approved but only when highly optimizd and tweaked for maximal science per circuit per moment\", then \"Yes, submit\" (22:28Z) to the written case for the Tuna-17 box-kite follow series at main d29f634 (QX twins batch-01, 02, 03, 05, 06; follow batch-00 to batch-06)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "68a70c3a20aadf62158e0dde91eb77258a78fc2a30eb3ab0ff776b3727119df0",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 871392,
+ "project": 767520,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "twin-depth-9-x.cq",
+   "job": 1530696,
+   "sha256": "e1f9a5ba3e914c39c015e2e2fffa3913ebba280e3208fa7793d7ca20517a465c"
+  },
+  {
+   "file": "twin-lcu-bright-y-1.cq",
+   "job": 1530697,
+   "sha256": "24cc36723dfe32843981bf0d007baa080d0aa51e5af6bbc0b126c0e3c9bacf1e"
+  },
+  {
+   "file": "twin-lcu-bright-y-2.cq",
+   "job": 1530698,
+   "sha256": "c130ec278a10db86e1f5c0095c9203735f95083053ee6f4c591795c37ebefda1"
+  }
+ ],
+ "submitted_utc": "2026-10-17T23:06:04+00:00"
+}
