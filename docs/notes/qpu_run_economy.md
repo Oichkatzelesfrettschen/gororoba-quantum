@@ -64,25 +64,13 @@ the bound each contribute; none of them changes the circuit.
    carries the default-delay excitation.
 
 6. **Calibration moves the required shots as much as the excitation does.**
-   Submit-free n21 dry runs on ibm_kingston, single replica, empirical
-   Bernstein, tiers up to 98,304 (records not retained):
-
-   | Calibration | Delay | Excitation | Shots per arm | Planner charge |
-   |---|---|---|---|---|
-   | 15:07 | 50 us | 0.005 | 81,920 | 23.49 s |
-   | 15:07 | 50 us | 0.01 | 90,112 | 25.48 s |
-   | 15:37 | 50 us | 0.02 | 98,304 | 27.73 s |
-   | 15:37 | 50 us | 0.03 | infeasible | - |
-   | 16:04 | 100 us | 0.005 | 81,920 | 31.58 s |
-   | 16:04 | 100 us | 0.01 | 81,920 | 31.58 s |
-   | 16:04 | 100 us | 0.02 | 90,112 | 34.50 s |
-   | 16:35 | 250 us | 0 | 73,728 | 50.77 s |
-
-   At 0.01 the 50 us plan needs 90,112 shots at 15:07, and the 100 us plan
-   81,920 at 16:04. An approvable record is therefore made minutes before
-   the case, with the shot tiers narrowed to the expected region and one
-   optimizer candidate, because the submission compares calibration with
-   the approved record at the refresh and at each batch.
+   The exact law reads every routed instruction's error and every measured
+   qubit's readout, so a republish with moved values moves the feasible
+   shot tier and the planner charge at a fixed excitation. An approvable
+   record is therefore made minutes before the case, with the shot tiers
+   narrowed to the expected region and one optimizer candidate, because the
+   submission compares calibration with the approved record at the refresh
+   and at each batch.
 
 7. **Each job costs its overhead, and a job's arms share one shot
    history.** Every job carries about 2.3 s of non-circuit charge, and
@@ -99,9 +87,10 @@ the bound each contribute; none of them changes the circuit.
 8. **The worst qubit's readout sets the control's resolution.** The
    binomial variance of an excited fraction grows with e10, and the excess
    compares two fractions over the readout contrast 1 - e01 - e10. On the
-   n21 qubits q125 reads e10 = 0.0266, which gives a 3-sigma resolution of
-   0.0049 for 32,768 shots at 50 us against 16,384 at 250 us, against a
-   feasibility edge near 0.02. Shots go 2:1 toward the cheaper delay, since
+   n21 qubits q125 read e10 = 0.0159 and e01 = 0.0266 in the control's
+   planning record (`results/live/2026-10-18T044724.343287Z`), which gives a
+   3-sigma resolution of 0.0037 for 32,768 shots at 50 us against 16,384 at
+   250 us, against a feasibility edge near 0.02. Shots go 2:1 toward the cheaper delay, since
    a 250 us execution costs about 5 times a 50 us one.
 
 9. **A control measures the device, never the simulator.** The

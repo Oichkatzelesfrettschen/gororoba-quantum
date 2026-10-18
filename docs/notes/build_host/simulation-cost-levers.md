@@ -68,10 +68,17 @@ under the ibm_kingston snapshot 20261015T2035330700, CPU, host load near 20:
 | `dynamic_density.probabilities`, restricted | 8.0 to 8.4 s per PUB, 1.2 s more for the model | no |
 
 The exact law plus `numpy.random.Generator(PCG64(seed)).multinomial(shots,
-law)` replaces sampling wherever a record keeps no Aer-drawn counts of its
-own: a ghost replay of a new run, a planning model under `--model-method
-exact`. Gate core-487 holds `dynamic_density` to Aer's density-matrix
-method within 1.2e-15. Its cost grows with 4^n in the active qubits and
+law)` replaces sampling in a ghost replay of a run whose record keeps no
+Aer-drawn counts for that member (`scripts/ghost_run.py`, dynamic members
+at 32768 shots or more). Planning under `--model-method exact` takes its
+predictions from the law but still runs `--model-shots` of Aer sampling per
+choice: `n21_exact_planning.exact_predictions` retains those frequencies
+and rejects a law that leaves their sampling radius, so the sampled pass
+stays the falsifier and its cost stays in the plan. `dynamic_density`
+agrees with Aer's density-matrix method to 1.2e-15 on the cleaned noise
+model and to 1.06e-9 on the raw calibration model, whose small error
+components Aer truncates (gate core-487,
+docs/notes/numerics_best_practice.md). Its cost grows with 4^n in the active qubits and
 with the number of distinct recorded values, so it serves 7-qubit dynamic
 circuits in seconds and wide one-qubit families not at all; a wide
 one-qubit family is a batch of independent 2 x 2 laws instead.
@@ -99,4 +106,5 @@ one-qubit family is a batch of independent 2 x 2 laws instead.
   write `approval_required`.
 - The exact-law route is wrong for a circuit if core-487's comparison
   with Aer's density-matrix method exceeds its tolerance on that circuit's
-  instruction set.
+  instruction set, or if a planning law leaves the sampling radius of its
+  own Aer-drawn frequencies.
