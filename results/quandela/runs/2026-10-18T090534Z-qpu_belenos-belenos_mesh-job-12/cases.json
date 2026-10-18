@@ -1,0 +1,298 @@
+{
+ "schema": "qd-box-kite-cases-v1",
+ "family": "belenos_mesh",
+ "job": "job-12",
+ "platforms": [
+  "sim:belenos",
+  "qpu:belenos"
+ ],
+ "command": "sample_count",
+ "gate_form": "unitary",
+ "min_detected_photons": 1,
+ "max_samples": 166000,
+ "max_shots": 332000,
+ "max_duration": 300,
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "circuit": {
+  "file": "circuit.json",
+  "sha256": "69326bf0674a45e8c0005b10e2ac72cee36c122691ec0a5b542dbabb6e1fffb9"
+ },
+ "blocks": [
+  {
+   "config": "two_label-04",
+   "kind": "two_label",
+   "offset": 20,
+   "photons": [
+    20
+   ],
+   "m": [
+    [
+     1,
+     1
+    ],
+    [
+     -1,
+     -1
+    ]
+   ],
+   "t": 1,
+   "roles": [
+    "label_0",
+    "label_1",
+    "dilation",
+    "dilation"
+   ],
+   "ideal": [
+    "1/2",
+    "1/2",
+    "0",
+    "0"
+   ],
+   "p_algebra": "1",
+   "rows": [
+    [
+     "within_kite",
+     4
+    ],
+    [
+     "within_kite",
+     10
+    ],
+    [
+     "within_kite",
+     54
+    ],
+    [
+     "within_kite",
+     56
+    ],
+    [
+     "within_kite",
+     100
+    ],
+    [
+     "within_kite",
+     106
+    ],
+    [
+     "within_kite",
+     144
+    ],
+    [
+     "within_kite",
+     154
+    ],
+    [
+     "within_kite",
+     168
+    ],
+    [
+     "within_kite",
+     178
+    ],
+    [
+     "within_kite",
+     182
+    ],
+    [
+     "within_kite",
+     184
+    ],
+    [
+     "within_kite",
+     244
+    ],
+    [
+     "within_kite",
+     258
+    ],
+    [
+     "within_kite",
+     290
+    ],
+    [
+     "within_kite",
+     292
+    ],
+    [
+     "within_kite",
+     320
+    ],
+    [
+     "within_kite",
+     326
+    ],
+    [
+     "within_kite",
+     430
+    ],
+    [
+     "within_kite",
+     436
+    ],
+    [
+     "within_kite",
+     442
+    ],
+    [
+     "within_kite",
+     452
+    ],
+    [
+     "within_kite",
+     466
+    ],
+    [
+     "within_kite",
+     476
+    ],
+    [
+     "within_kite",
+     482
+    ],
+    [
+     "within_kite",
+     496
+    ],
+    [
+     "within_kite",
+     520
+    ],
+    [
+     "within_kite",
+     530
+    ],
+    [
+     "within_kite",
+     588
+    ],
+    [
+     "within_kite",
+     598
+    ],
+    [
+     "within_kite",
+     600
+    ],
+    [
+     "within_kite",
+     610
+    ],
+    [
+     "within_kite",
+     626
+    ],
+    [
+     "within_kite",
+     632
+    ],
+    [
+     "within_kite",
+     680
+    ],
+    [
+     "within_kite",
+     698
+    ],
+    [
+     "within_kite",
+     744
+    ],
+    [
+     "within_kite",
+     750
+    ],
+    [
+     "within_kite",
+     762
+    ],
+    [
+     "within_kite",
+     776
+    ],
+    [
+     "within_kite",
+     824
+    ],
+    [
+     "within_kite",
+     838
+    ]
+   ]
+  }
+ ],
+ "preregistered": {
+  "series": "form versus dwell on Q1's circuit (strategy.md section 7 item 10); dwell-preregistration.json in the session directory holds the thresholds and branches"
+ },
+ "iterations": 9,
+ "settings": [
+  {
+   "name": "d2-00-s20-n1500",
+   "compilation_seed": 20,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "d2-01-s20-n10000",
+   "compilation_seed": 20,
+   "max_samples": 10000,
+   "max_shots": 20000
+  },
+  {
+   "name": "d2-02-s20-n1500",
+   "compilation_seed": 20,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "d2-03-s20-n40000",
+   "compilation_seed": 20,
+   "max_samples": 40000,
+   "max_shots": 80000
+  },
+  {
+   "name": "d2-04-s20-n1500",
+   "compilation_seed": 20,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "d2-05-s20-n60000",
+   "compilation_seed": 20,
+   "max_samples": 60000,
+   "max_shots": 120000
+  },
+  {
+   "name": "d4-06-s46667-n1500",
+   "compilation_seed": 46667,
+   "max_samples": 1500,
+   "max_shots": 3000
+  },
+  {
+   "name": "d4-07-s46667-n10000",
+   "compilation_seed": 46667,
+   "max_samples": 10000,
+   "max_shots": 20000
+  },
+  {
+   "name": "d4-08-s46667-n40000",
+   "compilation_seed": 46667,
+   "max_samples": 40000,
+   "max_shots": 80000
+  }
+ ],
+ "seed_source": {
+  "draw": "draw-2026-10-18T083548Z.json",
+  "index": 0,
+  "use": "D3 and D4 fresh mesh",
+  "raw_sha256": "cc8dbc7c781fb85e2adcd17ac35741a76f463a977495160f071bf9ff705d5e37",
+  "value": 46667
+ },
+ "seeded_from": {
+  "case": "box_kite_photonic_single/job-04",
+  "cases_sha256": "d7632a78edceaec2cf4d745f83e81af902950dfda1f3921ab925b53a16dbc4bc"
+ }
+}

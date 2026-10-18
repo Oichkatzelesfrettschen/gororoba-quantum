@@ -2858,6 +2858,46 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --self-test-bridge && \"$PYTHON\" -B -O -W error scripts/qd_belenos_mesh.py --self-test-bridge",
+   "name": "core-544",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-bridge results/quandela/sessions/2026-10-18T071847Z-qpu_belenos-belenos_mesh-bridge/bridge.json results/quandela/sessions/2026-10-18T071847Z-qpu_belenos-belenos_mesh-bridge/bridge-preregistration.json results/quandela/runs/2026-10-18T074524Z-qpu_belenos-belenos_mesh-job-09",
+   "name": "core-540",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/anu_qrng.py --self-test && \"$PYTHON\" -B -O -W error scripts/anu_qrng.py --self-test && \"$PYTHON\" -B -W error scripts/anu_qrng.py check docs/evidence/anu_qrng",
+   "name": "core-541",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --self-test-dwell && \"$PYTHON\" -B -O -W error scripts/qd_belenos_mesh.py --self-test-dwell",
+   "name": "core-542",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-dwell results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell.json results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell-preregistration.json results/quandela/runs/2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10 results/quandela/runs/2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11 results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12",
+   "name": "core-543",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test && \"$PYTHON\" -B -O -W error scripts/materialize_gororoba_csv.py --self-test",
    "name": "core-401",
    "seconds": 0.4,
