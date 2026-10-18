@@ -26,10 +26,13 @@ from qpe_diagnostics import (
     folded_diagnostic,
     folded_ideal,
     folded_terminal_weights,
+    lift_phase_law,
+    lift_phase_values,
     n21_diagnostic,
     n21_encoded_diagnostic,
     n21_labeled_law,
     n21_orbit_diagnostic,
+    phase_marginal,
 )
 
 FAMILY_NAMES = (
@@ -356,7 +359,13 @@ def state_prep_excitation(excited: float, prob_meas1_prep0: float, prob_meas0_pr
     return (excited - prob_meas1_prep0) / contrast
 
 
-def n21_orbit_rca_group(window_delay_dt: int, echo_half_dt: int) -> Group:
+# Clbits of a heralded n21-orbit-rca member: two phase bits and one herald
+# bit per qubit (control and the three work bits).
+N21_ORBIT_HERALDED_CLBITS = 6
+_N21_WEIGHTS = (0.5, 1.0, 0.5, 0.0)
+
+
+def n21_orbit_rca_group(window_delay_dt: int, echo_half_dt: int, init_herald: bool = False) -> Group:
     """Pair feed-forward with its omitted-correction control in each window variant.
 
     Barriers bracket the control's measurement and reset in every variant, so
@@ -365,13 +374,30 @@ def n21_orbit_rca_group(window_delay_dt: int, echo_half_dt: int) -> Group:
     lengthen the measurement window by one readout duration through idling or
     through a second readout; window_echo refocuses static work-qubit
     detuning. Every member keeps the exact labeled law.
+
+    init_herald measures every qubit before the program
+    (qpe_diagnostics.n21_orbit_diagnostic). A heralded member's distribution
+    spans the phase and herald bits, so its ideal law, weights and contract
+    values are the phase vectors lifted onto all six clbits, and the summary
+    reads the phase marginal and each herald bit's excited fraction.
     """
+    clbits = N21_ORBIT_HERALDED_CLBITS if init_herald else 2
+
+    def lifted(values: Any) -> np.ndarray:
+        return lift_phase_values(values, clbits) if init_herald else np.asarray(values, dtype=float)
+
     members = tuple(
         Member(
             f"n21_orbit_{variant}_{'feedback' if feedback else 'no_feedback'}",
-            n21_orbit_diagnostic(feedback, variant, window_delay_dt=window_delay_dt, echo_half_dt=echo_half_dt),
-            np.asarray(n21_labeled_law(feedback), dtype=float),
-            weights=np.asarray((0.5, 1.0, 0.5, 0.0)),
+            n21_orbit_diagnostic(
+                feedback, variant, window_delay_dt=window_delay_dt, echo_half_dt=echo_half_dt, init_herald=init_herald
+            ),
+            (
+                lift_phase_law(n21_labeled_law(feedback), clbits)
+                if init_herald
+                else np.asarray(n21_labeled_law(feedback), dtype=float)
+            ),
+            weights=lifted(_N21_WEIGHTS),
         )
         for variant in N21_ORBIT_VARIANTS
         for feedback in (True, False)
@@ -380,11 +406,18 @@ def n21_orbit_rca_group(window_delay_dt: int, echo_half_dt: int) -> Group:
     def summarize(distributions: dict[str, np.ndarray]) -> dict[str, float]:
         result = {}
         for variant in N21_ORBIT_VARIANTS:
-            primary = distributions[f"n21_orbit_{variant}_feedback"]
-            control = distributions[f"n21_orbit_{variant}_no_feedback"]
+            primary = phase_marginal(distributions[f"n21_orbit_{variant}_feedback"])
+            control = phase_marginal(distributions[f"n21_orbit_{variant}_no_feedback"])
             result[f"{variant}_feedback_signed_contrast"] = float(primary[1] - primary[3])
             result[f"{variant}_no_feedback_signed_contrast"] = float(control[1] - control[3])
             result[f"{variant}_contrast_difference"] = float(primary[1] - primary[3] - control[1] + control[3])
+        if init_herald:
+            outcomes = np.arange(1 << clbits)
+            for member in members:
+                distribution = np.asarray(distributions[member.name], dtype=float)
+                for qubit in range(clbits - 2):
+                    excited = ((outcomes >> (2 + qubit)) & 1).astype(float)
+                    result[f"{member.name.removeprefix('n21_orbit_')}_herald_q{qubit}"] = float(distribution @ excited)
         return result
 
     return Group("n21_orbit_rca", members, summarize)
@@ -424,13 +457,19 @@ def family_contracts(
 
         return coherence_contracts(precision, alpha, power)
     if family == "n21-orbit-rca":
-        # Four directional endpoints share the requested family-wise alpha.
+        # Four directional endpoints share the requested family-wise alpha. A
+        # heralded member scores its phase label whatever the herald read.
+        signed = (
+            tuple(float(value) for value in lift_phase_values(_SIGNED, N21_ORBIT_HERALDED_CLBITS))
+            if (configuration or {}).get("init_herald")
+            else _SIGNED
+        )
         return tuple(
             ObservableContract(
                 f"n21_orbit_{variant}_feedback_contrast",
                 (
-                    ObservableTerm(f"n21_orbit_{variant}_feedback", _SIGNED),
-                    ObservableTerm(f"n21_orbit_{variant}_no_feedback", _SIGNED, sign=-1),
+                    ObservableTerm(f"n21_orbit_{variant}_feedback", signed),
+                    ObservableTerm(f"n21_orbit_{variant}_no_feedback", signed, sign=-1),
                 ),
                 minimum_effect=0.0,
                 alpha=alpha / len(N21_ORBIT_VARIANTS),
@@ -503,7 +542,11 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
 
         return coherence_groups(int(family["window_dt"]))
     if family.get("name") == "n21-orbit-rca":
-        return [n21_orbit_rca_group(int(family["window_delay_dt"]), int(family["echo_half_dt"]))]
+        return [
+            n21_orbit_rca_group(
+                int(family["window_delay_dt"]), int(family["echo_half_dt"]), bool(family.get("init_herald", False))
+            )
+        ]
     if family.get("name") in N21_FAMILIES:
         return [
             n21_group(orbit=family["name"] == "n21-orbit-feedback", encoded=family["name"] == "n21-feedback-encoded")
