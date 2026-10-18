@@ -8,7 +8,10 @@ modeled charge or minimum worst normalized precision radius within the budget.
 Hoeffding bounds assume independent repetitions of stationary, bounded outcomes.
 Replicas and components within one PUB shot may be arbitrarily dependent. A
 declared covariance upper bound can tighten the bound through Cantelli or
-Chebyshev. Union bounds require no independence between PUBs. Finite-shot noise
+Chebyshev. An endpoint that opts in through EmpiricalBernsteinDesign also takes
+the Maurer-Pontil empirical-Bernstein radius, read from the sample variance,
+on its own share of the endpoint's alpha. Union bounds require no independence
+between PUBs. Finite-shot noise
 predictions receive a separate simultaneous Hoeffding error allowance across the
 entire candidate search. These guarantees concern the supplied noise model;
 hardware-model discrepancy remains unquantified.
@@ -124,11 +127,46 @@ class CovarianceBound:
 
 
 @dataclass(frozen=True)
+class EmpiricalBernsteinDesign:
+    """Opt-in empirical-Bernstein confidence and detection radii for one directional endpoint.
+
+    Each PUB's per-shot score Y is bounded by its span and i.i.d. over shots,
+    the conditions Hoeffding's radius already requires. Maurer and Pontil
+    (arXiv:0907.3740, Theorem 4, scaled from [0, 1] to span R) bound the
+    one-sided deviation at tail d by
+    sqrt(2 V_n ln(2 / d) / n) + 7 R ln(2 / d) / (3 (n - 1)), with V_n the
+    sample variance (n - 1 denominator); the two-sided radius takes d / 2 per
+    side, ln(4 / d). That radius reads the data, so it spends its own tail:
+    share of the endpoint's confidence tail (alpha minus any covariance
+    falsifier tails) goes to it and the rest to the Hoeffding radius and any
+    declared covariance radius, and each PUB reads the smaller. The true mean
+    leaves the smaller interval only when it leaves one of the two, so the
+    union bound keeps coverage at alpha.
+
+    Collection bounds sqrt(V_n(Y)) by sum_k |w_k| sqrt(V_n(s_k)) over the
+    PUB's replica scores s_k, exact for one replica and valid for any
+    within-shot dependence because the sample standard deviation is a norm.
+    Planning, before data, raises each replica's modeled standard deviation
+    by Maurer and Pontil's Theorem 10 (4) allowance
+    R_k sqrt(2 ln(K / t) / (n - 1)), t = variance_tail over the PUBs, K the
+    PUB's replica scores: the sample variance exceeds the planned value with
+    probability at most variance_tail under the model. That event can only
+    widen the collected radius, so the plan spends variance_tail from its
+    power miss probability and coverage stays at alpha.
+    """
+
+    observable_name: str
+    share: float = 0.5
+    variance_tail: float = 1e-3
+
+
+@dataclass(frozen=True)
 class CandidatePlan:
     name: str
     jobs: tuple[JobCandidate, ...]
     covariance_bounds: tuple[CovarianceBound, ...] = ()
     proxy_metadata: dict[str, float | str] = field(default_factory=dict)
+    empirical_bernstein: tuple[EmpiricalBernsteinDesign, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -269,6 +307,39 @@ class ObservationAnalysis:
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
 
+
+EMPIRICAL_BERNSTEIN = {
+    "source": (
+        "A. Maurer and M. Pontil, Empirical Bernstein Bounds and Sample Variance Penalization, COLT 2009, "
+        "arXiv:0907.3740v1, Theorem 4 (i.i.d. scores in [0, 1], n >= 2) and Theorem 10 (4)"
+    ),
+    "inequality": (
+        "one-sided at tail d: mean - sample mean <= sqrt(2 V_n ln(2 / d) / n) + 7 R ln(2 / d) / (3 (n - 1)), "
+        "V_n the sample variance with denominator n - 1 and R the per-shot score range; the two-sided radius "
+        "takes d / 2 per side, ln(4 / d)"
+    ),
+    "alpha_split": (
+        "each opted-in endpoint's confidence tail (alpha minus any covariance falsifier tails) splits equally: "
+        "half to the data-free radius (Hoeffding, or the declared covariance radius where smaller), half to "
+        "the empirical-Bernstein radius; each PUB reads the smaller, and the union bound over the two methods "
+        "and over PUBs keeps coverage at alpha"
+    ),
+    "collection_variance": (
+        "each PUB score Y = sum_k w_k s_k reads V_n(Y) <= n / (n - 1) (sum_k |w_k| sigma_k)^2 with sigma_k the "
+        "plug-in standard deviation of replica score s_k from its outcome frequencies: exact for one replica, "
+        "valid for any within-shot dependence"
+    ),
+    "planning_variance": (
+        "each modeled replica standard deviation rises by Theorem 10 (4)'s allowance "
+        "R_k sqrt(2 ln(K / t) / (n - 1)) at t = variance tail / PUBs, K replica scores per PUB; the plan "
+        "spends the variance tail from its power miss probability, so a variance above plan costs power and "
+        "never coverage"
+    ),
+    "scope": (
+        "endpoints whose per-shot scores are bounded and i.i.d. over shots within a PUB, the conditions the "
+        "Hoeffding radius already requires; power radii stay data-free"
+    ),
+}
 
 ASSUMPTIONS = (
     "independent stationary repetitions; arbitrary dependence within each PUB shot unless explicitly bounded",
@@ -413,6 +484,47 @@ def _validate_plan(plan: CandidatePlan, contracts: tuple[ObservableContract, ...
             bound.observable_name in {contract.name for contract in contracts} and bound.pub_name in pub_names,
             f"{plan.name}: covariance bound names an unknown observable or PUB",
         )
+    _validate_bernstein(plan.empirical_bernstein, contracts)
+    # Theorem 10 (4) bounds the sample variance about the modeled law's own
+    # variance; a law read from Monte Carlo frequencies carries sampling error
+    # that allowance does not cover, so an opted-in endpoint plans on exact
+    # probabilities only.
+    terms = {contract.name: {term.member for term in contract.terms} for contract in contracts}
+    for design in plan.empirical_bernstein:
+        for job in plan.jobs:
+            for pub in job.pubs:
+                _require(
+                    pub.simulation_shots is None or not terms[design.observable_name] & pub.member_distributions.keys(),
+                    f"{design.observable_name}/{pub.name}: an empirical-Bernstein plan reads exact model "
+                    "probabilities; simulation_shots must be None",
+                )
+
+
+def _validate_bernstein(
+    designs: tuple[EmpiricalBernsteinDesign, ...], contracts: tuple[ObservableContract, ...]
+) -> None:
+    names = [design.observable_name for design in designs]
+    _require(len(set(names)) == len(names), "empirical-Bernstein designs must name distinct observables")
+    by_name = {contract.name: contract for contract in contracts}
+    for design in designs:
+        contract = by_name.get(design.observable_name)
+        if contract is None:
+            raise ValueError(f"{design.observable_name}: empirical-Bernstein design names no contract")
+        # The variance tail comes out of the power miss probability, which only
+        # a directional endpoint carries.
+        _require(
+            contract.minimum_effect is not None,
+            f"{design.observable_name}: empirical-Bernstein designs apply to directional endpoints with a power "
+            "contract; a precision-only endpoint has no miss probability to spend the variance tail from",
+        )
+        _require(
+            _finite(design.share) and 0 < design.share < 1,
+            f"{design.observable_name}: empirical-Bernstein share must lie in (0, 1)",
+        )
+        _require(
+            _finite(design.variance_tail) and 0 < design.variance_tail < 1 - contract.power,
+            f"{design.observable_name}: variance tail must lie in (0, 1 - power)",
+        )
 
 
 def _repetition_seconds(pub: PubPrediction) -> float:
@@ -503,6 +615,11 @@ class _PubObservable:
     variance_bound: float | None
     covariance_assumption: str | None
     falsifier_tail: float = 0.0
+    # The variance the empirical-Bernstein radius reads (the sample variance's
+    # Minkowski bound at collection, its planned upper limit before data) and
+    # the share of the tail that radius spends; zero share leaves it unused.
+    sample_variance: float | None = None
+    bernstein_share: float = 0.0
 
 
 def _covariance_variance(bound: CovarianceBound, labels: list[str], weights: list[float]) -> float:
@@ -541,15 +658,27 @@ def _observable_inputs(
     simulation_tail: float,
     covariance_bounds: tuple[CovarianceBound, ...] = (),
     simulation_shots: dict[str, int | None] | None = None,
+    bernstein: EmpiricalBernsteinDesign | None = None,
+    planning: bool = False,
 ) -> tuple[float, float, tuple[_PubObservable, ...]]:
+    """The endpoint's predicted or observed value, simulation allowance and per-PUB score streams.
+
+    With a bernstein design each stream also carries the variance its
+    empirical-Bernstein radius reads: from the supplied distributions as
+    observed frequencies at collection, or as the modeled law raised to its
+    planned upper limit when planning.
+    """
     covariance = {(bound.observable_name, bound.pub_name): bound for bound in covariance_bounds}
     predictions: list[float] = []
     simulation_errors: list[float] = []
     streams: list[_PubObservable] = []
+    deviations: list[tuple[float, int]] = []
     for pub in pubs:
         labels: list[str] = []
         weights: list[float] = []
         spans: list[float] = []
+        deviation = 0.0
+        scored = 0
         samples = (simulation_shots or {}).get(pub.name)
         for term in contract.terms:
             replicas = pub.member_distributions.get(term.member)
@@ -562,9 +691,14 @@ def _observable_inputs(
                     len(distribution) == len(term.values),
                     f"{contract.name}/{term.member}: score and distribution dimensions differ",
                 )
-                predictions.append(
-                    weight * math.fsum(p * value for p, value in zip(distribution, term.values, strict=True))
-                )
+                mean = math.fsum(p * value for p, value in zip(distribution, term.values, strict=True))
+                predictions.append(weight * mean)
+                if bernstein is not None and span:
+                    spread = math.fsum(
+                        p * (value - mean) ** 2 for p, value in zip(distribution, term.values, strict=True)
+                    )
+                    deviation += abs(weight) * math.sqrt(max(spread, 0.0))
+                    scored += 1
                 labels.append(f"{term.member}/r{replica_index}")
                 weights.append(weight)
                 spans.append(abs(weight) * span)
@@ -584,12 +718,67 @@ def _observable_inputs(
                     bound.falsifier_tail if bound is not None else 0.0,
                 )
             )
+            deviations.append((deviation, scored))
         else:
             _require(
                 (contract.name, pub.name) not in covariance,
                 f"{contract.name}/{pub.name}: covariance bound has no observable terms",
             )
+    if bernstein is not None:
+        streams = _bernstein_streams(streams, deviations, bernstein, planning)
     return math.fsum(predictions), math.fsum(simulation_errors), tuple(streams)
+
+
+def empirical_bernstein_radius(variance: float, span: float, shots: int, tail: float, two_sided: bool) -> float:
+    """Maurer-Pontil Theorem 4 radius of the mean of shots scores of range span and sample variance variance.
+
+    One-sided: sqrt(2 V_n ln(2 / tail) / n) + 7 span ln(2 / tail) / (3 (n - 1)); the
+    two-sided radius spends tail / 2 per side. The score range clips it, and
+    fewer than two shots leave only the range.
+    """
+    if shots < 2:
+        return span
+    log = math.log((4.0 if two_sided else 2.0) / tail)
+    return min(math.sqrt(2 * variance * log / shots) + 7 * span * log / (3 * (shots - 1)), span)
+
+
+def sample_deviation_allowance(span: float, shots: int, tail: float) -> float:
+    """Maurer-Pontil Theorem 10 (4) scaled to range span: sqrt(V_n) exceeds sqrt(E V_n) by more w.p. at most tail."""
+    return span * math.sqrt(2 * math.log(1.0 / tail) / (shots - 1))
+
+
+def _bernstein_streams(
+    streams: list[_PubObservable],
+    deviations: list[tuple[float, int]],
+    design: EmpiricalBernsteinDesign,
+    planning: bool,
+) -> list[_PubObservable]:
+    """Attach each stream's empirical-Bernstein variance and tail share.
+
+    deviations holds sum_k |w_k| sigma_k of the stream's replica scores under
+    the supplied laws and the count K of scored replica scores. Collection
+    reads n / (n - 1) times its square, the Minkowski bound on the PUB score's
+    sample variance. Planning adds Theorem 10 (4)'s allowance to every
+    sigma_k at tail variance_tail / (PUBs x K), whose weighted sum is the
+    stream span times the allowance factor. The bound on any sample variance,
+    n / (n - 1) x span^2 / 4, caps both.
+    """
+    active = sum(1 for stream in streams if stream.span > 0)
+    attached = []
+    for stream, (deviation, scored) in zip(streams, deviations, strict=True):
+        variance = None
+        if stream.span > 0 and stream.shots >= 2:
+            inflation = stream.shots / (stream.shots - 1)
+            if planning:
+                tail = design.variance_tail / (active * max(scored, 1))
+                deviation += sample_deviation_allowance(stream.span, stream.shots, tail)
+                variance = deviation * deviation
+            else:
+                variance = inflation * deviation * deviation
+            variance = min(variance, inflation * stream.span * stream.span / 4)
+            _require(math.isfinite(variance), f"{stream.name}: empirical-Bernstein variance overflowed")
+        attached.append(replace(stream, sample_variance=variance, bernstein_share=design.share))
+    return attached
 
 
 def _confidence_tail(contract: ObservableContract, streams: tuple[_PubObservable, ...]) -> float:
@@ -599,7 +788,131 @@ def _confidence_tail(contract: ObservableContract, streams: tuple[_PubObservable
     return remaining
 
 
-def _radius(streams: tuple[_PubObservable, ...], probability: float, two_sided: bool) -> float:
+def _stream_radii(stream: _PubObservable, tail: float, two_sided: bool, empirical: bool) -> tuple[float, float | None]:
+    """One PUB's data-free radius (Hoeffding, or the declared covariance radius where smaller) and its
+    empirical-Bernstein radius, each at its share of tail; None where the stream reads no empirical radius."""
+    variance = stream.sample_variance if empirical else None
+    share = stream.bernstein_share if variance is not None else 0.0
+    fixed_tail = tail * (1.0 - share)
+    # A split tail that underflows to zero keeps the score range, the radius
+    # _radius returns when the union-bound allocation underflows.
+    radius = stream.span
+    if fixed_tail > 0:
+        hoeffding = stream.span * math.sqrt(math.log((2.0 if two_sided else 1.0) / fixed_tail) / (2 * stream.shots))
+        radius = min(hoeffding, stream.span)
+        if stream.variance_bound is not None:
+            multiplier = 1.0 / fixed_tail if two_sided else (1.0 - fixed_tail) / fixed_tail
+            covariance_radius = math.sqrt(stream.variance_bound / stream.shots * multiplier)
+            radius = min(radius, covariance_radius)
+    if variance is None or not share or not tail * share > 0:
+        return radius, None
+    return radius, empirical_bernstein_radius(variance, stream.span, stream.shots, tail * share, two_sided)
+
+
+def _bernstein_detail(
+    contract: ObservableContract,
+    streams: tuple[_PubObservable, ...],
+    design: EmpiricalBernsteinDesign,
+    planning: bool,
+) -> dict[str, Any]:
+    """Every radius an opted-in endpoint composes: per PUB, both methods at their tails and the one it reads."""
+    alpha = _confidence_tail(contract, streams)
+    active = [stream for stream in streams if stream.span > 0]
+    kinds = [("confidence", True)] + ([("detection", False)] if contract.minimum_effect is not None else [])
+    pubs: list[dict[str, Any]] = []
+    totals: dict[str, dict[str, float]] = {}
+    for stream in active:
+        row: dict[str, Any] = {
+            "pub": stream.name,
+            "shots": stream.shots,
+            "score_span": stream.span,
+            "variance": stream.sample_variance,
+        }
+        for kind, two_sided in kinds:
+            fixed, bernstein = _stream_radii(stream, alpha / len(active), two_sided, True)
+            used = fixed if bernstein is None else min(fixed, bernstein)
+            row[kind] = {
+                "data_free": fixed,
+                "empirical_bernstein": bernstein,
+                "used": used,
+                "method": "empirical_bernstein" if bernstein is not None and bernstein < fixed else "data_free",
+            }
+            total = totals.setdefault(kind, {"data_free": 0.0, "empirical_bernstein": 0.0, "used": 0.0})
+            total["data_free"] += fixed
+            total["empirical_bernstein"] += stream.span if bernstein is None else bernstein
+            total["used"] += used
+        pubs.append(row)
+    for kind, two_sided in kinds:
+        totals.setdefault(kind, {"data_free": 0.0, "empirical_bernstein": 0.0, "used": 0.0})
+        totals[kind]["without_empirical_bernstein"] = _radius(streams, alpha, two_sided)
+    detail: dict[str, Any] = {
+        "observable": contract.name,
+        "alpha": contract.alpha,
+        "falsifier_tail": contract.alpha - alpha,
+        "confidence_tail": alpha,
+        "share": design.share,
+        "data_free_tail": alpha * (1 - design.share),
+        "empirical_bernstein_tail": alpha * design.share,
+        "variance": (
+            "planned upper limit: modeled replica standard deviations, each raised by the Theorem 10 (4) "
+            f"allowance at total tail {design.variance_tail}"
+            if planning
+            else "observed: n / (n - 1) (sum_k |w_k| sigma_k)^2 over the PUB's replica score frequencies"
+        ),
+        "pubs": pubs,
+        "radii": totals,
+    }
+    if contract.minimum_effect is not None:
+        detail |= {
+            "variance_tail": design.variance_tail,
+            "power_tail": _power_tail(contract, design),
+            "power_radius": _radius(streams, _power_tail(contract, design), two_sided=False),
+            "power_radius_without_empirical_bernstein": _radius(streams, 1 - contract.power, two_sided=False),
+        }
+    return detail
+
+
+def planned_empirical_bernstein(plan: CandidatePlan, contracts: tuple[ObservableContract, ...]) -> list[dict[str, Any]]:
+    """_bernstein_detail of every opted-in endpoint at the plan's shots and planned variances."""
+    _validate_plan(plan, contracts)
+    pubs = tuple(ObservedPub(pub.name, pub.member_distributions, job.shots) for job in plan.jobs for pub in job.pubs)
+    details = []
+    for contract in contracts:
+        design = _design(plan.empirical_bernstein, contract)
+        if design is None:
+            continue
+        _, _, streams = _observable_inputs(pubs, contract, 1.0, plan.covariance_bounds, None, design, planning=True)
+        details.append(_bernstein_detail(contract, streams, design, planning=True))
+    return details
+
+
+def observed_empirical_bernstein(
+    pubs: tuple[ObservedPub, ...],
+    contracts: tuple[ObservableContract, ...],
+    covariance_bounds: tuple[CovarianceBound, ...],
+    designs: tuple[EmpiricalBernsteinDesign, ...],
+) -> list[dict[str, Any]]:
+    """_bernstein_detail of every opted-in endpoint at the observed shots and sample variances."""
+    _validate_observable_contracts(contracts)
+    _validate_bernstein(designs, contracts)
+    details = []
+    for contract in contracts:
+        design = _design(designs, contract)
+        if design is None:
+            continue
+        _, _, streams = _observable_inputs(pubs, contract, 1.0, covariance_bounds, None, design)
+        details.append(_bernstein_detail(contract, streams, design, planning=False))
+    return details
+
+
+def _radius(streams: tuple[_PubObservable, ...], probability: float, two_sided: bool, empirical: bool = False) -> float:
+    """Union-bound radius over the PUB streams at total tail probability.
+
+    empirical marks a confidence or detection radius, which the collected
+    data set and which may read a stream's empirical-Bernstein radius; a
+    power radius describes the alternative's lower tail and reads the
+    data-free radius only.
+    """
     active = [stream for stream in streams if stream.span > 0]
     if not active:
         return 0.0
@@ -610,29 +923,48 @@ def _radius(streams: tuple[_PubObservable, ...], probability: float, two_sided: 
         return math.fsum(stream.span for stream in active)
     radii: list[float] = []
     for stream in active:
-        hoeffding = stream.span * math.sqrt(math.log((2.0 if two_sided else 1.0) / tail) / (2 * stream.shots))
-        radius = min(hoeffding, stream.span)
-        if stream.variance_bound is not None:
-            multiplier = 1.0 / tail if two_sided else (1.0 - tail) / tail
-            covariance_radius = math.sqrt(stream.variance_bound / stream.shots * multiplier)
-            radius = min(radius, covariance_radius)
-        radii.append(radius)
+        radius, bernstein = _stream_radii(stream, tail, two_sided, empirical)
+        radii.append(radius if bernstein is None else min(radius, bernstein))
     return math.fsum(radii)
+
+
+def _power_tail(contract: ObservableContract, design: EmpiricalBernsteinDesign | None) -> float:
+    """The power radius's tail: the miss probability less the planned sample-variance excursion it covers."""
+    return 1 - contract.power - (design.variance_tail if design is not None else 0.0)
+
+
+def _bound_methods(streams: tuple[_PubObservable, ...]) -> tuple[str, ...]:
+    methods = []
+    for stream in streams:
+        method = (
+            "hoeffding_arbitrary_within_shot"
+            if stream.variance_bound is None
+            else "minimum_of_hoeffding_and_declared_covariance_cantelli_or_chebyshev"
+        )
+        if stream.bernstein_share:
+            method = (
+                "minimum_of_hoeffding_and_empirical_bernstein_split_alpha"
+                if stream.variance_bound is None
+                else "minimum_of_hoeffding_declared_covariance_and_empirical_bernstein_split_alpha"
+            )
+        methods.append(method)
+    return tuple(methods)
 
 
 def _evaluate_observable(plan: CandidatePlan, contract: ObservableContract, simulation_tail: float) -> ObservableResult:
     pubs = tuple(ObservedPub(pub.name, pub.member_distributions, job.shots) for job in plan.jobs for pub in job.pubs)
     samples = {pub.name: pub.simulation_shots for job in plan.jobs for pub in job.pubs}
+    design = _design(plan.empirical_bernstein, contract)
     predicted, model_radius, streams = _observable_inputs(
-        pubs, contract, simulation_tail, plan.covariance_bounds, samples
+        pubs, contract, simulation_tail, plan.covariance_bounds, samples, design, planning=True
     )
     alpha = _confidence_tail(contract, streams)
-    confidence = _radius(streams, alpha, two_sided=True)
+    confidence = _radius(streams, alpha, two_sided=True, empirical=True)
     reasons: list[str] = []
     detection = power = effect_used = None
     if contract.minimum_effect is not None:
-        detection = _radius(streams, alpha, two_sided=False)
-        power = _radius(streams, 1 - contract.power, two_sided=False)
+        detection = _radius(streams, alpha, two_sided=False, empirical=True)
+        power = _radius(streams, _power_tail(contract, design), two_sided=False)
         modeled_gap = predicted - model_radius - contract.null_value
         effect_used = modeled_gap if contract.minimum_effect == 0 else contract.minimum_effect
         if modeled_gap <= 0 or modeled_gap < contract.minimum_effect:
@@ -656,22 +988,24 @@ def _evaluate_observable(plan: CandidatePlan, contract: ObservableContract, simu
         contract.alpha,
         contract.power if contract.minimum_effect is not None else None,
         contract.null_value,
-        tuple(
-            "hoeffding_arbitrary_within_shot"
-            if stream.variance_bound is None
-            else "minimum_of_hoeffding_and_declared_covariance_cantelli_or_chebyshev"
-            for stream in streams
-        ),
+        _bound_methods(streams),
         tuple(stream.covariance_assumption for stream in streams if stream.covariance_assumption is not None),
         not reasons,
         tuple(reasons),
     )
 
 
+def _design(
+    designs: tuple[EmpiricalBernsteinDesign, ...], contract: ObservableContract
+) -> EmpiricalBernsteinDesign | None:
+    return next((design for design in designs if design.observable_name == contract.name), None)
+
+
 def analyze_observations(
     pubs: tuple[ObservedPub, ...],
     contracts: tuple[ObservableContract, ...],
     covariance_bounds: tuple[CovarianceBound, ...] = (),
+    empirical_bernstein: tuple[EmpiricalBernsteinDesign, ...] = (),
 ) -> ObservationAnalysis:
     """Apply the planner's grouped bounds and directional test to measured data.
 
@@ -680,10 +1014,14 @@ def analyze_observations(
     threshold used by the planner's power contract. Dependence within a PUB shot
     remains arbitrary unless the plan declared a covariance bound for that
     observable and PUB; the collector then applies the same bound the planner
-    did. Invalid identities or marginal distributions raise ValueError so a
-    collector can withhold the analysis explicitly.
+    did. An endpoint the plan opted into empirical_bernstein takes, per PUB,
+    the smaller of that radius and the Hoeffding radius at their alpha split,
+    with the variance read from the observed frequencies. Invalid identities
+    or marginal distributions raise ValueError so a collector can withhold the
+    analysis explicitly.
     """
     _validate_observable_contracts(contracts)
+    _validate_bernstein(empirical_bernstein, contracts)
     _require(bool(pubs), "at least one observed PUB is required")
     _require(len({pub.name for pub in pubs}) == len(pubs), "observed PUB names must be unique")
     members: set[str] = set()
@@ -706,10 +1044,14 @@ def analyze_observations(
     for contract in contracts:
         for term in contract.terms:
             _require(term.member in members, f"{contract.name}: observed member {term.member!r} is absent")
-        estimate, _, streams = _observable_inputs(pubs, contract, 1.0, covariance_bounds)
+        estimate, _, streams = _observable_inputs(
+            pubs, contract, 1.0, covariance_bounds, None, _design(empirical_bernstein, contract)
+        )
         alpha = _confidence_tail(contract, streams)
-        confidence = _radius(streams, alpha, two_sided=True)
-        detection = _radius(streams, alpha, two_sided=False) if contract.minimum_effect is not None else None
+        confidence = _radius(streams, alpha, two_sided=True, empirical=True)
+        detection = (
+            _radius(streams, alpha, two_sided=False, empirical=True) if contract.minimum_effect is not None else None
+        )
         rows.append(
             ObservationResult(
                 contract.name,
@@ -721,24 +1063,28 @@ def analyze_observations(
                 contract.null_value,
                 detection,
                 estimate - detection > contract.null_value if detection is not None else None,
-                tuple(
-                    "hoeffding_arbitrary_within_shot"
-                    if stream.variance_bound is None
-                    else "minimum_of_hoeffding_and_declared_covariance_cantelli_or_chebyshev"
-                    for stream in streams
-                ),
+                _bound_methods(streams),
             )
         )
     return ObservationAnalysis(
         tuple(rows),
         "shared planning/collection Hoeffding bounds grouped by immutable PUB identity"
-        + ("; declared covariance bounds where the plan carried them" if covariance_bounds else ""),
+        + ("; declared covariance bounds where the plan carried them" if covariance_bounds else "")
+        + ("; empirical-Bernstein radii at their alpha split where the plan opted in" if empirical_bernstein else ""),
         (
             "independent stationary repetitions; arbitrary dependence among replicas and members within each PUB shot"
             + (" unless a declared covariance bound applies" if covariance_bounds else ""),
             "union bounds across PUBs; no independence assumption between PUBs or jobs",
             "directional rejection uses the one-sided alpha radius; displayed intervals use the two-sided alpha radius",
             *sorted({bound.assumption for bound in covariance_bounds}),
+            *(
+                (
+                    "empirical-Bernstein radii (Maurer-Pontil Theorem 4) read each PUB score's sample variance "
+                    "through the Minkowski bound over its replica scores and spend their share of alpha",
+                )
+                if empirical_bernstein
+                else ()
+            ),
         ),
     )
 
@@ -747,6 +1093,7 @@ def observation_power_radii(
     pubs: tuple[ObservedPub, ...],
     contracts: tuple[ObservableContract, ...],
     covariance_bounds: tuple[CovarianceBound, ...] = (),
+    empirical_bernstein: tuple[EmpiricalBernsteinDesign, ...] = (),
 ) -> dict[str, float]:
     """The planner's one-sided power radius at tail 1 - power for each directional contract, at the observed shots.
 
@@ -755,12 +1102,15 @@ def observation_power_radii(
     family its analysis applied.
     """
     _validate_observable_contracts(contracts)
+    _validate_bernstein(empirical_bernstein, contracts)
     radii: dict[str, float] = {}
     for contract in contracts:
         if contract.minimum_effect is None:
             continue
         _, _, streams = _observable_inputs(pubs, contract, 1.0, covariance_bounds)
-        radii[contract.name] = _radius(streams, 1 - contract.power, two_sided=False)
+        radii[contract.name] = _radius(
+            streams, _power_tail(contract, _design(empirical_bernstein, contract)), two_sided=False
+        )
     return radii
 
 

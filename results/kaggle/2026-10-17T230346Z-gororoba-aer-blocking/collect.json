@@ -1,0 +1,22 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-aer-blocking/2",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-17T231733Z",
+ "files": {
+  "gororoba-aer-blocking.log": "e0672a9e09d26af718ba50f95641898b4bc53b4f8dc16dc13a64fff89007b1b1",
+  "output/aer_blocking_probe.json": "88022c2eb71114d7aad786f3efc6ff648c354d3ae7506ac517e8ddb7bd246ad4",
+  "output/environment.json": "dbe682a5bfc19883712d3b3c08f6466e70d25f591f88b262fe45d13064054d09",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/gpu-env-report.txt": "73f4d7d8a4f5446d41bee5d9df938de99cb90758e9174b6eb33eb06ad0a58f5f",
+  "output/gpu-freeze.txt": "d3736239ff0f1fafd41b66830c3dcd0db61138ce2ea40a05d6ab9b9cb8135637",
+  "output/gpu-venv.txt": "3ea249f1b95aef7d0c560fdddbe785d61f8481f8cc2a3556cf81746829c149ff",
+  "output/gpu_env.json": "cb26315ea0f32e8e08de3d746334ca65c5f1f80afc1563b123d814499c041dea",
+  "output/hypercomplex.json": "7fcc3d43f1700398f2b6febb88fda8df3c724959620618df48e0567efff55680",
+  "output/install-pins.txt": "a47a593fc3dec2e907f69b86858e3678b70432bd0b81216400407a3455529f83",
+  "output/pip.txt": "6b165fb4aa4c70aeb515efa500c229c9b0783e6fe8101bc29067e497b495cd46",
+  "output/stderr.txt": "50e31b712644548df2ea205f2e49aed62d938a59070d48f36338db20c2753895",
+  "output/stdout.txt": "ce8c712d9fd3b82d5b5bf6e743f02a04caad42468cd05d072b77081d8d6ee735",
+  "output/uv-install.txt": "fda86dd68ac3f0f902d065bb87d0a557d1410e186c0b8369ea3876dfc08449d7"
+ }
+}

@@ -625,6 +625,90 @@
       "question": "Ry smoke batch-01 (full Design B dark and bright witnesses of (1,10)(4,15) and the negative fixture): does the 5-qubit encoding keep its contrast on Ry?"
     },
     {
+      "id": "qi-boxkite-tuna17-follow-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_follow-batch-00",
+      "family": "box-kite Tuna-17 follow series",
+      "question": "Follow batch-00 on Tuna-17 (readout pair and the walk omit-last controls): do the omit-last walk controls read <X_c> = 0, and where do the readout rates open the series?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-follow-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_follow-batch-01",
+      "family": "box-kite Tuna-17 follow series",
+      "question": "Follow batch-01 on Tuna-17 (bright crossover in X and the depth-9 bright edge in X): does the 2 x 2 crossover hold twist equality in X, and how do the depth-1 and depth-9 bright edges read in X?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-follow-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_follow-batch-02",
+      "family": "box-kite Tuna-17 follow series",
+      "question": "Follow batch-02 on Tuna-17 (bright crossover in Y and the depth-9 bright edge in Y): does the 2 x 2 crossover hold twist equality in Y, and how do the depth-1 and depth-9 bright edges read in Y?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-follow-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_follow-batch-03",
+      "family": "box-kite Tuna-17 follow series",
+      "question": "Follow batch-03 on Tuna-17 (readout pair and both walks read in X): do both associator walks read <X_c> with the sign of omega, and how far did the readout rates move since batch-00?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-follow-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_follow-batch-04",
+      "family": "box-kite Tuna-17 follow series",
+      "question": "Follow batch-04 on Tuna-17 (both walks read in Y and the dark crossover in X): what imaginary part do the walk controls carry, and does the dark crossover hold twist equality in X?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-follow-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_follow-batch-05",
+      "family": "box-kite Tuna-17 follow series",
+      "question": "Follow batch-05 on Tuna-17 (dark crossover in Y and the depth-5 bright edge in X): does the dark crossover hold twist equality in Y, and how does the depth-5 bright edge read in X?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-follow-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_follow-batch-06",
+      "family": "box-kite Tuna-17 follow series",
+      "question": "Follow batch-06 on Tuna-17 (depth-5 bright edge in Y and the closing readout pair): how does the depth-5 bright edge read in Y, and how far did the readout rates move since batch-03?"
+    },
+    {
+      "id": "qi-boxkite-qx-twins-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-01",
+      "family": "box-kite Tuna-17 dry run on the ideal QX emulator",
+      "question": "Twin batch-01 on QX (the walk omit-last control and the bright X crossover, relabeled onto qubits 0-9): does every deterministic replica read its census outcome exactly?"
+    },
+    {
+      "id": "qi-boxkite-qx-twins-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-02",
+      "family": "box-kite Tuna-17 dry run on the ideal QX emulator",
+      "question": "Twin batch-02 on QX (the depth-9 bright X edge and the bright Y crossover, relabeled onto qubits 0-9): does every deterministic replica read its census outcome exactly?"
+    },
+    {
+      "id": "qi-boxkite-qx-twins-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-03",
+      "family": "box-kite Tuna-17 dry run on the ideal QX emulator",
+      "question": "Twin batch-03 on QX (the depth-9 bright Y edge and both walks in X and Y, relabeled onto qubits 0-9): does every deterministic replica read its census outcome exactly?"
+    },
+    {
+      "id": "qi-boxkite-qx-twins-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-05",
+      "family": "box-kite Tuna-17 dry run on the ideal QX emulator",
+      "question": "Twin batch-05 on QX (the dark X crossover and the first dark Y circuit, relabeled onto qubits 0-9): does every deterministic replica read its census outcome exactly?"
+    },
+    {
+      "id": "qi-boxkite-qx-twins-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-06",
+      "family": "box-kite Tuna-17 dry run on the ideal QX emulator",
+      "question": "Twin batch-06 on QX (the second dark Y circuit and the depth-5 bright edges, relabeled onto qubits 0-9): does every deterministic replica read its census outcome exactly?"
+    },
+    {
       "id": "qd-sim-belenos-pairs-job-00",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-00",
@@ -4176,7 +4260,7 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json",
-          "sha256": "b4836141978d8970caa3f8ca4942cb21e21e313786528ea2eda7d911dac5b2ab"
+          "sha256": "a20dfa4c30f5937665bda07b83b1e585187ac3478367a1789563e28aa2cf51be"
         }
       ],
       "documents": [
@@ -4206,7 +4290,7 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json",
-          "sha256": "b4836141978d8970caa3f8ca4942cb21e21e313786528ea2eda7d911dac5b2ab"
+          "sha256": "a20dfa4c30f5937665bda07b83b1e585187ac3478367a1789563e28aa2cf51be"
         }
       ],
       "documents": [
@@ -4258,6 +4342,88 @@
       "assumptions": [],
       "depends_on": [
         "qi-ry-emulator-reader-constructs"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-boxkite-follow-crossover",
+      "statement": "On Tuna-17 the packed follow series (7 batches, 21 jobs at 16384 shots, readout brackets in batches 0, 3 and 6 that moved at most 0.0076) gives every preregistered decision the census predicts. The reduced two-label LCU classifies all six rows: the kite-3 edge D = -0.964, -0.953, -0.916 on (1,4), (10,13), (12,14), its kite-6 twist D = +0.967, +0.952, the strut D = 0.001 (SE 0.002 to 0.004). Twist equality holds in all four block x setting crossovers at shot noise without a pair allowance: |Delta| at most 0.0040, |z| at most 2.44 against 3. Every depth-1 X conditional coherence has the census sign (E_0 = -1 bright, E_1 = +1 dark), and all eight strut branch expectations lie inside 0.1 + 3 sigma. Both associator walks read <X_c> with the sign of omega = -1 (-0.784 +- 0.006 on star 14 {11, 12, 16}, 6 CZ; -0.937 +- 0.006 on path 4 {1, 2}, 4 CZ), their omit-last controls stay inside 0.1 + 3 sigma, and the walk magnitudes 0.819 and 0.938 lie inside 0.10 of T0's r^n_CZ (0.810, 0.869). The five QX twin batches read every deterministic replica's outcome in all 2048 shots.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration of one evening (23:08Z to 23:29Z), three pairs, one edge, its twist and one strut, and two walk exemplars. The twist test differences replicas of one batch, so drift between batches cancels; the classification and coherence signs are deterministic-limit decisions that the batch-to-batch scatter of the exploratory claim does not reach. The cross-predicted magnitudes are reported, not decided: two depth-1 X coherences on (10,13) read |E| = 1.10 after readout correction, outside the 0.954 +- 0.10 band, because the bracket's e10 for q13 exceeds its witness-context value (claim qi-tuna17-boxkite-follow-ladder-drift).",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/box_kite_tuna_17_follow_analysis.json",
+          "sha256": "dad87269a7b36ee67003e1f5f3d73f299486145062520f99814ec30f936c0426"
+        }
+      ],
+      "documents": [
+        "docs/notes/box_kites/experiment-program.md",
+        "docs/notes/quantum_inspire/tuna-17.md",
+        "docs/notes/quantum_inspire/tuna-17-run-design.md",
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-425": "replay",
+        "core-420": "freshness"
+      },
+      "acquisitions": [
+        "qi-boxkite-tuna17-follow-batch-00",
+        "qi-boxkite-tuna17-follow-batch-01",
+        "qi-boxkite-tuna17-follow-batch-02",
+        "qi-boxkite-tuna17-follow-batch-03",
+        "qi-boxkite-tuna17-follow-batch-04",
+        "qi-boxkite-tuna17-follow-batch-05",
+        "qi-boxkite-tuna17-follow-batch-06",
+        "qi-boxkite-qx-twins-batch-01",
+        "qi-boxkite-qx-twins-batch-02",
+        "qi-boxkite-qx-twins-batch-03",
+        "qi-boxkite-qx-twins-batch-05",
+        "qi-boxkite-qx-twins-batch-06"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qi-tuna17-boxkite-t0-depth-ladder"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-boxkite-follow-ladder-drift",
+      "statement": "The follow series' reported estimates and their limits on Tuna-17. Coherence ladder (CZ depths 1, 5, 9; unweighted fits, 99% shot-noise intervals): r_coh = 0.962 and 0.957, r_pop = 0.925 and 0.915, r_coh / r_pop = 1.040 and 1.047 on (1,4) and (10,13); on (12,14) r_coh = 0.908 while 2 Pc(9) - 1 is negative, so r_pop is undefined; the phase slope per CZ lies within [-0.008, 0.008] rad on every pair. The X and Y replicas of one depth-9 bright edge, which run in consecutive batches and share the selector marginal, differ by 0.024 to 0.033 on all three pairs (4 to 7 shot-noise sigma), against at most 0.014 at depth 5 and 0.007 at depth 1, so deep-circuit populations scatter between batches by about 0.03 beyond shot noise and the ladder intervals understate the uncertainty; r_coh / r_pop above 1 and Pc(12,14, depth 9) = 0.483 below 1/2 are not established. Against T0 seven and a half hours earlier (no retained record places a platform calibration between them), the bright-edge populations moved by -0.209 on (12,14) at depth 9, -0.106 on (10,13) at depth 5 and -0.042 on (1,4) at depth 9, beyond that scatter. The q13 readout-1 bracket gives e10 = 0.091 while the bright (10,13) coherence's raw -0.911 corrects to -1.105, so the all-qubit readout pair misstates q13's |1> misassignment in the witness context. The walk controls carry phases of 0.297 +- 0.010 rad (star) and 0.052 +- 0.009 rad (path) about omega. The 21 jobs executed in 243.3 s against the design's 233.6 s.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive summaries of the retained follow runs; nothing here was a preregistered decision. The bootstrap carries shot and readout-bracket noise only. The q13 discrepancy has two candidate mechanisms that this design does not separate: readout that depends on the state of neighboring qubits (readout-1 excites all 17) and a preparation error of readout-1's own X on q13. The walk phases identify no CZ window or detuning, since each CZ adds its residual local phase. The path omit control reads -0.119 against a limit of 0.126 and one strut branch +0.135 against 0.136: inside the preregistered null offset, though far from 0 on shot noise. A within-batch ladder (depths 1 and 9 in X share batch-01) is the prospective test of r_coh / r_pop.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/box_kite_tuna_17_follow_analysis.json",
+          "sha256": "dad87269a7b36ee67003e1f5f3d73f299486145062520f99814ec30f936c0426"
+        }
+      ],
+      "documents": [
+        "docs/notes/box_kites/experiment-program.md",
+        "docs/notes/quantum_inspire/tuna-17.md",
+        "docs/notes/quantum_inspire/tuna-17-run-design.md",
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-425": "replay"
+      },
+      "acquisitions": [
+        "qi-boxkite-tuna17-follow-batch-00",
+        "qi-boxkite-tuna17-follow-batch-01",
+        "qi-boxkite-tuna17-follow-batch-02",
+        "qi-boxkite-tuna17-follow-batch-03",
+        "qi-boxkite-tuna17-follow-batch-04",
+        "qi-boxkite-tuna17-follow-batch-05",
+        "qi-boxkite-tuna17-follow-batch-06"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qi-tuna17-boxkite-t0-depth-ladder"
       ],
       "supersedes": [],
       "superseded_by": null

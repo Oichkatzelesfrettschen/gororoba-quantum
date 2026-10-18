@@ -38,7 +38,15 @@ also regenerates the circuits and requires each sha256 and each replica's
 checks, qubits included, to equal the record's, which binds the record to
 this checkout's generator and re-checks every prediction by state vector.
 --require-pass fails when any check is refuted or the record ran with
---limit, so an evidence replay accepts only the exhaustive family.
+--limit, so an evidence replay accepts only the exhaustive family. --live N
+reruns a sample of the record's circuits on qxelarator under $QI_PYTHON
+(qi_stack.live) and requires each histogram to equal the retained counts
+exactly: the sample is N circuits spread evenly over series order plus the
+first circuit of every sub-family, each regenerated from this checkout
+(sha256 against the record) and run at its recorded seed and shots. A seeded
+qxelarator 0.10.0 run is deterministic, so one differing count refutes the
+record or the emulator build. Without the stack, --live prints the replay
+line and the replay stands alone.
 
 --emulate CASE_DIR... runs every circuit of the given case directories on
 qxelarator at its manifest's shots (seed BASE_SEED + its index), applies the
@@ -51,7 +59,7 @@ census, requires the replay to accept them, and requires mutated counts,
 seeds, predictions, coverage and digests to be rejected.
 
 Usage: "$PYTHON" scripts/box_kite_qx_sweep.py --run DIR [--family a de] [--limit N]
-       "$PYTHON" scripts/box_kite_qx_sweep.py --replay RECORD [--bind] [--require-pass]
+       "$PYTHON" scripts/box_kite_qx_sweep.py --replay RECORD [--bind] [--require-pass] [--live N]
        "$PYTHON" scripts/box_kite_qx_sweep.py --emulate CASE_DIR... [--out FILE]
        "$PYTHON" scripts/box_kite_qx_sweep.py --self-test
 """
@@ -70,6 +78,7 @@ from collections.abc import Callable
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
 # qxelarator 0.10.0 is a SWIG 4.3 module whose builtin types lack __module__;
 # Python 3.13 reports that as a DeprecationWarning at import and again during
@@ -86,6 +95,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import box_kite_cases as cases  # noqa: E402
 
 import parallel  # noqa: E402
+import qi_stack  # noqa: E402
 
 SCHEMA = "box-kite-qx-sweep-v1"
 EMULATE_SCHEMA = "box-kite-qx-emulation-v1"
@@ -128,7 +138,10 @@ def count_check(kind: str, bits: Callable[[str], list[str]], histogram: dict[str
                 k += count * (values[1] == "0")
             else:
                 k += count * (values[1:].count("1") % 2 == 0)
-        elif kind not in ("p_zero_given_zero", "parity_zero_given_zero"):
+        elif kind == "p_zero_given_one" and values[0] == "1":
+            n += count
+            k += count * (values[1] == "0")
+        elif kind not in ("p_zero_given_zero", "parity_zero_given_zero", "p_zero_given_one"):
             raise ValueError(f"unknown check {kind!r}")
     return k, n
 
@@ -337,11 +350,17 @@ def expected_replicas(family: str, census: dict[str, Any], limit: int | None) ->
     return out
 
 
-def replay(record: dict[str, Any], bind: bool = False, exhaustive: bool = False) -> dict[str, Any]:
+def replay(
+    record: dict[str, Any],
+    bind: bool = False,
+    exhaustive: bool = False,
+    regenerated: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     """Every verdict of a sweep record re-derived from its counts and the census; raises on a difference.
 
     exhaustive refuses a record made with --limit, which covers only the first N replicas of each
-    sub-family; evidence replay of the family requires it.
+    sub-family; evidence replay of the family requires it. bind compares the record with regenerated,
+    the family's circuits from this checkout, which it builds when the caller passes none.
     """
     if record.get("schema") != SCHEMA or record.get("family") not in FAMILIES:
         raise ValueError(f"record schema {record.get('schema')!r} or family {record.get('family')!r} is unknown")
@@ -386,7 +405,7 @@ def replay(record: dict[str, Any], bind: bool = False, exhaustive: bool = False)
     if summarize(record["circuits"]) != record["summary"]:
         raise ValueError("record summary differs from its circuits")
     if bind:
-        regenerated = family_circuits(record["family"], limit)
+        regenerated = regenerated if regenerated is not None else family_circuits(record["family"], limit)
         if [c["file"] for c in regenerated] != [c["file"] for c in record["circuits"]]:
             raise ValueError("regenerated circuit files differ from the record")
         for new, old in zip(regenerated, record["circuits"], strict=True):
@@ -395,6 +414,50 @@ def replay(record: dict[str, Any], bind: bool = False, exhaustive: bool = False)
             if new["replicas"] != bare(old)["replicas"]:
                 raise ValueError(f"{old['file']}: regenerated replica checks differ from the record")
     return record["summary"]
+
+
+def live_indices(circuits: list[dict[str, Any]], count: int) -> list[int]:
+    """count positions spread evenly over the series, the first and last included, plus each sub-family's first."""
+    total = len(circuits)
+    spread = {round(n * (total - 1) / (count - 1)) for n in range(count)} if count > 1 else {0}
+    firsts = {
+        next(n for n, c in enumerate(circuits) if c["sub_family"] == name)
+        for name in {c["sub_family"] for c in circuits}
+    }
+    return sorted(n for n in spread | firsts if n < total)
+
+
+def qx_worker() -> int:
+    """--qx-worker under $QI_PYTHON: [text, shots, seed] jobs on stdin, qxelarator histograms on stdout, in order."""
+    from importlib import metadata
+
+    if metadata.version("qxelarator") != QXELARATOR:
+        raise SystemExit(f"qxelarator {metadata.version('qxelarator')} is installed; the sweep pins {QXELARATOR}")
+    jobs = [tuple(job) for job in json.loads(sys.stdin.read())]
+    print(json.dumps(parallel.ordered_map(emulate, jobs, min_items=2)))
+    return 0
+
+
+def live_check(record: dict[str, Any], count: int, regenerated: list[dict[str, Any]] | None = None) -> int:
+    """Rerun a sample of the record's circuits on qxelarator under $QI_PYTHON; raises on any differing count."""
+    circuits = regenerated if regenerated is not None else family_circuits(record["family"], record["limit"])
+    if [c["file"] for c in circuits] != [c["file"] for c in record["circuits"]]:
+        raise ValueError("regenerated circuit files differ from the record")
+    picks = live_indices(record["circuits"], count)
+    for n in picks:
+        if hashlib.sha256(circuits[n]["text"].encode()).hexdigest() != record["circuits"][n]["sha256"]:
+            raise ValueError(f"{record['circuits'][n]['file']}: regenerated bytes differ from the swept circuit")
+    jobs = [[circuits[n]["text"], record["shots"], record["circuits"][n]["seed"]] for n in picks]
+    outcomes = json.loads(
+        qi_stack.run(["-B", "-W", "error", str(Path(__file__).resolve()), "--qx-worker"], json.dumps(jobs))
+    )
+    if len(outcomes) != len(picks):
+        raise ValueError(f"the qxelarator worker returned {len(outcomes)} histograms for {len(picks)} circuits")
+    for n, outcome in zip(picks, outcomes, strict=True):
+        circuit = record["circuits"][n]
+        if reduce_histogram(outcome, circuit["readout_qubits"]) != circuit["counts"]:
+            raise ValueError(f"{circuit['file']}: qxelarator at seed {circuit['seed']} gives counts the record lacks")
+    return len(picks)
 
 
 def measured(text: str) -> str:
@@ -636,8 +699,59 @@ def family_mutations(family: str, circuits: int) -> int:
     return rejected
 
 
+def live_mutations() -> int:
+    """live_check on a synthetic record with a stub worker: equal histograms pass, a moved shot or text fails."""
+    record = synthetic_record("de")
+    texts = [{"file": c["file"], "text": f"// circuit {n}\n"} for n, c in enumerate(record["circuits"])]
+    for circuit, text in zip(record["circuits"], texts, strict=True):
+        circuit["sha256"] = hashlib.sha256(text["text"].encode()).hexdigest()
+
+    def raw(circuit: dict[str, Any]) -> dict[str, int]:
+        """A full-register histogram whose readout bits reduce to the circuit's counts, qubit 0 rightmost."""
+        out: dict[str, int] = {}
+        for key, count in circuit["counts"].items():
+            bits = ["0"] * cases.QX_QUBITS
+            for character, qubit in zip(key, circuit["readout_qubits"], strict=True):
+                bits[cases.QX_QUBITS - 1 - qubit] = character
+            out["".join(bits)] = out.get("".join(bits), 0) + count
+        return out
+
+    def worker(served: dict[str, Any]) -> Callable[..., str]:
+        def run(arguments: list[str], stdin: str | None = None) -> str:
+            jobs = json.loads(stdin or "[]")
+            by_text = {t["text"]: n for n, t in enumerate(texts)}
+            return json.dumps([raw(served["circuits"][by_text[text]]) for text, _, _ in jobs])
+
+        return run
+
+    picks = live_indices(record["circuits"], 4)
+    if len(picks) < 4 or picks[0] != 0 or picks[-1] != len(record["circuits"]) - 1:
+        raise AssertionError(f"live sample {picks} misses the series ends")
+    rejected = 0
+    with patch.object(qi_stack, "run", worker(record)):
+        if live_check(record, 4, texts) != len(picks):
+            raise AssertionError("the live sample size differs from live_indices")
+    moved = copy.deepcopy(record)
+    position = moved["circuits"][picks[-1]]["readout_qubits"].index(
+        moved["circuits"][picks[-1]]["replicas"][0]["checks"][0]["qubits"][0]
+    )
+    move_shot(moved, picks[-1], position)
+    with patch.object(qi_stack, "run", worker(moved)):
+        for label, call in (
+            ("a moved shot", lambda: live_check(record, 4, texts)),
+            ("an edited circuit text", lambda: live_check(record, 4, [{**t, "text": t["text"] + " "} for t in texts])),
+        ):
+            try:
+                call()
+            except ValueError:
+                rejected += 1
+                continue
+            raise AssertionError(f"live_check accepted {label}")
+    return rejected
+
+
 def self_test() -> None:
-    rejected = family_mutations("a", 848) + family_mutations("de", 149)
+    rejected = family_mutations("a", 848) + family_mutations("de", 149) + live_mutations()
     for p, zeros, outcome in (("0", 0, "pass"), ("0", 1, "refuted"), ("1", SHOTS, "pass"), ("1/2", 1024, "pass")):
         if verdict(p, zeros, SHOTS)[0] != outcome:
             raise AssertionError(f"verdict({p}, {zeros}) is not {outcome}")
@@ -657,6 +771,7 @@ def main() -> int:
     mode.add_argument("--replay", type=Path, metavar="RECORD")
     mode.add_argument("--emulate", type=Path, nargs="+", metavar="CASE_DIR")
     mode.add_argument("--self-test", action="store_true")
+    mode.add_argument("--qx-worker", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--family", nargs="+", choices=FAMILIES, default=list(FAMILIES), help="with --run")
     parser.add_argument("--limit", type=int, help="with --run: the first N replicas of each sub-family")
     parser.add_argument("--bind", action="store_true", help="with --replay: regenerate and compare circuit bytes")
@@ -666,10 +781,20 @@ def main() -> int:
         help="with --replay: fail on a refuted check or on a record made with --limit",
     )
     parser.add_argument("--out", type=Path, help="with --emulate: write the emulation record here")
+    parser.add_argument(
+        "--live",
+        type=int,
+        metavar="N",
+        help="with --replay: rerun about N circuits under $QI_PYTHON and require the retained counts",
+    )
     args = parser.parse_args()
+    if args.live is not None and (args.replay is None or args.live < 1):
+        parser.error("--live takes a positive N and needs --replay")
     if args.self_test:
         self_test()
         return 0
+    if args.qx_worker:
+        return qx_worker()
     if args.run:
         failed = False
         for family in args.family:
@@ -692,13 +817,19 @@ def main() -> int:
         return 0 if record["verdict"] == "pass" else 1
     try:
         record = json.loads(args.replay.read_text(encoding="utf-8"))
-        summary = replay(record, bind=args.bind, exhaustive=args.require_pass)
+        regenerated = None
+        if args.bind and args.live is not None and qi_stack.probe().available:
+            regenerated = family_circuits(record["family"], record["limit"])
+        summary = replay(record, bind=args.bind, exhaustive=args.require_pass, regenerated=regenerated)
+        print(
+            f"box-kite QX sweep replay: {summary['circuits']} circuits, {summary['replicas']} replicas, "
+            f"{summary['checks']} checks, max |z| {summary['max_abs_z']}, {summary['verdict']}"
+        )
+        if args.live is not None and qi_stack.live("qxelarator", "replayed retained counts"):
+            compared = live_check(record, args.live, regenerated)
+            print(f"box-kite QX sweep live: {compared} circuits rerun on qxelarator equal the retained counts")
     except ValueError as error:
         raise SystemExit(f"{args.replay}: {error}") from error
-    print(
-        f"box-kite QX sweep replay: {summary['circuits']} circuits, {summary['replicas']} replicas, "
-        f"{summary['checks']} checks, max |z| {summary['max_abs_z']}, {summary['verdict']}"
-    )
     return 1 if args.require_pass and summary["verdict"] != "pass" else 0
 
 

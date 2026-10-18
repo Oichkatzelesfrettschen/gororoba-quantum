@@ -68,7 +68,7 @@ import placement_feasibility
 import qpu_planning
 import variance
 from coherence_window import COHERENCE_PRECISION
-from diagnostic_experiments import FAMILY_NAMES, N21_FAMILIES, PATCH_FAMILIES, record_groups
+from diagnostic_experiments import FAMILY_NAMES, N21_FAMILIES, PATCH_FAMILIES, record_groups, state_prep_arms
 from experiments import (
     MIRROR_SUFFIX,
     Group,
@@ -2241,13 +2241,27 @@ def noise_simulator(name: str, target: Any, props: Any, compute_policy: dict[str
     return simulator
 
 
-def simulate(choice: Choice, noise: Any, shots: int = SHOTS) -> dict[str, list[np.ndarray]]:
+def simulate(
+    choice: Choice, noise: Any, shots: int = SHOTS, prep_excitation: float = 0.0
+) -> dict[str, list[np.ndarray]]:
     """Noisy distribution of every entry's every replica, each simulated as its own single-replica circuit.
 
     The noise model carries no crosstalk between replicas, so a replica alone
-    and a replica inside the packed circuit share one distribution.
+    and a replica inside the packed circuit share one distribution. A
+    declared prep_excitation runs each replica behind a leading X error of
+    that probability on every active qubit (dynamic_density.with_prep_excitation).
     """
-    return simulate_entries(noise, choice.entries, shots, SEED_SIMULATOR)
+    if not prep_excitation:
+        return simulate_entries(noise, choice.entries, shots, SEED_SIMULATOR)
+    from dynamic_density import with_prep_excitation
+
+    excited = [
+        dataclasses.replace(
+            entry, replicas=[with_prep_excitation(replica, prep_excitation) for replica in entry.replicas]
+        )
+        for entry in choice.entries
+    ]
+    return simulate_entries(noise, excited, shots, SEED_SIMULATOR)
 
 
 def replay_entries(
@@ -2790,6 +2804,23 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
     )
     if not snaps:
         raise LiveRunError("no eligible backend")
+    requested_delay = getattr(args, "rep_delay", None)
+    if requested_delay is not None:
+        refused = {
+            snapshot.name: violations
+            for snapshot in snaps
+            if (violations := qpu_planning.repetition_delay_violations(snapshot.backend, requested_delay, None))
+        }
+        if refused:
+            raise LiveRunError(f"--rep-delay {requested_delay} s is unavailable: {refused}")
+    if not getattr(args, "family", None):
+        refused_shots = {
+            snapshot.name: violations
+            for snapshot in snaps
+            if (violations := qpu_planning.shot_ceiling_violations(snapshot.backend, args.shots))
+        }
+        if refused_shots:
+            raise LiveRunError(f"--shots {args.shots} is unavailable: {refused_shots}")
     trace: dict[str, Any] = {}
     design: dict[str, Any] = {}
     if getattr(args, "family", None):
@@ -2884,6 +2915,10 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             "dd": getattr(args, "dd", None),
             "min_remaining_seconds": getattr(args, "min_remaining_seconds", None),
             "max_execution_seconds": getattr(args, "max_execution_seconds", None),
+            # The Sampler's execution.rep_delay changes the workload and its
+            # charge, so the approved-record gate compares it; the backend
+            # default leaves the key out.
+            **({"rep_delay_seconds": requested_delay} if requested_delay is not None else {}),
             "operator_excluded_qubits": {
                 name: sorted(qubits) for name, qubits in sorted((getattr(args, "exclude_qubits", None) or {}).items())
             },
@@ -2958,7 +2993,12 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
                 choice.snap.calibration,
             )
         sim, cal = sims[key]
-        noisy = simulate(choice, sim, int(record["shots"]))
+        excitation = record.get("policy", {}).get("design", {}).get("prep_excitation")
+        noisy = (
+            simulate(choice, sim, int(record["shots"]), prep_excitation=excitation)
+            if excitation
+            else simulate(choice, sim, int(record["shots"]))
+        )
         entry = _choice_record(choice, noisy, cal, int(record["shots"]), scopes)
         record["groups"].append(entry)
         cz = [m["cz"] for m in entry["members"]]
@@ -3156,6 +3196,20 @@ def choice_change_reasons(choice: Choice, fresh: Snapshot) -> list[str]:
     except Exception as error:
         reasons.append(f"calibration fingerprint failed ({type(error).__name__})")
     return sorted(set(reasons))
+
+
+def sampler_rep_delay(args: Any) -> dict[str, float]:
+    """configure_sampler's rep_delay keyword for --rep-delay; empty, the backend default, without it."""
+    value = getattr(args, "rep_delay", None)
+    return {} if value is None else {"rep_delay": value}
+
+
+def planned_repetition_delay_range(record: Mapping[str, Any], backend_name: str) -> list[float] | None:
+    """The rep_delay_range the record's execution contract admitted a requested delay in, for backend_name."""
+    for entry in record.get("execution_contract", {}).get("backends", []):
+        if entry.get("name") == backend_name:
+            return entry.get("repetition_delay_range_seconds")
+    return None
 
 
 def _optional_repetition_delay(backend: Any) -> float | None:
@@ -3406,6 +3460,7 @@ def build_submission_plan(
                     recovery_tags,
                     selected_shots,
                     getattr(args, "max_execution_seconds", None),
+                    **sampler_rep_delay(args),
                 )
                 plan_index = len(planned_jobs)
                 planned_jobs.append(
@@ -3700,6 +3755,25 @@ def submit(
             }
     if fused_changed:
         reselected["execution_pubs"] = {"reasons": ["fused PUB circuits or ordered component mapping changed"]}
+    requested_delay = getattr(args, "rep_delay", None)
+    if requested_delay is not None:
+        # A reused plan keeps its planning snapshots, so the fresh
+        # configuration of each chosen backend comes from the refresh.
+        refreshed = {snapshot.name: snapshot for snapshot in fresh_snapshots}
+        delay_backends = {
+            choice.snap.name: refreshed.get(choice.snap.name, choice.snap).backend for choice in fresh_choices
+        }
+        delay_reasons = {
+            name: violations
+            for name, backend in sorted(delay_backends.items())
+            if (
+                violations := qpu_planning.repetition_delay_violations(
+                    backend, requested_delay, planned_repetition_delay_range(record, name)
+                )
+            )
+        }
+        if delay_reasons:
+            reselected["repetition_delay"] = {"reasons": delay_reasons}
     choices[:] = fresh_choices
     record["execution_contract"] = qpu_planning.execution_contract(choices, record)
     record.setdefault("revalidation", []).append(
@@ -3810,6 +3884,26 @@ def submit(
         drift = approved_calibration_drift(record, name, fresh.calibration)
         if drift is not None:
             raise LiveRunError(f"{name}: {batch_tag} {drift}; no circuit in this batch was submitted")
+        requested_delay = getattr(args, "rep_delay", None)
+        if requested_delay is not None:
+            batch_delay_violations = qpu_planning.repetition_delay_violations(
+                fresh.backend, requested_delay, planned_repetition_delay_range(record, name)
+            )
+            if batch_delay_violations:
+                reason = "; ".join(batch_delay_violations)
+                if record["submission"]["jobs"]:
+                    record["renewed_approval_for_unsent_batches"] = {"required_at": _now(), "reason": reason}
+                else:
+                    record["state"] = "approval_required"
+                raise LiveRunError(f"{name}: {batch_tag} {reason}; no circuit in this batch was submitted")
+        shot_violations = qpu_planning.shot_ceiling_violations(fresh.backend, int(plan_entry["shots"]))
+        if shot_violations:
+            reason = "; ".join(shot_violations)
+            if record["submission"]["jobs"]:
+                record["renewed_approval_for_unsent_batches"] = {"required_at": _now(), "reason": reason}
+            else:
+                record["state"] = "approval_required"
+            raise LiveRunError(f"{name}: {batch_tag} {reason}; no circuit in this batch was submitted")
         usage = service.usage()
         check_budget(name, usage, args.min_remaining_seconds)
         # Accepted jobs may remain unbilled. Every ceiling stays reserved until
@@ -3831,6 +3925,7 @@ def submit(
             plan_entry["recovery_tags"],
             int(plan_entry["shots"]),
             getattr(args, "max_execution_seconds", None),
+            **sampler_rep_delay(args),
         )
         effective_options = sampler.options.model_dump(mode="json")
         if effective_options != plan_entry["options"]:
@@ -3887,8 +3982,13 @@ def configure_sampler(
     tags: list[str],
     shots: int = SHOTS,
     max_execution_seconds: int | None = None,
+    *,
+    rep_delay: float | None = None,
 ) -> Sampler:
     """The client-side Sampler for one job: twirling and DD apply to static jobs only.
+
+    execution.rep_delay takes rep_delay when given, else the backend default;
+    either must lie in the backend's rep_delay_range (repetition-rate guide).
 
     Every job requests the backend scheduler's per-PUB timing, which
     scheduled_duration reads and packing_schedule compares.
@@ -3914,7 +4014,12 @@ def configure_sampler(
     sampler.options.default_shots = shots
     configuration = backend.configuration()
     if getattr(configuration, "dynamic_reprate_enabled", False):
-        sampler.options.execution.rep_delay = qpu_planning.repetition_delay(backend)
+        try:
+            sampler.options.execution.rep_delay = qpu_planning.repetition_delay(backend, rep_delay)
+        except ValueError as error:
+            raise LiveRunError(str(error)) from error
+    elif rep_delay is not None:
+        raise LiveRunError("the backend runs a fixed repetition rate; --rep-delay needs dynamic_reprate_enabled")
     if max_execution_seconds is not None:
         # The service cancels a job whose system execution time passes this
         # ceiling (OptionsV2.max_execution_time), so the approved case's
@@ -5031,6 +5136,19 @@ def main(argv: list[str] | None = None) -> int:
         help="physical qubits of the patch, in patch_characterization.PATCH_ROLES order; "
         "omitted, the planner chooses the best calibrated patch on every eligible backend",
     )
+    parser.add_argument(
+        "--layout",
+        type=lambda value: [int(item) for item in value.split(",")],
+        help="physical qubits state-prep-control characterizes; omitted, the replica qubits of "
+        "diagnostic_experiments.STATE_PREP_SOURCE_RECORD on its backend",
+    )
+    parser.add_argument(
+        "--state-prep-arms",
+        type=lambda value: value.split(","),
+        help="state-prep-control arms among prep0, reset and x, comma-separated, prep0 always among them; "
+        "omitted, all three; "
+        "the policy binds a selection",
+    )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
         "--local-compute-method",
@@ -5067,6 +5185,20 @@ def main(argv: list[str] | None = None) -> int:
         type=float,
         help="declared per-replica score variance bound with independent replicas (N21 families); "
         "the planner applies it through Cantelli or Chebyshev and the collector after its falsifier passes",
+    )
+    parser.add_argument(
+        "--empirical-bernstein",
+        action="store_true",
+        help="N21 families under --model-method exact: each endpoint's confidence and detection radius takes the "
+        "smaller of the data-free radius and the Maurer-Pontil empirical-Bernstein radius at an equal alpha split, "
+        "planned on the exact law's variance raised to its sample-variance upper limit; the policy binds it",
+    )
+    parser.add_argument(
+        "--prep-excitation",
+        type=float,
+        metavar="EPS",
+        help="declared initial excitation per active qubit (N21 families): the exact law and the sampled "
+        "falsifier start every qubit in (1 - EPS)|0><0| + EPS|1><1|; the policy binds it",
     )
     parser.add_argument(
         "--precision",
@@ -5164,6 +5296,15 @@ def main(argv: list[str] | None = None) -> int:
         help="sha256 of the approved record's record.json, as the written case names it",
     )
     parser.add_argument(
+        "--rep-delay",
+        type=float,
+        metavar="SECONDS",
+        help=(
+            "Sampler execution.rep_delay for every job, within each backend's rep_delay_range; the charge model "
+            "and the approval bind it; default the backend's default_rep_delay"
+        ),
+    )
+    parser.add_argument(
         "--max-execution-seconds",
         type=int,
         help=(
@@ -5194,6 +5335,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--approved-record-sha256 applies only with --submit")
     if args.max_execution_seconds is not None and args.max_execution_seconds <= 0:
         parser.error("--max-execution-seconds must be positive")
+    if args.rep_delay is not None and (not math.isfinite(args.rep_delay) or args.rep_delay < 0):
+        parser.error("--rep-delay must be finite and nonnegative seconds")
+    if args.rep_delay is not None and args.family == "folded-correction":
+        parser.error("folded-correction binds the backend default repetition delay in its preparation report")
     if args.seeds <= 0:
         parser.error("--seeds must be positive")
     if args.submit and args.max_total_execution_seconds is None:
@@ -5216,10 +5361,28 @@ def main(argv: list[str] | None = None) -> int:
         args.family not in N21_FAMILIES
     ):
         parser.error("--model-method exact and --replica-variance-bound apply to the N21 families only")
+    if args.empirical_bernstein and (args.family not in N21_FAMILIES or args.model_method != "exact"):
+        parser.error("--empirical-bernstein applies to the N21 families under --model-method exact only")
+    if args.prep_excitation is not None:
+        if args.family not in N21_FAMILIES:
+            parser.error("--prep-excitation applies to the N21 families only")
+        if not math.isfinite(args.prep_excitation) or not 0 <= args.prep_excitation < 1:
+            parser.error("--prep-excitation must lie in [0, 1)")
     if args.patch_qubits is not None and args.family not in PATCH_FAMILIES:
         parser.error("--patch-qubits applies to the pinned-patch families only")
     if args.family in PATCH_FAMILIES and args.max_replicas not in (None, 1):
         parser.error("the patch family runs one pinned placement; --max-replicas must be 1")
+    if args.layout is not None and args.family != "state-prep-control":
+        parser.error("--layout applies to the state-prep-control family only")
+    if args.state_prep_arms is not None:
+        if args.family != "state-prep-control":
+            parser.error("--state-prep-arms applies to the state-prep-control family only")
+        try:
+            args.state_prep_arms = list(state_prep_arms(args.state_prep_arms))
+        except ValueError as error:
+            parser.error(f"--state-prep-arms: {error}")
+    if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
+        parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "folded-correction":
         if args.native_dry_run:
             parser.error("folded-correction uses fresh live calibration and post-execution schedules; mock is disabled")

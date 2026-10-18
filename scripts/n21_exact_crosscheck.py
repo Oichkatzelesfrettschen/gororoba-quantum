@@ -49,6 +49,16 @@ it, requires the same structure and every float within TOLERANCE.
 ``--self-test`` runs dynamic_density's three-qubit fixture: the default
 Semantics within TOLERANCE of the oracle, each of the seven alternatives
 beyond it, and a removed branch refused.
+
+``--prep-excitation EPS --out FILE`` writes the same comparison with an
+initial excitation: Aer runs each circuit behind a leading
+``pauli_error([("X", EPS), ("I", 1 - EPS)])`` on every active qubit
+(dynamic_density.with_prep_excitation), dynamic_density evolves the
+original circuit with ``prep_excitation=EPS``, and the cleaned model must
+agree within TOLERANCE at every save while the raw model stays inside the
+truncation bound. The record also carries each circuit's law and the
+contrast at EPS = 0, so it shows how far the channel moves them.
+``--check FILE`` dispatches on the record's schema.
 """
 
 from __future__ import annotations
@@ -77,6 +87,7 @@ import dynamic_density  # noqa: E402
 import parallel  # noqa: E402
 
 SCHEMA = "n21-exact-crosscheck-v1"
+PREP_SCHEMA = "n21-exact-crosscheck-prep-excitation-v1"
 SNAPSHOT = Path("docs/evidence/calibration/history/ibm_kingston/20261016T1213360700.json")
 ISA = Path("results/live/2026-10-17T003834.987727Z/isa.qpy")
 RECORD = ISA.parent / "record.json"
@@ -220,14 +231,14 @@ class _Capture(dynamic_density._Evolution):
 
 
 def _dynamic_density(
-    circuit: QuantumCircuit, noise: Any, semantics: dynamic_density.Semantics
+    circuit: QuantumCircuit, noise: Any, semantics: dynamic_density.Semantics, prep_excitation: float = 0.0
 ) -> tuple[np.ndarray, list[dict[tuple[int, int], np.ndarray]]]:
     """dynamic_density.probabilities with the branch states before each measure and at the end."""
     original = dynamic_density._Evolution
     _Capture.snapshots = []
     dynamic_density._Evolution = _Capture  # type: ignore[misc]
     try:
-        law = dynamic_density.probabilities(circuit, noise, semantics)
+        law = dynamic_density.probabilities(circuit, noise, semantics, prep_excitation)
     finally:
         dynamic_density._Evolution = original  # type: ignore[misc]
     return law, _Capture.snapshots
@@ -255,17 +266,24 @@ def _aer_saves(circuit: QuantumCircuit, noise: Any, shots: int) -> dict[str, dic
 
 
 def _work(item: tuple[Any, ...]) -> Any:
-    """One unit of the cross-check: an Aer run, a dynamic_density run, or a localization prefix."""
+    """One unit of the cross-check: an Aer run, a dynamic_density run, or a localization prefix.
+
+    An Aer or dynamic_density item may carry a fifth element, the initial
+    excitation: Aer receives it as leading X errors in the circuit,
+    dynamic_density as its prep_excitation argument.
+    """
     kind, source, model = item[0], item[1], item[2]
     circuit, noise = _inputs(source, model)
+    excitation = float(item[4]) if len(item) > 4 else 0.0
     if kind == "aer":
+        circuit = dynamic_density.with_prep_excitation(circuit, excitation)
         layout = _layout(circuit)
         flips = item[3]
         variant = _flipped(noise, [q for _p, q, _c in layout["mid"]], flips)
         return _aer_saves(_oracle_circuit(circuit, layout), variant, SHOTS)
     if kind == "dd":
         semantics = dynamic_density.Semantics(**dict(zip(SEMANTICS_FIELDS, item[3], strict=True)))
-        law, snapshots = _dynamic_density(circuit, noise, semantics)
+        law, snapshots = _dynamic_density(circuit, noise, semantics, excitation)
         return law, snapshots
     if kind == "prefix":
         # States on either side of instruction `position`, from both engines.
@@ -472,8 +490,15 @@ def _evaluate(
     models: tuple[str, ...],
     semantics: list[tuple[bool, ...]],
     localize: bool,
+    prep_excitation: float = 0.0,
 ) -> dict[str, Any]:
-    """Every Aer flip run and dynamic_density run of every source under every model, through one pool."""
+    """Every Aer flip run and dynamic_density run of every source under every model, through one pool.
+
+    A nonzero prep_excitation reaches every Aer and dynamic_density item; the
+    layouts stay those of the source circuits, whose measures keep their
+    relative order behind the leading channels.
+    """
+    extra: tuple[float, ...] = (prep_excitation,) if prep_excitation else ()
     items: list[tuple[Any, ...]] = []
     plan: list[tuple[str, str, str, Any]] = []
     layouts = {}
@@ -482,10 +507,10 @@ def _evaluate(
         layouts[name] = _layout(circuit)
         for model in models:
             for flips in _flip_patterns(layouts[name]):
-                items.append(("aer", source, model, flips))
+                items.append(("aer", source, model, flips, *extra))
                 plan.append((name, model, "aer", flips))
             for choice in semantics if model == "raw" else semantics[:1]:
-                items.append(("dd", source, model, choice))
+                items.append(("dd", source, model, choice, *extra))
                 plan.append((name, model, "dd", choice))
         if localize:
             first, _total = _first_dropped(circuit, raw)
@@ -539,15 +564,24 @@ def _compare_source(
     return row, oracle["law"], law
 
 
-def crosscheck() -> dict[str, Any]:
-    """The record: both circuits under the raw and cleaned models, scores, localization, and the fixture."""
+def _sources() -> tuple[dict[str, tuple[Any, ...]], dict[str, str], tuple[Any, ...]]:
+    """Both retained N=21 circuits restricted to their active qubits, their members, and the endpoint."""
     snapshot = json.loads((ROOT / SNAPSHOT).read_text())
     members, contracts = validation.endpoint(ROOT / RECORD)
     sources: dict[str, tuple[Any, ...]] = {}
     for circuit in validation._circuits(ROOT / ISA):
         reduced, restricted, _qubits = validation._restricted(snapshot, circuit)
         sources[circuit.name] = ("snapshot", restricted, validation._serialized(reduced))
-    evaluated = _evaluate(sources, ("raw", "cleaned"), [(True, True, True)], localize=True)
+    return sources, members, contracts
+
+
+def _models(
+    sources: dict[str, tuple[Any, ...]],
+    members: dict[str, str],
+    contracts: tuple[Any, ...],
+    evaluated: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, dict[str, float]]]:
+    """Per model: circuit rows, arm scores and contrasts from both engines; then the raw-minus-cleaned gaps."""
     models: dict[str, Any] = {}
     for model in ("raw", "cleaned"):
         circuits = {}
@@ -593,6 +627,14 @@ def crosscheck() -> dict[str, Any]:
         }
         for name in sources
     }
+    return models, attribution
+
+
+def crosscheck() -> dict[str, Any]:
+    """The record: both circuits under the raw and cleaned models, scores, localization, and the fixture."""
+    sources, members, contracts = _sources()
+    evaluated = _evaluate(sources, ("raw", "cleaned"), [(True, True, True)], localize=True)
+    models, attribution = _models(sources, members, contracts, evaluated)
     _require_verdict(models, attribution)
     import qiskit
     import qiskit_aer
@@ -616,6 +658,63 @@ def crosscheck() -> dict[str, Any]:
         "models": models,
         "raw_minus_cleaned": attribution,
         "fixture": fixture(),
+        "versions": {
+            "python": ".".join(str(v) for v in sys.version_info[:3]),
+            "qiskit": qiskit.__version__,
+            "qiskit-aer": qiskit_aer.__version__,
+            "numpy": np.__version__,
+        },
+    }
+
+
+def crosscheck_prep_excitation(epsilon: float) -> dict[str, Any]:
+    """Both circuits with an initial excitation epsilon: Aer's leading X errors against dynamic_density's channel."""
+    epsilon = dynamic_density.validate_prep_excitation(epsilon)
+    _require(epsilon > 0, "the excitation cross-check needs a nonzero epsilon")
+    sources, members, contracts = _sources()
+    evaluated = _evaluate(sources, ("raw", "cleaned"), [(True, True, True)], localize=False, prep_excitation=epsilon)
+    models, attribution = _models(sources, members, contracts, evaluated)
+    _require_verdict(models, attribution)
+    unexcited = {}
+    for name, source in sources.items():
+        circuit, noise = _inputs(source, "cleaned")
+        unexcited[name] = dynamic_density.probabilities(circuit, noise)
+    unexcited_scores = _scores(unexcited, members, contracts)
+    excited = models["cleaned"]["contrasts"]
+    import qiskit
+    import qiskit_aer
+
+    return {
+        "schema": PREP_SCHEMA,
+        "prep_excitation": epsilon,
+        "channel": (
+            "bit flip of probability prep_excitation on |0> of every active qubit before the first instruction; "
+            "Aer: leading pauli_error([('X', eps), ('I', 1 - eps)]) instructions (dynamic_density."
+            "with_prep_excitation); dynamic_density: probabilities(..., prep_excitation=eps)"
+        ),
+        "inputs": {
+            "snapshot": {"path": str(SNAPSHOT), "sha256": validation._sha256(ROOT / SNAPSHOT)},
+            "isa": {"path": str(ISA), "sha256": validation._sha256(ROOT / ISA)},
+            "record": {"path": str(RECORD), "sha256": validation._sha256(ROOT / RECORD)},
+        },
+        "oracle": {
+            "simulator": "AerSimulator",
+            "method": "density_matrix",
+            "shot_branching_enable": True,
+            "shots": SHOTS,
+            "seed": SEED,
+            "aer_threshold": AER_THRESHOLD,
+        },
+        "tolerance": TOLERANCE,
+        "models": models,
+        "raw_minus_cleaned": attribution,
+        "unexcited_cleaned": {
+            "laws": {name: [float(v) for v in law] for name, law in unexcited.items()},
+            "contrasts": unexcited_scores["contrasts"],
+            "contrast_shift": {
+                name: excited[name]["dynamic_density"] - value for name, value in unexcited_scores["contrasts"].items()
+            },
+        },
         "versions": {
             "python": ".".join(str(v) for v in sys.version_info[:3]),
             "qiskit": qiskit.__version__,
@@ -714,7 +813,10 @@ def _json(record: dict[str, Any]) -> Any:
 
 def check(path: Path) -> dict[str, Any]:
     retained = json.loads(path.read_text())
-    fresh = _json(crosscheck())
+    if retained.get("schema") == PREP_SCHEMA:
+        fresh = _json(crosscheck_prep_excitation(float(retained["prep_excitation"])))
+    else:
+        fresh = _json(crosscheck())
     failures: list[str] = []
     _compare(retained["versions"]["qiskit-aer"], fresh["versions"]["qiskit-aer"], "versions.qiskit-aer", failures)
     _compare(
@@ -771,12 +873,23 @@ def main() -> int:
     mode.add_argument("--out", type=Path)
     mode.add_argument("--check", type=Path)
     mode.add_argument("--self-test", action="store_true")
+    parser.add_argument(
+        "--prep-excitation",
+        type=float,
+        help="with --out, write the comparison under this initial excitation per active qubit",
+    )
     args = parser.parse_args()
+    if args.prep_excitation is not None and args.out is None:
+        parser.error("--prep-excitation applies with --out; --check reads it from the record")
     if args.self_test:
         self_test()
         return 0
     if args.check is not None:
         record = check(args.check)
+    elif args.prep_excitation is not None:
+        record = crosscheck_prep_excitation(args.prep_excitation)
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        args.out.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n")
     else:
         record = crosscheck()
         args.out.parent.mkdir(parents=True, exist_ok=True)

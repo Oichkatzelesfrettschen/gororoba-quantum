@@ -1,5 +1,5 @@
 """Contract for ci/run_gates.py: unique gate names, every CPU, keep-going past a launch failure,
-one child worker by default, --device, --max-seconds.
+one child worker by default, --device, --max-seconds, and the requires field with --requires.
 """
 
 from __future__ import annotations
@@ -86,9 +86,45 @@ def main() -> None:
             names = [gate["name"] for gate in run_gates.select(root, tier, limit)]
             if names != wanted:
                 raise RuntimeError(f"select({tier}, {limit}) chose {names}, not {wanted}")
+        # A qi gate runs in every lane, on its replay path where the stack is absent; --requires qi keeps
+        # only the qi gates and makes each take its live path.
+        qi = [
+            {"name": "qi-pr", "cwd": ".", "cmd": 'test "${GOROROBA_QI_REQUIRED:-0}" = 1', "requires": ["qi"]},
+            {"name": "qi-full", "cwd": ".", "cmd": "true", "requires": ["qi"], "tier": "full"},
+        ]
+        (root / "ci/gates.json").write_text(json.dumps({"gates": listed + qi}))
+        for tier, requires, wanted in (
+            ("pr", None, ["fast", "slow", "unmeasured", "qi-pr"]),
+            ("pr", "qi", ["qi-pr"]),
+            ("full", "qi", ["qi-pr", "qi-full"]),
+        ):
+            names = [gate["name"] for gate in run_gates.select(root, tier, None, requires)]
+            if names != wanted:
+                raise RuntimeError(f"select({tier}, requires={requires}) chose {names}, not {wanted}")
+        for flag, expected_status in (([], 1), (["--requires", "qi"], 0)):
+            output = io.StringIO()
+            with (
+                patch.object(run_gates, "ROOT", root),
+                patch.dict(os.environ),
+                contextlib.redirect_stdout(output),
+            ):
+                os.environ.pop("GOROROBA_QI_REQUIRED", None)
+                status = run_gates.main(["--tier", "pr", *flag])
+            if status != expected_status:
+                raise RuntimeError(f"{flag or 'no flag'} gave GOROROBA_QI_REQUIRED wrongly:\n{output.getvalue()}")
+        for malformed in ([], ["qi", "qi"], ["kaggle"], "qi", [1]):
+            gate = {"name": "malformed", "cwd": ".", "cmd": "true", "requires": malformed}
+            (root / "ci/gates.json").write_text(json.dumps({"gates": [gate]}))
+            try:
+                run_gates.select(root, "pr")
+            except SystemExit:
+                continue
+            raise RuntimeError(f"requires {malformed!r} was accepted")
+    run_gates.select(Path(__file__).resolve().parent.parent, "full")
     print(
         "run_gates: unique gate names, every CPU, a launch failure keeps going with its diagnostic, "
-        "child workers default to one, --device GPU reaches every gate, --max-seconds selects by measured seconds"
+        "child workers default to one, --device GPU reaches every gate, --max-seconds selects by measured seconds, "
+        "qi gates run in every lane and --requires qi keeps them alone with GOROROBA_QI_REQUIRED=1"
     )
 
 

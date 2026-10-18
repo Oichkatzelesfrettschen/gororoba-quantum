@@ -1,0 +1,3210 @@
+{
+  "schema_version": 7,
+  "schema_contract": "live-target-statistical-design-invocation-budget-v1",
+  "state": "planned",
+  "started": "2026-10-17T22:43:42.528684+00:00",
+  "versions": {
+    "numpy": "2.5.4",
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0",
+    "scipy": "1.18.1",
+    "rustworkx": "0.18.1",
+    "sympy": "1.14.0"
+  },
+  "policy": {
+    "max_readout_error": 0.08,
+    "max_cz_error": 0.03,
+    "max_sx_error": 0.01,
+    "min_t1_us": 20.0,
+    "min_t2_us": 20.0,
+    "max_pending": 25,
+    "seeds": 8,
+    "joint_candidates": 3,
+    "replica_floor": null,
+    "max_replicas": null,
+    "isolated_reference": false,
+    "cross_group_buffer": true,
+    "twirl": false,
+    "dd": null,
+    "min_remaining_seconds": 60.0,
+    "max_execution_seconds": 5,
+    "rep_delay_seconds": 0.00025,
+    "operator_excluded_qubits": {},
+    "design": {
+      "family": "state-prep-control",
+      "optimize": true,
+      "objective": "minimum_charge",
+      "cost_scenarios": [],
+      "shot_tiers": [
+        4096,
+        8192,
+        16384
+      ],
+      "shot_allocation": "uniform",
+      "replica_tiers": [
+        1
+      ],
+      "optimizer_candidates": 1,
+      "model_shots": 32768,
+      "precision": 0.08,
+      "alpha": 0.05,
+      "power": 0.8,
+      "simulation_alpha": 0.01,
+      "job_overhead_seconds": 2.3,
+      "classical_latency_us": 20.0,
+      "reserve_seconds": 60.0,
+      "max_total_execution_seconds": 5.0,
+      "patch_qubits": null,
+      "model_method": "sampled",
+      "replica_variance_bound": null,
+      "state_prep_arms": [
+        "prep0"
+      ]
+    },
+    "local_compute": {
+      "mode": "auto",
+      "threads": 12,
+      "memory_mb": 512,
+      "shot_branching": false,
+      "method": "density_matrix_dynamic_statevector",
+      "precision": "double",
+      "shot_branching_sampling": false,
+      "parallel_experiments": 1,
+      "aer_native": {
+        "schema": "native-aer-identity-v1",
+        "distribution": "qiskit-aer",
+        "version": "0.17.2",
+        "python_soabi": "cpython-314-x86_64-linux-gnu",
+        "extension": {
+          "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+          "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+        },
+        "native_cuda_build": null,
+        "loaded_mapping_verified": true,
+        "loaded_mapping_scope": "linux-process-map-device-inode"
+      }
+    }
+  },
+  "shots": 8192,
+  "instance_sha256_12": "e3de05b6901e",
+  "seed_simulator": 20261011,
+  "experiment_digest": "a518f8495ebaa7d50d394ba38bd2c6b20034a4116d622875dc9ba85c3a29d217",
+  "code_commit": {
+    "head": "55d6b075cd8cdaf75e10f964683e4145ce80e1c5",
+    "sources_modified": false
+  },
+  "system_inventory": {
+    "ibm_kingston": {
+      "eligibility": "eligible",
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 0,
+      "calibration": "2026-10-17T15:07:14-07:00",
+      "fetched_at": "2026-10-17T22:43:49+00:00",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 239.03382559901283,
+        "t2_us": 141.20932720181028,
+        "readout_error": 0.009033203125,
+        "cz_error": 0.0019003524476841616
+      },
+      "excluded_qubits": {
+        "113": "readout error 0.288",
+        "115": "T1=336.6us T2=14.0us",
+        "121": "missing calibration: \"Couldn't find the property 'T2' for qubit 121.\"",
+        "139": "T1=1.8us T2=24.7us",
+        "146": "missing calibration: \"Couldn't find the property 'T1' for qubit 146.\""
+      },
+      "excluded_edges": {
+        "14-15": "cz error 0.036462581381857734",
+        "15-14": "cz error 0.036462581381857734",
+        "37-45": "cz error 0.030531357550332316",
+        "44-45": "cz error 0.0383051334384342",
+        "45-37": "cz error 0.030531357550332316",
+        "45-44": "cz error 0.0383051334384342",
+        "45-46": "cz error 0.04117351938086017",
+        "46-45": "cz error 0.04117351938086017",
+        "84-85": "cz error 0.03826235663842001",
+        "85-84": "cz error 0.03826235663842001",
+        "85-86": "cz error 0.07508914119620674",
+        "86-85": "cz error 0.07508914119620674",
+        "86-87": "cz error 0.042475491132601406",
+        "87-86": "cz error 0.042475491132601406",
+        "111-112": "cz error 0.13197736928585646",
+        "112-111": "cz error 0.13197736928585646",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "116-121": "cz error 0.06615300636200355",
+        "119-133": "cz error 0.03841485927601557",
+        "120-121": "cz error 0.09449542870671401",
+        "121-116": "cz error 0.06615300636200355",
+        "121-120": "cz error 0.09449542870671401",
+        "121-122": "cz error 0.03660799754656879",
+        "122-121": "cz error 0.03660799754656879",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "133-119": "cz error 0.03841485927601557",
+        "145-146": "cz error 1.0",
+        "146-145": "cz error 1.0",
+        "146-147": "cz error 1.0",
+        "147-146": "cz error 1.0"
+      }
+    }
+  },
+  "backends": {
+    "ibm_kingston": {
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 0,
+      "calibration": "2026-10-17T15:07:14-07:00",
+      "fetched_at": "2026-10-17T22:43:49+00:00",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 239.03382559901283,
+        "t2_us": 141.20932720181028,
+        "readout_error": 0.009033203125,
+        "cz_error": 0.0019003524476841616
+      },
+      "excluded_qubits": {
+        "113": "readout error 0.288",
+        "115": "T1=336.6us T2=14.0us",
+        "121": "missing calibration: \"Couldn't find the property 'T2' for qubit 121.\"",
+        "139": "T1=1.8us T2=24.7us",
+        "146": "missing calibration: \"Couldn't find the property 'T1' for qubit 146.\""
+      },
+      "excluded_edges": {
+        "14-15": "cz error 0.036462581381857734",
+        "15-14": "cz error 0.036462581381857734",
+        "37-45": "cz error 0.030531357550332316",
+        "44-45": "cz error 0.0383051334384342",
+        "45-37": "cz error 0.030531357550332316",
+        "45-44": "cz error 0.0383051334384342",
+        "45-46": "cz error 0.04117351938086017",
+        "46-45": "cz error 0.04117351938086017",
+        "84-85": "cz error 0.03826235663842001",
+        "85-84": "cz error 0.03826235663842001",
+        "85-86": "cz error 0.07508914119620674",
+        "86-85": "cz error 0.07508914119620674",
+        "86-87": "cz error 0.042475491132601406",
+        "87-86": "cz error 0.042475491132601406",
+        "111-112": "cz error 0.13197736928585646",
+        "112-111": "cz error 0.13197736928585646",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "116-121": "cz error 0.06615300636200355",
+        "119-133": "cz error 0.03841485927601557",
+        "120-121": "cz error 0.09449542870671401",
+        "121-116": "cz error 0.06615300636200355",
+        "121-120": "cz error 0.09449542870671401",
+        "121-122": "cz error 0.03660799754656879",
+        "122-121": "cz error 0.03660799754656879",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "133-119": "cz error 0.03841485927601557",
+        "145-146": "cz error 1.0",
+        "146-145": "cz error 1.0",
+        "146-147": "cz error 1.0",
+        "147-146": "cz error 1.0"
+      }
+    }
+  },
+  "skipped_backends": {},
+  "circuit_requirements": {
+    "state_prep_q104": {
+      "qubits": 1,
+      "classical_bits": 1,
+      "static_circuits": 1,
+      "dynamic_circuits": 0,
+      "target_operations": [
+        "measure"
+      ],
+      "control_flow": []
+    },
+    "state_prep_q105": {
+      "qubits": 1,
+      "classical_bits": 1,
+      "static_circuits": 1,
+      "dynamic_circuits": 0,
+      "target_operations": [
+        "measure"
+      ],
+      "control_flow": []
+    },
+    "state_prep_q106": {
+      "qubits": 1,
+      "classical_bits": 1,
+      "static_circuits": 1,
+      "dynamic_circuits": 0,
+      "target_operations": [
+        "measure"
+      ],
+      "control_flow": []
+    },
+    "state_prep_q117": {
+      "qubits": 1,
+      "classical_bits": 1,
+      "static_circuits": 1,
+      "dynamic_circuits": 0,
+      "target_operations": [
+        "measure"
+      ],
+      "control_flow": []
+    },
+    "state_prep_q124": {
+      "qubits": 1,
+      "classical_bits": 1,
+      "static_circuits": 1,
+      "dynamic_circuits": 0,
+      "target_operations": [
+        "measure"
+      ],
+      "control_flow": []
+    },
+    "state_prep_q125": {
+      "qubits": 1,
+      "classical_bits": 1,
+      "static_circuits": 1,
+      "dynamic_circuits": 0,
+      "target_operations": [
+        "measure"
+      ],
+      "control_flow": []
+    },
+    "state_prep_q126": {
+      "qubits": 1,
+      "classical_bits": 1,
+      "static_circuits": 1,
+      "dynamic_circuits": 0,
+      "target_operations": [
+        "measure"
+      ],
+      "control_flow": []
+    }
+  },
+  "execution_requirements": {
+    "state_prep_q104": {
+      "entries": 1,
+      "entry_names": [
+        "spc_prep0_q104"
+      ],
+      "static_circuits": 1,
+      "dynamic_circuits": 0,
+      "max_classical_bits": 1,
+      "physical_qubits": [
+        104
+      ],
+      "operation_names": [
+        "measure"
+      ],
+      "replicas": 1,
+      "isolated_references": 0,
+      "target_validated": true
+    },
+    "state_prep_q105": {
+      "entries": 1,
+      "entry_names": [
+        "spc_prep0_q105"
+      ],
+      "static_circuits": 1,
+      "dynamic_circuits": 0,
+      "max_classical_bits": 1,
+      "physical_qubits": [
+        105
+      ],
+      "operation_names": [
+        "measure"
+      ],
+      "replicas": 1,
+      "isolated_references": 0,
+      "target_validated": true
+    },
+    "state_prep_q106": {
+      "entries": 1,
+      "entry_names": [
+        "spc_prep0_q106"
+      ],
+      "static_circuits": 1,
+      "dynamic_circuits": 0,
+      "max_classical_bits": 1,
+      "physical_qubits": [
+        106
+      ],
+      "operation_names": [
+        "measure"
+      ],
+      "replicas": 1,
+      "isolated_references": 0,
+      "target_validated": true
+    },
+    "state_prep_q117": {
+      "entries": 1,
+      "entry_names": [
+        "spc_prep0_q117"
+      ],
+      "static_circuits": 1,
+      "dynamic_circuits": 0,
+      "max_classical_bits": 1,
+      "physical_qubits": [
+        117
+      ],
+      "operation_names": [
+        "measure"
+      ],
+      "replicas": 1,
+      "isolated_references": 0,
+      "target_validated": true
+    },
+    "state_prep_q124": {
+      "entries": 1,
+      "entry_names": [
+        "spc_prep0_q124"
+      ],
+      "static_circuits": 1,
+      "dynamic_circuits": 0,
+      "max_classical_bits": 1,
+      "physical_qubits": [
+        124
+      ],
+      "operation_names": [
+        "measure"
+      ],
+      "replicas": 1,
+      "isolated_references": 0,
+      "target_validated": true
+    },
+    "state_prep_q125": {
+      "entries": 1,
+      "entry_names": [
+        "spc_prep0_q125"
+      ],
+      "static_circuits": 1,
+      "dynamic_circuits": 0,
+      "max_classical_bits": 1,
+      "physical_qubits": [
+        125
+      ],
+      "operation_names": [
+        "measure"
+      ],
+      "replicas": 1,
+      "isolated_references": 0,
+      "target_validated": true
+    },
+    "state_prep_q126": {
+      "entries": 1,
+      "entry_names": [
+        "spc_prep0_q126"
+      ],
+      "static_circuits": 1,
+      "dynamic_circuits": 0,
+      "max_classical_bits": 1,
+      "physical_qubits": [
+        126
+      ],
+      "operation_names": [
+        "measure"
+      ],
+      "replicas": 1,
+      "isolated_references": 0,
+      "target_validated": true
+    }
+  },
+  "fusion_placement": {
+    "allocation": "matched-family",
+    "configuration": {
+      "name": "state-prep-control",
+      "qubits": [
+        104,
+        105,
+        106,
+        117,
+        124,
+        125,
+        126
+      ],
+      "layout_source": "declared",
+      "arms": {
+        "prep0": "init, measure"
+      },
+      "placement_contract": "one pinned single-qubit placement per named qubit; every qubit runs each arm in the same shots; static prep0 and x PUBs, dynamic reset PUB",
+      "dt_seconds": 4e-09
+    }
+  },
+  "fusion_summary": {
+    "strategy": "aligned_members_without_reference",
+    "reference_estimand": null,
+    "reference_estimand_by_kind": {
+      "static": null,
+      "dynamic": null
+    },
+    "logical_entries": {
+      "static": 7,
+      "dynamic": 0
+    },
+    "execution_pubs": {
+      "static": 1,
+      "dynamic": 0
+    },
+    "reference_components": {
+      "static": 0,
+      "dynamic": 0
+    }
+  },
+  "execution_pubs": [
+    {
+      "name": "ibm_kingston_static_pub_01",
+      "backend": "ibm_kingston",
+      "kind": "static",
+      "target_gate_lower_bound_dt": 545,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
+      "components": [
+        {
+          "group": "state_prep_q104",
+          "member": "spc_prep0_q104",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            104
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_c"
+            ]
+          ]
+        },
+        {
+          "group": "state_prep_q105",
+          "member": "spc_prep0_q105",
+          "reference": false,
+          "register_prefix": "g1_",
+          "physical_qubits": [
+            105
+          ],
+          "registers_by_replica": [
+            [
+              "g1_r0_c"
+            ]
+          ]
+        },
+        {
+          "group": "state_prep_q106",
+          "member": "spc_prep0_q106",
+          "reference": false,
+          "register_prefix": "g2_",
+          "physical_qubits": [
+            106
+          ],
+          "registers_by_replica": [
+            [
+              "g2_r0_c"
+            ]
+          ]
+        },
+        {
+          "group": "state_prep_q117",
+          "member": "spc_prep0_q117",
+          "reference": false,
+          "register_prefix": "g3_",
+          "physical_qubits": [
+            117
+          ],
+          "registers_by_replica": [
+            [
+              "g3_r0_c"
+            ]
+          ]
+        },
+        {
+          "group": "state_prep_q124",
+          "member": "spc_prep0_q124",
+          "reference": false,
+          "register_prefix": "g4_",
+          "physical_qubits": [
+            124
+          ],
+          "registers_by_replica": [
+            [
+              "g4_r0_c"
+            ]
+          ]
+        },
+        {
+          "group": "state_prep_q125",
+          "member": "spc_prep0_q125",
+          "reference": false,
+          "register_prefix": "g5_",
+          "physical_qubits": [
+            125
+          ],
+          "registers_by_replica": [
+            [
+              "g5_r0_c"
+            ]
+          ]
+        },
+        {
+          "group": "state_prep_q126",
+          "member": "spc_prep0_q126",
+          "reference": false,
+          "register_prefix": "g6_",
+          "physical_qubits": [
+            126
+          ],
+          "registers_by_replica": [
+            [
+              "g6_r0_c"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "selection_trace": {},
+  "family_configuration": {
+    "name": "state-prep-control",
+    "qubits": [
+      104,
+      105,
+      106,
+      117,
+      124,
+      125,
+      126
+    ],
+    "layout_source": "declared",
+    "arms": {
+      "prep0": "init, measure"
+    },
+    "placement_contract": "one pinned single-qubit placement per named qubit; every qubit runs each arm in the same shots; static prep0 and x PUBs, dynamic reset PUB",
+    "dt_seconds": 4e-09
+  },
+  "observable_contracts": [
+    {
+      "name": "spc_excited_q104",
+      "terms": [
+        {
+          "member": "spc_prep0_q104",
+          "values": [
+            0.0,
+            1.0
+          ],
+          "sign": 1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": null,
+      "alpha": 0.0071428571428571435,
+      "power": 0.8,
+      "precision_half_width": 0.025
+    },
+    {
+      "name": "spc_excited_q105",
+      "terms": [
+        {
+          "member": "spc_prep0_q105",
+          "values": [
+            0.0,
+            1.0
+          ],
+          "sign": 1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": null,
+      "alpha": 0.0071428571428571435,
+      "power": 0.8,
+      "precision_half_width": 0.025
+    },
+    {
+      "name": "spc_excited_q106",
+      "terms": [
+        {
+          "member": "spc_prep0_q106",
+          "values": [
+            0.0,
+            1.0
+          ],
+          "sign": 1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": null,
+      "alpha": 0.0071428571428571435,
+      "power": 0.8,
+      "precision_half_width": 0.025
+    },
+    {
+      "name": "spc_excited_q117",
+      "terms": [
+        {
+          "member": "spc_prep0_q117",
+          "values": [
+            0.0,
+            1.0
+          ],
+          "sign": 1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": null,
+      "alpha": 0.0071428571428571435,
+      "power": 0.8,
+      "precision_half_width": 0.025
+    },
+    {
+      "name": "spc_excited_q124",
+      "terms": [
+        {
+          "member": "spc_prep0_q124",
+          "values": [
+            0.0,
+            1.0
+          ],
+          "sign": 1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": null,
+      "alpha": 0.0071428571428571435,
+      "power": 0.8,
+      "precision_half_width": 0.025
+    },
+    {
+      "name": "spc_excited_q125",
+      "terms": [
+        {
+          "member": "spc_prep0_q125",
+          "values": [
+            0.0,
+            1.0
+          ],
+          "sign": 1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": null,
+      "alpha": 0.0071428571428571435,
+      "power": 0.8,
+      "precision_half_width": 0.025
+    },
+    {
+      "name": "spc_excited_q126",
+      "terms": [
+        {
+          "member": "spc_prep0_q126",
+          "values": [
+            0.0,
+            1.0
+          ],
+          "sign": 1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": null,
+      "alpha": 0.0071428571428571435,
+      "power": 0.8,
+      "precision_half_width": 0.025
+    }
+  ],
+  "optimization": {
+    "selected": "candidate-000-shots-8192",
+    "candidates": [
+      {
+        "name": "candidate-000-shots-16384",
+        "feasible": false,
+        "estimated_charge_seconds": 6.43171712,
+        "total_execution_ceiling_seconds": 5.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/static/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_static_pub_01",
+                "shots": 16384,
+                "scheduled_seconds": 2.18e-06,
+                "repetition_delay_seconds": 0.00025,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 4.13171712,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 6.43171712,
+            "max_execution_seconds": 5,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "spc_excited_q104",
+            "predicted_value": 0.006072998046875,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.0052098044753535536,
+            "modeled_value_upper_bound": 0.017355800569103554,
+            "confidence_half_width": 0.013113357004697741,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "spc_excited_q105",
+            "predicted_value": 0.001953125,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.009329677522228554,
+            "modeled_value_upper_bound": 0.013235927522228554,
+            "confidence_half_width": 0.013113357004697741,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "spc_excited_q106",
+            "predicted_value": 0.00677490234375,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.0045079001784785536,
+            "modeled_value_upper_bound": 0.018057704865978554,
+            "confidence_half_width": 0.013113357004697741,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "spc_excited_q117",
+            "predicted_value": 0.001190185546875,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.010092616975353554,
+            "modeled_value_upper_bound": 0.012472988069103554,
+            "confidence_half_width": 0.013113357004697741,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "spc_excited_q124",
+            "predicted_value": 0.013916015625,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": 0.0026332131027714464,
+            "modeled_value_upper_bound": 0.025198818147228554,
+            "confidence_half_width": 0.013113357004697741,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "spc_excited_q125",
+            "predicted_value": 0.049072265625,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": 0.037789463102771446,
+            "modeled_value_upper_bound": 0.060355068147228554,
+            "confidence_half_width": 0.013113357004697741,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "spc_excited_q126",
+            "predicted_value": 0.0013427734375,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.009940029084728554,
+            "modeled_value_upper_bound": 0.012625575959728554,
+            "confidence_half_width": 0.013113357004697741,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [
+          "ibm_kingston/static/1: estimated charge exceeds the per-job execution ceiling"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 16384,
+          "proxy_score": 0.9768464811640145
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 6.43171712,
+        "normalized_precision_radius": 0.5245342801879096
+      },
+      {
+        "name": "candidate-000-shots-4096",
+        "feasible": false,
+        "estimated_charge_seconds": 3.33292928,
+        "total_execution_ceiling_seconds": 5.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/static/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_static_pub_01",
+                "shots": 4096,
+                "scheduled_seconds": 2.18e-06,
+                "repetition_delay_seconds": 0.00025,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 1.03292928,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 3.33292928,
+            "max_execution_seconds": 5,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "spc_excited_q104",
+            "predicted_value": 0.006072998046875,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.0052098044753535536,
+            "modeled_value_upper_bound": 0.017355800569103554,
+            "confidence_half_width": 0.026226714009395483,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": false,
+            "rejection_reasons": [
+              "shot tier exceeds the declared confidence half-width"
+            ]
+          },
+          {
+            "name": "spc_excited_q105",
+            "predicted_value": 0.001953125,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.009329677522228554,
+            "modeled_value_upper_bound": 0.013235927522228554,
+            "confidence_half_width": 0.026226714009395483,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": false,
+            "rejection_reasons": [
+              "shot tier exceeds the declared confidence half-width"
+            ]
+          },
+          {
+            "name": "spc_excited_q106",
+            "predicted_value": 0.00677490234375,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.0045079001784785536,
+            "modeled_value_upper_bound": 0.018057704865978554,
+            "confidence_half_width": 0.026226714009395483,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": false,
+            "rejection_reasons": [
+              "shot tier exceeds the declared confidence half-width"
+            ]
+          },
+          {
+            "name": "spc_excited_q117",
+            "predicted_value": 0.001190185546875,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.010092616975353554,
+            "modeled_value_upper_bound": 0.012472988069103554,
+            "confidence_half_width": 0.026226714009395483,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": false,
+            "rejection_reasons": [
+              "shot tier exceeds the declared confidence half-width"
+            ]
+          },
+          {
+            "name": "spc_excited_q124",
+            "predicted_value": 0.013916015625,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": 0.0026332131027714464,
+            "modeled_value_upper_bound": 0.025198818147228554,
+            "confidence_half_width": 0.026226714009395483,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": false,
+            "rejection_reasons": [
+              "shot tier exceeds the declared confidence half-width"
+            ]
+          },
+          {
+            "name": "spc_excited_q125",
+            "predicted_value": 0.049072265625,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": 0.037789463102771446,
+            "modeled_value_upper_bound": 0.060355068147228554,
+            "confidence_half_width": 0.026226714009395483,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": false,
+            "rejection_reasons": [
+              "shot tier exceeds the declared confidence half-width"
+            ]
+          },
+          {
+            "name": "spc_excited_q126",
+            "predicted_value": 0.0013427734375,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.009940029084728554,
+            "modeled_value_upper_bound": 0.012625575959728554,
+            "confidence_half_width": 0.026226714009395483,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": false,
+            "rejection_reasons": [
+              "shot tier exceeds the declared confidence half-width"
+            ]
+          }
+        ],
+        "rejection_reasons": [
+          "spc_excited_q104: shot tier exceeds the declared confidence half-width",
+          "spc_excited_q105: shot tier exceeds the declared confidence half-width",
+          "spc_excited_q106: shot tier exceeds the declared confidence half-width",
+          "spc_excited_q117: shot tier exceeds the declared confidence half-width",
+          "spc_excited_q124: shot tier exceeds the declared confidence half-width",
+          "spc_excited_q125: shot tier exceeds the declared confidence half-width",
+          "spc_excited_q126: shot tier exceeds the declared confidence half-width"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 4096,
+          "proxy_score": 0.9768464811640145
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 3.33292928,
+        "normalized_precision_radius": 1.0490685603758192
+      },
+      {
+        "name": "candidate-000-shots-8192",
+        "feasible": true,
+        "estimated_charge_seconds": 4.3658585599999995,
+        "total_execution_ceiling_seconds": 5.0,
+        "jobs": [
+          {
+            "name": "ibm_kingston/static/1",
+            "pubs": [
+              {
+                "name": "ibm_kingston_static_pub_01",
+                "shots": 8192,
+                "scheduled_seconds": 2.18e-06,
+                "repetition_delay_seconds": 0.00025,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 2.06585856,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 4.3658585599999995,
+            "max_execution_seconds": 5,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "spc_excited_q104",
+            "predicted_value": 0.006072998046875,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.0052098044753535536,
+            "modeled_value_upper_bound": 0.017355800569103554,
+            "confidence_half_width": 0.018545087324283772,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "spc_excited_q105",
+            "predicted_value": 0.001953125,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.009329677522228554,
+            "modeled_value_upper_bound": 0.013235927522228554,
+            "confidence_half_width": 0.018545087324283772,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "spc_excited_q106",
+            "predicted_value": 0.00677490234375,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.0045079001784785536,
+            "modeled_value_upper_bound": 0.018057704865978554,
+            "confidence_half_width": 0.018545087324283772,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "spc_excited_q117",
+            "predicted_value": 0.001190185546875,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.010092616975353554,
+            "modeled_value_upper_bound": 0.012472988069103554,
+            "confidence_half_width": 0.018545087324283772,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "spc_excited_q124",
+            "predicted_value": 0.013916015625,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": 0.0026332131027714464,
+            "modeled_value_upper_bound": 0.025198818147228554,
+            "confidence_half_width": 0.018545087324283772,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "spc_excited_q125",
+            "predicted_value": 0.049072265625,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": 0.037789463102771446,
+            "modeled_value_upper_bound": 0.060355068147228554,
+            "confidence_half_width": 0.018545087324283772,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          },
+          {
+            "name": "spc_excited_q126",
+            "predicted_value": 0.0013427734375,
+            "simulation_error_radius": 0.011282802522228554,
+            "modeled_value_lower_bound": -0.009940029084728554,
+            "modeled_value_upper_bound": 0.012625575959728554,
+            "confidence_half_width": 0.018545087324283772,
+            "detection_radius": null,
+            "power_radius": null,
+            "effect_used_for_power": null,
+            "minimum_effect": null,
+            "precision_half_width": 0.025,
+            "alpha": 0.0071428571428571435,
+            "power": null,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [],
+        "proxy_metadata": {
+          "backend": "ibm_kingston",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 8192,
+          "proxy_score": 0.9768464811640145
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 4.3658585599999995,
+        "normalized_precision_radius": 0.7418034929713508
+      }
+    ],
+    "pareto_frontier": [
+      "candidate-000-shots-8192"
+    ],
+    "rejection_reasons": [],
+    "simulation_alpha": 0.01,
+    "simulation_comparisons": 21,
+    "assumptions": [
+      "independent stationary repetitions; arbitrary dependence within each PUB shot unless explicitly bounded",
+      "union bounds across PUBs; no independence assumption between PUBs",
+      "observable alpha and power are per endpoint, conditional on the supplied outcome model",
+      "finite simulation error is controlled simultaneously across all supplied candidate-observable marginals",
+      "hardware-model discrepancy and cost-model error remain unquantified",
+      "charge estimates include every PUB, control, repetition delay, declared duration addition, and job overhead",
+      "execution ceilings apply per job; their aggregate must preserve the declared reserve",
+      "explicit cost scenarios are sensitivity assumptions; their coverage of cost uncertainty is unquantified"
+    ],
+    "objective": "minimum_charge",
+    "selected_objective_value": 4.3658585599999995,
+    "cost_scenarios": [],
+    "retained_candidate": "candidate-000-shots-8192",
+    "searched_routed_sets": 1,
+    "shot_tiers": [
+      4096,
+      8192,
+      16384
+    ],
+    "scope": "bounded routed candidates and uniform shot tiers; global optimality is unclaimed"
+  },
+  "optimizer_settings": {
+    "family": "state-prep-control",
+    "optimize": true,
+    "objective": "minimum_charge",
+    "cost_scenarios": [],
+    "shot_tiers": [
+      4096,
+      8192,
+      16384
+    ],
+    "shot_allocation": "uniform",
+    "replica_tiers": [
+      1
+    ],
+    "optimizer_candidates": 1,
+    "model_shots": 32768,
+    "precision": 0.08,
+    "alpha": 0.05,
+    "power": 0.8,
+    "simulation_alpha": 0.01,
+    "job_overhead_seconds": 2.3,
+    "classical_latency_us": 20.0,
+    "reserve_seconds": 60.0,
+    "max_total_execution_seconds": 5.0,
+    "patch_qubits": null,
+    "model_method": "sampled",
+    "replica_variance_bound": null,
+    "state_prep_arms": [
+      "prep0"
+    ]
+  },
+  "optimization_budget": {
+    "remaining_seconds": 266.0,
+    "reserve_seconds": 60.0,
+    "max_total_execution_seconds": 5.0
+  },
+  "local_simulation_batches": [
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "density_matrix",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "spc_prep0_q104"
+      ],
+      "ordered_qpy_sha256": "205033d0babe8cbea55bddbfa6c7bf2bda61782f81e87865cec9e7840ae20bc4",
+      "noise_serialized_channels_sha256": "c4d7447abf45b94dd233d548caed2b580518eca15dd6a484812decc5da56a42d",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 32768,
+      "seed_simulator": 20261011,
+      "wall_seconds": 3.425727307003399,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.021782465,
+          "num_bind_params": 1,
+          "parallel_state_update": 12,
+          "parallel_shots": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              104,
+              0
+            ]
+          ],
+          "method": "density_matrix",
+          "device": "CPU",
+          "num_qubits": 1,
+          "sample_measure_time": 0.008182816,
+          "active_input_qubits": [
+            104
+          ],
+          "num_clbits": 1,
+          "remapped_qubits": true,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "superop",
+          "measure_sampling": true,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 7,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "density_matrix",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "spc_prep0_q105"
+      ],
+      "ordered_qpy_sha256": "5f0c84ec6c79e02b78d6107fddb79b5781200290ff157b364e8d0403a19200fb",
+      "noise_serialized_channels_sha256": "c4d7447abf45b94dd233d548caed2b580518eca15dd6a484812decc5da56a42d",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 32768,
+      "seed_simulator": 20261011,
+      "wall_seconds": 2.7197592529992107,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.02900372,
+          "num_bind_params": 1,
+          "parallel_state_update": 12,
+          "parallel_shots": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              105,
+              0
+            ]
+          ],
+          "method": "density_matrix",
+          "device": "CPU",
+          "num_qubits": 1,
+          "sample_measure_time": 0.009968761,
+          "active_input_qubits": [
+            105
+          ],
+          "num_clbits": 1,
+          "remapped_qubits": true,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "superop",
+          "measure_sampling": true,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 7,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "density_matrix",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "spc_prep0_q106"
+      ],
+      "ordered_qpy_sha256": "fafc23a6cfed2810101df31a55ac4ddb548f9cddedd44964fa621fe05487d9b3",
+      "noise_serialized_channels_sha256": "c4d7447abf45b94dd233d548caed2b580518eca15dd6a484812decc5da56a42d",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 32768,
+      "seed_simulator": 20261011,
+      "wall_seconds": 2.471745599003043,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.024668611,
+          "num_bind_params": 1,
+          "parallel_state_update": 12,
+          "parallel_shots": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              106,
+              0
+            ]
+          ],
+          "method": "density_matrix",
+          "device": "CPU",
+          "num_qubits": 1,
+          "sample_measure_time": 0.007893266,
+          "active_input_qubits": [
+            106
+          ],
+          "num_clbits": 1,
+          "remapped_qubits": true,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "superop",
+          "measure_sampling": true,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 7,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "density_matrix",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "spc_prep0_q117"
+      ],
+      "ordered_qpy_sha256": "b4007488e2c1589d93a36e4816c3f16ebdd56a0c9c53215fe16262caf40ae348",
+      "noise_serialized_channels_sha256": "c4d7447abf45b94dd233d548caed2b580518eca15dd6a484812decc5da56a42d",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 32768,
+      "seed_simulator": 20261011,
+      "wall_seconds": 2.415610217998619,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.027781538,
+          "num_bind_params": 1,
+          "parallel_state_update": 12,
+          "parallel_shots": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              117,
+              0
+            ]
+          ],
+          "method": "density_matrix",
+          "device": "CPU",
+          "num_qubits": 1,
+          "sample_measure_time": 0.007548835,
+          "active_input_qubits": [
+            117
+          ],
+          "num_clbits": 1,
+          "remapped_qubits": true,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "superop",
+          "measure_sampling": true,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 7,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "density_matrix",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "spc_prep0_q124"
+      ],
+      "ordered_qpy_sha256": "e5056e1e40d39ff000c2619ef79338c3e627a29a70af55c485492cc60e9f93a8",
+      "noise_serialized_channels_sha256": "c4d7447abf45b94dd233d548caed2b580518eca15dd6a484812decc5da56a42d",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 32768,
+      "seed_simulator": 20261011,
+      "wall_seconds": 2.290648123002029,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.023455049,
+          "num_bind_params": 1,
+          "parallel_state_update": 12,
+          "parallel_shots": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              124,
+              0
+            ]
+          ],
+          "method": "density_matrix",
+          "device": "CPU",
+          "num_qubits": 1,
+          "sample_measure_time": 0.005731222,
+          "active_input_qubits": [
+            124
+          ],
+          "num_clbits": 1,
+          "remapped_qubits": true,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "superop",
+          "measure_sampling": true,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 7,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "density_matrix",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "spc_prep0_q125"
+      ],
+      "ordered_qpy_sha256": "c32476e238699652c9d79f16384eff60dc0c9a7a0ed47b7daad332a18b74ab5a",
+      "noise_serialized_channels_sha256": "c4d7447abf45b94dd233d548caed2b580518eca15dd6a484812decc5da56a42d",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 32768,
+      "seed_simulator": 20261011,
+      "wall_seconds": 2.3931831599984434,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.027278136,
+          "num_bind_params": 1,
+          "parallel_state_update": 12,
+          "parallel_shots": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              125,
+              0
+            ]
+          ],
+          "method": "density_matrix",
+          "device": "CPU",
+          "num_qubits": 1,
+          "sample_measure_time": 0.009222399,
+          "active_input_qubits": [
+            125
+          ],
+          "num_clbits": 1,
+          "remapped_qubits": true,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "superop",
+          "measure_sampling": true,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 7,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "density_matrix",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "spc_prep0_q126"
+      ],
+      "ordered_qpy_sha256": "5c64127442cdf3ee392cb5e7a366bb1cb3395b7af9e0561186e87e519c7f6e00",
+      "noise_serialized_channels_sha256": "c4d7447abf45b94dd233d548caed2b580518eca15dd6a484812decc5da56a42d",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 32768,
+      "seed_simulator": 20261011,
+      "wall_seconds": 2.4438438809957006,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.021647416,
+          "num_bind_params": 1,
+          "parallel_state_update": 12,
+          "parallel_shots": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              126,
+              0
+            ]
+          ],
+          "method": "density_matrix",
+          "device": "CPU",
+          "num_qubits": 1,
+          "sample_measure_time": 0.005595001,
+          "active_input_qubits": [
+            126
+          ],
+          "num_clbits": 1,
+          "remapped_qubits": true,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "superop",
+          "measure_sampling": true,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 7,
+            "enabled": true
+          }
+        }
+      ]
+    }
+  ],
+  "compiled_ideal_validation": {
+    "method": "branch-resolved statevector on active compiled replica wires",
+    "absolute_tolerance": 1e-10,
+    "noise_method": [
+      "density_matrix"
+    ],
+    "noise_policy": "density_matrix_dynamic_statevector",
+    "all_candidates_passed": true
+  },
+  "budget_plan": {
+    "jobs": [
+      {
+        "backend": "ibm_kingston",
+        "kind": "static",
+        "batch_index": 1,
+        "pubs": 1,
+        "ceiling_seconds": 5
+      }
+    ],
+    "combined_ceiling_seconds": 5.0,
+    "reserve_seconds": 60.0,
+    "max_total_execution_seconds": 5.0,
+    "remaining_seconds": 266,
+    "admitted": true,
+    "reasons": [],
+    "reservation_scope": "invocation-local ceilings; external submissions can change shared quota"
+  },
+  "execution_contract": {
+    "backends": [
+      {
+        "name": "ibm_kingston",
+        "repetition_delay_seconds": 0.00025,
+        "repetition_delay_source": "--rep-delay",
+        "default_repetition_delay_seconds": 0.00025,
+        "repetition_delay_range_seconds": [
+          0.0,
+          0.002
+        ]
+      }
+    ],
+    "selected_job_costs": [
+      {
+        "name": "ibm_kingston/static/1",
+        "pubs": [
+          {
+            "name": "ibm_kingston_static_pub_01",
+            "shots": 8192,
+            "scheduled_seconds": 2.18e-06,
+            "repetition_delay_seconds": 0.00025,
+            "reset_seconds": 0.0,
+            "classical_latency_seconds": 0.0,
+            "estimated_execution_seconds": 2.06585856,
+            "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+            "classical_stage_count": 0
+          }
+        ],
+        "overhead_seconds": 2.3,
+        "estimated_charge_seconds": 4.3658585599999995,
+        "max_execution_seconds": 5,
+        "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+      }
+    ],
+    "selected_cost_scenarios": [],
+    "selected_worst_case_charge_seconds": 4.3658585599999995
+  },
+  "groups": [
+    {
+      "group": "state_prep_q104",
+      "backend": "ibm_kingston",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "calibration": "2026-10-17T15:07:14-07:00",
+      "noise_model_calibration": "2026-10-17T15:07:14-07:00",
+      "seed_transpiler": 20261010,
+      "initial_layout": [
+        104
+      ],
+      "joint_score": 0.9775510128391769,
+      "replica_floor": 0.9,
+      "replicas": [
+        {
+          "index": 0,
+          "prefix": "r0_",
+          "score": 0.9775510128391769,
+          "physical_qubits": [
+            104
+          ],
+          "initial_layout": [
+            104
+          ],
+          "mapping": {
+            "104": 104
+          }
+        }
+      ],
+      "summary": {
+        "q104_excited_fraction": 0.0068359375
+      },
+      "summary_per_replica": [
+        {
+          "q104_excited_fraction": 0.0068359375
+        }
+      ],
+      "variance": {
+        "spc_prep0_q104": {
+          "replicas": 1.0,
+          "mean": 0.9931640625,
+          "shot_variance": 8.287606760859489e-07
+        }
+      },
+      "summary_readout_corrected": {
+        "q104_excited_fraction": 0.0007520681875156678
+      },
+      "placed_qubit_calibration": {
+        "104": {
+          "T1": 136.83310169251868,
+          "T2": 228.09965585932852,
+          "readout_error": 0.0130615234375,
+          "prob_meas1_prep0": 0.006103515625,
+          "prob_meas0_prep1": 0.02001953125
+        }
+      },
+      "members": [
+        {
+          "name": "spc_prep0_q104",
+          "reference": false,
+          "cz": 0,
+          "depth": 1,
+          "duration_bound": "scheduled",
+          "dynamic": false,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              104
+            ]
+          ],
+          "ideal": [
+            1.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                104
+              ],
+              "duration_s": 2.18e-06,
+              "esp": 0.9869384765625,
+              "coherence": 0.9904882989707529,
+              "noisy": [
+                0.993164,
+                0.006836
+              ],
+              "tvd_noisy_to_ideal": 0.0068359375
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "group": "state_prep_q105",
+      "backend": "ibm_kingston",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "calibration": "2026-10-17T15:07:14-07:00",
+      "noise_model_calibration": "2026-10-17T15:07:14-07:00",
+      "seed_transpiler": 20261010,
+      "initial_layout": [
+        105
+      ],
+      "joint_score": 0.9867922368453582,
+      "replica_floor": 0.9,
+      "replicas": [
+        {
+          "index": 0,
+          "prefix": "r0_",
+          "score": 0.9867922368453582,
+          "physical_qubits": [
+            105
+          ],
+          "initial_layout": [
+            105
+          ],
+          "mapping": {
+            "105": 105
+          }
+        }
+      ],
+      "summary": {
+        "q105_excited_fraction": 0.0023193359375
+      },
+      "summary_per_replica": [
+        {
+          "q105_excited_fraction": 0.0023193359375
+        }
+      ],
+      "variance": {
+        "spc_prep0_q105": {
+          "replicas": 1.0,
+          "mean": 0.9976806640625,
+          "shot_variance": 2.824654075084254e-07
+        }
+      },
+      "summary_readout_corrected": {
+        "q105_excited_fraction": 0.00012303149606299234
+      },
+      "placed_qubit_calibration": {
+        "105": {
+          "T1": 234.55639632372805,
+          "T2": 232.36325493677666,
+          "readout_error": 0.00390625,
+          "prob_meas1_prep0": 0.002197265625,
+          "prob_meas0_prep1": 0.005615234375
+        }
+      },
+      "members": [
+        {
+          "name": "spc_prep0_q105",
+          "reference": false,
+          "cz": 0,
+          "depth": 1,
+          "duration_bound": "scheduled",
+          "dynamic": false,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              105
+            ]
+          ],
+          "ideal": [
+            1.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                105
+              ],
+              "duration_s": 2.18e-06,
+              "esp": 0.99609375,
+              "coherence": 0.9906620103231831,
+              "noisy": [
+                0.997681,
+                0.002319
+              ],
+              "tvd_noisy_to_ideal": 0.0023193359375
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "group": "state_prep_q106",
+      "backend": "ibm_kingston",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "calibration": "2026-10-17T15:07:14-07:00",
+      "noise_model_calibration": "2026-10-17T15:07:14-07:00",
+      "seed_transpiler": 20261010,
+      "initial_layout": [
+        106
+      ],
+      "joint_score": 0.9773499603995736,
+      "replica_floor": 0.9,
+      "replicas": [
+        {
+          "index": 0,
+          "prefix": "r0_",
+          "score": 0.9773499603995736,
+          "physical_qubits": [
+            106
+          ],
+          "initial_layout": [
+            106
+          ],
+          "mapping": {
+            "106": 106
+          }
+        }
+      ],
+      "summary": {
+        "q106_excited_fraction": 0.0081787109375
+      },
+      "summary_per_replica": [
+        {
+          "q106_excited_fraction": 0.0081787109375
+        }
+      ],
+      "variance": {
+        "spc_prep0_q106": {
+          "replicas": 1.0,
+          "mean": 0.9918212890625,
+          "shot_variance": 9.902123565552756e-07
+        }
+      },
+      "summary_readout_corrected": {
+        "q106_excited_fraction": 0.0013674788662357013
+      },
+      "placed_qubit_calibration": {
+        "106": {
+          "T1": 105.90464593419759,
+          "T2": 157.5572301501826,
+          "readout_error": 0.009033203125,
+          "prob_meas1_prep0": 0.0068359375,
+          "prob_meas0_prep1": 0.01123046875
+        }
+      },
+      "members": [
+        {
+          "name": "spc_prep0_q106",
+          "reference": false,
+          "cz": 0,
+          "depth": 1,
+          "duration_bound": "scheduled",
+          "dynamic": false,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              106
+            ]
+          ],
+          "ideal": [
+            1.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                106
+              ],
+              "duration_s": 2.18e-06,
+              "esp": 0.990966796875,
+              "coherence": 0.98625903862938,
+              "noisy": [
+                0.991821,
+                0.008179
+              ],
+              "tvd_noisy_to_ideal": 0.0081787109375
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "group": "state_prep_q117",
+      "backend": "ibm_kingston",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "calibration": "2026-10-17T15:07:14-07:00",
+      "noise_model_calibration": "2026-10-17T15:07:14-07:00",
+      "seed_transpiler": 20261010,
+      "initial_layout": [
+        117
+      ],
+      "joint_score": 0.9864513558450222,
+      "replica_floor": 0.9,
+      "replicas": [
+        {
+          "index": 0,
+          "prefix": "r0_",
+          "score": 0.9864513558450222,
+          "physical_qubits": [
+            117
+          ],
+          "initial_layout": [
+            117
+          ],
+          "mapping": {
+            "117": 117
+          }
+        }
+      ],
+      "summary": {
+        "q117_excited_fraction": 0.0018310546875
+      },
+      "summary_per_replica": [
+        {
+          "q117_excited_fraction": 0.0018310546875
+        }
+      ],
+      "variance": {
+        "spc_prep0_q117": {
+          "replicas": 1.0,
+          "mean": 0.9981689453125,
+          "shot_variance": 2.2310814529191703e-07
+        }
+      },
+      "summary_readout_corrected": {
+        "q117_excited_fraction": 0.00036891293654697506
+      },
+      "placed_qubit_calibration": {
+        "117": {
+          "T1": 259.08402888110254,
+          "T2": 218.6026161595141,
+          "readout_error": 0.003662109375,
+          "prob_meas1_prep0": 0.00146484375,
+          "prob_meas0_prep1": 0.005859375
+        }
+      },
+      "members": [
+        {
+          "name": "spc_prep0_q117",
+          "reference": false,
+          "cz": 0,
+          "depth": 1,
+          "duration_bound": "scheduled",
+          "dynamic": false,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              117
+            ]
+          ],
+          "ideal": [
+            1.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                117
+              ],
+              "duration_s": 2.18e-06,
+              "esp": 0.996337890625,
+              "coherence": 0.9900771265722154,
+              "noisy": [
+                0.998169,
+                0.001831
+              ],
+              "tvd_noisy_to_ideal": 0.0018310546875
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "group": "state_prep_q124",
+      "backend": "ibm_kingston",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "calibration": "2026-10-17T15:07:14-07:00",
+      "noise_model_calibration": "2026-10-17T15:07:14-07:00",
+      "seed_transpiler": 20261010,
+      "initial_layout": [
+        124
+      ],
+      "joint_score": 0.9680495815500993,
+      "replica_floor": 0.9,
+      "replicas": [
+        {
+          "index": 0,
+          "prefix": "r0_",
+          "score": 0.9680495815500993,
+          "physical_qubits": [
+            124
+          ],
+          "initial_layout": [
+            124
+          ],
+          "mapping": {
+            "124": 124
+          }
+        }
+      ],
+      "summary": {
+        "q124_excited_fraction": 0.015869140625
+      },
+      "summary_per_replica": [
+        {
+          "q124_excited_fraction": 0.015869140625
+        }
+      ],
+      "variance": {
+        "spc_prep0_q124": {
+          "replicas": 1.0,
+          "mean": 0.984130859375,
+          "shot_variance": 1.9064100342802703e-06
+        }
+      },
+      "summary_readout_corrected": {
+        "q124_excited_fraction": 0.0017703591299949393
+      },
+      "placed_qubit_calibration": {
+        "124": {
+          "T1": 243.4529587531447,
+          "T2": 145.46914778101964,
+          "readout_error": 0.017333984375,
+          "prob_meas1_prep0": 0.01416015625,
+          "prob_meas0_prep1": 0.0205078125
+        }
+      },
+      "members": [
+        {
+          "name": "spc_prep0_q124",
+          "reference": false,
+          "cz": 0,
+          "depth": 1,
+          "duration_bound": "scheduled",
+          "dynamic": false,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              124
+            ]
+          ],
+          "ideal": [
+            1.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                124
+              ],
+              "duration_s": 2.18e-06,
+              "esp": 0.982666015625,
+              "coherence": 0.9851257356594303,
+              "noisy": [
+                0.984131,
+                0.015869
+              ],
+              "tvd_noisy_to_ideal": 0.015869140625
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "group": "state_prep_q125",
+      "backend": "ibm_kingston",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "calibration": "2026-10-17T15:07:14-07:00",
+      "noise_model_calibration": "2026-10-17T15:07:14-07:00",
+      "seed_transpiler": 20261010,
+      "initial_layout": [
+        125
+      ],
+      "joint_score": 0.9533420324971458,
+      "replica_floor": 0.9,
+      "replicas": [
+        {
+          "index": 0,
+          "prefix": "r0_",
+          "score": 0.9533420324971458,
+          "physical_qubits": [
+            125
+          ],
+          "initial_layout": [
+            125
+          ],
+          "mapping": {
+            "125": 125
+          }
+        }
+      ],
+      "summary": {
+        "q125_excited_fraction": 0.0521240234375
+      },
+      "summary_per_replica": [
+        {
+          "q125_excited_fraction": 0.0521240234375
+        }
+      ],
+      "variance": {
+        "spc_prep0_q125": {
+          "replicas": 1.0,
+          "mean": 0.9478759765625,
+          "shot_variance": 6.031141310813837e-06
+        }
+      },
+      "summary_readout_corrected": {
+        "q125_excited_fraction": 0.004372019077901426
+      },
+      "placed_qubit_calibration": {
+        "125": {
+          "T1": 241.0000620155779,
+          "T2": 283.7975175361988,
+          "readout_error": 0.039306640625,
+          "prob_meas1_prep0": 0.048095703125,
+          "prob_meas0_prep1": 0.030517578125
+        }
+      },
+      "members": [
+        {
+          "name": "spc_prep0_q125",
+          "reference": false,
+          "cz": 0,
+          "depth": 1,
+          "duration_bound": "scheduled",
+          "dynamic": false,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              125
+            ]
+          ],
+          "ideal": [
+            1.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                125
+              ],
+              "duration_s": 2.18e-06,
+              "esp": 0.960693359375,
+              "coherence": 0.9923478945637381,
+              "noisy": [
+                0.947876,
+                0.052124
+              ],
+              "tvd_noisy_to_ideal": 0.0521240234375
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "group": "state_prep_q126",
+      "backend": "ibm_kingston",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "calibration": "2026-10-17T15:07:14-07:00",
+      "noise_model_calibration": "2026-10-17T15:07:14-07:00",
+      "seed_transpiler": 20261010,
+      "initial_layout": [
+        126
+      ],
+      "joint_score": 0.9883891881717253,
+      "replica_floor": 0.9,
+      "replicas": [
+        {
+          "index": 0,
+          "prefix": "r0_",
+          "score": 0.9883891881717253,
+          "physical_qubits": [
+            126
+          ],
+          "initial_layout": [
+            126
+          ],
+          "mapping": {
+            "126": 126
+          }
+        }
+      ],
+      "summary": {
+        "q126_excited_fraction": 0.0020751953125
+      },
+      "summary_per_replica": [
+        {
+          "q126_excited_fraction": 0.0020751953125
+        }
+      ],
+      "variance": {
+        "spc_prep0_q126": {
+          "replicas": 1.0,
+          "mean": 0.9979248046875,
+          "shot_variance": 2.527940523577854e-07
+        }
+      },
+      "summary_readout_corrected": {
+        "q126_excited_fraction": 0.000370187561697927
+      },
+      "placed_qubit_calibration": {
+        "126": {
+          "T1": 288.54981298438753,
+          "T2": 346.40709118425445,
+          "readout_error": 0.00537109375,
+          "prob_meas1_prep0": 0.001708984375,
+          "prob_meas0_prep1": 0.009033203125
+        }
+      },
+      "members": [
+        {
+          "name": "spc_prep0_q126",
+          "reference": false,
+          "cz": 0,
+          "depth": 1,
+          "duration_bound": "scheduled",
+          "dynamic": false,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              126
+            ]
+          ],
+          "ideal": [
+            1.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                126
+              ],
+              "duration_s": 2.18e-06,
+              "esp": 0.99462890625,
+              "coherence": 0.9937265868314645,
+              "noisy": [
+                0.997925,
+                0.002075
+              ],
+              "tvd_noisy_to_ideal": 0.0020751953125
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "evaluation_simulation_batches": [
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "density_matrix",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "spc_prep0_q104"
+      ],
+      "ordered_qpy_sha256": "205033d0babe8cbea55bddbfa6c7bf2bda61782f81e87865cec9e7840ae20bc4",
+      "noise_serialized_channels_sha256": "c4d7447abf45b94dd233d548caed2b580518eca15dd6a484812decc5da56a42d",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 8192,
+      "seed_simulator": 20261011,
+      "wall_seconds": 2.3505045420024544,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.012890347,
+          "num_bind_params": 1,
+          "parallel_state_update": 12,
+          "parallel_shots": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              104,
+              0
+            ]
+          ],
+          "method": "density_matrix",
+          "device": "CPU",
+          "num_qubits": 1,
+          "sample_measure_time": 0.006932164,
+          "active_input_qubits": [
+            104
+          ],
+          "num_clbits": 1,
+          "remapped_qubits": true,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "superop",
+          "measure_sampling": true,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 7,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "density_matrix",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "spc_prep0_q105"
+      ],
+      "ordered_qpy_sha256": "5f0c84ec6c79e02b78d6107fddb79b5781200290ff157b364e8d0403a19200fb",
+      "noise_serialized_channels_sha256": "c4d7447abf45b94dd233d548caed2b580518eca15dd6a484812decc5da56a42d",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 8192,
+      "seed_simulator": 20261011,
+      "wall_seconds": 1.4076652840012684,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.011920765,
+          "num_bind_params": 1,
+          "parallel_state_update": 12,
+          "parallel_shots": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              105,
+              0
+            ]
+          ],
+          "method": "density_matrix",
+          "device": "CPU",
+          "num_qubits": 1,
+          "sample_measure_time": 0.00494856,
+          "active_input_qubits": [
+            105
+          ],
+          "num_clbits": 1,
+          "remapped_qubits": true,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "superop",
+          "measure_sampling": true,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 7,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "density_matrix",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "spc_prep0_q106"
+      ],
+      "ordered_qpy_sha256": "fafc23a6cfed2810101df31a55ac4ddb548f9cddedd44964fa621fe05487d9b3",
+      "noise_serialized_channels_sha256": "c4d7447abf45b94dd233d548caed2b580518eca15dd6a484812decc5da56a42d",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 8192,
+      "seed_simulator": 20261011,
+      "wall_seconds": 1.784960652999871,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.015023192,
+          "num_bind_params": 1,
+          "parallel_state_update": 12,
+          "parallel_shots": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              106,
+              0
+            ]
+          ],
+          "method": "density_matrix",
+          "device": "CPU",
+          "num_qubits": 1,
+          "sample_measure_time": 0.007356015,
+          "active_input_qubits": [
+            106
+          ],
+          "num_clbits": 1,
+          "remapped_qubits": true,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "superop",
+          "measure_sampling": true,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 7,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "density_matrix",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "spc_prep0_q117"
+      ],
+      "ordered_qpy_sha256": "b4007488e2c1589d93a36e4816c3f16ebdd56a0c9c53215fe16262caf40ae348",
+      "noise_serialized_channels_sha256": "c4d7447abf45b94dd233d548caed2b580518eca15dd6a484812decc5da56a42d",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 8192,
+      "seed_simulator": 20261011,
+      "wall_seconds": 1.8598883490049047,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.012941457,
+          "num_bind_params": 1,
+          "parallel_state_update": 12,
+          "parallel_shots": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              117,
+              0
+            ]
+          ],
+          "method": "density_matrix",
+          "device": "CPU",
+          "num_qubits": 1,
+          "sample_measure_time": 0.00927647,
+          "active_input_qubits": [
+            117
+          ],
+          "num_clbits": 1,
+          "remapped_qubits": true,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "superop",
+          "measure_sampling": true,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 7,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "density_matrix",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "spc_prep0_q124"
+      ],
+      "ordered_qpy_sha256": "e5056e1e40d39ff000c2619ef79338c3e627a29a70af55c485492cc60e9f93a8",
+      "noise_serialized_channels_sha256": "c4d7447abf45b94dd233d548caed2b580518eca15dd6a484812decc5da56a42d",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 8192,
+      "seed_simulator": 20261011,
+      "wall_seconds": 1.9270430500037037,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.010322002,
+          "num_bind_params": 1,
+          "parallel_state_update": 12,
+          "parallel_shots": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              124,
+              0
+            ]
+          ],
+          "method": "density_matrix",
+          "device": "CPU",
+          "num_qubits": 1,
+          "sample_measure_time": 0.003481798,
+          "active_input_qubits": [
+            124
+          ],
+          "num_clbits": 1,
+          "remapped_qubits": true,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "superop",
+          "measure_sampling": true,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 7,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "density_matrix",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "spc_prep0_q125"
+      ],
+      "ordered_qpy_sha256": "c32476e238699652c9d79f16384eff60dc0c9a7a0ed47b7daad332a18b74ab5a",
+      "noise_serialized_channels_sha256": "c4d7447abf45b94dd233d548caed2b580518eca15dd6a484812decc5da56a42d",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 8192,
+      "seed_simulator": 20261011,
+      "wall_seconds": 2.144861000000674,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.014638771,
+          "num_bind_params": 1,
+          "parallel_state_update": 12,
+          "parallel_shots": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              125,
+              0
+            ]
+          ],
+          "method": "density_matrix",
+          "device": "CPU",
+          "num_qubits": 1,
+          "sample_measure_time": 0.006193333,
+          "active_input_qubits": [
+            125
+          ],
+          "num_clbits": 1,
+          "remapped_qubits": true,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "superop",
+          "measure_sampling": true,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 7,
+            "enabled": true
+          }
+        }
+      ]
+    },
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "a4e55f3de57edbe0cde3c926ef397c47358c2b84a51c1357629f35cd374c6c1a"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "density_matrix",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "spc_prep0_q126"
+      ],
+      "ordered_qpy_sha256": "5c64127442cdf3ee392cb5e7a366bb1cb3395b7af9e0561186e87e519c7f6e00",
+      "noise_serialized_channels_sha256": "c4d7447abf45b94dd233d548caed2b580518eca15dd6a484812decc5da56a42d",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 8192,
+      "seed_simulator": 20261011,
+      "wall_seconds": 1.28728967999632,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.010605382,
+          "num_bind_params": 1,
+          "parallel_state_update": 12,
+          "parallel_shots": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              126,
+              0
+            ]
+          ],
+          "method": "density_matrix",
+          "device": "CPU",
+          "num_qubits": 1,
+          "sample_measure_time": 0.006373244,
+          "active_input_qubits": [
+            126
+          ],
+          "num_clbits": 1,
+          "remapped_qubits": true,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "superop",
+          "measure_sampling": true,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 7,
+            "enabled": true
+          }
+        }
+      ]
+    }
+  ]
+}

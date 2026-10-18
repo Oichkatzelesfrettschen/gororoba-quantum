@@ -20,8 +20,11 @@ nightly schedule and manual runs add the `full` tier's long simulation
 contracts on twelve shards. Runners are 2-vCPU, 8 GB machines on Python 3.14
 with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
 the plotting-only `matplotlib==3.11.2`). A pull request merges when every
-shard and the `external-ground-truth` job are green and its review threads
-are resolved; a red main or nightly run is fixed in the next change. The
+shard and the `qi-stack` and `external-ground-truth` jobs are green and its
+review threads are resolved; a red main or nightly run is fixed in the next
+change. The `qi-stack` job runs, at the same tier, the gates that ci/gates.json
+tags `"requires": ["qi"]`, under the Quantum Inspire interpreter
+([Quantum Inspire](#quantum-inspire)). The
 `external-ground-truth` job runs `verify.py` over the open_gororoba commit
 named in [ci/open_gororoba.pin](ci/open_gororoba.pin):
 `ci/fetch_open_gororoba.sh` sparse-checks out the paths it is given, and
@@ -369,10 +372,27 @@ sedenion statement never rests on them.
   `kaggle_run.py shards` replicates the CI gate shards for a commit on
   Kaggle CPU kernels in place of the build host. `docs/notes/kaggle/` holds the workflow, the measured
   substrates and the package-stack guide. Kaggle allows two concurrent GPU
-  and five concurrent CPU batch sessions per account. IBM hardware serves 15 or
-  more qubits, or a smaller run whose question concerns the device itself
-  (a named qubit's readout, detuning or drift); its case states why Aer
-  cannot answer it. A kernel's
+  and five concurrent CPU batch sessions per account.
+- A 15-qubit run is decision-gated: it waits for the user's approval of a
+  written case, which names its substrate from the access inventory and
+  says why that one answers the question.
+  - Simulation: an optimized Aer run on the build host or on a Kaggle
+    T4 x2. `SnapshotSimulator.run` cache-blocks the state across both T4s,
+    and a 15-qubit density matrix takes about 4 s there
+    (`docs/notes/kaggle/substrates.md`). The case's run first applies
+    `docs/notes/kaggle/gpu-runbook.md`: local rehearsal, vectorized
+    estimators, a sized timeout.
+  - Hardware: Tuna-17 through Quantum Inspire, under its submission rules
+    (Quantum Inspire below). `submit` refuses while any hardware job of the
+    account is unfinished or ended under `HARDWARE_PAUSE_SECONDS` ago, so
+    the run cannot overlap another session's job. Fifteen of 17 qubits
+    include qubits the Tuna-17 notes exclude for readout or coupler faults
+    (`docs/notes/quantum_inspire/experiments.md`), so the case names each
+    one it uses.
+- IBM hardware serves 16 or more qubits, or a smaller run whose question
+  concerns the device itself (a named qubit's readout, detuning or drift);
+  its case states why Aer cannot answer it.
+- A kernel's
   noise comes from a retained `gororoba_quantum/calibration_snapshot.py`
   export, whose `--export` requires every gate and readout channel to equal
   live_run's noise model, and a Kaggle result enters the research state
@@ -450,21 +470,42 @@ retain its output under results/kaggle/. The kernel's own guide is
   4. `set_options(max_parallel_threads=parallel.workers())` uses every host
      CPU.
 - **cuStateVec.** `noise_simulator(..., custatevec=True)` sets Aer's
-  `cuStateVec_enable` on a GPU statevector run. qiskit-aer-gpu-cu11 0.17.2
+  `cuStateVec_enable` on a GPU statevector or density-matrix run, and
+  `GOROROBA_AER_CUSTATEVEC=1` sets it for every GPU call that leaves
+  `custatevec` unset (`calibration_snapshot.aer_custatevec`). qiskit-aer-gpu-cu11 0.17.2
   links libcustatevec.so.1 and libcutensornet.so.2, which `cuquantum-cu11`
   24.8.0 and `cutensor-cu11` 2.2.0 (`KERNEL_PINS` entries) supply. Aer
   0.17.2 reports `cuStateVec_enable` False when `batched_shots_gpu` is also
   set.
-  `scripts/aer_gpu_probe.py --only cpu_statevector
-  gpu_statevector gpu_statevector_custatevec` records the three paths
-  with Aer's reported `cuStateVec_enable`; a T4 result for it is not retained
-  yet. `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
+  `scripts/aer_gpu_probe.py --workloads n21 --configurations
+  cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec` records the three paths
+  with Aer's reported `cuStateVec_enable`. On the T4 x2 (gate core-450)
+  cuStateVec ran the dynamic density matrix 1.44 and 1.63 times faster than
+  the plain GPU executor at 7 and 10 qubits and statevector trajectories
+  1.19 to 1.29 times slower, and Aer spread per-shot and batched runs over both
+  GPUs (`docs/evidence/aer_gpu_configuration/README.md`).
+  `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
   the T4 check, and `docs/notes/build_host/custatevec.md` the host build.
-- **Batched GPU shots.** `noise_simulator(..., batched_shots=True)` enables
-  Aer's `batched_shots_gpu` for static circuits of at most 16 active qubits.
-  qiskit-aer-gpu-cu11 0.17.2 aborts it on any circuit with control flow
-  (`if_else` lowers to `jump`). Batched static runs have no measurement here
-  yet.
+- **Batched GPU shots.** On a GPU `noise_simulator` enables Aer's
+  `batched_shots_gpu` by default for circuits of at most
+  `BATCHED_SHOTS_MAX_QUBITS` (10) active qubits, and `batched_shots=False`
+  opts out. `SnapshotSimulator.run` runs any circuit with control flow
+  unbatched: the batched executor rejects `jump`, and with if_else lowered
+  to bfunc-conditioned gates it evaluates the condition before the readout
+  channel. Shot branching is never enabled, since Aer 0.17.2's shot
+  branching drops a mid-circuit measurement's readout channel
+  (`docs/evidence/aer_gpu_configuration/README.md`).
+- **Cache blocking.** `SnapshotSimulator.run` blocks a GPU batch whose
+  widest active state exceeds one GPU's memory, Aer's own trigger, with
+  `calibration_snapshot.blocking_qubits_for`'s chunk (27 statevector, 13
+  density-matrix qubits on a T4) and `max_parallel_shots=1`, so every run
+  that fits one GPU keeps its executor and counts. On the T4 x2 a 15-qubit
+  density matrix ran in 4.2 s and a 30-qubit statevector in 7.2 s across
+  both GPUs, where Aer's automatic choice filled host memory until the OOM
+  killer ended it. if_else aborts under blocking, so a blocked batch runs in
+  `lower_conditionals` form and raises ValueError where none exists; Aer's
+  CPU chunk executor misplaces conditions, so blocking stays on the GPU
+  (gates core-451 and core-452, `docs/notes/kaggle/substrates.md`).
 - **CI replay.**
   - Seeded GPU counts differ from CPU counts, so a gate re-derives a GPU
     record from its retained counts and never resamples on CI.
@@ -475,6 +516,23 @@ retain its output under results/kaggle/. The kernel's own guide is
     durations.
   - Replays hold routed CZ, layout and classical stages exact, and depth
     and duration within a relative 0.002 across BLAS builds.
+- **Pinned GPU environment.** `push --gpu-env` on `NvidiaTeslaT4` runs the
+  entry in a venv on the image's Python 3.13, the newest Python the cu11
+  wheel ships, holding requirements.txt and ci/requirements-ci.txt with
+  `GPU_ENV_AER_PINS` in qiskit-aer's place (`ci/install_pins.sh` with
+  `AER_PINS`).
+  - Before the entry, `kernel_main.gpu_interpreter` requires every pin at its
+    version, qiskit-aer-gpu-cu11 as the only owner of
+    `qiskit_aer/__init__.py`, both T4s in nvidia-smi, and seeded Bell runs
+    on the GPU that report device GPU, the cuStateVec one with
+    `cuStateVec_enable` true.
+  - A miss lists its reasons under `failures` in gpu_env.json, and the kernel
+    exits 4 without running the entry.
+  - `aer_gpu_probe.py --require-gpu` then stops at the first row that leaves
+    the GPU.
+  - Only Python itself differs from CI's 3.14.7.
+  - On a CPU machine the same push stops at the preflight, which proves the
+    error path at no GPU cost.
 - **Sessions.** Five CPU and two GPU batch sessions run per account. A GPU
   machine's four host CPUs run CPU work, `--ci-env` included, when the CPU
   pool is full, at the price of GPU quota.
@@ -572,6 +630,7 @@ at those versions, except the linters.
 | python-rustworkx, python-sympy | rustworkx 0.18.1, sympy 1.14.0 |
 | python-matplotlib | matplotlib 3.11.2 |
 | python-stim, python-mthree (with python-runningman), python-qiskit-experiments, python-quimb, python-cotengra, python-pyzx, python-galois | stim 1.16.0, mthree 3.0.0, qiskit-experiments 0.14.2, quimb 1.15.0, cotengra 0.8.2, pyzx 0.10.7, galois 0.4.11: the `quantum-tools` group a Kaggle kernel installs with `push --with quantum-tools` (`scripts/kaggle_run.py` PIN_GROUPS) |
+| python-flint | python-flint 0.9.0 (CI pin): exact rank modulo p (`nmod_mat`) and RREF null spaces (`fmpq_mat`) in `scripts/exact_rank.py`, and SymPy 1.14.0's ground types, which it selects when the version is on SymPy's tested list |
 | python-pytorch-opt-cuda, python-pandas | torch and pandas for python-octonion and python-cayley-dickson only |
 | python-ruff, mypy | newer than the CI pins ruff 0.14.11 and mypy 1.19.1; `uvx ruff@0.14.11` reproduces CI formatting |
 
@@ -620,8 +679,18 @@ lives in its own environment, never in the repository's Python 3.14 stack:
 `QI_PYTHON=${QI_PYTHON:-$QI_ENV/bin/python}`, built with
 `uv venv --python 3.13 "$QI_ENV"` and
 `VIRTUAL_ENV="$QI_ENV" uv pip install -r docs/notes/quantum_inspire/requirements-qi.txt`.
-No Arch package carries the stack. CI never imports it: every gate checks
-retained JSON or regenerates text with the standard library.
+No Arch package carries the stack. CI's `qi-stack` job installs the lock
+exactly (`pip install --no-deps` and `pip check`) under Python 3.13.15 beside
+Python 3.14.7 and exports `QI_PYTHON`; there qxelarator, libqasm and
+OpenSquirrel run locally with no credential, and no SDK call reaches the
+network. gororoba_quantum/qi_stack.py reads `QI_PYTHON` from the environment
+alone and probes it once per process for the three modules at the lock's
+versions. A gate tagged `"requires": ["qi"]` compares a live run with its
+retained record where that probe passes; everywhere else (the gate shards,
+premerge, Kaggle shard replicas, a shell that has not exported `QI_PYTHON`)
+it replays the record and prints one line naming the replay.
+`ci/run_gates.py --requires qi` runs the tagged gates alone with
+`GOROROBA_QI_REQUIRED=1`, which makes a replay a failure.
 
 | Package | Version | Role |
 |---|---|---|
@@ -679,17 +748,21 @@ type this account can submit to.
 
 **Execution facts.**
 - Tuna: native single-qubit gates last 20 ns, CZ 60 ns, measurement 800 ns,
-  initialization 200 or 500 us; rotation angles quantize to multiples of
-  pi/36; OpenSquirrel schedules as late as possible, `wait(n)` idles n
-  cycles of 20 ns, and mid-circuit measurement is allowed while binary-
-  controlled gates are not, so feed-forward is applied in post-processing.
+  initialization 200 or 500 us; H, CNOT and SWAP are decomposed, the other
+  gates of the tuna dialect are native; rotation angles quantize to
+  multiples of pi/36; the compiler passes decompose only, so a circuit runs
+  in the gate order written; OpenSquirrel schedules as late as possible,
+  `wait(n)` idles n cycles of 20 ns, and mid-circuit measurement is allowed
+  while binary-controlled gates are not, so feed-forward is applied in
+  post-processing ([tuna-17-run-design.md](docs/notes/quantum_inspire/tuna-17-run-design.md)).
 - Bit order: QX and Tuna results put qubit 0 at the rightmost character; the
   Ry emulator puts it at the leftmost (an X on q[0] read `10` in all 1024
   shots). An analysis states the order of the backend it reads.
 - The Ry emulator takes no measurement statements and measures every qubit
-  at the end; a circuit with a bit register, H and CNOT compiled remotely but
-  failed at execution with the job message "error interpreting cQASM script"
-  (its log stays empty), while the X-only form of its code example ran.
+  at the end; a circuit that declares a bit register compiles remotely and
+  fails at execution with the job message "error interpreting cQASM script"
+  (its log stays empty), while H, CNOT, Z, S and Rz run in a circuit without
+  one ([ry-emulator.md](docs/notes/quantum_inspire/ry-emulator.md)).
 - The Qiskit provider writes a multi-qubit barrier as per-qubit barriers, so
   a timing-sensitive case writes cQASM directly with explicit `wait`.
 
@@ -699,9 +772,10 @@ forty-two jobs of 2026-10-16 on QX, the Ry emulator and Tuna-17, so no metered s
 or credits apply to this account as observed; the limits are structural: the
 table's qubits, shots, per-job execution limit and batch and queue counts,
 plus the FAQ's three queued jobs per hardware backend, which is stricter than
-the API's five batch jobs. Tuna-17 executed 16384 shots in 9.9 to 15.4 s
-(0.60 to 0.94 ms per shot, deeper circuits slower); QX finished 2048 shots
-in 0.03 to 10.4 s.
+the API's five batch jobs. Tuna-17 execution time fits 2.9 s per job plus
+0.51 ms per shot over the retained jobs, so a 16384-shot job takes about 11 s
+and the 120 s pause, not the shots, sets a batch's cost; QX finished 2048
+shots in 0.03 to 10.4 s.
 Calibration and tuning run between user jobs (Tuna-17 read `calibrating`
 between two reads minutes apart), delay queued jobs and charge the account
 nothing. The general conditions license every uploaded algorithm, datum and
@@ -750,10 +824,18 @@ the coupler map, its QX dry run and the spectator split), core-362
 (`qi_readout_ringdown_cases.py` case regeneration with the post-readout
 tail and excitation conformance), core-369 (the replay of its QX dry-run
 analyses), core-368 (`qi_toolchain_check.py --check`: the libqasm and
-OpenSquirrel record names every current case circuit at its sha256; the
-record itself is regenerated under `$QI_PYTHON`), and core-340
-(`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of the Tuna-17
-cases).
+OpenSquirrel record names every current case circuit at its sha256, and
+under the stack the record regenerates byte for byte), core-527 and core-423
+(`box_kite_qx_sweep.py --replay --live N`: the sweep records replay, and
+under the stack 24 evenly spaced family a circuits plus each sub-family's
+first rerun on qxelarator at their recorded seeds and must reproduce the
+retained counts exactly; core-423 adds 8 family de circuits on the full tier),
+core-499 (`n21_qx_conformance.py --check --live 0`: under the stack every
+reset probe, deferred state and native branch run reruns on qxelarator at its
+retained seed and must equal the retained result; each of the 36 sample jobs
+takes minutes, so `--live N` adds N of them by hand and `--live 36` all), and
+core-340 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of
+the Tuna-17 cases).
 
 ## Open Quantum
 

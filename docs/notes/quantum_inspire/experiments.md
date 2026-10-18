@@ -760,11 +760,20 @@ section 4(g); gate core-425 replays both records).
   read their ideal outcome at 0.978 or more, R9 loses 7.5% of shots, and
   the 35-CNOT full Design B falls to contrast 0.387, which stops the Ry
   smoke series as an emulator rate ([ry-emulator.md](ry-emulator.md)).
+- **Tuna-17 follow** (7 batches, 21 jobs at 16384 shots, its 5 QX twin
+  batches exact): all six classification rows, twist equality in all four
+  crossovers (|z| at most 2.44), every depth-1 X coherence sign and both
+  walk signs as the census states; verdict continue. The coherence ladder,
+  the walk phases, the depth-9 batch scatter of about 0.03, the drift
+  against T0 and the q13 readout context are reported estimates
+  ([tuna-17-run-design.md](tuna-17-run-design.md) Results).
 
-Records: results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json
+Records: results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json,
+results/quantum_inspire/box_kite_tuna_17_follow_analysis.json
 and results/quantum_inspire/box_kite_ry_analysis.json; claims
 `qi-tuna17-boxkite-pre-t0-readout-recovered`,
-`qi-tuna17-boxkite-t0-depth-ladder` and `qi-ry-emulator-boxkite-capability`.
+`qi-tuna17-boxkite-t0-depth-ladder`, `qi-tuna17-boxkite-follow-crossover`,
+`qi-tuna17-boxkite-follow-ladder-drift` and `qi-ry-emulator-boxkite-capability`.
 
 ## Next cases
 
