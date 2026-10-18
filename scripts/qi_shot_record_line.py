@@ -12,19 +12,26 @@ Per job:
 - parse: every shot string into a (shots, width) boolean array in one numpy
   pass, bit b at character width - 1 - b (qubit 0 rightmost on QX and Tuna);
   the Ry emulator reads leftmost and is skipped.
-- scan: the bits whose variance exceeds MIN_VARIANCE enter a zoom FFT over
-  BAND (scipy.signal.zoom_fft, ZOOM_POINTS points), each bit's power
-  normalized by n var, summed over bits. White Bernoulli shots give each bit
-  an Exp(1) power per frequency, so the sum over K bits is Gamma(K, 1); the
-  peak's p-value takes the band's n * width independent frequencies into
-  account, and a job with p below DETECTION_P carries the line.
+- scan: the bits whose variance exceeds MIN_VARIANCE are standardized and
+  enter a zoom FFT over BAND (scipy.signal.zoom_fft, ZOOM_POINTS points).
+  Bits of one shot are correlated (an LCU pair's selector and data, any
+  readout crosstalk), so the statistic whitens them: P(f) = Z(f)^H R^+ Z(f) / n
+  with Z the standardized bits' transform and R^+ the pseudo-inverse of their
+  same-shot correlation matrix, rank k after dropping eigenvalues below
+  EIGEN_FLOOR times the largest. Shots that are independent in time, whatever
+  their within-shot correlation, give P(f) a Gamma(k, 1) law at each
+  frequency; the peak's p-value takes the band's n * width independent
+  frequencies into account, and a job with p below DETECTION_P carries the
+  line.
 - lock-in: least squares of every scanned bit on cos and sin of 2 pi f t at
   the peak f and at 3 f gives the first-harmonic amplitude, its phase at the
   middle shot (where a frequency error moves it least) and the
   third-harmonic amplitude; a bit is listed when its amplitude
   exceeds AMPLITUDE_SIGMAS standard errors sqrt(2 var / n).
 - stationarity: the chi-square of BLOCKS block means of each scanned bit
-  against binomial noise (BLOCKS - 1 degrees of freedom), its largest value.
+  against binomial noise (BLOCKS - 1 degrees of freedom), reported as the
+  smallest per-bit tail probability times the number of bits scanned, so jobs
+  that scan different numbers of bits compare on one scale.
 
 Summaries:
 - wall clock against shot index: the readout ring-down arms differ only in a
@@ -74,6 +81,7 @@ BAND = (0.019, 0.021)
 ZOOM_POINTS = 4001
 MIN_VARIANCE = 0.02
 DETECTION_P = 1e-6
+EIGEN_FLOOR = 1e-9
 AMPLITUDE_SIGMAS = 5.0
 BLOCKS = 16
 CYCLE_SECONDS = 20e-9
@@ -113,8 +121,14 @@ def scan(x: np.ndarray, band: tuple[float, float] = BAND, detection_p: float = D
     if used.size == 0:
         return row | {"detected": False}
     columns = centered[:, used]
-    spectrum = zoom_fft(columns, list(band), m=ZOOM_POINTS, fs=1.0, axis=0)
-    power = (np.abs(spectrum) ** 2 / (n * variance[used])).sum(axis=1)
+    standard = columns / np.sqrt(variance[used])
+    correlation = standard.T @ standard / n
+    eigenvalues, vectors = np.linalg.eigh(correlation)
+    kept = eigenvalues > EIGEN_FLOOR * eigenvalues.max()
+    rank = int(kept.sum())
+    pseudo = (vectors[:, kept] / eigenvalues[kept]) @ vectors[:, kept].T
+    spectrum = zoom_fft(standard, list(band), m=ZOOM_POINTS, fs=1.0, axis=0)
+    power = np.einsum("fk,kl,fl->f", spectrum.conj(), pseudo, spectrum).real / n
     peak = int(power.argmax())
     step = (band[1] - band[0]) / (ZOOM_POINTS - 1)
     offset = 0.0
@@ -124,7 +138,7 @@ def scan(x: np.ndarray, band: tuple[float, float] = BAND, detection_p: float = D
         offset = 0.5 * (left - right) / denominator if denominator else 0.0
     frequency = band[0] + (peak + offset) * step
     independent = math.ceil((band[1] - band[0]) * n)
-    log10_p = min(0.0, (math.log(independent) + gamma_log_tail(used.size, float(power[peak]))) / math.log(10))
+    log10_p = min(0.0, (math.log(independent) + gamma_log_tail(rank, float(power[peak]))) / math.log(10))
     t = np.arange(n) - (n - 1) / 2
     design = np.stack(
         [
@@ -145,19 +159,22 @@ def scan(x: np.ndarray, band: tuple[float, float] = BAND, detection_p: float = D
         for b, a, p, h, e in zip(used, first, phase, third, error, strict=True)
         if a > AMPLITUDE_SIGMAS * e
     }
-    # Cramer-Rao bound of a sinusoid's frequency in white noise, combined over bits.
-    information = float((first**2 / variance[used]).sum()) * (2 * np.pi) ** 2 * n * (n * n - 1) / 6
+    # Cramer-Rao bound of a real sinusoid's frequency in white noise, combined over bits.
+    information = float((first**2 / variance[used]).sum()) * (2 * np.pi) ** 2 * n * (n * n - 1) / 24
     m = n // BLOCKS
     blocks = x[: m * BLOCKS, used].reshape(BLOCKS, m, used.size).mean(axis=1)
     chi = ((blocks - x[:, used].mean(axis=0)) ** 2 / (variance[used] / m)).sum(axis=0)
+    tails = stats.chi2.logsf(chi, BLOCKS - 1) / math.log(10)
+    block_log10_p = min(0.0, float(tails.min()) + math.log10(used.size))
     return row | {
         "detected": log10_p < math.log10(detection_p),
+        "whitened_rank": rank,
         "log10_p": sig(log10_p, 4),
         "peak_power": sig(float(power[peak]), 5),
         "cycles_per_shot": sig(frequency, 8),
         "cycles_per_shot_se": sig(1 / math.sqrt(information), 3) if information > 0 else None,
         "bits": listed,
-        "block_chi2_max": sig(float(chi.max()), 4),
+        "block_log10_p_adjusted": sig(block_log10_p, 4),
     }
 
 
@@ -246,13 +263,20 @@ def follow_depths(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def stationarity(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    """Median of each job's largest block chi-square, by run family."""
+    """Per run family: the median adjusted block log10 p and the fraction of jobs below 0.01 (log10 -2)."""
     families: dict[str, list[float]] = {}
     for row in rows:
-        if "block_chi2_max" in row and row["backend"] == "Tuna-17":
+        if "block_log10_p_adjusted" in row and row["backend"] == "Tuna-17":
             family = re.sub(r"-(batch|recal|rerun).*$", "", batch_of(row["run"]))
-            families.setdefault(family, []).append(row["block_chi2_max"])
-    return {family: sig(float(np.median(values)), 4) for family, values in sorted(families.items())}
+            families.setdefault(family, []).append(row["block_log10_p_adjusted"])
+    return {
+        family: {
+            "jobs": len(values),
+            "median_log10_p_adjusted": sig(float(np.median(values)), 4),
+            "fraction_below_0_01": sig(float(np.mean(np.array(values) < -2)), 4),
+        }
+        for family, values in sorted(families.items())
+    }
 
 
 def record() -> dict[str, Any]:
@@ -312,6 +336,10 @@ def self_test() -> str:
     require("3" not in row["bits"] and "4" not in row["bits"], row["bits"])
     white = scan(synthetic(16384, 0.020037, 0.0, 0.0, 12))
     require(not white["detected"], white)
+    # Twelve copies of one white bit: summing their powers as independent would detect a line; whitening sees rank 1.
+    copies = np.repeat(synthetic(16384, 0.020037, 0.0, 0.0, 13)[:, :1], 12, axis=1)
+    copied = scan(copies)
+    require(not copied["detected"] and copied["whitened_rank"] == 1, copied)
     # A shot-locked line keeps one frequency for every tau; a wall-clock line moves by F tau.
     rows = []
     for batch, base in enumerate((0.0202, 0.02021)):

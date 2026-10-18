@@ -30,10 +30,10 @@ index).
   changes, and a source locked to the shot count does not. The retained
   readout ring-down arms already vary T_shot: they differ only in a wait of
   tau cycles of 20 ns. Their peak frequency rises with tau at 50.4 +- 4.0 Hz
-  over 31 jobs with one intercept per batch, 12.7 standard errors from the
+  over 31 jobs with one intercept per batch, 12.6 standard errors from the
   shot-locked 0 Hz and 0.1 from 50 Hz ([tuna-17.md](tuna-17.md), claim
   `qi-tuna17-shot-record-50hz-line`). At 50 Hz the observed 0.0200 to 0.0202
-  cycles per shot puts one shot at 402.8 to 404.6 us in the ring-down circuits
+  cycles per shot puts one shot at 402.9 to 404.6 us in the ring-down circuits
   and 400.7 us in the follow series. The fitted 0.51 ms per
   shot of [usage.md](usage.md) therefore prices job execution time, about
   0.1 ms per shot beyond the repetition period, and does not measure the
