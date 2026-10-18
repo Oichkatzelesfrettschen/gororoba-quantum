@@ -369,8 +369,7 @@ sedenion statement never rests on them.
   widest density matrix reaches `local_compute.GPU_MIN_ACTIVE_QUBITS`;
   [Simulation on Kaggle](#simulation-on-kaggle-cpu-gpu-and-ci-replay)
   gives the machine choice, the GPU setup and the CI replay rules.
-  `kaggle_run.py shards` replicates the CI gate shards for a commit on
-  Kaggle CPU kernels in place of the build host. `docs/notes/kaggle/` holds the workflow, the measured
+  `docs/notes/kaggle/` holds the workflow, the measured
   substrates and the package-stack guide. Kaggle allows two concurrent GPU
   and five concurrent CPU batch sessions per account.
 - A 15-qubit run is decision-gated: it waits for the user's approval of a
@@ -687,7 +686,7 @@ network. gororoba_quantum/qi_stack.py reads `QI_PYTHON` from the environment
 alone and probes it once per process for the three modules at the lock's
 versions. A gate tagged `"requires": ["qi"]` compares a live run with its
 retained record where that probe passes; everywhere else (the gate shards,
-premerge, Kaggle shard replicas, a shell that has not exported `QI_PYTHON`)
+premerge, a shell that has not exported `QI_PYTHON`)
 it replays the record and prints one line naming the replay.
 `ci/run_gates.py --requires qi` runs the tagged gates alone with
 `GOROROBA_QI_REQUIRED=1`, which makes a replay a failure.
@@ -1027,14 +1026,58 @@ records that every two-label two-blade product at D = 16, 32 and 64 uses
 one of these configurations, and that the signed zero products (336, 5040,
 52080) equal the annihilator nullity sums.
 
+**Mesh control.** qpu:belenos is one fixed mesh: the processor record's
+`specs.architecture` holds 552 calibrated Rx couplers and 574 symbolic
+phases (276 MZIs and 22 edge phases), and every compiled circuit carries that
+topology with numbers in place of the symbols. The service re-transpiles
+every circuit, parameterized or numeric, with exqalibur's CircuitOptimizer
+from random starting phases, constraining only the input columns that carry
+photons; `compilation_seed` selects the start. `scripts/qd_belenos_mesh.py`
+decodes architectures and compiled meshes with a standard-library protobuf
+reader and writes `results/quandela/cases/belenos_mesh/`: iterated jobs of
+the architecture circuit whose iterations bind all 574 phases and the input
+mode, so one credit buys up to sixteen different unitaries (job-00 the
+error-class diagnostic, job-02 the 84/84 box-kite edges, job-03 to job-06
+the 64 seeded random settings of the characterization campaign).
+`qd_box_kite_analysis.py` scans every error class (exact heater and coupler
+dephasing, heater gain, thermal crosstalk, a demultiplexer misroute with
+noise) over its magnitude on the mesh each iteration returned and names a
+class only when its pooled deviance and shot-noise TVD pass an absolute fit
+test, otherwise "no class fits"; `--static OUT RUN...` fits one shared
+heater-offset vector across the runs of one calibration session and declares
+static offsets only when they beat the fitted dephasing ensemble on held-out
+runs, which takes about 64 random-target settings. `plan` decodes the live architecture and
+refuses a mesh case whose couplers or symbols changed, so a recalibration
+means a regenerated case. `docs/evidence/quandela/belenos_leakage_rca.json` holds the
+root-cause record of the qpu:belenos bright-block leakage, and
+docs/notes/quandela/strategy.md sections 6 to 8 its verdicts, the
+transpiler model and the 84/84 mapping.
+
 **Gates.** core-500 (`capture_qd_docs.py --check`), core-501 (its
 `--self-test`), core-502 (`qd_platform.py check docs/evidence/quandela
 --agents AGENTS.md docs/notes/quandela/README.md`), core-503 (its
 `--self-test`, the runner's stubbed-service contract included), core-504
 (`qd_box_kite_cases.py --check results/quandela/cases`), core-505 (its
 `--self-test`), core-506 (`cd_two_blade_blocks.py --check
-docs/evidence/box_kite_census/two_blade_blocks.json`) and core-507 (its
-`--self-test`).
+docs/evidence/box_kite_census/two_blade_blocks.json`), core-507 (its
+`--self-test`), core-508 (`qd_box_kite_analysis.py --check` over every
+retained run), core-509 (its `--self-test`), core-510
+(`qd_belenos_mesh.py --check results/quandela/cases`), core-511 (its
+`--check-rca` replay of the leakage record), core-512 (its
+`--self-test`), core-515 (full tier, `--self-test-rule`: the decision
+rule on synthetic in-family and out-of-family truths), core-513 (full tier, `--self-test-static`: static offsets
+are declared on a static truth and on no dephasing, out-of-family or
+simulator data) and core-514 (full tier, `--check-static` of the retained
+static records within a BLAS-path tolerance).
+
+**Strategy guide.** [docs/notes/quandela/strategy.md](docs/notes/quandela/strategy.md)
+is the living record of what a credit buys on Belenos: the measured cost
+model (1 credit per job plus 1e-06 per QPU shot), platform behavior
+(job-name limit, the simulator's own noise model, rates and dark counts,
+compiled-circuit structure, iterations and compilation seeds), the native
+BS.H / PS / PERM decomposition of every sign block, the analysis rules, the
+open conjectures with their falsifiers and the run log. Every run updates it
+in the change that retains the run.
 
 ## Qiskit skills
 

@@ -1,0 +1,51 @@
+{
+ "blocks": [
+  {
+   "a": 1.0,
+   "a_wilson95": [
+    0.999616002,
+    1.0
+   ],
+   "config": "two_label-04-native-4",
+   "dark_corrected": null,
+   "in_block": 1.0,
+   "in_block_wilson95": [
+    0.999616002,
+    1.0
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 0,
+   "one_click_by_mode": [
+    5082,
+    4918,
+    0,
+    0
+   ],
+   "one_click_outside_block": 0,
+   "one_click_outside_by_mode": {},
+   "other_multi_click": 0,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.0082
+  }
+ ],
+ "cases_sha256": "2c2e862ad99a965b8b3ab6ef0a9ad8700948ea0a43d81370ebfde18a113feff7",
+ "compiled": {
+  "distinct": 1,
+  "iterations": [],
+  "job": {
+   "chars": 16262,
+   "sha256": "a053abca0cd9127484e2daa51bd2e3dd1fb991a3c3b13a8aa3ce8a7a81700ec7"
+  }
+ },
+ "job_id": "6cc59d71-31c0-4ccd-baf5-e770ea0ffb02",
+ "logical_perf": 0.999999516781562,
+ "noise": ":PCVL:NoiseModel:{\"g2\": 0.003, \"indistinguishability\": 0.92, \"transmittance\": 0.06}",
+ "physical_perf": 0.060084854755766415,
+ "platform": "sim:belenos",
+ "result_sha256": "6006f6d400663a0db4a5d3d6d504e240abb954abffb059af019c8e93e725a9b8",
+ "run": "2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-02",
+ "samples": 10000,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 10000,
+ "status": "completed"
+}
