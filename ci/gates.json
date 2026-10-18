@@ -3749,6 +3749,22 @@
   },
   {
    "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --init-herald && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --init-herald",
+   "name": "core-445",
+   "seconds": 48.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --self-test-herald && PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --self-test-herald",
+   "name": "core-459",
+   "seconds": 14.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/result.json && \"$PYTHON\" -B -O -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/result.json",
    "name": "core-489",
@@ -3861,6 +3877,14 @@
    "name": "core-549",
    "seconds": 69.5,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --submit-reuse-herald",
+   "name": "core-570",
+   "seconds": 246.3,
+   "tier": "full"
   },
   {
    "suite": "core",
@@ -4109,6 +4133,14 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --self-test && \"$PYTHON\" -B -O -W error scripts/qx_reset_phase_probe.py --self-test",
    "name": "core-457",
    "seconds": 0.3,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zero_divisor_secondary.py --check results/quantum_inspire/secondary --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zero_divisor_secondary.py --check results/quantum_inspire/secondary --self-test",
+   "name": "core-571",
+   "seconds": 6.6,
    "tier": "pr"
   },
   {
