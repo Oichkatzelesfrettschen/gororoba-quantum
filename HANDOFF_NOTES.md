@@ -43,11 +43,14 @@ retained evidence end to end. The target is a normal-Python behavioral
 suite:
 
 - pytest with xdist, so modules import once per worker;
-- session-scoped fixtures built once;
+- expensive fixtures built once per input digest into a shared file cache
+  that every xdist worker reads, since pytest builds a session fixture once
+  per worker, with the per-worker setup measured against the budget;
 - each module's self-test body moved into test functions;
-- retained-record replays reduced to digest checks in the pull-request
-  suite, with the end-to-end replays moved to a nightly job keyed on input
-  changes.
+- an end-to-end replay runs in a pull request whose changes reach its
+  code or declared inputs, as full-tier selection does now; the other
+  pull requests check only the retained digests, and a nightly job runs
+  every replay.
 
 Migrate directory by directory. Each migration deletes the gates its tests
 replace and shows, with a planted mutant per moved contract, that the new
@@ -62,8 +65,10 @@ cache under `PYTHONPYCACHEPREFIX` moves every module's bytecode, site-
 packages included, so a cold prefix recompiles qiskit, numpy and scipy in
 every process.
 
-1. Fill the prefix once with `compileall` over the checkout and the
-   interpreter's site-packages before the first gate.
+1. Fill the prefix once with `compileall --invalidation-mode checked-hash`
+   over the checkout and the interpreter's site-packages before the first
+   gate. Hash validation keeps restored bytecode valid across checkouts,
+   which give every source a new modification time.
 2. Restore the prefix between CI runs.
 3. Keep the change only if a shard's summed gate CPU time falls with a cold
    prefix included.
