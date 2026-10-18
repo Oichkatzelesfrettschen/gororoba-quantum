@@ -386,13 +386,14 @@ and send the best. The local transpiler replay converges on 96 % of random
 targets (8 of 220 failed), so a campaign plans a few spare settings.
 
 **What C1 measured (qpu:belenos, jobs f945a01d, fa847dfd, 0f0f242b,
-445e0482; 4.01 credits).** All 64 settings ran (1500 one-click samples
-each, 12 multi-click events in 96000), every mesh was re-transpiled, and
+445e0482; 4.01 credits).** All 64 settings ran (1500 samples
+each: 95,988 one-click and 12 multi-click events in 96000), every mesh was re-transpiled, and
 the couplers equaled Q1's throughout.
 
 1. Preregistered verdict: every job reads "no class fits" (median TVD 9.6
    to 15.4 shot-noise floors), and `--static` declares no offsets (held-out
-   gain -81576 nats against fitted dephasing).
+   gain about -79000 nats against fitted dephasing; L-BFGS endpoints of
+   this unidentified 574-offset fit move by up to 3 % between BLAS builds).
 2. The instrument model behind that verdict is wrong. The receipt's `t_out`
    reads 3 to 6 % on modes 0 to 11 and 194 to 400 % on modes 12 to 23, yet
    modes 0 to 11 collect about twice the clicks of modes 12 to 23; the
@@ -407,7 +408,7 @@ the couplers equaled Q1's throughout.
    falls to 4.2 floors (absolute 0.149, range 0.031 to 0.273, floor 0.034),
    every class's best point sits at or next to its null magnitude, and no
    class passes; static offsets with fitted efficiencies lose to fitted
-   dephasing held out (-33944 nats), so the residual is not one offset
+   dephasing held out (about -34000 nats), so the residual is not one offset
    vector shared across runs. The factors put modes 0 to 11 near 1.2 and
    12 to 23 near 0.7; mode 5 reads 6.6 and also collects light the ideal
    places on modes 0 and 4.
@@ -547,7 +548,7 @@ selection needs repeated jobs rather than a split of one.
 | The transpiler is exqalibur's CircuitOptimizer with photon-free modes ignored | local replay against the S3 meshes | settled statistically; bitwise replay open (server seed mapping) |
 | The photon is misrouted into another source mode | source models on the returned meshes of C1 | settled: refuted on random meshes, every misroute fraction's best point is 0 under fitted efficiencies |
 | The chip's error class is random heater noise | class scans over C1 | open: under fitted efficiencies sigma 0.05 is the best point of a family that fails the fit (4.2 floors held out) |
-| The chip carries static heater offsets that user jobs can measure | `--static` and `--efficiency` over the four runs of C1 | settled for this session: refuted, held-out gain -81576 nats (receipt model) and -33944 nats (fitted efficiencies) |
+| The chip carries static heater offsets that user jobs can measure | `--static` and `--efficiency` over the four runs of C1 | settled for this session: refuted, held-out gain about -79000 nats (receipt model) and -34000 nats (fitted efficiencies) |
 | The bright-block leak is a property of its job (numeric unitary form or sparse target), not the chip's generic error | belenos_mesh job-02 on qpu:belenos scored against the C1 efficiencies, same couplers | settled: job specific, median in_block 0.952 against the 0.924 threshold; Q1's target kept 0.987 in the iterated form |
 | The one-circuit job form, not the bright block's own mesh, causes the leak | Q1's case as one circuit at compilation_seed 1 (belenos_mesh job-08) | settled: mostly the mesh, in_block 0.886 on a new mesh against 0.470 on 29dc6ef8 (preregistered verdict intermediate) |
 | The same body returns the same meshes on sim:belenos and qpu:belenos | job-02 on both | settled: refuted for iterated jobs (16 of 16 meshes differ); holds for the one-circuit single/job-04 |

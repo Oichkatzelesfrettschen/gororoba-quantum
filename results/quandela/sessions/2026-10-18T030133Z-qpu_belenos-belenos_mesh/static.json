@@ -15,12 +15,12 @@
  "settings": 64,
  "by_tau": {
   "0.1": {
-   "gain_over_dephasing": -81992.27,
-   "median_tvd_over_floor": 21.246
+   "gain_over_dephasing": -82800.532,
+   "median_tvd_over_floor": 20.047
   },
   "0.3": {
-   "gain_over_dephasing": -81575.313,
-   "median_tvd_over_floor": 20.55
+   "gain_over_dephasing": -79253.385,
+   "median_tvd_over_floor": 19.904
   }
  },
  "best_tau": 0.3,

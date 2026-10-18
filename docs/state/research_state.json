@@ -4018,8 +4018,8 @@
         "docs/evidence/linear_conjugation/README.md"
       ],
       "gates": {
-        "core-337": "replay",
-        "core-338": "replay"
+        "core-338": "replay",
+        "core-379": "replay"
       },
       "acquisitions": [],
       "assumptions": [
@@ -5026,7 +5026,7 @@
     },
     {
       "id": "qd-belenos-random-meshes-no-class-fits-under-receipt-model",
-      "statement": "On qpu:belenos four iterated jobs of 16 seeded uniform-random meshes each (64 settings, 1500 one-click samples per setting, one calibration session, all re-transpiled) read 'no class fits' under the preregistered analysis: no scanned heater-noise, gain, crosstalk or misroute magnitude reaches the fit test (median TVD 9.6 to 15.4 shot-noise floors per job), and shared static heater offsets are not declared (held-out gain -81576 nats against fitted dephasing, median held-out TVD 21 floors).",
+      "statement": "On qpu:belenos four iterated jobs of 16 seeded uniform-random meshes each (64 settings of 1500 samples, 95,988 of the 96,000 one-click, one calibration session, all re-transpiled) read 'no class fits' under the preregistered analysis: no scanned heater-noise, gain, crosstalk or misroute magnitude reaches the fit test (median TVD 9.6 to 15.4 shot-noise floors per job), and shared static heater offsets are not declared (held-out gain about -79000 nats against fitted dephasing at the best prior width, median held-out TVD 20 floors).",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
@@ -5050,14 +5050,14 @@
         },
         {
           "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/static.json",
-          "sha256": "19d61c60279c9b2674a9ea0d13595a261a31366fdc292e5ed1abc495da41b2b2"
+          "sha256": "5261e3c56af98dd377f0274ddbcc4e2c8d8f678b4b525c1fc6e7d7e1318ffac1"
         }
       ],
       "documents": [
         "docs/notes/quandela/strategy.md"
       ],
       "gates": {
-        "core-508": "replay",
+        "core-537": "replay",
         "core-514": "replay",
         "core-510": "freshness"
       },
@@ -5076,7 +5076,7 @@
     },
     {
       "id": "qd-belenos-random-meshes-fitted-efficiency-reanalysis",
-      "statement": "Refitting the four C1 runs with relative per-mode detection efficiencies fitted jointly with each class, each run held out in turn, cuts the held-out median TVD to 4.2 shot-noise floors (absolute TVD median 0.149 against the ideal, range 0.031 to 0.273, floor 0.034), with every class's best point at or next to its null magnitude and no class passing the fit test; static offsets fitted with the efficiencies lose to fitted dephasing on held-out runs (-33944 nats), and the fitted efficiencies put modes 0 to 11 near 1.2 and modes 12 to 23 near 0.7, with mode 5 a 6.6-fold outlier that also collects light the ideal places on modes 0 and 4.",
+      "statement": "Refitting the four C1 runs with relative per-mode detection efficiencies fitted jointly with each class, each run held out in turn, cuts the held-out median TVD to 4.2 shot-noise floors (absolute TVD median 0.149 against the ideal, range 0.031 to 0.273, floor 0.034), with every class's best point at or next to its null magnitude and no class passing the fit test; static offsets fitted with the efficiencies lose to fitted dephasing on held-out runs (about -34000 nats), and the fitted efficiencies put modes 0 to 11 near 1.2 and modes 12 to 23 near 0.7, with mode 5 a 6.6-fold outlier that also collects light the ideal places on modes 0 and 4.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -5084,7 +5084,7 @@
       "evidence": [
         {
           "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/efficiency.json",
-          "sha256": "4d6dd028a9b7e6aeb6b8cd2789c9f2902cd0503f2e2c92790546bcc3b08ee41e"
+          "sha256": "0b9eeead513e514ade31edf60a6f209eccd243e60fd16713ca43787ff6b80d2b"
         }
       ],
       "documents": [
@@ -5128,7 +5128,7 @@
         "docs/notes/quandela/strategy.md"
       ],
       "gates": {
-        "core-508": "replay",
+        "core-537": "replay",
         "core-536": "replay",
         "core-510": "freshness"
       },
@@ -5168,7 +5168,7 @@
       ],
       "gates": {
         "core-536": "replay",
-        "core-508": "replay"
+        "core-537": "replay"
       },
       "acquisitions": [
         "qd-qpu-belenos-mesh-job-02",
@@ -5212,7 +5212,7 @@
       ],
       "gates": {
         "core-536": "replay",
-        "core-508": "replay"
+        "core-537": "replay"
       },
       "acquisitions": [
         "qd-qpu-belenos-mesh-job-03",
