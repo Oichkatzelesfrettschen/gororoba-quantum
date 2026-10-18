@@ -394,11 +394,11 @@ class SnapshotSimulator(AerSimulator):
     cache-blocking pass splits the operation list into per-chunk blocks, so
     an if_else, which AerCompiler inlines into jump and mark, aborts the
     process when its mark lands in another block ("Invalid jump
-    destination", raised past every handler); such a circuit runs in its
-    lower_conditionals form, whose seeded counts equal the if_else circuit's
-    under blocking with the readout channel ahead of the condition
-    (scripts/aer_blocking_probe.py --self-test), and one with no such form
-    raises ValueError. Run options that set blocking_enable keep the
+    destination", raised past every handler); a circuit wider than the
+    chunk runs in its lower_conditionals form, whose seeded counts equal the
+    if_else circuit's under blocking with the readout channel ahead of the
+    condition (scripts/aer_blocking_probe.py --self-test), and one with no
+    such form raises ValueError. Run options that set blocking_enable keep the
     caller's choice. Every other run is AerSimulator.run.
     """
 
@@ -417,19 +417,26 @@ class SnapshotSimulator(AerSimulator):
 
 
 def blocked_batch(batch: list[Any], method: str, memory_mib: int | None) -> tuple[list[Any], dict[str, Any]]:
-    """The batch and its blocking options; a batch that needs blocking runs every circuit in conditioned-gate form."""
+    """The batch and its blocking options; under blocking a circuit wider than the chunk runs in conditioned-gate form.
+
+    Aer's cache-blocking pass splits only a circuit wider than
+    blocking_qubits; a circuit at or below the chunk width runs whole, so its
+    if_else stays intact and draws the unblocked batch's seeded counts
+    (scripts/aer_blocking_probe.py --self-test).
+    """
     width = max((active_qubits(c) for c in batch if isinstance(c, QuantumCircuit)), default=0)
     blocking = blocking_options(method, width, memory_mib)
     if not blocking:
         return batch, {}
     lowered = []
     for circuit in batch:
-        form = lower_conditionals(circuit) if has_control_flow(circuit) else circuit
+        split = isinstance(circuit, QuantumCircuit) and active_qubits(circuit) > blocking["blocking_qubits"]
+        form = lower_conditionals(circuit) if split and has_control_flow(circuit) else circuit
         if form is None:
             raise ValueError(
-                f"{getattr(circuit, 'name', circuit)}: a {width}-qubit {method} needs Aer cache blocking, which "
-                "aborts on if_else, and its control flow has no conditioned-gate form (an else body, an "
-                "expression condition, a measurement, reset or nested control flow in the body, or a loop)"
+                f"{getattr(circuit, 'name', circuit)}: a {active_qubits(circuit)}-qubit {method} needs Aer cache "
+                "blocking, which aborts on if_else, and its control flow has no conditioned-gate form (an else "
+                "body, an expression condition, a measurement, reset or nested control flow in the body, or a loop)"
             )
         lowered.append(form)
     return lowered, blocking

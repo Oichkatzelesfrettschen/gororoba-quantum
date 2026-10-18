@@ -480,6 +480,21 @@ def toy_counts(circuit: Any, method: str, device: str, options: dict[str, Any]) 
     return dict(sorted(result.get_counts().items()))
 
 
+def else_toy(width: int) -> Any:
+    """An if_else with an else body on width qubits, which has no conditioned-gate form."""
+    from qiskit import QuantumCircuit
+
+    circuit = QuantumCircuit(width, 2, name=f"else{width}")
+    circuit.h(0)
+    circuit.measure(0, 0)
+    with circuit.if_test((circuit.clbits[0], 1)) as orelse:
+        circuit.x(1)
+    with orelse:
+        circuit.x(width - 1)
+    circuit.measure(1, 1)
+    return circuit
+
+
 def toy_contract(method: str, device: str) -> None:
     """The lowered toy under blocking: on a GPU the if_else toy's counts, on the CPU a condition off its bit.
 
@@ -516,17 +531,23 @@ def run_contract() -> None:
     """SnapshotSimulator.run blocks a GPU batch past its chunk, lowers its if_else, and keeps the seeded counts.
 
     blocking_options is replaced by the toy's forced chunk, so the six-qubit
-    toy takes the path a state wider than one GPU takes.
+    toy takes the path a state wider than one GPU takes. The batch also holds
+    an else-body if_else as wide as the chunk, which Aer runs whole: it keeps
+    its control flow and draws its unblocked counts.
     """
     from qiskit_aer.noise import NoiseModel, ReadoutError
 
     noise = NoiseModel()
     noise.add_readout_error(ReadoutError([[1 - TOY_E10, TOY_E10], [TOY_E01, 1 - TOY_E01]]), [0])
 
-    def counts() -> tuple[dict[str, int], Any]:
+    def counts() -> tuple[list[dict[str, int]], list[Any]]:
         simulator = calibration_snapshot.SnapshotSimulator(method="statevector", device="GPU", noise_model=noise)
-        result = simulator.run(readout_toy(), shots=TOY_SHOTS, seed_simulator=SEED).result()
-        return dict(sorted(result.get_counts().items())), result.results[0].metadata.get("cacheblocking")
+        batch = [readout_toy(), else_toy(TOY_CHUNK)]
+        result = simulator.run(batch, shots=TOY_SHOTS, seed_simulator=SEED).result()
+        return (
+            [dict(sorted(result.get_counts(index).items())) for index in range(len(batch))],
+            [experiment.metadata.get("cacheblocking") for experiment in result.results],
+        )
 
     plain, unblocked = counts()
     original = calibration_snapshot.blocking_options
@@ -539,7 +560,7 @@ def run_contract() -> None:
         blocked, metadata = counts()
     finally:
         calibration_snapshot.blocking_options = original
-    if unblocked or (metadata or {}).get("block_bits") != TOY_CHUNK or blocked != plain:
+    if any(unblocked) or (metadata[0] or {}).get("block_bits") != TOY_CHUNK or metadata[1] or blocked != plain:
         raise SystemExit(f"aer_blocking_probe: SnapshotSimulator.run chunks {metadata}, counts kept {blocked == plain}")
 
 
@@ -598,6 +619,22 @@ def self_test() -> str:
         pass
     else:
         raise SystemExit("aer_blocking_probe: blocked_batch accepted an if_else with an else body")
+    # On a T4 the 30-qubit statevector blocks at 27-qubit chunks, so only a
+    # circuit wider than 27 active qubits loses its if_else.
+    thirty = QuantumCircuit(30)
+    thirty.h(range(30))
+    narrow = else_toy(TOY_WIDTH)
+    mixed, mixed_blocking = calibration_snapshot.blocked_batch([thirty, narrow], "statevector", t4)
+    if not mixed_blocking or mixed[1] is not narrow:
+        raise SystemExit("aer_blocking_probe: blocked_batch lowered a circuit narrower than its chunk")
+    wide_else = else_toy(28)
+    wide_else.h(range(28))
+    try:
+        calibration_snapshot.blocked_batch([thirty, wide_else], "statevector", t4)
+    except ValueError:
+        pass
+    else:
+        raise SystemExit("aer_blocking_probe: blocked_batch accepted an else body wider than its chunk")
     toy_contract("statevector", "CPU")
     from qiskit_aer import AerSimulator
 
@@ -610,11 +647,13 @@ def self_test() -> str:
         run_contract()
         gpu = (
             "on the GPU it draws the if_else counts, the condition on the recorded bit (statevector, density "
-            "matrix), and SnapshotSimulator.run blocks and lowers the if_else toy with its counts unchanged"
+            "matrix), and SnapshotSimulator.run blocks and lowers the if_else toy and runs a chunk-wide else body "
+            "whole, both with their counts unchanged"
         )
     return (
         f"chunks {sorted(set(sizes.values()))}; a T4 blocks statevector 30 and density matrix 15, not 29 or 14; "
-        f"a 156-qubit circuit counts its 7 active qubits; an else body is refused; under {TOY_CHUNK}-qubit chunks "
+        f"a 156-qubit circuit counts its 7 active qubits; an else body wider than the chunk is refused and one "
+        f"within it kept; under {TOY_CHUNK}-qubit chunks "
         f"the CPU's lowered readout toy leaves its condition's bit; {gpu}"
     )
 
