@@ -97,8 +97,11 @@ Consequences for this circuit:
   same key.
 - Requirement 5 holds because the control qubit conditions itself, which
   satisfies the one-controller and same-group rules by construction. The
-  conditioned qubit being reset and re-controlled by the same bit is not
-  covered by a stated rule: unverified.
+  Braket guide allows repeated control of a qubit only when no active reset
+  was performed on it, and this circuit active-resets the control and then
+  applies the conditional S-dagger to the same qubit, so Braket's documented
+  contract excludes the circuit. Open Quantum's stack states no contract for
+  this case: unverified until a probe shows it accepted.
 - Requirement 4 conflicts with Braket's statement that mid-circuit outcomes are
   not returned. A copy of the control's Z value onto a spare qubit by one CNOT
   (one CZ and two one-qubit gates) before `measure_ff` puts b0 in the ordinary
@@ -146,8 +149,10 @@ The two-arm design needs equal shots per arm, so the working budget is about
 Shots needed. The family's admitted contract
 ([N21_USAGE_BUDGET.md](../../gororoba_quantum/N21_USAGE_BUDGET.md)) sizes a run
 so that detection at alpha plus power 0.8 fits the contrast: K / sqrt(n) <= c
-with K = 9.724 under Hoeffding, or about 9.16 under the empirical-Bernstein
-opt-in, so n = (K / c)^2 shots per arm. For the three noise-model values of the
+with K = 9.724 under Hoeffding, so n = (K / c)^2 shots per arm. The
+empirical-Bernstein opt-in's K of about 9.16 holds near 90,112 Kingston shots
+and grows as n falls, and its planning needs per-PUB outcome laws that this
+scalar screen lacks, so only the Hoeffding sizing applies here. For the three noise-model values of the
 713-CZ Kingston routing, c = 0.0417, 0.0344 and 0.0310, this gives 54,378,
 79,905 and 98,394 shots per arm under Hoeffding; the Kingston run spent
 100,000 per arm. A 3-sigma normal approximation, (3 / c)^2, understates the
@@ -167,23 +172,22 @@ fitted value; IQM's own f is unknown. The model ignores IQM's readout and reset
 durations, crosstalk and the fat tail of the CZ error distribution, so treat it
 as a screen, not a prediction.
 
-| Backend | Routed CZ n | Contrast | Shots per arm, K = 9.724 | Shots per arm, K = 9.16 |
-| --- | --- | --- | --- | --- |
-| ibm_kingston (model) | 713 | 0.0417 | 54,378 | 48,253 |
-| ibm_kingston (measured) | 713 | +0.0027, consistent with 0 | n/a | n/a |
-| IQM Garnet | 713 | 0.0058 | 2,845,699 | 2,525,166 |
-| IQM Garnet | 450 | 0.0209 | 216,192 | 191,841 |
-| IQM Garnet | 300 | 0.0436 | 49,708 | 44,109 |
-| IQM Garnet | 200 | 0.0712 | 18,656 | 16,555 |
-| IQM Garnet | 150 | 0.0910 | 11,430 | 10,142 |
-| IQM Garnet | 100 | 0.1162 | 7,002 | 6,214 |
+| Backend | Routed CZ n | Contrast | Shots per arm, K = 9.724 |
+| --- | --- | --- | --- |
+| ibm_kingston (model) | 713 | 0.0417 | 54,378 |
+| ibm_kingston (measured) | 713 | +0.0027, consistent with 0 | n/a |
+| IQM Garnet | 713 | 0.0058 | 2,845,699 |
+| IQM Garnet | 450 | 0.0209 | 216,192 |
+| IQM Garnet | 300 | 0.0436 | 49,708 |
+| IQM Garnet | 200 | 0.0712 | 18,656 |
+| IQM Garnet | 150 | 0.0910 | 11,430 |
+| IQM Garnet | 100 | 0.1162 | 7,002 |
 
-Break-even on Spark. 13,586 shots per arm meet the contract for c >= 0.0834
-(Hoeffding) or 0.0786 (empirical Bernstein), that is n <= 167 or 179 routed CZ
-on Garnet at f = 0.759 and n <= 107 or 119 at f = 0.564. Emerald, whose
-per-shot fee leaves 12,312 shots per arm (c >= 0.0876 or 0.0826), gives 154 or
-166 and 95 or 107. The Spark threshold in the equal-f scenario is therefore
-about 110 to 180 routed CZ, below every routing of the circuit the repository
+Break-even on Spark. 13,586 shots per arm meet the contract for c >= 0.0834,
+that is n <= 167 routed CZ on Garnet at f = 0.759 and n <= 107 at f = 0.564.
+Emerald, whose per-shot fee leaves 12,312 shots per arm (c >= 0.0876), gives
+154 and 95. The Spark threshold in the equal-f scenario is therefore about 110
+to 170 routed CZ, below every routing of the circuit the repository
 records; a larger f on IQM raises it. The deciding inputs are the CZ count of a
 square-lattice routing of the circuit, which no branch of the repository holds
 yet, and IQM's own f. Paid Public credits cost ceil(0.18 + N * 0.00087)
@@ -199,8 +203,8 @@ measurement. Quota rows are what the page states; sources are cited per row.
 | Service | FF support | Qubits, connectivity | Free quota | Data terms | Eligibility | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | Open Quantum, IQM Garnet / Emerald (Online, `accepting_jobs` false at the 2026-10-17 read) | `dynamic_circuits` feature, `cc_prx`, `measure_ff` ([catalogue](../evidence/open_quantum/catalogue.json)); QASM lowering unverified | 20 / 54, square lattice, 99.51 / 99.5 percent median CZ ([Garnet page](open_quantum/site/providers_iqm_garnet.md)) | 25 Spark credits at signup and 25 every 90 days, claimed by hand ([free-credits page](open_quantum/site/free-credits.md)) | Public tier: circuits and results public, retained by Quantum Rings ([README](open_quantum/README.md)) | Account exists | Verified catalogue; FF path unverified |
-| IBM Open Plan, ibm_kingston | `if_else`, tested by the family | 156, heavy-hex | 10 min per 28 days; a one-time 180 min over 12 months for users who log 20 min in any 12 months, opt-in ([IBM blog 2026-03-16](https://www.ibm.com/quantum/blog/open-plan-updates)) | Private | Non-trial Open Plan account | Same machine, larger budget; the 10 min per 28 days is the 600 s rolling window `AGENTS.md` records. Measured null at 713 CZ on 2026-10-18 |
-| Amazon Braket, IQM Garnet / Emerald | `measure_ff`, `cc_prx`, experimental, verbatim only; MCM bits not returned ([developer guide](https://docs.aws.amazon.com/braket/latest/developerguide/braket-experimental-capabilities.html)) | 20 / 54, 2 / 4 groups | None for QPUs; $0.30 per task + $0.00145 (Garnet) / $0.00160 (Emerald) per shot ([pricing](https://aws.amazon.com/braket/pricing/)) | AWS terms, not reviewed | Any AWS account | Verified; paid |
+| IBM Open Plan, ibm_kingston | `if_else`, tested by the family | 156, heavy-hex | 10 min per 28 days; a one-time 180 min over 12 months for users who log 20 min in any 12 months, opt-in ([IBM blog 2026-03-16](https://www.ibm.com/quantum/blog/open-plan-updates)); the job inventory records 382 s, so 818 s more must accrue before the offer opens | IBM data terms not reviewed | Non-trial Open Plan account | Same machine, larger budget; the 10 min per 28 days is the 600 s rolling window `AGENTS.md` records. Measured null at 713 CZ on 2026-10-18 |
+| Amazon Braket, IQM Garnet / Emerald | `measure_ff`, `cc_prx`, experimental, verbatim only; MCM bits not returned; repeated control after an active reset excluded ([developer guide](https://docs.aws.amazon.com/braket/latest/developerguide/braket-experimental-capabilities.html)) | 20 / 54, 2 / 4 groups | None for QPUs; $0.30 per task + $0.00145 (Garnet) / $0.00160 (Emerald) per shot ([pricing](https://aws.amazon.com/braket/pricing/)) | AWS terms, not reviewed | Any AWS account | Excludes this circuit (reset then control); paid |
 | IQM Resonance Starter | Not documented for Resonance; the IQM Qiskit guide says availability depends on the instrument | Crystal 54, Crystal 20, Star 24 beta ([IQM](https://www.iqm.tech/products/iqm-resonance)) | Up to 30 credits per month, availability-dependent; pay-as-you-go from $0.30 per QPU second; credit-to-second conversion unstated (inferred 1 s, unverified) | Unstated on the page | Unstated | FF on Resonance unverified |
 | EuroHPC quantum pilot call (Euro-Q-Exa, Lucy, Piast-Q, VLQ) | Not mentioned; VLQ is IQM-built per the [Open Quantum IQM page](open_quantum/site/providers_iqm.md), FF unverified | Not stated | Free; rolling cut-offs on 1 Nov and 1 Dec 2026 ([EuroHPC](https://www.eurohpc-ju.europa.eu/eurohpc-ju-opens-access-its-quantum-computers-2026-06-25_en)) | Not mentioned | Research, public sector or industry in Europe | Unverified FF; eligibility depends on the owner's location |
 | Azure Quantum, Quantinuum H2-1 / H2-2 | Conditional logic on measurement results via Qiskit `c_if` or Q# `if`, QIR Adaptive RI ([provider page](https://learn.microsoft.com/azure/quantum/provider-quantinuum)). The page's `c_if` example does not exist in Qiskit 2.5.2 (`QuantumCircuit.x(0)` returns an instruction with no `c_if`); the repo's circuit uses `if_test`, so a port needs the provider's control-flow path, unverified | 56, all-to-all | None on hardware; syntax checkers free; emulator free with a hardware subscription; HQC = 5 + C(N1q + 10 N2q + 5 Nm)/5000 ([pricing](https://learn.microsoft.com/azure/quantum/pricing)); Standard plan $125,000 per month for 10k HQC | Azure terms, not reviewed | Pay-as-you-go via sales contact | Expressive, not free; the $500-per-provider workspace credit is not on the pages fetched: unverified |
@@ -209,7 +213,8 @@ measurement. Quota rows are what the page states; sources are cited per row.
 | Quantum Inspire Tuna-5 / 9 / 17 | No binary-controlled gates | 5 / 9 / 17 | Free | Licensed to QuTech | Account exists | Excluded |
 | Origin Quantum Cloud | `qif` / `qelse` on simulators ([docs](https://qcloud.originqc.com.cn/document/pyqpanda3-docs/en/tutorial/dynamic-circuits)); hardware support not stated | Wukong-180 | A "Research Incentive Program" of free time, size and terms unstated ([report](https://quantumcomputingreport.com/origin-quantum-unveils-origin-wukong-180-fourth-generation-quantum-computer/)) | Unreached | Unreached | Unverified |
 | Quafu / BAQIS ScQ | Dynamic circuits parsed in simulation only per the pyquafu changelog ([pyquafu changelog mirror](https://data.safetycli.com/changelogs/pyquafu)) | 10 in the 2022 paper | Unreached | Unreached | Unreached | Unverified |
-| qBraid | Reseller; Garnet 30 credits per task + 0.145 per shot, credit = $0.01 ([qBraid pricing](https://docs.qbraid.com/v2/home/pricing)); inherits Braket's FF limits | 20 | $50 via the Open Quantum partnership, same Spark pool | Open Quantum terms | Account | Duplicate of rows above |
+| qBraid managed Garnet | Reseller of the Braket route; 30 qBraid credits per task + 0.145 per shot, credit = $0.01 ([qBraid pricing](https://docs.qbraid.com/v2/home/pricing)); inherits Braket's FF limits | 20 | qBraid credits only | qBraid terms, not reviewed | Account | Duplicate of the Braket row |
+| qBraid Open Quantum integration | Targets `openquantum:*` devices and bills the connected Open Quantum account; qBraid credits do not fund it ([integration](https://docs.qbraid.com/v2/account/integrations/openquantum)) | 20 / 54 | The Open Quantum account's Spark and paid credits | Open Quantum terms | Account plus Open Quantum account | Duplicate of the Open Quantum row |
 | Rigetti QCS direct (Ankaa-3, Cepheus-1-108Q) | Searched: pyQuil and QCS pages surfaced no mid-circuit feedback documentation; the QCS FAQ has an active-reset section ([FAQ](https://docs.rigetti.com/qcs/faq)) whose text was truncated | 84 / 108, square-type lattice | None found; Azure PAYG $0.02 per 10 ms of execution ([pricing](https://learn.microsoft.com/azure/quantum/pricing)) | Not reviewed | Not reviewed | No feed-forward documentation found |
 | IonQ direct | "Dynamic circuit execution is not supported on any IonQ target" ([OpenQASM 3 docs](https://docs.ionq.com/api-reference/v0.4/openqasm3)); branching fails preflight | 36 | Research Credits Program, up to $10,000, 2021 terms: academic researchers, current terms unchecked ([IonQ cloud page](https://ionq.com/quantum-cloud)) | Not reviewed | Academic | Excluded: no FF |
 | Oxford Quantum Circuits (Toshiko) | Searched: no feed-forward statement found ([OQC Cloud](https://oqc.tech/access/oqc-cloud/)) | 32 | None found | Not reviewed | Not reviewed | No feed-forward documentation found |
@@ -229,20 +234,25 @@ expected contrast, confidentiality.
    returned MCM bits and feedback-key reuse are the open risks. Shots: 13,586
    per arm on Spark, 27,172 total. Contrast in the equal-f scenario: 0.044 at
    300 CZ, 0.071 at 200 CZ; the Spark balance meets the contract only for
-   n <= about 180 routed CZ. Confidentiality: public. Needs no new sign-up.
-2. IBM Open Plan with the 180-minute offer (the same machine, not a substitute).
+   n <= about 170 routed CZ. Confidentiality: public. Needs no new sign-up.
+2. IBM Open Plan with the 180-minute offer (the same machine, not a substitute),
+   once the account has logged the 1,200 s the offer requires; the job
+   inventory (`results/live/qpu-job-inventory.json`) records 382 s, so the
+   offer is unavailable today.
    Expressivity is proven; the contrast is measured and consistent with zero at
    100,000 shots per arm against a predicted 0.034, so more Heron r2 shots of
    the same circuit answer nothing new until the missing channel is identified.
    The 180-minute allowance (10,800 s) is eighteen times the 600 s window.
-   Private. Cost is the owner's opt-in.
-3. Amazon Braket IQM Garnet. Same chip and instruction set as ranking 1, so the
-   same contrast screen, with an unlimited paid shot supply: under the contract
-   (K = 9.724), 2 * (0.30 + 0.00145 * 18,656) = $54.7 at 200 CZ and
-   2 * (0.30 + 0.00145 * 49,708) = $144.8 at 300 CZ; at 713 CZ the
-   2,845,699 shots per arm cost about $8,250. Confidentiality: AWS data terms
-   not reviewed, so unknown. MCM bits are not returned, so requirement 4 needs
-   the copy-qubit workaround.
+   Confidentiality: IBM data terms not reviewed, so unknown. Cost: 818 s of
+   further runtime, then the owner's opt-in.
+Amazon Braket IQM Garnet is unranked: its guide excludes repeated control
+of a qubit after an active reset, which this circuit needs. Were a variant
+admitted, its costs under the contract (K = 9.724) and the 20,000-shot task
+ceiling would be 2 * (0.30 + 0.00145 * 18,656) = $54.7 at 200 CZ, three tasks
+per arm and about $146.0 at 300 CZ, and 143 tasks per arm (286 tasks) and
+about $8,338 at 713 CZ. Confidentiality: AWS data terms not reviewed, so
+unknown. MCM bits are not returned, so requirement 4 would need the
+copy-qubit workaround.
 
 Quantinuum H2 or Helios removes the SWAP-routing overhead through all-to-all
 connectivity, but the circuit's own entangling gates, measurements, resets and
@@ -261,18 +271,19 @@ an institutional or grant route.
 ## Recommendation and uncertainty
 
 Wait for the Garnet-grid routing and for iqm:garnet to accept jobs. If the CZ
-count is at most about 110 to 180 in the equal-f scenario, run the experiment
+count is at most about 110 to 170 in the equal-f scenario, run the experiment
 on Open Quantum Garnet in two Spark-funded jobs of 13,586 shots, one per arm,
 after a one-circuit probe confirms the `cc_prx` lowering, feedback-key reuse
 and the returned bits. Above that, the Spark balance cannot meet the contract,
-and the options are paid Public credits, the IBM 180-minute offer, or Braket
-Garnet at the costs above. Confidence that Garnet meets the contract on the
+and the options are paid Public credits or, once 818 s more of IBM runtime
+has accrued, the IBM 180-minute offer. Confidence that Garnet meets the contract on the
 Spark balance: low, set by the unrouted CZ count, by IQM's unknown f (the
 fitted 0.564 to 0.759 transfers no bound), and by whatever removed the effect on
 Heron r2. A Kingston diagnostic that identifies that channel raises this
 rating if it is Heron-specific and lowers it if it is generic to mid-circuit
-measurement. The cost ordering (Open Quantum before Braket) has high
-confidence, as it follows from the stated rates. No contrast ordering survives
+measurement. The cost
+ordering (Spark before paid Public credits) has high confidence, as it follows
+from the stated rates. No contrast ordering survives
 the Kingston measurement: the only measured contrast is consistent with zero.
 A `cc_prx` that rejects theta = pi/2 would invalidate the S-dagger
 construction.
@@ -284,7 +295,8 @@ construction.
    conditionals (the active reset and the S-dagger) driven from one
    `measure_ff` key, and whether `measure_ff` bits return in counts. This step
    resolves the four unverified Open Quantum risks.
-2. Decide whether to opt in to IBM's 180-minute Open Plan offer; it buys a
+2. Decide whether to opt in to IBM's 180-minute Open Plan offer once the
+   account has logged 1,200 s of runtime; it buys a
    Heron r2 rerun only once a hypothesis for the measured null exists.
 3. State the owner's location, which decides eligibility for the EuroHPC pilot
    call (cut-offs 1 Nov and 1 Dec 2026), and whether an institutional channel to
