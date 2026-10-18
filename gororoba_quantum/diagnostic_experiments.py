@@ -172,14 +172,14 @@ def state_prep_circuit(arm: str, qubit: int) -> QuantumCircuit:
 
 
 def state_prep_arms(arms: Any = None) -> tuple[str, ...]:
-    """The selected arms in STATE_PREP_ARMS order; None selects all three."""
+    """The selected arms in STATE_PREP_ARMS order; None selects all three, and every selection holds prep0."""
     if arms is None:
         return STATE_PREP_ARMS
     selected = tuple(arms)
     if not selected or len(set(selected)) != len(selected) or set(selected) - set(STATE_PREP_ARMS):
         raise ValueError(f"state-prep arms must be distinct members of {STATE_PREP_ARMS}, got {list(selected)}")
-    if "reset" in selected and "prep0" not in selected:
-        raise ValueError("the reset arm reads its benefit against prep0, which the selection omits")
+    if "prep0" not in selected:
+        raise ValueError("the family measures the initial excited fraction, which only the prep0 arm reads")
     return tuple(arm for arm in STATE_PREP_ARMS if arm in selected)
 
 
@@ -511,7 +511,7 @@ def _state_prep_self_test() -> None:
         names = {contract.name.removeprefix("spc_").rsplit("_q", 1)[0] for contract in chosen}
         if names != endpoint_names or not math.isclose(math.fsum(c.alpha for c in chosen), 0.05):
             raise AssertionError(f"arms {arms}: endpoints {names} or the alpha split moved")
-    for refused in ((), ("reset",), ("prep0", "prep0"), ("prep1",)):
+    for refused in ((), ("reset",), ("x",), ("reset", "x"), ("prep0", "prep0"), ("prep1",)):
         try:
             state_prep_arms(refused)
         except ValueError:

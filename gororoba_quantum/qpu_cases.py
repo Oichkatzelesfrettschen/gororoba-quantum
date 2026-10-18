@@ -257,9 +257,10 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         _require(
             isinstance(arms, list)
             and bool(arms)
+            and "prep0" in arms
             and set(arms) <= {"prep0", "reset", "x"}
             and len(set(arms)) == len(arms),
-            "state_prep_arms names distinct state-prep-control arms",
+            "state_prep_arms names distinct state-prep-control arms, prep0 among them",
         )
         arguments.extend(["--state-prep-arms", ",".join(arms)])
     arguments.extend(["--backends", ",".join(backends), "--shots", str(_count(record["shots"], "shots"))])
@@ -1525,13 +1526,7 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
         }
         static = [arm for arm in arms if arm != "reset"]
         jobs_text = (
-            (
-                "A and C share the static job"
-                if len(static) == 2
-                else f"{'A' if static == ['prep0'] else 'C'} runs in one static job"
-            )
-            if static
-            else ""
+            ("A and C share the static job" if len(static) == 2 else "A runs in one static job") if static else ""
         )
         if "reset" in arms:
             jobs_text += ("; " if jobs_text else "") + (
@@ -2426,13 +2421,13 @@ def _verify() -> None:
         prepared_case = " ".join(_scientific_case("state-prep-control", prepared))
         assert "One PUB measures every qubit" in prepared_case and "2 in all" in prepared_case
         assert "reset benefit" not in prepared_case and "Three PUBs" not in prepared_case
-        prepared["policy"]["design"]["state_prep_arms"] = ["prep0", "bogus"]
-        try:
-            _reproduction_arguments(prepared, Path("results/live/fixture/record.json"))
-        except ValueError:
-            pass
-        else:
-            raise AssertionError("an unknown state-prep arm rendered into the replay command")
+        for refused in (["prep0", "bogus"], ["x"]):
+            prepared["policy"]["design"]["state_prep_arms"] = refused
+            try:
+                _reproduction_arguments(prepared, Path("results/live/fixture/record.json"))
+            except ValueError:
+                continue
+            raise AssertionError(f"state-prep arms {refused} rendered into the replay command")
         assert any("declared excitation of 0.01" in line for line in _scientific_case("n21-feedback", excited))
         delayed = copy.deepcopy(record)
         delayed["policy"]["rep_delay_seconds"] = 0.00025

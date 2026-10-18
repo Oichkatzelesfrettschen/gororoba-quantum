@@ -5145,7 +5145,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--state-prep-arms",
         type=lambda value: value.split(","),
-        help="state-prep-control arms among prep0, reset and x, comma-separated; omitted, all three; "
+        help="state-prep-control arms among prep0, reset and x, comma-separated, prep0 always among them; "
+        "omitted, all three; "
         "the policy binds a selection",
     )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
