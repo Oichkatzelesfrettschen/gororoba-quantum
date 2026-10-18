@@ -207,7 +207,15 @@ values; with b the smaller of e10 and the prep0 bound, u = max(0, (U - b) /
 channel on the previous shot's end state, so the excitation is affine in
 that state's `|1>` population q, and the excitation after an all-`|1>`
 history is at most u / q with q >= (1 - u)(1 - delta); delta is the x error
-plus the x duration over T1, the flip failure of live_run's noise model.
+plus the x and measure durations over T1: the flip failure of live_run's
+noise model and a bound on the measurement's 0 -> 1 transitions, which run
+one to two orders below the T1-dominated 1 -> 0 rate on ibm_kingston
+(docs/notes/ibm_quantum/heron-r2-readout-resonator.md). The first shot of
+each executor chunk follows an uncontrolled shot, so the bounds count those
+shots at their worst value (chunk_timing in each job's
+result_metadata.json). The bound describes the initialization at the
+controls' execution calibrations, and the report's calibration_scope says
+whether the n21 plan shares one.
 eps = u / ((1 - u)(1 - delta)) at each delay, maximized over the placement,
 bounds each placed qubit's marginal excitation; dynamic_density applies
 independent local channels, and the report's joint coincidence counts

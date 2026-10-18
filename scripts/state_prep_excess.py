@@ -41,14 +41,25 @@ each qubit q of the placement S, which must lie inside C:
 
 - U50_q, U250_q: upper bounds on the x_history excited fraction.
 - L0_q: lower bound on the prep0 excited fraction at 250 us.
+- A PUB's shots run in sequence inside each executor chunk
+  (result_metadata.json's chunk_timing), so the first shot of each of its
+  s chunks follows an uncontrolled shot. The upper bounds count all ones
+  against the n - s controlled shots, and the lower bound removes s ones
+  first.
 - b_q = min(L0_q, the e10 envelope); e01_q the e01 envelope.
 - u_q(d) = max(0, state_prep_excitation(U_d, b_q, e01_q)), the x_history
   arm's own excitation at delay d.
-- delta_q: the largest x error plus x duration / T1 over the execution
-  calibrations of q's x_history PUBs. live_run's noise model composes
-  thermal relaxation over the gate duration with a depolarizing error whose
-  total average infidelity is the reported error, and a depolarizing error
-  of average infidelity r leaves |0> unflipped with probability r.
+- delta_q: the largest x error plus (x duration + measure duration) / T1
+  over the execution calibrations of q's x_history PUBs. live_run's noise
+  model composes thermal relaxation over the gate duration with a
+  depolarizing error whose total average infidelity is the reported error,
+  and a depolarizing error of average infidelity r leaves |0> unflipped
+  with probability r. A measurement can also excite |0> before the x: on
+  ibm_kingston the measurement instrument's 0 -> 1 rate sits one to two
+  orders below its T1-dominated 1 -> 0 rate
+  (docs/notes/ibm_quantum/heron-r2-readout-resonator.md), so measure
+  duration / T1 bounds it with at least a factor of ten to spare. Leakage
+  out of the qubit subspace lies outside the model.
 - eps_q(d) = u_q(d) / ((1 - u_q(d)) (1 - delta_q)).
 
 eps = (P - e10) / (1 - e01 - e10) rises in P, falls in e10 wherever
@@ -68,6 +79,13 @@ members share one PUB (and therefore one shot order), the number of shots
 in which two or more placed qubits read 1 beside the number their point
 marginals predict under independence; correlated readout raises that count
 as well, so it is a diagnostic outside the bound family.
+
+eps bounds the initialization at the controls' execution calibrations.
+Applying it to the n21 plan assumes that initialization channel unchanged
+until the n21 shots run; calibration_scope records both calibrations and
+whether the plan's noise model shares one with the controls, and the
+stage-2 case states the assumption. An eps at or above 1 lies outside the
+planner's --prep-excitation domain and is refused.
 
 Placement and eps depend on each other, so the plan iterates to a fixed
 point: plan at --prep-excitation 0, read S0, compute eps(S0) at the plan's
@@ -93,7 +111,7 @@ import math
 import sys
 import tempfile
 from collections.abc import Iterable
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -113,6 +131,7 @@ SCHEMA = "state-prep-excess-v2"
 OUTPUT_NAME = "state-prep-excess.json"
 READOUT_SCHEMA = "state-prep-readout-v1"
 READOUT_NAME = "state-prep-readout.json"
+RESULT_METADATA = "result_metadata.json"
 SHORT_DELAY = 5e-05
 LONG_DELAY = 2.5e-04
 DELAY_LABELS = {SHORT_DELAY: "50us", LONG_DELAY: "250us"}
@@ -120,7 +139,14 @@ DEFAULT_ALPHA = 0.01
 # The x_history fraction at each delay and prep0 at 250 us enter the rule.
 REQUIRED_CELLS = ((STATE_PREP_HISTORY_ARM, SHORT_DELAY), (STATE_PREP_HISTORY_ARM, LONG_DELAY), ("prep0", LONG_DELAY))
 BOUNDS_PER_QUBIT = len(REQUIRED_CELLS)
-READOUT_FIELDS = ("prob_meas1_prep0", "prob_meas0_prep1", "x_error", "x_duration_seconds", "T1_seconds")
+READOUT_FIELDS = (
+    "prob_meas1_prep0",
+    "prob_meas0_prep1",
+    "x_error",
+    "x_duration_seconds",
+    "measure_duration_seconds",
+    "T1_seconds",
+)
 
 
 def require(condition: bool, message: str) -> None:
@@ -178,6 +204,10 @@ def _instant(stamp: Any, where: str) -> datetime:
     return moment
 
 
+def _utc(stamp: Any) -> str:
+    return _instant(stamp, "calibration").astimezone(UTC).isoformat()
+
+
 def _member_qubit(member: str) -> tuple[str, int]:
     require(member.startswith("spc_") and "_q" in member, f"{member}: not a state-prep member")
     arm, qubit_text = member.removeprefix("spc_").rsplit("_q", 1)
@@ -221,6 +251,27 @@ def _pub_windows(job: dict[str, Any], manifest: dict[str, Any], executed: dict[s
     require(len(windows) == 1, f"{where}: members record different execution windows")
     start, stop, calibration, changed = windows.pop()
     return {"start": start, "stop": stop, "calibration": calibration, "changed": changed}
+
+
+def _pub_segments(raw: Path, index: dict[str, Any], count: int) -> list[int]:
+    """Execution chunks holding each PUB's shots, from the executor's chunk_timing in result_metadata.json.
+
+    A PUB's shots run in sequence inside a chunk, so the first shot of each
+    chunk follows a shot of another PUB or job rather than one of its own.
+    """
+    require(RESULT_METADATA in index.get("files", {}), f"{raw}: index.json lacks {RESULT_METADATA}")
+    data = (raw / RESULT_METADATA).read_bytes()
+    require(sha256_bytes(data) == index["files"][RESULT_METADATA], f"{raw / RESULT_METADATA}: sha256 differs")
+    chunks = (json.loads(data).get("executor") or {}).get("chunk_timing")
+    if not chunks:
+        raise ValueError(f"{raw / RESULT_METADATA}: no executor chunk_timing, so segment starts are unknown")
+    segments = [0] * count
+    for chunk in chunks:
+        for item in {int(part["idx_item"]) for part in chunk["parts"]}:
+            require(0 <= item < count, f"{raw / RESULT_METADATA}: chunk names PUB {item} of {count}")
+            segments[item] += 1
+    require(all(segments), f"{raw / RESULT_METADATA}: a PUB lies in no chunk")
+    return segments
 
 
 def read_control(run_dir: Path, root: Path) -> dict[str, Any]:
@@ -291,6 +342,8 @@ def read_control(run_dir: Path, root: Path) -> dict[str, Any]:
         require((raw / "index.json").is_file(), f"{run_dir} job {job_id}: no raw result under raw/{job_id}")
         index = json.loads((raw / "index.json").read_text())
         require(index.get("job_id") == job_id, f"{raw}: index.json names another job")
+        segments = _pub_segments(raw, index, len(job["pubs"]))
+        raw_digests[_relative(raw / RESULT_METADATA, root)] = index["files"][RESULT_METADATA]
         for position, manifest in enumerate(job["pubs"]):
             window = _pub_windows(job, manifest, executed)
             edges = ["start", "stop"] if window["changed"] else ["start"]
@@ -336,7 +389,8 @@ def read_control(run_dir: Path, root: Path) -> dict[str, Any]:
                 )
                 cell = counts.setdefault(arm, {})
                 require(qubit not in cell, f"{run_dir}: two registers read {member}")
-                cell[qubit] = [ones, shots]
+                require(segments[position] < shots, f"{member}: {segments[position]} segments for {shots} shots")
+                cell[qubit] = [ones, shots, segments[position]]
                 bits.setdefault(arm, {})[qubit] = (f"{job_id}/{manifest['name']}", "".join(bitstrings))
                 values = []
                 for entry in pub_readouts:
@@ -409,6 +463,7 @@ def fetch_readout(run_dir: Path) -> Path:
                         "prob_meas0_prep1": float(e01),
                         "x_error": float(props.gate_error("x", qubit)),
                         "x_duration_seconds": float(props.gate_length("x", qubit)),
+                        "measure_duration_seconds": float(props.readout_length(qubit)),
                         "T1_seconds": float(props.t1(qubit)),
                     }
                 windows.append(
@@ -526,12 +581,19 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
     bound_count = BOUNDS_PER_QUBIT * len(controlled)
     level = alpha / bound_count
 
-    def column(arm: str, delay: float) -> tuple[np.ndarray, np.ndarray]:
-        pairs = np.asarray([cells[(arm, delay)][q] for q in qubits], dtype=np.int64)
-        return pairs[:, 0], pairs[:, 1]
+    def column(arm: str, delay: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        triples = np.asarray([cells[(arm, delay)][q] for q in qubits], dtype=np.int64)
+        return triples[:, 0], triples[:, 1], triples[:, 2]
 
-    upper = {delay: cp_upper(*column(STATE_PREP_HISTORY_ARM, delay), level) for delay in (SHORT_DELAY, LONG_DELAY)}
-    prep0_lower = cp_lower(*column("prep0", LONG_DELAY), level)
+    # The s segment-leading shots of a PUB follow an uncontrolled shot: an upper bound counts their ones against
+    # the n - s controlled shots, and a lower bound removes s ones before it.
+    def history_upper(delay: float) -> np.ndarray:
+        ones, shots, segments = column(STATE_PREP_HISTORY_ARM, delay)
+        return cp_upper(ones, shots - segments, level)
+
+    upper = {delay: history_upper(delay) for delay in (SHORT_DELAY, LONG_DELAY)}
+    prep0_ones, prep0_shots, prep0_segments = column("prep0", LONG_DELAY)
+    prep0_lower = cp_lower(np.maximum(prep0_ones - prep0_segments, 0), prep0_shots - prep0_segments, level)
     per_qubit: dict[str, Any] = {}
     eps: dict[float, dict[int, float]] = {SHORT_DELAY: {}, LONG_DELAY: {}}
     for index, qubit in enumerate(qubits):
@@ -542,12 +604,12 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
         e10_floor = min([model_e10] + [v["prob_meas1_prep0"] for values in execution.values() for v in values])
         e01_ceiling = max([model_e01] + [v["prob_meas0_prep1"] for values in execution.values() for v in values])
         flip_failure = max(
-            v["x_error"] + v["x_duration_seconds"] / v["T1_seconds"]
+            v["x_error"] + (v["x_duration_seconds"] + v["measure_duration_seconds"]) / v["T1_seconds"]
             for (arm, delay) in REQUIRED_CELLS
             if arm == STATE_PREP_HISTORY_ARM
             for v in cell_readouts[(arm, delay)][qubit]
         )
-        require(0.0 <= flip_failure < 1.0, f"q{qubit}: x flip failure {flip_failure} leaves no |1> history")
+        require(0.0 <= flip_failure < 1.0, f"q{qubit}: end-state failure {flip_failure} leaves no |1> history")
         baseline = min(float(prep0_lower[index]), e10_floor)
         row: dict[str, Any] = {
             "model_readout": {"prob_meas1_prep0": model_e10, "prob_meas0_prep1": model_e01},
@@ -558,7 +620,7 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
                 "e10_envelope": e10_floor,
                 "e01_envelope": e01_ceiling,
                 "baseline": baseline,
-                "x_flip_failure": flip_failure,
+                "end_state_failure": flip_failure,
             },
             "history_excitation": {},
             "eps_unclamped": {},
@@ -568,7 +630,8 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
         for (arm, delay), cell in sorted(cells.items()):
             if qubit in cell:
                 key = f"{arm}_{DELAY_LABELS[delay]}"
-                row["counts"][key] = cell[qubit]
+                row["counts"][key] = cell[qubit][:2]
+                row.setdefault("segments", {})[key] = cell[qubit][2]
                 fractions[key] = cell[qubit][0] / cell[qubit][1]
         row["fractions"] = fractions
         for delay in (SHORT_DELAY, LONG_DELAY):
@@ -584,6 +647,10 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
             row["eps_unclamped"][label] = value
             row["history_excitation"][label] = own
             bounded = own / ((1.0 - own) * (1.0 - flip_failure))
+            require(
+                bounded < 1.0,
+                f"q{qubit}: eps {bounded} at {label} lies outside the planner's [0, 1) --prep-excitation domain",
+            )
             row["eps"][label] = bounded
             eps[delay][qubit] = bounded
         if "prep0_50us" in fractions:
@@ -600,6 +667,15 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
     measured = maxima[placement["rep_delay_seconds"]]
     planned = placement["planned_prep_excitation"]
     converged = measured <= planned
+    control_calibrations = sorted(
+        {
+            _utc(v["calibration"])
+            for arm, delay in REQUIRED_CELLS
+            for q in qubits
+            for v in cell_readouts[(arm, delay)][q]
+        }
+    )
+    plan_calibrations = sorted(_utc(stamp) for stamp in placement["noise_model_calibrations"])
     joint = {
         f"{arm}_{DELAY_LABELS[delay]}": coincidence(cell_bits[(arm, delay)], qubits)
         for (arm, delay) in sorted(cells)
@@ -618,7 +694,8 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
             "readout": "e10 the smallest and e01 the largest of the n21 model's and every execution calibration's "
             "reported values",
             "eps": "u / ((1 - u)(1 - delta)), u = max(0, (U - b) / (1 - e01 - b)), b = min(prep0_250us_lower, e10), "
-            "delta = max(x_error + x_duration / T1) over the x_history execution calibrations",
+            "delta = max(x_error + (x_duration + measure_duration) / T1) over the x_history execution calibrations; "
+            "each PUB's segment-leading shots are counted at their worst value",
             "joint": "marginal coverage under independent local preparation channels; joint_coincidences is a "
             "diagnostic outside the bound family",
         },
@@ -635,6 +712,13 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
         "placement": {"qubits": qubits, "rep_delay_seconds": placement["rep_delay_seconds"]},
         "qubits": per_qubit,
         "joint_coincidences": joint,
+        "calibration_scope": {
+            "control_execution_calibrations": control_calibrations,
+            "n21_noise_model_calibrations": plan_calibrations,
+            "matched": set(plan_calibrations) <= set(control_calibrations),
+            "scope": "eps bounds the initialization at the control's execution calibrations; applying it to the "
+            "n21 plan assumes that initialization channel unchanged until the n21 shots run",
+        },
         "eps50": maxima[SHORT_DELAY],
         "eps250": maxima[LONG_DELAY],
         "argmax50": [q for q in qubits if eps[SHORT_DELAY][q] == maxima[SHORT_DELAY]],
@@ -722,6 +806,7 @@ def _synthetic_run(
     staggered: bool = False,
     changed: bool = False,
     fetched_calibration: str = SYNTHETIC_CALIBRATION,
+    chunks: int = 1,
 ) -> Path:
     """A collected run directory in live_run's raw and collect layouts with its fetched readout sidecar.
 
@@ -729,7 +814,8 @@ def _synthetic_run(
     of every qubit lead its shot order, or follow one another without
     overlap when staggered. companion adds a second arm's members, with the
     same counts, to the same PUB. changed records a calibration change
-    during the shots, and the sidecar then carries the stop fetch too.
+    during the shots, and the sidecar then carries the stop fetch too;
+    chunks sets how many executor chunks hold the PUB's shots.
     """
     run = root / "results" / "live" / name
     raw = run / "raw" / f"job_{name}"
@@ -771,7 +857,11 @@ def _synthetic_run(
         }
     pub = encode({"pub_index": 0, "pub_name": pub_name, "registers": registers, "metadata": {}})
     (raw / "pub_00.json").write_bytes(pub)
-    (raw / "index.json").write_bytes(encode({"job_id": f"job_{name}", "files": {"pub_00.json": sha256_bytes(pub)}}))
+    chunk = {"parts": [{"idx_item": 0, "size": 1}], "start": SYNTHETIC_START, "stop": SYNTHETIC_STOP}
+    metadata = encode({"executor": {"chunk_timing": [chunk] * chunks}})
+    (raw / RESULT_METADATA).write_bytes(metadata)
+    files = {"pub_00.json": sha256_bytes(pub), RESULT_METADATA: sha256_bytes(metadata)}
+    (raw / "index.json").write_bytes(encode({"job_id": f"job_{name}", "files": files}))
     record = {
         "family_configuration": {
             "name": STATE_PREP_FAMILY,
@@ -884,7 +974,7 @@ def _self_test(scratch: Path) -> None:
         "history250": {3: (120, 16384), 4: (400, 16384), 7: (60, 16384), 9: (90, 16384)},
         "prep0_250": {3: (150, 16384), 4: (430, 16384), 7: (70, 16384), 9: (100, 16384)},
     }
-    nominal = {"x_error": 2e-4, "x_duration_seconds": 3.6e-8, "T1_seconds": 2e-4}
+    nominal = {"x_error": 2e-4, "x_duration_seconds": 3.6e-8, "measure_duration_seconds": 1.56e-6, "T1_seconds": 2e-4}
     readout_base = {
         q: {"prob_meas1_prep0": e10, "prob_meas0_prep1": e01, **nominal}
         for q, (e10, e01) in {**calibration, 9: (0.006, 0.012)}.items()
@@ -903,6 +993,7 @@ def _self_test(scratch: Path) -> None:
         staggered: bool = False,
         changed: bool = False,
         fetched_calibration: str = SYNTHETIC_CALIBRATION,
+        chunks: int = 1,
     ) -> tuple[Path, dict[str, Any]]:
         sets = {**base, **(overrides or {})}
         reads = {name: readout_base for name in ("history50", "history250", "prep0_250", "prep0_50")}
@@ -921,6 +1012,7 @@ def _self_test(scratch: Path) -> None:
                 staggered=staggered,
                 changed=changed,
                 fetched_calibration=fetched_calibration,
+                chunks=chunks,
             ),
             _synthetic_run(root, "h250", STATE_PREP_HISTORY_ARM, LONG_DELAY, sets["history250"], reads["history250"]),
             _synthetic_run(
@@ -954,8 +1046,8 @@ def _self_test(scratch: Path) -> None:
     require(result["eps50"] > narrow["eps50"], "the wider controlled set left eps unchanged")
     # The history correction: eps = u / ((1 - u)(1 - delta)) exceeds the arm's own excitation and rises with delta.
     reference = result["qubits"]["4"]
-    own, delta = reference["history_excitation"]["50us"], reference["bounds"]["x_flip_failure"]
-    require(math.isclose(delta, 2e-4 + 3.6e-8 / 2e-4), f"x flip failure {delta}")
+    own, delta = reference["history_excitation"]["50us"], reference["bounds"]["end_state_failure"]
+    require(math.isclose(delta, 2e-4 + (3.6e-8 + 1.56e-6) / 2e-4), f"end-state failure {delta}")
     require(reference["eps"]["50us"] == own / ((1.0 - own) * (1.0 - delta)) > own, "the history correction moved")
     slow = {q: {**values, "T1_seconds": 5e-5} for q, values in readout_base.items()}
     require(run(readout={"history50": slow})[1]["eps50"] > result["eps50"], "a larger delta left eps unchanged")
@@ -993,6 +1085,13 @@ def _self_test(scratch: Path) -> None:
     apart = run(staggered=True)[1]["joint_coincidences"]["x_history_50us"]
     require(apart["multiple_ones_shots"] == 0 < apart["independent_expected_shots"], f"staggered {apart}")
     require(run(staggered=True)[1]["eps50"] == result["eps50"], "the joint diagnostic moved eps")
+    # Segment-leading shots: more executor chunks leave fewer controlled shots and raise the upper bound.
+    require(result["qubits"]["4"]["segments"]["x_history_50us"] == 1, "one chunk reads as one segment")
+    require(run(chunks=8)[1]["eps50"] > result["eps50"], "more segment starts left eps unchanged")
+    _expect_refusal(lambda: run(chunks=0), "segment starts are unknown")
+    # Calibration scope: the synthetic plan shares the controls' execution calibration.
+    scope = result["calibration_scope"]
+    require(scope["matched"] and scope["control_execution_calibrations"] == ["2026-01-01T00:00:00+00:00"], f"{scope}")
     # A calibration change during the shots adds the stop readout to the envelope.
     require(run(changed=True)[1]["qubits"]["4"]["execution_readout"]["x_history_50us"][1]["calibration"], "stop")
     # Fixed point: below the planned value the plan stands; above it the next plan rises, rounded up.
@@ -1007,6 +1106,7 @@ def _self_test(scratch: Path) -> None:
     _expect_refusal(lambda: run(companion="x"), "share one job")
     _expect_refusal(lambda: run({"history50": {**base["history50"], 3: (32700, 32768)}}), "not monotone")
     _expect_refusal(lambda: run(fetched_calibration="2026-01-01T00:05:00+00:00"), "collect replayed under")
+    _expect_refusal(lambda: run({"history50": {**base["history50"], 4: (18000, 32768)}}), "planner's [0, 1)")
     root, _ = run()
     (root / "results/live/h250" / READOUT_NAME).unlink()
     _expect_refusal(lambda: check_inputs(root), f"no {READOUT_NAME}")
