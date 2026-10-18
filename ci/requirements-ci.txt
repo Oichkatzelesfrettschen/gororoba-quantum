@@ -1,4 +1,6 @@
 # Tools the CI gates invoke beyond the runtime pins in requirements.txt.
-mypy==1.19.1
-ruff==0.14.11
+mypy==2.4.0
+ruff==0.17.1
 matplotlib==3.11.2
+# Record the actual BLAS/OpenMP runtimes and native thread allocation.
+threadpoolctl==3.7.0

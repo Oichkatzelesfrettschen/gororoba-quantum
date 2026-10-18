@@ -147,9 +147,10 @@ the 50 Hz grid frequency (`scripts/qi_shot_record_line.py`,
 `results/quantum_inspire/tuna_17_shot_record_line.json`, gates core-426 and
 core-427; claim `qi-tuna17-shot-record-50hz-line`).
 
-- A band scan at 0.019 to 0.021 cycles per shot finds it in 57 of 126
-  Tuna-17 jobs and in none of 102 QX jobs. On Tuna-17 it is absent from
-  all 34 readout-0 and readout-1 circuits and all 8 depth-1 LCU circuits.
+- A band scan at 0.019 to 0.021 cycles per shot finds it in 69 of 147
+  Tuna-17 jobs and in none of 108 QX jobs. On Tuna-17 it is absent from
+  all 43 readout circuits, at up to 131072 shots, and all 8 depth-1 LCU
+  circuits.
   It is present in Ramsey, CZ-ladder, walk and additivity circuits.
 - Its amplitude in P(1) reaches 0.43 on q7 (ring-down Ramsey) and 0.39 on q5
   (coupler-ZZ Ramsey).
@@ -161,8 +162,8 @@ core-427; claim `qi-tuna17-shot-record-50hz-line`).
   wall-clock time, not on the shot index.
 - At 50 Hz one shot takes 402.9 to 404.6 us in the ring-down circuits and
   400.7 us in the follow series; the period grows with circuit length, which
-  is the slope above. The fitted execution cost of 0.51 ms per shot therefore
-  includes about 0.1 ms of per-shot time outside the repetition period.
+  is the slope above. The fitted execution cost of 0.53 ms per shot therefore
+  includes about 0.13 ms of per-shot time outside the repetition period.
 
 The inferred mechanism is a chip-wide modulation of qubit frequency or flux
 pulses at the mains frequency. No retained probe separates flux pickup from
@@ -180,11 +181,25 @@ Consequences:
   morning ring-down jobs and in 11 to 33 percent of the box-kite jobs. Within-job
   stationarity depends on the device's state, so each series checks it.
 
+## Readout context
+
+q13's |1> misassignment depends on what the rest of the chip is prepared in.
+In the ladder series, readout-1 (all 17 excited) gives e10 = 0.090 and 0.086
+and readout-iso-x (q1, q13, q14 alone) gives 0.044 and 0.040, about 45
+standard errors apart; q1 and q14 read alike in both contexts (claim
+`qi-tuna17-boxkite-ladder-readout-context`). The two circuits differ in the
+neighbors' state at measurement and in the X pulses on the neighbors, so
+state-dependent readout and drive crosstalk on q13's preparation stay
+unseparated. A witness whose data qubit sits beside idle neighbors is
+corrected with the isolated rate: on (10,13) the depth-1 coherence reads
+-0.997 that way and -1.104 with readout-1. q10's e01 rises by about 0.012
+beside an excited q13.
+
 ## Run design
 
 [tuna-17-run-design.md](tuna-17-run-design.md) holds the platform
 configuration that prices a Tuna-17 batch (decompose-only compilation, the
-fitted 2.9 s per job plus 0.51 ms per shot, no published calibration) and the
+fitted 2.6 s per job plus 0.53 ms per shot, no published calibration) and the
 box-kite follow series built on it: seven batches whose readout pairs bracket
 fifteen packed witnesses, sized from T0's r, the readout drift across the T0
 batches and the coupler-ZZ map (`docs/evidence/box_kite_follow_design/design.json`,

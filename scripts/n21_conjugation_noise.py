@@ -133,7 +133,7 @@ def circuits(two_round: tuple[int, ...], ten_round: tuple[int, ...]) -> dict[str
 
 
 def _backend(snapshot: dict[str, Any]) -> calibration_snapshot.SnapshotBackend:
-    backend, _ = calibration_snapshot.noise_model(snapshot)
+    backend = calibration_snapshot.SnapshotBackend(snapshot["backend"], calibration_snapshot.build_target(snapshot))
     if "if_else" not in backend.target.operation_names:
         backend.target.add_instruction(IfElseOp, name="if_else")
     return backend

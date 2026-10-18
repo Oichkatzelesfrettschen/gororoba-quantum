@@ -14,6 +14,7 @@ while IFS= read -r path; do
     docs/evidence/stiefel_witness/* | \
     docs/evidence/rocq_kaggle_replay/* | \
     scripts/rocq_kaggle_replay.py | \
+    gororoba_quantum/parallel.py | \
     ci/open_gororoba.pin | \
     ci/fetch_open_gororoba.sh | \
     ci/rocq_toolchain.pin | \

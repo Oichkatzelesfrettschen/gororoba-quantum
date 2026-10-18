@@ -84,6 +84,7 @@ import hashlib
 import json
 import math
 import sys
+from functools import cache
 from pathlib import Path
 from typing import Any
 
@@ -142,7 +143,23 @@ def visibility_excluded(path: Path = COUPLER_ZZ_ANALYSIS, floor: float = VISIBIL
     return tuple(sorted(row["target"] for row in targets if row["min_visibility"] < floor))
 
 
-EXCLUDED_QUBITS = tuple(sorted(set(READOUT_EXCLUDED) | set(visibility_excluded())))
+@cache
+def excluded_qubits() -> tuple[int, ...]:
+    """Read the hardware visibility exclusions on first use, keeping pure emitters independent of run archives."""
+    return tuple(sorted(set(READOUT_EXCLUDED) | set(visibility_excluded())))
+
+
+def __getattr__(name: str) -> tuple[int, ...]:
+    """Keep the public EXCLUDED_QUBITS tuple available through the lazy hardware read."""
+    if name == "EXCLUDED_QUBITS":
+        return excluded_qubits()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def __dir__() -> list[str]:
+    return sorted({*globals(), "EXCLUDED_QUBITS"})
+
+
 REGIONS = ((1, 2, 4, 8, 12), (10, 11, 13, 14, 16))
 SEEDS = range(16)
 A_PAIR = (1, 10)
@@ -494,9 +511,10 @@ def build() -> dict[str, dict[str, str]]:
             "comparison": KINGSTON,
         },
     }
+    excluded = excluded_qubits()
     for region in REGIONS:
-        if set(region) & set(EXCLUDED_QUBITS):
-            raise SystemExit(f"region {region} uses an excluded qubit of {EXCLUDED_QUBITS}")
+        if set(region) & set(excluded):
+            raise SystemExit(f"region {region} uses an excluded qubit of {excluded}")
     replicas = []
     for index, assignment in enumerate(ROTATION, start=1):
         for region, case in zip(REGIONS, assignment, strict=True):
@@ -576,7 +594,8 @@ def connected_regions(topology: tuple[tuple[int, int], ...], size: int = 5) -> l
     """Every connected `size`-qubit set of the topology that avoids EXCLUDED_QUBITS, in lexicographic order."""
     from itertools import combinations
 
-    qubits = [q for q in range(NQUBITS) if q not in EXCLUDED_QUBITS]
+    excluded = excluded_qubits()
+    qubits = [q for q in range(NQUBITS) if q not in excluded]
     adjacent: dict[int, set[int]] = {q: set() for q in qubits}
     for a, b in topology:
         if a in adjacent and b in adjacent:
@@ -968,13 +987,14 @@ def self_test() -> None:
             rejected += 1
         else:
             raise AssertionError("inconsistent witness backend metadata was accepted")
-    if visibility_excluded() != EXPECTED_VISIBILITY_EXCLUDED or EXCLUDED_QUBITS != (0, 5, 6, 7, 9):
+    excluded = excluded_qubits()
+    if visibility_excluded() != EXPECTED_VISIBILITY_EXCLUDED or excluded != (0, 5, 6, 7, 9):
         raise AssertionError("the retained Ramsey visibilities no longer exclude exactly q5, q6 and q7 at the floor")
     rows = json.loads(COUPLER_ZZ_ANALYSIS.read_text(encoding="utf-8"))["targets"]
     if any(0.30 < row["min_visibility"] < 0.755 for row in rows):
         raise AssertionError("a visibility lies inside the gap between the two clusters")
     placed = [set(region) for region in REGIONS]
-    if any(a & b for i, a in enumerate(placed) for b in placed[:i]) or any(set(EXCLUDED_QUBITS) & a for a in placed):
+    if any(a & b for i, a in enumerate(placed) for b in placed[:i]) or any(set(excluded) & a for a in placed):
         raise AssertionError("REGIONS overlap or use an excluded qubit")
     if not all(region in connected_regions(TUNA17) for region in REGIONS):
         raise AssertionError("a region is disconnected in the Tuna-17 topology")
@@ -1163,6 +1183,10 @@ def main() -> int:
             count += 1
     print(f"qi zero-divisor cases: {count} files {'written' if args.write else 'match their regeneration'}")
     return 0
+
+
+# A star import resolves the lazy tuple just as an explicit hardware import does.
+__all__ = sorted({name for name in globals() if not name.startswith("_")} | {"EXCLUDED_QUBITS"})
 
 
 if __name__ == "__main__":

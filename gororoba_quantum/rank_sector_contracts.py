@@ -143,7 +143,27 @@ def _symbolic_sector(sector: int) -> dict[str, Any]:
     }
 
 
+def _exact_probability_sector(sector: int) -> None:
+    """Compare sparse exact action with the independent full symbolic matrix."""
+    columns = [sector ^ offset for offset in COSET_SUBGROUP]
+    parameters = (*PARAMETERS, Fraction(1, 7), Fraction(11, 9), Fraction(2**60 - 1, 2**60))
+    for parameter in parameters:
+        matrix = path_matrix(parameter)[:, columns]
+        for probe in sector_probes(sector):
+            image = matrix * sp.Matrix(probe.coordinates)
+            numerator = sum(coordinate**2 for coordinate in image)
+            exact_norm = Fraction(int(numerator.p), int(numerator.q))
+            expected = exact_norm / (
+                sum(coordinate**2 for coordinate in probe.coordinates) * sector_alpha(parameter) ** 2
+            )
+            _require(
+                exact_success_probability(sector, probe.name, parameter) == expected,
+                f"sector {sector}, probe {probe.name}, parameter {parameter}: sparse exact action differs",
+            )
+
+
 def _circuit_sector(sector: int) -> dict[str, Any]:
+    _exact_probability_sector(sector)
     template, parameters = sector_template(sector)
     maximum_error = 0.0
     probabilities: list[dict[str, Any]] = []

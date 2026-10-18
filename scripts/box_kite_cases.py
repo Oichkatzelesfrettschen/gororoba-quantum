@@ -129,16 +129,28 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from qi_platform import HARDWARE_BATCH_CIRCUITS, declared_qubits  # noqa: E402
 from qi_zero_divisor_cases import (  # noqa: E402
-    EXCLUDED_QUBITS,
     READOUT_EXCLUDED,
     TUNA17,
     catalogue_backends,
+    excluded_qubits,
     header,
     readout_circuits,
     visibility_excluded,
 )
 
 import parallel  # noqa: E402
+
+
+def __getattr__(name: str) -> tuple[int, ...]:
+    """Resolve the public hardware exclusion tuple without making emitter imports read run archives."""
+    if name == "EXCLUDED_QUBITS":
+        return excluded_qubits()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def __dir__() -> list[str]:
+    return sorted({*globals(), "EXCLUDED_QUBITS"})
+
 
 CENSUS = ROOT / "docs/evidence/box_kite_census/census.json"
 CATALOGUE = ROOT / "docs/evidence/quantum_inspire/catalogue.json"
@@ -1075,9 +1087,10 @@ def tuna_backend(catalogue: Any) -> dict[str, Any]:
         raise SystemExit(f"{TUNA_IDENTIFIER}: catalogue lacks a gate of the tuna dialect")
     if backend["max_number_of_shots"] < T0_SHOTS:
         raise SystemExit(f"{TUNA_IDENTIFIER}: {T0_SHOTS} shots exceed the retained backend capacity")
-    if tuple(EXCLUDED_QUBITS) != TUNA_EXCLUDED:
+    excluded = excluded_qubits()
+    if excluded != TUNA_EXCLUDED:
         raise SystemExit(
-            f"the retained exclusions {EXCLUDED_QUBITS} differ from the admitted layout's {TUNA_EXCLUDED}; "
+            f"the retained exclusions {excluded} differ from the admitted layout's {TUNA_EXCLUDED}; "
             "re-rank the layout before generating"
         )
     return dict(backend)
@@ -3254,6 +3267,9 @@ def main() -> int:
             count += 1
     print(f"box-kite cases: {count} files {'written' if args.write else 'match their regeneration'}")
     return 0
+
+
+__all__ = sorted({name for name in globals() if not name.startswith("_")} | {"EXCLUDED_QUBITS"})
 
 
 if __name__ == "__main__":

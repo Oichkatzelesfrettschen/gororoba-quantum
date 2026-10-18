@@ -24,10 +24,14 @@ Per job:
   frequencies into account, and a job with p below DETECTION_P carries the
   line.
 - lock-in: least squares of every scanned bit on cos and sin of 2 pi f t at
-  the peak f and at 3 f gives the first-harmonic amplitude, its phase at the
-  middle shot (where a frequency error moves it least) and the
-  third-harmonic amplitude; a bit is listed when its amplitude
-  exceeds AMPLITUDE_SIGMAS standard errors sqrt(2 var / n).
+  the peak f, 2 f and 3 f gives the first-harmonic amplitude, its phase at the
+  middle shot (where a frequency error moves it least), the second- and
+  third-harmonic amplitudes and their standard error sqrt(2 var / n); a bit
+  is listed when its first- or second-harmonic amplitude exceeds
+  AMPLITUDE_SIGMAS standard errors, and each of the two carries its own
+  significance flag. A bit whose static phase
+  sits at an extremum of its response carries a phase modulation at 2 f
+  with a vanishing first harmonic.
 - stationarity: the chi-square of BLOCKS block means of each scanned bit
   against binomial noise (BLOCKS - 1 degrees of freedom), reported as the
   smallest per-bit tail probability times the number of bits scanned, so jobs
@@ -163,6 +167,8 @@ def scan(x: np.ndarray, band: tuple[float, float] = BAND, detection_p: float = D
             np.sin(2 * np.pi * frequency * t),
             np.cos(6 * np.pi * frequency * t),
             np.sin(6 * np.pi * frequency * t),
+            np.cos(4 * np.pi * frequency * t),
+            np.sin(4 * np.pi * frequency * t),
         ],
         axis=1,
     )
@@ -170,11 +176,20 @@ def scan(x: np.ndarray, band: tuple[float, float] = BAND, detection_p: float = D
     first = np.hypot(coefficients[0], coefficients[1])
     phase = np.arctan2(-coefficients[1], coefficients[0])
     third = np.hypot(coefficients[2], coefficients[3])
+    second = np.hypot(coefficients[4], coefficients[5])
     error = np.sqrt(2 * variance[used] / n)
     listed = {
-        str(int(b)): [sig(float(a), 4), sig(float(p), 4), sig(float(h), 4)]
-        for b, a, p, h, e in zip(used, first, phase, third, error, strict=True)
-        if a > AMPLITUDE_SIGMAS * e
+        str(int(b)): {
+            "first": sig(float(a), 4),
+            "phase": sig(float(p), 4),
+            "second": sig(float(g), 4),
+            "third": sig(float(h), 4),
+            "se": sig(float(e), 3),
+            "first_significant": bool(a > AMPLITUDE_SIGMAS * e),
+            "second_significant": bool(g > AMPLITUDE_SIGMAS * e),
+        }
+        for b, a, p, h, g, e in zip(used, first, phase, third, second, error, strict=True)
+        if max(a, g) > AMPLITUDE_SIGMAS * e
     }
     # Cramer-Rao bound of a real sinusoid's frequency in white noise, combined over bits through the same-shot
     # correlation: the standardized cosine and sine coefficient vectors contract with R^+, so k copies of one bit
@@ -270,9 +285,11 @@ def follow_depths(rows: list[dict[str, Any]]) -> dict[str, Any]:
     for row in rows:
         if FOLLOW not in row["run"] or not re.match(r"^(depth-\d|lcu-bright)", row["file"]):
             continue
-        listed = row.get("bits", {})
-        table[row["file"]] = {str(b): listed[str(b)][0] if str(b) in listed else None for b in SELECTORS}
-        phases = [listed[str(b)][1] for b in SELECTORS if str(b) in listed]
+        significant = {k: v for k, v in row.get("bits", {}).items() if v["first_significant"]}
+        table[row["file"]] = {
+            str(b): significant[str(b)]["first"] if str(b) in significant else None for b in SELECTORS
+        }
+        phases = [significant[str(b)]["phase"] for b in SELECTORS if str(b) in significant]
         if len(phases) == len(SELECTORS):
             resultants[row["file"]] = sig(float(abs(np.exp(1j * np.array(phases)).mean())), 4)
     follow = [row["cycles_per_shot"] for row in rows if FOLLOW in row["run"] and row["detected"]]
@@ -310,7 +327,7 @@ def record() -> dict[str, Any]:
         for name in BACKENDS.values()
     }
     return {
-        "schema": "qi-shot-record-line-v1",
+        "schema": "qi-shot-record-line-v2",
         "band_cycles_per_shot": list(BAND),
         "detection_p": DETECTION_P,
         "block_chi2_dof": BLOCKS - 1,
@@ -351,7 +368,8 @@ def self_test() -> str:
     require(abs(row["cycles_per_shot"] - 0.020037) < 5 * error, (row["cycles_per_shot"], error))
     middle = 0.7 + 2 * np.pi * 0.020037 * (16384 - 1) / 2
     for b in ("0", "1", "2"):
-        amplitude, phase, _ = row["bits"][b]
+        amplitude, phase = row["bits"][b]["first"], row["bits"][b]["phase"]
+        require(row["bits"][b]["first_significant"], row["bits"][b])
         require(abs(amplitude - 0.1) < 5 * math.sqrt(2 * 0.25 / 16384), amplitude)
         require(abs(np.angle(np.exp(1j * (phase - middle)))) < 5 * math.sqrt(2 * 0.25 / 16384) / 0.1, phase)
     require("3" not in row["bits"] and "4" not in row["bits"], row["bits"])
@@ -385,6 +403,16 @@ def self_test() -> str:
             )
     fit = wall_clock_slope(rows)
     require(abs(fit["slope_hz"] - GRID_HZ) < 4 * fit["slope_se_hz"], fit)
+    # A selector listed for its second harmonic alone keeps no first-harmonic amplitude or phase.
+    entry = {"first": 0.02, "phase": 0.5, "second": 0.0, "third": 0.0, "se": 0.001, "first_significant": True,
+             "second_significant": False}  # fmt: skip
+    second_only = {**entry, "first": 0.002, "phase": 2.5, "second": 0.02, "first_significant": False,
+                   "second_significant": True}  # fmt: skip
+    follow_row = {"run": f"2026-01-01T000000Z-{FOLLOW}-batch-01", "file": "depth-5-x.cq", "detected": True,
+                  "cycles_per_shot": 0.02, "bits": {"1": entry, "10": entry, "12": second_only}}  # fmt: skip
+    depths = follow_depths([follow_row])
+    require(depths["selector_amplitudes"]["depth-5-x.cq"] == {"1": 0.02, "10": 0.02, "12": None}, depths)
+    require("depth-5-x.cq" not in depths["selector_phase_resultant"], depths)
     items = inventory()[:6]
     serial = [job_row(item) for item in items]
     require(parallel.ordered_map(job_row, items, min_items=1) == serial, "pooled scan differs from serial")
