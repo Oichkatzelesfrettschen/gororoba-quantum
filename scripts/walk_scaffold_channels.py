@@ -51,13 +51,16 @@ cd_core; the run fails on any difference.
 
 Laws, fits and scores run through parallel.ordered_map. The entry reads
 GOROROBA_AER_DEVICE (CPU by default). ``--check FILE --run DIR`` binds FILE
-to the Kaggle run's collect.json digest, recomputes the cd_core side of the
+to the Kaggle run's collect.json digest, checks the re-extracted JSON bytes
+and loaded circuits under the installed SDK, recomputes the cd_core side of the
 algebra record without importing any package, re-derives Kingston lane 0's
 baseline and fitted laws of all 14 members to 1e-8 with the held-out
 log-likelihood, deviance and reproduces_floor decision, and requires each
 recorded optimum to be a local minimum: no single parameter moved by
 PROBE_STEP of its bound width, in either direction the bounds allow,
 raises the readout0 log-likelihood by more than 1e-3.
+``--check-extract`` separately requires byte-identical JSON and QPY extraction
+under the historical serialization toolchain that wrote the retained extract.
 """
 
 from __future__ import annotations
@@ -222,8 +225,8 @@ def write_extract(json_path: Path, qpy_path: Path) -> None:
 
     The retained runs carry about 77 MB of record, collection and QPY; the
     extract holds only what the fits read, with the sha256 of every source
-    file, so a kernel bundle stays small and the replay gate re-derives the
-    extract byte for byte from the retained runs.
+    file, so a kernel bundle stays small and the historical serialization
+    gate re-derives the extract byte for byte from the retained runs.
     """
     lanes = extract_lanes()
     circuits: list[QuantumCircuit] = []
@@ -654,18 +657,82 @@ def bound_to_run(path: Path, run_dir: Path) -> list[str]:
     return [] if digest == recorded else [f"{path} sha256 {digest} differs from the collected {recorded}"]
 
 
-def extract_matches() -> list[str]:
-    """Re-derive the extract from the retained runs and require identical bytes."""
+def extract_matches(*, exact_bytes: bool = False) -> list[str]:
+    """Re-derive source-bound metadata and circuits, with optional historical QPY byte identity.
+
+    QPY includes its format and SDK versions and can change representation
+    between SDK releases. Current SDK qualification compares loaded circuits;
+    the historical serialization gate additionally requires identical bytes.
+    """
     import tempfile
 
     with tempfile.TemporaryDirectory() as scratch:
         fresh_json, fresh_qpy = Path(scratch) / "members.json", Path(scratch) / "members.qpy"
         write_extract(fresh_json, fresh_qpy)
-        return [
-            f"{kept.relative_to(ROOT)} differs from its re-derivation"
-            for kept, fresh in ((EXTRACT_JSON, fresh_json), (EXTRACT_QPY, fresh_qpy))
-            if kept.read_bytes() != fresh.read_bytes()
-        ]
+        failures = []
+        if EXTRACT_JSON.read_bytes() != fresh_json.read_bytes():
+            failures.append(f"{EXTRACT_JSON.relative_to(ROOT)} differs from its re-derivation")
+        if exact_bytes:
+            if EXTRACT_QPY.read_bytes() != fresh_qpy.read_bytes():
+                failures.append(f"{EXTRACT_QPY.relative_to(ROOT)} differs from its re-derivation")
+        else:
+            with EXTRACT_QPY.open("rb") as stream:
+                retained_circuits = qpy.load(stream)
+            with fresh_qpy.open("rb") as stream:
+                extracted_circuits = qpy.load(stream)
+            if retained_circuits != extracted_circuits:
+                failures.append(f"{EXTRACT_QPY.relative_to(ROOT)} circuits differ from their re-derivation")
+        return failures
+
+
+def extract_self_test() -> int:
+    """SDK stamps may differ; circuit mutations, missing members and source metadata must fail."""
+    import tempfile
+    from unittest.mock import patch
+
+    def require(condition: bool, description: str) -> None:
+        if not condition:
+            raise RuntimeError(description)
+
+    expected_circuit = QuantumCircuit(1)
+    expected_circuit.x(0)
+
+    def write_fixture(json_path: Path, qpy_path: Path) -> None:
+        json_path.write_text('{"source": "retained"}\n', encoding="utf-8")
+        with qpy_path.open("wb") as stream:
+            qpy.dump([expected_circuit], stream)
+
+    module = sys.modules[__name__]
+    with tempfile.TemporaryDirectory() as scratch:
+        directory = Path(scratch)
+        metadata_path, circuit_path = directory / "members.json", directory / "members.qpy"
+        with (
+            patch.object(module, "ROOT", directory),
+            patch.object(module, "EXTRACT_JSON", metadata_path),
+            patch.object(module, "EXTRACT_QPY", circuit_path),
+            patch.object(module, "write_extract", write_fixture),
+        ):
+            write_fixture(metadata_path, circuit_path)
+            require(extract_matches() == [], "identical extracted circuits fail the semantic check")
+            require(extract_matches(exact_bytes=True) == [], "identical extracted bytes fail the historical check")
+            retained_bytes = circuit_path.read_bytes()
+            changed_stamp = bytearray(retained_bytes)
+            changed_stamp[7] -= 1  # QPY's producer SDK major version, independent of its format version.
+            circuit_path.write_bytes(changed_stamp)
+            require(extract_matches() == [], "a producer SDK stamp changes loaded circuit equality")
+            require(bool(extract_matches(exact_bytes=True)), "the byte check accepts an altered producer stamp")
+
+            altered_circuit = expected_circuit.copy()
+            altered_circuit.z(0)
+            for circuits in ([altered_circuit], []):
+                with circuit_path.open("wb") as stream:
+                    qpy.dump(circuits, stream)
+                require(bool(extract_matches()), "the semantic check accepts changed or missing circuits")
+            circuit_path.write_bytes(retained_bytes)
+            metadata_path.write_text('{"source": "altered"}\n', encoding="utf-8")
+            require(bool(extract_matches()), "the semantic check accepts altered source metadata")
+    print("walk scaffold extract contract: SDK stamps, circuit mutations, missing members and source metadata pass")
+    return 0
 
 
 def check(path: Path, run_dir: Path) -> int:
@@ -752,9 +819,21 @@ def main() -> int:
     parser.add_argument("--check", type=Path)
     parser.add_argument("--run", type=Path, help="Kaggle run directory whose collected output --check binds")
     parser.add_argument("--extract", action="store_true", help="write the members extract from the retained runs")
+    parser.add_argument(
+        "--check-extract", action="store_true", help="replay exact JSON and QPY bytes with the historical SDK"
+    )
+    parser.add_argument("--self-test", action="store_true", help="check extraction byte and semantic rejection paths")
     parser.add_argument("--lanes", help="comma-separated lane indices (default all four)")
     parser.add_argument("--channels", help="comma-separated names from CHANNELS (default all)")
     args = parser.parse_args()
+    if args.self_test:
+        return extract_self_test()
+    if args.check_extract:
+        failures = extract_matches(exact_bytes=True)
+        for failure in failures:
+            print(failure)
+        print(f"walk scaffold extract replay: {len(failures)} departures")
+        return 1 if failures else 0
     if args.extract:
         write_extract(EXTRACT_JSON, EXTRACT_QPY)
         print(f"wrote {EXTRACT_JSON.relative_to(ROOT)} and {EXTRACT_QPY.relative_to(ROOT)}")

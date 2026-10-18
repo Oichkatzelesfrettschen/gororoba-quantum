@@ -5,8 +5,9 @@
       "-w",
       "+all"
     ],
-    "ocaml": "5.5.0",
-    "rocq": "9.2"
+    "ocaml": "5.5.1",
+    "rocq": "9.3.0",
+    "stdlib": "9.2.0"
   },
   "fresh_compile_sources": [
     "GF2Algebra.v",
@@ -20,7 +21,7 @@
   "independent_failure": {
     "diagnostic": "deprecated-transitive-library-file-since-Stdlib-9.0",
     "exit_code": 1,
-    "original_log_sha256": "33e4e4b59ea84b55e802c556f3868b328bda0991f16f9b49b5aa534394cbef8a",
+    "original_log_sha256": "0fe8e2cfb5c21ae1af2f400c7d3441e301b6e1d9326b6b9c75e528ef2c7a4353",
     "receipt": "homotopy_import_deprecation.log",
     "redaction": "Replace the machine-specific Rocq installation prefix with <ROCQ_PREFIX>; preserve the remaining diagnostic text",
     "source": "proofs/theories/HomotopyTransferAssociator.v"
@@ -29,7 +30,12 @@
   "kernel_check_exit_code": 0,
   "replay_log": "rocq_replay.log",
   "schema_version": 1,
-  "sister_repository_observations": {
+  "source_hash_file": "source_hashes.sha256",
+  "source_head": "7d95d228db6be8a5b2f613430f04f2385d6ae48a",
+  "source_repository": "https://github.com/Oichkatzelesfrettschen/open_gororoba",
+  "supersedes": "history/abbf13c-rocq-9.1.1/verification_receipt.json",
+  "warnings_in_successful_closure": 0,
+  "historical_sister_repository_observations": {
     "after_head": "7d95d228db6be8a5b2f613430f04f2385d6ae48a",
     "after_short_status": [
       " M .gitignore",
@@ -42,9 +48,9 @@
     ],
     "scope": "HEAD object ID and git status --short entries only; the observations do not establish preservation of unmeasured surfaces"
   },
-  "source_hash_file": "source_hashes.sha256",
-  "source_head": "7d95d228db6be8a5b2f613430f04f2385d6ae48a",
-  "source_repository": "https://github.com/Oichkatzelesfrettschen/open_gororoba",
-  "supersedes": "history/abbf13c-rocq-9.1.1/verification_receipt.json",
-  "warnings_in_successful_closure": 0
+  "requalification": {
+    "source_materialization": "temporary source copies; external sources from git archive at ci/open_gororoba.pin",
+    "opam_repository": "eba24de6376079a3f9dfa4a9c9ca842475cd1bbc",
+    "kernel_diagnostics": "full raw Rocq 9.3 report, including inductives relying on indices not mattering"
+  }
 }

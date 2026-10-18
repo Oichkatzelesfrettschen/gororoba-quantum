@@ -1,0 +1,49 @@
+{
+  "schema": "qi-pooled-replay-qualification-v1",
+  "source_commit": "df28d4b5d94569eaefee8bcddbea140969e5f127",
+  "scope": "Concurrent local qualification of the three recorded commands, four workers per gate, GOROROBA_QI_REQUIRED=1. Seeded emulator results reproduce retained counts and conformance laws. The local and hosted machines differ; these timings do not establish a controlled speedup.",
+  "command": "Run the recorded ci/gates.json commands through ci/run_gates.py _run with QI_PYTHON naming the validated 67-distribution Python 3.13.15 lock, GOROROBA_WORKERS=4, GOROROBA_QI_REQUIRED=1 and one native thread per worker.",
+  "sources_sha256": {
+    "scripts/box_kite_qx_sweep.py": "74d2d963d2d4f394eed25336a8fb705518d5df9eed3cdb3247431a1bd1cde54a",
+    "scripts/n21_qx_conformance.py": "bf832588f3126bbba933e48eee0b7e3f88bd4f270961f314f9e441b43dd215e8",
+    "docs/notes/quantum_inspire/requirements-qi.txt": "95deb5311e97df0c191622f407f6f4ab747459c1e97e5d2cbf4d36b959654d88"
+  },
+  "records": [
+    {
+      "name": "core-527",
+      "status": 0,
+      "seconds": 12.708596326003317,
+      "resources": {
+        "user_seconds": 40.319907,
+        "system_seconds": 0.826824,
+        "max_rss_kib": 218408,
+        "workers": 4
+      },
+      "output": "box-kite QX sweep replay: 848 circuits, 2354 replicas, 2354 checks, max |z| 3.137786, pass\nbox-kite QX sweep live: 29 circuits rerun on qxelarator equal the retained counts\n"
+    },
+    {
+      "name": "core-499",
+      "status": 0,
+      "seconds": 34.29825849100598,
+      "resources": {
+        "user_seconds": 86.915874,
+        "system_seconds": 2.309246,
+        "max_rss_kib": 164240,
+        "workers": 4
+      },
+      "output": "n21 QX conformance live: 14 jobs rerun on qxelarator equal the retained results\nn21 QX conformance: exact max gaps n21_encoded_feedback-deferred.cq 1.95e-13, n21_encoded_no_feedback-deferred.cq 1.95e-13; exact contrast 0.250000000000 (reference 0.250000000000); deferred pair 24576 shots per arm, max gap 0.00423 within radius 0.01403; native reset arm refuted at max gap 0.15377, reset model max gap 0.00432\nn21 QX conformance self-test: unsnapped export equals the snapped one on grid; record shape checks reject 11 mutations; corrupted lines, dropped-control deferrals, a flipped bit order, swapped clbits, shifted shots and reference-law native counts rejected at radius 0.02431; reset models reproduce the dynamic_density law and the qxelarator phase drop; the live comparison rejects 4 moved retained results\nn21 QX conformance: exact max gaps n21_encoded_feedback-deferred.cq 1.95e-13, n21_encoded_no_feedback-deferred.cq 1.95e-13; exact contrast 0.250000000000 (reference 0.250000000000); deferred pair 24576 shots per arm, max gap 0.00423 within radius 0.01403; native reset arm refuted at max gap 0.15377, reset model max gap 0.00432\nn21 QX conformance self-test: unsnapped export equals the snapped one on grid; record shape checks reject 11 mutations; corrupted lines, dropped-control deferrals, a flipped bit order, swapped clbits, shifted shots and reference-law native counts rejected at radius 0.02431; reset models reproduce the dynamic_density law and the qxelarator phase drop; the live comparison rejects 4 moved retained results\n"
+    },
+    {
+      "name": "core-423",
+      "status": 0,
+      "seconds": 155.6443625480024,
+      "resources": {
+        "user_seconds": 335.613995,
+        "system_seconds": 2.785926,
+        "max_rss_kib": 249776,
+        "workers": 4
+      },
+      "output": "box-kite QX sweep replay: 848 circuits, 2354 replicas, 2354 checks, max |z| 3.137786, pass\nbox-kite QX sweep live: 29 circuits rerun on qxelarator equal the retained counts\nbox-kite QX sweep replay: 149 circuits, 281 replicas, 399 checks, max |z| 2.916815, pass\nbox-kite QX sweep live: 10 circuits rerun on qxelarator equal the retained counts\nbox-kite QX sweep replay: 848 circuits, 2354 replicas, 2354 checks, max |z| 3.137786, pass\nbox-kite QX sweep replay: 149 circuits, 281 replicas, 399 checks, max |z| 2.916815, pass\n"
+    }
+  ]
+}

@@ -12,7 +12,7 @@ import math
 import os
 import shutil
 import tempfile
-from collections.abc import Collection
+from collections.abc import Callable, Collection
 from contextlib import redirect_stdout
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -3451,52 +3451,75 @@ def _submit_after_version_bump(remaining: float | None, rebuilt: bool) -> None:
             raise RuntimeError(f"{label} plan: submitted {name} keeps identity {recorded}")
 
 
-def _verify() -> None:
-    _verify_dynamic_classification()
-    _verify_dynamic_mitigation_boundaries()
-    _verify_scheduler_timing_cases()
-    _verify_feed_forward_structure()
-    _verify_job_usage_cases()
-    _verify_packing_equivalence()
-    _verify_usage_wait()
-    _verify_approved_record_gate()
-    _verify_instance_and_ceiling()
-    _verify_raw_scrubbing()
-    _verify_nested_operations()
-    _verify_result_register_order()
-    _verify_twirling_shot_contract()
-    _verify_capability_admission()
-    _verify_discovered_capabilities()
-    _verify_target_and_bad_qubit_status()
-    _verify_snapshot_and_fingerprint_coherence()
-    _verify_pub_fusion_contracts()
-    _verify_worker_quota()
-    _verify_unchanged_since_planning()
-    _verify_backend_identity_records()
-    _verify_submit_refreshes_backend_identity()
-    _verify_replay_seed_independence()
-    _verify_fused_collection()
-    _verify_joint_fusion_placement()
-    _verify_joint_fusion_candidate_backtracking()
-    _verify_required_placement_backtracking()
-    _verify_buffer_scope()
-    _verify_placement_duplicate_branch_order()
-    _verify_static_placement_judge()
-    _verify_schema_lifecycle()
-    _verify_schema_discrimination()
-    _verify_every_job_revalidates()
-    _verify_live_reselection()
-    _verify_discovery_failure_isolation()
-    _verify_approved_backend_scope()
-    _verify_operator_qubit_exclusion()
-    _verify_compile_panic_isolation()
-    _verify_fragmented_target_layout()
-    _verify_packed_replica_split()
-    _verify_packing_global_phase()
-    _verify_packed_static_stays_static()
-    _verify_rate_keys()
-    _verify_replica_floor_resolution()
-    _verify_experiment_source_manifest()
+CONTRACT_CASES: dict[str, Callable[[], None]] = {
+    "dynamic_classification": _verify_dynamic_classification,
+    "dynamic_mitigation_boundaries": _verify_dynamic_mitigation_boundaries,
+    "scheduler_timing_cases": _verify_scheduler_timing_cases,
+    "feed_forward_structure": _verify_feed_forward_structure,
+    "job_usage_cases": _verify_job_usage_cases,
+    "packing_equivalence": _verify_packing_equivalence,
+    "usage_wait": _verify_usage_wait,
+    "approved_record_gate": _verify_approved_record_gate,
+    "instance_and_ceiling": _verify_instance_and_ceiling,
+    "raw_scrubbing": _verify_raw_scrubbing,
+    "nested_operations": _verify_nested_operations,
+    "result_register_order": _verify_result_register_order,
+    "twirling_shot_contract": _verify_twirling_shot_contract,
+    "capability_admission": _verify_capability_admission,
+    "discovered_capabilities": _verify_discovered_capabilities,
+    "target_and_bad_qubit_status": _verify_target_and_bad_qubit_status,
+    "snapshot_and_fingerprint_coherence": _verify_snapshot_and_fingerprint_coherence,
+    "pub_fusion_contracts": _verify_pub_fusion_contracts,
+    "worker_quota": _verify_worker_quota,
+    "unchanged_since_planning": _verify_unchanged_since_planning,
+    "backend_identity_records": _verify_backend_identity_records,
+    "submit_refreshes_backend_identity": _verify_submit_refreshes_backend_identity,
+    "replay_seed_independence": _verify_replay_seed_independence,
+    "fused_collection": _verify_fused_collection,
+    "joint_fusion_placement": _verify_joint_fusion_placement,
+    "joint_fusion_candidate_backtracking": _verify_joint_fusion_candidate_backtracking,
+    "required_placement_backtracking": _verify_required_placement_backtracking,
+    "buffer_scope": _verify_buffer_scope,
+    "placement_duplicate_branch_order": _verify_placement_duplicate_branch_order,
+    "static_placement_judge": _verify_static_placement_judge,
+    "schema_lifecycle": _verify_schema_lifecycle,
+    "schema_discrimination": _verify_schema_discrimination,
+    "every_job_revalidates": _verify_every_job_revalidates,
+    "live_reselection": _verify_live_reselection,
+    "discovery_failure_isolation": _verify_discovery_failure_isolation,
+    "approved_backend_scope": _verify_approved_backend_scope,
+    "operator_qubit_exclusion": _verify_operator_qubit_exclusion,
+    "compile_panic_isolation": _verify_compile_panic_isolation,
+    "fragmented_target_layout": _verify_fragmented_target_layout,
+    "packed_replica_split": _verify_packed_replica_split,
+    "packing_global_phase": _verify_packing_global_phase,
+    "packed_static_stays_static": _verify_packed_static_stays_static,
+    "rate_keys": _verify_rate_keys,
+    "replica_floor_resolution": _verify_replica_floor_resolution,
+    "experiment_source_manifest": _verify_experiment_source_manifest,
+}
+
+
+def _run_contract_case(name: str) -> str:
+    """Dispatch only registered contracts in an isolated process or the serial caller."""
+    try:
+        contract = CONTRACT_CASES[name]
+    except KeyError as error:
+        raise ValueError(f"unknown runtime contract case: {name!r}") from error
+    # The outer case pool owns CPU concurrency; nested placement and replay
+    # maps run serially inside each case to keep the total worker count bounded.
+    with patch.dict(os.environ, {"GOROROBA_WORKERS": "1"}):
+        contract()
+    return name
+
+
+def _verify(case_names: list[str] | None = None) -> None:
+    names = list(CONTRACT_CASES) if case_names is None else case_names
+    completed = parallel.ordered_map(_run_contract_case, names, min_items=2)
+    if case_names is not None:
+        for name in completed:
+            print(f"runtime contract {name}: pass")
+        return
     print(
         "runtime contracts: discovery, direct pinned lookup, capability admission, "
         "bounded-angle isolation, coherent snapshots, Target routing, joint placement, "
@@ -3506,5 +3529,19 @@ def _verify() -> None:
     )
 
 
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--list-cases", action="store_true", help="print the ordered contract names as JSON")
+    selection.add_argument(
+        "--case", action="append", choices=tuple(CONTRACT_CASES), help="run a named contract; repeat to select more"
+    )
+    args = parser.parse_args()
+    if args.list_cases:
+        print(json.dumps(list(CONTRACT_CASES)))
+        return
+    _verify(args.case)
+
+
 if __name__ == "__main__":
-    _verify()
+    main()

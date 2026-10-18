@@ -1365,7 +1365,7 @@ def scan_secrets(value: Any, path: str = "") -> None:
 def is_time(value: Any) -> bool:
     try:
         datetime.datetime.fromisoformat(value)
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return False
     return True
 
@@ -1400,7 +1400,14 @@ def check_backends(record: dict[str, Any]) -> None:
     versions: Any = record.get("versions")
     require(isinstance(versions, dict), "backends snapshot versions")
     require_runtime_version(versions.get("qiskit-ibm-runtime"))
-    require_qiskit_version(versions.get("qiskit"))
+    # Runtime 0.50 declares qiskit>=2.3.0,<3; a retained read keeps its producer
+    # version when requirements.txt advances the interpreter used for new reads.
+    producer = versions.get("qiskit")
+    release = re.fullmatch(r"2\.(\d+)\.(\d+)", producer) if isinstance(producer, str) else None
+    require(
+        release is not None and int(release.group(1)) >= 3,
+        f"backends snapshot qiskit producer {producer!r} must be a stable release >=2.3.0,<3",
+    )
     require(
         sorted(record["backends"]) == sorted(record["accessible_backends"]),
         "backends snapshot captures a backend set that differs from accessible_backends",
@@ -1488,9 +1495,14 @@ def self_test() -> None:
     foreign = copy.deepcopy(snapshot)
     foreign["usage"]["usage_instance_is_active_instance"] = False
     rejects(lambda: check_backends(foreign), "active instance")
-    stale = copy.deepcopy(snapshot)
-    stale["versions"]["qiskit"] = "2.5.1"
-    rejects(lambda: check_backends(stale), "requirements.txt pins")
+    for producer in ("2.3.0", "2.5.1", "2.6.0"):
+        historical = copy.deepcopy(snapshot)
+        historical["versions"]["qiskit"] = producer
+        check_backends(historical)
+    for invalid_producer in ("2.2.9", "3.0.0", "2.6.0rc1", "invalid", None, 2):
+        incompatible = copy.deepcopy(snapshot)
+        incompatible["versions"]["qiskit"] = invalid_producer
+        rejects(partial(check_backends, incompatible), "qiskit producer")
     rejects(lambda: require_qiskit_version("2.5.1"), "requirements.txt pins")
 
     installed = probe_environment()
@@ -1514,7 +1526,7 @@ def self_test() -> None:
     check_note(text, rendered_usage)
     rejects(lambda: check_note(text, {"usage": "\n".join(render_usage(spent))}), "usage")
     print(
-        "self-test: backend set, runtime and qiskit versions, probe environment, usage instance "
+        "self-test: backend set, runtime and incompatible producer versions, probe environment, usage instance "
         "and note drift each rejected"
     )
 

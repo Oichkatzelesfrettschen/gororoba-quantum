@@ -1,0 +1,7 @@
+{
+  "schema": "gororoba-compile-target-cost-v1",
+  "snapshot": "docs/evidence/calibration/history/ibm_fez/20261016T1212520700.json",
+  "full_noise_model_seconds": 4.79423216500436,
+  "target_only_seconds": 0.002335028002562467,
+  "python": "3.14.7"
+}

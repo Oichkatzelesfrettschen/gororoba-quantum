@@ -72,12 +72,14 @@ def check(root: Path) -> list[str]:
     if constant(driver, "ROCQ_PACKAGES") != "(" + ", ".join(f'"{p}"' for p in packages) + ")":
         errors.append("ROCQ_PACKAGES of the replay driver differs from the pin packages")
     ocaml_version = pin["compiler"].split(".", 1)[1]
-    rocq_versions = {package.split(".", 1)[1] for package in packages}
-    if len(rocq_versions) != 1:
-        errors.append("the pin packages carry more than one version")
+    package_versions = dict(package.split(".", 1) for package in packages)
+    if set(package_versions) != {"rocq-core", "rocq-runtime", "rocq-stdlib"}:
+        errors.append("the pin must name rocq-core, rocq-runtime and rocq-stdlib")
+    elif package_versions["rocq-core"] != package_versions["rocq-runtime"]:
+        errors.append("rocq-core and rocq-runtime must carry the same version")
     else:
-        major_minor = ".".join(next(iter(rocq_versions)).split(".")[:2])
-        expected = f"The Rocq Prover, version {major_minor}\ncompiled with OCaml {ocaml_version}\n"
+        # Stdlib releases independently; the prover banner identifies rocq-core.
+        expected = f"The Rocq Prover, version {package_versions['rocq-core']}\ncompiled with OCaml {ocaml_version}\n"
         names = bundles(root)
         if not names:
             errors.append("no docs/evidence bundle carries a replay_rocq.sh")
@@ -117,7 +119,7 @@ def check(root: Path) -> list[str]:
     selector = (root / "ci/rocq_changed.sh").read_text(encoding="utf-8")
     required = [f"docs/evidence/{name}/*" for name in bundles(root)]
     required += ["proofs/*", "scripts/rocq_kaggle_replay.py", "ci/open_gororoba.pin", "ci/rocq_toolchain.pin"]
-    required += [".github/workflows/ci.yml", "docs/evidence/rocq_kaggle_replay/*"]
+    required += [".github/workflows/ci.yml", "docs/evidence/rocq_kaggle_replay/*", "gororoba_quantum/parallel.py"]
     for pattern in required:
         if pattern not in selector:
             errors.append(f"ci/rocq_changed.sh lacks {pattern}")
@@ -142,22 +144,25 @@ def self_test() -> None:
             files.append(f"docs/evidence/{name}/source_hashes.sha256")
     workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
     some_crate = next(line.strip() for line in workflow.splitlines() if line.strip().startswith("crates/"))
+    pin = read_pin(ROOT)
+    core_package = next(package for package in pin["packages"].split() if package.startswith("rocq-core."))
+    core_version = core_package.split(".", 1)[1]
     mutations = {
         "ci/rocq_toolchain.pin": [
-            ("ocaml-base-compiler.5.5.0", "ocaml-base-compiler.5.4.0"),
-            ("rocq-core.9.2.0", "rocq-core.9.2.1"),
-            ("switch=rocq-9.2", "switch=rocq-9.3"),
-            ("opam_repository=eba24de", "opam_repository=zba24de"),
+            (pin["compiler"], "ocaml-base-compiler.0.0.0"),
+            (core_package, "rocq-core.0.0.0"),
+            (f"switch={pin['switch']}", f"switch={pin['switch']}-altered"),
+            (f"opam_repository={pin['opam_repository']}", "opam_repository=z" + pin["opam_repository"][1:]),
         ],
         "ci/open_gororoba.pin": [("7", "x")],
-        f"docs/evidence/{names[0]}/toolchain.txt": [("9.2", "9.1")],
+        f"docs/evidence/{names[0]}/toolchain.txt": [(core_version, "0.0.0")],
         "ci/rocq_changed.sh": [("docs/evidence/stiefel_witness/*", "docs/evidence/stiefel_witnes/*")],
         ".github/workflows/ci.yml": [
             ("command -v rg", "command -v grep"),
             (some_crate, "crates/elsewhere"),
             ("needs.changes.outputs.rocq == 'true'", "true"),
         ],
-        "scripts/rocq_kaggle_replay.py": [('"ocaml-base-compiler.5.5.0"', '"ocaml-base-compiler.5.4.0"')],
+        "scripts/rocq_kaggle_replay.py": [(f'"{pin["compiler"]}"', '"ocaml-base-compiler.0.0.0"')],
         "ci/gates.json": [("the ci.yml job rocq-replay on proof paths", "a manual step on proof paths")],
     }
     for target, edits in mutations.items():
