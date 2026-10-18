@@ -21,6 +21,10 @@
 # AER_BUILD_JOBS (default 6), PODMAN (default podman). The work tree holds
 # the sources, venvs, uv cache and wheel, several GB of Python packages, and
 # lives outside every checkout so the checkout's tree walks never read it.
+# Every checkout shares it, so one host run at a time holds WORK/.lock (a
+# second run exits 75), and build records in WORK/producer.txt the digest of
+# the recipe inputs that made the wheel; check and gpu-check refuse a wheel
+# whose digest differs from the running recipe's.
 set -eu
 
 RECIPE_DIR=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
@@ -48,6 +52,24 @@ libcusolverMg.so.12 libcusparse.so.12 libnvJitLink.so.13 libcustatevec.so.1
 libcutensornet.so.2 libcutensor.so.2 libcutensorMg.so.2 libcuda.so.1"
 
 log() { printf '%s\n' "$*" >&2; }
+
+# recipe_digest: one sha256 over every input a build reads from the checkout.
+recipe_digest() {
+	{
+		(cd "$RECIPE_DIR" && sha256sum build_aer_gpu_cu13_wheel.sh aer-gpu-cu13.Containerfile \
+			aer-cu13-pip-layout.patch aer-gpu-cu13-build-pins.txt aer-gpu-cu13-runtime-pins.txt)
+		(cd "$REPO_ROOT" && sha256sum requirements.txt docs/notes/build_host/recipes/*)
+	} | sha256sum | cut -d' ' -f1
+}
+
+require_producer() {
+	want=$(recipe_digest)
+	have=$(sed -n 's/^recipe //p' "$WORK/producer.txt" 2>/dev/null || true)
+	if [ "$have" != "$want" ]; then
+		log "$WORK holds a wheel built by recipe ${have:-unknown}, not $want; run build first"
+		exit 1
+	fi
+}
 
 # container_run IMAGE DEVICE STEP: run this script's STEP inside IMAGE; DEVICE
 # is a CDI device name or empty. One bind mount holds the uv cache and both
@@ -97,7 +119,7 @@ step_images() {
 }
 
 step_build() {
-	for stale in "$WORK/src" "$WORK/venv-build" "$WORK/dist"; do
+	for stale in "$WORK/src" "$WORK/venv-build" "$WORK/dist" "$WORK/producer.txt"; do
 		if [ -e "$stale" ]; then
 			log "trash $stale"
 			trash-put "$stale"
@@ -105,9 +127,12 @@ step_build() {
 	done
 	mkdir -p "$WORK/logs"
 	container_run "$BUILD_TAG" '' inner-build >"$WORK/logs/build.log" 2>&1
+	revision=$(git -C "$REPO_ROOT" rev-parse HEAD 2>/dev/null || echo unknown)
+	printf 'recipe %s\nrevision %s\n' "$(recipe_digest)" "$revision" >"$WORK/producer.txt"
 }
 
 step_check() {
+	require_producer
 	if [ -e "$WORK/venv-test" ]; then
 		trash-put "$WORK/venv-test"
 	fi
@@ -117,6 +142,7 @@ step_check() {
 }
 
 step_gpu_check() {
+	require_producer
 	container_run "$TEST_TAG" nvidia.com/gpu=all inner-gpu-check >"$WORK/logs/gpu-check.log" 2>&1
 }
 
@@ -331,6 +357,24 @@ EOF
 if [ "$#" -eq 0 ]; then
 	set -- fetch images build check
 fi
+# Host steps re-run under flock(1) on WORK/.lock; -o closes the lock's
+# descriptor before the script runs, so a container the run starts never
+# holds it. Container steps (inner-*) run inside a host step's lock.
+case $1 in
+inner-*) ;;
+*)
+	if [ -z "${AER_CU13_LOCKED:-}" ]; then
+		mkdir -p "$WORK"
+		export AER_CU13_LOCKED=1
+		status=0
+		flock -n -o -E 75 "$WORK/.lock" sh "$0" "$@" || status=$?
+		if [ "$status" -eq 75 ]; then
+			log "another run holds $WORK/.lock"
+		fi
+		exit "$status"
+	fi
+	;;
+esac
 for step in "$@"; do
 	case $step in
 	fetch) step_fetch ;;

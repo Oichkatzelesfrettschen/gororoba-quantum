@@ -178,7 +178,9 @@ core-450 rechecks the record. The timings and the two-GPU metadata are in
   SASS for sm_75 (T4) and sm_89 and cuStateVec and cuTensorNet linked,
   under `$AER_CU13_WORK`, by default
   `${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/aer-gpu-cu13` outside
-  the checkout. Its sha256, `3d40fc33...253d5`, is `AER_GPU_WHEELS["cu13"]` in
+  the checkout. One run at a time holds that tree, and `check` verifies only
+  a wheel whose recorded recipe digest matches the running recipe. Its
+  sha256, `3d40fc33...253d5`, is `AER_GPU_WHEELS["cu13"]` in
   `scripts/kaggle_run.py`.
 - **Library chain.** `GPU_AER_PINS["cu13"]` adds the nine CUDA 13 wheels of
   `docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt`: the CUDA 13.0.3
