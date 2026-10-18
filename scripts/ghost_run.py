@@ -37,17 +37,25 @@ EXACT_MIN_SHOTS or more shots, which Aer's density-matrix method evolves
 once per shot, draws its counts instead from its exact law: dynamic_density's
 branch-resolved evolution under the same noise model, restricted to the
 active qubits, then numpy's PCG64 multinomial at the seed Aer would give its
-position. Each record lists every member's law under ``member_law``; a record
-without it holds Aer-sampled members only.
+position. A replica dynamic_density.structural_refusal rejects (a delay,
+nested or unsupported control flow, a measurement or reset inside a body)
+keeps its member on Aer. Each record lists every member's law under
+``member_law``; a record without it holds Aer-sampled members only.
 
 ``--merge RESULT`` ghosts only the (run, snapshot) pairs RESULT lacks under
 the index (every snapshot of an audited run RESULT does not hold, and every
 newly indexed snapshot of a retained run's backend), one pair per item of
 parallel.ordered_map, and writes RESULT (or ``--out``) with every retained
 entry unchanged; the header's ``merged`` list records each merge's device,
-versions, added runs and added pairs. ``--provenance RESULT BASE`` requires
-RESULT without those runs and pairs to be BASE byte for byte, so a merged
-result still carries the bytes the kernel that produced BASE wrote.
+versions, added runs and added pairs. A retained run whose archived inputs
+and index now give other execution windows, members, shots or laws (a newly
+indexed job of that run) is ghosted again in full, and the record lists its
+replaced entry's sha256. ``--provenance RESULT BASE`` requires RESULT without
+those runs and pairs to be BASE byte for byte, less the replaced runs whose
+recorded digests BASE matches, so a merged result still carries the bytes
+the kernel that produced BASE wrote. ``--check --runs merged`` replays the
+execution-snapshot ghost of every run a merge ghosted in full, bit for bit
+on the merge's Aer device.
 ``--self-test`` exercises the merge, its removal and the exact path's rule
 and seeds on synthetic records.
 
@@ -210,11 +218,23 @@ def is_dynamic(circuit: QuantumCircuit) -> bool:
 
 
 def member_laws(replicas: dict[str, tuple[str, list[QuantumCircuit]]], shots: dict[str, int]) -> dict[str, str]:
-    """Each member's sampling law: EXACT_MULTINOMIAL for a dynamic member at EXACT_MIN_SHOTS or more, else Aer."""
-    return {
-        m: EXACT_MULTINOMIAL if n >= EXACT_MIN_SHOTS and any(is_dynamic(r) for r in replicas[m][1]) else AER_SAMPLED
-        for m, n in shots.items()
-    }
+    """Each member's sampling law, EXACT_MULTINOMIAL or AER_SAMPLED.
+
+    A member draws from its exact law when it runs EXACT_MIN_SHOTS or more,
+    a replica is dynamic, and dynamic_density.structural_refusal accepts
+    every replica; any other member keeps Aer's sampler.
+    """
+    import dynamic_density
+
+    def exact(m: str, n: int) -> bool:
+        circuits = replicas[m][1]
+        return (
+            n >= EXACT_MIN_SHOTS
+            and any(is_dynamic(r) for r in circuits)
+            and all(dynamic_density.structural_refusal(r) is None for r in circuits)
+        )
+
+    return {m: EXACT_MULTINOMIAL if exact(m, n) else AER_SAMPLED for m, n in shots.items()}
 
 
 def exact_law(snapshot: dict[str, Any], circuit: QuantumCircuit) -> np.ndarray:
@@ -650,28 +670,61 @@ class PairGhost:
         return snapshot_entry(prepared, relative, current, self.device, prepared["members"])
 
 
+def entry_digest(run: dict[str, Any]) -> str:
+    """sha256 of a run entry in ghost_run's serialization, which a merge records for each run it replaces."""
+    return hashlib.sha256(json.dumps(run, indent=1).encode()).hexdigest()
+
+
+def stale(run: dict[str, Any], prepared: dict[str, Any]) -> bool:
+    """Whether the retained run differs from what its archived inputs and the index now determine.
+
+    A newly indexed job of a retained run changes its execution windows, so
+    its execution snapshots, summaries and self check no longer follow from
+    the retained distances; such a run is ghosted again in full.
+    """
+    if "skipped" in run or "skipped" in prepared:
+        return run.get("skipped") != prepared.get("skipped")
+    members = prepared["members"]
+    return (
+        run["backend"] != prepared["backend"]
+        or run["members_ghosted"] != len(members)
+        or run["members_skipped_width"] != prepared["skipped_width"]
+        or run["member_shots"] != prepared["shots"]
+        or run["execution_snapshot"] != prepared["execution"]
+        or run.get("member_law", dict.fromkeys(members, AER_SAMPLED)) != {m: prepared["laws"][m] for m in members}
+    )
+
+
 def missing_pairs(
     retained: dict[str, Any], index: dict[str, Any], runs: list[str]
-) -> tuple[dict[str, dict[str, Any]], list[tuple[str, str]]]:
-    """The prepared inputs of the runs retained lacks, and every (run, snapshot) pair full coverage still needs.
+) -> tuple[dict[str, dict[str, Any]], list[tuple[str, str]], dict[str, str]]:
+    """The runs to ghost in full with their prepared inputs, every other pair coverage needs, and the replaced runs.
 
-    A retained run gains each indexed snapshot of its backend it lacks; such
-    a snapshot executed none of its members, since index.json maps every
-    retained run's execution starts already, so the run's self check stays.
+    A run retained lacks, or a retained run stale() finds changed, is ghosted
+    under every indexed snapshot of its backend; the replaced map gives each
+    such retained run's entry_digest. Any other retained run gains each
+    indexed snapshot of its backend it lacks; such a snapshot executed none
+    of its members, since its execution windows still map as retained, so
+    the run's self check stays.
     """
     by_run = {run["run"]: run for run in retained["runs"]}
     added: dict[str, dict[str, Any]] = {}
+    replaced: dict[str, str] = {}
     pairs: list[tuple[str, str]] = []
     for name in runs:
         run = by_run.get(name)
+        prepared = prepare(name, index)
+        if run is not None and stale(run, prepared):
+            replaced[name] = entry_digest(run)
+            run = None
         if run is not None and "skipped" in run:
             continue
         backend = run["backend"] if run is not None else None
         if run is None:
-            added[name] = prepare(name, index)
-            if "skipped" in added[name]:
+            added[name] = prepared
+            if "skipped" in prepared:
                 continue
-            backend = added[name]["backend"]
+            backend = prepared["backend"]
         expected = sorted(f for f in index["files"] if f.startswith(f"docs/evidence/calibration/history/{backend}/"))
         have = set(run["snapshots"]) if run is not None else set()
         require(have <= set(expected), f"{name}: retained snapshots outside the index")
@@ -683,7 +736,7 @@ def missing_pairs(
                 f"{name}: {relative} is an execution snapshot the retained run lacks",
             )
             pairs.append((name, relative))
-    return added, pairs
+    return added, pairs, replaced
 
 
 def merged_result(
@@ -692,18 +745,24 @@ def merged_result(
     pairs: list[tuple[str, str]],
     entries: list[tuple[dict[str, Any], dict[str, list[float]]]],
     provenance: dict[str, Any],
+    replaced: dict[str, str] | None = None,
 ) -> dict[str, Any]:
-    """retained with each added run and each pair's snapshot entry in place, every retained entry unchanged.
+    """retained with each added run and each pair's snapshot entry in place, every other retained entry unchanged.
 
     Runs stay in sorted name order and each run's snapshots and summary in
     sorted path order, the order ghost_run writes; a retained run's summary
     gains the new snapshots' rows and keeps every other row. The header
     records each merge under ``merged``: its device, versions, the runs it
-    added and the pairs it added to retained runs, which unmerged() removes.
+    added and the pairs it added to retained runs, which unmerged() removes,
+    and, when stale runs were ghosted again, each replaced run's
+    entry_digest.
     """
+    replaced = replaced or {}
     names = [run["run"] for run in retained["runs"]]
     require(names == sorted(names), "retained runs are not in sorted order")
-    require(not set(added) & set(names), "an added run is already retained")
+    require(set(replaced) <= set(added), "a replaced run is not ghosted again")
+    require(not (set(added) - set(replaced)) & set(names), "an added run is already retained")
+    retained = dict(retained, runs=[run for run in retained["runs"] if run["run"] not in replaced])
     found: dict[str, dict[str, Any]] = {}
     resamples: dict[str, dict[str, list[float]]] = {}
     for (name, relative), (entry, resample) in zip(pairs, entries, strict=True):
@@ -727,6 +786,7 @@ def merged_result(
         **provenance,
         "runs": sorted(added),
         "pairs": [[name, relative] for name, relative in pairs if name not in added],
+        **({"replaced": [{"run": n, "sha256": d} for n, d in sorted(replaced.items())]} if replaced else {}),
     }
     header = {key: value for key, value in retained.items() if key != "runs"}
     header["merged"] = [*retained.get("merged", []), record]
@@ -788,8 +848,11 @@ def pool_order(costs: list[float]) -> list[int]:
 def merge(path: Path, out: Path, device: str, index: dict[str, Any]) -> None:
     """Ghost only the pairs path lacks, through the process pool, and write the merged result to out."""
     retained = json.loads(path.read_text(encoding="utf-8"))
-    added, pairs = missing_pairs(retained, index, audited_runs())
-    print(f"merge: {len(added)} added runs, {len(pairs)} (run, snapshot) pairs", flush=True)
+    added, pairs, replaced = missing_pairs(retained, index, audited_runs())
+    print(
+        f"merge: {len(added)} runs in full ({len(replaced)} replace stale entries), {len(pairs)} (run, snapshot) pairs",
+        flush=True,
+    )
     costs = {name: pair_cost(added.get(name) or prepare(name, index)) for name in sorted({n for n, _ in pairs})}
     order = pool_order([costs[name] for name, _ in pairs])
     mapped = parallel.ordered_map(PairGhost(index, device), [pairs[k] for k in order], min_items=2)
@@ -802,18 +865,127 @@ def merge(path: Path, out: Path, device: str, index: dict[str, Any]) -> None:
         "seed": SEED,
     }
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(serialize(merged_result(retained, added, pairs, entries, provenance)), encoding="utf-8")
+    out.write_text(serialize(merged_result(retained, added, pairs, entries, provenance, replaced)), encoding="utf-8")
+
+
+def base_without_replaced(result: dict[str, Any], base: dict[str, Any]) -> dict[str, Any]:
+    """base without the runs a merge replaced, each of which must match the entry_digest the merge recorded.
+
+    A run first added by an earlier merge and replaced later is absent from
+    base, and its digest names the earlier merge's entry.
+    """
+    seen: set[str] = set()
+    dropped: set[str] = set()
+    by_run = {run["run"]: run for run in base["runs"]}
+    for merge in result.get("merged", []):
+        for item in merge.get("replaced", []):
+            name = item["run"]
+            if name not in seen and name not in dropped:
+                require(name in by_run, f"{name}: a replaced run the base lacks")
+                require(entry_digest(by_run[name]) == item["sha256"], f"{name}: replaced entry digest differs")
+                dropped.add(name)
+        seen |= set(merge["runs"])
+    return dict(base, runs=[run for run in base["runs"] if run["run"] not in dropped])
 
 
 def check_provenance(result_path: Path, base_path: Path) -> None:
-    """Require result_path, with its merged runs and pairs removed, to be base_path byte for byte."""
+    """Require result_path without its merges to be base_path byte for byte, less the runs merges replaced."""
     text = result_path.read_text(encoding="utf-8")
     result = json.loads(text)
     require(text == serialize(result), f"{result_path}: not in ghost_run's serialization")
-    base = base_path.read_text(encoding="utf-8")
-    require(serialize(unmerged(result)) == base, f"{result_path}: without its merges differs from {base_path}")
+    base_text = base_path.read_text(encoding="utf-8")
+    base = json.loads(base_text)
+    require(base_text == serialize(base), f"{base_path}: not in ghost_run's serialization")
+    expected = serialize(base_without_replaced(result, base))
+    require(serialize(unmerged(result)) == expected, f"{result_path}: without its merges differs from {base_path}")
     merges = result.get("merged", [])
     print(f"{result_path}: {base_path} plus {len(merges)} merges keeps every retained byte")
+
+
+def merged_runs(result: dict[str, Any]) -> dict[str, str]:
+    """Each run a merge ghosted in full, mapped to the device of the latest merge that ghosted it."""
+    out: dict[str, str] = {}
+    for merge in result.get("merged", []):
+        for name in merge["runs"]:
+            out[name] = merge["device"]
+    return out
+
+
+def replay_merged(run: dict[str, Any], index: dict[str, Any], device: str) -> None:
+    """Require the merged run's execution-snapshot distances and resample scatter, recomputed, bit for bit.
+
+    --merge draws every member under each snapshot in one batch
+    (PairGhost), so the replay draws every member too and reproduces the
+    seeds each retained row came from.
+    """
+    name = run["run"]
+    prepared = prepare(name, index)
+    current = index["current"][prepared["backend"]]
+    resample: dict[str, list[float]] = {}
+    for relative in sorted(set(prepared["execution"].values())):
+        entry, own = snapshot_entry(prepared, relative, current, device, prepared["members"])
+        require(entry["tvd"] == run["snapshots"][relative]["tvd"], f"{name}: {relative} distances differ")
+        resample |= own
+    fresh = run_entry(name, prepared, run["snapshots"], resample)["self_check"]
+    require(fresh == run["self_check"], f"{name}: self check differs from the replayed resample")
+
+
+def check(path: Path, runs: str, index: dict[str, Any]) -> None:
+    """Validate every run of path, rerun the --runs execution ghosts, and replay merged runs bit for bit.
+
+    ``--runs`` names runs by path, ``all`` or the token ``merged``: each run
+    a merge ghosted in full replays bit for bit when this host's Aer device
+    is the one that merge used, and within five standard errors otherwise.
+    """
+    retained = json.loads(path.read_text(encoding="utf-8"))
+    listed = [run["run"] for run in retained["runs"]]
+    require(
+        sorted(listed) == audited_runs() and len(set(listed)) == len(listed),
+        f"{path}: runs are not each audited run exactly once",
+    )
+    for run in retained["runs"]:
+        validate(run, index)
+    device = calibration_snapshot.aer_device()
+    tokens = None if runs == "all" else set(runs.split(","))
+    merged = merged_runs(retained)
+    exact = set()
+    if tokens is not None and "merged" in tokens:
+        tokens.discard("merged")
+        exact = {n for n, d in merged.items() if d == device}
+        tokens |= set(merged) - exact
+    by_run = {run["run"]: run for run in retained["runs"]}
+    replayed = 0
+    for name in sorted(exact):
+        if "skipped" in by_run[name]:
+            continue
+        replay_merged(by_run[name], index, device)
+        replayed += 1
+    checked = 0
+    for run in retained["runs"]:
+        if "skipped" in run or (tokens is not None and run["run"] not in tokens):
+            continue
+        checked += 1
+        fresh = ghost_run(run["run"], "execution", device, index)
+        for relative, summary in run["summary"].items():
+            if not summary["execution_members"]:
+                continue
+            old, new = summary["execution_mean_tvd"], fresh["summary"][relative]["execution_mean_tvd"]
+            own = [m for m, snapshot in run["execution_snapshot"].items() if snapshot == relative]
+            # The execution mean runs over every replica row of its members.
+            rows = [run["member_shots"][m] for m in own for _ in run["snapshots"][relative]["tvd"][m]]
+            inverse_shots = float(np.mean([1 / shots for shots in rows]))
+            require(
+                abs(old - new) <= 5 * math.sqrt(2.0 * inverse_shots / len(rows)) + 1e-3,
+                f"{run['run']}: {old} vs {new}",
+            )
+    require(
+        checked + replayed > 0 and (tokens is None or checked == len(tokens)),
+        "--runs names a run FILE lacks",
+    )
+    print(
+        f"{path}: execution-state ghosts of {checked} runs reproduced on {device}; "
+        f"{replayed} merged runs replayed bit for bit"
+    )
 
 
 def self_test() -> None:
@@ -856,6 +1028,46 @@ def self_test() -> None:
             require(fragment in str(reason), f"self-test: {reason} lacks {fragment!r}")
             continue
         raise SystemExit(f"self-test: expected a failure naming {fragment!r}")
+    # A newly indexed job that moves a retained run's execution windows makes
+    # it stale; the merge ghosts it again in full and records its old digest.
+    prepared = {
+        "backend": "ibm_x",
+        "members": ["m"],
+        "shots": {"m": 100},
+        "skipped_width": [],
+        "execution": {"m": "p0"},
+        "recorded": {},
+        "laws": {"m": AER_SAMPLED},
+    }
+    current = dict(old, members_ghosted=1, members_skipped_width=[], member_shots={"m": 100})
+    require(not stale(current, prepared), "self-test: an unchanged run reads stale")
+    moved = dict(prepared, execution={"m": "p1"})
+    require(stale(current, moved), "self-test: a moved execution window reads current")
+    require(stale(current, {"skipped": "no record"}), "self-test: a run that lost its inputs reads current")
+    base_runs = dict(retained, runs=[current, retained["runs"][1]])
+    base_text = serialize(base_runs)
+    fresh_entry = dict(entry, tvd={"m": [0.3]})
+    regenerated = merged_result(
+        base_runs,
+        {"results/live/a": moved},
+        [("results/live/a", "p0"), ("results/live/a", "p1")],
+        [(fresh_entry, {}), (fresh_entry, {})],
+        {"device": "CPU"},
+        {"results/live/a": entry_digest(current)},
+    )
+    require(regenerated["runs"][0]["execution_snapshot"] == {"m": "p1"}, "self-test: the stale run kept its windows")
+    require(regenerated["merged"][-1]["replaced"][0]["run"] == "results/live/a", "self-test: replacement unrecorded")
+    stripped = serialize(unmerged(regenerated))
+    require(stripped == serialize(base_without_replaced(regenerated, base_runs)), "self-test: replaced provenance")
+    require(stripped != base_text, "self-test: unmerged kept the replaced run")
+    forged = json.loads(serialize(regenerated))
+    forged["merged"][-1]["replaced"][0]["sha256"] = "0" * 64
+    try:
+        base_without_replaced(forged, base_runs)
+    except SystemExit as reason:
+        require("digest differs" in str(reason), f"self-test: {reason}")
+    else:
+        raise SystemExit("self-test: a forged replaced digest passed")
     order = pool_order([1.0, 9.0, 3.0, 7.0, 5.0])
     require(order == [1, 0, 3, 2, 4], f"self-test: pool order {order}")
     # The exact path: dynamic circuits at EXACT_MIN_SHOTS draw from their law
@@ -871,9 +1083,35 @@ def self_test() -> None:
     reset.reset(0)
     reset.measure(0, 0)
     require(not is_dynamic(final) and is_dynamic(mid) and is_dynamic(reset), "self-test: dynamic rule")
-    replicas = {"f": ("ibm_x", [final]), "d": ("ibm_x", [mid]), "low": ("ibm_x", [reset])}
-    laws = member_laws(replicas, {"f": EXACT_MIN_SHOTS, "d": EXACT_MIN_SHOTS, "low": EXACT_MIN_SHOTS - 1})
-    require(laws == {"f": AER_SAMPLED, "d": EXACT_MULTINOMIAL, "low": AER_SAMPLED}, f"self-test: laws {laws}")
+    # dynamic_density refuses a delay, a measurement inside an if_else body
+    # and nested control flow, so such members keep Aer's sampler.
+    delayed = QuantumCircuit(1, 2)
+    delayed.measure(0, 0)
+    delayed.delay(100, 0, unit="dt")
+    delayed.measure(0, 1)
+    inner = QuantumCircuit(1, 2)
+    inner.measure(0, 0)
+    with inner.if_test((inner.clbits[0], 1)):
+        inner.measure(0, 1)
+    nested = QuantumCircuit(1, 2)
+    nested.measure(0, 0)
+    with nested.if_test((nested.clbits[0], 1)):
+        with nested.if_test((nested.clbits[0], 1)):
+            nested.x(0)
+    nested.measure(0, 1)
+    replicas = {
+        "f": ("ibm_x", [final]),
+        "d": ("ibm_x", [mid]),
+        "low": ("ibm_x", [reset]),
+        "delay": ("ibm_x", [delayed]),
+        "body": ("ibm_x", [inner]),
+        "nested": ("ibm_x", [nested]),
+        "mixed": ("ibm_x", [mid, delayed]),
+    }
+    shots = dict.fromkeys(replicas, EXACT_MIN_SHOTS) | {"low": EXACT_MIN_SHOTS - 1}
+    laws = member_laws(replicas, shots)
+    expected = dict.fromkeys(replicas, AER_SAMPLED) | {"d": EXACT_MULTINOMIAL}
+    require(laws == expected, f"self-test: laws {laws}")
     law = np.array([0.1, 0.2, 0.3, 0.4])
     counts = sample(None, [mid, mid], [100, 100], SEED, {0: law, 1: law})
     require(counts == sample(None, [mid, mid], [100, 100], SEED, {0: law, 1: law}), "self-test: draws repeat")
@@ -913,36 +1151,7 @@ def main() -> int:
         merge(args.merge, args.out or args.merge, calibration_snapshot.aer_device(), index)
         return 0
     if args.check:
-        retained = json.loads(args.check.read_text(encoding="utf-8"))
-        listed = [run["run"] for run in retained["runs"]]
-        require(
-            sorted(listed) == audited_runs() and len(set(listed)) == len(listed),
-            f"{args.check}: runs are not each audited run exactly once",
-        )
-        for run in retained["runs"]:
-            validate(run, index)
-        named = None if args.runs == "all" else set(args.runs.split(","))
-        checked = 0
-        for run in retained["runs"]:
-            if "skipped" in run or (named is not None and run["run"] not in named):
-                continue
-            checked += 1
-            fresh = ghost_run(run["run"], "execution", calibration_snapshot.aer_device(), index)
-            for relative, summary in run["summary"].items():
-                if not summary["execution_members"]:
-                    continue
-                old, new = summary["execution_mean_tvd"], fresh["summary"][relative]["execution_mean_tvd"]
-                own = [m for m, snapshot in run["execution_snapshot"].items() if snapshot == relative]
-                # The execution mean runs over every replica row of its members.
-                rows = [run["member_shots"][m] for m in own for _ in run["snapshots"][relative]["tvd"][m]]
-                inverse_shots = float(np.mean([1 / shots for shots in rows]))
-                require(
-                    abs(old - new) <= 5 * math.sqrt(2.0 * inverse_shots / len(rows)) + 1e-3,
-                    f"{run['run']}: {old} vs {new}",
-                )
-        require(checked > 0 and (named is None or checked == len(named)), "--runs names a run FILE lacks")
-        device = calibration_snapshot.aer_device()
-        print(f"{args.check}: execution-state ghosts of {checked} runs reproduced on {device}")
+        check(args.check, args.runs, index)
         return 0
     require(args.out is not None, "--out is required")
     runs = audited_runs() if args.runs == "all" else args.runs.split(",")

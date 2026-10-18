@@ -116,17 +116,29 @@ def flip(value: float, factor: float) -> float:
 
 
 def footprint(circuits: list[QuantumCircuit]) -> tuple[set[int], set[frozenset[int]]]:
-    """Physical qubits and CZ couplers the circuits act on; ISA circuits index qubits physically."""
+    """Physical qubits and CZ couplers the circuits act on; ISA circuits index qubits physically.
+
+    A control-flow instruction counts its declared qubits, and every block
+    it holds contributes its own instructions on the outer physical qubits,
+    so a CZ inside an if_else body is a coupler of the circuit.
+    """
     qubits: set[int] = set()
     couplers: set[frozenset[int]] = set()
-    for circuit in circuits:
+
+    def walk(circuit: QuantumCircuit, physical: list[int]) -> None:
         for instruction in circuit.data:
-            indices = [circuit.find_bit(q).index for q in instruction.qubits]
             if instruction.operation.name == "barrier":
                 continue
+            indices = [physical[circuit.find_bit(q).index] for q in instruction.qubits]
             qubits.update(indices)
             if instruction.operation.name == "cz":
                 couplers.add(frozenset(indices))
+            for block in getattr(instruction.operation, "blocks", ()):
+                if block is not None:
+                    walk(block, indices)
+
+    for circuit in circuits:
+        walk(circuit, list(range(circuit.num_qubits)))
     return qubits, couplers
 
 
@@ -346,6 +358,12 @@ def self_test() -> None:
         expect_failure(lambda: provenance(part, [*shards[:2], foreign], {}, identity), "header differs from")
         expect_failure(lambda: provenance(spaced, shards, {}, identity), "serialized differently")
         expect_failure(lambda: provenance(part, [], {}, identity), "at least one KERNEL_OUTPUT")
+    guarded = QuantumCircuit(3, 1)
+    guarded.measure(0, 0)
+    with guarded.if_test((guarded.clbits[0], 1)):
+        guarded.cz(1, 2)
+    require(not cz_free([guarded]), "self-test: a CZ inside an if_else body reads CZ-free")
+    require(footprint([guarded])[1] == {frozenset((1, 2))}, "self-test: the body CZ maps to its outer qubits")
     full = full_grid()
     picked = sampled_points(full, True)
     require(
