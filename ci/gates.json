@@ -3373,6 +3373,38 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --coverage && \"$PYTHON\" -B -O -W error empirical_bernstein_contracts.py --coverage",
+   "name": "core-529",
+   "seconds": 3.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --methods && \"$PYTHON\" -B -O -W error empirical_bernstein_contracts.py --methods",
+   "name": "core-530",
+   "seconds": 2.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --planner && \"$PYTHON\" -B -O -W error empirical_bernstein_contracts.py --planner",
+   "name": "core-531",
+   "seconds": 4.6,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --default-identity && \"$PYTHON\" -B -O -W error empirical_bernstein_contracts.py --default-identity",
+   "name": "core-532",
+   "seconds": 2.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --rep-delay && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --rep-delay",
    "name": "core-523",
    "seconds": 158.8,
@@ -3392,6 +3424,30 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json && \"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json && \"$PYTHON\" -B -O -W error scripts/n21_qx_conformance.py --self-test",
    "name": "core-499",
    "seconds": 50.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_zero_divisors.py --check docs/evidence/wheel_zero_divisors/result.json && \"$PYTHON\" -B -O -W error scripts/wheel_zero_divisors.py --check docs/evidence/wheel_zero_divisors/result.json",
+   "name": "core-494",
+   "seconds": 57.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_zero_divisors.py --self-test && \"$PYTHON\" -B -O -W error scripts/wheel_zero_divisors.py --self-test",
+   "name": "core-497",
+   "seconds": 5.8,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error gaussian_wheel.py --self-test && \"$PYTHON\" -B -O -W error gaussian_wheel.py --self-test",
+   "name": "core-498",
+   "seconds": 10.7,
    "tier": "pr"
   },
   {
