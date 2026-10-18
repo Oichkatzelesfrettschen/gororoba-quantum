@@ -195,8 +195,14 @@ def _dephase() -> list[np.ndarray]:
     return [np.diag([1.0, 0.0]).astype(complex), np.diag([0.0, 1.0]).astype(complex)]
 
 
-def distribution(params: dict[str, float], feed_forward: bool) -> np.ndarray:
-    """Labeled law over y = b0 + 2 b1 under the parameterized error model."""
+def distribution(params: dict[str, float], feed_forward: bool, window: np.ndarray | None = None) -> np.ndarray:
+    """Labeled law over y = b0 + 2 b1 under the parameterized error model.
+
+    window, when given, is the 8x8 unitary the work qubits for 1, 4 and 16
+    undergo between the first measurement and the second round.
+    cphase_one applies a phase to the work bit for 1 when the recorded first
+    bit is 1.
+    """
     state = Evolution()
     state.unitary(_X, (ONE,))
     state.unitary(_H, (CONTROL,))
@@ -239,6 +245,10 @@ def distribution(params: dict[str, float], feed_forward: bool) -> np.ndarray:
     for qubit, key in ((ONE, "phase_one"), (SIXTEEN, "phase_sixteen")):
         if params.get(key):
             state.unitary(np.diag([1, np.exp(1j * params[key])]).astype(complex), (qubit,))
+    if window is not None:
+        state.unitary(window, (ONE, FOUR, SIXTEEN))
+    if params.get("cphase_one"):
+        state.unitary(_controlled_phase(params["cphase_one"]), (RECORD, ONE))
     state.unitary(_H, (CONTROL,))
     state.unitary(_cswap(), (CONTROL, FOUR, SIXTEEN))
     state.unitary(_cswap(), (CONTROL, ONE, FOUR))
@@ -1496,6 +1506,13 @@ def _check_exact_laws() -> None:
         law = distribution(_readout(0.0, 0.0), feed_forward)
         if not np.allclose(law, [value / 8 for value in exact], atol=1e-12):
             raise RuntimeError(f"noiseless model law {law} differs from the exact N=21 law")
+        if not np.allclose(distribution(_readout(0.0, 0.0), feed_forward, np.eye(8, dtype=complex)), law, atol=1e-12):
+            raise RuntimeError("an identity window changed the noiseless law")
+        params = _readout(0.02, 0.03) | {"round1": 0.1, "phase_one": 0.7}
+        phase = np.diag([np.exp(0.7j) if index & 1 else 1.0 for index in range(8)]).astype(complex)
+        windowed = distribution(params | {"phase_one": 0.0}, feed_forward, phase)
+        if not np.allclose(windowed, distribution(params, feed_forward), atol=1e-12):
+            raise RuntimeError("a window phase on the work qubit for 1 differs from phase_one")
 
 
 class TwoBasins:
