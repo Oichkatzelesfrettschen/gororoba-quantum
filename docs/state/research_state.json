@@ -968,11 +968,25 @@
       "question": "Q1's circuit iterated over sample-budget ladders at seed 20 (29dc6ef8) and seed 46667: does in_block fall with the budget inside an iterated job?"
     },
     {
+      "id": "qi-qx-reset-phase-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00",
+      "family": "cQASM reset semantics on the hosted QX emulator",
+      "question": "Does the hosted QX emulator's reset keep the rest of the register's relative phase, as cQASM's measure-and-flip does, or apply qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map?"
+    },
+    {
       "id": "qd-qpu-belenos-mesh-job-13-seeded-single",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
       "family": "Belenos seeded single job on Q1's mesh",
       "question": "Q1's single job at compilation_seed 20 and 10000 samples on 29dc6ef8: does the in-cone leak follow the unseeded single-job path or the single-job form at Q1's budget?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-14-singleton-iterator",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14",
+      "family": "Belenos payload-class series on Q1's mesh",
+      "question": "Q1's circuit as a ComputationIterator holding one entry at compilation_seed 20 and 10000 samples on 29dc6ef8: does wrapping the failing single computation in a one-entry iterator change the returned distribution?"
     }
   ],
   "claims": [
@@ -4591,7 +4605,7 @@
     },
     {
       "id": "qi-tuna17-shot-record-50hz-line",
-      "statement": "The retained per-shot outcome lists of Tuna-17 jobs carry a line at the 50 Hz grid frequency in wall-clock time. A band scan at 0.019 to 0.021 cycles per shot finds the line (whitened, p below 1e-6 after the band's look-elsewhere factor) in 69 of 147 Tuna-17 jobs and in none of 108 QX jobs, none of 43 readout circuits (readout-0, readout-1 and the context readouts, at up to 131072 shots) and none of the 8 depth-1 LCU circuits; it appears in Ramsey, CZ-ladder, walk and additivity circuits, with first-harmonic amplitudes in P(1) up to 0.43 (q7, ring-down Ramsey) and 0.39 (q5, coupler-ZZ Ramsey). Across the readout ring-down arms, whose circuits differ only in a wait of tau cycles of 20 ns, the peak frequency rises with tau at 50.4 +- 4.0 Hz (31 jobs, one intercept per batch): 12.6 standard errors from the 0 Hz a shot-index-locked source predicts and 0.1 from 50 Hz, which at 50 Hz puts one shot at 402.9 to 404.6 us in the ring-down circuits and 400.7 us in the follow series. In the follow series the bright-edge selectors on (1,4), (10,13) and (12,14) oscillate with amplitudes 0.19 to 0.26 at CZ depth 9, 0.09 to 0.13 at depth 5 and below 0.0175 at depth 1, in phase across the three pairs (resultant 0.996 to 1.000 per job). Within-job stationarity (16 block means per bit, the smallest per-bit chi-square tail times the bits scanned) falls below 0.01 in 11 to 33 percent of the box-kite pre-T0, T0 and follow jobs and in 61 to 75 percent of the morning ring-down jobs. The detection statistic whitens the scanned bits by their same-shot correlation matrix, so correlated bits of one shot do not inflate it.",
+      "statement": "The retained per-shot outcome lists of Tuna-17 jobs carry a line at the 50 Hz grid frequency in wall-clock time. A band scan at 0.019 to 0.021 cycles per shot finds the line (whitened, p below 1e-6 after the band's look-elsewhere factor) in 69 of 147 Tuna-17 jobs and in none of 111 QX jobs, none of 43 readout circuits (readout-0, readout-1 and the context readouts, at up to 131072 shots) and none of the 8 depth-1 LCU circuits; it appears in Ramsey, CZ-ladder, walk and additivity circuits, with first-harmonic amplitudes in P(1) up to 0.43 (q7, ring-down Ramsey) and 0.39 (q5, coupler-ZZ Ramsey). Across the readout ring-down arms, whose circuits differ only in a wait of tau cycles of 20 ns, the peak frequency rises with tau at 50.4 +- 4.0 Hz (31 jobs, one intercept per batch): 12.6 standard errors from the 0 Hz a shot-index-locked source predicts and 0.1 from 50 Hz, which at 50 Hz puts one shot at 402.9 to 404.6 us in the ring-down circuits and 400.7 us in the follow series. In the follow series the bright-edge selectors on (1,4), (10,13) and (12,14) oscillate with amplitudes 0.19 to 0.26 at CZ depth 9, 0.09 to 0.13 at depth 5 and below 0.0175 at depth 1, in phase across the three pairs (resultant 0.996 to 1.000 per job). Within-job stationarity (16 block means per bit, the smallest per-bit chi-square tail times the bits scanned) falls below 0.01 in 11 to 33 percent of the box-kite pre-T0, T0 and follow jobs and in 61 to 75 percent of the morning ring-down jobs. The detection statistic whitens the scanned bits by their same-shot correlation matrix, so correlated bits of one shot do not inflate it.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -4599,7 +4613,7 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/tuna_17_shot_record_line.json",
-          "sha256": "aaaff37360da315dd5abe25cdeafbc9ecb3777b7c66eb19afb8ea2212258de19"
+          "sha256": "53727e87db5028e75007960fcde7e4f91f1d6dd72647c47f20fdd4dddf08b275"
         }
       ],
       "documents": [
@@ -4794,7 +4808,7 @@
         },
         {
           "path": "results/quantum_inspire/tuna_17_shot_record_line.json",
-          "sha256": "aaaff37360da315dd5abe25cdeafbc9ecb3777b7c66eb19afb8ea2212258de19"
+          "sha256": "53727e87db5028e75007960fcde7e4f91f1d6dd72647c47f20fdd4dddf08b275"
         }
       ],
       "documents": [
@@ -5515,6 +5529,35 @@
       "superseded_by": null
     },
     {
+      "id": "qi-qx-hosted-reset-drops-register-phase",
+      "statement": "The hosted QX emulator (QXsinglenodesimulator, backend type 1) does not apply cQASM 3.0's measure-and-flip reset to a qubit in |1> beside a qubit in |->: reset q[0] then H on q[1] reads q[1] = 0 in 2048 of 2048 shots, where measure-and-flip reads 1 in every shot and qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map reads 0, while the same program with X in place of the reset and a reset of an already-zero q[0] read q[1] = 1 in 2048 of 2048. On that input the hosted reset discards q[1]'s relative phase, so a QX law of a circuit that resets a |1>-weighted qubit beside a register carrying relative phase is not the cQASM law.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "One batch of three two-qubit circuits on 2026-10-18 under the emulator's deployment that day. It pins the outcome of one input, a |1> reset beside one |-> qubit: it rules out measure-and-flip there and agrees with the qxelarator sqrt map, but it does not establish that map on superposed or entangled reset inputs, where another phase-dropping implementation could differ. It says nothing about Tuna hardware, whose reset is physical. A redeployed emulator can change it.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/qx_reset_phase_analysis.json",
+          "sha256": "3a862e6bc95608b346731b863a7611a196ff694d5e87e6998e065407a8022782"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/qx-runs.md"
+      ],
+      "gates": {
+        "core-456": "replay",
+        "core-455": "freshness",
+        "core-457": "admission"
+      },
+      "acquisitions": [
+        "qi-qx-reset-phase-batch-00"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "qd-belenos-light-cone-reading",
       "statement": "Over every retained qpu:belenos run of Q1's circuit, in_block over the one-click samples inside source 20's light cone of each served mesh (the modes its ideal propagation passes through, joined with every mode the exact dephasing channel at 0.5 rad heater and 0.1 rad coupler noise detects at 1e-3 or more) reads 0.982 to 0.995 in every seeded iterated cell on meshes 29dc6ef8 and 14a96ca6 at 1500 to 60000 samples and 0.985 in D3's single job on 14a96ca6, while the single jobs on 29dc6ef8 read 0.507, 0.518 (unseeded, 10000 samples), 0.918 (unseeded, 1500) and 0.370 (seed 20, 10000). Off-cone clicks sit mostly on modes 0, 1 and 5, come and go within one job on one mesh (0, 0 and 81 on identical 1500-sample iterations), and share no sample with an in-cone click in every cell but one (135 pairs where 148 are expected), where independent pulse-gated clicks predict up to 329 such pairs.",
       "domain": "hardware",
@@ -5524,7 +5567,7 @@
       "evidence": [
         {
           "path": "docs/evidence/quandela/belenos_light_cone.json",
-          "sha256": "52e39c8444f45721304ec60cc62af210126222586209918cf02a8ed72fb78635"
+          "sha256": "55885b3aa23c1d1c8e7f19be92bff724a2d860e39951479fc9d6b994acb86595"
         },
         {
           "path": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/raw/result.json",
@@ -5557,6 +5600,10 @@
         {
           "path": "results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13/raw/result.json",
           "sha256": "7c4cf0ce7d480c0b3422eb150164a610557998dbab75e668969bfdaef06fc717"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14/raw/result.json",
+          "sha256": "21bdb7925f029b94fe37ee73077401260fcf64f76117bc9bd0debe90b90d609f"
         }
       ],
       "documents": [
@@ -5574,6 +5621,7 @@
         "qd-qpu-belenos-mesh-job-11-d3",
         "qd-qpu-belenos-mesh-job-12-d2-d4",
         "qd-qpu-belenos-mesh-job-13-seeded-single",
+        "qd-qpu-belenos-mesh-job-14-singleton-iterator",
         "qd-qpu-belenos-single-job-04",
         "qd-qpu-belenos-single-job-04-replay"
       ],
@@ -5649,15 +5697,15 @@
     },
     {
       "id": "qd-belenos-single-job-failure-is-a-transformation",
-      "statement": "On qpu:belenos mesh 29dc6ef8 the 10000-sample single jobs put most of the target block on its dilation modes, which the ideal leaves dark: Q1 (206, 996, 1772, 1724) and (260, 1130, 1770, 1878) and job-13 (425, 1123, 849, 951) on modes 20 to 23 against the ideal (1/2, 1/2, 0, 0), a label share of 0.12, 0.14 and 0.15 of every one-click sample against 0.81 to 0.96 in every passing cell on 29dc6ef8 and 14a96ca6. Q1's two identical bodies agree with each other while job-13, whose body differs only by compilation_seed 20, realizes a different wrong histogram (0.31 of its clicks on mode 16) from the same reported mesh. The RCA's error classes fit job-13 no better than TVD 0.39 against a 0.012 shot floor, the ideal outputs of the 135 meshes served to this account no better than 0.20 (Q1) and 0.29 (job-13), and per-detector reweighting of the passing 10000-sample iteration by powers of the receipt's t_out leaves it 0.77 to 0.79 from job-13.",
+      "statement": "On qpu:belenos mesh 29dc6ef8 the requested experiment and its reported mesh fail to predict the returned output distribution of the 10000-sample single jobs, which put most of the target block on its dilation modes, where the ideal is dark: Q1 (206, 996, 1772, 1724) and (260, 1130, 1770, 1878) and job-13 (425, 1123, 849, 951) on modes 20 to 23 against the ideal (1/2, 1/2, 0, 0). The label modes hold 0.12, 0.14 and 0.15 of every one-click sample (0.26, 0.28 and 0.46 of the block) against 0.81 to 0.96 of every one-click sample in the passing Q1-circuit cells on 29dc6ef8 and 14a96ca6; a uniform survival factor leaves the normalized distribution unchanged and cannot populate a dark output. Q1's two identical bodies agree with each other while job-13, whose body differs only by compilation_seed 20, returns a different wrong histogram (0.31 of its clicks on mode 16) under the same reported mesh, so the reported mesh identifier does not determine the observed behavior. The RCA's implemented error classes over their searched ranges fit job-13 no better than TVD 0.39 against a 0.012 shot floor, the ideal outputs of the 135 complete meshes served to this account no better than 0.20 (Q1) and 0.29 (job-13), and reweighting the passing 10000-sample iteration by powers of the receipt's t_out leaves it 0.77 to 0.79 from job-13.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "Three failing single jobs on one mesh; which layer realizes the different transformation (settings application, acquisition, the service's default DetectorBalancing on the sample_count path, or result processing) stays open, and the stale-load test covers only meshes this account was served. The payload-class series (cases job-14 to job-16) is the next test.",
+      "boundary": "Three failing single jobs on one mesh. The record does not isolate the optical transformation from input preparation, applied settings, detector assignment, acquisition, the service's default DetectorBalancing or result assembly; the fitted phase gains (-0.30 for Q1, +0.41 for job-13) characterize the failure of one gain model, not a physical gain. The stale-load test covers only complete meshes served to this account, not a partial configuration, another account's configuration, a mixture or stale load plus further error; the reweighting test excludes the t_out family only, not arbitrary correction, mode assignment or format-dependent processing. The reported mesh hash verifies the returned circuit description, not the applied phases.",
       "evidence": [
         {
           "path": "docs/evidence/quandela/belenos_light_cone.json",
-          "sha256": "52e39c8444f45721304ec60cc62af210126222586209918cf02a8ed72fb78635"
+          "sha256": "55885b3aa23c1d1c8e7f19be92bff724a2d860e39951479fc9d6b994acb86595"
         },
         {
           "path": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/raw/result.json",
@@ -5707,7 +5755,7 @@
       "domain": "hardware",
       "evidence_class": "proposed experiment",
       "status": "proposed",
-      "boundary": "One mesh at one budget; a pass in every arm reads no single-path failure in the block and isolates nothing. Mitigation-off and native samples arms change the execution path and stay out. A run needs the user's approval of the written case.",
+      "boundary": "One mesh at one budget; job-14 always precedes its follower, so request form, entry position and elapsed execution stay coupled within the block, and each reading describes the ordered block, not a subsystem. Mitigation-off and native samples arms change the execution path and stay out. job-14 ran and failed (qd-belenos-singleton-iterator-fails-on-q1-mesh), so job-16 is the prescribed follower; a run needs the user's approval of the written case.",
       "evidence": [],
       "documents": [
         "docs/notes/quandela/strategy.md"
@@ -5717,6 +5765,49 @@
       "assumptions": [],
       "depends_on": [
         "qd-belenos-single-job-failure-is-a-transformation"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-singleton-iterator-fails-on-q1-mesh",
+      "statement": "Q1's circuit sent to qpu:belenos as a ComputationIterator holding one entry at compilation_seed 20 and 10000 samples (job 3d95587b, case belenos_mesh/job-14) returned one results_list entry with one photon on mode 20 and 10000 retained samples, served Q1's mesh 29dc6ef8 and read tvd_cone_from_ideal 0.823 against a 0.004 shot floor, the preregistered fail (at least 0.50). The block read (1683, 13, 1433, 1218) on modes 20 to 23 against the ideal (1/2, 1/2, 0, 0), a label share of 0.17 of every one-click sample, with 2058 clicks on mode 19 and 1050 and 882 on modes 14 and 15: a fourth distinct wrong histogram under the same reported mesh. A one-entry iterator does not restore the behavior iterated jobs on 29dc6ef8 show (0.982 to 0.995 in-cone block retention), so the singleton iterator payload alone does not separate the failing and passing executions.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job on one mesh, about 3.2 hours after job-13. The result envelope's one entry shows the iterator representation returned, not a distinct internal worker branch. Whether a second entry, entry position or preceding execution matters is job-16's question; the service's default DetectorBalancing applied as in every earlier job.",
+      "evidence": [
+        {
+          "path": "docs/evidence/quandela/belenos_payload_series.json",
+          "sha256": "d8cac8a272f54645effff58311d217976edda85a2ac05116690afb7756c98a75"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14/raw/result.json",
+          "sha256": "21bdb7925f029b94fe37ee73077401260fcf64f76117bc9bd0debe90b90d609f"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14/analysis.json",
+          "sha256": "d17100985c352cefa422c8926a4004b8615c12c7346eabd39734483ebb00a5ad"
+        },
+        {
+          "path": "results/quandela/cases/belenos_mesh/job-14/cases.json",
+          "sha256": "456c582ea9c45bdaaa8e700bfebb41bb9d583aa536f49a002a72209b9e72d8b4"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-563": "replay",
+        "core-545": "admission",
+        "core-537": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-14-singleton-iterator"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-q1-leak-single-job-form-whatever-seed"
       ],
       "supersedes": [],
       "superseded_by": null

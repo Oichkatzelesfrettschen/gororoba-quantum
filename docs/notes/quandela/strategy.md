@@ -91,16 +91,26 @@ near 4 x 10^4 one-photon samples per second.
   samples, and D3's 10000-sample single job read 0.069 against 0.021 for
   its iterated twin. A share of trials fixed by the optics would not move
   with the budget, so physical_perf is no transmission and the time
-  estimate is no independent clock; it bounds the dark term's order of
-  magnitude only.
+  estimate is no independent clock. Perceval 1.3.1's DetectorBalancing also
+  multiplies physical_perf by a correction factor. The 0.03 to 0.27 s values
+  are conditional calculations under an unconfirmed acquisition model: they
+  exclude no timing, settling or acquisition mechanism and bound no dark
+  count.
 - **Mitigation and filtering.** No retained job body carries a
   `mitigations` field, and qpu:belenos's `default_mitigations` decodes to
   `[DetectorBalancing]`, so every retained count passed the service's
-  default processing; Perceval documents DetectorBalancing as reweighting
-  probabilities by detector and output-loss models, and whether it alters a
-  `sample_count` histogram is undocumented. All 167 QPU result entries
-  (single jobs and iterator entries) report `final_mode_number` 24, so no
-  output mode was filtered. The `apply_emt` flag the bodies carry belongs to
+  default processing. In Perceval 1.3.1, DetectorBalancing turns the
+  subcomputation into `probs`, corrects the distribution by detector and
+  output-loss models, and the common mitigation layer converts it back to
+  the requested command, which can regenerate counts from corrected
+  probabilities (`error_mitigation/detector_balancing.py`,
+  `abstract_mitigation.py`, `utils/conversion.py`); the retained artifacts
+  do not establish the server-side processing of these acquisitions, so the
+  histograms are not assumed to be unmitigated detector records. All 167 QPU
+  result entries (single jobs and iterator entries) report
+  `final_mode_number` 24, which excludes a cutoff to a smaller output
+  register; photon-number selection (`min_detected_photons` 1), event
+  rejection, correction or resampling that keeps 24 modes stay open. The `apply_emt` flag the bodies carry belongs to
   the command and gates Perceval's client-side mitigations only.
 - **Off-cone clicks.** Every mode of the full mesh is reachable from the
   source, so the light cone of a served mesh is defined by amplitude: the
@@ -697,27 +707,39 @@ the couplers equaled Q1's throughout.
     mode 12 (Q1: 98) lie outside the ideal cone and inside the noise-bounded
     one, the signature of a realized setting far from the served phases.
 
-    Inside the block the failure is a different transformation, not a loss.
-    Every single job on 29dc6ef8 at 10000 samples puts most of its block on
-    the dilation modes the ideal leaves dark: Q1 (206, 996, 1772, 1724) and
-    (260, 1130, 1770, 1878), job-13 (425, 1123, 849, 951) on modes 20 to 23
-    against the ideal (1/2, 1/2, 0, 0), a label share of 0.12, 0.14 and
-    0.15 of every one-click sample against 0.81 to 0.96 in every passing
-    cell. The redistribution is not reproducible across single jobs:
+    The requested experiment and its reported mesh fail to predict the
+    returned distribution of these single jobs. Every single job on
+    29dc6ef8 at 10000 samples puts most of its block on the dilation modes
+    the ideal leaves dark: Q1 (206, 996, 1772, 1724) and (260, 1130, 1770,
+    1878), job-13 (425, 1123, 849, 951) on modes 20 to 23 against the ideal
+    (1/2, 1/2, 0, 0). The label modes hold 0.12, 0.14 and 0.15 of every
+    one-click sample and 0.26, 0.28 and 0.46 of the block, against 0.81 to
+    0.96 of every one-click sample in the passing Q1-circuit cells on
+    29dc6ef8 and 14a96ca6 (other meshes include passing cells above 0.20).
+    A uniform survival factor leaves the normalized distribution unchanged
+    and cannot populate a dark output; loss inside the interferometer can
+    alter interference, so loss as such stays open. The record does not
+    separate the optical transformation from input preparation, applied
+    settings, detector assignment, acquisition, mitigation or result
+    assembly. The redistribution is not reproducible across single jobs:
     Q1's two runs, five hours apart, agree (modes 17, 18, 22 and 23), while
     job-13 puts 0.31 of its clicks on mode 16; the experiment bytes of the
     three bodies are identical and job-13's differs from Q1's only by its
-    compilation_seed parameter, so one reported mesh realized two different
-    wrong transformations. Offline tests against job-13 settle three
-    mechanisms: the RCA scan (wrong source, U^T, mirrored modes, gain,
-    crosstalk, ceiling, dephasing) fits no better than TVD 0.39 against a
-    shot floor of 0.012, and the fitted gain flips sign between Q1 (-0.30)
-    and job-13 (+0.41); the ideal output of each of the 135 meshes the chip
-    has served this account fits no better than 0.20 (Q1) and 0.29
-    (job-13), so a stale load of an earlier mesh of ours is refuted; and
-    reweighting the passing 10000-sample iteration of 29dc6ef8 by any power
-    of the receipt's t_out leaves it 0.77 to 0.79 from job-13, so a
-    per-detector correction applied to one path only is refuted.
+    compilation_seed parameter, so the reported mesh identifier does not
+    determine the observed behavior. The mesh hash verifies the returned
+    circuit description, not the applied phases. Offline tests against
+    job-13 narrow three mechanisms, each within its tested family: the RCA's
+    implemented classes over their searched ranges (wrong source, U^T,
+    mirrored modes, gain, crosstalk, ceiling, dephasing) fit no better than
+    TVD 0.39 against a shot floor of 0.012, and the fitted gains of Q1
+    (-0.30) and job-13 (+0.41) show that one gain correction describes
+    neither, not that a physical gain changed sign; the ideal output of each
+    of the 135 complete meshes served to this account fits no better than
+    0.20 (Q1) and 0.29 (job-13), which leaves partial, foreign, mixed or
+    stale-plus-error configurations open; and reweighting the passing
+    10000-sample iteration by powers of the receipt's t_out leaves it 0.77
+    to 0.79 from job-13, which excludes that receipt-derived family only,
+    since free weights w_j = q_j / p_j fit any histogram.
 
 13. **Single computation versus iterator payload, design** (cases job-14
     to job-16, preregistration `WRAPPER_PREREGISTERED` in
@@ -735,10 +757,38 @@ the couplers equaled Q1's throughout.
     `"iterator": true`), runs first; a pass is followed by job-15 (job-13
     again, the time control) and a fail by job-16 (two identical 10000-sample
     entries, separating the first entry's position from the entry count,
-    since D2's 10000-sample entry passed second). Two jobs at most, about
-    2.03 credits. The mitigation-off arm (`mitigations = []`) and the native
-    `samples` command change the execution path and stay out until the
-    payload class is read.
+    since D2's 10000-sample entry passed second). Two jobs at most, 2.06
+    credits at the shot-cap ceiling. The mitigation-off arm
+    (`mitigations = []`) and the native `samples` command change the
+    execution path and stay out until the payload class is read; a list
+    returned under `samples` is no chronological detector stream without
+    provenance, since Perceval's conversion can generate or shuffle one.
+
+    The readout validates before it scores: a run whose `results_list`
+    length differs from the payload sent reads void before any cell is
+    built, and an entry reads void when its `computed_input` is not one
+    photon on mode 20, its retained samples (multi-click included) differ
+    from 10000, its mesh is not 29dc6ef8 or its score is undefined. job-14
+    always precedes its follower, so each reading describes the ordered
+    block: job-14 pass then job-15 fail tracks request form in this block,
+    not a subsystem; job-16 fail then pass implicates entry position or
+    preceding execution, both arms being iterators; a pair failing twice
+    says two-entry repetition did not recover the iterated behavior, and a
+    second entry passing shows that a 1500-sample predecessor is
+    unnecessary. The case manifests' `readings` strings predate this
+    wording and stay as sent; thresholds and the branch rule are unchanged.
+
+    **job-14 ran and failed** (job 3d95587b, run
+    `2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14`, readout
+    `docs/evidence/quandela/belenos_payload_series.json`, gate core-563).
+    The one-entry iterator returned one entry, one photon on mode 20 and
+    10000 samples on 29dc6ef8 in 14 s, and read tvd_cone_from_ideal 0.823
+    against a 0.004 shot floor. Its block reads (1683, 13, 1433, 1218) on
+    modes 20 to 23, a label share of 0.17 of every one-click sample, with
+    2058 clicks on mode 19 and 1050 and 882 on modes 14 and 15: a fourth
+    wrong histogram under the same reported mesh, unlike Q1's and job-13's.
+    The singleton iterator payload alone does not restore the iterated
+    behavior, so the branch rule prescribes job-16.
 
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 
@@ -855,10 +905,11 @@ columns.
 | Off-cone clicks are a stationary dark rate the receipt measures | light-cone reading over every Q1-circuit run | settled: refuted, 0 to 5541 clicks per cell on modes 0, 1 and 5 that come and go within a job (0, 0, 81 on identical iterations) |
 | Off-cone clicks are independent of the photon | pairs of an off-cone and an in-cone click against the pulse-gated independent expectation | open: none observed in every cell but one where up to 329 are expected, which favors clicks derived from the photon unless the acquisition is not pulse-gated; no single wrong source fits (TVD 0.55 to 0.78); routing error within 0.5 rad puts at most 1.2e-4 of the photon on modes 0, 1 and 5 |
 | The in-cone deficit on 29dc6ef8 follows the unseeded single-job path | case job-13 (seeded single job at Q1's budget), section 7 item 12 | settled: refuted, the seeded single job c0db42f6 kept 0.389 inside the ideal cone on 29dc6ef8 (preregistered: single-job form at Q1's budget, whatever the seed) |
-| The single-job failure on 29dc6ef8 is a fixed error of the reported mesh's phase-to-photon map | identical bodies on one reported mesh (Q1 twice, job-13) against its iterated cells | settled: refuted, Q1 and job-13 realized different wrong histograms (job-13 0.31 on mode 16) from one reported mesh and identical experiment bytes, and the iterated cells hold |
-| The single-job failure is a stale load of an earlier served mesh | ideal output of the 135 meshes served to this account against Q1 and job-13 | settled for this account's meshes: refuted, best TVD 0.20 and 0.29 against a 0.012 shot floor |
-| The single-job failure is per-detector processing applied to one path | the passing 10000-sample iteration reweighted by powers of t_out against job-13 | settled: refuted, TVD 0.77 to 0.79 under every weighting |
-| The single-job failure follows the single-computation payload class | cases job-14 to job-16, section 7 item 13 | open: a one-entry iterator that passes while job-15 fails reads payload class |
+| The single-job failure on 29dc6ef8 is one fixed response of the reported mesh, independent of execution context | identical bodies on one reported mesh (Q1 twice, job-13) and the one-entry iterator job-14 against its iterated cells | settled: refuted, Q1, job-13 and job-14 returned three different wrong histograms (job-13 0.31 on mode 16, job-14 0.21 on mode 19) under one reported mesh, and the iterated cells hold; a defect that depends on preparation or execution history stays open |
+| The single-job failure is a stale load of an earlier complete mesh served to this account | ideal output of the 135 meshes served to this account against Q1 and job-13 | settled for those meshes: refuted, best TVD 0.20 and 0.29 against a 0.012 shot floor; partial, foreign, mixed or stale-plus-error configurations stay open |
+| The single-job failure is the receipt-derived per-detector reweighting applied to one path | the passing 10000-sample iteration reweighted by powers of t_out against job-13 | settled for that family: refuted, TVD 0.77 to 0.79 under every power; arbitrary correction, mode assignment or format-dependent processing stays open |
+| A one-entry iterator restores the iterated behavior on 29dc6ef8 | case job-14, section 7 item 13 | settled: refuted, job-14 (3d95587b) read tvd_cone_from_ideal 0.823 |
+| A second 10000-sample entry, or a preceding entry in the same job, restores it | case job-16, section 7 item 13 | open: job-16 is the prescribed follower and awaits approval |
 | The compiled phases alone determine the photon's output on a seeded mesh | in-cone TVD of seeded cells against the served mesh's ideal, raw and weighted by C1's fitted efficiencies | refuted at the 0.01 to 0.23 level: seeded cells sit 1 to 23 shot floors from the ideal (29dc6ef8 a stable 0.058 to 0.083 across six iterations and every budget), C1's efficiencies do not close the gap, and per-mesh in-cone deficits up to 0.15 (seeds 1, 10, 12) repeat within a job outside exact heater dephasing |
 | The same body returns the same meshes on sim:belenos and qpu:belenos | job-02 on both | settled: refuted for iterated jobs (16 of 16 meshes differ); holds for the one-circuit single/job-04 |
 | C1's residual is a fixed property of each mesh within a session | exact repeat of C1 job-03 | settled: refuted, same meshes and G^2 2564 on 226 degrees of freedom (drift) |
@@ -917,6 +968,7 @@ Not yet used:
 | 2026-10-18 09:04 | a5f0a8a4 | qpu:belenos | belenos_mesh job-11 (D3), Q1's single job at ANU seed 46667 | 1.01 | fresh mesh 14a96ca6; in_block 0.937; 14 s; mesh susceptible |
 | 2026-10-18 09:05 | c1eb1cbb | qpu:belenos | belenos_mesh job-12 (D2 + D4), 9 iterations, dwell ladders at seeds 20 and 46667 | 1.12 | 61 s for 166000 samples; D2 flat on 29dc6ef8 (0.90 to 0.99); D4 0.990, 0.961, 0.852 on 14a96ca6; billed the largest iteration's 120000 max_shots |
 | 2026-10-18 15:53 | c0db42f6 | qpu:belenos | belenos_mesh job-13, Q1's single job at seed 20 | 1.01 | served 29dc6ef8; in_block_cone 0.389 (raw 0.335); 14 s; preregistered: single-job form at Q1's budget, whatever the seed |
+| 2026-10-18 19:05 | 3d95587b | qpu:belenos | belenos_mesh job-14, Q1's circuit as a one-entry iterator at seed 20 | 1.01 | served 29dc6ef8; one results_list entry, 10000 samples; tvd_cone_from_ideal 0.823; 14 s; preregistered: fail, follower job-16 |
 
 A QPU approval quotes the expected credits, the expected seconds and why a
 local Perceval simulation cannot answer the question. Job 4e208d22's quotes

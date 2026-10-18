@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-18T16:16:29+00:00",
+ "approval": "Owner rule 2026-10-17: \"QPU Restriction lifted for CI QX and Ry emulator systems; try runs and real\" (QX emulator runs proceed without a per-run ask); owner request 2026-10-18 to resolve the remaining open issues, here #223 (remote QX reset semantics)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "c506657d7698735adc4d98ec680dd6b8b02a2d3d5e9cbd4c099fee11d5229729",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 872957,
+ "project": 769846,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "reset_phase.cq",
+   "job": 1535502,
+   "sha256": "7d4ac09ba0430ec9e4435a350e60a413ba191bbd15f555292e2b3983dfd6a80c"
+  },
+  {
+   "file": "control_x.cq",
+   "job": 1535503,
+   "sha256": "f5ec426d4c47de527927df4061cffe051b8ae68faf38a02414c59e3e61349c13"
+  },
+  {
+   "file": "already_zero.cq",
+   "job": 1535504,
+   "sha256": "c51eac1c974959e2bcc3cd07fc944fca57b494154ec64e99950671674ed99b87"
+  }
+ ],
+ "submitted_utc": "2026-10-18T16:16:29+00:00"
+}

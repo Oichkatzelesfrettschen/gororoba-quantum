@@ -480,16 +480,17 @@ def self_test() -> int:
     if account != with_noise["one_click_samples"] or with_noise["n_off_cone"] != 900:
         raise SystemExit(f"cone self-test: the one-click account {with_noise} does not close")
     series = {"void_unless_mesh_sha256_prefix": "q1", "pass_at_most": 0.2, "fail_at_least": 0.5}
-    for mesh, value, want in (
+    entry_cases: tuple[tuple[str, float | None, str], ...] = (
         ("q1x", 0.08, "pass"),
         ("q1x", 0.83, "fail"),
         ("q1x", 0.3, "intermediate"),
         ("q1x", None, "void"),
         ("q1x", math.nan, "void"),
         ("f", 0.08, "void"),
-    ):
-        if entry_reading(series, {"mesh_sha256": mesh, "tvd_cone_from_ideal": value}) != want:
-            raise SystemExit(f"cone self-test: a series entry at {value} did not read {want}")
+    )
+    for mesh, score, want in entry_cases:
+        if entry_reading(series, {"mesh_sha256": mesh, "tvd_cone_from_ideal": score}) != want:
+            raise SystemExit(f"cone self-test: a series entry at {score} did not read {want}")
     one = "1,0"
     for computed, results, want_problems in (
         (f"|0,{one}>", {f"|0,{one}>": 6, f"|1,{one}>": 4}, 0),
