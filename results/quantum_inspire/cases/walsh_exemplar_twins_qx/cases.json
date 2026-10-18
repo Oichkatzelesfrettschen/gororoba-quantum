@@ -1,0 +1,14 @@
+{
+ "schema": "qi-walsh-exemplar-series-v1",
+ "family": "walsh_exemplar_twins_qx",
+ "backend": "QXsinglenodesimulator",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "twin-walsh-c1.cq",
+    "twin-walsh-c2.cq"
+   ]
+  }
+ ]
+}

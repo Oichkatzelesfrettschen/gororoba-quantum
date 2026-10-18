@@ -3326,7 +3326,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json --runs results/live/2026-10-13T080216.451663Z",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json --runs results/live/2026-10-13T080216.451663Z,results/live/2026-10-18T090603.530638Z",
    "name": "core-339",
    "seconds": 133.9,
    "tier": "pr"
@@ -3546,6 +3546,50 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_shot_record_line.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_shot_record_line.py --self-test",
    "name": "core-427",
    "seconds": 3.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -O -W error scripts/qi_walsh_exemplar_cases.py --check results/quantum_inspire/cases",
+   "name": "core-428",
+   "seconds": 8.6,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_cases.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_walsh_exemplar_cases.py --self-test",
+   "name": "core-429",
+   "seconds": 4.8,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_analysis.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_walsh_exemplar_analysis.py --self-test",
+   "name": "core-431",
+   "seconds": 4.8,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_cases.py --check-conformance results/quantum_inspire/walsh_exemplar_qx_conformance.json",
+   "name": "core-432",
+   "seconds": 12.4,
+   "tier": "pr",
+   "requires": [
+    "qi"
+   ],
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_analysis.py --check results/quantum_inspire/walsh_exemplar_tuna_17_analysis.json results/quantum_inspire/runs/2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-0* && \"$PYTHON\" -B -O -W error scripts/qi_walsh_exemplar_analysis.py --check results/quantum_inspire/walsh_exemplar_tuna_17_analysis.json results/quantum_inspire/runs/2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-0*",
+   "name": "core-557",
+   "seconds": 8.2,
    "tier": "pr"
   },
   {
