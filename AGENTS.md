@@ -1038,7 +1038,8 @@ decodes architectures and compiled meshes with a standard-library protobuf
 reader and writes `results/quandela/cases/belenos_mesh/`: iterated jobs of
 the architecture circuit whose iterations bind all 574 phases and the input
 mode, so one credit buys up to sixteen different unitaries (job-00 the
-error-class diagnostic, job-02 the 84/84 box-kite edges).
+error-class diagnostic, job-02 the 84/84 box-kite edges, job-03 to job-06
+the 64 seeded random settings of the characterization campaign).
 `qd_box_kite_analysis.py` scans every error class (exact heater and coupler
 dephasing, heater gain, thermal crosstalk, a demultiplexer misroute with
 noise) over its magnitude on the mesh each iteration returned and names a

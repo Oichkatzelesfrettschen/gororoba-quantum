@@ -131,6 +131,8 @@ SINGLE = "box_kite_photonic_single"
 ZERO_DIVISOR_JOBS = {"dark": (5, 6, 8, 11, 16, 19, 21, 22), "bright": (4, 7, 9, 10, 17, 18, 20, 23)}
 SOURCES.update({f"{k}-{n:02d}": f"{SINGLE}/job-{n:02d}" for k, numbers in ZERO_DIVISOR_JOBS.items() for n in numbers})
 SINGLE_SETTING = "cold-bright-20"
+CAMPAIGN_JOBS = (3, 4, 5, 6)
+CONNECTED = (0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22)
 
 Element = tuple[str, int, Any]
 
@@ -709,6 +711,31 @@ def edge_coverage() -> dict[str, Any]:
     }
 
 
+def plan_characterization_settings(job: int) -> list[dict[str, Any]]:
+    """One job of the C1 campaign: 16 seeded uniform-random meshes, inputs rotating over the connected modes.
+
+    Uniform phases are the transpiler's own statistics, so each setting's occupied column is a random
+    column that spreads the photon over the chip; four such jobs identify shared static offsets.
+    """
+    start = (job - CAMPAIGN_JOBS[0]) * 16
+    return [
+        {
+            "name": f"random-{job:02d}-{k:02d}",
+            "mesh": "random",
+            "target": "random",
+            "low": CONNECTED[(start + k) % len(CONNECTED)],
+            "seed": [SEED, 303, job, k],
+        }
+        for k in range(16)
+    ]
+
+
+def random_phases(seed: list[int], count: int) -> list[float]:
+    import numpy as np
+
+    return [round(float(v), 12) for v in np.random.default_rng(seed).uniform(0, 2 * math.pi, count)]
+
+
 def plan_zero_divisor_settings() -> list[dict[str, Any]]:
     """The 84/84 job: every configuration the box-kite edge products use, one iteration each, at modes 20-23."""
     return [
@@ -749,7 +776,11 @@ def realize(arch: list[Element], plans: list[dict[str, Any]]) -> list[dict[str, 
     settings = []
     for index, plan in enumerate(plans):
         setting: dict[str, Any] = {key: plan[key] for key in ("name", "mesh", "target", "low")}
-        if plan["mesh"] == "compiled":
+        if plan["mesh"] == "random":
+            setting["seed"] = plan["seed"]
+            setting["phases"] = random_phases(plan["seed"], len(phase_slots(arch)))
+            setting["frame_out"] = setting["frame_in"] = None
+        elif plan["mesh"] == "compiled":
             run = RUNS / plan["run"]
             setting["source_run"] = {"run": plan["run"], "result_sha256": sha256(run / "raw/result.json")}
             (text,) = computed_circuits(run)
@@ -768,7 +799,7 @@ def realize(arch: list[Element], plans: list[dict[str, Any]]) -> list[dict[str, 
                 rows = [[complex(v) for v in row] for row in target]
                 jobs.append((rows, plan["low"], start, SEED + index))
                 owners.append(index)
-        if plan["target"] != "identity":
+        if plan["target"] not in ("identity", "random"):
             setting["source"] = source_target(plan["target"], plan.get("quarter"))[1]
         settings.append(setting)
     for index, fit in zip(owners, parallel.ordered_map(BlockFit(arch), jobs, min_items=2), strict=True):
@@ -782,7 +813,7 @@ def derived(arch: list[Element], setting: dict[str, Any], nbr: list[list[int]]) 
 
     low = setting["low"]
     out: dict[str, Any] = {}
-    if setting["target"] != "identity":
+    if setting["target"] not in ("identity", "random"):
         target, _ = source_target(setting["target"], setting["source"].get("phi_quarter_pi"))
         if setting["mesh"] != "compiled":
             out["block_error"] = round(block_error(arch, setting["phases"], target, low, setting), 9)
@@ -822,7 +853,7 @@ def documents(
     rows = []
     for s, f in zip(settings, facts, strict=True):
         row = {k: s[k] for k in ("name", "mesh", "target", "low")}
-        for key in ("source", "source_run", "block_mzis", "frame_out", "frame_in"):
+        for key in ("source", "source_run", "seed", "block_mzis", "frame_out", "frame_in"):
             if s.get(key) is not None:
                 row[key] = [round(v, 12) for v in s[key]] if key.startswith("frame") else s[key]
         row.update(f)
@@ -874,6 +905,8 @@ def write(directory: Path) -> None:
     write_job(directory, arch, "job-00", settings)
     write_job(directory, arch, "job-01", [s for s in settings if s["name"] == SINGLE_SETTING])
     write_job(directory, arch, "job-02", realize(arch, plan_zero_divisor_settings()), edge_coverage())
+    for job in CAMPAIGN_JOBS:
+        write_job(directory, arch, f"job-{job:02d}", realize(arch, plan_characterization_settings(job)))
 
 
 def write_job(
@@ -923,14 +956,16 @@ def admit(job: Path, catalogue: dict[str, Any] | None = None) -> None:
         require(row["name"] == sent["name"] and sent["input_mode"] == row["low"], f"{row['name']}: setting order")
         require(len(sent["phases"]) == len(spec["symbols"]), f"{row['name']}: phase count")
         setting = {**row, "phases": sent["phases"]}
-        if row["mesh"] == "compiled":
+        if row["mesh"] == "random":
+            require(sent["phases"] == random_phases(row["seed"], len(spec["symbols"])), f"{row['name']}: seeded phases")
+        elif row["mesh"] == "compiled":
             run = RUNS / row["source_run"]["run"]
             require(sha256(run / "raw/result.json") == row["source_run"]["result_sha256"], f"{row['name']}: source run")
             (text,) = computed_circuits(run)
             close(mesh_phases(arch, decode(text)), sent["phases"], f"{row['name']}.phases")
         else:
             check_baseline(arch, row, sent["phases"])
-        if row["target"] != "identity":
+        if row["target"] not in ("identity", "random"):
             _, ref = source_target(row["target"], row["source"].get("phi_quarter_pi"))
             require(ref == row["source"], f"{row['name']}: source case digests differ")
         rebuilt.append(setting)
@@ -965,7 +1000,8 @@ def check_baseline(arch: list[Element], row: dict[str, Any], phases: list[float]
 def check(directory: Path) -> None:
     jobs = sorted(p for p in (directory / FAMILY).iterdir() if p.is_dir())
     require(
-        [p.name for p in jobs] == ["job-00", "job-01", "job-02"], f"{directory / FAMILY} holds {[p.name for p in jobs]}"
+        [p.name for p in jobs] == ["job-00", "job-01", "job-02"] + [f"job-{j:02d}" for j in CAMPAIGN_JOBS],
+        f"{directory / FAMILY} holds {[p.name for p in jobs]}",
     )
     for job in jobs:
         admit(job)
@@ -1711,7 +1747,7 @@ def static_self_test() -> int:
     texts = computed_circuits(RUNS / S3_RUN)
     arch = run_architecture(decode(texts[0]))
     rng = np.random.default_rng([SEED, 11])
-    connected = (0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22)
+    connected = CONNECTED
     meshes = rng.uniform(0, 2 * math.pi, (64, len(phase_slots(arch))))
     lows = [connected[k % len(connected)] for k in range(64)]
     folds = [k // 16 for k in range(64)]
