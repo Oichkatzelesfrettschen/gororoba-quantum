@@ -1331,7 +1331,7 @@
   "new_campaign_cutoff": "2026-10-14T00:00:00Z",
   "observed_at": "2026-10-18T09:20:42.042591+00:00",
   "pub_count": 494,
-  "replay_source_sha256": "c81037a0fcc3deb7d1cbc6f849c2353b85a552cc8f057b4a714bc74c6b0f6174",
+  "replay_source_sha256": "e767077d2a8145c1e51e7c3730b9bffc7d5d5cd90a593dbf5f9a172cd0492e87",
   "schema": "qpu-job-retention-audit-v1",
   "scope": "All jobs in the retained service inventory have lossless raw archives. Offline replay establishes retained coverage at the observation time; subsequent live jobs require a fresh inventory.",
   "submitted_pub_shots": 1355072,

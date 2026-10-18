@@ -5,6 +5,14 @@ checks archive coverage and identities; it cannot refresh live account state.
 The account's consumed seconds cover a rolling usage_period, so they equal the
 final charges of the jobs that ran inside that period, not of every retained
 job: a job finished before the period's start has rolled out of the window.
+
+Each IBM Cloud instance has its own quota, usage period and inventory file.
+qpu-job-inventory.json holds the default instance; any other instance holds
+qpu-job-inventory.<instance_crn_hash>.json. A raw archive belongs to the
+instance its run record names (instance_sha256_12), and to the default
+instance when the run is a retrospective recovery without one. Coverage, the
+usage-window sum and the reserve hold per instance; the historical-job and
+campaign accounting bind the default instance only.
 """
 
 from __future__ import annotations
@@ -91,12 +99,45 @@ def campaign_split(rows: list[dict[str, Any]]) -> tuple[Decimal, Decimal, Decima
     return historical, campaign, later
 
 
+def inventory_family(snapshot_path: Path) -> tuple[Path, list[Path]]:
+    """The default inventory file and every per-instance file beside it."""
+    match = re.fullmatch(r"(.+?)(?:\.[0-9a-f]{12})?\.json", snapshot_path.name)
+    require(match is not None, "inventory filename differs")
+    assert match is not None
+    stem = match.group(1)
+    default = snapshot_path.parent / f"{stem}.json"
+    others = sorted(
+        path
+        for path in snapshot_path.parent.glob(f"{stem}.*.json")
+        if re.fullmatch(r"[0-9a-f]{12}", path.suffixes[0][1:])
+    )
+    return default, others
+
+
+def archive_instance(run: Path, default_instance: str) -> str:
+    """The instance that owns a run's raw archives: its record's, else the default instance's."""
+    record = run / "record.json"
+    recorded = read(record).get("instance_sha256_12") if record.is_file() else None
+    return recorded if isinstance(recorded, str) else default_instance
+
+
 def reconcile(snapshot_path: Path) -> dict[str, Any]:
+    default_path, other_paths = inventory_family(snapshot_path)
     snapshot = read(snapshot_path)
     require(snapshot["schema"] == "completed-qpu-job-inventory-v1", "inventory schema differs")
     require(snapshot["complete_service_inventory"] is True, "inventory observation is partial")
     require(snapshot["new_qpu_submissions"] == 0, "inventory contains submissions")
     require(bool(re.fullmatch(r"[0-9a-f]{12}", snapshot["instance_crn_hash"])), "instance hash differs")
+    instance = snapshot["instance_crn_hash"]
+    default_instance = instance if snapshot_path == default_path else read(default_path)["instance_crn_hash"]
+    is_default = instance == default_instance
+    require(is_default == (snapshot_path == default_path), "inventory file name and instance hash differ")
+    known = {default_instance}
+    for path in other_paths:
+        other = read(path)["instance_crn_hash"]
+        require(path.name.split(".")[-2] == other, "inventory file name and instance hash differ")
+        require(other not in known, "two inventory files record one instance")
+        known.add(other)
     usage = snapshot["account_usage"]
     quota = [usage.get(key) for key in ("usage_limit_seconds", "usage_consumed_seconds", "usage_remaining_seconds")]
     require(all(type(value) is int and value >= 0 for value in quota), "account usage fields are not whole seconds")
@@ -112,9 +153,12 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         identity = index["job_id"]
         require(identity == index_path.parent.name, "raw directory and job identity differ")
         require(identity not in archives, "duplicate raw archive for a physical job")
-        archives[identity] = index_path
+        owner = archive_instance(index_path.parent.parent.parent, default_instance)
+        require(owner in known, f"raw archive {identity} belongs to an instance without an inventory file: {owner}")
+        if owner == instance:
+            archives[identity] = index_path
     require(set(archives) == set(identities), "service jobs and retained archive identities differ")
-    require(HISTORICAL_JOBS <= set(identities), "historical accounting identities missing")
+    require(not is_default or HISTORICAL_JOBS <= set(identities), "historical accounting identities missing")
     rows = []
     for job in jobs:
         identity = job["job_id"]
@@ -234,9 +278,12 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
     total = sum(Decimal(str(row["final_qpu_charge_seconds"])) for row in rows)
     in_window = window_charge(rows, usage)
     require(in_window == Decimal(consumed), "final charges inside the usage period differ from the consumed seconds")
-    historical, campaign, later = campaign_split(rows)
+    if is_default:
+        historical, campaign, later = campaign_split(rows)
+    else:
+        historical, campaign, later = Decimal(0), Decimal(0), Decimal(total)
     require(campaign <= CAMPAIGN_CEILING_SECONDS, "new campaign exceeds authorized 180-second ceiling")
-    return {
+    payload = {
         "schema": "qpu-job-retention-audit-v1",
         "observed_at": snapshot["observed_at"],
         "inventory_sha256": digest(snapshot_path),
@@ -264,26 +311,44 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         "account_usage_observation": snapshot["account_usage"],
         "jobs": rows,
     }
+    if not is_default:
+        payload["instance_crn_hash"] = instance
+    return payload
+
+
+def audit_path(snapshot_path: Path) -> Path:
+    """The retention audit that pairs with an inventory file."""
+    return snapshot_path.with_name(snapshot_path.name.replace("qpu-job-inventory", "qpu-job-retention-audit"))
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--snapshot", type=Path, default=ROOT / "results/live/qpu-job-inventory.json")
-    parser.add_argument("--out", type=Path, default=ROOT / "results/live/qpu-job-retention-audit.json")
+    parser.add_argument(
+        "--snapshot", type=Path, help="one inventory file; default every inventory file beside the default one"
+    )
+    parser.add_argument("--out", type=Path, help="audit path for --snapshot; default pairs with the inventory name")
     parser.add_argument("--check", action="store_true")
     arguments = parser.parse_args()
     try:
-        payload = json.dumps(reconcile(arguments.snapshot), indent=2, sort_keys=True) + "\n"
-        if arguments.check:
-            require(arguments.out.read_text() == payload, "retention audit differs from offline replay")
+        if arguments.snapshot is not None:
+            snapshots = [arguments.snapshot]
         else:
-            for index_path in (ROOT / "results/live").glob("*/raw/*/index.json"):
-                require(
-                    not arguments.out.resolve().is_relative_to(index_path.parents[2]),
-                    "inventory output must stay outside every immutable run archive",
-                )
-            with arguments.out.open("x") as stream:
-                stream.write(payload)
+            default, others = inventory_family(ROOT / "results/live/qpu-job-inventory.json")
+            snapshots = [default, *others]
+        require(arguments.out is None or len(snapshots) == 1, "--out requires --snapshot")
+        for snapshot_path in snapshots:
+            out = arguments.out or audit_path(snapshot_path)
+            payload = json.dumps(reconcile(snapshot_path), indent=2, sort_keys=True) + "\n"
+            if arguments.check:
+                require(out.read_text() == payload, "retention audit differs from offline replay")
+            else:
+                for index_path in (ROOT / "results/live").glob("*/raw/*/index.json"):
+                    require(
+                        not out.resolve().is_relative_to(index_path.parents[2]),
+                        "inventory output must stay outside every immutable run archive",
+                    )
+                with out.open("x") as stream:
+                    stream.write(payload)
     except (ValueError, KeyError, TypeError, OSError) as error:
         parser.exit(1, f"QPU inventory audit failed: {error}\n")
     print("QPU inventory and every raw shot denominator verified")

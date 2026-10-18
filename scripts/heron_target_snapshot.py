@@ -31,6 +31,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+import ibm_account  # noqa: E402
+
 INSTRUCTIONS = (
     "measure",
     "measure_2",
@@ -94,7 +97,7 @@ def snapshot() -> dict[str, Any]:
     import qiskit_ibm_runtime
     from qiskit_ibm_runtime import QiskitRuntimeService
 
-    service = QiskitRuntimeService()
+    service = ibm_account.open_service(QiskitRuntimeService)
     names = sorted(b.name for b in service.backends(simulator=False))
     fractional = sorted(b.name for b in service.backends(simulator=False, use_fractional_gates=True))
     backends = {}

@@ -51,6 +51,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import calibration_snapshot  # noqa: E402
+import ibm_account  # noqa: E402
 
 AUDIT = ROOT / "results/live/qpu-job-retention-audit.json"
 HISTORY = ROOT / "docs/evidence/calibration/history"
@@ -120,6 +121,13 @@ def index_job(job: dict[str, Any], service: Any, backends: dict[str, Any], writt
     starts = execution_starts(job)
     source = "collect.json pub_timing"
     if not starts:
+        import live_run
+
+        ibm_account.require_instance(
+            ibm_account.recorded_instance(ROOT / job["run"]),
+            live_run._instance_hash(service),
+            f"{job['job_id']}: job metrics lookup",
+        )
         running = service.job(job["job_id"]).metrics()["timestamps"]["running"]
         starts = [running if "+" in running or running.endswith("Z") else running + "+00:00"]
         source = "job metrics timestamps.running"
@@ -137,7 +145,7 @@ def index_job(job: dict[str, Any], service: Any, backends: dict[str, Any], writt
 def write() -> int:
     from qiskit_ibm_runtime import QiskitRuntimeService
 
-    service = QiskitRuntimeService()
+    service = ibm_account.open_service(QiskitRuntimeService)
     backends = {name: service.backend(name) for name in BACKENDS}
     written: dict[str, str] = {}
     jobs = [index_job(job, service, backends, written) for job in json.loads(AUDIT.read_text(encoding="utf-8"))["jobs"]]
@@ -208,7 +216,7 @@ def add() -> int:
     if not missing:
         print("ghost calibrations: every audited job is indexed")
         return 0
-    service = QiskitRuntimeService()
+    service = ibm_account.open_service(QiskitRuntimeService)
     backends = {name: service.backend(name) for name in sorted({job["backend"] for job in missing})}
     written = {relative: entry["calibration"] for relative, entry in index["files"].items()}
     written |= {relative: entry["calibration"] for relative, entry in appended["files"].items()}
@@ -286,7 +294,7 @@ def append() -> int:
     """Read each backend's current calibration and record each new identity in APPENDED."""
     from qiskit_ibm_runtime import QiskitRuntimeService
 
-    service = QiskitRuntimeService()
+    service = ibm_account.open_service(QiskitRuntimeService)
     index = json.loads(INDEX.read_text(encoding="utf-8"))
     record = json.loads(APPENDED.read_text(encoding="utf-8")) if APPENDED.is_file() else {"files": {}}
     # export() returns a known identity without verifying or rewriting it, so

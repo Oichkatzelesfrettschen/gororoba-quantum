@@ -505,6 +505,28 @@ sedenion statement never rests on them.
   Target and properties afresh in the process that decides, compiles,
   simulates, and submits; no calibration value is cached or read back from a
   file to drive a submission.
+- Overflow account. The default saved account is primary. A second saved
+  account named `backup-ibm-quantum-platform` holds a different IBM Cloud
+  instance with its own 600 s rolling quota, and quotas never pool.
+  `GOROROBA_IBM_ACCOUNT` selects the account for every script through
+  `gororoba_quantum/ibm_account.py` (`open_service`); unset or empty
+  constructs `QiskitRuntimeService()` and selects the default. A case
+  written against the backup sets `GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform`
+  for its dry run, `--submit` and `--collect` alike: the approval binds
+  `instance_sha256_12`, so a submit under another account refuses, and
+  `--collect`, `--preserve-raw`, ghost_calibrations.py and
+  compare_submitted_circuits.py raise when the service resolves an instance
+  other than the record's. The backup serves when the primary's remaining
+  seconds minus the reserve fall below the case's summed ceilings. Each
+  instance has its own inventory, `results/live/qpu-job-inventory.json` for
+  the default and `results/live/qpu-job-inventory.<instance_crn_hash>.json`
+  for another (observe_qpu_job_inventory.py refuses to overwrite a file that
+  records a different instance), and its own `qpu-job-retention-audit` file;
+  reconcile_qpu_inventory.py assigns each raw archive to the instance its
+  run record names and checks coverage, the usage-window sum and the reserve
+  per instance, while the historical-job and campaign accounting bind the
+  default instance. Gate core-563 holds the account selection and the
+  instance refusal.
 
 ## Simulation on Kaggle: CPU, GPU and CI replay
 

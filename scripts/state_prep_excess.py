@@ -120,6 +120,7 @@ from scipy.stats import beta
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+import ibm_account  # noqa: E402
 from diagnostic_experiments import (  # noqa: E402
     N21_FAMILIES,
     STATE_PREP_FAMILY,
@@ -434,7 +435,7 @@ def fetch_readout(run_dir: Path) -> Path:
     record_bytes = (run_dir / "record.json").read_bytes()
     record = json.loads(record_bytes)
     collect_bytes, executed = _executions(run_dir)
-    service = QiskitRuntimeService()
+    service = ibm_account.open_service(QiskitRuntimeService)
     windows = []
     for job in (record.get("submission") or {}).get("jobs") or []:
         backend = service.backend(str(job["backend"]))
