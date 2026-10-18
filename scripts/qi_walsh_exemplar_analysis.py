@@ -59,6 +59,8 @@ from qi_walsh_exemplar_cases import (  # noqa: E402
 SCHEMA = "qi-walsh-exemplar-analysis-v1"
 DECIMALS = 6
 OUTCOMES = 1 << WIDTH
+# The readout batches that open and close the series; every Walsh batch runs between them.
+BRACKETS = ("batch-00", "batch-03")
 UNIFORM = 1 / OUTCOMES
 
 
@@ -96,6 +98,7 @@ def load_run(run: Path) -> tuple[dict[str, Any], dict[str, np.ndarray], dict[str
         raw = json.loads(raw_bytes)
         if len(raw) != manifest["shots"]:
             fail(f"{run}/{file}: {len(raw)} raw shots against the manifest's {manifest['shots']}")
+        check_widths(raw, manifest["nqubits"], f"{run}/{file}")
         matrix = bit_matrix(raw, manifest["nqubits"], "rightmost")
         if matrix is None:
             fail(f"{run}/{file}: a shot string holds a character other than 0 and 1")
@@ -104,13 +107,20 @@ def load_run(run: Path) -> tuple[dict[str, Any], dict[str, np.ndarray], dict[str
     return manifest, bits, digests
 
 
+def check_widths(raw: list[str], nqubits: int, where: str) -> None:
+    """Every shot string holds one character per qubit, so the concatenated matrix keeps its shot boundaries."""
+    widths = sorted({len(shot) for shot in raw})
+    if widths != [nqubits]:
+        fail(f"{where}: shot strings of {widths} characters against the manifest's {nqubits} qubits")
+
+
 # ---------------------------------------------------------------- readout
 
 
 def rates(bits: dict[str, dict[str, np.ndarray]]) -> dict[str, Any]:
     """Counts of the readout circuits: per bracket and qubit, ones of readout-0 and zeros of readout-1, and q13's."""
     brackets = []
-    for batch in ("batch-00", "batch-03"):
+    for batch in BRACKETS:
         zero, one = bits[batch]["readout-0.cq"], bits[batch]["readout-1.cq"]
         brackets.append(
             {"n0": zero.shape[0], "ones0": zero.sum(axis=0), "n1": one.shape[0], "zeros1": (1 - one).sum(axis=0)}
@@ -137,6 +147,19 @@ def channel_values(counts: dict[str, Any], rng: np.random.Generator | None, draw
     out = {"e01": e01, "e10": e10}
     for name, row in counts["context"].items():
         out[name] = draw(row["zeros"], row["n"])
+    return out
+
+
+def bracket_alternatives(counts: dict[str, Any], point: dict[str, np.ndarray]) -> dict[str, dict[str, np.ndarray]]:
+    """Measured channels with one bracket in place of the bracket mean, q13's context e10s moved by that bracket's
+    q13 e10 offset from the mean, so a drift between the readout batches and the Walsh batches enters each decision."""
+    out = {}
+    for k, bracket in enumerate(BRACKETS):
+        b = counts["brackets"][k]
+        e01 = (np.asarray(b["ones0"], dtype=np.float64) / b["n0"])[np.newaxis, :]
+        e10 = (np.asarray(b["zeros1"], dtype=np.float64) / b["n1"])[np.newaxis, :]
+        shift = e10[0, CONTEXT_QUBIT] - point["e10"][0, CONTEXT_QUBIT]
+        out[bracket] = {"e01": e01, "e10": e10, **{name: point[name] + shift for name in CONTEXTS}}
     return out
 
 
@@ -229,7 +252,7 @@ def analyze_bits(manifests: dict[str, dict[str, Any]], bits: dict[str, dict[str,
     readout = {}
     for k, b in enumerate(counts["brackets"]):
         e01, e10 = b["ones0"] / b["n0"], b["zeros1"] / b["n1"]
-        readout[("batch-00", "batch-03")[k]] = {
+        readout[BRACKETS[k]] = {
             str(q): [sig(float(e01[q])), sig(float(e10[q]))] for q in sorted(q for blk in BLOCKS.values() for q in blk)
         }
     drift = {
@@ -262,8 +285,10 @@ def analyze_bits(manifests: dict[str, dict[str, Any]], bits: dict[str, dict[str,
         "verdict": verdict[(drive, state)],
     }
 
+    alternatives = bracket_alternatives(counts, point)
     jobs: list[dict[str, Any]] = []
     pooled: dict[tuple[str, str], list[np.ndarray]] = {}
+    pooled_alt: dict[str, dict[tuple[str, str], list[np.ndarray]]] = {bracket: {} for bracket in BRACKETS}
     for batch in ("batch-01", "batch-02"):
         for name, assignment in CIRCUITS.items():
             matrix = bits[batch][f"{name}.cq"]
@@ -299,25 +324,62 @@ def analyze_bits(manifests: dict[str, dict[str, Any]], bits: dict[str, dict[str,
                         pooled.setdefault((cls, block), []).append(obs["visibility"])
                         variants[variant]["p"] = [sig(float(v)) for v in obs["p"][0]]
                         variants[variant]["_p_draws"] = obs["p"]
+                        variants[variant]["_k_draws"] = obs["k"]
+                        alt: dict[str, dict[str, float]] = {}
+                        for bracket, values in alternatives.items():
+                            r_alt = response(values, qubits, variant)
+                            obs_alt = observables(raw[np.newaxis, :], r_alt, ideal, k_ideal)
+                            pooled_alt[bracket].setdefault((cls, block), []).append(obs_alt["visibility"])
+                            alt[bracket] = {
+                                "k": float(obs_alt["k"][0]),
+                                "log10_p": shape_test(raw, r_alt[0], ideal)["log10_p"],
+                            }
+                        variants[variant]["_alt"] = alt
+                        variants[variant]["bracket_alternatives"] = {
+                            bracket: {key: sig(v) for key, v in values.items()} for bracket, values in alt.items()
+                        }
                 row[block] = {"class": cls, "raw": [int(v) for v in raw], "variants": variants}
             jobs.append(row)
 
     primary = {b: "context" if CONTEXT_QUBIT in BLOCKS[b] else "bracket" for b in BLOCKS}
     # Each block compares its high-class job with its low-class job of the same batch, so the block's
-    # own fidelity cancels; the two jobs are separate acquisitions and their SEs combine in quadrature.
+    # own fidelity cancels. Both jobs' K draws share each bootstrap response draw, so the SE is that of the
+    # drawn difference; the largest shift of the difference under a single-bracket response joins it in
+    # quadrature, since the readout batches bracket the Walsh batches in time.
     order = []
     for batch in ("batch-01", "batch-02"):
         for block in BLOCKS:
             by_class = {
-                row[block]["class"]: row[block]["variants"][primary[block]]["k"]
-                for row in jobs
-                if row["batch"] == batch
+                row[block]["class"]: row[block]["variants"][primary[block]] for row in jobs if row["batch"] == batch
             }
-            diff = by_class["high"]["value"] - by_class["low"]["value"]
-            se = math.hypot(by_class["high"]["se"], by_class["low"]["se"])
-            order.append({"batch": batch, "block": block, "z": sig(diff / se), "holds": bool(diff >= zdec * se)})
+            high, low = by_class["high"], by_class["low"]
+            diff = high["_k_draws"] - low["_k_draws"]
+            se = float(np.std(diff[1:], ddof=1))
+            drift_shift = max(abs(high["_alt"][b]["k"] - low["_alt"][b]["k"] - float(diff[0])) for b in BRACKETS)
+            total = math.hypot(se, drift_shift)
+            order.append(
+                {
+                    "batch": batch,
+                    "block": block,
+                    "difference": sig(float(diff[0])),
+                    "se": sig(se),
+                    "drift_shift": sig(drift_shift),
+                    "z": sig(float(diff[0]) / total),
+                    "holds": bool(diff[0] >= zdec * total),
+                }
+            )
+
+    def interaction_of(vis: dict[tuple[str, str], np.ndarray]) -> np.ndarray:
+        return (
+            np.log(vis[("high", "X")])
+            - np.log(vis[("high", "Y")])
+            - np.log(vis[("low", "X")])
+            + np.log(vis[("low", "Y")])
+        )
+
     v = {key: np.mean(values, axis=0) for key, values in pooled.items()}
-    if min(float(np.min(x)) for x in v.values()) <= 0:
+    v_alt = {b: {key: np.mean(values, axis=0) for key, values in pooled_alt[b].items()} for b in BRACKETS}
+    if min(float(np.min(x)) for vis in (v, *v_alt.values()) for x in vis.values()) <= 0:
         interaction: dict[str, Any] = {
             "value": None,
             "se": None,
@@ -325,9 +387,17 @@ def analyze_bits(manifests: dict[str, dict[str, Any]], bits: dict[str, dict[str,
             "reason": "a pooled visibility is not positive",
         }
     else:
-        stat = np.log(v[("high", "X")]) - np.log(v[("high", "Y")]) - np.log(v[("low", "X")]) + np.log(v[("low", "Y")])
+        stat = interaction_of(v)
         se = float(np.std(stat[1:], ddof=1))
-        interaction = {"value": sig(float(stat[0])), "se": sig(se), "established": bool(abs(stat[0]) >= zdec * se)}
+        drift_shift = max(abs(float(interaction_of(v_alt[b])[0] - stat[0])) for b in BRACKETS)
+        total = math.hypot(se, drift_shift)
+        interaction = {
+            "value": sig(float(stat[0])),
+            "se": sig(se),
+            "drift_shift": sig(drift_shift),
+            "se_with_drift": sig(total),
+            "established": bool(abs(stat[0]) >= zdec * total),
+        }
     scatter = []
     for name, assignment in CIRCUITS.items():
         a, b = (row for row in jobs if row["circuit"] == name)
@@ -340,15 +410,21 @@ def analyze_bits(manifests: dict[str, dict[str, Any]], bits: dict[str, dict[str,
             scatter.append(
                 {"circuit": name, "block": block, "tvd": sig(float(tvd[0])), "se": sig(se), "flagged": bool(flagged)}
             )
-    for row in jobs:
-        for block in BLOCKS:
-            row[block]["variants"][primary[block]].pop("_p_draws", None)
+    # A shape rejection stands only when it holds under the bracket mean and under each single bracket.
     shape_rejected = [
         f"{row['batch']}/{row['circuit']}/{block}"
         for row in jobs
         for block in BLOCKS
-        if row[block]["variants"][primary[block]]["shape"]["log10_p"] <= pre["shape_log10_p"]
+        if max(
+            row[block]["variants"][primary[block]]["shape"]["log10_p"],
+            *(alt["log10_p"] for alt in row[block]["variants"][primary[block]]["_alt"].values()),
+        )
+        <= pre["shape_log10_p"]
     ]
+    for row in jobs:
+        for block in BLOCKS:
+            for key in ("_p_draws", "_k_draws", "_alt"):
+                row[block]["variants"][primary[block]].pop(key, None)
     return {
         "schema": SCHEMA,
         "family": FAMILY,
@@ -517,6 +593,18 @@ def self_test() -> str:
     record = analyze_bits(manifests, synthetic(5, truth_of(classes, lam), q13_shift=0.06))
     if record["context"]["verdict"] != "neither":
         raise AssertionError(f"self-test: q13 attribution {record['context']['verdict']} on a drifting baseline")
+
+    # A drifting q13 baseline widens the interaction's SE through the single-bracket responses.
+    if record["decisions"]["interaction"]["se_with_drift"] < record["decisions"]["interaction"]["se"]:
+        raise AssertionError(f"self-test: drift narrowed the interaction SE {record['decisions']['interaction']}")
+
+    # Compensating shot widths keep the concatenated length and fail before the matrix is built.
+    try:
+        check_widths(["0" * 16, "0" * 18], 17, "self-test")
+    except SystemExit:
+        pass
+    else:
+        raise AssertionError("self-test: shot strings of 16 and 18 characters passed a 17-qubit manifest")
 
     # Missing batches fail.
     bits = synthetic(3, truth_of(classes, lam), shots=4096)

@@ -80,7 +80,7 @@ Y-block distribution. Four context readouts measure q13 after its X:
 | circuit | q10, q11 | separates |
 |---|---|---|
 | readout-q13 | idle, \|0> | isolated reference |
-| readout-q13-xx | X X each, \|0> | drive crosstalk at fixed state |
+| readout-q13-xx | X X each, \|0> | drive crosstalk that grows with pulse count, at fixed state |
 | readout-q13-q10 | X on q10 | state of q10 |
 | readout-q13-q11 | X on q11 | state of q11 |
 
@@ -133,7 +133,13 @@ The manifest's `preregistered` block carries every rule and threshold:
 Errors come from a parametric bootstrap of 2000 draws on seed 20261018 that
 redraws every readout circuit's counts and, for each Walsh circuit, the
 joint histogram of both blocks, so the draws keep the covariance of blocks
-read in the same shots.
+read in the same shots, and the class order takes the SE of the drawn
+high-minus-low difference, whose two jobs share each response draw. The
+response averages the batch-00 and batch-03 brackets around the Walsh
+batches; each decision is also evaluated with one bracket in its place and
+q13's context e10s moved by that bracket's q13 offset, the larger shift
+joins the class-order and interaction SEs in quadrature, and a shape
+rejection stands only under all three responses.
 
 ## Results, 2026-10-18
 
@@ -148,10 +154,13 @@ core-557; claims `qi-tuna17-q13-readout-context-q11` and
   q11 (+0.046, about 21 SE with q13's bracket drift in the SE), 0.0396
   beside an excited q10 and 0.0419 after
   X X on both neighbors; readout-1 reads 0.0898. The preregistered
-  attribution is "state", and the state that matters is q11's: the ladder's
-  context effect is q11 at measurement, with no drive crosstalk.
+  attribution is "state", and the state that matters is q11's. The drive
+  control gives each neighbor two pulses and returns it to |0>, and q10's
+  single pulse raises nothing, so the ladder's context effect follows q11
+  ending in |1>; a transient of q11's single pulse that a second pulse
+  cancels needs a control with one X on q11 and q11 returned to |0>.
 - **Classes.** On each block and in both batches the high-class job's K
-  exceeds the low-class job's at z 110 to 117.
+  exceeds the low-class job's at z 105 to 114.
 
   | class | block X | block Y | ideal |
   |---|---|---|---|

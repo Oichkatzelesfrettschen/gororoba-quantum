@@ -49,7 +49,7 @@ import json
 import sys
 from collections import Counter
 from fractions import Fraction
-from functools import partial
+from functools import cache, partial
 from pathlib import Path
 from typing import Any
 
@@ -170,18 +170,27 @@ def exemplar(name: str) -> dict[str, Any]:
 # ---------------------------------------------------------------- path search
 
 
+def class_row(cubic: int) -> list[tuple[tuple[int, int], ...]]:
+    """|W| multisets of h = cubic part + every quadratic part, in quadratic-mask order."""
+    row = []
+    for quadratic in range(1 << len(PAIRS)):
+        bits = []
+        for x in range(1 << WIDTH):
+            value = sum(bool(cubic >> n & 1 and contains(x, tri)) for n, tri in enumerate(TRIPLES))
+            value += sum(bool(quadratic >> n & 1 and contains(x, pair)) for n, pair in enumerate(PAIRS))
+            bits.append(value & 1)
+        row.append(signature(walsh(bits)))
+    return row
+
+
+@cache
 def class_table() -> dict[tuple[int, int], tuple[tuple[int, int], ...]]:
     """|W| multiset of every four-variable h = cubic part + quadratic part, keyed by their monomial masks."""
-    table = {}
-    for cubic in range(1 << len(TRIPLES)):
-        for quadratic in range(1 << len(PAIRS)):
-            bits = []
-            for x in range(1 << WIDTH):
-                value = sum(bool(cubic >> n & 1 and contains(x, tri)) for n, tri in enumerate(TRIPLES))
-                value += sum(bool(quadratic >> n & 1 and contains(x, pair)) for n, pair in enumerate(PAIRS))
-                bits.append(value & 1)
-            table[(cubic, quadratic)] = signature(walsh(bits))
-    return table
+    cubics = range(1 << len(TRIPLES))
+    rows = parallel.ordered_map(class_row, list(cubics))
+    return {
+        (cubic, quadratic): key for cubic, row in zip(cubics, rows, strict=True) for quadratic, key in enumerate(row)
+    }
 
 
 def target_signature(name: str) -> tuple[tuple[int, int], ...]:
