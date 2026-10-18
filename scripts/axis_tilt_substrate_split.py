@@ -347,9 +347,39 @@ def combine(s: dict[str, Any], t: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def substrate_kind(environment: dict[str, Any]) -> str | None:
+    """The BLAS build a capture ran on, read from the libraries its process mapped."""
+    mapped = [name.lower() for name in environment.get("mapped_libraries", [])]
+    if any(name.startswith(("libblis", "libflame")) for name in mapped):
+        return "aocl"
+    if any("openblas" in name for name in mapped) and "openblas" in str(environment["blas"].get("name")):
+        return "openblas"
+    return None
+
+
+def fold_solution_error(
+    problem: tuple[np.ndarray, np.ndarray], retained: Sequence[float], fresh: Any
+) -> tuple[float, float]:
+    """A retained and a fresh lstsq of one fold: their relative gap and the bound m n eps (kappa + kappa^2 rho)."""
+    a, b = problem
+    singular = np.linalg.svd(a, compute_uv=False)
+    kappa = float(singular[0] / singular[-1])
+    xs = np.array(retained, dtype=float)
+    rho = float(np.linalg.norm(b - a @ xs) / (singular[0] * np.linalg.norm(xs)))
+    m, p = a.shape
+    bound = m * p * EPS * (kappa + kappa * kappa * rho)
+    return float(np.linalg.norm(np.array(fresh) - xs) / np.linalg.norm(xs)), bound
+
+
 def check_witness(witness: list[dict[str, Any]], source: dict[str, Any]) -> None:
-    """Each substrate's capture rounds to the atlas lane; own solutions are this host's lstsq within roundoff."""
+    """Each substrate's capture rounds to the atlas lane; every solved cell is this host's lstsq within roundoff.
+
+    The first capture ran on AOCL and the second on OpenBLAS, by the libraries
+    each process mapped, so a same-substrate pair never reads as the split.
+    """
     require(len(witness) == 2, "the record holds two substrates")
+    kinds = [substrate_kind(sub["environment"]) for sub in witness]
+    require(kinds == ["aocl", "openblas"], f"the captures ran on {kinds}, not AOCL then OpenBLAS")
     lanes = {(lane["backend"], lane["lane"]): lane for lane in source["lanes"]}
     for k, sub in enumerate(witness):
         other = witness[1 - k]
@@ -368,18 +398,19 @@ def check_witness(witness: list[dict[str, Any]], source: dict[str, Any]) -> None
                 mine["other_own_sha256"] == solutions_digest(other["backends"][backend]["solutions"]["own"]),
                 f"substrate {k} {backend}: other_solution is not substrate {1 - k}'s own solution",
             )
-            design = model_design(mine["blocks"], mine["offsets"], MODEL)
-            problems = fold_problems(design, np.array(mine["offsets"], dtype=float))
-            fresh = parallel.ordered_map(FoldLstsq(), problems)
-            for h, ((a, b), x, y) in enumerate(zip(problems, mine["solutions"]["own"], fresh, strict=True)):
-                singular = np.linalg.svd(a, compute_uv=False)
-                kappa = float(singular[0] / singular[-1])
-                xs = np.array(x, dtype=float)
-                rho = float(np.linalg.norm(b - a @ xs) / (singular[0] * np.linalg.norm(xs)))
-                m, p = a.shape
-                bound = m * p * EPS * (kappa + kappa * kappa * rho)
-                error = float(np.linalg.norm(np.array(y) - xs) / np.linalg.norm(xs))
-                require(error <= bound, f"substrate {k} {backend} fold {h}: own solution {error:.2e} > {bound:.2e}")
+            theirs = other["backends"][backend]
+            own_offsets = np.array(mine["offsets"], dtype=float)
+            their_design = model_design(theirs["blocks"], theirs["offsets"], MODEL)
+            cells = {
+                "own": fold_problems(model_design(mine["blocks"], mine["offsets"], MODEL), own_offsets),
+                "other_problem": fold_problems(their_design, np.array(theirs["offsets"], dtype=float)),
+                "other_design": fold_problems(their_design, own_offsets),
+            }
+            labels = [(cell, h) for cell in cells for h in range(n)]
+            fresh = parallel.ordered_map(FoldLstsq(), [cells[cell][h] for cell, h in labels])
+            for (cell, h), solved in zip(labels, fresh, strict=True):
+                error, bound = fold_solution_error(cells[cell][h], mine["solutions"][cell][h], solved)
+                require(error <= bound, f"substrate {k} {backend} fold {h}: {cell} solution {error:.2e} > {bound:.2e}")
 
 
 def compare_summary(retained: Any, fresh: Any, path: str, norm: bool = False) -> None:
@@ -420,6 +451,10 @@ def self_test(path: Path) -> int:
         ),
         "slope": lambda r: r["substrates"][1]["backends"][backend]["blocks"]["axis_tilt"][0].__setitem__(0, 0.5),
         "solution": lambda r: r["substrates"][1]["backends"][backend]["solutions"]["own"][0].__setitem__(0, 1.0),
+        "cross solution": lambda r: r["substrates"][0]["backends"][backend]["solutions"]["other_problem"][
+            0
+        ].__setitem__(0, 1.0),
+        "substrate": lambda r: r["substrates"][1].__setitem__("environment", r["substrates"][0]["environment"]),
         "summary": lambda r: r["summary"][backend]["base_s"]["max_over_tolerance"].__setitem__("solve", 0.0),
         "study input": lambda r: r["study_inputs"][backend]["moves"].__setitem__(0, 0.0),
     }
