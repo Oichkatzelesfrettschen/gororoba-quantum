@@ -478,6 +478,17 @@ retain its output under results/kaggle/. The kernel's own guide is
   channel. Shot branching is never enabled, since Aer 0.17.2's shot
   branching drops a mid-circuit measurement's readout channel
   (`docs/evidence/aer_gpu_configuration/README.md`).
+- **Cache blocking.** `SnapshotSimulator.run` blocks a GPU batch whose
+  widest active state exceeds one GPU's memory, Aer's own trigger, with
+  `calibration_snapshot.blocking_qubits_for`'s chunk (27 statevector, 13
+  density-matrix qubits on a T4) and `max_parallel_shots=1`, so every run
+  that fits one GPU keeps its executor and counts. On the T4 x2 a 15-qubit
+  density matrix ran in 4.2 s and a 30-qubit statevector in 7.2 s across
+  both GPUs, where Aer's automatic choice filled host memory until the OOM
+  killer ended it. if_else aborts under blocking, so a blocked batch runs in
+  `lower_conditionals` form and raises ValueError where none exists; Aer's
+  CPU chunk executor misplaces conditions, so blocking stays on the GPU
+  (gates core-451 and core-452, `docs/notes/kaggle/substrates.md`).
 - **CI replay.**
   - Seeded GPU counts differ from CPU counts, so a gate re-derives a GPU
     record from its retained counts and never resamples on CI.

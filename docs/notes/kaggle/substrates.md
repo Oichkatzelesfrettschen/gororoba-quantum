@@ -31,7 +31,7 @@ Kaggle session with the build host.
 | --- | --- | --- |
 | CPU only | Kaggle CPU session (4 cores, 30 GB); build host (Ryzen 5 5600X3D, 12 threads, 62 GiB) | transpilation, package builds, Aer CPU methods (stabilizer, matrix product state, extended stabilizer are CPU-only in Aer), the CPU replay of a reduced case |
 | GPU (with its host CPU) | Kaggle GPU sessions (4 cores, 29 GB RAM); build host RTX 4070 Ti | Aer `device="GPU"` statevector, density matrix, unitary, superop and tensor network; the host CPU transpiles meanwhile |
-| Two GPUs in one session | Kaggle `NvidiaTeslaT4` (2 x T4) | either independent experiments on separate GPUs (one process per GPU through `CUDA_VISIBLE_DEVICES`), or one state split across both with Aer chunking (`blocking_enable`, `blocking_qubits`), which moves the double-precision density matrix from 14 to 15 qubits and the statevector from 29 to 30 (estimate, not measured) |
+| Two GPUs in one session | Kaggle `NvidiaTeslaT4` (2 x T4) | Aer spreads every multi-shot run over both (`batched_shots_optimization_parallel_gpus`, `gpu_parallel_shots_` 2), and `SnapshotSimulator.run` splits a state wider than one T4 across both with cache blocking: a 15-qubit density matrix in 4.2 s and a 30-qubit statevector in 7.2 s (measured, `results/kaggle/2026-10-17T230346Z-gororoba-aer-blocking`) |
 | TPU (with its host CPU) | Kaggle `TpuV5E8`, `TpuV6E8` | JAX only; Aer has no TPU backend, so a TPU session would serve the repository as a large CPU host (96 cores and 330 GB RAM on the documented v3-8 VM). Every batch request with either ID (CLI, MCP, the editor's commit) ran on a 4-core Xeon CPU machine on the CPU image without libtpu, with the TPU accelerator recorded server-side and TPU quota unused, with Persona identity verification, which the editor names as a TPU requirement, absent on the account; [tpu-research.md](tpu-research.md) holds the routes and the root-cause analysis |
 | CPU + GPU + TPU at once | not inside one Kaggle session | across sessions: Kaggle GPU kernels for Aer, a Kaggle TPU session for CPU-heavy Aer or JAX, the build host for dry runs, calibration exports and replay gates |
 | Any of the above + IBM | only after an approved case | IBM answers device questions; every substrate above feeds its design, never its result |
@@ -47,7 +47,8 @@ circuit at 256 shots, each width tried once in its own process).
 
 | Substrate | Memory | Statevector, double / single (estimate) | Density matrix, double / single (estimate) | Measured |
 | --- | --- | --- | --- | --- |
-| Kaggle T4 (one GPU) | 15 GiB | 29 / 30 | 14 / 15 | density matrix 14 (1.0 s), 15 killed; statevector 29 (4.4 s), 30 killed, 31 refused by Aer (target maximum 30) |
+| Kaggle T4 (one GPU) | 15 GiB | 29 / 30 | 14 / 15 | density matrix 14 (1.0 s); statevector 29 (4.4 s); 31 refused by Aer (target maximum 30, from host memory) |
+| Kaggle T4 x2, cache blocking | 2 x 15 GiB | 30 | 15 | density matrix 15 (4.2 s, 9,437 MiB per GPU); statevector 30 (7.2 s, 10,461 and 10,507 MiB); Aer's automatic choice at either width: host OOM kill |
 | Kaggle CPU or GPU-session host RAM | 29 to 30 GB | 30 / 31 | 15 / 15 | not measured |
 | Kaggle TPU VM host RAM | 330 GB (documented, v3-8) | 34 / 35 | 17 / 17 | not reachable: TPU pushes ran on 4-core CPU machines |
 | Build host RTX 4070 Ti | 12 GiB | 29 / 30 | 14 / 15 | density matrix 14, statevector 29; one wider fails with `std::bad_alloc` (detail in the untracked `docs/local/`) |
@@ -56,8 +57,9 @@ circuit at 256 shots, each width tried once in its own process).
 Rows list only substrates whose memory was measured or is documented
 (`site/notebooks.md`); Kaggle publishes no memory for the L4, A100, H100 or
 RTX Pro 6000 IDs, none of which this account reached, so this guide states
-no width for them. Single precision and two-GPU chunking are not configured
-in `calibration_snapshot.noise_simulator` and are not measured here.
+no width for them. Single precision is not configured in
+`calibration_snapshot.noise_simulator` and is not measured here; cache
+blocking is (below).
 
 What goes where by width, under the routing rule (root AGENTS.md: 14 qubits
 or fewer on Kaggle, 15 or more on IBM):
@@ -122,13 +124,59 @@ sets `local_compute.GPU_MIN_ACTIVE_QUBITS` for local runs only
 | Working disk | 19.52 GiB |
 | Image packages | numpy 2.1.3, scipy 1.16.3, torch 2.11.0+cu128 |
 | Hypercomplex stack | built and proved byte-identical |
-| Density matrix (one GPU, double) | 12 to 14 qubits in under 1 s; 15 killed (signal 9) |
-| Statevector (one GPU, double) | 26 to 29 qubits in under 5 s; 30 killed (signal 9); 31 refused by Aer, whose GPU target reports 30 qubits at most |
+| Density matrix (double) | 12 to 14 qubits in under 1 s; 15 killed (signal 9) under Aer's automatic choice |
+| Statevector (double) | 26 to 29 qubits in under 5 s; 30 killed (signal 9) under Aer's automatic choice; 31 refused by Aer, whose target reports 30 qubits at most |
 
 Each width ran in its own process, so the killed trials ended only
-themselves. Both failures sit where the state first exceeds one T4's 15 GiB
-(16 GiB at density matrix 15 and statevector 30), which places the single-GPU
-limits exactly at the memory estimate.
+themselves. Both machines' GPUs were visible. The kill is the host's, not
+the GPU's: the blocking probe (`scripts/aer_blocking_probe.py`,
+`results/kaggle/2026-10-17T225519Z-gororoba-aer-blocking` and
+`2026-10-17T230346Z-gororoba-aer-blocking`) shows Aer's automatic blocking
+of a 16 GiB state placing it whole in host memory (30,155 MiB peak RSS of
+the machine's 31 GiB, each GPU at its 209 MiB baseline) until the cgroup
+OOM killer ends it, the first time with the kernel driver too.
+
+## Cache blocking across both T4s
+
+Aer blocks a state on its own once it exceeds one GPU's memory
+(ParallelStateExecutor::multiple_chunk_required), with a chunk as wide as a
+whole device, and that choice lands in host memory. `SnapshotSimulator.run`
+keeps Aer's trigger and sets the chunk from
+`calibration_snapshot.blocking_qubits_for`, the widest double-precision
+chunk under a quarter of one GPU's memory as Aer's `blocking_qubits`
+documentation asks: 27 qubits for a statevector and 13 for a density matrix
+on a T4 or the build host's RTX 4070 Ti. Measured on the T4 x2 (gate core-451):
+
+| Run | Seconds | Memory |
+| --- | --- | --- |
+| density matrix 15, blocked across both T4s | 4.2 | 9,437 MiB per GPU |
+| the same with cuStateVec | 4.0 | 9,463 MiB per GPU |
+| the same on GPU 0 with chunks in host memory (`target_gpus=[0]`) | 16.1 | 14,563 MiB on GPU 0, 4,524 MiB RSS |
+| statevector 30, blocked across both T4s | 7.2 | 10,461 and 10,507 MiB |
+| the same with cuStateVec | 5.4 | 10,541 and 10,495 MiB |
+| the same on GPU 0 with chunks in host memory | 24.7 | 14,629 MiB on GPU 0, 6,573 MiB RSS |
+| feed-forward, lowered, density matrix 15, 2 shots | 29.1 | both GPUs |
+| feed-forward, lowered, statevector 30, 2 shots | 46.6 | both GPUs |
+
+- An if_else under blocking aborts the process (`Invalid jump destination`):
+  AerCompiler inlines it into jump and mark, and the blocking pass splits
+  them into different chunk blocks. `SnapshotSimulator.run` therefore runs a
+  blocked batch in `lower_conditionals` form and raises ValueError where
+  none exists (an else body, a measurement in the body, nested flow).
+- On the GPU the blocked lowered readout toy draws the if_else toy's seeded
+  counts with the condition on the recorded, post-readout bit, statevector
+  and density matrix; Aer's CPU chunk executor under the same blocking
+  leaves the condition's bit (gate core-452), so blocking applies on a GPU
+  only.
+- `max_parallel_shots=1` keeps Aer from sizing parallel shots of a dynamic
+  circuit against the whole state ("a circuit requires more memory than
+  max_memory_mb" on one GPU).
+- A blocked feed-forward shot re-evolves the full state: about 15 s per
+  density-matrix-15 shot and 23 s per statevector-30 shot on the T4 x2, and
+  on the build host's single 12 GiB GPU with chunks in host memory 308 s per
+  statevector-30 shot. Wide feed-forward work stays a few-shot measurement.
+- The 15-qubit density matrix stays an IBM-routed width under the root
+  AGENTS.md rule; these figures are its measured capacity on Kaggle.
 
 ## Small dynamic circuits: CPU against GPU
 
