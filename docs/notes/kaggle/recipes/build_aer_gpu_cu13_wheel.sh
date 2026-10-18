@@ -16,13 +16,16 @@
 #   clean       remove the two built images and the pulled base images
 # With no STEP it runs fetch images build check.
 #
-# Environment: AER_CU13_WORK (default <repo>/build/aer-gpu-cu13),
-# AER_BUILD_JOBS (default 6), PODMAN (default podman).
+# Environment: AER_CU13_WORK (default
+# ${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/aer-gpu-cu13),
+# AER_BUILD_JOBS (default 6), PODMAN (default podman). The work tree holds
+# the sources, venvs, uv cache and wheel, several GB of Python packages, and
+# lives outside every checkout so the checkout's tree walks never read it.
 set -eu
 
 RECIPE_DIR=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 REPO_ROOT=$(CDPATH='' cd -- "$RECIPE_DIR/../../../.." && pwd)
-WORK=${AER_CU13_WORK:-$REPO_ROOT/build/aer-gpu-cu13}
+WORK=${AER_CU13_WORK:-${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/aer-gpu-cu13}
 JOBS=${AER_BUILD_JOBS:-6}
 PODMAN=${PODMAN:-podman}
 

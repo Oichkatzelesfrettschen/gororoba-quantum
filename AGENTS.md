@@ -25,6 +25,13 @@ local Python imports and the dynamic data/source scopes in
 its non-imported inputs there, including source digests and JSON-selected
 raw evidence; a missing declaration fails selection. CI and dependency-pin
 changes select every gate, and an unavailable diff base runs the full suite.
+The import closure resolves against the files `git ls-files --cached --others
+--exclude-standard` lists (`gate_inputs.checkout_files`), the modules a CI
+clone of the same tree holds, so an ignored tree never widens it. Build trees,
+virtual environments and package caches still live outside every checkout,
+under `${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/` or
+`~/.local/share/`: `git worktree remove` deletes ignored files with the
+worktree, and a wheel or venv built inside one goes with it.
 Gate seconds are scheduling estimates, independent of tier membership.
 [CI runtime analysis](docs/notes/build_host/ci-runtime.md) records the timing
 denominators, measured bottlenecks and replay commands. Runner-spec logs
