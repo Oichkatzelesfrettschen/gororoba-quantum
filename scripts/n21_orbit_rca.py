@@ -1663,7 +1663,13 @@ def _check_parameter_replay() -> None:
 
 CONTRACT_IDLE_DT = {"nominal": 1000, "window_delay": 1415, "extra_readout": 1400, "window_echo": 1000}
 CONTRACT_SLOPE = 6e-4
-CONTRACT_SHOTS = 8192
+# Exact expected counts at this depth resolve the phase aliases the slope
+# test meets inside the rate bound.
+CONTRACT_SHOTS = 65536
+# window_delay windows: on the planted slope, off it, and on the alias one
+# turn above it, where the nominal phase wraps past pi.
+CONTRACT_OFF_SLOPE_DT = 1700
+CONTRACT_WRAPPED_DT = 1949
 
 
 def _contract_roles(coupling: dict[int, dict[int, int]]) -> dict[str, dict[str, Any]]:
@@ -1696,8 +1702,10 @@ def _check_between_arm() -> None:
     readout = _readout(0.001, 0.006)
     base = readout | {"round1": 0.05, "round2": 0.02}
 
-    def pair(params: dict[str, float]) -> dict[str, np.ndarray]:
-        return {arm: np.round(distribution(base | params, arm == "feedback") * CONTRACT_SHOTS) for arm in ARMS}
+    def pair(params: dict[str, float], control: dict[str, float] | None = None) -> dict[str, np.ndarray]:
+        """Exact expected counts; control replaces params in the no-feedback arm."""
+        laws = {"feedback": params, "no_feedback": params if control is None else control}
+        return {arm: np.round(distribution(base | laws[arm], arm == "feedback") * CONTRACT_SHOTS) for arm in ARMS}
 
     # The coupling of -1 makes the coupling-weighted exposure negative, so
     # the slope the contract recovers is -CONTRACT_SLOPE per dt.
@@ -1712,49 +1720,76 @@ def _check_between_arm() -> None:
     readouts = dict.fromkeys(roles, readout)
     t2_us = {7: 100.0}
     dt = SYNTHETIC_DT_US * 1e-6
-    fits = phase_fits(pairs, readouts)
-
-    def statuses(
-        case: dict[str, dict[str, Any]], measured: dict[str, dict[str, np.ndarray]], t2: dict[int, float]
-    ) -> dict[str, str]:
-        results = contract_results(case, measured, readouts, dt, t2, fits)
-        json.dumps(results, sort_keys=True)
-        return {name: result["status"] for name, result in results.items()}
-
+    profiles = SlopeProfiles(pairs, readouts, phase_fits(pairs, readouts))
+    orientation = admissibility(roles)["orientation"]
+    results = contract_results(roles, pairs, readouts, dt, t2_us, profiles)
+    json.dumps(results, sort_keys=True)
     passing = dict.fromkeys(CONTRACTS, "pass")
-    found = statuses(roles, pairs, t2_us)
-    if found != passing:
-        raise RuntimeError(f"a family planted on every contract returns {found}")
-    # A longer delay window moves the prediction off the planted phase, and
-    # window dephasing lowers a pair's contrast magnitude.
-    off_slope = copy.deepcopy(roles)
-    for arm in ARMS:
-        off_slope[f"{orbit_pair('window_delay')}_{arm}"]["windows"][7]["after"] += 600
-    dephased = pair({"phase_one": CONTRACT_SLOPE * CONTRACT_IDLE_DT["nominal"], "window_t2": 0.5})
-    for label, case, measured, expected in (
-        ("off-slope window_delay", off_slope, pairs, "window_delay_phase_slope"),
-        ("dephased extra_readout", roles, pairs | {orbit_pair("extra_readout"): dephased}, "extra_readout_contrast"),
-        ("dephased window_echo", roles, pairs | {orbit_pair("window_echo"): dephased}, "window_echo_restoration"),
+    if {name: result["status"] for name, result in results.items()} != passing:
+        raise RuntimeError(f"a family planted on every contract returns {results}")
+
+    def delayed(window: int) -> dict[str, dict[str, Any]]:
+        case = copy.deepcopy(roles)
+        for arm in ARMS:
+            case[f"{orbit_pair('window_delay')}_{arm}"]["windows"][7]["after"] = 100 + window
+        return case
+
+    off_slope = phase_slope_contract(profiles, delayed(CONTRACT_OFF_SLOPE_DT), orientation, dt, CONTRACT_ALPHA, False)
+    if off_slope["status"] != "fail":
+        raise RuntimeError(f"an off-slope window_delay passes the phase-slope contract: {off_slope}")
+    # The planted window_delay phase is also the alias one turn up of a
+    # nominal phase past pi, so the shared-slope test passes with one wrap
+    # while the principal nominal phase predicts a different delay phase.
+    wrapped = phase_slope_contract(profiles, delayed(CONTRACT_WRAPPED_DT), orientation, dt, CONTRACT_ALPHA, False)
+    principal = math.remainder(wrapped["nominal_fit_phase"] * wrapped["exposure_ratio"], 2 * math.pi)
+    principal_statistic = profiles.exact["window_delay"](principal) - profiles.minima[1]
+    if (
+        wrapped["status"] != "pass"
+        or wrapped["nominal_phase_wraps"] != 1
+        or principal_statistic <= off_slope["chi2_threshold"]
     ):
-        found = statuses(case, measured, t2_us)
-        if found != passing | {expected: "fail"}:
-            raise RuntimeError(f"a {label} returns {found}; only {expected} must fail")
+        raise RuntimeError(
+            f"a wrapped nominal phase returns {wrapped['status']} at {wrapped['nominal_phase_wraps']} wraps; "
+            f"the principal-branch rule's statistic is {principal_statistic:.2f}"
+        )
+    # The slope contract reads neither the extra_readout nor the window_echo
+    # pair, so their cases evaluate the two magnitude contracts alone.
+    dephased = pair({"phase_one": CONTRACT_SLOPE * CONTRACT_IDLE_DT["nominal"], "window_t2": 0.5})
+    readout_case = readout_contract(pairs | {orbit_pair("extra_readout"): dephased}, roles, dt, t2_us, CONTRACT_ALPHA)
+    echo_case = contrast_floor(dephased, nominal, (1.0, 1.0), CONTRACT_ALPHA)
+    if readout_case["status"] != "fail" or echo_case["status"] != "fail":
+        raise RuntimeError(f"dephased pairs pass the magnitude contracts: {readout_case}, {echo_case}")
+    if readout_contract(pairs, roles, dt, {}, CONTRACT_ALPHA)["status"] != "not_evaluable":
+        raise RuntimeError("the readout contract evaluates without a retained T2")
+    # Only the no-feedback member of extra_readout idles longer, so only y
+    # decays; the pair-mean factor overstates the feedback arm's decay bound.
+    resting = pair({})
+    arm_roles = copy.deepcopy(roles)
+    arm_roles[f"{orbit_pair('extra_readout')}_feedback"]["windows"][7]["after"] = 100 + CONTRACT_IDLE_DT["nominal"]
+    arm_roles[f"{orbit_pair('extra_readout')}_no_feedback"]["windows"][7]["after"] = (
+        100 + CONTRACT_IDLE_DT["nominal"] + 347
+    )
+    arm_pairs = {orbit_pair("nominal"): resting, orbit_pair("extra_readout"): pair({}, {"window_t2": 0.4})}
+    per_arm = readout_contract(arm_pairs, arm_roles, dt, {7: 1.0}, CONTRACT_ALPHA)
+    mean_factor = math.exp(-347 / 2 * dt / 1e-6)
+    pooled = contrast_floor(arm_pairs[orbit_pair("extra_readout")], resting, (mean_factor, mean_factor), CONTRACT_ALPHA)
+    if per_arm["status"] != "pass" or per_arm["feedback_factor"] != 1.0 or pooled["status"] != "fail":
+        raise RuntimeError(
+            f"per-arm readout dephasing returns {per_arm}; the pair-mean factor returns {pooled['status']}"
+        )
     # An echo that cancels the nominal phase at equal coherence lowers the
     # signed contrast difference beyond its one-sided limit; the magnitude
     # contract passes it.
     canceled = pair({})
-    restored = contract_results(roles, pairs | {orbit_pair("window_echo"): canceled}, readouts, dt, t2_us, fits)
+    restored = contrast_floor(canceled, nominal, (1.0, 1.0), CONTRACT_ALPHA)
     (echo_signed, echo_variance), (nominal_signed, nominal_variance) = map(contrast_difference, (canceled, nominal))
     signed_upper = (
         echo_signed - nominal_signed + float(norm.ppf(1 - CONTRACT_ALPHA)) * math.sqrt(echo_variance + nominal_variance)
     )
-    if restored["window_echo_restoration"]["status"] != "pass" or signed_upper >= 0:
+    if restored["status"] != "pass" or signed_upper >= 0:
         raise RuntimeError(
-            f"a phase-canceling echo returns {restored['window_echo_restoration']}; "
-            f"the signed contrast form's upper limit is {signed_upper:.4f}"
+            f"a phase-canceling echo returns {restored}; the signed contrast form's upper limit is {signed_upper:.4f}"
         )
-    if statuses(roles, pairs, {})["extra_readout_contrast"] != "not_evaluable":
-        raise RuntimeError("the readout contract evaluates without a retained T2")
     differing = copy.deepcopy(roles)
     name = f"{orbit_pair('nominal')}_no_feedback"
     differing[name]["coupling"] = {7: {0: 1, 1: 1}, 9: {1: 0}}
@@ -1768,20 +1803,28 @@ def _check_between_arm() -> None:
     relative[echo]["coupling"] = {7: {0: 1, 1: 1}, 9: {0: 1, 1: 1}}
     for case, members in ((differing, {name}), (relative, {echo})):
         admitted = admissibility(case)
-        results = contract_results(case, pairs, readouts, dt, t2_us, fits)
+        refused = contract_results(case, pairs, readouts, dt, t2_us, profiles)
         if admitted["admissible"] or set(admitted["differing"]) != members:
             raise RuntimeError(f"admissibility names {sorted(admitted['differing'])}, not {sorted(members)}")
         if any(
             result["status"] != "not_admissible" or result["differing"] != admitted["differing"]
-            for result in results.values()
+            for result in refused.values()
         ):
-            raise RuntimeError(f"a family with differing couplings evaluates a contract: {results}")
+            raise RuntimeError(f"a family with differing couplings evaluates a contract: {refused}")
     if admissibility(differing)["unresolved"] != {name: differing[name]["unresolved"]}:
         raise RuntimeError("admissibility omits a member's unresolved probe")
     single = {key: value for key, value in roles.items() if key.startswith(orbit_pair("nominal"))}
     absent = [f"{orbit_pair(variant)}_{arm}" for variant in ORBIT_VARIANTS[1:] for arm in ARMS]
     if admissibility(single)["missing"] != absent:
         raise RuntimeError("admissibility of the nominal pair alone names no missing member")
+    law = PhaseLaw(readout, True)
+    if not np.allclose(
+        law(0.11, 0.83, -2.4),
+        distribution(readout | {"round1": 0.11, "round2": 0.83, "phase_one": -2.4}, True),
+        rtol=0.0,
+        atol=1e-10,
+    ):
+        raise RuntimeError("the polynomial-trigonometric law differs from distribution() off its nodes")
 
 
 def self_check() -> None:
@@ -2130,13 +2173,10 @@ def pair_phase_exposure(
     return sum(values) / len(values)
 
 
-def pair_idle(roles: dict[str, dict[str, Any]], variant: str, qubit: int) -> float:
-    """Mean idle time in dt of one window qubit over a pair's members, driven echo pulses excluded."""
-    idles = []
-    for arm in ARMS:
-        window = roles[f"{orbit_pair(variant)}_{arm}"]["windows"][qubit]
-        idles.append(window["after"] - window["before"] - sum(length for _start, length in window["x"]))
-    return sum(idles) / len(idles)
+def arm_idle(roles: dict[str, dict[str, Any]], variant: str, arm: str, qubit: int) -> float:
+    """Idle time in dt of one window qubit in one member, driven echo pulses excluded."""
+    window = roles[f"{orbit_pair(variant)}_{arm}"]["windows"][qubit]
+    return float(window["after"] - window["before"] - sum(length for _start, length in window["x"]))
 
 
 def signed_contrast(counts: np.ndarray) -> tuple[float, float]:
@@ -2176,30 +2216,46 @@ def contrast_magnitude(arms: dict[str, np.ndarray]) -> tuple[float, float]:
 
 
 def contrast_floor(
-    test: dict[str, np.ndarray], reference: dict[str, np.ndarray], factor: float, alpha: float
+    test: dict[str, np.ndarray],
+    reference: dict[str, np.ndarray],
+    factors: tuple[float, float],
+    alpha: float,
 ) -> dict[str, Any]:
-    """One-sided test that a pair's contrast magnitude reaches factor times the reference pair's.
+    """One-sided test that a pair's contrast magnitude reaches the reference pair's, each arm scaled by its factor.
 
-    m_test - factor m_reference (contrast_magnitude) is normal to first order
-    in the multinomial counts of four independent PUBs, with variance
-    var_test + factor^2 var_reference. The contract fails only when its upper
-    (1 - alpha) confidence limit lies below zero, so at the bound sampling
-    noise fails it with probability alpha. The signed contrast difference
-    of each pair is reported and decides nothing, since a work phase moves it.
+    x = fb1 - fb3 comes from the feedback PUB and y = nf3 - nf1 from the
+    no-feedback PUB, so each decays by its own arm's factor and the bound is
+    hypot(f_fb x_ref, f_nf y_ref). m_test - bound is normal to first order
+    in the multinomial counts of four independent PUBs; the delta method
+    gives the bound's variance (f_fb^4 x^2 var x + f_nf^4 y^2 var y) /
+    bound^2, added to var m_test (contrast_magnitude). The contract fails
+    only when the upper (1 - alpha) confidence limit lies below zero, so at
+    the bound sampling noise fails it with probability alpha. The signed
+    contrast difference of each pair is reported and decides nothing, since
+    a work phase moves it.
     """
+    feedback_factor, control_factor = factors
     tested, tested_variance = contrast_magnitude(test)
-    reference_value, reference_variance = contrast_magnitude(reference)
-    statistic = tested - factor * reference_value
-    error = math.sqrt(tested_variance + factor**2 * reference_variance)
+    x, x_variance = signed_contrast(reference["feedback"])
+    y, y_variance = signed_contrast(reference["no_feedback"])
+    bound = math.hypot(feedback_factor * x, control_factor * y)
+    if bound == 0.0:
+        bound_variance = feedback_factor**2 * x_variance + control_factor**2 * y_variance
+    else:
+        bound_variance = (feedback_factor**4 * x**2 * x_variance + control_factor**4 * y**2 * y_variance) / bound**2
+    statistic = tested - bound
+    error = math.sqrt(tested_variance + bound_variance)
     quantile = float(norm.ppf(1 - alpha))
     upper = statistic + quantile * error
     return {
         "status": "pass" if upper >= 0 else "fail",
         "contrast_magnitude": tested,
-        "reference_contrast_magnitude": reference_value,
+        "reference_contrast_magnitude": contrast_magnitude(reference)[0],
         "signed_contrast_difference": contrast_difference(test)[0],
         "reference_signed_contrast_difference": contrast_difference(reference)[0],
-        "reference_factor": factor,
+        "feedback_factor": feedback_factor,
+        "no_feedback_factor": control_factor,
+        "bound": bound,
         "statistic": statistic,
         "standard_error": error,
         "one_sided_quantile": quantile,
@@ -2227,27 +2283,172 @@ def phase_fits(
     return dict(zip(variants, parallel.ordered_map(PhaseFit(), items, min_items=2), strict=True))
 
 
+# Odd grid size, so the periodic profile has an exact trigonometric
+# interpolant; the dense search steps an eighth of a grid step in both
+# arguments, and the lowest local minima are refined.
+SLOPE_GRID = 121
+SLOPE_DENSE_PER_STEP = 8
+SLOPE_CANDIDATES = 3
+_NODES = 0.5 - 0.5 * np.cos(np.pi * (2 * np.arange(5) + 1) / 10)
+_PHASES = (0.0, 2 * math.pi / 3, 4 * math.pi / 3)
+
+
+class PhaseLaw:
+    """distribution() of one arm as an exact expansion in round1, round2 and phase_one.
+
+    Each depolarizing round is affine in its strength on each of its four
+    qubits, so the law is a polynomial of degree 4 in round1 and in round2,
+    and phase_one acts once as diag(1, e^{i phi}) on the work bit for 1, so
+    the law is a + b cos(phi) + c sin(phi) in it. Five Chebyshev nodes per
+    strength and three phases determine the coefficients; construction
+    requires the expansion to reproduce distribution() at an off-node point.
+    """
+
+    def __init__(self, readout: dict[str, float], feed_forward: bool) -> None:
+        samples = np.array(
+            [
+                [
+                    [
+                        distribution(readout | {"round1": one, "round2": two, "phase_one": phase}, feed_forward)
+                        for phase in _PHASES
+                    ]
+                    for two in _NODES
+                ]
+                for one in _NODES
+            ]
+        )
+        inverse = np.linalg.inv(np.vander(_NODES, 5, increasing=True))
+        trig = np.linalg.inv(np.array([[1.0, math.cos(phase), math.sin(phase)] for phase in _PHASES]))
+        self.coefficients = np.einsum("ai,bj,tk,ijkc->abtc", inverse, inverse, trig, samples)
+        probe = readout | {"round1": 0.37, "round2": 0.61, "phase_one": 1.3}
+        if not np.allclose(self(0.37, 0.61, 1.3), distribution(probe, feed_forward), rtol=0.0, atol=1e-10):
+            raise RuntimeError("the polynomial-trigonometric law differs from distribution()")
+
+    def at_phase(self, phase: float) -> np.ndarray:
+        return np.einsum("abtc,t->abc", self.coefficients, [1.0, math.cos(phase), math.sin(phase)])
+
+    def __call__(self, round1: float, round2: float, phase: float) -> np.ndarray:
+        powers = np.arange(5)
+        return np.einsum("a,b,abc->c", round1**powers, round2**powers, self.at_phase(phase))
+
+
+class FastPhaseProfile:
+    """PhaseProfile of one pair evaluated through PhaseLaw: the same objective, start, method and bounds."""
+
+    def __init__(
+        self, counts: dict[str, np.ndarray], readouts: dict[str, dict[str, float]], best: dict[str, Any]
+    ) -> None:
+        self.counts = counts
+        self.laws = {arm: PhaseLaw(readouts[arm], arm == "feedback") for arm in ARMS}
+        self.start = np.array([best["parameters"][name] for name, _low, _high in NUISANCE])
+        self.bounds = [(low, high) for _name, low, high in NUISANCE]
+
+    def objective(self, vector: np.ndarray, tables: dict[str, np.ndarray]) -> float:
+        powers = np.arange(5)
+        one, two = float(vector[0]) ** powers, float(vector[1]) ** powers
+        total = 0.0
+        for arm, table in tables.items():
+            observed = self.counts[arm]
+            expected = np.clip(np.einsum("a,b,abc->c", one, two, table), 1e-12, None) * observed.sum()
+            positive = observed > 0
+            total += 2 * float(np.sum(observed[positive] * np.log(observed[positive] / expected[positive])))
+        return total
+
+    def __call__(self, phase: float) -> float:
+        tables = {arm: law.at_phase(phase) for arm, law in self.laws.items()}
+        return float(minimize(self.objective, self.start, args=(tables,), method="L-BFGS-B", bounds=self.bounds).fun)
+
+
+def periodic_interpolant(values: np.ndarray, phases: np.ndarray) -> np.ndarray:
+    """The trigonometric interpolant of values on the odd grid -pi + 2 pi j / N, evaluated at phases."""
+    count = len(values)
+    coefficients = np.fft.fft(values) / count
+    frequencies = np.fft.fftfreq(count, 1.0 / count)
+    return np.real(np.exp(1j * np.outer(phases + math.pi, frequencies)) @ coefficients)
+
+
+class SlopeSum:
+    """[D_n(phi) - D_n,min] + [D_d(r phi) - D_d,min] from two profiles and their minima."""
+
+    def __init__(self, nominal: Any, delay: Any, minima: tuple[float, float], ratio: float) -> None:
+        self.nominal, self.delay, self.minima, self.ratio = nominal, delay, minima, ratio
+
+    def __call__(self, phi: float) -> float:
+        return self.nominal(phi) - self.minima[0] + self.delay(self.ratio * phi) - self.minima[1]
+
+
+class RefineSlope:
+    """Bounded scalar minimum of the PhaseLaw slope sum within one grid step, and the exact sum there."""
+
+    def __init__(self, fast: SlopeSum, exact: SlopeSum, step: float, span: float) -> None:
+        self.fast, self.exact, self.step, self.span = fast, exact, step, span
+
+    def __call__(self, center: float) -> tuple[float, float]:
+        from scipy.optimize import minimize_scalar
+
+        bounds = (max(-self.span, center - self.step), min(self.span, center + self.step))
+        phi = float(minimize_scalar(self.fast, bounds=bounds, method="bounded", options={"xatol": 1e-6}).x)
+        return self.exact(phi), phi
+
+
+class SlopeProfiles:
+    """The nominal and window_delay pairs' exact and PhaseLaw profiles, minima and periodic grid profiles.
+
+    They depend on counts, readouts and fits alone, so families that differ
+    only in their windows share them. Each minimum is the work_phase_one
+    fit's deviance, the joint minimum over phase and nuisances.
+    """
+
+    def __init__(
+        self,
+        pairs: dict[str, dict[str, np.ndarray]],
+        readouts: dict[str, dict[str, float]],
+        fits: dict[str, dict[str, Any]],
+    ) -> None:
+        self.variants = ("nominal", "window_delay")
+        self.counts = {variant: pairs[orbit_pair(variant)] for variant in self.variants}
+        self.arms = {
+            variant: {arm: readouts[f"{orbit_pair(variant)}_{arm}"] for arm in ARMS} for variant in self.variants
+        }
+        self.fits = fits
+        self.exact = {v: PhaseProfile(self.counts[v], self.arms[v], fits[v]) for v in self.variants}
+        self.fast = {v: FastPhaseProfile(self.counts[v], self.arms[v], fits[v]) for v in self.variants}
+        self.minima = (fits["nominal"]["deviance"], fits["window_delay"]["deviance"])
+        grid = [float(phase) for phase in -math.pi + 2 * math.pi * np.arange(SLOPE_GRID) / SLOPE_GRID]
+        self.values = {v: np.array(parallel.ordered_map(self.fast[v], grid, min_items=2)) for v in self.variants}
+
+
 def phase_slope_contract(
-    pairs: dict[str, dict[str, np.ndarray]],
-    readouts: dict[str, dict[str, float]],
+    profiles: SlopeProfiles,
     roles: dict[str, dict[str, Any]],
     orientation: dict[str, int],
-    fits: dict[str, dict[str, Any]],
+    dt: float,
     alpha: float,
     render_set: bool,
 ) -> dict[str, Any]:
-    """window_delay's work phase lies on the nominal pair's static phase slope.
+    """Likelihood-ratio test that the nominal and window_delay pairs share one static phase slope.
 
     A static detuning shared by the coupled qubits adds work phase in
-    proportion to coupling-weighted exposure (pair_phase_exposure), so the
-    nominal pair's fitted phase, taken on its principal branch, over its
-    exposure gives the slope per dt, and the slope times window_delay's
-    exposure predicts that pair's phase modulo 2 pi. The contract passes when
-    the prediction lies in window_delay's profile-likelihood confidence set
-    at 1 - alpha: its profiled deviance (PhaseProfile) exceeds the
-    work-phase minimum by at most the one-parameter chi-square quantile.
-    The nominal phase enters as a point estimate. render_set adds the set
-    itself on phase_interval's grid.
+    proportion to coupling-weighted exposure (pair_phase_exposure), so a
+    slope s gives the nominal pair phase phi = s E_n and the window_delay
+    pair phase r phi with r = E_d / E_n. Each pair's profiled deviance
+    (PhaseProfile) is 2 pi periodic in its own phase, so every alias phi +
+    2 pi k of the nominal phase is a distinct slope with its own window_delay
+    prediction; |phi| <= EXPOSURE_RATE_BOUND (rad/us) times the nominal
+    exposure time bounds k. The statistic is the minimum over that range of
+    [D_n(phi) - D_n,min] + [D_d(r phi) - D_d,min], two free phases against
+    one free slope, so the contract passes when it lies within the
+    one-parameter chi-square quantile at 1 - alpha. Both pairs' uncertainty
+    enters through their profiles. Aliases closer than the profiles resolve
+    let a wrong slope pass, so the test's power falls as the bound and the
+    exposures grow.
+
+    Search: the trigonometric interpolants of the SlopeProfiles grids locate
+    the local minima of the sum on a phi grid of SLOPE_DENSE_PER_STEP points
+    per grid step in both arguments; the SLOPE_CANDIDATES lowest are refined
+    by bounded scalar minimization of the PhaseLaw sum within one grid step,
+    and the exact PhaseProfile sum at each refined phase decides. render_set
+    adds window_delay's own confidence set on phase_interval's grid.
     """
     coupling = normalized_coupling(roles[REFERENCE_MEMBER]["coupling"])
     if any(set(branches) != {0, 1} or len(set(branches.values())) != 1 for branches in coupling.values()):
@@ -2264,28 +2465,52 @@ def phase_slope_contract(
             "status": "not_evaluable",
             "reason": f"the nominal pair's signed exposure {nominal_exposure:g} dt defines no phase slope",
         }
-    nominal_phase = fits["nominal"]["parameters"]["phase_one"]
-    slope = nominal_phase / nominal_exposure
-    predicted = math.remainder(slope * delay_exposure, 2 * math.pi)
-    delay = orbit_pair("window_delay")
-    arms = {arm: readouts[f"{delay}_{arm}"] for arm in ARMS}
-    best = fits["window_delay"]
+    ratio = delay_exposure / nominal_exposure
+    dt_us = dt * 1e6
+    span = EXPOSURE_RATE_BOUND * abs(nominal_exposure) * dt_us
+    step = 2 * math.pi / SLOPE_GRID / max(1.0, abs(ratio))
+    dense = np.linspace(-span, span, max(3, math.ceil(2 * span * SLOPE_DENSE_PER_STEP / step) + 1))
+    summed = periodic_interpolant(profiles.values["nominal"], dense) + periodic_interpolant(
+        profiles.values["window_delay"], ratio * dense
+    )
+    local = [
+        index
+        for index in range(len(dense))
+        if (index == 0 or summed[index] <= summed[index - 1])
+        and (index == len(dense) - 1 or summed[index] <= summed[index + 1])
+    ]
+    centers = [float(dense[i]) for i in sorted(local, key=lambda i: (summed[i], i))[:SLOPE_CANDIDATES]]
+    refine = RefineSlope(
+        SlopeSum(profiles.fast["nominal"], profiles.fast["window_delay"], profiles.minima, ratio),
+        SlopeSum(profiles.exact["nominal"], profiles.exact["window_delay"], profiles.minima, ratio),
+        step,
+        span,
+    )
+    refined = parallel.ordered_map(refine, centers, min_items=2)
+    statistic, phi = min(refined)
     threshold = float(chi2.ppf(1 - alpha, 1))
-    statistic = PhaseProfile(pairs[delay], arms, best)(predicted) - best["deviance"]
     result: dict[str, Any] = {
         "status": "pass" if statistic <= threshold else "fail",
-        "nominal_phase": nominal_phase,
-        "nominal_exposure_dt": nominal_exposure,
-        "slope_rad_per_dt": slope,
-        "window_delay_exposure_dt": delay_exposure,
-        "predicted_phase": predicted,
-        "window_delay_phase": best["parameters"]["phase_one"],
-        "profile_deviance_at_prediction": statistic,
+        "statistic": statistic,
         "chi2_threshold": threshold,
         "level": 1 - alpha,
+        "nominal_phase": phi,
+        "nominal_phase_wraps": round((phi - math.remainder(phi, 2 * math.pi)) / (2 * math.pi)),
+        "window_delay_phase": ratio * phi,
+        "slope_rad_per_dt": phi / nominal_exposure,
+        "slope_rad_per_us": phi / (nominal_exposure * dt_us),
+        "nominal_exposure_dt": nominal_exposure,
+        "window_delay_exposure_dt": delay_exposure,
+        "exposure_ratio": ratio,
+        "nominal_phase_bound": span,
+        "nominal_fit_phase": profiles.fits["nominal"]["parameters"]["phase_one"],
+        "window_delay_fit_phase": profiles.fits["window_delay"]["parameters"]["phase_one"],
+        "candidates": [{"nominal_phase": at, "statistic": value} for value, at in refined],
     }
     if render_set:
-        result["confidence_set_grid_segments"] = phase_interval(pairs[delay], arms, best, threshold)
+        result["confidence_set_grid_segments"] = phase_interval(
+            profiles.counts["window_delay"], profiles.arms["window_delay"], profiles.fits["window_delay"], threshold
+        )
     return result
 
 
@@ -2296,31 +2521,34 @@ def readout_contract(
     t2_us: dict[int, float],
     alpha: float,
 ) -> dict[str, Any]:
-    """extra_readout's contrast magnitude stays above the nominal one dephased over the added idle time.
+    """extra_readout's contrast magnitude stays above the nominal one dephased over each arm's added idle time.
 
-    Each coupled qubit q idles t_q longer in the extra_readout window than in
-    the nominal one (pair_idle, floored at zero since dephasing only lowers
-    coherence), so its coherence decays by exp(-t_q / T2_q); the bound is the
-    nominal contrast magnitude times exp(-sum_q t_q / T2_q) over the coupled
-    qubits, with T2 from the record's retained calibration. A coupling that
-    holds only one of the work bits for 1 and 16 keeps one term, which
-    raises the bound. contrast_floor decides at alpha.
+    In each arm, coupled qubit q idles t_q longer in the extra_readout member
+    than in the nominal one (arm_idle, floored at zero since dephasing only
+    lowers coherence), so that arm's contrast component decays by
+    exp(-sum_q t_q / T2_q) over the coupled qubits, with T2 from the record's
+    retained calibration; contrast_floor bounds the magnitude with the two
+    arm factors at alpha. A coupling that holds only one of the work bits
+    for 1 and 16 keeps one term, which raises the bound.
     """
     qubits = sorted(normalized_coupling(roles[REFERENCE_MEMBER]["coupling"]))
     absent = [qubit for qubit in qubits if not t2_us.get(qubit)]
     if absent:
         return {"status": "not_evaluable", "reason": f"the record retains no T2 for coupled qubits {absent}"}
     added = {
-        qubit: max(0.0, pair_idle(roles, "extra_readout", qubit) - pair_idle(roles, "nominal", qubit))
-        for qubit in qubits
+        arm: {
+            qubit: max(0.0, arm_idle(roles, "extra_readout", arm, qubit) - arm_idle(roles, "nominal", arm, qubit))
+            for qubit in qubits
+        }
+        for arm in ARMS
     }
     # Backend properties report T2 in microseconds (live_run.placed_qubit_calibration).
-    exponent = sum(added[qubit] * dt / (t2_us[qubit] * 1e-6) for qubit in qubits)
+    factors = tuple(math.exp(-sum(added[arm][qubit] * dt / (t2_us[qubit] * 1e-6) for qubit in qubits)) for arm in ARMS)
     result = contrast_floor(
-        pairs[orbit_pair("extra_readout")], pairs[orbit_pair("nominal")], math.exp(-exponent), alpha
+        pairs[orbit_pair("extra_readout")], pairs[orbit_pair("nominal")], (factors[0], factors[1]), alpha
     )
     return result | {
-        "added_idle_dt": {str(qubit): added[qubit] for qubit in qubits},
+        "added_idle_dt": {arm: {str(qubit): added[arm][qubit] for qubit in qubits} for arm in ARMS},
         "t2_us": {str(qubit): t2_us[qubit] for qubit in qubits},
         "dt_seconds": dt,
     }
@@ -2332,7 +2560,7 @@ def contract_results(
     readouts: dict[str, dict[str, float]],
     dt: float,
     t2_us: dict[int, float],
-    fits: dict[str, dict[str, Any]] | None = None,
+    profiles: SlopeProfiles | None = None,
     render_set: bool = False,
 ) -> dict[str, dict[str, Any]]:
     """Every between-arm contract's status and deciding numbers, each at CONTRACT_ALPHA.
@@ -2342,20 +2570,21 @@ def contract_results(
     window_delay_phase_slope (phase_slope_contract), extra_readout_contrast
     (readout_contract), and window_echo_restoration, which passes when the
     upper confidence limit of the window_echo contrast magnitude minus the
-    nominal one reaches zero (contrast_floor at factor 1). A family that
+    nominal one reaches zero (contrast_floor at factors 1). A family that
     fails admissibility reports every contract not_admissible.
     """
     admitted = admissibility(roles)
     if not admitted["admissible"]:
         return not_admissible(admitted)
-    fits = phase_fits(pairs, readouts) if fits is None else fits
+    if profiles is None:
+        profiles = SlopeProfiles(pairs, readouts, phase_fits(pairs, readouts))
     return {
         "window_delay_phase_slope": phase_slope_contract(
-            pairs, readouts, roles, admitted["orientation"], fits, CONTRACT_ALPHA, render_set
+            profiles, roles, admitted["orientation"], dt, CONTRACT_ALPHA, render_set
         ),
         "extra_readout_contrast": readout_contract(pairs, roles, dt, t2_us, CONTRACT_ALPHA),
         "window_echo_restoration": contrast_floor(
-            pairs[orbit_pair("window_echo")], pairs[orbit_pair("nominal")], 1.0, CONTRACT_ALPHA
+            pairs[orbit_pair("window_echo")], pairs[orbit_pair("nominal")], (1.0, 1.0), CONTRACT_ALPHA
         ),
     }
 
