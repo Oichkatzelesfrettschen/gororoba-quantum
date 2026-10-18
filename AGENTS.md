@@ -1139,7 +1139,7 @@ offsets, efficiencies plus offsets are declared and recovered), core-535
 (full tier, `--check-efficiency` of the session record) and core-536
 (`--check-followup`, the preregistered job-02 and repeat readout) and
 core-538 (`--check-pair`, the one-circuit form test job-08 and the
-32-iteration seed ensemble job-07), core-539 (`--self-test-bridge`, every
+32-iteration seed ensemble job-07), core-544 (`--self-test-bridge`, every
 preregistered bridge branch on synthetic iterations) and core-540
 (`--check-bridge`, the form-mesh bridge job-09), core-541 (`anu_qrng.py`
 self-test and the offline check of every retained draw), core-542

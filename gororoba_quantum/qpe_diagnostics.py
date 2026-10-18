@@ -176,12 +176,16 @@ N21_ORBIT_BITS = (0, 2, 4)
 
 # Window variants between the first measurement and the second round. Each
 # keeps the ideal labeled law and changes one exposure of the work superposition
-# |1> +/- |16> while the control is measured and reset.
+# |1> +/- |16> while the control is measured and reset. Barriers over every
+# qubit open the window before the control's first measurement and close it
+# after its reset, so work-only gates of either multiplier round stay outside
+# it and every arm holds the work superposition on the same wires.
 N21_ORBIT_VARIANTS = ("nominal", "window_delay", "extra_readout", "window_echo")
-# window_barrier completes the first round before the first measurement and idles
-# the work bits for the same requested echo halves as window_echo, without the
-# pulses; elapsed exposure and pulse differences come from the returned schedule.
-N21_ORBIT_BUILDABLE = (*N21_ORBIT_VARIANTS, "window_barrier")
+# window_barrier idles the work bits for the same requested echo halves as
+# window_echo, without the pulses; elapsed exposure and pulse differences come
+# from the returned schedule. nominal_unbarriered omits both barriers, so the
+# compiler may move work-only gates across the control's measurement and reset.
+N21_ORBIT_BUILDABLE = (*N21_ORBIT_VARIANTS, "window_barrier", "nominal_unbarriered")
 
 
 def n21_orbit_diagnostic(
@@ -200,8 +204,10 @@ def n21_orbit_diagnostic(
     QPE with the labeled law of n21_labeled_law and performs no order finding
     (Smolin, Smith and Vargo, Nature 499, 163 (2013), doi:10.1038/nature12290).
 
-    window_delay idles the control for window_delay_dt after its reset, so the
-    work superposition waits that much longer before the second round.
+    Every variant except nominal_unbarriered brackets the control's
+    measurement and reset with barriers over all qubits. window_delay idles
+    the control for window_delay_dt after its reset, inside the bracket, so
+    the work superposition waits that much longer before the second round.
     extra_readout measures the control a second time into the first bit, which
     adds one readout of the same duration and leaves the last write as the
     feed-forward bit. window_echo applies X to the work bits for 1 and 16 after
@@ -225,15 +231,16 @@ def n21_orbit_diagnostic(
     circuit.cswap(0, one, four)
     circuit.cswap(0, four, sixteen)
     circuit.h(0)
+    bracketed = variant != "nominal_unbarriered"
+    if bracketed:
+        circuit.barrier()
     if variant == "window_echo":
         assert echo_half_dt is not None
-        circuit.barrier()
         for _half in range(2):
             circuit.delay(echo_half_dt, [one, sixteen], unit="dt")
             circuit.x([one, sixteen])
     if variant == "window_barrier":
         assert echo_half_dt is not None
-        circuit.barrier()
         circuit.delay(2 * echo_half_dt, [one, sixteen], unit="dt")
     circuit.measure(0, phase[0])
     if variant == "extra_readout":
@@ -242,7 +249,7 @@ def n21_orbit_diagnostic(
     if variant == "window_delay":
         assert window_delay_dt is not None
         circuit.delay(window_delay_dt, 0, unit="dt")
-    if variant in ("window_echo", "window_barrier"):
+    if bracketed:
         circuit.barrier()
     circuit.h(0)
     circuit.cswap(0, four, sixteen)
@@ -352,6 +359,39 @@ def ideal_branch_probabilities(circuit: QuantumCircuit) -> tuple[float, ...]:
     for weight, _state, classical in branches:
         probabilities[classical] += weight
     return tuple(probabilities)
+
+
+def window_bracket_violations(isa: QuantumCircuit, inside: frozenset[str] = frozenset({"delay"})) -> list[str]:
+    """Operations on other wires that the control's measurement-and-reset window holds.
+
+    The window opens at the first measurement and closes at the first reset
+    of its wire that follows it. An operation on another wire lies outside
+    the window when it precedes the measurement or follows the reset in the
+    circuit's dependency order; a barrier over every qubit places all of a
+    multiplier round on one side. Operations named in inside (delays, and
+    the echo pulses of window_echo) belong to the window by design.
+    """
+    dag = circuit_to_dag(isa)
+    nodes = list(dag.topological_op_nodes())
+    opening = next((node for node in nodes if node.op.name == "measure"), None)
+    if opening is None:
+        raise ValueError(f"{isa.name}: no measurement opens a window")
+    control = opening.qargs[0]
+    after = dag.descendants(opening)
+    closing = next(
+        (node for node in nodes if node in after and node.op.name == "reset" and node.qargs == (control,)), None
+    )
+    if closing is None:
+        raise ValueError(f"{isa.name}: no reset of the measured wire closes its window")
+    before, later = dag.ancestors(opening), dag.descendants(closing)
+    return [
+        f"{node.op.name} on {[isa.find_bit(qubit).index for qubit in node.qargs]}"
+        for node in nodes
+        if control not in node.qargs
+        and node.op.name not in inside | {"barrier"}
+        and node not in before
+        and node not in later
+    ]
 
 
 def ideal_compiled_probabilities(circuit: QuantumCircuit, *, max_active_qubits: int = 12) -> tuple[float, ...]:

@@ -2851,7 +2851,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --self-test-bridge && \"$PYTHON\" -B -O -W error scripts/qd_belenos_mesh.py --self-test-bridge",
-   "name": "core-539",
+   "name": "core-544",
    "seconds": 1.0,
    "tier": "pr"
   },
@@ -3599,6 +3599,14 @@
   },
   {
    "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --window-bracket && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --window-bracket",
+   "name": "core-446",
+   "seconds": 22.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/result.json && \"$PYTHON\" -B -O -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/result.json",
    "name": "core-489",
@@ -3844,7 +3852,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/state_prep_excess.py --check && \"$PYTHON\" -B -O -W error scripts/state_prep_excess.py --check",
-   "name": "core-538",
+   "name": "core-539",
    "seconds": 3.0,
    "tier": "pr"
   },
@@ -3878,6 +3886,14 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_branching_benchmark.py --check docs/evidence/ghost_error_scale_branching/benchmark-host.json results/kaggle/2026-10-18T041945Z-gororoba-ghost-branching-t4/output/output/ghost_branching_benchmark.json && \"$PYTHON\" -B -O -W error scripts/ghost_branching_benchmark.py --check docs/evidence/ghost_error_scale_branching/benchmark-host.json results/kaggle/2026-10-18T041945Z-gororoba-ghost-branching-t4/output/output/ghost_branching_benchmark.json",
    "name": "core-441",
    "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --compare-parts docs/evidence/ghost_error_scale/part_a.json --result results/kaggle/2026-10-18T055207Z-gororoba-ghost-branching-sweep/output/output/ghost_error_scale_branching.json --require-tolerance && \"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --compare-parts docs/evidence/ghost_error_scale/part_b.json --result results/kaggle/2026-10-18T055207Z-gororoba-ghost-branching-sweep/output/output/ghost_error_scale_branching.json --require-tolerance && \"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --compare-parts docs/evidence/ghost_error_scale/part_c.json --result results/kaggle/2026-10-18T055207Z-gororoba-ghost-branching-sweep/output/output/ghost_error_scale_branching.json --require-tolerance",
+   "name": "core-453",
+   "seconds": 3.0,
    "tier": "pr"
   }
  ],

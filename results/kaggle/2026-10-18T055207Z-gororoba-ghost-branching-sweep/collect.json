@@ -1,0 +1,22 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-ghost-branching-sweep/1",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-18T060059Z",
+ "files": {
+  "gororoba-ghost-branching-sweep.log": "e0201c0a7e7e3dc019ce3f29e65eb9c02b79e4009cc48152c2170813554d8ab8",
+  "output/ci-freeze.txt": "edc2ebae4e526f65a166b6c76350c959ae1c0276af67b30c6c9a3480893dbe89",
+  "output/datasets.json": "a7466c8e0435562584de75acfadee673a4498dca8d47b0f7945c8e04737c2c08",
+  "output/environment.json": "e604c22f6589594aab20509927fd918eb8a4b60d10cefc178740d9ff2f60c697",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/ghost_error_scale_branching.json": "eb9d3cc4ea8f68eb7bcc762671c487dbef51219e0993ad14ca10c6e11d26f43c",
+  "output/hypercomplex.json": "b0868ecde75c548642552b4fba27e9a8fd7574279b99459ac99f843cf6bab54f",
+  "output/install-pins.txt": "2ea67731b1ad5d4394864339bcf8341fc8c201fe35913cc5b4771b00d345dd87",
+  "output/pip.txt": "1036ed5b2a20fa7298c13fb41aa7ca2619d2c8ae096e992a29194abf2960ddb8",
+  "output/python-install.txt": "29f3344b4125e3777937a0ea130641016d7078375074fdd0257417f5035988d6",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "d6c7c8f1faad873acd62c37593bceb312375269a2ee7729b7746798d76226e22",
+  "output/uv-install.txt": "83d7a98e83c09d4ce954ee7ec374080c15c4866d3d195d382b44e2269f5376db",
+  "output/venv.txt": "c48758d995a48623a551e0e9f985c932e5fed775b217d7ed00f929890de3f00b"
+ }
+}

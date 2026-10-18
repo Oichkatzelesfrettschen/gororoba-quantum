@@ -165,7 +165,10 @@ def orbit(feed_forward: bool, context: str, echo_half_dt: int) -> QuantumCircuit
 
     if context not in ORBIT_CONTEXTS:
         raise ValueError(f"unknown orbit context {context!r}")
-    source = n21_orbit_diagnostic(feed_forward, context, echo_half_dt=echo_half_dt)
+    # The nominal context leaves the window unbracketed; window_barrier and
+    # window_echo add the barriers as their scheduling intervention.
+    variant = "nominal_unbarriered" if context == "nominal" else context
+    source = n21_orbit_diagnostic(feed_forward, variant, echo_half_dt=echo_half_dt)
     circuit = _patch(f"orbit_{context}_{'feedback' if feed_forward else 'no_feedback'}", source.num_clbits)
     circuit.compose(source, qubits=[CONTROL, WORK_A, SPECTATOR, WORK_B], clbits=range(source.num_clbits), inplace=True)
     return circuit
