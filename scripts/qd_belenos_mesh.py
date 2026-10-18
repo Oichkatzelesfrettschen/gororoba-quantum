@@ -650,7 +650,8 @@ class BlockFit:
             else:
                 u[m, :] *= np.exp(1j * start[t])
                 t += 1
-        assert pending is not None and first is not None
+        if not (pending is not None and first is not None):
+            raise AssertionError
         order.append((pending[0], pending[1], u))
         return [first], order
 

@@ -426,7 +426,8 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
     try:
         if policy is not None:
             validate(policy)
-            assert method is not None
+            if method is None:
+                raise AssertionError
             device, admission = batch_route(policy, method, circuits)
             # One GPU shot state at a time keeps execution within the two-state
             # admission floor; CPU batches parallelize shots across threads.
@@ -553,10 +554,14 @@ def _verify() -> None:
     simulator = AerSimulator(noise_model=NoiseModel())
     configure(simulator, policy)
     result = run(simulator, [circuit], 64, 20261012)
-    assert result.get_counts(0) == {"11": 64}
-    assert batches(simulator)[0]["ordered_circuit_names"] == [circuit.name]
-    assert not batches(simulator)[0]["experiment_metadata"][0].get("shot_branching_enabled", False)
-    assert batches(simulator)[0]["method"] == "statevector", "dynamic batch did not run statevector trajectories"
+    if result.get_counts(0) != {"11": 64}:
+        raise AssertionError
+    if batches(simulator)[0]["ordered_circuit_names"] != [circuit.name]:
+        raise AssertionError
+    if batches(simulator)[0]["experiment_metadata"][0].get("shot_branching_enabled", False):
+        raise AssertionError
+    if batches(simulator)[0]["method"] != "statevector":
+        raise AssertionError("dynamic batch did not run statevector trajectories")
     _verify_trajectory_noise(policy)
     static = QuantumCircuit(2, 2, name="static")
     static.h(0)
@@ -625,14 +630,19 @@ def _verify_routing(policy: dict[str, Any]) -> None:
             return route(policy | {"mode": mode}, [circuit])
 
     both = ("CPU", "GPU")
-    assert routed("cpu", wide, both, snapshot, 1) == ("CPU", None)
-    assert routed("auto", narrow, both, snapshot, 1) == ("CPU", None)
-    assert routed("auto", wide, ("CPU",), snapshot, 1) == ("CPU", None)
+    if routed("cpu", wide, both, snapshot, 1) != ("CPU", None):
+        raise AssertionError
+    if routed("auto", narrow, both, snapshot, 1) != ("CPU", None):
+        raise AssertionError
+    if routed("auto", wide, ("CPU",), snapshot, 1) != ("CPU", None):
+        raise AssertionError
     device, admission = routed("auto", wide, both, snapshot, 1)
-    assert device == "GPU" and admission is not None and admission["active_qubits"] == [GPU_MIN_ACTIVE_QUBITS]
+    if not (device == "GPU" and admission is not None and admission["active_qubits"] == [GPU_MIN_ACTIVE_QUBITS]):
+        raise AssertionError
     for reading, count in ((starved, 1), (snapshot, 2)):
         device, admission = routed("auto", wide, both, reading, count)
-        assert device == "CPU" and admission is not None and "rejected" in admission
+        if not (device == "CPU" and admission is not None and "rejected" in admission):
+            raise AssertionError
         try:
             routed("gpu", wide, both, reading, count)
         except ValueError:

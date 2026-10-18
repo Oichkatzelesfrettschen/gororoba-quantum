@@ -4,8 +4,8 @@
 recomputes the statements below from `cd_core.cd_sign` and
 `predict.associator_phase` in integer, rational or cyclotomic-integer
 arithmetic; the whole-operator periods are gated in
-[ripple_dynamics.py](../../gororoba_quantum/ripple_dynamics.py). Its CI gate
-runs in normal and optimized Python. Tags: [P] prior or textbook result, [E]
+[ripple_dynamics.py](../../gororoba_quantum/ripple_dynamics.py). It runs as a CI
+gate. Tags: [P] prior or textbook result, [E]
 finite check, [T] proved here, [I] interpretation.
 
 | Statement | Status |

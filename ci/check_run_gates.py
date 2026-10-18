@@ -115,6 +115,13 @@ def main() -> None:
                 status = run_gates.main(["--tier", "pr", *flag])
             if status != expected_status:
                 raise RuntimeError(f"{flag or 'no flag'} gave GOROROBA_QI_REQUIRED wrongly:\n{output.getvalue()}")
+        # --gates keeps the named gates of the tier and ignores a name the tree lacks.
+        output = io.StringIO()
+        with patch.object(run_gates, "ROOT", root), contextlib.redirect_stdout(output):
+            run_gates.main(["--tier", "pr", "--list", "--gates", "qi-pr,fast,absent"])
+        names = [line.split("\t", 1)[0] for line in output.getvalue().splitlines()]
+        if sorted(names) != ["fast", "qi-pr"]:
+            raise RuntimeError(f"--gates qi-pr,fast,absent listed {names}")
         for malformed in ([], ["qi", "qi"], ["kaggle"], "qi", [1]):
             gate = {"name": "malformed", "cwd": ".", "cmd": "true", "requires": malformed}
             (root / "ci/gates.json").write_text(json.dumps({"gates": [gate]}))
@@ -127,6 +134,7 @@ def main() -> None:
     print(
         "run_gates: unique gate names, every CPU, a launch failure keeps going with its diagnostic, "
         "child workers default to one, --device GPU reaches every gate, --max-seconds selects by measured seconds, "
+        "--gates selects by name, "
         "qi gates run in every lane and --requires qi keeps them alone with GOROROBA_QI_REQUIRED=1"
     )
 

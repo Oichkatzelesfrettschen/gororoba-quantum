@@ -263,10 +263,9 @@ class SelectionTests(unittest.TestCase):
         root = Path(__file__).resolve().parent.parent
         gates = json.loads((root / "ci/gates.json").read_text())["gates"]
         names = {
-            "core-064",
-            "sources-150",
+            "core-063",
+            "sources-149",
             "sources-215",
-            "sources-218",
             "core-287",
             "core-311",
             "core-487",

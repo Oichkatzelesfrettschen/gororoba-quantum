@@ -79,7 +79,7 @@ Tesla T4s (15,360 MiB each, compute capability 7.5, driver 580.178.04) with
 preflight in `gpu_env.json` lists no failure, and both Bell runs report
 device GPU. Every GPU row reports device GPU, every cuStateVec row
 `cuStateVec_enable` true, and no row is contended. Gate core-450 runs
-`--check` on the record in normal and optimized mode.
+`--check` on the record.
 
 ms per shot at 2048 shots:
 

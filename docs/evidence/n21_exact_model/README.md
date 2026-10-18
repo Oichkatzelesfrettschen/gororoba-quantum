@@ -121,7 +121,7 @@ from its channel, the latter untested.
 qubit starting in (1 - eps)|0><0| + eps|1><1|, eps = 0.01, the placeholder
 preparation excitation of the shorter repetition-delay dry runs
 (`scripts/n21_exact_crosscheck.py --prep-excitation 0.01 --out`, gate
-core-526 `--check` in normal and optimized Python). Aer receives the channel
+core-526 `--check`). Aer receives the channel
 as a leading `pauli_error([("X", 0.01), ("I", 0.99)])` instruction on each of
 the seven qubits (`dynamic_density.with_prep_excitation`), dynamic_density
 as `probabilities(..., prep_excitation=0.01)`, which applies the bit flip to

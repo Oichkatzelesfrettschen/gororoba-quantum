@@ -39,6 +39,9 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+import ibm_account  # noqa: E402
+
 AUDIT = ROOT / "results/live/qpu-job-retention-audit.json"
 OUT = ROOT / "docs/evidence/submitted_circuits/comparison.json"
 SCHEMA = "submitted-circuit-comparison-v3"
@@ -94,7 +97,9 @@ def write() -> int:
     from qiskit import qpy
     from qiskit_ibm_runtime import QiskitRuntimeService
 
-    service = QiskitRuntimeService()
+    import live_run
+
+    service = ibm_account.open_service(QiskitRuntimeService)
     rows = []
     for job in audit_jobs():
         path, names = expected_order(job)
@@ -109,6 +114,11 @@ def write() -> int:
             require(all(name in by_name for name in names), f"{job['job_id']}: a PUB name is missing from isa.qpy")
             expected = [by_name[name] for name in names]
             source = "record.json submission.jobs[].pubs"
+        ibm_account.require_instance(
+            ibm_account.recorded_instance(ROOT / job["run"]),
+            live_run._instance_hash(service),
+            f"{job['job_id']}: submitted-circuit lookup",
+        )
         items = service.job(job["job_id"]).inputs["quantum_program"].items
         circuits = [getattr(item, "circuit", None) for item in items]
         submitted_digests = [qpy_digest(c) if c is not None else None for c in circuits]

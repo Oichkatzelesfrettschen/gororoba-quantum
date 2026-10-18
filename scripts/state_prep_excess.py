@@ -87,6 +87,14 @@ whether the plan's noise model shares one with the controls, and the
 stage-2 case states the assumption. An eps at or above 1 lies outside the
 planner's --prep-excitation domain and is refused.
 
+A plan at any repetition delay D other than 50 and 250 us takes the
+single-delay rule: C is the set of qubits read by x_history and prep0 at D,
+alpha splits over 2|C| bounds, U_D and L0_q are both read at D, and
+eps_target is the maximum of eps_q(D) over S. prep0 after a near-|0>
+history reads (1 - eps_0) e10 + eps_0 (1 - e01), which lies at or above e10,
+so b_q = min(L0_q, e10 envelope) stays a baseline from below at any delay.
+Control runs at other delays enter the report only.
+
 Placement and eps depend on each other, so the plan iterates to a fixed
 point: plan at --prep-excitation 0, read S0, compute eps(S0) at the plan's
 delay; while eps(S_k) exceeds the eps_k planned with, re-plan at
@@ -120,6 +128,7 @@ from scipy.stats import beta
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+import ibm_account  # noqa: E402
 from diagnostic_experiments import (  # noqa: E402
     N21_FAMILIES,
     STATE_PREP_FAMILY,
@@ -138,7 +147,6 @@ DELAY_LABELS = {SHORT_DELAY: "50us", LONG_DELAY: "250us"}
 DEFAULT_ALPHA = 0.01
 # The x_history fraction at each delay and prep0 at 250 us enter the rule.
 REQUIRED_CELLS = ((STATE_PREP_HISTORY_ARM, SHORT_DELAY), (STATE_PREP_HISTORY_ARM, LONG_DELAY), ("prep0", LONG_DELAY))
-BOUNDS_PER_QUBIT = len(REQUIRED_CELLS)
 READOUT_FIELDS = (
     "prob_meas1_prep0",
     "prob_meas0_prep1",
@@ -184,10 +192,31 @@ def cp_lower(successes: Any, trials: Any, level: float) -> np.ndarray:
 
 def _delay(value: Any, where: str) -> float:
     require(isinstance(value, (int, float)) and not isinstance(value, bool), f"{where}: no repetition delay")
+    require(math.isfinite(float(value)) and float(value) >= 0.0, f"{where}: repetition delay {value} s")
     for delay in DELAY_LABELS:
         if math.isclose(float(value), delay, rel_tol=1e-9, abs_tol=0.0):
             return delay
-    raise ValueError(f"{where}: repetition delay {value} s lies outside the rule's 50 us and 250 us")
+    return float(value)
+
+
+def _label(delay: float) -> str:
+    """The cell key for a delay: the named label at 50 and 250 us, else the delay's shortest round-trip repr in seconds.
+
+    repr round-trips every float, so two distinct delays never share a key
+    and no cell overwrites another in the label-keyed tables.
+    """
+    return DELAY_LABELS.get(delay) or f"{delay!r}s"
+
+
+def rule_cells(delay: float) -> tuple[tuple[tuple[str, float], ...], tuple[float, ...], float]:
+    """The control cells the rule bounds for a plan at delay, the x_history delays among them and prep0's delay.
+
+    A plan at 50 or 250 us takes the two-delay rule; a plan at any other
+    delay D takes x_history upper and prep0 lower at D alone.
+    """
+    if delay in DELAY_LABELS:
+        return REQUIRED_CELLS, (SHORT_DELAY, LONG_DELAY), LONG_DELAY
+    return ((STATE_PREP_HISTORY_ARM, delay), ("prep0", delay)), (delay,), delay
 
 
 def _relative(path: Path, root: Path) -> str:
@@ -434,7 +463,7 @@ def fetch_readout(run_dir: Path) -> Path:
     record_bytes = (run_dir / "record.json").read_bytes()
     record = json.loads(record_bytes)
     collect_bytes, executed = _executions(run_dir)
-    service = QiskitRuntimeService()
+    service = ibm_account.open_service(QiskitRuntimeService)
     windows = []
     for job in (record.get("submission") or {}).get("jobs") or []:
         backend = service.backend(str(job["backend"]))
@@ -571,14 +600,17 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
             cell_bits.setdefault((arm, delay), {}).update(control["bits"][arm])
             cell_readouts.setdefault((arm, delay), {}).update(control["readouts"][arm])
     qubits = placement["qubits"]
+    target = placement["rep_delay_seconds"]
+    required, history_delays, prep0_delay = rule_cells(target)
+    legacy = required == REQUIRED_CELLS
     missing = {
-        f"{arm}@{DELAY_LABELS[delay]}": [q for q in qubits if q not in cells.get((arm, delay), {})]
-        for arm, delay in REQUIRED_CELLS
+        f"{arm}@{_label(delay)}": [q for q in qubits if q not in cells.get((arm, delay), {})] for arm, delay in required
     }
     missing = {cell: absent for cell, absent in missing.items() if absent}
     require(not missing, f"placed qubits lack control data: {missing}")
-    controlled = sorted(set.intersection(*(set(cells[cell]) for cell in REQUIRED_CELLS)))
-    bound_count = BOUNDS_PER_QUBIT * len(controlled)
+    controlled = sorted(set.intersection(*(set(cells[cell]) for cell in required)))
+    bounds_per_qubit = len(required)
+    bound_count = bounds_per_qubit * len(controlled)
     level = alpha / bound_count
 
     def column(arm: str, delay: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -591,21 +623,19 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
         ones, shots, segments = column(STATE_PREP_HISTORY_ARM, delay)
         return cp_upper(ones, shots - segments, level)
 
-    upper = {delay: history_upper(delay) for delay in (SHORT_DELAY, LONG_DELAY)}
-    prep0_ones, prep0_shots, prep0_segments = column("prep0", LONG_DELAY)
+    upper = {delay: history_upper(delay) for delay in history_delays}
+    prep0_ones, prep0_shots, prep0_segments = column("prep0", prep0_delay)
     prep0_lower = cp_lower(np.maximum(prep0_ones - prep0_segments, 0), prep0_shots - prep0_segments, level)
     per_qubit: dict[str, Any] = {}
-    eps: dict[float, dict[int, float]] = {SHORT_DELAY: {}, LONG_DELAY: {}}
+    eps: dict[float, dict[int, float]] = {delay: {} for delay in history_delays}
     for index, qubit in enumerate(qubits):
         model_e10, model_e01 = placement["calibration"][qubit]
-        execution = {
-            f"{arm}_{DELAY_LABELS[delay]}": cell_readouts[(arm, delay)][qubit] for arm, delay in REQUIRED_CELLS
-        }
+        execution = {f"{arm}_{_label(delay)}": cell_readouts[(arm, delay)][qubit] for arm, delay in required}
         e10_floor = min([model_e10] + [v["prob_meas1_prep0"] for values in execution.values() for v in values])
         e01_ceiling = max([model_e01] + [v["prob_meas0_prep1"] for values in execution.values() for v in values])
         flip_failure = max(
             v["x_error"] + (v["x_duration_seconds"] + v["measure_duration_seconds"]) / v["T1_seconds"]
-            for (arm, delay) in REQUIRED_CELLS
+            for (arm, delay) in required
             if arm == STATE_PREP_HISTORY_ARM
             for v in cell_readouts[(arm, delay)][qubit]
         )
@@ -616,7 +646,7 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
             "execution_readout": execution,
             "counts": {},
             "bounds": {
-                "prep0_250us_lower": float(prep0_lower[index]),
+                f"prep0_{_label(prep0_delay)}_lower": float(prep0_lower[index]),
                 "e10_envelope": e10_floor,
                 "e01_envelope": e01_ceiling,
                 "baseline": baseline,
@@ -629,13 +659,13 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
         fractions: dict[str, float] = {}
         for (arm, delay), cell in sorted(cells.items()):
             if qubit in cell:
-                key = f"{arm}_{DELAY_LABELS[delay]}"
+                key = f"{arm}_{_label(delay)}"
                 row["counts"][key] = cell[qubit][:2]
                 row.setdefault("segments", {})[key] = cell[qubit][2]
                 fractions[key] = cell[qubit][0] / cell[qubit][1]
         row["fractions"] = fractions
-        for delay in (SHORT_DELAY, LONG_DELAY):
-            label = DELAY_LABELS[delay]
+        for delay in history_delays:
+            label = _label(delay)
             bound = float(upper[delay][index])
             row["bounds"][f"x_history_{label}_upper"] = bound
             require(
@@ -653,7 +683,7 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
             )
             row["eps"][label] = bounded
             eps[delay][qubit] = bounded
-        if "prep0_50us" in fractions:
+        if legacy and "prep0_50us" in fractions:
             row["decomposition"] = {
                 "scope": "point estimates outside the bound family; x_history runs in a dynamic job and prep0 "
                 "in a static one, so each history difference spans the job kind as well as the shot history",
@@ -668,32 +698,32 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
     planned = placement["planned_prep_excitation"]
     converged = measured <= planned
     control_calibrations = sorted(
-        {
-            _utc(v["calibration"])
-            for arm, delay in REQUIRED_CELLS
-            for q in qubits
-            for v in cell_readouts[(arm, delay)][q]
-        }
+        {_utc(v["calibration"]) for arm, delay in required for q in qubits for v in cell_readouts[(arm, delay)][q]}
     )
     plan_calibrations = sorted(_utc(stamp) for stamp in placement["noise_model_calibrations"])
     joint = {
-        f"{arm}_{DELAY_LABELS[delay]}": coincidence(cell_bits[(arm, delay)], qubits)
+        f"{arm}_{_label(delay)}": coincidence(cell_bits[(arm, delay)], qubits)
         for (arm, delay) in sorted(cells)
         if all(q in cell_bits[(arm, delay)] for q in qubits)
     }
-    return {
+    label = _label(prep0_delay)
+    bounds = (
+        "one-sided Clopper-Pearson over every controlled qubit: x_history upper at 50 and 250 us, prep0 lower at 250 us"
+        if legacy
+        else f"one-sided Clopper-Pearson over every controlled qubit: x_history upper and prep0 lower at {label}"
+    )
+    result: dict[str, Any] = {
         "schema": SCHEMA,
         "rule": {
             "alpha": alpha,
-            "bounds_per_qubit": BOUNDS_PER_QUBIT,
+            "bounds_per_qubit": bounds_per_qubit,
             "controlled_qubits": controlled,
             "bound_count": bound_count,
             "alpha_per_bound": level,
-            "bounds": "one-sided Clopper-Pearson over every controlled qubit: x_history upper at 50 and 250 us, "
-            "prep0 lower at 250 us",
+            "bounds": bounds,
             "readout": "e10 the smallest and e01 the largest of the n21 model's and every execution calibration's "
             "reported values",
-            "eps": "u / ((1 - u)(1 - delta)), u = max(0, (U - b) / (1 - e01 - b)), b = min(prep0_250us_lower, e10), "
+            "eps": f"u / ((1 - u)(1 - delta)), u = max(0, (U - b) / (1 - e01 - b)), b = min(prep0_{label}_lower, e10), "
             "delta = max(x_error + (x_duration + measure_duration) / T1) over the x_history execution calibrations; "
             "each PUB's segment-leading shots are counted at their worst value",
             "joint": "marginal coverage under independent local preparation channels; joint_coincidences is a "
@@ -719,10 +749,6 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
             "scope": "eps bounds the initialization at the control's execution calibrations; applying it to the "
             "n21 plan assumes that initialization channel unchanged until the n21 shots run",
         },
-        "eps50": maxima[SHORT_DELAY],
-        "eps250": maxima[LONG_DELAY],
-        "argmax50": [q for q in qubits if eps[SHORT_DELAY][q] == maxima[SHORT_DELAY]],
-        "argmax250": [q for q in qubits if eps[LONG_DELAY][q] == maxima[LONG_DELAY]],
         "fixed_point": {
             "planned_prep_excitation": planned,
             "measured_at_plan_delay": measured,
@@ -730,6 +756,16 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
             "next_prep_excitation": planned if converged else max(planned, _round_up(measured)),
         },
     }
+    if legacy:
+        result["eps50"] = maxima[SHORT_DELAY]
+        result["eps250"] = maxima[LONG_DELAY]
+        result["argmax50"] = [q for q in qubits if eps[SHORT_DELAY][q] == maxima[SHORT_DELAY]]
+        result["argmax250"] = [q for q in qubits if eps[LONG_DELAY][q] == maxima[LONG_DELAY]]
+    else:
+        result["rule"]["target_delay_seconds"] = target
+        result["eps_target"] = maxima[target]
+        result["argmax_target"] = [q for q in qubits if eps[target][q] == maxima[target]]
+    return result
 
 
 def evaluate(record_path: Path, control_dirs: Iterable[Path], alpha: float, root: Path) -> dict[str, Any]:
@@ -952,15 +988,19 @@ def _synthetic_run(
 
 
 def _synthetic_placement(
-    root: Path, qubits: list[int], calibration: dict[int, tuple[float, float]], planned: float | None
+    root: Path,
+    qubits: list[int],
+    calibration: dict[int, tuple[float, float]],
+    planned: float | None,
+    delay: float = SHORT_DELAY,
 ) -> Path:
     run = root / "results" / "live" / "n21-plan"
     run.mkdir(parents=True)
     record = {
         "family_configuration": {"name": "n21-feedback-encoded"},
         "experiment_digest": "0" * 64,
-        "policy": {"design": {} if planned is None else {"prep_excitation": planned}, "rep_delay_seconds": SHORT_DELAY},
-        "execution_contract": {"backends": [{"name": "fake_backend", "repetition_delay_seconds": SHORT_DELAY}]},
+        "policy": {"design": {} if planned is None else {"prep_excitation": planned}, "rep_delay_seconds": delay},
+        "execution_contract": {"backends": [{"name": "fake_backend", "repetition_delay_seconds": delay}]},
         "groups": [
             {
                 "backend": "fake_backend",
@@ -993,6 +1033,9 @@ def self_test() -> None:
 
 
 def _self_test(scratch: Path) -> None:
+    # Delays that agree to six significant digits keep distinct cell keys.
+    require(_label(2e-05) != _label(2.0000001e-05), "delay labels collide")
+    require(_label(SHORT_DELAY) == "50us" and _label(LONG_DELAY) == "250us", "named delay labels moved")
     # Clopper-Pearson bounds against an independent binomial-tail inversion.
     cases = [(0, 50), (3, 50), (50, 50), (0, 4096), (109, 4096), (4096, 4096), (281, 32768), (1500, 16384)]
     for level in (0.01 / 453, 0.05):
@@ -1160,6 +1203,35 @@ def _self_test(scratch: Path) -> None:
     _expect_refusal(lambda: run({"history50": {**base["history50"], 3: (32700, 32768)}}), "not monotone")
     _expect_refusal(lambda: run(fetched_calibration="2026-01-01T00:05:00+00:00"), "collect replayed under")
     _expect_refusal(lambda: run({"history50": {**base["history50"], 4: (18000, 32768)}}), "planner's [0, 1)")
+
+    # A plan at another delay takes the single-delay rule: x_history upper and prep0 lower at that delay alone.
+    def single(with_prep0: bool = True, extra: bool = False) -> tuple[Path, dict[str, Any]]:
+        root = next(roots)
+        record = _synthetic_placement(root, placed, calibration, None, delay=0.0)
+        controls = [_synthetic_run(root, "h0", STATE_PREP_HISTORY_ARM, 0.0, base["history50"], readout_base)]
+        if with_prep0:
+            controls.append(_synthetic_run(root, "p0", "prep0", 0.0, base["prep0_250"], readout_base))
+        if extra:
+            controls.append(
+                _synthetic_run(root, "h50", STATE_PREP_HISTORY_ARM, SHORT_DELAY, base["history50"], readout_base)
+            )
+        return root, evaluate(record, controls, DEFAULT_ALPHA, root)
+
+    root, zero = single()
+    require(zero["rule"]["target_delay_seconds"] == 0.0 and zero["rule"]["bound_count"] == 8, f"{zero['rule']}")
+    require("eps50" not in zero and "eps250" not in zero, "the single-delay rule reported the two-delay maxima")
+    require(zero["eps_target"] == max(row["eps"]["0.0s"] for row in zero["qubits"].values()), "eps_target")
+    require(zero["argmax_target"] == [4], f"arg-max {zero['argmax_target']}")
+    require(zero["fixed_point"]["measured_at_plan_delay"] == zero["eps_target"], "fixed point reads another delay")
+    require("prep0_0.0s_lower" in zero["qubits"]["4"]["bounds"], "prep0 baseline at the target delay")
+    # Fewer bounds share alpha, so the same history counts give a smaller eps than the two-delay rule's eps50.
+    require(zero["eps_target"] < result["eps50"], "the single-delay rule spent more alpha than the two-delay rule")
+    require(single(extra=True)[1]["eps_target"] == zero["eps_target"], "a control at another delay moved eps")
+    _expect_refusal(lambda: single(with_prep0=False), "prep0@0.0s")
+    write(
+        root / "results/live/n21-plan/record.json", sorted((root / "results/live").glob("[hp]*")), DEFAULT_ALPHA, root
+    )
+    require(check(root) == 1, "the single-delay output does not replay")
     root, _ = run()
     (root / "results/live/h250" / READOUT_NAME).unlink()
     _expect_refusal(lambda: check_inputs(root), f"no {READOUT_NAME}")
@@ -1171,7 +1243,8 @@ def _self_test(scratch: Path) -> None:
         "state_prep_excess: Clopper-Pearson bounds match the binomial-tail inversion to 1e-9; 3|C| bounds share "
         "alpha over the controlled set; eps rises with the history fraction, e01 and the x flip failure, falls with "
         "the baseline, takes the readout envelope, clamps at 0; the joint diagnostic and prep0 at 50 us stay "
-        "outside the rule; the fixed point never lowers eps; refusals hold and the replay holds to the build tolerance"
+        "outside the rule; a plan at another delay takes x_history and prep0 at that delay alone; the fixed point "
+        "never lowers eps; refusals hold and the replay holds to the build tolerance"
     )
 
 
@@ -1214,7 +1287,11 @@ def main() -> int:
         parser.error("--n21-record and at least one --control are required")
     destination = write(arguments.n21_record, arguments.control, arguments.alpha, ROOT)
     result = json.loads(destination.read_bytes())
-    print(f"{destination}: eps50 {result['eps50']:.6g}, eps250 {result['eps250']:.6g}, {result['fixed_point']}")
+    if "eps_target" in result:
+        delay = _label(result["rule"]["target_delay_seconds"])
+        print(f"{destination}: eps at {delay} {result['eps_target']:.6g}, {result['fixed_point']}")
+    else:
+        print(f"{destination}: eps50 {result['eps50']:.6g}, eps250 {result['eps250']:.6g}, {result['fixed_point']}")
     return 0
 
 

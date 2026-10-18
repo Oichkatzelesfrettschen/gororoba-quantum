@@ -72,7 +72,8 @@ def integer_left_inverse(matrix: list[list[int]]) -> tuple[int, list[list[int]]]
     for column in range(size):
         pivot = next((row for row in range(column, size) if rows[row][column] != 0), None)
         require(pivot is not None, "the left multiplication is singular")
-        assert pivot is not None
+        if pivot is None:
+            raise AssertionError
         rows[column], rows[pivot] = rows[pivot], rows[column]
         lead = rows[column][column]
         rows[column] = [value / lead for value in rows[column]]

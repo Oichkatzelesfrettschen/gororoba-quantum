@@ -174,7 +174,8 @@ def _verify() -> None:
     narrow.measure(150, 0)
     with narrow.if_test((narrow.clbits[0], True)):
         narrow.x(151)
-    assert active_support(narrow) == 2
+    if active_support(narrow) != 2:
+        raise AssertionError
     wide = QuantumCircuit(9)
     wide.h(range(9))
     snapshot = {
@@ -186,10 +187,13 @@ def _verify() -> None:
         "compute_capability_major": 8,
         "compute_capability_minor": 9,
     }
-    assert admit_gpu([wide], 512, snapshot)["active_qubits"] == [9]
+    if admit_gpu([wide], 512, snapshot)["active_qubits"] != [9]:
+        raise AssertionError
     admitted = admit_gpu([narrow], 512, snapshot)
-    assert admitted["density_state_bytes"] == [256]
-    assert admitted["admission_budget_bytes"] == 384 * MEBIBYTE
+    if admitted["density_state_bytes"] != [256]:
+        raise AssertionError
+    if admitted["admission_budget_bytes"] != 384 * MEBIBYTE:
+        raise AssertionError
     for circuits, memory_mb, reading in (
         ([], 512, snapshot),
         ([narrow], 0, snapshot),
@@ -226,18 +230,22 @@ def _verify() -> None:
         "numpy": [],
         "nvidia-cudnn-cu13": [],
     }
-    assert gpu_aer_distributions(cu13) == [
+    if gpu_aer_distributions(cu13) != [
         "qiskit-aer-gpu-cu13",
         "custatevec-cu13",
         "cutensor-cu13",
         "cutensornet-cu13",
         "nvidia-cublas",
         "nvidia-cuda-nvrtc",
-    ]
+    ]:
+        raise AssertionError
     cu11 = {"qiskit-aer-gpu-cu11": ["cuquantum-cu11"], "cuquantum-cu11": ["custatevec-cu11"], "custatevec-cu11": []}
-    assert gpu_aer_distributions(cu11) == ["qiskit-aer-gpu-cu11", "cuquantum-cu11", "custatevec-cu11"]
-    assert gpu_aer_distributions({"qiskit-aer": ["numpy"], "numpy": []}) == []
-    assert all(isinstance(name, str) for name in gpu_aer_distributions())
+    if gpu_aer_distributions(cu11) != ["qiskit-aer-gpu-cu11", "cuquantum-cu11", "custatevec-cu11"]:
+        raise AssertionError
+    if gpu_aer_distributions({"qiskit-aer": ["numpy"], "numpy": []}) != []:
+        raise AssertionError
+    if not all(isinstance(name, str) for name in gpu_aer_distributions()):
+        raise AssertionError
     print("native Aer support mapping, GPU resource rejection and GPU Aer distribution checks pass")
 
 

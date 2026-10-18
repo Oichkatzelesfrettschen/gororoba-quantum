@@ -61,6 +61,7 @@ from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.executor_sampler import Sampler
 
 import correction_collection
+import ibm_account
 import local_compute
 import packing
 import parallel
@@ -144,6 +145,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "experiments.py",
     "factoring.py",
     "hybrid_shor.py",
+    "ibm_account.py",
     "integral_homology.py",
     "jax_bridge.py",
     "live_run.py",
@@ -4839,6 +4841,13 @@ def _instance_hash(service: Any) -> str:
     return hashlib.sha256(instance.encode()).hexdigest()[:12]
 
 
+def _require_record_instance(service: Any, record: dict[str, Any], context: str) -> None:
+    """A job lookup runs only on the service whose instance the record names (GOROROBA_IBM_ACCOUNT selects it)."""
+    recorded = record.get("instance_sha256_12")
+    if recorded is not None or ibm_account.account_name():
+        ibm_account.require_instance(recorded, _instance_hash(service), context, LiveRunError)
+
+
 def _budget(service: QiskitRuntimeService, usage: dict[str, Any]) -> dict[str, Any]:
     """usage() seconds and window, with the instance identified only by a hash of its CRN."""
     instance = str(service.active_instance() or "")
@@ -5382,6 +5391,7 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
 def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     """Measured replica distributions against the noise model of the calibration in force at execution."""
     record = json.loads((run_dir / "record.json").read_text())
+    _require_record_instance(service, record, f"{run_dir}: collect")
     qpy_bytes = (run_dir / "isa.qpy").read_bytes()
     groups = {g.name: g for g in [*all_experiment_groups(), *record_groups(record)]}
     if (
@@ -6249,7 +6259,7 @@ def main(argv: list[str] | None = None) -> int:
             )
         print(f"FAIL: {error}", file=sys.stderr)
         return 1
-    service = QiskitRuntimeService()
+    service = ibm_account.open_service(QiskitRuntimeService)
     try:
         if args.collect:
             collect(service, args.collect)
@@ -6462,6 +6472,7 @@ def preserve_raw(service: QiskitRuntimeService, run_dir: Path) -> dict[str, Any]
     jobs = record.get("submission", {}).get("jobs") or []
     if not jobs:
         raise LiveRunError(f"{run_dir} records no submitted jobs to preserve")
+    _require_record_instance(service, record, f"{run_dir}: preserve-raw")
     preserved: dict[str, Any] = {}
     (run_dir / RAW_DIRECTORY).mkdir(parents=True, exist_ok=True)
     for job_entry in jobs:

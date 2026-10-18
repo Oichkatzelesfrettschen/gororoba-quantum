@@ -639,8 +639,7 @@ QPE checks, standalone optimizer checks, and fake-backend planning
 contracts. The planning checks cover the shared initial mapping,
 per-phase calibrated delay sites, complete static/dynamic job accounting, shot-tier
 admission, approval mismatches, and negative-record persistence. Those
-checks consume zero QPU jobs. The allocated-case contracts run in normal
-and optimized Python modes, reject inconsistent mappings and ledgers, preserve
+checks consume zero QPU jobs. The allocated-case contracts reject inconsistent mappings and ledgers, preserve
 retained artifact bytes on rejection, and parse reproduction commands with the
 live CLI before any service call. A fresh live-calibration dry run remains a
 separate admission surface. Historical allocation arithmetic and separate

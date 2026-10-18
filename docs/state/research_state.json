@@ -1085,9 +1085,7 @@
       ],
       "gates": {
         "core-212": "replay",
-        "core-213": "replay",
-        "sources-215": "replay",
-        "sources-218": "replay"
+        "sources-215": "replay"
       },
       "acquisitions": [],
       "assumptions": [
@@ -1132,8 +1130,7 @@
         "docs/notes/singular_sector_dynamics.md"
       ],
       "gates": {
-        "core-240": "replay",
-        "core-241": "replay"
+        "core-240": "replay"
       },
       "acquisitions": [],
       "assumptions": [
@@ -1581,7 +1578,6 @@
       ],
       "gates": {
         "sources-127": "replay",
-        "sources-128": "replay",
         "sources-175": "bytes"
       },
       "acquisitions": [],
@@ -1608,7 +1604,6 @@
       ],
       "gates": {
         "sources-143": "replay",
-        "sources-144": "replay",
         "sources-145": "bytes"
       },
       "acquisitions": [],
@@ -1638,9 +1633,8 @@
       ],
       "gates": {
         "core-053": "replay",
-        "core-054": "replay",
-        "sources-150": "replay",
-        "sources-151": "bytes"
+        "sources-151": "bytes",
+        "sources-149": "replay"
       },
       "acquisitions": [],
       "assumptions": [],
@@ -1666,7 +1660,6 @@
       ],
       "gates": {
         "sources-129": "replay",
-        "sources-130": "replay",
         "sources-176": "bytes"
       },
       "acquisitions": [],
@@ -1693,9 +1686,7 @@
       ],
       "gates": {
         "core-063": "replay",
-        "core-064": "replay",
         "sources-166": "replay",
-        "sources-167": "replay",
         "sources-168": "bytes"
       },
       "acquisitions": [],
@@ -1722,9 +1713,7 @@
       ],
       "gates": {
         "core-179": "replay",
-        "core-180": "replay",
         "sources-184": "replay",
-        "sources-185": "replay",
         "sources-186": "bytes"
       },
       "acquisitions": [],
@@ -1754,9 +1743,7 @@
       ],
       "gates": {
         "core-190": "replay",
-        "core-191": "replay",
         "sources-192": "replay",
-        "sources-193": "replay",
         "sources-194": "bytes"
       },
       "acquisitions": [],
@@ -1909,8 +1896,7 @@
         "AGENTS.md"
       ],
       "gates": {
-        "core-251": "replay",
-        "core-252": "replay"
+        "core-251": "replay"
       },
       "acquisitions": [],
       "assumptions": [],
@@ -2539,7 +2525,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "fbfa5cb75adb665ba311191e3303cc8fbec3a394e9481f8d2f73fb29cb3df668"
+          "sha256": "e86df96c253d9892ede5811a9eac9ad07f68019c8be7fddef4694e2e2691e2ca"
         }
       ],
       "documents": [
@@ -3378,7 +3364,7 @@
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "fbfa5cb75adb665ba311191e3303cc8fbec3a394e9481f8d2f73fb29cb3df668"
+          "sha256": "e86df96c253d9892ede5811a9eac9ad07f68019c8be7fddef4694e2e2691e2ca"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -3740,11 +3726,11 @@
     },
     {
       "id": "qi-tuna17-zero-divisor-contraction",
-      "statement": "On Tuna-17 the exact Clifford+T Design B witness of (e1 + e10)(e4 - e15) = 0 reads P(s = 0) = 0.471 [0.466, 0.475] dark, 0.512 [0.508, 0.517] bright and 0.499 fixture over three regions in a Latin square, an endpoint contrast of 0.042 (4.2 % of ideal, 6.5 % of Kingston's 0.646) with dark below bright by about 13 standard errors; the fixture agrees with 1/2 (z = -0.42); the endpoints straddle 1/2 with midpoint 0.4915, so dark + bright - 1 = -0.017 (z = -5.3) rejects the preregistered shared symmetric-contraction model; the region on qubits 0, 1, 2, 4, 5 shows no resolved contrast (0.002, 95 % -0.009 to 0.013); the QX twin reads 0, 1 and 0.490.",
+      "statement": "On Tuna-17 the exact Clifford+T Design B witness of (e1 + e10)(e4 - e15) = 0 has raw P(s = 0) = 0.471 [0.466, 0.475] dark, 0.512 [0.508, 0.517] bright and 0.499 fixture over three regions in a Latin square, an endpoint contrast of 0.042 (4.2 % of ideal, 6.5 % of Kingston's 0.646) with dark below bright by about 13 standard errors; the raw pooled fixture agrees with 1/2 (z = -0.42); the endpoints straddle 1/2 with midpoint 0.4915, so dark + bright - 1 = -0.017 (z = -5.3) rejects the preregistered shared symmetric-contraction model; the region on qubits 0, 1, 2, 4, 5 shows no resolved contrast (0.002, 95 % -0.009 to 0.013); the QX twin reads 0, 1 and 0.490.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One 16384-shot run per circuit on one Tuna-17 calibration; the three Latin circuits ran as sequential jobs, so drift between them enters the case contrasts; the routed replicas carry 66-70 CZ and 26 T against about 45 CZ with continuous rotations on Kingston, so the visibility gap compares implementations, not devices alone; the readout correction uses the all-|0> and all-|1> circuits, which omit readout crosstalk under the witness's state. Rejecting one shared contraction leaves circuit-dependent contractions and readout asymmetry as alternatives the preregistered tests do not separate.",
+      "boundary": "One 16384-shot run per circuit on one Tuna-17 calibration; three sequential Latin jobs leave case contrasts exposed to between-job drift. Every dark and bright replica uses 66 CZ and 26 T; each fixture uses 70 CZ and 26 T. Kingston used about 45 CZ and continuous rotations, so endpoint contrasts compare implementations as well as devices. The corner fixture uses selector Q4 while its endpoints use Q2. The preregistered raw tests reject one shared symmetric contraction, not all depolarizing descriptions or any uniquely identified coherent, non-unital or coupler mechanism. The all-zero/all-one readout calibration includes preparation error and omits readout crosstalk under the witness state.",
       "evidence": [
         {
           "path": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/analysis.json",
@@ -3815,21 +3801,32 @@
       "domain": "geometry",
       "evidence_class": "mathematical theorem",
       "status": "open",
-      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only; curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it.",
+      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it.",
       "evidence": [
         {
           "path": "docs/evidence/rank_locus_second_order/result.json",
           "sha256": "a31e90bc02067291876bf0bb2738166e800922912fcf7313e58ad78aa0cdd7bf"
+        },
+        {
+          "path": "docs/evidence/rank_locus_rotation_composite/result.json",
+          "sha256": "bb884e0026b1b46c323362bbc7f01988c80e2dbedbfe1c9910a8ec7b83d82811"
+        },
+        {
+          "path": "docs/evidence/rank_locus_rotation_composite/audit.json",
+          "sha256": "e5bb1f6f9084990c9cb97b15b5edee86ac97980b79a95e35014e1fb1f303c30d"
         }
       ],
       "documents": [
         "docs/notes/rank_locus_two_dimension_gap.md",
         "docs/evidence/rank_locus_local_dimension/README.md",
-        "docs/evidence/rank_locus_second_order/README.md"
+        "docs/evidence/rank_locus_second_order/README.md",
+        "docs/evidence/rank_locus_rotation_composite/README.md"
       ],
       "gates": {
         "core-553": "replay",
-        "core-554": "admission"
+        "core-554": "admission",
+        "core-585": "replay",
+        "core-586": "replay"
       },
       "acquisitions": [],
       "assumptions": [
@@ -3844,22 +3841,28 @@
     },
     {
       "id": "qi-tuna17-zero-divisor-common-response",
-      "statement": "Readout-corrected with a seeded bootstrap over the joint selector outcomes and both calibration circuits, the Tuna-17 witness gives dark + bright - 1 = -0.042 (95 % -0.049 to -0.036), fixture - 1/2 = -0.016 (-0.021 to -0.012) and H = fixture - (dark + bright)/2 = +0.005 (-0.001 to 0.011): every selector misreads |1> more often than |0>, so readout hides part of the asymmetry rather than producing it, and the three preparations follow one affine response shifted toward selector 1, which disfavors circuit-dependent symmetric contractions; by region the common response holds on two regions and fails on qubits 0, 1, 2, 4, 5 (H = 0.027, z = 5.6).",
+      "statement": "The retained 4000-draw shared-shot/readout bootstrap and an independent analytic covariance replay agree on the Tuna-17 witness: corrected B-D=0.043494 (analytic z=12.97), D+B-1=-0.042291 (z=-12.15), fixture-1/2=-0.016412 (z=-6.70), and H=fixture-(dark+bright)/2=0.004733 (z=1.61). Raw H=0.007507 (z=2.72). The pooled corrected probabilities are compatible with a common affine response at this precision; non-rejection does not establish that model. Raw fixture consistency does not survive the retained readout correction. The corner has no resolved endpoint contrast, and its corrected H=0.018366 (z=3.50) also compares a Q4 fixture selector with Q2 endpoint selectors.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "The H test, the same-shot covariance and the bootstrap were fixed after the data; the readout correction uses all-|0> and all-|1> calibration, which omits readout crosstalk under the witness's state; a common affine response in the selector probability identifies no unique channel on the five-qubit circuit; one run on one calibration.",
+      "boundary": "This is secondary reanalysis, fixed after acquisition. H and its regional comparisons have no multiplicity correction; the original numerical |z|=3 benchmark does not make H preregistered. Uncertainty includes same-shot selector dependence and shared calibration sampling, but not between-job drift or calibration misspecification. Each fixture has four more CZ than the endpoints, and the weak corner also changes selector. The raw covariance methods differ by n versus n-1; corrected analytic and bootstrap standard errors differ by at most 1.4%. A probability-level affine description identifies no unique circuit channel, coupler setting, or cause of the spatial association.",
       "evidence": [
         {
           "path": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/analysis.json",
           "sha256": "c523ab54bb74ee985f30eca9bf66603b929cdb694eeaf5a0608105cbe989ae49"
+        },
+        {
+          "path": "results/quantum_inspire/secondary/zero_divisor_tuna_17.json",
+          "sha256": "436ca411aabf643ea69081df3a37c1f951e24533ea4bec2685eb6362a5c3acb5"
         }
       ],
       "documents": [
-        "docs/notes/quantum_inspire/experiments.md"
+        "docs/notes/quantum_inspire/experiments.md",
+        "results/quantum_inspire/secondary/zero_divisor_tuna_17.md"
       ],
       "gates": {
-        "core-330": "replay"
+        "core-330": "replay",
+        "core-571": "replay"
       },
       "acquisitions": [
         "qi-tuna17-zero-divisor"

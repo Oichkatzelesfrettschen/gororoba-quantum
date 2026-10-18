@@ -346,6 +346,9 @@ The [Heron tile packing note](notes/heron_spatial_multiprogramming.md) packs gua
 snapshot coupling map, composes one circuit per tile into one wide circuit, and states per-backend RZZ and
 repetition-delay arithmetic from Target values, audited in
 [spatial_multiprogramming_audit.json](evidence/heron_platform/spatial_multiprogramming_audit.json).
+The [N=21 feed-forward backend note](notes/n21_feedforward_backends.md) states the real-time conditioned-gate requirement of
+the n21-feedback-encoded family, what IQM cc_prx and measure_ff express, the Open Quantum shot arithmetic on Garnet and
+Emerald, and a provider survey with access terms, each web source dated.
 
 The [Hoeffding note](notes/hoeffding-1963.md) cites the 1963 inequality behind the admission contracts by DOI.
 The [measurement-foundations web note](notes/measurement_foundations_web_sources.md) records the 3 February 2025 removal

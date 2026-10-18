@@ -745,7 +745,7 @@ Built:
   CZ count;
 - `series("a", "qx")` (the exhaustive family, in memory), `smoke_series()`,
   `tuna_series()`, `--summary` and `self_test()`; gates core-420 (`--check`)
-  and core-421 (`--self-test`), each in normal and optimized mode.
+  and core-421 (`--self-test`).
 
 `scripts/box_kite_qx_sweep.py` runs the exhaustive family on qxelarator
 (`--run`), replays a record from its counts and the census (`--replay`,
