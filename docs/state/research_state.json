@@ -973,6 +973,13 @@
       "run": "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00",
       "family": "cQASM reset semantics on the hosted QX emulator",
       "question": "Does the hosted QX emulator's reset keep the rest of the register's relative phase, as cQASM's measure-and-flip does, or apply qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-13-seeded-single",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
+      "family": "Belenos seeded single job on Q1's mesh",
+      "question": "Q1's single job at compilation_seed 20 and 10000 samples on 29dc6ef8: does the in-cone leak follow the unseeded single-job path or the single-job form at Q1's budget?"
     }
   ],
   "claims": [
@@ -4885,11 +4892,11 @@
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/analysis.json",
-          "sha256": "61d3c7f7f7c9dfd6d1d7c9d455eb97a9121337e4f63ed8a4437abbeb6868b228"
+          "sha256": "cdc31bb68a141da0c75322c2d4ee2e3d3711793ae8ae508a6f063d3309f0bbfc"
         },
         {
           "path": "docs/evidence/quandela/belenos_leakage_rca.json",
-          "sha256": "2551d3d165db74a52316f06c7e1b9c2052c6de2eee42967bf121e1e25df3fa11"
+          "sha256": "bcce8a59d8a68892bd9ccbc5881cc8cdea13e2542a1a344a2c2642a89ec7c015"
         }
       ],
       "documents": [
@@ -5035,11 +5042,11 @@
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04/analysis.json",
-          "sha256": "cb2d07de68ff4c766c3e766a292b81c1960afa53a9cf519628032df5e819a149"
+          "sha256": "b94b5c77464f0fa42dcb7a5b1061dbeb63e0e1cb1fd77f24a40f7caa590982ed"
         },
         {
           "path": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/analysis.json",
-          "sha256": "61d3c7f7f7c9dfd6d1d7c9d455eb97a9121337e4f63ed8a4437abbeb6868b228"
+          "sha256": "cdc31bb68a141da0c75322c2d4ee2e3d3711793ae8ae508a6f063d3309f0bbfc"
         }
       ],
       "documents": [
@@ -5279,7 +5286,7 @@
         },
         {
           "path": "results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08/analysis.json",
-          "sha256": "b290bd7c485303c15c73d1bd71e2ab21760f5dc6f19fed4e1531021077163b25"
+          "sha256": "931587fc65ad0bd27dea0e88d90419284ccd6219de0990cfb4805bda36a21ce2"
         }
       ],
       "documents": [
@@ -5423,7 +5430,7 @@
     {
       "id": "qd-belenos-q1-leak-needs-single-job-and-large-budget",
       "statement": "On qpu:belenos mesh 29dc6ef8, Q1's single job kept in_block 0.918 (Wilson 0.903 to 0.931) at 1500 samples (job aa4218f1) against 0.470 and 0.504 at 10000, and every iteration of an iterated job at seed 20 kept 0.896 to 0.995 at 1500 to 60000 samples (job c1eb1cbb; preregistered reading flat). The preregistered readings are D1 intermediate, 0.016 short of 'dwell' after its 0.034 cross-job margin, and D2 flat; the single-job endpoint stays unresolved, and the two cells together do not establish what the single-job leak needs.",
-      "boundary": "One mesh, one job per cell, jobs about ten hours after Q1. An S job's 13 to 15 s is overhead and acquisition runs near 4 x 10^4 samples per second, so the budget is a sample count, not seconds of heater exposure; the single-job mechanism (chunked acquisition or re-settling) is inferred and untested.",
+      "boundary": "One mesh, one job per cell, jobs about ten hours after Q1. An S job's 13 to 15 s is overhead and acquisition runs near 4 x 10^4 samples per second, so the budget is a sample count, not seconds of heater exposure; the single-job mechanism (chunked acquisition or re-settling) is inferred and untested. The light-cone reading (qd-belenos-light-cone-reading) excludes off-cone clicks: inside the cone every seeded iterated cell on 29dc6ef8 holds 0.990 to 0.995 at every budget and D1 reads 0.918; job-13 (qd-belenos-q1-leak-single-job-form-whatever-seed) settles the single-job endpoint at 10000 samples whatever the seed.",
       "evidence": [
         {
           "path": "results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell.json",
@@ -5435,7 +5442,7 @@
         },
         {
           "path": "results/quandela/runs/2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10/analysis.json",
-          "sha256": "072c354aebf2c0337c2c1fdd4d491bb6241fac3ffe9e5ae148f7d8be5194145e"
+          "sha256": "c2d624794e02a53ba039dc36a690ee17ef8f76e905cfeb98f215670d532830ab"
         },
         {
           "path": "results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12/analysis.json",
@@ -5471,7 +5478,7 @@
     {
       "id": "qd-belenos-fresh-anu-mesh-holds-single-job",
       "statement": "Q1's single job at 10000 samples and ANU-drawn compilation_seed 46667 (job a5f0a8a4) served the fresh mesh 14a96ca6 and kept in_block 0.937 (Wilson 0.932 to 0.941), the preregistered 'mesh susceptible' reading: the single-job leak is not generic. The same seed served 14a96ca6 in the iterated job c1eb1cbb, which read 0.990, 0.961 and 0.852 at 1500, 10000 and 40000 samples (intermediate).",
-      "boundary": "One fresh mesh. Its 40000-sample iteration ran last, after 125500 samples of the same job, so position and budget are confounded for the iterated decline.",
+      "boundary": "One fresh mesh. Its 40000-sample iteration ran last, after 125500 samples of the same job, so position and budget are confounded for the iterated decline. Inside source 20's light cone D4 reads 0.990, 0.992 and 0.989: its decline is 5541 off-cone clicks, mostly on mode 5 (qd-belenos-light-cone-reading).",
       "evidence": [
         {
           "path": "results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell.json",
@@ -5483,7 +5490,7 @@
         },
         {
           "path": "results/quandela/runs/2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11/analysis.json",
-          "sha256": "916572c1ed7d96b0e1a67e79888209da176f35a942599e45bf32eef03bd6859e"
+          "sha256": "8ccb555e60df335fbaa2b902801a5550006b2a676dd58e9b4e475729b9c550cf"
         },
         {
           "path": "results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12/analysis.json",
@@ -5541,6 +5548,139 @@
       "assumptions": [],
       "depends_on": [],
       "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-light-cone-reading",
+      "statement": "Over every retained qpu:belenos run of Q1's circuit, in_block over the one-click samples inside source 20's light cone of each served mesh (the modes its ideal propagation passes through, joined with every mode the exact dephasing channel at 0.5 rad heater and 0.1 rad coupler noise detects at 1e-3 or more) reads 0.982 to 0.995 in every seeded iterated cell on meshes 29dc6ef8 and 14a96ca6 at 1500 to 60000 samples and 0.985 in D3's single job on 14a96ca6, while the single jobs on 29dc6ef8 read 0.507, 0.518 (unseeded, 10000 samples), 0.918 (unseeded, 1500) and 0.370 (seed 20, 10000). Off-cone clicks sit mostly on modes 0, 1 and 5, come and go within one job on one mesh (0, 0 and 81 on identical 1500-sample iterations), and share no sample with an in-cone click in every cell but one (135 pairs where 148 are expected), where independent pulse-gated clicks predict up to 329 such pairs.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "A post hoc statistic over retained data; the preregistered verdicts of the bridge and the form-versus-dwell series stand. The noise-bounded cone puts at most 1.2e-4 of the photon on modes 0, 1 and 5 at an error that already halves in_block, so those clicks need a cause other than the mesh's routing; whether acquisition is pulse-gated is unknown, so their origin (photon-derived on fixed channels, or independent noise) stays open, and no single wrong source mode reproduces them. Acquisition times are estimates, samples / (physical_perf x clock), on a reading of physical_perf no Quandela document confirms. Seeded cells sit 1 to 23 shot floors from their mesh's ideal inside the cone (TVD 0.012 to 0.228), and the bridge's 22 meshes read 0.852 to 0.998 inside the ideal cone, repeating within the job; exact heater dephasing fits that spread worse than none, and static per-mesh error classes were not scanned on these meshes.",
+      "evidence": [
+        {
+          "path": "docs/evidence/quandela/belenos_light_cone.json",
+          "sha256": "2a8a980ec810573bd363e3989c94755ac03fe02e4f66587f0982becbd9adb4e0"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/raw/result.json",
+          "sha256": "8943a7bbcc55633c4c050b6d429ac23bbf44083af7927c3287ebe71b946c14a3"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04/raw/result.json",
+          "sha256": "8c54ddda4c4b0cbd212480f6729af0b7f3515d4f0f4456da25f0137368a98eeb"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08/raw/result.json",
+          "sha256": "36fe314bae7149ddaa76e87ba9e29e038e583b5af4cc68fd55d8c2ee1839ab00"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T074524Z-qpu_belenos-belenos_mesh-job-09/raw/result.json",
+          "sha256": "89e6a2c64538c5663791c86849ff48b26b3a804177506e121cf821a4db15a392"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10/raw/result.json",
+          "sha256": "46eefda94887697a142ab98b0398b12b02fd1fe3bd0ca7831cb7ad583adbdb5a"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11/raw/result.json",
+          "sha256": "e994caa86077c34f658f1243d6245f11b32fb49c20915667b3017c0a073cb5a8"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12/raw/result.json",
+          "sha256": "42b4c1b048b9bf128fb8d4e47c9875c0d0bda1897b900f195a2c36be7a5c54ae"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13/raw/result.json",
+          "sha256": "7c4cf0ce7d480c0b3422eb150164a610557998dbab75e668969bfdaef06fc717"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md",
+        "docs/notes/quandela/form-dwell-decomposition.md"
+      ],
+      "gates": {
+        "core-546": "replay",
+        "core-545": "admission"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-08-form",
+        "qd-qpu-belenos-mesh-job-09-bridge",
+        "qd-qpu-belenos-mesh-job-10-d1",
+        "qd-qpu-belenos-mesh-job-11-d3",
+        "qd-qpu-belenos-mesh-job-12-d2-d4",
+        "qd-qpu-belenos-mesh-job-13-seeded-single",
+        "qd-qpu-belenos-single-job-04",
+        "qd-qpu-belenos-single-job-04-replay"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-q1-leak-follows-one-circuit-form",
+        "qd-belenos-q1-leak-needs-single-job-and-large-budget",
+        "qd-belenos-fresh-anu-mesh-holds-single-job"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "proposed-qd-belenos-seeded-single-job-q1-mesh",
+      "statement": "Q1's case as one qpu:belenos job at compilation_seed 20 and 10000 samples (case belenos_mesh/job-13, about 1.01 credits) separates the unseeded single-job path from the single-job form at Q1's budget: void unless it serves 29dc6ef8; in_block inside source 20's light cone of at least 0.95 reads that the leak follows the unseeded path, at most 0.65 that it needs the single-job form at Q1's budget on 29dc6ef8 whatever the seed, and between reads intermediate.",
+      "domain": "hardware",
+      "evidence_class": "proposed experiment",
+      "status": "superseded",
+      "boundary": "One job on one mesh; whether an unseeded single job splits its budget across compilations or applies the mesh differently stays open after either reading. A run needs the user's approval of the written case.",
+      "evidence": [],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-light-cone-reading"
+      ],
+      "supersedes": [],
+      "superseded_by": "qd-belenos-q1-leak-single-job-form-whatever-seed"
+    },
+    {
+      "id": "qd-belenos-q1-leak-single-job-form-whatever-seed",
+      "statement": "Q1's case sent to qpu:belenos as one single job at compilation_seed 20 and 10000 samples (job c0db42f6, case belenos_mesh/job-13) served Q1's mesh 29dc6ef8 and kept 0.389 of its one-click samples inside source 20's light cone (Wilson 0.379 to 0.400), the preregistered reading 'single-job form at Q1's budget, whatever the seed': the in-cone leak does not follow the unseeded path. The same mesh keeps 0.982 to 0.995 in every iterated cell up to 60000 samples.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job on one mesh, about 6.8 hours after D1 to D4. The single jobs on e296b6a9 and 14a96ca6 hold, so the leak is specific to 29dc6ef8 among the three meshes tested; what a 10000-sample single job does differently from a 1500-sample one (0.924) or an iterated job is not isolated, and acquisition time does not order the cells (0.10 s here against 0.25 s for D1).",
+      "evidence": [
+        {
+          "path": "docs/evidence/quandela/belenos_seeded_single.json",
+          "sha256": "69c2800ffbc152d5ecfb079ae80ab4e4287375866bb198a19066ee7f368ac431"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13/analysis.json",
+          "sha256": "1b0005b458fa029d4d6621d07698f8f89b5526cf11865defa93688390a11b10b"
+        },
+        {
+          "path": "results/quandela/cases/belenos_mesh/job-13/cases.json",
+          "sha256": "de2076c8388badaab55ea07f2c811d87dc252527b2f3c496c80f888e78ac3423"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-547": "replay",
+        "core-545": "admission",
+        "core-537": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-13-seeded-single"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-q1-leak-follows-one-circuit-form"
+      ],
+      "supersedes": [
+        "proposed-qd-belenos-seeded-single-job-q1-mesh"
+      ],
       "superseded_by": null
     }
   ]
