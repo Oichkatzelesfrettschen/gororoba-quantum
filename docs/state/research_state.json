@@ -707,6 +707,69 @@
       "run": "results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-06",
       "family": "box-kite Tuna-17 dry run on the ideal QX emulator",
       "question": "Twin batch-06 on QX (the second dark Y circuit and the depth-5 bright edges, relabeled onto qubits 0-9): does every deterministic replica read its census outcome exactly?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-ladder-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-00",
+      "family": "box-kite Tuna-17 ladder series",
+      "question": "Ladder batch-00 on Tuna-17 (readout-0, readout-1, readout-iso-x): where do the readout rates open the series, and does q1, q13 or q14 read |1> differently with every coupled neighbor in |0> than with all 17 qubits excited?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-ladder-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-01",
+      "family": "box-kite Tuna-17 ladder series",
+      "question": "Ladder batch-01 on Tuna-17 (the Latin square in X): per pair, the population and X coherence at CZ depths 1, 5 and 9 inside one batch, and the 50 Hz line by depth inside each job"
+    },
+    {
+      "id": "qi-boxkite-tuna17-ladder-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-02",
+      "family": "box-kite Tuna-17 ladder series",
+      "question": "Ladder batch-02 on Tuna-17 (the Latin square in Y): the same pairs and depths read in Y, for the phase per depth and a second population ladder"
+    },
+    {
+      "id": "qi-boxkite-tuna17-ladder-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-03",
+      "family": "box-kite Tuna-17 ladder series",
+      "question": "Ladder batch-03 on Tuna-17 (readout-0, readout-1, readout-iso-hzh): the middle bracket, and does preparing |1> by H Z H change the isolated e10 of q1, q13 and q14?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-ladder-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-04",
+      "family": "box-kite Tuna-17 ladder series",
+      "question": "Ladder batch-04 on Tuna-17 (the Latin square in X, circuit order rotated): does the within-batch ladder of batch-01 replicate?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-ladder-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-05",
+      "family": "box-kite Tuna-17 ladder series",
+      "question": "Ladder batch-05 on Tuna-17 (the Latin square in Y, circuit order rotated): does the Y ladder of batch-02 replicate?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-ladder-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-06",
+      "family": "box-kite Tuna-17 ladder series",
+      "question": "Ladder batch-06 on Tuna-17 (readout-0, readout-1, readout-iso-x): the closing bracket and the second neighbor-context reading"
+    },
+    {
+      "id": "qi-boxkite-qx-ladder-twins-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder_twins_qx-batch-00",
+      "family": "box-kite Tuna-17 dry run on the ideal QX emulator",
+      "question": "Ladder twin batch-00 on QX (the X Latin circuits, relabeled onto qubits 0-5): does every deterministic replica read its census outcome exactly?"
+    },
+    {
+      "id": "qi-boxkite-qx-ladder-twins-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder_twins_qx-batch-01",
+      "family": "box-kite Tuna-17 dry run on the ideal QX emulator",
+      "question": "Ladder twin batch-01 on QX (the Y Latin circuits, relabeled onto qubits 0-5): does every deterministic replica read its census outcome exactly?"
     }
   ],
   "claims": [
@@ -4325,7 +4388,7 @@
     },
     {
       "id": "qi-tuna17-shot-record-50hz-line",
-      "statement": "The retained per-shot outcome lists of Tuna-17 jobs carry a line at the 50 Hz grid frequency in wall-clock time. A band scan at 0.019 to 0.021 cycles per shot finds the line (whitened, p below 1e-6 after the band's look-elsewhere factor) in 57 of 126 Tuna-17 jobs and in none of 102 QX jobs, none of 34 readout-0/readout-1 circuits and none of the 8 depth-1 LCU circuits; it appears in Ramsey, CZ-ladder, walk and additivity circuits, with first-harmonic amplitudes in P(1) up to 0.43 (q7, ring-down Ramsey) and 0.39 (q5, coupler-ZZ Ramsey). Across the readout ring-down arms, whose circuits differ only in a wait of tau cycles of 20 ns, the peak frequency rises with tau at 50.4 +- 4.0 Hz (31 jobs, one intercept per batch): 12.6 standard errors from the 0 Hz a shot-index-locked source predicts and 0.1 from 50 Hz, which at 50 Hz puts one shot at 402.9 to 404.6 us in the ring-down circuits and 400.7 us in the follow series. In the follow series the bright-edge selectors on (1,4), (10,13) and (12,14) oscillate with amplitudes 0.19 to 0.26 at CZ depth 9, 0.09 to 0.13 at depth 5 and below 0.0175 at depth 1, in phase across the three pairs (resultant 0.996 to 1.000 per job). Within-job stationarity (16 block means per bit, the smallest per-bit chi-square tail times the bits scanned) falls below 0.01 in 11 to 33 percent of the box-kite pre-T0, T0 and follow jobs and in 61 to 75 percent of the morning ring-down jobs. The detection statistic whitens the scanned bits by their same-shot correlation matrix, so correlated bits of one shot do not inflate it.",
+      "statement": "The retained per-shot outcome lists of Tuna-17 jobs carry a line at the 50 Hz grid frequency in wall-clock time. A band scan at 0.019 to 0.021 cycles per shot finds the line (whitened, p below 1e-6 after the band's look-elsewhere factor) in 69 of 147 Tuna-17 jobs and in none of 108 QX jobs, none of 43 readout circuits (readout-0, readout-1 and the context readouts, at up to 131072 shots) and none of the 8 depth-1 LCU circuits; it appears in Ramsey, CZ-ladder, walk and additivity circuits, with first-harmonic amplitudes in P(1) up to 0.43 (q7, ring-down Ramsey) and 0.39 (q5, coupler-ZZ Ramsey). Across the readout ring-down arms, whose circuits differ only in a wait of tau cycles of 20 ns, the peak frequency rises with tau at 50.4 +- 4.0 Hz (31 jobs, one intercept per batch): 12.6 standard errors from the 0 Hz a shot-index-locked source predicts and 0.1 from 50 Hz, which at 50 Hz puts one shot at 402.9 to 404.6 us in the ring-down circuits and 400.7 us in the follow series. In the follow series the bright-edge selectors on (1,4), (10,13) and (12,14) oscillate with amplitudes 0.19 to 0.26 at CZ depth 9, 0.09 to 0.13 at depth 5 and below 0.0175 at depth 1, in phase across the three pairs (resultant 0.996 to 1.000 per job). Within-job stationarity (16 block means per bit, the smallest per-bit chi-square tail times the bits scanned) falls below 0.01 in 11 to 33 percent of the box-kite pre-T0, T0 and follow jobs and in 61 to 75 percent of the morning ring-down jobs. The detection statistic whitens the scanned bits by their same-shot correlation matrix, so correlated bits of one shot do not inflate it.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -4333,7 +4396,7 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/tuna_17_shot_record_line.json",
-          "sha256": "6c28127f6a7c846eb8802a336841f59b4dbeb38230af8d5bbb901fe9bae1d612"
+          "sha256": "4fdd54622bb7bef0674d7126a3a4832c0092c7c424fb3126c87ad015a1d6273f"
         }
       ],
       "documents": [
@@ -4422,10 +4485,137 @@
         "qi-boxkite-qx-twins-batch-02",
         "qi-boxkite-qx-twins-batch-03",
         "qi-boxkite-qx-twins-batch-05",
-        "qi-boxkite-qx-twins-batch-06"
+        "qi-boxkite-qx-twins-batch-06",
+        "qi-boxkite-tuna17-ladder-batch-00",
+        "qi-boxkite-tuna17-ladder-batch-01",
+        "qi-boxkite-tuna17-ladder-batch-02",
+        "qi-boxkite-tuna17-ladder-batch-03",
+        "qi-boxkite-tuna17-ladder-batch-04",
+        "qi-boxkite-tuna17-ladder-batch-05",
+        "qi-boxkite-tuna17-ladder-batch-06",
+        "qi-boxkite-qx-ladder-twins-batch-00",
+        "qi-boxkite-qx-ladder-twins-batch-01"
       ],
       "assumptions": [],
       "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-boxkite-ladder-readout-context",
+      "statement": "On Tuna-17 the |1> misassignment of q13 depends on the state of its coupled neighbors: e10 reads 0.0895 and 0.0863 with all 17 qubits excited (readout-1, batches 0 and 6) against 0.0441 and 0.0399 with q1, q13 and q14 alone excited and every coupled neighbor in |0> (readout-iso-x), differences 0.045 and 0.046 at about 45 standard errors, so neighbor context is established on q13 by the preregistered rule (above 0.02 and 5 SE in both brackets). It is absent on q1 (-0.0009, -0.0016) and q14 (-0.0027, -0.0006). The preparation path is absent under the 0.02 threshold on all three: e10 after H Z H minus the interpolated isolated e10 is +0.016 (q13), +0.005 (q14) and -0.0002 (q1). Corrected with the readout-1 brackets, the depth-1 X conditional coherence on (10,13) reads -1.104 and -1.060 (batches 1 and 4); corrected with q13's isolated e10 it reads -0.997 and -0.955, within one of the physical bound; (12,14) reads -0.995 and -0.994 either way. The follow series' unphysical -1.105 on (10,13) is therefore a readout-1 calibration artifact of q13.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One device state of one night (01:55Z to 03:02Z, 2026-10-18) at 131072 shots per job. readout-1 excites q10 and q11 together, so the design does not say which neighbor shifts q13's readout. The preparation differences below the 0.02 threshold are significant on shot noise (q13 +0.016 at about 20 SE, q14 +0.005 at about 9 SE) and are reported, not decided. Beside an excited q13, q10's own e01 rises by 0.011 to 0.014 against readout-0 (reported).",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json",
+          "sha256": "a2f22aeddf38809b47793d159773f5351f8b9448f239197a7d35f6fb8c8d5247"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/tuna-17.md",
+        "docs/notes/quantum_inspire/tuna-17-run-design.md",
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-425": "replay",
+        "core-420": "freshness"
+      },
+      "acquisitions": [
+        "qi-boxkite-tuna17-ladder-batch-00",
+        "qi-boxkite-tuna17-ladder-batch-01",
+        "qi-boxkite-tuna17-ladder-batch-02",
+        "qi-boxkite-tuna17-ladder-batch-03",
+        "qi-boxkite-tuna17-ladder-batch-04",
+        "qi-boxkite-tuna17-ladder-batch-05",
+        "qi-boxkite-tuna17-ladder-batch-06",
+        "qi-boxkite-qx-ladder-twins-batch-00",
+        "qi-boxkite-qx-ladder-twins-batch-01"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-boxkite-ladder-within-batch",
+      "statement": "The within-batch Latin-square ladder on Tuna-17 (every circuit holding CZ depths 1, 5 and 9 on the pairs (1,4), (10,13) and (12,14); X batches 1 and 4, Y batches 2 and 5; 131072 shots per job) gives rho = r_coh / r_pop above 1 on all three pairs in both X batches: 1.021 and 1.020 on (1,4), 1.021 and 1.022 on (10,13), 1.005 and 1.006 on (12,14), each 99% interval excluding 1 (preregistered decision: above 1). The replicate difference exceeds 3 combined standard errors on (12,14) only (z -3.85; (1,4) 1.59, (10,13) -2.68). r_pop is 0.951 to 0.957 on (1,4), 0.953 to 0.958 on (10,13) and 0.976 to 0.978 on (12,14) across all four Latin batches. The 50 Hz line is detected in all 12 Latin jobs, as predicted; the depth-9 over depth-1 amplitude margin holds in 10 of 12 jobs and is refuted in the two jobs whose depth-9 pair is (12,14) in batches 4 and 5 (batch-04 latin-x-1 and batch-05 latin-y-1), where that selector's first harmonic falls to 0.0027.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "rho above 1 means the population contrast decays faster than the joint coherence, which neither a global depolarizing channel (rho = 1) nor dephasing (rho below 1) gives; a coherent error that moves selector population, or the 50 Hz modulation averaged over a job, would raise it, and the design isolates neither. The (10,13) rho uses the readout-1 correction, which overstates q13's e10 (claim qi-tuna17-boxkite-ladder-readout-context). The line refutation is of the preregistered first-harmonic margin; the second harmonic of the same selector stays at 0.020 to 0.022 (claim qi-tuna17-boxkite-ladder-drift-harmonics), so the refutation does not show the modulation absent.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json",
+          "sha256": "a2f22aeddf38809b47793d159773f5351f8b9448f239197a7d35f6fb8c8d5247"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/tuna-17.md",
+        "docs/notes/quantum_inspire/tuna-17-run-design.md",
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-425": "replay",
+        "core-420": "freshness"
+      },
+      "acquisitions": [
+        "qi-boxkite-tuna17-ladder-batch-00",
+        "qi-boxkite-tuna17-ladder-batch-01",
+        "qi-boxkite-tuna17-ladder-batch-02",
+        "qi-boxkite-tuna17-ladder-batch-03",
+        "qi-boxkite-tuna17-ladder-batch-04",
+        "qi-boxkite-tuna17-ladder-batch-05",
+        "qi-boxkite-tuna17-ladder-batch-06",
+        "qi-boxkite-qx-ladder-twins-batch-00",
+        "qi-boxkite-qx-ladder-twins-batch-01"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-boxkite-ladder-drift-harmonics",
+      "statement": "Descriptive readings of the ladder series. Against the follow series about two and a half hours earlier, the bright-edge populations rose by 0.071 (1,4), 0.092 (10,13) and 0.394 (12,14) at CZ depth 9 and by 0.003, 0.035 and 0.190 at depth 5; (12,14) at depth 9 moved from 0.483 to 0.877. The (12,14) selector at depth 9 carries a first harmonic of 0.024 and 0.026 in batches 1 and 2 and 0.0027 in batches 4 and 5, while its second harmonic stays at 0.020 to 0.022 in all four (shot-record lock-in at each job's peak). In the shot-record scan the 21 ladder jobs fall below an adjusted block-stationarity p of 0.01 in 52 percent of jobs, and none of the 9 readout circuits carries the line at 131072 shots.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive; nothing here was a preregistered decision. A first harmonic that vanishes while the second persists fits a static phase moving onto an extremum of the selector's response, inferred, not measured. No retained record places a platform calibration between the follow and ladder series; batch 4 waited about 30 minutes in the queue.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json",
+          "sha256": "a2f22aeddf38809b47793d159773f5351f8b9448f239197a7d35f6fb8c8d5247"
+        },
+        {
+          "path": "results/quantum_inspire/tuna_17_shot_record_line.json",
+          "sha256": "4fdd54622bb7bef0674d7126a3a4832c0092c7c424fb3126c87ad015a1d6273f"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/tuna-17.md",
+        "docs/notes/quantum_inspire/tuna-17-run-design.md",
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-425": "replay",
+        "core-426": "replay"
+      },
+      "acquisitions": [
+        "qi-boxkite-tuna17-ladder-batch-00",
+        "qi-boxkite-tuna17-ladder-batch-01",
+        "qi-boxkite-tuna17-ladder-batch-02",
+        "qi-boxkite-tuna17-ladder-batch-03",
+        "qi-boxkite-tuna17-ladder-batch-04",
+        "qi-boxkite-tuna17-ladder-batch-05",
+        "qi-boxkite-tuna17-ladder-batch-06"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qi-tuna17-boxkite-follow-ladder-drift"
+      ],
       "supersedes": [],
       "superseded_by": null
     }

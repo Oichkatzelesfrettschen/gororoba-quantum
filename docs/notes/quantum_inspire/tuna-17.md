@@ -147,9 +147,10 @@ the 50 Hz grid frequency (`scripts/qi_shot_record_line.py`,
 `results/quantum_inspire/tuna_17_shot_record_line.json`, gates core-426 and
 core-427; claim `qi-tuna17-shot-record-50hz-line`).
 
-- A band scan at 0.019 to 0.021 cycles per shot finds it in 57 of 126
-  Tuna-17 jobs and in none of 102 QX jobs. On Tuna-17 it is absent from
-  all 34 readout-0 and readout-1 circuits and all 8 depth-1 LCU circuits.
+- A band scan at 0.019 to 0.021 cycles per shot finds it in 69 of 147
+  Tuna-17 jobs and in none of 108 QX jobs. On Tuna-17 it is absent from
+  all 43 readout circuits, at up to 131072 shots, and all 8 depth-1 LCU
+  circuits.
   It is present in Ramsey, CZ-ladder, walk and additivity circuits.
 - Its amplitude in P(1) reaches 0.43 on q7 (ring-down Ramsey) and 0.39 on q5
   (coupler-ZZ Ramsey).
@@ -179,6 +180,17 @@ Consequences:
   times the bits scanned) falls below 0.01 in 61 to 75 percent of the
   morning ring-down jobs and in 11 to 33 percent of the box-kite jobs. Within-job
   stationarity depends on the device's state, so each series checks it.
+
+## Readout context
+
+q13's |1> misassignment depends on its neighbors' state. In the ladder series,
+readout-1 (all 17 excited) gives e10 = 0.090 and 0.086 and readout-iso-x
+(q1, q13, q14 alone) gives 0.044 and 0.040, about 45 standard errors apart;
+q1 and q14 read alike in both contexts (claim
+`qi-tuna17-boxkite-ladder-readout-context`). A witness whose data qubit sits
+beside idle neighbors is therefore corrected with the isolated rate: on
+(10,13) the depth-1 coherence reads -0.997 that way and -1.104 with
+readout-1. q10's e01 rises by about 0.012 beside an excited q13.
 
 ## Run design
 

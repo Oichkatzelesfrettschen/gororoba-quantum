@@ -24,10 +24,13 @@ Per job:
   frequencies into account, and a job with p below DETECTION_P carries the
   line.
 - lock-in: least squares of every scanned bit on cos and sin of 2 pi f t at
-  the peak f and at 3 f gives the first-harmonic amplitude, its phase at the
+  the peak f, 2 f and 3 f gives the first-harmonic amplitude, its phase at the
   middle shot (where a frequency error moves it least) and the
-  third-harmonic amplitude; a bit is listed when its amplitude
-  exceeds AMPLITUDE_SIGMAS standard errors sqrt(2 var / n).
+  third- and second-harmonic amplitudes, listed in that order; a bit is
+  listed when its first- or second-harmonic amplitude exceeds
+  AMPLITUDE_SIGMAS standard errors sqrt(2 var / n). A bit whose static phase
+  sits at an extremum of its response carries a phase modulation at 2 f
+  with a vanishing first harmonic.
 - stationarity: the chi-square of BLOCKS block means of each scanned bit
   against binomial noise (BLOCKS - 1 degrees of freedom), reported as the
   smallest per-bit tail probability times the number of bits scanned, so jobs
@@ -163,6 +166,8 @@ def scan(x: np.ndarray, band: tuple[float, float] = BAND, detection_p: float = D
             np.sin(2 * np.pi * frequency * t),
             np.cos(6 * np.pi * frequency * t),
             np.sin(6 * np.pi * frequency * t),
+            np.cos(4 * np.pi * frequency * t),
+            np.sin(4 * np.pi * frequency * t),
         ],
         axis=1,
     )
@@ -170,11 +175,12 @@ def scan(x: np.ndarray, band: tuple[float, float] = BAND, detection_p: float = D
     first = np.hypot(coefficients[0], coefficients[1])
     phase = np.arctan2(-coefficients[1], coefficients[0])
     third = np.hypot(coefficients[2], coefficients[3])
+    second = np.hypot(coefficients[4], coefficients[5])
     error = np.sqrt(2 * variance[used] / n)
     listed = {
-        str(int(b)): [sig(float(a), 4), sig(float(p), 4), sig(float(h), 4)]
-        for b, a, p, h, e in zip(used, first, phase, third, error, strict=True)
-        if a > AMPLITUDE_SIGMAS * e
+        str(int(b)): [sig(float(a), 4), sig(float(p), 4), sig(float(h), 4), sig(float(g), 4)]
+        for b, a, p, h, g, e in zip(used, first, phase, third, second, error, strict=True)
+        if max(a, g) > AMPLITUDE_SIGMAS * e
     }
     # Cramer-Rao bound of a real sinusoid's frequency in white noise, combined over bits through the same-shot
     # correlation: the standardized cosine and sine coefficient vectors contract with R^+, so k copies of one bit
@@ -351,7 +357,7 @@ def self_test() -> str:
     require(abs(row["cycles_per_shot"] - 0.020037) < 5 * error, (row["cycles_per_shot"], error))
     middle = 0.7 + 2 * np.pi * 0.020037 * (16384 - 1) / 2
     for b in ("0", "1", "2"):
-        amplitude, phase, _ = row["bits"][b]
+        amplitude, phase, _, _ = row["bits"][b]
         require(abs(amplitude - 0.1) < 5 * math.sqrt(2 * 0.25 / 16384), amplitude)
         require(abs(np.angle(np.exp(1j * (phase - middle)))) < 5 * math.sqrt(2 * 0.25 / 16384) / 0.1, phase)
     require("3" not in row["bits"] and "4" not in row["bits"], row["bits"])

@@ -246,17 +246,51 @@ gate core-425; claims `qi-tuna17-boxkite-follow-crossover` and
   q13's |1> misassignment in the witness context, through neighbor-dependent
   readout or through readout-1's own X on q13.
 
+## Ladder results, 2026-10-18
+
+The series ran from 01:55Z to 03:02Z at 131072 shots per job. Both QX twin
+batches read every replica exactly, every batch passed its stop rules, and
+the brackets moved e01 and e10 by at most 0.009
+(`results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json`, gate
+core-425; claims `qi-tuna17-boxkite-ladder-readout-context`,
+`qi-tuna17-boxkite-ladder-within-batch` and
+`qi-tuna17-boxkite-ladder-drift-harmonics`).
+
+- **q13 readout.** With all 17 qubits excited, q13's e10 reads 0.090 and
+  0.086; with every coupled neighbor in |0> it reads 0.044 and 0.040. The
+  difference of 0.045 is about 45 standard errors, and the preregistered
+  rule establishes neighbor context. q1 and q14 show none. The H Z H
+  preparation moves q13's isolated e10 by +0.016, below the 0.02 threshold.
+  Corrected with the isolated e10, the depth-1 coherence on (10,13) reads
+  -0.997 and -0.955, against -1.104 and -1.060 with readout-1. The follow
+  series' -1.105 is therefore a readout-1 calibration artifact.
+- **rho.** r_coh / r_pop lies above 1 on all three pairs in both X batches:
+  1.020 to 1.022 on (1,4) and (10,13), and 1.005 to 1.006 on (12,14).
+  Population contrast decays faster than joint coherence, which neither
+  global depolarizing nor dephasing gives. Only (12,14) scatters between the
+  replicates beyond 3 SE.
+- **Line.**
+  - The line is detected in all 12 Latin jobs.
+  - The depth-9 over depth-1 margin holds in 10 of them. It fails where the
+    depth-9 pair is (12,14) in batches 4 and 5: that selector's first
+    harmonic drops from 0.025 to 0.003 while its second harmonic stays at
+    0.020 to 0.022.
+  - None of the 9 readout circuits carries the line at 131072 shots.
+- **Drift.** Against the follow series, the depth-9 bright populations rose
+  by 0.07, 0.09 and 0.39, with (12,14) moving from 0.483 to 0.877.
+
 ## Open questions
 
-- Readout context: a bracket with only the witness's qubits excited, beside
-  the all-qubit pair, would separate neighbor-dependent readout on q13 from
-  a preparation error of readout-1's X.
-- The raw shot order is temporal: it carries a 50 Hz line whose frequency
-  in cycles per shot follows circuit duration ([tuna-17.md](tuna-17.md),
-  claim `qi-tuna17-shot-record-50hz-line`). The line grows with CZ depth,
-  so the ladder's decay mixes decoherence with a time-averaged oscillating
-  phase. A ladder read at the line's phase, and a Ramsey sensor that gives
-  each job its phase reference, are open designs.
+- Readout context: readout-1 excites both of q13's neighbors, q10 and q11;
+  a context readout that excites one at a time would name the neighbor, and
+  the same circuits for every used qubit would give a context-resolved
+  correction.
+- rho above 1: a coherent selector-population error and the job-averaged
+  50 Hz modulation both raise it. A ladder analyzed in line-phase bins at
+  the bins where the modulation is stationary would separate them.
+- The line at 2 f: the first-harmonic test reads zero at an extremum of a
+  selector's response, so a preregistered line test should take the larger
+  of the first and second harmonics.
 - The per-CZ time term and the decomposition of H: an A/B of H against
   Y90 then X on one replica would price the decomposed gate, and a ladder of
   `wait` cycles beside the CZ ladder would separate the detuning phase from
