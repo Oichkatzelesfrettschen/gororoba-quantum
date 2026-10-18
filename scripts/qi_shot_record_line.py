@@ -111,6 +111,23 @@ def gamma_log_tail(k: int, x: float) -> float:
     return -x + float(logsumexp(j * math.log(x) - gammaln(j + 1)))
 
 
+def chi2_log10_tail(chi: np.ndarray, dof: int) -> np.ndarray:
+    """log10 P(chi2(dof) > chi), finite where scipy's logsf underflows.
+
+    The tail is Q(a, x) with a = dof / 2 and x = chi / 2; past the underflow x far exceeds a, where the
+    asymptotic series log Q = -x + (a - 1) log x - lgamma(a) + log(sum_j (a - 1)...(a - j) / x^j) holds.
+    """
+    direct = stats.chi2.logsf(chi, dof)
+    a, x = dof / 2, np.maximum(chi / 2, 1.0)
+    series = np.ones_like(x)
+    term = np.ones_like(x)
+    for j in range(1, 12):
+        term = term * (a - j) / x
+        series = series + term
+    asymptotic = -x + (a - 1) * np.log(x) - math.lgamma(a) + np.log(series)
+    return np.where(np.isfinite(direct), direct, asymptotic) / math.log(10)
+
+
 def scan(x: np.ndarray, band: tuple[float, float] = BAND, detection_p: float = DETECTION_P) -> dict[str, Any]:
     """Band scan, lock-in and block stationarity of a (shots, width) outcome array, in band at detection_p."""
     n = x.shape[0]
@@ -159,12 +176,16 @@ def scan(x: np.ndarray, band: tuple[float, float] = BAND, detection_p: float = D
         for b, a, p, h, e in zip(used, first, phase, third, error, strict=True)
         if a > AMPLITUDE_SIGMAS * e
     }
-    # Cramer-Rao bound of a real sinusoid's frequency in white noise, combined over bits.
-    information = float((first**2 / variance[used]).sum()) * (2 * np.pi) ** 2 * n * (n * n - 1) / 24
+    # Cramer-Rao bound of a real sinusoid's frequency in white noise, combined over bits through the same-shot
+    # correlation: the standardized cosine and sine coefficient vectors contract with R^+, so k copies of one bit
+    # carry one bit's information.
+    unit = coefficients[:2] / np.sqrt(variance[used])
+    contracted = float(np.einsum("ik,kl,il->", unit, pseudo, unit))
+    information = contracted * (2 * np.pi) ** 2 * n * (n * n - 1) / 24
     m = n // BLOCKS
     blocks = x[: m * BLOCKS, used].reshape(BLOCKS, m, used.size).mean(axis=1)
     chi = ((blocks - x[:, used].mean(axis=0)) ** 2 / (variance[used] / m)).sum(axis=0)
-    tails = stats.chi2.logsf(chi, BLOCKS - 1) / math.log(10)
+    tails = chi2_log10_tail(chi, BLOCKS - 1)
     block_log10_p = min(0.0, float(tails.min()) + math.log10(used.size))
     return row | {
         "detected": log10_p < math.log10(detection_p),
@@ -340,6 +361,15 @@ def self_test() -> str:
     copies = np.repeat(synthetic(16384, 0.020037, 0.0, 0.0, 13)[:, :1], 12, axis=1)
     copied = scan(copies)
     require(not copied["detected"] and copied["whitened_rank"] == 1, copied)
+    # The copies of a bit carrying the line carry one bit's frequency information.
+    single = scan(synthetic(16384, 0.020037, 0.1, 0.7, 11)[:, :1])
+    stacked = scan(np.repeat(synthetic(16384, 0.020037, 0.1, 0.7, 11)[:, :1], 12, axis=1))
+    require(abs(stacked["cycles_per_shot_se"] / single["cycles_per_shot_se"] - 1) < 1e-6, (single, stacked))
+    for chi in (40.0, 400.0, 4000.0):
+        tail = float(chi2_log10_tail(np.array([chi]), 15)[0])
+        require(math.isfinite(tail) and tail < 0, (chi, tail))
+    near = float(chi2_log10_tail(np.array([1400.0]), 15)[0])
+    require(abs(near - float(stats.chi2.logsf(1400.0, 15)) / math.log(10)) < 1e-6, near)
     # A shot-locked line keeps one frequency for every tau; a wall-clock line moves by F tau.
     rows = []
     for batch, base in enumerate((0.0202, 0.02021)):
