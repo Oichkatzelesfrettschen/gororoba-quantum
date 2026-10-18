@@ -22,20 +22,23 @@
   - Failures are never cached and rerun on the base through
     `ci/run_gates.py --gates`.
 - The first premerge against a new main commit runs both trees. Later
-  premerges against that commit run only the merge tree.
+  premerges under the same key run the merge tree plus a base rerun of
+  each merge failure the cached passes do not cover.
 - A host change the key omits shows up as an introduced failure, which
   blocks the merge rather than hiding one. `--no-cache` reruns the base in
   full.
-- Skipping unchanged gates is not done yet, and needs each gate's recorded
-  read set. Whole-tree record gates reach their inputs through glob,
+- `ci/run_gates.py --changed-files` already skips full-tier gates whose
+  declared inputs are unchanged. Skipping unchanged pull-request-tier gates
+  is not done yet, and needs each gate's recorded read set. Whole-tree record gates reach their inputs through glob,
   directory listing and git, which an import closure misses. Any skip rule
   needs a self-test with a planted missed input.
 
 ## Behavioral test suite
 
-The script-gate harness is the next redesign. One process per gate pays for
-interpreter start-up and a qiskit import every time, and the long gates
-re-derive retained evidence end to end. The target is a normal-Python
+The script-gate harness is the next redesign. Each gate starts its own
+process, so every Python gate pays for interpreter start-up and each one that
+imports qiskit pays for that import again. The long gates re-derive retained
+evidence end to end. The target is a normal-Python
 behavioral suite:
 
 - pytest with xdist, so modules import once per worker;
@@ -52,8 +55,9 @@ from retained durations keeps the suite fast.
 
 ## Bytecode cache
 
-Gate commands pass `-B`, which stops Python from writing bytecode but still
-lets it read existing bytecode. A cache under `PYTHONPYCACHEPREFIX` moves
+Most Python gate commands pass `-B` or set `PYTHONDONTWRITEBYTECODE=1`.
+Both stop Python from writing bytecode but still let it read existing
+bytecode. A cache under `PYTHONPYCACHEPREFIX` moves
 every module's bytecode, site-packages included, so a cold prefix recompiles
 qiskit, numpy and scipy in every process.
 
