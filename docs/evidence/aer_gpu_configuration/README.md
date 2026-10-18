@@ -102,7 +102,8 @@ ms per shot at 2048 shots:
   trajectories 1.19 to 1.29 times slower. A measurement-sampled static
   density matrix evolves once, so its rows agree within 4 percent across
   configurations.
-- Aer spreads every multi-shot run over both T4s: batched rows report
+- Aer spreads per-shot and batched runs over both T4s: batched rows report
   `batched_shots_optimization_parallel_gpus` 2, and unbatched trajectories
-  and dynamic density matrices `gpu_parallel_shots_` 2. A static density
-  matrix that measurement sampling serves holds one state on one GPU.
+  and dynamic density matrices `gpu_parallel_shots_` 2. A run that
+  measurement sampling serves (a static density matrix, a noise-free static
+  statevector) evolves one state on one GPU.

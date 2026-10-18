@@ -11,7 +11,7 @@ it and the code or gate that enforces it.
 
 | Record | Question | Answer |
 | --- | --- | --- |
-| `results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config` (core-450) | Does the pinned GPU venv run on both T4s, and which Aer executor wins? | every GPU row on the GPU; batched trajectories 3.5 and 3.8 times faster than unbatched at 7 and 10 qubits; cuStateVec 1.44 and 1.63 times faster on the dynamic density matrix; Aer spreads every multi-shot run over both GPUs |
+| `results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config` (core-450) | Does the pinned GPU venv run on both T4s, and which Aer executor wins? | every GPU row on the GPU; batched trajectories 3.5 and 3.8 times faster than unbatched at 7 and 10 qubits; cuStateVec 1.44 and 1.63 times faster on the dynamic density matrix; Aer spreads per-shot and batched runs over both GPUs |
 | `results/kaggle/2026-10-17T211857Z-gororoba-aer-gpu-env-preflight` | Does the preflight stop a CPU fallback? | exit 4 on a CPU machine, at no GPU quota |
 | `results/kaggle/2026-10-17T225519Z-gororoba-aer-blocking` and `2026-10-17T230346Z-gororoba-aer-blocking` (core-451) | Why did density matrix 15 and statevector 30 die on a T4? | Aer's automatic blocking filled host memory and the OOM killer ended it; explicit chunks ran both across the two T4s in 4.2 and 7.2 s |
 
@@ -97,12 +97,15 @@ The timings are in `docs/evidence/aer_gpu_configuration/README.md` and
 | Dynamic density matrix | `custatevec=True` | 1.44 and 1.63 times the plain GPU executor at 7 and 10 qubits on the T4 |
 | Statevector trajectories with cuStateVec | leave it off | 1.19 to 1.29 times slower |
 | A state wider than one GPU | automatic in `SnapshotSimulator.run` | chunks across both T4s; feed-forward lowered |
-| Many shots on two GPUs | nothing to add | Aer already reports two GPUs in use |
+| Many shots on two GPUs | nothing to add for per-shot and batched runs | Aer reports two GPUs in use; a measurement-sampled run evolves one state on one GPU |
 | Seeded counts for a CI gate | CPU sampler, or a gate that re-derives from retained GPU counts | seeded GPU counts differ from CPU counts |
 | Shot branching | never | it drops a mid-circuit measurement's readout channel |
 
 A process per GPU (`CUDA_VISIBLE_DEVICES`) adds nothing to Aer's own
-two-GPU spread for multi-shot runs. On the ghost-branching estimator the
+two-GPU spread for per-shot and batched runs. A measurement-sampled run, a
+static circuit whose shots Aer draws from one final state, holds one GPU:
+the 29-qubit GHZ under Aer's defaults used GPU 0 alone, with GPU 1 at its
+209 MiB baseline. On the ghost-branching estimator the
 GPU phases are 2.4 s of a 58.7 s run, so it would gain about 1 percent; the
 #68 T4 row measures it.
 

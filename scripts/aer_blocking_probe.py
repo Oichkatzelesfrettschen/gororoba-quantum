@@ -360,8 +360,10 @@ def main() -> int:
     if args.one:
         print(json.dumps(run_one(json.loads(args.one))), flush=True)
         return 0
+    names = {trial_name(t): t for t in TRIALS}
+    chosen = list(TRIALS) if not args.trials else [names[name] for name in args.trials.split(",")]
     if args.check:
-        return check(args.check)
+        return check(args.check, [trial_name(trial) for trial in chosen])
     if args.self_test:
         print(f"aer_blocking_probe: {self_test()}")
         return 0
@@ -370,8 +372,6 @@ def main() -> int:
     devices = aer_gpu_probe.gpus()
     if not devices:
         raise SystemExit(aer_gpu_probe.NO_GPU)
-    names = {trial_name(t): t for t in TRIALS}
-    chosen = list(TRIALS) if not args.trials else [names[name] for name in args.trials.split(",")]
     gpu_memory_mib = min(int(device["memory.total"]) for device in devices)
     record: dict[str, Any] = {
         "schema": SCHEMA,
@@ -390,6 +390,9 @@ def main() -> int:
             for method in ("statevector", "density_matrix")
         },
         "seed": SEED,
+        # Written before the first trial, so a record cut off mid-run keeps
+        # the trials it was meant to hold and --check names the missing ones.
+        "planned": [trial_name(trial) for trial in chosen],
         "trials": [],
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
@@ -402,10 +405,21 @@ def main() -> int:
     return 0
 
 
-def check(path: Path) -> int:
-    """Re-derive every trial's ok and ended_by and the record's chunk sizes; exit 1 on any difference."""
+def check(path: Path, requested: list[str]) -> int:
+    """Re-derive every trial's ok and ended_by and the record's chunk sizes; exit 1 on any difference.
+
+    The trials must be the record's planned list; a collected record made
+    before the probe wrote one checks against requested, the trials of the
+    --trials argument (every TRIALS entry by default), while its
+    collect.json sha256 pins its bytes.
+    """
     record = json.loads(path.read_text(encoding="utf-8"))
     problems = []
+    planned = record.get("planned", requested)
+    found = [row["name"] for row in record["trials"]]
+    if found != planned:
+        missing = [name for name in planned if name not in found]
+        problems.append(f"{len(found)} of {len(planned)} planned trials; missing {missing[:3]}")
     if record.get("schema") != SCHEMA:
         problems.append(f"schema {record.get('schema')!r} is not {SCHEMA}")
     for method, bits in record["blocking_qubits"].items():
@@ -564,10 +578,13 @@ def self_test() -> str:
     wide.h(3)
     for a, b in ((3, 4), (4, 5), (5, 16), (16, 23), (23, 24), (24, 25)):
         wide.cx(a, b)
+    wide.barrier()
     wide.measure([3, 4, 5, 16, 23, 24, 25], range(7))
     sized = calibration_snapshot.blocked_batch([wide], "statevector", t4)[1]
     if calibration_snapshot.active_qubits(wide) != 7 or sized:
-        raise SystemExit("aer_blocking_probe: a 156-qubit circuit with 7 active qubits was sized by its register")
+        raise SystemExit(
+            "aer_blocking_probe: a barriered 156-qubit circuit with 7 active qubits was sized by its register"
+        )
     with_else = QuantumCircuit(TOY_WIDTH, 1)
     with_else.measure(0, 0)
     with with_else.if_test((with_else.clbits[0], 1)) as orelse:

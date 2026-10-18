@@ -51,6 +51,8 @@ from qiskit.transpiler import InstructionProperties, Target
 from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, ReadoutError
 
+import aer_resources
+
 SCHEMA = "gororoba-calibration-snapshot-v2"
 GATES = {"cz": CZGate(), "sx": SXGate(), "x": XGate(), "rz": RZGate(Parameter("theta")), "id": IGate()}
 # Non-gate instructions the snapshot carries; every other Target operation is
@@ -322,8 +324,13 @@ def lower_conditionals(circuit: Any) -> Any:
 
 
 def active_qubits(circuit: Any) -> int:
-    """The qubits any instruction acts on: the width Aer simulates once it truncates idle qubits."""
-    return len({qubit for instruction in circuit.data for qubit in instruction.qubits})
+    """The width Aer simulates once it truncates idle qubits: every wire an instruction other than a barrier acts on.
+
+    Aer leaves barriers out of the wires it keeps (Circuit::check_result_ancestor,
+    which Circuit::set_params applies when it truncates), so a device-wide
+    barrier on an ISA circuit adds no width.
+    """
+    return aer_resources.active_support(circuit)
 
 
 # Aer stores a double-precision state in 16 * 2**n bytes, 16 * 4**n for a

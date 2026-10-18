@@ -482,7 +482,7 @@ retain its output under results/kaggle/. The kernel's own guide is
   with Aer's reported `cuStateVec_enable`. On the T4 x2 (gate core-450)
   cuStateVec ran the dynamic density matrix 1.44 and 1.63 times faster than
   the plain GPU executor at 7 and 10 qubits and statevector trajectories
-  1.19 to 1.29 times slower, and Aer spread every multi-shot run over both
+  1.19 to 1.29 times slower, and Aer spread per-shot and batched runs over both
   GPUs (`docs/evidence/aer_gpu_configuration/README.md`).
   `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
   the T4 check, and `docs/notes/build_host/custatevec.md` the host build.
