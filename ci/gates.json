@@ -3787,6 +3787,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/state_prep_excess.py --self-test && \"$PYTHON\" -B -O -W error scripts/state_prep_excess.py --self-test",
+   "name": "core-522",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/state_prep_excess.py --check && \"$PYTHON\" -B -O -W error scripts/state_prep_excess.py --check",
+   "name": "core-538",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --self-test >/dev/null && \"$PYTHON\" -B -O -W error scripts/ghost_error_scale_branching.py --self-test >/dev/null",
    "name": "core-363",
    "seconds": 53.5,
