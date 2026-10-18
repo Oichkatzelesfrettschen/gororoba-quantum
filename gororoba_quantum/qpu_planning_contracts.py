@@ -1238,6 +1238,77 @@ def _verify_state_prep_family() -> None:
     _require([pub.kind for pub in live_run.execution_pubs(subset_choices)] == ["static"], "prep0 alone left one PUB")
     _require(qpu_planning.settings(subset_args)["state_prep_arms"] == ["prep0"], "the policy lost the arm selection")
     _require("state_prep_arms" not in qpu_planning.settings(args), "an omitted selection entered the policy")
+    _verify_state_prep_history(snapshot, qubits[:7])
+
+
+def _verify_state_prep_history(snapshot: Any, qubits: list[int]) -> None:
+    """x_history alone fuses one dynamic PUB, measure then X on every named qubit, in one job of its own."""
+    args = _args(
+        "state-prep-control",
+        layout=qubits,
+        state_prep_arms=["x_history"],
+        optimize=True,
+        shot_tiers=[4096, 8192],
+        optimizer_candidates=1,
+        max_execution_seconds=60,
+        max_total_execution_seconds=120.0,
+        reserve_seconds=0.0,
+    )
+    candidates = qpu_planning.family_candidates(live_run, [snapshot], args, {})
+    _require(len(candidates) == 1, "the x_history selection produced no candidate")
+    choices, configuration = candidates[0]
+    _require(configuration["arms"] == {"x_history": "init, measure, x"}, f"arms recorded {configuration['arms']}")
+    _require("dynamic x_history PUB, alone in its job" in configuration["placement_contract"], "placement contract")
+    pubs = live_run.execution_pubs(choices)
+    _require([pub.kind for pub in pubs] == ["dynamic"], f"x_history fused into {[pub.kind for pub in pubs]}")
+    pub = pubs[0]
+    covered = sorted(q for component in pub.components for q in component.manifest()["physical_qubits"])
+    _require(covered == sorted(qubits), f"{pub.name}: measures {covered}, not every named qubit")
+    manifest = pub.manifest()
+    _require(
+        manifest["feed_forward_operation_count"] == 0 and manifest["sequential_stage_count"] == 0,
+        "the measure-then-X PUB carries classical stages",
+    )
+    # The X follows the measurement on each qubit, so a shot ends in the flip of the projected state.
+    for qubit in qubits:
+        steps = [
+            instruction.operation.name
+            for instruction in pub.circuit.data
+            if [pub.circuit.find_bit(bit).index for bit in instruction.qubits] == [qubit]
+        ]
+        _require(steps == ["measure", "x"], f"qubit {qubit}: the fused PUB runs {steps}, not measure then x")
+    _require(
+        [len(batch) for batch in live_run.submission_batches(choices, "dynamic", 8192)] == [1]
+        and not live_run.submission_batches(choices, "static", 8192),
+        "x_history left its own single-PUB job",
+    )
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
+    with patch.object(live_run, "simulate", _ideal_predictions):
+        _selected, metadata = qpu_planning.prepare(live_run, [snapshot], args, usage, {})
+    names = sorted(contract["name"] for contract in metadata["observable_contracts"])
+    _require(names == sorted(f"spc_history_excited_q{q}" for q in qubits), f"history endpoints {names}")
+    _require(qpu_planning.settings(args)["state_prep_arms"] == ["x_history"], "the policy lost the history arm")
+    for arms in ("x_history,prep0", "prep0,x_history", "x_history,reset", "reset"):
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            try:
+                live_run.main(
+                    [
+                        "--family",
+                        "state-prep-control",
+                        "--state-prep-arms",
+                        arms,
+                        "--max-execution-seconds",
+                        "60",
+                        "--max-total-execution-seconds",
+                        "60",
+                    ]
+                )
+            except SystemExit as error:
+                _require(error.code == 2, f"--state-prep-arms {arms} produced CLI status {error.code}")
+            else:
+                raise RuntimeError(f"the CLI accepted --state-prep-arms {arms}")
+        _require("--state-prep-arms" in stderr.getvalue(), f"the rejection of {arms} did not name the flag")
 
 
 def _verify_shot_ceiling(snapshot: Any, qubits: list[int]) -> None:
@@ -1401,7 +1472,8 @@ def _verify_state_prep_only() -> None:
     print(
         "QPU planning: state-prep-control pins each arm to its named qubit, fuses two static PUBs and one "
         "dynamic PUB over every qubit, refuses the retained layout off its backend, admits 8192 shots and drops "
-        "tiers above max_shots"
+        "tiers above max_shots; x_history alone fuses one dynamic measure-then-X PUB in its own job and refuses any "
+        "other arm beside it"
     )
 
 

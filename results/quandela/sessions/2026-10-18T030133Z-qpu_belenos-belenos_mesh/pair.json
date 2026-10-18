@@ -1,0 +1,368 @@
+{
+ "schema": "qd-belenos-form-ensemble-v1",
+ "preregistration_sha256": "afc626ba7705376a21d759a2335f5a7f99b343c7d8f414b39b2fc7f2c809d09f",
+ "form": {
+  "run": "2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08",
+  "mesh_sha256": "e296b6a9cbad9732a0b96ceb56dae2a2c1eba1424bae0396eb56eb946fb2140f",
+  "in_block": 0.8856,
+  "in_block_wilson95": [
+   0.879212875,
+   0.891690986
+  ],
+  "a": 0.931458898,
+  "a_wilson95": [
+   0.926007208,
+   0.936536444
+  ],
+  "verdict": "intermediate"
+ },
+ "ensemble": {
+  "run": "2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07",
+  "configurations": [
+   {
+    "name": "cold-dark-05-20",
+    "seed_0": {
+     "a": 0.0,
+     "in_block": 0.880667,
+     "mesh_sha256": "1316cfbba93c4e78e8afb6e3a86ce6af154b14666613a8f500e3eaae6dfe5696"
+    },
+    "seed_1": {
+     "a": 0.006272,
+     "in_block": 0.956667,
+     "mesh_sha256": "249d9475869d1fe25b2c8f5939c7335843dd9d8e640c41cf850b3199fe02c419"
+    },
+    "seed_2": {
+     "a": 0.021045,
+     "in_block": 0.982,
+     "mesh_sha256": "25fd11d9a6643d610bece4d6168fea5a1ae739423ce818e2e07d7d4fabadd94b"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.021045,
+    "in_block_spread": 0.101333
+   },
+   {
+    "name": "cold-dark-06-20",
+    "seed_0": {
+     "a": 0.023396,
+     "in_block": 0.998665,
+     "mesh_sha256": "faf6189064dfc58fc156879bdb16d799d230e05f740b467a67c0d42bbdd08d14"
+    },
+    "seed_1": {
+     "a": 0.007293,
+     "in_block": 0.822667,
+     "mesh_sha256": "8ab06f356e6c89d51826e38d4921869be89335431459d24952138031dd637b03"
+    },
+    "seed_2": {
+     "a": 0.006964,
+     "in_block": 0.957333,
+     "mesh_sha256": "ee5ad310a007e15688c0b0b0c6ae413c274d2628bedf955334b5e7bca0e3c776"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.016432,
+    "in_block_spread": 0.175998
+   },
+   {
+    "name": "cold-dark-08-20",
+    "seed_0": {
+     "a": 0.069559,
+     "in_block": 0.968,
+     "mesh_sha256": "1da12eaf36415815ecbf01613fe33850cac9f561c3aaef4f8b220188f7a99080"
+    },
+    "seed_1": {
+     "a": 0.048867,
+     "in_block": 0.941333,
+     "mesh_sha256": "031534aafdccfb1dd69e1d5e625062a1bf3d63071810901ff8688e7b941c86a6"
+    },
+    "seed_2": {
+     "a": 0.020055,
+     "in_block": 0.965932,
+     "mesh_sha256": "d13bea937402a7104d40e828a403cd957c101fb7f23f4380ca0ad8134316a6bf"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.049504,
+    "in_block_spread": 0.026667
+   },
+   {
+    "name": "cold-dark-11-20",
+    "seed_0": {
+     "a": 0.184147,
+     "in_block": 0.833778,
+     "mesh_sha256": "13d03819670be2bfc562cfd8aaf6d8e2580471ef02c0e58d5899141f65a72ad1"
+    },
+    "seed_1": {
+     "a": 0.060858,
+     "in_block": 0.964,
+     "mesh_sha256": "6295b4646dfdb5e2ba0f470c1a674eb268f7fa80e60b8761473e909e14e8d341"
+    },
+    "seed_2": {
+     "a": 0.016961,
+     "in_block": 0.982667,
+     "mesh_sha256": "cf40dbd0a910189244daf55029d001067eb0f21a36390d05c4780c9ae153947c"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.167186,
+    "in_block_spread": 0.148889
+   },
+   {
+    "name": "cold-dark-16-20",
+    "seed_0": {
+     "a": 0.057292,
+     "in_block": 0.896,
+     "mesh_sha256": "302a3892ee32e2be323441f41ba06146c16535307fab0303004ee1cde5f0959d"
+    },
+    "seed_1": {
+     "a": 0.059985,
+     "in_block": 0.878,
+     "mesh_sha256": "7f720cc66bce7145952b4bb5eaec19776879b8a47ef98145608c378ae735d9e8"
+    },
+    "seed_2": {
+     "a": 0.031735,
+     "in_block": 0.987333,
+     "mesh_sha256": "4c8c1af69e96b090ae9fc5d8be9c0cc67517a30f708e4d2945940aa86ece4084"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.02825,
+    "in_block_spread": 0.109333
+   },
+   {
+    "name": "cold-dark-19-20",
+    "seed_0": {
+     "a": 0.0,
+     "in_block": 0.988644,
+     "mesh_sha256": "4aee3c44a254ac9e8276c382bc964d8c603d91440547a243d665b6e5b9b9fbcd"
+    },
+    "seed_1": {
+     "a": 0.04807,
+     "in_block": 0.915333,
+     "mesh_sha256": "ab5e78e12623ae216a2d7c4077fabba23994c050b22a533fd271c91d8a28a017"
+    },
+    "seed_2": {
+     "a": 0.005895,
+     "in_block": 0.904667,
+     "mesh_sha256": "ed97c3a312f67cceda0431e64ef51e403bf57b301761b6fc9c68dfd380d32151"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.04807,
+    "in_block_spread": 0.083977
+   },
+   {
+    "name": "cold-dark-21-20",
+    "seed_0": {
+     "a": 0.013432,
+     "in_block": 0.992667,
+     "mesh_sha256": "3ac63fba1f5a8d28465c138762c93a8e7ba482e7070d8b3f0c106308fec496e1"
+    },
+    "seed_1": {
+     "a": 0.069198,
+     "in_block": 0.792112,
+     "mesh_sha256": "856a4794e3ae1d1253ca77bf0bafa9c25269c2d99f3759fd0b71ec76cac9861b"
+    },
+    "seed_2": {
+     "a": 0.030441,
+     "in_block": 0.876,
+     "mesh_sha256": "819e28eaac9939ed708bf8f644d2371181d4a6acbd9fae63388080ec74aa97f2"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.055766,
+    "in_block_spread": 0.200555
+   },
+   {
+    "name": "cold-dark-22-20",
+    "seed_0": {
+     "a": 0.032864,
+     "in_block": 0.994,
+     "mesh_sha256": "e23c8b6121b8023a2121c14ae63ae3b5c24a537ae6b6dfc5cd2978ebb3bea54d"
+    },
+    "seed_1": {
+     "a": 0.009352,
+     "in_block": 0.998,
+     "mesh_sha256": "17abcc8f5a0f242084f7f91e68e0179e399001031ecfdc2cd2804779ffc05285"
+    },
+    "seed_2": {
+     "a": 0.006579,
+     "in_block": 0.912,
+     "mesh_sha256": "6e38497617e445e9f36489a156938f91c6620234f0d6766665f1d0fe24403733"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.026285,
+    "in_block_spread": 0.086
+   },
+   {
+    "name": "cold-bright-04-20",
+    "seed_0": {
+     "a": 0.987846,
+     "in_block": 0.987333,
+     "mesh_sha256": "83992f5598811fc2908c90b42785030933bb8a09417e9b7f3aa3ed38fe3aea33"
+    },
+    "seed_1": {
+     "a": 0.996449,
+     "in_block": 0.938667,
+     "mesh_sha256": "85296a4bb65d2c8cdc103f39f459932d1039ebcb2f935e6ece0e7a113dc59fa1"
+    },
+    "seed_2": {
+     "a": 0.876662,
+     "in_block": 0.902667,
+     "mesh_sha256": "cf3280c090d36b640d2e10f928db7ff47e627078c679d1e40e5d629f7818df2a"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.119787,
+    "in_block_spread": 0.084666
+   },
+   {
+    "name": "cold-bright-07-20",
+    "seed_0": {
+     "a": 0.977798,
+     "in_block": 0.750667,
+     "mesh_sha256": "ff31902814c7ccc59fe30bda736d30301fb852bcc1c69961f0f62183a5f497f2"
+    },
+    "seed_1": {
+     "a": 0.995591,
+     "in_block": 0.907333,
+     "mesh_sha256": "4966f3859ab49887d8c259d5b45a7c5d112bcdc941f9d35fdfb56530ce3b4a8f"
+    },
+    "seed_2": {
+     "a": 0.929648,
+     "in_block": 0.796531,
+     "mesh_sha256": "d1edb5c23142997d62ffe26e395acc8e241d1dfa484f8d4d4447d3b4f1b58451"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.065943,
+    "in_block_spread": 0.156666
+   },
+   {
+    "name": "cold-bright-09-20",
+    "seed_0": {
+     "a": 0.935601,
+     "in_block": 0.921333,
+     "mesh_sha256": "223b76dcd4322dbbfe196999d5a4ae7c24f7d43140aaf5b0c01e5d8d47ad81a7"
+    },
+    "seed_1": {
+     "a": 0.937277,
+     "in_block": 0.935333,
+     "mesh_sha256": "4f3fbd1ae1bec2ac51adc9ed7b591c32c9df4c564b0928641016380e3953d8d8"
+    },
+    "seed_2": {
+     "a": 0.953748,
+     "in_block": 0.836,
+     "mesh_sha256": "0103f21e44d8849c5eb09f55741408aca13fb38c30c3f3a6cb436813ec96a968"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.018147,
+    "in_block_spread": 0.099333
+   },
+   {
+    "name": "cold-bright-10-20",
+    "seed_0": {
+     "a": 0.989278,
+     "in_block": 0.93516,
+     "mesh_sha256": "e61cc74ebb3ad75c0658d586fd0f2438e379f070246aba69f983c89043ecba69"
+    },
+    "seed_1": {
+     "a": 0.993649,
+     "in_block": 0.944667,
+     "mesh_sha256": "a5366afcd4511b68fe3b691de88f0d0f7d32b655230090484b2ce02327e1f6a2"
+    },
+    "seed_2": {
+     "a": 0.80826,
+     "in_block": 0.904,
+     "mesh_sha256": "fd4302f90ad66f5ca1a2da1b4c3547e9d8d2d7cdd6a525464823a179efbb0d02"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.185389,
+    "in_block_spread": 0.040667
+   },
+   {
+    "name": "cold-bright-17-20",
+    "seed_0": {
+     "a": 0.991304,
+     "in_block": 0.996667,
+     "mesh_sha256": "6fc5492413202c8c12adbf74f4fe636e192d06634157b78c6c62aec6d148a45c"
+    },
+    "seed_1": {
+     "a": 0.987895,
+     "in_block": 0.991333,
+     "mesh_sha256": "9731b07b87250c2c1d966d64587ba59fd1aadddb5f3d09d11d84131b356c9366"
+    },
+    "seed_2": {
+     "a": 0.982723,
+     "in_block": 0.96531,
+     "mesh_sha256": "0115199abc419bd9d04cb67e9f103b6c8b5b7f63f556a3f72f062107e1d90ae5"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.008581,
+    "in_block_spread": 0.031357
+   },
+   {
+    "name": "cold-bright-18-20",
+    "seed_0": {
+     "a": 0.987546,
+     "in_block": 0.91,
+     "mesh_sha256": "ca8e130665dcffcb5340534e1da13bd5a49da16eb295e7654ff125c2eb5313e8"
+    },
+    "seed_1": {
+     "a": 0.887825,
+     "in_block": 0.974667,
+     "mesh_sha256": "8d01a43622b8f37d066489d465487b65e4270d4bfd7110865cdea1a5441da58e"
+    },
+    "seed_2": {
+     "a": 0.815004,
+     "in_block": 0.915944,
+     "mesh_sha256": "4d3980c78c10fce8cdd492d7a75466e11bd11fea6f80fc5a551aab6b2a4b27db"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.172542,
+    "in_block_spread": 0.064667
+   },
+   {
+    "name": "cold-bright-20-20",
+    "seed_0": {
+     "a": 0.989637,
+     "in_block": 0.900667,
+     "mesh_sha256": "625c7948804aec3dd6f7384454542f0d97a1b16da94b79417668fa1cae735854"
+    },
+    "seed_1": {
+     "a": 0.98051,
+     "in_block": 0.889333,
+     "mesh_sha256": "75ab6a770292a58b5a0b272b88f8ff3c9c9fcc508ddb8981e2eada1c47c44bba"
+    },
+    "seed_2": {
+     "a": 0.981379,
+     "in_block": 0.966667,
+     "mesh_sha256": "a5a739e5543932720f200037fa81713fa584c29d09b9748ee446e2edc2d7e813"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.009127,
+    "in_block_spread": 0.077334
+   },
+   {
+    "name": "cold-bright-23-20",
+    "seed_0": {
+     "a": 0.973773,
+     "in_block": 0.991333,
+     "mesh_sha256": "3078f8ee08c87a7db12d268011824ba62c7ef0f9fe4eca1114435e61d1c66313"
+    },
+    "seed_1": {
+     "a": 0.941707,
+     "in_block": 0.960667,
+     "mesh_sha256": "730064a5aa6a0008b0ada4da84767f883ebc2600ac1a237edc55f46ea6633cc7"
+    },
+    "seed_2": {
+     "a": 0.935242,
+     "in_block": 0.978,
+     "mesh_sha256": "6697410e36ea0471280c80003cf8724f627dbbc1f4ec7714cdea8356f5dcfcf8"
+    },
+    "meshes_distinct": true,
+    "a_spread": 0.038531,
+    "in_block_spread": 0.030666
+   }
+  ],
+  "seed_selects_mesh": true,
+  "a_mean_by_kind": {
+   "bright": 0.937723,
+   "dark": 0.028098
+  },
+  "median_a_spread": 0.043301,
+  "duration_s": 221.0,
+  "duration_within_prediction": true
+ }
+}

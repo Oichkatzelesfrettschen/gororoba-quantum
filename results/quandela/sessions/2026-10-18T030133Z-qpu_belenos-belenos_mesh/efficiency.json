@@ -1,0 +1,304 @@
+{
+ "schema": "qd-belenos-mesh-efficiency-v1",
+ "runs": [
+  "2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03",
+  "2026-10-18T030428Z-qpu_belenos-belenos_mesh-job-04",
+  "2026-10-18T030731Z-qpu_belenos-belenos_mesh-job-05",
+  "2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06"
+ ],
+ "analysis_sha256": [
+  "d62e9498e4d5ad873fa96d702e7f7a28c4869b05326c8f22b26f78fc47768eab",
+  "aeebaca4e32de76bf1b1d3800c2039cea69d514a3afef7270e3489cc3d66753a",
+  "d1233ac4379af545b7157ccd64e719c30e892c7c94d9aa32828e58e88f7c1964",
+  "ff76901e050fa7b73f1134702951a4543ed0de9b7a8b2e92d20b060e906984ca"
+ ],
+ "settings": 64,
+ "t_out_at_plan": [
+  [
+   5.33,
+   4.78,
+   3.97,
+   3.91,
+   5.51,
+   3.23,
+   4.57,
+   3.96,
+   4.4,
+   4.24,
+   5.54,
+   4.57,
+   207.46,
+   237.65,
+   224.77,
+   312.38,
+   317.45,
+   400.0,
+   336.14,
+   341.56,
+   194.46,
+   368.67,
+   325.03,
+   307.07
+  ],
+  [
+   5.33,
+   4.78,
+   3.97,
+   3.91,
+   5.51,
+   3.23,
+   4.57,
+   3.96,
+   4.4,
+   4.24,
+   5.54,
+   4.57,
+   207.46,
+   237.65,
+   224.77,
+   312.38,
+   317.45,
+   400.0,
+   336.14,
+   341.56,
+   194.46,
+   368.67,
+   325.03,
+   307.07
+  ],
+  [
+   5.33,
+   4.78,
+   3.97,
+   3.91,
+   5.51,
+   3.23,
+   4.57,
+   3.96,
+   4.4,
+   4.24,
+   5.54,
+   4.57,
+   207.46,
+   237.65,
+   224.77,
+   312.38,
+   317.45,
+   400.0,
+   336.14,
+   341.56,
+   194.46,
+   368.67,
+   325.03,
+   307.07
+  ],
+  [
+   5.33,
+   4.78,
+   3.97,
+   3.91,
+   5.51,
+   3.23,
+   4.57,
+   3.96,
+   4.4,
+   4.24,
+   5.54,
+   4.57,
+   207.46,
+   237.65,
+   224.77,
+   312.38,
+   317.45,
+   400.0,
+   336.14,
+   341.56,
+   194.46,
+   368.67,
+   325.03,
+   307.07
+  ]
+ ],
+ "efficiency_under_ideal": [
+  1.402902,
+  1.459964,
+  1.505318,
+  1.262092,
+  1.163332,
+  6.562113,
+  1.175372,
+  1.12376,
+  1.230163,
+  1.140969,
+  0.945694,
+  0.817838,
+  0.965566,
+  0.852333,
+  0.854438,
+  0.709465,
+  0.570875,
+  0.644597,
+  0.723212,
+  0.712723,
+  0.617961,
+  0.782869,
+  0.686885,
+  0.746634
+ ],
+ "classes": {
+  "phase_noise": {
+   "chosen": [
+    {
+     "sigma": 0.05
+    },
+    {
+     "sigma": 0.05
+    },
+    {
+     "sigma": 0.05
+    },
+    {
+     "sigma": 0.05
+    }
+   ],
+   "held_out_log_likelihood": -209984.252248,
+   "g2_per_dof": 21.801368,
+   "p_value": 0.0,
+   "median_tvd_over_floor": 4.232946,
+   "fits": false
+  },
+  "gain": {
+   "chosen": [
+    {
+     "gain": 0.0
+    },
+    {
+     "gain": 0.0
+    },
+    {
+     "gain": 0.0
+    },
+    {
+     "gain": 0.0
+    }
+   ],
+   "held_out_log_likelihood": -210640.34991,
+   "g2_per_dof": 23.08879,
+   "p_value": 0.0,
+   "median_tvd_over_floor": 4.34527,
+   "fits": false
+  },
+  "crosstalk": {
+   "chosen": [
+    {
+     "kappa": 0.0
+    },
+    {
+     "kappa": 0.0
+    },
+    {
+     "kappa": 0.0
+    },
+    {
+     "kappa": 0.0
+    }
+   ],
+   "held_out_log_likelihood": -210640.34991,
+   "g2_per_dof": 23.08879,
+   "p_value": 0.0,
+   "median_tvd_over_floor": 4.34527,
+   "fits": false
+  },
+  "misroute_-4": {
+   "chosen": [
+    {
+     "sigma": 0.05,
+     "fraction": 0.0
+    },
+    {
+     "sigma": 0.05,
+     "fraction": 0.0
+    },
+    {
+     "sigma": 0.05,
+     "fraction": 0.0
+    },
+    {
+     "sigma": 0.05,
+     "fraction": 0.0
+    }
+   ],
+   "held_out_log_likelihood": -209984.252248,
+   "g2_per_dof": 21.801368,
+   "p_value": 0.0,
+   "median_tvd_over_floor": 4.232946,
+   "fits": false
+  },
+  "misroute_-2": {
+   "chosen": [
+    {
+     "sigma": 0.05,
+     "fraction": 0.0
+    },
+    {
+     "sigma": 0.05,
+     "fraction": 0.0
+    },
+    {
+     "sigma": 0.05,
+     "fraction": 0.0
+    },
+    {
+     "sigma": 0.05,
+     "fraction": 0.0
+    }
+   ],
+   "held_out_log_likelihood": -209984.252248,
+   "g2_per_dof": 21.801368,
+   "p_value": 0.0,
+   "median_tvd_over_floor": 4.232946,
+   "fits": false
+  },
+  "misroute_+2": {
+   "chosen": [
+    {
+     "sigma": 0.05,
+     "fraction": 0.0
+    },
+    {
+     "sigma": 0.05,
+     "fraction": 0.0
+    },
+    {
+     "sigma": 0.05,
+     "fraction": 0.0
+    },
+    {
+     "sigma": 0.05,
+     "fraction": 0.0
+    }
+   ],
+   "held_out_log_likelihood": -209984.252248,
+   "g2_per_dof": 21.801368,
+   "p_value": 0.0,
+   "median_tvd_over_floor": 4.232946,
+   "fits": false
+  }
+ },
+ "best_class": "phase_noise",
+ "verdict": "no class fits",
+ "static": {
+  "by_tau": {
+   "0.1": {
+    "gain_over_dephasing": -33985.39,
+    "median_tvd_over_floor": 10.169
+   },
+   "0.3": {
+    "gain_over_dephasing": -62130.792,
+    "median_tvd_over_floor": 12.975
+   }
+  },
+  "best_tau": 0.1,
+  "static_declared": false
+ }
+}
