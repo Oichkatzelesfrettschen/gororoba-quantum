@@ -87,3 +87,42 @@ every process.
 - The correlated-initialization issue stays open. It closes on the
   joint-coincidence reading of the herald run, compared against the
   independent-marginal prediction.
+
+## N=21 feed-forward on other backends
+
+`docs/notes/n21_feedforward_backends.md` ranks the services that can run the
+feedback-encoded N=21 circuit and closes on owner actions. Open Quantum's IQM
+Garnet and Emerald lead the ranking and wait on two inputs: the backends
+accepting jobs again, and a square-lattice routing of the circuit, which no
+branch holds. The routed entangling-gate count decides whether the Spark
+balance meets the family's Hoeffding contract. A one-circuit Garnet probe
+comes first: it tests `cc_prx` at a quarter turn, the QASM lowering of the
+feedback key, one key driving both the reset and the S-dagger, and whether
+mid-circuit bits return in counts. Amazon Braket's guide excludes control of
+a qubit after an active reset, so Braket stays out unless a reset-free
+variant of the circuit exists. IBM's larger Open Plan allowance opens only
+after the account logs the runtime its prerequisite names. The N=21 owner
+holds this program; each acquisition needs its own written case.
+
+## Unretained dry-run console logs
+
+`results/live/unretained-dry-run-logs/` keeps the console output of dry runs
+whose audit records no longer exist, indexed by sha256 in its README. A
+dry-run record cannot be regenerated, because it reads each backend's live
+Target at run time, so run output belongs in the tree and never in a scratch
+or trash location. A global `*.log` ignore rule on the build host drops log
+files from `git add` without a message; `git add -f` and a tree listing of
+the commit confirm retention.
+
+## Merges without CI
+
+The feed-forward backend note and the dry-run log directory merged on
+Codex review alone, without a completed CI run. The next full CI run on main
+is their first gate check, and a red shard there traces to them first.
+
+## Archived stash
+
+The branch `archive/n21-orbit-rca-window-unitary-model` holds a repo-wide
+stash entry of the window-unitary model for the orbit root-cause work. The
+stash itself remains in place, and the N=21 owner decides whether its content
+joins a change or the archive alone carries it.
