@@ -102,8 +102,8 @@ def campaign_split(rows: list[dict[str, Any]]) -> tuple[Decimal, Decimal, Decima
 def inventory_family(snapshot_path: Path) -> tuple[Path, list[Path]]:
     """The default inventory file and every per-instance file beside it."""
     match = re.fullmatch(r"(.+?)(?:\.[0-9a-f]{12})?\.json", snapshot_path.name)
-    require(match is not None, "inventory filename differs")
-    assert match is not None
+    if match is None:
+        raise ValueError("inventory filename differs")
     stem = match.group(1)
     default = snapshot_path.parent / f"{stem}.json"
     others = sorted(

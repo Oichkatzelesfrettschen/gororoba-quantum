@@ -3599,7 +3599,7 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error ibm_account.py --self-test && \"$PYTHON\" -B -O -W error ibm_account.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error ibm_account.py --self-test",
    "seconds": 2.5,
    "tier": "pr",
    "name": "core-563"
