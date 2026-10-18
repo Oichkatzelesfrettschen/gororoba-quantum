@@ -3598,6 +3598,14 @@
   },
   {
    "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error ibm_account.py --self-test",
+   "seconds": 2.5,
+   "tier": "pr",
+   "name": "core-587"
+  },
+  {
+   "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_rotation_composite.py --check docs/evidence/rank_locus_rotation_composite/result.json && \"$PYTHON\" -B -W error scripts/rank_locus_rotation_composite.py --self-test && \"$PYTHON\" -B -O -W error scripts/rank_locus_rotation_composite.py --check docs/evidence/rank_locus_rotation_composite/result.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_rotation_composite.py --self-test",
    "name": "core-585",
@@ -3611,6 +3619,46 @@
    "name": "core-586",
    "seconds": 10.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" check_et_rows.py",
+   "name": "core-580",
+   "seconds": 9,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" check_et_campaign.py",
+   "name": "core-581",
+   "seconds": 7,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" check_et_runtime.py",
+   "name": "core-582",
+   "seconds": 450,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B scripts/replay_et_sources.py --check",
+   "name": "core-583",
+   "seconds": 45,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B scripts/replay_et_pilot.py --self-test && \"$PYTHON\" -B scripts/replay_et_pilot.py",
+   "name": "core-584",
+   "seconds": 180,
+   "tier": "full"
   }
  ],
  "excluded": [

@@ -31,6 +31,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+import ibm_account  # noqa: E402
+
 ROSTER = ("ibm_fez", "ibm_kingston", "ibm_marrakesh")
 PROCESSOR_TYPE = {"family": "Heron", "revision": "2"}
 ABSENT = ("hamiltonian", "meas_lo_range", "qubit_lo_range", "rep_times")
@@ -77,7 +80,7 @@ def snapshot() -> dict[str, Any]:
     import qiskit_ibm_runtime
     from qiskit_ibm_runtime import QiskitRuntimeService
 
-    service = QiskitRuntimeService()
+    service = ibm_account.open_service(QiskitRuntimeService)
     backends = {}
     for name in ROSTER:
         backend = service.backend(name)

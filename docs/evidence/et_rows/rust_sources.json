@@ -1,0 +1,13 @@
+{
+  "commit": "2b72e552b95f7fe529a5abb45049f6d3e47cdd97",
+  "files": {
+    "cdp.rs": {
+      "path": "crates/algebra_experimental/src/emanation/cdp.rs",
+      "sha256": "50c22873442a10b3661289b5ed191c3cc8cc0dae4580578b22a6265a154418f8"
+    },
+    "strutted_et.rs": {
+      "path": "crates/algebra_experimental/src/emanation/strutted_et.rs",
+      "sha256": "bd8514597990ec8dd4296a250ec5a3c5133e731dc2165e0c8d9c1050f0a03a33"
+    }
+  }
+}

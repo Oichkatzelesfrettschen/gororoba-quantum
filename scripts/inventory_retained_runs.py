@@ -84,7 +84,14 @@ def inventory() -> dict[str, Any]:
 
     service_path = ROOT / "results/live/qpu-job-inventory.json"
     service = read(service_path)
-    physical_ids = {entry["job_id"] for entry in service["jobs"]}
+    # Each further IBM Cloud instance observes into qpu-job-inventory.<instance_crn_hash>.json.
+    additional_paths = sorted((ROOT / "results/live").glob("qpu-job-inventory.*.json"))
+    snapshots = [service, *(read(path) for path in additional_paths)]
+    physical_ids = {entry["job_id"] for snapshot in snapshots for entry in snapshot["jobs"]}
+    require(
+        len(physical_ids) == sum(len(snapshot["jobs"]) for snapshot in snapshots),
+        "A physical job appears in two instance inventories",
+    )
     record_paths = sorted((ROOT / "results/live").glob("*/record.json"))
     records = parallel.ordered_map(record_descriptor, record_paths, min_items=16)
     registered_ids = {identity for record in records for identity in record["recorded_job_ids"]}
@@ -134,6 +141,11 @@ def inventory() -> dict[str, Any]:
         "directory names nor planned/local/mock records establish additional physical QPU jobs.",
         "physical_service_observed_at": service["observed_at"],
         "physical_inventory_sha256": digest(service_path),
+        **(
+            {"additional_physical_inventory_sha256": {path.name: digest(path) for path in additional_paths}}
+            if additional_paths
+            else {}
+        ),
         "replay_source_sha256": digest(Path(__file__)),
         "counts": {
             "runner_records": len(records),

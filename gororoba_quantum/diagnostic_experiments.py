@@ -36,6 +36,7 @@ from qpe_diagnostics import (
 )
 
 FAMILY_NAMES = (
+    "et-row",
     "folded-qpe",
     "folded-correction",
     "n21-feedback",
@@ -430,6 +431,10 @@ def family_contracts(
 
     state-prep-control reads its qubits from the family configuration.
     """
+    if family == "et-row":
+        from et_campaign import contracts
+
+        return contracts(precision, alpha, power)
     if family == STATE_PREP_FAMILY:
         if configuration is None or not configuration.get("qubits"):
             raise ValueError("state-prep-control contracts need the configuration's named qubits")
@@ -513,6 +518,10 @@ def family_contracts(
 def record_groups(record: dict[str, Any]) -> list[Group]:
     """Reconstruct summaries from the calibration-bound circuit configuration."""
     family = record.get("family_configuration", {})
+    if family.get("name") == "et-row":
+        from et_campaign import et_group
+
+        return [et_group(family)]
     if family.get("name") == "folded-correction":
         return [correction_group()]
     if family.get("name") == "ripple":

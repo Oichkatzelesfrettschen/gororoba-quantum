@@ -51,6 +51,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import calibration_snapshot  # noqa: E402
+import ibm_account  # noqa: E402
 
 AUDIT = ROOT / "results/live/qpu-job-retention-audit.json"
 HISTORY = ROOT / "docs/evidence/calibration/history"
@@ -117,6 +118,15 @@ def export(backend: Any, name: str, props: Any, target: Any, written: dict[str, 
 
 def index_job(job: dict[str, Any], service: Any, backends: dict[str, Any], written: dict[str, str]) -> dict[str, Any]:
     """One audited job's index entry: each execution start mapped to the snapshot export() returns for it."""
+    import live_run
+
+    # The backends' calibration history and the job metrics belong to the
+    # service's instance, so both reads require the run's recorded instance.
+    ibm_account.require_instance(
+        ibm_account.recorded_instance(ROOT / job["run"]),
+        live_run._instance_hash(service),
+        f"{job['job_id']}: calibration history",
+    )
     starts = execution_starts(job)
     source = "collect.json pub_timing"
     if not starts:
@@ -137,7 +147,12 @@ def index_job(job: dict[str, Any], service: Any, backends: dict[str, Any], writt
 def write() -> int:
     from qiskit_ibm_runtime import QiskitRuntimeService
 
-    service = QiskitRuntimeService()
+    # The index binds the default account's retention audit and calibration history.
+    require(
+        not ibm_account.account_name(),
+        f"ghost calibrations read the default account; unset {ibm_account.ACCOUNT_ENV}",
+    )
+    service = ibm_account.open_service(QiskitRuntimeService)
     backends = {name: service.backend(name) for name in BACKENDS}
     written: dict[str, str] = {}
     jobs = [index_job(job, service, backends, written) for job in json.loads(AUDIT.read_text(encoding="utf-8"))["jobs"]]
@@ -208,7 +223,12 @@ def add() -> int:
     if not missing:
         print("ghost calibrations: every audited job is indexed")
         return 0
-    service = QiskitRuntimeService()
+    # The index binds the default account's retention audit and calibration history.
+    require(
+        not ibm_account.account_name(),
+        f"ghost calibrations read the default account; unset {ibm_account.ACCOUNT_ENV}",
+    )
+    service = ibm_account.open_service(QiskitRuntimeService)
     backends = {name: service.backend(name) for name in sorted({job["backend"] for job in missing})}
     written = {relative: entry["calibration"] for relative, entry in index["files"].items()}
     written |= {relative: entry["calibration"] for relative, entry in appended["files"].items()}
@@ -286,7 +306,12 @@ def append() -> int:
     """Read each backend's current calibration and record each new identity in APPENDED."""
     from qiskit_ibm_runtime import QiskitRuntimeService
 
-    service = QiskitRuntimeService()
+    # The index binds the default account's retention audit and calibration history.
+    require(
+        not ibm_account.account_name(),
+        f"ghost calibrations read the default account; unset {ibm_account.ACCOUNT_ENV}",
+    )
+    service = ibm_account.open_service(QiskitRuntimeService)
     index = json.loads(INDEX.read_text(encoding="utf-8"))
     record = json.loads(APPENDED.read_text(encoding="utf-8")) if APPENDED.is_file() else {"files": {}}
     # export() returns a known identity without verifying or rewriting it, so
