@@ -402,6 +402,11 @@ def extension_verdict(rule: dict[str, Any], pair: Arms, reference: Arms, reload:
         reading = (
             "a 14a96ca6 entry failed: the fault reaches beyond 29dc6ef8 in this job; mesh specificity is not supported"
         )
+    elif summary["reference_read"] < rule["minimum_read_entries"]:
+        reading = (
+            f"inconclusive: {summary['reference_read']} 14a96ca6 entries read pass or fail, fewer than "
+            f"{rule['minimum_read_entries']}, so no load of the reference mesh is shown"
+        )
     elif len(read) < rule["minimum_read_entries"]:
         reading = (
             f"inconclusive: {len(read)} post-load entries read pass or fail, fewer than {rule['minimum_read_entries']}"
@@ -634,6 +639,7 @@ def self_test() -> int:
         (("fail", "pass"), held, held, "confined to the job's first acquisition"),
         (("fail", "pass"), held, ("fail",) * 5 + ("pass",) * 6, "intermittent: 5 of 11"),
         (("fail", "pass"), held, ("void",) * 3 + ("pass",) * 8, "inconclusive: 8 post-load"),
+        (("fail", "fail"), ("void",) * 11, held, "inconclusive: 0 14a96ca6 entries"),
         (("pass", "pass"), held, held, "depends on the job's entry count or path"),
     ):
         got = extension_verdict(extension, pair, reference, reload)["reading"]
@@ -655,7 +661,7 @@ def self_test() -> int:
         raise SystemExit(f"cone self-test: a Poisson background read dispersion {row['dispersion_index']}")
     print(
         "cone self-test: off-cone clicks excluded, in-cone loss read, one-click account closes, four readings, "
-        "six series entries, four receipts, fourteen series verdicts, four extension entries, eight extension "
+        "six series entries, four receipts, fourteen series verdicts, four extension entries, nine extension "
         "readings, two chronologies, Poisson dispersion near 1"
     )
     return 0

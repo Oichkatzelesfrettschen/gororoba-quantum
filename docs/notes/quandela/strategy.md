@@ -817,6 +817,11 @@ the couplers equaled Q1's throughout.
       post-load entries implicates the load, and a failing second entry with
       holding post-load entries implicates repetition of the first mesh.
 
+    The readout adds one validity rule after the preregistration: fewer
+    than 9 readable 14a96ca6 entries read inconclusive, since void
+    references show no load of the reference mesh; job-16's 11 readable
+    references leave its reading unchanged.
+
     The extension cannot ask the first-entry question again; a 1500-sample
     first entry today (D1's order) needs its own job. No result entry
     carries a timestamp, so every position reading assumes in-order
