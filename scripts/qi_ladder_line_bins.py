@@ -37,9 +37,11 @@ rho per bin:
   bin reference from noise, so its stationary cells average over random
   phases, and a job whose scan peak misses line_detection_p takes its
   frequency from noise; "reference_significant" marks the pair-batches free
-  of both, and the stationary verdict combines those batches alone (the
-  all-batch combination is reported as stationary_all_verdict). An
-  undetected job's harmonic rules read undetermined.
+  of both. The stationary verdict and the job-average verdict the reading
+  compares it with combine those batches alone, so both read the same
+  observations; the all-batch combinations are reported as
+  stationary_all_verdict and job_average_all_verdict. An undetected job's
+  harmonic rules read undetermined.
 - intervals: conditional on each job's fitted line frequency and phase. The
   bootstrap redraws the cells' counts with the bins fixed; it does not
   repeat the scan or the lock-in, so the uncertainty of the bin reference
@@ -58,15 +60,23 @@ Harmonics at 2 f:
   sum of the two standard errors. A selector at an extremum of its response
   carries a vanishing A1 and a second harmonic, so the maximum keeps it. The
   max rule's standard error is the bootstrap standard deviation of the
-  depth difference of max(A1, A2), each draw redrawing both harmonics'
-  coefficients at the lock-in error and repeating the selection (numpy seed
-  [bootstrap_seed, LINE_BINS_SEED, MAX_RULE_SEED]). The maximum of two
-  amplitudes is biased upward by the Rice law of a noisy amplitude; the
-  margin test compares depth 9 with depth 1 on the same statistic, so the
-  bias enters both terms.
+  depth difference of max(A1, A2), each draw repeating the selection on
+  coefficients drawn jointly (numpy seed [bootstrap_seed, LINE_BINS_SEED,
+  MAX_RULE_SEED]): the depth-9 and depth-1 selectors read the same shot rows,
+  so their eight lock-in coefficients (cos and sin at f and 2 f) come from
+  one multivariate normal whose covariance is the residual shot covariance of
+  the two selectors times the centered Gram matrix of the lock-in weights.
+  The maximum of two amplitudes is biased upward by the Rice law of a noisy
+  amplitude; the margin test compares depth 9 with depth 1 on the same
+  statistic, so the bias enters both terms.
 
 --out FILE writes the record, --check FILE recomputes it from its listed runs
-and compares bytes, --self-test runs synthetic ladders: a line that modulates
+and compares bytes, --self-test first checks the joint coefficient draw (two
+selectors with the same shot noise give a max-rule SD of 0, and a correlated
+pair with a strong line reproduces the SD of independent realizations, which
+the draw with the selectors' noise made independent misses) and the matched
+verdicts (an excluded batch that flips the all-batch job average leaves the
+reading on the clean one), then runs synthetic ladders: a line that modulates
 the selector population with rho = 1 in the stationary bins, a coherent
 population error that raises rho in every bin, and a selector at an extremum of
 its response, and a series without a line, whose phase rules read
@@ -157,19 +167,84 @@ class JobWork:
         for a, d in job["pairs"]:
             code = 2 * bits[:, a].astype(np.int64) + bits[:, d]
             counts.append(np.bincount(index * 4 + code, minlength=self.bins * 4).reshape(self.bins, 4))
-        return {"first": first, "second": second, "counts": counts}
+        rule_depths = (max(self.depths), min(self.depths))
+        joint = coefficient_model(bits[:, [job["selector"][n] for n in rule_depths]], f)
+        for j, n in enumerate(rule_depths):
+            for h, lock in ((0, first[n]), (1, second[n])):
+                if abs(math.hypot(*joint["coefficients"][j][2 * h : 2 * h + 2]) - lock["amplitude"]) > 1e-9:
+                    box.fail(f"depth {n}: the joint coefficients differ from box_kite_analysis.lockin")
+        return {"first": first, "second": second, "counts": counts, "joint": joint}
 
 
-def max_draws(a1: dict[str, float], a2: dict[str, float], rng: np.random.Generator, draws: int) -> np.ndarray:
-    """max(A1, A2) per draw with each harmonic's two coefficients redrawn at the lock-in standard error.
+def coefficient_model(x: np.ndarray, f: float) -> dict[str, Any]:
+    """Lock-in coefficients (cos f, sin f, cos 2f, sin 2f) of each column and their joint shot-noise covariance.
 
-    The coefficient noise is isotropic, so |(A cos phi, A sin phi) + noise| has the law of |(A, 0) + noise|.
+    Each coefficient is P_k (x - mean x) with P the per-harmonic least-squares rows of box_kite_analysis.lockin,
+    so for shots independent in time with a per-shot column covariance S the covariance of coefficient k of
+    column j and coefficient l of column i is S_ji K_kl, K = P P^T - (P 1)(P 1)^T / n. S is the residual
+    covariance after both harmonics are removed, so a line shared by the columns enters the coefficients and
+    leaves the noise. Sums run elementwise, independent of the BLAS build.
     """
+    x = x.astype(np.float64)
+    n = x.shape[0]
+    t = np.arange(n) - (n - 1) / 2
+    rows, design = [], []
+    for frequency in (f, 2 * f):
+        c, s = np.cos(2 * np.pi * frequency * t), np.sin(2 * np.pi * frequency * t)
+        cc, cs, ss = float(np.sum(c * c)), float(np.sum(c * s)), float(np.sum(s * s))
+        det = cc * ss - cs * cs
+        rows += [(ss * c - cs * s) / det, (cc * s - cs * c) / det]
+        design += [c, s]
+    xc = x - x.mean(axis=0)
+    coefficients = [[float(np.sum(p * xc[:, j])) for p in rows] for j in range(x.shape[1])]
+    residual = [xc[:, j] - sum(coefficients[j][k] * design[k] for k in range(4)) for j in range(x.shape[1])]
+    sigma = [[float(np.sum(residual[i] * residual[j])) / n for j in range(x.shape[1])] for i in range(x.shape[1])]
+    totals = [float(np.sum(p)) for p in rows]
+    kernel = [[float(np.sum(rows[k] * rows[m])) - totals[k] * totals[m] / n for m in range(4)] for k in range(4)]
+    return {"coefficients": coefficients, "sigma": sigma, "kernel": kernel}
+
+
+def cholesky_psd(a: list[list[float]]) -> list[list[float]]:
+    """Lower Cholesky factor of a positive semidefinite matrix.
+
+    A pivot within 1e-12 of its diagonal entry is a singular direction to the precision of the sums, so it
+    and the column below it are zero.
+    """
+    m = len(a)
+    low = [[0.0] * m for _ in range(m)]
+    for i in range(m):
+        for j in range(i + 1):
+            rest = a[i][j] - sum(low[i][k] * low[j][k] for k in range(j))
+            if i == j:
+                low[i][i] = math.sqrt(rest) if rest > 1e-12 * a[i][i] else 0.0
+            else:
+                low[i][j] = rest / low[j][j] if low[j][j] > 0 else 0.0
+    return low
+
+
+def joint_max_draws(model: dict[str, Any], rng: np.random.Generator, draws: int) -> np.ndarray:
+    """max(A1, A2) per draw and column with every column's four coefficients drawn jointly.
+
+    The draw is coefficients + (chol S kron chol K) z with one standard normal 4-vector per column; the Kronecker
+    factor keeps a singular S, two columns with the same shot noise, exact.
+    """
+    columns = len(model["coefficients"])
+    z = rng.standard_normal((draws, columns * 4)).reshape(draws, columns, 4)
+    low_s, low_k = cholesky_psd(model["sigma"]), cholesky_psd(model["kernel"])
+    by_kernel = np.zeros((4, draws, columns))
+    for k in range(4):
+        for m in range(4):
+            by_kernel[k] += low_k[k][m] * z[:, :, m]
     out = []
-    for a in (a1, a2):
-        z = rng.standard_normal((draws, 2))
-        out.append(np.hypot(a["amplitude"] + a["se"] * z[:, 0], a["se"] * z[:, 1]))
-    return np.maximum(out[0], out[1])
+    for j in range(columns):
+        drawn = []
+        for k in range(4):
+            noise = np.zeros(draws)
+            for i in range(columns):
+                noise += low_s[j][i] * by_kernel[k][:, i]
+            drawn.append(model["coefficients"][j][k] + noise)
+        out.append(np.maximum(np.hypot(drawn[0], drawn[1]), np.hypot(drawn[2], drawn[3])))
+    return np.stack(out, axis=1)
 
 
 def harmonic_entry(
@@ -203,9 +278,10 @@ def harmonic_entry(
         return {"difference": difference, "se": se, "holds": bool(difference > sigmas * se)}
 
     # The maximum of two Rice-distributed amplitudes has no closed-form error; its SE is the bootstrap
-    # standard deviation of the depth difference with the harmonic selection repeated in every draw.
-    boot = {n: max_draws(work["first"][n], work["second"][n], rng, draws) for n in (max(depths), min(depths))}
-    max_se = float(np.std(boot[max(depths)] - boot[min(depths)], ddof=1))
+    # standard deviation of the depth difference with the harmonic selection repeated in every draw. Both
+    # depths' selectors read the job's shot rows, so their eight coefficients are drawn jointly.
+    boot = joint_max_draws(work["joint"], rng, draws)
+    max_se = float(np.std(boot[:, 0] - boot[:, 1], ddof=1))
     return {
         "depths": per_depth,
         "first_harmonic_rule": rule(deep["first"]["amplitude"], shallow["first"]["amplitude"], margin_se),
@@ -239,6 +315,39 @@ def verdict_of(interval: list[float] | None) -> str:
     if interval[0] > 1:
         return "above 1"
     return "consistent with 1"
+
+
+def combine(per_batch: list[Any], which: list[int], pct: list[float]) -> dict[str, Any]:
+    """rho from ln rho averaged over the listed batches, row by row over the bootstrap draws."""
+    with np.errstate(all="ignore"):
+        lp = np.mean([per_batch[i][0] for i in which], axis=0)
+        lb = np.mean([per_batch[i][1] for i in which], axis=0)
+        return box.summary(np.exp(lp), np.exp(lb), pct)
+
+
+def verdicts(job_average: list[Any], stationary: list[Any], clean: list[int], pct: list[float]) -> dict[str, Any]:
+    """The job-average and stationary verdicts over the clean batches and over every batch, and the reading.
+
+    The reading compares the two clean verdicts, so both rest on the same observations.
+    """
+    every = list(range(len(job_average)))
+    clean_job = combine(job_average, clean, pct) if clean else None
+    clean_stationary = combine(stationary, clean, pct) if clean else None
+    out = {
+        "job_average_clean": clean_job,
+        "stationary_clean": clean_stationary,
+        "job_average_verdict": verdict_of(None if clean_job is None else clean_job["interval"]),
+        "job_average_all_verdict": verdict_of(combine(job_average, every, pct)["interval"]),
+        "stationary_verdict": verdict_of(None if clean_stationary is None else clean_stationary["interval"]),
+        "stationary_all_verdict": verdict_of(combine(stationary, every, pct)["interval"]),
+    }
+    if out["stationary_verdict"] == "above 1":
+        out["reading"] = "averaging over the line does not explain rho above 1"
+    elif out["stationary_verdict"] == "consistent with 1" and out["job_average_verdict"] == "above 1":
+        out["reading"] = "averaging over the line explains the rho excess"
+    else:
+        out["reading"] = "undecided"
+    return out
 
 
 def iso_items(
@@ -362,12 +471,6 @@ def analyze_bins(
                 out.append((rho_log(values[0], cell, depths), rho_log(values[1], cell, depths)))
         return out
 
-    def combine(per_batch: list[Any], which: list[int]) -> dict[str, Any]:
-        with np.errstate(all="ignore"):
-            lp = np.mean([per_batch[i][0] for i in which], axis=0)
-            lb = np.mean([per_batch[i][1] for i in which], axis=0)
-            return box.summary(np.exp(lp), np.exp(lb), pct)
-
     names = sorted(cells)
     pairs = sorted({s for per in cells.values() for s in per})
     partner = {r["roles"]["selector"]: r["roles"]["data"][0] for item in lcu for r in [item["replica"]]}
@@ -389,7 +492,7 @@ def analyze_bins(
                     name: box.summary(np.exp(per_batch[i][0]), np.exp(per_batch[i][1]), pct)
                     for i, name in enumerate(names)
                 },
-                "combined": combine(per_batch, which),
+                "combined": combine(per_batch, which, pct),
             }
 
         def stationary(
@@ -401,27 +504,21 @@ def analyze_bins(
 
         for c, cell_name in enumerate(cell_names):
             row["cells"][cell_name] = entry_of(lr[c], every)
-        row["cells"]["all"]["combined_iso"] = None if iso_lr is None else combine(iso_lr[0], every)
+        row["cells"]["all"]["combined_iso"] = None if iso_lr is None else combine(iso_lr[0], every, pct)
         merged = stationary(lr)
         row["cells"]["stationary"] = entry_of(merged, every)
-        row["cells"]["stationary"]["clean"] = combine(merged, clean) if clean else None
-        row["cells"]["stationary"]["combined_iso"] = None if iso_lr is None else combine(stationary(iso_lr), every)
+        row["cells"]["stationary"]["combined_iso"] = None if iso_lr is None else combine(stationary(iso_lr), every, pct)
         row["cells"]["bin_mean"] = entry_of(stationary(lr, every, list(range(1, bins + 1))), every)
         row["bin_verdicts"] = {
             name: verdict_of(row["cells"][name]["combined"]["interval"]) for name in cell_names if name != "all"
         }
-        row["job_average_verdict"] = verdict_of(row["cells"]["all"]["combined"]["interval"])
         # Bins 0 and bins / 2 are extrema of the line only where the reference phase is the line's, so the
-        # stationary verdict combines the batches whose jobs all carry a detected line and a significant A1.
-        clean_block = row["cells"]["stationary"]["clean"]
-        row["stationary_verdict"] = verdict_of(None if clean_block is None else clean_block["interval"])
-        row["stationary_all_verdict"] = verdict_of(row["cells"]["stationary"]["combined"]["interval"])
-        if row["stationary_verdict"] == "above 1":
-            row["reading"] = "averaging over the line does not explain rho above 1"
-        elif row["stationary_verdict"] == "consistent with 1" and row["job_average_verdict"] == "above 1":
-            row["reading"] = "averaging over the line explains the rho excess"
-        else:
-            row["reading"] = "undecided"
+        # stationary verdict combines the batches whose jobs all carry a detected line and a significant A1,
+        # and the job-average verdict the reading compares it with combines the same batches.
+        matched = verdicts(lr[0], merged, clean, pct)
+        row["cells"]["all"]["clean"] = matched.pop("job_average_clean")
+        row["cells"]["stationary"]["clean"] = matched.pop("stationary_clean")
+        row |= matched
         rho_rows.append(row)
 
     if ladder is not None:
@@ -504,8 +601,8 @@ def build(
         "once per draw, shared by all cells, and each cell's joint (a, d) counts from a multinomial on the cell's "
         "own shots; they are conditional on each job's fitted line frequency and phase, which fix the bins and "
         "are not refitted per draw; harmonic errors are the lock-in standard error sqrt(2 p (1 - p) / n), and the "
-        "max rule's error is the standard deviation of the depth difference of max(A1, A2) over draws that "
-        "redraw both harmonics' coefficients",
+        "max rule's error is the standard deviation of the depth difference of max(A1, A2) over draws of the "
+        "depth-9 and depth-1 selectors' eight lock-in coefficients from their joint shot-noise covariance",
     }
     record["analysis_sha256"] = digest_of(record)
     return record
@@ -603,7 +700,76 @@ def require(condition: bool, label: str) -> None:
         raise AssertionError(label)
 
 
+def independent(model: dict[str, Any]) -> dict[str, Any]:
+    """The model with the columns' shot noise made independent: S off its diagonal set to 0."""
+    sigma = [[v if i == j else 0.0 for j, v in enumerate(row)] for i, row in enumerate(model["sigma"])]
+    return {**model, "sigma": sigma}
+
+
+def max_rule_sd(model: dict[str, Any], seed: int, draws: int) -> float:
+    boot = joint_max_draws(model, np.random.default_rng(seed), draws)
+    return float(np.std(boot[:, 0] - boot[:, 1], ddof=1))
+
+
+def self_test_joint_draw() -> None:
+    rng = np.random.default_rng(5101)
+    n, draws = 8192, 4000
+    t = np.arange(n) - (n - 1) / 2
+
+    # Two selector columns with the same shots: every draw's depth difference is exactly 0.
+    same = np.repeat((rng.random(n) < 0.3).astype(np.uint8)[:, None], 2, axis=1)
+    model = coefficient_model(same, FREQUENCY)
+    se = box.lockin(same, FREQUENCY, [0])[0]["se"]
+    for k in range(4):
+        ratio = math.sqrt(model["sigma"][0][0] * model["kernel"][k][k]) / se
+        require(abs(ratio - 1) < 0.02, f"coefficient {k} SE over the lock-in SE {ratio}")
+    require(max_rule_sd(model, 1, draws) < 1e-12, "identical selectors give a max-rule SD of 0")
+    require(max_rule_sd(independent(model), 1, draws) > 1e-3, "the independent draw spreads identical selectors")
+
+    # A strong line on two selectors whose shots share their uniform deviate with probability 0.8: the joint
+    # draw's SD of the depth difference matches the spread over independent realizations of the same law.
+    realizations = 400
+    theta = 2 * np.pi * FREQUENCY * t + 0.7
+    p_deep, p_shallow = 0.5 + 0.25 * np.cos(theta), 0.5 + 0.15 * np.cos(theta)
+    u = rng.random((n, realizations))
+    u_shallow = np.where(rng.random((n, realizations)) < 0.8, u, rng.random((n, realizations)))
+    bits = np.concatenate([u < p_deep[:, None], u_shallow < p_shallow[:, None]], axis=1).astype(np.uint8)
+    columns = list(range(2 * realizations))
+    tops = np.maximum(
+        [a["amplitude"] for a in box.lockin(bits, FREQUENCY, columns)],
+        [a["amplitude"] for a in box.lockin(bits, 2 * FREQUENCY, columns)],
+    )
+    spread = float(np.std(tops[:realizations] - tops[realizations:], ddof=1))
+    model = coefficient_model(bits[:, [0, realizations]], FREQUENCY)
+    joint, apart = max_rule_sd(model, 2, draws), max_rule_sd(independent(model), 2, draws)
+    require(abs(joint / spread - 1) < 0.15, f"joint SD {joint} against the realizations' {spread}")
+    require(apart / spread > 1.3, f"independent SD {apart} against the realizations' {spread}")
+
+
+def self_test_matched_verdicts() -> None:
+    rng = np.random.default_rng(5102)
+    pct = [0.5, 99.5]
+
+    def batch(ln_rho: float) -> tuple[np.ndarray, np.ndarray]:
+        return np.array([ln_rho]), ln_rho + 0.01 * rng.standard_normal(4000)
+
+    # The excluded batch 1 lifts the all-batch job average above 1; the clean batch 0 reads 1 throughout.
+    flat, high = batch(0.0), batch(0.2)
+    out = verdicts([flat, high], [flat, high], [0], pct)
+    require(out["job_average_all_verdict"] == "above 1", f"all-batch job average {out}")
+    require(out["job_average_verdict"] == "consistent with 1", f"clean job average {out}")
+    require(out["reading"] == "undecided", f"reading on the clean batches {out['reading']}")
+    # The excluded batch pulls the all-batch job average to 1 under a clean job average above 1.
+    lifted, low = batch(0.05), batch(-0.05)
+    out = verdicts([lifted, low], [flat, flat], [0], pct)
+    require(out["job_average_all_verdict"] == "consistent with 1", f"all-batch job average {out}")
+    require(out["reading"] == "averaging over the line explains the rho excess", out["reading"])
+    require(verdicts([flat], [flat], [], pct)["reading"] == "undecided", "no clean batch")
+
+
 def self_test() -> str:
+    self_test_joint_draw()
+    self_test_matched_verdicts()
     with tempfile.TemporaryDirectory(prefix="ladder-line-bins-") as scratch:
         root = Path(scratch)
         built = {
@@ -693,8 +859,10 @@ def self_test() -> str:
         raw.write_text(json.dumps(shots), encoding="utf-8")
         box.expect_exit("an altered raw file", lambda: check_record(record, base), "differs from its recomputation")
     return (
-        "self-test: a population line gives stationary rho 1 beside job-averaged rho above 1, a population error "
-        "raises rho in every bin, an extremum response keeps A1 near 0 with A2 detected by max(A1, A2), a "
+        "self-test: the joint coefficient draw gives identical selectors a max-rule SD of 0 and a correlated pair "
+        "its realizations' SD, the reading follows the clean-batch job average, a population line gives "
+        "stationary rho 1 beside job-averaged rho above 1, a population error raises rho in every bin, an extremum "
+        "response keeps A1 near 0 with A2 detected by max(A1, A2), a "
         "series without a line leaves every phase rule undetermined, and a corrupted digest, bin count and raw "
         "file are refused"
     )

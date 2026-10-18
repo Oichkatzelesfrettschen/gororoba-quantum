@@ -1,5 +1,5 @@
 {
- "analysis_sha256": "ad35843fac97366059e4759705cfdde735efbdcf378c3d067bffb8e8c6f71c98",
+ "analysis_sha256": "d2837d4df2f54507925736f6ab7fd3c6367f19be21966a019679b76ceb9d6981",
  "binds": "a future run only; the preregistered ladder record is analyze_ladder's",
  "cells": [
   "all",
@@ -89,7 +89,7 @@
    "max_rule": {
     "difference": 0.021319291918,
     "holds": true,
-    "se": 0.001475753934
+    "se": 0.001442824295
    },
    "reference_significant": true
   },
@@ -157,7 +157,7 @@
    "max_rule": {
     "difference": 0.134048028378,
     "holds": true,
-    "se": 0.001778780819
+    "se": 0.001739363351
    },
    "reference_significant": true
   },
@@ -225,7 +225,7 @@
    "max_rule": {
     "difference": 0.127285290822,
     "holds": true,
-    "se": 0.001878553814
+    "se": 0.001789670944
    },
    "reference_significant": true
   },
@@ -293,7 +293,7 @@
    "max_rule": {
     "difference": 0.024939673963,
     "holds": true,
-    "se": 0.001427276996
+    "se": 0.001443280413
    },
    "reference_significant": true
   },
@@ -361,7 +361,7 @@
    "max_rule": {
     "difference": 0.115923178782,
     "holds": true,
-    "se": 0.001703351409
+    "se": 0.001672202059
    },
    "reference_significant": true
   },
@@ -429,7 +429,7 @@
    "max_rule": {
     "difference": 0.120509006193,
     "holds": true,
-    "se": 0.001770499702
+    "se": 0.001744444507
    },
    "reference_significant": true
   },
@@ -497,7 +497,7 @@
    "max_rule": {
     "difference": 0.122258029579,
     "holds": true,
-    "se": 0.001746247554
+    "se": 0.001748855556
    },
    "reference_significant": true
   },
@@ -565,7 +565,7 @@
    "max_rule": {
     "difference": 0.111704169295,
     "holds": true,
-    "se": 0.001746142275
+    "se": 0.001712476895
    },
    "reference_significant": true
   },
@@ -633,7 +633,7 @@
    "max_rule": {
     "difference": 0.017382559005,
     "holds": true,
-    "se": 0.001501031059
+    "se": 0.001506362985
    },
    "reference_significant": false
   },
@@ -701,7 +701,7 @@
    "max_rule": {
     "difference": 0.136694322273,
     "holds": true,
-    "se": 0.001699921202
+    "se": 0.001668408156
    },
    "reference_significant": true
   },
@@ -769,7 +769,7 @@
    "max_rule": {
     "difference": 0.104268078358,
     "holds": true,
-    "se": 0.001847458628
+    "se": 0.001797436378
    },
    "reference_significant": true
   },
@@ -837,7 +837,7 @@
    "max_rule": {
     "difference": 0.020141252054,
     "holds": true,
-    "se": 0.001432109539
+    "se": 0.001449754377
    },
    "reference_significant": false
   }
@@ -928,6 +928,15 @@
    },
    "cells": {
     "all": {
+     "clean": {
+      "interval": [
+       1.020117088751,
+       1.022506067228
+      ],
+      "se": 0.000453432585,
+      "undefined_draws": 0,
+      "value": 1.021339442044
+     },
      "combined": {
       "interval": [
        1.020049377496,
@@ -1296,6 +1305,7 @@
      }
     }
    },
+   "job_average_all_verdict": "above 1",
    "job_average_verdict": "above 1",
    "pair": [
     1,
@@ -1326,6 +1336,15 @@
    },
    "cells": {
     "all": {
+     "clean": {
+      "interval": [
+       1.019433188448,
+       1.021637734185
+      ],
+      "se": 0.000429366766,
+      "undefined_draws": 0,
+      "value": 1.020580250261
+     },
      "combined": {
       "interval": [
        1.020655505322,
@@ -1694,6 +1713,7 @@
      }
     }
    },
+   "job_average_all_verdict": "above 1",
    "job_average_verdict": "above 1",
    "pair": [
     10,
@@ -1724,6 +1744,15 @@
    },
    "cells": {
     "all": {
+     "clean": {
+      "interval": [
+       1.003988596309,
+       1.005585141459
+      ],
+      "se": 0.000309113622,
+      "undefined_draws": 0,
+      "value": 1.004794070986
+     },
      "combined": {
       "interval": [
        1.005079749736,
@@ -2092,6 +2121,7 @@
      }
     }
    },
+   "job_average_all_verdict": "above 1",
    "job_average_verdict": "above 1",
    "pair": [
     12,
@@ -2187,5 +2217,5 @@
    14
   ]
  },
- "uncertainty": "intervals are the 0.5 and 99.5 percentiles of a parametric bootstrap (4000 draws): every bracket's readout counts once per draw, shared by all cells, and each cell's joint (a, d) counts from a multinomial on the cell's own shots; they are conditional on each job's fitted line frequency and phase, which fix the bins and are not refitted per draw; harmonic errors are the lock-in standard error sqrt(2 p (1 - p) / n), and the max rule's error is the standard deviation of the depth difference of max(A1, A2) over draws that redraw both harmonics' coefficients"
+ "uncertainty": "intervals are the 0.5 and 99.5 percentiles of a parametric bootstrap (4000 draws): every bracket's readout counts once per draw, shared by all cells, and each cell's joint (a, d) counts from a multinomial on the cell's own shots; they are conditional on each job's fitted line frequency and phase, which fix the bins and are not refitted per draw; harmonic errors are the lock-in standard error sqrt(2 p (1 - p) / n), and the max rule's error is the standard deviation of the depth difference of max(A1, A2) over draws of the depth-9 and depth-1 selectors' eight lock-in coefficients from their joint shot-noise covariance"
 }

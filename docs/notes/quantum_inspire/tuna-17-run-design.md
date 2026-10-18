@@ -327,12 +327,15 @@ stream, numpy seed [20261017, 2], differs from the ladder's.
 - **Reference.** In batch 4 the depth-9 selector of latin-x-1 has a first
   harmonic of 0.0027, so that job's bins take their phase from noise and every
   pair's depth cell from it averages over phases; the stationary verdict
-  leaves that job's batch out. A job whose line scan missed the detection
+  and the job average it is read against leave that job's batch out, and
+  batch 1 alone gives job averages 1.0213, 1.0206 and 1.0048, each 99%
+  interval above 1, as both X batches do. A job whose line scan missed the detection
   threshold would leave its harmonic rules undetermined and its batch out of
   the verdict; all 12 detect the line.
 - **Harmonics at 2 f.** max(A1, A2) at depth 9 exceeds depth 1 by 0.0174 to
-  0.137 in all 12 jobs, against a margin error of 0.0014 to 0.0019 from a
-  bootstrap that redraws both harmonics' coefficients and repeats the
+  0.137 in all 12 jobs, against a margin error of 0.0014 to 0.0018 from a
+  bootstrap that draws the depth-9 and depth-1 selectors' eight lock-in
+  coefficients jointly, since both read the job's shots, and repeats the
   maximum, where the first-harmonic rule holds in 10. In the two failing jobs (batch 4
   latin-x-1 and batch 5 latin-y-1, both with (12,14) at depth 9) A1 is 0.0027
   and A2 0.0203 and 0.0220, and the max rule's depth differences are 12 and
