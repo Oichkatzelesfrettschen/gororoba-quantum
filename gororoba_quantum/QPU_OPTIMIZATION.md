@@ -240,6 +240,43 @@ covariance certificate. Covariance admission rejects a negative numerical
 eigenvalue or projected variance; rounding a negative value to zero would
 fabricate precision.
 
+An endpoint whose plan carries an `EmpiricalBernsteinDesign` (live_run
+`--empirical-bernstein`, N21 families under `--model-method exact`) also
+reads the empirical-Bernstein radius of Maurer and Pontil
+([arXiv:0907.3740](../docs/notes/0907.3740.md), Theorem 4). For the `n`
+scores of one PUB, range `R` and sample variance `V_n` (denominator
+`n - 1`), the one-sided radius at tail `d` is
+`sqrt(2 V_n ln(2 / d) / n) + 7 R ln(2 / d) / (3 (n - 1))`; the two-sided
+radius spends `d / 2` per side, `ln(4 / d)`. The radius reads the data, so
+it takes its own tail: the endpoint's confidence tail (alpha minus any
+covariance falsifier tails) splits equally between the data-free radius
+(Hoeffding, or the declared covariance radius where smaller) and the
+empirical-Bernstein radius, and each PUB reads the smaller of the two. The
+true mean leaves that interval only when it leaves one of the two, so the
+union bound over methods and PUBs keeps coverage at alpha. The equal split
+is fixed before data and costs the data-free radius `ln(2 / t)` for
+`ln(1 / t)`; at the maximal per-shot variance an opted-in endpoint pays that
+cost, which is why the opt-in is per family. Collection bounds each PUB
+score's sample variance by `n / (n - 1) (sum_k |w_k| sigma_k)^2` from the
+replica frequencies: exact for one replica and valid under arbitrary
+within-shot dependence, because the sample standard deviation is a norm.
+Planning has no data: it raises each modeled replica standard deviation by
+Maurer and Pontil's Theorem 10 (4) allowance `R_k sqrt(2 ln(K / t) / (n - 1))`
+at a total tail of 0.001, the sample-variance upper limit collection meets
+with probability at least 0.999 under the model, and spends that 0.001
+from the power miss probability (power radius at tail 0.199 for power 0.8).
+A plan whose variance assumption fails loses power and never coverage.
+The opt-in therefore applies to directional endpoints only, whose power
+contract supplies that miss probability, and plans on exact model
+probabilities (`simulation_shots=None` on every PUB the endpoint scores),
+since Monte Carlo frequencies carry sampling error the allowance does not
+cover; plan validation rejects either violation. Collection withholds the
+analysis of a record whose preregistered `specification` differs from
+`EMPIRICAL_BERNSTEIN`.
+`empirical_bernstein_contracts.py` (gates core-529 to core-532) checks the
+coverage on seeded collections, the method choice, the planned variances
+and the byte identity of every default-path output.
+
 The N=21 contract tests the positive direction against zero, using default
 alpha 0.05 and power 0.8. `minimum_effect = 0` selects the positive modeled
 gap after the simulation allowance as the alternative. The report records
