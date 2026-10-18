@@ -190,8 +190,8 @@ The [bundle](docs/evidence/formal_certificates/README.md) distinguishes
 real foundations, deterministic interval premises and unproved coverage.
 
 The recovered wide-control acquisition uses
-`scripts/review_wide_control_job.py --check` and `--self-test`, each in
-normal and optimized Python. `scripts/reconcile_qpu_inventory.py --check`
+`scripts/review_wide_control_job.py --check` and `--self-test`.
+`scripts/reconcile_qpu_inventory.py --check`
 binds the complete recorded service inventory to every raw job archive and
 the account's consumed seconds to the final charges of the jobs that ran
 inside its rolling usage period; its synthetic contract rejects
@@ -214,13 +214,41 @@ list and the open_gororoba fetch in agreement. The manual procedure remains
 the local replay. A pull request merges when `rocq-replay` is green whenever
 it ran.
 
+**Gate cost.**
+- Measure a gate's cost in CPU seconds. The runner records user and system
+  time beside wall time; wall time on a shared host grows with the host's
+  load, and parallel code only divides the CPUs it is granted, so a gate
+  that reads slow at a load above the CPU count is contended. Read its CPU
+  seconds before tuning it.
+- Spend CPU only on results that can change. `ci/premerge_gates.py` caches
+  the base tree's passing gates under
+  `${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/premerge`, keyed by the
+  base commit, `--max-seconds`, each interpreter's real path, version and
+  installed distributions, and every `GOROROBA_`, `QI_`, `OQ_`, `QD_`,
+  `QISKIT_`, `PYTHON`, thread-count and `GLIBC_TUNABLES` variable. A flock
+  serializes runs over one key, so concurrent sessions share one base run.
+  Failures stay out of the cache: a merge failure absent from the cached
+  passes reruns on the base through `ci/run_gates.py --gates`, so a failure
+  under load never becomes a standing shared failure. `--no-cache` runs the
+  base every time.
+- Skip a gate only on evidence that its inputs are unchanged. The import
+  closure `gate_inputs` follows covers modules, while whole-tree record
+  gates (core-368, core-270) reach their inputs through glob, directory
+  listing and git; a skip rule for pr-tier gates needs each gate's recorded
+  read set and a self-test that plants a missed input.
+- Check with an explicit raise, never `assert`. `python -O` strips every
+  assert, and ruff `S101` (pyproject.toml) rejects one at lint time, so each
+  check holds in every interpreter mode and each gate runs its command once.
+  The files whose bytes retained evidence pins keep their asserts under
+  per-file ignores.
+
 ## Source library and research replay
 
 `docs/` owns source notes, retained PDFs, retrieval identities and research
 replays. `literature -> docs` preserves recorded paths; new Markdown links use
 `docs/`. Immutable source ledgers retain their recorded bytes. The
 `sources` suite in ci/gates.json covers the source registry, the evidence
-replays (normal and optimized modes) and their checksum ledgers.
+replays and their checksum ledgers.
 
 
 Changes to proof replay inputs also follow the pinned Rocq replay in
@@ -279,8 +307,8 @@ Cayley-Dickson arithmetic on a qubit register. The root AGENTS.md,
 gororoba_quantum/AGENTS.md and scripts/AGENTS.md carry this section with
 identical bytes; `ci/check_agents_sections.py` fails on any difference.
 `docs/evidence/reviewer_associator_audit/` replays the numeric claims below
-(gates sources-240 and sources-241), and `scripts/algebra_circuit_fixtures.py`
-(gates core-251 and core-252) runs the zero-product, Hadamard-basis and
+(gate sources-240), and `scripts/algebra_circuit_fixtures.py`
+(gate core-251) runs the zero-product, Hadamard-basis and
 workspace fixtures on the circuit builders of `designs.py`.
 
 **Encoding and representation.**
@@ -638,8 +666,8 @@ cz, id, rz, sx, x and xslow. Heron r3 and Nighthawk (square grid) exist in
 IBM's processor list and are absent from this account, so
 `service.backends()` is the authority before a design names a backend.
 `scripts/heron_target_snapshot.py --out` reads the live Targets into
-`docs/evidence/heron_platform/targets.json`, and gates core-254 and core-255
-recompute every per-backend fact below from it; a refreshed snapshot that
+`docs/evidence/heron_platform/targets.json`, and gate core-254
+recomputes every per-backend fact below from it; a refreshed snapshot that
 contradicts this section fails until the text changes with it. Measured
 values and the documentation captures are in
 `docs/notes/ibm_heron_platform.md`.
@@ -1135,7 +1163,10 @@ the 64 seeded random settings of the characterization campaign, job-07
 the 84/84 edges at compilation seeds 1 and 2 in 32 iterations, job-08 Q1's
 case as one circuit at seed 1, job-09 Q1's case iterated at seeds 0 to 21,
 0 and 1, job-10 to job-12 the form-versus-dwell series D1 to D4 with
-per-iteration sample budgets, job-13 Q1's case as one circuit at seed 20). A new exploratory compilation_seed comes
+per-iteration sample budgets, job-13 Q1's case as one circuit at seed 20, job-14 to job-16 the payload-class series: a one-entry
+iterator, a single computation and a two-entry iterator at seed 20 and 10000 samples per entry,
+`"iterator": true` naming the one-entry form, job-16 extended by 11 blocks of seeds 46667
+and 20 that load another mesh before each 29dc6ef8 entry). A new exploratory compilation_seed comes
 from the ANU QRNG draws that `scripts/anu_qrng.py` retains under
 `docs/evidence/anu_qrng/`. A case names its compilation_seed per
 iteration or, for one circuit, in its manifest; the seed selects the
@@ -1192,9 +1223,11 @@ preregistered bridge branch on synthetic iterations) and core-540
 (`--check-bridge`, the form-mesh bridge job-09), core-541 (`anu_qrng.py`
 self-test and the offline check of every retained draw), core-542
 (`--self-test-dwell`), core-543 (`--check-dwell`, the D1 to D4 readout),
-core-545 (`qd_belenos_cone.py --self-test`), core-546 (its `--check` of
-the light-cone reading) and core-547 (its `--check-readout` of job-13, the
-seeded single job).
+core-545 (`qd_belenos_cone.py --self-test`, the series readout rules
+included), core-546 (its `--check` of
+the light-cone reading), core-547 (its `--check-readout` of job-13, the
+seeded single job) and core-563 (its `--check-readout-series` of the
+payload-class series, job-14 and the extended job-16).
 
 **Strategy guide.** [docs/notes/quandela/strategy.md](docs/notes/quandela/strategy.md)
 is the living record of what a credit buys on Belenos: the measured cost
@@ -1324,7 +1357,8 @@ resolved, GitHub reports mergeable_state clean, and
 `"$PYTHON" ci/premerge_gates.py BRANCH` exits 0. That script merges the
 branch into origin/main in a scratch worktree and runs every pr-tier gate
 measured at 5 s or less there and on origin/main, each tree through its own
-ci/run_gates.py; it fails on a gate the merge breaks. A gate over a
+ci/run_gates.py, with origin/main's passes read from the base cache (Gate
+cost); it fails on a gate the merge breaks. A gate over a
 whole-tree record (core-368 over every case circuit, core-270 over every
 retained run) can pass on two branches separately and fail on their merge,
 and a PR's CI ran against main as it stood then. Full-tier record gates such

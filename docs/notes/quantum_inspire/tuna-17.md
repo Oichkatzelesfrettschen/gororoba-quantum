@@ -147,11 +147,12 @@ the 50 Hz grid frequency (`scripts/qi_shot_record_line.py`,
 `results/quantum_inspire/tuna_17_shot_record_line.json`, gates core-426 and
 core-427; claim `qi-tuna17-shot-record-50hz-line`).
 
-- A band scan at 0.019 to 0.021 cycles per shot finds it in 69 of 147
-  Tuna-17 jobs and in none of 111 QX jobs. On Tuna-17 it is absent from
-  all 43 readout circuits, at up to 131072 shots, and all 8 depth-1 LCU
+- A band scan at 0.019 to 0.021 cycles per shot finds it in 72 of 159
+  Tuna-17 jobs and in none of 113 QX jobs. On Tuna-17 it is absent from
+  all 51 readout circuits, at up to 131072 shots, and all 8 depth-1 LCU
   circuits.
-  It is present in Ramsey, CZ-ladder, walk and additivity circuits.
+  It is present in Ramsey, CZ-ladder, walk, additivity and Walsh-exemplar
+  circuits.
 - Its amplitude in P(1) reaches 0.43 on q7 (ring-down Ramsey) and 0.39 on q5
   (coupler-ZZ Ramsey).
 - In the follow series the three bright-edge selectors oscillate at 0.19 to

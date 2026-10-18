@@ -1,0 +1,366 @@
+{
+ "schema": "qd-box-kite-cases-v1",
+ "family": "belenos_mesh",
+ "job": "job-16",
+ "platforms": [
+  "sim:belenos",
+  "qpu:belenos"
+ ],
+ "command": "sample_count",
+ "gate_form": "unitary",
+ "min_detected_photons": 1,
+ "max_samples": 240000,
+ "max_shots": 480000,
+ "max_duration": 300,
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "circuit": {
+  "file": "circuit.json",
+  "sha256": "69326bf0674a45e8c0005b10e2ac72cee36c122691ec0a5b542dbabb6e1fffb9"
+ },
+ "blocks": [
+  {
+   "config": "two_label-04",
+   "kind": "two_label",
+   "offset": 20,
+   "photons": [
+    20
+   ],
+   "m": [
+    [
+     1,
+     1
+    ],
+    [
+     -1,
+     -1
+    ]
+   ],
+   "t": 1,
+   "roles": [
+    "label_0",
+    "label_1",
+    "dilation",
+    "dilation"
+   ],
+   "ideal": [
+    "1/2",
+    "1/2",
+    "0",
+    "0"
+   ],
+   "p_algebra": "1",
+   "rows": [
+    [
+     "within_kite",
+     4
+    ],
+    [
+     "within_kite",
+     10
+    ],
+    [
+     "within_kite",
+     54
+    ],
+    [
+     "within_kite",
+     56
+    ],
+    [
+     "within_kite",
+     100
+    ],
+    [
+     "within_kite",
+     106
+    ],
+    [
+     "within_kite",
+     144
+    ],
+    [
+     "within_kite",
+     154
+    ],
+    [
+     "within_kite",
+     168
+    ],
+    [
+     "within_kite",
+     178
+    ],
+    [
+     "within_kite",
+     182
+    ],
+    [
+     "within_kite",
+     184
+    ],
+    [
+     "within_kite",
+     244
+    ],
+    [
+     "within_kite",
+     258
+    ],
+    [
+     "within_kite",
+     290
+    ],
+    [
+     "within_kite",
+     292
+    ],
+    [
+     "within_kite",
+     320
+    ],
+    [
+     "within_kite",
+     326
+    ],
+    [
+     "within_kite",
+     430
+    ],
+    [
+     "within_kite",
+     436
+    ],
+    [
+     "within_kite",
+     442
+    ],
+    [
+     "within_kite",
+     452
+    ],
+    [
+     "within_kite",
+     466
+    ],
+    [
+     "within_kite",
+     476
+    ],
+    [
+     "within_kite",
+     482
+    ],
+    [
+     "within_kite",
+     496
+    ],
+    [
+     "within_kite",
+     520
+    ],
+    [
+     "within_kite",
+     530
+    ],
+    [
+     "within_kite",
+     588
+    ],
+    [
+     "within_kite",
+     598
+    ],
+    [
+     "within_kite",
+     600
+    ],
+    [
+     "within_kite",
+     610
+    ],
+    [
+     "within_kite",
+     626
+    ],
+    [
+     "within_kite",
+     632
+    ],
+    [
+     "within_kite",
+     680
+    ],
+    [
+     "within_kite",
+     698
+    ],
+    [
+     "within_kite",
+     744
+    ],
+    [
+     "within_kite",
+     750
+    ],
+    [
+     "within_kite",
+     762
+    ],
+    [
+     "within_kite",
+     776
+    ],
+    [
+     "within_kite",
+     824
+    ],
+    [
+     "within_kite",
+     838
+    ]
+   ]
+  }
+ ],
+ "preregistered": {
+  "series": "single computation versus iterator payload on Q1's mesh (strategy.md section 7 item 13)",
+  "statistic": "tvd_cone_from_ideal per entry: total variation of the one-click histogram inside source 20's noise-bounded light cone from the served mesh's ideal propagation (scripts/qd_belenos_cone.py)",
+  "void_unless_mesh_sha256_prefix": "29dc6ef8",
+  "pass_at_most": 0.2,
+  "fail_at_least": 0.5,
+  "payload_entries": {
+   "job-14": 1,
+   "job-15": 0,
+   "job-16": 2
+  },
+  "order": "job-14 runs first; job-15 follows a job-14 pass and job-16 a job-14 fail; a void or intermediate job-14 ends the series",
+  "readings": "job-14 pass, job-15 fail: the failure follows the single-computation payload class; job-14 pass, job-15 pass: no single-path failure in this block, the payload class is not isolated; job-14 fail, job-16 fail then pass: the first 10000-sample entry of a job fails whatever its wrapper; job-14 fail, job-16 pass twice: one entry fails as a single computation does, two entries hold; job-14 fail, job-16 fail twice: 10000-sample entries fail without D2's leading 1500-sample entry; any other pattern, a void entry (other mesh, or a result whose results_list length differs from payload_entries) or an intermediate entry: no attribution"
+ },
+ "iterations": 24,
+ "settings": [
+  {
+   "name": "c0-s20-n10000",
+   "compilation_seed": 20
+  },
+  {
+   "name": "c1-s20-n10000",
+   "compilation_seed": 20
+  },
+  {
+   "name": "r2-s46667-n10000",
+   "compilation_seed": 46667
+  },
+  {
+   "name": "t3-s20-n10000",
+   "compilation_seed": 20
+  },
+  {
+   "name": "r4-s46667-n10000",
+   "compilation_seed": 46667
+  },
+  {
+   "name": "t5-s20-n10000",
+   "compilation_seed": 20
+  },
+  {
+   "name": "r6-s46667-n10000",
+   "compilation_seed": 46667
+  },
+  {
+   "name": "t7-s20-n10000",
+   "compilation_seed": 20
+  },
+  {
+   "name": "r8-s46667-n10000",
+   "compilation_seed": 46667
+  },
+  {
+   "name": "t9-s20-n10000",
+   "compilation_seed": 20
+  },
+  {
+   "name": "r10-s46667-n10000",
+   "compilation_seed": 46667
+  },
+  {
+   "name": "t11-s20-n10000",
+   "compilation_seed": 20
+  },
+  {
+   "name": "r12-s46667-n10000",
+   "compilation_seed": 46667
+  },
+  {
+   "name": "t13-s20-n10000",
+   "compilation_seed": 20
+  },
+  {
+   "name": "r14-s46667-n10000",
+   "compilation_seed": 46667
+  },
+  {
+   "name": "t15-s20-n10000",
+   "compilation_seed": 20
+  },
+  {
+   "name": "r16-s46667-n10000",
+   "compilation_seed": 46667
+  },
+  {
+   "name": "t17-s20-n10000",
+   "compilation_seed": 20
+  },
+  {
+   "name": "r18-s46667-n10000",
+   "compilation_seed": 46667
+  },
+  {
+   "name": "t19-s20-n10000",
+   "compilation_seed": 20
+  },
+  {
+   "name": "r20-s46667-n10000",
+   "compilation_seed": 46667
+  },
+  {
+   "name": "t21-s20-n10000",
+   "compilation_seed": 20
+  },
+  {
+   "name": "r22-s46667-n10000",
+   "compilation_seed": 46667
+  },
+  {
+   "name": "t23-s20-n10000",
+   "compilation_seed": 20
+  }
+ ],
+ "seed_source": {
+  "draw": "draw-2026-10-18T083548Z.json",
+  "index": 0,
+  "use": "D3 and D4 fresh mesh",
+  "raw_sha256": "cc8dbc7c781fb85e2adcd17ac35741a76f463a977495160f071bf9ff705d5e37",
+  "value": 46667
+ },
+ "seeded_from": {
+  "case": "box_kite_photonic_single/job-04",
+  "cases_sha256": "d7632a78edceaec2cf4d745f83e81af902950dfda1f3921ab925b53a16dbc4bc"
+ },
+ "extension_preregistered": {
+  "question": "does a 10000-sample 29dc6ef8 entry fail when it is the first acquisition of that mesh after a load of 14a96ca6, and does 14a96ca6 hold in the same job",
+  "first_entry": 2,
+  "blocks": 11,
+  "expected_mesh_sha256_prefix": {
+   "20": "29dc6ef8",
+   "46667": "14a96ca6"
+  },
+  "pass_at_most": 0.2,
+  "fail_at_least": 0.5,
+  "reload_fails_at_least_share": 0.8,
+  "minimum_read_entries": 9,
+  "order": "results_list order is taken as execution order; no result entry carries a timestamp",
+  "readings": "any 14a96ca6 entry failing: the fault reaches beyond 29dc6ef8 in this job, mesh specificity is not supported; otherwise, of the post-load 29dc6ef8 entries that read pass or fail (at least 9 needed, else inconclusive), at least 0.8 failing: a large 29dc6ef8 acquisition fails after a mesh load; none failing: post-load acquisitions hold; between: intermittent, reported as a share with its Wilson interval. Each is read beside the pair's two entries: a passing first entry implicates the job's entry count or path, a passing second entry with failing post-load entries implicates the load, a failing second entry with holding post-load entries implicates repetition of the job's first mesh."
+ }
+}

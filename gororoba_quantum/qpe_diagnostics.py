@@ -17,7 +17,7 @@ from pathlib import Path
 
 import numpy as np
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, transpile
-from qiskit.circuit import Clbit, ControlFlowOp, Qubit
+from qiskit.circuit import CircuitInstruction, Clbit, ControlFlowOp, Qubit
 from qiskit.circuit.library import XGate
 from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit.quantum_info import Statevector
@@ -187,6 +187,74 @@ N21_ORBIT_VARIANTS = ("nominal", "window_delay", "extra_readout", "window_echo")
 # compiler may move work-only gates across the control's measurement and reset.
 N21_ORBIT_BUILDABLE = (*N21_ORBIT_VARIANTS, "window_barrier", "nominal_unbarriered")
 
+# The initialization herald measures every qubit into its own register before
+# the program and a barrier over all qubits follows it, so the labeled law
+# over the phase register is unchanged. Packing prefixes register names
+# (packing.relabel), so a register plays a role by its name or by its name's
+# last underscore-separated field.
+HERALD_REGISTER = "herald"
+# The labeled law occupies the two phase bits, clbits 0 and 1; the herald
+# register follows them, so an outcome index is phase + 4 * herald.
+N21_PHASE_OUTCOMES = 4
+
+
+def register_role(name: str) -> str:
+    """The unprefixed role of a classical register name: its last underscore-separated field."""
+    return name.rsplit("_", 1)[-1]
+
+
+def herald_clbits(circuit: QuantumCircuit) -> frozenset[int]:
+    """Indices of every clbit in a herald register of circuit."""
+    return frozenset(
+        circuit.find_bit(bit).index
+        for register in circuit.cregs
+        if register_role(register.name) == HERALD_REGISTER
+        for bit in register
+    )
+
+
+def has_herald(circuit: QuantumCircuit) -> bool:
+    return bool(herald_clbits(circuit))
+
+
+def herald_measurement(circuit: QuantumCircuit, instruction: CircuitInstruction) -> bool:
+    """Whether instruction is a measurement into a herald register of circuit."""
+    return (
+        instruction.operation.name == "measure"
+        and bool(instruction.clbits)
+        and circuit.find_bit(instruction.clbits[0]).index in herald_clbits(circuit)
+    )
+
+
+def lift_phase_values(values: object, clbits: int) -> np.ndarray:
+    """A per-outcome vector over the phase register extended to every outcome of clbits bits.
+
+    Outcome k of the full register reads the phase label k mod 4, so a score,
+    weight or contrast vector keeps its value whatever the herald recorded.
+    """
+    phase = np.asarray(values, dtype=float)
+    if phase.shape != (N21_PHASE_OUTCOMES,) or clbits < 2:
+        raise ValueError(f"a phase vector has {N21_PHASE_OUTCOMES} entries and lifts onto two or more clbits")
+    return np.asarray(phase[np.arange(1 << clbits) % N21_PHASE_OUTCOMES])
+
+
+def lift_phase_law(law: object, clbits: int) -> np.ndarray:
+    """A phase-register law extended with every herald bit 0, the ideal heralded law."""
+    phase = np.asarray(law, dtype=float)
+    if phase.shape != (N21_PHASE_OUTCOMES,) or clbits < 2:
+        raise ValueError(f"a phase law has {N21_PHASE_OUTCOMES} entries and lifts onto two or more clbits")
+    lifted = np.zeros(1 << clbits)
+    lifted[:N21_PHASE_OUTCOMES] = phase
+    return lifted
+
+
+def phase_marginal(distribution: object) -> np.ndarray:
+    """The law over the phase bits, clbits 0 and 1, of a distribution over phase and herald bits."""
+    values = np.asarray(distribution, dtype=float)
+    if values.ndim != 1 or values.size % N21_PHASE_OUTCOMES:
+        raise ValueError(f"a distribution over phase and herald bits has a multiple of {N21_PHASE_OUTCOMES} entries")
+    return np.asarray(values.reshape(-1, N21_PHASE_OUTCOMES).sum(axis=0))
+
 
 def n21_orbit_diagnostic(
     feed_forward: bool = True,
@@ -194,6 +262,7 @@ def n21_orbit_diagnostic(
     *,
     window_delay_dt: int | None = None,
     echo_half_dt: int | None = None,
+    init_herald: bool = False,
 ) -> QuantumCircuit:
     """Build the N=21 two-bit diagnostic with multipliers compiled on the orbit of |1>.
 
@@ -214,6 +283,12 @@ def n21_orbit_diagnostic(
     echo_half_dt and again after a second echo_half_dt, both concurrent with
     the measurement and reset; a static frequency offset on those qubits
     accumulates opposite phases in the two halves and cancels.
+
+    init_herald measures every qubit into the register HERALD_REGISTER, qubit
+    k into its bit k, and places a barrier over all qubits before the
+    program. Each herald bit reads 1 with the qubit's initial excitation plus
+    its readout P(1|0); the ideal herald is all zero, so the ideal law over
+    phase and herald bits is the labeled law lifted by lift_phase_law.
     """
     if variant not in N21_ORBIT_BUILDABLE:
         raise ValueError(f"unknown N=21 orbit variant {variant!r}")
@@ -225,6 +300,12 @@ def n21_orbit_diagnostic(
     work = QuantumRegister(len(N21_ORBIT_BITS), "w")
     phase = ClassicalRegister(2, "phase")
     circuit = QuantumCircuit(control, work, phase)
+    if init_herald:
+        herald = ClassicalRegister(circuit.num_qubits, HERALD_REGISTER)
+        circuit.add_register(herald)
+        for qubit in range(circuit.num_qubits):
+            circuit.measure(qubit, herald[qubit])
+        circuit.barrier()
     one, four, sixteen = 1, 2, 3
     circuit.x(one)
     circuit.h(0)
@@ -235,19 +316,22 @@ def n21_orbit_diagnostic(
     if bracketed:
         circuit.barrier()
     if variant == "window_echo":
-        assert echo_half_dt is not None
+        if echo_half_dt is None:
+            raise AssertionError
         for _half in range(2):
             circuit.delay(echo_half_dt, [one, sixteen], unit="dt")
             circuit.x([one, sixteen])
     if variant == "window_barrier":
-        assert echo_half_dt is not None
+        if echo_half_dt is None:
+            raise AssertionError
         circuit.delay(2 * echo_half_dt, [one, sixteen], unit="dt")
     circuit.measure(0, phase[0])
     if variant == "extra_readout":
         circuit.measure(0, phase[0])
     circuit.reset(0)
     if variant == "window_delay":
-        assert window_delay_dt is not None
+        if window_delay_dt is None:
+            raise AssertionError
         circuit.delay(window_delay_dt, 0, unit="dt")
     if bracketed:
         circuit.barrier()
@@ -260,6 +344,7 @@ def n21_orbit_diagnostic(
     circuit.h(0)
     circuit.measure(0, phase[1])
     suffix = "" if variant == "nominal" else f"_{variant}"
+    suffix += "_heralded" if init_herald else ""
     circuit.name = "n21_orbit_a4_two_bit_" + ("feed_forward" if feed_forward else "no_feed_forward") + suffix
     return circuit
 
@@ -364,8 +449,11 @@ def ideal_branch_probabilities(circuit: QuantumCircuit) -> tuple[float, ...]:
 def window_bracket_violations(isa: QuantumCircuit, inside: frozenset[str] = frozenset({"delay"})) -> list[str]:
     """Operations on other wires that the control's measurement-and-reset window holds.
 
-    The window opens at the first measurement and closes at the first reset
-    of its wire that follows it. An operation on another wire lies outside
+    The window opens at the first measurement outside every herald register
+    (herald_clbits) and closes at the first reset of its wire that follows
+    it, so a heralded circuit reads the window of its unheralded twin. The
+    herald measurements precede a barrier over every qubit and so lie before
+    the window. An operation on another wire lies outside
     the window when it precedes the measurement or follows the reset in the
     circuit's dependency order; a barrier over every qubit places all of a
     multiplier round on one side. Operations named in inside (delays, and
@@ -373,7 +461,11 @@ def window_bracket_violations(isa: QuantumCircuit, inside: frozenset[str] = froz
     """
     dag = circuit_to_dag(isa)
     nodes = list(dag.topological_op_nodes())
-    opening = next((node for node in nodes if node.op.name == "measure"), None)
+    heralded = herald_clbits(isa)
+    opening = next(
+        (node for node in nodes if node.op.name == "measure" and isa.find_bit(node.cargs[0]).index not in heralded),
+        None,
+    )
     if opening is None:
         raise ValueError(f"{isa.name}: no measurement opens a window")
     control = opening.qargs[0]
@@ -418,6 +510,37 @@ def ideal_compiled_probabilities(circuit: QuantumCircuit, *, max_active_qubits: 
     return ideal_branch_probabilities(compact)
 
 
+def _check_herald_structure(heralded: QuantumCircuit, twin: QuantumCircuit) -> None:
+    """A heralded orbit circuit is its twin after one herald measurement per qubit and a full barrier.
+
+    Its phase marginal is the twin's labeled law, its window bracket reads
+    the twin's, and the same circuit with the herald written into a register
+    of another name opens the window at the control's herald measurement,
+    which a bracketed arm then fails.
+    """
+    width = heralded.num_qubits
+    prefix = heralded.data[: width + 1]
+    if [heralded.find_bit(i.qubits[0]).index for i in prefix[:width] if herald_measurement(heralded, i)] != list(
+        range(width)
+    ):
+        raise RuntimeError(f"{heralded.name}: the herald does not measure every qubit first, qubit k into bit k")
+    if prefix[width].operation.name != "barrier" or len(prefix[width].qubits) != width:
+        raise RuntimeError(f"{heralded.name}: no barrier over every qubit follows the herald")
+    if [(i.operation.name, i.qubits, i.clbits) for i in heralded.data[width + 1 :]] != [
+        (i.operation.name, i.qubits, i.clbits) for i in twin.data
+    ]:
+        raise RuntimeError(f"{heralded.name}: the program after the herald differs from its unheralded twin")
+    marginal = phase_marginal(ideal_branch_probabilities(heralded))
+    if not np.allclose(marginal, ideal_branch_probabilities(twin), atol=1e-11, rtol=0):
+        raise RuntimeError(f"{heralded.name}: the phase marginal differs from the unheralded labeled law")
+    if window_bracket_violations(heralded) != window_bracket_violations(twin):
+        raise RuntimeError(f"{heralded.name}: the herald changes the window bracket")
+    renamed = QuantumCircuit(*heralded.qregs, *(ClassicalRegister(r.size, r.name + "x") for r in heralded.cregs))
+    renamed.compose(heralded, inplace=True)
+    if "unbarriered" not in heralded.name and not window_bracket_violations(renamed):
+        raise RuntimeError(f"{heralded.name}: a window opened at the herald holds no violation, so the check is void")
+
+
 def _verify() -> None:
     circuits: list[QuantumCircuit] = []
     expected_laws: list[tuple[Fraction, ...]] = []
@@ -450,6 +573,12 @@ def _verify() -> None:
         for variant in N21_ORBIT_BUILDABLE:
             circuits.append(n21_orbit_diagnostic(feed_forward, variant, window_delay_dt=416, echo_half_dt=512))
             expected_laws.append(expected)
+            heralded = n21_orbit_diagnostic(
+                feed_forward, variant, window_delay_dt=416, echo_half_dt=512, init_herald=True
+            )
+            _check_herald_structure(heralded, circuits[-1])
+            circuits.append(heralded)
+            expected_laws.append(expected + (Fraction(0),) * ((1 << heralded.num_clbits) - len(expected)))
     for circuit, expected in zip(circuits, expected_laws, strict=True):
         observed = ideal_branch_probabilities(circuit)
         if not np.allclose(observed, [float(value) for value in expected], atol=1e-11, rtol=0):
@@ -478,7 +607,7 @@ def _verify() -> None:
     compiled = transpile(circuits, simulator, optimization_level=0)
     sampled = simulator.run(compiled, shots=8192, seed_simulator=20261011).result()
     for index, (circuit, expected) in enumerate(zip(circuits, expected_laws, strict=True)):
-        counts = sampled.get_counts(index)
+        counts = {key.replace(" ", ""): value for key, value in sampled.get_counts(index).items()}
         for label, probability in enumerate(expected):
             observed_rate = counts.get(format(label, f"0{circuit.num_clbits}b"), 0) / 8192
             if abs(observed_rate - float(probability)) > 0.025:
@@ -489,7 +618,11 @@ def _verify() -> None:
         except ValueError:
             continue
         raise RuntimeError(f"delay arm accepted invalid duration {invalid_delay}")
-    print("QPE diagnostics: 16 folded laws and fourteen N=21 laws match exact circuit branches and sampled labels")
+    print(
+        "QPE diagnostics: 16 folded laws and fourteen N=21 laws, with the twelve heralded orbit laws, match exact "
+        "circuit branches and sampled labels; heralded orbit circuits measure every qubit before a full barrier, "
+        "read the window bracket of their unheralded twins and marginalize to the labeled law"
+    )
 
 
 if __name__ == "__main__":

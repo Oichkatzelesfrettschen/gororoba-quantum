@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-18T17:26:51+00:00",
+ "approval": "Owner approved in this session on 2026-10-18 the written Walsh exemplar case (PR #269): QX twin batch first, then Tuna-17 walsh_exemplar_tuna_17 batch-00 to batch-03 at 131072 shots, under 3 circuits per batch, one batch queued and the 120 s pause; stop on a failed job, a readout below 0.7 or K_high <= K_low.",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "9da7b467a92ab19c0b2dfe4730990ff4de7f08ad2395f94009b7978c1da09aaf",
+ "backend_status_at_submit": "executing",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 873028,
+ "project": 770006,
+ "shots": 131072,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1535771,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1535772,
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  },
+  {
+   "file": "readout-q13-q11.cq",
+   "job": 1535773,
+   "sha256": "4a6d281fbb9ea1a5f82804a66136ed92e31717e2408cd0d7d5ea2a6f417a2652"
+  }
+ ],
+ "submitted_utc": "2026-10-18T17:26:51+00:00"
+}

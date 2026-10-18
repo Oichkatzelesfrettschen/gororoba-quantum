@@ -168,7 +168,6 @@ result under that check.
 ## Gate
 
 Gate core-329 runs `--check ../docs/evidence/atlas_coherent_families/result.json
---runs ibm_fez,ibm_kingston --lanes 4` from `gororoba_quantum/` in normal and
-optimized Python. It recomputes both lanes, with every resimulation, and
+--runs ibm_fez,ibm_kingston --lanes 4` from `gororoba_quantum/`. It recomputes both lanes, with every resimulation, and
 compares every number within the tolerance above. It runs in the
 full tier, since one worker needs several minutes per mode.

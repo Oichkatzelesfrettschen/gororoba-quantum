@@ -154,7 +154,7 @@ Gate core-311 runs four checks:
 
 Gate core-310 lints and type-checks the script.
 
-Gate `core-walk-extract` runs `--check-extract` in normal and optimized Python
+Gate `core-walk-extract` runs `--check-extract`
 under the recorded Qiskit 2.5.2 producer. That check requires exact JSON and QPY
 bytes. Qiskit 2.6 emits QPY format 18 where the producer emitted format 17, so
 current-SDK circuit equivalence and producer byte identity have separate gates.

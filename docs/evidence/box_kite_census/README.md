@@ -19,8 +19,7 @@ floats, paths, timestamps or worker counts, so the pooled and serial
 "$PYTHON" -B -W error scripts/box_kite_census.py --self-test
 ```
 
-Gates core-372 (`--check`) and core-373 (`--self-test`) run both in normal and
-optimized Python. `--check` recomputes the census and requires byte equality
+Gates core-372 (`--check`) and core-373 (`--self-test`) run both. `--check` recomputes the census and requires byte equality
 with the canonical JSON (sorted keys, indent 1, ASCII). `--self-test` applies
 twenty mutations to the retained record (an edge sign type, a swapped strut,
 a dropped assessor, a Design B probability, a post-selected coherence, a face

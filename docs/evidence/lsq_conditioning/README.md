@@ -519,8 +519,7 @@ scipy 1.18.1 and qiskit 2.5.2.
 
 ## Gates
 
-- core-489: `--check` in normal and optimized Python, pr tier, 64 s of CPU
-  time with one worker.
+- core-489: `--check`, pr tier.
 - core-492: `--self-test` in both modes, pr tier, 2.1 s.
 - core-493: `gororoba_quantum/wheel_algebra.py --self-test` in both modes,
   pr tier, 3.9 s. Its axiom cases run in chunks through

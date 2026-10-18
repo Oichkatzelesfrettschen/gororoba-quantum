@@ -72,7 +72,6 @@ from diagnostic_experiments import (
     FAMILY_NAMES,
     N21_FAMILIES,
     PATCH_FAMILIES,
-    STATE_PREP_FAMILY,
     record_groups,
     state_prep_arms,
 )
@@ -3269,7 +3268,7 @@ def approved_family_design(
                 args.precision,
                 args.alpha,
                 args.power,
-                **({"configuration": configuration} if args.family == STATE_PREP_FAMILY else {}),
+                **qpu_planning.contract_configuration(args.family, configuration),
             )
             tiers = sorted(set(args.shot_tiers if args.optimize else [args.shots]))
             ceiling = min(
@@ -5610,6 +5609,13 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 if window is not None:
                     props_then = at[window[0]][0]
                     props_by_name[name] = props_then
+                    # The calibration in force at the PUB's execution start,
+                    # by value, over every qubit the PUB ran, so the fused
+                    # components of one PUB carry one execution evidence.
+                    executed[name]["placed_qubit_calibration"] = placed_qubit_calibration(
+                        props_then,
+                        sorted({int(q) for part in pub_manifest["components"] for q in part["physical_qubits"]}),
+                    )
                     calibration = props_then.last_update_date
                     sims_by_calibration.setdefault(calibration, at[window[0]][1])
                     replay_batches.setdefault(calibration, []).append(entry)
@@ -5877,6 +5883,12 @@ def main(argv: list[str] | None = None) -> int:
         "them, or x_history alone, since it sets the end state every shot of its job leaves; "
         "omitted, prep0, reset and x; the policy binds a selection",
     )
+    parser.add_argument(
+        "--init-herald",
+        action="store_true",
+        help="n21-orbit-rca: measure every qubit into a herald register before the program, a per-member "
+        "initial-excitation reading beside the unchanged labeled law; the policy and family configuration bind it",
+    )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
         "--local-compute-method",
@@ -6109,6 +6121,8 @@ def main(argv: list[str] | None = None) -> int:
             args.state_prep_arms = list(state_prep_arms(args.state_prep_arms))
         except ValueError as error:
             parser.error(f"--state-prep-arms: {error}")
+    if args.init_herald and args.family != "n21-orbit-rca":
+        parser.error("--init-herald applies to the n21-orbit-rca family only")
     if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
         parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "folded-correction":

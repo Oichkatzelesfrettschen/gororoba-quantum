@@ -667,7 +667,8 @@ def build_plan(
             if position in splits:
                 fuser.split(item.qargs[0], item.clbit)
             continue
-        assert item.superop is not None
+        if item.superop is None:
+            raise AssertionError
         if position in angle_source:
             unitaries = np.stack(
                 [Operator(r.data[angle_source[position]].operation).data.astype(np.complex128) for r in replicas]
@@ -1000,7 +1001,8 @@ def evolve(
         if staged.form == "local":
             out = _apply_local(rho, step.qargs, operator, n, backend)
         else:
-            assert isinstance(backend, TorchBackend)
+            if not isinstance(backend, TorchBackend):
+                raise AssertionError
             out = _apply_dense(rho, step.qargs, operator, n, backend)
         rho = out if step.when is None else backend.where(masks[index], out, rho)
     weights = backend.upload(readout_map(plan, branches, factors, flip), real=True)

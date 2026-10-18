@@ -7,6 +7,7 @@ import hashlib
 import io
 import json
 import tempfile
+from collections import defaultdict
 from collections.abc import Callable
 from contextlib import ExitStack, redirect_stderr, redirect_stdout
 from datetime import UTC, datetime, timedelta
@@ -208,7 +209,9 @@ def _verify_collection_pipeline(fixture: _Fixture) -> None:
     job = SimpleNamespace(result=lambda: result, metrics=lambda: {}, status=lambda: "DONE")
     start = datetime(2026, 10, 12, tzinfo=UTC)
     target = SimpleNamespace(dt=4e-9)
-    properties = SimpleNamespace(last_update_date=start)
+    # BackendProperties lists per-qubit Nduv values under qubits; the
+    # fixture's qubits report none.
+    properties = SimpleNamespace(last_update_date=start, qubits=defaultdict(list))
     backend = SimpleNamespace(
         name="fixture_backend", properties=lambda **_kwargs: properties, target_history=lambda **_kwargs: target
     )
