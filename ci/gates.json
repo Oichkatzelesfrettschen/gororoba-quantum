@@ -3882,6 +3882,14 @@
   },
   {
    "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --serialized-noise",
+   "name": "core-548",
+   "seconds": 105.5,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --self-test >/dev/null && \"$PYTHON\" -B -O -W error scripts/ghost_error_scale_branching.py --self-test >/dev/null",
    "name": "core-363",

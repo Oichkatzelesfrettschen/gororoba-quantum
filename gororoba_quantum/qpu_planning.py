@@ -10,6 +10,7 @@ from __future__ import annotations
 import copy
 import json
 import math
+import threading
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 from pathlib import Path
@@ -1023,18 +1024,28 @@ def prepare(
 
     # Aer releases the GIL while it simulates, so independent choices run on
     # threads. Each simulator already uses the policy's thread count, so the
-    # pool runs only as many simulators as fit in the available CPUs. Each task
-    # owns a simulator built from the snapshot's cached noise model; its batch
-    # evidence joins the snapshot simulator in serial order.
+    # pool runs only as many simulators as fit in the available CPUs. Each
+    # pool thread reuses one simulator per snapshot, built from the
+    # snapshot's cached noise model, for every choice it runs: local_compute.run
+    # sets the device and method of each batch, and AerSimulator.from_backend
+    # converts the whole-device Target to BackendProperties on every build. A
+    # task returns the batch evidence its run appended, which joins the
+    # snapshot simulator in serial order.
     # A declared initial excitation enters the sampled model and the exact
     # law alike, so the sampled falsifier tests the law the plan prices.
     excited = {"prep_excitation": excitation} if excitation else {}
+    lane = threading.local()
 
-    def simulate_choice(choice: Any) -> tuple[Any, dict[str, Any]]:
-        simulator = runtime.noise_simulator(
-            choice.snap.name, choice.snap.backend.target, choice.snap.properties, local_compute.settings(args)
-        )
-        return simulator, runtime.simulate(choice, simulator, args.model_shots, **excited)
+    def simulate_choice(choice: Any) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        owned: dict[int, Any] = lane.__dict__.setdefault("simulators", {})
+        simulator = owned.get(id(choice.snap))
+        if simulator is None:
+            simulator = owned[id(choice.snap)] = runtime.noise_simulator(
+                choice.snap.name, choice.snap.backend.target, choice.snap.properties, local_compute.settings(args)
+            )
+        start = len(local_compute.batches(simulator))
+        noisy = runtime.simulate(choice, simulator, args.model_shots, **excited)
+        return local_compute.batches(simulator)[start:], noisy
 
     ordered = [choice for choices, _configuration in candidates for choice in choices]
     concurrent = max(1, parallel.workers() // local_compute.settings(args)["threads"])
@@ -1050,8 +1061,8 @@ def prepare(
                         raise runtime.LiveRunError(
                             f"{entry.name}: compiled labeled ideal differs from its exact oracle"
                         )
-            task_simulator, noisy = next(simulated)
-            local_compute.merge_batches(simulators[id(choice.snap)], task_simulator)
+            evidence, noisy = next(simulated)
+            local_compute.append_batches(simulators[id(choice.snap)], evidence)
             predictions.update(
                 {name: tuple(tuple(map(float, dist)) for dist in replicas) for name, replicas in noisy.items()}
             )

@@ -2334,7 +2334,7 @@ def noise_simulator(name: str, target: Any, props: Any, compute_policy: dict[str
     # selector. Aer 0.17.2 miscomputes a reset-only one-bit member following a
     # two-bit feedback member when it switches from statevector to density
     # matrix inside the batch (qpu_planning_contracts verifies the mixed case).
-    simulator = AerSimulator.from_backend(view, noise_model=noise, method="density_matrix")
+    simulator = local_compute.SerializedNoiseSimulator.from_backend(view, noise_model=noise, method="density_matrix")
     local_compute.configure(simulator, local_compute.settings() if compute_policy is None else compute_policy)
     return simulator
 
