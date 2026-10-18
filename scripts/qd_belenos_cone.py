@@ -2,10 +2,9 @@
 
 A photon entering source s reaches only the modes its served mesh couples to
 s: the cone is every mode whose peak occupancy along the propagation
-(qd_belenos_mesh.peak_occupancy) exceeds CONE_FLOOR. A one-click sample on a
-mode outside the cone carries no light of this circuit, so it is detector
-background by construction, and in_block over in-cone samples reads the
-mesh's retention without any background model. The reading is a second
+(qd_belenos_mesh.peak_occupancy) exceeds CONE_FLOOR. The served mesh routes
+no light of this circuit to a mode outside the cone, so in_block over in-cone
+samples reads the mesh's retention without a model of the off-cone clicks. The reading is a second
 analysis of the retained runs; each run's preregistered verdict stays in its
 own record.
 
@@ -14,15 +13,18 @@ Per cell (a single job, or one iteration of an iterated job) the record holds:
 - in_block over every one-click sample and over in-cone samples, each with its
   Wilson 95 % interval, and the in-cone total variation from the served
   mesh's ideal propagation beside its multinomial shot floor;
-- the off-cone one-click counts by mode;
+- the off-cone one-click counts by mode, and the two-click samples that pair an
+  off-cone click with an in-cone click beside the count that independent clicks
+  gated to the source pulses would give, off-cone total x physical_perf /
+  (1 - physical_perf);
 - the acquisition time samples / (physical_perf x clock): physical_perf is
   the share of source pulses that pass the one-photon filter, so this is the
   time the detectors were read, while status.duration is the job's wall time;
 - the receipt's dark expectation on off-cone modes under both time bases.
 
-Groups of cells with one mesh and one budget give each background mode's
-dispersion index (variance over mean of its counts); a stationary dark rate
-reads 1.
+Groups of cells of one job with one mesh and one budget give each off-cone
+mode's dispersion index (variance over mean of its counts); a stationary
+rate reads 1.
 
 --write OUT RUN... writes the record, --check OUT RUN... recomputes it and
 requires equal bytes, and --self-test requires off-cone background to leave
@@ -122,19 +124,24 @@ def run_cells(run: Path) -> list[dict[str, Any]]:
         settings = manifest["settings"]
         seeds = [s.get("compilation_seed") for s in settings]
         names = [s["name"] for s in settings]
+        budgets = [s.get("max_samples", manifest["max_samples"] // len(settings)) for s in settings]
         form = "iterated"
     else:
         entries = [inner]
         seeds = [manifest.get("compilation_seed")]
         names = [manifest["job"]]
+        budgets = [manifest["max_samples"]]
         form = "single"
     out = []
-    for name, seed, entry in zip(names, seeds, entries, strict=True):
+    for name, seed, budget, entry in zip(names, seeds, budgets, entries, strict=True):
         counts = mesh_lib.bscount(entry["results"])
         single = [0] * MODES
+        pairs: list[tuple[tuple[int, ...], int]] = []
         for state, n in counts.items():
             if sum(state) == 1:
                 single[state.index(1)] += n
+            else:
+                pairs.append((tuple(k for k, v in enumerate(state) if v), n))
         elements = mesh_lib.decode(entry["computed_circuit"])
         arch = mesh_lib.run_architecture(elements)
         row = cell(
@@ -149,31 +156,37 @@ def run_cells(run: Path) -> list[dict[str, Any]]:
         )
         off = [q for q in range(MODES) if q not in row["cone_modes"]]
         acquisition = row["acquisition_s"] or 0.0
+        off_total = sum(row["off_cone_by_mode"].values())
+        perf = row["physical_perf"]
+        mixed = sum(n for clicks, n in pairs if any(q in off for q in clicks) and any(q not in off for q in clicks))
         out.append(
             {
                 "run": run.name,
                 "name": name,
                 "form": form,
                 "compilation_seed": seed,
+                "max_samples": budget,
                 "mesh_sha256": mesh_lib.mesh_sha(entry["computed_circuit"]),
                 **row,
                 "job_duration_s": duration,
                 "receipt_dark_off_cone_wall": round(sum(rates[q] for q in off) * duration, 3),
                 "receipt_dark_off_cone_acquisition": round(sum(rates[q] for q in off) * acquisition, 3),
-                "off_cone_total": sum(row["off_cone_by_mode"].values()),
+                "off_cone_total": off_total,
+                "off_cone_with_in_cone_click": mixed,
+                "independent_gated_expectation": round(off_total * perf / (1 - perf), 3),
             }
         )
     return out
 
 
 def dispersion(cells: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Variance over mean of each background mode's counts in every group of two or more cells sharing a mesh
-    and a budget."""
-    groups: dict[tuple[str, int], list[dict[str, Any]]] = {}
+    """Variance over mean of each off-cone mode's counts in every group of two or more cells of one job that share
+    a served mesh and a sample budget, so drift between jobs stays out of the index."""
+    groups: dict[tuple[str, str, int], list[dict[str, Any]]] = {}
     for c in cells:
-        groups.setdefault((c["mesh_sha256"], c["one_click_samples"] // 100), []).append(c)
+        groups.setdefault((c["run"], c["mesh_sha256"], c["max_samples"]), []).append(c)
     rows = []
-    for (mesh, _), members in sorted(groups.items()):
+    for (_, mesh, _), members in sorted(groups.items()):
         if len(members) < 2:
             continue
         modes = sorted({int(q) for c in members for q in c["off_cone_by_mode"]})
@@ -239,7 +252,7 @@ def self_test() -> int:
         raise SystemExit("cone self-test: in-cone loss left the cone reading unchanged")
     poisson = np.random.default_rng(7).poisson(50, 400).tolist()
     fake = [
-        {"mesh_sha256": "m", "one_click_samples": 1500, "run": "r", "name": f"i{k}", "off_cone_by_mode": {"5": v}}
+        {"mesh_sha256": "m", "max_samples": 1500, "run": "r", "name": f"i{k}", "off_cone_by_mode": {"5": v}}
         for k, v in enumerate(poisson)
     ]
     (row,) = dispersion(fake)

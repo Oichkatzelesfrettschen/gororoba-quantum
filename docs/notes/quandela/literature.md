@@ -1227,15 +1227,15 @@ Repo cross-check (values read from the repo records, not from the literature):
 `docs/evidence/quandela/belenos_leakage_rca.json` (run
 2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04, one photon on
 mode 20) records the TVD of the observed distribution against the ideal
-compiled-mesh prediction as 0.871; an isotropic phase-noise hypothesis reaches
-its best stored TVD, 0.252, at sigma = 0.5 rad (the largest of the stored
+compiled-mesh prediction as 0.880; an isotropic phase-noise hypothesis reaches
+its best stored TVD, 0.273, at sigma = 0.5 rad (the largest of the stored
 values 0.2, 0.3, 0.4, 0.5); the gain, crosstalk, wrong-source, ceiling and
-convention hypotheses each leave TVD at or above 0.256; the shot-noise floor is 0.0124; and the expected dark
-counts over the 13 s job are 277 on mode 0 and 640 on mode 5, against 664
-single clicks on mode 5. `docs/notes/quandela/strategy.md` records about 68
-dark counts per second summed over modes, about 9 % of a job's samples. A
-retained fraction must be computed after subtracting duration x per-mode dark
-rate, and a mode with many dark counts can mimic a leak.
+convention hypotheses each leave TVD at or above 0.283; the shot-noise floor is 0.0129; and the expected dark
+counts over the job's 0.27 s acquisition are 5.8 on mode 0 and 13.5 on mode 5,
+against 664 single clicks on mode 5. Those 664 clicks lie outside the photon's
+light cone and come and go in a way the receipt's rate does not predict
+(`docs/notes/quandela/strategy.md` section 2), so a retained fraction is read
+over the in-cone samples, where an off-cone mode cannot mimic a leak.
 
 Inference, uncertainty moderate to low. A static residual of the published
 hardware-backed scale (0.1 rad) predicts retention of about 0.89 on an interior

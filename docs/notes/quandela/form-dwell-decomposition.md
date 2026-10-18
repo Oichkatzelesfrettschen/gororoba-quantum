@@ -145,9 +145,9 @@ job.
 
 The light-cone reading (`docs/evidence/quandela/belenos_light_cone.json`,
 strategy.md section 7 item 11) reads the same cells inside source 20's cone
-of each served mesh, which excludes the detector background bursts on modes
-0, 1 and 5. Every seeded cell then holds 0.98 to 0.995 at every budget, D4's
-decline is a 5421-click mode-5 burst, and the cells that lose light inside
+of each served mesh, which excludes the off-cone clicks that come and go
+on modes 0, 1 and 5. Every seeded cell then holds 0.98 to 0.995 at every budget, D4's
+decline is 5421 off-cone clicks on mode 5, and the cells that lose light inside
 the cone are the unseeded single jobs on 29dc6ef8 (Q1 0.519 and 0.534, D1
 0.924). Budget and dwell drop out of the explanation; seeding and the
 single-job form at Q1's budget remain confounded on 29dc6ef8, which case

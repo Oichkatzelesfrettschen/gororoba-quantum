@@ -1110,9 +1110,10 @@ runs, which takes about 64 random-target settings. The receipt's `t_out` and dar
 rates contradict the detected light (modes 12 to 23 read 194 to 400 %), so
 `--efficiency OUT RUN...` refits a session with relative per-mode efficiencies
 fitted jointly with every class and with the offsets, each run held out.
-Off-cone one-click samples are detector background that arrives in bursts on
-modes 0, 1 and 5, so `scripts/qd_belenos_cone.py` reads in_block over the
-samples inside the source's light cone of each served mesh and times each
+Off-cone one-click samples come and go on modes 0, 1 and 5 with an origin
+the receipt's dark rates do not describe, so `scripts/qd_belenos_cone.py`
+reads in_block over the samples inside the source's light cone of each
+served mesh and times each
 acquisition as samples / (physical_perf x clock);
 `docs/evidence/quandela/belenos_light_cone.json` holds that reading of every
 Q1-circuit run.
