@@ -611,9 +611,10 @@ the couplers equaled Q1's throughout.
     mesh 14a96ca6, which held 0.937 at Q1's 10000 samples, mesh
     susceptible. D4 (same job as D2): seed 46667 served 14a96ca6 again
     (paired) and read 0.990, 0.961 and 0.852 at 1500, 10000 and 40000,
-    intermediate (drop 0.138). Together: **29dc6ef8 loses half its light
-    only in a single job that collects many samples**; at 1500 samples or in
-    any iterated job it holds. Because an S job's 13 s is overhead and
+    intermediate (drop 0.138). Read raw, 29dc6ef8 lost half its light only
+    in the 10000-sample single jobs and held at 1500 samples or in any
+    iterated job; the D1 endpoint is intermediate, so the cells do not
+    establish what the single-job leak needs. Because an S job's 13 s is overhead and
     10000 samples take about 0.3 s of acquisition, the sample count, not
     seconds of heater dwell, is what separates Q1 from D1, which points at
     how a single job acquires a large budget (several acquisition chunks,
