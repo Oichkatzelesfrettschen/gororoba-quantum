@@ -180,8 +180,8 @@ ENSEMBLE_SEEDS = (1, 2)
 FORM_JOB = "job-08"
 FORM_SEED = 1
 FORM_SOURCE = "box_kite_photonic_single/job-04"
-# job-09 sends Q1's case iterated over BRIDGE_SEEDS, 1500 samples each; seeds 0 and 1 open and close the job, so
-# Q1's one-circuit meshes (29dc6ef8 at seed 0, e296b6a9 at seed 1) can recur in the iterated form, and each
+# job-09 sends Q1's case iterated over BRIDGE_SEEDS, 1500 samples each, so Q1's one-circuit meshes can recur in
+# the iterated form (29dc6ef8 at seed 20, e296b6a9 at seed 1); seeds 0 and 1 open and close the job, and each
 # repeated seed bounds drift within the job.
 BRIDGE_JOB = "job-09"
 BRIDGE_SEEDS = (*range(22), 0, 1)

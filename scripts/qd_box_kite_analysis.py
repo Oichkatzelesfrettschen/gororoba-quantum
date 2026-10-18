@@ -247,6 +247,12 @@ def seeded(
             raise ValueError(
                 f"{setting['name']}: the iteration ran compilation_seed {entry['iteration'].get('compilation_seed')!r}"
             )
+        # Budgeted settings can share a seed, so the budget the iteration ran under names it too.
+        for key in ("max_samples", "max_shots"):
+            if key in setting and entry["iteration"].get(key) != setting[key]:
+                raise ValueError(f"{setting['name']}: the iteration ran {key} {entry['iteration'].get(key)!r}")
+        if "max_samples" in setting and sum(entry["counts"].values()) > setting["max_samples"]:
+            raise ValueError(f"{setting['name']}: the iteration returned more samples than its max_samples")
         text_value = entry.get("result_fields", {}).get("computed_circuit")
         if not isinstance(text_value, str):
             raise ValueError(f"{setting['name']}: the iteration returned no computed_circuit")
@@ -399,7 +405,23 @@ def self_test() -> int:
         except ValueError:
             continue
         raise AssertionError("a seeded result with a missing, reordered or meshless iteration was analyzed")
-    print("qd box-kite analysis self-test: 11 verdicts")
+    ladder = [{"name": f"n{n}", "compilation_seed": 20, "max_samples": n, "max_shots": 2 * n} for n in (1000, 3000)]
+    rungs = [
+        {
+            "iteration": {"compilation_seed": 20, "max_samples": n, "max_shots": 2 * n},
+            "counts": {"0,0,1,0": n},
+            "result_fields": {"computed_circuit": "mesh-20"},
+        }
+        for n in (1000, 3000)
+    ]
+    seeded(one, ladder, rungs)
+    for broken in ([rungs[1], rungs[0]], [{**rungs[0], "counts": {"0,0,1,0": 1001}}, rungs[1]]):
+        try:
+            seeded(one, ladder, broken)
+        except ValueError:
+            continue
+        raise AssertionError("a budgeted ladder with swapped or overfull iterations was analyzed")
+    print("qd box-kite analysis self-test: 13 verdicts")
     return 0
 
 
