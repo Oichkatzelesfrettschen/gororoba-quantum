@@ -1,0 +1,59 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-18T17:00:19+00:00",
+ "approval": "Owner approved in this session on 2026-10-18 the written Walsh exemplar case (PR #269): QX twin batch first, then Tuna-17 walsh_exemplar_tuna_17 batch-00 to batch-03 at 131072 shots, under 3 circuits per batch, one batch queued and the 120 s pause; stop on a failed job, a readout below 0.7 or K_high <= K_low.",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "0b59eaa979fe0820c805980daed43d610288536d7b80636e7dab93ef76c6057f",
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "twin-walsh-c1.cq",
+   "job": 1535665,
+   "sha256": "a4d6c4601c1cb7f5f9127dce38f24041f95409c95b58e741b1a498b1f6100573"
+  },
+  {
+   "file": "twin-walsh-c2.cq",
+   "job": 1535666,
+   "sha256": "60290d6797d1746427d6ab7d390dd47a4a90bc5998857527518f3e30c3f5f0cc"
+  }
+ ],
+ "project": 769945,
+ "batch_job": 873001,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-18T17:00:21+00:00",
+  "approval": "Owner approved in this session on 2026-10-18 the written Walsh exemplar case (PR #269): QX twin batch first, then Tuna-17 walsh_exemplar_tuna_17 batch-00 to batch-03 at 131072 shots, under 3 circuits per batch, one batch queued and the 120 s pause; stop on a failed job, a readout below 0.7 or K_high <= K_low.",
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "cases_sha256": "0b59eaa979fe0820c805980daed43d610288536d7b80636e7dab93ef76c6057f",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 5,
+  "batch_job": 873001,
+  "project": 769945,
+  "shots": 2048,
+  "jobs": [
+   {
+    "file": "twin-walsh-c1.cq",
+    "job": 1535665,
+    "sha256": "a4d6c4601c1cb7f5f9127dce38f24041f95409c95b58e741b1a498b1f6100573"
+   },
+   {
+    "file": "twin-walsh-c2.cq",
+    "job": 1535666,
+    "sha256": "60290d6797d1746427d6ab7d390dd47a4a90bc5998857527518f3e30c3f5f0cc"
+   }
+  ],
+  "submitted_utc": "2026-10-18T17:00:22+00:00"
+ },
+ "confirmed_utc": "2026-10-18T17:00:22+00:00"
+}

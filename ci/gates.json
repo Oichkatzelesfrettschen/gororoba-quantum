@@ -3533,6 +3533,50 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -O -W error scripts/qi_walsh_exemplar_cases.py --check results/quantum_inspire/cases",
+   "name": "core-428",
+   "seconds": 8.6,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_cases.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_walsh_exemplar_cases.py --self-test",
+   "name": "core-429",
+   "seconds": 4.8,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_analysis.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_walsh_exemplar_analysis.py --self-test",
+   "name": "core-431",
+   "seconds": 4.8,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_cases.py --check-conformance results/quantum_inspire/walsh_exemplar_qx_conformance.json",
+   "name": "core-432",
+   "seconds": 12.4,
+   "tier": "pr",
+   "requires": [
+    "qi"
+   ],
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_analysis.py --check results/quantum_inspire/walsh_exemplar_tuna_17_analysis.json results/quantum_inspire/runs/2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-0* && \"$PYTHON\" -B -O -W error scripts/qi_walsh_exemplar_analysis.py --check results/quantum_inspire/walsh_exemplar_tuna_17_analysis.json results/quantum_inspire/runs/2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-0*",
+   "name": "core-557",
+   "seconds": 8.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/gl52_split_conjugators.py --self-test docs/evidence/gl52_split_conjugators/split.json && \"$PYTHON\" -B -O -W error scripts/gl52_split_conjugators.py --self-test docs/evidence/gl52_split_conjugators/split.json",
    "name": "core-490",
    "seconds": 32.9,
