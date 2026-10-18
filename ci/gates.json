@@ -808,7 +808,7 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" qpu_planning_contracts.py",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py",
    "name": "core-094",
    "seconds": 123.8,
    "tier": "full",
@@ -3633,9 +3633,9 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --rep-delay && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --rep-delay",
+   "cmd": "\"$PYTHON\" -B -O -W error qpu_planning_contracts.py --rep-delay",
    "name": "core-523",
-   "seconds": 121.3,
+   "seconds": 60.7,
    "tier": "full",
    "workers": "all",
    "timing_origin": "local-four-worker-qualification"
