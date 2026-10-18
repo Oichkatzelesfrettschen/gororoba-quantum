@@ -1,0 +1,76 @@
+{
+ "schema": "qd-belenos-form-mesh-bridge-preregistration-v1",
+ "case": "results/quandela/cases/belenos_mesh/job-09",
+ "question": "Does Q1's bright-block leak follow its compiled mesh 29dc6ef8 when that mesh is served inside an iterated job, and how is in_block spread over the meshes of Q1's exact circuit in the iterated form?",
+ "couplers": "live qpu:belenos architecture equal to the retained catalogue's (sha256 prefix ca90c1c0), the couplers of Q1, its replay and job-08; qd_platform plan refuses otherwise",
+ "compilation_seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  0,
+  1
+ ],
+ "samples_per_iteration": 1500,
+ "duration_s": {
+  "low": 161,
+  "high": 204,
+  "basis": "24 iterations at the 6.7 to 8.5 s per 1500-sample iteration of the architecture-phase qpu:belenos jobs; a numeric unitary in an iterated job is untimed, and 24 iterations tolerate 12.5 s each within the 300 s limit"
+ },
+ "rule": {
+  "mesh_at_most": 0.65,
+  "form_at_least": 0.9,
+  "representation_fraction": 0.25,
+  "iteration_median": 0.9,
+  "one_circuit": {
+   "q1": {
+    "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+    "in_block": [
+     0.4698,
+     0.5038
+    ],
+    "runs": [
+     "2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04",
+     "2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04"
+    ]
+   },
+   "form": {
+    "mesh_sha256": "e296b6a9cbad9732a0b96ceb56dae2a2c1eba1424bae0396eb56eb946fb2140f",
+    "in_block": [
+     0.8856
+    ],
+    "runs": [
+     "2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08"
+    ]
+   }
+  },
+  "branches": {
+   "refused": "the service rejects the body at POST: recorded, no reading, redesign",
+   "seed ignored": "every iteration returns one mesh: the iterated path ignores compilation_seed for a numeric unitary",
+   "bridge on q1 mesh": "an iteration returns 29dc6ef8; with d the largest in_block spread over repeated seeds that returned one mesh, or cross_job_scale 0.034 (Q1 against its replay on 29dc6ef8) when no repeated seed returned one mesh (the record then carries drift_measured false), pooled in_block + d <= 0.65 reads 'mesh' (the leak follows the programmed phases in either form), in_block - d >= 0.90 reads 'form or dwell' (the one-circuit job leaks on a mesh that holds iterated; that job also dwelt 10000 samples per setting against 1500 here, so form and dwell stay confounded), otherwise 'intermediate'",
+   "bridge on form mesh": "an iteration returns job-08's mesh: its iterated in_block is reported against the one-circuit 0.8856 with both Wilson intervals; secondary to the q1 branch",
+   "bridge fails": "neither one-circuit mesh recurs; the family verdict below carries the reading"
+  },
+  "family": "over the distinct meshes, each pooled over its iterations: a quarter or more at in_block <= 0.65 reads 'representation' (Q1's numeric unitary compiles to leaky meshes in the iterated form too, so the one-circuit form is not necessary for the leak); otherwise a median >= 0.90 reads 'iteration' (with the circuit fixed, the iterated job holds the light through the meshes it draws or its execution); otherwise 'intermediate'. Reported on every branch.",
+  "cross_job_scale": 0.034
+ },
+ "prior": "unknown: the only seed-0 iterated mesh retained (83992f55) came from an architecture-phase circuit, not Q1's numeric unitary, so whether seed 0 returns 29dc6ef8 here is untested"
+}

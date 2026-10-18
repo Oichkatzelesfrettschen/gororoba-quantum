@@ -1,0 +1,334 @@
+{
+ "schema": "qd-box-kite-cases-v1",
+ "family": "belenos_mesh",
+ "job": "job-09",
+ "platforms": [
+  "sim:belenos",
+  "qpu:belenos"
+ ],
+ "command": "sample_count",
+ "gate_form": "unitary",
+ "min_detected_photons": 1,
+ "max_samples": 36000,
+ "max_shots": 72000,
+ "max_duration": 300,
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "circuit": {
+  "file": "circuit.json",
+  "sha256": "69326bf0674a45e8c0005b10e2ac72cee36c122691ec0a5b542dbabb6e1fffb9"
+ },
+ "blocks": [
+  {
+   "config": "two_label-04",
+   "kind": "two_label",
+   "offset": 20,
+   "photons": [
+    20
+   ],
+   "m": [
+    [
+     1,
+     1
+    ],
+    [
+     -1,
+     -1
+    ]
+   ],
+   "t": 1,
+   "roles": [
+    "label_0",
+    "label_1",
+    "dilation",
+    "dilation"
+   ],
+   "ideal": [
+    "1/2",
+    "1/2",
+    "0",
+    "0"
+   ],
+   "p_algebra": "1",
+   "rows": [
+    [
+     "within_kite",
+     4
+    ],
+    [
+     "within_kite",
+     10
+    ],
+    [
+     "within_kite",
+     54
+    ],
+    [
+     "within_kite",
+     56
+    ],
+    [
+     "within_kite",
+     100
+    ],
+    [
+     "within_kite",
+     106
+    ],
+    [
+     "within_kite",
+     144
+    ],
+    [
+     "within_kite",
+     154
+    ],
+    [
+     "within_kite",
+     168
+    ],
+    [
+     "within_kite",
+     178
+    ],
+    [
+     "within_kite",
+     182
+    ],
+    [
+     "within_kite",
+     184
+    ],
+    [
+     "within_kite",
+     244
+    ],
+    [
+     "within_kite",
+     258
+    ],
+    [
+     "within_kite",
+     290
+    ],
+    [
+     "within_kite",
+     292
+    ],
+    [
+     "within_kite",
+     320
+    ],
+    [
+     "within_kite",
+     326
+    ],
+    [
+     "within_kite",
+     430
+    ],
+    [
+     "within_kite",
+     436
+    ],
+    [
+     "within_kite",
+     442
+    ],
+    [
+     "within_kite",
+     452
+    ],
+    [
+     "within_kite",
+     466
+    ],
+    [
+     "within_kite",
+     476
+    ],
+    [
+     "within_kite",
+     482
+    ],
+    [
+     "within_kite",
+     496
+    ],
+    [
+     "within_kite",
+     520
+    ],
+    [
+     "within_kite",
+     530
+    ],
+    [
+     "within_kite",
+     588
+    ],
+    [
+     "within_kite",
+     598
+    ],
+    [
+     "within_kite",
+     600
+    ],
+    [
+     "within_kite",
+     610
+    ],
+    [
+     "within_kite",
+     626
+    ],
+    [
+     "within_kite",
+     632
+    ],
+    [
+     "within_kite",
+     680
+    ],
+    [
+     "within_kite",
+     698
+    ],
+    [
+     "within_kite",
+     744
+    ],
+    [
+     "within_kite",
+     750
+    ],
+    [
+     "within_kite",
+     762
+    ],
+    [
+     "within_kite",
+     776
+    ],
+    [
+     "within_kite",
+     824
+    ],
+    [
+     "within_kite",
+     838
+    ]
+   ]
+  }
+ ],
+ "preregistered": {
+  "transpilation": "Q1's case sent unchanged as 24 iterations of 1500 samples at compilation seeds 0 to 21, then 0 and 1 again; the per-iteration seed is the only parameter an iteration sets, and each iteration's mesh is the sha256 of its unzipped computed_circuit, the identity under which Q1 returned 29dc6ef8",
+  "decision": "bridge-preregistration.json in the session directory holds the branches and thresholds; a 'form' reading on Q1's mesh confounds the one-circuit job form with its 10000-sample dwell per setting against 1500 here, and reads 'form or dwell'"
+ },
+ "iterations": 24,
+ "settings": [
+  {
+   "name": "q1-00-s0",
+   "compilation_seed": 0
+  },
+  {
+   "name": "q1-01-s1",
+   "compilation_seed": 1
+  },
+  {
+   "name": "q1-02-s2",
+   "compilation_seed": 2
+  },
+  {
+   "name": "q1-03-s3",
+   "compilation_seed": 3
+  },
+  {
+   "name": "q1-04-s4",
+   "compilation_seed": 4
+  },
+  {
+   "name": "q1-05-s5",
+   "compilation_seed": 5
+  },
+  {
+   "name": "q1-06-s6",
+   "compilation_seed": 6
+  },
+  {
+   "name": "q1-07-s7",
+   "compilation_seed": 7
+  },
+  {
+   "name": "q1-08-s8",
+   "compilation_seed": 8
+  },
+  {
+   "name": "q1-09-s9",
+   "compilation_seed": 9
+  },
+  {
+   "name": "q1-10-s10",
+   "compilation_seed": 10
+  },
+  {
+   "name": "q1-11-s11",
+   "compilation_seed": 11
+  },
+  {
+   "name": "q1-12-s12",
+   "compilation_seed": 12
+  },
+  {
+   "name": "q1-13-s13",
+   "compilation_seed": 13
+  },
+  {
+   "name": "q1-14-s14",
+   "compilation_seed": 14
+  },
+  {
+   "name": "q1-15-s15",
+   "compilation_seed": 15
+  },
+  {
+   "name": "q1-16-s16",
+   "compilation_seed": 16
+  },
+  {
+   "name": "q1-17-s17",
+   "compilation_seed": 17
+  },
+  {
+   "name": "q1-18-s18",
+   "compilation_seed": 18
+  },
+  {
+   "name": "q1-19-s19",
+   "compilation_seed": 19
+  },
+  {
+   "name": "q1-20-s20",
+   "compilation_seed": 20
+  },
+  {
+   "name": "q1-21-s21",
+   "compilation_seed": 21
+  },
+  {
+   "name": "q1-22-s0",
+   "compilation_seed": 0
+  },
+  {
+   "name": "q1-23-s1",
+   "compilation_seed": 1
+  }
+ ],
+ "seeded_from": {
+  "case": "box_kite_photonic_single/job-04",
+  "cases_sha256": "d7632a78edceaec2cf4d745f83e81af902950dfda1f3921ab925b53a16dbc4bc"
+ }
+}

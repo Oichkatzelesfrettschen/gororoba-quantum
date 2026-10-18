@@ -53,6 +53,10 @@ per-setting G^2 homogeneity of a repeated job against its original;
 reads the one-circuit form test (job-08: Q1's case at compilation_seed 1)
 and the seed ensemble (job-07: job-02 at seeds 1 and 2); --check-pair
 replays it.
+--bridge OUT PREREGISTRATION BRIDGE reads the form-mesh bridge (job-09: Q1's
+case iterated over compilation seeds) against Q1's one-circuit meshes;
+--check-bridge replays it and --self-test-bridge reads every preregistered
+branch from synthetic iterations.
 
 Usage: "$PYTHON" scripts/qd_belenos_mesh.py (--write DIR | --check DIR | --rca OUT | --check-rca OUT | --self-test)
 """
@@ -120,6 +124,7 @@ FOLLOWUP_DRAWS = 200
 FOLLOWUP_STREAM = 21
 FOLLOWUP_SPARSE_FAIL = 0.65
 PAIR_SCHEMA = "qd-belenos-form-ensemble-v1"
+BRIDGE_SCHEMA = "qd-belenos-form-mesh-bridge-v1"
 FIT_TVD_RATIO = 3.0
 SAMPLES_PER_SETTING = 1_500
 SHOT_HEADROOM = 2
@@ -172,6 +177,13 @@ ENSEMBLE_SEEDS = (1, 2)
 FORM_JOB = "job-08"
 FORM_SEED = 1
 FORM_SOURCE = "box_kite_photonic_single/job-04"
+# job-09 sends Q1's case iterated over BRIDGE_SEEDS, 1500 samples each; seeds 0 and 1 open and close the job, so
+# Q1's one-circuit meshes (29dc6ef8 at seed 0, e296b6a9 at seed 1) can recur in the iterated form, and each
+# repeated seed bounds drift within the job.
+BRIDGE_JOB = "job-09"
+BRIDGE_SEEDS = (*range(22), 0, 1)
+BRIDGE_SAMPLES = 1500
+BRIDGE_SHOTS = 3000
 CONNECTED = (0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22)
 
 Element = tuple[str, int, Any]
@@ -981,6 +993,16 @@ FORM_PREREGISTERED = {
 }
 
 
+BRIDGE_PREREGISTERED = {
+    "transpilation": "Q1's case sent unchanged as 24 iterations of 1500 samples at compilation seeds 0 to 21, then "
+    "0 and 1 again; the per-iteration seed is the only parameter an iteration sets, and each iteration's mesh is "
+    "the sha256 of its unzipped computed_circuit, the identity under which Q1 returned 29dc6ef8",
+    "decision": "bridge-preregistration.json in the session directory holds the branches and thresholds; a "
+    "'form' reading on Q1's mesh confounds the one-circuit job form with its 10000-sample dwell per setting "
+    "against 1500 here, and reads 'form or dwell'",
+}
+
+
 def ensemble_settings(zero_divisor: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """job-02's realized settings at each of ENSEMBLE_SEEDS, the seeds of one configuration adjacent."""
     return [
@@ -1000,29 +1022,54 @@ def seeded_manifest(source: dict[str, Any], source_sha: str) -> dict[str, Any]:
     }
 
 
+def bridge_manifest(source: dict[str, Any], source_sha: str) -> dict[str, Any]:
+    """The bridge case: the source case iterated over BRIDGE_SEEDS, one compilation seed per iteration.
+
+    Only the job name, the iteration count, the per-iteration budgets, the seed list and the preregistration
+    differ from the source; the circuit is the source's numeric unitary, so every iteration sends one program.
+    """
+    return {
+        **source,
+        "family": FAMILY,
+        "job": BRIDGE_JOB,
+        "iterations": len(BRIDGE_SEEDS),
+        "max_samples": BRIDGE_SAMPLES * len(BRIDGE_SEEDS),
+        "max_shots": BRIDGE_SHOTS * len(BRIDGE_SEEDS),
+        "settings": [{"name": f"q1-{k:02d}-s{seed}", "compilation_seed": seed} for k, seed in enumerate(BRIDGE_SEEDS)],
+        "seeded_from": {"case": FORM_SOURCE, "cases_sha256": source_sha},
+        "preregistered": BRIDGE_PREREGISTERED,
+    }
+
+
+SEEDED_JOBS = {FORM_JOB: seeded_manifest, BRIDGE_JOB: bridge_manifest}
+
+
 def write_seeded(directory: Path) -> None:
     source = directory / FORM_SOURCE
-    manifest = seeded_manifest(
-        json.loads((source / "cases.json").read_text(encoding="utf-8")), sha256(source / "cases.json")
-    )
-    job = directory / FAMILY / FORM_JOB
-    job.mkdir(parents=True, exist_ok=True)
-    (job / "circuit.json").write_bytes((source / "circuit.json").read_bytes())
-    (job / "cases.json").write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
-    print(f"{job}: {FORM_SOURCE} as one circuit at compilation_seed {FORM_SEED}")
+    for name, build in SEEDED_JOBS.items():
+        manifest = build(json.loads((source / "cases.json").read_text(encoding="utf-8")), sha256(source / "cases.json"))
+        job = directory / FAMILY / name
+        job.mkdir(parents=True, exist_ok=True)
+        (job / "circuit.json").write_bytes((source / "circuit.json").read_bytes())
+        (job / "cases.json").write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
+        seeds = [s["compilation_seed"] for s in manifest.get("settings", [])] or [FORM_SEED]
+        print(f"{job}: {FORM_SOURCE} at compilation seeds {seeds}")
 
 
 def admit_seeded(job: Path) -> None:
-    """The one-circuit form case equals its source case byte for byte in its circuit and field for field elsewhere."""
+    """A seeded case equals its source case byte for byte in its circuit and field for field elsewhere."""
     manifest = json.loads((job / "cases.json").read_text(encoding="utf-8"))
     source = CASES / manifest["seeded_from"]["case"]
     require(manifest["seeded_from"]["case"] == FORM_SOURCE, f"{job.name}: source case {manifest['seeded_from']}")
     require(sha256(source / "cases.json") == manifest["seeded_from"]["cases_sha256"], f"{job.name}: source digest")
     require((job / "circuit.json").read_bytes() == (source / "circuit.json").read_bytes(), f"{job.name}: circuit bytes")
-    expected = seeded_manifest(
+    require(manifest.get("job") in SEEDED_JOBS, f"{job.name}: {manifest.get('job')!r} is no seeded case")
+    expected = SEEDED_JOBS[manifest["job"]](
         json.loads((source / "cases.json").read_text(encoding="utf-8")), sha256(source / "cases.json")
     )
-    require(manifest == expected, f"{job.name}: manifest differs from its source beyond name, seed and preregistration")
+    require(
+        manifest == expected, f"{job.name}: manifest differs from its source beyond name, seeds and preregistration"
+    )
 
 
 def write_job(
@@ -1147,7 +1194,9 @@ def check(directory: Path) -> None:
     jobs = sorted(p for p in (directory / FAMILY).iterdir() if p.is_dir())
     require(
         [p.name for p in jobs]
-        == ["job-00", "job-01", "job-02"] + [f"job-{j:02d}" for j in CAMPAIGN_JOBS] + [ENSEMBLE_JOB, FORM_JOB],
+        == ["job-00", "job-01", "job-02"]
+        + [f"job-{j:02d}" for j in CAMPAIGN_JOBS]
+        + [ENSEMBLE_JOB, FORM_JOB, BRIDGE_JOB],
         f"{directory / FAMILY} holds {[p.name for p in jobs]}",
     )
     for job in jobs:
@@ -2116,6 +2165,190 @@ def pair_record(preregistration: Path, form: Path, ensemble: Path, job02: Path) 
     }
 
 
+def pooled_in_block(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """in_block over the one-click samples of rows that share a mesh, with its Wilson interval."""
+    from qd_box_kite_analysis import wilson
+
+    inside = sum(sum(r["one_click_by_mode"]) for r in rows)
+    outside = sum(r["one_click_outside_block"] for r in rows)
+    return {
+        "iterations": [r["name"] for r in rows],
+        "in_block": round(inside / (inside + outside), 9) if inside + outside else None,
+        "in_block_wilson95": wilson(inside, inside + outside),
+    }
+
+
+def bridge_verdict(rule: dict[str, Any], rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """The preregistered reading of Q1's circuit iterated over compilation seeds.
+
+    Repeated seeds that return one mesh bound drift within the job by their largest in_block difference d; with no
+    such repeat d is the cross-job scale on one mesh (cross_job_scale), the Q1 and replay difference. On
+    Q1's mesh, in_block + d <= mesh_at_most reads "mesh" and in_block - d >= form_at_least reads "form or dwell"
+    (the one-circuit job also dwelt longer per setting); between reads "intermediate". Over the distinct meshes, at
+    least representation_fraction at or below mesh_at_most reads "representation", otherwise a median at or above
+    iteration_median reads "iteration", otherwise "intermediate".
+    """
+    by_mesh: dict[str, list[dict[str, Any]]] = {}
+    by_seed: dict[int, list[dict[str, Any]]] = {}
+    for row in rows:
+        by_mesh.setdefault(row["mesh_sha256"], []).append(row)
+        by_seed.setdefault(row["compilation_seed"], []).append(row)
+    repeats = []
+    for seed, group in sorted(by_seed.items()):
+        if len(group) > 1:
+            values = [r["in_block"] for r in group]
+            repeats.append(
+                {
+                    "compilation_seed": seed,
+                    "same_mesh": len({r["mesh_sha256"] for r in group}) == 1,
+                    "in_block": values,
+                    "in_block_spread": round(max(values) - min(values), 9),
+                }
+            )
+    measured = [r["in_block_spread"] for r in repeats if r["same_mesh"]]
+    drift = max(measured) if measured else rule["cross_job_scale"]
+    meshes = {sha: pooled_in_block(group) for sha, group in by_mesh.items()}
+    values = sorted(m["in_block"] for m in meshes.values())
+    median = (
+        values[len(values) // 2] if len(values) % 2 else (values[len(values) // 2 - 1] + values[len(values) // 2]) / 2
+    )
+    leaky = sum(v <= rule["mesh_at_most"] for v in values) / len(values)
+    family = (
+        "representation"
+        if leaky >= rule["representation_fraction"]
+        else "iteration"
+        if median >= rule["iteration_median"]
+        else "intermediate"
+    )
+    bridges = {}
+    for key in ("q1", "form"):
+        reference = rule["one_circuit"][key]
+        hit = meshes.get(reference["mesh_sha256"])
+        entry: dict[str, Any] = {"mesh_sha256": reference["mesh_sha256"], "one_circuit_in_block": reference["in_block"]}
+        if hit is not None:
+            entry["iterated"] = hit
+            if key == "q1":
+                value = hit["in_block"]
+                entry["verdict"] = (
+                    "mesh"
+                    if value + drift <= rule["mesh_at_most"]
+                    else "form or dwell"
+                    if value - drift >= rule["form_at_least"]
+                    else "intermediate"
+                )
+        bridges[key] = entry
+    branch = (
+        "seed ignored"
+        if len(meshes) == 1
+        else "bridge on q1 mesh"
+        if "iterated" in bridges["q1"]
+        else "bridge on form mesh"
+        if "iterated" in bridges["form"]
+        else "bridge fails"
+    )
+    return {
+        "branch": branch,
+        "bridges": bridges,
+        "drift_bound": round(drift, 9),
+        "drift_measured": bool(measured),
+        "repeated_seeds": repeats,
+        "distinct_meshes": len(meshes),
+        "meshes": dict(sorted(meshes.items())),
+        "median_in_block_over_meshes": round(median, 9),
+        "fraction_at_or_below_mesh_threshold": round(leaky, 9),
+        "family_verdict": family,
+    }
+
+
+def bridge_record(preregistration: Path, bridge: Path) -> dict[str, Any]:
+    """The preregistered readout of the bridge run (job-09) against Q1's one-circuit meshes."""
+    prereg = json.loads(preregistration.read_text(encoding="utf-8"))
+    analysis = json.loads((bridge / "analysis.json").read_text(encoding="utf-8"))
+    rows = analysis["blocks"]
+    require(
+        [r["compilation_seed"] for r in rows] == prereg["compilation_seeds"],
+        f"{bridge.name}: iterations ran seeds {[r['compilation_seed'] for r in rows]}",
+    )
+    rule = prereg["rule"]
+    for key, reference in rule["one_circuit"].items():
+        for name in reference["runs"]:
+            (block,) = json.loads((RUNS / name / "analysis.json").read_text(encoding="utf-8"))["blocks"]
+            (text,) = computed_circuits(RUNS / name)
+            require(mesh_sha(text) == reference["mesh_sha256"], f"{name}: mesh differs from the {key} reference")
+            require(block["in_block"] in reference["in_block"], f"{name}: in_block differs from the {key} reference")
+    duration = json.loads((bridge / "results.json").read_text(encoding="utf-8"))["status"]["duration"]
+    window = prereg["duration_s"]
+    return {
+        "schema": BRIDGE_SCHEMA,
+        "preregistration_sha256": sha256(preregistration),
+        "run": bridge.name,
+        "job_id": analysis["job_id"],
+        "per_iteration": [
+            {k: r[k] for k in ("name", "compilation_seed", "mesh_sha256", "in_block", "in_block_wilson95", "a")}
+            for r in rows
+        ],
+        **bridge_verdict(rule, rows),
+        "duration_s": duration,
+        "duration_within_prediction": window["low"] <= duration <= window["high"],
+    }
+
+
+def bridge_self_test() -> int:
+    """Each preregistered branch on synthetic iterations: seed ignored, the Q1 bridge reading mesh, form or
+    intermediate under drift, the form-mesh bridge, and a failed bridge reading representation or iteration."""
+    rule = {
+        "mesh_at_most": 0.65,
+        "form_at_least": 0.9,
+        "representation_fraction": 0.25,
+        "iteration_median": 0.9,
+        "cross_job_scale": 0.034,
+        "one_circuit": {
+            "q1": {"mesh_sha256": "q1", "in_block": [0.47, 0.5]},
+            "form": {"mesh_sha256": "form", "in_block": [0.886]},
+        },
+    }
+
+    def row(seed: int, mesh: str, value: float) -> dict[str, Any]:
+        inside = round(1000 * value)
+        return {
+            "name": f"s{seed}-{mesh}",
+            "compilation_seed": seed,
+            "mesh_sha256": mesh,
+            "in_block": inside / 1000,
+            "one_click_by_mode": [inside, 0, 0, 0],
+            "one_click_outside_block": 1000 - inside,
+        }
+
+    def fresh(n: int, value: float) -> list[dict[str, Any]]:
+        return [row(seed, f"m{seed}", value) for seed in range(2, 2 + n)]
+
+    cases: list[tuple[str, list[dict[str, Any]], str, str | None]] = [
+        ("one mesh", [row(k % 2, "q1", 0.5) for k in range(4)], "seed ignored", "mesh"),
+        ("q1 leaks", [row(0, "q1", 0.5), *fresh(4, 0.95), row(0, "q1", 0.52)], "bridge on q1 mesh", "mesh"),
+        ("q1 holds", [row(0, "q1", 0.95), *fresh(4, 0.95), row(0, "q1", 0.96)], "bridge on q1 mesh", "form or dwell"),
+        ("q1 drifts", [row(0, "q1", 0.6), *fresh(4, 0.95), row(0, "q1", 0.95)], "bridge on q1 mesh", "intermediate"),
+        (
+            "q1 once, edge",
+            [row(0, "q1", 0.63), *fresh(4, 0.95), row(0, "z", 0.95)],
+            "bridge on q1 mesh",
+            "intermediate",
+        ),
+        ("q1 once, clear", [row(0, "q1", 0.5), *fresh(4, 0.95), row(0, "z", 0.95)], "bridge on q1 mesh", "mesh"),
+        ("form mesh", [row(1, "form", 0.9), *fresh(4, 0.95)], "bridge on form mesh", None),
+        ("leaky family", [*fresh(3, 0.95), row(9, "x", 0.5)], "bridge fails", None),
+        ("holding family", fresh(5, 0.93), "bridge fails", None),
+    ]
+    families = {"leaky family": "representation", "holding family": "iteration"}
+    for name, rows, branch, q1 in cases:
+        got = bridge_verdict(rule, rows)
+        if got["branch"] != branch or got["bridges"]["q1"].get("verdict") != q1:
+            raise SystemExit(f"self-test: {name} reads {got['branch']}, {got['bridges']['q1'].get('verdict')}")
+        if name in families and got["family_verdict"] != families[name]:
+            raise SystemExit(f"self-test: {name} reads family {got['family_verdict']}")
+    print(f"bridge self-test: {len(cases)} branches read as preregistered")
+    return 0
+
+
 def scan_axes() -> dict[str, list[dict[str, float]]]:
     mixture = [{"sigma": s, "fraction": f} for s in SCAN_SIGMAS for f in SCAN_FRACTIONS]
     return {
@@ -2444,6 +2677,27 @@ def self_test() -> int:
                 rejected += 1
                 continue
             raise SystemExit(f"self-test: the {name} mutation was admitted")
+        bridge_mutations: list[tuple[str, Any]] = [
+            ("bridge seed", lambda c, m: m["settings"][22].__setitem__("compilation_seed", 22)),
+            ("bridge setting parameter", lambda c, m: m["settings"][0].__setitem__("circuit_params", {"phi": 0.0})),
+            ("bridge iterations", lambda c, m: m.__setitem__("iterations", 23)),
+            ("bridge samples", lambda c, m: m.__setitem__("max_samples", 48000)),
+            ("bridge circuit", lambda c, m: c["input_state"].reverse()),
+        ]
+        for name, mutate in bridge_mutations:
+            target = Path(scratch) / name.replace(" ", "_")
+            shutil.copytree(CASES / FAMILY / BRIDGE_JOB, target)
+            circuit = json.loads((target / "circuit.json").read_text(encoding="utf-8"))
+            manifest = json.loads((target / "cases.json").read_text(encoding="utf-8"))
+            mutate(circuit, manifest)
+            (target / "circuit.json").write_text(json.dumps(circuit, indent=1) + "\n", encoding="utf-8")
+            (target / "cases.json").write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
+            try:
+                admit(target, catalogue)
+            except MeshError:
+                rejected += 1
+                continue
+            raise SystemExit(f"self-test: the {name} mutation was admitted")
     record = json.loads(RCA.read_text(encoding="utf-8"))
     bad = copy.deepcopy(record)
     bad["hypotheses"]["gain"]["tvd"] = 0.01
@@ -2644,10 +2898,27 @@ def main() -> int:
     group.add_argument(
         "--check-pair", type=Path, nargs=5, metavar=("OUT", "PREREGISTRATION", "FORM", "ENSEMBLE", "JOB02")
     )
+    group.add_argument("--self-test-bridge", action="store_true")
+    group.add_argument("--bridge", type=Path, nargs=3, metavar=("OUT", "PREREGISTRATION", "BRIDGE"))
+    group.add_argument("--check-bridge", type=Path, nargs=3, metavar=("OUT", "PREREGISTRATION", "BRIDGE"))
     args = parser.parse_args()
     try:
         if args.self_test:
             return self_test()
+        if args.self_test_bridge:
+            return bridge_self_test()
+        if args.bridge or args.check_bridge:
+            out, *inputs = args.bridge or args.check_bridge
+            record = bridge_record(*inputs)
+            if args.bridge:
+                out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+            else:
+                close_relative(json.loads(out.read_text(encoding="utf-8")), record)
+            print(
+                f"{out}: bridge {'written' if args.bridge else 'replays'}, {record['branch']}, "
+                f"q1 {record['bridges']['q1'].get('verdict')}, family {record['family_verdict']}"
+            )
+            return 0
         if args.self_test_static:
             return static_self_test()
         if args.self_test_rule:

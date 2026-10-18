@@ -644,6 +644,31 @@ def job_seed(manifest: dict[str, Any], settings: list[dict[str, Any]]) -> int | 
     return None if seed is None else seed_value(seed, owner)
 
 
+def iteration_form(manifest: dict[str, Any]) -> str:
+    """How a case's iterations differ: "single" (one computation), "mesh" (each binds its own phases), "seeded"
+    (a fixed circuit whose iterations set only their compilation_seed) or "phase" (phi = k pi/4).
+
+    A non-mesh iterated case with settings is seeded only when every setting names a valid compilation_seed and
+    nothing else but its name, and the settings count its iterations; any other settings list raises.
+    """
+    owner = manifest["job"]
+    steps = manifest.get("iterations", 1)
+    if steps == 1:
+        return "single"
+    if manifest.get("gate_form") == "mesh":
+        return "mesh"
+    settings = manifest.get("settings")
+    if settings is None:
+        return "phase"
+    if not isinstance(settings, list) or len(settings) != steps:
+        raise PlatformError(f"{owner}: {steps} iterations need {steps} settings")
+    for setting in settings:
+        if not isinstance(setting, dict) or set(setting) != {"name", "compilation_seed"}:
+            raise PlatformError(f"{owner}: a seeded iteration names exactly its name and compilation_seed: {setting!r}")
+        seed_value(setting["compilation_seed"], f"{owner}/{setting['name']}")
+    return "seeded"
+
+
 def live_mesh(processor: dict[str, Any], circuit: dict[str, Any]) -> None:
     """Refuse a mesh case when the platform's live architecture carries other couplers or symbols than the case."""
     import qd_belenos_mesh as mesh
@@ -654,6 +679,23 @@ def live_mesh(processor: dict[str, Any], circuit: dict[str, Any]) -> None:
         "couplers"
     ]:
         raise PlatformError("the live architecture differs from the case: regenerate the mesh case after recalibration")
+
+
+def live_architecture(processor: dict[str, Any], platform: str) -> None:
+    """Refuse a case seeded from a retained run on its chip when the live couplers or symbols differ from the
+    retained catalogue's, since a comparison with that run then crosses a coupler recalibration."""
+    import qd_belenos_mesh as mesh
+
+    if platform != mesh.CHIP:
+        return
+    live = mesh.decode(processor["specs"]["architecture"])
+    retained = mesh.architecture(mesh.load_catalogue())
+    if [(k, m, p) for k, m, p in live if k == "bs"] != [(k, m, p) for k, m, p in retained if k == "bs"] or [
+        p for k, _, p in live if k == "ps"
+    ] != [p for k, _, p in retained if k == "ps"]:
+        raise PlatformError(
+            "the live architecture differs from the retained catalogue: the seeded case's source ran on other couplers"
+        )
 
 
 def explorer_row(platform: str) -> dict[str, Any]:
@@ -680,12 +722,15 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
 
     layer = QuandelaCommunicationLayer(platform, token=token())
     computer = RemoteComputer(layer)
+    form = iteration_form(manifest)
     mesh = manifest.get("gate_form") == "mesh"
     built, settings = mesh_experiment(manifest, circuit) if mesh else (experiment(manifest, circuit), [])
+    if form == "seeded":
+        settings = manifest["settings"]
     steps = manifest.get("iterations", 1)
     # Iterations split the case's sample and shot budgets evenly; a mesh iteration
-    # takes its setting's compilation_seed (0 when unnamed), a phase case pins 0
-    # and sets phi = k pi/4 per iteration.
+    # takes its setting's compilation_seed (0 when unnamed), a seeded iteration sets
+    # only its own, and a phase case pins 0 and sets phi = k pi/4 per iteration.
     per_samples, per_shots = manifest["max_samples"] // steps, manifest["max_shots"] // steps
     factory = ExecutionFactory(computer, built, max_shots_per_call=per_shots)
     base = factory.build_computation(manifest["command"])
@@ -693,7 +738,7 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     seed = job_seed(manifest, settings)
     if seed is not None:
         base.add_params(compilation_seed=seed)
-    params = settings[0]["circuit_params"] if mesh else ({"phi": 0.0} if steps > 1 else None)
+    params = settings[0]["circuit_params"] if mesh else ({"phi": 0.0} if form == "phase" else None)
     estimate = computer.estimate_required_shots(base, nsamples=per_samples, param_values=params)
     estimate = None if estimate is None else estimate * steps
     if steps > 1:
@@ -706,6 +751,13 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
                     max_samples=per_samples,
                     max_shots=per_shots,
                     compilation_seed=settings[k].get("compilation_seed", 0),
+                )
+                continue
+            if form == "seeded":
+                factory.add_iteration(
+                    max_samples=per_samples,
+                    max_shots=per_shots,
+                    compilation_seed=settings[k]["compilation_seed"],
                 )
                 continue
             factory.add_iteration(
@@ -772,6 +824,8 @@ def plan(
     perfs = scrub(processor.get("perfs", {}))
     if manifest.get("gate_form") == "mesh":
         live_mesh(processor, circuit)
+    if "seeded_from" in manifest:
+        live_architecture(processor, platform)
     counters = availability()
     if counters["num_concurrent_jobs"] or counters["num_jobs_in_queue"]:
         raise PlatformError(f"the token has a running or queued job: {counters}")
@@ -1198,7 +1252,8 @@ def charge_self_test() -> None:
 def seed_self_test() -> None:
     """seed_value passes non-negative integers and refuses a bool, a negative, a float or a string; job_seed
     takes a one-circuit job's seed from its setting or its manifest and refuses a conflict or an iterated
-    case's manifest seed."""
+    case's manifest seed; iteration_form names each case form and refuses a seeded settings list that
+    miscounts its iterations, lacks or misstates a seed, or carries circuit parameters."""
     if seed_value(0, "test") != 0 or seed_value(7, "test") != 7:
         raise SystemExit("self-test: seed_value changed a valid seed")
     for bad in (True, -1, 1.0, "1", None):
@@ -1232,6 +1287,29 @@ def seed_self_test() -> None:
         except PlatformError:
             continue
         raise SystemExit(f"self-test: job_seed accepted {manifest} with {settings}")
+    seeded = [{"name": "a", "compilation_seed": 0}, {"name": "b", "compilation_seed": 5}]
+    forms: list[tuple[dict[str, Any], str]] = [
+        (one, "single"),
+        ({**one, "settings": seeded}, "single"),
+        (many, "phase"),
+        ({**many, "gate_form": "mesh", "settings": [{}, {}]}, "mesh"),
+        ({**many, "settings": seeded}, "seeded"),
+    ]
+    for manifest, form in forms:
+        if iteration_form(manifest) != form:
+            raise SystemExit(f"self-test: iteration_form({manifest}) is not {form}")
+    for bad_settings in (
+        seeded[:1],
+        [seeded[0], {"name": "b"}],
+        [seeded[0], {"name": "b", "compilation_seed": -1}],
+        [seeded[0], {"name": "b", "compilation_seed": 1, "circuit_params": {"phi": 0.0}}],
+        [seeded[0], {"name": "b", "compilation_seed": True}],
+    ):
+        try:
+            iteration_form({**many, "settings": bad_settings})
+        except PlatformError:
+            continue
+        raise SystemExit(f"self-test: iteration_form accepted settings {bad_settings}")
 
 
 def runner_self_test() -> int:
