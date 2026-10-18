@@ -1,0 +1,65 @@
+{
+  "schema": "et-claim-evidence-v1",
+  "coefficient_domain": "real assessors; complex-linear circuit extension",
+  "convention": "cd_core.cd_sign; assessor a=e_l+e_(l xor (G xor S)); numerical occupied sign eta requires opposite dyad signs when eta=+1",
+  "formal_sources_commit": "2b72e552b95f7fe529a5abb45049f6d3e47cdd97",
+  "formal_source_observation": "Declaration sources inspected; this integration performs finite executable checks and does not claim a fresh upstream Rocq replay.",
+  "claims": [
+    {
+      "claim": "Exact signed ET cells and tone-row order",
+      "domain": "116 tables at D16,D32,D64,D128",
+      "source": "rust_sources.json",
+      "check": "scripts/replay_et_sources.py --check",
+      "evidence_level": "executed unchanged isolated Rust modules versus Python reference and original fixtures"
+    },
+    {
+      "claim": "ET row degree equals left-multiplier nullity, with Gram eigenvalues 0,2,4",
+      "domain": "two-basis assessors of the bounded ET census",
+      "check": "scripts/replay_et_sources.py --check",
+      "evidence_level": "finite exact paired-block calculation",
+      "missing_general_bridge": "upstream/issues.json: formal ET kernel and graph bridge"
+    },
+    {
+      "claim": "Primary and shifted inherited copies preserve signed numerical entries",
+      "domain": "53 parent-strut transitions ending at D128",
+      "check": "gororoba_quantum/check_et_rows.py: test_all_signed_inherited_copies_through_d128",
+      "evidence_level": "finite exact check",
+      "assumption": "Fixed strut and the declared primary/shifted address embeddings"
+    },
+    {
+      "claim": "Shifted child boxes include their new boundary labels",
+      "domain": "S15 transitions D32 to D64, D64 to D128, D128 to D256",
+      "check": "gororoba_quantum/check_et_rows.py: test_shifted_child_box",
+      "evidence_level": "finite exact signed reference and occupancy counts",
+      "exclusion": "A principal-block identity does not establish compressed time-evolution identity."
+    },
+    {
+      "claim": "Numeric and Boolean multiplication signs correspond",
+      "source": "proofs/theories/CDSignNumericCorrespondence.v",
+      "declarations": ["numeric_cube_sign", "numeric_cube_associator"],
+      "evidence_level": "inspected upstream formal source",
+      "scope": "Bounded binary indices and the theorem's fuel/order assumptions; not a generic ET-kernel theorem"
+    },
+    {
+      "claim": "Walsh probability normalization and parity extension",
+      "source": "proofs/theories/WalshProbability.v",
+      "declarations": ["walsh_parseval_integer", "walsh_character_orthogonality", "walsh_law_normalized", "walsh_probability_parity_extension"],
+      "evidence_level": "inspected upstream formal source",
+      "scope": "Boolean cube phase laws; the full ET state also requires its signed-path and decoding contract"
+    },
+    {
+      "claim": "Canonical Boolean ANF and its degree laws",
+      "source": "proofs/theories/BooleanANFDegree.v",
+      "declarations": ["canonical_anf_correct", "canonical_anf_unique", "append_parity_degree"],
+      "evidence_level": "inspected upstream formal source",
+      "scope": "Boolean polynomial degree, distinct from ET graph degree and multiplier nullity"
+    },
+    {
+      "claim": "Exact multiplication-sign and associator-phase ANF degrees",
+      "source": "proofs/theories/CDPhaseDegree.v",
+      "declarations": ["sign_row_degree", "associator_phase_degree", "numeric_sign_row_degree", "numeric_associator_phase_degree"],
+      "evidence_level": "inspected upstream formal source",
+      "scope": "The declarations' nondegeneracy/order/fuel hypotheses; no native gate-count or graph-nullity conclusion"
+    }
+  ]
+}

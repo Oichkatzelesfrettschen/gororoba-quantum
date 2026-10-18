@@ -1,0 +1,1119 @@
+{
+  "schema": "et-native-qualification-v1",
+  "quantum_execution": false,
+  "source_commit": {
+    "head": "e3560e5601a39d76e6d98c4083c6a6da4c4d02e9",
+    "sources_modified": false
+  },
+  "started": "2026-10-18T22:35:41.913583+00:00",
+  "state": "budget_infeasible",
+  "artifact_sha256": {
+    "record.json": "8934d637b73c9cdc3b6114d5b2e2f2b45e0c22b83613e6c83fcc17ff2dba2c2a",
+    "isa.qpy": "49bb44ef4e024191cd8301108cb16e15d550334cc6c56dcf517a3a17dbc3c1e2"
+  },
+  "executions": 466944,
+  "pubs": 4656,
+  "selected": null,
+  "retained_candidate": "candidate-000-shots-2048",
+  "budget": {
+    "combined_ceiling_seconds": 360.0,
+    "reserve_seconds": 10.0,
+    "max_total_execution_seconds": 600.0,
+    "remaining_seconds": 198,
+    "admitted": false,
+    "reasons": [
+      "combined execution ceiling 360.0 s plus reserve 10.0 s exceeds remaining 198 s"
+    ],
+    "reservation_scope": "invocation-local ceilings; external submissions can change shared quota"
+  },
+  "job_tiers": [
+    {
+      "backend": "ibm_kingston",
+      "kind": "static",
+      "batch_index": 1,
+      "pubs": 1536,
+      "ceiling_seconds": 90,
+      "shots": 32
+    },
+    {
+      "backend": "ibm_kingston",
+      "kind": "static",
+      "batch_index": 2,
+      "pubs": 1152,
+      "ceiling_seconds": 90,
+      "shots": 64
+    },
+    {
+      "backend": "ibm_kingston",
+      "kind": "static",
+      "batch_index": 3,
+      "pubs": 1920,
+      "ceiling_seconds": 90,
+      "shots": 128
+    },
+    {
+      "backend": "ibm_kingston",
+      "kind": "static",
+      "batch_index": 4,
+      "pubs": 48,
+      "ceiling_seconds": 90,
+      "shots": 2048
+    }
+  ],
+  "backends": {
+    "ibm_kingston": {
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 2,
+      "calibration": "2026-10-18T15:08:21-07:00",
+      "fetched_at": "2026-10-18T22:35:43+00:00",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 249.8781563435581,
+        "t2_us": 139.2733350438692,
+        "readout_error": 0.00885009765625,
+        "cz_error": 0.001887314544937152
+      },
+      "excluded_qubits": {
+        "20": "T1=235.2us T2=15.1us",
+        "76": "T1=7.2us T2=14.2us",
+        "86": "T1=81.5us T2=18.5us",
+        "113": "T1=120.0us T2=3.6us",
+        "115": "T1=301.8us T2=14.3us",
+        "121": "missing calibration: \"Couldn't find the property 'T2' for qubit 121.\"",
+        "131": "readout error 0.081",
+        "146": "missing calibration: \"Couldn't find the property 'T1' for qubit 146.\""
+      },
+      "excluded_edges": {
+        "84-85": "cz error 0.03903231001709434",
+        "85-84": "cz error 0.03903231001709434",
+        "85-86": "cz error 0.051306856276297885",
+        "86-85": "cz error 0.051306856276297885",
+        "86-87": "cz error 0.05179859886235064",
+        "87-86": "cz error 0.05179859886235064",
+        "111-112": "cz error 0.13197736928585646",
+        "112-111": "cz error 0.13197736928585646",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "116-121": "cz error 0.04304415955458579",
+        "120-121": "cz error 0.07333091214880402",
+        "121-116": "cz error 0.04304415955458579",
+        "121-120": "cz error 0.07333091214880402",
+        "121-122": "cz error 0.03825322448322746",
+        "122-121": "cz error 0.03825322448322746",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "145-146": "cz error 1.0",
+        "146-145": "cz error 1.0",
+        "146-147": "cz error 1.0",
+        "147-146": "cz error 1.0"
+      }
+    },
+    "ibm_fez": {
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 0,
+      "calibration": "2026-10-18T15:13:23-07:00",
+      "fetched_at": "2026-10-18T22:35:45+00:00",
+      "backend_version": "1.3.37",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 136.3060501072959,
+        "t2_us": 101.49038057480952,
+        "readout_error": 0.009765625,
+        "cz_error": 0.00241409060507293
+      },
+      "excluded_qubits": {
+        "11": "T1=75.3us T2=11.3us",
+        "45": "readout error 0.103",
+        "46": "T1=159.3us T2=14.6us",
+        "53": "T1=161.3us T2=18.4us",
+        "63": "readout error 0.096",
+        "66": "T1=126.0us T2=18.5us",
+        "72": "missing calibration: \"Couldn't find the property 'T2' for qubit 72.\"",
+        "83": "readout error 0.122",
+        "94": "T1=118.3us T2=19.3us",
+        "102": "readout error 0.101",
+        "126": "readout error 0.094",
+        "146": "T1=121.9us T2=14.5us",
+        "148": "T1=9.7us T2=23.8us",
+        "149": "T1=26.6us T2=7.1us",
+        "150": "T1=136.9us T2=5.4us"
+      },
+      "excluded_edges": {
+        "26-27": "cz error 0.040573204828518894",
+        "27-26": "cz error 0.040573204828518894",
+        "27-28": "cz error 0.10323228480861839",
+        "28-27": "cz error 0.10323228480861839",
+        "31-32": "cz error 0.03429758715110279",
+        "32-31": "cz error 0.03429758715110279",
+        "32-33": "cz error 1.0",
+        "33-32": "cz error 1.0",
+        "38-49": "cz error 0.05414860532300081",
+        "48-49": "cz error 0.06584895622264286",
+        "49-38": "cz error 0.05414860532300081",
+        "49-48": "cz error 0.06584895622264286",
+        "63-64": "cz error 0.045392081776778975",
+        "64-63": "cz error 0.045392081776778975",
+        "71-72": "cz error 1.0",
+        "72-71": "cz error 1.0",
+        "72-73": "cz error 1.0",
+        "73-72": "cz error 1.0",
+        "102-103": "cz error 0.11864945721108751",
+        "103-102": "cz error 0.11864945721108751",
+        "147-148": "cz error 0.10389499279266895",
+        "148-147": "cz error 0.10389499279266895",
+        "148-149": "cz error 0.13106785643824742",
+        "149-148": "cz error 0.13106785643824742"
+      }
+    },
+    "ibm_marrakesh": {
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 1,
+      "calibration": "2026-10-18T14:49:37-07:00",
+      "fetched_at": "2026-10-18T22:35:47+00:00",
+      "backend_version": "1.0.21",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 159.0023351496121,
+        "t2_us": 84.90932319637021,
+        "readout_error": 0.01373291015625,
+        "cz_error": 0.002960490059080556
+      },
+      "excluded_qubits": {
+        "17": "T1=192.9us T2=11.4us",
+        "26": "T1=6.9us T2=5.4us",
+        "31": "readout error 0.254",
+        "37": "T1=102.9us T2=16.8us",
+        "56": "T1=146.9us T2=19.3us",
+        "74": "T1=106.7us T2=15.5us",
+        "75": "T1=62.2us T2=5.1us",
+        "78": "T1=9.4us T2=7.3us",
+        "80": "T1=149.3us T2=15.0us",
+        "82": "missing calibration: \"Couldn't find the property 'T2' for qubit 82.\"",
+        "83": "readout error 0.214",
+        "94": "missing calibration: \"Couldn't find the property 'T1' for qubit 94.\"",
+        "99": "readout error 0.272",
+        "100": "readout error 0.085",
+        "113": "missing calibration: \"Couldn't find the property 'T2' for qubit 113.\"",
+        "116": "T1=66.8us T2=11.7us",
+        "117": "T1=255.0us T2=17.4us",
+        "119": "readout error 0.141",
+        "122": "T1=119.9us T2=15.5us",
+        "123": "T1=136.7us T2=17.9us",
+        "126": "T1=135.6us T2=16.3us",
+        "130": "missing calibration: \"Couldn't find the property 'T1' for qubit 130.\""
+      },
+      "excluded_edges": {
+        "40-41": "cz error 0.09815435972138016",
+        "41-40": "cz error 0.09815435972138016",
+        "81-82": "cz error 0.07469783469660052",
+        "82-81": "cz error 0.07469783469660052",
+        "82-83": "cz error 1.0",
+        "83-82": "cz error 1.0",
+        "95-99": "cz error 0.1418415119422666",
+        "99-95": "cz error 0.1418415119422666",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "113-114": "cz error 1.0",
+        "113-119": "cz error 1.0",
+        "114-113": "cz error 1.0",
+        "119-113": "cz error 1.0",
+        "119-133": "cz error 0.06804032998964088",
+        "129-130": "cz error 1.0",
+        "130-129": "cz error 1.0",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "133-119": "cz error 0.06804032998964088"
+      }
+    }
+  },
+  "candidates": [
+    {
+      "name": "candidate-000-shots-2048",
+      "feasible": false,
+      "estimated_charge_seconds": 128.38096793600002,
+      "total_execution_ceiling_seconds": 360.0,
+      "observables": [
+        {
+          "name": "et_d32_s9_r2_signed",
+          "predicted_value": 0.369873046875,
+          "simulation_error_radius": 0.15603332003095785,
+          "modeled_value_lower_bound": 0.21383972684404215,
+          "modeled_value_upper_bound": 0.5259063669059578,
+          "confidence_half_width": 0.1215145347612612,
+          "detection_radius": 0.11581009917625756,
+          "power_radius": 0.07649208845877552,
+          "effect_used_for_power": 0.21383972684404215,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": true,
+          "rejection_reasons": []
+        },
+        {
+          "name": "et_d32_s9_r2_coherence",
+          "predicted_value": 0.5221923828124999,
+          "simulation_error_radius": 0.3120666400619157,
+          "modeled_value_lower_bound": 0.2101257427505842,
+          "modeled_value_upper_bound": 0.8342590228744156,
+          "confidence_half_width": 0.1718475030848325,
+          "detection_radius": 0.16378021291483666,
+          "power_radius": 0.10817614891264284,
+          "effect_used_for_power": 0.2101257427505842,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": false,
+          "rejection_reasons": [
+            "shot tier cannot detect the reported alternative effect at the declared alpha and power"
+          ]
+        },
+        {
+          "name": "et_d32_s1_r2_signed",
+          "predicted_value": 1.03515625,
+          "simulation_error_radius": 0.15603332003095785,
+          "modeled_value_lower_bound": 0.8791229299690422,
+          "modeled_value_upper_bound": 1.1911895700309578,
+          "confidence_half_width": 0.1215145347612612,
+          "detection_radius": 0.11581009917625756,
+          "power_radius": 0.07649208845877552,
+          "effect_used_for_power": 0.8791229299690422,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": true,
+          "rejection_reasons": []
+        },
+        {
+          "name": "et_d32_s1_r2_coherence",
+          "predicted_value": 0.7393798828124999,
+          "simulation_error_radius": 0.3120666400619157,
+          "modeled_value_lower_bound": 0.4273132427505842,
+          "modeled_value_upper_bound": 1.0514465228744156,
+          "confidence_half_width": 0.1718475030848325,
+          "detection_radius": 0.16378021291483666,
+          "power_radius": 0.10817614891264284,
+          "effect_used_for_power": 0.4273132427505842,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": true,
+          "rejection_reasons": []
+        },
+        {
+          "name": "et_d32_s9_r8_signed",
+          "predicted_value": 1.044189453125,
+          "simulation_error_radius": 0.15603332003095785,
+          "modeled_value_lower_bound": 0.8881561330940422,
+          "modeled_value_upper_bound": 1.2002227731559578,
+          "confidence_half_width": 0.1215145347612612,
+          "detection_radius": 0.11581009917625756,
+          "power_radius": 0.07649208845877552,
+          "effect_used_for_power": 0.8881561330940422,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": true,
+          "rejection_reasons": []
+        },
+        {
+          "name": "et_d32_s9_r8_coherence",
+          "predicted_value": 0.8047851562499999,
+          "simulation_error_radius": 0.3120666400619157,
+          "modeled_value_lower_bound": 0.4927185161880842,
+          "modeled_value_upper_bound": 1.1168517963119156,
+          "confidence_half_width": 0.1718475030848325,
+          "detection_radius": 0.16378021291483666,
+          "power_radius": 0.10817614891264284,
+          "effect_used_for_power": 0.4927185161880842,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": true,
+          "rejection_reasons": []
+        }
+      ],
+      "rejection_reasons": [
+        "aggregate per-job ceilings consume the declared budget reserve",
+        "et_d32_s9_r2_coherence: shot tier cannot detect the reported alternative effect at the declared alpha and power",
+        "ET calibrated inference fails at declared allocation"
+      ],
+      "proxy_metadata": {
+        "backend": "ibm_kingston",
+        "seed": 20261010,
+        "replicas": 1,
+        "shots": 2048,
+        "proxy_score": 0.4336587099425843
+      },
+      "worst_case_charge_seconds": 128.38096793600002,
+      "normalized_precision_radius": null
+    },
+    {
+      "name": "candidate-001-shots-2048",
+      "feasible": false,
+      "estimated_charge_seconds": 128.153627648,
+      "total_execution_ceiling_seconds": 360.0,
+      "observables": [
+        {
+          "name": "et_d32_s9_r2_signed",
+          "predicted_value": 0.328369140625,
+          "simulation_error_radius": 0.15603332003095785,
+          "modeled_value_lower_bound": 0.17233582059404215,
+          "modeled_value_upper_bound": 0.4844024606559578,
+          "confidence_half_width": 0.1215145347612612,
+          "detection_radius": 0.11581009917625756,
+          "power_radius": 0.07649208845877552,
+          "effect_used_for_power": 0.17233582059404215,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": false,
+          "rejection_reasons": [
+            "shot tier cannot detect the reported alternative effect at the declared alpha and power"
+          ]
+        },
+        {
+          "name": "et_d32_s9_r2_coherence",
+          "predicted_value": 0.4854492187499999,
+          "simulation_error_radius": 0.3120666400619157,
+          "modeled_value_lower_bound": 0.1733825786880842,
+          "modeled_value_upper_bound": 0.7975158588119156,
+          "confidence_half_width": 0.1718475030848325,
+          "detection_radius": 0.16378021291483666,
+          "power_radius": 0.10817614891264284,
+          "effect_used_for_power": 0.1733825786880842,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": false,
+          "rejection_reasons": [
+            "shot tier cannot detect the reported alternative effect at the declared alpha and power"
+          ]
+        },
+        {
+          "name": "et_d32_s1_r2_signed",
+          "predicted_value": 0.962158203125,
+          "simulation_error_radius": 0.15603332003095785,
+          "modeled_value_lower_bound": 0.8061248830940422,
+          "modeled_value_upper_bound": 1.1181915231559578,
+          "confidence_half_width": 0.1215145347612612,
+          "detection_radius": 0.11581009917625756,
+          "power_radius": 0.07649208845877552,
+          "effect_used_for_power": 0.8061248830940422,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": true,
+          "rejection_reasons": []
+        },
+        {
+          "name": "et_d32_s1_r2_coherence",
+          "predicted_value": 0.6916259765624999,
+          "simulation_error_radius": 0.3120666400619157,
+          "modeled_value_lower_bound": 0.3795593365005842,
+          "modeled_value_upper_bound": 1.0036926166244156,
+          "confidence_half_width": 0.1718475030848325,
+          "detection_radius": 0.16378021291483666,
+          "power_radius": 0.10817614891264284,
+          "effect_used_for_power": 0.3795593365005842,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": true,
+          "rejection_reasons": []
+        },
+        {
+          "name": "et_d32_s9_r8_signed",
+          "predicted_value": 0.932373046875,
+          "simulation_error_radius": 0.15603332003095785,
+          "modeled_value_lower_bound": 0.7763397268440422,
+          "modeled_value_upper_bound": 1.0884063669059578,
+          "confidence_half_width": 0.1215145347612612,
+          "detection_radius": 0.11581009917625756,
+          "power_radius": 0.07649208845877552,
+          "effect_used_for_power": 0.7763397268440422,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": true,
+          "rejection_reasons": []
+        },
+        {
+          "name": "et_d32_s9_r8_coherence",
+          "predicted_value": 0.7546142578124999,
+          "simulation_error_radius": 0.3120666400619157,
+          "modeled_value_lower_bound": 0.4425476177505842,
+          "modeled_value_upper_bound": 1.0666808978744156,
+          "confidence_half_width": 0.1718475030848325,
+          "detection_radius": 0.16378021291483666,
+          "power_radius": 0.10817614891264284,
+          "effect_used_for_power": 0.4425476177505842,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": true,
+          "rejection_reasons": []
+        }
+      ],
+      "rejection_reasons": [
+        "aggregate per-job ceilings consume the declared budget reserve",
+        "et_d32_s9_r2_signed: shot tier cannot detect the reported alternative effect at the declared alpha and power",
+        "et_d32_s9_r2_coherence: shot tier cannot detect the reported alternative effect at the declared alpha and power",
+        "ET calibrated inference fails at declared allocation"
+      ],
+      "proxy_metadata": {
+        "backend": "ibm_fez",
+        "seed": 20261010,
+        "replicas": 1,
+        "shots": 2048,
+        "proxy_score": 0.4245566749387445
+      },
+      "worst_case_charge_seconds": 128.153627648,
+      "normalized_precision_radius": null
+    },
+    {
+      "name": "candidate-002-shots-2048",
+      "feasible": false,
+      "estimated_charge_seconds": 128.71852544,
+      "total_execution_ceiling_seconds": 360.0,
+      "observables": [
+        {
+          "name": "et_d32_s9_r2_signed",
+          "predicted_value": 0.308349609375,
+          "simulation_error_radius": 0.15603332003095785,
+          "modeled_value_lower_bound": 0.15231628934404215,
+          "modeled_value_upper_bound": 0.4643829294059578,
+          "confidence_half_width": 0.1215145347612612,
+          "detection_radius": 0.11581009917625756,
+          "power_radius": 0.07649208845877552,
+          "effect_used_for_power": 0.15231628934404215,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": false,
+          "rejection_reasons": [
+            "shot tier cannot detect the reported alternative effect at the declared alpha and power"
+          ]
+        },
+        {
+          "name": "et_d32_s9_r2_coherence",
+          "predicted_value": 0.4935546874999999,
+          "simulation_error_radius": 0.3120666400619157,
+          "modeled_value_lower_bound": 0.18148804743808422,
+          "modeled_value_upper_bound": 0.8056213275619156,
+          "confidence_half_width": 0.1718475030848325,
+          "detection_radius": 0.16378021291483666,
+          "power_radius": 0.10817614891264284,
+          "effect_used_for_power": 0.18148804743808422,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": false,
+          "rejection_reasons": [
+            "shot tier cannot detect the reported alternative effect at the declared alpha and power"
+          ]
+        },
+        {
+          "name": "et_d32_s1_r2_signed",
+          "predicted_value": 0.930419921875,
+          "simulation_error_radius": 0.15603332003095785,
+          "modeled_value_lower_bound": 0.7743866018440422,
+          "modeled_value_upper_bound": 1.0864532419059578,
+          "confidence_half_width": 0.1215145347612612,
+          "detection_radius": 0.11581009917625756,
+          "power_radius": 0.07649208845877552,
+          "effect_used_for_power": 0.7743866018440422,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": true,
+          "rejection_reasons": []
+        },
+        {
+          "name": "et_d32_s1_r2_coherence",
+          "predicted_value": 0.6781494140624998,
+          "simulation_error_radius": 0.3120666400619157,
+          "modeled_value_lower_bound": 0.36608277400058414,
+          "modeled_value_upper_bound": 0.9902160541244156,
+          "confidence_half_width": 0.1718475030848325,
+          "detection_radius": 0.16378021291483666,
+          "power_radius": 0.10817614891264284,
+          "effect_used_for_power": 0.36608277400058414,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": true,
+          "rejection_reasons": []
+        },
+        {
+          "name": "et_d32_s9_r8_signed",
+          "predicted_value": 0.9462890625,
+          "simulation_error_radius": 0.15603332003095785,
+          "modeled_value_lower_bound": 0.7902557424690422,
+          "modeled_value_upper_bound": 1.1023223825309578,
+          "confidence_half_width": 0.1215145347612612,
+          "detection_radius": 0.11581009917625756,
+          "power_radius": 0.07649208845877552,
+          "effect_used_for_power": 0.7902557424690422,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": true,
+          "rejection_reasons": []
+        },
+        {
+          "name": "et_d32_s9_r8_coherence",
+          "predicted_value": 0.7632812499999999,
+          "simulation_error_radius": 0.3120666400619157,
+          "modeled_value_lower_bound": 0.4512146099380842,
+          "modeled_value_upper_bound": 1.0753478900619156,
+          "confidence_half_width": 0.1718475030848325,
+          "detection_radius": 0.16378021291483666,
+          "power_radius": 0.10817614891264284,
+          "effect_used_for_power": 0.4512146099380842,
+          "minimum_effect": 0.0,
+          "precision_half_width": null,
+          "alpha": 0.004166666666666667,
+          "power": 0.8,
+          "null_value": 0.0,
+          "bound_methods": [
+            "hoeffding_independent_shots_within_declared_blocks"
+          ],
+          "covariance_assumptions": [
+            "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed"
+          ],
+          "feasible": true,
+          "rejection_reasons": []
+        }
+      ],
+      "rejection_reasons": [
+        "aggregate per-job ceilings consume the declared budget reserve",
+        "et_d32_s9_r2_signed: shot tier cannot detect the reported alternative effect at the declared alpha and power",
+        "et_d32_s9_r2_coherence: shot tier cannot detect the reported alternative effect at the declared alpha and power",
+        "ET calibrated inference fails at declared allocation"
+      ],
+      "proxy_metadata": {
+        "backend": "ibm_marrakesh",
+        "seed": 20261010,
+        "replicas": 1,
+        "shots": 2048,
+        "proxy_score": 0.2944727004169883
+      },
+      "worst_case_charge_seconds": 128.71852544,
+      "normalized_precision_radius": null
+    }
+  ],
+  "calibrated_screens": {
+    "candidate-000-shots-2048": {
+      "admitted": false,
+      "withheld": null,
+      "endpoints": [
+        {
+          "name": "et_d32_s9_r2_signed",
+          "kind": "signed",
+          "estimate": 0.38802075082901216,
+          "raw_estimate": 0.3701171875,
+          "calibration_allowance": 1.0299855464562944,
+          "confidence_interval": [
+            -0.771592542757428,
+            1.5476340444154522
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s9_r2_coherence",
+          "kind": "coherence",
+          "estimate": 0.5670346566948423,
+          "raw_estimate": 0.521728515625,
+          "calibration_allowance": 1.0707897040880314,
+          "confidence_interval": [
+            -0.6943388673162707,
+            1.8284081807059553
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s1_r2_signed",
+          "kind": "signed",
+          "estimate": 1.1622813811201371,
+          "raw_estimate": 1.0341796875,
+          "calibration_allowance": 1.1312827160621435,
+          "confidence_interval": [
+            -0.11137773076129531,
+            2.43594049300157
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s1_r2_coherence",
+          "kind": "coherence",
+          "estimate": 0.8091390317918299,
+          "raw_estimate": 0.7395507812499998,
+          "calibration_allowance": 1.0805480475456273,
+          "confidence_interval": [
+            -0.463729668189528,
+            2.0820077317731878
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s9_r8_signed",
+          "kind": "signed",
+          "estimate": 1.1870932977505735,
+          "raw_estimate": 1.04541015625,
+          "calibration_allowance": 1.1419273268269319,
+          "confidence_interval": [
+            -0.09855009118248415,
+            2.472736686683631
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s9_r8_coherence",
+          "kind": "coherence",
+          "estimate": 0.8692811389814512,
+          "raw_estimate": 0.8044433593749998,
+          "calibration_allowance": 1.0442100976037485,
+          "confidence_interval": [
+            -0.36078202430251727,
+            2.0993443022654197
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        }
+      ],
+      "assumption": "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed",
+      "method": "plug-in model histograms at declared allocation; additional feasibility screen, not a power guarantee"
+    },
+    "candidate-001-shots-2048": {
+      "admitted": false,
+      "withheld": null,
+      "endpoints": [
+        {
+          "name": "et_d32_s9_r2_signed",
+          "kind": "signed",
+          "estimate": 0.34725855985089404,
+          "raw_estimate": 0.3291015625,
+          "calibration_allowance": 0.9840826501632388,
+          "confidence_interval": [
+            -0.7664640563744228,
+            1.4609811760762108
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s9_r2_coherence",
+          "kind": "coherence",
+          "estimate": 0.5198229872537746,
+          "raw_estimate": 0.4850097656249999,
+          "calibration_allowance": 1.000638631327597,
+          "confidence_interval": [
+            -0.6672386888989036,
+            1.706884663406453
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s1_r2_signed",
+          "kind": "signed",
+          "estimate": 1.027364405777633,
+          "raw_estimate": 0.96240234375,
+          "calibration_allowance": 1.0171990744250108,
+          "confidence_interval": [
+            -0.12383728871690258,
+            2.1785661002721683
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s1_r2_coherence",
+          "kind": "coherence",
+          "estimate": 0.7542502174595993,
+          "raw_estimate": 0.690966796875,
+          "calibration_allowance": 1.0164544511746474,
+          "confidence_interval": [
+            -0.45157383007230467,
+            1.9600742649915033
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s9_r8_signed",
+          "kind": "signed",
+          "estimate": 0.9995086478931672,
+          "raw_estimate": 0.93115234375,
+          "calibration_allowance": 1.0424282948576766,
+          "confidence_interval": [
+            -0.18024588551274734,
+            2.1792631812990817
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s9_r8_coherence",
+          "kind": "coherence",
+          "estimate": 0.793812635926843,
+          "raw_estimate": 0.7549804687499999,
+          "calibration_allowance": 0.9626594125655749,
+          "confidence_interval": [
+            -0.3481941386148505,
+            1.9358194104685365
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        }
+      ],
+      "assumption": "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed",
+      "method": "plug-in model histograms at declared allocation; additional feasibility screen, not a power guarantee"
+    },
+    "candidate-002-shots-2048": {
+      "admitted": false,
+      "withheld": null,
+      "endpoints": [
+        {
+          "name": "et_d32_s9_r2_signed",
+          "kind": "signed",
+          "estimate": 0.3275214995546739,
+          "raw_estimate": 0.30810546875,
+          "calibration_allowance": 0.9917742788145611,
+          "confidence_interval": [
+            -0.7949060163893437,
+            1.4499490154986914
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s9_r2_coherence",
+          "kind": "coherence",
+          "estimate": 0.524714821065241,
+          "raw_estimate": 0.492822265625,
+          "calibration_allowance": 0.997086956390439,
+          "confidence_interval": [
+            -0.6581334886711732,
+            1.7075631308016552
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s1_r2_signed",
+          "kind": "signed",
+          "estimate": 0.9971484036969738,
+          "raw_estimate": 0.93115234375,
+          "calibration_allowance": 1.0440615592133147,
+          "confidence_interval": [
+            -0.1844545551952015,
+            2.178751362589149
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s1_r2_coherence",
+          "kind": "coherence",
+          "estimate": 0.7319946721542296,
+          "raw_estimate": 0.6779296874999998,
+          "calibration_allowance": 1.0125549672160026,
+          "confidence_interval": [
+            -0.4692034017053026,
+            1.933192746013762
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s9_r8_signed",
+          "kind": "signed",
+          "estimate": 1.0378526535014836,
+          "raw_estimate": 0.94775390625,
+          "calibration_allowance": 1.0606470846062805,
+          "confidence_interval": [
+            -0.1625207559509787,
+            2.238226062953946
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        },
+        {
+          "name": "et_d32_s9_r8_coherence",
+          "kind": "coherence",
+          "estimate": 0.8133163494992397,
+          "raw_estimate": 0.7634765624999998,
+          "calibration_allowance": 0.9705479228796527,
+          "confidence_interval": [
+            -0.3380485968965159,
+            1.9646812958949953
+          ],
+          "p_value": 1.0,
+          "response_informative": true,
+          "detected": false
+        }
+      ],
+      "assumption": "independent training and endpoint observations; independent endpoint shots within each fixed-response block; cross-block endpoint dependence allowed",
+      "method": "plug-in model histograms at declared allocation; additional feasibility screen, not a power guarantee"
+    }
+  },
+  "native_operator_check": {
+    "bindings": 54,
+    "max_error": 1.0395639430183797e-12
+  },
+  "compiled_ideal_validation": {
+    "method": "branch-resolved statevector on active compiled replica wires",
+    "absolute_tolerance": 1e-10,
+    "noise_method": [
+      "density_matrix"
+    ],
+    "noise_policy": "density_matrix_dynamic_statevector",
+    "all_candidates_passed": true
+  },
+  "compilation_contract": "arbitrary-input-unitary-v1",
+  "interpretation": "Current-Target compilation and local noise-model admission; hardware acquisition remains held"
+}

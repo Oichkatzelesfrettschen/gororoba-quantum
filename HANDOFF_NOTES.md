@@ -88,6 +88,11 @@ every process.
   joint-coincidence reading of the herald run, compared against the
   independent-marginal prediction.
 
+
+ET row integration provides exact signed fixtures, coherent row circuits, reusable operator compilation, complete acquisition controls, collection reconstruction, and calibrated paired inference. The experiment contract and replay commands are documented in gororoba_quantum/ET_ROWS.md and docs/evidence/et_rows/README.md. The evidence bundle retains the frozen Heron planning record and native circuit archive.
+
+ET hardware acquisition remains held. The retained Heron qualification refuses the fixed campaign on quota and calibrated inference grounds. Further acquisition requires adequate calibration precision, statistical power, and available allowance, followed by approval of the concrete execution case. Doubling, Tuna native synthesis, and optical transformation conformance retain separate qualification gates. The shutdown reconciliation preserves the incoming optimizer exception check; a fresh CI replay of the shutdown merge remains deferred.
+
 ## Nullity-twelve local dimension at the {a, 0} witnesses
 
 The local dimension of D_(5,12) at a nonzd-axis witness {e_i, 0} lies
@@ -193,6 +198,9 @@ usable-graph analysis, which fold into the next Tuna note.
   open review thread is answered.
 - Program analysis and both reviews live in `docs/local/reviews/`, and the
   submit scripts and admitted qubit lists in `docs/local/n21-handover/`.
+
+
+ET approval preflight uses deduplicated parallel ideal validation. The focused approval and optimizer-rejection regressions pass. A complete runner dry run and continuous integration replay remain pending for the integrated changes. The retained native evidence remains bound to its recorded source commit.
 
 ## Belenos photonic campaign
 

@@ -162,11 +162,20 @@ class EmpiricalBernsteinDesign:
 
 @dataclass(frozen=True)
 class CandidatePlan:
+    """Costed PUBs with optional, explicitly conditioned independence blocks.
+
+    Independent PUB blocks assume independent shot vectors across their PUBs;
+    replicas within one shot may remain dependent. Different blocks may be
+    dependent. The declared partition and its assumption travel with the plan.
+    """
+
     name: str
     jobs: tuple[JobCandidate, ...]
     covariance_bounds: tuple[CovarianceBound, ...] = ()
     proxy_metadata: dict[str, float | str] = field(default_factory=dict)
     empirical_bernstein: tuple[EmpiricalBernsteinDesign, ...] = ()
+    independent_pub_blocks: tuple[tuple[str, ...], ...] = ()
+    pub_independence_assumption: str | None = None
 
 
 @dataclass(frozen=True)
@@ -421,6 +430,24 @@ def _validate_cost_scenarios(scenarios: tuple[CostScenario, ...]) -> None:
 
 
 def _validate_plan(plan: CandidatePlan, contracts: tuple[ObservableContract, ...]) -> None:
+    if plan.independent_pub_blocks:
+        names = [pub.name for job in plan.jobs for pub in job.pubs]
+        declared = [name for block in plan.independent_pub_blocks for name in block]
+        _require(all(plan.independent_pub_blocks), "independent PUB blocks must be nonempty")
+        _require(
+            len(declared) == len(set(declared)) and set(declared) == set(names),
+            "independent PUB blocks must partition the complete plan",
+        )
+        _require(
+            bool(plan.pub_independence_assumption and plan.pub_independence_assumption.strip()),
+            "independent PUB blocks require an explicit sampling assumption",
+        )
+        _require(
+            not plan.covariance_bounds and not plan.empirical_bernstein,
+            "independent PUB blocks use their declared Hoeffding rule exclusively",
+        )
+    else:
+        _require(plan.pub_independence_assumption is None, "PUB independence requires declared blocks")
     _require(bool(plan.name.strip()) and bool(plan.jobs), "each candidate needs a name and jobs")
     _require(len({job.name for job in plan.jobs}) == len(plan.jobs), f"{plan.name}: job names must be unique")
     pub_names: set[str] = set()
@@ -928,6 +955,35 @@ def _radius(streams: tuple[_PubObservable, ...], probability: float, two_sided: 
     return math.fsum(radii)
 
 
+def _plan_radius(
+    plan: CandidatePlan,
+    streams: tuple[_PubObservable, ...],
+    probability: float,
+    two_sided: bool,
+    empirical: bool = False,
+) -> float:
+    """Sum block Hoeffding radii using a union bound between dependent blocks.
+
+    Within one block the proxy is sum(span**2 / shots); independence combines
+    the shot contributions before the blockwise tail allocation.
+    """
+    if not plan.independent_pub_blocks:
+        return _radius(streams, probability, two_sided, empirical)
+    active = {stream.name: stream for stream in streams if stream.span > 0}
+    proxies = [
+        math.fsum(active[name].span ** 2 / active[name].shots for name in block if name in active)
+        for block in plan.independent_pub_blocks
+    ]
+    proxies = [value for value in proxies if value > 0]
+    if not proxies:
+        return 0.0
+    tail = probability / len(proxies)
+    if tail == 0:
+        return math.fsum(stream.span for stream in active.values())
+    logarithm = math.log((2 if two_sided else 1) / tail)
+    return math.fsum(math.sqrt(proxy * logarithm / 2) for proxy in proxies)
+
+
 def _power_tail(contract: ObservableContract, design: EmpiricalBernsteinDesign | None) -> float:
     """The power radius's tail: the miss probability less the planned sample-variance excursion it covers."""
     return 1 - contract.power - (design.variance_tail if design is not None else 0.0)
@@ -959,12 +1015,12 @@ def _evaluate_observable(plan: CandidatePlan, contract: ObservableContract, simu
         pubs, contract, simulation_tail, plan.covariance_bounds, samples, design, planning=True
     )
     alpha = _confidence_tail(contract, streams)
-    confidence = _radius(streams, alpha, two_sided=True, empirical=True)
+    confidence = _plan_radius(plan, streams, alpha, two_sided=True, empirical=True)
     reasons: list[str] = []
     detection = power = effect_used = None
     if contract.minimum_effect is not None:
-        detection = _radius(streams, alpha, two_sided=False, empirical=True)
-        power = _radius(streams, _power_tail(contract, design), two_sided=False)
+        detection = _plan_radius(plan, streams, alpha, two_sided=False, empirical=True)
+        power = _plan_radius(plan, streams, _power_tail(contract, design), two_sided=False)
         modeled_gap = predicted - model_radius - contract.null_value
         effect_used = modeled_gap if contract.minimum_effect == 0 else contract.minimum_effect
         if modeled_gap <= 0 or modeled_gap < contract.minimum_effect:
@@ -988,8 +1044,14 @@ def _evaluate_observable(plan: CandidatePlan, contract: ObservableContract, simu
         contract.alpha,
         contract.power if contract.minimum_effect is not None else None,
         contract.null_value,
-        _bound_methods(streams),
-        tuple(stream.covariance_assumption for stream in streams if stream.covariance_assumption is not None),
+        ("hoeffding_independent_shots_within_declared_blocks",)
+        if plan.independent_pub_blocks
+        else _bound_methods(streams),
+        (
+            (plan.pub_independence_assumption,)
+            if plan.pub_independence_assumption is not None
+            else tuple(stream.covariance_assumption for stream in streams if stream.covariance_assumption is not None)
+        ),
         not reasons,
         tuple(reasons),
     )
@@ -1217,6 +1279,43 @@ def _dominates(first: CandidateResult, second: CandidateResult) -> bool:
     )
 
 
+def _candidate_rank(result: CandidateResult, objective: str) -> tuple[float, float, str]:
+    charge = result.worst_case_charge_seconds
+    score = charge if objective == "minimum_charge" else result.normalized_precision_radius
+    if not (charge is not None and score is not None):
+        raise AssertionError
+    return score, charge, result.name
+
+
+def restrict_candidates(result: OptimizationResult, admitted: set[str], reason: str) -> OptimizationResult:
+    """Apply an additional admission gate without changing search-wide statistical allowances."""
+    if not result.candidates:
+        return result
+    if not admitted <= {candidate.name for candidate in result.candidates}:
+        raise ValueError("additional admission names an unknown evaluated candidate")
+    if all(candidate.name in admitted for candidate in result.candidates):
+        return result
+    excludes_feasible = any(candidate.feasible and candidate.name not in admitted for candidate in result.candidates)
+    candidates = tuple(
+        candidate
+        if candidate.name in admitted
+        else replace(candidate, feasible=False, rejection_reasons=candidate.rejection_reasons + (reason,))
+        for candidate in result.candidates
+    )
+    feasible = [candidate for candidate in candidates if candidate.feasible]
+    selected = min(feasible, key=lambda candidate: _candidate_rank(candidate, result.objective)) if feasible else None
+    return replace(
+        result,
+        candidates=candidates,
+        selected=selected.name if selected else None,
+        pareto_frontier=tuple(
+            candidate.name for candidate in feasible if not any(_dominates(other, candidate) for other in feasible)
+        ),
+        selected_objective_value=_candidate_rank(selected, result.objective)[0] if selected else None,
+        rejection_reasons=() if feasible else result.rejection_reasons + ((reason,) if excludes_feasible else ()),
+    )
+
+
 def optimize(
     plans: tuple[CandidatePlan, ...],
     contracts: tuple[ObservableContract, ...],
@@ -1265,14 +1364,7 @@ def optimize(
     )
     feasible = [result for result in results if result.feasible]
 
-    def rank(result: CandidateResult) -> tuple[float, float, str]:
-        charge = result.worst_case_charge_seconds
-        score = charge if objective == "minimum_charge" else result.normalized_precision_radius
-        if not (charge is not None and score is not None):
-            raise AssertionError
-        return score, charge, result.name
-
-    selected = min(feasible, key=rank) if feasible else None
+    selected = min(feasible, key=lambda result: _candidate_rank(result, objective)) if feasible else None
     frontier = tuple(result.name for result in feasible if not any(_dominates(other, result) for other in feasible))
     reasons = () if feasible else ("every supplied candidate failed at least one contract",)
     return OptimizationResult(
@@ -1282,9 +1374,15 @@ def optimize(
         reasons,
         simulation_alpha,
         comparisons,
-        ASSUMPTIONS,
+        ASSUMPTIONS
+        if not any(plan.independent_pub_blocks for plan in plans)
+        else tuple(assumption for assumption in ASSUMPTIONS if assumption != ASSUMPTIONS[1])
+        + (
+            "declared PUB blocks assume independent shots within each block; "
+            "union bounds permit cross-block dependence",
+        ),
         objective,
-        rank(selected)[0] if selected else None,
+        _candidate_rank(selected, objective)[0] if selected else None,
         tuple(sorted(cost_scenarios, key=lambda item: item.name)),
     )
 
