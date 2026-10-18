@@ -3481,6 +3481,14 @@
    "name": "sources-252",
    "seconds": 0.4,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ibm_runtime_options_inventory.py --check docs/evidence/ibm_runtime_options/inventory.json && \"$PYTHON\" -B -O -W error scripts/ibm_runtime_options_inventory.py --check docs/evidence/ibm_runtime_options/inventory.json && \"$PYTHON\" -B -W error scripts/ibm_runtime_options_inventory.py --self-test",
+   "name": "core-533",
+   "seconds": 12.3,
+   "tier": "pr"
   }
  ],
  "excluded": [
