@@ -1493,19 +1493,21 @@ def _planning_outcomes(
 
 
 def _verify_serialized_noise(snapshot: live_run.Snapshot) -> None:
-    """One retained noise serialization and the skipped empty pass run leave every planning outcome bit-identical.
+    """One retained, qubit-restricted noise serialization leaves every planning outcome bit-identical.
 
     The stock pass patches SerializedNoiseSimulator back to AerSimulator's
     per-run NoiseModel.to_dict and AerBackend._assemble_noise_model. The
     cases cover one-qubit static and reset groups (state-prep-control), a
     multi-qubit static group and a feed-forward group with Delay members
     (folded-qpe), and an excited rerun whose copied model serializes afresh.
+    Qubit 2's own errors hold no Kraus channel while the device model does,
+    so its reset batch also serves as the negative control of the opset
+    witnesses that _Serialization.restrict keeps.
     """
-    from qiskit_aer import AerSimulator
     from qiskit_aer.noise import NoiseModel
 
-    qubits = [qubit for qubit in range(40, 156, 7) if qubit not in snapshot.excluded_qubits][:1]
-    state_prep = _args("state-prep-control", layout=qubits)
+    _require(2 not in snapshot.excluded_qubits, "FakeFez excludes the negative-control qubit 2")
+    state_prep = _args("state-prep-control", layout=[2])
     folded = _args("folded-qpe")
     cases = [
         (label, args, qpu_planning.family_candidates(live_run, [snapshot], args, {}))
@@ -1555,27 +1557,11 @@ def _verify_serialized_noise(snapshot: live_run.Snapshot) -> None:
     outcomes = {}
     for mode in ("stock", "serialized"):
         observed.update(snapshot_serializations=[], pass_runs=[])
-        stock = (
-            (
-                patch.object(
-                    local_compute.SerializedNoiseSimulator, "_execute_circuits", AerSimulator._execute_circuits
-                ),
-                patch.object(
-                    local_compute.SerializedNoiseSimulator,
-                    "_assemble_noise_model",
-                    AerSimulator._assemble_noise_model,
-                ),
-            )
-            if mode == "stock"
-            else ()
-        )
         with (
             patch.object(NoiseModel, "to_dict", counting_to_dict),
             patch.object(NoiseModel, "_pass_manager", counting_pass_manager),
-            contextlib.ExitStack() as stack,
+            _stock_aer() if mode == "stock" else contextlib.nullcontext(),
         ):
-            for context in stock:
-                stack.enter_context(context)
             outcomes[mode] = _planning_outcomes(snapshot, cases, excited)
         serializations = len(observed["snapshot_serializations"])
         empty_runs = observed["pass_runs"].count(0)
@@ -1592,6 +1578,50 @@ def _verify_serialized_noise(snapshot: live_run.Snapshot) -> None:
         _require(stock_call == serialized_call, f"{stock_call[:3]}: a simulated distribution changed bits")
     changed = _first_difference(outcomes["stock"], outcomes["serialized"])
     _require(changed is None, f"a plan or evaluation record field changed at {changed}")
+    reset = next(
+        choice for choices, _configuration in cases[0][2] for choice in choices if "reset" in choice.group.name
+    )
+    restrict = local_compute._Serialization.restrict
+
+    def unwitnessed(self: Any, active: frozenset[int]) -> dict[str, Any]:
+        errors = restrict(self, active)["errors"]
+        return {
+            "errors": [
+                error
+                for error in errors
+                if "gate_qubits" not in error or any(set(qubits) <= active for qubits in error["gate_qubits"])
+            ]
+        }
+
+    laws = {}
+    for label in ("stock", "restricted", "unwitnessed"):
+        with (
+            _stock_aer() if label == "stock" else contextlib.nullcontext(),
+            patch.object(local_compute._Serialization, "restrict", unwitnessed)
+            if label == "unwitnessed"
+            else contextlib.nullcontext(),
+        ):
+            simulator = live_run.noise_simulator(snapshot.name, snapshot.backend.target, snapshot.properties)
+            laws[label] = [law.tolist() for laws in live_run.simulate(reset, simulator, 32768).values() for law in laws]
+    _require(laws["restricted"] == laws["stock"], "the restricted reset batch changed bits at 32768 shots")
+    _require(
+        laws["unwitnessed"] != laws["stock"],
+        "the reset batch without opset witnesses kept the stock counts, so the control no longer tests them",
+    )
+
+
+@contextlib.contextmanager
+def _stock_aer() -> Any:
+    """SerializedNoiseSimulator with AerSimulator's own per-run serialization and noise assembly."""
+    from qiskit_aer import AerSimulator
+
+    with (
+        patch.object(local_compute.SerializedNoiseSimulator, "_execute_circuits", AerSimulator._execute_circuits),
+        patch.object(
+            local_compute.SerializedNoiseSimulator, "_assemble_noise_model", AerSimulator._assemble_noise_model
+        ),
+    ):
+        yield
 
 
 def _verify_serialized_noise_only() -> None:
@@ -1602,8 +1632,9 @@ def _verify_serialized_noise_only() -> None:
         _service, snapshot = _fixture()
         _verify_serialized_noise(snapshot)
     print(
-        "QPU planning: one retained noise serialization per snapshot model and the skipped empty noise-pass run "
-        "reproduce every simulated distribution, plan and evaluation record of the per-run Aer path"
+        "QPU planning: one retained noise serialization per snapshot model, restricted to each batch's qubits with "
+        "opset witnesses, and the skipped empty noise-pass run reproduce every simulated distribution, plan and "
+        "evaluation record of the per-run Aer path; dropping the witnesses changes the reset batch's counts"
     )
 
 
