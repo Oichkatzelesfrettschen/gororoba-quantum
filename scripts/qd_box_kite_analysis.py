@@ -134,16 +134,19 @@ def dark_corrected(
 
 
 def acquisition_seconds(samples: int, physical_perf: Any, clock_mhz: Any) -> float | None:
-    """Seconds the detectors were read: physical_perf is the share of source pulses that pass the one-photon
-    filter, so samples / (physical_perf x clock) counts the pulses elapsed while samples accrued. A job's
-    status.duration adds compilation, setup and queue time on top."""
+    """Estimated seconds the detectors were read, samples / (physical_perf x clock).
+
+    Perceval defines physical_perf as the share of trials that pass the detected-photon filter; taking one
+    trial per source pulse at the catalogue clock is a model no Quandela document confirms. A job's
+    status.duration, the measured wall time, adds compilation and setup on top."""
     if not isinstance(physical_perf, int | float) or not isinstance(clock_mhz, int | float) or physical_perf <= 0:
         return None
     return samples / (float(physical_perf) * float(clock_mhz) * 1e6)
 
 
 def dark_expectation(run: Path, collected: dict[str, Any], width: int) -> list[float] | None:
-    """Expected dark clicks per chip mode: the receipt's per-mode rates times the job's acquisition seconds."""
+    """Expected dark clicks per chip mode: the receipt's per-mode rates times the job's estimated acquisition
+    seconds (acquisition_seconds)."""
     submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
     perfs = submission.get("perfs_at_plan", {})
     rates = perfs.get("Dark counts (detection/s)")

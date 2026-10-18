@@ -1151,8 +1151,9 @@ preregistered bridge branch on synthetic iterations) and core-540
 (`--check-bridge`, the form-mesh bridge job-09), core-541 (`anu_qrng.py`
 self-test and the offline check of every retained draw), core-542
 (`--self-test-dwell`), core-543 (`--check-dwell`, the D1 to D4 readout),
-core-545 (`qd_belenos_cone.py --self-test`) and core-546 (its `--check` of
-the light-cone reading).
+core-545 (`qd_belenos_cone.py --self-test`), core-546 (its `--check` of
+the light-cone reading) and core-547 (its `--check-readout` of job-13, the
+seeded single job).
 
 **Strategy guide.** [docs/notes/quandela/strategy.md](docs/notes/quandela/strategy.md)
 is the living record of what a credit buys on Belenos: the measured cost

@@ -1,10 +1,15 @@
 """Light-cone reading of Q1's circuit on qpu:belenos: in-cone retention, off-cone background and acquisition time.
 
-A photon entering source s reaches only the modes its served mesh couples to
-s: the cone is every mode whose peak occupancy along the propagation
-(qd_belenos_mesh.peak_occupancy) exceeds CONE_FLOOR. The served mesh routes
-no light of this circuit to a mode outside the cone, so in_block over in-cone
-samples reads the mesh's retention without a model of the off-cone clicks. The reading is a second
+Every mode of the full mesh is topologically reachable from source s, so the
+cone is defined by amplitude: every mode whose peak occupancy along the ideal
+propagation (qd_belenos_mesh.peak_occupancy) exceeds CONE_FLOOR, joined with
+every mode the exact dephasing channel at CONE_SIGMA heater and
+CONE_SIGMA_THETA coupler noise detects at NOISY_FLOOR or more. Routing error
+within that bound stays inside the cone, so in_block over in-cone samples
+reads the mesh's retention and an off-cone click needs an error far larger
+than any seeded cell shows, or a source other than the mesh's routing. The
+ideal cone alone is kept beside it as in_block_ideal_cone, the statistic
+case job-13 preregistered. The reading is a second
 analysis of the retained runs; each run's preregistered verdict stays in its
 own record.
 
@@ -17,9 +22,11 @@ Per cell (a single job, or one iteration of an iterated job) the record holds:
   off-cone click with an in-cone click beside the count that independent clicks
   gated to the source pulses would give, off-cone total x physical_perf /
   (1 - physical_perf);
-- the acquisition time samples / (physical_perf x clock): physical_perf is
-  the share of source pulses that pass the one-photon filter, so this is the
-  time the detectors were read, while status.duration is the job's wall time;
+- an acquisition-time estimate, samples / (physical_perf x clock): Perceval
+  defines physical_perf as the share of trials that pass the detected-photon
+  filter, and reading one trial per source pulse at the catalogue clock is a
+  model no Quandela document confirms; the job's status.duration, shared
+  among iterations by sample count, is the measured wall time;
 - the receipt's dark expectation on off-cone modes under both time bases.
 
 Groups of cells of one job with one mesh and one budget give each off-cone
@@ -27,7 +34,9 @@ mode's dispersion index (variance over mean of its counts); a stationary
 rate reads 1.
 
 --write OUT RUN... writes the record, --check OUT RUN... recomputes it and
-requires equal bytes, and --self-test requires off-cone background to leave
+requires equal bytes, --readout OUT RUN reads a single-job case against the
+in-cone thresholds its manifest preregisters (case job-13) and
+--check-readout OUT RUN replays that reading, and --self-test requires off-cone background to leave
 the in-cone reading unchanged, in-cone loss to lower it, and a stationary
 background to read a dispersion index near 1.
 
@@ -51,6 +60,10 @@ from qd_box_kite_analysis import wilson  # noqa: E402
 
 SCHEMA = "qd-belenos-cone-reading-v1"
 CONE_FLOOR = 1e-6
+# The exact dephasing channel at these heater and coupler noise levels drops Q1's in_block to about 0.5 on its
+# served meshes, far beyond any seeded cell (0.98 to 0.995); a mode it detects at NOISY_FLOOR or more joins the
+# cone, so routing error inside that bound never lands off the cone.
+CONE_SIGMA, CONE_SIGMA_THETA, NOISY_FLOOR = 0.5, 0.1, 1e-3
 MODES = mesh_lib.MODES
 
 
@@ -71,6 +84,7 @@ def source_mode(computed_input: str) -> int:
 
 def cell(
     single: list[int],
+    samples: int,
     arch: list[Any],
     phases: list[float],
     source: int,
@@ -79,32 +93,40 @@ def cell(
     physical_perf: float,
     clock_mhz: float,
 ) -> dict[str, Any]:
-    """The cone reading of one served mesh (its architecture and phases) and its one-click histogram."""
+    """The cone reading of one served mesh (its architecture and phases), its one-click histogram and its
+    sample count over every outcome."""
     import numpy as np
 
     peak = mesh_lib.peak_occupancy(arch, phases, source)
-    cone = [q for q in range(MODES) if peak[q] > CONE_FLOOR]
+    ideal_cone = [q for q in range(MODES) if peak[q] > CONE_FLOOR]
+    noisy = mesh_lib.channel(arch, phases, source, sigma=CONE_SIGMA, sigma_theta=CONE_SIGMA_THETA)
+    cone = sorted(set(ideal_cone) | {q for q in range(MODES) if noisy[q] >= NOISY_FLOOR})
     ideal = mesh_lib.propagate(arch, phases, source)[0]
     block = sum(single[low : low + width])
     total = sum(single)
     inside = sum(single[q] for q in cone)
+    inside_ideal = sum(single[q] for q in ideal_cone)
     observed = np.zeros(MODES)
     for q in cone:
         observed[q] = single[q]
     distance = 0.5 * float(abs(observed / inside - ideal).sum()) if inside else None
     return {
         "cone_modes": cone,
+        "ideal_cone_modes": ideal_cone,
+        "samples": samples,
         "one_click_samples": total,
         "in_block": round(block / total, 6) if total else None,
         "in_block_wilson95": wilson(block, total),
         "in_cone_samples": inside,
         "in_block_cone": round(block / inside, 6) if inside else None,
         "in_block_cone_wilson95": wilson(block, inside),
+        "in_block_ideal_cone": round(block / inside_ideal, 6) if inside_ideal else None,
+        "in_block_ideal_cone_wilson95": wilson(block, inside_ideal),
         "tvd_cone_from_ideal": round(distance, 6) if distance is not None else None,
         "shot_floor": mesh_lib.shot_floor(ideal, inside) if inside else None,
         "off_cone_by_mode": {str(q): single[q] for q in range(MODES) if q not in cone and single[q]},
         "physical_perf": round(physical_perf, 9),
-        "acquisition_s": round(total / (physical_perf * clock_mhz * 1e6), 6) if physical_perf else None,
+        "acquisition_s_estimate": round(samples / (physical_perf * clock_mhz * 1e6), 6) if physical_perf else None,
     }
 
 
@@ -119,6 +141,7 @@ def run_cells(run: Path) -> list[dict[str, Any]]:
     outer = json.loads((run / "raw/result.json").read_text(encoding="utf-8"))
     inner = mesh_lib.raw_result(run)
     duration = float(outer["duration"])
+    job_samples = sum(sum(mesh_lib.bscount(e["results"]).values()) for e in inner.get("results_list") or [inner])
     if "results_list" in inner:
         entries = inner["results_list"]
         settings = manifest["settings"]
@@ -135,6 +158,7 @@ def run_cells(run: Path) -> list[dict[str, Any]]:
     out = []
     for name, seed, budget, entry in zip(names, seeds, budgets, entries, strict=True):
         counts = mesh_lib.bscount(entry["results"])
+        samples = sum(counts.values())
         single = [0] * MODES
         pairs: list[tuple[tuple[int, ...], int]] = []
         for state, n in counts.items():
@@ -146,6 +170,7 @@ def run_cells(run: Path) -> list[dict[str, Any]]:
         arch = mesh_lib.run_architecture(elements)
         row = cell(
             single,
+            samples,
             arch,
             mesh_lib.mesh_phases(arch, elements),
             source_mode(entry["computed_input"]),
@@ -155,7 +180,8 @@ def run_cells(run: Path) -> list[dict[str, Any]]:
             clock,
         )
         off = [q for q in range(MODES) if q not in row["cone_modes"]]
-        acquisition = row["acquisition_s"] or 0.0
+        acquisition = row["acquisition_s_estimate"] or 0.0
+        wall = duration * samples / job_samples
         off_total = sum(row["off_cone_by_mode"].values())
         perf = row["physical_perf"]
         mixed = sum(n for clicks, n in pairs if any(q in off for q in clicks) and any(q not in off for q in clicks))
@@ -169,7 +195,8 @@ def run_cells(run: Path) -> list[dict[str, Any]]:
                 "mesh_sha256": mesh_lib.mesh_sha(entry["computed_circuit"]),
                 **row,
                 "job_duration_s": duration,
-                "receipt_dark_off_cone_wall": round(sum(rates[q] for q in off) * duration, 3),
+                "wall_share_s": round(wall, 6),
+                "receipt_dark_off_cone_wall": round(sum(rates[q] for q in off) * wall, 3),
                 "receipt_dark_off_cone_acquisition": round(sum(rates[q] for q in off) * acquisition, 3),
                 "off_cone_total": off_total,
                 "off_cone_with_in_cone_click": mixed,
@@ -216,6 +243,35 @@ def record(runs: list[Path]) -> dict[str, Any]:
     }
 
 
+READOUT_SCHEMA = "qd-belenos-seeded-single-readout-v1"
+
+
+def reading(rule: dict[str, Any], row: dict[str, Any]) -> str:
+    """The preregistered reading of one cell: void off the named mesh, else by in_block over the ideal cone, the
+    cone the case was preregistered on."""
+    if not row["mesh_sha256"].startswith(rule["void_unless_mesh_sha256_prefix"]):
+        return "void"
+    if row["in_block_ideal_cone"] >= rule["unseeded_path_at_least"]:
+        return "unseeded path"
+    if row["in_block_ideal_cone"] <= rule["single_job_budget_at_most"]:
+        return "single-job form at Q1's budget"
+    return "intermediate"
+
+
+def readout(run: Path) -> dict[str, Any]:
+    manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+    rule = manifest["preregistered"]
+    (row,) = run_cells(run)
+    return {
+        "schema": READOUT_SCHEMA,
+        "run": run.name,
+        "cases_sha256": mesh_lib.sha256(run / "cases.json"),
+        "rule": rule,
+        "cell": row,
+        "verdict": reading(rule, row),
+    }
+
+
 def dump(value: dict[str, Any]) -> str:
     return json.dumps(value, indent=1, sort_keys=True) + "\n"
 
@@ -234,22 +290,32 @@ def self_test() -> int:
     import numpy as np
 
     ideal = mesh_lib.propagate(arch, phases, 20)[0]
-    peak = mesh_lib.peak_occupancy(arch, phases, 20)
-    cone = [q for q in range(MODES) if peak[q] > CONE_FLOOR]
-    outside = [q for q in range(MODES) if q not in cone]
     clean = [int(round(10000 * float(p))) for p in ideal]
     low = 20
-    base = cell(clean, arch, phases, 20, low, 4, 0.01, 4.94)
+    base = cell(clean, sum(clean), arch, phases, 20, low, 4, 0.01, 4.94)
+    cone = base["cone_modes"]
+    outside = [q for q in range(MODES) if q not in cone]
+    if not outside:
+        raise SystemExit("cone self-test: the synthetic mesh's bounded cone covers every mode")
     noisy = list(clean)
     noisy[outside[0]] += 900
-    with_noise = cell(noisy, arch, phases, 20, low, 4, 0.01, 4.94)
+    with_noise = cell(noisy, sum(noisy), arch, phases, 20, low, 4, 0.01, 4.94)
     if with_noise["in_block_cone"] != base["in_block_cone"] or with_noise["in_block"] >= base["in_block"]:
         raise SystemExit(f"cone self-test: off-cone background moved the cone reading {base} -> {with_noise}")
     lossy = list(clean)
     inside_off_block = [q for q in cone if not low <= q < low + 4]
     lossy[inside_off_block[0]] += 900
-    if cell(lossy, arch, phases, 20, low, 4, 0.01, 4.94)["in_block_cone"] >= base["in_block_cone"]:
+    if cell(lossy, sum(lossy), arch, phases, 20, low, 4, 0.01, 4.94)["in_block_cone"] >= base["in_block_cone"]:
         raise SystemExit("cone self-test: in-cone loss left the cone reading unchanged")
+    rule = {"void_unless_mesh_sha256_prefix": "q1", "unseeded_path_at_least": 0.95, "single_job_budget_at_most": 0.65}
+    for mesh, value, want in (
+        ("q1x", 0.97, "unseeded path"),
+        ("q1x", 0.39, "single-job form at Q1's budget"),
+        ("q1x", 0.8, "intermediate"),
+        ("f", 0.39, "void"),
+    ):
+        if reading(rule, {"mesh_sha256": mesh, "in_block_ideal_cone": value}) != want:
+            raise SystemExit(f"cone self-test: {mesh} at {value} did not read {want}")
     poisson = np.random.default_rng(7).poisson(50, 400).tolist()
     fake = [
         {"mesh_sha256": "m", "max_samples": 1500, "run": "r", "name": f"i{k}", "off_cone_by_mode": {"5": v}}
@@ -258,7 +324,7 @@ def self_test() -> int:
     (row,) = dispersion(fake)
     if not 0.8 <= row["dispersion_index"] <= 1.2:
         raise SystemExit(f"cone self-test: a Poisson background read dispersion {row['dispersion_index']}")
-    print("cone self-test: off-cone background excluded, in-cone loss read, Poisson dispersion near 1")
+    print("cone self-test: off-cone clicks excluded, in-cone loss read, four readings, Poisson dispersion near 1")
     return 0
 
 
@@ -267,10 +333,21 @@ def main() -> int:
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--write", type=Path, nargs="+", metavar=("OUT", "RUN"))
     group.add_argument("--check", type=Path, nargs="+", metavar=("OUT", "RUN"))
+    group.add_argument("--readout", type=Path, nargs=2, metavar=("OUT", "RUN"))
+    group.add_argument("--check-readout", type=Path, nargs=2, metavar=("OUT", "RUN"))
     group.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     if args.self_test:
         return self_test()
+    if args.readout or args.check_readout:
+        out, run = args.readout or args.check_readout
+        text = dump(readout(run))
+        if args.readout:
+            out.write_text(text, encoding="utf-8")
+        elif out.read_text(encoding="utf-8") != text:
+            raise SystemExit(f"{out}: the readout differs from its retained run")
+        print(f"{out}: {'written' if args.readout else 'replays'}, {json.loads(text)['verdict']}")
+        return 0
     out, *runs = args.write or args.check
     text = dump(record(runs))
     if args.write:

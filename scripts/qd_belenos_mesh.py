@@ -1313,7 +1313,7 @@ def check(directory: Path) -> None:
         [p.name for p in jobs]
         == ["job-00", "job-01", "job-02"]
         + [f"job-{j:02d}" for j in CAMPAIGN_JOBS]
-        + [ENSEMBLE_JOB, FORM_JOB, BRIDGE_JOB, DWELL_D1_JOB, DWELL_D3_JOB, DWELL_LADDER_JOB],
+        + [ENSEMBLE_JOB, FORM_JOB, BRIDGE_JOB, DWELL_D1_JOB, DWELL_D3_JOB, DWELL_LADDER_JOB, SEEDED_SINGLE_JOB],
         f"{directory / FAMILY} holds {[p.name for p in jobs]}",
     )
     uses: dict[tuple[str, int], set[str]] = {}
@@ -1378,7 +1378,7 @@ def observed(run: Path) -> tuple[Any, dict[str, Any]]:
         "single_click": [int(v) for v in single],
         "other_events": multi,
         "duration_s": duration,
-        "acquisition_s": round(float(seconds), 6),
+        "acquisition_s_estimate": round(float(seconds), 6),
         "dark_expected": [round(float(v), 3) for v in dark],
         "t_out": [float(v) for v in eta],
         "computed_input": inner["computed_input"],

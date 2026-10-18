@@ -145,10 +145,12 @@ job.
 
 The light-cone reading (`docs/evidence/quandela/belenos_light_cone.json`,
 strategy.md section 7 item 11) reads the same cells inside source 20's cone
-of each served mesh, which excludes the off-cone clicks that come and go
-on modes 0, 1 and 5. Every seeded cell then holds 0.98 to 0.995 at every budget, D4's
-decline is 5421 off-cone clicks on mode 5, and the cells that lose light inside
-the cone are the unseeded single jobs on 29dc6ef8 (Q1 0.519 and 0.534, D1
-0.924). Budget and dwell drop out of the explanation; seeding and the
-single-job form at Q1's budget remain confounded on 29dc6ef8, which case
-job-13 (item 12) separates.
+of each served mesh, which excludes the off-cone clicks that come and go on
+modes 0, 1 and 5. Every seeded iterated cell and D3 then hold 0.982 to 0.995
+at every budget, D4's decline is off-cone clicks on mode 5, and the cells
+that lose light inside the cone are the single jobs on 29dc6ef8 (Q1 0.507
+and 0.518, D1 0.918). Case job-13 (strategy.md item 12) then ran Q1's single
+job at seed 20 and kept 0.389 inside the ideal cone, its preregistered
+statistic: seeding plays no part, and the leak is a 10000-sample single job
+on 29dc6ef8, as the raw D1 to D4 readings suggested, with D4's decline
+removed as off-cone clicks.

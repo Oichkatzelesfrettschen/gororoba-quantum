@@ -1231,7 +1231,7 @@ compiled-mesh prediction as 0.880; an isotropic phase-noise hypothesis reaches
 its best stored TVD, 0.273, at sigma = 0.5 rad (the largest of the stored
 values 0.2, 0.3, 0.4, 0.5); the gain, crosstalk, wrong-source, ceiling and
 convention hypotheses each leave TVD at or above 0.283; the shot-noise floor is 0.0129; and the expected dark
-counts over the job's 0.27 s acquisition are 5.8 on mode 0 and 13.5 on mode 5,
+counts over the job's estimated 0.27 s acquisition are 5.8 on mode 0 and 13.5 on mode 5,
 against 664 single clicks on mode 5. Those 664 clicks lie outside the photon's
 light cone and come and go in a way the receipt's rate does not predict
 (`docs/notes/quandela/strategy.md` section 2), so a retained fraction is read

@@ -1,0 +1,85 @@
+{
+ "cases_sha256": "de2076c8388badaab55ea07f2c811d87dc252527b2f3c496c80f888e78ac3423",
+ "cell": {
+  "acquisition_s_estimate": 0.100024,
+  "compilation_seed": 20,
+  "cone_modes": [
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23
+  ],
+  "form": "single",
+  "ideal_cone_modes": [
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23
+  ],
+  "in_block": 0.334934,
+  "in_block_cone": 0.369536,
+  "in_block_cone_wilson95": [
+   0.359654671,
+   0.379528763
+  ],
+  "in_block_ideal_cone": 0.389167,
+  "in_block_ideal_cone_wilson95": [
+   0.378915489,
+   0.399516586
+  ],
+  "in_block_wilson95": [
+   0.325746703,
+   0.344248065
+  ],
+  "in_cone_samples": 9060,
+  "independent_gated_expectation": 19.334,
+  "job_duration_s": 14.0,
+  "max_samples": 10000,
+  "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+  "name": "job-13",
+  "off_cone_by_mode": {
+   "5": 936
+  },
+  "off_cone_total": 936,
+  "off_cone_with_in_cone_click": 0,
+  "one_click_samples": 9996,
+  "physical_perf": 0.020237996,
+  "receipt_dark_off_cone_acquisition": 10.553,
+  "receipt_dark_off_cone_wall": 1477.0,
+  "run": "2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
+  "samples": 10000,
+  "shot_floor": 0.004203,
+  "tvd_cone_from_ideal": 0.829139,
+  "wall_share_s": 14.0
+ },
+ "rule": {
+  "readings": "at least 0.95: the leak follows the unseeded single-job path; at most 0.65: the leak needs the single-job form at Q1's budget on 29dc6ef8 whatever the seed; between: intermediate, no attribution",
+  "series": "seeded single job on Q1's mesh (strategy.md section 7 item 12)",
+  "single_job_budget_at_most": 0.65,
+  "statistic": "in_block over one-click samples inside source 20's light cone of the served mesh (scripts/qd_belenos_cone.py)",
+  "unseeded_path_at_least": 0.95,
+  "void_unless_mesh_sha256_prefix": "29dc6ef8"
+ },
+ "run": "2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
+ "schema": "qd-belenos-seeded-single-readout-v1",
+ "verdict": "single-job form at Q1's budget"
+}
