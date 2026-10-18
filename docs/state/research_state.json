@@ -945,6 +945,27 @@
       "run": "results/quandela/runs/2026-10-18T074524Z-qpu_belenos-belenos_mesh-job-09",
       "family": "Belenos form-mesh bridge",
       "question": "Q1's exact case iterated over compilation seeds 0 to 21, 0 and 1: does Q1's mesh 29dc6ef8 recur in the iterated form, and does it leak there as it did in the one-circuit form?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-10-d1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10",
+      "family": "Belenos form-versus-dwell D1",
+      "question": "Q1's single job unchanged but for a 1500-sample budget: does mesh 29dc6ef8 still leak as a single job?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-11-d3",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11",
+      "family": "Belenos form-versus-dwell D3",
+      "question": "Q1's single job at 10000 samples on a fresh mesh from ANU-drawn compilation_seed 46667: is the single-job leak generic or mesh specific?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-12-d2-d4",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12",
+      "family": "Belenos form-versus-dwell D2 and D4",
+      "question": "Q1's circuit iterated over sample-budget ladders at seed 20 (29dc6ef8) and seed 46667: does in_block fall with the budget inside an iterated job?"
     }
   ],
   "claims": [
@@ -5389,6 +5410,100 @@
       "depends_on": [
         "qd-belenos-q1-one-circuit-new-mesh-intermediate"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-q1-leak-needs-single-job-and-large-budget",
+      "statement": "On qpu:belenos mesh 29dc6ef8, Q1's single job kept in_block 0.918 (Wilson 0.903 to 0.931) at 1500 samples (job aa4218f1) against 0.470 and 0.504 at 10000, and every iteration of an iterated job at seed 20 kept 0.896 to 0.995 at 1500 to 60000 samples (job c1eb1cbb; preregistered reading flat). The leak needs the single-job form with a large sample budget; the preregistered D1 reading is intermediate, 0.016 short of 'dwell' after its 0.034 cross-job margin.",
+      "boundary": "One mesh, one job per cell, jobs about ten hours after Q1. An S job's 13 to 15 s is overhead and acquisition runs near 4 x 10^4 samples per second, so the budget is a sample count, not seconds of heater exposure; the single-job mechanism (chunked acquisition or re-settling) is inferred and untested.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell.json",
+          "sha256": "97cead195732ddd6dc07555b6dcaf40cb393bbd730bb46862607abfea4046d48"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell-preregistration.json",
+          "sha256": "47fde7851c76d1fd451b31db26754e06383ecc7edb5b8da3a670c90d9899a32e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10/analysis.json",
+          "sha256": "072c354aebf2c0337c2c1fdd4d491bb6241fac3ffe9e5ae148f7d8be5194145e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12/analysis.json",
+          "sha256": "d48da8786d490391efd7e7cbaee5966090c012f1467b8387a738497c399c4e02"
+        }
+      ],
+      "gates": {
+        "core-543": "replay",
+        "core-542": "replay",
+        "core-537": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-10-d1",
+        "qd-qpu-belenos-mesh-job-12-d2-d4",
+        "qd-qpu-belenos-single-job-04",
+        "qd-qpu-belenos-single-job-04-replay"
+      ],
+      "depends_on": [
+        "qd-belenos-q1-leak-follows-one-circuit-form"
+      ],
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "documents": [
+        "docs/notes/quandela/strategy.md",
+        "docs/notes/quandela/form-dwell-decomposition.md"
+      ],
+      "assumptions": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-fresh-anu-mesh-holds-single-job",
+      "statement": "Q1's single job at 10000 samples and ANU-drawn compilation_seed 46667 (job a5f0a8a4) served the fresh mesh 14a96ca6 and kept in_block 0.937 (Wilson 0.932 to 0.941), the preregistered 'mesh susceptible' reading: the single-job leak is not generic. The same seed served 14a96ca6 in the iterated job c1eb1cbb, which read 0.990, 0.961 and 0.852 at 1500, 10000 and 40000 samples (intermediate).",
+      "boundary": "One fresh mesh. Its 40000-sample iteration ran last, after 125500 samples of the same job, so position and budget are confounded for the iterated decline.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell.json",
+          "sha256": "97cead195732ddd6dc07555b6dcaf40cb393bbd730bb46862607abfea4046d48"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell-preregistration.json",
+          "sha256": "47fde7851c76d1fd451b31db26754e06383ecc7edb5b8da3a670c90d9899a32e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11/analysis.json",
+          "sha256": "916572c1ed7d96b0e1a67e79888209da176f35a942599e45bf32eef03bd6859e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12/analysis.json",
+          "sha256": "d48da8786d490391efd7e7cbaee5966090c012f1467b8387a738497c399c4e02"
+        }
+      ],
+      "gates": {
+        "core-543": "replay",
+        "core-541": "freshness",
+        "core-537": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-11-d3",
+        "qd-qpu-belenos-mesh-job-12-d2-d4"
+      ],
+      "depends_on": [
+        "qd-belenos-q1-leak-follows-one-circuit-form"
+      ],
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "documents": [
+        "docs/notes/quandela/strategy.md",
+        "docs/notes/quandela/form-dwell-decomposition.md"
+      ],
+      "assumptions": [],
       "supersedes": [],
       "superseded_by": null
     }

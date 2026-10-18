@@ -128,3 +128,17 @@ its short-iteration spread, and flat when by at most 0.05 plus that spread.
 D3 and D4 repeat the reading on a fresh mesh when they pair (D4's mesh equals
 D3's). The order is D1, D3, then the D2 + D4 job, back to back, so the
 cross-job scale stays near its measured 0.034.
+
+## 6. Outcome
+
+The series ran as preregistered for 3.1315 credits (section 11 of
+strategy.md and `dwell.json` hold the numbers). Two premises of this
+decomposition failed and are corrected in strategy.md section 1a: an S job's
+13 to 15 s is overhead (1500 and 10000 samples both took 14 s), and an I job
+bills its largest iteration's `max_shots`. With acquisition near 4 x 10^4
+samples per second, "dwell" in these designs is a sample budget, not seconds
+of heater exposure. 29dc6ef8 held 0.918 in a 1500-sample single job and
+0.90 to 0.99 in every iteration up to 60000 samples, so its leak needs the
+single-job form with a large budget; the fresh mesh 14a96ca6 held 0.937 in
+a 10000-sample single job and declined to 0.852 at the end of the iterated
+job.

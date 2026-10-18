@@ -42,10 +42,11 @@ The cases, the runner and this guide use these names. One POST is one
 | cell | one (form, dwell, mesh) combination with its measured in_block | section 7 item 10 |
 
 Billing measured on the retained jobs: S jobs charged 1 + 1e-06 x shots
-(1.01 for 10000); every I job charged 1.003, with 3000 `max_shots` per
-iteration, for 36000 and for 48000 shots. The inferred rule, three jobs
-deep, is that an I job bills one iteration's `max_shots`, so samples past the
-first iteration are free and the 300 s limit, not credit, bounds an I job.
+(1.01 for 10000, 1.0015 for 1500). I jobs charge 1 + 1e-06 x the largest
+iteration's `max_shots`: 1.003 for three jobs with 3000 per iteration
+(36000 and 48000 shots in all) and 1.12 for job c1eb1cbb, whose largest
+iteration named 120000 of its 332000. Samples spread over equal iterations
+are nearly free; one long iteration bills its own shots.
 Seeds. A `compilation_seed` that explores new meshes comes from the ANU
 quantum random number generator: `scripts/anu_qrng.py draw` retains one
 1024-value uint16 draw per request under `docs/evidence/anu_qrng/` (raw
@@ -57,9 +58,12 @@ that reproduces a known served mesh (seed 20 for 29dc6ef8, seed 1 for
 e296b6a9) is an identifier and stays fixed. The seeds 0 to 21 of job-09
 predate the rule.
 
-Time on qpu:belenos: about 6.3 s per 1500-sample iteration (job c2eea262,
-152 s for 24) and 13 to 15 s for a 10000-sample S job, which fits about 5.2 s
-of per-setting overhead plus 0.75 ms per sample.
+Time on qpu:belenos: an S job takes 13 to 15 s whether it collects 1500 or
+10000 samples (aa4218f1, a5f0a8a4, Q1), so its duration is overhead. I jobs
+fit about 6.3 s per iteration plus 26 us per sample (c2eea262: 24 iterations,
+36000 samples, 152 s; c1eb1cbb: 9 iterations, 166000 samples, 61 s); the
+setting count, not the samples, fills the 300 s limit, and acquisition runs
+near 4 x 10^4 one-photon samples per second.
 
 ## 2. Platform facts that shape a case
 
@@ -71,12 +75,13 @@ of per-setting overhead plus 0.75 ms per sample.
   `noise`). It is not the QPU's live figures (g2 1 %, HOM 92.6 % on
   2026-10-17), so a sim prediction of a QPU number sends the QPU's
   NoiseModel or recomputes locally.
-- **Rates.** qpu:belenos delivered 10000 one-photon samples in 13 s, about
-  770 per second (`physical_perf` 0.0074), not the clock times transmittance
-  estimate of about 10^4 per second. The summed detector dark counts (about
-  68 per second, 38.2 on mode 5 and 19.6 on mode 0) are then about 9 % of a
-  job's samples; an analysis subtracts duration times the per-mode dark
-  count before it attributes clicks outside a block to the optics.
+- **Rates.** A 10000-sample S job lasts 13 s, but that is overhead: the
+  166000-sample I job c1eb1cbb places acquisition near 4 x 10^4 one-photon
+  samples per second (section 1a), the order of the clock times
+  transmittance estimate, not the 770 per second a job's duration suggests.
+  The analysis's dark expectation multiplies the job duration by the
+  per-mode dark rate (about 68 per second summed), so it overstates dark
+  clicks by the overhead's share of that duration.
 - **Compilation.** Both the simulator and the QPU return `computed_input`
   and `computed_circuit`. For a 24-mode circuit the compiled circuit is the
   full chip mesh: 552 beam splitters (Rx convention, calibrated angles such as
@@ -576,6 +581,30 @@ the couplers equaled Q1's throughout.
     its own `max_samples` and `max_shots`. D3's seed is the first ANU value
     a case consumes; the next case takes value 1 of the same draw.
 
+11. **Form versus dwell, run** (`dwell-preregistration.json`, readout
+    `dwell.json`, [form-dwell-decomposition.md](form-dwell-decomposition.md)).
+    D1 (aa4218f1): Q1's single job at 1500 samples served 29dc6ef8 again
+    and kept in_block 0.918 (Wilson 0.903 to 0.931), against 0.470 and
+    0.504 at 10000; the rule reads intermediate, 0.016 short of 'dwell'
+    after its 0.034 margin. D2 (c1eb1cbb, seed 20, 29dc6ef8 in all six
+    iterations): 0.993, 0.896, 0.995, 0.949, 0.940 and 0.945 at 1500, 10000,
+    1500, 40000, 1500 and 60000 samples, flat (drop 0.029 within the 0.055
+    short-iteration spread). D3 (a5f0a8a4): ANU seed 46667 served the fresh
+    mesh 14a96ca6, which held 0.937 at Q1's 10000 samples, mesh
+    susceptible. D4 (same job as D2): seed 46667 served 14a96ca6 again
+    (paired) and read 0.990, 0.961 and 0.852 at 1500, 10000 and 40000,
+    intermediate (drop 0.138). Together: **29dc6ef8 loses half its light
+    only in a single job that collects many samples**; at 1500 samples or in
+    any iterated job it holds. Because an S job's 13 s is overhead and
+    10000 samples take about 0.3 s of acquisition, the sample count, not
+    seconds of heater dwell, is what separates Q1 from D1, which points at
+    how a single job acquires a large budget (several acquisition chunks,
+    re-settling between them) rather than at heater heating; that reading
+    is inferred and untested. The fresh mesh shows the opposite trend, a
+    loss that grows with samples inside an iterated job, at the end of a
+    job that had already run 114500 samples, so position in the job and
+    dwell are confounded for D4.
+
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 
 The literature note transcribes 30 sources with their arXiv ids and the
@@ -672,7 +701,7 @@ selection needs repeated jobs rather than a split of one.
 | The chip's error class is random heater noise | class scans over C1 | open: under fitted efficiencies sigma 0.05 is the best point of a family that fails the fit (4.2 floors held out) |
 | The chip carries static heater offsets that user jobs can measure | `--static` and `--efficiency` over the four runs of C1 | settled for this session: refuted, held-out gain about -79000 nats (receipt model) and -34000 nats (fitted efficiencies) |
 | The bright-block leak is a property of its job (numeric unitary form or sparse target), not the chip's generic error | belenos_mesh job-02 on qpu:belenos scored against the C1 efficiencies, same couplers | settled: job specific, median in_block 0.952 against the 0.924 threshold; Q1's target kept 0.987 in the iterated form |
-| The one-circuit job form, not the bright block's own mesh, causes the leak | Q1's case as one circuit at compilation_seed 1 (belenos_mesh job-08), then Q1's case iterated over 24 seeds (job-09), which served 29dc6ef8 at seed 20 | supported: 29dc6ef8 kept 0.949 iterated against 0.470 and 0.504 as one circuit, in-job drift 0.005; preregistered verdict form or dwell, mesh specific (e296b6a9 0.886 one-circuit, 0.907 iterated); next, separate form from dwell with D1 to D4 (section 7 item 10) |
+| The one-circuit job form, not the bright block's own mesh, causes the leak | Q1's case as one circuit at compilation_seed 1 (belenos_mesh job-08), then Q1's case iterated over 24 seeds (job-09), which served 29dc6ef8 at seed 20 | supported: 29dc6ef8 kept 0.949 iterated against 0.470 and 0.504 as one circuit, in-job drift 0.005; preregistered verdict form or dwell, mesh specific (e296b6a9 0.886 one-circuit, 0.907 iterated); D1 to D4 (section 7 item 11): at 1500 samples the single job keeps 0.918 on 29dc6ef8, iterations up to 60000 samples keep about 0.945, a fresh ANU-seeded mesh keeps 0.937 at 10000 in a single job; the leak needs the single-job form with a large sample budget on a susceptible mesh |
 | The same body returns the same meshes on sim:belenos and qpu:belenos | job-02 on both | settled: refuted for iterated jobs (16 of 16 meshes differ); holds for the one-circuit single/job-04 |
 | C1's residual is a fixed property of each mesh within a session | exact repeat of C1 job-03 | settled: refuted, same meshes and G^2 2564 on 226 degrees of freedom (drift) |
 | compilation_seed selects the served mesh | job-02 at seeds 1 and 2 (belenos_mesh job-07) on qpu:belenos | settled: 16 of 16 configurations return three distinct meshes at seeds 0, 1 and 2 |
@@ -726,6 +755,9 @@ Not yet used:
 | 2026-10-18 04:24 | 8d28f121 | qpu:belenos | belenos_mesh job-08, Q1's case as one circuit at seed 1 | 1.01 | new mesh e296b6a9; in_block 0.886, a = 0.931; preregistered verdict intermediate |
 | 2026-10-18 04:25 | b8e2ec0c | qpu:belenos | belenos_mesh job-07, 84/84 at seeds 1 and 2, 32 iterations | 1.003 | 221 s; seed selects the mesh (16 of 16); dark a = 0.028, bright a = 0.938 |
 | 2026-10-18 07:45 | c2eea262 | qpu:belenos | belenos_mesh job-09, Q1's case iterated at seeds 0 to 21, 0, 1 | 1.003 | 152 s; 29dc6ef8 at seed 20, in_block 0.949 against 0.470 and 0.504 one-circuit; verdict form or dwell; 22 meshes, median 0.943 |
+| 2026-10-18 09:03 | aa4218f1 | qpu:belenos | belenos_mesh job-10 (D1), Q1's single job at 1500 samples | 1.0015 | 29dc6ef8; in_block 0.918; 14 s; verdict intermediate |
+| 2026-10-18 09:04 | a5f0a8a4 | qpu:belenos | belenos_mesh job-11 (D3), Q1's single job at ANU seed 46667 | 1.01 | fresh mesh 14a96ca6; in_block 0.937; 14 s; mesh susceptible |
+| 2026-10-18 09:05 | c1eb1cbb | qpu:belenos | belenos_mesh job-12 (D2 + D4), 9 iterations, dwell ladders at seeds 20 and 46667 | 1.12 | 61 s for 166000 samples; D2 flat on 29dc6ef8 (0.90 to 0.99); D4 0.990, 0.961, 0.852 on 14a96ca6; billed the largest iteration's 120000 max_shots |
 
 A QPU approval quotes the expected credits, the expected seconds and why a
 local Perceval simulation cannot answer the question. Job 4e208d22's quotes
