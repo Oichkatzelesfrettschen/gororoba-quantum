@@ -151,7 +151,7 @@ exhaustive replay rather than establishing the full corpus's scientific claim.
 
 `parallel.available_cpus()` intersects scheduler affinity with the CPU quotas
 of the process and its cgroup ancestors. The runner maintains that many CPU
-slots across all active gates. Ordinary gates consume one slot; seventeen gates
+slots across all active gates. Ordinary gates consume one slot; eighteen gates
 with independent inner work reserve the whole allocation using `workers: all`.
 A reserved gate receives the slot count through `GOROROBA_WORKERS`. Other gates
 wait until enough slots return. BLAS, OpenMP, NumExpr, Rayon and Qiskit process
@@ -346,3 +346,10 @@ commit receives a fresh hosted run. These runs cover different selections from
 the earlier PR baseline; their walls do not establish a controlled workflow
 speedup. The repetition-delay planning contract remains the longest single-slot
 case at 635.81 seconds in that qualification.
+
+The final main merge adds eight Quandela gates, including three full-tier static
+mesh checks. Their reviewed scopes cover retained Quandela cases/runs, the
+Quandela catalogue and leakage receipt, and the box-kite census. Transitive
+Python imports add their implementation inputs. The long retained-analysis
+gate reserves the allocation for its existing independent mesh-scan pool; the
+static optimizer checks keep one slot per process.
