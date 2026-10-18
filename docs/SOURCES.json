@@ -4906,6 +4906,64 @@
       "license_bytes": 1205,
       "copy_status": "unchanged",
       "conditions": "Preserve the complete original source archive, including author credits, copyright and license notices; no modifications or relabeling. Source distribution grants apply separately from paper rights."
+    },
+    {
+      "title": "wheel (Rust crate)",
+      "authors": [
+        "metastable-void"
+      ],
+      "version": "0.1.0",
+      "sha256": "2fb7ccae7d01d16dca5a39f58376ae6277467a8e3bea3fe45c20f72b4ee2c58b",
+      "bytes": 14092,
+      "retrieved_at_utc": "2026-10-17T18:03:55+00:00",
+      "license_identifier": "Apache-2.0 OR MPL-2.0",
+      "reading_scope": "Every member read in full before compiling: manifest and original manifest, VCS info, README, src/lib.rs, src/float.rs and src/fraction.rs with their tests; license headers.",
+      "compatibility": "No build script, dependencies or proc-macros; built offline as a path dependency of the audit harness under rustc 1.98.1",
+      "inspected_files": [
+        {
+          "file": "wheel-0.1.0/.cargo_vcs_info.json",
+          "sha256": "6c4ab6965b86484a38cca2a054f215f20ce3c18ff3c33c982a4c715210a46f64",
+          "bytes": 94
+        },
+        {
+          "file": "wheel-0.1.0/Cargo.toml",
+          "sha256": "8e0c022c696c3ddd518c198edd81c3f1511d7da1249f27d7708c6620a256f1f1",
+          "bytes": 915
+        },
+        {
+          "file": "wheel-0.1.0/Cargo.toml.orig",
+          "sha256": "97017890282c47676056da148d16ee4e43c3c91cea781a9d820a79cdee07a69d",
+          "bytes": 316
+        },
+        {
+          "file": "wheel-0.1.0/README.md",
+          "sha256": "d943d081eaeb9749b6a265c8a0c63faabae217d4c7c4199083a89fb72df50d40",
+          "bytes": 418
+        },
+        {
+          "file": "wheel-0.1.0/src/lib.rs",
+          "sha256": "eea95e211c027f15bd66fb7479880afb29008935d3a4a6c01c371db03065e29f",
+          "bytes": 1847
+        },
+        {
+          "file": "wheel-0.1.0/src/float.rs",
+          "sha256": "46d170859453ffda9c593555e3b142b7a29e78c8832ee7d85833f90e0ccfc47a",
+          "bytes": 19407
+        },
+        {
+          "file": "wheel-0.1.0/src/fraction.rs",
+          "sha256": "973971427aa17ab35633c20803cc829ff7eafba08780d61181159477e5239361",
+          "bytes": 14167
+        }
+      ],
+      "path": "docs/source_archives/wheel-0.1.0.crate",
+      "source_url": "https://static.crates.io/crates/wheel/wheel-0.1.0.crate",
+      "note": "docs/notes/wheel-rust-crate.md",
+      "license_member": "wheel-0.1.0/LICENSE.APACHE",
+      "license_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "license_bytes": 11357,
+      "copy_status": "unchanged",
+      "conditions": "Preserve the complete original crate archive, including LICENSE.APACHE and LICENSE.MPL; no modifications or relabeling. Either license of the Apache-2.0 OR MPL-2.0 choice permits unchanged redistribution."
     }
   ]
 }
