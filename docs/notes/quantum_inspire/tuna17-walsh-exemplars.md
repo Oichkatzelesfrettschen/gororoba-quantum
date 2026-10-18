@@ -1,0 +1,131 @@
+# Tuna-17 Walsh exemplars: the two cubic classes and the q13 readout context
+
+`scripts/qi_walsh_exemplar_cases.py` writes the series
+`results/quantum_inspire/cases/walsh_exemplar_tuna_17/` and its QX twins;
+`scripts/qi_walsh_exemplar_analysis.py` holds the preregistered analysis.
+Gates core-428 (case regeneration), core-429 (generator self-test), core-431
+(analysis self-test) and core-432 (qxelarator conformance, `requires: qi`).
+
+## What the circuits measure
+
+The associator phase omega_{i,j} of a dimension-32 pair is a cubic Boolean
+function for every pair with j at least 16, and the census
+(`scripts/associator_walsh_classes.py`) splits the cubic pairs into two
+spectral classes: |W| multiset {0: 24, 8: 7, 24: 1} with K = 11/32 (234
+pairs) and {0: 22, 8: 8, 16: 2} with K = 5/32 (126 pairs). The exemplars are
+(1,16), whose phase is OR(x1, x2, x3), and (9,18), affine-equivalent to
+a b c + b d. Design C samples the Walsh distribution P(y) = W(y)^2 / 1024
+through H^5, the diagonal phase and H^5.
+
+Under |+>^n input every linear change of variables before the diagonal is
+free and every linear network after it relabels the measured string, so a
+phase h with omega(x) = (-1)^h(Ax + b) up to affine terms gives
+P_omega(y) = P_h(z) at y = M z + u. Each class therefore runs as a four-qubit
+phase circuit; the generator records the first injective affine map
+(`census_map`) that carries the block distribution onto the census spectrum
+outcome by outcome, and the analysis reads z.
+
+These circuits measure how Tuna-17 moves two spectra that differ by one
+quadratic term on a fixed CCZ phase polynomial. They do not compose the
+three sedenion multiplication blocks; the factorized Design C circuits that
+do cost 94 and 99 routed CZ on Kingston
+([design_c_cubic_noise](../../evidence/design_c_cubic_noise/README.md)) and
+stay an IBM question.
+
+## Circuits
+
+`path_search` enumerates, breadth first by two-qubit gate count, every
+circuit of CNOT and CZ gates on a four-qubit path with diagonal phases
+k pi/4 on the parities the CNOT network visits and a free final linear map.
+A phase polynomial sum_p c_p (pi/4) [p.x] is a Boolean phase pi h(x) exactly
+when, in the expansion [p.x] = sum over nonempty T in p of (-2)^(|T|-1) x_T,
+the sums of c_p over p containing T vanish mod 4 for |T| = 1, are even for
+|T| = 2 (their halves give the quadratic part of h) and give the cubic part
+mod 2 for |T| = 3; only c_p mod 4 matters. The minimum is 5 two-qubit gates
+for the high class and 6 for the low class, with or without CZ moves; no
+circuit of that gate set reaches either class with fewer. The high circuit
+uses three positions and leaves the fourth idle in |0>.
+
+CNOT is written H CZ H, two H on one qubit with no gate between them cancel,
+and the phases are T, S and Tdag, on the pi/36 grid and native on Tuna-17.
+Every text is checked against the exact state vector of its own gate list,
+both blocks against the census spectrum through the recorded map, and
+OpenSquirrel's decomposition passes keep each gate sequence
+(`docs/evidence/quantum_inspire/toolchain_check.json`). qxelarator returns
+no shot outside either support and every outcome within |z| < 4.5 of its
+exact probability at 8192 shots
+(`results/quantum_inspire/walsh_exemplar_qx_conformance.json`).
+
+## Layout
+
+With q0, q5, q6, q7 and q9 excluded and q15 avoided
+([tuna-17.md](tuna-17.md)), the usable graph holds 18 four-qubit paths and
+exactly four vertex-disjoint pairs of them, each joined by at least two
+couplers: X = (1|2, 4, 8, 12) with Y = (10, 13, 11, 14) or
+(13, 11, 14, 16). No buffered pair exists, so the series carries the static
+ZZ of the parked couplers 8-11 and 12-14 ([experiments.md](experiments.md)).
+The series uses X = (1, 4, 8, 12) and Y = (10, 13, 11, 14): both usable
+neighbors of q13 then lie in block Y, so the readout model conditions q13 on
+block variables. walsh-c1 runs the high class on X and the low class on Y,
+walsh-c2 swaps them, and class and block separate inside one calibration.
+
+## Readout context
+
+The ladder established a context-dependent |1> misassignment on q13: e10
+0.088 with all 17 qubits excited, 0.042 with every coupled neighbor in |0>
+([tuna-17-run-design.md](tuna-17-run-design.md), ladder results). In a
+Walsh circuit q10 and q11 vary shot by shot, so a bracket value biases every
+Y-block distribution. Four context readouts measure q13 after its X:
+
+| circuit | q10, q11 | separates |
+|---|---|---|
+| readout-q13 | idle, \|0> | isolated reference |
+| readout-q13-xx | X X each, \|0> | drive crosstalk at fixed state |
+| readout-q13-q10 | X on q10 | state of q10 |
+| readout-q13-q11 | X on q11 | state of q11 |
+
+The analysis builds the Y-block response from q13's e10 chosen by the true
+state of (q10, q11), with readout-1 for (1, 1), and reports the bracket and
+isolated corrections beside it. In the self-test a state-dependent truth
+leaves the bracket and isolated corrections biased and their depolarizing
+shape test rejected, so a shape rejection on hardware is read against the
+readout variant that produced it.
+
+## Series
+
+| batch | circuits |
+|---|---|
+| batch-00 | readout-0, readout-1, readout-q13 |
+| batch-01 | walsh-c1, walsh-c2, readout-q13-xx |
+| batch-02 | walsh-c1, walsh-c2, readout-q13-q10 |
+| batch-03 | readout-0, readout-1, readout-q13-q11 |
+
+131072 shots per job. The fitted Tuna-17 cost of 2.6 s per job plus 0.53 ms
+per shot gives about 72 s per job, 12 jobs and about 870 s of execution;
+with the 120 s pause after each batch and the queue, the series takes about
+25 minutes. Each batch is three circuits, one batch queued at a time.
+
+## Preregistered decisions
+
+The manifest's `preregistered` block carries every rule and threshold:
+
+- Class order: K_high > K_low on each block at z >= 3 in every job; a
+  reversal refutes the emitted circuits.
+- Interaction: I = ln V(high, X) - ln V(high, Y) - ln V(low, X) +
+  ln V(low, Y) with V = (K - 1/16) / (K_ideal - 1/16). A per-block
+  multiplicative fidelity gives I = 0; |I| >= 3 SE establishes an error that
+  depends on the class, such as a coherent phase error on the CCZ or the
+  parked-coupler ZZ acting on the extra CZ.
+- Shape: per job and block, the maximum-likelihood depolarizing fit through
+  the readout response and its G test on 14 degrees of freedom;
+  log10 p <= -3 rejects the depolarizing shape.
+- Attribution of q13: drive, state, both or neither, each delta established
+  at |delta| >= 0.02 and |z| >= 3.
+- Reported without a decision: forbidden weight, replicate TVD against a
+  0.03 batch-scatter allowance, and the global
+  depolarizing prediction K_high 0.2595 and K_low 0.1236 at retention 0.965
+  per CZ, which the ladder's rho above 1 already excludes as the whole
+  channel.
+
+Errors come from a parametric bootstrap of 2000 draws on seed 20261018 that
+redraws every block histogram and every readout circuit's counts.
