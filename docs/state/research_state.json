@@ -3740,11 +3740,11 @@
     },
     {
       "id": "qi-tuna17-zero-divisor-contraction",
-      "statement": "On Tuna-17 the exact Clifford+T Design B witness of (e1 + e10)(e4 - e15) = 0 reads P(s = 0) = 0.471 [0.466, 0.475] dark, 0.512 [0.508, 0.517] bright and 0.499 fixture over three regions in a Latin square, an endpoint contrast of 0.042 (4.2 % of ideal, 6.5 % of Kingston's 0.646) with dark below bright by about 13 standard errors; the fixture agrees with 1/2 (z = -0.42); the endpoints straddle 1/2 with midpoint 0.4915, so dark + bright - 1 = -0.017 (z = -5.3) rejects the preregistered shared symmetric-contraction model; the region on qubits 0, 1, 2, 4, 5 shows no resolved contrast (0.002, 95 % -0.009 to 0.013); the QX twin reads 0, 1 and 0.490.",
+      "statement": "On Tuna-17 the exact Clifford+T Design B witness of (e1 + e10)(e4 - e15) = 0 has raw P(s = 0) = 0.471 [0.466, 0.475] dark, 0.512 [0.508, 0.517] bright and 0.499 fixture over three regions in a Latin square, an endpoint contrast of 0.042 (4.2 % of ideal, 6.5 % of Kingston's 0.646) with dark below bright by about 13 standard errors; the raw pooled fixture agrees with 1/2 (z = -0.42); the endpoints straddle 1/2 with midpoint 0.4915, so dark + bright - 1 = -0.017 (z = -5.3) rejects the preregistered shared symmetric-contraction model; the region on qubits 0, 1, 2, 4, 5 shows no resolved contrast (0.002, 95 % -0.009 to 0.013); the QX twin reads 0, 1 and 0.490.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One 16384-shot run per circuit on one Tuna-17 calibration; the three Latin circuits ran as sequential jobs, so drift between them enters the case contrasts; the routed replicas carry 66-70 CZ and 26 T against about 45 CZ with continuous rotations on Kingston, so the visibility gap compares implementations, not devices alone; the readout correction uses the all-|0> and all-|1> circuits, which omit readout crosstalk under the witness's state. Rejecting one shared contraction leaves circuit-dependent contractions and readout asymmetry as alternatives the preregistered tests do not separate.",
+      "boundary": "One 16384-shot run per circuit on one Tuna-17 calibration; three sequential Latin jobs leave case contrasts exposed to between-job drift. Every dark and bright replica uses 66 CZ and 26 T; each fixture uses 70 CZ and 26 T. Kingston used about 45 CZ and continuous rotations, so endpoint contrasts compare implementations as well as devices. The corner fixture uses selector Q4 while its endpoints use Q2. The preregistered raw tests reject one shared symmetric contraction, not all depolarizing descriptions or any uniquely identified coherent, non-unital or coupler mechanism. The all-zero/all-one readout calibration includes preparation error and omits readout crosstalk under the witness state.",
       "evidence": [
         {
           "path": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/analysis.json",
@@ -3844,22 +3844,28 @@
     },
     {
       "id": "qi-tuna17-zero-divisor-common-response",
-      "statement": "Readout-corrected with a seeded bootstrap over the joint selector outcomes and both calibration circuits, the Tuna-17 witness gives dark + bright - 1 = -0.042 (95 % -0.049 to -0.036), fixture - 1/2 = -0.016 (-0.021 to -0.012) and H = fixture - (dark + bright)/2 = +0.005 (-0.001 to 0.011): every selector misreads |1> more often than |0>, so readout hides part of the asymmetry rather than producing it, and the three preparations follow one affine response shifted toward selector 1, which disfavors circuit-dependent symmetric contractions; by region the common response holds on two regions and fails on qubits 0, 1, 2, 4, 5 (H = 0.027, z = 5.6).",
+      "statement": "The retained 4000-draw shared-shot/readout bootstrap and an independent analytic covariance replay agree on the Tuna-17 witness: corrected B-D=0.043494 (analytic z=12.97), D+B-1=-0.042291 (z=-12.15), fixture-1/2=-0.016412 (z=-6.70), and H=fixture-(dark+bright)/2=0.004733 (z=1.61). Raw H=0.007507 (z=2.72). The pooled corrected probabilities are compatible with a common affine response at this precision; non-rejection does not establish that model. Raw fixture consistency does not survive the retained readout correction. The corner has no resolved endpoint contrast, and its corrected H=0.018366 (z=3.50) also compares a Q4 fixture selector with Q2 endpoint selectors.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "The H test, the same-shot covariance and the bootstrap were fixed after the data; the readout correction uses all-|0> and all-|1> calibration, which omits readout crosstalk under the witness's state; a common affine response in the selector probability identifies no unique channel on the five-qubit circuit; one run on one calibration.",
+      "boundary": "This is secondary reanalysis, fixed after acquisition. H and its regional comparisons have no multiplicity correction; the original numerical |z|=3 benchmark does not make H preregistered. Uncertainty includes same-shot selector dependence and shared calibration sampling, but not between-job drift or calibration misspecification. Each fixture has four more CZ than the endpoints, and the weak corner also changes selector. The raw covariance methods differ by n versus n-1; corrected analytic and bootstrap standard errors differ by at most 1.4%. A probability-level affine description identifies no unique circuit channel, coupler setting, or cause of the spatial association.",
       "evidence": [
         {
           "path": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/analysis.json",
           "sha256": "c523ab54bb74ee985f30eca9bf66603b929cdb694eeaf5a0608105cbe989ae49"
+        },
+        {
+          "path": "results/quantum_inspire/secondary/zero_divisor_tuna_17.json",
+          "sha256": "436ca411aabf643ea69081df3a37c1f951e24533ea4bec2685eb6362a5c3acb5"
         }
       ],
       "documents": [
-        "docs/notes/quantum_inspire/experiments.md"
+        "docs/notes/quantum_inspire/experiments.md",
+        "results/quantum_inspire/secondary/zero_divisor_tuna_17.md"
       ],
       "gates": {
-        "core-330": "replay"
+        "core-330": "replay",
+        "core-571": "replay"
       },
       "acquisitions": [
         "qi-tuna17-zero-divisor"
