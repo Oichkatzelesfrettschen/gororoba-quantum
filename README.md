@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (71 established, 28 exploratory, 4 open, 8 proposed, 2 superseded, 11 withdrawn) with its evidence class,
+registered claim (72 established, 28 exploratory, 4 open, 8 proposed, 2 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -133,12 +133,13 @@ acquisition of every provider:
 | [2026-10-17T220939Z-sim_belenos-belenos_fringe-job-01](results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_fringe-job-01) | Quandela Cloud | Belenos fringe S2 | sim:belenos | 1 | 1 | completed | 1.0 credits |
 | [2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00](results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00) | Quandela Cloud | Belenos mesh S3 | sim:belenos | 1 | 16 | completed | 1.0 credits |
 | [2026-10-17T233527Z-sim_belenos-belenos_mesh-job-01](results/quandela/runs/2026-10-17T233527Z-sim_belenos-belenos_mesh-job-01) | Quandela Cloud | Belenos mesh S4 | sim:belenos | 1 | 1 | completed | 1.0 credits |
+| [2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02](results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02) | Quandela Cloud | Belenos mesh S5 | sim:belenos | 1 | 16 | completed | 1.0 credits |
 
 The IBM service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 physical jobs with 334 settled seconds; the account then reported 334 of 600 s consumed in the rolling window ending 2026-10-15T07:13:13.771Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-17T16:04:23+00:00 lists 212 jobs with 1353728 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-17T17:53:31+00:00 counts 0 jobs, and 14 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-17T17:53:31+00:00 counts 0 jobs, and 15 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 <!-- research-state:end -->
 
 ## Contents

@@ -2670,7 +2670,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --check results/quandela/runs/*/",
    "name": "core-508",
-   "seconds": 25.0,
+   "seconds": 46.0,
    "tier": "pr"
   },
   {

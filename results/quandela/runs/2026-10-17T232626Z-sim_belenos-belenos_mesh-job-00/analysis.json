@@ -12,20 +12,20 @@
     "kappa": 0.0
    },
    "fits": true,
-   "g2_per_dof": 1.523479,
+   "g2_per_dof": 0.89287,
    "log_likelihood": -19829.611943,
    "median_tvd_over_floor": 1.073143,
-   "p_value": 0.0331507
+   "p_value": 0.66087
   },
   "gain": {
    "best": {
     "gain": 0.0
    },
    "fits": true,
-   "g2_per_dof": 1.523479,
+   "g2_per_dof": 0.89287,
    "log_likelihood": -19829.611943,
    "median_tvd_over_floor": 1.073143,
-   "p_value": 0.0331507
+   "p_value": 0.66087
   },
   "misroute_+2": {
    "best": {
@@ -33,10 +33,10 @@
     "sigma": 0.0
    },
    "fits": true,
-   "g2_per_dof": 1.576013,
+   "g2_per_dof": 0.916366,
    "log_likelihood": -19829.611943,
    "median_tvd_over_floor": 1.073143,
-   "p_value": 0.0251021
+   "p_value": 0.617198
   },
   "misroute_-2": {
    "best": {
@@ -44,10 +44,10 @@
     "sigma": 0.0
    },
    "fits": true,
-   "g2_per_dof": 1.576013,
+   "g2_per_dof": 0.916366,
    "log_likelihood": -19829.611943,
    "median_tvd_over_floor": 1.073143,
-   "p_value": 0.0251021
+   "p_value": 0.617198
   },
   "misroute_-4": {
    "best": {
@@ -55,20 +55,20 @@
     "sigma": 0.0
    },
    "fits": true,
-   "g2_per_dof": 1.576013,
+   "g2_per_dof": 0.916366,
    "log_likelihood": -19829.611943,
    "median_tvd_over_floor": 1.073143,
-   "p_value": 0.0251021
+   "p_value": 0.617198
   },
   "phase_noise": {
    "best": {
     "sigma": 0.0
    },
    "fits": true,
-   "g2_per_dof": 1.523479,
+   "g2_per_dof": 0.89287,
    "log_likelihood": -19829.611943,
    "median_tvd_over_floor": 1.073143,
-   "p_value": 0.0331507
+   "p_value": 0.66087
   }
  },
  "couplers_match_case": true,

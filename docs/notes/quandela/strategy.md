@@ -223,7 +223,7 @@ total variation distance against a shot-noise floor of 0.012):
 | Extra photons or entanglement (other sources firing, g2) | 1 event of 10000 has more than one click; with one photon there is no multi-photon state to entangle | refuted |
 | Serialization or convention (transpose, mirrored modes, reversed order, negated phases, theta to pi - theta) | best variant TVD 0.378 against 0.871 for the ideal, none near the floor | refuted |
 | Coupler (theta) errors | a common shift of 0.1 rad keeps 0.99 of the light in the block; 0.05 rad noise keeps 0.99 | refuted as the main cause |
-| Random heater phase noise | needs sigma about 0.5 rad on every heater to reach TVD 0.237, and puts the leak on 18 and 19 rather than 17 | not supported at a physical size |
+| Random heater phase noise | the exact dephasing channel reaches TVD 0.252 only at sigma 0.5 rad on every heater and puts the leak on 18 and 19 rather than 17 | not supported at a physical size |
 | Heater gain, thermal crosstalk, phase ceiling | best one-parameter fits TVD 0.256 (gain -0.3), 0.364 (crosstalk 0.155), 0.315 (ceiling 4.95 rad), all twenty times the floor | open, none explains the run |
 | Wrong photon: the demultiplexer routes the photon into another source mode | the compiled mesh's column 18 fits at TVD 0.298, as well as any physical model | open, tested by the identity settings below |
 | Device state: the run preceded a calibration (status `calibration` 40 minutes later) | Belenos read 0 % availability 2026-10-10 to 13 and returned on 10-14 | open, tested by the diagnostic job's class likelihood on fresh calibration |
@@ -352,6 +352,49 @@ QPU for the same body) respond differently to each class.
   sixteen settings of 1500 samples, and a simulator validation of a larger
   job splits into halves that each stay under 300 s.
 
+## 7a. What the literature adds (docs/notes/quandela/literature.md)
+
+The literature note transcribes 30 sources with their arXiv ids and the
+equations used here. Five findings set the plan:
+
+1. The Belenos chip class (Barzaghi et al., arXiv:2505.01609) is a
+   laser-written glass mesh whose calibration fits static phases, every
+   coupler's splitting ratio and a thermal crosstalk matrix from 30000 random
+   settings, reaching 99.7 % Haar amplitude fidelity; a closed-loop route
+   reaches 24 dB extinction, so a healthy mesh loses at most about 9 % on a
+   one-photon route. Q1's loss of about half therefore points at the compile
+   and calibration path, not at the glass.
+2. Calibration episodes move leakage by more than an order of magnitude: a
+   Belenos study (Tully et al., arXiv:2606.18408) saw HOM visibility fall from
+   90.7 % to 21.2 % and a dump-port leak rise 66-fold across one
+   recalibration, then recover. qpu:belenos read HOM 92.6 % at Q1 and 57.8 %
+   after the next calibration.
+3. Compile non-convergence biased one-photon observables on Ascella by up to
+   40 % and changed between calibrations; an ensemble of 40 equivalent
+   circuits with random output phases removed it (Franco et al.,
+   arXiv:2604.04691).
+4. Retained power on a bar or cross route of N_c MZIs under per-arm phase
+   error sigma is about exp(-N_c sigma^2 / 2), so Q1's 0.47 on an interior
+   route needs sigma near 0.25 to 0.28 rad, 2.5 to 3 times the only
+   hardware-backed residual bound (0.1 rad, 6-mode glass).
+5. Model-based fits with about one sample per parameter work on hardware;
+   ratio reconstruction at 24 modes needs about 3e11 counts.
+
+Design rules taken from it, in order:
+
+1. Gate a QPU job on calibration state: plan records HOM and g2, and a
+   one-photon diagnostic waits until HOM is back above 90 %, the settled
+   state of the cited episode.
+2. Run every production configuration as an ensemble of equivalent compiles
+   (distinct `compilation_seed` values), report the mean and the
+   between-seed spread, and select seeds on one half of the shots while
+   reporting the other.
+3. Key every offset fit to one calibration session; the static class is
+   valid only within the session that produced its data.
+4. Place blocks to minimize MZIs crossed and cross states, and subtract
+   instrument terms (dark clicks, per-port efficiency) before reading any
+   retained fraction as optical.
+
 ## 8. The 84/84 box-kite program
 
 The census's seven box-kites hold 84 edges, each a pair of assessors whose
@@ -424,3 +467,4 @@ Not yet used:
 | 2026-10-17 22:16 | one job | sim:belenos | fringe strut, 8 iterations | 1.00 | flat: visibility 0.023 (2500 samples per point) |
 | 2026-10-17 23:27 | 1d7160c1 | sim:belenos | belenos_mesh job-00, 16 settings | 1.00 | every setting at its ideal (TVD 0.0002 to 0.038); all 574 phases re-transpiled; class likelihood names ideal by 352 nats |
 | 2026-10-17 23:36 | e5b74123 | sim:belenos | belenos_mesh job-01, numeric form | 1.00 | 721/779 on modes 20/21; re-transpiled, max phase change pi |
+| 2026-10-18 00:29 | 32b28fe8 | sim:belenos | belenos_mesh job-02, the 84/84 program | 1.00 | 8 dark configurations a = 0 (0/1500 each, Wilson upper 0.0026), 8 bright a = 1; verdict ideal (p = 0.136) |

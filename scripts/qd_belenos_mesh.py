@@ -80,6 +80,7 @@ SCAN_CROSSTALK = tuple(round(-0.2 + 0.02 * k, 2) for k in range(21))
 SCAN_FRACTIONS = tuple(round(0.1 * k, 1) for k in range(11))
 MISROUTE_OFFSETS = (-4, -2, 2)
 FIT_P_MIN = 1e-3
+POOL_MIN = 5.0
 STATIC_FOLDS = 4
 STATIC_TAUS = (0.1, 0.3)
 STATIC_GAIN_MIN = 10.0
@@ -850,13 +851,15 @@ def documents(
             "demultiplexer misroute (source models) each predict a different histogram per returned mesh",
             "decision": "each class's magnitude scan (exact dephasing channel, heater gain, thermal "
             "crosstalk, misroute plus noise) is scored by efficiency-weighted multinomial likelihood on the "
-            "returned meshes; the best class fits only when the chi-square p-value of G^2 at its degrees of "
-            "freedom is at least 0.001 and the median ratio of setting TVD to its shot-noise floor is at most "
-            "3, and otherwise the job reads 'no class fits'; a best point at every class's null magnitude "
-            "reads 'ideal'; one shared static heater-offset vector, fitted by MAP on three folds of settings "
-            "and scored on the fourth, is the static class and wins when its held-out gain exceeds 10 nats; a "
-            "misroute is read from the likelihood of the source models on the returned meshes, whose unused "
-            "columns are transpiler draws",
+            "returned meshes; the best class fits only when the chi-square p-value of its deviance, with "
+            "bins expected below 5 counts pooled into one rest bin floored at one count once it saw a click, "
+            "is at least 0.001 "
+            "at its degrees of freedom and the median ratio of setting TVD to its shot-noise floor is at "
+            "most 3, and otherwise the job reads 'no class fits'; a best point at every class's null "
+            "magnitude reads 'ideal'; one shared static heater-offset vector, fitted by MAP on three folds "
+            "of settings and scored on the fourth, is the static class and wins when its held-out gain "
+            "exceeds 10 nats; a misroute is read from the likelihood of the source models on the returned "
+            "meshes, whose unused columns are transpiler draws",
         },
     }
     return json.dumps(manifest, indent=1) + "\n", circuit_text
@@ -1132,9 +1135,21 @@ def capped_dark(singles: list[list[int]], receipt: list[list[float]]) -> list[li
     return [[min(d[m], floors[m] * sum(s)) for m in range(MODES)] for s, d in zip(singles, receipt, strict=True)]
 
 
-def g_squared(counts: list[int], probabilities: list[float]) -> float:
+def pooled_deviance(counts: list[int], probabilities: list[float]) -> tuple[float, int]:
+    """Poisson deviance and bin count after Cochran pooling.
+
+    Bins expected below POOL_MIN counts merge into one rest bin. When the rest bin saw clicks, its
+    expectation is floored at one count, the resolution of an N-sample histogram, so a stray click where the
+    mesh predicts 1e-7 costs what one unexplained count costs and an empty rest bin costs nothing.
+    """
     n = sum(counts)
-    return 2 * sum(c * math.log(c / (n * p)) for c, p in zip(counts, probabilities, strict=True) if c)
+    bins = [(c, n * p) for c, p in zip(counts, probabilities, strict=True) if n * p >= POOL_MIN]
+    rest = [(c, n * p) for c, p in zip(counts, probabilities, strict=True) if n * p < POOL_MIN]
+    if rest:
+        seen = sum(c for c, _ in rest)
+        bins.append((seen, max(sum(e for _, e in rest), min(1.0, seen))))
+    deviance = 2 * sum((c * math.log(c / e) if c else 0.0) - (c - e) for c, e in bins)
+    return deviance, len(bins)
 
 
 class Scan:
@@ -1314,11 +1329,9 @@ def score(
         ]
         j = max(range(len(points)), key=lambda k: summed[k])
         probabilities = [rates(c, scans[i][name][j], eta, dark[i]) for i, c in enumerate(singles)]
-        g2 = sum(g_squared(c, p) for c, p in zip(singles, probabilities, strict=True))
-        dof = sum(
-            sum(1 for v, q in zip(c, p, strict=True) if v or q * sum(c) >= 1) - 1
-            for c, p in zip(singles, probabilities, strict=True)
-        ) - len(points[j])
+        pooled = [pooled_deviance(c, p) for c, p in zip(singles, probabilities, strict=True)]
+        g2 = sum(d for d, _ in pooled)
+        dof = sum(k - 1 for _, k in pooled) - len(points[j])
         ratios = sorted(
             0.5 * sum(abs(v / sum(c) - q) for v, q in zip(c, p, strict=True)) / max(shot_floor(p, sum(c)), 1e-12)
             for c, p in zip(singles, probabilities, strict=True)

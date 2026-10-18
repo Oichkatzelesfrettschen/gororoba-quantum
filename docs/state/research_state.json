@@ -721,6 +721,13 @@
       "run": "results/quandela/runs/2026-10-17T233527Z-sim_belenos-belenos_mesh-job-01",
       "family": "Belenos mesh S4",
       "question": "one numeric architecture circuit, the guide's pre-compiled form: does the service keep its phases?"
+    },
+    {
+      "id": "qd-sim-belenos-mesh-job-02",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02",
+      "family": "Belenos mesh S5",
+      "question": "the 84/84 box-kite program in one job: do the 8 dark and 8 bright configurations covering every zero product and control of the 84 edges read their ideals through the re-transpiled meshes?"
     }
   ],
   "claims": [
@@ -4403,7 +4410,7 @@
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/analysis.json",
-          "sha256": "6ec001b097bb78fbf45ea05e680d025568cbd9f0ed8ffb586b4080084295735d"
+          "sha256": "cd2831be4ba1b90c6ae0d0d1f569eaa353b458e1a9671bf40882a543ad2be2de"
         },
         {
           "path": "results/quandela/runs/2026-10-17T233527Z-sim_belenos-belenos_mesh-job-01/analysis.json",
@@ -4424,6 +4431,36 @@
       "assumptions": [],
       "depends_on": [
         "qd-sim-belenos-iterations-and-forms"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-sim-belenos-84-84-zero-divisor-program",
+      "statement": "On sim:belenos one 16-iteration job (32b28fe8) carries all 168 zero products and 168 bright controls of the 84 box-kite edges, certified through cd_core and mapped to 8 dark and 8 bright one-photon configurations: every dark configuration reads algebra share a = 0 (0 of 1500 one-click samples, Wilson upper bound 0.0026) and every bright one a = 1 (lower bound 0.9974) through the meshes the service re-transpiled, and the class analysis of the returned meshes reads ideal (p = 0.136).",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "One sim:belenos job on 2026-10-18 under the simulator's default noise model; it shows the 84/84 case, the iterated mesh vehicle and the analysis reproduce the exact ideals end to end, never that hardware does.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02/analysis.json",
+          "sha256": "f3fc39ce8cbcb9ccd197ac87a6c15c51bc0404f85a5fd11acc919a034f58feb2"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-508": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-sim-belenos-mesh-job-02"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-cloud-retranspiles-architecture-circuits"
       ],
       "supersedes": [],
       "superseded_by": null
