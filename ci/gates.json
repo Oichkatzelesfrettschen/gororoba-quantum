@@ -3551,6 +3551,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_ladder_line_bins.py --check results/quantum_inspire/box_kite_tuna_17_ladder_line_bins.json && \"$PYTHON\" -B -O -W error scripts/qi_ladder_line_bins.py --check results/quantum_inspire/box_kite_tuna_17_ladder_line_bins.json",
+   "name": "core-433",
+   "seconds": 12.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_ladder_line_bins.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_ladder_line_bins.py --self-test",
+   "name": "core-550",
+   "seconds": 66.9,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -O -W error scripts/qi_walsh_exemplar_cases.py --check results/quantum_inspire/cases",
    "name": "core-428",
    "seconds": 8.6,
