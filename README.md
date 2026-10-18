@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (87 established, 33 exploratory, 4 open, 8 proposed, 3 superseded, 11 withdrawn) with its evidence class,
+registered claim (88 established, 33 exploratory, 4 open, 8 proposed, 3 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -169,10 +169,11 @@ acquisition of every provider:
 | [2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11](results/quandela/runs/2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11) | Quandela Cloud | Belenos form-versus-dwell D3 | qpu:belenos | 1 | 1 | completed | 1.01 credits |
 | [2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12](results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12) | Quandela Cloud | Belenos form-versus-dwell D2 and D4 | qpu:belenos | 1 | 1 | completed | 1.12 credits |
 | [2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13](results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13) | Quandela Cloud | Belenos seeded single job on Q1's mesh | qpu:belenos | 1 | 1 | completed | 1.01 credits |
+| [2026-10-18T161620Z-qx_reset_phase-batch-00](results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00) | Quantum Inspire | cQASM reset semantics on the hosted QX emulator | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
 
 The IBM service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 physical jobs with 334 settled seconds; the account then reported 334 of 600 s consumed in the rolling window ending 2026-10-15T07:13:13.771Z. That is an observation, not a current balance or an authorization.
 
-The Quantum Inspire ledger retrieved at 2026-10-18T03:06:50+00:00 lists 275 jobs with 4493312 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+The Quantum Inspire ledger retrieved at 2026-10-18T16:18:13+00:00 lists 278 jobs with 4499456 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
 The Quandela token usage report retrieved at 2026-10-17T17:53:31+00:00 counts 0 jobs, and 29 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 <!-- research-state:end -->

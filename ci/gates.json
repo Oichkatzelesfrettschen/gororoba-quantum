@@ -3003,6 +3003,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_gap_directions.py --check docs/evidence/rank_locus_gap_directions/result.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_gap_directions.py --check docs/evidence/rank_locus_gap_directions/result.json",
+   "name": "core-551",
+   "seconds": 10.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_gap_directions.py --self-test && \"$PYTHON\" -B -O -W error scripts/rank_locus_gap_directions.py --self-test",
+   "name": "core-552",
+   "seconds": 13.3,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/exact_rank.py --self-test && \"$PYTHON\" -B -O -W error scripts/exact_rank.py --self-test",
    "name": "core-528",
    "seconds": 3.4,
@@ -3984,6 +4000,30 @@
    "seconds": 32.0,
    "tier": "full",
    "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -O -W error scripts/qx_reset_phase_probe.py --check results/quantum_inspire/cases",
+   "name": "core-455",
+   "seconds": 0.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --replay results/quantum_inspire/qx_reset_phase_analysis.json && \"$PYTHON\" -B -O -W error scripts/qx_reset_phase_probe.py --replay results/quantum_inspire/qx_reset_phase_analysis.json",
+   "name": "core-456",
+   "seconds": 0.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --self-test && \"$PYTHON\" -B -O -W error scripts/qx_reset_phase_probe.py --self-test",
+   "name": "core-457",
+   "seconds": 0.3,
+   "tier": "pr"
   }
  ],
  "excluded": [

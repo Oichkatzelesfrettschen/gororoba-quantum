@@ -50,6 +50,26 @@ and is never evidence of the gap.
    non-zero-divisor witness. Falsifier: rank below 2 at any witness refutes
    the "leaves through e_8 and e_24" part of the conjecture while leaving
    the dimension question open.
+
+   **Outcome.** The prediction holds at all 12 witnesses
+   ([evidence](../evidence/rank_locus_gap_directions/README.md),
+   `scripts/rank_locus_gap_directions.py`, gates core-551 and core-552).
+   - T_F is built from exact curve velocities inside each family:
+     octonion-derivation flows, scalings, fiber lines and projection
+     curves.
+   - It is pinned from above by the kernel of each family's defining
+     equations, and its dimension equals the family dimension.
+   - The induced map T_1(x)/T_F -> span{e_8, e_24} has rank 2.
+   - The result is sharper than predicted:
+     T_1(x) = T_F (+) span{e_8, e_24}, an orthogonal sum.
+   - So e_8 and e_24 are themselves the first-order exit directions, and no
+     first-order direction touches e_0 or e_16.
+   - T_1(x) intersected with H_5^perp equals T_F. So D_(5,k) intersected
+     with H_5^perp has local dimension exactly the family dimension at
+     every witness, and any excess must leave H_5^perp.
+   - The question stays first order. Computation 2 now runs over
+     T_1(x) = T_F (+) span{e_8, e_24}, with the e_8 and e_24 coefficients
+     as the transverse variables.
 2. **Second-order compatibility with the family variables kept.** Run the
    centered Schur construction of `nullity_twelve_locus.py` at the
    nullity-12 witnesses {a, 0} (then the nullity-8 and nullity-4
