@@ -721,8 +721,14 @@ def conformance(directories: dict[str, dict[str, str]], live: bool) -> dict[str,
         if live:
             row["counts"] = reduce_counts(histograms[n], job["blocks"])
         rows.append(row)
-    return {"schema": CONFORMANCE_SCHEMA, "qxelarator": "0.10.0", "shots": CONFORMANCE_SHOTS, "ideal": ideal,
-            "circuits": rows}  # fmt: skip
+    return {"schema": CONFORMANCE_SCHEMA, "qxelarator": qi_stack.pins()["qxelarator"], "shots": CONFORMANCE_SHOTS,
+            "ideal": ideal, "circuits": rows}  # fmt: skip
+
+
+def check_header(retained: dict[str, Any], fresh: dict[str, Any]) -> None:
+    """The record's schema, pinned qxelarator version, shots and ideal spectra equal the regenerated header."""
+    for key in ("schema", "qxelarator", "shots", "ideal"):
+        require(retained.get(key) == fresh[key], f"record header {key} differs from {fresh[key]!r}")
 
 
 def check_conformance(directories: dict[str, dict[str, str]], path: Path) -> str:
@@ -731,7 +737,7 @@ def check_conformance(directories: dict[str, dict[str, str]], path: Path) -> str
     live = qi_stack.live("qxelarator", "judged the retained counts")
     fresh = conformance(directories, live)
     keys = ("file", "sha256", "seed", "classes", "blocks")
-    require(retained["shots"] == fresh["shots"] and retained["ideal"] == fresh["ideal"], "record header differs")
+    check_header(retained, fresh)
     require(
         [{k: r[k] for k in keys} for r in retained["circuits"]] == [{k: r[k] for k in keys} for r in fresh["circuits"]],
         "the record's circuits differ from the regenerated series",
@@ -803,6 +809,13 @@ def self_test() -> None:
     unclosed = [[zero, one, row], [row]]
     expect_rejection("a series without its closing bracket", partial(write, shared, unclosed, texts, tuna))
     write(shared, [[zero, one, row], [row, row], [zero, one, row]], texts, tuna)
+    retained = json.loads(CONFORMANCE.read_text(encoding="utf-8"))
+    fresh = conformance(series(), False)
+    check_header(retained, fresh)
+    for key, value in (("schema", "qi-walsh-exemplar-qx-conformance-v0"), ("qxelarator", "0.9.0")):
+        expect_rejection(
+            f"a conformance record with {key} {value}", partial(check_header, retained | {key: value}, fresh)
+        )
     print("walsh exemplar cases self-test: every corrupted input rejected")
 
 

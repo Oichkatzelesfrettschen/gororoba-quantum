@@ -169,9 +169,9 @@ def response(values: dict[str, np.ndarray], block: tuple[int, ...], variant: str
 # ---------------------------------------------------------------- Walsh observables
 
 
-def histogram(matrix: np.ndarray, block: tuple[int, ...]) -> np.ndarray:
+def histogram(matrix: np.ndarray, block: tuple[int, ...], outcomes: int = OUTCOMES) -> np.ndarray:
     z = sum(matrix[:, q].astype(np.int64) << k for k, q in enumerate(block))
-    return np.bincount(z, minlength=OUTCOMES)
+    return np.bincount(z, minlength=outcomes)
 
 
 def shape_test(raw: np.ndarray, r: np.ndarray, ideal: np.ndarray) -> dict[str, float]:
@@ -238,12 +238,21 @@ def analyze_bits(manifests: dict[str, dict[str, Any]], bits: dict[str, dict[str,
     }
     joined = {name: np.concatenate([point[name], boot[name]]) for name in CONTEXTS}
     joined["readout-1"] = np.concatenate([point["e10"][:, CONTEXT_QUBIT], boot["e10"][:, CONTEXT_QUBIT]])
+    # readout-q13 runs in batch-00 and each context readout in a later batch, so q13's bracket drift
+    # between batch-00 and batch-03 bounds the baseline shift a delta carries and joins its SE in quadrature.
+    q13_drift = drift[str(CONTEXT_QUBIT)]
     attribution: dict[str, dict[str, Any]] = {}
     for label, name in (("drive", "readout-q13-xx"), ("q10", "readout-q13-q10"), ("q11", "readout-q13-q11")):
         delta = joined[name] - joined["readout-q13"]
         se = float(np.std(delta[1:], ddof=1))
-        established = abs(delta[0]) >= pre["delta_min"] and abs(delta[0]) >= zdec * se
-        attribution[label] = {"delta": sig(float(delta[0])), "se": sig(se), "established": bool(established)}
+        total = math.hypot(se, q13_drift)
+        established = abs(delta[0]) >= pre["delta_min"] and abs(delta[0]) >= zdec * total
+        attribution[label] = {
+            "delta": sig(float(delta[0])),
+            "se": sig(se),
+            "se_with_drift": sig(total),
+            "established": bool(established),
+        }
     drive = bool(attribution["drive"]["established"])
     state = bool(attribution["q10"]["established"] or attribution["q11"]["established"])
     verdict = {(False, False): "neither", (True, False): "drive", (False, True): "state", (True, True): "both"}
@@ -260,15 +269,22 @@ def analyze_bits(manifests: dict[str, dict[str, Any]], bits: dict[str, dict[str,
             matrix = bits[batch][f"{name}.cq"]
             outside = [q for q in range(matrix.shape[1]) if all(q not in blk for blk in BLOCKS.values())]
             row: dict[str, Any] = {"batch": batch, "circuit": name, "stray": int(matrix[:, outside].any(axis=1).sum())}
+            # Both blocks read the same shots, so each draw resamples the joint (X, Y) histogram once and
+            # takes both block histograms from it: index x + 16 y, rows y and columns x after the reshape.
+            joint = histogram(matrix, BLOCKS["X"] + BLOCKS["Y"], OUTCOMES * OUTCOMES).astype(np.float64)
+            n = joint.sum()
+            joint_draws = np.concatenate(
+                [joint[None, :], rng.multinomial(int(n), joint / n, size=draws).astype(np.float64)]
+            ).reshape(-1, OUTCOMES, OUTCOMES)
+            block_draws = {"X": joint_draws.sum(axis=1), "Y": joint_draws.sum(axis=2)}
             for block, cls in assignment.items():
                 qubits = BLOCKS[block]
                 raw = histogram(matrix, qubits).astype(np.float64)
                 ideal = np.array([float(Fraction(p)) for p in classes[cls]["ideal_p"]])
                 k_ideal = float(Fraction(classes[cls]["k"]))
-                n = raw.sum()
-                raw_draws = np.concatenate(
-                    [raw[None, :], rng.multinomial(int(n), raw / n, size=draws).astype(np.float64)]
-                )
+                raw_draws = block_draws[block]
+                if not np.array_equal(raw_draws[0], raw):
+                    fail(f"{batch}/{name}: the joint histogram's {block} marginal differs from the block histogram")
                 variants: dict[str, dict[str, Any]] = {}
                 for variant in pre["q13"]["variants"] if CONTEXT_QUBIT in qubits else ["bracket"]:
                     r = np.concatenate([response(point, qubits, variant), response(boot, qubits, variant)])
@@ -287,14 +303,19 @@ def analyze_bits(manifests: dict[str, dict[str, Any]], bits: dict[str, dict[str,
             jobs.append(row)
 
     primary = {b: "context" if CONTEXT_QUBIT in BLOCKS[b] else "bracket" for b in BLOCKS}
+    # Each block compares its high-class job with its low-class job of the same batch, so the block's
+    # own fidelity cancels; the two jobs are separate acquisitions and their SEs combine in quadrature.
     order = []
-    for row in jobs:
-        high, low = (b for cls in ("high", "low") for b in BLOCKS if row[b]["class"] == cls)
-        diff = row[high]["variants"][primary[high]]["k"]["value"] - row[low]["variants"][primary[low]]["k"]["value"]
-        se = math.hypot(row[high]["variants"][primary[high]]["k"]["se"], row[low]["variants"][primary[low]]["k"]["se"])
-        order.append(
-            {"batch": row["batch"], "circuit": row["circuit"], "z": sig(diff / se), "holds": diff >= zdec * se}
-        )
+    for batch in ("batch-01", "batch-02"):
+        for block in BLOCKS:
+            by_class = {
+                row[block]["class"]: row[block]["variants"][primary[block]]["k"]
+                for row in jobs
+                if row["batch"] == batch
+            }
+            diff = by_class["high"]["value"] - by_class["low"]["value"]
+            se = math.hypot(by_class["high"]["se"], by_class["low"]["se"])
+            order.append({"batch": batch, "block": block, "z": sig(diff / se), "holds": bool(diff >= zdec * se)})
     v = {key: np.mean(values, axis=0) for key, values in pooled.items()}
     if min(float(np.min(x)) for x in v.values()) <= 0:
         interaction: dict[str, Any] = {
@@ -374,11 +395,12 @@ def synthetic(
     q13: tuple[float, float, float, float] = (0.04, 0.06, 0.06, 0.09),
     drive: float = 0.0,
     shots: int = 131072,
+    q13_shift: float = 0.0,
 ) -> dict[str, dict[str, np.ndarray]]:
     """Bit matrices of the whole series from true block distributions and a readout model.
 
     q13's e10 follows the true state of (q10, q11) through q13 = (00, 10, 01, 11); the X X readout adds
-    `drive` to its isolated value.
+    `drive` to its isolated value, and every batch after batch-00 adds `q13_shift` to q13's e10.
     """
     rng = np.random.default_rng(seed)
     bits: dict[str, dict[str, np.ndarray]] = {}
@@ -400,6 +422,7 @@ def synthetic(
             flip_p = np.where(true == 0, e01, e10)
             neighbors = true[:, CONTEXT_NEIGHBORS[0]] + 2 * true[:, CONTEXT_NEIGHBORS[1]]
             q13_e10 = np.asarray(q13)[neighbors] + (drive if name == "readout-q13-xx" else 0.0)
+            q13_e10 = q13_e10 + (q13_shift if n > 0 else 0.0)
             flip_p[:, CONTEXT_QUBIT] = np.where(true[:, CONTEXT_QUBIT] == 0, e01, q13_e10)
             bits[batch][f"{name}.cq"] = true ^ (rng.random(true.shape) < flip_p)
     return bits
@@ -483,6 +506,17 @@ def self_test() -> str:
         raise AssertionError("self-test: a class-specific error on one block leaves no interaction")
     if record["context"]["verdict"] != "drive":
         raise AssertionError(f"self-test: q13 attribution {record['context']['verdict']} on a drive-only truth")
+
+    # Block X far below block Y: a within-job comparison of high on X against low on Y reverses, while each
+    # block's own high-against-low comparison holds.
+    record = analyze_bits(manifests, synthetic(4, truth_of(classes, {"X": 0.5, "Y": 0.95}), shots=32768))
+    if not record["decisions"]["class_order_holds"]:
+        raise AssertionError(f"self-test: the class order fails at fixed block {record['decisions']['class_order']}")
+
+    # A q13 baseline that shifts after batch-00 by more than the context deltas attributes nothing.
+    record = analyze_bits(manifests, synthetic(5, truth_of(classes, lam), q13_shift=0.06))
+    if record["context"]["verdict"] != "neither":
+        raise AssertionError(f"self-test: q13 attribution {record['context']['verdict']} on a drifting baseline")
 
     # Missing batches fail.
     bits = synthetic(3, truth_of(classes, lam), shots=4096)

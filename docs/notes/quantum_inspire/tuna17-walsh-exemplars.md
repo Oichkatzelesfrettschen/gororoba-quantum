@@ -109,8 +109,9 @@ with the 120 s pause after each batch and the queue, the series takes about
 
 The manifest's `preregistered` block carries every rule and threshold:
 
-- Class order: K_high > K_low on each block at z >= 3 in every job; a
-  reversal refutes the emitted circuits.
+- Class order: K_high > K_low on each block at z >= 3 in every batch,
+  comparing the block's high-class job with its low-class job so the
+  block's fidelity cancels; a reversal refutes the emitted circuits.
 - Interaction: I = ln V(high, X) - ln V(high, Y) - ln V(low, X) +
   ln V(low, Y) with V = (K - 1/16) / (K_ideal - 1/16). A per-block
   multiplicative fidelity gives I = 0; |I| >= 3 SE establishes an error that
@@ -120,7 +121,9 @@ The manifest's `preregistered` block carries every rule and threshold:
   the readout response and its G test on 14 degrees of freedom;
   log10 p <= -3 rejects the depolarizing shape.
 - Attribution of q13: drive, state, both or neither, each delta established
-  at |delta| >= 0.02 and |z| >= 3.
+  at |delta| >= 0.02 and |z| >= 3. readout-q13 runs in batch-00 and the
+  context readouts in later batches, so q13's bracket drift between
+  batch-00 and batch-03 joins each delta's SE in quadrature.
 - Reported without a decision: forbidden weight, replicate TVD against a
   0.03 batch-scatter allowance, and the global
   depolarizing prediction K_high 0.2595 and K_low 0.1236 at retention 0.965
@@ -128,7 +131,9 @@ The manifest's `preregistered` block carries every rule and threshold:
   channel.
 
 Errors come from a parametric bootstrap of 2000 draws on seed 20261018 that
-redraws every block histogram and every readout circuit's counts.
+redraws every readout circuit's counts and, for each Walsh circuit, the
+joint histogram of both blocks, so the draws keep the covariance of blocks
+read in the same shots.
 
 ## Results, 2026-10-18
 
@@ -140,11 +145,13 @@ core-557; claims `qi-tuna17-q13-readout-context-q11` and
 0.0037 on every block qubit.
 
 - **q13 context.** q13's e10 reads 0.0456 alone, 0.0913 beside an excited
-  q11 (+0.046, about 45 SE), 0.0396 beside an excited q10 and 0.0419 after
+  q11 (+0.046, about 21 SE with q13's bracket drift in the SE), 0.0396
+  beside an excited q10 and 0.0419 after
   X X on both neighbors; readout-1 reads 0.0898. The preregistered
   attribution is "state", and the state that matters is q11's: the ladder's
   context effect is q11 at measurement, with no drive crosstalk.
-- **Classes.** K_high exceeds K_low in all four jobs at z 111 to 115.
+- **Classes.** On each block and in both batches the high-class job's K
+  exceeds the low-class job's at z 110 to 117.
 
   | class | block X | block Y | ideal |
   |---|---|---|---|
@@ -152,7 +159,7 @@ core-557; claims `qi-tuna17-q13-readout-context-q11` and
   | low | 0.1296, 0.1313 | 0.1251, 0.1252 | 0.15625 |
 
   Replicates agree within a TVD of 0.004 to 0.008.
-- **Interaction.** I = -0.148 (SE 0.009), established: the high class does
+- **Interaction.** I = -0.148 (SE 0.010), established: the high class does
   better on Y and the low class on X. The high circuit leaves its block's
   fourth qubit idle, so the low class alone uses q12 and q14 and the couplers
   q8-q12 and q11-q14; the two classes run on different hardware subsets, and
