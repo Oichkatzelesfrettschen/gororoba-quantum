@@ -53,15 +53,19 @@ Consequences for this survey:
 
 - The residual factor f below is fitted to the noise-model values, not to a
   measurement. The measured Kingston contrast is consistent with zero, so no
-  measured f exists to carry to another machine, and every contrast in the IQM
-  screen is an upper estimate.
-- A run on a second feed-forward stack now answers a different question than
-  "more shots for the same effect": a nonzero contrast on IQM would place the
-  missing structure in the Heron r2 feed-forward path, and a null would point
-  to the circuit or its routed depth. Both outcomes need the same shot count
-  the screen derives.
+  measured f exists to carry to another machine. The IQM rows are equal-f
+  scenarios: IQM's readout, reset, one-qubit and idle survival can exceed
+  f = 0.759, and no row alone establishes that a route is infeasible.
+- A run on a second feed-forward stack is a stack-level replication. A nonzero
+  contrast on IQM would not by itself place the missing structure in the
+  Heron r2 feed-forward path, because topology, routed depth, native gates,
+  reset and the copy-qubit readout all change with the machine; isolating the
+  feed-forward controller needs a matched control. A null would be consistent
+  with the Kingston one. Either outcome needs the shot count the screen
+  derives.
 
-Deferred measurement (a coherent controlled-S onto an eighth qubit) removes
+Deferred measurement (a coherent controlled-S-dagger, `cp(-pi/2)`, onto an
+eighth qubit) removes
 requirements 1 to 3 and 5 but changes the intervention: the arm no longer tests
 classical feed-forward, so it is a separate experiment with its own controls.
 
@@ -139,12 +143,15 @@ Largest Spark allotments on Garnet:
 The two-arm design needs equal shots per arm, so the working budget is about
 13,500 shots per arm. Emerald gives (12 - 0.18) / 0.00096 = 12,312 per arm.
 
-Shots needed. Each arm's score has variance near (p01 + p11) / N = 0.5 / N, so
-the contrast difference has standard error 1 / sqrt(N). A k-sigma detection of
-contrast c needs N = (k / c)^2 shots per arm. For the three noise-model values
-of the 713-CZ Kingston routing, c = 0.0417, 0.0344 and 0.0310, this gives
-5,176, 7,606 and 9,366 shots per arm at 3 sigma and 14,377, 21,127 and 26,015
-at 5 sigma. The Kingston run spent 100,000 per arm.
+Shots needed. The family's admitted contract
+([N21_USAGE_BUDGET.md](../../gororoba_quantum/N21_USAGE_BUDGET.md)) sizes a run
+so that detection at alpha plus power 0.8 fits the contrast: K / sqrt(n) <= c
+with K = 9.724 under Hoeffding, or about 9.16 under the empirical-Bernstein
+opt-in, so n = (K / c)^2 shots per arm. For the three noise-model values of the
+713-CZ Kingston routing, c = 0.0417, 0.0344 and 0.0310, this gives 54,378,
+79,905 and 98,394 shots per arm under Hoeffding; the Kingston run spent
+100,000 per arm. A 3-sigma normal approximation, (3 / c)^2, understates the
+requirement by a factor of about ten and does not size a run.
 
 First-order contrast model. Contrast = 0.25 * f * exp(-n e), with n the routed CZ
 count and e the median CZ error. Kingston's median CZ error in
@@ -155,33 +162,34 @@ f = 0.759 for c = 0.0417, 0.626 for 0.0344 and 0.564 for 0.0310; the three
 values come from calibrations of 2026-10-16 and 2026-10-18 while e comes from
 the 2026-10-14 snapshot. Garnet's median CZ fidelity is 99.51 percent
 (e = 0.0049) and Emerald's 99.5 percent (e = 0.005) per the Open Quantum
-provider pages; f is assumed equal. The model ignores IQM's readout and reset
-durations, crosstalk and the fat tail of the CZ error distribution, so treat
-it as a screen, not a prediction. Rows use f = 0.759, the upper end.
+provider pages. The rows below are equal-f scenarios at f = 0.759, the largest
+fitted value; IQM's own f is unknown. The model ignores IQM's readout and reset
+durations, crosstalk and the fat tail of the CZ error distribution, so treat it
+as a screen, not a prediction.
 
-| Backend | Routed CZ n | Contrast | Shots per arm, 3 sigma | Shots per arm, 5 sigma |
+| Backend | Routed CZ n | Contrast | Shots per arm, K = 9.724 | Shots per arm, K = 9.16 |
 | --- | --- | --- | --- | --- |
-| ibm_kingston (model) | 713 | 0.0417 | 5,176 | 14,377 |
+| ibm_kingston (model) | 713 | 0.0417 | 54,378 | 48,253 |
 | ibm_kingston (measured) | 713 | +0.0027, consistent with 0 | n/a | n/a |
-| IQM Garnet | 713 | 0.0058 | 270,858 | 752,383 |
-| IQM Garnet | 600 | 0.0100 | 89,497 | 248,601 |
-| IQM Garnet | 450 | 0.0209 | 20,578 | 57,160 |
-| IQM Garnet | 300 | 0.0436 | 4,732 | 13,143 |
-| IQM Garnet | 200 | 0.0712 | 1,776 | 4,933 |
+| IQM Garnet | 713 | 0.0058 | 2,845,699 | 2,525,166 |
+| IQM Garnet | 450 | 0.0209 | 216,192 | 191,841 |
+| IQM Garnet | 300 | 0.0436 | 49,708 | 44,109 |
+| IQM Garnet | 200 | 0.0712 | 18,656 | 16,555 |
+| IQM Garnet | 150 | 0.0910 | 11,430 | 10,142 |
+| IQM Garnet | 100 | 0.1162 | 7,002 | 6,214 |
 
-Break-even on Spark. A 3-sigma result at 13,586 shots per arm needs c >= 0.0257,
-that is n <= 408 routed CZ on Garnet with f = 0.759 and n <= 347 with f = 0.564.
-Emerald, whose per-shot fee leaves 12,312 shots per arm (c >= 0.0270), gives
-390 and 330. A 5-sigma result needs c >= 0.0429 on Garnet, n <= 303 or 243.
-The Spark threshold is therefore about 350 to 410 routed CZ.
-The 713-CZ heavy-hex routing is out of reach on Garnet at any budget this
-account holds: 3 sigma needs about 271,000 shots per arm, 20 times the per-arm
-Spark budget and 14 jobs of the 20,000-shot ceiling per arm. The deciding input is
-the CZ count of a square-lattice routing of the circuit, which no branch of the
-repository holds yet; with it in hand the table above converts to a
-go/no-go in one lookup. Paid Public credits would cost ceil(0.18 + N * 0.00087)
-credits per job at one USD-equivalent dollar per credit, for example 2 * 18 = 36
-credits for two 20,000-shot jobs.
+Break-even on Spark. 13,586 shots per arm meet the contract for c >= 0.0834
+(Hoeffding) or 0.0786 (empirical Bernstein), that is n <= 167 or 179 routed CZ
+on Garnet at f = 0.759 and n <= 107 or 119 at f = 0.564. Emerald, whose
+per-shot fee leaves 12,312 shots per arm (c >= 0.0876 or 0.0826), gives 154 or
+166 and 95 or 107. The Spark threshold in the equal-f scenario is therefore
+about 110 to 180 routed CZ, below every routing of the circuit the repository
+records; a larger f on IQM raises it. The deciding inputs are the CZ count of a
+square-lattice routing of the circuit, which no branch of the repository holds
+yet, and IQM's own f. Paid Public credits cost ceil(0.18 + N * 0.00087)
+credits per job at one USD-equivalent dollar per credit: at 300 CZ the
+contract's 49,708 shots per arm take three jobs at the 20,000-shot ceiling,
+18 + 18 + 9 = 45 credits per arm.
 
 ## Provider survey
 
@@ -217,10 +225,11 @@ expected contrast, confidentiality.
 
 1. Open Quantum IQM Garnet (then Emerald), conditional on `accepting_jobs`
    turning true. Expressivity: `cc_prx` with one
-   control bit covers the S-dagger correction and the reset; QASM lowering and
-   returned MCM bits are the open risks. Shots: 13,500 per arm on Spark, 27,172
-   total. Contrast: 0.021 at 450 CZ, 0.044 at 300 CZ; feasible at 3 sigma only for
-   n <= 408 routed CZ. Confidentiality: public. Needs no new sign-up.
+   control bit covers the S-dagger correction and the reset; QASM lowering,
+   returned MCM bits and feedback-key reuse are the open risks. Shots: 13,586
+   per arm on Spark, 27,172 total. Contrast in the equal-f scenario: 0.044 at
+   300 CZ, 0.071 at 200 CZ; the Spark balance meets the contract only for
+   n <= about 180 routed CZ. Confidentiality: public. Needs no new sign-up.
 2. IBM Open Plan with the 180-minute offer (the same machine, not a substitute).
    Expressivity is proven; the contrast is measured and consistent with zero at
    100,000 shots per arm against a predicted 0.034, so more Heron r2 shots of
@@ -228,50 +237,53 @@ expected contrast, confidentiality.
    The 180-minute allowance (10,800 s) is eighteen times the 600 s window.
    Private. Cost is the owner's opt-in.
 3. Amazon Braket IQM Garnet. Same chip and instruction set as ranking 1, so the
-   same contrast screen, with an unlimited paid shot supply: at 450 CZ,
-   2 * (0.30 + 0.00145 * 20,578) = $60.3 for 3 sigma and
-   2 * (0.30 + 0.00145 * 57,160) = $166.4 for 5 sigma; at 713 CZ even 3 sigma costs
-   2 * (0.30 + 0.00145 * 270,858) = $786.1. Private under AWS terms. MCM bits are not
-   returned, so requirement 4 needs the copy-qubit workaround.
+   same contrast screen, with an unlimited paid shot supply: under the contract
+   (K = 9.724), 2 * (0.30 + 0.00145 * 18,656) = $54.7 at 200 CZ and
+   2 * (0.30 + 0.00145 * 49,708) = $144.8 at 300 CZ; at 713 CZ the
+   2,845,699 shots per arm cost about $8,250. Confidentiality: AWS data terms
+   not reviewed, so unknown. MCM bits are not returned, so requirement 4 needs
+   the copy-qubit workaround.
 
-Quantinuum H2 or Helios ranks first on contrast (all-to-all connectivity removes
-the routing term) and on expressivity (classical conditions through Q# `if` or
-QIR Adaptive RI; the Qiskit port path is unverified, see the survey row), but offers no free
-individual quota in the pages reached, and the published HQC formula and the
-$125,000 Standard plan imply a cost of order $10^4 for 5,000 shots. The estimate
-assumes N1q = 600, N2q = 300, Nm = 10 (not derived from a compiled circuit),
-giving HQC = 5 + 5000 * (600 + 3000 + 50) / 5000 = 3,655, and prices an HQC at
-$12.5 from the subscription ($125,000 for 10,000 HQC); the pay-as-you-go unit
-price is not published.
-It becomes the first choice only through an institutional or grant route.
+Quantinuum H2 or Helios removes the SWAP-routing overhead through all-to-all
+connectivity, but the circuit's own entangling gates, measurements, resets and
+conditional operations still attenuate the contrast; without a compiled circuit
+and a hardware-grounded error model its contrast ranking is unverified.
+Expressivity covers classical conditions through Q# `if` or QIR Adaptive RI;
+the Qiskit port path is unverified (see the survey row). No free individual
+quota appears in the pages reached, and the published HQC formula and the
+$125,000 Standard plan imply a cost of order $10^4 for 5,000 shots. The
+estimate assumes N1q = 600, N2q = 300, Nm = 10 (not derived from a compiled
+circuit), giving HQC = 5 + 5000 * (600 + 3000 + 50) / 5000 = 3,655, and prices
+an HQC at $12.5 from the subscription ($125,000 for 10,000 HQC); the
+pay-as-you-go unit price is not published. It becomes a candidate only through
+an institutional or grant route.
 
 ## Recommendation and uncertainty
 
 Wait for the Garnet-grid routing and for iqm:garnet to accept jobs. If the CZ
-count is at most about 350 (up to 410 at f = 0.759), run the
-experiment on Open Quantum Garnet in two Spark-funded jobs of about 13,500
-shots, one per arm, after a one-circuit probe confirms the `cc_prx` lowering
-and the returned bits. If it is above 410, the Spark balance cannot reach 3
-sigma, and the options are the IBM 180-minute offer, or Braket Garnet at the
-costs above. Confidence that Garnet reaches 3 sigma on the Spark balance:
-low (below 25 percent), set by the unrouted CZ count, by the assumed f (0.564 to
-0.759, all fitted to noise-model values the Kingston measurement did not reproduce),
-and by whatever removed the effect on Heron r2. A Kingston diagnostic that
-identifies that channel raises this rating if it is Heron-specific and lowers
-it if it is generic to mid-circuit measurement.
-The cost ordering (Open Quantum before Braket) has high confidence, as it
-follows from the stated rates. No contrast ordering survives the Kingston
-measurement: the only measured contrast is consistent with zero. The residual
-factor, IQM readout and reset overhead, and the fat tail of the CZ error would
-move the contrast estimate by tens of percent; a
-`cc_prx` that rejects theta = pi/2 would invalidate the S-dagger construction.
+count is at most about 110 to 180 in the equal-f scenario, run the experiment
+on Open Quantum Garnet in two Spark-funded jobs of 13,586 shots, one per arm,
+after a one-circuit probe confirms the `cc_prx` lowering, feedback-key reuse
+and the returned bits. Above that, the Spark balance cannot meet the contract,
+and the options are paid Public credits, the IBM 180-minute offer, or Braket
+Garnet at the costs above. Confidence that Garnet meets the contract on the
+Spark balance: low, set by the unrouted CZ count, by IQM's unknown f (the
+fitted 0.564 to 0.759 transfers no bound), and by whatever removed the effect on
+Heron r2. A Kingston diagnostic that identifies that channel raises this
+rating if it is Heron-specific and lowers it if it is generic to mid-circuit
+measurement. The cost ordering (Open Quantum before Braket) has high
+confidence, as it follows from the stated rates. No contrast ordering survives
+the Kingston measurement: the only measured contrast is consistent with zero.
+A `cc_prx` that rejects theta = pi/2 would invalidate the S-dagger
+construction.
 
 ## Owner actions
 
-1. Approve a written one-circuit probe on iqm:garnet (Public, Spark) that checks
-   `cc_prx` with theta = pi/2, the QASM form of the feedback key, and whether
-   `measure_ff` bits return in counts. This is the only step that resolves the
-   three unverified Open Quantum risks.
+1. Approve a written one-circuit probe on iqm:garnet (Public, Spark) that
+   checks `cc_prx` with theta = pi/2, the QASM form of the feedback key, both
+   conditionals (the active reset and the S-dagger) driven from one
+   `measure_ff` key, and whether `measure_ff` bits return in counts. This step
+   resolves the four unverified Open Quantum risks.
 2. Decide whether to opt in to IBM's 180-minute Open Plan offer; it buys a
    Heron r2 rerun only once a hypothesis for the measured null exists.
 3. State the owner's location, which decides eligibility for the EuroHPC pilot
@@ -279,7 +291,7 @@ move the contrast estimate by tens of percent; a
    Quantinuum exists.
 4. Sign-ups for Amazon Braket, Azure Quantum, IQM Resonance and Quantinuum are
    the owner's action and are not needed unless step 1 fails or the Garnet
-   routing exceeds about 410 CZ.
+   routing exceeds the Spark threshold.
 5. Approve the Public tier's disclosure terms for any Open Quantum run
    (circuits and results public, retained by Quantum Rings).
 
