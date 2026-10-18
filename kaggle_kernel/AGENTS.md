@@ -122,6 +122,10 @@ and what it must prove before its output counts.
     - a CPU qiskit-aer that shares the qiskit_aer/ files;
     - a GPU that nvidia-smi does not list;
     - a Bell run that raised, ran on another device, or left cuStateVec off.
+  - `push --gpu-env-with torch` adds torch 2.14.1, the build host's version,
+    to the venv's pins, so a torch entry runs over the repository's numpy
+    and qiskit instead of the image's; the preflight requires it at that
+    version like every other pin.
   - Read gpu-env-report.txt and install-pins.txt in the output for the
     commands' own output.
   - "Keeping the run on the GPU" in `docs/notes/kaggle/custatevec.md` maps

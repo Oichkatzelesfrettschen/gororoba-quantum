@@ -1018,7 +1018,7 @@ def self_test() -> dict[str, Any]:
     sums = max(float(np.max(np.abs(law.sum(axis=-1) - 1))) for law in laws)
     lowest = min(float(law.min()) for law in laws)
     require(sums <= SUM_TOLERANCE, f"(f) laws sum to 1 within {sums}")
-    require(lowest >= -np.finfo(np.float64).eps, f"(f) a law entry is {lowest}")
+    require(lowest >= -float(np.finfo(np.float64).eps), f"(f) a law entry is {lowest}")
     out["f_normalization"] = {"max_abs_sum_minus_1": sums, "min_probability": lowest}
 
     # (g) torch complex128 on the CPU against numpy.

@@ -529,6 +529,11 @@ retain its output under results/kaggle/. The kernel's own guide is
     exits 4 without running the entry.
   - `aer_gpu_probe.py --require-gpu` then stops at the first row that leaves
     the GPU.
+  - `--gpu-env-with torch` adds `GPU_ENV_GROUPS["torch"]`, torch 2.14.1 at
+    the host's version, to the same resolve and to the pins the preflight
+    requires; `ghost_branching_benchmark.py --require-gpu NAME --gpus N`
+    then exits 3 unless torch lists both T4s and a complex128 matmul on
+    each matches numpy.
   - Only Python itself differs from CI's 3.14.7.
   - On a CPU machine the same push stops at the preflight, which proves the
     error path at no GPU cost.
