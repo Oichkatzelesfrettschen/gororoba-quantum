@@ -371,15 +371,23 @@ def fold_solution_error(
     return float(np.linalg.norm(np.array(fresh) - xs) / np.linalg.norm(xs)), bound
 
 
+SHARED_ENVIRONMENT = ("python", "machine", "processor", "numpy", "scipy", "qiskit")
+
+
 def check_witness(witness: list[dict[str, Any]], source: dict[str, Any]) -> None:
     """Each substrate's capture rounds to the atlas lane; every solved cell is this host's lstsq within roundoff.
 
     The first capture ran on AOCL and the second on OpenBLAS, by the libraries
     each process mapped, so a same-substrate pair never reads as the split.
+    Both ran on one CPU model, interpreter and numpy, scipy and qiskit release
+    (SHARED_ENVIRONMENT), so BLAS and LAPACK are the only recorded difference.
     """
     require(len(witness) == 2, "the record holds two substrates")
     kinds = [substrate_kind(sub["environment"]) for sub in witness]
     require(kinds == ["aocl", "openblas"], f"the captures ran on {kinds}, not AOCL then OpenBLAS")
+    for key in SHARED_ENVIRONMENT:
+        values = [sub["environment"].get(key) for sub in witness]
+        require(values[0] is not None and values[0] == values[1], f"the captures differ in {key}: {values}")
     lanes = {(lane["backend"], lane["lane"]): lane for lane in source["lanes"]}
     for k, sub in enumerate(witness):
         other = witness[1 - k]
@@ -455,6 +463,7 @@ def self_test(path: Path) -> int:
             0
         ].__setitem__(0, 1.0),
         "substrate": lambda r: r["substrates"][1].__setitem__("environment", r["substrates"][0]["environment"]),
+        "shared environment": lambda r: r["substrates"][1]["environment"].__setitem__("numpy", "0.0.0"),
         "summary": lambda r: r["summary"][backend]["base_s"]["max_over_tolerance"].__setitem__("solve", 0.0),
         "study input": lambda r: r["study_inputs"][backend]["moves"].__setitem__(0, 0.0),
     }

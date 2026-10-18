@@ -462,7 +462,8 @@ scipy 1.18.1 and qiskit 2.5.2.
 - S is the Arch numpy on AMD AOCL BLAS 5.3 (BLIS and libflame).
 - T is a uv venv with the pip numpy on scipy-openblas 0.3.34 (CI's numpy,
   scipy and BLAS pins). Its qiskit stays at the host's 2.5.2, so BLAS is the
-  only difference.
+  only difference. `--check` requires both captures to record the same CPU
+  model, machine, Python, numpy, scipy and qiskit.
 - The retained atlas record, which core-329 compares against, comes from a
   third substrate: the Kaggle kernel, with numpy 2.1.3 and Python 3.13.15.
 
