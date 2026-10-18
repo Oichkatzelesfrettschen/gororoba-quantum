@@ -936,7 +936,7 @@ def anchor_phase(partner: int, errors: dict[Column, float]) -> float:
 
 
 def zz_frame_anchor() -> None:
-    """A partner in |0> leaves the qubit's phase unchanged under zz; zz_symmetric adds a zeta/2 detuning."""
+    """Synthetic channel check: |0> leaves the partner's zz phase unchanged; zz_symmetric adds zeta/2 detuning."""
     for partner in (0, 1):
         base = anchor_phase(partner, {})
 
@@ -1190,7 +1190,11 @@ def main() -> int:
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path)
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--self-test-channels", action="store_true", help="check the synthetic ZZ frame anchor")
     args = parser.parse_args()
+    if args.self_test_channels:
+        zz_frame_anchor()
+        return 0
     if args.self_test:
         return self_test()
     backends = args.runs.split(",")

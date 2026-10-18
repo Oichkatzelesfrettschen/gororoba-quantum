@@ -45,6 +45,8 @@ call's; the sampled parity holds in numpy complex128; and parity_failure
 passes a gap at PARITY_TOLERANCE and fails one above it.
 ``--self-test --device cpu`` also replays the restructured programs in JAX,
 compares them with numpy, and compares the chunked JAX replay with one call.
+``--unit-test`` checks template reuse, CZ Kraus channels and padded replay
+chunks on five synthetic two-qubit circuits without archived runs or JAX.
 
 Kaggle. The sweep reads the retention audit, the calibration history and
 each audited run's record.json, isa.qpy and collect.json, about 93 MB that
@@ -518,6 +520,101 @@ def diagonal(program: jax_bridge.Program) -> np.ndarray:
     return np.real(np.diag(jax_bridge.evolve_numpy(program)))
 
 
+def unit_test() -> dict[str, Any]:
+    """Synthetic two-qubit template, CZ-channel and padded chunk contracts without archives or JAX."""
+    from qiskit_aer.noise import NoiseModel, ReadoutError, depolarizing_error
+
+    channel = jax_bridge.CzChannel.build([(None, None), (None, None)], None)
+    require(cz_error(None, 12.0) is None, "an absent CZ error acquires a scaled value")
+    require(cz_error(0.03, 1000.0) == ghost_error_scale.CZ_CAP, "the CZ factor exceeds its recorded cap")
+    require(abs(channel.depolarizing(0.03) - 0.04) <= CHANNEL_TOLERANCE, "the no-relaxation CZ infidelity is wrong")
+
+    def noise(error: float | None) -> Any:
+        model = NoiseModel()
+        model.add_quantum_error(depolarizing_error(0.02, 1), "h", [0])
+        model.add_quantum_error(depolarizing_error(channel.depolarizing(error), 2), "cz", [0, 1])
+        model.add_readout_error(ReadoutError([[0.97, 0.03], [0.04, 0.96]]), [0])
+        return model
+
+    circuits = []
+    factors = (0.0, 0.1, 0.5, 12.0, 1000.0)
+    for position in range(len(factors)):
+        circuit = QuantumCircuit(2, 2)
+        circuit.h(0)
+        circuit.h(1)
+        circuit.rz(0.13 * position, 0)
+        circuit.cz(0, 1)
+        circuit.h(0)
+        circuit.measure([0, 1], [1, 0])
+        circuits.append(circuit)
+    base = noise(0.03)
+    cache: dict[int, np.ndarray] = {}
+    skeleton = jax_bridge.template(circuits[0], base, cache)
+    require(bool(skeleton.angles) and bool(skeleton.cz), "the synthetic template lacks angle or noisy CZ slots")
+    programs = []
+    channel_distance = 0.0
+    reproduction = 0.0
+    for circuit, factor in zip(circuits, factors, strict=True):
+        require(
+            jax_bridge.structure_key(circuit) == jax_bridge.structure_key(circuits[0]),
+            "angle changes alter a synthetic structure key",
+        )
+        instance = jax_bridge.instantiate(skeleton, circuit)
+        require(programs_equal(instance, jax_bridge.export(circuit, base, cache)), "template reuse changes the export")
+        error = cz_error(0.03, factor)
+        stack = channel.kraus(error)
+        reference_noise = noise(error)
+        expected_error = depolarizing_error(channel.depolarizing(error), 2)
+        channel_distance = max(channel_distance, superop_distance(stack, expected_error))
+        scaled = jax_bridge.rescale_cz(instance, {(0, 1): stack})
+        direct = jax_bridge.export(circuit, reference_noise)
+        left, right = diagonal(scaled), diagonal(direct)
+        for readout_scale in (0.0, 1.0, 12.0):
+            reproduction = max(
+                reproduction,
+                float(
+                    np.max(
+                        np.abs(
+                            jax_bridge.probabilities(scaled, left, readout_scale=readout_scale)
+                            - jax_bridge.probabilities(direct, right, readout_scale=readout_scale)
+                        )
+                    )
+                ),
+            )
+        programs.append(scaled)
+    require(channel_distance <= CHANNEL_TOLERANCE, f"synthetic CZ Kraus channel differs by {channel_distance}")
+    require(reproduction <= REPRODUCTION_TOLERANCE, f"synthetic rescaled exports differ by {reproduction}")
+    require(len({program.ops[program.cz[0][0]][1].shape[0] for program in programs}) > 1, "Kraus ranks never vary")
+
+    ranks = jax_bridge.stack_ranks(programs)
+    per_program = 8 * 4 ** programs[0].n + sum(
+        8 * rank * kraus.shape[1] ** 2 for rank, (_, kraus) in zip(ranks, programs[0].ops, strict=True)
+    )
+    budget = 2 * per_program
+    require(chunk_size(programs, ranks, budget) == 2, "the synthetic budget fails to make two-program chunks")
+    whole = [kraus.astype(np.complex64) for _, kraus in jax_bridge.stack_programs(programs)]
+    chunks = list(replay_chunks(programs, budget))
+    require([count for _, count, _ in chunks] == [2, 2, 1], "the synthetic final chunk is not partial")
+    for rows, _, arrays in chunks:
+        require(
+            all(np.array_equal(part, full[rows]) for part, full in zip(arrays, whole, strict=True)),
+            "chunk padding changes the synthetic Kraus rows",
+        )
+    collector = RowCollector()
+    several = chunked_replay(collector, budget)(programs)[0][:, 0]
+    single = chunked_replay(collector, len(programs) * per_program)(programs)[0][:, 0]
+    diagonals = np.array(parallel.ordered_map(row_diagonal, collector.rows))
+    require(np.array_equal(diagonals[several], diagonals[single]), "synthetic chunked diagonals differ from one call")
+    require(parity_failure(PARITY_TOLERANCE) is None, "the parity boundary fails")
+    require(parity_failure(2 * PARITY_TOLERANCE) is not None, "a parity violation passes")
+    return {
+        "programs": len(programs),
+        "chunks": len(chunks),
+        "max_channel_gap": channel_distance,
+        "max_export_gap": reproduction,
+    }
+
+
 def self_test(device: str | None) -> dict[str, Any]:
     """The contracts on the REDUCED case; see the module docstring."""
     index = json.loads(ghost_run.INDEX.read_text(encoding="utf-8"))
@@ -725,7 +822,11 @@ def main() -> int:
     parser.add_argument("--parity-seed", type=int, default=PARITY_SEED)
     parser.add_argument("--batch-bytes", type=int, default=BATCH_BYTES)
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--unit-test", action="store_true", help="check synthetic templates, channels and chunks")
     args = parser.parse_args()
+    if args.unit_test:
+        print(json.dumps(unit_test(), indent=1))
+        return 0
     if args.self_test:
         print(json.dumps({"versions": versions(), **self_test(args.device)}, indent=1))
         return 0

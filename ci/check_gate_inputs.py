@@ -126,6 +126,32 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(result["gates"][0]["resources"]["workers"], 1)
         self.assertGreater(result["gates"][0]["resources"]["max_rss_kib"], 0)
 
+    def test_resource_collection_without_external_timer(self) -> None:
+        import os
+        import shutil
+
+        binary_directory = self.root / "bin"
+        binary_directory.mkdir()
+        shell = shutil.which("sh")
+        self.assertIsNotNone(shell)
+        (binary_directory / "sh").symlink_to(str(shell))
+        environment = dict(os.environ, PATH=str(binary_directory))
+        gate = {"name": "portable", "cwd": ".", "cmd": "printf portable-resource"}
+        measured, status, _, output = run_gates._run(gate, environment, self.root)
+        self.assertEqual(status, 0, output)
+        self.assertEqual(output, "portable-resource")
+        self.assertGreater(measured["resources"]["max_rss_kib"], 0)
+        gate["cmd"] = "kill -9 $$"
+        self.assertEqual(run_gates._run(gate, environment, self.root)[1], 137)
+
+    def test_all_ci_configuration_and_dependency_pins_select_full(self) -> None:
+        for path in (
+            ".github/actionlint.yaml",
+            ".github/workflows/ci.yml",
+            "docs/notes/quantum_inspire/requirements-qi.txt",
+        ):
+            self.assertEqual(self.chosen(path), ["fast", "long"])
+
     def test_workflow_diff_failure_selects_exhaustive_checks(self) -> None:
         import subprocess
 
@@ -199,6 +225,47 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(observed, {"full-pool": 4, **{str(index): 1 for index in range(4)}})
         self.assertEqual(maximum, 4)
 
+    def test_shards_balance_reserved_cpu_slots(self) -> None:
+        gates = [
+            {"name": "pool", "workers": "all", "seconds": 10},
+            *({"name": f"ordinary_{index}", "seconds": 15} for index in range(3)),
+        ]
+        shards = run_gates.assign(gates, 2, capacity=4)
+        self.assertEqual([gate["name"] for gate in shards[0]], ["pool"])
+        self.assertEqual(len(shards[1]), 3)
+        with patch.object(run_gates, "_cpus", return_value=2):
+            self.assertEqual(run_gates.assign(gates, 2, capacity=4), shards)
+        with patch.object(run_gates, "_cpus", return_value=8):
+            self.assertEqual(run_gates.assign(gates, 2, capacity=4), shards)
+
+    def test_expensive_archive_replays_have_input_scopes(self) -> None:
+        root = Path(__file__).resolve().parent.parent
+        gates = json.loads((root / "ci/gates.json").read_text())["gates"]
+        names = {
+            "core-064",
+            "sources-150",
+            "sources-215",
+            "sources-218",
+            "core-287",
+            "core-311",
+            "core-487",
+            "core-495",
+            "core-526",
+        }
+        self.assertTrue(all(gate["tier"] == "full" for gate in gates if gate["name"] in names))
+        changed = [
+            "gororoba_quantum/complex_skew_contracts.py",
+            "docs/evidence/schur_acceleration/SHA256SUMS",
+            "docs/evidence/cd_associator_defect_census/census.json",
+            "docs/evidence/ghost_runs/result.json",
+            "docs/evidence/walk_scaffold_channels/members.qpy",
+            "docs/evidence/n21_exact_model/crosscheck.json",
+            "docs/evidence/n21_exact_model/crosscheck_prep_excitation.json",
+            "results/live/2026-10-13T201757.782152Z/raw/added/counts.json",
+        ]
+        self.assertLessEqual(names, gate_inputs.affected_full(root, gates, changed))
+        self.assertFalse(names & gate_inputs.affected_full(root, gates, ["docs/unrelated-ci-audit.md"]))
+
     def test_explicit_worker_caps_apply_to_inner_pools(self) -> None:
         observed = []
 
@@ -252,6 +319,54 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(status, 0, result)
         self.assertEqual(result.strip(), "producer-interpreter")
         self.assertEqual(environment["PYTHON"], "/missing/current")
+
+    def test_synthetic_units_refuse_archive_access(self) -> None:
+        import subprocess
+        import sys
+
+        root = Path(__file__).resolve().parent.parent
+        program = """
+import builtins
+import io
+import os
+import runpy
+import sys
+from pathlib import Path
+from unittest.mock import patch
+root = Path(sys.argv[1])
+script, option = sys.argv[2:]
+sys.path[:0] = [str(root / "scripts"), str(root / "gororoba_quantum")]
+forbidden = [root / "results", root / "docs/evidence"]
+def guard(original):
+    def checked(file, *arguments, **keywords):
+        if isinstance(file, (str, bytes, os.PathLike)):
+            path = Path(os.fsdecode(file)).resolve()
+            if any(path.is_relative_to(directory) for directory in forbidden):
+                raise AssertionError(f"synthetic contract accessed an archive: {path}")
+        return original(file, *arguments, **keywords)
+    return checked
+sys.argv = [str(root / script), option]
+with patch("builtins.open", guard(builtins.open)), patch("io.open", guard(io.open)):
+    runpy.run_path(str(root / script), run_name="__main__")
+"""
+        fixtures = (
+            ("scripts/atlas_coherent_families.py", "--self-test-channels"),
+            ("scripts/atlas_fringe_amplitudes.py", "--self-test-channels"),
+            ("scripts/jax_bridge_sweep.py", "--unit-test"),
+            ("scripts/n21_qx_conformance.py", "--unit-test"),
+        )
+        environment = dict(run_gates.environment_for(None), GOROROBA_WORKERS="1")
+        for script, option in fixtures:
+            with self.subTest(script=script):
+                result = subprocess.run(
+                    [sys.executable, "-I", "-c", program, str(root), script, option],
+                    cwd=root,
+                    env=environment,
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                )
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_kaggle_historical_interpreter_isolation(self) -> None:
         import sys

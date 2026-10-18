@@ -14,7 +14,15 @@ import shlex
 from pathlib import Path
 from typing import Any
 
-GLOBAL_INPUTS = ("ci/**", ".github/workflows/**", "requirements*.txt", "pyproject.toml", "**/AGENTS.md", "AGENTS.md")
+GLOBAL_INPUTS = (
+    "ci/**",
+    ".github/**",
+    "requirements*.txt",
+    "**/requirements*.txt",
+    "pyproject.toml",
+    "**/AGENTS.md",
+    "AGENTS.md",
+)
 
 
 def matches(path: str, pattern: str) -> bool:

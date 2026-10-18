@@ -1413,7 +1413,7 @@
     },
     {
       "id": "c881-exhaustive-rocq",
-      "statement": "Exhaustive quadratic rejection for the fixed fifteen-label C881 partition, kernel-checked by Rocq 9.2 with six closed assumption queries.",
+      "statement": "Exhaustive quadratic rejection for the fixed fifteen-label C881 partition, kernel-checked by Rocq 9.3.0 with six closed assumption queries.",
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
@@ -1429,7 +1429,7 @@
         },
         {
           "path": "docs/evidence/c881_exhaustive/kernel.txt",
-          "sha256": "263ae57ce30ab0954cf7211712e543a9280fe82738ec570e04d44859c5405ad3"
+          "sha256": "6ab673b318a00623c62cd191789fc8932cdf30981865a3044a9538e75c9cd204"
         }
       ],
       "documents": [
@@ -1487,7 +1487,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "The retained verification receipt pins Rocq 9.2 / OCaml 5.5.0 after renewal of the initial 9.1.1 receipts. The scalar proof alone leaves the general Cayley-Dickson embedding and tower bridge open; open_gororoba separately formalizes a concrete 16D average/detail transport retaining all coordinates. Current external builds use Rocq 9.3.0; historical receipts keep their recorded identity.",
+      "boundary": "The retained verification receipt pins Rocq 9.3.0 / OCaml 5.5.1 with Stdlib 9.2.0 after fresh compilation, kernel checks and assumption queries; the initial receipts used 9.1.1. The scalar proof alone leaves the general Cayley-Dickson embedding and tower bridge open; open_gororoba separately formalizes a concrete 16D average/detail transport retaining all coordinates. Current external builds use Rocq 9.3.0; historical receipts keep their recorded identity.",
       "evidence": [
         {
           "path": "proofs/FoldAverageDescent.v",
@@ -1503,7 +1503,7 @@
         },
         {
           "path": "docs/evidence/formal_certificates/FoldAverageDescent.kernel.txt",
-          "sha256": "263ae57ce30ab0954cf7211712e543a9280fe82738ec570e04d44859c5405ad3"
+          "sha256": "6ab673b318a00623c62cd191789fc8932cdf30981865a3044a9538e75c9cd204"
         }
       ],
       "documents": [
@@ -2023,7 +2023,7 @@
       "evidence": [
         {
           "path": "results/live/rank-sector-endpoint-decomposition.json",
-          "sha256": "4c55897b0d860ad201c757d06f263adc969890d646b4b32c52c88dd47ad25210"
+          "sha256": "001d385fb64f548b302151e2b559406d1b5abda5b0ad43af981875799d223831"
         }
       ],
       "documents": [
@@ -2051,7 +2051,7 @@
       "evidence": [
         {
           "path": "results/live/rank-sector-endpoint-decomposition.json",
-          "sha256": "4c55897b0d860ad201c757d06f263adc969890d646b4b32c52c88dd47ad25210"
+          "sha256": "001d385fb64f548b302151e2b559406d1b5abda5b0ad43af981875799d223831"
         }
       ],
       "documents": [
@@ -2123,7 +2123,7 @@
       "evidence": [
         {
           "path": "results/live/rank-sector-endpoint-decomposition.json",
-          "sha256": "4c55897b0d860ad201c757d06f263adc969890d646b4b32c52c88dd47ad25210"
+          "sha256": "001d385fb64f548b302151e2b559406d1b5abda5b0ad43af981875799d223831"
         },
         {
           "path": "results/live/2026-10-15T070847.644554Z/collect.json",
@@ -2419,7 +2419,7 @@
         },
         {
           "path": "docs/evidence/stiefel_witness/kernel.txt",
-          "sha256": "263ae57ce30ab0954cf7211712e543a9280fe82738ec570e04d44859c5405ad3"
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
         },
         {
           "path": "docs/evidence/stiefel_witness/package_cross_check.json",

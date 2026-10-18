@@ -1,13 +1,13 @@
 """Run the repository gates listed in ci/gates.json, sharded and keep-going.
 
-Each gate is one shell command with a repository-relative working directory
-and the seconds it took on the last measured CI run. Shards come from a
-longest-first assignment of those durations, so the slowest gates land on
-separate shards. A shard runs its gates on a thread pool sized to the CPUs
-available to the process, each gate's own process pool limited to one worker
-and native-library threads default to one; every gate runs regardless
-of earlier failures, completions print immediately, and the exit status is nonzero when any gate fails,
-listing each failure with its output tail.
+Each gate declares a shell command, working directory and measured duration.
+Shards balance estimated CPU-slot seconds under a stable planning profile.
+Execution shares detected affinity/cgroup CPU slots across concurrent gates:
+ordinary gates reserve one, and gates marked workers: all reserve the available
+allocation for their inner pool. Explicit caller caps bound every inner pool.
+Native library threads default to one. Every gate runs despite earlier failures;
+completions and failure tails print immediately, resource/timing records name
+the actual allocation, and any failed gate makes the shard exit nonzero.
 
 ``--device GPU`` exports GOROROBA_AER_DEVICE=GPU to every gate, so the
 replays that simulate run on the local GPU while CI's runners, which carry
@@ -46,10 +46,31 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import parallel  # noqa: E402
 
+# Stable across shards, matching the retained hosted four-CPU timing profile.
+DEFAULT_SHARD_CPUS = 4
 TAIL_LINES = 40
 # Each named toolchain and the variable that makes its absence a gate failure.
 REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED"}
 REPLAY_INTERPRETERS = {"qiskit-2.5": "REPLAY_PYTHON"}
+# Each collector owns exactly one shell tree, so parallel gates cannot mix
+# their RUSAGE_CHILDREN counters. POSIX Python supplies the platform binding.
+RESOURCE_COLLECTOR = """
+import json
+import resource
+import subprocess
+import sys
+from pathlib import Path
+
+completed = subprocess.run(sys.argv[2:], check=False)
+usage = resource.getrusage(resource.RUSAGE_CHILDREN)
+rss_kib = usage.ru_maxrss / 1024 if sys.platform == "darwin" else usage.ru_maxrss
+Path(sys.argv[1]).write_text(json.dumps({
+    "user_seconds": usage.ru_utime,
+    "system_seconds": usage.ru_stime,
+    "max_rss_kib": int(rss_kib),
+}))
+sys.exit(completed.returncode if completed.returncode >= 0 else 128 - completed.returncode)
+"""
 
 
 def _cpus() -> int:
@@ -67,14 +88,13 @@ def _run(gate: dict[str, Any], environment: dict[str, str], root: Path) -> tuple
         environment = dict(environment, PYTHON=environment[variable])
     try:
         with TemporaryDirectory(prefix="ci-gate-resources-") as temporary:
-            resource_file = Path(temporary) / "usage.tsv"
+            resource_file = Path(temporary) / "usage.json"
             completed = subprocess.run(
                 [
-                    "/usr/bin/time",
-                    "-q",
-                    "-f",
-                    "%U\t%S\t%M",
-                    "-o",
+                    sys.executable,
+                    "-I",
+                    "-c",
+                    RESOURCE_COLLECTOR,
                     str(resource_file),
                     "sh",
                     "-c",
@@ -87,16 +107,9 @@ def _run(gate: dict[str, Any], environment: dict[str, str], root: Path) -> tuple
                 text=True,
                 check=False,
             )
-            user_seconds, system_seconds, max_rss = resource_file.read_text().strip().split("\t")
-            measured = dict(
-                gate,
-                resources={
-                    "user_seconds": float(user_seconds),
-                    "system_seconds": float(system_seconds),
-                    "max_rss_kib": int(max_rss),
-                    "workers": int(environment.get("GOROROBA_WORKERS", "1")),
-                },
-            )
+            resources = json.loads(resource_file.read_text())
+            resources["workers"] = int(environment["GOROROBA_WORKERS"])
+            measured = dict(gate, resources=resources)
     except OSError as error:
         return gate, 127, time.monotonic() - start, f"gate could not start: {error}"
     except ValueError as error:
@@ -104,14 +117,29 @@ def _run(gate: dict[str, Any], environment: dict[str, str], root: Path) -> tuple
     return measured, completed.returncode, time.monotonic() - start, completed.stdout
 
 
-def assign(gates: list[dict[str, Any]], count: int) -> list[list[dict[str, Any]]]:
-    """Longest-first assignment: each gate joins the shard with the least total seconds."""
+def allocated_workers(gate: dict[str, Any], capacity: int, caller_cap: str | None = None) -> int:
+    """Bound inner concurrency by detected slots and the caller's explicit cap."""
+    limit = min(capacity, int(caller_cap)) if caller_cap is not None else capacity
+    requested = gate.get("workers", caller_cap or "1")
+    workers = limit if requested == "all" else min(limit, int(requested))
+    if workers < 1:
+        raise ValueError(f"{gate['name']}: workers must be positive")
+    return workers
+
+
+def assign(
+    gates: list[dict[str, Any]], count: int, capacity: int = 1, caller_cap: str | None = None
+) -> list[list[dict[str, Any]]]:
+    """Longest-first allocation by estimated occupied CPU-slot seconds."""
     shards: list[list[dict[str, Any]]] = [[] for _ in range(count)]
     loads = [0.0] * count
-    for gate in sorted(gates, key=lambda gate: (-float(gate.get("seconds", 10.0)), gate["name"])):
+    costs = {
+        gate["name"]: float(gate.get("seconds", 10.0)) * allocated_workers(gate, capacity, caller_cap) for gate in gates
+    }
+    for gate in sorted(gates, key=lambda gate: (-costs[gate["name"]], gate["name"])):
         target = min(range(count), key=lambda index: (loads[index], index))
         shards[target].append(gate)
-        loads[target] += float(gate.get("seconds", 10.0))
+        loads[target] += costs[gate["name"]]
     return shards
 
 
@@ -193,11 +221,7 @@ def run_all(
     with ThreadPoolExecutor(max_workers=capacity) as pool:
         while pending or active:
             for gate in list(pending):
-                caller_cap = min(capacity, int(environment.get("GOROROBA_WORKERS", str(capacity))))
-                requested = gate.get("workers", environment.get("GOROROBA_WORKERS", "1"))
-                workers = caller_cap if requested == "all" else min(caller_cap, int(requested))
-                if workers < 1:
-                    raise ValueError(f"{gate['name']}: workers must be positive")
+                workers = allocated_workers(gate, capacity, environment.get("GOROROBA_WORKERS"))
                 if workers > available:
                     continue
                 child_environment = dict(environment, GOROROBA_WORKERS=str(workers))
@@ -213,6 +237,12 @@ def run_all(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--shard", default="0/1", help="SHARD/COUNT, zero-based")
+    parser.add_argument(
+        "--shard-cpus",
+        type=int,
+        default=DEFAULT_SHARD_CPUS,
+        help="stable CPU profile for shard estimates; execution concurrency is detected per runner",
+    )
     parser.add_argument("--list", action="store_true", help="print this shard's gates without running them")
     parser.add_argument(
         "--tier",
@@ -238,6 +268,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--plan", type=Path, help="write the selected shard and historical environments, then exit")
     parser.add_argument("--github-output", type=Path, help="append historical=true/false for a --plan step")
     arguments = parser.parse_args(argv)
+    if arguments.shard_cpus < 1:
+        parser.error("--shard-cpus must be positive")
     shard, count = (int(part) for part in arguments.shard.split("/"))
     if not 0 <= shard < count:
         parser.error("shard must satisfy 0 <= SHARD < COUNT")
@@ -250,11 +282,20 @@ def main(argv: list[str] | None = None) -> int:
             ROOT, select(ROOT, arguments.tier, arguments.max_seconds, arguments.requires, changed)
         ),
         count,
+        arguments.shard_cpus,
     )[shard]
     if arguments.plan is not None:
         environments = sorted({gate["runtime"] for gate in selected if gate.get("runtime")})
         arguments.plan.write_text(
-            json.dumps({"schema": "gororoba-gate-plan-v1", "gates": selected, "environments": environments}, indent=2)
+            json.dumps(
+                {
+                    "schema": "gororoba-gate-plan-v1",
+                    "gates": selected,
+                    "environments": environments,
+                    "shard_cpus": arguments.shard_cpus,
+                },
+                indent=2,
+            )
             + "\n"
         )
         if arguments.github_output is not None:
@@ -297,6 +338,7 @@ def main(argv: list[str] | None = None) -> int:
                     "shard": arguments.shard,
                     "wall_seconds": time.monotonic() - started,
                     "cpu_capacity": _cpus(),
+                    "shard_cpus": arguments.shard_cpus,
                     "gates": sorted(timings, key=lambda row: str(row["name"])),
                 },
                 indent=2,

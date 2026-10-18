@@ -14,7 +14,9 @@ GitHub Actions runs every gate ([.github/workflows/ci.yml](.github/workflows/ci.
 working directory; [ci/run_gates.py](ci/run_gates.py) runs a shard of them on
 a thread pool sized to the runner's CPUs and keeps going past failures, so a
 red shard lists every failing gate. Each gate records its measured seconds;
-shards are assigned longest-first. Pull requests run the `pr` tier and affected
+shards are assigned longest-first by estimated occupied CPU-slot seconds.
+The stable `--shard-cpus` profile defaults to the recorded four-CPU runner;
+actual gate concurrency follows each runner's detected allocation. Pull requests run the `pr` tier and affected
 `full` gates on six shards;
 pushes to main use the same selection on twelve shards. Nightly and manual
 runs execute every gate on twelve shards. The changed-path selection follows

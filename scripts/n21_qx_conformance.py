@@ -447,14 +447,15 @@ def law(payload: bytes) -> list[float]:
     """
     import numpy as np
     from qiskit.quantum_info import Statevector
-    from qiskit_aer.noise import NoiseModel
-
-    import dynamic_density
-    import snapshot_laws
 
     circuit = deserialize(payload)
     pairs = _terminal(circuit)
     if pairs is None:
+        from qiskit_aer.noise import NoiseModel
+
+        import dynamic_density
+        import snapshot_laws
+
         restricted, _ = snapshot_laws.restrict_circuit(circuit)
         return [float(v) for v in dynamic_density.probabilities(restricted, NoiseModel())]
     if sorted(c for _, c in pairs) != list(range(circuit.num_clbits)):
@@ -1458,9 +1459,9 @@ def live_mutations() -> int:
     return rejected
 
 
-def self_test() -> None:
+def emitter_grid_check() -> None:
+    """Snapped and unsnapped emitters agree on a synthetic on-grid circuit."""
     import box_kite_cases as cases
-    import numpy as np
     from qiskit import QuantumCircuit
 
     # The unsnapped qx export equals the snapped one on an on-grid circuit byte for byte.
@@ -1477,6 +1478,56 @@ def self_test() -> None:
     place = {0: 4, 1: 0, 2: 9}
     if cases.emit(grid, place, dialect="qx", angle_grid=None) != cases.emit(grid, place, dialect="qx"):
         raise AssertionError("the unsnapped qx export differs from the snapped one on an on-grid circuit")
+
+
+def unit_test() -> None:
+    """Synthetic emitter, payload and QX-key contracts without archived ISA or emulator execution."""
+    from qiskit import QuantumCircuit
+
+    emitter_grid_check()
+    circuit = QuantumCircuit(2, 2)
+    circuit.h(0)
+    circuit.rz(0.123456789, 0)
+    circuit.cx(0, 1)
+    circuit.rz(-0.234567891, 1)
+    circuit.h(0)
+    circuit.measure(0, 1)
+    circuit.measure(1, 0)
+    payload = serialize(circuit)
+    if deserialize(payload) != circuit:
+        raise AssertionError("the synthetic QPY payload changes its circuit")
+    text = program(circuit, "synthetic emitter contract")
+    parsed = parse_program(text, circuit.num_clbits)
+    if gap(law(payload), law(serialize(parsed))) > EXACT_TOL:
+        raise AssertionError("the unsnapped synthetic cQASM round trip changes its measured law")
+    if _all_measures(parsed) != [(0, 1), (1, 0)]:
+        raise AssertionError("the cQASM parser changes classical bit ordering")
+    _reject("a malformed rotation", lambda: parse_program(text.replace("Rz(", "Rz(0.1.2+", 1), 2))
+    _reject("an out-of-range classical write", lambda: parse_program(text.replace("b[1] =", "b[2] ="), 2))
+    _reject("a changed header width", lambda: parse_program(text.replace(f"qubit[{QX_WIDTH}]", "qubit[3]"), 2))
+
+    readout = [4, 1]
+    histogram = {qx_key(value, readout): count for value, count in enumerate((2, 3, 5, 7))}
+    if counts_vector([histogram], readout) != [2, 3, 5, 7]:
+        raise AssertionError("QX key parsing changes little-endian outcome counts")
+    _reject("a negative shot count", lambda: counts_vector([{qx_key(0, readout): -1}], readout))
+    malformed_counts: Any = {qx_key(0, readout): 1.0}
+    _reject("a noninteger shot count", lambda: counts_vector([malformed_counts], readout))
+    _reject("a malformed bit key", lambda: counts_vector([{"2" * QX_WIDTH: 1}], readout))
+    _reject("a nonzero idle qubit", lambda: counts_vector([{qx_key(1, [0]): 1}], readout))
+    amplitudes = {qx_key(0, readout): [math.sqrt(0.5), 0.0], qx_key(3, readout): [0.0, math.sqrt(0.5)]}
+    require_state(amplitudes, "synthetic state")
+    if gap(state_law(amplitudes, readout, [0]), [0.5, 0.0, 0.0, 0.5]) > EXACT_TOL:
+        raise AssertionError("QX state payload parsing changes the marginal law")
+    _reject("an unnormalized state", lambda: require_state({qx_key(0, readout): [0.5, 0.0]}, "synthetic state"))
+    _reject("a malformed state amplitude", lambda: require_state({qx_key(0, readout): [1.0]}, "synthetic state"))
+    print("n21 QX unit test: emitter grid, off-grid round trip, payloads, bit order and corruptions pass")
+
+
+def self_test() -> None:
+    import numpy as np
+
+    emitter_grid_check()
     built = build()
     texts = {file_name(form): form["text"] for form in built["forms"]}
     staged = stages(built, texts)
@@ -1660,6 +1711,7 @@ def main() -> int:
     mode.add_argument("--out", type=Path)
     mode.add_argument("--check", type=Path)
     mode.add_argument("--self-test", action="store_true")
+    mode.add_argument("--unit-test", action="store_true", help="check synthetic emitters and payload parsers")
     mode.add_argument("--qx-worker", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--seeds", type=int, default=SEEDS, help="with --out: QX runs of QX_SHOTS per program")
     parser.add_argument(
@@ -1673,6 +1725,9 @@ def main() -> int:
         parser.error("--live takes a count N >= 0 and needs --check")
     if args.qx_worker:
         return qx_worker()
+    if args.unit_test:
+        unit_test()
+        return 0
     if args.self_test:
         self_test()
         return 0

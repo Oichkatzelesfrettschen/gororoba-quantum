@@ -5,11 +5,11 @@ bc77cd4c70a27bc736cbcaafdc62d17324b6988ebd8ed552ffcd0aac4e40b543  result.json
 6ef7d97e8187c3688161347b1fd9e7316841fefabf3990108e55420681007a88  ../../notes/real_circle_frontier_graphs.md
 0497c295581cda51f934dcf83b8cf3cc267aba4382c06cc24b3252f78f2ef166  ../../../gororoba_quantum/real_frontier_graphs.py
 cb8e267f8d067bf32b7d9a578201899df194c1d6d95ad345a8a9d767eb37baab  ../../../gororoba_quantum/real_frontier_contracts.py
-fdf2ceee199eeb98dee32d6aa2397adc16ad1fec2233c8b6acb8b40c9fef1eea  ../../../gororoba_quantum/circle_kernel_attachments.py
+e6a7593b6d2ccb7e0bf4bab2ab19c96b7ec2244e0147f4b86106b14a88c3e7cd  ../../../gororoba_quantum/circle_kernel_attachments.py
 aa399e54d6e435a45c46e469977c20ee931e9a12cee116408bdbaa7c8a1f3d46  ../../../gororoba_quantum/projective_kernel_limits.py
-a8ac465ec449e6a6d45c9a7de01301fb8404d3e77458678e989c0b97bb82d5f2  ../../../gororoba_quantum/kernel_limits.py
-15e3dc1cf268c8cfe26046d9e212d5a9cfe69bf77c92c0638a989d5b744fcadd  ../../../gororoba_quantum/complex_skew.py
+46591b43f37086bce51d6d600c0b0ae6e1d5055c0e0c475a5185d0c2d351e6a7  ../../../gororoba_quantum/kernel_limits.py
+a8daff05282a0affff406ed1fc067a340e9943816ed4145387c73fc4725763f0  ../../../gororoba_quantum/complex_skew.py
 408e311026adeceb5041a10d74438c0599c863746cf9304952e2278aac022629  ../../../gororoba_quantum/integral_homology.py
 f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c  ../../../gororoba_quantum/rank_charts.py
 5ee4f9ff6744b8a8847d1396c000d91c4de1e84b2de110c017e1143e50fb9427  ../../../gororoba_quantum/cd_core.py
-c77e02ae1f141231e7d1a6abfdc591a39685878cc2c843f4685dff0a4c458754  ../../../gororoba_quantum/parallel.py
+3a483f80f32505893b08c9e63f3cf4b3e291e9e385d705517b5a93ebf72bc01e  ../../../gororoba_quantum/parallel.py

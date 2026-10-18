@@ -108,6 +108,74 @@
       "docs/evidence/linear_conjugation/search.json",
       "docs/evidence/open_quantum/catalogue.json",
       "results/hw_estimate/n21_linear_conjugation_challenger.json"
+    ],
+    "core-064": [],
+    "sources-150": [
+      "docs/evidence/schur_acceleration/**",
+      "docs/notes/schur_acceleration_certificates.md"
+    ],
+    "sources-215": [
+      "docs/evidence/cd_associator_defect_census/census.json"
+    ],
+    "sources-218": [
+      "docs/evidence/cd_associator_defect_census/census.json"
+    ],
+    "core-287": [
+      "docs/evidence/ghost_runs/**",
+      "docs/evidence/calibration/history/**",
+      "results/live/2026-10-13T080216.451663Z/**"
+    ],
+    "core-311": [
+      "docs/evidence/walk_scaffold_channels/**",
+      "docs/evidence/calibration/history/**",
+      "results/live/2026-10-13T025444.603480Z/**",
+      "results/live/2026-10-15T031229.371738Z/**",
+      "results/kaggle/2026-10-16T102614Z-gororoba-walk-scaffold-channels/collect.json"
+    ],
+    "core-495": [
+      "results/live/2026-10-13T201757.782152Z/**"
+    ],
+    "core-487": [
+      "docs/evidence/n21_exact_model/crosscheck.json",
+      "docs/evidence/calibration/history/ibm_kingston/20261016T1213360700.json",
+      "results/live/2026-10-17T003834.987727Z/isa.qpy",
+      "results/live/2026-10-17T003834.987727Z/record.json"
+    ],
+    "core-526": [
+      "docs/evidence/n21_exact_model/crosscheck_prep_excitation.json",
+      "docs/evidence/calibration/history/ibm_kingston/20261016T1213360700.json",
+      "results/live/2026-10-17T003834.987727Z/isa.qpy",
+      "results/live/2026-10-17T003834.987727Z/record.json"
+    ],
+    "core-325": [
+      "docs/evidence/atlas_detuning_map/result.json",
+      "docs/evidence/calibration/history/**",
+      "results/ripple/measured-ripple.json",
+      "results/live/2026-10-13T025444.603480Z/**",
+      "results/live/2026-10-15T031229.371738Z/**"
+    ],
+    "core-359": [
+      "docs/evidence/atlas_detuning_map/result.json",
+      "docs/evidence/calibration/history/**",
+      "results/ripple/measured-ripple.json",
+      "results/live/2026-10-13T025444.603480Z/**",
+      "results/live/2026-10-15T031229.371738Z/**"
+    ],
+    "core-352": [
+      "docs/evidence/calibration/history/**",
+      "results/live/2026-10-15T070853.550532Z/**",
+      "results/live/2026-10-15T070847.644554Z/**"
+    ],
+    "core-353": [
+      "docs/evidence/calibration/history/**",
+      "results/live/2026-10-15T070853.550532Z/**",
+      "results/live/2026-10-15T070847.644554Z/**"
+    ],
+    "core-499": [
+      "docs/evidence/n21_qx_conformance/**",
+      "results/live/2026-10-17T003834.987727Z/isa.qpy",
+      "results/live/2026-10-17T003834.987727Z/record.json",
+      "docs/notes/quantum_inspire/requirements-qi.txt"
     ]
   }
 }

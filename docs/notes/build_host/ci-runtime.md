@@ -151,7 +151,7 @@ exhaustive replay rather than establishing the full corpus's scientific claim.
 
 `parallel.available_cpus()` intersects scheduler affinity with the CPU quotas
 of the process and its cgroup ancestors. The runner maintains that many CPU
-slots across all active gates. Ordinary gates consume one slot; seven gates
+slots across all active gates. Ordinary gates consume one slot; twelve gates
 with independent inner work reserve the whole allocation using `workers: all`.
 A reserved gate receives the slot count through `GOROROBA_WORKERS`. Other gates
 wait until enough slots return. BLAS, OpenMP, NumExpr, Rayon and Qiskit process
@@ -165,8 +165,10 @@ order through the spawn pool; case workers cap their own nested pools at one.
 Rocq bundle replay similarly maps independent isolated bundle processes through
 the detected pool and returns bundle records in request order.
 
-The GNU time wrapper measures user/system CPU seconds and maximum resident set
-size for each gate process tree. Peak RSS is a process maximum, rather than a
+An isolated POSIX Python collector measures user/system CPU seconds and maximum
+resident set size through `resource.getrusage(RUSAGE_CHILDREN)` for one gate
+process tree. Separate collectors prevent parallel gates from mixing counters
+and remove the external GNU time dependency. macOS RSS bytes convert to KiB. Peak RSS is a process maximum, rather than a
 sum of simultaneous child memory. These resource fields complement overlapping
 elapsed times; elapsed totals remain distinct from billed runner intervals.
 
@@ -244,3 +246,65 @@ fields and measured counts retain their exact comparisons. Regression cases
 accept the measured stopping drift and equivalent phase branches and reject
 changed laws, corrupted coordinate/law bindings and out-of-domain coordinates.
 Raw reports retain their original coordinates.
+
+## Short PR contracts and stable shard plans
+
+Fourteen expensive gates originally labeled PR checks now declare full-tier
+input scopes: exhaustive geometry, archive-derived crosschecks, calibrated
+channel replays and retained QX conformance. The full corpus still runs whenever
+its code or declared evidence changes. Small atlas channel, JAX program and QX
+emitter/parser contracts run on every PR in both Python modes. A regression
+wraps file access and rejects any attempt by those contracts to read `results/`
+or `docs/evidence/`, including reads during import. Hardware exclusion metadata
+continues to come from the actual visibility analysis, loaded and cached on
+first hardware use; importing pure emitters leaves the archives unopened.
+
+Shard assignment balances estimated occupied CPU-slot seconds. A gate reserving
+four slots for ten seconds contributes forty slot-seconds. The stable planning
+profile defaults to the measured hosted four-CPU allocation (`--shard-cpus 4`);
+every shard in a run uses the same profile, so heterogeneous host CPU limits
+cannot change shard membership. Actual execution still uses every detected CPU
+and respects the caller's worker cap. Plans and timing records retain the
+planning profile alongside actual allocated resources.
+
+Qiskit 2.6 emits elementary KG24 gates where 2.5 emitted named RCCX/CCX gates.
+Order-finding resource checks lower both representations to the common declared
+elementary basis and compare the same independent CX/T/T-dagger budgets. The
+native shared-predicate probe recognizes only complete, exactly matched RCCX
+endpoint spans and verifies full operators. Its current-SDK contract keeps the
+original 1e-12 scientific bound and records current costs separately from the
+producer's historical receipt. Historical QPY digest receipts and version-stamped
+wide-control reports use their producer interpreter; raw reports remain intact.
+
+The first broad upgraded PR replay completed 411 gates: 397 passed and 14
+failed. The failures exposed historical serialization/synthesis comparisons,
+renewed proof-receipt hashes and derived source identities. Focused qualification
+renews only derived hashes after unchanged mathematical and hardware-statistic
+results are verified. The rank-endpoint regeneration changed only its producer
+source-hash map. Formal registry claims bind the freshly checked Rocq 9.3
+receipts. Original raw archives, native probe result and archived probe retain
+their recorded bytes.
+
+All 45 current-SDK runtime cases passed together (323.14 s wall, 377.04 s user
+CPU, 5.21 s system CPU, maximum process RSS 990824 KiB on the shared build host).
+The fragmented-layout case triggers a native Sabre capacity-overflow panic on
+a valid Target restricted to qubits 0-4. Existing compile isolation converts the
+panic and successfully compiles the explicit layout [0,1,2]; an isolated replay
+passed. The measurement qualifies the recovery boundary, rather than asserting
+that the upstream router accepts every admission Target directly.
+
+The planted-detuning contract draws all 20 random streams before dispatching
+independent fits through the spawn pool. The fitter arithmetic remains identical.
+[The retained benchmark](../../evidence/ci_runtime/patch_window.json) measured
+83.956804 s serially and 29.859811 s with four workers, including spawn, on a
+shared host. All result dictionaries and random streams match byte for byte.
+The observed 2.81-fold speedup is one local sample.
+
+The QI emitter contract checks availability through `qi_stack.live()` and runs
+the synthetic emitter under both installed interpreters. A direct qxelarator
+0.10.0 import with `-W error` reproduced exit 139 during interpreter shutdown;
+the ordinary import and the existing isolated probe both exit successfully.
+The probe applies the repository's narrowly scoped SWIG `__module__` warning
+filter and checks the installed versions against the QI lock. The emitter
+contract exercises serialization and parsing; live simulator conformance remains
+a separate gate.
