@@ -4,8 +4,11 @@ IBM bills QPU lock time, about 2 s per sub-job plus (rep_delay + circuit)
 x executions (docs/notes/ibm_quantum/estimate-job-run-time.md), against a
 600 s rolling 28-day window. This note collects the planning rules that the
 n21-feedback-encoded program measured. Each rule names the record, gate or
-document that carries its evidence. The rules apply to any family that
-live_run.py plans.
+document that carries its evidence. Rules 1, 4, 7, 11, 12 and 13
+apply to any family live_run.py plans. Rules 2, 3 and 5 to 10 rest on
+`--model-method exact`, `--empirical-bernstein` and `--prep-excitation`,
+which live_run.py accepts for the N21 families only, and on the
+`state-prep-control` family that measures the excitation.
 
 ## The run, from 83.1 s to 25.5 s
 
@@ -162,12 +165,15 @@ The n21 execution is 19,559 and 19,745 dt of scheduled circuit (78 to
 25.7 s, and the job overhead brings the total to the 28 s billed. The
 circuit is 61 percent of the shot loop and the delay 39 percent.
 
-The control's excited fractions over 149 qubits match at both delays
-(median 0.0045 at 50 us and 0.0047 at 250 us for prep0; 0.0058 and 0.0051
-for x_history), and the bound on the n21 placement reads 0.0144 at 50 us
-against 0.0157 at 250 us. A 50 us delay therefore cost no measurable
-initialization error on this device. The remaining levers on the n21 shot
-loop are:
+The control's simultaneous Clopper-Pearson bound on the n21 placement
+reads 0.0144 at 50 us and 0.0157 at 250 us, and the 50 us bound fits the
+excitation the plan absorbs within `max_shots`; that is the preregistered
+inference. The excited fractions over 149 qubits read medians of 0.0045 at
+50 us and 0.0047 at 250 us for prep0, 0.0058 and 0.0051 for x_history.
+`scripts/state_prep_excess.py` reports those delay differences as point
+estimates outside the bound family, and x_history runs in a dynamic job
+while prep0 runs in a static one, so they bound no difference between the
+delays. The remaining levers on the n21 shot loop are:
 
 - **A delay below 50 us.** `rep_delay_range` admits 0, and at 0 the same
   plan bills about 18 s. The excitation there is unmeasured, so the step
@@ -177,9 +183,10 @@ loop are:
 - **Fewer routed CZ.** The unitary part holds 320 CX before routing on
   the 7-qubit tree, and routing roughly doubles it. IBM's local AI
   routing (qiskit-ibm-transpiler 0.18.0) routed it to 798 CZ against 786
-  to 799 for qiskit's optimization level 3, while live_run's search
-  reaches 713, so the next reduction has to come from the encoding or the
-  placement graph, not from a router.
+  to 799 for qiskit's optimization level 3 over three seeds, while
+  live_run's bounded search reaches 713. Neither tested router improved on
+  713; no routing lower bound exists for the circuit, so the encoding, the
+  placement graph and untested routers all remain candidates.
 
 ## What transfers from Tuna-17
 
@@ -190,8 +197,11 @@ contrast near 1e-12. Its runs still shape the IBM design.
   the 126-job fit gives 2.92 s + 0.509 ms per shot, 69.6 s for a full job
   (docs/notes/quantum_inspire/tuna-17-run-design.md); a full job spends
   the fixed cost once. On IBM the same rule meets `max_shots` = 100,000
-  per PUB and the per-job overhead, so the n21 plan takes the 100,000-shot
-  tier when it is feasible within the ceiling.
+  per PUB and the per-job overhead. The optimizer's `minimum_charge`
+  objective still takes the smallest feasible tier, since every shot past
+  it adds delay and circuit time; the executed n21 run took 100,000 shots
+  because its approved plan configured that single tier (`shot_tiers`
+  [100000] in record.json), feasible at eps 0.014393.
 - **Compare inside one job where history allows.** Tuna batches scatter
   between jobs, so arms compared against each other share a job. On IBM
   that holds for arms with a common end state; arms that set different
