@@ -2898,6 +2898,30 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_cone.py --self-test && \"$PYTHON\" -B -O -W error scripts/qd_belenos_cone.py --self-test",
+   "name": "core-545",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_cone.py --check docs/evidence/quandela/belenos_light_cone.json results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04 results/quandela/runs/2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04 results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08 results/quandela/runs/2026-10-18T074524Z-qpu_belenos-belenos_mesh-job-09 results/quandela/runs/2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10 results/quandela/runs/2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11 results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12 results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
+   "name": "core-546",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_cone.py --check-readout docs/evidence/quandela/belenos_seeded_single.json results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
+   "name": "core-547",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test && \"$PYTHON\" -B -O -W error scripts/materialize_gororoba_csv.py --self-test",
    "name": "core-401",
    "seconds": 0.4,
@@ -3683,6 +3707,14 @@
   },
   {
    "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/axis_tilt_substrate_split.py --check docs/evidence/lsq_conditioning/substrate_split.json && \"$PYTHON\" -B -O -W error scripts/axis_tilt_substrate_split.py --check docs/evidence/lsq_conditioning/substrate_split.json && \"$PYTHON\" -B -W error scripts/axis_tilt_substrate_split.py --self-test docs/evidence/lsq_conditioning/substrate_split.json && \"$PYTHON\" -B -O -W error scripts/axis_tilt_substrate_split.py --self-test docs/evidence/lsq_conditioning/substrate_split.json",
+   "name": "core-458",
+   "seconds": 3.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error wheel_algebra.py --self-test && \"$PYTHON\" -B -O -W error wheel_algebra.py --self-test",
    "name": "core-493",
@@ -3915,6 +3947,14 @@
    "name": "core-539",
    "seconds": 3.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --serialized-noise",
+   "name": "core-548",
+   "seconds": 105.5,
+   "tier": "full"
   },
   {
    "suite": "core",
