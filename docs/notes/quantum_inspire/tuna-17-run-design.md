@@ -331,7 +331,15 @@ stream, numpy seed [20261017, 2], differs from the ladder's.
   batch 1 alone gives job averages 1.0213, 1.0206 and 1.0048, each 99%
   interval above 1, as both X batches do. A job whose line scan missed the detection
   threshold would leave its harmonic rules undetermined and its batch out of
-  the verdict; all 12 detect the line.
+  the verdict; all 12 detect the line. A selector at an extremum of its
+  response follows the line at 2 f alone, so each job also scans the doubled
+  band, both bands at half the detection p; all 12 detect in the band itself.
+  The other depths' selectors share the reference phase where every
+  significant harmonic is extremal within a quarter bin (pi/16) of bins 0
+  and 4, up to 5 phase standard errors. On the clean jobs the depth-5 first
+  harmonics sit -0.024 to +0.120 rad from the reference and the depth-9
+  second harmonics -0.252 to -0.049 rad, so every selector aligns and no
+  batch leaves the verdict on that count.
 - **Harmonics at 2 f.** max(A1, A2) at depth 9 exceeds depth 1 by 0.0174 to
   0.137 in all 12 jobs, against a margin error of 0.0014 to 0.0018 from a
   bootstrap that draws the depth-9 and depth-1 selectors' eight lock-in

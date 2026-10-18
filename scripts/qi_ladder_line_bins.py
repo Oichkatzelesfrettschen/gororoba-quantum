@@ -11,10 +11,13 @@ only a future run.
 
 rho per bin:
 - binning: a job's line frequency f is the scan peak in the manifest's band
-  (box_kite_analysis.LineScan), its phase the depth-9 selector's first-harmonic
-  lock-in phase (box_kite_analysis.lockin), and shot t falls in bin
-  box_kite_analysis.line_phase_bin_index, bin 0 at the depth-9 selector's P1
-  peak. The ladder's phase_binned_contrast uses the same bins.
+  (box_kite_analysis.LineScan), or half the peak in the doubled band when only
+  that band detects, since a selector at an extremum of its response follows
+  the line at 2 f alone; each band is tested at line_detection_p / 2, so the
+  two searches keep the manifest's level. The phase is the depth-9 selector's
+  first-harmonic lock-in phase (box_kite_analysis.lockin), and shot t falls in
+  bin box_kite_analysis.line_phase_bin_index, bin 0 at the depth-9 selector's
+  P1 peak. The ladder's phase_binned_contrast uses the same bins.
 - cells: for every X-setting replica, the joint (a, d) counts of each bin and
   of all shots. Each cell enters follow_sample as an LCU item whose
   multinomial has the cell's own shot count, so the bracket draws stay shared
@@ -36,8 +39,14 @@ rho per bin:
   whose job's depth-9 selector carries no significant first harmonic takes its
   bin reference from noise, so its stationary cells average over random
   phases, and a job whose scan peak misses line_detection_p takes its
-  frequency from noise; "reference_significant" marks the pair-batches free
-  of both. The stationary verdict and the job-average verdict the reading
+  frequency from noise. The other depths' selectors share the reference
+  phase only up to their own response: harmonic h of a selector with phase
+  phi_h puts its extrema at line phase offset wrap(phi_h - h phi_ref) / h,
+  wrapped to [-pi/2, pi/2) before the division, and a significant harmonic
+  whose offset exceeds a quarter bin, pi / (2 bins), by more than
+  amplitude_sigmas phase standard errors moves that selector's P1 to first
+  order inside the stationary bins. "reference_significant" marks the
+  pair-batches free of all three. The stationary verdict and the job-average verdict the reading
   compares it with combine those batches alone, so both read the same
   observations; the all-batch combinations are reported as
   stationary_all_verdict and job_average_all_verdict. An undetected job's
@@ -79,8 +88,9 @@ verdicts (an excluded batch that flips the all-batch job average leaves the
 reading on the clean one), then runs synthetic ladders: a line that modulates
 the selector population with rho = 1 in the stationary bins, a coherent
 population error that raises rho in every bin, and a selector at an extremum of
-its response, and a series without a line, whose phase rules read
-undetermined; it then rejects a corrupted raw digest, an altered bin count and
+its response, a line that only the doubled band carries, a depth-5 selector a
+quarter period off the reference phase, and a series without a line, whose
+phase rules read undetermined; it then rejects a corrupted raw digest, an altered bin count and
 an altered raw file.
 
 Usage: "$PYTHON" scripts/qi_ladder_line_bins.py (--out FILE | --check FILE | --self-test)
@@ -118,6 +128,8 @@ POST_HOC = [
     "the max(A1, A2) rule and its depth-9 over depth-1 margin test were chosen after the first-harmonic test "
     "read zero at an extremum of a selector's response in batches 4 and 5",
     "the clean-reference restriction was chosen after the depth-9 first harmonic of (12,14) fell to noise in batch 4",
+    "the doubled-band scan and the quarter-bin phase alignment of every significant harmonic were added after the "
+    "record was read; on the retained jobs neither moves a detection or a clean batch",
 ]
 
 
@@ -247,6 +259,47 @@ def joint_max_draws(model: dict[str, Any], rng: np.random.Generator, draws: int)
     return np.stack(out, axis=1)
 
 
+def line_of(fundamental: dict[str, Any], doubled: dict[str, Any]) -> dict[str, Any]:
+    """The job's line: the band's peak when the band detects, else half the doubled band's detected peak."""
+    band: str | None
+    if doubled["detected"] and not fundamental["detected"]:
+        frequency, band, log10_p = doubled["cycles_per_shot"] / 2, "second", doubled["log10_p"]
+    else:
+        frequency, log10_p = fundamental.get("cycles_per_shot"), fundamental.get("log10_p")
+        band = "first" if fundamental["detected"] else None
+    return {
+        "detected": band is not None,
+        "line_band": band,
+        "cycles_per_shot": frequency,
+        "log10_p": log10_p,
+        "log10_p_doubled_band": doubled.get("log10_p"),
+    }
+
+
+def phase_alignment(per_depth: dict[str, dict[str, Any]], reference_depth: int, sigmas: float, bins: int) -> None:
+    """Each depth's significant harmonics' extremum offsets from the reference phase, and whether they align.
+
+    Harmonic h of phase phi_h is extremal at line phase offset wrap(phi_h - h phi_ref) / h; the selector is
+    aligned when every such offset lies within a quarter bin, pi / (2 bins), up to sigmas phase standard errors
+    sqrt((se / A_h)^2 / h^2 + (se_ref / A_ref)^2). The reference's own first harmonic carries offset 0.
+    """
+    reference = per_depth[str(reference_depth)]
+    tolerance = math.pi / (2 * bins)
+    amplitude = reference["first"]["amplitude"]
+    ref_phase_se = reference["se"] / amplitude if amplitude > 0 else math.inf
+    for n, row in per_depth.items():
+        offsets = []
+        for h, key in ((1, "first"), (2, "second")):
+            if (int(n), h) == (reference_depth, 1) or not row[key]["significant"]:
+                continue
+            psi = row[key]["phase"] - h * reference["first"]["phase"]
+            offset = (psi + math.pi / 2) % math.pi - math.pi / 2
+            se = math.sqrt((row["se"] / row[key]["amplitude"]) ** 2 / h**2 + ref_phase_se**2)
+            offsets.append({"harmonic": h, "offset": offset / h, "se": se})
+        row["phase_offsets"] = offsets
+        row["aligned"] = None if not offsets else all(abs(o["offset"]) <= tolerance + sigmas * o["se"] for o in offsets)
+
+
 def harmonic_entry(
     depths: list[int],
     selector: dict[int, int],
@@ -254,6 +307,7 @@ def harmonic_entry(
     sigmas: float,
     rng: np.random.Generator,
     draws: int,
+    bins: int,
 ) -> dict[str, Any]:
     per_depth = {}
     for n in depths:
@@ -270,6 +324,7 @@ def harmonic_entry(
             "max_amplitude": top,
             "dominant": "first" if a1["amplitude"] >= a2["amplitude"] else "second",
         }  # fmt: skip
+    phase_alignment(per_depth, max(depths), sigmas, bins)
     deep, shallow = per_depth[str(max(depths))], per_depth[str(min(depths))]
     margin_se = math.sqrt(deep["se"] ** 2 + shallow["se"] ** 2)
 
@@ -391,10 +446,12 @@ def analyze_bins(
         box.fail("the ladder design holds no walk")
 
     jobs = [(name, batch, row) for name, batch in batches.items() for row in box.witness_rows(batch)]
-    scans = parallel.ordered_map(
-        box.LineScan(tuple(t["line_band"]), t["line_detection_p"]),
-        [batch["bits"][row["file"]][:, box.replica_columns(row)] for _, batch, row in jobs],
-    )
+    columns = [batch["bits"][row["file"]][:, box.replica_columns(row)] for _, batch, row in jobs]
+    low, high = t["line_band"]
+    half = t["line_detection_p"] / 2
+    fundamental = parallel.ordered_map(box.LineScan((low, high), half), columns)
+    doubled = parallel.ordered_map(box.LineScan((2 * low, 2 * high), half), columns)
+    scans = [line_of(f, d) for f, d in zip(fundamental, doubled, strict=True)]
     work_items = []
     for (_, batch, witness), scanned in zip(jobs, scans, strict=True):
         by_depth = {r["cz_depth"]: r for r in witness["replicas"]}
@@ -411,9 +468,10 @@ def analyze_bins(
     counts: dict[tuple[str, str, int], np.ndarray] = {}
     max_rng = np.random.default_rng([t["bootstrap_seed"], LINE_BINS_SEED, MAX_RULE_SEED])
     for (name, _, witness), scanned, item, work in zip(jobs, scans, work_items, works, strict=True):
-        entry = harmonic_entry(depths, item["selector"], work, sigmas, max_rng, draws)
+        entry = harmonic_entry(depths, item["selector"], work, sigmas, max_rng, draws, bins)
         entry |= {"batch": name, "file": witness["file"], "detected": scanned["detected"],
-                  "cycles_per_shot": scanned["cycles_per_shot"], "log10_p": scanned["log10_p"]}  # fmt: skip
+                  "line_band": scanned["line_band"], "cycles_per_shot": scanned["cycles_per_shot"],
+                  "log10_p": scanned["log10_p"], "log10_p_doubled_band": scanned["log10_p_doubled_band"]}  # fmt: skip
         # A scan peak below line_detection_p is a noise frequency: the job's phase rules are undetermined
         # and its bins carry no phase reference.
         if not scanned["detected"]:
@@ -422,7 +480,10 @@ def analyze_bins(
         entry["reference_significant"] = bool(
             scanned["detected"] and entry["depths"][str(max(depths))]["first"]["significant"]
         )
-        reference[(name, witness["file"])] = entry["reference_significant"]
+        for depth_row in entry["depths"].values():
+            reference[(name, witness["file"], depth_row["qubit"])] = (
+                entry["reference_significant"] and depth_row["aligned"] is not False
+            )
         harmonics.append(entry)
         for r, c in zip(witness["replicas"], work["counts"], strict=True):
             counts[(name, witness["file"], r["slot"])] = c
@@ -479,7 +540,7 @@ def analyze_bins(
         row: dict[str, Any] = {"pair": [selector, partner[selector]], "batches": names, "cells": {}}
         clean = [
             i for i, name in enumerate(names)
-            if all(reference[(name, f)] for f in files_of[name][selector])
+            if all(reference[(name, f, selector)] for f in files_of[name][selector])
         ]  # fmt: skip
         row["reference_significant"] = {name: i in clean for i, name in enumerate(names)}
         lr = {c: estimates((point, boot), selector, c) for c in range(len(cell_names))}
@@ -561,10 +622,13 @@ def check_against_ladder(
                 box.fail(f"pair {row['pair']} {name}: all-shots rho {got} differs from the ladder record's {want}")
     for entry in stage["line"]:
         mine = next(h for h in harmonics if (h["batch"], h["file"]) == (entry["batch"], entry["file"]))
+        # The ladder scans the band alone; a line found through the doubled band has its own frequency.
+        if mine["line_band"] == "second":
+            continue
         for n, selector in entry["selectors"].items():
             if abs(selector["amplitude"] - mine["depths"][n]["first"]["amplitude"]) > 1e-9:
                 box.fail(f"{entry['file']} depth {n}: first-harmonic amplitude differs from the ladder record")
-        if mine["detected"] and entry["depth_growth"]["holds"] != mine["first_harmonic_rule"]["holds"]:
+        if mine["line_band"] == "first" and entry["depth_growth"]["holds"] != mine["first_harmonic_rule"]["holds"]:
             box.fail(f"{entry['file']}: first-harmonic rule differs from the ladder record")
 
 
@@ -642,13 +706,15 @@ def synth_shots(item: Any) -> list[str]:
     Per job one phase is drawn; per replica group (a, d, ideal, decay, depth) the decay is
     decay (1 + m_n cos(h theta)) with m_n = modulation depth / 9 (or modulation when scale_depth is false) and h
     the depth's harmonic (none when 0), and the selector population is p0 - p_slope depth + p_line cos(theta)
-    with the ideal branch weights rescaled to it. Readout flips follow the scenario's per-qubit rates.
+    with the ideal branch weights rescaled to it; a depth listed in phase_offset reads theta shifted by it.
+    Readout flips follow the scenario's per-qubit rates.
     """
     _, seed, width, n, groups, readout, params = item
     rng = np.random.default_rng(seed)
-    theta = 2 * np.pi * params["frequency"] * np.arange(n) + rng.uniform(0, 2 * np.pi)
+    line = 2 * np.pi * params["frequency"] * np.arange(n) + rng.uniform(0, 2 * np.pi)
     true = np.zeros((n, width), dtype=np.uint8)
     for a, d, ideal, decay, depth in groups:
+        theta = line + params.get("phase_offset", {}).get(depth, 0.0)
         harmonic = params.get("harmonic", {}).get(depth, 1)
         m = params["modulation"] * (depth / 9 if params.get("scale_depth", True) else 1.0)
         lam = np.clip(decay * (1 + m * (np.cos(harmonic * theta) if harmonic else np.zeros(n))), 0.0, 1.0)
@@ -690,6 +756,16 @@ SCENARIOS: dict[str, dict[str, Any]] = {
     "population_error": {"frequency": FREQUENCY, "modulation": 0.3, "p0": 0.97, "p_slope": 0.02},
     # Depth 5 carries the line at f, depth 9 at 2 f only, depth 1 none.
     "extremum": {"frequency": FREQUENCY, "modulation": 0.2, "scale_depth": False, "harmonic": {1: 0, 5: 1, 9: 2}},
+    # Depths 5 and 9 follow the line at 2 f alone, so only the doubled band detects it.
+    "second_only": {"frequency": FREQUENCY, "modulation": 0.2, "scale_depth": False, "harmonic": {1: 0, 5: 2, 9: 2}},
+    # The population line with depth 5 a quarter period behind depth 9's reference.
+    "offset": {
+        "frequency": FREQUENCY,
+        "modulation": 0.9,
+        "p0": 0.85,
+        "p_line": -0.12,
+        "phase_offset": {5: math.pi / 2},
+    },
     # No line: the scan peak is noise, so every phase rule and the stationary verdict are undetermined.
     "no_line": {"frequency": FREQUENCY, "modulation": 0.0, "p0": 0.9},
 }
@@ -791,6 +867,9 @@ def self_test() -> str:
             )
             require(row["reading"] == "averaging over the line explains the rho excess", row["reading"])
             require(all(row["reference_significant"].values()), "the depth-9 selector carries the line")
+        for h in line["harmonics"]:
+            require(h["line_band"] == "first", f"{h['file']} line band {h['line_band']}")
+            require(all(d["aligned"] is not False for d in h["depths"].values()), f"{h['file']} aligned depths")
         require(
             line["harmonic_rules"]["first_harmonic_rule_holds"] == line["harmonic_rules"]["jobs"],
             "first rule on a first-harmonic line",
@@ -816,6 +895,26 @@ def self_test() -> str:
             )
             require(h["max_rule"]["holds"] and not h["first_harmonic_rule"]["holds"], f"{h['file']} rules")
             require(h["depths"]["5"]["first"]["significant"], f"{h['file']} depth 5 first harmonic")
+
+        second = analysis("second_only")
+        for h in second["harmonics"]:
+            require(h["detected"] and h["line_band"] == "second", f"{h['file']} doubled band ({h['log10_p']})")
+            require(abs(h["cycles_per_shot"] - FREQUENCY) < 1e-4, f"{h['file']} frequency {h['cycles_per_shot']}")
+            require(h["max_rule"]["holds"] is True, f"{h['file']} max rule {h['max_rule']}")
+            require(h["first_harmonic_rule"]["holds"] is False, f"{h['file']} first rule {h['first_harmonic_rule']}")
+        for row in second["rho"]:
+            require(row["stationary_verdict"] == "undetermined", f"{row['pair']}: {row['stationary_verdict']}")
+
+        shifted = analysis("offset")
+        for h in shifted["harmonics"]:
+            require(h["reference_significant"], f"{h['file']} reference")
+            require(h["depths"]["5"]["aligned"] is False, f"{h['file']} depth 5 {h['depths']['5']['phase_offsets']}")
+            require(
+                h["depths"]["9"]["aligned"] is not False, f"{h['file']} depth 9 {h['depths']['9']['phase_offsets']}"
+            )
+        for row in shifted["rho"]:
+            require(not any(row["reference_significant"].values()), f"{row['pair']} clean batches")
+            require(row["stationary_verdict"] == "undetermined", f"{row['pair']}: {row['stationary_verdict']}")
 
         quiet = analysis("no_line")
         for h in quiet["harmonics"]:
@@ -862,7 +961,9 @@ def self_test() -> str:
         "self-test: the joint coefficient draw gives identical selectors a max-rule SD of 0 and a correlated pair "
         "its realizations' SD, the reading follows the clean-batch job average, a population line gives "
         "stationary rho 1 beside job-averaged rho above 1, a population error raises rho in every bin, an extremum "
-        "response keeps A1 near 0 with A2 detected by max(A1, A2), a "
+        "response keeps A1 near 0 with A2 detected by max(A1, A2), a line seen only at 2 f is found through the "
+        "doubled band and decides the max rule, a depth-5 selector a quarter period off the reference leaves "
+        "every batch out of the stationary verdict, a "
         "series without a line leaves every phase rule undetermined, and a corrupted digest, bin count and raw "
         "file are refused"
     )

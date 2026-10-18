@@ -1,5 +1,5 @@
 {
- "analysis_sha256": "d2837d4df2f54507925736f6ab7fd3c6367f19be21966a019679b76ceb9d6981",
+ "analysis_sha256": "bb0069e432201b268b7ef983108d88e2c9187ffa1ca48b6e9fdc8127acf7a5f6",
  "binds": "a future run only; the preregistered ladder record is analyze_ladder's",
  "cells": [
   "all",
@@ -30,6 +30,7 @@
    "cycles_per_shot": 0.020042693,
    "depths": {
     "1": {
+     "aligned": null,
      "dominant": "first",
      "first": {
       "amplitude": 0.00254440271,
@@ -37,6 +38,7 @@
       "significant": false
      },
      "max_amplitude": 0.00254440271,
+     "phase_offsets": [],
      "qubit": 1,
      "se": 0.000828982385,
      "second": {
@@ -46,6 +48,7 @@
      }
     },
     "5": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.078998432519,
@@ -53,6 +56,13 @@
       "significant": true
      },
      "max_amplitude": 0.078998432519,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.07327422664,
+       "se": 0.057428285304
+      }
+     ],
      "qubit": 10,
      "se": 0.001518879357,
      "second": {
@@ -62,6 +72,7 @@
      }
     },
     "9": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.023863694627,
@@ -69,6 +80,13 @@
       "significant": true
      },
      "max_amplitude": 0.023863694627,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.049277787436,
+       "se": 0.062347431846
+      }
+     ],
      "qubit": 12,
      "se": 0.001291363691,
      "second": {
@@ -85,7 +103,9 @@
     "holds": true,
     "se": 0.001534546179
    },
+   "line_band": "first",
    "log10_p": -683.2,
+   "log10_p_doubled_band": -53.61,
    "max_rule": {
     "difference": 0.021319291918,
     "holds": true,
@@ -98,6 +118,7 @@
    "cycles_per_shot": 0.020038832,
    "depths": {
     "1": {
+     "aligned": null,
      "dominant": "first",
      "first": {
       "amplitude": 0.002042318293,
@@ -105,6 +126,7 @@
       "significant": false
      },
      "max_amplitude": 0.002042318293,
+     "phase_offsets": [],
      "qubit": 12,
      "se": 0.00089136416,
      "second": {
@@ -114,6 +136,7 @@
      }
     },
     "5": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.09690228362,
@@ -121,6 +144,13 @@
       "significant": true
      },
      "max_amplitude": 0.09690228362,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.014274371426,
+       "se": 0.019462190743
+      }
+     ],
      "qubit": 1,
      "se": 0.001482367549,
      "second": {
@@ -130,6 +160,7 @@
      }
     },
     "9": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.136090346671,
@@ -137,6 +168,13 @@
       "significant": true
      },
      "max_amplitude": 0.136090346671,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.195285372402,
+       "se": 0.052010892552
+      }
+     ],
      "qubit": 10,
      "se": 0.001637398344,
      "second": {
@@ -153,7 +191,9 @@
     "holds": true,
     "se": 0.001864297026
    },
+   "line_band": "first",
    "log10_p": -2385.0,
+   "log10_p_doubled_band": -17.76,
    "max_rule": {
     "difference": 0.134048028378,
     "holds": true,
@@ -166,6 +206,7 @@
    "cycles_per_shot": 0.020039389,
    "depths": {
     "1": {
+     "aligned": null,
      "dominant": "first",
      "first": {
       "amplitude": 0.003004900953,
@@ -173,6 +214,7 @@
       "significant": false
      },
      "max_amplitude": 0.003004900953,
+     "phase_offsets": [],
      "qubit": 10,
      "se": 0.001140048462,
      "second": {
@@ -182,6 +224,7 @@
      }
     },
     "5": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.028282745603,
@@ -189,6 +232,18 @@
       "significant": true
      },
      "max_amplitude": 0.028282745603,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.012723281638,
+       "se": 0.039694072891
+      },
+      {
+       "harmonic": 2,
+       "offset": -0.075348210218,
+       "se": 0.080766990644
+      }
+     ],
      "qubit": 12,
      "se": 0.001070741991,
      "second": {
@@ -198,6 +253,7 @@
      }
     },
     "9": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.130290191775,
@@ -205,6 +261,13 @@
       "significant": true
      },
      "max_amplitude": 0.130290191775,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.170612318352,
+       "se": 0.030675769657
+      }
+     ],
      "qubit": 1,
      "se": 0.00155452248,
      "second": {
@@ -221,7 +284,9 @@
     "holds": true,
     "se": 0.00192775793
    },
+   "line_band": "first",
    "log10_p": -1708.0,
+   "log10_p_doubled_band": -71.86,
    "max_rule": {
     "difference": 0.127285290822,
     "holds": true,
@@ -234,6 +299,7 @@
    "cycles_per_shot": 0.020040209,
    "depths": {
     "1": {
+     "aligned": null,
      "dominant": "first",
      "first": {
       "amplitude": 0.001321278094,
@@ -241,6 +307,7 @@
       "significant": false
      },
      "max_amplitude": 0.001321278094,
+     "phase_offsets": [],
      "qubit": 1,
      "se": 0.000833923434,
      "second": {
@@ -250,6 +317,7 @@
      }
     },
     "5": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.077069183569,
@@ -257,6 +325,13 @@
       "significant": true
      },
      "max_amplitude": 0.077069183569,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": -0.023962033399,
+       "se": 0.053076597017
+      }
+     ],
      "qubit": 10,
      "se": 0.001511656608,
      "second": {
@@ -266,6 +341,7 @@
      }
     },
     "9": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.026260952057,
@@ -273,6 +349,13 @@
       "significant": true
      },
      "max_amplitude": 0.026260952057,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.100098370919,
+       "se": 0.057607045818
+      }
+     ],
      "qubit": 12,
      "se": 0.001295174911,
      "second": {
@@ -289,7 +372,9 @@
     "holds": true,
     "se": 0.001540424079
    },
+   "line_band": "first",
    "log10_p": -641.3,
+   "log10_p_doubled_band": -54.05,
    "max_rule": {
     "difference": 0.024939673963,
     "holds": true,
@@ -302,6 +387,7 @@
    "cycles_per_shot": 0.020041674,
    "depths": {
     "1": {
+     "aligned": null,
      "dominant": "first",
      "first": {
       "amplitude": 0.001531518544,
@@ -309,6 +395,7 @@
       "significant": false
      },
      "max_amplitude": 0.001531518544,
+     "phase_offsets": [],
      "qubit": 12,
      "se": 0.000850941205,
      "second": {
@@ -318,6 +405,7 @@
      }
     },
     "5": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.090027328213,
@@ -325,6 +413,13 @@
       "significant": true
      },
      "max_amplitude": 0.090027328213,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.039720537301,
+       "se": 0.021323582318
+      }
+     ],
      "qubit": 1,
      "se": 0.001478314874,
      "second": {
@@ -334,6 +429,7 @@
      }
     },
     "9": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.117454697326,
@@ -341,6 +437,13 @@
       "significant": true
      },
      "max_amplitude": 0.117454697326,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.162464584983,
+       "se": 0.050842161901
+      }
+     ],
      "qubit": 10,
      "se": 0.001597792479,
      "second": {
@@ -357,7 +460,9 @@
     "holds": true,
     "se": 0.001810260131
    },
+   "line_band": "first",
    "log10_p": -1883.0,
+   "log10_p_doubled_band": -17.36,
    "max_rule": {
     "difference": 0.115923178782,
     "holds": true,
@@ -370,6 +475,7 @@
    "cycles_per_shot": 0.020044766,
    "depths": {
     "1": {
+     "aligned": null,
      "dominant": "second",
      "first": {
       "amplitude": 0.003142078374,
@@ -377,6 +483,7 @@
       "significant": false
      },
      "max_amplitude": 0.003452468732,
+     "phase_offsets": [],
      "qubit": 10,
      "se": 0.001089863978,
      "second": {
@@ -386,6 +493,7 @@
      }
     },
     "5": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.024647135917,
@@ -393,6 +501,18 @@
       "significant": true
      },
      "max_amplitude": 0.024647135917,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.018944780003,
+       "se": 0.044634928242
+      },
+      {
+       "harmonic": 2,
+       "offset": -0.140969656935,
+       "se": 0.06210710326
+      }
+     ],
      "qubit": 12,
      "se": 0.001056467173,
      "second": {
@@ -402,6 +522,7 @@
      }
     },
     "9": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.123961474925,
@@ -409,6 +530,13 @@
       "significant": true
      },
      "max_amplitude": 0.123961474925,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.245176303082,
+       "se": 0.028749065204
+      }
+     ],
      "qubit": 1,
      "se": 0.001543213174,
      "second": {
@@ -425,7 +553,9 @@
     "holds": true,
     "se": 0.001889261864
    },
+   "line_band": "first",
    "log10_p": -1492.0,
+   "log10_p_doubled_band": -86.61,
    "max_rule": {
     "difference": 0.120509006193,
     "holds": true,
@@ -438,6 +568,7 @@
    "cycles_per_shot": 0.020052268,
    "depths": {
     "1": {
+     "aligned": null,
      "dominant": "first",
      "first": {
       "amplitude": 0.001373626452,
@@ -445,6 +576,7 @@
       "significant": false
      },
      "max_amplitude": 0.001373626452,
+     "phase_offsets": [],
      "qubit": 12,
      "se": 0.000838766269,
      "second": {
@@ -454,6 +586,7 @@
      }
     },
     "5": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.079719289517,
@@ -461,6 +594,13 @@
       "significant": true
      },
      "max_amplitude": 0.079719289517,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.000167478429,
+       "se": 0.02224193601
+      }
+     ],
      "qubit": 1,
      "se": 0.001420188451,
      "second": {
@@ -470,6 +610,7 @@
      }
     },
     "9": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.123631656031,
@@ -477,6 +618,13 @@
       "significant": true
      },
      "max_amplitude": 0.123631656031,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.252003269732,
+       "se": 0.093322570554
+      }
+     ],
      "qubit": 10,
      "se": 0.001646364615,
      "second": {
@@ -493,7 +641,9 @@
     "holds": true,
     "se": 0.001847713533
    },
+   "line_band": "first",
    "log10_p": -1899.0,
+   "log10_p_doubled_band": -3.295,
    "max_rule": {
     "difference": 0.122258029579,
     "holds": true,
@@ -506,6 +656,7 @@
    "cycles_per_shot": 0.020042204,
    "depths": {
     "1": {
+     "aligned": null,
      "dominant": "first",
      "first": {
       "amplitude": 0.001475848605,
@@ -513,6 +664,7 @@
       "significant": false
      },
      "max_amplitude": 0.001475848605,
+     "phase_offsets": [],
      "qubit": 10,
      "se": 0.001154338655,
      "second": {
@@ -522,6 +674,7 @@
      }
     },
     "5": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.015967554279,
@@ -529,6 +682,18 @@
       "significant": true
      },
      "max_amplitude": 0.015967554279,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.011895739176,
+       "se": 0.064665302289
+      },
+      {
+       "harmonic": 2,
+       "offset": -0.156058516178,
+       "se": 0.061556366455
+      }
+     ],
      "qubit": 12,
      "se": 0.001010547742,
      "second": {
@@ -538,6 +703,7 @@
      }
     },
     "9": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.1131800179,
@@ -545,6 +711,13 @@
       "significant": true
      },
      "max_amplitude": 0.1131800179,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.208573429633,
+       "se": 0.031237247387
+      }
+     ],
      "qubit": 1,
      "se": 0.001502715881,
      "second": {
@@ -561,7 +734,9 @@
     "holds": true,
     "se": 0.001894901779
    },
+   "line_band": "first",
    "log10_p": -1330.0,
+   "log10_p_doubled_band": -71.0,
    "max_rule": {
     "difference": 0.111704169295,
     "holds": true,
@@ -574,6 +749,7 @@
    "cycles_per_shot": 0.02004042,
    "depths": {
     "1": {
+     "aligned": null,
      "dominant": "first",
      "first": {
       "amplitude": 0.002890764055,
@@ -581,6 +757,7 @@
       "significant": false
      },
      "max_amplitude": 0.002890764055,
+     "phase_offsets": [],
      "qubit": 1,
      "se": 0.000827263624,
      "second": {
@@ -590,6 +767,7 @@
      }
     },
     "5": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.073012143268,
@@ -597,6 +775,18 @@
       "significant": true
      },
      "max_amplitude": 0.073012143268,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.764824115832,
+       "se": 0.467993848678
+      },
+      {
+       "harmonic": 2,
+       "offset": 0.623294874305,
+       "se": 0.476427812127
+      }
+     ],
      "qubit": 10,
      "se": 0.001588258322,
      "second": {
@@ -606,6 +796,7 @@
      }
     },
     "9": {
+     "aligned": true,
      "dominant": "second",
      "first": {
       "amplitude": 0.002741006104,
@@ -613,6 +804,13 @@
       "significant": false
      },
      "max_amplitude": 0.020273323061,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": 0.664413185594,
+       "se": 0.468554982095
+      }
+     ],
      "qubit": 12,
      "se": 0.001281387474,
      "second": {
@@ -629,7 +827,9 @@
     "holds": false,
     "se": 0.001525227512
    },
+   "line_band": "first",
    "log10_p": -484.9,
+   "log10_p_doubled_band": -59.3,
    "max_rule": {
     "difference": 0.017382559005,
     "holds": true,
@@ -642,6 +842,7 @@
    "cycles_per_shot": 0.020038164,
    "depths": {
     "1": {
+     "aligned": null,
      "dominant": "second",
      "first": {
       "amplitude": 0.000346698528,
@@ -649,6 +850,7 @@
       "significant": false
      },
      "max_amplitude": 0.000474497556,
+     "phase_offsets": [],
      "qubit": 12,
      "se": 0.000844942828,
      "second": {
@@ -658,6 +860,7 @@
      }
     },
     "5": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.091206135867,
@@ -665,6 +868,13 @@
       "significant": true
      },
      "max_amplitude": 0.091206135867,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.026941956126,
+       "se": 0.019755794683
+      }
+     ],
      "qubit": 1,
      "se": 0.001446150714,
      "second": {
@@ -674,6 +884,7 @@
      }
     },
     "9": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.137168819829,
@@ -681,6 +892,13 @@
       "significant": true
      },
      "max_amplitude": 0.137168819829,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.137968285035,
+       "se": 0.042375073278
+      }
+     ],
      "qubit": 10,
      "se": 0.001616518553,
      "second": {
@@ -697,7 +915,9 @@
     "holds": true,
     "se": 0.001824023194
    },
+   "line_band": "first",
    "log10_p": -2327.0,
+   "log10_p_doubled_band": -27.12,
    "max_rule": {
     "difference": 0.136694322273,
     "holds": true,
@@ -710,6 +930,7 @@
    "cycles_per_shot": 0.020039437,
    "depths": {
     "1": {
+     "aligned": null,
      "dominant": "first",
      "first": {
       "amplitude": 0.004859826054,
@@ -717,6 +938,7 @@
       "significant": false
      },
      "max_amplitude": 0.004859826054,
+     "phase_offsets": [],
      "qubit": 10,
      "se": 0.001072013925,
      "second": {
@@ -726,6 +948,7 @@
      }
     },
     "5": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.013075030288,
@@ -733,6 +956,13 @@
       "significant": true
      },
      "max_amplitude": 0.013075030288,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.119738479817,
+       "se": 0.078084434568
+      }
+     ],
      "qubit": 12,
      "se": 0.001004758104,
      "second": {
@@ -742,6 +972,7 @@
      }
     },
     "9": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.109127904412,
@@ -749,6 +980,13 @@
       "significant": true
      },
      "max_amplitude": 0.109127904412,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.177121921696,
+       "se": 0.039359509581
+      }
+     ],
      "qubit": 1,
      "se": 0.001511876014,
      "second": {
@@ -765,7 +1003,9 @@
     "holds": true,
     "se": 0.001853370696
    },
+   "line_band": "first",
    "log10_p": -1159.0,
+   "log10_p_doubled_band": -36.51,
    "max_rule": {
     "difference": 0.104268078358,
     "holds": true,
@@ -778,6 +1018,7 @@
    "cycles_per_shot": 0.020038948,
    "depths": {
     "1": {
+     "aligned": null,
      "dominant": "first",
      "first": {
       "amplitude": 0.001854909037,
@@ -785,6 +1026,7 @@
       "significant": false
      },
      "max_amplitude": 0.001854909037,
+     "phase_offsets": [],
      "qubit": 1,
      "se": 0.000813289073,
      "second": {
@@ -794,6 +1036,7 @@
      }
     },
     "5": {
+     "aligned": true,
      "dominant": "first",
      "first": {
       "amplitude": 0.076669609492,
@@ -801,6 +1044,13 @@
       "significant": true
      },
      "max_amplitude": 0.076669609492,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.400597824559,
+       "se": 0.470156798781
+      }
+     ],
      "qubit": 10,
      "se": 0.001485580808,
      "second": {
@@ -810,6 +1060,7 @@
      }
     },
     "9": {
+     "aligned": true,
      "dominant": "second",
      "first": {
       "amplitude": 0.002696509634,
@@ -817,6 +1068,13 @@
       "significant": false
      },
      "max_amplitude": 0.021996161091,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": 0.29107655575,
+       "se": 0.4706389831
+      }
+     ],
      "qubit": 12,
      "se": 0.001266705228,
      "second": {
@@ -833,7 +1091,9 @@
     "holds": false,
     "se": 0.001505317658
    },
+   "line_band": "first",
    "log10_p": -568.2,
+   "log10_p_doubled_band": -56.92,
    "max_rule": {
     "difference": 0.020141252054,
     "holds": true,
@@ -908,7 +1168,8 @@
  "post_hoc_rules": [
   "the line-phase-bin cells (every bin, and the stationary pair of bins 0 and bins / 2 combined in ln rho) were chosen after the ladder analysis showed rho above 1 on every pair",
   "the max(A1, A2) rule and its depth-9 over depth-1 margin test were chosen after the first-harmonic test read zero at an extremum of a selector's response in batches 4 and 5",
-  "the clean-reference restriction was chosen after the depth-9 first harmonic of (12,14) fell to noise in batch 4"
+  "the clean-reference restriction was chosen after the depth-9 first harmonic of (12,14) fell to noise in batch 4",
+  "the doubled-band scan and the quarter-bin phase alignment of every significant harmonic were added after the record was read; on the retained jobs neither moves a detection or a clean batch"
  ],
  "rho": [
   {
