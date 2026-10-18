@@ -159,7 +159,7 @@ core-427; claim `qi-tuna17-shot-record-50hz-line`).
 - The ring-down arms differ only in a wait of tau cycles. Their peak
   frequency rises with tau at 50.4 +- 4.0 Hz, so the source runs in
   wall-clock time, not on the shot index.
-- At 50 Hz one shot takes 402.8 to 404.6 us in the ring-down circuits and
+- At 50 Hz one shot takes 402.9 to 404.6 us in the ring-down circuits and
   400.7 us in the follow series; the period grows with circuit length, which
   is the slope above. The fitted execution cost of 0.51 ms per shot therefore
   includes about 0.1 ms of per-shot time outside the repetition period.
@@ -175,8 +175,9 @@ Consequences:
 - The shot index plus a per-job phase gives every shot its line phase. A
   demodulated analysis therefore recovers phase-resolved contrast from data
   a job already returns.
-- Morning ring-down jobs have a median largest block chi-square (15 degrees
-  of freedom) of 52 to 99, against 25 to 27 in the box-kite series. Within-job
+- Block stationarity (16 block means per bit; the smallest per-bit tail
+  times the bits scanned) falls below 0.01 in 61 to 75 percent of the
+  morning ring-down jobs and in 11 to 33 percent of the box-kite jobs. Within-job
   stationarity depends on the device's state, so each series checks it.
 
 ## Run design
