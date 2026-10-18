@@ -321,10 +321,10 @@ def analyze() -> dict[str, Any]:
         "input_sha256": hashes,
         "method": {
             "bit_order": "qubit zero is the rightmost character",
-        "normalization": (
-            "Design B fixed-operand LCU: P(s=0) = ||x y||^2 / 2 for normalized x = (e_i + t e_j)/sqrt2 "
-            "and normalized y, so the ideal reads 0 dark, 1 bright and 1/2 fixture"
-        ),
+            "normalization": (
+                "Design B fixed-operand LCU: P(s=0) = ||x y||^2 / 2 for normalized x = (e_i + t e_j)/sqrt2 "
+                "and normalized y, so the ideal reads 0 dark, 1 bright and 1/2 fixture"
+            ),
             "raw_covariance": "unbiased covariance of each acquisition's mean: (E[Xi Xj]-E[Xi]E[Xj])/(n-1)",
             "pooling": "equal-weight average of three fixed regions, each with the same shot count",
             "readout_correction": "(p-beta)/(1-alpha-beta), alpha=P(read 1|prepared 0), beta=P(read 0|prepared 1)",
