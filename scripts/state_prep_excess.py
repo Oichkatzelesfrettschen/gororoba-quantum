@@ -199,7 +199,12 @@ def _delay(value: Any, where: str) -> float:
 
 
 def _label(delay: float) -> str:
-    return DELAY_LABELS.get(delay) or f"{delay * 1e6:g}us"
+    """The cell key for a delay: the named label at 50 and 250 us, else the delay's shortest round-trip repr in seconds.
+
+    repr round-trips every float, so two distinct delays never share a key
+    and no cell overwrites another in the label-keyed tables.
+    """
+    return DELAY_LABELS.get(delay) or f"{delay!r}s"
 
 
 def rule_cells(delay: float) -> tuple[tuple[tuple[str, float], ...], tuple[float, ...], float]:
@@ -1027,6 +1032,9 @@ def self_test() -> None:
 
 
 def _self_test(scratch: Path) -> None:
+    # Delays that agree to six significant digits keep distinct cell keys.
+    require(_label(2e-05) != _label(2.0000001e-05), "delay labels collide")
+    require(_label(SHORT_DELAY) == "50us" and _label(LONG_DELAY) == "250us", "named delay labels moved")
     # Clopper-Pearson bounds against an independent binomial-tail inversion.
     cases = [(0, 50), (3, 50), (50, 50), (0, 4096), (109, 4096), (4096, 4096), (281, 32768), (1500, 16384)]
     for level in (0.01 / 453, 0.05):
@@ -1211,14 +1219,14 @@ def _self_test(scratch: Path) -> None:
     root, zero = single()
     require(zero["rule"]["target_delay_seconds"] == 0.0 and zero["rule"]["bound_count"] == 8, f"{zero['rule']}")
     require("eps50" not in zero and "eps250" not in zero, "the single-delay rule reported the two-delay maxima")
-    require(zero["eps_target"] == max(row["eps"]["0us"] for row in zero["qubits"].values()), "eps_target")
+    require(zero["eps_target"] == max(row["eps"]["0.0s"] for row in zero["qubits"].values()), "eps_target")
     require(zero["argmax_target"] == [4], f"arg-max {zero['argmax_target']}")
     require(zero["fixed_point"]["measured_at_plan_delay"] == zero["eps_target"], "fixed point reads another delay")
-    require("prep0_0us_lower" in zero["qubits"]["4"]["bounds"], "prep0 baseline at the target delay")
+    require("prep0_0.0s_lower" in zero["qubits"]["4"]["bounds"], "prep0 baseline at the target delay")
     # Fewer bounds share alpha, so the same history counts give a smaller eps than the two-delay rule's eps50.
     require(zero["eps_target"] < result["eps50"], "the single-delay rule spent more alpha than the two-delay rule")
     require(single(extra=True)[1]["eps_target"] == zero["eps_target"], "a control at another delay moved eps")
-    _expect_refusal(lambda: single(with_prep0=False), "prep0@0us")
+    _expect_refusal(lambda: single(with_prep0=False), "prep0@0.0s")
     write(
         root / "results/live/n21-plan/record.json", sorted((root / "results/live").glob("[hp]*")), DEFAULT_ALPHA, root
     )
