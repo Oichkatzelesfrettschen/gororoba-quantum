@@ -51,9 +51,9 @@ the bound each contribute; none of them changes the circuit.
    (docs/notes/ibm_quantum/hardware-controls.md). The planner drops shot
    tiers above it and records them under `selection_trace.shot_ceiling`, and
    each batch rechecks the fresh configuration (gate core-524). The cap
-   bounds the excitation a short-delay plan can absorb: in the sweep below,
-   50 us at the 15:37 calibration stays feasible at an excess excitation of
-   0.02 only at the 98,304 tier, and 0.03 has no tier at or below the cap.
+   bounds the excitation a short-delay plan can absorb: a larger declared
+   excitation flattens the exact law's contrast, the required tier rises,
+   and once it passes the cap the plan records no feasible tier.
 
 5. **The delay changes the price of a shot, not the number of shots.** The
    exact law depends on the declared excitation and the calibration; the
@@ -144,6 +144,12 @@ the bound each contribute; none of them changes the circuit.
     ([simulation-cost-levers.md](build_host/simulation-cost-levers.md)).
 
 ## The run as executed on ibm_kingston, 2026-10-18
+
+The controls are `results/live/2026-10-18T083402.386701Z` to
+`2026-10-18T083404.414317Z` and the n21 run is
+`results/live/2026-10-18T090603.530638Z`, each with its raw archive and
+collect.json; `results/live/qpu-job-inventory.json` binds their jobs to
+the account's consumed seconds.
 
 | Stage | Jobs | Shots | Billed | Predicted |
 |---|---|---|---|---|
