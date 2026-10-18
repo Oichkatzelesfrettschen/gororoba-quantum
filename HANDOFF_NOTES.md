@@ -337,9 +337,9 @@ status line.
 The branch merges once the service inventory records the four failed
 control jobs. Those jobs' charges must settle first, which takes a read-only
 `--collect` of each failed run, and the reconciliation needs a failed-job
-inventory extension. The control-run findings note withdraws its
-timeout-code argument in the same change: the long-delay-free jobs and the
-large-shot short-delay jobs both ended with the service's max-time code, so
-that code does not separate a stalled shot loop from an overrun ceiling.
+inventory extension. The control-run findings note no longer argues from
+the timeout code: the zero-delay jobs and the large-shot short-delay jobs
+both ended with the service's max-time code, so that code does not
+separate a stalled shot loop from an overrun ceiling.
 The note's remaining claim rests on the absent circuit execution time of
 the zero-delay jobs and on IBM's documented floor.

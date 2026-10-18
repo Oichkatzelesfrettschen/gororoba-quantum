@@ -7,9 +7,11 @@ for Heron and Eagle QPUs, while `backend.configuration().rep_delay_range`
 on ibm_kingston reads [0.0, 0.002] s. live_run.py admits a delay inside
 that range, and the service's own range check (error 1602) accepted 0. Both
 jobs then stayed in the running state for 129 s and 207 s, returned no
-circuit execution time, and ended in error 1305, the service's own
-"ran longer than" timeout, rather than 1304, the documented overrun of a
-job's `max_execution_time`. The source pages and their digests are in
+circuit execution time, and ended in error 1305, the service's "ran longer
+than" timeout. The 20 us jobs of the same design at 100,000 shots under a
+6 s ceiling also ended in 1305, so the retained jobs report 1305 for every
+ceiling cancellation, and the code does not separate a stalled shot loop
+from an overrun ceiling. The source pages and their digests are in
 [ibm_heron_platform.md](../../docs/notes/ibm_heron_platform.md#repetition-delay-floor-and-timeout-codes).
 
 ## The runs
@@ -50,9 +52,10 @@ The 50 us control jobs of the same design ran from running to finished in
    jobs reported neither code. A 0 us job measuring one qubit that fails
    the same way would remove width as the cause.
 3. **The default delay substituted for 0.** 100,000 shots at 250 us
-   accumulate 25 s of QPU time and would end at the 5 s ceiling with code
-   1304 and a nonzero circuit time; the jobs show 1305 and none. This
-   explanation is the weakest.
+   accumulate 25 s of QPU time and would overrun the 5 s ceiling with a
+   nonzero circuit time; the jobs report none. The error code carries no
+   weight here, since every retained ceiling cancellation reports 1305.
+   This explanation is the weakest.
 
 The static prep0 job failed as the dynamic x_history job did, so the
 dynamic circuit is not the cause.
