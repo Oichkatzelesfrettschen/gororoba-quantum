@@ -282,6 +282,10 @@ def check(path: Path) -> str:
         row = next(r for r in record["rows"] if r["row"] == name)
         if row["dtype"] == "complex128" and "laws_agree" in out:
             require(out["laws_agree"], f"{path}: {name} laws differ from numpy by {out['max_abs_law_minus_numpy']}")
+        require(
+            row.get("records_equal_in_process", True),
+            f"{path}: {name} records differ from the in-process complex128 row",
+        )
         if row["device"] == "cuda":
             require(
                 bool(record["gpu_check"] and record["gpu_check"]["devices"]), f"{path}: {name} names no CUDA device"
