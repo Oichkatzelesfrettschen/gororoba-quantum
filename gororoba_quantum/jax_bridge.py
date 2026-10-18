@@ -362,11 +362,22 @@ def _apply(rho: Any, qargs: tuple[int, ...], kraus: Any, n: int, xp: Any) -> Any
 
 
 class _Numpy:
+    """numpy einsum along the greedy contraction path, searched once per subscripts and operand shapes.
+
+    np.einsum with an explicit path runs the contractions the greedy search
+    would choose, in the same order, so the result carries the same bits.
+    """
+
     conj = staticmethod(np.conj)
+    paths: dict[tuple[str, tuple[tuple[int, ...], ...]], list[Any]] = {}
 
     @staticmethod
     def einsum(subscripts: str, *operands: Any) -> Any:
-        return np.einsum(subscripts, *operands, optimize="greedy")
+        key = (subscripts, tuple(np.shape(operand) for operand in operands))
+        path = _Numpy.paths.get(key)
+        if path is None:
+            path = _Numpy.paths[key] = np.einsum_path(subscripts, *operands, optimize="greedy")[0]
+        return np.einsum(subscripts, *operands, optimize=path)
 
 
 def evolve_numpy(program: Program) -> np.ndarray:

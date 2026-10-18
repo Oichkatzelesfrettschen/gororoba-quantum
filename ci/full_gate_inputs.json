@@ -76,10 +76,6 @@
       "results/live/2026-10-13T025444.603480Z/**",
       "results/live/2026-10-15T031229.371738Z/**"
     ],
-    "core-337": [
-      "docs/evidence/linear_conjugation/noise.json",
-      "docs/evidence/calibration/history/**"
-    ],
     "core-379": [
       "docs/evidence/linear_conjugation/noise.json",
       "docs/evidence/calibration/history/**"

@@ -277,7 +277,7 @@ def reference_circuit(m: int, target: int) -> QuantumCircuit:
 
 def compile_all(snapshot: dict[str, Any]) -> dict[str, Any]:
     """The device pair, the eps family and the reference circuits, each noiselessly checked."""
-    view, _ = calibration_snapshot.noise_model(snapshot)
+    view = calibration_snapshot.snapshot_backend(snapshot)
 
     def compiled(eps: Any, layout: list[int] | None) -> QuantumCircuit:
         return transpile(pair_template(eps), view, initial_layout=layout, optimization_level=3, seed_transpiler=SEED)
