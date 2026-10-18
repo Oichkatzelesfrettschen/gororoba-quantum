@@ -343,3 +343,14 @@ both ended with the service's max-time code, so that code does not
 separate a stalled shot loop from an overrun ceiling.
 The note's remaining claim rests on the absent circuit execution time of
 the zero-delay jobs and on IBM's documented floor.
+
+## Closing conditions for the consolidated branch
+
+The consolidated pull request does not close cleanly as it stands. It
+merges only when all of these hold:
+- the failed-job inventory blocker is resolved, and the service-inventory
+  reconciliation and retained-run inventory gates pass;
+- every open issue on the repository is resolved or closed with a recorded
+  reason;
+- the current-head Codex review is clean, every review thread is resolved
+  and the mergeable state is clean.

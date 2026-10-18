@@ -444,6 +444,12 @@ def _completed_job(
     index = reader.json(raw / "index.json")
     require(index.get("job_id") == job_id, f"{raw}: index.json names another job")
     files = index.get("files") or {}
+    ledger = collected.get("raw")
+    if ledger is not None:
+        require(
+            ledger.get("directory") == f"raw/{job_id}" and ledger.get("files") == files,
+            f"{raw}: index.json differs from the raw ledger collect.json records",
+        )
     pubs = []
     for position, manifest in enumerate(job["pubs"]):
         name = f"pub_{position:02d}.json"
@@ -1012,6 +1018,7 @@ class RunExtractor:
                 result["failed"].append(_failed_job(record, job, collected))
         if family != FAMILY or result["failed"]:
             result["kind"] = "timing"
+            result["inputs"] = reader.inputs
             return result
         arms = list((record.get("family_configuration") or {}).get("arms") or ())
         require(len(arms) == 1 and arms[0] in (PREP0_ARM, HISTORY_ARM), f"{run_dir}: arms {arms}")
@@ -1886,11 +1893,19 @@ def _self_test(scratch: Path) -> None:
     missing_run = _synthetic_run(other, "missing", PREP0_ARM, 2e-5, known, qubits, readout)
     (other / missing_run / "raw" / "job_missing" / "pub_00.json").unlink()
     _expect_refusal(lambda: evaluate(other, [missing_run]), "raw file missing")
+    ledger_run = _synthetic_run(other, "ledger", PREP0_ARM, 2e-5, known, qubits, readout)
+    collect_path = other / ledger_run / "collect.json"
+    collect = json.loads(collect_path.read_bytes())
+    ledger_index = json.loads((other / ledger_run / "raw" / "job_ledger" / "index.json").read_bytes())
+    files = dict(ledger_index["files"]) | {"pub_00.json": "0" * 64}
+    collect[0]["jobs"]["job_ledger"]["raw"] = {"directory": "raw/job_ledger", "files": files}
+    _dump(collect_path, collect)
+    _expect_refusal(lambda: evaluate(other, [ledger_run]), "differs from the raw ledger")
     print(
         "state_prep_control_parameters: Clopper-Pearson matches the binomial-tail inversion to 1e-9, Newcombe's "
         "example reproduces, the Poisson-binomial law matches enumeration; known fractions, a zero timing residual, "
         "an injected burst, drift and lag-1 memory are recovered; the replay holds to 1e-9 and refuses changed "
-        "inputs, mismatched shots and a missing raw file"
+        "inputs, mismatched shots, a missing raw file and a raw index that differs from its collection ledger"
     )
 
 
