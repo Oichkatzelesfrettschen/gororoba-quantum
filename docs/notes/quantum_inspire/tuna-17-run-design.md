@@ -287,6 +287,75 @@ core-425; claims `qi-tuna17-boxkite-ladder-readout-context`,
 - **Drift.** Against the follow series, the depth-9 bright populations rose
   by 0.07, 0.09 and 0.39, with (12,14) moving from 0.483 to 0.877.
 
+### Ladder line-phase bins (exploratory)
+
+`scripts/qi_ladder_line_bins.py` re-reads the 12 Latin jobs' raw shots with the
+ladder estimators after cutting each job into 8 line-phase bins, bin 0 at the
+depth-9 selector's P1 peak, and tests the max(A1, A2) line statistic
+(`results/quantum_inspire/box_kite_tuna_17_ladder_line_bins.json`, gates
+core-433 and core-550). Both rules were chosen after the ladder data were
+read, so the record is exploratory and binds a future run only. Its bootstrap
+stream, numpy seed [20261017, 2], differs from the ladder's.
+
+- **rho by phase.** A peak and a trough pooled into one cell restore the
+  covariance of the modulation with the decay, so the stationary estimate
+  averages ln rho over bin 0 and bin 4, each fitted on its own shots. Against
+  the job-averaged value, rho reads:
+
+  | pair | job average | mean over 8 bins | stationary bins 0 and 4 | bin 0 | bin 4 |
+  |---|---|---|---|---|---|
+  | (1,4) | 1.0208 | 1.0259 | 1.0300 | 1.058 | 1.0026 |
+  | (10,13) | 1.0214 | 1.0274 | 1.0312 | 1.063 | 1.0004 |
+  | (12,14) | 1.0056 | 1.0058 | 1.0086 | 1.011 | 1.0059 |
+
+  Bins 0 and 4 are extrema of the line only where the depth-9 selector's
+  first harmonic supplies the phase, so the stationary verdict combines
+  batch 1 alone, the only X batch whose jobs all carry a detected line and a
+  significant depth-9 first harmonic: 1.0326, 1.0303 and 1.0075, with 99%
+  intervals 1.0297 to 1.0358, 1.0272 to 1.0332 and 1.0059 to 1.0092, all
+  excluding 1. Both X batches together (the table) give 1.0280 to 1.0322,
+  1.0291 to 1.0334 and 1.0074 to 1.0098, and the readout-iso-x correction
+  moves those by at most 0.0003. The ln-mean over all 8 bins, which carries no choice of bin, also reads at or above the job
+  average, so job-averaging does not raise rho here and the modulation
+  covariance does not explain the excess.
+- **Phase profile.** The excess follows the line. On (1,4) and (10,13) rho
+  is 1.05 to 1.07 in bins 7, 0 and 1, around the depth-9 selector's lowest
+  population contrast, and 1.000 to 1.004 in bins 3 to 5, where the 99%
+  interval of (10,13) includes 1. A coherent selector-population error
+  that is itself modulated by the line fits this profile; a depth-only
+  error would leave rho flat across bins.
+- **Reference.** In batch 4 the depth-9 selector of latin-x-1 has a first
+  harmonic of 0.0027, so that job's bins take their phase from noise and every
+  pair's depth cell from it averages over phases; the stationary verdict
+  and the job average it is read against leave that job's batch out, and
+  batch 1 alone gives job averages 1.0213, 1.0206 and 1.0048, each 99%
+  interval above 1, as both X batches do. A job whose line scan missed the detection
+  threshold would leave its harmonic rules undetermined and its batch out of
+  the verdict; all 12 detect the line. A selector at an extremum of its
+  response follows the line at 2 f alone, so each job also scans the doubled
+  band, both bands at half the detection p; all 12 detect in the band itself.
+  The other depths' selectors share the reference phase where every
+  significant harmonic is extremal within a quarter bin (pi/16) of bins 0
+  and 4, up to 5 phase standard errors. On the clean jobs the depth-5 first
+  harmonics sit -0.024 to +0.120 rad from the reference and the depth-9
+  second harmonics -0.252 to -0.049 rad, so every selector aligns and no
+  batch leaves the verdict on that count.
+- **Harmonics at 2 f.** max(A1, A2) at depth 9 exceeds depth 1 by 0.0174 to
+  0.137 in all 12 jobs, against a margin error of 0.0014 to 0.0018 from a
+  bootstrap that draws the depth-9 and depth-1 selectors' eight lock-in
+  coefficients jointly, since both read the job's shots, and repeats the
+  maximum, where the first-harmonic rule holds in 10. In the two failing jobs (batch 4
+  latin-x-1 and batch 5 latin-y-1, both with (12,14) at depth 9) A1 is 0.0027
+  and A2 0.0203 and 0.0220, and the max rule's depth differences are 12 and
+  14 margin errors. A depth-9 second
+  harmonic of 0.009 to 0.030 appears in every job, so the selector responses
+  are not pure first harmonics.
+
+The intervals carry shot noise and readout-count noise only, conditional on
+each job's fitted line frequency and phase, which set the bins and are not
+refitted per draw; the batch-to-batch scatter of deep populations that the
+follow series measured is outside them.
+
 ## Open questions
 
 - Readout context: resolved by the Walsh exemplar series
@@ -294,12 +363,16 @@ core-425; claims `qi-tuna17-boxkite-ladder-readout-context`,
   doubles beside an excited q11 and moves by less than 0.01 beside an
   excited q10 or after X X on both, so the dependence is q11's state at
   measurement. The other used qubits' contexts remain unmeasured.
-- rho above 1: a coherent selector-population error and the job-averaged
-  50 Hz modulation both raise it. A ladder analyzed in line-phase bins at
-  the bins where the modulation is stationary would separate them.
-- The line at 2 f: the first-harmonic test reads zero at an extremum of a
-  selector's response, so a preregistered line test should take the larger
-  of the first and second harmonics.
+- rho above 1: the stationary line-phase bins keep rho above 1 on all three
+  pairs, so the job-averaged modulation does not explain it, and the excess
+  tracks the line phase. A run that separates a line-modulated selector
+  population from a depth-dependent one needs the population measured per
+  phase bin at each depth in one job, so every depth shares the bin
+  reference; the Latin square puts each pair's depths in different jobs.
+- The line at 2 f: max(A1, A2) holds in all 12 jobs where the first-harmonic
+  test fails in two. The max rule is exploratory; a preregistered line test
+  for a future run adopts it with its bootstrap margin and the Rice bias of
+  a noisy amplitude stated.
 - The per-CZ time term and the decomposition of H: an A/B of H against
   Y90 then X on one replica would price the decomposed gate, and a ladder of
   `wait` cycles beside the CZ ladder would separate the detuning phase from

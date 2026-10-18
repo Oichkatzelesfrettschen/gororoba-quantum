@@ -209,6 +209,10 @@
       "results/quandela/runs/*-qpu_belenos-belenos_mesh-*/**"
     ],
     "core-548": [],
+    "core-553": [
+      "docs/evidence/rank_locus_second_order/result.json"
+    ],
+    "core-554": [],
     "core-562": [
       "docs/evidence/calibration/history/**",
       "results/live/2026-10-15T070847.644554Z/**",
