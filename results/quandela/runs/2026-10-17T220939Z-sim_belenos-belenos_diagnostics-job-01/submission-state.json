@@ -1,0 +1,98 @@
+{
+ "body_sha256": "690c85960a4d1b4646e589afee17d938b8be9c966abc6efd9581d58cc290b7ca",
+ "cases_sha256": "43a3eb0a2311615532a34ab9de73ad01c80abc0d1a2f6f8e07552d65a8792f45",
+ "job_id": "dec179fa-b847-4bcb-81ee-5ea85b497031",
+ "phase": "posted",
+ "platform": "sim:belenos",
+ "receipt": {
+  "approval": "User 2026-10-17: 'Either way those are approved especially when you do the tests before the next QPU job ... and execute!' Case S2 (5 sim:belenos jobs: fringe edge, fringe strut, diagnostics job-01/02/03), measured 1 credit per job, shots 0.",
+  "availability_at_plan": {
+   "max_concurrent_jobs": 1,
+   "max_jobs_in_queue": 1,
+   "max_running_qt_jobs": 10,
+   "num_concurrent_jobs": 0,
+   "num_jobs_in_queue": 0,
+   "num_running_qt_jobs": 0
+  },
+  "body_sha256": "690c85960a4d1b4646e589afee17d938b8be9c966abc6efd9581d58cc290b7ca",
+  "case": "2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-01",
+  "cases_sha256": "43a3eb0a2311615532a34ab9de73ad01c80abc0d1a2f6f8e07552d65a8792f45",
+  "credit_ceiling": 1.0,
+  "estimated_credits": 1.0,
+  "estimated_shots": 10000,
+  "expected_seconds": 120.0,
+  "max_credits": 1.0,
+  "max_samples": 10000,
+  "max_shots": 20000,
+  "per_job_credits": 1.0,
+  "perfs_at_plan": {},
+  "platform": "sim:belenos",
+  "platform_at_plan": {
+   "bookable": false,
+   "description": "Belenos simulator",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:belenos",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-10": {
+     "availability": 99.92
+    },
+    "2026-10-11": {
+     "availability": 99.91
+    },
+    "2026-10-12": {
+     "availability": 99.88
+    },
+    "2026-10-13": {
+     "availability": 99.86000000000001
+    },
+    "2026-10-14": {
+     "availability": 99.88000000000001
+    },
+    "2026-10-15": {
+     "availability": 99.9
+    },
+    "2026-10-16": {
+     "availability": 99.88000000000001
+    },
+    "2026-10-17": {
+     "availability": 99.89999999999999
+    }
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  "schema": "qd-submission-v1",
+  "usage_before": [
+   {
+    "total_jobs": 7,
+    "usage": [
+     {
+      "credits": 0.0,
+      "duration_seconds": 105,
+      "free_credits": 6.0,
+      "nb_jobs": 6,
+      "platform_name": "sim:belenos"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 13,
+      "free_credits": 1.01,
+      "nb_jobs": 1,
+      "platform_name": "qpu:belenos"
+     }
+    ]
+   }
+  ],
+  "versions": {
+   "exqalibur": "1.4.2",
+   "perceval-quandela": "1.3.1"
+  }
+ },
+ "schema": "qd-submission-state-v1",
+ "started_utc": "2026-10-17T22:09:58+00:00",
+ "submitted_utc": "2026-10-17T22:10:01+00:00"
+}
