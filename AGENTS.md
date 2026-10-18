@@ -553,7 +553,7 @@ sedenion statement never rests on them.
   reconcile_qpu_inventory.py assigns each raw archive to the instance its
   run record names and checks coverage, the usage-window sum and the reserve
   per instance, while the historical-job and campaign accounting bind the
-  default instance. Gate core-563 holds the account selection and the
+  default instance. Gate core-587 holds the account selection and the
   instance refusal.
 
 ## Simulation on Kaggle: CPU, GPU and CI replay
