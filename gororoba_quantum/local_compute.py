@@ -377,6 +377,28 @@ def route(policy: dict[str, Any], circuits: list[Any]) -> tuple[str, dict[str, A
     return "GPU", admission
 
 
+def host_independent_route(batch: dict[str, Any]) -> str | None:
+    """None when route() sends a recorded batch to CPU whatever GPU the host reports, else the reason.
+
+    cpu mode never routes; auto keeps statevector trajectories, and density
+    matrices narrower than GPU_MIN_ACTIVE_QUBITS, on CPU. Every other batch
+    depends on Aer's device list and a fresh CUDA memory reading, and seeded
+    GPU counts differ from CPU counts, so a recorded draw of such a batch
+    need not repeat on the same circuits.
+    """
+    policy = batch.get("policy") or {}
+    if batch.get("device") != "CPU" or batch.get("gpu_admission") is not None:
+        return f"ran on {batch.get('device')} after a GPU admission decision"
+    if policy.get("mode") == "cpu" or (policy.get("mode") == "auto" and batch.get("method") != "density_matrix"):
+        return None
+    if policy.get("mode") != "auto":
+        return f"local-compute mode {policy.get('mode')}"
+    widths = [len(metadata.get("active_input_qubits") or ()) for metadata in batch.get("experiment_metadata", [])]
+    if not widths or 0 in widths or max(widths) >= GPU_MIN_ACTIVE_QUBITS:
+        return f"a density matrix of {max(widths, default=0)} active qubits routes by GPU availability"
+    return None
+
+
 def batch_route(policy: dict[str, Any], method: str, circuits: list[Any]) -> tuple[str, dict[str, Any] | None]:
     """Device for one batch under its method.
 

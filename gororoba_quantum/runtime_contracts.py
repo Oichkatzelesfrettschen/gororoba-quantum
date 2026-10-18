@@ -2655,6 +2655,29 @@ def _verify_approval_calibration_values() -> None:
         if sent["state"] != "submitted" or ("renewed_approval_for_unsent_batches" in sent) != reported:
             raise RuntimeError("batch drift after a sent batch resets the lifecycle or goes unrecorded")
 
+    # A batch whose groups are partly bound: the bound group's values decide
+    # it whatever the timestamp, and only the unbound group falls to the
+    # timestamp, so changed bound values never pass under an unchanged stamp.
+    accepted = "2026-01-01T00:00:00+00:00"
+    partly_bound: list[tuple[str, Any, str | None]] = [
+        (accepted, unchanged[name], None),
+        (accepted, shifted[name], f"calibration values changed for {name}"),
+        (republished, unchanged[name], "the timestamp moved for unbound_group"),
+        (republished, shifted[name], f"calibration values changed for {name}; the timestamp moved for unbound_group"),
+    ]
+    for calibration, bound_values, wanted in partly_bound:
+        mixed = copy.deepcopy(record)
+        mixed["approved_record"] = {
+            "calibrations": {backend.name: accepted},
+            "calibration_values": {"fingerprint_sha256": bound},
+        }
+        batch = {name: bound_values, "unbound_group": unchanged[name]}
+        drift = live_run_module.approved_calibration_drift(mixed, backend.name, calibration, batch)
+        if (drift is None) != (wanted is None) or (wanted is not None and wanted not in str(drift)):
+            raise RuntimeError(f"a partly bound batch at {calibration} reports {drift!r}, wanted {wanted!r}")
+        if mixed["state"] != ("approval_required" if wanted else record["state"]):
+            raise RuntimeError(f"a partly bound batch leaves state {mixed['state']}")
+
 
 def _verify_schema_lifecycle() -> None:
     backend = _ProbeBackend("viable", FakeFez())
