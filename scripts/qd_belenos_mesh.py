@@ -49,7 +49,10 @@ preregistered follow-up: job-02's median in_block against the predicted 5th
 percentile under the session's efficiencies and FOLLOWUP_RMS heater offsets
 (job specific) and FOLLOWUP_SPARSE_FAIL (sparse targets fail), and the summed
 per-setting G^2 homogeneity of a repeated job against its original;
---check-followup replays it.
+--check-followup replays it. --pair OUT PREREGISTRATION FORM ENSEMBLE JOB02
+reads the one-circuit form test (job-08: Q1's case at compilation_seed 1)
+and the seed ensemble (job-07: job-02 at seeds 1 and 2); --check-pair
+replays it.
 
 Usage: "$PYTHON" scripts/qd_belenos_mesh.py (--write DIR | --check DIR | --rca OUT | --check-rca OUT | --self-test)
 """
@@ -110,6 +113,7 @@ FOLLOWUP_SCHEMA = "qd-belenos-followup-v1"
 FOLLOWUP_RMS = 0.08
 FOLLOWUP_DRAWS = 200
 FOLLOWUP_SPARSE_FAIL = 0.65
+PAIR_SCHEMA = "qd-belenos-form-ensemble-v1"
 FIT_TVD_RATIO = 3.0
 SAMPLES_PER_SETTING = 1_500
 SHOT_HEADROOM = 2
@@ -156,6 +160,12 @@ ZERO_DIVISOR_JOBS = {"dark": (5, 6, 8, 11, 16, 19, 21, 22), "bright": (4, 7, 9, 
 SOURCES.update({f"{k}-{n:02d}": f"{SINGLE}/job-{n:02d}" for k, numbers in ZERO_DIVISOR_JOBS.items() for n in numbers})
 SINGLE_SETTING = "cold-bright-20"
 CAMPAIGN_JOBS = (3, 4, 5, 6)
+# job-07 repeats job-02's settings at these compilation seeds; job-08 sends Q1's case as one circuit at FORM_SEED.
+ENSEMBLE_JOB = "job-07"
+ENSEMBLE_SEEDS = (1, 2)
+FORM_JOB = "job-08"
+FORM_SEED = 1
+FORM_SOURCE = "box_kite_photonic_single/job-04"
 CONNECTED = (0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22)
 
 Element = tuple[str, int, Any]
@@ -857,7 +867,12 @@ class Derive:
 
 
 def documents(
-    arch: list[Element], settings: list[dict[str, Any]], catalogue_sha: str, job: str, coverage: Any = None
+    arch: list[Element],
+    settings: list[dict[str, Any]],
+    catalogue_sha: str,
+    job: str,
+    coverage: Any = None,
+    preregistered: dict[str, str] | None = None,
 ) -> tuple[str, str]:
     nbr = neighbours(arch)
     facts = parallel.ordered_map(Derive(arch, nbr), settings, min_items=2)
@@ -870,14 +885,20 @@ def documents(
             "couplers": [[m, p[0]] for k, m, p in arch if k == "bs"],
         },
         "settings": [
-            {"name": s["name"], "input_mode": s["low"], "phases": [round(v, 12) for v in s["phases"]]} for s in settings
+            {
+                "name": s["name"],
+                "input_mode": s["low"],
+                "phases": [round(v, 12) for v in s["phases"]],
+                **({"compilation_seed": s["compilation_seed"]} if "compilation_seed" in s else {}),
+            }
+            for s in settings
         ],
     }
     circuit_text = json.dumps(circuit, separators=(",", ":")) + "\n"
     rows = []
     for s, f in zip(settings, facts, strict=True):
         row = {k: s[k] for k in ("name", "mesh", "target", "low")}
-        for key in ("source", "source_run", "seed", "block_mzis", "frame_out", "frame_in"):
+        for key in ("source", "source_run", "seed", "compilation_seed", "block_mzis", "frame_out", "frame_in"):
             if s.get(key) is not None:
                 row[key] = [round(v, 12) for v in s[key]] if key.startswith("frame") else s[key]
         row.update(f)
@@ -900,7 +921,8 @@ def documents(
         "seed": SEED,
         "settings": rows,
         **({"coverage": coverage} if coverage is not None else {}),
-        "preregistered": {
+        "preregistered": preregistered
+        or {
             "transpilation": "the service re-transpiles every iteration, so each model's prediction is computed "
             "on the computed_circuit the iteration returns; the same body compiles to the same meshes on "
             "sim:belenos and qpu:belenos while the couplers are unchanged",
@@ -928,16 +950,85 @@ def write(directory: Path) -> None:
     settings = realize(arch, plan_settings())
     write_job(directory, arch, "job-00", settings)
     write_job(directory, arch, "job-01", [s for s in settings if s["name"] == SINGLE_SETTING])
-    write_job(directory, arch, "job-02", realize(arch, plan_zero_divisor_settings()), edge_coverage())
+    zero_divisor = realize(arch, plan_zero_divisor_settings())
+    write_job(directory, arch, "job-02", zero_divisor, edge_coverage())
     for job in CAMPAIGN_JOBS:
         write_job(directory, arch, f"job-{job:02d}", realize(arch, plan_characterization_settings(job)))
+    write_job(directory, arch, ENSEMBLE_JOB, ensemble_settings(zero_divisor), None, ENSEMBLE_PREREGISTERED)
+    write_seeded(directory)
+
+
+ENSEMBLE_PREREGISTERED = {
+    "transpilation": "every iteration names its compilation_seed: job-02's sixteen configurations at seeds 1 and "
+    "2, the two seeds of a configuration adjacent; each prediction is computed on the computed_circuit the "
+    "iteration returns, and the QPU need not return the simulator's meshes for an iterated body",
+    "decision": "per configuration and seed the algebra share a and in_block with Wilson intervals; the "
+    "bright-minus-dark contrast of a over all 32 iterations; compilation_seed selects the served mesh when "
+    "the two seeds of every configuration return different meshes; the spread between seeds 0 (job-02), 1 "
+    "and 2 is reported per configuration; the class scans and fit test are those of job-02",
+}
+FORM_PREREGISTERED = {
+    "transpilation": "Q1's case sent as one circuit with compilation_seed 1, the only change against Q1's body "
+    "besides its job name and Perceval's process_id",
+    "decision": "a returned mesh other than Q1's (29dc6ef8) with in_block at most 0.65 reads 'one-circuit form', "
+    "at least 0.90 reads 'Q1 mesh', between reads 'intermediate'; Q1's mesh again reads 'seed ignored'",
+}
+
+
+def ensemble_settings(zero_divisor: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """job-02's realized settings at each of ENSEMBLE_SEEDS, the seeds of one configuration adjacent."""
+    return [
+        {**s, "name": f"{s['name']}-s{seed}", "compilation_seed": seed} for s in zero_divisor for seed in ENSEMBLE_SEEDS
+    ]
+
+
+def seeded_manifest(source: dict[str, Any], source_sha: str) -> dict[str, Any]:
+    """The one-circuit form case: the source case's manifest with only its name, seed and preregistration changed."""
+    return {
+        **source,
+        "family": FAMILY,
+        "job": FORM_JOB,
+        "compilation_seed": FORM_SEED,
+        "seeded_from": {"case": FORM_SOURCE, "cases_sha256": source_sha},
+        "preregistered": FORM_PREREGISTERED,
+    }
+
+
+def write_seeded(directory: Path) -> None:
+    source = directory / FORM_SOURCE
+    manifest = seeded_manifest(
+        json.loads((source / "cases.json").read_text(encoding="utf-8")), sha256(source / "cases.json")
+    )
+    job = directory / FAMILY / FORM_JOB
+    job.mkdir(parents=True, exist_ok=True)
+    (job / "circuit.json").write_bytes((source / "circuit.json").read_bytes())
+    (job / "cases.json").write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
+    print(f"{job}: {FORM_SOURCE} as one circuit at compilation_seed {FORM_SEED}")
+
+
+def admit_seeded(job: Path) -> None:
+    """The one-circuit form case equals its source case byte for byte in its circuit and field for field elsewhere."""
+    manifest = json.loads((job / "cases.json").read_text(encoding="utf-8"))
+    source = CASES / manifest["seeded_from"]["case"]
+    require(manifest["seeded_from"]["case"] == FORM_SOURCE, f"{job.name}: source case {manifest['seeded_from']}")
+    require(sha256(source / "cases.json") == manifest["seeded_from"]["cases_sha256"], f"{job.name}: source digest")
+    require((job / "circuit.json").read_bytes() == (source / "circuit.json").read_bytes(), f"{job.name}: circuit bytes")
+    expected = seeded_manifest(
+        json.loads((source / "cases.json").read_text(encoding="utf-8")), sha256(source / "cases.json")
+    )
+    require(manifest == expected, f"{job.name}: manifest differs from its source beyond name, seed and preregistration")
 
 
 def write_job(
-    directory: Path, arch: list[Element], name: str, settings: list[dict[str, Any]], coverage: Any = None
+    directory: Path,
+    arch: list[Element],
+    name: str,
+    settings: list[dict[str, Any]],
+    coverage: Any = None,
+    preregistered: dict[str, str] | None = None,
 ) -> None:
     """One case directory; a one-setting job sends its phases as numbers, the guide's pre-compiled form."""
-    manifest, circuit = documents(arch, settings, sha256(CATALOGUE), name, coverage)
+    manifest, circuit = documents(arch, settings, sha256(CATALOGUE), name, coverage, preregistered)
     job = directory / FAMILY / name
     job.mkdir(parents=True, exist_ok=True)
     (job / "circuit.json").write_text(circuit, encoding="utf-8")
@@ -988,6 +1079,9 @@ def admit(job: Path, catalogue: dict[str, Any] | None = None) -> None:
     catalogue = load_catalogue() if catalogue is None else catalogue
     arch = architecture(catalogue)
     manifest = json.loads((job / "cases.json").read_text(encoding="utf-8"))
+    if "seeded_from" in manifest:
+        admit_seeded(job)
+        return
     circuit_text = (job / "circuit.json").read_text(encoding="utf-8")
     require(hashlib.sha256(circuit_text.encode()).hexdigest() == manifest["circuit"]["sha256"], "circuit digest")
     circuit = json.loads(circuit_text)
@@ -999,6 +1093,7 @@ def admit(job: Path, catalogue: dict[str, Any] | None = None) -> None:
     rebuilt = []
     for row, sent in zip(manifest["settings"], circuit["settings"], strict=True):
         require(row["name"] == sent["name"] and sent["input_mode"] == row["low"], f"{row['name']}: setting order")
+        require(row.get("compilation_seed") == sent.get("compilation_seed"), f"{row['name']}: compilation seed")
         require(len(sent["phases"]) == len(spec["symbols"]), f"{row['name']}: phase count")
         setting = {**row, "phases": sent["phases"]}
         if row["mesh"] == "random":
@@ -1045,7 +1140,8 @@ def check_baseline(arch: list[Element], row: dict[str, Any], phases: list[float]
 def check(directory: Path) -> None:
     jobs = sorted(p for p in (directory / FAMILY).iterdir() if p.is_dir())
     require(
-        [p.name for p in jobs] == ["job-00", "job-01", "job-02"] + [f"job-{j:02d}" for j in CAMPAIGN_JOBS],
+        [p.name for p in jobs]
+        == ["job-00", "job-01", "job-02"] + [f"job-{j:02d}" for j in CAMPAIGN_JOBS] + [ENSEMBLE_JOB, FORM_JOB],
         f"{directory / FAMILY} holds {[p.name for p in jobs]}",
     )
     for job in jobs:
@@ -1057,6 +1153,18 @@ def check(directory: Path) -> None:
     require(
         [r["target"] for r in manifest["settings"]] == list(coverage["uses"]),
         "job-02 settings differ from its coverage",
+    )
+    circuit = json.loads((directory / FAMILY / "job-02" / "circuit.json").read_text(encoding="utf-8"))
+    ensemble = json.loads((directory / FAMILY / ENSEMBLE_JOB / "circuit.json").read_text(encoding="utf-8"))
+    require(
+        [(s["name"], s["input_mode"], s["phases"]) for s in ensemble["settings"]]
+        == [
+            (f"{s['name']}-s{seed}", s["input_mode"], s["phases"])
+            for s in circuit["settings"]
+            for seed in ENSEMBLE_SEEDS
+        ]
+        and [s["compilation_seed"] for s in ensemble["settings"]] == list(ENSEMBLE_SEEDS) * len(circuit["settings"]),
+        f"{ENSEMBLE_JOB} is not job-02 at seeds {ENSEMBLE_SEEDS}",
     )
     products = f"{coverage['dark_products']} zero products, {coverage['bright_products']} controls"
     print(f"job-02 covers {coverage['edges']} edges: {products}")
@@ -1881,6 +1989,75 @@ def followup_record(preregistration: Path, job02: Path, repeat: Path, original: 
     }
 
 
+def mesh_sha(text: str) -> str:
+    return hashlib.sha256(unzip(text).encode()).hexdigest()
+
+
+def pair_record(preregistration: Path, form: Path, ensemble: Path, job02: Path) -> dict[str, Any]:
+    """The preregistered readout of the one-circuit form test and the 32-iteration seed ensemble."""
+    import numpy as np
+
+    prereg = json.loads(preregistration.read_text(encoding="utf-8"))
+    rule = prereg["form"]
+    block = json.loads((form / "analysis.json").read_text(encoding="utf-8"))["blocks"][0]
+    (text,) = computed_circuits(form)
+    returned = mesh_sha(text)
+    if returned == rule["q1_mesh_sha256"]:
+        form_verdict = "seed ignored"
+    elif block["in_block"] <= rule["one_circuit_form_at_most"]:
+        form_verdict = "one-circuit form"
+    elif block["in_block"] >= rule["q1_mesh_at_least"]:
+        form_verdict = "Q1 mesh"
+    else:
+        form_verdict = "intermediate"
+    analysis = json.loads((ensemble / "analysis.json").read_text(encoding="utf-8"))
+    zero = {s["name"]: s for s in json.loads((job02 / "analysis.json").read_text(encoding="utf-8"))["settings"]}
+    rows: dict[str, dict[str, Any]] = {}
+    for s in analysis["settings"]:
+        name, seed = s["name"].rsplit("-s", 1)
+        row = rows.setdefault(
+            name, {"name": name, "seed_0": {k: zero[name][k] for k in ("a", "in_block", "mesh_sha256")}}
+        )
+        row[f"seed_{seed}"] = {k: s[k] for k in ("a", "in_block", "mesh_sha256")}
+    configurations = []
+    for row in rows.values():
+        seeds = [row[f"seed_{k}"] for k in (0, *ENSEMBLE_SEEDS)]
+        a = [s["a"] for s in seeds]
+        configurations.append(
+            {
+                **row,
+                "meshes_distinct": len({s["mesh_sha256"] for s in seeds}) == len(seeds),
+                "a_spread": round(float(max(a) - min(a)), 6),
+                "in_block_spread": round(
+                    float(max(s["in_block"] for s in seeds) - min(s["in_block"] for s in seeds)), 6
+                ),
+            }
+        )
+    window = prereg["ensemble"]["duration_s"]
+    return {
+        "schema": PAIR_SCHEMA,
+        "preregistration_sha256": sha256(preregistration),
+        "form": {
+            "run": form.name,
+            "mesh_sha256": returned,
+            "in_block": block["in_block"],
+            "in_block_wilson95": block["in_block_wilson95"],
+            "a": block["a"],
+            "a_wilson95": block["a_wilson95"],
+            "verdict": form_verdict,
+        },
+        "ensemble": {
+            "run": ensemble.name,
+            "configurations": configurations,
+            "seed_selects_mesh": all(c["meshes_distinct"] for c in configurations),
+            "a_mean_by_kind": analysis["a_mean_by_kind"],
+            "median_a_spread": round(float(np.median([c["a_spread"] for c in configurations])), 6),
+            "duration_s": analysis["duration_s"],
+            "duration_within_prediction": window["low"] <= analysis["duration_s"] <= window["high"],
+        },
+    }
+
+
 def scan_axes() -> dict[str, list[dict[str, float]]]:
     mixture = [{"sigma": s, "fraction": f} for s in SCAN_SIGMAS for f in SCAN_FRACTIONS]
     return {
@@ -2341,6 +2518,10 @@ def main() -> int:
     group.add_argument(
         "--check-followup", type=Path, nargs=5, metavar=("OUT", "PREREGISTRATION", "JOB02", "REPEAT", "ORIGINAL")
     )
+    group.add_argument("--pair", type=Path, nargs=5, metavar=("OUT", "PREREGISTRATION", "FORM", "ENSEMBLE", "JOB02"))
+    group.add_argument(
+        "--check-pair", type=Path, nargs=5, metavar=("OUT", "PREREGISTRATION", "FORM", "ENSEMBLE", "JOB02")
+    )
     args = parser.parse_args()
     try:
         if args.self_test:
@@ -2351,6 +2532,18 @@ def main() -> int:
             return rule_self_test()
         if args.self_test_efficiency:
             return efficiency_self_test()
+        if args.pair or args.check_pair:
+            out, *inputs = args.pair or args.check_pair
+            record = pair_record(*inputs)
+            if args.pair:
+                out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+            else:
+                close_relative(json.loads(out.read_text(encoding="utf-8")), record)
+            print(
+                f"{out}: pair {'written' if args.pair else 'replays'}, form {record['form']['verdict']}, "
+                f"seed selects mesh {record['ensemble']['seed_selects_mesh']}"
+            )
+            return 0
         if args.followup or args.check_followup:
             out, *inputs = args.followup or args.check_followup
             record = followup_record(*inputs)
