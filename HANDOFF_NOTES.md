@@ -87,3 +87,42 @@ every process.
 - The correlated-initialization issue stays open. It closes on the
   joint-coincidence reading of the herald run, compared against the
   independent-marginal prediction.
+
+## Belenos photonic campaign
+
+- On Q1's served mesh, the sample budget of a job's opening entry separates
+  failing jobs from passing ones, in both the single and the iterated form.
+  A failing opening holds its wrong state until the job loads another mesh,
+  and a low-budget opening lets the large entry right after it pass. The
+  split is descriptive, because the rule was read off the jobs it counts. The contingency table, the covariate check and
+  the falsification plan are in
+  `docs/notes/quandela/belenos-first-load-hypothesis-2026-10-18.md`, and
+  the campaign record is in `docs/notes/quandela/strategy.md`.
+- The jobs left, in order:
+  1. A back-to-back pair at one hour on Q1's mesh. One job opens low and
+     follows with consecutive large entries; the other opens large. The
+     pair separates budget from time of day and tests persistence without
+     a refresh.
+  2. An intermediate-budget opening that locates the threshold. An
+     intermediate reading there is inconclusive.
+  3. An opening on another mesh followed by a high-budget entry on Q1's mesh,
+     which tests prevention.
+- Stop the series on a void or intermediate reading. Each job waits for a
+  written case and the user's approval. No case directory exists for these
+  jobs yet:
+  - `scripts/qd_belenos_mesh.py` generates case directories;
+  - `scripts/qd_belenos_cone.py` reads them out;
+  - new compilation seeds come from the retained ANU draws.
+- Iterated jobs pay one per-job charge however many entries they hold, and
+  each entry costs a fixed few seconds whatever its budget. Pack every
+  question into the entries of one job, up to the credit cap the user sets.
+- Warming up on another mesh before entries on Q1's mesh is a candidate
+  procedure only. It becomes the campaign procedure when the third job
+  passes.
+- The complete-mesh stale-load sweep lives only in the strategy record. A
+  replayable sweep artifact is owed under `docs/evidence/quandela/`. The
+  partial or mixed configuration fit has not been run. Both are offline
+  and need no credit.
+- The origin of the bursty off-cone one-click background on the low-index
+  modes is open. The light-cone reading excludes those clicks from every
+  score.
