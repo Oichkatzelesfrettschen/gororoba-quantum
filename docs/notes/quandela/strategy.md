@@ -46,6 +46,16 @@ Billing measured on the retained jobs: S jobs charged 1 + 1e-06 x shots
 iteration, for 36000 and for 48000 shots. The inferred rule, three jobs
 deep, is that an I job bills one iteration's `max_shots`, so samples past the
 first iteration are free and the 300 s limit, not credit, bounds an I job.
+Seeds. A `compilation_seed` that explores new meshes comes from the ANU
+quantum random number generator: `scripts/anu_qrng.py draw` retains one
+1024-value uint16 draw per request under `docs/evidence/anu_qrng/` (raw
+response, sha256, UTC time; the keyless service answers one request per
+minute), and a case names the draw file and the index of every value it
+takes, consuming values in index order, so no value seeds two cases. A seed
+that reproduces a known served mesh (seed 20 for 29dc6ef8, seed 1 for
+e296b6a9) is an identifier and stays fixed. The seeds 0 to 21 of job-09
+predate the rule.
+
 Time on qpu:belenos: about 6.3 s per 1500-sample iteration (job c2eea262,
 152 s for 24) and 13 to 15 s for a 10000-sample S job, which fits about 5.2 s
 of per-setting overhead plus 0.75 ms per sample.

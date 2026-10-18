@@ -2866,6 +2866,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/anu_qrng.py --self-test && \"$PYTHON\" -B -O -W error scripts/anu_qrng.py --self-test && \"$PYTHON\" -B -W error scripts/anu_qrng.py check docs/evidence/anu_qrng",
+   "name": "core-541",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test && \"$PYTHON\" -B -O -W error scripts/materialize_gororoba_csv.py --self-test",
    "name": "core-401",
    "seconds": 0.4,
