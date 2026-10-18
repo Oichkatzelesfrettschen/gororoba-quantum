@@ -57,7 +57,7 @@ owns the link from literature and observations to the next intervention.
 ### Open and proposed claims
 
 [RESEARCH_STATE.md](state/RESEARCH_STATE.md) records every registered claim
-(87 established, 33 exploratory, 4 open, 8 proposed, 3 superseded, 11 withdrawn) and every executed acquisition. Open and
+(87 established, 34 exploratory, 4 open, 9 proposed, 3 superseded, 11 withdrawn) and every executed acquisition. Open and
 proposed work, in dependency order:
 
 - **cd-moving-pair-walsh-proof** (open, mathematical theorem). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32. Depends on cd-associator-census.
@@ -72,6 +72,7 @@ proposed work, in dependency order:
 - **proposed-census-frequency** (proposed, proposed experiment). Read a per-triple associator witness on the 3360 sedenion triples with i and j nonzero and unequal: P(c = 1) = (1 - V+)/2 + f (V+ + V-)/2 gives their dark fraction f = 1848/3360, where pooled bright (omega = +1) and dark (omega = -1) references fix V+ and V-; the other 736 triples are bright exactly, so the census is f x 3360/4096 = 231/512, a test of how faithfully hardware carries the sign function. Depends on cd-associator-census.
 - **a5-nonzero-divisor-two-dimension-gap** (open, mathematical theorem). At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24. Depends on a5-rank-locus-local-dimension, nullity-twelve-cone.
 - **proposed-tuna17-q0-q6-double-x-discriminator** (proposed, proposed experiment). P1 after X X with no wait, beside a readout-0 and readout-1 pair in one Tuna-17 batch, separates an under-rotated X from |1> misassignment on Q0 and Q6: under-rotation by the angle their zero-wait P(1|1) implies predicts 0.98 and 0.52, misassignment 0.038 and 0.013. Ramsey inverted with the matched calibration cannot separate them when X and X90 share the under-rotation, because the raw quadratures then take the readout-scale form sin^2(beta) (1 + cos phi) / 2; a fault confined to native X keeps the X90 Ramsey at the earlier scale, which Q6's raw quadrature mean (0.064 against a floor of 0.148) excludes and Q0's (0.287 against 0.175) does not. Depends on qi-tuna17-q0-q6-loss-not-readout-relaxation.
+- **proposed-qd-belenos-payload-class-series** (proposed, proposed experiment). Q1's case on qpu:belenos at compilation_seed 20 and 10000 samples per entry, first as a ComputationIterator holding one entry (case belenos_mesh/job-14), then job-15 (a single computation, the time control) after a job-14 pass or job-16 (two identical entries) after a job-14 fail, at most two jobs and about 2.03 credits, reads each entry's in-cone TVD from the served mesh's ideal: at most 0.20 passes, at least 0.50 fails, void off 29dc6ef8 or when the result's results_list length differs from the payload sent; job-14 pass with job-15 fail reads that the failure follows the single-computation payload class. Depends on qd-belenos-single-job-failure-is-a-transformation.
 <!-- research-state:end -->
 
 The correction pilot, coherence window, ripple and rank-sector transfers,

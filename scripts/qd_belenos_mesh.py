@@ -201,6 +201,12 @@ DWELL_Q1_SEED = 20
 # unseeded single job on 29dc6ef8 lost light inside the photon's cone and every seeded cell kept it, so a
 # seeded single job at Q1's budget on Q1's mesh separates the unseeded path from form and budget.
 SEEDED_SINGLE_JOB = "job-13"
+# job-14 to job-16 hold Q1's circuit at seed 20 and 10000 samples per entry and change only the payload class:
+# a ComputationIterator with one entry (job-14), a single Computation (job-15, job-13 again as the time
+# control) and an iterator with two entries (job-16), so the single-path failure on 29dc6ef8 is read against the
+# wrapper with the budget, seed and mesh held.
+WRAPPER_ITERATOR_JOB, WRAPPER_SINGLE_JOB, WRAPPER_PAIR_JOB = "job-14", "job-15", "job-16"
+WRAPPER_SAMPLES = 10000
 CONNECTED = (0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22)
 
 Element = tuple[str, int, Any]
@@ -1141,6 +1147,68 @@ def seeded_single_manifest(source: dict[str, Any], source_sha: str) -> dict[str,
     }
 
 
+WRAPPER_PREREGISTERED = {
+    "series": "single computation versus iterator payload on Q1's mesh (strategy.md section 7 item 13)",
+    "statistic": "tvd_cone_from_ideal per entry: total variation of the one-click histogram inside source 20's "
+    "noise-bounded light cone from the served mesh's ideal propagation (scripts/qd_belenos_cone.py)",
+    "void_unless_mesh_sha256_prefix": "29dc6ef8",
+    "pass_at_most": 0.2,
+    "fail_at_least": 0.5,
+    "payload_entries": {WRAPPER_ITERATOR_JOB: 1, WRAPPER_SINGLE_JOB: 0, WRAPPER_PAIR_JOB: 2},
+    "order": "job-14 runs first; job-15 follows a job-14 pass and job-16 a job-14 fail; a void or intermediate "
+    "job-14 ends the series",
+    "readings": "job-14 pass, job-15 fail: the failure follows the single-computation payload class; job-14 pass, "
+    "job-15 pass: no single-path failure in this block, the payload class is not isolated; job-14 fail, job-16 "
+    "fail then pass: the first 10000-sample entry of a job fails whatever its wrapper; job-14 fail, job-16 pass "
+    "twice: one entry fails as a single computation does, two entries hold; job-14 fail, job-16 fail twice: "
+    "10000-sample entries fail without D2's leading 1500-sample entry; any other pattern, a void entry (other "
+    "mesh, or a result whose results_list length differs from payload_entries) or an intermediate entry: no "
+    "attribution",
+}
+
+
+def wrapper_iterator_manifest(source: dict[str, Any], source_sha: str) -> dict[str, Any]:
+    """Arm B: Q1's case as a ComputationIterator holding one entry at seed 20 and 10000 samples."""
+    return {
+        **source,
+        "family": FAMILY,
+        "job": WRAPPER_ITERATOR_JOB,
+        "iterator": True,
+        "iterations": 1,
+        "max_samples": WRAPPER_SAMPLES,
+        "max_shots": 2 * WRAPPER_SAMPLES,
+        "settings": [{"name": f"b-s{DWELL_Q1_SEED}-n{WRAPPER_SAMPLES}", "compilation_seed": DWELL_Q1_SEED}],
+        "seeded_from": {"case": FORM_SOURCE, "cases_sha256": source_sha},
+        "preregistered": WRAPPER_PREREGISTERED,
+    }
+
+
+def wrapper_single_manifest(source: dict[str, Any], source_sha: str) -> dict[str, Any]:
+    """Arm A: job-13's single computation again, the time control of a job-14 pass."""
+    return {
+        **seeded_single_manifest(source, source_sha),
+        "job": WRAPPER_SINGLE_JOB,
+        "preregistered": WRAPPER_PREREGISTERED,
+    }
+
+
+def wrapper_pair_manifest(source: dict[str, Any], source_sha: str) -> dict[str, Any]:
+    """Arm C: Q1's case as two identical iterator entries at seed 20 and 10000 samples each."""
+    return {
+        **source,
+        "family": FAMILY,
+        "job": WRAPPER_PAIR_JOB,
+        "iterations": 2,
+        "max_samples": 2 * WRAPPER_SAMPLES,
+        "max_shots": 4 * WRAPPER_SAMPLES,
+        "settings": [
+            {"name": f"c{k}-s{DWELL_Q1_SEED}-n{WRAPPER_SAMPLES}", "compilation_seed": DWELL_Q1_SEED} for k in range(2)
+        ],
+        "seeded_from": {"case": FORM_SOURCE, "cases_sha256": source_sha},
+        "preregistered": WRAPPER_PREREGISTERED,
+    }
+
+
 SEEDED_JOBS = {
     FORM_JOB: seeded_manifest,
     BRIDGE_JOB: bridge_manifest,
@@ -1148,6 +1216,9 @@ SEEDED_JOBS = {
     DWELL_D3_JOB: dwell_d3_manifest,
     DWELL_LADDER_JOB: dwell_ladder_manifest,
     SEEDED_SINGLE_JOB: seeded_single_manifest,
+    WRAPPER_ITERATOR_JOB: wrapper_iterator_manifest,
+    WRAPPER_SINGLE_JOB: wrapper_single_manifest,
+    WRAPPER_PAIR_JOB: wrapper_pair_manifest,
 }
 
 
@@ -1313,7 +1384,8 @@ def check(directory: Path) -> None:
         [p.name for p in jobs]
         == ["job-00", "job-01", "job-02"]
         + [f"job-{j:02d}" for j in CAMPAIGN_JOBS]
-        + [ENSEMBLE_JOB, FORM_JOB, BRIDGE_JOB, DWELL_D1_JOB, DWELL_D3_JOB, DWELL_LADDER_JOB, SEEDED_SINGLE_JOB],
+        + [ENSEMBLE_JOB, FORM_JOB, BRIDGE_JOB, DWELL_D1_JOB, DWELL_D3_JOB, DWELL_LADDER_JOB, SEEDED_SINGLE_JOB]
+        + [WRAPPER_ITERATOR_JOB, WRAPPER_SINGLE_JOB, WRAPPER_PAIR_JOB],
         f"{directory / FAMILY} holds {[p.name for p in jobs]}",
     )
     uses: dict[tuple[str, int], set[str]] = {}

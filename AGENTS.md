@@ -1126,7 +1126,9 @@ the 64 seeded random settings of the characterization campaign, job-07
 the 84/84 edges at compilation seeds 1 and 2 in 32 iterations, job-08 Q1's
 case as one circuit at seed 1, job-09 Q1's case iterated at seeds 0 to 21,
 0 and 1, job-10 to job-12 the form-versus-dwell series D1 to D4 with
-per-iteration sample budgets, job-13 Q1's case as one circuit at seed 20). A new exploratory compilation_seed comes
+per-iteration sample budgets, job-13 Q1's case as one circuit at seed 20, job-14 to job-16 the payload-class series: a one-entry
+iterator, a single computation and a two-entry iterator at seed 20 and 10000 samples per entry,
+`"iterator": true` naming the one-entry form). A new exploratory compilation_seed comes
 from the ANU QRNG draws that `scripts/anu_qrng.py` retains under
 `docs/evidence/anu_qrng/`. A case names its compilation_seed per
 iteration or, for one circuit, in its manifest; the seed selects the
@@ -1183,7 +1185,8 @@ preregistered bridge branch on synthetic iterations) and core-540
 (`--check-bridge`, the form-mesh bridge job-09), core-541 (`anu_qrng.py`
 self-test and the offline check of every retained draw), core-542
 (`--self-test-dwell`), core-543 (`--check-dwell`, the D1 to D4 readout),
-core-545 (`qd_belenos_cone.py --self-test`), core-546 (its `--check` of
+core-545 (`qd_belenos_cone.py --self-test`, the series readout rules
+included), core-546 (its `--check` of
 the light-cone reading) and core-547 (its `--check-readout` of job-13, the
 seeded single job).
 

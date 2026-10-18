@@ -15,6 +15,11 @@ own record.
 
 Per cell (a single job, or one iteration of an iterated job) the record holds:
 
+- the one-click account N_B (target block), N_C\\B (cone outside the block) and
+  N_off (off the cone) with cone_share = (N_B + N_C\\B) / one-click,
+  in_block = N_B / one-click and in_block_cone = N_B / (N_B + N_C\\B), so
+  in_block = cone_share x in_block_cone; the block's per-mode counts and the
+  label share, the block's label roles over every one-click sample;
 - in_block over every one-click sample and over in-cone samples, each with its
   Wilson 95 % interval, and the in-cone total variation from the served
   mesh's ideal propagation beside its multinomial shot floor;
@@ -32,6 +37,11 @@ Per cell (a single job, or one iteration of an iterated job) the record holds:
 Groups of cells of one job with one mesh and one budget give each off-cone
 mode's dispersion index (variance over mean of its counts); a stationary
 rate reads 1.
+
+--readout-series OUT RUN... reads the payload-class series job-14 to job-16
+against its shared preregistration (each entry's tvd_cone_from_ideal, void off
+29dc6ef8 or when the result's results_list length differs from the payload the
+case sent), and --check-readout-series replays it.
 
 --write OUT RUN... writes the record, --check OUT RUN... recomputes it and
 requires equal bytes, --readout OUT RUN reads a single-job case against the
@@ -58,7 +68,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import qd_belenos_mesh as mesh_lib  # noqa: E402
 from qd_box_kite_analysis import wilson  # noqa: E402
 
-SCHEMA = "qd-belenos-cone-reading-v1"
+SCHEMA = "qd-belenos-cone-reading-v2"
 CONE_FLOOR = 1e-6
 # The exact dephasing channel at these heater and coupler noise levels drops Q1's in_block to about 0.5 on its
 # served meshes, far beyond any seeded cell (0.98 to 0.995); a mode it detects at NOISY_FLOOR or more joins the
@@ -90,6 +100,7 @@ def cell(
     source: int,
     low: int,
     width: int,
+    labels: list[int],
     physical_perf: float,
     clock_mhz: float,
 ) -> dict[str, Any]:
@@ -106,6 +117,7 @@ def cell(
     total = sum(single)
     inside = sum(single[q] for q in cone)
     inside_ideal = sum(single[q] for q in ideal_cone)
+    labelled = sum(single[q] for q in labels)
     observed = np.zeros(MODES)
     for q in cone:
         observed[q] = single[q]
@@ -115,6 +127,12 @@ def cell(
         "ideal_cone_modes": ideal_cone,
         "samples": samples,
         "one_click_samples": total,
+        "n_block": block,
+        "n_cone_outside_block": sum(single[q] for q in cone if not low <= q < low + width),
+        "n_off_cone": total - inside,
+        "cone_share": round(inside / total, 6) if total else None,
+        "block_counts": single[low : low + width],
+        "label_share": round(labelled / total, 6) if total else None,
         "in_block": round(block / total, 6) if total else None,
         "in_block_wilson95": wilson(block, total),
         "in_cone_samples": inside,
@@ -134,6 +152,7 @@ def run_cells(run: Path) -> list[dict[str, Any]]:
     manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
     (block,) = manifest["blocks"]
     low, width = block["offset"], len(block["roles"])
+    labels = [low + k for k, role in enumerate(block["roles"]) if role.startswith("label")]
     submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
     perfs = submission["perfs_at_plan"]
     clock = float(perfs["Clock (MHz)"])
@@ -176,6 +195,7 @@ def run_cells(run: Path) -> list[dict[str, Any]]:
             source_mode(entry["computed_input"]),
             low,
             width,
+            labels,
             float(entry["physical_perf"]),
             clock,
         )
@@ -272,6 +292,76 @@ def readout(run: Path) -> dict[str, Any]:
     }
 
 
+SERIES_SCHEMA = "qd-belenos-payload-series-readout-v1"
+SERIES_ROLES = {"job-14": "iterator", "job-15": "single", "job-16": "pair"}
+Arms = tuple[str, ...]
+SERIES_READINGS: dict[tuple[Arms, Arms | None, Arms | None], str] = {
+    (("pass",), ("fail",), None): "the failure follows the single-computation payload class",
+    (("pass",), ("pass",), None): "no single-path failure in this block; the payload class is not isolated",
+    (("fail",), None, ("fail", "pass")): "the first 10000-sample entry of a job fails whatever its wrapper",
+    (("fail",), None, ("pass", "pass")): "one entry fails as a single computation does; two entries hold",
+    (("fail",), None, ("fail", "fail")): "10000-sample entries fail without a leading 1500-sample entry",
+}
+
+
+def entry_reading(rule: dict[str, Any], row: dict[str, Any], entries: int, sent: int) -> str:
+    """pass, fail, intermediate or void for one entry of the payload-class series."""
+    if not row["mesh_sha256"].startswith(rule["void_unless_mesh_sha256_prefix"]) or entries != sent:
+        return "void"
+    if row["tvd_cone_from_ideal"] <= rule["pass_at_most"]:
+        return "pass"
+    if row["tvd_cone_from_ideal"] >= rule["fail_at_least"]:
+        return "fail"
+    return "intermediate"
+
+
+def series_verdict(arms: dict[str, Arms]) -> str:
+    """The preregistered reading of the arms run so far: job-14 first, then job-15 on a pass or job-16 on a fail."""
+    first, single, pair = arms.get("iterator"), arms.get("single"), arms.get("pair")
+    if first is None:
+        return "pending"
+    if first not in (("pass",), ("fail",)):
+        return "no attribution"
+    follower = single if first == ("pass",) else pair
+    if (single if first == ("fail",) else pair) is not None:
+        return "no attribution"
+    if follower is None:
+        return "pending"
+    return SERIES_READINGS.get((first, single, pair), "no attribution")
+
+
+def readout_series(runs: list[Path]) -> dict[str, Any]:
+    jobs: dict[str, Any] = {}
+    rules = []
+    for run in runs:
+        manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+        rule = manifest["preregistered"]
+        rules.append(rule)
+        inner = mesh_lib.raw_result(run)
+        entries = len(inner["results_list"]) if "results_list" in inner else 0
+        sent = rule["payload_entries"][manifest["job"]]
+        cells = run_cells(run)
+        role = SERIES_ROLES[manifest["job"]]
+        if role in jobs:
+            raise SystemExit(f"{run.name}: {manifest['job']} appears twice in the series")
+        jobs[role] = {
+            "run": run.name,
+            "job": manifest["job"],
+            "cases_sha256": mesh_lib.sha256(run / "cases.json"),
+            "payload_entries": entries,
+            "cells": cells,
+            "readings": [entry_reading(rule, row, entries, sent) for row in cells],
+        }
+    if not rules or any(rule != rules[0] for rule in rules):
+        raise SystemExit("the series runs carry different preregistrations")
+    return {
+        "schema": SERIES_SCHEMA,
+        "rule": rules[0],
+        "arms": jobs,
+        "verdict": series_verdict({role: tuple(arm["readings"]) for role, arm in jobs.items()}),
+    }
+
+
 def dump(value: dict[str, Any]) -> str:
     return json.dumps(value, indent=1, sort_keys=True) + "\n"
 
@@ -292,20 +382,23 @@ def self_test() -> int:
     ideal = mesh_lib.propagate(arch, phases, 20)[0]
     clean = [int(round(10000 * float(p))) for p in ideal]
     low = 20
-    base = cell(clean, sum(clean), arch, phases, 20, low, 4, 0.01, 4.94)
+    base = cell(clean, sum(clean), arch, phases, 20, low, 4, [20, 21], 0.01, 4.94)
     cone = base["cone_modes"]
     outside = [q for q in range(MODES) if q not in cone]
     if not outside:
         raise SystemExit("cone self-test: the synthetic mesh's bounded cone covers every mode")
     noisy = list(clean)
     noisy[outside[0]] += 900
-    with_noise = cell(noisy, sum(noisy), arch, phases, 20, low, 4, 0.01, 4.94)
+    with_noise = cell(noisy, sum(noisy), arch, phases, 20, low, 4, [20, 21], 0.01, 4.94)
     if with_noise["in_block_cone"] != base["in_block_cone"] or with_noise["in_block"] >= base["in_block"]:
         raise SystemExit(f"cone self-test: off-cone background moved the cone reading {base} -> {with_noise}")
     lossy = list(clean)
     inside_off_block = [q for q in cone if not low <= q < low + 4]
     lossy[inside_off_block[0]] += 900
-    if cell(lossy, sum(lossy), arch, phases, 20, low, 4, 0.01, 4.94)["in_block_cone"] >= base["in_block_cone"]:
+    if (
+        cell(lossy, sum(lossy), arch, phases, 20, low, 4, [20, 21], 0.01, 4.94)["in_block_cone"]
+        >= base["in_block_cone"]
+    ):
         raise SystemExit("cone self-test: in-cone loss left the cone reading unchanged")
     rule = {"void_unless_mesh_sha256_prefix": "q1", "unseeded_path_at_least": 0.95, "single_job_budget_at_most": 0.65}
     for mesh, value, want in (
@@ -316,6 +409,31 @@ def self_test() -> int:
     ):
         if reading(rule, {"mesh_sha256": mesh, "in_block_ideal_cone": value}) != want:
             raise SystemExit(f"cone self-test: {mesh} at {value} did not read {want}")
+    account = with_noise["n_block"] + with_noise["n_cone_outside_block"] + with_noise["n_off_cone"]
+    if account != with_noise["one_click_samples"] or with_noise["n_off_cone"] != 900:
+        raise SystemExit(f"cone self-test: the one-click account {with_noise} does not close")
+    series = {"void_unless_mesh_sha256_prefix": "q1", "pass_at_most": 0.2, "fail_at_least": 0.5}
+    for mesh, value, entries, sent, want in (
+        ("q1x", 0.08, 1, 1, "pass"),
+        ("q1x", 0.83, 0, 0, "fail"),
+        ("q1x", 0.3, 2, 2, "intermediate"),
+        ("q1x", 0.08, 0, 1, "void"),
+        ("f", 0.08, 1, 1, "void"),
+    ):
+        if entry_reading(series, {"mesh_sha256": mesh, "tvd_cone_from_ideal": value}, entries, sent) != want:
+            raise SystemExit(f"cone self-test: a series entry at {value} did not read {want}")
+    verdicts: tuple[tuple[dict[str, Arms], str], ...] = (
+        ({}, "pending"),
+        ({"iterator": ("pass",)}, "pending"),
+        ({"iterator": ("pass",), "single": ("fail",)}, SERIES_READINGS[(("pass",), ("fail",), None)]),
+        ({"iterator": ("fail",), "pair": ("fail", "pass")}, SERIES_READINGS[(("fail",), None, ("fail", "pass"))]),
+        ({"iterator": ("fail",), "pair": ("pass", "fail")}, "no attribution"),
+        ({"iterator": ("pass",), "pair": ("pass", "pass")}, "no attribution"),
+        ({"iterator": ("void",), "single": ("fail",)}, "no attribution"),
+    )
+    for arms, want in verdicts:
+        if series_verdict(arms) != want:
+            raise SystemExit(f"cone self-test: series {arms} did not read {want}")
     poisson = np.random.default_rng(7).poisson(50, 400).tolist()
     fake = [
         {"mesh_sha256": "m", "max_samples": 1500, "run": "r", "name": f"i{k}", "off_cone_by_mode": {"5": v}}
@@ -324,7 +442,10 @@ def self_test() -> int:
     (row,) = dispersion(fake)
     if not 0.8 <= row["dispersion_index"] <= 1.2:
         raise SystemExit(f"cone self-test: a Poisson background read dispersion {row['dispersion_index']}")
-    print("cone self-test: off-cone clicks excluded, in-cone loss read, four readings, Poisson dispersion near 1")
+    print(
+        "cone self-test: off-cone clicks excluded, in-cone loss read, one-click account closes, four readings, "
+        "five series entries, seven series verdicts, Poisson dispersion near 1"
+    )
     return 0
 
 
@@ -335,10 +456,21 @@ def main() -> int:
     group.add_argument("--check", type=Path, nargs="+", metavar=("OUT", "RUN"))
     group.add_argument("--readout", type=Path, nargs=2, metavar=("OUT", "RUN"))
     group.add_argument("--check-readout", type=Path, nargs=2, metavar=("OUT", "RUN"))
+    group.add_argument("--readout-series", type=Path, nargs="+", metavar=("OUT", "RUN"))
+    group.add_argument("--check-readout-series", type=Path, nargs="+", metavar=("OUT", "RUN"))
     group.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     if args.self_test:
         return self_test()
+    if args.readout_series or args.check_readout_series:
+        out, *series_runs = args.readout_series or args.check_readout_series
+        text = dump(readout_series(series_runs))
+        if args.readout_series:
+            out.write_text(text, encoding="utf-8")
+        elif out.read_text(encoding="utf-8") != text:
+            raise SystemExit(f"{out}: the series readout differs from its retained runs")
+        print(f"{out}: {'written' if args.readout_series else 'replays'}, {json.loads(text)['verdict']}")
+        return 0
     if args.readout or args.check_readout:
         out, run = args.readout or args.check_readout
         text = dump(readout(run))
