@@ -15,6 +15,7 @@ it and the code or gate that enforces it.
 | `results/kaggle/2026-10-17T211857Z-gororoba-aer-gpu-env-preflight` | Does the preflight stop a CPU fallback? | exit 4 on a CPU machine, at no GPU quota |
 | `results/kaggle/2026-10-18T041945Z-gororoba-ghost-branching-t4` (core-441) | Does the exact branching ghost sweep gain from a T4, or from one process per T4? | no: the CPU pool map takes 34 s in every row and the GPU phases 4 s, so numpy over 4 workers (34.9 s) beats torch CUDA (39.3 s); one process per T4 ran 0.994 of one process; torch complex128 laws match numpy within 1.4e-15 (`docs/evidence/ghost_error_scale_branching/README.md`) |
 | `results/kaggle/2026-10-18T041018Z-gororoba-ghost-branching-preflight` | Does `--gpu-env-with torch` install torch 2.14.1 in the pinned venv? | yes, at version, and the CPU machine stopped at the preflight with exit 4 |
+| `results/kaggle/2026-10-18T055207Z-gororoba-ghost-branching-sweep` | Does the CPU route reproduce the sweep under CI's Python and pins? | yes: every law, distance and best point equals the build host's output; the pool map took 36.1 s on 4 CPUs (`docs/evidence/ghost_error_scale_branching/README.md`) |
 | `results/kaggle/2026-10-17T225519Z-gororoba-aer-blocking` and `2026-10-17T230346Z-gororoba-aer-blocking` (core-451) | Why did density matrix 15 and statevector 30 die on a T4? | Aer's automatic blocking filled host memory and the OOM killer ended it; explicit chunks ran both across the two T4s in 4.2 and 7.2 s |
 
 The timings are in `docs/evidence/aer_gpu_configuration/README.md` and
@@ -193,6 +194,7 @@ installs the group into the image interpreter, which `--gpu-env` refuses.
 | gororoba-aer-blocking v2 | T4 x2 | 0.21 | 14 trials, both wide widths blocked across both GPUs |
 | gororoba-ghost-branching-preflight | CPU | 0 | torch 2.14.1 at version in the venv, exit 4 on the missing GPU |
 | gororoba-ghost-branching-t4 | T4 x2 | 0.19 | 5 rows; the sweep is CPU-bound, so its route is a CPU kernel |
+| gororoba-ghost-branching-sweep | CPU, `--ci-env` | 0 | the full sweep under CI's pins, equal to the build host's output apart from timings |
 
 The plan before the fixes budgeted a 3 h rerun of the full matrix
 (`--timeout 10800`). The rehearsal, the reduced matrix and the contention
