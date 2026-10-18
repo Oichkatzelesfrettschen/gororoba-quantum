@@ -75,6 +75,15 @@ arrays cannot replace those certificates' exact domains. Large statistical
 replicate loops follow the existing batched NumPy and scalar-equivalence
 contracts; transpilation uses Qiskit's compiler rather than a numerical fit.
 
+## Pinned runner infrastructure
+
+The workflow pins Ubuntu 24.04 to preserve the measured image through the
+announced October 19 ubuntu-latest migration. Official action manifests
+verified Node 24 for checkout v7.0.1, setup-python v7.0.0, cache v6.1.0,
+upload-artifact v7.0.2 and download-artifact v8.0.2. The workflow pins each
+release by its resolved commit SHA, avoiding the deprecated Node 20 actions
+reported by the initial hosted run.
+
 ## Selection and resource boundaries
 
 - PRs always run the behavioral `pr` tier and add affected `full` gates.
