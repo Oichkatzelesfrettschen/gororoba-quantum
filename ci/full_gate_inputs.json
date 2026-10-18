@@ -203,6 +203,7 @@
     "core-537": [
       "results/quandela/runs/*-qpu_belenos-belenos_mesh-*/**"
     ],
+    "core-548": [],
     "core-553": [
       "docs/evidence/rank_locus_second_order/result.json"
     ],

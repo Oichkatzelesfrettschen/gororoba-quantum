@@ -7,7 +7,7 @@
  "counts": {
   "QX": {
    "detected": 0,
-   "jobs": 108
+   "jobs": 111
   },
   "Tuna-17": {
    "detected": 69,
@@ -8472,6 +8472,30 @@
    "run": "2026-10-18T015435Z-box_kite_tuna_ladder_twins_qx-batch-01",
    "shots": 2048,
    "whitened_rank": 3
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "already_zero.cq",
+   "run": "2026-10-18T161620Z-qx_reset_phase-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "control_x.cq",
+   "run": "2026-10-18T161620Z-qx_reset_phase-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "reset_phase.cq",
+   "run": "2026-10-18T161620Z-qx_reset_phase-batch-00",
+   "shots": 2048
   }
  ],
  "schema": "qi-shot-record-line-v2",
