@@ -16,7 +16,8 @@ own environment and these tables describe the probes, not a guarantee.
 | Transpilation against a calibration export | kernel CPU | about 0.06 s per Design C pair (three 5-qubit circuits) on the build host; the pair's three 20,000-shot density-matrix simulations take about 4 s on the build host CPU and about 8 s on a Kaggle T4, so a 5-qubit noise run is simulation-bound and the GPU does not speed it up |
 | JAX code | Kaggle TPU v5e-8 | Aer and Qiskit have no TPU backend |
 | Gemma inference | Kaggle GPU or TPU with the model attached | text tasks; never evidence |
-| IBM jobs (15 or more qubits, or a named device qubit) | IBM Heron, after an approved case | the device is the question |
+| A 15-qubit run | build host or Kaggle T4 x2 Aer with cache blocking, or Tuna-17 through Quantum Inspire, the substrate named in an approved case | decision-gated (root AGENTS.md); 15 qubits fit both simulation and Tuna-17 |
+| IBM jobs (16 or more qubits, or a named device qubit) | IBM Heron, after an approved case | the device is the question |
 | CPU replay of a reduced case of every Kaggle result | GitHub Actions | the gate that admits a Kaggle result |
 | Dry runs, calibration exports, SageMath, Arch-packaged stack | build host | IBM credential and Sage live there |
 
@@ -62,13 +63,14 @@ no width for them. Single precision is not configured in
 blocking is (below).
 
 What goes where by width, under the routing rule (root AGENTS.md: 14 qubits
-or fewer on Kaggle, 15 or more on IBM):
+or fewer on Kaggle, 15 by an approved case, 16 or more on IBM):
 
 | Width | Noisy simulation | Ideal simulation | Hardware |
 | --- | --- | --- | --- |
 | 1 to 10 qubits | Kaggle CPU: statevector trajectories, or the density matrix of a static circuit | Kaggle CPU statevector | IBM only for a named-device question with an approved case |
 | 11 to 14 qubits | Kaggle GPU, double-precision density matrix (measured on one T4 to 14); a dynamic circuit stays on the CPU's trajectories unless a probe at its width shows the GPU faster | Kaggle GPU statevector | IBM only for a named-device question with an approved case |
-| 15 qubits or more | none on Kaggle: the 15-qubit density matrix was killed on a T4, and no measured mode extends it | Kaggle GPU statevector up to the measured 29 qubits, as design support for an IBM case | IBM after an approved case |
+| 15 qubits | Kaggle T4 x2, density matrix cache-blocked across both GPUs (4.2 s static; a feed-forward shot about 15 s), or the build host (CPU density matrix 15 in 17 s), after an approved case | Kaggle GPU statevector | Tuna-17 through Quantum Inspire after an approved case that names the excluded qubits it uses |
+| 16 qubits or more | none measured on Kaggle for the density matrix | Kaggle GPU statevector up to 30 qubits blocked across both T4s, as design support for a hardware case | IBM after an approved case |
 
 ## CPU against T4
 
@@ -175,8 +177,8 @@ on a T4 or the build host's RTX 4070 Ti. Measured on the T4 x2 (gate core-451):
   density-matrix-15 shot and 23 s per statevector-30 shot on the T4 x2, and
   on the build host's single 12 GiB GPU with chunks in host memory 308 s per
   statevector-30 shot. Wide feed-forward work stays a few-shot measurement.
-- The 15-qubit density matrix stays an IBM-routed width under the root
-  AGENTS.md rule; these figures are its measured capacity on Kaggle.
+- A 15-qubit run is decision-gated under the root AGENTS.md rule: an
+  approved case names this Kaggle route, the build host, or Tuna-17.
 
 ## Small dynamic circuits: CPU against GPU
 

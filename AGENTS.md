@@ -372,10 +372,27 @@ sedenion statement never rests on them.
   `kaggle_run.py shards` replicates the CI gate shards for a commit on
   Kaggle CPU kernels in place of the build host. `docs/notes/kaggle/` holds the workflow, the measured
   substrates and the package-stack guide. Kaggle allows two concurrent GPU
-  and five concurrent CPU batch sessions per account. IBM hardware serves 15 or
-  more qubits, or a smaller run whose question concerns the device itself
-  (a named qubit's readout, detuning or drift); its case states why Aer
-  cannot answer it. A kernel's
+  and five concurrent CPU batch sessions per account.
+- A 15-qubit run is decision-gated: it waits for the user's approval of a
+  written case, which names its substrate from the access inventory and
+  says why that one answers the question.
+  - Simulation: an optimized Aer run on the build host or on a Kaggle
+    T4 x2. `SnapshotSimulator.run` cache-blocks the state across both T4s,
+    and a 15-qubit density matrix takes about 4 s there
+    (`docs/notes/kaggle/substrates.md`). The case's run first applies
+    `docs/notes/kaggle/gpu-runbook.md`: local rehearsal, vectorized
+    estimators, a sized timeout.
+  - Hardware: Tuna-17 through Quantum Inspire, under its submission rules
+    (Quantum Inspire below). `submit` refuses while any hardware job of the
+    account is unfinished or ended under `HARDWARE_PAUSE_SECONDS` ago, so
+    the run cannot overlap another session's job. Fifteen of 17 qubits
+    include qubits the Tuna-17 notes exclude for readout or coupler faults
+    (`docs/notes/quantum_inspire/experiments.md`), so the case names each
+    one it uses.
+- IBM hardware serves 16 or more qubits, or a smaller run whose question
+  concerns the device itself (a named qubit's readout, detuning or drift);
+  its case states why Aer cannot answer it.
+- A kernel's
   noise comes from a retained `gororoba_quantum/calibration_snapshot.py`
   export, whose `--export` requires every gate and readout channel to equal
   live_run's noise model, and a Kaggle result enters the research state
