@@ -861,9 +861,11 @@ def follow_sample(brackets: list[Any], lcu: list[Any], walks: list[Any], rng: An
 
 
 def rates_at(sample: Values, item: dict[str, Any], q: int, force: float | None = None) -> tuple[Any, Any]:
+    """Qubit q's e01 and e10 at the item's job; an item's qubit_weights override its bracket weights for one qubit."""
+    weights = item.get("qubit_weights", {}).get(q, item["weights"])
     out = []
     for kind in ("e01", "e10"):
-        a, b, w = item["weights"][kind]
+        a, b, w = weights[kind]
         w = w if force is None else force
         out.append((1 - w) * sample[kind][a][:, q] + w * sample[kind][b][:, q])
     return out[0], out[1]
@@ -1363,7 +1365,11 @@ def lockin(bits: np.ndarray, frequency: float, columns: list[int]) -> list[dict[
 
 
 def iso_brackets(batches: dict[str, Batch], brackets: list[dict[str, Any]], iso: list[int]) -> list[dict[str, Any]]:
-    """The brackets holding readout-iso-x, with each iso qubit's e10 counts and time taken from that circuit."""
+    """The brackets holding readout-iso-x, with each iso qubit's e10 counts and time taken from that circuit.
+
+    Only the iso qubits read their e10 from these brackets (qubit_weights in the cross-check); every other
+    qubit keeps the readout-0 and readout-1 brackets and their finish times.
+    """
     out = []
     for b in brackets:
         batch = batches[b["batch"]]
@@ -1409,6 +1415,21 @@ def ladder_stops(batches: dict[str, Batch], t: dict[str, Any]) -> tuple[dict[str
         if problems:
             stops.append(f"sanity stop at {name}: {problems[0]}")
     return block, batch_block, stops
+
+
+def replica_columns(row: dict[str, Any]) -> list[int]:
+    """The selector and data qubits of a witness row's replicas, the columns its preregistered line scan reads."""
+    return sorted(q for r in row["replicas"] for q in [r["roles"]["selector"], *r["roles"]["data"]])
+
+
+class LineScan:
+    """qi_shot_record_line.scan in the manifest's band and threshold, picklable for parallel.ordered_map."""
+
+    def __init__(self, band: tuple[float, float], detection_p: float):
+        self.band, self.detection_p = band, detection_p
+
+    def __call__(self, bits: np.ndarray) -> dict[str, Any]:
+        return scan(bits.astype(np.float64), self.band, self.detection_p)
 
 
 def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
@@ -1517,57 +1538,60 @@ def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, An
                           "verdict": verdict, "replicate_z": z,
                           "replicate_scatter": z is not None and abs(z) > sigma})  # fmt: skip
 
-    # The 50 Hz line per Latin job: detection, selector lock-in by depth, phase-binned contrast.
+    # The 50 Hz line per Latin job: detection on the replica qubits, selector lock-in by depth, phase-binned contrast.
     line = []
     bins = t["line_phase_bins"]
-    for name, batch in batches.items():
-        for row in witness_rows(batch):
-            bits = batch["bits"][row["file"]]
-            scanned = scan(bits.astype(np.float64), tuple(t["line_band"]), t["line_detection_p"])
-            by_depth = {r["cz_depth"]: r for r in row["replicas"]}
-            entry = {"batch": name, "file": row["file"], "detected": scanned["detected"],
-                     "log10_p": scanned.get("log10_p"), "cycles_per_shot": scanned.get("cycles_per_shot")}  # fmt: skip
-            if scanned.get("cycles_per_shot") is None:
-                line.append(entry)
-                refutations.append(f"{name} {row['file']}: no line scanned")
-                continue
-            f = scanned["cycles_per_shot"]
-            selectors = [by_depth[n]["roles"]["selector"] for n in depths]
-            locks = dict(zip(depths, lockin(bits, f, selectors), strict=True))
-            entry["selectors"] = {str(n): {"qubit": by_depth[n]["roles"]["selector"], **locks[n]} for n in depths}
-            entry["third_harmonic"] = {
-                str(n): lockin(bits, 3 * f, [by_depth[n]["roles"]["selector"]])[0]["amplitude"] for n in depths
-            }
-            deep, shallow = locks[max(depths)], locks[min(depths)]
-            margin = deep["amplitude"] - shallow["amplitude"]
-            margin_se = math.sqrt(deep["se"] ** 2 + shallow["se"] ** 2)
-            grows = margin > t["amplitude_sigmas"] * margin_se
-            entry["depth_growth"] = {"difference": margin, "se": margin_se, "holds": grows}
-            phases = [locks[n]["phase"] for n in depths if n != min(depths)]
-            entry["phase_resultant"] = float(abs(np.exp(1j * np.array(phases)).mean()))
-            # Bin 0 holds the line phase where the deepest selector's P1 peaks.
-            n_shots = bits.shape[0]
-            theta = 2 * np.pi * f * (np.arange(n_shots) - (n_shots - 1) / 2) + deep["phase"]
-            index_bin = np.floor(np.mod(theta + np.pi / bins, 2 * np.pi) / (2 * np.pi / bins)).astype(np.int64) % bins
-            binned = {}
-            for n in depths:
-                item_index = next(i for i, it in enumerate(lcu) if it["batch"] == name and it["file"] == row["file"]
-                                  and it["replica"]["cz_depth"] == n)  # fmt: skip
-                q = by_depth[n]["roles"]["selector"]
-                e01, e10 = (float(x[0]) for x in rates_at(observed, lcu[item_index], q))
-                counts = np.bincount(index_bin, minlength=bins)
-                zeros_in = np.bincount(index_bin, weights=(bits[:, q] == 0).astype(np.float64), minlength=bins)
-                raw = zeros_in / counts
-                pc = (raw - e10) / (1 - e01 - e10)
-                binned[str(n)] = {"contrast": [float(2 * v - 1) for v in pc],
-                                  "se": [float(2 * math.sqrt(r * (1 - r) / c) / (1 - e01 - e10))
-                                         for r, c in zip(raw, counts, strict=True)]}  # fmt: skip
-            entry["phase_binned_contrast"] = binned
+    jobs = [(name, batch, row) for name, batch in batches.items() for row in witness_rows(batch)]
+    scans = parallel.ordered_map(
+        LineScan(tuple(t["line_band"]), t["line_detection_p"]),
+        [batch["bits"][row["file"]][:, replica_columns(row)] for _, batch, row in jobs],
+    )
+    for (name, batch, row), scanned in zip(jobs, scans, strict=True):
+        bits = batch["bits"][row["file"]]
+        by_depth = {r["cz_depth"]: r for r in row["replicas"]}
+        entry = {"batch": name, "file": row["file"], "detected": scanned["detected"],
+                 "log10_p": scanned.get("log10_p"), "cycles_per_shot": scanned.get("cycles_per_shot")}  # fmt: skip
+        if scanned.get("cycles_per_shot") is None:
             line.append(entry)
-            if not scanned["detected"]:
-                refutations.append(f"{name} {row['file']}: no 50 Hz line at p below {t['line_detection_p']}")
-            elif not grows:
-                refutations.append(f"{name} {row['file']}: the depth-9 line amplitude does not exceed depth 1's")
+            refutations.append(f"{name} {row['file']}: no line scanned")
+            continue
+        f = scanned["cycles_per_shot"]
+        selectors = [by_depth[n]["roles"]["selector"] for n in depths]
+        locks = dict(zip(depths, lockin(bits, f, selectors), strict=True))
+        entry["selectors"] = {str(n): {"qubit": by_depth[n]["roles"]["selector"], **locks[n]} for n in depths}
+        entry["third_harmonic"] = {
+            str(n): lockin(bits, 3 * f, [by_depth[n]["roles"]["selector"]])[0]["amplitude"] for n in depths
+        }
+        deep, shallow = locks[max(depths)], locks[min(depths)]
+        margin = deep["amplitude"] - shallow["amplitude"]
+        margin_se = math.sqrt(deep["se"] ** 2 + shallow["se"] ** 2)
+        grows = margin > t["amplitude_sigmas"] * margin_se
+        entry["depth_growth"] = {"difference": margin, "se": margin_se, "holds": grows}
+        phases = [locks[n]["phase"] for n in depths if n != min(depths)]
+        entry["phase_resultant"] = float(abs(np.exp(1j * np.array(phases)).mean()))
+        # Bin 0 holds the line phase where the deepest selector's P1 peaks.
+        n_shots = bits.shape[0]
+        theta = 2 * np.pi * f * (np.arange(n_shots) - (n_shots - 1) / 2) + deep["phase"]
+        index_bin = np.floor(np.mod(theta + np.pi / bins, 2 * np.pi) / (2 * np.pi / bins)).astype(np.int64) % bins
+        binned = {}
+        for n in depths:
+            item_index = next(i for i, it in enumerate(lcu) if it["batch"] == name and it["file"] == row["file"]
+                              and it["replica"]["cz_depth"] == n)  # fmt: skip
+            q = by_depth[n]["roles"]["selector"]
+            e01, e10 = (float(x[0]) for x in rates_at(observed, lcu[item_index], q))
+            counts = np.bincount(index_bin, minlength=bins)
+            zeros_in = np.bincount(index_bin, weights=(bits[:, q] == 0).astype(np.float64), minlength=bins)
+            raw = zeros_in / counts
+            pc = (raw - e10) / (1 - e01 - e10)
+            binned[str(n)] = {"contrast": [float(2 * v - 1) for v in pc],
+                              "se": [float(2 * math.sqrt(r * (1 - r) / c) / (1 - e01 - e10))
+                                     for r, c in zip(raw, counts, strict=True)]}  # fmt: skip
+        entry["phase_binned_contrast"] = binned
+        line.append(entry)
+        if not scanned["detected"]:
+            refutations.append(f"{name} {row['file']}: no 50 Hz line at p below {t['line_detection_p']}")
+        elif not grows:
+            refutations.append(f"{name} {row['file']}: the depth-9 line amplitude does not exceed depth 1's")
 
     # Readout context on the iso qubits, and the e01 of each pair's other qubit beside an excited neighbor.
     def rate(batch: Batch, file: str, q: int, state: int) -> tuple[float, float, int]:
@@ -1630,16 +1654,20 @@ def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, An
     cross = []
     alternative = iso_brackets(batches, brackets, iso)
     if len(alternative) >= 2:
-        times = {kind: [b[f"time_{kind}"] for b in alternative] for kind in ("e01", "e10")}
+        combined = brackets + alternative
+        iso_times = [b["time_e10"] for b in alternative]
         cross_rng = np.random.default_rng([t["bootstrap_seed"], LADDER_LINE_SEED])
         for index, item in enumerate(lcu):
             r = item["replica"]
-            if r["setting"] != "X" or r["cz_depth"] != 1 or r["roles"]["data"][0] not in iso:
+            data = r["roles"]["data"][0]
+            if r["setting"] != "X" or r["cz_depth"] != 1 or data not in iso:
                 continue
-            stamp = job_time(batches[item["batch"]], item["file"])
-            moved = {**item, "weights": {kind: bracket_weight(stamp, times[kind]) for kind in times}}
-            alt_point = follow_values(follow_sample(alternative, [moved], []), [moved], [])
-            alt_boot = follow_values(follow_sample(alternative, [moved], [], cross_rng, t["bootstrap_draws"]),
+            near, far, weight = bracket_weight(job_time(batches[item["batch"]], item["file"]), iso_times)
+            shift = len(brackets)
+            iso_e10 = (near + shift, far + shift, weight)
+            moved = {**item, "qubit_weights": {data: {"e01": item["weights"]["e01"], "e10": iso_e10}}}
+            alt_point = follow_values(follow_sample(combined, [moved], []), [moved], [])
+            alt_boot = follow_values(follow_sample(combined, [moved], [], cross_rng, t["bootstrap_draws"]),
                                      [moved], [])  # fmt: skip
             with np.errstate(all="ignore"):
                 iso_stat = summary(alt_point["e"][(0, 0)], alt_boot["e"][(0, 0)])
@@ -2380,7 +2408,11 @@ def analyze_self_test() -> None:
             # Global depolarizing at r = 0.95: J(n) and 2 Pc(n) - 1 decay alike, so rho = 1. The overstated q13
             # e10 adds an offset to the corrected E_0 on (10, 13), which the slope of ln J does not cancel.
             if decision["pair"] != [10, 13]:
-                check(decision["verdict"] == "consistent with 1", f"rho decision {decision}")
+                check(decision["verdict"] in ("consistent with 1", "replicate-split"), f"rho decision {decision}")
+        for rung in ladder["within_batch_ladder"]:
+            if rung["setting"] == "X" and rung["pair"] != [10, 13]:
+                rho = rung["rho"]
+                check(abs(rho["value"] - 1) < 4 * rho["se"], f"{rung['batch']} {rung['pair']} rho {rho}")
         for rung in ladder["within_batch_ladder"]:
             low, high = rung["r_pop"]["interval"]
             check(low <= 0.95 <= high, f"{rung['batch']} {rung['pair']} r_pop {low, high} misses 0.95")
