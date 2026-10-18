@@ -50,7 +50,9 @@ their measure plays, so admissibility is that of the unheralded twin, and
 level-0.05 test that every member spread of the initial excitation is at
 most herald_bound(n), the spread that moves a magnitude contract by a
 quarter of its minimum detectable deficit (B = 0.001276 at 27,648 shots;
-derivation in herald_bound). --self-test-herald checks the sensitivity
+derivation in herald_bound). Every member must read a herald qubit
+through one assignment channel; a refused or unevaluable herald reads every
+contract not_admissible. --self-test-herald checks the sensitivity
 coefficients, the twin roles on the retained schedule and the admission
 test's operating characteristic. The mechanism fit reads unheralded runs.
 """
@@ -68,6 +70,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 from typing import Any
+from unittest import mock
 
 import numpy as np
 from scipy.optimize import minimize
@@ -1836,6 +1839,15 @@ def _check_between_arm() -> None:
     passing = dict.fromkeys(CONTRACTS, "pass")
     if {name: result["status"] for name, result in results.items()} != passing:
         raise RuntimeError(f"a family planted on every contract returns {results}")
+    if contract_results(roles, pairs, readouts, dt, t2_us, profiles, nominal_t2_us=t2_us) != results:
+        raise RuntimeError("a nominal member at the extra_readout member's T2 changes the contracts")
+    drifted = contract_results(
+        roles, pairs, readouts, dt, t2_us, profiles, nominal_t2_us={**t2_us, "feedback": {7: 90.0}}
+    )
+    if drifted["extra_readout_contrast"].get("differing_t2_qubits") != {"feedback": [7]} or any(
+        drifted[name] != results[name] for name in CONTRACTS if name != "extra_readout_contrast"
+    ):
+        raise RuntimeError(f"a nominal member at another T2 reads {drifted}")
 
     def delayed(window: int) -> dict[str, dict[str, Any]]:
         case = copy.deepcopy(roles)
@@ -2638,6 +2650,7 @@ def readout_contract(
     dt: float,
     t2_us: dict[str, dict[int, float]],
     alpha: float,
+    nominal_t2_us: dict[str, dict[int, float]] | None = None,
 ) -> dict[str, Any]:
     """extra_readout's contrast magnitude stays above the nominal one dephased over each arm's added idle time.
 
@@ -2648,11 +2661,26 @@ def readout_contract(
     extra_readout member (arm_t2_us, keyed by arm); contrast_floor bounds the
     magnitude with the two arm factors at alpha. A coupling that holds only
     one of the work bits for 1 and 16 keeps one term, which raises the bound.
+    The factor carries the added idle alone, so it holds only where the
+    arm's nominal member executed at the same T2 (nominal_t2_us); a coupled
+    qubit whose T2 differs between the two members dephases their common
+    circuit unequally, and the contract is not_evaluable.
     """
     qubits = sorted(normalized_coupling(roles[REFERENCE_MEMBER]["coupling"]))
     absent = sorted({qubit for arm in ARMS for qubit in qubits if not t2_us.get(arm, {}).get(qubit)})
     if absent:
         return {"status": "not_evaluable", "reason": f"the record retains no T2 for coupled qubits {absent}"}
+    if nominal_t2_us is not None:
+        differing = {
+            arm: [qubit for qubit in qubits if nominal_t2_us.get(arm, {}).get(qubit) != t2_us[arm][qubit]]
+            for arm in ARMS
+        }
+        if any(differing.values()):
+            return {
+                "status": "not_evaluable",
+                "reason": "the nominal and extra_readout members executed at different T2 on coupled qubits",
+                "differing_t2_qubits": {arm: found for arm, found in differing.items() if found},
+            }
     added = {
         arm: {
             qubit: max(0.0, arm_idle(roles, "extra_readout", arm, qubit) - arm_idle(roles, "nominal", arm, qubit))
@@ -2682,6 +2710,7 @@ def contract_results(
     t2_us: dict[str, dict[int, float]],
     profiles: SlopeProfiles | None = None,
     render_set: bool = False,
+    nominal_t2_us: dict[str, dict[int, float]] | None = None,
 ) -> dict[str, dict[str, Any]]:
     """Every between-arm contract's status and deciding numbers, each at CONTRACT_ALPHA.
 
@@ -2702,24 +2731,25 @@ def contract_results(
         "window_delay_phase_slope": phase_slope_contract(
             profiles, roles, admitted["orientation"], dt, CONTRACT_ALPHA, render_set
         ),
-        "extra_readout_contrast": readout_contract(pairs, roles, dt, t2_us, CONTRACT_ALPHA),
+        "extra_readout_contrast": readout_contract(pairs, roles, dt, t2_us, CONTRACT_ALPHA, nominal_t2_us),
         "window_echo_restoration": contrast_floor(
             pairs[orbit_pair("window_echo")], pairs[orbit_pair("nominal")], (1.0, 1.0), CONTRACT_ALPHA
         ),
     }
 
 
-def arm_t2_us(run: Path) -> dict[str, dict[int, float]]:
-    """Per arm, T2 in microseconds of each placed qubit at the extra_readout member's calibration.
+def arm_t2_us(run: Path, variant: str = "extra_readout") -> dict[str, dict[int, float]]:
+    """Per arm, T2 in microseconds of each placed qubit at the variant member's calibration.
 
     The extra_readout member holds the added idle the readout contract
-    dephases, so its PUB's calibration (execution_calibration) sets T2.
+    dephases, so its PUB's calibration (execution_calibration) sets T2; the
+    nominal member's T2 must equal it (readout_contract).
     """
     calibrations = execution_calibration(run)
     return {
         arm: {
             int(qubit): float(values["T2"])
-            for qubit, values in calibrations[f"{orbit_pair('extra_readout')}_{arm}"]["values"].items()
+            for qubit, values in calibrations[f"{orbit_pair(variant)}_{arm}"]["values"].items()
             if "T2" in values
         }
         for arm in ARMS
@@ -2821,9 +2851,11 @@ def herald_admission(
 ) -> dict[str, Any]:
     """Whether the herald refutes a member spread of the initial excitation at most bound on any herald bit.
 
-    Herald bit k reads P(1) = (1 - eps) e10 + eps (1 - e01), so a difference
-    of two members' rates on one qubit is their excitation difference times
-    the readout contrast r = 1 - e01 - e10, with the common e10 removed.
+    With p10 = prob_meas1_prep0 and p01 = prob_meas0_prep1 of the qubit's
+    common assignment channel (herald_report), herald bit k reads
+    P(1) = (1 - eps) p10 + eps (1 - p01), so a difference of two members'
+    rates is their excitation difference times the readout contrast
+    r = 1 - p01 - p10, with the common p10 removed.
     Each ordered member pair (i, j) on each bit gets the Agresti-Caffo
     interval of p_i - p_j (one success and one failure added to each
     member; Agresti and Caffo, The American Statistician 54, 280 (2000)) at
@@ -2885,22 +2917,65 @@ def herald_admission(
 def herald_report(run: Path, calibrations: dict[str, dict[str, Any]]) -> dict[str, Any]:
     """herald_admission of RUN at herald_bound of its smallest member shot count, or {"present": False}.
 
-    Each qubit's readout contrast is the smallest over the members'
-    calibrations (execution_calibration), so the threshold is the most
-    demanding one any member's calibration gives.
+    herald_admission removes prob_meas1_prep0 as common to the members, so
+    every member reads each herald qubit through one assignment channel
+    (prob_meas1_prep0, prob_meas0_prep1) in its calibration
+    (execution_calibration). prob_meas1_prep0 counts the calibration's own
+    initialization error with its discrimination error (qpu-information.md,
+    initialization error), so only a channel shared by every member cancels
+    from the member differences. A herald qubit whose members read differing
+    or unretained channels leaves the herald not evaluable, which no
+    contract reads past; the report names each member's calibration source.
     """
     counts = herald_counts(run)
     if counts is None:
         return {"present": False}
+    shots = min(n for entry in counts.values() for _excited, n in entry["members"].values())
     contrasts = {}
+    differing = {}
     for entry in counts.values():
         qubit = entry["qubit"]
-        values = [calibrations[name]["values"].get(str(qubit), {}) for name in entry["members"]]
-        if not all({"prob_meas1_prep0", "prob_meas0_prep1"} <= item.keys() for item in values):
-            raise RuntimeError(f"no retained assignment rates for herald qubit {qubit}")
-        contrasts[qubit] = min(1 - item["prob_meas1_prep0"] - item["prob_meas0_prep1"] for item in values)
-    shots = min(n for entry in counts.values() for _excited, n in entry["members"].values())
-    return herald_admission(counts, contrasts, herald_bound(shots)) | {"shots": shots}
+        values = {name: calibrations[name]["values"].get(str(qubit), {}) for name in entry["members"]}
+        channels = {name: (item.get("prob_meas1_prep0"), item.get("prob_meas0_prep1")) for name, item in values.items()}
+        if len(set(channels.values())) > 1 or None in next(iter(channels.values())):
+            differing[str(qubit)] = {
+                name: {"channel": list(channel), "source": calibrations[name]["source"]}
+                for name, channel in channels.items()
+            }
+            continue
+        ((p10, p01),) = set(channels.values())
+        contrasts[qubit] = 1 - float(p10) - float(p01)
+    if differing:
+        return {
+            "present": True,
+            "evaluable": False,
+            "admissible": False,
+            "reason": "the members read a herald qubit through differing or unretained assignment channels",
+            "differing_channels": differing,
+            "shots": shots,
+        }
+    return herald_admission(counts, contrasts, herald_bound(shots)) | {"evaluable": True, "shots": shots}
+
+
+def contract_gate(admitted: dict[str, Any], herald: dict[str, Any]) -> dict[str, dict[str, Any]] | None:
+    """Every contract not_admissible behind a refused window or herald, else None for contracts to be read."""
+    if not admitted["admissible"]:
+        return not_admissible(admitted)
+    if herald["present"] and not herald["admissible"]:
+        return herald_refusal(herald)
+    return None
+
+
+def herald_refusal(herald: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Every contract not_admissible behind a heralded run that the herald does not admit."""
+    if not herald["evaluable"]:
+        reason = {"herald": "not_evaluable", "differing_channels": herald["differing_channels"]}
+    else:
+        reason = {
+            "herald": "refused",
+            "refused_bits": sorted(bit for bit, entry in herald["bits"].items() if entry["status"] == "fail"),
+        }
+    return {name: {"status": "not_admissible"} | reason for name in CONTRACTS}
 
 
 def analyzer_sha256() -> str:
@@ -2915,7 +2990,9 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
     (window_roles); readouts, dt, T2 and the fits are read only for an
     admissible family. The report names the analyzer's sha256, the
     calibration each member reads (execution_calibration) and, for a
-    heralded run, the herald admission beside admissibility.
+    heralded run, the herald admission beside admissibility; a heralded run
+    the herald does not admit reads every contract not_admissible
+    (herald_refusal).
     """
     roles = window_roles(run)
     admitted = admissibility(roles)
@@ -2936,8 +3013,9 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
         },
         "admissibility": admitted,
     }
-    if not admitted["admissible"]:
-        report["contracts"] = not_admissible(admitted)
+    gated = contract_gate(admitted, report["herald"])
+    if gated is not None:
+        report["contracts"] = gated
         return report
     pairs = measured_pairs(run)
     sources = readout_sources(run, roles, readout)
@@ -2950,7 +3028,9 @@ def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[s
         "measured_counts": {
             pair: {arm: values.astype(int).tolist() for arm, values in arms.items()} for pair, arms in pairs.items()
         },
-        "contracts": contract_results(roles, pairs, readouts, dt, arm_t2_us(run), render_set=True),
+        "contracts": contract_results(
+            roles, pairs, readouts, dt, arm_t2_us(run), render_set=True, nominal_t2_us=arm_t2_us(run, "nominal")
+        ),
     }
     return report
 
@@ -3052,12 +3132,12 @@ def _heralded_payload(payload: dict[str, Any], order: list[int], ones: list[int]
     return copied
 
 
-def _heralded_run(target: Path, ones: dict[str, list[int]], execution: set[str]) -> Path:
+def _heralded_run(target: Path, ones: dict[str, list[int]], execution: set[str], e10_shift: float = 0.0) -> Path:
     """A heralded copy of RETAINED_WINDOW_RUN with planted herald counts and execution-start calibrations.
 
     Members named in execution carry placed_qubit_calibration in collect.json
-    with every T2 scaled by 0.9, so their source and values differ from plan
-    time.
+    with every T2 scaled by 0.9 and prob_meas1_prep0 raised by e10_shift, so
+    their source and values differ from plan time.
     """
     from qiskit import qpy
 
@@ -3089,7 +3169,8 @@ def _heralded_run(target: Path, ones: dict[str, list[int]], execution: set[str])
         for name, executed in entry.get("executed", {}).items():
             if name in execution:
                 executed["placed_qubit_calibration"] = {
-                    qubit: values | {"T2": 0.9 * values["T2"]}
+                    qubit: values
+                    | {"T2": 0.9 * values["T2"], "prob_meas1_prep0": values["prob_meas1_prep0"] + e10_shift}
                     for qubit, values in group["placed_qubit_calibration"].items()
                 }
     (target / "collect.json").write_text(json.dumps(collect))
@@ -3178,7 +3259,8 @@ def _check_herald_twin_roles() -> dict[str, Any]:
                 raise RuntimeError("--expected-analyzer-sha256 refused this analyzer's own digest")
         planted = {name: list(values) for name, values in clean.items()}
         planted[members[3]][0] += excess
-        refused = between_arm_report(_heralded_run(Path(scratch) / "planted", planted, set()), None)
+        planted_run = _heralded_run(Path(scratch) / "planted", planted, set())
+        refused = between_arm_report(planted_run, None)
         bits = refused["herald"]["bits"]
         if refused["herald"]["admissible"] or [bits[str(k)]["status"] for k in range(4)] != [
             "fail",
@@ -3187,6 +3269,63 @@ def _check_herald_twin_roles() -> dict[str, Any]:
             "pass",
         ]:
             raise RuntimeError(f"a planted control excess of {excess} shots reads {refused['herald']}")
+        # The retained window run is not window-admissible, so its reports
+        # stop at that gate; contract_gate on an admissible window reads the
+        # herald gate behind it.
+        window = {"admissible": True}
+        gated = contract_gate(window, refused["herald"])
+        if (
+            contract_gate(window, report["herald"]) is not None
+            or gated is None
+            or set(gated) != set(CONTRACTS)
+            or any(
+                entry != {"status": "not_admissible", "herald": "refused", "refused_bits": ["0"]}
+                for entry in gated.values()
+            )
+        ):
+            raise RuntimeError(f"a refused herald gates the contracts as {gated}")
+        # One member under its own assignment channel leaves the herald not
+        # evaluable, and the contracts not admissible behind it.
+        channel = _heralded_run(Path(scratch) / "channel", clean, {members[1]}, e10_shift=0.001)
+        shifted = herald_report(channel, execution_calibration(channel))
+        gated = contract_gate(window, shifted)
+        if (
+            shifted["evaluable"]
+            or set(shifted["differing_channels"]) != {str(q) for q in order}
+            or gated is None
+            or set(gated) != set(CONTRACTS)
+            or any(
+                entry["status"] != "not_admissible" or entry["herald"] != "not_evaluable" for entry in gated.values()
+            )
+        ):
+            raise RuntimeError(f"a member-specific channel reads {shifted}, gating {gated}")
+        # An extra_readout member at another T2 than its arm's nominal member
+        # leaves the readout contract not evaluable in that arm alone.
+        lone = _heralded_run(Path(scratch) / "t2", clean, {f"{orbit_pair('extra_readout')}_feedback"})
+        readout_case = readout_contract(
+            {}, window_roles(lone), dt_source(lone)[0], arm_t2_us(lone), CONTRACT_ALPHA, arm_t2_us(lone, "nominal")
+        )
+        if readout_case["status"] != "not_evaluable" or set(readout_case["differing_t2_qubits"]) != {"feedback"}:
+            raise RuntimeError(f"an extra_readout member at its own T2 reads {readout_case}")
+        # between_arm_report itself, behind an admissible window: a refused
+        # herald stops it at contract_gate, and an admitted one hands
+        # contract_results both members' T2.
+        module = sys.modules[__name__]
+        passed = {"admissible": True, "orientation": {}, "differing": {}, "unresolved": {}, "missing": []}
+        seen: dict[str, Any] = {}
+
+        def spy(*args: Any, **kwargs: Any) -> dict[str, dict[str, Any]]:
+            seen.update(kwargs, t2_us=args[4])
+            return {}
+
+        with mock.patch.object(module, "admissibility", lambda _roles: passed):
+            behind = between_arm_report(planted_run, None)["contracts"]
+            with mock.patch.object(module, "contract_results", spy):
+                between_arm_report(lone, None)
+        if behind != herald_refusal(refused["herald"]):
+            raise RuntimeError(f"between_arm_report reads {behind} behind a refused herald")
+        if seen.get("t2_us") != arm_t2_us(lone) or seen.get("nominal_t2_us") != arm_t2_us(lone, "nominal"):
+            raise RuntimeError(f"between_arm_report hands contract_results T2 {seen}")
     return {"shots": shots, "planted_excess": excess / shots}
 
 
@@ -3286,7 +3425,12 @@ def main(argv: list[str] | None = None) -> int:
         print(f"analyzer sha256: {report['analyzer_sha256']}")
         print(f"admissibility: {'admissible' if report['admissibility']['admissible'] else 'not admissible'}")
         herald = report["herald"]
-        print(f"herald: {'absent' if not herald['present'] else 'admissible' if herald['admissible'] else 'refused'}")
+        if not herald["present"]:
+            print("herald: absent")
+        elif not herald["evaluable"]:
+            print(f"herald: not evaluable ({herald['reason']})")
+        else:
+            print(f"herald: {'admissible' if herald['admissible'] else 'refused'}")
         for name, contract in report["contracts"].items():
             print(f"{name}: {contract['status']}")
         if arguments.out:

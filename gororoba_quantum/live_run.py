@@ -72,7 +72,6 @@ from diagnostic_experiments import (
     FAMILY_NAMES,
     N21_FAMILIES,
     PATCH_FAMILIES,
-    STATE_PREP_FAMILY,
     record_groups,
     state_prep_arms,
 )
@@ -3269,7 +3268,7 @@ def approved_family_design(
                 args.precision,
                 args.alpha,
                 args.power,
-                **({"configuration": configuration} if args.family == STATE_PREP_FAMILY else {}),
+                **qpu_planning.contract_configuration(args.family, configuration),
             )
             tiers = sorted(set(args.shot_tiers if args.optimize else [args.shots]))
             ceiling = min(

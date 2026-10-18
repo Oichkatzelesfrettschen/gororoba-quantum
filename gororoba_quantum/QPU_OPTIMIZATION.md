@@ -150,8 +150,12 @@ and contract values lift onto the six clbits by phase label;
 skip the herald readouts and their measure plays, so a heralded member reads
 its unheralded twin's bracket, windows and couplings (gates core-445 and
 core-459). Herald bit k reads logical qubit k's initial excitation plus its
-readout P(1|0); the readout term is common to the members, so the herald
-bounds the member spread of the excitation and is never a post-selection.
+readout P(1|0); every member must read each herald qubit through one
+assignment channel (prob_meas1_prep0, prob_meas0_prep1) at its execution
+calibration, which makes the readout term common to the members, so the
+herald bounds the member spread of the excitation and is never a
+post-selection. Members whose channels differ leave the herald not
+evaluable.
 An excitation of bit k moves a pair's contrast vector by at most c_k m with
 c = (2, 1, 2, 2) for the control and the work bits for 1, 4 and 16 (exact
 ideal laws), so a spread of at most B on every bit moves a magnitude
@@ -167,7 +171,12 @@ and refuses at a 0.006 spread. At 27,648 shots and a 0.006 herald rate a
 member difference has standard error 0.00066 and the simultaneous quantile
 is 3.5, so the test resolves spreads above about B + 0.0023 = 0.0036; the
 report states the contract shift the simultaneous upper limits leave
-possible. The mechanism fit
+possible. A refused or unevaluable herald reads every between-arm contract
+not_admissible, and the readout contract is not evaluable in an arm whose
+nominal and extra_readout members executed at different T2 on a coupled
+qubit. A heralded submission under an approved record rebuilds the lifted
+contracts and reuses the approved design without simulating (gate
+core-570). The mechanism fit
 (`n21_orbit_rca.py RUN`, `--check`) reads unheralded runs only.
 
 The window durations come from the backend's longest measure and reset in

@@ -1656,6 +1656,17 @@ class _SmallHeronBackend(_ProbeBackend):
         return configuration
 
 
+class _DynamicHeronBackend(_SmallHeronBackend):
+    """_SmallHeronBackend whose Target also carries if_else, so dynamic families route on it."""
+
+    def __init__(self, name: str) -> None:
+        from qiskit.circuit import IfElseOp
+
+        backend = FakePrague()
+        backend.target.add_instruction(IfElseOp, name="if_else")
+        super().__init__(name, cast(Any, backend))
+
+
 class _SimulationForbidden(RuntimeError):
     """A reused submission reached a noise simulation."""
 
@@ -1870,6 +1881,59 @@ def _submit_reuse_case(name: str, argv: list[str], directory: Path) -> None:
             and (not family or not changed["prediction_reuse"]["design"]["reused"]),
             f"{name}: a changed {label} reused the approved predictions",
         )
+
+
+def _verify_submit_reuse_herald() -> None:
+    """A heralded n21-orbit-rca submission reuses its approved design and predictions without simulating.
+
+    approved_family_design rebuilds the family contracts with the herald
+    configuration (qpu_planning.contract_configuration); four-outcome terms
+    would differ from the approved 64-outcome ones and send the submission
+    through the noise simulation, which the reuse case forbids.
+    """
+    from runtime_contracts import _FiniteQuotaService
+
+    backend = _DynamicHeronBackend("reuse_dynamic_fixture")
+    service = _FiniteQuotaService([backend])
+    family = [
+        "--family",
+        "n21-orbit-rca",
+        "--init-herald",
+        "--rep-delay",
+        "0.00005",
+        "--optimize",
+        "--shots",
+        "16384",
+        "--shot-tiers",
+        "16384",
+        "--replica-tiers",
+        "1",
+        "--optimizer-candidates",
+        "1",
+        "--model-shots",
+        "32768",
+        "--local-compute",
+        "auto",
+        "--local-compute-method",
+        "density_matrix_dynamic_statevector",
+        "--simulation-threads",
+        "1",
+        "--backends",
+        backend.name,
+        "--max-execution-seconds",
+        "60",
+        "--max-total-execution-seconds",
+        "120",
+    ]
+    with (
+        patch.object(live_run, "QiskitRuntimeService", lambda: service),
+        tempfile.TemporaryDirectory(prefix="gororoba-submit-reuse-herald-") as directory,
+    ):
+        _submit_reuse_case("n21-orbit-rca-herald", family, Path(directory))
+    print(
+        "QPU planning: a heralded n21-orbit-rca submission whose inputs match the approved record reuses its "
+        "lifted contracts, design and predictions without simulating, and a moved value refuses"
+    )
 
 
 def _verify_submit_reuse() -> None:
@@ -2157,7 +2221,12 @@ def _verify_init_herald(snapshot: live_run.Snapshot) -> None:
             bool(opened_at_herald),
             f"{member.name}: a window opened at the herald readout passes, so the herald exclusion proves nothing",
         )
-    contracts = diagnostic_experiments.family_contracts("n21-orbit-rca", 0.08, 0.05, 0.8, configuration)
+    # prepare and live_run.approved_family_design build the contracts through
+    # qpu_planning.contract_configuration, so a dropped configuration here
+    # leaves four-outcome terms and fails the lift below.
+    contracts = diagnostic_experiments.family_contracts(
+        "n21-orbit-rca", 0.08, 0.05, 0.8, **qpu_planning.contract_configuration("n21-orbit-rca", configuration)
+    )
     plain_contracts = diagnostic_experiments.family_contracts("n21-orbit-rca", 0.08, 0.05, 0.8)
     for lifted, unlifted in zip(contracts, plain_contracts, strict=True):
         for term, plain_term in zip(lifted.terms, unlifted.terms, strict=True):
@@ -2299,6 +2368,11 @@ if __name__ == "__main__":
         "--submit-reuse", action="store_true", help="run only the approved-prediction reuse submission contracts"
     )
     parser.add_argument(
+        "--submit-reuse-herald",
+        action="store_true",
+        help="run only the heralded n21-orbit-rca approved-design reuse submission contract",
+    )
+    parser.add_argument(
         "--serialized-noise",
         action="store_true",
         help="run only the retained noise-serialization equivalence contract",
@@ -2324,5 +2398,7 @@ if __name__ == "__main__":
         _verify_prep_excitation_only()
     elif parsed.submit_reuse:
         _verify_submit_reuse()
+    elif parsed.submit_reuse_herald:
+        _verify_submit_reuse_herald()
     else:
         _verify()

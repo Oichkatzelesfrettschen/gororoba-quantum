@@ -59,6 +59,16 @@ from packing import Replica
 from qpe_diagnostics import has_herald, herald_measurement, ideal_compiled_probabilities
 
 
+def contract_configuration(family: str, configuration: dict[str, Any]) -> dict[str, Any]:
+    """family_contracts' configuration keyword for a family whose contracts read its candidate's configuration.
+
+    state-prep-control reads its named qubits and n21-orbit-rca its herald
+    outcome width there; prepare and live_run.approved_family_design both
+    pass this, so a reused approved design rebuilds the approved contracts.
+    """
+    return {"configuration": configuration} if family in (STATE_PREP_FAMILY, "n21-orbit-rca") else {}
+
+
 def settings(args: Any) -> dict[str, Any]:
     """Approval-bound design inputs, distinct from fluctuating quota readings.
 
@@ -994,7 +1004,7 @@ def prepare(
         args.precision,
         args.alpha,
         args.power,
-        **({"configuration": candidates[0][1]} if args.family in (STATE_PREP_FAMILY, "n21-orbit-rca") else {}),
+        **contract_configuration(args.family, candidates[0][1]),
     )
     plans: list[CandidatePlan] = []
     ownership: dict[str, tuple[list[Any], dict[str, Any], int]] = {}
