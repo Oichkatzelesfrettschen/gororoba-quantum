@@ -3663,6 +3663,14 @@
   },
   {
    "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/axis_tilt_substrate_split.py --check docs/evidence/lsq_conditioning/substrate_split.json && \"$PYTHON\" -B -O -W error scripts/axis_tilt_substrate_split.py --check docs/evidence/lsq_conditioning/substrate_split.json && \"$PYTHON\" -B -W error scripts/axis_tilt_substrate_split.py --self-test docs/evidence/lsq_conditioning/substrate_split.json && \"$PYTHON\" -B -O -W error scripts/axis_tilt_substrate_split.py --self-test docs/evidence/lsq_conditioning/substrate_split.json",
+   "name": "core-458",
+   "seconds": 3.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error wheel_algebra.py --self-test && \"$PYTHON\" -B -O -W error wheel_algebra.py --self-test",
    "name": "core-493",
