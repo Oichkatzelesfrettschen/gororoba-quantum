@@ -566,7 +566,7 @@ the couplers equaled Q1's throughout.
     dwell inside one form, so the third job runs unless the user stops
     after the two S jobs. A fifth job, S at dwell 1500 on D3's mesh, is
     worth its credit only if D3 leaks. The three jobs cost about 3.015
-    credits, about 3.08 if an I job bills its largest iteration's
+    credits, about 3.13 if an I job bills its largest iteration's
     `max_shots` instead. A `samples` command in place of `sample_count`
     would return the individual events of one long S job and could resolve
     in_block over time within it, but nothing retained shows the events
