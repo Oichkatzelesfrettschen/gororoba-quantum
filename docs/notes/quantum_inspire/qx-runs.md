@@ -111,7 +111,8 @@ A local run needs no account, queue or approval and records nothing.
    `scripts/qx_reset_phase_probe.py` read q1 = 0 in 2048 of 2048 shots
    (batch job 872957, `results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00`,
    gates core-455 to core-457), so a QX dry run of a reset circuit checks
-   syntax and plumbing, never its law (knowledge-base.md C22). No
+   syntax and plumbing, never its law (knowledge-base.md C22); the upstream
+   report is https://github.com/QuTech-Delft/qx-simulator/issues/217. No
    box-kite dialect maps `reset` (`box_kite_cases.DIALECTS`), so `emit`
    refuses it for every generated case.
 
