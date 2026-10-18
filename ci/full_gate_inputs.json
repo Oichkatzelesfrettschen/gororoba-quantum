@@ -178,11 +178,30 @@
     ],
     "core-514": [
       "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/**",
-      "results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02/**"
+      "results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02/**",
+      "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/static.json",
+      "results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03/**",
+      "results/quandela/runs/2026-10-18T030428Z-qpu_belenos-belenos_mesh-job-04/**",
+      "results/quandela/runs/2026-10-18T030731Z-qpu_belenos-belenos_mesh-job-05/**",
+      "results/quandela/runs/2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06/**"
     ],
     "core-515": [
       "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/**",
       "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/submission.json"
+    ],
+    "core-534": [
+      "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/**",
+      "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/submission.json"
+    ],
+    "core-535": [
+      "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/efficiency.json",
+      "results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03/**",
+      "results/quandela/runs/2026-10-18T030428Z-qpu_belenos-belenos_mesh-job-04/**",
+      "results/quandela/runs/2026-10-18T030731Z-qpu_belenos-belenos_mesh-job-05/**",
+      "results/quandela/runs/2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06/**"
+    ],
+    "core-537": [
+      "results/quandela/runs/*-qpu_belenos-belenos_mesh-*/**"
     ]
   }
 }

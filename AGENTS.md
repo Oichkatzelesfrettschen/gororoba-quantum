@@ -1097,7 +1097,11 @@ class only when its pooled deviance and shot-noise TVD pass an absolute fit
 test, otherwise "no class fits"; `--static OUT RUN...` fits one shared
 heater-offset vector across the runs of one calibration session and declares
 static offsets only when they beat the fitted dephasing ensemble on held-out
-runs, which takes about 64 random-target settings. `plan` decodes the live architecture and
+runs, which takes about 64 random-target settings. The receipt's `t_out` and dark
+rates contradict the detected light (modes 12 to 23 read 194 to 400 %), so
+`--efficiency OUT RUN...` refits a session with relative per-mode efficiencies
+fitted jointly with every class and with the offsets, each run held out.
+`plan` decodes the live architecture and
 refuses a mesh case whose couplers or symbols changed, so a recalibration
 means a regenerated case. `docs/evidence/quandela/belenos_leakage_rca.json` holds the
 root-cause record of the qpu:belenos bright-block leakage, and
@@ -1112,14 +1116,19 @@ transpiler model and the 84/84 mapping.
 `--self-test`), core-506 (`cd_two_blade_blocks.py --check
 docs/evidence/box_kite_census/two_blade_blocks.json`), core-507 (its
 `--self-test`), core-508 (`qd_box_kite_analysis.py --check` over every
-retained run), core-509 (its `--self-test`), core-510
+retained run but the qpu:belenos mesh runs, which core-537 replays on the
+full tier), core-509 (its `--self-test`), core-510
 (`qd_belenos_mesh.py --check results/quandela/cases`), core-511 (its
 `--check-rca` replay of the leakage record), core-512 (its
 `--self-test`), core-515 (full tier, `--self-test-rule`: the decision
 rule on synthetic in-family and out-of-family truths), core-513 (full tier, `--self-test-static`: static offsets
 are declared on a static truth and on no dephasing, out-of-family or
 simulator data) and core-514 (full tier, `--check-static` of the retained
-static records within a BLAS-path tolerance).
+static records within a BLAS-path tolerance), core-534 (full tier,
+`--self-test-efficiency`: an efficiency-only truth reads ideal without
+offsets, efficiencies plus offsets are declared and recovered), core-535
+(full tier, `--check-efficiency` of the session record) and core-536
+(`--check-followup`, the preregistered job-02 and repeat readout).
 
 **Strategy guide.** [docs/notes/quandela/strategy.md](docs/notes/quandela/strategy.md)
 is the living record of what a credit buys on Belenos: the measured cost

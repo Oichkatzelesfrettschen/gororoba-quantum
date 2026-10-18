@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (75 established, 31 exploratory, 4 open, 8 proposed, 2 superseded, 11 withdrawn) with its evidence class,
+registered claim (80 established, 32 exploratory, 4 open, 8 proposed, 2 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -154,13 +154,20 @@ acquisition of every provider:
 | [2026-10-18T015435Z-box_kite_tuna_ladder-batch-03](results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-03) | Quantum Inspire | box-kite Tuna-17 ladder series | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-18T015435Z-box_kite_tuna_ladder-batch-04](results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-04) | Quantum Inspire | box-kite Tuna-17 ladder series | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-18T015435Z-box_kite_tuna_ladder-batch-05](results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-05) | Quantum Inspire | box-kite Tuna-17 ladder series | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04](results/quandela/runs/2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04) | Quandela Cloud | box-kite photonic R1 replay | qpu:belenos | 1 | 1 | completed | 1.01 credits |
 | [2026-10-18T015435Z-box_kite_tuna_ladder-batch-06](results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-06) | Quantum Inspire | box-kite Tuna-17 ladder series | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03](results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03) | Quandela Cloud | Belenos mesh C1 | qpu:belenos | 1 | 16 | completed | 1.003 credits |
+| [2026-10-18T030428Z-qpu_belenos-belenos_mesh-job-04](results/quandela/runs/2026-10-18T030428Z-qpu_belenos-belenos_mesh-job-04) | Quandela Cloud | Belenos mesh C1 | qpu:belenos | 1 | 16 | completed | 1.003 credits |
+| [2026-10-18T030731Z-qpu_belenos-belenos_mesh-job-05](results/quandela/runs/2026-10-18T030731Z-qpu_belenos-belenos_mesh-job-05) | Quandela Cloud | Belenos mesh C1 | qpu:belenos | 1 | 16 | completed | 1.003 credits |
+| [2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06](results/quandela/runs/2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06) | Quandela Cloud | Belenos mesh C1 | qpu:belenos | 1 | 16 | completed | 1.003 credits |
+| [2026-10-18T033336Z-qpu_belenos-belenos_mesh-job-02](results/quandela/runs/2026-10-18T033336Z-qpu_belenos-belenos_mesh-job-02) | Quandela Cloud | Belenos mesh M2 (84/84) | qpu:belenos | 1 | 16 | completed | 1.003 credits |
+| [2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03](results/quandela/runs/2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03) | Quandela Cloud | Belenos mesh C1 repeat | qpu:belenos | 1 | 16 | completed | 1.003 credits |
 
 The IBM service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 physical jobs with 334 settled seconds; the account then reported 334 of 600 s consumed in the rolling window ending 2026-10-15T07:13:13.771Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-18T03:06:50+00:00 lists 275 jobs with 4493312 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-17T17:53:31+00:00 counts 0 jobs, and 15 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-17T17:53:31+00:00 counts 0 jobs, and 22 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 <!-- research-state:end -->
 
 ## Contents
