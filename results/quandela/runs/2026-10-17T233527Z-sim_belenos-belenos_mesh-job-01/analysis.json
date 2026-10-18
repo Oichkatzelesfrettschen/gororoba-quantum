@@ -1,8 +1,83 @@
 {
  "a_mean_by_kind": null,
+ "best_class": "phase_noise",
  "best_model": "ideal",
  "cases_sha256": "e53bade9cd8b5481a4136196e100fb4eb922d82af729402270019b5d2098cad8",
+ "classes": {
+  "crosstalk": {
+   "best": {
+    "kappa": 0.0
+   },
+   "fits": true,
+   "g2_per_dof": 2.806836,
+   "log_likelihood": -1040.002576,
+   "median_tvd_over_floor": 1.811208,
+   "p_value": 0.0938634
+  },
+  "gain": {
+   "best": {
+    "gain": 0.0
+   },
+   "fits": true,
+   "g2_per_dof": 2.806836,
+   "log_likelihood": -1040.002576,
+   "median_tvd_over_floor": 1.811208,
+   "p_value": 0.0938634
+  },
+  "misroute_+2": {
+   "best": {
+    "fraction": 0.0,
+    "sigma": 0.0
+   },
+   "fits": true,
+   "g2_per_dof": 2.806836,
+   "log_likelihood": -1040.002576,
+   "median_tvd_over_floor": 1.811208,
+   "p_value": 0.0938634
+  },
+  "misroute_-2": {
+   "best": {
+    "fraction": 0.0,
+    "sigma": 0.0
+   },
+   "fits": true,
+   "g2_per_dof": 2.806836,
+   "log_likelihood": -1040.002576,
+   "median_tvd_over_floor": 1.811208,
+   "p_value": 0.0938634
+  },
+  "misroute_-4": {
+   "best": {
+    "fraction": 0.0,
+    "sigma": 0.0
+   },
+   "fits": true,
+   "g2_per_dof": 2.806836,
+   "log_likelihood": -1040.002576,
+   "median_tvd_over_floor": 1.811208,
+   "p_value": 0.0938634
+  },
+  "phase_noise": {
+   "best": {
+    "sigma": 0.0
+   },
+   "fits": true,
+   "g2_per_dof": 2.806836,
+   "log_likelihood": -1040.002576,
+   "median_tvd_over_floor": 1.811208,
+   "p_value": 0.0938634
+  }
+ },
+ "couplers_match_case": true,
  "duration_s": 13.0,
+ "fitting_classes": [
+  "phase_noise",
+  "gain",
+  "crosstalk",
+  "misroute_-4",
+  "misroute_-2",
+  "misroute_+2"
+ ],
  "job_id": "e5b74123-b2d0-49d2-bc10-1336d26d8542",
  "log_likelihood_total": {
   "ceiling_4.94": -2945.401029,
@@ -11,13 +86,13 @@
   "gain_-0.1": -1690.300203,
   "gain_-0.3": -2125.978757,
   "ideal": -1040.002576,
-  "phase_noise_0.1": -1241.139466,
-  "phase_noise_0.2": -1771.705638,
-  "phase_noise_0.4": -2859.906229,
+  "phase_noise_0.1": -1240.800028,
+  "phase_noise_0.2": -1772.642927,
+  "phase_noise_0.4": -2868.118225,
   "source_+2": -3460.22742,
   "source_-2": -4216.298488,
   "source_-4": -3717.516172,
-  "theta_noise_0.05": -1069.714918
+  "theta_noise_0.05": -1068.916081
  },
  "run": "2026-10-17T233527Z-sim_belenos-belenos_mesh-job-01",
  "schema": "qd-belenos-mesh-analysis-v1",
@@ -43,19 +118,19 @@
     "gain_-0.1": -1690.300203,
     "gain_-0.3": -2125.978757,
     "ideal": -1040.002576,
-    "phase_noise_0.1": -1241.139466,
-    "phase_noise_0.2": -1771.705638,
-    "phase_noise_0.4": -2859.906229,
+    "phase_noise_0.1": -1240.800028,
+    "phase_noise_0.2": -1772.642927,
+    "phase_noise_0.4": -2868.118225,
     "source_+2": -3460.22742,
     "source_-2": -4216.298488,
     "source_-4": -3717.516172,
-    "theta_noise_0.05": -1069.714918
+    "theta_noise_0.05": -1068.916081
    },
    "max_phase_gap": 3.138897230102,
    "mesh_heater_phase_sum": 1812.076486,
    "mesh_sha256": "19f8ba8ceb8bf4f434ca68a95c1b2517bdb99de6115559b8a822562468431df7",
    "name": "cold-bright-20",
-   "nb_shots_used": 0,
+   "nb_shots_used": 1500,
    "other_events": 0,
    "single_click": [
     0,
@@ -83,9 +158,10 @@
     0,
     0
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.019286
+   "transpiled": true
   }
  ],
- "transpiled_iterations": 1
+ "static_offsets": null,
+ "transpiled_iterations": 1,
+ "verdict": "ideal"
 }

@@ -3,9 +3,84 @@
   "bright": 1.0,
   "dark": 0.0
  },
+ "best_class": "gain",
  "best_model": "ideal",
  "cases_sha256": "5748a482b0d39e372582b6ad0d215f893414e88fc471e9d06a6665a8f12d7038",
+ "classes": {
+  "crosstalk": {
+   "best": {
+    "kappa": 0.0
+   },
+   "fits": true,
+   "g2_per_dof": 1.523479,
+   "log_likelihood": -19829.611943,
+   "median_tvd_over_floor": 1.073143,
+   "p_value": 0.0331507
+  },
+  "gain": {
+   "best": {
+    "gain": 0.0
+   },
+   "fits": true,
+   "g2_per_dof": 1.523479,
+   "log_likelihood": -19829.611943,
+   "median_tvd_over_floor": 1.073143,
+   "p_value": 0.0331507
+  },
+  "misroute_+2": {
+   "best": {
+    "fraction": 0.0,
+    "sigma": 0.0
+   },
+   "fits": true,
+   "g2_per_dof": 1.576013,
+   "log_likelihood": -19829.611943,
+   "median_tvd_over_floor": 1.073143,
+   "p_value": 0.0251021
+  },
+  "misroute_-2": {
+   "best": {
+    "fraction": 0.0,
+    "sigma": 0.0
+   },
+   "fits": true,
+   "g2_per_dof": 1.576013,
+   "log_likelihood": -19829.611943,
+   "median_tvd_over_floor": 1.073143,
+   "p_value": 0.0251021
+  },
+  "misroute_-4": {
+   "best": {
+    "fraction": 0.0,
+    "sigma": 0.0
+   },
+   "fits": true,
+   "g2_per_dof": 1.576013,
+   "log_likelihood": -19829.611943,
+   "median_tvd_over_floor": 1.073143,
+   "p_value": 0.0251021
+  },
+  "phase_noise": {
+   "best": {
+    "sigma": 0.0
+   },
+   "fits": true,
+   "g2_per_dof": 1.523479,
+   "log_likelihood": -19829.611943,
+   "median_tvd_over_floor": 1.073143,
+   "p_value": 0.0331507
+  }
+ },
+ "couplers_match_case": true,
  "duration_s": 212.0,
+ "fitting_classes": [
+  "phase_noise",
+  "gain",
+  "crosstalk",
+  "misroute_-4",
+  "misroute_-2",
+  "misroute_+2"
+ ],
  "job_id": "1d7160c1-3254-47d8-ae74-07883bac0883",
  "log_likelihood_total": {
   "ceiling_4.94": -48066.62426,
@@ -14,13 +89,13 @@
   "gain_-0.1": -32031.22916,
   "gain_-0.3": -62506.001779,
   "ideal": -19829.611937,
-  "phase_noise_0.1": -22291.157859,
-  "phase_noise_0.2": -28819.865297,
-  "phase_noise_0.4": -43723.652216,
+  "phase_noise_0.1": -22259.418098,
+  "phase_noise_0.2": -28819.688964,
+  "phase_noise_0.4": -43376.798578,
   "source_+2": -77104.892834,
   "source_-2": -101640.528682,
   "source_-4": -102163.142351,
-  "theta_noise_0.05": -20181.962537
+  "theta_noise_0.05": -20177.381219
  },
  "run": "2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00",
  "schema": "qd-belenos-mesh-analysis-v1",
@@ -46,13 +121,13 @@
     "gain_-0.1": -1225.924616,
     "gain_-0.3": -3322.915427,
     "ideal": -1039.732477,
-    "phase_noise_0.1": -1205.770103,
-    "phase_noise_0.2": -1629.722973,
-    "phase_noise_0.4": -2587.222561,
+    "phase_noise_0.1": -1201.866372,
+    "phase_noise_0.2": -1634.824144,
+    "phase_noise_0.4": -2601.28671,
     "source_+2": -1914.28512,
     "source_-2": -8663.332833,
     "source_-4": -5032.097783,
-    "theta_noise_0.05": -1065.67379
+    "theta_noise_0.05": -1066.014556
    },
    "max_phase_gap": 3.137222554741,
    "mesh_heater_phase_sum": 1816.387068,
@@ -86,8 +161,7 @@
     0,
     0
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.013065
+   "transpiled": true
   },
   {
    "computed_input": ":PCVL:BasicState:|0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0>",
@@ -104,13 +178,13 @@
     "gain_-0.1": -765.768373,
     "gain_-0.3": -3666.20977,
     "ideal": -9.670757,
-    "phase_noise_0.1": -242.358273,
-    "phase_noise_0.2": -868.190218,
-    "phase_noise_0.4": -2515.541786,
+    "phase_noise_0.1": -235.678243,
+    "phase_noise_0.2": -864.571353,
+    "phase_noise_0.4": -2386.660252,
     "source_+2": -13173.710717,
     "source_-2": -15682.51846,
     "source_-4": -13745.004384,
-    "theta_noise_0.05": -38.924048
+    "theta_noise_0.05": -39.734639
    },
    "max_phase_gap": 3.138954664603,
    "mesh_heater_phase_sum": 1776.151259,
@@ -144,8 +218,7 @@
     0,
     0
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.001428
+   "transpiled": true
   },
   {
    "computed_input": ":PCVL:BasicState:|0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0>",
@@ -162,13 +235,13 @@
     "gain_-0.1": -635.941133,
     "gain_-0.3": -3012.820421,
     "ideal": -23.60472,
-    "phase_noise_0.1": -260.157147,
-    "phase_noise_0.2": -940.082182,
-    "phase_noise_0.4": -2857.352511,
+    "phase_noise_0.1": -259.865015,
+    "phase_noise_0.2": -939.67118,
+    "phase_noise_0.4": -2596.446762,
     "source_+2": -11001.445896,
     "source_-2": -12478.304446,
     "source_-4": -12021.90553,
-    "theta_noise_0.05": -54.789842
+    "theta_noise_0.05": -54.380757
    },
    "max_phase_gap": 3.133261611961,
    "mesh_heater_phase_sum": 1810.103883,
@@ -202,8 +275,7 @@
     0,
     0
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.000174
+   "transpiled": true
   },
   {
    "a": 1.0,
@@ -226,13 +298,13 @@
     "gain_-0.1": -2151.433988,
     "gain_-0.3": -4248.817852,
     "ideal": -1047.942213,
-    "phase_noise_0.1": -1242.256596,
-    "phase_noise_0.2": -1718.776221,
-    "phase_noise_0.4": -2842.339246,
+    "phase_noise_0.1": -1233.166723,
+    "phase_noise_0.2": -1738.344529,
+    "phase_noise_0.4": -2838.128477,
     "source_+2": -2249.486145,
     "source_-2": -9875.581485,
     "source_-4": -6607.164711,
-    "theta_noise_0.05": -1074.063198
+    "theta_noise_0.05": -1074.572928
    },
    "max_phase_gap": 3.133695770717,
    "mesh_heater_phase_sum": 1818.104016,
@@ -266,8 +338,7 @@
     0,
     0
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.00977
+   "transpiled": true
   },
   {
    "a": 1.0,
@@ -290,13 +361,13 @@
     "gain_-0.1": -1522.240944,
     "gain_-0.3": -5181.401752,
     "ideal": -1040.020547,
-    "phase_noise_0.1": -1203.094075,
-    "phase_noise_0.2": -1610.89486,
-    "phase_noise_0.4": -2593.158692,
+    "phase_noise_0.1": -1208.124647,
+    "phase_noise_0.2": -1651.340467,
+    "phase_noise_0.4": -2595.904088,
     "source_+2": -5285.88263,
     "source_-2": -3599.502088,
     "source_-4": -8113.025695,
-    "theta_noise_0.05": -1061.84019
+    "theta_noise_0.05": -1062.070752
    },
    "max_phase_gap": 3.129082761947,
    "mesh_heater_phase_sum": 1797.168285,
@@ -330,8 +401,7 @@
     0,
     0
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.000214
+   "transpiled": true
   },
   {
    "a": 0.0,
@@ -354,13 +424,13 @@
     "gain_-0.1": -1685.387313,
     "gain_-0.3": -3184.730227,
     "ideal": -1039.744122,
-    "phase_noise_0.1": -1179.262865,
-    "phase_noise_0.2": -1563.874309,
-    "phase_noise_0.4": -2493.028434,
+    "phase_noise_0.1": -1185.609287,
+    "phase_noise_0.2": -1574.15892,
+    "phase_noise_0.4": -2481.047839,
     "source_+2": -3339.145041,
     "source_-2": -3270.554772,
     "source_-4": -4685.076602,
-    "theta_noise_0.05": -1061.702819
+    "theta_noise_0.05": -1061.237874
    },
    "max_phase_gap": 3.138165128882,
    "mesh_heater_phase_sum": 1778.24038,
@@ -394,8 +464,7 @@
     766,
     734
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.010516
+   "transpiled": true
   },
   {
    "a": 0.0,
@@ -418,13 +487,13 @@
     "gain_-0.1": -1425.048111,
     "gain_-0.3": -3725.021261,
     "ideal": -1039.851293,
-    "phase_noise_0.1": -1240.27932,
-    "phase_noise_0.2": -1740.254535,
-    "phase_noise_0.4": -2740.090605,
+    "phase_noise_0.1": -1230.673197,
+    "phase_noise_0.2": -1735.254817,
+    "phase_noise_0.4": -2768.710739,
     "source_+2": -4716.973615,
     "source_-2": -5819.110704,
     "source_-4": -3148.218188,
-    "theta_noise_0.05": -1068.585513
+    "theta_noise_0.05": -1069.393318
    },
    "max_phase_gap": 3.137882142823,
    "mesh_heater_phase_sum": 1843.796573,
@@ -458,8 +527,7 @@
     773,
     727
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.015335
+   "transpiled": true
   },
   {
    "a": 1.0,
@@ -482,13 +550,13 @@
     "gain_-0.1": -1516.30756,
     "gain_-0.3": -4388.34091,
     "ideal": -1039.750737,
-    "phase_noise_0.1": -1197.085992,
-    "phase_noise_0.2": -1676.988887,
-    "phase_noise_0.4": -2693.122162,
+    "phase_noise_0.1": -1201.503077,
+    "phase_noise_0.2": -1638.010376,
+    "phase_noise_0.4": -2632.192712,
     "source_+2": -1894.553753,
     "source_-2": -1039.750737,
     "source_-4": -1039.750737,
-    "theta_noise_0.05": -1065.310718
+    "theta_noise_0.05": -1064.626627
    },
    "max_phase_gap": 3.133784055999,
    "mesh_heater_phase_sum": 1831.230203,
@@ -522,8 +590,7 @@
     0,
     0
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.00995
+   "transpiled": true
   },
   {
    "a": 1.0,
@@ -546,13 +613,13 @@
     "gain_-0.1": -1410.013973,
     "gain_-0.3": -4436.565479,
     "ideal": -1055.854987,
-    "phase_noise_0.1": -1238.75711,
-    "phase_noise_0.2": -1765.522625,
-    "phase_noise_0.4": -2865.240354,
+    "phase_noise_0.1": -1234.45574,
+    "phase_noise_0.2": -1742.048418,
+    "phase_noise_0.4": -2897.672857,
     "source_+2": -7318.144156,
     "source_-2": -6552.358158,
     "source_-4": -5977.566231,
-    "theta_noise_0.05": -1077.889437
+    "theta_noise_0.05": -1077.368355
    },
    "max_phase_gap": 3.140317769816,
    "mesh_heater_phase_sum": 1784.523565,
@@ -586,8 +653,7 @@
     0,
     0
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.037702
+   "transpiled": true
   },
   {
    "a": 0.514,
@@ -610,13 +676,13 @@
     "gain_-0.1": -3440.537932,
     "gain_-0.3": -4375.584108,
     "ideal": -2079.503415,
-    "phase_noise_0.1": -2188.817178,
-    "phase_noise_0.2": -2455.998166,
-    "phase_noise_0.4": -2896.381478,
+    "phase_noise_0.1": -2186.454725,
+    "phase_noise_0.2": -2451.296971,
+    "phase_noise_0.4": -2943.717978,
     "source_+2": -4378.23235,
     "source_-2": -4026.082938,
     "source_-4": -7639.628636,
-    "theta_noise_0.05": -2097.063502
+    "theta_noise_0.05": -2096.061055
    },
    "max_phase_gap": 3.141112489655,
    "mesh_heater_phase_sum": 1840.308673,
@@ -650,8 +716,7 @@
     345,
     384
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.020686
+   "transpiled": true
   },
   {
    "a": 0.0,
@@ -674,13 +739,13 @@
     "gain_-0.1": -2083.989513,
     "gain_-0.3": -3662.40165,
     "ideal": -1048.497491,
-    "phase_noise_0.1": -1219.848187,
-    "phase_noise_0.2": -1678.175886,
-    "phase_noise_0.4": -2756.39467,
+    "phase_noise_0.1": -1217.579585,
+    "phase_noise_0.2": -1681.191112,
+    "phase_noise_0.4": -2708.490307,
     "source_+2": -3127.713296,
     "source_-2": -3133.181239,
     "source_-4": -6123.413993,
-    "theta_noise_0.05": -1072.573247
+    "theta_noise_0.05": -1071.296828
    },
    "max_phase_gap": 3.141485356102,
    "mesh_heater_phase_sum": 1788.717629,
@@ -714,8 +779,7 @@
     733,
     766
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.011382
+   "transpiled": true
   },
   {
    "a": 0.499333,
@@ -738,13 +802,13 @@
     "gain_-0.1": -2418.8335,
     "gain_-0.3": -5183.663656,
     "ideal": -2079.499005,
-    "phase_noise_0.1": -2192.390199,
-    "phase_noise_0.2": -2445.815858,
-    "phase_noise_0.4": -2897.10276,
+    "phase_noise_0.1": -2187.694464,
+    "phase_noise_0.2": -2453.018789,
+    "phase_noise_0.4": -2943.458527,
     "source_+2": -4105.969258,
     "source_-2": -4719.846737,
     "source_-4": -3473.223594,
-    "theta_noise_0.05": -2094.596986
+    "theta_noise_0.05": -2094.367093
    },
    "max_phase_gap": 3.137553653435,
    "mesh_heater_phase_sum": 1778.24038,
@@ -778,8 +842,7 @@
     357,
     394
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.013368
+   "transpiled": true
   },
   {
    "a": 0.499333,
@@ -802,13 +865,13 @@
     "gain_-0.1": -3461.774085,
     "gain_-0.3": -3793.995204,
     "ideal": -1560.455616,
-    "phase_noise_0.1": -1654.883525,
-    "phase_noise_0.2": -1912.483624,
-    "phase_noise_0.4": -2573.112541,
+    "phase_noise_0.1": -1657.035589,
+    "phase_noise_0.2": -1916.487728,
+    "phase_noise_0.4": -2538.749007,
     "source_+2": -4602.088193,
     "source_-2": -7980.779484,
     "source_-4": -3462.322451,
-    "theta_noise_0.05": -1577.446006
+    "theta_noise_0.05": -1576.780376
    },
    "max_phase_gap": 3.134810469083,
    "mesh_heater_phase_sum": 1831.230203,
@@ -842,8 +905,7 @@
     362,
     389
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.009345
+   "transpiled": true
   },
   {
    "a": 0.501333,
@@ -866,13 +928,13 @@
     "gain_-0.1": -2557.714289,
     "gain_-0.3": -3567.315503,
     "ideal": -2079.500766,
-    "phase_noise_0.1": -2181.923917,
-    "phase_noise_0.2": -2414.836388,
-    "phase_noise_0.4": -2921.897809,
+    "phase_noise_0.1": -2177.337752,
+    "phase_noise_0.2": -2423.298212,
+    "phase_noise_0.4": -2915.387819,
     "source_+2": -3972.980261,
     "source_-2": -3914.724885,
     "source_-4": -4953.356415,
-    "theta_noise_0.05": -2095.306293
+    "theta_noise_0.05": -2094.978404
    },
    "max_phase_gap": 3.1412505039,
    "mesh_heater_phase_sum": 1803.373121,
@@ -906,8 +968,7 @@
     381,
     367
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.005416
+   "transpiled": true
   },
   {
    "a": 0.501668,
@@ -930,13 +991,13 @@
     "gain_-0.1": -1994.904271,
     "gain_-0.3": -3287.023874,
     "ideal": -1566.485081,
-    "phase_noise_0.1": -1678.011939,
-    "phase_noise_0.2": -2008.032076,
-    "phase_noise_0.4": -2684.439308,
+    "phase_noise_0.1": -1677.509715,
+    "phase_noise_0.2": -1998.391146,
+    "phase_noise_0.4": -2728.523606,
     "source_+2": -2025.537006,
     "source_-2": -4714.644892,
     "source_-4": -11374.668328,
-    "theta_noise_0.05": -1582.138598
+    "theta_noise_0.05": -1581.396984
    },
    "max_phase_gap": 3.140831232985,
    "mesh_heater_phase_sum": 1805.537645,
@@ -970,8 +1031,7 @@
     342,
     405
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.021966
+   "transpiled": true
   },
   {
    "a": 0.476667,
@@ -994,13 +1054,13 @@
     "gain_-0.1": -3735.409559,
     "gain_-0.3": -3469.194685,
     "ideal": -2079.49871,
-    "phase_noise_0.1": -2166.261433,
-    "phase_noise_0.2": -2390.216489,
-    "phase_noise_0.4": -2807.227299,
+    "phase_noise_0.1": -2164.863967,
+    "phase_noise_0.2": -2377.780802,
+    "phase_noise_0.4": -2800.420898,
     "source_+2": -3998.745397,
     "source_-2": -6170.254824,
     "source_-4": -4766.719073,
-    "theta_noise_0.05": -2094.05835
+    "theta_noise_0.05": -2093.100673
    },
    "max_phase_gap": 3.127976343931,
    "mesh_heater_phase_sum": 1810.103883,
@@ -1034,9 +1094,17 @@
     381,
     404
    ],
-   "transpiled": true,
-   "tvd_from_ideal": 0.023362
+   "transpiled": true
   }
  ],
- "transpiled_iterations": 16
+ "static_offsets": {
+  "best_tau": 0.1,
+  "heldout_gain_by_tau": {
+   "0.1": -28.037562,
+   "0.3": -64.380421
+  },
+  "predictive": false
+ },
+ "transpiled_iterations": 16,
+ "verdict": "ideal"
 }

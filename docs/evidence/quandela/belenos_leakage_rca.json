@@ -2,7 +2,6 @@
  "schema": "qd-belenos-leakage-rca-v1",
  "run": "2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04",
  "result_sha256": "8943a7bbcc55633c4c050b6d429ac23bbf44083af7927c3287ebe71b946c14a3",
- "catalogue_sha256": "0d6eb06c724856f6155d023add6e797c0e91c723edc9ea764f7b1a4f46dc796f",
  "observed": {
   "single_click": [
    0,
@@ -139,7 +138,6 @@
    0.0,
    0.0
   ],
-  "retained_meshes_matching_architecture": "all",
   "peak_occupancy_from_20": [
    0.0,
    0.0,
@@ -202,10 +200,10 @@
    "tvd": 0.314973
   },
   "phase_noise": {
-   "0.2": 0.482104,
-   "0.3": 0.349311,
-   "0.4": 0.271214,
-   "0.5": 0.237136
+   "0.2": 0.472113,
+   "0.3": 0.335697,
+   "0.4": 0.274544,
+   "0.5": 0.251756
   },
   "shot_noise_floor": 0.012393
  }

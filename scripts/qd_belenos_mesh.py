@@ -74,6 +74,16 @@ RCA_SCHEMA = "qd-belenos-leakage-rca-v1"
 ANALYSIS_SCHEMA = "qd-belenos-mesh-analysis-v1"
 TRANSPILE_TOLERANCE = 1e-9
 LIKELIHOOD_FLOOR = 1e-6
+SCAN_SIGMAS = tuple(round(0.05 * k, 2) for k in range(17))
+SCAN_GAINS = tuple(round(-0.6 + 0.05 * k, 2) for k in range(25))
+SCAN_CROSSTALK = tuple(round(-0.2 + 0.02 * k, 2) for k in range(21))
+SCAN_FRACTIONS = tuple(round(0.1 * k, 1) for k in range(11))
+MISROUTE_OFFSETS = (-4, -2, 2)
+FIT_P_MIN = 1e-3
+STATIC_FOLDS = 4
+STATIC_TAUS = (0.1, 0.3)
+STATIC_GAIN_MIN = 10.0
+FIT_TVD_RATIO = 3.0
 SAMPLES_PER_SETTING = 1_500
 SHOT_HEADROOM = 2
 MAX_DURATION = 300
@@ -84,10 +94,9 @@ FIT_TOLERANCE = 2e-3
 BLOCK_SIZES = (6, 8, 10)
 BAR_TOLERANCE = 1e-3
 NUMERIC_TOLERANCE = 1e-7
-NOISE_REPLICATES = 200
 SEED = 20261017
-# (name, kind, magnitude); noise kinds average NOISE_REPLICATES seeded replicates, and a
-# source model sends the photon into the input mode magnitude away, a demultiplexer misroute.
+# (name, kind, magnitude); a noise kind is the exact ensemble of `channel`, and a source
+# model sends the photon into the input mode magnitude away, a demultiplexer misroute.
 MODELS = (
     ("phase_noise_0.1", "phase_noise", 0.1),
     ("phase_noise_0.2", "phase_noise", 0.2),
@@ -103,6 +112,7 @@ MODELS = (
     ("source_-4", "source", -4),
 )
 Q1_RUN = "2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04"
+S3_RUN = "2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00"
 DARK_SIM_RUN = "2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-05"
 SOURCES = {
     "bright": "box_kite_photonic_single/job-04",
@@ -243,6 +253,23 @@ def same_mesh(arch: list[Element], mesh: list[Element]) -> bool:
     )
 
 
+def run_architecture(mesh: list[Element]) -> list[Element]:
+    """The architecture a returned mesh was compiled on: its topology and couplers, its phases as symbols.
+
+    A computed_circuit carries the couplers of the calibration it ran under, so a retained run replays
+    against its own chip rather than against a catalogue refreshed after a recalibration.
+    """
+    out: list[Element] = []
+    t = 0
+    for kind, m, p in mesh:
+        if kind == "bs":
+            out.append((kind, m, p))
+        else:
+            out.append(("ps", m, f"phi{t}"))
+            t += 1
+    return out
+
+
 def mesh_phases(arch: list[Element], mesh: list[Element]) -> list[float]:
     require(same_mesh(arch, mesh), "the compiled mesh differs from the architecture")
     return [float(p) % (2 * math.pi) for k, _, p in mesh if k == "ps"]
@@ -332,6 +359,52 @@ def propagate(arch: list[Element], phases: list[float], source: int, dphi: Any =
             psi[:, m] *= np.exp(1j * (base[ip] + (dphi[:, ip] if dphi is not None else 0.0)))
             ip += 1
     return np.abs(psi) ** 2
+
+
+def channel(arch: list[Element], phases: list[float], source: int, sigma: float = 0.0, sigma_theta: float = 0.0) -> Any:
+    """Exact one-photon detection probabilities under independent Gaussian heater and coupler noise.
+
+    The photon's 24 x 24 density matrix crosses the mesh. A phase shifter on
+    mode q with noise N(0, sigma^2) multiplies every coherence rho_qk (k != q)
+    by e^{i phi} e^{-sigma^2 / 2}; a coupler B = c I + i s X with angle noise
+    N(0, sigma_theta^2) maps the pair block M to E[c^2] M + E[s^2] X M X +
+    i E[cs] (X M - M X) and the pair-to-rest blocks by E[B], with
+    E[c^2] = (1 + cos(theta) e^{-st^2/2}) / 2, E[cs] = sin(theta) e^{-st^2/2} / 2
+    and E[c] = cos(theta / 2) e^{-st^2/8}. sigma = sigma_theta = 0 is the
+    unitary propagation of `propagate`.
+    """
+    import numpy as np
+
+    rho = np.zeros((MODES, MODES), dtype=complex)
+    rho[source, source] = 1
+    damp = math.exp(-(sigma**2) / 2)
+    t = 0
+    x = np.array([[0, 1], [1, 0]], dtype=complex)
+    for kind, m, p in arch:
+        if kind == "bs":
+            theta = p[0]
+            fade = math.exp(-(sigma_theta**2) / 2)
+            ec2, es2 = (1 + math.cos(theta) * fade) / 2, (1 - math.cos(theta) * fade) / 2
+            ecs = math.sin(theta) * fade / 2
+            fade8 = math.exp(-(sigma_theta**2) / 8)
+            mean = np.array(
+                [[math.cos(theta / 2), 1j * math.sin(theta / 2)], [1j * math.sin(theta / 2), math.cos(theta / 2)]]
+            )
+            mean = mean * fade8
+            pair = slice(m, m + 2)
+            block = rho[pair, pair].copy()
+            rest = [k for k in range(MODES) if k not in (m, m + 1)]
+            rho[pair, rest] = mean @ rho[pair, rest]
+            rho[rest, pair] = rho[rest, pair] @ mean.conj().T
+            rho[pair, pair] = ec2 * block + es2 * (x @ block @ x) + 1j * ecs * (x @ block - block @ x)
+        else:
+            phase = np.exp(1j * phases[t]) * damp
+            t += 1
+            diag = rho[m, m]
+            rho[m, :] *= phase
+            rho[:, m] *= np.conj(phase)
+            rho[m, m] = diag
+    return np.real(np.diag(rho)).clip(0)
 
 
 def mzis(arch: list[Element]) -> list[dict[str, Any]]:
@@ -523,18 +596,16 @@ def neighbours(arch: list[Element]) -> list[list[int]]:
 
 
 def predict(arch: list[Element], phases: list[float], source: int, nbr: list[list[int]]) -> dict[str, list[float]]:
-    """Per-mode detection probability of each error model, from seeded replicates where the model is random."""
+    """Per-mode detection probability of each error model; the noise kinds are exact ensembles (`channel`)."""
     import numpy as np
 
     phi = np.asarray(phases) % (2 * math.pi)
     out: dict[str, list[float]] = {"ideal": propagate(arch, list(phi), source)[0].tolist()}
-    for index, (name, kind, size) in enumerate(MODELS):
-        rng = np.random.default_rng([SEED, index])
+    for name, kind, size in MODELS:
         if kind == "phase_noise":
-            p = propagate(arch, list(phi), source, dphi=rng.normal(0, size, (NOISE_REPLICATES, len(phi)))).mean(0)
+            p = channel(arch, list(phi), source, sigma=size)
         elif kind == "theta_noise":
-            n_bs = sum(1 for e in arch if e[0] == "bs")
-            p = propagate(arch, list(phi), source, dtheta=rng.normal(0, size, (NOISE_REPLICATES, n_bs))).mean(0)
+            p = channel(arch, list(phi), source, sigma_theta=size)
         elif kind == "gain":
             p = propagate(arch, list(phi + size * phi), source)[0]
         elif kind == "crosstalk":
@@ -768,7 +839,6 @@ def documents(
         "max_duration": MAX_DURATION,
         "circuit": {"file": "circuit.json", "sha256": hashlib.sha256(circuit_text.encode()).hexdigest()},
         "models": [{"name": n, "kind": k, "size": v} for n, k, v in MODELS],
-        "noise_replicates": NOISE_REPLICATES,
         "seed": SEED,
         "settings": rows,
         **({"coverage": coverage} if coverage is not None else {}),
@@ -778,8 +848,15 @@ def documents(
             "sim:belenos and qpu:belenos while the couplers are unchanged",
             "classes": "phase noise, coupler noise, heater gain, thermal crosstalk, a phase ceiling and a "
             "demultiplexer misroute (source models) each predict a different histogram per returned mesh",
-            "decision": "the model with the highest efficiency-weighted multinomial log-likelihood summed over all "
-            "settings names the chip's error class; the identity settings read the misroute directly",
+            "decision": "each class's magnitude scan (exact dephasing channel, heater gain, thermal "
+            "crosstalk, misroute plus noise) is scored by efficiency-weighted multinomial likelihood on the "
+            "returned meshes; the best class fits only when the chi-square p-value of G^2 at its degrees of "
+            "freedom is at least 0.001 and the median ratio of setting TVD to its shot-noise floor is at most "
+            "3, and otherwise the job reads 'no class fits'; a best point at every class's null magnitude "
+            "reads 'ideal'; one shared static heater-offset vector, fitted by MAP on three folds of settings "
+            "and scored on the fourth, is the static class and wins when its held-out gain exceeds 10 nats; a "
+            "misroute is read from the likelihood of the source models on the returned meshes, whose unused "
+            "columns are transpiler draws",
         },
     }
     return json.dumps(manifest, indent=1) + "\n", circuit_text
@@ -946,12 +1023,19 @@ def rca(out: Path) -> None:
     print(f"{out}: written")
 
 
-def rca_record() -> dict[str, Any]:
+def rca_record(sources: list[int] | None = None) -> dict[str, Any]:
+    """The leakage root-cause record of the qpu:belenos bright block, on the couplers its own mesh carries.
+
+    sources lists the connected input modes the wrong-source hypothesis tries; the retained record's own
+    list replays it, so a refreshed catalogue changes nothing a retained run determines.
+    """
     import numpy as np
 
-    catalogue = load_catalogue()
-    arch = architecture(catalogue)
     run = RUNS / Q1_RUN
+    (text,) = computed_circuits(run)
+    arch = run_architecture(decode(text))
+    if sources is None:
+        sources = load_catalogue()["processors"][CHIP]["specs"]["connected_input_modes"]
     obs, extra = observed(run)
     eta = extra["eta"]
 
@@ -959,16 +1043,9 @@ def rca_record() -> dict[str, Any]:
         weighted = np.asarray(p) * eta
         return weighted / weighted.sum()
 
-    (text,) = computed_circuits(run)
     compiled = mesh_phases(arch, decode(text))
     u = unitary(arch, compiled)
     columns = np.abs(u) ** 2
-    for path in sorted(RUNS.iterdir()):
-        if (path / "raw/result.json").is_file():
-            for entry in computed_circuits(path):
-                require(same_mesh(arch, decode(entry)), f"{path.name} returned a mesh outside the architecture")
-    sources = catalogue["processors"][CHIP]["specs"]["connected_input_modes"]
-    slots = phase_slots(arch)
     nbr = neighbours(arch)
     phi = np.asarray(compiled)
 
@@ -985,11 +1062,7 @@ def rca_record() -> dict[str, Any]:
         best = min(scores)
         return {"best": round(best[1], 6), "tvd": best[0]}
 
-    noise = {}
-    for sigma in (0.2, 0.3, 0.4, 0.5):
-        rng = np.random.default_rng([SEED, int(sigma * 10)])
-        p = propagate(arch, compiled, 20, dphi=rng.normal(0, sigma, (NOISE_REPLICATES, len(slots)))).mean(0)
-        noise[f"{sigma}"] = tvd(seen(p), obs)
+    noise = {f"{sigma}": tvd(seen(channel(arch, compiled, 20, sigma=sigma)), obs) for sigma in (0.2, 0.3, 0.4, 0.5)}
     variants = {
         "U": columns[:, 20],
         "U^T": np.abs(u.T[:, 20]) ** 2,
@@ -999,11 +1072,9 @@ def rca_record() -> dict[str, Any]:
         "schema": RCA_SCHEMA,
         "run": Q1_RUN,
         "result_sha256": sha256(run / "raw/result.json"),
-        "catalogue_sha256": sha256(CATALOGUE),
         "observed": {**extra["facts"], "dark_subtracted_distribution": [round(float(v), 6) for v in obs]},
         "compiled_mesh": {
             "column_20": [round(float(v), 6) for v in columns[:, 20]],
-            "retained_meshes_matching_architecture": "all",
             "peak_occupancy_from_20": peak_occupancy(arch, compiled, 20),
             "heater_phase_sum": round(float(phi.sum()), 6),
         },
@@ -1026,7 +1097,8 @@ def _mirror(arch: list[Element]) -> list[Element]:
 
 def check_rca(path: Path) -> None:
     retained = json.loads(path.read_text(encoding="utf-8"))
-    close(retained, rca_record(), "rca")
+    sources = [int(k) for k in retained["hypotheses"]["single_wrong_source"]]
+    close(retained, rca_record(sources), "rca")
     print(f"{path}: replays")
 
 
@@ -1040,61 +1112,290 @@ def circular_gap(a: float, b: float) -> float:
 
 def loglik(counts: list[int], model: list[float], eta: list[float], dark: list[float]) -> float:
     """Multinomial log-likelihood of one-click counts under lambda_m = A p_m eta_m + d_m with sum lambda = N."""
+    return sum(c * math.log(r) for c, r in zip(counts, rates(counts, model, eta, dark), strict=True) if c)
+
+
+def rates(counts: list[int], model: list[float], eta: list[float], dark: list[float]) -> list[float]:
+    """Per-mode detection probabilities: efficiency-weighted model light plus dark clicks, floored and normalized."""
     n = sum(counts)
     weighted = [p * e for p, e in zip(model, eta, strict=True)]
     scale = max(n - sum(dark), 0.0) / max(sum(weighted), 1e-300)
-    rates = [max(scale * w + d, LIKELIHOOD_FLOOR * n) for w, d in zip(weighted, dark, strict=True)]
-    total = sum(rates)
-    return sum(c * math.log(r / total) for c, r in zip(counts, rates, strict=True) if c)
+    raw = [max(scale * w + d, LIKELIHOOD_FLOOR * n) for w, d in zip(weighted, dark, strict=True)]
+    total = sum(raw)
+    return [r / total for r in raw]
+
+
+def capped_dark(singles: list[list[int]], receipt: list[list[float]]) -> list[list[float]]:
+    """Expected dark clicks per setting and mode: the receipt's rate times the setting's time share, capped by the
+    mode's lowest click fraction over the job's settings, since a dark rate cannot exceed the least light a mode saw."""
+    floors = [min(s[m] / max(sum(s), 1) for s in singles) for m in range(MODES)]
+    return [[min(d[m], floors[m] * sum(s)) for m in range(MODES)] for s, d in zip(singles, receipt, strict=True)]
+
+
+def g_squared(counts: list[int], probabilities: list[float]) -> float:
+    n = sum(counts)
+    return 2 * sum(c * math.log(c / (n * p)) for c, p in zip(counts, probabilities, strict=True) if c)
+
+
+class Scan:
+    """Every class's summed likelihood over its magnitude grid on one setting's returned mesh.
+
+    Phase noise and the misroute-plus-noise mixtures use the exact dephasing
+    channel, so a scan is a deterministic function of the mesh.
+    """
+
+    def __init__(self, arch: list[Element], nbr: list[list[int]]) -> None:
+        self.arch, self.nbr = arch, nbr
+
+    def __call__(self, job: tuple[list[float], int]) -> dict[str, list[list[float]]]:
+        import numpy as np
+
+        phases, low = job
+        phi = np.asarray(phases) % (2 * math.pi)
+        arch = self.arch
+        out: dict[str, list[list[float]]] = {}
+        noisy: dict[tuple[float, int], Any] = {}
+        sources = [low] + [min(max(low + k, 0), MODES - 1) for k in MISROUTE_OFFSETS]
+        for sigma in SCAN_SIGMAS:
+            for src in sources:
+                noisy[(sigma, src)] = channel(arch, list(phi), src, sigma=sigma)
+        out["phase_noise"] = [noisy[(sigma, low)].tolist() for sigma in SCAN_SIGMAS]
+        out["gain"] = [propagate(arch, list(phi + g * phi), low)[0].tolist() for g in SCAN_GAINS]
+        heat = np.array([phi[n].sum() for n in self.nbr])
+        out["crosstalk"] = [propagate(arch, list(phi + k * heat), low)[0].tolist() for k in SCAN_CROSSTALK]
+        for offset, src in zip(MISROUTE_OFFSETS, sources[1:], strict=True):
+            out[f"misroute_{offset:+d}"] = [
+                ((1 - f) * noisy[(sigma, low)] + f * noisy[(sigma, src)]).tolist()
+                for sigma in SCAN_SIGMAS
+                for f in SCAN_FRACTIONS
+            ]
+        return out
+
+
+def jacobians(arch: list[Element], phases: Any, sources: list[int]) -> tuple[Any, Any]:
+    """Detection probabilities p (S x 24) and dp / dphi (S x 24 x 574) of S one-photon settings, by adjoint.
+
+    A forward pass keeps each phase shifter's output amplitude; a backward pass
+    carries G, the product of the elements after the current one, so
+    d psi_out / d phi_j = G[:, q] i psi_after_j[q] for the shifter on mode q.
+    """
+    import numpy as np
+
+    count = len(sources)
+    psi = np.zeros((count, MODES), dtype=complex)
+    psi[np.arange(count), sources] = 1
+    after = []
+    t = 0
+    for kind, m, p in arch:
+        if kind == "bs":
+            psi[:, m : m + 2] = psi[:, m : m + 2] @ coupler(*p).T
+        else:
+            psi[:, m] *= np.exp(1j * phases[:, t])
+            after.append(psi[:, m].copy())
+            t += 1
+    g = np.broadcast_to(np.eye(MODES, dtype=complex), (count, MODES, MODES)).copy()
+    d = np.zeros((count, MODES, t), dtype=complex)
+    for kind, m, p in reversed(arch):
+        if kind == "bs":
+            g[:, :, m : m + 2] = g[:, :, m : m + 2] @ coupler(*p)
+        else:
+            t -= 1
+            d[:, :, t] = g[:, :, m] * (1j * after[t])[:, None]
+            g[:, :, m] *= np.exp(1j * phases[:, t])[:, None]
+    return np.abs(psi) ** 2, 2 * np.real(np.conj(psi)[:, :, None] * d)
+
+
+class StaticFit:
+    """MAP estimate of one heater-offset vector shared by every setting, under a Gaussian prior of width tau."""
+
+    def __init__(self, arch: list[Element], meshes: Any, sources: list[int], counts: Any, eta: Any, dark: Any) -> None:
+        import numpy as np
+
+        self.arch, self.meshes, self.sources = arch, np.asarray(meshes), list(sources)
+        self.counts, self.eta, self.dark = np.asarray(counts, float), np.asarray(eta, float), np.asarray(dark, float)
+
+    def loglik(self, delta: Any, keep: Any) -> tuple[float, Any]:
+        """Summed log-likelihood of the kept settings at offsets delta, and its gradient in delta."""
+        import numpy as np
+
+        p, jac = jacobians(self.arch, self.meshes[keep] + delta, [self.sources[i] for i in keep])
+        n, eta, dark = self.counts[keep], self.eta, self.dark[keep]
+        total = n.sum(1, keepdims=True)
+        weighted = p * eta
+        norm = weighted.sum(1, keepdims=True)
+        scale = np.maximum(total - dark.sum(1, keepdims=True), 0) / np.maximum(norm, 1e-300)
+        lam = np.maximum(scale * weighted + dark, LIKELIHOOD_FLOOR * total)
+        value = float((n * np.log(lam / total)).sum())
+        inner = (n * eta * p / lam).sum(1, keepdims=True)
+        dldp = scale * eta * n / lam - scale * eta / norm * inner
+        return value, np.einsum("sm,smj->j", dldp, jac)
+
+    def fit(self, keep: Any, tau: float) -> Any:
+        import numpy as np
+        from scipy.optimize import minimize
+
+        def objective(delta: Any) -> tuple[float, Any]:
+            value, grad = self.loglik(delta, keep)
+            return -(value - float((delta**2).sum()) / (2 * tau**2)), -(grad - delta / tau**2)
+
+        found = minimize(
+            objective, np.zeros(self.meshes.shape[1]), jac=True, method="L-BFGS-B", options={"maxiter": 400}
+        )
+        return found.x
+
+
+def static_cross_validation(
+    arch: list[Element], meshes: Any, sources: list[int], counts: Any, eta: Any, dark: Any, taus: tuple[float, ...]
+) -> dict[str, Any]:
+    """Held-out log-likelihood gain of shared static heater offsets over the nominal mesh, per prior width.
+
+    Settings split into STATIC_FOLDS folds by index; each fold's offsets are fitted on the other folds and
+    scored on it. A positive gain above STATIC_GAIN_MIN nats means the offsets predict settings they never saw.
+    """
+    import numpy as np
+
+    fitter = StaticFit(arch, meshes, sources, counts, eta, dark)
+    index = np.arange(len(sources))
+    zero = np.zeros(np.asarray(meshes).shape[1])
+    out = {}
+    for tau in taus:
+        gain = 0.0
+        for fold in range(STATIC_FOLDS):
+            test, train = index[index % STATIC_FOLDS == fold], index[index % STATIC_FOLDS != fold]
+            delta = fitter.fit(train, tau)
+            gain += fitter.loglik(delta, test)[0] - fitter.loglik(zero, test)[0]
+        out[f"{tau}"] = round(gain, 6)
+    best = max(out, key=lambda k: out[k])
+    return {"heldout_gain_by_tau": out, "best_tau": float(best), "predictive": out[best] > STATIC_GAIN_MIN}
+
+
+def scan_axes() -> dict[str, list[dict[str, float]]]:
+    mixture = [{"sigma": s, "fraction": f} for s in SCAN_SIGMAS for f in SCAN_FRACTIONS]
+    return {
+        "phase_noise": [{"sigma": s} for s in SCAN_SIGMAS],
+        "gain": [{"gain": g} for g in SCAN_GAINS],
+        "crosstalk": [{"kappa": k} for k in SCAN_CROSSTALK],
+        **{f"misroute_{offset:+d}": mixture for offset in MISROUTE_OFFSETS},
+    }
+
+
+def score(
+    arch: list[Element],
+    meshes: list[list[float]],
+    lows: list[int],
+    singles: list[list[int]],
+    eta: list[float],
+    receipt_dark: list[list[float]],
+) -> dict[str, Any]:
+    """Fixed-model likelihoods, class scans and the goodness-of-fit verdict of one job's returned meshes and counts.
+
+    A class fits when its best magnitude gives a chi-square p-value of G^2 at its degrees of freedom of at least
+    FIT_P_MIN and the median ratio of each
+    setting's total variation to its shot-noise floor <= FIT_TVD_RATIO; otherwise the job reads "no class fits".
+    """
+    from scipy.stats import chi2
+
+    nbr = neighbours(arch)
+    dark = capped_dark(singles, receipt_dark)
+    fixed = [predict(arch, ph, low, nbr) for ph, low in zip(meshes, lows, strict=True)]
+    names = list(fixed[0])
+    per_setting = [
+        {name: round(loglik(c, pred[name], eta, d), 6) for name in names}
+        for c, pred, d in zip(singles, fixed, dark, strict=True)
+    ]
+    totals = {name: round(sum(ll[name] for ll in per_setting), 6) for name in names}
+    scans = parallel.ordered_map(Scan(arch, nbr), list(zip(meshes, lows, strict=True)), min_items=2)
+    axes = scan_axes()
+    classes: dict[str, dict[str, Any]] = {}
+    best_ll: dict[str, float] = {}
+    for name, points in axes.items():
+        summed = [
+            sum(loglik(c, scans[i][name][j], eta, dark[i]) for i, c in enumerate(singles)) for j in range(len(points))
+        ]
+        j = max(range(len(points)), key=lambda k: summed[k])
+        probabilities = [rates(c, scans[i][name][j], eta, dark[i]) for i, c in enumerate(singles)]
+        g2 = sum(g_squared(c, p) for c, p in zip(singles, probabilities, strict=True))
+        dof = sum(
+            sum(1 for v, q in zip(c, p, strict=True) if v or q * sum(c) >= 1) - 1
+            for c, p in zip(singles, probabilities, strict=True)
+        ) - len(points[j])
+        ratios = sorted(
+            0.5 * sum(abs(v / sum(c) - q) for v, q in zip(c, p, strict=True)) / max(shot_floor(p, sum(c)), 1e-12)
+            for c, p in zip(singles, probabilities, strict=True)
+        )
+        median = ratios[len(ratios) // 2]
+        classes[name] = {
+            "best": points[j],
+            "log_likelihood": round(summed[j], 6),
+            "g2_per_dof": round(g2 / max(dof, 1), 6),
+            "p_value": float(f"{chi2.sf(g2, max(dof, 1)):.6g}"),
+            "median_tvd_over_floor": round(median, 6),
+            "fits": bool(chi2.sf(g2, max(dof, 1)) >= FIT_P_MIN and median <= FIT_TVD_RATIO),
+        }
+        best_ll[name] = summed[j]
+    best = max(best_ll, key=lambda k: best_ll[k])
+    fitting = [k for k, v in classes.items() if v["fits"]]
+    return {
+        "per_setting": per_setting,
+        "fixed_totals": totals,
+        "fixed_best": max(names, key=lambda k: totals[k]),
+        "classes": classes,
+        "best_class": best,
+        # Every class contains the ideal mesh at its null magnitude; a best point there detects no error.
+        "verdict": ("ideal" if not any(classes[best]["best"].values()) else best)
+        if classes[best]["fits"]
+        else "no class fits",
+        "fitting_classes": fitting,
+        "dark_expected": [[round(v, 3) for v in d] for d in dark],
+    }
 
 
 def analyze_run(run: Path, manifest: dict[str, Any], circuit: dict[str, Any]) -> dict[str, Any]:
-    """Per setting: transpilation check, one-click histogram, dark-corrected block share and model likelihoods."""
-    arch = architecture(load_catalogue())
+    """Per setting: returned mesh, one-click histogram, dark-corrected block share, algebra share; then the score."""
     inner = raw_result(run)
     entries = inner.get("results_list") or [inner]
+    arch = run_architecture(decode(entries[0]["computed_circuit"]))
+    couplers_match = circuit["architecture"]["couplers"] == [[m, p[0]] for k, m, p in arch if k == "bs"]
     require(
         len(entries) == len(circuit["settings"]),
         f"{run.name}: {len(entries)} results for {len(circuit['settings'])} settings",
     )
+    require(manifest["models"] == [{"name": n, "kind": k, "size": v} for n, k, v in MODELS], "the case's models differ")
     submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
     perfs = submission.get("perfs_at_plan", {})
-    rates = perfs.get("Dark counts (detection/s)") or [0.0] * MODES
+    receipt = perfs.get("Dark counts (detection/s)") or [0.0] * MODES
     eta = (perfs.get("Transmission per mode (%)") or {}).get("t_out") or [1.0] * MODES
     duration = float(json.loads((run / "raw/result.json").read_text(encoding="utf-8")).get("duration") or 0)
-    shots = [int(e.get("nb_shots_used") or 0) for e in entries]
-    names = ["ideal"] + [m["name"] for m in manifest["models"]]
-    require(manifest["models"] == [{"name": n, "kind": k, "size": v} for n, k, v in MODELS], "the case's models differ")
-    nbr = neighbours(arch)
-    settings = []
-    totals = dict.fromkeys(names, 0.0)
-    for entry, row, sent, used in zip(entries, manifest["settings"], circuit["settings"], shots, strict=True):
+    outer_shots = json.loads((run / "raw/result.json").read_text(encoding="utf-8")).get("shots")
+    # A one-setting job answers without results_list; its shots are the outer result's.
+    shots = [int(e.get("nb_shots_used") or 0) for e in entries] if "results_list" in inner else [int(outer_shots or 0)]
+    meshes, singles, others = [], [], []
+    for entry, row in zip(entries, manifest["settings"], strict=True):
         mesh = decode(entry["computed_circuit"])
         require(same_mesh(arch, mesh), f"{run.name}: {row['name']} returned a mesh outside the architecture")
-        gap = (
-            max((circular_gap(a, b) for a, b in zip(mesh_phases(arch, mesh), sent["phases"], strict=True)), default=0.0)
-            if same_mesh(arch, mesh)
-            else None
-        )
-        counts = bscount(entry["results"])
+        meshes.append(mesh_phases(arch, mesh))
         single = [0] * MODES
         other = 0
-        for state, n in counts.items():
+        for state, n in bscount(entry["results"]).items():
             if sum(state) == 1:
                 single[state.index(1)] += n
             else:
                 other += n
-        share = used / sum(shots) if sum(shots) else 0.0
-        dark = [r * duration * share for r in rates]
-        corrected = [max(c - d, 0.0) for c, d in zip(single, dark, strict=True)]
-        low = row["low"]
-        n = sum(single)
-        block = sum(single[low : low + 4])
-        predictions = predict(arch, mesh_phases(arch, mesh), low, nbr)
-        likelihoods = {name: round(loglik(single, predictions[name], eta, dark), 6) for name in names}
-        for name in names:
-            totals[name] += likelihoods[name]
-        ideal = predictions["ideal"]
+        singles.append(single)
+        others.append(other)
+    receipt_dark = [[r * duration * used / max(sum(shots), 1) for r in receipt] for used in shots]
+    lows = [row["low"] for row in manifest["settings"]]
+    scored = score(arch, meshes, lows, singles, eta, receipt_dark)
+    static = (
+        static_cross_validation(arch, meshes, lows, singles, eta, scored["dark_expected"], STATIC_TAUS)
+        if len(lows) >= 2 * STATIC_FOLDS
+        else None
+    )
+    settings = []
+    for i, (entry, row, sent) in enumerate(zip(entries, manifest["settings"], circuit["settings"], strict=True)):
+        single, low = singles[i], row["low"]
+        corrected = [max(c - d, 0.0) for c, d in zip(single, scored["dark_expected"][i], strict=True)]
+        n, block = sum(single), sum(single[low : low + 4])
         labels = single[low] + single[low + 1]
         algebra = (
             {
@@ -1105,33 +1406,27 @@ def analyze_run(run: Path, manifest: dict[str, Any], circuit: dict[str, Any]) ->
             if "case_ideal" in row
             else {}
         )
-        seen = [p * e for p, e in zip(ideal, eta, strict=True)]
+        gap = max(circular_gap(a, b) for a, b in zip(meshes[i], sent["phases"], strict=True))
         settings.append(
             {
                 "name": row["name"],
-                "transpiled": gap is None or gap > TRANSPILE_TOLERANCE,
-                "max_phase_gap": None if gap is None else round(gap, 12),
+                "transpiled": gap > TRANSPILE_TOLERANCE,
+                "max_phase_gap": round(gap, 12),
                 "mesh_sha256": hashlib.sha256(unzip(entry["computed_circuit"]).encode()).hexdigest(),
-                "mesh_heater_phase_sum": round(sum(mesh_phases(arch, mesh)), 6),
+                "mesh_heater_phase_sum": round(sum(meshes[i]), 6),
                 "computed_input": entry.get("computed_input"),
                 "single_click": single,
-                "other_events": other,
-                "nb_shots_used": used,
+                "other_events": others[i],
+                "nb_shots_used": shots[i],
                 "in_block": round(block / n, 6) if n else None,
                 "in_block_wilson95": wilson(block, n),
                 "in_block_dark_corrected": round(sum(corrected[low : low + 4]) / sum(corrected), 6)
                 if sum(corrected)
                 else None,
-                "tvd_from_ideal": round(
-                    0.5 * sum(abs(c / sum(corrected) - s / sum(seen)) for c, s in zip(corrected, seen, strict=True)), 6
-                )
-                if sum(corrected)
-                else None,
-                "log_likelihood": likelihoods,
+                "log_likelihood": scored["per_setting"][i],
                 **algebra,
             }
         )
-    best = max(names, key=lambda name: totals[name])
     shares = {
         kind: [s["a"] for s, row in zip(settings, manifest["settings"], strict=True) if row["target"].startswith(kind)]
         for kind in ("dark", "bright")
@@ -1148,8 +1443,14 @@ def analyze_run(run: Path, manifest: dict[str, Any], circuit: dict[str, Any]) ->
         "duration_s": duration,
         "settings": settings,
         "transpiled_iterations": sum(1 for s in settings if s["transpiled"]),
-        "log_likelihood_total": {name: round(v, 6) for name, v in totals.items()},
-        "best_model": best,
+        "couplers_match_case": couplers_match,
+        "log_likelihood_total": scored["fixed_totals"],
+        "best_model": scored["fixed_best"],
+        "classes": scored["classes"],
+        "best_class": scored["best_class"],
+        "verdict": "static heater offsets" if static and static["predictive"] else scored["verdict"],
+        "fitting_classes": scored["fitting_classes"],
+        "static_offsets": static,
         "a_mean_by_kind": contrast,
     }
 
@@ -1247,7 +1548,87 @@ def self_test() -> int:
         rejected += 1
     else:
         raise SystemExit("self-test: an altered RCA verdict replayed")
-    print(f"self-test: {rejected} mutations rejected")
+    verdicts = synthetic_verdicts()
+    expected = {
+        "phase_noise_0.6": "phase_noise",
+        "misroute_-2_0.3_noise_0.3": "misroute_-2",
+        "out_of_family": "no class fits",
+    }
+    if verdicts != expected:
+        raise SystemExit(f"self-test: the decision rule read {verdicts}, not {expected}")
+    print(f"self-test: {rejected} mutations rejected; decision rule {verdicts}")
+    return 0
+
+
+def synthetic_verdicts() -> dict[str, str]:
+    """The decision rule on counts drawn from known truths over the S3 meshes: in-family truths off the fixed grid
+    must be found by the scans and fit, and an out-of-family truth must read "no class fits"."""
+    import numpy as np
+
+    run = RUNS / S3_RUN
+    circuit = json.loads((run / "circuit.json").read_text(encoding="utf-8"))
+    texts = computed_circuits(run)
+    arch = run_architecture(decode(texts[0]))
+    meshes = [mesh_phases(arch, decode(text)) for text in texts]
+    lows = [s["input_mode"] for s in circuit["settings"]]
+    eta = json.loads((RUNS / Q1_RUN / "submission.json").read_text(encoding="utf-8"))["perfs_at_plan"][
+        "Transmission per mode (%)"
+    ]["t_out"]
+    rng = np.random.default_rng([SEED, 7])
+
+    def draw(truths: list[Any]) -> list[list[int]]:
+        out = []
+        for p in truths:
+            q = np.asarray(p) * np.asarray(eta)
+            out.append([int(v) for v in rng.multinomial(SAMPLES_PER_SETTING, q / q.sum())])
+        return out
+
+    def noisy(phases: list[float], src: int, sigma: float) -> Any:
+        return channel(arch, phases, src, sigma=sigma)
+
+    truths = {
+        "phase_noise_0.6": [noisy(ph, low, 0.6) for ph, low in zip(meshes, lows, strict=True)],
+        "misroute_-2_0.3_noise_0.3": [
+            0.7 * noisy(ph, low, 0.3) + 0.3 * noisy(ph, max(low - 2, 0), 0.3)
+            for ph, low in zip(meshes, lows, strict=True)
+        ],
+        "out_of_family": [rng.dirichlet(np.full(MODES, 0.3)) for _ in meshes],
+    }
+    dark = [[0.0] * MODES for _ in meshes]
+    return {name: score(arch, meshes, lows, draw(t), eta, dark)["verdict"] for name, t in truths.items()}
+
+
+def static_self_test() -> int:
+    """Shared static offsets predict held-out settings of a static truth and fail to on the simulator's counts."""
+    import numpy as np
+
+    run = RUNS / S3_RUN
+    circuit = json.loads((run / "circuit.json").read_text(encoding="utf-8"))
+    texts = computed_circuits(run)
+    arch = run_architecture(decode(texts[0]))
+    meshes = np.array([mesh_phases(arch, decode(text)) for text in texts])
+    lows = [s["input_mode"] for s in circuit["settings"]]
+    eta = np.array(
+        json.loads((RUNS / Q1_RUN / "submission.json").read_text(encoding="utf-8"))["perfs_at_plan"][
+            "Transmission per mode (%)"
+        ]["t_out"]
+    )
+    dark = np.zeros((len(lows), MODES))
+    sim = np.array(
+        [s["single_click"] for s in json.loads((run / "analysis.json").read_text(encoding="utf-8"))["settings"]]
+    )
+    rng = np.random.default_rng([SEED, 11])
+    offsets = rng.normal(0, 0.3, meshes.shape[1])
+    truth = []
+    for ph, low in zip(meshes, lows, strict=True):
+        q = propagate(arch, list(ph + offsets), low)[0] * eta
+        truth.append(rng.multinomial(SAMPLES_PER_SETTING, q / q.sum()))
+    on_sim = static_cross_validation(arch, meshes, lows, sim, np.ones(MODES), dark, STATIC_TAUS)
+    on_truth = static_cross_validation(arch, meshes, lows, np.array(truth), eta, dark, STATIC_TAUS)
+    if on_sim["predictive"] or not on_truth["predictive"]:
+        raise SystemExit(f"self-test: static offsets read {on_sim} on the simulator and {on_truth} on a static truth")
+    gains = (on_sim["heldout_gain_by_tau"], on_truth["heldout_gain_by_tau"])
+    print(f"static self-test: simulator gain {gains[0]}, static truth {gains[1]}")
     return 0
 
 
@@ -1269,10 +1650,13 @@ def main() -> int:
     group.add_argument("--rca", type=Path)
     group.add_argument("--check-rca", type=Path)
     group.add_argument("--self-test", action="store_true")
+    group.add_argument("--self-test-static", action="store_true")
     args = parser.parse_args()
     try:
         if args.self_test:
             return self_test()
+        if args.self_test_static:
+            return static_self_test()
         if args.write:
             write(args.write)
         elif args.check:

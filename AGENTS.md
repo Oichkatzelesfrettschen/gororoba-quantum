@@ -977,8 +977,11 @@ docs/evidence/box_kite_census/two_blade_blocks.json`), core-507 (its
 `--self-test`), core-508 (`qd_box_kite_analysis.py --check` over every
 retained run), core-509 (its `--self-test`), core-510
 (`qd_belenos_mesh.py --check results/quandela/cases`), core-511 (its
-`--check-rca` replay of the leakage record) and core-512 (its
-`--self-test`).
+`--check-rca` replay of the leakage record), core-512 (its
+`--self-test`, the decision rule on synthetic in-family and out-of-family
+truths included) and core-513 (`--self-test-static`: shared static heater
+offsets predict held-out settings of a static truth and not the
+simulator's).
 
 **Strategy guide.** [docs/notes/quandela/strategy.md](docs/notes/quandela/strategy.md)
 is the living record of what a credit buys on Belenos: the measured cost

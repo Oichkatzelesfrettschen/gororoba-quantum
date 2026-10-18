@@ -188,13 +188,23 @@ no-redirect opener and keeps the token out of every file it writes.
   C sin phi over the eight phases (`scripts/qd_box_kite_analysis.py`).
 - Mesh job: per iteration, the returned mesh (its sha256, heater sum and
   largest phase change against the sent phases), the one-click histogram, the
-  dark-corrected block share, the algebra share a against the case's ideal,
-  and the multinomial log-likelihood of every error model computed on the
-  mesh the iteration returned, under lambda_m = A p_m t_out_m + d_m. The
-  model with the highest summed likelihood names the chip's error class
-  (`qd_belenos_mesh.analyze_run`). On sim:belenos, whose truth is the ideal
-  mesh, the analysis names "ideal" 352 nats ahead of coupler noise, against
-  408 predicted.
+  dark-corrected block share and the algebra share a against the case's ideal.
+  Every model is computed on the mesh the iteration returned, on that run's
+  own couplers (`run_architecture`), so a refreshed catalogue never changes a
+  retained analysis. Dark clicks are the receipt's per-mode rate times the
+  setting's share of the job, capped by the mode's lowest click fraction over
+  the job's settings (Q1's receipt predicts 277 dark clicks on mode 0, which
+  read none). Each class is scanned over its magnitude (exact dephasing
+  channel sigma 0 to 0.8, heater gain -0.6 to 0.6, crosstalk -0.2 to 0.2,
+  misroute fraction 0 to 1 with noise), and a class fits when the chi-square
+  p-value of G^2 at its degrees of freedom is at least 0.001 and the median
+  ratio of setting TVD to the shot-noise floor is at most 3; otherwise the
+  job reads "no class fits", and a best point at every class's null
+  magnitude reads "ideal". The static class (section 6) wins when its
+  held-out gain exceeds 10 nats (`qd_belenos_mesh.analyze_run`). On
+  sim:belenos, whose truth is the ideal mesh, both mesh runs read "ideal"
+  (p = 0.033 and 0.094) and the static offsets lose 28 nats on held-out
+  settings.
 
 ## 6. Leakage root cause (qpu:belenos job 7419efb8)
 
@@ -243,10 +253,11 @@ QPU for the same body) respond differently to each class.
    best seed for one class is not the best for another. Resolved by
    computing every class's prediction on the mesh each iteration returns and
    letting a likelihood over one job decide the class first.
-4. A misrouted photon looks like optical leakage in a block test and like a
-   dark identity in an identity test. Resolved by the identity settings and
-   the demultiplexer models (source -2, +2, -4), the most separable classes
-   of the job.
+4. A misrouted photon looks like optical leakage in a block test. The
+   returned meshes' unused columns are transpiler draws, so a misrouted
+   photon lands wherever its column sends it, not on its own mode. Resolved
+   by the source models, whose likelihood on the returned meshes separates a
+   misroute from every other class by at least 8993 nats in one job.
 5. A calibration window can follow a run, and the source changes with it
    (HOM 92.6 % at the Q1 run, 57.8 % after the next calibration). Resolved:
    every plan records the live performance figures, and two-photon cases wait
@@ -260,6 +271,38 @@ QPU for the same body) respond differently to each class.
    (`RemoteComputer.prepare_payload` sends `None`); DetectorBalancing
    rewrites probabilities, while `sample_count` histograms return as integer
    counts. A case states its mitigations explicitly.
+
+**Fitting the chip's error: what failed and how each failure is resolved.**
+
+1. Direct mesh control was assumed from the captured guide's promise that
+   a compatible circuit skips transpilation. S3 and S4 refuted it for both
+   the parameterized and the numeric form. Resolved: predictions use the
+   returned mesh, and the seed is the planning lever (section 7).
+2. Averaged-noise predictions were Monte Carlo means over 200 replicates.
+   Their estimator error (about 0.02 per mode at sigma 0.6) exceeds the shot
+   noise of 1500 samples, so an in-family truth drawn on independent
+   replicates failed the fit (G^2 / dof 2.11 against 1.31 on the scan's own
+   replicates). Resolved: `channel` propagates the photon's 24 x 24 density
+   matrix with each noisy shifter damping its coherences by e^{-sigma^2/2}
+   and each noisy coupler mixing by its exact moments, the exact ensemble in
+   18 ms, equal to `propagate` at sigma 0 to 3e-16 and to a 20000-replicate
+   Monte Carlo within its own error.
+3. An ensemble is the wrong object for a miscalibrated chip, which is one
+   static realization shared by every job on it. Resolved: `StaticFit`
+   estimates one offset per heater, shared by all settings of a job, by MAP
+   under a Gaussian prior, with the exact adjoint Jacobian (`jacobians`,
+   equal to a central difference to 4e-10), and `static_cross_validation`
+   scores each fold of settings with offsets fitted on the others. The
+   photons of the 16 S3 meshes touch 83 % of the 574 heaters, so one job
+   constrains most of the chip. On the simulator the held-out gain is -28
+   nats (no offsets), and on a synthetic static truth of 0.3 rad it is about
+   1.1e5 nats.
+4. The first decision rule crowned the best of twelve fixed models, so a
+   data set no model explains still named a class. Resolved: magnitude
+   scans, an absolute fit criterion and the preregistered "no class fits"
+   outcome, held by core-512 on three synthetic truths (phase noise 0.6 off
+   the fixed grid, misroute 0.3 plus noise 0.3, and an out-of-family
+   distribution) and by core-513 on the static class.
 
 ## 7. Transpiler model and planning around it
 
@@ -339,8 +382,9 @@ encoding needs 34 modes, beyond the chip's 24.
 | The chip implements U, not its transpose | the RCA's convention variants | settled offline: U^T fits at TVD 0.546 |
 | The server runs an architecture-form circuit without re-transpiling | belenos_mesh job-00 (S3) and job-01 (S4) on sim:belenos | settled: refuted, all 574 phases change in both forms |
 | The transpiler is exqalibur's CircuitOptimizer with photon-free modes ignored | local replay against the S3 meshes | settled statistically; bitwise replay open (server seed mapping) |
-| The photon is misrouted into another source mode | identity settings of belenos_mesh job-00 on qpu:belenos | a source model outscores every other class |
-| The chip's error class is random heater noise | summed likelihood over belenos_mesh job-00 on qpu:belenos | a gain, crosstalk, ceiling or source model outscores every phase_noise model |
+| The photon is misrouted into another source mode | source models on the returned meshes of belenos_mesh job-00 on qpu:belenos | the misroute class fits and outscores every other class |
+| The chip's error class is random heater noise | class scans over belenos_mesh job-00 on qpu:belenos | another class fits better, the static offsets gain over 10 nats held out, or no class fits |
+| The chip carries static heater offsets that a user job can measure | static cross-validation over belenos_mesh job-00 on qpu:belenos | held-out gain at or below 10 nats |
 | compilation_seed selects the served mesh | a seed screen on sim:belenos | two seeds return the same mesh for the same target |
 | The fringe visibility separates edge from strut on hardware | the fringe settings of belenos_mesh job-00 on qpu:belenos | edge visibility within 4.5 standard errors of the strut's |
 

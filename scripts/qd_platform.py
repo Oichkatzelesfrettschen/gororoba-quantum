@@ -1081,7 +1081,8 @@ def run_facts(directory: Path) -> dict[str, Any]:
             raise PlatformError(f"{owner}: a counted state has a mode count other than {modes}")
         if summary["samples"] > manifest["max_samples"]:
             raise PlatformError(f"{owner}: {summary['samples']} samples exceed max_samples {manifest['max_samples']}")
-        shots = summary["shots_used"]
+        # A count-less partial result carries no per-iteration shots; its top-level shots stand in.
+        shots = summary.get("shots_used", summary.get("shots") or 0)
     elif not isinstance(collected.get("result_absent"), str):
         raise PlatformError(f"{owner}: a {status} job records neither a raw result nor its absence")
     else:
@@ -1117,11 +1118,14 @@ def charged(submission: dict[str, Any], collected: dict[str, Any], shots: int) -
     """The credits a run consumed: the usage report after collection minus the one before submission.
 
     Jobs run one at a time on the token, so the difference is this job's
-    per-job price plus its shots; a receipt without both reports falls back to
-    the recorded per-job price plus shots times the price per shot.
+    per-job price plus its shots. The usage report counts the calendar month,
+    so a job submitted and collected in different months, a negative
+    difference or a receipt without both reports falls back to the recorded
+    per-job price plus shots times the price per shot.
     """
     before, after = usage_total(submission.get("usage_before")), usage_total(collected.get("usage_after"))
-    if before is not None and after is not None:
+    same_month = str(submission.get("submitted_utc", ""))[:7] == str(collected.get("collected_utc", ""))[:7]
+    if before is not None and after is not None and same_month and after >= before:
         return round(after - before, 6)
     price = submission["platform_at_plan"]["price_per_shot"]
     return round(float(submission.get("per_job_credits", 0)) + shots * price, 6)
@@ -1135,8 +1139,32 @@ def zipped(text: str) -> str:
     return ":PCVL:zip:" + base64.b64encode(zlib.compress(text.encode("ascii"))).decode("ascii")
 
 
+def charge_self_test() -> None:
+    """charged() takes the usage delta within one calendar month and the recorded price across a reset."""
+
+    def report(credits: float) -> list[dict[str, Any]]:
+        return [{"usage": [{"credits": 0.0, "free_credits": credits, "nb_jobs": 1, "platform_name": "qpu:belenos"}]}]
+
+    submission = {
+        "submitted_utc": "2026-10-31T23:59:00+00:00",
+        "usage_before": report(12.0),
+        "per_job_credits": 1.0,
+        "platform_at_plan": {"price_per_shot": 1e-06},
+    }
+    cases = (
+        ("2026-10-31T23:59:30+00:00", report(13.01), 1.01),
+        ("2026-11-01T00:00:30+00:00", report(1.01), 1.01),
+        ("2026-10-31T23:59:30+00:00", report(11.0), 1.01),
+    )
+    for collected_utc, after, want in cases:
+        got = charged(submission, {"collected_utc": collected_utc, "usage_after": after}, 10000)
+        if got != want:
+            raise SystemExit(f"self-test: charged() read {got} for a collection at {collected_utc}, not {want}")
+
+
 def runner_self_test() -> int:
     """Offline rules of plan, submit, collect and run_facts against a stubbed service; returns the rejections."""
+    charge_self_test()
     root = Path(__file__).resolve().parent.parent
     case = root / "results/quandela/cases/box_kite_photonic_single/job-00"
     modes = ["0"] * 24

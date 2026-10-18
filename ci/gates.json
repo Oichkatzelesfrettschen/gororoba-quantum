@@ -2670,7 +2670,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --check results/quandela/runs/*/",
    "name": "core-508",
-   "seconds": 1.0,
+   "seconds": 25.0,
    "tier": "pr"
   },
   {
@@ -2702,7 +2702,15 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --self-test && \"$PYTHON\" -B -O -W error scripts/qd_belenos_mesh.py --self-test",
    "name": "core-512",
-   "seconds": 7.0,
+   "seconds": 60.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --self-test-static",
+   "name": "core-513",
+   "seconds": 70.0,
    "tier": "pr"
   },
   {

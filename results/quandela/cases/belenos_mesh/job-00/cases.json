@@ -79,7 +79,6 @@
    "size": -4
   }
  ],
- "noise_replicates": 200,
  "seed": 20261017,
  "settings": [
   {
@@ -1368,6 +1367,6 @@
  "preregistered": {
   "transpilation": "the service re-transpiles every iteration, so each model's prediction is computed on the computed_circuit the iteration returns; the same body compiles to the same meshes on sim:belenos and qpu:belenos while the couplers are unchanged",
   "classes": "phase noise, coupler noise, heater gain, thermal crosstalk, a phase ceiling and a demultiplexer misroute (source models) each predict a different histogram per returned mesh",
-  "decision": "the model with the highest efficiency-weighted multinomial log-likelihood summed over all settings names the chip's error class; the identity settings read the misroute directly"
+  "decision": "each class's magnitude scan (exact dephasing channel, heater gain, thermal crosstalk, misroute plus noise) is scored by efficiency-weighted multinomial likelihood on the returned meshes; the best class fits only when the chi-square p-value of G^2 at its degrees of freedom is at least 0.001 and the median ratio of setting TVD to its shot-noise floor is at most 3, and otherwise the job reads 'no class fits'; a best point at every class's null magnitude reads 'ideal'; one shared static heater-offset vector, fitted by MAP on three folds of settings and scored on the fourth, is the static class and wins when its held-out gain exceeds 10 nats; a misroute is read from the likelihood of the source models on the returned meshes, whose unused columns are transpiler draws"
  }
 }
