@@ -3916,14 +3916,6 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_calibrations.py --self-test && \"$PYTHON\" -O -B -W error scripts/ghost_calibrations.py --self-test",
-   "name": "core-549",
-   "seconds": 1.2,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_run.py --self-test && \"$PYTHON\" -O -B -W error scripts/ghost_run.py --self-test",
    "name": "core-550",
    "seconds": 1.2,
    "tier": "pr"
@@ -3931,8 +3923,16 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --self-test-cz-free",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_run.py --self-test && \"$PYTHON\" -O -B -W error scripts/ghost_run.py --self-test",
    "name": "core-551",
+   "seconds": 1.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --self-test-cz-free",
+   "name": "core-552",
    "seconds": 32.0,
    "tier": "full",
    "workers": "all"
