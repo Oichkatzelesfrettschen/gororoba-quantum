@@ -102,7 +102,7 @@ What the rows settle:
 ## Running it on Kaggle
 
 The sweep's route is a CPU kernel under CI's Python and pins, which spends
-no GPU quota. The command below has not been run on Kaggle:
+no GPU quota:
 
 ```sh
 "$PYTHON" scripts/kaggle_run.py push --slug gororoba-ghost-branching-sweep \
@@ -110,6 +110,33 @@ no GPU quota. The command below has not been run on Kaggle:
     scripts/ghost_error_scale_branching.py -- --runs all \
     --out /kaggle/working/output/ghost_error_scale_branching.json
 ```
+
+`results/kaggle/2026-10-18T055207Z-gororoba-ghost-branching-sweep` holds
+that kernel's output: Python 3.14.7 with CI's pins (numpy 2.5.4 on pip's
+OpenBLAS, qiskit 2.6.0) on 4 Xeon CPUs at 2.20 GHz.
+
+- The pool map took 36.1 s on 4 workers, against 10.6 s on the build
+  host's 12 (AOCL numpy, qiskit 2.5.2). In the kernel's 281 s to its exit
+  record, the hypercomplex stack build and proof took 147.5 s (from
+  `environment.json` at 24.9 s to `hypercomplex.json` at 172.4 s), and the
+  CI interpreter, the pin install and the sweep together took the
+  remaining 108.7 s.
+- The output holds 15 runs: 14 evaluated and
+  `results/live/kingston-wide-control-result`, skipped because that archive
+  keeps no record.json, isa.qpy or collect.json. The output serializes
+  per-replica distances, their means and the best points at six decimals,
+  not the laws. Every such field equals the build host's output; the files
+  differ only in `seconds`, `warmup_seconds` and `versions`. Any BLAS- or
+  qiskit-dependent difference between the two hosts therefore stays below
+  the six-decimal rounding on these 14 runs.
+- `--compare-parts docs/evidence/ghost_error_scale/part_X.json --result
+  OUTPUT --require-tolerance` for parts a, b and c (gate core-453) puts all
+  50 grid points of each of the 14 runs the parts cover within the Aer
+  sweep's tolerance. The sampled best
+  point differs from Aer's on 3 runs (2026-10-13T080216, 2026-10-13T201757,
+  2026-10-13T032011); on each, the sampled mean TVD at Aer's best point
+  exceeds the sampled minimum by 0.0066, 0.0001 and 0.00004, below that
+  run's tolerance of 0.079, 0.032 and 0.016.
 
 The T4 x2 benchmark that settled the route reproduces as:
 

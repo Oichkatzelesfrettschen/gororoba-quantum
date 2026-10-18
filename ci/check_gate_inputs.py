@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -18,6 +19,9 @@ class SelectionTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
+        # Selection indexes the files git tracks or would track, so the
+        # fixture is a work tree; untracked files .gitignore admits count.
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
         self.write("ci/full_gate_inputs.json", json.dumps({"gates": {"long": ["data/**"]}}))
         self.write("entry.py", "def run():\n import helper\n")
         self.write("helper.py", "import leaf\n")
@@ -46,6 +50,22 @@ class SelectionTests(unittest.TestCase):
     def test_deleted_import_still_selects(self) -> None:
         self.write("helper.py", "import deleted\n")
         self.assertEqual(self.chosen("deleted.py"), ["fast", "long"])
+
+    def test_ignored_trees_stay_out_of_the_module_index(self) -> None:
+        # An ignored build tree holding a same-named module would otherwise
+        # resolve `import helper` into its copy and select through its imports.
+        self.write(".gitignore", "build/\n")
+        self.write("build/vendor/helper.py", "import vendored\n")
+        self.write("vendored.py", "")
+        self.write("fresh.py", "")
+        modules = gate_inputs.module_index(self.root)
+        self.assertEqual(modules["helper"], {self.root / "helper.py"})
+        self.assertIn(self.root / "fresh.py", modules["fresh"])
+        indexed = {path.relative_to(self.root).parts[0] for paths in modules.values() for path in paths}
+        self.assertNotIn("build", indexed)
+        self.assertEqual(self.chosen("vendored.py"), ["fast"])
+        with tempfile.TemporaryDirectory() as outside, self.assertRaisesRegex(ValueError, "not a git work tree"):
+            gate_inputs.module_index(Path(outside))
 
     def test_source_digest_literal(self) -> None:
         self.write("entry.py", "SOURCES = ('helper.py',)\n")

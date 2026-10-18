@@ -1,0 +1,408 @@
+{
+ "blocks": [
+  {
+   "a": 0.946944258,
+   "a_wilson95": [
+    0.934365898,
+    0.957222416
+   ],
+   "compilation_seed": 20,
+   "config": "two_label-04",
+   "dark_corrected": null,
+   "in_block": 0.992666667,
+   "in_block_wilson95": [
+    0.986916091,
+    0.995900277
+   ],
+   "kind": "two_label",
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "multi_click_in_block": 0,
+   "name": "d2-00-s20-n1500",
+   "one_click_by_mode": [
+    743,
+    667,
+    55,
+    24
+   ],
+   "one_click_outside_block": 11,
+   "one_click_outside_by_mode": {
+    "14": 4,
+    "19": 7
+   },
+   "other_multi_click": 0,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.053055742
+  },
+  {
+   "a": 0.956021877,
+   "a_wilson95": [
+    0.951576932,
+    0.960075922
+   ],
+   "compilation_seed": 20,
+   "config": "two_label-04",
+   "dark_corrected": null,
+   "in_block": 0.896168851,
+   "in_block_wilson95": [
+    0.890036291,
+    0.901997063
+   ],
+   "kind": "two_label",
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "multi_click_in_block": 3,
+   "name": "d2-01-s20-n10000",
+   "one_click_by_mode": [
+    4765,
+    3800,
+    263,
+    131
+   ],
+   "one_click_outside_block": 1038,
+   "one_click_outside_by_mode": {
+    "0": 39,
+    "12": 6,
+    "14": 18,
+    "15": 6,
+    "16": 6,
+    "18": 3,
+    "19": 22,
+    "5": 938
+   },
+   "other_multi_click": 0,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.075845518
+  },
+  {
+   "a": 0.953020134,
+   "a_wilson95": [
+    0.94106205,
+    0.962648308
+   ],
+   "compilation_seed": 20,
+   "config": "two_label-04",
+   "dark_corrected": null,
+   "in_block": 0.994659546,
+   "in_block_wilson95": [
+    0.989497123,
+    0.997291457
+   ],
+   "kind": "two_label",
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "multi_click_in_block": 2,
+   "name": "d2-02-s20-n1500",
+   "one_click_by_mode": [
+    758,
+    662,
+    50,
+    20
+   ],
+   "one_click_outside_block": 8,
+   "one_click_outside_by_mode": {
+    "14": 5,
+    "18": 2,
+    "19": 1
+   },
+   "other_multi_click": 0,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.055704698
+  },
+  {
+   "a": 0.956567546,
+   "a_wilson95": [
+    0.954470674,
+    0.958572037
+   ],
+   "compilation_seed": 20,
+   "config": "two_label-04",
+   "dark_corrected": null,
+   "in_block": 0.949317398,
+   "in_block_wilson95": [
+    0.947124175,
+    0.951424314
+   ],
+   "kind": "two_label",
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "multi_click_in_block": 6,
+   "name": "d2-03-s20-n40000",
+   "one_click_by_mode": [
+    20352,
+    15966,
+    1095,
+    554
+   ],
+   "one_click_outside_block": 2027,
+   "one_click_outside_by_mode": {
+    "0": 214,
+    "1": 104,
+    "11": 48,
+    "12": 2,
+    "13": 5,
+    "14": 164,
+    "15": 15,
+    "16": 12,
+    "17": 10,
+    "18": 15,
+    "19": 85,
+    "3": 56,
+    "5": 1253,
+    "6": 44
+   },
+   "other_multi_click": 0,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.079476914
+  },
+  {
+   "a": 0.954609929,
+   "a_wilson95": [
+    0.942454372,
+    0.964295103
+   ],
+   "compilation_seed": 20,
+   "config": "two_label-04",
+   "dark_corrected": null,
+   "in_block": 0.94,
+   "in_block_wilson95": [
+    0.92682063,
+    0.950931471
+   ],
+   "kind": "two_label",
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "multi_click_in_block": 0,
+   "name": "d2-04-s20-n1500",
+   "one_click_by_mode": [
+    736,
+    610,
+    43,
+    21
+   ],
+   "one_click_outside_block": 90,
+   "one_click_outside_by_mode": {
+    "14": 5,
+    "16": 1,
+    "19": 3,
+    "5": 81
+   },
+   "other_multi_click": 0,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.067375887
+  },
+  {
+   "a": 0.960636886,
+   "a_wilson95": [
+    0.959002263,
+    0.962208903
+   ],
+   "compilation_seed": 20,
+   "config": "two_label-04",
+   "dark_corrected": null,
+   "in_block": 0.945487087,
+   "in_block_wilson95": [
+    0.943638457,
+    0.94727847
+   ],
+   "kind": "two_label",
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "multi_click_in_block": 5,
+   "name": "d2-05-s20-n60000",
+   "one_click_by_mode": [
+    30188,
+    24112,
+    1427,
+    798
+   ],
+   "one_click_outside_block": 3259,
+   "one_click_outside_by_mode": {
+    "0": 330,
+    "1": 134,
+    "11": 38,
+    "12": 11,
+    "13": 8,
+    "14": 181,
+    "15": 15,
+    "16": 37,
+    "17": 6,
+    "18": 16,
+    "19": 176,
+    "2": 58,
+    "4": 43,
+    "5": 2100,
+    "9": 106
+   },
+   "other_multi_click": 211,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.073427687
+  },
+  {
+   "a": 0.967676768,
+   "a_wilson95": [
+    0.957405887,
+    0.975534281
+   ],
+   "compilation_seed": 46667,
+   "config": "two_label-04",
+   "dark_corrected": null,
+   "in_block": 0.99,
+   "in_block_wilson95": [
+    0.983566095,
+    0.993930562
+   ],
+   "kind": "two_label",
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "multi_click_in_block": 0,
+   "name": "d4-06-s46667-n1500",
+   "one_click_by_mode": [
+    795,
+    642,
+    23,
+    25
+   ],
+   "one_click_outside_block": 15,
+   "one_click_outside_by_mode": {
+    "12": 2,
+    "14": 6,
+    "15": 1,
+    "19": 6
+   },
+   "other_multi_click": 0,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.067676768
+  },
+  {
+   "a": 0.956729769,
+   "a_wilson95": [
+    0.952476965,
+    0.960617728
+   ],
+   "compilation_seed": 46667,
+   "config": "two_label-04",
+   "dark_corrected": null,
+   "in_block": 0.9614,
+   "in_block_wilson95": [
+    0.957443725,
+    0.965001922
+   ],
+   "kind": "two_label",
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "multi_click_in_block": 0,
+   "name": "d4-07-s46667-n10000",
+   "one_click_by_mode": [
+    5201,
+    3997,
+    290,
+    126
+   ],
+   "one_click_outside_block": 386,
+   "one_click_outside_by_mode": {
+    "12": 2,
+    "13": 3,
+    "14": 33,
+    "15": 13,
+    "16": 5,
+    "17": 1,
+    "19": 19,
+    "5": 310
+   },
+   "other_multi_click": 0,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.084252132
+  },
+  {
+   "a": 0.95601879,
+   "a_wilson95": [
+    0.953789207,
+    0.958145521
+   ],
+   "compilation_seed": 46667,
+   "config": "two_label-04",
+   "dark_corrected": null,
+   "in_block": 0.851712928,
+   "in_block_wilson95": [
+    0.848196011,
+    0.85516228
+   ],
+   "kind": "two_label",
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "multi_click_in_block": 9,
+   "name": "d4-08-s46667-n40000",
+   "one_click_by_mode": [
+    18060,
+    14502,
+    1004,
+    494
+   ],
+   "one_click_outside_block": 5930,
+   "one_click_outside_by_mode": {
+    "0": 73,
+    "1": 47,
+    "12": 13,
+    "13": 10,
+    "14": 94,
+    "15": 17,
+    "16": 18,
+    "17": 1,
+    "18": 7,
+    "19": 87,
+    "5": 5421,
+    "8": 49,
+    "9": 93
+   },
+   "other_multi_click": 1,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.074221961
+  }
+ ],
+ "cases_sha256": "cbb6511f2850ca3cd6b8091b8ce16f824513253b92b212cd217d7364f756ca72",
+ "compiled": {
+  "distinct": 2,
+  "iterations": [
+   {
+    "chars": 16250,
+    "sha256": "9bbbaf63c8ec6bacf23fd5e83cbe023fbf5b8f93257c7876506f4da6773f21eb"
+   },
+   {
+    "chars": 16250,
+    "sha256": "9bbbaf63c8ec6bacf23fd5e83cbe023fbf5b8f93257c7876506f4da6773f21eb"
+   },
+   {
+    "chars": 16250,
+    "sha256": "9bbbaf63c8ec6bacf23fd5e83cbe023fbf5b8f93257c7876506f4da6773f21eb"
+   },
+   {
+    "chars": 16250,
+    "sha256": "9bbbaf63c8ec6bacf23fd5e83cbe023fbf5b8f93257c7876506f4da6773f21eb"
+   },
+   {
+    "chars": 16250,
+    "sha256": "9bbbaf63c8ec6bacf23fd5e83cbe023fbf5b8f93257c7876506f4da6773f21eb"
+   },
+   {
+    "chars": 16250,
+    "sha256": "9bbbaf63c8ec6bacf23fd5e83cbe023fbf5b8f93257c7876506f4da6773f21eb"
+   },
+   {
+    "chars": 16230,
+    "sha256": "06b5bcdb2532a5a21dabd3511d0ef5c70cfbf8f281f51239e17bfb99da7d3eb2"
+   },
+   {
+    "chars": 16230,
+    "sha256": "06b5bcdb2532a5a21dabd3511d0ef5c70cfbf8f281f51239e17bfb99da7d3eb2"
+   },
+   {
+    "chars": 16230,
+    "sha256": "06b5bcdb2532a5a21dabd3511d0ef5c70cfbf8f281f51239e17bfb99da7d3eb2"
+   }
+  ],
+  "job": null
+ },
+ "job_id": "c1eb1cbb-4240-45fe-8a2e-d0c4d8b4729f",
+ "logical_perf": null,
+ "noise": null,
+ "physical_perf": null,
+ "platform": "qpu:belenos",
+ "result_sha256": "42b4c1b048b9bf128fb8d4e47c9875c0d0bda1897b900f195a2c36be7a5c54ae",
+ "run": "2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12",
+ "samples": 166000,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 120000,
+ "status": "completed"
+}

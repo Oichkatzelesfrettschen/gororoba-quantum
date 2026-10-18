@@ -24,7 +24,9 @@ modes the block occupies:
   suppressed block).
 
 The statistics are exact fractions and floats from the standard library, so
-the analysis replays on CI without Perceval. --write RUN_DIR... writes each
+the analysis replays on CI without Perceval. A seeded case (one fixed circuit
+iterated over compilation seeds) reports one block's statistics per
+iteration beside the sha256 of the mesh that iteration returned. --write RUN_DIR... writes each
 run's analysis.json; --check RUN_DIR... recomputes and compares bytes;
 --self-test requires a corrupted count, a swapped role and a pair histogram
 off its ideal to change the verdicts.
@@ -44,7 +46,7 @@ from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
-from qd_platform import PlatformError, load_case, run_facts
+from qd_platform import PlatformError, iteration_form, load_case, run_facts
 
 SCHEMA = "qd-box-kite-analysis-v1"
 # A mesh analysis replays within qd_belenos_mesh.ANALYSIS_TOLERANCE; every other record replays byte for byte.
@@ -227,6 +229,44 @@ def fringe(block: dict[str, Any], iterations: list[dict[str, Any]]) -> dict[str,
     }
 
 
+def seeded(
+    block: dict[str, Any], settings: list[dict[str, Any]], iterations: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """One-photon statistics of a fixed circuit per compilation seed, each with the mesh its iteration returned.
+
+    The mesh identity is the sha256 of the unzipped computed_circuit (qd_belenos_mesh.mesh_sha), the digest a
+    one-circuit run of the same case reports, so equal digests mean one served mesh in either job form.
+    """
+    import qd_belenos_mesh
+
+    if len(iterations) != len(settings):
+        raise ValueError(f"{block['config']}: {len(iterations)} iterations returned for {len(settings)} settings")
+    rows = []
+    for setting, entry in zip(settings, iterations, strict=True):
+        if entry["iteration"].get("compilation_seed") != setting["compilation_seed"]:
+            raise ValueError(
+                f"{setting['name']}: the iteration ran compilation_seed {entry['iteration'].get('compilation_seed')!r}"
+            )
+        # Budgeted settings can share a seed, so the budget the iteration ran under names it too.
+        for key in ("max_samples", "max_shots"):
+            if key in setting and entry["iteration"].get(key) != setting[key]:
+                raise ValueError(f"{setting['name']}: the iteration ran {key} {entry['iteration'].get(key)!r}")
+        if "max_samples" in setting and sum(entry["counts"].values()) > setting["max_samples"]:
+            raise ValueError(f"{setting['name']}: the iteration returned more samples than its max_samples")
+        text_value = entry.get("result_fields", {}).get("computed_circuit")
+        if not isinstance(text_value, str):
+            raise ValueError(f"{setting['name']}: the iteration returned no computed_circuit")
+        rows.append(
+            {
+                "name": setting["name"],
+                "compilation_seed": setting["compilation_seed"],
+                "mesh_sha256": qd_belenos_mesh.mesh_sha(text_value),
+                **one_photon(block, entry["counts"]),
+            }
+        )
+    return rows
+
+
 def fingerprint(fields: dict[str, Any]) -> dict[str, Any] | None:
     """sha256 and length of a result's computed_circuit string, the identity of its compiled mesh."""
     text_value = fields.get("computed_circuit")
@@ -255,7 +295,11 @@ def analyze(run: Path) -> dict[str, Any]:
     width = max((len(state.split(",")) for state in counts), default=0)
     dark = dark_expectation(run, collected, width) if width else None
     blocks = []
-    for block in manifest["blocks"]:
+    if iteration_form(manifest) == "seeded":
+        if len(manifest["blocks"]) != 1:
+            raise PlatformError(f"{run.name}: a seeded case analyzes one block")
+        blocks = seeded(manifest["blocks"][0], manifest["settings"], collected.get("iterations", []))
+    for block in manifest["blocks"] if not blocks else []:
         if block["kind"] == "pair":
             blocks.append(pair(block, counts))
         elif block["kind"] == "fringe":
@@ -347,7 +391,37 @@ def self_test() -> int:
         pass
     else:
         raise AssertionError("a fringe missing an iteration was analyzed")
-    print("qd box-kite analysis self-test: 7 verdicts")
+    settings = [{"name": "s0", "compilation_seed": 0}, {"name": "s1", "compilation_seed": 1}]
+    runs = [
+        {"iteration": {"compilation_seed": k}, "counts": counts, "result_fields": {"computed_circuit": f"mesh-{k}"}}
+        for k, counts in enumerate((dark, {**dark, "1,0,0,0": 1000}))
+    ]
+    rows = seeded(one, settings, runs)
+    if [r["in_block"] for r in rows] != [1.0, 1.0] or rows[0]["mesh_sha256"] == rows[1]["mesh_sha256"]:
+        raise AssertionError(f"seeded iterations read {rows}")
+    for broken in (runs[:1], [runs[1], runs[0]], [runs[0], {**runs[1], "result_fields": {}}]):
+        try:
+            seeded(one, settings, broken)
+        except ValueError:
+            continue
+        raise AssertionError("a seeded result with a missing, reordered or meshless iteration was analyzed")
+    ladder = [{"name": f"n{n}", "compilation_seed": 20, "max_samples": n, "max_shots": 2 * n} for n in (1000, 3000)]
+    rungs = [
+        {
+            "iteration": {"compilation_seed": 20, "max_samples": n, "max_shots": 2 * n},
+            "counts": {"0,0,1,0": n},
+            "result_fields": {"computed_circuit": "mesh-20"},
+        }
+        for n in (1000, 3000)
+    ]
+    seeded(one, ladder, rungs)
+    for broken in ([rungs[1], rungs[0]], [{**rungs[0], "counts": {"0,0,1,0": 1001}}, rungs[1]]):
+        try:
+            seeded(one, ladder, broken)
+        except ValueError:
+            continue
+        raise AssertionError("a budgeted ladder with swapped or overfull iterations was analyzed")
+    print("qd box-kite analysis self-test: 13 verdicts")
     return 0
 
 

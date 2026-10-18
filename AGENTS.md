@@ -25,6 +25,13 @@ local Python imports and the dynamic data/source scopes in
 its non-imported inputs there, including source digests and JSON-selected
 raw evidence; a missing declaration fails selection. CI and dependency-pin
 changes select every gate, and an unavailable diff base runs the full suite.
+The import closure resolves against the files `git ls-files --cached --others
+--exclude-standard` lists (`gate_inputs.checkout_files`), the modules a CI
+clone of the same tree holds, so an ignored tree never widens it. Build trees,
+virtual environments and package caches still live outside every checkout,
+under `${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/` or
+`~/.local/share/`: `git worktree remove` deletes ignored files with the
+worktree, and a wheel or venv built inside one goes with it.
 Gate seconds are scheduling estimates, independent of tier membership.
 [CI runtime analysis](docs/notes/build_host/ci-runtime.md) records the timing
 denominators, measured bottlenecks and replay commands. Runner-spec logs
@@ -50,7 +57,12 @@ The lint and type gates (core-000, core-001, core-002, core-039) cover
 gororoba_quantum/, scripts/, ci/ and kaggle_kernel/ whole, so a module there
 is linted and type-checked without a list edit; a checked file elsewhere in
 the tree, such as an evidence replay under results/ or docs/, is named in
-those gates' commands.
+those gates' commands. They run ruff and mypy through
+`ci/pinned_tool.py TOOL ARGS`, which uses the installed tool when it reports
+the ci/requirements-ci.txt pin and otherwise runs the pinned release through
+uv: ruff through `uv tool run`, mypy layered over `"$PYTHON"`'s
+site-packages, so a host mypy run type-checks against that host's packages
+(qiskit 2.5.2 on the build host against CI's 2.6.0).
 
 Gate commands invoke `"$PYTHON"`. ci/run_gates.py sets it to its own
 interpreter when the environment leaves it unset, and assigns
@@ -73,9 +85,21 @@ defaults stay within the outer allocation. Timings retain wall time, user/system
 peak RSS and allocated workers. Ruff formats shared code for Python 3.13.
 
 Current contracts use Qiskit 2.6.0. Gates marked `"runtime": "qiskit-2.5"`
-recompile retained historical evidence using `ci/requirements-replay.txt` and
-require `REPLAY_PYTHON`; missing producer interpreters fail explicitly. CI
-installs that isolated environment only for shards whose plan requires it.
+recompile retained historical evidence under an interpreter holding every pin
+of `ci/requirements-replay.txt`: `ci/run_gates.py --replay-python PATH` (also
+accepted by `ci/premerge_gates.py`), else `REPLAY_PYTHON`, verified against
+those pins in a `-I` subprocess. With neither, the running interpreter serves
+when it holds every pin, as the build host's Arch stack does, and the runner
+prints the choice before the first gate; an unresolved runtime's gates exit
+127 with the differing versions. CI installs that isolated environment only
+for shards whose plan requires it and passes it as `REPLAY_PYTHON`.
+`GOROROBA_PINS_REQUIRED=1`, set workflow-wide in ci.yml, turns every version
+fallback into a failure: the replay interpreter must be named, ruff and mypy
+must be installed at their pins, and `ibm_runtime_options_inventory.py
+--check` (core-533) must find the probe versions its inventory records.
+Without it that check replays the retained inventory (canonical form,
+backend schema, note blocks) and names the differing versions
+(`ci/pins.py`, gate core-454).
 Before Python starts, CI and Kaggle reserve 4096 optional static TLS bytes with
 `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, required by the combined
 Qiskit Rust and Aer OpenMP extensions. Local shells use the same startup setting.
@@ -567,7 +591,7 @@ retain its output under results/kaggle/. The kernel's own guide is
   `GPU_ENV_AER_PINS` in qiskit-aer's place (`ci/install_pins.sh` with
   `AER_PINS`).
   - Before the entry, `kernel_main.gpu_interpreter` requires every pin at its
-    version, qiskit-aer-gpu-cu11 as the only owner of
+    version, the selected GPU Aer distribution as the only owner of
     `qiskit_aer/__init__.py`, both T4s in nvidia-smi, and seeded Bell runs
     on the GPU that report device GPU, the cuStateVec one with
     `cuStateVec_enable` true.
@@ -580,6 +604,14 @@ retain its output under results/kaggle/. The kernel's own guide is
     requires; `ghost_branching_benchmark.py --require-gpu NAME --gpus N`
     then exits 3 unless torch lists both T4s and a complex128 matmul on
     each matches numpy.
+  - `--gpu-aer cu13` replaces the cu11 wheels with `GPU_AER_PINS["cu13"]`:
+    the CUDA 13 wheel `docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh`
+    builds, which the push attaches from its `kaggle_run.py artifact`
+    dataset (`AER_GPU_WHEELS`) and the kernel installs only when its sha256
+    matches (`docs/notes/kaggle/custatevec.md`, "CUDA 13 build"). On the
+    T4 x2 it ran every probe row with cuStateVec on; its GPU density-matrix
+    rows draw the cu11 wheel's seeded counts, while seeded statevector
+    trajectories differ by build (gate core-442).
   - Only Python itself differs from CI's 3.14.7.
   - On a CPU machine the same push stops at the preflight, which proves the
     error path at no GPU cost.
@@ -682,7 +714,7 @@ at those versions, except the linters.
 | python-stim, python-mthree (with python-runningman), python-qiskit-experiments, python-quimb, python-cotengra, python-pyzx, python-galois | stim 1.16.0, mthree 3.0.0, qiskit-experiments 0.14.2, quimb 1.15.0, cotengra 0.8.2, pyzx 0.10.7, galois 0.4.11: the `quantum-tools` group a Kaggle kernel installs with `push --with quantum-tools` (`scripts/kaggle_run.py` PIN_GROUPS) |
 | python-flint | python-flint 0.9.0 (CI pin): exact rank modulo p (`nmod_mat`) and RREF null spaces (`fmpq_mat`) in `scripts/exact_rank.py`, and SymPy 1.14.0's ground types, which it selects when the version is on SymPy's tested list |
 | python-pytorch-opt-cuda, python-pandas | torch and pandas for python-octonion and python-cayley-dickson only |
-| python-ruff, mypy | newer than the CI pins ruff 0.14.11 and mypy 1.19.1; `uvx ruff@0.14.11` reproduces CI formatting |
+| python-ruff, mypy | ruff 0.17.0 and mypy 2.3.1, behind the CI pins ruff 0.17.1 and mypy 2.4.0 (a `~/.local/bin` install of ruff 0.14.11 and mypy 1.19.1 precedes them on PATH); the lint gates run the pins through `ci/pinned_tool.py` and uv |
 
 A broken or missing package is rebuilt and reinstalled from its PKGBUILD in
 `~/Github/PKGBUILDs` with `makepkg -si --nocheck` in the package
@@ -1092,7 +1124,11 @@ mode, so one credit buys every unitary that fits the 300 s per-job limit,
 error-class diagnostic, job-02 the 84/84 box-kite edges, job-03 to job-06
 the 64 seeded random settings of the characterization campaign, job-07
 the 84/84 edges at compilation seeds 1 and 2 in 32 iterations, job-08 Q1's
-case as one circuit at seed 1). A case names its compilation_seed per
+case as one circuit at seed 1, job-09 Q1's case iterated at seeds 0 to 21,
+0 and 1, job-10 to job-12 the form-versus-dwell series D1 to D4 with
+per-iteration sample budgets). A new exploratory compilation_seed comes
+from the ANU QRNG draws that `scripts/anu_qrng.py` retains under
+`docs/evidence/anu_qrng/`. A case names its compilation_seed per
 iteration or, for one circuit, in its manifest; the seed selects the
 served mesh.
 `qd_box_kite_analysis.py` scans every error class (exact heater and coupler
@@ -1135,7 +1171,11 @@ offsets, efficiencies plus offsets are declared and recovered), core-535
 (full tier, `--check-efficiency` of the session record) and core-536
 (`--check-followup`, the preregistered job-02 and repeat readout) and
 core-538 (`--check-pair`, the one-circuit form test job-08 and the
-32-iteration seed ensemble job-07).
+32-iteration seed ensemble job-07), core-544 (`--self-test-bridge`, every
+preregistered bridge branch on synthetic iterations) and core-540
+(`--check-bridge`, the form-mesh bridge job-09), core-541 (`anu_qrng.py`
+self-test and the offline check of every retained draw), core-542
+(`--self-test-dwell`) and core-543 (`--check-dwell`, the D1 to D4 readout).
 
 **Strategy guide.** [docs/notes/quandela/strategy.md](docs/notes/quandela/strategy.md)
 is the living record of what a credit buys on Belenos: the measured cost

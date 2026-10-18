@@ -6,7 +6,10 @@ qiskit_aer/__init__.py, Aer's available devices, numpy's build
 configuration, and one seeded Bell circuit run on the GPU without and with
 cuStateVec_enable, each with the device and cuStateVec_enable its result
 metadata reports or the error it raised, and every sys.path entry outside
-the venv, the standard library and this script's directory.
+the venv, the standard library and this script's directory. The compiled
+controller_wrappers module's path and every CUDA library the process has
+mapped once it is imported show where the loader resolved each one; the
+import needs no GPU, so a CPU machine's report carries them too.
 """
 
 from __future__ import annotations
@@ -14,6 +17,7 @@ from __future__ import annotations
 import importlib.metadata
 import json
 import pathlib
+import re
 import sys
 import sysconfig
 from typing import Any
@@ -46,6 +50,17 @@ def foreign_paths() -> list[str]:
     return found
 
 
+def cuda_libraries() -> list[str]:
+    """Paths of the CUDA and cuQuantum shared objects this process has mapped, from /proc/self/maps."""
+    try:
+        maps = pathlib.Path("/proc/self/maps").read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return []
+    paths = {line.split(maxsplit=5)[-1] for line in maps if len(line.split(maxsplit=5)) == 6}
+    pattern = re.compile(r"/lib(cuda|cudart|cublas|cublasLt|cusolver|cusparse|nvJitLink|custatevec|cutensor\w*)\.so")
+    return sorted(path for path in paths if pattern.search(path))
+
+
 def bell_runs() -> dict[str, dict[str, Any]]:
     from qiskit import QuantumCircuit
     from qiskit_aer import AerSimulator
@@ -75,6 +90,7 @@ def main() -> int:
     import numpy
     import qiskit_aer
     from qiskit_aer import AerSimulator
+    from qiskit_aer.backends import controller_wrappers
 
     installed: dict[str, str | None] = {}
     for name in json.loads(sys.argv[1]):
@@ -87,6 +103,8 @@ def main() -> int:
         "installed": installed,
         "qiskit_aer_version": qiskit_aer.__version__,
         "qiskit_aer_owners": owners(str(qiskit_aer.__file__)),
+        "controller_wrappers": controller_wrappers.__file__,
+        "cuda_libraries": cuda_libraries(),
         "devices": list(AerSimulator().available_devices()),
         "foreign_paths": foreign_paths(),
         "numpy": json.loads(json.dumps(numpy.show_config(mode="dicts") or {}, default=str)),

@@ -121,11 +121,19 @@ and what it must prove before its output counts.
     - a pin that resolved to another version;
     - a CPU qiskit-aer that shares the qiskit_aer/ files;
     - a GPU that nvidia-smi does not list;
-    - a Bell run that raised, ran on another device, or left cuStateVec off.
+    - a Bell run that raised, ran on another device, or left cuStateVec off;
+    - on a `--gpu-aer cu13` push (spec `cuda_in_venv`), a mapped CUDA library
+      other than the driver's libcuda.so from outside the venv, or no mapped
+      CUDA library at all.
   - `push --gpu-env-with torch` adds torch 2.14.1, the build host's version,
     to the venv's pins, so a torch entry runs over the repository's numpy
     and qiskit instead of the image's; the preflight requires it at that
     version like every other pin.
+  - Under `--gpu-aer cu13` the Aer wheel comes from an attached dataset:
+    gpu_env.json's `wheel` names the file found under /kaggle/input and its
+    sha256, and a missing or different file is a failure before any install.
+    The report's `controller_wrappers` and `cuda_libraries` show where each
+    CUDA library resolved.
   - Read gpu-env-report.txt and install-pins.txt in the output for the
     commands' own output.
   - "Keeping the run on the GPU" in `docs/notes/kaggle/custatevec.md` maps
