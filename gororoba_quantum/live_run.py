@@ -68,7 +68,7 @@ import placement_feasibility
 import qpu_planning
 import variance
 from coherence_window import COHERENCE_PRECISION
-from diagnostic_experiments import FAMILY_NAMES, N21_FAMILIES, PATCH_FAMILIES, record_groups
+from diagnostic_experiments import FAMILY_NAMES, N21_FAMILIES, PATCH_FAMILIES, record_groups, state_prep_arms
 from experiments import (
     MIRROR_SUFFIX,
     Group,
@@ -2813,6 +2813,14 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         }
         if refused:
             raise LiveRunError(f"--rep-delay {requested_delay} s is unavailable: {refused}")
+    if not getattr(args, "family", None):
+        refused_shots = {
+            snapshot.name: violations
+            for snapshot in snaps
+            if (violations := qpu_planning.shot_ceiling_violations(snapshot.backend, args.shots))
+        }
+        if refused_shots:
+            raise LiveRunError(f"--shots {args.shots} is unavailable: {refused_shots}")
     trace: dict[str, Any] = {}
     design: dict[str, Any] = {}
     if getattr(args, "family", None):
@@ -3888,6 +3896,14 @@ def submit(
                 else:
                     record["state"] = "approval_required"
                 raise LiveRunError(f"{name}: {batch_tag} {reason}; no circuit in this batch was submitted")
+        shot_violations = qpu_planning.shot_ceiling_violations(fresh.backend, int(plan_entry["shots"]))
+        if shot_violations:
+            reason = "; ".join(shot_violations)
+            if record["submission"]["jobs"]:
+                record["renewed_approval_for_unsent_batches"] = {"required_at": _now(), "reason": reason}
+            else:
+                record["state"] = "approval_required"
+            raise LiveRunError(f"{name}: {batch_tag} {reason}; no circuit in this batch was submitted")
         usage = service.usage()
         check_budget(name, usage, args.min_remaining_seconds)
         # Accepted jobs may remain unbilled. Every ceiling stays reserved until
@@ -5126,6 +5142,13 @@ def main(argv: list[str] | None = None) -> int:
         help="physical qubits state-prep-control characterizes; omitted, the replica qubits of "
         "diagnostic_experiments.STATE_PREP_SOURCE_RECORD on its backend",
     )
+    parser.add_argument(
+        "--state-prep-arms",
+        type=lambda value: value.split(","),
+        help="state-prep-control arms among prep0, reset and x, comma-separated, prep0 always among them; "
+        "omitted, all three; "
+        "the policy binds a selection",
+    )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
         "--local-compute-method",
@@ -5351,6 +5374,13 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("the patch family runs one pinned placement; --max-replicas must be 1")
     if args.layout is not None and args.family != "state-prep-control":
         parser.error("--layout applies to the state-prep-control family only")
+    if args.state_prep_arms is not None:
+        if args.family != "state-prep-control":
+            parser.error("--state-prep-arms applies to the state-prep-control family only")
+        try:
+            args.state_prep_arms = list(state_prep_arms(args.state_prep_arms))
+        except ValueError as error:
+            parser.error(f"--state-prep-arms: {error}")
     if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
         parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "folded-correction":

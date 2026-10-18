@@ -9,7 +9,7 @@
  ],
  "optimization_level": 3,
  "seed_transpiler": 11,
- "groups": 194,
+ "groups": 208,
  "superseded_configurations": [
   {
    "run": "results/live/2026-10-13T163154.032617Z",
@@ -17,7 +17,7 @@
    "missing_field": "measure_dt"
   }
  ],
- "distinct_members": 1494,
+ "distinct_members": 1496,
  "entangling_members": 950,
  "unchecked": {},
  "members": [
@@ -3196,6 +3196,15 @@
    "declared": null
   },
   {
+   "member": "spc_prep0_q124",
+   "digest": "f3696e28fcbce95f",
+   "kind": "local_unitary",
+   "templated": false,
+   "cz": 0,
+   "cz_in_local_components": 0,
+   "declared": null
+  },
+  {
    "member": "spc_prep0_q125",
    "digest": "f3696e28fcbce95f",
    "kind": "local_unitary",
@@ -3468,6 +3477,15 @@
   },
   {
    "member": "spc_x_q117",
+   "digest": "6bdf0823b920ee34",
+   "kind": "local_unitary",
+   "templated": false,
+   "cz": 0,
+   "cz_in_local_components": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_q124",
    "digest": "6bdf0823b920ee34",
    "kind": "local_unitary",
    "templated": false,

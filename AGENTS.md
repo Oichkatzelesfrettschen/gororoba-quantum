@@ -372,10 +372,27 @@ sedenion statement never rests on them.
   `kaggle_run.py shards` replicates the CI gate shards for a commit on
   Kaggle CPU kernels in place of the build host. `docs/notes/kaggle/` holds the workflow, the measured
   substrates and the package-stack guide. Kaggle allows two concurrent GPU
-  and five concurrent CPU batch sessions per account. IBM hardware serves 15 or
-  more qubits, or a smaller run whose question concerns the device itself
-  (a named qubit's readout, detuning or drift); its case states why Aer
-  cannot answer it. A kernel's
+  and five concurrent CPU batch sessions per account.
+- A 15-qubit run is decision-gated: it waits for the user's approval of a
+  written case, which names its substrate from the access inventory and
+  says why that one answers the question.
+  - Simulation: an optimized Aer run on the build host or on a Kaggle
+    T4 x2. `SnapshotSimulator.run` cache-blocks the state across both T4s,
+    and a 15-qubit density matrix takes about 4 s there
+    (`docs/notes/kaggle/substrates.md`). The case's run first applies
+    `docs/notes/kaggle/gpu-runbook.md`: local rehearsal, vectorized
+    estimators, a sized timeout.
+  - Hardware: Tuna-17 through Quantum Inspire, under its submission rules
+    (Quantum Inspire below). `submit` refuses while any hardware job of the
+    account is unfinished or ended under `HARDWARE_PAUSE_SECONDS` ago, so
+    the run cannot overlap another session's job. Fifteen of 17 qubits
+    include qubits the Tuna-17 notes exclude for readout or coupler faults
+    (`docs/notes/quantum_inspire/experiments.md`), so the case names each
+    one it uses.
+- IBM hardware serves 16 or more qubits, or a smaller run whose question
+  concerns the device itself (a named qubit's readout, detuning or drift);
+  its case states why Aer cannot answer it.
+- A kernel's
   noise comes from a retained `gororoba_quantum/calibration_snapshot.py`
   export, whose `--export` requires every gate and readout channel to equal
   live_run's noise model, and a Kaggle result enters the research state
@@ -465,7 +482,7 @@ retain its output under results/kaggle/. The kernel's own guide is
   with Aer's reported `cuStateVec_enable`. On the T4 x2 (gate core-450)
   cuStateVec ran the dynamic density matrix 1.44 and 1.63 times faster than
   the plain GPU executor at 7 and 10 qubits and statevector trajectories
-  1.19 to 1.29 times slower, and Aer spread every multi-shot run over both
+  1.19 to 1.29 times slower, and Aer spread per-shot and batched runs over both
   GPUs (`docs/evidence/aer_gpu_configuration/README.md`).
   `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
   the T4 check, and `docs/notes/build_host/custatevec.md` the host build.
@@ -478,6 +495,17 @@ retain its output under results/kaggle/. The kernel's own guide is
   channel. Shot branching is never enabled, since Aer 0.17.2's shot
   branching drops a mid-circuit measurement's readout channel
   (`docs/evidence/aer_gpu_configuration/README.md`).
+- **Cache blocking.** `SnapshotSimulator.run` blocks a GPU batch whose
+  widest active state exceeds one GPU's memory, Aer's own trigger, with
+  `calibration_snapshot.blocking_qubits_for`'s chunk (27 statevector, 13
+  density-matrix qubits on a T4) and `max_parallel_shots=1`, so every run
+  that fits one GPU keeps its executor and counts. On the T4 x2 a 15-qubit
+  density matrix ran in 4.2 s and a 30-qubit statevector in 7.2 s across
+  both GPUs, where Aer's automatic choice filled host memory until the OOM
+  killer ended it. if_else aborts under blocking, so a blocked batch runs in
+  `lower_conditionals` form and raises ValueError where none exists; Aer's
+  CPU chunk executor misplaces conditions, so blocking stays on the GPU
+  (gates core-451 and core-452, `docs/notes/kaggle/substrates.md`).
 - **CI replay.**
   - Seeded GPU counts differ from CPU counts, so a gate re-derives a GPU
     record from its retained counts and never resamples on CI.
@@ -802,7 +830,11 @@ under the stack the record regenerates byte for byte), core-527 and core-423
 under the stack 24 evenly spaced family a circuits plus each sub-family's
 first rerun on qxelarator at their recorded seeds and must reproduce the
 retained counts exactly; core-423 adds 8 family de circuits on the full tier),
-and core-340 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of
+core-499 (`n21_qx_conformance.py --check --live 0`: under the stack every
+reset probe, deferred state and native branch run reruns on qxelarator at its
+retained seed and must equal the retained result; each of the 36 sample jobs
+takes minutes, so `--live N` adds N of them by hand and `--live 36` all), and
+core-340 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of
 the Tuna-17 cases).
 
 ## Open Quantum
