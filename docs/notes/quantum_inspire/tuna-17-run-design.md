@@ -24,15 +24,18 @@ gates core-439 and core-440).
 
 ## Measured constraints
 
-**Shot cost.** Over the 126 completed Tuna-17 jobs retained (4096, 8192 and
-16384 shots), execution time fits 2.92 +- 0.46 s per job plus 0.509 +- 0.032
-ms per shot (residual 1.2 s): the 500 us initialization dominates, so a
-16384-shot job takes about 11 s and the 21-job follow series about 238 s.
-The fit also carries 0.92 +- 0.38 us per CZ line per shot, against the
-documented 60 ns: a 2.4-sigma term with no known mechanism, which may be
-control-stack time rather than qubit time. The fit over the 105 jobs before
-the follow series predicted 233.6 s for it; its 21 jobs executed in 243.3 s,
-4% more, about two residual standard deviations of a 21-job sum.
+**Shot cost.** Over the 147 completed Tuna-17 jobs retained (4096, 8192,
+16384 and 131072 shots), execution time fits 2.63 +- 0.22 s per job plus
+0.533 +- 0.003 ms per shot (residual 1.4 s): the 500 us initialization
+dominates, so a 16384-shot job takes about 11 s, the 21-job follow series
+about 240 s and a 131072-shot job about 72 s. The fit also carries 0.49 +-
+0.34 us per CZ line per shot, against the documented 60 ns: a 1.4-sigma term
+with no known mechanism, which may be control-stack time rather than qubit
+time. The fit over the 105 jobs before the follow series predicted 233.6 s
+for it; its 21 jobs executed in 243.3 s, 4% more, about two residual
+standard deviations of a 21-job sum. The 126-job fit predicted 1462 s for
+the ladder series; its 21 jobs at 131072 shots executed in 1536 s, 5% more,
+70.7 to 77.3 s each.
 
 **Readout drift.** Across the three T0 batches (15:41Z to 15:48Z), e01 and
 e10 of the six LCU qubits moved by at most 0.0071 (q13, |1> misassignment);
@@ -166,7 +169,7 @@ job or one batch:
   qubit has each coupled neighbor in |0>. That is the context q13 reads in
   on the bright branch of a witness. readout-iso-hzh reaches |1> by H Z H,
   the gate path of a witness's data qubit. e10 from readout-1 against
-  readout-iso-x separates neighbor-dependent readout; readout-iso-hzh
+  readout-iso-x separates context-dependent readout; readout-iso-hzh
   against readout-iso-x separates the preparation path. LADDER_CONTEXT_MIN =
   0.02 is about three times the largest e10 move between follow brackets.
 - **Line.** Each Latin job is scanned and locked in at its peak. The
@@ -176,8 +179,8 @@ job or one batch:
   phase.
 
 Budget at LADDER_SHOTS = 131072, the platform cap, from the timing fit:
-- 2.92 s + 0.509 ms x 131072 = 69.6 s per job against the 300 s limit, and
-  1462 s for the 21 jobs.
+- 2.92 s + 0.509 ms x 131072 = 69.6 s per job from the 126-job fit, against
+  the 300 s limit, and 1462 s for the 21 jobs.
 - With the seven pauses and collection, about 50 minutes of wall time.
 - About 3 MB of raw shots per job, and 2621 cycles of the 50 Hz line.
 The QX twins of the six Latin circuits run in two emulator batches first.
@@ -246,17 +249,60 @@ gate core-425; claims `qi-tuna17-boxkite-follow-crossover` and
   q13's |1> misassignment in the witness context, through neighbor-dependent
   readout or through readout-1's own X on q13.
 
+## Ladder results, 2026-10-18
+
+The series ran from 01:55Z to 03:02Z at 131072 shots per job. Both QX twin
+batches read every replica exactly, every batch passed its stop rules, and
+the brackets moved e01 and e10 by at most 0.009
+(`results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json`, gate
+core-425; claims `qi-tuna17-boxkite-ladder-readout-context`,
+`qi-tuna17-boxkite-ladder-within-batch` and
+`qi-tuna17-boxkite-ladder-drift-harmonics`).
+
+- **q13 readout.** With all 17 qubits excited, q13's e10 reads 0.090 and
+  0.086; with every coupled neighbor in |0> it reads 0.044 and 0.040. The
+  difference of 0.045 is about 45 standard errors, and the preregistered
+  rule establishes context on q13. q1 and q14 show none. The two circuits
+  differ in the neighbors' state at measurement and in the X pulses on the
+  neighbors, so the rule does not name which one moves q13. The H Z H
+  preparation moves q13's isolated e10 by +0.016, below the 0.02 threshold.
+  Corrected with the isolated e10, the depth-1 coherence on (10,13) reads
+  -0.997 and -0.955, against -1.104 and -1.060 with readout-1. The follow
+  series' -1.105 is therefore an artifact of the all-qubit readout-1
+  bracket.
+- **rho.** r_coh / r_pop lies above 1 on all three pairs in both X batches:
+  1.020 to 1.022 on (1,4) and (10,13), and 1.005 to 1.006 on (12,14).
+  Population contrast decays faster than joint coherence, which neither
+  global depolarizing nor dephasing gives. Only (12,14) scatters between the
+  replicates beyond 3 SE. With every iso qubit's e10 taken from
+  readout-iso-x, rho moves by at most 0.0004 and every 99% interval still
+  excludes 1, so the decision holds under both corrections.
+- **Line.**
+  - The line is detected in all 12 Latin jobs.
+  - The depth-9 over depth-1 margin holds in 10 of them. It fails where the
+    depth-9 pair is (12,14) in batches 4 and 5: that selector's first
+    harmonic drops from 0.025 to 0.003 while its second harmonic stays at
+    0.020 to 0.022.
+  - None of the 9 readout circuits carries the line at 131072 shots.
+- **Drift.** Against the follow series, the depth-9 bright populations rose
+  by 0.07, 0.09 and 0.39, with (12,14) moving from 0.483 to 0.877.
+
 ## Open questions
 
-- Readout context: a bracket with only the witness's qubits excited, beside
-  the all-qubit pair, would separate neighbor-dependent readout on q13 from
-  a preparation error of readout-1's X.
-- The raw shot order is temporal: it carries a 50 Hz line whose frequency
-  in cycles per shot follows circuit duration ([tuna-17.md](tuna-17.md),
-  claim `qi-tuna17-shot-record-50hz-line`). The line grows with CZ depth,
-  so the ladder's decay mixes decoherence with a time-averaged oscillating
-  phase. A ladder read at the line's phase, and a Ramsey sensor that gives
-  each job its phase reference, are open designs.
+- Readout context: readout-1 and readout-iso-x differ in the neighbors'
+  state and in the pulses the neighbors receive. A readout that applies X X
+  to the neighbors (driven, left in |0>) beside q13's X holds the drive and
+  changes only the state, so the pair separates state-dependent readout from
+  drive crosstalk. readout-1 also excites both of q13's neighbors, q10 and
+  q11; a context readout that excites one at a time would name the neighbor,
+  and the same circuits for every used qubit would give a context-resolved
+  correction.
+- rho above 1: a coherent selector-population error and the job-averaged
+  50 Hz modulation both raise it. A ladder analyzed in line-phase bins at
+  the bins where the modulation is stationary would separate them.
+- The line at 2 f: the first-harmonic test reads zero at an extremum of a
+  selector's response, so a preregistered line test should take the larger
+  of the first and second harmonics.
 - The per-CZ time term and the decomposition of H: an A/B of H against
   Y90 then X on one replica would price the decomposed gate, and a ladder of
   `wait` cycles beside the CZ ladder would separate the detuning phase from
