@@ -159,9 +159,10 @@ core-427; claim `qi-tuna17-shot-record-50hz-line`).
 - The ring-down arms differ only in a wait of tau cycles. Their peak
   frequency rises with tau at 50.4 +- 4.0 Hz, so the source runs in
   wall-clock time, not on the shot index.
-- One shot takes 402.8 to 404.6 us. The fitted execution cost of 0.51 ms per
-  shot therefore includes about 0.1 ms of per-shot time outside the
-  repetition period.
+- At 50 Hz one shot takes 402.8 to 404.6 us in the ring-down circuits and
+  400.7 us in the follow series; the period grows with circuit length, which
+  is the slope above. The fitted execution cost of 0.51 ms per shot therefore
+  includes about 0.1 ms of per-shot time outside the repetition period.
 
 The inferred mechanism is a chip-wide modulation of qubit frequency or flux
 pulses at the mains frequency. No retained probe separates flux pickup from

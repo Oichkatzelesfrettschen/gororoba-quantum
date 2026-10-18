@@ -103,8 +103,8 @@ def gamma_log_tail(k: int, x: float) -> float:
     return -x + float(logsumexp(j * math.log(x) - gammaln(j + 1)))
 
 
-def scan(x: np.ndarray) -> dict[str, Any]:
-    """Band scan, lock-in and block stationarity of a (shots, width) outcome array."""
+def scan(x: np.ndarray, band: tuple[float, float] = BAND, detection_p: float = DETECTION_P) -> dict[str, Any]:
+    """Band scan, lock-in and block stationarity of a (shots, width) outcome array, in band at detection_p."""
     n = x.shape[0]
     centered = x - x.mean(axis=0)
     variance = centered.var(axis=0)
@@ -113,17 +113,17 @@ def scan(x: np.ndarray) -> dict[str, Any]:
     if used.size == 0:
         return row | {"detected": False}
     columns = centered[:, used]
-    spectrum = zoom_fft(columns, list(BAND), m=ZOOM_POINTS, fs=1.0, axis=0)
+    spectrum = zoom_fft(columns, list(band), m=ZOOM_POINTS, fs=1.0, axis=0)
     power = (np.abs(spectrum) ** 2 / (n * variance[used])).sum(axis=1)
     peak = int(power.argmax())
-    step = (BAND[1] - BAND[0]) / (ZOOM_POINTS - 1)
+    step = (band[1] - band[0]) / (ZOOM_POINTS - 1)
     offset = 0.0
     if 0 < peak < ZOOM_POINTS - 1:
         left, middle, right = power[peak - 1], power[peak], power[peak + 1]
         denominator = left - 2 * middle + right
         offset = 0.5 * (left - right) / denominator if denominator else 0.0
-    frequency = BAND[0] + (peak + offset) * step
-    independent = math.ceil((BAND[1] - BAND[0]) * n)
+    frequency = band[0] + (peak + offset) * step
+    independent = math.ceil((band[1] - band[0]) * n)
     log10_p = min(0.0, (math.log(independent) + gamma_log_tail(used.size, float(power[peak]))) / math.log(10))
     t = np.arange(n) - (n - 1) / 2
     design = np.stack(
@@ -151,7 +151,7 @@ def scan(x: np.ndarray) -> dict[str, Any]:
     blocks = x[: m * BLOCKS, used].reshape(BLOCKS, m, used.size).mean(axis=1)
     chi = ((blocks - x[:, used].mean(axis=0)) ** 2 / (variance[used] / m)).sum(axis=0)
     return row | {
-        "detected": log10_p < math.log10(DETECTION_P),
+        "detected": log10_p < math.log10(detection_p),
         "log10_p": sig(log10_p, 4),
         "peak_power": sig(float(power[peak]), 5),
         "cycles_per_shot": sig(frequency, 8),
@@ -223,7 +223,9 @@ def follow_depths(rows: list[dict[str, Any]]) -> dict[str, Any]:
     An amplitude is None when it stays below AMPLITUDE_SIGMAS standard errors.
     The phase resultant |mean exp(i phase)| over one job's selectors is 1 when
     every selector oscillates in phase; each job starts at its own line phase,
-    so the resultant is taken per job.
+    so the resultant is taken per job. The shot period at the grid frequency
+    spans the follow jobs that carry the line; it depends on circuit length,
+    as the ring-down slope shows.
     """
     table = {}
     resultants = {}
@@ -235,7 +237,12 @@ def follow_depths(rows: list[dict[str, Any]]) -> dict[str, Any]:
         phases = [listed[str(b)][1] for b in SELECTORS if str(b) in listed]
         if len(phases) == len(SELECTORS):
             resultants[row["file"]] = sig(float(abs(np.exp(1j * np.array(phases)).mean())), 4)
-    return {"selector_amplitudes": table, "selector_phase_resultant": resultants}
+    follow = [row["cycles_per_shot"] for row in rows if FOLLOW in row["run"] and row["detected"]]
+    return {
+        "selector_amplitudes": table,
+        "selector_phase_resultant": resultants,
+        "shot_period_us_at_grid": [sig(min(follow) / GRID_HZ * 1e6, 5), sig(max(follow) / GRID_HZ * 1e6, 5)],
+    }
 
 
 def stationarity(rows: list[dict[str, Any]]) -> dict[str, Any]:
