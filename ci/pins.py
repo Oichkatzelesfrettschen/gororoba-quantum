@@ -80,16 +80,22 @@ def mismatches(python: str, pins: Mapping[str, str]) -> list[str]:
 
 
 def resolve_replay(
-    runtime: str, explicit: str | None, environment: Mapping[str, str], current: str
+    runtime: str,
+    explicit: str | None,
+    environment: Mapping[str, str],
+    current: str,
+    root: Path = ROOT,
 ) -> tuple[str | None, str]:
     """The interpreter for a historical runtime's gates and a one-line account of the choice.
 
     An explicit interpreter (``--replay-python``) wins over the runtime's
-    variable; either must hold every pin. With neither, the running
-    interpreter serves when it holds every pin, unless PINS_REQUIRED
+    variable; either must hold every pin of ROOT's own pin file, so a tree
+    that changes the pins is verified against its own. With neither, the
+    running interpreter serves when it holds every pin, unless PINS_REQUIRED
     demands an explicit one. None means the runtime's gates cannot run.
     """
-    variable, path = REPLAY_RUNTIMES[runtime]
+    variable, default_path = REPLAY_RUNTIMES[runtime]
+    path = root / default_path.relative_to(ROOT)
     pins = read_pins(path)
     named = explicit or environment.get(variable)
     source = "--replay-python" if explicit else variable

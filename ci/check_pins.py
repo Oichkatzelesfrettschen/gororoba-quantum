@@ -68,13 +68,36 @@ def check_replay_resolution() -> None:
         chosen, reason = resolve(probe, explicit, environment)
         if chosen != expected or fragment not in reason:
             raise RuntimeError(f"{explicit}, {environment}, {probe}: chose {chosen} ({reason})")
+    # Each tree verifies against its own pin file: a tree whose pins name an
+    # absent distribution refuses the interpreter the repository's pins admit.
+    with TemporaryDirectory(prefix="ci-pins-tree-") as temporary:
+        tree = Path(temporary)
+        (tree / "ci").mkdir()
+        (tree / "ci" / "requirements-replay.txt").write_text("pip-package-that-is-absent==1.0\n")
+        chosen, reason = pins.resolve_replay("qiskit-2.5", python, {}, python, tree)
+        if chosen is not None or "pip-package-that-is-absent" not in reason:
+            raise RuntimeError(f"a tree's own pins were not applied: {chosen} ({reason})")
 
 
 def check_pinned_tool() -> None:
     uv, python = "/usr/bin/uv", "/usr/bin/python3"
     argv, notice = pinned_tool.command("ruff", ["check", "ci"], "0.17.1", "0.17.1", {}, uv, python)
-    if argv != ["ruff", "check", "ci"] or notice is not None:
+    if Path(argv[0]).name != "ruff" or argv[1:] != ["check", "ci"] or notice is not None:
         raise RuntimeError(f"an installed pin runs {argv} with notice {notice}")
+    # An installed mypy runs as the requested interpreter's module, so its
+    # imports resolve against that interpreter and not the PATH executable's.
+    argv, notice = pinned_tool.command("mypy", ["."], "2.4.0", "2.4.0", {}, uv, python)
+    if argv != [python, "-m", "mypy", "."] or notice is not None:
+        raise RuntimeError(f"an installed mypy pin runs {argv}")
+    for reported, version in (
+        ("mypy 2.4.0 (compiled: yes)", "2.4.0"),
+        ("mypy 2.4.0+local (compiled: no)", "2.4.0+local"),
+        ("ruff 0.17.1.post1", "0.17.1.post1"),
+    ):
+        match = pinned_tool._VERSION.match(reported)
+        if match is None or match.group(1) != version:
+            raise RuntimeError(f"{reported!r} parses as {match and match.group(1)}, not {version}")
+    refuses(lambda: pinned_tool.command("mypy", [], "2.4.0", "2.4.0+local", STRICT, uv, python), pins.PINS_REQUIRED)
     argv, notice = pinned_tool.command("ruff", ["check"], "0.17.1", "0.14.11", {}, uv, python)
     if argv != [uv, "tool", "run", "--from", "ruff==0.17.1", "ruff", "check"] or not notice:
         raise RuntimeError(f"a ruff mismatch runs {argv}")

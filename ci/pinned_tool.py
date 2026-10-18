@@ -2,8 +2,9 @@
 
 Usage: "$PYTHON" ci/pinned_tool.py TOOL ARGS...
 
-The installed tool runs directly when ``TOOL --version`` reports the pin,
-which is the CI case. Otherwise, unless GOROROBA_PINS_REQUIRED=1, uv runs
+The installed tool runs directly when it reports the pin exactly, which is
+the CI case: ruff as the executable on PATH, mypy as ``"$PYTHON" -m mypy``
+so its imports resolve against that interpreter's packages. Otherwise, unless GOROROBA_PINS_REQUIRED=1, uv runs
 the pinned release: ruff through ``uv tool run``, which needs nothing from
 the project environment, and mypy through ``uv run --no-project --python
 "$PYTHON" --with mypy==PIN``, which layers the pinned mypy over the calling
@@ -28,18 +29,28 @@ import pins
 
 REQUIREMENTS = Path(__file__).resolve().parent / "requirements-ci.txt"
 TOOLS = ("ruff", "mypy")
-_VERSION = re.compile(r"\b(\d+(?:\.\d+)+)\b")
+# The whole version token after the tool's name, so 2.4.0+local or
+# 0.17.1.post1 never reads as the release 2.4.0 or 0.17.1.
+_VERSION = re.compile(r"^\S+ (\S+)")
 
 
-def installed_version(tool: str) -> str | None:
+def launcher(tool: str, python: str) -> list[str] | None:
+    """ruff as its executable on PATH; mypy as the requested interpreter's module, so imports resolve there."""
+    if tool == "mypy":
+        return [python, "-m", "mypy"]
     executable = shutil.which(tool)
-    if executable is None:
+    return [executable] if executable else None
+
+
+def installed_version(tool: str, python: str) -> str | None:
+    prefix = launcher(tool, python)
+    if prefix is None:
         return None
     try:
-        completed = subprocess.run([executable, "--version"], capture_output=True, text=True, check=False, timeout=60)
+        completed = subprocess.run([*prefix, "--version"], capture_output=True, text=True, check=False, timeout=60)
     except (OSError, subprocess.TimeoutExpired):
         return None
-    match = _VERSION.search(completed.stdout)
+    match = _VERSION.match(completed.stdout.strip())
     return match.group(1) if completed.returncode == 0 and match else None
 
 
@@ -56,7 +67,7 @@ def command(
     if tool not in TOOLS:
         raise SystemExit(f"pinned_tool: {tool!r} is not one of {', '.join(TOOLS)}")
     if installed == pin:
-        return [tool, *arguments], None
+        return [*(launcher(tool, python) or [tool]), *arguments], None
     found = f"{tool} {installed}" if installed else f"no {tool}"
     if pins.pins_required(environment):
         raise SystemExit(f"pinned_tool: {found} is installed; {pins.PINS_REQUIRED}=1 requires {tool} {pin}")
@@ -76,7 +87,13 @@ def main(argv: Sequence[str]) -> int:
     if tool not in pinned:
         raise SystemExit(f"pinned_tool: {REQUIREMENTS.name} pins no {tool}")
     argv_out, notice = command(
-        tool, arguments, pinned[tool], installed_version(tool), os.environ, shutil.which("uv"), sys.executable
+        tool,
+        arguments,
+        pinned[tool],
+        installed_version(tool, sys.executable),
+        os.environ,
+        shutil.which("uv"),
+        sys.executable,
     )
     if notice:
         print(notice, file=sys.stderr, flush=True)

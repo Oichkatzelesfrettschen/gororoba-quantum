@@ -18,9 +18,11 @@ whose local toolchain differs from CI's does not mask the comparison. A
 textual conflict stops the run with the conflicted paths.
 
 Historical-runtime gates run under the interpreter pins.resolve_replay
-chooses from --replay-python, REPLAY_PYTHON or the running interpreter;
-both trees' runners receive it as REPLAY_PYTHON in their own environment,
-so a base whose runner predates --replay-python runs those gates too.
+chooses from --replay-python, REPLAY_PYTHON or the running interpreter,
+verified per tree against that tree's ci/requirements-replay.txt; each
+runner receives it as REPLAY_PYTHON in its own environment, so a base whose
+runner predates --replay-python runs those gates too. An explicit
+interpreter that fails the merge's pins stops the run.
 
 The worktrees live under --worktrees (default ~/worktrees/<repository>/premerge,
 <repository> naming the primary checkout), named by base, ref and process id,
@@ -129,19 +131,26 @@ def compare(base: dict[str, tuple[int, str]], merged: dict[str, tuple[int, str]]
     return introduced, shared
 
 
-def replay_interpreters(explicit: str | None) -> dict[str, str]:
-    """The historical-runtime interpreter variables both trees' runners receive, each pin-verified."""
+def replay_interpreters(explicit: str | None, root: Path, label: str) -> tuple[dict[str, str], list[str]]:
+    """The historical-runtime interpreter variables ROOT's runner receives, verified against ROOT's pins.
+
+    The second element names each runtime an explicit interpreter fails to
+    satisfy, so a caller can refuse rather than compare gates neither tree ran.
+    """
     found: dict[str, str] = {}
+    refused: list[str] = []
     for runtime, (variable, _path) in pins.REPLAY_RUNTIMES.items():
-        chosen, reason = pins.resolve_replay(runtime, explicit, os.environ, interpreter())
-        print(f"premerge: historical runtime {runtime}: {reason}", flush=True)
+        chosen, reason = pins.resolve_replay(runtime, explicit, os.environ, interpreter(), root)
+        print(f"premerge: {label} historical runtime {runtime}: {reason}", flush=True)
         if chosen is not None:
             found[variable] = os.path.abspath(shutil.which(chosen) or chosen)
-    return found
+        elif explicit:
+            refused.append(f"{runtime}: {reason}")
+    return found, refused
 
 
 def premerge(
-    repo: Path, ref: str, base_ref: str, max_seconds: float, worktrees: Path, replay: dict[str, str] | None = None
+    repo: Path, ref: str, base_ref: str, max_seconds: float, worktrees: Path, replay_python: str | None = None
 ) -> int:
     base_commit = git(repo, "rev-parse", "--verify", f"{base_ref}^{{commit}}")
     ref_commit = git(repo, "rev-parse", "--verify", f"{ref}^{{commit}}")
@@ -165,8 +174,18 @@ def premerge(
                 git(merge_tree, "merge", "--abort", check=False)
                 print(f"merge of {ref} into {base_ref} conflicts:\n{conflicts or merged.stdout + merged.stderr}")
                 return 2
-            base_results = results(base_tree, max_seconds, replay)
-            merge_results = results(merge_tree, max_seconds, replay)
+            # Each tree verifies the interpreter against its own pins, so a
+            # branch that changes ci/requirements-replay.txt runs its gates
+            # under an interpreter holding the new pins. An explicit
+            # interpreter must satisfy the merge, the tree under test.
+            merge_replay, refused = replay_interpreters(replay_python, merge_tree, "merge")
+            if refused:
+                raise SystemExit(f"--replay-python {replay_python} fails the merge's pins: {'; '.join(refused)}")
+            base_replay, _base_refused = replay_interpreters(replay_python, base_tree, "base")
+            if replay_python and not base_replay:
+                base_replay, _base_refused = replay_interpreters(None, base_tree, "base")
+            base_results = results(base_tree, max_seconds, base_replay)
+            merge_results = results(merge_tree, max_seconds, merge_replay)
     finally:
         with contextlib.suppress(OSError):
             worktrees.rmdir()
@@ -264,8 +283,7 @@ def main(argv: list[str] | None = None) -> int:
     if not arguments.no_fetch:
         git(ROOT, "fetch", "--quiet", "origin")
     worktrees = arguments.worktrees or Path.home() / "worktrees" / repository_name(ROOT) / "premerge"
-    replay = replay_interpreters(arguments.replay_python)
-    return premerge(ROOT, arguments.ref, arguments.base, arguments.max_seconds, worktrees, replay)
+    return premerge(ROOT, arguments.ref, arguments.base, arguments.max_seconds, worktrees, arguments.replay_python)
 
 
 if __name__ == "__main__":
