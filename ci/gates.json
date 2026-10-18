@@ -2676,7 +2676,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "shellcheck -S error ci/fetch_open_gororoba.sh",
+   "cmd": "shellcheck -S error ci/fetch_open_gororoba.sh ci/install_pins.sh",
    "name": "core-402",
    "seconds": 1.0,
    "tier": "pr"
@@ -3138,6 +3138,22 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_census.py --self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_census.py --self-test",
    "name": "core-373",
    "seconds": 15.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/aer_gpu_probe.py --check docs/evidence/aer_gpu_configuration/result.json && \"$PYTHON\" -B -O -W error scripts/aer_gpu_probe.py --check docs/evidence/aer_gpu_configuration/result.json",
+   "name": "core-367",
+   "seconds": 22.6,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config/output/output/aer_gpu_probe.json --workloads toy,width --widths 7,10 && \"$PYTHON\" -B -O -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config/output/output/aer_gpu_probe.json --workloads toy,width --widths 7,10",
+   "name": "core-450",
+   "seconds": 20.0,
    "tier": "pr"
   },
   {

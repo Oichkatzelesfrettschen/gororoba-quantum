@@ -102,8 +102,8 @@ nvidia-smi compute-apps listing showed only desktop processes), two runs each:
 cuStateVec is 1.25x faster at 20 qubits and 1.18x at 26. A 1-qubit if_else
 circuit costs 0.035 and 0.078 ms/shot with cuStateVec against 0.017 and 0.035
 without, so tiny circuits pay a fixed overhead. The 7-qubit N=21 two-round
-circuit with feed-forward (`aer_gpu_probe.py --one two_round_encoded_ff
-gpu_statevector_custatevec`) ran 1859 shots at 39.8 ms/shot under that load;
+circuit with feed-forward, run alone through the probe's
+`gpu_statevector_custatevec` configuration, ran 1859 shots at 39.8 ms/shot under that load;
 its plain-GPU counterpart is not measured.
 
 ## Verification on the installed package
@@ -145,7 +145,7 @@ No retained run sets `cuStateVec_enable`, so the T4 path is unmeasured.
 the kernel reports the five cuQuantum-chain wheel versions in
 `environment.json`. `calibration_snapshot.noise_simulator(...,
 custatevec=True)` sets the option, and `scripts/aer_gpu_probe.py` carries the
-`gpu_statevector_custatevec` configuration and `--only`.
+`gpu_statevector_custatevec` configuration.
 `docs/notes/kaggle/custatevec.md` holds the wheel chain, the T4 push command
 and how to read its result.
 

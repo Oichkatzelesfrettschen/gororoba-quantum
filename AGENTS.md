@@ -453,21 +453,31 @@ retain its output under results/kaggle/. The kernel's own guide is
   4. `set_options(max_parallel_threads=parallel.workers())` uses every host
      CPU.
 - **cuStateVec.** `noise_simulator(..., custatevec=True)` sets Aer's
-  `cuStateVec_enable` on a GPU statevector run. qiskit-aer-gpu-cu11 0.17.2
+  `cuStateVec_enable` on a GPU statevector or density-matrix run, and
+  `GOROROBA_AER_CUSTATEVEC=1` sets it for every GPU call that leaves
+  `custatevec` unset (`calibration_snapshot.aer_custatevec`). qiskit-aer-gpu-cu11 0.17.2
   links libcustatevec.so.1 and libcutensornet.so.2, which `cuquantum-cu11`
   24.8.0 and `cutensor-cu11` 2.2.0 (`KERNEL_PINS` entries) supply. Aer
   0.17.2 reports `cuStateVec_enable` False when `batched_shots_gpu` is also
   set.
-  `scripts/aer_gpu_probe.py --only cpu_statevector
-  gpu_statevector gpu_statevector_custatevec` records the three paths
-  with Aer's reported `cuStateVec_enable`; a T4 result for it is not retained
-  yet. `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
+  `scripts/aer_gpu_probe.py --workloads n21 --configurations
+  cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec` records the three paths
+  with Aer's reported `cuStateVec_enable`. On the T4 x2 (gate core-450)
+  cuStateVec ran the dynamic density matrix 1.44 and 1.63 times faster than
+  the plain GPU executor at 7 and 10 qubits and statevector trajectories
+  1.19 to 1.29 times slower, and Aer spread every multi-shot run over both
+  GPUs (`docs/evidence/aer_gpu_configuration/README.md`).
+  `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
   the T4 check, and `docs/notes/build_host/custatevec.md` the host build.
-- **Batched GPU shots.** `noise_simulator(..., batched_shots=True)` enables
-  Aer's `batched_shots_gpu` for static circuits of at most 16 active qubits.
-  qiskit-aer-gpu-cu11 0.17.2 aborts it on any circuit with control flow
-  (`if_else` lowers to `jump`). Batched static runs have no measurement here
-  yet.
+- **Batched GPU shots.** On a GPU `noise_simulator` enables Aer's
+  `batched_shots_gpu` by default for circuits of at most
+  `BATCHED_SHOTS_MAX_QUBITS` (10) active qubits, and `batched_shots=False`
+  opts out. `SnapshotSimulator.run` runs any circuit with control flow
+  unbatched: the batched executor rejects `jump`, and with if_else lowered
+  to bfunc-conditioned gates it evaluates the condition before the readout
+  channel. Shot branching is never enabled, since Aer 0.17.2's shot
+  branching drops a mid-circuit measurement's readout channel
+  (`docs/evidence/aer_gpu_configuration/README.md`).
 - **CI replay.**
   - Seeded GPU counts differ from CPU counts, so a gate re-derives a GPU
     record from its retained counts and never resamples on CI.
@@ -478,6 +488,23 @@ retain its output under results/kaggle/. The kernel's own guide is
     durations.
   - Replays hold routed CZ, layout and classical stages exact, and depth
     and duration within a relative 0.002 across BLAS builds.
+- **Pinned GPU environment.** `push --gpu-env` on `NvidiaTeslaT4` runs the
+  entry in a venv on the image's Python 3.13, the newest Python the cu11
+  wheel ships, holding requirements.txt and ci/requirements-ci.txt with
+  `GPU_ENV_AER_PINS` in qiskit-aer's place (`ci/install_pins.sh` with
+  `AER_PINS`).
+  - Before the entry, `kernel_main.gpu_interpreter` requires every pin at its
+    version, qiskit-aer-gpu-cu11 as the only owner of
+    `qiskit_aer/__init__.py`, both T4s in nvidia-smi, and seeded Bell runs
+    on the GPU that report device GPU, the cuStateVec one with
+    `cuStateVec_enable` true.
+  - A miss lists its reasons under `failures` in gpu_env.json, and the kernel
+    exits 4 without running the entry.
+  - `aer_gpu_probe.py --require-gpu` then stops at the first row that leaves
+    the GPU.
+  - Only Python itself differs from CI's 3.14.7.
+  - On a CPU machine the same push stops at the preflight, which proves the
+    error path at no GPU cost.
 - **Sessions.** Five CPU and two GPU batch sessions run per account. A GPU
   machine's four host CPUs run CPU work, `--ci-env` included, when the CPU
   pool is full, at the price of GPU quota.
