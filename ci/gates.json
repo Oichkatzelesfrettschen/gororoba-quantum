@@ -3724,7 +3724,7 @@
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --submit-reuse && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --submit-reuse",
-   "name": "core-546",
+   "name": "core-549",
    "seconds": 69.5,
    "tier": "pr"
   },
