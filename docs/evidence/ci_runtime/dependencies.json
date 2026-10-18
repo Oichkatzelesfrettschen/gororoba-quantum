@@ -1,0 +1,879 @@
+{
+  "schema": "gororoba-ci-dependency-audit-v1",
+  "source": "https://pypi.org/pypi/{distribution}/{version}/json",
+  "packages": [
+    {
+      "name": "numpy",
+      "original_pins": [
+        {
+          "file": "requirements.txt",
+          "version": "2.5.4"
+        },
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.5.4"
+        }
+      ],
+      "latest": "2.5.4",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "qiskit",
+      "original_pins": [
+        {
+          "file": "requirements.txt",
+          "version": "2.5.2"
+        },
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.3.1"
+        }
+      ],
+      "latest": "2.6.0",
+      "decision": "Quantum Inspire provider 0.18.5 requires qiskit<2.4; its interpreter remains 3.13.15. Main upgrades to 2.6.0."
+    },
+    {
+      "name": "qiskit-aer",
+      "original_pins": [
+        {
+          "file": "requirements.txt",
+          "version": "0.17.2"
+        }
+      ],
+      "latest": "0.17.2",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "qiskit-ibm-runtime",
+      "original_pins": [
+        {
+          "file": "requirements.txt",
+          "version": "0.50.0"
+        }
+      ],
+      "latest": "0.50.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "pydantic",
+      "original_pins": [
+        {
+          "file": "requirements.txt",
+          "version": "2.13.5"
+        },
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.13.4"
+        }
+      ],
+      "latest": "2.14.1",
+      "decision": "Main upgrades to 2.14.1; QI API client 0.63.0 requires pydantic==2.13.4."
+    },
+    {
+      "name": "qiskit-mitigation",
+      "original_pins": [
+        {
+          "file": "requirements.txt",
+          "version": "0.1.1"
+        }
+      ],
+      "latest": "0.1.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "samplomatic",
+      "original_pins": [
+        {
+          "file": "requirements.txt",
+          "version": "0.21.0"
+        }
+      ],
+      "latest": "0.21.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "ibm-quantum-schemas",
+      "original_pins": [
+        {
+          "file": "requirements.txt",
+          "version": "0.12.20260921"
+        }
+      ],
+      "latest": "0.13.20261016",
+      "decision": "Upgrade to latest published compatible version."
+    },
+    {
+      "name": "rustworkx",
+      "original_pins": [
+        {
+          "file": "requirements.txt",
+          "version": "0.18.1"
+        },
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.18.1"
+        }
+      ],
+      "latest": "0.18.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "scipy",
+      "original_pins": [
+        {
+          "file": "requirements.txt",
+          "version": "1.18.1"
+        },
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "1.18.1"
+        }
+      ],
+      "latest": "1.18.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "sympy",
+      "original_pins": [
+        {
+          "file": "requirements.txt",
+          "version": "1.14.0"
+        }
+      ],
+      "latest": "1.14.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "python-flint",
+      "original_pins": [
+        {
+          "file": "requirements.txt",
+          "version": "0.9.0"
+        }
+      ],
+      "latest": "0.9.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "mypy",
+      "original_pins": [
+        {
+          "file": "ci/requirements-ci.txt",
+          "version": "1.19.1"
+        }
+      ],
+      "latest": "2.4.0",
+      "decision": "Upgrade to latest published compatible version."
+    },
+    {
+      "name": "ruff",
+      "original_pins": [
+        {
+          "file": "ci/requirements-ci.txt",
+          "version": "0.14.11"
+        }
+      ],
+      "latest": "0.17.1",
+      "decision": "Upgrade to latest published compatible version."
+    },
+    {
+      "name": "matplotlib",
+      "original_pins": [
+        {
+          "file": "ci/requirements-ci.txt",
+          "version": "3.11.2"
+        }
+      ],
+      "latest": "3.11.2",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "playwright",
+      "original_pins": [
+        {
+          "file": "ci/requirements-browser.txt",
+          "version": "1.63.0"
+        }
+      ],
+      "latest": "1.64.0",
+      "decision": "Upgrade to latest published compatible version."
+    },
+    {
+      "name": "aiohappyeyeballs",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.7.1"
+        }
+      ],
+      "latest": "2.7.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "aiohttp",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "3.14.3"
+        }
+      ],
+      "latest": "3.14.5",
+      "decision": "qi-compute-api-client 0.63.0 requires aiohttp==3.14.3."
+    },
+    {
+      "name": "aiohttp-retry",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.9.1"
+        }
+      ],
+      "latest": "2.9.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "aiosignal",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "1.4.0"
+        }
+      ],
+      "latest": "1.4.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "annotated-doc",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.0.5"
+        }
+      ],
+      "latest": "0.0.5",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "annotated-types",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.8.0"
+        }
+      ],
+      "latest": "0.8.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "anyio",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "4.15.1"
+        }
+      ],
+      "latest": "4.15.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "attrs",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "26.1.0"
+        }
+      ],
+      "latest": "26.1.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "certifi",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2026.7.22"
+        }
+      ],
+      "latest": "2026.7.22",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "cffi",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.1.1"
+        }
+      ],
+      "latest": "2.1.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "charset-normalizer",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "3.5.2"
+        }
+      ],
+      "latest": "3.5.2",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "click",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "8.5.0"
+        }
+      ],
+      "latest": "8.5.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "colorama",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.4.6"
+        }
+      ],
+      "latest": "0.4.6",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "cryptography",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "50.0.2"
+        }
+      ],
+      "latest": "50.0.2",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "dill",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.4.1"
+        }
+      ],
+      "latest": "0.4.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "frozenlist",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "1.8.0"
+        }
+      ],
+      "latest": "1.8.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "h11",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.16.0"
+        }
+      ],
+      "latest": "0.16.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "httpcore2",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.13.1"
+        }
+      ],
+      "latest": "2.13.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "httpx2",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.13.1"
+        }
+      ],
+      "latest": "2.13.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "idna",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "3.20"
+        }
+      ],
+      "latest": "3.20",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "jsonschema",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "4.26.0"
+        }
+      ],
+      "latest": "4.26.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "jsonschema-specifications",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2025.9.1"
+        }
+      ],
+      "latest": "2025.9.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "libqasm",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "1.2.1"
+        }
+      ],
+      "latest": "1.6.0",
+      "decision": "OpenSquirrel 0.9.1 requires libqasm==1.2.1."
+    },
+    {
+      "name": "markdown-it-py",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "4.2.0"
+        }
+      ],
+      "latest": "4.2.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "mcp",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.3.0"
+        }
+      ],
+      "latest": "2.3.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "mcp-types",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.3.0"
+        }
+      ],
+      "latest": "2.3.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "mdurl",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.1.2"
+        }
+      ],
+      "latest": "0.1.2",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "multidict",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "6.9.1"
+        }
+      ],
+      "latest": "7.1.0",
+      "decision": "Locked aiohttp 3.14.3 requires multidict<7; latest aiohttp metadata has a different bound."
+    },
+    {
+      "name": "networkx",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "3.7"
+        }
+      ],
+      "latest": "3.7",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "oauthlib",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "4.0.0"
+        }
+      ],
+      "latest": "4.0.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "opensquirrel",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.9.1"
+        }
+      ],
+      "latest": "0.9.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "opentelemetry-api",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "1.45.1"
+        }
+      ],
+      "latest": "1.45.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "propcache",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.5.4"
+        }
+      ],
+      "latest": "0.5.4",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "pycparser",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "3.11"
+        }
+      ],
+      "latest": "3.11",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "pydantic-core",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.46.4"
+        }
+      ],
+      "latest": "2.50.1",
+      "decision": "QI pydantic 2.13.4 requires pydantic-core==2.46.4."
+    },
+    {
+      "name": "pydantic-settings",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.16.0"
+        }
+      ],
+      "latest": "2.16.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "pygments",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.21.0"
+        }
+      ],
+      "latest": "2.21.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "pyjwt",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.15.1"
+        }
+      ],
+      "latest": "2.15.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "python-dateutil",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.9.0.post0"
+        }
+      ],
+      "latest": "2.9.0.post0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "python-dotenv",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "1.2.4"
+        }
+      ],
+      "latest": "1.2.4",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "python-multipart",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.0.32"
+        }
+      ],
+      "latest": "0.0.32",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "qi-compute-api-client",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.63.0"
+        }
+      ],
+      "latest": "0.63.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "qiskit-quantuminspire",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.18.5"
+        }
+      ],
+      "latest": "0.18.5",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "quantuminspire",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "4.1.0"
+        }
+      ],
+      "latest": "4.1.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "qxelarator",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.10.0"
+        }
+      ],
+      "latest": "0.10.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "referencing",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.37.0"
+        }
+      ],
+      "latest": "0.37.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "requests",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.34.2"
+        }
+      ],
+      "latest": "2.34.2",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "rich",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "15.0.0"
+        }
+      ],
+      "latest": "15.0.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "rpds-py",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2026.9.1"
+        }
+      ],
+      "latest": "2026.9.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "shellingham",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "1.5.4"
+        }
+      ],
+      "latest": "1.5.4",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "six",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "1.17.0"
+        }
+      ],
+      "latest": "1.17.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "sse-starlette",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "3.5.0"
+        }
+      ],
+      "latest": "3.5.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "starlette",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "1.8.0"
+        }
+      ],
+      "latest": "1.8.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "stevedore",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "5.9.1"
+        }
+      ],
+      "latest": "5.9.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "truststore",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.10.5"
+        }
+      ],
+      "latest": "0.10.5",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "typer",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.27.3"
+        }
+      ],
+      "latest": "0.27.3",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "typing-extensions",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "4.16.0"
+        }
+      ],
+      "latest": "4.16.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "typing-inspection",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.4.4"
+        }
+      ],
+      "latest": "0.4.4",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "urllib3",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "2.7.0"
+        }
+      ],
+      "latest": "2.8.0",
+      "decision": "QI API client 0.63.0 requires urllib3==2.7.0."
+    },
+    {
+      "name": "uvicorn",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "0.54.0"
+        }
+      ],
+      "latest": "0.54.0",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "yarl",
+      "original_pins": [
+        {
+          "file": "docs/notes/quantum_inspire/requirements-qi.txt",
+          "version": "1.25.1"
+        }
+      ],
+      "latest": "1.25.1",
+      "decision": "Already at latest published release."
+    },
+    {
+      "name": "threadpoolctl",
+      "original_pins": [],
+      "latest": "3.7.0",
+      "decision": "Add pinned native-pool instrumentation to CI and the QI lock; verify loaded library thread counts under each interpreter."
+    }
+  ]
+}

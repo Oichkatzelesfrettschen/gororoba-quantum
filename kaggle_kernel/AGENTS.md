@@ -60,7 +60,7 @@ and what it must prove before its output counts.
 
 | Package | Pin | Kernel source |
 | --- | --- | --- |
-| qiskit | 2.5.2 | PyPI |
+| qiskit | 2.6.0 | PyPI |
 | qiskit-aer-gpu-cu11 | 0.17.2 (the CUDA 12 `qiskit-aer-gpu` stops at 0.15.1 and has no Python 3.13 wheel) | PyPI |
 | cuquantum-cu11 | 24.8.0 (brings custatevec-cu11 1.6.0.post1 and cutensornet-cu11 2.5.0; the libraries the cu11 Aer wheel links) | PyPI |
 | cutensor-cu11 | 2.2.0 (the newest release inside cutensornet-cu11 2.5.0's `>=2.0.1,<3`) | PyPI |

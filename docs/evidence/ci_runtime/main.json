@@ -1,0 +1,3252 @@
+{
+  "run": {
+    "id": 39081984593,
+    "event": "push",
+    "head_sha": "1db2b5aa48143620b5db60f4dc3098eef70d81a0",
+    "created_at": "2026-10-18T00:13:44Z",
+    "run_started_at": "2026-10-18T00:13:44Z"
+  },
+  "created_to_first_job_seconds": 1040.0,
+  "job_span_seconds": 1845.0,
+  "schema": "gororoba-ci-analysis-v1",
+  "workflow_seconds": 2885.0,
+  "runner_seconds": 8262.0,
+  "stage_runner_seconds": {
+    "Complete job": 2.0,
+    "Fetch the pinned open_gororoba registry and proofs": 4.0,
+    "Install pinned dependencies": 446.0,
+    "Install the Quantum Inspire lock": 21.0,
+    "Materialize the kernel CSVs from the registry records": 2.0,
+    "Post Run actions/checkout@v4": 4.0,
+    "Post Run actions/setup-python@v5": 2.0,
+    "Run actions/checkout@v4": 123.0,
+    "Run actions/setup-python@v5": 175.0,
+    "Run shard": 6959.0,
+    "Run the qi gates": 454.0,
+    "Run verify.py": 7.0,
+    "Runner specs": 2.0,
+    "Select the Rocq replay": 0.0,
+    "Set up job": 14.0
+  },
+  "gate_elapsed_seconds": 18091.8,
+  "runners": [
+    {
+      "name": "verify.py against open_gororoba",
+      "conclusion": "success",
+      "wall_seconds": 69.0
+    },
+    {
+      "name": "rocq paths changed",
+      "conclusion": "success",
+      "wall_seconds": 13.0
+    },
+    {
+      "name": "gates 10/12",
+      "conclusion": "success",
+      "wall_seconds": 409.0
+    },
+    {
+      "name": "gates 1/12",
+      "conclusion": "success",
+      "wall_seconds": 604.0
+    },
+    {
+      "name": "qi stack on Python 3.13",
+      "conclusion": "success",
+      "wall_seconds": 539.0
+    },
+    {
+      "name": "gates 3/12",
+      "conclusion": "success",
+      "wall_seconds": 224.0
+    },
+    {
+      "name": "gates 5/12",
+      "conclusion": "success",
+      "wall_seconds": 525.0
+    },
+    {
+      "name": "gates 2/12",
+      "conclusion": "success",
+      "wall_seconds": 688.0
+    },
+    {
+      "name": "gates 0/12",
+      "conclusion": "success",
+      "wall_seconds": 1843.0
+    },
+    {
+      "name": "gates 4/12",
+      "conclusion": "success",
+      "wall_seconds": 345.0
+    },
+    {
+      "name": "gates 6/12",
+      "conclusion": "success",
+      "wall_seconds": 975.0
+    },
+    {
+      "name": "gates 11/12",
+      "conclusion": "success",
+      "wall_seconds": 326.0
+    },
+    {
+      "name": "gates 9/12",
+      "conclusion": "success",
+      "wall_seconds": 730.0
+    },
+    {
+      "name": "gates 7/12",
+      "conclusion": "success",
+      "wall_seconds": 593.0
+    },
+    {
+      "name": "gates 8/12",
+      "conclusion": "success",
+      "wall_seconds": 379.0
+    }
+  ],
+  "runner_specs": {
+    "gates 0/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15253440 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 1/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15239316 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 10/12": [
+      "cpu_model: AMD EPYC 9V74 80-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15323768 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 11/12": [
+      "cpu_model: AMD EPYC 9V45 96-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15278636 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 2/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373448 kB', 'MemAvailable': '15225224 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 3/12": [
+      "cpu_model: AMD EPYC 9V45 96-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15075172 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 4/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15236168 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 5/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15109352 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 6/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15235172 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 7/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15288428 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 8/12": [
+      "cpu_model: Intel(R) Xeon(R) 6973P-C",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16372436 kB', 'MemAvailable': '15199252 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "gates 9/12": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15260524 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
+    ],
+    "qi stack on Python 3.13": [
+      "cpu_model: AMD EPYC 7763 64-Core Processor",
+      "logical_cpus: 4  affinity_cpus: 4  cgroup_cpu_max: none",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15302652 kB'}",
+      "python: 3.14.7 CPython x86_64",
+      "platform: Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "memory: {'MemTotal': '16373452 kB', 'MemAvailable': '15302656 kB'}",
+      "python: 3.13.15 CPython x86_64"
+    ]
+  },
+  "gates": [
+    {
+      "job": "gates 0/12",
+      "name": "core-379",
+      "status": "PASS",
+      "seconds": 1779.9,
+      "estimated_seconds": 1281.7
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-434",
+      "status": "PASS",
+      "seconds": 918.2,
+      "estimated_seconds": 535.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-329",
+      "status": "PASS",
+      "seconds": 672.8,
+      "estimated_seconds": 363.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-448",
+      "status": "PASS",
+      "seconds": 627.2,
+      "estimated_seconds": 850
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-447",
+      "status": "PASS",
+      "seconds": 542.2,
+      "estimated_seconds": 850
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-523",
+      "status": "PASS",
+      "seconds": 532.8,
+      "estimated_seconds": 158.8
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-074",
+      "status": "PASS",
+      "seconds": 470.2,
+      "estimated_seconds": 679.2
+    },
+    {
+      "job": "qi stack on Python 3.13",
+      "name": "core-423",
+      "status": "PASS",
+      "seconds": 453.6,
+      "estimated_seconds": 132.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-491",
+      "status": "PASS",
+      "seconds": 358.1,
+      "estimated_seconds": 410.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-526",
+      "status": "PASS",
+      "seconds": 329.9,
+      "estimated_seconds": 40.4
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-360",
+      "status": "PASS",
+      "seconds": 327.1,
+      "estimated_seconds": 395.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-094",
+      "status": "PASS",
+      "seconds": 323.4,
+      "estimated_seconds": 279.2
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-487",
+      "status": "PASS",
+      "seconds": 310.7,
+      "estimated_seconds": 44.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-337",
+      "status": "PASS",
+      "seconds": 280.7,
+      "estimated_seconds": 227.4
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-289",
+      "status": "PASS",
+      "seconds": 276.4,
+      "estimated_seconds": 120.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "sources-147",
+      "status": "PASS",
+      "seconds": 230.4,
+      "estimated_seconds": 131.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-495",
+      "status": "PASS",
+      "seconds": 223.6,
+      "estimated_seconds": 62.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-211",
+      "status": "PASS",
+      "seconds": 222.9,
+      "estimated_seconds": 45
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-390",
+      "status": "PASS",
+      "seconds": 219.1,
+      "estimated_seconds": 143.5
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-353",
+      "status": "PASS",
+      "seconds": 201.4,
+      "estimated_seconds": 43.1
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-089",
+      "status": "PASS",
+      "seconds": 185.1,
+      "estimated_seconds": 683.7
+    },
+    {
+      "job": "gates 8/12",
+      "name": "sources-218",
+      "status": "PASS",
+      "seconds": 181.4,
+      "estimated_seconds": 110.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-438",
+      "status": "PASS",
+      "seconds": 171.0,
+      "estimated_seconds": 178.4
+    },
+    {
+      "job": "gates 11/12",
+      "name": "sources-215",
+      "status": "PASS",
+      "seconds": 165.3,
+      "estimated_seconds": 110.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-311",
+      "status": "PASS",
+      "seconds": 162.9,
+      "estimated_seconds": 30.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-287",
+      "status": "PASS",
+      "seconds": 158.7,
+      "estimated_seconds": 20.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-449",
+      "status": "PASS",
+      "seconds": 151.4,
+      "estimated_seconds": 169
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-359",
+      "status": "PASS",
+      "seconds": 146.1,
+      "estimated_seconds": 83.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-064",
+      "status": "PASS",
+      "seconds": 143.9,
+      "estimated_seconds": 95.4
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-053",
+      "status": "PASS",
+      "seconds": 142.2,
+      "estimated_seconds": 115.5
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-328",
+      "status": "PASS",
+      "seconds": 135.2,
+      "estimated_seconds": 16.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "sources-161",
+      "status": "PASS",
+      "seconds": 132.4,
+      "estimated_seconds": 147.9
+    },
+    {
+      "job": "gates 6/12",
+      "name": "sources-164",
+      "status": "PASS",
+      "seconds": 125.3,
+      "estimated_seconds": 120.2
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-099",
+      "status": "PASS",
+      "seconds": 121.9,
+      "estimated_seconds": 88.8
+    },
+    {
+      "job": "gates 4/12",
+      "name": "sources-160",
+      "status": "PASS",
+      "seconds": 118.6,
+      "estimated_seconds": 87.0
+    },
+    {
+      "job": "gates 5/12",
+      "name": "sources-163",
+      "status": "PASS",
+      "seconds": 116.7,
+      "estimated_seconds": 76.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-098",
+      "status": "PASS",
+      "seconds": 115.1,
+      "estimated_seconds": 87.7
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-149",
+      "status": "PASS",
+      "seconds": 111.8,
+      "estimated_seconds": 153.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-056",
+      "status": "PASS",
+      "seconds": 111.6,
+      "estimated_seconds": 69.2
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-339",
+      "status": "PASS",
+      "seconds": 111.4,
+      "estimated_seconds": 49.2
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-221",
+      "status": "PASS",
+      "seconds": 107.8,
+      "estimated_seconds": 45
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-242",
+      "status": "PASS",
+      "seconds": 107.6,
+      "estimated_seconds": 52.5
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-409",
+      "status": "PASS",
+      "seconds": 105.2,
+      "estimated_seconds": 72.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-301",
+      "status": "PASS",
+      "seconds": 104.9,
+      "estimated_seconds": 60.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-055",
+      "status": "PASS",
+      "seconds": 101.3,
+      "estimated_seconds": 55.6
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-352",
+      "status": "PASS",
+      "seconds": 97.8,
+      "estimated_seconds": 44.7
+    },
+    {
+      "job": "gates 11/12",
+      "name": "sources-146",
+      "status": "PASS",
+      "seconds": 93.7,
+      "estimated_seconds": 184.3
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-054",
+      "status": "PASS",
+      "seconds": 89.5,
+      "estimated_seconds": 94.3
+    },
+    {
+      "job": "gates 1/12",
+      "name": "sources-143",
+      "status": "PASS",
+      "seconds": 87.9,
+      "estimated_seconds": 70.9
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-499",
+      "status": "PASS",
+      "seconds": 87.9,
+      "estimated_seconds": 50.5
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-080",
+      "status": "PASS",
+      "seconds": 86.2,
+      "estimated_seconds": 697.7
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-167",
+      "status": "PASS",
+      "seconds": 86.1,
+      "estimated_seconds": 120.3
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-484",
+      "status": "PASS",
+      "seconds": 85.8,
+      "estimated_seconds": 16.0
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-063",
+      "status": "PASS",
+      "seconds": 85.2,
+      "estimated_seconds": 142.6
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-349",
+      "status": "PASS",
+      "seconds": 84.0,
+      "estimated_seconds": 112.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-060",
+      "status": "PASS",
+      "seconds": 79.7,
+      "estimated_seconds": 60.6
+    },
+    {
+      "job": "gates 3/12",
+      "name": "sources-150",
+      "status": "PASS",
+      "seconds": 79.3,
+      "estimated_seconds": 109.5
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-443",
+      "status": "PASS",
+      "seconds": 78.9,
+      "estimated_seconds": 160
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-325",
+      "status": "PASS",
+      "seconds": 76.4,
+      "estimated_seconds": 71.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-069",
+      "status": "PASS",
+      "seconds": 74.8,
+      "estimated_seconds": 153.1
+    },
+    {
+      "job": "gates 5/12",
+      "name": "sources-144",
+      "status": "PASS",
+      "seconds": 72.0,
+      "estimated_seconds": 68.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-223",
+      "status": "PASS",
+      "seconds": 70.8,
+      "estimated_seconds": 3.1
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-278",
+      "status": "PASS",
+      "seconds": 70.2,
+      "estimated_seconds": 30.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-304",
+      "status": "PASS",
+      "seconds": 63.4,
+      "estimated_seconds": 20.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-423",
+      "status": "PASS",
+      "seconds": 62.3,
+      "estimated_seconds": 132.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-494",
+      "status": "PASS",
+      "seconds": 61.9,
+      "estimated_seconds": 57.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-481",
+      "status": "PASS",
+      "seconds": 61.9,
+      "estimated_seconds": 40.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-271",
+      "status": "PASS",
+      "seconds": 61.6,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-178",
+      "status": "PASS",
+      "seconds": 61.3,
+      "estimated_seconds": 22.3
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-336",
+      "status": "PASS",
+      "seconds": 60.7,
+      "estimated_seconds": 31.6
+    },
+    {
+      "job": "gates 11/12",
+      "name": "sources-166",
+      "status": "PASS",
+      "seconds": 60.6,
+      "estimated_seconds": 64.5
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-288",
+      "status": "PASS",
+      "seconds": 60.4,
+      "estimated_seconds": 30.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "sources-182",
+      "status": "PASS",
+      "seconds": 59.1,
+      "estimated_seconds": 32.3
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-101",
+      "status": "PASS",
+      "seconds": 59.1,
+      "estimated_seconds": 50.1
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-489",
+      "status": "PASS",
+      "seconds": 58.5,
+      "estimated_seconds": 64.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-436",
+      "status": "PASS",
+      "seconds": 55.3,
+      "estimated_seconds": 61.5
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-029",
+      "status": "PASS",
+      "seconds": 54.3,
+      "estimated_seconds": 54.7
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-324",
+      "status": "PASS",
+      "seconds": 50.9,
+      "estimated_seconds": 51.2
+    },
+    {
+      "job": "gates 6/12",
+      "name": "sources-211",
+      "status": "PASS",
+      "seconds": 50.7,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-490",
+      "status": "PASS",
+      "seconds": 50.2,
+      "estimated_seconds": 30.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-485",
+      "status": "PASS",
+      "seconds": 49.4,
+      "estimated_seconds": 25.0
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-525",
+      "status": "PASS",
+      "seconds": 49.4,
+      "estimated_seconds": 31.4
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-222",
+      "status": "PASS",
+      "seconds": 48.7,
+      "estimated_seconds": 3.1
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-437",
+      "status": "PASS",
+      "seconds": 47.5,
+      "estimated_seconds": 27.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-095",
+      "status": "PASS",
+      "seconds": 47.3,
+      "estimated_seconds": 70.9
+    },
+    {
+      "job": "gates 5/12",
+      "name": "sources-181",
+      "status": "PASS",
+      "seconds": 46.9,
+      "estimated_seconds": 36.7
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-524",
+      "status": "PASS",
+      "seconds": 45.8,
+      "estimated_seconds": 21.6
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-362",
+      "status": "PASS",
+      "seconds": 45.4,
+      "estimated_seconds": 11.3
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-480",
+      "status": "PASS",
+      "seconds": 45.1,
+      "estimated_seconds": 20.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-179",
+      "status": "PASS",
+      "seconds": 44.1,
+      "estimated_seconds": 31.1
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-209",
+      "status": "PASS",
+      "seconds": 43.6,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-040",
+      "status": "PASS",
+      "seconds": 43.4,
+      "estimated_seconds": 25.5
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-057",
+      "status": "PASS",
+      "seconds": 42.9,
+      "estimated_seconds": 42.4
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-269",
+      "status": "PASS",
+      "seconds": 42.6,
+      "estimated_seconds": 20.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-302",
+      "status": "PASS",
+      "seconds": 42.3,
+      "estimated_seconds": 30.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-005",
+      "status": "PASS",
+      "seconds": 41.0,
+      "estimated_seconds": 32.2
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-208",
+      "status": "PASS",
+      "seconds": 41.0,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-280",
+      "status": "PASS",
+      "seconds": 40.6,
+      "estimated_seconds": 5.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-285",
+      "status": "PASS",
+      "seconds": 39.2,
+      "estimated_seconds": 20.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-031",
+      "status": "PASS",
+      "seconds": 38.9,
+      "estimated_seconds": 72.2
+    },
+    {
+      "job": "gates 7/12",
+      "name": "sources-210",
+      "status": "PASS",
+      "seconds": 38.5,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "sources-192",
+      "status": "PASS",
+      "seconds": 38.2,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-059",
+      "status": "PASS",
+      "seconds": 37.9,
+      "estimated_seconds": 65.6
+    },
+    {
+      "job": "gates 9/12",
+      "name": "sources-185",
+      "status": "PASS",
+      "seconds": 36.7,
+      "estimated_seconds": 40.9
+    },
+    {
+      "job": "qi stack on Python 3.13",
+      "name": "core-527",
+      "status": "PASS",
+      "seconds": 36.0,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 5/12",
+      "name": "sources-184",
+      "status": "PASS",
+      "seconds": 34.7,
+      "estimated_seconds": 20.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-335",
+      "status": "PASS",
+      "seconds": 32.0,
+      "estimated_seconds": 6.1
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-267",
+      "status": "PASS",
+      "seconds": 31.7,
+      "estimated_seconds": 12.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-424",
+      "status": "PASS",
+      "seconds": 31.4,
+      "estimated_seconds": 41.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-039",
+      "status": "PASS",
+      "seconds": 30.1,
+      "estimated_seconds": 23.6
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-090",
+      "status": "PASS",
+      "seconds": 29.7,
+      "estimated_seconds": 9.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-276",
+      "status": "PASS",
+      "seconds": 29.5,
+      "estimated_seconds": 4.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-028",
+      "status": "PASS",
+      "seconds": 29.2,
+      "estimated_seconds": 24.8
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-496",
+      "status": "PASS",
+      "seconds": 28.9,
+      "estimated_seconds": 25.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "sources-135",
+      "status": "PASS",
+      "seconds": 28.7,
+      "estimated_seconds": 23.1
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-361",
+      "status": "PASS",
+      "seconds": 28.1,
+      "estimated_seconds": 26.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-070",
+      "status": "PASS",
+      "seconds": 26.2,
+      "estimated_seconds": 23.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-193",
+      "status": "PASS",
+      "seconds": 25.4,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-092",
+      "status": "PASS",
+      "seconds": 24.7,
+      "estimated_seconds": 15.4
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-058",
+      "status": "PASS",
+      "seconds": 24.6,
+      "estimated_seconds": 32.2
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-345",
+      "status": "PASS",
+      "seconds": 24.5,
+      "estimated_seconds": 11.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "sources-122",
+      "status": "PASS",
+      "seconds": 24.0,
+      "estimated_seconds": 13.5
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-486",
+      "status": "PASS",
+      "seconds": 23.8,
+      "estimated_seconds": 12.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-367",
+      "status": "PASS",
+      "seconds": 22.5,
+      "estimated_seconds": 22.6
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-180",
+      "status": "PASS",
+      "seconds": 21.8,
+      "estimated_seconds": 33.2
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-190",
+      "status": "PASS",
+      "seconds": 21.4,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "sources-248",
+      "status": "PASS",
+      "seconds": 21.2,
+      "estimated_seconds": 20.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-191",
+      "status": "PASS",
+      "seconds": 20.4,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-282",
+      "status": "PASS",
+      "seconds": 20.4,
+      "estimated_seconds": 20.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-303",
+      "status": "PASS",
+      "seconds": 20.0,
+      "estimated_seconds": 8.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "sources-249",
+      "status": "PASS",
+      "seconds": 18.9,
+      "estimated_seconds": 11.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-085",
+      "status": "PASS",
+      "seconds": 18.9,
+      "estimated_seconds": 14.0
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-279",
+      "status": "PASS",
+      "seconds": 18.9,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-422",
+      "status": "PASS",
+      "seconds": 18.5,
+      "estimated_seconds": 25.4
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-264",
+      "status": "PASS",
+      "seconds": 18.4,
+      "estimated_seconds": 6.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-272",
+      "status": "PASS",
+      "seconds": 17.8,
+      "estimated_seconds": 2.0
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-030",
+      "status": "PASS",
+      "seconds": 17.6,
+      "estimated_seconds": 32.0
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-313",
+      "status": "PASS",
+      "seconds": 17.2,
+      "estimated_seconds": 15.0
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-177",
+      "status": "PASS",
+      "seconds": 16.8,
+      "estimated_seconds": 35.2
+    },
+    {
+      "job": "gates 1/12",
+      "name": "sources-138",
+      "status": "PASS",
+      "seconds": 16.3,
+      "estimated_seconds": 9.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "sources-134",
+      "status": "PASS",
+      "seconds": 16.1,
+      "estimated_seconds": 14.1
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-213",
+      "status": "PASS",
+      "seconds": 15.6,
+      "estimated_seconds": 6.2
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-498",
+      "status": "PASS",
+      "seconds": 15.6,
+      "estimated_seconds": 10.7
+    },
+    {
+      "job": "gates 6/12",
+      "name": "sources-137",
+      "status": "PASS",
+      "seconds": 15.5,
+      "estimated_seconds": 13.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-042",
+      "status": "PASS",
+      "seconds": 14.9,
+      "estimated_seconds": 8.7
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-274",
+      "status": "PASS",
+      "seconds": 14.7,
+      "estimated_seconds": 4.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-373",
+      "status": "PASS",
+      "seconds": 14.6,
+      "estimated_seconds": 15.7
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-219",
+      "status": "PASS",
+      "seconds": 14.6,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-062",
+      "status": "PASS",
+      "seconds": 14.2,
+      "estimated_seconds": 18.6
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-022",
+      "status": "PASS",
+      "seconds": 13.9,
+      "estimated_seconds": 12.9
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-421",
+      "status": "PASS",
+      "seconds": 13.7,
+      "estimated_seconds": 47.5
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-450",
+      "status": "PASS",
+      "seconds": 13.5,
+      "estimated_seconds": 20.0
+    },
+    {
+      "job": "gates 3/12",
+      "name": "sources-250",
+      "status": "PASS",
+      "seconds": 13.4,
+      "estimated_seconds": 11.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-312",
+      "status": "PASS",
+      "seconds": 13.2,
+      "estimated_seconds": 8.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-088",
+      "status": "PASS",
+      "seconds": 13.1,
+      "estimated_seconds": 10.4
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-372",
+      "status": "PASS",
+      "seconds": 12.9,
+      "estimated_seconds": 17.2
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-212",
+      "status": "PASS",
+      "seconds": 12.8,
+      "estimated_seconds": 6.2
+    },
+    {
+      "job": "gates 8/12",
+      "name": "sources-247",
+      "status": "PASS",
+      "seconds": 12.8,
+      "estimated_seconds": 19.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-025",
+      "status": "PASS",
+      "seconds": 12.6,
+      "estimated_seconds": 21.2
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-081",
+      "status": "PASS",
+      "seconds": 12.5,
+      "estimated_seconds": 7.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-507",
+      "status": "PASS",
+      "seconds": 12.3,
+      "estimated_seconds": 9.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-024",
+      "status": "PASS",
+      "seconds": 12.3,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-482",
+      "status": "PASS",
+      "seconds": 12.1,
+      "estimated_seconds": 15.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-023",
+      "status": "PASS",
+      "seconds": 11.9,
+      "estimated_seconds": 17.9
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-326",
+      "status": "PASS",
+      "seconds": 11.2,
+      "estimated_seconds": 5.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-344",
+      "status": "PASS",
+      "seconds": 10.9,
+      "estimated_seconds": 4.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-205",
+      "status": "PASS",
+      "seconds": 10.6,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-300",
+      "status": "PASS",
+      "seconds": 10.6,
+      "estimated_seconds": 8.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-241",
+      "status": "PASS",
+      "seconds": 10.3,
+      "estimated_seconds": 4.2
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-420",
+      "status": "PASS",
+      "seconds": 10.2,
+      "estimated_seconds": 41.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-100",
+      "status": "PASS",
+      "seconds": 10.1,
+      "estimated_seconds": 13.2
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-072",
+      "status": "PASS",
+      "seconds": 9.9,
+      "estimated_seconds": 8.6
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-195",
+      "status": "PASS",
+      "seconds": 9.9,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-220",
+      "status": "PASS",
+      "seconds": 9.7,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-196",
+      "status": "PASS",
+      "seconds": 9.7,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-240",
+      "status": "PASS",
+      "seconds": 9.4,
+      "estimated_seconds": 4.2
+    },
+    {
+      "job": "gates 9/12",
+      "name": "sources-132",
+      "status": "PASS",
+      "seconds": 9.4,
+      "estimated_seconds": 9.7
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-091",
+      "status": "PASS",
+      "seconds": 9.2,
+      "estimated_seconds": 11.5
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-531",
+      "status": "PASS",
+      "seconds": 9.1,
+      "estimated_seconds": 4.6
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-281",
+      "status": "PASS",
+      "seconds": 9.1,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-076",
+      "status": "PASS",
+      "seconds": 9.0,
+      "estimated_seconds": 4.1
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-050",
+      "status": "PASS",
+      "seconds": 8.8,
+      "estimated_seconds": 9.8
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-310",
+      "status": "PASS",
+      "seconds": 8.6,
+      "estimated_seconds": 8.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-343",
+      "status": "PASS",
+      "seconds": 8.6,
+      "estimated_seconds": 6.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-052",
+      "status": "PASS",
+      "seconds": 8.6,
+      "estimated_seconds": 6.8
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-406",
+      "status": "PASS",
+      "seconds": 8.4,
+      "estimated_seconds": 11.5
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-194",
+      "status": "PASS",
+      "seconds": 8.4,
+      "estimated_seconds": 20
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-340",
+      "status": "PASS",
+      "seconds": 8.3,
+      "estimated_seconds": 9.0
+    },
+    {
+      "job": "qi stack on Python 3.13",
+      "name": "core-368",
+      "status": "PASS",
+      "seconds": 8.3,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-497",
+      "status": "PASS",
+      "seconds": 8.2,
+      "estimated_seconds": 5.8
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-197",
+      "status": "PASS",
+      "seconds": 8.1,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-061",
+      "status": "PASS",
+      "seconds": 8.0,
+      "estimated_seconds": 12.1
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-011",
+      "status": "PASS",
+      "seconds": 7.8,
+      "estimated_seconds": 14.8
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-084",
+      "status": "PASS",
+      "seconds": 7.6,
+      "estimated_seconds": 6.9
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-529",
+      "status": "PASS",
+      "seconds": 7.6,
+      "estimated_seconds": 3.5
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-323",
+      "status": "PASS",
+      "seconds": 7.4,
+      "estimated_seconds": 2.6
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-019",
+      "status": "PASS",
+      "seconds": 7.3,
+      "estimated_seconds": 9.5
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-273",
+      "status": "PASS",
+      "seconds": 7.2,
+      "estimated_seconds": 4.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-493",
+      "status": "PASS",
+      "seconds": 7.1,
+      "estimated_seconds": 3.9
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-021",
+      "status": "PASS",
+      "seconds": 7.1,
+      "estimated_seconds": 8.1
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-341",
+      "status": "PASS",
+      "seconds": 7.0,
+      "estimated_seconds": 0.2
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-071",
+      "status": "PASS",
+      "seconds": 7.0,
+      "estimated_seconds": 8.8
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-530",
+      "status": "PASS",
+      "seconds": 6.6,
+      "estimated_seconds": 2.4
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-003",
+      "status": "PASS",
+      "seconds": 6.6,
+      "estimated_seconds": 4.1
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-251",
+      "status": "PASS",
+      "seconds": 6.6,
+      "estimated_seconds": 1.6
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-483",
+      "status": "PASS",
+      "seconds": 6.5,
+      "estimated_seconds": 4.5
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-505",
+      "status": "PASS",
+      "seconds": 6.5,
+      "estimated_seconds": 7.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-277",
+      "status": "PASS",
+      "seconds": 6.5,
+      "estimated_seconds": 2.0
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-266",
+      "status": "PASS",
+      "seconds": 6.4,
+      "estimated_seconds": 3.0
+    },
+    {
+      "job": "gates 3/12",
+      "name": "sources-141",
+      "status": "PASS",
+      "seconds": 6.3,
+      "estimated_seconds": 14.9
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-206",
+      "status": "PASS",
+      "seconds": 6.2,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-043",
+      "status": "PASS",
+      "seconds": 6.2,
+      "estimated_seconds": 6.8
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-102",
+      "status": "PASS",
+      "seconds": 6.1,
+      "estimated_seconds": 4.8
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-027",
+      "status": "PASS",
+      "seconds": 5.9,
+      "estimated_seconds": 20.1
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-407",
+      "status": "PASS",
+      "seconds": 5.9,
+      "estimated_seconds": 7.7
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-348",
+      "status": "PASS",
+      "seconds": 5.9,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-532",
+      "status": "PASS",
+      "seconds": 5.7,
+      "estimated_seconds": 2.2
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-333",
+      "status": "PASS",
+      "seconds": 5.7,
+      "estimated_seconds": 2.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-492",
+      "status": "PASS",
+      "seconds": 5.5,
+      "estimated_seconds": 2.1
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-192",
+      "status": "PASS",
+      "seconds": 5.4,
+      "estimated_seconds": 15
+    },
+    {
+      "job": "gates 6/12",
+      "name": "sources-153",
+      "status": "PASS",
+      "seconds": 5.4,
+      "estimated_seconds": 17.1
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-020",
+      "status": "PASS",
+      "seconds": 5.3,
+      "estimated_seconds": 5.6
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-439",
+      "status": "PASS",
+      "seconds": 5.2,
+      "estimated_seconds": 6.2
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-330",
+      "status": "PASS",
+      "seconds": 5.1,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-229",
+      "status": "PASS",
+      "seconds": 5.1,
+      "estimated_seconds": 4.6
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-408",
+      "status": "PASS",
+      "seconds": 4.9,
+      "estimated_seconds": 9.4
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-010",
+      "status": "PASS",
+      "seconds": 4.9,
+      "estimated_seconds": 5.1
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-488",
+      "status": "PASS",
+      "seconds": 4.8,
+      "estimated_seconds": 1.6
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-113",
+      "status": "PASS",
+      "seconds": 4.8,
+      "estimated_seconds": 8.4
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-066",
+      "status": "PASS",
+      "seconds": 4.7,
+      "estimated_seconds": 2.9
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-082",
+      "status": "PASS",
+      "seconds": 4.4,
+      "estimated_seconds": 4.4
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-108",
+      "status": "PASS",
+      "seconds": 4.4,
+      "estimated_seconds": 0.7
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-044",
+      "status": "PASS",
+      "seconds": 4.4,
+      "estimated_seconds": 5.4
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-078",
+      "status": "PASS",
+      "seconds": 4.4,
+      "estimated_seconds": 2.3
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-374",
+      "status": "PASS",
+      "seconds": 4.3,
+      "estimated_seconds": 25.0
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-338",
+      "status": "PASS",
+      "seconds": 4.3,
+      "estimated_seconds": 2.0
+    },
+    {
+      "job": "gates 8/12",
+      "name": "sources-131",
+      "status": "PASS",
+      "seconds": 4.3,
+      "estimated_seconds": 9.8
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-079",
+      "status": "PASS",
+      "seconds": 4.2,
+      "estimated_seconds": 3.6
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-026",
+      "status": "PASS",
+      "seconds": 4.1,
+      "estimated_seconds": 4.0
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-275",
+      "status": "PASS",
+      "seconds": 4.0,
+      "estimated_seconds": 2.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-332",
+      "status": "PASS",
+      "seconds": 4.0,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-227",
+      "status": "PASS",
+      "seconds": 3.8,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-528",
+      "status": "PASS",
+      "seconds": 3.8,
+      "estimated_seconds": 5.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-387",
+      "status": "PASS",
+      "seconds": 3.8,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-256",
+      "status": "PASS",
+      "seconds": 3.7,
+      "estimated_seconds": 2.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-226",
+      "status": "PASS",
+      "seconds": 3.6,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-435",
+      "status": "PASS",
+      "seconds": 3.6,
+      "estimated_seconds": 7.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-260",
+      "status": "PASS",
+      "seconds": 3.6,
+      "estimated_seconds": 1.3
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-268",
+      "status": "PASS",
+      "seconds": 3.6,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-261",
+      "status": "PASS",
+      "seconds": 3.5,
+      "estimated_seconds": 1.3
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-068",
+      "status": "PASS",
+      "seconds": 3.4,
+      "estimated_seconds": 5.1
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-342",
+      "status": "PASS",
+      "seconds": 3.3,
+      "estimated_seconds": 8.0
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-425",
+      "status": "PASS",
+      "seconds": 3.3,
+      "estimated_seconds": 7.6
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-106",
+      "status": "PASS",
+      "seconds": 3.2,
+      "estimated_seconds": 2.1
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-270",
+      "status": "PASS",
+      "seconds": 3.2,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-049",
+      "status": "PASS",
+      "seconds": 3.2,
+      "estimated_seconds": 3.8
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-033",
+      "status": "PASS",
+      "seconds": 3.0,
+      "estimated_seconds": 3.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-107",
+      "status": "PASS",
+      "seconds": 3.0,
+      "estimated_seconds": 3.3
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-075",
+      "status": "PASS",
+      "seconds": 2.9,
+      "estimated_seconds": 3.1
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-252",
+      "status": "PASS",
+      "seconds": 2.9,
+      "estimated_seconds": 1.6
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-083",
+      "status": "PASS",
+      "seconds": 2.8,
+      "estimated_seconds": 2.5
+    },
+    {
+      "job": "gates 3/12",
+      "name": "sources-130",
+      "status": "PASS",
+      "seconds": 2.8,
+      "estimated_seconds": 0.8
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-045",
+      "status": "PASS",
+      "seconds": 2.7,
+      "estimated_seconds": 4.4
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-087",
+      "status": "PASS",
+      "seconds": 2.7,
+      "estimated_seconds": 10.1
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-228",
+      "status": "PASS",
+      "seconds": 2.6,
+      "estimated_seconds": 4.6
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-506",
+      "status": "PASS",
+      "seconds": 2.6,
+      "estimated_seconds": 5.0
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-320",
+      "status": "PASS",
+      "seconds": 2.5,
+      "estimated_seconds": 2.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-114",
+      "status": "PASS",
+      "seconds": 2.4,
+      "estimated_seconds": 2.5
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-203",
+      "status": "PASS",
+      "seconds": 2.4,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-430",
+      "status": "PASS",
+      "seconds": 2.4,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 8/12",
+      "name": "sources-127",
+      "status": "PASS",
+      "seconds": 2.4,
+      "estimated_seconds": 5.3
+    },
+    {
+      "job": "gates 11/12",
+      "name": "sources-128",
+      "status": "PASS",
+      "seconds": 2.3,
+      "estimated_seconds": 4.2
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-503",
+      "status": "PASS",
+      "seconds": 2.3,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-035",
+      "status": "PASS",
+      "seconds": 2.3,
+      "estimated_seconds": 9.8
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-257",
+      "status": "PASS",
+      "seconds": 2.3,
+      "estimated_seconds": 2.5
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-097",
+      "status": "PASS",
+      "seconds": 2.3,
+      "estimated_seconds": 2.4
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-096",
+      "status": "PASS",
+      "seconds": 2.2,
+      "estimated_seconds": 2.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-037",
+      "status": "PASS",
+      "seconds": 2.2,
+      "estimated_seconds": 9.1
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-104",
+      "status": "PASS",
+      "seconds": 2.1,
+      "estimated_seconds": 2.8
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-103",
+      "status": "PASS",
+      "seconds": 2.1,
+      "estimated_seconds": 2.8
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-036",
+      "status": "PASS",
+      "seconds": 2.1,
+      "estimated_seconds": 2.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "sources-124",
+      "status": "PASS",
+      "seconds": 2.1,
+      "estimated_seconds": 0.8
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-400",
+      "status": "PASS",
+      "seconds": 2.0,
+      "estimated_seconds": 2.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-073",
+      "status": "PASS",
+      "seconds": 2.0,
+      "estimated_seconds": 1.8
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-046",
+      "status": "PASS",
+      "seconds": 2.0,
+      "estimated_seconds": 4.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-225",
+      "status": "PASS",
+      "seconds": 2.0,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "sources-152",
+      "status": "PASS",
+      "seconds": 2.0,
+      "estimated_seconds": 2.3
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-086",
+      "status": "PASS",
+      "seconds": 1.9,
+      "estimated_seconds": 6.1
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-111",
+      "status": "PASS",
+      "seconds": 1.9,
+      "estimated_seconds": 1.7
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-119",
+      "status": "PASS",
+      "seconds": 1.9,
+      "estimated_seconds": 2.3
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-201",
+      "status": "PASS",
+      "seconds": 1.8,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-389",
+      "status": "PASS",
+      "seconds": 1.8,
+      "estimated_seconds": 2.0
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-504",
+      "status": "PASS",
+      "seconds": 1.7,
+      "estimated_seconds": 3.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-258",
+      "status": "PASS",
+      "seconds": 1.6,
+      "estimated_seconds": 3.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "sources-158",
+      "status": "PASS",
+      "seconds": 1.6,
+      "estimated_seconds": 1.1
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-048",
+      "status": "PASS",
+      "seconds": 1.6,
+      "estimated_seconds": 3.4
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-018",
+      "status": "PASS",
+      "seconds": 1.5,
+      "estimated_seconds": 2.3
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-034",
+      "status": "PASS",
+      "seconds": 1.5,
+      "estimated_seconds": 2.0
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-527",
+      "status": "PASS",
+      "seconds": 1.5,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-004",
+      "status": "PASS",
+      "seconds": 1.5,
+      "estimated_seconds": 1.2
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-331",
+      "status": "PASS",
+      "seconds": 1.4,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "sources-126",
+      "status": "PASS",
+      "seconds": 1.4,
+      "estimated_seconds": 1.5
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-371",
+      "status": "PASS",
+      "seconds": 1.4,
+      "estimated_seconds": 1.5
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-224",
+      "status": "PASS",
+      "seconds": 1.3,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "sources-140",
+      "status": "PASS",
+      "seconds": 1.3,
+      "estimated_seconds": 3.3
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-067",
+      "status": "PASS",
+      "seconds": 1.3,
+      "estimated_seconds": 1.5
+    },
+    {
+      "job": "gates 8/12",
+      "name": "sources-171",
+      "status": "PASS",
+      "seconds": 1.3,
+      "estimated_seconds": 1.5
+    },
+    {
+      "job": "gates 1/12",
+      "name": "sources-240",
+      "status": "PASS",
+      "seconds": 1.2,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "sources-241",
+      "status": "PASS",
+      "seconds": 1.2,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-109",
+      "status": "PASS",
+      "seconds": 1.1,
+      "estimated_seconds": 1.3
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-193",
+      "status": "PASS",
+      "seconds": 1.1,
+      "estimated_seconds": 20
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-440",
+      "status": "PASS",
+      "seconds": 1.1,
+      "estimated_seconds": 4.3
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-501",
+      "status": "PASS",
+      "seconds": 1.1,
+      "estimated_seconds": 2.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-110",
+      "status": "PASS",
+      "seconds": 1.1,
+      "estimated_seconds": 0.7
+    },
+    {
+      "job": "gates 8/12",
+      "name": "sources-123",
+      "status": "PASS",
+      "seconds": 1.1,
+      "estimated_seconds": 0.8
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-041",
+      "status": "PASS",
+      "seconds": 1.0,
+      "estimated_seconds": 2.3
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-369",
+      "status": "PASS",
+      "seconds": 1.0,
+      "estimated_seconds": 0.3
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-116",
+      "status": "PASS",
+      "seconds": 1.0,
+      "estimated_seconds": 1.4
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-077",
+      "status": "PASS",
+      "seconds": 1.0,
+      "estimated_seconds": 2.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "sources-172",
+      "status": "PASS",
+      "seconds": 1.0,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-200",
+      "status": "PASS",
+      "seconds": 1.0,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-286",
+      "status": "PASS",
+      "seconds": 1.0,
+      "estimated_seconds": 15.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-386",
+      "status": "PASS",
+      "seconds": 0.9,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-032",
+      "status": "PASS",
+      "seconds": 0.9,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-388",
+      "status": "PASS",
+      "seconds": 0.9,
+      "estimated_seconds": 0.5
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-015",
+      "status": "PASS",
+      "seconds": 0.8,
+      "estimated_seconds": 1.8
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-105",
+      "status": "PASS",
+      "seconds": 0.8,
+      "estimated_seconds": 0.7
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-381",
+      "status": "PASS",
+      "seconds": 0.8,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-404",
+      "status": "PASS",
+      "seconds": 0.8,
+      "estimated_seconds": 0.9
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-006",
+      "status": "PASS",
+      "seconds": 0.8,
+      "estimated_seconds": 0.7
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-202",
+      "status": "PASS",
+      "seconds": 0.8,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-047",
+      "status": "PASS",
+      "seconds": 0.7,
+      "estimated_seconds": 0.5
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-350",
+      "status": "PASS",
+      "seconds": 0.7,
+      "estimated_seconds": 6.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-125",
+      "status": "PASS",
+      "seconds": 0.7,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-155",
+      "status": "PASS",
+      "seconds": 0.7,
+      "estimated_seconds": 0.7
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-207",
+      "status": "PASS",
+      "seconds": 0.7,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-520",
+      "status": "PASS",
+      "seconds": 0.7,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-014",
+      "status": "PASS",
+      "seconds": 0.7,
+      "estimated_seconds": 1.3
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-198",
+      "status": "PASS",
+      "seconds": 0.6,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-115",
+      "status": "PASS",
+      "seconds": 0.6,
+      "estimated_seconds": 0.5
+    },
+    {
+      "job": "gates 3/12",
+      "name": "sources-157",
+      "status": "PASS",
+      "seconds": 0.6,
+      "estimated_seconds": 0.7
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-401",
+      "status": "PASS",
+      "seconds": 0.5,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-000",
+      "status": "PASS",
+      "seconds": 0.5,
+      "estimated_seconds": 3.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-284",
+      "status": "PASS",
+      "seconds": 0.5,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "sources-129",
+      "status": "PASS",
+      "seconds": 0.5,
+      "estimated_seconds": 0.6
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-002",
+      "status": "PASS",
+      "seconds": 0.5,
+      "estimated_seconds": 0.4
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-017",
+      "status": "PASS",
+      "seconds": 0.5,
+      "estimated_seconds": 0.5
+    },
+    {
+      "job": "gates 8/12",
+      "name": "sources-156",
+      "status": "PASS",
+      "seconds": 0.5,
+      "estimated_seconds": 0.8
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-502",
+      "status": "PASS",
+      "seconds": 0.5,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-383",
+      "status": "PASS",
+      "seconds": 0.4,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-290",
+      "status": "PASS",
+      "seconds": 0.4,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-265",
+      "status": "PASS",
+      "seconds": 0.4,
+      "estimated_seconds": 0.5
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-230",
+      "status": "PASS",
+      "seconds": 0.4,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-215",
+      "status": "PASS",
+      "seconds": 0.3,
+      "estimated_seconds": 0.5
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-403",
+      "status": "PASS",
+      "seconds": 0.3,
+      "estimated_seconds": 0.4
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-210",
+      "status": "PASS",
+      "seconds": 0.3,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-214",
+      "status": "PASS",
+      "seconds": 0.3,
+      "estimated_seconds": 0.5
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-231",
+      "status": "PASS",
+      "seconds": 0.3,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-389",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 0.3
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-093",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 0.2
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-351",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 0.2
+    },
+    {
+      "job": "gates 2/12",
+      "name": "sources-169",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 0.3
+    },
+    {
+      "job": "gates 2/12",
+      "name": "sources-170",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-001",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 0.3
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-321",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 0.3
+    },
+    {
+      "job": "gates 3/12",
+      "name": "sources-212",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-199",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-283",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-382",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 5/12",
+      "name": "sources-188",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 0.3
+    },
+    {
+      "job": "gates 5/12",
+      "name": "sources-189",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-112",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 0.4
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-322",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 0.3
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-327",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 7/12",
+      "name": "sources-217",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-346",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-262",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 0.5
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-368",
+      "status": "PASS",
+      "seconds": 0.2,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-051",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 1/12",
+      "name": "core-385",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-120",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-121",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-255",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 0.5
+    },
+    {
+      "job": "gates 11/12",
+      "name": "sources-216",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-065",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-254",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 0.5
+    },
+    {
+      "job": "gates 2/12",
+      "name": "core-402",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 2/12",
+      "name": "sources-213",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 3/12",
+      "name": "core-380",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-117",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 6/12",
+      "name": "sources-244",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 6/12",
+      "name": "sources-388",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 0.3
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-012",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 7/12",
+      "name": "core-370",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-118",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-500",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-347",
+      "status": "PASS",
+      "seconds": 0.1,
+      "estimated_seconds": 1.0
+    },
+    {
+      "job": "gates 1/12",
+      "name": "sources-214",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-007",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-009",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-013",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-016",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-038",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "core-334",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-133",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-136",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-139",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-142",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-145",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-148",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-151",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-154",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-159",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-162",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-165",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-168",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-173",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-174",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-175",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-176",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-183",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-186",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-242",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-243",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-245",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 10/12",
+      "name": "sources-246",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "core-204",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 11/12",
+      "name": "sources-194",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 10.0
+    },
+    {
+      "job": "gates 4/12",
+      "name": "core-253",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.2
+    },
+    {
+      "job": "gates 5/12",
+      "name": "core-292",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 6/12",
+      "name": "core-293",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 8/12",
+      "name": "core-263",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.2
+    },
+    {
+      "job": "gates 8/12",
+      "name": "sources-187",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-008",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.1
+    },
+    {
+      "job": "gates 9/12",
+      "name": "core-250",
+      "status": "PASS",
+      "seconds": 0.0,
+      "estimated_seconds": 0.2
+    }
+  ],
+  "run_id": "39081984593"
+}

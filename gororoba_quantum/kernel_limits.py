@@ -354,6 +354,8 @@ def cd_polynomial_matrix(
     return sp.Matrix(
         dimension,
         dimension,
-        lambda row, column: values[row ^ column]
-        * (cd_sign(dimension, row ^ column, column) if side == "left" else cd_sign(dimension, column, row ^ column)),
+        lambda row, column: (
+            values[row ^ column]
+            * (cd_sign(dimension, row ^ column, column) if side == "left" else cd_sign(dimension, column, row ^ column))
+        ),
     )

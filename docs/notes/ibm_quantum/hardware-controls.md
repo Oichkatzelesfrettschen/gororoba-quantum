@@ -17,13 +17,16 @@ source supports reads **unverified**.
 | Live read A, exploratory | 2026-10-17T21:33:40Z to 21:33:45Z | `QiskitRuntimeService()`, `service.backends()`, `ibm_kingston` `configuration()` and `status()`, `service.usage()` | superseded by read B; values agree |
 | Live read B | 2026-10-17T21:46:09Z to 21:46:19Z | `service.backends()` (plain, `dynamic_circuits=True`, `use_fractional_gates=True`), `service.usage()`, and per backend `configuration()`, `status()`, `properties()`, `target`, fractional `target`; each call stamped | [backends.json](../../evidence/ibm_runtime_options/backends.json) |
 | Calibration at read B | ibm_fez 2026-10-17T14:32:07-07:00, ibm_kingston 13:50:45-07:00, ibm_marrakesh 14:18:18-07:00 | `properties().last_update_date` | backends.json |
-| Installed source and offline probes | 2026-10-17 | qiskit-ibm-runtime 0.50.0, qiskit 2.5.2, samplomatic 0.21.0, qiskit-mitigation 0.1.1, pydantic 2.13.5, Python 3.14.7 | [inventory.json](../../evidence/ibm_runtime_options/inventory.json) |
+| Installed source and offline probes | 2026-10-17 | qiskit-ibm-runtime 0.50.0, qiskit 2.6.0, samplomatic 0.21.0, qiskit-mitigation 0.1.1, pydantic 2.14.1, ibm-quantum-schemas 0.13.20261016, Python 3.14.7 | [inventory.json](../../evidence/ibm_runtime_options/inventory.json) |
 | Target snapshot | 2026-10-14T21:00:38Z | `scripts/heron_target_snapshot.py --out` | [targets.json](../../evidence/heron_platform/targets.json) |
 
 `scripts/ibm_runtime_options_inventory.py` writes both evidence files: `--out`
 introspects the installed package offline, `--backends` makes read B, and
-`--check` (gate core-533) regenerates the inventory, holds the three generated
-blocks below to `--render`, and validates the schema of backends.json. Read B
+`--check` (gate core-533) regenerates the inventory, holds the five generated
+blocks below to `--render`, and validates the schema of backends.json. The
+inventory binds the installed probe dependencies exactly. Read B retains its
+original producer versions; its schema accepts stable Qiskit releases in Runtime
+0.50's declared range `>=2.3.0,<3` and requires Runtime 0.50.0. Read B
 submitted nothing and records the instance only as the 12-hex sha256 of its
 CRN; `instance_id` and `plan_id` of `usage()` are dropped.
 

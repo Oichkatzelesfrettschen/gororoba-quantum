@@ -28,12 +28,16 @@ import argparse
 import hashlib
 import json
 import math
+import sys
 from collections import Counter
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 from scipy.optimize import minimize
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "gororoba_quantum"))
+import parallel  # noqa: E402
 
 Z95 = 1.959963984540054
 # X and Y circuits of one point must execute the same idle within this many microseconds.
@@ -452,10 +456,10 @@ def registered_endpoints(run: Path, record: dict[str, Any]) -> dict[str, Any]:
     return {"method": analysis.get("method"), "endpoints": [rows[name] for name in names]}
 
 
-def self_check() -> None:
-    """Planted detuning recovery with interval coverage, and an unresolved phase at zero visibility."""
+def _planted_detuning_samples(truth: float, trials: int) -> list[list[dict[str, Any]]]:
+    """Draw every trial in the fixed generator order before distributing fits."""
     rng = np.random.default_rng(20261013)
-    truth, covered, trials = 0.06, 0, 20
+    samples = []
     for _trial in range(trials):
         points = []
         for t in (0.0, 3.6, 5.6, 7.6):
@@ -463,7 +467,15 @@ def self_check() -> None:
             x0 = int(rng.binomial(1024, (1 + visibility * math.cos(phase)) / 2))
             y0 = int(rng.binomial(1024, (1 + visibility * math.sin(phase)) / 2))
             points.append({"t_us": t, "x_zero": x0, "x_shots": 1024, "y_zero": y0, "y_shots": 1024})
-        fit = fit_ramsey(points)
+        samples.append(points)
+    return samples
+
+
+def self_check() -> None:
+    """Planted detuning recovery with interval coverage, and an unresolved phase at zero visibility."""
+    truth, covered, trials = 0.06, 0, 20
+    samples = _planted_detuning_samples(truth, trials)
+    for fit in parallel.ordered_map(fit_ramsey, samples, min_items=2):
         low, high = fit["delta_95_mhz"]
         covered += (low is None or low <= truth) and (high is None or truth <= high)
     if covered < 0.8 * trials:

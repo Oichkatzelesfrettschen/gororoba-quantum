@@ -8,6 +8,7 @@ import contextlib
 import io
 import json
 import os
+from itertools import product
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
@@ -21,20 +22,21 @@ def main() -> None:
     duplicates = sorted({name for name in names if names.count(name) > 1})
     if duplicates:
         raise RuntimeError(f"ci/gates.json names more than one gate {', '.join(duplicates)}")
-    expected = len(os.sched_getaffinity(0)) if hasattr(os, "sched_getaffinity") else os.cpu_count() or 1
+    expected = run_gates.parallel.available_cpus()
     if run_gates._cpus() != expected:
         raise RuntimeError(f"gate pool uses {run_gates._cpus()} workers, not every available CPU ({expected})")
     with TemporaryDirectory(prefix="ci-launch-contract-") as temporary:
         root = Path(temporary)
         (root / "ci").mkdir()
-        for override, workers in ((None, "1"), ("3", "3")):
+        for capacity, override in product((1, 2, 4), (None, "3")):
+            workers = min(capacity, int(override or "1"))
             gates = {
                 "gates": [
                     {"name": "missing-directory", "cwd": "absent", "cmd": "exit 0"},
                     {
                         "name": "retained-success",
                         "cwd": ".",
-                        "cmd": f'test "$GOROROBA_WORKERS" = {workers}; printf "success survived\\n"',
+                        "cmd": f'test "$GOROROBA_WORKERS" = {workers} && printf "success survived\\n"',
                     },
                 ]
             }
@@ -42,6 +44,7 @@ def main() -> None:
             output = io.StringIO()
             with (
                 patch.object(run_gates, "ROOT", root),
+                patch.object(run_gates, "_cpus", return_value=capacity),
                 patch.dict(os.environ),
                 contextlib.redirect_stdout(output),
             ):

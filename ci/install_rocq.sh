@@ -34,7 +34,8 @@ command -v opam >/dev/null || {
 }
 
 export OPAMYES=1 OPAMROOTISOK=1
-OPAMJOBS=$(nproc)
+PYTHON=${PYTHON:-python3}
+OPAMJOBS=$("$PYTHON" -c 'import sys; sys.path.insert(0, sys.argv[1]); import parallel; print(parallel.available_cpus())' "$here/../gororoba_quantum")
 export OPAMJOBS
 root=${OPAMROOT:-$HOME/.opam}
 if [ ! -f "$root/config" ]; then
