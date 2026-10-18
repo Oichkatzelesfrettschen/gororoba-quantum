@@ -1600,6 +1600,18 @@ def _submit_reuse_case(name: str, argv: list[str], directory: Path) -> None:
             blockers = moved["revalidation"][0]["prediction_reuse"]["design"]["blockers"]
             _require(any(f"e10:{qubit}" in b for b in blockers), f"{name}: the refresh reused moved values {blockers}")
 
+    # An approved batch whose device depended on the host's GPU re-plans
+    # through the full path and sends the same PUB bytes.
+    with patch.object(local_compute, "host_independent_route", lambda _batch: "routed by GPU availability"):
+        code, routed, routed_bytes = submit("device", [], None, reuse=True, simulate=True)
+    _require(code == 0 and routed["state"] == "submitted", f"{name}: the device fallback left {routed['state']}")
+    _require(
+        not routed["prediction_reuse"]["predictions"]["reused"]
+        and (not family or not routed["prediction_reuse"]["design"]["reused"]),
+        f"{name}: a host-dependent device route reused the approved predictions",
+    )
+    _require(routed_bytes == full_bytes, f"{name}: the device fallback sent other PUB bytes than the full path")
+
     # A changed seed or source digest falls back to the full path, which
     # refuses exactly as before.
     changes: tuple[tuple[str, list[str], str, Any], ...] = (
@@ -1634,6 +1646,30 @@ def _submit_reuse_case(name: str, argv: list[str], directory: Path) -> None:
 def _verify_submit_reuse() -> None:
     """A submission reuses the approved predictions exactly when every input they read is unchanged."""
     from runtime_contracts import _FiniteQuotaService
+
+    narrow = [{"active_input_qubits": list(range(local_compute.GPU_MIN_ACTIVE_QUBITS - 1))}]
+    wide = [{"active_input_qubits": list(range(local_compute.GPU_MIN_ACTIVE_QUBITS))}]
+    routes: tuple[tuple[str, str, str, dict[str, Any] | None, list[dict[str, Any]], bool], ...] = (
+        ("cpu", "density_matrix", "CPU", None, wide, True),
+        ("auto", "statevector", "CPU", None, wide, True),
+        ("auto", "density_matrix", "CPU", None, narrow, True),
+        ("auto", "density_matrix", "CPU", None, wide, False),
+        ("auto", "density_matrix", "CPU", {"rejected": "memory"}, wide, False),
+        ("auto", "density_matrix", "GPU", {"active_qubits": 11}, wide, False),
+        ("gpu", "density_matrix", "GPU", {"active_qubits": 11}, wide, False),
+    )
+    for mode, method, device, admission, metadata, stable in routes:
+        batch = {
+            "policy": {"mode": mode},
+            "method": method,
+            "device": device,
+            "gpu_admission": admission,
+            "experiment_metadata": metadata,
+        }
+        _require(
+            (local_compute.host_independent_route(batch) is None) == stable,
+            f"host_independent_route misreads {mode} {method} on {device} with admission {admission}",
+        )
 
     # A 33-qubit device keeps each whole-device noise model small.
     backend = _SmallHeronBackend("reuse_fixture", cast(Any, FakePrague()))
@@ -1672,8 +1708,8 @@ def _verify_submit_reuse() -> None:
     print(
         "QPU planning: a submission whose calibration values, seeds, policy, sources and versions match the "
         "approved record reuses its design and predictions without simulating and sends the full path's PUB bytes; "
-        "a moved value refuses at the preflight, refresh and batch, and a changed seed or source digest re-plans "
-        "and refuses as before"
+        "a moved value refuses at the preflight, refresh and batch, a batch routed by the host's GPU re-plans "
+        "and sends the same bytes, and a changed seed or source digest re-plans and refuses as before"
     )
 
 

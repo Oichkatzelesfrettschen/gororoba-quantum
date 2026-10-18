@@ -481,8 +481,9 @@ sedenion statement never rests on them.
   isa.qpy circuits against the fresh Target and properties by the same rule
   and writes `approval_required` in seconds. When the source digest,
   dependency versions, simulator seed, policy, compiled circuits, QPY bytes
-  and every group's calibration values equal the approved record's, the
-  submission copies the approved predictions (`reuse_approved_predictions`)
+  and every group's calibration values equal the approved record's, and
+  every recorded Aer batch ran on CPU by a route the host's GPU cannot
+  change (`local_compute.host_independent_route`), the submission copies the approved predictions (`reuse_approved_predictions`)
   and, for a matched family whose approved search held one routed candidate
   set under the same contracts, tiers, PUB cost inputs and optimization
   budget, the approved design (`approved_family_design`) instead of

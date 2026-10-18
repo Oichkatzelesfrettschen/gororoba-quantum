@@ -558,7 +558,11 @@ function of the compiled circuits, the calibration values they read, the
 shots, the simulator seed, the local-compute policy, the source digest and
 the dependency versions, so a submission whose inputs all equal the
 approved record's copies its group predictions instead of re-running the
-evaluation simulation. A matched family's selection also reads every
+evaluation simulation. Seeded GPU and CPU counts differ, so reuse also
+requires every recorded planning and evaluation batch to have run on CPU by
+a route independent of the host's GPU: cpu mode, statevector trajectories,
+or a density matrix narrower than `GPU_MIN_ACTIVE_QUBITS` under auto
+(`local_compute.host_independent_route`). A matched family's selection also reads every
 candidate's planning distributions, which the record does not retain; the
 submission reuses the approved design only when the approved search held one
 routed candidate set and the contracts, shot tiers, PUB cost inputs and

@@ -3192,6 +3192,18 @@ def approved_choice_blockers(approved_dir: Path, approved: Mapping[str, Any], ch
     return blockers
 
 
+def device_blockers(approved: Mapping[str, Any], field: str) -> list[str]:
+    """Each batch of approved[field] whose draw local_compute.host_independent_route ties to this host's GPU."""
+    batches = approved.get(field) or []
+    if not isinstance(batches, list):
+        return [f"the approved record's {field} is not a list"]
+    return [
+        f"{field}[{index}]: {reason}"
+        for index, batch in enumerate(batches)
+        if (reason := local_compute.host_independent_route(batch)) is not None
+    ]
+
+
 def _reuse_context(args: argparse.Namespace) -> tuple[Path, str | None] | None:
     approved_dir = getattr(args, "approved_record", None)
     if not getattr(args, "submit", False) or approved_dir is None:
@@ -3242,6 +3254,7 @@ def approved_family_design(
         ):
             if _json_value(fresh) != approved.get(name):
                 blockers.append(f"{name} differs")
+        blockers.extend(device_blockers(approved, "local_simulation_batches"))
     if not blockers and approved is not None:
         runtime = sys.modules[__name__]
         candidates = qpu_planning.admitted_family_candidates(
@@ -3377,6 +3390,7 @@ def reuse_approved_predictions(choices: list[Choice], record: dict[str, Any], ar
             for name in (*APPROVED_RECORD_FIELDS, "seed_simulator")
             if _json_value(record.get(name)) != approved.get(name)
         )
+        blockers.extend(device_blockers(approved, "evaluation_simulation_batches"))
         blockers.extend(approved_choice_blockers(approved_dir, approved, choices))
     if blockers or approved is None:
         log["predictions"] = {"reused": False, "blockers": blockers}
