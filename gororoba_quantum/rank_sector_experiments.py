@@ -24,7 +24,7 @@ import parallel
 from cd_core import cd_sign
 from experiment_optimizer import ObservableContract, ObservableTerm
 from experiments import Group, Member, tvd
-from rank_attachments import COSET_SUBGROUP, path_coefficients, path_matrix
+from rank_attachments import COSET_SUBGROUP, path_coefficients
 from select_lcu import phase_oracle_from_truth_table
 
 PARAMETERS = (Fraction(0), Fraction(1, 2), Fraction(1), Fraction(3, 2), Fraction(2))
@@ -212,19 +212,19 @@ def sector_binding(
 
 
 def exact_success_probability(sector: int, probe_name: str, parameter: int | Fraction) -> Fraction:
-    """Predict the selected norm from the complete exact 32-dimensional matrix."""
+    """Apply the four nonzero path coefficients to the complete exact image."""
     probe = _probe(sector, probe_name)
     value = _parameter(parameter)
-    columns = [sector ^ offset for offset in COSET_SUBGROUP]
-    matrix = path_matrix(value)
+    coefficients = sector_coefficients(value)
     norm_squared = sum(coordinate**2 for coordinate in probe.coordinates)
-    image = [
-        sum(matrix[row, column] * coordinate for column, coordinate in zip(columns, probe.coordinates, strict=True))
-        for row in range(32)
-    ]
-    numerator = sum(coordinate**2 for coordinate in image)
-    exact_norm = Fraction(int(numerator.p), int(numerator.q))
-    probability = exact_norm / (norm_squared * sector_alpha(value) ** 2)
+    image = [Fraction(0)] * 32
+    for offset, coordinate in zip(COSET_SUBGROUP, probe.coordinates, strict=True):
+        column = sector ^ offset
+        for support_index, coefficient in zip(SUPPORT, coefficients, strict=True):
+            image[support_index ^ column] += coefficient * coordinate * cd_sign(32, support_index, column)
+    exact_norm = sum((coordinate**2 for coordinate in image), Fraction(0))
+    alpha = sum((abs(coefficient) for coefficient in coefficients), Fraction(0))
+    probability = exact_norm / (norm_squared * alpha**2)
     if not 0 <= probability <= 1:
         raise RuntimeError("exact LCU probability escaped [0,1]")
     return probability

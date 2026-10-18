@@ -1,13 +1,14 @@
 {
   "schema": "formal-certificate-verification-v1",
   "compiler": {
-    "rocq": "9.2",
-    "ocaml": "5.5.0",
+    "rocq": "9.3.0",
+    "ocaml": "5.5.1",
     "flags": [
       "-q",
       "-w",
       "@all"
-    ]
+    ],
+    "stdlib": "9.2.0"
   },
   "kernel_flags": [
     "-silent",
@@ -73,5 +74,10 @@
     "TerminalChannelSeparation.kernel.txt",
     "TerminalChannelSeparationReal.compile.txt",
     "TerminalChannelSeparationReal.kernel.txt"
-  ]
+  ],
+  "requalification": {
+    "source_materialization": "temporary source copies; external sources from git archive at ci/open_gororoba.pin",
+    "opam_repository": "eba24de6376079a3f9dfa4a9c9ca842475cd1bbc",
+    "kernel_diagnostics": "full raw Rocq 9.3 report, including inductives relying on indices not mattering"
+  }
 }

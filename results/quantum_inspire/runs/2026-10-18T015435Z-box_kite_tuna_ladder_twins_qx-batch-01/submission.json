@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-18T01:55:19+00:00",
+ "approval": "Owner approval in session boxkite-quantum-main, 2026-10-18: \"131072 shots (maximum)\" (about 01:10Z) to the written case for the Tuna-17 box-kite ladder series, conditional on PRs #238 and #239 merging with the case digests unchanged, met at main 5c285fc (QX twins batch-00, batch-01; ladder batch-00 to batch-06)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "c677536c903ef2c82ba55e2ee02bfb8a86988e881614e7fb8d0fec0b9f88f358",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 871677,
+ "project": 767803,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "twin-latin-y-1.cq",
+   "job": 1531005,
+   "sha256": "3c3d27600f6b136ba0eb55580db01cd31e7edb43e05ae5dc9859099a8cbb8665"
+  },
+  {
+   "file": "twin-latin-y-2.cq",
+   "job": 1531006,
+   "sha256": "017effcb3654014307c58d86f955d0b3c0bff460b38e13ae77bea816ad5ab37c"
+  },
+  {
+   "file": "twin-latin-y-3.cq",
+   "job": 1531007,
+   "sha256": "7b15b202fd459928e890e5958e8c8b8eaf8dfef0dc58d97cae2df684416904cb"
+  }
+ ],
+ "submitted_utc": "2026-10-18T01:55:19+00:00"
+}

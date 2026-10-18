@@ -1,0 +1,275 @@
+{
+  "scope": "Local spawn and nested-map CPU-budget probe; simulation/process allocation only.",
+  "python": "3.14.7",
+  "before_source_commit": "2fbecdc7d70b257c8a75b7252fa1d5b89864a46e",
+  "after_parallel_sha256": "d1e886998cab944943ae50babb8e9be7eb2977bbb2d48daf196e171ae9007e92",
+  "command": "GOROROBA_WORKERS=2 \"$PYTHON\" PROBE.py (run from repository root)",
+  "probe_source": "import json\nimport os\nimport sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path.cwd() / 'gororoba_quantum'))\nimport parallel\n\ndef inner(item):\n    return {'item': item, 'pid': os.getpid(), 'workers': parallel.workers(), 'threads': parallel.default_threads()}\n\ndef outer(item):\n    return {'outer_pid': os.getpid(), 'workers': parallel.workers(), 'threads': parallel.default_threads(), 'nested': parallel.ordered_map(inner, [item * 4 + offset for offset in range(4)], min_items=1)}\n\nif __name__ == '__main__':\n    os.environ['GOROROBA_WORKERS'] = '2'\n    print(json.dumps({'parent_workers': parallel.workers(), 'parent_threads': parallel.default_threads(), 'rows': parallel.ordered_map(outer, list(range(4)), min_items=1)}, sort_keys=True))\n",
+  "before": {
+    "parent_threads": 12,
+    "parent_workers": 2,
+    "rows": [
+      {
+        "nested": [
+          {
+            "item": 0,
+            "pid": 3418728,
+            "threads": 12,
+            "workers": 2
+          },
+          {
+            "item": 1,
+            "pid": 3418728,
+            "threads": 12,
+            "workers": 2
+          },
+          {
+            "item": 2,
+            "pid": 3418728,
+            "threads": 12,
+            "workers": 2
+          },
+          {
+            "item": 3,
+            "pid": 3418728,
+            "threads": 12,
+            "workers": 2
+          }
+        ],
+        "outer_pid": 3418712,
+        "threads": 12,
+        "workers": 2
+      },
+      {
+        "nested": [
+          {
+            "item": 4,
+            "pid": 3418729,
+            "threads": 12,
+            "workers": 2
+          },
+          {
+            "item": 5,
+            "pid": 3418729,
+            "threads": 12,
+            "workers": 2
+          },
+          {
+            "item": 6,
+            "pid": 3418729,
+            "threads": 12,
+            "workers": 2
+          },
+          {
+            "item": 7,
+            "pid": 3418729,
+            "threads": 12,
+            "workers": 2
+          }
+        ],
+        "outer_pid": 3418709,
+        "threads": 12,
+        "workers": 2
+      },
+      {
+        "nested": [
+          {
+            "item": 8,
+            "pid": 3418728,
+            "threads": 12,
+            "workers": 2
+          },
+          {
+            "item": 9,
+            "pid": 3418728,
+            "threads": 12,
+            "workers": 2
+          },
+          {
+            "item": 10,
+            "pid": 3418728,
+            "threads": 12,
+            "workers": 2
+          },
+          {
+            "item": 11,
+            "pid": 3418728,
+            "threads": 12,
+            "workers": 2
+          }
+        ],
+        "outer_pid": 3418712,
+        "threads": 12,
+        "workers": 2
+      },
+      {
+        "nested": [
+          {
+            "item": 12,
+            "pid": 3418728,
+            "threads": 12,
+            "workers": 2
+          },
+          {
+            "item": 13,
+            "pid": 3418728,
+            "threads": 12,
+            "workers": 2
+          },
+          {
+            "item": 14,
+            "pid": 3418728,
+            "threads": 12,
+            "workers": 2
+          },
+          {
+            "item": 15,
+            "pid": 3418728,
+            "threads": 12,
+            "workers": 2
+          }
+        ],
+        "outer_pid": 3418712,
+        "threads": 12,
+        "workers": 2
+      }
+    ]
+  },
+  "after": {
+    "parent_threads": 2,
+    "parent_workers": 2,
+    "rows": [
+      {
+        "nested": [
+          {
+            "item": 0,
+            "pid": 3421204,
+            "threads": 1,
+            "workers": 1
+          },
+          {
+            "item": 1,
+            "pid": 3421204,
+            "threads": 1,
+            "workers": 1
+          },
+          {
+            "item": 2,
+            "pid": 3421204,
+            "threads": 1,
+            "workers": 1
+          },
+          {
+            "item": 3,
+            "pid": 3421204,
+            "threads": 1,
+            "workers": 1
+          }
+        ],
+        "outer_pid": 3421204,
+        "threads": 1,
+        "workers": 1
+      },
+      {
+        "nested": [
+          {
+            "item": 4,
+            "pid": 3421207,
+            "threads": 1,
+            "workers": 1
+          },
+          {
+            "item": 5,
+            "pid": 3421207,
+            "threads": 1,
+            "workers": 1
+          },
+          {
+            "item": 6,
+            "pid": 3421207,
+            "threads": 1,
+            "workers": 1
+          },
+          {
+            "item": 7,
+            "pid": 3421207,
+            "threads": 1,
+            "workers": 1
+          }
+        ],
+        "outer_pid": 3421207,
+        "threads": 1,
+        "workers": 1
+      },
+      {
+        "nested": [
+          {
+            "item": 8,
+            "pid": 3421204,
+            "threads": 1,
+            "workers": 1
+          },
+          {
+            "item": 9,
+            "pid": 3421204,
+            "threads": 1,
+            "workers": 1
+          },
+          {
+            "item": 10,
+            "pid": 3421204,
+            "threads": 1,
+            "workers": 1
+          },
+          {
+            "item": 11,
+            "pid": 3421204,
+            "threads": 1,
+            "workers": 1
+          }
+        ],
+        "outer_pid": 3421204,
+        "threads": 1,
+        "workers": 1
+      },
+      {
+        "nested": [
+          {
+            "item": 12,
+            "pid": 3421204,
+            "threads": 1,
+            "workers": 1
+          },
+          {
+            "item": 13,
+            "pid": 3421204,
+            "threads": 1,
+            "workers": 1
+          },
+          {
+            "item": 14,
+            "pid": 3421204,
+            "threads": 1,
+            "workers": 1
+          },
+          {
+            "item": 15,
+            "pid": 3421204,
+            "threads": 1,
+            "workers": 1
+          }
+        ],
+        "outer_pid": 3421204,
+        "threads": 1,
+        "workers": 1
+      }
+    ]
+  },
+  "checks": [
+    "24 selector/resource contracts pass",
+    "parallel self-test passes normal and optimized Python",
+    "parallel self-test passes with actual single-CPU affinity",
+    "Three source-bound mathematical replays pass normal and optimized Python before checksum refresh; retained result bytes identical",
+    "Endpoint regeneration is byte-identical; research-state checks pass 128 claims and 116 acquisitions"
+  ]
+}

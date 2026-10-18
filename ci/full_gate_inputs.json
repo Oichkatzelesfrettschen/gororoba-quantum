@@ -1,0 +1,188 @@
+{
+  "schema": "gororoba-full-gate-inputs-v1",
+  "gates": {
+    "core-063": [],
+    "core-069": [],
+    "core-080": [],
+    "core-089": [],
+    "core-094": [],
+    "core-523": [],
+    "core-074": [],
+    "sources-146": [
+      "docs/evidence/principal_skew_atlas/**",
+      "docs/notes/principal_skew_atlas.md"
+    ],
+    "sources-147": [
+      "docs/evidence/principal_skew_atlas/**",
+      "docs/notes/principal_skew_atlas.md"
+    ],
+    "sources-149": [
+      "docs/evidence/schur_acceleration/**",
+      "docs/notes/schur_acceleration_certificates.md"
+    ],
+    "sources-161": [
+      "docs/evidence/nullity_twelve_locus/**",
+      "docs/notes/nullity_twelve_local_geometry.md"
+    ],
+    "sources-164": [
+      "docs/evidence/kernel_limits/**",
+      "docs/notes/annihilator_kernel_limits.md"
+    ],
+    "sources-167": [
+      "docs/evidence/complex_skew/**",
+      "docs/notes/complex_skew_rank_geometry.md"
+    ],
+    "core-443": [
+      "results/live/2026-10-13T080216.451663Z/**",
+      "docs/evidence/heron_platform/targets.json"
+    ],
+    "core-449": [
+      "results/live/2026-10-13T080216.451663Z/**",
+      "docs/evidence/heron_platform/targets.json"
+    ],
+    "core-447": [
+      "results/live/2026-10-13T083417.634585Z/**",
+      "docs/evidence/heron_platform/targets.json"
+    ],
+    "core-448": [
+      "results/live/2026-10-13T083417.634585Z/**",
+      "docs/evidence/heron_platform/targets.json"
+    ],
+    "core-289": [
+      "docs/evidence/walk-control-scaffolding/local_member_conformance.json",
+      "results/live/*/record.json"
+    ],
+    "core-434": [
+      "results/quantum_inspire/readout_ringdown_tuna_17_*_calibration_sensitivity.json",
+      "results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_*/**"
+    ],
+    "core-438": [
+      "results/quantum_inspire/readout_ringdown_tuna_17_*_analysis.json"
+    ],
+    "core-329": [
+      "docs/evidence/atlas_coherent_families/**",
+      "docs/evidence/atlas_detuning_map/**",
+      "docs/evidence/calibration/history/**",
+      "results/ripple/measured-ripple.json",
+      "results/live/2026-10-13T025444.603480Z/**",
+      "results/live/2026-10-15T031229.371738Z/**"
+    ],
+    "core-360": [
+      "docs/evidence/atlas_coherent_families/**",
+      "docs/evidence/atlas_detuning_map/**",
+      "docs/evidence/calibration/history/**",
+      "results/ripple/measured-ripple.json",
+      "docs/evidence/atlas_fringe_amplitudes/**",
+      "results/live/2026-10-13T025444.603480Z/**",
+      "results/live/2026-10-15T031229.371738Z/**"
+    ],
+    "core-379": [
+      "docs/evidence/linear_conjugation/noise.json",
+      "docs/evidence/calibration/history/**"
+    ],
+    "core-390": [
+      "docs/evidence/ghost_error_scale/**",
+      "results/kaggle/2026-10-16T160710Z-gororoba-ghost-error-scale-c/**",
+      "docs/evidence/calibration/history/**",
+      "results/live/2026-10-13T025444.603480Z/**",
+      "results/live/2026-10-13T032011.664435Z/**",
+      "results/live/2026-10-15T030748.903241Z/**",
+      "results/live/2026-10-15T030903.235380Z/**",
+      "results/live/2026-10-15T031229.371738Z/**",
+      "results/live/2026-10-15T070847.644554Z/**",
+      "results/live/2026-10-15T070853.550532Z/**",
+      "results/live/kingston-wide-control-result/**"
+    ],
+    "core-423": [
+      "docs/evidence/box_kite_qx_sweep/**",
+      "results/kaggle/2026-10-17T131115Z-box-kite-qx-sweep/**",
+      "docs/evidence/box_kite_census/**",
+      "docs/notes/quantum_inspire/requirements-qi.txt"
+    ],
+    "core-491": [
+      "docs/evidence/gl52_split_conjugators/**",
+      "docs/evidence/linear_conjugation/search.json",
+      "docs/evidence/open_quantum/catalogue.json",
+      "results/hw_estimate/n21_linear_conjugation_challenger.json"
+    ],
+    "core-064": [],
+    "sources-150": [
+      "docs/evidence/schur_acceleration/**",
+      "docs/notes/schur_acceleration_certificates.md"
+    ],
+    "sources-215": [
+      "docs/evidence/cd_associator_defect_census/census.json"
+    ],
+    "sources-218": [
+      "docs/evidence/cd_associator_defect_census/census.json"
+    ],
+    "core-287": [
+      "docs/evidence/ghost_runs/**",
+      "docs/evidence/calibration/history/**",
+      "results/live/2026-10-13T080216.451663Z/**"
+    ],
+    "core-311": [
+      "docs/evidence/walk_scaffold_channels/**",
+      "docs/evidence/calibration/history/**",
+      "results/live/2026-10-13T025444.603480Z/**",
+      "results/live/2026-10-15T031229.371738Z/**",
+      "results/kaggle/2026-10-16T102614Z-gororoba-walk-scaffold-channels/collect.json"
+    ],
+    "core-495": [
+      "results/live/2026-10-13T201757.782152Z/**"
+    ],
+    "core-487": [
+      "docs/evidence/n21_exact_model/crosscheck.json",
+      "docs/evidence/calibration/history/ibm_kingston/20261016T1213360700.json",
+      "results/live/2026-10-17T003834.987727Z/isa.qpy",
+      "results/live/2026-10-17T003834.987727Z/record.json"
+    ],
+    "core-526": [
+      "docs/evidence/n21_exact_model/crosscheck_prep_excitation.json",
+      "docs/evidence/calibration/history/ibm_kingston/20261016T1213360700.json",
+      "results/live/2026-10-17T003834.987727Z/isa.qpy",
+      "results/live/2026-10-17T003834.987727Z/record.json"
+    ],
+    "core-325": [
+      "docs/evidence/atlas_detuning_map/result.json",
+      "docs/evidence/calibration/history/**",
+      "results/ripple/measured-ripple.json",
+      "results/live/2026-10-13T025444.603480Z/**",
+      "results/live/2026-10-15T031229.371738Z/**"
+    ],
+    "core-359": [
+      "docs/evidence/atlas_detuning_map/result.json",
+      "docs/evidence/calibration/history/**",
+      "results/ripple/measured-ripple.json",
+      "results/live/2026-10-13T025444.603480Z/**",
+      "results/live/2026-10-15T031229.371738Z/**"
+    ],
+    "core-352": [
+      "docs/evidence/calibration/history/**",
+      "results/live/2026-10-15T070853.550532Z/**",
+      "results/live/2026-10-15T070847.644554Z/**"
+    ],
+    "core-353": [
+      "docs/evidence/calibration/history/**",
+      "results/live/2026-10-15T070853.550532Z/**",
+      "results/live/2026-10-15T070847.644554Z/**"
+    ],
+    "core-499": [
+      "docs/evidence/n21_qx_conformance/**",
+      "results/live/2026-10-17T003834.987727Z/isa.qpy",
+      "results/live/2026-10-17T003834.987727Z/record.json",
+      "docs/notes/quantum_inspire/requirements-qi.txt"
+    ],
+    "core-513": [
+      "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/**"
+    ],
+    "core-514": [
+      "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/**",
+      "results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02/**"
+    ],
+    "core-515": [
+      "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/**",
+      "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/submission.json"
+    ]
+  }
+}

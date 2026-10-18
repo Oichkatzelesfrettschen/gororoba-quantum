@@ -30,6 +30,35 @@ def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def kg24_body(circuit: Any, controls: int) -> tuple[list[Any], str]:
+    """Remove only complete native RCCX endpoints after exact structural matching."""
+    from qiskit.circuit.library import RCCXGate
+
+    if circuit.num_qubits != controls + 2 or circuit.global_phase != 0:
+        raise RuntimeError("KG24 native width or global phase differs from the audited construction")
+    qubit_map = (0, 1, controls + 1)
+    definition = RCCXGate().definition
+    decomposed = [
+        (instruction.operation, [qubit_map[definition.find_bit(qubit).index] for qubit in instruction.qubits])
+        for instruction in definition.data
+    ]
+    representations = (("opaque-rccx", [(RCCXGate(), list(qubit_map))]), ("elementary-rccx", decomposed))
+    for label, expected in representations:
+        width = len(expected)
+        if len(circuit.data) < 2 * width:
+            continue
+        endpoints = (circuit.data[:width], circuit.data[-width:])
+        if all(
+            instruction.operation == operation
+            and [circuit.find_bit(qubit).index for qubit in instruction.qubits] == indices
+            and not instruction.clbits
+            for endpoint in endpoints
+            for instruction, (operation, indices) in zip(endpoint, expected, strict=True)
+        ):
+            return list(circuit.data[width:-width]), label
+    raise RuntimeError("KG24 outer-predicate structure differs from the audited native circuit")
+
+
 def source_snapshot(root: Path) -> dict[str, Any]:
     def git(*arguments: str) -> str:
         return subprocess.check_output(
@@ -65,6 +94,7 @@ def main() -> None:
 
     started = time.monotonic()
     results: list[dict[str, Any]] = []
+    endpoint_representations: set[str] = set()
     for multiplier in (4, 16):
         network = target_flip_network(modular_permutation(21, multiplier))
         choices: list[list[tuple[int, bool] | None]] = [
@@ -109,11 +139,9 @@ def main() -> None:
                 controls = [0, pivot_bit + 1] + [bit + 1 for bit in other_bits]
                 synthesized = synth_mcx_1_clean_kg24(len(controls))
                 mapping = controls + [cube.target + 1, 6]
-                for endpoint in (synthesized.data[0], synthesized.data[-1]):
-                    indices = [synthesized.find_bit(qubit).index for qubit in endpoint.qubits]
-                    if endpoint.operation.name != "rccx" or indices != [0, 1, len(controls) + 1]:
-                        raise RuntimeError("KG24 outer-predicate structure differs from the audited native circuit")
-                for instruction in synthesized.data[1:-1]:
+                body, representation = kg24_body(synthesized, len(controls))
+                endpoint_representations.add(representation)
+                for instruction in body:
                     candidate.append(
                         instruction.operation,
                         [mapping[synthesized.find_bit(qubit).index] for qubit in instruction.qubits],
@@ -201,6 +229,7 @@ def main() -> None:
             "The probe performs no Aer shot simulation, IBM service construction, package build, or QPU submission.",
         ],
         "results": results,
+        "native_kg24_endpoint_representations": sorted(endpoint_representations),
     }
     serialized_output = json.dumps(output, indent=2, sort_keys=True) + "\n"
     if digest(probe_path) != probe_sha256:
