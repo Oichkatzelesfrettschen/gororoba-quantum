@@ -753,7 +753,8 @@ the couplers equaled Q1's throughout.
     every retained cell (passing 0.058 to 0.158, failing 0.829 to 0.870):
     at most 0.20 passes, at least 0.50 fails, and an entry is void off
     29dc6ef8 or when the result's `results_list` length differs from the
-    payload sent (one for job-14, none for job-15, two for job-16), which
+    payload sent (one for job-14, none for job-15, and for job-16 its two
+    attribution entries plus the 22 extension entries, 24 in all), which
     catches a service that normalizes a one-entry iterator. job-14, Q1's
     case as a ComputationIterator holding one entry (manifest
     `"iterator": true`), runs first; a pass is followed by job-15 (job-13
@@ -802,7 +803,11 @@ the couplers equaled Q1's throughout.
     entries first and appends 11 blocks of (seed 46667, which serves
     14a96ca6, then seed 20), all at 10000 samples: 24 entries, about 170 s,
     a 480000-shot cap and a 1.48-credit ceiling inside the 1.49 the user set,
-    which puts the series at about 2.5 credits. No earlier job ran a large
+    which priced the series at up to 2.5 credits. The usage ledger charged
+    job-16 1.02 credits (qpu:belenos free_credits 16.2055 before, 17.2255
+    after) against the 1.24 the per-shot rate gives for 240000 samples, and
+    job-14 1.01, so the series cost 2.03; one iterated job is the evidence
+    that the charge does not scale with summed entry shots. No earlier job ran a large
     29dc6ef8 entry right after a mesh switch: job-09 switched meshes at 1500
     samples and D2 ran large entries without a switch. The readings:
     - any 14a96ca6 entry failing: the fault reaches beyond 29dc6ef8 in this
@@ -1043,7 +1048,7 @@ Not yet used:
 | 2026-10-18 09:05 | c1eb1cbb | qpu:belenos | belenos_mesh job-12 (D2 + D4), 9 iterations, dwell ladders at seeds 20 and 46667 | 1.12 | 61 s for 166000 samples; D2 flat on 29dc6ef8 (0.90 to 0.99); D4 0.990, 0.961, 0.852 on 14a96ca6; billed the largest iteration's 120000 max_shots |
 | 2026-10-18 15:53 | c0db42f6 | qpu:belenos | belenos_mesh job-13, Q1's single job at seed 20 | 1.01 | served 29dc6ef8; in_block_cone 0.389 (raw 0.335); 14 s; preregistered: single-job form at Q1's budget, whatever the seed |
 | 2026-10-18 19:05 | 3d95587b | qpu:belenos | belenos_mesh job-14, Q1's circuit as a one-entry iterator at seed 20 | 1.01 | served 29dc6ef8; one results_list entry, 10000 samples; tvd_cone_from_ideal 0.823; 14 s; preregistered: fail, follower job-16 |
-| 2026-10-18 19:35 | 46b810ae | qpu:belenos | belenos_mesh job-16, pair at seed 20 plus 11 blocks of seeds 46667 and 20, 10000 samples each | 1.24 | 24 entries in 149 s; pair fail (0.819, 0.814); 14a96ca6 11/11 pass; post-load 29dc6ef8 11/11 pass; preregistered: recovers after a mesh load |
+| 2026-10-18 19:35 | 46b810ae | qpu:belenos | belenos_mesh job-16, pair at seed 20 plus 11 blocks of seeds 46667 and 20, 10000 samples each | 1.02 | 24 entries in 149 s; pair fail (0.819, 0.814); 14a96ca6 11/11 pass; post-load 29dc6ef8 11/11 pass; preregistered: recovers after a mesh load |
 
 A QPU approval quotes the expected credits, the expected seconds and why a
 local Perceval simulation cannot answer the question. Job 4e208d22's quotes
