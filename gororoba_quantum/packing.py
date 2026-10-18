@@ -17,6 +17,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
+from typing import Any
 
 import rustworkx as rx
 from qiskit import ClassicalRegister, QuantumCircuit
@@ -259,14 +260,70 @@ def extract(circuit: QuantumCircuit, prefix: str, qubits: Iterable[int], name: s
         raise ValueError(f"{circuit.name}: no classical register carries component prefix {prefix!r}")
     out = QuantumCircuit(*circuit.qregs, *kept, name=name)
     allowed = {bit for register in kept for bit in register}
+    index = {qubit: k for k, qubit in enumerate(circuit.qubits)}
     for instruction in circuit.data:
-        indices = {circuit.find_bit(qubit).index for qubit in instruction.qubits}
+        indices = {index[qubit] for qubit in instruction.qubits}
         if not indices or not indices <= own:
             continue
         if any(bit not in allowed for bit in instruction.clbits):
             raise ValueError(f"{circuit.name}: component {prefix} writes another component's bits")
-        out.append(instruction.operation, instruction.qubits, instruction.clbits)
+        _keep(out, instruction)
     return out
+
+
+def extract_many(circuit: QuantumCircuit, components: Sequence[tuple[str, Iterable[int], str]]) -> list[QuantumCircuit]:
+    """extract() of each (prefix, qubits, name) component of one fused circuit, in one pass over disjoint qubits.
+
+    An instruction joins a component when its qubits lie inside that
+    component's qubits, so with pairwise disjoint qubit sets each
+    instruction has at most one candidate, the owner of its first qubit, and
+    one pass places every instruction as extract() would; overlapping sets
+    fall back to extract() per component.
+    """
+    owns = [set(qubits) for _, qubits, _ in components]
+    owner: dict[int, int] = {}
+    for c, own in enumerate(owns):
+        for q in own:
+            if q in owner:
+                # owns holds each iterable's qubits, which a generator yields once.
+                return [
+                    extract(circuit, prefix, kept, name)
+                    for (prefix, _, name), kept in zip(components, owns, strict=True)
+                ]
+            owner[q] = c
+    outs, allowed = [], []
+    for prefix, _, name in components:
+        kept = [register for register in circuit.cregs if register.name.startswith(prefix)]
+        if not kept:
+            raise ValueError(f"{circuit.name}: no classical register carries component prefix {prefix!r}")
+        outs.append(QuantumCircuit(*circuit.qregs, *kept, name=name))
+        allowed.append({bit for register in kept for bit in register})
+    index = {qubit: k for k, qubit in enumerate(circuit.qubits)}
+    for instruction in circuit.data:
+        indices = [index[qubit] for qubit in instruction.qubits]
+        if not indices or indices[0] not in owner:
+            continue
+        c = owner[indices[0]]
+        if not all(q in owns[c] for q in indices):
+            continue
+        if any(bit not in allowed[c] for bit in instruction.clbits):
+            raise ValueError(f"{circuit.name}: component {components[c][0]} writes another component's bits")
+        _keep(outs[c], instruction)
+    return outs
+
+
+def _keep(out: QuantumCircuit, instruction: Any) -> None:
+    """Append one instruction whose qubits and clbits out already holds, as append would place it.
+
+    out shares the source's quantum registers and the kept classical
+    registers, so the instruction's bits are out's own: a bound operation
+    enters through _append, which skips append's argument broadcasting, and
+    a parameterized one through append, which copies it.
+    """
+    if instruction.operation.is_parameterized():
+        out.append(instruction.operation, instruction.qubits, instruction.clbits)
+    else:
+        out._append(instruction)
 
 
 def _measurement_tail_start(circuit: QuantumCircuit) -> int:
@@ -295,11 +352,12 @@ def split(packed: QuantumCircuit, prefix: str, qubits: Iterable[int], name: str 
         raise ValueError(f"{packed.name}: no classical register carries prefix {prefix!r}")
     out = QuantumCircuit(*packed.qregs, *kept, name=name or packed.name)
     allowed = {bit for register in kept for bit in register}
+    index = {qubit: k for k, qubit in enumerate(packed.qubits)}
     for inst in packed.data:
-        indices = {packed.find_bit(q).index for q in inst.qubits}
+        indices = {index[q] for q in inst.qubits}
         if not indices or not indices <= own:
             continue
         if any(bit not in allowed for bit in inst.clbits):
             raise ValueError(f"{packed.name}: instruction on replica {prefix} writes another replica's bits")
-        out.append(inst.operation, inst.qubits, inst.clbits)
+        _keep(out, inst)
     return out

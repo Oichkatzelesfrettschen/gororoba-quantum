@@ -413,7 +413,8 @@ def gpu_interpreter(
     The venv starts empty, so the image's own numpy, scipy and Aer stay out
     of the entry while the hypercomplex stage keeps the image's packages;
     ci/install_pins.sh installs requirements.txt and the CI tools with
-    spec["aer_pins"] in qiskit-aer's place, and gpu_env_report.py reads the
+    spec["aer_pins"] in qiskit-aer's place and spec["extra_pins"] (push
+    --gpu-env-with) beside them, and gpu_env_report.py reads the
     result back under the entry's own environment. The image exports
     PYTHONPATH and site customization that would load its packages ahead of
     the venv's, so the environment drops ISOLATION_VARIABLES and turns the
@@ -435,9 +436,10 @@ def gpu_interpreter(
             GOROROBA_AER_DEVICE="GPU",
         )
     )
-    checked("install-pins", "sh", "ci/install_pins.sh", cwd=tree, env=dict(env, AER_PINS=" ".join(spec["aer_pins"])))
+    added = [*spec["aer_pins"], *spec.get("extra_pins", [])]
+    checked("install-pins", "sh", "ci/install_pins.sh", cwd=tree, env=dict(env, AER_PINS=" ".join(added)))
     checked("gpu-freeze", python, "-m", "pip", "freeze", env=env)
-    pins = pinned(tree, spec["aer_pins"])
+    pins = pinned(tree, added)
     script = str(tree / "kaggle_kernel/gpu_env_report.py")
     report = json.loads(checked("gpu-env-report", python, script, json.dumps(sorted(pins)), env=env).splitlines()[-1])
     listed = len(gpus())

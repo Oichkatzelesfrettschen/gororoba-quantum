@@ -808,7 +808,7 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" qpu_planning_contracts.py",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py",
    "name": "core-094",
    "seconds": 123.8,
    "tier": "full",
@@ -3641,9 +3641,9 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --rep-delay && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --rep-delay",
+   "cmd": "\"$PYTHON\" -B -O -W error qpu_planning_contracts.py --rep-delay",
    "name": "core-523",
-   "seconds": 121.3,
+   "seconds": 60.7,
    "tier": "full",
    "workers": "all",
    "timing_origin": "local-four-worker-qualification"
@@ -3782,6 +3782,46 @@
    "cmd": "\"$PYTHON\" -B -W error results/local_compute/n21_shared_predicate/check_probe.py --current-sdk && \"$PYTHON\" -B -O -W error results/local_compute/n21_shared_predicate/check_probe.py --current-sdk",
    "name": "core-native-predicate-current",
    "seconds": 12.6,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error runtime_contracts.py --case approval_calibration_values && \"$PYTHON\" -B -O -W error runtime_contracts.py --case approval_calibration_values",
+   "name": "core-521",
+   "seconds": 53.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --self-test >/dev/null && \"$PYTHON\" -B -O -W error scripts/ghost_error_scale_branching.py --self-test >/dev/null",
+   "name": "core-363",
+   "seconds": 53.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --replay docs/evidence/ghost_error_scale_branching/reduced.json",
+   "name": "core-364",
+   "seconds": 11.9,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --check-converter",
+   "name": "core-444",
+   "seconds": 40.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_branching_benchmark.py --check docs/evidence/ghost_error_scale_branching/benchmark-host.json results/kaggle/2026-10-18T041945Z-gororoba-ghost-branching-t4/output/output/ghost_branching_benchmark.json && \"$PYTHON\" -B -O -W error scripts/ghost_branching_benchmark.py --check docs/evidence/ghost_error_scale_branching/benchmark-host.json results/kaggle/2026-10-18T041945Z-gororoba-ghost-branching-t4/output/output/ghost_branching_benchmark.json",
+   "name": "core-441",
+   "seconds": 2.0,
    "tier": "pr"
   }
  ],
