@@ -3876,7 +3876,7 @@
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --serialized-noise",
-   "name": "core-540",
+   "name": "core-548",
    "seconds": 105.5,
    "tier": "full"
   },
