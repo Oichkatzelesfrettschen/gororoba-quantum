@@ -60,6 +60,7 @@ import importlib
 import inspect
 import json
 import math
+import os
 import re
 import statistics
 import sys
@@ -71,6 +72,8 @@ from pathlib import Path
 from typing import Any, Literal, get_args, get_origin
 
 ROOT = Path(__file__).resolve().parents[1]
+# CI sets it so a version mismatch fails instead of replaying the retained inventory (ci/pins.py).
+PINS_REQUIRED = "GOROROBA_PINS_REQUIRED"
 NOTE = ROOT / "docs/notes/ibm_quantum/hardware-controls.md"
 BACKENDS = ROOT / "docs/evidence/ibm_runtime_options/backends.json"
 SCHEMA = "ibm-runtime-options-inventory-v1"
@@ -737,17 +740,31 @@ def probe_environment() -> dict[str, str | None]:
     return versions
 
 
-def check_environment(recorded: Any, installed: dict[str, str | None]) -> None:
-    """The probe outcomes byte-compare only under the versions the inventory was generated with."""
+def environment_differences(recorded: Any, installed: dict[str, str | None]) -> list[str]:
+    """Each probe distribution whose installed version differs from the one the inventory was generated with."""
     require(
         isinstance(recorded, dict) and set(recorded) == set(PROBE_PACKAGES),
         f"inventory probe_environment must name {', '.join(PROBE_PACKAGES)}",
     )
-    for name in PROBE_PACKAGES:
-        require(
-            recorded[name] == installed[name],
-            f"{name} {installed[name]} is installed; the inventory was generated with {recorded[name]}",
-        )
+    return [
+        f"{name} {installed[name]} is installed; the inventory was generated with {recorded[name]}"
+        for name in PROBE_PACKAGES
+        if recorded[name] != installed[name]
+    ]
+
+
+def check_environment(recorded: Any, installed: dict[str, str | None]) -> None:
+    """The probe outcomes byte-compare only under the versions the inventory was generated with."""
+    differing = environment_differences(recorded, installed)
+    require(not differing, "; ".join(differing))
+
+
+def allow_replay(differing: list[str], environment: Any) -> None:
+    """A version mismatch replays the retained inventory unless GOROROBA_PINS_REQUIRED=1 demands the probes."""
+    require(
+        environment.get(PINS_REQUIRED) != "1",
+        f"{'; '.join(differing)}; {PINS_REQUIRED}=1 requires the recorded versions",
+    )
 
 
 def inventory() -> dict[str, Any]:
@@ -851,13 +868,15 @@ def render_behavior(data: dict[str, Any]) -> list[str]:
         "client-side primitives on FakeFez and submit nothing.",
         "",
         "**Client-side Sampler, resolved twirling defaults** (`finalize_sampler_options`): "
-        + ", ".join(f"`{key}` = {json.dumps(value)}" for key, value in effective["sampler"].items())
+        + ", ".join(f"`{key}` = {json.dumps(value)}" for key, value in sorted(effective["sampler"].items()))
         + ".",
         "",
         "**Client-side Estimator, resolved defaults by resilience level** (`finalize_estimator_options`).",
         "",
     ]
-    keys = [key for key in effective["estimator_levels"][0] if key != "resilience_level"]
+    # Columns follow key order, so the block renders alike from a fresh probe and from the
+    # retained file, whose keys dumps() sorts.
+    keys = sorted(key for key in effective["estimator_levels"][0] if key != "resilience_level")
     lines += ["| resilience_level | " + " | ".join(f"`{key}`" for key in keys) + " |"]
     lines += ["| --- |" + " --- |" * len(keys)]
     for level in effective["estimator_levels"]:
@@ -1453,8 +1472,23 @@ def check_note(text: str, rendered: dict[str, str]) -> None:
 
 
 def check(path: Path) -> None:
+    """Regenerate the inventory under its recorded versions, or replay what needs no installed package.
+
+    Under other versions of the probe distributions the probes cannot
+    byte-compare, so the check holds the retained file to its canonical
+    serialization, the backend snapshot to its schema and the note blocks to
+    the retained inventory's rendering, and names the differing versions.
+    """
     recorded = json.loads(path.read_text())
-    check_environment(recorded.get("probe_environment"), probe_environment())
+    differing = environment_differences(recorded.get("probe_environment"), probe_environment())
+    if differing:
+        allow_replay(differing, os.environ)
+        require(path.read_text() == dumps(recorded), f"{path} is not in its canonical serialization")
+        snapshot = json.loads(BACKENDS.read_text())
+        check_backends(snapshot)
+        check_note(NOTE.read_text(), render(recorded, snapshot))
+        print(f"replayed {path.name} without regenerating its probes: {'; '.join(differing)}")
+        return
     data = inventory()
     require(path.read_text() == dumps(data), f"{path} differs from the installed package; rerun --out")
     snapshot = json.loads(BACKENDS.read_text())
@@ -1512,6 +1546,8 @@ def self_test() -> None:
         drifted[name] = "0.0.0"
         rejects(partial(check_environment, drifted, installed), name)
     rejects(lambda: check_environment({}, installed), "probe_environment")
+    allow_replay(["qiskit 0.0.0 is installed"], {})
+    rejects(lambda: allow_replay(["qiskit 0.0.0 is installed"], {PINS_REQUIRED: "1"}), PINS_REQUIRED)
 
     changed = copy.deepcopy(snapshot)
     first = sorted(changed["backends"])[0]

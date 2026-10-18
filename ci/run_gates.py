@@ -24,6 +24,14 @@ gate, which replays its retained record where the toolchain is absent.
 ``--requires qi`` keeps only the gates that name it and exports
 GOROROBA_QI_REQUIRED=1, so each must take its live path or fail; the
 qi-stack job of .github/workflows/ci.yml runs that selection.
+
+A gate's ``runtime`` names a historical producer environment; its command
+runs under that runtime's interpreter (pins.REPLAY_RUNTIMES). The
+interpreter comes from ``--replay-python PATH``, else REPLAY_PYTHON, and
+must hold every pin of ci/requirements-replay.txt. With neither, the running
+interpreter serves when it holds every pin, as the build host's does, unless
+GOROROBA_PINS_REQUIRED=1, which CI sets. One line before the first gate
+names the choice; an unresolved runtime's gates exit 127 with that reason.
 """
 
 from __future__ import annotations
@@ -41,6 +49,7 @@ from tempfile import TemporaryDirectory
 from typing import Any
 
 import gate_inputs
+import pins
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
@@ -51,7 +60,7 @@ DEFAULT_SHARD_CPUS = 4
 TAIL_LINES = 40
 # Each named toolchain and the variable that makes its absence a gate failure.
 REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED"}
-REPLAY_INTERPRETERS = {"qiskit-2.5": "REPLAY_PYTHON"}
+REPLAY_INTERPRETERS = {runtime: variable for runtime, (variable, _pins) in pins.REPLAY_RUNTIMES.items()}
 # Each collector owns exactly one shell tree, so parallel gates cannot mix
 # their RUSAGE_CHILDREN counters. POSIX Python supplies the platform binding.
 RESOURCE_COLLECTOR = """
@@ -267,6 +276,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--timings", type=Path, help="write measured gate durations and shard wall time as JSON")
     parser.add_argument("--plan", type=Path, help="write the selected shard and historical environments, then exit")
     parser.add_argument("--github-output", type=Path, help="append historical=true/false for a --plan step")
+    parser.add_argument(
+        "--replay-python",
+        help="interpreter for historical-runtime gates; it must hold every pin of ci/requirements-replay.txt",
+    )
     arguments = parser.parse_args(argv)
     if arguments.shard_cpus < 1:
         parser.error("--shard-cpus must be positive")
@@ -309,6 +322,14 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{gate['name']}\t{gate['cwd']}\t{gate['cmd']}")
         return 0
     environment = environment_for(arguments.device, arguments.requires)
+    for runtime in sorted({gate["runtime"] for gate in selected if gate.get("runtime")}):
+        interpreter, reason = pins.resolve_replay(runtime, arguments.replay_python, environment, environment["PYTHON"])
+        print(f"historical runtime {runtime}: {reason}", flush=True)
+        variable = REPLAY_INTERPRETERS[runtime]
+        if interpreter is None:
+            environment.pop(variable, None)
+        else:
+            environment[variable] = interpreter
     failures = []
     started = time.monotonic()
     timings = []

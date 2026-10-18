@@ -29,6 +29,7 @@ import diagnostic_experiments
 import live_run
 import local_compute
 import native_preflight
+import qpe_diagnostics
 import qpu_cases
 import qpu_planning
 from runtime_contracts import _fixture_args, _ProbeBackend, _ProbeSampler, _ProbeService
@@ -1755,6 +1756,44 @@ def _verify_rep_delay_only() -> None:
     )
 
 
+def _verify_window_bracket(snapshot: live_run.Snapshot) -> None:
+    """Every n21-orbit-rca arm keeps work-qubit gates out of the control's measurement-and-reset window.
+
+    The barrier-free n21-orbit-feedback pair is the negative control: its
+    compiled multipliers place work-only gates inside the window.
+    """
+    traces: dict[str, Any] = {}
+    rca = qpu_planning.family_candidates(live_run, [snapshot], _args("n21-orbit-rca"), traces)
+    _require(bool(rca), f"FakeFez rejects every N=21 window family: {traces}")
+    (choice,), _configuration = rca[0]
+    _require(len(choice.isas) == 8, "N=21 window family lost an arm")
+    for member, isa in zip(choice.group.members, choice.isas, strict=True):
+        inside = frozenset({"delay", "x"}) if "_window_echo_" in member.name else frozenset({"delay"})
+        found = qpe_diagnostics.window_bracket_violations(isa, inside)
+        _require(not found, f"{member.name}: the window holds work-qubit operations {found}")
+    unbracketed = qpu_planning.family_candidates(live_run, [snapshot], _args("n21-orbit-feedback"), traces)
+    _require(bool(unbracketed), f"FakeFez rejects every N=21 orbit family: {traces}")
+    (control,), _configuration = unbracketed[0]
+    for member, isa in zip(control.group.members, control.isas, strict=True):
+        _require(
+            bool(qpe_diagnostics.window_bracket_violations(isa)),
+            f"{member.name}: the barrier-free window holds no work-qubit operation, so the check proves nothing",
+        )
+
+
+def _verify_window_bracket_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_window_bracket(snapshot)
+    print(
+        "QPU planning: every compiled n21-orbit-rca arm keeps work-qubit gates outside the control's "
+        "measurement-and-reset window, and the barrier-free n21-orbit-feedback pair does not"
+    )
+
+
 def _verify_static_admission_only() -> None:
     with (
         patch.object(live_run, "QiskitRuntimeService", _forbid_service),
@@ -1778,8 +1817,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "--submit-reuse", action="store_true", help="run only the approved-prediction reuse submission contracts"
     )
+    parser.add_argument("--window-bracket", action="store_true", help="run only the N=21 orbit window-bracket contract")
     parsed = parser.parse_args()
-    if parsed.static_group_admission:
+    if parsed.window_bracket:
+        _verify_window_bracket_only()
+    elif parsed.static_group_admission:
         _verify_static_admission_only()
     elif parsed.rep_delay:
         _verify_rep_delay_only()

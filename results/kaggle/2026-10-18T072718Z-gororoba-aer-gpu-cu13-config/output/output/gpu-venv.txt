@@ -1,0 +1,1 @@
+$ /usr/bin/python3 -m uv venv -q --seed --python /usr/bin/python3 /tmp/gororoba/gpu-venv

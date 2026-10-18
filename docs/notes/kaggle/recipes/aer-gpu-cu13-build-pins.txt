@@ -1,0 +1,12 @@
+# Build tools for build_aer_gpu_cu13_wheel.sh (python -m build --no-isolation),
+# at the versions the build host's python-qiskit-aer-cuda recipe uses where
+# PyPI carries them.
+setuptools==84.0.0
+wheel==0.48.0
+build==1.6.0
+scikit-build==0.19.1
+cmake==4.4.3
+ninja==1.13.2
+pybind11==3.1.0
+auditwheel==6.8.2
+patchelf==0.19.1.0

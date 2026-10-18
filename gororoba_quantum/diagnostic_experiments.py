@@ -110,7 +110,12 @@ def n21_group(orbit: bool = False, encoded: bool = False) -> Group:
     if orbit and encoded:
         raise ValueError("the orbit and encoded N21 variants are separate families")
     prefix = "n21_orbit" if orbit else "n21_encoded" if encoded else "n21"
-    build = n21_orbit_diagnostic if orbit else n21_encoded_diagnostic if encoded else n21_diagnostic
+
+    def build(feedback: bool) -> QuantumCircuit:
+        if orbit:
+            return n21_orbit_diagnostic(feedback, "nominal_unbarriered")
+        return n21_encoded_diagnostic(feedback) if encoded else n21_diagnostic(feedback)
+
     members = tuple(
         Member(
             f"{prefix}_feedback" if feedback else f"{prefix}_no_feedback",
@@ -354,7 +359,9 @@ def state_prep_excitation(excited: float, prob_meas1_prep0: float, prob_meas0_pr
 def n21_orbit_rca_group(window_delay_dt: int, echo_half_dt: int) -> Group:
     """Pair feed-forward with its omitted-correction control in each window variant.
 
-    The nominal pair repeats n21-orbit-feedback; window_delay and extra_readout
+    Barriers bracket the control's measurement and reset in every variant, so
+    the nominal pair is n21-orbit-feedback with its window bracketed;
+    window_delay and extra_readout
     lengthen the measurement window by one readout duration through idling or
     through a second readout; window_echo refocuses static work-qubit
     detuning. Every member keeps the exact labeled law.

@@ -83,6 +83,7 @@ import numpy as np  # noqa: E402
 from qiskit import QuantumCircuit  # noqa: E402
 from qiskit.quantum_info import Kraus, SuperOp  # noqa: E402
 
+import aer_resources  # noqa: E402
 import calibration_snapshot  # noqa: E402
 import jax_bridge  # noqa: E402
 import parallel  # noqa: E402
@@ -453,7 +454,8 @@ def parity_count(text: str) -> int | None:
 
 def versions() -> dict[str, str | None]:
     out: dict[str, str | None] = {}
-    for name in ("jax", "jaxlib", "libtpu", "numpy", "qiskit", "qiskit-aer", "qiskit-aer-gpu-cu11"):
+    names = ("jax", "jaxlib", "libtpu", "numpy", "qiskit", "qiskit-aer")
+    for name in (*names, *aer_resources.gpu_aer_distributions()):
         try:
             out[name] = importlib.metadata.version(name)
         except importlib.metadata.PackageNotFoundError:
