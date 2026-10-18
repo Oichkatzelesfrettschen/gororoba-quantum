@@ -180,6 +180,9 @@ class _Serialization:
         ]
         self.all_names = frozenset().union(*self.names)
         self.readout = any(error["type"] == "roerror" for error in errors)
+        # A nonlocal error acts on qubits other than the gate's, so no
+        # active-qubit restriction preserves it; such a model runs whole.
+        self.nonlocal_errors = bool(getattr(model, "_nonlocal_quantum_errors", None))
         self.restricted: dict[frozenset[int], dict[str, Any]] = {}
         self.lock = threading.Lock()
 
@@ -199,6 +202,8 @@ class _Serialization:
         type the kept ones lack, preserves those four properties and every
         lookup, so the controller samples the same counts.
         """
+        if self.nonlocal_errors:
+            return self.full
         with self.lock:
             cached = self.restricted.get(active)
             if cached is not None:
