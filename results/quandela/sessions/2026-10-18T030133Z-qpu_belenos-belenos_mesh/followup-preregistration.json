@@ -1,0 +1,301 @@
+{
+ "schema": "qd-belenos-followup-preregistration-v1",
+ "approval": "User 2026-10-18 chose 'Both jobs (Recommended)': belenos_mesh job-02 (the 84/84 program) at compilation seed 0 and an exact repeat of C1 job-03 on qpu:belenos while the couplers equal Q1's (architecture sha256 prefix ca90c1c0).",
+ "efficiency_source": "efficiency.json efficiency_under_ideal (C1, four runs)",
+ "job_02": {
+  "question": "Is Q1's bright-block leak specific to its job (numeric unitary form or its own mesh) or does it follow sparse targets into the iterated mesh form?",
+  "statistic": "median over the 16 configurations of raw in_block (one-click samples on modes low..low+3 over all one-click samples), read from analysis.json",
+  "predictions": "computed on the meshes S5 returned for the same body (identical on sim:belenos and qpu:belenos while the couplers are unchanged), weighted by the C1 efficiencies, under independent heater offsets of 0.08 rad rms, the size that reproduces C1's held-out TVD; 200 draws per configuration, seed [20261017, 21]",
+  "decision": {
+   "job_specific": "median in_block >= 0.9261, the median over configurations of the predicted 5th percentile at 0.08 rad: Q1's leak belongs to its numeric unitary form or its own mesh",
+   "sparse_targets_fail": "median in_block <= 0.65: sparse targets leak in either form",
+   "intermediate": "otherwise: sparse targets leak more than C1's error predicts, less than Q1",
+   "mesh_check": "if any returned mesh sha256 differs from S5's, the prediction is recomputed on the returned mesh by the same procedure before the rule is read, and the difference is reported"
+  },
+  "secondary": "bright-04 (Q1's own target) in_block with its Wilson interval against Q1's 0.470 (0.460 to 0.480); the 84/84 algebra shares a per configuration and the bright-minus-dark contrast are reported against these predictions",
+  "per_configuration": [
+   {
+    "name": "cold-dark-05-20",
+    "target": "dark-05",
+    "mesh_sha256_s5": "56a656c6f1ea77325e4a8a9a85fc49f59fbd73f3bf56698404ce65a32410c0a5",
+    "in_block_ideal": 0.9999,
+    "a_ideal": 0.0,
+    "in_block_at_0.08": {
+     "mean": 0.9609,
+     "p05": 0.924,
+     "p95": 0.9897
+    },
+    "a_at_0.08": {
+     "mean": 0.0226,
+     "p05": 0.0035,
+     "p95": 0.0529
+    }
+   },
+   {
+    "name": "cold-dark-06-20",
+    "target": "dark-06",
+    "mesh_sha256_s5": "e537c5476ff75e81be7f13a22346888ceff3cfc942b53129a7610efcace17441",
+    "in_block_ideal": 0.9999,
+    "a_ideal": 0.0,
+    "in_block_at_0.08": {
+     "mean": 0.9757,
+     "p05": 0.9466,
+     "p95": 0.994
+    },
+    "a_at_0.08": {
+     "mean": 0.0382,
+     "p05": 0.0061,
+     "p95": 0.0831
+    }
+   },
+   {
+    "name": "cold-dark-08-20",
+    "target": "dark-08",
+    "mesh_sha256_s5": "6433eaec02af8393f8d6e5957d27f650231fca5898651f83613cae8841c0d893",
+    "in_block_ideal": 0.9999,
+    "a_ideal": 0.0,
+    "in_block_at_0.08": {
+     "mean": 0.9865,
+     "p05": 0.9685,
+     "p95": 0.9969
+    },
+    "a_at_0.08": {
+     "mean": 0.0408,
+     "p05": 0.0061,
+     "p95": 0.0976
+    }
+   },
+   {
+    "name": "cold-dark-11-20",
+    "target": "dark-11",
+    "mesh_sha256_s5": "d459ef5b54172cb0b4736c8e06a850636762c68155c66ad0890378e19a356b11",
+    "in_block_ideal": 0.9999,
+    "a_ideal": 0.0,
+    "in_block_at_0.08": {
+     "mean": 0.9711,
+     "p05": 0.9336,
+     "p95": 0.9914
+    },
+    "a_at_0.08": {
+     "mean": 0.0276,
+     "p05": 0.0051,
+     "p95": 0.0644
+    }
+   },
+   {
+    "name": "cold-dark-16-20",
+    "target": "dark-16",
+    "mesh_sha256_s5": "6628255835e8216e73d451610bfa9f2935e1087c600d1f478b4e8a01dd9c2f11",
+    "in_block_ideal": 0.9999,
+    "a_ideal": 0.0,
+    "in_block_at_0.08": {
+     "mean": 0.9533,
+     "p05": 0.9004,
+     "p95": 0.9861
+    },
+    "a_at_0.08": {
+     "mean": 0.0296,
+     "p05": 0.0068,
+     "p95": 0.0764
+    }
+   },
+   {
+    "name": "cold-dark-19-20",
+    "target": "dark-19",
+    "mesh_sha256_s5": "2f0a5513c5d4c85510dcf14fb6a2cf3f1002e991521647d798ff5603e2d8a109",
+    "in_block_ideal": 0.9999,
+    "a_ideal": 0.0,
+    "in_block_at_0.08": {
+     "mean": 0.9757,
+     "p05": 0.9461,
+     "p95": 0.9938
+    },
+    "a_at_0.08": {
+     "mean": 0.0139,
+     "p05": 0.0013,
+     "p95": 0.0358
+    }
+   },
+   {
+    "name": "cold-dark-21-20",
+    "target": "dark-21",
+    "mesh_sha256_s5": "a7123f12d8a0d41b46a537b75afd7f784ee2d0422f176148eb853b4103816647",
+    "in_block_ideal": 0.9999,
+    "a_ideal": 0.0,
+    "in_block_at_0.08": {
+     "mean": 0.9718,
+     "p05": 0.9405,
+     "p95": 0.9912
+    },
+    "a_at_0.08": {
+     "mean": 0.0304,
+     "p05": 0.0061,
+     "p95": 0.0808
+    }
+   },
+   {
+    "name": "cold-dark-22-20",
+    "target": "dark-22",
+    "mesh_sha256_s5": "bafa1f17c3dae8f14a609ed6887cf082fa7711269ec4c512bf23c632458f16a5",
+    "in_block_ideal": 0.9999,
+    "a_ideal": 0.0,
+    "in_block_at_0.08": {
+     "mean": 0.9639,
+     "p05": 0.9224,
+     "p95": 0.9904
+    },
+    "a_at_0.08": {
+     "mean": 0.0432,
+     "p05": 0.0068,
+     "p95": 0.1066
+    }
+   },
+   {
+    "name": "cold-bright-04-20",
+    "target": "bright-04",
+    "mesh_sha256_s5": "08cfd2b52fe0c89a0f679fe70d82b66f727ff41e3bd6940aee9da00f2c4b1d0a",
+    "in_block_ideal": 0.9998,
+    "a_ideal": 1.0,
+    "in_block_at_0.08": {
+     "mean": 0.9529,
+     "p05": 0.8941,
+     "p95": 0.9873
+    },
+    "a_at_0.08": {
+     "mean": 0.9654,
+     "p05": 0.9158,
+     "p95": 0.9944
+    }
+   },
+   {
+    "name": "cold-bright-07-20",
+    "target": "bright-07",
+    "mesh_sha256_s5": "1af3d110e1880038fc3a3668cc79dee711666cc2e43397b05930b7bccebfe1af",
+    "in_block_ideal": 0.9998,
+    "a_ideal": 1.0,
+    "in_block_at_0.08": {
+     "mean": 0.9804,
+     "p05": 0.9523,
+     "p95": 0.9965
+    },
+    "a_at_0.08": {
+     "mean": 0.9624,
+     "p05": 0.9149,
+     "p95": 0.9931
+    }
+   },
+   {
+    "name": "cold-bright-09-20",
+    "target": "bright-09",
+    "mesh_sha256_s5": "4fc9b35e20ace87c99e04d81cb284efae1a3c3ad6d6bdb79c7e2295ab6d44898",
+    "in_block_ideal": 0.9998,
+    "a_ideal": 1.0,
+    "in_block_at_0.08": {
+     "mean": 0.9688,
+     "p05": 0.9303,
+     "p95": 0.9926
+    },
+    "a_at_0.08": {
+     "mean": 0.9493,
+     "p05": 0.8729,
+     "p95": 0.9915
+    }
+   },
+   {
+    "name": "cold-bright-10-20",
+    "target": "bright-10",
+    "mesh_sha256_s5": "a900e050c068a0595a96eacc52fc3bf477b76011c06c92c59af480a266ece546",
+    "in_block_ideal": 0.9998,
+    "a_ideal": 1.0,
+    "in_block_at_0.08": {
+     "mean": 0.9538,
+     "p05": 0.9144,
+     "p95": 0.9836
+    },
+    "a_at_0.08": {
+     "mean": 0.9635,
+     "p05": 0.9077,
+     "p95": 0.9941
+    }
+   },
+   {
+    "name": "cold-bright-17-20",
+    "target": "bright-17",
+    "mesh_sha256_s5": "dbca8dc3d71c2e74bcf839e25fc709256db8add9fdf5ed930320d76dae003f62",
+    "in_block_ideal": 0.9998,
+    "a_ideal": 1.0,
+    "in_block_at_0.08": {
+     "mean": 0.9641,
+     "p05": 0.9282,
+     "p95": 0.9882
+    },
+    "a_at_0.08": {
+     "mean": 0.9624,
+     "p05": 0.9164,
+     "p95": 0.989
+    }
+   },
+   {
+    "name": "cold-bright-18-20",
+    "target": "bright-18",
+    "mesh_sha256_s5": "ea824a9f01afe37d13b3268756e4fc1bd43906029ad407d8543bd5522adc454f",
+    "in_block_ideal": 0.9998,
+    "a_ideal": 1.0,
+    "in_block_at_0.08": {
+     "mean": 0.955,
+     "p05": 0.9031,
+     "p95": 0.9863
+    },
+    "a_at_0.08": {
+     "mean": 0.9705,
+     "p05": 0.9268,
+     "p95": 0.995
+    }
+   },
+   {
+    "name": "cold-bright-20-20",
+    "target": "bright-20",
+    "mesh_sha256_s5": "fdecb72e9c417867ef686fbe4c7fbff09e88e0171c6004a6702a1e186cd13403",
+    "in_block_ideal": 0.9998,
+    "a_ideal": 1.0,
+    "in_block_at_0.08": {
+     "mean": 0.9543,
+     "p05": 0.9125,
+     "p95": 0.9852
+    },
+    "a_at_0.08": {
+     "mean": 0.9673,
+     "p05": 0.9286,
+     "p95": 0.9961
+    }
+   },
+   {
+    "name": "cold-bright-23-20",
+    "target": "bright-23",
+    "mesh_sha256_s5": "176bbb7015ffb834379b40f495058a0f164eb804886648db4766e61dc73e357a",
+    "in_block_ideal": 0.9998,
+    "a_ideal": 1.0,
+    "in_block_at_0.08": {
+     "mean": 0.9551,
+     "p05": 0.9097,
+     "p95": 0.9878
+    },
+    "a_at_0.08": {
+     "mean": 0.9656,
+     "p05": 0.9186,
+     "p95": 0.9929
+    }
+   }
+  ]
+ },
+ "job_03_repeat": {
+  "question": "Does the same body return the same 16 meshes and the same histograms, so that C1's residual is a deterministic function of the mesh within the session, or does the chip drift between jobs?",
+  "mesh_check": "each returned mesh sha256 against run 1 (2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03)",
+  "test": "per setting a G^2 homogeneity test of the two 24-mode one-click histograms, modes whose pooled expected count is below 5 in either run merged into one rest column; G^2 and degrees of freedom summed over the 16 settings",
+  "decision": {
+   "reproducible": "summed p >= 0.001",
+   "drift": "summed p < 0.001"
+  },
+  "also_reported": "median per-setting TVD between the two runs"
+ }
+}
