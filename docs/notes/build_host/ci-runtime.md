@@ -375,3 +375,30 @@ reserve the allocation. Their provisional manifest estimates explicitly carry
 that label when a successful hosted primary sample replaces it. The older
 635.81-second single-slot sample identifies the original bottleneck and remains
 in the qualification receipt rather than representing the new allocation.
+
+## Premerge base cache and the optimized-Python pass
+
+`ci/premerge_gates.py` runs the pr-tier gates measured at 5 s or less, 260
+gates at origin/main 5ea77f5, in two trees: the merge of the branch into
+main and main itself. Main's half depends only on its commit, the
+interpreters and their installed distributions, the PATH tools the gates
+run and the environment they read, so its passing gates are cached under
+`${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/premerge` by a sha256 over
+those inputs (`cache_key`). Every later premerge against the same main
+commit under the same key runs the merge tree alone plus a `--gates` rerun
+of each merge failure the cached passes do not cover. Environment values
+enter the key as digests, so a credential in `QISKIT_IBM_TOKEN` never
+reaches the cache file. The first premerge against a new main commit pays
+for both trees.
+
+Wall time on the build host measures contention as well as work. At a load
+average of 65 on 12 CPUs, `import qiskit_ibm_runtime` took 17.6 s of wall
+time and 2.2 s of user plus system CPU; the CPU figure is the cost a gate
+pays per interpreter it starts.
+
+216 gates run their command a second time under `python -O`, 189 of them
+pr-tier. On six exact normal/`-O` pairs (core-454, core-388, core-268,
+core-270, core-274, core-275, `GOROROBA_WORKERS=1`) the `-O` half took 26.8
+of 53.5 CPU seconds, so the pass doubles each paired gate's cost. ruff
+`S101` with explicit raises for validation carries the same guarantee at
+lint time ([#283](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/283)).
