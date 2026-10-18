@@ -63,7 +63,11 @@
    "depth-5-y.cq": 0.9988,
    "depth-9-x.cq": 0.9995,
    "depth-9-y.cq": 0.9999
-  }
+  },
+  "shot_period_us_at_grid": [
+   400.66,
+   400.73
+  ]
  },
  "jobs": [
   {
