@@ -151,7 +151,7 @@ exhaustive replay rather than establishing the full corpus's scientific claim.
 
 `parallel.available_cpus()` intersects scheduler affinity with the CPU quotas
 of the process and its cgroup ancestors. The runner maintains that many CPU
-slots across all active gates. Ordinary gates consume one slot; twelve gates
+slots across all active gates. Ordinary gates consume one slot; fourteen gates
 with independent inner work reserve the whole allocation using `workers: all`.
 A reserved gate receives the slot count through `GOROROBA_WORKERS`. Other gates
 wait until enough slots return. BLAS, OpenMP, NumExpr, Rayon and Qiskit process
@@ -312,3 +312,11 @@ a separate gate.
 Upstream main removed the Kaggle CI-shard replica during integration. The merge
 retains that removal and the native TLS setup used by ordinary Kaggle entries;
 historical-compiler provisioning remains in the GitHub shard planner.
+
+The coherent-family and fringe full replays also reserve the detected CPU
+allocation for their existing edge, bootstrap and resimulation pools. Their
+[local four-worker qualification](../../evidence/ci_runtime/atlas_pool.json)
+reproduces both lane-4 backends in normal and optimized Python at unchanged
+tolerances. The one-worker hosted samples were 905.0 s and 757.7 s; the local
+four-worker samples use a different machine and establish qualification rather
+than a controlled speedup.

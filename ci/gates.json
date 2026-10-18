@@ -3004,7 +3004,8 @@
    "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_coherent_families.py --check ../docs/evidence/atlas_coherent_families/result.json --runs ibm_fez,ibm_kingston --lanes 4 && \"$PYTHON\" -B -O -W error ../scripts/atlas_coherent_families.py --check ../docs/evidence/atlas_coherent_families/result.json --runs ibm_fez,ibm_kingston --lanes 4",
    "name": "core-329",
    "seconds": 905.0,
-   "tier": "full"
+   "tier": "full",
+   "workers": "all"
   },
   {
    "suite": "core",
@@ -3200,7 +3201,8 @@
    "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_fringe_amplitudes.py --check ../docs/evidence/atlas_fringe_amplitudes/result.json --runs ibm_fez,ibm_kingston --lanes 4 && \"$PYTHON\" -B -O -W error ../scripts/atlas_fringe_amplitudes.py --check ../docs/evidence/atlas_fringe_amplitudes/result.json --runs ibm_fez,ibm_kingston --lanes 4",
    "name": "core-360",
    "seconds": 757.7,
-   "tier": "full"
+   "tier": "full",
+   "workers": "all"
   },
   {
    "suite": "core",
