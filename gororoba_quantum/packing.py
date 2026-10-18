@@ -285,7 +285,11 @@ def extract_many(circuit: QuantumCircuit, components: Sequence[tuple[str, Iterab
     for c, own in enumerate(owns):
         for q in own:
             if q in owner:
-                return [extract(circuit, prefix, qubits, name) for prefix, qubits, name in components]
+                # owns holds each iterable's qubits, which a generator yields once.
+                return [
+                    extract(circuit, prefix, kept, name)
+                    for (prefix, _, name), kept in zip(components, owns, strict=True)
+                ]
             owner[q] = c
     outs, allowed = [], []
     for prefix, _, name in components:

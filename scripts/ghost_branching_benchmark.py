@@ -12,10 +12,9 @@ scripts/ghost_error_scale_branching.py ``sweep_runs``:
   bytes, each with half the workers. Both time interpreter start, imports,
   warmup and the sweep, from the first start to the last exit.
 
-Prediction for the split row, recorded before its first run: the export
-phase is CPU work and the GPU phases are about a tenth of the wall time, so
-two processes sharing the host's CPUs finish no sooner than one process,
-within 5 percent (split wall >= 0.95 of the process wall).
+Prediction for the split row: preparation and export are CPU work, and the
+two processes share the host's CPUs, so they finish no sooner than one
+process, within 5 percent (split wall >= 0.95 of the process wall).
 
 ``--require-gpu NAME --gpus N`` runs before any row: torch must list N CUDA
 devices whose names contain NAME and finish a complex128 matmul on each

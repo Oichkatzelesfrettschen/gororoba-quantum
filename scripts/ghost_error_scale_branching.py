@@ -85,6 +85,11 @@ are real part-a replicas except the toys of (a) and (d).
 (h) Laws from the restricted snapshot equal laws from the full 156-qubit
     snapshot within 1e-12 at CZ factors 1 and 12 and every readout factor,
     on a replica with a delay and a reset and one with feed-forward.
+(i) branch_dm.error_superop equals qiskit's SuperOp on every local error
+    the exports above convert, within CONVERTER_TOLERANCE.
+(j) export raises UnsupportedCircuit on a gate-attached condition
+    (calibration_snapshot.lower_conditionals form), and a noise model's
+    all-qubit readout error reaches every measured qubit.
 """
 
 from __future__ import annotations
@@ -839,6 +844,31 @@ def toy_feed_forward() -> dict[str, Any]:
     return {"max_abs_minus_analytic": gap, "branches": stats}
 
 
+def export_boundaries() -> dict[str, Any]:
+    """(j): a gate-attached condition raises, and an all-qubit readout error reaches every measured qubit."""
+    circuit = QuantumCircuit(2, 2)
+    circuit.x(0)
+    circuit.measure(0, 0)
+    with circuit.if_test((circuit.clbits[0], 1)):
+        circuit.x(1)
+    circuit.measure(1, 1)
+    lowered = calibration_snapshot.lower_conditionals(circuit)
+    require(lowered is not None, "(j) the toy has no conditioned-gate form")
+    try:
+        branch_dm.export(lowered, NoiseModel())
+    except branch_dm.UnsupportedCircuit as error:
+        refused = str(error)
+    else:
+        raise SystemExit("(j) export accepts a gate condition")
+    matrix = [[0.9, 0.1], [0.2, 0.8]]
+    noise = NoiseModel()
+    noise.add_all_qubit_readout_error(ReadoutError(matrix))
+    program = branch_dm.export(circuit, noise)
+    readout = {q: program.readout[q].tolist() for q in sorted(program.readout)}
+    require(readout == {0: matrix, 1: matrix}, f"(j) all-qubit readout reads {readout}")
+    return {"gate_condition": refused, "default_readout": readout}
+
+
 def body_noise_toy(index: dict[str, Any]) -> tuple[QuantumCircuit, dict[str, Any]]:
     """(d) toy: a delay and noisy sx gates inside an if_else body on a short-T1 qubit, two Kingston qubits."""
     snapshot = json.loads(
@@ -871,6 +901,7 @@ def self_test() -> dict[str, Any]:
 
     clock = time.perf_counter()
     out["a_feed_forward"] = toy_feed_forward()
+    out["j_export_boundaries"] = export_boundaries()
     timing["a"] = time.perf_counter() - clock
 
     clock = time.perf_counter()

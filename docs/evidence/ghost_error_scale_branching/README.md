@@ -43,27 +43,17 @@ On torch the plans return to the main process, which stages one group at a
 time on the device; device memory then holds the widest group, not the
 widest run.
 
-Measured on the build host (12 workers, the full grid over the 15 audited
-runs, numpy complex128, other sessions' gates sharing the CPUs):
+Three rules bound the cost:
 
-| Code | Wall s | Export s | Records |
-| --- | --- | --- | --- |
-| before (qiskit SuperOp per error, per-run pool maps) | 55.1 | 38.5 summed over runs | reference |
-| after | 15.7 | in the pool map's 12.7 | byte-identical JSON for every run |
-
-The three changes that moved it:
-
-1. `error_superop` in place of qiskit's SuperOp composition, which was 24
-   of 33 serial export seconds of one run: about 65 times faster per error.
-2. One noise model per (snapshot, active qubits) pair: 420 groups share 115
-   pairs. Within a run the pairs capture all of the reuse; across runs only
-   3 more pairs coincide.
-3. Nothing heavy crosses a process boundary. Earlier stages shipped
-   156-qubit circuits (50 MB pickled) out of the prepare map and 2.4 GB of
-   plans back from the export map, which cost more than the work they
-   spread. `packing.extract_many` places a fused PUB's members in one pass,
-   and `member_replicas` over all runs fell from 8.4 to 2.4 s with
-   identical circuits.
+1. A local error's superoperator comes from `error_superop`; qiskit's
+   SuperOp composes each error circuit through instruction conversions
+   and stays the reference that core-444 compares.
+2. One noise model serves every group on a (snapshot, active qubits) pair:
+   the 420 groups of the audited runs share 115 pairs.
+3. Only distances, or plans for the device, cross a process boundary.
+   A worker keeps the 156-qubit circuits it prepares, and on numpy also the
+   plans it builds. `packing.extract_many` places a fused PUB's members in
+   one pass over the PUB.
 
 The evolve and sample phases are a few seconds of either engine, so the
 sweep is CPU-bound: a GPU shortens only the part that was already short.
@@ -111,8 +101,8 @@ What the rows settle:
 
 ## Running it on Kaggle
 
-The sweep itself runs on a CPU kernel under CI's Python and pins, which
-spends no GPU quota:
+The sweep's route is a CPU kernel under CI's Python and pins, which spends
+no GPU quota. The command below has not been run on Kaggle:
 
 ```sh
 "$PYTHON" scripts/kaggle_run.py push --slug gororoba-ghost-branching-sweep \

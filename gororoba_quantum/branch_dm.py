@@ -17,10 +17,9 @@ little-endian local convention: a gate from its unitary, a ``reset`` from
 the exact channel {|0><0|, |0><1|} (its reset local error follows it), and
 a local error from ``error_superop``, which sums the error's circuits'
 probability-weighted products of exact Kraus superoperators with no
-eigenvalue truncation. It equals qiskit's SuperOp of the QuantumError on
+eigenvalue truncation, and equals qiskit's SuperOp of the QuantumError on
 every error the ghost sweep converts (ghost_error_scale_branching.py
-``--check-converter``) at about 1/65 of its cost; qiskit composes each
-circuit through SuperOp instruction conversions, which dominated export.
+``--check-converter``).
 
 Measurement roles. A measure is deferred when no later operation touches
 its qubit and no later condition reads its clbit; collapsing then or at the
@@ -246,6 +245,10 @@ class _Exporter:
         self.audit = audit
         self.shared = {} if cache is None else cache
         self.local: dict[int, np.ndarray] = {}
+        # A relaxation-pass error lives only as long as its noisy (sub)circuit,
+        # so the exporter keeps every error it keys by id; a freed body's
+        # error id could otherwise return to a later body's new error.
+        self.alive: list[Any] = []
         self.owned = {
             id(error) for by_qubits in noise_model._local_quantum_errors.values() for error in by_qubits.values()
         }
@@ -272,6 +275,10 @@ class _Exporter:
             name = operation.name
             if name in SKIPPED:
                 continue
+            if name != "if_else" and getattr(operation, "condition", None) is not None:
+                # calibration_snapshot.lower_conditionals and c_if attach the
+                # test to the gate itself; only IfElseOp branches here.
+                raise UnsupportedCircuit(f"{circuit.name}: {name} carries a gate condition")
             qargs = tuple(noisy.find_bit(q).index for q in instruction.qubits)
             qubits = tuple(self.index[q] for q in qargs)
             if isinstance(operation, IfElseOp):
@@ -299,6 +306,7 @@ class _Exporter:
                 cache = self.shared if key in self.owned else self.local
                 if key not in cache:
                     cache[key] = error_superop(error)
+                    self.alive.append(error)
                     if self.audit is not None:
                         self.audit.append((error, cache[key]))
                 if error is self.cz_errors.get(qargs):
@@ -333,6 +341,8 @@ def _export(
     for item in program.items:
         if item.kind == "measure" and item.qargs[0] not in program.readout:
             error = noise_model._local_readout_errors.get((program.physical[item.qargs[0]],))
+            if error is None:
+                error = getattr(noise_model, "_default_readout_error", None)
             program.readout[item.qargs[0]] = np.asarray(
                 error.probabilities if error is not None else np.eye(2), dtype=float
             )
@@ -878,16 +888,26 @@ class Staged:
     projectors: Any
 
 
-def _padded_kraus(s: np.ndarray) -> np.ndarray:
-    """Kraus stacks of every row of a (Gk, Fk, d^2, d^2) superoperator, zero-padded to a common rank."""
+def _padded_kraus(s: np.ndarray, floor: float = jax_bridge.KRAUS_FLOOR) -> np.ndarray:
+    """Kraus stacks of every row of a (Gk, Fk, d^2, d^2) superoperator, zero-padded to a common rank.
+
+    One batched eigh over every row's Choi matrix gives each row the stack
+    superop_kraus gives it: the kept eigenvalues in ascending order, then
+    zero operators up to the largest kept rank.
+    """
     lead = s.shape[:2]
-    stacks = [superop_kraus(s[g, f]) for g in range(lead[0]) for f in range(lead[1])]
-    rank = max(k.shape[0] for k in stacks)
-    d = stacks[0].shape[-1]
-    out = np.zeros(lead + (rank, d, d), dtype=np.complex128)
-    for index, k in enumerate(stacks):
-        out[index // lead[1], index % lead[1], : k.shape[0]] = k
-    return out
+    d = int(round(np.sqrt(s.shape[-1])))
+    choi = s.reshape(lead + (d, d, d, d)).transpose(0, 1, 2, 4, 3, 5).reshape(lead + (d * d, d * d))
+    values, vectors = np.linalg.eigh((choi + np.conj(np.swapaxes(choi, -1, -2))) / 2)
+    keep = values > floor
+    rank = int(keep.sum(axis=-1).max())
+    # Kept columns first, each group in ascending eigenvalue order.
+    order = np.argsort(~keep, axis=-1, kind="stable")[..., :rank]
+    kept = np.take_along_axis(keep, order, axis=-1)
+    weights = np.sqrt(np.where(kept, np.take_along_axis(values, order, axis=-1), 0.0))
+    columns = np.take_along_axis(vectors, order[..., None, :], axis=-1)
+    kraus = np.swapaxes(columns, -1, -2).reshape(lead + (rank, d, d))
+    return np.ascontiguousarray(weights[..., None, None] * kraus)
 
 
 def stage(plan: Plan, backend: Backend, form: str = "local") -> Staged:

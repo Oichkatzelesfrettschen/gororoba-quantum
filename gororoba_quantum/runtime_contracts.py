@@ -1130,6 +1130,9 @@ def _verify_pub_fusion_contracts() -> None:
         for case in (specs, specs + specs[:1]):
             if packing.extract_many(fused, case) != [packing.extract(fused, *spec) for spec in case]:
                 raise RuntimeError(f"{pub.name}: extract_many differs from extract")
+        once = [(prefix, iter(qubits), name) for prefix, qubits, name in specs + specs[:1]]
+        if packing.extract_many(fused, once) != [packing.extract(fused, *spec) for spec in specs + specs[:1]]:
+            raise RuntimeError(f"{pub.name}: extract_many loses one-shot qubit iterables on the overlap path")
 
     overlap = copy.deepcopy(static_choices[:2])
     overlap[1].entries = copy.deepcopy(overlap[1].entries)
