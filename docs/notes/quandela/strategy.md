@@ -525,38 +525,56 @@ the couplers equaled Q1's throughout.
     | S, mesh e296b6a9 | - | 0.886 (8d28f121, seed 1) |
     | I, mesh e296b6a9 | 0.907 (c2eea262, seed 1) | - |
 
-    The leak is a property of S with dwell 10000 on 29dc6ef8. Two missing
-    cells split it, one job each:
+    The leak is a property of S with dwell 10000 on 29dc6ef8 and absent on
+    e296b6a9 in either form. Four designs fill the missing cells: D1 and D2
+    split form from dwell on 29dc6ef8, D3 and D4 ask the same of a fresh
+    mesh drawn from the ANU QRNG, so the reading is not tied to one mesh.
 
-    - **D1, the S cell at dwell 1500.** Q1's body unchanged (unseeded, so
-      the service serves 29dc6ef8 as it did twice) with `max_samples` 1500
-      and `max_shots` 3000: the only change against Q1 is the dwell. About
-      7 s and 1.0015 credits. Reading: at most 0.65 says the S form leaks
-      at any dwell (form); at least 0.90 says the leak needs the long dwell
-      (dwell); between says both. The served mesh must be 29dc6ef8, or the
-      cell is missing and the job reports only a new S mesh.
-    - **D2, the I cells over a dwell ladder.** One I job of Q1's circuit at
-      seed 20 (29dc6ef8 in c2eea262; seed 1 served e296b6a9 in both forms,
-      so the seed is expected to carry over) with iterations of 1500,
-      10000, 1500, 40000, 1500 and 100000 samples: 154500 samples in about
-      31 s of overhead plus 116 s of sampling, about 150 s against 300 s,
-      and 1.003 credits if the billing rule above holds. The long
-      iterations read in_block against dwell inside the I form; the
-      1500-sample iterations between them bound drift and any after-effect
-      of a long dwell. A leak that grows with dwell here reads dwell
-      whatever D1 reads.
+    - **D1, S at dwell 1500 on 29dc6ef8.** Q1's body unchanged (unseeded,
+      so the service serves 29dc6ef8 as it did twice) with `max_samples`
+      1500 and `max_shots` 3000: the only change against Q1 is the dwell.
+      About 7 s and 1.0015 credits. Reading: at most 0.65 says the S form
+      leaks at any dwell (form); at least 0.90 says the leak needs the long
+      dwell (dwell); between says both. A served mesh other than 29dc6ef8
+      leaves the cell missing.
+    - **D2, I over a dwell ladder on 29dc6ef8.** Iterations of Q1's circuit
+      at seed 20 (29dc6ef8 in c2eea262) of 1500, 10000, 1500, 40000, 1500
+      and 60000 samples. The long iterations read in_block against dwell
+      inside the I form; the 1500-sample iterations between them bound
+      drift and any after-effect of a long dwell. A leak that grows with
+      dwell here reads dwell whatever D1 reads.
+    - **D3, S at dwell 10000 on a fresh mesh.** Q1's body at
+      `compilation_seed` 46667, value 0 of
+      `docs/evidence/anu_qrng/draw-2026-10-18T083548Z.json`: Q1's own
+      condition on a mesh nobody has measured. 13 to 15 s, 1.01 credits.
+      Reading: at most 0.65 says the S-form leak is generic to long S jobs;
+      at least 0.90 says it needs a susceptible mesh, as e296b6a9 already
+      suggests.
+    - **D4, I over a dwell ladder on the same fresh mesh.** Iterations at
+      seed 46667 of 1500, 10000 and 40000 samples, D3's I partner. They ride
+      in D2's job, because iterations are free: nine iterations, 166000
+      samples, about 47 s of overhead plus 125 s of sampling, about 170 s
+      against 300 s, 1.003 credits if the billing rule holds. D3 and D4 pair
+      only if seed 46667 serves one mesh in both forms, as seed 1 did for
+      e296b6a9; each iteration's mesh sha256 decides it, and an unpaired D3
+      still reads its S cell while D4 reads its own mesh's ladder.
 
-    Order and stop rule: D1 first, because it is the cheaper decisive
-    cell. D1 reading form ends the question unless the user wants D2's
-    dwell curve; D1 reading dwell or intermediate makes D2 the next job.
-    Both together cost about 2.005 credits, about 2.2 if the I job
-    bills its largest iteration's `max_shots` instead. A `samples` command
-    in place of `sample_count` would return the individual events of one
-    long S job and could resolve in_block over time within it, but nothing
-    retained shows the events come back in acquisition order, and a shuffled
-    list would hide a dwell trend and read form, so it stays unused until a
-    job proves the order. The runner needs one extension for D2: a seeded
-    iteration that names its own `max_samples` and `max_shots`.
+    Order and stop rule: D1, then D3, then the combined D2 + D4 job, one at
+    a time per the token's limit and back to back, so the cross-job drift
+    stays near the 0.034 scale. D1 and D3 both reading 'needs the long
+    dwell or a susceptible mesh' still leave the I ladder as the test of
+    dwell inside one form, so the third job runs unless the user stops
+    after the two S jobs. A fifth job, S at dwell 1500 on D3's mesh, is
+    worth its credit only if D3 leaks. The three jobs cost about 3.015
+    credits, about 3.08 if an I job bills its largest iteration's
+    `max_shots` instead. A `samples` command in place of `sample_count`
+    would return the individual events of one long S job and could resolve
+    in_block over time within it, but nothing retained shows the events
+    come back in acquisition order, and a shuffled list would hide a dwell
+    trend and read form, so it stays unused until a job proves the order.
+    The runner needs one extension for D2 + D4: a seeded iteration that names
+    its own `max_samples` and `max_shots`. D3's seed is the first ANU value
+    a case consumes; the next case takes value 1 of the same draw.
 
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 
@@ -654,7 +672,7 @@ selection needs repeated jobs rather than a split of one.
 | The chip's error class is random heater noise | class scans over C1 | open: under fitted efficiencies sigma 0.05 is the best point of a family that fails the fit (4.2 floors held out) |
 | The chip carries static heater offsets that user jobs can measure | `--static` and `--efficiency` over the four runs of C1 | settled for this session: refuted, held-out gain about -79000 nats (receipt model) and -34000 nats (fitted efficiencies) |
 | The bright-block leak is a property of its job (numeric unitary form or sparse target), not the chip's generic error | belenos_mesh job-02 on qpu:belenos scored against the C1 efficiencies, same couplers | settled: job specific, median in_block 0.952 against the 0.924 threshold; Q1's target kept 0.987 in the iterated form |
-| The one-circuit job form, not the bright block's own mesh, causes the leak | Q1's case as one circuit at compilation_seed 1 (belenos_mesh job-08), then Q1's case iterated over 24 seeds (job-09), which served 29dc6ef8 at seed 20 | supported: 29dc6ef8 kept 0.949 iterated against 0.470 and 0.504 as one circuit, in-job drift 0.005; preregistered verdict form or dwell, mesh specific (e296b6a9 0.886 one-circuit, 0.907 iterated); next, separate form from dwell with D1 and D2 (section 7 item 10) |
+| The one-circuit job form, not the bright block's own mesh, causes the leak | Q1's case as one circuit at compilation_seed 1 (belenos_mesh job-08), then Q1's case iterated over 24 seeds (job-09), which served 29dc6ef8 at seed 20 | supported: 29dc6ef8 kept 0.949 iterated against 0.470 and 0.504 as one circuit, in-job drift 0.005; preregistered verdict form or dwell, mesh specific (e296b6a9 0.886 one-circuit, 0.907 iterated); next, separate form from dwell with D1 to D4 (section 7 item 10) |
 | The same body returns the same meshes on sim:belenos and qpu:belenos | job-02 on both | settled: refuted for iterated jobs (16 of 16 meshes differ); holds for the one-circuit single/job-04 |
 | C1's residual is a fixed property of each mesh within a session | exact repeat of C1 job-03 | settled: refuted, same meshes and G^2 2564 on 226 degrees of freedom (drift) |
 | compilation_seed selects the served mesh | job-02 at seeds 1 and 2 (belenos_mesh job-07) on qpu:belenos | settled: 16 of 16 configurations return three distinct meshes at seeds 0, 1 and 2 |
