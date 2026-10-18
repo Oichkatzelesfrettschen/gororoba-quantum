@@ -8,10 +8,10 @@
    ],
    "config": "two_label-04",
    "dark_corrected": {
-    "a": 0.255647582,
-    "expected_dark_in_block": 1.3,
-    "expected_dark_outside": 691.6,
-    "in_block": 0.504636245
+    "a": 0.255849208,
+    "expected_dark_in_block": 0.027,
+    "expected_dark_outside": 14.601,
+    "in_block": 0.470485484
    },
    "in_block": 0.4698,
    "in_block_wilson95": [
