@@ -114,7 +114,9 @@ Estimators, exactly as preregistered:
   idle qubits. Per pair and Latin batch, from that batch alone: C(n) =
   2 Pc(n) - 1 and, in X, J(n) = Pc(n) |E_0(n)|, r_pop and r_coh from
   unweighted least-squares slopes of their logs on n, rho = r_coh / r_pop
-  with its interval, decided per pair from the two X batches; in Y, the
+  with its interval, decided per pair from the two X batches, and rho_iso,
+  the same ratio with every iso qubit's e10 taken from the readout-iso-x
+  brackets (its own bootstrap stream) and decided the same way; in Y, the
   phase atan2(E_Y, -E_X) per depth with E_X from the preceding X batch. Per
   Latin job: the shot-record line scan of scripts/qi_shot_record_line.scan,
   each selector's lock-in amplitude and phase at the peak, the depth-9 over
@@ -129,8 +131,8 @@ Estimators, exactly as preregistered:
   amplitude_sigmas binomial standard errors, and the e01 of each pair's
   other qubit beside its excited partner. The depth-1 X E_0 of each pair
   whose data qubit is an iso qubit is corrected twice, with the readout-1
-  brackets and with brackets whose iso e10 comes from readout-iso-x (its
-  own bootstrap stream). The depth-5 and depth-9 populations are compared
+  brackets and with the readout-iso-x e10 of rho_iso. The depth-5 and
+  depth-9 populations are compared
   with the retained follow analysis as drift.
 - T0 gate: the follow series analyzed in the same call as T0 carries T0's
   end-program or resize stop first in its stops, with its estimates still
@@ -1452,6 +1454,30 @@ def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, An
         with np.errstate(all="ignore"):
             return summary(fn(point), fn(boot), percentiles)
 
+    # The same estimates with every iso qubit of a replica reading its e10 from readout-iso-x.
+    alternative = iso_brackets(batches, brackets, iso)
+    iso_values: tuple[Values, Values] | None = None
+    if len(alternative) >= 2:
+        combined = brackets + alternative
+        iso_times = [b["time_e10"] for b in alternative]
+        moved = []
+        for item in lcu:
+            near, far, weight = bracket_weight(job_time(batches[item["batch"]], item["file"]), iso_times)
+            iso_e10 = (near + len(brackets), far + len(brackets), weight)
+            roles = (item["replica"]["roles"]["selector"], item["replica"]["roles"]["data"][0])
+            weights = {q: {"e01": item["weights"]["e01"], "e10": iso_e10} for q in roles if q in iso}
+            moved.append({**item, "qubit_weights": weights})
+        iso_rng = np.random.default_rng([t["bootstrap_seed"], LADDER_LINE_SEED])
+        iso_draws = follow_sample(combined, moved, [], iso_rng, t["bootstrap_draws"])
+        iso_values = (follow_values(follow_sample(combined, moved, []), moved, []),
+                      pooled_follow_values(iso_draws, moved, []))  # fmt: skip
+
+    def iso_both(fn: Any, percentiles: list[float] | None = None) -> dict[str, Any] | None:
+        if iso_values is None:
+            return None
+        with np.errstate(all="ignore"):
+            return summary(fn(iso_values[0]), fn(iso_values[1]), percentiles)
+
     replicas = []
     for index, item in enumerate(lcu):
         r = item["replica"]
@@ -1506,6 +1532,7 @@ def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, An
                 entry["joint_coherence"] = {str(n): both(lambda v, n=n: joint(v, n)) for n in depths}
                 entry["r_coh"] = both(lambda v: np.exp(log_slope(v, joint)), pct)
                 entry["rho"] = both(lambda v: np.exp(log_slope(v, joint) - log_slope(v, contrast)), pct)
+                entry["rho_iso"] = iso_both(lambda v: np.exp(log_slope(v, joint) - log_slope(v, contrast)), pct)
             else:
                 partner = names[names.index(name) - 1]
                 x_cell = cells[partner][selector]
@@ -1515,20 +1542,24 @@ def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, An
                     for n in depths
                 }
             ladder.append(entry)
+
+    def rho_verdict(intervals: list[Any]) -> str:
+        if any(i is None for i in intervals):
+            return "undetermined"
+        if all(i[1] < 1 for i in intervals):
+            return "below 1"
+        if all(i[0] > 1 for i in intervals):
+            return "above 1"
+        if all(i[0] <= 1 <= i[1] for i in intervals):
+            return "consistent with 1"
+        return "replicate-split"
+
     decisions = []
     for selector in sorted({tuple(e["pair"]) for e in ladder}):
         x_rows = [e for e in ladder if tuple(e["pair"]) == selector and e["setting"] == "X"]
-        intervals = [e["rho"]["interval"] for e in x_rows]
-        if any(i is None for i in intervals):
-            verdict = "undetermined"
-        elif all(i[1] < 1 for i in intervals):
-            verdict = "below 1"
-        elif all(i[0] > 1 for i in intervals):
-            verdict = "above 1"
-        elif all(i[0] <= 1 <= i[1] for i in intervals):
-            verdict = "consistent with 1"
-        else:
-            verdict = "replicate-split"
+        verdict = rho_verdict([e["rho"]["interval"] for e in x_rows])
+        iso_rows = [e["rho_iso"] for e in x_rows]
+        verdict_iso = rho_verdict([None if e is None else e["interval"] for e in iso_rows])
         values = [e["rho"]["value"] for e in x_rows]
         ses = [e["rho"]["se"] for e in x_rows]
         z = None
@@ -1536,7 +1567,9 @@ def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, An
             z = (values[0] - values[1]) / math.sqrt(ses[0] ** 2 + ses[1] ** 2)
         decisions.append({"pair": list(selector), "batches": [e["batch"] for e in x_rows], "rho": values,
                           "verdict": verdict, "replicate_z": z,
-                          "replicate_scatter": z is not None and abs(z) > sigma})  # fmt: skip
+                          "replicate_scatter": z is not None and abs(z) > sigma,
+                          "rho_iso": [None if e is None else e["value"] for e in iso_rows],
+                          "verdict_iso": verdict_iso})  # fmt: skip
 
     # The 50 Hz line per Latin job: detection on the replica qubits, selector lock-in by depth, phase-binned contrast.
     line = []
@@ -1652,25 +1685,15 @@ def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, An
 
     # Witness cross-check: the depth-1 X E_0 on the pair whose data qubit is an iso qubit, both corrections.
     cross = []
-    alternative = iso_brackets(batches, brackets, iso)
-    if len(alternative) >= 2:
-        combined = brackets + alternative
-        iso_times = [b["time_e10"] for b in alternative]
-        cross_rng = np.random.default_rng([t["bootstrap_seed"], LADDER_LINE_SEED])
+    if iso_values is not None:
         for index, item in enumerate(lcu):
             r = item["replica"]
             data = r["roles"]["data"][0]
             if r["setting"] != "X" or r["cz_depth"] != 1 or data not in iso:
                 continue
-            near, far, weight = bracket_weight(job_time(batches[item["batch"]], item["file"]), iso_times)
-            shift = len(brackets)
-            iso_e10 = (near + shift, far + shift, weight)
-            moved = {**item, "qubit_weights": {data: {"e01": item["weights"]["e01"], "e10": iso_e10}}}
-            alt_point = follow_values(follow_sample(combined, [moved], []), [moved], [])
-            alt_boot = follow_values(follow_sample(combined, [moved], [], cross_rng, t["bootstrap_draws"]),
-                                     [moved], [])  # fmt: skip
-            with np.errstate(all="ignore"):
-                iso_stat = summary(alt_point["e"][(0, 0)], alt_boot["e"][(0, 0)])
+            iso_stat = iso_both(lambda v, i=index: v["e"][(i, 0)])
+            if iso_stat is None:
+                fail("the iso estimates vanished between the ladder and the cross-check")
             primary = both(lambda v, i=index: v["e"][(i, 0)])
             cross.append({"batch": item["batch"], "file": item["file"], "pair": [r["roles"]["selector"],
                           r["roles"]["data"][0]], "readout_1_corrected": primary, "iso_corrected": iso_stat,
@@ -1712,8 +1735,9 @@ def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, An
         "replication": replication,
         "uncertainty": f"standard errors are standard deviations and intervals the {pct[0]} and {pct[1]} "
         f"percentiles of a parametric bootstrap ({t['bootstrap_draws']} draws, numpy seed {t['bootstrap_seed']}) "
-        "of every bracket's readout counts and each replica's joint (a, d) counts; the witness cross-check draws "
-        f"from numpy seed [{t['bootstrap_seed']}, {LADDER_LINE_SEED}]; line and context errors are binomial",
+        "of every bracket's readout counts and each replica's joint (a, d) counts; the readout-iso-x estimates "
+        "(rho_iso and the witness cross-check) draw from numpy seed "
+        f"[{t['bootstrap_seed']}, {LADDER_LINE_SEED}]; line and context errors are binomial",
         "refutations": refutations,
         "stops": stops,
     }
@@ -2409,10 +2433,17 @@ def analyze_self_test() -> None:
             # e10 adds an offset to the corrected E_0 on (10, 13), which the slope of ln J does not cancel.
             if decision["pair"] != [10, 13]:
                 check(decision["verdict"] in ("consistent with 1", "replicate-split"), f"rho decision {decision}")
+            # readout-iso-x reads q13's injected e10 at its isolated value, so rho_iso returns to 1 on every pair.
+            check(decision["verdict_iso"] in ("consistent with 1", "replicate-split"), f"rho_iso decision {decision}")
         for rung in ladder["within_batch_ladder"]:
             if rung["setting"] == "X" and rung["pair"] != [10, 13]:
                 rho = rung["rho"]
                 check(abs(rho["value"] - 1) < 4 * rho["se"], f"{rung['batch']} {rung['pair']} rho {rho}")
+            if rung["setting"] == "X":
+                rho_iso = rung["rho_iso"]
+                check(
+                    abs(rho_iso["value"] - 1) < 4 * rho_iso["se"], f"{rung['batch']} {rung['pair']} rho_iso {rho_iso}"
+                )
         for rung in ladder["within_batch_ladder"]:
             low, high = rung["r_pop"]["interval"]
             check(low <= 0.95 <= high, f"{rung['batch']} {rung['pair']} r_pop {low, high} misses 0.95")
