@@ -3003,6 +3003,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_gap_directions.py --check docs/evidence/rank_locus_gap_directions/result.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_gap_directions.py --check docs/evidence/rank_locus_gap_directions/result.json",
+   "name": "core-551",
+   "seconds": 10.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_gap_directions.py --self-test && \"$PYTHON\" -B -O -W error scripts/rank_locus_gap_directions.py --self-test",
+   "name": "core-552",
+   "seconds": 13.3,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/exact_rank.py --self-test && \"$PYTHON\" -B -O -W error scripts/exact_rank.py --self-test",
    "name": "core-528",
    "seconds": 3.4,
