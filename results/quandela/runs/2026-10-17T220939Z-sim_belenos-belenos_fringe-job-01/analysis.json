@@ -1,0 +1,323 @@
+{
+ "blocks": [
+  {
+   "config": "fringe-strut",
+   "fit": {
+    "A": 0.49255,
+    "B": 0.001287006,
+    "C": -0.01112254,
+    "phase_offset": -1.455597142,
+    "visibility": 0.022732216
+   },
+   "kind": "fringe",
+   "points": [
+    {
+     "a": 0.5056,
+     "a_wilson95": [
+      0.486008036,
+      0.525174781
+     ],
+     "config": "fringe-strut",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      1264,
+      0,
+      620,
+      616
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1/2",
+      "0"
+     ],
+     "p_algebra_ideal": 0.5,
+     "phi_quarter_pi": 0,
+     "total_variation_from_ideal": 0.0056
+    },
+    {
+     "a": 0.4812,
+     "a_wilson95": [
+      0.461658072,
+      0.500799615
+     ],
+     "config": "fringe-strut",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      1029,
+      174,
+      644,
+      653
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1/2",
+      "0"
+     ],
+     "p_algebra_ideal": 0.5,
+     "phi_quarter_pi": 1,
+     "total_variation_from_ideal": 0.0188
+    },
+    {
+     "a": 0.484,
+     "a_wilson95": [
+      0.464449963,
+      0.503599132
+     ],
+     "config": "fringe-strut",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      606,
+      604,
+      679,
+      611
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1/2",
+      "0"
+     ],
+     "p_algebra_ideal": 0.5,
+     "phi_quarter_pi": 2,
+     "total_variation_from_ideal": 0.0216
+    },
+    {
+     "a": 0.4692,
+     "a_wilson95": [
+      0.449699791,
+      0.488794717
+     ],
+     "config": "fringe-strut",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      172,
+      1001,
+      679,
+      648
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1/2",
+      "0"
+     ],
+     "p_algebra_ideal": 0.5,
+     "phi_quarter_pi": 3,
+     "total_variation_from_ideal": 0.0308
+    },
+    {
+     "a": 0.5112,
+     "a_wilson95": [
+      0.491603124,
+      0.530762509
+     ],
+     "config": "fringe-strut",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      0,
+      1278,
+      627,
+      595
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1/2",
+      "0"
+     ],
+     "p_algebra_ideal": 0.5,
+     "phi_quarter_pi": 4,
+     "total_variation_from_ideal": 0.012
+    },
+    {
+     "a": 0.4912,
+     "a_wilson95": [
+      0.471631931,
+      0.510795071
+     ],
+     "config": "fringe-strut",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      181,
+      1047,
+      619,
+      653
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1/2",
+      "0"
+     ],
+     "p_algebra_ideal": 0.5,
+     "phi_quarter_pi": 5,
+     "total_variation_from_ideal": 0.0112
+    },
+    {
+     "a": 0.5036,
+     "a_wilson95": [
+      0.484010385,
+      0.523178569
+     ],
+     "config": "fringe-strut",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      644,
+      615,
+      631,
+      610
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1/2",
+      "0"
+     ],
+     "p_algebra_ideal": 0.5,
+     "phi_quarter_pi": 6,
+     "total_variation_from_ideal": 0.01
+    },
+    {
+     "a": 0.4944,
+     "a_wilson95": [
+      0.474825219,
+      0.513991964
+     ],
+     "config": "fringe-strut",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      1059,
+      177,
+      621,
+      643
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1/2",
+      "0"
+     ],
+     "p_algebra_ideal": 0.5,
+     "phi_quarter_pi": 7,
+     "total_variation_from_ideal": 0.0072
+    }
+   ]
+  }
+ ],
+ "cases_sha256": "420312cc7b90e58a66ed5679999aa246a6aa9180010ab7ebc6babaff18be33eb",
+ "compiled": {
+  "distinct": 8,
+  "iterations": [
+   {
+    "chars": 16226,
+    "sha256": "e0947f0538f18a662afc4758ff3f4476a3d371015fc51f0526c3984bcba59188"
+   },
+   {
+    "chars": 16254,
+    "sha256": "d156dd0cb0202baa046b26b50342aa8064518c8d88dcec1b89ac772e73f40a4b"
+   },
+   {
+    "chars": 16250,
+    "sha256": "cbfdeb07fd0ed475abb6b84c5410ef5bd1db0a2582deb67709cf4b0ac5eb8d34"
+   },
+   {
+    "chars": 16262,
+    "sha256": "537aea702d5c7f21828ca47881ff068a7dd27bb8493a6fbda8541960f45eccd6"
+   },
+   {
+    "chars": 16266,
+    "sha256": "aa71593bb683195cbef730faa903da53af4106bb856888e800bf526310e43728"
+   },
+   {
+    "chars": 16246,
+    "sha256": "92ec556c8e07535281a83921bf5bed453ebdc73d3688c35d3c819aeaf2b25f8d"
+   },
+   {
+    "chars": 16254,
+    "sha256": "f4f164802d87d61cbc50cdb2f03579e59a95e6e72e39eebe89cbf6e5d60e393b"
+   },
+   {
+    "chars": 16242,
+    "sha256": "2cbbb3a095aeec772aa2cca83313691e3245959987e76f5a4a0472f7eaf547b6"
+   }
+  ],
+  "job": null
+ },
+ "job_id": "2ec4a620-3001-4bc6-bcd6-81cd8e4e893a",
+ "logical_perf": null,
+ "noise": null,
+ "physical_perf": null,
+ "platform": "sim:belenos",
+ "result_sha256": "ebebdfb9dbbf3d11e5115c79106981002cb6324c3537aa2792c0611bb8dddef1",
+ "run": "2026-10-17T220939Z-sim_belenos-belenos_fringe-job-01",
+ "samples": 20000,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 5000,
+ "status": "completed"
+}

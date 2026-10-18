@@ -1,0 +1,48 @@
+{
+ "schema": "qd-box-kite-series-v1",
+ "family": "belenos_diagnostics",
+ "census_sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2",
+ "census_sign_blocks": 14,
+ "summary": {
+  "identity": {
+   "configs": 1,
+   "rows": 0
+  },
+  "two_label": {
+   "configs": 4,
+   "rows": 0
+  }
+ },
+ "jobs": [
+  {
+   "job": "job-00",
+   "configs": [
+    "identity-00"
+   ]
+  },
+  {
+   "job": "job-01",
+   "configs": [
+    "two_label-04-unitary-4"
+   ]
+  },
+  {
+   "job": "job-02",
+   "configs": [
+    "two_label-04-native-4"
+   ]
+  },
+  {
+   "job": "job-03",
+   "configs": [
+    "two_label-04-native-24"
+   ]
+  },
+  {
+   "job": "job-04",
+   "configs": [
+    "two_label-05-native-4"
+   ]
+  }
+ ]
+}

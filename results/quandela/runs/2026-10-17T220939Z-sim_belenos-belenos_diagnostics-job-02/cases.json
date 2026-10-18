@@ -1,0 +1,73 @@
+{
+ "schema": "qd-box-kite-cases-v1",
+ "family": "belenos_diagnostics",
+ "job": "job-02",
+ "platforms": [
+  "sim:belenos",
+  "qpu:belenos"
+ ],
+ "command": "sample_count",
+ "gate_form": "native",
+ "min_detected_photons": 1,
+ "max_samples": 10000,
+ "max_shots": 20000,
+ "max_duration": 300,
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "circuit": {
+  "file": "circuit.json",
+  "sha256": "aa197be85fef7333574c7a057b00fc050708519f8c7e9ff86ea5678f0085e39a"
+ },
+ "blocks": [
+  {
+   "config": "two_label-04-native-4",
+   "kind": "two_label",
+   "offset": 0,
+   "photons": [
+    0
+   ],
+   "m": [
+    [
+     1,
+     1
+    ],
+    [
+     -1,
+     -1
+    ]
+   ],
+   "t": 1,
+   "reference": "two_label-04",
+   "roles": [
+    "label_0",
+    "label_1",
+    "dilation",
+    "dilation"
+   ],
+   "ideal": [
+    "1/2",
+    "1/2",
+    "0",
+    "0"
+   ],
+   "p_algebra": "1",
+   "rows": []
+  }
+ ],
+ "preregistered": {
+  "definitions": {
+   "dark": "a one-photon block whose ideal algebra-mode probability p_algebra is 0: x y = 0, so the photon leaves only through the dilation ports and any algebra-mode detection is implementation error",
+   "bright": "a one-photon block with p_algebra = 1: ||x y||^2 = 2, so the photon never reaches a dilation port"
+  },
+  "observable": "per job, in_block: the share of one-click samples on the block's modes, and a, the algebra-mode share of those, with the per-mode histogram against the exact ideal",
+  "hypotheses": {
+   "routing": "job-00 sends one photon through the identity on 24 modes; in_block below 0.9 on qpu:belenos places the bright block's leakage in the chip's realization of the identity",
+   "width": "job-01 compiles the bright block as a 4-mode circuit, whose unused chip modes the transpiler sets as mirrors; in_block and a above the 24-mode single/job-04 result by more than 4.5 standard errors attribute the leakage to the 24-mode fit",
+   "gate_form": "job-02 and job-03 send the exact native BS.H / PS / PERM gates; a computed_circuit equal to the unitary form's, or counts within 4.5 standard errors of job-01 and single/job-04, show that the transpiler re-fits native gates as a unitary",
+   "dark_floor": "job-04 is the dark block in the best form; its a is the chip's dark floor"
+  },
+  "simulator_stop_rule": "on sim:belenos every job reads in_block 1 and its exact ideal within the simulator's g2 floor"
+ }
+}

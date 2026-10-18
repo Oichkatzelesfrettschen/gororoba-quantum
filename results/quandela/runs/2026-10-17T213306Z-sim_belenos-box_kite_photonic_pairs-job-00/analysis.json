@@ -1,0 +1,46 @@
+{
+ "blocks": [
+  {
+   "config": "pair-00",
+   "f": 0.013444474,
+   "f_ideal_v0": "1/7",
+   "f_ideal_v1": "0",
+   "f_wilson95": [
+    0.010213117,
+    0.017679948
+   ],
+   "kind": "pair",
+   "other_samples": 1281,
+   "permanent": 0,
+   "two_click_by_mode_pair": {
+    "0,1": 50,
+    "0,2": 563,
+    "0,3": 597,
+    "1,2": 647,
+    "1,3": 584,
+    "2,3": 1278
+   },
+   "v_g2_0": 0.918233851
+  }
+ ],
+ "cases_sha256": "6bc522d5e9beb91a6481bea5d8727c201cae07d16f22790bd9b2421ea662159f",
+ "compiled": {
+  "distinct": 1,
+  "iterations": [],
+  "job": {
+   "chars": 16226,
+   "sha256": "d213ed34d691e94bd28561ce533a7dee299b2075738f9b3cd889124756a83a26"
+  }
+ },
+ "job_id": "4420d79b-4300-46b1-9a30-621162035261",
+ "logical_perf": 0.9999997604902348,
+ "noise": ":PCVL:NoiseModel:{\"g2\": 0.003, \"indistinguishability\": 0.92, \"transmittance\": 0.06}",
+ "physical_perf": 0.0036213188109594603,
+ "platform": "sim:belenos",
+ "result_sha256": "35a3bafc18f8b351b1150df0f9affd2c63baef20e2664a9f79d38eefe160ce0a",
+ "run": "2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-00",
+ "samples": 5000,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 162604,
+ "status": "completed"
+}
