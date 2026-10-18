@@ -5473,7 +5473,7 @@
     },
     {
       "id": "hw-n21-feedback-null-kingston",
-      "statement": "At 50 us on Kingston qubits 104-106, 117, 124-126 with 100,000 shots per arm, the encoded N=21 contrast difference between feedback and no feedback is +0.0027 with 95 % interval [-0.0129, +0.0184]; zero is not rejected, and the calibration model's +0.0344 lies outside the interval.",
+      "statement": "At 50 us on Kingston qubits 104-106, 117, 124-126 with 100,000 shots per arm, the encoded N=21 contrast difference between feedback and no feedback is +0.0027 with 95 % interval [-0.0129, +0.0184]; zero is not rejected, and the calibration model's exact +0.0310 (sampled replay +0.0344) lies outside the interval.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",

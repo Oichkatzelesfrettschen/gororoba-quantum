@@ -19,9 +19,10 @@ job `dba8r7k24mrc738527d0`).
 
 The preregistered endpoint does not reject zero: the detection radius is
 0.0147 under the empirical-Bernstein split, and the plan held power 0.8 at
-the planned effect 0.0310. The model's difference, 0.0344, lies above the
-interval's upper end, so the device suppresses the effect the calibration
-noise model predicts. Both arms read near-uniform four-outcome
+the planned effect 0.0310. The model's exact difference, 0.0310
+(`record.json`, branch-resolved law), lies above the interval's upper end,
+as does the 100,000-shot replay's 0.0344, so the device suppresses the
+effect the calibration noise model predicts. Both arms read near-uniform four-outcome
 distributions, (0.269, 0.245, 0.237, 0.249) and (0.265, 0.245, 0.237,
 0.252). Each lies 0.026 and 0.029 TVD from its own replay, which carries
 the bounded initial excitation 0.0144 on every active qubit. A channel
@@ -41,8 +42,8 @@ placement from the four control jobs (149 qubits each,
 `2026-10-18T0834*`): eps50 0.014392 and eps250 0.015745, both at q125, from
 447 simultaneous Clopper-Pearson bounds at alpha 0.01. The fixed point
 converged on the first re-plan (`2026-10-18T085924.738302Z/state-prep-excess.json`).
-On q125, x_history at 50 us reads 249/32768 and prep0 at 250 us 118/16384,
-against e10 0.0073 in both the model and the execution calibration.
+On q125, x_history at 50 us reads 1400/32768 and prep0 at 250 us 661/16384,
+against e10 0.0425 in both the model and the execution calibration.
 
 ## Control survey (descriptive)
 
