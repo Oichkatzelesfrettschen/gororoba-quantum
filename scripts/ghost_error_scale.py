@@ -46,6 +46,12 @@ the kernels' simulation fields unchanged and calibration-derived fields equal
 to a fresh recomputation; otherwise it names the first differing path.
 Several outputs are shard kernels, one or more runs each, whose headers
 (every field but ``runs``) agree; their runs concatenate into one part.
+A snapshot group whose circuits apply no CZ samples only the c = 1 point
+of each readout factor and repeats its distances along c; --check requires
+that repetition, and ``--self-test-cz-free [RUN...]`` shows that one seed
+gives such a group identical counts at every c while a CZ group's counts
+change. A member ghost_run draws from its exact law (``member_law``) takes
+that law under each scaled snapshot.
 ``--self-test`` drives that comparison on synthetic parts with the
 regeneration replaced by the identity: shards in order pass, and swapped or
 missing shards, a differing header, a reserialized part and an empty kernel
@@ -340,7 +346,64 @@ def self_test() -> None:
         expect_failure(lambda: provenance(part, [*shards[:2], foreign], {}, identity), "header differs from")
         expect_failure(lambda: provenance(spaced, shards, {}, identity), "serialized differently")
         expect_failure(lambda: provenance(part, [], {}, identity), "at least one KERNEL_OUTPUT")
+    full = full_grid()
+    picked = sampled_points(full, True)
+    require(
+        sorted(set(picked.values())) == [full.index((1.0, r)) for r in READOUT_FACTORS],
+        "self-test: a CZ-free full grid samples other than its c = 1 points",
+    )
+    sub = [(1.0, 1.0), (0.5, 1.0), (12.0, 3.0)]
+    require(sampled_points(sub, True) == {0: 0, 1: 0, 2: 2}, "self-test: a sub-grid without c = 1 at r = 3")
+    require(sampled_points(sub, False) == {0: 0, 1: 1, 2: 2}, "self-test: a CZ group skips a point")
     print("ghost error-scale self-test: shard provenance merges in order and names every mismatch")
+
+
+CZ_FREE_RUN = "results/live/2026-10-15T070847.644554Z"
+CZ_CONTROL_RUN = "results/live/2026-10-15T070853.550532Z"
+
+
+class CountsAt:
+    """A GridSampler's counts at one point under SEED; picklable for the process pool."""
+
+    def __init__(self, sampler: GridSampler) -> None:
+        self.sampler = sampler
+
+    def __call__(self, point: tuple[float, float]) -> list[dict[str, int]]:
+        return self.sampler.counts(point, (SEED,))[0]
+
+
+def group_sampler(run_name: str, index: dict[str, Any], members: int | None = None) -> GridSampler:
+    """The GridSampler sweep_run builds for the run's first execution snapshot group, or its first members."""
+    prepared = ghost_run.prepare(run_name, index)
+    execution = prepared["execution"]
+    relative = sorted(set(execution.values()))[0]
+    chosen = [m for m in prepared["members"] if execution.get(m) == relative][:members]
+    snapshot = json.loads((ROOT / relative).read_text(encoding="utf-8"))
+    group = {m: prepared["replicas"][m][1] for m in chosen}
+    laws = {m: prepared["laws"][m] for m in chosen}
+    return GridSampler(snapshot, "CPU", 1, chosen, group, prepared["measured"], prepared["shots"], laws)
+
+
+def cz_free_self_test(run_name: str, control_name: str, index: dict[str, Any]) -> None:
+    """Under one seed a CZ-free group's counts repeat at every c of the grid, and a CZ group's counts change.
+
+    sweep_run samples a CZ-free group at c = 1 alone on this ground: scaled()
+    changes only cz channels, which a circuit without a CZ never applies.
+    """
+    sampler = group_sampler(run_name, index)
+    require(cz_free(sampler.circuits), f"{run_name}: the group applies a CZ")
+    points = [(c, 1.0) for c in CZ_FACTORS]
+    counts = parallel.ordered_map(CountsAt(sampler), points, min_items=2)
+    differing = [points[j] for j, row in enumerate(counts) if row != counts[CZ_FACTORS.index(1.0)]]
+    require(not differing, f"{run_name}: CZ-free counts differ from c = 1 at {differing}")
+    control = group_sampler(control_name, index, members=1)
+    require(not cz_free(control.circuits), f"{control_name}: the control group applies no CZ")
+    low, high = parallel.ordered_map(CountsAt(control), [(1.0, 1.0), (CZ_FACTORS[-1], 1.0)], min_items=2)
+    require(low != high, f"{control_name}: CZ counts repeat at c = {CZ_FACTORS[-1]}, so the test cannot fail")
+    print(
+        f"ghost error-scale CZ-free self-test: {len(sampler.circuits)} circuits repeat their counts at "
+        f"{len(CZ_FACTORS)} CZ factors; the CZ control changes"
+    )
 
 
 def grid_means(points: list[dict[str, Any]], members: list[str]) -> list[float]:
@@ -356,7 +419,10 @@ class GridSampler:
     """One snapshot group's TV distances at a (c, r) point; picklable, so the process pool maps it over the grid.
 
     Aer counts do not depend on its thread count under a fixed seed, so the
-    pooled grid equals the serial one.
+    pooled grid equals the serial one. A member ghost_run.member_laws draws
+    from its exact law takes that law under the scaled snapshot
+    (ghost_run.exact_law), and the Aer simulator is built only for a group
+    holding an Aer-sampled member.
     """
 
     def __init__(
@@ -368,17 +434,30 @@ class GridSampler:
         replicas: dict[str, list[QuantumCircuit]],
         measured: dict[str, list[np.ndarray]],
         shots: dict[str, int],
+        laws: dict[str, str] | None = None,
     ) -> None:
         self.snapshot, self.device, self.threads = snapshot, device, threads
         self.chosen, self.replicas = chosen, replicas
         self.measured = {m: measured[m] for m in chosen}
         self.circuits = [r for m in chosen for r in replicas[m]]
         self.shots = [shots[m] for m in chosen for _ in replicas[m]]
+        laws = laws or {}
+        self.exact = [laws.get(m) == ghost_run.EXACT_MULTINOMIAL for m in chosen for _ in replicas[m]]
+
+    def counts(self, point: tuple[float, float], seeds: tuple[int, ...]) -> list[list[dict[str, int]]]:
+        """Every circuit's counts at the point, one draw per seed."""
+        model = scaled(self.snapshot, *point)
+        simulator = None
+        if not all(self.exact):
+            simulator = calibration_snapshot.noise_simulator(model, self.device)
+            simulator.set_options(
+                max_parallel_threads=self.threads, max_parallel_experiments=ghost_run.PARALLEL_EXPERIMENTS
+            )
+        exact = {k: ghost_run.exact_law(model, c) for k, c in enumerate(self.circuits) if self.exact[k]}
+        return [ghost_run.sample(simulator, self.circuits, self.shots, seed, exact) for seed in seeds]
 
     def __call__(self, point: tuple[float, float]) -> dict[str, list[float]]:
-        simulator = calibration_snapshot.noise_simulator(scaled(self.snapshot, *point), self.device)
-        simulator.set_options(max_parallel_threads=self.threads)
-        counts = iter(ghost_run.sample(simulator, self.circuits, self.shots, SEED))
+        counts = iter(self.counts(point, (SEED,))[0])
         return {
             m: [
                 round(ghost_run.tv(self.measured[m][k], ghost_run.distribution(next(counts), r.num_clbits)), 6)
@@ -388,6 +467,27 @@ class GridSampler:
         }
 
 
+def cz_free(circuits: list[QuantumCircuit]) -> bool:
+    """Whether the circuits apply no CZ, so scaled() changes no channel they use and every c samples alike."""
+    return not footprint(circuits)[1]
+
+
+def sampled_points(grid: list[tuple[float, float]], free: bool) -> dict[int, int]:
+    """Each grid index mapped to the index whose sample it takes.
+
+    A group with a CZ samples every point. A CZ-free group samples one point
+    per readout factor, the c = 1 point where the grid holds it and else the
+    first point with that factor, and every other point takes that sample.
+    """
+    if not free:
+        return {j: j for j in range(len(grid))}
+    chosen: dict[float, int] = {}
+    for j, (c, r) in enumerate(grid):
+        if r not in chosen or (c == 1.0 and grid[chosen[r]][0] != 1.0):
+            chosen[r] = j
+    return {j: chosen[r] for j, (_, r) in enumerate(grid)}
+
+
 def sweep_run(
     run_name: str,
     device: str,
@@ -395,40 +495,47 @@ def sweep_run(
     grid: list[tuple[float, float]],
     floor_point: tuple[float, float] | None = None,
 ) -> dict[str, Any]:
-    """The run's TV distances at every grid point, and the resample floor at floor_point or the minimizing point."""
+    """The run's TV distances at every grid point, and the resample floor at floor_point or the minimizing point.
+
+    A CZ-free snapshot group samples only the c = 1 point of each readout
+    factor and gives every other c that point's distances: under one seed
+    a full c sweep of such a group returns the same counts at every c
+    (--self-test-cz-free).
+    """
     prepared = ghost_run.prepare(run_name, index)
     if "skipped" in prepared:
         return {"run": run_name, "skipped": prepared["skipped"]}
-    replicas, measured, shots, execution = (
+    replicas, measured, shots, execution, laws = (
         prepared["replicas"],
         prepared["measured"],
         prepared["shots"],
         prepared["execution"],
+        prepared["laws"],
     )
     members = [m for m in prepared["members"] if m in execution]
     points: list[dict[str, Any]] = [{"cz": c, "readout": r, "tvd": {}} for c, r in grid]
     snapshots = snapshot_diagnostics(prepared, members)
+    samplers: dict[str, GridSampler] = {}
     for relative in snapshots:
         snapshot = json.loads((ROOT / relative).read_text(encoding="utf-8"))
         chosen = [m for m in members if execution[m] == relative]
+        group = {m: replicas[m][1] for m in chosen}
+        source = sampled_points(grid, cz_free([r for rows in group.values() for r in rows]))
+        picks = sorted(set(source.values()))
         sampler = GridSampler(
-            snapshot, device, aer_threads(len(points)), chosen, {m: replicas[m][1] for m in chosen}, measured, shots
+            snapshot, device, aer_threads(len(picks)), chosen, group, measured, shots, {m: laws[m] for m in chosen}
         )
-        for point, distances in zip(points, parallel.ordered_map(sampler, grid, min_items=1), strict=True):
-            point["tvd"].update(distances)
+        samplers[relative] = sampler
+        found = dict(zip(picks, parallel.ordered_map(sampler, [grid[j] for j in picks], min_items=1), strict=True))
+        for j, point in enumerate(points):
+            point["tvd"].update(found[source[j]])
     means = grid_means(points, members)
     best = int(np.argmin(means))
     cz, readout = floor_point or (points[best]["cz"], points[best]["readout"])
     floor: dict[str, Any] = {"cz": cz, "readout": readout, "tvd": {}}
-    for relative in sorted(set(execution.values())):
-        snapshot = json.loads((ROOT / relative).read_text(encoding="utf-8"))
-        chosen = [m for m in members if execution[m] == relative]
-        circuits = [replica for m in chosen for replica in replicas[m][1]]
-        circuit_shots = [shots[m] for m in chosen for _ in replicas[m][1]]
-        simulator = calibration_snapshot.noise_simulator(scaled(snapshot, cz, readout), device)
-        first = iter(ghost_run.sample(simulator, circuits, circuit_shots, SEED))
-        second = iter(ghost_run.sample(simulator, circuits, circuit_shots, ghost_run.RESAMPLE_SEED))
-        for m in chosen:
+    for sampler in samplers.values():
+        first, second = (iter(draw) for draw in sampler.counts((cz, readout), (SEED, ghost_run.RESAMPLE_SEED)))
+        for m in sampler.chosen:
             floor["tvd"][m] = [
                 round(
                     ghost_run.tv(
@@ -449,6 +556,7 @@ def sweep_run(
         "backend": prepared["backend"],
         "members": members,
         "member_shots": {m: shots[m] for m in members},
+        "member_law": {m: laws[m] for m in members},
         "execution_snapshot": {m: execution[m] for m in members},
         "snapshots": snapshots,
         "mean_tvd": means,
@@ -613,6 +721,11 @@ def validate(run: dict[str, Any], index: dict[str, Any], grid: list[tuple[float,
     require(run["members"] == members, f"{name}: members differ")
     require(run["member_shots"] == {m: prepared["shots"][m] for m in members}, f"{name}: member shots differ")
     require(run["execution_snapshot"] == {m: execution[m] for m in members}, f"{name}: execution snapshots differ")
+    laws = {m: prepared["laws"][m] for m in members}
+    require(
+        run.get("member_law", dict.fromkeys(members, ghost_run.AER_SAMPLED)) == laws,
+        f"{name}: member laws differ from the rule over its archived inputs",
+    )
     require([(p["cz"], p["readout"]) for p in run["points"]] == grid, f"{name}: grid differs")
     # The sampler groups members by execution snapshot, so a run that spans
     # a calibration change keys its distances in group order.
@@ -642,6 +755,14 @@ def validate(run: dict[str, Any], index: dict[str, Any], grid: list[tuple[float,
             "cz": [{k: v for k, v in row.items() if k != "model_infidelity_mean"} for row in entry["cz"]],
         }
         require(retained == {"members": len(chosen), **rebuilt}, f"{name}: {relative} diagnostics differ")
+        # A CZ-free group samples alike at every c, so its distances repeat
+        # along c at each readout factor.
+        if cz_free(circuits):
+            for j, k in sampled_points(grid, True).items():
+                require(
+                    all(run["points"][j]["tvd"][m] == run["points"][k]["tvd"][m] for m in chosen),
+                    f"{name}: CZ-free {relative} differs along c at {grid[j]}",
+                )
 
 
 class RunValidator:
@@ -717,9 +838,20 @@ def main() -> int:
         help="PART KERNEL_OUTPUT...: require PART to be the regeneration of the kernel parts merged in order",
     )
     parser.add_argument("--self-test", action="store_true", help="exercise --provenance on synthetic shards")
+    parser.add_argument(
+        "--self-test-cz-free",
+        nargs="*",
+        metavar="RUN",
+        help=f"show a CZ-free group samples alike at every c (default {CZ_FREE_RUN}, control {CZ_CONTROL_RUN})",
+    )
     args = parser.parse_args()
     if args.self_test:
         self_test()
+        return 0
+    if args.self_test_cz_free is not None:
+        index = json.loads(ghost_run.INDEX.read_text(encoding="utf-8"))
+        for run in args.self_test_cz_free or [CZ_FREE_RUN]:
+            cz_free_self_test(run, CZ_CONTROL_RUN, index)
         return 0
     if args.report:
         print(json.dumps(report(args.report), indent=1))
