@@ -466,7 +466,8 @@ def readout_series(runs: list[Path]) -> dict[str, Any]:
             "cells": cells[:series],
             "problems": [p for entry in problems[:series] for p in entry],
             "readings": [
-                "void" if bad else entry_reading(rule, row) for bad, row in zip(problems, cells[:series], strict=True)
+                "void" if bad else entry_reading(rule, row)
+                for bad, row in zip(problems[:series], cells[:series], strict=True)
             ],
         }
         if extension:

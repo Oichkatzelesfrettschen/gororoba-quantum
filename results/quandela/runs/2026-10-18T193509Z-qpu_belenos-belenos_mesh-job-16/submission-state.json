@@ -1,0 +1,188 @@
+{
+ "body_sha256": "8be2212789e2e4a348c54da56043d78edcdbf8e16866e47234f04f1d2b8741c9",
+ "cases_sha256": "3cff3dec9eacb3e54b3657875507ee7f50f15bbf2bb4efe7290c838dae3d973b",
+ "job_id": "46b810ae-7a5d-4191-9310-a93826a6c586",
+ "phase": "posted",
+ "platform": "qpu:belenos",
+ "receipt": {
+  "approval": "User 2026-10-18: 'job 16 is approved but remember if each job is a credit lets get as much done in there until 1.49 credits as we can if possible.' -- belenos_mesh job-16 extended unsent: the two preregistered seed-20 entries (29dc6ef8) at 10000 samples, then 11 blocks of seed 46667 (14a96ca6) and seed 20 at 10000 samples, 24 entries on qpu:belenos, about 170 s against the 300 s limit, 1.24 credits estimated, ceiling 1.48; pair read under the series rule (at most 0.20 pass, at least 0.50 fail), extension under PAIR_EXTENSION_PREREGISTERED.",
+  "availability_at_plan": {
+   "max_concurrent_jobs": 1,
+   "max_jobs_in_queue": 1,
+   "max_running_qt_jobs": 10,
+   "num_concurrent_jobs": 0,
+   "num_jobs_in_queue": 0,
+   "num_running_qt_jobs": 0
+  },
+  "body_sha256": "8be2212789e2e4a348c54da56043d78edcdbf8e16866e47234f04f1d2b8741c9",
+  "case": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+  "cases_sha256": "3cff3dec9eacb3e54b3657875507ee7f50f15bbf2bb4efe7290c838dae3d973b",
+  "credit_ceiling": 1.48,
+  "estimated_credits": 1.24,
+  "estimated_shots": 240000,
+  "expected_seconds": 200.0,
+  "max_credits": 1.49,
+  "max_samples": 240000,
+  "max_shots": 480000,
+  "per_job_credits": 1.0,
+  "perfs_at_plan": {
+   "Clock (MHz)": 4.94,
+   "Dark counts (detection/s)": [
+    23.1,
+    5.8,
+    0.7,
+    0.9,
+    0.2,
+    255.4,
+    0.3,
+    0.0,
+    0.1,
+    0.8,
+    0.1,
+    0.1,
+    0.1,
+    0.0,
+    0.0,
+    1.8,
+    0.0,
+    0.1,
+    0.0,
+    0.1,
+    0.0,
+    0.0,
+    0.0,
+    0.1
+   ],
+   "HOM (%)": 58.3,
+   "Transmission per mode (%)": {
+    "t_in": [
+     2.85,
+     0.0,
+     2.15,
+     0.0,
+     1.84,
+     0.0,
+     2.68,
+     0.0,
+     1.65,
+     2.24,
+     0.0,
+     0.0,
+     2.16,
+     1.69,
+     0.0,
+     0.0,
+     1.5,
+     0.0,
+     1.43,
+     0.0,
+     1.4,
+     0.0,
+     0.97,
+     0.0
+    ],
+    "t_out": [
+     5.95,
+     5.72,
+     4.95,
+     4.88,
+     6.87,
+     4.16,
+     5.75,
+     5.12,
+     5.68,
+     5.39,
+     6.81,
+     5.86,
+     219.44,
+     225.19,
+     237.48,
+     324.3,
+     273.98,
+     400.58,
+     368.34,
+     352.23,
+     193.13,
+     370.21,
+     328.68,
+     305.53
+    ]
+   },
+   "Transmittance (%)": 2.69,
+   "g2 (%)": 1.1
+  },
+  "platform": "qpu:belenos",
+  "platform_at_plan": {
+   "bookable": true,
+   "description": "Belenos QPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": {
+    "end_time": "2026-10-22T11:00:00Z",
+    "maintenance_title": "Weekly maintenance",
+    "start_time": "2026-10-22T07:30:00Z",
+    "time_zone": "Europe/Paris"
+   },
+   "max_duration": 300,
+   "name": "qpu:belenos",
+   "price_per_shot": 1e-06,
+   "statistic": {
+    "2026-10-11": {
+     "availability": 0.0
+    },
+    "2026-10-12": {
+     "availability": 0.0
+    },
+    "2026-10-13": {
+     "availability": 0.0
+    },
+    "2026-10-14": {
+     "availability": 30.72
+    },
+    "2026-10-15": {
+     "availability": 88.97
+    },
+    "2026-10-16": {
+     "availability": 72.11
+    },
+    "2026-10-17": {
+     "availability": 86.72999999999999
+    },
+    "2026-10-18": {
+     "availability": 89.37
+    }
+   },
+   "status": "available",
+   "type": "qpu"
+  },
+  "schema": "qd-submission-v1",
+  "usage_before": [
+   {
+    "total_jobs": 30,
+    "usage": [
+     {
+      "credits": 0.0,
+      "duration_seconds": 772,
+      "free_credits": 14.0,
+      "nb_jobs": 14,
+      "platform_name": "sim:belenos"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 1231,
+      "free_credits": 16.2055,
+      "nb_jobs": 16,
+      "platform_name": "qpu:belenos"
+     }
+    ]
+   }
+  ],
+  "versions": {
+   "exqalibur": "1.4.2",
+   "perceval-quandela": "1.3.1"
+  }
+ },
+ "schema": "qd-submission-state-v1",
+ "started_utc": "2026-10-18T19:36:35+00:00",
+ "submitted_utc": "2026-10-18T19:36:38+00:00"
+}

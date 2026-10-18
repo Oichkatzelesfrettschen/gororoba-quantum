@@ -823,6 +823,37 @@ the couplers equaled Q1's throughout.
     the upper sixth for phases within 0.3 rad of the wrap, a weak feature
     that changes no design.
 
+    **job-16 ran: the failure persists until another mesh loads** (job
+    46b810ae, run `2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16`, 24
+    entries in 149 s, readout `docs/evidence/quandela/belenos_payload_series.json`,
+    gate core-563). Series verdict: the singleton and both pair entries
+    failed (0.819 and 0.814), and two-entry repetition did not recover the
+    iterated behavior. Their blocks, (1708, 7, 1378, 1175) and (1788, 25,
+    1427, 1215), reproduce job-14's within TVD 0.04 to 0.05: one wrong state,
+    stable across three acquisitions 30 minutes apart, unlike Q1's and
+    job-13's. Extension: all 11 14a96ca6 entries passed (0.080 to 0.103) and
+    all 11 29dc6ef8 entries that each followed a 14a96ca6 entry passed (0.078
+    to 0.104; post-load failure share 0 of 11, Wilson 95 % 0 to 0.26). The
+    preregistered reading: 29dc6ef8 recovers after a load of another mesh,
+    while repeating the job's first mesh kept the failure. So the wrong
+    state set when a job opens on 29dc6ef8 at 10000 samples persists while
+    the job keeps that mesh and clears on one load of another mesh, which
+    fits a service that skips re-applying the configuration between entries
+    that share a mesh (inferred; no result field shows a reload). Offline,
+    the stable failing histogram matches no ideal output of the 135 meshes
+    served to this account (best 0.20, e3f757ed, a characterization mesh)
+    and no other source mode of 29dc6ef8 (best 0.41).
+
+    Operational procedure, nominated: an entry on another mesh before each
+    29dc6ef8 entry returned 11 of 11 passing entries. It is one job on one
+    target mesh, a procedure candidate rather than a causal resolution.
+    Open: why the job's opening configuration is wrong at 10000 samples
+    while D1's and D2's 1500-sample openings on 29dc6ef8 passed, and whether
+    a warm-up entry repairs other meshes. The next discriminator is a job
+    opening on 29dc6ef8 at 1500 samples followed by a 10000-sample entry
+    with no switch (D2's order today), with a mesh-switch block as its
+    positive control.
+
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 
 The literature note transcribes 30 sources with their arXiv ids and the
@@ -942,7 +973,10 @@ columns.
 | The single-job failure is a stale load of an earlier complete mesh served to this account | ideal output of the 135 meshes served to this account against Q1 and job-13 | settled for those meshes: refuted, best TVD 0.20 and 0.29 against a 0.012 shot floor; partial, foreign, mixed or stale-plus-error configurations stay open |
 | The single-job failure is the receipt-derived per-detector reweighting applied to one path | the passing 10000-sample iteration reweighted by powers of t_out against job-13 | settled for that family: refuted, TVD 0.77 to 0.79 under every power; arbitrary correction, mode assignment or format-dependent processing stays open |
 | A one-entry iterator restores the iterated behavior on 29dc6ef8 | case job-14, section 7 item 13 | settled: refuted, job-14 (3d95587b) read tvd_cone_from_ideal 0.823 |
-| A second 10000-sample entry, or a preceding entry in the same job, restores it | case job-16, section 7 item 13 | open: job-16 is the prescribed follower and awaits approval |
+| A second 10000-sample entry on the same mesh restores it | case job-16, section 7 item 13 | settled: refuted, job-16's two leading 29dc6ef8 entries failed at 0.819 and 0.814 |
+| The failure is a property of 29dc6ef8 in any execution context | job-16 extension: 11 29dc6ef8 entries, each after a 14a96ca6 entry | settled: refuted, 11 of 11 passed (0.078 to 0.104) |
+| The chip's state fails every mesh in a job that opens badly | job-16 extension: 11 14a96ca6 entries | settled: refuted, 11 of 11 passed (0.080 to 0.103) |
+| The bad opening state needs a 10000-sample opening entry (D1's and D2's 1500-sample openings passed) | a job opening on 29dc6ef8 at 1500 samples, then 10000 samples with no switch | open: not run |
 | The compiled phases alone determine the photon's output on a seeded mesh | in-cone TVD of seeded cells against the served mesh's ideal, raw and weighted by C1's fitted efficiencies | refuted at the 0.01 to 0.23 level: seeded cells sit 1 to 23 shot floors from the ideal (29dc6ef8 a stable 0.058 to 0.083 across six iterations and every budget), C1's efficiencies do not close the gap, and per-mesh in-cone deficits up to 0.15 (seeds 1, 10, 12) repeat within a job outside exact heater dephasing |
 | The same body returns the same meshes on sim:belenos and qpu:belenos | job-02 on both | settled: refuted for iterated jobs (16 of 16 meshes differ); holds for the one-circuit single/job-04 |
 | C1's residual is a fixed property of each mesh within a session | exact repeat of C1 job-03 | settled: refuted, same meshes and G^2 2564 on 226 degrees of freedom (drift) |
@@ -1002,6 +1036,7 @@ Not yet used:
 | 2026-10-18 09:05 | c1eb1cbb | qpu:belenos | belenos_mesh job-12 (D2 + D4), 9 iterations, dwell ladders at seeds 20 and 46667 | 1.12 | 61 s for 166000 samples; D2 flat on 29dc6ef8 (0.90 to 0.99); D4 0.990, 0.961, 0.852 on 14a96ca6; billed the largest iteration's 120000 max_shots |
 | 2026-10-18 15:53 | c0db42f6 | qpu:belenos | belenos_mesh job-13, Q1's single job at seed 20 | 1.01 | served 29dc6ef8; in_block_cone 0.389 (raw 0.335); 14 s; preregistered: single-job form at Q1's budget, whatever the seed |
 | 2026-10-18 19:05 | 3d95587b | qpu:belenos | belenos_mesh job-14, Q1's circuit as a one-entry iterator at seed 20 | 1.01 | served 29dc6ef8; one results_list entry, 10000 samples; tvd_cone_from_ideal 0.823; 14 s; preregistered: fail, follower job-16 |
+| 2026-10-18 19:35 | 46b810ae | qpu:belenos | belenos_mesh job-16, pair at seed 20 plus 11 blocks of seeds 46667 and 20, 10000 samples each | 1.24 | 24 entries in 149 s; pair fail (0.819, 0.814); 14a96ca6 11/11 pass; post-load 29dc6ef8 11/11 pass; preregistered: recovers after a mesh load |
 
 A QPU approval quotes the expected credits, the expected seconds and why a
 local Perceval simulation cannot answer the question. Job 4e208d22's quotes
