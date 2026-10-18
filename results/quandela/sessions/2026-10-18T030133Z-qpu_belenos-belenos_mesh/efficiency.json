@@ -290,12 +290,12 @@
  "static": {
   "by_tau": {
    "0.1": {
-    "gain_over_dephasing": -32578.665,
-    "median_tvd_over_floor": 9.913
+    "gain_over_dephasing": -33944.128,
+    "median_tvd_over_floor": 10.173
    },
    "0.3": {
-    "gain_over_dephasing": -66373.343,
-    "median_tvd_over_floor": 13.182
+    "gain_over_dephasing": -58963.945,
+    "median_tvd_over_floor": 12.642
    }
   },
   "best_tau": 0.1,
