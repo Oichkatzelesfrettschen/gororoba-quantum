@@ -368,25 +368,6 @@ with patch("builtins.open", guard(builtins.open)), patch("io.open", guard(io.ope
                 )
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
-    def test_kaggle_historical_interpreter_isolation(self) -> None:
-        import sys
-
-        sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "kaggle_kernel"))
-        import kernel_main
-
-        environment = {"PYTHON": "/current/python", "GLIBC_TUNABLES": "glibc.malloc.arena_max=2"}
-        with patch.object(kernel_main, "checked") as checked:
-            result = kernel_main.historical_interpreter(self.root, "/current/python", environment)
-        self.assertEqual(environment["PYTHON"], "/current/python")
-        self.assertEqual(result["PYTHON"], "/current/python")
-        self.assertTrue(result["REPLAY_PYTHON"].endswith("replay-venv/bin/python"))
-        installation = checked.call_args_list[1]
-        child = installation.kwargs["env"]
-        self.assertEqual(child["PYTHON"], result["REPLAY_PYTHON"])
-        self.assertEqual(child["REQUIREMENTS_FILE"], "ci/requirements-replay.txt")
-        self.assertIn("glibc.rtld.optional_static_tls=4096", child["GLIBC_TUNABLES"])
-        self.assertIn("glibc.malloc.arena_max=2", child["GLIBC_TUNABLES"])
-
     def test_invalid_resource_and_runtime_metadata(self) -> None:
         for field, value in (("workers", 0), ("workers", True), ("workers", "four"), ("runtime", "unknown")):
             with self.subTest(field=field, value=value):

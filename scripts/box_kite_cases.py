@@ -93,6 +93,13 @@ qi_zero_divisor_cases.readout_circuits(17). twin() moves the identical gate
 list of each witness circuit onto QX qubits 0-9 (map recorded). Bit strings
 put qubit 0 at the rightmost character (QX and Tuna).
 
+The ladder series (LADDER_PLAN) holds every LCU pair at every CZ depth of
+LADDER_DEPTHS in each circuit, a 3 x 3 Latin square over one batch's three
+circuits, read in X and then Y and repeated with the circuit order rotated.
+Its brackets add a context readout: readout-iso-x (X) or readout-iso-hzh
+(H Z H) on LADDER_ISO_QUBITS, one qubit of each pair with every coupled
+neighbor in |0>, against readout-1's excitation of all 17.
+
 --write DIR writes every case directory of CASE_DIRECTORIES under DIR (each
 batch-NN/ cases and a series cases.json); --check DIR regenerates in memory
 and compares file sets and bytes; --summary prints circuits, batches, shots
@@ -309,6 +316,36 @@ CROSS_PREDICTION_BAND = 0.10
 # both roundings to the retained T0 analysis.
 T0_R = 0.9654
 T0_C1 = 0.954
+# The ladder series. Every circuit holds the bright edge at the three CZ
+# depths LADDER_DEPTHS, one per LCU pair, and a batch's three circuits of one
+# setting form a 3 x 3 Latin square, so each pair reads every depth inside one
+# batch and each depth shares its job with the other two. LADDER_ISO_QUBITS
+# takes one qubit of each pair, no two coupled: in readout-iso-* every excited
+# qubit has each coupled neighbor in |0>, while readout-1 excites all 17.
+LADDER_SHOTS = 131072
+LADDER_DEPTHS = (1, 5, 9)
+LADDER_ISO_QUBITS = (1, 13, 14)
+# readout-iso-x prepares |1> with X, readout-iso-hzh with H Z H, the gate path
+# by which a witness's data qubit reaches |1>.
+LADDER_ISO_PREPARATIONS = {"iso-x": ("X",), "iso-hzh": ("H", "Z", "H")}
+LADDER_PLAN = (
+    ("readout-0", "readout-1", "readout-iso-x"),
+    ("latin-x-1", "latin-x-2", "latin-x-3"),
+    ("latin-y-1", "latin-y-2", "latin-y-3"),
+    ("readout-0", "readout-1", "readout-iso-hzh"),
+    ("latin-x-2", "latin-x-3", "latin-x-1"),
+    ("latin-y-2", "latin-y-3", "latin-y-1"),
+    ("readout-0", "readout-1", "readout-iso-x"),
+)
+# A line in the shot order is detected below this p-value after the band's
+# look-elsewhere factor (scripts/qi_shot_record_line.py).
+LADDER_LINE_DETECTION_P = 1e-6
+LADDER_LINE_BAND = (0.019, 0.021)
+AMPLITUDE_SIGMAS = 5.0
+LADDER_PHASE_BINS = 8
+# An e10 difference between readout contexts that matters: about three times
+# the largest e10 move between two follow brackets (0.0076).
+LADDER_CONTEXT_MIN = 0.02
 RY_DETERMINISTIC_MIN = 0.9
 # Pre-T0 double-X batch (claim proposed-tuna17-q0-q6-double-x-discriminator).
 PRE_SHOTS = 4096
@@ -325,6 +362,8 @@ CASE_DIRECTORIES = (
     "box_kite_tuna_t0",
     "box_kite_tuna_follow",
     "box_kite_tuna_twins_qx",
+    "box_kite_tuna_ladder",
+    "box_kite_tuna_ladder_twins_qx",
     "box_kite_ry_ladder",
     "box_kite_ry_smoke",
     "box_kite_de_qx",
@@ -1189,12 +1228,17 @@ def validate_series(files: dict[str, str], backend: dict[str, Any]) -> None:
             kinds = [row["kind"] for row in circuits]
             pair = ["readout-0.cq", "readout-1.cq"]
             if manifest.get("readout_calibration") == "bracketed":
+                context = len(batch["files"]) == 3 and batch["files"][2] in LADDER_CONTEXT_FILES
                 if not (
                     kinds == ["witness"] * HARDWARE_BATCH_CIRCUITS
+                    or (kinds == ["readout"] * 3 and batch["files"][:2] == pair and context)
                     or (kinds == ["readout", "readout", "witness"] and batch["files"][:2] == pair)
                     or (kinds == ["witness", "readout", "readout"] and batch["files"][1:] == pair)
                 ):
-                    raise ValueError(f"{name}: a bracketed Tuna batch is three witnesses or a readout pair and one")
+                    raise ValueError(
+                        f"{name}: a bracketed Tuna batch is three witnesses or a readout pair and one witness or "
+                        "context readout"
+                    )
                 bracketed.append("readout" in kinds)
             elif (
                 kinds[0] not in ("witness", "diagnostic")
@@ -1744,7 +1788,160 @@ def tuna_preregistered(census: dict[str, Any]) -> dict[str, dict[str, Any]]:
                 "interval_percentiles": [0.5, 99.5],
             },
         },
+        "ladder": ladder_preregistered(stop_core=sanity),
     }
+
+
+def ladder_preregistered(stop_core: dict[str, Any]) -> dict[str, Any]:
+    iso = list(LADDER_ISO_QUBITS)
+    used = sorted(q for pair in LCU_PAIRS for q in pair)
+    return {
+        "observable": "per Latin replica the selector success P(a = 0) and the data expectation E_0 = 2 P(d = 0 | "
+        "a = 0) - 1 in the replica's setting (X: H on d; Y: Sdag, H on d); per job the shot-ordered outcome of every "
+        "bit; per context readout the P1 of every qubit",
+        "design": "seven batches in LADDER_PLAN order. latin-{x,y}-c (c = 1, 2, 3) places the bright edge "
+        "(1,10)(4,15) of kite 3 at y_sign +1 at CZ depth LADDER_DEPTHS[(p + c - 1) % 3], depths "
+        f"{list(LADDER_DEPTHS)}, "
+        f"on pair p of {[list(pair) for pair in LCU_PAIRS]}: every circuit holds all three depths, and the three "
+        "circuits of one setting form a 3 x 3 Latin square inside one batch. Batches 1 and 2 read the square in X "
+        "then Y; batches 4 and 5 repeat it with the circuit order rotated by one. Batches 0, 3 and 6 hold readout-0, "
+        "readout-1 and a context readout",
+        "readout": "the primary correction interpolates each qubit's e01 and e10 from the readout-0 and readout-1 "
+        "circuits of batches 0, 3 and 6 linearly in job finish time, as in the follow series; Pc = (p - e10) / (1 - "
+        "e01 - e10) on the selector and E_0 inverts the tensor product of both assignment matrices on the joint "
+        "(a, d) counts. The context readouts enter only the context analysis below",
+        "ladder": "per pair and Latin batch, from the replicas of that one batch: the population contrast "
+        "C(n) = 2 Pc(n) - 1 and, in X, the joint coherence J(n) = Pc(n) |E_0(n)|; r_pop and r_coh are exp of the "
+        "unweighted least-squares slopes of ln C(n) and ln J(n) on n over the three depths, and rho = r_coh / r_pop. "
+        "Under a global depolarizing channel rho = 1; dephasing lowers rho, amplitude damping raises r_pop. Each "
+        f"carries a 99% parametric-bootstrap interval ({BOOTSTRAP_DRAWS} draws, seed {BOOTSTRAP_SEED}) of the "
+        "binomial counts and the brackets. Decision per pair: rho below 1 when the intervals of both X batches (1 and "
+        "4) lie below 1, above 1 when both lie above, consistent with 1 when both contain it, and replicate-split "
+        f"otherwise; |rho(batch 1) - rho(batch 4)| above {SIGMA:g} combined standard errors measures between-batch "
+        "scatter beyond shot noise at the ladder level. The Y batches give the phase atan2(E_Y, -E_X) per depth, "
+        "with E_X from the adjacent X batch, reported as an estimate",
+        "line": "per Latin job, the shot-ordered selector and data outcomes are scanned for a line in "
+        f"{list(LADDER_LINE_BAND)} cycles per shot with scripts/qi_shot_record_line.scan (detected at p below "
+        f"{LADDER_LINE_DETECTION_P:g} after the band's look-elsewhere factor); at the peak each selector's "
+        "first-harmonic amplitude A and phase come from a least-squares lock-in. Predictions from the retained "
+        "follow series (claim qi-tuna17-shot-record-50hz-line): the line is detected in every Latin job, and on "
+        f"each job A at CZ depth 9 exceeds A at depth 1 by more than {AMPLITUDE_SIGMAS:g} standard errors sqrt(2 var "
+        "/ n). Falsifier: a Latin job without the line, or a job whose depth-9 amplitude does not exceed its depth-1 "
+        "amplitude by that margin, refutes the depth-growing 50 Hz modulation for that job. Reported: A per pair and "
+        "depth, the depth-5 and depth-9 phase resultant per job, the third-harmonic amplitude, and per pair the "
+        "contrast C(n) in eight bins of the line's phase",
+        "context": f"q in {iso}: e10_all = 1 - P1(q | readout-1), e10_iso = 1 - P1(q | readout-iso-x) in batches 0 "
+        "and 6, and e10_hzh = 1 - P1(q | readout-iso-hzh) in batch 3 against e10_iso interpolated in time between "
+        f"batches 0 and 6. Neighbor context on q: e10_all - e10_iso above {LADDER_CONTEXT_MIN} and above "
+        f"{AMPLITUDE_SIGMAS:g} binomial standard errors in both batches 0 and 6; absent when |e10_all - e10_iso| is "
+        f"below {LADDER_CONTEXT_MIN} in both. Preparation path on q: |e10_hzh - e10_iso| above {LADDER_CONTEXT_MIN} "
+        f"and {AMPLITUDE_SIGMAS:g} standard errors; absent below {LADDER_CONTEXT_MIN}. "
+        f"{LADDER_CONTEXT_MIN} is about three times the largest e10 move between follow brackets. Cross-check on the "
+        "witness: the depth-1 E_0 in X on each pair whose data qubit is an iso qubit, (10, 13) and (12, 14), where the "
+        "data qubit reads with every coupled neighbor but its selector idle in |0> and the selector in |0> on the "
+        "bright branch, is corrected with the data qubit's e10 from readout-1 and, separately, from readout-iso-x; "
+        "under neighbor context the iso-corrected |E_0| lies within 3 sigma of at most 1 while the readout-1 value "
+        "exceeds 1. The e01 of each pair's other qubit in readout-iso-x, beside an excited neighbor, against "
+        "readout-0 is reported",
+        "replication": "the depth-9 and depth-5 bright populations per pair against the follow series' values on the "
+        "same pair and depth, reported as drift",
+        "stop_rule": f"each batch: every job completed with the manifest's shots; circuit digests equal cases.json; "
+        f"the account's queue empty; a 120 s pause before the next batch. At each bracket: readout-0 P1 at most "
+        f"{READOUT_0_P1_MAX:.2f} and readout-1 P1 at least {READOUT_1_P1_MIN:.2f} on every used qubit {used}, no "
+        f"used qubit's e01 or e10 moved more than {BRACKET_DRIFT_MAX} since the previous bracket, and the context "
+        f"readout's P1 at least {READOUT_1_P1_MIN:.2f} on {iso}; a failure stops the series. In every Latin "
+        f"circuit the depth-1 replica's raw P(selector = 0) at least {BRIGHT_P_MIN:g}, and every idle qubit at P1 "
+        f"at most {IDLE_MARGIN:g} above its readout-0 P1",
+        "thresholds": {
+            **stop_core,
+            "used_qubits": used,
+            "iso_qubits": iso,
+            "depths": list(LADDER_DEPTHS),
+            "context_min": LADDER_CONTEXT_MIN,
+            "amplitude_sigmas": AMPLITUDE_SIGMAS,
+            "line_band": list(LADDER_LINE_BAND),
+            "line_detection_p": LADDER_LINE_DETECTION_P,
+            "line_phase_bins": LADDER_PHASE_BINS,
+            "sigma": SIGMA,
+            "bracket_drift_max": BRACKET_DRIFT_MAX,
+            "bracket_span": BRACKET_SPAN,
+            "bootstrap_draws": BOOTSTRAP_DRAWS,
+            "bootstrap_seed": BOOTSTRAP_SEED,
+            "interval_percentiles": [0.5, 99.5],
+        },
+    }
+
+
+LADDER_CONTEXT_FILES = tuple(f"readout-{name}.cq" for name in LADDER_ISO_PREPARATIONS)
+
+
+def check_iso_qubits(iso: tuple[int, ...] = LADDER_ISO_QUBITS) -> None:
+    """One qubit of each LCU pair, no two joined by a TUNA17 coupler, none excluded or avoided."""
+    couplers = {tuple(sorted(edge)) for edge in TUNA17}
+    if sorted(len(set(pair) & set(iso)) for pair in LCU_PAIRS) != [1] * len(LCU_PAIRS) or len(iso) != len(LCU_PAIRS):
+        raise ValueError(f"isolated readout qubits {iso} do not take one qubit of each LCU pair")
+    if any((min(a, b), max(a, b)) in couplers for a, b in itertools.combinations(iso, 2)):
+        raise ValueError(f"isolated readout qubits {iso} include a coupled pair")
+    if set(iso) & set(TUNA_EXCLUDED + TUNA_AVOIDED):
+        raise ValueError(f"isolated readout qubits {iso} touch an excluded or avoided qubit")
+
+
+def context_readout_circuits(nqubits: int) -> dict[str, str]:
+    """readout-iso-*: |1> on LADDER_ISO_QUBITS by each preparation of LADDER_ISO_PREPARATIONS, |0> elsewhere."""
+    check_iso_qubits()
+    texts = {}
+    for name, gates in LADDER_ISO_PREPARATIONS.items():
+        body = []
+        for index, gate in enumerate(gates):
+            if index:
+                body += [f"barrier q[{q}]" for q in LADDER_ISO_QUBITS]
+            body += [f"{gate} q[{q}]" for q in LADDER_ISO_QUBITS]
+        comment = f"// {' '.join(gates)} on q{list(LADDER_ISO_QUBITS)}, every other qubit in |0>; ideal P1 1 there"
+        texts[f"readout-{name}.cq"] = "\n".join(
+            header(nqubits) + [comment, *body, "", "barrier q", "b = measure q", ""]
+        )
+    return texts
+
+
+def context_checks() -> list[tuple[str, tuple[int, ...], str]]:
+    return [("p_zero", (q,), "0") for q in LADDER_ISO_QUBITS]
+
+
+def ladder_witnesses(census: dict[str, Any], rows: dict[str, list[Row]]) -> dict[str, list[tuple[Any, Any]]]:
+    """latin-{x,y}-{1,2,3}: circuit c places the bright edge at LADDER_DEPTHS[(p + c) % 3] on LCU_PAIRS[p]."""
+    check_twist(census)
+    edge = find_row(rows, EDGE_K3, 1, 1)
+    if edge["p_selector_zero"] != "1":
+        raise ValueError("the ladder lost its bright edge (1,10)(4,15) of kite 3 at y_sign +1")
+    witnesses = {
+        f"latin-{setting.lower()}-{c + 1}": [
+            lcu_replica(p, edge, LCU_PAIRS[p], "lcu", LADDER_DEPTHS[(p + c) % 3], setting, "edge+")
+            for p in range(len(LCU_PAIRS))
+        ]
+        for setting in ("X", "Y")
+        for c in range(len(LADDER_DEPTHS))
+    }
+    check_ladder_plan(LADDER_PLAN, witnesses)
+    return witnesses
+
+
+def check_ladder_plan(plan: tuple[tuple[str, ...], ...], witnesses: dict[str, Any]) -> None:
+    """Every Latin circuit twice, each witness batch one setting's full square, each bracket a context readout."""
+    names = [name for batch in plan for name in batch if not name.startswith("readout-")]
+    if sorted(set(names)) != sorted(witnesses) or any(names.count(name) != 2 for name in witnesses):
+        raise ValueError("LADDER_PLAN does not list every Latin circuit exactly twice")
+    for batch in plan:
+        if batch[0].startswith("readout-"):
+            if batch[:2] != ("readout-0", "readout-1") or f"{batch[2]}.cq" not in LADDER_CONTEXT_FILES:
+                raise ValueError(f"ladder bracket {batch} is not readout-0, readout-1 and a context readout")
+            continue
+        settings = {QUADRATURE.match(f"{name}.cq")[2] for name in batch}  # type: ignore[index]
+        squares = {name.rsplit("-", 1)[1] for name in batch}
+        if len(settings) != 1 or squares != {"1", "2", "3"}:
+            raise ValueError(f"ladder batch {batch} is not one setting's full Latin square")
+    contexts = {name for batch in plan for name in batch if f"{name}.cq" in LADDER_CONTEXT_FILES}
+    if contexts != {f"readout-{name}" for name in LADDER_ISO_PREPARATIONS}:
+        raise ValueError("LADDER_PLAN does not read every context preparation")
 
 
 def tuna_series(census_path: Path = CENSUS) -> dict[str, dict[str, str]]:
@@ -1764,7 +1961,7 @@ def tuna_series(census_path: Path = CENSUS) -> dict[str, dict[str, str]]:
     }
     directories: dict[str, dict[str, str]] = {"box_kite_tuna_pre": pre_series(tuna, census_path, census, layout)}
     witness_jobs: list[tuple[str, str, list[tuple[str, tuple[int, ...], str]]]] = []
-    twins: dict[str, list[tuple[dict[str, Any], str]]] = {"t0": [], "follow": []}
+    twins: dict[str, list[tuple[dict[str, Any], str]]] = {"t0": [], "follow": [], "ladder": []}
 
     def witness(stage: str, file: str, members: list[tuple[Any, Any]], batch: int) -> dict[str, Any]:
         text = tuna_text(members)
@@ -1874,12 +2071,59 @@ def tuna_series(census_path: Path = CENSUS) -> dict[str, dict[str, str]]:
     twin_files = write_batches(twin_shared, twin_chunks, twin_texts, "stage")
     validate_series(twin_files, qx)
     directories["box_kite_tuna_twins_qx"] = twin_files
+    # Ladder: LADDER_PLAN batches, each Latin circuit twice, context readouts in the brackets.
+    texts = dict(readout) | context_readout_circuits(TUNA_QUBITS)
+    ladder = ladder_witnesses(census, rows)
+    emitted: dict[str, dict[str, Any]] = {}
+
+    def ladder_row(name: str, index: int) -> dict[str, Any]:
+        if name.startswith("readout-"):
+            prepared = name.removeprefix("readout-")
+            row = {"file": f"{name}.cq", "kind": "readout", "stage": "ladder", "prepared": prepared}
+            return row | ({"excited": list(LADDER_ISO_QUBITS)} if prepared in LADDER_ISO_PREPARATIONS else {})
+        if name not in emitted:
+            emitted[name] = witness("ladder", f"{name}.cq", ladder[name], index)
+        return emitted[name]
+
+    chunks = [[ladder_row(name, index) for name in batch] for index, batch in enumerate(LADDER_PLAN)]
+    shared = {
+        **shared,
+        "family": "tuna_ladder",
+        "shots": LADDER_SHOTS,
+        "layout": {**{k: v for k, v in layout.items() if k != "walks"}, "iso_qubits": list(LADDER_ISO_QUBITS)},
+        "encodings": {
+            "reduced": shared["encodings"]["reduced"],
+            "readout": "readout-0 measures all 17 qubits in |0>, readout-1 after X on all 17; readout-iso-x after X "
+            "and readout-iso-hzh after H Z H (a per-qubit barrier run between the gates) on LADDER_ISO_QUBITS only",
+        },
+        "preregistered": prereg["ladder"],
+    }
+    files = write_batches(shared, chunks, texts, "stage")
+    validate_series(files, tuna)
+    directories["box_kite_tuna_ladder"] = files
+    ladder_twins = [row for row, _ in twins["ladder"]]
+    ladder_twin_files = write_batches(
+        {**twin_shared, "family": "tuna_ladder_twins"},
+        [
+            ladder_twins[start : start + HARDWARE_BATCH_CIRCUITS]
+            for start in range(0, len(ladder_twins), HARDWARE_BATCH_CIRCUITS)
+        ],
+        {row["file"]: text for row, text in twins["ladder"]},
+        "stage",
+    )
+    validate_series(ladder_twin_files, qx)
+    directories["box_kite_tuna_ladder_twins_qx"] = ladder_twin_files
+
     pre_text_17 = directories["box_kite_tuna_pre"][f"batch-00/{PRE_FILE}"]
     parallel.ordered_map(
         verify_text,
         witness_jobs
-        + [(row["file"], twin_texts[row["file"]], checks_of(row)) for row, _ in twins["t0"] + twins["follow"]]
-        + [(PRE_FILE, pre_text_17, double_x_checks(range(TUNA_QUBITS)))],
+        + [
+            (row["file"], text, checks_of(row))
+            for row, text in [(r, twin_texts[r["file"]]) for r, _ in twins["t0"] + twins["follow"]] + twins["ladder"]
+        ]
+        + [(PRE_FILE, pre_text_17, double_x_checks(range(TUNA_QUBITS)))]
+        + [(file, texts[file], context_checks()) for file in LADDER_CONTEXT_FILES],
     )
     return directories
 
@@ -2865,6 +3109,27 @@ def self_test() -> None:
     for batch in index["batches"]:
         batch["files"] = [{"walk-y.cq": "depth-5-y.cq", "depth-5-y.cq": "walk-y.cq"}.get(f, f) for f in batch["files"]]
     reject("walk-x and walk-y three batches apart", lambda: check_quadratures(index))
+    # Ladder: isolated readout set, plan shape and the context bracket.
+    reject("an isolated readout set with both qubits of one pair", lambda: check_iso_qubits((1, 4, 13)))
+    reject("an isolated readout set on an excluded qubit", lambda: check_iso_qubits((1, 13, 15)))
+    latin = ladder_witnesses(census, rows)
+    mixed = (LADDER_PLAN[0], ("latin-x-1", "latin-y-2", "latin-x-3"), *LADDER_PLAN[2:])
+    reject("a Latin batch that mixes settings", lambda: check_ladder_plan(mixed, latin))
+    once = tuple(batch for index, batch in enumerate(LADDER_PLAN) if index != 4)
+    reject("a Latin square read once in X", lambda: check_ladder_plan(once, latin))
+    plain = (("readout-0", "readout-1", "readout-0"), *LADDER_PLAN[1:])
+    reject("a bracket without a context readout", lambda: check_ladder_plan(plain, latin))
+    ladder_files = tuna_dirs["box_kite_tuna_ladder"]
+    head = json.loads(ladder_files["batch-00/cases.json"])
+    order = [head["circuits"][0], head["circuits"][2], head["circuits"][1]]
+    reordered = dict(ladder_files)
+    reordered["batch-00/cases.json"] = json.dumps({**head, "circuits": order}, indent=1) + "\n"
+    index = json.loads(ladder_files["cases.json"])
+    index["batches"][0]["files"] = [row["file"] for row in order]
+    reordered["cases.json"] = json.dumps(index, indent=1) + "\n"
+    reject("a context readout before readout-1", lambda: validate_series(reordered, tuna))
+    hzh = ladder_files["batch-03/readout-iso-hzh.cq"].replace("Z q[13]", "S q[13]")
+    reject("a context readout that leaves q13 off |1>", lambda: verify_text(("hzh", hzh, context_checks())))
     mutated = copy.deepcopy(census)
     mutated["kites"][2]["twists"][0]["twisted_kite"] = 5
     reject("a census twist that no longer maps the T1 edge", lambda: check_twist(mutated))

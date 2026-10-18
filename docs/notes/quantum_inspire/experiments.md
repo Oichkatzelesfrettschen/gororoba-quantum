@@ -768,6 +768,11 @@ section 4(g); gate core-425 replays both records).
   against T0 and the q13 readout context are reported estimates
   ([tuna-17-run-design.md](tuna-17-run-design.md) Results).
 
+- **Shot order** (reanalysis of every retained job): the raw lists carry a
+  50 Hz wall-clock line in phase-sensitive Tuna-17 circuits, none in readout
+  or depth-1 circuits and none on QX ([tuna-17.md](tuna-17.md), claim
+  `qi-tuna17-shot-record-50hz-line`).
+
 Records: results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json,
 results/quantum_inspire/box_kite_tuna_17_follow_analysis.json
 and results/quantum_inspire/box_kite_ry_analysis.json; claims

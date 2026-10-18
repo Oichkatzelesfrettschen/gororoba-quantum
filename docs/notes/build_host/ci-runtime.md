@@ -195,7 +195,7 @@ shared `qi_*.py` scripts.
 Qiskit 2.6 changes seeded routing relative to the retained Qiskit 2.5 receipts.
 Current behavioral and operator contracts run on 2.6. Source-recompilation gates
 that compare historical costs or simulated responses declare the producer
-runtime in the manifest. The GitHub and Kaggle shard planners request `ci/requirements-replay.txt` only
+runtime in the manifest. The GitHub shard planner requests `ci/requirements-replay.txt` only
 when a shard contains those gates; dispatch requires `REPLAY_PYTHON` and reports
 the runtime in timing records. Historical raw costs and version labels retain
 their recorded values.
@@ -308,3 +308,7 @@ The probe applies the repository's narrowly scoped SWIG `__module__` warning
 filter and checks the installed versions against the QI lock. The emitter
 contract exercises serialization and parsing; live simulator conformance remains
 a separate gate.
+
+Upstream main removed the Kaggle CI-shard replica during integration. The merge
+retains that removal and the native TLS setup used by ordinary Kaggle entries;
+historical-compiler provisioning remains in the GitHub shard planner.

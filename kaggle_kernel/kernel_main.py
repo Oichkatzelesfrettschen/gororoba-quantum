@@ -200,8 +200,8 @@ def environment() -> dict[str, Any]:
 
 
 def entry_aer_device(job: dict[str, Any]) -> str:
-    """The GOROROBA_AER_DEVICE the entry sees: CI's CPU under --ci-env and in a shard run, else the machine's."""
-    return "CPU" if job.get("ci_env") or job.get("mode") == "shards" else str(job.get("device", "GPU"))
+    """The GOROROBA_AER_DEVICE the entry sees: CI's CPU under --ci-env, else the machine's."""
+    return "CPU" if job.get("ci_env") else str(job.get("device", "GPU"))
 
 
 def hypercomplex() -> dict[str, Any]:
@@ -311,7 +311,6 @@ def unpack_datasets(datasets: list[dict[str, Any]]) -> dict[str, Any]:
     return report
 
 
-CI_TREE = Path("/tmp/gororoba/ci")
 CI_VENV = Path("/tmp/gororoba/venv")
 
 
@@ -322,28 +321,6 @@ def checked(name: str, *cmd: str, cwd: Path | None = None, env: dict[str, str] |
     if proc.returncode:
         raise SystemExit(f"{name} failed with exit {proc.returncode}: {(proc.stdout + proc.stderr)[-1500:]}")
     return proc.stdout
-
-
-def apply_overlay(tree: Path, overlay: Path, modes: dict[str, str], deleted: list[str]) -> None:
-    """Apply a commit's changed files (with their git modes) and deletions to a checkout of its base."""
-    # Deletions come first and prune the directories they empty, so a commit
-    # that replaces a directory with a file or symlink finds the path free.
-    for rel in deleted:
-        (tree / rel).unlink()
-        parent = (tree / rel).parent
-        while parent != tree and not any(parent.iterdir()):
-            parent.rmdir()
-            parent = parent.parent
-    for rel, mode in modes.items():
-        source, target = overlay / rel, tree / rel
-        target.parent.mkdir(parents=True, exist_ok=True)
-        if target.is_symlink() or target.is_file():
-            target.unlink()
-        if mode == "120000":
-            target.symlink_to(source.read_text(encoding="utf-8"))
-        else:
-            shutil.copyfile(source, target)
-            target.chmod(0o755 if mode == "100755" else 0o644)
 
 
 def ci_interpreter(tree: Path, uv: str, version: str) -> tuple[str, dict[str, str]]:
@@ -365,21 +342,6 @@ def ci_interpreter(tree: Path, uv: str, version: str) -> tuple[str, dict[str, st
     checked("install-pins", "sh", "ci/install_pins.sh", cwd=tree, env=env)
     checked("ci-freeze", python, "-m", "pip", "freeze", env=env)
     return python, env
-
-
-def historical_interpreter(tree: Path, python: str, environment: dict[str, str]) -> dict[str, str]:
-    """Install the pinned producer beside the current interpreter for a selected replay shard."""
-    replay = str(CI_VENV.parent / "replay-venv" / "bin" / "python")
-    checked("replay-venv", python, "-m", "venv", str(Path(replay).parent.parent), env=environment)
-    checked(
-        "replay-pins",
-        "sh",
-        "ci/install_pins.sh",
-        cwd=tree,
-        env=native_environment(dict(environment, PYTHON=replay, REQUIREMENTS_FILE="ci/requirements-replay.txt")),
-    )
-    checked("replay-freeze", replay, "-m", "pip", "freeze", env=environment)
-    return dict(environment, REPLAY_PYTHON=replay)
 
 
 GPU_VENV = Path("/tmp/gororoba/gpu-venv")
@@ -489,53 +451,6 @@ def gpu_interpreter(
     return python, env, record
 
 
-def run_shard(job: dict[str, Any]) -> int:
-    """One CI shard on the tree job["tree"], under CI's interpreter and pins.
-
-    The base commit is fetched from the public repository, the bundled
-    overlay (files changed since the base) is applied with its deletions and
-    file modes, and git write-tree must reproduce the head commit's tree
-    before any gate runs, so the shard tests exactly that commit. uv installs
-    CI's Python, ci/install_pins.sh installs CI's pins, and the gates run on
-    the CPU through ci/run_gates.py.
-    """
-    CI_TREE.mkdir(parents=True)
-    checked("git-init", "git", "init", "-q", str(CI_TREE))
-    checked("git-fetch", "git", "fetch", "-q", "--depth", "1", job["remote"], job["base"], cwd=CI_TREE)
-    checked("git-checkout", "git", "checkout", "-q", "FETCH_HEAD", cwd=CI_TREE)
-    apply_overlay(CI_TREE, REPO / "kaggle_kernel/overlay", job["modes"], job["deleted"])
-    checked("git-add", "git", "add", "-A", cwd=CI_TREE)
-    tree = checked("git-write-tree", "git", "write-tree", cwd=CI_TREE).strip()
-    write("tree.json", {"base": job["base"], "head": job["head"], "expected_tree": job["tree"], "tree": tree})
-    if tree != job["tree"]:
-        print(f"the assembled tree {tree} differs from the head's {job['tree']}; no gate runs", flush=True)
-        return 4
-    python, env = ci_interpreter(CI_TREE, job["uv"], job["python"])
-    if shutil.which("shellcheck", path=env["PATH"]) is None:
-        checked("shellcheck-install", python, "-m", "pip", "install", "-q", job["shellcheck"], env=env)
-    checked("runner-specs", python, "ci/runner_specs.py", cwd=CI_TREE, env=env)
-    gates = [python, "ci/run_gates.py", "--tier", job["tier"], "--shard", f"{job['shard']}/{job['count']}"]
-    if (CI_TREE / "ci/requirements-replay.txt").is_file():
-        plan_path = OUT / "gate-plan.json"
-        checked("gate-plan", *gates, "--plan", str(plan_path), cwd=CI_TREE, env=env)
-        if json.loads(plan_path.read_text())["environments"]:
-            env = historical_interpreter(CI_TREE, python, env)
-    started = time.time()
-    proc = subprocess.run(gates, cwd=CI_TREE, env=env, capture_output=True, text=True)
-    (OUT / "gates.txt").write_text(proc.stdout + proc.stderr, encoding="utf-8")
-    write(
-        "shard.json",
-        {
-            **{k: job[k] for k in ("tier", "shard", "count", "head")},
-            "returncode": proc.returncode,
-            "seconds": round(time.time() - started, 1),
-            "summary": proc.stdout.strip().splitlines()[-1:],
-        },
-    )
-    print(proc.stdout[-6000:], proc.stderr[-2000:], sep="\n", flush=True)
-    return proc.returncode
-
-
 def main() -> int:
     if len(sys.argv) in (4, 5) and sys.argv[1] == "--trial":
         device = sys.argv[4] if len(sys.argv) == 5 else "GPU"
@@ -589,8 +504,6 @@ def run_entry() -> int:
     if not stack["identical"]:
         print("hypercomplex stack differs from the repository's retained tables; the entry does not run", flush=True)
         return 3
-    if job.get("mode") == "shards":
-        return run_shard(job)
     if job["smoke"]:
         capacity()
         return 0

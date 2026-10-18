@@ -1,8 +1,8 @@
 #!/bin/sh
 # Install the CI pins into $PYTHON: requirements.txt and ci/requirements-ci.txt,
 # then the mpmath and sympy pair the retained SymPy evidence ran with.
-# .github/workflows/ci.yml and the Kaggle shard kernels both run this file, so
-# the two environments install the same set. AER_PINS, a space-separated pin
+# .github/workflows/ci.yml and the Kaggle --ci-env and --gpu-env kernels both run
+# this file, so the environments install the same set. AER_PINS, a space-separated pin
 # list, replaces requirements.txt's qiskit-aer in the same resolve: the GPU
 # wheel and the CPU wheel both install qiskit_aer/, so only one of them may
 # enter the environment.
