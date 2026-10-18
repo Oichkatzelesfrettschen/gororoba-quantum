@@ -92,3 +92,32 @@ replay. `upstream/issues.json` links the missing semantic and formal bridges.
 
 The algebra CI dependency remains separate from the vendored canonical
 constructor used by the focused comparison.
+
+## Current Heron qualification
+
+`native_qualification.json` summarizes the frozen-source, submit-free run
+at `e3560e5601a39d76e6d98c4083c6a6da4c4d02e9`.
+`native_qualification.zip` retains the exact `record.json` and `isa.qpy` bytes;
+the summary binds both SHA-256 digests. The source replay checks the summary
+against the archived record as well as the evidence checksum ledger.
+
+Kingston, Fez and Marrakesh each compiled the complete 4656-member design.
+The retained diagnostic candidate is Kingston; its QPY contains all 4656
+PUBs. The record retains the three candidate cost/inference results and
+current backend observations. The selected diagnostic compilation checked
+54 distinct bindings with maximum arbitrary-input error about 1.04e-12,
+within its 1e-10 contract. The native ideal-law checks passed.
+
+The runner recorded `budget_infeasible`: four 90-second ceilings require
+360 seconds plus a 10-second reserve, exceeding the observed 198 seconds
+of remaining allowance. Estimated charges were 128.381, 128.154 and
+128.719 seconds respectively; estimates and enforceable ceilings are
+different quantities. All three calibrated screens also refused the fixed
+allocation. The sparse-row coherence raw-power contract failed on all three;
+Fez and Marrakesh also failed its signed raw-power contract.
+
+The retained result establishes current compilation and modeled refusal.
+It supplies neither a hardware acquisition nor an approved execution case.
+The complete ideal-model fixture separately demonstrates artifact-bound case
+generation when every admission condition passes. Acquisition and doubling
+remain behind their qualification gates and the QPU hold.

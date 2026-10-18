@@ -8,6 +8,7 @@ import json
 import subprocess
 import sys
 import tempfile
+import zipfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
@@ -20,6 +21,68 @@ from et_reference import ETSpec
 
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "docs/evidence/et_rows"
+
+
+def check_native_qualification(bundle: Path = BUNDLE) -> None:
+    """Bind the readable qualification receipt to its exact submit-free artifacts."""
+    receipt = json.loads((bundle / "native_qualification.json").read_text())
+    with zipfile.ZipFile(bundle / "native_qualification.zip") as archive:
+        if set(archive.namelist()) != {"record.json", "isa.qpy"}:
+            raise ValueError("native qualification archive inventory differs")
+        artifacts = {name: archive.read(name) for name in archive.namelist()}
+    record = json.loads(artifacts["record.json"])
+    expected = {
+        "schema": "et-native-qualification-v1",
+        "quantum_execution": False,
+        "source_commit": record["code_commit"],
+        "started": record["started"],
+        "state": record["state"],
+        "artifact_sha256": {name: hashlib.sha256(data).hexdigest() for name, data in artifacts.items()},
+        "executions": sum(record["pub_shots"].values()),
+        "pubs": len(record["execution_pubs"]),
+        "selected": record["optimization"]["selected"],
+        "retained_candidate": record["optimization"]["retained_candidate"],
+        "budget": {key: value for key, value in record["budget_plan"].items() if key != "jobs"},
+        "job_tiers": [
+            {key: value for key, value in job.items() if key != "pub_names"} for job in record["budget_plan"]["jobs"]
+        ],
+        "backends": record["backends"],
+        "candidates": [
+            {key: value for key, value in candidate.items() if key not in ("jobs", "cost_scenarios")}
+            for candidate in record["optimization"]["candidates"]
+        ],
+        "calibrated_screens": record["optimization"]["et_calibrated_candidates"],
+        "native_operator_check": record["family_configuration"]["native_operator_check"],
+        "compiled_ideal_validation": record["compiled_ideal_validation"],
+        "compilation_contract": record["family_configuration"]["compilation_contract"],
+        "interpretation": (
+            "Current-Target compilation and local noise-model admission; hardware acquisition remains held"
+        ),
+    }
+    if receipt != expected:
+        raise ValueError("native qualification receipt differs from its archived record")
+    if (
+        record["code_commit"]["sources_modified"]
+        or record["state"] not in ("planned", "budget_infeasible", "design_infeasible")
+        or expected["executions"] != 466944
+        or expected["pubs"] != 4656
+    ):
+        raise ValueError("native qualification violates the frozen-source submit-free acquisition contract")
+
+
+def verify_native_receipt_guard() -> None:
+    """Reject altered execution, selection and acquisition claims even with a new checksum ledger."""
+    receipt = json.loads((BUNDLE / "native_qualification.json").read_text())
+    with tempfile.TemporaryDirectory(prefix="et-native-receipt-") as temporary:
+        bundle = Path(temporary)
+        (bundle / "native_qualification.zip").write_bytes((BUNDLE / "native_qualification.zip").read_bytes())
+        for key, value in (("quantum_execution", True), ("selected", "invented"), ("executions", 1), ("pubs", 1)):
+            (bundle / "native_qualification.json").write_text(json.dumps(receipt | {key: value}))
+            try:
+                check_native_qualification(bundle)
+            except ValueError:
+                continue
+            raise ValueError(f"altered native receipt passed validation: {key}")
 
 
 def check_exact_kernel(arguments: tuple[int, int, int]) -> dict[str, int]:
@@ -83,6 +146,8 @@ def replay() -> dict:
     for name, digest in integrity.items():
         if hashlib.sha256((BUNDLE / name).read_bytes()).hexdigest() != digest:
             raise ValueError(f"ET evidence checksum differs: {name}")
+    check_native_qualification()
+    verify_native_receipt_guard()
     pins = json.loads((BUNDLE / "rust_sources.json").read_text())
     for name, record in pins["files"].items():
         if hashlib.sha256((BUNDLE / "rust" / name).read_bytes()).hexdigest() != record["sha256"]:

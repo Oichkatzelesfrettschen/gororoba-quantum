@@ -104,3 +104,11 @@ native coherence/control suites and hardware cases require separate
 qualification. Fixed S15 and moving `S=G/2+1` retain separate trajectory
 identities. Whole-table graph operators, Tuna angle-grid synthesis and
 Belenos transformation conformance remain separately tracked experiments.
+
+The retained current-Target comparison in
+[`docs/evidence/et_rows/README.md`](../docs/evidence/et_rows/README.md#current-heron-qualification)
+compiled the complete D32 campaign on Kingston, Fez and Marrakesh, then
+refused all three candidates. The fixed allocation fails calibrated inference;
+the invocation's 360-second aggregate ceiling plus 10-second reserve also
+exceeds the observed 198-second allowance. Software integration therefore
+does not admit an acquisition or a next-dimension hardware campaign.
