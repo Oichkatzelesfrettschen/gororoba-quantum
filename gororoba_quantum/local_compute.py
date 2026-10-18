@@ -339,11 +339,10 @@ def batches(simulator: Any) -> list[dict[str, Any]]:
     return list(getattr(simulator, "_gororoba_simulation_batches", []))
 
 
-def merge_batches(target: Any, source: Any) -> None:
-    """Append source's batch evidence to target's, in order; a simulator without evidence contributes nothing."""
-    evidence = batches(source)
+def append_batches(target: Any, evidence: list[dict[str, Any]]) -> None:
+    """Append batch evidence another simulator recorded to target's, in order."""
     if evidence:
-        target._gororoba_simulation_batches = batches(target) + evidence
+        target._gororoba_simulation_batches = batches(target) + list(evidence)
 
 
 def route(policy: dict[str, Any], circuits: list[Any]) -> tuple[str, dict[str, Any] | None]:
