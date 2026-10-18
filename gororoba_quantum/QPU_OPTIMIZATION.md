@@ -172,6 +172,39 @@ probabilities; for either coherence the branch values add to the reduced
 pair, and their difference and the sector sum are the branch-signed value,
 C for the odd coherence.
 
+`--family state-prep-control` reads, on every `--layout` qubit in the same
+shots, the excited fraction left by the Sampler's implicit initialization
+(`init_qubits`) at one repetition delay. `--state-prep-arms` selects among
+prep0 (init, measure), reset (init, reset, measure), x (x, measure) and
+x_history (init, measure, x); a selection holds prep0, or is x_history alone.
+Each shot of x_history after the first starts from the initialization of a
+qubit the previous shot left in `|1>`, the largest end-of-shot excited
+population any circuit leaves, while prep0 follows shots that end near
+`|0>`. The service interleaves the shots of one job's circuits in an
+unspecified order, so x_history is the only arm of its job: one PUB fuses
+every qubit's measure-then-X, which `local_compute.is_dynamic` classifies
+dynamic, and the job runs with twirling and dynamical decoupling off. The
+calibration model carries no shot history and prices x_history at prep0's
+law.
+
+`scripts/state_prep_excess.py` turns collected control runs into the
+`--prep-excitation` of an n21 plan. It reads each run's lossless
+`raw/<job_id>/pub_NN.json` registers through the submission's PUB
+manifests, admitting prep0 and x_history only from a job that holds no
+other arm, and takes the readout channel from the n21 record's
+`placed_qubit_calibration`. Per placed qubit, the family-wise alpha (0.01 by
+default) splits over five one-sided Clopper-Pearson bounds: x_history upper
+at 50 and 250 us, prep0 lower at 250 us, and e10 lower and e01 upper read as
+k/4096 calibration estimates. With b the smaller of the e10 and prep0
+bounds, eps = max(0, (U - b) / (1 - e01 - b)) at each delay, maximized over
+the placement; prep0 at 50 us is reported as a point-estimate decomposition
+outside the bound family, whose x_history-minus-prep0 differences span the
+dynamic and static job kinds as well as the shot history. Placement and eps depend on each other, so the
+plan iterates: plan at eps 0, bound eps on its placement, re-plan at the
+larger of the planned and bounded values, and stop when the bound no longer
+exceeds the eps planned with. eps never decreases and takes values from a
+finite set, so the iteration stops.
+
 `qpe_diagnostics.py` derives the folded-QPE and N=21 families' laws independently of Qiskit
 using exact integer branch amplitudes and rational probabilities. The gate
 compares those labels with exact circuit branches and seeded Aer sampling.
