@@ -104,20 +104,38 @@ coherent phase on the second-round kickback, which a calibration noise model
 omits because backend properties carry no qubit frequency.
 `scripts/n21_orbit_rca.py` fits error mechanisms to each pair's eight cells
 with an exact density-matrix model and a Bonferroni threshold across the
-mechanisms. Work-only gates commute with the control's measurement, so the
-compiler can finish a multiplier after it, and the physical qubits holding the
-work superposition during the window then differ between the feed-forward and
-omitted-correction members and between recorded branches. The script
-identifies each qubit's role with Z probes on the archived ISA and reads
-exposure from the returned schedule. A barrier before the first measurement
-fixes the window structure; the echo arm carries one.
+mechanisms. Work-only gates commute with the control's measurement, so
+without a barrier the compiler finishes a multiplier after it or starts the
+next one before the reset ends, and the physical qubits holding the work
+superposition during the window differ between the feed-forward and
+omitted-correction members and between recorded branches. Every arm
+therefore brackets the control's measurement and reset with barriers over
+all qubits, so each multiplier round compiles entirely on one side of the
+window. The script identifies each qubit's role with Z probes on the
+archived ISA and reads exposure from the returned schedule.
+`qpe_diagnostics.window_bracket_violations` lists the work-qubit operations a
+compiled window holds, and `qpu_planning_contracts.py --window-bracket`
+(gate core-446) requires none in any compiled arm and some in the
+barrier-free n21-orbit-feedback pair. The bracket costs one routed CZ per
+arm on the ibm_fez layouts it was compiled for (43 to 44 and 47 to 48).
 
 | Arm | Change to the window | Detuning on work qubits | Readout-induced shift | Residual control photons |
 |---|---|---|---|---|
 | nominal | none | reference | reference | reference |
 | window_delay | control idles one readout length after reset | phase grows with the idle | phase unchanged | phase shrinks |
 | extra_readout | control read twice into the first bit | phase grows as for window_delay | phase grows beyond window_delay | phase unchanged |
-| window_echo | barrier, then X on the work bits for 1 and 16 at each echo half | phase near zero | partial cancellation | phase unchanged |
+| window_echo | X on the work bits for 1 and 16 at each echo half | phase near zero | partial cancellation | phase unchanged |
+
+`n21_orbit_rca.py --between-arm RUN` evaluates three contracts fixed before
+any bracketed run, each at alpha 0.05 / 3, and only when every member's Z
+probes give one resolved coupling equal to the nominal feed-forward member's
+(a no-feedback member up to its global sign); otherwise each reports
+`not_admissible` with the differing members. window_delay's phase must lie on
+the nominal pair's phase-per-exposure slope inside its profile-likelihood
+set; extra_readout's phase-free contrast magnitude
+hypot(fb1 - fb3, nf3 - nf1) must reach the nominal one times
+exp(-sum t_q / T2_q) over the added idle; window_echo's magnitude must reach
+the nominal one.
 
 The window durations come from the backend's longest measure and reset in
 dt and are recorded in the family configuration with the backend dt. Four
