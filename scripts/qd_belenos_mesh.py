@@ -2445,7 +2445,12 @@ def dwell_verdict(
         if d1["mesh_sha256"] != q1
         else {"verdict": single_reading(rule, d1["in_block"], "form", "dwell"), **d1}
     )
-    three = {"verdict": single_reading(rule, d3["in_block"], "generic", "mesh susceptible"), **d3}
+    # D3 asks how a mesh other than Q1's behaves, so a seed that serves Q1's mesh answers nothing.
+    three = (
+        {"verdict": "mesh collision", "mesh_sha256": d3["mesh_sha256"]}
+        if d3["mesh_sha256"] == q1
+        else {"verdict": single_reading(rule, d3["in_block"], "generic", "mesh susceptible"), **d3}
+    )
     four = ladder_reading(rule, d4_rows, None)
     return {
         "d1": one,
@@ -2550,6 +2555,14 @@ def dwell_self_test() -> int:
             ladder("d2", "y", 0.95, 0.95) + [it("d4", 0, "f", 1500, 0.9), it("d4", 1, "g", 40000, 0.9)],
             {"d1": "mesh missing", "d2": "mesh missing", "d3": "mesh susceptible", "d4": "mesh missing"},
             False,
+        ),
+        (
+            "collision",
+            single,
+            {**fresh, "mesh_sha256": "q1"},
+            ladder("d2", "q1", 0.95, 0.95) + ladder("d4", "q1", 0.95, 0.95),
+            {"d1": "form", "d2": "flat", "d3": "mesh collision", "d4": "flat"},
+            True,
         ),
     ]
     for name, d1, d3, rows, want, paired in cases:

@@ -5415,7 +5415,7 @@
     },
     {
       "id": "qd-belenos-q1-leak-needs-single-job-and-large-budget",
-      "statement": "On qpu:belenos mesh 29dc6ef8, Q1's single job kept in_block 0.918 (Wilson 0.903 to 0.931) at 1500 samples (job aa4218f1) against 0.470 and 0.504 at 10000, and every iteration of an iterated job at seed 20 kept 0.896 to 0.995 at 1500 to 60000 samples (job c1eb1cbb; preregistered reading flat). The leak needs the single-job form with a large sample budget; the preregistered D1 reading is intermediate, 0.016 short of 'dwell' after its 0.034 cross-job margin.",
+      "statement": "On qpu:belenos mesh 29dc6ef8, Q1's single job kept in_block 0.918 (Wilson 0.903 to 0.931) at 1500 samples (job aa4218f1) against 0.470 and 0.504 at 10000, and every iteration of an iterated job at seed 20 kept 0.896 to 0.995 at 1500 to 60000 samples (job c1eb1cbb; preregistered reading flat). The preregistered readings are D1 intermediate, 0.016 short of 'dwell' after its 0.034 cross-job margin, and D2 flat; the single-job endpoint stays unresolved, and the two cells together do not establish what the single-job leak needs.",
       "boundary": "One mesh, one job per cell, jobs about ten hours after Q1. An S job's 13 to 15 s is overhead and acquisition runs near 4 x 10^4 samples per second, so the budget is a sample count, not seconds of heater exposure; the single-job mechanism (chunked acquisition or re-settling) is inferred and untested.",
       "evidence": [
         {
