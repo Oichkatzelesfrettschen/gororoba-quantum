@@ -3242,6 +3242,91 @@
    "shot_floor": 0.004203,
    "tvd_cone_from_ideal": 0.829139,
    "wall_share_s": 14.0
+  },
+  {
+   "acquisition_s_estimate": 0.236038,
+   "block_counts": [
+    1683,
+    13,
+    1433,
+    1218
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.960396,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.434743,
+   "in_block_cone": 0.452671,
+   "in_block_cone_wilson95": [
+    0.442736504,
+    0.462643427
+   ],
+   "in_block_ideal_cone": 0.471117,
+   "in_block_ideal_cone_wilson95": [
+    0.460946481,
+    0.481312304
+   ],
+   "in_block_wilson95": [
+    0.425053885,
+    0.444483186
+   ],
+   "in_cone_samples": 9603,
+   "independent_gated_expectation": 3.426,
+   "job_duration_s": 14.0,
+   "label_share": 0.169617,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 4347,
+   "n_cone_outside_block": 5256,
+   "n_off_cone": 396,
+   "name": "b-s20-n10000",
+   "off_cone_by_mode": {
+    "0": 46,
+    "1": 50,
+    "5": 252,
+    "6": 48
+   },
+   "off_cone_total": 396,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9999,
+   "physical_perf": 0.008576141,
+   "receipt_dark_off_cone_acquisition": 67.601,
+   "receipt_dark_off_cone_wall": 4009.6,
+   "run": "2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14",
+   "samples": 10000,
+   "shot_floor": 0.004082,
+   "tvd_cone_from_ideal": 0.823388,
+   "wall_share_s": 14.0
   }
  ],
  "cone_floor": 1e-06,
@@ -3253,7 +3338,8 @@
   "2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10",
   "2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11",
   "2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12",
-  "2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13"
+  "2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
+  "2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14"
  ],
  "schema": "qd-belenos-cone-reading-v2"
 }

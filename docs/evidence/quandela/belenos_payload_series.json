@@ -1,0 +1,118 @@
+{
+ "arms": {
+  "iterator": {
+   "cases_sha256": "456c582ea9c45bdaaa8e700bfebb41bb9d583aa536f49a002a72209b9e72d8b4",
+   "cells": [
+    {
+     "acquisition_s_estimate": 0.236038,
+     "block_counts": [
+      1683,
+      13,
+      1433,
+      1218
+     ],
+     "compilation_seed": 20,
+     "cone_modes": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ],
+     "cone_share": 0.960396,
+     "form": "iterated",
+     "ideal_cone_modes": [
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ],
+     "in_block": 0.434743,
+     "in_block_cone": 0.452671,
+     "in_block_cone_wilson95": [
+      0.442736504,
+      0.462643427
+     ],
+     "in_block_ideal_cone": 0.471117,
+     "in_block_ideal_cone_wilson95": [
+      0.460946481,
+      0.481312304
+     ],
+     "in_block_wilson95": [
+      0.425053885,
+      0.444483186
+     ],
+     "in_cone_samples": 9603,
+     "independent_gated_expectation": 3.426,
+     "job_duration_s": 14.0,
+     "label_share": 0.169617,
+     "max_samples": 10000,
+     "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+     "n_block": 4347,
+     "n_cone_outside_block": 5256,
+     "n_off_cone": 396,
+     "name": "b-s20-n10000",
+     "off_cone_by_mode": {
+      "0": 46,
+      "1": 50,
+      "5": 252,
+      "6": 48
+     },
+     "off_cone_total": 396,
+     "off_cone_with_in_cone_click": 0,
+     "one_click_samples": 9999,
+     "physical_perf": 0.008576141,
+     "receipt_dark_off_cone_acquisition": 67.601,
+     "receipt_dark_off_cone_wall": 4009.6,
+     "run": "2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14",
+     "samples": 10000,
+     "shot_floor": 0.004082,
+     "tvd_cone_from_ideal": 0.823388,
+     "wall_share_s": 14.0
+    }
+   ],
+   "job": "job-14",
+   "payload_entries": 1,
+   "problems": [],
+   "readings": [
+    "fail"
+   ],
+   "run": "2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14"
+  }
+ },
+ "next_job": "job-16",
+ "rule": {
+  "fail_at_least": 0.5,
+  "order": "job-14 runs first; job-15 follows a job-14 pass and job-16 a job-14 fail; a void or intermediate job-14 ends the series",
+  "pass_at_most": 0.2,
+  "payload_entries": {
+   "job-14": 1,
+   "job-15": 0,
+   "job-16": 2
+  },
+  "readings": "job-14 pass, job-15 fail: the failure follows the single-computation payload class; job-14 pass, job-15 pass: no single-path failure in this block, the payload class is not isolated; job-14 fail, job-16 fail then pass: the first 10000-sample entry of a job fails whatever its wrapper; job-14 fail, job-16 pass twice: one entry fails as a single computation does, two entries hold; job-14 fail, job-16 fail twice: 10000-sample entries fail without D2's leading 1500-sample entry; any other pattern, a void entry (other mesh, or a result whose results_list length differs from payload_entries) or an intermediate entry: no attribution",
+  "series": "single computation versus iterator payload on Q1's mesh (strategy.md section 7 item 13)",
+  "statistic": "tvd_cone_from_ideal per entry: total variation of the one-click histogram inside source 20's noise-bounded light cone from the served mesh's ideal propagation (scripts/qd_belenos_cone.py)",
+  "void_unless_mesh_sha256_prefix": "29dc6ef8"
+ },
+ "schema": "qd-belenos-payload-series-readout-v1",
+ "verdict": "pending"
+}

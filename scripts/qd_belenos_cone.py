@@ -27,11 +27,12 @@ Per cell (a single job, or one iteration of an iterated job) the record holds:
   off-cone click with an in-cone click beside the count that independent clicks
   gated to the source pulses would give, off-cone total x physical_perf /
   (1 - physical_perf);
-- an acquisition-time estimate, samples / (physical_perf x clock): Perceval
-  defines physical_perf as the share of trials that pass the detected-photon
-  filter, and reading one trial per source pulse at the catalogue clock is a
-  model no Quandela document confirms; the job's status.duration, shared
-  among iterations by sample count, is the measured wall time;
+- an acquisition-time estimate, samples / (physical_perf x clock), a
+  conditional calculation under an unconfirmed acquisition model: the served
+  physical_perf grows with the requested budget on one mesh within one job, and
+  Perceval's DetectorBalancing rescales it, so the estimate is no exposure
+  reference or dark-count bound; the job's status.duration, shared among
+  iterations by sample count, is the measured wall time;
 - the receipt's dark expectation on off-cone modes under both time bases.
 
 Groups of cells of one job with one mesh and one budget give each off-cone
@@ -39,9 +40,13 @@ mode's dispersion index (variance over mean of its counts); a stationary
 rate reads 1.
 
 --readout-series OUT RUN... reads the payload-class series job-14 to job-16
-against its shared preregistration (each entry's tvd_cone_from_ideal, void off
-29dc6ef8 or when the result's results_list length differs from the payload the
-case sent), and --check-readout-series replays it.
+against its shared preregistration and names the follower the branch rule
+prescribes. A run whose results_list length differs from the payload the case
+sent reads void before any cell is built; an entry whose computed_input is not
+one photon on the block's source mode, whose retained samples differ from its
+budget, whose served mesh is not 29dc6ef8 or whose cone score is undefined
+reads void; every other entry reads its tvd_cone_from_ideal against the
+thresholds. --check-readout-series replays it.
 
 --write OUT RUN... writes the record, --check OUT RUN... recomputes it and
 requires equal bytes, --readout OUT RUN reads a single-job case against the
@@ -295,22 +300,55 @@ def readout(run: Path) -> dict[str, Any]:
 SERIES_SCHEMA = "qd-belenos-payload-series-readout-v1"
 SERIES_ROLES = {"job-14": "iterator", "job-15": "single", "job-16": "pair"}
 Arms = tuple[str, ...]
+# Each reading describes the ordered block it observed. job-14 always precedes its follower, so request form,
+# entry position and elapsed execution stay coupled within one block.
 SERIES_READINGS: dict[tuple[Arms, Arms | None, Arms | None], str] = {
-    (("pass",), ("fail",), None): "the failure follows the single-computation payload class",
-    (("pass",), ("pass",), None): "no single-path failure in this block; the payload class is not isolated",
-    (("fail",), None, ("fail", "pass")): "the first 10000-sample entry of a job fails whatever its wrapper",
-    (("fail",), None, ("pass", "pass")): "one entry fails as a single computation does; two entries hold",
-    (("fail",), None, ("fail", "fail")): "10000-sample entries fail without a leading 1500-sample entry",
+    (("pass",), ("fail",), None): (
+        "the one-entry iterator passed and the single computation failed in this ordered block; "
+        "the pattern tracks submitted request form here"
+    ),
+    (("pass",), ("pass",), None): (
+        "both request forms passed in this block; the historical single-computation failure was not reproduced"
+    ),
+    (("fail",), None, ("fail", "pass")): (
+        "the singleton and the pair's first entry failed and its second entry passed; "
+        "entry position or preceding-execution context is implicated"
+    ),
+    (("fail",), None, ("pass", "pass")): (
+        "the singleton iterator failed and both entries of the following pair passed; "
+        "singleton and two-entry jobs differed in this block"
+    ),
+    (("fail",), None, ("fail", "fail")): (
+        "the singleton and both pair entries failed; two-entry repetition did not recover the iterated behavior"
+    ),
 }
+STOP_AFTER_FIRST = "stop: job-14 read void or intermediate, so no follower runs"
+INCONCLUSIVE = "inconclusive for attribution: the follower holds a void or intermediate entry"
 
 
-def entry_reading(rule: dict[str, Any], row: dict[str, Any], entries: int, sent: int) -> str:
-    """pass, fail, intermediate or void for one entry of the payload-class series."""
-    if not row["mesh_sha256"].startswith(rule["void_unless_mesh_sha256_prefix"]) or entries != sent:
+def entry_problems(entry: dict[str, Any], source: int, budget: int) -> list[str]:
+    """The receipt checks a returned entry passes before its score is read: one photon on the source mode
+    and the requested sample budget over every retained outcome, multi-click samples included."""
+    problems = []
+    occupation = entry["computed_input"].rsplit("|", 1)[1].rstrip(">").split(",")
+    if [k for k, v in enumerate(occupation) for _ in range(int(v))] != [source]:
+        problems.append(f"computed_input {entry['computed_input']} is not one photon on mode {source}")
+    samples = sum(mesh_lib.bscount(entry["results"]).values())
+    if samples != budget:
+        problems.append(f"{samples} retained samples for a budget of {budget}")
+    return problems
+
+
+def entry_reading(rule: dict[str, Any], row: dict[str, Any]) -> str:
+    """pass, fail, intermediate or void for one receipt-checked entry of the payload-class series."""
+    distance = row["tvd_cone_from_ideal"]
+    if not row["mesh_sha256"].startswith(rule["void_unless_mesh_sha256_prefix"]):
         return "void"
-    if row["tvd_cone_from_ideal"] <= rule["pass_at_most"]:
+    if distance is None or not math.isfinite(distance):
+        return "void"
+    if distance <= rule["pass_at_most"]:
         return "pass"
-    if row["tvd_cone_from_ideal"] >= rule["fail_at_least"]:
+    if distance >= rule["fail_at_least"]:
         return "fail"
     return "intermediate"
 
@@ -319,46 +357,75 @@ def series_verdict(arms: dict[str, Arms]) -> str:
     """The preregistered reading of the arms run so far: job-14 first, then job-15 on a pass or job-16 on a fail."""
     first, single, pair = arms.get("iterator"), arms.get("single"), arms.get("pair")
     if first is None:
-        return "pending"
+        return "no attribution" if single or pair else "pending"
     if first not in (("pass",), ("fail",)):
-        return "no attribution"
+        return STOP_AFTER_FIRST if single is None and pair is None else "no attribution"
     follower = single if first == ("pass",) else pair
     if (single if first == ("fail",) else pair) is not None:
         return "no attribution"
     if follower is None:
         return "pending"
+    if any(reading not in ("pass", "fail") for reading in follower):
+        return INCONCLUSIVE
     return SERIES_READINGS.get((first, single, pair), "no attribution")
 
 
+def next_job(verdict: str, arms: dict[str, Arms]) -> str | None:
+    """The follower the branch rule prescribes after job-14, or None once the series is complete or stopped."""
+    if verdict != "pending" or "iterator" not in arms:
+        return "job-14" if verdict == "pending" else None
+    return "job-15" if arms["iterator"] == ("pass",) else "job-16"
+
+
 def readout_series(runs: list[Path]) -> dict[str, Any]:
+    """Validates each run's result shape and receipts before any cell is scored; a run that fails a check reads
+    void with its reasons and its raw result stays in the run directory."""
     jobs: dict[str, Any] = {}
     rules = []
     for run in runs:
         manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
         rule = manifest["preregistered"]
         rules.append(rule)
-        inner = mesh_lib.raw_result(run)
-        entries = len(inner["results_list"]) if "results_list" in inner else 0
-        sent = rule["payload_entries"][manifest["job"]]
-        cells = run_cells(run)
         role = SERIES_ROLES[manifest["job"]]
         if role in jobs:
             raise SystemExit(f"{run.name}: {manifest['job']} appears twice in the series")
-        jobs[role] = {
+        inner = mesh_lib.raw_result(run)
+        returned = len(inner["results_list"]) if "results_list" in inner else 0
+        sent = rule["payload_entries"][manifest["job"]]
+        arm: dict[str, Any] = {
             "run": run.name,
             "job": manifest["job"],
             "cases_sha256": mesh_lib.sha256(run / "cases.json"),
-            "payload_entries": entries,
-            "cells": cells,
-            "readings": [entry_reading(rule, row, entries, sent) for row in cells],
+            "payload_entries": returned,
         }
+        if returned != sent:
+            arm |= {"cells": [], "problems": [f"{returned} results_list entries for {sent} sent"], "readings": ["void"]}
+            jobs[role] = arm
+            continue
+        (source,) = manifest["blocks"][0]["photons"]
+        if sent:
+            budgets = [s.get("max_samples", manifest["max_samples"] // sent) for s in manifest["settings"]]
+            entries = inner["results_list"]
+        else:
+            budgets, entries = [manifest["max_samples"]], [inner]
+        problems = [entry_problems(entry, source, budget) for entry, budget in zip(entries, budgets, strict=True)]
+        cells = run_cells(run)
+        arm |= {
+            "cells": cells,
+            "problems": [p for entry in problems for p in entry],
+            "readings": ["void" if bad else entry_reading(rule, row) for bad, row in zip(problems, cells, strict=True)],
+        }
+        jobs[role] = arm
     if not rules or any(rule != rules[0] for rule in rules):
         raise SystemExit("the series runs carry different preregistrations")
+    arms = {role: tuple(arm["readings"]) for role, arm in jobs.items()}
+    verdict = series_verdict(arms)
     return {
         "schema": SERIES_SCHEMA,
         "rule": rules[0],
         "arms": jobs,
-        "verdict": series_verdict({role: tuple(arm["readings"]) for role, arm in jobs.items()}),
+        "verdict": verdict,
+        "next_job": next_job(verdict, arms),
     }
 
 
@@ -413,27 +480,48 @@ def self_test() -> int:
     if account != with_noise["one_click_samples"] or with_noise["n_off_cone"] != 900:
         raise SystemExit(f"cone self-test: the one-click account {with_noise} does not close")
     series = {"void_unless_mesh_sha256_prefix": "q1", "pass_at_most": 0.2, "fail_at_least": 0.5}
-    for mesh, value, entries, sent, want in (
-        ("q1x", 0.08, 1, 1, "pass"),
-        ("q1x", 0.83, 0, 0, "fail"),
-        ("q1x", 0.3, 2, 2, "intermediate"),
-        ("q1x", 0.08, 0, 1, "void"),
-        ("f", 0.08, 1, 1, "void"),
+    for mesh, value, want in (
+        ("q1x", 0.08, "pass"),
+        ("q1x", 0.83, "fail"),
+        ("q1x", 0.3, "intermediate"),
+        ("q1x", None, "void"),
+        ("q1x", math.nan, "void"),
+        ("f", 0.08, "void"),
     ):
-        if entry_reading(series, {"mesh_sha256": mesh, "tvd_cone_from_ideal": value}, entries, sent) != want:
+        if entry_reading(series, {"mesh_sha256": mesh, "tvd_cone_from_ideal": value}) != want:
             raise SystemExit(f"cone self-test: a series entry at {value} did not read {want}")
-    verdicts: tuple[tuple[dict[str, Arms], str], ...] = (
-        ({}, "pending"),
-        ({"iterator": ("pass",)}, "pending"),
-        ({"iterator": ("pass",), "single": ("fail",)}, SERIES_READINGS[(("pass",), ("fail",), None)]),
-        ({"iterator": ("fail",), "pair": ("fail", "pass")}, SERIES_READINGS[(("fail",), None, ("fail", "pass"))]),
-        ({"iterator": ("fail",), "pair": ("pass", "fail")}, "no attribution"),
-        ({"iterator": ("pass",), "pair": ("pass", "pass")}, "no attribution"),
-        ({"iterator": ("void",), "single": ("fail",)}, "no attribution"),
+    one = "1,0"
+    for computed, results, want_problems in (
+        (f"|0,{one}>", {f"|0,{one}>": 6, f"|1,{one}>": 4}, 0),
+        (f"|0,{one}>", {f"|0,{one}>": 9}, 1),
+        (f"|1,{one}>", {f"|1,{one}>": 10}, 1),
+        ("|0,2,0>", {"|0,2,0>": 10}, 1),
+    ):
+        text = ";".join(f"{state}={n}" for state, n in results.items())
+        got = entry_problems({"computed_input": computed, "results": text}, 1, 10)
+        if len(got) != want_problems:
+            raise SystemExit(f"cone self-test: receipt {computed} {results} gave problems {got}")
+    verdicts: tuple[tuple[dict[str, Arms], str, str | None], ...] = (
+        ({}, "pending", "job-14"),
+        ({"iterator": ("pass",)}, "pending", "job-15"),
+        ({"iterator": ("fail",)}, "pending", "job-16"),
+        ({"iterator": ("void",)}, STOP_AFTER_FIRST, None),
+        ({"iterator": ("intermediate",)}, STOP_AFTER_FIRST, None),
+        ({"iterator": ("pass",), "single": ("fail",)}, SERIES_READINGS[(("pass",), ("fail",), None)], None),
+        ({"iterator": ("fail",), "pair": ("fail", "pass")}, SERIES_READINGS[(("fail",), None, ("fail", "pass"))], None),
+        ({"iterator": ("fail",), "pair": ("fail", "fail")}, SERIES_READINGS[(("fail",), None, ("fail", "fail"))], None),
+        ({"iterator": ("fail",), "pair": ("pass", "fail")}, "no attribution", None),
+        ({"iterator": ("fail",), "pair": ("pass", "void")}, INCONCLUSIVE, None),
+        ({"iterator": ("pass",), "single": ("intermediate",)}, INCONCLUSIVE, None),
+        ({"iterator": ("pass",), "pair": ("pass", "pass")}, "no attribution", None),
+        ({"iterator": ("void",), "single": ("fail",)}, "no attribution", None),
+        ({"single": ("fail",)}, "no attribution", None),
     )
-    for arms, want in verdicts:
-        if series_verdict(arms) != want:
-            raise SystemExit(f"cone self-test: series {arms} did not read {want}")
+    for arms, want, follower in verdicts:
+        if series_verdict(arms) != want or next_job(want, arms) != follower:
+            raise SystemExit(f"cone self-test: series {arms} did not read {want} then {follower}")
+    if any("1500" in text or "whatever" in text for text in SERIES_READINGS.values()):
+        raise SystemExit("cone self-test: a series reading attributes a mechanism the block does not vary")
     poisson = np.random.default_rng(7).poisson(50, 400).tolist()
     fake = [
         {"mesh_sha256": "m", "max_samples": 1500, "run": "r", "name": f"i{k}", "off_cone_by_mode": {"5": v}}
@@ -444,7 +532,7 @@ def self_test() -> int:
         raise SystemExit(f"cone self-test: a Poisson background read dispersion {row['dispersion_index']}")
     print(
         "cone self-test: off-cone clicks excluded, in-cone loss read, one-click account closes, four readings, "
-        "five series entries, seven series verdicts, Poisson dispersion near 1"
+        "six series entries, four receipts, fourteen series verdicts, Poisson dispersion near 1"
     )
     return 0
 
