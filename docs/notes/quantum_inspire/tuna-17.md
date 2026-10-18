@@ -140,6 +140,46 @@ circuits read every replica exactly. C(1) lies above its preregistered
 [0.72, 0.82] because that prediction carried the selector's readout factor
 (about 0.87) while C(n) is readout-corrected; 0.82 / 0.874 = 0.94.
 
+## Shot order: a 50 Hz line
+
+The retained raw lists are in time order, and that order carries a line at
+the 50 Hz grid frequency (`scripts/qi_shot_record_line.py`,
+`results/quantum_inspire/tuna_17_shot_record_line.json`, gates core-426 and
+core-427; claim `qi-tuna17-shot-record-50hz-line`).
+
+- A band scan at 0.019 to 0.021 cycles per shot finds it in 57 of 126
+  Tuna-17 jobs and in none of 102 QX jobs. On Tuna-17 it is absent from
+  all 34 readout-0 and readout-1 circuits and all 8 depth-1 LCU circuits.
+  It is present in Ramsey, CZ-ladder, walk and additivity circuits.
+- Its amplitude in P(1) reaches 0.43 on q7 (ring-down Ramsey) and 0.39 on q5
+  (coupler-ZZ Ramsey).
+- In the follow series the three bright-edge selectors oscillate at 0.19 to
+  0.26 at CZ depth 9 and 0.09 to 0.13 at depth 5, and stay below 0.0175 at
+  depth 1. Within one job they share one phase on all three pairs.
+- The ring-down arms differ only in a wait of tau cycles. Their peak
+  frequency rises with tau at 50.4 +- 4.0 Hz, so the source runs in
+  wall-clock time, not on the shot index.
+- At 50 Hz one shot takes 402.9 to 404.6 us in the ring-down circuits and
+  400.7 us in the follow series; the period grows with circuit length, which
+  is the slope above. The fitted execution cost of 0.51 ms per shot therefore
+  includes about 0.1 ms of per-shot time outside the repetition period.
+
+The inferred mechanism is a chip-wide modulation of qubit frequency or flux
+pulses at the mains frequency. No retained probe separates flux pickup from
+any other 50 Hz path.
+
+Consequences:
+- A job's mean averages its outcome over the line's phase. Any contrast that
+  depends on accumulated phase is lowered by an amount set by the modulation
+  depth, and that depth can differ between batches.
+- The shot index plus a per-job phase gives every shot its line phase. A
+  demodulated analysis therefore recovers phase-resolved contrast from data
+  a job already returns.
+- Block stationarity (16 block means per bit; the smallest per-bit tail
+  times the bits scanned) falls below 0.01 in 61 to 75 percent of the
+  morning ring-down jobs and in 11 to 33 percent of the box-kite jobs. Within-job
+  stationarity depends on the device's state, so each series checks it.
+
 ## Run design
 
 [tuna-17-run-design.md](tuna-17-run-design.md) holds the platform
