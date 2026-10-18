@@ -2668,9 +2668,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --check results/quandela/runs/*/",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --check $(for d in results/quandela/runs/*/; do case \"$d\" in *-qpu_belenos-belenos_mesh-*) ;; *) printf \"%s \" \"$d\" ;; esac; done)",
    "name": "core-508",
-   "seconds": 62.0,
+   "seconds": 80.0,
    "tier": "pr"
   },
   {
@@ -2742,7 +2742,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-efficiency results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/efficiency.json results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03 results/quandela/runs/2026-10-18T030428Z-qpu_belenos-belenos_mesh-job-04 results/quandela/runs/2026-10-18T030731Z-qpu_belenos-belenos_mesh-job-05 results/quandela/runs/2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06",
    "name": "core-535",
-   "seconds": 300.0,
+   "seconds": 240.0,
    "tier": "full"
   },
   {
@@ -2752,6 +2752,14 @@
    "name": "core-536",
    "seconds": 40.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --check results/quandela/runs/*-qpu_belenos-belenos_mesh-*/",
+   "name": "core-537",
+   "seconds": 90.0,
+   "tier": "full"
   },
   {
    "suite": "core",

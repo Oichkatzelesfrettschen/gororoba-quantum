@@ -1065,7 +1065,8 @@ transpiler model and the 84/84 mapping.
 `--self-test`), core-506 (`cd_two_blade_blocks.py --check
 docs/evidence/box_kite_census/two_blade_blocks.json`), core-507 (its
 `--self-test`), core-508 (`qd_box_kite_analysis.py --check` over every
-retained run), core-509 (its `--self-test`), core-510
+retained run but the qpu:belenos mesh runs, which core-537 replays on the
+full tier), core-509 (its `--self-test`), core-510
 (`qd_belenos_mesh.py --check results/quandela/cases`), core-511 (its
 `--check-rca` replay of the leakage record), core-512 (its
 `--self-test`), core-515 (full tier, `--self-test-rule`: the decision
