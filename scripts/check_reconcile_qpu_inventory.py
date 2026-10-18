@@ -93,6 +93,7 @@ def second_instance_contract(
         pass
     else:
         raise RuntimeError("two inventory files for one instance were admitted")
+    write(backup_path, backup)
 
 
 def main() -> None:

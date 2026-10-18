@@ -49,9 +49,15 @@ def require_instance(recorded: str | None, active: str, context: str, error: typ
     """Refuse a job lookup when the service resolves another instance than the record names.
 
     A record without instance_sha256_12 (a retrospective archive) binds the
-    default account and is not compared.
+    default account, so it passes only while no named account is selected.
     """
-    if recorded is not None and recorded != active:
+    if recorded is None:
+        if account_name():
+            raise error(
+                f"{context}: the record names no instance and binds the default account; unset {ACCOUNT_ENV} to read it"
+            )
+        return
+    if recorded != active:
         raise error(
             f"{context}: the record names instance {recorded} but the service resolves instance {active}; "
             f"set {ACCOUNT_ENV} to the saved account that owns the run"
@@ -121,7 +127,15 @@ def self_test() -> None:
                 _require(ACCOUNT_ENV not in str(error), "a matching instance must pass the account check")
             else:
                 raise RuntimeError("collect accepted a record without an experiment digest")
+        os.environ.pop(ACCOUNT_ENV, None)
         require_instance(None, active, "retrospective archive")
+        os.environ[ACCOUNT_ENV] = "backup"
+        try:
+            require_instance(None, active, "retrospective archive")
+        except RuntimeError as error:
+            _require(ACCOUNT_ENV in str(error), "the default-account refusal must name the variable")
+        else:
+            raise RuntimeError("a named account read a retrospective archive")
     finally:
         if saved is None:
             os.environ.pop(ACCOUNT_ENV, None)

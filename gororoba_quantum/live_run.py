@@ -4810,7 +4810,7 @@ def _instance_hash(service: Any) -> str:
 def _require_record_instance(service: Any, record: dict[str, Any], context: str) -> None:
     """A job lookup runs only on the service whose instance the record names (GOROROBA_IBM_ACCOUNT selects it)."""
     recorded = record.get("instance_sha256_12")
-    if recorded is not None:
+    if recorded is not None or ibm_account.account_name():
         ibm_account.require_instance(recorded, _instance_hash(service), context, LiveRunError)
 
 

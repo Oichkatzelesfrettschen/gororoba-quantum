@@ -147,6 +147,11 @@ def index_job(job: dict[str, Any], service: Any, backends: dict[str, Any], writt
 def write() -> int:
     from qiskit_ibm_runtime import QiskitRuntimeService
 
+    # The index binds the default account's retention audit and calibration history.
+    require(
+        not ibm_account.account_name(),
+        f"ghost calibrations read the default account; unset {ibm_account.ACCOUNT_ENV}",
+    )
     service = ibm_account.open_service(QiskitRuntimeService)
     backends = {name: service.backend(name) for name in BACKENDS}
     written: dict[str, str] = {}
@@ -218,6 +223,11 @@ def add() -> int:
     if not missing:
         print("ghost calibrations: every audited job is indexed")
         return 0
+    # The index binds the default account's retention audit and calibration history.
+    require(
+        not ibm_account.account_name(),
+        f"ghost calibrations read the default account; unset {ibm_account.ACCOUNT_ENV}",
+    )
     service = ibm_account.open_service(QiskitRuntimeService)
     backends = {name: service.backend(name) for name in sorted({job["backend"] for job in missing})}
     written = {relative: entry["calibration"] for relative, entry in index["files"].items()}
@@ -296,6 +306,11 @@ def append() -> int:
     """Read each backend's current calibration and record each new identity in APPENDED."""
     from qiskit_ibm_runtime import QiskitRuntimeService
 
+    # The index binds the default account's retention audit and calibration history.
+    require(
+        not ibm_account.account_name(),
+        f"ghost calibrations read the default account; unset {ibm_account.ACCOUNT_ENV}",
+    )
     service = ibm_account.open_service(QiskitRuntimeService)
     index = json.loads(INDEX.read_text(encoding="utf-8"))
     record = json.loads(APPENDED.read_text(encoding="utf-8")) if APPENDED.is_file() else {"files": {}}
