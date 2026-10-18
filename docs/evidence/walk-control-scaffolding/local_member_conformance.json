@@ -9,7 +9,7 @@
  ],
  "optimization_level": 3,
  "seed_transpiler": 11,
- "groups": 215,
+ "groups": 216,
  "superseded_configurations": [
   {
    "run": "results/live/2026-10-13T163154.032617Z",
@@ -828,24 +828,24 @@
   },
   {
    "member": "n21_orbit_extra_readout_feedback",
-   "digest": "100e71077138eb67",
+   "digest": "12151729e74808bf",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
-   "cz": 27,
+   "cz": 28,
    "declared": null
   },
   {
    "member": "n21_orbit_extra_readout_no_feedback",
-   "digest": "b00b3853b2f5f8b1",
+   "digest": "2684d0486365878d",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
-   "cz": 27,
+   "cz": 28,
    "declared": null
   },
   {
@@ -872,46 +872,46 @@
   },
   {
    "member": "n21_orbit_nominal_feedback",
-   "digest": "6dc38994d5b5b324",
+   "digest": "8436949c2c8b41de",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
-   "cz": 27,
+   "cz": 28,
    "declared": null
   },
   {
    "member": "n21_orbit_nominal_no_feedback",
-   "digest": "01565181eec7858c",
+   "digest": "96354de813fe6b8d",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
-   "cz": 27,
+   "cz": 28,
    "declared": null
   },
   {
    "member": "n21_orbit_window_delay_feedback",
-   "digest": "6b482b16425a9a33",
+   "digest": "c297541b83d3d37b",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
-   "cz": 27,
+   "cz": 28,
    "declared": null
   },
   {
    "member": "n21_orbit_window_delay_no_feedback",
-   "digest": "96dbfeeb113d5a67",
+   "digest": "da560b9ab37b2818",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
-   "cz": 27,
+   "cz": 28,
    "declared": null
   },
   {
