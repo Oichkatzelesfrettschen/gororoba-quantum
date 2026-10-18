@@ -46,7 +46,9 @@ phases on one run and prints the seconds as JSON without writing a file.
 reports, per run, the sampled-estimator mean at every point minus the Aer
 part's, how many points fall within ghost_error_scale.tolerance, and
 whether the minimizing (c, r) of either estimator matches the Aer one; with
-``--result OUT`` it compares a retained sweep output without sweeping.
+``--result OUT`` it compares a retained sweep output without sweeping, and
+``--require-tolerance`` then fails unless every point of every compared run
+lies within the tolerance.
 
 ``--replay FILE`` recomputes the reduced case, run REDUCED_RUN at the grid
 corners on numpy complex128, and requires FILE to equal its deterministic
@@ -1130,6 +1132,11 @@ def main() -> int:
     parser.add_argument("--out", type=Path)
     parser.add_argument("--compare-parts", type=Path, help="a ghost_error_scale part file to compare with")
     parser.add_argument("--result", type=Path, help="with --compare-parts, a retained sweep output to compare")
+    parser.add_argument(
+        "--require-tolerance",
+        action="store_true",
+        help="with --compare-parts and --result, fail unless every point lies within the tolerance",
+    )
     parser.add_argument("--profile-only", metavar="RUN", help="time the phases on one run and print them")
     parser.add_argument("--replay", type=Path, help="the retained reduced-case file")
     parser.add_argument("--write", action="store_true", help="with --replay, write the file instead of comparing")
@@ -1150,7 +1157,18 @@ def main() -> int:
         return 0
     if args.compare_parts and args.result:
         result = json.loads(args.result.read_text(encoding="utf-8"))
-        print(json.dumps(compare_parts(result, args.compare_parts), indent=1))
+        compared = compare_parts(result, args.compare_parts)
+        if not args.require_tolerance:
+            print(json.dumps(compared, indent=1))
+            return 0
+        require(bool(compared["runs"]), f"{args.result} shares no run with {args.compare_parts}")
+        for row in compared["runs"]:
+            require(
+                row["points_within_tolerance"] == row["points"],
+                f"{row['run']}: {row['points'] - row['points_within_tolerance']} points exceed the tolerance",
+            )
+        points = sum(row["points"] for row in compared["runs"])
+        print(f"{args.compare_parts}: {len(compared['runs'])} runs, all {points} points within the tolerance")
         return 0
     index = json.loads(ghost_run.INDEX.read_text(encoding="utf-8"))
     if args.replay:
