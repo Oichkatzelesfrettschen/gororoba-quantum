@@ -276,7 +276,8 @@ on Open Quantum Garnet in two Spark-funded jobs of 13,586 shots, one per arm,
 after a one-circuit probe confirms the `cc_prx` lowering, feedback-key reuse
 and the returned bits. Above that, the Spark balance cannot meet the contract,
 and the options are paid Public credits or, once 818 s more of IBM runtime
-has accrued, the IBM 180-minute offer. Confidence that Garnet meets the contract on the
+has accrued, the IBM 180-minute offer. Confidence that Garnet meets the
+contract on the
 Spark balance: low, set by the unrouted CZ count, by IQM's unknown f (the
 fitted 0.564 to 0.759 transfers no bound), and by whatever removed the effect on
 Heron r2. A Kingston diagnostic that identifies that channel raises this
@@ -301,7 +302,8 @@ construction.
 3. State the owner's location, which decides eligibility for the EuroHPC pilot
    call (cut-offs 1 Nov and 1 Dec 2026), and whether an institutional channel to
    Quantinuum exists.
-4. Sign-ups for Amazon Braket, Azure Quantum, IQM Resonance and Quantinuum are
+4. Sign-ups for Azure Quantum, IQM Resonance and Quantinuum (and Amazon
+   Braket, only for a variant that avoids reset-then-control) are
    the owner's action and are not needed unless step 1 fails or the Garnet
    routing exceeds the Spark threshold.
 5. Approve the Public tier's disclosure terms for any Open Quantum run
