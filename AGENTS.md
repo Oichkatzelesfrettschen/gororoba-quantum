@@ -1126,7 +1126,7 @@ the 64 seeded random settings of the characterization campaign, job-07
 the 84/84 edges at compilation seeds 1 and 2 in 32 iterations, job-08 Q1's
 case as one circuit at seed 1, job-09 Q1's case iterated at seeds 0 to 21,
 0 and 1, job-10 to job-12 the form-versus-dwell series D1 to D4 with
-per-iteration sample budgets). A new exploratory compilation_seed comes
+per-iteration sample budgets, job-13 Q1's case as one circuit at seed 20). A new exploratory compilation_seed comes
 from the ANU QRNG draws that `scripts/anu_qrng.py` retains under
 `docs/evidence/anu_qrng/`. A case names its compilation_seed per
 iteration or, for one circuit, in its manifest; the seed selects the
@@ -1142,6 +1142,13 @@ runs, which takes about 64 random-target settings. The receipt's `t_out` and dar
 rates contradict the detected light (modes 12 to 23 read 194 to 400 %), so
 `--efficiency OUT RUN...` refits a session with relative per-mode efficiencies
 fitted jointly with every class and with the offsets, each run held out.
+Off-cone one-click samples come and go on modes 0, 1 and 5 with an origin
+the receipt's dark rates do not describe, so `scripts/qd_belenos_cone.py`
+reads in_block over the samples inside the source's light cone of each
+served mesh and times each
+acquisition as samples / (physical_perf x clock);
+`docs/evidence/quandela/belenos_light_cone.json` holds that reading of every
+Q1-circuit run.
 `plan` decodes the live architecture and
 refuses a mesh case whose couplers or symbols changed, so a recalibration
 means a regenerated case. `docs/evidence/quandela/belenos_leakage_rca.json` holds the
@@ -1175,7 +1182,10 @@ core-538 (`--check-pair`, the one-circuit form test job-08 and the
 preregistered bridge branch on synthetic iterations) and core-540
 (`--check-bridge`, the form-mesh bridge job-09), core-541 (`anu_qrng.py`
 self-test and the offline check of every retained draw), core-542
-(`--self-test-dwell`) and core-543 (`--check-dwell`, the D1 to D4 readout).
+(`--self-test-dwell`), core-543 (`--check-dwell`, the D1 to D4 readout),
+core-545 (`qd_belenos_cone.py --self-test`), core-546 (its `--check` of
+the light-cone reading) and core-547 (its `--check-readout` of job-13, the
+seeded single job).
 
 **Strategy guide.** [docs/notes/quandela/strategy.md](docs/notes/quandela/strategy.md)
 is the living record of what a credit buys on Belenos: the measured cost

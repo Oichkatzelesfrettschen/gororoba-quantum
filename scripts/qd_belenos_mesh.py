@@ -197,6 +197,10 @@ DWELL_ANU = {"draw": "draw-2026-10-18T083548Z.json", "index": 0, "use": "D3 and 
 DWELL_D2_LADDER = (1500, 10000, 1500, 40000, 1500, 60000)
 DWELL_D4_LADDER = (1500, 10000, 40000)
 DWELL_Q1_SEED = 20
+# job-13 is Q1's single job at seed 20, the seed that serves Q1's mesh 29dc6ef8 in the iterated form: every
+# unseeded single job on 29dc6ef8 lost light inside the photon's cone and every seeded cell kept it, so a
+# seeded single job at Q1's budget on Q1's mesh separates the unseeded path from form and budget.
+SEEDED_SINGLE_JOB = "job-13"
 CONNECTED = (0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22)
 
 Element = tuple[str, int, Any]
@@ -1058,6 +1062,16 @@ DWELL_PREREGISTERED = {
     "series": "form versus dwell on Q1's circuit (strategy.md section 7 item 10); dwell-preregistration.json in "
     "the session directory holds the thresholds and branches",
 }
+SEEDED_SINGLE_PREREGISTERED = {
+    "series": "seeded single job on Q1's mesh (strategy.md section 7 item 12)",
+    "statistic": "in_block over one-click samples inside source 20's light cone of the served mesh "
+    "(scripts/qd_belenos_cone.py)",
+    "void_unless_mesh_sha256_prefix": "29dc6ef8",
+    "unseeded_path_at_least": 0.95,
+    "single_job_budget_at_most": 0.65,
+    "readings": "at least 0.95: the leak follows the unseeded single-job path; at most 0.65: the leak needs the "
+    "single-job form at Q1's budget on 29dc6ef8 whatever the seed; between: intermediate, no attribution",
+}
 
 
 def anu_seed(spec: dict[str, Any]) -> dict[str, Any]:
@@ -1115,12 +1129,25 @@ def dwell_ladder_manifest(source: dict[str, Any], source_sha: str) -> dict[str, 
     }
 
 
+def seeded_single_manifest(source: dict[str, Any], source_sha: str) -> dict[str, Any]:
+    """Q1's single job unchanged but for compilation seed 20, the seed serving Q1's mesh 29dc6ef8."""
+    return {
+        **source,
+        "family": FAMILY,
+        "job": SEEDED_SINGLE_JOB,
+        "compilation_seed": DWELL_Q1_SEED,
+        "seeded_from": {"case": FORM_SOURCE, "cases_sha256": source_sha},
+        "preregistered": SEEDED_SINGLE_PREREGISTERED,
+    }
+
+
 SEEDED_JOBS = {
     FORM_JOB: seeded_manifest,
     BRIDGE_JOB: bridge_manifest,
     DWELL_D1_JOB: dwell_d1_manifest,
     DWELL_D3_JOB: dwell_d3_manifest,
     DWELL_LADDER_JOB: dwell_ladder_manifest,
+    SEEDED_SINGLE_JOB: seeded_single_manifest,
 }
 
 
@@ -1286,7 +1313,7 @@ def check(directory: Path) -> None:
         [p.name for p in jobs]
         == ["job-00", "job-01", "job-02"]
         + [f"job-{j:02d}" for j in CAMPAIGN_JOBS]
-        + [ENSEMBLE_JOB, FORM_JOB, BRIDGE_JOB, DWELL_D1_JOB, DWELL_D3_JOB, DWELL_LADDER_JOB],
+        + [ENSEMBLE_JOB, FORM_JOB, BRIDGE_JOB, DWELL_D1_JOB, DWELL_D3_JOB, DWELL_LADDER_JOB, SEEDED_SINGLE_JOB],
         f"{directory / FAMILY} holds {[p.name for p in jobs]}",
     )
     uses: dict[tuple[str, int], set[str]] = {}
@@ -1327,6 +1354,7 @@ def check(directory: Path) -> None:
 def observed(run: Path) -> tuple[Any, dict[str, Any]]:
     """Dark-subtracted one-click distribution of a one-photon run and its raw facts."""
     import numpy as np
+    from qd_box_kite_analysis import acquisition_seconds
 
     inner = raw_result(run)
     counts = bscount(inner["results"])
@@ -1340,13 +1368,17 @@ def observed(run: Path) -> tuple[Any, dict[str, Any]]:
     submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
     perfs = submission["perfs_at_plan"]
     duration = json.loads((run / "raw/result.json").read_text(encoding="utf-8"))["duration"]
-    dark = np.array(perfs["Dark counts (detection/s)"], dtype=float) * duration
+    seconds = acquisition_seconds(int(single.sum() + multi), inner.get("physical_perf"), perfs.get("Clock (MHz)"))
+    if seconds is None:
+        raise MeshError(f"{run.name}: no physical_perf or clock to time the acquisition")
+    dark = np.array(perfs["Dark counts (detection/s)"], dtype=float) * seconds
     corrected = np.clip(single - dark, 0, None)
     eta = np.array(perfs["Transmission per mode (%)"]["t_out"], dtype=float)
     facts = {
         "single_click": [int(v) for v in single],
         "other_events": multi,
         "duration_s": duration,
+        "acquisition_s_estimate": round(float(seconds), 6),
         "dark_expected": [round(float(v), 3) for v in dark],
         "t_out": [float(v) for v in eta],
         "computed_input": inner["computed_input"],

@@ -115,7 +115,7 @@ def one_photon(
 def dark_corrected(
     block: dict[str, Any], modes: list[int], leaked: dict[int, int], dark: list[float]
 ) -> dict[str, Any]:
-    """in_block and a after subtracting each mode's expected dark clicks (rate times job duration).
+    """in_block and a after subtracting each mode's expected dark clicks (rate times acquisition seconds).
 
     dark lists the expected dark clicks per chip mode; counts are floored at
     zero after subtraction, and the expectation itself is reported beside them.
@@ -133,14 +133,33 @@ def dark_corrected(
     }
 
 
-def dark_expectation(run: Path, collected: dict[str, Any], width: int) -> list[float] | None:
-    """Expected dark clicks per chip mode: the receipt's per-mode rates times the job's duration."""
-    submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
-    rates = submission.get("perfs_at_plan", {}).get("Dark counts (detection/s)")
-    duration = collected.get("status", {}).get("duration")
-    if not isinstance(rates, list) or not isinstance(duration, int | float):
+def acquisition_seconds(samples: int, physical_perf: Any, clock_mhz: Any) -> float | None:
+    """Estimated seconds the detectors were read, samples / (physical_perf x clock).
+
+    Perceval defines physical_perf as the share of trials that pass the detected-photon filter; taking one
+    trial per source pulse at the catalogue clock is a model no Quandela document confirms. A job's
+    status.duration, the measured wall time, adds compilation and setup on top."""
+    if not isinstance(physical_perf, int | float) or not isinstance(clock_mhz, int | float) or physical_perf <= 0:
         return None
-    return [float(rate) * float(duration) for rate in rates[:width]] + [0.0] * max(0, width - len(rates))
+    return samples / (float(physical_perf) * float(clock_mhz) * 1e6)
+
+
+def dark_expectation(run: Path, collected: dict[str, Any], width: int) -> list[float] | None:
+    """Expected dark clicks per chip mode: the receipt's per-mode rates times the job's estimated acquisition
+    seconds (acquisition_seconds)."""
+    submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
+    perfs = submission.get("perfs_at_plan", {})
+    rates = perfs.get("Dark counts (detection/s)")
+    raw = run / "raw/result.json"
+    if not isinstance(rates, list) or not raw.is_file():
+        return None
+    inner = json.loads(json.loads(raw.read_text(encoding="utf-8"))["results"])
+    seconds = acquisition_seconds(
+        sum(collected.get("counts", {}).values()), inner.get("physical_perf"), perfs.get("Clock (MHz)")
+    )
+    if seconds is None:
+        return None
+    return [float(rate) * seconds for rate in rates[:width]] + [0.0] * max(0, width - len(rates))
 
 
 def pair(block: dict[str, Any], counts: dict[str, int]) -> dict[str, Any]:
