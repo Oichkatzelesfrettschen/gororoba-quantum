@@ -606,13 +606,42 @@ def mesh_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tuple[
             raise PlatformError(f"{setting['name']}: Perceval's mesh unitary deviates by {deviation:.2e}")
         state = [0] * circuit["modes"]
         state[setting["input_mode"]] = 1
-        iterations.append({"name": setting["name"], "circuit_params": values, "input_state": state})
+        iteration = {"name": setting["name"], "circuit_params": values, "input_state": state}
+        if "compilation_seed" in setting:
+            iteration["compilation_seed"] = seed_value(setting["compilation_seed"], setting["name"])
+        iterations.append(iteration)
     for parameter in parameters.values():
         parameter.reset()
     built = pcvl.Experiment(chip)
     built.with_input(pcvl.BasicState(iterations[0]["input_state"]))
     built.min_detected_photons_filter(manifest["min_detected_photons"])
     return built, iterations
+
+
+def seed_value(seed: Any, owner: str) -> int:
+    """A compilation seed as the service takes it: a non-negative integer."""
+    if isinstance(seed, bool) or not isinstance(seed, int) or seed < 0:
+        raise PlatformError(f"{owner}: compilation_seed {seed!r} is not a non-negative integer")
+    return seed
+
+
+def job_seed(manifest: dict[str, Any], settings: list[dict[str, Any]]) -> int | None:
+    """The compilation seed of a one-circuit job's computation: its one mesh setting's or its manifest's.
+
+    An iterated job names its seeds per iteration, so a manifest seed on it raises, as does a one-setting
+    case whose setting and manifest name different seeds; a case that names none sends none.
+    """
+    owner = manifest["job"]
+    named = manifest.get("compilation_seed")
+    if manifest.get("iterations", 1) > 1:
+        if named is not None:
+            raise PlatformError(f"{owner}: an iterated case names compilation_seed per iteration, not in its manifest")
+        return None
+    own = settings[0].get("compilation_seed") if settings else None
+    if named is not None and own is not None and named != own:
+        raise PlatformError(f"{owner}: manifest compilation_seed {named!r} differs from its setting's {own!r}")
+    seed = named if own is None else own
+    return None if seed is None else seed_value(seed, owner)
 
 
 def live_mesh(processor: dict[str, Any], circuit: dict[str, Any]) -> None:
@@ -654,12 +683,16 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     mesh = manifest.get("gate_form") == "mesh"
     built, settings = mesh_experiment(manifest, circuit) if mesh else (experiment(manifest, circuit), [])
     steps = manifest.get("iterations", 1)
-    # Iterations split the case's sample and shot budgets evenly and pin
-    # compilation_seed 0; a phase case sets phi = k pi/4 per iteration.
+    # Iterations split the case's sample and shot budgets evenly; a mesh iteration
+    # takes its setting's compilation_seed (0 when unnamed), a phase case pins 0
+    # and sets phi = k pi/4 per iteration.
     per_samples, per_shots = manifest["max_samples"] // steps, manifest["max_shots"] // steps
     factory = ExecutionFactory(computer, built, max_shots_per_call=per_shots)
     base = factory.build_computation(manifest["command"])
     base.add_params(max_samples=per_samples)
+    seed = job_seed(manifest, settings)
+    if seed is not None:
+        base.add_params(compilation_seed=seed)
     params = settings[0]["circuit_params"] if mesh else ({"phi": 0.0} if steps > 1 else None)
     estimate = computer.estimate_required_shots(base, nsamples=per_samples, param_values=params)
     estimate = None if estimate is None else estimate * steps
@@ -672,7 +705,7 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
                     input_state=pcvl.BasicState(settings[k]["input_state"]),
                     max_samples=per_samples,
                     max_shots=per_shots,
-                    compilation_seed=0,
+                    compilation_seed=settings[k].get("compilation_seed", 0),
                 )
                 continue
             factory.add_iteration(
@@ -1162,9 +1195,49 @@ def charge_self_test() -> None:
             raise SystemExit(f"self-test: charged() read {got} for a collection at {collected_utc}, not {want}")
 
 
+def seed_self_test() -> None:
+    """seed_value passes non-negative integers and refuses a bool, a negative, a float or a string; job_seed
+    takes a one-circuit job's seed from its setting or its manifest and refuses a conflict or an iterated
+    case's manifest seed."""
+    if seed_value(0, "test") != 0 or seed_value(7, "test") != 7:
+        raise SystemExit("self-test: seed_value changed a valid seed")
+    for bad in (True, -1, 1.0, "1", None):
+        try:
+            seed_value(bad, "test")
+        except PlatformError:
+            continue
+        raise SystemExit(f"self-test: seed_value accepted {bad!r}")
+    one: dict[str, Any] = {"job": "test"}
+    many: dict[str, Any] = {"job": "test", "iterations": 2}
+    accepted: list[tuple[dict[str, Any], list[dict[str, Any]], int | None]] = [
+        (one, [], None),
+        (one, [{}], None),
+        ({**one, "compilation_seed": 3}, [], 3),
+        ({**one, "compilation_seed": 3}, [{}], 3),
+        (one, [{"compilation_seed": 4}], 4),
+        ({**one, "compilation_seed": 4}, [{"compilation_seed": 4}], 4),
+        (many, [{"compilation_seed": 1}, {"compilation_seed": 2}], None),
+    ]
+    for manifest, settings, want in accepted:
+        if job_seed(manifest, settings) != want:
+            raise SystemExit(f"self-test: job_seed({manifest}, {settings}) is not {want}")
+    refused: list[tuple[dict[str, Any], list[dict[str, Any]]]] = [
+        ({**one, "compilation_seed": 3}, [{"compilation_seed": 4}]),
+        ({**many, "compilation_seed": 1}, [{}, {}]),
+        ({**one, "compilation_seed": -1}, []),
+    ]
+    for manifest, settings in refused:
+        try:
+            job_seed(manifest, settings)
+        except PlatformError:
+            continue
+        raise SystemExit(f"self-test: job_seed accepted {manifest} with {settings}")
+
+
 def runner_self_test() -> int:
     """Offline rules of plan, submit, collect and run_facts against a stubbed service; returns the rejections."""
     charge_self_test()
+    seed_self_test()
     root = Path(__file__).resolve().parent.parent
     case = root / "results/quandela/cases/box_kite_photonic_single/job-00"
     modes = ["0"] * 24

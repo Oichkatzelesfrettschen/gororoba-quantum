@@ -1087,9 +1087,14 @@ photons; `compilation_seed` selects the start. `scripts/qd_belenos_mesh.py`
 decodes architectures and compiled meshes with a standard-library protobuf
 reader and writes `results/quandela/cases/belenos_mesh/`: iterated jobs of
 the architecture circuit whose iterations bind all 574 phases and the input
-mode, so one credit buys up to sixteen different unitaries (job-00 the
+mode, so one credit buys every unitary that fits the 300 s per-job limit,
+32 iterations of 1500 samples in 221 s on qpu:belenos (job-00 the
 error-class diagnostic, job-02 the 84/84 box-kite edges, job-03 to job-06
-the 64 seeded random settings of the characterization campaign).
+the 64 seeded random settings of the characterization campaign, job-07
+the 84/84 edges at compilation seeds 1 and 2 in 32 iterations, job-08 Q1's
+case as one circuit at seed 1). A case names its compilation_seed per
+iteration or, for one circuit, in its manifest; the seed selects the
+served mesh.
 `qd_box_kite_analysis.py` scans every error class (exact heater and coupler
 dephasing, heater gain, thermal crosstalk, a demultiplexer misroute with
 noise) over its magnitude on the mesh each iteration returned and names a
@@ -1128,7 +1133,9 @@ static records within a BLAS-path tolerance), core-534 (full tier,
 `--self-test-efficiency`: an efficiency-only truth reads ideal without
 offsets, efficiencies plus offsets are declared and recovered), core-535
 (full tier, `--check-efficiency` of the session record) and core-536
-(`--check-followup`, the preregistered job-02 and repeat readout).
+(`--check-followup`, the preregistered job-02 and repeat readout) and
+core-538 (`--check-pair`, the one-circuit form test job-08 and the
+32-iteration seed ensemble job-07).
 
 **Strategy guide.** [docs/notes/quandela/strategy.md](docs/notes/quandela/strategy.md)
 is the living record of what a credit buys on Belenos: the measured cost

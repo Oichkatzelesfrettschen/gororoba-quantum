@@ -14,7 +14,7 @@ the run log at the end.
 | Per job, any Explorer platform | 1 credit, drawn as `free_credits` from the 200-credit monthly pool | token usage report after jobs e12075f3 (sim) and 7419efb8 (QPU) |
 | Per shot, qpu:belenos and qpu:ascella | 1e-06 credits | platform record; job 7419efb8 charged 1.01 for 10000 shots |
 | Per shot, every simulator | 0 | platform record; six sim:belenos jobs charged 6.00 |
-| Iterated job | 1 credit for 8 iterations (fringe job 685945a8, 83 s on sim:belenos) | usage report after the fringe jobs |
+| Iterated job | 1 credit for 8 iterations (fringe job 685945a8, 83 s on sim:belenos); 1.003 credits for 32 iterations of 1500 samples (job b8e2ec0c, 221 s on qpu:belenos) | usage report after the fringe jobs; run record of b8e2ec0c |
 | Seconds charged | `duration_seconds` in the usage report (12 to 18 s per sim job, 13 s for a 10000-shot QPU job, about 10 s per iteration) | usage report |
 
 The job, not the shot, is the cost unit: a 10000-shot QPU job costs 1.01
@@ -160,7 +160,8 @@ no-redirect opener and keeps the token out of every file it writes.
 - **Many unitaries in one job.** `scripts/qd_belenos_mesh.py` sends the
   architecture circuit with one Perceval parameter per phase, so every
   experiment of a job is one iteration's 574 `circuit_params` plus its
-  `input_state`: sixteen different block unitaries cost one credit. A
+  `input_state`: every block unitary that fits the 300 s limit costs the
+  same one credit. A
   block's phases come from placing it on the first six (or eight) MZIs
   inside its four modes, fitted to D_out U D_in with free diagonal frames,
   with every other MZI in bar (hot) or idle at phase 0 outside a two-mode
@@ -368,10 +369,13 @@ sixteen settings whose returned meshes respond differently to each class.
   any number of iterations ride on it within 300 s. sim:belenos spent about
   13 s per iteration of 1500 samples (212 s for sixteen); the local
   optimizer needs about 1 s, so most of that is the simulator's sampling.
-  qpu:belenos returned 10000 one-photon samples in 13 s. The diagnostic job
-  measures the QPU's per-iteration overhead; until then a QPU job plans
-  sixteen settings of 1500 samples, and a simulator validation of a larger
-  job splits into halves that each stay under 300 s.
+  qpu:belenos spent 6.7 to 8.5 s per iteration of 1500 samples over the six
+  16-iteration jobs (fit 6.18 s per iteration plus 0.732 ms per sample) and
+  ran 32 iterations in 221 s (job b8e2ec0c). The 300 s limit bounds the
+  count: at the slowest measured 8.5 s a QPU job plans at most 35
+  iterations of 1500 samples, and no service limit on iterations has
+  appeared up to 32. A simulator validation of a job longer than 23
+  iterations splits into parts that each stay under 300 s.
 
 **The characterization campaign this implies (C1).** Four iterated jobs of
 16 one-photon settings each, Haar-random target columns on the 12 connected
@@ -439,6 +443,24 @@ the couplers equaled Q1's throughout.
    fitted on three runs predicts the fourth. Q1 and its replay, whose
    one-circuit failure repeated within 0.034 across a calibration, are the
    exception that this drift does not explain.
+7. The form test (`pair-preregistration.json`, readout `pair.json`):
+   Q1's exact case as one circuit at compilation_seed 1 (job 8d28f121)
+   compiled to a new mesh (e296b6a9) and kept in_block 0.886 (Wilson 0.879
+   to 0.892, a = 0.931), against 0.470 and 0.504 on Q1's mesh 29dc6ef8.
+   The preregistered rule reads **intermediate** (0.65 < 0.886 < 0.90): it
+   rejects the one-circuit-form reading (at most 0.65) and withholds the
+   Q1-mesh reading (at least 0.90). At seed 0 the one-circuit form returned
+   29dc6ef8 both times, so form and mesh stay confounded, and one seed on
+   one new mesh does not split the remaining 0.114 between a form effect
+   and mesh-to-mesh scatter, which the iterated bright configurations put
+   at 0.75 to 0.997 in_block. One-circuit jobs at several more seeds split
+   them.
+8. The seed ensemble (job b8e2ec0c, belenos_mesh job-07): every
+   configuration returned three distinct meshes at seeds 0, 1 and 2, so
+   **compilation_seed selects the served mesh**, and a configuration's a moves
+   by a median of 0.043 between seeds (at most 0.185, bright-10). Thirty-two
+   iterations of 1500 samples ran in 221 s, inside the preregistered 200 to
+   290 s window: a job carries twice the settings the first campaigns sent.
 
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 
@@ -514,6 +536,14 @@ a chip that drifts between jobs (section 7, item 6); the seed ensemble with
 split-half selection that the "no class fits" branch preregisters measures
 their spread.
 
+At seeds 1 and 2 in one 32-iteration job (b8e2ec0c) the program reads dark
+a = 0.028 and bright a = 0.938 (contrast 0.910). Across seeds 0, 1 and 2 a
+configuration's a moves by a median of 0.043; bright-10 (0.989, 0.994, 0.808),
+bright-18 (0.988, 0.888, 0.815) and dark-11 (0.184, 0.061, 0.017) move most, so
+a production readout takes the median of several seeds and jobs.
+`sample_count` returns counts without shot order, so split-half seed
+selection needs repeated jobs rather than a split of one.
+
 ## 9. Open conjectures and their falsifiers
 
 | Conjecture | Test | Falsifier |
@@ -528,10 +558,10 @@ their spread.
 | The chip's error class is random heater noise | class scans over C1 | open: under fitted efficiencies sigma 0.05 is the best point of a family that fails the fit (4.2 floors held out) |
 | The chip carries static heater offsets that user jobs can measure | `--static` and `--efficiency` over the four runs of C1 | settled for this session: refuted, held-out gain about -79000 nats (receipt model) and -34000 nats (fitted efficiencies) |
 | The bright-block leak is a property of its job (numeric unitary form or sparse target), not the chip's generic error | belenos_mesh job-02 on qpu:belenos scored against the C1 efficiencies, same couplers | settled: job specific, median in_block 0.952 against the 0.924 threshold; Q1's target kept 0.987 in the iterated form |
-| The one-circuit job form, not the bright block's own mesh, causes the leak | the bright block as a one-setting architecture-form job (job-01 shape) and as a two-setting iterated job on qpu:belenos | the one-setting job leaks like Q1 while the iterated one does not (form), or both keep in_block above 0.9 (the mesh 29dc6ef8) |
+| The one-circuit job form, not the bright block's own mesh, causes the leak | Q1's case as one circuit at compilation_seed 1 (belenos_mesh job-08); next, one-circuit jobs at more seeds | open: preregistered verdict intermediate, in_block 0.886 on new mesh e296b6a9 against 0.470 and 0.504 on 29dc6ef8; the rule rejects the form-only reading and withholds the mesh reading |
 | The same body returns the same meshes on sim:belenos and qpu:belenos | job-02 on both | settled: refuted for iterated jobs (16 of 16 meshes differ); holds for the one-circuit single/job-04 |
 | C1's residual is a fixed property of each mesh within a session | exact repeat of C1 job-03 | settled: refuted, same meshes and G^2 2564 on 226 degrees of freedom (drift) |
-| compilation_seed selects the served mesh | a seed screen on sim:belenos | two seeds return the same mesh for the same target |
+| compilation_seed selects the served mesh | job-02 at seeds 1 and 2 (belenos_mesh job-07) on qpu:belenos | settled: 16 of 16 configurations return three distinct meshes at seeds 0, 1 and 2 |
 | The bright-block leak is a calibration episode that the HOM figure indexes | exact replay of Q1's mesh after the calibration that moved HOM from 92.6 % to 57.6 % | settled: refuted, the identical mesh 29dc6ef8 kept in_block 0.504 (0.470 at Q1) with the leak on modes 17 to 19 |
 | The fringe visibility separates edge from strut on hardware | the fringe settings of belenos_mesh job-00 on qpu:belenos | edge visibility within 4.5 standard errors of the strut's |
 
@@ -540,8 +570,8 @@ their spread.
 Used:
 
 - One architecture, many settings: an iterated job of the architecture
-  circuit binds all 574 phases and the input mode per iteration, so sixteen
-  different unitaries cost one credit.
+  circuit binds all 574 phases and the input mode per iteration, so every
+  unitary that fits the 300 s limit (32 measured) costs one credit.
 - Per-iteration predictions on the returned mesh, so a re-transpiled mesh
   is still a known mesh.
 - Offline transpiler replay with exqalibur to price a strategy before any
@@ -579,3 +609,12 @@ Not yet used:
 | 2026-10-18 03:10 | 445e0482 | qpu:belenos | belenos_mesh job-06, C1 run 4 | 1.003 | no class fits (14.4 floors); `--static` declares nothing; fitted efficiencies reach 4.2 floors held out |
 | 2026-10-18 03:34 | 4e208d22 | qpu:belenos | belenos_mesh job-02, the 84/84 program | 1.003 | dark a = 0.048, bright a = 0.979; median in_block 0.952, preregistered verdict job specific; 16 meshes differ from the sim's |
 | 2026-10-18 03:37 | f9e13312 | qpu:belenos | belenos_mesh job-03, exact repeat of f945a01d | 1.003 | same 16 meshes; G^2 2564 on 226 dof, median TVD 0.128: drift |
+| 2026-10-18 04:24 | 8d28f121 | qpu:belenos | belenos_mesh job-08, Q1's case as one circuit at seed 1 | 1.01 | new mesh e296b6a9; in_block 0.886, a = 0.931; preregistered verdict intermediate |
+| 2026-10-18 04:25 | b8e2ec0c | qpu:belenos | belenos_mesh job-07, 84/84 at seeds 1 and 2, 32 iterations | 1.003 | 221 s; seed selects the mesh (16 of 16); dark a = 0.028, bright a = 0.938 |
+
+A QPU approval quotes the expected credits, the expected seconds and why a
+local Perceval simulation cannot answer the question. Job 4e208d22's quotes
+its credits and seconds; the approvals of jobs 8d28f121 and b8e2ec0c quote
+the dialog's question without its option text, and `pair-approval.json` in
+the session directory holds that dialog verbatim ("~2 credits" and both job
+descriptions) and names the terms it lacks.

@@ -924,6 +924,20 @@
       "run": "results/quandela/runs/2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03",
       "family": "Belenos mesh C1 repeat",
       "question": "the exact body of C1 job-03 again 36 minutes later: same meshes and same histograms, or drift between jobs?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-08-form",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08",
+      "family": "Belenos one-circuit form test",
+      "question": "Q1's exact case as one circuit at compilation_seed 1: does the leak follow the one-circuit job form or Q1's own compiled mesh?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-07-seed-ensemble",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07",
+      "family": "Belenos mesh 84/84 seed ensemble",
+      "question": "job-02's sixteen configurations at compilation seeds 1 and 2 in one 32-iteration job: does the seed select the served mesh, how far do the algebra shares move between seeds, and does a 32-iteration job fit the 300 s limit?"
     }
   ],
   "claims": [
@@ -5208,6 +5222,122 @@
       "assumptions": [],
       "depends_on": [
         "qd-cloud-retranspiles-architecture-circuits"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-q1-one-circuit-new-mesh-intermediate",
+      "statement": "Q1's exact case sent to qpu:belenos as one circuit at compilation_seed 1 (job 8d28f121) compiled to a new mesh (e296b6a9, not Q1's 29dc6ef8) and kept in_block 0.886 (Wilson 0.879 to 0.892) with a = 0.931, where the same one-circuit body at the default seed compiled to 29dc6ef8 both times and kept 0.470 and 0.504; the preregistered rule reads 'intermediate': 0.886 lies above the 0.65 bound of the one-circuit-form reading and below the 0.90 bound of the Q1-mesh reading.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One seeded job on one new mesh in the couplers of every C1 run. At the default seed the one-circuit form returned Q1's mesh both times, so form and mesh are confounded, and the residual 0.114 lies inside the 0.75 to 0.997 in_block spread of the iterated bright configurations, so it is not split between a form effect and mesh-to-mesh scatter.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair.json",
+          "sha256": "d8e36e375b1f05c4af5cadf5ebb5ffa6323f7f7c0a28af2b55e582c4b02c109d"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair-preregistration.json",
+          "sha256": "afc626ba7705376a21d759a2335f5a7f99b343c7d8f414b39b2fc7f2c809d09f"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08/analysis.json",
+          "sha256": "b290bd7c485303c15c73d1bd71e2ab21760f5dc6f19fed4e1531021077163b25"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-538": "replay",
+        "core-537": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-08-form",
+        "qd-qpu-belenos-single-job-04",
+        "qd-qpu-belenos-single-job-04-replay"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-bright-block-leak-is-job-specific"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-compilation-seed-selects-mesh",
+      "statement": "On qpu:belenos compilation_seed selects the served mesh: each of job-02's sixteen configurations returned three distinct meshes at seeds 0 (job-02), 1 and 2 (job 07, b8e2ec0c), and Q1's one-circuit body returned a mesh other than Q1's at seed 1; the 32-iteration job (1500 samples per iteration) ran 221 s, inside the preregistered 200 to 290 s window.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Three seeds per configuration in one coupler state; it says nothing about how the service maps a seed to a starting point.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair.json",
+          "sha256": "d8e36e375b1f05c4af5cadf5ebb5ffa6323f7f7c0a28af2b55e582c4b02c109d"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair-preregistration.json",
+          "sha256": "afc626ba7705376a21d759a2335f5a7f99b343c7d8f414b39b2fc7f2c809d09f"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07/analysis.json",
+          "sha256": "d2e2e2b04f6b20bcb8146380ac4407a4f0c6bcf4f01b2831ef186143dca2b72d"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-538": "replay",
+        "core-537": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-07-seed-ensemble",
+        "qd-qpu-belenos-mesh-job-02",
+        "qd-qpu-belenos-mesh-job-08-form"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-same-meshes-drift-between-jobs"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-qpu-belenos-84-84-seed-ensemble",
+      "statement": "The 84/84 program repeated at compilation seeds 1 and 2 in one 32-iteration qpu:belenos job reads algebra share a = 0.028 averaged over the dark configurations and 0.938 over the bright ones (contrast 0.910, against 0.931 at seed 0 in job-02); across seeds 0, 1 and 2 a configuration's a moves by a median of 0.043 and at most 0.185 (bright-10).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Two jobs in one coupler state; seed and job-to-job drift are confounded for seed 0 against seeds 1 and 2, while seeds 1 and 2 share a job with adjacent iterations. Sample-count results carry no shot order, so the split-half seed selection the 'no class fits' branch names needs repeated jobs, not a split of one.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair.json",
+          "sha256": "d8e36e375b1f05c4af5cadf5ebb5ffa6323f7f7c0a28af2b55e582c4b02c109d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07/analysis.json",
+          "sha256": "d2e2e2b04f6b20bcb8146380ac4407a4f0c6bcf4f01b2831ef186143dca2b72d"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-538": "replay",
+        "core-537": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-07-seed-ensemble",
+        "qd-qpu-belenos-mesh-job-02"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-qpu-belenos-84-84-zero-divisor-program"
       ],
       "supersedes": [],
       "superseded_by": null
