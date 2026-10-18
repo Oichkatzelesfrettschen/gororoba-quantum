@@ -2858,6 +2858,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-bridge results/quandela/sessions/2026-10-18T071847Z-qpu_belenos-belenos_mesh-bridge/bridge.json results/quandela/sessions/2026-10-18T071847Z-qpu_belenos-belenos_mesh-bridge/bridge-preregistration.json results/quandela/runs/2026-10-18T074524Z-qpu_belenos-belenos_mesh-job-09",
+   "name": "core-540",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test && \"$PYTHON\" -B -O -W error scripts/materialize_gororoba_csv.py --self-test",
    "name": "core-401",
    "seconds": 0.4,

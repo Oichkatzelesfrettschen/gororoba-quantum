@@ -461,6 +461,20 @@ the couplers equaled Q1's throughout.
    by a median of 0.043 between seeds (at most 0.185, bright-10). Thirty-two
    iterations of 1500 samples ran in 221 s, inside the preregistered 200 to
    290 s window: a job carries twice the settings the first campaigns sent.
+9. The form-mesh bridge (`bridge-preregistration.json`, readout
+   `bridge.json`, job c2eea262, belenos_mesh job-09): Q1's exact case
+   iterated 24 times at compilation seeds 0 to 21, 0 and 1. Q1's
+   one-circuit mesh 29dc6ef8 recurred at seed 20 and kept in_block 0.949
+   (Wilson 0.936 to 0.959) against 0.470 and 0.504 as one circuit; the
+   repeated seeds 0 and 1 returned their meshes again within 0.005, so the
+   preregistered rule reads **form or dwell**: the leak belongs to the
+   one-circuit job form or its 10000-sample dwell per setting, not to the
+   programmed mesh. The effect is mesh specific: job-08's mesh e296b6a9
+   recurred at seed 1 and kept 0.907 iterated against 0.886 as one circuit.
+   Over the 22 distinct meshes the median in_block is 0.943 and the lowest
+   0.748 (family verdict iteration). Seed 0 returned 54aef849, so the
+   service's unseeded default is not seed 0. The job ran 152 s, under the
+   preregistered 161 to 204 s, and was charged 1.003 credits.
 
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 
@@ -558,7 +572,7 @@ selection needs repeated jobs rather than a split of one.
 | The chip's error class is random heater noise | class scans over C1 | open: under fitted efficiencies sigma 0.05 is the best point of a family that fails the fit (4.2 floors held out) |
 | The chip carries static heater offsets that user jobs can measure | `--static` and `--efficiency` over the four runs of C1 | settled for this session: refuted, held-out gain about -79000 nats (receipt model) and -34000 nats (fitted efficiencies) |
 | The bright-block leak is a property of its job (numeric unitary form or sparse target), not the chip's generic error | belenos_mesh job-02 on qpu:belenos scored against the C1 efficiencies, same couplers | settled: job specific, median in_block 0.952 against the 0.924 threshold; Q1's target kept 0.987 in the iterated form |
-| The one-circuit job form, not the bright block's own mesh, causes the leak | Q1's case as one circuit at compilation_seed 1 (belenos_mesh job-08); next, one-circuit jobs at more seeds | open: preregistered verdict intermediate, in_block 0.886 on new mesh e296b6a9 against 0.470 and 0.504 on 29dc6ef8; the rule rejects the form-only reading and withholds the mesh reading |
+| The one-circuit job form, not the bright block's own mesh, causes the leak | Q1's case as one circuit at compilation_seed 1 (belenos_mesh job-08), then Q1's case iterated over 24 seeds (job-09), which served 29dc6ef8 at seed 20 | supported: 29dc6ef8 kept 0.949 iterated against 0.470 and 0.504 as one circuit, in-job drift 0.005; preregistered verdict form or dwell, mesh specific (e296b6a9 0.886 one-circuit, 0.907 iterated); next, separate form from dwell with a one-circuit job of 1500 samples at seed 20 |
 | The same body returns the same meshes on sim:belenos and qpu:belenos | job-02 on both | settled: refuted for iterated jobs (16 of 16 meshes differ); holds for the one-circuit single/job-04 |
 | C1's residual is a fixed property of each mesh within a session | exact repeat of C1 job-03 | settled: refuted, same meshes and G^2 2564 on 226 degrees of freedom (drift) |
 | compilation_seed selects the served mesh | job-02 at seeds 1 and 2 (belenos_mesh job-07) on qpu:belenos | settled: 16 of 16 configurations return three distinct meshes at seeds 0, 1 and 2 |
@@ -611,6 +625,7 @@ Not yet used:
 | 2026-10-18 03:37 | f9e13312 | qpu:belenos | belenos_mesh job-03, exact repeat of f945a01d | 1.003 | same 16 meshes; G^2 2564 on 226 dof, median TVD 0.128: drift |
 | 2026-10-18 04:24 | 8d28f121 | qpu:belenos | belenos_mesh job-08, Q1's case as one circuit at seed 1 | 1.01 | new mesh e296b6a9; in_block 0.886, a = 0.931; preregistered verdict intermediate |
 | 2026-10-18 04:25 | b8e2ec0c | qpu:belenos | belenos_mesh job-07, 84/84 at seeds 1 and 2, 32 iterations | 1.003 | 221 s; seed selects the mesh (16 of 16); dark a = 0.028, bright a = 0.938 |
+| 2026-10-18 07:45 | c2eea262 | qpu:belenos | belenos_mesh job-09, Q1's case iterated at seeds 0 to 21, 0, 1 | 1.003 | 152 s; 29dc6ef8 at seed 20, in_block 0.949 against 0.470 and 0.504 one-circuit; verdict form or dwell; 22 meshes, median 0.943 |
 
 A QPU approval quotes the expected credits, the expected seconds and why a
 local Perceval simulation cannot answer the question. Job 4e208d22's quotes
