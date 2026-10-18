@@ -3019,6 +3019,24 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_second_order.py --check docs/evidence/rank_locus_second_order/result.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_second_order.py --check docs/evidence/rank_locus_second_order/result.json",
+   "name": "core-553",
+   "seconds": 328.4,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_second_order.py --self-test && \"$PYTHON\" -B -O -W error scripts/rank_locus_second_order.py --self-test",
+   "name": "core-554",
+   "seconds": 235.7,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/exact_rank.py --self-test && \"$PYTHON\" -B -O -W error scripts/exact_rank.py --self-test",
    "name": "core-528",
    "seconds": 3.4,
