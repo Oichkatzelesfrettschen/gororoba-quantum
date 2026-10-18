@@ -717,8 +717,8 @@ forty-two jobs of 2026-10-16 on QX, the Ry emulator and Tuna-17, so no metered s
 or credits apply to this account as observed; the limits are structural: the
 table's qubits, shots, per-job execution limit and batch and queue counts,
 plus the FAQ's three queued jobs per hardware backend, which is stricter than
-the API's five batch jobs. Tuna-17 execution time fits 3.0 s per job plus
-0.49 ms per shot over the retained jobs, so a 16384-shot job takes about 11 s
+the API's five batch jobs. Tuna-17 execution time fits 2.9 s per job plus
+0.51 ms per shot over the retained jobs, so a 16384-shot job takes about 11 s
 and the 120 s pause, not the shots, sets a batch's cost; QX finished 2048
 shots in 0.03 to 10.4 s.
 Calibration and tuning run between user jobs (Tuna-17 read `calibrating`
