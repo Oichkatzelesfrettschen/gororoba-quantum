@@ -178,19 +178,15 @@
       "docs/notes/quantum_inspire/requirements-qi.txt"
     ],
     "core-513": [
-      "results/quandela/**",
-      "docs/evidence/quandela/**",
-      "docs/evidence/box_kite_census/census.json"
+      "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/**"
     ],
     "core-514": [
-      "results/quandela/**",
-      "docs/evidence/quandela/**",
-      "docs/evidence/box_kite_census/census.json"
+      "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/**",
+      "results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02/**"
     ],
     "core-515": [
-      "results/quandela/**",
-      "docs/evidence/quandela/**",
-      "docs/evidence/box_kite_census/census.json"
+      "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/**",
+      "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/submission.json"
     ]
   }
 }

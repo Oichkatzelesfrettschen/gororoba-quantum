@@ -266,6 +266,19 @@ class SelectionTests(unittest.TestCase):
         self.assertLessEqual(names, gate_inputs.affected_full(root, gates, changed))
         self.assertFalse(names & gate_inputs.affected_full(root, gates, ["docs/unrelated-ci-audit.md"]))
 
+    def test_quandela_static_scopes_follow_named_fixtures(self) -> None:
+        root = Path(__file__).resolve().parent.parent
+        gates = json.loads((root / "ci/gates.json").read_text())["gates"]
+        names = {"core-513", "core-514", "core-515"}
+        fixture = "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/raw/result.json"
+        self.assertLessEqual(names, gate_inputs.affected_full(root, gates, [fixture]))
+        unrelated = "results/quandela/runs/unrelated-acquisition/raw/result.json"
+        self.assertFalse(names & gate_inputs.affected_full(root, gates, [unrelated]))
+        transmission = (
+            "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/submission.json"
+        )
+        self.assertEqual(names & gate_inputs.affected_full(root, gates, [transmission]), {"core-515"})
+
     def test_explicit_worker_caps_apply_to_inner_pools(self) -> None:
         observed = []
 

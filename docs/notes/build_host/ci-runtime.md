@@ -348,8 +348,8 @@ speedup. The repetition-delay planning contract remains the longest single-slot
 case at 635.81 seconds in that qualification.
 
 The final main merge adds eight Quandela gates, including three full-tier static
-mesh checks. Their reviewed scopes cover retained Quandela cases/runs, the
-Quandela catalogue and leakage receipt, and the box-kite census. Transitive
+mesh checks. Their reviewed scopes cover the exact retained S3 mesh runs and the Q1
+transmission receipt used by the synthetic decision rule. Transitive
 Python imports add their implementation inputs. The long retained-analysis
 gate reserves the allocation for its existing independent mesh-scan pool; the
 static optimizer checks keep one slot per process.
