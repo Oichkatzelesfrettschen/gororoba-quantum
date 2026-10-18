@@ -9,7 +9,7 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 | --- | --- | --- |
 | `docs/pdf/` | 25 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
 | `docs/local_source_cache/` | 97 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
-| `docs/source_archives/` | 4 licensed original software archives, with exact inspected members and notices | Tracked |
+| `docs/source_archives/` | 5 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
 The local cache lives inside `docs/`. A fresh checkout receives the public notes
@@ -190,8 +190,8 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 ## Licensed software source snapshots
 
 These archives preserve the exact original upstream bytes and license notices.
-Source inspection supplies candidate proof interfaces; joint Rocq build
-compatibility remains a separate gate. Archive/member hashes and license text
+Source inspection supplies candidate proof interfaces and independent
+implementations to cross-check; build compatibility remains a separate gate. Archive/member hashes and license text
 are checked by `verify_sources.py` without extraction or execution.
 
 | Source | Original archive | License |
@@ -200,6 +200,7 @@ are checked by `verify_sources.py` without extraction or execution.
 | [CoqInterval](notes/coqinterval-certified-enclosures.md) | [interval-4.11.5.tar.gz](source_archives/interval-4.11.5.tar.gz) | CECILL-C |
 | [Mathematical Components](notes/mathcomp-coqeal-matrix-certificates.md) | [mathcomp-9931c88.tar.gz](source_archives/mathcomp-9931c88.tar.gz) | CECILL-B |
 | [CoqEAL](notes/mathcomp-coqeal-matrix-certificates.md) | [coqeal-8fd26cf.tar.gz](source_archives/coqeal-8fd26cf.tar.gz) | MIT |
+| [wheel (Rust crate)](notes/wheel-rust-crate.md) | [wheel-0.1.0.crate](source_archives/wheel-0.1.0.crate) | Apache-2.0 OR MPL-2.0 |
 
 ## Repository research certificates
 
@@ -335,6 +336,12 @@ nine arXiv HTML renderings (2604.25863v3, 2604.03360v2, 2606.00433v2, 2412.04053
 2308.13065v2, 2406.07611v2, 2402.17833v2) by SHA-256 in [SOURCES.json](SOURCES.json); the retained
 [backend configuration snapshot](evidence/heron_platform/backend_configuration.json) holds the sorted configuration
 key names of the three account backends.
+The [hardware controls audit](notes/ibm_quantum/hardware-controls.md) inventories every option field, REST endpoint
+and client-side restriction of the installed qiskit-ibm-runtime 0.50.0 in
+[inventory.json](evidence/ibm_runtime_options/inventory.json) (gate core-533), records read-only backend limits
+(max_shots, rep_delay range, measure_2, fractional angle bounds) in
+[backends.json](evidence/ibm_runtime_options/backends.json), and states the configuration per workload type with the
+gaps between live_run.py and it.
 The [Heron tile packing note](notes/heron_spatial_multiprogramming.md) packs guard-banded tiles on the
 snapshot coupling map, composes one circuit per tile into one wide circuit, and states per-backend RZZ and
 repetition-delay arithmetic from Target values, audited in

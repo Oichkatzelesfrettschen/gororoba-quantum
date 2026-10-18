@@ -1391,6 +1391,8 @@ class SourceArchiveChecks(unittest.TestCase):
         self.reject("archive license allowlist")
         self.entry["license_identifier"] = "CECILL-C"
         self.reject("archive license text identity")
+        self.entry["license_identifier"] = "Apache-2.0 OR MPL-2.0"
+        self.reject("archive license text identity")
 
     def test_license_member_identity_is_required(self) -> None:
         original = copy.deepcopy(self.entry)
@@ -1454,6 +1456,42 @@ class SourceArchiveChecks(unittest.TestCase):
         self.assertEqual(verify_source_archives(self.root, self.registry), 1)
         self.entry["version"] = "4.11.4"
         self.reject("archive pinned version")
+
+    def test_crates_io_route_is_bound_to_archive_root(self) -> None:
+        old_prefix = self.prefix
+        self.prefix = "research-0.1.0"
+        license_payload = (
+            b"                                 Apache License\n"
+            b"                           Version 2.0, January 2004\n"
+            b"                        http://www.apache.org/licenses/\n\n"
+            b"   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\n"
+        )
+        info = tarfile.TarInfo(f"{self.prefix}/LICENSE.APACHE")
+        info.size = len(license_payload)
+        self.members[0] = (info, license_payload)
+        self.members[1][0].name = self.members[1][0].name.replace(old_prefix, self.prefix)
+        self.source.unlink()
+        self.source = self.source.with_name("research-0.1.0.crate")
+        self.entry.update(
+            path=self.source.relative_to(self.root).as_posix(),
+            source_url="https://static.crates.io/crates/research/research-0.1.0.crate",
+            version="0.1.0",
+            license_identifier="Apache-2.0 OR MPL-2.0",
+            license_member=info.name,
+            license_bytes=len(license_payload),
+            license_sha256=hashlib.sha256(license_payload).hexdigest(),
+        )
+        self.entry["inspected_files"][0]["file"] = self.members[1][0].name
+        self.write_archive()
+        self.assertEqual(verify_source_archives(self.root, self.registry), 1)
+        self.entry["version"] = "0.1.1"
+        self.reject("archive pinned version")
+        self.entry["version"] = "0.1.0"
+        self.entry["source_url"] = "https://static.crates.io/crates/research/other-0.1.0.crate"
+        self.reject("archive source route")
+        self.entry["source_url"] = "https://static.crates.io/crates/research/research-0.1.0.crate"
+        self.entry["license_identifier"] = "MIT"
+        self.reject("archive license text identity")
 
 
 class HostedArxivCaptureChecks(unittest.TestCase):

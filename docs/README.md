@@ -15,7 +15,7 @@ The canonical source library lives under `docs/`: paper descriptions in
 byte count, page count, acquisition status, owning note, and exact-version
 license evidence. The library publishes 25 licensed PDFs and two aliases;
 97 external sources retain citations and optional ignored local reading copies.
-Four licensed original software archives retain upstream notices under
+Five licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](PDF_SHA256SUMS) verifies the published PDF set from the
 repository root with `sha256sum -c docs/PDF_SHA256SUMS`.

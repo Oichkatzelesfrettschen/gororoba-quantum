@@ -1,0 +1,14 @@
+{"name": "density_matrix-15-ghz-blocked", "ended_by": "ok", "wall_seconds": 5.06, "peak_rss_mib": 521}
+{"name": "density_matrix-15-ghz-blocked_custatevec", "ended_by": "ok", "wall_seconds": 4.843, "peak_rss_mib": 539}
+{"name": "density_matrix-15-ghz-blocked_gpu0", "ended_by": "ok", "wall_seconds": 16.916, "peak_rss_mib": 4524}
+{"name": "density_matrix-15-dynamic-blocked", "ended_by": "signal 6", "wall_seconds": 4.839, "peak_rss_mib": 434}
+{"name": "density_matrix-15-dynamic-blocked_parallel_shots", "ended_by": "signal 6", "wall_seconds": 4.757, "peak_rss_mib": 435}
+{"name": "density_matrix-15-dynamic_lowered-blocked", "ended_by": "ok", "wall_seconds": 29.944, "peak_rss_mib": 521}
+{"name": "statevector-29-ghz-auto", "ended_by": "ok", "wall_seconds": 5.048, "peak_rss_mib": 514}
+{"name": "statevector-29-ghz-blocked", "ended_by": "ok", "wall_seconds": 4.623, "peak_rss_mib": 516}
+{"name": "statevector-30-ghz-blocked", "ended_by": "ok", "wall_seconds": 8.077, "peak_rss_mib": 518}
+{"name": "statevector-30-ghz-blocked_custatevec", "ended_by": "ok", "wall_seconds": 6.31, "peak_rss_mib": 544}
+{"name": "statevector-30-ghz-blocked_gpu0", "ended_by": "ok", "wall_seconds": 25.51, "peak_rss_mib": 6573}
+{"name": "statevector-30-dynamic-blocked", "ended_by": "signal 6", "wall_seconds": 7.755, "peak_rss_mib": 437}
+{"name": "statevector-30-dynamic_lowered-blocked", "ended_by": "ok", "wall_seconds": 47.437, "peak_rss_mib": 517}
+{"name": "statevector-30-ghz-auto", "ended_by": "oom_kill", "wall_seconds": 325.614, "peak_rss_mib": 30155}

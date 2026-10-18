@@ -24,12 +24,14 @@ import parallel
 from diagnostic_experiments import (
     N21_FAMILIES,
     PATCH_FAMILIES,
+    STATE_PREP_ARM_STEPS,
     STATE_PREP_FAMILY,
     STATE_PREP_SOURCE_RECORD,
     family_contracts,
     folded_group,
     n21_group,
     n21_orbit_rca_group,
+    state_prep_arms,
     state_prep_groups,
 )
 from experiment_optimizer import (
@@ -57,12 +59,13 @@ from qpe_diagnostics import ideal_compiled_probabilities
 def settings(args: Any) -> dict[str, Any]:
     """Approval-bound design inputs, distinct from fluctuating quota readings.
 
-    A declared preparation excitation and the empirical-Bernstein opt-in join
-    them only when given, so a plan without either keeps its settings
-    unchanged.
+    A declared preparation excitation, the empirical-Bernstein opt-in and a
+    state-prep arm selection join them only when given, so a plan without
+    them keeps its settings unchanged.
     """
     excitation = getattr(args, "prep_excitation", None)
     bernstein = {"empirical_bernstein": True} if getattr(args, "empirical_bernstein", False) else {}
+    arms = getattr(args, "state_prep_arms", None)
     return (
         {
             name: getattr(args, name, default)
@@ -91,6 +94,7 @@ def settings(args: Any) -> dict[str, Any]:
         }
         | ({"prep_excitation": excitation} if excitation is not None else {})
         | bernstein
+        | ({"state_prep_arms": list(arms)} if arms is not None else {})
     )
 
 
@@ -553,7 +557,12 @@ def state_prep_candidates(
         qubits, source = state_prep_layout(args)
     except (OSError, KeyError, ValueError) as error:
         raise runtime.LiveRunError(f"state-prep-control layout: {error}") from error
-    groups = state_prep_groups(qubits)
+    try:
+        arms = state_prep_arms(getattr(args, "state_prep_arms", None))
+    except ValueError as error:
+        raise runtime.LiveRunError(f"state-prep-control arms: {error}") from error
+    groups = state_prep_groups(qubits, arms)
+    expected_kinds = sorted(["static"] * len([arm for arm in arms if arm != "reset"]) + ["dynamic"] * ("reset" in arms))
     candidates = []
     for snapshot in snapshots:
         try:
@@ -596,8 +605,8 @@ def state_prep_candidates(
                 choices.append(choice)
             pubs = runtime.execution_pubs(choices)
             kinds = sorted(pub.kind for pub in pubs)
-            if kinds != ["dynamic", "static", "static"]:
-                raise runtime.LiveRunError(f"the arms fused into PUB kinds {kinds}, not two static and one dynamic")
+            if kinds != expected_kinds:
+                raise runtime.LiveRunError(f"the arms {list(arms)} fused into PUB kinds {kinds}, not {expected_kinds}")
         except (runtime.LiveRunError, QiskitError, ValueError) as error:
             trace.setdefault("family_rejections", []).append(
                 {"backend": snapshot.name, "qubits": qubits, "reason": str(error)}
@@ -610,7 +619,7 @@ def state_prep_candidates(
                     "name": STATE_PREP_FAMILY,
                     "qubits": qubits,
                     **source,
-                    "arms": {"prep0": "init, measure", "reset": "init, reset, measure", "x": "x, measure"},
+                    "arms": {arm: STATE_PREP_ARM_STEPS[arm] for arm in arms},
                     "placement_contract": (
                         "one pinned single-qubit placement per named qubit; every qubit runs each arm in the "
                         "same shots; static prep0 and x PUBs, dynamic reset PUB"
@@ -845,6 +854,18 @@ def repetition_delay_range(backend: Any) -> list[float] | None:
     return [float(interval[0]), float(interval[1])]
 
 
+def shot_ceiling(backend: Any) -> int | None:
+    """backend's configuration().max_shots, the per-PUB shot limit planning and each batch hold, or None."""
+    value = getattr(backend.configuration(), "max_shots", None)
+    return int(value) if value else None
+
+
+def shot_ceiling_violations(backend: Any, shots: int) -> list[str]:
+    """Why shots per PUB cannot run under backend's fresh max_shots."""
+    ceiling = shot_ceiling(backend)
+    return [f"{shots} shots per PUB exceed max_shots {ceiling}"] if ceiling is not None and shots > ceiling else []
+
+
 def repetition_delay_violations(backend: Any, requested: float, planned_range: list[float] | None) -> list[str]:
     """Why requested cannot run on backend's fresh configuration, or why its allowed range moved since planning."""
     try:
@@ -952,6 +973,22 @@ def prepare(
     ownership: dict[str, tuple[list[Any], dict[str, Any], int]] = {}
     simulators: dict[int, Any] = {}
     tiers = sorted(set(args.shot_tiers if args.optimize else [args.shots]))
+    # Tiers above a candidate backend's max_shots never reach a plan; the
+    # trace keeps the dropped tiers beside the ceiling that dropped them.
+    ceiling = min(
+        (
+            limit
+            for choices, _configuration in candidates
+            for choice in choices
+            if (limit := shot_ceiling(choice.snap.backend)) is not None
+        ),
+        default=None,
+    )
+    if ceiling is not None and tiers[-1] > ceiling:
+        trace["shot_ceiling"] = {"max_shots": ceiling, "dropped_tiers": [shots for shots in tiers if shots > ceiling]}
+        tiers = [shots for shots in tiers if shots <= ceiling]
+        if not tiers:
+            raise runtime.LiveRunError(f"every shot tier exceeds max_shots {ceiling}: {trace['shot_ceiling']}")
     per_pub = getattr(args, "shot_allocation", "uniform") == "per-pub"
     if per_pub and (args.family not in ("ripple", "rank-sector", *PATCH_FAMILIES) or not args.optimize):
         raise runtime.LiveRunError("per-PUB shot allocation requires an optimized algebra or patch family")

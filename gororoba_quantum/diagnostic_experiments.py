@@ -136,11 +136,12 @@ def n21_group(orbit: bool = False, encoded: bool = False) -> Group:
 _SIGNED = (0.0, 1.0, 0.0, -1.0)
 
 # state-prep-control: the arms in PUB order, A (init, measure), B (init,
-# reset, measure) and C (x, measure). Every named qubit runs each arm in the
-# same shots, so A and C share the static job and B, which a reset makes
-# dynamic, runs in its own job with twirling and DD off.
+# reset, measure) and C (x, measure). Every named qubit runs each selected arm
+# in the same shots, so A and C share the static job and B, which a reset
+# makes dynamic, runs in its own job with twirling and DD off.
 STATE_PREP_FAMILY = "state-prep-control"
 STATE_PREP_ARMS = ("prep0", "reset", "x")
+STATE_PREP_ARM_STEPS = {"prep0": "init, measure", "reset": "init, reset, measure", "x": "x, measure"}
 # The retained n21-feedback-encoded dry run whose R = 2 replica qubits the
 # family measures when --layout is absent; repository-relative.
 STATE_PREP_SOURCE_RECORD = "results/live/2026-10-17T130242.718497Z/record.json"
@@ -170,8 +171,20 @@ def state_prep_circuit(arm: str, qubit: int) -> QuantumCircuit:
     return circuit
 
 
-def state_prep_groups(qubits: list[int]) -> list[Group]:
-    """Per qubit, a static group (prep0 row 0, x row 1) and a dynamic group (reset row 0).
+def state_prep_arms(arms: Any = None) -> tuple[str, ...]:
+    """The selected arms in STATE_PREP_ARMS order; None selects all three, and every selection holds prep0."""
+    if arms is None:
+        return STATE_PREP_ARMS
+    selected = tuple(arms)
+    if not selected or len(set(selected)) != len(selected) or set(selected) - set(STATE_PREP_ARMS):
+        raise ValueError(f"state-prep arms must be distinct members of {STATE_PREP_ARMS}, got {list(selected)}")
+    if "prep0" not in selected:
+        raise ValueError("the family measures the initial excited fraction, which only the prep0 arm reads")
+    return tuple(arm for arm in STATE_PREP_ARMS if arm in selected)
+
+
+def state_prep_groups(qubits: list[int], arms: Any = None) -> list[Group]:
+    """Per qubit, a static group (prep0, then x) and a dynamic group (reset), each holding its selected arms.
 
     Fusion joins row r of every group of one kind into one PUB, so PUB A
     measures every qubit's prep0 arm in the same shots, PUB C every x arm,
@@ -179,6 +192,8 @@ def state_prep_groups(qubits: list[int]) -> list[Group]:
     """
     if not qubits or len(set(qubits)) != len(qubits) or any(type(q) is not int or q < 0 for q in qubits):
         raise ValueError(f"state-prep-control needs distinct nonnegative qubits, got {qubits}")
+    selected = state_prep_arms(arms)
+    static_arms = tuple(arm for arm in selected if arm != "reset")
     groups = []
     for qubit in qubits:
         ideal = {"prep0": (1.0, 0.0), "reset": (1.0, 0.0), "x": (0.0, 1.0)}
@@ -189,37 +204,51 @@ def state_prep_groups(qubits: list[int]) -> list[Group]:
                 np.asarray(ideal[arm], dtype=float),
                 weights=np.asarray(ideal[arm], dtype=float),
             )
-            for arm in STATE_PREP_ARMS
+            for arm in selected
         }
 
         def summarize_static(distributions: dict[str, np.ndarray], qubit: int = qubit) -> dict[str, float]:
+            names = {"prep0": f"q{qubit}_excited_fraction", "x": f"q{qubit}_one_fraction"}
             return {
-                f"q{qubit}_excited_fraction": float(distributions[state_prep_member("prep0", qubit)][1]),
-                f"q{qubit}_one_fraction": float(distributions[state_prep_member("x", qubit)][1]),
+                names[arm]: float(distributions[state_prep_member(arm, qubit)][1])
+                for arm in names
+                if state_prep_member(arm, qubit) in distributions
             }
 
         def summarize_reset(distributions: dict[str, np.ndarray], qubit: int = qubit) -> dict[str, float]:
             return {f"q{qubit}_reset_excited_fraction": float(distributions[state_prep_member("reset", qubit)][1])}
 
-        groups.append(Group(f"state_prep_q{qubit}", (members["prep0"], members["x"]), summarize_static))
-        groups.append(Group(f"state_prep_reset_q{qubit}", (members["reset"],), summarize_reset))
+        if static_arms:
+            groups.append(Group(f"state_prep_q{qubit}", tuple(members[arm] for arm in static_arms), summarize_static))
+        if "reset" in selected:
+            groups.append(Group(f"state_prep_reset_q{qubit}", (members["reset"],), summarize_reset))
     return groups
 
 
-def state_prep_contracts(qubits: list[int], alpha: float, power: float) -> tuple[ObservableContract, ...]:
-    """Three two-sided precision endpoints per qubit at the family-wise alpha split over all of them.
+def state_prep_contracts(
+    qubits: list[int], alpha: float, power: float, arms: Any = None
+) -> tuple[ObservableContract, ...]:
+    """Two-sided precision endpoints per qubit for the selected arms, at the family-wise alpha split over all.
 
     spc_excited_qQ reads P(1) after initialization (residual excitation plus
     readout misassignment); spc_reset_benefit_qQ reads that minus P(1) after
     an active reset, positive where initialization leaves more excitation
     than the reset's own misassignment; spc_one_column_qQ reads P(1) after
-    an X, the |1> column of the assignment matrix.
+    an X, the |1> column of the assignment matrix. Each endpoint needs every
+    arm it reads among the selected arms.
     """
-    share = alpha / (len(STATE_PREP_PRECISION) * len(qubits))
+    selected = state_prep_arms(arms)
+    endpoints = [
+        name
+        for name, needs in (("excited", {"prep0"}), ("reset_benefit", {"prep0", "reset"}), ("one_column", {"x"}))
+        if needs <= set(selected)
+    ]
+    share = alpha / (len(endpoints) * len(qubits))
     contracts: list[ObservableContract] = []
     for qubit in qubits:
         contracts.extend(
-            (
+            contract
+            for contract in (
                 ObservableContract(
                     f"spc_excited_q{qubit}",
                     (ObservableTerm(state_prep_member("prep0", qubit), _EXCITED),),
@@ -245,6 +274,7 @@ def state_prep_contracts(qubits: list[int], alpha: float, power: float) -> tuple
                     precision_half_width=STATE_PREP_PRECISION["one_column"],
                 ),
             )
+            if contract.name.removeprefix("spc_").rsplit("_q", 1)[0] in endpoints
         )
     return tuple(contracts)
 
@@ -304,7 +334,9 @@ def family_contracts(
     if family == STATE_PREP_FAMILY:
         if configuration is None or not configuration.get("qubits"):
             raise ValueError("state-prep-control contracts need the configuration's named qubits")
-        return state_prep_contracts([int(qubit) for qubit in configuration["qubits"]], alpha, power)
+        return state_prep_contracts(
+            [int(qubit) for qubit in configuration["qubits"]], alpha, power, configuration.get("arms")
+        )
     if family == "folded-correction":
         # The correction collector evaluates four exact-binomial directional
         # bounds on integer counts; bounded-score optimizer inference differs.
@@ -411,7 +443,7 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
             n21_group(orbit=family["name"] == "n21-orbit-feedback", encoded=family["name"] == "n21-feedback-encoded")
         ]
     if family.get("name") == STATE_PREP_FAMILY:
-        return state_prep_groups([int(qubit) for qubit in family["qubits"]])
+        return state_prep_groups([int(qubit) for qubit in family["qubits"]], family.get("arms"))
     return []
 
 
@@ -466,10 +498,30 @@ def _state_prep_self_test() -> None:
         recovered = state_prep_excitation(float(laws["prep0"][1]), e10, e01)
         if abs(recovered - epsilon) > 1e-14:
             raise AssertionError(f"eps {epsilon}: the excited fraction implies {recovered}")
+    for arms, group_count, endpoint_names in (
+        (("prep0",), 1, {"excited"}),
+        (("x", "prep0"), 1, {"excited", "one_column"}),
+        (("prep0", "reset"), 2, {"excited", "reset_benefit"}),
+    ):
+        subset = state_prep_groups(qubits, arms)
+        members = {member.name.split("_q")[0].removeprefix("spc_") for group in subset for member in group.members}
+        if len(subset) != group_count * len(qubits) or members != set(arms):
+            raise AssertionError(f"arms {arms}: groups {len(subset)} hold {members}")
+        chosen = state_prep_contracts(qubits, 0.05, 0.8, arms)
+        names = {contract.name.removeprefix("spc_").rsplit("_q", 1)[0] for contract in chosen}
+        if names != endpoint_names or not math.isclose(math.fsum(c.alpha for c in chosen), 0.05):
+            raise AssertionError(f"arms {arms}: endpoints {names} or the alpha split moved")
+    for refused in ((), ("reset",), ("x",), ("reset", "x"), ("prep0", "prep0"), ("prep1",)):
+        try:
+            state_prep_arms(refused)
+        except ValueError:
+            continue
+        raise AssertionError(f"arms {refused} were admitted")
     print(
         f"state-prep-control: {len(qubits)} qubits, {len(contracts)} endpoints at alpha {share:.3g} each, "
         "8192 shots the smallest admitted tier; prep0, reset and x laws match their closed forms under "
-        "readout, reset and X errors and an initial excitation, which the excited fraction recovers"
+        "readout, reset and X errors and an initial excitation, which the excited fraction recovers; arm "
+        "subsets keep the endpoints their arms support"
     )
 
 
