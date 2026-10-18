@@ -2,8 +2,10 @@
 
 This census lists every run the repository still proposes, the machine it
 belongs on, and its cost. Routing follows AGENTS.md: a simulation of 14
-qubits or fewer runs on Kaggle through `scripts/kaggle_run.py`, and IBM
-hardware serves 15 or more qubits or a question about the device itself.
+qubits or fewer runs on Kaggle through `scripts/kaggle_run.py`, a
+15-qubit run goes to the Aer or Tuna-17 substrate its approved case names,
+and IBM hardware serves 16 or more qubits or a question about the device
+itself.
 Every IBM run still needs the owner's approval of its written case, and
 nothing below has been submitted.
 

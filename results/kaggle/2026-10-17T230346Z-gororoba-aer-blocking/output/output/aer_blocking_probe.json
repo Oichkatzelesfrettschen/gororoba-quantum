@@ -1,0 +1,676 @@
+{
+ "schema": "aer-blocking-probe-v1",
+ "machine": {
+  "gpus": [
+   {
+    "index": "0",
+    "name": "Tesla T4",
+    "driver_version": "580.178.04",
+    "memory.total": "15360",
+    "compute_cap": "7.5"
+   },
+   {
+    "index": "1",
+    "name": "Tesla T4",
+    "driver_version": "580.178.04",
+    "memory.total": "15360",
+    "compute_cap": "7.5"
+   }
+  ],
+  "cuda_driver": "13.0",
+  "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+  "cpus": 4,
+  "host_memory": {
+   "mem_total_mib": 32099,
+   "cgroup_memory_max": "32212254720"
+  },
+  "packages": {
+   "qiskit": "2.5.2",
+   "qiskit-aer": null,
+   "qiskit-aer-gpu": null,
+   "qiskit-aer-gpu-cu11": "0.17.2",
+   "cuquantum-cu11": "24.8.0",
+   "custatevec-cu11": "1.6.0.post1",
+   "cutensornet-cu11": "2.5.0",
+   "cutensor-cu11": "2.2.0",
+   "cuquantum-python-cu11": null,
+   "nvidia-cuda-runtime-cu11": "11.8.89",
+   "numpy": "2.5.4",
+   "arch:python-qiskit-aer-cuda": null
+  },
+  "qiskit_aer": {
+   "version": "0.17.2",
+   "owners": [
+    "qiskit-aer-gpu-cu11"
+   ]
+  }
+ },
+ "gpu_memory_mib": 15360,
+ "blocking_qubits": {
+  "statevector": 27,
+  "density_matrix": 13
+ },
+ "seed": 20261017,
+ "trials": [
+  {
+   "name": "density_matrix-15-ghz-blocked",
+   "method": "density_matrix",
+   "width": 15,
+   "circuit": "ghz",
+   "configuration": "blocked",
+   "options": {
+    "blocking_enable": true,
+    "blocking_qubits": 13,
+    "max_parallel_shots": 1
+   },
+   "wall_seconds": 5.06,
+   "returncode": 0,
+   "peak_rss_mib": 521,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 29894,
+   "gpu_peak_memory_mib": {
+    "0": 9437.0,
+    "1": 9437.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'"
+   ],
+   "simulate_seconds": 4.235,
+   "shots": 256,
+   "counts": {
+    "000000000000000": 120,
+    "111111111111111": 136
+   },
+   "metadata": {
+    "device": "GPU",
+    "method": "density_matrix",
+    "num_qubits": 15,
+    "cacheblocking": {
+     "chunk_parallel_gpus": 2,
+     "block_bits": 13,
+     "enabled": true
+    },
+    "target_gpus": [
+     0,
+     1
+    ],
+    "cuStateVec_enable": false,
+    "parallel_shots": 1,
+    "parallel_state_update": 4
+   },
+   "ok": true,
+   "ended_by": "ok"
+  },
+  {
+   "name": "density_matrix-15-ghz-blocked_custatevec",
+   "method": "density_matrix",
+   "width": 15,
+   "circuit": "ghz",
+   "configuration": "blocked_custatevec",
+   "options": {
+    "blocking_enable": true,
+    "blocking_qubits": 13,
+    "max_parallel_shots": 1,
+    "cuStateVec_enable": true
+   },
+   "wall_seconds": 4.843,
+   "returncode": 0,
+   "peak_rss_mib": 539,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 29880,
+   "gpu_peak_memory_mib": {
+    "0": 9463.0,
+    "1": 9463.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'"
+   ],
+   "simulate_seconds": 3.977,
+   "shots": 256,
+   "counts": {
+    "000000000000000": 120,
+    "111111111111111": 136
+   },
+   "metadata": {
+    "device": "GPU",
+    "method": "density_matrix",
+    "num_qubits": 15,
+    "cacheblocking": {
+     "chunk_parallel_gpus": 2,
+     "block_bits": 13,
+     "enabled": true
+    },
+    "target_gpus": [
+     0,
+     1
+    ],
+    "cuStateVec_enable": true,
+    "parallel_shots": 1,
+    "parallel_state_update": 4
+   },
+   "ok": true,
+   "ended_by": "ok"
+  },
+  {
+   "name": "density_matrix-15-ghz-blocked_gpu0",
+   "method": "density_matrix",
+   "width": 15,
+   "circuit": "ghz",
+   "configuration": "blocked_gpu0",
+   "options": {
+    "blocking_enable": true,
+    "blocking_qubits": 13,
+    "max_parallel_shots": 1,
+    "target_gpus": [
+     0
+    ]
+   },
+   "wall_seconds": 16.916,
+   "returncode": 0,
+   "peak_rss_mib": 4524,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 25800,
+   "gpu_peak_memory_mib": {
+    "0": 14563.0,
+    "1": 209.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'"
+   ],
+   "simulate_seconds": 16.077,
+   "shots": 256,
+   "counts": {
+    "000000000000000": 120,
+    "111111111111111": 136
+   },
+   "metadata": {
+    "device": "GPU",
+    "method": "density_matrix",
+    "num_qubits": 15,
+    "cacheblocking": {
+     "chunk_parallel_gpus": 2,
+     "block_bits": 13,
+     "enabled": true
+    },
+    "target_gpus": [
+     0
+    ],
+    "cuStateVec_enable": false,
+    "parallel_shots": 1,
+    "parallel_state_update": 4
+   },
+   "ok": true,
+   "ended_by": "ok"
+  },
+  {
+   "name": "density_matrix-15-dynamic-blocked",
+   "method": "density_matrix",
+   "width": 15,
+   "circuit": "dynamic",
+   "configuration": "blocked",
+   "options": {
+    "blocking_enable": true,
+    "blocking_qubits": 13,
+    "max_parallel_shots": 1
+   },
+   "wall_seconds": 4.839,
+   "returncode": -6,
+   "peak_rss_mib": 434,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 29819,
+   "gpu_peak_memory_mib": {
+    "0": 9437.0,
+    "1": 9437.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'",
+    "terminate called recursively",
+    "terminate called after throwing an instance of 'std::runtime_error'"
+   ],
+   "ok": false,
+   "ended_by": "signal 6"
+  },
+  {
+   "name": "density_matrix-15-dynamic-blocked_parallel_shots",
+   "method": "density_matrix",
+   "width": 15,
+   "circuit": "dynamic",
+   "configuration": "blocked_parallel_shots",
+   "options": {
+    "blocking_enable": true,
+    "blocking_qubits": 13
+   },
+   "wall_seconds": 4.757,
+   "returncode": -6,
+   "peak_rss_mib": 435,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 29881,
+   "gpu_peak_memory_mib": {
+    "0": 9437.0,
+    "1": 9437.0
+   },
+   "stderr_tail": [
+    "terminate called after throwing an instance of 'std::runtime_error'",
+    "  what():  Invalid jump destination:\"if_0_end\".",
+    "",
+    "terminate called recursively"
+   ],
+   "ok": false,
+   "ended_by": "signal 6"
+  },
+  {
+   "name": "density_matrix-15-dynamic_lowered-blocked",
+   "method": "density_matrix",
+   "width": 15,
+   "circuit": "dynamic_lowered",
+   "configuration": "blocked",
+   "options": {
+    "blocking_enable": true,
+    "blocking_qubits": 13,
+    "max_parallel_shots": 1
+   },
+   "wall_seconds": 29.944,
+   "returncode": 0,
+   "peak_rss_mib": 521,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 29823,
+   "gpu_peak_memory_mib": {
+    "0": 9437.0,
+    "1": 9437.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'"
+   ],
+   "simulate_seconds": 29.098,
+   "shots": 2,
+   "counts": {
+    "0 000000000000000": 1,
+    "1 000000000000000": 1
+   },
+   "metadata": {
+    "device": "GPU",
+    "method": "density_matrix",
+    "num_qubits": 15,
+    "cacheblocking": {
+     "chunk_parallel_gpus": 2,
+     "block_bits": 13,
+     "enabled": true
+    },
+    "target_gpus": [
+     0,
+     1
+    ],
+    "cuStateVec_enable": false,
+    "parallel_shots": 1,
+    "parallel_state_update": 4
+   },
+   "ok": true,
+   "ended_by": "ok"
+  },
+  {
+   "name": "statevector-29-ghz-auto",
+   "method": "statevector",
+   "width": 29,
+   "circuit": "ghz",
+   "configuration": "auto",
+   "options": {},
+   "wall_seconds": 5.048,
+   "returncode": 0,
+   "peak_rss_mib": 514,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 29948,
+   "gpu_peak_memory_mib": {
+    "0": 8459.0,
+    "1": 209.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'"
+   ],
+   "simulate_seconds": 4.203,
+   "shots": 256,
+   "counts": {
+    "00000000000000000000000000000": 120,
+    "11111111111111111111111111111": 136
+   },
+   "metadata": {
+    "device": "GPU",
+    "method": "statevector",
+    "num_qubits": 29,
+    "target_gpus": [
+     0,
+     1
+    ],
+    "cuStateVec_enable": false,
+    "parallel_shots": 1,
+    "parallel_state_update": 4
+   },
+   "ok": true,
+   "ended_by": "ok"
+  },
+  {
+   "name": "statevector-29-ghz-blocked",
+   "method": "statevector",
+   "width": 29,
+   "circuit": "ghz",
+   "configuration": "blocked",
+   "options": {
+    "blocking_enable": true,
+    "blocking_qubits": 27,
+    "max_parallel_shots": 1
+   },
+   "wall_seconds": 4.623,
+   "returncode": 0,
+   "peak_rss_mib": 516,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 29919,
+   "gpu_peak_memory_mib": {
+    "0": 6361.0,
+    "1": 6361.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'"
+   ],
+   "simulate_seconds": 3.816,
+   "shots": 256,
+   "counts": {
+    "00000000000000000000000000000": 120,
+    "11111111111111111111111111111": 136
+   },
+   "metadata": {
+    "device": "GPU",
+    "method": "statevector",
+    "num_qubits": 29,
+    "cacheblocking": {
+     "chunk_parallel_gpus": 2,
+     "block_bits": 27,
+     "enabled": true
+    },
+    "target_gpus": [
+     0,
+     1
+    ],
+    "cuStateVec_enable": false,
+    "parallel_shots": 1,
+    "parallel_state_update": 4
+   },
+   "ok": true,
+   "ended_by": "ok"
+  },
+  {
+   "name": "statevector-30-ghz-blocked",
+   "method": "statevector",
+   "width": 30,
+   "circuit": "ghz",
+   "configuration": "blocked",
+   "options": {
+    "blocking_enable": true,
+    "blocking_qubits": 27,
+    "max_parallel_shots": 1
+   },
+   "wall_seconds": 8.077,
+   "returncode": 0,
+   "peak_rss_mib": 518,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 29934,
+   "gpu_peak_memory_mib": {
+    "0": 10461.0,
+    "1": 10507.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'"
+   ],
+   "simulate_seconds": 7.172,
+   "shots": 256,
+   "counts": {
+    "000000000000000000000000000000": 120,
+    "111111111111111111111111111111": 136
+   },
+   "metadata": {
+    "device": "GPU",
+    "method": "statevector",
+    "num_qubits": 30,
+    "cacheblocking": {
+     "chunk_parallel_gpus": 2,
+     "block_bits": 27,
+     "enabled": true
+    },
+    "target_gpus": [
+     0,
+     1
+    ],
+    "cuStateVec_enable": false,
+    "parallel_shots": 1,
+    "parallel_state_update": 4
+   },
+   "ok": true,
+   "ended_by": "ok"
+  },
+  {
+   "name": "statevector-30-ghz-blocked_custatevec",
+   "method": "statevector",
+   "width": 30,
+   "circuit": "ghz",
+   "configuration": "blocked_custatevec",
+   "options": {
+    "blocking_enable": true,
+    "blocking_qubits": 27,
+    "max_parallel_shots": 1,
+    "cuStateVec_enable": true
+   },
+   "wall_seconds": 6.31,
+   "returncode": 0,
+   "peak_rss_mib": 544,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 29929,
+   "gpu_peak_memory_mib": {
+    "0": 10541.0,
+    "1": 10495.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'"
+   ],
+   "simulate_seconds": 5.425,
+   "shots": 256,
+   "counts": {
+    "000000000000000000000000000000": 120,
+    "111111111111111111111111111111": 136
+   },
+   "metadata": {
+    "device": "GPU",
+    "method": "statevector",
+    "num_qubits": 30,
+    "cacheblocking": {
+     "chunk_parallel_gpus": 2,
+     "block_bits": 27,
+     "enabled": true
+    },
+    "target_gpus": [
+     0,
+     1
+    ],
+    "cuStateVec_enable": true,
+    "parallel_shots": 1,
+    "parallel_state_update": 4
+   },
+   "ok": true,
+   "ended_by": "ok"
+  },
+  {
+   "name": "statevector-30-ghz-blocked_gpu0",
+   "method": "statevector",
+   "width": 30,
+   "circuit": "ghz",
+   "configuration": "blocked_gpu0",
+   "options": {
+    "blocking_enable": true,
+    "blocking_qubits": 27,
+    "max_parallel_shots": 1,
+    "target_gpus": [
+     0
+    ]
+   },
+   "wall_seconds": 25.51,
+   "returncode": 0,
+   "peak_rss_mib": 6573,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 23798,
+   "gpu_peak_memory_mib": {
+    "0": 14629.0,
+    "1": 209.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'"
+   ],
+   "simulate_seconds": 24.694,
+   "shots": 256,
+   "counts": {
+    "000000000000000000000000000000": 120,
+    "111111111111111111111111111111": 136
+   },
+   "metadata": {
+    "device": "GPU",
+    "method": "statevector",
+    "num_qubits": 30,
+    "cacheblocking": {
+     "chunk_parallel_gpus": 2,
+     "block_bits": 27,
+     "enabled": true
+    },
+    "target_gpus": [
+     0
+    ],
+    "cuStateVec_enable": false,
+    "parallel_shots": 1,
+    "parallel_state_update": 4
+   },
+   "ok": true,
+   "ended_by": "ok"
+  },
+  {
+   "name": "statevector-30-dynamic-blocked",
+   "method": "statevector",
+   "width": 30,
+   "circuit": "dynamic",
+   "configuration": "blocked",
+   "options": {
+    "blocking_enable": true,
+    "blocking_qubits": 27,
+    "max_parallel_shots": 1
+   },
+   "wall_seconds": 7.755,
+   "returncode": -6,
+   "peak_rss_mib": 437,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 29949,
+   "gpu_peak_memory_mib": {
+    "0": 10461.0,
+    "1": 10461.0
+   },
+   "stderr_tail": [
+    "terminate called after throwing an instance of 'std::runtime_error'",
+    "terminate called after throwing an instance of 'std::runtime_error'",
+    "  what():  Invalid jump destination:\"if_0_end\".",
+    "  what():  Invalid jump destination:\"if_0_end\"."
+   ],
+   "ok": false,
+   "ended_by": "signal 6"
+  },
+  {
+   "name": "statevector-30-dynamic_lowered-blocked",
+   "method": "statevector",
+   "width": 30,
+   "circuit": "dynamic_lowered",
+   "configuration": "blocked",
+   "options": {
+    "blocking_enable": true,
+    "blocking_qubits": 27,
+    "max_parallel_shots": 1
+   },
+   "wall_seconds": 47.437,
+   "returncode": 0,
+   "peak_rss_mib": 517,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 29956,
+   "gpu_peak_memory_mib": {
+    "0": 10461.0,
+    "1": 10461.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'"
+   ],
+   "simulate_seconds": 46.562,
+   "shots": 2,
+   "counts": {
+    "0 000000000000000000000000000000": 1,
+    "1 000000000000000000000000000000": 1
+   },
+   "metadata": {
+    "device": "GPU",
+    "method": "statevector",
+    "num_qubits": 30,
+    "cacheblocking": {
+     "chunk_parallel_gpus": 2,
+     "block_bits": 27,
+     "enabled": true
+    },
+    "target_gpus": [
+     0,
+     1
+    ],
+    "cuStateVec_enable": false,
+    "parallel_shots": 1,
+    "parallel_state_update": 4
+   },
+   "ok": true,
+   "ended_by": "ok"
+  },
+  {
+   "name": "statevector-30-ghz-auto",
+   "method": "statevector",
+   "width": 30,
+   "circuit": "ghz",
+   "configuration": "auto",
+   "options": {},
+   "wall_seconds": 325.614,
+   "returncode": -9,
+   "peak_rss_mib": 30155,
+   "timed_out": false,
+   "oom_kills": 1,
+   "min_mem_available_mib": 204,
+   "gpu_peak_memory_mib": {
+    "0": 209.0,
+    "1": 209.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'"
+   ],
+   "ok": false,
+   "ended_by": "oom_kill"
+  }
+ ]
+}

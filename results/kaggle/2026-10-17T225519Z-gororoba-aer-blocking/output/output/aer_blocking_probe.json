@@ -1,0 +1,173 @@
+{
+ "schema": "aer-blocking-probe-v1",
+ "machine": {
+  "gpus": [
+   {
+    "index": "0",
+    "name": "Tesla T4",
+    "driver_version": "580.178.04",
+    "memory.total": "15360",
+    "compute_cap": "7.5"
+   },
+   {
+    "index": "1",
+    "name": "Tesla T4",
+    "driver_version": "580.178.04",
+    "memory.total": "15360",
+    "compute_cap": "7.5"
+   }
+  ],
+  "cuda_driver": "13.0",
+  "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+  "cpus": 4,
+  "host_memory": {
+   "mem_total_mib": 32099,
+   "cgroup_memory_max": "32212254720"
+  },
+  "packages": {
+   "qiskit": "2.5.2",
+   "qiskit-aer": null,
+   "qiskit-aer-gpu": null,
+   "qiskit-aer-gpu-cu11": "0.17.2",
+   "cuquantum-cu11": "24.8.0",
+   "custatevec-cu11": "1.6.0.post1",
+   "cutensornet-cu11": "2.5.0",
+   "cutensor-cu11": "2.2.0",
+   "cuquantum-python-cu11": null,
+   "nvidia-cuda-runtime-cu11": "11.8.89",
+   "numpy": "2.5.4",
+   "arch:python-qiskit-aer-cuda": null
+  },
+  "qiskit_aer": {
+   "version": "0.17.2",
+   "owners": [
+    "qiskit-aer-gpu-cu11"
+   ]
+  }
+ },
+ "gpu_memory_mib": 15360,
+ "blocking_qubits": {
+  "statevector": 27,
+  "density_matrix": 13
+ },
+ "seed": 20261017,
+ "trials": [
+  {
+   "name": "density_matrix-14-ghz-auto",
+   "method": "density_matrix",
+   "width": 14,
+   "circuit": "ghz",
+   "configuration": "auto",
+   "options": {},
+   "wall_seconds": 1.833,
+   "returncode": 0,
+   "peak_rss_mib": 515,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 29932,
+   "gpu_peak_memory_mib": {
+    "0": 4313.0,
+    "1": 209.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'"
+   ],
+   "simulate_seconds": 1.03,
+   "shots": 256,
+   "counts": {
+    "00000000000000": 120,
+    "11111111111111": 136
+   },
+   "metadata": {
+    "device": "GPU",
+    "method": "density_matrix",
+    "num_qubits": 14,
+    "target_gpus": [
+     0,
+     1
+    ],
+    "cuStateVec_enable": false,
+    "parallel_shots": 1,
+    "parallel_state_update": 4
+   },
+   "ok": true,
+   "ended_by": "ok"
+  },
+  {
+   "name": "density_matrix-14-ghz-blocked",
+   "method": "density_matrix",
+   "width": 14,
+   "circuit": "ghz",
+   "configuration": "blocked",
+   "options": {
+    "blocking_enable": true,
+    "blocking_qubits": 13,
+    "max_parallel_shots": 1
+   },
+   "wall_seconds": 2.103,
+   "returncode": 0,
+   "peak_rss_mib": 517,
+   "timed_out": false,
+   "oom_kills": 0,
+   "min_mem_available_mib": 29915,
+   "gpu_peak_memory_mib": {
+    "0": 3287.0,
+    "1": 3287.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'"
+   ],
+   "simulate_seconds": 1.355,
+   "shots": 256,
+   "counts": {
+    "00000000000000": 120,
+    "11111111111111": 136
+   },
+   "metadata": {
+    "device": "GPU",
+    "method": "density_matrix",
+    "num_qubits": 14,
+    "cacheblocking": {
+     "chunk_parallel_gpus": 2,
+     "block_bits": 13,
+     "enabled": true
+    },
+    "target_gpus": [
+     0,
+     1
+    ],
+    "cuStateVec_enable": false,
+    "parallel_shots": 1,
+    "parallel_state_update": 4
+   },
+   "ok": true,
+   "ended_by": "ok"
+  },
+  {
+   "name": "density_matrix-15-ghz-auto",
+   "method": "density_matrix",
+   "width": 15,
+   "circuit": "ghz",
+   "configuration": "auto",
+   "options": {},
+   "wall_seconds": 67.178,
+   "returncode": -9,
+   "peak_rss_mib": 30155,
+   "timed_out": false,
+   "oom_kills": 2,
+   "min_mem_available_mib": 298,
+   "gpu_peak_memory_mib": {
+    "0": 209.0,
+    "1": 209.0
+   },
+   "stderr_tail": [
+    "Error in sitecustomize; set PYTHONVERBOSE for traceback:",
+    "ModuleNotFoundError: No module named 'wrapt'"
+   ],
+   "ok": false,
+   "ended_by": "oom_kill"
+  }
+ ]
+}
