@@ -310,7 +310,7 @@ T0_C1 = 0.954
 # batch and each depth shares its job with the other two. LADDER_ISO_QUBITS
 # takes one qubit of each pair, no two coupled: in readout-iso-* every excited
 # qubit has each coupled neighbor in |0>, while readout-1 excites all 17.
-LADDER_SHOTS = 65536
+LADDER_SHOTS = 131072
 LADDER_DEPTHS = (1, 5, 9)
 LADDER_ISO_QUBITS = (1, 13, 14)
 # readout-iso-x prepares |1> with X, readout-iso-hzh with H Z H, the gate path
