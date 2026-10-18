@@ -1063,23 +1063,22 @@ def prepare(
         simulated = iter(list(pool.map(simulate_choice, ordered)))
     for candidate_index, (choices, configuration) in enumerate(candidates):
         predictions: dict[str, tuple[tuple[float, ...], ...]] = {}
-        ideal_cache = {}
         for choice in choices:
-            for entry in choice.entries:
-                for replica in entry.replicas:
-                    if args.family == "et-row":
-                        from et_planning import native_signature
+            if args.family == "et-row":
+                from et_planning import validate_ideals
 
-                        key = native_signature(replica)
-                        if key not in ideal_cache:
-                            ideal_cache[key] = ideal_compiled_probabilities(replica)
-                        actual = ideal_cache[key]
-                    else:
+                try:
+                    validate_ideals(choice)
+                except ValueError as error:
+                    raise runtime.LiveRunError(str(error)) from error
+            else:
+                for entry in choice.entries:
+                    for replica in entry.replicas:
                         actual = ideal_compiled_probabilities(replica)
-                    if not np.allclose(actual, entry.ideal, rtol=0, atol=1e-10):
-                        raise runtime.LiveRunError(
-                            f"{entry.name}: compiled labeled ideal differs from its exact oracle"
-                        )
+                        if not np.allclose(actual, entry.ideal, rtol=0, atol=1e-10):
+                            raise runtime.LiveRunError(
+                                f"{entry.name}: compiled labeled ideal differs from its exact oracle"
+                            )
             evidence, noisy = next(simulated)
             local_compute.append_batches(simulators[id(choice.snap)], evidence)
             predictions.update(
@@ -1302,7 +1301,8 @@ def prepare(
                 if per_pub
                 else "bounded routed candidates and uniform shot tiers; global optimality is unclaimed"
             ),
-        },
+        }
+        | ({"et_calibrated_candidates": et_screens} if args.family == "et-row" else {}),
         "optimizer_settings": settings(args),
         **(
             {

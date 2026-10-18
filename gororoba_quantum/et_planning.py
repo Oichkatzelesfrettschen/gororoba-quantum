@@ -10,9 +10,10 @@ from typing import Any
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.exceptions import QiskitError
-from qiskit.quantum_info import Operator
+from qiskit.quantum_info import Operator, Statevector
 from qiskit.transpiler import Target
 
+import parallel
 from et_campaign import configuration, et_group
 from experiments import Group
 from packing import Replica
@@ -67,6 +68,50 @@ def native_signature(circuit: QuantumCircuit) -> tuple:
     )
 
 
+def terminal_probabilities(circuit: QuantumCircuit) -> np.ndarray:
+    """Evaluate the static six-wire acquisition without enumerating measurement branches."""
+    writers = measurement_map(circuit)
+    positions = {physical: bit for bit, physical in enumerate(sorted(writers))}
+    compact = QuantumCircuit(6)
+    compact.global_phase = circuit.global_phase
+    measuring = False
+    for instruction in circuit.data:
+        operation = instruction.operation
+        if operation.name in ("barrier", "delay"):
+            continue
+        if operation.name == "measure":
+            measuring = True
+            continue
+        if measuring or instruction.clbits or operation.name == "reset" or hasattr(operation, "blocks"):
+            raise ValueError("ET static law requires only terminal measurements")
+        physical = [circuit.find_bit(qubit).index for qubit in instruction.qubits]
+        if any(qubit not in positions for qubit in physical):
+            raise ValueError("ET static law exceeds its six measured wires")
+        compact.append(operation, [positions[qubit] for qubit in physical])
+    probabilities = Statevector.from_instruction(compact).probabilities()
+    rows = [
+        sum(((outcome >> bit) & 1) << positions[physical] for bit, physical in enumerate(writers))
+        for outcome in range(64)
+    ]
+    return probabilities[rows]
+
+
+def validate_ideals(choice: Any) -> None:
+    """Check every member law while evaluating independent identical programs only once."""
+    programs: dict[tuple, QuantumCircuit] = {}
+    for entry in choice.entries:
+        for replica in entry.replicas:
+            programs.setdefault(native_signature(replica), replica)
+    signatures = list(programs)
+    with bulk_packing():
+        laws = parallel.ordered_map(terminal_probabilities, list(programs.values()), min_items=2)
+    references = dict(zip(signatures, laws, strict=True))
+    for entry in choice.entries:
+        for replica in entry.replicas:
+            if not np.allclose(references[native_signature(replica)], entry.ideal, rtol=0, atol=1e-10):
+                raise ValueError(f"{entry.name}: compiled labeled ideal differs from its exact oracle")
+
+
 def operator_error(native: QuantumCircuit, logical: QuantumCircuit, layout: list[int]) -> float:
     """Compare arbitrary inputs on six active wires, retaining actual output permutations and phase."""
     indices = {physical: logical_bit for logical_bit, physical in enumerate(layout)}
@@ -87,6 +132,10 @@ def operator_error(native: QuantumCircuit, logical: QuantumCircuit, layout: list
     return float(
         np.max(abs(Operator(compact).data[rows] - Operator(logical.remove_final_measurements(inplace=False)).data))
     )
+
+
+def _operator_job(arguments: tuple[QuantumCircuit, QuantumCircuit, list[int]]) -> float:
+    return operator_error(*arguments)
 
 
 def bind_controls(choice: Any, definition: dict[str, Any], runtime: Any) -> None:
@@ -208,7 +257,7 @@ def family_candidates(
                 templates = {}
                 isas = []
                 checked = set()
-                operator_errors = []
+                operator_jobs = []
                 for member in group.members:
                     if config["members"][member.name]["kind"] in ("signal", "dephased"):
                         if id(member.circuit) not in templates:
@@ -222,16 +271,16 @@ def family_candidates(
                         )
                         if binding_key not in checked:
                             logical = member.circuit.assign_parameters(member.binding or {})
-                            error = operator_error(native, logical, choice.layout)
-                            if error > 1e-10:
-                                raise ValueError(f"{member.name}: native arbitrary-input error {error}")
-                            operator_errors.append(error)
+                            operator_jobs.append((native, logical, choice.layout))
                             checked.add(binding_key)
                         isas.append(native)
                     else:
                         # bind_controls replaces every control with an actual
                         # native readout or decoder twin before ISA admission.
                         isas.append(isas[0])
+                operator_errors = parallel.ordered_map(_operator_job, operator_jobs, min_items=2)
+                if max(operator_errors) > 1e-10:
+                    raise ValueError(f"native arbitrary-input error {max(operator_errors)}")
                 choice.group = group
                 choice.isas = isas
                 bind_controls(choice, config, runtime)

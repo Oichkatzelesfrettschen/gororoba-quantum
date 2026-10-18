@@ -1420,6 +1420,13 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "adjustment. Material control discrepancies withhold admission. Bit-zero marker detection does "
             "not certify full-row fidelity. Native mock outcomes are excluded from scientific analysis.",
             "",
+            record["family_configuration"]["sampling_assumption"],
+            "",
+            "The calibrated design screen applies the collector at the declared allocation to plug-in model "
+            "histograms. The raw-observable power calculation below is separate and supplies no calibrated "
+            "power guarantee under physical errors. Half of alpha 0.05 covers simultaneous response-diagonal "
+            "uncertainty; Holm uses the remaining half for the six endpoints.",
+            "",
         ]
     if family == "folded-correction":
         return [

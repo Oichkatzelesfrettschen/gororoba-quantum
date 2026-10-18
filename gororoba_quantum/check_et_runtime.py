@@ -47,6 +47,21 @@ class ETRuntimeTests(unittest.TestCase):
             live_run._compile(QuantumCircuit(1), snapshot, 230)
         self.assertNotIn("qubits_initially_zero", compile_call.call_args.kwargs)
 
+    def test_static_law_matches_branch_reference_and_rejects_mid_measurement(self) -> None:
+        import numpy as np
+
+        from et_planning import terminal_probabilities
+        from qpe_diagnostics import ideal_compiled_probabilities
+
+        circuit = row_circuit(ETSpec(32, 9, 2), basis="X", mask=1)
+        # A full-device wrapper carries idle physical wires and permuted roles.
+        native = QuantumCircuit(156, 6)
+        native.compose(circuit, qubits=[83, 96, 84, 81, 82, 103], clbits=[5, 4, 3, 2, 1, 0], inplace=True)
+        np.testing.assert_allclose(terminal_probabilities(native), ideal_compiled_probabilities(native), atol=1e-12)
+        native.x(83)
+        with self.assertRaisesRegex(ValueError, "terminal"):
+            terminal_probabilities(native)
+
     def test_incomplete_et_case_is_refused(self) -> None:
         import tempfile
         from pathlib import Path
