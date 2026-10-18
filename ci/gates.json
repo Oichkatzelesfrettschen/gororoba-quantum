@@ -3839,6 +3839,14 @@
    "name": "core-441",
    "seconds": 2.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --compare-parts docs/evidence/ghost_error_scale/part_a.json --result results/kaggle/2026-10-18T055207Z-gororoba-ghost-branching-sweep/output/output/ghost_error_scale_branching.json --require-tolerance && \"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --compare-parts docs/evidence/ghost_error_scale/part_b.json --result results/kaggle/2026-10-18T055207Z-gororoba-ghost-branching-sweep/output/output/ghost_error_scale_branching.json --require-tolerance && \"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --compare-parts docs/evidence/ghost_error_scale/part_c.json --result results/kaggle/2026-10-18T055207Z-gororoba-ghost-branching-sweep/output/output/ghost_error_scale_branching.json --require-tolerance",
+   "name": "core-453",
+   "seconds": 3.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
