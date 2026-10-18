@@ -26,20 +26,17 @@ index).
 - [I] At N = 16384 shots the resolution is 6.1e-5 cycles per shot, so a period
   of 49.95 shots and a period of exactly 50 shots are not separated by one
   record.
-- [I] A 50 Hz line at 0.0200 cycles per shot needs T_shot = 0.400 ms; a 60 Hz
-  line needs 0.333 ms. [usage.md](usage.md) records a Tuna shot dominated by
-  the 500 us initialization, with a fitted execution time of 0.51 ms per shot,
-  and [backends.md](backends.md) lists initialization of 500 or 200 us. At
-  0.51 ms the same line sits at 39 Hz, between the two mains frequencies and
-  matching neither. The fit covers job execution time and not the interval
-  between shots, so the conversion stays open until T_shot is measured.
 - [I] A source locked to wall-clock time moves in cycles per shot when T_shot
-  changes. A source locked to the shot count stays at a fixed number of cycles
-  per shot. A change of T_shot by inserted `wait` cycles (20 ns each) therefore
-  separates the two without any physical model; the measurable shift is
-  proportional to the relative change of T_shot, and a 20-CZ ladder adds 1.2 us to
-  a 0.4 ms shot, a 0.3 percent change, which a 16384-shot record only
-  just resolves, so a deliberate wait of tens of microseconds is the usable lever.
+  changes, and a source locked to the shot count does not. The retained
+  readout ring-down arms already vary T_shot: they differ only in a wait of
+  tau cycles of 20 ns. Their peak frequency rises with tau at 50.4 +- 4.0 Hz
+  over 31 jobs with one intercept per batch, 12.7 standard errors from the
+  shot-locked 0 Hz and 0.1 from 50 Hz ([tuna-17.md](tuna-17.md), claim
+  `qi-tuna17-shot-record-50hz-line`). At 50 Hz the observed 0.0200 to 0.0202
+  cycles per shot puts one shot at 402.8 to 404.6 us. The fitted 0.51 ms per
+  shot of [usage.md](usage.md) therefore prices job execution time, about
+  0.1 ms per shot beyond the repetition period, and does not measure the
+  interval between shots.
 
 ## 1. Flux-pulsed CZ gates and their sensitivity to flux amplitude and noise
 
@@ -174,7 +171,7 @@ observation; it does not rank the candidates.
 
 | Candidate | Predicts | Measurement that tests it |
 | --- | --- | --- |
-| Mains pickup on flux lines (wall-clock line) | Line frequency in Hz fixed; in cycles per shot proportional to 1 / T_shot; odd harmonics for a distorted or clipped waveform; amplitude proportional to the flux sensitivity d phi / dA of the CZ; phase random from job to job unless the shot loop locks to the line | Repeat the ladder with deliberate `wait` padding to change T_shot and track the line in cycles per shot; compare phase across jobs; test for 50 and 60 Hz relation using T_shot from job timing |
+| Mains pickup on flux lines (wall-clock line) | Line frequency in Hz fixed; in cycles per shot proportional to 1 / T_shot; odd harmonics for a distorted or clipped waveform; amplitude proportional to the flux sensitivity d phi / dA of the CZ; phase random from job to job unless the shot loop locks to the line | Repeat the ladder with deliberate `wait` padding to change T_shot and track the line in cycles per shot; compare phase across jobs; measured: the ring-down wait ladder gives 50.4 +- 4.0 Hz in wall-clock time |
 | Control-stack sequencer or shot-loop timing (shot-count line) | Line at an exact integer period in shots, independent of T_shot and of the circuit; harmonics at exact multiples; may follow a batch or buffer size | Same wait-padding scan (line stays at the same cycles per shot); vary shots per job and per batch and check whether the period follows a count; check for a line in circuits of equal duration with no flux pulse (the readout and single-qubit circuits already show none) |
 | Pulse-tube or other mechanical vibration | Line fixed in Hz with a frequency near the cryocooler stroke and its harmonics; coupling through flux-line or wire motion, so amplitude depends on the sensitivity of each gate's phase and not on the CZ count alone | Convert the line to Hz using T_shot and compare with the cooler frequency of the installation, which the platform pages do not publish; look for a line in idle (wait-only) circuits, where Klimov-type frequency noise would show |
 | TLS telegraph noise and 1/f flux noise | Lorentzian or 1/f spectrum at millihertz to hertz, qubit-specific, present in idle and readout circuits as frequency or T1 jumps, not a sharp line with a third harmonic and not common-mode across distant pairs | Spectrum of the idle-circuit record; cross-spectrum between distant qubits; the shape of the peak against a Lorentzian |
