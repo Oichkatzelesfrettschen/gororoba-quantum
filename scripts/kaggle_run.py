@@ -443,6 +443,9 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
                 dataset_slugs.append(slug)
             gpu_env["find_links"] = {"dataset": record["ref"], "wheel": wheel}
             gpu_env["wheel_sha256"] = digest
+            # The recipe's DT_RPATH names the pinned CUDA pip wheels, so the
+            # preflight requires every non-driver CUDA library from the venv.
+            gpu_env["cuda_in_venv"] = True
         extra = [pin for group in getattr(args, "gpu_env_with", []) for pin in GPU_ENV_GROUPS[group]]
         if extra:
             gpu_env["extra_pins"] = extra
@@ -954,6 +957,7 @@ def _gpu_aer_self_test(data: str) -> None:
         "gpus": MACHINE_GPUS[GPU_MACHINE],
         "find_links": {"dataset": ref, "wheel": wheel},
         "wheel_sha256": digest,
+        "cuda_in_venv": True,
     }
     require(
         job["gpu_env"] == submission["gpu_env"] == cu13_spec
@@ -983,6 +987,29 @@ def _gpu_aer_self_test(data: str) -> None:
         ("a missing cuStateVec wheel", {**report, "installed": {**pins, "custatevec-cu13": None}}),
     ):
         require(bool(kernel_main.gpu_env_failures(pins, changed, 2, 2)), f"gpu_env_failures passes {change}")
+    # With the venv as cuda_root, a library the loader took from the image
+    # fails while the host driver's libcuda.so passes; the retained T4 run's
+    # report, mapped inside the kernel's venv, holds the rule.
+    venv = kernel_main.GPU_VENV
+    site = venv / "lib/python3.13/site-packages"
+    report["cuda_libraries"] = [
+        str(site / "cuquantum/lib/libcustatevec.so.1"),
+        str(site / "nvidia/cu13/lib/libcudart.so.13"),
+        "/usr/local/nvidia/lib64/libcuda.so.580.178.04",
+    ]
+    require(kernel_main.gpu_env_failures(pins, report, 2, 2, venv) == [], "venv CUDA libraries fail")
+    for change, libraries in (
+        ("an image cuStateVec", [*report["cuda_libraries"], "/usr/local/cuda/lib64/libcustatevec.so.1"]),
+        ("no mapped CUDA library", []),
+    ):
+        changed = {**report, "cuda_libraries": libraries}
+        require(bool(kernel_main.gpu_env_failures(pins, changed, 2, 2, venv)), f"gpu_env_failures passes {change}")
+    t4_run = ROOT / "results/kaggle/2026-10-18T072718Z-gororoba-aer-gpu-cu13-config"
+    retained = json.loads((t4_run / "output/output/gpu_env.json").read_text(encoding="utf-8"))
+    require(
+        kernel_main.gpu_env_failures(retained["pins"], retained["report"], 2, retained["listed_gpus"], venv) == [],
+        f"the retained cu13 T4 report fails the venv rule: {retained['report'].get('cuda_libraries')}",
+    )
 
     payload = b"self-test wheel bytes"
     kernel_spec = {**cu13_spec, "wheel_sha256": sha256(payload)}
@@ -1023,7 +1050,9 @@ def _gpu_aer_self_test(data: str) -> None:
         # index can supply qiskit-aer-gpu-cu13; every other pin stays exact.
         mounted.write_bytes(payload)
         calls: dict[str, dict[str, str]] = {}
-        holding = json.dumps({**report, "installed": dict(pins)})
+        scratch_site = Path(scratch) / "venv" / site.relative_to(venv)
+        scratch_libraries = [str(scratch_site / Path(name).relative_to(site)) for name in report["cuda_libraries"][:2]]
+        holding = json.dumps({**report, "installed": dict(pins), "cuda_libraries": scratch_libraries})
 
         def recorded(name: str, *args: str, **kwargs: Any) -> str:
             calls[name] = dict(kwargs.get("env") or {})
@@ -1040,6 +1069,22 @@ def _gpu_aer_self_test(data: str) -> None:
             and record["wheel"]["find_links"] == str(wheelhouse),
             f"the verified wheel's install: {install} {record.get('failures')}",
         )
+
+        # Every attached artifact, not only the GPU wheel, is checked against
+        # its retained digest before the entry runs.
+        entry = {"ref": ref, "file": wheel, "sha256": sha256(payload)}
+        checked = kernel_main.verify_artifacts([entry], inputs)
+        require(
+            checked == {ref: {"path": str(mounted), "sha256": entry["sha256"], "size": len(payload)}},
+            f"a matching artifact reads {checked}",
+        )
+        _expect_refusal(
+            lambda: kernel_main.verify_artifacts([{**entry, "ref": "owner/absent"}], inputs),
+            "0 files named",
+            "an artifact absent from the inputs",
+        )
+        mounted.write_bytes(payload + b"!")
+        _expect_refusal(lambda: kernel_main.verify_artifacts([entry], inputs), "has sha256", "a changed artifact")
 
     with tempfile.TemporaryDirectory() as scratch:
         path = Path(scratch) / wheel
