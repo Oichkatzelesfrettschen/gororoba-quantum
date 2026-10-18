@@ -1219,6 +1219,65 @@ def _verify_state_prep_family() -> None:
     _require(len(metadata["observable_contracts"]) == 42, "the plan lost a per-qubit endpoint")
     rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
     _require([g.name for g in rebuilt] == [c.group.name for c in choices], "record_groups lost the per-qubit groups")
+    _verify_shot_ceiling(snapshot, qubits)
+    subset_args = _args(
+        "state-prep-control",
+        layout=qubits[:7],
+        state_prep_arms=["prep0"],
+        optimize=True,
+        shot_tiers=[4096, 8192],
+        optimizer_candidates=1,
+        max_execution_seconds=60,
+        max_total_execution_seconds=120.0,
+        reserve_seconds=0.0,
+    )
+    subset = qpu_planning.family_candidates(live_run, [snapshot], subset_args, {})
+    _require(len(subset) == 1, "the prep0-only selection produced no candidate")
+    subset_choices, subset_configuration = subset[0]
+    _require(list(subset_configuration["arms"]) == ["prep0"], f"arms recorded {subset_configuration['arms']}")
+    _require([pub.kind for pub in live_run.execution_pubs(subset_choices)] == ["static"], "prep0 alone left one PUB")
+    _require(qpu_planning.settings(subset_args)["state_prep_arms"] == ["prep0"], "the policy lost the arm selection")
+    _require("state_prep_arms" not in qpu_planning.settings(args), "an omitted selection entered the policy")
+
+
+def _verify_shot_ceiling(snapshot: Any, qubits: list[int]) -> None:
+    """Shot tiers above configuration().max_shots leave the plan, and a batch above it refuses."""
+    reported = qpu_planning.shot_ceiling(snapshot.backend)
+    _require(reported == 100000, f"FakeFez reports max_shots {reported}")
+    ceiling = 100000
+    _require(not qpu_planning.shot_ceiling_violations(snapshot.backend, ceiling), "max_shots itself was refused")
+    _require(bool(qpu_planning.shot_ceiling_violations(snapshot.backend, ceiling + 1)), "max_shots + 1 was admitted")
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
+
+    def tier_args(tiers: list[int]) -> Any:
+        return _args(
+            "state-prep-control",
+            layout=qubits,
+            optimize=True,
+            shot_tiers=tiers,
+            optimizer_candidates=1,
+            max_execution_seconds=60,
+            max_total_execution_seconds=120.0,
+            reserve_seconds=0.0,
+        )
+
+    trace: dict[str, Any] = {}
+    args = tier_args([8192, ceiling + 1])
+    with patch.object(live_run, "simulate", _ideal_predictions):
+        _selected, metadata = qpu_planning.prepare(live_run, [snapshot], args, usage, trace)
+    planned = {int(row["proxy_metadata"]["shots"]) for row in metadata["optimization"]["candidates"]}
+    _require(planned == {8192} and args.shots == 8192, f"the optimizer planned tiers {planned}")
+    _require(
+        trace.get("shot_ceiling") == {"max_shots": ceiling, "dropped_tiers": [ceiling + 1]},
+        f"the dropped tier left no trace: {trace.get('shot_ceiling')}",
+    )
+    try:
+        with patch.object(live_run, "simulate", _ideal_predictions):
+            qpu_planning.prepare(live_run, [snapshot], tier_args([ceiling + 1]), usage, {})
+    except live_run.LiveRunError as error:
+        _require("max_shots" in str(error), f"the planner refused for another reason: {error}")
+    else:
+        raise RuntimeError("a plan whose every tier exceeds max_shots was admitted")
 
 
 def _verify_prep_excitation() -> None:
@@ -1341,7 +1400,8 @@ def _verify_state_prep_only() -> None:
         _verify_state_prep_family()
     print(
         "QPU planning: state-prep-control pins each arm to its named qubit, fuses two static PUBs and one "
-        "dynamic PUB over every qubit, refuses the retained layout off its backend, and admits 8192 shots"
+        "dynamic PUB over every qubit, refuses the retained layout off its backend, admits 8192 shots and drops "
+        "tiers above max_shots"
     )
 
 
