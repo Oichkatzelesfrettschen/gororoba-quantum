@@ -14813,6 +14813,48 @@
    "gate_changes": {}
   },
   {
+   "case": "results/quantum_inspire/cases/qx_reset_phase/batch-00/reset_phase.cq",
+   "sha256": "7d4ac09ba0430ec9e4435a350e60a413ba191bbd15f555292e2b3983dfd6a80c",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "f5432bbe2595eb55a675b17929b34021f81ca36e745e473034557ae71d719e7e",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/qx_reset_phase/batch-00/control_x.cq",
+   "sha256": "f5ec426d4c47de527927df4061cffe051b8ae68faf38a02414c59e3e61349c13",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "d088008d09eb4b9209facb94811e8a309f6d1e9638c00fb6f7d9c54ac07f5982",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/qx_reset_phase/batch-00/already_zero.cq",
+   "sha256": "c51eac1c974959e2bcc3cd07fc944fca57b494154ec64e99950671674ed99b87",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "69c1d853a837640ef76fce5fe233bda089e9a10996c0281f22fb9a177adb2251",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
    "case": "results/quantum_inspire/cases/readout_ringdown_qx_P/batch-00/readout-0.cq",
    "sha256": "465d496d83a2716c6341dee71174e45e966077868068d14c67977780d74aede9",
    "backend": "QXsinglenodesimulator",

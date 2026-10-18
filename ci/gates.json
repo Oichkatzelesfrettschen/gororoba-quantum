@@ -3975,6 +3975,30 @@
    "name": "core-453",
    "seconds": 3.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -O -W error scripts/qx_reset_phase_probe.py --check results/quantum_inspire/cases",
+   "name": "core-455",
+   "seconds": 0.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --replay results/quantum_inspire/qx_reset_phase_analysis.json && \"$PYTHON\" -B -O -W error scripts/qx_reset_phase_probe.py --replay results/quantum_inspire/qx_reset_phase_analysis.json",
+   "name": "core-456",
+   "seconds": 0.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --self-test && \"$PYTHON\" -B -O -W error scripts/qx_reset_phase_probe.py --self-test",
+   "name": "core-457",
+   "seconds": 0.3,
+   "tier": "pr"
   }
  ],
  "excluded": [
