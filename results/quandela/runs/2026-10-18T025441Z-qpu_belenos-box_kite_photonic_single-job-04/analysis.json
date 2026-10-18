@@ -1,0 +1,70 @@
+{
+ "blocks": [
+  {
+   "a": 0.275903136,
+   "a_wilson95": [
+    0.263735113,
+    0.288412645
+   ],
+   "config": "two_label-04",
+   "dark_corrected": {
+    "a": 0.275903136,
+    "expected_dark_in_block": 0.0,
+    "expected_dark_outside": 656.6,
+    "in_block": 0.520046245
+   },
+   "in_block": 0.5038,
+   "in_block_wilson95": [
+    0.494000885,
+    0.513596196
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 0,
+   "one_click_by_mode": [
+    260,
+    1130,
+    1770,
+    1878
+   ],
+   "one_click_outside_block": 4962,
+   "one_click_outside_by_mode": {
+    "0": 129,
+    "1": 55,
+    "11": 58,
+    "12": 157,
+    "13": 22,
+    "14": 243,
+    "15": 278,
+    "16": 261,
+    "17": 1720,
+    "18": 1110,
+    "19": 769,
+    "5": 92,
+    "8": 68
+   },
+   "other_multi_click": 0,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.724096864
+  }
+ ],
+ "cases_sha256": "d7632a78edceaec2cf4d745f83e81af902950dfda1f3921ab925b53a16dbc4bc",
+ "compiled": {
+  "distinct": 1,
+  "iterations": [],
+  "job": {
+   "chars": 16250,
+   "sha256": "9bbbaf63c8ec6bacf23fd5e83cbe023fbf5b8f93257c7876506f4da6773f21eb"
+  }
+ },
+ "job_id": "7af74302-a3b3-4be3-82f4-59a292e90ee2",
+ "logical_perf": 1,
+ "noise": ":PCVL:NoiseModel:{\"g2\": 0.011000000000000001, \"indistinguishability\": 0.5760000000000001, \"transmittance\": 0.0287}",
+ "physical_perf": 0.018722251603629347,
+ "platform": "qpu:belenos",
+ "result_sha256": "8c54ddda4c4b0cbd212480f6729af0b7f3515d4f0f4456da25f0137368a98eeb",
+ "run": "2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04",
+ "samples": 10000,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 10000,
+ "status": "completed"
+}

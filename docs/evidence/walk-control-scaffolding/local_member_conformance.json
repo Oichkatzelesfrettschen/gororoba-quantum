@@ -9,7 +9,7 @@
  ],
  "optimization_level": 3,
  "seed_transpiler": 11,
- "groups": 209,
+ "groups": 216,
  "superseded_configurations": [
   {
    "run": "results/live/2026-10-13T163154.032617Z",
@@ -17,7 +17,7 @@
    "missing_field": "measure_dt"
   }
  ],
- "distinct_members": 1496,
+ "distinct_members": 1503,
  "entangling_members": 950,
  "unchecked": {},
  "members": [
@@ -3431,6 +3431,83 @@
   {
    "member": "spc_reset_q70",
    "digest": "52c65227d48b8cf0",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_history_q104",
+   "digest": "d3fcd0b86f3740a4",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_history_q105",
+   "digest": "d3fcd0b86f3740a4",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_history_q106",
+   "digest": "d3fcd0b86f3740a4",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_history_q117",
+   "digest": "d3fcd0b86f3740a4",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_history_q124",
+   "digest": "d3fcd0b86f3740a4",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_history_q125",
+   "digest": "d3fcd0b86f3740a4",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_history_q126",
+   "digest": "d3fcd0b86f3740a4",
    "kind": "dynamic_law",
    "templated": false,
    "law": "point_mass",

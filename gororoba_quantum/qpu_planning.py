@@ -25,7 +25,9 @@ from diagnostic_experiments import (
     N21_FAMILIES,
     PATCH_FAMILIES,
     STATE_PREP_ARM_STEPS,
+    STATE_PREP_DYNAMIC_ARMS,
     STATE_PREP_FAMILY,
+    STATE_PREP_HISTORY_ARM,
     STATE_PREP_SOURCE_RECORD,
     family_contracts,
     folded_group,
@@ -562,7 +564,8 @@ def state_prep_candidates(
     except ValueError as error:
         raise runtime.LiveRunError(f"state-prep-control arms: {error}") from error
     groups = state_prep_groups(qubits, arms)
-    expected_kinds = sorted(["static"] * len([arm for arm in arms if arm != "reset"]) + ["dynamic"] * ("reset" in arms))
+    dynamic_arms = [arm for arm in arms if arm in STATE_PREP_DYNAMIC_ARMS]
+    expected_kinds = sorted(["static"] * (len(arms) - len(dynamic_arms)) + ["dynamic"] * len(dynamic_arms))
     candidates = []
     for snapshot in snapshots:
         try:
@@ -622,7 +625,11 @@ def state_prep_candidates(
                     "arms": {arm: STATE_PREP_ARM_STEPS[arm] for arm in arms},
                     "placement_contract": (
                         "one pinned single-qubit placement per named qubit; every qubit runs each arm in the "
-                        "same shots; static prep0 and x PUBs, dynamic reset PUB"
+                        + (
+                            "same shots; one dynamic x_history PUB, alone in its job"
+                            if arms == (STATE_PREP_HISTORY_ARM,)
+                            else "same shots; static prep0 and x PUBs, dynamic reset PUB"
+                        )
                     ),
                     "dt_seconds": snapshot.backend.target.dt,
                 },

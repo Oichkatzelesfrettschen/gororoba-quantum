@@ -190,6 +190,63 @@ probabilities; for either coherence the branch values add to the reduced
 pair, and their difference and the sector sum are the branch-signed value,
 C for the odd coherence.
 
+`--family state-prep-control` reads, on every `--layout` qubit in the same
+shots, the excited fraction left by the Sampler's implicit initialization
+(`init_qubits`) at one repetition delay. `--state-prep-arms` selects among
+prep0 (init, measure), reset (init, reset, measure), x (x, measure) and
+x_history (init, measure, x); a selection holds prep0, or is x_history alone.
+x_history flips the state its measurement projects, so a shot ends in `|1>`
+unless its own initialization left `|1>` or the X failed, and each shot after
+the first starts from the initialization of that near-`|1>` end state, while
+prep0 follows shots that end near `|0>`. The service interleaves the shots of
+one job's circuits in an unspecified order, so x_history is the only arm of
+its job: one PUB fuses every qubit's measure-then-X, which
+`local_compute.is_dynamic` classifies dynamic, and the job runs with
+twirling and dynamical decoupling off. The calibration model carries no shot
+history and prices x_history at prep0's law.
+
+`scripts/state_prep_excess.py` turns collected control runs into the
+`--prep-excitation` of an n21 plan. It reads each run's lossless
+`raw/<job_id>/pub_NN.json` registers through the submission's PUB
+manifests, admitting prep0 and x_history only from a job that holds no
+other arm. `--fetch-readout RUN_DIR` retains, in `state-prep-readout.json`,
+the readout, x error, x duration and T1 that `properties(datetime=...)`
+reports at each PUB's execution start (and stop, when the calibration
+changed during the shots), and the rule requires each fetched calibration
+to equal the one `--collect` recorded. The family-wise alpha (0.01 by
+default) splits over three one-sided Clopper-Pearson bounds per qubit of
+the controlled set C, the qubits with x_history at 50 and 250 us and prep0
+at 250 us: x_history upper at each delay and prep0 lower at 250 us. The
+bounds hold simultaneously over C, so any placement inside C is covered
+however often the fixed point below looks. e10 is the smallest and e01 the
+largest of the n21 model's and every execution calibration's reported
+values; with b the smaller of e10 and the prep0 bound, u = max(0, (U - b) /
+(1 - e01 - b)) is x_history's own excitation. The initialization is one
+channel on the previous shot's end state, so the excitation is affine in
+that state's `|1>` population q, and the excitation after an all-`|1>`
+history is at most u / q with q >= (1 - u)(1 - delta); delta is the x error
+plus the x and measure durations over T1: the flip failure of live_run's
+noise model and a bound on the measurement's 0 -> 1 transitions, which run
+one to two orders below the T1-dominated 1 -> 0 rate on ibm_kingston
+(docs/notes/ibm_quantum/heron-r2-readout-resonator.md). The first shot of
+each executor chunk follows an uncontrolled shot, so the bounds count those
+shots at their worst value (chunk_timing in each job's
+result_metadata.json). The bound describes the initialization at the
+controls' execution calibrations, and the report's calibration_scope says
+whether the n21 plan shares one.
+eps = u / ((1 - u)(1 - delta)) at each delay, maximized over the placement,
+bounds each placed qubit's marginal excitation; dynamic_density applies
+independent local channels, and the report's joint coincidence counts
+(shots in which two or more placed qubits read 1, beside the independent
+prediction) stay a diagnostic. prep0 at 50 us is reported as a
+point-estimate decomposition outside the bound family, whose
+x_history-minus-prep0 differences span the dynamic and static job kinds as
+well as the shot history. Placement and eps depend on each other, so the
+plan iterates: plan at eps 0, bound eps on its placement, re-plan at the
+larger of the planned and bounded values, and stop when the bound no longer
+exceeds the eps planned with. eps never decreases and takes values from a
+finite set, so the iteration stops.
+
 `qpe_diagnostics.py` derives the folded-QPE and N=21 families' laws independently of Qiskit
 using exact integer branch amplitudes and rational probabilities. The gate
 compares those labels with exact circuit branches and seeded Aer sampling.

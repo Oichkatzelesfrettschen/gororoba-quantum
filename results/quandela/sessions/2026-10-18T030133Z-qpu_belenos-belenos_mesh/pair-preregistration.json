@@ -1,0 +1,24 @@
+{
+ "schema": "qd-belenos-form-ensemble-preregistration-v1",
+ "approval": "User 2026-10-18 chose 'Both (Recommended)': (a) Q1's exact circuit as one circuit at compilation_seed 1, the form-or-mesh test; (b) a 32-iteration 84/84 seed ensemble (16 configurations x seeds 1 and 2).",
+ "couplers": "architecture sha256 prefix ca90c1c0, equal to Q1's and to every C1 run",
+ "form": {
+  "case": "results/quandela/cases/belenos_mesh/job-08",
+  "question": "Does Q1's bright-block leak follow the one-circuit job form or Q1's compiled mesh?",
+  "q1_mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+  "one_circuit_form_at_most": 0.65,
+  "q1_mesh_at_least": 0.9,
+  "rule": "the returned mesh equal to Q1's reads 'seed ignored'; otherwise raw in_block <= 0.65 reads 'one-circuit form', >= 0.90 reads 'Q1 mesh', between reads 'intermediate'",
+  "expectation": "Q1 and its replay kept 0.470 and 0.504; a heater-offset error of the size C1 allows predicts about 0.95 on a fresh mesh"
+ },
+ "ensemble": {
+  "case": "results/quandela/cases/belenos_mesh/job-07",
+  "question": "Does compilation_seed select the served mesh of an iterated job, and how far do the 84/84 algebra shares move between seeds 0 (job-02), 1 and 2?",
+  "rule": "compilation_seed selects the served mesh when every configuration returns three distinct meshes at seeds 0, 1 and 2; per configuration the spread (max - min) of a and of in_block over the three seeds is reported with the bright-minus-dark contrast of this job",
+  "duration_s": {
+   "low": 200,
+   "high": 290,
+   "basis": "32 iterations at the 6.7 to 8.5 s per iteration of the six 16-iteration qpu:belenos jobs (1500 samples each); the fit 6.18 s per iteration + 0.732 ms per sample predicts 233 s"
+  }
+ }
+}
