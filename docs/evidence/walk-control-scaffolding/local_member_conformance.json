@@ -9,7 +9,7 @@
  ],
  "optimization_level": 3,
  "seed_transpiler": 11,
- "groups": 194,
+ "groups": 216,
  "superseded_configurations": [
   {
    "run": "results/live/2026-10-13T163154.032617Z",
@@ -17,7 +17,7 @@
    "missing_field": "measure_dt"
   }
  ],
- "distinct_members": 1494,
+ "distinct_members": 1503,
  "entangling_members": 950,
  "unchecked": {},
  "members": [
@@ -828,24 +828,24 @@
   },
   {
    "member": "n21_orbit_extra_readout_feedback",
-   "digest": "100e71077138eb67",
+   "digest": "12151729e74808bf",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
-   "cz": 27,
+   "cz": 28,
    "declared": null
   },
   {
    "member": "n21_orbit_extra_readout_no_feedback",
-   "digest": "b00b3853b2f5f8b1",
+   "digest": "2684d0486365878d",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
-   "cz": 27,
+   "cz": 28,
    "declared": null
   },
   {
@@ -872,46 +872,46 @@
   },
   {
    "member": "n21_orbit_nominal_feedback",
-   "digest": "6dc38994d5b5b324",
+   "digest": "8436949c2c8b41de",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
-   "cz": 27,
+   "cz": 28,
    "declared": null
   },
   {
    "member": "n21_orbit_nominal_no_feedback",
-   "digest": "01565181eec7858c",
+   "digest": "96354de813fe6b8d",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
-   "cz": 27,
+   "cz": 28,
    "declared": null
   },
   {
    "member": "n21_orbit_window_delay_feedback",
-   "digest": "6b482b16425a9a33",
+   "digest": "c297541b83d3d37b",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
-   "cz": 27,
+   "cz": 28,
    "declared": null
   },
   {
    "member": "n21_orbit_window_delay_no_feedback",
-   "digest": "96dbfeeb113d5a67",
+   "digest": "da560b9ab37b2818",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
    "outcome": null,
    "same_law_without_multi_qubit_gates": false,
-   "cz": 27,
+   "cz": 28,
    "declared": null
   },
   {
@@ -3196,6 +3196,15 @@
    "declared": null
   },
   {
+   "member": "spc_prep0_q124",
+   "digest": "f3696e28fcbce95f",
+   "kind": "local_unitary",
+   "templated": false,
+   "cz": 0,
+   "cz_in_local_components": 0,
+   "declared": null
+  },
+  {
    "member": "spc_prep0_q125",
    "digest": "f3696e28fcbce95f",
    "kind": "local_unitary",
@@ -3431,6 +3440,83 @@
    "declared": null
   },
   {
+   "member": "spc_x_history_q104",
+   "digest": "d3fcd0b86f3740a4",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_history_q105",
+   "digest": "d3fcd0b86f3740a4",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_history_q106",
+   "digest": "d3fcd0b86f3740a4",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_history_q117",
+   "digest": "d3fcd0b86f3740a4",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_history_q124",
+   "digest": "d3fcd0b86f3740a4",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_history_q125",
+   "digest": "d3fcd0b86f3740a4",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_history_q126",
+   "digest": "d3fcd0b86f3740a4",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "0",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
    "member": "spc_x_q104",
    "digest": "6bdf0823b920ee34",
    "kind": "local_unitary",
@@ -3468,6 +3554,15 @@
   },
   {
    "member": "spc_x_q117",
+   "digest": "6bdf0823b920ee34",
+   "kind": "local_unitary",
+   "templated": false,
+   "cz": 0,
+   "cz_in_local_components": 0,
+   "declared": null
+  },
+  {
+   "member": "spc_x_q124",
    "digest": "6bdf0823b920ee34",
    "kind": "local_unitary",
    "templated": false,

@@ -108,6 +108,32 @@ Estimators, exactly as preregistered:
   classification, twist equality, X sign, strut D, strut E_b, walk sign or
   omit control enters the separate refutations list and gives the stage the
   verdict "refuted" when no stop stands; it never stops the series.
+- ladder: the follow series' brackets (batches 0, 3 and 6) on the LCU pair
+  qubits, plus each context readout's P1 floor on the iso qubits, and the
+  follow series' per-batch sanity on each Latin circuit's depth-1 replica and
+  idle qubits. Per pair and Latin batch, from that batch alone: C(n) =
+  2 Pc(n) - 1 and, in X, J(n) = Pc(n) |E_0(n)|, r_pop and r_coh from
+  unweighted least-squares slopes of their logs on n, rho = r_coh / r_pop
+  with its interval, decided per pair from the two X batches, and rho_iso,
+  the same ratio with every iso qubit's e10 taken from the readout-iso-x
+  brackets (its own bootstrap stream) and decided the same way; in Y, the
+  phase atan2(E_Y, -E_X) per depth with E_X from the preceding X batch. Per
+  Latin job: the shot-record line scan of scripts/qi_shot_record_line.scan,
+  each selector's lock-in amplitude and phase at the peak, the depth-9 over
+  depth-1 amplitude margin against amplitude_sigmas standard errors, the
+  phase resultant of the depth-5 and depth-9 selectors, the third-harmonic
+  amplitude, and the readout-corrected contrast in line_phase_bins bins of
+  the line's phase (bin 0 where the depth-9 selector's P1 peaks); a job
+  without the line or without the margin is a refutation. Readout context
+  per iso qubit: e10 from readout-1 against readout-iso-x in batches 0 and 6
+  (neighbor context), e10 from readout-iso-hzh against readout-iso-x
+  interpolated in time (preparation path), each against context_min and
+  amplitude_sigmas binomial standard errors, and the e01 of each pair's
+  other qubit beside its excited partner. The depth-1 X E_0 of each pair
+  whose data qubit is an iso qubit is corrected twice, with the readout-1
+  brackets and with the readout-iso-x e10 of rho_iso. The depth-5 and
+  depth-9 populations are compared
+  with the retained follow analysis as drift.
 - T0 gate: the follow series analyzed in the same call as T0 carries T0's
   end-program or resize stop first in its stops, with its estimates still
   computed; analyzed without T0 it records the gate as unverified.
@@ -165,6 +191,8 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+from qi_shot_record_line import scan  # noqa: E402
+
 import parallel  # noqa: E402
 
 CASES = ROOT / "results/quantum_inspire/cases"
@@ -178,11 +206,13 @@ FAMILIES = {
     "ry_ladder": "box_kite_ry_ladder",
     "ry_smoke": "box_kite_ry_smoke",
     "tuna_twins": "box_kite_tuna_twins_qx",
+    "tuna_ladder": "box_kite_tuna_ladder",
+    "tuna_ladder_twins": "box_kite_tuna_ladder_twins_qx",
 }
 # Stages that run only after T0; T0's stops carry into them when analyzed together.
 T0_DEPENDENT = ("tuna_follow",)
 # Families whose batches each answer their own question; the others need every batch.
-INDEPENDENT_BATCHES = ("tuna_twins",)
+INDEPENDENT_BATCHES = ("tuna_twins", "tuna_ladder_twins")
 TWIN_Z_LIMIT = re.compile(r"\|z\| < ([0-9.]+)")
 BIT_ORDER = {"tuna_17": "rightmost", "QXsinglenodesimulator": "rightmost", "Rydberg": "leftmost"}
 SHARED_EXEMPT = {"batch", "stage", "group", "circuits"}
@@ -747,10 +777,12 @@ def interpolated(brackets: list[dict[str, Any]], weights: dict[str, tuple[int, i
     return out
 
 
-def bracket_block(batches: dict[str, Batch], t: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+def bracket_block(
+    batches: dict[str, Batch], t: dict[str, Any], used: list[int] | None = None
+) -> tuple[dict[str, Any], list[str]]:
     """Each bracket's rates on the used qubits, their differences, readout limits, drift and bracket span."""
     brackets = follow_brackets(batches)
-    used = follow_used(batches)
+    used = follow_used(batches) if used is None else used
     problems = []
     rates: dict[str, list[dict[str, Any]]] = {str(q): [] for q in used}
     for b in brackets:
@@ -831,9 +863,11 @@ def follow_sample(brackets: list[Any], lcu: list[Any], walks: list[Any], rng: An
 
 
 def rates_at(sample: Values, item: dict[str, Any], q: int, force: float | None = None) -> tuple[Any, Any]:
+    """Qubit q's e01 and e10 at the item's job; an item's qubit_weights override its bracket weights for one qubit."""
+    weights = item.get("qubit_weights", {}).get(q, item["weights"])
     out = []
     for kind in ("e01", "e10"):
-        a, b, w = item["weights"][kind]
+        a, b, w = weights[kind]
         w = w if force is None else force
         out.append((1 - w) * sample[kind][a][:, q] + w * sample[kind][b][:, q])
     return out[0], out[1]
@@ -1285,6 +1319,430 @@ def analyze_follow(batches: dict[str, Batch], t: dict[str, Any], t0: dict[str, A
     }
 
 
+# ---------------------------------------------------------------- ladder series
+
+LADDER_LINE_SEED = 1
+FOLLOW_RECORD = ROOT / "results/quantum_inspire/box_kite_tuna_17_follow_analysis.json"
+
+
+def ladder_used(batches: dict[str, Batch]) -> list[int]:
+    layout = next(iter(batches.values()))["manifest"]["layout"]
+    return sorted(q for pair in layout["lcu_pairs"] for q in pair)
+
+
+def context_files(batch: Batch) -> list[str]:
+    return [row["file"] for row in batch["manifest"]["circuits"] if row["kind"] == "readout" and "excited" in row]
+
+
+def idle_problems(batch: Batch, row: dict[str, Any], brackets: list[dict[str, Any]], margin: float) -> list[str]:
+    """Idle qubits of a witness job above the interpolated readout-0 P1 by more than margin (bit-order conformance)."""
+    bits = batch["bits"][row["file"]]
+    a, b, w = bracket_weight(job_time(batch, row["file"]), [x["time_e01"] for x in brackets])
+    problems = []
+    for q in sorted(set(range(batch["manifest"]["nqubits"])) - touched(batch["texts"][row["file"]])):
+        base = (1 - w) * brackets[a]["k01"][q] / brackets[a]["n0"] + w * brackets[b]["k01"][q] / brackets[b]["n0"]
+        p = int(bits[:, q].sum()) / bits.shape[0]
+        if p > base + margin:
+            problems.append(
+                f"{row['file']} idle q{q} P1 {p:.3f} exceeds its interpolated readout-0 P1 {base:.3f} by more than "
+                f"{margin} (bit-order conformance)"
+            )
+    return problems
+
+
+def lockin(bits: np.ndarray, frequency: float, columns: list[int]) -> list[dict[str, float]]:
+    """First-harmonic amplitude, phase at the middle shot and standard error sqrt(2 var / n) of each column at f."""
+    n = bits.shape[0]
+    t = np.arange(n) - (n - 1) / 2
+    design = np.stack([np.cos(2 * np.pi * frequency * t), np.sin(2 * np.pi * frequency * t)], axis=1)
+    x = bits[:, columns].astype(np.float64)
+    p = x.mean(axis=0)
+    coefficients = np.linalg.lstsq(design, x - p, rcond=None)[0]
+    amplitude = np.hypot(coefficients[0], coefficients[1])
+    phase = np.arctan2(-coefficients[1], coefficients[0])
+    se = np.sqrt(2 * p * (1 - p) / n)
+    return [
+        {"amplitude": float(a), "phase": float(f), "se": float(e)} for a, f, e in zip(amplitude, phase, se, strict=True)
+    ]
+
+
+def iso_brackets(batches: dict[str, Batch], brackets: list[dict[str, Any]], iso: list[int]) -> list[dict[str, Any]]:
+    """The brackets holding readout-iso-x, with each iso qubit's e10 counts and time taken from that circuit.
+
+    Only the iso qubits read their e10 from these brackets (qubit_weights in the cross-check); every other
+    qubit keeps the readout-0 and readout-1 brackets and their finish times.
+    """
+    out = []
+    for b in brackets:
+        batch = batches[b["batch"]]
+        if "readout-iso-x.cq" not in batch["bits"]:
+            continue
+        bits = batch["bits"]["readout-iso-x.cq"]
+        if bits.shape[0] != b["n1"]:
+            fail(f"{b['batch']}: readout-iso-x and readout-1 differ in shots")
+        k10 = list(b["k10"])
+        for q in iso:
+            k10[q] = int((bits[:, q] == 0).sum())
+        out.append({**b, "k10": k10, "time_e10": job_time(batch, "readout-iso-x.cq")})
+    return out
+
+
+def ladder_stops(batches: dict[str, Batch], t: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any], list[str]]:
+    """The stop rules a ladder batch is judged by before the next one: brackets, context floor, per-batch sanity.
+
+    They read only the batches run so far, so an incomplete series is judged by the same rules.
+    """
+    block, stops = bracket_block(batches, t, ladder_used(batches))
+    brackets = follow_brackets(batches)
+    batch_block: dict[str, Any] = {}
+    for name, batch in batches.items():
+        problems = []
+        for file in context_files(batch):
+            for q in t["iso_qubits"]:
+                p1 = int(batch["bits"][file][:, q].sum()) / batch["bits"][file].shape[0]
+                if p1 < t["readout_1_p1_at_least"]:
+                    stops.append(f"bracket stop: {name} {file} q{q} P1 {p1:.3f} below {t['readout_1_p1_at_least']}")
+        for row in witness_rows(batch):
+            if not brackets:
+                fail(f"{name}: a Latin batch before any readout bracket")
+            bits = batch["bits"][row["file"]]
+            for r in row["replicas"]:
+                if r["cz_depth"] in t["bright_floor_cz_depths"] and r["p_selector_zero"] == "1":
+                    p = int((bits[:, r["roles"]["selector"]] == 0).sum()) / bits.shape[0]
+                    if p < t["bright_p_selector_zero_at_least"]:
+                        problems.append(f"{row['file']} slot {r['slot']} raw P(a = 0) {p:.3f} below "
+                                        f"{t['bright_p_selector_zero_at_least']}")  # fmt: skip
+            problems += idle_problems(batch, row, brackets, t["idle_p1_above_readout_0_at_most"])
+        batch_block[name] = {"run": batch["run"], "sanity": "pass" if not problems else "fail", "problems": problems}
+        if problems:
+            stops.append(f"sanity stop at {name}: {problems[0]}")
+    return block, batch_block, stops
+
+
+def replica_columns(row: dict[str, Any]) -> list[int]:
+    """The selector and data qubits of a witness row's replicas, the columns its preregistered line scan reads."""
+    return sorted(q for r in row["replicas"] for q in [r["roles"]["selector"], *r["roles"]["data"]])
+
+
+class LineScan:
+    """qi_shot_record_line.scan in the manifest's band and threshold, picklable for parallel.ordered_map."""
+
+    def __init__(self, band: tuple[float, float], detection_p: float):
+        self.band, self.detection_p = band, detection_p
+
+    def __call__(self, bits: np.ndarray) -> dict[str, Any]:
+        return scan(bits.astype(np.float64), self.band, self.detection_p)
+
+
+def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
+    """The ladder series (module docstring): brackets, sanity, within-batch ladder, line lock-in, readout context."""
+    iso = list(t["iso_qubits"])
+    block, batch_block, stops = ladder_stops(batches, t)
+    refutations: list[str] = []
+    brackets = follow_brackets(batches)
+    lcu, walks = follow_items(batches, brackets)
+    if walks:
+        fail("the ladder design holds no walk")
+    rng = np.random.default_rng(t["bootstrap_seed"])
+    observed = follow_sample(brackets, lcu, walks)
+    point = follow_values(observed, lcu, walks)
+    boot = pooled_follow_values(follow_sample(brackets, lcu, walks, rng, t["bootstrap_draws"]), lcu, walks)
+    pct = t["interval_percentiles"]
+    sigma = t["sigma"]
+
+    def both(fn: Any, percentiles: list[float] | None = None) -> dict[str, Any]:
+        with np.errstate(all="ignore"):
+            return summary(fn(point), fn(boot), percentiles)
+
+    # The same estimates with every iso qubit of a replica reading its e10 from readout-iso-x.
+    alternative = iso_brackets(batches, brackets, iso)
+    iso_values: tuple[Values, Values] | None = None
+    if len(alternative) >= 2:
+        combined = brackets + alternative
+        iso_times = [b["time_e10"] for b in alternative]
+        moved = []
+        for item in lcu:
+            near, far, weight = bracket_weight(job_time(batches[item["batch"]], item["file"]), iso_times)
+            iso_e10 = (near + len(brackets), far + len(brackets), weight)
+            roles = (item["replica"]["roles"]["selector"], item["replica"]["roles"]["data"][0])
+            weights = {q: {"e01": item["weights"]["e01"], "e10": iso_e10} for q in roles if q in iso}
+            moved.append({**item, "qubit_weights": weights})
+        iso_rng = np.random.default_rng([t["bootstrap_seed"], LADDER_LINE_SEED])
+        iso_draws = follow_sample(combined, moved, [], iso_rng, t["bootstrap_draws"])
+        iso_values = (follow_values(follow_sample(combined, moved, []), moved, []),
+                      pooled_follow_values(iso_draws, moved, []))  # fmt: skip
+
+    def iso_both(fn: Any, percentiles: list[float] | None = None) -> dict[str, Any] | None:
+        if iso_values is None:
+            return None
+        with np.errstate(all="ignore"):
+            return summary(fn(iso_values[0]), fn(iso_values[1]), percentiles)
+
+    replicas = []
+    for index, item in enumerate(lcu):
+        r = item["replica"]
+        a, d = r["roles"]["selector"], r["roles"]["data"][0]
+        replicas.append({
+            "batch": item["batch"], "file": item["file"], "slot": r["slot"], "setting": r["setting"],
+            "cz_depth": r["cz_depth"], "pair": [a, d], "joint_counts": item["joint"],
+            "p_zero_raw": (item["joint"][0] + item["joint"][1]) / item["shots"],
+            "readout": {"selector": interpolated(brackets, item["weights"], a),
+                        "data": interpolated(brackets, item["weights"], d)},
+            "p_zero_corrected": both(lambda v, i=index: v["pc"][i]),
+            "expectation_corrected": both(lambda v, i=index: v["e"][(i, 0)]),
+        })  # fmt: skip
+
+    # The within-batch ladder: every pair at every depth inside one batch.
+    depths = list(t["depths"])
+    cells: dict[str, dict[int, dict[int, int]]] = {}
+    for index, item in enumerate(lcu):
+        selector = item["replica"]["roles"]["selector"]
+        cell = cells.setdefault(item["batch"], {}).setdefault(selector, {})
+        if item["replica"]["cz_depth"] in cell:
+            fail(f"{item['batch']} holds two depth-{item['replica']['cz_depth']} replicas on q{selector}")
+        cell[item["replica"]["cz_depth"]] = index
+    names = list(cells)
+    setting_of = {
+        name: lcu[next(iter(next(iter(c.values())).values()))]["replica"]["setting"] for name, c in cells.items()
+    }
+    ladder = []
+    for name in names:
+        for selector, cell in sorted(cells[name].items()):
+            if sorted(cell) != depths:
+                fail(f"{name} q{selector} holds depths {sorted(cell)}, not {depths}")
+
+            def contrast(v: Values, n: int, c: dict[int, int] = cell) -> Any:
+                return 2 * v["pc"][c[n]] - 1
+
+            def joint(v: Values, n: int, c: dict[int, int] = cell) -> Any:
+                return v["pc"][c[n]] * np.abs(v["e"][(c[n], 0)])
+
+            def log_slope(v: Values, fn: Any) -> Any:
+                return ols_slope(depths, [np.log(fn(v, n)) for n in depths])
+
+            entry: dict[str, Any] = {
+                "batch": name, "setting": setting_of[name], "pair": lcu[cell[1]]["replica"]["roles"]["selector"],
+                "data": lcu[cell[1]]["replica"]["roles"]["data"][0],
+                "files": {str(n): lcu[cell[n]]["file"] for n in depths},
+                "population_contrast": {str(n): both(lambda v, n=n: contrast(v, n)) for n in depths},
+                "r_pop": both(lambda v: np.exp(log_slope(v, contrast)), pct),
+            }  # fmt: skip
+            entry["pair"] = [entry.pop("pair"), entry.pop("data")]
+            if setting_of[name] == "X":
+                entry["joint_coherence"] = {str(n): both(lambda v, n=n: joint(v, n)) for n in depths}
+                entry["r_coh"] = both(lambda v: np.exp(log_slope(v, joint)), pct)
+                entry["rho"] = both(lambda v: np.exp(log_slope(v, joint) - log_slope(v, contrast)), pct)
+                entry["rho_iso"] = iso_both(lambda v: np.exp(log_slope(v, joint) - log_slope(v, contrast)), pct)
+            else:
+                partner = names[names.index(name) - 1]
+                x_cell = cells[partner][selector]
+                entry["phase_against"] = partner
+                entry["phase"] = {
+                    str(n): both(lambda v, n=n, y=cell, x=x_cell: np.arctan2(v["e"][(y[n], 0)], -v["e"][(x[n], 0)]))
+                    for n in depths
+                }
+            ladder.append(entry)
+
+    def rho_verdict(intervals: list[Any]) -> str:
+        if any(i is None for i in intervals):
+            return "undetermined"
+        if all(i[1] < 1 for i in intervals):
+            return "below 1"
+        if all(i[0] > 1 for i in intervals):
+            return "above 1"
+        if all(i[0] <= 1 <= i[1] for i in intervals):
+            return "consistent with 1"
+        return "replicate-split"
+
+    decisions = []
+    for selector in sorted({tuple(e["pair"]) for e in ladder}):
+        x_rows = [e for e in ladder if tuple(e["pair"]) == selector and e["setting"] == "X"]
+        verdict = rho_verdict([e["rho"]["interval"] for e in x_rows])
+        iso_rows = [e["rho_iso"] for e in x_rows]
+        verdict_iso = rho_verdict([None if e is None else e["interval"] for e in iso_rows])
+        values = [e["rho"]["value"] for e in x_rows]
+        ses = [e["rho"]["se"] for e in x_rows]
+        z = None
+        if len(x_rows) == 2 and None not in values and None not in ses and (ses[0] ** 2 + ses[1] ** 2) > 0:
+            z = (values[0] - values[1]) / math.sqrt(ses[0] ** 2 + ses[1] ** 2)
+        decisions.append({"pair": list(selector), "batches": [e["batch"] for e in x_rows], "rho": values,
+                          "verdict": verdict, "replicate_z": z,
+                          "replicate_scatter": z is not None and abs(z) > sigma,
+                          "rho_iso": [None if e is None else e["value"] for e in iso_rows],
+                          "verdict_iso": verdict_iso})  # fmt: skip
+
+    # The 50 Hz line per Latin job: detection on the replica qubits, selector lock-in by depth, phase-binned contrast.
+    line = []
+    bins = t["line_phase_bins"]
+    jobs = [(name, batch, row) for name, batch in batches.items() for row in witness_rows(batch)]
+    scans = parallel.ordered_map(
+        LineScan(tuple(t["line_band"]), t["line_detection_p"]),
+        [batch["bits"][row["file"]][:, replica_columns(row)] for _, batch, row in jobs],
+    )
+    for (name, batch, row), scanned in zip(jobs, scans, strict=True):
+        bits = batch["bits"][row["file"]]
+        by_depth = {r["cz_depth"]: r for r in row["replicas"]}
+        entry = {"batch": name, "file": row["file"], "detected": scanned["detected"],
+                 "log10_p": scanned.get("log10_p"), "cycles_per_shot": scanned.get("cycles_per_shot")}  # fmt: skip
+        if scanned.get("cycles_per_shot") is None:
+            line.append(entry)
+            refutations.append(f"{name} {row['file']}: no line scanned")
+            continue
+        f = scanned["cycles_per_shot"]
+        selectors = [by_depth[n]["roles"]["selector"] for n in depths]
+        locks = dict(zip(depths, lockin(bits, f, selectors), strict=True))
+        entry["selectors"] = {str(n): {"qubit": by_depth[n]["roles"]["selector"], **locks[n]} for n in depths}
+        entry["third_harmonic"] = {
+            str(n): lockin(bits, 3 * f, [by_depth[n]["roles"]["selector"]])[0]["amplitude"] for n in depths
+        }
+        deep, shallow = locks[max(depths)], locks[min(depths)]
+        margin = deep["amplitude"] - shallow["amplitude"]
+        margin_se = math.sqrt(deep["se"] ** 2 + shallow["se"] ** 2)
+        grows = margin > t["amplitude_sigmas"] * margin_se
+        entry["depth_growth"] = {"difference": margin, "se": margin_se, "holds": grows}
+        phases = [locks[n]["phase"] for n in depths if n != min(depths)]
+        entry["phase_resultant"] = float(abs(np.exp(1j * np.array(phases)).mean()))
+        # Bin 0 holds the line phase where the deepest selector's P1 peaks.
+        n_shots = bits.shape[0]
+        theta = 2 * np.pi * f * (np.arange(n_shots) - (n_shots - 1) / 2) + deep["phase"]
+        index_bin = np.floor(np.mod(theta + np.pi / bins, 2 * np.pi) / (2 * np.pi / bins)).astype(np.int64) % bins
+        binned = {}
+        for n in depths:
+            item_index = next(i for i, it in enumerate(lcu) if it["batch"] == name and it["file"] == row["file"]
+                              and it["replica"]["cz_depth"] == n)  # fmt: skip
+            q = by_depth[n]["roles"]["selector"]
+            e01, e10 = (float(x[0]) for x in rates_at(observed, lcu[item_index], q))
+            counts = np.bincount(index_bin, minlength=bins)
+            zeros_in = np.bincount(index_bin, weights=(bits[:, q] == 0).astype(np.float64), minlength=bins)
+            raw = zeros_in / counts
+            pc = (raw - e10) / (1 - e01 - e10)
+            binned[str(n)] = {"contrast": [float(2 * v - 1) for v in pc],
+                              "se": [float(2 * math.sqrt(r * (1 - r) / c) / (1 - e01 - e10))
+                                     for r, c in zip(raw, counts, strict=True)]}  # fmt: skip
+        entry["phase_binned_contrast"] = binned
+        line.append(entry)
+        if not scanned["detected"]:
+            refutations.append(f"{name} {row['file']}: no 50 Hz line at p below {t['line_detection_p']}")
+        elif not grows:
+            refutations.append(f"{name} {row['file']}: the depth-9 line amplitude does not exceed depth 1's")
+
+    # Readout context on the iso qubits, and the e01 of each pair's other qubit beside an excited neighbor.
+    def rate(batch: Batch, file: str, q: int, state: int) -> tuple[float, float, int]:
+        bits = batch["bits"][file]
+        k = int((bits[:, q] != state).sum())
+        n = bits.shape[0]
+        return k / n, k * (n - k) / n**3, n
+
+    context = []
+    iso_runs = [(name, b) for name, b in batches.items() if "readout-iso-x.cq" in b["bits"]]
+    hzh_runs = [(name, b) for name, b in batches.items() if "readout-iso-hzh.cq" in b["bits"]]
+    partners = {q: next(p for pair in next(iter(batches.values()))["manifest"]["layout"]["lcu_pairs"]
+                        for p in pair if q in pair and p != q) for q in iso}  # fmt: skip
+    for q in iso:
+        rows: list[dict[str, float | str]] = []
+        for name, b in iso_runs:
+            e_all, v_all, _ = rate(b, "readout-1.cq", q, 1)
+            e_iso, v_iso, _ = rate(b, "readout-iso-x.cq", q, 1)
+            rows.append({"batch": name, "e10_all": e_all, "e10_iso": e_iso, "difference": e_all - e_iso,
+                         "se": math.sqrt(v_all + v_iso)})  # fmt: skip
+        minimum, k = t["context_min"], t["amplitude_sigmas"]
+        if len(rows) < 2:
+            neighbor = "undetermined"
+        elif all(float(r["difference"]) > minimum and float(r["difference"]) > k * float(r["se"]) for r in rows):
+            neighbor = "established"
+        elif all(abs(float(r["difference"])) < minimum for r in rows):
+            neighbor = "absent"
+        else:
+            neighbor = "unresolved"
+        preparation: dict[str, Any] = {"verdict": "undetermined"}
+        if len(iso_runs) >= 2 and hzh_runs:
+            b0, b6 = iso_runs[0][1], iso_runs[-1][1]
+            name3, b3 = hzh_runs[0]
+            t0_, t6_ = job_time(b0, "readout-iso-x.cq"), job_time(b6, "readout-iso-x.cq")
+            t3_ = job_time(b3, "readout-iso-hzh.cq")
+            w = min(1.0, max(0.0, (t3_ - t0_) / (t6_ - t0_)))
+            e0, v0, _ = rate(b0, "readout-iso-x.cq", q, 1)
+            e6, v6, _ = rate(b6, "readout-iso-x.cq", q, 1)
+            e3, v3, _ = rate(b3, "readout-iso-hzh.cq", q, 1)
+            interp = (1 - w) * e0 + w * e6
+            diff = e3 - interp
+            se = math.sqrt(v3 + (1 - w) ** 2 * v0 + w**2 * v6)
+            verdict = (
+                "established" if abs(diff) > minimum and abs(diff) > k * se
+                else "absent" if abs(diff) < minimum else "unresolved"
+            )  # fmt: skip
+            preparation = {"batch": name3, "e10_hzh": e3, "e10_iso_interpolated": interp, "weight": w,
+                           "difference": diff, "se": se, "verdict": verdict}  # fmt: skip
+        partner = partners[q]
+        beside = []
+        for name, b in iso_runs:
+            e_ctx, v_ctx, _ = rate(b, "readout-iso-x.cq", partner, 0)
+            e_0, v_0, _ = rate(b, "readout-0.cq", partner, 0)
+            beside.append({"batch": name, "qubit": partner, "e01_beside_excited": e_ctx, "e01_readout_0": e_0,
+                           "difference": e_ctx - e_0, "se": math.sqrt(v_ctx + v_0)})  # fmt: skip
+        context.append({"qubit": q, "neighbor_context": {"rows": rows, "verdict": neighbor},
+                        "preparation_path": preparation, "partner_e01": beside})  # fmt: skip
+
+    # Witness cross-check: the depth-1 X E_0 on the pair whose data qubit is an iso qubit, both corrections.
+    cross = []
+    if iso_values is not None:
+        for index, item in enumerate(lcu):
+            r = item["replica"]
+            data = r["roles"]["data"][0]
+            if r["setting"] != "X" or r["cz_depth"] != 1 or data not in iso:
+                continue
+            iso_stat = iso_both(lambda v, i=index: v["e"][(i, 0)])
+            if iso_stat is None:
+                fail("the iso estimates vanished between the ladder and the cross-check")
+            primary = both(lambda v, i=index: v["e"][(i, 0)])
+            cross.append({"batch": item["batch"], "file": item["file"], "pair": [r["roles"]["selector"],
+                          r["roles"]["data"][0]], "readout_1_corrected": primary, "iso_corrected": iso_stat,
+                          "iso_within_unit": iso_stat["value"] is not None and iso_stat["se"] is not None
+                          and abs(iso_stat["value"]) - 1 <= 3 * iso_stat["se"],
+                          "readout_1_above_unit": primary["value"] is not None
+                          and abs(primary["value"]) > 1})  # fmt: skip
+
+    # Replication against the follow series' populations on the same pair and depth.
+    replication: Any
+    if not FOLLOW_RECORD.exists():
+        replication = {"undetermined": "the follow analysis record is absent"}
+    else:
+        follow = json.loads(FOLLOW_RECORD.read_text(encoding="utf-8"))["stages"]["tuna_follow"]["depth_ladder"]
+        replication = {"follow_record_sha256": sha256(FOLLOW_RECORD.read_bytes()), "rows": []}
+        for rung in follow:
+            for entry_f in rung["points"]:
+                n = entry_f["cz_depth"]
+                if n == 1:
+                    continue
+                indices = [i for i, it in enumerate(lcu) if it["replica"]["roles"]["selector"] == rung["pair"][0]
+                           and it["replica"]["cz_depth"] == n]  # fmt: skip
+                stat = both(lambda v, ids=indices: sum(v["pc"][i] for i in ids) / len(ids))
+                prior = entry_f["population"]
+                row_r: dict[str, Any] = {"pair": rung["pair"], "cz_depth": n, "ladder": stat, "follow": prior}
+                if stat["value"] is not None and prior["value"] is not None and stat["se"] and prior["se"]:
+                    row_r["drift"] = stat["value"] - prior["value"]
+                    row_r["drift_se"] = math.sqrt(stat["se"] ** 2 + prior["se"] ** 2)
+                replication["rows"].append(row_r)
+    return {
+        "batches": batch_block,
+        "brackets": block,
+        "replicas": replicas,
+        "within_batch_ladder": ladder,
+        "rho_decisions": decisions,
+        "line": line,
+        "readout_context": context,
+        "witness_cross_check": cross,
+        "replication": replication,
+        "uncertainty": f"standard errors are standard deviations and intervals the {pct[0]} and {pct[1]} "
+        f"percentiles of a parametric bootstrap ({t['bootstrap_draws']} draws, numpy seed {t['bootstrap_seed']}) "
+        "of every bracket's readout counts and each replica's joint (a, d) counts; the readout-iso-x estimates "
+        "(rho_iso and the witness cross-check) draw from numpy seed "
+        f"[{t['bootstrap_seed']}, {LADDER_LINE_SEED}]; line and context errors are binomial",
+        "refutations": refutations,
+        "stops": stops,
+    }
+
+
 def binomial_z(k: int, n: int, p: float) -> float | None:
     return (k - n * p) / math.sqrt(n * p * (1 - p)) if 0 < p < 1 else None
 
@@ -1455,6 +1913,9 @@ def analyze(runs: list[Path], base: Path = ROOT, cases_root: Path = CASES) -> di
             if family == "tuna_follow":
                 # The bracket stop rule decides before each later batch, so the brackets run so far are judged.
                 estimates["brackets"], estimates["stops"] = bracket_block(batches, t)
+            elif family == "tuna_ladder":
+                # Every ladder stop rule decides before the next batch, so the batches run so far are judged.
+                estimates["brackets"], out["batches"], estimates["stops"] = ladder_stops(batches, t)
             out["verdict"] = f"incomplete: {', '.join(missing)} not analyzed"
         else:
             if family == "tuna_pre":
@@ -1465,7 +1926,9 @@ def analyze(runs: list[Path], base: Path = ROOT, cases_root: Path = CASES) -> di
                 estimates = analyze_follow(batches, t, results.get("tuna_t0"))
             elif family == "ry_ladder":
                 estimates = analyze_ry_ladder(batches, t)
-            elif family == "tuna_twins":
+            elif family == "tuna_ladder":
+                estimates = analyze_ladder(batches, t)
+            elif family in ("tuna_twins", "tuna_ladder_twins"):
                 estimates = analyze_twins(batches, t)
             else:
                 estimates = analyze_ry_smoke(batches, t)
@@ -1662,12 +2125,18 @@ def scenario_jobs(name: str, scenario: dict[str, Any], seed: int) -> list[tuple[
                 if family.startswith("ry"):
                     jobs.append((family, entry["batch"], file, ry_item(seed, manifest, row, scenario), failures))
                     continue
-                if row["kind"] == "readout":
+                item: Any
+                if row["kind"] == "readout" and "excited" in row:
+                    model = {q: float(q in row["excited"]) for q in range(width)}
+                    item = (seed, width, n, model, {**readout, **scenario.get(f"readout_{file}", {})})
+                elif row["kind"] == "readout":
                     model = {q: float(row["prepared"]) for q in range(width)}
                     item = (seed, width, n, model, {**readout, **scenario.get(f"readout_{file}", {})})
                 elif family == "tuna_pre" or row.get("ideal_p1") == "0":
                     model = {q: 0.0 for q in range(width)}
                     item = (seed, width, n, model, {**readout, **scenario.get("xx", {})})
+                elif "line" in scenario and family == "tuna_ladder":
+                    item = ("line", seed, width, n, line_groups(row, scenario), readout, scenario["line"])
                 else:
                     item = (seed, width, n, tuna_model(row, scenario), readout)
                 jobs.append((family, entry["batch"], file, item, failures))
@@ -1687,8 +2156,38 @@ def ry_item(seed: int, manifest: dict[str, Any], row: dict[str, Any], scenario: 
     return ("smoke", seed, width, manifest["shots"], model)
 
 
+def line_groups(row: dict[str, Any], scenario: dict[str, Any]) -> list[tuple[int, int, list[float], float, int]]:
+    """Per LCU replica: selector, data, the ideal joint (a, d) distribution, its depolarizing decay and depth."""
+    ideal_scenario = {**scenario, "amplitude": 1.0, "r": 1.0}
+    out = []
+    for r in row["replicas"]:
+        ((a, d), ideal), *_ = lcu_model(r, ideal_scenario, 1.0).items()
+        decay = scenario.get("amplitude", SYN_VISIBILITY) * scenario.get("r", 1.0) ** r["cz_depth"]
+        out.append((a, d, ideal, decay, r["cz_depth"]))
+    return out
+
+
+def line_shots(item: Any) -> list[str]:
+    """Shots whose depolarizing decay oscillates at f cycles per shot with relative depth depth / 9 times m."""
+    _, seed, width, n, groups, readout, (frequency, modulation) = item
+    rng = np.random.default_rng(seed)
+    true = np.zeros((n, width), dtype=np.uint8)
+    wave = np.cos(2 * np.pi * frequency * np.arange(n))
+    for a, d, ideal, decay, depth in groups:
+        lam = np.minimum(1.0, decay * (1 + modulation * depth / 9 * wave))
+        joint = lam[:, None] * np.asarray(ideal)[None, :] + (1 - lam[:, None]) / 4
+        outcome = np.minimum((np.cumsum(joint, axis=1) < rng.random(n)[:, None]).sum(axis=1), 3)
+        true[:, a], true[:, d] = outcome >> 1, outcome & 1
+    rates = np.array([readout.get(q, (SYN_E01, SYN_E10)) for q in range(width)])
+    flip = rng.random((n, width)) < np.where(true == 0, rates[:, 0], rates[:, 1])
+    text = ((true ^ flip)[:, ::-1] + 48).astype(np.uint8).tobytes().decode("ascii")
+    return [text[s * width : (s + 1) * width] for s in range(n)]
+
+
 def synthesize(item: Any) -> list[str]:
     """Pool worker: shots of one synthetic circuit (Tuna items from synthetic_shots, Ry items leftmost)."""
+    if item[0] == "line":
+        return line_shots(item)
     if item[0] == "ladder":
         _, seed, width, n, expected = item
         rng = random.Random(seed)
@@ -1726,11 +2225,17 @@ HEALTHY = {0: (0.02, 0.06), 6: (0.02, 0.06), 9: (0.02, 0.06)}
 # r^n_CZ at T0's r.
 FOLLOW_MODEL = {"amplitude": 0.821, "r": 0.95, "walk_r": 0.9654}
 FOLLOW_ONLY = {"families": ["tuna_follow"], "readout": {}, **FOLLOW_MODEL}
+# Ladder model: the follow model's depolarizing decay, with a line at the follow series' 0.020036 cycles per
+# shot that modulates the decay by 0.3 n / 9 at CZ depth n, and readout-1 alone overstating q13's e10.
+LADDER_FAMILIES = ("tuna_ladder", "tuna_ladder_twins")
+LADDER_ONLY = {"families": ["tuna_ladder"], "readout": {}, "amplitude": 0.821, "r": 0.95}
+LADDER_LINE = (0.020036, 0.3)
 # 0.4 rad per CZ puts depth 9 at 3.6 rad, past the atan2 branch cut, so the phase fit must unwrap.
 INJECTED_PHASE = 0.4
 SCENARIOS: dict[str, dict[str, Any]] = {
     "pass": {
-        "families": [f for f in FAMILIES if f != "tuna_twins"], "readout": FAULT, "xx": UNDER_ROTATION_XX,
+        "families": [f for f in FAMILIES if f not in ("tuna_twins", *LADDER_FAMILIES)], "readout": FAULT,
+        "xx": UNDER_ROTATION_XX,
         **FOLLOW_MODEL,
         "ry_failed": {"r9-teleport-bare.cq": "Quantum backend error: error interpreting cQASM script"},
     },
@@ -1749,6 +2254,10 @@ SCENARIOS: dict[str, dict[str, Any]] = {
     "pre_misassignment": {"families": ["tuna_pre"], "readout": FAULT, "xx": MISASSIGNMENT_XX},
     "ry_gate": {"families": ["ry_ladder", "ry_smoke"],
                 "ry_failed": {"r1-width-9.cq": "Quantum backend error: error interpreting cQASM script"}},
+    "ladder": {**LADDER_ONLY, "line": LADDER_LINE, "readout_readout-1.cq": {13: (0.02, 0.10)}},
+    "ladder_flat": {**LADDER_ONLY},
+    "ladder_context_low": {**LADDER_ONLY, "readout_readout-iso-x.cq": {13: (0.02, 0.4)}},
+    "ladder_twins": {"families": ["tuna_ladder_twins"], "readout": IDEAL_QX, "visibility": 1.0},
     "ry_stopped": {"families": ["ry_ladder", "ry_smoke"], "ry_fidelity": 0.85,
                    "ry_failed": {"r1-width-9.cq": "Quantum backend error: error interpreting cQASM script"}},
 }  # fmt: skip
@@ -1913,6 +2422,52 @@ def analyze_self_test() -> None:
             low, high = entry["phase_slope_per_cz"]["interval"]
             check(low <= INJECTED_PHASE <= high, f"pair {entry['pair']} phase slope {low, high} misses the injection")
         check(phased["verdict"] == "continue", f"a phase per CZ stops or refutes: {phased['refutations']}")
+        ladder = stages("ladder")["tuna_ladder"]
+        check(ladder["verdict"] == "continue", f"ladder stops {ladder['stops']}, refutations {ladder['refutations']}")
+        check(len(ladder["line"]) == 12 and all(e["detected"] for e in ladder["line"]), "a ladder job lost its line")
+        check(all(e["depth_growth"]["holds"] for e in ladder["line"]), "the injected line does not grow with depth")
+        check(all(e["phase_resultant"] > 0.99 for e in ladder["line"]), "the injected line is not common-mode")
+        check(len(ladder["within_batch_ladder"]) == 12, "three pairs in four Latin batches")
+        for decision in ladder["rho_decisions"]:
+            # Global depolarizing at r = 0.95: J(n) and 2 Pc(n) - 1 decay alike, so rho = 1. The overstated q13
+            # e10 adds an offset to the corrected E_0 on (10, 13), which the slope of ln J does not cancel.
+            if decision["pair"] != [10, 13]:
+                check(decision["verdict"] in ("consistent with 1", "replicate-split"), f"rho decision {decision}")
+            # readout-iso-x reads q13's injected e10 at its isolated value, so rho_iso returns to 1 on every pair.
+            check(decision["verdict_iso"] in ("consistent with 1", "replicate-split"), f"rho_iso decision {decision}")
+        for rung in ladder["within_batch_ladder"]:
+            if rung["setting"] == "X" and rung["pair"] != [10, 13]:
+                rho = rung["rho"]
+                check(abs(rho["value"] - 1) < 4 * rho["se"], f"{rung['batch']} {rung['pair']} rho {rho}")
+            if rung["setting"] == "X":
+                rho_iso = rung["rho_iso"]
+                check(
+                    abs(rho_iso["value"] - 1) < 4 * rho_iso["se"], f"{rung['batch']} {rung['pair']} rho_iso {rho_iso}"
+                )
+        for rung in ladder["within_batch_ladder"]:
+            low, high = rung["r_pop"]["interval"]
+            check(low <= 0.95 <= high, f"{rung['batch']} {rung['pair']} r_pop {low, high} misses 0.95")
+        for entry in ladder["readout_context"]:
+            # readout-1 alone overstates q13's e10 by 0.04; q1 and q14 read alike in every context.
+            want = "established" if entry["qubit"] == 13 else "absent"
+            check(entry["neighbor_context"]["verdict"] == want, f"q{entry['qubit']} context: {entry}")
+            check(entry["preparation_path"]["verdict"] == "absent", f"preparation without a cause: {entry}")
+        check(len(ladder["witness_cross_check"]) == 4, "the cross-check needs two pairs in both X Latin batches")
+        check(all(c["iso_within_unit"] for c in ladder["witness_cross_check"]), "iso-corrected E_0 beyond 1")
+        flat = stages("ladder_flat")["tuna_ladder"]
+        check(
+            flat["verdict"] == "refuted" and not flat["stops"] and len(flat["refutations"]) == 12,
+            f"i.i.d. shots carry a line: {flat['refutations']}",
+        )
+        low = runs["ladder_context_low"]
+        first = analyze([run for run in low if run.name.endswith("batch-00")], root / "ladder_context_low")
+        partial = first["stages"]["tuna_ladder"]
+        check(
+            partial["verdict"].startswith("incomplete") and any("readout-iso-x.cq q13" in s for s in partial["stops"]),
+            f"a context readout below its floor did not stop the incomplete series: {partial['stops']}",
+        )
+        ladder_twins = stages("ladder_twins")["tuna_ladder_twins"]
+        check(ladder_twins["verdict"] == "continue", f"ideal ladder twins: {ladder_twins['stops']}")
         omitted = stages("follow_omit")["tuna_follow"]
         check(
             [w["verdict"] for w in omitted["walks"] if w["omit_last_block"]] == ["refuted", "refuted"]

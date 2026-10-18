@@ -68,7 +68,7 @@ import placement_feasibility
 import qpu_planning
 import variance
 from coherence_window import COHERENCE_PRECISION
-from diagnostic_experiments import FAMILY_NAMES, N21_FAMILIES, PATCH_FAMILIES, record_groups
+from diagnostic_experiments import FAMILY_NAMES, N21_FAMILIES, PATCH_FAMILIES, record_groups, state_prep_arms
 from experiments import (
     MIRROR_SUFFIX,
     Group,
@@ -761,6 +761,96 @@ def _same_optional_float(first: Any, second: Any) -> bool:
     if first is None or second is None:
         return first is second
     return math.isclose(float(first), float(second), rel_tol=1e-9, abs_tol=1e-15)
+
+
+def _delayed_qubits(isa: QuantumCircuit) -> set[int]:
+    """Physical qubits of every delay in isa, nested control-flow blocks included."""
+    qubits: set[int] = set()
+
+    def walk(circuit: QuantumCircuit, physical_qubits: tuple[int, ...]) -> None:
+        for instruction in circuit.data:
+            mapped = tuple(physical_qubits[circuit.find_bit(qubit).index] for qubit in instruction.qubits)
+            if isinstance(instruction.operation, ControlFlowOp):
+                for block in instruction.operation.blocks:
+                    walk(block, mapped)
+            elif instruction.operation.name == "delay":
+                qubits.update(mapped)
+
+    walk(isa, tuple(range(isa.num_qubits)))
+    return qubits
+
+
+def calibration_values(isas: list[QuantumCircuit], target: Any, props: Any) -> dict[str, Any]:
+    """Every calibration value one group's plan consumes, in the JSON form a record retains.
+
+    fingerprint() supplies the Target timing constraints, the error and
+    duration of every routed instruction, T1 and T2 of every qubit an
+    instruction touches, and each measured qubit's asymmetric readout channel:
+    the inputs of the layout score, the duration and cost estimates, the
+    noise model's gate, relaxation and readout channels, and the readout
+    correction. Aer's RelaxationNoisePass charges each delay with its qubit's
+    T1 and T2 over dt, so a qubit that only idles adds its T1 and T2. The
+    noise model reads qubit frequency only for a nonzero temperature, and
+    NoiseModel.from_backend runs at temperature 0, so frequency stays out.
+    """
+    values = fingerprint(isas, target, props)
+    for isa in isas:
+        for qubit in sorted(_delayed_qubits(isa)):
+            qubit_properties = target.qubit_properties[qubit]
+            values[f"target:t1:{qubit}"] = qubit_properties.t1
+            values[f"target:t2:{qubit}"] = qubit_properties.t2
+    retained: dict[str, Any] = json.loads(json.dumps(values, sort_keys=True, default=str))
+    return retained
+
+
+def calibration_values_sha256(values: Mapping[str, Any]) -> str:
+    """sha256 of the canonical JSON text of one calibration_values mapping."""
+    text = json.dumps(values, sort_keys=True, separators=(",", ":"), default=str)
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def _brief(value: Any) -> str:
+    text = json.dumps(value, default=str)
+    return text if len(text) <= 48 else f"{text[:45]}..."
+
+
+def calibration_value_changes(approved: Mapping[str, Any], fresh: Mapping[str, Any]) -> list[str]:
+    """Every key whose value differs between two calibration_values mappings, in key order.
+
+    Values compare by their canonical JSON text, so a float matches only its
+    exact retained value and a key present on one side alone is a change.
+    """
+    changes = []
+    for key in sorted(set(approved) | set(fresh)):
+        if key not in fresh:
+            changes.append(f"{key} absent from the fresh values")
+        elif key not in approved:
+            changes.append(f"{key} absent from the approved values")
+        elif json.dumps(approved[key], sort_keys=True, default=str) != json.dumps(
+            fresh[key], sort_keys=True, default=str
+        ):
+            changes.append(f"{key} {_brief(approved[key])} -> {_brief(fresh[key])}")
+    return changes
+
+
+def _changes_summary(changes: list[str], limit: int = 4) -> str:
+    shown = "; ".join(changes[:limit])
+    return f"{len(changes)} calibration values changed ({shown}{'; ...' if len(changes) > limit else ''})"
+
+
+def same_calibration_instant(first: Any, second: Any) -> bool:
+    """Whether two recorded calibration stamps name one instant.
+
+    BackendProperties.last_update_date carries the host's local UTC offset,
+    so two hosts record one publish under different strings; aware ISO
+    stamps compare as instants, and text that does not parse compares as text.
+    """
+    if first == second:
+        return True
+    try:
+        return bool(datetime.fromisoformat(str(first)) == datetime.fromisoformat(str(second)))
+    except ValueError:
+        return False
 
 
 def check_snapshot_matches_properties(target: Any, props: Any, label: str) -> None:
@@ -2677,8 +2767,22 @@ def _choice_record(
         "placed_qubit_calibration": placed_qubit_calibration(
             choice.snap.properties, sorted({qubit for replica in choice.replicas for qubit in replica.qubits})
         ),
+        **choice_calibration_values(choice),
         "members": members,
     }
+
+
+def choice_calibration_values(choice: Choice) -> dict[str, Any]:
+    """The group's calibration_values over its packed circuits on its own snapshot, and that mapping's sha256.
+
+    The approved-record comparison binds an approval to these values: a
+    republished calibration whose values are unchanged keeps the approval,
+    and any changed value refuses it.
+    """
+    values = calibration_values(
+        [entry.packed for entry in choice.entries], choice.snap.backend.target, choice.snap.properties
+    )
+    return {"calibration_fingerprint": values, "calibration_fingerprint_sha256": calibration_values_sha256(values)}
 
 
 PLACED_QUBIT_FIELDS = ("T1", "T2", "readout_error", "prob_meas1_prep0", "prob_meas0_prep1", "frequency")
@@ -2788,13 +2892,133 @@ def approved_backend_scope(approved_dir: Path) -> list[str]:
     return sorted(backends)
 
 
+class ApprovalPreflightRefused(LiveRunError):
+    """The approved record's circuits read changed calibration values before planning; record is the refusal."""
+
+    def __init__(self, message: str, record: dict[str, Any]) -> None:
+        super().__init__(message)
+        self.record = record
+
+
+def approved_calibration_preflight(approved_dir: Path, snapshots: list[Snapshot]) -> dict[str, Any]:
+    """Compare the approved record's own circuits with the first fresh snapshots, before any planning.
+
+    Each approved group's packed circuits are extracted from the approved
+    isa.qpy through its execution_pubs component map, then checked against
+    the fresh snapshot of their backend: compiled_violations names a qubit or
+    coupler the fresh exclusion policy rejects, and calibration_values must
+    equal the group's recorded calibration_fingerprint key for key. A group
+    whose record carries no calibration_fingerprint keeps the timestamp rule.
+    A backend without a fresh snapshot is left to the full comparison, which
+    refuses it. Every mismatch found here also fails the full comparison
+    after planning, so the refusal costs one discovery instead of a re-plan.
+    """
+    approved = json.loads((approved_dir / "record.json").read_text())
+    with (approved_dir / "isa.qpy").open("rb") as handle:
+        archived = {circuit.name: circuit for circuit in qpy.load(handle)}
+    fresh = {snapshot.name: snapshot for snapshot in snapshots}
+    components: dict[str, list[tuple[str, dict[str, Any]]]] = {}
+    for pub in approved.get("execution_pubs", []):
+        for component in pub.get("components", []):
+            components.setdefault(component.get("group"), []).append((pub.get("name"), component))
+    mismatches: list[str] = []
+    accepted: list[dict[str, Any]] = []
+    for group in approved.get("groups", []):
+        name, backend = group.get("group"), group.get("backend")
+        snapshot = fresh.get(backend)
+        if snapshot is None:
+            continue
+        approved_calibration = group.get("calibration")
+        same_instant = same_calibration_instant(approved_calibration, snapshot.calibration)
+        values = group.get("calibration_fingerprint")
+        if not isinstance(values, dict):
+            if not same_instant:
+                mismatches.append(
+                    f"{name}: calibration {approved_calibration} -> {snapshot.calibration} "
+                    "(the approved record binds no calibration values)"
+                )
+            continue
+        try:
+            circuits = [
+                packing.extract(
+                    archived[pub_name], component["register_prefix"], component["physical_qubits"], component["member"]
+                )
+                for pub_name, component in components.get(name, [])
+            ]
+        except (KeyError, TypeError, ValueError) as error:
+            mismatches.append(f"{name}: the approved isa.qpy lacks its PUB components ({type(error).__name__})")
+            continue
+        if not circuits:
+            mismatches.append(f"{name}: the approved record maps no PUB component to the group")
+            continue
+        violations = sorted({violation for circuit in circuits for violation in compiled_violations(circuit, snapshot)})
+        if violations:
+            mismatches.append(f"{name}: {backend} now rejects {', '.join(violations[:4])}")
+        try:
+            changes = calibration_value_changes(
+                values, calibration_values(circuits, snapshot.backend.target, snapshot.properties)
+            )
+        except Exception as error:
+            mismatches.append(f"{name}: calibration values unreadable ({type(error).__name__})")
+            continue
+        if changes:
+            mismatches.append(
+                f"{name}: calibration {approved_calibration} -> {snapshot.calibration}: {_changes_summary(changes)}"
+            )
+        elif not same_instant and not violations:
+            accepted.append(
+                {
+                    "group": name,
+                    "backend": backend,
+                    "approved_calibration": approved_calibration,
+                    "fresh_calibration": snapshot.calibration,
+                    "calibration_fingerprint_sha256": calibration_values_sha256(values),
+                }
+            )
+    return {"compared_at": _now(), "accepted_timestamp_changes": accepted, "mismatches": mismatches}
+
+
+def _preflight_refusal(args: argparse.Namespace, approved_dir: Path, preflight: dict[str, Any], discovery: Any) -> None:
+    """Raise ApprovalPreflightRefused with an approval_required record when the preflight found a mismatch."""
+    mismatches = preflight["mismatches"]
+    if not mismatches:
+        return
+    _snapshots, skipped, inventory = discovery
+    record = {
+        "schema_version": RECORD_SCHEMA_VERSION,
+        "schema_contract": RECORD_SCHEMA_CONTRACT,
+        "state": "approval_required",
+        "started": getattr(args, "started", None),
+        "experiment_digest": experiment_digest(),
+        "system_inventory": inventory,
+        "skipped_backends": skipped,
+        "approved_record": {
+            "run": approved_dir.name,
+            "record_sha256": hashlib.sha256((approved_dir / "record.json").read_bytes()).hexdigest(),
+            "qpy_archive_sha256": hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest(),
+            "calibration_preflight": preflight,
+            "mismatches": mismatches,
+        },
+        "renewed_approval": {
+            "required_at": _now(),
+            "reason": "the approved circuits read changed calibration values at the first discovery, before planning",
+            "mismatches": mismatches,
+        },
+    }
+    raise ApprovalPreflightRefused(
+        f"the live calibration differs from the approved record {approved_dir.name} ({'; '.join(mismatches)}); "
+        "a renewed written case and approval are required; no plan was built and no Runtime job was submitted",
+        record,
+    )
+
+
 def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[Choice], dict[str, Any]]:
     available_groups = all_experiment_groups()
     known = {group.name for group in available_groups}
     unknown = sorted(set(args.groups or []) - known)
     if unknown:
         raise LiveRunError(f"unknown experiment groups {unknown}; known: {sorted(known)}")
-    snaps, skipped, inventory = discover_snapshots(
+    discovery = discover_snapshots(
         service,
         args.backends,
         args.max_pending,
@@ -2802,6 +3026,16 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         scope=getattr(args, "approved_scope", None),
         operator_excluded=getattr(args, "exclude_qubits", None),
     )
+    snaps, skipped, inventory = discovery
+    approved_dir = getattr(args, "approved_record", None)
+    preflight: dict[str, Any] | None = None
+    if getattr(args, "submit", False) and approved_dir is not None:
+        preflight = approved_calibration_preflight(Path(approved_dir), snaps)
+        _preflight_refusal(args, Path(approved_dir), preflight, discovery)
+        print(
+            f"approval preflight: approved circuits read unchanged calibration values "
+            f"({len(preflight['accepted_timestamp_changes'])} groups under a republished timestamp)"
+        )
     if not snaps:
         raise LiveRunError("no eligible backend")
     requested_delay = getattr(args, "rep_delay", None)
@@ -2813,6 +3047,14 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         }
         if refused:
             raise LiveRunError(f"--rep-delay {requested_delay} s is unavailable: {refused}")
+    if not getattr(args, "family", None):
+        refused_shots = {
+            snapshot.name: violations
+            for snapshot in snaps
+            if (violations := qpu_planning.shot_ceiling_violations(snapshot.backend, args.shots))
+        }
+        if refused_shots:
+            raise LiveRunError(f"--shots {args.shots} is unavailable: {refused_shots}")
     trace: dict[str, Any] = {}
     design: dict[str, Any] = {}
     if getattr(args, "family", None):
@@ -2933,6 +3175,8 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         "selection_trace": trace,
         **design,
     }
+    if preflight is not None:
+        record["approval_preflight"] = preflight
     record["budget_plan"] = qpu_planning.budget_plan(sys.modules[__name__], choices, args, service.usage())
     record["execution_contract"] = qpu_planning.execution_contract(choices, record)
     if design.get("optimization", {}).get("selected") is None and design:
@@ -2992,6 +3236,9 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
             else simulate(choice, sim, int(record["shots"]))
         )
         entry = _choice_record(choice, noisy, cal, int(record["shots"]), scopes)
+        # Provenance of the whole-device noise model the prediction ran under;
+        # the approval binds the group's calibration_fingerprint, not this digest.
+        entry["noise_serialized_channels_sha256"] = getattr(sim, "_gororoba_noise_digest", None)
         record["groups"].append(entry)
         cz = [m["cz"] for m in entry["members"]]
         summary = {k: round(v, 4) for k, v in entry["summary"].items()}
@@ -3035,17 +3282,43 @@ APPROVED_RECORD_FIELDS = (
 )
 
 
-def approved_calibration_drift(record: dict[str, Any], backend_name: str, calibration: str) -> str | None:
+def approved_calibration_drift(
+    record: dict[str, Any],
+    backend_name: str,
+    calibration: str,
+    fresh_values: Mapping[str, Mapping[str, Any]] | None = None,
+) -> str | None:
     """Why a batch's calibration departs from the one the approved-record gate accepted, or None.
 
-    A run that has sent no batch returns to approval_required; a run with a
-    batch already sent keeps its submission lifecycle and records that the
-    unsent batches need renewed approval.
+    fresh_values maps each group of the batch to its calibration_values on
+    the batch's snapshot. When the approved record bound every one of those
+    groups to values (approved_record.calibration_values.fingerprint_sha256),
+    the batch proceeds exactly when each group's values hash to the approved
+    digest, whatever the calibration timestamp; otherwise the timestamp must
+    name the instant the approved-record gate accepted. A run that has sent
+    no batch returns to approval_required; a run with a batch already sent
+    keeps its submission lifecycle and records that the unsent batches need
+    renewed approval.
     """
-    approved = record.get("approved_record", {}).get("calibrations", {})
-    if backend_name not in approved or calibration == approved[backend_name]:
+    approved_record = record.get("approved_record", {})
+    approved = approved_record.get("calibrations", {})
+    if backend_name not in approved:
         return None
-    reason = f"calibration moved after the approved-record check ({approved[backend_name]} -> {calibration})"
+    bound = approved_record.get("calibration_values", {}).get("fingerprint_sha256", {})
+    if fresh_values and all(group in bound for group in fresh_values):
+        moved = sorted(
+            group for group, values in fresh_values.items() if calibration_values_sha256(values) != bound[group]
+        )
+        if not moved:
+            return None
+        reason = (
+            f"calibration moved after the approved-record check ({approved[backend_name]} -> {calibration}): "
+            f"calibration values changed for {', '.join(moved)}"
+        )
+    elif same_calibration_instant(calibration, approved[backend_name]):
+        return None
+    else:
+        reason = f"calibration moved after the approved-record check ({approved[backend_name]} -> {calibration})"
     if record.get("submission", {}).get("jobs"):
         record["renewed_approval_for_unsent_batches"] = {"required_at": _now(), "reason": reason}
     else:
@@ -3071,6 +3344,7 @@ def refreshed_plan_view(record: dict[str, Any], choices: list[Choice], pubs: lis
                 "initial_layout": list(choice.layout),
                 "replica_floor": choice.replica_floor,
                 "calibration": choice.snap.calibration,
+                **choice_calibration_values(choice),
                 "replicas": [{"physical_qubits": list(replica.qubits)} for replica in choice.replicas],
             }
             for choice in choices
@@ -3118,7 +3392,11 @@ def consume_approval(approved_dir: Path, run_name: str) -> dict[str, Any]:
 
 
 def approved_record_mismatches(
-    approved_dir: Path, record: dict[str, Any], qpy_archive_sha256: str, expected_record_sha256: str | None = None
+    approved_dir: Path,
+    record: dict[str, Any],
+    qpy_archive_sha256: str,
+    expected_record_sha256: str | None = None,
+    binding: dict[str, Any] | None = None,
 ) -> list[str]:
     """Every way the fresh plan in record differs from the approved submit-free record in approved_dir.
 
@@ -3130,6 +3408,13 @@ def approved_record_mismatches(
     replica qubits, and floors, the same fused PUB manifests, the same
     calibration on every used backend, and a byte-identical QPY archive. The approved record is itself a dry
     run: planned, with no submission.
+
+    A group whose approved entry carries calibration_fingerprint binds the
+    approval to those values: the fresh group's calibration_fingerprint must
+    equal it key for key, and a calibration timestamp that moved with every
+    value unchanged is accepted. A group without one keeps the timestamp
+    rule. binding, when given, receives fingerprint_sha256 (group -> digest
+    of each bound group's approved values) and accepted_timestamp_changes.
     """
     approved = json.loads((approved_dir / "record.json").read_text())
     approved_qpy = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
@@ -3156,8 +3441,35 @@ def approved_record_mismatches(
         new_qubits = [replica.get("physical_qubits") for replica in new.get("replicas", [])]
         if old_qubits != new_qubits:
             mismatches.append(f"{name}: replica qubits {old_qubits} -> {new_qubits}")
-        if old.get("calibration") != new.get("calibration"):
-            mismatches.append(f"{name}: calibration {old.get('calibration')} -> {new.get('calibration')}")
+        old_calibration, new_calibration = old.get("calibration"), new.get("calibration")
+        same_instant = same_calibration_instant(old_calibration, new_calibration)
+        approved_values, fresh_values = old.get("calibration_fingerprint"), new.get("calibration_fingerprint")
+        if not isinstance(approved_values, dict):
+            if not same_instant:
+                mismatches.append(f"{name}: calibration {old_calibration} -> {new_calibration}")
+            continue
+        changes = (
+            calibration_value_changes(approved_values, fresh_values)
+            if isinstance(fresh_values, dict)
+            else ["the fresh plan carries no calibration values"]
+        )
+        if changes:
+            summary = _changes_summary(changes)
+            mismatches.append(f"{name}: calibration {old_calibration} -> {new_calibration}: {summary}")
+            continue
+        approved_digest = calibration_values_sha256(approved_values)
+        if binding is not None:
+            binding.setdefault("fingerprint_sha256", {})[name] = approved_digest
+            if not same_instant:
+                binding.setdefault("accepted_timestamp_changes", []).append(
+                    {
+                        "group": name,
+                        "backend": new.get("backend"),
+                        "approved_calibration": old_calibration,
+                        "fresh_calibration": new_calibration,
+                        "calibration_fingerprint_sha256": approved_digest,
+                    }
+                )
     if approved.get("execution_pubs") != record.get("execution_pubs"):
         mismatches.append("fused PUB manifests differ")
     if approved_qpy != qpy_archive_sha256:
@@ -3808,14 +4120,22 @@ def submit(
         # build_submission_plan sends, since record["groups"] still describes
         # the initial snapshot when the refresh changed nothing routable.
         fresh_view = refreshed_plan_view(record, choices, fresh_execution_pubs)
+        binding: dict[str, Any] = {"fingerprint_sha256": {}, "accepted_timestamp_changes": []}
         mismatches = approved_record_mismatches(
-            Path(approved_dir), fresh_view, qpy_archive_sha256, getattr(args, "approved_record_sha256", None)
+            Path(approved_dir),
+            fresh_view,
+            qpy_archive_sha256,
+            getattr(args, "approved_record_sha256", None),
+            binding,
         )
         record["approved_record"] = {
             "run": Path(approved_dir).name,
             "record_sha256": hashlib.sha256((Path(approved_dir) / "record.json").read_bytes()).hexdigest(),
             "qpy_archive_sha256": hashlib.sha256((Path(approved_dir) / "isa.qpy").read_bytes()).hexdigest(),
             "calibrations": {group["backend"]: group["calibration"] for group in fresh_view["groups"]},
+            # Groups bound by value keep the approval across a republished
+            # timestamp; each batch rechecks these digests.
+            "calibration_values": binding,
             "mismatches": mismatches,
         }
         if mismatches:
@@ -3854,28 +4174,37 @@ def submit(
         ineligible = fresh.ineligible_reason(args.max_pending)
         if ineligible:
             raise LiveRunError(f"{name}: {batch_tag} left the eligibility gate ({ineligible})")
-        owner_reasons: dict[str, list[str]] = {}
-        seen_owners: set[int] = set()
+        owners: list[Choice] = []
         for pub in batch:
             for component in pub.components:
-                owner = component.choice
-                if id(owner) in seen_owners:
-                    continue
-                seen_owners.add(id(owner))
-                reasons = choice_change_reasons(owner, fresh)
-                if reasons:
-                    owner_reasons[owner.group.name] = reasons
+                if all(component.choice is not owner for owner in owners):
+                    owners.append(component.choice)
+        # A publish between the approved-record check and this batch keeps
+        # the approval only when every group of the batch reads its approved
+        # values; a changed value returns the run to approval_required.
+        batch_values: dict[str, dict[str, Any]] | None
+        try:
+            batch_values = {
+                owner.group.name: calibration_values(
+                    [entry.packed for entry in owner.entries], fresh.backend.target, fresh.properties
+                )
+                for owner in owners
+            }
+        except Exception:
+            batch_values = None
+        drift = approved_calibration_drift(record, name, fresh.calibration, batch_values)
+        if drift is not None:
+            raise LiveRunError(f"{name}: {batch_tag} {drift}; no circuit in this batch was submitted")
+        owner_reasons: dict[str, list[str]] = {}
+        for owner in owners:
+            reasons = choice_change_reasons(owner, fresh)
+            if reasons:
+                owner_reasons[owner.group.name] = reasons
         if owner_reasons:
             raise LiveRunError(
                 f"{name}: {batch_tag} hardware moved after batch planning; "
                 f"no circuit in this batch was submitted ({owner_reasons})"
             )
-        # The approved-record check compared calibration timestamps at the
-        # refresh; a calibration that rolls between that check and this
-        # batch leaves the consumed values unchanged yet is unapproved.
-        drift = approved_calibration_drift(record, name, fresh.calibration)
-        if drift is not None:
-            raise LiveRunError(f"{name}: {batch_tag} {drift}; no circuit in this batch was submitted")
         requested_delay = getattr(args, "rep_delay", None)
         if requested_delay is not None:
             batch_delay_violations = qpu_planning.repetition_delay_violations(
@@ -3888,6 +4217,14 @@ def submit(
                 else:
                     record["state"] = "approval_required"
                 raise LiveRunError(f"{name}: {batch_tag} {reason}; no circuit in this batch was submitted")
+        shot_violations = qpu_planning.shot_ceiling_violations(fresh.backend, int(plan_entry["shots"]))
+        if shot_violations:
+            reason = "; ".join(shot_violations)
+            if record["submission"]["jobs"]:
+                record["renewed_approval_for_unsent_batches"] = {"required_at": _now(), "reason": reason}
+            else:
+                record["state"] = "approval_required"
+            raise LiveRunError(f"{name}: {batch_tag} {reason}; no circuit in this batch was submitted")
         usage = service.usage()
         check_budget(name, usage, args.min_remaining_seconds)
         # Accepted jobs may remain unbilled. Every ceiling stays reserved until
@@ -3932,6 +4269,11 @@ def submit(
         plan_entry["pre_submit_revalidation"] = {
             "fetched_at": fresh.fetched_at,
             "calibration": fresh.calibration,
+            "calibration_fingerprint_sha256": (
+                {group: calibration_values_sha256(values) for group, values in batch_values.items()}
+                if batch_values is not None
+                else None
+            ),
             "capabilities": fresh.capabilities.summary(),
             "excluded_qubits": len(fresh.excluded_qubits),
             "excluded_edges": len(fresh.excluded_edges),
@@ -5126,6 +5468,13 @@ def main(argv: list[str] | None = None) -> int:
         help="physical qubits state-prep-control characterizes; omitted, the replica qubits of "
         "diagnostic_experiments.STATE_PREP_SOURCE_RECORD on its backend",
     )
+    parser.add_argument(
+        "--state-prep-arms",
+        type=lambda value: value.split(","),
+        help="state-prep-control arms among prep0, reset, x and x_history, comma-separated: prep0 among "
+        "them, or x_history alone, since it sets the end state every shot of its job leaves; "
+        "omitted, prep0, reset and x; the policy binds a selection",
+    )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
         "--local-compute-method",
@@ -5351,6 +5700,13 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("the patch family runs one pinned placement; --max-replicas must be 1")
     if args.layout is not None and args.family != "state-prep-control":
         parser.error("--layout applies to the state-prep-control family only")
+    if args.state_prep_arms is not None:
+        if args.family != "state-prep-control":
+            parser.error("--state-prep-arms applies to the state-prep-control family only")
+        try:
+            args.state_prep_arms = list(state_prep_arms(args.state_prep_arms))
+        except ValueError as error:
+            parser.error(f"--state-prep-arms: {error}")
     if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
         parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "folded-correction":
@@ -5467,6 +5823,12 @@ def main(argv: list[str] | None = None) -> int:
                 )
             finally:
                 write_json(run_dir, record)
+    except ApprovalPreflightRefused as exc:
+        if run_dir:
+            run_dir.mkdir(parents=True, exist_ok=False)
+            write_json(run_dir, exc.record)
+        print(f"FAIL: {exc}", file=sys.stderr)
+        return 1
     except LiveRunError as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1

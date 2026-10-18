@@ -1,5 +1,8 @@
 """Fringe amplitude ratios of the Fez and Kingston ripple atlas edges: structure against shot noise, and its predictors.
 
+``--self-test-channels`` checks synthetic thermal and depolarizing channels
+against Aer; ``--self-test`` also replays the retained Fez lane contract.
+
 The runs, lanes, executed replicas and per-edge observations are those of
 scripts/atlas_coherent_families.py: 84 box-kite edges, each an 8-point phase
 sweep phi_k = k pi/4, on 7 lanes of 5 physical qubits, from ibm_fez
@@ -845,8 +848,8 @@ PLANTED_SX = ((3, -0.02),)
 PLANTED_CONSTANT = -0.15
 
 
-def self_test() -> int:
-    """Channel algebra, density matrix against statevector, bootstrap, and planted structure on Fez lane 4."""
+def self_test_channels() -> int:
+    """Synthetic channel algebra and qubit ordering against Aer, without retained run inputs."""
     from qiskit.quantum_info import DensityMatrix, random_density_matrix
     from qiskit_aer.noise import depolarizing_error, thermal_relaxation_error
 
@@ -868,6 +871,12 @@ def self_test() -> int:
         np.max(np.abs(unitary(tensor, Operator.from_label("X").data, 0, 2).reshape(4, 4) - flipped)) < 1e-12, "axis"
     )
     print("thermal relaxation, one- and two-qubit depolarizing and qubit order equal qiskit_aer within 1e-12")
+    return 0
+
+
+def self_test() -> int:
+    """Channel algebra, density matrix against statevector, bootstrap, and planted structure on Fez lane 4."""
+    self_test_channels()
 
     retained = {fit["lane"]: fit for fit in json.loads(acf.RETAINED_DETUNING.read_text(encoding="utf-8"))["lanes"]}
     backend, lane = "ibm_fez", 4
@@ -950,7 +959,10 @@ def main() -> int:
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path)
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--self-test-channels", action="store_true", help="check synthetic thermal and noise channels")
     args = parser.parse_args()
+    if args.self_test_channels:
+        return self_test_channels()
     if args.self_test:
         return self_test()
     backends = args.runs.split(",")

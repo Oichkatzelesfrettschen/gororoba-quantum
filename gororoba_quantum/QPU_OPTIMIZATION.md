@@ -104,20 +104,38 @@ coherent phase on the second-round kickback, which a calibration noise model
 omits because backend properties carry no qubit frequency.
 `scripts/n21_orbit_rca.py` fits error mechanisms to each pair's eight cells
 with an exact density-matrix model and a Bonferroni threshold across the
-mechanisms. Work-only gates commute with the control's measurement, so the
-compiler can finish a multiplier after it, and the physical qubits holding the
-work superposition during the window then differ between the feed-forward and
-omitted-correction members and between recorded branches. The script
-identifies each qubit's role with Z probes on the archived ISA and reads
-exposure from the returned schedule. A barrier before the first measurement
-fixes the window structure; the echo arm carries one.
+mechanisms. Work-only gates commute with the control's measurement, so
+without a barrier the compiler finishes a multiplier after it or starts the
+next one before the reset ends, and the physical qubits holding the work
+superposition during the window differ between the feed-forward and
+omitted-correction members and between recorded branches. Every arm
+therefore brackets the control's measurement and reset with barriers over
+all qubits, so each multiplier round compiles entirely on one side of the
+window. The script identifies each qubit's role with Z probes on the
+archived ISA and reads exposure from the returned schedule.
+`qpe_diagnostics.window_bracket_violations` lists the work-qubit operations a
+compiled window holds, and `qpu_planning_contracts.py --window-bracket`
+(gate core-446) requires none in any compiled arm and some in the
+barrier-free n21-orbit-feedback pair. The bracket costs one routed CZ per
+arm on the ibm_fez layouts it was compiled for (43 to 44 and 47 to 48).
 
 | Arm | Change to the window | Detuning on work qubits | Readout-induced shift | Residual control photons |
 |---|---|---|---|---|
 | nominal | none | reference | reference | reference |
 | window_delay | control idles one readout length after reset | phase grows with the idle | phase unchanged | phase shrinks |
 | extra_readout | control read twice into the first bit | phase grows as for window_delay | phase grows beyond window_delay | phase unchanged |
-| window_echo | barrier, then X on the work bits for 1 and 16 at each echo half | phase near zero | partial cancellation | phase unchanged |
+| window_echo | X on the work bits for 1 and 16 at each echo half | phase near zero | partial cancellation | phase unchanged |
+
+`n21_orbit_rca.py --between-arm RUN` evaluates three contracts fixed before
+any bracketed run, each at alpha 0.05 / 3, and only when every member's Z
+probes give one resolved coupling equal to the nominal feed-forward member's
+(a no-feedback member up to its global sign); otherwise each reports
+`not_admissible` with the differing members. window_delay's phase must lie on
+the nominal pair's phase-per-exposure slope inside its profile-likelihood
+set; extra_readout's phase-free contrast magnitude
+hypot(fb1 - fb3, nf3 - nf1) must reach the nominal one times
+exp(-sum t_q / T2_q) over the added idle; window_echo's magnitude must reach
+the nominal one.
 
 The window durations come from the backend's longest measure and reset in
 dt and are recorded in the family configuration with the backend dt. Four
@@ -171,6 +189,63 @@ branch and each spectator sector, as unnormalized values with their support
 probabilities; for either coherence the branch values add to the reduced
 pair, and their difference and the sector sum are the branch-signed value,
 C for the odd coherence.
+
+`--family state-prep-control` reads, on every `--layout` qubit in the same
+shots, the excited fraction left by the Sampler's implicit initialization
+(`init_qubits`) at one repetition delay. `--state-prep-arms` selects among
+prep0 (init, measure), reset (init, reset, measure), x (x, measure) and
+x_history (init, measure, x); a selection holds prep0, or is x_history alone.
+x_history flips the state its measurement projects, so a shot ends in `|1>`
+unless its own initialization left `|1>` or the X failed, and each shot after
+the first starts from the initialization of that near-`|1>` end state, while
+prep0 follows shots that end near `|0>`. The service interleaves the shots of
+one job's circuits in an unspecified order, so x_history is the only arm of
+its job: one PUB fuses every qubit's measure-then-X, which
+`local_compute.is_dynamic` classifies dynamic, and the job runs with
+twirling and dynamical decoupling off. The calibration model carries no shot
+history and prices x_history at prep0's law.
+
+`scripts/state_prep_excess.py` turns collected control runs into the
+`--prep-excitation` of an n21 plan. It reads each run's lossless
+`raw/<job_id>/pub_NN.json` registers through the submission's PUB
+manifests, admitting prep0 and x_history only from a job that holds no
+other arm. `--fetch-readout RUN_DIR` retains, in `state-prep-readout.json`,
+the readout, x error, x duration and T1 that `properties(datetime=...)`
+reports at each PUB's execution start (and stop, when the calibration
+changed during the shots), and the rule requires each fetched calibration
+to equal the one `--collect` recorded. The family-wise alpha (0.01 by
+default) splits over three one-sided Clopper-Pearson bounds per qubit of
+the controlled set C, the qubits with x_history at 50 and 250 us and prep0
+at 250 us: x_history upper at each delay and prep0 lower at 250 us. The
+bounds hold simultaneously over C, so any placement inside C is covered
+however often the fixed point below looks. e10 is the smallest and e01 the
+largest of the n21 model's and every execution calibration's reported
+values; with b the smaller of e10 and the prep0 bound, u = max(0, (U - b) /
+(1 - e01 - b)) is x_history's own excitation. The initialization is one
+channel on the previous shot's end state, so the excitation is affine in
+that state's `|1>` population q, and the excitation after an all-`|1>`
+history is at most u / q with q >= (1 - u)(1 - delta); delta is the x error
+plus the x and measure durations over T1: the flip failure of live_run's
+noise model and a bound on the measurement's 0 -> 1 transitions, which run
+one to two orders below the T1-dominated 1 -> 0 rate on ibm_kingston
+(docs/notes/ibm_quantum/heron-r2-readout-resonator.md). The first shot of
+each executor chunk follows an uncontrolled shot, so the bounds count those
+shots at their worst value (chunk_timing in each job's
+result_metadata.json). The bound describes the initialization at the
+controls' execution calibrations, and the report's calibration_scope says
+whether the n21 plan shares one.
+eps = u / ((1 - u)(1 - delta)) at each delay, maximized over the placement,
+bounds each placed qubit's marginal excitation; dynamic_density applies
+independent local channels, and the report's joint coincidence counts
+(shots in which two or more placed qubits read 1, beside the independent
+prediction) stay a diagnostic. prep0 at 50 us is reported as a
+point-estimate decomposition outside the bound family, whose
+x_history-minus-prep0 differences span the dynamic and static job kinds as
+well as the shot history. Placement and eps depend on each other, so the
+plan iterates: plan at eps 0, bound eps on its placement, re-plan at the
+larger of the planned and bounded values, and stop when the bound no longer
+exceeds the eps planned with. eps never decreases and takes values from a
+finite set, so the iteration stops.
 
 `qpe_diagnostics.py` derives the folded-QPE and N=21 families' laws independently of Qiskit
 using exact integer branch amplitudes and rational probabilities. The gate
@@ -473,11 +548,14 @@ budget membership and cost-scenario workloads. The top-level `shots` equals
 the largest allocated count; the full PUB ledger supplies each actual count.
 Reproduction includes `--shot-allocation` only when the saved design records
 that option, preserving historical uniform commands. A written case still requires
-owner approval. Fresh selection and calibration must match the approved
-experiment, observable contracts, shots, policy, dependencies, layouts,
-replica maps, execution contract, and QPY bytes. A changed plan requires a
-fresh case and approval. Historical raw results, records, and earlier
-interpretations remain retained under their original identities.
+owner approval. Fresh selection must match the approved experiment,
+observable contracts, shots, policy, dependencies, layouts, replica maps,
+execution contract, and QPY bytes, and each group's calibration values
+(`calibration_fingerprint`) must equal the approved ones; a republished
+calibration timestamp with unchanged values keeps the approval, and an
+approved record without values keeps the timestamp rule. A changed plan or
+value requires a fresh case and approval. Historical raw results, records,
+and earlier interpretations remain retained under their original identities.
 
 Collection reports `family_analysis` only when every required member has
 compatible execution-time calibration evidence. The pure

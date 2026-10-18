@@ -34,10 +34,12 @@ import hashlib
 import json
 import os
 import platform
+import re
 import shutil
 import subprocess
 import sys
 import time
+from collections.abc import Mapping
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any
@@ -54,6 +56,16 @@ REPORTED_PACKAGES = (
     "custatevec-cu11",
     "cutensornet-cu11",
     "cutensor-cu11",
+    "qiskit-aer-gpu-cu13",
+    "custatevec-cu13",
+    "cutensornet-cu13",
+    "cutensor-cu13",
+    "nvidia-cuda-runtime",
+    "nvidia-cublas",
+    "nvidia-cusolver",
+    "nvidia-cusparse",
+    "nvidia-nvjitlink",
+    "nvidia-cuda-nvrtc",
     "qiskit-ibm-runtime",
     "numpy",
     "scipy",
@@ -73,6 +85,31 @@ REPORTED_PACKAGES = (
 DM_WIDTHS = (12, 13, 14, 15)
 SV_WIDTHS = (26, 28, 29, 30, 31)
 TRIAL_TIMEOUT = 600
+NATIVE_STATIC_TLS_BYTES = 4096
+STATIC_TLS_TUNABLE = "glibc.rtld.optional_static_tls"
+
+
+def native_environment(environment: Mapping[str, str]) -> dict[str, str]:
+    """Reserve native TLS when the child loader starts, preserving unrelated caller tunables.
+
+    Qiskit's Rust extension and Aer's libgomp need more optional static TLS
+    than glibc's default 512 bytes. The loader reads the surplus at process
+    startup, so setting the variable inside an importing interpreter is late.
+    """
+    entries = environment.get("GLIBC_TUNABLES", "").split(":")
+    retained = []
+    capacity = NATIVE_STATIC_TLS_BYTES
+    for entry in entries:
+        name, separator, value = entry.partition("=")
+        if name == STATIC_TLS_TUNABLE and separator:
+            try:
+                capacity = max(capacity, int(value))
+            except ValueError:
+                pass
+        elif entry:
+            retained.append(entry)
+    retained.append(f"{STATIC_TLS_TUNABLE}={capacity}")
+    return dict(environment, GLIBC_TUNABLES=":".join(retained))
 
 
 def write(name: str, data: Any) -> None:
@@ -173,8 +210,8 @@ def environment() -> dict[str, Any]:
 
 
 def entry_aer_device(job: dict[str, Any]) -> str:
-    """The GOROROBA_AER_DEVICE the entry sees: CI's CPU under --ci-env and in a shard run, else the machine's."""
-    return "CPU" if job.get("ci_env") or job.get("mode") == "shards" else str(job.get("device", "GPU"))
+    """The GOROROBA_AER_DEVICE the entry sees: CI's CPU under --ci-env, else the machine's."""
+    return "CPU" if job.get("ci_env") else str(job.get("device", "GPU"))
 
 
 def hypercomplex() -> dict[str, Any]:
@@ -232,7 +269,9 @@ def capacity() -> dict[str, Any]:
         for width in widths:
             cmd = [sys.executable, "-B", str(Path(__file__).resolve()), "--trial", method, str(width)]
             try:
-                proc = subprocess.run(cmd, capture_output=True, text=True, timeout=TRIAL_TIMEOUT)
+                proc = subprocess.run(
+                    cmd, capture_output=True, text=True, timeout=TRIAL_TIMEOUT, env=native_environment(os.environ)
+                )
             except subprocess.TimeoutExpired:
                 trial = {"width": width, "ok": False, "error": f"timeout after {TRIAL_TIMEOUT} s"}
             else:
@@ -282,7 +321,6 @@ def unpack_datasets(datasets: list[dict[str, Any]]) -> dict[str, Any]:
     return report
 
 
-CI_TREE = Path("/tmp/gororoba/ci")
 CI_VENV = Path("/tmp/gororoba/venv")
 
 
@@ -295,87 +333,237 @@ def checked(name: str, *cmd: str, cwd: Path | None = None, env: dict[str, str] |
     return proc.stdout
 
 
-def apply_overlay(tree: Path, overlay: Path, modes: dict[str, str], deleted: list[str]) -> None:
-    """Apply a commit's changed files (with their git modes) and deletions to a checkout of its base."""
-    # Deletions come first and prune the directories they empty, so a commit
-    # that replaces a directory with a file or symlink finds the path free.
-    for rel in deleted:
-        (tree / rel).unlink()
-        parent = (tree / rel).parent
-        while parent != tree and not any(parent.iterdir()):
-            parent.rmdir()
-            parent = parent.parent
-    for rel, mode in modes.items():
-        source, target = overlay / rel, tree / rel
-        target.parent.mkdir(parents=True, exist_ok=True)
-        if target.is_symlink() or target.is_file():
-            target.unlink()
-        if mode == "120000":
-            target.symlink_to(source.read_text(encoding="utf-8"))
-        else:
-            shutil.copyfile(source, target)
-            target.chmod(0o755 if mode == "100755" else 0o644)
-
-
 def ci_interpreter(tree: Path, uv: str, version: str) -> tuple[str, dict[str, str]]:
     """CI's Python with CI's pins (ci/install_pins.sh run in tree), and the environment its runs use."""
     checked("uv-install", sys.executable, "-m", "pip", "install", "-q", uv)
     checked("python-install", sys.executable, "-m", "uv", "python", "install", version)
     checked("venv", sys.executable, "-m", "uv", "venv", "-q", "--seed", "--python", version, str(CI_VENV))
     python = str(CI_VENV / "bin/python")
-    env = dict(
-        os.environ,
-        PATH=f"{CI_VENV / 'bin'}:{os.environ['PATH']}",
-        PYTHON=python,
-        PYTHONHASHSEED="0",
-        MPLBACKEND="Agg",
-        GOROROBA_AER_DEVICE="CPU",
+    env = native_environment(
+        dict(
+            os.environ,
+            PATH=f"{CI_VENV / 'bin'}:{os.environ['PATH']}",
+            PYTHON=python,
+            PYTHONHASHSEED="0",
+            MPLBACKEND="Agg",
+            GOROROBA_AER_DEVICE="CPU",
+        )
     )
     checked("install-pins", "sh", "ci/install_pins.sh", cwd=tree, env=env)
     checked("ci-freeze", python, "-m", "pip", "freeze", env=env)
     return python, env
 
 
-def run_shard(job: dict[str, Any]) -> int:
-    """One CI shard on the tree job["tree"], under CI's interpreter and pins.
+GPU_VENV = Path("/tmp/gororoba/gpu-venv")
+INPUTS = Path("/kaggle/input")
+WHEELHOUSE = Path("/tmp/gororoba/wheelhouse")
+# Interpreter variables that would put the image's modules or startup code
+# into the venv's interpreter.
+ISOLATION_VARIABLES = frozenset({"PYTHONPATH", "PYTHONHOME", "PYTHONSTARTUP", "PYTHONUSERBASE"})
 
-    The base commit is fetched from the public repository, the bundled
-    overlay (files changed since the base) is applied with its deletions and
-    file modes, and git write-tree must reproduce the head commit's tree
-    before any gate runs, so the shard tests exactly that commit. uv installs
-    CI's Python, ci/install_pins.sh installs CI's pins, and the gates run on
-    the CPU through ci/run_gates.py.
+
+def normalized(name: str) -> str:
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+
+def pinned(tree: Path, aer_pins: list[str]) -> dict[str, str]:
+    """Every exact pin the GPU entry environment holds, by normalized name.
+
+    requirements.txt without qiskit-aer, ci/requirements-ci.txt, the GPU Aer
+    pins that ci/install_pins.sh installs in qiskit-aer's place through
+    AER_PINS, and the --no-deps pins that script installs after them.
     """
-    CI_TREE.mkdir(parents=True)
-    checked("git-init", "git", "init", "-q", str(CI_TREE))
-    checked("git-fetch", "git", "fetch", "-q", "--depth", "1", job["remote"], job["base"], cwd=CI_TREE)
-    checked("git-checkout", "git", "checkout", "-q", "FETCH_HEAD", cwd=CI_TREE)
-    apply_overlay(CI_TREE, REPO / "kaggle_kernel/overlay", job["modes"], job["deleted"])
-    checked("git-add", "git", "add", "-A", cwd=CI_TREE)
-    tree = checked("git-write-tree", "git", "write-tree", cwd=CI_TREE).strip()
-    write("tree.json", {"base": job["base"], "head": job["head"], "expected_tree": job["tree"], "tree": tree})
-    if tree != job["tree"]:
-        print(f"the assembled tree {tree} differs from the head's {job['tree']}; no gate runs", flush=True)
-        return 4
-    python, env = ci_interpreter(CI_TREE, job["uv"], job["python"])
-    if shutil.which("shellcheck", path=env["PATH"]) is None:
-        checked("shellcheck-install", python, "-m", "pip", "install", "-q", job["shellcheck"], env=env)
-    checked("runner-specs", python, "ci/runner_specs.py", cwd=CI_TREE, env=env)
-    gates = [python, "ci/run_gates.py", "--tier", job["tier"], "--shard", f"{job['shard']}/{job['count']}"]
-    started = time.time()
-    proc = subprocess.run(gates, cwd=CI_TREE, env=env, capture_output=True, text=True)
-    (OUT / "gates.txt").write_text(proc.stdout + proc.stderr, encoding="utf-8")
-    write(
-        "shard.json",
-        {
-            **{k: job[k] for k in ("tier", "shard", "count", "head")},
-            "returncode": proc.returncode,
-            "seconds": round(time.time() - started, 1),
-            "summary": proc.stdout.strip().splitlines()[-1:],
-        },
+    lines = [
+        *(tree / "requirements.txt").read_text(encoding="utf-8").splitlines(),
+        *(tree / "ci/requirements-ci.txt").read_text(encoding="utf-8").splitlines(),
+    ]
+    pins = [line.strip() for line in lines if "==" in line and not line.lstrip().startswith("#")]
+    pins = [pin for pin in pins if normalized(pin.split("==")[0]) != "qiskit-aer"]
+    pins += [*aer_pins, *re.findall(r"--no-deps (\S+==\S+)", (tree / "ci/install_pins.sh").read_text(encoding="utf-8"))]
+    return {normalized(name): version for name, version in (pin.split("==", 1) for pin in pins)}
+
+
+def gpu_env_failures(
+    pins: dict[str, str],
+    report: dict[str, Any],
+    expected_gpus: int,
+    listed_gpus: int,
+    cuda_root: Path | None = None,
+) -> list[str]:
+    """Each way the GPU entry environment differs from its pins or leaves the GPU; empty when it holds both.
+
+    The imported qiskit_aer must belong to the GPU Aer distribution alone,
+    since a CPU qiskit-aer installed beside it overwrites the same files, and
+    the interpreter's sys.path must stay inside the venv and the standard
+    library. With cuda_root, every CUDA library the report names as mapped
+    must lie under it, except the driver's libcuda.so, which the host's
+    kernel module fixes; a build whose DT_RPATH names the pinned pip wheels
+    passes only when the loader took them and no system copy.
+    """
+    failures = [
+        f"{name} is {report['installed'].get(name)}, pinned {version}"
+        for name, version in pins.items()
+        if report["installed"].get(name) != version
+    ]
+    aer = [name for name in pins if name.startswith("qiskit-aer-gpu")]
+    found = sorted(normalized(name) for name in report["qiskit_aer_owners"])
+    if found != aer:
+        failures.append(f"qiskit_aer/__init__.py belongs to {found}, not {aer}")
+    if listed_gpus < expected_gpus:
+        failures.append(f"nvidia-smi lists {listed_gpus} GPUs; the machine carries {expected_gpus}")
+    for entry in report.get("foreign_paths", ["(the report lists no sys.path)"]):
+        failures.append(f"sys.path holds {entry} outside the venv and the standard library")
+    if "GPU" not in report["devices"]:
+        failures.append(f"Aer lists devices {report['devices']} without GPU")
+    for label in ("gpu", "custatevec"):
+        run = report["runs"].get(label, {"error": "not run"})
+        if "error" in run:
+            failures.append(f"the {label} Bell run raised {run['error']}")
+        elif not run["success"] or run["device"] != "GPU":
+            failures.append(f"the {label} Bell run reports success {run['success']} on device {run['device']!r}")
+        elif label == "custatevec" and run["cuStateVec_enable"] is not True:
+            failures.append(f"the custatevec Bell run reports cuStateVec_enable {run['cuStateVec_enable']!r}")
+    if cuda_root is not None:
+        libraries = report.get("cuda_libraries", [])
+        if not libraries:
+            failures.append("the report names no mapped CUDA library")
+        for library in libraries:
+            path = Path(library)
+            if not path.name.startswith("libcuda.so") and not path.is_relative_to(cuda_root):
+                failures.append(f"{library} is mapped from outside {cuda_root}")
+    return failures
+
+
+def attached_files(inputs: Path, ref: str, name: str) -> list[Path]:
+    """The files named NAME under a mount of dataset REF.
+
+    Kaggle mounts a dataset at /kaggle/input/SLUG or
+    /kaggle/input/datasets/OWNER/SLUG, so a file is found by name under a
+    path that holds the slug, as unpack_datasets finds an archive.
+    """
+    slug = ref.split("/")[1]
+    return sorted(p for p in inputs.rglob(name) if slug in p.parts) if inputs.is_dir() else []
+
+
+def verify_artifacts(artifacts: list[dict[str, Any]], inputs: Path = INPUTS) -> dict[str, Any]:
+    """Each attached artifact's file and sha256, before the entry runs.
+
+    An artifact stays a file under its dataset's mount. A missing, ambiguous
+    or different file stops the kernel, as a mismatched archive does in
+    unpack_datasets, so the entry reads only the bytes the retained record
+    names.
+    """
+    report: dict[str, Any] = {}
+    for entry in artifacts:
+        found = attached_files(inputs, entry["ref"], entry["file"])
+        if len(found) != 1:
+            raise SystemExit(f"artifact {entry['ref']}: {len(found)} files named {entry['file']} under {inputs}")
+        digest = sha256(found[0])
+        report[entry["ref"]] = {"path": str(found[0]), "sha256": digest, "size": found[0].stat().st_size}
+        if digest != entry["sha256"]:
+            raise SystemExit(f"artifact {entry['ref']}: {found[0]} has sha256 {digest}, not {entry['sha256']}")
+    return report
+
+
+def verified_wheel(
+    spec: dict[str, Any], inputs: Path = INPUTS, wheelhouse: Path = WHEELHOUSE
+) -> tuple[dict[str, Any], list[str]]:
+    """Copy the spec's wheel out of its attached dataset into wheelhouse when its sha256 is spec["wheel_sha256"].
+
+    The wheel is found as attached_files finds any artifact. pip then reads
+    only the verified copy; a missing, ambiguous or different file yields a
+    failure and an empty wheelhouse.
+    """
+    locator = spec["find_links"]
+    found = attached_files(inputs, locator["dataset"], locator["wheel"])
+    record: dict[str, Any] = {**locator, "expected_sha256": spec["wheel_sha256"], "paths": [str(p) for p in found]}
+    if len(found) != 1:
+        return record, [f"dataset {locator['dataset']}: {len(found)} files named {locator['wheel']} under {inputs}"]
+    data = found[0].read_bytes()
+    record["sha256"] = hashlib.sha256(data).hexdigest()
+    record["size"] = len(data)
+    if record["sha256"] != spec["wheel_sha256"]:
+        return record, [f"{found[0]} has sha256 {record['sha256']}, not {spec['wheel_sha256']}"]
+    wheelhouse.mkdir(parents=True, exist_ok=True)
+    (wheelhouse / locator["wheel"]).write_bytes(data)
+    record["find_links"] = str(wheelhouse)
+    return record, []
+
+
+def gpu_interpreter(
+    tree: Path, spec: dict[str, Any], venv: Path = GPU_VENV, inputs: Path = INPUTS, wheelhouse: Path = WHEELHOUSE
+) -> tuple[str, dict[str, str], dict[str, Any]]:
+    """The image's Python in an isolated venv holding the repository's pins with the GPU Aer build, and its proof.
+
+    The venv starts empty, so the image's own numpy, scipy and Aer stay out
+    of the entry while the hypercomplex stage keeps the image's packages;
+    ci/install_pins.sh installs requirements.txt and the CI tools with
+    spec["aer_pins"] in qiskit-aer's place and spec["extra_pins"] (push
+    --gpu-env-with) beside them, and gpu_env_report.py reads the
+    result back under the entry's own environment. The image exports
+    PYTHONPATH and site customization that would load its packages ahead of
+    the venv's, so the environment drops ISOLATION_VARIABLES and turns the
+    user site off. The record's failures name every difference from the
+    pins, every sys.path entry outside the venv and the standard library,
+    and every way the venv's Aer leaves the GPU; a spec with "cuda_in_venv"
+    also names every non-driver CUDA library mapped from outside the venv.
+    A spec with "find_links" (a
+    wheel no index serves) installs only after verified_wheel admits the
+    attached file; otherwise the record carries the refusal and nothing is
+    installed. The wheel's own pin is then a direct file reference to the
+    verified copy, so no index can supply the distribution, and
+    PIP_FIND_LINKS names the same directory.
+    """
+    wheel: dict[str, Any] | None = None
+    find_links: dict[str, str] = {}
+    if "find_links" in spec:
+        wheel, refused = verified_wheel(spec, inputs, wheelhouse)
+        if refused:
+            return sys.executable, dict(os.environ), {"wheel": wheel, "failures": refused}
+        find_links = {"PIP_FIND_LINKS": wheel["find_links"]}
+    checked("uv-install", sys.executable, "-m", "pip", "install", "-q", spec["uv"])
+    checked("gpu-venv", sys.executable, "-m", "uv", "venv", "-q", "--seed", "--python", sys.executable, str(venv))
+    python = str(venv / "bin/python")
+    env = native_environment(
+        dict(
+            {key: value for key, value in os.environ.items() if key not in ISOLATION_VARIABLES},
+            PYTHONNOUSERSITE="1",
+            PATH=f"{venv / 'bin'}:{os.environ['PATH']}",
+            PYTHON=python,
+            PYTHONHASHSEED="0",
+            MPLBACKEND="Agg",
+            GOROROBA_AER_DEVICE="GPU",
+        )
     )
-    print(proc.stdout[-6000:], proc.stderr[-2000:], sep="\n", flush=True)
-    return proc.returncode
+    added = [*spec["aer_pins"], *spec.get("extra_pins", [])]
+    install = added
+    if wheel is not None:
+        local = Path(wheel["find_links"])
+        distribution = normalized(wheel["wheel"].split("-")[0])
+        install = [
+            f"{distribution}@{(local / wheel['wheel']).as_uri()}"
+            if normalized(pin.split("==")[0]) == distribution
+            else pin
+            for pin in added
+        ]
+    checked(
+        "install-pins", "sh", "ci/install_pins.sh", cwd=tree, env=dict(env, AER_PINS=" ".join(install), **find_links)
+    )
+    checked("gpu-freeze", python, "-m", "pip", "freeze", env=env)
+    pins = pinned(tree, added)
+    script = str(tree / "kaggle_kernel/gpu_env_report.py")
+    report = json.loads(checked("gpu-env-report", python, script, json.dumps(sorted(pins)), env=env).splitlines()[-1])
+    listed = len(gpus())
+    record = {
+        "pins": pins,
+        "expected_gpus": spec["gpus"],
+        "listed_gpus": listed,
+        "report": report,
+        "failures": gpu_env_failures(pins, report, spec["gpus"], listed, venv if spec.get("cuda_in_venv") else None),
+    }
+    if wheel is not None:
+        record["wheel"] = wheel
+    return python, env, record
 
 
 def main() -> int:
@@ -395,6 +583,20 @@ def main() -> int:
     return code
 
 
+def start_entry(argv: list[str], cwd: Path, env: dict[str, str], out: Path) -> subprocess.Popen[bytes]:
+    """Start the entry with its stdout and stderr written to out as they arrive.
+
+    Kaggle returns /kaggle/working/output from a session it ends at the
+    timeout, and the entry's process dies with the session; PYTHONUNBUFFERED
+    puts every print in out/stdout.txt as it is made, so an entry that also
+    writes its record under out keeps every row it finished.
+    """
+    with open(out / "stdout.txt", "wb") as stdout, open(out / "stderr.txt", "wb") as stderr:
+        return subprocess.Popen(
+            argv, cwd=cwd, env=native_environment(dict(env, PYTHONUNBUFFERED="1")), stdout=stdout, stderr=stderr
+        )
+
+
 def run_entry() -> int:
     job = json.loads((REPO / "kaggle_kernel/kernel_job.json").read_text(encoding="utf-8"))
     print((REPO / "kaggle_kernel/AGENTS.md").read_text(encoding="utf-8"), flush=True)
@@ -402,6 +604,8 @@ def run_entry() -> int:
     print(f"usage guides in this kernel under {REPO}:", *guides, sep="\n  ", flush=True)
     if job.get("datasets"):
         write("datasets.json", unpack_datasets(job["datasets"]))
+    if job.get("artifacts"):
+        write("artifacts.json", verify_artifacts(job["artifacts"]))
     before = {p: sha256(p) for p in REPO.rglob("*") if p.is_file()}
     write("environment.json", environment() | {"entry_aer_device": entry_aer_device(job)})
     if job.get("pin_groups"):
@@ -417,8 +621,6 @@ def run_entry() -> int:
     if not stack["identical"]:
         print("hypercomplex stack differs from the repository's retained tables; the entry does not run", flush=True)
         return 3
-    if job.get("mode") == "shards":
-        return run_shard(job)
     if job["smoke"]:
         capacity()
         return 0
@@ -426,19 +628,29 @@ def run_entry() -> int:
         # CI's interpreter and pins, so CI replays the entry's retained record
         # byte for byte; the image's numpy and Python change compiled circuits.
         python, env = ci_interpreter(REPO, job["ci_env"]["uv"], job["ci_env"]["python"])
+    elif job.get("gpu_env"):
+        python, env, record = gpu_interpreter(REPO, job["gpu_env"])
+        write("gpu_env.json", record)
+        if record["failures"]:
+            print(
+                "the GPU environment fails its checks; the entry does not run:",
+                *record["failures"],
+                sep="\n  ",
+                flush=True,
+            )
+            return 4
     else:
         python = sys.executable
         env = dict(os.environ, GOROROBA_AER_DEVICE=entry_aer_device(job), PYTHON=python)
-    proc = subprocess.run([python, "-B", job["entry"], *job["args"]], cwd=REPO, env=env, capture_output=True, text=True)
-    (OUT / "stdout.txt").write_text(proc.stdout, encoding="utf-8")
-    (OUT / "stderr.txt").write_text(proc.stderr, encoding="utf-8")
-    print(proc.stdout[-4000:], proc.stderr[-4000:], sep="\n", flush=True)
+    returncode = start_entry([python, "-B", job["entry"], *job["args"]], REPO, env, OUT).wait()
+    for name in ("stdout.txt", "stderr.txt"):
+        print((OUT / name).read_text(encoding="utf-8", errors="replace")[-4000:], flush=True)
     for path in REPO.rglob("*"):
         if path.is_file() and path != TABLES and before.get(path) != sha256(path):
             target = OUT / "repo" / path.relative_to(REPO)
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(path.read_bytes())
-    return proc.returncode
+    return returncode
 
 
 if __name__ == "__main__":

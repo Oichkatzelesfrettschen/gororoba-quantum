@@ -1,0 +1,22 @@
+{
+ "schema": "qd-belenos-static-offsets-v1",
+ "runs": [
+  "2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02"
+ ],
+ "analysis_sha256": [
+  "45656860791bfe4f820fab0276389497246c9b22e5372c6839a0c4b39b29cb2b"
+ ],
+ "settings": 16,
+ "by_tau": {
+  "0.1": {
+   "gain_over_dephasing": -9.116,
+   "median_tvd_over_floor": 1.434
+  },
+  "0.3": {
+   "gain_over_dephasing": -40.362,
+   "median_tvd_over_floor": 2.146
+  }
+ },
+ "best_tau": 0.1,
+ "static_declared": false
+}

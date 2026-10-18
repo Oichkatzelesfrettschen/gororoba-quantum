@@ -1,0 +1,21 @@
+# Historical compiler environment for immutable Qiskit 2.5.2 routing and simulated-response receipts.
+# Tested versions. qiskit-ibm-runtime 0.50.0 is the first release with the
+# client-side executor_sampler that submission uses.
+numpy==2.5.4
+qiskit==2.5.2
+qiskit-aer==0.17.2
+qiskit-ibm-runtime==0.50.0
+# Runtime's lower-bounded dependencies whose option models and prepare() paths
+# scripts/ibm_runtime_options_inventory.py records and byte-compares.
+pydantic==2.13.5
+qiskit-mitigation==0.1.1
+samplomatic==0.21.0
+ibm-quantum-schemas==0.12.20260921
+# Replica placement (rustworkx.vf2_mapping) and replicate statistics (scipy.stats).
+rustworkx==0.18.1
+scipy==1.18.1
+# Exact polynomial rank, kernel-chart, and attachment certificates.
+sympy==1.14.0
+# Exact rank modulo a prime and rational null spaces (scripts/exact_rank.py).
+# SymPy's automatic ground types also select it for integers and rationals.
+python-flint==0.9.0

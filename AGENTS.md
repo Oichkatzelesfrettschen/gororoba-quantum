@@ -14,15 +14,36 @@ GitHub Actions runs every gate ([.github/workflows/ci.yml](.github/workflows/ci.
 working directory; [ci/run_gates.py](ci/run_gates.py) runs a shard of them on
 a thread pool sized to the runner's CPUs and keeps going past failures, so a
 red shard lists every failing gate. Each gate records its measured seconds;
-shards are assigned longest-first. Pull requests run the `pr` tier, every
-gate that measured under two minutes, on six shards; pushes to main, the
-nightly schedule and manual runs add the `full` tier's long simulation
-contracts on twelve shards. Runners are 2-vCPU, 8 GB machines on Python 3.14
+shards are assigned longest-first by estimated occupied CPU-slot seconds.
+The stable `--shard-cpus` profile defaults to the recorded four-CPU runner;
+actual gate concurrency follows each runner's detected allocation. Pull requests run the `pr` tier and affected
+`full` gates on six shards;
+pushes to main use the same selection on twelve shards. Nightly and manual
+runs execute every gate on twelve shards. The changed-path selection follows
+local Python imports and the dynamic data/source scopes in
+[ci/full_gate_inputs.json](ci/full_gate_inputs.json). Every full gate declares
+its non-imported inputs there, including source digests and JSON-selected
+raw evidence; a missing declaration fails selection. CI and dependency-pin
+changes select every gate, and an unavailable diff base runs the full suite.
+The import closure resolves against the files `git ls-files --cached --others
+--exclude-standard` lists (`gate_inputs.checkout_files`), the modules a CI
+clone of the same tree holds, so an ignored tree never widens it. Build trees,
+virtual environments and package caches still live outside every checkout,
+under `${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/` or
+`~/.local/share/`: `git worktree remove` deletes ignored files with the
+worktree, and a wheel or venv built inside one goes with it.
+Gate seconds are scheduling estimates, independent of tier membership.
+[CI runtime analysis](docs/notes/build_host/ci-runtime.md) records the timing
+denominators, measured bottlenecks and replay commands. Runner-spec logs
+record the allocation; the retained audit measured four affinity CPUs and
+about 16 GB on ubuntu-latest. CI uses Ubuntu 26.04, retains an Ubuntu 24.04 compatibility job, and pins
+Node 24 action commits. Jobs use Python 3.14.7
 with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
 the plotting-only `matplotlib==3.11.2`). A pull request merges when every
 shard and the `qi-stack` and `external-ground-truth` jobs are green and its
 review threads are resolved; a red main or nightly run is fixed in the next
-change. The `qi-stack` job runs, at the same tier, the gates that ci/gates.json
+change. The `qi-stack` job applies the same changed-input selection to the gates
+that ci/gates.json
 tags `"requires": ["qi"]`, under the Quantum Inspire interpreter
 ([Quantum Inspire](#quantum-inspire)). The
 `external-ground-truth` job runs `verify.py` over the open_gororoba commit
@@ -36,16 +57,52 @@ The lint and type gates (core-000, core-001, core-002, core-039) cover
 gororoba_quantum/, scripts/, ci/ and kaggle_kernel/ whole, so a module there
 is linted and type-checked without a list edit; a checked file elsewhere in
 the tree, such as an evidence replay under results/ or docs/, is named in
-those gates' commands.
+those gates' commands. They run ruff and mypy through
+`ci/pinned_tool.py TOOL ARGS`, which uses the installed tool when it reports
+the ci/requirements-ci.txt pin and otherwise runs the pinned release through
+uv: ruff through `uv tool run`, mypy layered over `"$PYTHON"`'s
+site-packages, so a host mypy run type-checks against that host's packages
+(qiskit 2.5.2 on the build host against CI's 2.6.0).
 
 Gate commands invoke `"$PYTHON"`. ci/run_gates.py sets it to its own
-interpreter when the environment leaves it unset, and sets
-`GOROROBA_WORKERS=1` the same way. A gate command run outside run_gates.py
+interpreter when the environment leaves it unset, and assigns
+`GOROROBA_WORKERS=1` to ordinary gates when the caller leaves the cap unset.
+An explicit worker cap also bounds gates that request the full allocation. A gate command run outside run_gates.py
 needs `PYTHON` exported (`export PYTHON="${PYTHON:-python3}"`): a variable
 assigned without `export` expands empty in the child shell, and every gate
 then exits 127 in 0.0 s with `/bin/sh: line 1: : command not found`, which
 reads as a gate failure.
 
+
+The runner expands `runtime_contracts.CONTRACT_CASES` into independently sharded
+cases. CPU slots cover outer gates and inner process pools together: ordinary
+gates reserve one slot, while manifest `"workers": "all"` gates reserve the
+detected allocation. Native BLAS, OpenMP, Rayon and Qiskit subprocess defaults
+stay at one inside each slot. `parallel.default_threads()` and `workers()`
+share the affinity/quota-bounded `GOROROBA_WORKERS` cap. Spawned pool children
+receive one slot through a child-only initializer, so nested maps and simulator
+defaults stay within the outer allocation. Timings retain wall time, user/system CPU time,
+peak RSS and allocated workers. Ruff formats shared code for Python 3.13.
+
+Current contracts use Qiskit 2.6.0. Gates marked `"runtime": "qiskit-2.5"`
+recompile retained historical evidence under an interpreter holding every pin
+of `ci/requirements-replay.txt`: `ci/run_gates.py --replay-python PATH` (also
+accepted by `ci/premerge_gates.py`), else `REPLAY_PYTHON`, verified against
+those pins in a `-I` subprocess. With neither, the running interpreter serves
+when it holds every pin, as the build host's Arch stack does, and the runner
+prints the choice before the first gate; an unresolved runtime's gates exit
+127 with the differing versions. CI installs that isolated environment only
+for shards whose plan requires it and passes it as `REPLAY_PYTHON`.
+`GOROROBA_PINS_REQUIRED=1`, set workflow-wide in ci.yml, turns every version
+fallback into a failure: the replay interpreter must be named, ruff and mypy
+must be installed at their pins, and `ibm_runtime_options_inventory.py
+--check` (core-533) must find the probe versions its inventory records.
+Without it that check replays the retained inventory (canonical form,
+backend schema, note blocks) and names the differing versions
+(`ci/pins.py`, gate core-454).
+Before Python starts, CI and Kaggle reserve 4096 optional static TLS bytes with
+`GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, required by the combined
+Qiskit Rust and Aer OpenMP extensions. Local shells use the same startup setting.
 
 Every CPU-bound loop over independent items (embedding scores in replica
 placement, operator checks, registry parsing, exact certificates, synthesis
@@ -127,7 +184,7 @@ modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
 Changes to `proofs/FoldAverageDescent.v`, `proofs/TerminalChannelSeparation.v`,
 `proofs/TerminalChannelSeparationReal.v`, or their receipts also run
 `ROCQ="${ROCQ:-rocq}" sh docs/evidence/formal_certificates/replay_rocq.sh` with the
-toolchain its `toolchain.txt` pins, Rocq 9.2 with OCaml 5.5.0. The replay compiles in temporary storage,
+toolchain its `toolchain.txt` pins, Rocq 9.3.0 with OCaml 5.5.1 and Stdlib 9.2.0. The replay compiles in temporary storage,
 treats warnings as errors, kernel-checks, and compares raw assumptions.
 The [bundle](docs/evidence/formal_certificates/README.md) distinguishes
 real foundations, deterministic interval premises and unproved coverage.
@@ -148,8 +205,8 @@ Changes to the C881 proof sources or receipts also run the pinned Rocq
 procedure in `docs/evidence/c881_exhaustive/README.md`. The CI receipt
 check verifies retained hashes. The ci.yml job `rocq-replay` replays the
 formal_certificates, c881_exhaustive, folding_proofs and TargetFlipN21
-bundles under the opam switch of `ci/rocq_toolchain.pin` (Rocq 9.2.0 on OCaml
-5.5.0) on a pull request that touches `proofs/`, a replay bundle, the replay
+bundles under the opam switch of `ci/rocq_toolchain.pin` (Rocq 9.3.0 on OCaml
+5.5.1 with Stdlib 9.2.0) on a pull request that touches `proofs/`, a replay bundle, the replay
 driver, a pin or the workflow (`ci/rocq_changed.sh` holds the path list), and
 adds the stiefel_witness bundle on pushes to main and the nightly schedule.
 Gates core-403 and core-404 hold the pin, the toolchain.txt banners, the path
@@ -361,7 +418,7 @@ sedenion statement never rests on them.
 - Simulations of 14 qubits or fewer run on Kaggle kernels through
   `scripts/kaggle_run.py` (`push`, `status`, `collect`), which bundles the
   entry's repository imports with `kaggle_kernel/` (the kernel program and
-  its AGENTS.md), installs qiskit 2.5.2 and qiskit-ibm-runtime 0.50.0 with
+  its AGENTS.md), installs qiskit 2.6.0 and qiskit-ibm-runtime 0.50.0 with
   qiskit-aer 0.17.2 (or qiskit-aer-gpu-cu11 0.17.2 on a GPU), proves the
   hypercomplex package stack before the entry runs, and retains the output
   under results/kaggle/.
@@ -369,13 +426,29 @@ sedenion statement never rests on them.
   widest density matrix reaches `local_compute.GPU_MIN_ACTIVE_QUBITS`;
   [Simulation on Kaggle](#simulation-on-kaggle-cpu-gpu-and-ci-replay)
   gives the machine choice, the GPU setup and the CI replay rules.
-  `kaggle_run.py shards` replicates the CI gate shards for a commit on
-  Kaggle CPU kernels in place of the build host. `docs/notes/kaggle/` holds the workflow, the measured
+  `docs/notes/kaggle/` holds the workflow, the measured
   substrates and the package-stack guide. Kaggle allows two concurrent GPU
-  and five concurrent CPU batch sessions per account. IBM hardware serves 15 or
-  more qubits, or a smaller run whose question concerns the device itself
-  (a named qubit's readout, detuning or drift); its case states why Aer
-  cannot answer it. A kernel's
+  and five concurrent CPU batch sessions per account.
+- A 15-qubit run is decision-gated: it waits for the user's approval of a
+  written case, which names its substrate from the access inventory and
+  says why that one answers the question.
+  - Simulation: an optimized Aer run on the build host or on a Kaggle
+    T4 x2. `SnapshotSimulator.run` cache-blocks the state across both T4s,
+    and a 15-qubit density matrix takes about 4 s there
+    (`docs/notes/kaggle/substrates.md`). The case's run first applies
+    `docs/notes/kaggle/gpu-runbook.md`: local rehearsal, vectorized
+    estimators, a sized timeout.
+  - Hardware: Tuna-17 through Quantum Inspire, under its submission rules
+    (Quantum Inspire below). `submit` refuses while any hardware job of the
+    account is unfinished or ended under `HARDWARE_PAUSE_SECONDS` ago, so
+    the run cannot overlap another session's job. Fifteen of 17 qubits
+    include qubits the Tuna-17 notes exclude for readout or coupler faults
+    (`docs/notes/quantum_inspire/experiments.md`), so the case names each
+    one it uses.
+- IBM hardware serves 16 or more qubits, or a smaller run whose question
+  concerns the device itself (a named qubit's readout, detuning or drift);
+  its case states why Aer cannot answer it.
+- A kernel's
   noise comes from a retained `gororoba_quantum/calibration_snapshot.py`
   export, whose `--export` requires every gate and readout channel to equal
   live_run's noise model, and a Kaggle result enters the research state
@@ -392,10 +465,23 @@ sedenion statement never rests on them.
   plan must match the record in experiment
   digest, shots, policy (twirling, DD, budget floor, execution ceiling),
   dependency versions, IBM Cloud instance, groups, backends, seeds, layouts,
-  replica qubits, fused PUB manifests, calibration at the refresh and again
-  at each batch, and QPY bytes, or the run writes an `approval_required`
-  record and sends nothing. The submission plans only over the backends the
-  approved record found eligible (`live_run.approved_backend_scope`), so a
+  replica qubits, fused PUB manifests, calibration values at the refresh and
+  again at each batch, and QPY bytes, or the run writes an
+  `approval_required` record and sends nothing. The calibration binds by
+  value: each dry-run group records `calibration_fingerprint`
+  (`live_run.calibration_values` over its packed circuits: the Target timing
+  constraints, error and duration of every routed instruction, T1 and T2 of
+  every touched or delayed qubit, and each measured qubit's asymmetric
+  readout channel), so a republished `last_update_date` with every value
+  unchanged keeps the approval and the run records the accepted timestamp
+  pair under `approved_record.calibration_values`, while any changed value
+  refuses. An approved record without fingerprints keeps the timestamp rule,
+  and timestamps compare as instants whatever their UTC offset. Right after
+  the first discovery, before planning, the submission checks the approved
+  isa.qpy circuits against the fresh Target and properties by the same rule
+  and writes `approval_required` in seconds. The submission plans only over
+  the backends the approved record found eligible
+  (`live_run.approved_backend_scope`), so a
   backend whose queue or status changed after the dry run cannot enter the
   plan; an approved backend that turns ineligible still refuses through the
   comparison. `--exclude-qubits BACKEND:Q[,Q|A-B...]` withholds named qubits
@@ -453,21 +539,42 @@ retain its output under results/kaggle/. The kernel's own guide is
   4. `set_options(max_parallel_threads=parallel.workers())` uses every host
      CPU.
 - **cuStateVec.** `noise_simulator(..., custatevec=True)` sets Aer's
-  `cuStateVec_enable` on a GPU statevector run. qiskit-aer-gpu-cu11 0.17.2
+  `cuStateVec_enable` on a GPU statevector or density-matrix run, and
+  `GOROROBA_AER_CUSTATEVEC=1` sets it for every GPU call that leaves
+  `custatevec` unset (`calibration_snapshot.aer_custatevec`). qiskit-aer-gpu-cu11 0.17.2
   links libcustatevec.so.1 and libcutensornet.so.2, which `cuquantum-cu11`
   24.8.0 and `cutensor-cu11` 2.2.0 (`KERNEL_PINS` entries) supply. Aer
   0.17.2 reports `cuStateVec_enable` False when `batched_shots_gpu` is also
   set.
-  `scripts/aer_gpu_probe.py --only cpu_statevector
-  gpu_statevector gpu_statevector_custatevec` records the three paths
-  with Aer's reported `cuStateVec_enable`; a T4 result for it is not retained
-  yet. `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
+  `scripts/aer_gpu_probe.py --workloads n21 --configurations
+  cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec` records the three paths
+  with Aer's reported `cuStateVec_enable`. On the T4 x2 (gate core-450)
+  cuStateVec ran the dynamic density matrix 1.44 and 1.63 times faster than
+  the plain GPU executor at 7 and 10 qubits and statevector trajectories
+  1.19 to 1.29 times slower, and Aer spread per-shot and batched runs over both
+  GPUs (`docs/evidence/aer_gpu_configuration/README.md`).
+  `docs/notes/kaggle/custatevec.md` holds the kernel's library chain and
   the T4 check, and `docs/notes/build_host/custatevec.md` the host build.
-- **Batched GPU shots.** `noise_simulator(..., batched_shots=True)` enables
-  Aer's `batched_shots_gpu` for static circuits of at most 16 active qubits.
-  qiskit-aer-gpu-cu11 0.17.2 aborts it on any circuit with control flow
-  (`if_else` lowers to `jump`). Batched static runs have no measurement here
-  yet.
+- **Batched GPU shots.** On a GPU `noise_simulator` enables Aer's
+  `batched_shots_gpu` by default for circuits of at most
+  `BATCHED_SHOTS_MAX_QUBITS` (10) active qubits, and `batched_shots=False`
+  opts out. `SnapshotSimulator.run` runs any circuit with control flow
+  unbatched: the batched executor rejects `jump`, and with if_else lowered
+  to bfunc-conditioned gates it evaluates the condition before the readout
+  channel. Shot branching is never enabled, since Aer 0.17.2's shot
+  branching drops a mid-circuit measurement's readout channel
+  (`docs/evidence/aer_gpu_configuration/README.md`).
+- **Cache blocking.** `SnapshotSimulator.run` blocks a GPU batch whose
+  widest active state exceeds one GPU's memory, Aer's own trigger, with
+  `calibration_snapshot.blocking_qubits_for`'s chunk (27 statevector, 13
+  density-matrix qubits on a T4) and `max_parallel_shots=1`, so every run
+  that fits one GPU keeps its executor and counts. On the T4 x2 a 15-qubit
+  density matrix ran in 4.2 s and a 30-qubit statevector in 7.2 s across
+  both GPUs, where Aer's automatic choice filled host memory until the OOM
+  killer ended it. if_else aborts under blocking, so a blocked batch runs in
+  `lower_conditionals` form and raises ValueError where none exists; Aer's
+  CPU chunk executor misplaces conditions, so blocking stays on the GPU
+  (gates core-451 and core-452, `docs/notes/kaggle/substrates.md`).
 - **CI replay.**
   - Seeded GPU counts differ from CPU counts, so a gate re-derives a GPU
     record from its retained counts and never resamples on CI.
@@ -478,6 +585,36 @@ retain its output under results/kaggle/. The kernel's own guide is
     durations.
   - Replays hold routed CZ, layout and classical stages exact, and depth
     and duration within a relative 0.002 across BLAS builds.
+- **Pinned GPU environment.** `push --gpu-env` on `NvidiaTeslaT4` runs the
+  entry in a venv on the image's Python 3.13, the newest Python the cu11
+  wheel ships, holding requirements.txt and ci/requirements-ci.txt with
+  `GPU_ENV_AER_PINS` in qiskit-aer's place (`ci/install_pins.sh` with
+  `AER_PINS`).
+  - Before the entry, `kernel_main.gpu_interpreter` requires every pin at its
+    version, the selected GPU Aer distribution as the only owner of
+    `qiskit_aer/__init__.py`, both T4s in nvidia-smi, and seeded Bell runs
+    on the GPU that report device GPU, the cuStateVec one with
+    `cuStateVec_enable` true.
+  - A miss lists its reasons under `failures` in gpu_env.json, and the kernel
+    exits 4 without running the entry.
+  - `aer_gpu_probe.py --require-gpu` then stops at the first row that leaves
+    the GPU.
+  - `--gpu-env-with torch` adds `GPU_ENV_GROUPS["torch"]`, torch 2.14.1 at
+    the host's version, to the same resolve and to the pins the preflight
+    requires; `ghost_branching_benchmark.py --require-gpu NAME --gpus N`
+    then exits 3 unless torch lists both T4s and a complex128 matmul on
+    each matches numpy.
+  - `--gpu-aer cu13` replaces the cu11 wheels with `GPU_AER_PINS["cu13"]`:
+    the CUDA 13 wheel `docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh`
+    builds, which the push attaches from its `kaggle_run.py artifact`
+    dataset (`AER_GPU_WHEELS`) and the kernel installs only when its sha256
+    matches (`docs/notes/kaggle/custatevec.md`, "CUDA 13 build"). On the
+    T4 x2 it ran every probe row with cuStateVec on; its GPU density-matrix
+    rows draw the cu11 wheel's seeded counts, while seeded statevector
+    trajectories differ by build (gate core-442).
+  - Only Python itself differs from CI's 3.14.7.
+  - On a CPU machine the same push stops at the preflight, which proves the
+    error path at no GPU cost.
 - **Sessions.** Five CPU and two GPU batch sessions run per account. A GPU
   machine's four host CPUs run CPU work, `--ci-env` included, when the CPU
   pool is full, at the price of GPU quota.
@@ -577,7 +714,7 @@ at those versions, except the linters.
 | python-stim, python-mthree (with python-runningman), python-qiskit-experiments, python-quimb, python-cotengra, python-pyzx, python-galois | stim 1.16.0, mthree 3.0.0, qiskit-experiments 0.14.2, quimb 1.15.0, cotengra 0.8.2, pyzx 0.10.7, galois 0.4.11: the `quantum-tools` group a Kaggle kernel installs with `push --with quantum-tools` (`scripts/kaggle_run.py` PIN_GROUPS) |
 | python-flint | python-flint 0.9.0 (CI pin): exact rank modulo p (`nmod_mat`) and RREF null spaces (`fmpq_mat`) in `scripts/exact_rank.py`, and SymPy 1.14.0's ground types, which it selects when the version is on SymPy's tested list |
 | python-pytorch-opt-cuda, python-pandas | torch and pandas for python-octonion and python-cayley-dickson only |
-| python-ruff, mypy | newer than the CI pins ruff 0.14.11 and mypy 1.19.1; `uvx ruff@0.14.11` reproduces CI formatting |
+| python-ruff, mypy | ruff 0.17.0 and mypy 2.3.1, behind the CI pins ruff 0.17.1 and mypy 2.4.0 (a `~/.local/bin` install of ruff 0.14.11 and mypy 1.19.1 precedes them on PATH); the lint gates run the pins through `ci/pinned_tool.py` and uv |
 
 A broken or missing package is rebuilt and reinstalled from its PKGBUILD in
 `~/Github/PKGBUILDs` with `makepkg -si --nocheck` in the package
@@ -600,7 +737,7 @@ lists libcustatevec.so.1 and libcutensornet.so.2 among its NEEDED entries;
 a module without them raises `Simulation device "GPU" does not support
 cuStateVec on this system` on `cuStateVec_enable=True`.
 `docs/notes/build_host/custatevec.md` holds the requirement list, the build
-and install commands and the probe results. A Kaggle kernel installs qiskit 2.5.2,
+and install commands and the probe results. A Kaggle kernel installs qiskit 2.6.0,
 qiskit-ibm-runtime 0.50.0 (its fake backends, such as FakeFez, need no
 account) and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel
 stops at 0.15.1) over the Kaggle image's numpy and scipy, records every
@@ -632,7 +769,7 @@ network. gororoba_quantum/qi_stack.py reads `QI_PYTHON` from the environment
 alone and probes it once per process for the three modules at the lock's
 versions. A gate tagged `"requires": ["qi"]` compares a live run with its
 retained record where that probe passes; everywhere else (the gate shards,
-premerge, Kaggle shard replicas, a shell that has not exported `QI_PYTHON`)
+premerge, a shell that has not exported `QI_PYTHON`)
 it replays the record and prints one line naming the replay.
 `ci/run_gates.py --requires qi` runs the tagged gates alone with
 `GOROROBA_QI_REQUIRED=1`, which makes a replay a failure.
@@ -642,7 +779,7 @@ it replays the record and prints one line naming the replay.
 | quantuminspire | 4.1.0 | `qi` CLI, `quantuminspire.api.Api`, OAuth device login |
 | qi-compute-api-client | 0.63.0 | generated client of the compute job manager REST API |
 | qiskit-quantuminspire | 0.18.5 | `QIProvider`, Qiskit backends, cQASM writer (per-qubit barriers) |
-| qiskit | 2.3.1 | the newest release below the provider's < 2.4 cap; the repository runs 2.5.2 |
+| qiskit | 2.3.1 | the newest release below the provider's < 2.4 cap; the repository runs 2.6.0 |
 | opensquirrel | 0.9.1 | compiler: decomposition, mapping, routing, ALAP scheduling |
 | libqasm | 1.2.1 | cQASM 3.0 parser and analyzer |
 | qxelarator | 0.10.0 | local QX state-vector emulator |
@@ -717,8 +854,8 @@ forty-two jobs of 2026-10-16 on QX, the Ry emulator and Tuna-17, so no metered s
 or credits apply to this account as observed; the limits are structural: the
 table's qubits, shots, per-job execution limit and batch and queue counts,
 plus the FAQ's three queued jobs per hardware backend, which is stricter than
-the API's five batch jobs. Tuna-17 execution time fits 2.9 s per job plus
-0.51 ms per shot over the retained jobs, so a 16384-shot job takes about 11 s
+the API's five batch jobs. Tuna-17 execution time fits 2.6 s per job plus
+0.53 ms per shot over the retained jobs, so a 16384-shot job takes about 11 s
 and the 120 s pause, not the shots, sets a batch's cost; QX finished 2048
 shots in 0.03 to 10.4 s.
 Calibration and tuning run between user jobs (Tuna-17 read `calibrating`
@@ -775,7 +912,11 @@ under the stack the record regenerates byte for byte), core-527 and core-423
 under the stack 24 evenly spaced family a circuits plus each sub-family's
 first rerun on qxelarator at their recorded seeds and must reproduce the
 retained counts exactly; core-423 adds 8 family de circuits on the full tier),
-and core-340 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of
+core-499 (`n21_qx_conformance.py --check --live 0`: under the stack every
+reset probe, deferred state and native branch run reruns on qxelarator at its
+retained seed and must equal the retained result; each of the 36 sample jobs
+takes minutes, so `--live N` adds N of them by hand and `--live 36` all), and
+core-340 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of
 the Tuna-17 cases).
 
 ## Open Quantum
@@ -968,14 +1109,82 @@ records that every two-label two-blade product at D = 16, 32 and 64 uses
 one of these configurations, and that the signed zero products (336, 5040,
 52080) equal the annihilator nullity sums.
 
+**Mesh control.** qpu:belenos is one fixed mesh: the processor record's
+`specs.architecture` holds 552 calibrated Rx couplers and 574 symbolic
+phases (276 MZIs and 22 edge phases), and every compiled circuit carries that
+topology with numbers in place of the symbols. The service re-transpiles
+every circuit, parameterized or numeric, with exqalibur's CircuitOptimizer
+from random starting phases, constraining only the input columns that carry
+photons; `compilation_seed` selects the start. `scripts/qd_belenos_mesh.py`
+decodes architectures and compiled meshes with a standard-library protobuf
+reader and writes `results/quandela/cases/belenos_mesh/`: iterated jobs of
+the architecture circuit whose iterations bind all 574 phases and the input
+mode, so one credit buys every unitary that fits the 300 s per-job limit,
+32 iterations of 1500 samples in 221 s on qpu:belenos (job-00 the
+error-class diagnostic, job-02 the 84/84 box-kite edges, job-03 to job-06
+the 64 seeded random settings of the characterization campaign, job-07
+the 84/84 edges at compilation seeds 1 and 2 in 32 iterations, job-08 Q1's
+case as one circuit at seed 1, job-09 Q1's case iterated at seeds 0 to 21,
+0 and 1, job-10 to job-12 the form-versus-dwell series D1 to D4 with
+per-iteration sample budgets). A new exploratory compilation_seed comes
+from the ANU QRNG draws that `scripts/anu_qrng.py` retains under
+`docs/evidence/anu_qrng/`. A case names its compilation_seed per
+iteration or, for one circuit, in its manifest; the seed selects the
+served mesh.
+`qd_box_kite_analysis.py` scans every error class (exact heater and coupler
+dephasing, heater gain, thermal crosstalk, a demultiplexer misroute with
+noise) over its magnitude on the mesh each iteration returned and names a
+class only when its pooled deviance and shot-noise TVD pass an absolute fit
+test, otherwise "no class fits"; `--static OUT RUN...` fits one shared
+heater-offset vector across the runs of one calibration session and declares
+static offsets only when they beat the fitted dephasing ensemble on held-out
+runs, which takes about 64 random-target settings. The receipt's `t_out` and dark
+rates contradict the detected light (modes 12 to 23 read 194 to 400 %), so
+`--efficiency OUT RUN...` refits a session with relative per-mode efficiencies
+fitted jointly with every class and with the offsets, each run held out.
+`plan` decodes the live architecture and
+refuses a mesh case whose couplers or symbols changed, so a recalibration
+means a regenerated case. `docs/evidence/quandela/belenos_leakage_rca.json` holds the
+root-cause record of the qpu:belenos bright-block leakage, and
+docs/notes/quandela/strategy.md sections 6 to 8 its verdicts, the
+transpiler model and the 84/84 mapping.
+
 **Gates.** core-500 (`capture_qd_docs.py --check`), core-501 (its
 `--self-test`), core-502 (`qd_platform.py check docs/evidence/quandela
 --agents AGENTS.md docs/notes/quandela/README.md`), core-503 (its
 `--self-test`, the runner's stubbed-service contract included), core-504
 (`qd_box_kite_cases.py --check results/quandela/cases`), core-505 (its
 `--self-test`), core-506 (`cd_two_blade_blocks.py --check
-docs/evidence/box_kite_census/two_blade_blocks.json`) and core-507 (its
-`--self-test`).
+docs/evidence/box_kite_census/two_blade_blocks.json`), core-507 (its
+`--self-test`), core-508 (`qd_box_kite_analysis.py --check` over every
+retained run but the qpu:belenos mesh runs, which core-537 replays on the
+full tier), core-509 (its `--self-test`), core-510
+(`qd_belenos_mesh.py --check results/quandela/cases`), core-511 (its
+`--check-rca` replay of the leakage record), core-512 (its
+`--self-test`), core-515 (full tier, `--self-test-rule`: the decision
+rule on synthetic in-family and out-of-family truths), core-513 (full tier, `--self-test-static`: static offsets
+are declared on a static truth and on no dephasing, out-of-family or
+simulator data) and core-514 (full tier, `--check-static` of the retained
+static records within a BLAS-path tolerance), core-534 (full tier,
+`--self-test-efficiency`: an efficiency-only truth reads ideal without
+offsets, efficiencies plus offsets are declared and recovered), core-535
+(full tier, `--check-efficiency` of the session record) and core-536
+(`--check-followup`, the preregistered job-02 and repeat readout) and
+core-538 (`--check-pair`, the one-circuit form test job-08 and the
+32-iteration seed ensemble job-07), core-544 (`--self-test-bridge`, every
+preregistered bridge branch on synthetic iterations) and core-540
+(`--check-bridge`, the form-mesh bridge job-09), core-541 (`anu_qrng.py`
+self-test and the offline check of every retained draw), core-542
+(`--self-test-dwell`) and core-543 (`--check-dwell`, the D1 to D4 readout).
+
+**Strategy guide.** [docs/notes/quandela/strategy.md](docs/notes/quandela/strategy.md)
+is the living record of what a credit buys on Belenos: the measured cost
+model (1 credit per job plus 1e-06 per QPU shot), platform behavior
+(job-name limit, the simulator's own noise model, rates and dark counts,
+compiled-circuit structure, iterations and compilation seeds), the native
+BS.H / PS / PERM decomposition of every sign block, the analysis rules, the
+open conjectures with their falsifiers and the run log. Every run updates it
+in the change that retains the run.
 
 ## Qiskit skills
 

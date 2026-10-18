@@ -1,0 +1,1024 @@
+{
+ "accessible_backends": [
+  "ibm_fez",
+  "ibm_kingston",
+  "ibm_marrakesh"
+ ],
+ "backends": {
+  "ibm_fez": {
+   "configuration": {
+    "backend_version": "1.3.37",
+    "basis_gates": [
+     "cz",
+     "id",
+     "rz",
+     "sx",
+     "x",
+     "xslow"
+    ],
+    "clops_h": 320000,
+    "conditional": false,
+    "credits_required": true,
+    "default_rep_delay": 0.00025,
+    "discriminators": null,
+    "dt": 4e-09,
+    "dtm": 4e-09,
+    "dynamic_reprate_enabled": true,
+    "max_experiments": 300,
+    "max_shots": 100000,
+    "mcps": 3864,
+    "meas_kernels": null,
+    "meas_levels": null,
+    "measure_esp_enabled": false,
+    "memory": true,
+    "multi_meas_enabled": true,
+    "n_qubits": 156,
+    "n_registers": 1,
+    "online_date": "2024-05-14T04:00:00+00:00",
+    "open_pulse": false,
+    "processor_type": {
+     "family": "Heron",
+     "revision": "2"
+    },
+    "rep_delay_range": [
+     0.0,
+     0.002
+    ],
+    "simulator": false,
+    "supported_features": [
+     "qobj",
+     "qasm3",
+     "dynamic_circuits",
+     "parameters"
+    ],
+    "supported_instructions": [
+     "cz",
+     "id",
+     "delay",
+     "measure",
+     "measure_reset",
+     "measure_2",
+     "measure_reset_2",
+     "reset",
+     "reset_2",
+     "rz",
+     "sx",
+     "x",
+     "if_else",
+     "store",
+     "xslow"
+    ],
+    "timing_constraints": {
+     "acquire_alignment": 1,
+     "granularity": 1,
+     "min_length": 2,
+     "pulse_alignment": 1
+    }
+   },
+   "fractional_angle_bounds": {
+    "rx": {
+     "has_angle_bounds": false,
+     "present": true,
+     "supported": {
+      "-0.3": null,
+      "0.3": null,
+      "1.5707963267948966": null,
+      "2.0": null
+     }
+    },
+    "rzz": {
+     "has_angle_bounds": true,
+     "present": true,
+     "supported": {
+      "-0.3": false,
+      "0.3": true,
+      "1.5707963267948966": true,
+      "2.0": false
+     }
+    }
+   },
+   "fractional_instructions": {
+    "rx": {
+     "duration_ns_max": 24.0,
+     "duration_ns_median": 24.0,
+     "duration_ns_min": 24.0,
+     "error_median": 0.00028966693012794407,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "rzz": {
+     "duration_ns_max": 116.0,
+     "duration_ns_median": 68.0,
+     "duration_ns_min": 68.0,
+     "error_median": 0.002820400939608919,
+     "present": true,
+     "qargs_with_properties": 352
+    }
+   },
+   "instructions": {
+    "cz": {
+     "duration_ns_max": 88.0,
+     "duration_ns_median": 68.0,
+     "duration_ns_min": 68.0,
+     "error_median": 0.002555200193244858,
+     "present": true,
+     "qargs_with_properties": 352
+    },
+    "delay": {
+     "duration_ns_max": null,
+     "duration_ns_median": null,
+     "duration_ns_min": null,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 0
+    },
+    "for_loop": {
+     "present": false
+    },
+    "id": {
+     "duration_ns_max": 24.0,
+     "duration_ns_median": 24.0,
+     "duration_ns_min": 24.0,
+     "error_median": 0.00028966693012794407,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "if_else": {
+     "duration_ns_max": null,
+     "duration_ns_median": null,
+     "duration_ns_min": null,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 0
+    },
+    "measure": {
+     "duration_ns_max": 1660.0,
+     "duration_ns_median": 1660.0,
+     "duration_ns_min": 1660.0,
+     "error_median": 0.01239013671875,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "measure_2": {
+     "duration_ns_max": 1340.0,
+     "duration_ns_median": 1340.0,
+     "duration_ns_min": 1340.0,
+     "error_median": 0.0140380859375,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "measure_reset": {
+     "duration_ns_max": 1684.0,
+     "duration_ns_median": 1684.0,
+     "duration_ns_min": 1684.0,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "measure_reset_2": {
+     "duration_ns_max": 1364.0,
+     "duration_ns_median": 1364.0,
+     "duration_ns_min": 1364.0,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "reset": {
+     "duration_ns_max": 1684.0,
+     "duration_ns_median": 1684.0,
+     "duration_ns_min": 1684.0,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "reset_2": {
+     "duration_ns_max": 1364.0,
+     "duration_ns_median": 1364.0,
+     "duration_ns_min": 1364.0,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "rz": {
+     "duration_ns_max": 0.0,
+     "duration_ns_median": 0.0,
+     "duration_ns_min": 0.0,
+     "error_median": 0.0,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "store": {
+     "present": false
+    },
+    "switch_case": {
+     "present": false
+    },
+    "sx": {
+     "duration_ns_max": 24.0,
+     "duration_ns_median": 24.0,
+     "duration_ns_min": 24.0,
+     "error_median": 0.00028966693012794407,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "while_loop": {
+     "present": false
+    },
+    "x": {
+     "duration_ns_max": 24.0,
+     "duration_ns_median": 24.0,
+     "duration_ns_min": 24.0,
+     "error_median": 0.00028966693012794407,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "xslow": {
+     "duration_ns_max": 1000.0,
+     "duration_ns_median": 1000.0,
+     "duration_ns_min": 1000.0,
+     "error_median": 0.00028966693012794407,
+     "present": true,
+     "qargs_with_properties": 156
+    }
+   },
+   "max_circuits": null,
+   "meas_map": {
+    "groups": 1,
+    "largest_group": 156
+   },
+   "properties_last_update": "2026-10-17T14:32:07-07:00",
+   "rzz_transpile_probe": {
+    "results": {
+     "default (backend plugin)": {
+      "all_rzz_in_bounds": true,
+      "operation_counts": {
+       "barrier": 1,
+       "measure": 2,
+       "rz": 2,
+       "rzz": 2,
+       "x": 2
+      },
+      "rzz_angles": [
+       0.3,
+       1.141593
+      ]
+     },
+     "ibm_dynamic_and_fractional": {
+      "all_rzz_in_bounds": true,
+      "operation_counts": {
+       "barrier": 1,
+       "measure": 2,
+       "rz": 2,
+       "rzz": 2,
+       "x": 2
+      },
+      "rzz_angles": [
+       0.3,
+       1.141593
+      ]
+     }
+    },
+    "translation_plugin": "ibm_dynamic_circuits"
+   },
+   "status": {
+    "backend_version": "",
+    "operational": true,
+    "pending_jobs": 1,
+    "status_msg": "active"
+   },
+   "wire_units": {
+    "default_rep_delay": 250.0,
+    "rep_delay_range": [
+     0.0,
+     2000.0
+    ]
+   }
+  },
+  "ibm_kingston": {
+   "configuration": {
+    "backend_version": "1.0.0",
+    "basis_gates": [
+     "cz",
+     "id",
+     "rz",
+     "sx",
+     "x",
+     "xslow"
+    ],
+    "clops_h": 340000,
+    "conditional": false,
+    "credits_required": true,
+    "default_rep_delay": 0.00025,
+    "discriminators": null,
+    "dt": 4e-09,
+    "dtm": 4e-09,
+    "dynamic_reprate_enabled": true,
+    "max_experiments": 300,
+    "max_shots": 100000,
+    "mcps": 3829,
+    "meas_kernels": null,
+    "meas_levels": null,
+    "measure_esp_enabled": false,
+    "memory": true,
+    "multi_meas_enabled": true,
+    "n_qubits": 156,
+    "n_registers": 1,
+    "online_date": "2025-02-20T05:00:00+00:00",
+    "open_pulse": false,
+    "processor_type": {
+     "family": "Heron",
+     "revision": "2"
+    },
+    "rep_delay_range": [
+     0.0,
+     0.002
+    ],
+    "simulator": false,
+    "supported_features": [
+     "qobj",
+     "qasm3",
+     "dynamic_circuits",
+     "parameters"
+    ],
+    "supported_instructions": [
+     "cz",
+     "id",
+     "delay",
+     "measure",
+     "measure_reset",
+     "measure_2",
+     "measure_reset_2",
+     "reset",
+     "reset_2",
+     "rz",
+     "sx",
+     "x",
+     "if_else",
+     "store",
+     "xslow"
+    ],
+    "timing_constraints": {
+     "acquire_alignment": 1,
+     "granularity": 1,
+     "min_length": 2,
+     "pulse_alignment": 1
+    }
+   },
+   "fractional_angle_bounds": {
+    "rx": {
+     "has_angle_bounds": false,
+     "present": true,
+     "supported": {
+      "-0.3": null,
+      "0.3": null,
+      "1.5707963267948966": null,
+      "2.0": null
+     }
+    },
+    "rzz": {
+     "has_angle_bounds": true,
+     "present": true,
+     "supported": {
+      "-0.3": false,
+      "0.3": true,
+      "1.5707963267948966": true,
+      "2.0": false
+     }
+    }
+   },
+   "fractional_instructions": {
+    "rx": {
+     "duration_ns_max": 32.0,
+     "duration_ns_median": 32.0,
+     "duration_ns_min": 32.0,
+     "error_median": 0.0002991230021516942,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "rzz": {
+     "duration_ns_max": 108.0,
+     "duration_ns_median": 68.0,
+     "duration_ns_min": 68.0,
+     "error_median": 0.0019856656642906617,
+     "present": true,
+     "qargs_with_properties": 352
+    }
+   },
+   "instructions": {
+    "cz": {
+     "duration_ns_max": 108.0,
+     "duration_ns_median": 68.0,
+     "duration_ns_min": 68.0,
+     "error_median": 0.0019881847890784315,
+     "present": true,
+     "qargs_with_properties": 352
+    },
+    "delay": {
+     "duration_ns_max": null,
+     "duration_ns_median": null,
+     "duration_ns_min": null,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 0
+    },
+    "for_loop": {
+     "present": false
+    },
+    "id": {
+     "duration_ns_max": 32.0,
+     "duration_ns_median": 32.0,
+     "duration_ns_min": 32.0,
+     "error_median": 0.0002991230021516942,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "if_else": {
+     "duration_ns_max": null,
+     "duration_ns_median": null,
+     "duration_ns_min": null,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 0
+    },
+    "measure": {
+     "duration_ns_max": 2180.0,
+     "duration_ns_median": 2180.0,
+     "duration_ns_min": 2180.0,
+     "error_median": 0.00970458984375,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "measure_2": {
+     "duration_ns_max": 1380.0,
+     "duration_ns_median": 1380.0,
+     "duration_ns_min": 1380.0,
+     "error_median": 0.0093994140625,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "measure_reset": {
+     "duration_ns_max": 2212.0,
+     "duration_ns_median": 2212.0,
+     "duration_ns_min": 2212.0,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "measure_reset_2": {
+     "duration_ns_max": 1412.0,
+     "duration_ns_median": 1412.0,
+     "duration_ns_min": 1412.0,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "reset": {
+     "duration_ns_max": 2212.0,
+     "duration_ns_median": 2212.0,
+     "duration_ns_min": 2212.0,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "reset_2": {
+     "duration_ns_max": 1412.0,
+     "duration_ns_median": 1412.0,
+     "duration_ns_min": 1412.0,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "rz": {
+     "duration_ns_max": 0.0,
+     "duration_ns_median": 0.0,
+     "duration_ns_min": 0.0,
+     "error_median": 0.0,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "store": {
+     "present": false
+    },
+    "switch_case": {
+     "present": false
+    },
+    "sx": {
+     "duration_ns_max": 32.0,
+     "duration_ns_median": 32.0,
+     "duration_ns_min": 32.0,
+     "error_median": 0.0002991230021516942,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "while_loop": {
+     "present": false
+    },
+    "x": {
+     "duration_ns_max": 32.0,
+     "duration_ns_median": 32.0,
+     "duration_ns_min": 32.0,
+     "error_median": 0.0002991230021516942,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "xslow": {
+     "duration_ns_max": 1000.0,
+     "duration_ns_median": 1000.0,
+     "duration_ns_min": 1000.0,
+     "error_median": 0.0002991230021516942,
+     "present": true,
+     "qargs_with_properties": 156
+    }
+   },
+   "max_circuits": null,
+   "meas_map": {
+    "groups": 1,
+    "largest_group": 156
+   },
+   "properties_last_update": "2026-10-17T13:50:45-07:00",
+   "rzz_transpile_probe": {
+    "results": {
+     "default (backend plugin)": {
+      "all_rzz_in_bounds": true,
+      "operation_counts": {
+       "barrier": 1,
+       "measure": 2,
+       "rz": 2,
+       "rzz": 2,
+       "x": 2
+      },
+      "rzz_angles": [
+       0.3,
+       1.141593
+      ]
+     },
+     "ibm_dynamic_and_fractional": {
+      "all_rzz_in_bounds": true,
+      "operation_counts": {
+       "barrier": 1,
+       "measure": 2,
+       "rz": 2,
+       "rzz": 2,
+       "x": 2
+      },
+      "rzz_angles": [
+       0.3,
+       1.141593
+      ]
+     }
+    },
+    "translation_plugin": "ibm_dynamic_circuits"
+   },
+   "status": {
+    "backend_version": "",
+    "operational": true,
+    "pending_jobs": 1,
+    "status_msg": "active"
+   },
+   "wire_units": {
+    "default_rep_delay": 250.0,
+    "rep_delay_range": [
+     0.0,
+     2000.0
+    ]
+   }
+  },
+  "ibm_marrakesh": {
+   "configuration": {
+    "backend_version": "1.0.21",
+    "basis_gates": [
+     "cz",
+     "id",
+     "rz",
+     "sx",
+     "x",
+     "xslow"
+    ],
+    "clops_h": 300000,
+    "conditional": false,
+    "credits_required": true,
+    "default_rep_delay": 0.00025,
+    "discriminators": null,
+    "dt": 4e-09,
+    "dtm": 4e-09,
+    "dynamic_reprate_enabled": true,
+    "max_experiments": 300,
+    "max_shots": 100000,
+    "mcps": 3732,
+    "meas_kernels": null,
+    "meas_levels": null,
+    "measure_esp_enabled": false,
+    "memory": true,
+    "multi_meas_enabled": true,
+    "n_qubits": 156,
+    "n_registers": 1,
+    "online_date": "2024-08-07T04:00:00+00:00",
+    "open_pulse": false,
+    "processor_type": {
+     "family": "Heron",
+     "revision": "2"
+    },
+    "rep_delay_range": [
+     0.0,
+     0.002
+    ],
+    "simulator": false,
+    "supported_features": [
+     "qobj",
+     "qasm3",
+     "dynamic_circuits",
+     "parameters"
+    ],
+    "supported_instructions": [
+     "cz",
+     "id",
+     "delay",
+     "measure",
+     "measure_reset",
+     "measure_2",
+     "measure_reset_2",
+     "reset",
+     "reset_2",
+     "rz",
+     "sx",
+     "x",
+     "if_else",
+     "store",
+     "xslow"
+    ],
+    "timing_constraints": {
+     "acquire_alignment": 1,
+     "granularity": 1,
+     "min_length": 2,
+     "pulse_alignment": 1
+    }
+   },
+   "fractional_angle_bounds": {
+    "rx": {
+     "has_angle_bounds": false,
+     "present": true,
+     "supported": {
+      "-0.3": null,
+      "0.3": null,
+      "1.5707963267948966": null,
+      "2.0": null
+     }
+    },
+    "rzz": {
+     "has_angle_bounds": true,
+     "present": true,
+     "supported": {
+      "-0.3": false,
+      "0.3": true,
+      "1.5707963267948966": true,
+      "2.0": false
+     }
+    }
+   },
+   "fractional_instructions": {
+    "rx": {
+     "duration_ns_max": 36.0,
+     "duration_ns_median": 36.0,
+     "duration_ns_min": 36.0,
+     "error_median": 0.0004008303913820688,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "rzz": {
+     "duration_ns_max": 140.0,
+     "duration_ns_median": 68.0,
+     "duration_ns_min": 68.0,
+     "error_median": 0.004179254526548562,
+     "present": true,
+     "qargs_with_properties": 352
+    }
+   },
+   "instructions": {
+    "cz": {
+     "duration_ns_max": 96.0,
+     "duration_ns_median": 68.0,
+     "duration_ns_min": 68.0,
+     "error_median": 0.0028694069984573634,
+     "present": true,
+     "qargs_with_properties": 352
+    },
+    "delay": {
+     "duration_ns_max": null,
+     "duration_ns_median": null,
+     "duration_ns_min": null,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 0
+    },
+    "for_loop": {
+     "present": false
+    },
+    "id": {
+     "duration_ns_max": 36.0,
+     "duration_ns_median": 36.0,
+     "duration_ns_min": 36.0,
+     "error_median": 0.0004008303913820688,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "if_else": {
+     "duration_ns_max": null,
+     "duration_ns_median": null,
+     "duration_ns_min": null,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 0
+    },
+    "measure": {
+     "duration_ns_max": 2684.0,
+     "duration_ns_median": 2684.0,
+     "duration_ns_min": 2684.0,
+     "error_median": 0.01678466796875,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "measure_2": {
+     "duration_ns_max": 1884.0,
+     "duration_ns_median": 1884.0,
+     "duration_ns_min": 1884.0,
+     "error_median": 0.020751953125,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "measure_reset": {
+     "duration_ns_max": 2720.0,
+     "duration_ns_median": 2720.0,
+     "duration_ns_min": 2720.0,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "measure_reset_2": {
+     "duration_ns_max": 1920.0,
+     "duration_ns_median": 1920.0,
+     "duration_ns_min": 1920.0,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "reset": {
+     "duration_ns_max": 2720.0,
+     "duration_ns_median": 2720.0,
+     "duration_ns_min": 2720.0,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "reset_2": {
+     "duration_ns_max": 1920.0,
+     "duration_ns_median": 1920.0,
+     "duration_ns_min": 1920.0,
+     "error_median": null,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "rz": {
+     "duration_ns_max": 0.0,
+     "duration_ns_median": 0.0,
+     "duration_ns_min": 0.0,
+     "error_median": 0.0,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "store": {
+     "present": false
+    },
+    "switch_case": {
+     "present": false
+    },
+    "sx": {
+     "duration_ns_max": 36.0,
+     "duration_ns_median": 36.0,
+     "duration_ns_min": 36.0,
+     "error_median": 0.0004008303913820688,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "while_loop": {
+     "present": false
+    },
+    "x": {
+     "duration_ns_max": 36.0,
+     "duration_ns_median": 36.0,
+     "duration_ns_min": 36.0,
+     "error_median": 0.0004008303913820688,
+     "present": true,
+     "qargs_with_properties": 156
+    },
+    "xslow": {
+     "duration_ns_max": 1000.0,
+     "duration_ns_median": 1000.0,
+     "duration_ns_min": 1000.0,
+     "error_median": 0.0004008303913820688,
+     "present": true,
+     "qargs_with_properties": 156
+    }
+   },
+   "max_circuits": null,
+   "meas_map": {
+    "groups": 1,
+    "largest_group": 156
+   },
+   "properties_last_update": "2026-10-17T14:18:18-07:00",
+   "rzz_transpile_probe": {
+    "results": {
+     "default (backend plugin)": {
+      "all_rzz_in_bounds": true,
+      "operation_counts": {
+       "barrier": 1,
+       "measure": 2,
+       "rz": 2,
+       "rzz": 2,
+       "x": 2
+      },
+      "rzz_angles": [
+       0.3,
+       1.141593
+      ]
+     },
+     "ibm_dynamic_and_fractional": {
+      "all_rzz_in_bounds": true,
+      "operation_counts": {
+       "barrier": 1,
+       "measure": 2,
+       "rz": 2,
+       "rzz": 2,
+       "x": 2
+      },
+      "rzz_angles": [
+       0.3,
+       1.141593
+      ]
+     }
+    },
+    "translation_plugin": "ibm_dynamic_circuits"
+   },
+   "status": {
+    "backend_version": "",
+    "operational": true,
+    "pending_jobs": 0,
+    "status_msg": "active"
+   },
+   "wire_units": {
+    "default_rep_delay": 250.0,
+    "rep_delay_range": [
+     0.0,
+     2000.0
+    ]
+   }
+  }
+ },
+ "dynamic_circuit_backends": [
+  "ibm_fez",
+  "ibm_kingston",
+  "ibm_marrakesh"
+ ],
+ "fractional_backends": [
+  "ibm_fez",
+  "ibm_kingston",
+  "ibm_marrakesh"
+ ],
+ "reads": [
+  {
+   "call": "QiskitRuntimeService() from the saved account",
+   "time": "2026-10-17T21:46:09+00:00"
+  },
+  {
+   "call": "service.backends()",
+   "time": "2026-10-17T21:46:10+00:00"
+  },
+  {
+   "call": "service.backends(dynamic_circuits=True)",
+   "time": "2026-10-17T21:46:10+00:00"
+  },
+  {
+   "call": "service.backends(use_fractional_gates=True)",
+   "time": "2026-10-17T21:46:10+00:00"
+  },
+  {
+   "call": "service.usage()",
+   "time": "2026-10-17T21:46:10+00:00"
+  },
+  {
+   "call": "service.backend('ibm_fez')",
+   "time": "2026-10-17T21:46:10+00:00"
+  },
+  {
+   "call": "ibm_fez.configuration()",
+   "time": "2026-10-17T21:46:10+00:00"
+  },
+  {
+   "call": "ibm_fez.status()",
+   "time": "2026-10-17T21:46:10+00:00"
+  },
+  {
+   "call": "ibm_fez.properties()",
+   "time": "2026-10-17T21:46:11+00:00"
+  },
+  {
+   "call": "ibm_fez.target",
+   "time": "2026-10-17T21:46:11+00:00"
+  },
+  {
+   "call": "service.backend('ibm_fez', use_fractional_gates=True)",
+   "time": "2026-10-17T21:46:12+00:00"
+  },
+  {
+   "call": "ibm_fez.target with fractional gates",
+   "time": "2026-10-17T21:46:12+00:00"
+  },
+  {
+   "call": "ibm_fez: local rzz transpile probe finished",
+   "time": "2026-10-17T21:46:14+00:00"
+  },
+  {
+   "call": "service.backend('ibm_kingston')",
+   "time": "2026-10-17T21:46:14+00:00"
+  },
+  {
+   "call": "ibm_kingston.configuration()",
+   "time": "2026-10-17T21:46:14+00:00"
+  },
+  {
+   "call": "ibm_kingston.status()",
+   "time": "2026-10-17T21:46:15+00:00"
+  },
+  {
+   "call": "ibm_kingston.properties()",
+   "time": "2026-10-17T21:46:16+00:00"
+  },
+  {
+   "call": "ibm_kingston.target",
+   "time": "2026-10-17T21:46:16+00:00"
+  },
+  {
+   "call": "service.backend('ibm_kingston', use_fractional_gates=True)",
+   "time": "2026-10-17T21:46:17+00:00"
+  },
+  {
+   "call": "ibm_kingston.target with fractional gates",
+   "time": "2026-10-17T21:46:17+00:00"
+  },
+  {
+   "call": "ibm_kingston: local rzz transpile probe finished",
+   "time": "2026-10-17T21:46:17+00:00"
+  },
+  {
+   "call": "service.backend('ibm_marrakesh')",
+   "time": "2026-10-17T21:46:17+00:00"
+  },
+  {
+   "call": "ibm_marrakesh.configuration()",
+   "time": "2026-10-17T21:46:17+00:00"
+  },
+  {
+   "call": "ibm_marrakesh.status()",
+   "time": "2026-10-17T21:46:17+00:00"
+  },
+  {
+   "call": "ibm_marrakesh.properties()",
+   "time": "2026-10-17T21:46:18+00:00"
+  },
+  {
+   "call": "ibm_marrakesh.target",
+   "time": "2026-10-17T21:46:18+00:00"
+  },
+  {
+   "call": "service.backend('ibm_marrakesh', use_fractional_gates=True)",
+   "time": "2026-10-17T21:46:19+00:00"
+  },
+  {
+   "call": "ibm_marrakesh.target with fractional gates",
+   "time": "2026-10-17T21:46:19+00:00"
+  },
+  {
+   "call": "ibm_marrakesh: local rzz transpile probe finished",
+   "time": "2026-10-17T21:46:19+00:00"
+  }
+ ],
+ "retrieved": "2026-10-17T21:46:09+00:00",
+ "schema": "ibm-runtime-backend-controls-v1",
+ "usage": {
+  "instance_sha256_12": "e3de05b6901e",
+  "usage_consumed_ru": 5.376124,
+  "usage_consumed_seconds": 334,
+  "usage_instance_is_active_instance": true,
+  "usage_limit_reached": false,
+  "usage_limit_ru": 10,
+  "usage_limit_seconds": 600,
+  "usage_period": {
+   "end_time": "2026-10-17T21:46:10.438Z",
+   "start_time": "2026-09-19T21:46:10.438Z"
+  },
+  "usage_remaining_seconds": 266
+ },
+ "versions": {
+  "qiskit": "2.5.2",
+  "qiskit-ibm-runtime": "0.50.0"
+ }
+}

@@ -95,7 +95,7 @@ that path.
 | GF(2) linear algebra, ANF, CCZ normal form certificates | galois, `boolean_anf.py` | yes | yes | no gain | exact CPU gate (the normal-form certificates already have gates core-278 and core-284) |
 | Layout and placement on the coupling graph | rustworkx | yes | yes | no gain | CPU gate |
 | Twirling overhead and samplex shapes | samplomatic | yes | yes | no gain | CPU gate |
-| Hardware execution at 15 qubits or more, or a device question | qiskit-ibm-runtime with IBM | only after an approved case | never | never | the IBM job and its raw archive |
+| Hardware execution at 16 qubits or more, or a device question (15 qubits go to the substrate an approved case names, Tuna-17 through Quantum Inspire included) | qiskit-ibm-runtime with IBM | only after an approved case | never | never | the IBM job and its raw archive |
 
 ## Pushing a kernel with the group
 

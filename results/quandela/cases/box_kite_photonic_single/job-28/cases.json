@@ -7,6 +7,7 @@
   "qpu:belenos"
  ],
  "command": "sample_count",
+ "gate_form": "unitary",
  "min_detected_photons": 1,
  "max_samples": 10000,
  "max_shots": 20000,
@@ -17,7 +18,7 @@
  },
  "circuit": {
   "file": "circuit.json",
-  "sha256": "9a2e41aa3c2947321d0aadda7cf2b52d6fa0f2dbfd0694436f545ea67a92aeb2"
+  "sha256": "abe203876023d7c32601383701cce5b870c91a2855a0693f4639e8c0329ae4ba"
  },
  "blocks": [
   {

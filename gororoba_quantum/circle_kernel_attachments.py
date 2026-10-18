@@ -89,8 +89,9 @@ def _block(representative: int, coordinates: sp.MatrixBase) -> sp.Matrix:
     return sp.Matrix(
         8,
         8,
-        lambda row, column: cd_sign(DIMENSION, rows[row] ^ columns[column], columns[column])
-        * coordinates[rows[row] ^ columns[column]],
+        lambda row, column: (
+            cd_sign(DIMENSION, rows[row] ^ columns[column], columns[column]) * coordinates[rows[row] ^ columns[column]]
+        ),
     )
 
 

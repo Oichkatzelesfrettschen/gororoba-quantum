@@ -1,0 +1,10 @@
+{
+ "schema": "kaggle-artifact-v1",
+ "ref": "probablyeric/gororoba-aer-gpu-cu13-wheel",
+ "file": "qiskit_aer_gpu_cu13-0.17.2-cp313-cp313-manylinux_2_39_x86_64.whl",
+ "sha256": "3d40fc33cd6674644807c15364b3e3ac1d417885e08ad255797ae93e886253d5",
+ "size": 16414722,
+ "git_commit": "e7f30b94c91de6c5a5ec118627862aa15f957594-dirty",
+ "reply": "or file qiskit_aer_gpu_cu13-0.17.2-cp313-cp313-manylinux_2_39_x86_64.whl\nUpload successful: qiskit_aer_gpu_cu13-0.17.2-cp313-cp313-manylinux_2_39_x86_64.whl (16MB)\nYour private Dataset is being created. Please check progress at https://www.kaggle.com/datasets/probablyeric/gororoba-aer-gpu-cu13-wheel",
+ "history": []
+}

@@ -468,14 +468,18 @@ def check_agents(catalogue: dict[str, Any], files: list[Path]) -> None:
 
 ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "results/quandela/runs"
-CASES_SCHEMAS = ("qd-box-kite-cases-v1",)
+CASES_SCHEMAS = ("qd-box-kite-cases-v1", "qd-belenos-mesh-cases-v1")
 CIRCUIT_SCHEMA = "qd-circuit-v1"
+CIRCUIT_SCHEMAS = (CIRCUIT_SCHEMA, "qd-mesh-circuit-v1")
 STATE_SCHEMA = "qd-submission-state-v1"
 SUBMISSION_SCHEMA = "qd-submission-v1"
 COLLECTION_SCHEMA = "qd-collection-v1"
 TERMINAL = ("completed", "error", "canceled")
 # Perceval 1.3.1 is the client whose payload format the runner captures.
 RUNNER_PERCEVAL = "1.3.1"
+# POST /api/jobs stores job_name in a varchar(50); a longer name answers
+# HTTP 424 "value too long for type character varying(50)".
+JOB_NAME_LIMIT = 50
 # A decompressed result larger than this is refused rather than parsed.
 RESULT_LIMIT = 64 << 20
 STATE_PATTERN = re.compile(r"\|(\d+(?:,\d+)*)>=(\d+)")
@@ -495,7 +499,7 @@ def load_case(case_dir: Path) -> tuple[dict[str, Any], dict[str, Any], str]:
     if sha256_bytes(circuit_bytes) != manifest["circuit"]["sha256"]:
         raise PlatformError(f"{case_dir}: circuit.json differs from its cases.json sha256")
     circuit: dict[str, Any] = json.loads(circuit_bytes)
-    if circuit.get("schema") != CIRCUIT_SCHEMA:
+    if circuit.get("schema") not in CIRCUIT_SCHEMAS:
         raise PlatformError(f"{case_dir}: circuit schema {circuit.get('schema')!r}")
     return manifest, circuit, sha256_bytes(cases_bytes)
 
@@ -511,13 +515,211 @@ def experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> Any:
     import perceval as pcvl
 
     chip = pcvl.Circuit(circuit["modes"])
+    expected = numpy.eye(circuit["modes"], dtype=complex)
+    phases: list[tuple[int, Any]] = []
     for component in circuit["components"]:
         matrix = numpy.array([[real(x) for x in row] for row in component["unitary"]], dtype=complex)
-        chip.add(component["at"], pcvl.Unitary(pcvl.Matrix(matrix)))
+        at, width = component["at"], len(matrix)
+        expected[at : at + width, at : at + width] = matrix
+        if manifest.get("gate_form", "unitary") == "native":
+            block = pcvl.Circuit(width)
+            if "prep_phase" in component:
+                # BS.H then PS(phi) on port 1 prepares (|0> + e^{i phi}|1>)/sqrt2 ahead of the block.
+                parameter = pcvl.P(component["prep_phase"])
+                block.add(0, pcvl.BS.H())
+                block.add(1, pcvl.PS(parameter))
+                phases.append((at, parameter))
+            for op in component["native"]:
+                if op[0] == "BS.H":
+                    block.add(op[1], pcvl.BS.H())
+                elif op[0] == "PS":
+                    block.add(op[1], pcvl.PS(math.pi))
+                elif op[0] == "PERM":
+                    block.add(0, pcvl.PERM(op[1]))
+                else:
+                    raise PlatformError(f"unknown native op {op!r}")
+            chip.add(at, block)
+        else:
+            chip.add(at, pcvl.Unitary(pcvl.Matrix(matrix)))
+    # Perceval's conventions must reproduce the exact case unitary before anything
+    # is sent, at every iteration value of a parameterized preparation phase.
+    values = [k * math.pi / 4 for k in range(manifest.get("iterations", 1))] if phases else [0.0]
+    for value in values:
+        target = expected.copy()
+        for at, parameter in phases:
+            parameter.set_value(value)
+            prep = numpy.eye(circuit["modes"], dtype=complex)
+            prep[at : at + 2, at : at + 2] = numpy.array([[1, 1], [numpy.exp(1j * value), -numpy.exp(1j * value)]])
+            prep[at : at + 2, at : at + 2] /= math.sqrt(2)
+            target = expected @ prep
+        deviation = float(numpy.max(numpy.abs(numpy.array(chip.compute_unitary()) - target)))
+        if deviation > 1e-12:
+            raise PlatformError(f"the Perceval circuit deviates from the case unitary by {deviation:.2e} at {value}")
+    for _, parameter in phases:
+        parameter.reset()
     built = pcvl.Experiment(chip)
     built.with_input(pcvl.BasicState(circuit["input_state"]))
     built.min_detected_photons_filter(manifest["min_detected_photons"])
     return built
+
+
+def mesh_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tuple[Any, list[dict[str, Any]]]:
+    """The Belenos architecture with one Perceval parameter per phase, and one iteration per retained setting.
+
+    Each setting's phases bind the 574 symbols; Perceval's unitary at those
+    values must equal qd_belenos_mesh's propagation of the same elements, so
+    the BS and PS conventions that designed the phases are the ones sent.
+    """
+    import numpy
+    import perceval as pcvl
+    import qd_belenos_mesh as mesh
+
+    arch = mesh.architecture(mesh.load_catalogue())
+    spec = circuit["architecture"]
+    if spec["symbols"] != [p for k, _, p in arch if k == "ps"] or spec["couplers"] != [
+        [m, p[0]] for k, m, p in arch if k == "bs"
+    ]:
+        raise PlatformError("the case's mesh differs from the retained Belenos architecture")
+    # One setting goes out as numbers, the pre-compiled form of the cloud guide;
+    # several go out as one parameterized circuit with a setting per iteration.
+    numeric = len(circuit["settings"]) == 1
+    fixed = dict(zip(spec["symbols"], circuit["settings"][0]["phases"], strict=True))
+    chip = pcvl.Circuit(circuit["modes"])
+    parameters: dict[str, Any] = {}
+    for kind, m, p in arch:
+        if kind == "bs":
+            chip.add(m, pcvl.BS(theta=p[0]))
+        elif numeric:
+            chip.add(m, pcvl.PS(fixed[p]))
+        else:
+            parameters[p] = pcvl.P(p)
+            chip.add(m, pcvl.PS(parameters[p]))
+    iterations = []
+    for setting in circuit["settings"]:
+        values = dict(zip(spec["symbols"], setting["phases"], strict=True))
+        for symbol, parameter in parameters.items():
+            parameter.set_value(values[symbol])
+        deviation = float(
+            numpy.max(numpy.abs(numpy.array(chip.compute_unitary()) - mesh.unitary(arch, setting["phases"])))
+        )
+        if deviation > 1e-12:
+            raise PlatformError(f"{setting['name']}: Perceval's mesh unitary deviates by {deviation:.2e}")
+        state = [0] * circuit["modes"]
+        state[setting["input_mode"]] = 1
+        iteration = {"name": setting["name"], "circuit_params": values, "input_state": state}
+        if "compilation_seed" in setting:
+            iteration["compilation_seed"] = seed_value(setting["compilation_seed"], setting["name"])
+        iterations.append(iteration)
+    for parameter in parameters.values():
+        parameter.reset()
+    built = pcvl.Experiment(chip)
+    built.with_input(pcvl.BasicState(iterations[0]["input_state"]))
+    built.min_detected_photons_filter(manifest["min_detected_photons"])
+    return built, iterations
+
+
+def seed_value(seed: Any, owner: str) -> int:
+    """A compilation seed as the service takes it: a non-negative integer."""
+    if isinstance(seed, bool) or not isinstance(seed, int) or seed < 0:
+        raise PlatformError(f"{owner}: compilation_seed {seed!r} is not a non-negative integer")
+    return seed
+
+
+def job_seed(manifest: dict[str, Any], settings: list[dict[str, Any]]) -> int | None:
+    """The compilation seed of a one-circuit job's computation: its one mesh setting's or its manifest's.
+
+    An iterated job names its seeds per iteration, so a manifest seed on it raises, as does a one-setting
+    case whose setting and manifest name different seeds; a case that names none sends none.
+    """
+    owner = manifest["job"]
+    named = manifest.get("compilation_seed")
+    if manifest.get("iterations", 1) > 1:
+        if named is not None:
+            raise PlatformError(f"{owner}: an iterated case names compilation_seed per iteration, not in its manifest")
+        return None
+    own = settings[0].get("compilation_seed") if settings else None
+    if named is not None and own is not None and named != own:
+        raise PlatformError(f"{owner}: manifest compilation_seed {named!r} differs from its setting's {own!r}")
+    seed = named if own is None else own
+    return None if seed is None else seed_value(seed, owner)
+
+
+def iteration_form(manifest: dict[str, Any]) -> str:
+    """How a case's iterations differ: "single" (one computation), "mesh" (each binds its own phases), "seeded"
+    (a fixed circuit whose iterations set only their compilation_seed and, optionally, their own budgets) or
+    "phase" (phi = k pi/4).
+
+    A non-mesh iterated case with settings is seeded only when every setting names a valid compilation_seed and
+    nothing else but its name, and the settings count its iterations. A seeded case names per-iteration
+    max_samples and max_shots on every setting or on none; named budgets are positive integers with
+    max_shots >= max_samples that sum to the manifest's. Any other settings list raises.
+    """
+    owner = manifest["job"]
+    steps = manifest.get("iterations", 1)
+    if steps == 1:
+        return "single"
+    if manifest.get("gate_form") == "mesh":
+        return "mesh"
+    settings = manifest.get("settings")
+    if settings is None:
+        return "phase"
+    if not isinstance(settings, list) or len(settings) != steps:
+        raise PlatformError(f"{owner}: {steps} iterations need {steps} settings")
+    plain, budgeted = {"name", "compilation_seed"}, {"name", "compilation_seed", "max_samples", "max_shots"}
+    keys = {frozenset(setting) if isinstance(setting, dict) else frozenset() for setting in settings}
+    if keys not in ({frozenset(plain)}, {frozenset(budgeted)}):
+        raise PlatformError(
+            f"{owner}: every seeded iteration names its name and compilation_seed, and all or none their budgets"
+        )
+    for setting in settings:
+        seed_value(setting["compilation_seed"], f"{owner}/{setting['name']}")
+    if keys == {frozenset(budgeted)}:
+        for setting in settings:
+            samples, shots = setting["max_samples"], setting["max_shots"]
+            if any(isinstance(v, bool) or not isinstance(v, int) or v < 1 for v in (samples, shots)) or shots < samples:
+                raise PlatformError(f"{owner}/{setting['name']}: budgets {samples!r} samples, {shots!r} shots")
+        for key in ("max_samples", "max_shots"):
+            if sum(setting[key] for setting in settings) != manifest[key]:
+                raise PlatformError(f"{owner}: per-iteration {key} do not sum to the manifest's {manifest[key]}")
+    return "seeded"
+
+
+def iteration_budgets(manifest: dict[str, Any]) -> list[tuple[int, int]]:
+    """(max_samples, max_shots) of every iteration: a seeded setting's own budgets, else an even split."""
+    steps = manifest.get("iterations", 1)
+    settings = manifest.get("settings") or []
+    if iteration_form(manifest) == "seeded" and "max_samples" in settings[0]:
+        return [(s["max_samples"], s["max_shots"]) for s in settings]
+    return [(manifest["max_samples"] // steps, manifest["max_shots"] // steps)] * steps
+
+
+def live_mesh(processor: dict[str, Any], circuit: dict[str, Any]) -> None:
+    """Refuse a mesh case when the platform's live architecture carries other couplers or symbols than the case."""
+    import qd_belenos_mesh as mesh
+
+    live = mesh.decode(processor["specs"]["architecture"])
+    spec = circuit["architecture"]
+    if [p for k, _, p in live if k == "ps"] != spec["symbols"] or [[m, p[0]] for k, m, p in live if k == "bs"] != spec[
+        "couplers"
+    ]:
+        raise PlatformError("the live architecture differs from the case: regenerate the mesh case after recalibration")
+
+
+def live_architecture(processor: dict[str, Any], platform: str) -> None:
+    """Refuse a case seeded from a retained run on its chip when the live couplers or symbols differ from the
+    retained catalogue's, since a comparison with that run then crosses a coupler recalibration."""
+    import qd_belenos_mesh as mesh
+
+    if platform != mesh.CHIP:
+        return
+    live = mesh.decode(processor["specs"]["architecture"])
+    retained = mesh.architecture(mesh.load_catalogue())
+    if [(k, m, p) for k, m, p in live if k == "bs"] != [(k, m, p) for k, m, p in retained if k == "bs"] or [
+        p for k, _, p in live if k == "ps"
+    ] != [p for k, _, p in retained if k == "ps"]:
+        raise PlatformError(
+            "the live architecture differs from the retained catalogue: the seeded case's source ran on other couplers"
+        )
 
 
 def explorer_row(platform: str) -> dict[str, Any]:
@@ -540,14 +742,70 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     found = versions()
     if found.get("perceval-quandela") != RUNNER_PERCEVAL:
         raise PlatformError(f"perceval-quandela {found.get('perceval-quandela')} is installed, not {RUNNER_PERCEVAL}")
+    import perceval as pcvl
+
     layer = QuandelaCommunicationLayer(platform, token=token())
     computer = RemoteComputer(layer)
-    factory = ExecutionFactory(computer, experiment(manifest, circuit), max_shots_per_call=manifest["max_shots"])
-    computation = factory.build_computation(manifest["command"])
-    computation.add_params(max_samples=manifest["max_samples"])
-    computation.job_name = f"gororoba-{case_dir.name}"[:64]
+    form = iteration_form(manifest)
+    mesh = manifest.get("gate_form") == "mesh"
+    built, settings = mesh_experiment(manifest, circuit) if mesh else (experiment(manifest, circuit), [])
+    if form == "seeded":
+        settings = manifest["settings"]
+    steps = manifest.get("iterations", 1)
+    # Iterations split the case's sample and shot budgets evenly; a mesh iteration
+    # takes its setting's compilation_seed (0 when unnamed), a seeded iteration sets
+    # only its own, and a phase case pins 0 and sets phi = k pi/4 per iteration.
+    per_samples, per_shots = manifest["max_samples"] // steps, manifest["max_shots"] // steps
+    # pcvlar serialization shares one entry per Python object, so an even split reuses per_samples and per_shots
+    # themselves: equal integers computed apart would serialize as separate entries and change the body bytes.
+    budgeted = form == "seeded" and "max_samples" in manifest["settings"][0]
+    budgets = iteration_budgets(manifest) if budgeted else [(per_samples, per_shots)] * steps
+    factory = ExecutionFactory(computer, built, max_shots_per_call=max(shots for _, shots in budgets))
+    base = factory.build_computation(manifest["command"])
+    base.add_params(max_samples=per_samples)
+    seed = job_seed(manifest, settings)
+    if seed is not None:
+        base.add_params(compilation_seed=seed)
+    params = settings[0]["circuit_params"] if mesh else ({"phi": 0.0} if form == "phase" else None)
+    if len({samples for samples, _ in budgets}) == 1:
+        estimate = computer.estimate_required_shots(base, nsamples=per_samples, param_values=params)
+        estimate = None if estimate is None else estimate * steps
+    else:
+        parts = [computer.estimate_required_shots(base, nsamples=n, param_values=params) for n, _ in budgets]
+        estimate = None if any(part is None for part in parts) else sum(parts)
+    if steps > 1:
+        for k in range(steps):
+            if mesh:
+                # A mesh iteration binds all 574 phases and its own input mode.
+                factory.add_iteration(
+                    circuit_params=settings[k]["circuit_params"],
+                    input_state=pcvl.BasicState(settings[k]["input_state"]),
+                    max_samples=per_samples,
+                    max_shots=per_shots,
+                    compilation_seed=settings[k].get("compilation_seed", 0),
+                )
+                continue
+            if form == "seeded":
+                factory.add_iteration(
+                    max_samples=budgets[k][0],
+                    max_shots=budgets[k][1],
+                    compilation_seed=settings[k]["compilation_seed"],
+                )
+                continue
+            factory.add_iteration(
+                circuit_params={"phi": k * math.pi / 4},
+                max_samples=per_samples,
+                max_shots=per_shots,
+                compilation_seed=0,
+            )
+        computation = factory.build_computation(manifest["command"])
+        computation.add_params(max_samples=per_samples)
+    else:
+        computation = base
+    computation.job_name = f"{manifest['family']}/{manifest['job']}"
+    if len(computation.job_name) > JOB_NAME_LIMIT:
+        raise PlatformError(f"job name {computation.job_name!r} exceeds the service's {JOB_NAME_LIMIT} characters")
     computer.validate_single(computation)
-    estimate = computer.estimate_required_shots(computation, nsamples=manifest["max_samples"])
     captured: dict[str, Any] = {}
 
     def record(cloud_data: dict[str, Any]) -> str:
@@ -594,7 +852,12 @@ def plan(
         raise PlatformError(
             f"{manifest['max_shots']} shots and the per-job price cost up to {ceiling:g} credits, above {max_credits:g}"
         )
-    perfs = scrub(get(platform_route(platform)).get("perfs", {}))
+    processor = get(platform_route(platform))
+    perfs = scrub(processor.get("perfs", {}))
+    if manifest.get("gate_form") == "mesh":
+        live_mesh(processor, circuit)
+    if "seeded_from" in manifest:
+        live_architecture(processor, platform)
     counters = availability()
     if counters["num_concurrent_jobs"] or counters["num_jobs_in_queue"]:
         raise PlatformError(f"the token has a running or queued job: {counters}")
@@ -819,21 +1082,72 @@ def result_summary(result_bytes: bytes, job: str, status: dict[str, Any], comple
         raise PlatformError(f"job {job}: status shots {status['shots']} differ from the result's {shots}")
     serialized = answer.get("results")
     inner = json.loads(serialized) if isinstance(serialized, str) and serialized else None
-    if not isinstance(inner, dict) or not isinstance(inner.get("results"), str):
+    iterations = None
+    if isinstance(inner, dict) and isinstance(inner.get("results_list"), list):
+        # An iterated job answers one entry per iteration; counts add up, and
+        # each entry keeps its own counts and its iteration's scalar fields.
+        iterations = []
+        merged: dict[str, int] = {}
+        for entry in inner["results_list"]:
+            if not isinstance(entry, dict) or not isinstance(entry.get("results"), str):
+                raise PlatformError(f"job {job}: an iteration result carries no serialized counts")
+            part = parse_counts(entry["results"])
+            for state, n in part.items():
+                merged[state] = merged.get(state, 0) + n
+            iteration = entry.get("iteration") if isinstance(entry.get("iteration"), dict) else {}
+            fields = {k: v for k, v in entry.items() if k not in ("results", "iteration")}
+            iterations.append(
+                {
+                    "iteration": scalar_tree(iteration),
+                    "counts": part,
+                    "samples": sum(part.values()),
+                    "result_fields": scalar_tree(fields),
+                }
+            )
+        inner = {**{k: v for k, v in inner.items() if k != "results_list"}, "results": None}
+        counts = merged
+    elif not isinstance(inner, dict) or not isinstance(inner.get("results"), str):
         if complete:
             raise PlatformError("the result carries no serialized counts")
         return {"shots": shots, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}
-    counts = parse_counts(inner["results"])
-    if sum(counts.values()) > shots:
-        raise PlatformError(f"job {job}: {sum(counts.values())} samples exceed its {shots} shots")
+    else:
+        counts = parse_counts(inner["results"])
+    # An iterated answer's top-level shots is one iteration's max_shots; each
+    # entry reports the shots it used, and their sum is what the job consumed.
+    used = shots
+    if iterations is not None:
+        per = [entry["result_fields"].get("nb_shots_used") for entry in iterations]
+        if not all(isinstance(n, int) and n >= 0 for n in per):
+            raise PlatformError(f"job {job}: an iteration reports no nb_shots_used")
+        used = sum(per)
+        for entry, n in zip(iterations, per, strict=True):
+            if entry["samples"] > n:
+                raise PlatformError(f"job {job}: an iteration counts {entry['samples']} samples from {n} shots")
+    if sum(counts.values()) > used:
+        raise PlatformError(f"job {job}: {sum(counts.values())} samples exceed its {used} shots")
     scalars = {k: v for k, v in inner.items() if k != "results" and isinstance(v, int | float | str | None)}
-    return {
+    summary = {
         "shots": shots,
+        "shots_used": used,
         "partial": not complete,
         "counts": counts,
         "samples": sum(counts.values()),
         "result_fields": scalars,
     }
+    if iterations is not None:
+        summary["iterations"] = iterations
+    return summary
+
+
+def scalar_tree(value: Any) -> Any:
+    """JSON scalars and nested dicts and lists of them; anything else becomes its type name."""
+    if isinstance(value, dict):
+        return {str(k): scalar_tree(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [scalar_tree(v) for v in value]
+    if value is None or isinstance(value, bool | int | float | str):
+        return value
+    return type(value).__name__
 
 
 def run_facts(directory: Path) -> dict[str, Any]:
@@ -873,14 +1187,21 @@ def run_facts(directory: Path) -> dict[str, Any]:
         if not raw.is_file() or sha256_bytes(raw.read_bytes()) != collected.get("result_sha256"):
             raise PlatformError(f"{owner}: raw/result.json differs from its recorded sha256")
         summary = result_summary(raw.read_bytes(), submission["job_id"], collected["status"], status == "completed")
-        if any(collected.get(key) != value for key, value in summary.items()):
+        # shots_used is derived from the raw bytes; a collection written before
+        # the field existed omits it and the raw result supplies it.
+        if any(
+            collected.get(key) != value
+            for key, value in summary.items()
+            if not (key == "shots_used" and key not in collected)
+        ):
             raise PlatformError(f"{owner}: results.json differs from the raw result")
-        modes = len(json.loads((directory / manifest["circuit"]["file"]).read_text(encoding="utf-8"))["input_state"])
+        modes = json.loads((directory / manifest["circuit"]["file"]).read_text(encoding="utf-8"))["modes"]
         if any(len(state.split(",")) != modes for state in summary["counts"]):
             raise PlatformError(f"{owner}: a counted state has a mode count other than {modes}")
         if summary["samples"] > manifest["max_samples"]:
             raise PlatformError(f"{owner}: {summary['samples']} samples exceed max_samples {manifest['max_samples']}")
-        shots = summary["shots"]
+        # A count-less partial result carries no per-iteration shots; its top-level shots stand in.
+        shots = summary.get("shots_used", summary.get("shots") or 0)
     elif not isinstance(collected.get("result_absent"), str):
         raise PlatformError(f"{owner}: a {status} job records neither a raw result nor its absence")
     else:
@@ -893,11 +1214,40 @@ def run_facts(directory: Path) -> dict[str, Any]:
         "created_at": submission["submitted_utc"],
         "backends": [submission["platform"]],
         "jobs": 1,
-        "circuits": len(manifest["blocks"]),
+        # A box-kite case counts its blocks and a mesh case its phase settings.
+        "circuits": len(manifest["blocks"] if "blocks" in manifest else manifest["settings"]),
         "statuses": {status: 1},
-        "charge": shots * submission["platform_at_plan"]["price_per_shot"],
+        "charge": charged(submission, collected, shots),
         "detail": f"job {submission['job_id']}, {collected.get('samples', 0)} samples, {shots} shots",
     }
+
+
+def usage_total(report: Any) -> float | None:
+    """credits plus free_credits over every platform row of a token usage report."""
+    if not isinstance(report, list):
+        return None
+    total = 0.0
+    for token_row in report:
+        for row in token_row.get("usage", []) if isinstance(token_row, dict) else []:
+            total += float(row.get("credits") or 0) + float(row.get("free_credits") or 0)
+    return total
+
+
+def charged(submission: dict[str, Any], collected: dict[str, Any], shots: int) -> float:
+    """The credits a run consumed: the usage report after collection minus the one before submission.
+
+    Jobs run one at a time on the token, so the difference is this job's
+    per-job price plus its shots. The usage report counts the calendar month,
+    so a job submitted and collected in different months, a negative
+    difference or a receipt without both reports falls back to the recorded
+    per-job price plus shots times the price per shot.
+    """
+    before, after = usage_total(submission.get("usage_before")), usage_total(collected.get("usage_after"))
+    same_month = str(submission.get("submitted_utc", ""))[:7] == str(collected.get("collected_utc", ""))[:7]
+    if before is not None and after is not None and same_month and after >= before:
+        return round(after - before, 6)
+    price = submission["platform_at_plan"]["price_per_shot"]
+    return round(float(submission.get("per_job_credits", 0)) + shots * price, 6)
 
 
 def run_directories(runs: Path = RUNS) -> list[Path]:
@@ -908,8 +1258,113 @@ def zipped(text: str) -> str:
     return ":PCVL:zip:" + base64.b64encode(zlib.compress(text.encode("ascii"))).decode("ascii")
 
 
+def charge_self_test() -> None:
+    """charged() takes the usage delta within one calendar month and the recorded price across a reset."""
+
+    def report(credits: float) -> list[dict[str, Any]]:
+        return [{"usage": [{"credits": 0.0, "free_credits": credits, "nb_jobs": 1, "platform_name": "qpu:belenos"}]}]
+
+    submission = {
+        "submitted_utc": "2026-10-31T23:59:00+00:00",
+        "usage_before": report(12.0),
+        "per_job_credits": 1.0,
+        "platform_at_plan": {"price_per_shot": 1e-06},
+    }
+    cases = (
+        ("2026-10-31T23:59:30+00:00", report(13.01), 1.01),
+        ("2026-11-01T00:00:30+00:00", report(1.01), 1.01),
+        ("2026-10-31T23:59:30+00:00", report(11.0), 1.01),
+    )
+    for collected_utc, after, want in cases:
+        got = charged(submission, {"collected_utc": collected_utc, "usage_after": after}, 10000)
+        if got != want:
+            raise SystemExit(f"self-test: charged() read {got} for a collection at {collected_utc}, not {want}")
+
+
+def seed_self_test() -> None:
+    """seed_value passes non-negative integers and refuses a bool, a negative, a float or a string; job_seed
+    takes a one-circuit job's seed from its setting or its manifest and refuses a conflict or an iterated
+    case's manifest seed; iteration_form names each case form and refuses a seeded settings list that
+    miscounts its iterations, lacks or misstates a seed, or carries circuit parameters."""
+    if seed_value(0, "test") != 0 or seed_value(7, "test") != 7:
+        raise SystemExit("self-test: seed_value changed a valid seed")
+    for bad in (True, -1, 1.0, "1", None):
+        try:
+            seed_value(bad, "test")
+        except PlatformError:
+            continue
+        raise SystemExit(f"self-test: seed_value accepted {bad!r}")
+    one: dict[str, Any] = {"job": "test"}
+    many: dict[str, Any] = {"job": "test", "iterations": 2}
+    accepted: list[tuple[dict[str, Any], list[dict[str, Any]], int | None]] = [
+        (one, [], None),
+        (one, [{}], None),
+        ({**one, "compilation_seed": 3}, [], 3),
+        ({**one, "compilation_seed": 3}, [{}], 3),
+        (one, [{"compilation_seed": 4}], 4),
+        ({**one, "compilation_seed": 4}, [{"compilation_seed": 4}], 4),
+        (many, [{"compilation_seed": 1}, {"compilation_seed": 2}], None),
+    ]
+    for manifest, settings, want in accepted:
+        if job_seed(manifest, settings) != want:
+            raise SystemExit(f"self-test: job_seed({manifest}, {settings}) is not {want}")
+    refused: list[tuple[dict[str, Any], list[dict[str, Any]]]] = [
+        ({**one, "compilation_seed": 3}, [{"compilation_seed": 4}]),
+        ({**many, "compilation_seed": 1}, [{}, {}]),
+        ({**one, "compilation_seed": -1}, []),
+    ]
+    for manifest, settings in refused:
+        try:
+            job_seed(manifest, settings)
+        except PlatformError:
+            continue
+        raise SystemExit(f"self-test: job_seed accepted {manifest} with {settings}")
+    seeded = [{"name": "a", "compilation_seed": 0}, {"name": "b", "compilation_seed": 5}]
+    forms: list[tuple[dict[str, Any], str]] = [
+        (one, "single"),
+        ({**one, "settings": seeded}, "single"),
+        (many, "phase"),
+        ({**many, "gate_form": "mesh", "settings": [{}, {}]}, "mesh"),
+        ({**many, "settings": seeded}, "seeded"),
+    ]
+    for manifest, form in forms:
+        if iteration_form(manifest) != form:
+            raise SystemExit(f"self-test: iteration_form({manifest}) is not {form}")
+    ladder = [{**seeded[0], "max_samples": 10, "max_shots": 20}, {**seeded[1], "max_samples": 30, "max_shots": 60}]
+    laddered = {**many, "settings": ladder, "max_samples": 40, "max_shots": 80}
+    if iteration_form(laddered) != "seeded" or iteration_budgets(laddered) != [(10, 20), (30, 60)]:
+        raise SystemExit("self-test: a budgeted seeded case lost its per-iteration budgets")
+    if iteration_budgets({**many, "settings": seeded, "max_samples": 40, "max_shots": 80}) != [(20, 40)] * 2:
+        raise SystemExit("self-test: an unbudgeted seeded case lost its even split")
+    for bad_ladder in (
+        [ladder[0], seeded[1]],
+        [{**ladder[0], "max_shots": 5}, ladder[1]],
+        [{**ladder[0], "max_samples": 0}, ladder[1]],
+        [{**ladder[0], "max_samples": 11, "max_shots": 21}, ladder[1]],
+    ):
+        try:
+            iteration_form({**laddered, "settings": bad_ladder})
+        except PlatformError:
+            continue
+        raise SystemExit(f"self-test: iteration_form accepted ladder {bad_ladder}")
+    for bad_settings in (
+        seeded[:1],
+        [seeded[0], {"name": "b"}],
+        [seeded[0], {"name": "b", "compilation_seed": -1}],
+        [seeded[0], {"name": "b", "compilation_seed": 1, "circuit_params": {"phi": 0.0}}],
+        [seeded[0], {"name": "b", "compilation_seed": True}],
+    ):
+        try:
+            iteration_form({**many, "settings": bad_settings})
+        except PlatformError:
+            continue
+        raise SystemExit(f"self-test: iteration_form accepted settings {bad_settings}")
+
+
 def runner_self_test() -> int:
     """Offline rules of plan, submit, collect and run_facts against a stubbed service; returns the rejections."""
+    charge_self_test()
+    seed_self_test()
     root = Path(__file__).resolve().parent.parent
     case = root / "results/quandela/cases/box_kite_photonic_single/job-00"
     modes = ["0"] * 24
@@ -1086,6 +1541,45 @@ def runner_self_test() -> int:
         finally:
             for stub in reversed(stubs):
                 stub.stop()
+    iterated = json.dumps(
+        {
+            "job_id": "job-i",
+            "shots": 9,
+            "results": json.dumps(
+                {
+                    "results_list": [
+                        {
+                            "results": ":PCVL:BSCount:{|1,0>=3;|0,1>=1}",
+                            "nb_shots_used": 5,
+                            "iteration": {"circuit_params": {"phi": 0.0}},
+                        },
+                        {
+                            "results": zipped(":PCVL:BSCount:{|0,1>=4}"),
+                            "nb_shots_used": 4,
+                            "iteration": {"circuit_params": {"phi": 3.14}},
+                        },
+                    ]
+                }
+            ),
+        }
+    ).encode()
+    summary = result_summary(iterated, "job-i", {"shots": 9})
+    if (
+        summary["counts"] != {"1,0": 3, "0,1": 5}
+        or [it["samples"] for it in summary["iterations"]] != [4, 4]
+        or summary["shots_used"] != 9
+    ):
+        raise AssertionError(f"an iterated result parsed as {summary}")
+    overdrawn = iterated.replace(b'"nb_shots_used\\": 4', b'"nb_shots_used\\": 3')
+    if overdrawn == iterated:
+        raise AssertionError("the overdrawn-iteration fixture did not change the iterated result")
+    refuse(
+        "an iteration with more samples than shots", functools.partial(result_summary, overdrawn, "job-i", {}), "from"
+    )
+    broken = iterated.replace(b"|1,0>=3", b"|{_:0},0>=3")
+    if broken == iterated:
+        raise AssertionError("the annotated-state fixture did not change the iterated result")
+    refuse("an iteration with an annotated state", functools.partial(result_summary, broken, "job-i", {}), "")
     for label_text, text in (
         ("a BasicState tag", ":PCVL:BasicState:|1,0>"),
         ("an annotated state", ":PCVL:BSCount:{|{_:0},0>=3}"),

@@ -707,6 +707,265 @@
       "run": "results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-06",
       "family": "box-kite Tuna-17 dry run on the ideal QX emulator",
       "question": "Twin batch-06 on QX (the second dark Y circuit and the depth-5 bright edges, relabeled onto qubits 0-9): does every deterministic replica read its census outcome exactly?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-ladder-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-00",
+      "family": "box-kite Tuna-17 ladder series",
+      "question": "Ladder batch-00 on Tuna-17 (readout-0, readout-1, readout-iso-x): where do the readout rates open the series, and does q1, q13 or q14 read |1> differently with every coupled neighbor in |0> than with all 17 qubits excited?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-ladder-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-01",
+      "family": "box-kite Tuna-17 ladder series",
+      "question": "Ladder batch-01 on Tuna-17 (the Latin square in X): per pair, the population and X coherence at CZ depths 1, 5 and 9 inside one batch, and the 50 Hz line by depth inside each job"
+    },
+    {
+      "id": "qi-boxkite-tuna17-ladder-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-02",
+      "family": "box-kite Tuna-17 ladder series",
+      "question": "Ladder batch-02 on Tuna-17 (the Latin square in Y): the same pairs and depths read in Y, for the phase per depth and a second population ladder"
+    },
+    {
+      "id": "qi-boxkite-tuna17-ladder-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-03",
+      "family": "box-kite Tuna-17 ladder series",
+      "question": "Ladder batch-03 on Tuna-17 (readout-0, readout-1, readout-iso-hzh): the middle bracket, and does preparing |1> by H Z H change the isolated e10 of q1, q13 and q14?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-ladder-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-04",
+      "family": "box-kite Tuna-17 ladder series",
+      "question": "Ladder batch-04 on Tuna-17 (the Latin square in X, circuit order rotated): does the within-batch ladder of batch-01 replicate?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-ladder-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-05",
+      "family": "box-kite Tuna-17 ladder series",
+      "question": "Ladder batch-05 on Tuna-17 (the Latin square in Y, circuit order rotated): does the Y ladder of batch-02 replicate?"
+    },
+    {
+      "id": "qi-boxkite-tuna17-ladder-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-06",
+      "family": "box-kite Tuna-17 ladder series",
+      "question": "Ladder batch-06 on Tuna-17 (readout-0, readout-1, readout-iso-x): the closing bracket and the second neighbor-context reading"
+    },
+    {
+      "id": "qi-boxkite-qx-ladder-twins-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder_twins_qx-batch-00",
+      "family": "box-kite Tuna-17 dry run on the ideal QX emulator",
+      "question": "Ladder twin batch-00 on QX (the X Latin circuits, relabeled onto qubits 0-5): does every deterministic replica read its census outcome exactly?"
+    },
+    {
+      "id": "qi-boxkite-qx-ladder-twins-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder_twins_qx-batch-01",
+      "family": "box-kite Tuna-17 dry run on the ideal QX emulator",
+      "question": "Ladder twin batch-01 on QX (the Y Latin circuits, relabeled onto qubits 0-5): does every deterministic replica read its census outcome exactly?"
+    },
+    {
+      "id": "qd-sim-belenos-pairs-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-00",
+      "family": "box-kite photonic S1",
+      "question": "two-photon strut block: label fraction against f_strut(V); the V it implies?"
+    },
+    {
+      "id": "qd-sim-belenos-pairs-job-02",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-02",
+      "family": "box-kite photonic S1",
+      "question": "two-photon edge block: label fraction of two-click samples against f_edge(V)?"
+    },
+    {
+      "id": "qd-sim-belenos-single-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-00",
+      "family": "box-kite photonic S1",
+      "question": "strut block (1,1;1,-1): a = 1/2 with per-mode ideal 1/2, 0, 1/4, 1/4?"
+    },
+    {
+      "id": "qd-sim-belenos-single-job-04",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-04",
+      "family": "box-kite photonic S1",
+      "question": "bright block (1,1;-1,-1), t = +1: does the cloud path return the exact ideal a = 1?"
+    },
+    {
+      "id": "qd-sim-belenos-single-job-05",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-05",
+      "family": "box-kite photonic S1",
+      "question": "dark block, same sign block, t = -1: is a = 0 exactly (the zero divisor)?"
+    },
+    {
+      "id": "qd-sim-belenos-single-job-33",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-33",
+      "family": "box-kite photonic S1",
+      "question": "one-hot 16D dark pair (e1+e10)(e4-e15) on 18 modes: zero clicks on all 16 algebra labels?"
+    },
+    {
+      "id": "qd-qpu-belenos-single-job-04",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04",
+      "family": "box-kite photonic Q1 bright",
+      "question": "bright block (1,1;-1,-1) on qpu:belenos, the same compiled circuit as sim job e12075f3: a and in-block routing on hardware?"
+    },
+    {
+      "id": "qd-sim-belenos-diagnostics-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-01",
+      "family": "Belenos diagnostics S2",
+      "question": "bright block as a compact 4-mode unitary at mode 0: does circuit width change the compiled mesh?"
+    },
+    {
+      "id": "qd-sim-belenos-diagnostics-job-02",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-02",
+      "family": "Belenos diagnostics S2",
+      "question": "bright block as compact native BS.H/PS/PERM gates: does gate form change the compiled mesh?"
+    },
+    {
+      "id": "qd-sim-belenos-diagnostics-job-03",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-03",
+      "family": "Belenos diagnostics S2",
+      "question": "bright block as native gates inside the 24-mode circuit: same question at full width"
+    },
+    {
+      "id": "qd-sim-belenos-fringe-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_fringe-job-00",
+      "family": "Belenos fringe S2",
+      "question": "edge block over phi = k pi/4 in one iterated job: visibility, offset and per-iteration compilation"
+    },
+    {
+      "id": "qd-sim-belenos-fringe-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_fringe-job-01",
+      "family": "Belenos fringe S2",
+      "question": "strut block over phi = k pi/4: the flat control"
+    },
+    {
+      "id": "qd-sim-belenos-mesh-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00",
+      "family": "Belenos mesh S3",
+      "question": "sixteen architecture-form settings in one job: does the service keep sent phases, and does the class likelihood name the simulator's ideal?"
+    },
+    {
+      "id": "qd-sim-belenos-mesh-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T233527Z-sim_belenos-belenos_mesh-job-01",
+      "family": "Belenos mesh S4",
+      "question": "one numeric architecture circuit, the guide's pre-compiled form: does the service keep its phases?"
+    },
+    {
+      "id": "qd-sim-belenos-mesh-job-02",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02",
+      "family": "Belenos mesh S5",
+      "question": "the 84/84 box-kite program in one job: do the 8 dark and 8 bright configurations covering every zero product and control of the 84 edges read their ideals through the re-transpiled meshes?"
+    },
+    {
+      "id": "qd-qpu-belenos-single-job-04-replay",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04",
+      "family": "box-kite photonic R1 replay",
+      "question": "the exact Q1 bright-block body on qpu:belenos after the calibration that moved HOM from 92.6 % to 57.6 %: does the identical compiled circuit keep Q1's in-block share?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-03",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03",
+      "family": "Belenos mesh C1",
+      "question": "sixteen seeded uniform-random meshes over the connected inputs, one of four runs in one calibration session: which error class, if any, explains the one-click histograms on the returned meshes, and do shared static heater offsets predict a held-out run?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-04",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T030428Z-qpu_belenos-belenos_mesh-job-04",
+      "family": "Belenos mesh C1",
+      "question": "sixteen seeded uniform-random meshes over the connected inputs, one of four runs in one calibration session: which error class, if any, explains the one-click histograms on the returned meshes, and do shared static heater offsets predict a held-out run?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-05",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T030731Z-qpu_belenos-belenos_mesh-job-05",
+      "family": "Belenos mesh C1",
+      "question": "sixteen seeded uniform-random meshes over the connected inputs, one of four runs in one calibration session: which error class, if any, explains the one-click histograms on the returned meshes, and do shared static heater offsets predict a held-out run?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-06",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06",
+      "family": "Belenos mesh C1",
+      "question": "sixteen seeded uniform-random meshes over the connected inputs, one of four runs in one calibration session: which error class, if any, explains the one-click histograms on the returned meshes, and do shared static heater offsets predict a held-out run?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-02",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T033336Z-qpu_belenos-belenos_mesh-job-02",
+      "family": "Belenos mesh M2 (84/84)",
+      "question": "the 84/84 box-kite program on qpu:belenos in one 16-iteration job: do the 8 dark and 8 bright configurations read their algebra shares through the re-transpiled meshes, and does the bright block leak like Q1 in the iterated form?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-03-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03",
+      "family": "Belenos mesh C1 repeat",
+      "question": "the exact body of C1 job-03 again 36 minutes later: same meshes and same histograms, or drift between jobs?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-08-form",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08",
+      "family": "Belenos one-circuit form test",
+      "question": "Q1's exact case as one circuit at compilation_seed 1: does the leak follow the one-circuit job form or Q1's own compiled mesh?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-07-seed-ensemble",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07",
+      "family": "Belenos mesh 84/84 seed ensemble",
+      "question": "job-02's sixteen configurations at compilation seeds 1 and 2 in one 32-iteration job: does the seed select the served mesh, how far do the algebra shares move between seeds, and does a 32-iteration job fit the 300 s limit?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-09-bridge",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T074524Z-qpu_belenos-belenos_mesh-job-09",
+      "family": "Belenos form-mesh bridge",
+      "question": "Q1's exact case iterated over compilation seeds 0 to 21, 0 and 1: does Q1's mesh 29dc6ef8 recur in the iterated form, and does it leak there as it did in the one-circuit form?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-10-d1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10",
+      "family": "Belenos form-versus-dwell D1",
+      "question": "Q1's single job unchanged but for a 1500-sample budget: does mesh 29dc6ef8 still leak as a single job?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-11-d3",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11",
+      "family": "Belenos form-versus-dwell D3",
+      "question": "Q1's single job at 10000 samples on a fresh mesh from ANU-drawn compilation_seed 46667: is the single-job leak generic or mesh specific?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-12-d2-d4",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12",
+      "family": "Belenos form-versus-dwell D2 and D4",
+      "question": "Q1's circuit iterated over sample-budget ladders at seed 20 (29dc6ef8) and seed 46667: does in_block fall with the budget inside an iterated job?"
     }
   ],
   "claims": [
@@ -1413,7 +1672,7 @@
     },
     {
       "id": "c881-exhaustive-rocq",
-      "statement": "Exhaustive quadratic rejection for the fixed fifteen-label C881 partition, kernel-checked by Rocq 9.2 with six closed assumption queries.",
+      "statement": "Exhaustive quadratic rejection for the fixed fifteen-label C881 partition, kernel-checked by Rocq 9.3.0 with six closed assumption queries.",
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
@@ -1429,7 +1688,7 @@
         },
         {
           "path": "docs/evidence/c881_exhaustive/kernel.txt",
-          "sha256": "263ae57ce30ab0954cf7211712e543a9280fe82738ec570e04d44859c5405ad3"
+          "sha256": "6ab673b318a00623c62cd191789fc8932cdf30981865a3044a9538e75c9cd204"
         }
       ],
       "documents": [
@@ -1487,7 +1746,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "The retained verification receipt pins Rocq 9.2 / OCaml 5.5.0 after renewal of the initial 9.1.1 receipts. The scalar proof alone leaves the general Cayley-Dickson embedding and tower bridge open; open_gororoba separately formalizes a concrete 16D average/detail transport retaining all coordinates. Current external builds use Rocq 9.3.0; historical receipts keep their recorded identity.",
+      "boundary": "The retained verification receipt pins Rocq 9.3.0 / OCaml 5.5.1 with Stdlib 9.2.0 after fresh compilation, kernel checks and assumption queries; the initial receipts used 9.1.1. The scalar proof alone leaves the general Cayley-Dickson embedding and tower bridge open; open_gororoba separately formalizes a concrete 16D average/detail transport retaining all coordinates. Current external builds use Rocq 9.3.0; historical receipts keep their recorded identity.",
       "evidence": [
         {
           "path": "proofs/FoldAverageDescent.v",
@@ -1503,7 +1762,7 @@
         },
         {
           "path": "docs/evidence/formal_certificates/FoldAverageDescent.kernel.txt",
-          "sha256": "263ae57ce30ab0954cf7211712e543a9280fe82738ec570e04d44859c5405ad3"
+          "sha256": "6ab673b318a00623c62cd191789fc8932cdf30981865a3044a9538e75c9cd204"
         }
       ],
       "documents": [
@@ -2023,7 +2282,7 @@
       "evidence": [
         {
           "path": "results/live/rank-sector-endpoint-decomposition.json",
-          "sha256": "4c55897b0d860ad201c757d06f263adc969890d646b4b32c52c88dd47ad25210"
+          "sha256": "001d385fb64f548b302151e2b559406d1b5abda5b0ad43af981875799d223831"
         }
       ],
       "documents": [
@@ -2051,7 +2310,7 @@
       "evidence": [
         {
           "path": "results/live/rank-sector-endpoint-decomposition.json",
-          "sha256": "4c55897b0d860ad201c757d06f263adc969890d646b4b32c52c88dd47ad25210"
+          "sha256": "001d385fb64f548b302151e2b559406d1b5abda5b0ad43af981875799d223831"
         }
       ],
       "documents": [
@@ -2123,7 +2382,7 @@
       "evidence": [
         {
           "path": "results/live/rank-sector-endpoint-decomposition.json",
-          "sha256": "4c55897b0d860ad201c757d06f263adc969890d646b4b32c52c88dd47ad25210"
+          "sha256": "001d385fb64f548b302151e2b559406d1b5abda5b0ad43af981875799d223831"
         },
         {
           "path": "results/live/2026-10-15T070847.644554Z/collect.json",
@@ -2419,7 +2678,7 @@
         },
         {
           "path": "docs/evidence/stiefel_witness/kernel.txt",
-          "sha256": "263ae57ce30ab0954cf7211712e543a9280fe82738ec570e04d44859c5405ad3"
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
         },
         {
           "path": "docs/evidence/stiefel_witness/package_cross_check.json",
@@ -3787,8 +4046,8 @@
         "docs/evidence/linear_conjugation/README.md"
       ],
       "gates": {
-        "core-337": "replay",
-        "core-338": "replay"
+        "core-338": "replay",
+        "core-379": "replay"
       },
       "acquisitions": [],
       "assumptions": [
@@ -4291,7 +4550,7 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "Descriptive summaries of the retained follow runs; nothing here was a preregistered decision. The bootstrap carries shot and readout-bracket noise only. The q13 discrepancy has two candidate mechanisms that this design does not separate: readout that depends on the state of neighboring qubits (readout-1 excites all 17) and a preparation error of readout-1's own X on q13. The walk phases identify no CZ window or detuning, since each CZ adds its residual local phase. The path omit control reads -0.119 against a limit of 0.126 and one strut branch +0.135 against 0.136: inside the preregistered null offset, though far from 0 on shot noise. A within-batch ladder (depths 1 and 9 in X share batch-01) is the prospective test of r_coh / r_pop.",
+      "boundary": "Descriptive summaries of the retained follow runs; nothing here was a preregistered decision. The bootstrap carries shot and readout-bracket noise only. The q13 discrepancy has two candidate mechanisms that this design does not separate: readout that depends on the state of neighboring qubits (readout-1 excites all 17) and a preparation error of readout-1's own X on q13. The walk phases identify no CZ window or detuning, since each CZ adds its residual local phase. The path omit control reads -0.119 against a limit of 0.126 and one strut branch +0.135 against 0.136: inside the preregistered null offset, though far from 0 on shot noise. The retained shot order carries a 50 Hz modulation that grows with CZ depth (claim qi-tuna17-shot-record-50hz-line), so the ladder's decay mixes decoherence with a time-averaged oscillating phase. A within-batch ladder demodulated at the line is the prospective test of r_coh / r_pop.",
       "evidence": [
         {
           "path": "results/quantum_inspire/box_kite_tuna_17_follow_analysis.json",
@@ -4320,6 +4579,931 @@
       "depends_on": [
         "qi-tuna17-boxkite-t0-depth-ladder"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-shot-record-50hz-line",
+      "statement": "The retained per-shot outcome lists of Tuna-17 jobs carry a line at the 50 Hz grid frequency in wall-clock time. A band scan at 0.019 to 0.021 cycles per shot finds the line (whitened, p below 1e-6 after the band's look-elsewhere factor) in 69 of 147 Tuna-17 jobs and in none of 108 QX jobs, none of 43 readout circuits (readout-0, readout-1 and the context readouts, at up to 131072 shots) and none of the 8 depth-1 LCU circuits; it appears in Ramsey, CZ-ladder, walk and additivity circuits, with first-harmonic amplitudes in P(1) up to 0.43 (q7, ring-down Ramsey) and 0.39 (q5, coupler-ZZ Ramsey). Across the readout ring-down arms, whose circuits differ only in a wait of tau cycles of 20 ns, the peak frequency rises with tau at 50.4 +- 4.0 Hz (31 jobs, one intercept per batch): 12.6 standard errors from the 0 Hz a shot-index-locked source predicts and 0.1 from 50 Hz, which at 50 Hz puts one shot at 402.9 to 404.6 us in the ring-down circuits and 400.7 us in the follow series. In the follow series the bright-edge selectors on (1,4), (10,13) and (12,14) oscillate with amplitudes 0.19 to 0.26 at CZ depth 9, 0.09 to 0.13 at depth 5 and below 0.0175 at depth 1, in phase across the three pairs (resultant 0.996 to 1.000 per job). Within-job stationarity (16 block means per bit, the smallest per-bit chi-square tail times the bits scanned) falls below 0.01 in 11 to 33 percent of the box-kite pre-T0, T0 and follow jobs and in 61 to 75 percent of the morning ring-down jobs. The detection statistic whitens the scanned bits by their same-shot correlation matrix, so correlated bits of one shot do not inflate it.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "A reanalysis of retained shot order, which the platform does not document as temporal; the wall-clock slope is the evidence that it is. The mechanism is inferred, not measured: a 50 Hz modulation common to the chip that grows with the phase a circuit accumulates (wait or CZ count) fits mains-frequency interference on the qubits' frequency or the flux pulses, but no retained probe separates flux pickup from any other 50 Hz path, and the third-harmonic amplitudes do not separate a 150 Hz component from the nonlinear response to a large phase swing. A time-averaged oscillating phase lowers a job's mean contrast, so the follow ladder's decay rates and r_coh / r_pop mix decoherence with this modulation. The scan detects lines in one band only.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/tuna_17_shot_record_line.json",
+          "sha256": "aaaff37360da315dd5abe25cdeafbc9ecb3777b7c66eb19afb8ea2212258de19"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/tuna-17.md",
+        "docs/notes/quantum_inspire/tuna-17-run-design.md",
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-426": "replay"
+      },
+      "acquisitions": [
+        "qi-qx-crosstalk-teleport-reference",
+        "qi-tuna17-crosstalk-teleport",
+        "qi-qx-zero-divisor-twin",
+        "qi-tuna17-zero-divisor",
+        "qi-qx-coupler-zz-dry-run-0",
+        "qi-qx-coupler-zz-dry-run-1",
+        "qi-qx-coupler-zz-dry-run-2",
+        "qi-qx-coupler-zz-dry-run-3",
+        "qi-tuna17-coupler-zz-0",
+        "qi-tuna17-coupler-zz-1",
+        "qi-tuna17-coupler-zz-2",
+        "qi-tuna17-coupler-zz-3",
+        "qi-qx-zero-divisor-batch-dry-run-0",
+        "qi-qx-zero-divisor-batch-dry-run-1",
+        "qi-qx-zero-divisor-two-region-dry-run",
+        "qi-qx-zero-divisor-visibility-floor-dry-run",
+        "qi-tuna17-zero-divisor-visibility-floor-batch-00",
+        "qi-tuna17-zero-divisor-visibility-floor-batch-01",
+        "qi-tuna17-zero-divisor-visibility-floor-batch-02",
+        "qi-qx-readout-ringdown-P-dry-run-0",
+        "qi-qx-readout-ringdown-P-dry-run-1",
+        "qi-qx-readout-ringdown-P-dry-run-2",
+        "qi-qx-readout-ringdown-P-dry-run-3",
+        "qi-qx-readout-ringdown-P-dry-run-4",
+        "qi-qx-readout-ringdown-P-dry-run-5",
+        "qi-qx-readout-ringdown-P-dry-run-6",
+        "qi-qx-readout-ringdown-P-dry-run-7",
+        "qi-qx-readout-ringdown-P-dry-run-8",
+        "qi-qx-readout-ringdown-Q-dry-run-0",
+        "qi-qx-readout-ringdown-Q-dry-run-1",
+        "qi-qx-readout-ringdown-Q-dry-run-2",
+        "qi-qx-readout-ringdown-Q-dry-run-3",
+        "qi-qx-readout-ringdown-Q-dry-run-4",
+        "qi-qx-readout-ringdown-Q-dry-run-5",
+        "qi-qx-readout-ringdown-Q-dry-run-6",
+        "qi-qx-readout-ringdown-Q-dry-run-7",
+        "qi-qx-readout-ringdown-Q-dry-run-8",
+        "qi-tuna17-readout-ringdown-P-batch-00",
+        "qi-tuna17-readout-ringdown-P-batch-01",
+        "qi-tuna17-readout-ringdown-P-batch-02",
+        "qi-tuna17-readout-ringdown-P-batch-03",
+        "qi-tuna17-readout-ringdown-P-batch-04",
+        "qi-tuna17-readout-ringdown-P-batch-05",
+        "qi-tuna17-readout-ringdown-P-batch-05-rerun1",
+        "qi-tuna17-readout-ringdown-P-batch-06",
+        "qi-tuna17-readout-ringdown-P-batch-06-rerun1",
+        "qi-tuna17-readout-ringdown-P-batch-07",
+        "qi-tuna17-readout-ringdown-P-batch-08",
+        "qi-tuna17-readout-ringdown-P-recal-041520",
+        "qi-tuna17-readout-ringdown-P-recal-042425",
+        "qi-tuna17-readout-ringdown-Q-batch-00",
+        "qi-tuna17-readout-ringdown-Q-batch-01",
+        "qi-tuna17-readout-ringdown-Q-batch-02",
+        "qi-tuna17-readout-ringdown-Q-batch-03",
+        "qi-tuna17-readout-ringdown-Q-batch-04",
+        "qi-tuna17-readout-ringdown-Q-batch-05",
+        "qi-tuna17-readout-ringdown-Q-batch-06",
+        "qi-tuna17-readout-ringdown-Q-batch-07",
+        "qi-tuna17-readout-ringdown-Q-batch-08",
+        "qi-tuna17-readout-ringdown-Q-recal-053951",
+        "qi-boxkite-qx-twins-batch-00",
+        "qi-boxkite-qx-twins-batch-04",
+        "qi-boxkite-tuna17-pre-batch-00",
+        "qi-boxkite-tuna17-t0-batch-00",
+        "qi-boxkite-tuna17-t0-batch-01",
+        "qi-boxkite-tuna17-t0-batch-02",
+        "qi-boxkite-tuna17-follow-batch-00",
+        "qi-boxkite-tuna17-follow-batch-01",
+        "qi-boxkite-tuna17-follow-batch-02",
+        "qi-boxkite-tuna17-follow-batch-03",
+        "qi-boxkite-tuna17-follow-batch-04",
+        "qi-boxkite-tuna17-follow-batch-05",
+        "qi-boxkite-tuna17-follow-batch-06",
+        "qi-boxkite-qx-twins-batch-01",
+        "qi-boxkite-qx-twins-batch-02",
+        "qi-boxkite-qx-twins-batch-03",
+        "qi-boxkite-qx-twins-batch-05",
+        "qi-boxkite-qx-twins-batch-06",
+        "qi-boxkite-tuna17-ladder-batch-00",
+        "qi-boxkite-tuna17-ladder-batch-01",
+        "qi-boxkite-tuna17-ladder-batch-02",
+        "qi-boxkite-tuna17-ladder-batch-03",
+        "qi-boxkite-tuna17-ladder-batch-04",
+        "qi-boxkite-tuna17-ladder-batch-05",
+        "qi-boxkite-tuna17-ladder-batch-06",
+        "qi-boxkite-qx-ladder-twins-batch-00",
+        "qi-boxkite-qx-ladder-twins-batch-01"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-boxkite-ladder-readout-context",
+      "statement": "On Tuna-17 the |1> misassignment of q13 depends on the preparation context of the chip: e10 reads 0.0895 and 0.0863 with all 17 qubits excited (readout-1, batches 0 and 6) against 0.0441 and 0.0399 with q1, q13 and q14 alone excited and every coupled neighbor in |0> (readout-iso-x), differences 0.045 and 0.046 at about 45 standard errors, so context is established on q13 by the preregistered rule (above 0.02 and 5 SE in both brackets). It is absent on q1 (-0.0009, -0.0016) and q14 (-0.0027, -0.0006). The preparation path is absent under the 0.02 threshold on all three: e10 after H Z H minus the interpolated isolated e10 is +0.016 (q13), +0.005 (q14) and -0.0002 (q1). Corrected with the readout-1 brackets, the depth-1 X conditional coherence on (10,13) reads -1.104 and -1.060 (batches 1 and 4); corrected with q13's isolated e10 it reads -0.997 and -0.955, within one of the physical bound; (12,14) reads -0.995 and -0.994 with readout-1 and -0.999 and -0.995 with q14's isolated e10. The follow series' unphysical -1.105 on (10,13) is therefore a calibration artifact of the all-qubit readout-1 bracket applied to q13.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One device state of one night (01:55Z to 03:02Z, 2026-10-18) at 131072 shots per job. readout-1 and readout-iso-x differ both in the neighbors' state at measurement and in the X pulses applied to the neighbors, so the design does not separate state-dependent readout of q13 from drive crosstalk of those pulses on q13's preparation; readout-1 also excites q10 and q11 together, so it does not say which neighbor matters. The preparation differences below the 0.02 threshold are significant on shot noise (q13 +0.016 at about 20 SE, q14 +0.005 at about 9 SE) and are reported, not decided. Beside an excited q13, q10's own e01 rises by 0.011 to 0.014 against readout-0 (reported).",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json",
+          "sha256": "b301929aef16321096dfd04c37e85e58729201bb01db0f9d63a904de7fe5675e"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/tuna-17.md",
+        "docs/notes/quantum_inspire/tuna-17-run-design.md",
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-425": "replay",
+        "core-420": "freshness"
+      },
+      "acquisitions": [
+        "qi-boxkite-tuna17-ladder-batch-00",
+        "qi-boxkite-tuna17-ladder-batch-01",
+        "qi-boxkite-tuna17-ladder-batch-02",
+        "qi-boxkite-tuna17-ladder-batch-03",
+        "qi-boxkite-tuna17-ladder-batch-04",
+        "qi-boxkite-tuna17-ladder-batch-05",
+        "qi-boxkite-tuna17-ladder-batch-06",
+        "qi-boxkite-qx-ladder-twins-batch-00",
+        "qi-boxkite-qx-ladder-twins-batch-01"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-boxkite-ladder-within-batch",
+      "statement": "The within-batch Latin-square ladder on Tuna-17 (every circuit holding CZ depths 1, 5 and 9 on the pairs (1,4), (10,13) and (12,14); X batches 1 and 4, Y batches 2 and 5; 131072 shots per job) gives rho = r_coh / r_pop above 1 on all three pairs in both X batches: 1.021 and 1.020 on (1,4), 1.021 and 1.022 on (10,13), 1.005 and 1.006 on (12,14), each 99% interval excluding 1 (preregistered decision: above 1). The replicate difference exceeds 3 combined standard errors on (12,14) only (z -3.85; (1,4) 1.59, (10,13) -2.68). r_pop is 0.951 to 0.957 on (1,4), 0.953 to 0.958 on (10,13) and 0.976 to 0.978 on (12,14) across all four Latin batches. The 50 Hz line is detected in all 12 Latin jobs, as predicted; the depth-9 over depth-1 amplitude margin holds in 10 of 12 jobs and is refuted in the two jobs whose depth-9 pair is (12,14) in batches 4 and 5 (batch-04 latin-x-1 and batch-05 latin-y-1), where that selector's first harmonic falls to 0.0027.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "rho above 1 means the population contrast decays faster than the joint coherence, which neither a global depolarizing channel (rho = 1) nor dephasing (rho below 1) gives; a coherent error that moves selector population, or the 50 Hz modulation averaged over a job, would raise it, and the design isolates neither. The preregistered rho uses the readout-1 correction, which overstates q13's e10 (claim qi-tuna17-boxkite-ladder-readout-context); with every iso qubit's e10 from readout-iso-x, rho reads 1.021 and 1.020 on (1,4), 1.020 and 1.022 on (10,13), 1.005 and 1.006 on (12,14), each 99% interval again excluding 1, so the decision is the same under both corrections. The line refutation is of the preregistered first-harmonic margin; the second harmonic of the same selector stays at 0.020 to 0.022 (claim qi-tuna17-boxkite-ladder-drift-harmonics), so the refutation does not show the modulation absent.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json",
+          "sha256": "b301929aef16321096dfd04c37e85e58729201bb01db0f9d63a904de7fe5675e"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/tuna-17.md",
+        "docs/notes/quantum_inspire/tuna-17-run-design.md",
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-425": "replay",
+        "core-420": "freshness"
+      },
+      "acquisitions": [
+        "qi-boxkite-tuna17-ladder-batch-00",
+        "qi-boxkite-tuna17-ladder-batch-01",
+        "qi-boxkite-tuna17-ladder-batch-02",
+        "qi-boxkite-tuna17-ladder-batch-03",
+        "qi-boxkite-tuna17-ladder-batch-04",
+        "qi-boxkite-tuna17-ladder-batch-05",
+        "qi-boxkite-tuna17-ladder-batch-06",
+        "qi-boxkite-qx-ladder-twins-batch-00",
+        "qi-boxkite-qx-ladder-twins-batch-01"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-boxkite-ladder-drift-harmonics",
+      "statement": "Descriptive readings of the ladder series. Against the follow series about two and a half hours earlier, the bright-edge populations rose by 0.071 (1,4), 0.092 (10,13) and 0.394 (12,14) at CZ depth 9 and by 0.003, 0.035 and 0.190 at depth 5; (12,14) at depth 9 moved from 0.483 to 0.877. The (12,14) selector at depth 9 carries a first harmonic of 0.024 and 0.026 in batches 1 and 2 and 0.0027 in batches 4 and 5, while its second harmonic stays at 0.020 to 0.022 in all four (shot-record lock-in at each job's peak). In the shot-record scan the 21 ladder jobs fall below an adjusted block-stationarity p of 0.01 in 52 percent of jobs, and none of the 9 readout circuits carries the line at 131072 shots.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive; nothing here was a preregistered decision. A first harmonic that vanishes while the second persists fits a static phase moving onto an extremum of the selector's response, inferred, not measured. No retained record places a platform calibration between the follow and ladder series; batch 4 waited about 30 minutes in the queue.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json",
+          "sha256": "b301929aef16321096dfd04c37e85e58729201bb01db0f9d63a904de7fe5675e"
+        },
+        {
+          "path": "results/quantum_inspire/tuna_17_shot_record_line.json",
+          "sha256": "aaaff37360da315dd5abe25cdeafbc9ecb3777b7c66eb19afb8ea2212258de19"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/tuna-17.md",
+        "docs/notes/quantum_inspire/tuna-17-run-design.md",
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-425": "replay",
+        "core-426": "replay"
+      },
+      "acquisitions": [
+        "qi-boxkite-tuna17-ladder-batch-00",
+        "qi-boxkite-tuna17-ladder-batch-01",
+        "qi-boxkite-tuna17-ladder-batch-02",
+        "qi-boxkite-tuna17-ladder-batch-03",
+        "qi-boxkite-tuna17-ladder-batch-04",
+        "qi-boxkite-tuna17-ladder-batch-05",
+        "qi-boxkite-tuna17-ladder-batch-06"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qi-tuna17-boxkite-follow-ladder-drift"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-sim-belenos-boxkite-ideals",
+      "statement": "On sim:belenos (its default noise model g2 0.003, indistinguishability 0.92, transmittance 0.06) the six S1 box-kite circuits reproduce their exact Q(sqrt2) ideals: bright a = 1 (5003/4996/0/0), dark a = 0 (Wilson upper bound 0.00038), strut a = 0.506 against 1/2, the one-hot 16D dark pair 0 clicks on all 16 algebra labels, and two-photon label fractions of 0.472 (edge) and 0.0134 (strut), whose strut inversion gives V = 0.918 against the simulator's 0.92.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "One job per circuit on sim:belenos as served on 2026-10-17; the simulator applies its own noise model and Quandela's transpiler, so agreement shows the cases, runner and compilation path are correct, never that hardware reaches the ideal.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-00/analysis.json",
+          "sha256": "38a442caf1e24d582dfaa8bc8c2c5737c4a7585d9e1e59274aa1e6216e029716"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-02/analysis.json",
+          "sha256": "ab02810e6bc847aa8dfc3f0105de4cc6e1c5bd0d682463cdbf8f552cae79dcee"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-00/analysis.json",
+          "sha256": "e8636569a3ab950eda7be1e34c5619450dc8d63673ea54ab0c35203cdade7236"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-04/analysis.json",
+          "sha256": "e3f7ea1647c0d1dcd358c22fb7da9ae51382c4e0b53fc947ecf3590752511fe5"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-05/analysis.json",
+          "sha256": "cfd18fc43af83bf1c893b9d9b89f45abc37b774199bdf68ca586efefe03e9ee5"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-33/analysis.json",
+          "sha256": "74715736a3ae31517efb0abef1056c79a0c0081a5d2612b640e2848a255bb4f5"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-508": "replay",
+        "core-504": "freshness"
+      },
+      "acquisitions": [
+        "qd-sim-belenos-pairs-job-00",
+        "qd-sim-belenos-pairs-job-02",
+        "qd-sim-belenos-single-job-00",
+        "qd-sim-belenos-single-job-04",
+        "qd-sim-belenos-single-job-05",
+        "qd-sim-belenos-single-job-33"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bright-block-routing-deficit",
+      "statement": "On qpu:belenos the bright block that sim:belenos reproduces exactly, sent as a 4-mode unitary inside a 24-mode identity and compiled to the same 552-beam-splitter circuit, keeps 0.470 (Wilson 0.460 to 0.480) of one-click samples on its four modes, and of those an algebra share a = 0.256 (0.244 to 0.269) against the ideal 1; the leaked clicks fall mostly on modes 14 to 19, whose dark counts are below 0.2 per second.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One 10000-sample job at the 2026-10-17 calibration (HOM 92.6 %, g2 1 %). The root-cause record (docs/evidence/quandela/belenos_leakage_rca.json) refutes a circuit, encoding, convention or multi-photon cause: the decoded compiled mesh reproduces the ideal, and no single-parameter error model reaches the shot-noise floor; the exact replay after a calibration reproduces the leak, and 64 random meshes of the same session show errors about a fifth the size the leak needs, so the leak stays specific to this job's form or mesh.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/analysis.json",
+          "sha256": "61d3c7f7f7c9dfd6d1d7c9d455eb97a9121337e4f63ed8a4437abbeb6868b228"
+        },
+        {
+          "path": "docs/evidence/quandela/belenos_leakage_rca.json",
+          "sha256": "2551d3d165db74a52316f06c7e1b9c2052c6de2eee42967bf121e1e25df3fa11"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-508": "replay",
+        "core-504": "freshness",
+        "core-511": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-single-job-04"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-sim-belenos-boxkite-ideals"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-sim-belenos-iterations-and-forms",
+      "statement": "On sim:belenos an iterated job runs every iteration for one credit and compiles each iteration separately (eight distinct meshes in one fringe job); the edge block's fringe over phi = k pi/4 has visibility 0.996 and offset -0.008 rad and the strut block's is flat (visibility 0.023), and the bright block sent as a compact 4-mode unitary, compact native gates or 24-mode native gates reads a = 1 each while every form compiles to the full 552-splitter mesh.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "Five sim:belenos jobs on 2026-10-17 under the simulator's default noise model; they establish the job, iteration and compilation behavior of the service, never hardware performance.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-01/analysis.json",
+          "sha256": "ae71795ab4a51a768cca023ed73181bb79e3359dc4b74c56f678b487dabf44f6"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-02/analysis.json",
+          "sha256": "80be8270073de87d646e1bfe08a07e9762632d4939299beaacdc7f0d6a099d95"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-03/analysis.json",
+          "sha256": "4390dc9ce9ca70c2e0cb92277c8e9e6d7a5629b7d1686443e26c9c10cb92a6e3"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_fringe-job-00/analysis.json",
+          "sha256": "c5f8e8f2e70d23c0fcef10fadc9681a4f173cf873b3a743af46c788f3156802d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_fringe-job-01/analysis.json",
+          "sha256": "b4a6dfee555ce8c882768032e70f220dac9649f79e43902fb008527a53a5c73e"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-508": "replay",
+        "core-504": "freshness"
+      },
+      "acquisitions": [
+        "qd-sim-belenos-diagnostics-job-01",
+        "qd-sim-belenos-diagnostics-job-02",
+        "qd-sim-belenos-diagnostics-job-03",
+        "qd-sim-belenos-fringe-job-00",
+        "qd-sim-belenos-fringe-job-01"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-sim-belenos-boxkite-ideals"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-cloud-retranspiles-architecture-circuits",
+      "statement": "Quandela Cloud re-transpiles every circuit sent to sim:belenos, the Belenos architecture with its 574 phases bound per iteration (job 1d7160c1, 16 settings) and the same architecture as a numeric circuit (job e5b74123): every returned computed_circuit changes all 574 phases and keeps only the occupied input column (|U|^2 within 2e-4), each setting's histogram lies within shot noise of its ideal (TVD 0.0002 to 0.038 at 1500 samples), and the efficiency-weighted likelihood computed on the returned meshes names the ideal model 352 nats ahead of coupler noise.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "Two sim:belenos jobs on 2026-10-17 with perceval-quandela 1.3.1 against a platform running 1.3.0 and exqalibur 1.4.2; the served meshes match exqalibur's CircuitOptimizer statistically, not bitwise, and the identical sim and QPU meshes hold for the one-circuit single/job-04 body; the iterated job-02 body returned different meshes on qpu:belenos (qd-belenos-same-meshes-drift-between-jobs).",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/analysis.json",
+          "sha256": "6c9d69eb73b888cb8fdaf9cd84a0ea6e6edcc4b81f360d0a2dfef5f339bbeaac"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T233527Z-sim_belenos-belenos_mesh-job-01/analysis.json",
+          "sha256": "7c75040afbc8b8ee0192b4e559a529f93caff29b46dafdce3c782606df35c2c1"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-508": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-sim-belenos-mesh-job-00",
+        "qd-sim-belenos-mesh-job-01"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-sim-belenos-iterations-and-forms"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-sim-belenos-84-84-zero-divisor-program",
+      "statement": "On sim:belenos one 16-iteration job (32b28fe8) carries all 168 zero products and 168 bright controls of the 84 box-kite edges, certified through cd_core and mapped to 8 dark and 8 bright one-photon configurations: every dark configuration reads algebra share a = 0 (0 of 1500 one-click samples, Wilson upper bound 0.0026) and every bright one a = 1 (lower bound 0.9974) through the meshes the service re-transpiled, and the class analysis of the returned meshes reads ideal (p = 0.136).",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "One sim:belenos job on 2026-10-18 under the simulator's default noise model; it shows the 84/84 case, the iterated mesh vehicle and the analysis reproduce the exact ideals end to end, never that hardware does.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02/analysis.json",
+          "sha256": "45656860791bfe4f820fab0276389497246c9b22e5372c6839a0c4b39b29cb2b"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-508": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-sim-belenos-mesh-job-02"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-cloud-retranspiles-architecture-circuits"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bright-block-leak-survives-recalibration",
+      "statement": "On qpu:belenos the exact Q1 bright-block body, re-run after the calibration that moved the HOM figure from 92.6 % to 57.6 % with unchanged couplers, compiled to the identical circuit (sha256 9bbbaf63) and kept 0.504 (Wilson 0.494 to 0.514) of one-click samples on the block's four modes against Q1's 0.470 (0.460 to 0.480), with the leaked light again mostly on modes 17, 18 and 19; the HOM figure does not index this one-photon route's leakage.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Two 10000-sample jobs on one compiled mesh, before and after one calibration; raw in-block shares only, since the receipt's dark rates that the dark-corrected figures subtract are refuted by the C1 runs (modes 0 and 1 read no clicks where they predict about 150 and 40). It says nothing about another mesh or a recalibration that changes the couplers.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04/analysis.json",
+          "sha256": "cb2d07de68ff4c766c3e766a292b81c1960afa53a9cf519628032df5e819a149"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/analysis.json",
+          "sha256": "61d3c7f7f7c9dfd6d1d7c9d455eb97a9121337e4f63ed8a4437abbeb6868b228"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-508": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-single-job-04",
+        "qd-qpu-belenos-single-job-04-replay"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-bright-block-routing-deficit"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-random-meshes-no-class-fits-under-receipt-model",
+      "statement": "On qpu:belenos four iterated jobs of 16 seeded uniform-random meshes each (64 settings of 1500 samples, 95,988 of the 96,000 one-click, one calibration session, all re-transpiled) read 'no class fits' under the preregistered analysis: no scanned heater-noise, gain, crosstalk or misroute magnitude reaches the fit test (median TVD 9.6 to 15.4 shot-noise floors per job), and shared static heater offsets are not declared (held-out gain about -79000 nats against fitted dephasing at the best prior width, median held-out TVD 20 floors).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The preregistered instrument model weights each mode by the receipt's t_out and subtracts the receipt's dark rates; the runs refute both (t_out reads 3 to 6 % on modes 0 to 11 and 194 to 400 % on modes 12 to 23, while modes 0 to 11 collect about twice the clicks of 12 to 23), so the verdict holds for that model and does not name the chip's optical error class.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03/analysis.json",
+          "sha256": "d62e9498e4d5ad873fa96d702e7f7a28c4869b05326c8f22b26f78fc47768eab"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T030428Z-qpu_belenos-belenos_mesh-job-04/analysis.json",
+          "sha256": "aeebaca4e32de76bf1b1d3800c2039cea69d514a3afef7270e3489cc3d66753a"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T030731Z-qpu_belenos-belenos_mesh-job-05/analysis.json",
+          "sha256": "d1233ac4379af545b7157ccd64e719c30e892c7c94d9aa32828e58e88f7c1964"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06/analysis.json",
+          "sha256": "ff76901e050fa7b73f1134702951a4543ed0de9b7a8b2e92d20b060e906984ca"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/static.json",
+          "sha256": "5261e3c56af98dd377f0274ddbcc4e2c8d8f678b4b525c1fc6e7d7e1318ffac1"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-537": "replay",
+        "core-514": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-03",
+        "qd-qpu-belenos-mesh-job-04",
+        "qd-qpu-belenos-mesh-job-05",
+        "qd-qpu-belenos-mesh-job-06"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-cloud-retranspiles-architecture-circuits"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-random-meshes-fitted-efficiency-reanalysis",
+      "statement": "Refitting the four C1 runs with relative per-mode detection efficiencies fitted jointly with each class, each run held out in turn, cuts the held-out median TVD to 4.2 shot-noise floors (absolute TVD median 0.149 against the ideal, range 0.031 to 0.273, floor 0.034), with every class's best point at or next to its null magnitude and no class passing the fit test; static offsets fitted with the efficiencies lose to fitted dephasing on held-out runs (about -34000 nats), and the fitted efficiencies put modes 0 to 11 near 1.2 and modes 12 to 23 near 0.7, with mode 5 a 6.6-fold outlier that also collects light the ideal places on modes 0 and 4.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Post hoc: the efficiency model was written after job-03 had been examined in sample and committed (5ad0008) before it ran on the four runs; the efficiencies are a fitted factor per output mode and support no detector-efficiency claim. It motivates a prospective test that scores a further job against these fixed efficiencies, belenos_mesh job-02 on qpu:belenos in the same coupler state.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/efficiency.json",
+          "sha256": "0b9eeead513e514ade31edf60a6f209eccd243e60fd16713ca43787ff6b80d2b"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-535": "replay",
+        "core-534": "admission"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-03",
+        "qd-qpu-belenos-mesh-job-04",
+        "qd-qpu-belenos-mesh-job-05",
+        "qd-qpu-belenos-mesh-job-06"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-random-meshes-no-class-fits-under-receipt-model"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-qpu-belenos-84-84-zero-divisor-program",
+      "statement": "On qpu:belenos one 16-iteration job (4e208d22, compilation seed 0) carries all 168 zero products and 168 bright controls of the 84 box-kite edges as 8 dark and 8 bright one-photon configurations and reads algebra share a = 0.048 averaged over the dark configurations (0.000 to 0.184 each) and a = 0.979 over the bright ones (0.936 to 0.991), a bright-minus-dark contrast of 0.931, with a median of 0.952 of one-click samples kept on the four block modes.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job in one calibration session (HOM 57.6 %, couplers ca90c1c0) on the meshes this job returned; the chip drifts between jobs by a median TVD of 0.128 on identical meshes, so each configuration's value is a single-job snapshot whose spread a seed ensemble measures. The dark floor carries routing, compile and drift contributions together.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-18T033336Z-qpu_belenos-belenos_mesh-job-02/analysis.json",
+          "sha256": "5a5ef4f52b0d6f375bc709a018ed41ed579dda5404cf719c08122197d50c8dbc"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/followup.json",
+          "sha256": "f8989e0ce5a0256f38ea680c169705753edf13e3bd63dba18d904e7b7aad4486"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-537": "replay",
+        "core-536": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-02"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-sim-belenos-84-84-zero-divisor-program"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bright-block-leak-is-job-specific",
+      "statement": "Sparse block targets do not leak like Q1 in the iterated mesh form on qpu:belenos: the sixteen block configurations of job-02 keep a median in_block of 0.952 (0.751 to 0.999), far above the preregistered sparse-failure bound 0.65, and Q1's own bright target keeps 0.987 (a = 0.988) where the one-circuit numeric-unitary job kept 0.470 (a = 0.256) before and 0.504 after a calibration, so the leak belongs to that job.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The rule separates sparse targets from the Q1 job; it does not separate the one-circuit job form from Q1's own compiled mesh 29dc6ef8, since that form always returns that mesh. The preregistered job-specific threshold (0.924, also passed) comes from the exploratory fitted-efficiency reanalysis of C1 and enters no conclusion above.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/followup.json",
+          "sha256": "f8989e0ce5a0256f38ea680c169705753edf13e3bd63dba18d904e7b7aad4486"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/followup-preregistration.json",
+          "sha256": "0484b3527c18e39c49377fb1b026dbf1e7c71d8a7c3cf9c8a1713eb7b65090d4"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T033336Z-qpu_belenos-belenos_mesh-job-02/analysis.json",
+          "sha256": "5a5ef4f52b0d6f375bc709a018ed41ed579dda5404cf719c08122197d50c8dbc"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-536": "replay",
+        "core-537": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-02",
+        "qd-qpu-belenos-single-job-04",
+        "qd-qpu-belenos-single-job-04-replay"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-bright-block-leak-survives-recalibration"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-same-meshes-drift-between-jobs",
+      "statement": "The exact body of C1 job-03, re-sent to qpu:belenos 36 minutes later (f9e13312), returned the same sixteen compiled meshes and different one-click histograms (summed G^2 homogeneity 2564 on 226 degrees of freedom, median TVD 0.128 between the runs), so the chip's realization of a fixed mesh drifts between jobs within one coupler state; the iterated job-02 body returned sixteen different meshes on qpu:belenos than on sim:belenos.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One repeated job pair 36 minutes apart; it does not resolve drift within a job or its time constant, and the sim-QPU mesh difference is shown for one iterated body while the one-circuit single/job-04 body returned identical meshes.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/followup.json",
+          "sha256": "f8989e0ce5a0256f38ea680c169705753edf13e3bd63dba18d904e7b7aad4486"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/followup-preregistration.json",
+          "sha256": "0484b3527c18e39c49377fb1b026dbf1e7c71d8a7c3cf9c8a1713eb7b65090d4"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03/analysis.json",
+          "sha256": "71d04106413b1a2436b2c2c2a58450a86f2ed53c3339c85902ca2e23810f8c8b"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03/analysis.json",
+          "sha256": "d62e9498e4d5ad873fa96d702e7f7a28c4869b05326c8f22b26f78fc47768eab"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-536": "replay",
+        "core-537": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-03",
+        "qd-qpu-belenos-mesh-job-03-repeat",
+        "qd-qpu-belenos-mesh-job-02"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-cloud-retranspiles-architecture-circuits"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-q1-one-circuit-new-mesh-intermediate",
+      "statement": "Q1's exact case sent to qpu:belenos as one circuit at compilation_seed 1 (job 8d28f121) compiled to a new mesh (e296b6a9, not Q1's 29dc6ef8) and kept in_block 0.886 (Wilson 0.879 to 0.892) with a = 0.931, where the same one-circuit body at the default seed compiled to 29dc6ef8 both times and kept 0.470 and 0.504; the preregistered rule reads 'intermediate': 0.886 lies above the 0.65 bound of the one-circuit-form reading and below the 0.90 bound of the Q1-mesh reading.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One seeded job on one new mesh in the couplers of every C1 run. At the default seed the one-circuit form returned Q1's mesh both times, so form and mesh are confounded, and the residual 0.114 lies inside the 0.75 to 0.997 in_block spread of the iterated bright configurations, so it is not split between a form effect and mesh-to-mesh scatter.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair.json",
+          "sha256": "d8e36e375b1f05c4af5cadf5ebb5ffa6323f7f7c0a28af2b55e582c4b02c109d"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair-preregistration.json",
+          "sha256": "afc626ba7705376a21d759a2335f5a7f99b343c7d8f414b39b2fc7f2c809d09f"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08/analysis.json",
+          "sha256": "b290bd7c485303c15c73d1bd71e2ab21760f5dc6f19fed4e1531021077163b25"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-538": "replay",
+        "core-537": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-08-form",
+        "qd-qpu-belenos-single-job-04",
+        "qd-qpu-belenos-single-job-04-replay"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-bright-block-leak-is-job-specific"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-compilation-seed-selects-mesh",
+      "statement": "On qpu:belenos compilation_seed selects the served mesh: each of job-02's sixteen configurations returned three distinct meshes at seeds 0 (job-02), 1 and 2 (job 07, b8e2ec0c), and Q1's one-circuit body returned a mesh other than Q1's at seed 1; the 32-iteration job (1500 samples per iteration) ran 221 s, inside the preregistered 200 to 290 s window.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Three seeds per configuration in one coupler state; it says nothing about how the service maps a seed to a starting point.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair.json",
+          "sha256": "d8e36e375b1f05c4af5cadf5ebb5ffa6323f7f7c0a28af2b55e582c4b02c109d"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair-preregistration.json",
+          "sha256": "afc626ba7705376a21d759a2335f5a7f99b343c7d8f414b39b2fc7f2c809d09f"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07/analysis.json",
+          "sha256": "d2e2e2b04f6b20bcb8146380ac4407a4f0c6bcf4f01b2831ef186143dca2b72d"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-538": "replay",
+        "core-537": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-07-seed-ensemble",
+        "qd-qpu-belenos-mesh-job-02",
+        "qd-qpu-belenos-mesh-job-08-form"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-same-meshes-drift-between-jobs"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-qpu-belenos-84-84-seed-ensemble",
+      "statement": "The 84/84 program repeated at compilation seeds 1 and 2 in one 32-iteration qpu:belenos job reads algebra share a = 0.028 averaged over the dark configurations and 0.938 over the bright ones (contrast 0.910, against 0.931 at seed 0 in job-02); across seeds 0, 1 and 2 a configuration's a moves by a median of 0.043 and at most 0.185 (bright-10).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Two jobs in one coupler state; seed and job-to-job drift are confounded for seed 0 against seeds 1 and 2, while seeds 1 and 2 share a job with adjacent iterations. Sample-count results carry no shot order, so the split-half seed selection the 'no class fits' branch names needs repeated jobs, not a split of one.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair.json",
+          "sha256": "d8e36e375b1f05c4af5cadf5ebb5ffa6323f7f7c0a28af2b55e582c4b02c109d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07/analysis.json",
+          "sha256": "d2e2e2b04f6b20bcb8146380ac4407a4f0c6bcf4f01b2831ef186143dca2b72d"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-538": "replay",
+        "core-537": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-07-seed-ensemble",
+        "qd-qpu-belenos-mesh-job-02"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-qpu-belenos-84-84-zero-divisor-program"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-q1-leak-follows-one-circuit-form",
+      "statement": "Q1's exact case sent to qpu:belenos as 24 iterations at compilation seeds 0 to 21, 0 and 1 (job c2eea262) returned Q1's one-circuit mesh 29dc6ef8 at seed 20 with in_block 0.949 (Wilson 0.936 to 0.959), against 0.470 and 0.504 on the same mesh as one-circuit jobs; the preregistered rule reads 'form or dwell': with in-job drift bounded by 0.005 on repeated seeds, the leak belongs to the one-circuit job form or its 10000-sample dwell per setting, not to the programmed mesh. Over the 22 distinct meshes the median in_block is 0.943 and none is at or below 0.65 (family verdict 'iteration').",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One iteration on 29dc6ef8, about ten hours after Q1 and five after its replay; the 0.45 difference exceeds the 0.034 cross-job scale on that mesh by a factor of thirteen. The form effect is mesh specific: job-08's mesh e296b6a9 kept 0.886 as one circuit and 0.907 iterated at seed 1. Job form and dwell per setting stay confounded. The service's unseeded default returned 29dc6ef8 and the iterated seed 0 returned 54aef849, so an unseeded one-circuit job does not run at seed 0.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T071847Z-qpu_belenos-belenos_mesh-bridge/bridge.json",
+          "sha256": "32626de1185ee7c6f6a445ffaaedfccc928cf0b14658ad380d5ce9d0badf9b78"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T071847Z-qpu_belenos-belenos_mesh-bridge/bridge-preregistration.json",
+          "sha256": "e4804ee1fd6d3d24b70e7755a5ce5858daca352e4dd0b24e2c885ff4ae44a726"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T074524Z-qpu_belenos-belenos_mesh-job-09/analysis.json",
+          "sha256": "a433aa9bfadecdc6712177304b5f3bcb9555b59dc36e79b5b391b7d14dd2b669"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-540": "replay",
+        "core-544": "replay",
+        "core-537": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-09-bridge",
+        "qd-qpu-belenos-mesh-job-08-form",
+        "qd-qpu-belenos-single-job-04",
+        "qd-qpu-belenos-single-job-04-replay"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-q1-one-circuit-new-mesh-intermediate"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-q1-leak-needs-single-job-and-large-budget",
+      "statement": "On qpu:belenos mesh 29dc6ef8, Q1's single job kept in_block 0.918 (Wilson 0.903 to 0.931) at 1500 samples (job aa4218f1) against 0.470 and 0.504 at 10000, and every iteration of an iterated job at seed 20 kept 0.896 to 0.995 at 1500 to 60000 samples (job c1eb1cbb; preregistered reading flat). The preregistered readings are D1 intermediate, 0.016 short of 'dwell' after its 0.034 cross-job margin, and D2 flat; the single-job endpoint stays unresolved, and the two cells together do not establish what the single-job leak needs.",
+      "boundary": "One mesh, one job per cell, jobs about ten hours after Q1. An S job's 13 to 15 s is overhead and acquisition runs near 4 x 10^4 samples per second, so the budget is a sample count, not seconds of heater exposure; the single-job mechanism (chunked acquisition or re-settling) is inferred and untested.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell.json",
+          "sha256": "97cead195732ddd6dc07555b6dcaf40cb393bbd730bb46862607abfea4046d48"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell-preregistration.json",
+          "sha256": "47fde7851c76d1fd451b31db26754e06383ecc7edb5b8da3a670c90d9899a32e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10/analysis.json",
+          "sha256": "072c354aebf2c0337c2c1fdd4d491bb6241fac3ffe9e5ae148f7d8be5194145e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12/analysis.json",
+          "sha256": "d48da8786d490391efd7e7cbaee5966090c012f1467b8387a738497c399c4e02"
+        }
+      ],
+      "gates": {
+        "core-543": "replay",
+        "core-542": "replay",
+        "core-537": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-10-d1",
+        "qd-qpu-belenos-mesh-job-12-d2-d4",
+        "qd-qpu-belenos-single-job-04",
+        "qd-qpu-belenos-single-job-04-replay"
+      ],
+      "depends_on": [
+        "qd-belenos-q1-leak-follows-one-circuit-form"
+      ],
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "documents": [
+        "docs/notes/quandela/strategy.md",
+        "docs/notes/quandela/form-dwell-decomposition.md"
+      ],
+      "assumptions": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-fresh-anu-mesh-holds-single-job",
+      "statement": "Q1's single job at 10000 samples and ANU-drawn compilation_seed 46667 (job a5f0a8a4) served the fresh mesh 14a96ca6 and kept in_block 0.937 (Wilson 0.932 to 0.941), the preregistered 'mesh susceptible' reading: the single-job leak is not generic. The same seed served 14a96ca6 in the iterated job c1eb1cbb, which read 0.990, 0.961 and 0.852 at 1500, 10000 and 40000 samples (intermediate).",
+      "boundary": "One fresh mesh. Its 40000-sample iteration ran last, after 125500 samples of the same job, so position and budget are confounded for the iterated decline.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell.json",
+          "sha256": "97cead195732ddd6dc07555b6dcaf40cb393bbd730bb46862607abfea4046d48"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell-preregistration.json",
+          "sha256": "47fde7851c76d1fd451b31db26754e06383ecc7edb5b8da3a670c90d9899a32e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11/analysis.json",
+          "sha256": "916572c1ed7d96b0e1a67e79888209da176f35a942599e45bf32eef03bd6859e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12/analysis.json",
+          "sha256": "d48da8786d490391efd7e7cbaee5966090c012f1467b8387a738497c399c4e02"
+        }
+      ],
+      "gates": {
+        "core-543": "replay",
+        "core-541": "freshness",
+        "core-537": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-11-d3",
+        "qd-qpu-belenos-mesh-job-12-d2-d4"
+      ],
+      "depends_on": [
+        "qd-belenos-q1-leak-follows-one-circuit-form"
+      ],
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "documents": [
+        "docs/notes/quandela/strategy.md",
+        "docs/notes/quandela/form-dwell-decomposition.md"
+      ],
+      "assumptions": [],
       "supersedes": [],
       "superseded_by": null
     }

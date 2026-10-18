@@ -9,16 +9,32 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.ref }}
-  # A pull-request push replaces its branch's stale run. A main push waits as
-  # the group's one pending run while the running full tier finishes, so
-  # every started main run completes and the newest main commit runs next.
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: ci-${{ github.event_name }}-${{ github.ref }}
+  # A newer tree replaces stale checks on the same ref. Nightly and manual
+  # runs retain the exhaustive selection; push runs select affected replays.
+  cancel-in-progress: true
+
+env:
+  PYTHON: python3
+  # Qiskit 2.6 Rust TLS plus late-loaded Aer OpenMP need reserved loader capacity.
+  GLIBC_TUNABLES: glibc.rtld.optional_static_tls=4096
+  OPENBLAS_NUM_THREADS: "1"
+  OMP_NUM_THREADS: "1"
+  MKL_NUM_THREADS: "1"
+  BLIS_NUM_THREADS: "1"
+  VECLIB_MAXIMUM_THREADS: "1"
+  NUMEXPR_NUM_THREADS: "1"
+  RAYON_NUM_THREADS: "1"
+  QISKIT_NUM_PROCS: "1"
+  # Every fallback (replay interpreter detection, pinned lint tools through uv,
+  # record replays under other package versions) fails instead (ci/pins.py).
+  GOROROBA_PINS_REQUIRED: "1"
 
 jobs:
   gates:
+    needs: changes
     name: gates ${{ matrix.shard }}/${{ github.event_name == 'pull_request' && 6 || 12 }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -28,53 +44,83 @@ jobs:
       PYTHONHASHSEED: "0"
       MPLBACKEND: Agg
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
         with:
           python-version: "3.14.7"
           cache: pip
           cache-dependency-path: |
             requirements.txt
             ci/requirements-ci.txt
+            ci/requirements-replay.txt
       - name: Install pinned dependencies
-        run: PYTHON=python sh ci/install_pins.sh
+        run: sh ci/install_pins.sh
       - name: Runner specs
-        run: python ci/runner_specs.py
-      - name: Run shard
-        # Pull requests run the fast tier on six shards; pushes to main, the
-        # nightly schedule and manual runs add the long simulation contracts.
+        run: |
+          "$PYTHON" ci/runner_specs.py
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2, Node 24
+        if: needs.changes.outputs.limited == 'true'
+        with:
+          name: ci-changed-files
+          path: ${{ runner.temp }}/ci-selection
+      - name: Plan historical replay environment
+        id: plan
         run: >-
-          python ci/run_gates.py
-          --tier ${{ github.event_name == 'pull_request' && 'pr' || 'full' }}
+          "$PYTHON" ci/run_gates.py --tier full
+          --shard ${{ matrix.shard }}/${{ github.event_name == 'pull_request' && 6 || 12 }}
+          ${{ needs.changes.outputs.limited == 'true' && format('--changed-files {0}/ci-selection/changed-files.bin', runner.temp) || '' }}
+          --plan ${{ runner.temp }}/gate-plan.json --github-output "$GITHUB_OUTPUT"
+      - name: Install the recorded compiler runtime
+        if: steps.plan.outputs.historical == 'true'
+        run: |
+          set -eu
+          "$PYTHON" -m venv "$RUNNER_TEMP/historical-compiler"
+          replay="$RUNNER_TEMP/historical-compiler/bin/python"
+          PYTHON="$replay" REQUIREMENTS_FILE=ci/requirements-replay.txt sh ci/install_pins.sh
+          echo "REPLAY_PYTHON=$replay" >> "$GITHUB_ENV"
+      - name: Run shard
+        run: >-
+          "$PYTHON" ci/run_gates.py
+          --tier full
+          ${{ needs.changes.outputs.limited == 'true' && format('--changed-files {0}/ci-selection/changed-files.bin', runner.temp) || '' }}
+          --timings ${{ runner.temp }}/gate-timings.json
           --shard ${{ matrix.shard }}/${{ github.event_name == 'pull_request' && 6 || 12 }}
 
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        if: always()
+        with:
+          name: gate-timings-${{ matrix.shard }}
+          path: ${{ runner.temp }}/gate-timings.json
+
   qi-stack:
+    needs: changes
     name: qi stack on Python 3.13
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 45
     env:
       PYTHONHASHSEED: "0"
       MPLBACKEND: Agg
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
       # qxelarator 0.10.0 ships cp313 wheels only and qiskit-quantuminspire caps
       # Qiskit below 2.4, so the Quantum Inspire lock gets its own 3.13.15
       # interpreter beside the repository's 3.14.7; the last setup-python step
       # sets the default python.
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
         id: qi-python
         with:
           python-version: "3.13.15"
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
         with:
           python-version: "3.14.7"
           cache: pip
           cache-dependency-path: |
             requirements.txt
             ci/requirements-ci.txt
+            ci/requirements-replay.txt
             docs/notes/quantum_inspire/requirements-qi.txt
       - name: Install pinned dependencies
-        run: PYTHON=python sh ci/install_pins.sh
+        run: sh ci/install_pins.sh
       - name: Install the Quantum Inspire lock
         # The lock pins every distribution, so --no-deps installs exactly the
         # lock and pip check proves it complete.
@@ -89,52 +135,111 @@ jobs:
           echo "QI_PYTHON=$qi" >> "$GITHUB_ENV"
       - name: Runner specs
         run: |
-          python ci/runner_specs.py
+          "$PYTHON" ci/runner_specs.py
           "$QI_PYTHON" ci/runner_specs.py
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2, Node 24
+        if: needs.changes.outputs.limited == 'true'
+        with:
+          name: ci-changed-files
+          path: ${{ runner.temp }}/ci-selection
+      - name: Plan historical replay environment
+        id: plan
+        run: >-
+          "$PYTHON" ci/run_gates.py --tier full
+          --requires qi
+          ${{ needs.changes.outputs.limited == 'true' && format('--changed-files {0}/ci-selection/changed-files.bin', runner.temp) || '' }}
+          --plan ${{ runner.temp }}/gate-plan.json --github-output "$GITHUB_OUTPUT"
+      - name: Install the recorded compiler runtime
+        if: steps.plan.outputs.historical == 'true'
+        run: |
+          set -eu
+          "$PYTHON" -m venv "$RUNNER_TEMP/historical-compiler"
+          replay="$RUNNER_TEMP/historical-compiler/bin/python"
+          PYTHON="$replay" REQUIREMENTS_FILE=ci/requirements-replay.txt sh ci/install_pins.sh
+          echo "REPLAY_PYTHON=$replay" >> "$GITHUB_ENV"
       - name: Run the qi gates
         # --requires qi exports GOROROBA_QI_REQUIRED=1, so a gate that cannot
         # reach the stack fails instead of replaying. run_gates.py runs the
         # gates concurrently with one worker each, which fills the runner's CPUs.
         run: >-
-          python ci/run_gates.py --requires qi
-          --tier ${{ github.event_name == 'pull_request' && 'pr' || 'full' }}
+          "$PYTHON" ci/run_gates.py --requires qi
+          --tier full
+          ${{ needs.changes.outputs.limited == 'true' && format('--changed-files {0}/ci-selection/changed-files.bin', runner.temp) || '' }}
+          --timings ${{ runner.temp }}/qi-timings.json
 
-  external-ground-truth:
-    name: verify.py against open_gororoba
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        if: always()
+        with:
+          name: qi-gate-timings
+          path: ${{ runner.temp }}/qi-timings.json
+
+  ubuntu-24-compatibility:
+    name: Ubuntu 24.04 compatibility
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     env:
+      GOROROBA_WORKERS: "1"
       PYTHONHASHSEED: "0"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
         with:
           python-version: "3.14.7"
           cache: pip
           cache-dependency-path: |
             requirements.txt
             ci/requirements-ci.txt
+            ci/requirements-replay.txt
       - name: Install pinned dependencies
-        run: PYTHON=python sh ci/install_pins.sh
+        run: sh ci/install_pins.sh
+      - name: Exercise the native stack and behavioral scheduling
+        run: |
+          export PYTHON=python3
+          "$PYTHON" ci/runner_specs.py
+          "$PYTHON" -B -W error -c 'import qiskit_aer, qiskit_ibm_runtime, numpy, scipy, flint'
+          "$PYTHON" -B -W error ci/check_gate_inputs.py
+          "$PYTHON" -B -W error ci/check_run_gates.py
+          "$PYTHON" -B -W error scripts/check_n21_conjugation_target.py
+
+  external-ground-truth:
+    name: verify.py against open_gororoba
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+    env:
+      PYTHONHASHSEED: "0"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
+        with:
+          python-version: "3.14.7"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            ci/requirements-ci.txt
+            ci/requirements-replay.txt
+      - name: Install pinned dependencies
+        run: sh ci/install_pins.sh
       - name: Fetch the pinned open_gororoba registry and proofs
         run: sh ci/fetch_open_gororoba.sh "$RUNNER_TEMP/open_gororoba" registry/data/project_csv proofs
       - name: Materialize the kernel CSVs from the registry records
         run: >-
-          python scripts/materialize_gororoba_csv.py "$RUNNER_TEMP/open_gororoba"
+          "$PYTHON" scripts/materialize_gororoba_csv.py "$RUNNER_TEMP/open_gororoba"
           --only multiplication_table_8D multiplication_table_16D reggiani_standard_zero_divisor_pairs
       - name: Run verify.py
         working-directory: gororoba_quantum
-        run: GOROROBA_ROOT="$RUNNER_TEMP/open_gororoba" python verify.py
+        run: |
+          GOROROBA_ROOT="$RUNNER_TEMP/open_gororoba" "$PYTHON" verify.py
 
   changes:
-    name: rocq paths changed
-    runs-on: ubuntu-latest
+    name: replay input changes
+    runs-on: ubuntu-26.04
     timeout-minutes: 5
     outputs:
       rocq: ${{ steps.filter.outputs.rocq }}
       full: ${{ steps.filter.outputs.full }}
+      limited: ${{ steps.filter.outputs.limited }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
       - name: Select the Rocq replay
         id: filter
         # Pull requests and pushes diff the tree against the base sha; the
@@ -143,52 +248,38 @@ jobs:
         env:
           EVENT: ${{ github.event_name }}
           BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        # ci/changed_paths.py feeds the shared ci/rocq_changed.sh predicate.
+        # An unavailable base selects exhaustive gates and proof replays.
         run: |
-          set -eu
-          case "$EVENT" in
-          pull_request) full=false ;;
-          *) full=true ;;
-          esac
-          rocq=true
-          case "$EVENT" in
-          pull_request | push)
-            case "$BASE" in
-            "" | 0000000000000000000000000000000000000000) ;;
-            *)
-              git fetch -q --depth=1 origin "$BASE"
-              if git diff --name-only "$BASE" HEAD | sh ci/rocq_changed.sh; then
-                rocq=true
-              else
-                rocq=false
-              fi
-              ;;
-            esac
-            ;;
-          esac
-          echo "rocq=$rocq" >> "$GITHUB_OUTPUT"
-          echo "full=$full" >> "$GITHUB_OUTPUT"
+          export PYTHON=python3
+          "$PYTHON" ci/changed_paths.py
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        if: steps.filter.outputs.limited == 'true'
+        with:
+          name: ci-changed-files
+          path: ${{ runner.temp }}/changed-files.bin
 
   rocq-replay:
     name: rocq replay
     needs: changes
     if: needs.changes.outputs.rocq == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     env:
       PYTHONHASHSEED: "0"
       OPAMROOT: ${{ github.workspace }}/.opam
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
       - name: Install system packages
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq opam m4 pkg-config libgmp-dev git make gcc unzip bubblewrap ripgrep
           command -v rg
       - name: Restore the opam switch
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
         with:
           path: .opam
-          key: opam-rocq-${{ runner.os }}-${{ hashFiles('ci/rocq_toolchain.pin', 'ci/install_rocq.sh') }}
+          key: opam-rocq-ubuntu-26.04-${{ runner.arch }}-${{ hashFiles('ci/rocq_toolchain.pin', 'ci/install_rocq.sh') }}
       - name: Install the pinned Rocq toolchain
         run: |
           sh ci/install_rocq.sh > "$RUNNER_TEMP/opam_list.txt"
@@ -211,15 +302,15 @@ jobs:
             only="$only stiefel_witness"
           fi
           # shellcheck disable=SC2086
-          python3 scripts/rocq_kaggle_replay.py --rocq "$rocq" \
+          "$PYTHON" scripts/rocq_kaggle_replay.py --rocq "$rocq" \
             --gororoba-root "$RUNNER_TEMP/open_gororoba" \
             --gororoba-commit "$(tr -d ' \t\r\n' < ci/open_gororoba.pin)" \
             --only $only --out "$RUNNER_TEMP/rocq_replay.json"
       - name: Show the replay record
         if: always()
         run: |
-          [ ! -f "$RUNNER_TEMP/rocq_replay.json" ] || python3 -c 'import json,sys; r=json.load(open(sys.argv[1])); [print(k, v["returncode"], v["seconds"], v["warning_lines"], v["tail"][-600:], sep="\n") for k, v in r["replays"].items()]' "$RUNNER_TEMP/rocq_replay.json"
-      - uses: actions/upload-artifact@v4
+          [ ! -f "$RUNNER_TEMP/rocq_replay.json" ] || "$PYTHON" -c 'import json,sys; r=json.load(open(sys.argv[1])); [print(k, v["returncode"], v["seconds"], v["warning_lines"], v["tail"][-600:], sep="\n") for k, v in r["replays"].items()]' "$RUNNER_TEMP/rocq_replay.json"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
         if: always()
         with:
           name: rocq-replay

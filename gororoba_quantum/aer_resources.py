@@ -7,12 +7,59 @@ The memory estimate is a state-size lower bound, not a device allocation cap.
 from __future__ import annotations
 
 import ctypes
+import importlib.metadata
+import re
+from collections.abc import Mapping
 from typing import Any
 
 from qiskit import QuantumCircuit
 
 MEBIBYTE = 1024 * 1024
 MINIMUM_GPU_FREE_BYTES = 384 * MEBIBYTE
+# Distribution names of the CUDA libraries a GPU Aer build requires: PyPI's
+# NVIDIA toolkit wheels (nvidia-*, and cu11/cu12 suffixed names) and the
+# cuQuantum family.
+CUDA_DISTRIBUTION_PREFIXES = ("nvidia-", "cuquantum", "custatevec", "cutensor", "cuda-")
+
+
+def _normalized(name: str) -> str:
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+
+def _installed_requirements() -> dict[str, list[str]]:
+    """Every installed distribution's normalized name and its unconditional Requires-Dist names."""
+    installed: dict[str, list[str]] = {}
+    for dist in importlib.metadata.distributions():
+        names = []
+        for requirement in dist.requires or ():
+            if "extra ==" in requirement:
+                continue
+            found = re.match(r"[A-Za-z0-9._-]+", requirement)
+            if found:
+                names.append(_normalized(found.group(0)))
+        if dist.metadata["Name"]:
+            installed[_normalized(dist.metadata["Name"])] = names
+    return installed
+
+
+def gpu_aer_distributions(installed: Mapping[str, list[str]] | None = None) -> list[str]:
+    """The installed GPU Aer builds (qiskit-aer-gpu*), then the CUDA distributions they require, transitively.
+
+    A record that reports these names identifies whichever build the
+    process holds, qiskit-aer-gpu-cu11 with cuquantum-cu11 or
+    qiskit-aer-gpu-cu13 with the unsuffixed CUDA 13 wheels, from installed
+    metadata alone.
+    """
+    tree = _installed_requirements() if installed is None else installed
+    builds = sorted(name for name in tree if name.startswith("qiskit-aer-gpu"))
+    found: set[str] = set()
+    stack = list(builds)
+    while stack:
+        for name in tree.get(stack.pop(), []):
+            if name.startswith(CUDA_DISTRIBUTION_PREFIXES) and name in tree and name not in found:
+                found.add(name)
+                stack.append(name)
+    return [*builds, *sorted(found)]
 
 
 def active_support(circuit: QuantumCircuit) -> int:
@@ -168,7 +215,30 @@ def _verify() -> None:
         pass
     else:
         raise AssertionError("two density states exceeded the declared admission budget")
-    print("native Aer support mapping and GPU resource rejection checks pass")
+    cu13 = {
+        "qiskit-aer-gpu-cu13": ["qiskit", "numpy", "nvidia-cublas", "custatevec-cu13", "cutensornet-cu13"],
+        "nvidia-cublas": ["nvidia-cuda-nvrtc"],
+        "nvidia-cuda-nvrtc": [],
+        "custatevec-cu13": [],
+        "cutensornet-cu13": ["cutensor-cu13"],
+        "cutensor-cu13": [],
+        "qiskit": ["numpy"],
+        "numpy": [],
+        "nvidia-cudnn-cu13": [],
+    }
+    assert gpu_aer_distributions(cu13) == [
+        "qiskit-aer-gpu-cu13",
+        "custatevec-cu13",
+        "cutensor-cu13",
+        "cutensornet-cu13",
+        "nvidia-cublas",
+        "nvidia-cuda-nvrtc",
+    ]
+    cu11 = {"qiskit-aer-gpu-cu11": ["cuquantum-cu11"], "cuquantum-cu11": ["custatevec-cu11"], "custatevec-cu11": []}
+    assert gpu_aer_distributions(cu11) == ["qiskit-aer-gpu-cu11", "cuquantum-cu11", "custatevec-cu11"]
+    assert gpu_aer_distributions({"qiskit-aer": ["numpy"], "numpy": []}) == []
+    assert all(isinstance(name, str) for name in gpu_aer_distributions())
+    print("native Aer support mapping, GPU resource rejection and GPU Aer distribution checks pass")
 
 
 if __name__ == "__main__":

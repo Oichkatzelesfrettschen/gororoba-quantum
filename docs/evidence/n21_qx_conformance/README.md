@@ -10,8 +10,13 @@ directory says anything about Kingston or any other hardware.
 
 `scripts/n21_qx_conformance.py` builds the programs, `result.json` retains
 the record, and the three `.cq` files are the exact programs qxelarator ran.
-Gate core-499 runs `--check` and `--self-test` in normal and optimized Python
-without the Quantum Inspire stack.
+Gate core-499 runs `--check` and `--self-test` in normal and optimized Python.
+Its first `--check` carries `--live 0`: under the Quantum Inspire stack
+(`$QI_PYTHON`) it reruns every reset probe, deferred state and native branch
+run on qxelarator and requires the retained results; `--live N` adds N of the
+36 sample jobs (12 seeds of each of the three programs), each 2048 shots of a
+program of about 6000 lines and minutes of qxelarator time, and `--live 36`
+reruns all of them. Without the stack the check replays the record.
 
 ## Method
 

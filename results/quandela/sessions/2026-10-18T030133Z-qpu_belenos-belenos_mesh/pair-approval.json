@@ -1,0 +1,13 @@
+{
+  "schema": "qd-belenos-approval-dialog-v1",
+  "runs": [
+    "results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08",
+    "results/quandela/runs/2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07"
+  ],
+  "recorded": "after both submissions, from the approval dialog the user answered on 2026-10-18; each run's submission.json keeps the approval text as sent",
+  "question": "Build and run the next qpu:belenos pair? Each would get runner support, cases, a dry-run plan and preregistered rules before submitting.",
+  "answer": "Both (Recommended)",
+  "answer_text": "~2 credits.\n(a) Q1's exact circuit as one circuit at compilation_seed 1: the form-or-mesh test.\n(b) A 32-iteration 84/84 seed ensemble (16 configurations x seeds 1 and 2): the seed spread, plus a test of the 32-iteration duration model.",
+  "normalization": "the dialog's multiplication sign is written x",
+  "absent": "The dialog names neither job's expected seconds nor why a local Perceval simulation cannot answer either question. The ensemble's 200 to 290 s window is in pair-preregistration.json; each submission.json records the plan's expected seconds, estimated credits and credit ceiling, which submit checked before the POST."
+}

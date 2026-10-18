@@ -186,7 +186,6 @@ client does not send.
 | --- | --- | --- |
 | Bundle and push a kernel; refuse a GPU or TPU push without `--timeout` or over a live version | CLI `kernels push --accelerator -t`, `kernels status`, `config view` | `scripts/kaggle_run.py push` |
 | Poll a run | CLI `kernels status OWNER/SLUG/N` (answers for the latest version) | `scripts/kaggle_run.py status` |
-| Replicate CI's gate shards for a commit | CLI `kernels push` per shard, retried while the batch session pool is full | `scripts/kaggle_run.py shards`, `shards-report` |
 | Download and ledger a run's output | kagglesdk `list_kernel_session_output` with `version_label vN` (the CLI's `kernels output` downloads the latest version) | `scripts/kaggle_run.py collect` |
 | Retain repository files as a dataset | CLI `datasets create`, `datasets version` | `scripts/kaggle_run.py dataset` |
 | A kernel's numeric id | CLI `kernels pull -m` (`id_no`) | `scripts/kaggle_sessions.py` |

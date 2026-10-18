@@ -1,9 +1,15 @@
 # Tested versions. qiskit-ibm-runtime 0.50.0 is the first release with the
 # client-side executor_sampler that submission uses.
 numpy==2.5.4
-qiskit==2.5.2
+qiskit==2.6.0
 qiskit-aer==0.17.2
 qiskit-ibm-runtime==0.50.0
+# Runtime's lower-bounded dependencies whose option models and prepare() paths
+# scripts/ibm_runtime_options_inventory.py records and byte-compares.
+pydantic==2.14.1
+qiskit-mitigation==0.1.1
+samplomatic==0.21.0
+ibm-quantum-schemas==0.13.20261016
 # Replica placement (rustworkx.vf2_mapping) and replicate statistics (scipy.stats).
 rustworkx==0.18.1
 scipy==1.18.1

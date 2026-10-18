@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-18T02:14:25+00:00",
+ "approval": "Owner approval in session boxkite-quantum-main, 2026-10-18: \"131072 shots (maximum)\" (about 01:10Z) to the written case for the Tuna-17 box-kite ladder series, conditional on PRs #238 and #239 merging with the case digests unchanged, met at main 5c285fc (QX twins batch-00, batch-01; ladder batch-00 to batch-06)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "e54d83fffc12cf258111f9730e65d3682724665dfe18aedfdd44d883639f8e8f",
+ "shots": 131072,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1531029,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1531030,
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  },
+  {
+   "file": "readout-iso-hzh.cq",
+   "job": 1531031,
+   "sha256": "a58b06a04d6165d1f24fa1bffed1b9ecdfa52beb4331c686ac1e344bd6fcc710"
+  }
+ ],
+ "project": 767819,
+ "batch_job": 871693,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-18T02:14:28+00:00",
+  "approval": "Owner approval in session boxkite-quantum-main, 2026-10-18: \"131072 shots (maximum)\" (about 01:10Z) to the written case for the Tuna-17 box-kite ladder series, conditional on PRs #238 and #239 merging with the case digests unchanged, met at main 5c285fc (QX twins batch-00, batch-01; ladder batch-00 to batch-06)",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "e54d83fffc12cf258111f9730e65d3682724665dfe18aedfdd44d883639f8e8f",
+  "backend_status_at_submit": "executing",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 871693,
+  "project": 767819,
+  "shots": 131072,
+  "jobs": [
+   {
+    "file": "readout-0.cq",
+    "job": 1531029,
+    "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+   },
+   {
+    "file": "readout-1.cq",
+    "job": 1531030,
+    "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+   },
+   {
+    "file": "readout-iso-hzh.cq",
+    "job": 1531031,
+    "sha256": "a58b06a04d6165d1f24fa1bffed1b9ecdfa52beb4331c686ac1e344bd6fcc710"
+   }
+  ],
+  "submitted_utc": "2026-10-18T02:14:28+00:00"
+ },
+ "confirmed_utc": "2026-10-18T02:14:28+00:00"
+}

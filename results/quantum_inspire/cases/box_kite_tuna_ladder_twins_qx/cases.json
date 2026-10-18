@@ -1,0 +1,26 @@
+{
+ "schema": "box-kite-series-v1",
+ "family": "tuna_ladder_twins",
+ "backend": "QXsinglenodesimulator",
+ "census_sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "stage": "ladder",
+   "files": [
+    "twin-latin-x-1.cq",
+    "twin-latin-x-2.cq",
+    "twin-latin-x-3.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "stage": "ladder",
+   "files": [
+    "twin-latin-y-1.cq",
+    "twin-latin-y-2.cq",
+    "twin-latin-y-3.cq"
+   ]
+  }
+ ]
+}

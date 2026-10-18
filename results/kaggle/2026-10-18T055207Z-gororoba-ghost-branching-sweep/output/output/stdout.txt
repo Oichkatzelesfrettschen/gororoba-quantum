@@ -1,0 +1,14 @@
+{"run": "results/live/2026-10-11T152922.787095Z", "best": [5.0, 1.0], "mean_tvd": 0.032911, "sampled_best": [5.0, 1.0]}
+{"run": "results/live/2026-10-12T055624.091217Z", "best": [4.0, 0.5], "mean_tvd": 0.044982, "sampled_best": [4.0, 0.5]}
+{"run": "results/live/2026-10-13T020454.599853Z", "best": [5.0, 0.5], "mean_tvd": 0.024079, "sampled_best": [5.0, 0.5]}
+{"run": "results/live/2026-10-13T022433.333775Z", "best": [6.0, 0.5], "mean_tvd": 0.040422, "sampled_best": [6.0, 0.5]}
+{"run": "results/live/2026-10-13T025444.603480Z", "best": [2.0, 1.0], "mean_tvd": 0.049931, "sampled_best": [2.0, 1.0]}
+{"run": "results/live/2026-10-13T032011.664435Z", "best": [1.5, 1.5], "mean_tvd": 0.031417, "sampled_best": [1.5, 1.5]}
+{"run": "results/live/2026-10-13T080216.451663Z", "best": [5.0, 2.0], "mean_tvd": 0.022819, "sampled_best": [4.0, 3.0]}
+{"run": "results/live/2026-10-13T083417.634585Z", "best": [6.0, 3.0], "mean_tvd": 0.029438, "sampled_best": [6.0, 3.0]}
+{"run": "results/live/2026-10-13T201757.782152Z", "best": [2.0, 1.0], "mean_tvd": 0.023388, "sampled_best": [2.0, 1.0]}
+{"run": "results/live/2026-10-15T030748.903241Z", "best": [3.0, 3.0], "mean_tvd": 0.175978, "sampled_best": [3.0, 3.0]}
+{"run": "results/live/2026-10-15T030903.235380Z", "best": [2.0, 2.0], "mean_tvd": 0.053895, "sampled_best": [2.0, 2.0]}
+{"run": "results/live/2026-10-15T031229.371738Z", "best": [2.0, 1.0], "mean_tvd": 0.071851, "sampled_best": [2.0, 1.0]}
+{"run": "results/live/2026-10-15T070847.644554Z", "best": [0.5, 3.0], "mean_tvd": 0.409716, "sampled_best": [0.5, 3.0]}
+{"run": "results/live/2026-10-15T070853.550532Z", "best": [4.0, 0.5], "mean_tvd": 0.055475, "sampled_best": [4.0, 0.5]}

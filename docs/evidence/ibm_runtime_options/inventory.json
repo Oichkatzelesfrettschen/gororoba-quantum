@@ -1,0 +1,3522 @@
+{
+ "classes": [
+  {
+   "class": "qiskit_ibm_runtime.options_models.bit_flip_checks.BitFlipChecksOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "PreCircuitBitFlipChecksOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.bit_flip_checks.BitFlipChecksOptions",
+     "default": "PreCircuitBitFlipChecksOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "pre_circuit",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.bit_flip_checks.PreCircuitBitFlipChecksOptions"
+     ],
+     "summary": "Options to apply pre-circuit bit-flip checks to the results of noise learning circuits.",
+     "validators": []
+    },
+    {
+     "annotation": "PostCircuitBitFlipChecksOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.bit_flip_checks.BitFlipChecksOptions",
+     "default": "PostCircuitBitFlipChecksOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "post_circuit",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.bit_flip_checks.PostCircuitBitFlipChecksOptions"
+     ],
+     "summary": "Options to apply post-circuit bit-flip checks to the results of noise learning circuits.",
+     "validators": []
+    }
+   ],
+   "summary": "Options to apply bit-flip checks to the results of noise learning circuits."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.bit_flip_checks.PostCircuitBitFlipChecksOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.bit_flip_checks.PostCircuitBitFlipChecksOptions",
+     "default": "False",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "enable",
+     "nested": [],
+     "summary": "Whether to apply post-circuit bit-flip checks.",
+     "validators": []
+    },
+    {
+     "annotation": "Literal['xslow', 'rx']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.bit_flip_checks.PostCircuitBitFlipChecksOptions",
+     "default": "'xslow'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "xslow",
+      "rx"
+     ],
+     "name": "x_pulse_type",
+     "nested": [],
+     "summary": "The type of the X-pulse used for the post-circuit bit-flip checks.",
+     "validators": []
+    },
+    {
+     "annotation": "Literal['node', 'edge']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.bit_flip_checks.PostCircuitBitFlipChecksOptions",
+     "default": "'node'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "node",
+      "edge"
+     ],
+     "name": "strategy",
+     "nested": [],
+     "summary": "The strategy used to decide if a shot should be kept or discarded.",
+     "validators": []
+    }
+   ],
+   "summary": "Options to apply post-circuit bit-flip checks to the results of noise learning circuits."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.bit_flip_checks.PreCircuitBitFlipChecksOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.bit_flip_checks.PreCircuitBitFlipChecksOptions",
+     "default": "False",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "enable",
+     "nested": [],
+     "summary": "Whether to apply pre-circuit bit-flip checks.",
+     "validators": []
+    },
+    {
+     "annotation": "Literal['xslow', 'rx']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.bit_flip_checks.PreCircuitBitFlipChecksOptions",
+     "default": "'xslow'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "xslow",
+      "rx"
+     ],
+     "name": "x_pulse_type",
+     "nested": [],
+     "summary": "The type of the X-pulse used for the pre-circuit bit-flip checks.",
+     "validators": []
+    },
+    {
+     "annotation": "Literal['node', 'edge']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.bit_flip_checks.PreCircuitBitFlipChecksOptions",
+     "default": "'node'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "node",
+      "edge"
+     ],
+     "name": "strategy",
+     "nested": [],
+     "summary": "The strategy used to decide if a shot should be kept or discarded.",
+     "validators": []
+    }
+   ],
+   "summary": "Options to apply pre-circuit bit-flip checks to the results of noise learning circuits."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.calibrator.CalibratorOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "EnvironmentOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.calibrator.CalibratorOptions",
+     "default": "EnvironmentOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "environment",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.environment.EnvironmentOptions"
+     ],
+     "summary": "Options related to the execution environment.",
+     "validators": []
+    },
+    {
+     "annotation": "dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.calibrator.CalibratorOptions",
+     "default": "{}",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "experimental",
+     "nested": [],
+     "summary": "Experimental options that are passed to the executor.",
+     "validators": []
+    }
+   ],
+   "summary": "Options for the Calibrator."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.dynamical_decoupling.DynamicalDecouplingOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.dynamical_decoupling.DynamicalDecouplingOptions",
+     "default": "False",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "enable",
+     "nested": [],
+     "summary": "Whether to enable DD as specified by the other options in this class.",
+     "validators": []
+    },
+    {
+     "annotation": "Literal['XX', 'XpXm', 'XY4']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.dynamical_decoupling.DynamicalDecouplingOptions",
+     "default": "'XX'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "XX",
+      "XpXm",
+      "XY4"
+     ],
+     "name": "sequence_type",
+     "nested": [],
+     "summary": "Which dynamical decoupling sequence to use.",
+     "validators": []
+    },
+    {
+     "annotation": "Literal['middle', 'edges']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.dynamical_decoupling.DynamicalDecouplingOptions",
+     "default": "'middle'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "middle",
+      "edges"
+     ],
+     "name": "extra_slack_distribution",
+     "nested": [],
+     "summary": "Where to put extra timing delays due to rounding issues.",
+     "validators": []
+    },
+    {
+     "annotation": "Literal['alap', 'asap']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.dynamical_decoupling.DynamicalDecouplingOptions",
+     "default": "'alap'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "alap",
+      "asap"
+     ],
+     "name": "scheduling_method",
+     "nested": [],
+     "summary": "Whether to schedule gates as soon as (\"asap\") or as late as (\"alap\") possible.",
+     "validators": []
+    },
+    {
+     "annotation": "bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.dynamical_decoupling.DynamicalDecouplingOptions",
+     "default": "False",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "skip_reset_qubits",
+     "nested": [],
+     "summary": "Whether to insert DD on idle periods that immediately follow initialized/reset qubits.",
+     "validators": []
+    }
+   ],
+   "summary": "Options for dynamical decoupling (DD)."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.environment.EnvironmentOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "LogLevelType",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.environment.EnvironmentOptions",
+     "default": "'WARNING'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "DEBUG",
+      "INFO",
+      "WARNING",
+      "ERROR",
+      "CRITICAL"
+     ],
+     "name": "log_level",
+     "nested": [],
+     "summary": "Logging level to set in the execution environment.",
+     "validators": []
+    },
+    {
+     "annotation": "list[str]",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.environment.EnvironmentOptions",
+     "default": "[]",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "job_tags",
+     "nested": [],
+     "summary": "Tags to be assigned to the job.",
+     "validators": []
+    },
+    {
+     "annotation": "bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.environment.EnvironmentOptions",
+     "default": "False",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "private",
+     "nested": [],
+     "summary": "Boolean that indicates whether the job is marked as private.",
+     "validators": []
+    },
+    {
+     "annotation": "Annotated[int | None, AfterValidator(warn_max_execution_time)]",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.environment.EnvironmentOptions",
+     "default": "None",
+     "deprecated": {
+      "msg": "Setting `max_execution_time` via `EnvironmentOptions` is deprecated",
+      "version": "0.50.0"
+     },
+     "documented_default": null,
+     "literals": [],
+     "name": "max_execution_time",
+     "nested": [],
+     "summary": "Maximum execution time in seconds.",
+     "validators": []
+    },
+    {
+     "annotation": "Annotated[str, Field(pattern='[a-zA-Z0-9]+([/.\\\\-_][a-zA-Z0-9]+)*:[a-zA-Z0-9]+([.\\\\-_][a-zA-Z0-9]+)*$')] | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.environment.EnvironmentOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "image",
+     "nested": [],
+     "summary": "IBM Quantum Compute (formerly Qiskit Runtime) image used for this job.",
+     "validators": []
+    }
+   ],
+   "summary": "Options related to the execution environment."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.estimator.EstimatorOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "Annotated[float, Field(gt=0)]",
+     "bounds": {
+      "gt": 0
+     },
+     "declared_in": "qiskit_ibm_runtime.options_models.estimator.EstimatorOptions",
+     "default": "0.015625",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "default_precision",
+     "nested": [],
+     "summary": "The default precision to use for any PUB or `run()` call that does not specify one.",
+     "validators": []
+    },
+    {
+     "annotation": "Annotated[int, Field(ge=0)] | None",
+     "bounds": {
+      "ge": 0
+     },
+     "declared_in": "qiskit_ibm_runtime.options_models.estimator.EstimatorOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "default_shots",
+     "nested": [],
+     "summary": "The total number of shots to use per circuit per configuration.",
+     "validators": []
+    },
+    {
+     "annotation": "ExecutionOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.estimator.EstimatorOptions",
+     "default": "ExecutionOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "execution",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.execution.ExecutionOptions"
+     ],
+     "summary": "Execution options.",
+     "validators": []
+    },
+    {
+     "annotation": "TwirlingOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.estimator.EstimatorOptions",
+     "default": "TwirlingOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "twirling",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.twirling.TwirlingOptions"
+     ],
+     "summary": "Twirling options.",
+     "validators": []
+    },
+    {
+     "annotation": "DynamicalDecouplingOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.estimator.EstimatorOptions",
+     "default": "DynamicalDecouplingOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "dynamical_decoupling",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.dynamical_decoupling.DynamicalDecouplingOptions"
+     ],
+     "summary": "Dynamical decoupling options.",
+     "validators": []
+    },
+    {
+     "annotation": "SimulatorOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.estimator.EstimatorOptions",
+     "default": "SimulatorOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "simulator",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.simulator.SimulatorOptions"
+     ],
+     "summary": "Options related to local mode simulations.",
+     "validators": []
+    },
+    {
+     "annotation": "dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.estimator.EstimatorOptions",
+     "default": "{}",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "experimental",
+     "nested": [],
+     "summary": "Experimental options.",
+     "validators": []
+    },
+    {
+     "annotation": "EnvironmentOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.estimator.EstimatorOptions",
+     "default": "EnvironmentOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "environment",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.environment.EnvironmentOptions"
+     ],
+     "summary": "Options related to the execution environment.",
+     "validators": []
+    },
+    {
+     "annotation": "ResilienceOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.estimator.EstimatorOptions",
+     "default": "ResilienceOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "resilience",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.resilience.ResilienceOptions"
+     ],
+     "summary": "Advanced resilience options to fine-tune the resilience strategy.",
+     "validators": []
+    },
+    {
+     "annotation": "Literal[0, 1, 2]",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.estimator.EstimatorOptions",
+     "default": "1",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      0,
+      1,
+      2
+     ],
+     "name": "resilience_level",
+     "nested": [],
+     "summary": "How much resilience to build against errors.",
+     "validators": []
+    },
+    {
+     "annotation": "int | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.estimator.EstimatorOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "max_execution_time",
+     "nested": [],
+     "summary": "Maximum execution time in seconds.",
+     "validators": []
+    }
+   ],
+   "summary": "Options for the client-side Estimator."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.execution.ExecutionOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.execution.ExecutionOptions",
+     "default": "True",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "init_qubits",
+     "nested": [],
+     "summary": "Whether to reset the qubits to the ground state for each shot.",
+     "validators": []
+    },
+    {
+     "annotation": "float | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.execution.ExecutionOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": "given by `backend.default_rep_delay`.",
+     "literals": [],
+     "name": "rep_delay",
+     "nested": [],
+     "summary": "The repetition delay.",
+     "validators": []
+    },
+    {
+     "annotation": "bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.execution.ExecutionOptions",
+     "default": "False",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "scheduler_timing",
+     "nested": [],
+     "summary": "Whether to return circuit schedule timing of each provided quantum circuit.",
+     "validators": []
+    },
+    {
+     "annotation": "bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.execution.ExecutionOptions",
+     "default": "False",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "stretch_values",
+     "nested": [],
+     "summary": "Whether to return numeric resolutions of stretches for each provided quantum circuit.",
+     "validators": []
+    }
+   ],
+   "summary": "Low-level execution options."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.execution.SamplerExecutionOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.execution.ExecutionOptions",
+     "default": "True",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "init_qubits",
+     "nested": [],
+     "summary": "Whether to reset the qubits to the ground state for each shot.",
+     "validators": []
+    },
+    {
+     "annotation": "float | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.execution.ExecutionOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": "given by `backend.default_rep_delay`.",
+     "literals": [],
+     "name": "rep_delay",
+     "nested": [],
+     "summary": "The repetition delay.",
+     "validators": []
+    },
+    {
+     "annotation": "bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.execution.ExecutionOptions",
+     "default": "False",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "scheduler_timing",
+     "nested": [],
+     "summary": "Whether to return circuit schedule timing of each provided quantum circuit.",
+     "validators": []
+    },
+    {
+     "annotation": "bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.execution.ExecutionOptions",
+     "default": "False",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "stretch_values",
+     "nested": [],
+     "summary": "Whether to return numeric resolutions of stretches for each provided quantum circuit.",
+     "validators": []
+    },
+    {
+     "annotation": "Literal['classified', 'kerneled', 'avg_kerneled']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.execution.SamplerExecutionOptions",
+     "default": "'classified'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "classified",
+      "kerneled",
+      "avg_kerneled"
+     ],
+     "name": "meas_type",
+     "nested": [],
+     "summary": "How to process and return measurement results.",
+     "validators": []
+    }
+   ],
+   "summary": "Execution options for the sampler primitive."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.executor.ExecutorOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "EnvironmentOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.executor.ExecutorOptions",
+     "default": "EnvironmentOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "environment",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.environment.EnvironmentOptions"
+     ],
+     "summary": "Options related to the execution environment.",
+     "validators": []
+    },
+    {
+     "annotation": "ExecutionOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.executor.ExecutorOptions",
+     "default": "ExecutionOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "execution",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.execution.ExecutionOptions"
+     ],
+     "summary": "Low-level execution options.",
+     "validators": []
+    },
+    {
+     "annotation": "dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.executor.ExecutorOptions",
+     "default": "{}",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "experimental",
+     "nested": [],
+     "summary": "Experimental options that are passed to the executor.",
+     "validators": []
+    },
+    {
+     "annotation": "SimulatorOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.executor.ExecutorOptions",
+     "default": "SimulatorOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "simulator",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.simulator.SimulatorOptions"
+     ],
+     "summary": "Options related to local mode simulations.",
+     "validators": []
+    },
+    {
+     "annotation": "int | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.executor.ExecutorOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "max_execution_time",
+     "nested": [],
+     "summary": "Maximum execution time in seconds.",
+     "validators": []
+    }
+   ],
+   "summary": "Options for the executor."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.measure_noise_learning.MeasureNoiseLearningOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "Annotated[int, Field(ge=1)] | Literal['auto']",
+     "bounds": {
+      "ge": 1
+     },
+     "declared_in": "qiskit_ibm_runtime.options_models.measure_noise_learning.MeasureNoiseLearningOptions",
+     "default": "'auto'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "auto"
+     ],
+     "name": "num_randomizations",
+     "nested": [],
+     "summary": "The number of random circuits to draw for the measurement learning experiment.",
+     "validators": []
+    }
+   ],
+   "summary": "Options for measurement noise learning."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.noise_learner_v3.NoiseLearnerV3Options",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "Annotated[int, Field(ge=1)]",
+     "bounds": {
+      "ge": 1
+     },
+     "declared_in": "qiskit_ibm_runtime.options_models.noise_learner_v3.NoiseLearnerV3Options",
+     "default": "128",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "shots_per_randomization",
+     "nested": [],
+     "summary": "The total number of shots to use per randomized learning circuit.",
+     "validators": []
+    },
+    {
+     "annotation": "Annotated[int, Field(ge=1)]",
+     "bounds": {
+      "ge": 1
+     },
+     "declared_in": "qiskit_ibm_runtime.options_models.noise_learner_v3.NoiseLearnerV3Options",
+     "default": "32",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "num_randomizations",
+     "nested": [],
+     "summary": "The number of random circuits to use per learning circuit configuration.",
+     "validators": []
+    },
+    {
+     "annotation": "list[Annotated[int, Field(ge=0)]]",
+     "bounds": {
+      "ge": 0
+     },
+     "declared_in": "qiskit_ibm_runtime.options_models.noise_learner_v3.NoiseLearnerV3Options",
+     "default": "[0, 1, 2, 4, 16, 32]",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "layer_pair_depths",
+     "nested": [],
+     "summary": "The circuit depths (measured in number of pairs) to use in Pauli Lindblad experiments.",
+     "validators": []
+    },
+    {
+     "annotation": "BitFlipChecksOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.noise_learner_v3.NoiseLearnerV3Options",
+     "default": "BitFlipChecksOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "bit_flip_checks",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.bit_flip_checks.BitFlipChecksOptions"
+     ],
+     "summary": "Options to apply bit-flip checks to the results of noise learning circuits.",
+     "validators": []
+    },
+    {
+     "annotation": "PostSelectionOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.noise_learner_v3.NoiseLearnerV3Options",
+     "default": "PostSelectionOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "post_selection",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.post_selection.PostSelectionOptions"
+     ],
+     "summary": "Options for post selecting the results of noise learning circuits.",
+     "validators": []
+    },
+    {
+     "annotation": "dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.noise_learner_v3.NoiseLearnerV3Options",
+     "default": "{}",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "experimental",
+     "nested": [],
+     "summary": "Experimental options.",
+     "validators": []
+    },
+    {
+     "annotation": "ExecutionOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.noise_learner_v3.NoiseLearnerV3Options",
+     "default": "ExecutionOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "execution",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.execution.ExecutionOptions"
+     ],
+     "summary": "Low-level execution options.",
+     "validators": []
+    },
+    {
+     "annotation": "EnvironmentOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.noise_learner_v3.NoiseLearnerV3Options",
+     "default": "EnvironmentOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "environment",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.environment.EnvironmentOptions"
+     ],
+     "summary": "Options related to the execution environment.",
+     "validators": []
+    },
+    {
+     "annotation": "int | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.noise_learner_v3.NoiseLearnerV3Options",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "max_execution_time",
+     "nested": [],
+     "summary": "Maximum execution time in seconds.",
+     "validators": []
+    }
+   ],
+   "summary": "Options for :class:`.NoiseLearnerV3`."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.pec.PecOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "Annotated[float, Field(gt=0)] | None",
+     "bounds": {
+      "gt": 0
+     },
+     "declared_in": "qiskit_ibm_runtime.options_models.pec.PecOptions",
+     "default": "100",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "max_overhead",
+     "nested": [],
+     "summary": "The maximum circuit sampling overhead allowed, or `None` for no maximum.",
+     "validators": []
+    },
+    {
+     "annotation": "Annotated[float, Field(ge=0)] | Literal['auto']",
+     "bounds": {
+      "ge": 0
+     },
+     "declared_in": "qiskit_ibm_runtime.options_models.pec.PecOptions",
+     "default": "'auto'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "auto"
+     ],
+     "name": "noise_gain",
+     "nested": [],
+     "summary": "The amount by which to scale the noise.",
+     "validators": []
+    }
+   ],
+   "summary": "Probabalistic error cancellation mitigation options."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.post_selection.PostSelectionOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "Annotated[bool, AfterValidator(warn_post_selection)]",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.post_selection.PostSelectionOptions",
+     "default": "False",
+     "deprecated": {
+      "msg": "The 'post_selection' field of NoiseLearnerV3 is deprecated",
+      "version": "0.49.0"
+     },
+     "documented_default": null,
+     "literals": [],
+     "name": "enable",
+     "nested": [],
+     "summary": "Whether to enable Post Selection when performing learning experiments.",
+     "validators": []
+    },
+    {
+     "annotation": "Literal['xslow', 'rx']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.post_selection.PostSelectionOptions",
+     "default": "'xslow'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "xslow",
+      "rx"
+     ],
+     "name": "x_pulse_type",
+     "nested": [],
+     "summary": "The type of the X-pulse used for the post selection measurements.",
+     "validators": []
+    },
+    {
+     "annotation": "Literal['node', 'edge']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.post_selection.PostSelectionOptions",
+     "default": "'node'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "node",
+      "edge"
+     ],
+     "name": "strategy",
+     "nested": [],
+     "summary": "The strategy used to decide if a shot should be kept or discarded.",
+     "validators": []
+    }
+   ],
+   "summary": "Options for post selecting results."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.resilience.ResilienceOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "bool | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.resilience.ResilienceOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "measure_mitigation",
+     "nested": [],
+     "summary": "Whether to enable measurement error mitigation method.",
+     "validators": []
+    },
+    {
+     "annotation": "MeasureNoiseLearningOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.resilience.ResilienceOptions",
+     "default": "MeasureNoiseLearningOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "measure_noise_learning",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.measure_noise_learning.MeasureNoiseLearningOptions"
+     ],
+     "summary": "Additional measurement noise learning options.",
+     "validators": []
+    },
+    {
+     "annotation": "bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.resilience.ResilienceOptions",
+     "default": "False",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "pec_mitigation",
+     "nested": [],
+     "summary": "Whether to turn on Probabilistic Error Cancellation error mitigation method.",
+     "validators": []
+    },
+    {
+     "annotation": "PecOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.resilience.ResilienceOptions",
+     "default": "PecOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "pec",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.pec.PecOptions"
+     ],
+     "summary": "Additional probabalistic error cancellation mitigation options.",
+     "validators": []
+    },
+    {
+     "annotation": "bool | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.resilience.ResilienceOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "zne_mitigation",
+     "nested": [],
+     "summary": "Whether to turn on Zero-Noise Extrapolation error mitigation method.",
+     "validators": []
+    },
+    {
+     "annotation": "ZneOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.resilience.ResilienceOptions",
+     "default": "ZneOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "zne",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.zne.ZneOptions"
+     ],
+     "summary": "Additional zero noise extrapolation mitigation options.",
+     "validators": []
+    },
+    {
+     "annotation": "list[LayerNoiseModel] | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.resilience.ResilienceOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "layer_noise_model",
+     "nested": [],
+     "summary": "Noise model specified by a collection of instructions and the noise that affects them.",
+     "validators": []
+    }
+   ],
+   "summary": "Resilience options for V2 Estimator."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.sampler.SamplerOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "int | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.sampler.SamplerOptions",
+     "default": "4096",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "default_shots",
+     "nested": [],
+     "summary": "The default number of shots to use if none are specified in the PUBs or in the run method.",
+     "validators": []
+    },
+    {
+     "annotation": "DynamicalDecouplingOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.sampler.SamplerOptions",
+     "default": "DynamicalDecouplingOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "dynamical_decoupling",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.dynamical_decoupling.DynamicalDecouplingOptions"
+     ],
+     "summary": "Suboptions for dynamical decoupling.",
+     "validators": []
+    },
+    {
+     "annotation": "SamplerExecutionOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.sampler.SamplerOptions",
+     "default": "SamplerExecutionOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "execution",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.execution.SamplerExecutionOptions"
+     ],
+     "summary": "Execution options.",
+     "validators": []
+    },
+    {
+     "annotation": "TwirlingOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.sampler.SamplerOptions",
+     "default": "TwirlingOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "twirling",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.twirling.TwirlingOptions"
+     ],
+     "summary": "Pauli twirling options.",
+     "validators": []
+    },
+    {
+     "annotation": "int | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.sampler.SamplerOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "max_execution_time",
+     "nested": [],
+     "summary": "Maximum execution time in seconds.",
+     "validators": []
+    },
+    {
+     "annotation": "SimulatorOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.sampler.SamplerOptions",
+     "default": "SimulatorOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "simulator",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.simulator.SimulatorOptions"
+     ],
+     "summary": "Options related to local mode simulations.",
+     "validators": []
+    },
+    {
+     "annotation": "dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.sampler.SamplerOptions",
+     "default": "{}",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "experimental",
+     "nested": [],
+     "summary": "Experimental options.",
+     "validators": []
+    },
+    {
+     "annotation": "EnvironmentOptions",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.sampler.SamplerOptions",
+     "default": "EnvironmentOptions()",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "environment",
+     "nested": [
+      "qiskit_ibm_runtime.options_models.environment.EnvironmentOptions"
+     ],
+     "summary": "Options related to the execution environment.",
+     "validators": []
+    }
+   ],
+   "summary": "Options for the client-side Sampler."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.simulator.SimulatorOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "int",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.simulator.SimulatorOptions",
+     "default": "5",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "angle_decimals",
+     "nested": [],
+     "summary": "Gate angle decimal precision.",
+     "validators": []
+    },
+    {
+     "annotation": "list[LayerNoiseModel] | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.simulator.SimulatorOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "layer_noise_model",
+     "nested": [],
+     "summary": "Noise model specified by a collection of instructions and the noise that affects them.",
+     "validators": []
+    },
+    {
+     "annotation": "int | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.simulator.SimulatorOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "seed_simulator",
+     "nested": [],
+     "summary": "Random seed to control sampling.",
+     "validators": []
+    },
+    {
+     "annotation": "bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.simulator.SimulatorOptions",
+     "default": "True",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "warn_absent",
+     "nested": [],
+     "summary": "Whether to emit a warning when an entry is missing in :attr:`layer_noise_dict`.",
+     "validators": []
+    }
+   ],
+   "summary": "Simulator options."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.twirling.TwirlingOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "bool | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.twirling.TwirlingOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "enable_gates",
+     "nested": [],
+     "summary": "Whether to apply 2-qubit Clifford gate twirling.",
+     "validators": []
+    },
+    {
+     "annotation": "bool | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.twirling.TwirlingOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "enable_measure",
+     "nested": [],
+     "summary": "Whether to enable twirling of measurement instructions.",
+     "validators": []
+    },
+    {
+     "annotation": "Literal['pauli', 'balanced_pauli', 'local_c1', 'local_pauli']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.twirling.TwirlingOptions",
+     "default": "'pauli'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "pauli",
+      "balanced_pauli",
+      "local_c1",
+      "local_pauli"
+     ],
+     "name": "group",
+     "nested": [],
+     "summary": "The group used to twirl the content of the identified layers.",
+     "validators": []
+    },
+    {
+     "annotation": "Annotated[int, Field(ge=1)] | Literal['auto']",
+     "bounds": {
+      "ge": 1
+     },
+     "declared_in": "qiskit_ibm_runtime.options_models.twirling.TwirlingOptions",
+     "default": "'auto'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "auto"
+     ],
+     "name": "num_randomizations",
+     "nested": [],
+     "summary": "The number of random samples to use when twirling or performing sampled mitigation.",
+     "validators": []
+    },
+    {
+     "annotation": "Annotated[int, Field(ge=1)] | Literal['auto']",
+     "bounds": {
+      "ge": 1
+     },
+     "declared_in": "qiskit_ibm_runtime.options_models.twirling.TwirlingOptions",
+     "default": "'auto'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "auto"
+     ],
+     "name": "shots_per_randomization",
+     "nested": [],
+     "summary": "The number of shots to run for each random sample.",
+     "validators": []
+    },
+    {
+     "annotation": "Literal['active', 'active-accum', 'active-circuit', 'all']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.twirling.TwirlingOptions",
+     "default": "'active-accum'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "active",
+      "active-accum",
+      "active-circuit",
+      "all"
+     ],
+     "name": "strategy",
+     "nested": [],
+     "summary": "Specify the strategy of twirling qubits in identified layers of 2-qubit twirled gates.",
+     "validators": []
+    }
+   ],
+   "summary": "Twirling options."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options_models.zne.ZneOptions",
+   "family": "client",
+   "fields": [
+    {
+     "annotation": "Literal['gate_folding', 'gate_folding_front', 'gate_folding_back', 'pea']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.zne.ZneOptions",
+     "default": "'gate_folding'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "gate_folding",
+      "gate_folding_front",
+      "gate_folding_back",
+      "pea"
+     ],
+     "name": "amplifier",
+     "nested": [],
+     "summary": "Which technique to use for amplifying noise.",
+     "validators": []
+    },
+    {
+     "annotation": "Annotated[Sequence[Annotated[float, Field(ge=1)]], AfterValidator(at_least_two_noise_factors)] | Literal['auto']",
+     "bounds": {
+      "ge": 1
+     },
+     "declared_in": "qiskit_ibm_runtime.options_models.zne.ZneOptions",
+     "default": "'auto'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "auto"
+     ],
+     "name": "noise_factors",
+     "nested": [],
+     "summary": "Noise factors to use for noise amplification.",
+     "validators": []
+    },
+    {
+     "annotation": "ExtrapolatorType | Sequence[ExtrapolatorType]",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options_models.zne.ZneOptions",
+     "default": "('exponential', 'linear')",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "linear",
+      "exponential",
+      "double_exponential",
+      "polynomial_degree_1",
+      "polynomial_degree_2",
+      "polynomial_degree_3",
+      "polynomial_degree_4",
+      "polynomial_degree_5",
+      "polynomial_degree_6",
+      "polynomial_degree_7",
+      "fallback"
+     ],
+     "name": "extrapolator",
+     "nested": [],
+     "summary": "Extrapolator(s) to try (in order) for extrapolating to zero noise.",
+     "validators": []
+    },
+    {
+     "annotation": "Sequence[Annotated[float, Field(ge=0)]] | Literal['auto']",
+     "bounds": {
+      "ge": 0
+     },
+     "declared_in": "qiskit_ibm_runtime.options_models.zne.ZneOptions",
+     "default": "'auto'",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "auto"
+     ],
+     "name": "extrapolated_noise_factors",
+     "nested": [],
+     "summary": "Noise factors to evaluate the fit extrapolation models at.",
+     "validators": []
+    }
+   ],
+   "summary": "Zero noise extrapolation mitigation options."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options.dynamical_decoupling_options.DynamicalDecouplingOptions",
+   "family": "server",
+   "fields": [
+    {
+     "annotation": "UnsetType | bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.dynamical_decoupling_options.DynamicalDecouplingOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`False`.",
+     "literals": [],
+     "name": "enable",
+     "nested": [],
+     "summary": "Whether to enable DD as specified by the other options in this class.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | Literal['XX', 'XpXm', 'XY4']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.dynamical_decoupling_options.DynamicalDecouplingOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`\"XX\"`.",
+     "literals": [
+      "XX",
+      "XpXm",
+      "XY4"
+     ],
+     "name": "sequence_type",
+     "nested": [],
+     "summary": "Which dynamical decoupling sequence to use.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | Literal['middle', 'edges']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.dynamical_decoupling_options.DynamicalDecouplingOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`\"middle\"`.",
+     "literals": [
+      "middle",
+      "edges"
+     ],
+     "name": "extra_slack_distribution",
+     "nested": [],
+     "summary": "Where to put extra timing delays due to rounding issues.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | Literal['alap', 'asap']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.dynamical_decoupling_options.DynamicalDecouplingOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`\"alap\"`.",
+     "literals": [
+      "alap",
+      "asap"
+     ],
+     "name": "scheduling_method",
+     "nested": [],
+     "summary": "Whether to schedule gates as soon as (\"asap\") or as late as (\"alap\") possible.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.dynamical_decoupling_options.DynamicalDecouplingOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`False`.",
+     "literals": [],
+     "name": "skip_reset_qubits",
+     "nested": [],
+     "summary": "Whether to insert DD on idle periods that immediately follow initialized/reset qubits.",
+     "validators": []
+    }
+   ],
+   "summary": "Options for dynamical decoupling (DD)."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options.environment_options.EnvironmentOptions",
+   "family": "server",
+   "fields": [
+    {
+     "annotation": "LogLevelType",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.environment_options.EnvironmentOptions",
+     "default": "'WARNING'",
+     "deprecated": null,
+     "documented_default": "`WARNING`.",
+     "literals": [
+      "DEBUG",
+      "INFO",
+      "WARNING",
+      "ERROR",
+      "CRITICAL"
+     ],
+     "name": "log_level",
+     "nested": [],
+     "summary": "logging level to set in the execution environment.",
+     "validators": []
+    },
+    {
+     "annotation": "list | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.environment_options.EnvironmentOptions",
+     "default": "None",
+     "deprecated": null,
+     "documented_default": "`None`.",
+     "literals": [],
+     "name": "job_tags",
+     "nested": [],
+     "summary": "Tags to be assigned to the job.",
+     "validators": []
+    },
+    {
+     "annotation": "bool | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.environment_options.EnvironmentOptions",
+     "default": "False",
+     "deprecated": null,
+     "documented_default": "False.",
+     "literals": [],
+     "name": "private",
+     "nested": [],
+     "summary": "Boolean that indicates whether the job is marked as private.",
+     "validators": []
+    }
+   ],
+   "summary": "Options related to the execution environment."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options.estimator_options.EstimatorOptions",
+   "family": "server",
+   "fields": [
+    {
+     "annotation": "UnsetType | int",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.options.OptionsV2",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "max_execution_time",
+     "nested": [],
+     "summary": "Maximum execution time in seconds, which is based on system execution time (not wall clock time).",
+     "validators": []
+    },
+    {
+     "annotation": "EnvironmentOptions | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.options.OptionsV2",
+     "default": "Field(default_factory=EnvironmentOptions)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "environment",
+     "nested": [
+      "qiskit_ibm_runtime.options.environment_options.EnvironmentOptions"
+     ],
+     "summary": "Options related to the execution environment.",
+     "validators": []
+    },
+    {
+     "annotation": "SimulatorOptions | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.options.OptionsV2",
+     "default": "Field(default_factory=SimulatorOptions)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "simulator",
+     "nested": [
+      "qiskit_ibm_runtime.options.simulator_options.SimulatorOptions"
+     ],
+     "summary": "Simulator options.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | float",
+     "bounds": {
+      "gt": 0
+     },
+     "declared_in": "qiskit_ibm_runtime.options.estimator_options.EstimatorOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "0.015625 (1 / sqrt(4096)).",
+     "literals": [],
+     "name": "default_precision",
+     "nested": [],
+     "summary": "The default precision to use for any PUB or `run()` call that does not specify one.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | int | None",
+     "bounds": {
+      "ge": 0
+     },
+     "declared_in": "qiskit_ibm_runtime.options.estimator_options.EstimatorOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`None`.",
+     "literals": [],
+     "name": "default_shots",
+     "nested": [],
+     "summary": "The total number of shots to use per circuit per configuration.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | int",
+     "bounds": {
+      "ge": 0,
+      "le": 2
+     },
+     "declared_in": "qiskit_ibm_runtime.options.estimator_options.EstimatorOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "1.",
+     "literals": [],
+     "name": "resilience_level",
+     "nested": [],
+     "summary": "How much resilience to build against errors.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | int",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.estimator_options.EstimatorOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`None`.",
+     "literals": [],
+     "name": "seed_estimator",
+     "nested": [],
+     "summary": "Seed used to control sampling.",
+     "validators": []
+    },
+    {
+     "annotation": "DynamicalDecouplingOptions | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.estimator_options.EstimatorOptions",
+     "default": "Field(default_factory=DynamicalDecouplingOptions)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "dynamical_decoupling",
+     "nested": [
+      "qiskit_ibm_runtime.options.dynamical_decoupling_options.DynamicalDecouplingOptions"
+     ],
+     "summary": "Suboptions for dynamical decoupling.",
+     "validators": []
+    },
+    {
+     "annotation": "ResilienceOptionsV2 | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.estimator_options.EstimatorOptions",
+     "default": "Field(default_factory=ResilienceOptionsV2)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "resilience",
+     "nested": [
+      "qiskit_ibm_runtime.options.resilience_options.ResilienceOptionsV2"
+     ],
+     "summary": "Advanced resilience options to fine-tune the resilience strategy.",
+     "validators": []
+    },
+    {
+     "annotation": "ExecutionOptionsV2 | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.estimator_options.EstimatorOptions",
+     "default": "Field(default_factory=ExecutionOptionsV2)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "execution",
+     "nested": [
+      "qiskit_ibm_runtime.options.execution_options.ExecutionOptionsV2"
+     ],
+     "summary": "Execution time options.",
+     "validators": []
+    },
+    {
+     "annotation": "TwirlingOptions | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.estimator_options.EstimatorOptions",
+     "default": "Field(default_factory=TwirlingOptions)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "twirling",
+     "nested": [
+      "qiskit_ibm_runtime.options.twirling_options.TwirlingOptions"
+     ],
+     "summary": "Pauli twirling options.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.estimator_options.EstimatorOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "experimental",
+     "nested": [],
+     "summary": "Experimental options.",
+     "validators": []
+    }
+   ],
+   "summary": "Options for V2 Estimator."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options.execution_options.ExecutionOptionsV2",
+   "family": "server",
+   "fields": [
+    {
+     "annotation": "UnsetType | bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.execution_options.ExecutionOptionsV2",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`True`.",
+     "literals": [],
+     "name": "init_qubits",
+     "nested": [],
+     "summary": "Whether to reset the qubits to the ground state for each shot.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | float",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.execution_options.ExecutionOptionsV2",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "given by `backend.default_rep_delay`.",
+     "literals": [],
+     "name": "rep_delay",
+     "nested": [],
+     "summary": "The repetition delay.",
+     "validators": []
+    }
+   ],
+   "summary": "Execution options for V2 primitives."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options.layer_noise_learning_options.LayerNoiseLearningOptions",
+   "family": "server",
+   "fields": [
+    {
+     "annotation": "UnsetType | int | None",
+     "bounds": {
+      "ge": 0
+     },
+     "declared_in": "qiskit_ibm_runtime.options.layer_noise_learning_options.LayerNoiseLearningOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "4.",
+     "literals": [],
+     "name": "max_layers_to_learn",
+     "nested": [],
+     "summary": "The max number of unique layers to learn.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | int",
+     "bounds": {
+      "ge": 1
+     },
+     "declared_in": "qiskit_ibm_runtime.options.layer_noise_learning_options.LayerNoiseLearningOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "128.",
+     "literals": [],
+     "name": "shots_per_randomization",
+     "nested": [],
+     "summary": "The total number of shots to use per random learning circuit.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | int",
+     "bounds": {
+      "ge": 1
+     },
+     "declared_in": "qiskit_ibm_runtime.options.layer_noise_learning_options.LayerNoiseLearningOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "32.",
+     "literals": [],
+     "name": "num_randomizations",
+     "nested": [],
+     "summary": "The number of random circuits to use per learning circuit configuration.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | list[int]",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.layer_noise_learning_options.LayerNoiseLearningOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "(0, 1, 2, 4, 16, 32).",
+     "literals": [],
+     "name": "layer_pair_depths",
+     "nested": [],
+     "summary": "The circuit depths (measured in number of pairs) to use in learning experiments.",
+     "validators": [
+      "_nonnegative_list"
+     ]
+    }
+   ],
+   "summary": "Options for learning layer noise."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options.measure_noise_learning_options.MeasureNoiseLearningOptions",
+   "family": "server",
+   "fields": [
+    {
+     "annotation": "UnsetType | int",
+     "bounds": {
+      "ge": 1
+     },
+     "declared_in": "qiskit_ibm_runtime.options.measure_noise_learning_options.MeasureNoiseLearningOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "32.",
+     "literals": [],
+     "name": "num_randomizations",
+     "nested": [],
+     "summary": "The number of random circuits to draw for the measurement learning experiment.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | int | Literal['auto']",
+     "bounds": {
+      "ge": 1
+     },
+     "declared_in": "qiskit_ibm_runtime.options.measure_noise_learning_options.MeasureNoiseLearningOptions",
+     "default": "Unset",
+     "deprecated": {
+      "msg": "Specifying 'measure_noise_learning.shots_per_randomization' as an integer is deprecated",
+      "version": "0.48.0"
+     },
+     "documented_default": "\"auto\".",
+     "literals": [
+      "auto"
+     ],
+     "name": "shots_per_randomization",
+     "nested": [],
+     "summary": "The number of shots to use for the learning experiment per random circuit.",
+     "validators": [
+      "_warn_shots_per_randomization_int"
+     ]
+    }
+   ],
+   "summary": "Options for measurement noise learning."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options.pec_options.PecOptions",
+   "family": "server",
+   "fields": [
+    {
+     "annotation": "UnsetType | float | None",
+     "bounds": {
+      "gt": 0
+     },
+     "declared_in": "qiskit_ibm_runtime.options.pec_options.PecOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "100.",
+     "literals": [],
+     "name": "max_overhead",
+     "nested": [],
+     "summary": "The maximum circuit sampling overhead allowed, or `None` for no maximum.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | float | Literal['auto']",
+     "bounds": {
+      "ge": 0
+     },
+     "declared_in": "qiskit_ibm_runtime.options.pec_options.PecOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "\"auto\".",
+     "literals": [
+      "auto"
+     ],
+     "name": "noise_gain",
+     "nested": [],
+     "summary": "The amount by which to scale the noise, where:",
+     "validators": []
+    }
+   ],
+   "summary": "Probabalistic error cancellation mitigation options."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options.resilience_options.ResilienceOptionsV2",
+   "family": "server",
+   "fields": [
+    {
+     "annotation": "UnsetType | bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.resilience_options.ResilienceOptionsV2",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "measure_mitigation",
+     "nested": [],
+     "summary": "Whether to enable measurement error mitigation method.",
+     "validators": []
+    },
+    {
+     "annotation": "MeasureNoiseLearningOptions | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.resilience_options.ResilienceOptionsV2",
+     "default": "Field(default_factory=MeasureNoiseLearningOptions)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "measure_noise_learning",
+     "nested": [
+      "qiskit_ibm_runtime.options.measure_noise_learning_options.MeasureNoiseLearningOptions"
+     ],
+     "summary": "Additional measurement noise learning options.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.resilience_options.ResilienceOptionsV2",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "zne_mitigation",
+     "nested": [],
+     "summary": "Whether to turn on Zero-Noise Extrapolation error mitigation method.",
+     "validators": []
+    },
+    {
+     "annotation": "ZneOptions | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.resilience_options.ResilienceOptionsV2",
+     "default": "Field(default_factory=ZneOptions)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "zne",
+     "nested": [
+      "qiskit_ibm_runtime.options.zne_options.ZneOptions"
+     ],
+     "summary": "Additional zero-noise extrapolation mitigation options.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.resilience_options.ResilienceOptionsV2",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "False.",
+     "literals": [],
+     "name": "pec_mitigation",
+     "nested": [],
+     "summary": "Whether to turn on Probabilistic Error Cancellation error mitigation method.",
+     "validators": []
+    },
+    {
+     "annotation": "PecOptions | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.resilience_options.ResilienceOptionsV2",
+     "default": "Field(default_factory=PecOptions)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "pec",
+     "nested": [
+      "qiskit_ibm_runtime.options.pec_options.PecOptions"
+     ],
+     "summary": "Additional probabalistic error cancellation mitigation options.",
+     "validators": []
+    },
+    {
+     "annotation": "LayerNoiseLearningOptions | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.resilience_options.ResilienceOptionsV2",
+     "default": "Field(default_factory=LayerNoiseLearningOptions)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "layer_noise_learning",
+     "nested": [
+      "qiskit_ibm_runtime.options.layer_noise_learning_options.LayerNoiseLearningOptions"
+     ],
+     "summary": "Layer noise learning options.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | NoiseLearnerResult | Sequence[LayerError] | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.resilience_options.ResilienceOptionsV2",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`None`.",
+     "literals": [],
+     "name": "layer_noise_model",
+     "nested": [],
+     "summary": "A :class:`NoiseLearnerResult` or a sequence of :class:`LayerError` objects.",
+     "validators": []
+    }
+   ],
+   "summary": "Resilience options for V2 Estimator."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options.sampler_execution_options.SamplerExecutionOptionsV2",
+   "family": "server",
+   "fields": [
+    {
+     "annotation": "UnsetType | bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.execution_options.ExecutionOptionsV2",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`True`.",
+     "literals": [],
+     "name": "init_qubits",
+     "nested": [],
+     "summary": "Whether to reset the qubits to the ground state for each shot.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | float",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.execution_options.ExecutionOptionsV2",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "given by `backend.default_rep_delay`.",
+     "literals": [],
+     "name": "rep_delay",
+     "nested": [],
+     "summary": "The repetition delay.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | Literal['classified', 'kerneled', 'avg_kerneled']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.sampler_execution_options.SamplerExecutionOptionsV2",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "\"classified\".",
+     "literals": [
+      "classified",
+      "kerneled",
+      "avg_kerneled"
+     ],
+     "name": "meas_type",
+     "nested": [],
+     "summary": "How to process and return measurement results.",
+     "validators": []
+    }
+   ],
+   "summary": "Extends :class:`~qiskit_ibm_runtime.options.ExecutionOptionsV2` for the sampler primitive."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options.sampler_options.SamplerOptions",
+   "family": "server",
+   "fields": [
+    {
+     "annotation": "UnsetType | int",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.options.OptionsV2",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "max_execution_time",
+     "nested": [],
+     "summary": "Maximum execution time in seconds, which is based on system execution time (not wall clock time).",
+     "validators": []
+    },
+    {
+     "annotation": "EnvironmentOptions | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.options.OptionsV2",
+     "default": "Field(default_factory=EnvironmentOptions)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "environment",
+     "nested": [
+      "qiskit_ibm_runtime.options.environment_options.EnvironmentOptions"
+     ],
+     "summary": "Options related to the execution environment.",
+     "validators": []
+    },
+    {
+     "annotation": "SimulatorOptions | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.options.OptionsV2",
+     "default": "Field(default_factory=SimulatorOptions)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "simulator",
+     "nested": [
+      "qiskit_ibm_runtime.options.simulator_options.SimulatorOptions"
+     ],
+     "summary": "Simulator options.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | int",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.sampler_options.SamplerOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "4096.",
+     "literals": [],
+     "name": "default_shots",
+     "nested": [],
+     "summary": "The default number of shots to use if none are specified in the PUBs or in the run method.",
+     "validators": []
+    },
+    {
+     "annotation": "DynamicalDecouplingOptions | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.sampler_options.SamplerOptions",
+     "default": "Field(default_factory=DynamicalDecouplingOptions)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "dynamical_decoupling",
+     "nested": [
+      "qiskit_ibm_runtime.options.dynamical_decoupling_options.DynamicalDecouplingOptions"
+     ],
+     "summary": "Suboptions for dynamical decoupling.",
+     "validators": []
+    },
+    {
+     "annotation": "SamplerExecutionOptionsV2 | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.sampler_options.SamplerOptions",
+     "default": "Field(default_factory=SamplerExecutionOptionsV2)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "execution",
+     "nested": [
+      "qiskit_ibm_runtime.options.sampler_execution_options.SamplerExecutionOptionsV2"
+     ],
+     "summary": "Execution time options.",
+     "validators": []
+    },
+    {
+     "annotation": "TwirlingOptions | Dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.sampler_options.SamplerOptions",
+     "default": "Field(default_factory=TwirlingOptions)",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "twirling",
+     "nested": [
+      "qiskit_ibm_runtime.options.twirling_options.TwirlingOptions"
+     ],
+     "summary": "Pauli twirling options.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | dict",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.sampler_options.SamplerOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "experimental",
+     "nested": [],
+     "summary": "Experimental options.",
+     "validators": []
+    }
+   ],
+   "summary": "Options for V2 Sampler."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options.simulator_options.SimulatorOptions",
+   "family": "server",
+   "fields": [
+    {
+     "annotation": "UnsetType | dict | NoiseModel | None",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.simulator_options.SimulatorOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`None`.",
+     "literals": [],
+     "name": "noise_model",
+     "nested": [],
+     "summary": "Noise model for the simulator.",
+     "validators": [
+      "_validate_noise_model"
+     ]
+    },
+    {
+     "annotation": "UnsetType | int",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.simulator_options.SimulatorOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`None`.",
+     "literals": [],
+     "name": "seed_simulator",
+     "nested": [],
+     "summary": "Random seed to control sampling.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | list[list[int]] | CouplingMap",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.simulator_options.SimulatorOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`None`, which implies no connectivity constraints.",
+     "literals": [],
+     "name": "coupling_map",
+     "nested": [],
+     "summary": "Directed coupling map to target in mapping.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | list[str]",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.simulator_options.SimulatorOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "all basis gates supported by the simulator.",
+     "literals": [],
+     "name": "basis_gates",
+     "nested": [],
+     "summary": "List of basis gate names to unroll to.",
+     "validators": []
+    }
+   ],
+   "summary": "Simulator options."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options.twirling_options.TwirlingOptions",
+   "family": "server",
+   "fields": [
+    {
+     "annotation": "UnsetType | bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.twirling_options.TwirlingOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "- For the Sampler: `False`. - For the Estimator: If `enables_gates` is `Unset`, it is determined by the server according to the resilience level: it is `False` for resilience levels 0 and 1, and `True` for resilience level 2.",
+     "literals": [],
+     "name": "enable_gates",
+     "nested": [],
+     "summary": "Whether to apply 2-qubit Clifford gate twirling.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | bool",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.twirling_options.TwirlingOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "- For the Sampler: `False`. - For the Estimator: If `enable_measure` is `Unset`, it is determined by the server according to the resilience level: it is `False` for resilience level 0, and `True` for resilience levels 1 and 2.",
+     "literals": [],
+     "name": "enable_measure",
+     "nested": [],
+     "summary": "Whether to enable twirling to measurement instructions, as long as the measurement is not involved within a conditional block.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | int | Literal['auto']",
+     "bounds": {
+      "ge": 1
+     },
+     "declared_in": "qiskit_ibm_runtime.options.twirling_options.TwirlingOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`\"auto\"`.",
+     "literals": [
+      "auto"
+     ],
+     "name": "num_randomizations",
+     "nested": [],
+     "summary": "The number of random samples to use when twirling or peforming sampled mitigation.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | int | Literal['auto']",
+     "bounds": {
+      "ge": 1
+     },
+     "declared_in": "qiskit_ibm_runtime.options.twirling_options.TwirlingOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`\"auto\"`.",
+     "literals": [
+      "auto"
+     ],
+     "name": "shots_per_randomization",
+     "nested": [],
+     "summary": "The number of shots to run for each random sample.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | TwirlingStrategyType",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.twirling_options.TwirlingOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`\"active-accum\"`.",
+     "literals": [
+      "active",
+      "active-accum",
+      "active-circuit",
+      "all"
+     ],
+     "name": "strategy",
+     "nested": [],
+     "summary": "Specify the strategy of twirling qubits in identified layers of 2-qubit twirled gates.",
+     "validators": []
+    }
+   ],
+   "summary": "Twirling options."
+  },
+  {
+   "class": "qiskit_ibm_runtime.options.zne_options.ZneOptions",
+   "family": "server",
+   "fields": [
+    {
+     "annotation": "UnsetType | Literal['gate_folding', 'gate_folding_front', 'gate_folding_back', 'pea']",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.zne_options.ZneOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [
+      "gate_folding",
+      "gate_folding_front",
+      "gate_folding_back",
+      "pea"
+     ],
+     "name": "amplifier",
+     "nested": [],
+     "summary": "Which technique to use for amplifying noise.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | Sequence[float]",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.zne_options.ZneOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`(1, 3, 5)`.",
+     "literals": [],
+     "name": "noise_factors",
+     "nested": [],
+     "summary": "noise_factors:",
+     "validators": [
+      "_validate_zne_noise_factors"
+     ]
+    },
+    {
+     "annotation": "UnsetType | ExtrapolatorType | Sequence[ExtrapolatorType]",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.zne_options.ZneOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": "`(\"exponential\", \"linear\")`.",
+     "literals": [
+      "linear",
+      "exponential",
+      "double_exponential",
+      "polynomial_degree_1",
+      "polynomial_degree_2",
+      "polynomial_degree_3",
+      "polynomial_degree_4",
+      "polynomial_degree_5",
+      "polynomial_degree_6",
+      "polynomial_degree_7",
+      "fallback"
+     ],
+     "name": "extrapolator",
+     "nested": [],
+     "summary": "Extrapolator(s) to try (in order) for extrapolating to zero noise.",
+     "validators": []
+    },
+    {
+     "annotation": "UnsetType | Sequence[float]",
+     "bounds": {},
+     "declared_in": "qiskit_ibm_runtime.options.zne_options.ZneOptions",
+     "default": "Unset",
+     "deprecated": null,
+     "documented_default": null,
+     "literals": [],
+     "name": "extrapolated_noise_factors",
+     "nested": [],
+     "summary": "Noise factors to evaluate the fit extrapolation models at.",
+     "validators": []
+    }
+   ],
+   "summary": "Zero noise extrapolation mitigation options."
+  }
+ ],
+ "deprecations": [
+  {
+   "module": "qiskit_ibm_runtime.estimator",
+   "msg": "The EstimatorV2 class is deprecated",
+   "site": "EstimatorV2.__init__",
+   "version": "0.50.0"
+  },
+  {
+   "module": "qiskit_ibm_runtime.estimator",
+   "msg": "Specifying different 'precision' across pubs is deprecated",
+   "site": "EstimatorV2.run",
+   "version": "0.48.0"
+  },
+  {
+   "module": "qiskit_ibm_runtime.options.measure_noise_learning_options",
+   "msg": "Specifying 'measure_noise_learning.shots_per_randomization' as an integer is deprecated",
+   "site": "MeasureNoiseLearningOptions._warn_shots_per_randomization_int",
+   "version": "0.48.0"
+  },
+  {
+   "module": "qiskit_ibm_runtime.options_models.environment",
+   "msg": "Setting `max_execution_time` via `EnvironmentOptions` is deprecated",
+   "site": "warn_max_execution_time",
+   "version": "0.50.0"
+  },
+  {
+   "module": "qiskit_ibm_runtime.options_models.post_selection",
+   "msg": "The 'post_selection' field of NoiseLearnerV3 is deprecated",
+   "site": "warn_post_selection",
+   "version": "0.49.0"
+  },
+  {
+   "module": "qiskit_ibm_runtime.sampler",
+   "msg": "The SamplerV2 class is deprecated",
+   "site": "SamplerV2.__init__",
+   "version": "0.50.0"
+  },
+  {
+   "module": "qiskit_ibm_runtime.sampler",
+   "msg": "Specifying different 'shots' across pubs is deprecated",
+   "site": "SamplerV2.run",
+   "version": "0.48.0"
+  }
+ ],
+ "effective_defaults": {
+  "estimator_levels": [
+   {
+    "resilience.measure_mitigation": false,
+    "resilience.pec_mitigation": false,
+    "resilience.zne_mitigation": false,
+    "resilience_level": 0,
+    "twirling.enable_gates": false,
+    "twirling.enable_measure": false
+   },
+   {
+    "resilience.measure_mitigation": true,
+    "resilience.pec_mitigation": false,
+    "resilience.zne_mitigation": false,
+    "resilience_level": 1,
+    "twirling.enable_gates": false,
+    "twirling.enable_measure": true
+   },
+   {
+    "resilience.measure_mitigation": true,
+    "resilience.pec_mitigation": false,
+    "resilience.zne_mitigation": true,
+    "resilience_level": 2,
+    "twirling.enable_gates": true,
+    "twirling.enable_measure": true
+   }
+  ],
+  "sampler": {
+   "twirling.enable_gates": false,
+   "twirling.enable_measure": false
+  },
+  "twirling_split": [
+   {
+    "executed_shots": 1024,
+    "num_randomizations": "auto",
+    "resolved_randomizations": 16,
+    "shots": 1024,
+    "shots_per_randomization": 64
+   },
+   {
+    "executed_shots": 1024,
+    "num_randomizations": 32,
+    "resolved_randomizations": 32,
+    "shots": 1024,
+    "shots_per_randomization": 32
+   },
+   {
+    "executed_shots": 4096,
+    "num_randomizations": "auto",
+    "resolved_randomizations": 32,
+    "shots": 4096,
+    "shots_per_randomization": 128
+   },
+   {
+    "executed_shots": 4096,
+    "num_randomizations": 32,
+    "resolved_randomizations": 32,
+    "shots": 4096,
+    "shots_per_randomization": 128
+   },
+   {
+    "executed_shots": 8192,
+    "num_randomizations": "auto",
+    "resolved_randomizations": 32,
+    "shots": 8192,
+    "shots_per_randomization": 256
+   },
+   {
+    "executed_shots": 8192,
+    "num_randomizations": 32,
+    "resolved_randomizations": 32,
+    "shots": 8192,
+    "shots_per_randomization": 256
+   },
+   {
+    "executed_shots": 65536,
+    "num_randomizations": "auto",
+    "resolved_randomizations": 32,
+    "shots": 65536,
+    "shots_per_randomization": 2048
+   },
+   {
+    "executed_shots": 65536,
+    "num_randomizations": 32,
+    "resolved_randomizations": 32,
+    "shots": 65536,
+    "shots_per_randomization": 2048
+   },
+   {
+    "executed_shots": 100000,
+    "num_randomizations": "auto",
+    "resolved_randomizations": 32,
+    "shots": 100000,
+    "shots_per_randomization": 3125
+   },
+   {
+    "executed_shots": 100000,
+    "num_randomizations": 32,
+    "resolved_randomizations": 32,
+    "shots": 100000,
+    "shots_per_randomization": 3125
+   },
+   {
+    "executed_shots": 122880,
+    "num_randomizations": "auto",
+    "resolved_randomizations": 32,
+    "shots": 122880,
+    "shots_per_randomization": 3840
+   },
+   {
+    "executed_shots": 122880,
+    "num_randomizations": 32,
+    "resolved_randomizations": 32,
+    "shots": 122880,
+    "shots_per_randomization": 3840
+   }
+  ]
+ },
+ "entry_points": [
+  {
+   "name": "qiskit_ibm_runtime.Session",
+   "signature": "(self, backend: 'BackendV2', max_time: 'int | str | None' = None, *, create_new: 'bool | None' = True)"
+  },
+  {
+   "name": "qiskit_ibm_runtime.Batch",
+   "signature": "(self, backend: 'BackendV2', max_time: 'int | str | None' = None, *, create_new: 'bool | None' = True)"
+  },
+  {
+   "name": "qiskit_ibm_runtime.QiskitRuntimeService",
+   "signature": "(self, channel: 'ChannelType | None' = None, token: 'str | None' = None, url: 'str | None' = None, filename: 'str | None' = None, name: 'str | None' = None, instance: 'str | None' = None, proxies: 'dict | None' = None, verify: 'bool | None' = None, private_endpoint: 'bool | None' = None, url_resolver: 'Callable[[str, str, bool | None, str], str] | None' = None, region: 'str | None' = None, plans_preference: 'list[str] | None' = None, tags: 'list[str] | None' = None) -> 'None'"
+  },
+  {
+   "name": "qiskit_ibm_runtime.QiskitRuntimeService.backends",
+   "signature": "(self, name: 'str | None' = None, min_num_qubits: 'int | None' = None, instance: 'str | None' = None, dynamic_circuits: 'bool | None' = None, filters: 'Callable[[IBMBackend], bool] | None' = None, *, use_fractional_gates: 'bool | None' = False, calibration_id: 'str | None' = None, **kwargs: 'Any') -> 'list[IBMBackend]'"
+  },
+  {
+   "name": "qiskit_ibm_runtime.QiskitRuntimeService.backend",
+   "signature": "(self, name: 'str', instance: 'str | None' = None, use_fractional_gates: 'bool | None' = False, calibration_id: 'str | None' = None) -> 'Backend'"
+  },
+  {
+   "name": "qiskit_ibm_runtime.QiskitRuntimeService.usage",
+   "signature": "(self) -> 'dict[str, Any]'"
+  },
+  {
+   "name": "qiskit_ibm_runtime.QiskitRuntimeService.least_busy",
+   "signature": "(self, min_num_qubits: 'int | None' = None, instance: 'str | None' = None, filters: 'Callable[[IBMBackend], bool] | None' = None, use_fractional_gates: 'bool | None' = False, **kwargs: 'Any') -> 'IBMBackend'"
+  },
+  {
+   "name": "qiskit_ibm_runtime.executor_sampler.Sampler.run",
+   "signature": "(self, pubs: 'Iterable[SamplerPubLike]', *, shots: 'int | None' = None, dry_run: 'bool' = False) -> 'RuntimeJobV2 | LocalRuntimeJob'"
+  },
+  {
+   "name": "qiskit_ibm_runtime.executor_estimator.Estimator.run",
+   "signature": "(self, pubs: 'Iterable[EstimatorPubLike]', *, precision: 'float | None' = None, dry_run: 'bool' = False) -> 'RuntimeJobV2 | LocalRuntimeJob'"
+  }
+ ],
+ "probe_environment": {
+  "ibm-quantum-schemas": "0.13.20261016",
+  "pydantic": "2.14.1",
+  "qiskit": "2.6.0",
+  "qiskit-mitigation": "0.1.1",
+  "samplomatic": "0.21.0"
+ },
+ "probes": [
+  {
+   "accepted": true,
+   "case": "static, defaults",
+   "options": {},
+   "primitive": "client Sampler",
+   "program_shots": 4096
+  },
+  {
+   "accepted": true,
+   "case": "if_else, defaults",
+   "options": {},
+   "primitive": "client Sampler",
+   "program_shots": 4096
+  },
+  {
+   "accepted": true,
+   "case": "static, DD",
+   "options": {
+    "dynamical_decoupling": {
+     "enable": true
+    }
+   },
+   "primitive": "client Sampler",
+   "program_shots": 4096
+  },
+  {
+   "accepted": false,
+   "case": "if_else, DD",
+   "error": "IBMInputValueError",
+   "message": "'Dynamical decoupling is not compatible with dynamic circuits (circuits with control flow operations).'",
+   "options": {
+    "dynamical_decoupling": {
+     "enable": true
+    }
+   },
+   "primitive": "client Sampler"
+  },
+  {
+   "accepted": true,
+   "case": "mid-circuit measure, DD",
+   "options": {
+    "dynamical_decoupling": {
+     "enable": true
+    }
+   },
+   "primitive": "client Sampler",
+   "program_shots": 4096
+  },
+  {
+   "accepted": true,
+   "case": "reset, DD",
+   "options": {
+    "dynamical_decoupling": {
+     "enable": true
+    }
+   },
+   "primitive": "client Sampler",
+   "program_shots": 4096
+  },
+  {
+   "accepted": true,
+   "case": "static, gate and measure twirling",
+   "options": {
+    "twirling": {
+     "enable_gates": true,
+     "enable_measure": true
+    }
+   },
+   "primitive": "client Sampler",
+   "program_shots": 128
+  },
+  {
+   "accepted": false,
+   "case": "if_else, gate twirling",
+   "error": "TranspilerError",
+   "message": null,
+   "options": {
+    "twirling": {
+     "enable_gates": true
+    }
+   },
+   "primitive": "client Sampler"
+  },
+  {
+   "accepted": false,
+   "case": "if_else, measure twirling",
+   "error": "TranspilerError",
+   "message": null,
+   "options": {
+    "twirling": {
+     "enable_measure": true
+    }
+   },
+   "primitive": "client Sampler"
+  },
+  {
+   "accepted": true,
+   "case": "mid-circuit measure, gate and measure twirling",
+   "options": {
+    "twirling": {
+     "enable_gates": true,
+     "enable_measure": true
+    }
+   },
+   "primitive": "client Sampler",
+   "program_shots": 128
+  },
+  {
+   "accepted": true,
+   "case": "MidCircuitMeasure, gate and measure twirling",
+   "options": {
+    "twirling": {
+     "enable_gates": true,
+     "enable_measure": true
+    }
+   },
+   "primitive": "client Sampler",
+   "program_shots": 128
+  },
+  {
+   "accepted": false,
+   "case": "reset, gate and measure twirling",
+   "error": "SamplexBuildError",
+   "message": null,
+   "options": {
+    "twirling": {
+     "enable_gates": true,
+     "enable_measure": true
+    }
+   },
+   "primitive": "client Sampler"
+  },
+  {
+   "accepted": false,
+   "case": "measure twice into one bit, gate and measure twirling",
+   "error": "SamplexBuildError",
+   "message": null,
+   "options": {
+    "twirling": {
+     "enable_gates": true,
+     "enable_measure": true
+    }
+   },
+   "primitive": "client Sampler"
+  },
+  {
+   "accepted": true,
+   "case": "static, meas_type kerneled",
+   "options": {
+    "execution": {
+     "meas_type": "kerneled"
+    }
+   },
+   "primitive": "client Sampler",
+   "program_shots": 4096
+  },
+  {
+   "accepted": false,
+   "case": "static, meas_type kerneled, measure twirling",
+   "error": "IBMInputValueError",
+   "message": "\"'meas_type=kerneled' and measurement twirling are not compatible. Set `twirling.enable_measure=False` or `execution.meas_type='classified'`\"",
+   "options": {
+    "execution": {
+     "meas_type": "kerneled"
+    },
+    "twirling": {
+     "enable_measure": true
+    }
+   },
+   "primitive": "client Sampler"
+  },
+  {
+   "accepted": false,
+   "case": "BoxOp, twirling off",
+   "error": "IBMInputValueError",
+   "message": "\"Circuit contains a BoxOp instruction 'box' which is not supported in this minimal implementation. BoxOp support (for twirling) will be added in a future phase.\"",
+   "options": {},
+   "primitive": "client Sampler"
+  },
+  {
+   "accepted": false,
+   "case": "two PUBs, 1000 and 2000 shots",
+   "error": "IBMInputValueError",
+   "message": "'All pubs must have the same number of shots. Found: {1000, 2000}'",
+   "options": {},
+   "primitive": "client Sampler"
+  },
+  {
+   "accepted": true,
+   "case": "static, 32 randomizations x 64 shots",
+   "options": {
+    "twirling": {
+     "enable_gates": true,
+     "num_randomizations": 32,
+     "shots_per_randomization": 64
+    }
+   },
+   "primitive": "client Sampler",
+   "program_shots": 64
+  },
+  {
+   "accepted": true,
+   "case": "level 0",
+   "options": {
+    "resilience_level": 0
+   },
+   "primitive": "client Estimator"
+  },
+  {
+   "accepted": true,
+   "case": "level 1",
+   "options": {
+    "resilience_level": 1
+   },
+   "primitive": "client Estimator"
+  },
+  {
+   "accepted": true,
+   "case": "level 2",
+   "options": {
+    "resilience_level": 2
+   },
+   "primitive": "client Estimator"
+  },
+  {
+   "accepted": false,
+   "case": "PEC without layer_noise_model",
+   "error": "IBMInputValueError",
+   "message": "\"PEA/PEC mitigation requires a noise model. Set 'resilience.layer_noise_model' before running.\"",
+   "options": {
+    "resilience": {
+     "pec_mitigation": true
+    }
+   },
+   "primitive": "client Estimator"
+  },
+  {
+   "accepted": false,
+   "case": "ZNE with PEA without layer_noise_model",
+   "error": "IBMInputValueError",
+   "message": "\"PEA/PEC mitigation requires a noise model. Set 'resilience.layer_noise_model' before running.\"",
+   "options": {
+    "resilience": {
+     "zne": {
+      "amplifier": "pea"
+     },
+     "zne_mitigation": true
+    }
+   },
+   "primitive": "client Estimator"
+  },
+  {
+   "accepted": true,
+   "case": "ZNE with gate folding",
+   "options": {
+    "resilience": {
+     "zne_mitigation": true
+    }
+   },
+   "primitive": "client Estimator"
+  },
+  {
+   "accepted": false,
+   "case": "PEC and ZNE",
+   "error": "IBMInputValueError",
+   "message": "'PEC mitigation and ZNE mitigation are incompatible with one another.'",
+   "options": {
+    "resilience": {
+     "pec_mitigation": true,
+     "zne_mitigation": true
+    }
+   },
+   "primitive": "client Estimator"
+  },
+  {
+   "accepted": true,
+   "case": "DD",
+   "options": {
+    "dynamical_decoupling": {
+     "enable": true
+    }
+   },
+   "primitive": "client Estimator"
+  }
+ ],
+ "qiskit_ibm_runtime": "0.50.0",
+ "rest": {
+  "adaptors": [
+   {
+    "adaptor": "qiskit_ibm_runtime.api.rest.runtime.Runtime",
+    "methods": [
+     {
+      "method": "program_run",
+      "paths": [
+       "/jobs"
+      ],
+      "payload": [
+       [
+        "backend_name",
+        "backend"
+       ],
+       [
+        "calibration_id",
+        "calibration_id"
+       ],
+       [
+        "image",
+        "runtime"
+       ],
+       [
+        "job_tags",
+        "tags"
+       ],
+       [
+        "log_level",
+        "log_level"
+       ],
+       [
+        "max_execution_time",
+        "cost"
+       ],
+       [
+        "session_id",
+        "session_id"
+       ],
+       [
+        "session_time",
+        "session_time"
+       ],
+       [
+        "start_session",
+        "start_session"
+       ]
+      ],
+      "verbs": [
+       "POST"
+      ]
+     },
+     {
+      "method": "jobs_get",
+      "paths": [
+       "/jobs"
+      ],
+      "payload": [
+       [
+        "backend_name",
+        "backend"
+       ],
+       [
+        "job_tags",
+        "tags"
+       ],
+       [
+        "limit",
+        "limit"
+       ],
+       [
+        "program_id",
+        "program"
+       ],
+       [
+        "session_id",
+        "session_id"
+       ],
+       [
+        "skip",
+        "offset"
+       ]
+      ],
+      "verbs": [
+       "GET"
+      ]
+     },
+     {
+      "method": "backends",
+      "paths": [
+       "/backends"
+      ],
+      "payload": [],
+      "verbs": [
+       "GET"
+      ]
+     },
+     {
+      "method": "cloud_usage",
+      "paths": [
+       "/instances/usage"
+      ],
+      "payload": [],
+      "verbs": [
+       "GET"
+      ]
+     },
+     {
+      "method": "workloads_get",
+      "paths": [
+       "/workloads"
+      ],
+      "payload": [],
+      "verbs": [
+       "GET"
+      ]
+     }
+    ],
+    "prefixes": [
+     "\"\""
+    ]
+   },
+   {
+    "adaptor": "qiskit_ibm_runtime.api.rest.cloud_backend.CloudBackend",
+    "methods": [
+     {
+      "method": "configuration",
+      "paths": [
+       "/configuration"
+      ],
+      "payload": [
+       [
+        "calibration_id",
+        "calibration_id"
+       ]
+      ],
+      "verbs": [
+       "GET"
+      ]
+     },
+     {
+      "method": "properties",
+      "paths": [
+       "/properties"
+      ],
+      "payload": [
+       [
+        "calibration_id",
+        "calibration_id"
+       ]
+      ],
+      "verbs": [
+       "GET"
+      ]
+     },
+     {
+      "method": "status",
+      "paths": [
+       "/status"
+      ],
+      "payload": [],
+      "verbs": [
+       "GET"
+      ]
+     }
+    ],
+    "prefixes": [
+     "f'{url_prefix}/backends/{backend_name}'"
+    ]
+   },
+   {
+    "adaptor": "qiskit_ibm_runtime.api.rest.program_job.ProgramJob",
+    "methods": [
+     {
+      "method": "get",
+      "paths": [
+       ""
+      ],
+      "payload": [],
+      "verbs": [
+       "GET"
+      ]
+     },
+     {
+      "method": "delete",
+      "paths": [
+       ""
+      ],
+      "payload": [],
+      "verbs": [
+       "DELETE"
+      ]
+     },
+     {
+      "method": "results",
+      "paths": [
+       "/results"
+      ],
+      "payload": [],
+      "verbs": [
+       "GET"
+      ]
+     },
+     {
+      "method": "cancel",
+      "paths": [
+       "/cancel"
+      ],
+      "payload": [],
+      "verbs": [
+       "POST"
+      ]
+     },
+     {
+      "method": "logs",
+      "paths": [
+       "/logs"
+      ],
+      "payload": [],
+      "verbs": [
+       "GET"
+      ]
+     },
+     {
+      "method": "metadata",
+      "paths": [
+       "/metrics"
+      ],
+      "payload": [],
+      "verbs": [
+       "GET"
+      ]
+     },
+     {
+      "method": "update_tags",
+      "paths": [
+       "/tags"
+      ],
+      "payload": [],
+      "verbs": [
+       "PUT"
+      ]
+     }
+    ],
+    "prefixes": [
+     "f'{url_prefix}/jobs/{job_id}'"
+    ]
+   },
+   {
+    "adaptor": "qiskit_ibm_runtime.api.rest.runtime_session.RuntimeSession",
+    "methods": [
+     {
+      "method": "create",
+      "paths": [
+       ""
+      ],
+      "payload": [
+       [
+        "backend",
+        "backend"
+       ],
+       [
+        "instance",
+        "instance"
+       ],
+       [
+        "max_time",
+        "max_ttl"
+       ],
+       [
+        "mode",
+        "mode"
+       ]
+      ],
+      "verbs": [
+       "POST"
+      ]
+     },
+     {
+      "method": "cancel",
+      "paths": [
+       "/close"
+      ],
+      "payload": [],
+      "verbs": [
+       "DELETE"
+      ]
+     },
+     {
+      "method": "close",
+      "paths": [
+       ""
+      ],
+      "payload": [],
+      "verbs": [
+       "PATCH"
+      ]
+     },
+     {
+      "method": "details",
+      "paths": [
+       ""
+      ],
+      "payload": [],
+      "verbs": [
+       "GET"
+      ]
+     }
+    ],
+    "prefixes": [
+     "f'{url_prefix}/sessions'",
+     "f'{url_prefix}/sessions/{session_id}'"
+    ]
+   }
+  ],
+  "api_version_header": {
+   "IBM-API-Version": "2026-04-15"
+  }
+ },
+ "roots": [
+  {
+   "accepted_by": "qiskit_ibm_runtime.executor_sampler.Sampler",
+   "class": "qiskit_ibm_runtime.options_models.sampler.SamplerOptions",
+   "label": "client Sampler",
+   "leaf_paths": [
+    "default_shots",
+    "dynamical_decoupling.enable",
+    "dynamical_decoupling.sequence_type",
+    "dynamical_decoupling.extra_slack_distribution",
+    "dynamical_decoupling.scheduling_method",
+    "dynamical_decoupling.skip_reset_qubits",
+    "execution.init_qubits",
+    "execution.rep_delay",
+    "execution.scheduler_timing",
+    "execution.stretch_values",
+    "execution.meas_type",
+    "twirling.enable_gates",
+    "twirling.enable_measure",
+    "twirling.group",
+    "twirling.num_randomizations",
+    "twirling.shots_per_randomization",
+    "twirling.strategy",
+    "max_execution_time",
+    "simulator.angle_decimals",
+    "simulator.layer_noise_model",
+    "simulator.seed_simulator",
+    "simulator.warn_absent",
+    "experimental",
+    "environment.log_level",
+    "environment.job_tags",
+    "environment.private",
+    "environment.max_execution_time",
+    "environment.image"
+   ]
+  },
+  {
+   "accepted_by": "qiskit_ibm_runtime.executor_estimator.Estimator",
+   "class": "qiskit_ibm_runtime.options_models.estimator.EstimatorOptions",
+   "label": "client Estimator",
+   "leaf_paths": [
+    "default_precision",
+    "default_shots",
+    "execution.init_qubits",
+    "execution.rep_delay",
+    "execution.scheduler_timing",
+    "execution.stretch_values",
+    "twirling.enable_gates",
+    "twirling.enable_measure",
+    "twirling.group",
+    "twirling.num_randomizations",
+    "twirling.shots_per_randomization",
+    "twirling.strategy",
+    "dynamical_decoupling.enable",
+    "dynamical_decoupling.sequence_type",
+    "dynamical_decoupling.extra_slack_distribution",
+    "dynamical_decoupling.scheduling_method",
+    "dynamical_decoupling.skip_reset_qubits",
+    "simulator.angle_decimals",
+    "simulator.layer_noise_model",
+    "simulator.seed_simulator",
+    "simulator.warn_absent",
+    "experimental",
+    "environment.log_level",
+    "environment.job_tags",
+    "environment.private",
+    "environment.max_execution_time",
+    "environment.image",
+    "resilience.measure_mitigation",
+    "resilience.measure_noise_learning.num_randomizations",
+    "resilience.pec_mitigation",
+    "resilience.pec.max_overhead",
+    "resilience.pec.noise_gain",
+    "resilience.zne_mitigation",
+    "resilience.zne.amplifier",
+    "resilience.zne.noise_factors",
+    "resilience.zne.extrapolator",
+    "resilience.zne.extrapolated_noise_factors",
+    "resilience.layer_noise_model",
+    "resilience_level",
+    "max_execution_time"
+   ]
+  },
+  {
+   "accepted_by": "qiskit_ibm_runtime.Executor",
+   "class": "qiskit_ibm_runtime.options_models.executor.ExecutorOptions",
+   "label": "Executor",
+   "leaf_paths": [
+    "environment.log_level",
+    "environment.job_tags",
+    "environment.private",
+    "environment.max_execution_time",
+    "environment.image",
+    "execution.init_qubits",
+    "execution.rep_delay",
+    "execution.scheduler_timing",
+    "execution.stretch_values",
+    "experimental",
+    "simulator.angle_decimals",
+    "simulator.layer_noise_model",
+    "simulator.seed_simulator",
+    "simulator.warn_absent",
+    "max_execution_time"
+   ]
+  },
+  {
+   "accepted_by": "qiskit_ibm_runtime.NoiseLearnerV3",
+   "class": "qiskit_ibm_runtime.options_models.noise_learner_v3.NoiseLearnerV3Options",
+   "label": "NoiseLearnerV3",
+   "leaf_paths": [
+    "shots_per_randomization",
+    "num_randomizations",
+    "layer_pair_depths",
+    "bit_flip_checks.pre_circuit.enable",
+    "bit_flip_checks.pre_circuit.x_pulse_type",
+    "bit_flip_checks.pre_circuit.strategy",
+    "bit_flip_checks.post_circuit.enable",
+    "bit_flip_checks.post_circuit.x_pulse_type",
+    "bit_flip_checks.post_circuit.strategy",
+    "post_selection.enable",
+    "post_selection.x_pulse_type",
+    "post_selection.strategy",
+    "experimental",
+    "execution.init_qubits",
+    "execution.rep_delay",
+    "execution.scheduler_timing",
+    "execution.stretch_values",
+    "environment.log_level",
+    "environment.job_tags",
+    "environment.private",
+    "environment.max_execution_time",
+    "environment.image",
+    "max_execution_time"
+   ]
+  },
+  {
+   "accepted_by": "qiskit_ibm_runtime.calibrator.Calibrator",
+   "class": "qiskit_ibm_runtime.options_models.calibrator.CalibratorOptions",
+   "label": "Calibrator",
+   "leaf_paths": [
+    "environment.log_level",
+    "environment.job_tags",
+    "environment.private",
+    "environment.max_execution_time",
+    "environment.image",
+    "experimental"
+   ]
+  },
+  {
+   "accepted_by": "qiskit_ibm_runtime.SamplerV2",
+   "class": "qiskit_ibm_runtime.options.sampler_options.SamplerOptions",
+   "label": "server SamplerV2",
+   "leaf_paths": [
+    "max_execution_time",
+    "environment.log_level",
+    "environment.job_tags",
+    "environment.private",
+    "simulator.noise_model",
+    "simulator.seed_simulator",
+    "simulator.coupling_map",
+    "simulator.basis_gates",
+    "default_shots",
+    "dynamical_decoupling.enable",
+    "dynamical_decoupling.sequence_type",
+    "dynamical_decoupling.extra_slack_distribution",
+    "dynamical_decoupling.scheduling_method",
+    "dynamical_decoupling.skip_reset_qubits",
+    "execution.init_qubits",
+    "execution.rep_delay",
+    "execution.meas_type",
+    "twirling.enable_gates",
+    "twirling.enable_measure",
+    "twirling.num_randomizations",
+    "twirling.shots_per_randomization",
+    "twirling.strategy",
+    "experimental"
+   ]
+  },
+  {
+   "accepted_by": "qiskit_ibm_runtime.EstimatorV2",
+   "class": "qiskit_ibm_runtime.options.estimator_options.EstimatorOptions",
+   "label": "server EstimatorV2",
+   "leaf_paths": [
+    "max_execution_time",
+    "environment.log_level",
+    "environment.job_tags",
+    "environment.private",
+    "simulator.noise_model",
+    "simulator.seed_simulator",
+    "simulator.coupling_map",
+    "simulator.basis_gates",
+    "default_precision",
+    "default_shots",
+    "resilience_level",
+    "seed_estimator",
+    "dynamical_decoupling.enable",
+    "dynamical_decoupling.sequence_type",
+    "dynamical_decoupling.extra_slack_distribution",
+    "dynamical_decoupling.scheduling_method",
+    "dynamical_decoupling.skip_reset_qubits",
+    "resilience.measure_mitigation",
+    "resilience.measure_noise_learning.num_randomizations",
+    "resilience.measure_noise_learning.shots_per_randomization",
+    "resilience.zne_mitigation",
+    "resilience.zne.amplifier",
+    "resilience.zne.noise_factors",
+    "resilience.zne.extrapolator",
+    "resilience.zne.extrapolated_noise_factors",
+    "resilience.pec_mitigation",
+    "resilience.pec.max_overhead",
+    "resilience.pec.noise_gain",
+    "resilience.layer_noise_learning.max_layers_to_learn",
+    "resilience.layer_noise_learning.shots_per_randomization",
+    "resilience.layer_noise_learning.num_randomizations",
+    "resilience.layer_noise_learning.layer_pair_depths",
+    "resilience.layer_noise_model",
+    "execution.init_qubits",
+    "execution.rep_delay",
+    "twirling.enable_gates",
+    "twirling.enable_measure",
+    "twirling.num_randomizations",
+    "twirling.shots_per_randomization",
+    "twirling.strategy",
+    "experimental"
+   ]
+  }
+ ],
+ "runtime_requirements": [
+  "ibm-platform-services >=0.61.1",
+  "ibm-quantum-schemas <1,>=0.12.20260921",
+  "numpy >=1.26.2",
+  "pybase64 >=1.4.0",
+  "pydantic >=2.13.0",
+  "python-dateutil >=2.9.0",
+  "qiskit <3,>=2.3.0",
+  "qiskit-mitigation >=0.1.1",
+  "requests >=2.32.4",
+  "requests-ntlm >=1.1.0",
+  "samplomatic >=0.21.0",
+  "scipy >=1.5.0",
+  "urllib3 >=2.4.0"
+ ],
+ "schema": "ibm-runtime-options-inventory-v1"
+}

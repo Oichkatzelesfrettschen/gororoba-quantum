@@ -1,0 +1,69 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -323,15 +323,32 @@
+ 			set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -I${PYTHON_SITE_PATH}/cuquantum/include")
+ 			set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -I${PYTHON_SITE_PATH}/cutensor/include")
+ 			set(THRUST_DEPENDANT_LIBS "${THRUST_DEPENDANT_LIBS} -Wl,--disable-new-dtags")
+-			set(THRUST_DEPENDANT_LIBS "${THRUST_DEPENDANT_LIBS} -Wl,-rpath,'${STR_ORIGIN}/../../nvidia/cublas/lib'")
+-			set(THRUST_DEPENDANT_LIBS "${THRUST_DEPENDANT_LIBS} -Wl,-rpath,'${STR_ORIGIN}/../../nvidia/cusolver/lib'")
+-			set(THRUST_DEPENDANT_LIBS "${THRUST_DEPENDANT_LIBS} -Wl,-rpath,'${STR_ORIGIN}/../../nvidia/cusparse/lib'")
+-			set(THRUST_DEPENDANT_LIBS "${THRUST_DEPENDANT_LIBS} -Wl,-rpath,'${STR_ORIGIN}/../../nvidia/cuda_runtime/lib'")
+-			set(THRUST_DEPENDANT_LIBS "${THRUST_DEPENDANT_LIBS} -Wl,-rpath,'${STR_ORIGIN}/../../cutensor/lib'")
+-			set(THRUST_DEPENDANT_LIBS "${THRUST_DEPENDANT_LIBS} -Wl,-rpath,'${STR_ORIGIN}/../../cuquantum/lib'")
+-			set(THRUST_DEPENDANT_LIBS "${THRUST_DEPENDANT_LIBS} -Wl,--no-as-needed,-l:libcusolver.so.11")
+-			set(THRUST_DEPENDANT_LIBS "${THRUST_DEPENDANT_LIBS} -Wl,--no-as-needed,-l:libcusparse.so.${CUDA_VERSION_MAJOR}")
+-			set(THRUST_DEPENDANT_LIBS "${THRUST_DEPENDANT_LIBS} -L${PYTHON_SITE_PATH}/cuquantum/lib")
++			if(CUDA_VERSION_MAJOR VERSION_GREATER_EQUAL 13)
++				# CUDA 13 pip wheels install every toolkit library into
++				# nvidia/cu13/lib; cuSOLVER 12 and cuSPARSE 12 keep soname major 12.
++				# Every library the cuQuantum libraries reach is a direct
++				# dependency: the loader maps the module's DT_NEEDED entries
++				# breadth-first through its DT_RPATH, so a dependency's RUNPATH
++				# search finds the soname loaded and LD_LIBRARY_PATH cannot
++				# substitute another copy.
++				set(AER_PIP_CUDA_LIB_DIRS nvidia/cu${CUDA_VERSION_MAJOR}/lib)
++				set(AER_PIP_PRELOAD_SONAMES libcusolver.so.12 libcusparse.so.12
++					libcublas.so.13 libcublasLt.so.13 libnvJitLink.so.13 libcutensor.so.2)
++			else()
++				set(AER_PIP_CUDA_LIB_DIRS nvidia/cublas/lib nvidia/cusolver/lib nvidia/cusparse/lib nvidia/cuda_runtime/lib)
++				set(AER_PIP_PRELOAD_SONAMES libcusolver.so.11 libcusparse.so.${CUDA_VERSION_MAJOR})
++			endif()
++			# CMake escapes $ORIGIN for the active generator in INSTALL_RPATH;
++			# a literal $ORIGIN inside link flags reaches Ninja or Make as a
++			# variable reference and expands to an empty string.
++			set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
++			foreach(AER_PIP_LIB_DIR ${AER_PIP_CUDA_LIB_DIRS} cutensor/lib cuquantum/lib)
++				list(APPEND CMAKE_INSTALL_RPATH "$ORIGIN/../../${AER_PIP_LIB_DIR}")
++				set(THRUST_DEPENDANT_LIBS "${THRUST_DEPENDANT_LIBS} -L${PYTHON_SITE_PATH}/${AER_PIP_LIB_DIR}")
++			endforeach()
++			foreach(AER_PIP_SONAME ${AER_PIP_PRELOAD_SONAMES})
++				set(THRUST_DEPENDANT_LIBS "${THRUST_DEPENDANT_LIBS} -Wl,--no-as-needed,-l:${AER_PIP_SONAME}")
++			endforeach()
+ 			set(THRUST_DEPENDANT_LIBS "${THRUST_DEPENDANT_LIBS} -Wl,--no-as-needed,-l:libcustatevec.so.1")
+ 			set(THRUST_DEPENDANT_LIBS "${THRUST_DEPENDANT_LIBS} -Wl,--no-as-needed,-l:libcutensornet.so.2")
+ 
+--- a/setup.py
++++ b/setup.py
+@@ -62,6 +62,22 @@
+         classifiers_cuda = [
+             "Environment :: GPU :: NVIDIA CUDA :: 11",
+         ]
++    elif "13" in CUDA_MAJOR:
++        # CUDA 13 wheels drop the -cu13 suffix for toolkit libraries; the
++        # cuQuantum floors are the releases the module compiles against.
++        requirements_cuda = [
++            "nvidia-cuda-runtime>=13.0,<14",
++            "nvidia-cublas>=13.0,<14",
++            "nvidia-cusolver>=12.0,<13",
++            "nvidia-cusparse>=12.6,<13",
++            "nvidia-nvjitlink>=13.0,<14",
++            "custatevec-cu13>=1.15.0,<2",
++            "cutensornet-cu13>=2.14.0,<3",
++            "cutensor-cu13>=2.8.1,<3",
++        ]
++        classifiers_cuda = [
++            "Environment :: GPU :: NVIDIA CUDA :: 13",
++        ]
+     else:
+         requirements_cuda = [
+             "nvidia-cuda-runtime-cu12>=12.1.105",

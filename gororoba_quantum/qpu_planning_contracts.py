@@ -29,6 +29,7 @@ import diagnostic_experiments
 import live_run
 import local_compute
 import native_preflight
+import qpe_diagnostics
 import qpu_cases
 import qpu_planning
 from runtime_contracts import _fixture_args, _ProbeBackend, _ProbeSampler, _ProbeService
@@ -1128,9 +1129,9 @@ def _verify_rep_delay_approval() -> None:
         submit_args.approved_record_sha256 = record_digest
         original_drift = live_run.approved_calibration_drift
 
-        def drift_then_move(record_: dict[str, Any], name: str, calibration: str) -> str | None:
+        def drift_then_move(record_: dict[str, Any], name: str, calibration: str, *values: Any) -> str | None:
             backend.rep_delay_range = [0.0, 0.00008]
-            return original_drift(record_, name, calibration)
+            return original_drift(record_, name, calibration, *values)
 
         try:
             with (
@@ -1219,6 +1220,136 @@ def _verify_state_prep_family() -> None:
     _require(len(metadata["observable_contracts"]) == 42, "the plan lost a per-qubit endpoint")
     rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
     _require([g.name for g in rebuilt] == [c.group.name for c in choices], "record_groups lost the per-qubit groups")
+    _verify_shot_ceiling(snapshot, qubits)
+    subset_args = _args(
+        "state-prep-control",
+        layout=qubits[:7],
+        state_prep_arms=["prep0"],
+        optimize=True,
+        shot_tiers=[4096, 8192],
+        optimizer_candidates=1,
+        max_execution_seconds=60,
+        max_total_execution_seconds=120.0,
+        reserve_seconds=0.0,
+    )
+    subset = qpu_planning.family_candidates(live_run, [snapshot], subset_args, {})
+    _require(len(subset) == 1, "the prep0-only selection produced no candidate")
+    subset_choices, subset_configuration = subset[0]
+    _require(list(subset_configuration["arms"]) == ["prep0"], f"arms recorded {subset_configuration['arms']}")
+    _require([pub.kind for pub in live_run.execution_pubs(subset_choices)] == ["static"], "prep0 alone left one PUB")
+    _require(qpu_planning.settings(subset_args)["state_prep_arms"] == ["prep0"], "the policy lost the arm selection")
+    _require("state_prep_arms" not in qpu_planning.settings(args), "an omitted selection entered the policy")
+    _verify_state_prep_history(snapshot, qubits[:7])
+
+
+def _verify_state_prep_history(snapshot: Any, qubits: list[int]) -> None:
+    """x_history alone fuses one dynamic PUB, measure then X on every named qubit, in one job of its own."""
+    args = _args(
+        "state-prep-control",
+        layout=qubits,
+        state_prep_arms=["x_history"],
+        optimize=True,
+        shot_tiers=[4096, 8192],
+        optimizer_candidates=1,
+        max_execution_seconds=60,
+        max_total_execution_seconds=120.0,
+        reserve_seconds=0.0,
+    )
+    candidates = qpu_planning.family_candidates(live_run, [snapshot], args, {})
+    _require(len(candidates) == 1, "the x_history selection produced no candidate")
+    choices, configuration = candidates[0]
+    _require(configuration["arms"] == {"x_history": "init, measure, x"}, f"arms recorded {configuration['arms']}")
+    _require("dynamic x_history PUB, alone in its job" in configuration["placement_contract"], "placement contract")
+    pubs = live_run.execution_pubs(choices)
+    _require([pub.kind for pub in pubs] == ["dynamic"], f"x_history fused into {[pub.kind for pub in pubs]}")
+    pub = pubs[0]
+    covered = sorted(q for component in pub.components for q in component.manifest()["physical_qubits"])
+    _require(covered == sorted(qubits), f"{pub.name}: measures {covered}, not every named qubit")
+    manifest = pub.manifest()
+    _require(
+        manifest["feed_forward_operation_count"] == 0 and manifest["sequential_stage_count"] == 0,
+        "the measure-then-X PUB carries classical stages",
+    )
+    # The X follows the measurement on each qubit, so a shot ends in the flip of the projected state.
+    for qubit in qubits:
+        steps = [
+            instruction.operation.name
+            for instruction in pub.circuit.data
+            if [pub.circuit.find_bit(bit).index for bit in instruction.qubits] == [qubit]
+        ]
+        _require(steps == ["measure", "x"], f"qubit {qubit}: the fused PUB runs {steps}, not measure then x")
+    _require(
+        [len(batch) for batch in live_run.submission_batches(choices, "dynamic", 8192)] == [1]
+        and not live_run.submission_batches(choices, "static", 8192),
+        "x_history left its own single-PUB job",
+    )
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
+    with patch.object(live_run, "simulate", _ideal_predictions):
+        _selected, metadata = qpu_planning.prepare(live_run, [snapshot], args, usage, {})
+    names = sorted(contract["name"] for contract in metadata["observable_contracts"])
+    _require(names == sorted(f"spc_history_excited_q{q}" for q in qubits), f"history endpoints {names}")
+    _require(qpu_planning.settings(args)["state_prep_arms"] == ["x_history"], "the policy lost the history arm")
+    for arms in ("x_history,prep0", "prep0,x_history", "x_history,reset", "reset"):
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            try:
+                live_run.main(
+                    [
+                        "--family",
+                        "state-prep-control",
+                        "--state-prep-arms",
+                        arms,
+                        "--max-execution-seconds",
+                        "60",
+                        "--max-total-execution-seconds",
+                        "60",
+                    ]
+                )
+            except SystemExit as error:
+                _require(error.code == 2, f"--state-prep-arms {arms} produced CLI status {error.code}")
+            else:
+                raise RuntimeError(f"the CLI accepted --state-prep-arms {arms}")
+        _require("--state-prep-arms" in stderr.getvalue(), f"the rejection of {arms} did not name the flag")
+
+
+def _verify_shot_ceiling(snapshot: Any, qubits: list[int]) -> None:
+    """Shot tiers above configuration().max_shots leave the plan, and a batch above it refuses."""
+    reported = qpu_planning.shot_ceiling(snapshot.backend)
+    _require(reported == 100000, f"FakeFez reports max_shots {reported}")
+    ceiling = 100000
+    _require(not qpu_planning.shot_ceiling_violations(snapshot.backend, ceiling), "max_shots itself was refused")
+    _require(bool(qpu_planning.shot_ceiling_violations(snapshot.backend, ceiling + 1)), "max_shots + 1 was admitted")
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
+
+    def tier_args(tiers: list[int]) -> Any:
+        return _args(
+            "state-prep-control",
+            layout=qubits,
+            optimize=True,
+            shot_tiers=tiers,
+            optimizer_candidates=1,
+            max_execution_seconds=60,
+            max_total_execution_seconds=120.0,
+            reserve_seconds=0.0,
+        )
+
+    trace: dict[str, Any] = {}
+    args = tier_args([8192, ceiling + 1])
+    with patch.object(live_run, "simulate", _ideal_predictions):
+        _selected, metadata = qpu_planning.prepare(live_run, [snapshot], args, usage, trace)
+    planned = {int(row["proxy_metadata"]["shots"]) for row in metadata["optimization"]["candidates"]}
+    _require(planned == {8192} and args.shots == 8192, f"the optimizer planned tiers {planned}")
+    _require(
+        trace.get("shot_ceiling") == {"max_shots": ceiling, "dropped_tiers": [ceiling + 1]},
+        f"the dropped tier left no trace: {trace.get('shot_ceiling')}",
+    )
+    try:
+        with patch.object(live_run, "simulate", _ideal_predictions):
+            qpu_planning.prepare(live_run, [snapshot], tier_args([ceiling + 1]), usage, {})
+    except live_run.LiveRunError as error:
+        _require("max_shots" in str(error), f"the planner refused for another reason: {error}")
+    else:
+        raise RuntimeError("a plan whose every tier exceeds max_shots was admitted")
 
 
 def _verify_prep_excitation() -> None:
@@ -1341,7 +1472,9 @@ def _verify_state_prep_only() -> None:
         _verify_state_prep_family()
     print(
         "QPU planning: state-prep-control pins each arm to its named qubit, fuses two static PUBs and one "
-        "dynamic PUB over every qubit, refuses the retained layout off its backend, and admits 8192 shots"
+        "dynamic PUB over every qubit, refuses the retained layout off its backend, admits 8192 shots and drops "
+        "tiers above max_shots; x_history alone fuses one dynamic measure-then-X PUB in its own job and refuses any "
+        "other arm beside it"
     )
 
 
@@ -1359,6 +1492,44 @@ def _verify_rep_delay_only() -> None:
     print(
         "QPU planning: --rep-delay refuses outside rep_delay_range, moves each PUB's charge per shot by the delay "
         "change, binds the policy and execution contract, and stops a changed delay or range before any job"
+    )
+
+
+def _verify_window_bracket(snapshot: live_run.Snapshot) -> None:
+    """Every n21-orbit-rca arm keeps work-qubit gates out of the control's measurement-and-reset window.
+
+    The barrier-free n21-orbit-feedback pair is the negative control: its
+    compiled multipliers place work-only gates inside the window.
+    """
+    traces: dict[str, Any] = {}
+    rca = qpu_planning.family_candidates(live_run, [snapshot], _args("n21-orbit-rca"), traces)
+    _require(bool(rca), f"FakeFez rejects every N=21 window family: {traces}")
+    (choice,), _configuration = rca[0]
+    _require(len(choice.isas) == 8, "N=21 window family lost an arm")
+    for member, isa in zip(choice.group.members, choice.isas, strict=True):
+        inside = frozenset({"delay", "x"}) if "_window_echo_" in member.name else frozenset({"delay"})
+        found = qpe_diagnostics.window_bracket_violations(isa, inside)
+        _require(not found, f"{member.name}: the window holds work-qubit operations {found}")
+    unbracketed = qpu_planning.family_candidates(live_run, [snapshot], _args("n21-orbit-feedback"), traces)
+    _require(bool(unbracketed), f"FakeFez rejects every N=21 orbit family: {traces}")
+    (control,), _configuration = unbracketed[0]
+    for member, isa in zip(control.group.members, control.isas, strict=True):
+        _require(
+            bool(qpe_diagnostics.window_bracket_violations(isa)),
+            f"{member.name}: the barrier-free window holds no work-qubit operation, so the check proves nothing",
+        )
+
+
+def _verify_window_bracket_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_window_bracket(snapshot)
+    print(
+        "QPU planning: every compiled n21-orbit-rca arm keeps work-qubit gates outside the control's "
+        "measurement-and-reset window, and the barrier-free n21-orbit-feedback pair does not"
     )
 
 
@@ -1382,8 +1553,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "--prep-excitation", action="store_true", help="run only the declared initial-excitation contracts"
     )
+    parser.add_argument("--window-bracket", action="store_true", help="run only the N=21 orbit window-bracket contract")
     parsed = parser.parse_args()
-    if parsed.static_group_admission:
+    if parsed.window_bracket:
+        _verify_window_bracket_only()
+    elif parsed.static_group_admission:
         _verify_static_admission_only()
     elif parsed.rep_delay:
         _verify_rep_delay_only()

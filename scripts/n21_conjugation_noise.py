@@ -133,7 +133,7 @@ def circuits(two_round: tuple[int, ...], ten_round: tuple[int, ...]) -> dict[str
 
 
 def _backend(snapshot: dict[str, Any]) -> calibration_snapshot.SnapshotBackend:
-    backend, _ = calibration_snapshot.noise_model(snapshot)
+    backend = calibration_snapshot.snapshot_backend(snapshot)
     if "if_else" not in backend.target.operation_names:
         backend.target.add_instruction(IfElseOp, name="if_else")
     return backend
@@ -373,8 +373,9 @@ def run(challenger: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any
                 optimization_level=OPTIMIZATION_LEVEL, target=backend.target, seed_transpiler=chosen["seed_transpiler"]
             )
             active, qubits = snapshot_laws.restrict_circuit(manager.run(built[name]))
-            # Dynamic circuits stay unbatched: Aer's batched GPU sampler
-            # aborts on if_else (calibration_snapshot.noise_simulator).
+            # On a GPU the simulator batches shots of the circuits without
+            # control flow and runs the feed-forward ones shot by shot
+            # (calibration_snapshot.SnapshotSimulator).
             simulator = calibration_snapshot.noise_simulator(
                 snapshot_laws.restrict(snapshot, qubits), DEVICE, method="statevector"
             )

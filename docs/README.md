@@ -13,9 +13,9 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 23 licensed PDFs and two aliases;
-85 external sources retain citations and optional ignored local reading copies.
-Four licensed original software archives retain upstream notices under
+license evidence. The library publishes 25 licensed PDFs and two aliases;
+97 external sources retain citations and optional ignored local reading copies.
+Five licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](PDF_SHA256SUMS) verifies the published PDF set from the
 repository root with `sha256sum -c docs/PDF_SHA256SUMS`.
@@ -135,6 +135,20 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [Coste](notes/coste-semialgebraic-geometry.md) | Semialgebraic geometry: compatible triangulation, Hardt triviality and local conic structure (2002) | none | method | none |
 | [Hatcher](notes/hatcher-algebraic-topology.md) | Algebraic Topology, Chapter 0, attachment and quotient hypotheses | none | method | none |
 | [Carlstrom](notes/wheels-carlstrom.md) | Wheels: total division by zero, the wheel of fractions and its axioms (2001 report; MSCS 2004) | none | method | none |
+| [1903.02492](notes/1903.02492.md) | Rol et al., Net Zero bipolar flux-pulse CZ gate (2019) | high | medium | low |
+| [2008.07411](notes/2008.07411.md) | Negirneac et al., Sudden Net Zero CZ gate (PRL 126, 220502, 2021) | high | medium | low |
+| [2102.13071](notes/2102.13071.md) | Marques et al., logical-qubit operations on a Surface-7 transmon processor (Nat. Phys. 18, 80, 2022) | medium | low | low |
+| [1708.07677](notes/1708.07677.md) | Fu et al., QuMA experimental control microarchitecture (2017) | medium | none | none |
+| [1808.02449](notes/1808.02449.md) | Fu et al., eQASM executable QISA with explicit timing (HPCA 2019) | medium | none | none |
+| [2310.01120](notes/2310.01120.md) | van der Schoot et al., quantum metrics on Quantum Inspire Starmon-5 (2023) | high | none | medium |
+| [1809.01043](notes/1809.01043.md) | Klimov et al., T1 fluctuations from two-level-system spectral diffusion (PRL 121, 090502, 2018) | medium | medium | none |
+| [1901.05352](notes/1901.05352.md) | Schloer et al., low-frequency burst noise from single fluctuators in a transmon (PRL 123, 190502, 2019) | medium | medium | none |
+| [1903.01043](notes/1903.01043.md) | Sung et al., non-Gaussian noise spectroscopy with a flux qubit sensor (Nat. Commun. 10, 3715, 2019) | low | medium | none |
+| [2006.14044](notes/2006.14044.md) | Bravyi et al., tensor-product and CTMP readout-error mitigation (PRA 103, 042605, 2021) | medium | high | low |
+| [2108.12518](notes/2108.12518.md) | Nation et al., matrix-free measurement mitigation (M3; PRX Quantum 2, 040326, 2021) | medium | high | low |
+| [1801.07904](notes/1801.07904.md) | Heinsoo et al., rapid multiplexed readout and its crosstalk (PR Applied 10, 034040, 2018) | medium | medium | low |
+| [2002.01471](notes/2002.01471.md) | Geller, rigorous justification of transition-matrix measurement correction (QST 5, 03LT01, 2020) | low | high | low |
+| [1606.05721](notes/1606.05721.md) | Sank et al., measurement-induced state transitions (PRL 117, 190503, 2016) | low | low | low |
 | [2403.09514](notes/2403.09514.md) | Baeumer et al., Quantum Fourier transform using dynamic circuits, PRL 133, 150602 (2024) | high | none | medium |
 | [2403.06852](notes/2403.06852.md) | Seif et al., Suppressing correlated noise via context-aware compiling, ISCA 2024 | high | none | low |
 | [1101.4707](notes/1101.4707.md) | Bylander et al., Noise spectroscopy through dynamical decoupling with a superconducting flux qubit, Nat. Phys. 7, 565 (2011) | medium | none | none |

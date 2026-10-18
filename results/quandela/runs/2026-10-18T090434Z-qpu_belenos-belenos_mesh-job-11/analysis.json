@@ -1,0 +1,68 @@
+{
+ "blocks": [
+  {
+   "a": 0.961136024,
+   "a_wilson95": [
+    0.957029059,
+    0.964864875
+   ],
+   "config": "two_label-04",
+   "dark_corrected": {
+    "a": 0.961136024,
+    "expected_dark_in_block": 0.0,
+    "expected_dark_outside": 709.8,
+    "in_block": 0.978662933
+   },
+   "in_block": 0.9366,
+   "in_block_wilson95": [
+    0.931654261,
+    0.941210432
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 0,
+   "one_click_by_mode": [
+    4942,
+    4060,
+    239,
+    125
+   ],
+   "one_click_outside_block": 634,
+   "one_click_outside_by_mode": {
+    "1": 40,
+    "12": 1,
+    "13": 6,
+    "14": 33,
+    "15": 4,
+    "16": 6,
+    "18": 12,
+    "19": 36,
+    "2": 71,
+    "5": 376,
+    "9": 49
+   },
+   "other_multi_click": 0,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.06651719
+  }
+ ],
+ "cases_sha256": "7ee003b854f7f989b5659551c3ba37065ff55fe3b0afcad5da713f47b53eb171",
+ "compiled": {
+  "distinct": 1,
+  "iterations": [],
+  "job": {
+   "chars": 16230,
+   "sha256": "06b5bcdb2532a5a21dabd3511d0ef5c70cfbf8f281f51239e17bfb99da7d3eb2"
+  }
+ },
+ "job_id": "a5f0a8a4-9750-4daa-b321-9d60201bc297",
+ "logical_perf": 1,
+ "noise": ":PCVL:NoiseModel:{\"g2\": 0.01, \"indistinguishability\": 0.579, \"transmittance\": 0.0288}",
+ "physical_perf": 0.06876432039064147,
+ "platform": "qpu:belenos",
+ "result_sha256": "e994caa86077c34f658f1243d6245f11b32fb49c20915667b3017c0a073cb5a8",
+ "run": "2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11",
+ "samples": 10000,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 10000,
+ "status": "completed"
+}

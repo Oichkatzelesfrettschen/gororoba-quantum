@@ -501,7 +501,14 @@ def emulate_cases(directories: list[Path]) -> dict[str, Any]:
             for key, want in row["expected_leftmost"].items():
                 result, z = verdict(want, leftmost.get(key, 0), shots)
                 checks.append({"check": f"outcome {key}", "prediction": want, "z": z, "verdict": result})
-        if row["kind"] == "readout":
+        if row["kind"] == "readout" and "excited" in row:
+            # qubit q is the character width - 1 - q of a key (qubit 0 rightmost).
+            ok = all(
+                key == "".join("1" if q in row["excited"] else "0" for q in reversed(range(len(key))))
+                for key in outcome
+            )
+            checks.append({"check": f"readout 1 on q{row['excited']} only", "verdict": "pass" if ok else "refuted"})
+        elif row["kind"] == "readout":
             want = "0" if row["file"] == "readout-0.cq" else "1"
             ok = all(set(key) == {want} for key in outcome)
             checks.append({"check": f"readout all {want}", "verdict": "pass" if ok else "refuted"})

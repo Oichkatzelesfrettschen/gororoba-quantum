@@ -1,0 +1,37 @@
+{
+  "schema": "planning-pooled-contract-qualification-v1",
+  "source_commit": "5fc3b8fc2ea6b720bbf8288a9d815eb8a50e4378",
+  "scope": "Concurrent local execution of both recorded gate commands with four workers per gate, native threads one. Both contracts pass their original layout, timing, budget, approval and scientific assertions. These local times do not establish a controlled speedup against the separate hosted one-worker measurements.",
+  "command": "Run the recorded ci/gates.json commands through ci/run_gates.py _run with GOROROBA_WORKERS=4, PYTHON naming the upgraded SDK environment, and one native BLAS/OpenMP/Rayon/Qiskit thread per worker.",
+  "sources_sha256": {
+    "gororoba_quantum/qpu_planning_contracts.py": "dd6bffc964c990040db3f5e1c318d27445b544b1f66b95fc3f6122534971de9d",
+    "gororoba_quantum/qpu_planning.py": "4ef7503f9c4e42debdaf0d6bd6bda302367b54affca566f31217f93a2201b047",
+    "gororoba_quantum/live_run.py": "b597930ab25fa0374733700e730850375b15db07659d0fb470aa1200e7037995"
+  },
+  "records": [
+    {
+      "name": "core-523",
+      "status": 0,
+      "seconds": 121.33804912101186,
+      "resources": {
+        "user_seconds": 258.942029,
+        "system_seconds": 2.582924,
+        "max_rss_kib": 1210484,
+        "workers": 4
+      },
+      "output": "audit record: /tmp/gororoba-rep-delay-approval-6rerbext/approved\nQPU planning: --rep-delay refuses outside rep_delay_range, moves each PUB's charge per shot by the delay change, binds the policy and execution contract, and stops a changed delay or range before any job\naudit record: /tmp/gororoba-rep-delay-approval-wxj4fzvv/approved\nQPU planning: --rep-delay refuses outside rep_delay_range, moves each PUB's charge per shot by the delay change, binds the policy and execution contract, and stops a changed delay or range before any job\n"
+    },
+    {
+      "name": "core-094",
+      "status": 0,
+      "seconds": 123.82902980000654,
+      "resources": {
+        "user_seconds": 209.325258,
+        "system_seconds": 2.119473,
+        "max_rss_kib": 1490276,
+        "workers": 4
+      },
+      "output": "audit record: /tmp/gororoba-planning-approval-71u16kja\naudit record: /tmp/gororoba-rep-delay-approval-vinza2gx/approved\nQPU planning: matching, calibrated timing, budgets, shot optimization, approval, infeasible archives, unrouted rejection diagnostics, coherence readout maps, calibrated patch selection and the requested repetition delay checked\n"
+    }
+  ]
+}
