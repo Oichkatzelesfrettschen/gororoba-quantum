@@ -666,6 +666,27 @@ and batch-04, every check exact, the double-X twin all 0 in 2048 shots).
   in one witness per batch; the follow series spends those margins on
   observables T0 cannot reach (above).
 
+**Follow results, 2026-10-17.** results/quantum_inspire/box_kite_tuna_17_follow_analysis.json
+holds the seven follow batches (23:08Z to 23:29Z), the five follow twin
+batches and the pre-T0, T0 and twin runs above; brackets moved at most
+0.0076 and every batch passed sanity.
+
+- Preregistered decisions: all six rows classified (edge D -0.964, -0.953,
+  -0.916; twist +0.967, +0.952; strut 0.001); twist equality in all four
+  block x setting crossovers (|Delta| at most 0.0040, |z| at most 2.44);
+  every depth-1 X coherence with the census sign; strut branches and both
+  omit controls inside 0.1 + 3 sigma; both walks with omega's sign (-0.784
+  star, -0.937 path) and magnitudes inside 0.10 of r^n_CZ. Verdict continue.
+- Reported estimates: r_coh 0.962, 0.957, 0.908 and r_pop 0.925, 0.915 (the
+  (12,14) contrast turns negative at depth 9) per pair, phase slopes within
+  0.008 rad per CZ, walk phases 0.297 and 0.052 rad. The depth-9 X and Y
+  replicas, in consecutive batches, differ by 0.024 to 0.033 on every pair,
+  beyond shot noise, so these intervals understate the uncertainty.
+- Drift against T0, seven and a half hours earlier: -0.209 on (12,14) at
+  depth 9 and -0.106 on (10,13) at depth 5. The all-qubit readout-1
+  bracket overstates q13's e10 in the witness context (two (10,13)
+  coherences correct to |E| = 1.10).
+
 ## 5. Run order and budget
 
 The Kaggle sweep runs first: it sets the ideal outcome of every family (a)
@@ -695,10 +716,10 @@ every shot: on the build host a family (a) circuit took 0.14 to 0.23 s at
 2048 shots, while a dense d2 or d3 circuit took about 215 s, so the de
 family costs about 15000 CPU-seconds and the whole sweep about an hour on a
 4-CPU Kaggle kernel. Tuna-17 executes 503808 shots; the fit over the
-retained jobs (0.491 ms per shot plus 3.0 s per job) puts the follow series
-at about 234 s of execution, each job near 11 s against the 300 s limit,
-and with collection, checks and seven 120 s pauses it takes about 25
-minutes. QX 2048 shots per circuit is its maximum
+retained jobs before it (0.491 ms per shot plus 3.0 s per job) put the
+follow series at 234 s of execution, each job near 11 s against the 300 s
+limit; it executed in 243 s and, with collection, checks and the 120 s
+pauses, took 21 minutes of wall time (23:08Z to 23:29Z). QX 2048 shots per circuit is its maximum
 and Ry 1024 its maximum. Quantum Inspire records no charge for this account;
 the limits are structural (catalogue in
 docs/evidence/quantum_inspire/catalogue.json).

@@ -14,7 +14,7 @@
  ],
  "budget": {
   "batches": 7,
-  "fitted_execution_s": 233.645054,
+  "fitted_execution_s": 238.08616,
   "jobs": 21,
   "replicas": 42,
   "shots_per_job": 16384,
@@ -519,28 +519,28 @@
  "timing": {
   "coefficients": {
    "fixed_s": {
-    "se": 0.425744328,
-    "value": 2.98557987
+    "se": 0.461427358,
+    "value": 2.92046677
    },
    "per_shot_per_cz_s": {
-    "se": 3.55704958e-07,
-    "value": 8.17091086e-07
+    "se": 3.80838637e-07,
+    "value": 9.20470412e-07
    },
    "per_shot_per_one_qubit_s": {
-    "se": 1.44750084e-07,
-    "value": 2.91495178e-08
+    "se": 1.52643276e-07,
+    "value": -3.84911783e-08
    },
    "per_shot_s": {
-    "se": 3.14890605e-05,
-    "value": 0.000490968929
+    "se": 3.16555898e-05,
+    "value": 0.00050864221
    },
    "wait_time_ratio": {
-    "se": 0.874748025,
-    "value": 1.42743076
+    "se": 0.915474004,
+    "value": 1.11327391
    }
   },
-  "jobs": 105,
-  "residual_sd_s": 1.09397931,
+  "jobs": 126,
+  "residual_sd_s": 1.1963043,
   "shots": [
    4096,
    8192,

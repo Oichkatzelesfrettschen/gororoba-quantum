@@ -2676,7 +2676,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "shellcheck -S error ci/fetch_open_gororoba.sh",
+   "cmd": "shellcheck -S error ci/fetch_open_gororoba.sh ci/install_pins.sh",
    "name": "core-402",
    "seconds": 1.0,
    "tier": "pr"
@@ -3143,6 +3143,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/aer_gpu_probe.py --check docs/evidence/aer_gpu_configuration/result.json && \"$PYTHON\" -B -O -W error scripts/aer_gpu_probe.py --check docs/evidence/aer_gpu_configuration/result.json",
+   "name": "core-367",
+   "seconds": 22.6,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config/output/output/aer_gpu_probe.json --workloads toy,width --widths 7,10 && \"$PYTHON\" -B -O -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config/output/output/aer_gpu_probe.json --workloads toy,width --widths 7,10",
+   "name": "core-450",
+   "seconds": 20.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -O -W error scripts/box_kite_cases.py --check results/quantum_inspire/cases",
    "name": "core-420",
    "seconds": 41.0,
@@ -3197,9 +3213,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json && \"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_ry_analysis.json && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_ry_analysis.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json && \"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_ry_analysis.json && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_ry_analysis.json && \"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_follow_analysis.json && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_follow_analysis.json",
    "name": "core-425",
-   "seconds": 4.1,
+   "seconds": 7.6,
    "tier": "pr"
   },
   {
@@ -3451,6 +3467,22 @@
    "cmd": "\"$PYTHON\" -B -W error gaussian_wheel.py --self-test && \"$PYTHON\" -B -O -W error gaussian_wheel.py --self-test",
    "name": "core-498",
    "seconds": 10.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_rust_audit.py --check docs/evidence/wheel_rust_audit && \"$PYTHON\" -B -O -W error scripts/wheel_rust_audit.py --check docs/evidence/wheel_rust_audit",
+   "name": "sources-251",
+   "seconds": 9.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_rust_audit.py --self-test && \"$PYTHON\" -B -O -W error scripts/wheel_rust_audit.py --self-test",
+   "name": "sources-252",
+   "seconds": 0.4,
    "tier": "pr"
   }
  ],

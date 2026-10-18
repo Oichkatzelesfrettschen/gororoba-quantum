@@ -45,7 +45,15 @@ and what it must prove before its output counts.
    seventeen algebra distributions; the byte comparison binds the rest.
 3. `capacity.json` (smoke kernels): the widest GHZ circuit each Aer method
    runs on the GPU.
-4. The entry's stdout, stderr, exit code and changed files.
+4. The entry's stdout and stderr, written to `stdout.txt` and `stderr.txt`
+   as the entry prints (`kernel_main.start_entry` sets
+   `PYTHONUNBUFFERED=1`), then its exit code and the repository files it
+   changed, which the kernel copies under `repo/` after the entry exits.
+   A session Kaggle ends at `--timeout` still returns
+   `/kaggle/working/output` but never reaches that copy, so an entry that
+   may outlive its timeout writes its record to an absolute path under
+   `/kaggle/working/output` and rewrites it after every finished unit of
+   work, as `scripts/aer_gpu_probe.py` does per row.
 
 ## Package stack
 
@@ -92,15 +100,36 @@ and what it must prove before its output counts.
   sized to the work; kaggle_run.py refuses an accelerator push without one.
   The kernel installs qiskit-aer-gpu-cu11 0.17.2, cuquantum-cu11 24.8.0 and
   cutensor-cu11 2.2.0 and sets `GOROROBA_AER_DEVICE=GPU`.
-- **cuStateVec.** `noise_simulator(..., custatevec=True)` sets
-  `cuStateVec_enable` on a GPU statevector run; `scripts/aer_gpu_probe.py
-  --only cpu_statevector gpu_statevector gpu_statevector_custatevec` records
+- **cuStateVec.** `noise_simulator(..., custatevec=True)`, or
+  `GOROROBA_AER_CUSTATEVEC=1` in the entry's environment, sets
+  `cuStateVec_enable` on a GPU statevector or density-matrix run; `scripts/aer_gpu_probe.py
+  --workloads n21 --configurations
+  cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec` records
   the three paths with Aer's reported `cuStateVec_enable`. The option excludes
   `batched_shots_gpu`. `docs/notes/kaggle/custatevec.md` holds the library
   chain, the T4 push command and how to read its result.
+- **Pinned GPU environment.** A push with `--gpu-env` runs the entry in
+  /tmp/gororoba/gpu-venv:
+  - The venv runs the image's Python with the repository's pins and the GPU
+    Aer wheels in qiskit-aer's place.
+  - Before the entry, gpu_env.json records each pin's installed version, the
+    owners of `qiskit_aer/__init__.py`, Aer's devices, and two seeded Bell
+    runs on the GPU.
+  - A nonempty `failures` list stops the kernel with exit 4, before the
+    entry starts. Each failure names what to fix:
+    - a pin that resolved to another version;
+    - a CPU qiskit-aer that shares the qiskit_aer/ files;
+    - a GPU that nvidia-smi does not list;
+    - a Bell run that raised, ran on another device, or left cuStateVec off.
+  - Read gpu-env-report.txt and install-pins.txt in the output for the
+    commands' own output.
+  - "Keeping the run on the GPU" in `docs/notes/kaggle/custatevec.md` maps
+    each route to the CPU to the check that closes it.
 - **Using it in an entry.** The entry passes
   `calibration_snapshot.aer_device()` to `noise_simulator(snapshot, device,
-  method=...)`.
+  method=...)`. On a GPU the simulator batches shots of circuits of at most
+  10 active qubits without control flow and runs feed-forward circuits shot
+  by shot (`calibration_snapshot.SnapshotSimulator`).
 - **Noise model width.** Restricting the snapshot and the circuit to the
   active qubits (`snapshot_laws.restrict` and `restrict_circuit`) keeps
   Aer's noise model at the circuit's width on either device.
