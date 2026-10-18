@@ -13,8 +13,8 @@
    "median_tvd_over_floor": 1.436
   },
   "0.3": {
-   "gain_over_dephasing": -40.012,
-   "median_tvd_over_floor": 2.2
+   "gain_over_dephasing": -39.76,
+   "median_tvd_over_floor": 2.191
   }
  },
  "best_tau": 0.1,

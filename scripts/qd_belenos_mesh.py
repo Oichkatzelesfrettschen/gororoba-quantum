@@ -109,6 +109,8 @@ EFFICIENCY_STATIC_ITERATIONS = 600
 FOLLOWUP_SCHEMA = "qd-belenos-followup-v1"
 FOLLOWUP_RMS = 0.08
 FOLLOWUP_DRAWS = 200
+# followup-preregistration.json fixes the offset draws to the stream [SEED, 21].
+FOLLOWUP_STREAM = 21
 FOLLOWUP_SPARSE_FAIL = 0.65
 FIT_TVD_RATIO = 3.0
 SAMPLES_PER_SETTING = 1_500
@@ -1311,6 +1313,18 @@ def jacobians(arch: list[Element], phases: Any, sources: list[int]) -> tuple[Any
     return np.abs(psi) ** 2, 2 * np.real(np.conj(psi)[:, :, None] * d)
 
 
+class Dephased:
+    """Exact dephasing-channel detection probabilities of one (phases, source, sigma) job on one architecture."""
+
+    def __init__(self, arch: list[Element]) -> None:
+        self.arch = arch
+
+    def __call__(self, job: tuple[list[float], int, float]) -> list[float]:
+        phases, source, sigma = job
+        out: list[float] = channel(self.arch, phases, source, sigma=sigma).tolist()
+        return out
+
+
 class StaticFit:
     """MAP estimate of one heater-offset vector shared by every setting, under a Gaussian prior of width tau."""
 
@@ -1330,10 +1344,13 @@ class StaticFit:
         weighted = p * eta
         norm = weighted.sum(1, keepdims=True)
         scale = np.maximum(total - dark.sum(1, keepdims=True), 0) / np.maximum(norm, 1e-300)
-        lam = np.maximum(scale * weighted + dark, LIKELIHOOD_FLOOR * total)
+        free = scale * weighted + dark
+        lam = np.maximum(free, LIKELIHOOD_FLOOR * total)
         value = float((n * np.log(lam / total)).sum())
-        inner = (n * eta * p / lam).sum(1, keepdims=True)
-        dldp = scale * eta * n / lam - scale * eta / norm * inner
+        # A bin held at the floor is constant in delta, so only the unfloored bins differentiate.
+        live = np.where(free >= LIKELIHOOD_FLOOR * total, n / lam, 0.0)
+        inner = (live * eta * p).sum(1, keepdims=True)
+        dldp = scale * eta * live - scale * eta / norm * inner
         return value, np.einsum("sm,smj->j", dldp, jac)
 
     def fit(self, keep: Any, tau: float) -> Any:
@@ -1376,10 +1393,12 @@ def static_cross_validation(
     rows = [list(map(int, c)) for c in np.asarray(counts)]
     darks = [list(map(float, d)) for d in np.asarray(dark)]
     effs = list(map(float, np.asarray(eta)))
-    noisy = [
-        [channel(arch, list(ph), src, sigma=sg).tolist() for sg in SCAN_SIGMAS]
-        for ph, src in zip(meshes, sources, strict=True)
-    ]
+    flat = parallel.ordered_map(
+        Dephased(arch),
+        [(list(ph), src, sg) for ph, src in zip(meshes, sources, strict=True) for sg in SCAN_SIGMAS],
+        min_items=2,
+    )
+    noisy = [flat[i * len(SCAN_SIGMAS) : (i + 1) * len(SCAN_SIGMAS)] for i in range(len(sources))]
     index = np.arange(len(sources))
     label = np.asarray(folds) if folds is not None else index % STATIC_FOLDS
     out: dict[str, Any] = {}
@@ -1581,10 +1600,13 @@ class StaticEfficiencyFit(StaticFit):
         weighted = p * eta
         norm = weighted.sum(1, keepdims=True)
         scale = total / np.maximum(norm, 1e-300)
-        lam = np.maximum(scale * weighted, LIKELIHOOD_FLOOR * total)
+        free = scale * weighted
+        lam = np.maximum(free, LIKELIHOOD_FLOOR * total)
         value = float((n * np.log(lam / total)).sum())
-        inner = (n * weighted / lam).sum(1, keepdims=True)
-        ratio = scale * n / lam
+        # A bin held at the floor is constant in delta and u, so only the unfloored bins differentiate.
+        live = np.where(free >= LIKELIHOOD_FLOOR * total, n / lam, 0.0)
+        inner = (live * weighted).sum(1, keepdims=True)
+        ratio = scale * live
         dldp = eta * ratio - scale * eta / norm * inner
         dldeta = (p * ratio - scale * p / norm * inner).sum(0)
         g = dldeta * eta
@@ -1633,11 +1655,12 @@ def efficiency_static(
     rows = [list(map(int, c)) for c in np.asarray(counts)]
     zeros = [0.0] * MODES
     noisy = np.asarray(
-        [
-            [channel(arch, list(ph), src, sigma=sg) for ph, src in zip(meshes, sources, strict=True)]
-            for sg in SCAN_SIGMAS
-        ]
-    )
+        parallel.ordered_map(
+            Dephased(arch),
+            [(list(ph), src, sg) for sg in SCAN_SIGMAS for ph, src in zip(meshes, sources, strict=True)],
+            min_items=2,
+        )
+    ).reshape(len(SCAN_SIGMAS), len(sources), MODES)
     index = np.arange(len(sources))
     label = np.asarray(folds)
     out: dict[str, Any] = {}
@@ -1736,8 +1759,16 @@ def efficiency_close(a: dict[str, Any], b: dict[str, Any]) -> None:
         == {k: b["static"][k] for k in ("best_tau", "static_declared")},
         f"{a['runs']}: static verdict differs",
     )
+    require(set(a) == set(b) and set(a["static"]) == set(b["static"]), f"{a['runs']}: record fields differ")
+    require(set(a["static"]["by_tau"]) == set(b["static"]["by_tau"]), f"{a['runs']}: prior widths differ")
+    require(set(a["classes"]) == set(b["classes"]), f"{a['runs']}: scanned classes differ")
     for name, row in a["classes"].items():
+        require(set(row) == set(b["classes"][name]), f"{name}: fields differ")
         require(row["chosen"] == b["classes"][name]["chosen"] and row["fits"] == b["classes"][name]["fits"], name)
+        p_retained, p_replayed = row["p_value"], b["classes"][name]["p_value"]
+        require(
+            abs(p_retained - p_replayed) <= max(1e-12, STATIC_REPLAY_TOLERANCE * abs(p_replayed)), f"{name} p_value"
+        )
         for key in ("held_out_log_likelihood", "g2_per_dof", "median_tvd_over_floor"):
             other = b["classes"][name][key]
             require(
@@ -1812,7 +1843,7 @@ def followup_record(preregistration: Path, job02: Path, repeat: Path, original: 
     texts = computed_circuits(job02)
     arch = run_architecture(decode(texts[0]))
     manifest = json.loads((job02 / "cases.json").read_text(encoding="utf-8"))
-    rng = np.random.default_rng([SEED, 22])
+    rng = np.random.default_rng([SEED, FOLLOWUP_STREAM])
     configurations = []
     for row, setting, text, case in zip(rows, analysis["settings"], texts, manifest["settings"], strict=True):
         require(row["name"] == setting["name"], f"{job02.name}: {setting['name']} out of order")
@@ -2075,6 +2106,60 @@ def wilson(successes: int, trials: int) -> list[float] | None:
 # --- self-test -------------------------------------------------------------------------------
 
 
+def gradient_self_test() -> int:
+    """Both static fits return the derivative of the likelihood they return, bins held at the floor included.
+
+    S3's returned meshes put most modes near zero light, so clicks added where the mesh predicts below
+    LIKELIHOOD_FLOOR hold those bins at the floor; central differences of the likelihood in the offsets and
+    the efficiency logarithms must match the analytic gradients there.
+    """
+    import numpy as np
+
+    texts = computed_circuits(RUNS / S3_RUN)
+    arch = run_architecture(decode(texts[0]))
+    manifest = json.loads((RUNS / S3_RUN / "cases.json").read_text(encoding="utf-8"))
+    meshes = np.asarray([mesh_phases(arch, decode(t)) for t in texts[:3]])
+    sources = [row["low"] for row in manifest["settings"][:3]]
+    rng = np.random.default_rng([SEED, 31])
+    p, jac = jacobians(arch, meshes, sources)
+    counts = np.asarray([rng.multinomial(SAMPLES_PER_SETTING, row / row.sum()) for row in p], float)
+    floored = [(s, int(np.argmin(p[s]))) for s in range(len(sources))]
+    # The heaters that move each floored bin most are where a derivative that counts its clicks goes wrong.
+    probes = {int(j) for s, m in floored for j in np.argsort(-np.abs(jac[s, m]))[:2]}
+    probes |= {int(j) for j in rng.choice(meshes.shape[1], 3, replace=False)}
+    for s, m in floored:
+        require(p[s, m] < LIKELIHOOD_FLOOR / 10, f"gradient self-test: mode {m} of setting {s} carries light")
+        counts[s, m] += 50
+    keep = np.arange(len(sources))
+    delta = rng.normal(0, 0.05, meshes.shape[1])
+    u = rng.normal(0, 0.2, MODES)
+    plain = StaticFit(arch, meshes, sources, counts, np.ones(MODES), np.zeros((len(sources), MODES)))
+    joint = StaticEfficiencyFit(arch, meshes, sources, counts)
+    _, g_plain = plain.loglik(delta, keep)
+    _, g_delta, g_u = joint.joint(delta, u, keep)
+    step = 1e-6
+    checked = 0
+    for j in sorted(probes):
+        e = np.zeros(meshes.shape[1])
+        e[j] = step
+        pairs = (
+            ((plain.loglik(delta + e, keep)[0] - plain.loglik(delta - e, keep)[0]) / (2 * step), g_plain[j]),
+            ((joint.joint(delta + e, u, keep)[0] - joint.joint(delta - e, u, keep)[0]) / (2 * step), g_delta[j]),
+        )
+        for numeric, analytic in pairs:
+            require(
+                abs(numeric - analytic) <= 1e-4 * max(1.0, abs(analytic)), f"offset {j}: {numeric} against {analytic}"
+            )
+            checked += 1
+    for k in rng.choice(MODES, 4, replace=False):
+        e = np.zeros(MODES)
+        e[k] = step
+        numeric = (joint.joint(delta, u + e, keep)[0] - joint.joint(delta, u - e, keep)[0]) / (2 * step)
+        require(abs(numeric - g_u[k]) <= 1e-4 * max(1.0, abs(g_u[k])), f"efficiency {k}: {numeric} against {g_u[k]}")
+        checked += 1
+    return checked
+
+
 def self_test() -> int:
     import numpy as np
 
@@ -2155,7 +2240,8 @@ def self_test() -> int:
         rejected += 1
     else:
         raise SystemExit("self-test: an altered RCA verdict replayed")
-    print(f"self-test: {rejected} mutations rejected")
+    checked = gradient_self_test()
+    print(f"self-test: {rejected} mutations rejected, {checked} static-fit derivatives match central differences")
     return 0
 
 
