@@ -3797,7 +3797,7 @@
    "status": "completed"
   }
  ],
- "retrieved_utc": "2026-10-18T17:34:42+00:00",
+ "retrieved_utc": "2026-10-18T18:45:31+00:00",
  "schema": "qi-usage-v2",
  "totals": {
   "by_backend_type_id": {},
@@ -3807,9 +3807,5 @@
   "shots_done": 6076416
  },
  "transactions": [],
- "unretained": [
-  1535502,
-  1535503,
-  1535504
- ]
+ "unretained": []
 }

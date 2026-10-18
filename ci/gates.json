@@ -2496,9 +2496,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "cmp docs/evidence/atlas_detuning_map/result.json results/kaggle/2026-10-16T114149Z-gororoba-atlas-detuning-map/output/output/repo/results/kaggle_out/atlas_detuning_map.json && cmp docs/evidence/ghost_runs/result.json results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/output/output/repo/results/kaggle_out/ghost_runs.json && cmp docs/evidence/census_frequency_design/result.json results/kaggle/2026-10-16T043842Z-gororoba-census-frequency-design/output/output/repo/results/kaggle_out/census_frequency_design.json",
+   "cmd": "cmp docs/evidence/atlas_detuning_map/result.json results/kaggle/2026-10-16T114149Z-gororoba-atlas-detuning-map/output/output/repo/results/kaggle_out/atlas_detuning_map.json && \"$PYTHON\" -B -W error scripts/ghost_run.py --provenance docs/evidence/ghost_runs/result.json results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/output/output/repo/results/kaggle_out/ghost_runs.json && cmp docs/evidence/census_frequency_design/result.json results/kaggle/2026-10-16T043842Z-gororoba-census-frequency-design/output/output/repo/results/kaggle_out/census_frequency_design.json",
    "name": "core-293",
-   "seconds": 0.1,
+   "seconds": 1.0,
    "tier": "pr"
   },
   {
@@ -2513,9 +2513,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs results/live/2026-10-13T080216.451663Z && \"$PYTHON\" -B -O -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs results/live/2026-10-13T080216.451663Z && \"$PYTHON\" -B -W error scripts/ghost_run.py --report docs/evidence/ghost_runs/result.json | cmp - docs/evidence/ghost_runs/report.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs results/live/2026-10-13T080216.451663Z,merged && \"$PYTHON\" -B -O -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs results/live/2026-10-13T080216.451663Z,merged && \"$PYTHON\" -B -W error scripts/ghost_run.py --report docs/evidence/ghost_runs/result.json | cmp - docs/evidence/ghost_runs/report.json",
    "name": "core-287",
-   "seconds": 127.6,
+   "seconds": 110.5,
    "tier": "full"
   },
   {
@@ -2998,6 +2998,22 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_local_dimension.py --check docs/evidence/rank_locus_local_dimension/result.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_local_dimension.py --check docs/evidence/rank_locus_local_dimension/result.json",
    "name": "core-328",
    "seconds": 80.6,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_gap_directions.py --check docs/evidence/rank_locus_gap_directions/result.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_gap_directions.py --check docs/evidence/rank_locus_gap_directions/result.json",
+   "name": "core-551",
+   "seconds": 10.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_gap_directions.py --self-test && \"$PYTHON\" -B -O -W error scripts/rank_locus_gap_directions.py --self-test",
+   "name": "core-552",
+   "seconds": 13.3,
    "tier": "pr"
   },
   {
@@ -3798,6 +3814,14 @@
   },
   {
    "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --submit-reuse && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --submit-reuse",
+   "name": "core-549",
+   "seconds": 69.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json --live 0 && \"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json && \"$PYTHON\" -B -O -W error scripts/n21_qx_conformance.py --self-test",
    "name": "core-499",
@@ -3994,6 +4018,55 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --compare-parts docs/evidence/ghost_error_scale/part_a.json --result results/kaggle/2026-10-18T055207Z-gororoba-ghost-branching-sweep/output/output/ghost_error_scale_branching.json --require-tolerance && \"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --compare-parts docs/evidence/ghost_error_scale/part_b.json --result results/kaggle/2026-10-18T055207Z-gororoba-ghost-branching-sweep/output/output/ghost_error_scale_branching.json --require-tolerance && \"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --compare-parts docs/evidence/ghost_error_scale/part_c.json --result results/kaggle/2026-10-18T055207Z-gororoba-ghost-branching-sweep/output/output/ghost_error_scale_branching.json --require-tolerance",
    "name": "core-453",
    "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_calibrations.py --self-test && \"$PYTHON\" -O -B -W error scripts/ghost_calibrations.py --self-test",
+   "name": "core-560",
+   "seconds": 1.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_run.py --self-test && \"$PYTHON\" -O -B -W error scripts/ghost_run.py --self-test",
+   "name": "core-561",
+   "seconds": 1.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --self-test-cz-free",
+   "name": "core-562",
+   "seconds": 32.0,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -O -W error scripts/qx_reset_phase_probe.py --check results/quantum_inspire/cases",
+   "name": "core-455",
+   "seconds": 0.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --replay results/quantum_inspire/qx_reset_phase_analysis.json && \"$PYTHON\" -B -O -W error scripts/qx_reset_phase_probe.py --replay results/quantum_inspire/qx_reset_phase_analysis.json",
+   "name": "core-456",
+   "seconds": 0.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --self-test && \"$PYTHON\" -B -O -W error scripts/qx_reset_phase_probe.py --self-test",
+   "name": "core-457",
+   "seconds": 0.3,
    "tier": "pr"
   }
  ],

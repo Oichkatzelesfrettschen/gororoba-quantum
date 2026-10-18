@@ -479,7 +479,16 @@ sedenion statement never rests on them.
   and timestamps compare as instants whatever their UTC offset. Right after
   the first discovery, before planning, the submission checks the approved
   isa.qpy circuits against the fresh Target and properties by the same rule
-  and writes `approval_required` in seconds. The submission plans only over
+  and writes `approval_required` in seconds. When the source digest,
+  dependency versions, simulator seed, policy, compiled circuits, QPY bytes
+  and every group's calibration values equal the approved record's, and
+  every recorded Aer batch ran on CPU by a route the host's GPU cannot
+  change (`local_compute.host_independent_route`), the submission copies the approved predictions (`reuse_approved_predictions`)
+  and, for a matched family whose approved search held one routed candidate
+  set under the same contracts, tiers, PUB cost inputs and optimization
+  budget, the approved design (`approved_family_design`) instead of
+  simulating; any differing input re-plans in full, and the run records
+  `prediction_reuse` with the approved record's digest. The submission plans only over
   the backends the approved record found eligible
   (`live_run.approved_backend_scope`), so a
   backend whose queue or status changed after the dry run cannot enter the
