@@ -2,6 +2,12 @@
  "cases_sha256": "de2076c8388badaab55ea07f2c811d87dc252527b2f3c496c80f888e78ac3423",
  "cell": {
   "acquisition_s_estimate": 0.100024,
+  "block_counts": [
+   425,
+   1123,
+   849,
+   951
+  ],
   "compilation_seed": 20,
   "cone_modes": [
    8,
@@ -21,6 +27,7 @@
    22,
    23
   ],
+  "cone_share": 0.906363,
   "form": "single",
   "ideal_cone_modes": [
    13,
@@ -53,8 +60,12 @@
   "in_cone_samples": 9060,
   "independent_gated_expectation": 19.334,
   "job_duration_s": 14.0,
+  "label_share": 0.154862,
   "max_samples": 10000,
   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+  "n_block": 3348,
+  "n_cone_outside_block": 5712,
+  "n_off_cone": 936,
   "name": "job-13",
   "off_cone_by_mode": {
    "5": 936

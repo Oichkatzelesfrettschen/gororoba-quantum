@@ -1,0 +1,72 @@
+{
+ "blocks": [
+  {
+   "a": 0.390154129,
+   "a_wilson95": [
+    0.375756745,
+    0.404745484
+   ],
+   "compilation_seed": 20,
+   "config": "two_label-04",
+   "dark_corrected": null,
+   "in_block": 0.4347,
+   "in_block_wilson95": [
+    0.425011022,
+    0.444439128
+   ],
+   "kind": "two_label",
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "multi_click_in_block": 0,
+   "name": "b-s20-n10000",
+   "one_click_by_mode": [
+    1683,
+    13,
+    1433,
+    1218
+   ],
+   "one_click_outside_block": 5653,
+   "one_click_outside_by_mode": {
+    "0": 46,
+    "1": 50,
+    "10": 76,
+    "12": 68,
+    "13": 92,
+    "14": 1050,
+    "15": 883,
+    "16": 671,
+    "17": 112,
+    "18": 15,
+    "19": 2058,
+    "5": 252,
+    "6": 48,
+    "8": 58,
+    "9": 174
+   },
+   "other_multi_click": 0,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.609845871
+  }
+ ],
+ "cases_sha256": "456c582ea9c45bdaaa8e700bfebb41bb9d583aa536f49a002a72209b9e72d8b4",
+ "compiled": {
+  "distinct": 1,
+  "iterations": [
+   {
+    "chars": 16250,
+    "sha256": "9bbbaf63c8ec6bacf23fd5e83cbe023fbf5b8f93257c7876506f4da6773f21eb"
+   }
+  ],
+  "job": null
+ },
+ "job_id": "3d95587b-f840-4391-b4f9-e88caf47e15f",
+ "logical_perf": null,
+ "noise": null,
+ "physical_perf": null,
+ "platform": "qpu:belenos",
+ "result_sha256": "21bdb7925f029b94fe37ee73077401260fcf64f76117bc9bd0debe90b90d609f",
+ "run": "2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14",
+ "samples": 10000,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 10000,
+ "status": "completed"
+}

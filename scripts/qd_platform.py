@@ -633,7 +633,7 @@ def job_seed(manifest: dict[str, Any], settings: list[dict[str, Any]]) -> int | 
     """
     owner = manifest["job"]
     named = manifest.get("compilation_seed")
-    if manifest.get("iterations", 1) > 1:
+    if iteration_form(manifest) != "single":
         if named is not None:
             raise PlatformError(f"{owner}: an iterated case names compilation_seed per iteration, not in its manifest")
         return None
@@ -649,6 +649,9 @@ def iteration_form(manifest: dict[str, Any]) -> str:
     (a fixed circuit whose iterations set only their compilation_seed and, optionally, their own budgets) or
     "phase" (phi = k pi/4).
 
+    A one-iteration case is one computation unless its manifest sets "iterator": true, which sends its one
+    seeded setting as a ComputationIterator holding one entry, the payload class of every iterated job.
+
     A non-mesh iterated case with settings is seeded only when every setting names a valid compilation_seed and
     nothing else but its name, and the settings count its iterations. A seeded case names per-iteration
     max_samples and max_shots on every setting or on none; named budgets are positive integers with
@@ -656,8 +659,13 @@ def iteration_form(manifest: dict[str, Any]) -> str:
     """
     owner = manifest["job"]
     steps = manifest.get("iterations", 1)
-    if steps == 1:
+    iterator = manifest.get("iterator", False)
+    if iterator is not False and (iterator is not True or steps != 1 or manifest.get("gate_form") == "mesh"):
+        raise PlatformError(f"{owner}: iterator is true only on a one-iteration seeded case, not {iterator!r}")
+    if steps == 1 and not iterator:
         return "single"
+    if iterator and manifest.get("settings") is None:
+        raise PlatformError(f"{owner}: a one-entry iterator names its setting")
     if manifest.get("gate_form") == "mesh":
         return "mesh"
     settings = manifest.get("settings")
@@ -773,7 +781,7 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     else:
         parts = [computer.estimate_required_shots(base, nsamples=n, param_values=params) for n, _ in budgets]
         estimate = None if any(part is None for part in parts) else sum(parts)
-    if steps > 1:
+    if form != "single":
         for k in range(steps):
             if mesh:
                 # A mesh iteration binds all 574 phases and its own input mode.
@@ -1326,6 +1334,7 @@ def seed_self_test() -> None:
         (many, "phase"),
         ({**many, "gate_form": "mesh", "settings": [{}, {}]}, "mesh"),
         ({**many, "settings": seeded}, "seeded"),
+        ({**one, "iterator": True, "settings": seeded[:1]}, "seeded"),
     ]
     for manifest, form in forms:
         if iteration_form(manifest) != form:
@@ -1347,6 +1356,22 @@ def seed_self_test() -> None:
         except PlatformError:
             continue
         raise SystemExit(f"self-test: iteration_form accepted ladder {bad_ladder}")
+    if job_seed({**one, "iterator": True, "settings": seeded[1:]}, seeded[1:]) is not None:
+        raise SystemExit("self-test: a one-entry iterator carried its seed on the base computation")
+    for bad_iterator in (
+        {**one, "iterator": True},
+        {**one, "iterator": 1, "settings": seeded[:1]},
+        {**one, "iterator": True, "settings": seeded},
+        {**many, "iterator": True, "settings": seeded},
+        {**one, "iterator": True, "gate_form": "mesh", "settings": [{}]},
+        {**one, "iterator": True, "compilation_seed": 0, "settings": seeded[:1]},
+    ):
+        try:
+            iteration_form(bad_iterator)
+            job_seed(bad_iterator, bad_iterator.get("settings") or [])
+        except PlatformError:
+            continue
+        raise SystemExit(f"self-test: accepted iterator case {bad_iterator}")
     for bad_settings in (
         seeded[:1],
         [seeded[0], {"name": "b"}],

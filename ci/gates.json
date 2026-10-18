@@ -2906,7 +2906,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_cone.py --check docs/evidence/quandela/belenos_light_cone.json results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04 results/quandela/runs/2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04 results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08 results/quandela/runs/2026-10-18T074524Z-qpu_belenos-belenos_mesh-job-09 results/quandela/runs/2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10 results/quandela/runs/2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11 results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12 results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_cone.py --check docs/evidence/quandela/belenos_light_cone.json results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04 results/quandela/runs/2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04 results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08 results/quandela/runs/2026-10-18T074524Z-qpu_belenos-belenos_mesh-job-09 results/quandela/runs/2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10 results/quandela/runs/2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11 results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12 results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13 results/quandela/runs/2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14 results/quandela/runs/2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
    "name": "core-546",
    "seconds": 2.0,
    "tier": "pr"
@@ -2916,6 +2916,14 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_cone.py --check-readout docs/evidence/quandela/belenos_seeded_single.json results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
    "name": "core-547",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_cone.py --check-readout-series docs/evidence/quandela/belenos_payload_series.json results/quandela/runs/2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14 results/quandela/runs/2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "name": "core-563",
    "seconds": 1.0,
    "tier": "pr"
   },
@@ -3546,6 +3554,22 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_shot_record_line.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_shot_record_line.py --self-test",
    "name": "core-427",
    "seconds": 3.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_ladder_line_bins.py --check results/quantum_inspire/box_kite_tuna_17_ladder_line_bins.json && \"$PYTHON\" -B -O -W error scripts/qi_ladder_line_bins.py --check results/quantum_inspire/box_kite_tuna_17_ladder_line_bins.json",
+   "name": "core-433",
+   "seconds": 12.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_ladder_line_bins.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_ladder_line_bins.py --self-test",
+   "name": "core-550",
+   "seconds": 66.9,
    "tier": "pr"
   },
   {

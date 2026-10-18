@@ -1050,6 +1050,20 @@
       "run": "results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
       "family": "Belenos seeded single job on Q1's mesh",
       "question": "Q1's single job at compilation_seed 20 and 10000 samples on 29dc6ef8: does the in-cone leak follow the unseeded single-job path or the single-job form at Q1's budget?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-14-singleton-iterator",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14",
+      "family": "Belenos payload-class series on Q1's mesh",
+      "question": "Q1's circuit as a ComputationIterator holding one entry at compilation_seed 20 and 10000 samples on 29dc6ef8: does wrapping the failing single computation in a one-entry iterator change the returned distribution?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-16-pair-and-reload",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+      "family": "Belenos payload-class series on Q1's mesh",
+      "question": "Two seed-20 entries at 10000 samples on 29dc6ef8, then 11 blocks of 14a96ca6 and 29dc6ef8: does a second entry recover the iterated behavior, and does a 29dc6ef8 acquisition after a load of another mesh fail?"
     }
   ],
   "claims": [
@@ -5830,7 +5844,7 @@
       "evidence": [
         {
           "path": "docs/evidence/quandela/belenos_light_cone.json",
-          "sha256": "2a8a980ec810573bd363e3989c94755ac03fe02e4f66587f0982becbd9adb4e0"
+          "sha256": "816f21f88dc91c0f37a4d82a71617263f22560c6b40344946d9a6edf31775b45"
         },
         {
           "path": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/raw/result.json",
@@ -5863,6 +5877,14 @@
         {
           "path": "results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13/raw/result.json",
           "sha256": "7c4cf0ce7d480c0b3422eb150164a610557998dbab75e668969bfdaef06fc717"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14/raw/result.json",
+          "sha256": "21bdb7925f029b94fe37ee73077401260fcf64f76117bc9bd0debe90b90d609f"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16/raw/result.json",
+          "sha256": "5bc8cee631060d0f9a2a16465df54c83c50c68d46ac9ce58c38a840bd0fcc4ab"
         }
       ],
       "documents": [
@@ -5880,6 +5902,8 @@
         "qd-qpu-belenos-mesh-job-11-d3",
         "qd-qpu-belenos-mesh-job-12-d2-d4",
         "qd-qpu-belenos-mesh-job-13-seeded-single",
+        "qd-qpu-belenos-mesh-job-14-singleton-iterator",
+        "qd-qpu-belenos-mesh-job-16-pair-and-reload",
         "qd-qpu-belenos-single-job-04",
         "qd-qpu-belenos-single-job-04-replay"
       ],
@@ -5922,7 +5946,7 @@
       "evidence": [
         {
           "path": "docs/evidence/quandela/belenos_seeded_single.json",
-          "sha256": "69c2800ffbc152d5ecfb079ae80ab4e4287375866bb198a19066ee7f368ac431"
+          "sha256": "9fac44a518673b9075c43e4f72d2ae2c82916196cf1c445755364cefd0898eb8"
         },
         {
           "path": "results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13/analysis.json",
@@ -5950,6 +5974,169 @@
       ],
       "supersedes": [
         "proposed-qd-belenos-seeded-single-job-q1-mesh"
+      ],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-single-job-failure-is-a-transformation",
+      "statement": "On qpu:belenos mesh 29dc6ef8 the requested experiment and its reported mesh fail to predict the returned output distribution of the 10000-sample single jobs, which put most of the target block on its dilation modes, where the ideal is dark: Q1 (206, 996, 1772, 1724) and (260, 1130, 1770, 1878) and job-13 (425, 1123, 849, 951) on modes 20 to 23 against the ideal (1/2, 1/2, 0, 0). The label modes hold 0.12, 0.14 and 0.15 of every one-click sample (0.26, 0.28 and 0.46 of the block) against 0.81 to 0.96 of every one-click sample in the passing Q1-circuit cells on 29dc6ef8 and 14a96ca6; a uniform survival factor leaves the normalized distribution unchanged and cannot populate a dark output. Q1's two identical bodies agree with each other while job-13, whose body differs only by compilation_seed 20, returns a different wrong histogram (0.31 of its clicks on mode 16) under the same reported mesh, so the reported mesh identifier does not determine the observed behavior. The RCA's implemented error classes over their searched ranges fit job-13 no better than TVD 0.39 against a 0.012 shot floor, the ideal outputs of the 135 complete meshes served to this account no better than 0.20 (Q1) and 0.29 (job-13), and reweighting the passing 10000-sample iteration by powers of the receipt's t_out leaves it 0.77 to 0.79 from job-13.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Three failing single jobs on one mesh. The record does not isolate the optical transformation from input preparation, applied settings, detector assignment, acquisition, the service's default DetectorBalancing or result assembly; the fitted phase gains (-0.30 for Q1, +0.41 for job-13) characterize the failure of one gain model, not a physical gain. The stale-load test covers only complete meshes served to this account, not a partial configuration, another account's configuration, a mixture or stale load plus further error; the reweighting test excludes the t_out family only, not arbitrary correction, mode assignment or format-dependent processing. The reported mesh hash verifies the returned circuit description, not the applied phases.",
+      "evidence": [
+        {
+          "path": "docs/evidence/quandela/belenos_light_cone.json",
+          "sha256": "816f21f88dc91c0f37a4d82a71617263f22560c6b40344946d9a6edf31775b45"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/raw/result.json",
+          "sha256": "8943a7bbcc55633c4c050b6d429ac23bbf44083af7927c3287ebe71b946c14a3"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04/raw/result.json",
+          "sha256": "8c54ddda4c4b0cbd212480f6729af0b7f3515d4f0f4456da25f0137368a98eeb"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12/raw/result.json",
+          "sha256": "42b4c1b048b9bf128fb8d4e47c9875c0d0bda1897b900f195a2c36be7a5c54ae"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13/raw/result.json",
+          "sha256": "7c4cf0ce7d480c0b3422eb150164a610557998dbab75e668969bfdaef06fc717"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md",
+        "docs/notes/quandela/form-dwell-decomposition.md"
+      ],
+      "gates": {
+        "core-546": "replay",
+        "core-545": "admission"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-08-form",
+        "qd-qpu-belenos-mesh-job-09-bridge",
+        "qd-qpu-belenos-mesh-job-10-d1",
+        "qd-qpu-belenos-mesh-job-11-d3",
+        "qd-qpu-belenos-mesh-job-12-d2-d4",
+        "qd-qpu-belenos-mesh-job-13-seeded-single",
+        "qd-qpu-belenos-single-job-04",
+        "qd-qpu-belenos-single-job-04-replay"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-light-cone-reading"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "proposed-qd-belenos-payload-class-series",
+      "statement": "Q1's case on qpu:belenos at compilation_seed 20 and 10000 samples per entry, first as a ComputationIterator holding one entry (case belenos_mesh/job-14), then job-15 (a single computation, the time control) after a job-14 pass or job-16 (two identical entries) after a job-14 fail, at most two jobs and about 2.03 credits, reads each entry's in-cone TVD from the served mesh's ideal: at most 0.20 passes, at least 0.50 fails, void off 29dc6ef8 or when the result's results_list length differs from the payload sent; job-14 pass with job-15 fail reads that the failure follows the single-computation payload class.",
+      "domain": "hardware",
+      "evidence_class": "proposed experiment",
+      "status": "superseded",
+      "boundary": "One mesh at one budget; job-14 always precedes its follower, so request form, entry position and elapsed execution stay coupled within the block, and each reading describes the ordered block, not a subsystem. Mitigation-off and native samples arms change the execution path and stay out. job-14 ran and failed (qd-belenos-singleton-iterator-fails-on-q1-mesh), so job-16 is the prescribed follower; a run needs the user's approval of the written case.",
+      "evidence": [],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-single-job-failure-is-a-transformation"
+      ],
+      "supersedes": [],
+      "superseded_by": "qd-belenos-q1-failure-persists-until-mesh-load"
+    },
+    {
+      "id": "qd-belenos-singleton-iterator-fails-on-q1-mesh",
+      "statement": "Q1's circuit sent to qpu:belenos as a ComputationIterator holding one entry at compilation_seed 20 and 10000 samples (job 3d95587b, case belenos_mesh/job-14) returned one results_list entry with one photon on mode 20 and 10000 retained samples, served Q1's mesh 29dc6ef8 and read tvd_cone_from_ideal 0.823 against a 0.004 shot floor, the preregistered fail (at least 0.50). The block read (1683, 13, 1433, 1218) on modes 20 to 23 against the ideal (1/2, 1/2, 0, 0), a label share of 0.17 of every one-click sample, with 2058 clicks on mode 19 and 1050 and 882 on modes 14 and 15: a fourth distinct wrong histogram under the same reported mesh. A one-entry iterator does not restore the behavior iterated jobs on 29dc6ef8 show (0.982 to 0.995 in-cone block retention), so the singleton iterator payload alone does not separate the failing and passing executions.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job on one mesh, about 3.2 hours after job-13. The result envelope's one entry shows the iterator representation returned, not a distinct internal worker branch. Whether a second entry, entry position or preceding execution matters is job-16's question; the service's default DetectorBalancing applied as in every earlier job.",
+      "evidence": [
+        {
+          "path": "docs/evidence/quandela/belenos_payload_series.json",
+          "sha256": "e5254e1779caeba5ec0dade8876814611277a6debff2b2743f0de5182b353afa"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14/raw/result.json",
+          "sha256": "21bdb7925f029b94fe37ee73077401260fcf64f76117bc9bd0debe90b90d609f"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14/analysis.json",
+          "sha256": "d17100985c352cefa422c8926a4004b8615c12c7346eabd39734483ebb00a5ad"
+        },
+        {
+          "path": "results/quandela/cases/belenos_mesh/job-14/cases.json",
+          "sha256": "456c582ea9c45bdaaa8e700bfebb41bb9d583aa536f49a002a72209b9e72d8b4"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-563": "replay",
+        "core-545": "admission",
+        "core-537": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-14-singleton-iterator"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-q1-leak-single-job-form-whatever-seed"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-q1-failure-persists-until-mesh-load",
+      "statement": "In one qpu:belenos job (46b810ae, case belenos_mesh/job-16, 24 entries of Q1's circuit at 10000 samples, 149 s) the two leading seed-20 entries on 29dc6ef8 failed (tvd_cone_from_ideal 0.819 and 0.814; blocks (1708, 7, 1378, 1175) and (1788, 25, 1427, 1215) on modes 20 to 23), reproducing job-14's histogram within TVD 0.04 to 0.05, so a second entry on the same mesh does not recover; every one of the 11 following 14a96ca6 entries passed (0.080 to 0.103) and every one of the 11 29dc6ef8 entries that each followed a 14a96ca6 entry passed (0.078 to 0.104, post-load failure share 0 of 11, Wilson 95 % 0 to 0.26). The wrong state set at the start of a job on 29dc6ef8 persists while the job keeps that mesh and clears after one load of another mesh; the preregistered extension reading is '29dc6ef8 recovers after a load of another mesh while repeating the job's first mesh kept the failure'.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job, one target mesh and one reference mesh; entry order is assumed to be execution order since no result entry carries a timestamp. The failing state is reproducible within this session (job-14 and job-16 30 minutes apart) but differs from Q1's and job-13's earlier histograms, and its realized transformation matches no ideal output of the 135 meshes served to this account (best TVD 0.20) or any other source mode of 29dc6ef8 (best 0.41). Why a job that opens on 29dc6ef8 at 10000 samples fails while D2's 1500-sample opening entry on it passed, and whether a reference warm-up entry recovers other meshes or other jobs, stay open; the service's default DetectorBalancing applied throughout.",
+      "evidence": [
+        {
+          "path": "docs/evidence/quandela/belenos_payload_series.json",
+          "sha256": "e5254e1779caeba5ec0dade8876814611277a6debff2b2743f0de5182b353afa"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16/raw/result.json",
+          "sha256": "5bc8cee631060d0f9a2a16465df54c83c50c68d46ac9ce58c38a840bd0fcc4ab"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16/analysis.json",
+          "sha256": "b3fd942aa3be10dd4c78aa9597c2938a8f0d2ebb7d5777aa7304fd37589bbf53"
+        },
+        {
+          "path": "results/quandela/cases/belenos_mesh/job-16/cases.json",
+          "sha256": "3cff3dec9eacb3e54b3657875507ee7f50f15bbf2bb4efe7290c838dae3d973b"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-563": "replay",
+        "core-545": "admission",
+        "core-537": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-14-singleton-iterator",
+        "qd-qpu-belenos-mesh-job-16-pair-and-reload"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-singleton-iterator-fails-on-q1-mesh"
+      ],
+      "supersedes": [
+        "proposed-qd-belenos-payload-class-series"
       ],
       "superseded_by": null
     }
