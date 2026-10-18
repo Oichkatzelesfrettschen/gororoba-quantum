@@ -311,7 +311,9 @@ Kingston's margin at the worst measured difference changes class, from a
 core-329 failure (0.39) to a pass (2.1). Fez stays a failure (0.47): a
 substrate whose slope block moved by the worst measured amount on this model
 would still fail core-329 on Fez's contrasts, with every solver and every
-precision in this study.
+precision in this study. The measured AOCL-to-OpenBLAS difference on this
+model's slope block is about 1e-14, not 3.5e-13, and it moves Fez `[1]` by
+2.2e-6 (see [Substrate split of the P4 moves](#substrate-split-of-the-p4-moves)).
 
 Over all 2716 designs, the worst-size slope perturbation leaves the smallest
 parameter margin at 2.49, on Fez lane 6 `detuning_and_axis_tilt`, fold 9.
@@ -384,6 +386,11 @@ the requirements.txt pins.
       solution under OpenBLAS. The two runs split each move between the
       solve and the resimulation, and a move that stays when only the
       resimulation substrate changes refutes the attribution.
+    - Measured in
+      [Substrate split of the P4 moves](#substrate-split-of-the-p4-moves):
+      the slope block differs by about 1e-14. The solve share is 2.2e-6
+      (Fez) and 5.4e-7 (Kingston), and the resimulation share is below
+      1e-15, so the attribution holds.
 - **P5 holds.**
   - The p-adic reconstruction equals the Fraction solution on all 2716
     designs.
@@ -421,7 +428,9 @@ the requirements.txt pins.
   sensitivity of the problem.
 - #207's normwise contrast rule admits the moves at the median measured
   design difference (margins 6.0 and 66). At the worst measured difference it
-  admits Kingston's (margin 2.1) and not Fez's (margin 0.47).
+  admits Kingston's (margin 2.1) and not Fez's (margin 0.47). On the
+  measured OpenBLAS build both pass, at core-329 margins of 31.7 and 72.6
+  ([Substrate split of the P4 moves](#substrate-split-of-the-p4-moves)).
 - The lever is the model or the tolerance, not the arithmetic.
   - An exact change of variables leaves x*, its sensitivity to the design,
     and the resimulated contrasts unchanged.
@@ -434,6 +443,79 @@ the requirements.txt pins.
 - For anyone re-deriving fits from `result.json`, the retained rounding of
   slopes and offsets dominates everything here, at up to 631 tolerances.
 
+## Substrate split of the P4 moves
+
+`scripts/axis_tilt_substrate_split.py` runs P4's falsifier on two real
+substrates. It writes `substrate_split.json`.
+
+**Prediction, stated before measuring.** P4's worst-perturbation moves
+(#213) are 2.0e-4 (Fez `[1]`) and 3.5e-5 (Kingston `[0]`). They come from a
+random slope-block perturbation of 3.5e-13.
+- If the solve share between AOCL and OpenBLAS stays below a tenth of those
+  moves, the issue is moot on these substrates.
+- If core-329's margin on OpenBLAS comes out at or below 2, the issue stands.
+- A resimulation share comparable to the solve share refutes P4's
+  least-squares attribution.
+
+**Substrates.** Both run on the build host: Python 3.14.7, numpy 2.5.4,
+scipy 1.18.1 and qiskit 2.5.2.
+- S is the Arch numpy on AMD AOCL BLAS 5.3 (BLIS and libflame).
+- T is a uv venv with the pip numpy on scipy-openblas 0.3.34 (CI's numpy,
+  scipy and BLAS pins). Its qiskit stays at the host's 2.5.2, so BLAS is the
+  only difference.
+- The retained atlas record, which core-329 compares against, comes from a
+  third substrate: the Kaggle kernel, with numpy 2.1.3 and Python 3.13.15.
+
+**Method.**
+- Each substrate captures lane 4 of both backends (`--capture`) and solves
+  every `axis_tilt_plus_mean` fold.
+- It resimulates the held-out edge at four solutions:
+  - its own;
+  - the other substrate's;
+  - its own lstsq of the other's fold problem;
+  - its own lstsq of the other's design with its own offsets.
+- The four cells split each move: full = own_T - own_S, solve =
+  resim_S(x_T) - own_S, resimulation = resim_T(x_S) - own_S, interaction =
+  full - solve - resimulation.
+- Two captures on each substrate agree bit for bit, so no run-to-run term
+  enters the split.
+
+**Results**, the moved prediction of each lane, base S:
+
+| | Fez `[1]` | Kingston `[0]` |
+| --- | ---: | ---: |
+| slope-block difference, that fold (relative 2-norm) | 1.0e-14 | 1.2e-14 |
+| largest lane-4 design difference, any model | 3.5e-13 (`zz_symmetric` fold 11) | 2.0e-13 (`zz_symmetric` fold 9) |
+| full move | 2.20e-6 | 5.38e-7 |
+| solve share | 2.20e-6 | 5.38e-7 |
+| design share (T's slope block alone) | 2.05e-6 | 5.38e-7 |
+| resimulation share | -4.4e-16 | -2.4e-16 |
+| full move / core-329 contrast tolerance | 0.023 | 0.0074 |
+| P4's random move scaled to the measured difference | 5.8e-6 | 1.2e-6 |
+| design share / scaled random move | 0.35 | 0.45 |
+| core-329 margin, S / T | 95.2 / 31.7 | exact / 72.6 |
+
+- Over every fold of both lanes, the full move stays at most 0.023 of the
+  tolerance.
+- The resimulation share and the interaction stay below 1.2e-15.
+- The core-329 margins equal what core-329 prints on each substrate. They
+  measure the distance to the Kaggle record, not the S-to-T move.
+
+**Verdict.**
+- The solve share is 91 times (Fez) and 65 times (Kingston) below P4's
+  worst-perturbation moves, under the tenth that the prediction set.
+- core-329 passes on T at margins of 31.7 and 72.6.
+- The resimulation contributes nothing measurable, so P4's least-squares
+  attribution holds.
+- #213's worst case puts the largest lane-4 design difference on this
+  model's slope block. That difference sits in the `zz_symmetric` block.
+  The `axis_tilt` block moves by 9.5e-15 (Fez) and 1.1e-14 (Kingston) on
+  the full designs, and by 8.2e-15 to 1.28e-14 across the folds. That is
+  near the median over all designs.
+- Scaled linearly along the measured direction, a 3.5e-13 tilt-block
+  difference would give Fez a margin near 1.3. That figure is a
+  hypothetical that no measured substrate reaches.
+
 ## Gates
 
 - core-489: `--check` in normal and optimized Python, pr tier, 64 s of CPU
@@ -442,6 +524,20 @@ the requirements.txt pins.
 - core-493: `gororoba_quantum/wheel_algebra.py --self-test` in both modes,
   pr tier, 3.9 s. Its axiom cases run in chunks through
   `parallel.ordered_map`.
+- core-458: `scripts/axis_tilt_substrate_split.py --check` and
+  `--self-test` on `substrate_split.json` in both modes, pr tier, 3.5 s.
+  - The check binds the atlas record by sha256.
+  - It requires each retained slope block and offset vector to round to the
+    atlas lane.
+  - It requires each own fold solution to equal this host's lstsq within
+    m n eps (kappa + kappa^2 rho).
+  - It recomputes every share, fraction and margin exactly from the retained
+    log ratios.
+  - The captures rerun the simulation, about a minute per substrate, so the
+    gate checks the witness instead.
+  - It binds the P4 moves of `result.json` through `study_inputs()`. A
+    regenerated study record fails core-458 until `--combine` rewrites
+    `substrate_split.json`.
 
 `--check` recomputes everything but the pyadic lifting, the lane-4 bridge
 and the resimulations. Those need pyadic, which CI does not pin, and the
