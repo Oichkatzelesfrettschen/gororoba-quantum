@@ -47,6 +47,8 @@ from typing import Any
 from qd_platform import PlatformError, load_case, run_facts
 
 SCHEMA = "qd-box-kite-analysis-v1"
+# A mesh analysis replays within qd_belenos_mesh.ANALYSIS_TOLERANCE; every other record replays byte for byte.
+MESH_SCHEMA = "qd-belenos-mesh-analysis-v1"
 Z95 = 1.959963984540054
 
 
@@ -365,7 +367,16 @@ def main() -> int:
             path = run / "analysis.json"
             if args.write:
                 path.write_text(rendered, encoding="utf-8")
-            elif not path.is_file() or path.read_text(encoding="utf-8") != rendered:
+            elif not path.is_file():
+                raise SystemExit(f"{path} differs from the recomputed analysis")
+            elif json.loads(rendered).get("schema") == MESH_SCHEMA:
+                import qd_belenos_mesh
+
+                try:
+                    qd_belenos_mesh.close_relative(json.loads(path.read_text(encoding="utf-8")), json.loads(rendered))
+                except qd_belenos_mesh.MeshError as error:
+                    raise SystemExit(f"{path} differs from the recomputed analysis: {error}") from None
+            elif path.read_text(encoding="utf-8") != rendered:
                 raise SystemExit(f"{path} differs from the recomputed analysis")
             print(f"{run.name}: analysis {'written' if args.write else 'matches'}")
     except PlatformError as error:

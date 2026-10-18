@@ -3,7 +3,7 @@
   "bright": 1.0,
   "dark": 0.0
  },
- "best_class": "gain",
+ "best_class": "phase_noise",
  "best_model": "ideal",
  "cases_sha256": "5748a482b0d39e372582b6ad0d215f893414e88fc471e9d06a6665a8f12d7038",
  "classes": {

@@ -72,6 +72,8 @@ CASES_SCHEMA = "qd-belenos-mesh-cases-v1"
 CIRCUIT_SCHEMA = "qd-mesh-circuit-v1"
 RCA_SCHEMA = "qd-belenos-leakage-rca-v1"
 ANALYSIS_SCHEMA = "qd-belenos-mesh-analysis-v1"
+ANALYSIS_TOLERANCE = 1e-6
+TIE_NATS = 1e-6
 TRANSPILE_TOLERANCE = 1e-9
 LIKELIHOOD_FLOOR = 1e-6
 SCAN_SIGMAS = tuple(round(0.05 * k, 2) for k in range(17))
@@ -938,6 +940,27 @@ def close(a: Any, b: Any, path: str = "") -> None:
         require(a == b, f"{path}: {a!r} differs from {b!r}")
 
 
+def close_relative(a: Any, b: Any, path: str = "") -> None:
+    """Recursive equality with floats within ANALYSIS_TOLERANCE relative (at least that absolute).
+
+    A mesh analysis sums likelihoods over 24 x 24 complex products whose last bits differ between BLAS
+    builds, so its replay compares numbers to a tolerance and every string, flag and integer exactly.
+    """
+    if isinstance(a, float) or isinstance(b, float):
+        require(isinstance(a, int | float) and isinstance(b, int | float), f"{path}: {a!r} against {b!r}")
+        require(abs(a - b) <= ANALYSIS_TOLERANCE * max(1.0, abs(b)), f"{path}: {a!r} differs from {b!r}")
+    elif isinstance(a, dict):
+        require(isinstance(b, dict) and set(a) == set(b), f"{path}: keys differ")
+        for key in a:
+            close_relative(a[key], b[key], f"{path}.{key}")
+    elif isinstance(a, list):
+        require(isinstance(b, list) and len(a) == len(b), f"{path}: lengths differ")
+        for i, (x, y) in enumerate(zip(a, b, strict=True)):
+            close_relative(x, y, f"{path}[{i}]")
+    else:
+        require(a == b, f"{path}: {a!r} differs from {b!r}")
+
+
 def admit(job: Path, catalogue: dict[str, Any] | None = None) -> None:
     """Recompute every derived number of a mesh case from its retained phases, architecture and sources."""
     catalogue = load_catalogue() if catalogue is None else catalogue
@@ -1171,6 +1194,14 @@ def capped_dark(singles: list[list[int]], receipt: list[list[float]]) -> list[li
     mode's lowest click fraction over the job's settings, since a dark rate cannot exceed the least light a mode saw."""
     floors = [min(s[m] / max(sum(s), 1) for s in singles) for m in range(MODES)]
     return [[min(d[m], floors[m] * sum(s)) for m in range(MODES)] for s, d in zip(singles, receipt, strict=True)]
+
+
+def first_best(values: list[float]) -> int:
+    """Index of the first value within TIE_NATS of the maximum. Every class holds the ideal mesh at its null
+    magnitude and the misroute classes hold the dephasing channel at fraction 0, so nested points tie up to
+    float paths that differ between BLAS builds; callers order candidates simplest first."""
+    top = max(values)
+    return next(i for i, v in enumerate(values) if v >= top - TIE_NATS)
 
 
 def pooled_deviance(counts: list[int], probabilities: list[float]) -> tuple[float, int]:
@@ -1455,7 +1486,7 @@ def score(
         summed = [
             sum(loglik(c, scans[i][name][j], eta, dark[i]) for i, c in enumerate(singles)) for j in range(len(points))
         ]
-        j = max(range(len(points)), key=lambda k: summed[k])
+        j = first_best(summed)
         probabilities = [rates(c, scans[i][name][j], eta, dark[i]) for i, c in enumerate(singles)]
         pooled = [pooled_deviance(c, p) for c, p in zip(singles, probabilities, strict=True)]
         g2 = sum(d for d, _ in pooled)
@@ -1474,12 +1505,14 @@ def score(
             "fits": bool(chi2.sf(g2, max(dof, 1)) >= FIT_P_MIN and median <= FIT_TVD_RATIO),
         }
         best_ll[name] = summed[j]
-    best = max(best_ll, key=lambda k: best_ll[k])
+    # scan_axes orders classes by parameter count, so a tie resolves to the simplest nested class.
+    order = list(best_ll)
+    best = order[first_best([best_ll[k] for k in order])]
     fitting = [k for k, v in classes.items() if v["fits"]]
     return {
         "per_setting": per_setting,
         "fixed_totals": totals,
-        "fixed_best": max(names, key=lambda k: totals[k]),
+        "fixed_best": names[first_best([totals[k] for k in names])],
         "classes": classes,
         "best_class": best,
         # Every class contains the ideal mesh at its null magnitude; a best point there detects no error.
@@ -1684,15 +1717,7 @@ def self_test() -> int:
         rejected += 1
     else:
         raise SystemExit("self-test: an altered RCA verdict replayed")
-    verdicts = synthetic_verdicts()
-    expected = {
-        "phase_noise_0.6": "phase_noise",
-        "misroute_-2_0.3_noise_0.3": "misroute_-2",
-        "out_of_family": "no class fits",
-    }
-    if verdicts != expected:
-        raise SystemExit(f"self-test: the decision rule read {verdicts}, not {expected}")
-    print(f"self-test: {rejected} mutations rejected; decision rule {verdicts}")
+    print(f"self-test: {rejected} mutations rejected")
     return 0
 
 
@@ -1732,6 +1757,20 @@ def synthetic_verdicts() -> dict[str, str]:
     }
     dark = [[0.0] * MODES for _ in meshes]
     return {name: score(arch, meshes, lows, draw(t), eta, dark)["verdict"] for name, t in truths.items()}
+
+
+def rule_self_test() -> int:
+    """The decision rule on synthetic truths over the S3 meshes (see synthetic_verdicts)."""
+    verdicts = synthetic_verdicts()
+    expected = {
+        "phase_noise_0.6": "phase_noise",
+        "misroute_-2_0.3_noise_0.3": "misroute_-2",
+        "out_of_family": "no class fits",
+    }
+    if verdicts != expected:
+        raise SystemExit(f"self-test: the decision rule read {verdicts}, not {expected}")
+    print(f"rule self-test: decision rule {verdicts}")
+    return 0
 
 
 def static_self_test() -> int:
@@ -1796,6 +1835,7 @@ def main() -> int:
     group.add_argument("--check-rca", type=Path)
     group.add_argument("--self-test", action="store_true")
     group.add_argument("--self-test-static", action="store_true")
+    group.add_argument("--self-test-rule", action="store_true")
     group.add_argument("--static", type=Path, nargs="+", metavar=("OUT", "RUN"))
     group.add_argument("--check-static", type=Path, nargs="+", metavar=("OUT", "RUN"))
     args = parser.parse_args()
@@ -1804,6 +1844,8 @@ def main() -> int:
             return self_test()
         if args.self_test_static:
             return static_self_test()
+        if args.self_test_rule:
+            return rule_self_test()
         if args.static or args.check_static:
             out, *runs = args.static or args.check_static
             record = static_record(runs)

@@ -1065,8 +1065,8 @@ docs/evidence/box_kite_census/two_blade_blocks.json`), core-507 (its
 retained run), core-509 (its `--self-test`), core-510
 (`qd_belenos_mesh.py --check results/quandela/cases`), core-511 (its
 `--check-rca` replay of the leakage record), core-512 (its
-`--self-test`, the decision rule on synthetic in-family and out-of-family
-truths included), core-513 (full tier, `--self-test-static`: static offsets
+`--self-test`), core-515 (full tier, `--self-test-rule`: the decision
+rule on synthetic in-family and out-of-family truths), core-513 (full tier, `--self-test-static`: static offsets
 are declared on a static truth and on no dephasing, out-of-family or
 simulator data) and core-514 (full tier, `--check-static` of the retained
 static records within a BLAS-path tolerance).
