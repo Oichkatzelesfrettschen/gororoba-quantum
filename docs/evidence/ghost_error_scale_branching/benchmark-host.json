@@ -1,0 +1,785 @@
+{
+ "schema": "ghost-branching-benchmark-v1",
+ "host": {
+  "python": "3.14.7",
+  "cpu_model": "AMD Ryzen 5 5600X3D 6-Core Processor",
+  "available_cpus": 12,
+  "workers": 12,
+  "versions": {
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "qiskit": "2.5.2",
+   "qiskit-aer": "0.17.2",
+   "qiskit-aer-gpu-cu11": null,
+   "torch": "2.14.1"
+  },
+  "torch_cuda": "13.4",
+  "driver": "615.78.08"
+ },
+ "gpu_check": {
+  "name": "RTX 4070 Ti",
+  "count": 1,
+  "devices": [
+   "NVIDIA GeForce RTX 4070 Ti"
+  ],
+  "matmul_gap": [
+   5.002266277759561e-14
+  ],
+  "failures": []
+ },
+ "rows": [
+  {
+   "row": "numpy",
+   "engine": "numpy",
+   "device": "cpu",
+   "dtype": "complex128",
+   "workers": 12,
+   "warmup_seconds": 0.552,
+   "wall_seconds": 10.968,
+   "seconds": {
+    "workers": 10.501776937002433,
+    "worker_seconds": {
+     "prepare": 48.416,
+     "export": 56.126,
+     "evolve": 8.061,
+     "sample": 3.162
+    }
+   },
+   "before": {
+    "utc": "2026-10-18T04:20:16Z",
+    "loadavg": [
+     15.4951171875,
+     14.912109375,
+     16.98779296875
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "NVIDIA GeForce RTX 4070 Ti",
+      "utilization.gpu": "8",
+      "memory.used": "11242",
+      "memory.total": "12282",
+      "driver_version": "615.78.08"
+     }
+    ]
+   },
+   "after": {
+    "utc": "2026-10-18T04:20:27Z",
+    "loadavg": [
+     16.42822265625,
+     15.1298828125,
+     17.03662109375
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "NVIDIA GeForce RTX 4070 Ti",
+      "utilization.gpu": "37",
+      "memory.used": "11229",
+      "memory.total": "12282",
+      "driver_version": "615.78.08"
+     }
+    ]
+   },
+   "runs": {
+    "results/live/2026-10-11T152922.787095Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032911
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032488
+     }
+    },
+    "results/live/2026-10-12T055624.091217Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.044982
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.043854
+     }
+    },
+    "results/live/2026-10-13T020454.599853Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.024079
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.025665
+     }
+    },
+    "results/live/2026-10-13T022433.333775Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.040422
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.042297
+     }
+    },
+    "results/live/2026-10-13T025444.603480Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.049931
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.051388
+     }
+    },
+    "results/live/2026-10-13T032011.664435Z": {
+     "best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.031417
+     },
+     "sampled_best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.035142
+     }
+    },
+    "results/live/2026-10-13T080216.451663Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 2.0,
+      "mean_tvd": 0.022819
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 3.0,
+      "mean_tvd": 0.026245
+     }
+    },
+    "results/live/2026-10-13T083417.634585Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.029438
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.032593
+     }
+    },
+    "results/live/2026-10-13T201757.782152Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.023388
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.026617
+     }
+    },
+    "results/live/2026-10-15T030748.903241Z": {
+     "best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.175978
+     },
+     "sampled_best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.17959
+     }
+    },
+    "results/live/2026-10-15T030903.235380Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.053895
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.05682
+     }
+    },
+    "results/live/2026-10-15T031229.371738Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.071851
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.072627
+     }
+    },
+    "results/live/2026-10-15T070847.644554Z": {
+     "best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.409716
+     },
+     "sampled_best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.414481
+     }
+    },
+    "results/live/2026-10-15T070853.550532Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055475
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055032
+     }
+    },
+    "results/live/kingston-wide-control-result": {
+     "skipped": "the run keeps no record.json, isa.qpy, collect.json"
+    }
+   }
+  },
+  {
+   "row": "torch-cuda-complex128",
+   "engine": "torch",
+   "device": "cuda",
+   "dtype": "complex128",
+   "workers": 12,
+   "warmup_seconds": 0.098,
+   "wall_seconds": 34.704,
+   "seconds": {
+    "workers": 27.95833333999326,
+    "worker_seconds": {
+     "prepare": 112.544,
+     "export": 122.45
+    },
+    "upload": 1.252,
+    "evolve": 2.885,
+    "sample": 1.712
+   },
+   "before": {
+    "utc": "2026-10-18T04:20:27Z",
+    "loadavg": [
+     16.42822265625,
+     15.1298828125,
+     17.03662109375
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "NVIDIA GeForce RTX 4070 Ti",
+      "utilization.gpu": "37",
+      "memory.used": "11259",
+      "memory.total": "12282",
+      "driver_version": "615.78.08"
+     }
+    ]
+   },
+   "after": {
+    "utc": "2026-10-18T04:21:02Z",
+    "loadavg": [
+     23.03173828125,
+     16.9716796875,
+     17.5849609375
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "NVIDIA GeForce RTX 4070 Ti",
+      "utilization.gpu": "22",
+      "memory.used": "11333",
+      "memory.total": "12282",
+      "driver_version": "615.78.08"
+     }
+    ]
+   },
+   "runs": {
+    "results/live/2026-10-11T152922.787095Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032911
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032488
+     }
+    },
+    "results/live/2026-10-12T055624.091217Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.044982
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.043854
+     }
+    },
+    "results/live/2026-10-13T020454.599853Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.024079
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.025665
+     }
+    },
+    "results/live/2026-10-13T022433.333775Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.040422
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.042297
+     }
+    },
+    "results/live/2026-10-13T025444.603480Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.049931
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.051388
+     }
+    },
+    "results/live/2026-10-13T032011.664435Z": {
+     "best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.031417
+     },
+     "sampled_best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.035142
+     }
+    },
+    "results/live/2026-10-13T080216.451663Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 2.0,
+      "mean_tvd": 0.022819
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 3.0,
+      "mean_tvd": 0.026245
+     }
+    },
+    "results/live/2026-10-13T083417.634585Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.029438
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.032593
+     }
+    },
+    "results/live/2026-10-13T201757.782152Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.023388
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.026617
+     }
+    },
+    "results/live/2026-10-15T030748.903241Z": {
+     "best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.175978
+     },
+     "sampled_best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.17959
+     }
+    },
+    "results/live/2026-10-15T030903.235380Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.053895
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.05682
+     }
+    },
+    "results/live/2026-10-15T031229.371738Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.071851
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.072627
+     }
+    },
+    "results/live/2026-10-15T070847.644554Z": {
+     "best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.409716
+     },
+     "sampled_best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.414481
+     }
+    },
+    "results/live/2026-10-15T070853.550532Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055475
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055032
+     }
+    },
+    "results/live/kingston-wide-control-result": {
+     "skipped": "the run keeps no record.json, isa.qpy, collect.json"
+    }
+   },
+   "law_gap": {
+    "results/live/2026-10-11T152922.787095Z": 6.661338147750939e-16,
+    "results/live/2026-10-12T055624.091217Z": 6.661338147750939e-16,
+    "results/live/2026-10-13T020454.599853Z": 5.551115123125783e-16,
+    "results/live/2026-10-13T022433.333775Z": 5.551115123125783e-16,
+    "results/live/2026-10-13T025444.603480Z": 1.4432899320127035e-15,
+    "results/live/2026-10-13T032011.664435Z": 4.440892098500626e-16,
+    "results/live/2026-10-13T080216.451663Z": 2.7755575615628914e-16,
+    "results/live/2026-10-13T083417.634585Z": 2.220446049250313e-16,
+    "results/live/2026-10-13T201757.782152Z": 3.3306690738754696e-16,
+    "results/live/2026-10-15T030748.903241Z": 1.3877787807814457e-16,
+    "results/live/2026-10-15T030903.235380Z": 4.440892098500626e-16,
+    "results/live/2026-10-15T031229.371738Z": 8.187894806610529e-16,
+    "results/live/2026-10-15T070847.644554Z": 4.440892098500626e-16,
+    "results/live/2026-10-15T070853.550532Z": 6.661338147750939e-16
+   }
+  },
+  {
+   "row": "torch-cuda-complex64",
+   "engine": "torch",
+   "device": "cuda",
+   "dtype": "complex64",
+   "workers": 12,
+   "warmup_seconds": 0.011,
+   "wall_seconds": 17.215,
+   "seconds": {
+    "workers": 12.602818615996512,
+    "worker_seconds": {
+     "prepare": 63.531,
+     "export": 56.336
+    },
+    "upload": 1.188,
+    "evolve": 1.644,
+    "sample": 1.029
+   },
+   "before": {
+    "utc": "2026-10-18T04:21:02Z",
+    "loadavg": [
+     23.03173828125,
+     16.9716796875,
+     17.5849609375
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "NVIDIA GeForce RTX 4070 Ti",
+      "utilization.gpu": "22",
+      "memory.used": "11333",
+      "memory.total": "12282",
+      "driver_version": "615.78.08"
+     }
+    ]
+   },
+   "after": {
+    "utc": "2026-10-18T04:21:19Z",
+    "loadavg": [
+     22.36572265625,
+     17.228515625,
+     17.65771484375
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "NVIDIA GeForce RTX 4070 Ti",
+      "utilization.gpu": "14",
+      "memory.used": "11383",
+      "memory.total": "12282",
+      "driver_version": "615.78.08"
+     }
+    ]
+   },
+   "runs": {
+    "results/live/2026-10-11T152922.787095Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032911
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032488
+     }
+    },
+    "results/live/2026-10-12T055624.091217Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.044982
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.043854
+     }
+    },
+    "results/live/2026-10-13T020454.599853Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.024079
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.025665
+     }
+    },
+    "results/live/2026-10-13T022433.333775Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.040422
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.042297
+     }
+    },
+    "results/live/2026-10-13T025444.603480Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.049931
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.051388
+     }
+    },
+    "results/live/2026-10-13T032011.664435Z": {
+     "best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.031417
+     },
+     "sampled_best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.035142
+     }
+    },
+    "results/live/2026-10-13T080216.451663Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 2.0,
+      "mean_tvd": 0.022819
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 3.0,
+      "mean_tvd": 0.026245
+     }
+    },
+    "results/live/2026-10-13T083417.634585Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.029438
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.032593
+     }
+    },
+    "results/live/2026-10-13T201757.782152Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.023388
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.026617
+     }
+    },
+    "results/live/2026-10-15T030748.903241Z": {
+     "best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.175978
+     },
+     "sampled_best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.17959
+     }
+    },
+    "results/live/2026-10-15T030903.235380Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.053895
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.05682
+     }
+    },
+    "results/live/2026-10-15T031229.371738Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.071851
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.072627
+     }
+    },
+    "results/live/2026-10-15T070847.644554Z": {
+     "best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.409716
+     },
+     "sampled_best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.414481
+     }
+    },
+    "results/live/2026-10-15T070853.550532Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055475
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055032
+     }
+    },
+    "results/live/kingston-wide-control-result": {
+     "skipped": "the run keeps no record.json, isa.qpy, collect.json"
+    }
+   },
+   "law_gap": {
+    "results/live/2026-10-11T152922.787095Z": 1.8407924218255545e-07,
+    "results/live/2026-10-12T055624.091217Z": 2.0936093592105465e-07,
+    "results/live/2026-10-13T020454.599853Z": 1.5492570615283086e-07,
+    "results/live/2026-10-13T022433.333775Z": 1.5492570615283086e-07,
+    "results/live/2026-10-13T025444.603480Z": 4.7539148401165576e-07,
+    "results/live/2026-10-13T032011.664435Z": 2.1677831124611302e-07,
+    "results/live/2026-10-13T080216.451663Z": 1.1565698548876568e-07,
+    "results/live/2026-10-13T083417.634585Z": 1.2179331659867287e-07,
+    "results/live/2026-10-13T201757.782152Z": 9.708225934268455e-08,
+    "results/live/2026-10-15T030748.903241Z": 9.92390552789768e-08,
+    "results/live/2026-10-15T030903.235380Z": 2.4855943192569896e-07,
+    "results/live/2026-10-15T031229.371738Z": 3.9383896452416245e-07,
+    "results/live/2026-10-15T070847.644554Z": 3.8018968417929955e-08,
+    "results/live/2026-10-15T070853.550532Z": 3.549489206999823e-07
+   }
+  }
+ ],
+ "prediction": {
+  "split_over_process_at_least": 0.95
+ },
+ "runs": [
+  "results/live/2026-10-11T152922.787095Z",
+  "results/live/2026-10-12T055624.091217Z",
+  "results/live/2026-10-13T020454.599853Z",
+  "results/live/2026-10-13T022433.333775Z",
+  "results/live/2026-10-13T025444.603480Z",
+  "results/live/2026-10-13T032011.664435Z",
+  "results/live/2026-10-13T080216.451663Z",
+  "results/live/2026-10-13T083417.634585Z",
+  "results/live/2026-10-13T201757.782152Z",
+  "results/live/2026-10-15T030748.903241Z",
+  "results/live/2026-10-15T030903.235380Z",
+  "results/live/2026-10-15T031229.371738Z",
+  "results/live/2026-10-15T070847.644554Z",
+  "results/live/2026-10-15T070853.550532Z",
+  "results/live/kingston-wide-control-result"
+ ],
+ "derived": {
+  "numpy": {
+   "speedup_vs_numpy": 1.0,
+   "best_matches_numpy": true
+  },
+  "torch-cuda-complex128": {
+   "speedup_vs_numpy": 0.316,
+   "best_matches_numpy": true,
+   "max_abs_law_minus_numpy": 1.4432899320127035e-15,
+   "laws_agree": true
+  },
+  "torch-cuda-complex64": {
+   "speedup_vs_numpy": 0.637,
+   "best_matches_numpy": true,
+   "max_abs_law_minus_numpy": 4.7539148401165576e-07,
+   "laws_agree": true
+  }
+ }
+}
