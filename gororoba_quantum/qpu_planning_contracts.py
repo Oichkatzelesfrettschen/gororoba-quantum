@@ -2075,6 +2075,13 @@ def _verify_init_herald(snapshot: live_run.Snapshot) -> None:
     plain_args = _args("n21-orbit-rca")
     _require(qpu_planning.settings(heralded_args).get("init_herald") is True, "the policy lost the herald")
     _require("init_herald" not in qpu_planning.settings(plain_args), "an absent herald entered the policy")
+    # approved_record_mismatches compares the record policy whole, so a
+    # submission whose herald differs from its approved record refuses.
+    heralded_policy = live_run.record_policy(heralded_args)
+    _require(
+        heralded_policy["design"].get("init_herald") is True and heralded_policy != live_run.record_policy(plain_args),
+        "the record policy does not bind the herald",
+    )
     trace: dict[str, Any] = {}
     candidates = qpu_planning.family_candidates(live_run, [snapshot], heralded_args, trace)
     _require(bool(candidates), f"FakeFez rejects every heralded N=21 window family: {trace}")
