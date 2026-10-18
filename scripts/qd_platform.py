@@ -646,10 +646,13 @@ def job_seed(manifest: dict[str, Any], settings: list[dict[str, Any]]) -> int | 
 
 def iteration_form(manifest: dict[str, Any]) -> str:
     """How a case's iterations differ: "single" (one computation), "mesh" (each binds its own phases), "seeded"
-    (a fixed circuit whose iterations set only their compilation_seed) or "phase" (phi = k pi/4).
+    (a fixed circuit whose iterations set only their compilation_seed and, optionally, their own budgets) or
+    "phase" (phi = k pi/4).
 
     A non-mesh iterated case with settings is seeded only when every setting names a valid compilation_seed and
-    nothing else but its name, and the settings count its iterations; any other settings list raises.
+    nothing else but its name, and the settings count its iterations. A seeded case names per-iteration
+    max_samples and max_shots on every setting or on none; named budgets are positive integers with
+    max_shots >= max_samples that sum to the manifest's. Any other settings list raises.
     """
     owner = manifest["job"]
     steps = manifest.get("iterations", 1)
@@ -662,11 +665,32 @@ def iteration_form(manifest: dict[str, Any]) -> str:
         return "phase"
     if not isinstance(settings, list) or len(settings) != steps:
         raise PlatformError(f"{owner}: {steps} iterations need {steps} settings")
+    plain, budgeted = {"name", "compilation_seed"}, {"name", "compilation_seed", "max_samples", "max_shots"}
+    keys = {frozenset(setting) if isinstance(setting, dict) else frozenset() for setting in settings}
+    if keys not in ({frozenset(plain)}, {frozenset(budgeted)}):
+        raise PlatformError(
+            f"{owner}: every seeded iteration names its name and compilation_seed, and all or none their budgets"
+        )
     for setting in settings:
-        if not isinstance(setting, dict) or set(setting) != {"name", "compilation_seed"}:
-            raise PlatformError(f"{owner}: a seeded iteration names exactly its name and compilation_seed: {setting!r}")
         seed_value(setting["compilation_seed"], f"{owner}/{setting['name']}")
+    if keys == {frozenset(budgeted)}:
+        for setting in settings:
+            samples, shots = setting["max_samples"], setting["max_shots"]
+            if any(isinstance(v, bool) or not isinstance(v, int) or v < 1 for v in (samples, shots)) or shots < samples:
+                raise PlatformError(f"{owner}/{setting['name']}: budgets {samples!r} samples, {shots!r} shots")
+        for key in ("max_samples", "max_shots"):
+            if sum(setting[key] for setting in settings) != manifest[key]:
+                raise PlatformError(f"{owner}: per-iteration {key} do not sum to the manifest's {manifest[key]}")
     return "seeded"
+
+
+def iteration_budgets(manifest: dict[str, Any]) -> list[tuple[int, int]]:
+    """(max_samples, max_shots) of every iteration: a seeded setting's own budgets, else an even split."""
+    steps = manifest.get("iterations", 1)
+    settings = manifest.get("settings") or []
+    if iteration_form(manifest) == "seeded" and "max_samples" in settings[0]:
+        return [(s["max_samples"], s["max_shots"]) for s in settings]
+    return [(manifest["max_samples"] // steps, manifest["max_shots"] // steps)] * steps
 
 
 def live_mesh(processor: dict[str, Any], circuit: dict[str, Any]) -> None:
@@ -732,15 +756,20 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     # takes its setting's compilation_seed (0 when unnamed), a seeded iteration sets
     # only its own, and a phase case pins 0 and sets phi = k pi/4 per iteration.
     per_samples, per_shots = manifest["max_samples"] // steps, manifest["max_shots"] // steps
-    factory = ExecutionFactory(computer, built, max_shots_per_call=per_shots)
+    budgets = iteration_budgets(manifest)
+    factory = ExecutionFactory(computer, built, max_shots_per_call=max(shots for _, shots in budgets))
     base = factory.build_computation(manifest["command"])
     base.add_params(max_samples=per_samples)
     seed = job_seed(manifest, settings)
     if seed is not None:
         base.add_params(compilation_seed=seed)
     params = settings[0]["circuit_params"] if mesh else ({"phi": 0.0} if form == "phase" else None)
-    estimate = computer.estimate_required_shots(base, nsamples=per_samples, param_values=params)
-    estimate = None if estimate is None else estimate * steps
+    if len({samples for samples, _ in budgets}) == 1:
+        estimate = computer.estimate_required_shots(base, nsamples=per_samples, param_values=params)
+        estimate = None if estimate is None else estimate * steps
+    else:
+        parts = [computer.estimate_required_shots(base, nsamples=n, param_values=params) for n, _ in budgets]
+        estimate = None if any(part is None for part in parts) else sum(parts)
     if steps > 1:
         for k in range(steps):
             if mesh:
@@ -755,8 +784,8 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
                 continue
             if form == "seeded":
                 factory.add_iteration(
-                    max_samples=per_samples,
-                    max_shots=per_shots,
+                    max_samples=budgets[k][0],
+                    max_shots=budgets[k][1],
                     compilation_seed=settings[k]["compilation_seed"],
                 )
                 continue
@@ -1298,6 +1327,23 @@ def seed_self_test() -> None:
     for manifest, form in forms:
         if iteration_form(manifest) != form:
             raise SystemExit(f"self-test: iteration_form({manifest}) is not {form}")
+    ladder = [{**seeded[0], "max_samples": 10, "max_shots": 20}, {**seeded[1], "max_samples": 30, "max_shots": 60}]
+    laddered = {**many, "settings": ladder, "max_samples": 40, "max_shots": 80}
+    if iteration_form(laddered) != "seeded" or iteration_budgets(laddered) != [(10, 20), (30, 60)]:
+        raise SystemExit("self-test: a budgeted seeded case lost its per-iteration budgets")
+    if iteration_budgets({**many, "settings": seeded, "max_samples": 40, "max_shots": 80}) != [(20, 40)] * 2:
+        raise SystemExit("self-test: an unbudgeted seeded case lost its even split")
+    for bad_ladder in (
+        [ladder[0], seeded[1]],
+        [{**ladder[0], "max_shots": 5}, ladder[1]],
+        [{**ladder[0], "max_samples": 0}, ladder[1]],
+        [{**ladder[0], "max_samples": 11, "max_shots": 21}, ladder[1]],
+    ):
+        try:
+            iteration_form({**laddered, "settings": bad_ladder})
+        except PlatformError:
+            continue
+        raise SystemExit(f"self-test: iteration_form accepted ladder {bad_ladder}")
     for bad_settings in (
         seeded[:1],
         [seeded[0], {"name": "b"}],

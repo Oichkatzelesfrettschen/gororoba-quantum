@@ -2874,6 +2874,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --self-test-dwell && \"$PYTHON\" -B -O -W error scripts/qd_belenos_mesh.py --self-test-dwell",
+   "name": "core-542",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test && \"$PYTHON\" -B -O -W error scripts/materialize_gororoba_csv.py --self-test",
    "name": "core-401",
    "seconds": 0.4,
