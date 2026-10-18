@@ -26,6 +26,12 @@ the only path from the repository to Kaggle:
   and writes collect.json with the sha256 of every file.
 - ``verify`` checks every retained collect.json against the files under its
   output/ directory, offline.
+- ``dataset --slug SLUG --include PATH`` uploads tracked repository files as
+  one archive a kernel unpacks; ``artifact --slug SLUG --file PATH --sha256
+  HEX`` uploads one verified file (a built wheel) that a kernel reads in
+  place. ``push --dataset SLUG`` attaches either kind.
+- ``push --gpu-env --gpu-aer cu13`` builds the GPU venv on the CUDA 13 Aer
+  wheel (AER_GPU_WHEELS) instead of PyPI's qiskit-aer-gpu-cu11.
 
 ``self-test`` builds the Design C kernel in a temporary directory without
 network access and checks its bundle digests, metadata and generated code.
@@ -81,6 +87,39 @@ KERNEL_PINS = (
 # --gpu-env installs these in requirements.txt's qiskit-aer place inside a
 # venv on the image's Python 3.13, the newest Python the cu11 wheel ships for.
 GPU_ENV_AER_PINS = tuple(pin for pin in KERNEL_PINS if not pin.startswith(("qiskit==", "qiskit-ibm-runtime==")))
+# The CUDA 13 libraries the qiskit-aer-gpu-cu13 wheel loads from site-packages;
+# _gpu_aer_self_test holds this tuple equal to the recipe's pin file.
+CU13_RUNTIME_PINS_FILE = "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt"
+CU13_RUNTIME_PINS = (
+    "nvidia-cuda-runtime==13.0.96",
+    "nvidia-cublas==13.1.1.3",
+    "nvidia-cuda-nvrtc==13.0.88",
+    "nvidia-cusolver==12.0.4.66",
+    "nvidia-cusparse==12.6.3.3",
+    "nvidia-nvjitlink==13.0.88",
+    "custatevec-cu13==1.15.0",
+    "cutensornet-cu13==2.14.0",
+    "cutensor-cu13==2.8.1",
+)
+# ``push --gpu-env --gpu-aer BUILD`` selects the GPU Aer pins of the venv.
+# cu11 is PyPI's qiskit-aer-gpu-cu11; cu13 is the wheel
+# docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh builds (CUDA 13.0,
+# sm_75 and sm_89 SASS, cuStateVec), which no index serves.
+GPU_AER_PINS: dict[str, tuple[str, ...]] = {
+    "cu11": GPU_ENV_AER_PINS,
+    "cu13": ("qiskit-aer-gpu-cu13==0.17.2", *CU13_RUNTIME_PINS),
+}
+# A build no index serves: the private dataset slug that holds its wheel as an
+# artifact (``kaggle_run.py artifact``), the wheel's file name and its sha256.
+# A cu13 push attaches the dataset itself, and the kernel installs only a
+# wheel whose bytes match the digest.
+AER_GPU_WHEELS: dict[str, tuple[str, str, str]] = {
+    "cu13": (
+        "gororoba-aer-gpu-cu13-wheel",
+        "qiskit_aer_gpu_cu13-0.17.2-cp313-cp313-manylinux_2_39_x86_64.whl",
+        "3d40fc33cd6674644807c15364b3e3ac1d417885e08ad255797ae93e886253d5",
+    ),
+}
 # Opt-in pins a --gpu-env venv adds (``push --gpu-env-with GROUP``), each at
 # the build host's Arch package version, installed in the same ci/install_pins.sh
 # resolve and required at version by kernel_main.gpu_env_failures. torch 2.14.1
@@ -374,6 +413,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         require(not args.machine.startswith("Tpu") and not smoke, "--ci-env runs an ENTRY on a CPU or GPU machine")
         files.extend(ROOT / name for name in CI_ENV_FILES)
         ci_env = {"python": CI_PYTHON, "uv": UV_PIN}
+    dataset_slugs = list(getattr(args, "dataset", []))
     gpu_env = None
     if getattr(args, "gpu_env", False):
         # A CPU machine lists no GPU, so its kernel stops at the preflight with
@@ -386,11 +426,28 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         )
         require(not args.with_groups, "--gpu-env installs the repository's pins only; drop --with")
         files.extend(ROOT / name for name in CI_ENV_FILES)
-        gpu_env = {"uv": UV_PIN, "aer_pins": list(GPU_ENV_AER_PINS), "gpus": MACHINE_GPUS.get(args.machine, 1)}
+        build = getattr(args, "gpu_aer", None) or "cu11"
+        gpu_env = {"uv": UV_PIN, "aer_pins": list(GPU_AER_PINS[build]), "gpus": MACHINE_GPUS.get(args.machine, 1)}
+        if build in AER_GPU_WHEELS:
+            # The wheel's dataset is attached whether or not --dataset names
+            # it, and only a retained artifact record of exactly this file
+            # and digest admits the push.
+            slug, wheel, digest = AER_GPU_WHEELS[build]
+            record = dataset_record(slug)
+            require(
+                record.get("schema") == ARTIFACT_SCHEMA and record["file"] == wheel and record["sha256"] == digest,
+                f"--gpu-aer {build}: dataset record {slug}.json holds {record.get('file')} "
+                f"{str(record.get('sha256'))[:12]}, not {wheel} {digest[:12]}; run `artifact` with that wheel",
+            )
+            if slug not in dataset_slugs:
+                dataset_slugs.append(slug)
+            gpu_env["find_links"] = {"dataset": record["ref"], "wheel": wheel}
+            gpu_env["wheel_sha256"] = digest
         extra = [pin for group in getattr(args, "gpu_env_with", []) for pin in GPU_ENV_GROUPS[group]]
         if extra:
             gpu_env["extra_pins"] = extra
     require(gpu_env is not None or not getattr(args, "gpu_env_with", []), "--gpu-env-with needs --gpu-env")
+    require(gpu_env is not None or getattr(args, "gpu_aer", None) is None, "--gpu-aer needs --gpu-env")
     bundled = sorted({path.relative_to(ROOT).as_posix() for path in files})
     listed = subprocess.run(
         ["git", "ls-files", "-z", "--", *bundled], cwd=ROOT, capture_output=True, text=True, check=True
@@ -411,7 +468,11 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
             contents[rel] = data
             bundle.writestr(rel, data)
         device = "CPU" if args.machine == "cpu" or args.machine.startswith("Tpu") else "GPU"
-        datasets = [dataset_record(slug) for slug in getattr(args, "dataset", [])]
+        records = [dataset_record(slug) for slug in dataset_slugs]
+        # A bundle dataset is unpacked into the repository and checked against
+        # its manifest; an artifact stays a file under /kaggle/input.
+        datasets = [d for d in records if d.get("schema") != ARTIFACT_SCHEMA]
+        artifacts = [d for d in records if d.get("schema") == ARTIFACT_SCHEMA]
         job = {
             "entry": entry_rel,
             "args": list(args.args),
@@ -422,6 +483,8 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
             "ci_env": ci_env,
             "gpu_env": gpu_env,
         }
+        if artifacts:
+            job["artifacts"] = [{"ref": d["ref"], "file": d["file"], "sha256": d["sha256"]} for d in artifacts]
         bundle.writestr("kaggle_kernel/kernel_job.json", json.dumps(job, indent=1) + "\n")
     kernel_dir = run_dir / "kernel"
     kernel_dir.mkdir(parents=True)
@@ -454,8 +517,8 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         metadata["machine_shape"] = args.machine
     if tpu:
         metadata["docker_image_pinning_type"] = "latest"
-    if datasets:
-        metadata["dataset_sources"] = [d["ref"] for d in datasets]
+    if records:
+        metadata["dataset_sources"] = [d["ref"] for d in records]
     (kernel_dir / "kernel-metadata.json").write_text(json.dumps(metadata, indent=1) + "\n", encoding="utf-8")
     submission = {
         "schema": "kaggle-aer-submission-v1",
@@ -474,7 +537,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "aer_device": "CPU" if ci_env else device,
         "calibration_snapshots": bundled_calibrations(contents),
         "bundle": digests,
-        "datasets": {d["ref"]: d["archive_sha256"] for d in datasets},
+        "datasets": {d["ref"]: record_digest(d) for d in records},
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
         "pushed_utc": stamp,
     }
@@ -648,6 +711,7 @@ def self_test(args: argparse.Namespace) -> int:
     _killed_entry_self_test()
     _calibration_identity_self_test()
     _gpu_env_self_test(data)
+    _gpu_aer_self_test(data)
     _push_guard_self_test()
     _dataset_history_self_test()
     print(
@@ -655,6 +719,7 @@ def self_test(args: argparse.Namespace) -> int:
         "with their Aer device and bundled calibration identity, "
         "an entry killed mid-run keeps its stdout and record, "
         "a GPU-environment kernel whose pin and GPU checks name every fallback, "
+        "a cu13 GPU Aer kernel admitted only on its verified wheel artifact, "
         "an accelerator push refused while an older version runs, "
         "a re-versioned dataset that keeps every earlier archive"
     )
@@ -803,6 +868,194 @@ def _gpu_env_self_test(data: str) -> None:
             pass
         else:
             raise SystemExit("kaggle_run self-test: --gpu-env accepted a --with group")
+
+
+def _expect_refusal(action: Callable[[], object], fragment: str, case: str) -> None:
+    try:
+        action()
+    except SystemExit as reason:
+        require(fragment in str(reason), f"{case}: {reason} lacks {fragment!r}")
+        return
+    raise SystemExit(f"kaggle_run self-test: {case} was accepted")
+
+
+def _gpu_aer_self_test(data: str) -> None:
+    """--gpu-aer: cu11 stays the default spec, cu13 needs its artifact record, and the kernel verifies the wheel.
+
+    The artifact records live in a temporary DATASETS directory, and the
+    kernel side reads a temporary /kaggle/input tree, so no Kaggle call or
+    repository write happens.
+    """
+    import tempfile
+    from unittest.mock import patch
+
+    sys.path.insert(0, str(ROOT / "kaggle_kernel"))
+    import kernel_main
+
+    listed = [
+        line.strip()
+        for line in (ROOT / CU13_RUNTIME_PINS_FILE).read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+    require(tuple(listed) == CU13_RUNTIME_PINS, f"CU13_RUNTIME_PINS differs from {CU13_RUNTIME_PINS_FILE}: {listed}")
+    cu11 = ("qiskit-aer-gpu-cu11==0.17.2", "cuquantum-cu11==24.8.0", "cutensor-cu11==2.2.0")
+    require(GPU_AER_PINS["cu11"] == GPU_ENV_AER_PINS == cu11, f"cu11 GPU Aer pins {GPU_AER_PINS['cu11']}")
+    base = argparse.Namespace(
+        entry="scripts/aer_gpu_probe.py",
+        smoke=False,
+        include=[data],
+        args=["--require-gpu"],
+        slug="self-test",
+        machine=GPU_MACHINE,
+        with_groups=[],
+        gpu_env=True,
+    )
+
+    def built(**changes: Any) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+        with tempfile.TemporaryDirectory() as scratch:
+            run = Path(scratch) / "run"
+            submission = build_kernel(
+                argparse.Namespace(**{**vars(base), **changes}), run, "owner", "2000-01-01T000000Z", "0" * 40
+            )
+            metadata = json.loads((run / "kernel/kernel-metadata.json").read_text(encoding="utf-8"))
+            return submission, bundled_job(run / "kernel/run.py"), metadata
+
+    default_submission, default_job, default_metadata = built()
+    explicit_submission, explicit_job, explicit_metadata = built(gpu_aer="cu11")
+    spec = {"uv": UV_PIN, "aer_pins": list(cu11), "gpus": MACHINE_GPUS[GPU_MACHINE]}
+    require(
+        json.dumps(default_job) == json.dumps(explicit_job)
+        and default_job["gpu_env"] == spec
+        and "artifacts" not in default_job
+        and "dataset_sources" not in default_metadata
+        and default_metadata == explicit_metadata
+        and default_submission["gpu_env"] == explicit_submission["gpu_env"] == spec
+        and default_submission["datasets"] == {},
+        f"the cu11 default changed: {default_job['gpu_env']} {explicit_job['gpu_env']}",
+    )
+    _expect_refusal(lambda: built(gpu_env=False, gpu_aer="cu11"), "--gpu-aer needs --gpu-env", "--gpu-aer alone")
+
+    slug, wheel, digest = AER_GPU_WHEELS["cu13"]
+    ref = f"owner/{slug}"
+    with tempfile.TemporaryDirectory() as scratch, patch.dict(globals(), {"DATASETS": Path(scratch)}):
+        record_path = Path(scratch) / f"{slug}.json"
+        _expect_refusal(lambda: built(gpu_aer="cu13"), "no retained dataset record", "cu13 without a record")
+        valid = {"schema": ARTIFACT_SCHEMA, "ref": ref, "file": wheel, "sha256": digest, "size": 1, "history": []}
+        for change, value in (("sha256", "0" * 64), ("file", "other.whl"), ("schema", "kaggle-dataset-v1")):
+            record_path.write_text(json.dumps({**valid, change: value}), encoding="utf-8")
+            _expect_refusal(lambda: built(gpu_aer="cu13"), "run `artifact`", f"cu13 with a record of another {change}")
+        record_path.write_text(json.dumps(valid), encoding="utf-8")
+        submission, job, metadata = built(gpu_aer="cu13")
+        attached, attached_job, _ = built(gpu_aer="cu13", dataset=[slug])
+    cu13_pins = ["qiskit-aer-gpu-cu13==0.17.2", *CU13_RUNTIME_PINS]
+    cu13_spec: dict[str, Any] = {
+        "uv": UV_PIN,
+        "aer_pins": cu13_pins,
+        "gpus": MACHINE_GPUS[GPU_MACHINE],
+        "find_links": {"dataset": ref, "wheel": wheel},
+        "wheel_sha256": digest,
+    }
+    require(
+        job["gpu_env"] == submission["gpu_env"] == cu13_spec
+        and job["datasets"] == []
+        and job["artifacts"] == [{"ref": ref, "file": wheel, "sha256": digest}]
+        and metadata["dataset_sources"] == [ref]
+        and submission["datasets"] == attached["datasets"] == {ref: digest}
+        and attached_job["artifacts"] == job["artifacts"],
+        f"cu13 kernel spec {job['gpu_env']} artifacts {job.get('artifacts')} sources {metadata.get('dataset_sources')}",
+    )
+    pins = kernel_main.pinned(ROOT, cu13_pins)
+    require(
+        "qiskit-aer" not in pins and "qiskit-aer-gpu-cu11" not in pins and pins["qiskit-aer-gpu-cu13"] == "0.17.2",
+        f"cu13 GPU environment pins {pins}",
+    )
+    run = {"success": True, "device": "GPU", "cuStateVec_enable": False}
+    report: dict[str, Any] = {
+        "installed": dict(pins),
+        "qiskit_aer_owners": ["qiskit-aer-gpu-cu13"],
+        "devices": ["CPU", "GPU"],
+        "foreign_paths": [],
+        "runs": {"gpu": run, "custatevec": {**run, "cuStateVec_enable": True}},
+    }
+    require(kernel_main.gpu_env_failures(pins, report, 2, 2) == [], "a holding cu13 environment fails")
+    for change, changed in (
+        ("the cu11 owner", {**report, "qiskit_aer_owners": ["qiskit-aer-gpu-cu11"]}),
+        ("a missing cuStateVec wheel", {**report, "installed": {**pins, "custatevec-cu13": None}}),
+    ):
+        require(bool(kernel_main.gpu_env_failures(pins, changed, 2, 2)), f"gpu_env_failures passes {change}")
+
+    payload = b"self-test wheel bytes"
+    kernel_spec = {**cu13_spec, "wheel_sha256": sha256(payload)}
+    with tempfile.TemporaryDirectory() as scratch:
+        inputs, wheelhouse = Path(scratch) / "input", Path(scratch) / "wheelhouse"
+        mounted = inputs / "datasets/owner" / slug / wheel
+        missing, refused = kernel_main.verified_wheel(kernel_spec, inputs, wheelhouse)
+        require(bool(refused) and not wheelhouse.exists(), f"a missing wheel is admitted: {missing}")
+        mounted.parent.mkdir(parents=True)
+        mounted.write_bytes(payload)
+        admitted, refused = kernel_main.verified_wheel(kernel_spec, inputs, wheelhouse)
+        require(
+            refused == []
+            and admitted["find_links"] == str(wheelhouse)
+            and (wheelhouse / wheel).read_bytes() == payload
+            and admitted["sha256"] == kernel_spec["wheel_sha256"],
+            f"a verified wheel is refused: {admitted} {refused}",
+        )
+        (wheelhouse / wheel).unlink()
+        mounted.write_bytes(payload + b"!")
+        changed, refused = kernel_main.verified_wheel(kernel_spec, inputs, wheelhouse)
+        require(
+            len(refused) == 1 and "has sha256" in refused[0] and not (wheelhouse / wheel).exists(),
+            f"a changed wheel is admitted: {changed} {refused}",
+        )
+
+        def no_install(name: str, *args: str, **kwargs: Any) -> str:
+            raise SystemExit(f"gpu_interpreter ran {name} on an unverified wheel")
+
+        with patch.object(kernel_main, "checked", no_install):
+            _, _, record = kernel_main.gpu_interpreter(ROOT, kernel_spec, Path(scratch) / "venv", inputs, wheelhouse)
+        require(
+            record["failures"] == refused and record["wheel"]["sha256"] == sha256(payload + b"!"),
+            f"gpu_interpreter's refusal record {record}",
+        )
+
+        # A verified wheel installs as a direct reference to its copy, so no
+        # index can supply qiskit-aer-gpu-cu13; every other pin stays exact.
+        mounted.write_bytes(payload)
+        calls: dict[str, dict[str, str]] = {}
+        holding = json.dumps({**report, "installed": dict(pins)})
+
+        def recorded(name: str, *args: str, **kwargs: Any) -> str:
+            calls[name] = dict(kwargs.get("env") or {})
+            return holding if name == "gpu-env-report" else ""
+
+        with patch.object(kernel_main, "checked", recorded), patch.object(kernel_main, "gpus", return_value=[{}, {}]):
+            _, _, record = kernel_main.gpu_interpreter(ROOT, kernel_spec, Path(scratch) / "venv", inputs, wheelhouse)
+        install = calls["install-pins"]["AER_PINS"].split()
+        require(
+            install[0] == f"qiskit-aer-gpu-cu13@{(wheelhouse / wheel).as_uri()}"
+            and install[1:] == list(CU13_RUNTIME_PINS)
+            and calls["install-pins"]["PIP_FIND_LINKS"] == str(wheelhouse)
+            and record["failures"] == []
+            and record["wheel"]["find_links"] == str(wheelhouse),
+            f"the verified wheel's install: {install} {record.get('failures')}",
+        )
+
+    with tempfile.TemporaryDirectory() as scratch:
+        path = Path(scratch) / wheel
+        path.write_bytes(payload)
+        _expect_refusal(lambda: artifact_record(path, "0" * 64, ref), "has sha256", "an artifact of other bytes")
+        first = with_history({**artifact_record(path, sha256(payload), ref), "git_commit": "a" * 7}, None)
+    second = with_history({**first, "sha256": "b" * 64, "size": 2, "git_commit": "b" * 7}, first)
+    require(
+        second["history"] == [{"sha256": sha256(payload), "size": len(payload), "git_commit": "a" * 7}],
+        f"artifact history {second['history']}",
+    )
+    require_dataset_version("run", ref, sha256(payload), second)
+    require_dataset_version("run", ref, "b" * 64, second)
+    _expect_refusal(lambda: require_dataset_version("run", ref, "c" * 64, second), "is no recorded version", "a stray")
+    bundle = {"schema": "kaggle-dataset-v1", "ref": ref, "archive_sha256": "d" * 64, "git_commit": "d", "files": {}}
+    _expect_refusal(lambda: with_history(bundle, second), "is kaggle-artifact-v1", "a bundle over an artifact")
 
 
 def _native_tls_self_test() -> None:
@@ -1043,27 +1296,49 @@ def _self_test_kernel(entry: str, data: str, machine: str) -> dict[str, Any]:
 
 DATASETS = RESULTS / "datasets"
 ARCHIVE = "repository-files.bundle"
+# A dataset that holds one file the kernel reads in place (a wheel no index
+# serves); its record carries the file's name, sha256 and size.
+ARTIFACT_SCHEMA = "kaggle-artifact-v1"
 
 
 def dataset_record(slug: str) -> dict[str, Any]:
     path = DATASETS / f"{slug}.json"
-    require(path.is_file(), f"no retained dataset record {path.relative_to(ROOT)}; run `dataset` first")
+    shown = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
+    require(path.is_file(), f"no retained dataset record {shown}; run `dataset` or `artifact` first")
     return dict(json.loads(path.read_text(encoding="utf-8")))
 
 
+def record_digest(record: dict[str, Any]) -> str:
+    """The sha256 a run records for an attached dataset: the artifact file's, or the bundle archive's."""
+    return str(record["sha256"] if record.get("schema") == ARTIFACT_SCHEMA else record["archive_sha256"])
+
+
 def with_history(record: dict[str, Any], previous: dict[str, Any] | None) -> dict[str, Any]:
-    """The record with every earlier version, newest first, as its archive digest, commit and file count."""
+    """The record with every earlier version, newest first.
+
+    A bundle version keeps its archive digest, commit and file count; an
+    artifact version keeps its file digest, size and commit.
+    """
     history: list[dict[str, Any]] = []
     if previous is not None:
         require(previous["ref"] == record["ref"], f"dataset record {previous['ref']} replaced by {record['ref']}")
-        entry = {"archive_sha256": previous["archive_sha256"], "git_commit": previous["git_commit"]}
-        history = [{**entry, "files": len(previous["files"])}, *previous.get("history", [])]
+        require(
+            previous.get("schema") == record.get("schema"),
+            f"dataset record {previous['ref']} is {previous.get('schema')}, not {record.get('schema')}",
+        )
+        if record.get("schema") == ARTIFACT_SCHEMA:
+            entry = {"sha256": previous["sha256"], "size": previous["size"], "git_commit": previous["git_commit"]}
+        else:
+            entry = {"archive_sha256": previous["archive_sha256"], "git_commit": previous["git_commit"]}
+            entry["files"] = len(previous["files"])
+        history = [entry, *previous.get("history", [])]
     return {**record, "history": history}
 
 
 def require_dataset_version(run: str, ref: str, digest: str, record: dict[str, Any]) -> None:
-    """A run's attached archive is the record's current version or one its history names."""
-    versions = {record["archive_sha256"], *(entry["archive_sha256"] for entry in record.get("history", []))}
+    """A run's attached archive or artifact is the record's current version or one its history names."""
+    field = "sha256" if record.get("schema") == ARTIFACT_SCHEMA else "archive_sha256"
+    versions = {record_digest(record), *(entry[field] for entry in record.get("history", []))}
     require(record["ref"] == ref, f"{run}: dataset {ref} has the record of {record['ref']}")
     require(digest in versions, f"{run}: dataset {ref} archive {digest[:12]} is no recorded version")
 
@@ -1129,6 +1404,54 @@ def dataset(args: argparse.Namespace) -> int:
     DATASETS.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(with_history(record, previous), indent=1) + "\n", encoding="utf-8")
     print(f"{ref}: {len(manifest)} files, archive {archive_sha256[:12]}")
+    return 0
+
+
+def artifact_record(path: Path, expected_sha256: str, ref: str) -> dict[str, Any]:
+    """The kaggle-artifact-v1 fields of one file, refused when its bytes differ from the expected digest."""
+    require(path.is_file(), f"{path} is not a file")
+    digest = sha256(path.read_bytes())
+    require(digest == expected_sha256.lower(), f"{path.name} has sha256 {digest}, not {expected_sha256}")
+    return {"schema": ARTIFACT_SCHEMA, "ref": ref, "file": path.name, "sha256": digest, "size": path.stat().st_size}
+
+
+def artifact(args: argparse.Namespace) -> int:
+    """Upload one file, verified against --sha256, as a private Kaggle dataset that holds nothing else.
+
+    The file travels outside git (a built wheel); its record names the bytes
+    a push may attach, and a kernel reads the file under /kaggle/input
+    instead of unpacking it into the repository.
+    """
+    import shutil
+    import tempfile
+
+    # The bytes are checked before any Kaggle call.
+    fields = artifact_record(Path(args.file).resolve(), args.sha256, "")
+    ref = f"{username()}/{args.slug}"
+    fields["ref"] = ref
+    path = DATASETS / f"{args.slug}.json"
+    previous = dict(json.loads(path.read_text(encoding="utf-8"))) if path.is_file() else None
+    require(
+        previous is None or (previous["ref"] == ref and previous.get("schema") == ARTIFACT_SCHEMA),
+        f"dataset record {path.name} holds {previous and previous['ref']} ({previous and previous.get('schema')}), "
+        f"not the artifact {ref}",
+    )
+    with tempfile.TemporaryDirectory() as scratch:
+        staging = Path(scratch)
+        shutil.copyfile(args.file, staging / fields["file"])
+        require(sha256((staging / fields["file"]).read_bytes()) == fields["sha256"], "the staged copy differs")
+        metadata = {"title": args.slug, "id": ref, "licenses": [{"name": "unknown"}]}
+        (staging / "dataset-metadata.json").write_text(json.dumps(metadata, indent=1) + "\n", encoding="utf-8")
+        exists = subprocess.run(["kaggle", "datasets", "status", ref], capture_output=True, text=True).returncode == 0
+        message = f"{fields['file']} {fields['sha256'][:12]}"
+        if exists:
+            reply = kaggle("datasets", "version", "-p", str(staging), "-m", message, "-r", "skip")
+        else:
+            reply = kaggle("datasets", "create", "-p", str(staging), "-r", "skip")
+    record = {**fields, "git_commit": git_commit(), "reply": reply.strip()[-300:]}
+    DATASETS.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(with_history(record, previous), indent=1) + "\n", encoding="utf-8")
+    print(f"{ref}: {fields['file']} {fields['size']} bytes, sha256 {fields['sha256'][:12]}")
     return 0
 
 
@@ -1319,12 +1642,23 @@ def main() -> int:
         choices=sorted(GPU_ENV_GROUPS),
         help="with --gpu-env, a pin group the venv adds at the host's versions",
     )
+    push_parser.add_argument(
+        "--gpu-aer",
+        dest="gpu_aer",
+        choices=sorted(GPU_AER_PINS),
+        help="with --gpu-env, the GPU Aer build (default cu11); cu13 attaches its wheel dataset",
+    )
     push_parser.set_defaults(func=push)
     sub.add_parser("self-test").set_defaults(func=self_test)
     dataset_parser = sub.add_parser("dataset")
     dataset_parser.add_argument("--slug", required=True)
     dataset_parser.add_argument("--include", action="append", required=True, help="repository file or directory")
     dataset_parser.set_defaults(func=dataset)
+    artifact_parser = sub.add_parser("artifact")
+    artifact_parser.add_argument("--slug", required=True)
+    artifact_parser.add_argument("--file", required=True, help="the one file the dataset holds")
+    artifact_parser.add_argument("--sha256", required=True, help="the file's expected sha256")
+    artifact_parser.set_defaults(func=artifact)
     sub.add_parser("verify").set_defaults(func=verify)
     for name, func in (("status", status), ("collect", collect)):
         sub_parser = sub.add_parser(name)

@@ -56,6 +56,16 @@ REPORTED_PACKAGES = (
     "custatevec-cu11",
     "cutensornet-cu11",
     "cutensor-cu11",
+    "qiskit-aer-gpu-cu13",
+    "custatevec-cu13",
+    "cutensornet-cu13",
+    "cutensor-cu13",
+    "nvidia-cuda-runtime",
+    "nvidia-cublas",
+    "nvidia-cusolver",
+    "nvidia-cusparse",
+    "nvidia-nvjitlink",
+    "nvidia-cuda-nvrtc",
     "qiskit-ibm-runtime",
     "numpy",
     "scipy",
@@ -345,6 +355,8 @@ def ci_interpreter(tree: Path, uv: str, version: str) -> tuple[str, dict[str, st
 
 
 GPU_VENV = Path("/tmp/gororoba/gpu-venv")
+INPUTS = Path("/kaggle/input")
+WHEELHOUSE = Path("/tmp/gororoba/wheelhouse")
 # Interpreter variables that would put the image's modules or startup code
 # into the venv's interpreter.
 ISOLATION_VARIABLES = frozenset({"PYTHONPATH", "PYTHONHOME", "PYTHONSTARTUP", "PYTHONUSERBASE"})
@@ -405,8 +417,36 @@ def gpu_env_failures(pins: dict[str, str], report: dict[str, Any], expected_gpus
     return failures
 
 
+def verified_wheel(
+    spec: dict[str, Any], inputs: Path = INPUTS, wheelhouse: Path = WHEELHOUSE
+) -> tuple[dict[str, Any], list[str]]:
+    """Copy the spec's wheel out of its attached dataset into wheelhouse when its sha256 is spec["wheel_sha256"].
+
+    Kaggle mounts a dataset at /kaggle/input/SLUG or
+    /kaggle/input/datasets/OWNER/SLUG, so the wheel is found by name under a
+    path that holds the slug, as unpack_datasets finds an archive. pip then
+    reads only the verified copy; a missing, ambiguous or different file
+    yields a failure and an empty wheelhouse.
+    """
+    locator = spec["find_links"]
+    slug = locator["dataset"].split("/")[1]
+    found = sorted(p for p in inputs.rglob(locator["wheel"]) if slug in p.parts) if inputs.is_dir() else []
+    record: dict[str, Any] = {**locator, "expected_sha256": spec["wheel_sha256"], "paths": [str(p) for p in found]}
+    if len(found) != 1:
+        return record, [f"dataset {locator['dataset']}: {len(found)} files named {locator['wheel']} under {inputs}"]
+    data = found[0].read_bytes()
+    record["sha256"] = hashlib.sha256(data).hexdigest()
+    record["size"] = len(data)
+    if record["sha256"] != spec["wheel_sha256"]:
+        return record, [f"{found[0]} has sha256 {record['sha256']}, not {spec['wheel_sha256']}"]
+    wheelhouse.mkdir(parents=True, exist_ok=True)
+    (wheelhouse / locator["wheel"]).write_bytes(data)
+    record["find_links"] = str(wheelhouse)
+    return record, []
+
+
 def gpu_interpreter(
-    tree: Path, spec: dict[str, Any], venv: Path = GPU_VENV
+    tree: Path, spec: dict[str, Any], venv: Path = GPU_VENV, inputs: Path = INPUTS, wheelhouse: Path = WHEELHOUSE
 ) -> tuple[str, dict[str, str], dict[str, Any]]:
     """The image's Python in an isolated venv holding the repository's pins with the GPU Aer build, and its proof.
 
@@ -420,8 +460,20 @@ def gpu_interpreter(
     the venv's, so the environment drops ISOLATION_VARIABLES and turns the
     user site off. The record's failures name every difference from the
     pins, every sys.path entry outside the venv and the standard library,
-    and every way the venv's Aer leaves the GPU.
+    and every way the venv's Aer leaves the GPU. A spec with "find_links" (a
+    wheel no index serves) installs only after verified_wheel admits the
+    attached file; otherwise the record carries the refusal and nothing is
+    installed. The wheel's own pin is then a direct file reference to the
+    verified copy, so no index can supply the distribution, and
+    PIP_FIND_LINKS names the same directory.
     """
+    wheel: dict[str, Any] | None = None
+    find_links: dict[str, str] = {}
+    if "find_links" in spec:
+        wheel, refused = verified_wheel(spec, inputs, wheelhouse)
+        if refused:
+            return sys.executable, dict(os.environ), {"wheel": wheel, "failures": refused}
+        find_links = {"PIP_FIND_LINKS": wheel["find_links"]}
     checked("uv-install", sys.executable, "-m", "pip", "install", "-q", spec["uv"])
     checked("gpu-venv", sys.executable, "-m", "uv", "venv", "-q", "--seed", "--python", sys.executable, str(venv))
     python = str(venv / "bin/python")
@@ -437,7 +489,19 @@ def gpu_interpreter(
         )
     )
     added = [*spec["aer_pins"], *spec.get("extra_pins", [])]
-    checked("install-pins", "sh", "ci/install_pins.sh", cwd=tree, env=dict(env, AER_PINS=" ".join(added)))
+    install = added
+    if wheel is not None:
+        local = Path(wheel["find_links"])
+        distribution = normalized(wheel["wheel"].split("-")[0])
+        install = [
+            f"{distribution}@{(local / wheel['wheel']).as_uri()}"
+            if normalized(pin.split("==")[0]) == distribution
+            else pin
+            for pin in added
+        ]
+    checked(
+        "install-pins", "sh", "ci/install_pins.sh", cwd=tree, env=dict(env, AER_PINS=" ".join(install), **find_links)
+    )
     checked("gpu-freeze", python, "-m", "pip", "freeze", env=env)
     pins = pinned(tree, added)
     script = str(tree / "kaggle_kernel/gpu_env_report.py")
@@ -450,6 +514,8 @@ def gpu_interpreter(
         "report": report,
         "failures": gpu_env_failures(pins, report, spec["gpus"], listed),
     }
+    if wheel is not None:
+        record["wheel"] = wheel
     return python, env, record
 
 

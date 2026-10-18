@@ -126,6 +126,11 @@ and what it must prove before its output counts.
     to the venv's pins, so a torch entry runs over the repository's numpy
     and qiskit instead of the image's; the preflight requires it at that
     version like every other pin.
+  - Under `--gpu-aer cu13` the Aer wheel comes from an attached dataset:
+    gpu_env.json's `wheel` names the file found under /kaggle/input and its
+    sha256, and a missing or different file is a failure before any install.
+    The report's `controller_wrappers` and `cuda_libraries` show where each
+    CUDA library resolved.
   - Read gpu-env-report.txt and install-pins.txt in the output for the
     commands' own output.
   - "Keeping the run on the GPU" in `docs/notes/kaggle/custatevec.md` maps

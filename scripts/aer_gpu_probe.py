@@ -139,8 +139,10 @@ NO_GPU = "no GPU on this machine"
 # Aer 0.17.2 takes target_gpus only as a run option (aer_compiler's run
 # options); the constructor and set_options raise "Invalid option target_gpus".
 RUN_OPTIONS = frozenset({"target_gpus"})
-# qiskit-aer-gpu-cu11 0.17.2 aborts batched_shots_gpu on control flow
-# (if_else lowers to jump); the abort is a measured row on the GPU.
+# Aer 0.17.2's batched_shots_gpu executor aborts on control flow (if_else
+# lowers to jump), measured on the qiskit-aer-gpu-cu11 build; a cu13 build
+# compiles the same executor source, so the row keeps its exemption and its
+# exit code is recorded on either build.
 KNOWN_GPU_ABORTS = frozenset({"gpu_statevector_batched_jump"})
 # label: (device, method, Aer options, lower if_else, needs two or more GPUs)
 CONFIGURATIONS: dict[str, tuple[str, str, dict[str, Any], bool, bool]] = {
@@ -189,17 +191,11 @@ WIDTH_CONFIGURATIONS = (
     "gpu_density_matrix_batched",
     "gpu_density_matrix_custatevec",
 )
+# The CPU and Arch names; package_versions adds the installed GPU Aer build
+# and its CUDA distributions (aer_resources.gpu_aer_distributions).
 PACKAGES = (
     "qiskit",
     "qiskit-aer",
-    "qiskit-aer-gpu",
-    "qiskit-aer-gpu-cu11",
-    "cuquantum-cu11",
-    "custatevec-cu11",
-    "cutensornet-cu11",
-    "cutensor-cu11",
-    "cuquantum-python-cu11",
-    "nvidia-cuda-runtime-cu11",
     "numpy",
 )
 DERIVED_ROW_KEYS = (
@@ -254,8 +250,10 @@ def cpu_model() -> str | None:
 
 
 def package_versions() -> dict[str, str | None]:
+    import aer_resources
+
     versions: dict[str, str | None] = {}
-    for name in PACKAGES:
+    for name in (*PACKAGES, *aer_resources.gpu_aer_distributions()):
         try:
             versions[name] = importlib.metadata.version(name)
         except importlib.metadata.PackageNotFoundError:

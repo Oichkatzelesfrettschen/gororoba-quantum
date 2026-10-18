@@ -567,7 +567,7 @@ retain its output under results/kaggle/. The kernel's own guide is
   `GPU_ENV_AER_PINS` in qiskit-aer's place (`ci/install_pins.sh` with
   `AER_PINS`).
   - Before the entry, `kernel_main.gpu_interpreter` requires every pin at its
-    version, qiskit-aer-gpu-cu11 as the only owner of
+    version, the selected GPU Aer distribution as the only owner of
     `qiskit_aer/__init__.py`, both T4s in nvidia-smi, and seeded Bell runs
     on the GPU that report device GPU, the cuStateVec one with
     `cuStateVec_enable` true.
@@ -580,6 +580,11 @@ retain its output under results/kaggle/. The kernel's own guide is
     requires; `ghost_branching_benchmark.py --require-gpu NAME --gpus N`
     then exits 3 unless torch lists both T4s and a complex128 matmul on
     each matches numpy.
+  - `--gpu-aer cu13` replaces the cu11 wheels with `GPU_AER_PINS["cu13"]`:
+    the CUDA 13 wheel `docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh`
+    builds, which the push attaches from its `kaggle_run.py artifact`
+    dataset (`AER_GPU_WHEELS`) and the kernel installs only when its sha256
+    matches (`docs/notes/kaggle/custatevec.md`, "CUDA 13 build").
   - Only Python itself differs from CI's 3.14.7.
   - On a CPU machine the same push stops at the preflight, which proves the
     error path at no GPU cost.

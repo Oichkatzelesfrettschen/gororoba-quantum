@@ -166,3 +166,55 @@ core-450 rechecks the record. The timings and the two-GPU metadata are in
 - Seeded GPU counts differ from CPU counts, so a CI gate re-derives a GPU
   record from its retained counts and never resamples (root AGENTS.md,
   "Simulation on Kaggle").
+
+## CUDA 13 build
+
+`push --gpu-env --gpu-aer cu13` runs the venv on qiskit-aer-gpu-cu13
+0.17.2 in place of the cu11 wheels. The default stays cu11.
+
+- **Wheel.** `docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh` builds
+  `qiskit_aer_gpu_cu13-0.17.2-cp313-cp313-manylinux_2_39_x86_64.whl` in
+  rootless podman from the CUDA 13.0.3 devel image on Ubuntu 24.04, with
+  SASS for sm_75 (T4) and sm_89 and cuStateVec and cuTensorNet linked. Its
+  sha256, `3d40fc33...253d5`, is `AER_GPU_WHEELS["cu13"]` in
+  `scripts/kaggle_run.py`.
+- **Library chain.** `GPU_AER_PINS["cu13"]` adds the nine CUDA 13 wheels of
+  `docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt`: the CUDA 13.0.3
+  toolkit libraries under `site-packages/nvidia/cu13/lib`, custatevec-cu13
+  1.15.0 and cutensornet-cu13 2.14.0 under `cuquantum/lib`, and
+  cutensor-cu13 2.8.1 under `cutensor/lib`. The module's DT_RPATH names those
+  three directories, and every CUDA soname the cuQuantum libraries reach is a
+  direct dependency of the module, so an LD_LIBRARY_PATH that holds another
+  CUDA toolkit cannot substitute a copy. torch 2.14.1 (`--gpu-env-with
+  torch`) requires cuda-toolkit 13.0.3, which resolves to the same nvidia-*
+  versions.
+- **Dataset.** No index serves the wheel. `kaggle_run.py artifact --slug
+  gororoba-aer-gpu-cu13-wheel --file WHEEL --sha256 HEX` uploads it as a
+  private dataset holding that one file, after checking its bytes, and writes
+  `results/kaggle/datasets/gororoba-aer-gpu-cu13-wheel.json`
+  (`kaggle-artifact-v1`).
+  - A cu13 push attaches that dataset itself. It refuses unless the record
+    names exactly the wheel and sha256 of `AER_GPU_WHEELS`.
+  - The kernel finds the file under /kaggle/input by name, verifies its
+    sha256, and copies it to /tmp/gororoba/wheelhouse. `ci/install_pins.sh`
+    then installs the copy as a direct file reference, with `PIP_FIND_LINKS`
+    naming that directory, so no index can supply the distribution.
+  - A missing, ambiguous or different file is a `failures` entry in
+    gpu_env.json, and the kernel exits 4 before anything is installed.
+- **Records.** gpu_env.json's `wheel` holds the dataset path, size and
+  sha256. The report names `qiskit-aer-gpu-cu13` as the owner of
+  `qiskit_aer/__init__.py`. It also gives the `controller_wrappers` module
+  path and `cuda_libraries`, each CUDA library the import mapped. The import
+  needs no GPU, so a CPU push shows the wheel installing and its libraries
+  resolving at no GPU cost, then exits 4 because nvidia-smi lists no GPU and
+  the Bell runs raise.
+- **Open risk.** The wheel has run on the build host's RTX 4070 Ti (driver
+  615, sm_89). The T4's sm_75 code and the 580 driver are unexercised.
+  - The cuQuantum and cuTENSOR wheels are compiled with CUDA 13.4. NVIDIA's
+    cuQuantum requirements list driver 580.65.06 or later for CUDA 13.x,
+    and the Kaggle T4 image reports 580.178.04.
+  - The tag requires glibc 2.39, which the image provides exactly.
+  - Kaggle uncompresses archive uploads. A wheel is a ZIP file, so the CPU
+    push also shows whether the dataset keeps the `.whl` intact.
+  - A T4 run whose gpu_env.json lists no failure settles all three.
+
