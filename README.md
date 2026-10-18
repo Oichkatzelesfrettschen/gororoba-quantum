@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (83 established, 32 exploratory, 4 open, 8 proposed, 2 superseded, 11 withdrawn) with its evidence class,
+registered claim (85 established, 33 exploratory, 4 open, 8 proposed, 2 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -164,8 +164,13 @@ acquisition of every provider:
 | [2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03](results/quandela/runs/2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03) | Quandela Cloud | Belenos mesh C1 repeat | qpu:belenos | 1 | 16 | completed | 1.003 credits |
 | [2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08](results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08) | Quandela Cloud | Belenos one-circuit form test | qpu:belenos | 1 | 1 | completed | 1.01 credits |
 | [2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07](results/quandela/runs/2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07) | Quandela Cloud | Belenos mesh 84/84 seed ensemble | qpu:belenos | 1 | 32 | completed | 1.003 credits |
+| [2026-10-18T083404.226285Z](results/live/2026-10-18T083404.226285Z) | IBM Quantum | state-prep-control (x_history, 50 us) | ibm_kingston | 1 | 1 | DONE | 4 s |
+| [2026-10-18T083404.414317Z](results/live/2026-10-18T083404.414317Z) | IBM Quantum | state-prep-control (prep0, 250 us) | ibm_kingston | 1 | 1 | DONE | 6 s |
+| [2026-10-18T083403.945334Z](results/live/2026-10-18T083403.945334Z) | IBM Quantum | state-prep-control (x_history, 250 us) | ibm_kingston | 1 | 1 | DONE | 6 s |
+| [2026-10-18T083402.386701Z](results/live/2026-10-18T083402.386701Z) | IBM Quantum | state-prep-control (prep0, 50 us) | ibm_kingston | 1 | 1 | DONE | 4 s |
+| [2026-10-18T090603.530638Z](results/live/2026-10-18T090603.530638Z) | IBM Quantum | n21-feedback-encoded | ibm_kingston | 1 | 2 | DONE | 28 s |
 
-The IBM service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 physical jobs with 334 settled seconds; the account then reported 334 of 600 s consumed in the rolling window ending 2026-10-15T07:13:13.771Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-18T09:20:42.042591+00:00 holds 28 physical jobs with 382 settled seconds; the account then reported 382 of 600 s consumed in the rolling window ending 2026-10-18T09:20:41.985Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-18T03:06:50+00:00 lists 275 jobs with 4493312 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 

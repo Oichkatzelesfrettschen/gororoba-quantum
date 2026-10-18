@@ -26,7 +26,7 @@ and neither establishes a theorem or authorizes a QPU run.
 
 ## Acquisitions
 
-The IBM service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 physical jobs with 334 settled seconds; the account then reported 334 of 600 s consumed in the rolling window ending 2026-10-15T07:13:13.771Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-18T09:20:42.042591+00:00 holds 28 physical jobs with 382 settled seconds; the account then reported 382 of 600 s consumed in the rolling window ending 2026-10-18T09:20:41.985Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-18T03:06:50+00:00 lists 275 jobs with 4493312 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
@@ -171,6 +171,11 @@ circuit and charges the account ledger's change.
 | [2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03](../../results/quandela/runs/2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03) | Quandela Cloud | Belenos mesh C1 repeat | qpu:belenos | 1 | 16 | completed | 1.003 credits | qd-belenos-same-meshes-drift-between-jobs |
 | [2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08](../../results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08) | Quandela Cloud | Belenos one-circuit form test | qpu:belenos | 1 | 1 | completed | 1.01 credits | qd-belenos-q1-one-circuit-new-mesh-intermediate, qd-belenos-compilation-seed-selects-mesh |
 | [2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07](../../results/quandela/runs/2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07) | Quandela Cloud | Belenos mesh 84/84 seed ensemble | qpu:belenos | 1 | 32 | completed | 1.003 credits | qd-belenos-compilation-seed-selects-mesh, qd-qpu-belenos-84-84-seed-ensemble |
+| [2026-10-18T083404.226285Z](../../results/live/2026-10-18T083404.226285Z) | IBM Quantum | state-prep-control (x_history, 50 us) | ibm_kingston | 1 | 1 | DONE | 4 s | hw-kingston-init-excitation-bound, hw-kingston-init-survey-149q |
+| [2026-10-18T083404.414317Z](../../results/live/2026-10-18T083404.414317Z) | IBM Quantum | state-prep-control (prep0, 250 us) | ibm_kingston | 1 | 1 | DONE | 6 s | hw-kingston-init-excitation-bound, hw-kingston-init-survey-149q |
+| [2026-10-18T083403.945334Z](../../results/live/2026-10-18T083403.945334Z) | IBM Quantum | state-prep-control (x_history, 250 us) | ibm_kingston | 1 | 1 | DONE | 6 s | hw-kingston-init-excitation-bound, hw-kingston-init-survey-149q |
+| [2026-10-18T083402.386701Z](../../results/live/2026-10-18T083402.386701Z) | IBM Quantum | state-prep-control (prep0, 50 us) | ibm_kingston | 1 | 1 | DONE | 4 s | hw-kingston-init-excitation-bound, hw-kingston-init-survey-149q |
+| [2026-10-18T090603.530638Z](../../results/live/2026-10-18T090603.530638Z) | IBM Quantum | n21-feedback-encoded | ibm_kingston | 1 | 2 | DONE | 28 s | hw-n21-feedback-null-kingston |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -306,6 +311,11 @@ circuit and charges the account ledger's change.
 - **qd-qpu-belenos-mesh-job-03-repeat** (2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03, job f9e13312-7fa2-4c88-b493-3afd23e39cbf, 24000 samples, 24000 shots): the exact body of C1 job-03 again 36 minutes later: same meshes and same histograms, or drift between jobs?
 - **qd-qpu-belenos-mesh-job-08-form** (2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08, job 8d28f121-f69d-4c52-b1e2-87f81094fe99, 10000 samples, 10000 shots): Q1's exact case as one circuit at compilation_seed 1: does the leak follow the one-circuit job form or Q1's own compiled mesh?
 - **qd-qpu-belenos-mesh-job-07-seed-ensemble** (2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07, job b8e2ec0c-2f4f-4e54-a445-e76ef2ff8ad9, 48000 samples, 48000 shots): job-02's sixteen configurations at compilation seeds 1 and 2 in one 32-iteration job: does the seed select the served mesh, how far do the algebra shares move between seeds, and does a 32-iteration job fit the 300 s limit?
+- **kingston-init-control-xhistory-50us** (2026-10-18T083404.226285Z): How much excitation does the Sampler's implicit initialization leave on each admitted Kingston qubit after this shot history and repetition delay?
+- **kingston-init-control-prep0-250us** (2026-10-18T083404.414317Z): How much excitation does the Sampler's implicit initialization leave on each admitted Kingston qubit after this shot history and repetition delay?
+- **kingston-init-control-xhistory-250us** (2026-10-18T083403.945334Z): How much excitation does the Sampler's implicit initialization leave on each admitted Kingston qubit after this shot history and repetition delay?
+- **kingston-init-control-prep0-50us** (2026-10-18T083402.386701Z): How much excitation does the Sampler's implicit initialization leave on each admitted Kingston qubit after this shot history and repetition delay?
+- **kingston-n21-feedback-encoded-50us** (2026-10-18T090603.530638Z): Does mid-circuit feedback change the encoded N=21 contrast on Kingston at a 50 us repetition delay?
 
 ## Established claims
 
@@ -723,6 +733,16 @@ circuit and charges the account ledger's change.
   Gates: replayed by core-538, core-537.
   Acquisitions: qd-qpu-belenos-mesh-job-07-seed-ensemble, qd-qpu-belenos-mesh-job-02.
   Depends on: qd-qpu-belenos-84-84-zero-divisor-program.
+- **hw-kingston-init-excitation-bound** (preregistered hardware inference, hardware). On Kingston qubits 104, 105, 106, 117, 124, 125 and 126 the implicit initialization leaves at most eps50 = 0.0144 and eps250 = 0.0157 excitation after the worst shot history, both set by q125, simultaneously with 447 bounds at alpha 0.01 over 149 controlled qubits; the n21 plan's fixed point converged at 0.014393.
+  Boundary: One calibration (2026-10-18 01:38:20 PDT) shared by the controls and the n21 run; correlated initialization across qubits is reported as a diagnostic, not bounded (issue #251).
+  Evidence: [state-prep-excess.json](../../results/live/2026-10-18T085924.738302Z/state-prep-excess.json), [collect.json](../../results/live/2026-10-18T083402.386701Z/collect.json), [collect.json](../../results/live/2026-10-18T083404.414317Z/collect.json), [collect.json](../../results/live/2026-10-18T083404.226285Z/collect.json), [collect.json](../../results/live/2026-10-18T083403.945334Z/collect.json), [N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md](../../results/live/N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md), [N21_STATE_PREP_CONTROL_CASE.md](../../results/live/N21_STATE_PREP_CONTROL_CASE.md).
+  Gates: replayed by core-539.
+  Acquisitions: kingston-init-control-prep0-50us, kingston-init-control-prep0-250us, kingston-init-control-xhistory-50us, kingston-init-control-xhistory-250us.
+- **hw-n21-feedback-null-kingston** (preregistered hardware inference, hardware). At 50 us on Kingston qubits 104-106, 117, 124-126 with 100,000 shots per arm, the encoded N=21 contrast difference between feedback and no feedback is +0.0027 with 95 % interval [-0.0129, +0.0184]; zero is not rejected, and the calibration model's +0.0344 lies outside the interval.
+  Boundary: One placement and calibration; raw counts without readout correction (feed-forward); the run isolates no suppressing mechanism.
+  Evidence: [collect.json](../../results/live/2026-10-18T090603.530638Z/collect.json), [N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md](../../results/live/N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md), [N21_STATE_PREP_CONTROL_CASE.md](../../results/live/N21_STATE_PREP_CONTROL_CASE.md).
+  Acquisitions: kingston-n21-feedback-encoded-50us.
+  Depends on: hw-kingston-init-excitation-bound.
 
 ## Exploratory claims
 
@@ -897,6 +917,10 @@ circuit and charges the account ledger's change.
   Gates: replayed by core-535; replay failure paths checked by core-534.
   Acquisitions: qd-qpu-belenos-mesh-job-03, qd-qpu-belenos-mesh-job-04, qd-qpu-belenos-mesh-job-05, qd-qpu-belenos-mesh-job-06.
   Depends on: qd-belenos-random-meshes-no-class-fits-under-receipt-model.
+- **hw-kingston-init-survey-149q** (exploratory reanalysis, hardware). Across 149 Kingston qubits the shot-history excitation averages +0.0011 at 50 us and +0.00003 at 250 us; q58 reads 0.080 after prep0 at 50 us against 0.030 at 250 us and q62 gains +0.030 from a |1> history at 50 us.
+  Boundary: Point estimates; each history difference spans a dynamic and a static job as well as the shot history.
+  Evidence: [collect.json](../../results/live/2026-10-18T083402.386701Z/collect.json), [collect.json](../../results/live/2026-10-18T083404.414317Z/collect.json), [collect.json](../../results/live/2026-10-18T083404.226285Z/collect.json), [collect.json](../../results/live/2026-10-18T083403.945334Z/collect.json), [N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md](../../results/live/N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md).
+  Acquisitions: kingston-init-control-prep0-50us, kingston-init-control-prep0-250us, kingston-init-control-xhistory-50us, kingston-init-control-xhistory-250us.
 
 ## Open claims
 
