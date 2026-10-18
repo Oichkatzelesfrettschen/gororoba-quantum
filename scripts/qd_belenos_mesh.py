@@ -37,6 +37,15 @@ requires architecture, phase, source, baseline and RCA mutations to be
 rejected and cross-checks the decoder and BS convention against exqalibur
 and Perceval where they import.
 
+--efficiency OUT RUN... writes the reanalysis of one calibration session's
+mesh runs with relative per-mode detection efficiencies fitted jointly with
+every error class and with the static offsets, each run held out in turn and
+no dark term; --check-efficiency OUT RUN... replays it, and
+--self-test-efficiency requires an efficiency-only truth to read ideal
+without static offsets, efficiencies plus offsets to be declared and
+recovered, and a flat truth scored with the receipt's t_out to read "no
+class fits".
+
 Usage: "$PYTHON" scripts/qd_belenos_mesh.py (--write DIR | --check DIR | --rca OUT | --check-rca OUT | --self-test)
 """
 
@@ -88,6 +97,10 @@ STATIC_TAUS = (0.1, 0.3)
 STATIC_GAIN_MIN = 10.0
 STATIC_SCHEMA = "qd-belenos-static-offsets-v1"
 STATIC_REPLAY_TOLERANCE = 1e-3
+EFFICIENCY_SCHEMA = "qd-belenos-mesh-efficiency-v1"
+EFFICIENCY_SWEEPS = 5000
+EFFICIENCY_TOLERANCE = 1e-10
+EFFICIENCY_STATIC_ITERATIONS = 600
 FIT_TVD_RATIO = 3.0
 SAMPLES_PER_SETTING = 1_500
 SHOT_HEADROOM = 2
@@ -1443,6 +1456,294 @@ def static_close(a: dict[str, Any], b: dict[str, Any]) -> None:
             require(abs(value - other) <= max(1.0, STATIC_REPLAY_TOLERANCE * abs(other)), f"{a['runs']}: {tau} {key}")
 
 
+# --- fitted detection efficiencies -----------------------------------------------------------
+
+
+def fit_efficiency(p: Any, counts: Any) -> Any:
+    """Relative per-mode detection efficiencies, geometric mean 1, maximizing the multinomial likelihood.
+
+    p is (..., S, 24) model detection probabilities and counts (S, 24). The fit is the iterative
+    proportional fit of lambda_sm = A_s eta_m p_sm, whose profile over the free scales A_s is the
+    multinomial of each setting's one-click histogram: a sweep sets every A_s to the setting's clicks over
+    its weighted light and every eta_m to the mode's clicks over its scaled light. Leading axes batch
+    independent fits (one per scan point). A mode that receives no model light in any setting keeps 1.
+    """
+    import numpy as np
+
+    p = np.asarray(p, float)
+    n = np.asarray(counts, float)
+    eta = np.ones(p.shape[:-2] + (MODES,))
+    clicks = n.sum(-2)
+    for _ in range(EFFICIENCY_SWEEPS):
+        scale = n.sum(-1) / np.maximum((p * eta[..., None, :]).sum(-1), 1e-300)
+        light = (scale[..., None] * p).sum(-2)
+        new = np.where(light > 0, (clicks + 1e-12) / np.maximum(light, 1e-300), 1.0)
+        new = new / np.exp(np.log(new).mean(-1, keepdims=True))
+        if np.max(np.abs(new - eta)) < EFFICIENCY_TOLERANCE:
+            return new
+        eta = new
+    return eta
+
+
+def held_out_fit(rows: list[tuple[list[int], list[float]]]) -> dict[str, Any]:
+    """Pooled deviance p-value and median TVD over the shot-noise floor of held-out settings."""
+    from scipy.stats import chi2
+
+    pooled = [pooled_deviance(c, q) for c, q in rows]
+    g2 = sum(d for d, _ in pooled)
+    dof = max(sum(k - 1 for _, k in pooled), 1)
+    ratios = sorted(
+        float(0.5 * sum(abs(v / sum(c) - x) for v, x in zip(c, q, strict=True)) / max(shot_floor(q, sum(c)), 1e-12))
+        for c, q in rows
+    )
+    p_value = float(f"{chi2.sf(g2, dof):.6g}")
+    median = ratios[len(ratios) // 2]
+    return {
+        "g2_per_dof": round(g2 / dof, 6),
+        "p_value": p_value,
+        "median_tvd_over_floor": round(median, 6),
+        "fits": bool(p_value >= FIT_P_MIN and median <= FIT_TVD_RATIO),
+    }
+
+
+def efficiency_classes(
+    scans: list[dict[str, list[list[float]]]], singles: list[list[int]], folds: list[int]
+) -> dict[str, Any]:
+    """Every class scanned with per-mode efficiencies fitted jointly, scored on settings held out by fold.
+
+    For each fold and each scan point the efficiencies are fitted on the other folds; the point with the
+    best training likelihood, its efficiencies and the class's prediction then score the fold. A class fits
+    when the held-out pooled deviance has p >= FIT_P_MIN and the held-out median TVD stays within
+    FIT_TVD_RATIO shot-noise floors; the verdict is the best held-out class when it fits ("ideal" when its
+    every chosen point is the null magnitude), otherwise "no class fits".
+    """
+    import numpy as np
+
+    zeros = [0.0] * MODES
+    index = np.arange(len(singles))
+    label = np.asarray(folds)
+    counts = np.asarray(singles, float)
+    classes: dict[str, dict[str, Any]] = {}
+    for name, points in scan_axes().items():
+        p = np.asarray([[scans[i][name][j] for i in index] for j in range(len(points))])
+        held, chosen, rows = 0.0, [], []
+        for fold in sorted(set(folds)):
+            test, train = index[label == fold], index[label != fold]
+            eta = fit_efficiency(p[:, train], counts[train])
+            trained = [
+                sum(loglik(singles[i], list(p[j, i]), list(eta[j]), zeros) for i in train) for j in range(len(points))
+            ]
+            j = first_best(trained)
+            chosen.append(points[j])
+            for i in test:
+                held += loglik(singles[i], list(p[j, i]), list(eta[j]), zeros)
+                rows.append((singles[i], rates(singles[i], list(p[j, i]), list(eta[j]), zeros)))
+        classes[name] = {"chosen": chosen, "held_out_log_likelihood": round(float(held), 6), **held_out_fit(rows)}
+    order = list(classes)
+    best = order[first_best([classes[k]["held_out_log_likelihood"] for k in order])]
+    null = all(not any(point.values()) for point in classes[best]["chosen"])
+    return {
+        "classes": classes,
+        "best_class": best,
+        "verdict": ("ideal" if null else best) if classes[best]["fits"] else "no class fits",
+    }
+
+
+class StaticEfficiencyFit(StaticFit):
+    """MAP estimate of shared heater offsets (Gaussian prior of width tau) and relative per-mode efficiencies.
+
+    The efficiencies are exp(u - mean u), so their geometric mean is 1 and u carries no prior; the
+    multinomial of each setting is invariant to a common efficiency scale.
+    """
+
+    def __init__(self, arch: list[Element], meshes: Any, sources: list[int], counts: Any) -> None:
+        import numpy as np
+
+        super().__init__(arch, meshes, sources, counts, np.ones(MODES), np.zeros((len(sources), MODES)))
+
+    def joint(self, delta: Any, u: Any, keep: Any) -> tuple[float, Any, Any]:
+        """Summed log-likelihood of the kept settings and its gradients in delta and u."""
+        import numpy as np
+
+        eta = np.exp(u - u.mean())
+        p, jac = jacobians(self.arch, self.meshes[keep] + delta, [self.sources[i] for i in keep])
+        n = self.counts[keep]
+        total = n.sum(1, keepdims=True)
+        weighted = p * eta
+        norm = weighted.sum(1, keepdims=True)
+        scale = total / np.maximum(norm, 1e-300)
+        lam = np.maximum(scale * weighted, LIKELIHOOD_FLOOR * total)
+        value = float((n * np.log(lam / total)).sum())
+        inner = (n * weighted / lam).sum(1, keepdims=True)
+        ratio = scale * n / lam
+        dldp = eta * ratio - scale * eta / norm * inner
+        dldeta = (p * ratio - scale * p / norm * inner).sum(0)
+        g = dldeta * eta
+        return value, np.einsum("sm,smj->j", dldp, jac), g - g.mean()
+
+    def fit_joint(self, keep: Any, tau: float) -> tuple[Any, Any]:
+        import numpy as np
+        from scipy.optimize import minimize
+
+        size = self.meshes.shape[1]
+        start = np.log(
+            fit_efficiency(
+                jacobians(self.arch, self.meshes[keep], [self.sources[i] for i in keep])[0], self.counts[keep]
+            )
+        )
+
+        def objective(x: Any) -> tuple[float, Any]:
+            delta, u = x[:size], x[size:]
+            value, gd, gu = self.joint(delta, u, keep)
+            return -(value - float((delta**2).sum()) / (2 * tau**2)), -np.concatenate([gd - delta / tau**2, gu])
+
+        found = minimize(
+            objective,
+            np.concatenate([np.zeros(size), start]),
+            jac=True,
+            method="L-BFGS-B",
+            options={"maxiter": EFFICIENCY_STATIC_ITERATIONS},
+        )
+        return found.x[:size], np.exp(found.x[size:] - found.x[size:].mean())
+
+
+def efficiency_static(
+    arch: list[Element], meshes: Any, sources: list[int], counts: Any, taus: tuple[float, ...], folds: list[int]
+) -> dict[str, Any]:
+    """Held-out gain of shared static offsets with fitted efficiencies over fitted efficiencies and dephasing.
+
+    On each fold the baseline is the exact dephasing channel at the sigma of SCAN_SIGMAS (0 included) whose
+    efficiency fit best explains the other folds, and the static model fits offsets and efficiencies jointly
+    on the other folds; both score the fold. Static offsets are declared when the summed gain exceeds
+    STATIC_GAIN_MIN nats and the held-out median TVD stays within FIT_TVD_RATIO shot-noise floors, so an
+    efficiency correction alone never passes for a static calibration error.
+    """
+    import numpy as np
+
+    fitter = StaticEfficiencyFit(arch, meshes, sources, counts)
+    rows = [list(map(int, c)) for c in np.asarray(counts)]
+    zeros = [0.0] * MODES
+    noisy = np.asarray(
+        [
+            [channel(arch, list(ph), src, sigma=sg) for ph, src in zip(meshes, sources, strict=True)]
+            for sg in SCAN_SIGMAS
+        ]
+    )
+    index = np.arange(len(sources))
+    label = np.asarray(folds)
+    out: dict[str, Any] = {}
+    for tau in taus:
+        gain, ratios = 0.0, []
+        for fold in sorted(set(folds)):
+            test, train = index[label == fold], index[label != fold]
+            etas = fit_efficiency(noisy[:, train], np.asarray(rows, float)[train])
+            k = first_best(
+                [
+                    sum(loglik(rows[i], list(noisy[s, i]), list(etas[s]), zeros) for i in train)
+                    for s in range(len(SCAN_SIGMAS))
+                ]
+            )
+            baseline = sum(loglik(rows[i], list(noisy[k, i]), list(etas[k]), zeros) for i in test)
+            delta, eta = fitter.fit_joint(train, tau)
+            p, _ = jacobians(arch, np.asarray(meshes)[test] + delta, [sources[i] for i in test])
+            for i, row in zip(test, p, strict=True):
+                q = rates(rows[i], list(row), list(eta), zeros)
+                gain += loglik(rows[i], list(row), list(eta), zeros)
+                tvd_i = 0.5 * sum(abs(c / sum(rows[i]) - v) for c, v in zip(rows[i], q, strict=True))
+                ratios.append(float(tvd_i / max(shot_floor(q, sum(rows[i])), 1e-12)))
+            gain -= baseline
+        ratios.sort()
+        out[f"{tau}"] = {
+            "gain_over_dephasing": round(float(gain), 3),
+            "median_tvd_over_floor": round(ratios[len(ratios) // 2], 3),
+        }
+    best = max(out, key=lambda key: out[key]["gain_over_dephasing"])
+    declared = (
+        out[best]["gain_over_dephasing"] > STATIC_GAIN_MIN and out[best]["median_tvd_over_floor"] <= FIT_TVD_RATIO
+    )
+    return {"by_tau": out, "best_tau": float(best), "static_declared": bool(declared)}
+
+
+def campaign(runs: list[Path]) -> dict[str, Any]:
+    """Meshes, sources, one-click counts and folds of the retained mesh runs of one calibration session."""
+    meshes: list[list[float]] = []
+    lows: list[int] = []
+    singles: list[list[int]] = []
+    folds: list[int] = []
+    arch: list[Element] = []
+    t_out: list[list[float]] = []
+    for k, run in enumerate(runs):
+        manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+        analysis = json.loads((run / "analysis.json").read_text(encoding="utf-8"))
+        texts = computed_circuits(run)
+        mine = run_architecture(decode(texts[0]))
+        require(
+            not arch or mine == arch, f"{run.name}: couplers differ from {runs[0].name}, another calibration session"
+        )
+        arch = mine
+        meshes += [mesh_phases(arch, decode(t)) for t in texts]
+        singles += [s["single_click"] for s in analysis["settings"]]
+        lows += [row["low"] for row in manifest["settings"]]
+        folds += [k] * len(texts)
+        perfs = json.loads((run / "submission.json").read_text(encoding="utf-8")).get("perfs_at_plan", {})
+        t_out.append((perfs.get("Transmission per mode (%)") or {}).get("t_out") or [1.0] * MODES)
+    return {"arch": arch, "meshes": meshes, "lows": lows, "singles": singles, "folds": folds, "t_out": t_out}
+
+
+def efficiency_record(runs: list[Path]) -> dict[str, Any]:
+    """The fitted-efficiency reanalysis of the mesh runs of one calibration session, each run one fold.
+
+    It replaces the receipt's t_out efficiencies and dark rates, which the runs themselves refute, by
+    relative per-mode efficiencies fitted with every class and with the static offsets, and no dark term.
+    """
+    import numpy as np
+
+    require(len(runs) > 1, "the fitted-efficiency reanalysis holds out whole runs, so it needs two or more")
+    data = campaign(runs)
+    arch, meshes, lows, singles = data["arch"], data["meshes"], data["lows"], data["singles"]
+    scans = parallel.ordered_map(Scan(arch, neighbours(arch)), list(zip(meshes, lows, strict=True)), min_items=2)
+    ideal = np.asarray([scan["phase_noise"][0] for scan in scans])
+    eta = fit_efficiency(ideal, np.asarray(singles, float))
+    return {
+        "schema": EFFICIENCY_SCHEMA,
+        "runs": [run.name for run in runs],
+        "analysis_sha256": [sha256(run / "analysis.json") for run in runs],
+        "settings": len(lows),
+        "t_out_at_plan": data["t_out"],
+        "efficiency_under_ideal": [round(float(v), 6) for v in eta],
+        **efficiency_classes(scans, singles, data["folds"]),
+        "static": efficiency_static(arch, meshes, lows, singles, STATIC_TAUS, data["folds"]),
+    }
+
+
+def efficiency_close(a: dict[str, Any], b: dict[str, Any]) -> None:
+    """A fitted-efficiency record replays when its verdicts and digests match and every number agrees within
+    STATIC_REPLAY_TOLERANCE relative (at least one nat on likelihood sums), since L-BFGS paths differ across BLAS
+    builds."""
+    keys = ("schema", "runs", "analysis_sha256", "settings", "best_class", "verdict")
+    require({k: a[k] for k in keys} == {k: b[k] for k in keys}, f"{a.get('runs')}: fitted-efficiency verdict differs")
+    require(
+        {k: a["static"][k] for k in ("best_tau", "static_declared")}
+        == {k: b["static"][k] for k in ("best_tau", "static_declared")},
+        f"{a['runs']}: static verdict differs",
+    )
+    for name, row in a["classes"].items():
+        require(row["chosen"] == b["classes"][name]["chosen"] and row["fits"] == b["classes"][name]["fits"], name)
+        for key in ("held_out_log_likelihood", "g2_per_dof", "median_tvd_over_floor"):
+            other = b["classes"][name][key]
+            require(
+                abs(row[key] - other)
+                <= max(1.0 if key == "held_out_log_likelihood" else 1e-3, STATIC_REPLAY_TOLERANCE * abs(other)),
+                f"{name} {key}",
+            )
+    for tau, row in a["static"]["by_tau"].items():
+        for key, value in row.items():
+            other = b["static"]["by_tau"][tau][key]
+            require(abs(value - other) <= max(1.0, STATIC_REPLAY_TOLERANCE * abs(other)), f"{a['runs']}: {tau} {key}")
+    close_relative(a["efficiency_under_ideal"], b["efficiency_under_ideal"], "efficiency_under_ideal")
+    require(a["t_out_at_plan"] == b["t_out_at_plan"], "t_out_at_plan differs")
+
+
 def scan_axes() -> dict[str, list[dict[str, float]]]:
     mixture = [{"sigma": s, "fraction": f} for s in SCAN_SIGMAS for f in SCAN_FRACTIONS]
     return {
@@ -1816,6 +2117,62 @@ def static_self_test() -> int:
     return 0
 
 
+def efficiency_self_test() -> int:
+    """Fitted efficiencies separate an instrument error from an optical one.
+
+    Sixty-four uniform random meshes over the connected inputs in four folds stand in for a campaign of four
+    runs. Two detector banks at different efficiency without offsets read ideal and declare no static offsets;
+    the same efficiencies with 0.1 rad static offsets declare them and recover both; an ideal truth at flat
+    efficiency scored with Q1's receipt t_out reads "no class fits" under the receipt-efficiency score and
+    "ideal" under fitted efficiencies.
+    """
+    import numpy as np
+
+    texts = computed_circuits(RUNS / S3_RUN)
+    arch = run_architecture(decode(texts[0]))
+    rng = np.random.default_rng([SEED, 13])
+    meshes = rng.uniform(0, 2 * math.pi, (64, len(phase_slots(arch))))
+    lows = [CONNECTED[k % len(CONNECTED)] for k in range(64)]
+    folds = [k // 16 for k in range(64)]
+    pairs = list(zip(meshes, lows, strict=True))
+    truth = np.where(np.arange(MODES) < MODES // 2, 1.0, 0.5) * rng.uniform(0.8, 1.2, MODES)
+    offsets = rng.normal(0, 0.1, meshes.shape[1])
+    nominal = np.asarray([propagate(arch, list(ph), low)[0] for ph, low in pairs])
+    shifted = np.asarray([propagate(arch, list(ph + offsets), low)[0] for ph, low in pairs])
+
+    def draw(p: Any, eta: Any) -> list[list[int]]:
+        return [list(map(int, rng.multinomial(SAMPLES_PER_SETTING, w / w.sum()))) for w in p * eta]
+
+    instrument, both, flat = draw(nominal, truth), draw(shifted, truth), draw(nominal, np.ones(MODES))
+    scans = parallel.ordered_map(Scan(arch, neighbours(arch)), pairs, min_items=2)
+    seen: dict[str, Any] = {}
+    read = efficiency_classes(scans, instrument, folds)
+    static = efficiency_static(arch, meshes, lows, instrument, (0.1,), folds)
+    seen["efficiency only"] = (read["verdict"], static["by_tau"]["0.1"])
+    require(read["verdict"] == "ideal", f"self-test: an efficiency-only truth reads {read['verdict']}")
+    require(not static["static_declared"], f"self-test: an efficiency-only truth declared static offsets: {static}")
+    static = efficiency_static(arch, meshes, lows, both, (0.1,), folds)
+    delta, eta = StaticEfficiencyFit(arch, meshes, lows, both).fit_joint(np.arange(64), 0.1)
+    recovered = (float(np.corrcoef(delta, offsets)[0, 1]), float(np.corrcoef(np.log(eta), np.log(truth))[0, 1]))
+    seen["efficiency and offsets"] = (static["by_tau"]["0.1"], [round(v, 3) for v in recovered])
+    require(static["static_declared"], f"self-test: static offsets with efficiencies were not declared: {static}")
+    require(
+        recovered[0] >= 0.8 and recovered[1] >= 0.95, f"self-test: offsets and efficiencies recovered at {recovered}"
+    )
+    receipt = json.loads((RUNS / Q1_RUN / "submission.json").read_text(encoding="utf-8"))["perfs_at_plan"]
+    t_out = receipt["Transmission per mode (%)"]["t_out"]
+    preregistered = score(arch, [list(m) for m in meshes], lows, flat, t_out, [[0.0] * MODES for _ in lows])
+    fitted = efficiency_classes(scans, flat, folds)
+    seen["flat under t_out"] = (preregistered["verdict"], fitted["verdict"])
+    require(
+        preregistered["verdict"] == "no class fits",
+        f"self-test: t_out scoring of a flat truth reads {preregistered['verdict']}",
+    )
+    require(fitted["verdict"] == "ideal", f"self-test: fitted efficiencies on a flat truth read {fitted['verdict']}")
+    print(f"efficiency self-test: instrument and optical errors separate; {seen}")
+    return 0
+
+
 def block_slot(arch: list[Element], low: int) -> int:
     slot: int = block_mzis(arch, low, 4, BLOCK_SIZES[0])[2]["ps"][1]
     return slot
@@ -1838,6 +2195,9 @@ def main() -> int:
     group.add_argument("--self-test-rule", action="store_true")
     group.add_argument("--static", type=Path, nargs="+", metavar=("OUT", "RUN"))
     group.add_argument("--check-static", type=Path, nargs="+", metavar=("OUT", "RUN"))
+    group.add_argument("--self-test-efficiency", action="store_true")
+    group.add_argument("--efficiency", type=Path, nargs="+", metavar=("OUT", "RUN"))
+    group.add_argument("--check-efficiency", type=Path, nargs="+", metavar=("OUT", "RUN"))
     args = parser.parse_args()
     try:
         if args.self_test:
@@ -1846,6 +2206,21 @@ def main() -> int:
             return static_self_test()
         if args.self_test_rule:
             return rule_self_test()
+        if args.self_test_efficiency:
+            return efficiency_self_test()
+        if args.efficiency or args.check_efficiency:
+            out, *runs = args.efficiency or args.check_efficiency
+            record = efficiency_record(runs)
+            if args.efficiency:
+                out.parent.mkdir(parents=True, exist_ok=True)
+                out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+            else:
+                efficiency_close(json.loads(out.read_text(encoding="utf-8")), record)
+            print(
+                f"{out}: fitted efficiencies {'written' if args.efficiency else 'replay'}, "
+                f"verdict {record['verdict']}, static declared {record['static']['static_declared']}"
+            )
+            return 0
         if args.static or args.check_static:
             out, *runs = args.static or args.check_static
             record = static_record(runs)
