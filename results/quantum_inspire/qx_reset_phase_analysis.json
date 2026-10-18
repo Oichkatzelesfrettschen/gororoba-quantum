@@ -1,0 +1,37 @@
+{
+ "cases_sha256": "c506657d7698735adc4d98ec680dd6b8b02a2d3d5e9cbd4c099fee11d5229729",
+ "counts": {
+  "already_zero": {
+   "10": 2048
+  },
+  "control_x": {
+   "10": 2048
+  },
+  "reset_phase": {
+   "00": 2048
+  }
+ },
+ "laws": {
+  "already_zero": {
+   "cqasm": "10",
+   "qxelarator": "10"
+  },
+  "control_x": {
+   "cqasm": "10",
+   "qxelarator": "10"
+  },
+  "reset_phase": {
+   "cqasm": "10",
+   "qxelarator": "00"
+  }
+ },
+ "raw_sha256": {
+  "already_zero": "2513f6ca8b2100c851dde7b3cf1b28ed00c72abc5f50dabdf249ca92f52a2ea1",
+  "control_x": "2513f6ca8b2100c851dde7b3cf1b28ed00c72abc5f50dabdf249ca92f52a2ea1",
+  "reset_phase": "d85e5f6742eac4fd705f6eb097d7386f5956174217ef6738801bbed997fd0c35"
+ },
+ "run": "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00",
+ "schema": "qx-reset-phase-analysis-v1",
+ "shots": 2048,
+ "verdict": "qxelarator"
+}

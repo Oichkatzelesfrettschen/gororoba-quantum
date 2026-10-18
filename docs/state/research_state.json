@@ -966,6 +966,13 @@
       "run": "results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12",
       "family": "Belenos form-versus-dwell D2 and D4",
       "question": "Q1's circuit iterated over sample-budget ladders at seed 20 (29dc6ef8) and seed 46667: does in_block fall with the budget inside an iterated job?"
+    },
+    {
+      "id": "qi-qx-reset-phase-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00",
+      "family": "cQASM reset semantics on the hosted QX emulator",
+      "question": "Does the hosted QX emulator's reset keep the rest of the register's relative phase, as cQASM's measure-and-flip does, or apply qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map?"
     }
   ],
   "claims": [
@@ -5504,6 +5511,35 @@
         "docs/notes/quandela/form-dwell-decomposition.md"
       ],
       "assumptions": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-qx-hosted-reset-drops-register-phase",
+      "statement": "The hosted QX emulator (QXsinglenodesimulator, backend type 1) applies qxelarator 0.10.0's reset map, not cQASM 3.0's measure-and-flip: with q[0] in |1> and q[1] in |->, reset q[0] then H on q[1] reads q[1] = 0 in 2048 of 2048 shots, where measure-and-flip reads 1 in every shot, while the same program with X in place of the reset and a reset of an already-zero q[0] read q[1] = 1 in 2048 of 2048. Local qxelarator 0.10.0 returns the same three outcomes, so a QX or qxelarator law of any circuit that resets a qubit with weight on |1> beside a register carrying relative phase is the qxelarator map's law.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "One batch of three two-qubit circuits on 2026-10-18 under the emulator's deployment that day; it pins the map on a |1>-weighted reset beside one |-> qubit and says nothing about Tuna hardware, whose reset is physical. A redeployed emulator or a newer qxelarator can change it.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/qx_reset_phase_analysis.json",
+          "sha256": "3a862e6bc95608b346731b863a7611a196ff694d5e87e6998e065407a8022782"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/qx-runs.md"
+      ],
+      "gates": {
+        "core-456": "replay",
+        "core-455": "freshness",
+        "core-457": "admission"
+      },
+      "acquisitions": [
+        "qi-qx-reset-phase-batch-00"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     }
