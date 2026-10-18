@@ -4,6 +4,8 @@ Claim kind: **secondary hardware reanalysis**. This independent analytic audit c
 
 Run: `results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17`. The JSON sidecar binds every input by SHA256.
 
+Normalization: Design B fixed-operand LCU: P(s=0) = ||x y||^2 / 2 for normalized x = (e_i + t e_j)/sqrt2 and normalized y, so the ideal reads 0 dark, 1 bright and 1/2 fixture.
+
 ## Counts and case estimates
 
 Each Latin-square circuit and each readout calibration contains 16,384 shots. Each case appears once in each of the three Latin-square circuits, totaling 49,152 attempts per case. The estimates below pool three fixed regions; the same-shot covariance is retained between cases.
