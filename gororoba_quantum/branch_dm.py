@@ -15,8 +15,12 @@ the same channels. Each operation becomes a superoperator on the active
 qubits, renumbered 0..n-1 in ascending physical order with jax_bridge's
 little-endian local convention: a gate from its unitary, a ``reset`` from
 the exact channel {|0><0|, |0><1|} (its reset local error follows it), and
-a local error from qiskit's SuperOp of the QuantumError, which composes the
-error's circuits with no eigenvalue truncation.
+a local error from ``error_superop``, which sums the error's circuits'
+probability-weighted products of exact Kraus superoperators with no
+eigenvalue truncation. It equals qiskit's SuperOp of the QuantumError on
+every error the ghost sweep converts (ghost_error_scale_branching.py
+``--check-converter``) at about 1/65 of its cost; qiskit composes each
+circuit through SuperOp instruction conversions, which dominated export.
 
 Measurement roles. A measure is deferred when no later operation touches
 its qubit and no later condition reads its clbit; collapsing then or at the
@@ -101,7 +105,7 @@ from typing import Any
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit import ClassicalRegister, Clbit, Delay, IfElseOp, Parameter
-from qiskit.quantum_info import Operator, SuperOp
+from qiskit.quantum_info import Operator
 
 import jax_bridge
 
@@ -231,8 +235,15 @@ def dynamic_key(circuit: QuantumCircuit) -> tuple[Any, ...]:
 class _Exporter:
     """Converts noisy (sub)circuits into Items under one noise model, sharing the superoperator caches."""
 
-    def __init__(self, noise_model: Any, cache: dict[int, np.ndarray] | None, program: DynamicProgram) -> None:
+    def __init__(
+        self,
+        noise_model: Any,
+        cache: dict[int, np.ndarray] | None,
+        program: DynamicProgram,
+        audit: list[tuple[Any, np.ndarray]] | None = None,
+    ) -> None:
         self.noise_model = noise_model
+        self.audit = audit
         self.shared = {} if cache is None else cache
         self.local: dict[int, np.ndarray] = {}
         self.owned = {
@@ -287,7 +298,9 @@ class _Exporter:
                 key = id(error)
                 cache = self.shared if key in self.owned else self.local
                 if key not in cache:
-                    cache[key] = from_superop(SuperOp(error.to_quantumchannel()).data)
+                    cache[key] = error_superop(error)
+                    if self.audit is not None:
+                        self.audit.append((error, cache[key]))
                 if error is self.cz_errors.get(qargs):
                     program.cz.append((len(program.items), qargs))
                 s = cache[key]
@@ -312,10 +325,11 @@ def _export(
     noise_model: Any,
     cache: dict[int, np.ndarray] | None,
     angles: Mapping[str, tuple[int, int]],
+    audit: list[tuple[Any, np.ndarray]] | None = None,
 ) -> DynamicProgram:
     physical = jax_bridge._active(circuit)
     program = DynamicProgram(n=len(physical), physical=physical, num_clbits=circuit.num_clbits)
-    _Exporter(noise_model, cache, program).convert(circuit, angles, None)
+    _Exporter(noise_model, cache, program, audit).convert(circuit, angles, None)
     for item in program.items:
         if item.kind == "measure" and item.qargs[0] not in program.readout:
             error = noise_model._local_readout_errors.get((program.physical[item.qargs[0]],))
@@ -335,8 +349,17 @@ def export(circuit: QuantumCircuit, noise_model: Any, cache: dict[int, np.ndarra
     return _export(circuit, noise_model, cache, {})
 
 
-def template(circuit: QuantumCircuit, noise_model: Any, cache: dict[int, np.ndarray] | None = None) -> DynamicProgram:
-    """The export of circuit with every top-level angle gate left open, named by its instruction index."""
+def template(
+    circuit: QuantumCircuit,
+    noise_model: Any,
+    cache: dict[int, np.ndarray] | None = None,
+    audit: list[tuple[Any, np.ndarray]] | None = None,
+) -> DynamicProgram:
+    """The export of circuit with every top-level angle gate left open, named by its instruction index.
+
+    audit, when given, receives (QuantumError, superoperator) for every
+    local error the export converts, the relaxation pass's included.
+    """
     body = circuit.copy_empty_like()
     angles: dict[str, tuple[int, int]] = {}
     for position, instruction in enumerate(circuit.data):
@@ -347,7 +370,7 @@ def template(circuit: QuantumCircuit, noise_model: Any, cache: dict[int, np.ndar
             angles.update({p.name: (position, j) for j, p in enumerate(symbols)})
             operation.params = symbols
         body.append(operation, instruction.qubits, instruction.clbits, copy=False)
-    return _export(body, noise_model, cache, angles)
+    return _export(body, noise_model, cache, angles, audit)
 
 
 def superop(kraus: np.ndarray) -> np.ndarray:
@@ -358,6 +381,98 @@ def superop(kraus: np.ndarray) -> np.ndarray:
 
 
 RESET_SUPEROP = superop(RESET_KRAUS)
+
+
+def _lift(kraus: np.ndarray, qargs: tuple[int, ...], n: int) -> np.ndarray:
+    """A (rank, 2^k, 2^k) Kraus stack on local qubits qargs as one on n qubits, little-endian, identity elsewhere."""
+    rank = kraus.shape[0]
+    if qargs == tuple(range(n)):
+        return kraus
+    rest = [q for q in range(n) if q not in qargs]
+    # kron(I_rest, K): axes most significant first are rest, then qargs, each block in descending order.
+    full = np.einsum("ab,rij->raibj", np.eye(2 ** len(rest)), kraus).reshape(rank, 2**n, 2**n)
+    order = list(reversed(rest)) + list(reversed(qargs))
+    axes = [order.index(q) for q in reversed(range(n))]
+    tensor = full.reshape((rank,) + (2,) * (2 * n))
+    tensor = tensor.transpose([0] + [1 + a for a in axes] + [1 + n + a for a in axes])
+    return tensor.reshape(rank, 2**n, 2**n)
+
+
+def _instruction_kraus(operation: Any) -> np.ndarray:
+    """The Kraus stack of one instruction of a QuantumError circuit: a unitary gate, ``kraus`` or ``reset``."""
+    name = operation.name
+    if name == "reset":
+        return RESET_KRAUS
+    if name == "kraus":
+        return np.stack([np.asarray(k, dtype=np.complex128) for k in operation.params])
+    if operation.is_parameterized() or not hasattr(operation, "to_matrix"):
+        raise UnsupportedCircuit(f"local error instruction {name} is not a unitary gate, kraus or reset")
+    return np.asarray(operation.to_matrix(), dtype=np.complex128)[None]
+
+
+def _kraus_superop(kraus: np.ndarray) -> np.ndarray:
+    """superop() of a Kraus stack as sum_a kron(K_a, conj(K_a)), which is S[(i, j), (k, l)] for small d."""
+    s = np.kron(kraus[0], kraus[0].conj())
+    for k in kraus[1:]:
+        s += np.kron(k, k.conj())
+    return s
+
+
+# Superoperators of the parameterless gates and resets inside local errors, by (name, params, qargs, n).
+_FIXED: dict[tuple[Any, ...], np.ndarray] = {}
+
+
+def _instruction_superop(
+    operation: Any, qargs: tuple[int, ...], n: int, kraus: dict[tuple[Any, ...], np.ndarray]
+) -> np.ndarray | None:
+    """The superoperator of one error-circuit instruction on n qubits; None for the identity gate.
+
+    kraus caches ``kraus`` instructions by qargs and matrix bytes within
+    one error, whose composed terms repeat the same relaxation matrices.
+    """
+    name = operation.name
+    if name == "id":
+        return None
+    if name == "kraus":
+        stack = _instruction_kraus(operation)
+        content = (qargs, stack.shape, stack.tobytes())
+        if content not in kraus:
+            kraus[content] = _kraus_superop(_lift(stack, qargs, n))
+        return kraus[content]
+    params = tuple(operation.params)
+    if not all(isinstance(p, str) for p in params):
+        return _kraus_superop(_lift(_instruction_kraus(operation), qargs, n))
+    key = (name, params, qargs, n)
+    if key not in _FIXED:
+        _FIXED[key] = _kraus_superop(_lift(_instruction_kraus(operation), qargs, n))
+    return _FIXED[key]
+
+
+def error_superop(error: Any) -> np.ndarray:
+    """A QuantumError's superoperator, sum_t p_t S(circuit_t), each S the ordered product of its instructions' maps.
+
+    Every instruction contributes the superoperator of its exact Kraus
+    stack, so no eigenvalue truncation enters; the result equals
+    from_superop(SuperOp(error.to_quantumchannel()).data), the qiskit path
+    the self-test compares on every local error of the snapshots it covers.
+    """
+    n = error.num_qubits
+    d2 = 4**n
+    total = np.zeros((d2, d2), dtype=np.complex128)
+    kraus: dict[tuple[Any, ...], np.ndarray] = {}
+    for circuit, probability in zip(error.circuits, error.probabilities, strict=True):
+        index = {q: k for k, q in enumerate(circuit.qubits)}
+        s: np.ndarray | None = None
+        for instruction in circuit.data:
+            qargs = tuple(index[q] for q in instruction.qubits)
+            step = _instruction_superop(instruction.operation, qargs, n, kraus)
+            if step is not None:
+                s = step if s is None else step @ s
+        if s is None:
+            total[np.diag_indices(d2)] += probability
+        else:
+            total += probability * s
+    return total
 
 
 def from_superop(data: np.ndarray) -> np.ndarray:

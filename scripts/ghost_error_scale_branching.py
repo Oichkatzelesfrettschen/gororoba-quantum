@@ -7,7 +7,7 @@ snapshot's factor-1 noise model; replicas of one dynamic key share a
 template export, and one batch carries the key's replicas, the ten CZ
 factors of scripts/ghost_error_scale.py and every live branch. A key fixes
 the physical qubits, so each group's noise model is built in a pool worker
-from the snapshot restricted to those qubits (GroupBuilder), which carries
+from the snapshot restricted to those qubits (KeyBuilder), which carries
 the full snapshot's channels on them. The CZ
 factor c enters only through the CZ steps, jax_bridge.CzChannel at
 min(c * error, CZ_CAP) as ghost_error_scale.scaled reports it; the readout
@@ -32,14 +32,15 @@ Two estimators per replica and point, kept apart:
 spread over parallel.ordered_map; ``--engine torch`` evolves on
 ``--device cuda|cpu`` in ``--dtype complex64|complex128`` (branch_dm.py
 documents both contraction ``--form`` choices and ``--no-fuse``), staying
-on the device from the plan upload to the law tensor. Each run records the
-seconds of its phases: prepare (records and snapshot files), export
-(restricted noise models, templates and plans in the pool, upload to the
-device), evolve (laws ready on the device) and sample (distances on the
-host). The output's ``warmup_seconds`` is the pool start, plus the CUDA
-context and cuBLAS start on cuda, which no phase includes.
-``--profile-only RUN`` runs the four phases on one run and prints the
-seconds as JSON without writing a file.
+on the device from the plan upload to the law tensor. The output records
+the seconds of each phase across every run: prepare (records and snapshot
+files, one pool map), export (restricted noise models, templates and
+plans, one pool map), upload (torch only: one run's plans at a time to the
+device), evolve (laws ready on the device; numpy maps every group's plan
+over the pool) and sample (distances on the host). The output's
+``warmup_seconds`` is the pool start, plus the CUDA context and cuBLAS
+start on cuda, which no phase includes. ``--profile-only RUN`` runs the
+phases on one run and prints the seconds as JSON without writing a file.
 
 ``--compare-parts FILE`` reads a ghost_error_scale part (Aer, sampled) and
 reports, per run, the sampled-estimator mean at every point minus the Aer
@@ -90,6 +91,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import functools
 import hashlib
 import importlib.metadata
 import json
@@ -149,6 +151,7 @@ CONTRACT_FACTORS = jax_bridge_sweep.CONTRACT_FACTORS
 JAX_TOLERANCE = 1e-12
 AER_DIAGONAL_TOLERANCE = 1e-9
 RESCALE_TOLERANCE = 1e-10
+CONVERTER_TOLERANCE = 1e-14
 SUM_TOLERANCE = 1e-12
 TORCH_TOLERANCE = 1e-12
 require = ghost_run.require
@@ -172,15 +175,17 @@ class SnapshotState:
     templates: dict[tuple[Any, ...], branch_dm.DynamicProgram] = field(default_factory=dict)
     channels: dict[tuple[int, ...], tuple[jax_bridge.CzChannel, float | None]] = field(default_factory=dict)
     superops: dict[tuple[tuple[int, ...], float], np.ndarray] = field(default_factory=dict)
+    audit: list[tuple[Any, np.ndarray]] | None = None
 
     @classmethod
-    def build(cls, snapshot: dict[str, Any]) -> SnapshotState:
-        return cls(snapshot=snapshot, noise=calibration_snapshot.noise_model(snapshot)[1])
+    def build(cls, snapshot: dict[str, Any], audit: bool = False) -> SnapshotState:
+        noise = calibration_snapshot.noise_model(snapshot)[1]
+        return cls(snapshot=snapshot, noise=noise, audit=[] if audit else None)
 
     def skeleton(self, replica: QuantumCircuit) -> tuple[tuple[Any, ...], branch_dm.DynamicProgram]:
         key = branch_dm.dynamic_key(replica)
         if key not in self.templates:
-            self.templates[key] = branch_dm.template(replica, self.noise, self.cache)
+            self.templates[key] = branch_dm.template(replica, self.noise, self.cache, self.audit)
         return key, self.templates[key]
 
     def cz_superop(self, qargs: tuple[int, ...], factor: float) -> np.ndarray:
@@ -206,80 +211,254 @@ def make_backend(engine: str, device: str, dtype: str) -> branch_dm.Backend:
     return branch_dm.TorchBackend(device, dtype)
 
 
-@dataclass
-class NumpyEvolver:
-    """evolve() of one plan on numpy complex128, for the process pool; returns the law and the branch counts."""
-
-    readout_factors: tuple[float, ...]
-
-    def __call__(self, plan: branch_dm.Plan) -> tuple[np.ndarray, dict[str, int]]:
-        backend = branch_dm.NumpyBackend()
-        return branch_dm.evolve(branch_dm.stage(plan, backend), backend, self.readout_factors, flip)
-
-
-@dataclass
-class Group:
-    """Replicas of one dynamic key under one snapshot: their labels and plan."""
-
-    relative: str
-    labels: list[str]
-    plan: branch_dm.Plan
-
-
 def restricted(circuit: QuantumCircuit) -> tuple[QuantumCircuit, list[int]]:
-    """circuit without barriers on its active qubits, renumbered in ascending physical order (restrict_circuit)."""
+    """circuit without barriers on its active qubits, renumbered in ascending physical order (restrict_circuit).
+
+    body shares circuit's bits, so a bound instruction enters through
+    _append, which skips append's argument broadcasting.
+    """
     body = circuit.copy_empty_like()
     for instruction in circuit.data:
-        if instruction.operation.name not in branch_dm.SKIPPED:
-            body.append(instruction.operation, instruction.qubits, instruction.clbits, copy=False)
+        operation = instruction.operation
+        if operation.name in branch_dm.SKIPPED:
+            continue
+        if operation.is_parameterized():
+            body.append(operation, instruction.qubits, instruction.clbits, copy=False)
+        else:
+            body._append(instruction)
     return snapshot_laws.restrict_circuit(body)
 
 
-@dataclass
-class GroupBuilder:
-    """The plan of one group from its restricted snapshot and circuits, for the process pool.
+GroupKey = tuple[str, tuple[Any, ...]]
+Pair = tuple[str, tuple[int, ...]]
+MODES = ("plans", "distances", "audit")
 
-    NoiseModel.from_backend builds every gate, reset and readout channel
-    from that qubit's or coupler's own Target entries, and the relaxation
-    pass from that qubit's T1, T2 and the dt, so the snapshot restricted to
-    the group's active qubits (snapshot_laws.restrict) carries the same
-    channels as the full one; the self-test's (h) compares them. A worker
-    then builds a noise model of n qubits in place of 156.
+
+def active(circuit: QuantumCircuit) -> tuple[int, ...]:
+    """The physical qubits restricted() keeps: every qubit a non-skipped instruction touches, ascending."""
+    index = {q: k for k, q in enumerate(circuit.qubits)}
+    return tuple(
+        sorted({index[q] for i in circuit.data if i.operation.name not in branch_dm.SKIPPED for q in i.qubits})
+    )
+
+
+def assign(pairs: dict[Pair, list[GroupKey]], parts: int) -> list[list[Pair]]:
+    """The pairs over parts slices: most groups first onto the least-loaded slice, ties to the lowest slice.
+
+    The rule reads only the run's own pairs in first-appearance order, so
+    every slice of a run computes the same assignment.
+    """
+    order = {pair: k for k, pair in enumerate(pairs)}
+    loads = [0] * parts
+    out: list[list[Pair]] = [[] for _ in range(parts)]
+    for pair in sorted(pairs, key=lambda p: (-len(pairs[p]), order[p])):
+        j = min(range(parts), key=lambda s: (loads[s], s))
+        out[j].append(pair)
+        loads[j] += 1 + len(pairs[pair])
+    return out
+
+
+@functools.cache
+def snapshot_file(relative: str) -> dict[str, Any]:
+    """A calibration snapshot, read once per process; callers restrict it and never modify it."""
+    return dict(json.loads((ROOT / relative).read_text(encoding="utf-8")))
+
+
+def run_uniforms(run_name: str, shots: dict[str, int], replicas: dict[str, int], members: list[str]) -> dict[str, Any]:
+    """The run's sampled-estimator uniforms per replica label, drawn in member and replica order."""
+    rng = np.random.default_rng([SEED, run_digest(run_name)])
+    return {f"{m}#{k}": rng.random(shots[m]) for m in members for k in range(replicas[m])}
+
+
+@dataclass
+class GroupResult:
+    """One group's structure line, its replicas' branch counts and their (exact, sampled) distances per point."""
+
+    structure: dict[str, Any]
+    branches: dict[str, int]
+    rows: dict[str, tuple[np.ndarray, np.ndarray]]
+
+
+def group_result(
+    prepared: dict[str, Any],
+    labels: list[str],
+    plan: branch_dm.Plan,
+    evolved: tuple[Any, dict[str, int]],
+    uniforms: dict[str, Any],
+    points: int,
+    backend: branch_dm.Backend,
+) -> GroupResult:
+    """The distances of every replica of one group from its law, on the backend that holds the law."""
+    law, stats = evolved
+    structure = {
+        "replicas": labels,
+        "qubits": plan.n,
+        "exported_ops": plan.exported_ops,
+        "steps": stats["ops"],
+        "splits": stats["splits"],
+        "live_branches": stats["live"],
+    }
+    flat = law.reshape((law.shape[0], points, law.shape[-1]))
+    rows = {}
+    for g, label in enumerate(labels):
+        m, k = label.rsplit("#", 1)
+        measured = prepared["measured"][m][int(k)]
+        if isinstance(backend, branch_dm.TorchBackend):
+            pair = backend.host(torch_distances(backend, flat[g], uniforms[label], measured))
+            rows[label] = (pair[0], pair[1])
+        else:
+            exact = 0.5 * np.abs(flat[g] - measured).sum(axis=1)
+            rows[label] = (exact, inverse_cdf_tv(flat[g], uniforms[label], measured))
+    branches = {"splits": stats["splits"], "children": stats["children"], "live": stats["live"]}
+    return GroupResult(structure, branches, rows)
+
+
+@dataclass
+class Shard:
+    """What one (run, slice) pool item returns: the run's metadata and its own pairs' results.
+
+    prepared is ghost_run.prepare without the circuits, replicas counts each
+    member's replicas, and keys lists every group key of the run with its
+    replica labels in first-appearance order, the same in every slice of the
+    run. results maps the slice's keys to their plans (mode plans) or
+    GroupResults (mode distances); audit holds converter_gap per pair (mode
+    audit).
     """
 
+    name: str
+    prepared: dict[str, Any]
+    members: list[str]
+    replicas: dict[str, int]
+    keys: list[tuple[GroupKey, list[str]]]
+    results: dict[GroupKey, Any]
+    seconds: dict[str, float]
+    audit: list[tuple[int, float]] = field(default_factory=list)
+
+
+@dataclass
+class RunSlicer:
+    """One (run, slice, slices) item for the process pool.
+
+    The worker prepares the run, groups its replicas by dynamic key and
+    takes the (snapshot, active qubits) pairs assign() gives its slice. Per
+    pair it builds one noise model from the snapshot restricted to those
+    qubits (snapshot_laws.restrict) and every key's plan under it, sharing
+    the superoperator cache. NoiseModel.from_backend builds every gate, reset
+    and readout channel from that qubit's or coupler's own Target entries,
+    and the relaxation pass from that qubit's T1, T2 and the dt, so the
+    restricted snapshot carries the full one's channels on those qubits (the
+    self-test's (h)). Mode distances also evolves on numpy and samples, so
+    only distances leave the worker; mode plans returns the plans for the
+    device; mode audit returns converter_gap of every error the exports
+    convert.
+    """
+
+    index: dict[str, Any]
     cz_factors: tuple[float, ...]
+    readout_factors: tuple[float, ...]
     fuse: bool
+    mode: str
 
-    def __call__(self, item: tuple[dict[str, Any], list[QuantumCircuit]]) -> branch_dm.Plan:
-        snapshot, circuits = item
-        return SnapshotState.build(snapshot).plan(circuits, self.cz_factors, self.fuse)
+    def __call__(self, item: tuple[str, int, int]) -> Shard:
+        run_name, part, parts = item
+        seconds: dict[str, float] = {}
+        clock = time.perf_counter()
+        prepared = ghost_run.prepare(run_name, self.index)
+        if "skipped" in prepared:
+            return Shard(run_name, prepared, [], {}, [], {}, {})
+        execution = prepared["execution"]
+        members = [m for m in prepared["members"] if m in execution]
+        keyed: dict[GroupKey, list[tuple[str, QuantumCircuit]]] = {}
+        for m in members:
+            for k, replica in enumerate(prepared["replicas"][m][1]):
+                keyed.setdefault((execution[m], branch_dm.dynamic_key(replica)), []).append((f"{m}#{k}", replica))
+        pairs: dict[Pair, list[GroupKey]] = {}
+        for key, rows in keyed.items():
+            pairs.setdefault((key[0], active(rows[0][1])), []).append(key)
+        seconds["prepare"] = time.perf_counter() - clock
+
+        clock = time.perf_counter()
+        plans: dict[GroupKey, branch_dm.Plan] = {}
+        audit = []
+        for pair in assign(pairs, parts)[part]:
+            relative, qubits = pair
+            snapshot = snapshot_laws.restrict(snapshot_file(relative), list(qubits))
+            state = SnapshotState.build(snapshot, audit=self.mode == "audit")
+            for key in pairs[pair]:
+                circuits = []
+                for _, replica in keyed[key]:
+                    circuit, kept = restricted(replica)
+                    require(tuple(kept) == qubits, f"{run_name}: replicas of one dynamic key differ in active qubits")
+                    circuits.append(circuit)
+                if self.mode == "audit":
+                    state.skeleton(circuits[0])
+                else:
+                    plans[key] = state.plan(circuits, self.cz_factors, self.fuse)
+            if self.mode == "audit":
+                audit.append(converter_gap(state.audit or []))
+        seconds["export"] = time.perf_counter() - clock
+
+        replicas = {m: len(prepared["replicas"][m][1]) for m in members}
+        light = {name: value for name, value in prepared.items() if name != "replicas"}
+        keys = [(key, [label for label, _ in rows]) for key, rows in keyed.items()]
+        results: dict[GroupKey, Any] = dict(plans)
+        if self.mode == "distances":
+            clock = time.perf_counter()
+            backend = branch_dm.NumpyBackend()
+            evolved = {
+                key: branch_dm.evolve(branch_dm.stage(plan, backend), backend, self.readout_factors, flip)
+                for key, plan in plans.items()
+            }
+            seconds["evolve"] = time.perf_counter() - clock
+            clock = time.perf_counter()
+            uniforms = run_uniforms(run_name, prepared["shots"], replicas, members)
+            points = len(self.cz_factors) * len(self.readout_factors)
+            labels = dict(keys)
+            results = {
+                key: group_result(prepared, labels[key], plans[key], evolved[key], uniforms, points, backend)
+                for key in plans
+            }
+            seconds["sample"] = time.perf_counter() - clock
+        return Shard(run_name, light, members, replicas, keys, results, seconds, audit)
 
 
-def build_groups(
-    prepared: dict[str, Any],
-    members: list[str],
-    snapshots: dict[str, dict[str, Any]],
-    cz_factors: Sequence[float],
-    fuse: bool,
-) -> list[Group]:
-    """Every dynamic-key group of the run's replicas, in first-appearance order, with plans built in the pool."""
-    execution = prepared["execution"]
-    keyed: dict[tuple[str, tuple[Any, ...]], list[tuple[str, QuantumCircuit]]] = {}
-    for m in members:
-        for k, replica in enumerate(prepared["replicas"][m][1]):
-            keyed.setdefault((execution[m], branch_dm.dynamic_key(replica)), []).append((f"{m}#{k}", replica))
-    items = []
-    for (relative, _), rows in keyed.items():
-        circuits = []
-        for _, replica in rows:
-            circuit, qubits = restricted(replica)
-            circuits.append(circuit)
-        items.append((snapshot_laws.restrict(snapshots[relative], qubits), circuits))
-    plans = parallel.ordered_map(GroupBuilder(tuple(cz_factors), fuse), items, min_items=2)
-    return [
-        Group(relative, [label for label, _ in rows], plan)
-        for ((relative, _), rows), plan in zip(keyed.items(), plans, strict=True)
-    ]
+def converter_gap(pairs: Sequence[tuple[Any, np.ndarray]]) -> tuple[int, float]:
+    """How many (QuantumError, superoperator) pairs, and the largest entry gap to qiskit's SuperOp of each."""
+    gap = 0.0
+    for error, mine in pairs:
+        reference = branch_dm.from_superop(SuperOp(error.to_quantumchannel()).data)
+        gap = max(gap, float(np.max(np.abs(mine - reference))))
+    return len(pairs), gap
+
+
+def slices(run_names: Sequence[str]) -> list[tuple[str, int, int]]:
+    """(run, slice, slices) items: each run split in proportion to its isa.qpy bytes, the largest slices first.
+
+    A run's preparation and its replica count both grow with its submitted
+    circuits, so the file size apportions the worker count among runs.
+    """
+    sizes = {}
+    for run in run_names:
+        path = ROOT / run / "isa.qpy"
+        sizes[run] = path.stat().st_size if path.is_file() else 0
+    total = sum(sizes.values()) or 1
+    count = parallel.workers()
+    parts = {run: max(1, min(count, round(count * sizes[run] / total))) for run in run_names}
+    items = [(run, part, parts[run]) for run in run_names for part in range(parts[run])]
+    return sorted(items, key=lambda item: -sizes[item[0]] / item[2])
+
+
+def check_converter(index: dict[str, Any]) -> dict[str, Any]:
+    """branch_dm.error_superop against qiskit's SuperOp on every local error the sweep of every audited run converts."""
+    runs = ghost_run.audited_runs()
+    slicer = RunSlicer(index, tuple(CZ_FACTORS), tuple(READOUT_FACTORS), True, "audit")
+    shards = parallel.ordered_map(slicer, slices(runs), min_items=2)
+    audits = [pair for shard in shards for pair in shard.audit]
+    count = sum(c for c, _ in audits)
+    gap = max((g for _, g in audits), default=0.0)
+    require(count > 0 and gap <= CONVERTER_TOLERANCE, f"{count} converted errors differ from qiskit by {gap}")
+    snapshots = {key[0] for shard in shards for key, _ in shard.keys}
+    return {"runs": len(runs), "snapshots": len(snapshots), "pairs": len(audits), "errors": count, "max_abs_gap": gap}
 
 
 def inverse_cdf_tv(law: np.ndarray, uniforms: np.ndarray, measured: np.ndarray) -> np.ndarray:
@@ -310,8 +489,8 @@ def torch_distances(backend: branch_dm.TorchBackend, law: Any, uniforms: np.ndar
     return torch.stack([exact, sampled])
 
 
-def sweep_run(
-    run_name: str,
+def sweep_runs(
+    run_names: Sequence[str],
     index: dict[str, Any],
     engine: str,
     device: str,
@@ -320,68 +499,88 @@ def sweep_run(
     fuse: bool = True,
     cz_factors: Sequence[float] = CZ_FACTORS,
     readout_factors: Sequence[float] = READOUT_FACTORS,
-) -> dict[str, Any]:
-    """The run's exact and sampled TV distances at every (c, r) point, its branch counts and phase seconds."""
-    seconds: dict[str, float] = {}
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Every run's exact and sampled TV distances at every (c, r) point and its branch counts, with phase seconds.
+
+    One pool map over slices() runs RunSlicer: on numpy it returns
+    distances, on torch it returns plans, which the main process uploads one
+    group at a time, evolves on the device and samples there. The seconds hold
+    the pool map's wall time (``workers``), each worker phase summed over
+    slices (``worker_seconds``) and, on torch, the device phases.
+    """
+    seconds: dict[str, Any] = {}
     clock = time.perf_counter()
-    prepared = ghost_run.prepare(run_name, index)
+    mode = "distances" if engine == "numpy" else "plans"
+    slicer = RunSlicer(index, tuple(cz_factors), tuple(readout_factors), fuse, mode)
+    shards = parallel.ordered_map(slicer, slices(run_names), min_items=2)
+    seconds["workers"] = time.perf_counter() - clock
+    summed: dict[str, float] = {}
+    for shard in shards:
+        for phase, value in shard.seconds.items():
+            summed[phase] = summed.get(phase, 0.0) + value
+    seconds["worker_seconds"] = {phase: round(value, 3) for phase, value in summed.items()}
+    by_run: dict[str, list[Shard]] = {}
+    for shard in shards:
+        by_run.setdefault(shard.name, []).append(shard)
+
+    points = len(cz_factors) * len(readout_factors)
+    results = []
+    if engine == "numpy":
+        for run in run_names:
+            merged = {key: value for shard in by_run[run] for key, value in shard.results.items()}
+            first = by_run[run][0]
+            results.append(summarize_run(first, [merged[key] for key, _ in first.keys], cz_factors, readout_factors))
+        return results, seconds
+
+    backend = make_backend(engine, device, dtype)
+    factors = tuple(readout_factors)
+    for phase in ("upload", "evolve", "sample"):
+        seconds[phase] = 0.0
+    for run in run_names:
+        first = by_run[run][0]
+        if "skipped" in first.prepared:
+            results.append(summarize_run(first, [], cz_factors, readout_factors))
+            continue
+        merged = {key: value for shard in by_run[run] for key, value in shard.results.items()}
+        # One group's plan sits on the device at a time, so device memory holds
+        # the widest group's superoperators and branch states, and every law
+        # stays on the device for the sample phase.
+        evolved = []
+        for key, _ in first.keys:
+            clock = time.perf_counter()
+            staged = branch_dm.stage(merged[key], backend, form)
+            backend.synchronize()
+            seconds["upload"] += time.perf_counter() - clock
+            clock = time.perf_counter()
+            evolved.append(branch_dm.evolve(staged, backend, factors, flip))
+            backend.synchronize()
+            seconds["evolve"] += time.perf_counter() - clock
+            del staged
+        clock = time.perf_counter()
+        uniforms = run_uniforms(run, first.prepared["shots"], first.replicas, first.members)
+        groups = [
+            group_result(first.prepared, labels, merged[key], law, uniforms, points, backend)
+            for (key, labels), law in zip(first.keys, evolved, strict=True)
+        ]
+        seconds["sample"] += time.perf_counter() - clock
+        results.append(summarize_run(first, groups, cz_factors, readout_factors))
+    for phase in ("upload", "evolve", "sample"):
+        seconds[phase] = round(seconds[phase], 3)
+    return results, seconds
+
+
+def summarize_run(
+    run: Shard, groups: list[GroupResult], cz_factors: Sequence[float], readout_factors: Sequence[float]
+) -> dict[str, Any]:
+    """One run's record from its groups' results, in first-appearance group order."""
+    run_name, prepared, members = run.name, run.prepared, run.members
     if "skipped" in prepared:
         return {"run": run_name, "skipped": prepared["skipped"]}
     execution = prepared["execution"]
-    members = [m for m in prepared["members"] if m in execution]
-    snapshots = {
-        relative: json.loads((ROOT / relative).read_text(encoding="utf-8"))
-        for relative in sorted({execution[m] for m in members})
-    }
-    seconds["prepare"] = time.perf_counter() - clock
-
-    clock = time.perf_counter()
-    backend = make_backend(engine, device, dtype)
-    groups = build_groups(prepared, members, snapshots, cz_factors, fuse)
-    staged = [branch_dm.stage(group.plan, backend, form) for group in groups] if engine == "torch" else []
-    backend.synchronize()
-    seconds["export"] = time.perf_counter() - clock
-
-    clock = time.perf_counter()
-    factors = tuple(readout_factors)
-    if engine == "numpy":
-        evolved = parallel.ordered_map(NumpyEvolver(factors), [group.plan for group in groups], min_items=2)
-    else:
-        evolved = [branch_dm.evolve(s, backend, factors, flip) for s in staged]
-    backend.synchronize()
-    seconds["evolve"] = time.perf_counter() - clock
-
-    clock = time.perf_counter()
     grid = [(c, r) for c in cz_factors for r in readout_factors]
-    labels = [f"{m}#{k}" for m in members for k in range(len(prepared["replicas"][m][1]))]
-    rng = np.random.default_rng([SEED, run_digest(run_name)])
-    uniforms = {label: rng.random(prepared["shots"][label.rsplit("#", 1)[0]]) for label in labels}
-    rows: dict[str, tuple[np.ndarray, np.ndarray]] = {}
-    branches: dict[str, dict[str, int]] = {}
-    plans = []
-    for group, (law, stats) in zip(groups, evolved, strict=True):
-        plans.append(
-            {
-                "replicas": group.labels,
-                "qubits": group.plan.n,
-                "exported_ops": group.plan.exported_ops,
-                "steps": stats["ops"],
-                "splits": stats["splits"],
-                "live_branches": stats["live"],
-            }
-        )
-        flat = law.reshape((law.shape[0], len(grid), law.shape[-1]))
-        for g, label in enumerate(group.labels):
-            m, k = label.rsplit("#", 1)
-            measured = prepared["measured"][m][int(k)]
-            branches[label] = {"splits": stats["splits"], "children": stats["children"], "live": stats["live"]}
-            if engine == "numpy":
-                exact = 0.5 * np.abs(flat[g] - measured).sum(axis=1)
-                rows[label] = (exact, inverse_cdf_tv(flat[g], uniforms[label], measured))
-            else:
-                assert isinstance(backend, branch_dm.TorchBackend)
-                pair = backend.host(torch_distances(backend, flat[g], uniforms[label], measured))
-                rows[label] = (pair[0], pair[1])
+    labels = [f"{m}#{k}" for m in members for k in range(run.replicas[m])]
+    rows = {label: row for group in groups for label, row in group.rows.items()}
+    branches = {label: group.branches for group in groups for label in group.structure["replicas"]}
     points: list[dict[str, Any]] = [{"cz": c, "readout": r, "tvd": {}, "sampled_tvd": {}} for c, r in grid]
     for m in members:
         own = [label for label in labels if label.rsplit("#", 1)[0] == m]
@@ -390,7 +589,6 @@ def sweep_run(
             point["sampled_tvd"][m] = [round(float(rows[label][1][j]), 6) for label in own]
     means = ghost_error_scale.grid_means(points, members)
     sampled_means = [round(float(np.mean([v for m in members for v in p["sampled_tvd"][m]])), 6) for p in points]
-    seconds["sample"] = time.perf_counter() - clock
     best, sampled_best = int(np.argmin(means)), int(np.argmin(sampled_means))
     print(
         json.dumps(
@@ -409,7 +607,7 @@ def sweep_run(
         "members": members,
         "member_shots": {m: prepared["shots"][m] for m in members},
         "execution_snapshot": {m: execution[m] for m in members},
-        "structures": plans,
+        "structures": [group.structure for group in groups],
         "branches": branches,
         "mean_tvd": means,
         "sampled_mean_tvd": sampled_means,
@@ -420,8 +618,23 @@ def sweep_run(
             "mean_tvd": sampled_means[sampled_best],
         },
         "points": points,
-        "seconds": {k: round(v, 3) for k, v in seconds.items()},
     }
+
+
+def sweep_run(
+    run_name: str,
+    index: dict[str, Any],
+    engine: str,
+    device: str,
+    dtype: str,
+    form: str = "local",
+    fuse: bool = True,
+    cz_factors: Sequence[float] = CZ_FACTORS,
+    readout_factors: Sequence[float] = READOUT_FACTORS,
+) -> dict[str, Any]:
+    """sweep_runs of one run, with the phase seconds under ``seconds``."""
+    (result,), seconds = sweep_runs([run_name], index, engine, device, dtype, form, fuse, cz_factors, readout_factors)
+    return result if "skipped" in result else {**result, "seconds": seconds}
 
 
 def versions(engine: str) -> dict[str, str | None]:
@@ -647,7 +860,8 @@ def self_test() -> dict[str, Any]:
 
     clock = time.perf_counter()
     cases = {(run, member): restricted_case(run, member, index) for run, member in (*STATIC_CASES, *DYNAMIC_CASES)}
-    states = {key: SnapshotState.build(snapshot) for key, (_, snapshot) in cases.items()}
+    states = {key: SnapshotState.build(snapshot, audit=True) for key, (_, snapshot) in cases.items()}
+    audited = list(states.values())
     timing["prepare"] = time.perf_counter() - clock
 
     # (b) The static replica that jax_bridge exports.
@@ -761,13 +975,15 @@ def self_test() -> dict[str, Any]:
     run, _ = RESTRICTION_CASES[0]
     prepared = ghost_run.prepare(run, index)
     full = json.loads((ROOT / prepared["execution"][RESTRICTION_CASES[0][1]]).read_text(encoding="utf-8"))
-    state = SnapshotState.build(full)
+    state = SnapshotState.build(full, audit=True)
+    audited.append(state)
     restriction: dict[str, float] = {}
     for _, member in RESTRICTION_CASES:
         require(prepared["execution"][member] == prepared["execution"][RESTRICTION_CASES[0][1]], "(h) snapshots differ")
         original = prepared["replicas"][member][1][0]
         circuit, qubits = restricted(original)
-        small = SnapshotState.build(snapshot_laws.restrict(full, qubits))
+        small = SnapshotState.build(snapshot_laws.restrict(full, qubits), audit=True)
+        audited.append(small)
         mine = law_of(small, circuit, RESTRICTION_FACTORS, READOUT_FACTORS)
         reference = law_of(state, original, RESTRICTION_FACTORS, READOUT_FACTORS)
         laws += [mine, reference]
@@ -775,6 +991,13 @@ def self_test() -> dict[str, Any]:
     require(max(restriction.values()) <= RESTRICTION_TOLERANCE, f"(h) restricted laws differ by {restriction}")
     out["h_restriction"] = {"factors": list(RESTRICTION_FACTORS), "max_abs_restricted_minus_full": restriction}
     timing["h"] = time.perf_counter() - clock
+
+    # (i) Every local error the exports above converted, against qiskit's SuperOp.
+    clock = time.perf_counter()
+    count, gap = converter_gap([pair for s in audited for pair in s.audit or []])
+    require(count > 0 and gap <= CONVERTER_TOLERANCE, f"(i) {count} converted errors differ from qiskit by {gap}")
+    out["i_converter"] = {"errors": count, "max_abs_minus_qiskit_superop": gap}
+    timing["i"] = time.perf_counter() - clock
 
     # (f) Normalization and sign of every law above.
     sums = max(float(np.max(np.abs(law.sum(axis=-1) - 1))) for law in laws)
@@ -828,7 +1051,7 @@ def warmup(backend: branch_dm.Backend) -> float:
 
 
 def profile(run: str, engine: str, device: str, dtype: str, form: str, fuse: bool) -> dict[str, Any]:
-    """The four phases on one run, after warmup() has started the pool and any CUDA context."""
+    """The phases on one run, after warmup() has started the pool and any CUDA context."""
     index = json.loads(ghost_run.INDEX.read_text(encoding="utf-8"))
     started = warmup(make_backend(engine, device, dtype))
     result = sweep_run(run, index, engine, device, dtype, form, fuse)
@@ -861,14 +1084,20 @@ def main() -> int:
     parser.add_argument("--out", type=Path)
     parser.add_argument("--compare-parts", type=Path, help="a ghost_error_scale part file to compare with")
     parser.add_argument("--result", type=Path, help="with --compare-parts, a retained sweep output to compare")
-    parser.add_argument("--profile-only", metavar="RUN", help="time the four phases on one run and print them")
+    parser.add_argument("--profile-only", metavar="RUN", help="time the phases on one run and print them")
     parser.add_argument("--replay", type=Path, help="the retained reduced-case file")
     parser.add_argument("--write", action="store_true", help="with --replay, write the file instead of comparing")
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument(
+        "--check-converter", action="store_true", help="error_superop against qiskit on every error the sweep converts"
+    )
     args = parser.parse_args()
     fuse = not args.no_fuse
     if args.self_test:
         print(json.dumps(self_test(), indent=1))
+        return 0
+    if args.check_converter:
+        print(json.dumps(check_converter(json.loads(ghost_run.INDEX.read_text(encoding="utf-8")))))
         return 0
     if args.profile_only:
         print(json.dumps(profile(args.profile_only, args.engine, args.device, args.dtype, args.form, fuse)))
@@ -892,10 +1121,8 @@ def main() -> int:
     out = header(args.engine, args.device, args.dtype, args.form, fuse)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     out["warmup_seconds"] = warmup(make_backend(args.engine, args.device, args.dtype))
-    for run in runs:
-        # Written after every run, so a failure keeps every finished one.
-        out["runs"].append(sweep_run(run, index, args.engine, args.device, args.dtype, args.form, fuse))
-        args.out.write_text(json.dumps(out) + "\n", encoding="utf-8")
+    out["runs"], out["seconds"] = sweep_runs(runs, index, args.engine, args.device, args.dtype, args.form, fuse)
+    args.out.write_text(json.dumps(out) + "\n", encoding="utf-8")
     if args.compare_parts:
         print(json.dumps(compare_parts(out, args.compare_parts), indent=1))
     return 0

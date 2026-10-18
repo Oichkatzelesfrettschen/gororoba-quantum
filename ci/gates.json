@@ -3604,6 +3604,14 @@
    "name": "core-364",
    "seconds": 11.9,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --check-converter",
+   "name": "core-444",
+   "seconds": 40.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
