@@ -369,8 +369,7 @@ sedenion statement never rests on them.
   widest density matrix reaches `local_compute.GPU_MIN_ACTIVE_QUBITS`;
   [Simulation on Kaggle](#simulation-on-kaggle-cpu-gpu-and-ci-replay)
   gives the machine choice, the GPU setup and the CI replay rules.
-  `kaggle_run.py shards` replicates the CI gate shards for a commit on
-  Kaggle CPU kernels in place of the build host. `docs/notes/kaggle/` holds the workflow, the measured
+  `docs/notes/kaggle/` holds the workflow, the measured
   substrates and the package-stack guide. Kaggle allows two concurrent GPU
   and five concurrent CPU batch sessions per account.
 - A 15-qubit run is decision-gated: it waits for the user's approval of a
@@ -687,7 +686,7 @@ network. gororoba_quantum/qi_stack.py reads `QI_PYTHON` from the environment
 alone and probes it once per process for the three modules at the lock's
 versions. A gate tagged `"requires": ["qi"]` compares a live run with its
 retained record where that probe passes; everywhere else (the gate shards,
-premerge, Kaggle shard replicas, a shell that has not exported `QI_PYTHON`)
+premerge, a shell that has not exported `QI_PYTHON`)
 it replays the record and prints one line naming the replay.
 `ci/run_gates.py --requires qi` runs the tagged gates alone with
 `GOROROBA_QI_REQUIRED=1`, which makes a replay a failure.
