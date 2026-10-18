@@ -1,0 +1,32 @@
+{
+  "schema": "gororoba-ci-local-replay-v1",
+  "surface": "offline build-host snapshot compilation and retained summaries",
+  "source_sha256": "bc6fb62565649314076f186a7c24bf0db69cfdc98bfef6f1419ccf4bf37c4e0e",
+  "versions": {
+    "python": "3.14.7",
+    "qiskit": "2.5.2",
+    "numpy": "2.5.4",
+    "qiskit-aer": "0.17.2"
+  },
+  "environment": {
+    "GOROROBA_WORKERS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1"
+  },
+  "runs": [
+    {
+      "mode": "normal",
+      "command": "\"$PYTHON\" -B -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/noise.json --all-seeds",
+      "exit_status": 0,
+      "time_output": "target-only all-seeds wall=102.33 cpu=138% rss_kb=791392",
+      "stdout": "n21_conjugation_noise: 144 compilations over every seed and every derived field reproduced"
+    },
+    {
+      "mode": "optimized",
+      "command": "\"$PYTHON\" -B -O -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/noise.json --all-seeds",
+      "exit_status": 0,
+      "time_output": "target-only optimized all-seeds wall=82.07 cpu=144% rss_kb=788316",
+      "stdout": "n21_conjugation_noise: 144 compilations over every seed and every derived field reproduced"
+    }
+  ]
+}

@@ -14,15 +14,25 @@ GitHub Actions runs every gate ([.github/workflows/ci.yml](.github/workflows/ci.
 working directory; [ci/run_gates.py](ci/run_gates.py) runs a shard of them on
 a thread pool sized to the runner's CPUs and keeps going past failures, so a
 red shard lists every failing gate. Each gate records its measured seconds;
-shards are assigned longest-first. Pull requests run the `pr` tier, every
-gate that measured under two minutes, on six shards; pushes to main, the
-nightly schedule and manual runs add the `full` tier's long simulation
-contracts on twelve shards. Runners are 2-vCPU, 8 GB machines on Python 3.14
+shards are assigned longest-first. Pull requests run the `pr` tier and affected
+`full` gates on six shards;
+pushes to main use the same selection on twelve shards. Nightly and manual
+runs execute every gate on twelve shards. The changed-path selection follows
+local Python imports and the dynamic data/source scopes in
+[ci/full_gate_inputs.json](ci/full_gate_inputs.json). Every full gate declares
+its non-imported inputs there, including source digests and JSON-selected
+raw evidence; a missing declaration fails selection. CI and dependency-pin
+changes select every gate, and an unavailable diff base runs the full suite.
+Gate seconds are scheduling estimates, independent of tier membership.
+[CI runtime analysis](docs/notes/build_host/ci-runtime.md) records the timing
+denominators, measured bottlenecks and replay commands. Runners are 2-vCPU,
+8 GB machines on Python 3.14
 with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
 the plotting-only `matplotlib==3.11.2`). A pull request merges when every
 shard and the `qi-stack` and `external-ground-truth` jobs are green and its
 review threads are resolved; a red main or nightly run is fixed in the next
-change. The `qi-stack` job runs, at the same tier, the gates that ci/gates.json
+change. The `qi-stack` job applies the same changed-input selection to the gates
+that ci/gates.json
 tags `"requires": ["qi"]`, under the Quantum Inspire interpreter
 ([Quantum Inspire](#quantum-inspire)). The
 `external-ground-truth` job runs `verify.py` over the open_gororoba commit

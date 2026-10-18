@@ -21,7 +21,7 @@ def main() -> None:
     duplicates = sorted({name for name in names if names.count(name) > 1})
     if duplicates:
         raise RuntimeError(f"ci/gates.json names more than one gate {', '.join(duplicates)}")
-    expected = len(os.sched_getaffinity(0)) if hasattr(os, "sched_getaffinity") else os.cpu_count() or 1
+    expected = run_gates.parallel.available_cpus()
     if run_gates._cpus() != expected:
         raise RuntimeError(f"gate pool uses {run_gates._cpus()} workers, not every available CPU ({expected})")
     with TemporaryDirectory(prefix="ci-launch-contract-") as temporary:
