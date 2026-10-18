@@ -2,26 +2,33 @@
 
 The ANU QRNG measures vacuum fluctuations of the electromagnetic field
 (Symul, Assad and Lam, Appl. Phys. Lett. 98, 231103 (2011); Haw et al.,
-Phys. Rev. Applied 3, 054004 (2015)). Its keyless JSON service,
-https://qrng.anu.edu.au/API/jsonI.php, answers {"type", "length", "data",
-"success"} for length 1 to 1024 and type uint8 or uint16, at one request per
-minute (a second request answers HTTP 500 with the limit in its body); ANU
-states that it
-will be scaled back and retired in favour of the keyed AWS service at
-https://api.quantumnumbers.anu.edu.au (header x-api-key, 100 requests per
-month on the free tier). A draw is used once: a case cites the record and the
-index of every value it took, so no value seeds two cases.
+Phys. Rev. Applied 3, 054004 (2015)). Two services answer {"success", "type",
+"length", "data"} for length 1 to 1024 and type uint8 or uint16:
+
+- aqn, the default: https://api.quantumnumbers.anu.edu.au on AWS, with the
+  account's key in the x-api-key header (100 requests per calendar month and
+  1 per second on the free tier); it answers length as a string. The key lives
+  in the file ANU_QRNG_KEY_FILE names (default ~/.config/anu-qrng/api-key,
+  mode 600) and never enters a record, a URL or a log.
+- legacy: the keyless https://qrng.anu.edu.au/API/jsonI.php, one request per
+  minute (a second answers HTTP 500 with the limit in its body), which ANU
+  will scale back and retire.
+
+A draw is used once: a case cites the record and the index of every value it
+took, so no value seeds two cases.
 
 Subcommands:
 
-- draw --out DIR [--length N] [--type uint16] (network) makes one request and
+- draw --out DIR [--source aqn|legacy] [--length N] [--type uint16] (network)
+  makes one request and
   writes DIR/draw-<UTC>.json: the request URL, the UTC time, the raw response
   bytes as text, their sha256 and the parsed values.
 - check DIR (offline) requires every record's sha256 to match its raw bytes,
   the parsed values to equal the raw JSON's data, the success flag to be
   true and every value to lie in its type's range.
 - --self-test requires a corrupted value, an edited raw byte, a false success
-  flag and an out-of-range value to be rejected.
+  flag and an out-of-range value to be rejected, and a string length to be
+  admitted.
 
 Usage: "$PYTHON" scripts/anu_qrng.py (draw --out DIR | check DIR | --self-test)
 """
@@ -33,13 +40,14 @@ import copy
 import datetime
 import hashlib
 import json
+import os
 import sys
 import urllib.request
 from pathlib import Path
 from typing import Any
 
 SCHEMA = "anu-qrng-draw-v1"
-ENDPOINT = "https://qrng.anu.edu.au/API/jsonI.php"
+ENDPOINTS = {"aqn": "https://api.quantumnumbers.anu.edu.au", "legacy": "https://qrng.anu.edu.au/API/jsonI.php"}
 RANGES = {"uint8": 255, "uint16": 65535}
 MAX_LENGTH = 1024
 
@@ -79,19 +87,30 @@ def admit(record: dict[str, Any]) -> None:
     if top is None:
         raise DrawError(f"type {record['type']!r}")
     values = record["values"]
-    if not isinstance(values, list) or len(values) != answer.get("length"):
+    if not isinstance(values, list) or str(len(values)) != str(answer.get("length")):
         raise DrawError("value count differs from the answered length")
     for value in values:
         if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= top:
             raise DrawError(f"value {value!r} outside {record['type']}")
 
 
-def draw(out: Path, length: int, kind: str) -> Path:
-    if not 1 <= length <= MAX_LENGTH or kind not in RANGES:
-        raise DrawError(f"length {length} or type {kind!r} outside the service's domain")
-    url = f"{ENDPOINT}?length={length}&type={kind}"
+def api_key() -> str:
+    path = Path(os.environ.get("ANU_QRNG_KEY_FILE", Path.home() / ".config/anu-qrng/api-key"))
+    if not path.is_file() or path.stat().st_mode & 0o077:
+        raise DrawError(f"{path} is missing or readable by group or others")
+    key = path.read_text(encoding="utf-8").strip()
+    if not key:
+        raise DrawError(f"{path} is empty")
+    return key
+
+
+def draw(out: Path, length: int, kind: str, source: str) -> Path:
+    if not 1 <= length <= MAX_LENGTH or kind not in RANGES or source not in ENDPOINTS:
+        raise DrawError(f"length {length}, type {kind!r} or source {source!r} outside the services' domain")
+    url = f"{ENDPOINTS[source]}?length={length}&type={kind}"
+    headers = {"x-api-key": api_key()} if source == "aqn" else {}
     utc = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H%M%SZ")
-    with urllib.request.urlopen(url, timeout=30) as response:
+    with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=30) as response:
         raw = response.read().decode()
     record = record_from(url, utc, raw)
     out.mkdir(parents=True, exist_ok=True)
@@ -115,7 +134,9 @@ def check(directory: Path) -> int:
 
 def self_test() -> int:
     raw = json.dumps({"type": "uint16", "length": 3, "data": [0, 1, 65535], "success": True})
-    good = record_from(ENDPOINT, "2026-01-01T000000Z", raw)
+    good = record_from(ENDPOINTS["legacy"], "2026-01-01T000000Z", raw)
+    keyed = json.dumps({"success": True, "type": "uint16", "length": "3", "data": [0, 1, 65535]})
+    record_from(ENDPOINTS["aqn"], "2026-01-01T000000Z", keyed)
     bad_raw = raw.replace("65535", "65534")
     mutations = [
         ("value", lambda r: r["values"].__setitem__(0, 7)),
@@ -133,7 +154,7 @@ def self_test() -> int:
         except DrawError:
             continue
         raise SystemExit(f"self-test: the {name} mutation was admitted")
-    print(f"anu_qrng self-test: {len(mutations)} mutations rejected")
+    print(f"anu_qrng self-test: {len(mutations)} mutations rejected, a string length admitted")
     return 0
 
 
@@ -145,6 +166,7 @@ def main() -> int:
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--length", type=int, default=MAX_LENGTH)
     p.add_argument("--type", dest="kind", default="uint16", choices=sorted(RANGES))
+    p.add_argument("--source", default="aqn", choices=sorted(ENDPOINTS))
     p = sub.add_parser("check")
     p.add_argument("directory", type=Path)
     args = parser.parse_args()
@@ -152,7 +174,7 @@ def main() -> int:
         if args.self_test:
             return self_test()
         if args.command == "draw":
-            print(draw(args.out, args.length, args.kind))
+            print(draw(args.out, args.length, args.kind, args.source))
             return 0
         if args.command == "check":
             print(f"{args.directory}: {check(args.directory)} draws admitted")
