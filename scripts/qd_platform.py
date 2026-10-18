@@ -756,7 +756,10 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     # takes its setting's compilation_seed (0 when unnamed), a seeded iteration sets
     # only its own, and a phase case pins 0 and sets phi = k pi/4 per iteration.
     per_samples, per_shots = manifest["max_samples"] // steps, manifest["max_shots"] // steps
-    budgets = iteration_budgets(manifest)
+    # pcvlar serialization shares one entry per Python object, so an even split reuses per_samples and per_shots
+    # themselves: equal integers computed apart would serialize as separate entries and change the body bytes.
+    budgeted = form == "seeded" and "max_samples" in manifest["settings"][0]
+    budgets = iteration_budgets(manifest) if budgeted else [(per_samples, per_shots)] * steps
     factory = ExecutionFactory(computer, built, max_shots_per_call=max(shots for _, shots in budgets))
     base = factory.build_computation(manifest["command"])
     base.add_params(max_samples=per_samples)
