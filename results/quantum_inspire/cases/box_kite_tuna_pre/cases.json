@@ -1,0 +1,17 @@
+{
+ "schema": "box-kite-series-v1",
+ "family": "tuna_pre",
+ "backend": "tuna_17",
+ "census_sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "stage": "pre",
+   "files": [
+    "double-x.cq",
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  }
+ ]
+}

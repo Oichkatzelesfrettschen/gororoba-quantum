@@ -31,7 +31,7 @@ import local_compute
 import native_preflight
 import qpu_cases
 import qpu_planning
-from runtime_contracts import _fixture_args, _ProbeBackend, _ProbeService
+from runtime_contracts import _fixture_args, _ProbeBackend, _ProbeSampler, _ProbeService
 
 
 def _require(condition: bool, message: str) -> None:
@@ -788,6 +788,557 @@ def _verify_patch_selection(snapshot: live_run.Snapshot) -> None:
     )
 
 
+def _measure_first(circuit: Any) -> Any:
+    """Move the first measurement directly after the last earlier operation on its qubit.
+
+    The moved measurement acts on another qubit than the operations it now
+    precedes, so the distribution is unchanged and only circuit.data order,
+    which is_dynamic reads, differs.
+    """
+    data = list(circuit.data)
+    first = next(index for index, instruction in enumerate(data) if instruction.operation.name == "measure")
+    qubit = data[first].qubits[0]
+    last = max(index for index in range(first) if qubit in data[index].qubits)
+    moved = circuit.copy_empty_like()
+    for index, instruction in enumerate(data):
+        if index != first:
+            moved.append(instruction)
+        if index == last:
+            moved.append(data[first])
+    return moved
+
+
+def _verify_static_group_admission(service: _ProbeService, snapshot: live_run.Snapshot) -> None:
+    """A static patch group holding a measure-then-gate member writes no planned record and names the member."""
+    import patch_characterization
+
+    original = patch_characterization.patch_groups
+    names: list[str] = []
+
+    def injected(*args: Any, **kwargs: Any) -> list[Any]:
+        static, *rest = original(*args, **kwargs)
+        member = static.members[0]
+        moved = dataclasses.replace(member, circuit=_measure_first(member.circuit))
+        _require(not local_compute.is_dynamic(member.circuit), f"{member.name}: the patch member is already dynamic")
+        _require(local_compute.is_dynamic(moved.circuit), f"{member.name}: the reordered member stays static")
+        names.append(member.name)
+        return [dataclasses.replace(static, members=(moved, *static.members[1:])), *rest]
+
+    patch_qubits = [142, 136, 143, 144, 123, 145]
+    args = _args("patch-window", patch_qubits=patch_qubits)
+    clean = qpu_planning.family_candidates(live_run, [snapshot], args, {})
+    _require(
+        len(qpu_planning.admitted_family_candidates(live_run, clean, {})) == 1, "admission rejects the static family"
+    )
+    with patch.object(patch_characterization, "patch_groups", injected):
+        trace: dict[str, Any] = {}
+        mixed = qpu_planning.family_candidates(live_run, [snapshot], args, trace)
+    _require(len(mixed) == 1 and bool(names), f"the injected patch family did not compile: {trace}")
+    expected = f"dynamic members {names[:1]}"
+    _require(not qpu_planning.admitted_family_candidates(live_run, mixed, trace), "a mixed static group was admitted")
+    _require(expected in trace["family_rejections"][-1]["reason"], f"admission omits {expected}: {trace}")
+    static_choice = mixed[0][0][0]
+    _require(
+        expected in live_run.choice_change_reasons(static_choice, snapshot),
+        "the pre-submit refresh reads another predicate than planning",
+    )
+    stderr = io.StringIO()
+    with (
+        tempfile.TemporaryDirectory(prefix="gororoba-planning-mixed-static-") as directory,
+        patch.object(patch_characterization, "patch_groups", injected),
+        patch.object(live_run, "QiskitRuntimeService", return_value=service),
+        patch.object(live_run, "simulate", side_effect=_forbid_service) as simulate,
+        patch.object(live_run, "evaluate", side_effect=_forbid_service) as evaluate,
+        patch.object(live_run, "write_archive", side_effect=_forbid_service) as write_archive,
+        patch.object(live_run, "submit", side_effect=_forbid_service) as submit,
+        patch.object(qpu_cases, "write_case", side_effect=_forbid_service) as write_case,
+        redirect_stdout(io.StringIO()),
+        redirect_stderr(stderr),
+    ):
+        status = live_run.main(
+            [
+                "--family",
+                "patch-window",
+                "--patch-qubits",
+                ",".join(map(str, patch_qubits)),
+                "--max-replicas",
+                "1",
+                "--replica-tiers",
+                "1",
+                "--no-isolated-reference",
+                "--max-execution-seconds",
+                "9",
+                "--max-total-execution-seconds",
+                "27",
+                "--out",
+                directory,
+            ]
+        )
+        _require(status == 1, f"a mixed static group changed the dry-run status to {status}")
+        _require(not list(Path(directory).iterdir()), "a mixed static group wrote a dry-run record")
+        for operation in (simulate, evaluate, write_archive, submit, write_case):
+            _require(operation.call_count == 0, f"a mixed static group reached {operation._mock_name}")
+    _require(expected in stderr.getvalue(), f"the dry-run refusal omits {expected}")
+
+
+class _RangeBackend(_ProbeBackend):
+    """FakeFez whose rep_delay_range the contract can move between configuration reads."""
+
+    rep_delay_range: list[float] | None = None
+
+    def configuration(self) -> Any:
+        configuration = super().configuration()
+        if self.rep_delay_range is not None:
+            configuration.rep_delay_range = list(self.rep_delay_range)
+        return configuration
+
+
+def _verify_rep_delay_range() -> None:
+    """--rep-delay outside rep_delay_range refuses in the CLI, the planner, the charge model and the Sampler."""
+    backend = _RangeBackend("rep_delay_fixture", FakeFez())
+    low, high = backend.configuration().rep_delay_range
+    _require(qpu_planning.repetition_delay(backend) == 0.00025, "the default repetition delay moved")
+    _require(qpu_planning.repetition_delay(backend, 0.00005) == 0.00005, "an in-range request was not honored")
+    for outside in (high + 1e-6, -1e-6, float("nan")):
+        try:
+            qpu_planning.repetition_delay(backend, outside)
+        except ValueError:
+            pass
+        else:
+            raise RuntimeError(f"the charge model accepted a repetition delay {outside} outside [{low}, {high}]")
+        _require(
+            bool(qpu_planning.repetition_delay_violations(backend, outside, None)),
+            f"repetition_delay_violations admitted {outside}",
+        )
+    service = _ProbeService([backend])
+    try:
+        with redirect_stdout(io.StringIO()):
+            live_run.plan(
+                cast(Any, service), _fixture_args(groups=["hybrid_shor_mod15"], max_replicas=1, rep_delay=high * 2)
+            )
+    except live_run.LiveRunError as error:
+        _require("--rep-delay" in str(error), f"the planner refused for another reason: {error}")
+    else:
+        raise RuntimeError("the planner admitted a repetition delay outside the backend range")
+    # The client-side Sampler takes a Backend instance; FakeFez carries the same range.
+    sampler_backend = FakeFez()
+    default = live_run.configure_sampler(sampler_backend, "dynamic", False, None, [], 64, 60)
+    _require(default.options.execution.rep_delay == 0.00025, "the Sampler default left the backend default")
+    requested = live_run.configure_sampler(sampler_backend, "dynamic", False, None, [], 64, 60, rep_delay=0.00005)
+    _require(requested.options.execution.rep_delay == 0.00005, "the Sampler omitted the requested rep_delay")
+    try:
+        live_run.configure_sampler(sampler_backend, "dynamic", False, None, [], 64, 60, rep_delay=high * 2)
+    except live_run.LiveRunError:
+        pass
+    else:
+        raise RuntimeError("the Sampler accepted a repetition delay outside the backend range")
+    for value in ("-0.0001", "nan", "inf"):
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            try:
+                live_run.main(["--rep-delay", value, "--out", "/tmp/rep-delay-contract-unused"])
+            except SystemExit as error:
+                _require(error.code == 2, f"--rep-delay {value} produced CLI status {error.code}")
+            else:
+                raise RuntimeError(f"the CLI accepted --rep-delay {value}")
+        _require("--rep-delay" in stderr.getvalue(), f"the CLI rejection of {value} did not name --rep-delay")
+
+
+def _ideal_predictions(choice: Any, noise: Any, shots: int) -> dict[str, list[Any]]:
+    del noise, shots
+    return {entry.name: [entry.ideal for _ in entry.replicas] for entry in choice.entries}
+
+
+def _verify_rep_delay_charge(snapshot: live_run.Snapshot, choices: list[Any], configuration: dict[str, Any]) -> None:
+    """Every PUB's charge per shot moves by exactly the requested repetition-delay change."""
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 130.0}
+    ledgers: dict[float | None, list[dict[str, Any]]] = {}
+    for delay in (None, 0.0001, 0.0004):
+        args = _args("folded-qpe", rep_delay=delay)
+        # The charge reads circuit durations and the delay, never the outcome
+        # model, so each replica predicts its ideal law.
+        with (
+            patch.object(qpu_planning, "family_candidates", return_value=[(choices, configuration)]),
+            patch.object(live_run, "simulate", _ideal_predictions),
+        ):
+            _selected, metadata = qpu_planning.prepare(live_run, [snapshot], args, usage, {})
+        candidates = metadata["optimization"]["candidates"]
+        _require(len(candidates) == 1, "the fixed-tier plan searched more than one candidate")
+        ledgers[delay] = candidates[0]["jobs"]
+    default = qpu_planning.repetition_delay(snapshot.backend)
+    for delay in (0.0001, 0.0004):
+        for job, base in zip(ledgers[delay], ledgers[None], strict=True):
+            change = math.fsum(
+                pub["estimated_execution_seconds"] - other["estimated_execution_seconds"]
+                for pub, other in zip(job["pubs"], base["pubs"], strict=True)
+            )
+            shots = sum(pub["shots"] for pub in job["pubs"])
+            for pub, other in zip(job["pubs"], base["pubs"], strict=True):
+                _require(pub["repetition_delay_seconds"] == delay, f"{pub['name']}: the charge left --rep-delay")
+                _require(other["repetition_delay_seconds"] == default, f"{pub['name']}: the default delay moved")
+                per_shot = (pub["estimated_execution_seconds"] - other["estimated_execution_seconds"]) / pub["shots"]
+                _require(
+                    math.isclose(per_shot, delay - default, rel_tol=1e-9, abs_tol=1e-15),
+                    f"{pub['name']}: charge per shot moved {per_shot} s for a {delay - default} s delay change",
+                )
+            _require(
+                math.isclose(
+                    job["estimated_charge_seconds"] - base["estimated_charge_seconds"],
+                    change,
+                    rel_tol=1e-9,
+                    abs_tol=1e-12,
+                ),
+                f"{job['name']}: the job charge moved by more than its PUBs' repetition change",
+            )
+            _require(
+                math.isclose(change, shots * (delay - default), rel_tol=1e-9, abs_tol=1e-12),
+                f"{job['name']}: the charge moved {change} s, not shots x delay change",
+            )
+
+
+class _UnsentSampler(_ProbeSampler):
+    def run(self, circuits: list[Any]) -> Any:
+        raise RuntimeError(f"a refused repetition delay reached Sampler.run with {len(circuits)} circuits")
+
+
+def _unsent_sampler(
+    backend: Any, kind: str, twirl: bool, dd: str | None, tags: list[str], *args: Any, **kwargs: Any
+) -> Any:
+    del backend, twirl, dd
+    return _UnsentSampler(kind, tags, int(args[0]) if args else 4096, None, None, args[1] if len(args) > 1 else None)
+
+
+def _verify_rep_delay_approval() -> None:
+    """The policy and execution contract bind --rep-delay; a changed delay or range stops before any job."""
+    backend = _RangeBackend("rep_delay_fixture", FakeFez())
+    service = _ProbeService([backend])
+    args = _fixture_args(groups=["hybrid_shor_mod15"], max_replicas=1, rep_delay=0.0001)
+    with redirect_stdout(io.StringIO()):
+        choices, record = live_run.plan(cast(Any, service), args)
+        live_run.evaluate(choices, record)
+        default_choices, default_record = live_run.plan(
+            cast(Any, service), _fixture_args(groups=["hybrid_shor_mod15"], max_replicas=1)
+        )
+    _require(record["policy"]["rep_delay_seconds"] == 0.0001, "the policy omitted the requested repetition delay")
+    _require("rep_delay_seconds" not in default_record["policy"], "a default plan recorded a repetition delay")
+    _require(
+        default_record["execution_contract"]["backends"]
+        == [{"name": backend.name, "repetition_delay_seconds": 0.00025}],
+        "the default execution contract changed shape",
+    )
+    bound = record["execution_contract"]["backends"][0]
+    _require(
+        bound["repetition_delay_seconds"] == 0.0001
+        and bound["default_repetition_delay_seconds"] == 0.00025
+        and bound["repetition_delay_range_seconds"] == [0.0, 0.0005],
+        f"the execution contract does not bind the requested delay and its range: {bound}",
+    )
+    del default_choices
+    with tempfile.TemporaryDirectory(prefix="gororoba-rep-delay-approval-") as directory:
+        approved = Path(directory) / "approved"
+        approved.mkdir()
+        live_run.write_archive(approved, choices)
+        live_run.write_json(approved, record)
+        qpy_digest = hashlib.sha256((approved / "isa.qpy").read_bytes()).hexdigest()
+        record_digest = hashlib.sha256((approved / "record.json").read_bytes()).hexdigest()
+        _require(not live_run.approved_record_mismatches(approved, record, qpy_digest), "an unchanged plan mismatches")
+        moved = copy.deepcopy(record)
+        moved["policy"]["rep_delay_seconds"] = 0.00005
+        _require(
+            "policy differs" in live_run.approved_record_mismatches(approved, moved, qpy_digest),
+            "the approval accepted a changed repetition delay",
+        )
+        ranged = copy.deepcopy(record)
+        ranged["execution_contract"]["backends"][0]["repetition_delay_range_seconds"] = [0.0, 0.001]
+        _require(
+            "execution_contract differs" in live_run.approved_record_mismatches(approved, ranged, qpy_digest),
+            "the approval accepted a moved repetition-delay range",
+        )
+        run_dir = Path(directory) / "run"
+        run_dir.mkdir()
+
+        def attempt(submit_args: argparse.Namespace, label: str) -> dict[str, Any]:
+            # submit compares the refreshed choices, so the fresh plan needs no evaluation.
+            with redirect_stdout(io.StringIO()):
+                fresh_choices, fresh_record = live_run.plan(cast(Any, service), submit_args)
+            submit_args.approved_record = approved
+            submit_args.approved_record_sha256 = record_digest
+            try:
+                with patch.object(live_run, "configure_sampler", _unsent_sampler), redirect_stdout(io.StringIO()):
+                    live_run.submit(
+                        cast(Any, service),
+                        fresh_choices,
+                        submit_args,
+                        fresh_record,
+                        lambda: live_run.write_archive(run_dir, fresh_choices),
+                        lambda: None,
+                    )
+            except live_run.LiveRunError:
+                pass
+            else:
+                raise RuntimeError(f"{label}: the submission completed")
+            _require(fresh_record["state"] == "approval_required", f"{label}: left {fresh_record['state']}")
+            _require(not (approved / live_run.APPROVAL_CONSUMED_FILE).exists(), f"{label}: consumed the approval")
+            return fresh_record
+
+        differing = attempt(
+            _fixture_args(groups=["hybrid_shor_mod15"], max_replicas=1, rep_delay=0.00005), "a differing --rep-delay"
+        )
+        _require(
+            "policy differs" in differing["renewed_approval"]["mismatches"],
+            f"a differing --rep-delay stopped for {differing['renewed_approval']}",
+        )
+        omitted = attempt(_fixture_args(groups=["hybrid_shor_mod15"], max_replicas=1), "an omitted --rep-delay")
+        _require("policy differs" in omitted["renewed_approval"]["mismatches"], "an omitted --rep-delay passed")
+
+        # The range moves between planning and the pre-submission refresh.
+        submit_args = _fixture_args(groups=["hybrid_shor_mod15"], max_replicas=1, rep_delay=0.0001)
+        with redirect_stdout(io.StringIO()):
+            fresh_choices, fresh_record = live_run.plan(cast(Any, service), submit_args)
+        backend.rep_delay_range = [0.0, 0.001]
+        submit_args.approved_record = approved
+        submit_args.approved_record_sha256 = record_digest
+        try:
+            with patch.object(live_run, "configure_sampler", _unsent_sampler), redirect_stdout(io.StringIO()):
+                live_run.submit(
+                    cast(Any, service),
+                    fresh_choices,
+                    submit_args,
+                    fresh_record,
+                    lambda: live_run.write_archive(run_dir, fresh_choices),
+                    lambda: None,
+                )
+        except live_run.LiveRunError:
+            pass
+        else:
+            raise RuntimeError("a moved repetition-delay range reached submission")
+        finally:
+            backend.rep_delay_range = None
+        reasons = fresh_record.get("renewed_approval", {}).get("changed_groups", {}).get("repetition_delay")
+        _require(
+            fresh_record["state"] == "approval_required" and reasons is not None,
+            f"a range moved before the refresh left {fresh_record['state']}: {fresh_record.get('renewed_approval')}",
+        )
+
+        # The range moves after the approved-record check, before the batch.
+        submit_args = _fixture_args(groups=["hybrid_shor_mod15"], max_replicas=1, rep_delay=0.0001)
+        with redirect_stdout(io.StringIO()):
+            fresh_choices, fresh_record = live_run.plan(cast(Any, service), submit_args)
+        submit_args.approved_record = approved
+        submit_args.approved_record_sha256 = record_digest
+        original_drift = live_run.approved_calibration_drift
+
+        def drift_then_move(record_: dict[str, Any], name: str, calibration: str) -> str | None:
+            backend.rep_delay_range = [0.0, 0.00008]
+            return original_drift(record_, name, calibration)
+
+        try:
+            with (
+                patch.object(live_run, "configure_sampler", _unsent_sampler),
+                patch.object(live_run, "approved_calibration_drift", drift_then_move),
+                redirect_stdout(io.StringIO()),
+            ):
+                live_run.submit(
+                    cast(Any, service),
+                    fresh_choices,
+                    submit_args,
+                    fresh_record,
+                    lambda: live_run.write_archive(run_dir, fresh_choices),
+                    lambda: None,
+                )
+        except live_run.LiveRunError as error:
+            _require("repetition delay" in str(error), f"the batch stopped for another reason: {error}")
+        else:
+            raise RuntimeError("a repetition delay outside the batch-time range reached Sampler.run")
+        finally:
+            backend.rep_delay_range = None
+        _require(
+            fresh_record["state"] == "approval_required" and not fresh_record["submission"]["jobs"],
+            f"a batch-time range change left {fresh_record['state']}",
+        )
+        _require(not (approved / live_run.APPROVAL_CONSUMED_FILE).exists(), "the refused batch consumed the approval")
+
+
+def _verify_state_prep_family() -> None:
+    """state-prep-control pins each arm to its qubit, fuses two static PUBs and one dynamic, admits 8192 shots."""
+    backend = _ProbeBackend("state_prep_fixture", FakeFez())
+    service = _ProbeService([backend])
+    with redirect_stdout(io.StringIO()):
+        snapshot = live_run.take_snapshot(cast(Any, service), backend.name)
+    qubits = [qubit for qubit in range(40, 156, 7) if qubit not in snapshot.excluded_qubits][:14]
+    _require(len(qubits) == 14, "FakeFez lacks 14 admitted fixture qubits")
+    args = _args(
+        "state-prep-control",
+        layout=qubits,
+        optimize=True,
+        shot_tiers=[4096, 8192, 16384],
+        optimizer_candidates=1,
+        max_execution_seconds=60,
+        max_total_execution_seconds=120.0,
+        reserve_seconds=0.0,
+    )
+    trace: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(live_run, [snapshot], args, trace)
+    _require(len(candidates) == 1, f"the declared layout produced {len(candidates)} candidates: {trace}")
+    choices, configuration = candidates[0]
+    _require(configuration["qubits"] == qubits and configuration["layout_source"] == "declared", "layout lost")
+    _require(len(choices) == 28, "each qubit needs one static and one dynamic group")
+    for choice in choices:
+        qubit = int(choice.group.name.rsplit("_q", 1)[1])
+        _require([r.qubits for r in choice.replicas] == [[qubit]], f"{choice.group.name}: moved off qubit {qubit}")
+    pubs = live_run.execution_pubs(choices)
+    _require(sorted(pub.kind for pub in pubs) == ["dynamic", "static", "static"], "the arms fused into other PUBs")
+    for pub in pubs:
+        covered = sorted(q for component in pub.components for q in component.manifest()["physical_qubits"])
+        _require(covered == sorted(qubits), f"{pub.name}: measures {covered}, not every named qubit")
+        arms = {component.entry.name.split("_q")[0] for component in pub.components}
+        _require(len(arms) == 1, f"{pub.name}: mixes arms {arms}")
+    batches = {kind: live_run.submission_batches(choices, kind, 8192) for kind in ("static", "dynamic")}
+    _require([len(b) for b in batches["static"]] == [2] and [len(b) for b in batches["dynamic"]] == [1], "jobs")
+    default_trace: dict[str, Any] = {}
+    default_args = _args("state-prep-control", layout=None)
+    _require(
+        not qpu_planning.family_candidates(live_run, [snapshot], default_args, default_trace),
+        "the retained n21 layout was placed on a backend other than its own",
+    )
+    _require(
+        "ibm_kingston" in default_trace["family_rejections"][0]["reason"],
+        f"the default layout refused for another reason: {default_trace}",
+    )
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
+    with patch.object(live_run, "simulate", _ideal_predictions):
+        selected, metadata = qpu_planning.prepare(live_run, [snapshot], args, usage, {})
+    _require(
+        [choice.group.name for choice in selected] == [choice.group.name for choice in choices] and args.shots == 8192,
+        f"the optimizer selected {args.shots} shots",
+    )
+    rejected = {
+        int(row["proxy_metadata"]["shots"]) for row in metadata["optimization"]["candidates"] if not row["feasible"]
+    }
+    _require(rejected == {4096}, f"the optimizer rejected tiers {rejected}, not 4096 alone")
+    _require(len(metadata["observable_contracts"]) == 42, "the plan lost a per-qubit endpoint")
+    rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
+    _require([g.name for g in rebuilt] == [c.group.name for c in choices], "record_groups lost the per-qubit groups")
+    _verify_shot_ceiling(snapshot, qubits)
+    subset_args = _args(
+        "state-prep-control",
+        layout=qubits[:7],
+        state_prep_arms=["prep0"],
+        optimize=True,
+        shot_tiers=[4096, 8192],
+        optimizer_candidates=1,
+        max_execution_seconds=60,
+        max_total_execution_seconds=120.0,
+        reserve_seconds=0.0,
+    )
+    subset = qpu_planning.family_candidates(live_run, [snapshot], subset_args, {})
+    _require(len(subset) == 1, "the prep0-only selection produced no candidate")
+    subset_choices, subset_configuration = subset[0]
+    _require(list(subset_configuration["arms"]) == ["prep0"], f"arms recorded {subset_configuration['arms']}")
+    _require([pub.kind for pub in live_run.execution_pubs(subset_choices)] == ["static"], "prep0 alone left one PUB")
+    _require(qpu_planning.settings(subset_args)["state_prep_arms"] == ["prep0"], "the policy lost the arm selection")
+    _require("state_prep_arms" not in qpu_planning.settings(args), "an omitted selection entered the policy")
+
+
+def _verify_shot_ceiling(snapshot: Any, qubits: list[int]) -> None:
+    """Shot tiers above configuration().max_shots leave the plan, and a batch above it refuses."""
+    reported = qpu_planning.shot_ceiling(snapshot.backend)
+    _require(reported == 100000, f"FakeFez reports max_shots {reported}")
+    ceiling = 100000
+    _require(not qpu_planning.shot_ceiling_violations(snapshot.backend, ceiling), "max_shots itself was refused")
+    _require(bool(qpu_planning.shot_ceiling_violations(snapshot.backend, ceiling + 1)), "max_shots + 1 was admitted")
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
+
+    def tier_args(tiers: list[int]) -> Any:
+        return _args(
+            "state-prep-control",
+            layout=qubits,
+            optimize=True,
+            shot_tiers=tiers,
+            optimizer_candidates=1,
+            max_execution_seconds=60,
+            max_total_execution_seconds=120.0,
+            reserve_seconds=0.0,
+        )
+
+    trace: dict[str, Any] = {}
+    args = tier_args([8192, ceiling + 1])
+    with patch.object(live_run, "simulate", _ideal_predictions):
+        _selected, metadata = qpu_planning.prepare(live_run, [snapshot], args, usage, trace)
+    planned = {int(row["proxy_metadata"]["shots"]) for row in metadata["optimization"]["candidates"]}
+    _require(planned == {8192} and args.shots == 8192, f"the optimizer planned tiers {planned}")
+    _require(
+        trace.get("shot_ceiling") == {"max_shots": ceiling, "dropped_tiers": [ceiling + 1]},
+        f"the dropped tier left no trace: {trace.get('shot_ceiling')}",
+    )
+    try:
+        with patch.object(live_run, "simulate", _ideal_predictions):
+            qpu_planning.prepare(live_run, [snapshot], tier_args([ceiling + 1]), usage, {})
+    except live_run.LiveRunError as error:
+        _require("max_shots" in str(error), f"the planner refused for another reason: {error}")
+    else:
+        raise RuntimeError("a plan whose every tier exceeds max_shots was admitted")
+
+
+def _verify_prep_excitation() -> None:
+    """--prep-excitation is an N21 planning assumption the policy binds and both model paths apply."""
+    import numpy as np
+    from qiskit_aer import AerSimulator
+
+    import dynamic_density
+    import n21_exact_planning
+    from packing import Replica
+
+    for argv, label in (
+        (["--family", "folded-qpe", "--prep-excitation", "0.01"], "a non-N21 family"),
+        (["--family", "n21-feedback-encoded", "--prep-excitation", "1.0"], "an excitation of 1"),
+        (["--family", "n21-feedback-encoded", "--prep-excitation", "nan"], "a NaN excitation"),
+    ):
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            try:
+                live_run.main([*argv, "--max-execution-seconds", "60", "--max-total-execution-seconds", "60"])
+            except SystemExit as error:
+                _require(error.code == 2, f"{label} produced CLI status {error.code}")
+            else:
+                raise RuntimeError(f"the CLI accepted {label}")
+        _require("--prep-excitation" in stderr.getvalue(), f"the CLI rejection of {label} did not name the flag")
+    _require("prep_excitation" not in qpu_planning.settings(_args("n21-feedback")), "a default plan binds epsilon")
+    _require(
+        qpu_planning.settings(_args("n21-feedback", prep_excitation=0.01))["prep_excitation"] == 0.01,
+        "the design settings omit the declared excitation",
+    )
+    try:
+        qpu_planning.prepare(live_run, [], _args("folded-qpe", prep_excitation=0.01), {}, {})
+    except live_run.LiveRunError as error:
+        _require("N21" in str(error), f"the planner refused a non-N21 excitation for another reason: {error}")
+    except Exception as error:  # an empty snapshot list reaches no other refusal first
+        raise RuntimeError(f"the planner did not refuse a non-N21 excitation: {error!r}") from error
+    # The planner's sampled path (live_run.simulate) and its exact law
+    # (n21_exact_planning.exact_predictions) apply one channel.
+    circuit, noise = dynamic_density._fixture()
+    entry = live_run._entry("fixture", circuit, np.zeros(2**circuit.num_clbits), [Replica(0, {0: 0, 1: 1, 2: 2}, 1.0)])
+    snap = object()
+    choice = SimpleNamespace(snap=snap, entries=[entry])
+    simulator = AerSimulator(method="density_matrix", noise_model=noise)
+    shots = 200_000
+    epsilon = 0.25
+    excited = live_run.simulate(cast(Any, choice), simulator, shots, prep_excitation=epsilon)
+    sampled = {"fixture": tuple(tuple(map(float, dist)) for dist in excited["fixture"])}
+    exact, evidence = n21_exact_planning.exact_predictions(
+        [choice], {id(snap): noise}, sampled, shots, 0.01, prep_excitation=epsilon
+    )
+    _require(evidence["passed"] and evidence["prep_excitation"] == epsilon, f"excited planning failed: {evidence}")
+    expected = dynamic_density.probabilities(entry.replicas[0], noise, prep_excitation=epsilon)
+    _require(np.allclose(exact["fixture"][0], expected, rtol=0, atol=1e-15), "the exact law left dynamic_density")
+    try:
+        n21_exact_planning.exact_predictions([choice], {id(snap): noise}, sampled, shots, 0.01)
+    except n21_exact_planning.ExactModelRejected:
+        pass
+    else:
+        raise RuntimeError("an excited sample validated against the unexcited exact law")
+
+
 def _forbid_service(*args: Any, **kwargs: Any) -> Any:
     del args, kwargs
     raise RuntimeError("credential-free planning contract reached a RuntimeService constructor")
@@ -806,6 +1357,7 @@ def _verify() -> None:
         _verify_mixed_noise_batch(choices)
         metadata = _verify_optimizer(snapshot, choices, configuration)
         _verify_approval_mutations(choices, metadata)
+        _verify_rep_delay_charge(snapshot, choices, configuration)
         _verify_cli_approval_boundary()
         _verify_precision_defaults()
         _verify_compute_boundary()
@@ -814,13 +1366,90 @@ def _verify() -> None:
         _verify_unrouted_family_diagnostics(service)
         _verify_coherence_readout(snapshot)
         _verify_patch_selection(snapshot)
+        _verify_static_group_admission(service, snapshot)
+        _verify_state_prep_family()
+        _verify_prep_excitation()
     _verify_control_timing()
+    with patch.object(live_run, "QiskitRuntimeService", _forbid_service):
+        _verify_rep_delay_range()
+        _verify_rep_delay_approval()
     print(
         "QPU planning: matching, calibrated timing, budgets, shot optimization, "
-        "approval, infeasible archives, unrouted rejection diagnostics, coherence readout maps and calibrated "
-        "patch selection checked"
+        "approval, infeasible archives, unrouted rejection diagnostics, coherence readout maps, calibrated "
+        "patch selection and the requested repetition delay checked"
     )
 
 
+def _verify_prep_excitation_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _verify_prep_excitation()
+    print(
+        "QPU planning: --prep-excitation refuses outside the N21 families and [0, 1), joins the design settings "
+        "only when declared, and enters the sampled model and the exact law alike"
+    )
+
+
+def _verify_state_prep_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _verify_state_prep_family()
+    print(
+        "QPU planning: state-prep-control pins each arm to its named qubit, fuses two static PUBs and one "
+        "dynamic PUB over every qubit, refuses the retained layout off its backend, admits 8192 shots and drops "
+        "tiers above max_shots"
+    )
+
+
+def _verify_rep_delay_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        choices, configuration = _verify_family_layouts(snapshot)
+        _verify_rep_delay_charge(snapshot, choices, configuration)
+    with patch.object(live_run, "QiskitRuntimeService", _forbid_service):
+        _verify_rep_delay_range()
+        _verify_rep_delay_approval()
+    print(
+        "QPU planning: --rep-delay refuses outside rep_delay_range, moves each PUB's charge per shot by the delay "
+        "change, binds the policy and execution contract, and stops a changed delay or range before any job"
+    )
+
+
+def _verify_static_admission_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        service, snapshot = _fixture()
+        _verify_static_group_admission(service, snapshot)
+    print("QPU planning: a static group with a measure-then-gate member writes no planned record")
+
+
 if __name__ == "__main__":
-    _verify()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--static-group-admission", action="store_true", help="run only the static-group admission contract"
+    )
+    parser.add_argument("--rep-delay", action="store_true", help="run only the requested repetition-delay contracts")
+    parser.add_argument("--state-prep", action="store_true", help="run only the state-prep-control planning contract")
+    parser.add_argument(
+        "--prep-excitation", action="store_true", help="run only the declared initial-excitation contracts"
+    )
+    parsed = parser.parse_args()
+    if parsed.static_group_admission:
+        _verify_static_admission_only()
+    elif parsed.rep_delay:
+        _verify_rep_delay_only()
+    elif parsed.state_prep:
+        _verify_state_prep_only()
+    elif parsed.prep_excitation:
+        _verify_prep_excitation_only()
+    else:
+        _verify()

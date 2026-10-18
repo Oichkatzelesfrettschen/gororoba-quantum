@@ -68,7 +68,7 @@ import placement_feasibility
 import qpu_planning
 import variance
 from coherence_window import COHERENCE_PRECISION
-from diagnostic_experiments import FAMILY_NAMES, PATCH_FAMILIES, record_groups
+from diagnostic_experiments import FAMILY_NAMES, N21_FAMILIES, PATCH_FAMILIES, record_groups, state_prep_arms
 from experiments import (
     MIRROR_SUFFIX,
     Group,
@@ -127,15 +127,18 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "correction_statistics.py",
     "designs.py",
     "diagnostic_experiments.py",
+    "dynamic_density.py",
     "experiment_optimizer.py",
     "experiments.py",
     "factoring.py",
     "hybrid_shor.py",
     "integral_homology.py",
+    "jax_bridge.py",
     "live_run.py",
     "local_compute.py",
     "maximal_experiments.py",
     "modular_arithmetic.py",
+    "n21_exact_planning.py",
     "native_preflight.py",
     "order_finding.py",
     "packing.py",
@@ -236,6 +239,7 @@ class Snapshot:
     excluded_edges: dict[tuple[int, int], str] = field(default_factory=dict)
     medians: dict[str, float | None] = field(default_factory=dict)
     admission_target: Target | None = field(default=None, repr=False)
+    identity: dict[str, Any] = field(default_factory=dict)
 
     def ineligible_reason(self, max_pending: int | None) -> str | None:
         if not self.capabilities.native_cz:
@@ -253,6 +257,7 @@ class Snapshot:
             "pending_jobs": self.pending_jobs,
             "calibration": self.calibration,
             "fetched_at": self.fetched_at,
+            **self.identity,
             "capabilities": self.capabilities.summary(),
             "repetition_delay": _optional_repetition_delay(self.backend),
             "medians": self.medians,
@@ -274,6 +279,76 @@ def _backend_capabilities(backend: Any) -> BackendCapabilities:
         operation_names=operation_names,
         control_flow=tuple(sorted(CONTROL_FLOW_OPERATIONS.intersection(operation_names))),
     )
+
+
+# Provenance fields of a backend summary: recorded data that neither selection
+# reuse (unchanged_since_planning) nor the approved-record comparison reads.
+BACKEND_IDENTITY_FIELDS = ("backend_version", "processor_type")
+
+
+def backend_identity(backend: Any) -> dict[str, Any]:
+    """The backend's reported version and processor type, as its configuration carries them.
+
+    IBMBackend.refresh() replaces the configuration but leaves the
+    BackendV2.backend_version read at construction, so both values come from
+    backend.configuration(). processor_type is the configuration's
+    {"family", "revision"[, "segment"]} dictionary, or None when the backend
+    reports none.
+    """
+    configuration = backend.configuration()
+    processor = getattr(configuration, "processor_type", None)
+    return {
+        "backend_version": str(configuration.backend_version),
+        "processor_type": {str(k): str(v) for k, v in processor.items()} if isinstance(processor, Mapping) else None,
+    }
+
+
+def reported_identity(backend: Any) -> dict[str, Any]:
+    """backend_identity, with None for each field a backend object does not report.
+
+    Identity is provenance: a backend without it stays eligible in a snapshot
+    and a collection proceeds.
+    """
+    try:
+        return backend_identity(backend)
+    except AttributeError:
+        return dict.fromkeys(BACKEND_IDENTITY_FIELDS)
+
+
+def execution_identity(backend: Any, properties_at: Mapping[datetime, Any]) -> dict[str, Any]:
+    """A collected job's backend identity: the configuration now and the properties at each execution start.
+
+    The properties in force when a PUB's shots began report the
+    backend_version that ran them; the configuration read at collection names
+    the processor type and the current version; a property set without a
+    version records None.
+    """
+    identity = reported_identity(backend)
+    at_execution = {}
+    for start, properties in sorted(properties_at.items()):
+        version = getattr(properties, "backend_version", None)
+        at_execution[start.isoformat()] = None if version is None else str(version)
+    return identity | {"backend_version_at_execution": at_execution}
+
+
+def backend_identity_violations(entry: Mapping[str, Any]) -> list[str]:
+    """Shape faults of the identity fields one record entry carries; an absent field is no fault.
+
+    backend_version is None or a nonempty string; processor_type is None or a
+    string-valued dictionary naming at least the family and the revision.
+    """
+    faults = []
+    version = entry.get("backend_version")
+    if version is not None and not (isinstance(version, str) and version):
+        faults.append(f"backend_version {entry['backend_version']!r} is not a nonempty string")
+    processor = entry.get("processor_type")
+    if processor is not None and not (
+        isinstance(processor, Mapping)
+        and {"family", "revision"} <= set(processor)
+        and all(isinstance(key, str) and isinstance(value, str) for key, value in processor.items())
+    ):
+        faults.append(f"processor_type {processor!r} is not a string dictionary with family and revision")
+    return faults
 
 
 def _qubit_exclusion(text: str) -> tuple[str, frozenset[int]]:
@@ -326,6 +401,7 @@ def take_snapshot(service: QiskitRuntimeService, name: str, operator_excluded: C
         capabilities = _backend_capabilities(backend)
     except Exception as error:
         raise LiveRunError(f"{name}: backend capability read failed ({type(error).__name__})") from error
+    identity = reported_identity(backend)
     try:
         check_snapshot_matches_properties(backend.target, props, name)
     except LiveRunError:
@@ -342,6 +418,7 @@ def take_snapshot(service: QiskitRuntimeService, name: str, operator_excluded: C
         calibration=props.last_update_date.isoformat(),
         fetched_at=_now(),
         capabilities=capabilities,
+        identity=identity,
     )
     if "cz" not in backend.target.operation_names:
         return snap
@@ -552,6 +629,25 @@ def capability_violations(requirements: CircuitRequirements, capabilities: Backe
         violations.append(f"missing target operations {missing}")
     if requirements.dynamic_circuits and not capabilities.dynamic_circuits:
         violations.append("service dynamic-circuit filter rejects backend")
+    return violations
+
+
+def group_admission_violations(group: Group, capabilities: BackendCapabilities) -> list[str]:
+    """Capability violations of one source-circuit group, naming the members of a mixed group's minority kind.
+
+    select_candidates, qpu_planning.prepare and the pre-submit refresh
+    (choice_change_reasons) apply this one predicate to the source members, so
+    a group the refresh rejects never reaches a planned record. Routing can
+    serialize independent operations in another order, so a routed ISA can
+    classify static where its source circuit classifies dynamic.
+    """
+    violations = capability_violations(group_requirements(group), capabilities)
+    kinds: dict[str, list[str]] = {"dynamic": [], "static": []}
+    for member in group.members:
+        kinds["dynamic" if _is_dynamic(member.circuit) else "static"].append(member.name)
+    if kinds["dynamic"] and kinds["static"]:
+        minority = "dynamic" if len(kinds["dynamic"]) <= len(kinds["static"]) else "static"
+        violations.append(f"{minority} members {kinds[minority]}")
     return violations
 
 
@@ -1801,7 +1897,7 @@ def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict
     for snap in snaps:
         trace: list[dict[str, Any]] = []
         log[group.name][snap.name] = trace
-        capability_rejections = capability_violations(requirements, snap.capabilities)
+        capability_rejections = group_admission_violations(group, snap.capabilities)
         trace.append(
             {
                 "stage": "capability_admission",
@@ -2145,13 +2241,27 @@ def noise_simulator(name: str, target: Any, props: Any, compute_policy: dict[str
     return simulator
 
 
-def simulate(choice: Choice, noise: Any, shots: int = SHOTS) -> dict[str, list[np.ndarray]]:
+def simulate(
+    choice: Choice, noise: Any, shots: int = SHOTS, prep_excitation: float = 0.0
+) -> dict[str, list[np.ndarray]]:
     """Noisy distribution of every entry's every replica, each simulated as its own single-replica circuit.
 
     The noise model carries no crosstalk between replicas, so a replica alone
-    and a replica inside the packed circuit share one distribution.
+    and a replica inside the packed circuit share one distribution. A
+    declared prep_excitation runs each replica behind a leading X error of
+    that probability on every active qubit (dynamic_density.with_prep_excitation).
     """
-    return simulate_entries(noise, choice.entries, shots, SEED_SIMULATOR)
+    if not prep_excitation:
+        return simulate_entries(noise, choice.entries, shots, SEED_SIMULATOR)
+    from dynamic_density import with_prep_excitation
+
+    excited = [
+        dataclasses.replace(
+            entry, replicas=[with_prep_excitation(replica, prep_excitation) for replica in entry.replicas]
+        )
+        for entry in choice.entries
+    ]
+    return simulate_entries(noise, excited, shots, SEED_SIMULATOR)
 
 
 def replay_entries(
@@ -2544,6 +2654,7 @@ def _choice_record(
     return {
         "group": choice.group.name,
         "backend": choice.snap.name,
+        **choice.snap.identity,
         "calibration": choice.snap.calibration,
         "noise_model_calibration": noise_calibration,
         "seed_transpiler": choice.seed,
@@ -2693,6 +2804,23 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
     )
     if not snaps:
         raise LiveRunError("no eligible backend")
+    requested_delay = getattr(args, "rep_delay", None)
+    if requested_delay is not None:
+        refused = {
+            snapshot.name: violations
+            for snapshot in snaps
+            if (violations := qpu_planning.repetition_delay_violations(snapshot.backend, requested_delay, None))
+        }
+        if refused:
+            raise LiveRunError(f"--rep-delay {requested_delay} s is unavailable: {refused}")
+    if not getattr(args, "family", None):
+        refused_shots = {
+            snapshot.name: violations
+            for snapshot in snaps
+            if (violations := qpu_planning.shot_ceiling_violations(snapshot.backend, args.shots))
+        }
+        if refused_shots:
+            raise LiveRunError(f"--shots {args.shots} is unavailable: {refused_shots}")
     trace: dict[str, Any] = {}
     design: dict[str, Any] = {}
     if getattr(args, "family", None):
@@ -2787,6 +2915,10 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             "dd": getattr(args, "dd", None),
             "min_remaining_seconds": getattr(args, "min_remaining_seconds", None),
             "max_execution_seconds": getattr(args, "max_execution_seconds", None),
+            # The Sampler's execution.rep_delay changes the workload and its
+            # charge, so the approved-record gate compares it; the backend
+            # default leaves the key out.
+            **({"rep_delay_seconds": requested_delay} if requested_delay is not None else {}),
             "operator_excluded_qubits": {
                 name: sorted(qubits) for name, qubits in sorted((getattr(args, "exclude_qubits", None) or {}).items())
             },
@@ -2861,7 +2993,12 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
                 choice.snap.calibration,
             )
         sim, cal = sims[key]
-        noisy = simulate(choice, sim, int(record["shots"]))
+        excitation = record.get("policy", {}).get("design", {}).get("prep_excitation")
+        noisy = (
+            simulate(choice, sim, int(record["shots"]), prep_excitation=excitation)
+            if excitation
+            else simulate(choice, sim, int(record["shots"]))
+        )
         entry = _choice_record(choice, noisy, cal, int(record["shots"]), scopes)
         record["groups"].append(entry)
         cz = [m["cz"] for m in entry["members"]]
@@ -3045,7 +3182,7 @@ def _qpy_digest(circuits: list[QuantumCircuit]) -> str:
 
 def choice_change_reasons(choice: Choice, fresh: Snapshot) -> list[str]:
     """Reasons an existing compile needs rebuilding against a fresh snapshot."""
-    reasons = capability_violations(group_requirements(choice.group), fresh.capabilities)
+    reasons = group_admission_violations(choice.group, fresh.capabilities)
     if choice.snap.capabilities != fresh.capabilities:
         reasons.append("backend capabilities changed")
     isas = [entry.packed for entry in choice.entries]
@@ -3059,6 +3196,20 @@ def choice_change_reasons(choice: Choice, fresh: Snapshot) -> list[str]:
     except Exception as error:
         reasons.append(f"calibration fingerprint failed ({type(error).__name__})")
     return sorted(set(reasons))
+
+
+def sampler_rep_delay(args: Any) -> dict[str, float]:
+    """configure_sampler's rep_delay keyword for --rep-delay; empty, the backend default, without it."""
+    value = getattr(args, "rep_delay", None)
+    return {} if value is None else {"rep_delay": value}
+
+
+def planned_repetition_delay_range(record: Mapping[str, Any], backend_name: str) -> list[float] | None:
+    """The rep_delay_range the record's execution contract admitted a requested delay in, for backend_name."""
+    for entry in record.get("execution_contract", {}).get("backends", []):
+        if entry.get("name") == backend_name:
+            return entry.get("repetition_delay_range_seconds")
+    return None
 
 
 def _optional_repetition_delay(backend: Any) -> float | None:
@@ -3084,7 +3235,9 @@ def unchanged_since_planning(
     each must match its planning value; the entries are captured when the
     snapshot is taken, so a cached backend object refreshed in place still
     compares its planning value. Every chosen backend's compiled instructions
-    must also keep their capabilities and calibration fingerprint.
+    must also keep their capabilities and calibration fingerprint. The
+    backend version and processor type are provenance that selection never
+    reads, so they stay out of the comparison.
     """
     planned = record.get("system_inventory")
     if not isinstance(planned, dict) or set(planned) != set(inventory):
@@ -3092,13 +3245,12 @@ def unchanged_since_planning(
     planned_remaining = record.get("budget_plan", {}).get("remaining_seconds")
     if planned_remaining is None or remaining_seconds != planned_remaining:
         return False
+    unread = {"fetched_at", *BACKEND_IDENTITY_FIELDS}
     for name, entry in inventory.items():
         before = planned[name]
         if not isinstance(before, dict) or not isinstance(entry, dict):
             return False
-        if {k: v for k, v in before.items() if k != "fetched_at"} != {
-            k: v for k, v in entry.items() if k != "fetched_at"
-        }:
+        if {k: v for k, v in before.items() if k not in unread} != {k: v for k, v in entry.items() if k not in unread}:
             return False
     by_name = {snapshot.name: snapshot for snapshot in fresh}
     for choice in choices:
@@ -3106,6 +3258,33 @@ def unchanged_since_planning(
         if current is None or choice_change_reasons(choice, current):
             return False
     return True
+
+
+def refresh_backend_identity(record: dict[str, Any], inventory: Mapping[str, Any]) -> None:
+    """Copy each refreshed backend's version and processor type into the record's provenance entries.
+
+    unchanged_since_planning and the approved-record comparison skip these
+    fields, so a plan reused or rebuilt without reselection keeps its
+    planning-time backends, system_inventory and group entries; the refresh
+    writes the fresh values into each entry that names a probed backend, and
+    leaves every other field and every unprobed backend as planned.
+    """
+    fresh = {
+        name: {key: entry[key] for key in BACKEND_IDENTITY_FIELDS if key in entry}
+        for name, entry in inventory.items()
+        if isinstance(entry, Mapping)
+    }
+    entries = [
+        *(
+            (name, entry)
+            for section in ("backends", "system_inventory")
+            for name, entry in record.get(section, {}).items()
+        ),
+        *((group.get("backend"), group) for group in record.get("groups", [])),
+    ]
+    for name, entry in entries:
+        if isinstance(entry, dict) and fresh.get(name):
+            entry.update(fresh[name])
 
 
 def choice_reselection_reasons(current: Choice, fresh: Choice) -> list[str]:
@@ -3281,6 +3460,7 @@ def build_submission_plan(
                     recovery_tags,
                     selected_shots,
                     getattr(args, "max_execution_seconds", None),
+                    **sampler_rep_delay(args),
                 )
                 plan_index = len(planned_jobs)
                 planned_jobs.append(
@@ -3575,6 +3755,25 @@ def submit(
             }
     if fused_changed:
         reselected["execution_pubs"] = {"reasons": ["fused PUB circuits or ordered component mapping changed"]}
+    requested_delay = getattr(args, "rep_delay", None)
+    if requested_delay is not None:
+        # A reused plan keeps its planning snapshots, so the fresh
+        # configuration of each chosen backend comes from the refresh.
+        refreshed = {snapshot.name: snapshot for snapshot in fresh_snapshots}
+        delay_backends = {
+            choice.snap.name: refreshed.get(choice.snap.name, choice.snap).backend for choice in fresh_choices
+        }
+        delay_reasons = {
+            name: violations
+            for name, backend in sorted(delay_backends.items())
+            if (
+                violations := qpu_planning.repetition_delay_violations(
+                    backend, requested_delay, planned_repetition_delay_range(record, name)
+                )
+            )
+        }
+        if delay_reasons:
+            reselected["repetition_delay"] = {"reasons": delay_reasons}
     choices[:] = fresh_choices
     record["execution_contract"] = qpu_planning.execution_contract(choices, record)
     record.setdefault("revalidation", []).append(
@@ -3588,6 +3787,7 @@ def submit(
             "selection_trace": attempt_trace,
         }
     )
+    refresh_backend_identity(record, inventory)
     if reselected:
         record["system_inventory"] = inventory
         record["backends"] = {snapshot.name: snapshot.summary() for snapshot in fresh_snapshots}
@@ -3684,6 +3884,26 @@ def submit(
         drift = approved_calibration_drift(record, name, fresh.calibration)
         if drift is not None:
             raise LiveRunError(f"{name}: {batch_tag} {drift}; no circuit in this batch was submitted")
+        requested_delay = getattr(args, "rep_delay", None)
+        if requested_delay is not None:
+            batch_delay_violations = qpu_planning.repetition_delay_violations(
+                fresh.backend, requested_delay, planned_repetition_delay_range(record, name)
+            )
+            if batch_delay_violations:
+                reason = "; ".join(batch_delay_violations)
+                if record["submission"]["jobs"]:
+                    record["renewed_approval_for_unsent_batches"] = {"required_at": _now(), "reason": reason}
+                else:
+                    record["state"] = "approval_required"
+                raise LiveRunError(f"{name}: {batch_tag} {reason}; no circuit in this batch was submitted")
+        shot_violations = qpu_planning.shot_ceiling_violations(fresh.backend, int(plan_entry["shots"]))
+        if shot_violations:
+            reason = "; ".join(shot_violations)
+            if record["submission"]["jobs"]:
+                record["renewed_approval_for_unsent_batches"] = {"required_at": _now(), "reason": reason}
+            else:
+                record["state"] = "approval_required"
+            raise LiveRunError(f"{name}: {batch_tag} {reason}; no circuit in this batch was submitted")
         usage = service.usage()
         check_budget(name, usage, args.min_remaining_seconds)
         # Accepted jobs may remain unbilled. Every ceiling stays reserved until
@@ -3705,6 +3925,7 @@ def submit(
             plan_entry["recovery_tags"],
             int(plan_entry["shots"]),
             getattr(args, "max_execution_seconds", None),
+            **sampler_rep_delay(args),
         )
         effective_options = sampler.options.model_dump(mode="json")
         if effective_options != plan_entry["options"]:
@@ -3761,8 +3982,13 @@ def configure_sampler(
     tags: list[str],
     shots: int = SHOTS,
     max_execution_seconds: int | None = None,
+    *,
+    rep_delay: float | None = None,
 ) -> Sampler:
     """The client-side Sampler for one job: twirling and DD apply to static jobs only.
+
+    execution.rep_delay takes rep_delay when given, else the backend default;
+    either must lie in the backend's rep_delay_range (repetition-rate guide).
 
     Every job requests the backend scheduler's per-PUB timing, which
     scheduled_duration reads and packing_schedule compares.
@@ -3788,7 +4014,12 @@ def configure_sampler(
     sampler.options.default_shots = shots
     configuration = backend.configuration()
     if getattr(configuration, "dynamic_reprate_enabled", False):
-        sampler.options.execution.rep_delay = qpu_planning.repetition_delay(backend)
+        try:
+            sampler.options.execution.rep_delay = qpu_planning.repetition_delay(backend, rep_delay)
+        except ValueError as error:
+            raise LiveRunError(str(error)) from error
+    elif rep_delay is not None:
+        raise LiveRunError("the backend runs a fixed repetition rate; --rep-delay needs dynamic_reprate_enabled")
     if max_execution_seconds is not None:
         # The service cancels a job whose system execution time passes this
         # ceiling (OptionsV2.max_execution_time), so the approved case's
@@ -3808,18 +4039,8 @@ def configure_sampler(
     return sampler
 
 
-def _is_dynamic(isa: QuantumCircuit) -> bool:
-    """Control flow, reset, or any measurement followed by later quantum work."""
-    measurement_seen = False
-    for inst in isa.data:
-        name = inst.operation.name
-        if isinstance(inst.operation, ControlFlowOp) or name == "reset":
-            return True
-        if measurement_seen and name not in ("measure", "barrier", "delay"):
-            return True
-        if name == "measure":
-            measurement_seen = True
-    return False
+# One classifier assigns IBM job kinds, group admission and the Aer method.
+_is_dynamic = local_compute.is_dynamic
 
 
 def _has_feed_forward(isa: QuantumCircuit) -> bool:
@@ -4514,6 +4735,17 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         }
         jobs_out[job_entry["job_id"]] = job_out
         checkpoint(out)
+        # The configuration identity is read once the charge is on disk and
+        # before result(), so a job that ended in ERROR or CANCELLED keeps it;
+        # a job with results adds the version at each execution start below.
+        # Identity is provenance: a backend the account no longer serves
+        # records None fields, and only a job with results needs the backend.
+        backend: Any = None
+        try:
+            backend = service.backend(job_entry["backend"])
+        except Exception:  # noqa: BLE001 - QiskitBackendNotFoundError and transport faults alike leave identity unread
+            backend = None
+        job_out["backend_identity"] = execution_identity(backend, {})
         try:
             result = job.result()
         except Exception as error:  # noqa: BLE001 - the service raises its own hierarchy for failed jobs
@@ -4544,7 +4776,8 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             )
         spans = pub_windows(result, len(pub_manifests))
         twirled_readout = bool(job_entry.get("options", {}).get("twirling", {}).get("enable_measure"))
-        backend = service.backend(job_entry["backend"])
+        if backend is None:
+            backend = service.backend(job_entry["backend"])
         # One calibration fetch per distinct execution start: a PUB is replayed
         # under the Target and properties in force when its shots began, and
         # its scheduler residual is read against that Target's durations.
@@ -4585,6 +4818,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 pub_manifest, window, window_reason, scheduled, scheduled_reason, spans.source, execution_bound
             )
         jobs_out[job_entry["job_id"]]["pub_timing"] = timing
+        job_out["backend_identity"] = execution_identity(backend, {start: entry[0] for start, entry in at.items()})
         measured: dict[str, list[np.ndarray]] = {}
         props_by_name: dict[str, Any] = {}
         replayed: dict[str, list[np.ndarray]] = {}
@@ -4764,12 +4998,18 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             for name, distributions in family_measured.items()
         }
     if record.get("observable_contracts") or correction_family:
+        # A declared covariance bound is tested on the shot-ordered registers
+        # write_raw_result retained above, the bytes a replay reads.
+        bounded_pubs = {bound["pub_name"] for bound in record.get("covariance_bounds", [])}
         out[0]["family_analysis"] = qpu_planning.measured_family(
             record,
             family_measured,
             family_executed,
             sys.modules[__name__],
             correction_evidence=correction_evidence if correction_family else None,
+            replica_registers=(
+                qpu_planning.n21_exact_planning.retained_registers(run_dir, bounded_pubs) if bounded_pubs else None
+            ),
         )
     out[0]["invocation_usage"] = invocation_usage(record, jobs_out)
     checkpoint(out, final=True)
@@ -4896,6 +5136,19 @@ def main(argv: list[str] | None = None) -> int:
         help="physical qubits of the patch, in patch_characterization.PATCH_ROLES order; "
         "omitted, the planner chooses the best calibrated patch on every eligible backend",
     )
+    parser.add_argument(
+        "--layout",
+        type=lambda value: [int(item) for item in value.split(",")],
+        help="physical qubits state-prep-control characterizes; omitted, the replica qubits of "
+        "diagnostic_experiments.STATE_PREP_SOURCE_RECORD on its backend",
+    )
+    parser.add_argument(
+        "--state-prep-arms",
+        type=lambda value: value.split(","),
+        help="state-prep-control arms among prep0, reset and x, comma-separated, prep0 always among them; "
+        "omitted, all three; "
+        "the policy binds a selection",
+    )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
         "--local-compute-method",
@@ -4920,6 +5173,33 @@ def main(argv: list[str] | None = None) -> int:
         help="maximum routed family sets before replica and shot expansion",
     )
     parser.add_argument("--model-shots", type=_positive_int, default=32768)
+    parser.add_argument(
+        "--model-method",
+        choices=("sampled", "exact"),
+        default="sampled",
+        help="exact plans an N21 family on dynamic_density's branch-resolved law, validated against "
+        "--model-shots sampled shots; sampled keeps the finite-simulation allowance",
+    )
+    parser.add_argument(
+        "--replica-variance-bound",
+        type=float,
+        help="declared per-replica score variance bound with independent replicas (N21 families); "
+        "the planner applies it through Cantelli or Chebyshev and the collector after its falsifier passes",
+    )
+    parser.add_argument(
+        "--empirical-bernstein",
+        action="store_true",
+        help="N21 families under --model-method exact: each endpoint's confidence and detection radius takes the "
+        "smaller of the data-free radius and the Maurer-Pontil empirical-Bernstein radius at an equal alpha split, "
+        "planned on the exact law's variance raised to its sample-variance upper limit; the policy binds it",
+    )
+    parser.add_argument(
+        "--prep-excitation",
+        type=float,
+        metavar="EPS",
+        help="declared initial excitation per active qubit (N21 families): the exact law and the sampled "
+        "falsifier start every qubit in (1 - EPS)|0><0| + EPS|1><1|; the policy binds it",
+    )
     parser.add_argument(
         "--precision",
         type=float,
@@ -5016,6 +5296,15 @@ def main(argv: list[str] | None = None) -> int:
         help="sha256 of the approved record's record.json, as the written case names it",
     )
     parser.add_argument(
+        "--rep-delay",
+        type=float,
+        metavar="SECONDS",
+        help=(
+            "Sampler execution.rep_delay for every job, within each backend's rep_delay_range; the charge model "
+            "and the approval bind it; default the backend's default_rep_delay"
+        ),
+    )
+    parser.add_argument(
         "--max-execution-seconds",
         type=int,
         help=(
@@ -5046,6 +5335,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--approved-record-sha256 applies only with --submit")
     if args.max_execution_seconds is not None and args.max_execution_seconds <= 0:
         parser.error("--max-execution-seconds must be positive")
+    if args.rep_delay is not None and (not math.isfinite(args.rep_delay) or args.rep_delay < 0):
+        parser.error("--rep-delay must be finite and nonnegative seconds")
+    if args.rep_delay is not None and args.family == "folded-correction":
+        parser.error("folded-correction binds the backend default repetition delay in its preparation report")
     if args.seeds <= 0:
         parser.error("--seeds must be positive")
     if args.submit and args.max_total_execution_seconds is None:
@@ -5064,10 +5357,32 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
     if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
         parser.error("the folded family uses one fixed physical placement per candidate; --max-replicas must be 1")
+    if (args.model_method != "sampled" or args.replica_variance_bound is not None) and (
+        args.family not in N21_FAMILIES
+    ):
+        parser.error("--model-method exact and --replica-variance-bound apply to the N21 families only")
+    if args.empirical_bernstein and (args.family not in N21_FAMILIES or args.model_method != "exact"):
+        parser.error("--empirical-bernstein applies to the N21 families under --model-method exact only")
+    if args.prep_excitation is not None:
+        if args.family not in N21_FAMILIES:
+            parser.error("--prep-excitation applies to the N21 families only")
+        if not math.isfinite(args.prep_excitation) or not 0 <= args.prep_excitation < 1:
+            parser.error("--prep-excitation must lie in [0, 1)")
     if args.patch_qubits is not None and args.family not in PATCH_FAMILIES:
         parser.error("--patch-qubits applies to the pinned-patch families only")
     if args.family in PATCH_FAMILIES and args.max_replicas not in (None, 1):
         parser.error("the patch family runs one pinned placement; --max-replicas must be 1")
+    if args.layout is not None and args.family != "state-prep-control":
+        parser.error("--layout applies to the state-prep-control family only")
+    if args.state_prep_arms is not None:
+        if args.family != "state-prep-control":
+            parser.error("--state-prep-arms applies to the state-prep-control family only")
+        try:
+            args.state_prep_arms = list(state_prep_arms(args.state_prep_arms))
+        except ValueError as error:
+            parser.error(f"--state-prep-arms: {error}")
+    if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
+        parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "folded-correction":
         if args.native_dry_run:
             parser.error("folded-correction uses fresh live calibration and post-execution schedules; mock is disabled")

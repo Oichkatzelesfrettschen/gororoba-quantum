@@ -34,27 +34,122 @@ and ran GPU trajectories, which the NEEDED entries require to resolve. Aer
 leaves `cuStateVec_enable` off by default and no retained GPU run sets it,
 so no retained record exercises the library.
 
+## Keeping the run on the GPU
+
+Aer falls back to the CPU in silence: an AerSimulator on a host without a
+usable CUDA build or device still constructs, and `available_devices()`
+still lists GPU. A kernel can leave the GPU by six routes. `--gpu-env` closes
+each one before the entry starts, and `--require-gpu` closes the last one
+while the entry runs:
+
+| Route to the CPU | Mechanism | What closes it |
+| --- | --- | --- |
+| Interpreter ABI | qiskit-aer-gpu-cu11 0.17.2 publishes cp313 wheels only, and the CUDA 12 qiskit-aer-gpu stops at 0.15.1, so the CI venv's Python 3.14.7 can take only CPU Aer | `gpu_interpreter` builds the venv from the image's own `sys.executable` (Python 3.13), for which every pin has a manylinux wheel |
+| Image packages | the image ships its own numpy, scipy and Aer | `uv venv --seed` starts the venv empty, so the image's packages stay out of the entry |
+| Shared module directory | qiskit-aer and qiskit-aer-gpu-cu11 both install `qiskit_aer/`, so the CPU wheel that requirements.txt pins overwrites the CUDA controller module when both install | `ci/install_pins.sh` with `AER_PINS` drops the `qiskit-aer==` line and installs the GPU wheels in the same resolve; `gpu_env_failures` requires the GPU distribution to be the only owner of `qiskit_aer/__init__.py` |
+| Missing device | a CPU machine, or a GPU session that attached no device | nvidia-smi must list `MACHINE_GPUS` devices (two on NvidiaTeslaT4), and a seeded Bell run with `device="GPU"` must succeed with result metadata `device` GPU |
+| cuStateVec off | Aer reports `cuStateVec_enable` false when `batched_shots_gpu` is also set, and false when libcustatevec fails to load | the cuStateVec Bell run sets `batched_shots_gpu` False and must report `cuStateVec_enable` true; `noise_simulator` raises ValueError on `custatevec=True` with `batched_shots=True` |
+| One row leaves the GPU | a configuration the build rejects, or a child that runs on another device | `aer_gpu_probe.py --require-gpu` reads each GPU row's metadata through `gpu_fallback` and exits on the first row that reports another device or leaves cuStateVec off; `--check` enforces the same rule on the retained record |
+
+`gpu_env.json` keeps the evidence for each row of the table: the installed
+version of every pin, the owners of `qiskit_aer/__init__.py`, Aer's devices,
+numpy's build configuration, and both Bell runs with their metadata. A
+nonempty `failures` list exits 4 and names the route. The one exemption is
+`gpu_statevector_batched_jump`, the batched configuration the cu11 build
+aborts on control flow (`KNOWN_GPU_ABORTS`); a row that aborts is still
+recorded with its exit code.
+
+The venv holds the build host's numerical stack at the pinned versions:
+numpy 2.5.4 and scipy 1.18.1 on scipy-openblas 0.3.34 with DYNAMIC_ARCH, so
+OpenBLAS selects the host CPU's kernels at load time. `report.numpy` in
+`gpu_env.json` records both choices. On the Kaggle CPU kernel it read
+"OpenBLAS 0.3.34.106.0 USE64BITINT DYNAMIC_ARCH NO_AFFINITY SkylakeX
+MAX_THREADS=64", and it reported numpy's X86_V2 baseline with X86_V3 (AVX2)
+found and the AVX-512 groups absent.
+
 ## T4 check
 
-The full Aer GPU configuration probe carries the cuStateVec row:
+The kernel runs the probe under `--gpu-env`. The venv uses the image's
+Python 3.13 and installs requirements.txt and ci/requirements-ci.txt, with
+the wheels above taking qiskit-aer's place. Before the entry starts, the
+kernel requires all of the following and otherwise exits 4:
+
+- every pin at its version;
+- qiskit-aer-gpu-cu11 as the only owner of `qiskit_aer/__init__.py`;
+- both T4s listed by nvidia-smi;
+- GPU Bell runs that report device GPU, and `cuStateVec_enable` true on the
+  cuStateVec run.
+
+The probe's `--require-gpu` then stops at the first row that leaves the
+GPU. The push carries the two calibration snapshots the probe reads:
 
 ```sh
 "$PYTHON" scripts/kaggle_run.py push scripts/aer_gpu_probe.py \
-    --slug gororoba-aer-gpu-config --machine NvidiaTeslaT4 --timeout 5400 \
+    --slug gororoba-aer-gpu-config --machine NvidiaTeslaT4 --gpu-env --timeout 3600 \
     --include docs/evidence/calibration/history/ibm_fez/20261016T1212520700.json \
     --include docs/evidence/calibration/ibm_kingston.json \
-    -- --out results/kaggle_out/aer_gpu_probe.json
+    -- --out /kaggle/working/output/aer_gpu_probe.json --workloads toy,width --widths 7,10 --require-gpu
 ```
 
-`--workloads n21 --configurations
-cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec`
-after `--` runs only the three statevector paths.
+The same push with `--machine cpu` stops at the preflight, which tests the
+fallback error on Kaggle at no GPU cost.
+
+The CPU kernel
+(`results/kaggle/2026-10-17T211857Z-gororoba-aer-gpu-env-preflight`) did
+exactly that. It held all 13 pins under Python 3.13.15, with numpy on
+scipy-openblas 0.3.34 and qiskit-aer-gpu-cu11 as the only owner of
+`qiskit_aer`, then exited 4 with three failures:
+
+- nvidia-smi listed no GPU;
+- both Bell runs raised "No CUDA device available!".
+
+On that machine `AerSimulator().available_devices()` still listed GPU. The
+cu11 build reports GPU whether or not a CUDA device exists, so only a run's
+result metadata shows where it executed.
+
+**Sizing the timeout.** The build host ran exactly this entry in the same
+pinned venv (Python 3.13.15, numpy 2.5.4 on scipy-openblas 0.3.34, the cu11
+wheels on an RTX 4070 Ti):
+
+| Rows | Process seconds |
+| --- | --- |
+| 11 readout-toy rows | 47 |
+| 24 width rows | 1,226 |
+| of which the three 10-qubit dynamic density-matrix rows | 769 |
+
+At two to three times the host's GPU time on a T4, plus the venv install,
+the work fits 3600 s.
+
+The probe runs every static row before any dynamic row, and the 10-qubit
+dynamic density-matrix rows come last. A timeout therefore cuts only those
+rows, and the record keeps every row finished before the cut.
+
+**Contention.** A row counts as contended when processes outside the
+probe's own process tree held more than FOREIGN_CPU_LIMIT CPUs before or
+during it; the probe's own Aer threads never count. On the build host, the
+1-minute load-average rule marked every row of a four-CPU probe busy,
+because that average still counts the previous row. Each row then waited
+IDLE_WAIT_SECONDS and ran again, which is how the first T4 push
+(`results/kaggle/2026-10-17T083803Z-gororoba-aer-gpu-config`) overran
+5400 s without one finished row.
 
 Read `kaggle quota` before and after, then `status` and `collect` retain the
 output under results/kaggle/.
 
+**Result.** The push above ran as
+`results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config` in 0.84 h of GPU
+quota and exited 0. Its `gpu_env.json` lists no failure, nvidia-smi listed
+both T4s, and both Bell runs report device GPU, the cuStateVec run with
+`cuStateVec_enable` true. All 35 rows ran uncontended, every GPU row reports
+device GPU, and every cuStateVec row reports `cuStateVec_enable` true; gate
+core-450 rechecks the record. The timings and the two-GPU metadata are in
+`docs/evidence/aer_gpu_configuration/README.md`.
+
 ## Reading the result
 
+- `gpu_env.json` comes first. A nonempty `failures` list names each pin,
+  owner, GPU or Bell-run difference, and the kernel ran no entry.
+  `install-pins.txt` and `gpu-env-report.txt` hold the commands' output.
 - The check succeeds when every `gpu_statevector_custatevec` row carries
   `cuStateVec_enable` true in `metadata`, no `failed` field, and a
   `tvd_to_cpu_statevector` inside the row's `sampling_scale`.

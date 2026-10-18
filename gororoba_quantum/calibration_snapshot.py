@@ -19,6 +19,11 @@ module carries those inputs as JSON:
 - ``noise_simulator(snapshot, device)`` rebuilds the Target, applies the same
   two noise steps, and returns a density-matrix AerSimulator on CPU or GPU.
 
+The snapshot also records the backend_version its properties report and the
+processor_type of the backend configuration. ``backend_identity(snapshot)``
+returns the fields a snapshot holds, empty for a snapshot without them, so a
+record that names the snapshot carries them through.
+
 The file is public device calibration and carries no account or instance
 identifier. ``--check FILE`` rebuilds the Target from a retained file,
 requires it to reproduce every instruction entry and T1/T2, and runs a
@@ -28,9 +33,13 @@ seeded noisy probe; it needs no network.
 from __future__ import annotations
 
 import argparse
+import functools
 import json
 import os
+import shutil
+import subprocess
 import sys
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
@@ -41,6 +50,8 @@ from qiskit.providers import BackendV2, Options, QubitProperties
 from qiskit.transpiler import InstructionProperties, Target
 from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, ReadoutError
+
+import aer_resources
 
 SCHEMA = "gororoba-calibration-snapshot-v2"
 GATES = {"cz": CZGate(), "sx": SXGate(), "x": XGate(), "rz": RZGate(Parameter("theta")), "id": IGate()}
@@ -86,8 +97,17 @@ def _entries(target: Any, name: str) -> list[dict[str, Any]]:
     return sorted(rows, key=lambda row: row["qargs"])
 
 
-def describe(name: str, target: Any, props: Any, readout_flips: Any) -> dict[str, Any]:
+IDENTITY_FIELDS = ("backend_version", "processor_type")
+
+
+def describe(
+    name: str, target: Any, props: Any, readout_flips: Any, processor_type: Mapping[str, Any] | None = None
+) -> dict[str, Any]:
     """The snapshot of one fetched backend; readout_flips is live_run.readout_flips.
+
+    backend_version comes from the properties, so a historical calibration
+    keeps the version reported with it; processor_type is the backend
+    configuration's (live_run.backend_identity).
 
     The Target and the properties must describe one calibration update, the
     condition live_run.take_snapshot enforces through
@@ -118,12 +138,33 @@ def describe(name: str, target: Any, props: Any, readout_flips: Any) -> dict[str
         "schema": SCHEMA,
         "backend": name,
         "calibration": props.last_update_date.isoformat(),
+        "backend_version": str(props.backend_version),
+        "processor_type": dict(processor_type) if processor_type is not None else None,
         "num_qubits": target.num_qubits,
         "dt": target.dt,
         "qubits": qubits,
         "instructions": {op: _entries(target, op) for op in (*GATES, *NON_GATES)},
         "omitted_operations": sorted(set(target.operation_names) - set(GATES) - set(NON_GATES) - {"delay"}),
     }
+
+
+def backend_identity(snapshot: Mapping[str, Any]) -> dict[str, Any]:
+    """The backend_version and processor_type a snapshot holds; a snapshot without them yields an empty dictionary."""
+    return {key: snapshot[key] for key in IDENTITY_FIELDS if key in snapshot}
+
+
+def check_identity(snapshot: Mapping[str, Any]) -> None:
+    """A present backend_version is a nonempty string and a present processor_type a string dictionary."""
+    version = snapshot.get("backend_version")
+    if "backend_version" in snapshot and not (isinstance(version, str) and version):
+        raise ValueError(f"snapshot backend_version {version!r} is not a nonempty string")
+    processor = snapshot.get("processor_type")
+    if processor is not None and not (
+        isinstance(processor, dict)
+        and {"family", "revision"} <= set(processor)
+        and all(isinstance(value, str) for value in processor.values())
+    ):
+        raise ValueError(f"snapshot processor_type {processor!r} lacks a string family and revision")
 
 
 def build_target(snapshot: dict[str, Any]) -> Target:
@@ -155,7 +196,11 @@ def build_target(snapshot: dict[str, Any]) -> Target:
 
 
 def round_trip(snapshot: dict[str, Any]) -> None:
-    """The rebuilt Target reproduces every instruction entry and every T1 and T2 of the snapshot."""
+    """The rebuilt Target reproduces every instruction entry and every T1 and T2 of the snapshot.
+
+    A present backend_version or processor_type also passes check_identity.
+    """
+    check_identity(snapshot)
     target = build_target(snapshot)
     for op in (*GATES, *NON_GATES):
         if _entries(target, op) != snapshot["instructions"].get(op, []):
@@ -213,6 +258,26 @@ def aer_custatevec() -> bool:
 # fills the device (docs/evidence/aer_gpu_configuration); Aer batches only
 # circuits of at most batched_shots_gpu_max_qubits active qubits.
 BATCHED_SHOTS_MAX_QUBITS = 10
+# Aer's blocking_qubits documentation asks that one double-precision chunk,
+# 16 * 2**blocking_qubits bytes, stay below a quarter of one GPU's memory;
+# a density-matrix chunk of b qubits holds 4**b entries
+# (CacheBlocking::set_blocking scales its chunk bits by 2 for a matrix).
+BLOCKING_MEMORY_FRACTION = 4
+COMPLEX_DOUBLE_BYTES = 16
+
+
+def blocking_qubits_for(method: str, gpu_memory_mib: int) -> int:
+    """The widest Aer chunk whose double-precision state fits a quarter of one GPU's memory."""
+    if method not in ("statevector", "density_matrix"):
+        raise ValueError(f"Aer cache blocking supports statevector and density_matrix, not {method}")
+    scale = 2 if method == "density_matrix" else 1
+    limit = (gpu_memory_mib << 20) // BLOCKING_MEMORY_FRACTION
+    bits = 1
+    while COMPLEX_DOUBLE_BYTES << (scale * (bits + 1)) <= limit:
+        bits += 1
+    return bits
+
+
 CONTROL_FLOW = frozenset({"if_else", "while_loop", "for_loop", "switch_case"})
 
 
@@ -220,6 +285,98 @@ def has_control_flow(circuit: Any) -> bool:
     return isinstance(circuit, QuantumCircuit) and any(
         instruction.operation.name in CONTROL_FLOW for instruction in circuit.data
     )
+
+
+def lower_conditionals(circuit: Any) -> Any:
+    """circuit with every if_else replaced by its true body's gates, each conditioned on the same test.
+
+    AerCompiler inlines an if_else into mark and jump instructions, which
+    Aer's batched GPU executor rejects. Aer's assemble_circuit turns an
+    operation's ``condition`` (a Clbit or ClassicalRegister and a value)
+    into a bfunc register that gates it. A one-level if_else without an else
+    body whose true body holds gates only has that form. The result is the
+    circuit itself without control flow, and None when an instruction has no
+    such form (an else body, an expression condition, a measurement, reset or
+    nested control flow inside the body, or a loop or switch).
+    """
+    from qiskit.circuit import Gate
+
+    if not has_control_flow(circuit):
+        return circuit
+    lowered = circuit.copy_empty_like()
+    for instruction in circuit.data:
+        operation = instruction.operation
+        if operation.name not in CONTROL_FLOW:
+            lowered.append(instruction)
+            continue
+        condition = getattr(operation, "condition", None)
+        if operation.name != "if_else" or not isinstance(condition, tuple) or operation.params[1] is not None:
+            return None
+        body = operation.params[0]
+        wires = dict(zip(body.qubits, instruction.qubits, strict=True))
+        for inner in body.data:
+            if not isinstance(inner.operation, Gate) or inner.clbits:
+                return None
+            gate = inner.operation.to_mutable()
+            gate.condition = condition
+            lowered.append(gate, [wires[q] for q in inner.qubits])
+    return lowered
+
+
+def active_qubits(circuit: Any) -> int:
+    """The width Aer simulates once it truncates idle qubits: every wire an instruction other than a barrier acts on.
+
+    Aer leaves barriers out of the wires it keeps (Circuit::check_result_ancestor,
+    which Circuit::set_params applies when it truncates), so a device-wide
+    barrier on an ISA circuit adds no width.
+    """
+    return aer_resources.active_support(circuit)
+
+
+# Aer stores a double-precision state in 16 * 2**n bytes, 16 * 4**n for a
+# density matrix.
+def state_bytes(method: str, width: int) -> int:
+    return COMPLEX_DOUBLE_BYTES << ((2 if method == "density_matrix" else 1) * width)
+
+
+@functools.cache
+def gpu_memory_mib() -> int | None:
+    """The smallest memory.total nvidia-smi reports across the host's GPUs, or None without one."""
+    if shutil.which("nvidia-smi") is None:
+        return None
+    listing = subprocess.run(
+        ["nvidia-smi", "--query-gpu=memory.total", "--format=csv,noheader,nounits"],
+        capture_output=True,
+        text=True,
+        check=False,
+    ).stdout.split()
+    return min(int(value) for value in listing) if listing else None
+
+
+def blocking_options(method: str, width: int, memory_mib: int | None) -> dict[str, Any]:
+    """Aer cache-blocking options for a state of width qubits, empty while it fits one GPU.
+
+    Aer blocks a state on its own once it exceeds one GPU's share of the
+    device memory (ParallelStateExecutor::multiple_chunk_required), with a
+    chunk as wide as one whole device; on the T4 x2 that choice placed a
+    15-qubit density matrix and a 30-qubit statevector entirely in host
+    memory, which the OOM killer ended, while chunks from blocking_qubits_for
+    ran both across the two GPUs (docs/evidence/aer_gpu_configuration). So
+    the trigger is Aer's own and only the chunk size changes: a run that
+    fits one GPU keeps its unblocked executor and its seeded counts.
+    max_parallel_shots=1 keeps Executor::set_parallelization from sizing
+    parallel shots of a dynamic circuit against the whole state, which
+    raises "a circuit requires more memory than max_memory_mb".
+    """
+    if memory_mib is None or method not in ("statevector", "density_matrix"):
+        return {}
+    if state_bytes(method, width) <= memory_mib << 20:
+        return {}
+    return {
+        "blocking_enable": True,
+        "blocking_qubits": blocking_qubits_for(method, memory_mib),
+        "max_parallel_shots": 1,
+    }
 
 
 class SnapshotSimulator(AerSimulator):
@@ -231,16 +388,58 @@ class SnapshotSimulator(AerSimulator):
     channel instead of the recorded bit (the readout toy of
     docs/evidence/aer_gpu_configuration). A batch containing control flow
     therefore runs with batched_shots_gpu off, the per-shot GPU executor,
-    which draws the CPU's samples. Every other run is AerSimulator.run.
+    which draws the CPU's samples.
+
+    A GPU state wider than one device runs under blocking_options. Aer's
+    cache-blocking pass splits the operation list into per-chunk blocks, so
+    an if_else, which AerCompiler inlines into jump and mark, aborts the
+    process when its mark lands in another block ("Invalid jump
+    destination", raised past every handler); a circuit wider than the
+    chunk runs in its lower_conditionals form, whose seeded counts equal the
+    if_else circuit's under blocking with the readout channel ahead of the
+    condition (scripts/aer_blocking_probe.py --self-test), and one with no
+    such form raises ValueError. Run options that set blocking_enable keep the
+    caller's choice. Every other run is AerSimulator.run.
     """
 
     def run(self, circuits: Any, parameter_binds: Any = None, **run_options: Any) -> Any:
         options = {**self.options.__dict__, **run_options}
+        batch = list(circuits) if isinstance(circuits, (list, tuple)) else [circuits]
         if options.get("device") == "GPU" and options.get("batched_shots_gpu"):
-            batch = circuits if isinstance(circuits, (list, tuple)) else [circuits]
             if any(has_control_flow(circuit) for circuit in batch):
                 run_options["batched_shots_gpu"] = False
+        if options.get("device") == "GPU" and "blocking_enable" not in run_options:
+            lowered, blocking = blocked_batch(batch, str(options.get("method")), gpu_memory_mib())
+            if blocking:
+                circuits = lowered if isinstance(circuits, (list, tuple)) else lowered[0]
+                run_options = {**run_options, **blocking}
         return super().run(circuits, parameter_binds=parameter_binds, **run_options)
+
+
+def blocked_batch(batch: list[Any], method: str, memory_mib: int | None) -> tuple[list[Any], dict[str, Any]]:
+    """The batch and its blocking options; under blocking a circuit wider than the chunk runs in conditioned-gate form.
+
+    Aer's cache-blocking pass splits only a circuit wider than
+    blocking_qubits; a circuit at or below the chunk width runs whole, so its
+    if_else stays intact and draws the unblocked batch's seeded counts
+    (scripts/aer_blocking_probe.py --self-test).
+    """
+    width = max((active_qubits(c) for c in batch if isinstance(c, QuantumCircuit)), default=0)
+    blocking = blocking_options(method, width, memory_mib)
+    if not blocking:
+        return batch, {}
+    lowered = []
+    for circuit in batch:
+        split = isinstance(circuit, QuantumCircuit) and active_qubits(circuit) > blocking["blocking_qubits"]
+        form = lower_conditionals(circuit) if split and has_control_flow(circuit) else circuit
+        if form is None:
+            raise ValueError(
+                f"{getattr(circuit, 'name', circuit)}: a {active_qubits(circuit)}-qubit {method} needs Aer cache "
+                "blocking, which aborts on if_else, and its control flow has no conditioned-gate form (an else "
+                "body, an expression condition, a measurement, reset or nested control flow in the body, or a loop)"
+            )
+        lowered.append(form)
+    return lowered, blocking
 
 
 def noise_simulator(
@@ -333,7 +532,8 @@ def export(name: str, out: Path) -> None:
     backend.refresh()
     props = backend.properties()
     target = backend.target
-    snapshot = describe(name, target, props, live_run.readout_flips)
+    processor_type = live_run.backend_identity(backend)["processor_type"]
+    snapshot = describe(name, target, props, live_run.readout_flips, processor_type)
     snapshot = json.loads(json.dumps(snapshot))
     omitted = tuple(snapshot["omitted_operations"])
     live_all = channel_table(live_run._noise_model(name, live_run.TargetView(name, target), target, props))
@@ -345,6 +545,7 @@ def export(name: str, out: Path) -> None:
     differing = sorted((live.keys() ^ rebuilt.keys()) | {key for key in shared if not live[key] == rebuilt[key]})
     if differing:
         raise SystemExit(f"rebuilt noise differs from live_run's on {len(differing)} channels, first {differing[:3]}")
+    check_identity(snapshot)
     out.write_text(json.dumps(snapshot, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     print(
         f"wrote {out}: calibration {snapshot['calibration']}, {len(live)} channels equal to live_run's, "

@@ -1,0 +1,300 @@
+{
+ "schema": "box-kite-cases-v1",
+ "family": "tuna_twins",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "dialect": "qx",
+ "bit_order": "qubit 0 at the rightmost character (QX)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "twin_of": "tuna_17",
+ "role": "the gate list of each Tuna-17 witness circuit relabeled onto QX qubits 0-9 (qubit_map: Tuna qubit -> QX qubit), run on the remote ideal emulator before its Tuna batch; the identical Tuna bytes run on local qxelarator",
+ "preregistered": {
+  "falsifier": "any shot violating a deterministic replica refutes the emitted cQASM; a P = 1/2 replica outside |z| < 4.5 at 2048 shots refutes it"
+ },
+ "batch": "batch-00",
+ "stage": "t0",
+ "circuits": [
+  {
+   "file": "twin-t0-1.cq",
+   "kind": "witness",
+   "stage": "t0",
+   "tuna_case": "box_kite_tuna_t0/batch-00/t0-1.cq",
+   "qubit_map": {
+    "1": 0,
+    "4": 1,
+    "10": 2,
+    "12": 3,
+    "13": 4,
+    "14": 5
+   },
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "lcu",
+     "census": "within_kite[245]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      -1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "0"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 2,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 5,
+     "p_selector_zero": "1"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 3,
+      "data": [
+       5
+      ]
+     },
+     "cz_depth": 9,
+     "p_selector_zero": "1"
+    }
+   ],
+   "sha256": "0fc32e66414804a97f32de68e012a323459319c17bd38801e8de3b808d418638"
+  },
+  {
+   "file": "twin-t0-2.cq",
+   "kind": "witness",
+   "stage": "t0",
+   "tuna_case": "box_kite_tuna_t0/batch-01/t0-2.cq",
+   "qubit_map": {
+    "1": 0,
+    "4": 1,
+    "10": 2,
+    "12": 3,
+    "13": 4,
+    "14": 5
+   },
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "lcu",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "cz_depth": 5,
+     "p_selector_zero": "1"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "census": "within_kite[245]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      -1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 2,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 9,
+     "p_selector_zero": "0"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 3,
+      "data": [
+       5
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "1"
+    }
+   ],
+   "sha256": "65e610372c8f19f1d1556ba88aa9e735505be85dc4221e151c141fa53cd6ab40"
+  },
+  {
+   "file": "twin-t0-3.cq",
+   "kind": "witness",
+   "stage": "t0",
+   "tuna_case": "box_kite_tuna_t0/batch-02/t0-3.cq",
+   "qubit_map": {
+    "1": 0,
+    "4": 1,
+    "10": 2,
+    "12": 3,
+    "13": 4,
+    "14": 5
+   },
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "lcu",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "cz_depth": 9,
+     "p_selector_zero": "1"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 2,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "1"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "census": "within_kite[245]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      -1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 3,
+      "data": [
+       5
+      ]
+     },
+     "cz_depth": 5,
+     "p_selector_zero": "0"
+    }
+   ],
+   "sha256": "373221a8c30977bc348d8c770cebc21d3878c0cd1e0977505c85398460a6b58c"
+  }
+ ]
+}

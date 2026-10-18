@@ -10,7 +10,10 @@ on:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # A pull-request push replaces its branch's stale run. A main push waits as
+  # the group's one pending run while the running full tier finishes, so
+  # every started main run completes and the newest main commit runs next.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   gates:
@@ -44,3 +47,182 @@ jobs:
           python ci/run_gates.py
           --tier ${{ github.event_name == 'pull_request' && 'pr' || 'full' }}
           --shard ${{ matrix.shard }}/${{ github.event_name == 'pull_request' && 6 || 12 }}
+
+  qi-stack:
+    name: qi stack on Python 3.13
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONHASHSEED: "0"
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+      # qxelarator 0.10.0 ships cp313 wheels only and qiskit-quantuminspire caps
+      # Qiskit below 2.4, so the Quantum Inspire lock gets its own 3.13.15
+      # interpreter beside the repository's 3.14.7; the last setup-python step
+      # sets the default python.
+      - uses: actions/setup-python@v5
+        id: qi-python
+        with:
+          python-version: "3.13.15"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14.7"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            ci/requirements-ci.txt
+            docs/notes/quantum_inspire/requirements-qi.txt
+      - name: Install pinned dependencies
+        run: PYTHON=python sh ci/install_pins.sh
+      - name: Install the Quantum Inspire lock
+        # The lock pins every distribution, so --no-deps installs exactly the
+        # lock and pip check proves it complete.
+        env:
+          QI_BASE: ${{ steps.qi-python.outputs.python-path }}
+        run: |
+          set -eu
+          "$QI_BASE" -m venv "$RUNNER_TEMP/qi-venv"
+          qi="$RUNNER_TEMP/qi-venv/bin/python"
+          "$qi" -m pip install --disable-pip-version-check --no-deps -r docs/notes/quantum_inspire/requirements-qi.txt
+          "$qi" -m pip check
+          echo "QI_PYTHON=$qi" >> "$GITHUB_ENV"
+      - name: Runner specs
+        run: |
+          python ci/runner_specs.py
+          "$QI_PYTHON" ci/runner_specs.py
+      - name: Run the qi gates
+        # --requires qi exports GOROROBA_QI_REQUIRED=1, so a gate that cannot
+        # reach the stack fails instead of replaying. run_gates.py runs the
+        # gates concurrently with one worker each, which fills the runner's CPUs.
+        run: >-
+          python ci/run_gates.py --requires qi
+          --tier ${{ github.event_name == 'pull_request' && 'pr' || 'full' }}
+
+  external-ground-truth:
+    name: verify.py against open_gororoba
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONHASHSEED: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14.7"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            ci/requirements-ci.txt
+      - name: Install pinned dependencies
+        run: PYTHON=python sh ci/install_pins.sh
+      - name: Fetch the pinned open_gororoba registry and proofs
+        run: sh ci/fetch_open_gororoba.sh "$RUNNER_TEMP/open_gororoba" registry/data/project_csv proofs
+      - name: Materialize the kernel CSVs from the registry records
+        run: >-
+          python scripts/materialize_gororoba_csv.py "$RUNNER_TEMP/open_gororoba"
+          --only multiplication_table_8D multiplication_table_16D reggiani_standard_zero_divisor_pairs
+      - name: Run verify.py
+        working-directory: gororoba_quantum
+        run: GOROROBA_ROOT="$RUNNER_TEMP/open_gororoba" python verify.py
+
+  changes:
+    name: rocq paths changed
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      rocq: ${{ steps.filter.outputs.rocq }}
+      full: ${{ steps.filter.outputs.full }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select the Rocq replay
+        id: filter
+        # Pull requests and pushes diff the tree against the base sha; the
+        # schedule and manual runs always replay. Every event but a pull
+        # request adds the Stiefel bundle, whose replay takes about nine minutes.
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          set -eu
+          case "$EVENT" in
+          pull_request) full=false ;;
+          *) full=true ;;
+          esac
+          rocq=true
+          case "$EVENT" in
+          pull_request | push)
+            case "$BASE" in
+            "" | 0000000000000000000000000000000000000000) ;;
+            *)
+              git fetch -q --depth=1 origin "$BASE"
+              if git diff --name-only "$BASE" HEAD | sh ci/rocq_changed.sh; then
+                rocq=true
+              else
+                rocq=false
+              fi
+              ;;
+            esac
+            ;;
+          esac
+          echo "rocq=$rocq" >> "$GITHUB_OUTPUT"
+          echo "full=$full" >> "$GITHUB_OUTPUT"
+
+  rocq-replay:
+    name: rocq replay
+    needs: changes
+    if: needs.changes.outputs.rocq == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PYTHONHASHSEED: "0"
+      OPAMROOT: ${{ github.workspace }}/.opam
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install system packages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq opam m4 pkg-config libgmp-dev git make gcc unzip bubblewrap ripgrep
+          command -v rg
+      - name: Restore the opam switch
+        uses: actions/cache@v4
+        with:
+          path: .opam
+          key: opam-rocq-${{ runner.os }}-${{ hashFiles('ci/rocq_toolchain.pin', 'ci/install_rocq.sh') }}
+      - name: Install the pinned Rocq toolchain
+        run: |
+          sh ci/install_rocq.sh > "$RUNNER_TEMP/opam_list.txt"
+          cat "$RUNNER_TEMP/opam_list.txt"
+      - name: Fetch the pinned open_gororoba sources
+        run: >-
+          sh ci/fetch_open_gororoba.sh "$RUNNER_TEMP/open_gororoba"
+          proofs
+          crates/algebra_analysis/src
+          crates/algebra_experimental/src/sedenion_subalgebras
+          crates/cd_kernel/src/cayley_dickson
+      - name: Replay the receipts
+        # A pull request replays the bundles under two minutes; pushes to main,
+        # the nightly schedule and manual runs add the Stiefel bundle.
+        run: |
+          set -eu
+          rocq=$(sed -n 's/^rocq //p' "$RUNNER_TEMP/opam_list.txt")
+          only="formal_certificates c881_exhaustive folding_proofs TargetFlipN21"
+          if [ "${{ needs.changes.outputs.full }}" = true ]; then
+            only="$only stiefel_witness"
+          fi
+          # shellcheck disable=SC2086
+          python3 scripts/rocq_kaggle_replay.py --rocq "$rocq" \
+            --gororoba-root "$RUNNER_TEMP/open_gororoba" \
+            --gororoba-commit "$(tr -d ' \t\r\n' < ci/open_gororoba.pin)" \
+            --only $only --out "$RUNNER_TEMP/rocq_replay.json"
+      - name: Show the replay record
+        if: always()
+        run: |
+          [ ! -f "$RUNNER_TEMP/rocq_replay.json" ] || python3 -c 'import json,sys; r=json.load(open(sys.argv[1])); [print(k, v["returncode"], v["seconds"], v["warning_lines"], v["tail"][-600:], sep="\n") for k, v in r["replays"].items()]' "$RUNNER_TEMP/rocq_replay.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rocq-replay
+          path: |
+            ${{ runner.temp }}/rocq_replay.json
+            ${{ runner.temp }}/opam_list.txt

@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (63 established, 26 exploratory, 3 open, 7 proposed, 2 superseded, 11 withdrawn) with its evidence class,
+registered claim (73 established, 30 exploratory, 4 open, 8 proposed, 2 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -105,10 +105,53 @@ acquisition of every provider:
 | [2026-10-17T052547Z-zero_divisor_tuna_17-batch-00](results/quantum_inspire/runs/2026-10-17T052547Z-zero_divisor_tuna_17-batch-00) | Quantum Inspire | sedenion zero-divisor witness (Design B, exact Clifford+T) | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-17T052915Z-zero_divisor_tuna_17-batch-01](results/quantum_inspire/runs/2026-10-17T052915Z-zero_divisor_tuna_17-batch-01) | Quantum Inspire | sedenion zero-divisor witness (Design B, exact Clifford+T) | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-17T053226Z-zero_divisor_tuna_17-batch-02](results/quantum_inspire/runs/2026-10-17T053226Z-zero_divisor_tuna_17-batch-02) | Quantum Inspire | sedenion zero-divisor witness (Design B, exact Clifford+T) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-recal-053951](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-recal-053951) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 2 | 2 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08](results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08) | Quantum Inspire | post-readout frequency tail (mid-circuit readout and pre-delay ladder) | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-00](results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-00) | Quantum Inspire | box-kite Tuna-17 dry run on the ideal QX emulator | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-04](results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-04) | Quantum Inspire | box-kite Tuna-17 dry run on the ideal QX emulator | QXsinglenodesimulator | 1 | 1 | completed | 0 ledger change |
+| [2026-10-17T152324Z-box_kite_tuna_pre-batch-00](results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_pre-batch-00) | Quantum Inspire | box-kite Tuna-17 pre-T0 readout and double X | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T152324Z-box_kite_tuna_t0-batch-00](results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-00) | Quantum Inspire | box-kite Tuna-17 T0 depth ladder | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T152324Z-box_kite_tuna_t0-batch-01](results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-01) | Quantum Inspire | box-kite Tuna-17 T0 depth ladder | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T152324Z-box_kite_tuna_t0-batch-02](results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02) | Quantum Inspire | box-kite Tuna-17 T0 depth ladder | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T154255Z-box_kite_ry_ladder-batch-00](results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_ladder-batch-00) | Quantum Inspire | box-kite Ry emulator capability | Rydberg | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T154255Z-box_kite_ry_smoke-batch-00](results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_smoke-batch-00) | Quantum Inspire | box-kite Ry emulator capability | Rydberg | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T154255Z-box_kite_ry_smoke-batch-01](results/quantum_inspire/runs/2026-10-17T154255Z-box_kite_ry_smoke-batch-01) | Quantum Inspire | box-kite Ry emulator capability | Rydberg | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-04](results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-04) | Quandela Cloud | box-kite photonic S1 | sim:belenos | 1 | 1 | completed | 1.0 credits |
+| [2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04](results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04) | Quandela Cloud | box-kite photonic Q1 bright | qpu:belenos | 1 | 1 | completed | 1.01 credits |
+| [2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-05](results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-05) | Quandela Cloud | box-kite photonic S1 | sim:belenos | 1 | 1 | completed | 1.0 credits |
+| [2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-00](results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-00) | Quandela Cloud | box-kite photonic S1 | sim:belenos | 1 | 1 | completed | 1.0 credits |
+| [2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-33](results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-33) | Quandela Cloud | box-kite photonic S1 | sim:belenos | 1 | 1 | completed | 1.0 credits |
+| [2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-02](results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-02) | Quandela Cloud | box-kite photonic S1 | sim:belenos | 1 | 1 | completed | 1.0 credits |
+| [2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-00](results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-00) | Quandela Cloud | box-kite photonic S1 | sim:belenos | 1 | 1 | completed | 1.0 credits |
+| [2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-01](results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-01) | Quandela Cloud | Belenos diagnostics S2 | sim:belenos | 1 | 1 | completed | 1.0 credits |
+| [2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-02](results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-02) | Quandela Cloud | Belenos diagnostics S2 | sim:belenos | 1 | 1 | completed | 1.0 credits |
+| [2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-03](results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-03) | Quandela Cloud | Belenos diagnostics S2 | sim:belenos | 1 | 1 | completed | 1.0 credits |
+| [2026-10-17T220939Z-sim_belenos-belenos_fringe-job-00](results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_fringe-job-00) | Quandela Cloud | Belenos fringe S2 | sim:belenos | 1 | 1 | completed | 1.0 credits |
+| [2026-10-17T220939Z-sim_belenos-belenos_fringe-job-01](results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_fringe-job-01) | Quandela Cloud | Belenos fringe S2 | sim:belenos | 1 | 1 | completed | 1.0 credits |
+| [2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-01](results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-01) | Quantum Inspire | box-kite Tuna-17 dry run on the ideal QX emulator | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-02](results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-02) | Quantum Inspire | box-kite Tuna-17 dry run on the ideal QX emulator | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-03](results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-03) | Quantum Inspire | box-kite Tuna-17 dry run on the ideal QX emulator | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-05](results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-05) | Quantum Inspire | box-kite Tuna-17 dry run on the ideal QX emulator | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-06](results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-06) | Quantum Inspire | box-kite Tuna-17 dry run on the ideal QX emulator | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T230513Z-box_kite_tuna_follow-batch-00](results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_follow-batch-00) | Quantum Inspire | box-kite Tuna-17 follow series | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T230513Z-box_kite_tuna_follow-batch-01](results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_follow-batch-01) | Quantum Inspire | box-kite Tuna-17 follow series | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T230513Z-box_kite_tuna_follow-batch-02](results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_follow-batch-02) | Quantum Inspire | box-kite Tuna-17 follow series | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T230513Z-box_kite_tuna_follow-batch-03](results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_follow-batch-03) | Quantum Inspire | box-kite Tuna-17 follow series | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T230513Z-box_kite_tuna_follow-batch-04](results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_follow-batch-04) | Quantum Inspire | box-kite Tuna-17 follow series | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T230513Z-box_kite_tuna_follow-batch-05](results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_follow-batch-05) | Quantum Inspire | box-kite Tuna-17 follow series | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T230513Z-box_kite_tuna_follow-batch-06](results/quantum_inspire/runs/2026-10-17T230513Z-box_kite_tuna_follow-batch-06) | Quantum Inspire | box-kite Tuna-17 follow series | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00](results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00) | Quandela Cloud | Belenos mesh S3 | sim:belenos | 1 | 16 | completed | 1.0 credits |
+| [2026-10-17T233527Z-sim_belenos-belenos_mesh-job-01](results/quandela/runs/2026-10-17T233527Z-sim_belenos-belenos_mesh-job-01) | Quandela Cloud | Belenos mesh S4 | sim:belenos | 1 | 1 | completed | 1.0 credits |
+| [2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02](results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02) | Quandela Cloud | Belenos mesh S5 | sim:belenos | 1 | 16 | completed | 1.0 credits |
 
 The IBM service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 physical jobs with 334 settled seconds; the account then reported 334 of 600 s consumed in the rolling window ending 2026-10-15T07:13:13.771Z. That is an observation, not a current balance or an authorization.
 
-The Quantum Inspire ledger retrieved at 2026-10-17T05:53:53+00:00 lists 184 jobs with 1152000 shots done and a total ledger change of 0; 11 of them are declared unretained, belonging to run directories of other branches (11 on tuna_17), and every other listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+The Quantum Inspire ledger retrieved at 2026-10-17T23:32:19+00:00 lists 248 jobs with 1728512 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+
+The Quandela token usage report retrieved at 2026-10-17T17:53:31+00:00 counts 0 jobs, and 15 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 <!-- research-state:end -->
 
 ## Contents

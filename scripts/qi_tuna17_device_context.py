@@ -1,4 +1,4 @@
-"""Per-qubit device context for the Tuna-17 readout ring-down pilot, from every retained Tuna-17 measurement.
+"""Per-qubit device context for the Tuna-17 readout ring-down pilot, from the retained Tuna-17 measurements it names.
 
 The pilot (qi_readout_ringdown_cases) reads delta(tau), the rate offset of a
 mid-circuit-read target against an unread reference on the same circuit. This
@@ -29,8 +29,8 @@ decision rule untouched. Four blocks per qubit:
   see the same phase error, so the spread bounds the difference at that eps.
   The crosstalk run gives eps only a lower bound, so the block is the
   scenario at the measured lower bound; a larger eps gives a larger spread.
-- Readout (the readout-0 and readout-1 circuits of every retained Tuna-17
-  run): P(1|0) and P(1|1) per run, and the wait before readout parsed from the
+- Readout (the readout-0 and readout-1 circuits of the Tuna-17 runs that
+  READOUT_RUNS names, oldest first): P(1|0) and P(1|1) per run, and the wait before readout parsed from the
   circuit text. Where a run waits before the readout of a prepared |1>
   (the pilot's SETTLE_CYCLES), the implied T1 is wait / ln(P1_nowait / P1_wait)
   with P1_nowait from the earliest no-wait run within 24 h before it. The
@@ -46,7 +46,10 @@ decision rule untouched. Four blocks per qubit:
 
 The common-mode text lists which effects cancel in delta(tau) and which stay.
 Floats are written at SIGNIFICANT digits. --check recomputes the record and
-compares bytes.
+compares bytes. READOUT_RUNS fixes the record's inputs, so retaining a new
+Tuna-17 run leaves the record and its research-state sha256 unchanged until a
+change adds the run to the list; --check names every retained Tuna-17 run
+with a readout pair that the list omits.
 
 Usage: "$PYTHON" scripts/qi_tuna17_device_context.py [--check] [--out PATH]
 """
@@ -91,7 +94,22 @@ PILOT_SERIES = ("P", "Q")
 EDGE_WINDOW_HZ = 30e3
 PHASE_GRID = 2001
 NOWAIT_WINDOW = timedelta(hours=24)
-RUN_STAMP = re.compile(r"^(\d{4}-\d{2}-\d{2}T\d{6}Z)-")
+READOUT_RUNS = (
+    "2026-10-16T221133Z-zero_divisor_tuna_17",
+    "2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+    "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+    "2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+    "2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+    "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+    "2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+    "2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+    "2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+    "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-recal-053951",
+    "2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+    "2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+    "2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+    "2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+)
 WAIT_LINE = re.compile(r"^wait\((\d+)\) q\[(\d+)\]$")
 FLIP_LINE = re.compile(r"^X q\[(\d+)\]$")
 
@@ -184,24 +202,42 @@ def circuit_waits(text: str) -> tuple[dict[int, int], set[int]]:
 
 
 def run_time(run: Path) -> datetime:
-    stamp = RUN_STAMP.match(run.name)
-    if stamp is None:
-        raise SystemExit(f"{run.name} carries no UTC timestamp prefix")
-    return datetime.strptime(stamp.group(1), "%Y-%m-%dT%H%M%SZ")
+    """The earliest finished_at of the run's jobs in results.json.
+
+    A series directory carries the series start in its name, so a recalibration collected into it
+    hours later shares that prefix; the job records hold when the shots were taken.
+    """
+    jobs = read_json(run / "results.json").get("jobs") or []
+    stamps = [entry["job"]["finished_at"] for entry in jobs if entry.get("job", {}).get("finished_at")]
+    if not stamps:
+        raise SystemExit(f"{retained_path(run)} records no finished job")
+    return min(datetime.strptime(stamp, "%Y-%m-%dT%H:%M:%S.%fZ") for stamp in stamps)
+
+
+def has_readout_pair(run: Path) -> bool:
+    """run is a collected Tuna-17 run holding readout-0 and readout-1 circuits and their raw shots."""
+    files = [run / "cases.json", run / "readout-0.cq", run / "readout-1.cq", run / "results.json"]
+    raw = [run / "raw" / "readout-0.cq.json", run / "raw" / "readout-1.cq.json"]
+    return all(p.is_file() for p in [*files, *raw]) and read_json(run / "cases.json").get("backend") == "tuna_17"
+
+
+def unlisted_runs() -> list[str]:
+    """Retained Tuna-17 runs with a readout pair that READOUT_RUNS omits."""
+    return [run.name for run in sorted(RUNS.iterdir()) if run.name not in READOUT_RUNS and has_readout_pair(run)]
 
 
 def readout_runs() -> list[dict[str, Any]]:
-    """Every retained Tuna-17 run that holds a collected readout-0 and readout-1 pair, oldest first."""
+    """The READOUT_RUNS runs, oldest first; the earliest no-wait run is the implied-T1 reference."""
+    if len(set(READOUT_RUNS)) != len(READOUT_RUNS):
+        raise SystemExit("READOUT_RUNS must list distinct runs")
     found = []
-    for run in sorted(RUNS.iterdir()):
-        files = [run / "cases.json", run / "readout-0.cq", run / "readout-1.cq"]
-        raw = [run / "raw" / "readout-0.cq.json", run / "raw" / "readout-1.cq.json"]
-        if not all(p.is_file() for p in [*files, *raw]) or not (run / "results.json").is_file():
-            continue
-        if read_json(run / "cases.json").get("backend") != "tuna_17":
-            continue
-        zero, one = (read_json(p) for p in raw)
-        waits, flips = circuit_waits(files[2].read_text(encoding="utf-8"))
+    for name in READOUT_RUNS:
+        run = RUNS / name
+        if not has_readout_pair(run):
+            raise SystemExit(f"{retained_path(run)} holds no collected Tuna-17 readout-0 and readout-1 pair")
+        files = [run / "readout-0.cq", run / "readout-1.cq"]
+        zero, one = (read_json(run / "raw" / f"{f.name}.json") for f in files)
+        waits, flips = circuit_waits(files[1].read_text(encoding="utf-8"))
         prepared = flips or set(range(NQUBITS))
         found.append(
             {
@@ -214,6 +250,9 @@ def readout_runs() -> list[dict[str, Any]]:
                 "p1_given_1": {q: sum(bit(s, q) for s in one) / len(one) for q in sorted(prepared)},
             }
         )
+    times = [run_time(RUNS / name) for name in READOUT_RUNS]
+    if times != sorted(times):
+        raise SystemExit("READOUT_RUNS must list runs in the order their jobs finished")
     return found
 
 
@@ -452,6 +491,8 @@ def main() -> int:
             print(f"{args.out} differs from its recomputation", file=sys.stderr)
             return 1
         print(f"{args.out}: device context reproduces")
+        for name in unlisted_runs():
+            print(f"{name}: retained Tuna-17 readout pair outside READOUT_RUNS")
         return 0
     args.out.write_text(text, encoding="utf-8")
     print(f"{NQUBITS} qubits -> {args.out}")

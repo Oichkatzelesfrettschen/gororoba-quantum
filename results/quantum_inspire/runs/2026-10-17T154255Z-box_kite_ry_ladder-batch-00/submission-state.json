@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-17T15:50:32+00:00",
+ "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: 'Those cases are approved' for the Ry gate test and 6-circuit smoke set (box_kite_ry_ladder, box_kite_ry_smoke)",
+ "backend": "Rydberg",
+ "backend_type_id": 5,
+ "cases_sha256": "cb9056e1703edd4ac6747b3bb4902a7353cd2827c0038cc1e84c7741244086d2",
+ "shots": 1024,
+ "jobs": [
+  {
+   "file": "r1-width-9.cq",
+   "job": 1528732,
+   "sha256": "186f8390b849bc3cbe62b22f194d12591ed0f4e5131ab15aacb83ffc5ea32c8c"
+  },
+  {
+   "file": "r2-comment.cq",
+   "job": 1528733,
+   "sha256": "2415fbf9b710e6ce7240c7c0f7c803bfa8b9d934fc0c584d5c894f9fe85fd98e"
+  },
+  {
+   "file": "r9-teleport-bare.cq",
+   "job": 1528734,
+   "sha256": "29094166005ac7fbd8114ff342ca910d47301222ee0aeaac7a0ee3739b351746"
+  }
+ ],
+ "project": 766526,
+ "batch_job": 870723,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-17T15:50:36+00:00",
+  "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: 'Those cases are approved' for the Ry gate test and 6-circuit smoke set (box_kite_ry_ladder, box_kite_ry_smoke)",
+  "backend": "Rydberg",
+  "backend_type_id": 5,
+  "cases_sha256": "cb9056e1703edd4ac6747b3bb4902a7353cd2827c0038cc1e84c7741244086d2",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 870723,
+  "project": 766526,
+  "shots": 1024,
+  "jobs": [
+   {
+    "file": "r1-width-9.cq",
+    "job": 1528732,
+    "sha256": "186f8390b849bc3cbe62b22f194d12591ed0f4e5131ab15aacb83ffc5ea32c8c"
+   },
+   {
+    "file": "r2-comment.cq",
+    "job": 1528733,
+    "sha256": "2415fbf9b710e6ce7240c7c0f7c803bfa8b9d934fc0c584d5c894f9fe85fd98e"
+   },
+   {
+    "file": "r9-teleport-bare.cq",
+    "job": 1528734,
+    "sha256": "29094166005ac7fbd8114ff342ca910d47301222ee0aeaac7a0ee3739b351746"
+   }
+  ],
+  "submitted_utc": "2026-10-17T15:50:36+00:00"
+ },
+ "confirmed_utc": "2026-10-17T15:50:36+00:00"
+}

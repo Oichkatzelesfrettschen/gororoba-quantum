@@ -9,12 +9,13 @@ and what it must prove before its output counts.
 
 | Substrate | Runs | Never runs |
 | --- | --- | --- |
-| Kaggle CPU kernel (the default) | every simulation of 14 qubits or fewer whose widest density matrix stays below 12 qubits (8 with mid-circuit measurement), and the CI gate shards (`kaggle_run.py shards`) | IBM jobs; anything needing an IBM credential |
+| Kaggle CPU kernel (the default) | every simulation of 14 qubits or fewer whose widest density matrix stays below 12 qubits (8 with mid-circuit measurement) | IBM jobs; anything needing an IBM credential |
 | Kaggle GPU kernel (Aer on GPU, `--machine NvidiaTeslaT4`) | simulations whose widest density matrix reaches 12 qubits, or 8 with mid-circuit measurement (docs/notes/kaggle/substrates.md, "CPU against T4") | IBM jobs; narrow replays, which the T4 speeds up by at most 3 times |
 | Kaggle CPU in the same kernel | transpilation, package builds, the hypercomplex table extraction | |
 | Kaggle TPU (`TpuV5E8`, `TpuV6E8`) | JAX code only; Aer has no TPU backend. An account without Persona identity verification gets a 4-core CPU machine for every TPU request; a verified account's request queues for a TPU, one batch session at a time (docs/notes/kaggle/tpu-research.md) | Qiskit or Aer |
 | Kaggle Gemma models (attached through `model_sources`) | text tasks on request | evidence: a language-model answer supports no physical or mathematical claim |
-| IBM Heron (ibm_fez, ibm_kingston, ibm_marrakesh) | 15 or more qubits, or a question about a named device qubit, only after the owner approves a written case | simulations |
+| A 15-qubit run (decision-gated) | the substrate an approved written case names: Kaggle T4 x2 or build host Aer, a GPU state wider than one T4 cache-blocked across both (`calibration_snapshot.blocking_options`; docs/notes/kaggle/gpu-runbook.md), or Tuna-17 through Quantum Inspire, whose `submit` refuses while another session's hardware job is live | any substrate the case does not name |
+| IBM Heron (ibm_fez, ibm_kingston, ibm_marrakesh) | 16 or more qubits, or a question about a named device qubit, only after the owner approves a written case | simulations |
 | GitHub Actions CPU | the CPU replay gate that re-derives a reduced case of each Kaggle result | GPU work |
 | Build host (Arch, RTX 4070 Ti 12 GB; guide in the untracked `docs/local/`) | development, dry runs, calibration exports, CPU replays, the Arch-packaged hypercomplex stack and SageMath | runs the routing rule sends to Kaggle |
 
@@ -25,7 +26,8 @@ and what it must prove before its output counts.
 
 1. `environment.json`: Python and package versions, CPU model and cores,
    RAM, working disk, every GPU (name, memory, driver, compute capability),
-   CUDA driver version, TPU devices, Aer devices and attached models.
+   CUDA driver version, TPU devices, Aer devices, the Aer device the entry
+   runs on (`entry_aer_device`) and attached models.
 2. `hypercomplex.json`: the hypercomplex stack, built and proved by
    `scripts/algebra_package_tables.py`. `--fetch` downloads the seventeen
    archives `RELEASES` pins and keeps each only if its sha256 matches.
@@ -44,7 +46,15 @@ and what it must prove before its output counts.
    seventeen algebra distributions; the byte comparison binds the rest.
 3. `capacity.json` (smoke kernels): the widest GHZ circuit each Aer method
    runs on the GPU.
-4. The entry's stdout, stderr, exit code and changed files.
+4. The entry's stdout and stderr, written to `stdout.txt` and `stderr.txt`
+   as the entry prints (`kernel_main.start_entry` sets
+   `PYTHONUNBUFFERED=1`), then its exit code and the repository files it
+   changed, which the kernel copies under `repo/` after the entry exits.
+   A session Kaggle ends at `--timeout` still returns
+   `/kaggle/working/output` but never reaches that copy, so an entry that
+   may outlive its timeout writes its record to an absolute path under
+   `/kaggle/working/output` and rewrites it after every finished unit of
+   work, as `scripts/aer_gpu_probe.py` does per row.
 
 ## Package stack
 
@@ -99,6 +109,23 @@ and what it must prove before its output counts.
   the three paths with Aer's reported `cuStateVec_enable`. The option excludes
   `batched_shots_gpu`. `docs/notes/kaggle/custatevec.md` holds the library
   chain, the T4 push command and how to read its result.
+- **Pinned GPU environment.** A push with `--gpu-env` runs the entry in
+  /tmp/gororoba/gpu-venv:
+  - The venv runs the image's Python with the repository's pins and the GPU
+    Aer wheels in qiskit-aer's place.
+  - Before the entry, gpu_env.json records each pin's installed version, the
+    owners of `qiskit_aer/__init__.py`, Aer's devices, and two seeded Bell
+    runs on the GPU.
+  - A nonempty `failures` list stops the kernel with exit 4, before the
+    entry starts. Each failure names what to fix:
+    - a pin that resolved to another version;
+    - a CPU qiskit-aer that shares the qiskit_aer/ files;
+    - a GPU that nvidia-smi does not list;
+    - a Bell run that raised, ran on another device, or left cuStateVec off.
+  - Read gpu-env-report.txt and install-pins.txt in the output for the
+    commands' own output.
+  - "Keeping the run on the GPU" in `docs/notes/kaggle/custatevec.md` maps
+    each route to the CPU to the check that closes it.
 - **Using it in an entry.** The entry passes
   `calibration_snapshot.aer_device()` to `noise_simulator(snapshot, device,
   method=...)`. On a GPU the simulator batches shots of circuits of at most

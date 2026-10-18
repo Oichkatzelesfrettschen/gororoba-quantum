@@ -1,0 +1,133 @@
+{
+ "expected_gpus": 1,
+ "failures": [
+  "nvidia-smi lists 0 GPUs; the machine carries 1",
+  "the gpu Bell run raised RuntimeError: No CUDA device available!",
+  "the custatevec Bell run raised RuntimeError: No CUDA device available!"
+ ],
+ "listed_gpus": 0,
+ "pins": {
+  "cuquantum-cu11": "24.8.0",
+  "cutensor-cu11": "2.2.0",
+  "matplotlib": "3.11.2",
+  "mpmath": "1.4.1",
+  "mypy": "1.19.1",
+  "numpy": "2.5.4",
+  "qiskit": "2.5.2",
+  "qiskit-aer-gpu-cu11": "0.17.2",
+  "qiskit-ibm-runtime": "0.50.0",
+  "ruff": "0.14.11",
+  "rustworkx": "0.18.1",
+  "scipy": "1.18.1",
+  "sympy": "1.14.0"
+ },
+ "report": {
+  "devices": [
+   "CPU",
+   "GPU"
+  ],
+  "installed": {
+   "cuquantum-cu11": "24.8.0",
+   "cutensor-cu11": "2.2.0",
+   "matplotlib": "3.11.2",
+   "mpmath": "1.4.1",
+   "mypy": "1.19.1",
+   "numpy": "2.5.4",
+   "qiskit": "2.5.2",
+   "qiskit-aer-gpu-cu11": "0.17.2",
+   "qiskit-ibm-runtime": "0.50.0",
+   "ruff": "0.14.11",
+   "rustworkx": "0.18.1",
+   "scipy": "1.18.1",
+   "sympy": "1.14.0"
+  },
+  "numpy": {
+   "Build Dependencies": {
+    "blas": {
+     "detection method": "pkgconfig",
+     "found": true,
+     "include directory": "/opt/_internal/cpython-3.13.14/lib/python3.13/site-packages/scipy_openblas64/include",
+     "lib directory": "/opt/_internal/cpython-3.13.14/lib/python3.13/site-packages/scipy_openblas64/lib",
+     "name": "scipy-openblas",
+     "openblas configuration": "OpenBLAS 0.3.34.106.0  USE64BITINT DYNAMIC_ARCH NO_AFFINITY SkylakeX MAX_THREADS=64",
+     "pc file directory": "/project/.openblas",
+     "version": "0.3.34.106.0"
+    },
+    "lapack": {
+     "detection method": "pkgconfig",
+     "found": true,
+     "include directory": "/opt/_internal/cpython-3.13.14/lib/python3.13/site-packages/scipy_openblas64/include",
+     "lib directory": "/opt/_internal/cpython-3.13.14/lib/python3.13/site-packages/scipy_openblas64/lib",
+     "name": "scipy-openblas",
+     "openblas configuration": "OpenBLAS 0.3.34.106.0  USE64BITINT DYNAMIC_ARCH NO_AFFINITY SkylakeX MAX_THREADS=64",
+     "pc file directory": "/project/.openblas",
+     "version": "0.3.34.106.0"
+    }
+   },
+   "Compilers": {
+    "c": {
+     "commands": "cc",
+     "linker": "ld.bfd",
+     "name": "gcc",
+     "version": "14.2.1"
+    },
+    "c++": {
+     "commands": "c++",
+     "linker": "ld.bfd",
+     "name": "gcc",
+     "version": "14.2.1"
+    },
+    "cython": {
+     "commands": "cython",
+     "linker": "cython",
+     "name": "cython",
+     "version": "3.3.0"
+    }
+   },
+   "Machine Information": {
+    "build": {
+     "cpu": "x86_64",
+     "endian": "little",
+     "family": "x86_64",
+     "system": "linux"
+    },
+    "host": {
+     "cpu": "x86_64",
+     "endian": "little",
+     "family": "x86_64",
+     "system": "linux"
+    }
+   },
+   "Python Information": {
+    "path": "/tmp/build-env-au6kdu2e/bin/python",
+    "version": "3.13"
+   },
+   "SIMD Extensions": {
+    "baseline": [
+     "X86_V2"
+    ],
+    "found": [
+     "X86_V3"
+    ],
+    "not found": [
+     "X86_V4",
+     "AVX512_ICL",
+     "AVX512_SPR"
+    ]
+   }
+  },
+  "python": "3.13.15",
+  "qiskit_aer_owners": [
+   "qiskit-aer-gpu-cu11"
+  ],
+  "qiskit_aer_version": "0.17.2",
+  "runs": {
+   "custatevec": {
+    "error": "RuntimeError: No CUDA device available!"
+   },
+   "gpu": {
+    "error": "RuntimeError: No CUDA device available!"
+   }
+  }
+ }
+}

@@ -2,8 +2,8 @@
  "schema": "kaggle-dataset-v1",
  "ref": "probablyeric/gororoba-retained-runs",
  "archive": "repository-files.bundle",
- "archive_sha256": "3c89bc011d1ee8ce3b4ea5646876501d40ce1129f91a4c091530ab2a718b3df8",
- "git_commit": "bc99a7bfb8d28530a8d7d688798246ee44273cbd",
+ "archive_sha256": "cf0f894bbf28fbeb5f533ad6c2af13cae87654107ab845e35b0f6020688ed206",
+ "git_commit": "745ea03a73d7ea268f3ce369f3435a8612088a4a",
  "includes": [
   "results/live/2026-10-11T152922.787095Z",
   "results/live/2026-10-12T055624.091217Z",
@@ -26,11 +26,14 @@
   "docs/evidence/heron_platform/targets.json"
  ],
  "files": {
+  "docs/evidence/calibration/history/appended.json": "250c412ca7644948f8acc2442a3db97091fa7935611aaaa8e54d240d929ea6a5",
   "docs/evidence/calibration/history/ibm_fez/20261012T1920460700.json": "f5260cfb997a9d23e2231eea3f0f8b856377a8f448bcb39491e792e492f732dd",
   "docs/evidence/calibration/history/ibm_fez/20261012T2327110700.json": "8a9dba4cb267dc0d710813cac8376705432d47355ef3572b181686a5553337b1",
   "docs/evidence/calibration/history/ibm_fez/20261013T0101230700.json": "23b5cec99ad7428aafe6de707c0681248411a54b549ae19d3b7fc364d916480c",
   "docs/evidence/calibration/history/ibm_fez/20261013T1341520700.json": "5f024c3b6a95a84f2668b8ad7700d9c0c09ddabf6f35346a17ccf3e61ffa9edf",
   "docs/evidence/calibration/history/ibm_fez/20261015T2031280700.json": "b244e7b16f771b3d0ee4e2263d8c63b337476c0445a323c90981ee0ac6c5d684",
+  "docs/evidence/calibration/history/ibm_fez/20261016T0851170700.json": "2a575e56132a68ced554ee699669eba91c4b8f3db2833661f90820be78e55595",
+  "docs/evidence/calibration/history/ibm_fez/20261016T1212520700.json": "ea05e9454beb0b60ea064801c9b64029e0309cec666c57359fde68bbed10823c",
   "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json": "68f18a24d412e0a753406c660dde6954cbcd67bf2b88d206f6ba7dbbc186f675",
   "docs/evidence/calibration/history/ibm_kingston/20261011T2236250700.json": "184fe35eb5c4aca5b42f37666c99cd2cf3b9d49d8dc022786c4872b8c2304362",
   "docs/evidence/calibration/history/ibm_kingston/20261012T1847310700.json": "dd47b94150f3ba4f59933780aa44d1afef70b46b048ea5fb0d0b944f696ad0ff",
@@ -39,7 +42,11 @@
   "docs/evidence/calibration/history/ibm_kingston/20261014T2025340700.json": "ac3345f4ac23aea6fcce32ef74b86085b92f25fa2bb596dfadd9d2d979f59e92",
   "docs/evidence/calibration/history/ibm_kingston/20261015T0003150700.json": "65cafecb72250647b0801d5a9405964c51bea203821bf672bffd94b99e9daf6e",
   "docs/evidence/calibration/history/ibm_kingston/20261015T2035330700.json": "1b96aa950e86733f287b80d4a88bd737276a4f4e136f5cfc1ea180c9f69f1865",
+  "docs/evidence/calibration/history/ibm_kingston/20261016T0909010700.json": "277f1497d6670f1b0fa531fe66dc3f57ac6642dbda302cb4963e98988042cc7e",
+  "docs/evidence/calibration/history/ibm_kingston/20261016T1213360700.json": "69470d67f12ae90eaa3b0e078c1367f840a152a7d943987b769364536e9e2ec3",
   "docs/evidence/calibration/history/ibm_marrakesh/20261015T2046350700.json": "6c8c75217326e2dbb03b74d7b5d5df47496176790e4a285b58a048c71bbc166c",
+  "docs/evidence/calibration/history/ibm_marrakesh/20261016T0808140700.json": "23f5f44f30cf019c65245ce96309ea0d1ca59f8db9146e21551cbe3979935a58",
+  "docs/evidence/calibration/history/ibm_marrakesh/20261016T1151090700.json": "fbd07e29df915b51405bfdbb0b0346720ce010f9af033d382e5748376ff4a3ca",
   "docs/evidence/calibration/history/index.json": "fbd834d714189e3a8a462c7d2f86f6c4aa16b6131b7f32c5b775eeef6a867548",
   "docs/evidence/heron_platform/targets.json": "998c56dd2574d1404e8574dd1cc435ea1349558817c3e26be48db5212e8e52c3",
   "results/live/2026-10-11T152922.787095Z/ADJUDICATION.md": "90b77a376726cd1b458e77e2b2701c9282927b9a703c6a068c88986855337970",
@@ -686,5 +693,12 @@
   "results/live/qpu-job-retention-audit.json": "7eb6a2458621aa96e1bcc04996aef2ce21a4c5c698fa47766b7cefb690534260",
   "results/ripple/measured-ripple.json": "066825757ae961e0b74652682248cf9d000674cb5f94589931f4c984d1f115b7"
  },
- "reply": "Starting upload for file repository-files.bundle\nUpload successful: repository-files.bundle (10MB)\nYour private Dataset is being created. Please check progress at https://www.kaggle.com/datasets/probablyeric/gororoba-retained-runs"
+ "reply": "Starting upload for file repository-files.bundle\nUpload successful: repository-files.bundle (10MB)\nDataset version is being created. Please check progress at https://www.kaggle.com/datasets/probablyeric/gororoba-retained-runs",
+ "history": [
+  {
+   "archive_sha256": "3c89bc011d1ee8ce3b4ea5646876501d40ce1129f91a4c091530ab2a718b3df8",
+   "git_commit": "bc99a7bfb8d28530a8d7d688798246ee44273cbd",
+   "files": 659
+  }
+ ]
 }

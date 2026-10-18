@@ -1,0 +1,323 @@
+{
+ "blocks": [
+  {
+   "config": "fringe-edge",
+   "fit": {
+    "A": 0.5003,
+    "B": 0.49819448,
+    "C": -0.004102944,
+    "phase_offset": -0.00823544,
+    "visibility": 0.995825255
+   },
+   "kind": "fringe",
+   "points": [
+    {
+     "a": 1.0,
+     "a_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "config": "fringe-edge",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      1290,
+      1210,
+      0,
+      0
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1",
+      "0"
+     ],
+     "p_algebra_ideal": 1.0,
+     "phi_quarter_pi": 0,
+     "total_variation_from_ideal": 0.016
+    },
+    {
+     "a": 0.8452,
+     "a_wilson95": [
+      0.830492446,
+      0.858848325
+     ],
+     "config": "fringe-edge",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      1052,
+      1061,
+      185,
+      202
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1/2",
+      "1/4"
+     ],
+     "p_algebra_ideal": 0.853553391,
+     "phi_quarter_pi": 1,
+     "total_variation_from_ideal": 0.008353391
+    },
+    {
+     "a": 0.4956,
+     "a_wilson95": [
+      0.476022909,
+      0.515190592
+     ],
+     "config": "fringe-edge",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      636,
+      603,
+      649,
+      612
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1/2",
+      "0"
+     ],
+     "p_algebra_ideal": 0.5,
+     "phi_quarter_pi": 2,
+     "total_variation_from_ideal": 0.014
+    },
+    {
+     "a": 0.1536,
+     "a_wilson95": [
+      0.139998422,
+      0.168264489
+     ],
+     "config": "fringe-edge",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      191,
+      193,
+      1079,
+      1037
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1/2",
+      "-1/4"
+     ],
+     "p_algebra_ideal": 0.146446609,
+     "phi_quarter_pi": 3,
+     "total_variation_from_ideal": 0.011976695
+    },
+    {
+     "a": 0.0,
+     "a_wilson95": [
+      0.0,
+      0.001534226
+     ],
+     "config": "fringe-edge",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      0,
+      0,
+      1236,
+      1264
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "0",
+      "0"
+     ],
+     "p_algebra_ideal": 0.0,
+     "phi_quarter_pi": 4,
+     "total_variation_from_ideal": 0.0056
+    },
+    {
+     "a": 0.1384,
+     "a_wilson95": [
+      0.125417522,
+      0.15249203
+     ],
+     "config": "fringe-edge",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      162,
+      184,
+      1097,
+      1057
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1/2",
+      "-1/4"
+     ],
+     "p_algebra_ideal": 0.146446609,
+     "phi_quarter_pi": 5,
+     "total_variation_from_ideal": 0.0124
+    },
+    {
+     "a": 0.5188,
+     "a_wilson95": [
+      0.499200385,
+      0.538341928
+     ],
+     "config": "fringe-edge",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      625,
+      672,
+      626,
+      577
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1/2",
+      "0"
+     ],
+     "p_algebra_ideal": 0.5,
+     "phi_quarter_pi": 6,
+     "total_variation_from_ideal": 0.0192
+    },
+    {
+     "a": 0.8508,
+     "a_wilson95": [
+      0.836296002,
+      0.864227585
+     ],
+     "config": "fringe-edge",
+     "dark_corrected": null,
+     "in_block": 1.0,
+     "in_block_wilson95": [
+      0.998465774,
+      1.0
+     ],
+     "kind": "fringe",
+     "multi_click_in_block": 0,
+     "one_click_by_mode": [
+      1059,
+      1068,
+      188,
+      185
+     ],
+     "one_click_outside_block": 0,
+     "one_click_outside_by_mode": {},
+     "other_multi_click": 0,
+     "p_algebra": [
+      "1/2",
+      "1/4"
+     ],
+     "p_algebra_ideal": 0.853553391,
+     "phi_quarter_pi": 7,
+     "total_variation_from_ideal": 0.003176695
+    }
+   ]
+  }
+ ],
+ "cases_sha256": "96bcaa4455770ce72809e94fc7f3844f3366ae4746bb7d0c90feb8ab25857f62",
+ "compiled": {
+  "distinct": 8,
+  "iterations": [
+   {
+    "chars": 16250,
+    "sha256": "2b6aef86af52bec8a773fcdaa776f16e8d15ae88bae048646133c3646e2384e3"
+   },
+   {
+    "chars": 16254,
+    "sha256": "360fd5b635e2a514f2613c692fb2569f799f2d8a626b571b7b2827edfa9f222c"
+   },
+   {
+    "chars": 16274,
+    "sha256": "ea1925ad74f49e8281c090dfa77c9fbe89ce2c97484b7810ec6b9ebf237b6670"
+   },
+   {
+    "chars": 16258,
+    "sha256": "09fbbb4767373bb2ac53ca45ae0e03cd72b756b02e1bee4c9b72850d13d4bd16"
+   },
+   {
+    "chars": 16238,
+    "sha256": "5c3e2f051acfc222304a87b39ac5f0747aad924f23488c49b0a680c62d651258"
+   },
+   {
+    "chars": 16242,
+    "sha256": "4165a21ba5f19d7aa61cb1891c85b1297f220a7915599444b9c3e6e570fc1282"
+   },
+   {
+    "chars": 16262,
+    "sha256": "d99f04a67f9d2710b857ee5f743d59cf1aa0bb7e82878286d5bc1aa53803a589"
+   },
+   {
+    "chars": 16254,
+    "sha256": "de06b19352851586ed56196896c4f13da57d472e01391539cd941627e19ba5a4"
+   }
+  ],
+  "job": null
+ },
+ "job_id": "685945a8-e95d-4f2f-8415-a605ea387fba",
+ "logical_perf": null,
+ "noise": null,
+ "physical_perf": null,
+ "platform": "sim:belenos",
+ "result_sha256": "bdb425223079429f1171530b1f8dcd1b68946c22e6d3989cf73ffa4eb5e76e87",
+ "run": "2026-10-17T220939Z-sim_belenos-belenos_fringe-job-00",
+ "samples": 20000,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 5000,
+ "status": "completed"
+}

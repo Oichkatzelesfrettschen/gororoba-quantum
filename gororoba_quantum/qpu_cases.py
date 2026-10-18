@@ -35,6 +35,7 @@ FAMILIES = {
     "coherence-window",
     "ripple",
     "rank-sector",
+    "state-prep-control",
 }
 # Families that run on one pinned patch and carry its six physical qubits.
 PATCH_FAMILIES = ("patch-window", "coherence-window")
@@ -68,6 +69,8 @@ _MAPPING_FIELDS = (
     "measure_dt",
     "window_dt",
     "readout_qubits",
+    "qubits",
+    "source_replicas",
 )
 
 
@@ -241,6 +244,25 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
     if design["optimize"]:
         arguments.append("--optimize")
     arguments.extend(_patch_arguments(record))
+    configuration = record["family_configuration"]
+    if family == "state-prep-control" and configuration.get("layout_source") == "declared":
+        qubits = configuration["qubits"]
+        _require(
+            isinstance(qubits, list) and bool(qubits) and all(type(q) is int and q >= 0 for q in qubits),
+            "state-prep-control names nonnegative qubits",
+        )
+        arguments.extend(["--layout", ",".join(str(qubit) for qubit in qubits)])
+    if "state_prep_arms" in design:
+        arms = design["state_prep_arms"]
+        _require(
+            isinstance(arms, list)
+            and bool(arms)
+            and "prep0" in arms
+            and set(arms) <= {"prep0", "reset", "x"}
+            and len(set(arms)) == len(arms),
+            "state_prep_arms names distinct state-prep-control arms, prep0 among them",
+        )
+        arguments.extend(["--state-prep-arms", ",".join(arms)])
     arguments.extend(["--backends", ",".join(backends), "--shots", str(_count(record["shots"], "shots"))])
     for backend_name, qubits in sorted(policy.get("operator_excluded_qubits", {}).items()):
         _require(
@@ -252,6 +274,11 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         value = policy[name]
         _number(value, name)
         arguments.extend(["--" + name.replace("_", "-"), str(value)])
+    # A requested repetition delay sets every job's Sampler rep_delay and its
+    # charge; the approval binds it, so the replay passes it.
+    if "rep_delay_seconds" in policy:
+        _require(_number(policy["rep_delay_seconds"], "rep_delay_seconds") >= 0, "rep_delay must be nonnegative")
+        arguments.extend(["--rep-delay", str(policy["rep_delay_seconds"])])
     for name in ("replica_floor", "max_replicas"):
         if policy[name] is not None:
             _number(policy[name], name, positive=True)
@@ -268,6 +295,23 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
             _number(value, name)
             argument = str(value)
         arguments.extend(["--" + name.replace("_", "-"), argument])
+    # The N21 exact-model and replica-covariance settings shape the plan the
+    # approval binds; a replay without them plans a different design.
+    model_method = design.get("model_method", "sampled")
+    _require(model_method in ("sampled", "exact"), "model method must be sampled or exact")
+    if model_method != "sampled":
+        arguments.extend(["--model-method", model_method])
+    variance_bound = design.get("replica_variance_bound")
+    if variance_bound is not None:
+        _number(variance_bound, "replica_variance_bound", positive=True)
+        arguments.extend(["--replica-variance-bound", str(variance_bound)])
+    if "prep_excitation" in design:
+        excitation = _number(design["prep_excitation"], "prep_excitation")
+        _require(0 <= excitation < 1, "prep_excitation must lie in [0, 1)")
+        arguments.extend(["--prep-excitation", str(design["prep_excitation"])])
+    if "empirical_bernstein" in design:
+        _require(design["empirical_bernstein"] is True, "empirical_bernstein is recorded only when declared")
+        arguments.append("--empirical-bernstein")
     arguments.extend(["--out", (Path("..") / location.parent).as_posix()])
     return arguments
 
@@ -344,6 +388,11 @@ def _validate_costs(candidate: dict[str, Any], record: dict[str, Any]) -> None:
                 )
             ]
             _require(all(value >= 0 for value in durations), "PUB duration components must be nonnegative")
+            if "rep_delay_seconds" in policy:
+                _require(
+                    pub["repetition_delay_seconds"] == policy["rep_delay_seconds"],
+                    "PUB repetition delay differs from the requested --rep-delay",
+                )
             expected = expected_shots * math.fsum(durations)
             _require(expected > 0, "PUB repetition duration must be positive")
             _require(
@@ -920,13 +969,23 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
                 len(coefficients) == len(members[member]["ideal"]), "score labels differ from the member ideal law"
             )
             lines.append(f"- `{member}`: sign {term['sign']:+d}, labeled score vector `{json.dumps(coefficients)}`.")
+        exact = record.get("exact_model")
+        model_sentence = (
+            f"The noise model predicts {_format_number(endpoint['predicted_value'])} from the exact "
+            "branch-resolved law (dynamic_density), so no finite-simulation allowance applies; each "
+            f"replica's exact law lies within {_format_number(exact['max_gap'])} of its "
+            f"{_count(exact['model_shots'], 'model shots')}-shot sampled marginal, inside the simultaneous "
+            f"radius {_format_number(exact['radius'])}." + _exact_contrast_sentence(exact, name)
+            if exact is not None
+            else f"The noise model predicts {_format_number(endpoint['predicted_value'])}; "
+            "the simultaneous finite-simulation allowance is "
+            f"+/-{_format_number(endpoint['simulation_error_radius'])}. "
+            f"The lower modeled value is {_format_number(endpoint['modeled_value_lower_bound'])}."
+        )
         lines.extend(
             [
                 "",
-                f"The noise model predicts {_format_number(endpoint['predicted_value'])}; "
-                "the simultaneous finite-simulation allowance is "
-                f"+/-{_format_number(endpoint['simulation_error_radius'])}. "
-                f"The lower modeled value is {_format_number(endpoint['modeled_value_lower_bound'])}.",
+                model_sentence,
                 "",
                 f"At alpha {_format_number(endpoint['alpha'])}, the two-sided confidence half-width is "
                 f"{_format_number(endpoint['confidence_half_width'])}; requested precision is "
@@ -972,11 +1031,30 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
             "The search-wide simulation error probability is "
             f"{_format_number(record['optimization']['simulation_alpha'])} "
             f"across {record['optimization']['simulation_comparisons']} scored finite-shot marginals. "
-            "Hoeffding/union bounds allow arbitrary same-shot replica dependence. Independent stationary "
-            "repetitions remain an assumption. Hardware-model discrepancy remains unquantified.",
+            + (
+                "Each per-PUB radius is the smaller of the Hoeffding radius, valid under arbitrary same-shot "
+                "replica dependence, and the Cantelli radius under the variance each covariance bound reads "
+                "(the declared projection or its measured upper confidence limit, whichever is larger); the "
+                "replica covariance section below names which radius each endpoint takes and its alpha split. "
+                if record.get("covariance_bounds")
+                else "Hoeffding/union bounds allow arbitrary same-shot replica dependence. "
+            )
+            + (
+                "Confidence and detection radii also take the empirical-Bernstein radius at its share of alpha "
+                "where smaller; the empirical-Bernstein section below states the split, the planned variances "
+                "and the radius each PUB reads. "
+                if record.get("empirical_bernstein")
+                else ""
+            )
+            + "Independent stationary repetitions remain an assumption. Hardware-model discrepancy remains "
+            "unquantified.",
             "",
         ]
     )
+    if record.get("covariance_falsifier") is not None:
+        lines.extend(_covariance_falsifier(record, candidate))
+    if record.get("empirical_bernstein") is not None:
+        lines.extend(_empirical_bernstein(record, candidate))
     if directional:
         lines.extend(
             [
@@ -984,6 +1062,304 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
                 "",
             ]
         )
+    return lines
+
+
+def _exact_contrast_sentence(exact: dict[str, Any], name: str) -> str:
+    """The endpoint's exact contrast against its sampled estimate at the contrast's own radius."""
+    row = exact.get("contrasts", {}).get(name)
+    if row is None:
+        return ""
+    return (
+        f" The endpoint's exact contrast {_format_number(row['exact'])} sits "
+        f"{_format_number(row['gap'])} from its sampled estimate {_format_number(row['sampled'])}, inside the "
+        f"contrast's own Bernstein radius {_format_number(row['radius'])} at tail "
+        f"{_format_number(exact['score_tail'])}; a model bias smaller than that radius passes this check unseen."
+    )
+
+
+def _covariance_falsifier(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
+    """The preregistered variance upper-confidence rule, its planned projections, alpha split and fallback power."""
+    import n21_exact_planning
+    from experiment_optimizer import (
+        CovarianceBound,
+        ObservableContract,
+        ObservableTerm,
+        ObservedPub,
+        analyze_observations,
+        observation_power_radii,
+    )
+
+    specification = record["covariance_falsifier"]
+    _require(
+        specification == n21_exact_planning.COVARIANCE_FALSIFIER,
+        "record covariance falsifier differs from n21_exact_planning.COVARIANCE_FALSIFIER",
+    )
+    bounds = record["covariance_bounds"]
+    shots = {pub["name"]: _count(pub["shots"], "PUB shots") for job in candidate["jobs"] for pub in job["pubs"]}
+    contracts = {contract["name"]: contract for contract in record["observable_contracts"]}
+    lines = [
+        "### Replica covariance: variance upper confidence limit",
+        "",
+        "The power admission above rests on the declared covariance bounds. Collection measures each on the "
+        "retained shot-ordered replica registers before its radius reads it "
+        "(n21_exact_planning.covariance_falsifier, preregistered here and in record.json `covariance_falsifier`).",
+        "",
+        f"- Statistic: {specification['statistic']}.",
+        f"- Upper confidence limit: {specification['upper_confidence_limit']}; total tail "
+        f"{_format_number(specification['tail'])}.",
+        f"- Decision: {specification['decision']}.",
+        f"- Planning: {specification['planning']}.",
+        "",
+        "| Endpoint | PUB | Weights | Shots | Declared projection | UCL allowance at these shots | Projection the "
+        "plan reads | Falsifier tail |",
+        "|---|---|---|---:|---:|---:|---:|---:|",
+    ]
+    for bound in bounds:
+        terms = {term["member"]: term for term in contracts[bound["observable_name"]]["terms"]}
+        members = [label.rpartition("/r")[0] for label in bound["labels"]]
+        weights = [terms[member]["sign"] / members.count(member) for member in members]
+        matrix = bound["matrix"]
+        declared = sum(
+            weights[row] * matrix[row][column] * weights[column]
+            for row in range(len(weights))
+            for column in range(len(weights))
+        )
+        allowance = _number(bound["variance_allowance"], "variance allowance")
+        lines.append(
+            f"| {_identifier(bound['observable_name'], 'endpoint')} | {_identifier(bound['pub_name'], 'PUB')} | "
+            f"{', '.join(f'{weight:+.6g}' for weight in weights)} | {shots[bound['pub_name']]} | {declared:.6g} | "
+            f"{allowance:.6g} | {declared + allowance:.6g} | {_format_number(bound['falsifier_tail'])} |"
+        )
+    ideals = {member["name"]: member["ideal"] for group in record["groups"] for member in group["members"]}
+    by_pub: dict[str, dict[str, tuple[tuple[float, ...], ...]]] = {}
+    for pub in record["execution_pubs"]:
+        for component in pub["components"]:
+            ideal = tuple(float(value) for value in ideals[component["member"]])
+            by_pub.setdefault(pub["name"], {})[component["member"]] = (ideal,) * len(component["registers_by_replica"])
+    observed = tuple(ObservedPub(name, laws, shots[name]) for name, laws in by_pub.items())
+    endpoints = tuple(
+        ObservableContract(
+            **{key: value for key, value in contract.items() if key != "terms"},
+            terms=tuple(
+                ObservableTerm(term["member"], tuple(term["values"]), term["sign"]) for term in contract["terms"]
+            ),
+        )
+        for contract in record["observable_contracts"]
+    )
+    # The same falsifier tails with a projection no Cantelli radius undercuts:
+    # every radius Hoeffding's at the charged alpha.
+    charged = tuple(
+        CovarianceBound(
+            bound["observable_name"],
+            bound["pub_name"],
+            tuple(bound["labels"]),
+            tuple(tuple(float(value) for value in row) for row in bound["matrix"]),
+            bound["assumption"],
+            variance_allowance=1e12,
+            falsifier_tail=float(bound["falsifier_tail"]),
+        )
+        for bound in bounds
+    )
+    from experiment_optimizer import EmpiricalBernsteinDesign
+
+    # An opted-in endpoint plans its power radius at the miss probability
+    # less the variance tail; the Hoeffding comparator takes the same tail.
+    bernstein = tuple(
+        EmpiricalBernsteinDesign(**design) for design in record.get("empirical_bernstein", {}).get("designs", [])
+    )
+    tails = {design.observable_name: design.variance_tail for design in bernstein}
+    plain = {row["name"]: row for row in analyze_observations(observed, endpoints, charged).as_dict()["observables"]}
+    plain_power = observation_power_radii(observed, endpoints, charged, bernstein)
+    fallback = analyze_observations(observed, endpoints).as_dict()["observables"]
+    power = observation_power_radii(observed, endpoints, (), bernstein)
+    planned = {endpoint["name"]: endpoint for endpoint in candidate["observables"]}
+    unbounded = _bernstein_fallback(record, contracts) if bernstein else {}
+    lines.append("")
+    for row in fallback:
+        name = row["name"]
+        if name not in power:
+            continue
+        spent = sum(float(bound["falsifier_tail"]) for bound in bounds if bound["observable_name"] == name)
+        alpha = _number(contracts[name]["alpha"], "alpha")
+        miss = 1 - _number(contracts[name]["power"], "power")
+        detection = unbounded.get(name, row["detection_radius"])
+        total = detection + power[name]
+        effect = _number(planned[name]["effect_used_for_power"], "effect used for power")
+        assumptions = planned[name].get("covariance_assumptions") or []
+        rests = []
+        for label, admitted, hoeffding in (
+            ("detection", planned[name]["detection_radius"], plain[name]["detection_radius"]),
+            ("power", planned[name]["power_radius"], plain_power[name]),
+        ):
+            rests.append(
+                f"the {label} radius {_format_number(admitted)} "
+                + (
+                    "sums, over PUBs, the smaller of the data-free radius and the empirical-Bernstein radius "
+                    f"at their alpha split (Hoeffding alone at the charged alpha gives {hoeffding:.6g}); the "
+                    "empirical-Bernstein section below names the radius each PUB reads"
+                    if label == "detection" and name in tails
+                    else "equals the Hoeffding radius and needs no replica assumption"
+                    if math.isclose(admitted, hoeffding, rel_tol=1e-9, abs_tol=1e-15)
+                    else f"rests on the bounds read through their UCL (Hoeffding alone gives {hoeffding:.6g})"
+                )
+            )
+        lines.extend(
+            [
+                f"Alpha split for `{_identifier(name, 'endpoint')}`: {_format_number(alpha)} = falsifier tail "
+                f"{spent:.6g} + confidence and detection tail {alpha - spent:.6g}; "
+                + (
+                    f"the power tail is {miss - tails[name]:.6g}, the miss probability {miss:.6g} less the "
+                    f"variance tail {tails[name]:.6g}."
+                    if name in tails
+                    else f"the power tail stays {_format_number(miss)}."
+                ),
+                "",
+                f"Assumption in force for `{_identifier(name, 'endpoint')}`: {rests[0]}; {rests[1]}. A collected UCL "
+                "above the planned projection widens the radius it reads and can leave the endpoint underpowered; "
+                f"collect.json reports it. The declared bound reads: {'; '.join(sorted(set(assumptions))) or 'none'}.",
+                "",
+            ]
+        )
+        lines.append(
+            (
+                "Without retained registers (no covariance bound; each PUB reads the smaller of Hoeffding and "
+                "empirical Bernstein at the full alpha split, here at the planned variances) "
+                if name in unbounded
+                else "Without retained registers (the Hoeffding fallback, full alpha) "
+            )
+            + f"`{_identifier(name, 'endpoint')}` "
+            f"rejects its null only above {_format_number(row['null_value'] + detection)}; detection "
+            f"plus power radius {total:.6g} against the admitted effect {_format_number(effect)} "
+            + (
+                "leaves the endpoint underpowered at these shots, and the collected analysis reports it so."
+                if total > effect
+                else "keeps the declared power at these shots."
+            )
+        )
+    lines.append("")
+    _require(bool(contracts) and set(planned) <= set(contracts), "falsifier endpoints differ from the contracts")
+    return lines
+
+
+def _bernstein_fallback(record: dict[str, Any], contracts: dict[str, dict[str, Any]]) -> dict[str, float]:
+    """Each opted-in endpoint's detection radius once the covariance bounds drop: per PUB, the smaller of
+    Hoeffding and empirical Bernstein at the full alpha split, read at the planned variances."""
+    from experiment_optimizer import empirical_bernstein_radius
+
+    shares = {design["observable_name"]: design["share"] for design in record["empirical_bernstein"]["designs"]}
+    radii: dict[str, float] = {}
+    for detail in record["empirical_bernstein"]["planned"]:
+        name = detail["observable"]
+        if contracts[name].get("minimum_effect") is None:
+            continue
+        pubs = [row for row in detail["pubs"] if row["variance"] is not None]
+        tail = _number(contracts[name]["alpha"], "alpha") / len(detail["pubs"])
+        share = _number(shares[name], "empirical-Bernstein share")
+        total = 0.0
+        for row in pubs:
+            span, shots = _number(row["score_span"], "score span"), _count(row["shots"], "PUB shots")
+            hoeffding = min(span * math.sqrt(math.log(1.0 / (tail * (1 - share))) / (2 * shots)), span)
+            bernstein = empirical_bernstein_radius(row["variance"], span, shots, tail * share, two_sided=False)
+            total += min(hoeffding, bernstein)
+        radii[name] = total
+    return radii
+
+
+def _empirical_bernstein(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
+    """The preregistered empirical-Bernstein rule, its alpha split, planned variances and per-PUB radii."""
+    from experiment_optimizer import EMPIRICAL_BERNSTEIN
+
+    block = record["empirical_bernstein"]
+    specification = block["specification"]
+    _require(
+        specification == EMPIRICAL_BERNSTEIN,
+        "record empirical-Bernstein specification differs from experiment_optimizer.EMPIRICAL_BERNSTEIN",
+    )
+    planned = {endpoint["name"]: endpoint for endpoint in candidate["observables"]}
+    lines = [
+        "### Empirical-Bernstein confidence and detection radii",
+        "",
+        "Each opted-in endpoint reads, per PUB, the smaller of the data-free radius and the empirical-Bernstein "
+        "radius, preregistered here and in record.json `empirical_bernstein`.",
+        "",
+        f"- Source: {specification['source']}.",
+        f"- Inequality: {specification['inequality']}.",
+        f"- Alpha split: {specification['alpha_split']}.",
+        f"- Collection variance: {specification['collection_variance']}.",
+        f"- Planning variance: {specification['planning_variance']}.",
+        f"- Scope: {specification['scope']}.",
+        "",
+        "| Endpoint | PUB | Shots | Score span | Planned variance | Detection: data-free | Detection: "
+        "empirical Bernstein | Detection: read | Two-sided: read |",
+        "|---|---|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    details = block["planned"]
+    _require(
+        {detail["observable"] for detail in details} == {design["observable_name"] for design in block["designs"]},
+        "planned empirical-Bernstein details differ from the designs",
+    )
+    for detail in details:
+        name = _identifier(detail["observable"], "endpoint")
+        for row in detail["pubs"]:
+            detection = row.get("detection", {})
+            lines.append(
+                f"| {name} | {_identifier(row['pub'], 'PUB')} | {_count(row['shots'], 'PUB shots')} | "
+                f"{_number(row['score_span'], 'score span'):.6g} | "
+                + (f"{_number(row['variance'], 'planned variance'):.6g}" if row["variance"] is not None else "n/a")
+                + " | "
+                + (
+                    f"{_number(detection['data_free'], 'radius'):.6g} | "
+                    + (
+                        f"{_number(detection['empirical_bernstein'], 'radius'):.6g}"
+                        if detection["empirical_bernstein"] is not None
+                        else "n/a"
+                    )
+                    + f" | {_number(detection['used'], 'radius'):.6g}"
+                    if detection
+                    else "n/a | n/a | n/a"
+                )
+                + f" | {_number(row['confidence']['used'], 'radius'):.6g} |"
+            )
+    lines.append("")
+    for detail in details:
+        name = _identifier(detail["observable"], "endpoint")
+        endpoint = planned[name]
+        radii = detail["radii"]
+        _require(
+            math.isclose(radii["confidence"]["used"], endpoint["confidence_half_width"], rel_tol=1e-12, abs_tol=0.0),
+            f"{name}: planned empirical-Bernstein half-width differs from the admitted one",
+        )
+        lines.append(
+            f"Alpha split for `{name}`: {_format_number(detail['alpha'])} = falsifier tail "
+            f"{detail['falsifier_tail']:.6g} + data-free tail {detail['data_free_tail']:.6g} + empirical-Bernstein "
+            f"tail {detail['empirical_bernstein_tail']:.6g}. The planned two-sided half-width is "
+            f"{radii['confidence']['used']:.6g} against {radii['confidence']['without_empirical_bernstein']:.6g} "
+            "without the opt-in."
+        )
+        if "detection" in radii:
+            _require(
+                math.isclose(radii["detection"]["used"], endpoint["detection_radius"], rel_tol=1e-12, abs_tol=0.0)
+                and math.isclose(detail["power_radius"], endpoint["power_radius"], rel_tol=1e-12, abs_tol=0.0),
+                f"{name}: planned empirical-Bernstein radii differ from the admitted ones",
+            )
+            lines.extend(
+                [
+                    "",
+                    f"The planned detection radius is {radii['detection']['used']:.6g} against "
+                    f"{radii['detection']['without_empirical_bernstein']:.6g} under the data-free rule at the full "
+                    f"alpha; the power radius {detail['power_radius']:.6g} runs at tail "
+                    f"{detail['power_tail']:.6g}, the miss probability "
+                    f"{1 - _number(endpoint['power'], 'power'):.6g} less the variance tail "
+                    f"{detail['variance_tail']:.6g} (without the opt-in "
+                    f"{detail['power_radius_without_empirical_bernstein']:.6g}). The rejection threshold above "
+                    "reads the planned variances; collection recomputes each PUB's empirical-Bernstein radius from "
+                    "the measured frequencies and rejects only when the estimate exceeds the null plus the "
+                    "collected detection radius. A sample variance above its planned upper limit widens that "
+                    "radius and costs power, never coverage: the interval keeps its alpha whatever the variance.",
+                ]
+            )
+        lines.append("")
     return lines
 
 
@@ -1127,6 +1503,91 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "reported only where |C| supports it.",
             "",
         ]
+    if family == "state-prep-control":
+        configuration = record["family_configuration"]
+        qubits = configuration["qubits"]
+        backends = ", ".join(sorted({_identifier(group["backend"], "backend") for group in record["groups"]}))
+        delay = record["policy"].get("rep_delay_seconds")
+        delay_text = (
+            f"a requested repetition delay of {_format_number(delay * 1e6)} us (`--rep-delay {delay}`)"
+            if delay is not None
+            else "the backend's default repetition delay"
+        )
+        origin = (
+            "the declared layout"
+            if configuration.get("layout_source") == "declared"
+            else f"the replica qubits of `{configuration['layout_source']}`"
+        )
+        arms = list(configuration.get("arms") or ("prep0", "reset", "x"))
+        pub_text = {
+            "prep0": "A initializes and measures (residual excitation plus readout misassignment)",
+            "reset": "B adds an active reset before the measure",
+            "x": "C applies an X before the measure (the |1> column of the assignment matrix)",
+        }
+        static = [arm for arm in arms if arm != "reset"]
+        jobs_text = (
+            ("A and C share the static job" if len(static) == 2 else "A runs in one static job") if static else ""
+        )
+        if "reset" in arms:
+            jobs_text += ("; " if jobs_text else "") + (
+                "B, which the reset makes dynamic, runs in its own job with twirling and dynamical decoupling off"
+            )
+        endpoints = [
+            text
+            for text, needs in (
+                ("0.025 on A", {"prep0"}),
+                ("0.05 on A - B", {"prep0", "reset"}),
+                ("0.025 on C", {"x"}),
+            )
+            if needs <= set(arms)
+        ]
+        count = len(endpoints)
+        words = {1: "One", 2: "Two", 3: "Three"}
+        reset_text = (
+            " The reset benefit A - B is positive only where initialization leaves more excitation than the "
+            "reset's own misassignment."
+            if "reset" in arms
+            else ""
+        )
+        selection = (
+            ""
+            if len(arms) == 3
+            else f" The run selects the arms {', '.join(arms)} (`--state-prep-arms {','.join(arms)}`)."
+        )
+        return [
+            "## Scientific question and interpretation",
+            "",
+            f"The state-prep-control family measures, on {len(qubits)} qubits of {backends} ({origin}: "
+            f"{', '.join(str(q) for q in qubits)}), the excited fraction each qubit carries after the "
+            f"Sampler's implicit initialization at {delay_text}. "
+            + (
+                "Three PUBs measure every qubit in each "
+                "shot: A initializes and measures (residual excitation plus readout misassignment), B adds an "
+                "active reset before the measure, and C applies an X before the measure (the |1> column of the "
+                "assignment matrix). A and C share the static job; B, which the reset makes dynamic, runs in its "
+                "own job with twirling and dynamical decoupling off."
+                if len(arms) == 3
+                else f"{words[len(arms)]} PUB{'s' if len(arms) > 1 else ''} measure{'' if len(arms) > 1 else 's'} "
+                "every qubit in each shot: "
+                + "; ".join(pub_text[arm] for arm in arms)
+                + f". {jobs_text[0].upper() + jobs_text[1:]}.{selection}"
+            ),
+            "",
+            "Under the readout channel e10 = prob_meas1_prep0, e01 = prob_meas0_prep1, A reads "
+            "(1 - eps) e10 + eps (1 - e01), so the initial excitation is eps = (A - e10) / (1 - e01 - e10) "
+            "(diagnostic_experiments.state_prep_excitation), the value dynamic_density's prep_excitation and "
+            f"live_run's --prep-excitation take.{reset_text} The calibration "
+            "noise model starts every qubit in |0>, so it prices A at the readout error alone; the residual "
+            "excitation is the device property this run measures, and only the device answers it.",
+            "",
+            f"{words[count]} two-sided precision contract{'s' if count > 1 else ''} per qubit, "
+            f"{count * len(qubits)} in all, split the family-wise alpha evenly and admit the design: "
+            f"half-width {'0.025 on A and on C, 0.05 on A - B' if count == 3 else ', '.join(endpoints)}, Hoeffding "
+            "radii valid under arbitrary dependence between the qubits of one shot. They price resolution, "
+            "not an effect. The comparison of A between two repetition delays spans two jobs, so it is "
+            "outside these contracts; the written addendum states that comparison and its decision rule.",
+            "",
+        ]
     if family == "patch-window":
         configuration = record["family_configuration"]
         roles = configuration.get("patch_roles") or [
@@ -1222,6 +1683,18 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "",
             ]
             if family == "n21-feedback-encoded"
+            else []
+        ),
+        *(
+            [
+                f"The model starts every active qubit with a declared excitation of "
+                f"{_format_number(record['policy']['design']['prep_excitation'])} "
+                "(`--prep-excitation`): the exact law and its sampled falsifier both apply that initial bit "
+                "flip, a planning assumption until a state-prep-control run measures it at the run's "
+                "repetition delay.",
+                "",
+            ]
+            if "prep_excitation" in record["policy"]["design"]
             else []
         ),
         "Gate noise, measurement/reset disturbance, conditional-control latency, routing changes, "
@@ -1700,6 +2173,202 @@ def _fixture() -> dict[str, Any]:
     )
 
 
+def _verify_covariance_falsifier(record: dict[str, Any]) -> None:
+    """A record with declared replica bounds preregisters the falsifier, its thresholds and the fallback power."""
+    import n21_exact_planning
+
+    bounded = copy.deepcopy(record)
+    bounded["execution_pubs"] = [
+        {
+            "name": "feedback_pub",
+            "components": [{"member": "feedback", "registers_by_replica": [["g0_r0_c"], ["g0_r1_c"]]}],
+        }
+    ]
+    bounded["covariance_bounds"] = [
+        {
+            "observable_name": "feedback_contrast",
+            "pub_name": "feedback_pub",
+            "labels": ["feedback/r0", "feedback/r1"],
+            "matrix": [[0.55, 0.0], [0.0, 0.55]],
+            "assumption": "independent replicas",
+            "variance_allowance": n21_exact_planning.variance_allowance(2048, 1.0, 1e-3),
+            "falsifier_tail": 1e-3,
+        }
+    ]
+    bounded["covariance_falsifier"] = json.loads(json.dumps(n21_exact_planning.COVARIANCE_FALSIFIER))
+    bounded["observable_contracts"][0].update(minimum_effect=0.0, alpha=0.05, power=0.8)
+    candidate = bounded["optimization"]["candidates"][0]
+    candidate["observables"][0]["covariance_assumptions"] = ["independent replicas"]
+    bounded["exact_model"] = {
+        "max_gap": 0.004,
+        "model_shots": 65536,
+        "radius": 0.0078,
+        "score_tail": 0.005,
+        "contrasts": {"feedback_contrast": {"exact": 0.25, "sampled": 0.248, "gap": -0.002, "radius": 0.03}},
+    }
+    text = "\n".join(_endpoints(bounded, candidate))
+    allowance = n21_exact_planning.variance_allowance(2048, 1.0, 1e-3)
+    for phrase in (
+        "### Replica covariance: variance upper confidence limit",
+        "Statistic: biased sample variance over shots",
+        f"| feedback_contrast | feedback_pub | +0.5, +0.5 | 2048 | 0.275 | {allowance:.6g} | {0.275 + allowance:.6g} "
+        "| 0.001 |",
+        "Alpha split for `feedback_contrast`: 0.05 = falsifier tail 0.001 + confidence and detection tail 0.049; "
+        "the power tail stays 0.2.",
+        "Without retained registers (the Hoeffding fallback, full alpha) `feedback_contrast` rejects its null",
+        "Assumption in force for `feedback_contrast`: the detection radius",
+        "the Cantelli radius under the variance each covariance bound reads",
+        "exact contrast 0.25 sits -0.002 from its sampled estimate 0.248",
+    ):
+        if phrase not in text:
+            raise AssertionError(f"covariance falsifier case lacks {phrase!r}")
+    if "### Replica covariance" in "\n".join(_endpoints(record, record["optimization"]["candidates"][0])):
+        raise AssertionError("a record without declared bounds rendered a covariance falsifier")
+    _verify_bounded_bernstein(bounded)
+    bounded["covariance_falsifier"]["tail"] = 0.01
+    try:
+        _endpoints(bounded, candidate)
+    except ValueError:
+        return
+    raise AssertionError("a record falsifier that differs from the source specification rendered")
+
+
+def _verify_bounded_bernstein(bounded: dict[str, Any]) -> None:
+    """A two-replica record with covariance bounds and the opt-in names both rules and its unbounded fallback."""
+    from dataclasses import asdict
+
+    from experiment_optimizer import (
+        EMPIRICAL_BERNSTEIN,
+        CandidatePlan,
+        CovarianceBound,
+        EmpiricalBernsteinDesign,
+        JobCandidate,
+        ObservableContract,
+        ObservableTerm,
+        PubPrediction,
+        empirical_bernstein_radius,
+        planned_empirical_bernstein,
+    )
+
+    opted = copy.deepcopy(bounded)
+    design = EmpiricalBernsteinDesign("feedback_contrast")
+    contract = ObservableContract(
+        "feedback_contrast", (ObservableTerm("feedback", (0.0, 1.0)),), minimum_effect=0.0, alpha=0.05, power=0.8
+    )
+    bound = opted["covariance_bounds"][0]
+    covariance = CovarianceBound(
+        bound["observable_name"],
+        bound["pub_name"],
+        tuple(bound["labels"]),
+        tuple(tuple(row) for row in bound["matrix"]),
+        bound["assumption"],
+        bound["variance_allowance"],
+        bound["falsifier_tail"],
+    )
+    pub = PubPrediction("feedback_pub", {"feedback": ((0.9, 0.1), (0.9, 0.1))}, 0.001, 0.00025, "fixture")
+    plan = CandidatePlan(
+        "candidate-000-shots-2048",
+        (JobCandidate("ibm_fez/dynamic/1", (pub,), 2048, 2.3, 90.0, "fixture"),),
+        (covariance,),
+        empirical_bernstein=(design,),
+    )
+    (detail,) = planned_empirical_bernstein(plan, (contract,))
+    opted["empirical_bernstein"] = {
+        "specification": json.loads(json.dumps(EMPIRICAL_BERNSTEIN)),
+        "designs": [asdict(design)],
+        "planned": [json.loads(json.dumps(detail))],
+    }
+    candidate = opted["optimization"]["candidates"][0]
+    candidate["observables"][0].update(
+        confidence_half_width=detail["radii"]["confidence"]["used"],
+        detection_radius=detail["radii"]["detection"]["used"],
+        power_radius=detail["power_radius"],
+    )
+    text = "\n".join(_endpoints(opted, candidate))
+    row = detail["pubs"][0]
+    fallback = min(
+        math.sqrt(math.log(1.0 / 0.025) / (2 * 2048)),
+        empirical_bernstein_radius(row["variance"], 1.0, 2048, 0.025, two_sided=False),
+    )
+    for phrase in (
+        "### Replica covariance: variance upper confidence limit",
+        "### Empirical-Bernstein confidence and detection radii",
+        "sums, over PUBs, the smaller of the data-free radius and the empirical-Bernstein radius",
+        "Alpha split for `feedback_contrast`: 0.05 = falsifier tail 0.001 + data-free tail 0.0245 + "
+        "empirical-Bernstein tail 0.0245",
+        "confidence and detection tail 0.049; the power tail is 0.199, the miss probability 0.2 less the variance "
+        "tail 0.001.",
+        "Without retained registers (no covariance bound; each PUB reads the smaller of Hoeffding and empirical "
+        f"Bernstein at the full alpha split, here at the planned variances) `feedback_contrast` rejects its null "
+        f"only above {_format_number(fallback)}",
+    ):
+        if phrase not in text:
+            raise AssertionError(f"bounded empirical-Bernstein case lacks {phrase!r}")
+    if "the power tail stays" in text:
+        raise AssertionError("an opted-in endpoint rendered the undiminished power tail beside its comparator")
+
+
+def _verify_empirical_bernstein(record: dict[str, Any]) -> None:
+    """An opted-in record preregisters the empirical-Bernstein rule, its alpha split and per-PUB radii."""
+    from dataclasses import asdict
+
+    from experiment_optimizer import (
+        EMPIRICAL_BERNSTEIN,
+        CandidatePlan,
+        EmpiricalBernsteinDesign,
+        JobCandidate,
+        ObservableContract,
+        ObservableTerm,
+        PubPrediction,
+        planned_empirical_bernstein,
+    )
+
+    opted = copy.deepcopy(record)
+    design = EmpiricalBernsteinDesign("feedback_contrast")
+    contract = ObservableContract(
+        "feedback_contrast", (ObservableTerm("feedback", (0.0, 1.0)),), minimum_effect=0.0, alpha=0.05, power=0.8
+    )
+    pub = PubPrediction("feedback_pub", {"feedback": ((0.95, 0.05),)}, 0.001, 0.00025, "fixture")
+    plan = CandidatePlan(
+        "candidate-000-shots-2048", (JobCandidate("ibm_fez/dynamic/1", (pub,), 2048, 2.3, 90.0, "fixture"),)
+    )
+    (detail,) = planned_empirical_bernstein(
+        CandidatePlan(plan.name, plan.jobs, empirical_bernstein=(design,)), (contract,)
+    )
+    opted["empirical_bernstein"] = {
+        "specification": json.loads(json.dumps(EMPIRICAL_BERNSTEIN)),
+        "designs": [asdict(design)],
+        "planned": [json.loads(json.dumps(detail))],
+    }
+    opted["policy"]["design"]["empirical_bernstein"] = True
+    candidate = opted["optimization"]["candidates"][0]
+    candidate["observables"][0].update(
+        confidence_half_width=detail["radii"]["confidence"]["used"],
+        detection_radius=detail["radii"]["detection"]["used"],
+        power_radius=detail["power_radius"],
+    )
+    text = "\n".join(_endpoints(opted, candidate))
+    for phrase in (
+        "### Empirical-Bernstein confidence and detection radii",
+        "Inequality: one-sided at tail d: mean - sample mean <= sqrt(2 V_n ln(2 / d) / n)",
+        "Alpha split for `feedback_contrast`: 0.05 = falsifier tail 0 + data-free tail 0.025 + empirical-Bernstein "
+        "tail 0.025",
+        "costs power, never coverage",
+        "the empirical-Bernstein section below states the split",
+        f"| feedback_contrast | feedback_pub | 2048 | 1 | {detail['pubs'][0]['variance']:.6g} |",
+    ):
+        if phrase not in text:
+            raise AssertionError(f"empirical-Bernstein case lacks {phrase!r}")
+    if "Empirical-Bernstein" in "\n".join(_endpoints(record, record["optimization"]["candidates"][0])):
+        raise AssertionError("a record without the opt-in rendered the empirical-Bernstein section")
+    opted["empirical_bernstein"]["specification"]["alpha_split"] = "unequal"
+    try:
+        _endpoints(opted, candidate)
+    except ValueError:
+        return
+    raise AssertionError("a record rule that differs from the source specification rendered")
+
+
 def _verify() -> None:
     record = _fixture()
     with tempfile.TemporaryDirectory(prefix="qpu-case-check-") as temporary:
@@ -1729,6 +2398,55 @@ def _verify() -> None:
         assert str(run_dir) not in text and "crn:" not in text
         assert "--submit" not in text.split("## Approval-only submission template")[0]
         assert write_case(run_dir, record) == destination and destination.read_text() == text
+        assert "--model-method" not in text and "--replica-variance-bound" not in text
+        exact = copy.deepcopy(record)
+        exact["policy"]["design"].update(model_method="exact", replica_variance_bound=0.55)
+        exact_arguments = _reproduction_arguments(exact, Path("results/live/fixture/record.json"))
+        assert "--model-method exact --replica-variance-bound 0.55" in " ".join(exact_arguments)
+        assert "--rep-delay" not in text and "--prep-excitation" not in text
+        excited = copy.deepcopy(exact)
+        excited["policy"]["design"]["prep_excitation"] = 0.01
+        excited_arguments = _reproduction_arguments(excited, Path("results/live/fixture/record.json"))
+        assert "--prep-excitation 0.01" in " ".join(excited_arguments)
+        prepared = copy.deepcopy(record)
+        prepared["policy"]["design"].update(family="state-prep-control", state_prep_arms=["prep0"])
+        prepared["family_configuration"] = {
+            "name": "state-prep-control",
+            "qubits": [104, 105],
+            "layout_source": "declared",
+            "arms": {"prep0": "init, measure"},
+        }
+        prepared_arguments = " ".join(_reproduction_arguments(prepared, Path("results/live/fixture/record.json")))
+        assert "--layout 104,105 --state-prep-arms prep0" in prepared_arguments
+        prepared_case = " ".join(_scientific_case("state-prep-control", prepared))
+        assert "One PUB measures every qubit" in prepared_case and "2 in all" in prepared_case
+        assert "reset benefit" not in prepared_case and "Three PUBs" not in prepared_case
+        for refused in (["prep0", "bogus"], ["x"]):
+            prepared["policy"]["design"]["state_prep_arms"] = refused
+            try:
+                _reproduction_arguments(prepared, Path("results/live/fixture/record.json"))
+            except ValueError:
+                continue
+            raise AssertionError(f"state-prep arms {refused} rendered into the replay command")
+        assert any("declared excitation of 0.01" in line for line in _scientific_case("n21-feedback", excited))
+        delayed = copy.deepcopy(record)
+        delayed["policy"]["rep_delay_seconds"] = 0.00025
+        delayed_arguments = _reproduction_arguments(delayed, Path("results/live/fixture/record.json"))
+        assert "--rep-delay 0.00025" in " ".join(delayed_arguments)
+        delayed["policy"]["rep_delay_seconds"] = 0.0001
+        selected = next(
+            candidate
+            for candidate in delayed["optimization"]["candidates"]
+            if candidate["name"] == delayed["optimization"]["selected"]
+        )
+        try:
+            _validate_costs(selected, delayed)
+        except ValueError as error:
+            assert "requested --rep-delay" in str(error)
+        else:
+            raise AssertionError("a cost ledger at another repetition delay passed the requested --rep-delay")
+        _verify_covariance_falsifier(record)
+        _verify_empirical_bernstein(record)
         assert all((run_dir / name).read_bytes() == value for name, value in originals.items())
         for family, phrase in (("ripple", "box-kite phase atlas"), ("rank-sector", "coefficient-dependent LCU")):
             algebra = copy.deepcopy(record)

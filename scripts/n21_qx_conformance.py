@@ -1,0 +1,1708 @@
+"""Ideal law of the encoded N=21 feedback pair through cQASM export and the QX emulator's semantics.
+
+The two dynamic circuits of results/live/2026-10-17T003834.987727Z/isa.qpy
+(n21_encoded_feedback, n21_encoded_no_feedback on ibm_kingston) run on seven
+active qubits; snapshot_laws.restrict_circuit keeps them in ascending physical
+order, and restricted qubit k sits on QX register qubit k. Both arms measure
+q[5] into clbit 0 mid-circuit, reset q[5] and reuse it; the feedback arm then
+applies Rz(-pi/2) to q[1] when clbit 0 reads 1. cQASM 3.0 has no
+binary-controlled gate, so QX runs the feedback arm only in a
+deferred-measurement form, and both arms get one:
+
+- the mid-circuit measure of q[5] becomes CNOT q[5] -> q[7], a fresh ancilla
+  (QX_ANCILLA) that no later gate touches, so the copy dephases q[5] exactly
+  as the measurement does;
+- the reset that immediately follows it becomes CNOT q[7] -> q[5]: q[5] and
+  q[7] agree in the Z basis after the copy, so the second CNOT returns q[5]
+  to |0> with the outcome kept on q[7] (a reset after a projective measure is
+  an X conditioned on the outcome);
+- the if_else on clbit 0 becomes the controlled body from q[7] (Rz(theta)
+  controlled is Rz(theta/2), CNOT, Rz(-theta/2), CNOT on the target);
+- every measurement moves to the end, each into its own classical bit
+  (b[0] = measure q[7], b[1] = measure q[1]).
+
+Every deferred program is unitary until its final measurements, so
+qxelarator's `state` of the same program without them is deterministic and
+gives the exact QX law. The no-feedback arm also runs natively: mid-circuit
+`b[0] = measure q[5]`, `reset q[5]`, and a final `b[1] = measure q[1]`.
+qxelarator 0.10.0's `reset` is not the cQASM reset: when the qubit carries
+weight on |1>, every amplitude pair (a0x, a1x) becomes the nonnegative real
+sqrt(|a0x|^2 + |a1x|^2), which drops the phase of the whole register. The
+native arm's law follows that map (``branches``, reset model "qxelarator"),
+which the retained phase probes and single-shot branch states pin.
+
+Gates lower by explicit substitution (SX = H S H exactly, X, CZ, CNOT, Rz
+unchanged) to the qx gate map of box_kite_cases.DIALECTS. QX results are the
+measurement register, one character per qubit with qubit 0 rightmost, each
+the qubit's last measured outcome; a reset leaves it unchanged
+(docs/notes/quantum_inspire/qx-runs.md). Recorded value r = c0 + 2 c1, clbit 0
+least significant, reads c0 from q[7] (deferred) or q[5] (native) and c1 from
+q[1].
+
+- ``--out FILE`` builds the forms, proves each stage's ideal law against the
+  reference (dynamic_density with an empty noise model), writes the cQASM
+  programs beside FILE, runs them and the reset probes on qxelarator through
+  qi_stack.run at ``$QI_PYTHON`` (QX_SHOTS per seed, the exact state of each
+  deferred program, single-shot native branch states), then writes the record
+  and exits nonzero unless require_verdicts holds. An unavailable stack stops
+  it with the probe's reason.
+- ``--check FILE`` runs without qxelarator: it recomputes the reference,
+  deferred, lowered and parsed laws, regenerates the programs and requires
+  their bytes and sha256s, re-parses the retained programs with
+  box_kite_cases.parse_cqasm, holds both reset models to the retained probe
+  and branch states, and requires the verdicts: each deferred QX state's
+  marginal equals the reference, the pooled deferred counts pass
+  n21_exact_model_validation.compare (simultaneous Hoeffding radius at total
+  tail TAIL, Bernstein radii on each arm score and the contrast), and the
+  native counts fail the reference and pass the qxelarator reset model.
+  ``--live N`` adds, when qi_stack.live finds the stack at ``$QI_PYTHON``, a
+  rerun on qxelarator of every reset probe, deferred state and native branch
+  run plus N evenly spaced sample jobs at their retained seeds; histograms and
+  branch keys must equal the retained ones and amplitudes agree within
+  EXACT_TOL. Without the stack it prints one replay line, and
+  GOROROBA_QI_REQUIRED=1 turns that into a failure.
+- ``--self-test`` requires corrupted cQASM lines, dropped-control deferrals, a
+  flipped bit order, swapped clbits, moved shots and native counts drawn from
+  the reference law to fail, the reset models to reproduce the
+  dynamic_density law and the phase drop, and the unsnapped qx export to
+  equal the snapped one on an on-grid circuit byte for byte, and a moved
+  retained count, amplitude, branch key or probe to fail the live comparison.
+
+Usage:
+    "$PYTHON" scripts/n21_qx_conformance.py --out docs/evidence/n21_qx_conformance/result.json
+    "$PYTHON" scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json [--live N]
+    "$PYTHON" scripts/n21_qx_conformance.py --self-test
+"""
+
+# Module-level imports stay in the standard library: --out runs the --qx-worker
+# mode of this file under $QI_PYTHON (Python 3.13 without qiskit-aer), and
+# parallel.py's spawn pool re-imports this module in every worker there.
+from __future__ import annotations
+
+import argparse
+import copy
+import functools
+import hashlib
+import json
+import math
+import re
+import sys
+from collections.abc import Callable
+from pathlib import Path
+from typing import Any
+from unittest.mock import patch
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+
+import parallel  # noqa: E402
+import qi_stack  # noqa: E402
+
+SCHEMA = "n21-qx-conformance-v1"
+ISA = ROOT / "results/live/2026-10-17T003834.987727Z/isa.qpy"
+RECORD = ISA.parent / "record.json"
+QX_WIDTH = 10
+BIT_ORDER = (
+    "QX keys hold one character per declared qubit, qubit 0 rightmost, each the qubit's last measured "
+    "outcome; recorded value r = c0 + 2 c1 (clbit 0 least significant) reads c_k from readout[k]"
+)
+# Formatted floats inside retained messages compare at this many significant digits, the
+# precision at which BLAS builds agree on the values the messages quote.
+MESSAGE_DIGITS = 9
+FLOAT_TEXT = re.compile(r"-?\d+\.\d+(?:e[-+]?\d+)?")
+QX_ANCILLA = 7
+QX_SHOTS = 2048
+BASE_SEED = 20261017
+SEEDS = 12
+TAIL = 1e-3
+# Stages between the reference and the QX programs are exact up to float
+# rounding; EXACT_TOL bounds every probability gap and 1 - fidelity.
+EXACT_TOL = 1e-9
+QXELARATOR = "0.10.0"
+LOWERED = ("h", "s", "sdg", "x", "z", "cx", "cz", "rz")
+MEASURE_LINE = re.compile(r"b\[(\d+)\] = measure q\[(\d+)\]")
+RESET_LINE = re.compile(r"reset q\[(\d+)\]")
+# QX result register probe: a reset after a measurement keeps the measured
+# character, so q[0] reads 1 in every shot.
+RESET_REGISTER_PROBE = "\n".join(
+    ["version 3.0", "", "qubit[2] q", "bit[2] b", "", "X q[0]", "b[0] = measure q[0]", "reset q[0]", ""]
+)
+# QX reset phase probes, each a final state: q[0] in |1> beside q[1] in |->; q[0]
+# already |0> beside q[1] in (|0> + i|1>)/sqrt2; a three-qubit entangled state
+# with weight on both values of q[0].
+_PROBE_HEADER = f"version 3.0\n\nqubit[{QX_WIDTH}] q\nbit[{QX_WIDTH}] b\n\n"
+RESET_PHASE_PROBES = {
+    "phase_minus": _PROBE_HEADER + "X q[0]\nX q[1]\nH q[1]\nreset q[0]\n",
+    "already_zero": _PROBE_HEADER + "H q[1]\nS q[1]\nreset q[0]\n",
+    "general": _PROBE_HEADER
+    + "H q[0]\nRz(0.7) q[0]\nH q[1]\nRz(1.1) q[1]\nCNOT q[0], q[1]\nH q[2]\nCNOT q[1], q[2]\nRz(0.4) q[2]\n"
+    + "H q[0]\nRz(0.3) q[0]\nreset q[0]\n",
+}
+# Single-shot runs of the native program up to its final measurement: each
+# returns one mid-circuit branch's state.
+BRANCH_SEEDS = 8
+
+Circuit = Any
+
+
+# ---------------------------------------------------------------- circuits
+
+
+def sha256(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def load_arms() -> list[dict[str, Any]]:
+    """Each dynamic circuit restricted to its active qubits, with its record member and physical qubits."""
+    from qiskit import qpy
+
+    import snapshot_laws
+
+    with ISA.open("rb") as handle:
+        circuits = list(qpy.load(handle))
+    members = {pub["name"]: pub["components"][0]["member"] for pub in json.loads(RECORD.read_text())["execution_pubs"]}
+    arms = []
+    for circuit in circuits:
+        restricted, physical = snapshot_laws.restrict_circuit(circuit)
+        branch = any(inst.operation.name == "if_else" for inst in restricted.data)
+        arms.append(
+            {
+                "name": circuit.name,
+                "member": members[circuit.name],
+                "circuit": restricted,
+                "physical": physical,
+                "branch": branch,
+            }
+        )
+    return arms
+
+
+def serialize(circuit: Circuit) -> bytes:
+    import io
+
+    from qiskit import qpy
+
+    buffer = io.BytesIO()
+    qpy.dump(circuit, buffer)
+    return buffer.getvalue()
+
+
+def deserialize(payload: bytes) -> Circuit:
+    import io
+
+    from qiskit import qpy
+
+    return qpy.load(io.BytesIO(payload))[0]
+
+
+def _qubits(circuit: Circuit, instruction: Any) -> list[int]:
+    return [circuit.find_bit(q).index for q in instruction.qubits]
+
+
+def _condition(circuit: Circuit, operation: Any) -> tuple[int, int]:
+    from qiskit.circuit import Clbit
+
+    target, value = operation.condition
+    if not isinstance(target, Clbit):
+        raise ValueError(f"{circuit.name}: if_else reads {target!r}; deferral takes a single-clbit condition")
+    return circuit.find_bit(target).index, int(value)
+
+
+def defer(circuit: Circuit, body: str = "controlled") -> tuple[Circuit, dict[str, Any]]:
+    """The deferred-measurement form on circuit.num_qubits + one ancilla per mid-circuit measure.
+
+    body="controlled" applies each if_else body gate controlled by the ancilla
+    that holds its clbit; "unconditional" and "removed" are the self-test's
+    broken deferrals (control dropped, body dropped).
+    """
+    from qiskit import QuantumCircuit
+    from qiskit.circuit import Gate
+
+    data = [inst for inst in circuit.data if inst.operation.name != "barrier"]
+    last_use: dict[int, int] = {}
+    for position, inst in enumerate(data):
+        for q in _qubits(circuit, inst):
+            last_use[q] = position
+    measured: set[int] = set()
+    mid = []
+    for position, inst in enumerate(data):
+        if inst.operation.name == "measure":
+            clbit = circuit.find_bit(inst.clbits[0]).index
+            if clbit in measured:
+                raise ValueError(f"{circuit.name}: clbit {clbit} is written twice")
+            measured.add(clbit)
+            if last_use[_qubits(circuit, inst)[0]] != position:
+                mid.append(position)
+    ancilla = {position: circuit.num_qubits + n for n, position in enumerate(mid)}
+    out = QuantumCircuit(circuit.num_qubits + len(mid), circuit.num_clbits, global_phase=circuit.global_phase)
+    holder: dict[int, int] = {}
+    final: list[tuple[int, int]] = []
+    consumed: set[int] = set()
+    deferrals = []
+    for position, inst in enumerate(data):
+        if position in consumed:
+            continue
+        name = inst.operation.name
+        qubits = _qubits(circuit, inst)
+        if name == "measure":
+            clbit = circuit.find_bit(inst.clbits[0]).index
+            if position not in ancilla:
+                final.append((qubits[0], clbit))
+                continue
+            a = ancilla[position]
+            out.cx(qubits[0], a)
+            holder[clbit] = a
+            row: dict[str, Any] = {"measure": {"qubit": qubits[0], "clbit": clbit}, "ancilla": a, "reset": None}
+            following = data[position + 1] if position + 1 < len(data) else None
+            if following is not None and following.operation.name == "reset" and _qubits(circuit, following) == qubits:
+                out.cx(a, qubits[0])
+                consumed.add(position + 1)
+                row["reset"] = f"CNOT q[{a}] -> q[{qubits[0]}]"
+            deferrals.append(row)
+            final.append((a, clbit))
+        elif name == "reset":
+            raise ValueError(f"{circuit.name}: reset of q{qubits} does not follow a deferred measure of that qubit")
+        elif name == "if_else":
+            clbit, value = _condition(circuit, inst.operation)
+            if clbit not in holder:
+                raise ValueError(
+                    f"{circuit.name}: if_else reads clbit {clbit}, which no earlier deferred measure holds"
+                )
+            blocks = [(inst.operation.blocks[0], value)]
+            if len(inst.operation.blocks) > 1 and inst.operation.blocks[1] is not None:
+                blocks.append((inst.operation.blocks[1], 1 - value))
+            for block, state in blocks:
+                for inner in block.data:
+                    if inner.operation.name == "barrier":
+                        continue
+                    if not isinstance(inner.operation, Gate):
+                        raise ValueError(f"{circuit.name}: {inner.operation.name} inside an if_else body")
+                    targets = [qubits[block.find_bit(q).index] for q in inner.qubits]
+                    if body == "controlled":
+                        out.append(inner.operation.control(1, ctrl_state=state), [holder[clbit], *targets])
+                    elif body == "unconditional":
+                        out.append(inner.operation, targets)
+                    elif body != "removed":
+                        raise ValueError(f"unknown body mode {body!r}")
+                    deferrals.append(
+                        {
+                            "if_else": {"clbit": clbit, "value": state},
+                            "control": holder[clbit],
+                            "gate": inner.operation.name,
+                            "targets": targets,
+                            "body": body,
+                        }
+                    )
+        elif name in ("while_loop", "for_loop", "switch_case", "box") or inst.clbits:
+            raise ValueError(f"{circuit.name}: {name} is outside the deferral")
+        else:
+            out.append(inst.operation, qubits)
+    for qubit, clbit in sorted(final, key=lambda pair: pair[1]):
+        out.measure(qubit, clbit)
+    return out, {"ancillas": sorted(ancilla.values()), "steps": deferrals}
+
+
+def lower(circuit: Circuit) -> Circuit:
+    """circuit over LOWERED gates, measure and reset by explicit substitution; every step is exact.
+
+    SX = H S H with no phase; CRZ(theta) = Rz(theta/2) CNOT Rz(-theta/2) CNOT on
+    the target. Barriers drop (the qx dialect writes none).
+    """
+    from qiskit import QuantumCircuit
+
+    out = QuantumCircuit(circuit.num_qubits, circuit.num_clbits, global_phase=circuit.global_phase)
+    for inst in circuit.data:
+        name = inst.operation.name
+        qubits = _qubits(circuit, inst)
+        if name == "barrier":
+            continue
+        if name == "sx":
+            out.h(qubits[0])
+            out.s(qubits[0])
+            out.h(qubits[0])
+        elif name == "crz":
+            if getattr(inst.operation, "ctrl_state", 1) != 1:
+                raise ValueError("an open-controlled crz is outside the lowering")
+            theta = float(inst.operation.params[0])
+            out.rz(theta / 2, qubits[1])
+            out.cx(qubits[0], qubits[1])
+            out.rz(-theta / 2, qubits[1])
+            out.cx(qubits[0], qubits[1])
+        elif name in LOWERED:
+            out.append(inst.operation, qubits)
+        elif name == "measure":
+            out.measure(qubits[0], circuit.find_bit(inst.clbits[0]).index)
+        elif name == "reset":
+            out.reset(qubits[0])
+        else:
+            raise ValueError(f"{name} is outside the lowering to the qx gate map")
+    return out
+
+
+# ---------------------------------------------------------------- cQASM
+
+
+def program(circuit: Circuit, comment: str) -> str:
+    """Full QX program of a lowered circuit: header, gate segments, measure and reset lines in order."""
+    import box_kite_cases
+    import qi_zero_divisor_cases
+    from qiskit import QuantumCircuit
+
+    place = {q: q for q in range(circuit.num_qubits)}
+    lines = [*qi_zero_divisor_cases.header(QX_WIDTH), f"// {comment}"]
+    segment = QuantumCircuit(circuit.num_qubits)
+
+    def flush() -> None:
+        nonlocal segment
+        lines.extend(box_kite_cases.emit(segment, place, dialect="qx", angle_grid=None))
+        segment = QuantumCircuit(circuit.num_qubits)
+
+    for inst in circuit.data:
+        name = inst.operation.name
+        qubits = _qubits(circuit, inst)
+        if name == "measure":
+            flush()
+            lines.append(f"b[{circuit.find_bit(inst.clbits[0]).index}] = measure q[{qubits[0]}]")
+        elif name == "reset":
+            flush()
+            lines.append(f"reset q[{qubits[0]}]")
+        else:
+            segment.append(inst.operation, qubits)
+    flush()
+    return "\n".join([*lines, ""])
+
+
+def state_program(text: str) -> str:
+    """The program without its trailing measurements, whose final state qxelarator returns intact."""
+    lines = text.rstrip("\n").split("\n")
+    while lines and MEASURE_LINE.fullmatch(lines[-1]):
+        lines.pop()
+    if any(MEASURE_LINE.fullmatch(line) or RESET_LINE.fullmatch(line) for line in lines):
+        raise ValueError("a state program needs every measurement at the end and no reset")
+    return "\n".join([*lines, ""])
+
+
+def parse_program(text: str, num_clbits: int) -> Circuit:
+    """A QX program back into a circuit: gate runs through box_kite_cases.parse_cqasm, measure and reset here."""
+    import box_kite_cases as cases
+    from qiskit import QuantumCircuit
+
+    out = QuantumCircuit(QX_WIDTH, num_clbits)
+    preamble = "\n".join(["version 3.0", f"qubit[{QX_WIDTH}] q", ""])
+    run: list[str] = []
+
+    def flush() -> None:
+        if run:
+            out.compose(cases.parse_cqasm(preamble + "\n".join(run) + "\n"), inplace=True)
+            run.clear()
+
+    for raw in text.split("\n"):
+        line = raw.strip()
+        measure, reset = MEASURE_LINE.fullmatch(line), RESET_LINE.fullmatch(line)
+        if line.startswith(("version ", "qubit[", "bit[")):
+            if line not in ("version 3.0", f"qubit[{QX_WIDTH}] q", f"bit[{QX_WIDTH}] b"):
+                raise ValueError(f"declaration {line!r} differs from the QX program header")
+        elif measure is not None:
+            flush()
+            if int(measure[1]) >= num_clbits:
+                raise ValueError(f"{line!r} writes outside the circuit's {num_clbits} classical bits")
+            out.measure(int(measure[2]), int(measure[1]))
+        elif reset is not None:
+            flush()
+            out.reset(int(reset[1]))
+        else:
+            run.append(line)
+    flush()
+    return out
+
+
+# ---------------------------------------------------------------- laws
+
+
+def _terminal(circuit: Circuit) -> list[tuple[int, int]] | None:
+    """(qubit, clbit) of every measurement when all of them close their qubits and no reset or branch occurs."""
+    last: dict[int, int] = {}
+    for position, inst in enumerate(circuit.data):
+        if inst.operation.name in ("reset", "if_else"):
+            return None
+        for q in _qubits(circuit, inst):
+            last[q] = position
+    pairs = []
+    for position, inst in enumerate(circuit.data):
+        if inst.operation.name == "measure":
+            qubit = _qubits(circuit, inst)[0]
+            if last[qubit] != position:
+                return None
+            pairs.append((qubit, circuit.find_bit(inst.clbits[0]).index))
+    return pairs
+
+
+def law(payload: bytes) -> list[float]:
+    """Pool worker: ideal recorded law, clbit 0 least significant.
+
+    A circuit measured only at its end takes Statevector probabilities; one with
+    a mid-circuit measure, reset or branch takes dynamic_density with an empty
+    noise model, so the deferral proof compares two independent engines.
+    """
+    import numpy as np
+    from qiskit.quantum_info import Statevector
+    from qiskit_aer.noise import NoiseModel
+
+    import dynamic_density
+    import snapshot_laws
+
+    circuit = deserialize(payload)
+    pairs = _terminal(circuit)
+    if pairs is None:
+        restricted, _ = snapshot_laws.restrict_circuit(circuit)
+        return [float(v) for v in dynamic_density.probabilities(restricted, NoiseModel())]
+    if sorted(c for _, c in pairs) != list(range(circuit.num_clbits)):
+        raise ValueError(f"{circuit.name}: measurements do not write each classical bit once")
+    unitary = circuit.remove_final_measurements(inplace=False)
+    by_clbit = [q for q, _ in sorted(pairs, key=lambda pair: pair[1])]
+    probabilities = Statevector(unitary).probabilities(by_clbit)
+    return [float(v) for v in np.asarray(probabilities)]
+
+
+def statevector(payload: bytes) -> list[list[float]]:
+    """Pool worker: Aer statevector of a measurement-free program, [re, im] per basis index."""
+    from qiskit.quantum_info import Statevector
+
+    data = Statevector(deserialize(payload)).data
+    return [[float(v.real), float(v.imag)] for v in data]
+
+
+def gap(a: list[float], b: list[float]) -> float:
+    return max(abs(x - y) for x, y in zip(a, b, strict=True))
+
+
+def score(values: list[float], law_: list[float]) -> float:
+    return math.fsum(v * p for v, p in zip(values, law_, strict=True))
+
+
+def bit(key: str, qubit: int) -> str:
+    """The character of `qubit` in a QX key, qubit 0 at the rightmost character."""
+    return key[len(key) - 1 - qubit]
+
+
+def recorded(key: str, readout: list[int], reverse: bool = False) -> int:
+    """Recorded value r = sum c_k 2^k, c_k the QX character of readout[k]; reverse reads qubit 0 leftmost."""
+    return sum(int(key[q] if reverse else bit(key, q)) << k for k, q in enumerate(readout))
+
+
+def counts_vector(histograms: list[dict[str, int]], readout: list[int], reverse: bool = False) -> list[int]:
+    vector = [0] * 2 ** len(readout)
+    for histogram in histograms:
+        for key, count in histogram.items():
+            if len(key) != QX_WIDTH or set(key) - {"0", "1"} or type(count) is not int or count < 0:
+                raise ValueError(f"QX key {key!r} or count {count!r} is malformed")
+            for q in range(QX_WIDTH):
+                if q not in readout and bit(key, q) != "0":
+                    raise ValueError(f"QX key {key!r} reads 1 on unmeasured qubit {q}")
+            vector[recorded(key, readout, reverse)] += count
+    return vector
+
+
+def state_law(amplitudes: dict[str, list[float]], readout: list[int], idle: list[int]) -> list[float]:
+    """Marginal law of a qxelarator state over the readout qubits; keys absent from the state carry zero."""
+    out = [0.0] * 2 ** len(readout)
+    for key, (re_, im) in amplitudes.items():
+        if len(key) != QX_WIDTH or set(key) - {"0", "1"}:
+            raise ValueError(f"QX state key {key!r} is malformed")
+        weight = re_ * re_ + im * im
+        if weight > EXACT_TOL and any(bit(key, q) != "0" for q in idle):
+            raise ValueError(f"QX state carries weight {weight} on {key!r}, outside the active qubits")
+        out[recorded(key, readout)] += weight
+    return out
+
+
+def fidelity(amplitudes: dict[str, list[float]], reference: list[list[float]]) -> float:
+    """|<qx|aer>|^2; the cQASM drops the global phase, which the overlap's modulus ignores."""
+    overlap = complex(0.0)
+    for key, (re_, im) in amplitudes.items():
+        ar, ai = reference[int(key, 2)]
+        overlap += complex(re_, -im) * complex(ar, ai)
+    return abs(overlap) ** 2
+
+
+# ---------------------------------------------------------------- build
+
+
+def off_grid(built: dict[str, Any]) -> dict[str, Any]:
+    """Every Rz of the lowered deferred programs that box_kite_cases.snap_angle refuses, and the grid it enforces.
+
+    The deferred form of each arm holds every Rz of its native form plus the
+    controlled body's; instruction indices refer to the lowered deferred form.
+    """
+    import box_kite_cases as cases
+
+    rows = []
+    counts = {}
+    for form in built["forms"]:
+        if form["form"] != "deferred":
+            continue
+        arm, lowered = form["arm"], form["lowered"]
+        total = failing = 0
+        for position, inst in enumerate(lowered.data):
+            if inst.operation.name != "rz":
+                continue
+            total += 1
+            theta = float(inst.operation.params[0])
+            try:
+                cases.snap_angle(theta)
+            except ValueError:
+                failing += 1
+                qubit = _qubits(lowered, inst)[0]
+                physical = arm["physical"][qubit] if qubit < len(arm["physical"]) else None
+                rows.append(
+                    {
+                        "circuit": arm["member"],
+                        "instruction": position,
+                        "gate": "rz",
+                        "qx_qubit": qubit,
+                        "physical_qubit": physical,
+                        "value": repr(theta),
+                    }
+                )
+        counts[arm["member"]] = {"rz": total, "off_grid": failing}
+    return {
+        "grid": f"pi/{cases.ANGLE_GRID}",
+        "tolerance": cases.ANGLE_TOLERANCE,
+        "counts": counts,
+        "distinct_values": sorted({row["value"] for row in rows}, key=float),
+        "rows": rows,
+    }
+
+
+def build() -> dict[str, Any]:
+    """Every form, program text and ideal-law stage of both arms, computed in the repository interpreter."""
+    arms = load_arms()
+    forms = []
+    for arm in arms:
+        deferred, steps = defer(arm["circuit"])
+        lowered_deferred = lower(deferred)
+        readout = [q for q, _ in sorted(_final_measures(lowered_deferred), key=lambda pair: pair[1])]
+        comment = (
+            f"{arm['member']} deferred-measurement form; restricted qubit k on q[k] (physical "
+            f"{arm['physical']}), ancilla q[{QX_ANCILLA}]; c0 = q[{readout[0]}], c1 = q[{readout[1]}]"
+        )
+        forms.append(
+            {
+                "arm": arm,
+                "form": "deferred",
+                "circuit": deferred,
+                "lowered": lowered_deferred,
+                "steps": steps,
+                "readout": readout,
+                "text": program(lowered_deferred, comment),
+            }
+        )
+        if steps["ancillas"] != [QX_ANCILLA]:
+            raise ValueError(f"{arm['member']}: deferral ancillas {steps['ancillas']}, not q[{QX_ANCILLA}]")
+        if not arm["branch"]:
+            native = lower(arm["circuit"])
+            readout = [q for q, _ in sorted(_all_measures(native), key=lambda pair: pair[1])]
+            comment = (
+                f"{arm['member']} native form; restricted qubit k on q[k] (physical {arm['physical']}); "
+                f"mid-circuit c0 = q[{readout[0]}], c1 = q[{readout[1]}]"
+            )
+            forms.append(
+                {
+                    "arm": arm,
+                    "form": "native",
+                    "circuit": arm["circuit"],
+                    "lowered": native,
+                    "steps": None,
+                    "readout": readout,
+                    "text": program(native, comment),
+                }
+            )
+    return {"arms": arms, "forms": forms}
+
+
+def _final_measures(circuit: Circuit) -> list[tuple[int, int]]:
+    pairs = _terminal(circuit)
+    if pairs is None:
+        raise ValueError(f"{circuit.name}: the deferred form measures before its end")
+    return pairs
+
+
+def _all_measures(circuit: Circuit) -> list[tuple[int, int]]:
+    return [
+        (_qubits(circuit, inst)[0], circuit.find_bit(inst.clbits[0]).index)
+        for inst in circuit.data
+        if inst.operation.name == "measure"
+    ]
+
+
+def file_name(form: dict[str, Any]) -> str:
+    return f"{form['arm']['member']}-{form['form']}.cq"
+
+
+def stages(built: dict[str, Any], texts: dict[str, str]) -> dict[str, Any]:
+    """Reference law of each arm and every stage's law and gap: deferred, lowered and parsed from texts."""
+    arms, forms = built["arms"], built["forms"]
+    jobs = [serialize(arm["circuit"]) for arm in arms]
+    for form in forms:
+        if form["form"] == "deferred":
+            jobs.append(serialize(form["circuit"]))
+        jobs.append(serialize(form["lowered"]))
+        parsed = parse_program(texts[file_name(form)], form["circuit"].num_clbits)
+        jobs.append(serialize(parsed))
+    laws = parallel.ordered_map(law, jobs, min_items=2)
+    reference = {arm["member"]: laws[n] for n, arm in enumerate(arms)}
+    position = len(arms)
+    out: dict[str, Any] = {"reference": reference, "forms": {}}
+    for form in forms:
+        member = form["arm"]["member"]
+        row: dict[str, Any] = {}
+        names = (["deferred"] if form["form"] == "deferred" else []) + ["lowered", "parsed"]
+        for name in names:
+            row[name] = {"law": laws[position], "max_gap": gap(laws[position], reference[member])}
+            position += 1
+        out["forms"][file_name(form)] = row
+    return out
+
+
+# ---------------------------------------------------------------- reset models
+
+
+def branches(circuit: Circuit, reset_model: str) -> dict[int, Any]:
+    """Unnormalized pure branch states of a circuit with projective measures, keyed by recorded value.
+
+    reset_model "ideal" applies X to a branch whose qubit holds 1 and refuses a
+    branch with weight on both values (a mixed reset); "qxelarator" is the
+    observed qxelarator 0.10.0 map: zero weight on 1 leaves the state as it is,
+    otherwise every amplitude pair (a0x, a1x) becomes sqrt(|a0x|^2 + |a1x|^2)
+    on the 0 side with zero phase.
+    """
+    import numpy as np
+    from qiskit import QuantumCircuit
+    from qiskit.quantum_info import Statevector
+
+    n = circuit.num_qubits
+    index = np.arange(2**n)
+    states: dict[int, Any] = {0: Statevector.from_label("0" * n).data}
+    segment = QuantumCircuit(n)
+
+    def flush() -> None:
+        nonlocal segment
+        if segment.data:
+            for key in states:
+                states[key] = Statevector(states[key]).evolve(segment).data
+        segment = QuantumCircuit(n)
+
+    for inst in circuit.data:
+        name = inst.operation.name
+        qubits = _qubits(circuit, inst)
+        if name not in ("measure", "reset"):
+            segment.append(inst.operation, qubits)
+            continue
+        flush()
+        one = ((index >> qubits[0]) & 1) == 1
+        if name == "measure":
+            clbit = circuit.find_bit(inst.clbits[0]).index
+            split: dict[int, Any] = {}
+            for key, vector in states.items():
+                for outcome, mask in ((0, ~one), (1, one)):
+                    projected = np.where(mask, vector, 0)
+                    if np.vdot(projected, projected).real > 0:
+                        split[(key & ~(1 << clbit)) | (outcome << clbit)] = projected
+            states = split
+            continue
+        for key, vector in states.items():
+            low, high = vector[~one], vector[one]
+            if np.vdot(high, high).real == 0:
+                continue
+            reset = np.zeros_like(vector)
+            if reset_model == "ideal":
+                if np.vdot(low, low).real != 0:
+                    raise ValueError("an ideal reset of a branch with weight on 0 and 1 is a mixture")
+                reset[~one] = high
+            elif reset_model == "qxelarator":
+                reset[~one] = np.sqrt(np.abs(low) ** 2 + np.abs(high) ** 2)
+            else:
+                raise ValueError(f"unknown reset model {reset_model!r}")
+            states[key] = reset
+    flush()
+    return states
+
+
+def branch_law(item: tuple[bytes, str]) -> list[float]:
+    """Pool worker: recorded law of a serialized circuit under a reset model, clbit 0 least significant."""
+    import numpy as np
+
+    payload, reset_model = item
+    circuit = deserialize(payload)
+    out = [0.0] * 2**circuit.num_clbits
+    for key, vector in branches(circuit, reset_model).items():
+        out[key] += float(np.vdot(vector, vector).real)
+    return out
+
+
+def law_item(item: tuple[str, bytes]) -> list[float]:
+    """Pool worker: ("law", payload) through law, or (reset model, payload) through branch_law."""
+    kind, payload = item
+    return law(payload) if kind == "law" else branch_law((payload, kind))
+
+
+def amplitudes_of(vector: Any) -> dict[str, list[float]]:
+    """Normalized nonzero amplitudes of a QX_WIDTH-qubit vector in QX key form, qubit 0 rightmost."""
+    import numpy as np
+
+    norm = math.sqrt(float(np.vdot(vector, vector).real))
+    return {
+        format(n, f"0{QX_WIDTH}b"): [float(v.real) / norm, float(v.imag) / norm]
+        for n, v in enumerate(vector)
+        if abs(v) / norm > 1e-12
+    }
+
+
+def state_fidelity(a: dict[str, list[float]], b: dict[str, list[float]]) -> float:
+    overlap = complex(0.0)
+    for key, (re_, im) in a.items():
+        if key in b:
+            overlap += complex(re_, -im) * complex(*b[key])
+    return abs(overlap) ** 2
+
+
+def probe_models(item: tuple[str, dict[str, list[float]]]) -> dict[str, Any]:
+    """Pool worker: fidelity of a retained QX state with each reset model's state of the same program."""
+    text, qx_state = item
+    circuit = parse_program(text, 0)
+    row: dict[str, Any] = {}
+    for model in ("qxelarator", "ideal"):
+        try:
+            (vector,) = branches(circuit, model).values()
+        except ValueError as error:
+            row[model] = str(error)
+            continue
+        row[model] = state_fidelity(qx_state, amplitudes_of(vector))
+    return row
+
+
+def native_branches(item: tuple[str, int, dict[str, Any]]) -> dict[str, Any]:
+    """Pool worker: a retained QX branch state of the native program against each reset model's branch."""
+    text, clbit_qubit, run = item
+    circuit = parse_program(text, 1)
+    key = next(iter(run["results"]))
+    outcome = int(bit(key, clbit_qubit))
+    row: dict[str, Any] = {"seed": run["seed"], "c0": outcome}
+    for model in ("qxelarator", "ideal"):
+        vector = branches(circuit, model)[outcome]
+        row[model] = state_fidelity(run["state"], amplitudes_of(vector))
+    return row
+
+
+def branch_program(text: str) -> str:
+    """The native program without its trailing measurements; its mid-circuit measure and reset remain."""
+    lines = text.rstrip("\n").split("\n")
+    while lines and MEASURE_LINE.fullmatch(lines[-1]):
+        lines.pop()
+    return "\n".join([*lines, ""])
+
+
+# ---------------------------------------------------------------- QX runs
+
+
+def sample_seed(position: int, n: int) -> int:
+    """Seed of run n of the program at `position` in form order: each program draws its own stream."""
+    return BASE_SEED + 1000 * position + n
+
+
+def qx_jobs(texts: dict[str, str], forms: list[dict[str, Any]], seeds: int) -> list[dict[str, Any]]:
+    return program_jobs(texts, [(file_name(form), form["form"]) for form in forms], seeds)
+
+
+def program_jobs(texts: dict[str, str], programs: list[tuple[str, str]], seeds: int) -> list[dict[str, Any]]:
+    """The probe jobs, then per (file, form) program in order its state or branch jobs and `seeds` sample jobs."""
+    jobs: list[dict[str, Any]] = [
+        {"kind": "sample", "file": "reset-register-probe", "text": RESET_REGISTER_PROBE, "shots": 64,
+         "seed": BASE_SEED}
+    ]  # fmt: skip
+    for name, text in RESET_PHASE_PROBES.items():
+        jobs.append({"kind": "state", "file": f"reset-phase-probe-{name}", "text": text, "seed": BASE_SEED})
+    for position, (name, form) in enumerate(programs):
+        if form == "deferred":
+            jobs.append({"kind": "state", "file": name, "text": state_program(texts[name]), "seed": BASE_SEED})
+        else:
+            for n in range(BRANCH_SEEDS):
+                jobs.append(
+                    {"kind": "branch", "file": name, "text": branch_program(texts[name]), "seed": BASE_SEED + n}
+                )
+        for n in range(seeds):
+            jobs.append(
+                {"kind": "sample", "file": name, "text": texts[name], "shots": QX_SHOTS,
+                 "seed": sample_seed(position, n)}
+            )  # fmt: skip
+    return jobs
+
+
+def run_qx(jobs: list[dict[str, Any]]) -> dict[str, Any]:
+    """The QX jobs on qxelarator under $QI_PYTHON (qi_stack.run): this file's --qx-worker mode."""
+    result: dict[str, Any] = json.loads(
+        qi_stack.run(["-I", "-B", str(Path(__file__).resolve()), "--qx-worker"], json.dumps(jobs))
+    )
+    return result
+
+
+def qx_job(job: dict[str, Any]) -> Any:
+    """Pool worker under $QI_PYTHON: a sampled histogram, a final state, or one shot's branch state and key."""
+    import box_kite_qx_sweep as sweep  # its filter silences qxelarator's SWIG import warnings
+    import qxelarator
+
+    if job["kind"] == "sample":
+        return sweep.emulate((job["text"], job["shots"], job["seed"]))
+    result = qxelarator.execute_string(job["text"], iterations=1, seed=job["seed"])
+    if isinstance(result, qxelarator.SimulationError):
+        raise RuntimeError(f"qxelarator: {result}")
+    state = {str(key): [float(v.real), float(v.imag)] for key, v in sorted(result.state.items())}
+    if job["kind"] == "state":
+        return state
+    return {"results": {str(key): int(value) for key, value in result.results.items()}, "state": state}
+
+
+def qx_worker() -> int:
+    import platform
+    from importlib import metadata
+
+    jobs = json.loads(sys.stdin.read())
+    if metadata.version("qxelarator") != QXELARATOR:
+        raise SystemExit(f"qxelarator {metadata.version('qxelarator')} is installed; the check pins {QXELARATOR}")
+    results = parallel.ordered_map(qx_job, jobs, min_items=2)
+    versions = {name: metadata.version(name) for name in ("qxelarator", "libqasm", "qiskit")}
+    environment = {"python": platform.python_version(), **versions, "workers": parallel.workers()}
+    print(json.dumps({"environment": environment, "results": results}))
+    return 0
+
+
+def native_form(record: dict[str, Any]) -> dict[str, Any]:
+    (row,) = [row for row in record["programs"] if row["form"] == "native"]
+    return row
+
+
+def reset_evidence(record: dict[str, Any], texts: dict[str, str]) -> dict[str, Any]:
+    """Each reset model against the retained QX probe and branch states, and its law of the native program."""
+    probes = record["qx"]["reset_phase_probes"]
+    probe_rows = parallel.ordered_map(
+        probe_models, [(RESET_PHASE_PROBES[name], probes[name]["amplitudes"]) for name in sorted(probes)], min_items=2
+    )
+    native = native_form(record)
+    text = texts[native["file"]]
+    runs = record["qx"]["native_branches"]
+    branch_rows = parallel.ordered_map(
+        native_branches, [(branch_program(text), native["readout"][0], run) for run in runs], min_items=2
+    )
+    parsed = serialize(parse_program(text, 2))
+    laws = parallel.ordered_map(branch_law, [(parsed, "ideal"), (parsed, "qxelarator")], min_items=2)
+    return {
+        "probes": dict(zip(sorted(probes), probe_rows, strict=True)),
+        "native_branches": branch_rows,
+        "native_law": {"ideal": laws[0], "qxelarator": laws[1]},
+    }
+
+
+QI_LOCK = ROOT / "docs" / "notes" / "quantum_inspire" / "requirements-qi.txt"
+UNIT_NORM_TOL = 1e-9
+
+
+def qi_lock_environment() -> dict[str, str]:
+    """The Python minor version and the qxelarator, libqasm and qiskit pins of the Quantum Inspire lock."""
+    text = QI_LOCK.read_text(encoding="utf-8")
+    found = re.search(r"Python (\d+\.\d+)\.\d+", text)
+    if found is None:
+        raise ValueError(f"{QI_LOCK} names no Python version")
+    pins = dict(re.findall(r"^(qxelarator|libqasm|qiskit)==(\S+)$", text, flags=re.MULTILINE))
+    if set(pins) != {"qxelarator", "libqasm", "qiskit"}:
+        raise ValueError(f"{QI_LOCK} lacks a qxelarator, libqasm or qiskit pin")
+    return {"python_minor": found.group(1), **pins}
+
+
+def require_state(state: Any, where: str) -> None:
+    """A retained state: QX_WIDTH-bit keys, pairs of finite floats, unit norm."""
+    if not isinstance(state, dict) or not state:
+        raise ValueError(f"{where}: the state is empty or not a mapping")
+    total = 0.0
+    for key, value in state.items():
+        if not (isinstance(key, str) and len(key) == QX_WIDTH and set(key) <= {"0", "1"}):
+            raise ValueError(f"{where}: basis key {key!r} is not a {QX_WIDTH}-bit string")
+        if not (
+            isinstance(value, list)
+            and len(value) == 2
+            and all(isinstance(part, float) and math.isfinite(part) for part in value)
+        ):
+            raise ValueError(f"{where}: amplitude {value!r} at {key} is not a finite (re, im) pair")
+        total += value[0] ** 2 + value[1] ** 2
+    if abs(total - 1.0) > UNIT_NORM_TOL:
+        raise ValueError(f"{where}: the state's norm squared is {total}, not 1")
+
+
+def require_record_shape(record: dict[str, Any]) -> None:
+    """The retained QX section holds the pinned environment and every run the experiment constants require."""
+    qx = record["qx"]
+    lock = qi_lock_environment()
+    environment = qx["environment"]
+    if not str(environment.get("python", "")).startswith(lock["python_minor"] + "."):
+        raise ValueError(f"QX ran under Python {environment.get('python')!r}; the lock pins {lock['python_minor']}")
+    for name in ("qxelarator", "libqasm", "qiskit"):
+        if environment.get(name) != lock[name]:
+            raise ValueError(f"QX ran {name} {environment.get(name)!r}; the lock pins {lock[name]}")
+    if lock["qxelarator"] != QXELARATOR:
+        raise ValueError(f"the lock pins qxelarator {lock['qxelarator']}; this check pins {QXELARATOR}")
+    if (qx["seeds"], qx["shots"]) != (SEEDS, QX_SHOTS):
+        raise ValueError(f"QX samples declare {qx['seeds']} seeds of {qx['shots']} shots, not {SEEDS} of {QX_SHOTS}")
+    for name, runs in qx["samples"].items():
+        if len(runs) != SEEDS:
+            raise ValueError(f"{name}: {len(runs)} sampled runs, not {SEEDS}")
+    if set(qx["reset_phase_probes"]) != set(RESET_PHASE_PROBES):
+        raise ValueError(f"reset phase probes {sorted(qx['reset_phase_probes'])} are not {sorted(RESET_PHASE_PROBES)}")
+    for name, probe in qx["reset_phase_probes"].items():
+        require_state(probe["amplitudes"], f"reset phase probe {name}")
+    for name, state in qx["states"].items():
+        require_state(state["amplitudes"], f"QX state {name}")
+    if len(qx["native_branches"]) != BRANCH_SEEDS:
+        raise ValueError(f"{len(qx['native_branches'])} native branch runs, not {BRANCH_SEEDS}")
+    for n, run in enumerate(qx["native_branches"]):
+        results = run["results"]
+        (key,) = results if len(results) == 1 else (None,)
+        if key is None or len(key) != QX_WIDTH or set(key) > {"0", "1"} or results[key] != 1:
+            raise ValueError(f"native branch run {n}: results {results} are not one {QX_WIDTH}-bit shot")
+        require_state(run["state"], f"native branch run {n}")
+
+
+def require_reset_evidence(evidence: dict[str, Any], reference: list[float]) -> None:
+    """The qxelarator model reproduces every retained QX state; the ideal reset differs where weight sat on 1."""
+    for name, row in evidence["probes"].items():
+        if abs(1.0 - row["qxelarator"]) > EXACT_TOL:
+            raise ValueError(f"reset probe {name}: the qxelarator model's fidelity is {row['qxelarator']}")
+    if evidence["probes"]["phase_minus"]["ideal"] > 0.5:
+        raise ValueError("the ideal reset reproduces the |-> probe, which the qxelarator model must alone explain")
+    if abs(1.0 - evidence["probes"]["already_zero"]["ideal"]) > EXACT_TOL:
+        raise ValueError("the ideal reset differs from QX where the reset qubit holds no weight on 1")
+    if {row["c0"] for row in evidence["native_branches"]} != {0, 1}:
+        raise ValueError("the retained native branch states do not cover both mid-circuit outcomes")
+    for row in evidence["native_branches"]:
+        if abs(1.0 - row["qxelarator"]) > EXACT_TOL:
+            raise ValueError(f"native branch seed {row['seed']}: qxelarator model fidelity {row['qxelarator']}")
+        if (row["c0"] == 0) != (abs(1.0 - row["ideal"]) <= EXACT_TOL):
+            raise ValueError(f"native branch seed {row['seed']}: the ideal reset fidelity {row['ideal']} breaks c0")
+    if gap(evidence["native_law"]["ideal"], reference) > EXACT_TOL:
+        raise ValueError("the branch stepper with an ideal reset leaves the dynamic_density reference")
+    if gap(evidence["native_law"]["qxelarator"], reference) <= EXACT_TOL:
+        raise ValueError("the qxelarator reset model leaves the native law at the reference")
+
+
+def out(path: Path, seeds: int) -> dict[str, Any]:
+    stack = qi_stack.probe()
+    if not stack.available:
+        raise SystemExit(f"--out runs qxelarator under $QI_PYTHON: {stack.reason}")
+    built = build()
+    texts = {file_name(form): form["text"] for form in built["forms"]}
+    staged = stages(built, texts)
+    for name, row in staged["forms"].items():
+        for stage, values in row.items():
+            if values["max_gap"] > EXACT_TOL:
+                raise SystemExit(f"{name}: the {stage} law differs from the reference by {values['max_gap']}")
+    jobs = qx_jobs(texts, built["forms"], seeds)
+    qx = run_qx(jobs)
+    register = qx["results"][0]
+    states: dict[str, Any] = {}
+    probes: dict[str, Any] = {}
+    native_runs: list[dict[str, Any]] = []
+    histograms: dict[str, list[dict[str, Any]]] = {}
+    for job, result in zip(jobs[1:], qx["results"][1:], strict=True):
+        if job["file"].startswith("reset-phase-probe-"):
+            name = job["file"].removeprefix("reset-phase-probe-")
+            probes[name] = {"text_sha256": sha256(job["text"].encode()), "amplitudes": result}
+        elif job["kind"] == "state":
+            states[job["file"]] = {"sha256": sha256(job["text"].encode()), "seed": job["seed"], "amplitudes": result}
+        elif job["kind"] == "branch":
+            native_runs.append({"seed": job["seed"], "text_sha256": sha256(job["text"].encode()), **result})
+        else:
+            histograms.setdefault(job["file"], []).append({"seed": job["seed"], "counts": result})
+    path.parent.mkdir(parents=True, exist_ok=True)
+    for name, text in texts.items():
+        (path.parent / name).write_text(text, encoding="utf-8")
+    record: dict[str, Any] = {
+        "schema": SCHEMA,
+        "isa": {"path": ISA.relative_to(ROOT).as_posix(), "sha256": sha256(ISA.read_bytes())},
+        "record": {"path": RECORD.relative_to(ROOT).as_posix(), "sha256": sha256(RECORD.read_bytes())},
+        "qx_width": QX_WIDTH,
+        "bit_order": BIT_ORDER,
+        "arms": [
+            {
+                "name": arm["name"],
+                "member": arm["member"],
+                "physical_qubits": arm["physical"],
+                "reference_law": staged["reference"][arm["member"]],
+            }
+            for arm in built["arms"]
+        ],
+        "angle_grid": off_grid(built),
+        "programs": [
+            {
+                "file": file_name(form),
+                "member": form["arm"]["member"],
+                "form": form["form"],
+                "sha256": sha256(form["text"].encode()),
+                "readout": form["readout"],
+                "deferral": form["steps"],
+                "stages": staged["forms"][file_name(form)],
+            }
+            for form in built["forms"]
+        ],
+        "qx": {
+            "environment": qx["environment"],
+            "opensquirrel": "not used: QX executes cQASM without compiler passes",
+            "reset_register_probe": {"text_sha256": sha256(RESET_REGISTER_PROBE.encode()), "counts": register},
+            "reset_phase_probes": probes,
+            "native_branches": native_runs,
+            "shots": QX_SHOTS,
+            "seed_rule": (
+                "sampled run n of the program at position p in programs order takes base_seed + 1000 p + n; "
+                "state runs take base_seed; native branch run n takes base_seed + n"
+            ),
+            "base_seed": BASE_SEED,
+            "seeds": seeds,
+            "states": states,
+            "samples": histograms,
+        },
+    }
+    record["reset_model"] = reset_evidence(record, texts)
+    record["comparison"] = compare_qx(record)
+    try:
+        require_record_shape(record)
+    except ValueError as error:
+        raise SystemExit(f"{path}: the acquired record would fail --check: {error}") from error
+    path.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    try:
+        require_verdicts(record)
+    except ValueError as error:
+        raise SystemExit(f"{path}: {error}") from error
+    return record
+
+
+# ---------------------------------------------------------------- comparison
+
+
+def compare_qx(record: dict[str, Any], reverse: bool = False) -> dict[str, Any]:
+    """QX laws against the reference and the qxelarator reset model.
+
+    exact: each deferred program's QX state marginal against the reference.
+    deferred_pair: pooled counts of both deferred programs against the
+    reference; native_vs_reference: the deferred feedback and the native
+    no-feedback counts against the reference; native_vs_reset_model: the same
+    counts against the reference (feedback) and the qxelarator reset model's
+    law (no-feedback). Each sampled comparison is
+    n21_exact_model_validation.compare at total tail TAIL.
+    """
+    import n21_exact_model_validation as validation
+
+    members, contracts = validation.endpoint(RECORD)
+    reference = {arm["name"]: arm["reference_law"] for arm in record["arms"]}
+    by_member = {arm["member"]: arm["name"] for arm in record["arms"]}
+    programs = {row["file"]: row for row in record["programs"]}
+    exact: dict[str, Any] = {}
+    exact_laws: dict[str, list[float]] = {}
+    for name, state in sorted(record["qx"]["states"].items()):
+        row = programs[name]
+        law_ = state_law(state["amplitudes"], row["readout"], [q for q in range(QX_ANCILLA + 1, QX_WIDTH)])
+        exact_laws[row["member"]] = law_
+        exact[name] = {"law": law_, "norm": math.fsum(law_), "max_gap": gap(law_, reference[by_member[row["member"]]])}
+    vectors: dict[str, list[int]] = {}
+    shots = None
+    for position, row in enumerate(record["programs"]):
+        runs = record["qx"]["samples"][row["file"]]
+        seeds = [run["seed"] for run in runs]
+        if seeds != [sample_seed(position, n) for n in range(record["qx"]["seeds"])]:
+            raise ValueError(f"{row['file']}: seeds {seeds} break the seed rule")
+        for run in runs:
+            if sum(run["counts"].values()) != record["qx"]["shots"]:
+                raise ValueError(f"{row['file']}: seed {run['seed']} holds {sum(run['counts'].values())} shots")
+        vectors[row["file"]] = counts_vector([run["counts"] for run in runs], row["readout"], reverse)
+        if shots is not None and sum(vectors[row["file"]]) != shots:
+            raise ValueError("sampled programs hold different shot totals")
+        shots = sum(vectors[row["file"]])
+    if shots is None:
+        raise ValueError("the record holds no sampled program")
+    files = {(row["member"], row["form"]): row["file"] for row in record["programs"]}
+    feedback, control = (by_member[term.member] for term in contracts[0].terms)
+    feedback_member, control_member = (term.member for term in contracts[0].terms)
+
+    def pooled(control_form: str, control_law: list[float]) -> dict[str, Any]:
+        counts = {
+            feedback: vectors[files[(feedback_member, "deferred")]],
+            control: vectors[files[(control_member, control_form)]],
+        }
+        laws = {feedback: reference[feedback], control: control_law}
+        return {
+            "files": [files[(feedback_member, "deferred")], files[(control_member, control_form)]],
+            **validation.compare({"shots": shots, "counts": counts}, laws, members, contracts),
+        }
+
+    model_law = record["reset_model"]["native_law"]["qxelarator"]
+    contract = contracts[0]
+    exact_scores = {term.member: score(list(term.values), exact_laws[term.member]) for term in contract.terms}
+    reference_scores = {
+        term.member: score(list(term.values), reference[by_member[term.member]]) for term in contract.terms
+    }
+    return {
+        "exact": exact,
+        "exact_contrast": math.fsum(term.sign * exact_scores[term.member] for term in contract.terms),
+        "reference_scores": reference_scores,
+        "reference_contrast": math.fsum(term.sign * reference_scores[term.member] for term in contract.terms),
+        "reset_model_control_score": score(list(contract.terms[1].values), model_law),
+        "deferred_pair": pooled("deferred", reference[control]),
+        "native_vs_reference": pooled("native", reference[control]),
+        "native_vs_reset_model": pooled("native", model_law),
+    }
+
+
+def require_verdicts(record: dict[str, Any]) -> None:
+    """Deferred programs match the reference exactly and in sample; the native arm matches the reset model only."""
+    comparison = record["comparison"]
+    for name, row in comparison["exact"].items():
+        if row["max_gap"] > EXACT_TOL or abs(row["norm"] - 1.0) > EXACT_TOL:
+            raise ValueError(f"{name}: QX exact law gap {row['max_gap']} or norm {row['norm']} leaves {EXACT_TOL}")
+    if abs(comparison["exact_contrast"] - comparison["reference_contrast"]) > EXACT_TOL:
+        raise ValueError(f"QX exact contrast {comparison['exact_contrast']} differs from the reference")
+    if not comparison["deferred_pair"]["passed"]:
+        raise ValueError(f"deferred QX counts leave the radius: {comparison['deferred_pair']['failures']}")
+    if not comparison["native_vs_reset_model"]["passed"]:
+        raise ValueError(f"native QX counts leave the reset model: {comparison['native_vs_reset_model']['failures']}")
+    if comparison["native_vs_reference"]["passed"]:
+        raise ValueError("native QX counts pass the reference, which the qxelarator reset model excludes")
+
+
+def _first_gap(a: Any, b: Any, tol: float = EXACT_TOL, path: str = "$") -> str | None:
+    """The first path where two retained structures differ beyond tol, with both values, or None."""
+    if isinstance(a, dict) and isinstance(b, dict):
+        if a.keys() != b.keys():
+            return f"{path}: keys {sorted(set(a) ^ set(b))} differ"
+        for key in a:
+            found = _first_gap(a[key], b[key], tol, f"{path}.{key}")
+            if found is not None:
+                return found
+        return None
+    if isinstance(a, list) and isinstance(b, list):
+        if len(a) != len(b):
+            return f"{path}: length {len(a)} against {len(b)}"
+        for index, (x, y) in enumerate(zip(a, b, strict=True)):
+            found = _first_gap(x, y, tol, f"{path}[{index}]")
+            if found is not None:
+                return found
+        return None
+    return None if _close(a, b, tol) else f"{path}: retained {a!r}, recomputed {b!r}"
+
+
+def _close(a: Any, b: Any, tol: float = EXACT_TOL) -> bool:
+    if isinstance(a, dict) and isinstance(b, dict):
+        return a.keys() == b.keys() and all(_close(a[k], b[k], tol) for k in a)
+    if isinstance(a, list) and isinstance(b, list):
+        return len(a) == len(b) and all(_close(x, y, tol) for x, y in zip(a, b, strict=True))
+    if isinstance(a, float) or isinstance(b, float):
+        return isinstance(a, (int, float)) and isinstance(b, (int, float)) and abs(a - b) <= tol
+    if isinstance(a, str) and isinstance(b, str):
+        return _message_form(a) == _message_form(b)
+    return bool(a == b)
+
+
+def _message_form(text: str) -> str:
+    """A retained message with every embedded float rounded to MESSAGE_DIGITS significant digits."""
+    return FLOAT_TEXT.sub(lambda match: f"{float(match.group()):.{MESSAGE_DIGITS}g}", text)
+
+
+def verify(record: dict[str, Any], directory: Path) -> dict[str, Any]:
+    """Every claim of a record from the current circuits and the retained programs; raises on a difference."""
+    if record.get("schema") != SCHEMA:
+        raise ValueError(f"schema {record.get('schema')!r} is not {SCHEMA}")
+    require_record_shape(record)
+    if (record.get("qx_width"), record.get("bit_order")) != (QX_WIDTH, BIT_ORDER):
+        raise ValueError(f"declared width {record.get('qx_width')!r} or bit order differs from the key reading")
+    for key, path in (("isa", ISA), ("record", RECORD)):
+        if record[key]["path"] != path.relative_to(ROOT).as_posix():
+            raise ValueError(f"{key} path {record[key]['path']!r} is not {path.relative_to(ROOT).as_posix()}")
+        if record[key]["sha256"] != sha256(path.read_bytes()):
+            raise ValueError(f"{record[key]['path']} differs from the input the record was built from")
+    built = build()
+    texts = {}
+    for row, form in zip(record["programs"], built["forms"], strict=True):
+        name = file_name(form)
+        text = (directory / row["file"]).read_text(encoding="utf-8")
+        if row["file"] != name or sha256(text.encode()) != row["sha256"]:
+            raise ValueError(f"{row['file']}: retained bytes differ from the record's sha256")
+        if text != form["text"]:
+            raise ValueError(f"{name}: the current circuits export to other bytes than the retained program")
+        if (row["readout"], row["deferral"], row["form"]) != (form["readout"], form["steps"], form["form"]):
+            raise ValueError(f"{name}: readout map, deferral steps or form differ from the current construction")
+        texts[name] = text
+    staged = stages(built, texts)
+    descriptors = [(arm["name"], arm["member"], arm["physical_qubits"]) for arm in record["arms"]]
+    rebuilt = [(arm["name"], arm["member"], arm["physical"]) for arm in built["arms"]]
+    if descriptors != rebuilt:
+        raise ValueError(f"retained arms {descriptors} differ from the rebuilt arms {rebuilt}")
+    for arm in record["arms"]:
+        if gap(arm["reference_law"], staged["reference"][arm["member"]]) > EXACT_TOL:
+            raise ValueError(f"{arm['member']}: reference law differs from the recomputed one")
+    for row in record["programs"]:
+        for stage, values in staged["forms"][row["file"]].items():
+            if values["max_gap"] > EXACT_TOL:
+                raise ValueError(f"{row['file']}: the {stage} law differs from the reference by {values['max_gap']}")
+        if not _close(row["stages"], staged["forms"][row["file"]]):
+            raise ValueError(f"{row['file']}: retained stage laws differ from the recomputed ones")
+    if record["angle_grid"] != off_grid(built):
+        raise ValueError("the off-grid Rz list differs from the current lowering")
+    qx = record["qx"]
+    if qx["reset_register_probe"] != {"text_sha256": sha256(RESET_REGISTER_PROBE.encode()), "counts": {"01": 64}}:
+        raise ValueError(f"register probe {qx['reset_register_probe']} does not keep the measured character")
+    for name, probe in qx["reset_phase_probes"].items():
+        if probe["text_sha256"] != sha256(RESET_PHASE_PROBES[name].encode()):
+            raise ValueError(f"reset phase probe {name}: text differs from the probe that ran")
+    native = native_form(record)
+    readout_qubit = native["readout"][0]
+    for n, run in enumerate(qx["native_branches"]):
+        (key,) = run["results"]
+        if any(bit(key, q) != "0" for q in range(QX_WIDTH) if q != readout_qubit):
+            raise ValueError(f"native branch run {n}: key {key} sets a qubit other than measured q[{readout_qubit}]")
+        if (run["seed"], run["text_sha256"]) != (BASE_SEED + n, sha256(branch_program(texts[native["file"]]).encode())):
+            raise ValueError(f"native branch run {n}: seed or program differs from the branch program")
+    evidence = reset_evidence(record, texts)
+    member = {arm["member"]: arm["reference_law"] for arm in record["arms"]}[native["member"]]
+    require_reset_evidence(evidence, member)
+    if not _close(evidence, record["reset_model"]):
+        raise ValueError(
+            "the retained reset-model evidence differs from the recomputed one: "
+            f"{_first_gap(record['reset_model'], evidence)}"
+        )
+    jobs = []
+    for name, state in sorted(qx["states"].items()):
+        text = state_program(texts[name])
+        if state["sha256"] != sha256(text.encode()):
+            raise ValueError(f"{name}: the state program's sha256 differs from the retained program's")
+        jobs.append(serialize(parse_program(text, 0)))
+    references = parallel.ordered_map(statevector, jobs, min_items=2)
+    fidelities = {}
+    for (name, state), reference in zip(sorted(qx["states"].items()), references, strict=True):
+        value = fidelity(state["amplitudes"], reference)
+        if abs(1.0 - value) > EXACT_TOL:
+            raise ValueError(f"{name}: QX state fidelity {value} with the Aer statevector of its program")
+        fidelities[name] = value
+    comparison = compare_qx(record)
+    if not _close(comparison, record["comparison"]):
+        raise ValueError(
+            f"the retained comparison differs from the recomputed one: {_first_gap(record['comparison'], comparison)}"
+        )
+    require_verdicts(record)
+    return {"comparison": comparison, "fidelities": fidelities}
+
+
+def live_picks(samples: list[int], count: int) -> list[int]:
+    """count entries spread evenly over the sample job indices, the first and last included."""
+    total = len(samples)
+    if count < 1:
+        return []
+    if count >= total:
+        return list(samples)
+    spread = {round(n * (total - 1) / (count - 1)) for n in range(count)} if count > 1 else {0}
+    return [samples[n] for n in sorted(spread)]
+
+
+def retained_result(record: dict[str, Any], job: dict[str, Any]) -> Any:
+    """The result the record retains for a QX job: probe counts or amplitudes, a branch run, or a sample histogram."""
+    qx = record["qx"]
+    name = job["file"]
+    if name == "reset-register-probe":
+        return qx["reset_register_probe"]["counts"]
+    if name.startswith("reset-phase-probe-"):
+        return qx["reset_phase_probes"][name.removeprefix("reset-phase-probe-")]["amplitudes"]
+    if job["kind"] == "state":
+        return qx["states"][name]["amplitudes"]
+    if job["kind"] == "branch":
+        run = qx["native_branches"][job["seed"] - BASE_SEED]
+        return {"results": run["results"], "state": run["state"]}
+    (run,) = [run for run in qx["samples"][name] if run["seed"] == job["seed"]]
+    return run["counts"]
+
+
+def live_check(record: dict[str, Any], directory: Path, count: int) -> int:
+    """Rerun the retained jobs on qxelarator under $QI_PYTHON; raises on any result the record lacks.
+
+    The jobs are program_jobs over the retained program files: every reset
+    probe, deferred state and native branch run, plus `count` sample jobs
+    spread over the sample list (each is QX_SHOTS shots of a program of several
+    thousand gates, minutes of qxelarator time, so the gate runs N = 0). Seeded qxelarator is deterministic, so
+    histograms and branch keys equal the retained ones and amplitudes agree
+    within EXACT_TOL.
+    """
+    qx = record["qx"]
+    texts = {row["file"]: (directory / row["file"]).read_text(encoding="utf-8") for row in record["programs"]}
+    for row in record["programs"]:
+        if sha256(texts[row["file"]].encode()) != row["sha256"]:
+            raise ValueError(f"{row['file']}: retained bytes differ from the record's sha256")
+    jobs = program_jobs(texts, [(row["file"], row["form"]) for row in record["programs"]], qx["seeds"])
+    sampled = [n for n, job in enumerate(jobs) if job["kind"] == "sample" and job["file"] in texts]
+    chosen = set(live_picks(sampled, count))
+    picks = [n for n, job in enumerate(jobs) if n in chosen or n not in sampled]
+    outcome = run_qx([jobs[n] for n in picks])
+    if len(outcome["results"]) != len(picks):
+        raise ValueError(f"the qxelarator worker returned {len(outcome['results'])} results for {len(picks)} jobs")
+    for n, result in zip(picks, outcome["results"], strict=True):
+        job = jobs[n]
+        if job["kind"] == "branch":
+            if sha256(job["text"].encode()) != qx["native_branches"][job["seed"] - BASE_SEED]["text_sha256"]:
+                raise ValueError(f"{job['file']}: branch program differs from the retained run")
+        found = _first_gap(retained_result(record, job), result)
+        if found is not None:
+            raise ValueError(f"{job['file']}: qxelarator at seed {job['seed']} differs from the record: {found}")
+    return len(picks)
+
+
+# ---------------------------------------------------------------- self-test
+
+
+def _reject(label: str, action: Callable[[], Any]) -> None:
+    try:
+        action()
+    except ValueError:
+        return
+    raise AssertionError(f"{label} was accepted")
+
+
+def qx_key(value: int, readout: list[int]) -> str:
+    """The QX key whose readout qubits hold recorded value `value` and whose other qubits read 0."""
+    key = ["0"] * QX_WIDTH
+    for k, q in enumerate(readout):
+        key[QX_WIDTH - 1 - q] = str((value >> k) & 1)
+    return "".join(key)
+
+
+def live_mutations() -> int:
+    """live_check on a synthetic record with a stub worker: equal results pass, a moved result fails."""
+    import tempfile
+
+    unit = {"0" * QX_WIDTH: [1.0, 0.0]}
+    names = {"deferred": "a-deferred.cq", "native": "b-native.cq"}
+    texts = {name: f"version 3.0\n// {name}\nH q[0]\nb[0] = measure q[0]\n" for name in names.values()}
+    seeds = 3
+    record: dict[str, Any] = {
+        "programs": [
+            {"file": name, "form": form, "sha256": sha256(texts[name].encode())} for form, name in names.items()
+        ],
+        "qx": {
+            "shots": QX_SHOTS,
+            "seeds": seeds,
+            "reset_register_probe": {"counts": {"01": 64}},
+            "reset_phase_probes": {name: {"amplitudes": dict(unit)} for name in RESET_PHASE_PROBES},
+            "states": {names["deferred"]: {"amplitudes": dict(unit)}},
+            "native_branches": [
+                {
+                    "seed": BASE_SEED + n,
+                    "text_sha256": sha256(branch_program(texts[names["native"]]).encode()),
+                    "results": {"0" * (QX_WIDTH - 1) + "1": 1},
+                    "state": dict(unit),
+                }
+                for n in range(BRANCH_SEEDS)
+            ],
+            "samples": {
+                name: [
+                    {"seed": sample_seed(position, n), "counts": {"0" * QX_WIDTH: QX_SHOTS - n, "1" * QX_WIDTH: n}}
+                    for n in range(seeds)
+                ]
+                for position, name in enumerate(names.values())
+            },
+        },
+    }
+
+    def worker(served: dict[str, Any]) -> Callable[..., str]:
+        def run(arguments: list[str], stdin: str | None = None) -> str:
+            jobs = json.loads(stdin or "[]")
+            return json.dumps({"environment": {}, "results": [retained_result(served, job) for job in jobs]})
+
+        return run
+
+    ones = "1" * QX_WIDTH
+    zeros = "0" * QX_WIDTH
+
+    def move_count(r: dict[str, Any]) -> None:
+        r["qx"]["samples"][names["native"]][1]["counts"][ones] = 9
+
+    def move_amplitude(r: dict[str, Any]) -> None:
+        r["qx"]["states"][names["deferred"]]["amplitudes"][zeros] = [0.9, 0.0]
+
+    def move_branch(r: dict[str, Any]) -> None:
+        r["qx"]["native_branches"][2]["results"] = {ones: 1}
+
+    def move_probe(r: dict[str, Any]) -> None:
+        r["qx"]["reset_register_probe"]["counts"] = {"00": 64}
+
+    moves: list[tuple[str, Callable[[dict[str, Any]], Any]]] = [
+        ("a moved sample count", move_count),
+        ("a moved state amplitude", move_amplitude),
+        ("a moved branch key", move_branch),
+        ("a moved register probe", move_probe),
+    ]
+    with tempfile.TemporaryDirectory() as scratch:
+        for name, text in texts.items():
+            (Path(scratch) / name).write_text(text, encoding="utf-8")
+        with patch.object(qi_stack, "run", worker(record)):
+            if live_check(record, Path(scratch), 2) != 1 + len(RESET_PHASE_PROBES) + 1 + BRANCH_SEEDS + 2:
+                raise AssertionError("the live job count differs from the probes, states, branches and sample picks")
+        rejected = 0
+        for label, move in moves:
+            moved = copy.deepcopy(record)
+            move(moved)
+            with patch.object(qi_stack, "run", worker(moved)):
+                _reject(label, functools.partial(live_check, record, Path(scratch), 2 * seeds))
+            rejected += 1
+    return rejected
+
+
+def self_test() -> None:
+    import box_kite_cases as cases
+    import numpy as np
+    from qiskit import QuantumCircuit
+
+    # The unsnapped qx export equals the snapped one on an on-grid circuit byte for byte.
+    grid = QuantumCircuit(3)
+    grid.h(0)
+    grid.x(1)
+    grid.z(2)
+    grid.s(0)
+    grid.sdg(1)
+    grid.cx(0, 2)
+    grid.cz(1, 2)
+    for k in (-63, -17, -1, 0, 3, 32, 64, 127):
+        grid.rz(k * math.pi / cases.ANGLE_GRID, k % 3)
+    place = {0: 4, 1: 0, 2: 9}
+    if cases.emit(grid, place, dialect="qx", angle_grid=None) != cases.emit(grid, place, dialect="qx"):
+        raise AssertionError("the unsnapped qx export differs from the snapped one on an on-grid circuit")
+    built = build()
+    texts = {file_name(form): form["text"] for form in built["forms"]}
+    staged = stages(built, texts)
+    for name, row in staged["forms"].items():
+        for stage, values in row.items():
+            if values["max_gap"] > EXACT_TOL:
+                raise AssertionError(f"{name}: honest {stage} law gap {values['max_gap']}")
+    reference = staged["reference"]
+    forms = {file_name(form): form for form in built["forms"]}
+    feedback = next(form for form in built["forms"] if form["arm"]["branch"])
+    native = next(form for form in built["forms"] if form["form"] == "native")
+    feedback_name = file_name(feedback)
+    clbits = feedback["circuit"].num_clbits
+
+    # Corrupted cQASM lines, re-hashed so the law and the parser, not the digest, catch them.
+    lines = texts[feedback_name].split("\n")
+    # The middle CZ of the feedback program moves the law by 1/8; an early or the
+    # last CZ acts where CZ and CNOT agree on the reachable states.
+    cz_lines = [n for n, line in enumerate(lines) if line.startswith("CZ ")]
+    middle_cz = cz_lines[len(cz_lines) // 2]
+    copy_line = next(n for n, line in enumerate(lines) if line == f"CNOT q[5], q[{QX_ANCILLA}]")
+    first_rz = next(n for n, line in enumerate(lines) if line.startswith("Rz("))
+    corrupt_cz, corrupt_copy, unparseable, binary = lines.copy(), lines.copy(), lines.copy(), lines.copy()
+    corrupt_cz[middle_cz] = corrupt_cz[middle_cz].replace("CZ ", "CNOT ", 1)
+    corrupt_copy[copy_line] = f"CNOT q[5], q[{QX_ANCILLA + 1}]"
+    unparseable[first_rz] = "Rz(0.1.2) q[1]"
+    binary.insert(first_rz, "c-X q[7], q[1]")
+    _reject("an unparseable Rz line", lambda: parse_program("\n".join(unparseable), clbits))
+    _reject("a cQASM 1.0 binary-controlled line", lambda: parse_program("\n".join(binary), clbits))
+    # Every law that must move off the reference, and the native program under both reset models, in one pool:
+    # corrupted texts, deferrals that drop the control or the body (as circuits and as exported programs).
+    moved: list[tuple[str, tuple[str, bytes]]] = [
+        ("the middle CZ line rewritten as CNOT", ("law", serialize(parse_program("\n".join(corrupt_cz), clbits)))),
+        ("the deferral copy onto another qubit", ("law", serialize(parse_program("\n".join(corrupt_copy), clbits)))),
+    ]
+    for body in ("unconditional", "removed"):
+        broken, _ = defer(feedback["arm"]["circuit"], body=body)
+        exported = parse_program(program(lower(broken), "broken"), clbits)
+        moved += [
+            (f"a deferral with the body {body}", ("law", serialize(broken))),
+            (f"the exported {body} deferral", ("law", serialize(exported))),
+        ]
+    native_payload = serialize(parse_program(texts[file_name(native)], clbits))
+    items = [item for _, item in moved] + [("ideal", native_payload), ("qxelarator", native_payload)]
+    laws = parallel.ordered_map(law_item, items, min_items=2)
+    for (label, _), law_ in zip(moved, laws, strict=False):
+        shift = gap(law_, reference[feedback["arm"]["member"]])
+        if shift <= EXACT_TOL:
+            raise AssertionError(f"{label} left the law within {EXACT_TOL} ({shift})")
+    # Reset models: the ideal stepper reproduces the dynamic_density law of the native program and refuses a
+    # mixed reset; the qxelarator model turns |1>|-> into |0>|+> and keeps the phase when the qubit reads 0.
+    ideal, model = laws[-2], laws[-1]
+    if gap(ideal, reference[native["arm"]["member"]]) > EXACT_TOL:
+        raise AssertionError("the ideal branch stepper leaves the native reference law")
+    _reject(
+        "an ideal reset of a superposition", lambda: branches(parse_program(RESET_PHASE_PROBES["general"], 0), "ideal")
+    )
+    (minus,) = branches(parse_program(RESET_PHASE_PROBES["phase_minus"], 0), "qxelarator").values()
+    plus = {qx_key(0, [0]): [math.sqrt(0.5), 0.0], qx_key(1, [1]): [math.sqrt(0.5), 0.0]}
+    if abs(1.0 - state_fidelity(amplitudes_of(minus), plus)) > EXACT_TOL:
+        raise AssertionError("the qxelarator reset model does not drop the |-> phase")
+    (zero,) = branches(parse_program(RESET_PHASE_PROBES["already_zero"], 0), "qxelarator").values()
+    (zero_ideal,) = branches(parse_program(RESET_PHASE_PROBES["already_zero"], 0), "ideal").values()
+    if abs(1.0 - state_fidelity(amplitudes_of(zero), amplitudes_of(zero_ideal))) > EXACT_TOL:
+        raise AssertionError("the qxelarator reset model changes a qubit with no weight on 1")
+    # Synthetic QX records in QX key form: draws from the reference laws (deferred programs) and the reset
+    # model (native program) pass; a flipped bit order, swapped clbits, moved shots and native draws from
+    # the reference law each fail their check.
+    generator = np.random.default_rng(BASE_SEED)
+    seeds = 4
+
+    def synthetic(native_law: list[float]) -> dict[str, Any]:
+        samples: dict[str, list[dict[str, Any]]] = {}
+        states: dict[str, Any] = {}
+        programs = []
+        for position, (name, form) in enumerate(forms.items()):
+            law_ = native_law if form["form"] == "native" else reference[form["arm"]["member"]]
+            if form["form"] == "deferred":
+                amplitudes = {qx_key(value, form["readout"]): [math.sqrt(p), 0.0] for value, p in enumerate(law_)}
+                states[name] = {"amplitudes": amplitudes}
+            runs = []
+            for n in range(seeds):
+                draw = generator.multinomial(QX_SHOTS, law_)
+                histogram = {qx_key(value, form["readout"]): int(c) for value, c in enumerate(draw) if c}
+                runs.append({"seed": sample_seed(position, n), "counts": histogram})
+            samples[name] = runs
+            programs.append({"file": name, "member": form["arm"]["member"], "form": form["form"],
+                             "readout": form["readout"]})  # fmt: skip
+        return {
+            "arms": [
+                {"name": arm["name"], "member": arm["member"], "reference_law": reference[arm["member"]]}
+                for arm in built["arms"]
+            ],
+            "programs": programs,
+            "reset_model": {"native_law": {"ideal": ideal, "qxelarator": model}},
+            "qx": {"shots": QX_SHOTS, "seeds": seeds, "states": states, "samples": samples},
+        }
+
+    record = synthetic(model)
+    record["comparison"] = compare_qx(record)
+    require_verdicts(record)
+
+    def verdicts(mutated: dict[str, Any], reverse: bool = False) -> None:
+        mutated["comparison"] = compare_qx(mutated, reverse)
+        require_verdicts(mutated)
+
+    _reject("QX keys read with qubit 0 leftmost", lambda: verdicts(copy.deepcopy(record), reverse=True))
+    swapped = copy.deepcopy(record)
+    for row in swapped["programs"]:
+        row["readout"] = row["readout"][::-1]
+    _reject("clbits 0 and 1 read from each other's qubits", lambda: verdicts(swapped))
+    shifted = copy.deepcopy(record)
+    counts = shifted["qx"]["samples"][feedback_name][0]["counts"]
+    keys = sorted(counts)
+    counts[keys[0]] -= 400
+    counts[keys[-1]] += 400
+    _reject("400 shots moved between outcomes", lambda: verdicts(shifted))
+    flipped = copy.deepcopy(record)
+    flipped["qx"]["states"][feedback_name]["amplitudes"] = {
+        key[::-1]: amplitude for key, amplitude in record["qx"]["states"][feedback_name]["amplitudes"].items()
+    }
+    _reject("a QX state written with qubit 0 leftmost", lambda: verdicts(flipped))
+    _reject(
+        "native counts drawn from the reference law", lambda: verdicts(synthetic(reference[native["arm"]["member"]]))
+    )
+    if abs(record["comparison"]["reference_contrast"] - 0.25) > EXACT_TOL:
+        raise AssertionError(f"reference contrast {record['comparison']['reference_contrast']} is not 1/4")
+    # Retained-record shape: the lock's environment, the experiment's seed and shot constants, the full
+    # probe and branch sets, unit-norm well-keyed states and one-shot branch results.
+    unit = {"0" * QX_WIDTH: [math.sqrt(0.5), 0.0], "0" * (QX_WIDTH - 1) + "1": [0.0, math.sqrt(0.5)]}
+    lock = qi_lock_environment()
+    shaped = {
+        "qx": {
+            "environment": {
+                "python": lock["python_minor"] + ".15",
+                **{k: lock[k] for k in ("qxelarator", "libqasm", "qiskit")},
+            },
+            "seeds": SEEDS,
+            "shots": QX_SHOTS,
+            "samples": {"program": [{} for _ in range(SEEDS)]},
+            "reset_phase_probes": {name: {"amplitudes": dict(unit)} for name in RESET_PHASE_PROBES},
+            "states": {"program": {"amplitudes": dict(unit)}},
+            "native_branches": [{"results": {"0" * QX_WIDTH: 1}, "state": dict(unit)} for _ in range(BRANCH_SEEDS)],
+        }
+    }
+    require_record_shape(shaped)
+    shape_mutations: list[tuple[str, Callable[[dict[str, Any]], Any]]] = [
+        ("another qxelarator version", lambda r: r["qx"]["environment"].__setitem__("qxelarator", "0.11.0")),
+        ("another Python minor version", lambda r: r["qx"]["environment"].__setitem__("python", "3.14.7")),
+        ("one declared seed", lambda r: r["qx"].__setitem__("seeds", 1)),
+        ("a truncated sample list", lambda r: r["qx"]["samples"]["program"].pop()),
+        ("another shot count", lambda r: r["qx"].__setitem__("shots", QX_SHOTS // 2)),
+        ("a dropped reset phase probe", lambda r: r["qx"]["reset_phase_probes"].pop("general")),
+        ("a truncated branch list", lambda r: r["qx"]["native_branches"].pop()),
+        ("a zero-count branch", lambda r: r["qx"]["native_branches"][0].__setitem__("results", {"0" * QX_WIDTH: 0})),
+        ("a two-outcome branch", lambda r: r["qx"]["native_branches"][0]["results"].__setitem__("1" * QX_WIDTH, 1)),
+        (
+            "an unnormalized branch state",
+            lambda r: r["qx"]["native_branches"][0]["state"].__setitem__("1" * QX_WIDTH, [0.5, 0.0]),
+        ),  # fmt: skip
+        ("a malformed state key", lambda r: r["qx"]["states"]["program"]["amplitudes"].__setitem__("2", [0.0, 0.0])),
+    ]
+    for label, mutate in shape_mutations:
+        mutated_shape = copy.deepcopy(shaped)
+        mutate(mutated_shape)
+        _reject(label, functools.partial(require_record_shape, mutated_shape))
+    radius = record["comparison"]["deferred_pair"]["radius"]
+    live_rejected = live_mutations()
+    print(
+        "n21 QX conformance self-test: unsnapped export equals the snapped one on grid; record shape checks reject "
+        f"{len(shape_mutations)} mutations; corrupted lines, dropped-control deferrals, "
+        "a flipped bit order, swapped clbits, shifted shots and reference-law native counts rejected at radius "
+        f"{radius:.5f}; reset models reproduce the dynamic_density law and the qxelarator phase drop; "
+        f"the live comparison rejects {live_rejected} moved retained results"
+    )
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--out", type=Path)
+    mode.add_argument("--check", type=Path)
+    mode.add_argument("--self-test", action="store_true")
+    mode.add_argument("--qx-worker", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--seeds", type=int, default=SEEDS, help="with --out: QX runs of QX_SHOTS per program")
+    parser.add_argument(
+        "--live",
+        type=int,
+        metavar="N",
+        help="with --check: rerun every probe, state and branch job plus N sample jobs under $QI_PYTHON",
+    )
+    args = parser.parse_args()
+    if args.live is not None and (args.check is None or args.live < 0):
+        parser.error("--live takes a count N >= 0 and needs --check")
+    if args.qx_worker:
+        return qx_worker()
+    if args.self_test:
+        self_test()
+        return 0
+    if args.out is not None:
+        record = out(args.out, args.seeds)
+    else:
+        record = json.loads(args.check.read_text(encoding="utf-8"))
+        try:
+            verify(record, args.check.parent)
+            live_jobs = None
+            if args.live is not None and qi_stack.live("qxelarator", "replayed retained counts and states"):
+                live_jobs = live_check(record, args.check.parent, args.live)
+        except ValueError as error:
+            raise SystemExit(f"{args.check}: {error}") from error
+        if live_jobs is not None:
+            print(f"n21 QX conformance live: {live_jobs} jobs rerun on qxelarator equal the retained results")
+    comparison = record["comparison"]
+    native = comparison["native_vs_reference"]
+    print(
+        "n21 QX conformance: exact max gaps "
+        + ", ".join(f"{name} {row['max_gap']:.2e}" for name, row in comparison["exact"].items())
+        + f"; exact contrast {comparison['exact_contrast']:.12f} (reference {comparison['reference_contrast']:.12f})"
+        + f"; deferred pair {comparison['deferred_pair']['shots']} shots per arm, max gap "
+        + f"{max(r['max_gap'] for r in comparison['deferred_pair']['circuits'].values()):.5f} within radius "
+        + f"{comparison['deferred_pair']['radius']:.5f}; native reset arm refuted at max gap "
+        + f"{max(r['max_gap'] for r in native['circuits'].values()):.5f}, reset model max gap "
+        + f"{max(r['max_gap'] for r in comparison['native_vs_reset_model']['circuits'].values()):.5f}"
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -69,11 +69,16 @@ GPU matters for sweeps and batched trials, not for single circuits.
 - `dataset --slug SLUG --include FILE ...` uploads tracked files as a
   private dataset, one tar archive with its sha256 manifest, and records it
   under `results/kaggle/datasets/`; `push --dataset SLUG` attaches it, and
-  the kernel verifies every file against the manifest before ENTRY runs. A GPU or TPU push needs
+  the kernel verifies every file against the manifest before ENTRY runs.
+  Uploading the slug again publishes a new version and moves the earlier
+  archive digest, commit and file count into the record's `history`;
+  `verify` requires every retained run's attached archive to be the current
+  version or one in that history. A GPU or TPU push needs
   `--timeout SECONDS` (at most four hours) and refuses while any version
   of the slug is still running or queued (next section). `--with GROUP` adds an
   opt-in package group from `PIN_GROUPS` (`quantum-tools`,
-  `exact-arithmetic`) at the build host's versions, installed under a
+  `exact-arithmetic`, and `qx-emulator`, qxelarator at the Quantum Inspire
+  environment's version) at the build host's versions, installed under a
   constraints file that holds the core pins and the image's numpy, scipy
   and JAX fixed; `pin_groups.json` records what installed. Every bundle
   carries the usage guides in `KERNEL_DOCS` (docs/notes/kaggle,
@@ -81,28 +86,6 @@ GPU matters for sweeps and batched trials, not for single circuits.
   audit). A `Tpu*` machine is pushed as a notebook with latest image
   pinning, no `docker_image` and no notebook `kaggle` block, with the CPU
   build of Aer; batch pushes have not reached a TPU (next section).
-- `shards [--tier pr] [--count N] [--only I,J] [--machine M,...]
-  [--slot-wait S]` pushes one kernel per CI shard of the committed HEAD,
-  with CI's shard count by default (6 for pr, 12 for full), on the first
-  machine in the list with a free session; a default run waits up to two
-  hours for sessions, since six shards outnumber the five CPU sessions. A
-  commit that a branch of the canonical repository (`REMOTE`, whose branches
-  `shards` mirrors under `refs/kaggle-shards/remote/`) contains is fetched as
-  itself. Any other commit, a fork-only one included, is rebuilt from the
-  merge base with that repository's main plus the bundled files
-  changed since then, with their modes and deletions; Kaggle refuses a
-  script near 1.7 MB (HTTP 400 on SaveKernel) and accepts 706 KB, so
-  `shards` stops above `KERNEL_SOURCE_LIMIT` (1 MB) and asks for a push.
-  Either way the kernel runs no gate unless `git write-tree` equals HEAD's
-  tree. It then installs CI's
-  Python through uv and CI's pins through `ci/install_pins.sh` (the script
-  `.github/workflows/ci.yml` runs), and runs `ci/run_gates.py` on its
-  shard with the CPU device. Shard runs live under the ignored
-  `.kaggle-shards/`, iteration records and never evidence;
-  `shards-report RUN_DIR...` prints each collected shard's summary and
-  failing gates. CI stays the merge authority: a shard that passes on
-  Kaggle and fails on CI exposes an environment difference. A machine list
-  that names an accelerator needs `--timeout`, as `push` does.
 - `status RUN_DIR` and `collect RUN_DIR` poll the kernel and download the
   run's own version with a sha256 manifest; `collect` reads that version
   through kagglesdk's `ListKernelSessionOutput` with `version_label vN`,
@@ -130,8 +113,7 @@ GPU matters for sweeps and batched trials, not for single circuits.
   kernel's `environment.json`, not the request, records what ran.
 - The account runs at most five CPU batch sessions at once, shared by
   every kernel it pushes; a sixth push fails with "Maximum batch CPU session
-  count of 5 reached", and `shards --slot-wait` retries until a session
-  ends. A `TpuV5E8` request draws on the same pool: with five CPU sessions
+  count of 5 reached". A `TpuV5E8` request draws on the same pool: with five CPU sessions
   running, it fails with the same CPU-count message (2026-10-16), so the
   GPU pool is the only capacity beyond the five. Neither a script nor a
   notebook kernel pushed with `--accelerator TpuV5E8` (plus
@@ -140,12 +122,7 @@ GPU matters for sweeps and batched trials, not for single circuits.
   `kaggle quota` kept TPU use at 0.00 h. The batch push exposes no docker
   image, while the MCP `create_notebook_session` call takes `docker_image`
   and `machine_shape`; whether a TPU VM image through that call reaches the
-  TPU is untested. `shards --machine
-  cpu,NvidiaTeslaT4` falls through to a GPU session when the CPU pool is
-  full; a GPU session runs the shard on its 4-core host. Each shard slug
-  (`gororoba-ci-shard-I-of-N`) is fixed, so a machine list that names an
-  accelerator applies the push guard of the next section to every selected
-  shard slug before the first push, and one live version refuses the run.
+  TPU is untested.
 - The account runs at most two GPU batch sessions at once; a third push
   fails with "Maximum batch GPU session count of 2 reached", and `push`
   exits with that message and removes the unsent run directory, as it does
@@ -165,7 +142,8 @@ bearer header. [interfaces.md](interfaces.md) maps every CLI command, SDK
 method and MCP tool onto the operations they share.
 
 Each run directory under results/kaggle/ keeps submission.json (entry,
-arguments, git commit, bundle digests, pins), the generated kernel, and
+arguments, git commit, bundle digests, pins, the entry's Aer device and the
+backend identity of every bundled calibration snapshot), the generated kernel, and
 after collection the output with collect.json. Retaining it registers no
 claim. A `numerical or stochastic simulation` claim in the research state
 needs a replay gate that re-derives it in CI, so a Kaggle result becomes a

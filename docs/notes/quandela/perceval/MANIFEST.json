@@ -1,0 +1,93 @@
+{
+ "schema": "qd-docs-capture-v1",
+ "kind": "perceval",
+ "retrieved_utc": "2026-10-17T17:29Z",
+ "files": [
+  {
+   "path": "docs/notes/quandela/perceval/getting_started.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/getting_started.html",
+   "sha256": "422a2b46f60e6beb2944185fd4d40f183f15a4669e83d0520e18c6c35f8ca8c2"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/notebooks/Remote_Computation_Tutorial.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/notebooks/Remote_Computation_Tutorial.html",
+   "sha256": "45415b72ef134b7980e6f2978331189fc6a22f3b12b3f0bdc416218ca81c88a2"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/providers/index.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/providers/index.html",
+   "sha256": "c20fb3c53442ed70a30d01bff785268ead47e049bd22e0d1b92180349c4a7063"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/providers/quandela.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html",
+   "sha256": "a71e22d71c6b10a757afdae6eff519945ea94e3ed08a7f16501d3145fb8f8ee9"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/runtime/command.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/runtime/command.html",
+   "sha256": "bcb29c30e5648748aa208ca6ad979957a9a8eeb6fba8bc4f163d96058d9c6f8f"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/runtime/communication_layer.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/runtime/communication_layer.html",
+   "sha256": "9b17ce91fbb4515453cbcd08ecec9fef37261c02650357337528c0c924516f74"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/runtime/computation.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/runtime/computation.html",
+   "sha256": "1fdf53b4ec5f5bc2199b3dd58053ac63461b88c9a5e44dab19f3b58c81944ef8"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/runtime/computer.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/runtime/computer.html",
+   "sha256": "e3ef047328a34e31d67732d4ba901713a73f5be57cf468944d397af5f087d861"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/runtime/error_mitigation/index.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/runtime/error_mitigation/index.html",
+   "sha256": "95b0387116679c3598c2c076487fa60f49134457109e5475247d6e57935fe776"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/runtime/execution.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/runtime/execution.html",
+   "sha256": "dae2b9cb7690c25c7196dd8262721439281062c8072be33f9bbbf41e190e66c9"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/runtime/execution_factory.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/runtime/execution_factory.html",
+   "sha256": "db9e234ef61b27b6243ca80c887b1aba7c6f98d3942b3008a27ad75212427c80"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/runtime/execution_group.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/runtime/execution_group.html",
+   "sha256": "8182462166918a6b4c8a82299df868689e7b8591ff6df035f98ad1a15105063e"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/runtime/execution_status.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/runtime/execution_status.html",
+   "sha256": "0cba6f187d24f2fb2e7c3df25629b26c3b48ec9048249c0adc707f22d2c8fb9c"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/runtime/legacy/job.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/runtime/legacy/job.html",
+   "sha256": "0a86f6683138eaf93a2316c7b00c90c6b377b1dadd4f109843cf1583c077c317"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/runtime/legacy/remote_processor.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/runtime/legacy/remote_processor.html",
+   "sha256": "6d6c0d418f7f33b69d44bfbb92639f0df2b533551f2b833d1d4c4a209bfba400"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/runtime/legacy/rpchandler.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/runtime/legacy/rpchandler.html",
+   "sha256": "1274d6eba7d2a0a4320c75aae1f83773e364bd6937586f1c21a8186b83c428e7"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/runtime/platform_specs.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/runtime/platform_specs.html",
+   "sha256": "018203cf21d5783bb9b710a492125d92913e83ba10008f13299f7f78614c640b"
+  }
+ ],
+ "unreachable": []
+}

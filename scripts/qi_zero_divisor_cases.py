@@ -432,6 +432,15 @@ def header(nqubits: int) -> list[str]:
     return ["version 3.0", "", f"qubit[{nqubits}] q", f"bit[{nqubits}] b", ""]
 
 
+def readout_circuits(nqubits: int) -> dict[str, str]:
+    """readout-0 measures every qubit prepared in |0>, readout-1 every qubit after an X: the batch's assignment."""
+    measure = ["barrier q", "b = measure q", ""]
+    return {
+        "readout-0.cq": "\n".join(header(nqubits) + measure),
+        "readout-1.cq": "\n".join(header(nqubits) + [f"X q[{q}]" for q in range(nqubits)] + [""] + measure),
+    }
+
+
 def finish(cases: dict[str, Any], texts: dict[str, str]) -> dict[str, str]:
     """batch-NN/ directories of at most HARDWARE_BATCH_CIRCUITS circuits, and the series cases.json.
 
@@ -531,10 +540,7 @@ def build() -> dict[str, dict[str, str]]:
             cases["replicas"].append(row(name, case, region, roles, seed, circuit, p0))
         tuna[name] = "\n".join(lines + ["", "barrier q", "b = measure q", ""])
         cases["circuits"].append({"file": name, "kind": "witness"})
-    tuna["readout-0.cq"] = "\n".join(header(NQUBITS) + ["barrier q", "b = measure q", ""])
-    tuna["readout-1.cq"] = "\n".join(
-        header(NQUBITS) + [f"X q[{q}]" for q in range(NQUBITS)] + ["", "barrier q", "b = measure q", ""]
-    )
+    tuna.update(readout_circuits(NQUBITS))
     cases["circuits"] += [{"file": "readout-0.cq", "kind": "readout"}, {"file": "readout-1.cq", "kind": "readout"}]
 
     # QX serves 10 qubits, so its twin packs the six routed replicas two per

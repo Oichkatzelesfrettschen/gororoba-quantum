@@ -1,0 +1,71 @@
+{
+ "schema": "box-kite-series-v1",
+ "family": "tuna_ladder",
+ "backend": "tuna_17",
+ "census_sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "stage": "ladder",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq",
+    "readout-iso-x.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "stage": "ladder",
+   "files": [
+    "latin-x-1.cq",
+    "latin-x-2.cq",
+    "latin-x-3.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "stage": "ladder",
+   "files": [
+    "latin-y-1.cq",
+    "latin-y-2.cq",
+    "latin-y-3.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "stage": "ladder",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq",
+    "readout-iso-hzh.cq"
+   ]
+  },
+  {
+   "batch": "batch-04",
+   "stage": "ladder",
+   "files": [
+    "latin-x-2.cq",
+    "latin-x-3.cq",
+    "latin-x-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-05",
+   "stage": "ladder",
+   "files": [
+    "latin-y-2.cq",
+    "latin-y-3.cq",
+    "latin-y-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-06",
+   "stage": "ladder",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq",
+    "readout-iso-x.cq"
+   ]
+  }
+ ]
+}
