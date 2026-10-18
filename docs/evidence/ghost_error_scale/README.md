@@ -106,6 +106,20 @@ inputs and reruns 2026-10-13T080216 on the CPU.
 `scripts/ghost_event_scale.py` reads each dynamic run's fitted readout
 factor from these parts.
 
+`part_d.json` holds the five 2026-10-18 Kingston runs, swept on the build
+host's CPU under their execution snapshot 20261018T0138200700. The four
+state-prep-control runs apply no CZ, so each samples the c = 1 point of
+every readout factor and repeats those distances along c (`--check`
+requires the repetition; core-562 shows one seed gives a CZ-free group
+identical counts at every c); their fit reads r = 1.0 with a mean distance
+of 0.002 to 0.003 against a resample floor of 0.0005 to 0.0007, and c is
+unidentified. The n21 feedback run's two 100000-shot dynamic members draw
+from their exact branch-resolved law at every grid point (`member_law`
+`exact_multinomial`) and fit c = 2.0, r = 0.5 (mean distance 0.0075 against
+0.0251 at (1, 1), paired change -0.0177 with standard error 0.0053 over 2
+PUBs) beside an idle budget c_idle of 1.80; two PUBs bound the bootstrap
+little. core-339 reads the four parts.
+
 ## Prediction for sweep part a
 
 Recorded before part a's kernel finished. Part a holds two Kingston runs:
