@@ -1424,6 +1424,13 @@ def replica_columns(row: dict[str, Any]) -> list[int]:
     return sorted(q for r in row["replicas"] for q in [r["roles"]["selector"], *r["roles"]["data"]])
 
 
+def line_phase_bin_index(shots: int, frequency: float, phase: float, bins: int) -> np.ndarray:
+    """Each shot's line-phase bin: the lock-in phase at the middle shot advanced at the scanned frequency, in bins
+    of width 2 pi / bins centered on multiples of it, so bin 0 holds the phase where the locked selector peaks."""
+    theta = 2 * np.pi * frequency * (np.arange(shots) - (shots - 1) / 2) + phase
+    return np.floor(np.mod(theta + np.pi / bins, 2 * np.pi) / (2 * np.pi / bins)).astype(np.int64) % bins
+
+
 class LineScan:
     """qi_shot_record_line.scan in the manifest's band and threshold, picklable for parallel.ordered_map."""
 
@@ -1603,9 +1610,7 @@ def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, An
         phases = [locks[n]["phase"] for n in depths if n != min(depths)]
         entry["phase_resultant"] = float(abs(np.exp(1j * np.array(phases)).mean()))
         # Bin 0 holds the line phase where the deepest selector's P1 peaks.
-        n_shots = bits.shape[0]
-        theta = 2 * np.pi * f * (np.arange(n_shots) - (n_shots - 1) / 2) + deep["phase"]
-        index_bin = np.floor(np.mod(theta + np.pi / bins, 2 * np.pi) / (2 * np.pi / bins)).astype(np.int64) % bins
+        index_bin = line_phase_bin_index(bits.shape[0], f, deep["phase"], bins)
         binned = {}
         for n in depths:
             item_index = next(i for i, it in enumerate(lcu) if it["batch"] == name and it["file"] == row["file"]

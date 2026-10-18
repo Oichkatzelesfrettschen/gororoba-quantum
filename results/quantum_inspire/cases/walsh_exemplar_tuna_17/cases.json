@@ -1,0 +1,39 @@
+{
+ "schema": "qi-walsh-exemplar-series-v1",
+ "family": "walsh_exemplar_tuna_17",
+ "backend": "tuna_17",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq",
+    "readout-q13.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "files": [
+    "walsh-c1.cq",
+    "walsh-c2.cq",
+    "readout-q13-xx.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "files": [
+    "walsh-c1.cq",
+    "walsh-c2.cq",
+    "readout-q13-q10.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq",
+    "readout-q13-q11.cq"
+   ]
+  }
+ ]
+}

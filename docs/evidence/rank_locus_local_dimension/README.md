@@ -13,9 +13,11 @@ preimage of the rank-(32 - k) matrix manifold under x -> L_x.
 - **Tangent containment.** Let V span ker L_x and U span ker L_x^T. Then
   every curve of S_k through x has its velocity in
   T(x) = {y : U^T L_y V = 0}.
-- **Dimension bound.** A semialgebraic set has the local dimension of its
-  tangent cone. Here that cone lies in T(x), which contains x, so the unit
-  locus has local dimension at most dim T(x) - 1.
+- **Dimension bound.** Near x, S_k is the zero set of the Schur complement
+  of L_y's invertible pivot block, whose differential at x is
+  y -> U^T L_y V. Entries of it with independent differentials cut out a
+  submanifold of dimension dim T(x) containing S_k near x. T(x) contains x,
+  so the unit locus has local dimension at most dim T(x) - 1.
 - **Exactness.** The rank of y -> U^T L_y V is computed modulo 2^61 - 1. That
   rank is at most the rational rank, so 31 - rank_p is a valid upper bound.
 
