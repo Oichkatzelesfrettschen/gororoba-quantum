@@ -32,6 +32,12 @@ RUN_DIR/rca-mechanism-fit.json and requires agreement of the induced laws,
 likelihoods, decisions and provenance. Each pair-mechanism parameter vector
 must reproduce its own stored laws; optimizer coordinates are reported without imposing
 a coordinate precision absent from the fitting procedure.
+
+--between-arm RUN_DIR [--out FILE] evaluates the preregistered between-arm
+contracts of an n21-orbit-rca run (contract_results): the window_delay phase
+slope, the extra_readout dephasing bound and the window_echo restoration, at
+family-wise alpha split over the three, each only when every member carries
+one resolved coupling (admissibility).
 """
 
 from __future__ import annotations
@@ -48,7 +54,7 @@ from typing import Any
 
 import numpy as np
 from scipy.optimize import minimize
-from scipy.stats import chi2
+from scipy.stats import chi2, norm
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
 
@@ -497,7 +503,11 @@ def signed_exposure(
     probe coupling maps the qubit's phase onto the phase of the work bit for 1
     in the branches where the qubit holds the superposition.
     """
-    roles = window_roles(run) if roles is None else roles
+    return role_exposure(window_roles(run) if roles is None else roles)
+
+
+def role_exposure(roles: dict[str, dict[str, Any]]) -> dict[str, dict[int, dict[int, float]]]:
+    """signed_exposure of window_roles output already in hand."""
     exposure: dict[str, dict[int, dict[int, float]]] = {}
     for name, role in roles.items():
         member_exposure: dict[int, dict[int, float]] = {0: {}, 1: {}}
@@ -1185,25 +1195,45 @@ def piecewise_fit(
     }
 
 
-def phase_interval(
-    counts: dict[str, np.ndarray], readouts: dict[str, dict[str, float]], best: dict[str, Any]
-) -> list[list[float]]:
-    """Profile-likelihood 95 percent confidence set of the work phase as wrapped segments.
+class PhaseProfile:
+    """Deviance of both arms at a fixed work phase, minimized over the depolarizing nuisances.
 
-    Grid phases whose profiled deviance lies within 3.84 of the minimum form
-    the set; contiguous runs become segments, and a run touching both -pi and
-    pi joins into one segment across the wrap.
+    L-BFGS-B starts from the work-phase fit's nuisances, so phase_interval's
+    grid and a single-phase test evaluate the same profile.
     """
-    names = [name for name, _low, _high in NUISANCE]
-    bounds = [(low, high) for _name, low, high in NUISANCE]
-    start = np.array([best["parameters"][name] for name in names])
-    inside: list[bool] = []
-    for phase in np.linspace(-math.pi, math.pi, 121):
 
-        def objective(vector: np.ndarray, phase: float = float(phase)) -> float:
-            return deviance(counts, dict(zip(names, map(float, vector), strict=True)) | {"phase_one": phase}, readouts)
+    def __init__(
+        self, counts: dict[str, np.ndarray], readouts: dict[str, dict[str, float]], best: dict[str, Any]
+    ) -> None:
+        self.counts, self.readouts = counts, readouts
+        self.names = [name for name, _low, _high in NUISANCE]
+        self.bounds = [(low, high) for _name, low, high in NUISANCE]
+        self.start = np.array([best["parameters"][name] for name in self.names])
 
-        inside.append(minimize(objective, start, method="L-BFGS-B", bounds=bounds).fun <= best["deviance"] + 3.84)
+    def objective(self, vector: np.ndarray, phase: float) -> float:
+        params = dict(zip(self.names, map(float, vector), strict=True)) | {"phase_one": phase}
+        return deviance(self.counts, params, self.readouts)
+
+    def __call__(self, phase: float) -> float:
+        return float(minimize(self.objective, self.start, args=(phase,), method="L-BFGS-B", bounds=self.bounds).fun)
+
+
+def phase_interval(
+    counts: dict[str, np.ndarray],
+    readouts: dict[str, dict[str, float]],
+    best: dict[str, Any],
+    threshold: float = 3.84,
+) -> list[list[float]]:
+    """Profile-likelihood confidence set of the work phase as wrapped segments.
+
+    Grid phases whose profiled deviance lies within threshold of the minimum
+    form the set; contiguous runs become segments, and a run touching both
+    -pi and pi joins into one segment across the wrap. The default 3.84 is
+    the one-parameter chi-square 95 percent quantile to two decimals, the
+    level the retained mechanism fits carry.
+    """
+    profile = PhaseProfile(counts, readouts, best)
+    inside = [profile(float(phase)) <= best["deviance"] + threshold for phase in np.linspace(-math.pi, math.pi, 121)]
     grid = np.linspace(-math.pi, math.pi, 121)
     segments: list[list[float]] = []
     for index, accepted in enumerate(inside):
@@ -1631,6 +1661,129 @@ def _check_parameter_replay() -> None:
             raise RuntimeError(f"an out-of-domain parameter {invalid_value!r} passes replay")
 
 
+CONTRACT_IDLE_DT = {"nominal": 1000, "window_delay": 1415, "extra_readout": 1400, "window_echo": 1000}
+CONTRACT_SLOPE = 6e-4
+CONTRACT_SHOTS = 8192
+
+
+def _contract_roles(coupling: dict[int, dict[int, int]]) -> dict[str, dict[str, Any]]:
+    """window_roles output of a synthetic family whose members all couple as given, idle CONTRACT_IDLE_DT.
+
+    window_echo's window holds two echo pulses. No-feedback members carry
+    the global negation whenever the anchor, the lowest coupled qubit,
+    couples negatively, as window_roles reports it.
+    """
+    anchor = next(iter(coupling[min(coupling)].values()))
+    roles: dict[str, dict[str, Any]] = {}
+    for variant, idle in CONTRACT_IDLE_DT.items():
+        echoes = [[400, 8], [900, 8]] if variant == "window_echo" else []
+        for arm in ARMS:
+            flip = -1 if arm == "no_feedback" and anchor < 0 else 1
+            roles[f"{orbit_pair(variant)}_{arm}"] = {
+                "control": 0,
+                "terminal": 0,
+                "coupling": {q: {b: flip * sign for b, sign in branches.items()} for q, branches in coupling.items()},
+                "windows": {q: {"before": 100, "after": 100 + idle + 8 * len(echoes), "x": echoes} for q in coupling},
+                "unresolved": [],
+            }
+    return roles
+
+
+def _check_between_arm() -> None:
+    """Planted families pass every contract, fail each one alone, and fail admissibility by member."""
+    import copy
+
+    readout = _readout(0.001, 0.006)
+    base = readout | {"round1": 0.05, "round2": 0.02}
+
+    def pair(params: dict[str, float]) -> dict[str, np.ndarray]:
+        return {arm: np.round(distribution(base | params, arm == "feedback") * CONTRACT_SHOTS) for arm in ARMS}
+
+    # The coupling of -1 makes the coupling-weighted exposure negative, so
+    # the slope the contract recovers is -CONTRACT_SLOPE per dt.
+    nominal = pair({"phase_one": CONTRACT_SLOPE * CONTRACT_IDLE_DT["nominal"]})
+    pairs = {
+        orbit_pair("nominal"): nominal,
+        orbit_pair("window_delay"): pair({"phase_one": CONTRACT_SLOPE * CONTRACT_IDLE_DT["window_delay"]}),
+        orbit_pair("extra_readout"): nominal,
+        orbit_pair("window_echo"): nominal,
+    }
+    roles = _contract_roles({7: {0: -1, 1: -1}})
+    readouts = dict.fromkeys(roles, readout)
+    t2_us = {7: 100.0}
+    dt = SYNTHETIC_DT_US * 1e-6
+    fits = phase_fits(pairs, readouts)
+
+    def statuses(
+        case: dict[str, dict[str, Any]], measured: dict[str, dict[str, np.ndarray]], t2: dict[int, float]
+    ) -> dict[str, str]:
+        results = contract_results(case, measured, readouts, dt, t2, fits)
+        json.dumps(results, sort_keys=True)
+        return {name: result["status"] for name, result in results.items()}
+
+    passing = dict.fromkeys(CONTRACTS, "pass")
+    found = statuses(roles, pairs, t2_us)
+    if found != passing:
+        raise RuntimeError(f"a family planted on every contract returns {found}")
+    # A longer delay window moves the prediction off the planted phase, and
+    # window dephasing lowers a pair's contrast magnitude.
+    off_slope = copy.deepcopy(roles)
+    for arm in ARMS:
+        off_slope[f"{orbit_pair('window_delay')}_{arm}"]["windows"][7]["after"] += 600
+    dephased = pair({"phase_one": CONTRACT_SLOPE * CONTRACT_IDLE_DT["nominal"], "window_t2": 0.5})
+    for label, case, measured, expected in (
+        ("off-slope window_delay", off_slope, pairs, "window_delay_phase_slope"),
+        ("dephased extra_readout", roles, pairs | {orbit_pair("extra_readout"): dephased}, "extra_readout_contrast"),
+        ("dephased window_echo", roles, pairs | {orbit_pair("window_echo"): dephased}, "window_echo_restoration"),
+    ):
+        found = statuses(case, measured, t2_us)
+        if found != passing | {expected: "fail"}:
+            raise RuntimeError(f"a {label} returns {found}; only {expected} must fail")
+    # An echo that cancels the nominal phase at equal coherence lowers the
+    # signed contrast difference beyond its one-sided limit; the magnitude
+    # contract passes it.
+    canceled = pair({})
+    restored = contract_results(roles, pairs | {orbit_pair("window_echo"): canceled}, readouts, dt, t2_us, fits)
+    (echo_signed, echo_variance), (nominal_signed, nominal_variance) = map(contrast_difference, (canceled, nominal))
+    signed_upper = (
+        echo_signed - nominal_signed + float(norm.ppf(1 - CONTRACT_ALPHA)) * math.sqrt(echo_variance + nominal_variance)
+    )
+    if restored["window_echo_restoration"]["status"] != "pass" or signed_upper >= 0:
+        raise RuntimeError(
+            f"a phase-canceling echo returns {restored['window_echo_restoration']}; "
+            f"the signed contrast form's upper limit is {signed_upper:.4f}"
+        )
+    if statuses(roles, pairs, {})["extra_readout_contrast"] != "not_evaluable":
+        raise RuntimeError("the readout contract evaluates without a retained T2")
+    differing = copy.deepcopy(roles)
+    name = f"{orbit_pair('nominal')}_no_feedback"
+    differing[name]["coupling"] = {7: {0: 1, 1: 1}, 9: {1: 0}}
+    differing[name]["unresolved"] = ["a joint probe with qubit 7 fits neither relative sign of qubit 9"]
+    # A two-qubit coupling admits the no-feedback global negation; a relative
+    # sign flip between the two qubits differs.
+    relative = _contract_roles({7: {0: -1, 1: -1}, 9: {0: 1, 1: 1}})
+    if not admissibility(relative)["admissible"]:
+        raise RuntimeError("admissibility refuses a globally negated no-feedback coupling")
+    echo = f"{orbit_pair('window_echo')}_no_feedback"
+    relative[echo]["coupling"] = {7: {0: 1, 1: 1}, 9: {0: 1, 1: 1}}
+    for case, members in ((differing, {name}), (relative, {echo})):
+        admitted = admissibility(case)
+        results = contract_results(case, pairs, readouts, dt, t2_us, fits)
+        if admitted["admissible"] or set(admitted["differing"]) != members:
+            raise RuntimeError(f"admissibility names {sorted(admitted['differing'])}, not {sorted(members)}")
+        if any(
+            result["status"] != "not_admissible" or result["differing"] != admitted["differing"]
+            for result in results.values()
+        ):
+            raise RuntimeError(f"a family with differing couplings evaluates a contract: {results}")
+    if admissibility(differing)["unresolved"] != {name: differing[name]["unresolved"]}:
+        raise RuntimeError("admissibility omits a member's unresolved probe")
+    single = {key: value for key, value in roles.items() if key.startswith(orbit_pair("nominal"))}
+    absent = [f"{orbit_pair(variant)}_{arm}" for variant in ORBIT_VARIANTS[1:] for arm in ARMS]
+    if admissibility(single)["missing"] != absent:
+        raise RuntimeError("admissibility of the nominal pair alone names no missing member")
+
+
 def self_check() -> None:
     """Recover a known work phase from exact expected counts and reject the depolarizing baseline."""
     _check_exact_laws()
@@ -1639,6 +1792,7 @@ def self_check() -> None:
     _check_piecewise_exposure()
     _check_seed_ranking()
     _check_differences()
+    _check_between_arm()
     readout = _readout(0.001, 0.006)
     truth = readout | {"round1": 0.1, "round2": 0.02, "phase_one": 0.5}
     counts = {
@@ -1661,7 +1815,7 @@ def self_check() -> None:
         raise RuntimeError("branch dephasing leaves the no-feedback law unchanged")
     print(
         "N=21 orbit RCA: exact laws, manifest binding, seeded static basins, piecewise window exposure, "
-        "regeneration tolerance, planted-phase recovery, "
+        "regeneration tolerance, between-arm contracts and admissibility, planted-phase recovery, "
         "branch-window, and baseline rejection checks pass"
     )
 
@@ -1681,22 +1835,28 @@ class PairFit:
         return models, phase_interval(counts, arms, models["work_phase_one"])
 
 
-def build_report(run: Path, readout: tuple[float, float] | None) -> dict[str, Any]:
-    """Every pair's mechanism fits and phase interval, and the joint fit, as rca-mechanism-fit.json holds them."""
-    _check_exact_laws()
-    pairs = measured_pairs(run)
-    roles = window_roles(run)
+def readout_sources(
+    run: Path, roles: dict[str, dict[str, Any]], readout: tuple[float, float] | None
+) -> dict[str, dict[str, Any]]:
+    """Each member's assignment rates with their provenance: --readout's rates, or member_readouts."""
     if readout:
         writers = {qubit for role in roles.values() for qubit in (role["control"], role["terminal"])}
         if len(writers) != 1:
             raise SystemExit(f"--readout supplies one qubit's rates, but the members measure on {sorted(writers)}")
         fixed = _readout(*readout)
-        sources: dict[str, dict[str, Any]] = {name: fixed | {"source": "--readout"} for name in roles}
-    else:
-        sources = {
-            name: entry | {"source": "retained placed-qubit calibration or properties at the record calibration"}
-            for name, entry in member_readouts(run, roles).items()
-        }
+        return {name: fixed | {"source": "--readout"} for name in roles}
+    return {
+        name: entry | {"source": "retained placed-qubit calibration or properties at the record calibration"}
+        for name, entry in member_readouts(run, roles).items()
+    }
+
+
+def build_report(run: Path, readout: tuple[float, float] | None) -> dict[str, Any]:
+    """Every pair's mechanism fits and phase interval, and the joint fit, as rca-mechanism-fit.json holds them."""
+    _check_exact_laws()
+    pairs = measured_pairs(run)
+    roles = window_roles(run)
+    sources = readout_sources(run, roles, readout)
     readouts = {name: _model_readout(entry) for name, entry in sources.items()}
     report: dict[str, Any] = {"schema_version": SCHEMA_VERSION, "member_readout": sources, "pairs": {}}
     items = [
@@ -1877,6 +2037,373 @@ def check(run: Path) -> None:
     )
 
 
+BETWEEN_ARM_SCHEMA = "n21-orbit-between-arm-contracts-v1"
+ORBIT_VARIANTS = ("nominal", "window_delay", "extra_readout", "window_echo")
+ARMS = ("feedback", "no_feedback")
+REFERENCE_MEMBER = "n21_orbit_nominal_feedback"
+CONTRACTS = ("window_delay_phase_slope", "extra_readout_contrast", "window_echo_restoration")
+# Bonferroni over the three contracts holds their family-wise error at FAMILY_ALPHA.
+CONTRACT_ALPHA = FAMILY_ALPHA / len(CONTRACTS)
+# A nominal pair exposed for under one sample time defines no phase slope.
+MIN_SLOPE_EXPOSURE_DT = 1.0
+
+
+def orbit_pair(variant: str) -> str:
+    return f"n21_orbit_{variant}"
+
+
+def normalized_coupling(coupling: dict[Any, dict[Any, Any]]) -> dict[int, dict[int, int]]:
+    """A coupling with integer qubits, branches and signs, the form window_roles and its JSON both reduce to."""
+    return {int(q): {int(b): int(sign) for b, sign in branches.items()} for q, branches in coupling.items()}
+
+
+def coupling_json(coupling: dict[Any, dict[Any, Any]]) -> dict[str, dict[str, int]]:
+    normalized = normalized_coupling(coupling)
+    return {
+        str(q): {str(b): sign for b, sign in sorted(branches.items())} for q, branches in sorted(normalized.items())
+    }
+
+
+def admissibility(roles: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """Whether every family member carries one resolved, non-empty coupling, and which members break it.
+
+    The contracts compare pairs through one map from window qubits to the
+    work bit for 1, so every member of the four pairs must be present, free
+    of unresolved probes, and coupled exactly as the nominal feedback member.
+    A no-feedback law is even in the work phase (window_roles), so a
+    no-feedback member's signs are fixed only up to one global sign, which
+    window_roles sets positive on its anchor qubit; such a member matches
+    when its coupling or its global negation equals the reference, and
+    orientation records the sign that maps it onto the reference.
+    """
+    expected = [f"{orbit_pair(variant)}_{arm}" for variant in ORBIT_VARIANTS for arm in ARMS]
+    missing = [name for name in expected if name not in roles]
+    reference = normalized_coupling(roles[REFERENCE_MEMBER]["coupling"]) if REFERENCE_MEMBER in roles else {}
+    orientation: dict[str, int] = {}
+    differing: dict[str, dict[str, dict[str, int]]] = {}
+    for name, role in roles.items():
+        coupling = normalized_coupling(role["coupling"])
+        negated = {q: {b: -sign for b, sign in branches.items()} for q, branches in coupling.items()}
+        if coupling and coupling == reference:
+            orientation[name] = 1
+        elif coupling and name.endswith("_no_feedback") and negated == reference:
+            orientation[name] = -1
+        else:
+            differing[name] = coupling_json(coupling)
+    unresolved = {name: list(role["unresolved"]) for name, role in roles.items() if role["unresolved"]}
+    return {
+        "admissible": not (missing or differing or unresolved),
+        "reference_member": REFERENCE_MEMBER,
+        "reference_coupling": coupling_json(reference),
+        "orientation": orientation,
+        "differing": differing,
+        "unresolved": unresolved,
+        "missing": missing,
+    }
+
+
+def not_admissible(admitted: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    return {
+        name: {
+            "status": "not_admissible",
+            "differing": admitted["differing"],
+            "unresolved": admitted["unresolved"],
+            "missing": admitted["missing"],
+        }
+        for name in CONTRACTS
+    }
+
+
+def pair_phase_exposure(
+    exposure: dict[str, dict[int, dict[int, float]]], orientation: dict[str, int], variant: str
+) -> float:
+    """Mean coupling-weighted signed exposure in dt over a pair's members and both recorded branches.
+
+    Each member's exposure enters in the reference member's orientation, so
+    a no-feedback member's global sign convention cancels.
+    """
+    values = [
+        orientation[name] * sum(exposure[name][branch].values())
+        for name in (f"{orbit_pair(variant)}_{arm}" for arm in ARMS)
+        for branch in (0, 1)
+    ]
+    return sum(values) / len(values)
+
+
+def pair_idle(roles: dict[str, dict[str, Any]], variant: str, qubit: int) -> float:
+    """Mean idle time in dt of one window qubit over a pair's members, driven echo pulses excluded."""
+    idles = []
+    for arm in ARMS:
+        window = roles[f"{orbit_pair(variant)}_{arm}"]["windows"][qubit]
+        idles.append(window["after"] - window["before"] - sum(length for _start, length in window["x"]))
+    return sum(idles) / len(idles)
+
+
+def signed_contrast(counts: np.ndarray) -> tuple[float, float]:
+    """p1 - p3 of one arm's labeled counts and its multinomial variance (p1 + p3 - (p1 - p3)^2) / n."""
+    shots = float(counts.sum())
+    one, three = float(counts[1]) / shots, float(counts[3]) / shots
+    return one - three, (one + three - (one - three) ** 2) / shots
+
+
+def contrast_difference(arms: dict[str, np.ndarray]) -> tuple[float, float]:
+    """Feedback minus no-feedback signed contrast of one pair and its variance; the arms are separate PUBs."""
+    feedback, feedback_variance = signed_contrast(arms["feedback"])
+    control, control_variance = signed_contrast(arms["no_feedback"])
+    return feedback - control, feedback_variance + control_variance
+
+
+def contrast_magnitude(arms: dict[str, np.ndarray]) -> tuple[float, float]:
+    """m = hypot(fb1 - fb3, nf3 - nf1), the pair's contrast with the work phase removed, and its variance.
+
+    The noiseless law (distribution) gives fb1 - fb3 = c sin(phi) / 4 and
+    nf3 - nf1 = c cos(phi) / 4 at work phase phi and work-bit coherence c, so
+    the signed contrast difference c (sin(phi) + cos(phi)) / 4 moves with
+    phi while m is c / 4. The delta method gives var(m) = (x^2 var x + y^2
+    var y) / m^2 from each arm's multinomial variance; at m = 0 the gradient
+    is undefined and var x + var y, the mean square of m at zero coherence,
+    takes its place. hypot is biased upward at small m: when the sampling
+    noise of x and y is comparable to m, E[m] exceeds c / 4, so a
+    near-zero reference contrast overstates the coherence it bounds.
+    """
+    feedback, feedback_variance = signed_contrast(arms["feedback"])
+    control, control_variance = signed_contrast(arms["no_feedback"])
+    magnitude = math.hypot(feedback, control)
+    if magnitude == 0.0:
+        return magnitude, feedback_variance + control_variance
+    variance = (feedback**2 * feedback_variance + control**2 * control_variance) / magnitude**2
+    return magnitude, variance
+
+
+def contrast_floor(
+    test: dict[str, np.ndarray], reference: dict[str, np.ndarray], factor: float, alpha: float
+) -> dict[str, Any]:
+    """One-sided test that a pair's contrast magnitude reaches factor times the reference pair's.
+
+    m_test - factor m_reference (contrast_magnitude) is normal to first order
+    in the multinomial counts of four independent PUBs, with variance
+    var_test + factor^2 var_reference. The contract fails only when its upper
+    (1 - alpha) confidence limit lies below zero, so at the bound sampling
+    noise fails it with probability alpha. The signed contrast difference
+    of each pair is reported and decides nothing, since a work phase moves it.
+    """
+    tested, tested_variance = contrast_magnitude(test)
+    reference_value, reference_variance = contrast_magnitude(reference)
+    statistic = tested - factor * reference_value
+    error = math.sqrt(tested_variance + factor**2 * reference_variance)
+    quantile = float(norm.ppf(1 - alpha))
+    upper = statistic + quantile * error
+    return {
+        "status": "pass" if upper >= 0 else "fail",
+        "contrast_magnitude": tested,
+        "reference_contrast_magnitude": reference_value,
+        "signed_contrast_difference": contrast_difference(test)[0],
+        "reference_signed_contrast_difference": contrast_difference(reference)[0],
+        "reference_factor": factor,
+        "statistic": statistic,
+        "standard_error": error,
+        "one_sided_quantile": quantile,
+        "upper_confidence_limit": upper,
+    }
+
+
+class PhaseFit:
+    """The work_phase_one fit of one (counts, arm readouts) pair."""
+
+    def __call__(self, item: tuple[dict[str, np.ndarray], dict[str, dict[str, float]]]) -> dict[str, Any]:
+        counts, arms = item
+        return fit(counts, arms, MECHANISMS["work_phase_one"])
+
+
+def phase_fits(
+    pairs: dict[str, dict[str, np.ndarray]], readouts: dict[str, dict[str, float]]
+) -> dict[str, dict[str, Any]]:
+    """work_phase_one fits of the nominal and window_delay pairs, the pairs the phase-slope contract compares."""
+    variants = ("nominal", "window_delay")
+    items = [
+        (pairs[orbit_pair(variant)], {arm: readouts[f"{orbit_pair(variant)}_{arm}"] for arm in ARMS})
+        for variant in variants
+    ]
+    return dict(zip(variants, parallel.ordered_map(PhaseFit(), items, min_items=2), strict=True))
+
+
+def phase_slope_contract(
+    pairs: dict[str, dict[str, np.ndarray]],
+    readouts: dict[str, dict[str, float]],
+    roles: dict[str, dict[str, Any]],
+    orientation: dict[str, int],
+    fits: dict[str, dict[str, Any]],
+    alpha: float,
+    render_set: bool,
+) -> dict[str, Any]:
+    """window_delay's work phase lies on the nominal pair's static phase slope.
+
+    A static detuning shared by the coupled qubits adds work phase in
+    proportion to coupling-weighted exposure (pair_phase_exposure), so the
+    nominal pair's fitted phase, taken on its principal branch, over its
+    exposure gives the slope per dt, and the slope times window_delay's
+    exposure predicts that pair's phase modulo 2 pi. The contract passes when
+    the prediction lies in window_delay's profile-likelihood confidence set
+    at 1 - alpha: its profiled deviance (PhaseProfile) exceeds the
+    work-phase minimum by at most the one-parameter chi-square quantile.
+    The nominal phase enters as a point estimate. render_set adds the set
+    itself on phase_interval's grid.
+    """
+    coupling = normalized_coupling(roles[REFERENCE_MEMBER]["coupling"])
+    if any(set(branches) != {0, 1} or len(set(branches.values())) != 1 for branches in coupling.values()):
+        return {
+            "status": "not_evaluable",
+            "reason": "a coupled qubit phases one recorded branch, or the two with opposite signs, "
+            "so the window phase is not the unconditional work phase work_phase_one fits",
+        }
+    exposure = role_exposure(roles)
+    nominal_exposure = pair_phase_exposure(exposure, orientation, "nominal")
+    delay_exposure = pair_phase_exposure(exposure, orientation, "window_delay")
+    if abs(nominal_exposure) < MIN_SLOPE_EXPOSURE_DT:
+        return {
+            "status": "not_evaluable",
+            "reason": f"the nominal pair's signed exposure {nominal_exposure:g} dt defines no phase slope",
+        }
+    nominal_phase = fits["nominal"]["parameters"]["phase_one"]
+    slope = nominal_phase / nominal_exposure
+    predicted = math.remainder(slope * delay_exposure, 2 * math.pi)
+    delay = orbit_pair("window_delay")
+    arms = {arm: readouts[f"{delay}_{arm}"] for arm in ARMS}
+    best = fits["window_delay"]
+    threshold = float(chi2.ppf(1 - alpha, 1))
+    statistic = PhaseProfile(pairs[delay], arms, best)(predicted) - best["deviance"]
+    result: dict[str, Any] = {
+        "status": "pass" if statistic <= threshold else "fail",
+        "nominal_phase": nominal_phase,
+        "nominal_exposure_dt": nominal_exposure,
+        "slope_rad_per_dt": slope,
+        "window_delay_exposure_dt": delay_exposure,
+        "predicted_phase": predicted,
+        "window_delay_phase": best["parameters"]["phase_one"],
+        "profile_deviance_at_prediction": statistic,
+        "chi2_threshold": threshold,
+        "level": 1 - alpha,
+    }
+    if render_set:
+        result["confidence_set_grid_segments"] = phase_interval(pairs[delay], arms, best, threshold)
+    return result
+
+
+def readout_contract(
+    pairs: dict[str, dict[str, np.ndarray]],
+    roles: dict[str, dict[str, Any]],
+    dt: float,
+    t2_us: dict[int, float],
+    alpha: float,
+) -> dict[str, Any]:
+    """extra_readout's contrast magnitude stays above the nominal one dephased over the added idle time.
+
+    Each coupled qubit q idles t_q longer in the extra_readout window than in
+    the nominal one (pair_idle, floored at zero since dephasing only lowers
+    coherence), so its coherence decays by exp(-t_q / T2_q); the bound is the
+    nominal contrast magnitude times exp(-sum_q t_q / T2_q) over the coupled
+    qubits, with T2 from the record's retained calibration. A coupling that
+    holds only one of the work bits for 1 and 16 keeps one term, which
+    raises the bound. contrast_floor decides at alpha.
+    """
+    qubits = sorted(normalized_coupling(roles[REFERENCE_MEMBER]["coupling"]))
+    absent = [qubit for qubit in qubits if not t2_us.get(qubit)]
+    if absent:
+        return {"status": "not_evaluable", "reason": f"the record retains no T2 for coupled qubits {absent}"}
+    added = {
+        qubit: max(0.0, pair_idle(roles, "extra_readout", qubit) - pair_idle(roles, "nominal", qubit))
+        for qubit in qubits
+    }
+    # Backend properties report T2 in microseconds (live_run.placed_qubit_calibration).
+    exponent = sum(added[qubit] * dt / (t2_us[qubit] * 1e-6) for qubit in qubits)
+    result = contrast_floor(
+        pairs[orbit_pair("extra_readout")], pairs[orbit_pair("nominal")], math.exp(-exponent), alpha
+    )
+    return result | {
+        "added_idle_dt": {str(qubit): added[qubit] for qubit in qubits},
+        "t2_us": {str(qubit): t2_us[qubit] for qubit in qubits},
+        "dt_seconds": dt,
+    }
+
+
+def contract_results(
+    roles: dict[str, dict[str, Any]],
+    pairs: dict[str, dict[str, np.ndarray]],
+    readouts: dict[str, dict[str, float]],
+    dt: float,
+    t2_us: dict[int, float],
+    fits: dict[str, dict[str, Any]] | None = None,
+    render_set: bool = False,
+) -> dict[str, dict[str, Any]]:
+    """Every between-arm contract's status and deciding numbers, each at CONTRACT_ALPHA.
+
+    The contracts are preregistered, their statistics, levels and decision
+    rules independent of any run's counts:
+    window_delay_phase_slope (phase_slope_contract), extra_readout_contrast
+    (readout_contract), and window_echo_restoration, which passes when the
+    upper confidence limit of the window_echo contrast magnitude minus the
+    nominal one reaches zero (contrast_floor at factor 1). A family that
+    fails admissibility reports every contract not_admissible.
+    """
+    admitted = admissibility(roles)
+    if not admitted["admissible"]:
+        return not_admissible(admitted)
+    fits = phase_fits(pairs, readouts) if fits is None else fits
+    return {
+        "window_delay_phase_slope": phase_slope_contract(
+            pairs, readouts, roles, admitted["orientation"], fits, CONTRACT_ALPHA, render_set
+        ),
+        "extra_readout_contrast": readout_contract(pairs, roles, dt, t2_us, CONTRACT_ALPHA),
+        "window_echo_restoration": contrast_floor(
+            pairs[orbit_pair("window_echo")], pairs[orbit_pair("nominal")], 1.0, CONTRACT_ALPHA
+        ),
+    }
+
+
+def retained_t2_us(run: Path) -> dict[int, float]:
+    """T2 in microseconds of each placed qubit the record's calibration retains."""
+    retained = _group(run).get("placed_qubit_calibration", {})
+    return {int(qubit): float(values["T2"]) for qubit, values in retained.items() if "T2" in values}
+
+
+def between_arm_report(run: Path, readout: tuple[float, float] | None) -> dict[str, Any]:
+    """Admissibility and every between-arm contract of RUN, as --between-arm writes them.
+
+    Admissibility needs only the archived circuits and returned schedules
+    (window_roles); readouts, dt, T2 and the fits are read only for an
+    admissible family.
+    """
+    roles = window_roles(run)
+    admitted = admissibility(roles)
+    report: dict[str, Any] = {
+        "schema_version": BETWEEN_ARM_SCHEMA,
+        "alpha": {
+            "family_alpha": FAMILY_ALPHA,
+            "split": "Bonferroni",
+            "contracts": len(CONTRACTS),
+            "per_contract_alpha": CONTRACT_ALPHA,
+        },
+        "admissibility": admitted,
+    }
+    if not admitted["admissible"]:
+        report["contracts"] = not_admissible(admitted)
+        return report
+    pairs = measured_pairs(run)
+    sources = readout_sources(run, roles, readout)
+    readouts = {name: _model_readout(entry) for name, entry in sources.items()}
+    dt, source = dt_source(run)
+    report |= {
+        "member_readout": sources,
+        "dt_seconds": dt,
+        "dt_source": source,
+        "measured_counts": {
+            pair: {arm: values.astype(int).tolist() for arm, values in arms.items()} for pair, arms in pairs.items()
+        },
+        "contracts": contract_results(roles, pairs, readouts, dt, retained_t2_us(run), render_set=True),
+    }
+    return report
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run", type=Path, nargs="?")
@@ -1890,9 +2417,24 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--self-check", action="store_true")
     parser.add_argument("--check", action="store_true", help=f"regenerate RUN_DIR/{RETAINED} and require it to agree")
+    parser.add_argument(
+        "--between-arm",
+        type=Path,
+        metavar="RUN_DIR",
+        help="evaluate the preregistered between-arm contracts of an n21-orbit-rca run; --out writes the report",
+    )
     arguments = parser.parse_args(argv)
     if arguments.self_check:
         self_check()
+        return 0
+    if arguments.between_arm is not None:
+        if arguments.run is not None or arguments.check:
+            parser.error("--between-arm names its own run directory and takes no RUN_DIR or --check")
+        report = between_arm_report(arguments.between_arm, tuple(arguments.readout) if arguments.readout else None)
+        for name, contract in report["contracts"].items():
+            print(f"{name}: {contract['status']}")
+        if arguments.out:
+            arguments.out.write_text(serialize(report))
         return 0
     if arguments.run is None:
         parser.error("a run directory is required")

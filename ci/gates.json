@@ -3515,6 +3515,14 @@
   },
   {
    "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --window-bracket && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --window-bracket",
+   "name": "core-446",
+   "seconds": 22.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/result.json && \"$PYTHON\" -B -O -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/result.json",
    "name": "core-489",
