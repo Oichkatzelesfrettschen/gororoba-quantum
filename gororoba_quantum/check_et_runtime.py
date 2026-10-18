@@ -18,6 +18,98 @@ from experiments import Group
 
 
 class ETRuntimeTests(unittest.TestCase):
+    def test_execution_pub_build_uses_bounded_et_gc_context(self) -> None:
+        import gc
+
+        before = gc.isenabled()
+        observed = []
+
+        def build(_: Any) -> list:
+            observed.append(gc.isenabled())
+            return []
+
+        with patch.object(live_run, "_execution_pubs", side_effect=build):
+            live_run.execution_pubs([cast(Any, SimpleNamespace(group=SimpleNamespace(name="et_row_campaign")))])
+            live_run.execution_pubs([cast(Any, SimpleNamespace(group=SimpleNamespace(name="other_family")))])
+        self.assertEqual(observed, [False, before])
+        self.assertEqual(gc.isenabled(), before)
+
+    def test_complete_submit_free_case_with_ideal_model_fixture(self) -> None:
+        import io
+        import json
+        import tempfile
+        from contextlib import redirect_stdout
+        from pathlib import Path
+
+        from qiskit_ibm_runtime.fake_provider import FakeFez
+
+        import et_planning
+        import qpu_cases
+        from diagnostic_experiments import record_groups
+        from runtime_contracts import _ProbeBackend, _ProbeService
+
+        service = _ProbeService([_ProbeBackend("ibm_fez", FakeFez())])
+
+        def ideal_model(runtime: Any, choice: Any, simulator: Any, shots: int) -> dict:
+            del runtime, simulator, shots
+            return {entry.name: [entry.ideal] for entry in choice.entries}
+
+        with tempfile.TemporaryDirectory(prefix="et-case-fixture-") as temporary:
+            arguments = [
+                "--family",
+                "et-row",
+                "--optimize",
+                "--shot-allocation",
+                "per-pub",
+                "--shots",
+                "8192",
+                "--shot-tiers",
+                "32,64,128,2048",
+                "--max-replicas",
+                "1",
+                "--replica-tiers",
+                "1",
+                "--no-isolated-reference",
+                "--optimizer-candidates",
+                "1",
+                "--seeds",
+                "1",
+                "--model-shots",
+                "65536",
+                "--simulation-threads",
+                "1",
+                "--max-execution-seconds",
+                "90",
+                "--max-total-execution-seconds",
+                "600",
+                "--reserve-seconds",
+                "10",
+                "--out",
+                temporary,
+            ]
+            with (
+                patch.object(live_run, "QiskitRuntimeService", return_value=service),
+                patch.object(live_run, "noise_simulator", return_value=SimpleNamespace()),
+                patch.object(et_planning, "simulate", side_effect=ideal_model),
+                patch.object(live_run, "submit", side_effect=AssertionError("hardware boundary")),
+                redirect_stdout(io.StringIO()),
+            ):
+                status = live_run.main(arguments)
+            self.assertEqual(status, 0)
+            (record_path,) = Path(temporary).glob("*/record.json")
+            record = json.loads(record_path.read_text())
+            self.assertEqual(record["state"], "planned", record["optimization"])
+            self.assertEqual(sum(record["pub_shots"].values()), 466944)
+            self.assertEqual(len(record_groups(record)[0].members), 4656)
+            case = record_path.parent / qpu_cases.CASE_FILENAME
+            self.assertTrue(case.is_file())
+            _, record_digest, archive_digest = qpu_cases._case_inputs(record_path.parent, record)
+            self.assertIn(record_digest, case.read_text())
+            self.assertIn(archive_digest, case.read_text())
+            record["family_configuration"]["compilation_contract"] = "invalid-fixture-contract"
+            with self.assertRaises(ValueError):
+                qpu_cases._case_inputs(record_path.parent, record)
+
     def test_bulk_packing_restores_gc_on_error(self) -> None:
         import gc
 

@@ -1865,6 +1865,16 @@ def _assign_fusion_indices(choices: list[Choice]) -> None:
 
 
 def execution_pubs(choices: list[Choice]) -> list[ExecutionPub]:
+    """Build ET's bounded bulk of circuit graphs before collecting temporary cycles."""
+    if any(choice.group.name == "et_row_campaign" for choice in choices):
+        from et_planning import bulk_packing
+
+        with bulk_packing():
+            return _execution_pubs(choices)
+    return _execution_pubs(choices)
+
+
+def _execution_pubs(choices: list[Choice]) -> list[ExecutionPub]:
     """Fuse corresponding logical entries on each backend and job-kind cluster.
 
     Row zero aligns every packed primary. Row one aligns every group-isolated

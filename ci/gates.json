@@ -4132,7 +4132,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" check_et_runtime.py && \"$PYTHON\" -O check_et_runtime.py",
    "name": "core-582",
-   "seconds": 32,
+   "seconds": 180,
    "tier": "full"
   },
   {
