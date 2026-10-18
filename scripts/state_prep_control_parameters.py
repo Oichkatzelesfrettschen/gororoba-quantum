@@ -830,8 +830,8 @@ def _window(manifest: dict[str, Any], executed: dict[str, dict[str, Any]], where
     windows = set()
     for component in manifest["components"]:
         execution = executed.get(str(component["member"]))
-        require(execution is not None, f"{where}: collect.json records no execution of {component['member']}")
-        assert execution is not None
+        if execution is None:
+            raise ValueError(f"{where}: collect.json records no execution of {component['member']}")
         require(execution.get("pub") == manifest["name"], f"{where}: {component['member']} ran in another PUB")
         require(execution.get("start") is not None, f"{where}: no execution window for {component['member']}")
         windows.add(
@@ -994,13 +994,13 @@ class RunExtractor:
         for job in jobs:
             job_id = str(job["job_id"])
             collected = collected_jobs.get(job_id)
-            require(collected is not None, f"{run_dir}: collect.json holds no job {job_id}")
-            assert collected is not None
+            if collected is None:
+                raise ValueError(f"{run_dir}: collect.json holds no job {job_id}")
             status = (collected.get("usage") or {}).get("job_status")
             if status == "DONE":
                 dt = self.dt.get(str(job["backend"]))
-                require(dt is not None, f"{TARGETS}: no dt for {job['backend']}")
-                assert dt is not None
+                if dt is None:
+                    raise ValueError(f"{TARGETS}: no dt for {job['backend']}")
                 timing, pubs = _completed_job(reader, run_dir, record, job, collected, dt)
                 result["timing"].append(timing)
                 completed.append((job, timing, pubs))
