@@ -8,6 +8,7 @@ or submit quantum work. Run the module directly; GOROROBA_WORKERS overrides the 
 from __future__ import annotations
 
 import argparse
+import contextlib
 import copy
 import dataclasses
 import hashlib
@@ -21,9 +22,9 @@ from types import SimpleNamespace
 from typing import Any, cast
 from unittest.mock import patch
 
-from qiskit.circuit import Measure
+from qiskit.circuit import Delay, Measure
 from qiskit.transpiler import InstructionProperties, Target
-from qiskit_ibm_runtime.fake_provider import FakeFez
+from qiskit_ibm_runtime.fake_provider import FakeFez, FakePrague
 
 import diagnostic_experiments
 import live_run
@@ -1411,9 +1412,533 @@ def _verify_prep_excitation() -> None:
         raise RuntimeError("an excited sample validated against the unexcited exact law")
 
 
+# Fields Aer and local_compute fill with the run's own elapsed time.
+_TIMING_FIELDS = frozenset({"wall_seconds", "time_taken", "sample_measure_time"})
+
+
+def _without_timing(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {key: _without_timing(item) for key, item in value.items() if key not in _TIMING_FIELDS}
+    if isinstance(value, list):
+        return [_without_timing(item) for item in value]
+    return value
+
+
+def _first_difference(left: Any, right: Any, path: str = "") -> str | None:
+    """The path of the first value where two JSON trees differ, or None."""
+    if isinstance(left, dict) and isinstance(right, dict):
+        for key in sorted(set(left) | set(right)):
+            if key not in left or key not in right:
+                return f"{path}/{key}"
+            if (found := _first_difference(left[key], right[key], f"{path}/{key}")) is not None:
+                return found
+        return None
+    if isinstance(left, list) and isinstance(right, list):
+        if len(left) != len(right):
+            return f"{path} (length {len(left)} != {len(right)})"
+        for index, (first, second) in enumerate(zip(left, right, strict=True)):
+            if (found := _first_difference(first, second, f"{path}[{index}]")) is not None:
+                return found
+        return None
+    return None if left == right else f"{path}: {left!r} != {right!r}"
+
+
+def _planning_outcomes(
+    snapshot: live_run.Snapshot,
+    cases: list[tuple[str, argparse.Namespace, list[tuple[list[Any], dict[str, Any]]]]],
+    excited: list[bool],
+) -> dict[str, Any]:
+    """Every distribution, plan and evaluation record one planning pass derives from simulation, timing removed.
+
+    Each case plans through qpu_planning.prepare on its fixed candidates and
+    evaluates the selection through live_run.evaluate. A declared excitation
+    then reruns the first case's first selected choice, whose
+    QuantumChannelInstruction errors make Aer serialize a copied model;
+    excited[0] marks that rerun.
+    """
+    calls: list[Any] = []
+    simulate_entries = live_run.simulate_entries
+
+    def capture(noise: Any, entries: list[Any], shots: int, seed: int) -> dict[str, list[Any]]:
+        result = simulate_entries(noise, entries, shots, seed)
+        laws = {name: [distribution.tolist() for distribution in laws] for name, laws in result.items()}
+        calls.append([[entry.name for entry in entries], shots, seed, laws])
+        return result
+
+    outcomes: dict[str, Any] = {}
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
+    with patch.object(live_run, "simulate_entries", capture), redirect_stdout(io.StringIO()):
+        for label, args, candidates in cases:
+            with patch.object(qpu_planning, "family_candidates", return_value=candidates):
+                selected, metadata = qpu_planning.prepare(live_run, [snapshot], args, usage, {})
+            record: dict[str, Any] = {"shots": args.shots, "policy": {"local_compute": local_compute.settings(args)}}
+            live_run.evaluate(selected, record)
+            outcomes[label] = live_run._jsonable({"metadata": metadata, "record": record})
+            if label == cases[0][0]:
+                simulator = live_run.noise_simulator(snapshot.name, snapshot.backend.target, snapshot.properties)
+                excited[0] = True
+                live_run.simulate(selected[0], simulator, args.model_shots, prep_excitation=0.02)
+                excited[0] = False
+                # with_prep_excitation draws a fresh QuantumError per call, and
+                # its generated id enters the QPY bytes, so the excited batch's
+                # QPY digest differs between any two reruns.
+                outcomes["excited_batches"] = live_run._jsonable(
+                    [
+                        {key: value for key, value in batch.items() if key != "ordered_qpy_sha256"}
+                        for batch in local_compute.batches(simulator)
+                    ]
+                )
+    # prepare simulates choices on a thread pool; the set of calls is the outcome.
+    calls.sort(key=lambda call: json.dumps(call[:3]))
+    return cast(dict[str, Any], _without_timing(json.loads(json.dumps({"calls": calls, "outcomes": outcomes}))))
+
+
+def _verify_serialized_noise(snapshot: live_run.Snapshot) -> None:
+    """One retained, qubit-restricted noise serialization leaves every planning outcome bit-identical.
+
+    The stock pass patches SerializedNoiseSimulator back to AerSimulator's
+    per-run NoiseModel.to_dict and AerBackend._assemble_noise_model. The
+    cases cover one-qubit static and reset groups (state-prep-control), a
+    multi-qubit static group and a feed-forward group with Delay members
+    (folded-qpe), and an excited rerun whose copied model serializes afresh.
+    Qubit 2's own errors hold no Kraus channel while the device model does,
+    so its reset batch also serves as the negative control of the opset
+    witnesses that _Serialization.restrict keeps.
+    """
+    from qiskit_aer.noise import NoiseModel
+
+    _require(2 not in snapshot.excluded_qubits, "FakeFez excludes the negative-control qubit 2")
+    state_prep = _args("state-prep-control", layout=[2])
+    folded = _args("folded-qpe")
+    cases = [
+        (label, args, qpu_planning.family_candidates(live_run, [snapshot], args, {}))
+        for label, args in (("state-prep-control", state_prep), ("folded-qpe", folded))
+    ]
+    for label, _planning_args, candidates in cases:
+        _require(len(candidates) == 1, f"{label}: the fixture produced {len(candidates)} candidates")
+    _require(
+        any(
+            isinstance(instruction.operation, Delay)
+            for choices, _configuration in cases[1][2]
+            for choice in choices
+            for entry in choice.entries
+            for replica in entry.replicas
+            for instruction in replica.data
+        ),
+        "folded-qpe lost the Delay members that exercise the relaxation pass",
+    )
+    model = live_run.noise_simulator(snapshot.name, snapshot.backend.target, snapshot.properties).options.noise_model
+    _require(
+        local_compute.serialized_noise(model) == model.to_dict(serializable=True),
+        "the retained serialization differs from a fresh NoiseModel.to_dict",
+    )
+    to_dict = NoiseModel.to_dict
+    pass_manager = NoiseModel._pass_manager
+    observed: dict[str, list[int]] = {}
+    excited = [False]
+
+    def counting_to_dict(self: Any, serializable: bool = False) -> Any:
+        if serializable and self is model:
+            observed["snapshot_serializations"].append(1)
+        return to_dict(self, serializable)
+
+    def counting_pass_manager(self: Any) -> Any:
+        manager = pass_manager(self)
+        if manager is not None:
+            run = manager.run
+
+            def counted(programs: list[Any], *args: Any, **kwargs: Any) -> Any:
+                if not excited[0]:
+                    observed["pass_runs"].append(len(programs))
+                return run(programs, *args, **kwargs)
+
+            manager.run = counted
+        return manager
+
+    outcomes = {}
+    for mode in ("stock", "serialized"):
+        observed.update(snapshot_serializations=[], pass_runs=[])
+        with (
+            patch.object(NoiseModel, "to_dict", counting_to_dict),
+            patch.object(NoiseModel, "_pass_manager", counting_pass_manager),
+            _stock_aer() if mode == "stock" else contextlib.nullcontext(),
+        ):
+            outcomes[mode] = _planning_outcomes(snapshot, cases, excited)
+        serializations = len(observed["snapshot_serializations"])
+        empty_runs = observed["pass_runs"].count(0)
+        delay_runs = sum(1 for count in observed["pass_runs"] if count > 0)
+        _require(delay_runs > 0, f"{mode}: no batch ran the relaxation pass on its Delay circuits")
+        if mode == "stock":
+            _require(serializations > 0 and empty_runs > 0, f"{mode}: the per-run Aer path was not exercised")
+        else:
+            _require(serializations == 0, f"the snapshot model was serialized {serializations} times after configure")
+            _require(empty_runs == 0, f"{empty_runs} unexcited batches without Delay still ran the noise passes")
+    stock_calls, serialized_calls = outcomes["stock"]["calls"], outcomes["serialized"]["calls"]
+    _require(len(stock_calls) == len(serialized_calls) > 0, "the two planning passes simulated different batches")
+    for stock_call, serialized_call in zip(stock_calls, serialized_calls, strict=True):
+        _require(stock_call == serialized_call, f"{stock_call[:3]}: a simulated distribution changed bits")
+    changed = _first_difference(outcomes["stock"], outcomes["serialized"])
+    _require(changed is None, f"a plan or evaluation record field changed at {changed}")
+    reset = next(
+        choice for choices, _configuration in cases[0][2] for choice in choices if "reset" in choice.group.name
+    )
+    restrict = local_compute._Serialization.restrict
+
+    def unwitnessed(self: Any, active: frozenset[int]) -> dict[str, Any]:
+        errors = restrict(self, active)["errors"]
+        return {
+            "errors": [
+                error
+                for error in errors
+                if "gate_qubits" not in error or any(set(qubits) <= active for qubits in error["gate_qubits"])
+            ]
+        }
+
+    laws = {}
+    for label in ("stock", "restricted", "unwitnessed"):
+        with (
+            _stock_aer() if label == "stock" else contextlib.nullcontext(),
+            patch.object(local_compute._Serialization, "restrict", unwitnessed)
+            if label == "unwitnessed"
+            else contextlib.nullcontext(),
+        ):
+            simulator = live_run.noise_simulator(snapshot.name, snapshot.backend.target, snapshot.properties)
+            laws[label] = [law.tolist() for laws in live_run.simulate(reset, simulator, 32768).values() for law in laws]
+    _require(laws["restricted"] == laws["stock"], "the restricted reset batch changed bits at 32768 shots")
+    _require(
+        laws["unwitnessed"] != laws["stock"],
+        "the reset batch without opset witnesses kept the stock counts, so the control no longer tests them",
+    )
+
+
+@contextlib.contextmanager
+def _stock_aer() -> Any:
+    """SerializedNoiseSimulator with AerSimulator's own per-run serialization and noise assembly."""
+    from qiskit_aer import AerSimulator
+
+    with (
+        patch.object(local_compute.SerializedNoiseSimulator, "_execute_circuits", AerSimulator._execute_circuits),
+        patch.object(
+            local_compute.SerializedNoiseSimulator, "_assemble_noise_model", AerSimulator._assemble_noise_model
+        ),
+    ):
+        yield
+
+
+def _verify_serialized_noise_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_serialized_noise(snapshot)
+    print(
+        "QPU planning: one retained noise serialization per snapshot model, restricted to each batch's qubits with "
+        "opset witnesses, and the skipped empty noise-pass run reproduce every simulated distribution, plan and "
+        "evaluation record of the per-run Aer path; dropping the witnesses changes the reset batch's counts"
+    )
+
+
 def _forbid_service(*args: Any, **kwargs: Any) -> Any:
     del args, kwargs
     raise RuntimeError("credential-free planning contract reached a RuntimeService constructor")
+
+
+class _SmallHeronBackend(_ProbeBackend):
+    """FakePrague, 33 qubits with native CZ, carrying FakeFez's repetition-rate configuration."""
+
+    def configuration(self) -> Any:
+        configuration = super().configuration()
+        heron = FakeFez().configuration()
+        for name in ("dynamic_reprate_enabled", "default_rep_delay", "rep_delay_range", "max_shots"):
+            setattr(configuration, name, getattr(heron, name))
+        return configuration
+
+
+class _SimulationForbidden(RuntimeError):
+    """A reused submission reached a noise simulation."""
+
+
+def _submit_reuse_case(name: str, argv: list[str], directory: Path) -> None:
+    """One approved dry run, then reuse, full-path and refused submissions through live_run.main.
+
+    Every discovery reads a newly republished calibration stamp, so the
+    preflight accepts a timestamp-only change and the refresh before the
+    first batch rebuilds the plan; a shifted readout value on a placed qubit
+    stands for a moved value.
+    """
+    from runtime_contracts import _ShiftedReadout
+
+    out = directory / name
+    with redirect_stdout(io.StringIO()):
+        status = live_run.main([*argv, "--out", str(out / "dry")])
+    dry_runs = list((out / "dry").iterdir())
+    _require(status == 0 and len(dry_runs) == 1, f"{name}: the dry run exited {status}")
+    approved = dry_runs[0]
+    record_sha = hashlib.sha256((approved / "record.json").read_bytes()).hexdigest()
+    approved_record = json.loads((approved / "record.json").read_text())
+    _require(approved_record["state"] == "planned", f"{name}: the dry run left {approved_record['state']}")
+    measured = sorted(
+        int(key.split(":")[1]) for key in approved_record["groups"][0]["calibration_fingerprint"] if key[:4] == "e10:"
+    )
+    _require(bool(measured), f"{name}: the approved group binds no readout value")
+    qubit = measured[0]
+    original_snapshot = live_run.take_snapshot
+
+    def rolled(after: int, shift_after: int | None) -> Any:
+        calls = 0
+
+        def take(service_: Any, backend_name: str, operator_excluded: Any = ()) -> Any:
+            nonlocal calls
+            calls += 1
+            snapshot = original_snapshot(service_, backend_name, operator_excluded)
+            if calls > after:
+                snapshot.calibration = f"2099-01-01T00:{calls:02d}:00+00:00"
+            if shift_after is not None and calls > shift_after:
+                snapshot.properties = _ShiftedReadout(snapshot.properties, qubit)
+            return snapshot
+
+        return patch.object(live_run, "take_snapshot", take)
+
+    def forbidden(*_args: Any, **_kwargs: Any) -> Any:
+        raise _SimulationForbidden("a noise simulation ran")
+
+    def submit(
+        label: str,
+        extra: list[str],
+        shift_after: int | None,
+        *,
+        reuse: bool,
+        simulate: bool,
+        republish: bool = True,
+    ) -> tuple[int, dict[str, Any], list[bytes]]:
+        sent: list[bytes] = []
+
+        def capture(circuits: list[Any]) -> None:
+            buffer = io.BytesIO()
+            live_run.qpy.dump(circuits, buffer)
+            sent.append(buffer.getvalue())
+
+        def sampler(
+            backend_: Any,
+            kind: str,
+            twirl: bool,
+            dd: str | None,
+            tags: list[str],
+            shots: int = 4096,
+            max_execution_seconds: int | None = None,
+            *,
+            rep_delay: float | None = None,
+        ) -> Any:
+            del backend_, twirl, dd, rep_delay
+            return _ProbeSampler(kind, tags, shots, capture, None, max_execution_seconds)
+
+        (approved / live_run.APPROVAL_CONSUMED_FILE).unlink(missing_ok=True)
+        target = out / label
+        patches = [
+            rolled(0 if republish else 1 << 30, shift_after),
+            patch.object(live_run, "configure_sampler", sampler),
+        ]
+        if not simulate:
+            patches += [
+                patch.object(live_run, "simulate", forbidden),
+                patch.object(live_run, "noise_simulator", forbidden),
+                patch.object(local_compute, "run", forbidden),
+            ]
+        if not reuse:
+            patches.append(patch.object(live_run, "_reuse_context", lambda _args: None))
+        with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+            for active in patches:
+                active.start()
+            try:
+                code = live_run.main(
+                    [
+                        *argv,
+                        *extra,
+                        "--out",
+                        str(target),
+                        "--submit",
+                        "--approved-record",
+                        str(approved),
+                        "--approved-record-sha256",
+                        record_sha,
+                    ]
+                )
+            finally:
+                for active in reversed(patches):
+                    active.stop()
+        written = [json.loads(path.read_text()) for path in target.glob("*/record.json")]
+        _require(len(written) == 1, f"{name} {label}: wrote {len(written)} records")
+        return code, written[0], sent
+
+    # Reuse: no planning or evaluation simulation, and a timestamp-only
+    # republish at the refresh rebuilds through the approved design again.
+    code, reused, reused_bytes = submit("reuse", [], None, reuse=True, simulate=False)
+    _require(code == 0 and reused["state"] == "submitted", f"{name}: the reuse run left {reused['state']}")
+    _require(reused["approved_record"]["mismatches"] == [], f"{name}: {reused['approved_record']['mismatches']}")
+    _require(bool(reused_bytes), f"{name}: the reuse run sent nothing")
+    reuse_log = reused["prediction_reuse"]
+    _require(
+        reuse_log["predictions"]["reused"] and reuse_log["record_sha256"] == record_sha,
+        f"{name}: predictions were not reused: {reuse_log}",
+    )
+    family = "family_configuration" in approved_record
+    if family:
+        _require(reuse_log["design"]["reused"], f"{name}: the design was not reused: {reuse_log}")
+        refresh = reused["revalidation"][0]
+        _require(
+            refresh["rebuilt"] and refresh["prediction_reuse"]["design"]["reused"],
+            f"{name}: the refresh rebuilt without the approved design: {refresh}",
+        )
+    _require(
+        {group["calibration"] for group in reused["groups"]} == {"2099-01-01T00:01:00+00:00"},
+        f"{name}: reused groups keep a stale calibration identity",
+    )
+
+    # The full path under the same republish sends the same PUB bytes and
+    # reaches the same verdict; its fresh simulation reproduces the reused
+    # predictions.
+    code, full, full_bytes = submit("full", [], None, reuse=False, simulate=True)
+    _require(code == 0 and full["state"] == "submitted", f"{name}: the full path left {full['state']}")
+    _require(full["approved_record"]["mismatches"] == [], f"{name}: {full['approved_record']['mismatches']}")
+    _require("prediction_reuse" not in full or not full["prediction_reuse"], f"{name}: the full path reused")
+    _require(full_bytes == reused_bytes, f"{name}: reuse and full path sent different PUB bytes")
+    unbound = {"noise_model_calibration"}
+    for fresh, copied in zip(full["groups"], reused["groups"], strict=True):
+        _require(
+            {k: v for k, v in fresh.items() if k not in unbound}
+            == {k: v for k, v in copied.items() if k not in unbound},
+            f"{name} {fresh['group']}: the fresh simulation differs from the reused predictions",
+        )
+    for key in live_run.DESIGN_RECORD_FIELDS:
+        if key != "local_simulation_batches":
+            _require(full.get(key) == reused.get(key), f"{name}: the full path's {key} differs from the reused one")
+    for key in ("shots", "pub_shots", "execution_pubs", "execution_contract", "budget_plan"):
+        _require(full.get(key) == reused.get(key), f"{name}: the full path's {key} differs from the reused one")
+
+    # A moved value refuses at the preflight, at the refresh and at the batch.
+    for shift_after, where in ((0, "preflight"), (1, "refresh"), (2, "batch")):
+        code, moved, sent = submit(f"moved-{where}", [], shift_after, reuse=True, simulate=where != "preflight")
+        _require(
+            code == 1 and moved["state"] == "approval_required" and not sent,
+            f"{name}: a value moved at the {where} left {moved['state']} with {len(sent)} jobs",
+        )
+        _require(not (approved / live_run.APPROVAL_CONSUMED_FILE).exists(), f"{name}: the {where} refusal consumed it")
+        if where == "refresh" and family:
+            blockers = moved["revalidation"][0]["prediction_reuse"]["design"]["blockers"]
+            _require(any(f"e10:{qubit}" in b for b in blockers), f"{name}: the refresh reused moved values {blockers}")
+
+    # An approved batch whose device depended on the host's GPU re-plans
+    # through the full path and sends the same PUB bytes.
+    with patch.object(local_compute, "host_independent_route", lambda _batch: "routed by GPU availability"):
+        code, routed, routed_bytes = submit("device", [], None, reuse=True, simulate=True)
+    _require(code == 0 and routed["state"] == "submitted", f"{name}: the device fallback left {routed['state']}")
+    _require(
+        not routed["prediction_reuse"]["predictions"]["reused"]
+        and (not family or not routed["prediction_reuse"]["design"]["reused"]),
+        f"{name}: a host-dependent device route reused the approved predictions",
+    )
+    _require(routed_bytes == full_bytes, f"{name}: the device fallback sent other PUB bytes than the full path")
+
+    # A changed seed or source digest falls back to the full path, which
+    # refuses exactly as before.
+    changes: tuple[tuple[str, list[str], str, Any], ...] = (
+        ("seed", ["--seeds", "2"], "policy differs", None),
+        ("digest", [], "experiment_digest differs", patch.object(live_run, "experiment_digest", lambda: "0" * 64)),
+    )
+    for label, extra, mismatch, patched in changes:
+        if patched is not None:
+            patched.start()
+        try:
+            # Without a republish the refresh keeps the plan, so the
+            # comparison alone decides.
+            code, changed, sent = submit(label, extra, None, reuse=True, simulate=True, republish=False)
+        finally:
+            if patched is not None:
+                patched.stop()
+        _require(
+            code == 1 and changed["state"] == "approval_required" and not sent,
+            f"{name}: a changed {label} left {changed['state']}",
+        )
+        _require(
+            mismatch in changed["approved_record"]["mismatches"],
+            f"{name}: a changed {label} refused for {changed['approved_record']['mismatches']}",
+        )
+        _require(
+            not changed["prediction_reuse"]["predictions"]["reused"]
+            and (not family or not changed["prediction_reuse"]["design"]["reused"]),
+            f"{name}: a changed {label} reused the approved predictions",
+        )
+
+
+def _verify_submit_reuse() -> None:
+    """A submission reuses the approved predictions exactly when every input they read is unchanged."""
+    from runtime_contracts import _FiniteQuotaService
+
+    narrow = [{"active_input_qubits": list(range(local_compute.GPU_MIN_ACTIVE_QUBITS - 1))}]
+    wide = [{"active_input_qubits": list(range(local_compute.GPU_MIN_ACTIVE_QUBITS))}]
+    routes: tuple[tuple[str, str, str, dict[str, Any] | None, list[dict[str, Any]], bool], ...] = (
+        ("cpu", "density_matrix", "CPU", None, wide, True),
+        ("auto", "statevector", "CPU", None, wide, True),
+        ("auto", "density_matrix", "CPU", None, narrow, True),
+        ("auto", "density_matrix", "CPU", None, wide, False),
+        ("auto", "density_matrix", "CPU", {"rejected": "memory"}, wide, False),
+        ("auto", "density_matrix", "GPU", {"active_qubits": 11}, wide, False),
+        ("gpu", "density_matrix", "GPU", {"active_qubits": 11}, wide, False),
+    )
+    for mode, method, device, admission, metadata, stable in routes:
+        batch = {
+            "policy": {"mode": mode},
+            "method": method,
+            "device": device,
+            "gpu_admission": admission,
+            "experiment_metadata": metadata,
+        }
+        _require(
+            (local_compute.host_independent_route(batch) is None) == stable,
+            f"host_independent_route misreads {mode} {method} on {device} with admission {admission}",
+        )
+
+    # A 33-qubit device keeps each whole-device noise model small.
+    backend = _SmallHeronBackend("reuse_fixture", cast(Any, FakePrague()))
+    service = _FiniteQuotaService([backend])
+    with redirect_stdout(io.StringIO()):
+        snapshot = live_run.take_snapshot(cast(Any, service), backend.name)
+    qubits = [qubit for qubit in range(snapshot.backend.num_qubits) if qubit not in snapshot.excluded_qubits][:1]
+    common = ["--backends", backend.name, "--max-execution-seconds", "60", "--max-total-execution-seconds", "120"]
+    family = [
+        "--family",
+        "state-prep-control",
+        "--layout",
+        ",".join(map(str, qubits)),
+        "--state-prep-arms",
+        "prep0,reset",
+        "--optimize",
+        "--shot-tiers",
+        "4096,8192",
+        "--replica-tiers",
+        "1",
+        "--optimizer-candidates",
+        "1",
+        "--model-shots",
+        "512",
+        "--simulation-threads",
+        "1",
+        *common,
+    ]
+    groups = ["--groups", "design_c_8_1_4", "--max-replicas", "1", "--simulation-threads", "1", *common]
+    with (
+        patch.object(live_run, "QiskitRuntimeService", lambda: service),
+        tempfile.TemporaryDirectory(prefix="gororoba-submit-reuse-") as directory,
+    ):
+        _submit_reuse_case("state-prep-control", family, Path(directory))
+        _submit_reuse_case("groups", groups, Path(directory))
+    print(
+        "QPU planning: a submission whose calibration values, seeds, policy, sources and versions match the "
+        "approved record reuses its design and predictions without simulating and sends the full path's PUB bytes; "
+        "a moved value refuses at the preflight, refresh and batch, a batch routed by the host's GPU re-plans "
+        "and sends the same bytes, and a changed seed or source digest re-plans and refuses as before"
+    )
 
 
 def _verify() -> None:
@@ -1553,9 +2078,19 @@ if __name__ == "__main__":
     parser.add_argument(
         "--prep-excitation", action="store_true", help="run only the declared initial-excitation contracts"
     )
+    parser.add_argument(
+        "--submit-reuse", action="store_true", help="run only the approved-prediction reuse submission contracts"
+    )
+    parser.add_argument(
+        "--serialized-noise",
+        action="store_true",
+        help="run only the retained noise-serialization equivalence contract",
+    )
     parser.add_argument("--window-bracket", action="store_true", help="run only the N=21 orbit window-bracket contract")
     parsed = parser.parse_args()
-    if parsed.window_bracket:
+    if parsed.serialized_noise:
+        _verify_serialized_noise_only()
+    elif parsed.window_bracket:
         _verify_window_bracket_only()
     elif parsed.static_group_admission:
         _verify_static_admission_only()
@@ -1565,5 +2100,7 @@ if __name__ == "__main__":
         _verify_state_prep_only()
     elif parsed.prep_excitation:
         _verify_prep_excitation_only()
+    elif parsed.submit_reuse:
+        _verify_submit_reuse()
     else:
         _verify()

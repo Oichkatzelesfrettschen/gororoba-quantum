@@ -18,7 +18,7 @@
     "mean_delta": -0.001709,
     "standard_error": 0.001303
    },
-   "distinct_states": 6,
+   "distinct_states": 7,
    "state_mean_tvd_range": [
     0.093624,
     0.103179
@@ -54,9 +54,9 @@
     "mean_delta": -0.018082,
     "standard_error": 0.001519
    },
-   "distinct_states": 6,
+   "distinct_states": 7,
    "state_mean_tvd_range": [
-    0.120064,
+    0.087975,
     0.141502
    ],
    "self_check": {
@@ -90,9 +90,9 @@
     "mean_delta": -0.031616,
     "standard_error": 0.001346
    },
-   "distinct_states": 6,
+   "distinct_states": 7,
    "state_mean_tvd_range": [
-    0.1539,
+    0.140198,
     0.185516
    ],
    "self_check": {
@@ -126,9 +126,9 @@
     "mean_delta": -0.031616,
     "standard_error": 0.001346
    },
-   "distinct_states": 6,
+   "distinct_states": 7,
    "state_mean_tvd_range": [
-    0.178284,
+    0.164581,
     0.2099
    ],
    "self_check": {
@@ -345,10 +345,10 @@
     "mean_delta": -0.009147,
     "standard_error": 0.002392
    },
-   "distinct_states": 6,
+   "distinct_states": 7,
    "state_mean_tvd_range": [
     0.194173,
-    0.204688
+    0.204981
    ],
    "self_check": {
     "pairs": 15,
@@ -382,10 +382,10 @@
     "mean_delta": -0.001483,
     "standard_error": 0.000346
    },
-   "distinct_states": 6,
+   "distinct_states": 7,
    "state_mean_tvd_range": [
     0.0702,
-    0.075661
+    0.084521
    ],
    "self_check": {
     "pairs": 0,
@@ -420,7 +420,7 @@
     "mean_delta": -0.001784,
     "standard_error": 0.000427
    },
-   "distinct_states": 6,
+   "distinct_states": 7,
    "state_mean_tvd_range": [
     0.0819,
     0.086299
@@ -456,7 +456,7 @@
     "mean_delta": -0.004185,
     "standard_error": 0.002446
    },
-   "distinct_states": 6,
+   "distinct_states": 7,
    "state_mean_tvd_range": [
     0.423829,
     0.444755
@@ -492,7 +492,7 @@
     "mean_delta": -0.002874,
     "standard_error": 0.001246
    },
-   "distinct_states": 6,
+   "distinct_states": 7,
    "state_mean_tvd_range": [
     0.09342,
     0.097517
@@ -513,14 +513,194 @@
    }
   },
   {
+   "run": "results/live/2026-10-18T083402.386701Z",
+   "backend": "ibm_kingston",
+   "members": 149,
+   "shots": {
+    "32768": 149
+   },
+   "execution_mean_tvd": [
+    0.002955
+   ],
+   "current_minus_execution": {
+    "replicas": 149,
+    "pubs": 1,
+    "mean_delta": 0.001819,
+    "standard_error": null
+   },
+   "distinct_states": 7,
+   "state_mean_tvd_range": [
+    0.002955,
+    0.008277
+   ],
+   "self_check": {
+    "pairs": 149,
+    "mean_abs_ghost_minus_recorded_tvd": 0.000495,
+    "max_abs_ghost_minus_recorded_tvd": 0.0029,
+    "mean_abs_ghost_minus_resampled_tvd": 0.000434,
+    "mean_ghost_minus_recorded_tvd": 5.4e-05,
+    "sd": 0.000712
+   },
+   "calibration_change": {
+    "qubits": 149,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261018T0138200700.json",
+    "cz_error_change": -0.001087138,
+    "readout_error_change": -0.000170407
+   }
+  },
+  {
+   "run": "results/live/2026-10-18T083403.945334Z",
+   "backend": "ibm_kingston",
+   "members": 149,
+   "shots": {
+    "16384": 149
+   },
+   "execution_mean_tvd": [
+    0.002158
+   ],
+   "current_minus_execution": {
+    "replicas": 149,
+    "pubs": 1,
+    "mean_delta": 0.002239,
+    "standard_error": null
+   },
+   "distinct_states": 7,
+   "state_mean_tvd_range": [
+    0.002158,
+    0.007638
+   ],
+   "self_check": {
+    "pairs": 149,
+    "mean_abs_ghost_minus_recorded_tvd": 0.000722,
+    "max_abs_ghost_minus_recorded_tvd": 0.004029,
+    "mean_abs_ghost_minus_resampled_tvd": 0.000617,
+    "mean_ghost_minus_recorded_tvd": -8.3e-05,
+    "sd": 0.001033
+   },
+   "calibration_change": {
+    "qubits": 149,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261018T0138200700.json",
+    "cz_error_change": -0.001087138,
+    "readout_error_change": -0.000170407
+   }
+  },
+  {
+   "run": "results/live/2026-10-18T083404.226285Z",
+   "backend": "ibm_kingston",
+   "members": 149,
+   "shots": {
+    "32768": 149
+   },
+   "execution_mean_tvd": [
+    0.003018
+   ],
+   "current_minus_execution": {
+    "replicas": 149,
+    "pubs": 1,
+    "mean_delta": 0.002757,
+    "standard_error": null
+   },
+   "distinct_states": 7,
+   "state_mean_tvd_range": [
+    0.003018,
+    0.008926
+   ],
+   "self_check": {
+    "pairs": 149,
+    "mean_abs_ghost_minus_recorded_tvd": 0.000481,
+    "max_abs_ghost_minus_recorded_tvd": 0.002625,
+    "mean_abs_ghost_minus_resampled_tvd": 0.000481,
+    "mean_ghost_minus_recorded_tvd": 4.7e-05,
+    "sd": 0.00069
+   },
+   "calibration_change": {
+    "qubits": 149,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261018T0138200700.json",
+    "cz_error_change": -0.001087138,
+    "readout_error_change": -0.000170407
+   }
+  },
+  {
+   "run": "results/live/2026-10-18T083404.414317Z",
+   "backend": "ibm_kingston",
+   "members": 149,
+   "shots": {
+    "16384": 149
+   },
+   "execution_mean_tvd": [
+    0.00215
+   ],
+   "current_minus_execution": {
+    "replicas": 149,
+    "pubs": 1,
+    "mean_delta": 0.002431,
+    "standard_error": null
+   },
+   "distinct_states": 7,
+   "state_mean_tvd_range": [
+    0.00215,
+    0.007683
+   ],
+   "self_check": {
+    "pairs": 149,
+    "mean_abs_ghost_minus_recorded_tvd": 0.00071,
+    "max_abs_ghost_minus_recorded_tvd": 0.004883,
+    "mean_abs_ghost_minus_resampled_tvd": 0.000619,
+    "mean_ghost_minus_recorded_tvd": -4.9e-05,
+    "sd": 0.001068
+   },
+   "calibration_change": {
+    "qubits": 149,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261018T0138200700.json",
+    "cz_error_change": -0.001087138,
+    "readout_error_change": -0.000170407
+   }
+  },
+  {
+   "run": "results/live/2026-10-18T090603.530638Z",
+   "backend": "ibm_kingston",
+   "members": 2,
+   "shots": {
+    "100000": 2
+   },
+   "execution_mean_tvd": [
+    0.025135
+   ],
+   "current_minus_execution": {
+    "replicas": 2,
+    "pubs": 2,
+    "mean_delta": -0.002475,
+    "standard_error": 0.000835
+   },
+   "distinct_states": 7,
+   "state_mean_tvd_range": [
+    0.01762,
+    0.025655
+   ],
+   "self_check": {
+    "pairs": 2,
+    "mean_abs_ghost_minus_recorded_tvd": 0.00265,
+    "max_abs_ghost_minus_recorded_tvd": 0.00477,
+    "mean_abs_ghost_minus_resampled_tvd": 0.00201,
+    "mean_ghost_minus_recorded_tvd": -0.00265,
+    "sd": 0.00212
+   },
+   "calibration_change": {
+    "qubits": 7,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261018T0138200700.json",
+    "cz_error_change": 0.000148853,
+    "readout_error_change": -0.000156948
+   }
+  },
+  {
    "run": "results/live/kingston-wide-control-result",
    "skipped": "the run keeps no record.json, isa.qpy, collect.json"
   }
  ],
  "correlations": {
-  "runs": 14,
-  "cz_error_higher_now": 10,
-  "cz_error_change_vs_distance_change": -0.3091,
-  "readout_error_change_vs_distance_change": 0.3185
+  "runs": 19,
+  "cz_error_higher_now": 11,
+  "cz_error_change_vs_distance_change": -0.516,
+  "readout_error_change_vs_distance_change": 0.275
  }
 }

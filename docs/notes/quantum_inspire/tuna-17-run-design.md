@@ -24,12 +24,12 @@ gates core-439 and core-440).
 
 ## Measured constraints
 
-**Shot cost.** Over the 147 completed Tuna-17 jobs retained (4096, 8192,
-16384 and 131072 shots), execution time fits 2.63 +- 0.22 s per job plus
-0.533 +- 0.003 ms per shot (residual 1.4 s): the 500 us initialization
+**Shot cost.** Over the 159 completed Tuna-17 jobs retained (4096, 8192,
+16384 and 131072 shots), execution time fits 2.62 +- 0.22 s per job plus
+0.534 +- 0.003 ms per shot (residual 1.5 s): the 500 us initialization
 dominates, so a 16384-shot job takes about 11 s, the 21-job follow series
-about 240 s and a 131072-shot job about 72 s. The fit also carries 0.49 +-
-0.34 us per CZ line per shot, against the documented 60 ns: a 1.4-sigma term
+about 240 s and a 131072-shot job about 72 s. The fit also carries 0.42 +-
+0.30 us per CZ line per shot, against the documented 60 ns: a 1.4-sigma term
 with no known mechanism, which may be control-stack time rather than qubit
 time. The fit over the 105 jobs before the follow series predicted 233.6 s
 for it; its 21 jobs executed in 243.3 s, 4% more, about two residual
@@ -350,14 +350,11 @@ follow series measured is outside them.
 
 ## Open questions
 
-- Readout context: readout-1 and readout-iso-x differ in the neighbors'
-  state and in the pulses the neighbors receive. A readout that applies X X
-  to the neighbors (driven, left in |0>) beside q13's X holds the drive and
-  changes only the state, so the pair separates state-dependent readout from
-  drive crosstalk. readout-1 also excites both of q13's neighbors, q10 and
-  q11; a context readout that excites one at a time would name the neighbor,
-  and the same circuits for every used qubit would give a context-resolved
-  correction.
+- Readout context: resolved by the Walsh exemplar series
+  ([tuna17-walsh-exemplars.md](tuna17-walsh-exemplars.md)): q13's e10
+  doubles beside an excited q11 and moves by less than 0.01 beside an
+  excited q10 or after X X on both, so the dependence is q11's state at
+  measurement. The other used qubits' contexts remain unmeasured.
 - rho above 1: the stationary line-phase bins keep rho above 1 on all three
   pairs, so the job-averaged modulation does not explain it, and the excess
   tracks the line phase. A run that separates a line-modulated selector
