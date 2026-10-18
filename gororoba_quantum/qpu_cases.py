@@ -315,6 +315,9 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
     if "empirical_bernstein" in design:
         _require(design["empirical_bernstein"] is True, "empirical_bernstein is recorded only when declared")
         arguments.append("--empirical-bernstein")
+    if "init_herald" in design:
+        _require(design["init_herald"] is True, "init_herald is recorded only when set")
+        arguments.append("--init-herald")
     arguments.extend(["--out", (Path("..") / location.parent).as_posix()])
     return arguments
 
