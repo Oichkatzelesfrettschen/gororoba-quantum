@@ -1554,8 +1554,9 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
         ]
         label = "H" if history else "A"
         history_text = (
-            " Every shot of H after the first follows a shot that ended in |1>, the largest end-of-shot excited "
-            "population a circuit leaves."
+            " Every shot of H after the first follows a shot that ended in |1> unless that shot's own "
+            "initialization left |1> or its X failed; scripts/state_prep_excess.py bounds the excitation after an "
+            "all-|1> history from H through that end-state population."
             if history
             else ""
         )

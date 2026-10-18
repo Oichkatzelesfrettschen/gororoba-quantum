@@ -1,50 +1,87 @@
 """Preregistered initial excitation of an n21 placement from state-prep-control raw shots.
 
-The Sampler's implicit initialization (init_qubits) is imperfect, and the
-residual excitation it leaves grows with the |1> population the previous shot
-left behind and shrinks with the repetition delay. The x_history arm (init,
-measure, x) reads every qubit's initial state after a shot that ended in |1>,
-the largest end-of-shot excited population an n21 shot can leave; prep0
-(init, measure) reads it after a history near |0>. The shots of one job's circuits
-interleave, so prep0 and x_history counts come only from a job holding no
-other arm: an x PUB beside prep0 would give some prep0 shots a |1> history.
+The Sampler's implicit initialization (init_qubits) is imperfect: the
+residual excitation it leaves depends on the state the previous shot ended
+in and shrinks with the repetition delay. The initialization is one channel
+acting on the previous shot's end state, so on a diagonal end state with
+|1> population q the excitation it leaves is affine in q,
+eps(q) = eps_0 + (eps_1 - eps_0) q, and an all-|1> history (q = 1) leaves
+eps_1, the largest an n21 shot can leave behind. The x_history arm (init,
+measure, x) ends a shot in |1> unless its own initialization left |1> (the
+measurement projects that branch and x maps it to |0>) or the x fails, so
+its shots run at q >= (1 - pi)(1 - delta), with pi the arm's true
+excitation and delta the probability that the x leaves |0> unflipped. Its
+excitation eps_h = eps(q) bounds the all-|1> one: eps_1 = eps_h / q -
+eps_0 (1 - q) / q <= eps_h / q when eps_1 >= eps_0, and eps_1 < eps_h
+otherwise. prep0 (init, measure) reads the excitation after a history near
+|0>. The shots of one job's circuits interleave, so prep0 and x_history
+counts come only from a job holding no other arm. Measurement is
+projective, the model dynamic_density's exact law applies.
 
-Rule, for each qubit q of the placement S of an n21 record, with the
-family-wise alpha split evenly over 5|S| one-sided Clopper-Pearson bounds
-(five per qubit):
+Readout. A control PUB's counts pass through the readout in force while its
+shots ran, which live_run --collect records per member as the PUB's
+execution calibration. --fetch-readout RUN_DIR reads properties(datetime=...)
+at each PUB's execution start, and at its stop when the calibration changed
+during the shots, requires each fetched stamp to equal the calibration
+collect recorded, and retains prob_meas1_prep0, prob_meas0_prep1 (through
+live_run.readout_flips), the x error, the x duration and T1 of every member
+qubit in state-prep-readout.json beside the run. The n21 model applies its
+own placed_qubit_calibration readout. The rule takes the envelope: e10 is
+the smallest and e01 the largest value among the model's and every
+execution calibration of the qubit's control PUBs. These are the
+calibration's reported values, each the parameter of a readout channel; the
+rule assigns them no sampling distribution.
 
-- U50_q, U250_q: upper bounds on the x_history excited fraction at 50 us
-  and 250 us.
+Rule. C is the set of qubits read by x_history at 50 and 250 us and by
+prep0 at 250 us in the supplied control runs. The family-wise alpha splits
+evenly over 3|C| one-sided Clopper-Pearson bounds, three per controlled
+qubit, so the bounds hold simultaneously over every placement inside C and
+the fixed-point iteration below may inspect any number of placements. For
+each qubit q of the placement S, which must lie inside C:
+
+- U50_q, U250_q: upper bounds on the x_history excited fraction.
 - L0_q: lower bound on the prep0 excited fraction at 250 us.
-- e10_q lower and e01_q upper bounds: the calibration's prob_meas1_prep0 and
-  prob_meas0_prep1 are k/4096 estimates, read as k excited outcomes in 4096
-  calibration shots.
-- b_q = min(e10_q lower, L0_q).
-- eps50_q = max(0, state_prep_excitation(U50_q, b_q, e01_q upper)), and
-  eps250_q the same with U250_q.
+- b_q = min(L0_q, the e10 envelope); e01_q the e01 envelope.
+- u_q(d) = max(0, state_prep_excitation(U_d, b_q, e01_q)), the x_history
+  arm's own excitation at delay d.
+- delta_q: the largest x error plus x duration / T1 over the execution
+  calibrations of q's x_history PUBs. live_run's noise model composes
+  thermal relaxation over the gate duration with a depolarizing error whose
+  total average infidelity is the reported error, and a depolarizing error
+  of average infidelity r leaves |0> unflipped with probability r.
+- eps_q(d) = u_q(d) / ((1 - u_q(d)) (1 - delta_q)).
 
 eps = (P - e10) / (1 - e01 - e10) rises in P, falls in e10 wherever
-P < 1 - e01 and rises in e01 wherever P > e10, so the upper P, the lower
-baseline and the upper e01 give the largest eps the data admit; an upper P
-at or above 1 - e01 reverses the e10 direction and the rule refuses it.
-eps50 and eps250 are the maxima over S. prep0 at 50 us, where present,
-enters the report as a history-versus-delay decomposition of point estimates
-and stays outside the bound family. The calibration is the n21 record's
-placed_qubit_calibration, the readout channel its model applies.
+P < 1 - e01 and rises in e01 wherever P > e10, and u / ((1 - u)(1 - delta))
+rises in u and delta, so the upper P, the lower baseline, the upper e01 and
+the larger delta give the largest eps the data admit; an upper P at or
+above 1 - e01 reverses the e10 direction and the rule refuses it. eps50 and
+eps250 are the maxima over S. prep0 at 50 us, where present, enters the
+report as a history-versus-delay decomposition of point estimates and
+stays outside the bound family.
+
+The bounds cover each placed qubit's marginal excitation.
+dynamic_density.with_prep_excitation applies independent local channels, so
+a plan built on eps covers correlated initialization failures only as far
+as they factor. The report keeps, for each control cell whose placed
+members share one PUB (and therefore one shot order), the number of shots
+in which two or more placed qubits read 1 beside the number their point
+marginals predict under independence; correlated readout raises that count
+as well, so it is a diagnostic outside the bound family.
 
 Placement and eps depend on each other, so the plan iterates to a fixed
 point: plan at --prep-excitation 0, read S0, compute eps(S0) at the plan's
 delay; while eps(S_k) exceeds the eps_k planned with, re-plan at
 eps_{k+1} = max(eps_k, eps(S_k)) and read S_{k+1}; stop at the first k with
 eps(S_k) <= eps_k. eps_k never decreases and every eps(S) is a maximum of
-per-qubit values over the qubits with control data, a finite set, so the
-iteration stops. The report's fixed_point block carries the verdict and the
-next --prep-excitation, rounded up to 1e-6.
+per-qubit values over C, a finite set, so the iteration stops. The report's
+fixed_point block carries the verdict and the next --prep-excitation,
+rounded up to 1e-6.
 
 Each run writes state-prep-excess.json beside the n21 record; --check
 recomputes every retained one from the inputs it names and requires the same
-bytes, and --self-test exercises the rule on synthetic runs in the raw layout
-live_run --collect writes.
+bytes, and --self-test exercises the rule on synthetic runs in the raw,
+collect and readout layouts the runner and --fetch-readout write.
 """
 
 from __future__ import annotations
@@ -56,6 +93,7 @@ import math
 import sys
 import tempfile
 from collections.abc import Iterable
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -71,18 +109,18 @@ from diagnostic_experiments import (  # noqa: E402
     state_prep_excitation,
 )
 
-SCHEMA = "state-prep-excess-v1"
+SCHEMA = "state-prep-excess-v2"
 OUTPUT_NAME = "state-prep-excess.json"
+READOUT_SCHEMA = "state-prep-readout-v1"
+READOUT_NAME = "state-prep-readout.json"
 SHORT_DELAY = 5e-05
 LONG_DELAY = 2.5e-04
 DELAY_LABELS = {SHORT_DELAY: "50us", LONG_DELAY: "250us"}
-# Every prob_meas1_prep0 and prob_meas0_prep1 of the Heron r2 properties is a
-# multiple of 1/4096: the inferred number of calibration shots per state.
-CALIBRATION_SHOTS = 4096
-BOUNDS_PER_QUBIT = 5
 DEFAULT_ALPHA = 0.01
 # The x_history fraction at each delay and prep0 at 250 us enter the rule.
 REQUIRED_CELLS = ((STATE_PREP_HISTORY_ARM, SHORT_DELAY), (STATE_PREP_HISTORY_ARM, LONG_DELAY), ("prep0", LONG_DELAY))
+BOUNDS_PER_QUBIT = len(REQUIRED_CELLS)
+READOUT_FIELDS = ("prob_meas1_prep0", "prob_meas0_prep1", "x_error", "x_duration_seconds", "T1_seconds")
 
 
 def require(condition: bool, message: str) -> None:
@@ -133,13 +171,68 @@ def _relative(path: Path, root: Path) -> str:
         raise ValueError(f"{path} lies outside {root}") from error
 
 
+def _instant(stamp: Any, where: str) -> datetime:
+    require(isinstance(stamp, str), f"{where}: no calibration stamp")
+    moment = datetime.fromisoformat(stamp)
+    require(moment.tzinfo is not None, f"{where}: calibration stamp {stamp} carries no UTC offset")
+    return moment
+
+
+def _member_qubit(member: str) -> tuple[str, int]:
+    require(member.startswith("spc_") and "_q" in member, f"{member}: not a state-prep member")
+    arm, qubit_text = member.removeprefix("spc_").rsplit("_q", 1)
+    return arm, int(qubit_text)
+
+
+def _executions(run_dir: Path) -> tuple[bytes, dict[str, dict[str, Any]]]:
+    """collect.json's bytes and its per-member execution record (PUB, window, calibration)."""
+    data = (run_dir / "collect.json").read_bytes()
+    entries = json.loads(data)
+    require(isinstance(entries, list) and bool(entries), f"{run_dir}/collect.json: not a collection")
+    executed: dict[str, dict[str, Any]] = {}
+    for entry in entries[1:]:
+        for member, execution in (entry.get("executed") or {}).items():
+            require(executed.setdefault(member, execution) == execution, f"{run_dir}: {member} executed twice")
+    return data, executed
+
+
+def _pub_windows(job: dict[str, Any], manifest: dict[str, Any], executed: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """The one execution window and calibration every member of a fused PUB shares."""
+    where = f"job {job['job_id']} PUB {manifest['name']}"
+    windows = set()
+    for component in manifest["components"]:
+        execution = executed.get(str(component["member"]))
+        if execution is None:
+            raise ValueError(f"{where}: collect.json records no execution of {component['member']}")
+        require(execution.get("pub") == manifest["name"], f"{where}: {component['member']} ran in another PUB")
+        require(
+            execution.get("start") is not None and execution.get("calibration") is not None,
+            f"{where}: no execution window, so the readout in force is unknown "
+            f"({execution.get('window_unavailable_reason')})",
+        )
+        windows.add(
+            (
+                execution["start"],
+                execution["stop"],
+                execution["calibration"],
+                bool(execution.get("calibration_changed_during_shots")),
+            )
+        )
+    require(len(windows) == 1, f"{where}: members record different execution windows")
+    start, stop, calibration, changed = windows.pop()
+    return {"start": start, "stop": stop, "calibration": calibration, "changed": changed}
+
+
 def read_control(run_dir: Path, root: Path) -> dict[str, Any]:
-    """Per-qubit excited counts of one submitted state-prep-control run, read from raw/<job_id>/.
+    """Per-qubit counts, shot-ordered bits and execution readout of one collected state-prep-control run.
 
     record.json's submission names each job, its options and its PUB
     manifests; a manifest component maps a member spc_<arm>_q<qubit> on its
     one physical qubit to a one-bit register of the PUB file. Every PUB file
-    must carry the sha256 index.json recorded for it.
+    must carry the sha256 index.json recorded for it, every PUB must carry
+    the execution window collect.json recorded, and state-prep-readout.json
+    must name these record and collect bytes and hold the readout fetched at
+    that window's calibration.
     """
     record_bytes = (run_dir / "record.json").read_bytes()
     record = json.loads(record_bytes)
@@ -149,8 +242,24 @@ def read_control(run_dir: Path, root: Path) -> dict[str, Any]:
     require(bool(arms), f"{run_dir}: the record names no arms")
     jobs = (record.get("submission") or {}).get("jobs") or []
     require(bool(jobs), f"{run_dir}: the record holds no submitted job")
+    collect_bytes, executed = _executions(run_dir)
+    readout_path = run_dir / READOUT_NAME
+    require(readout_path.is_file(), f"{run_dir}: no {READOUT_NAME}; run --fetch-readout {run_dir}")
+    readout_bytes = readout_path.read_bytes()
+    readout = json.loads(readout_bytes)
+    require(readout.get("schema") == READOUT_SCHEMA, f"{readout_path}: schema {readout.get('schema')}")
+    require(
+        readout.get("record_sha256") == sha256_bytes(record_bytes)
+        and readout.get("collect_sha256") == sha256_bytes(collect_bytes),
+        f"{readout_path}: fetched for other record or collect bytes",
+    )
+    fetched = {
+        (str(window["job_id"]), str(window["pub"]), str(window["edge"])): window for window in readout["windows"]
+    }
     policy_delay = (record.get("policy") or {}).get("rep_delay_seconds")
     counts: dict[str, dict[int, list[int]]] = {}
+    bits: dict[str, dict[int, tuple[str, str]]] = {}
+    readouts: dict[str, dict[int, list[dict[str, Any]]]] = {}
     raw_digests: dict[str, str] = {}
     delays = set()
     backends = set()
@@ -170,7 +279,7 @@ def read_control(run_dir: Path, root: Path) -> dict[str, Any]:
         delays.add(delay)
         backends.add(str(job["backend"]))
         job_arms = {
-            str(component["member"]).removeprefix("spc_").rsplit("_q", 1)[0]
+            _member_qubit(str(component["member"]))[0]
             for manifest in job["pubs"]
             for component in manifest["components"]
         }
@@ -183,6 +292,21 @@ def read_control(run_dir: Path, root: Path) -> dict[str, Any]:
         index = json.loads((raw / "index.json").read_text())
         require(index.get("job_id") == job_id, f"{raw}: index.json names another job")
         for position, manifest in enumerate(job["pubs"]):
+            window = _pub_windows(job, manifest, executed)
+            edges = ["start", "stop"] if window["changed"] else ["start"]
+            pub_readouts = []
+            for edge in edges:
+                key = (job_id, str(manifest["name"]), edge)
+                require(key in fetched, f"{readout_path}: no readout at the {edge} of {manifest['name']}")
+                entry = fetched[key]
+                require(entry.get("at") == window[edge], f"{readout_path}: {key} fetched at another instant")
+                if edge == "start":
+                    require(
+                        _instant(entry.get("calibration"), str(key)) == _instant(window["calibration"], str(key)),
+                        f"{readout_path}: {key} calibration {entry.get('calibration')} differs from the "
+                        f"{window['calibration']} collect replayed under",
+                    )
+                pub_readouts.append(entry)
             name = f"pub_{position:02d}.json"
             require(name in index.get("files", {}), f"{raw}: index.json lacks {name}")
             data = (raw / name).read_bytes()
@@ -196,9 +320,7 @@ def read_control(run_dir: Path, root: Path) -> dict[str, Any]:
             )
             for component in manifest["components"]:
                 member = str(component["member"])
-                require(member.startswith("spc_") and "_q" in member, f"{member}: not a state-prep member")
-                arm, qubit_text = member.removeprefix("spc_").rsplit("_q", 1)
-                qubit = int(qubit_text)
+                arm, qubit = _member_qubit(member)
                 require(arm in arms, f"{run_dir}: member {member} of an unselected arm")
                 require(component["physical_qubits"] == [qubit], f"{member}: placed on {component['physical_qubits']}")
                 registers = component["registers_by_replica"]
@@ -215,10 +337,24 @@ def read_control(run_dir: Path, root: Path) -> dict[str, Any]:
                 cell = counts.setdefault(arm, {})
                 require(qubit not in cell, f"{run_dir}: two registers read {member}")
                 cell[qubit] = [ones, shots]
+                bits.setdefault(arm, {})[qubit] = (f"{job_id}/{manifest['name']}", "".join(bitstrings))
+                values = []
+                for entry in pub_readouts:
+                    qubit_values = (entry.get("qubits") or {}).get(str(qubit))
+                    if qubit_values is None:
+                        raise ValueError(f"{readout_path}: no readout of q{qubit} at {entry['edge']}")
+                    require(
+                        all(isinstance(qubit_values.get(field), (int, float)) for field in READOUT_FIELDS),
+                        f"{readout_path}: q{qubit} lacks one of {READOUT_FIELDS}",
+                    )
+                    values.append({"calibration": entry["calibration"], **{f: qubit_values[f] for f in READOUT_FIELDS}})
+                readouts.setdefault(arm, {})[qubit] = values
     require(len(delays) == 1 and len(backends) == 1, f"{run_dir}: jobs span delays {delays} or backends {backends}")
     return {
         "path": _relative(run_dir, root),
         "record_sha256": sha256_bytes(record_bytes),
+        "collect_sha256": sha256_bytes(collect_bytes),
+        "readout_sha256": sha256_bytes(readout_bytes),
         "raw_sha256": raw_digests,
         "backend": backends.pop(),
         "rep_delay_seconds": delays.pop(),
@@ -226,11 +362,78 @@ def read_control(run_dir: Path, root: Path) -> dict[str, Any]:
         "job_ids": sorted(str(job["job_id"]) for job in jobs),
         "planning_calibrations": sorted({str(group.get("calibration")) for group in record.get("groups", [])}),
         "counts": counts,
+        "bits": bits,
+        "readouts": readouts,
     }
 
 
+def fetch_readout(run_dir: Path) -> Path:
+    """Retain the readout, x error, x duration and T1 in force at each control PUB's execution window.
+
+    Reads the IBM service (calibration reads need no approval) and writes
+    state-prep-readout.json; read_control binds its stamps to collect.json.
+    """
+    from qiskit_ibm_runtime import QiskitRuntimeService
+
+    from live_run import readout_flips
+
+    record_bytes = (run_dir / "record.json").read_bytes()
+    record = json.loads(record_bytes)
+    collect_bytes, executed = _executions(run_dir)
+    service = QiskitRuntimeService()
+    windows = []
+    for job in (record.get("submission") or {}).get("jobs") or []:
+        backend = service.backend(str(job["backend"]))
+        for manifest in job["pubs"]:
+            window = _pub_windows(job, manifest, executed)
+            qubits = sorted({_member_qubit(str(component["member"]))[1] for component in manifest["components"]})
+            for edge in ["start", "stop"] if window["changed"] else ["start"]:
+                props = backend.properties(datetime=_instant(window[edge], f"{manifest['name']} {edge}"))
+                calibration = props.last_update_date.isoformat()
+                if edge == "start":
+                    require(
+                        _instant(calibration, "fetched") == _instant(window["calibration"], "collect"),
+                        f"{manifest['name']}: properties at {window['start']} read calibration {calibration}, "
+                        f"collect replayed under {window['calibration']}",
+                    )
+                else:
+                    require(
+                        _instant(calibration, "fetched") != _instant(window["calibration"], "collect"),
+                        f"{manifest['name']}: collect records a calibration change the stop fetch does not show",
+                    )
+                values = {}
+                for qubit in qubits:
+                    e10, e01 = readout_flips(props, qubit)
+                    values[str(qubit)] = {
+                        "prob_meas1_prep0": float(e10),
+                        "prob_meas0_prep1": float(e01),
+                        "x_error": float(props.gate_error("x", qubit)),
+                        "x_duration_seconds": float(props.gate_length("x", qubit)),
+                        "T1_seconds": float(props.t1(qubit)),
+                    }
+                windows.append(
+                    {
+                        "job_id": str(job["job_id"]),
+                        "pub": str(manifest["name"]),
+                        "edge": edge,
+                        "at": window[edge],
+                        "calibration": calibration,
+                        "qubits": values,
+                    }
+                )
+    payload = {
+        "schema": READOUT_SCHEMA,
+        "record_sha256": sha256_bytes(record_bytes),
+        "collect_sha256": sha256_bytes(collect_bytes),
+        "windows": windows,
+    }
+    destination = run_dir / READOUT_NAME
+    destination.write_bytes(encode(payload))
+    return destination
+
+
 def read_placement(record_path: Path, root: Path) -> dict[str, Any]:
-    """Placed qubits, their readout calibration, the plan's delay and the excitation it was planned with."""
+    """Placed qubits, their model readout calibration, the plan's delay and the excitation it was planned with."""
     data = record_path.read_bytes()
     record = json.loads(data)
     family = (record.get("family_configuration") or {}).get("name")
@@ -267,15 +470,6 @@ def read_placement(record_path: Path, root: Path) -> dict[str, Any]:
     }
 
 
-def _calibration_count(probability: float, qubit: int, name: str) -> int:
-    count = probability * CALIBRATION_SHOTS
-    require(
-        abs(count - round(count)) < 1e-6 and 0 <= round(count) <= CALIBRATION_SHOTS,
-        f"q{qubit} {name} {probability} is not a multiple of 1/{CALIBRATION_SHOTS}",
-    )
-    return int(round(count))
-
-
 def _round_up(value: float) -> float:
     """value rounded up to a multiple of 1e-6, never below value, so the next plan covers it."""
     rounded = math.ceil(value * 1e6) / 1e6
@@ -284,17 +478,43 @@ def _round_up(value: float) -> float:
     return rounded
 
 
+def coincidence(by_qubit: dict[int, tuple[str, str]], qubits: list[int]) -> dict[str, Any]:
+    """Shots in which two or more of qubits read 1, beside the count independent point marginals predict."""
+    pubs = {by_qubit[q][0] for q in qubits}
+    if len(pubs) != 1:
+        return {"scope": "placed members span PUBs, whose shot orders are unrelated", "pubs": sorted(pubs)}
+    matrix = np.stack([np.frombuffer(by_qubit[q][1].encode(), dtype=np.uint8) - ord("0") for q in qubits])
+    shots = int(matrix.shape[1])
+    marginals = matrix.mean(axis=1)
+    if np.any(marginals >= 1.0):
+        return {"scope": "a placed qubit read 1 in every shot", "pubs": sorted(pubs)}
+    none = float(np.prod(1.0 - marginals))
+    single = none * float(np.sum(marginals / (1.0 - marginals)))
+    multiple = int(np.count_nonzero(matrix.sum(axis=0) >= 2))
+    return {
+        "pub": pubs.pop(),
+        "shots": shots,
+        "multiple_ones_shots": multiple,
+        "independent_expected_shots": shots * (1.0 - none - single),
+    }
+
+
 def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: float) -> dict[str, Any]:
     """The rule's per-qubit bounds and eps on placement S, and the fixed-point step for its plan."""
     require(0.0 < alpha < 1.0, f"alpha {alpha} lies outside (0, 1)")
     cells: dict[tuple[str, float], dict[int, list[int]]] = {}
+    cell_bits: dict[tuple[str, float], dict[int, tuple[str, str]]] = {}
+    cell_readouts: dict[tuple[str, float], dict[int, list[dict[str, Any]]]] = {}
     for control in controls:
         require(control["backend"] == placement["backend"], f"{control['path']}: runs on {control['backend']}")
+        delay = control["rep_delay_seconds"]
         for arm, by_qubit in control["counts"].items():
-            cell = cells.setdefault((arm, control["rep_delay_seconds"]), {})
+            cell = cells.setdefault((arm, delay), {})
             for qubit, pair in by_qubit.items():
-                require(qubit not in cell, f"two control runs read {arm} on q{qubit} at {control['rep_delay_seconds']}")
+                require(qubit not in cell, f"two control runs read {arm} on q{qubit} at {delay}")
                 cell[qubit] = pair
+            cell_bits.setdefault((arm, delay), {}).update(control["bits"][arm])
+            cell_readouts.setdefault((arm, delay), {}).update(control["readouts"][arm])
     qubits = placement["qubits"]
     missing = {
         f"{arm}@{DELAY_LABELS[delay]}": [q for q in qubits if q not in cells.get((arm, delay), {})]
@@ -302,38 +522,45 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
     }
     missing = {cell: absent for cell, absent in missing.items() if absent}
     require(not missing, f"placed qubits lack control data: {missing}")
-    bound_count = BOUNDS_PER_QUBIT * len(qubits)
+    controlled = sorted(set.intersection(*(set(cells[cell]) for cell in REQUIRED_CELLS)))
+    bound_count = BOUNDS_PER_QUBIT * len(controlled)
     level = alpha / bound_count
 
     def column(arm: str, delay: float) -> tuple[np.ndarray, np.ndarray]:
         pairs = np.asarray([cells[(arm, delay)][q] for q in qubits], dtype=np.int64)
         return pairs[:, 0], pairs[:, 1]
 
-    k10 = np.asarray([_calibration_count(placement["calibration"][q][0], q, "e10") for q in qubits])
-    k01 = np.asarray([_calibration_count(placement["calibration"][q][1], q, "e01") for q in qubits])
-    shots = np.full(len(qubits), CALIBRATION_SHOTS)
     upper = {delay: cp_upper(*column(STATE_PREP_HISTORY_ARM, delay), level) for delay in (SHORT_DELAY, LONG_DELAY)}
     prep0_lower = cp_lower(*column("prep0", LONG_DELAY), level)
-    e10_lower = cp_lower(k10, shots, level)
-    e01_upper = cp_upper(k01, shots, level)
-    baseline = np.minimum(e10_lower, prep0_lower)
     per_qubit: dict[str, Any] = {}
     eps: dict[float, dict[int, float]] = {SHORT_DELAY: {}, LONG_DELAY: {}}
     for index, qubit in enumerate(qubits):
+        model_e10, model_e01 = placement["calibration"][qubit]
+        execution = {
+            f"{arm}_{DELAY_LABELS[delay]}": cell_readouts[(arm, delay)][qubit] for arm, delay in REQUIRED_CELLS
+        }
+        e10_floor = min([model_e10] + [v["prob_meas1_prep0"] for values in execution.values() for v in values])
+        e01_ceiling = max([model_e01] + [v["prob_meas0_prep1"] for values in execution.values() for v in values])
+        flip_failure = max(
+            v["x_error"] + v["x_duration_seconds"] / v["T1_seconds"]
+            for (arm, delay) in REQUIRED_CELLS
+            if arm == STATE_PREP_HISTORY_ARM
+            for v in cell_readouts[(arm, delay)][qubit]
+        )
+        require(0.0 <= flip_failure < 1.0, f"q{qubit}: x flip failure {flip_failure} leaves no |1> history")
+        baseline = min(float(prep0_lower[index]), e10_floor)
         row: dict[str, Any] = {
-            "calibration": {
-                "prob_meas1_prep0": placement["calibration"][qubit][0],
-                "prob_meas0_prep1": placement["calibration"][qubit][1],
-                "excited_counts": [int(k10[index]), CALIBRATION_SHOTS],
-                "relaxed_counts": [int(k01[index]), CALIBRATION_SHOTS],
-            },
+            "model_readout": {"prob_meas1_prep0": model_e10, "prob_meas0_prep1": model_e01},
+            "execution_readout": execution,
             "counts": {},
             "bounds": {
-                "e10_lower": float(e10_lower[index]),
-                "e01_upper": float(e01_upper[index]),
                 "prep0_250us_lower": float(prep0_lower[index]),
-                "baseline": float(baseline[index]),
+                "e10_envelope": e10_floor,
+                "e01_envelope": e01_ceiling,
+                "baseline": baseline,
+                "x_flip_failure": flip_failure,
             },
+            "history_excitation": {},
             "eps_unclamped": {},
             "eps": {},
         }
@@ -349,13 +576,16 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
             bound = float(upper[delay][index])
             row["bounds"][f"x_history_{label}_upper"] = bound
             require(
-                bound < 1.0 - float(e01_upper[index]),
+                bound < 1.0 - e01_ceiling,
                 f"q{qubit}: x_history upper bound {bound} at {label} reaches 1 - e01, where eps is not monotone",
             )
-            value = state_prep_excitation(bound, float(baseline[index]), float(e01_upper[index]))
+            value = state_prep_excitation(bound, baseline, e01_ceiling)
+            own = max(0.0, value)
             row["eps_unclamped"][label] = value
-            row["eps"][label] = max(0.0, value)
-            eps[delay][qubit] = max(0.0, value)
+            row["history_excitation"][label] = own
+            bounded = own / ((1.0 - own) * (1.0 - flip_failure))
+            row["eps"][label] = bounded
+            eps[delay][qubit] = bounded
         if "prep0_50us" in fractions:
             row["decomposition"] = {
                 "scope": "point estimates outside the bound family; x_history runs in a dynamic job and prep0 "
@@ -370,27 +600,41 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
     measured = maxima[placement["rep_delay_seconds"]]
     planned = placement["planned_prep_excitation"]
     converged = measured <= planned
+    joint = {
+        f"{arm}_{DELAY_LABELS[delay]}": coincidence(cell_bits[(arm, delay)], qubits)
+        for (arm, delay) in sorted(cells)
+        if all(q in cell_bits[(arm, delay)] for q in qubits)
+    }
     return {
         "schema": SCHEMA,
         "rule": {
             "alpha": alpha,
             "bounds_per_qubit": BOUNDS_PER_QUBIT,
+            "controlled_qubits": controlled,
             "bound_count": bound_count,
             "alpha_per_bound": level,
-            "calibration_shots": CALIBRATION_SHOTS,
-            "bounds": "one-sided Clopper-Pearson: x_history upper at 50 and 250 us, prep0 lower at 250 us, "
-            "e10 lower, e01 upper",
-            "eps": "max(0, (U - b) / (1 - e01_upper - b)), b = min(e10_lower, prep0_250us_lower)",
+            "bounds": "one-sided Clopper-Pearson over every controlled qubit: x_history upper at 50 and 250 us, "
+            "prep0 lower at 250 us",
+            "readout": "e10 the smallest and e01 the largest of the n21 model's and every execution calibration's "
+            "reported values",
+            "eps": "u / ((1 - u)(1 - delta)), u = max(0, (U - b) / (1 - e01 - b)), b = min(prep0_250us_lower, e10), "
+            "delta = max(x_error + x_duration / T1) over the x_history execution calibrations",
+            "joint": "marginal coverage under independent local preparation channels; joint_coincidences is a "
+            "diagnostic outside the bound family",
         },
         "inputs": {
             "n21_record": {key: placement[key] for key in placement if key not in ("calibration", "qubits")},
             "controls": sorted(
-                ({key: value for key, value in control.items() if key != "counts"} for control in controls),
+                (
+                    {key: value for key, value in control.items() if key not in ("counts", "bits", "readouts")}
+                    for control in controls
+                ),
                 key=lambda control: str(control["path"]),
             ),
         },
         "placement": {"qubits": qubits, "rep_delay_seconds": placement["rep_delay_seconds"]},
         "qubits": per_qubit,
+        "joint_coincidences": joint,
         "eps50": maxima[SHORT_DELAY],
         "eps250": maxima[LONG_DELAY],
         "argmax50": [q for q in qubits if eps[SHORT_DELAY][q] == maxima[SHORT_DELAY]],
@@ -461,42 +705,70 @@ def _bisect(function: Any, target: float) -> float:
     return (low + high) / 2
 
 
+SYNTHETIC_CALIBRATION = "2026-01-01T00:00:00+00:00"
+SYNTHETIC_START = "2026-01-01T00:10:00+00:00"
+SYNTHETIC_STOP = "2026-01-01T00:11:00+00:00"
+
+
 def _synthetic_run(
     root: Path,
     name: str,
     arm: str,
     delay: float,
     counts: dict[int, tuple[int, int]],
+    readout: dict[int, dict[str, float]],
     twirl: bool = False,
     companion: str | None = None,
+    staggered: bool = False,
+    changed: bool = False,
+    fetched_calibration: str = SYNTHETIC_CALIBRATION,
 ) -> Path:
-    """A submitted run directory in live_run's raw layout: one job, one PUB, one-bit register per qubit and arm.
+    """A collected run directory in live_run's raw and collect layouts with its fetched readout sidecar.
 
-    companion adds a second arm's members, with the same counts, to the same PUB.
+    One job and one PUB hold a one-bit register per qubit and arm; the ones
+    of every qubit lead its shot order, or follow one another without
+    overlap when staggered. companion adds a second arm's members, with the
+    same counts, to the same PUB. changed records a calibration change
+    during the shots, and the sidecar then carries the stop fetch too.
     """
     run = root / "results" / "live" / name
     raw = run / "raw" / f"job_{name}"
     raw.mkdir(parents=True)
     arms = [arm] if companion is None else [arm, companion]
+    kind = "dynamic" if arm == STATE_PREP_HISTORY_ARM else "static"
+    pub_name = f"fake_backend_{kind}_pub_01"
     components = []
     registers: dict[str, Any] = {}
+    executed: dict[str, Any] = {}
+    offset = 0
     for index, (member_arm, (qubit, (ones, shots))) in enumerate(
         (member_arm, item) for member_arm in arms for item in sorted(counts.items())
     ):
         register = f"g{index}_r0_c"
+        member = f"spc_{member_arm}_q{qubit}"
         components.append(
             {
                 "group": f"state_prep_q{qubit}",
-                "member": f"spc_{member_arm}_q{qubit}",
+                "member": member,
                 "reference": False,
                 "register_prefix": f"g{index}_",
                 "physical_qubits": [qubit],
                 "registers_by_replica": [[register]],
             }
         )
-        registers[register] = {"num_bits": 1, "num_shots": shots, "bitstrings": ["1"] * ones + ["0"] * (shots - ones)}
-    kind = "dynamic" if arm == STATE_PREP_HISTORY_ARM else "static"
-    pub_name = f"fake_backend_{kind}_pub_01"
+        lead = offset if staggered else 0
+        offset += ones
+        bitstrings = ["0"] * lead + ["1"] * ones + ["0"] * (shots - ones - lead)
+        registers[register] = {"num_bits": 1, "num_shots": shots, "bitstrings": bitstrings}
+        executed[member] = {
+            "pub": pub_name,
+            "start": SYNTHETIC_START,
+            "stop": SYNTHETIC_STOP,
+            "calibration": SYNTHETIC_CALIBRATION,
+            "calibration_changed_during_shots": changed,
+            "window_unavailable_reason": None,
+            "shots": shots,
+        }
     pub = encode({"pub_index": 0, "pub_name": pub_name, "registers": registers, "metadata": {}})
     (raw / "pub_00.json").write_bytes(pub)
     (raw / "index.json").write_bytes(encode({"job_id": f"job_{name}", "files": {"pub_00.json": sha256_bytes(pub)}}))
@@ -507,7 +779,7 @@ def _synthetic_run(
             "arms": {member_arm: "steps" for member_arm in arms},
         },
         "policy": {"rep_delay_seconds": delay, "twirl": twirl},
-        "groups": [{"backend": "fake_backend", "calibration": "2026-01-01T00:00:00Z"}],
+        "groups": [{"backend": "fake_backend", "calibration": SYNTHETIC_CALIBRATION}],
         "submission": {
             "jobs": [
                 {
@@ -522,11 +794,38 @@ def _synthetic_run(
             ]
         },
     }
-    (run / "record.json").write_bytes(encode(record))
+    record_bytes = encode(record)
+    (run / "record.json").write_bytes(record_bytes)
+    collect_bytes = encode([{"jobs": {}}, {"group": "state_prep", "job_id": f"job_{name}", "executed": executed}])
+    (run / "collect.json").write_bytes(collect_bytes)
+    qubit_values = {str(q): readout[q] for q in sorted(counts)}
+    windows = [
+        {
+            "job_id": f"job_{name}",
+            "pub": pub_name,
+            "edge": edge,
+            "at": at,
+            "calibration": calibration,
+            "qubits": qubit_values,
+        }
+        for edge, at, calibration in (
+            [("start", SYNTHETIC_START, fetched_calibration)]
+            + ([("stop", SYNTHETIC_STOP, "2026-01-01T00:10:30+00:00")] if changed else [])
+        )
+    ]
+    sidecar = {
+        "schema": READOUT_SCHEMA,
+        "record_sha256": sha256_bytes(record_bytes),
+        "collect_sha256": sha256_bytes(collect_bytes),
+        "windows": windows,
+    }
+    (run / READOUT_NAME).write_bytes(encode(sidecar))
     return run
 
 
-def _synthetic_placement(root: Path, calibration: dict[int, tuple[float, float]], planned: float | None) -> Path:
+def _synthetic_placement(
+    root: Path, qubits: list[int], calibration: dict[int, tuple[float, float]], planned: float | None
+) -> Path:
     run = root / "results" / "live" / "n21-plan"
     run.mkdir(parents=True)
     record = {
@@ -537,11 +836,11 @@ def _synthetic_placement(root: Path, calibration: dict[int, tuple[float, float]]
         "groups": [
             {
                 "backend": "fake_backend",
-                "noise_model_calibration": "2026-01-01T00:00:00Z",
-                "replicas": [{"physical_qubits": sorted(calibration)}],
+                "noise_model_calibration": SYNTHETIC_CALIBRATION,
+                "replicas": [{"physical_qubits": qubits}],
                 "placed_qubit_calibration": {
-                    str(q): {"prob_meas1_prep0": k10 / CALIBRATION_SHOTS, "prob_meas0_prep1": k01 / CALIBRATION_SHOTS}
-                    for q, (k10, k01) in calibration.items()
+                    str(q): {"prob_meas1_prep0": calibration[q][0], "prob_meas0_prep1": calibration[q][1]}
+                    for q in qubits
                 },
             }
         ],
@@ -568,7 +867,7 @@ def self_test() -> None:
 def _self_test(scratch: Path) -> None:
     # Clopper-Pearson bounds against an independent binomial-tail inversion.
     cases = [(0, 50), (3, 50), (50, 50), (0, 4096), (109, 4096), (4096, 4096), (281, 32768), (1500, 16384)]
-    for level in (0.01 / 35, 0.05):
+    for level in (0.01 / 453, 0.05):
         for k, n in cases:
             upper = float(cp_upper([k], [n], level)[0])
             lower = float(cp_lower([k], [n], level)[0])
@@ -577,11 +876,18 @@ def _self_test(scratch: Path) -> None:
             require(abs(upper - reference_upper) <= 1e-9, f"upper bound {k}/{n}: {upper} vs {reference_upper}")
             require(abs(lower - reference_lower) <= 1e-9, f"lower bound {k}/{n}: {lower} vs {reference_lower}")
             require(lower <= k / n <= upper, f"{k}/{n}: bounds exclude the fraction")
-    calibration: dict[int, tuple[float, float]] = {3: (40, 60), 4: (109, 106), 7: (20, 50)}
+    placed = [3, 4, 7]
+    calibration: dict[int, tuple[float, float]] = {3: (0.0098, 0.0146), 4: (0.0200, 0.0259), 7: (0.0049, 0.0122)}
+    # q9 is controlled but unplaced: it widens C, and with it the bound count, without entering eps.
     base = {
-        "history50": {3: (300, 32768), 4: (900, 32768), 7: (150, 32768)},
-        "history250": {3: (120, 16384), 4: (400, 16384), 7: (60, 16384)},
-        "prep0_250": {3: (150, 16384), 4: (430, 16384), 7: (70, 16384)},
+        "history50": {3: (300, 32768), 4: (900, 32768), 7: (150, 32768), 9: (200, 32768)},
+        "history250": {3: (120, 16384), 4: (400, 16384), 7: (60, 16384), 9: (90, 16384)},
+        "prep0_250": {3: (150, 16384), 4: (430, 16384), 7: (70, 16384), 9: (100, 16384)},
+    }
+    nominal = {"x_error": 2e-4, "x_duration_seconds": 3.6e-8, "T1_seconds": 2e-4}
+    readout_base = {
+        q: {"prob_meas1_prep0": e10, "prob_meas0_prep1": e01, **nominal}
+        for q, (e10, e01) in {**calibration, 9: (0.006, 0.012)}.items()
     }
 
     roots = (scratch / str(index) for index in range(1000))
@@ -591,25 +897,47 @@ def _self_test(scratch: Path) -> None:
         cal: dict[int, tuple[float, float]] | None = None,
         planned: float | None = None,
         prep0_50: dict[int, tuple[int, int]] | None = None,
+        readout: dict[str, dict[int, dict[str, float]]] | None = None,
         twirl: bool = False,
         companion: str | None = None,
+        staggered: bool = False,
+        changed: bool = False,
+        fetched_calibration: str = SYNTHETIC_CALIBRATION,
     ) -> tuple[Path, dict[str, Any]]:
         sets = {**base, **(overrides or {})}
+        reads = {name: readout_base for name in ("history50", "history250", "prep0_250", "prep0_50")}
+        reads.update(readout or {})
         root = next(roots)
-        record = _synthetic_placement(root, cal or calibration, planned)
+        record = _synthetic_placement(root, placed, cal or calibration, planned)
         controls = [
-            _synthetic_run(root, "h50", STATE_PREP_HISTORY_ARM, SHORT_DELAY, sets["history50"], twirl),
-            _synthetic_run(root, "h250", STATE_PREP_HISTORY_ARM, LONG_DELAY, sets["history250"]),
-            _synthetic_run(root, "p250", "prep0", LONG_DELAY, sets["prep0_250"], companion=companion),
+            _synthetic_run(
+                root,
+                "h50",
+                STATE_PREP_HISTORY_ARM,
+                SHORT_DELAY,
+                sets["history50"],
+                reads["history50"],
+                twirl,
+                staggered=staggered,
+                changed=changed,
+                fetched_calibration=fetched_calibration,
+            ),
+            _synthetic_run(root, "h250", STATE_PREP_HISTORY_ARM, LONG_DELAY, sets["history250"], reads["history250"]),
+            _synthetic_run(
+                root, "p250", "prep0", LONG_DELAY, sets["prep0_250"], reads["prep0_250"], companion=companion
+            ),
         ]
         if prep0_50 is not None:
-            controls.append(_synthetic_run(root, "p50", "prep0", SHORT_DELAY, prep0_50))
+            controls.append(_synthetic_run(root, "p50", "prep0", SHORT_DELAY, prep0_50, reads["prep0_50"]))
         return root, evaluate(record, controls, DEFAULT_ALPHA, root)
 
     root, result = run()
-    require(result["rule"]["bound_count"] == 15, f"bound count {result['rule']['bound_count']} for 3 qubits")
-    require(math.isclose(result["rule"]["alpha_per_bound"] * 15, DEFAULT_ALPHA), "the alpha split moved")
+    rule = result["rule"]
+    require(rule["controlled_qubits"] == [3, 4, 7, 9], f"controlled set {rule['controlled_qubits']}")
+    require(rule["bound_count"] == 12, f"bound count {rule['bound_count']} for 4 controlled qubits")
+    require(math.isclose(rule["alpha_per_bound"] * 12, DEFAULT_ALPHA), "the alpha split moved")
     require(result["eps50"] == max(row["eps"]["50us"] for row in result["qubits"].values()), "eps50 is not the max")
+    require("9" not in result["qubits"], "an unplaced controlled qubit entered eps")
     require(result["argmax50"] == [4], f"arg-max {result['argmax50']}")
     require(result["eps50"] > result["eps250"] > 0, "the synthetic history excess vanished")
     # The CLI path writes, and the replay reproduces the bytes.
@@ -620,43 +948,85 @@ def _self_test(scratch: Path) -> None:
     raw = root / "results/live/h50/raw/job_h50/pub_00.json"
     raw.write_bytes(raw.read_bytes().replace(b'"0"', b'"1"', 1))
     _expect_refusal(lambda: check(root), "sha256 differs")
-    # Monotonicity on q4, whose calibration e10 sets the baseline: eps rises with the history fraction and
-    # with e01, falls with e10, and rises when a lower prep0 bound takes over the baseline.
+    # A wider controlled set divides alpha further and raises every upper bound.
+    narrow = run({name: {q: c for q, c in cells.items() if q != 9} for name, cells in base.items()})[1]
+    require(narrow["rule"]["bound_count"] == 9, f"narrow bound count {narrow['rule']['bound_count']}")
+    require(result["eps50"] > narrow["eps50"], "the wider controlled set left eps unchanged")
+    # The history correction: eps = u / ((1 - u)(1 - delta)) exceeds the arm's own excitation and rises with delta.
     reference = result["qubits"]["4"]
-    require(reference["bounds"]["baseline"] == reference["bounds"]["e10_lower"], "e10 does not set the baseline")
+    own, delta = reference["history_excitation"]["50us"], reference["bounds"]["x_flip_failure"]
+    require(math.isclose(delta, 2e-4 + 3.6e-8 / 2e-4), f"x flip failure {delta}")
+    require(reference["eps"]["50us"] == own / ((1.0 - own) * (1.0 - delta)) > own, "the history correction moved")
+    slow = {q: {**values, "T1_seconds": 5e-5} for q, values in readout_base.items()}
+    require(run(readout={"history50": slow})[1]["eps50"] > result["eps50"], "a larger delta left eps unchanged")
+    # Monotonicity on q4, whose e10 envelope sets the baseline: eps rises with the history fraction, with e01 in
+    # either calibration and with a lower e10 in either, falls when e10 rises in every calibration, and rises when
+    # a lower prep0 bound takes over the baseline.
+    require(reference["bounds"]["baseline"] == reference["bounds"]["e10_envelope"] == 0.0200, "baseline source")
+    lower_e10 = {**readout_base, 4: {**readout_base[4], "prob_meas1_prep0": 0.0150}}
+    higher_e10 = {**readout_base, 4: {**readout_base[4], "prob_meas1_prep0": 0.0215}}
+    higher_e01 = {**readout_base, 4: {**readout_base[4], "prob_meas0_prep1": 0.0400}}
+    everywhere = {name: higher_e10 for name in ("history50", "history250", "prep0_250")}
     for label, outcome, sign in (
         ("history fraction", run({"history50": {**base["history50"], 4: (950, 32768)}}), 1),
-        ("e10", run(cal={**calibration, 4: (120, 106)}), -1),
-        ("e01", run(cal={**calibration, 4: (109, 140)}), 1),
+        ("model e10 (lowered)", run(cal={**calibration, 4: (0.0150, 0.0259)}), 1),
+        ("e10 in every calibration", run(cal={**calibration, 4: (0.0215, 0.0259)}, readout=everywhere), -1),
+        ("model e01", run(cal={**calibration, 4: (0.0200, 0.0400)}), 1),
+        ("execution e01", run(readout={"prep0_250": higher_e01}), 1),
+        ("execution e10 (lowered)", run(readout={"history250": lower_e10}), 1),
         ("prep0 baseline", run({"prep0_250": {**base["prep0_250"], 4: (200, 16384)}}), 1),
     ):
         shifted = outcome[1]["qubits"]["4"]
         moved = shifted["eps"]["50us"] - reference["eps"]["50us"]
-        require(moved * sign > 0, f"raising the {label} moved eps by {moved}")
+        require(moved * sign > 0, f"changing the {label} moved eps by {moved}")
     require(shifted["bounds"]["baseline"] == shifted["bounds"]["prep0_250us_lower"], "prep0 left the baseline")
     # Clamping: a qubit with no history excitation reads eps 0 from a negative value.
     clamped = run({"history50": {**base["history50"], 7: (0, 32768)}})[1]["qubits"]["7"]
     require(clamped["eps"]["50us"] == 0.0 and clamped["eps_unclamped"]["50us"] < 0, "eps was not clamped at 0")
     # prep0 at 50 us is reported and leaves the rule unchanged.
-    reported = run(prep0_50={3: (160, 32768), 4: (450, 32768), 7: (80, 32768)})[1]
+    reported = run(prep0_50={3: (160, 32768), 4: (450, 32768), 7: (80, 32768), 9: (100, 32768)})[1]
     require(reported["eps50"] == result["eps50"] and reported["eps250"] == result["eps250"], "prep0 50 us moved eps")
     require("decomposition" in reported["qubits"]["4"] and "decomposition" not in result["qubits"]["4"], "report")
+    # Joint diagnostic: ones that lead every qubit's shot order coincide; staggered ones never do.
+    aligned = result["joint_coincidences"]["x_history_50us"]
+    require(aligned["multiple_ones_shots"] == 300 > aligned["independent_expected_shots"], f"aligned {aligned}")
+    apart = run(staggered=True)[1]["joint_coincidences"]["x_history_50us"]
+    require(apart["multiple_ones_shots"] == 0 < apart["independent_expected_shots"], f"staggered {apart}")
+    require(run(staggered=True)[1]["eps50"] == result["eps50"], "the joint diagnostic moved eps")
+    # A calibration change during the shots adds the stop readout to the envelope.
+    require(run(changed=True)[1]["qubits"]["4"]["execution_readout"]["x_history_50us"][1]["calibration"], "stop")
     # Fixed point: below the planned value the plan stands; above it the next plan rises, rounded up.
     step = result["fixed_point"]
     require(step["verdict"] == "replan" and step["next_prep_excitation"] >= result["eps50"], f"{step}")
     stays = run(planned=0.5)[1]["fixed_point"]
     require(stays["verdict"] == "converged" and stays["next_prep_excitation"] == 0.5, f"{stays}")
-    # Refusals: a placed qubit without control data, twirled readout, prep0 sharing its job with x, a
-    # saturated bound, an off-grid calibration.
+    # Refusals: a placed qubit without control data, twirled readout, prep0 sharing its job with x, a saturated
+    # bound, readout fetched under another calibration, a missing or stale sidecar.
     _expect_refusal(lambda: run({"history250": {3: (120, 16384), 4: (400, 16384)}}), "lack control data")
     _expect_refusal(lambda: run(twirl=True), "twirling")
     _expect_refusal(lambda: run(companion="x"), "share one job")
     _expect_refusal(lambda: run({"history50": {**base["history50"], 3: (32700, 32768)}}), "not monotone")
-    _expect_refusal(lambda: run(cal={**calibration, 3: (40.5, 60)}), "multiple of 1/4096")
+    _expect_refusal(lambda: run(fetched_calibration="2026-01-01T00:05:00+00:00"), "collect replayed under")
+    root, _ = run()
+    (root / "results/live/h250" / READOUT_NAME).unlink()
+    _expect_refusal(lambda: check_inputs(root), f"no {READOUT_NAME}")
+    root, _ = run()
+    collect = root / "results/live/p250/collect.json"
+    collect.write_bytes(collect.read_bytes().replace(b'"shots"', b'"shots_"'))
+    _expect_refusal(lambda: check_inputs(root), "other record or collect bytes")
     print(
-        "state_prep_excess: Clopper-Pearson bounds match the binomial-tail inversion to 1e-9; 5|S| bounds share "
-        "alpha; eps rises with the history fraction and e01, falls with the baseline, clamps at 0; prep0 at 50 us "
-        "stays outside the rule; the fixed point never lowers eps; refusals hold and the replay reproduces bytes"
+        "state_prep_excess: Clopper-Pearson bounds match the binomial-tail inversion to 1e-9; 3|C| bounds share "
+        "alpha over the controlled set; eps rises with the history fraction, e01 and the x flip failure, falls with "
+        "the baseline, takes the readout envelope, clamps at 0; the joint diagnostic and prep0 at 50 us stay "
+        "outside the rule; the fixed point never lowers eps; refusals hold and the replay reproduces bytes"
+    )
+
+
+def check_inputs(root: Path) -> dict[str, Any]:
+    """Evaluate the synthetic layout under root: its n21 plan against its h50, h250 and p250 runs."""
+    live = root / "results/live"
+    return evaluate(
+        live / "n21-plan/record.json", [live / name for name in ("h50", "h250", "p250")], DEFAULT_ALPHA, root
     )
 
 
@@ -665,6 +1035,13 @@ def main() -> int:
     parser.add_argument("--n21-record", type=Path, help="record.json of the n21 plan whose placement S is bounded")
     parser.add_argument("--control", type=Path, action="append", default=[], help="collected control run directory")
     parser.add_argument("--alpha", type=float, default=DEFAULT_ALPHA)
+    parser.add_argument(
+        "--fetch-readout",
+        type=Path,
+        action="append",
+        default=[],
+        help="collected control run directory whose execution-time readout to fetch and retain",
+    )
     parser.add_argument("--check", action="store_true", help="replay every retained output under results/live")
     parser.add_argument("--self-test", action="store_true")
     arguments = parser.parse_args()
@@ -674,6 +1051,10 @@ def main() -> int:
     if arguments.check:
         count = check(ROOT)
         print(f"state_prep_excess: {count} retained output{'s' if count != 1 else ''} replay byte for byte")
+        return 0
+    if arguments.fetch_readout:
+        for run_dir in arguments.fetch_readout:
+            print(f"{fetch_readout(run_dir)}: execution readout retained")
         return 0
     if arguments.n21_record is None or not arguments.control:
         parser.error("--n21-record and at least one --control are required")

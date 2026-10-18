@@ -5,7 +5,8 @@ The N=21 family measures the labeled distribution's response to feed-forward;
 two phase bits do not supply an order-recovery experiment. The
 state-prep-control family reads each named qubit's excited fraction after
 initialization, after an active reset, and after an X, at one repetition
-delay, or alone the excited fraction after a shot that ended in |1>; run
+delay, or alone the excited fraction after shots that end with an X on
+the measured state; run
 directly with --self-test it checks the family's exact laws.
 """
 
@@ -141,12 +142,14 @@ _SIGNED = (0.0, 1.0, 0.0, -1.0)
 # in the same shots, so A and C share the static job and B, which a reset
 # makes dynamic, runs in its own job with twirling and DD off.
 #
-# H (init, measure, x) reads the initial state and leaves |1>, so with
-# init_qubits on every shot of H starts from the implicit reset of a |1>
-# history. Circuits of one job interleave shot by shot in an order the
-# service leaves unspecified, so H is the only arm of its job; the X after
-# the measurement makes H dynamic (local_compute.is_dynamic), so that job
-# runs with twirling and DD off.
+# H (init, measure, x) reads the initial state and then flips the projected
+# one, so a shot ends in |1> unless its own initialization left |1> or the X
+# fails, and with init_qubits on every shot of H starts from the implicit
+# reset of that near-|1> history (scripts/state_prep_excess.py bounds the
+# all-|1> excitation from it). Circuits of one job interleave shot by shot
+# in an order the service leaves unspecified, so H is the only arm of its
+# job; the X after the measurement makes H dynamic
+# (local_compute.is_dynamic), so that job runs with twirling and DD off.
 STATE_PREP_FAMILY = "state-prep-control"
 STATE_PREP_ARMS = ("prep0", "reset", "x", "x_history")
 # The selection an omitted --state-prep-arms makes.
@@ -205,7 +208,9 @@ def state_prep_arms(arms: Any = None) -> tuple[str, ...]:
     if not selected or len(set(selected)) != len(selected) or set(selected) - set(STATE_PREP_ARMS):
         raise ValueError(f"state-prep arms must be distinct members of {STATE_PREP_ARMS}, got {list(selected)}")
     if STATE_PREP_HISTORY_ARM in selected and len(selected) > 1:
-        raise ValueError("x_history leaves every qubit in |1> for the next shot, so it runs as the only arm of its job")
+        raise ValueError(
+            "x_history sets the end state every shot of its job leaves, so it runs as the only arm of its job"
+        )
     if "prep0" not in selected and selected != (STATE_PREP_HISTORY_ARM,):
         raise ValueError(
             "the family measures the initial excited fraction, which only the prep0 and x_history arms read"

@@ -1269,7 +1269,7 @@ def _verify_state_prep_history(snapshot: Any, qubits: list[int]) -> None:
         manifest["feed_forward_operation_count"] == 0 and manifest["sequential_stage_count"] == 0,
         "the measure-then-X PUB carries classical stages",
     )
-    # The X follows the measurement on each qubit, so every shot ends in |1>.
+    # The X follows the measurement on each qubit, so a shot ends in the flip of the projected state.
     for qubit in qubits:
         steps = [
             instruction.operation.name

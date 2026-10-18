@@ -5146,7 +5146,7 @@ def main(argv: list[str] | None = None) -> int:
         "--state-prep-arms",
         type=lambda value: value.split(","),
         help="state-prep-control arms among prep0, reset, x and x_history, comma-separated: prep0 among "
-        "them, or x_history alone, since it leaves every qubit in |1> for the next shot of its job; "
+        "them, or x_history alone, since it sets the end state every shot of its job leaves; "
         "omitted, prep0, reset and x; the policy binds a selection",
     )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
