@@ -1,0 +1,6582 @@
+{
+ "band_cycles_per_shot": [
+  0.019,
+  0.021
+ ],
+ "block_chi2_dof": 15,
+ "counts": {
+  "QX": {
+   "detected": 0,
+   "jobs": 102
+  },
+  "Tuna-17": {
+   "detected": 57,
+   "jobs": 126
+  }
+ },
+ "detection_p": 1e-06,
+ "follow": {
+  "selector_amplitudes": {
+   "depth-5-x.cq": {
+    "1": 0.09267,
+    "10": 0.09433,
+    "12": 0.1293
+   },
+   "depth-5-y.cq": {
+    "1": 0.09377,
+    "10": 0.1073,
+    "12": 0.125
+   },
+   "depth-9-x.cq": {
+    "1": 0.1926,
+    "10": 0.2093,
+    "12": 0.2486
+   },
+   "depth-9-y.cq": {
+    "1": 0.2277,
+    "10": 0.1986,
+    "12": 0.2617
+   },
+   "lcu-bright-x-1.cq": {
+    "1": null,
+    "10": null,
+    "12": null
+   },
+   "lcu-bright-x-2.cq": {
+    "1": null,
+    "10": null,
+    "12": null
+   },
+   "lcu-bright-y-1.cq": {
+    "1": null,
+    "10": null,
+    "12": null
+   },
+   "lcu-bright-y-2.cq": {
+    "1": null,
+    "10": null,
+    "12": null
+   }
+  },
+  "selector_phase_resultant": {
+   "depth-5-x.cq": 0.9955,
+   "depth-5-y.cq": 0.9988,
+   "depth-9-x.cq": 0.9995,
+   "depth-9-y.cq": 0.9999
+  }
+ },
+ "jobs": [
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    3,
+    6
+   ],
+   "block_chi2_max": 22.49,
+   "cycles_per_shot": 0.020704779,
+   "cycles_per_shot_se": 4.15e-05,
+   "detected": false,
+   "file": "additivity-A.cq",
+   "log10_p": -0.2818,
+   "peak_power": 5.2581,
+   "run": "2026-10-16T211635Z-QXsinglenodesimulator",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    3,
+    6
+   ],
+   "block_chi2_max": 15.37,
+   "cycles_per_shot": 0.020106377,
+   "cycles_per_shot_se": 4.12e-05,
+   "detected": false,
+   "file": "additivity-AB.cq",
+   "log10_p": -0.3031,
+   "peak_power": 5.3291,
+   "run": "2026-10-16T211635Z-QXsinglenodesimulator",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    3,
+    6
+   ],
+   "block_chi2_max": 19.51,
+   "cycles_per_shot": 0.021,
+   "cycles_per_shot_se": 3.86e-05,
+   "detected": false,
+   "file": "additivity-B.cq",
+   "log10_p": -0.5362,
+   "peak_power": 6.0874,
+   "run": "2026-10-16T211635Z-QXsinglenodesimulator",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    3,
+    6
+   ],
+   "block_chi2_max": 16.95,
+   "cycles_per_shot": 0.019350995,
+   "cycles_per_shot_se": 3.79e-05,
+   "detected": false,
+   "file": "additivity-none.cq",
+   "log10_p": -0.6157,
+   "peak_power": 6.3387,
+   "run": "2026-10-16T211635Z-QXsinglenodesimulator",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    3,
+    4,
+    5,
+    7
+   ],
+   "block_chi2_max": 23.63,
+   "cycles_per_shot": 0.021,
+   "cycles_per_shot_se": 3.78e-05,
+   "detected": false,
+   "file": "teleport.cq",
+   "log10_p": 0.0,
+   "peak_power": 6.3154,
+   "run": "2026-10-16T211635Z-QXsinglenodesimulator",
+   "shots": 2048
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": [
+     0.1345,
+     0.9614,
+     0.03442
+    ],
+    "11": [
+     0.03048,
+     0.9,
+     0.01031
+    ],
+    "12": [
+     0.02903,
+     0.92,
+     0.009363
+    ],
+    "7": [
+     0.02598,
+     -2.661,
+     0.002586
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 53.65,
+   "cycles_per_shot": 0.020060764,
+   "cycles_per_shot_se": 6.29e-07,
+   "detected": true,
+   "file": "additivity-A.cq",
+   "log10_p": -126.2,
+   "peak_power": 357.46,
+   "run": "2026-10-16T211635Z-tuna_17",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": [
+     0.1302,
+     2.06,
+     0.03386
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 53.15,
+   "cycles_per_shot": 0.020045785,
+   "cycles_per_shot_se": 6.53e-07,
+   "detected": true,
+   "file": "additivity-AB.cq",
+   "log10_p": -115.4,
+   "peak_power": 331.55,
+   "run": "2026-10-16T211635Z-tuna_17",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": [
+     0.1354,
+     2.783,
+     0.04695
+    ],
+    "12": [
+     0.03449,
+     2.848,
+     0.004184
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 81.02,
+   "cycles_per_shot": 0.020058391,
+   "cycles_per_shot_se": 6.27e-07,
+   "detected": true,
+   "file": "additivity-B.cq",
+   "log10_p": -128.4,
+   "peak_power": 359.67,
+   "run": "2026-10-16T211635Z-tuna_17",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": [
+     0.1318,
+     -2.553,
+     0.04671
+    ],
+    "12": [
+     0.02864,
+     -2.303,
+     0.01137
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 60.13,
+   "cycles_per_shot": 0.020061588,
+   "cycles_per_shot_se": 6.69e-07,
+   "detected": true,
+   "file": "additivity-none.cq",
+   "log10_p": -110.3,
+   "peak_power": 316.04,
+   "run": "2026-10-16T211635Z-tuna_17",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 32.05,
+   "cycles_per_shot": 0.020039963,
+   "cycles_per_shot_se": 1.98e-06,
+   "detected": false,
+   "file": "teleport.cq",
+   "log10_p": -2.281,
+   "peak_power": 35.942,
+   "run": "2026-10-16T211635Z-tuna_17",
+   "shots": 16384
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    3,
+    4,
+    5,
+    6,
+    9
+   ],
+   "block_chi2_max": 16.82,
+   "cycles_per_shot": 0.019459547,
+   "cycles_per_shot_se": 2.2e-05,
+   "detected": false,
+   "file": "twin-1.cq",
+   "log10_p": -3.055,
+   "peak_power": 18.817,
+   "run": "2026-10-16T221133Z-zero_divisor_qx",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    8,
+    9
+   ],
+   "block_chi2_max": 19.78,
+   "cycles_per_shot": 0.019073438,
+   "cycles_per_shot_se": 2.61e-05,
+   "detected": false,
+   "file": "twin-2.cq",
+   "log10_p": -0.6433,
+   "peak_power": 13.328,
+   "run": "2026-10-16T221133Z-zero_divisor_qx",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    7,
+    8
+   ],
+   "block_chi2_max": 16.28,
+   "cycles_per_shot": 0.020403591,
+   "cycles_per_shot_se": 2.42e-05,
+   "detected": false,
+   "file": "twin-3.cq",
+   "log10_p": -1.169,
+   "peak_power": 15.488,
+   "run": "2026-10-16T221133Z-zero_divisor_qx",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    9
+   ],
+   "block_chi2_max": 23.95,
+   "cycles_per_shot": 0.020386881,
+   "cycles_per_shot_se": 2.42e-05,
+   "detected": false,
+   "file": "twin-4.cq",
+   "log10_p": -1.191,
+   "peak_power": 15.574,
+   "run": "2026-10-16T221133Z-zero_divisor_qx",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    2,
+    3
+   ],
+   "block_chi2_max": 14.7,
+   "cycles_per_shot": 0.019081614,
+   "cycles_per_shot_se": 4.31e-05,
+   "detected": false,
+   "file": "twin-5.cq",
+   "log10_p": -0.1623,
+   "peak_power": 4.8525,
+   "run": "2026-10-16T221133Z-zero_divisor_qx",
+   "shots": 2048
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": [
+     0.03677,
+     2.216,
+     0.007427
+    ],
+    "11": [
+     0.03575,
+     2.035,
+     0.006205
+    ],
+    "4": [
+     0.033,
+     -0.6948,
+     0.008592
+    ],
+    "5": [
+     0.03235,
+     -1.15,
+     0.002943
+    ],
+    "7": [
+     0.03427,
+     2.458,
+     0.008914
+    ],
+    "8": [
+     0.03803,
+     -0.9363,
+     0.007032
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 19.37,
+   "cycles_per_shot": 0.020282143,
+   "cycles_per_shot_se": 9.52e-07,
+   "detected": true,
+   "file": "latin-1.cq",
+   "log10_p": -45.4,
+   "peak_power": 155.98,
+   "run": "2026-10-16T221133Z-zero_divisor_tuna_17",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "14": [
+     0.03986,
+     0.7913,
+     0.01225
+    ],
+    "2": [
+     0.04274,
+     -2.161,
+     0.007811
+    ],
+    "9": [
+     0.03168,
+     -2.364,
+     0.002154
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 25.28,
+   "cycles_per_shot": 0.020307664,
+   "cycles_per_shot_se": 1.08e-06,
+   "detected": true,
+   "file": "latin-2.cq",
+   "log10_p": -31.79,
+   "peak_power": 120.84,
+   "run": "2026-10-16T221133Z-zero_divisor_tuna_17",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "11": [
+     0.0509,
+     -2.683,
+     0.01289
+    ],
+    "16": [
+     0.03128,
+     -2.637,
+     0.006635
+    ],
+    "7": [
+     0.02888,
+     0.8971,
+     0.009667
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 19.79,
+   "cycles_per_shot": 0.020278571,
+   "cycles_per_shot_se": 1.04e-06,
+   "detected": true,
+   "file": "latin-3.cq",
+   "log10_p": -35.64,
+   "peak_power": 130.9,
+   "run": "2026-10-16T221133Z-zero_divisor_tuna_17",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    10,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 33.69,
+   "cycles_per_shot": 0.020927381,
+   "cycles_per_shot_se": 2.58e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -1.503,
+   "peak_power": 21.233,
+   "run": "2026-10-16T221133Z-zero_divisor_tuna_17",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 131.5,
+   "cycles_per_shot": 0.020692654,
+   "cycles_per_shot_se": 2.14e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -1.08,
+   "peak_power": 30.855,
+   "run": "2026-10-16T221133Z-zero_divisor_tuna_17",
+   "shots": 16384
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "readout-0.cq",
+   "run": "2026-10-16T224534Z-coupler_zz_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "readout-1.cq",
+   "run": "2026-10-16T224534Z-coupler_zz_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 14.56,
+   "cycles_per_shot": 0.021,
+   "cycles_per_shot_se": 3.47e-05,
+   "detected": false,
+   "file": "targets-P-x-d025.cq",
+   "log10_p": 0.0,
+   "peak_power": 7.5087,
+   "run": "2026-10-16T224534Z-coupler_zz_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 20.7,
+   "cycles_per_shot": 0.019,
+   "cycles_per_shot_se": 2.74e-05,
+   "detected": false,
+   "file": "targets-P-x-d100.cq",
+   "log10_p": -1.016,
+   "peak_power": 12.087,
+   "run": "2026-10-16T224534Z-coupler_zz_qx-batch-01",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 23.33,
+   "cycles_per_shot": 0.01922823,
+   "cycles_per_shot_se": 2.55e-05,
+   "detected": false,
+   "file": "targets-P-y-d025.cq",
+   "log10_p": -0.2415,
+   "peak_power": 13.89,
+   "run": "2026-10-16T224534Z-coupler_zz_qx-batch-01",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 21.56,
+   "cycles_per_shot": 0.020563831,
+   "cycles_per_shot_se": 2.9e-05,
+   "detected": false,
+   "file": "targets-P-y-d100.cq",
+   "log10_p": 0.0,
+   "peak_power": 10.788,
+   "run": "2026-10-16T224534Z-coupler_zz_qx-batch-01",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    4,
+    5,
+    6
+   ],
+   "block_chi2_max": 21.43,
+   "cycles_per_shot": 0.020538029,
+   "cycles_per_shot_se": 4.39e-05,
+   "detected": false,
+   "file": "targets-Q-x-d025.cq",
+   "log10_p": 0.0,
+   "peak_power": 4.7013,
+   "run": "2026-10-16T224534Z-coupler_zz_qx-batch-02",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    4,
+    5,
+    6
+   ],
+   "block_chi2_max": 20.07,
+   "cycles_per_shot": 0.020961224,
+   "cycles_per_shot_se": 3.19e-05,
+   "detected": false,
+   "file": "targets-Q-x-d100.cq",
+   "log10_p": -0.9384,
+   "peak_power": 8.8831,
+   "run": "2026-10-16T224534Z-coupler_zz_qx-batch-02",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 17.2,
+   "cycles_per_shot": 0.019930447,
+   "cycles_per_shot_se": 2.32e-05,
+   "detected": false,
+   "file": "targets-Q-y-d025.cq",
+   "log10_p": -0.8344,
+   "peak_power": 16.778,
+   "run": "2026-10-16T224534Z-coupler_zz_qx-batch-02",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 30.65,
+   "cycles_per_shot": 0.01989434,
+   "cycles_per_shot_se": 2.31e-05,
+   "detected": false,
+   "file": "targets-Q-y-d100.cq",
+   "log10_p": -0.8905,
+   "peak_power": 17.029,
+   "run": "2026-10-16T224534Z-coupler_zz_qx-batch-03",
+   "shots": 2048
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 33.81,
+   "cycles_per_shot": 0.019638705,
+   "cycles_per_shot_se": 2.78e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -0.3725,
+   "peak_power": 18.329,
+   "run": "2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 22.87,
+   "cycles_per_shot": 0.020092284,
+   "cycles_per_shot_se": 2.33e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.08185,
+   "peak_power": 25.974,
+   "run": "2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "6": [
+     0.0361,
+     0.3253,
+     0.005776
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 35.93,
+   "cycles_per_shot": 0.020041399,
+   "cycles_per_shot_se": 1.66e-06,
+   "detected": true,
+   "file": "targets-P-x-d025.cq",
+   "log10_p": -6.603,
+   "peak_power": 51.433,
+   "run": "2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": [
+     0.05598,
+     -2.014,
+     0.005372
+    ],
+    "12": [
+     0.04757,
+     1.06,
+     0.01526
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 45.56,
+   "cycles_per_shot": 0.020131121,
+   "cycles_per_shot_se": 8.77e-07,
+   "detected": true,
+   "file": "targets-P-x-d100.cq",
+   "log10_p": -55.51,
+   "peak_power": 184.2,
+   "run": "2026-10-16T224924Z-coupler_zz_tuna_17-batch-01",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": [
+     0.1048,
+     -0.4966,
+     0.0386
+    ],
+    "5": [
+     0.2485,
+     -0.5562,
+     0.06635
+    ],
+    "6": [
+     0.3804,
+     -0.5337,
+     0.09936
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 44.04,
+   "cycles_per_shot": 0.020054118,
+   "cycles_per_shot_se": 1.99e-07,
+   "detected": true,
+   "file": "targets-P-y-d025.cq",
+   "log10_p": -1514.0,
+   "peak_power": 3590.9,
+   "run": "2026-10-16T224924Z-coupler_zz_tuna_17-batch-01",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": [
+     0.2921,
+     2.627,
+     0.07834
+    ],
+    "11": [
+     0.06751,
+     2.611,
+     0.02216
+    ],
+    "12": [
+     0.05302,
+     2.46,
+     0.00928
+    ],
+    "16": [
+     0.04225,
+     2.557,
+     0.01398
+    ],
+    "5": [
+     0.3928,
+     2.672,
+     0.1235
+    ],
+    "6": [
+     0.04523,
+     -2.671,
+     0.04523
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 602.0,
+   "cycles_per_shot": 0.020124493,
+   "cycles_per_shot_se": 1.84e-07,
+   "detected": true,
+   "file": "targets-P-y-d100.cq",
+   "log10_p": -1764.0,
+   "peak_power": 4168.2,
+   "run": "2026-10-16T224924Z-coupler_zz_tuna_17-batch-01",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "7": [
+     0.1212,
+     0.6414,
+     0.02907
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 31.42,
+   "cycles_per_shot": 0.020035372,
+   "cycles_per_shot_se": 6.32e-07,
+   "detected": true,
+   "file": "targets-Q-x-d025.cq",
+   "log10_p": -125.0,
+   "peak_power": 354.68,
+   "run": "2026-10-16T224924Z-coupler_zz_tuna_17-batch-02",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "14": [
+     0.03123,
+     1.822,
+     0.0086
+    ],
+    "7": [
+     0.2936,
+     -1.24,
+     0.09141
+    ],
+    "8": [
+     0.02635,
+     1.578,
+     0.008195
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 141.9,
+   "cycles_per_shot": 0.020109462,
+   "cycles_per_shot_se": 3.09e-07,
+   "detected": true,
+   "file": "targets-Q-x-d100.cq",
+   "log10_p": -605.4,
+   "peak_power": 1483.6,
+   "run": "2026-10-16T224924Z-coupler_zz_tuna_17-batch-02",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "14": [
+     0.03608,
+     -0.2363,
+     0.009273
+    ],
+    "7": [
+     0.182,
+     -0.5092,
+     0.04859
+    ],
+    "8": [
+     0.02769,
+     -0.7736,
+     0.004911
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 32.62,
+   "cycles_per_shot": 0.020037298,
+   "cycles_per_shot_se": 4.33e-07,
+   "detected": true,
+   "file": "targets-Q-y-d025.cq",
+   "log10_p": -294.4,
+   "peak_power": 756.87,
+   "run": "2026-10-16T224924Z-coupler_zz_tuna_17-batch-02",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "14": [
+     0.07759,
+     1.319,
+     0.02935
+    ],
+    "15": [
+     0.04423,
+     1.029,
+     0.002983
+    ],
+    "3": [
+     0.05158,
+     1.076,
+     0.004345
+    ],
+    "7": [
+     0.1823,
+     -1.805,
+     0.06669
+    ],
+    "8": [
+     0.06991,
+     1.155,
+     0.02833
+    ],
+    "9": [
+     0.04014,
+     1.183,
+     0.01005
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 375.5,
+   "cycles_per_shot": 0.020117846,
+   "cycles_per_shot_se": 4.03e-07,
+   "detected": true,
+   "file": "targets-Q-y-d100.cq",
+   "log10_p": -343.6,
+   "peak_power": 872.39,
+   "run": "2026-10-16T224924Z-coupler_zz_tuna_17-batch-03",
+   "shots": 16384
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "readout-0.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "readout-1.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "reference-x-d002.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-01",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau000-x-d002.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-01",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau005-x-d002.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-01",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau015-x-d002.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-02",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau040-x-d002.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-02",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau100-x-d002.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-02",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    4,
+    5,
+    6
+   ],
+   "block_chi2_max": 25.53,
+   "cycles_per_shot": 0.02075638,
+   "cycles_per_shot_se": 3.6e-05,
+   "detected": false,
+   "file": "reference-y-d002.cq",
+   "log10_p": -0.3905,
+   "peak_power": 7.0075,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-03",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    4,
+    5,
+    6
+   ],
+   "block_chi2_max": 29.51,
+   "cycles_per_shot": 0.020293847,
+   "cycles_per_shot_se": 3.23e-05,
+   "detected": false,
+   "file": "tau000-y-d002.cq",
+   "log10_p": -0.8779,
+   "peak_power": 8.6842,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-03",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    4,
+    5,
+    6
+   ],
+   "block_chi2_max": 18.74,
+   "cycles_per_shot": 0.020773106,
+   "cycles_per_shot_se": 3.07e-05,
+   "detected": false,
+   "file": "tau005-y-d002.cq",
+   "log10_p": -1.161,
+   "peak_power": 9.6006,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-03",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    4,
+    5,
+    6
+   ],
+   "block_chi2_max": 18.06,
+   "cycles_per_shot": 0.019444294,
+   "cycles_per_shot_se": 3.13e-05,
+   "detected": false,
+   "file": "tau015-y-d002.cq",
+   "log10_p": -1.034,
+   "peak_power": 9.1954,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-04",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    4,
+    5,
+    6
+   ],
+   "block_chi2_max": 22.98,
+   "cycles_per_shot": 0.020004633,
+   "cycles_per_shot_se": 3.45e-05,
+   "detected": false,
+   "file": "tau040-y-d002.cq",
+   "log10_p": -0.5671,
+   "peak_power": 7.6327,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-04",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    4,
+    5,
+    6
+   ],
+   "block_chi2_max": 16.06,
+   "cycles_per_shot": 0.020514146,
+   "cycles_per_shot_se": 3.25e-05,
+   "detected": false,
+   "file": "tau100-y-d002.cq",
+   "log10_p": -0.8465,
+   "peak_power": 8.5804,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-04",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "reference-x-d077.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-05",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau000-x-d077.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-05",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau005-x-d077.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-05",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau015-x-d077.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-06",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau040-x-d077.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-06",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau100-x-d077.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-06",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    4,
+    5,
+    6
+   ],
+   "block_chi2_max": 20.45,
+   "cycles_per_shot": 0.020181099,
+   "cycles_per_shot_se": 3.01e-05,
+   "detected": false,
+   "file": "reference-y-d077.cq",
+   "log10_p": -1.304,
+   "peak_power": 10.053,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-07",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    4,
+    5,
+    6
+   ],
+   "block_chi2_max": 14.82,
+   "cycles_per_shot": 0.021,
+   "cycles_per_shot_se": 3.76e-05,
+   "detected": false,
+   "file": "tau000-y-d077.cq",
+   "log10_p": -0.2248,
+   "peak_power": 6.3962,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-07",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    4,
+    5,
+    6
+   ],
+   "block_chi2_max": 20.28,
+   "cycles_per_shot": 0.020101254,
+   "cycles_per_shot_se": 3.82e-05,
+   "detected": false,
+   "file": "tau005-y-d077.cq",
+   "log10_p": -0.1745,
+   "peak_power": 6.2049,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-07",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    4,
+    5,
+    6
+   ],
+   "block_chi2_max": 24.28,
+   "cycles_per_shot": 0.02090147,
+   "cycles_per_shot_se": 2.97e-05,
+   "detected": false,
+   "file": "tau015-y-d077.cq",
+   "log10_p": -1.398,
+   "peak_power": 10.348,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-08",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    4,
+    5,
+    6
+   ],
+   "block_chi2_max": 14.83,
+   "cycles_per_shot": 0.020647229,
+   "cycles_per_shot_se": 3.1e-05,
+   "detected": false,
+   "file": "tau040-y-d077.cq",
+   "log10_p": -1.105,
+   "peak_power": 9.4237,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-08",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    4,
+    5,
+    6
+   ],
+   "block_chi2_max": 15.72,
+   "cycles_per_shot": 0.020845072,
+   "cycles_per_shot_se": 4.07e-05,
+   "detected": false,
+   "file": "tau100-y-d077.cq",
+   "log10_p": 0.0,
+   "peak_power": 5.4669,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_P-batch-08",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "readout-0.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "readout-1.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "reference-x-d002.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-01",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau000-x-d002.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-01",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau005-x-d002.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-01",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau015-x-d002.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-02",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau040-x-d002.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-02",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau100-x-d002.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-02",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 22.87,
+   "cycles_per_shot": 0.019682011,
+   "cycles_per_shot_se": 2.78e-05,
+   "detected": false,
+   "file": "reference-y-d002.cq",
+   "log10_p": -0.9098,
+   "peak_power": 11.693,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-03",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 18.03,
+   "cycles_per_shot": 0.019,
+   "cycles_per_shot_se": 3.99e-05,
+   "detected": false,
+   "file": "tau000-y-d002.cq",
+   "log10_p": 0.0,
+   "peak_power": 5.6992,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-03",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 20.75,
+   "cycles_per_shot": 0.019659307,
+   "cycles_per_shot_se": 3.23e-05,
+   "detected": false,
+   "file": "tau005-y-d002.cq",
+   "log10_p": -0.1615,
+   "peak_power": 8.6607,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-03",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 14.58,
+   "cycles_per_shot": 0.019426091,
+   "cycles_per_shot_se": 3.11e-05,
+   "detected": false,
+   "file": "tau015-y-d002.cq",
+   "log10_p": -0.3232,
+   "peak_power": 9.3697,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-04",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 21.2,
+   "cycles_per_shot": 0.020690975,
+   "cycles_per_shot_se": 2.77e-05,
+   "detected": false,
+   "file": "tau040-y-d002.cq",
+   "log10_p": -0.9277,
+   "peak_power": 11.76,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-04",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 17.25,
+   "cycles_per_shot": 0.019834678,
+   "cycles_per_shot_se": 2.44e-05,
+   "detected": false,
+   "file": "tau100-y-d002.cq",
+   "log10_p": -1.9,
+   "peak_power": 15.15,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-04",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "reference-x-d077.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-05",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau000-x-d077.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-05",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau005-x-d077.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-05",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau015-x-d077.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-06",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau040-x-d077.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-06",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "tau100-x-d077.cq",
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-06",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 14.75,
+   "cycles_per_shot": 0.020236015,
+   "cycles_per_shot_se": 3.25e-05,
+   "detected": false,
+   "file": "reference-y-d077.cq",
+   "log10_p": -0.1438,
+   "peak_power": 8.5806,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-07",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 30.41,
+   "cycles_per_shot": 0.02093576,
+   "cycles_per_shot_se": 3.14e-05,
+   "detected": false,
+   "file": "tau000-y-d077.cq",
+   "log10_p": -0.2853,
+   "peak_power": 9.2069,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-07",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 30.5,
+   "cycles_per_shot": 0.020263405,
+   "cycles_per_shot_se": 2.25e-05,
+   "detected": false,
+   "file": "tau005-y-d077.cq",
+   "log10_p": -2.74,
+   "peak_power": 17.843,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-07",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 27.62,
+   "cycles_per_shot": 0.02019802,
+   "cycles_per_shot_se": 3.04e-05,
+   "detected": false,
+   "file": "tau015-y-d077.cq",
+   "log10_p": -0.4233,
+   "peak_power": 9.7901,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-08",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 17.59,
+   "cycles_per_shot": 0.019495128,
+   "cycles_per_shot_se": 3.24e-05,
+   "detected": false,
+   "file": "tau040-y-d077.cq",
+   "log10_p": -0.1534,
+   "peak_power": 8.6241,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-08",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 29.72,
+   "cycles_per_shot": 0.019475795,
+   "cycles_per_shot_se": 3.26e-05,
+   "detected": false,
+   "file": "tau100-y-d077.cq",
+   "log10_p": -0.1341,
+   "peak_power": 8.5365,
+   "run": "2026-10-17T030006Z-readout_ringdown_qx_Q-batch-08",
+   "shots": 2048
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 28.49,
+   "cycles_per_shot": 0.019077435,
+   "cycles_per_shot_se": 5.28e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -1.141,
+   "peak_power": 20.274,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 500.6,
+   "cycles_per_shot": 0.019870193,
+   "cycles_per_shot_se": 4.56e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.8594,
+   "peak_power": 27.175,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 28.25,
+   "cycles_per_shot": 0.020159657,
+   "cycles_per_shot_se": 4.64e-06,
+   "detected": false,
+   "file": "reference-x-d002.cq",
+   "log10_p": -0.6658,
+   "peak_power": 26.236,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    22,
+    23,
+    27,
+    33
+   ],
+   "block_chi2_max": 46.31,
+   "cycles_per_shot": 0.019744532,
+   "cycles_per_shot_se": 4.13e-06,
+   "detected": false,
+   "file": "tau000-x-d002.cq",
+   "log10_p": -1.036,
+   "peak_power": 33.209,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16,
+    22,
+    23,
+    27,
+    33
+   ],
+   "block_chi2_max": 38.18,
+   "cycles_per_shot": 0.020545018,
+   "cycles_per_shot_se": 4.4e-06,
+   "detected": false,
+   "file": "tau005-x-d002.cq",
+   "log10_p": -0.5122,
+   "peak_power": 29.223,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    22,
+    23,
+    27,
+    33
+   ],
+   "block_chi2_max": 440.1,
+   "cycles_per_shot": 0.019685052,
+   "cycles_per_shot_se": 3.96e-06,
+   "detected": false,
+   "file": "tau015-x-d002.cq",
+   "log10_p": -1.618,
+   "peak_power": 36.008,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16,
+    22,
+    23,
+    27,
+    33
+   ],
+   "block_chi2_max": 824.5,
+   "cycles_per_shot": 0.019967506,
+   "cycles_per_shot_se": 4.49e-06,
+   "detected": false,
+   "file": "tau040-x-d002.cq",
+   "log10_p": -0.2997,
+   "peak_power": 28.042,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    22,
+    23,
+    27,
+    33
+   ],
+   "block_chi2_max": 575.4,
+   "cycles_per_shot": 0.01932238,
+   "cycles_per_shot_se": 4.56e-06,
+   "detected": false,
+   "file": "tau100-x-d002.cq",
+   "log10_p": 0.0,
+   "peak_power": 27.16,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "6": [
+     0.04785,
+     -2.367,
+     0.004364
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 128.0,
+   "cycles_per_shot": 0.020142146,
+   "cycles_per_shot_se": 3.5e-06,
+   "detected": false,
+   "file": "reference-y-d002.cq",
+   "log10_p": -5.813,
+   "peak_power": 46.19,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16,
+    22,
+    23,
+    27,
+    33
+   ],
+   "block_chi2_max": 72.36,
+   "cycles_per_shot": 0.020149704,
+   "cycles_per_shot_se": 4.11e-06,
+   "detected": false,
+   "file": "tau000-y-d002.cq",
+   "log10_p": -1.38,
+   "peak_power": 33.569,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "5": [
+     0.04051,
+     0.8383,
+     0.005815
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16,
+    22,
+    23,
+    27,
+    33
+   ],
+   "block_chi2_max": 75.94,
+   "cycles_per_shot": 0.020116323,
+   "cycles_per_shot_se": 3.66e-06,
+   "detected": false,
+   "file": "tau005-y-d002.cq",
+   "log10_p": -3.436,
+   "peak_power": 42.273,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "6": [
+     0.04509,
+     -2.11,
+     0.007744
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    22,
+    23,
+    27,
+    33
+   ],
+   "block_chi2_max": 32.9,
+   "cycles_per_shot": 0.020184435,
+   "cycles_per_shot_se": 3.39e-06,
+   "detected": false,
+   "file": "tau015-y-d002.cq",
+   "log10_p": -4.878,
+   "peak_power": 49.227,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "6": [
+     0.04598,
+     -1.347,
+     0.02548
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    22,
+    23,
+    27,
+    33
+   ],
+   "block_chi2_max": 27.91,
+   "cycles_per_shot": 0.020184235,
+   "cycles_per_shot_se": 3.61e-06,
+   "detected": false,
+   "file": "tau040-y-d002.cq",
+   "log10_p": -3.364,
+   "peak_power": 43.443,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "6": [
+     0.04305,
+     0.7866,
+     0.00783
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    22,
+    23,
+    27,
+    33
+   ],
+   "block_chi2_max": 37.97,
+   "cycles_per_shot": 0.020233507,
+   "cycles_per_shot_se": 3.35e-06,
+   "detected": false,
+   "file": "tau100-y-d002.cq",
+   "log10_p": -5.219,
+   "peak_power": 50.473,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "5": [
+     0.147,
+     0.1556,
+     0.01942
+    ],
+    "6": [
+     0.06161,
+     0.3585,
+     0.03457
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 69.11,
+   "cycles_per_shot": 0.020242511,
+   "cycles_per_shot_se": 1.56e-06,
+   "detected": true,
+   "file": "reference-x-d077.cq",
+   "log10_p": -77.73,
+   "peak_power": 233.0,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "5": [
+     0.2042,
+     1.29,
+     0.0501
+    ],
+    "6": [
+     0.04486,
+     1.332,
+     0.03041
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    22,
+    23,
+    27,
+    33
+   ],
+   "block_chi2_max": 371.0,
+   "cycles_per_shot": 0.020217901,
+   "cycles_per_shot_se": 1.23e-06,
+   "detected": true,
+   "file": "tau000-x-d077.cq",
+   "log10_p": -130.1,
+   "peak_power": 375.85,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "5": [
+     0.1685,
+     1.446,
+     0.02396
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    22,
+    23,
+    27,
+    33
+   ],
+   "block_chi2_max": 323.2,
+   "cycles_per_shot": 0.02023018,
+   "cycles_per_shot_se": 1.49e-06,
+   "detected": true,
+   "file": "tau005-x-d077.cq",
+   "log10_p": -81.12,
+   "peak_power": 255.69,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "5": [
+     0.2227,
+     0.9987,
+     0.03658
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 30.14,
+   "cycles_per_shot": 0.020231115,
+   "cycles_per_shot_se": 1.14e-06,
+   "detected": true,
+   "file": "reference-x-d077.cq",
+   "log10_p": -158.7,
+   "peak_power": 434.76,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "5": [
+     0.1796,
+     -1.688,
+     0.02949
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    22,
+    27,
+    33
+   ],
+   "block_chi2_max": 60.91,
+   "cycles_per_shot": 0.020204406,
+   "cycles_per_shot_se": 1.4e-06,
+   "detected": true,
+   "file": "tau000-x-d077.cq",
+   "log10_p": -93.74,
+   "peak_power": 289.8,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "5": [
+     0.2039,
+     2.418,
+     0.05121
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    22,
+    27,
+    33
+   ],
+   "block_chi2_max": 34.44,
+   "cycles_per_shot": 0.02020869,
+   "cycles_per_shot_se": 1.25e-06,
+   "detected": true,
+   "file": "tau005-x-d077.cq",
+   "log10_p": -123.4,
+   "peak_power": 362.61,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "5": [
+     0.2166,
+     -0.2334,
+     0.04288
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    22,
+    27,
+    33
+   ],
+   "block_chi2_max": 40.6,
+   "cycles_per_shot": 0.020217307,
+   "cycles_per_shot_se": 1.15e-06,
+   "detected": true,
+   "file": "tau015-x-d077.cq",
+   "log10_p": -149.5,
+   "peak_power": 425.98,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "5": [
+     0.2456,
+     1.889,
+     0.05981
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    22,
+    27,
+    33
+   ],
+   "block_chi2_max": 63.05,
+   "cycles_per_shot": 0.020245424,
+   "cycles_per_shot_se": 1.04e-06,
+   "detected": true,
+   "file": "tau040-x-d077.cq",
+   "log10_p": -189.0,
+   "peak_power": 520.82,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "5": [
+     0.2499,
+     1.525,
+     0.06019
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    22,
+    27,
+    33
+   ],
+   "block_chi2_max": 59.45,
+   "cycles_per_shot": 0.020306964,
+   "cycles_per_shot_se": 1.02e-06,
+   "detected": true,
+   "file": "tau100-x-d077.cq",
+   "log10_p": -199.9,
+   "peak_power": 546.86,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "5": [
+     0.2177,
+     -1.231,
+     0.04705
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    22,
+    27,
+    33
+   ],
+   "block_chi2_max": 48.89,
+   "cycles_per_shot": 0.02021979,
+   "cycles_per_shot_se": 1.18e-06,
+   "detected": true,
+   "file": "tau015-x-d077.cq",
+   "log10_p": -142.1,
+   "peak_power": 408.03,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "5": [
+     0.2021,
+     -3.007,
+     0.05616
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    22,
+    27,
+    33
+   ],
+   "block_chi2_max": 39.6,
+   "cycles_per_shot": 0.020244993,
+   "cycles_per_shot_se": 1.27e-06,
+   "detected": true,
+   "file": "tau040-x-d077.cq",
+   "log10_p": -118.1,
+   "peak_power": 349.69,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "5": [
+     0.2131,
+     2.296,
+     0.04514
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    22,
+    27,
+    33
+   ],
+   "block_chi2_max": 30.92,
+   "cycles_per_shot": 0.02030437,
+   "cycles_per_shot_se": 1.19e-06,
+   "detected": true,
+   "file": "tau100-x-d077.cq",
+   "log10_p": -138.1,
+   "peak_power": 398.31,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": [
+     0.1157,
+     -0.432,
+     0.01795
+    ],
+    "12": [
+     0.06103,
+     -0.4773,
+     0.01448
+    ],
+    "2": [
+     0.01855,
+     -0.9882,
+     0.003142
+    ],
+    "5": [
+     0.3677,
+     -0.3957,
+     0.1081
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 81.98,
+   "cycles_per_shot": 0.020232217,
+   "cycles_per_shot_se": 6.41e-07,
+   "detected": true,
+   "file": "reference-y-d077.cq",
+   "log10_p": -562.0,
+   "peak_power": 1377.5,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": [
+     0.09716,
+     2.296,
+     0.01528
+    ],
+    "11": [
+     0.05058,
+     2.343,
+     0.009378
+    ],
+    "12": [
+     0.0631,
+     2.212,
+     0.02579
+    ],
+    "16": [
+     0.04048,
+     2.321,
+     0.008242
+    ],
+    "2": [
+     0.02286,
+     2.488,
+     0.009118
+    ],
+    "5": [
+     0.345,
+     2.349,
+     0.09647
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    22,
+    27,
+    33
+   ],
+   "block_chi2_max": 166.4,
+   "cycles_per_shot": 0.020205613,
+   "cycles_per_shot_se": 6.83e-07,
+   "detected": true,
+   "file": "tau000-y-d077.cq",
+   "log10_p": -482.6,
+   "peak_power": 1213.7,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": [
+     0.09781,
+     2.788,
+     0.02712
+    ],
+    "11": [
+     0.05645,
+     2.707,
+     0.01302
+    ],
+    "12": [
+     0.05971,
+     2.992,
+     0.01536
+    ],
+    "16": [
+     0.05065,
+     2.57,
+     0.00533
+    ],
+    "5": [
+     0.3689,
+     2.884,
+     0.1065
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    22,
+    27,
+    33
+   ],
+   "block_chi2_max": 64.02,
+   "cycles_per_shot": 0.020210763,
+   "cycles_per_shot_se": 6.49e-07,
+   "detected": true,
+   "file": "tau005-y-d077.cq",
+   "log10_p": -538.3,
+   "peak_power": 1344.1,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": [
+     0.08774,
+     -0.2635,
+     0.03139
+    ],
+    "11": [
+     0.06352,
+     -0.2232,
+     0.007484
+    ],
+    "12": [
+     0.06799,
+     -0.2435,
+     0.00504
+    ],
+    "16": [
+     0.03897,
+     -0.135,
+     0.01523
+    ],
+    "5": [
+     0.3754,
+     -0.2247,
+     0.1096
+    ],
+    "6": [
+     0.02233,
+     0.1833,
+     0.01427
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    22,
+    27,
+    33
+   ],
+   "block_chi2_max": 52.05,
+   "cycles_per_shot": 0.020215028,
+   "cycles_per_shot_se": 6.4e-07,
+   "detected": true,
+   "file": "tau015-y-d077.cq",
+   "log10_p": -553.6,
+   "peak_power": 1379.8,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": [
+     0.0936,
+     1.438,
+     0.02049
+    ],
+    "11": [
+     0.05047,
+     1.402,
+     0.01326
+    ],
+    "12": [
+     0.06532,
+     1.476,
+     0.005231
+    ],
+    "5": [
+     0.3756,
+     1.527,
+     0.1041
+    ],
+    "6": [
+     0.02364,
+     1.836,
+     0.009823
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    22,
+    27,
+    33
+   ],
+   "block_chi2_max": 108.9,
+   "cycles_per_shot": 0.02024222,
+   "cycles_per_shot_se": 6.41e-07,
+   "detected": true,
+   "file": "tau040-y-d077.cq",
+   "log10_p": -554.4,
+   "peak_power": 1381.8,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": [
+     0.09718,
+     2.275,
+     0.02365
+    ],
+    "11": [
+     0.05162,
+     2.063,
+     0.004987
+    ],
+    "12": [
+     0.0547,
+     2.19,
+     0.02369
+    ],
+    "5": [
+     0.3838,
+     2.247,
+     0.1167
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    22,
+    27,
+    33
+   ],
+   "block_chi2_max": 53.0,
+   "cycles_per_shot": 0.020301943,
+   "cycles_per_shot_se": 6.31e-07,
+   "detected": true,
+   "file": "tau100-y-d077.cq",
+   "log10_p": -571.6,
+   "peak_power": 1421.8,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 23.63,
+   "cycles_per_shot": 0.019466183,
+   "cycles_per_shot_se": 5.59e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": 0.0,
+   "peak_power": 18.129,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 34.61,
+   "cycles_per_shot": 0.020099477,
+   "cycles_per_shot_se": 4.87e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": 0.0,
+   "peak_power": 23.869,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-041520",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 29.71,
+   "cycles_per_shot": 0.019450168,
+   "cycles_per_shot_se": 5.38e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -0.09129,
+   "peak_power": 19.551,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 37.71,
+   "cycles_per_shot": 0.020167946,
+   "cycles_per_shot_se": 4.57e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.5909,
+   "peak_power": 27.132,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_P-recal-042425",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 25.73,
+   "cycles_per_shot": 0.020323743,
+   "cycles_per_shot_se": 5.02e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -0.6952,
+   "peak_power": 22.484,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 1659.0,
+   "cycles_per_shot": 0.019620309,
+   "cycles_per_shot_se": 4.81e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.8293,
+   "peak_power": 24.414,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 398.2,
+   "cycles_per_shot": 0.020458437,
+   "cycles_per_shot_se": 4.83e-06,
+   "detected": false,
+   "file": "reference-x-d002.cq",
+   "log10_p": -1.108,
+   "peak_power": 24.308,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "31": [
+     0.01422,
+     1.444,
+     0.002713
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    24,
+    25,
+    26,
+    31,
+    32
+   ],
+   "block_chi2_max": 346.3,
+   "cycles_per_shot": 0.019026127,
+   "cycles_per_shot_se": 3.83e-06,
+   "detected": false,
+   "file": "tau000-x-d002.cq",
+   "log10_p": -1.886,
+   "peak_power": 38.575,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "7": [
+     0.06763,
+     2.96,
+     0.009392
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    24,
+    25,
+    26,
+    30,
+    31,
+    32
+   ],
+   "block_chi2_max": 396.0,
+   "cycles_per_shot": 0.02014689,
+   "cycles_per_shot_se": 3.04e-06,
+   "detected": true,
+   "file": "tau005-x-d002.cq",
+   "log10_p": -7.414,
+   "peak_power": 61.395,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    24,
+    25,
+    26,
+    30,
+    31,
+    32
+   ],
+   "block_chi2_max": 573.5,
+   "cycles_per_shot": 0.020219035,
+   "cycles_per_shot_se": 3.7e-06,
+   "detected": false,
+   "file": "tau015-x-d002.cq",
+   "log10_p": -1.915,
+   "peak_power": 41.386,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "7": [
+     0.05034,
+     -1.734,
+     0.004414
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    24,
+    25,
+    26,
+    30,
+    31,
+    32
+   ],
+   "block_chi2_max": 841.1,
+   "cycles_per_shot": 0.020023816,
+   "cycles_per_shot_se": 3.18e-06,
+   "detected": false,
+   "file": "tau040-x-d002.cq",
+   "log10_p": -5.495,
+   "peak_power": 56.088,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "7": [
+     0.04159,
+     -1.631,
+     0.007412
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    24,
+    25,
+    26,
+    31,
+    32
+   ],
+   "block_chi2_max": 233.6,
+   "cycles_per_shot": 0.020362226,
+   "cycles_per_shot_se": 3.55e-06,
+   "detected": false,
+   "file": "tau100-x-d002.cq",
+   "log10_p": -3.033,
+   "peak_power": 44.953,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 111.1,
+   "cycles_per_shot": 0.020164639,
+   "cycles_per_shot_se": 4.91e-06,
+   "detected": false,
+   "file": "reference-y-d002.cq",
+   "log10_p": -0.9273,
+   "peak_power": 23.522,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-03",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    24,
+    25,
+    26,
+    30,
+    31,
+    32
+   ],
+   "block_chi2_max": 80.78,
+   "cycles_per_shot": 0.020136395,
+   "cycles_per_shot_se": 3.63e-06,
+   "detected": false,
+   "file": "tau000-y-d002.cq",
+   "log10_p": -2.592,
+   "peak_power": 43.074,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-03",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    24,
+    25,
+    26,
+    31,
+    32
+   ],
+   "block_chi2_max": 203.3,
+   "cycles_per_shot": 0.020640374,
+   "cycles_per_shot_se": 4.24e-06,
+   "detected": false,
+   "file": "tau005-y-d002.cq",
+   "log10_p": -0.4776,
+   "peak_power": 31.497,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-03",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    24,
+    25,
+    26,
+    30,
+    31,
+    32
+   ],
+   "block_chi2_max": 183.8,
+   "cycles_per_shot": 0.020152926,
+   "cycles_per_shot_se": 3.89e-06,
+   "detected": false,
+   "file": "tau015-y-d002.cq",
+   "log10_p": -1.361,
+   "peak_power": 37.41,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-04",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    24,
+    25,
+    26,
+    30,
+    31,
+    32
+   ],
+   "block_chi2_max": 28.43,
+   "cycles_per_shot": 0.020130864,
+   "cycles_per_shot_se": 4.15e-06,
+   "detected": false,
+   "file": "tau040-y-d002.cq",
+   "log10_p": -0.4984,
+   "peak_power": 32.841,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-04",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "7": [
+     0.05655,
+     -2.571,
+     0.006027
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    24,
+    25,
+    26,
+    30,
+    31,
+    32
+   ],
+   "block_chi2_max": 38.45,
+   "cycles_per_shot": 0.020203281,
+   "cycles_per_shot_se": 3.65e-06,
+   "detected": false,
+   "file": "tau100-y-d002.cq",
+   "log10_p": -2.179,
+   "peak_power": 42.609,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-04",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "7": [
+     0.3642,
+     1.74,
+     0.09003
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 461.8,
+   "cycles_per_shot": 0.020229326,
+   "cycles_per_shot_se": 7.12e-07,
+   "detected": true,
+   "file": "reference-x-d077.cq",
+   "log10_p": -456.5,
+   "peak_power": 1118.2,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "7": [
+     0.3573,
+     2.968,
+     0.1045
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    24,
+    25,
+    26,
+    31,
+    32
+   ],
+   "block_chi2_max": 63.79,
+   "cycles_per_shot": 0.020201445,
+   "cycles_per_shot_se": 7.21e-07,
+   "detected": true,
+   "file": "tau000-x-d077.cq",
+   "log10_p": -429.2,
+   "peak_power": 1088.5,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "7": [
+     0.3433,
+     0.893,
+     0.08526
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    19,
+    20,
+    24,
+    25,
+    26,
+    31,
+    32
+   ],
+   "block_chi2_max": 72.46,
+   "cycles_per_shot": 0.0202084,
+   "cycles_per_shot_se": 7.5e-07,
+   "detected": true,
+   "file": "tau005-x-d077.cq",
+   "log10_p": -394.4,
+   "peak_power": 1007.0,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "7": [
+     0.2811,
+     -1.939,
+     0.08498
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    24,
+    25,
+    26,
+    31,
+    32
+   ],
+   "block_chi2_max": 209.6,
+   "cycles_per_shot": 0.020225793,
+   "cycles_per_shot_se": 8.99e-07,
+   "detected": true,
+   "file": "tau015-x-d077.cq",
+   "log10_p": -266.2,
+   "peak_power": 700.86,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "7": [
+     0.246,
+     -0.5279,
+     0.06227
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    24,
+    25,
+    31,
+    32
+   ],
+   "block_chi2_max": 292.8,
+   "cycles_per_shot": 0.020243322,
+   "cycles_per_shot_se": 1.04e-06,
+   "detected": true,
+   "file": "tau040-x-d077.cq",
+   "log10_p": -192.2,
+   "peak_power": 521.61,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "7": [
+     0.224,
+     0.8984,
+     0.05952
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    24,
+    25,
+    26,
+    31,
+    32
+   ],
+   "block_chi2_max": 86.9,
+   "cycles_per_shot": 0.020310194,
+   "cycles_per_shot_se": 1.13e-06,
+   "detected": true,
+   "file": "tau100-x-d077.cq",
+   "log10_p": -158.5,
+   "peak_power": 444.24,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "14": [
+     0.09541,
+     2.478,
+     0.02055
+    ],
+    "7": [
+     0.05139,
+     2.665,
+     0.007917
+    ],
+    "8": [
+     0.06445,
+     2.698,
+     0.01217
+    ]
+   },
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 34.87,
+   "cycles_per_shot": 0.020237705,
+   "cycles_per_shot_se": 1.82e-06,
+   "detected": true,
+   "file": "reference-y-d077.cq",
+   "log10_p": -54.74,
+   "peak_power": 170.64,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "14": [
+     0.09059,
+     -0.7854,
+     0.0345
+    ],
+    "3": [
+     0.05289,
+     -0.9587,
+     0.0104
+    ],
+    "7": [
+     0.04297,
+     -1.002,
+     0.003429
+    ],
+    "8": [
+     0.04442,
+     -0.8854,
+     0.01416
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    24,
+    25,
+    26,
+    31,
+    32
+   ],
+   "block_chi2_max": 37.14,
+   "cycles_per_shot": 0.020212492,
+   "cycles_per_shot_se": 1.87e-06,
+   "detected": true,
+   "file": "tau000-y-d077.cq",
+   "log10_p": -44.2,
+   "peak_power": 162.07,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "14": [
+     0.08204,
+     2.213,
+     0.01618
+    ],
+    "7": [
+     0.04847,
+     2.237,
+     0.004747
+    ],
+    "8": [
+     0.04555,
+     2.706,
+     0.01657
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    24,
+    25,
+    31,
+    32
+   ],
+   "block_chi2_max": 28.79,
+   "cycles_per_shot": 0.020214143,
+   "cycles_per_shot_se": 1.99e-06,
+   "detected": true,
+   "file": "tau005-y-d077.cq",
+   "log10_p": -38.06,
+   "peak_power": 143.6,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "14": [
+     0.0674,
+     1.913,
+     0.02829
+    ],
+    "7": [
+     0.4275,
+     2.082,
+     0.1127
+    ],
+    "8": [
+     0.04623,
+     2.149,
+     0.008141
+    ],
+    "9": [
+     0.05276,
+     2.199,
+     0.001956
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    24,
+    25,
+    26,
+    31,
+    32
+   ],
+   "block_chi2_max": 47.04,
+   "cycles_per_shot": 0.020220282,
+   "cycles_per_shot_se": 5.92e-07,
+   "detected": true,
+   "file": "tau015-y-d077.cq",
+   "log10_p": -657.1,
+   "peak_power": 1617.0,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "14": [
+     0.07558,
+     0.92,
+     0.01664
+    ],
+    "3": [
+     0.03876,
+     0.5932,
+     0.01624
+    ],
+    "7": [
+     0.4247,
+     1.051,
+     0.119
+    ],
+    "8": [
+     0.05587,
+     1.208,
+     0.02475
+    ],
+    "9": [
+     0.0432,
+     0.8803,
+     0.01442
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    24,
+    25,
+    26,
+    31,
+    32
+   ],
+   "block_chi2_max": 41.28,
+   "cycles_per_shot": 0.020245213,
+   "cycles_per_shot_se": 5.94e-07,
+   "detected": true,
+   "file": "tau040-y-d077.cq",
+   "log10_p": -653.0,
+   "peak_power": 1607.3,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "14": [
+     0.07709,
+     0.7993,
+     0.02891
+    ],
+    "3": [
+     0.04645,
+     0.505,
+     0.0145
+    ],
+    "7": [
+     0.4093,
+     0.7427,
+     0.115
+    ],
+    "8": [
+     0.04581,
+     0.7469,
+     0.009887
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    18,
+    24,
+    25,
+    26,
+    31,
+    32
+   ],
+   "block_chi2_max": 77.47,
+   "cycles_per_shot": 0.020306674,
+   "cycles_per_shot_se": 6.14e-07,
+   "detected": true,
+   "file": "tau100-y-d077.cq",
+   "log10_p": -608.2,
+   "peak_power": 1502.9,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 29.57,
+   "cycles_per_shot": 0.019549831,
+   "cycles_per_shot_se": 4.55e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -2.226,
+   "peak_power": 27.322,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-recal-053951",
+   "shots": 8192
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 1153.0,
+   "cycles_per_shot": 0.020051549,
+   "cycles_per_shot_se": 4.95e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.8353,
+   "peak_power": 23.115,
+   "run": "2026-10-17T032034Z-readout_ringdown_tuna_17_Q-recal-053951",
+   "shots": 8192
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    3,
+    4,
+    5,
+    6,
+    9
+   ],
+   "block_chi2_max": 13.81,
+   "cycles_per_shot": 0.019427486,
+   "cycles_per_shot_se": 2.22e-05,
+   "detected": false,
+   "file": "twin-1.cq",
+   "log10_p": -2.938,
+   "peak_power": 18.457,
+   "run": "2026-10-17T034409Z-zero_divisor_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    8,
+    9
+   ],
+   "block_chi2_max": 26.46,
+   "cycles_per_shot": 0.019108553,
+   "cycles_per_shot_se": 2.51e-05,
+   "detected": false,
+   "file": "twin-2.cq",
+   "log10_p": -0.8808,
+   "peak_power": 14.331,
+   "run": "2026-10-17T034409Z-zero_divisor_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    7,
+    8
+   ],
+   "block_chi2_max": 21.01,
+   "cycles_per_shot": 0.020257388,
+   "cycles_per_shot_se": 2.36e-05,
+   "detected": false,
+   "file": "twin-3.cq",
+   "log10_p": -1.356,
+   "peak_power": 16.212,
+   "run": "2026-10-17T034409Z-zero_divisor_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    9
+   ],
+   "block_chi2_max": 18.2,
+   "cycles_per_shot": 0.019,
+   "cycles_per_shot_se": 2.79e-05,
+   "detected": false,
+   "file": "twin-4.cq",
+   "log10_p": -0.2638,
+   "peak_power": 11.591,
+   "run": "2026-10-17T034409Z-zero_divisor_qx-batch-01",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    2,
+    3
+   ],
+   "block_chi2_max": 19.76,
+   "cycles_per_shot": 0.019563834,
+   "cycles_per_shot_se": 3.84e-05,
+   "detected": false,
+   "file": "twin-5.cq",
+   "log10_p": -0.5742,
+   "peak_power": 6.2079,
+   "run": "2026-10-17T034409Z-zero_divisor_qx-batch-01",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    3,
+    5,
+    7,
+    9
+   ],
+   "block_chi2_max": 23.72,
+   "cycles_per_shot": 0.020500658,
+   "cycles_per_shot_se": 2.54e-05,
+   "detected": false,
+   "file": "twin-1.cq",
+   "log10_p": -1.57,
+   "peak_power": 14.04,
+   "run": "2026-10-17T042652Z-zero_divisor_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 29.35,
+   "cycles_per_shot": 0.019732232,
+   "cycles_per_shot_se": 2.53e-05,
+   "detected": false,
+   "file": "twin-2.cq",
+   "log10_p": -0.8384,
+   "peak_power": 14.156,
+   "run": "2026-10-17T042652Z-zero_divisor_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    7,
+    9
+   ],
+   "block_chi2_max": 20.23,
+   "cycles_per_shot": 0.019851136,
+   "cycles_per_shot_se": 2.04e-05,
+   "detected": false,
+   "file": "twin-3.cq",
+   "log10_p": -2.939,
+   "peak_power": 21.78,
+   "run": "2026-10-17T042652Z-zero_divisor_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    3,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 25.08,
+   "cycles_per_shot": 0.020314721,
+   "cycles_per_shot_se": 1.94e-05,
+   "detected": false,
+   "file": "twin-1.cq",
+   "log10_p": -4.866,
+   "peak_power": 24.172,
+   "run": "2026-10-17T044225Z-zero_divisor_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 15.5,
+   "cycles_per_shot": 0.020326619,
+   "cycles_per_shot_se": 2.68e-05,
+   "detected": false,
+   "file": "twin-2.cq",
+   "log10_p": -0.4705,
+   "peak_power": 12.561,
+   "run": "2026-10-17T044225Z-zero_divisor_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    7,
+    8,
+    9
+   ],
+   "block_chi2_max": 15.68,
+   "cycles_per_shot": 0.020925837,
+   "cycles_per_shot_se": 2.63e-05,
+   "detected": false,
+   "file": "twin-3.cq",
+   "log10_p": -0.5829,
+   "peak_power": 13.064,
+   "run": "2026-10-17T044225Z-zero_divisor_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "4": [
+     0.04527,
+     -2.619,
+     0.01436
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 23.96,
+   "cycles_per_shot": 0.020351443,
+   "cycles_per_shot_se": 1.63e-06,
+   "detected": true,
+   "file": "latin-1.cq",
+   "log10_p": -7.627,
+   "peak_power": 53.05,
+   "run": "2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 26.6,
+   "cycles_per_shot": 0.01981559,
+   "cycles_per_shot_se": 2.36e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -1.079,
+   "peak_power": 25.397,
+   "run": "2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 89.24,
+   "cycles_per_shot": 0.019131254,
+   "cycles_per_shot_se": 2.33e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.3666,
+   "peak_power": 26.181,
+   "run": "2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "13": [
+     0.03091,
+     2.754,
+     0.006875
+    ],
+    "4": [
+     0.02893,
+     -0.53,
+     0.01168
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 22.34,
+   "cycles_per_shot": 0.020353454,
+   "cycles_per_shot_se": 1.4e-06,
+   "detected": true,
+   "file": "latin-2.cq",
+   "log10_p": -14.01,
+   "peak_power": 72.302,
+   "run": "2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 19.46,
+   "cycles_per_shot": 0.020563978,
+   "cycles_per_shot_se": 2.53e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -0.3438,
+   "peak_power": 22.194,
+   "run": "2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 26.82,
+   "cycles_per_shot": 0.019126408,
+   "cycles_per_shot_se": 2.11e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -1.283,
+   "peak_power": 31.759,
+   "run": "2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "14": [
+     0.03345,
+     0.452,
+     0.005406
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 320.9,
+   "cycles_per_shot": 0.020347114,
+   "cycles_per_shot_se": 2.04e-06,
+   "detected": false,
+   "file": "latin-3.cq",
+   "log10_p": -2.154,
+   "peak_power": 34.0,
+   "run": "2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 17.79,
+   "cycles_per_shot": 0.02046774,
+   "cycles_per_shot_se": 2.5e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -0.4288,
+   "peak_power": 22.583,
+   "run": "2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 25.31,
+   "cycles_per_shot": 0.019592754,
+   "cycles_per_shot_se": 2.29e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.2785,
+   "peak_power": 27.007,
+   "run": "2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 40.93,
+   "cycles_per_shot": 0.019653647,
+   "cycles_per_shot_se": 1.11e-05,
+   "detected": false,
+   "file": "double-x.cq",
+   "log10_p": 0.0,
+   "peak_power": 18.542,
+   "run": "2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+   "shots": 4096
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    10,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 20.4,
+   "cycles_per_shot": 0.020818525,
+   "cycles_per_shot_se": 1.2e-05,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -0.6076,
+   "peak_power": 15.591,
+   "run": "2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+   "shots": 4096
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 24.98,
+   "cycles_per_shot": 0.020156046,
+   "cycles_per_shot_se": 9.93e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.1287,
+   "peak_power": 22.982,
+   "run": "2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+   "shots": 4096
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 29.11,
+   "cycles_per_shot": 0.019845042,
+   "cycles_per_shot_se": 2.9e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -0.0162,
+   "peak_power": 16.784,
+   "run": "2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 25.56,
+   "cycles_per_shot": 0.019144662,
+   "cycles_per_shot_se": 2.28e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.3139,
+   "peak_power": 27.189,
+   "run": "2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "10": [
+     0.04045,
+     2.305,
+     0.01709
+    ],
+    "12": [
+     0.2211,
+     2.42,
+     0.05946
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 54.57,
+   "cycles_per_shot": 0.020019656,
+   "cycles_per_shot_se": 3.72e-07,
+   "detected": true,
+   "file": "t0-1.cq",
+   "log10_p": -411.6,
+   "peak_power": 1023.0,
+   "run": "2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 19.6,
+   "cycles_per_shot": 0.02073714,
+   "cycles_per_shot_se": 2.69e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -0.3425,
+   "peak_power": 19.546,
+   "run": "2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 28.87,
+   "cycles_per_shot": 0.019011974,
+   "cycles_per_shot_se": 2.45e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": 0.0,
+   "peak_power": 23.522,
+   "run": "2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "1": [
+     0.09609,
+     0.3687,
+     0.03233
+    ],
+    "10": [
+     0.0184,
+     -2.714,
+     0.000979
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 21.56,
+   "cycles_per_shot": 0.020054917,
+   "cycles_per_shot_se": 6.83e-07,
+   "detected": true,
+   "file": "t0-2.cq",
+   "log10_p": -106.5,
+   "peak_power": 303.71,
+   "run": "2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 26.95,
+   "cycles_per_shot": 0.02018122,
+   "cycles_per_shot_se": 2.87e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -0.1179,
+   "peak_power": 17.236,
+   "run": "2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    16
+   ],
+   "block_chi2_max": 22.71,
+   "cycles_per_shot": 0.020835135,
+   "cycles_per_shot_se": 2.42e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": 0.0,
+   "peak_power": 24.157,
+   "run": "2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "1": [
+     0.145,
+     -2.491,
+     0.04177
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 23.36,
+   "cycles_per_shot": 0.020044823,
+   "cycles_per_shot_se": 5.13e-07,
+   "detected": true,
+   "file": "t0-3.cq",
+   "log10_p": -205.9,
+   "peak_power": 536.9,
+   "run": "2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+   "shots": 16384
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    4,
+    5
+   ],
+   "block_chi2_max": 18.9,
+   "cycles_per_shot": 0.020616019,
+   "cycles_per_shot_se": 4.28e-05,
+   "detected": false,
+   "file": "twin-t0-1.cq",
+   "log10_p": -0.1839,
+   "peak_power": 4.9267,
+   "run": "2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    4,
+    5
+   ],
+   "block_chi2_max": 16.98,
+   "cycles_per_shot": 0.020315584,
+   "cycles_per_shot_se": 4.17e-05,
+   "detected": false,
+   "file": "twin-t0-2.cq",
+   "log10_p": -0.2684,
+   "peak_power": 5.2134,
+   "run": "2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    4,
+    5
+   ],
+   "block_chi2_max": 21.26,
+   "cycles_per_shot": 0.019050267,
+   "cycles_per_shot_se": 4.31e-05,
+   "detected": false,
+   "file": "twin-t0-3.cq",
+   "log10_p": -0.1667,
+   "peak_power": 4.8676,
+   "run": "2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "twin-double-x.cq",
+   "run": "2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-04",
+   "shots": 2048
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 22.43,
+   "cycles_per_shot": 0.0197458,
+   "cycles_per_shot_se": 2.47e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -0.8934,
+   "peak_power": 23.241,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-00",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 23.81,
+   "cycles_per_shot": 0.019710227,
+   "cycles_per_shot_se": 2.33e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.09244,
+   "peak_power": 26.031,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-00",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 23.59,
+   "cycles_per_shot": 0.019234454,
+   "cycles_per_shot_se": 1.97e-06,
+   "detected": false,
+   "file": "walk-omit.cq",
+   "log10_p": -2.795,
+   "peak_power": 36.491,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-00",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "1": [
+     0.1926,
+     0.6142,
+     0.03914
+    ],
+    "10": [
+     0.2093,
+     0.5402,
+     0.04781
+    ],
+    "12": [
+     0.2486,
+     0.5799,
+     0.05401
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 40.36,
+   "cycles_per_shot": 0.020036509,
+   "cycles_per_shot_se": 2.29e-07,
+   "detected": true,
+   "file": "depth-9-x.cq",
+   "log10_p": -1130.0,
+   "peak_power": 2691.2,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-01",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 28.3,
+   "cycles_per_shot": 0.020362027,
+   "cycles_per_shot_se": 2.35e-06,
+   "detected": false,
+   "file": "lcu-bright-x-1.cq",
+   "log10_p": -0.5186,
+   "peak_power": 25.621,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-01",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 27.45,
+   "cycles_per_shot": 0.019917784,
+   "cycles_per_shot_se": 2.47e-06,
+   "detected": false,
+   "file": "lcu-bright-x-2.cq",
+   "log10_p": -0.01482,
+   "peak_power": 23.135,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-01",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "1": [
+     0.2277,
+     -2.581,
+     0.04656
+    ],
+    "10": [
+     0.1986,
+     -2.6,
+     0.04541
+    ],
+    "12": [
+     0.2617,
+     -2.569,
+     0.05428
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 33.3,
+   "cycles_per_shot": 0.020036654,
+   "cycles_per_shot_se": 2.18e-07,
+   "detected": true,
+   "file": "depth-9-y.cq",
+   "log10_p": -1260.0,
+   "peak_power": 2991.4,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-02",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 20.73,
+   "cycles_per_shot": 0.019212721,
+   "cycles_per_shot_se": 2.02e-06,
+   "detected": false,
+   "file": "lcu-bright-y-1.cq",
+   "log10_p": -2.373,
+   "peak_power": 34.862,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-02",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 33.83,
+   "cycles_per_shot": 0.019935366,
+   "cycles_per_shot_se": 2.27e-06,
+   "detected": false,
+   "file": "lcu-bright-y-2.cq",
+   "log10_p": -0.6225,
+   "peak_power": 27.417,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-02",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 26.24,
+   "cycles_per_shot": 0.020069628,
+   "cycles_per_shot_se": 2.52e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -0.6757,
+   "peak_power": 22.328,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-03",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    11,
+    12,
+    13,
+    14,
+    16
+   ],
+   "block_chi2_max": 26.77,
+   "cycles_per_shot": 0.02088151,
+   "cycles_per_shot_se": 2.37e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.4446,
+   "peak_power": 25.271,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-03",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "14": [
+     0.06154,
+     -0.4771,
+     0.01796
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 28.83,
+   "cycles_per_shot": 0.02003653,
+   "cycles_per_shot_se": 9.43e-07,
+   "detected": true,
+   "file": "walk-x.cq",
+   "log10_p": -45.69,
+   "peak_power": 159.26,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-03",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 23.34,
+   "cycles_per_shot": 0.02010902,
+   "cycles_per_shot_se": 2.27e-06,
+   "detected": false,
+   "file": "lcu-dark-x-1.cq",
+   "log10_p": -0.9192,
+   "peak_power": 27.447,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-04",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 28.97,
+   "cycles_per_shot": 0.020791723,
+   "cycles_per_shot_se": 2.32e-06,
+   "detected": false,
+   "file": "lcu-dark-x-2.cq",
+   "log10_p": -0.3826,
+   "peak_power": 26.26,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-04",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "14": [
+     0.1863,
+     -0.5312,
+     0.0447
+    ],
+    "4": [
+     0.06718,
+     -0.5188,
+     0.01699
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 23.36,
+   "cycles_per_shot": 0.020035127,
+   "cycles_per_shot_se": 4.45e-07,
+   "detected": true,
+   "file": "walk-y.cq",
+   "log10_p": -276.7,
+   "peak_power": 715.04,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-04",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "1": [
+     0.09267,
+     -2.975,
+     0.018
+    ],
+    "10": [
+     0.09433,
+     -2.743,
+     0.02544
+    ],
+    "12": [
+     0.1293,
+     -2.848,
+     0.0314
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 121.8,
+   "cycles_per_shot": 0.020034468,
+   "cycles_per_shot_se": 4.11e-07,
+   "detected": true,
+   "file": "depth-5-x.cq",
+   "log10_p": -331.5,
+   "peak_power": 840.01,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-05",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 21.42,
+   "cycles_per_shot": 0.020098438,
+   "cycles_per_shot_se": 2.3e-06,
+   "detected": false,
+   "file": "lcu-dark-y-1.cq",
+   "log10_p": -0.7681,
+   "peak_power": 26.771,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-05",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 27.12,
+   "cycles_per_shot": 0.019618597,
+   "cycles_per_shot_se": 2.15e-06,
+   "detected": false,
+   "file": "lcu-dark-y-2.cq",
+   "log10_p": -1.661,
+   "peak_power": 30.59,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-05",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "1": [
+     0.09377,
+     3.058,
+     0.01998
+    ],
+    "10": [
+     0.1073,
+     2.94,
+     0.02519
+    ],
+    "12": [
+     0.125,
+     2.992,
+     0.03385
+    ]
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 21.65,
+   "cycles_per_shot": 0.020033008,
+   "cycles_per_shot_se": 4.02e-07,
+   "detected": true,
+   "file": "depth-5-y.cq",
+   "log10_p": -348.0,
+   "peak_power": 874.5,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-06",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_chi2_max": 38.38,
+   "cycles_per_shot": 0.019333519,
+   "cycles_per_shot_se": 2.34e-06,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -1.535,
+   "peak_power": 25.796,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-06",
+   "shots": 16384
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    11,
+    12,
+    13,
+    14,
+    16
+   ],
+   "block_chi2_max": 25.96,
+   "cycles_per_shot": 0.020042829,
+   "cycles_per_shot_se": 2.45e-06,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.1183,
+   "peak_power": 23.667,
+   "run": "2026-10-17T230513Z-box_kite_tuna_follow-batch-06",
+   "shots": 16384
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "twin-lcu-bright-x-1.cq",
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-01",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "twin-lcu-bright-x-2.cq",
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-01",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    2,
+    3,
+    5,
+    6
+   ],
+   "block_chi2_max": 20.54,
+   "cycles_per_shot": 0.020535501,
+   "cycles_per_shot_se": 3.1e-05,
+   "detected": false,
+   "file": "twin-walk-omit.cq",
+   "log10_p": -0.6818,
+   "peak_power": 9.4477,
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-01",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "twin-depth-9-x.cq",
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-02",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    4,
+    5
+   ],
+   "block_chi2_max": 15.81,
+   "cycles_per_shot": 0.021,
+   "cycles_per_shot_se": 3.19e-05,
+   "detected": false,
+   "file": "twin-lcu-bright-y-1.cq",
+   "log10_p": -1.479,
+   "peak_power": 8.9208,
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-02",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    4,
+    5
+   ],
+   "block_chi2_max": 33.01,
+   "cycles_per_shot": 0.019,
+   "cycles_per_shot_se": 3.34e-05,
+   "detected": false,
+   "file": "twin-lcu-bright-y-2.cq",
+   "log10_p": -1.214,
+   "peak_power": 8.1518,
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-02",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    4,
+    5
+   ],
+   "block_chi2_max": 19.31,
+   "cycles_per_shot": 0.019126471,
+   "cycles_per_shot_se": 5.32e-05,
+   "detected": false,
+   "file": "twin-depth-9-y.cq",
+   "log10_p": 0.0,
+   "peak_power": 3.2051,
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-03",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "twin-walk-x.cq",
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-03",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    2,
+    5
+   ],
+   "block_chi2_max": 24.18,
+   "cycles_per_shot": 0.019968503,
+   "cycles_per_shot_se": 5.39e-05,
+   "detected": false,
+   "file": "twin-walk-y.cq",
+   "log10_p": -0.04267,
+   "peak_power": 3.1247,
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-03",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    3,
+    5
+   ],
+   "block_chi2_max": 16.87,
+   "cycles_per_shot": 0.01969351,
+   "cycles_per_shot_se": 3.74e-05,
+   "detected": false,
+   "file": "twin-lcu-dark-x-1.cq",
+   "log10_p": -1.22,
+   "peak_power": 6.4225,
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-05",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    3,
+    5
+   ],
+   "block_chi2_max": 21.2,
+   "cycles_per_shot": 0.020363933,
+   "cycles_per_shot_se": 5.98e-05,
+   "detected": false,
+   "file": "twin-lcu-dark-x-2.cq",
+   "log10_p": 0.0,
+   "peak_power": 2.554,
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-05",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    3,
+    4,
+    5
+   ],
+   "block_chi2_max": 21.72,
+   "cycles_per_shot": 0.020776485,
+   "cycles_per_shot_se": 3.64e-05,
+   "detected": false,
+   "file": "twin-lcu-dark-y-1.cq",
+   "log10_p": -0.346,
+   "peak_power": 6.846,
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-05",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "twin-depth-5-x.cq",
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-06",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    4,
+    5
+   ],
+   "block_chi2_max": 20.28,
+   "cycles_per_shot": 0.02053604,
+   "cycles_per_shot_se": 2.84e-05,
+   "detected": false,
+   "file": "twin-depth-5-y.cq",
+   "log10_p": -2.284,
+   "peak_power": 11.181,
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-06",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    3,
+    4,
+    5
+   ],
+   "block_chi2_max": 26.69,
+   "cycles_per_shot": 0.020122526,
+   "cycles_per_shot_se": 3.63e-05,
+   "detected": false,
+   "file": "twin-lcu-dark-y-2.cq",
+   "log10_p": -0.3546,
+   "peak_power": 6.8772,
+   "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-06",
+   "shots": 2048
+  }
+ ],
+ "schema": "qi-shot-record-line-v1",
+ "stationarity": {
+  "box_kite_tuna_follow": 26.77,
+  "box_kite_tuna_pre": 24.98,
+  "box_kite_tuna_t0": 25.56,
+  "coupler_zz_tuna_17": 39.98,
+  "readout_ringdown_tuna_17_P": 52.52,
+  "readout_ringdown_tuna_17_Q": 99.0,
+  "tuna_17": 53.65,
+  "zero_divisor_tuna_17": 25.3
+ },
+ "wall_clock": {
+  "batches": 11,
+  "jobs": 31,
+  "residual_sd": 8.61e-06,
+  "shot_period_us_at_grid": [
+   402.84,
+   404.57
+  ],
+  "slope_hz": 50.41,
+  "slope_se_hz": 3.97,
+  "z_from_grid": 0.104,
+  "z_shot_locked": 12.7
+ }
+}
