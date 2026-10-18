@@ -4110,6 +4110,22 @@
    "name": "core-457",
    "seconds": 0.3,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/state_prep_control_parameters.py --check && \"$PYTHON\" -B -O -W error scripts/state_prep_control_parameters.py --check",
+   "name": "core-564",
+   "seconds": 7.8,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/state_prep_control_parameters.py --self-test && \"$PYTHON\" -B -O -W error scripts/state_prep_control_parameters.py --self-test",
+   "name": "core-565",
+   "seconds": 3.6,
+   "tier": "pr"
   }
  ],
  "excluded": [

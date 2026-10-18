@@ -217,6 +217,21 @@
       "docs/evidence/calibration/history/**",
       "results/live/2026-10-15T070847.644554Z/**",
       "results/live/2026-10-15T070853.550532Z/**"
+    ],
+    "core-564": [
+      "docs/evidence/heron_platform/targets.json",
+      "results/live/state-prep-control-parameters.json",
+      "results/live/2026-10-18T083402.386701Z/**",
+      "results/live/2026-10-18T083403.945334Z/**",
+      "results/live/2026-10-18T083404.226285Z/**",
+      "results/live/2026-10-18T083404.414317Z/**",
+      "results/live/2026-10-18T090603.530638Z/**",
+      "results/live/2026-10-18T201601.788510Z/**",
+      "results/live/2026-10-18T201618.987131Z/**",
+      "results/live/2026-10-18T213733.601097Z/**",
+      "results/live/2026-10-18T213828.038774Z/**",
+      "results/live/2026-10-18T214519.655411Z/**",
+      "results/live/2026-10-18T220218.089776Z/**"
     ]
   }
 }
