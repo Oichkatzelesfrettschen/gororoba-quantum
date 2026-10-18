@@ -29,8 +29,9 @@ since its gates would fail in both trees and read as shared failures.
 The base's passing gates are cached under --cache (default
 ${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/premerge) by a key over the base
 commit, --max-seconds, each interpreter's path, version and installed
-distributions, and every environment variable a gate reads to pick its path
-or toolchain, so every premerge against one main commit on one host runs the
+distributions, the PATH tools gates run, and the environment variables
+gates read to pick a path, toolchain or thread count (KEY_PREFIXES,
+KEY_VARIABLES), so premerges against one main commit under one key run the
 base once; a flock serializes concurrent runs over one key and the second
 reads the first's entry. Base failures are never cached: a merge failure
 absent from the cached passes reruns on the base through run_gates --gates,
@@ -80,7 +81,14 @@ CACHE_SCHEMA = "gororoba-premerge-base-v1"
 # Gates read these to choose a device, toolchain, live or replay path, thread
 # count or warning policy, so each one's value enters the cache key.
 KEY_PREFIXES = ("GOROROBA_", "QI_", "OQ_", "QD_", "QISKIT_", "PYTHON", "OMP_", "OPENBLAS_", "MKL_", "BLIS_")
-KEY_VARIABLES = ("GLIBC_TUNABLES",)
+KEY_VARIABLES = ("GLIBC_TUNABLES", "PATH", "HOME", "VIRTUAL_ENV")
+# Gates run these from PATH (ci/pinned_tool.py prefers an installed ruff or
+# mypy at its pin and otherwise runs the pin through uv), so each one's
+# resolved file identity enters the key.
+KEY_TOOLS = ("ruff", "mypy", "uv", "shellcheck", "git", "sha256sum", "rocq")
+# These name interpreters of the separate service stacks; their installed
+# distributions enter the key beside the path.
+KEY_INTERPRETERS = ("QI_PYTHON", "OQ_PYTHON", "QD_PYTHON")
 DISTRIBUTIONS = (
     "import importlib.metadata as m, json, sys; "
     "print(json.dumps([sys.version, sorted({(d.metadata['Name'] or '', d.version) for d in m.distributions()})]))"
@@ -134,12 +142,32 @@ def interpreter_identity(python: str) -> list[Any]:
     return [os.path.realpath(python), json.loads(completed.stdout)]
 
 
+def tool_identity(name: str) -> list[Any] | None:
+    """The resolved path, size and modification time of a PATH tool, or None when PATH lacks it."""
+    found = shutil.which(name)
+    if found is None:
+        return None
+    real = os.path.realpath(found)
+    status = os.stat(real)
+    return [real, status.st_size, status.st_mtime_ns]
+
+
 def cache_key(base_commit: str, max_seconds: float, replay: dict[str, str]) -> tuple[str, dict[str, Any]]:
-    """The digest naming a base result and the components it covers."""
+    """The digest naming a base result and the components it covers.
+
+    Environment values enter as sha256 digests, so a credential a variable
+    carries (QISKIT_IBM_TOKEN matches the QISKIT_ prefix) never reaches the
+    cache file.
+    """
     environment = {
-        name: value
+        name: hashlib.sha256(value.encode()).hexdigest()
         for name, value in sorted(os.environ.items())
         if name.startswith(KEY_PREFIXES) or name in KEY_VARIABLES
+    }
+    services = {
+        name: interpreter_identity(os.environ[name])
+        for name in KEY_INTERPRETERS
+        if os.environ.get(name) and os.access(os.environ[name], os.X_OK)
     }
     components = {
         "schema": CACHE_SCHEMA,
@@ -148,6 +176,8 @@ def cache_key(base_commit: str, max_seconds: float, replay: dict[str, str]) -> t
         "python": interpreter_identity(interpreter()),
         "replay": {variable: interpreter_identity(path) for variable, path in sorted(replay.items())},
         "environment": environment,
+        "services": services,
+        "tools": {name: tool_identity(name) for name in KEY_TOOLS},
     }
     digest = hashlib.sha256(json.dumps(components, sort_keys=True).encode()).hexdigest()
     return digest, components
@@ -158,7 +188,11 @@ def locked(path: Path) -> Iterator[None]:
     """An exclusive flock beside path for the duration of the block."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path.with_suffix(".lock"), "w") as handle:
-        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            print(f"premerge: waiting for another run over {path.name}", flush=True)
+            fcntl.flock(handle, fcntl.LOCK_EX)
         yield
 
 
@@ -168,7 +202,9 @@ def cached_passes(path: Path, digest: str) -> set[str] | None:
         entry = json.loads(path.read_text())
     except (OSError, ValueError):
         return None
-    passed = entry.get("passed") if isinstance(entry, dict) else None
+    if not isinstance(entry, dict):
+        return None
+    passed = entry.get("passed")
     if entry.get("schema") != CACHE_SCHEMA or entry.get("key") != digest or not isinstance(passed, list):
         return None
     return {name for name in passed if isinstance(name, str)}
@@ -178,8 +214,12 @@ def store_passes(path: Path, digest: str, components: dict[str, Any], base: dict
     passed = sorted(name for name, (status, _) in base.items() if status == 0)
     entry = {"schema": CACHE_SCHEMA, "key": digest, "components": components, "passed": passed}
     with tempfile.NamedTemporaryFile("w", dir=path.parent, prefix=path.name, delete=False) as handle:
-        json.dump(entry, handle, indent=1)
-        handle.write("\n")
+        try:
+            json.dump(entry, handle, indent=1)
+            handle.write("\n")
+        except BaseException:
+            os.unlink(handle.name)
+            raise
     os.replace(handle.name, path)
 
 
@@ -442,10 +482,18 @@ def cache_self_test(repo: Path, worktrees: Path, cache: Path) -> None:
     status, text = run("consistent", DEFAULT_MAX_SECONDS / 2)
     if status != 0 or "base cache miss" not in text or len(list(cache.glob("*.json"))) != 2:
         raise RuntimeError(f"a changed --max-seconds reused another key's entry:\n{text}")
-    entries[0].write_text(json.dumps({"schema": CACHE_SCHEMA, "key": "foreign", "passed": ["always", "host"]}))
-    status, text = run("consistent")
-    if status != 0 or "base cache miss" not in text or "(host or main): host" not in text:
-        raise RuntimeError(f"a foreign entry was trusted:\n{text}")
+    with mock.patch.dict(os.environ, {"GOROROBA_AER_DEVICE": "premerge-key-probe"}):
+        status, text = run("consistent")
+    if status != 0 or "base cache miss" not in text or len(list(cache.glob("*.json"))) != 3:
+        raise RuntimeError(f"a changed gate variable reused another key's entry:\n{text}")
+    if "premerge-key-probe" in "".join(path.read_text() for path in cache.glob("*.json")):
+        raise RuntimeError("a cache entry stores an environment value in plain text")
+    foreign_entries: list[Any] = [{"schema": CACHE_SCHEMA, "key": "foreign", "passed": ["always", "host"]}, [], None]
+    for foreign in foreign_entries:
+        entries[0].write_text(json.dumps(foreign))
+        status, text = run("consistent")
+        if status != 0 or "base cache miss" not in text or "(host or main): host" not in text:
+            raise RuntimeError(f"the entry {foreign!r} was trusted:\n{text}")
 
 
 def main(argv: list[str] | None = None) -> int:
