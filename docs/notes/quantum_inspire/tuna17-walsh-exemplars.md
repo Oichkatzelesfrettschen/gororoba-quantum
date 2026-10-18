@@ -129,3 +129,43 @@ The manifest's `preregistered` block carries every rule and threshold:
 
 Errors come from a parametric bootstrap of 2000 draws on seed 20261018 that
 redraws every block histogram and every readout circuit's counts.
+
+## Results, 2026-10-18
+
+The QX twins read no shot outside either support. The Tuna-17 series ran
+from 17:00Z to 17:31Z, every job completed and every stop rule passed
+(`results/quantum_inspire/walsh_exemplar_tuna_17_analysis.json`, gate
+core-557; claims `qi-tuna17-q13-readout-context-q11` and
+`qi-tuna17-walsh-exemplar-classes`). Bracket drift stayed at or below
+0.0037 on every block qubit.
+
+- **q13 context.** q13's e10 reads 0.0456 alone, 0.0913 beside an excited
+  q11 (+0.046, about 45 SE), 0.0396 beside an excited q10 and 0.0419 after
+  X X on both neighbors; readout-1 reads 0.0898. The preregistered
+  attribution is "state", and the state that matters is q11's: the ladder's
+  context effect is q11 at measurement, with no drive crosstalk.
+- **Classes.** K_high exceeds K_low in all four jobs at z 111 to 115.
+
+  | class | block X | block Y | ideal |
+  |---|---|---|---|
+  | high | 0.2896, 0.2890 | 0.3050, 0.3054 | 0.34375 |
+  | low | 0.1296, 0.1313 | 0.1251, 0.1252 | 0.15625 |
+
+  Replicates agree within a TVD of 0.004 to 0.008.
+- **Interaction.** I = -0.148 (SE 0.009), established: the high class does
+  better on Y and the low class on X. The high circuit leaves its block's
+  fourth qubit idle, so the low class alone uses q12 and q14 and the couplers
+  q8-q12 and q11-q14; the two classes run on different hardware subsets, and
+  the interaction does not isolate a class-specific coherent error.
+- **Shape.** The depolarizing G test rejects every job and block. For the
+  high class the rejection is uninformative: its forbidden outcomes measure
+  the idle qubit alone (weight 0.003 on X, below 0.0002 on Y), against which
+  a uniform-over-16 null is misspecified. Its K below ideal with no forbidden
+  weight shows the noise moving weight among the eight allowed outcomes. The
+  low-class rejection (log10 p -1066 and -1042 on X, -26 and -33 on Y with
+  the context correction) holds under all three q13 corrections.
+
+A follow-up that separates hardware subset from class runs both classes on
+three-qubit paths, or gives the high class's fourth qubit an identity-
+equivalent CZ pair, and states a shape null over the qubits a circuit
+touches.

@@ -289,14 +289,11 @@ core-425; claims `qi-tuna17-boxkite-ladder-readout-context`,
 
 ## Open questions
 
-- Readout context: readout-1 and readout-iso-x differ in the neighbors'
-  state and in the pulses the neighbors receive. A readout that applies X X
-  to the neighbors (driven, left in |0>) beside q13's X holds the drive and
-  changes only the state, so the pair separates state-dependent readout from
-  drive crosstalk. readout-1 also excites both of q13's neighbors, q10 and
-  q11; a context readout that excites one at a time would name the neighbor,
-  and the same circuits for every used qubit would give a context-resolved
-  correction.
+- Readout context: resolved by the Walsh exemplar series
+  ([tuna17-walsh-exemplars.md](tuna17-walsh-exemplars.md)): q13's e10
+  doubles beside an excited q11 and moves by less than 0.01 beside an
+  excited q10 or after X X on both, so the dependence is q11's state at
+  measurement. The other used qubits' contexts remain unmeasured.
 - rho above 1: a coherent selector-population error and the job-averaged
   50 Hz modulation both raise it. A ladder analyzed in line-phase bins at
   the bins where the modulation is stationary would separate them.

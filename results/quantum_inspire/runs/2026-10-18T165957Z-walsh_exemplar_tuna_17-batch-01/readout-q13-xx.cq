@@ -1,0 +1,16 @@
+version 3.0
+
+qubit[17] q
+bit[17] b
+
+// X on q[13]; X X on q[10, 11]
+X q[10]
+X q[11]
+X q[13]
+barrier q[10]
+barrier q[11]
+X q[10]
+X q[11]
+
+barrier q
+b = measure q
