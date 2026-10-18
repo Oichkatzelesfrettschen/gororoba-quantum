@@ -24,13 +24,15 @@ gates core-439 and core-440).
 
 ## Measured constraints
 
-**Shot cost.** Over the 105 completed Tuna-17 jobs retained (4096, 8192 and
-16384 shots), execution time fits 2.99 +- 0.43 s per job plus 0.491 +- 0.031
-ms per shot (residual 1.1 s): the 500 us initialization dominates, so a
-16384-shot job takes about 11 s and the 21-job follow series about 234 s.
-The fit also carries 0.82 +- 0.36 us per CZ line per shot, against the
-documented 60 ns: a 2.3-sigma term with no known mechanism, which may be
-control-stack time rather than qubit time.
+**Shot cost.** Over the 126 completed Tuna-17 jobs retained (4096, 8192 and
+16384 shots), execution time fits 2.92 +- 0.46 s per job plus 0.509 +- 0.032
+ms per shot (residual 1.2 s): the 500 us initialization dominates, so a
+16384-shot job takes about 11 s and the 21-job follow series about 238 s.
+The fit also carries 0.92 +- 0.38 us per CZ line per shot, against the
+documented 60 ns: a 2.4-sigma term with no known mechanism, which may be
+control-stack time rather than qubit time. The fit over the 105 jobs before
+the follow series predicted 233.6 s for it; its 21 jobs executed in 243.3 s,
+4% more, about two residual standard deviations of a 21-job sum.
 
 **Readout drift.** Across the three T0 batches (15:41Z to 15:48Z), e01 and
 e10 of the six LCU qubits moved by at most 0.0071 (q13, |1> misassignment);
@@ -118,7 +120,7 @@ Against the plan it replaces (T1, coherence and walk stages: 7 batches of one
 witness and a readout pair, 7 witnesses with 18 replicas at 4096 shots), the
 follow series runs in the same 7 batches with 15 witnesses and 42 replicas at
 16384 shots. It adds the allowance-free twist test, both-branch Bloch
-vectors, the coherence ladder and the walk phase, and costs about 234 s of
+vectors, the coherence ladder and the walk phase, and cost 243 s of
 execution.
 
 ## Libraries
@@ -135,14 +137,54 @@ execution.
   placement scores run through `parallel.ordered_map`.
 - stim models Pauli channels and cannot carry the coherent ZZ and detuning
   phases the design turns on. mthree's independent calibration equals the
-  per-qubit tensor inversion at two qubits per replica, and no record shows
-  correlated readout. quimb and cotengra pay off far above seven active
+  per-qubit tensor inversion at two qubits per replica. The follow run shows
+  a context-dependent readout error on q13 (Results below), which a
+  calibration taken in the all-excited readout-1 state cannot carry, whatever
+  the inversion. quimb and cotengra pay off far above seven active
   qubits. pyzx and other optimizers would cancel the local-phase pairs whose
   cost the twist test measures. galois has no GF(2) synthesis to do: the
   walks are fixed CNOT sequences from the census.
 
+## Results, 2026-10-17
+
+The series ran from 23:08Z to 23:29Z, after its five QX twin batches read
+every deterministic replica exactly; every batch passed its checks, the
+brackets moved at most 0.0076, and the verdict is continue with no stop and
+no refutation (`results/quantum_inspire/box_kite_tuna_17_follow_analysis.json`,
+gate core-425; claims `qi-tuna17-boxkite-follow-crossover` and
+`qi-tuna17-boxkite-follow-ladder-drift`).
+
+- Classification: all six rows, |D| 0.916 to 0.967, the strut D = 0.001.
+- Twist equality in all four block x setting crossovers: |Delta| at most
+  0.0040, |z| at most 2.44, with no pair allowance.
+- Coherence: every depth-1 X sign as the census states; Y components at most
+  0.052 in magnitude; strut branches inside 0.1 + 3 sigma, the largest
+  +0.135 against 0.136.
+- Walks: <X_c> = -0.784 (star) and -0.937 (path) with omega's sign,
+  magnitudes 0.819 and 0.938 inside 0.10 of r^n_CZ, phases 0.297 and 0.052
+  rad about omega; the path omit control reads -0.119 against a limit of
+  0.126.
+- The X and Y replicas of a depth-9 bright edge, which sit in consecutive
+  batches and share the selector marginal, differ by 0.024 to 0.033 on all
+  three pairs, 4 to 7 shot-noise sigma: deep-circuit populations scatter by
+  about 0.03 between batches. The ladder's reported intervals carry shot
+  noise only, so r_coh / r_pop = 1.040 and 1.047 on (1,4) and (10,13) and
+  the (12,14) depth-9 population 0.483 are not established; depths 1 and 9
+  in X share batch-01, which a within-batch ladder can use.
+- Against T0, seven and a half hours earlier, the
+  bright-edge populations fell by 0.209 on (12,14) at depth 9 and by 0.106
+  on (10,13) at depth 5.
+- q13: the readout-1 bracket gives e10 = 0.091, and the bright (10,13)
+  coherence's raw -0.911 corrects to -1.105; on the dark branch, where e01
+  enters, raw 0.942 corrects to 0.990. The all-qubit bracket overstates
+  q13's |1> misassignment in the witness context, through neighbor-dependent
+  readout or through readout-1's own X on q13.
+
 ## Open questions
 
+- Readout context: a bracket with only the witness's qubits excited, beside
+  the all-qubit pair, would separate neighbor-dependent readout on q13 from
+  a preparation error of readout-1's X.
 - The raw shot order: a run with a deliberate mid-job change would show
   whether the retained list is temporal, which would let drift be tracked
   within a job.

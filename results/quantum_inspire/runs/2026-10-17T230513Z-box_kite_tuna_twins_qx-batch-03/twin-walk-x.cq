@@ -1,0 +1,49 @@
+version 3.0
+
+qubit[10] q
+bit[10] b
+
+// slot 0 walk (2, 11, 3) omega -1 control q[5] P(c=0) 0
+X q[3]
+X q[4]
+H q[5]
+Z q[5]
+H q[3]
+CZ q[5], q[3]
+H q[3]
+H q[4]
+CZ q[5], q[4]
+H q[4]
+H q[6]
+CZ q[5], q[6]
+H q[6]
+H q[4]
+CZ q[5], q[4]
+H q[4]
+H q[3]
+CZ q[5], q[3]
+H q[3]
+H q[6]
+CZ q[5], q[6]
+H q[6]
+H q[5]
+// slot 1 walk (2, 3, 10) omega -1 control q[2] P(c=0) 0
+X q[1]
+H q[2]
+Z q[2]
+H q[0]
+CZ q[2], q[0]
+H q[0]
+H q[1]
+CZ q[2], q[1]
+H q[1]
+H q[1]
+CZ q[2], q[1]
+H q[1]
+H q[0]
+CZ q[2], q[0]
+H q[0]
+H q[2]
+
+barrier q
+b = measure q

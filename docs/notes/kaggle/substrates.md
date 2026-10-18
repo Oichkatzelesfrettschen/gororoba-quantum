@@ -162,7 +162,11 @@ ran.
   which makes it about 160 times slower than trajectories of the same
   channel.
 - **Batched shots.** Aer 0.17.2's batched GPU sampler does not run control
-  flow.
+  flow. `docs/evidence/aer_gpu_configuration/README.md` measures it on
+  circuits without control flow (3.8 and 2.7 times faster than unbatched at
+  7 and 10 qubits, 2.2 times slower at 14), which sets
+  `calibration_snapshot.BATCHED_SHOTS_MAX_QUBITS` to 10 and keeps
+  feed-forward circuits unbatched.
 - **Agreement.** Every sampler that completed agrees with the CPU
   trajectories within its sampling scale.
 

@@ -1,0 +1,22 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-aer-gpu-config/2",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-17T221706Z",
+ "files": {
+  "gororoba-aer-gpu-config.log": "1b31138c2db093c5c582026521901fd743c9d0abd7c71271670935a4e97f5b67",
+  "output/aer_gpu_probe.json": "a02433aa2b4611a0e215ffb32c48c35d75d47ea9ef0f52987afbf8c5d8697805",
+  "output/environment.json": "91a0d069829877e67e6f16b5103f31fe2bca132197ce654fb717fe7deb75510b",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/gpu-env-report.txt": "73f4d7d8a4f5446d41bee5d9df938de99cb90758e9174b6eb33eb06ad0a58f5f",
+  "output/gpu-freeze.txt": "d3736239ff0f1fafd41b66830c3dcd0db61138ce2ea40a05d6ab9b9cb8135637",
+  "output/gpu-venv.txt": "3ea249f1b95aef7d0c560fdddbe785d61f8481f8cc2a3556cf81746829c149ff",
+  "output/gpu_env.json": "cb26315ea0f32e8e08de3d746334ca65c5f1f80afc1563b123d814499c041dea",
+  "output/hypercomplex.json": "7fcc3d43f1700398f2b6febb88fda8df3c724959620618df48e0567efff55680",
+  "output/install-pins.txt": "5e2394111d5429ceb6e719c6d5e216b5b768eef93f0d9a2eea0c6a46bd18388c",
+  "output/pip.txt": "c4945dd74fd42959c940aed3bfd70cc9d5f50027cae9797ff8ed22f58be5ae02",
+  "output/stderr.txt": "50e31b712644548df2ea205f2e49aed62d938a59070d48f36338db20c2753895",
+  "output/stdout.txt": "8c98dabf8ef34c82125d59158114bd3018dbd36baf6c908d3a2a6e3eec18d802",
+  "output/uv-install.txt": "a6bd4696d5d8e831c3d6cfb1b410d4db402a9470876efe4d24d7f1dca4e3aead"
+ }
+}

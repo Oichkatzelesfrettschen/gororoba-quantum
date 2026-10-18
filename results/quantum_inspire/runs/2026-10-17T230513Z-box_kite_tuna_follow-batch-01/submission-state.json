@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-17T23:11:22+00:00",
+ "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: conditional \"once designed the Tuna-17 run is then approved but only when highly optimizd and tweaked for maximal science per circuit per moment\", then \"Yes, submit\" (22:28Z) to the written case for the Tuna-17 box-kite follow series at main d29f634 (QX twins batch-01, 02, 03, 05, 06; follow batch-00 to batch-06)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "f8c0bb005839423720ef88fc2ee0164ddc0ec12ea2d8a7b81748c25a83f8f6bf",
+ "shots": 16384,
+ "jobs": [
+  {
+   "file": "lcu-bright-x-1.cq",
+   "job": 1530719,
+   "sha256": "fb3dac66435db67a0313cab7c049f2b89f2199bf49920ac184590c778e310dc8"
+  },
+  {
+   "file": "lcu-bright-x-2.cq",
+   "job": 1530720,
+   "sha256": "e157a32d78722a30c3b4cd71174e6300c3039f1345ddee13c46f3605d53eb3bc"
+  },
+  {
+   "file": "depth-9-x.cq",
+   "job": 1530721,
+   "sha256": "6e052d4ca5cc5b52f276d5de8af2307557389942eedf2f98024d98f7810285ef"
+  }
+ ],
+ "project": 767533,
+ "batch_job": 871405,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-17T23:11:26+00:00",
+  "approval": "Owner approval in session boxkite-quantum-main, 2026-10-17: conditional \"once designed the Tuna-17 run is then approved but only when highly optimizd and tweaked for maximal science per circuit per moment\", then \"Yes, submit\" (22:28Z) to the written case for the Tuna-17 box-kite follow series at main d29f634 (QX twins batch-01, 02, 03, 05, 06; follow batch-00 to batch-06)",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "f8c0bb005839423720ef88fc2ee0164ddc0ec12ea2d8a7b81748c25a83f8f6bf",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 871405,
+  "project": 767533,
+  "shots": 16384,
+  "jobs": [
+   {
+    "file": "lcu-bright-x-1.cq",
+    "job": 1530719,
+    "sha256": "fb3dac66435db67a0313cab7c049f2b89f2199bf49920ac184590c778e310dc8"
+   },
+   {
+    "file": "lcu-bright-x-2.cq",
+    "job": 1530720,
+    "sha256": "e157a32d78722a30c3b4cd71174e6300c3039f1345ddee13c46f3605d53eb3bc"
+   },
+   {
+    "file": "depth-9-x.cq",
+    "job": 1530721,
+    "sha256": "6e052d4ca5cc5b52f276d5de8af2307557389942eedf2f98024d98f7810285ef"
+   }
+  ],
+  "submitted_utc": "2026-10-17T23:11:26+00:00"
+ },
+ "confirmed_utc": "2026-10-17T23:11:26+00:00"
+}

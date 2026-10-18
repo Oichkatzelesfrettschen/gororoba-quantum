@@ -1,0 +1,354 @@
+{
+ "schema": "box-kite-cases-v1",
+ "family": "tuna_twins",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "dialect": "qx",
+ "bit_order": "qubit 0 at the rightmost character (QX)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "twin_of": "tuna_17",
+ "role": "the gate list of each Tuna-17 witness circuit relabeled onto QX qubits 0-9 (qubit_map: Tuna qubit -> QX qubit), run on the remote ideal emulator before its Tuna batch; the identical Tuna bytes run on local qxelarator",
+ "preregistered": {
+  "falsifier": "any shot violating a deterministic replica refutes the emitted cQASM; a P = 1/2 replica outside |z| < 4.5 at 2048 shots refutes it"
+ },
+ "batch": "batch-05",
+ "stage": "follow",
+ "circuits": [
+  {
+   "file": "twin-lcu-dark-x-1.cq",
+   "kind": "witness",
+   "stage": "follow",
+   "tuna_case": "box_kite_tuna_follow/batch-04/lcu-dark-x-1.cq",
+   "qubit_map": {
+    "1": 0,
+    "4": 1,
+    "10": 2,
+    "12": 3,
+    "13": 4,
+    "14": 5
+   },
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "lcu",
+     "label": "edge-",
+     "census": "within_kite[245]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      -1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "0",
+     "setting": "X",
+     "coherence_selector_1": "1/2",
+     "expectation_given_selector_one": "1",
+     "p_data_zero_given_selector_one": "1"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "label": "twist+",
+     "census": "within_kite[660]",
+     "kite": 6,
+     "p": [
+      4,
+      10,
+      1
+     ],
+     "q": [
+      1,
+      15,
+      1
+     ],
+     "relation": "edge_same",
+     "roles": {
+      "selector": 2,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "0",
+     "setting": "X",
+     "coherence_selector_1": "1/2",
+     "expectation_given_selector_one": "1",
+     "p_data_zero_given_selector_one": "1"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "label": "strut+",
+     "census": "within_kite[240]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      2,
+      9,
+      1
+     ],
+     "relation": "strut",
+     "roles": {
+      "selector": 3,
+      "data": [
+       5
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "1/2",
+     "setting": "X",
+     "coherence_selector_0": "0",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2",
+     "coherence_selector_1": "0",
+     "expectation_given_selector_one": "0",
+     "p_data_zero_given_selector_one": "1/2"
+    }
+   ],
+   "sha256": "97919115d6fb1f6dc88a219a0fbe4e21b8a254e6bedb013977096218ad8437cc"
+  },
+  {
+   "file": "twin-lcu-dark-x-2.cq",
+   "kind": "witness",
+   "stage": "follow",
+   "tuna_case": "box_kite_tuna_follow/batch-04/lcu-dark-x-2.cq",
+   "qubit_map": {
+    "1": 0,
+    "4": 1,
+    "10": 2,
+    "12": 3,
+    "13": 4,
+    "14": 5
+   },
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "lcu",
+     "label": "twist+",
+     "census": "within_kite[660]",
+     "kite": 6,
+     "p": [
+      4,
+      10,
+      1
+     ],
+     "q": [
+      1,
+      15,
+      1
+     ],
+     "relation": "edge_same",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "0",
+     "setting": "X",
+     "coherence_selector_1": "1/2",
+     "expectation_given_selector_one": "1",
+     "p_data_zero_given_selector_one": "1"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "label": "edge-",
+     "census": "within_kite[245]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      -1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 2,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "0",
+     "setting": "X",
+     "coherence_selector_1": "1/2",
+     "expectation_given_selector_one": "1",
+     "p_data_zero_given_selector_one": "1"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "label": "strut-",
+     "census": "within_kite[241]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      2,
+      9,
+      -1
+     ],
+     "relation": "strut",
+     "roles": {
+      "selector": 3,
+      "data": [
+       5
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "1/2",
+     "setting": "X",
+     "coherence_selector_0": "0",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2",
+     "coherence_selector_1": "0",
+     "expectation_given_selector_one": "0",
+     "p_data_zero_given_selector_one": "1/2"
+    }
+   ],
+   "sha256": "41ac365847195e4f8fb93fe87d4c083a6f31590c28ccd9886c02e0fe4f645fea"
+  },
+  {
+   "file": "twin-lcu-dark-y-1.cq",
+   "kind": "witness",
+   "stage": "follow",
+   "tuna_case": "box_kite_tuna_follow/batch-05/lcu-dark-y-1.cq",
+   "qubit_map": {
+    "1": 0,
+    "4": 1,
+    "10": 2,
+    "12": 3,
+    "13": 4,
+    "14": 5
+   },
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "lcu",
+     "label": "edge-",
+     "census": "within_kite[245]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      -1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "0",
+     "setting": "Y",
+     "coherence_selector_1": "1/2",
+     "expectation_given_selector_one": "0",
+     "p_data_zero_given_selector_one": "1/2"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "label": "twist+",
+     "census": "within_kite[660]",
+     "kite": 6,
+     "p": [
+      4,
+      10,
+      1
+     ],
+     "q": [
+      1,
+      15,
+      1
+     ],
+     "relation": "edge_same",
+     "roles": {
+      "selector": 2,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "0",
+     "setting": "Y",
+     "coherence_selector_1": "1/2",
+     "expectation_given_selector_one": "0",
+     "p_data_zero_given_selector_one": "1/2"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "label": "strut+",
+     "census": "within_kite[240]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      2,
+      9,
+      1
+     ],
+     "relation": "strut",
+     "roles": {
+      "selector": 3,
+      "data": [
+       5
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "1/2",
+     "setting": "Y",
+     "coherence_selector_0": "0",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2",
+     "coherence_selector_1": "0",
+     "expectation_given_selector_one": "0",
+     "p_data_zero_given_selector_one": "1/2"
+    }
+   ],
+   "sha256": "e4896a29248bec05cf4ad1cf334d8d1e0d413b348654e535291fb1178e28f9ca"
+  }
+ ]
+}
