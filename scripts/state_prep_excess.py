@@ -746,21 +746,59 @@ def write(record_path: Path, control_dirs: Iterable[Path], alpha: float, root: P
     return destination
 
 
+# scipy.stats.beta.ppf inverts the incomplete beta through Boost, whose last
+# bits differ between scipy builds of one version (a distribution package
+# against the pip wheel CI installs): about 1e-15 relative on the bounds.
+REPLAY_REL_TOL = 1e-12
+
+
+def _replay_mismatch(retained: Any, recomputed: Any, path: str = "") -> str | None:
+    """The first field where recomputed departs from retained: floats within REPLAY_REL_TOL, all else exact."""
+    if isinstance(retained, float) and isinstance(recomputed, float):
+        return None if math.isclose(retained, recomputed, rel_tol=REPLAY_REL_TOL, abs_tol=0.0) else path
+    if type(retained) is not type(recomputed):
+        return path
+    if isinstance(retained, dict):
+        if retained.keys() != recomputed.keys():
+            return path
+        for key in retained:
+            mismatch = _replay_mismatch(retained[key], recomputed[key], f"{path}/{key}")
+            if mismatch is not None:
+                return mismatch
+        return None
+    if isinstance(retained, list):
+        if len(retained) != len(recomputed):
+            return path
+        for index, (left, right) in enumerate(zip(retained, recomputed, strict=True)):
+            mismatch = _replay_mismatch(left, right, f"{path}[{index}]")
+            if mismatch is not None:
+                return mismatch
+        return None
+    return None if retained == recomputed else path
+
+
 def check(root: Path) -> int:
-    """Recompute every retained output under results/live from the inputs it names and compare bytes."""
+    """Recompute every retained output under results/live from the inputs it names and compare it.
+
+    Strings, integers, verdicts and qubit lists compare exactly; floats
+    compare within REPLAY_REL_TOL, the build-to-build spread of beta.ppf.
+    """
     retained = sorted((root / "results" / "live").glob(f"*/{OUTPUT_NAME}"))
     for output in retained:
         payload = json.loads(output.read_bytes())
         inputs = payload["inputs"]
-        recomputed = encode(
-            evaluate(
-                root / inputs["n21_record"]["path"],
-                [root / control["path"] for control in inputs["controls"]],
-                float(payload["rule"]["alpha"]),
-                root,
+        recomputed = json.loads(
+            encode(
+                evaluate(
+                    root / inputs["n21_record"]["path"],
+                    [root / control["path"] for control in inputs["controls"]],
+                    float(payload["rule"]["alpha"]),
+                    root,
+                )
             )
         )
-        require(recomputed == output.read_bytes(), f"{output}: the replay differs from the retained bytes")
+        mismatch = _replay_mismatch(payload, recomputed)
+        require(mismatch is None, f"{output}: the replay differs from the retained output at {mismatch or '/'}")
     return len(retained)
 
 
@@ -1037,6 +1075,21 @@ def _self_test(scratch: Path) -> None:
         root / "results/live/n21-plan/record.json", sorted((root / "results/live").glob("[hp]*")), DEFAULT_ALPHA, root
     )
     require(destination.name == OUTPUT_NAME and check(root) == 1, "the replay found no retained output")
+    # A last-bit float change replays; a change past the build tolerance, or in a verdict, refuses.
+    pristine = destination.read_bytes()
+    for nudge, accepted in ((1.0 + 1e-15, True), (1.0 + 1e-9, False)):
+        payload = json.loads(pristine)
+        payload["eps50"] *= nudge
+        destination.write_bytes(encode(payload))
+        if accepted:
+            require(check(root) == 1, "a last-bit float change refused the replay")
+        else:
+            _expect_refusal(lambda: check(root), "at /eps50")
+    payload = json.loads(pristine)
+    payload["fixed_point"]["verdict"] = "replan" if payload["fixed_point"]["verdict"] == "converged" else "converged"
+    destination.write_bytes(encode(payload))
+    _expect_refusal(lambda: check(root), "at /fixed_point/verdict")
+    destination.write_bytes(pristine)
     raw = root / "results/live/h50/raw/job_h50/pub_00.json"
     raw.write_bytes(raw.read_bytes().replace(b'"0"', b'"1"', 1))
     _expect_refusal(lambda: check(root), "sha256 differs")
@@ -1118,7 +1171,7 @@ def _self_test(scratch: Path) -> None:
         "state_prep_excess: Clopper-Pearson bounds match the binomial-tail inversion to 1e-9; 3|C| bounds share "
         "alpha over the controlled set; eps rises with the history fraction, e01 and the x flip failure, falls with "
         "the baseline, takes the readout envelope, clamps at 0; the joint diagnostic and prep0 at 50 us stay "
-        "outside the rule; the fixed point never lowers eps; refusals hold and the replay reproduces bytes"
+        "outside the rule; the fixed point never lowers eps; refusals hold and the replay holds to the build tolerance"
     )
 
 
@@ -1150,7 +1203,8 @@ def main() -> int:
         return 0
     if arguments.check:
         count = check(ROOT)
-        print(f"state_prep_excess: {count} retained output{'s' if count != 1 else ''} replay byte for byte")
+        plural = "s" if count != 1 else ""
+        print(f"state_prep_excess: {count} retained output{plural} replay within the build tolerance")
         return 0
     if arguments.fetch_readout:
         for run_dir in arguments.fetch_readout:

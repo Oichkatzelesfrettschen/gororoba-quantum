@@ -1,0 +1,1021 @@
+{
+ "argmax250": [
+  125
+ ],
+ "argmax50": [
+  125
+ ],
+ "calibration_scope": {
+  "control_execution_calibrations": [
+   "2026-10-18T08:38:20+00:00"
+  ],
+  "matched": true,
+  "n21_noise_model_calibrations": [
+   "2026-10-18T08:38:20+00:00"
+  ],
+  "scope": "eps bounds the initialization at the control's execution calibrations; applying it to the n21 plan assumes that initialization channel unchanged until the n21 shots run"
+ },
+ "eps250": 0.01574522027432981,
+ "eps50": 0.014392419533452064,
+ "fixed_point": {
+  "measured_at_plan_delay": 0.014392419533452064,
+  "next_prep_excitation": 0.014393,
+  "planned_prep_excitation": 0.0,
+  "verdict": "replan"
+ },
+ "inputs": {
+  "controls": [
+   {
+    "arms": [
+     "prep0"
+    ],
+    "backend": "ibm_kingston",
+    "collect_sha256": "59d7b6a0e9a05f647c6bade648f368b207e9b574352b8639bdc0d8fce589e4ea",
+    "job_ids": [
+     "dba8huoc77vs7382f8mg"
+    ],
+    "path": "results/live/2026-10-18T083402.386701Z",
+    "planning_calibrations": [
+     "2026-10-18T01:02:58-07:00"
+    ],
+    "raw_sha256": {
+     "results/live/2026-10-18T083402.386701Z/raw/dba8huoc77vs7382f8mg/pub_00.json": "9d410891991c942fcda4f6cd7737e1b595d96c23557c2b5261481d4e44f8da7f",
+     "results/live/2026-10-18T083402.386701Z/raw/dba8huoc77vs7382f8mg/result_metadata.json": "90e3a3edaf24753e786e7b0a20410784addb94180357c9da50c30cfc5f168138"
+    },
+    "readout_sha256": "306019eb464392982a338bdf6230b6615f9acef8b52e90be982a097b1dfcd540",
+    "record_sha256": "381e50e8d5ddf8277fa2436300152fc85b9634acf729fa61c71db9522f35929a",
+    "rep_delay_seconds": 5e-05
+   },
+   {
+    "arms": [
+     "x_history"
+    ],
+    "backend": "ibm_kingston",
+    "collect_sha256": "7be72acea468cb5cbeb941f0ced701d6f5f41bdf698fc4119c2fd2ced7dfe726",
+    "job_ids": [
+     "dba8hsk24mrc73851uag"
+    ],
+    "path": "results/live/2026-10-18T083403.945334Z",
+    "planning_calibrations": [
+     "2026-10-18T01:02:58-07:00"
+    ],
+    "raw_sha256": {
+     "results/live/2026-10-18T083403.945334Z/raw/dba8hsk24mrc73851uag/pub_00.json": "b824385e8eb37cf5ccf766600acf411959a33f755f5c1d73205f1abfd426f885",
+     "results/live/2026-10-18T083403.945334Z/raw/dba8hsk24mrc73851uag/result_metadata.json": "8d054e60573585306f740a60dfea3e4b661175ae1fc4f81f45b7cf49d43eb79b"
+    },
+    "readout_sha256": "ed6383ba86d1798aa50618d948dca8cfd22f571741cb6578206e257be1c14c7b",
+    "record_sha256": "0d188f90feae14c124ab6a0874b3d2dd125a60b122b8039f2aacfbfed110039b",
+    "rep_delay_seconds": 0.00025
+   },
+   {
+    "arms": [
+     "x_history"
+    ],
+    "backend": "ibm_kingston",
+    "collect_sha256": "a35e07134002d29c5d49cec21bdc437bbfc32a7308dc8aa19536a6e38e733eaf",
+    "job_ids": [
+     "dba8hnk24mrc73851u30"
+    ],
+    "path": "results/live/2026-10-18T083404.226285Z",
+    "planning_calibrations": [
+     "2026-10-18T01:02:58-07:00"
+    ],
+    "raw_sha256": {
+     "results/live/2026-10-18T083404.226285Z/raw/dba8hnk24mrc73851u30/pub_00.json": "73d54023a0057916cb3706983aa05155f100e1355231f96e27c99dd6f01c18e2",
+     "results/live/2026-10-18T083404.226285Z/raw/dba8hnk24mrc73851u30/result_metadata.json": "e08ab76d2335f1f7fd027b98cafdca5929664d5fdea2f0875833eeb12a19a7eb"
+    },
+    "readout_sha256": "4fa6dea8c117e5e609af3c71243fb812d5656eb88cc01ff6b685b08551e13b16",
+    "record_sha256": "ef90634ade52f7a2ab318c888c4c4d562cfb815fc261301ee6e5c9dc5f39c2de",
+    "rep_delay_seconds": 5e-05
+   },
+   {
+    "arms": [
+     "prep0"
+    ],
+    "backend": "ibm_kingston",
+    "collect_sha256": "1440ee0d160e275d2b3c3de53930f3add1ba42a79183f4775178c5723249b75c",
+    "job_ids": [
+     "dba8hr424mrc73851u8g"
+    ],
+    "path": "results/live/2026-10-18T083404.414317Z",
+    "planning_calibrations": [
+     "2026-10-18T01:02:58-07:00"
+    ],
+    "raw_sha256": {
+     "results/live/2026-10-18T083404.414317Z/raw/dba8hr424mrc73851u8g/pub_00.json": "b65c392528643dc6f95d6d3a737f309a2267c150d8741e5a17c1cfcc59fe15ca",
+     "results/live/2026-10-18T083404.414317Z/raw/dba8hr424mrc73851u8g/result_metadata.json": "34e35ebf329876d8bfbf28e88754dcf0bcf44bbb96e6b605931281ea6bd0c897"
+    },
+    "readout_sha256": "3ae009b35087182fdfe644882d217851ba57892dfa890e922cf2491b9e7dfd57",
+    "record_sha256": "58e1df0f6cda02101a7ba4ffda267f1a1f72901d239c300e5482029872f3a7d6",
+    "rep_delay_seconds": 0.00025
+   }
+  ],
+  "n21_record": {
+   "backend": "ibm_kingston",
+   "experiment_digest": "b03b4ff9292e00db58d79474175956e4f04c872a29cf88d0f4c157db771fa39f",
+   "family": "n21-feedback-encoded",
+   "noise_model_calibrations": [
+    "2026-10-18T01:38:20-07:00"
+   ],
+   "path": "results/live/2026-10-18T085503.864744Z/record.json",
+   "planned_prep_excitation": 0.0,
+   "rep_delay_seconds": 5e-05,
+   "sha256": "345728f830e80269a22d91a7d7d85269ea1fe74d60efaaa45e9b9c630cd8a3b5"
+  }
+ },
+ "joint_coincidences": {
+  "prep0_250us": {
+   "independent_expected_shots": 27.544023688142488,
+   "multiple_ones_shots": 26,
+   "pub": "dba8hr424mrc73851u8g/ibm_kingston_static_pub_01",
+   "shots": 16384
+  },
+  "prep0_50us": {
+   "independent_expected_shots": 58.34656533854195,
+   "multiple_ones_shots": 70,
+   "pub": "dba8huoc77vs7382f8mg/ibm_kingston_static_pub_01",
+   "shots": 32768
+  },
+  "x_history_250us": {
+   "independent_expected_shots": 27.264714911029614,
+   "multiple_ones_shots": 23,
+   "pub": "dba8hsk24mrc73851uag/ibm_kingston_dynamic_pub_01",
+   "shots": 16384
+  },
+  "x_history_50us": {
+   "independent_expected_shots": 67.94172377958103,
+   "multiple_ones_shots": 74,
+   "pub": "dba8hnk24mrc73851u30/ibm_kingston_dynamic_pub_01",
+   "shots": 32768
+  }
+ },
+ "placement": {
+  "qubits": [
+   104,
+   105,
+   106,
+   117,
+   124,
+   125,
+   126
+  ],
+  "rep_delay_seconds": 5e-05
+ },
+ "qubits": {
+  "104": {
+   "bounds": {
+    "baseline": 0.004764106946750092,
+    "e01_envelope": 0.01220703125,
+    "e10_envelope": 0.00732421875,
+    "end_state_failure": 0.016614872401977558,
+    "prep0_250us_lower": 0.004764106946750092,
+    "x_history_250us_upper": 0.009927550582742636,
+    "x_history_50us_upper": 0.009749835019622361
+   },
+   "counts": {
+    "prep0_250us": [
+     118,
+     16384
+    ],
+    "prep0_50us": [
+     255,
+     32768
+    ],
+    "x_history_250us": [
+     113,
+     16384
+    ],
+    "x_history_50us": [
+     249,
+     32768
+    ]
+   },
+   "decomposition": {
+    "delay_after_prep0": 0.000579833984375,
+    "delay_after_x_history": 0.000701904296875,
+    "history_at_250us": -0.00030517578125,
+    "history_at_50us": -0.00018310546875,
+    "scope": "point estimates outside the bound family; x_history runs in a dynamic job and prep0 in a static one, so each history difference spans the job kind as well as the shot history"
+   },
+   "eps": {
+    "250us": 0.0053695354878016835,
+    "50us": 0.0051837845569332065
+   },
+   "eps_unclamped": {
+    "250us": 0.005252585998869676,
+    "50us": 0.005071802331140657
+   },
+   "execution_readout": {
+    "prep0_250us": [
+     {
+      "T1_seconds": 0.0001368331016925187,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.01220703125,
+      "prob_meas1_prep0": 0.00732421875,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.0004491933912755726
+     }
+    ],
+    "x_history_250us": [
+     {
+      "T1_seconds": 0.0001368331016925187,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.01220703125,
+      "prob_meas1_prep0": 0.00732421875,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.0004491933912755726
+     }
+    ],
+    "x_history_50us": [
+     {
+      "T1_seconds": 0.0001368331016925187,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.01220703125,
+      "prob_meas1_prep0": 0.00732421875,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.0004491933912755726
+     }
+    ]
+   },
+   "fractions": {
+    "prep0_250us": 0.0072021484375,
+    "prep0_50us": 0.007781982421875,
+    "x_history_250us": 0.00689697265625,
+    "x_history_50us": 0.007598876953125
+   },
+   "history_excitation": {
+    "250us": 0.005252585998869676,
+    "50us": 0.005071802331140657
+   },
+   "model_readout": {
+    "prob_meas0_prep1": 0.01220703125,
+    "prob_meas1_prep0": 0.00732421875
+   },
+   "segments": {
+    "prep0_250us": 1,
+    "prep0_50us": 1,
+    "x_history_250us": 1,
+    "x_history_50us": 1
+   }
+  },
+  "105": {
+   "bounds": {
+    "baseline": 0.0003082443404846655,
+    "e01_envelope": 0.0087890625,
+    "e10_envelope": 0.00146484375,
+    "end_state_failure": 0.009624236319350596,
+    "prep0_250us_lower": 0.0003082443404846655,
+    "x_history_250us_upper": 0.002574463841547942,
+    "x_history_50us_upper": 0.0027250664341506694
+   },
+   "counts": {
+    "prep0_250us": [
+     18,
+     16384
+    ],
+    "prep0_50us": [
+     67,
+     32768
+    ],
+    "x_history_250us": [
+     18,
+     16384
+    ],
+    "x_history_50us": [
+     53,
+     32768
+    ]
+   },
+   "decomposition": {
+    "delay_after_prep0": 0.000946044921875,
+    "delay_after_x_history": 0.000518798828125,
+    "history_at_250us": 0.0,
+    "history_at_50us": -0.00042724609375,
+    "scope": "point estimates outside the bound family; x_history runs in a dynamic job and prep0 in a static one, so each history difference spans the job kind as well as the shot history"
+   },
+   "eps": {
+    "250us": 0.002314543459199303,
+    "50us": 0.0024687335124065034
+   },
+   "eps_unclamped": {
+    "250us": 0.002287025271711983,
+    "50us": 0.0024390105207605325
+   },
+   "execution_readout": {
+    "prep0_250us": [
+     {
+      "T1_seconds": 0.00023455639632372806,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.0087890625,
+      "prob_meas1_prep0": 0.00146484375,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.00019366851276193922
+     }
+    ],
+    "x_history_250us": [
+     {
+      "T1_seconds": 0.00023455639632372806,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.0087890625,
+      "prob_meas1_prep0": 0.00146484375,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.00019366851276193922
+     }
+    ],
+    "x_history_50us": [
+     {
+      "T1_seconds": 0.00023455639632372806,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.0087890625,
+      "prob_meas1_prep0": 0.00146484375,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.00019366851276193922
+     }
+    ]
+   },
+   "fractions": {
+    "prep0_250us": 0.0010986328125,
+    "prep0_50us": 0.002044677734375,
+    "x_history_250us": 0.0010986328125,
+    "x_history_50us": 0.001617431640625
+   },
+   "history_excitation": {
+    "250us": 0.002287025271711983,
+    "50us": 0.0024390105207605325
+   },
+   "model_readout": {
+    "prob_meas0_prep1": 0.0087890625,
+    "prob_meas1_prep0": 0.00146484375
+   },
+   "segments": {
+    "prep0_250us": 1,
+    "prep0_50us": 1,
+    "x_history_250us": 1,
+    "x_history_50us": 1
+   }
+  },
+  "106": {
+   "bounds": {
+    "baseline": 0.0021333393669093685,
+    "e01_envelope": 0.0185546875,
+    "e10_envelope": 0.00341796875,
+    "end_state_failure": 0.021248350319861553,
+    "prep0_250us_lower": 0.0021333393669093685,
+    "x_history_250us_upper": 0.00765088369481483,
+    "x_history_50us_upper": 0.00643729458542365
+   },
+   "counts": {
+    "prep0_250us": [
+     63,
+     16384
+    ],
+    "prep0_50us": [
+     147,
+     32768
+    ],
+    "x_history_250us": [
+     82,
+     16384
+    ],
+    "x_history_50us": [
+     154,
+     32768
+    ]
+   },
+   "decomposition": {
+    "delay_after_prep0": 0.000640869140625,
+    "delay_after_x_history": -0.00030517578125,
+    "history_at_250us": 0.00115966796875,
+    "history_at_50us": 0.000213623046875,
+    "scope": "point estimates outside the bound family; x_history runs in a dynamic job and prep0 in a static one, so each history difference spans the job kind as well as the shot history"
+   },
+   "eps": {
+    "250us": 0.005789033174507671,
+    "50us": 0.0045101091224300244
+   },
+   "eps_unclamped": {
+    "250us": 0.005634102797960599,
+    "50us": 0.004394876542502319
+   },
+   "execution_readout": {
+    "prep0_250us": [
+     {
+      "T1_seconds": 0.00010590464593419759,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.0185546875,
+      "prob_meas1_prep0": 0.00341796875,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.0003616368004717073
+     }
+    ],
+    "x_history_250us": [
+     {
+      "T1_seconds": 0.00010590464593419759,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.0185546875,
+      "prob_meas1_prep0": 0.00341796875,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.0003616368004717073
+     }
+    ],
+    "x_history_50us": [
+     {
+      "T1_seconds": 0.00010590464593419759,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.0185546875,
+      "prob_meas1_prep0": 0.00341796875,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.0003616368004717073
+     }
+    ]
+   },
+   "fractions": {
+    "prep0_250us": 0.00384521484375,
+    "prep0_50us": 0.004486083984375,
+    "x_history_250us": 0.0050048828125,
+    "x_history_50us": 0.00469970703125
+   },
+   "history_excitation": {
+    "250us": 0.005634102797960599,
+    "50us": 0.004394876542502319
+   },
+   "model_readout": {
+    "prob_meas0_prep1": 0.0185546875,
+    "prob_meas1_prep0": 0.00341796875
+   },
+   "segments": {
+    "prep0_250us": 1,
+    "prep0_50us": 1,
+    "x_history_250us": 1,
+    "x_history_50us": 1
+   }
+  },
+  "117": {
+   "bounds": {
+    "baseline": 0.0,
+    "e01_envelope": 0.00390625,
+    "e10_envelope": 0.0,
+    "end_state_failure": 0.008808262341784053,
+    "prep0_250us_lower": 9.587971541963658e-06,
+    "x_history_250us_upper": 0.0016302317175492622,
+    "x_history_50us_upper": 0.0019681806963165725
+   },
+   "counts": {
+    "prep0_250us": [
+     5,
+     16384
+    ],
+    "prep0_50us": [
+     18,
+     32768
+    ],
+    "x_history_250us": [
+     8,
+     16384
+    ],
+    "x_history_50us": [
+     34,
+     32768
+    ]
+   },
+   "decomposition": {
+    "delay_after_prep0": 0.000244140625,
+    "delay_after_x_history": 0.00054931640625,
+    "history_at_250us": 0.00018310546875,
+    "history_at_50us": 0.00048828125,
+    "scope": "point estimates outside the bound family; x_history runs in a dynamic job and prep0 in a static one, so each history difference spans the job kind as well as the shot history"
+   },
+   "eps": {
+    "250us": 0.001653875483884061,
+    "50us": 0.0019974046225022775
+   },
+   "eps_unclamped": {
+    "250us": 0.001636624783108279,
+    "50us": 0.001975899051988402
+   },
+   "execution_readout": {
+    "prep0_250us": [
+     {
+      "T1_seconds": 0.00025908402888110256,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.00390625,
+      "prob_meas1_prep0": 0.0,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.00027049175996590903
+     }
+    ],
+    "x_history_250us": [
+     {
+      "T1_seconds": 0.00025908402888110256,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.00390625,
+      "prob_meas1_prep0": 0.0,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.00027049175996590903
+     }
+    ],
+    "x_history_50us": [
+     {
+      "T1_seconds": 0.00025908402888110256,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.00390625,
+      "prob_meas1_prep0": 0.0,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.00027049175996590903
+     }
+    ]
+   },
+   "fractions": {
+    "prep0_250us": 0.00030517578125,
+    "prep0_50us": 0.00054931640625,
+    "x_history_250us": 0.00048828125,
+    "x_history_50us": 0.00103759765625
+   },
+   "history_excitation": {
+    "250us": 0.001636624783108279,
+    "50us": 0.001975899051988402
+   },
+   "model_readout": {
+    "prob_meas0_prep1": 0.00390625,
+    "prob_meas1_prep0": 0.0
+   },
+   "segments": {
+    "prep0_250us": 1,
+    "prep0_50us": 1,
+    "x_history_250us": 1,
+    "x_history_50us": 1
+   }
+  },
+  "124": {
+   "bounds": {
+    "baseline": 0.009852880863897216,
+    "e01_envelope": 0.013671875,
+    "e10_envelope": 0.01416015625,
+    "end_state_failure": 0.009182360374143262,
+    "prep0_250us_lower": 0.009852880863897216,
+    "x_history_250us_upper": 0.015534633058838511,
+    "x_history_50us_upper": 0.018078397137836422
+   },
+   "counts": {
+    "prep0_250us": [
+     217,
+     16384
+    ],
+    "prep0_50us": [
+     415,
+     32768
+    ],
+    "x_history_250us": [
+     192,
+     16384
+    ],
+    "x_history_50us": [
+     496,
+     32768
+    ]
+   },
+   "decomposition": {
+    "delay_after_prep0": -0.000579833984375,
+    "delay_after_x_history": 0.00341796875,
+    "history_at_250us": -0.00152587890625,
+    "history_at_50us": 0.002471923828125,
+    "scope": "point estimates outside the bound family; x_history runs in a dynamic job and prep0 in a static one, so each history difference spans the job kind as well as the shot history"
+   },
+   "eps": {
+    "250us": 0.005906928342212931,
+    "50us": 0.008573971835577112
+   },
+   "eps_unclamped": {
+    "250us": 0.005818634142607473,
+    "50us": 0.008423681320478741
+   },
+   "execution_readout": {
+    "prep0_250us": [
+     {
+      "T1_seconds": 0.0002434529587531447,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.013671875,
+      "prob_meas1_prep0": 0.01416015625,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 9.64161682118274e-05
+     }
+    ],
+    "x_history_250us": [
+     {
+      "T1_seconds": 0.0002434529587531447,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.013671875,
+      "prob_meas1_prep0": 0.01416015625,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 9.64161682118274e-05
+     }
+    ],
+    "x_history_50us": [
+     {
+      "T1_seconds": 0.0002434529587531447,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.013671875,
+      "prob_meas1_prep0": 0.01416015625,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 9.64161682118274e-05
+     }
+    ]
+   },
+   "fractions": {
+    "prep0_250us": 0.01324462890625,
+    "prep0_50us": 0.012664794921875,
+    "x_history_250us": 0.01171875,
+    "x_history_50us": 0.01513671875
+   },
+   "history_excitation": {
+    "250us": 0.005818634142607473,
+    "50us": 0.008423681320478741
+   },
+   "model_readout": {
+    "prob_meas0_prep1": 0.013671875,
+    "prob_meas1_prep0": 0.01416015625
+   },
+   "segments": {
+    "prep0_250us": 1,
+    "prep0_50us": 1,
+    "x_history_250us": 1,
+    "x_history_50us": 1
+   }
+  },
+  "125": {
+   "bounds": {
+    "baseline": 0.03430553145436945,
+    "e01_envelope": 0.029296875,
+    "e10_envelope": 0.04248046875,
+    "end_state_failure": 0.009842178784281865,
+    "prep0_250us_lower": 0.03430553145436945,
+    "x_history_250us_upper": 0.04868010363062582,
+    "x_history_50us_upper": 0.04746241941964073
+   },
+   "counts": {
+    "prep0_250us": [
+     661,
+     16384
+    ],
+    "prep0_50us": [
+     1275,
+     32768
+    ],
+    "x_history_250us": [
+     687,
+     16384
+    ],
+    "x_history_50us": [
+     1400,
+     32768
+    ]
+   },
+   "decomposition": {
+    "delay_after_prep0": -0.001434326171875,
+    "delay_after_x_history": 0.00079345703125,
+    "history_at_250us": 0.0015869140625,
+    "history_at_50us": 0.003814697265625,
+    "scope": "point estimates outside the bound family; x_history runs in a dynamic job and prep0 in a static one, so each history difference spans the job kind as well as the shot history"
+   },
+   "eps": {
+    "250us": 0.01574522027432981,
+    "50us": 0.014392419533452064
+   },
+   "eps_unclamped": {
+    "250us": 0.015350928147762155,
+    "50us": 0.01405053585780082
+   },
+   "execution_readout": {
+    "prep0_250us": [
+     {
+      "T1_seconds": 0.0002410000620155779,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.029296875,
+      "prob_meas1_prep0": 0.04248046875,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.000663757909614126
+     }
+    ],
+    "x_history_250us": [
+     {
+      "T1_seconds": 0.0002410000620155779,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.029296875,
+      "prob_meas1_prep0": 0.04248046875,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.000663757909614126
+     }
+    ],
+    "x_history_50us": [
+     {
+      "T1_seconds": 0.0002410000620155779,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.029296875,
+      "prob_meas1_prep0": 0.04248046875,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.000663757909614126
+     }
+    ]
+   },
+   "fractions": {
+    "prep0_250us": 0.04034423828125,
+    "prep0_50us": 0.038909912109375,
+    "x_history_250us": 0.04193115234375,
+    "x_history_50us": 0.042724609375
+   },
+   "history_excitation": {
+    "250us": 0.015350928147762155,
+    "50us": 0.01405053585780082
+   },
+   "model_readout": {
+    "prob_meas0_prep1": 0.029296875,
+    "prob_meas1_prep0": 0.04248046875
+   },
+   "segments": {
+    "prep0_250us": 1,
+    "prep0_50us": 1,
+    "x_history_250us": 1,
+    "x_history_50us": 1
+   }
+  },
+  "126": {
+   "bounds": {
+    "baseline": 0.004714491767337686,
+    "e01_envelope": 0.00537109375,
+    "e10_envelope": 0.01025390625,
+    "end_state_failure": 0.007918489980061888,
+    "prep0_250us_lower": 0.004714491767337686,
+    "x_history_250us_upper": 0.009345731940513056,
+    "x_history_50us_upper": 0.00957774851762776
+   },
+   "counts": {
+    "prep0_250us": [
+     117,
+     16384
+    ],
+    "prep0_50us": [
+     244,
+     32768
+    ],
+    "x_history_250us": [
+     105,
+     16384
+    ],
+    "x_history_50us": [
+     244,
+     32768
+    ]
+   },
+   "decomposition": {
+    "delay_after_prep0": 0.00030517578125,
+    "delay_after_x_history": 0.00103759765625,
+    "history_at_250us": -0.000732421875,
+    "history_at_50us": 0.0,
+    "scope": "point estimates outside the bound family; x_history runs in a dynamic job and prep0 in a static one, so each history difference spans the job kind as well as the shot history"
+   },
+   "eps": {
+    "250us": 0.004737932638929166,
+    "50us": 0.004976466180317609
+   },
+   "eps_unclamped": {
+    "250us": 0.004678424826853032,
+    "50us": 0.004912805267950012
+   },
+   "execution_readout": {
+    "prep0_250us": [
+     {
+      "T1_seconds": 0.0002885498129843875,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.00537109375,
+      "prob_meas1_prep0": 0.01025390625,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.00025256922578406827
+     }
+    ],
+    "x_history_250us": [
+     {
+      "T1_seconds": 0.0002885498129843875,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.00537109375,
+      "prob_meas1_prep0": 0.01025390625,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.00025256922578406827
+     }
+    ],
+    "x_history_50us": [
+     {
+      "T1_seconds": 0.0002885498129843875,
+      "calibration": "2026-10-18T01:38:20-07:00",
+      "measure_duration_seconds": 2.18e-06,
+      "prob_meas0_prep1": 0.00537109375,
+      "prob_meas1_prep0": 0.01025390625,
+      "x_duration_seconds": 3.2e-08,
+      "x_error": 0.00025256922578406827
+     }
+    ]
+   },
+   "fractions": {
+    "prep0_250us": 0.00714111328125,
+    "prep0_50us": 0.0074462890625,
+    "x_history_250us": 0.00640869140625,
+    "x_history_50us": 0.0074462890625
+   },
+   "history_excitation": {
+    "250us": 0.004678424826853032,
+    "50us": 0.004912805267950012
+   },
+   "model_readout": {
+    "prob_meas0_prep1": 0.00537109375,
+    "prob_meas1_prep0": 0.01025390625
+   },
+   "segments": {
+    "prep0_250us": 1,
+    "prep0_50us": 1,
+    "x_history_250us": 1,
+    "x_history_50us": 1
+   }
+  }
+ },
+ "rule": {
+  "alpha": 0.01,
+  "alpha_per_bound": 2.237136465324385e-05,
+  "bound_count": 447,
+  "bounds": "one-sided Clopper-Pearson over every controlled qubit: x_history upper at 50 and 250 us, prep0 lower at 250 us",
+  "bounds_per_qubit": 3,
+  "controlled_qubits": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31,
+   32,
+   33,
+   34,
+   35,
+   36,
+   37,
+   38,
+   39,
+   40,
+   41,
+   42,
+   43,
+   44,
+   45,
+   46,
+   47,
+   48,
+   49,
+   50,
+   51,
+   52,
+   53,
+   54,
+   55,
+   56,
+   57,
+   58,
+   59,
+   60,
+   61,
+   62,
+   63,
+   64,
+   65,
+   66,
+   67,
+   68,
+   69,
+   70,
+   71,
+   72,
+   73,
+   74,
+   75,
+   76,
+   77,
+   78,
+   79,
+   80,
+   81,
+   82,
+   83,
+   84,
+   85,
+   86,
+   87,
+   88,
+   89,
+   90,
+   91,
+   93,
+   94,
+   95,
+   96,
+   97,
+   98,
+   99,
+   100,
+   101,
+   102,
+   103,
+   104,
+   105,
+   106,
+   107,
+   108,
+   109,
+   110,
+   111,
+   112,
+   114,
+   116,
+   117,
+   118,
+   119,
+   120,
+   122,
+   123,
+   124,
+   125,
+   126,
+   127,
+   128,
+   129,
+   130,
+   131,
+   132,
+   133,
+   134,
+   135,
+   136,
+   137,
+   140,
+   141,
+   142,
+   143,
+   144,
+   145,
+   147,
+   148,
+   149,
+   150,
+   151,
+   152,
+   153,
+   154,
+   155
+  ],
+  "eps": "u / ((1 - u)(1 - delta)), u = max(0, (U - b) / (1 - e01 - b)), b = min(prep0_250us_lower, e10), delta = max(x_error + (x_duration + measure_duration) / T1) over the x_history execution calibrations; each PUB's segment-leading shots are counted at their worst value",
+  "joint": "marginal coverage under independent local preparation channels; joint_coincidences is a diagnostic outside the bound family",
+  "readout": "e10 the smallest and e01 the largest of the n21 model's and every execution calibration's reported values"
+ },
+ "schema": "state-prep-excess-v2"
+}
