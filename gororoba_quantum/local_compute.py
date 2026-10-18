@@ -10,6 +10,7 @@ preparation time stays separate from the QPU charge ledger.
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import io
 import json
@@ -20,8 +21,9 @@ from typing import Any
 
 import numpy as np
 from qiskit import qpy
-from qiskit.circuit import ControlFlowOp
+from qiskit.circuit import ControlFlowOp, Delay
 from qiskit_aer import AerSimulator
+from qiskit_aer.noise.errors.base_quantum_error import QuantumChannelInstruction
 
 import aer_identity
 import aer_resources
@@ -163,6 +165,79 @@ def noise_digest(model: Any) -> str:
     return digest
 
 
+_SERIALIZED_NOISE: OrderedDict[int, tuple[Any, dict[str, Any]]] = OrderedDict()
+_SERIALIZED_NOISE_LOCK = threading.Lock()
+
+
+def serialized_noise(model: Any) -> dict[str, Any]:
+    """model.to_dict(serializable=True), computed once per model object.
+
+    The dictionary is the native controller's only noise input. A model that
+    noise_simulator builds is never mutated afterward, so one serialization
+    equals every later one; the controller converts the dictionary to its
+    own representation and leaves the Python object unchanged.
+    """
+    with _SERIALIZED_NOISE_LOCK:
+        cached = _SERIALIZED_NOISE.get(id(model))
+        if cached is not None and cached[0] is model:
+            return cached[1]
+        serialized = model.to_dict(serializable=True)
+        _SERIALIZED_NOISE[id(model)] = (model, serialized)
+        while len(_SERIALIZED_NOISE) > CACHE_ENTRIES:
+            _SERIALIZED_NOISE.popitem(last=False)
+        return serialized
+
+
+class _SerializedNoise:
+    """Noise argument of cpp_execute_circuits carrying a retained serialization."""
+
+    def __init__(self, serialized: dict[str, Any]) -> None:
+        self._serialized = serialized
+
+    def to_dict(self, serializable: bool = False) -> dict[str, Any]:
+        del serializable
+        return self._serialized
+
+
+class SerializedNoiseSimulator(AerSimulator):
+    """AerSimulator that passes its configured noise model to the controller from one serialization.
+
+    qiskit_aer's cpp_execute_circuits serializes the noise model with
+    NoiseModel.to_dict(serializable=True) on every run: a walk over every
+    QuantumError of the whole device plus a JSON round trip. A run whose
+    noise model is the configured object hands the controller the retained
+    serialized_noise dictionary, which equals that walk's output, so the
+    controller receives the same input. AerBackend._assemble_noise_model
+    deep-copies the model before it adds a circuit's QuantumChannelInstruction
+    errors, and a run_options noise_model replaces it; either object differs
+    from the configured one and serializes afresh.
+    """
+
+    def _assemble_noise_model(self, circuits: Any, optypes: Any, **run_options: Any) -> Any:
+        """AerBackend._assemble_noise_model without its PassManager call on an empty circuit list.
+
+        The stock method runs the model's noise passes on the circuits that
+        hold a Delay and moves QuantumChannelInstruction errors into a copied
+        model. A batch with neither leaves circuits and model unchanged, yet
+        the stock call still hands qiskit's PassManager.run an empty list,
+        which dill-serializes the RelaxationNoisePass and its whole-device
+        Target for a process map. Such a batch returns the stock method's
+        unchanged result directly.
+        """
+        if any(Delay in types or QuantumChannelInstruction in types for types in optypes):
+            return super()._assemble_noise_model(circuits, optypes, **run_options)
+        return (
+            copy.copy(circuits),
+            run_options.get("noise_model", getattr(self.options, "noise_model", None)),
+            run_options,
+        )
+
+    def _execute_circuits(self, aer_circuits: Any, noise_model: Any, config: Any) -> Any:
+        if noise_model is not None and noise_model is getattr(self.options, "noise_model", None):
+            noise_model = _SerializedNoise(serialized_noise(noise_model))
+        return super()._execute_circuits(aer_circuits, noise_model, config)
+
+
 def configure(simulator: Any, policy: dict[str, Any]) -> None:
     validate(policy)
     simulator.set_options(
@@ -177,6 +252,10 @@ def configure(simulator: Any, policy: dict[str, Any]) -> None:
         shot_branching_sampling_enable=policy["shot_branching_sampling"],
     )
     simulator._gororoba_noise_digest = noise_digest(simulator.options.noise_model)
+    if isinstance(simulator, SerializedNoiseSimulator) and simulator.options.noise_model is not None:
+        # The first serialization runs on the configuring thread, so
+        # concurrent runs on one snapshot read one retained dictionary.
+        serialized_noise(simulator.options.noise_model)
     simulator._gororoba_compute_policy = dict(policy)
     simulator._gororoba_simulation_batches = []
 

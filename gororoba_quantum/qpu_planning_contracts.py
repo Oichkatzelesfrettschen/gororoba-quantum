@@ -8,6 +8,7 @@ or submit quantum work. Run the module directly; GOROROBA_WORKERS overrides the 
 from __future__ import annotations
 
 import argparse
+import contextlib
 import copy
 import dataclasses
 import hashlib
@@ -21,7 +22,7 @@ from types import SimpleNamespace
 from typing import Any, cast
 from unittest.mock import patch
 
-from qiskit.circuit import Measure
+from qiskit.circuit import Delay, Measure
 from qiskit.transpiler import InstructionProperties, Target
 from qiskit_ibm_runtime.fake_provider import FakeFez
 
@@ -1410,6 +1411,202 @@ def _verify_prep_excitation() -> None:
         raise RuntimeError("an excited sample validated against the unexcited exact law")
 
 
+# Fields Aer and local_compute fill with the run's own elapsed time.
+_TIMING_FIELDS = frozenset({"wall_seconds", "time_taken", "sample_measure_time"})
+
+
+def _without_timing(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {key: _without_timing(item) for key, item in value.items() if key not in _TIMING_FIELDS}
+    if isinstance(value, list):
+        return [_without_timing(item) for item in value]
+    return value
+
+
+def _first_difference(left: Any, right: Any, path: str = "") -> str | None:
+    """The path of the first value where two JSON trees differ, or None."""
+    if isinstance(left, dict) and isinstance(right, dict):
+        for key in sorted(set(left) | set(right)):
+            if key not in left or key not in right:
+                return f"{path}/{key}"
+            if (found := _first_difference(left[key], right[key], f"{path}/{key}")) is not None:
+                return found
+        return None
+    if isinstance(left, list) and isinstance(right, list):
+        if len(left) != len(right):
+            return f"{path} (length {len(left)} != {len(right)})"
+        for index, (first, second) in enumerate(zip(left, right, strict=True)):
+            if (found := _first_difference(first, second, f"{path}[{index}]")) is not None:
+                return found
+        return None
+    return None if left == right else f"{path}: {left!r} != {right!r}"
+
+
+def _planning_outcomes(
+    snapshot: live_run.Snapshot,
+    cases: list[tuple[str, argparse.Namespace, list[tuple[list[Any], dict[str, Any]]]]],
+    excited: list[bool],
+) -> dict[str, Any]:
+    """Every distribution, plan and evaluation record one planning pass derives from simulation, timing removed.
+
+    Each case plans through qpu_planning.prepare on its fixed candidates and
+    evaluates the selection through live_run.evaluate. A declared excitation
+    then reruns the first case's first selected choice, whose
+    QuantumChannelInstruction errors make Aer serialize a copied model;
+    excited[0] marks that rerun.
+    """
+    calls: list[Any] = []
+    simulate_entries = live_run.simulate_entries
+
+    def capture(noise: Any, entries: list[Any], shots: int, seed: int) -> dict[str, list[Any]]:
+        result = simulate_entries(noise, entries, shots, seed)
+        laws = {name: [distribution.tolist() for distribution in laws] for name, laws in result.items()}
+        calls.append([[entry.name for entry in entries], shots, seed, laws])
+        return result
+
+    outcomes: dict[str, Any] = {}
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
+    with patch.object(live_run, "simulate_entries", capture), redirect_stdout(io.StringIO()):
+        for label, args, candidates in cases:
+            with patch.object(qpu_planning, "family_candidates", return_value=candidates):
+                selected, metadata = qpu_planning.prepare(live_run, [snapshot], args, usage, {})
+            record: dict[str, Any] = {"shots": args.shots, "policy": {"local_compute": local_compute.settings(args)}}
+            live_run.evaluate(selected, record)
+            outcomes[label] = live_run._jsonable({"metadata": metadata, "record": record})
+            if label == cases[0][0]:
+                simulator = live_run.noise_simulator(snapshot.name, snapshot.backend.target, snapshot.properties)
+                excited[0] = True
+                live_run.simulate(selected[0], simulator, args.model_shots, prep_excitation=0.02)
+                excited[0] = False
+                # with_prep_excitation draws a fresh QuantumError per call, and
+                # its generated id enters the QPY bytes, so the excited batch's
+                # QPY digest differs between any two reruns.
+                outcomes["excited_batches"] = live_run._jsonable(
+                    [
+                        {key: value for key, value in batch.items() if key != "ordered_qpy_sha256"}
+                        for batch in local_compute.batches(simulator)
+                    ]
+                )
+    # prepare simulates choices on a thread pool; the set of calls is the outcome.
+    calls.sort(key=lambda call: json.dumps(call[:3]))
+    return cast(dict[str, Any], _without_timing(json.loads(json.dumps({"calls": calls, "outcomes": outcomes}))))
+
+
+def _verify_serialized_noise(snapshot: live_run.Snapshot) -> None:
+    """One retained noise serialization and the skipped empty pass run leave every planning outcome bit-identical.
+
+    The stock pass patches SerializedNoiseSimulator back to AerSimulator's
+    per-run NoiseModel.to_dict and AerBackend._assemble_noise_model. The
+    cases cover one-qubit static and reset groups (state-prep-control), a
+    multi-qubit static group and a feed-forward group with Delay members
+    (folded-qpe), and an excited rerun whose copied model serializes afresh.
+    """
+    from qiskit_aer import AerSimulator
+    from qiskit_aer.noise import NoiseModel
+
+    qubits = [qubit for qubit in range(40, 156, 7) if qubit not in snapshot.excluded_qubits][:1]
+    state_prep = _args("state-prep-control", layout=qubits)
+    folded = _args("folded-qpe")
+    cases = [
+        (label, args, qpu_planning.family_candidates(live_run, [snapshot], args, {}))
+        for label, args in (("state-prep-control", state_prep), ("folded-qpe", folded))
+    ]
+    for label, _planning_args, candidates in cases:
+        _require(len(candidates) == 1, f"{label}: the fixture produced {len(candidates)} candidates")
+    _require(
+        any(
+            isinstance(instruction.operation, Delay)
+            for choices, _configuration in cases[1][2]
+            for choice in choices
+            for entry in choice.entries
+            for replica in entry.replicas
+            for instruction in replica.data
+        ),
+        "folded-qpe lost the Delay members that exercise the relaxation pass",
+    )
+    model = live_run.noise_simulator(snapshot.name, snapshot.backend.target, snapshot.properties).options.noise_model
+    _require(
+        local_compute.serialized_noise(model) == model.to_dict(serializable=True),
+        "the retained serialization differs from a fresh NoiseModel.to_dict",
+    )
+    to_dict = NoiseModel.to_dict
+    pass_manager = NoiseModel._pass_manager
+    observed: dict[str, list[int]] = {}
+    excited = [False]
+
+    def counting_to_dict(self: Any, serializable: bool = False) -> Any:
+        if serializable and self is model:
+            observed["snapshot_serializations"].append(1)
+        return to_dict(self, serializable)
+
+    def counting_pass_manager(self: Any) -> Any:
+        manager = pass_manager(self)
+        if manager is not None:
+            run = manager.run
+
+            def counted(programs: list[Any], *args: Any, **kwargs: Any) -> Any:
+                if not excited[0]:
+                    observed["pass_runs"].append(len(programs))
+                return run(programs, *args, **kwargs)
+
+            manager.run = counted
+        return manager
+
+    outcomes = {}
+    for mode in ("stock", "serialized"):
+        observed.update(snapshot_serializations=[], pass_runs=[])
+        stock = (
+            (
+                patch.object(
+                    local_compute.SerializedNoiseSimulator, "_execute_circuits", AerSimulator._execute_circuits
+                ),
+                patch.object(
+                    local_compute.SerializedNoiseSimulator,
+                    "_assemble_noise_model",
+                    AerSimulator._assemble_noise_model,
+                ),
+            )
+            if mode == "stock"
+            else ()
+        )
+        with (
+            patch.object(NoiseModel, "to_dict", counting_to_dict),
+            patch.object(NoiseModel, "_pass_manager", counting_pass_manager),
+            contextlib.ExitStack() as stack,
+        ):
+            for context in stock:
+                stack.enter_context(context)
+            outcomes[mode] = _planning_outcomes(snapshot, cases, excited)
+        serializations = len(observed["snapshot_serializations"])
+        empty_runs = observed["pass_runs"].count(0)
+        delay_runs = sum(1 for count in observed["pass_runs"] if count > 0)
+        _require(delay_runs > 0, f"{mode}: no batch ran the relaxation pass on its Delay circuits")
+        if mode == "stock":
+            _require(serializations > 0 and empty_runs > 0, f"{mode}: the per-run Aer path was not exercised")
+        else:
+            _require(serializations == 0, f"the snapshot model was serialized {serializations} times after configure")
+            _require(empty_runs == 0, f"{empty_runs} unexcited batches without Delay still ran the noise passes")
+    stock_calls, serialized_calls = outcomes["stock"]["calls"], outcomes["serialized"]["calls"]
+    _require(len(stock_calls) == len(serialized_calls) > 0, "the two planning passes simulated different batches")
+    for stock_call, serialized_call in zip(stock_calls, serialized_calls, strict=True):
+        _require(stock_call == serialized_call, f"{stock_call[:3]}: a simulated distribution changed bits")
+    changed = _first_difference(outcomes["stock"], outcomes["serialized"])
+    _require(changed is None, f"a plan or evaluation record field changed at {changed}")
+
+
+def _verify_serialized_noise_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_serialized_noise(snapshot)
+    print(
+        "QPU planning: one retained noise serialization per snapshot model and the skipped empty noise-pass run "
+        "reproduce every simulated distribution, plan and evaluation record of the per-run Aer path"
+    )
+
+
 def _forbid_service(*args: Any, **kwargs: Any) -> Any:
     del args, kwargs
     raise RuntimeError("credential-free planning contract reached a RuntimeService constructor")
@@ -1514,8 +1711,15 @@ if __name__ == "__main__":
     parser.add_argument(
         "--prep-excitation", action="store_true", help="run only the declared initial-excitation contracts"
     )
+    parser.add_argument(
+        "--serialized-noise",
+        action="store_true",
+        help="run only the retained noise-serialization equivalence contract",
+    )
     parsed = parser.parse_args()
-    if parsed.static_group_admission:
+    if parsed.serialized_noise:
+        _verify_serialized_noise_only()
+    elif parsed.static_group_admission:
         _verify_static_admission_only()
     elif parsed.rep_delay:
         _verify_rep_delay_only()
