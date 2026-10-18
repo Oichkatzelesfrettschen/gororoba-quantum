@@ -1009,9 +1009,10 @@ circuit and charges the account ledger's change.
   Evidence: [RESEARCH_ROADMAP.md](../RESEARCH_ROADMAP.md), [rank_locus_two_dimension_gap.md](../notes/rank_locus_two_dimension_gap.md).
   Depends on: four-support-topology, principal-skew-atlas, kernel-limit-slice, nullity-twelve-cone.
 - **a5-nonzero-divisor-two-dimension-gap** (mathematical theorem, geometry). At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.
-  Boundary: The certificate bounds the local dimension between the family dimension and the tangent bound; a second-order obstruction on the two transverse directions would refute the statement, and an explicit curve family of the larger dimension would establish it.
+  Boundary: The certificate bounds the local dimension between the family dimension and the tangent bound. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only; curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
-  Evidence: [rank_locus_two_dimension_gap.md](../notes/rank_locus_two_dimension_gap.md), [README.md](../evidence/rank_locus_local_dimension/README.md).
+  Evidence: [result.json](../evidence/rank_locus_second_order/result.json), [rank_locus_two_dimension_gap.md](../notes/rank_locus_two_dimension_gap.md), [README.md](../evidence/rank_locus_local_dimension/README.md), [README.md](../evidence/rank_locus_second_order/README.md).
+  Gates: replayed by core-553; replay failure paths checked by core-554.
   Depends on: a5-rank-locus-local-dimension, nullity-twelve-cone.
 
 ## Proposed claims

@@ -9,8 +9,10 @@ has its velocity in
 
     T(x) = {y in R^32 : U^T L_y V = 0}.
 
-The tangent cone of S_k at x lies in T(x), and the local dimension of a
-semialgebraic set equals that of its tangent cone, so dim_x S_k <= dim T(x).
+Near x, S_k is the zero set of the Schur complement of L_y's pivot block,
+whose differential at x is y -> U^T L_y V; 32 - dim T(x) of its entries
+have independent differentials there and cut out a submanifold of dimension
+dim T(x) that contains S_k near x, so dim_x S_k <= dim T(x).
 x itself lies in T(x) and S_k is a cone, so D_(5,k) has local dimension at
 most dim T(x) - 1 at x / |x|. The map y -> U^T L_y V is a 32 x k^2 rational
 matrix; its rank modulo 2^61 - 1 bounds its rational rank from below, so
