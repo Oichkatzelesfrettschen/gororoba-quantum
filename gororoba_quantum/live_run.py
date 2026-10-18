@@ -3291,34 +3291,39 @@ def approved_calibration_drift(
     """Why a batch's calibration departs from the one the approved-record gate accepted, or None.
 
     fresh_values maps each group of the batch to its calibration_values on
-    the batch's snapshot. When the approved record bound every one of those
-    groups to values (approved_record.calibration_values.fingerprint_sha256),
-    the batch proceeds exactly when each group's values hash to the approved
-    digest, whatever the calibration timestamp; otherwise the timestamp must
-    name the instant the approved-record gate accepted. A run that has sent
-    no batch returns to approval_required; a run with a batch already sent
-    keeps its submission lifecycle and records that the unsent batches need
-    renewed approval.
+    the batch's snapshot. Each group the approved record bound to values
+    (approved_record.calibration_values.fingerprint_sha256) proceeds exactly
+    when its values hash to the approved digest, whatever the calibration
+    timestamp; the batch's other groups, and a batch without fresh values,
+    proceed only when the timestamp names the instant the approved-record
+    gate accepted. A bound group's changed values therefore stop the batch
+    even under an unchanged timestamp. A run that has sent no batch returns
+    to approval_required; a run with a batch already sent keeps its
+    submission lifecycle and records that the unsent batches need renewed
+    approval.
     """
     approved_record = record.get("approved_record", {})
     approved = approved_record.get("calibrations", {})
     if backend_name not in approved:
         return None
     bound = approved_record.get("calibration_values", {}).get("fingerprint_sha256", {})
-    if fresh_values and all(group in bound for group in fresh_values):
-        moved = sorted(
-            group for group, values in fresh_values.items() if calibration_values_sha256(values) != bound[group]
-        )
-        if not moved:
-            return None
-        reason = (
-            f"calibration moved after the approved-record check ({approved[backend_name]} -> {calibration}): "
-            f"calibration values changed for {', '.join(moved)}"
-        )
-    elif same_calibration_instant(calibration, approved[backend_name]):
+    values = dict(fresh_values or {})
+    moved = sorted(
+        group for group, entry in values.items() if group in bound and calibration_values_sha256(entry) != bound[group]
+    )
+    timed = sorted(group for group in values if group not in bound)
+    timestamp_holds = same_calibration_instant(calibration, approved[backend_name])
+    if not moved and (timestamp_holds or (values and not timed)):
         return None
-    else:
-        reason = f"calibration moved after the approved-record check ({approved[backend_name]} -> {calibration})"
+    changes = []
+    if moved:
+        changes.append(f"calibration values changed for {', '.join(moved)}")
+    if not timestamp_holds and (timed or not values):
+        changes.append(f"the timestamp moved for {', '.join(timed) if timed else 'the batch'}")
+    reason = (
+        f"calibration moved after the approved-record check ({approved[backend_name]} -> {calibration}): "
+        + "; ".join(changes)
+    )
     if record.get("submission", {}).get("jobs"):
         record["renewed_approval_for_unsent_batches"] = {"required_at": _now(), "reason": reason}
     else:
