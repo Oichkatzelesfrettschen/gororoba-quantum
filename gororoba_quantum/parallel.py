@@ -74,25 +74,25 @@ CGROUP_ROOT = Path("/sys/fs/cgroup")
 
 
 def workers() -> int:
-    """The worker count: GOROROBA_WORKERS when set, else default_threads()."""
-    configured = os.environ.get("GOROROBA_WORKERS")
-    if configured is not None:
-        count = int(configured)
-        if count < 1:
-            raise ValueError(f"GOROROBA_WORKERS must be a positive integer, got {configured!r}")
-        return count
+    """The process budget, bounded by affinity/quota and GOROROBA_WORKERS."""
     return default_threads()
 
 
 def default_threads() -> int:
-    """Every CPU available to this process.
+    """Bound simulation threads and process workers by the same CPU allocation.
 
-    Noisy density-matrix simulation of dynamic circuits evolves each shot
-    separately, so Aer's shot parallelism scales with logical CPUs: the
-    simultaneous-multithreading sibling threads add throughput over physical
-    cores alone (LOCAL_COMPUTE.md carries the measurement).
+    A caller's GOROROBA_WORKERS cap limits both executors. A spawned pool
+    worker receives one slot so its simulations and nested maps share that
+    slot instead of multiplying the outer pool's allocation.
     """
-    return available_cpus()
+    capacity = available_cpus()
+    configured = os.environ.get("GOROROBA_WORKERS")
+    if configured is None:
+        return capacity
+    count = int(configured)
+    if count < 1:
+        raise ValueError(f"GOROROBA_WORKERS must be a positive integer, got {configured!r}")
+    return min(capacity, count)
 
 
 def available_cpus() -> int:
@@ -191,12 +191,19 @@ def _worker_environment() -> Iterator[None]:
             os.environ.pop(name, None)
 
 
+def _initialize_worker() -> None:
+    """Give each spawned worker one slot without mutating the parent's budget."""
+    os.environ["GOROROBA_WORKERS"] = "1"
+
+
 def _executor(count: int) -> ProcessPoolExecutor:
     global _pool, _pool_size
     if _pool is None or _pool_size != count:
         if _pool is not None:
             _pool.shutdown()
-        _pool = ProcessPoolExecutor(count, mp_context=multiprocessing.get_context("spawn"))
+        _pool = ProcessPoolExecutor(
+            count, mp_context=multiprocessing.get_context("spawn"), initializer=_initialize_worker
+        )
         _pool_size = count
     return _pool
 
@@ -242,6 +249,14 @@ def _thread_settings(_item: int) -> dict[str, str | None]:
     return {name: os.environ.get(name) for name in WORKER_THREAD_VARIABLES}
 
 
+def _process_budget(item: int) -> tuple[int, int, int, int]:
+    return item, os.getpid(), workers(), default_threads()
+
+
+def _nested_budget(item: int) -> tuple[int, list[tuple[int, int, int, int]]]:
+    return os.getpid(), ordered_map(_process_budget, [4 * item + offset for offset in range(4)], min_items=1)
+
+
 def _square(item: int) -> int:
     return item * item
 
@@ -251,9 +266,9 @@ def self_test() -> str:
     saved = {name: os.environ.pop(name, None) for name in (*WORKER_THREAD_VARIABLES, "GOROROBA_WORKERS")}
     _shutdown()
     try:
-        count = 2
+        count = min(2, available_cpus())
         os.environ["GOROROBA_WORKERS"] = str(count)
-        expected = str(WORKER_BLAS_THREADS)
+        expected = str(WORKER_BLAS_THREADS) if count > 1 else None
         os.environ["MKL_NUM_THREADS"] = "3"
         seen = ordered_map(_thread_settings, list(range(4 * count)), min_items=1)
         for settings in seen:
@@ -265,6 +280,11 @@ def self_test() -> str:
             name: ("3" if name == "MKL_NUM_THREADS" else None) for name in WORKER_THREAD_VARIABLES
         }:
             raise SystemExit("parallel: the parent environment kept a worker thread setting")
+        for owner, nested in ordered_map(_nested_budget, list(range(4 * count)), min_items=1):
+            if any(pid != owner or process_budget != 1 or threads != 1 for _, pid, process_budget, threads in nested):
+                raise SystemExit(f"parallel: a nested map left its worker's single slot: {nested}")
+        if workers() != count or default_threads() != count:
+            raise SystemExit("parallel: a spawned worker changed the parent's CPU budget")
         items = list(range(257))
         if ordered_map(_square, items, min_items=1) != [_square(item) for item in items]:
             raise SystemExit("parallel: the pooled map differs from the serial loop")
@@ -275,7 +295,8 @@ def self_test() -> str:
                 os.environ.pop(name, None)
             else:
                 os.environ[name] = value
-    return f"{count} workers read {expected} BLAS/OpenMP threads each; a caller's setting is kept; order preserved"
+    native = f"{expected} BLAS/OpenMP threads each" if count > 1 else "the serial caller's native settings"
+    return f"{count} workers read {native}; nested maps keep one slot; caller settings and order preserved"
 
 
 def main() -> int:

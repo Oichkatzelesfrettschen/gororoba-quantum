@@ -158,6 +158,17 @@ wait until enough slots return. BLAS, OpenMP, NumExpr, Rayon and Qiskit process
 counts default to one so nested native pools share the same finite allocation.
 Explicit local native overrides remain visible in runner-spec output.
 
+The [spawn budget probe](../../evidence/ci_runtime/cpu_budget.json) reproduced
+an allocation leak on a 12-CPU host: a two-slot parent gave its pool children
+another two-worker budget and 12 default simulator threads. `workers()` and
+`default_threads()` now share the affinity/quota-bounded `GOROROBA_WORKERS` cap.
+A child-only pool initializer assigns one slot to each child; nested maps stay
+in their owning process and simulator defaults use one thread. The parent
+retains its two-slot budget. The retained before/after probe records process
+IDs, item order and budgets, and the self-test also runs on one-CPU affinity.
+Three source-bound mathematical replays pass before their source checksums are
+refreshed, with identical retained result bytes.
+
 The runtime suite exposes 45 named cases in a static registry. CI expands the
 registry before longest-first shard assignment, so independent cases can occupy
 different runners. Default script execution retains every case in original

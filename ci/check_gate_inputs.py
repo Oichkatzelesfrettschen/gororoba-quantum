@@ -280,6 +280,24 @@ class SelectionTests(unittest.TestCase):
         )
         self.assertEqual(names & gate_inputs.affected_full(root, gates, [transmission]), {"core-515"})
 
+    def test_simulation_defaults_share_the_process_budget(self) -> None:
+        import os
+
+        parallel = run_gates.parallel
+        for capacity in (1, 2, 4):
+            for cap in (None, "1", "3", "8"):
+                environment = {} if cap is None else {"GOROROBA_WORKERS": cap}
+                with (
+                    patch.dict(os.environ, environment, clear=True),
+                    patch.object(parallel, "available_cpus", return_value=capacity),
+                ):
+                    expected = capacity if cap is None else min(capacity, int(cap))
+                    self.assertEqual(parallel.workers(), expected)
+                    self.assertEqual(parallel.default_threads(), expected)
+            for cap in ("0", "-1", "invalid"):
+                with patch.dict(os.environ, {"GOROROBA_WORKERS": cap}), self.assertRaises(ValueError):
+                    parallel.default_threads()
+
     def test_explicit_worker_caps_apply_to_inner_pools(self) -> None:
         observed = []
 
