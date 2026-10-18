@@ -4004,8 +4004,8 @@
         "docs/evidence/linear_conjugation/README.md"
       ],
       "gates": {
-        "core-337": "replay",
-        "core-338": "replay"
+        "core-338": "replay",
+        "core-379": "replay"
       },
       "acquisitions": [],
       "assumptions": [
