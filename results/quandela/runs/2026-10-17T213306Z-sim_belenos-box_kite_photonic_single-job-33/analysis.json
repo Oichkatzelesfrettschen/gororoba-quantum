@@ -7,6 +7,7 @@
     0.000384075
    ],
    "config": "one_hot-00",
+   "dark_corrected": null,
    "in_block": 1.0,
    "in_block_wilson95": [
     0.999615925,
@@ -42,6 +43,14 @@
   }
  ],
  "cases_sha256": "3135d7709c4e82c3ab9653adf7bc899065d1fd531b638e5fe7fba7dfd3185bb1",
+ "compiled": {
+  "distinct": 1,
+  "iterations": [],
+  "job": {
+   "chars": 16234,
+   "sha256": "de942615682ed81c536edc87903f013e9690c670327917412218de5773f8c0c6"
+  }
+ },
  "job_id": "14b5364b-02e5-4507-a5d6-ec0af07a3334",
  "logical_perf": 0.9999999525883624,
  "noise": ":PCVL:NoiseModel:{\"g2\": 0.003, \"indistinguishability\": 0.92, \"transmittance\": 0.06}",

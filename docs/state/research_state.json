@@ -672,6 +672,55 @@
       "run": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04",
       "family": "box-kite photonic Q1 bright",
       "question": "bright block (1,1;-1,-1) on qpu:belenos, the same compiled circuit as sim job e12075f3: a and in-block routing on hardware?"
+    },
+    {
+      "id": "qd-sim-belenos-diagnostics-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-01",
+      "family": "Belenos diagnostics S2",
+      "question": "bright block as a compact 4-mode unitary at mode 0: does circuit width change the compiled mesh?"
+    },
+    {
+      "id": "qd-sim-belenos-diagnostics-job-02",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-02",
+      "family": "Belenos diagnostics S2",
+      "question": "bright block as compact native BS.H/PS/PERM gates: does gate form change the compiled mesh?"
+    },
+    {
+      "id": "qd-sim-belenos-diagnostics-job-03",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-03",
+      "family": "Belenos diagnostics S2",
+      "question": "bright block as native gates inside the 24-mode circuit: same question at full width"
+    },
+    {
+      "id": "qd-sim-belenos-fringe-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_fringe-job-00",
+      "family": "Belenos fringe S2",
+      "question": "edge block over phi = k pi/4 in one iterated job: visibility, offset and per-iteration compilation"
+    },
+    {
+      "id": "qd-sim-belenos-fringe-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_fringe-job-01",
+      "family": "Belenos fringe S2",
+      "question": "strut block over phi = k pi/4: the flat control"
+    },
+    {
+      "id": "qd-sim-belenos-mesh-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00",
+      "family": "Belenos mesh S3",
+      "question": "sixteen architecture-form settings in one job: does the service keep sent phases, and does the class likelihood name the simulator's ideal?"
+    },
+    {
+      "id": "qd-sim-belenos-mesh-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-17T233527Z-sim_belenos-belenos_mesh-job-01",
+      "family": "Belenos mesh S4",
+      "question": "one numeric architecture circuit, the guide's pre-compiled form: does the service keep its phases?"
     }
   ],
   "claims": [
@@ -4216,27 +4265,27 @@
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-00/analysis.json",
-          "sha256": "275260b3891d78443550f201918902ab8fc9d8adb516e32179b447844d38de33"
+          "sha256": "38a442caf1e24d582dfaa8bc8c2c5737c4a7585d9e1e59274aa1e6216e029716"
         },
         {
           "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-02/analysis.json",
-          "sha256": "2ef6dea06742cb2fa5b8b84e63c1b277d14407c93e5db9e865f89a1c96631360"
+          "sha256": "ab02810e6bc847aa8dfc3f0105de4cc6e1c5bd0d682463cdbf8f552cae79dcee"
         },
         {
           "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-00/analysis.json",
-          "sha256": "19f7e09e2a7828eeb29782a13e54c8a9921904fd15f53797c5a3b991a2489391"
+          "sha256": "e8636569a3ab950eda7be1e34c5619450dc8d63673ea54ab0c35203cdade7236"
         },
         {
           "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-04/analysis.json",
-          "sha256": "0743e4f8b3178790caa304d96ce06adce4dfd698347df82ed071fcec72b8108f"
+          "sha256": "e3f7ea1647c0d1dcd358c22fb7da9ae51382c4e0b53fc947ecf3590752511fe5"
         },
         {
           "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-05/analysis.json",
-          "sha256": "b3918b553479d32e3a59dab4bb262755e087de27c327f5751f1bff4af90eaf2d"
+          "sha256": "cfd18fc43af83bf1c893b9d9b89f45abc37b774199bdf68ca586efefe03e9ee5"
         },
         {
           "path": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-33/analysis.json",
-          "sha256": "f08ec9b517ae82a1e3529e23f8552073ff43adc480439dd6efd8fd940f802bdf"
+          "sha256": "74715736a3ae31517efb0abef1056c79a0c0081a5d2612b640e2848a255bb4f5"
         }
       ],
       "documents": [
@@ -4265,11 +4314,62 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One 10000-sample job at the 2026-10-17 calibration (HOM 92.6 %, g2 1 %); the cause (24-mode fit, chip routing or gate form) is untested, and belenos_diagnostics and belenos_fringe carry the falsifiers.",
+      "boundary": "One 10000-sample job at the 2026-10-17 calibration (HOM 92.6 %, g2 1 %). The root-cause record (docs/evidence/quandela/belenos_leakage_rca.json) refutes a circuit, encoding, convention or multi-photon cause: the decoded compiled mesh reproduces the ideal, and no single-parameter error model reaches the shot-noise floor; the chip's error class and a demultiplexer misroute stay open for belenos_mesh job-00 on qpu:belenos.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04/analysis.json",
-          "sha256": "202ee822ae4b5b4ce320607a38dfccc8e4333891460967f822cf21877f58337a"
+          "sha256": "61d3c7f7f7c9dfd6d1d7c9d455eb97a9121337e4f63ed8a4437abbeb6868b228"
+        },
+        {
+          "path": "docs/evidence/quandela/belenos_leakage_rca.json",
+          "sha256": "2839fc6576812e55e1f628c2a889a98a2039ee19fef652368d6638345de7cc3a"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-508": "replay",
+        "core-504": "freshness",
+        "core-511": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-single-job-04"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-sim-belenos-boxkite-ideals"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-sim-belenos-iterations-and-forms",
+      "statement": "On sim:belenos an iterated job runs every iteration for one credit and compiles each iteration separately (eight distinct meshes in one fringe job); the edge block's fringe over phi = k pi/4 has visibility 0.996 and offset -0.008 rad and the strut block's is flat (visibility 0.023), and the bright block sent as a compact 4-mode unitary, compact native gates or 24-mode native gates reads a = 1 each while every form compiles to the full 552-splitter mesh.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "Five sim:belenos jobs on 2026-10-17 under the simulator's default noise model; they establish the job, iteration and compilation behavior of the service, never hardware performance.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-01/analysis.json",
+          "sha256": "ae71795ab4a51a768cca023ed73181bb79e3359dc4b74c56f678b487dabf44f6"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-02/analysis.json",
+          "sha256": "80be8270073de87d646e1bfe08a07e9762632d4939299beaacdc7f0d6a099d95"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-03/analysis.json",
+          "sha256": "4390dc9ce9ca70c2e0cb92277c8e9e6d7a5629b7d1686443e26c9c10cb92a6e3"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_fringe-job-00/analysis.json",
+          "sha256": "c5f8e8f2e70d23c0fcef10fadc9681a4f173cf873b3a743af46c788f3156802d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_fringe-job-01/analysis.json",
+          "sha256": "b4a6dfee555ce8c882768032e70f220dac9649f79e43902fb008527a53a5c73e"
         }
       ],
       "documents": [
@@ -4280,11 +4380,50 @@
         "core-504": "freshness"
       },
       "acquisitions": [
-        "qd-qpu-belenos-single-job-04"
+        "qd-sim-belenos-diagnostics-job-01",
+        "qd-sim-belenos-diagnostics-job-02",
+        "qd-sim-belenos-diagnostics-job-03",
+        "qd-sim-belenos-fringe-job-00",
+        "qd-sim-belenos-fringe-job-01"
       ],
       "assumptions": [],
       "depends_on": [
         "qd-sim-belenos-boxkite-ideals"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-cloud-retranspiles-architecture-circuits",
+      "statement": "Quandela Cloud re-transpiles every circuit sent to sim:belenos, the Belenos architecture with its 574 phases bound per iteration (job 1d7160c1, 16 settings) and the same architecture as a numeric circuit (job e5b74123): every returned computed_circuit changes all 574 phases and keeps only the occupied input column (|U|^2 within 2e-4), each setting's histogram lies within shot noise of its ideal (TVD 0.0002 to 0.038 at 1500 samples), and the efficiency-weighted likelihood computed on the returned meshes names the ideal model 352 nats ahead of coupler noise.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "Two sim:belenos jobs on 2026-10-17 with perceval-quandela 1.3.1 against a platform running 1.3.0 and exqalibur 1.4.2; the served meshes match exqalibur's CircuitOptimizer statistically, not bitwise, and the QPU's compilation of the same body is inferred from the identical sim and QPU meshes of single/job-04.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/analysis.json",
+          "sha256": "f8a0524c89247ab0b15faa859fb7561db7834f7249509758981821c1e350a03e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-17T233527Z-sim_belenos-belenos_mesh-job-01/analysis.json",
+          "sha256": "865bf6edd1264a297b009cd489048a21e68d4d6cb52b5d231d79039f2bf9cb4f"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-508": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-sim-belenos-mesh-job-00",
+        "qd-sim-belenos-mesh-job-01"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-sim-belenos-iterations-and-forms"
       ],
       "supersedes": [],
       "superseded_by": null

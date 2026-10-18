@@ -945,6 +945,28 @@ records that every two-label two-blade product at D = 16, 32 and 64 uses
 one of these configurations, and that the signed zero products (336, 5040,
 52080) equal the annihilator nullity sums.
 
+**Mesh control.** qpu:belenos is one fixed mesh: the processor record's
+`specs.architecture` holds 552 calibrated Rx couplers and 574 symbolic
+phases (276 MZIs and 22 edge phases), and every compiled circuit carries that
+topology with numbers in place of the symbols. The service re-transpiles
+every circuit, parameterized or numeric, with exqalibur's CircuitOptimizer
+from random starting phases, constraining only the input columns that carry
+photons; `compilation_seed` selects the start. `scripts/qd_belenos_mesh.py`
+decodes architectures and compiled meshes with a standard-library protobuf
+reader and writes `results/quandela/cases/belenos_mesh/`: iterated jobs of
+the architecture circuit whose iterations bind all 574 phases and the input
+mode, so one credit buys up to sixteen different unitaries (job-00 the
+error-class diagnostic, job-02 the 84/84 box-kite edges).
+`qd_box_kite_analysis.py` computes every error model's prediction (heater
+noise, coupler noise, heater gain, thermal crosstalk, a phase ceiling, a
+demultiplexer misroute) on the mesh each iteration returned and names the
+class by summed likelihood. `plan` decodes the live architecture and
+refuses a mesh case whose couplers or symbols changed, so a recalibration
+means a regenerated case. `docs/evidence/quandela/belenos_leakage_rca.json` holds the
+root-cause record of the qpu:belenos bright-block leakage, and
+docs/notes/quandela/strategy.md sections 6 to 8 its verdicts, the
+transpiler model and the 84/84 mapping.
+
 **Gates.** core-500 (`capture_qd_docs.py --check`), core-501 (its
 `--self-test`), core-502 (`qd_platform.py check docs/evidence/quandela
 --agents AGENTS.md docs/notes/quandela/README.md`), core-503 (its
@@ -953,7 +975,10 @@ one of these configurations, and that the signed zero products (336, 5040,
 `--self-test`), core-506 (`cd_two_blade_blocks.py --check
 docs/evidence/box_kite_census/two_blade_blocks.json`), core-507 (its
 `--self-test`), core-508 (`qd_box_kite_analysis.py --check` over every
-retained run) and core-509 (its `--self-test`).
+retained run), core-509 (its `--self-test`), core-510
+(`qd_belenos_mesh.py --check results/quandela/cases`), core-511 (its
+`--check-rca` replay of the leakage record) and core-512 (its
+`--self-test`).
 
 **Strategy guide.** [docs/notes/quandela/strategy.md](docs/notes/quandela/strategy.md)
 is the living record of what a credit buys on Belenos: the measured cost

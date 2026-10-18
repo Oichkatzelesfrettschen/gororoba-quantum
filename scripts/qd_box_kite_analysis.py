@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 import math
 import sys
@@ -64,7 +65,9 @@ def occupied(state: str) -> list[int]:
     return [k for k, n in enumerate(state.split(",")) if int(n)]
 
 
-def one_photon(block: dict[str, Any], counts: dict[str, int], ideal: list[float] | None = None) -> dict[str, Any]:
+def one_photon(
+    block: dict[str, Any], counts: dict[str, int], ideal: list[float] | None = None, dark: list[float] | None = None
+) -> dict[str, Any]:
     offset, width = block["offset"], len(block["roles"])
     inside = range(offset, offset + width)
     modes = [0] * width
@@ -84,6 +87,7 @@ def one_photon(block: dict[str, Any], counts: dict[str, int], ideal: list[float]
             other += n
     total = sum(modes)
     algebra = sum(n for n, role in zip(modes, block["roles"], strict=True) if role != "dilation")
+    corrected = dark_corrected(block, modes, leaked, dark) if dark is not None else None
     expected = ideal if ideal is not None else [float(Fraction(p)) for p in block["ideal"]]
     distance = sum(abs(n / total - p) for n, p in zip(modes, expected, strict=True)) / 2 if total else None
     return {
@@ -97,10 +101,42 @@ def one_photon(block: dict[str, Any], counts: dict[str, int], ideal: list[float]
         "other_multi_click": other,
         "in_block": round(total / (total + outside), 9) if total + outside else None,
         "in_block_wilson95": wilson(total, total + outside),
+        "dark_corrected": corrected,
         "a": round(algebra / total, 9) if total else None,
         "a_wilson95": wilson(algebra, total),
         "total_variation_from_ideal": round(distance, 9) if distance is not None else None,
     }
+
+
+def dark_corrected(
+    block: dict[str, Any], modes: list[int], leaked: dict[int, int], dark: list[float]
+) -> dict[str, Any]:
+    """in_block and a after subtracting each mode's expected dark clicks (rate times job duration).
+
+    dark lists the expected dark clicks per chip mode; counts are floored at
+    zero after subtraction, and the expectation itself is reported beside them.
+    """
+    offset = block["offset"]
+    inside = [max(0.0, n - dark[offset + k]) for k, n in enumerate(modes)]
+    outside = sum(max(0.0, n - dark[k]) for k, n in leaked.items())
+    algebra = sum(v for v, role in zip(inside, block["roles"], strict=True) if role != "dilation")
+    total = sum(inside)
+    return {
+        "expected_dark_in_block": round(sum(dark[offset + k] for k in range(len(modes))), 3),
+        "expected_dark_outside": round(sum(dark[k] for k in leaked), 3),
+        "in_block": round(total / (total + outside), 9) if total + outside else None,
+        "a": round(algebra / total, 9) if total else None,
+    }
+
+
+def dark_expectation(run: Path, collected: dict[str, Any], width: int) -> list[float] | None:
+    """Expected dark clicks per chip mode: the receipt's per-mode rates times the job's duration."""
+    submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
+    rates = submission.get("perfs_at_plan", {}).get("Dark counts (detection/s)")
+    duration = collected.get("status", {}).get("duration")
+    if not isinstance(rates, list) or not isinstance(duration, int | float):
+        return None
+    return [float(rate) * float(duration) for rate in rates[:width]] + [0.0] * max(0, width - len(rates))
 
 
 def pair(block: dict[str, Any], counts: dict[str, int]) -> dict[str, Any]:
@@ -189,11 +225,33 @@ def fringe(block: dict[str, Any], iterations: list[dict[str, Any]]) -> dict[str,
     }
 
 
+def fingerprint(fields: dict[str, Any]) -> dict[str, Any] | None:
+    """sha256 and length of a result's computed_circuit string, the identity of its compiled mesh."""
+    text_value = fields.get("computed_circuit")
+    if not isinstance(text_value, str):
+        return None
+    return {"sha256": hashlib.sha256(text_value.encode()).hexdigest(), "chars": len(text_value)}
+
+
+def compiled(collected: dict[str, Any]) -> dict[str, Any]:
+    """The compiled-mesh fingerprint of the job and of each iteration, and how many distinct meshes ran."""
+    whole = fingerprint(collected.get("result_fields", {}))
+    per = [fingerprint(entry.get("result_fields", {})) for entry in collected.get("iterations", [])]
+    seen = {f["sha256"] for f in [whole, *per] if f is not None}
+    return {"job": whole, "iterations": per, "distinct": len(seen)}
+
+
 def analyze(run: Path) -> dict[str, Any]:
     facts = run_facts(run)
-    manifest, _, cases_sha256 = load_case(run)
+    manifest, circuit, cases_sha256 = load_case(run)
+    if manifest.get("gate_form") == "mesh":
+        import qd_belenos_mesh
+
+        return {**qd_belenos_mesh.analyze_run(run, manifest, circuit), "cases_sha256": cases_sha256}
     collected = json.loads((run / "results.json").read_text(encoding="utf-8"))
     counts = collected.get("counts", {})
+    width = max((len(state.split(",")) for state in counts), default=0)
+    dark = dark_expectation(run, collected, width) if width else None
     blocks = []
     for block in manifest["blocks"]:
         if block["kind"] == "pair":
@@ -201,7 +259,7 @@ def analyze(run: Path) -> dict[str, Any]:
         elif block["kind"] == "fringe":
             blocks.append(fringe(block, collected.get("iterations", [])))
         else:
-            blocks.append(one_photon(block, counts))
+            blocks.append(one_photon(block, counts, dark=dark))
     return {
         "schema": SCHEMA,
         "run": run.name,
@@ -213,6 +271,7 @@ def analyze(run: Path) -> dict[str, Any]:
         "samples": collected.get("samples", 0),
         "shots": collected.get("shots"),
         "noise": collected.get("result_fields", {}).get("noise"),
+        "compiled": compiled(collected),
         "physical_perf": collected.get("result_fields", {}).get("physical_perf"),
         "logical_perf": collected.get("result_fields", {}).get("logical_perf"),
         "blocks": blocks,

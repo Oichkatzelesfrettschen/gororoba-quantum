@@ -7,6 +7,7 @@
     1.0
    ],
    "config": "two_label-04",
+   "dark_corrected": null,
    "in_block": 1.0,
    "in_block_wilson95": [
     0.999615963,
@@ -28,6 +29,14 @@
   }
  ],
  "cases_sha256": "7ea68eea063a5b9226613735164156556ef8afd01ce7e5b71ab6f33a7c746a6e",
+ "compiled": {
+  "distinct": 1,
+  "iterations": [],
+  "job": {
+   "chars": 16250,
+   "sha256": "9bbbaf63c8ec6bacf23fd5e83cbe023fbf5b8f93257c7876506f4da6773f21eb"
+  }
+ },
  "job_id": "e12075f3-394b-4aa0-8b92-15dbcb34f165",
  "logical_perf": 0.9999999759289727,
  "noise": ":PCVL:NoiseModel:{\"g2\": 0.003, \"indistinguishability\": 0.92, \"transmittance\": 0.06}",

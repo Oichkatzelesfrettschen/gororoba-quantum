@@ -468,8 +468,9 @@ def check_agents(catalogue: dict[str, Any], files: list[Path]) -> None:
 
 ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "results/quandela/runs"
-CASES_SCHEMAS = ("qd-box-kite-cases-v1",)
+CASES_SCHEMAS = ("qd-box-kite-cases-v1", "qd-belenos-mesh-cases-v1")
 CIRCUIT_SCHEMA = "qd-circuit-v1"
+CIRCUIT_SCHEMAS = (CIRCUIT_SCHEMA, "qd-mesh-circuit-v1")
 STATE_SCHEMA = "qd-submission-state-v1"
 SUBMISSION_SCHEMA = "qd-submission-v1"
 COLLECTION_SCHEMA = "qd-collection-v1"
@@ -498,7 +499,7 @@ def load_case(case_dir: Path) -> tuple[dict[str, Any], dict[str, Any], str]:
     if sha256_bytes(circuit_bytes) != manifest["circuit"]["sha256"]:
         raise PlatformError(f"{case_dir}: circuit.json differs from its cases.json sha256")
     circuit: dict[str, Any] = json.loads(circuit_bytes)
-    if circuit.get("schema") != CIRCUIT_SCHEMA:
+    if circuit.get("schema") not in CIRCUIT_SCHEMAS:
         raise PlatformError(f"{case_dir}: circuit schema {circuit.get('schema')!r}")
     return manifest, circuit, sha256_bytes(cases_bytes)
 
@@ -562,6 +563,70 @@ def experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> Any:
     return built
 
 
+def mesh_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tuple[Any, list[dict[str, Any]]]:
+    """The Belenos architecture with one Perceval parameter per phase, and one iteration per retained setting.
+
+    Each setting's phases bind the 574 symbols; Perceval's unitary at those
+    values must equal qd_belenos_mesh's propagation of the same elements, so
+    the BS and PS conventions that designed the phases are the ones sent.
+    """
+    import numpy
+    import perceval as pcvl
+    import qd_belenos_mesh as mesh
+
+    arch = mesh.architecture(mesh.load_catalogue())
+    spec = circuit["architecture"]
+    if spec["symbols"] != [p for k, _, p in arch if k == "ps"] or spec["couplers"] != [
+        [m, p[0]] for k, m, p in arch if k == "bs"
+    ]:
+        raise PlatformError("the case's mesh differs from the retained Belenos architecture")
+    # One setting goes out as numbers, the pre-compiled form of the cloud guide;
+    # several go out as one parameterized circuit with a setting per iteration.
+    numeric = len(circuit["settings"]) == 1
+    fixed = dict(zip(spec["symbols"], circuit["settings"][0]["phases"], strict=True))
+    chip = pcvl.Circuit(circuit["modes"])
+    parameters: dict[str, Any] = {}
+    for kind, m, p in arch:
+        if kind == "bs":
+            chip.add(m, pcvl.BS(theta=p[0]))
+        elif numeric:
+            chip.add(m, pcvl.PS(fixed[p]))
+        else:
+            parameters[p] = pcvl.P(p)
+            chip.add(m, pcvl.PS(parameters[p]))
+    iterations = []
+    for setting in circuit["settings"]:
+        values = dict(zip(spec["symbols"], setting["phases"], strict=True))
+        for symbol, parameter in parameters.items():
+            parameter.set_value(values[symbol])
+        deviation = float(
+            numpy.max(numpy.abs(numpy.array(chip.compute_unitary()) - mesh.unitary(arch, setting["phases"])))
+        )
+        if deviation > 1e-12:
+            raise PlatformError(f"{setting['name']}: Perceval's mesh unitary deviates by {deviation:.2e}")
+        state = [0] * circuit["modes"]
+        state[setting["input_mode"]] = 1
+        iterations.append({"name": setting["name"], "circuit_params": values, "input_state": state})
+    for parameter in parameters.values():
+        parameter.reset()
+    built = pcvl.Experiment(chip)
+    built.with_input(pcvl.BasicState(iterations[0]["input_state"]))
+    built.min_detected_photons_filter(manifest["min_detected_photons"])
+    return built, iterations
+
+
+def live_mesh(processor: dict[str, Any], circuit: dict[str, Any]) -> None:
+    """Refuse a mesh case when the platform's live architecture carries other couplers or symbols than the case."""
+    import qd_belenos_mesh as mesh
+
+    live = mesh.decode(processor["specs"]["architecture"])
+    spec = circuit["architecture"]
+    if [p for k, _, p in live if k == "ps"] != spec["symbols"] or [[m, p[0]] for k, m, p in live if k == "bs"] != spec[
+        "couplers"
+    ]:
+        raise PlatformError("the live architecture differs from the case: regenerate the mesh case after recalibration")
+
+
 def explorer_row(platform: str) -> dict[str, Any]:
     rows = [row for row in get("/api/platforms/public/explorer", auth=False) if row.get("name") == platform]
     if len(rows) != 1:
@@ -582,21 +647,34 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     found = versions()
     if found.get("perceval-quandela") != RUNNER_PERCEVAL:
         raise PlatformError(f"perceval-quandela {found.get('perceval-quandela')} is installed, not {RUNNER_PERCEVAL}")
+    import perceval as pcvl
+
     layer = QuandelaCommunicationLayer(platform, token=token())
     computer = RemoteComputer(layer)
-    built = experiment(manifest, circuit)
+    mesh = manifest.get("gate_form") == "mesh"
+    built, settings = mesh_experiment(manifest, circuit) if mesh else (experiment(manifest, circuit), [])
     steps = manifest.get("iterations", 1)
-    # Iterations split the case's sample and shot budgets evenly; each one sets
-    # the preparation phase phi = k pi/4 and pins compilation_seed 0.
+    # Iterations split the case's sample and shot budgets evenly and pin
+    # compilation_seed 0; a phase case sets phi = k pi/4 per iteration.
     per_samples, per_shots = manifest["max_samples"] // steps, manifest["max_shots"] // steps
     factory = ExecutionFactory(computer, built, max_shots_per_call=per_shots)
     base = factory.build_computation(manifest["command"])
     base.add_params(max_samples=per_samples)
-    params = {"phi": 0.0} if steps > 1 else None
+    params = settings[0]["circuit_params"] if mesh else ({"phi": 0.0} if steps > 1 else None)
     estimate = computer.estimate_required_shots(base, nsamples=per_samples, param_values=params)
     estimate = None if estimate is None else estimate * steps
     if steps > 1:
         for k in range(steps):
+            if mesh:
+                # A mesh iteration binds all 574 phases and its own input mode.
+                factory.add_iteration(
+                    circuit_params=settings[k]["circuit_params"],
+                    input_state=pcvl.BasicState(settings[k]["input_state"]),
+                    max_samples=per_samples,
+                    max_shots=per_shots,
+                    compilation_seed=0,
+                )
+                continue
             factory.add_iteration(
                 circuit_params={"phi": k * math.pi / 4},
                 max_samples=per_samples,
@@ -657,7 +735,10 @@ def plan(
         raise PlatformError(
             f"{manifest['max_shots']} shots and the per-job price cost up to {ceiling:g} credits, above {max_credits:g}"
         )
-    perfs = scrub(get(platform_route(platform)).get("perfs", {}))
+    processor = get(platform_route(platform))
+    perfs = scrub(processor.get("perfs", {}))
+    if manifest.get("gate_form") == "mesh":
+        live_mesh(processor, circuit)
     counters = availability()
     if counters["num_concurrent_jobs"] or counters["num_jobs_in_queue"]:
         raise PlatformError(f"the token has a running or queued job: {counters}")
@@ -912,11 +993,23 @@ def result_summary(result_bytes: bytes, job: str, status: dict[str, Any], comple
         return {"shots": shots, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}
     else:
         counts = parse_counts(inner["results"])
-    if sum(counts.values()) > shots:
-        raise PlatformError(f"job {job}: {sum(counts.values())} samples exceed its {shots} shots")
+    # An iterated answer's top-level shots is one iteration's max_shots; each
+    # entry reports the shots it used, and their sum is what the job consumed.
+    used = shots
+    if iterations is not None:
+        per = [entry["result_fields"].get("nb_shots_used") for entry in iterations]
+        if not all(isinstance(n, int) and n >= 0 for n in per):
+            raise PlatformError(f"job {job}: an iteration reports no nb_shots_used")
+        used = sum(per)
+        for entry, n in zip(iterations, per, strict=True):
+            if entry["samples"] > n:
+                raise PlatformError(f"job {job}: an iteration counts {entry['samples']} samples from {n} shots")
+    if sum(counts.values()) > used:
+        raise PlatformError(f"job {job}: {sum(counts.values())} samples exceed its {used} shots")
     scalars = {k: v for k, v in inner.items() if k != "results" and isinstance(v, int | float | str | None)}
     summary = {
         "shots": shots,
+        "shots_used": used,
         "partial": not complete,
         "counts": counts,
         "samples": sum(counts.values()),
@@ -975,14 +1068,20 @@ def run_facts(directory: Path) -> dict[str, Any]:
         if not raw.is_file() or sha256_bytes(raw.read_bytes()) != collected.get("result_sha256"):
             raise PlatformError(f"{owner}: raw/result.json differs from its recorded sha256")
         summary = result_summary(raw.read_bytes(), submission["job_id"], collected["status"], status == "completed")
-        if any(collected.get(key) != value for key, value in summary.items()):
+        # shots_used is derived from the raw bytes; a collection written before
+        # the field existed omits it and the raw result supplies it.
+        if any(
+            collected.get(key) != value
+            for key, value in summary.items()
+            if not (key == "shots_used" and key not in collected)
+        ):
             raise PlatformError(f"{owner}: results.json differs from the raw result")
-        modes = len(json.loads((directory / manifest["circuit"]["file"]).read_text(encoding="utf-8"))["input_state"])
+        modes = json.loads((directory / manifest["circuit"]["file"]).read_text(encoding="utf-8"))["modes"]
         if any(len(state.split(",")) != modes for state in summary["counts"]):
             raise PlatformError(f"{owner}: a counted state has a mode count other than {modes}")
         if summary["samples"] > manifest["max_samples"]:
             raise PlatformError(f"{owner}: {summary['samples']} samples exceed max_samples {manifest['max_samples']}")
-        shots = summary["shots"]
+        shots = summary["shots_used"]
     elif not isinstance(collected.get("result_absent"), str):
         raise PlatformError(f"{owner}: a {status} job records neither a raw result nor its absence")
     else:
@@ -995,11 +1094,37 @@ def run_facts(directory: Path) -> dict[str, Any]:
         "created_at": submission["submitted_utc"],
         "backends": [submission["platform"]],
         "jobs": 1,
-        "circuits": len(manifest["blocks"]),
+        # A box-kite case counts its blocks and a mesh case its phase settings.
+        "circuits": len(manifest["blocks"] if "blocks" in manifest else manifest["settings"]),
         "statuses": {status: 1},
-        "charge": shots * submission["platform_at_plan"]["price_per_shot"],
+        "charge": charged(submission, collected, shots),
         "detail": f"job {submission['job_id']}, {collected.get('samples', 0)} samples, {shots} shots",
     }
+
+
+def usage_total(report: Any) -> float | None:
+    """credits plus free_credits over every platform row of a token usage report."""
+    if not isinstance(report, list):
+        return None
+    total = 0.0
+    for token_row in report:
+        for row in token_row.get("usage", []) if isinstance(token_row, dict) else []:
+            total += float(row.get("credits") or 0) + float(row.get("free_credits") or 0)
+    return total
+
+
+def charged(submission: dict[str, Any], collected: dict[str, Any], shots: int) -> float:
+    """The credits a run consumed: the usage report after collection minus the one before submission.
+
+    Jobs run one at a time on the token, so the difference is this job's
+    per-job price plus its shots; a receipt without both reports falls back to
+    the recorded per-job price plus shots times the price per shot.
+    """
+    before, after = usage_total(submission.get("usage_before")), usage_total(collected.get("usage_after"))
+    if before is not None and after is not None:
+        return round(after - before, 6)
+    price = submission["platform_at_plan"]["price_per_shot"]
+    return round(float(submission.get("per_job_credits", 0)) + shots * price, 6)
 
 
 def run_directories(runs: Path = RUNS) -> list[Path]:
@@ -1195,16 +1320,34 @@ def runner_self_test() -> int:
             "results": json.dumps(
                 {
                     "results_list": [
-                        {"results": ":PCVL:BSCount:{|1,0>=3;|0,1>=1}", "iteration": {"circuit_params": {"phi": 0.0}}},
-                        {"results": zipped(":PCVL:BSCount:{|0,1>=4}"), "iteration": {"circuit_params": {"phi": 3.14}}},
+                        {
+                            "results": ":PCVL:BSCount:{|1,0>=3;|0,1>=1}",
+                            "nb_shots_used": 5,
+                            "iteration": {"circuit_params": {"phi": 0.0}},
+                        },
+                        {
+                            "results": zipped(":PCVL:BSCount:{|0,1>=4}"),
+                            "nb_shots_used": 4,
+                            "iteration": {"circuit_params": {"phi": 3.14}},
+                        },
                     ]
                 }
             ),
         }
     ).encode()
     summary = result_summary(iterated, "job-i", {"shots": 9})
-    if summary["counts"] != {"1,0": 3, "0,1": 5} or [it["samples"] for it in summary["iterations"]] != [4, 4]:
+    if (
+        summary["counts"] != {"1,0": 3, "0,1": 5}
+        or [it["samples"] for it in summary["iterations"]] != [4, 4]
+        or summary["shots_used"] != 9
+    ):
         raise AssertionError(f"an iterated result parsed as {summary}")
+    overdrawn = iterated.replace(b'"nb_shots_used\\": 4', b'"nb_shots_used\\": 3')
+    if overdrawn == iterated:
+        raise AssertionError("the overdrawn-iteration fixture did not change the iterated result")
+    refuse(
+        "an iteration with more samples than shots", functools.partial(result_summary, overdrawn, "job-i", {}), "from"
+    )
     broken = iterated.replace(b"|1,0>=3", b"|{_:0},0>=3")
     if broken == iterated:
         raise AssertionError("the annotated-state fixture did not change the iterated result")

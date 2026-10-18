@@ -1,0 +1,175 @@
+{
+ "schema": "qd-belenos-mesh-cases-v1",
+ "family": "belenos_mesh",
+ "job": "job-01",
+ "platforms": [
+  "sim:belenos",
+  "qpu:belenos"
+ ],
+ "command": "sample_count",
+ "gate_form": "mesh",
+ "min_detected_photons": 1,
+ "iterations": 1,
+ "max_samples": 1500,
+ "max_shots": 3000,
+ "max_duration": 300,
+ "circuit": {
+  "file": "circuit.json",
+  "sha256": "31342b3f16be8f56fba9bbfb1c4350a967e88e02a06d8a2b297a1b8618998d77"
+ },
+ "models": [
+  {
+   "name": "phase_noise_0.1",
+   "kind": "phase_noise",
+   "size": 0.1
+  },
+  {
+   "name": "phase_noise_0.2",
+   "kind": "phase_noise",
+   "size": 0.2
+  },
+  {
+   "name": "phase_noise_0.4",
+   "kind": "phase_noise",
+   "size": 0.4
+  },
+  {
+   "name": "theta_noise_0.05",
+   "kind": "theta_noise",
+   "size": 0.05
+  },
+  {
+   "name": "gain_-0.1",
+   "kind": "gain",
+   "size": -0.1
+  },
+  {
+   "name": "gain_-0.3",
+   "kind": "gain",
+   "size": -0.3
+  },
+  {
+   "name": "crosstalk_0.05",
+   "kind": "crosstalk",
+   "size": 0.05
+  },
+  {
+   "name": "crosstalk_0.155",
+   "kind": "crosstalk",
+   "size": 0.155
+  },
+  {
+   "name": "ceiling_4.94",
+   "kind": "ceiling",
+   "size": 4.94
+  },
+  {
+   "name": "source_-2",
+   "kind": "source",
+   "size": -2
+  },
+  {
+   "name": "source_+2",
+   "kind": "source",
+   "size": 2
+  },
+  {
+   "name": "source_-4",
+   "kind": "source",
+   "size": -4
+  }
+ ],
+ "noise_replicates": 200,
+ "seed": 20261017,
+ "settings": [
+  {
+   "name": "cold-bright-20",
+   "mesh": "cold",
+   "target": "bright",
+   "low": 20,
+   "source": {
+    "case": "box_kite_photonic_single/job-04",
+    "cases_sha256": "d7632a78edceaec2cf4d745f83e81af902950dfda1f3921ab925b53a16dbc4bc",
+    "circuit_sha256": "69326bf0674a45e8c0005b10e2ac72cee36c122691ec0a5b542dbabb6e1fffb9"
+   },
+   "block_mzis": 6,
+   "frame_out": [
+    1.043171284781,
+    4.127802284073,
+    6.200122218653,
+    3.518533619413
+   ],
+   "frame_in": [
+    5.228636313206,
+    4.496141008728,
+    1.33987777867,
+    4.790919815133
+   ],
+   "block_error": 0.000372575,
+   "case_ideal": [
+    0.5,
+    0.5,
+    0.0,
+    0.0
+   ],
+   "design_distribution": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    5e-09,
+    0.000179058,
+    0.499735813,
+    0.500084987,
+    0.0,
+    1.37e-07
+   ],
+   "peak_occupancy": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.000187,
+    0.516382,
+    1.0,
+    0.52835,
+    0.255522,
+    0.000469
+   ],
+   "heater_phase_sum": 234.948727
+  }
+ ],
+ "preregistered": {
+  "transpilation": "the service re-transpiles every iteration, so each model's prediction is computed on the computed_circuit the iteration returns; the same body compiles to the same meshes on sim:belenos and qpu:belenos while the couplers are unchanged",
+  "classes": "phase noise, coupler noise, heater gain, thermal crosstalk, a phase ceiling and a demultiplexer misroute (source models) each predict a different histogram per returned mesh",
+  "decision": "the model with the highest efficiency-weighted multinomial log-likelihood summed over all settings names the chip's error class; the identity settings read the misroute directly"
+ }
+}

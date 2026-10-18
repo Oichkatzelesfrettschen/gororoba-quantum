@@ -7,6 +7,12 @@
     0.268526704
    ],
    "config": "two_label-04",
+   "dark_corrected": {
+    "a": 0.255647582,
+    "expected_dark_in_block": 1.3,
+    "expected_dark_outside": 691.6,
+    "in_block": 0.504636245
+   },
    "in_block": 0.4698,
    "in_block_wilson95": [
     0.46003154,
@@ -40,6 +46,14 @@
   }
  ],
  "cases_sha256": "7ea68eea063a5b9226613735164156556ef8afd01ce7e5b71ab6f33a7c746a6e",
+ "compiled": {
+  "distinct": 1,
+  "iterations": [],
+  "job": {
+   "chars": 16250,
+   "sha256": "9bbbaf63c8ec6bacf23fd5e83cbe023fbf5b8f93257c7876506f4da6773f21eb"
+  }
+ },
  "job_id": "7419efb8-7424-462d-89f9-9bd2b8fab334",
  "logical_perf": 1,
  "noise": ":PCVL:NoiseModel:{\"g2\": 0.01, \"indistinguishability\": 0.9259999999999999, \"transmittance\": 0.028900000000000002}",

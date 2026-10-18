@@ -24,6 +24,14 @@
   }
  ],
  "cases_sha256": "6bc522d5e9beb91a6481bea5d8727c201cae07d16f22790bd9b2421ea662159f",
+ "compiled": {
+  "distinct": 1,
+  "iterations": [],
+  "job": {
+   "chars": 16226,
+   "sha256": "d213ed34d691e94bd28561ce533a7dee299b2075738f9b3cd889124756a83a26"
+  }
+ },
  "job_id": "4420d79b-4300-46b1-9a30-621162035261",
  "logical_perf": 0.9999997604902348,
  "noise": ":PCVL:NoiseModel:{\"g2\": 0.003, \"indistinguishability\": 0.92, \"transmittance\": 0.06}",
