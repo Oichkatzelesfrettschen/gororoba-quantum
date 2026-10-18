@@ -78,6 +78,7 @@ from scipy.stats import chi2, norm
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
 
+import ibm_account  # noqa: E402
 import parallel  # noqa: E402
 
 FAMILY_ALPHA = 0.05
@@ -622,7 +623,7 @@ def dt_source(run: Path) -> tuple[float, str]:
             return float(snapshot["dt"]), f"docs/evidence/heron_platform/targets.json backends.{backend}.dt"
     from qiskit_ibm_runtime import QiskitRuntimeService
 
-    return float(QiskitRuntimeService().backend(backend).target.dt), f"live {backend} Target dt"
+    return float(ibm_account.open_service(QiskitRuntimeService).backend(backend).target.dt), f"live {backend} Target dt"
 
 
 def dt_seconds(run: Path) -> float:
@@ -1419,7 +1420,7 @@ def member_readouts(run: Path, roles: dict[str, dict[str, Any]]) -> dict[str, di
         from qiskit_ibm_runtime import QiskitRuntimeService
 
         stamp = datetime.fromisoformat(group["calibration"])
-        backend = QiskitRuntimeService().backend(group["backend"])
+        backend = ibm_account.open_service(QiskitRuntimeService).backend(group["backend"])
         # A historical query returns the newest snapshot strictly before its
         # datetime, so the query asks one second past the recorded stamp; the
         # current snapshot serves when no later calibration has landed.

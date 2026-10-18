@@ -17,6 +17,85 @@ def write(path: Path, value: object) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
 
 
+def second_instance_contract(
+    audit: Any, root: Path, source: Path, snapshot: dict[str, Any], times: dict[str, str]
+) -> None:
+    """A second instance's archive needs its own inventory file and reconciles against its own quota."""
+    other = "b" * 12
+    run = root / "results/live/synthetic-backup"
+    raw = run / "raw/backup-job"
+    raw.mkdir(parents=True)
+    write(
+        raw / "pub_00.json",
+        {"pub_index": 0, "registers": {"c": {"num_bits": 1, "num_shots": 2, "bitstrings": ["0", "1"]}}},
+    )
+    write(raw / "result_metadata.json", {})
+    write(
+        raw / "job_metrics.json", {"usage": {"status": "complete", "qpu_charge_time_seconds": 2}, "timestamps": times}
+    )
+    write(
+        raw / "index.json",
+        {
+            "job_id": "backup-job",
+            "files": {name: audit.digest(raw / name) for name in ("pub_00.json", "result_metadata.json")},
+            "metrics": ["job_metrics.json"],
+            "metrics_sha256": [audit.digest(raw / "job_metrics.json")],
+        },
+    )
+    write(run / "record.json", {"instance_sha256_12": other})
+    write(
+        run / "retention.json", {"job_id": "backup-job", "backend": "synthetic-backend", "final_qpu_charge_seconds": 2}
+    )
+    (run / "submitted-circuits.qpy").write_bytes(b"synthetic backup fixture bytes")
+    write(run / "submitted-input.json", {"circuit_archive_sha256": audit.digest(run / "submitted-circuits.qpy")})
+    backup = copy.deepcopy(snapshot)
+    backup["instance_crn_hash"] = other
+    backup["account_usage"] |= {"usage_consumed_seconds": 2, "usage_remaining_seconds": 598}
+    backup["jobs"][0] |= {"job_id": "backup-job", "final_qpu_charge_seconds": 2, "shots_per_pub": 2}
+    backup_path = source.with_name(f"inventory.{other}.json")
+    try:
+        audit.reconcile(source)
+    except ValueError:
+        pass
+    else:
+        raise RuntimeError("a backup archive without its inventory file was admitted")
+    write(backup_path, backup)
+    primary_audit = audit.reconcile(source)
+    backup_audit = audit.reconcile(backup_path)
+    audit.require(primary_audit["job_count"] == 1 and "instance_crn_hash" not in primary_audit, "default audit differs")
+    audit.require(
+        backup_audit["job_count"] == 1
+        and backup_audit["instance_crn_hash"] == other
+        and backup_audit["usage_window_charge_seconds"] == "2",
+        "backup audit differs",
+    )
+    audit.require(audit.audit_path(backup_path).name == f"inventory.{other}.json", "audit path pairing differs")
+    for mutate in (
+        lambda value: value.update(instance_crn_hash="c" * 12),
+        lambda value: value["account_usage"].update(usage_consumed_seconds=1, usage_remaining_seconds=599),
+        lambda value: value["account_usage"].update(usage_consumed_seconds=545, usage_remaining_seconds=55),
+    ):
+        mutant = copy.deepcopy(backup)
+        mutate(mutant)
+        write(backup_path, mutant)
+        try:
+            audit.reconcile(backup_path)
+        except ValueError:
+            pass
+        else:
+            raise RuntimeError("a mutated backup inventory was admitted")
+    duplicate = copy.deepcopy(backup)
+    duplicate["instance_crn_hash"] = snapshot["instance_crn_hash"]
+    write(backup_path, duplicate)
+    try:
+        audit.reconcile(source)
+    except ValueError:
+        pass
+    else:
+        raise RuntimeError("two inventory files for one instance were admitted")
+    write(backup_path, backup)
+
+
 def main() -> None:
     with TemporaryDirectory(prefix="qpu-inventory-contract-") as temporary:
         root = Path(temporary)
@@ -161,6 +240,7 @@ def main() -> None:
                 if path.is_file()
             }
             audit.require(before == after, "replay altered retained inputs")
+            second_instance_contract(audit, root, source, snapshot, times)
             duplicated = copy.deepcopy(index)
             duplicated["metrics"] = ["job_metrics.json", "job_metrics.json"]
             duplicated["metrics_sha256"] = [index["metrics_sha256"][0]] * 2

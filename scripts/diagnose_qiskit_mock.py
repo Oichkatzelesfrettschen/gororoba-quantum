@@ -13,6 +13,7 @@ import hashlib
 import json
 import logging
 import re
+import sys
 from datetime import UTC, datetime
 from importlib.metadata import version
 from pathlib import Path
@@ -22,6 +23,9 @@ from urllib.parse import urlsplit
 
 import requests  # type: ignore[import-untyped, unused-ignore]
 from qiskit_ibm_runtime import QiskitRuntimeService
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+import ibm_account  # noqa: E402
 
 
 def diagnose(backend_name: str) -> dict[str, Any]:
@@ -62,7 +66,7 @@ def diagnose(backend_name: str) -> dict[str, Any]:
     logger.setLevel(logging.CRITICAL)
     try:
         with patch.object(requests.sessions.Session, "send", observed_send):
-            service = QiskitRuntimeService()
+            service = ibm_account.open_service(QiskitRuntimeService)
             instance = service.active_instance()
             if not instance:
                 raise ValueError("service has no resolved active instance")

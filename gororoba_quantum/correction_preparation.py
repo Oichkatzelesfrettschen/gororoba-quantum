@@ -24,6 +24,7 @@ from qiskit_ibm_runtime import QiskitRuntimeService
 import correction_circuits
 import correction_schedule
 import correction_statistics
+import ibm_account
 import live_run
 import local_compute
 from qpe_diagnostics import ideal_compiled_probabilities
@@ -331,7 +332,7 @@ def main() -> int:
     args = parser.parse_args()
     correction_statistics.planning_certificate(args.shots)
     _require(args.seed >= 0 and args.model_shots > 0, "invalid seed or model shot count")
-    service = QiskitRuntimeService()
+    service = ibm_account.open_service(QiskitRuntimeService)
     snapshot = live_run.take_snapshot(service, args.backend)
     _require(snapshot.ineligible_reason(None) is None, "backend is ineligible")
     directory = args.out / datetime.now(UTC).strftime("%Y-%m-%dT%H%M%S.%fZ")

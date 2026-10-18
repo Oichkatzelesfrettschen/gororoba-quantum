@@ -531,9 +531,10 @@ def export(name: str, out: Path) -> None:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from qiskit_ibm_runtime import QiskitRuntimeService
 
+    import ibm_account
     import live_run
 
-    backend = QiskitRuntimeService().backend(name)
+    backend = ibm_account.open_service(QiskitRuntimeService).backend(name)
     backend.refresh()
     props = backend.properties()
     target = backend.target
