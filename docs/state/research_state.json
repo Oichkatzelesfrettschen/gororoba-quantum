@@ -847,6 +847,20 @@
       "run": "results/quandela/runs/2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06",
       "family": "Belenos mesh C1",
       "question": "sixteen seeded uniform-random meshes over the connected inputs, one of four runs in one calibration session: which error class, if any, explains the one-click histograms on the returned meshes, and do shared static heater offsets predict a held-out run?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-02",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T033336Z-qpu_belenos-belenos_mesh-job-02",
+      "family": "Belenos mesh M2 (84/84)",
+      "question": "the 84/84 box-kite program on qpu:belenos in one 16-iteration job: do the 8 dark and 8 bright configurations read their algebra shares through the re-transpiled meshes, and does the bright block leak like Q1 in the iterated form?"
+    },
+    {
+      "id": "qd-qpu-belenos-mesh-job-03-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03",
+      "family": "Belenos mesh C1 repeat",
+      "question": "the exact body of C1 job-03 again 36 minutes later: same meshes and same histograms, or drift between jobs?"
     }
   ],
   "claims": [
@@ -4713,7 +4727,7 @@
       "domain": "implementation",
       "evidence_class": "preregistered emulator control",
       "status": "established",
-      "boundary": "Two sim:belenos jobs on 2026-10-17 with perceval-quandela 1.3.1 against a platform running 1.3.0 and exqalibur 1.4.2; the served meshes match exqalibur's CircuitOptimizer statistically, not bitwise, and the QPU's compilation of the same body is inferred from the identical sim and QPU meshes of single/job-04.",
+      "boundary": "Two sim:belenos jobs on 2026-10-17 with perceval-quandela 1.3.1 against a platform running 1.3.0 and exqalibur 1.4.2; the served meshes match exqalibur's CircuitOptimizer statistically, not bitwise, and the identical sim and QPU meshes hold for the one-circuit single/job-04 body; the iterated job-02 body returned different meshes on qpu:belenos (qd-belenos-same-meshes-drift-between-jobs).",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/analysis.json",
@@ -4885,6 +4899,125 @@
       "assumptions": [],
       "depends_on": [
         "qd-belenos-random-meshes-no-class-fits-under-receipt-model"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-qpu-belenos-84-84-zero-divisor-program",
+      "statement": "On qpu:belenos one 16-iteration job (4e208d22, compilation seed 0) carries all 168 zero products and 168 bright controls of the 84 box-kite edges as 8 dark and 8 bright one-photon configurations and reads algebra share a = 0.048 averaged over the dark configurations (0.000 to 0.184 each) and a = 0.979 over the bright ones (0.936 to 0.991), a bright-minus-dark contrast of 0.931, with a median of 0.952 of one-click samples kept on the four block modes.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job in one calibration session (HOM 57.6 %, couplers ca90c1c0) on the meshes this job returned; the chip drifts between jobs by a median TVD of 0.128 on identical meshes, so each configuration's value is a single-job snapshot whose spread a seed ensemble measures. The dark floor carries routing, compile and drift contributions together.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-18T033336Z-qpu_belenos-belenos_mesh-job-02/analysis.json",
+          "sha256": "5a5ef4f52b0d6f375bc709a018ed41ed579dda5404cf719c08122197d50c8dbc"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/followup.json",
+          "sha256": "aeb7aa2a2d361238aa1f2abb07e1448437d455e0edbff18bbe629064857c1407"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-508": "replay",
+        "core-536": "replay",
+        "core-510": "freshness"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-02"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-sim-belenos-84-84-zero-divisor-program"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-bright-block-leak-is-job-specific",
+      "statement": "Sparse block targets do not leak like Q1 in the iterated mesh form on qpu:belenos: the sixteen block configurations of job-02 keep a median in_block of 0.952 (0.751 to 0.999), far above the preregistered sparse-failure bound 0.65, and Q1's own bright target keeps 0.987 (a = 0.988) where the one-circuit numeric-unitary job kept 0.470 (a = 0.256) before and 0.504 after a calibration, so the leak belongs to that job.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The rule separates sparse targets from the Q1 job; it does not separate the one-circuit job form from Q1's own compiled mesh 29dc6ef8, since that form always returns that mesh. The preregistered job-specific threshold (0.924, also passed) comes from the exploratory fitted-efficiency reanalysis of C1 and enters no conclusion above.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/followup.json",
+          "sha256": "aeb7aa2a2d361238aa1f2abb07e1448437d455e0edbff18bbe629064857c1407"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/followup-preregistration.json",
+          "sha256": "0484b3527c18e39c49377fb1b026dbf1e7c71d8a7c3cf9c8a1713eb7b65090d4"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T033336Z-qpu_belenos-belenos_mesh-job-02/analysis.json",
+          "sha256": "5a5ef4f52b0d6f375bc709a018ed41ed579dda5404cf719c08122197d50c8dbc"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-536": "replay",
+        "core-508": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-02",
+        "qd-qpu-belenos-single-job-04",
+        "qd-qpu-belenos-single-job-04-replay"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-belenos-bright-block-leak-survives-recalibration"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-same-meshes-drift-between-jobs",
+      "statement": "The exact body of C1 job-03, re-sent to qpu:belenos 36 minutes later (f9e13312), returned the same sixteen compiled meshes and different one-click histograms (summed G^2 homogeneity 2564 on 226 degrees of freedom, median TVD 0.128 between the runs), so the chip's realization of a fixed mesh drifts between jobs within one coupler state; the iterated job-02 body returned sixteen different meshes on qpu:belenos than on sim:belenos.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One repeated job pair 36 minutes apart; it does not resolve drift within a job or its time constant, and the sim-QPU mesh difference is shown for one iterated body while the one-circuit single/job-04 body returned identical meshes.",
+      "evidence": [
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/followup.json",
+          "sha256": "aeb7aa2a2d361238aa1f2abb07e1448437d455e0edbff18bbe629064857c1407"
+        },
+        {
+          "path": "results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/followup-preregistration.json",
+          "sha256": "0484b3527c18e39c49377fb1b026dbf1e7c71d8a7c3cf9c8a1713eb7b65090d4"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03/analysis.json",
+          "sha256": "71d04106413b1a2436b2c2c2a58450a86f2ed53c3339c85902ca2e23810f8c8b"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03/analysis.json",
+          "sha256": "d62e9498e4d5ad873fa96d702e7f7a28c4869b05326c8f22b26f78fc47768eab"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {
+        "core-536": "replay",
+        "core-508": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-mesh-job-03",
+        "qd-qpu-belenos-mesh-job-03-repeat",
+        "qd-qpu-belenos-mesh-job-02"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qd-cloud-retranspiles-architecture-circuits"
       ],
       "supersedes": [],
       "superseded_by": null

@@ -42,9 +42,14 @@ that adds shots changes it materially.
   and `computed_circuit`. For a 24-mode circuit the compiled circuit is the
   full chip mesh: 552 beam splitters (Rx convention, calibrated angles such as
   1.5867 against pi/2) and 574 phase shifters, so a photon crosses about 48
-  elements whatever the block's size. The sim and the QPU returned
-  byte-identical compiled circuits for the same case, so a QPU deviation from
-  a sim result is the hardware's realization of that circuit.
+  elements whatever the block's size. For the one-circuit single/job-04
+  body the sim and the QPU returned byte-identical compiled circuits, and the
+  QPU returned the same circuit again after a calibration. The iterated
+  belenos_mesh/job-02 body returned sixteen different meshes on the QPU than
+  on the sim (bodies equal but for platform and process_id, couplers
+  unchanged), while the QPU returned all sixteen meshes of job-03 again for
+  the repeated body: the QPU is self-consistent, and a sim mesh predicts an
+  iterated QPU mesh only through the same target.
 - **Input adaptation.** A photon on a mode without a source makes the cloud
   add routing permutations and re-transpile (`guide/user-guide/04-compilation.md`);
   every case puts photons on the connected modes 0, 2, 4, 6, 8, 9, 12, 13,
@@ -237,8 +242,7 @@ The conclusion is that the error is in the chip's realization of a
 correct circuit, a single-photon interferometer error of at least 0.5 rad
 equivalent per heater or a misrouted photon, and that one run cannot
 separate the classes. The discriminating job is `belenos_mesh/job-00`:
-sixteen settings whose returned meshes (identical on the simulator and the
-QPU for the same body) respond differently to each class.
+sixteen settings whose returned meshes respond differently to each class.
 
 **Lessons learned and how each is resolved.**
 
@@ -418,6 +422,22 @@ the couplers equaled Q1's throughout.
    not the chip's generic error (inference, moderate confidence: a
    mesh-form job with sparse targets in the same coupler state raises or
    lowers it).
+5. The preregistered follow-up (`followup-preregistration.json`, committed
+   before submission; readout `followup.json`). belenos_mesh job-02 on
+   qpu:belenos (job 4e208d22) kept a median in_block of 0.952 over its
+   sixteen block configurations, above the 0.924 job-specific threshold
+   recomputed on the meshes it returned: **Q1's leak belongs to its
+   one-circuit numeric-unitary job, not to sparse targets.** Q1's own target
+   (bright-04) kept in_block 0.987 and a = 0.988 in the iterated form, against
+   0.470 and 0.256 as a single unitary.
+6. The exact repeat of C1 job-03 (job f9e13312, 36 minutes after the
+   original) returned the same sixteen meshes and different histograms:
+   summed G^2 2564 on 226 degrees of freedom, median TVD 0.128 between the
+   runs. **The chip drifts between jobs** by about as much as C1's whole
+   held-out residual against the ideal (0.149), which is why no offset vector
+   fitted on three runs predicts the fourth. Q1 and its replay, whose
+   one-circuit failure repeated within 0.034 across a calibration, are the
+   exception that this drift does not explain.
 
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 
@@ -484,6 +504,15 @@ signed two-label zero products at D = 16, 32 and 64
 32-configuration job is the D = 64 program as well. A one-hot D = 32
 encoding needs 34 modes, beyond the chip's 24.
 
+On qpu:belenos (job 4e208d22, 1.003 credits, compilation seed 0) the program
+reads algebra share a = 0.048 averaged over the 8 dark configurations (0.000
+to 0.184; dark-11 the highest) and a = 0.979 over the 8 bright ones (0.936 to
+0.991): a bright-minus-dark contrast of 0.931 for all 168 zero products and
+168 controls of the 84 edges in one job. The values are one job's snapshot of
+a chip that drifts between jobs (section 7, item 6); the seed ensemble with
+split-half selection that the "no class fits" branch preregisters measures
+their spread.
+
 ## 9. Open conjectures and their falsifiers
 
 | Conjecture | Test | Falsifier |
@@ -497,7 +526,10 @@ encoding needs 34 modes, beyond the chip's 24.
 | The photon is misrouted into another source mode | source models on the returned meshes of C1 | settled: refuted on random meshes, every misroute fraction's best point is 0 under fitted efficiencies |
 | The chip's error class is random heater noise | class scans over C1 | open: under fitted efficiencies sigma 0.05 is the best point of a family that fails the fit (4.2 floors held out) |
 | The chip carries static heater offsets that user jobs can measure | `--static` and `--efficiency` over the four runs of C1 | settled for this session: refuted, held-out gain -75911 nats (receipt model) and -32579 nats (fitted efficiencies) |
-| The bright-block leak is a property of its job (numeric unitary form or sparse target), not the chip's generic error | belenos_mesh job-02 on qpu:belenos scored against the C1 efficiencies, same couplers | its bright configurations keep in_block near the C1-sized prediction (form or mesh) or leak like Q1 (sparse targets) |
+| The bright-block leak is a property of its job (numeric unitary form or sparse target), not the chip's generic error | belenos_mesh job-02 on qpu:belenos scored against the C1 efficiencies, same couplers | settled: job specific, median in_block 0.952 against the 0.924 threshold; Q1's target kept 0.987 in the iterated form |
+| The one-circuit job form, not the bright block's own mesh, causes the leak | the bright block as a one-setting architecture-form job (job-01 shape) and as a two-setting iterated job on qpu:belenos | the one-setting job leaks like Q1 while the iterated one does not (form), or both keep in_block above 0.9 (the mesh 29dc6ef8) |
+| The same body returns the same meshes on sim:belenos and qpu:belenos | job-02 on both | settled: refuted for iterated jobs (16 of 16 meshes differ); holds for the one-circuit single/job-04 |
+| C1's residual is a fixed property of each mesh within a session | exact repeat of C1 job-03 | settled: refuted, same meshes and G^2 2564 on 226 degrees of freedom (drift) |
 | compilation_seed selects the served mesh | a seed screen on sim:belenos | two seeds return the same mesh for the same target |
 | The bright-block leak is a calibration episode that the HOM figure indexes | exact replay of Q1's mesh after the calibration that moved HOM from 92.6 % to 57.6 % | settled: refuted, the identical mesh 29dc6ef8 kept in_block 0.504 (0.470 at Q1) with the leak on modes 17 to 19 |
 | The fringe visibility separates edge from strut on hardware | the fringe settings of belenos_mesh job-00 on qpu:belenos | edge visibility within 4.5 standard errors of the strut's |
@@ -544,3 +576,5 @@ Not yet used:
 | 2026-10-18 03:04 | fa847dfd | qpu:belenos | belenos_mesh job-04, C1 run 2 | 1.003 | no class fits (14.6 floors) |
 | 2026-10-18 03:07 | 0f0f242b | qpu:belenos | belenos_mesh job-05, C1 run 3 | 1.003 | no class fits (9.6 floors) |
 | 2026-10-18 03:10 | 445e0482 | qpu:belenos | belenos_mesh job-06, C1 run 4 | 1.003 | no class fits (14.4 floors); `--static` declares nothing; fitted efficiencies reach 4.2 floors held out |
+| 2026-10-18 03:34 | 4e208d22 | qpu:belenos | belenos_mesh job-02, the 84/84 program | 1.003 | dark a = 0.048, bright a = 0.979; median in_block 0.952, preregistered verdict job specific; 16 meshes differ from the sim's |
+| 2026-10-18 03:37 | f9e13312 | qpu:belenos | belenos_mesh job-03, exact repeat of f945a01d | 1.003 | same 16 meshes; G^2 2564 on 226 dof, median TVD 0.128: drift |

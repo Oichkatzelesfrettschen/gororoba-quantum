@@ -1,0 +1,350 @@
+{
+ "schema": "qd-belenos-followup-v1",
+ "preregistration_sha256": "0484b3527c18e39c49377fb1b026dbf1e7c71d8a7c3cf9c8a1713eb7b65090d4",
+ "job_02": {
+  "run": "2026-10-18T033336Z-qpu_belenos-belenos_mesh-job-02",
+  "configurations": [
+   {
+    "name": "cold-dark-05-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.880667,
+    "in_block_wilson95": [
+     0.863281,
+     0.896108
+    ],
+    "a": 0.0,
+    "a_wilson95": [
+     0.0,
+     0.0029
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.9636,
+     "p05": 0.9256,
+     "p95": 0.9891
+    }
+   },
+   {
+    "name": "cold-dark-06-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.998665,
+    "in_block_wilson95": [
+     0.995145,
+     0.999634
+    ],
+    "a": 0.023396,
+    "a_wilson95": [
+     0.01687,
+     0.032363
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.976,
+     "p05": 0.9479,
+     "p95": 0.9925
+    }
+   },
+   {
+    "name": "cold-dark-08-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.968,
+    "in_block_wilson95": [
+     0.957829,
+     0.97578
+    ],
+    "a": 0.069559,
+    "a_wilson95": [
+     0.057578,
+     0.083812
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.9873,
+     "p05": 0.9692,
+     "p95": 0.9973
+    }
+   },
+   {
+    "name": "cold-dark-11-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.833778,
+    "in_block_wilson95": [
+     0.814077,
+     0.851772
+    ],
+    "a": 0.184147,
+    "a_wilson95": [
+     0.163631,
+     0.206601
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.9726,
+     "p05": 0.9461,
+     "p95": 0.9921
+    }
+   },
+   {
+    "name": "cold-dark-16-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.896,
+    "in_block_wilson95": [
+     0.879527,
+     0.91045
+    ],
+    "a": 0.057292,
+    "a_wilson95": [
+     0.046083,
+     0.071024
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.9529,
+     "p05": 0.9007,
+     "p95": 0.9866
+    }
+   },
+   {
+    "name": "cold-dark-19-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.988644,
+    "in_block_wilson95": [
+     0.981889,
+     0.992898
+    ],
+    "a": 0.0,
+    "a_wilson95": [
+     0.0,
+     0.002589
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.975,
+     "p05": 0.9444,
+     "p95": 0.9941
+    }
+   },
+   {
+    "name": "cold-dark-21-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.992667,
+    "in_block_wilson95": [
+     0.986916,
+     0.9959
+    ],
+    "a": 0.013432,
+    "a_wilson95": [
+     0.008712,
+     0.020656
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.9626,
+     "p05": 0.9226,
+     "p95": 0.9879
+    }
+   },
+   {
+    "name": "cold-dark-22-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.994,
+    "in_block_wilson95": [
+     0.988636,
+     0.99684
+    ],
+    "a": 0.032864,
+    "a_wilson95": [
+     0.024947,
+     0.043181
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.967,
+     "p05": 0.93,
+     "p95": 0.9908
+    }
+   },
+   {
+    "name": "cold-bright-04-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.987333,
+    "in_block_wilson95": [
+     0.980301,
+     0.991876
+    ],
+    "a": 0.987846,
+    "a_wilson95": [
+     0.98087,
+     0.992298
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.9538,
+     "p05": 0.9061,
+     "p95": 0.9841
+    }
+   },
+   {
+    "name": "cold-bright-07-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.750667,
+    "in_block_wilson95": [
+     0.728151,
+     0.771901
+    ],
+    "a": 0.977798,
+    "a_wilson95": [
+     0.967429,
+     0.984917
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.9802,
+     "p05": 0.9529,
+     "p95": 0.9964
+    }
+   },
+   {
+    "name": "cold-bright-09-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.921333,
+    "in_block_wilson95": [
+     0.906608,
+     0.933906
+    ],
+    "a": 0.935601,
+    "a_wilson95": [
+     0.921413,
+     0.947373
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.9714,
+     "p05": 0.9397,
+     "p95": 0.991
+    }
+   },
+   {
+    "name": "cold-bright-10-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.93516,
+    "in_block_wilson95": [
+     0.921534,
+     0.946558
+    ],
+    "a": 0.989278,
+    "a_wilson95": [
+     0.982385,
+     0.993492
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.955,
+     "p05": 0.9106,
+     "p95": 0.9844
+    }
+   },
+   {
+    "name": "cold-bright-17-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.996667,
+    "in_block_wilson95": [
+     0.992221,
+     0.998575
+    ],
+    "a": 0.991304,
+    "a_wilson95": [
+     0.985179,
+     0.994911
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.9613,
+     "p05": 0.9101,
+     "p95": 0.9884
+    }
+   },
+   {
+    "name": "cold-bright-18-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.91,
+    "in_block_wilson95": [
+     0.894451,
+     0.923455
+    ],
+    "a": 0.987546,
+    "a_wilson95": [
+     0.980145,
+     0.99221
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.9555,
+     "p05": 0.9077,
+     "p95": 0.9848
+    }
+   },
+   {
+    "name": "cold-bright-20-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.900667,
+    "in_block_wilson95": [
+     0.884491,
+     0.914795
+    ],
+    "a": 0.989637,
+    "a_wilson95": [
+     0.982681,
+     0.993817
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.9506,
+     "p05": 0.9011,
+     "p95": 0.9851
+    }
+   },
+   {
+    "name": "cold-bright-23-20",
+    "mesh_equals_s5": false,
+    "in_block": 0.991333,
+    "in_block_wilson95": [
+     0.985228,
+     0.994928
+    ],
+    "a": 0.973773,
+    "a_wilson95": [
+     0.964348,
+     0.980755
+    ],
+    "predicted_in_block_at_0.08": {
+     "mean": 0.9517,
+     "p05": 0.9061,
+     "p95": 0.9819
+    }
+   }
+  ],
+  "median_in_block": 0.95158,
+  "job_specific_threshold": 0.9241,
+  "sparse_fail_threshold": 0.65,
+  "verdict": "job_specific",
+  "a_mean_by_kind": {
+   "bright": 0.979098,
+   "dark": 0.047586
+  }
+ },
+ "job_03_repeat": {
+  "runs": [
+   "2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03",
+   "2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03"
+  ],
+  "meshes_identical": [
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true
+  ],
+  "g2": 2563.537196,
+  "dof": 226,
+  "p_value": 0.0,
+  "median_tvd_between_runs": 0.128,
+  "verdict": "drift"
+ }
+}
