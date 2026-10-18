@@ -80,8 +80,25 @@ FAILURE_TAIL = re.compile(r"^=== (\S+) exit ")
 CACHE_SCHEMA = "gororoba-premerge-base-v1"
 # Gates read these to choose a device, toolchain, live or replay path, thread
 # count or warning policy, so each one's value enters the cache key.
-KEY_PREFIXES = ("GOROROBA_", "QI_", "OQ_", "QD_", "QISKIT_", "PYTHON", "OMP_", "OPENBLAS_", "MKL_", "BLIS_")
-KEY_VARIABLES = ("GLIBC_TUNABLES", "PATH", "HOME", "VIRTUAL_ENV")
+KEY_PREFIXES = (
+    "GOROROBA_",
+    "QI_",
+    "OQ_",
+    "QD_",
+    "QISKIT_",
+    "PYTHON",
+    "OMP_",
+    "OPENBLAS_",
+    "MKL_",
+    "BLIS_",
+    "MYPY",
+    "MPL",
+    "UV_",
+    "XDG_",
+    "LD_",
+    "CUDA_",
+)
+KEY_VARIABLES = ("GLIBC_TUNABLES", "PATH", "HOME", "VIRTUAL_ENV", "TMPDIR")
 # Gates run these from PATH (ci/pinned_tool.py prefers an installed ruff or
 # mypy at its pin and otherwise runs the pin through uv), so each one's
 # resolved file identity enters the key.
@@ -336,7 +353,10 @@ def premerge(
                 base_results = {name: (0, "") for name in passes}
                 if unknown:
                     print(f"premerge: rerunning {len(unknown)} merge failures on the base: {', '.join(unknown)}")
-                    base_results.update(results(base_tree, max_seconds, base_replay, unknown))
+                    # A base runner without --gates reruns every gate; only
+                    # the requested ones replace a cached pass.
+                    rerun = results(base_tree, max_seconds, base_replay, unknown)
+                    base_results.update({name: rerun[name] for name in unknown if name in rerun})
     finally:
         with contextlib.suppress(OSError):
             worktrees.rmdir()
@@ -346,6 +366,11 @@ def premerge(
         print(f"=== {name} fails on the merge and passes on {base_ref}\n{tail}\n")
     if shared:
         print(f"failing on {base_ref} and on the merge (host or main): {', '.join(shared)}")
+    if introduced and passes is not None:
+        print(
+            "premerge: a failure that also occurs on the base under a host change the key omits reads as "
+            "introduced against cached passes; --no-cache reruns the base in full"
+        )
     print(
         f"premerge {ref} ({ref_commit[:12]}) into {base_ref} ({base_commit[:12]}): "
         f"{len(merge_results)} gates at most {max_seconds:g} s, {len(introduced)} introduced failures"
@@ -482,6 +507,23 @@ def cache_self_test(repo: Path, worktrees: Path, cache: Path) -> None:
     status, text = run("consistent", DEFAULT_MAX_SECONDS / 2)
     if status != 0 or "base cache miss" not in text or len(list(cache.glob("*.json"))) != 2:
         raise RuntimeError(f"a changed --max-seconds reused another key's entry:\n{text}")
+    # A base runner without --gates reruns every gate. Its results replace
+    # only the requested failures, so a cached pass whose rerun happens to
+    # fail still marks the merge failure introduced.
+    real_results = results
+
+    def legacy(
+        root: Path, max_seconds: float, replay: dict[str, str] | None = None, gates: list[str] | None = None
+    ) -> dict[str, tuple[int, str]]:
+        found = real_results(root, max_seconds, replay)
+        if root.name.startswith("merge-") or gates is not None:
+            found["always"] = (1, "planted failure")
+        return found
+
+    with mock.patch(f"{__name__}.results", legacy):
+        status, text = run("consistent")
+    if status != 1 or "=== always fails on the merge" not in text:
+        raise RuntimeError(f"a legacy base rerun overwrote a cached pass:\n{text}")
     with mock.patch.dict(os.environ, {"GOROROBA_AER_DEVICE": "premerge-key-probe"}):
         status, text = run("consistent")
     if status != 0 or "base cache miss" not in text or len(list(cache.glob("*.json"))) != 3:
