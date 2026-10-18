@@ -25,7 +25,12 @@ backend's current calibration, and writes index.json mapping every job and
 PUB start to its snapshot. ``--append`` reads each backend's current calibration (read-only) and
 records each new identity in history/appended.json, outside the index whose
 snapshot set retained ghost results bind; it reads the service only and
-submits nothing.
+submits nothing. ``--add`` indexes only the audited jobs index.json lacks: it
+fetches their execution-start calibrations, exports the identities no
+retained snapshot carries, and appends the jobs and new files while every
+indexed job, the current map and every retained snapshot keep their bytes,
+so ghost results bound to the existing snapshot set stay valid and only the
+new (run, snapshot) pairs need a ghost (scripts/ghost_run.py --merge).
 ``--check`` needs no network: every indexed file
 exists with its recorded sha256, rebuilds its Target, the index covers
 exactly the audited jobs, and every executed member's start maps to a
@@ -110,29 +115,32 @@ def export(backend: Any, name: str, props: Any, target: Any, written: dict[str, 
     return relative
 
 
+def index_job(job: dict[str, Any], service: Any, backends: dict[str, Any], written: dict[str, str]) -> dict[str, Any]:
+    """One audited job's index entry: each execution start mapped to the snapshot export() returns for it."""
+    starts = execution_starts(job)
+    source = "collect.json pub_timing"
+    if not starts:
+        running = service.job(job["job_id"]).metrics()["timestamps"]["running"]
+        starts = [running if "+" in running or running.endswith("Z") else running + "+00:00"]
+        source = "job metrics timestamps.running"
+    backend = backends[job["backend"]]
+    windows = []
+    for start in starts:
+        when = datetime.fromisoformat(start.replace("Z", "+00:00"))
+        props = backend.properties(datetime=when)
+        target = backend.target_history(datetime=when)
+        windows.append({"start": start, "snapshot": export(backend, job["backend"], props, target, written)})
+    entry = {"job_id": job["job_id"], "run": job["run"], "backend": job["backend"], "start_source": source}
+    return entry | {"windows": windows}
+
+
 def write() -> int:
     from qiskit_ibm_runtime import QiskitRuntimeService
 
     service = QiskitRuntimeService()
     backends = {name: service.backend(name) for name in BACKENDS}
     written: dict[str, str] = {}
-    jobs = []
-    for job in json.loads(AUDIT.read_text(encoding="utf-8"))["jobs"]:
-        starts = execution_starts(job)
-        source = "collect.json pub_timing"
-        if not starts:
-            running = service.job(job["job_id"]).metrics()["timestamps"]["running"]
-            starts = [running if "+" in running or running.endswith("Z") else running + "+00:00"]
-            source = "job metrics timestamps.running"
-        backend = backends[job["backend"]]
-        windows = []
-        for start in starts:
-            when = datetime.fromisoformat(start.replace("Z", "+00:00"))
-            props = backend.properties(datetime=when)
-            target = backend.target_history(datetime=when)
-            windows.append({"start": start, "snapshot": export(backend, job["backend"], props, target, written)})
-        entry = {"job_id": job["job_id"], "run": job["run"], "backend": job["backend"], "start_source": source}
-        jobs.append(entry | {"windows": windows})
+    jobs = [index_job(job, service, backends, written) for job in json.loads(AUDIT.read_text(encoding="utf-8"))["jobs"]]
     current = {}
     for name, backend in backends.items():
         backend.refresh()
@@ -141,7 +149,7 @@ def write() -> int:
         relative: {"calibration": calibration, "sha256": sha256(ROOT / relative)}
         for relative, calibration in sorted(written.items())
     }
-    index = {
+    index: dict[str, Any] = {
         "schema": "ghost-calibration-index-v1",
         "retrieved_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%MZ"),
         "jobs": jobs,
@@ -151,6 +159,127 @@ def write() -> int:
     INDEX.write_text(json.dumps(index, indent=1) + "\n", encoding="utf-8")
     print(f"{len(jobs)} jobs, {len(files)} distinct calibrations")
     return 0
+
+
+def merged_index(
+    index: dict[str, Any], appended: dict[str, Any], jobs: list[dict[str, Any]], digests: dict[str, dict[str, str]]
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """The index with jobs appended in audit order and their new snapshots listed, and the appended record.
+
+    Every existing job, the current map and every listed file keep their
+    entries; files stay in sorted path order, as write() lists them. A window
+    on a snapshot appended.json holds moves that snapshot into the index with
+    its recorded calibration and sha256, since check() refuses a path both
+    indexed and appended. digests gives the calibration and sha256 of every
+    other path the new windows name.
+    """
+    known = {job["job_id"] for job in index["jobs"]}
+    require(all(job["job_id"] not in known for job in jobs), "an added job is already indexed")
+    require(len({job["job_id"] for job in jobs}) == len(jobs), "an added job repeats")
+    named = {w["snapshot"] for job in jobs for w in job["windows"]}
+    files = dict(index["files"])
+    remaining = dict(appended["files"])
+    for relative in sorted(named - set(files)):
+        if relative in remaining:
+            entry = remaining.pop(relative)
+            files[relative] = {"calibration": entry["calibration"], "sha256": entry["sha256"]}
+        else:
+            require(relative in digests, f"{relative}: no calibration and sha256 for a new snapshot")
+            files[relative] = {"calibration": digests[relative]["calibration"], "sha256": digests[relative]["sha256"]}
+    out = dict(index, jobs=[*index["jobs"], *jobs], files=dict(sorted(files.items())))
+    return out, dict(appended, files=remaining)
+
+
+def add() -> int:
+    """Index the audited jobs index.json lacks and export only the snapshots their execution starts name.
+
+    Read-only against the service, like --write, but every indexed job, the
+    current map, retrieved_utc and every retained snapshot keep their bytes:
+    export() returns a known calibration identity without rewriting its file.
+    """
+    from qiskit_ibm_runtime import QiskitRuntimeService
+
+    index = json.loads(INDEX.read_text(encoding="utf-8"))
+    appended: dict[str, Any] = {"schema": "ghost-calibration-appended-v1", "files": {}}
+    if APPENDED.is_file():
+        appended = json.loads(APPENDED.read_text(encoding="utf-8"))
+    known = {job["job_id"] for job in index["jobs"]}
+    missing = [job for job in json.loads(AUDIT.read_text(encoding="utf-8"))["jobs"] if job["job_id"] not in known]
+    if not missing:
+        print("ghost calibrations: every audited job is indexed")
+        return 0
+    service = QiskitRuntimeService()
+    backends = {name: service.backend(name) for name in sorted({job["backend"] for job in missing})}
+    written = {relative: entry["calibration"] for relative, entry in index["files"].items()}
+    written |= {relative: entry["calibration"] for relative, entry in appended["files"].items()}
+    retrieved = datetime.now(UTC).strftime("%Y-%m-%dT%H:%MZ")
+    jobs = [index_job(job, service, backends, written) | {"retrieved_utc": retrieved} for job in missing]
+    digests = {
+        relative: {"calibration": calibration, "sha256": sha256(ROOT / relative)}
+        for relative, calibration in written.items()
+        if relative not in index["files"] and relative not in appended["files"]
+    }
+    out, rest = merged_index(index, appended, jobs, digests)
+    INDEX.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
+    if APPENDED.is_file():
+        APPENDED.write_text(json.dumps(rest, indent=1) + "\n", encoding="utf-8")
+    print(f"added {len(jobs)} jobs, {len(out['files']) - len(index['files'])} snapshots")
+    return 0
+
+
+def self_test() -> None:
+    """merged_index on a synthetic index: existing entries keep their bytes, appended snapshots move, repeats fail."""
+    old_job: dict[str, Any] = {
+        "job_id": "a",
+        "run": "results/live/r0",
+        "backend": "ibm_x",
+        "windows": [{"start": "s0", "snapshot": "p0"}],
+    }
+    index: dict[str, Any] = {
+        "schema": "ghost-calibration-index-v1",
+        "retrieved_utc": "2026-01-01T00:00Z",
+        "jobs": [old_job],
+        "current": {"ibm_x": "p2"},
+        "files": {"p0": {"calibration": "c0", "sha256": "0"}, "p2": {"calibration": "c2", "sha256": "2"}},
+    }
+    appended: dict[str, Any] = {
+        "schema": "ghost-calibration-appended-v1",
+        "files": {"p1": {"calibration": "c1", "sha256": "1"}},
+    }
+    new_job: dict[str, Any] = {
+        "job_id": "b",
+        "run": "results/live/r1",
+        "backend": "ibm_x",
+        "windows": [
+            {"start": "s1", "snapshot": "p1"},
+            {"start": "s2", "snapshot": "p3"},
+            {"start": "s3", "snapshot": "p0"},
+        ],
+    }
+    before = json.dumps(index, indent=1)
+    out, rest = merged_index(index, appended, [new_job], {"p3": {"calibration": "c3", "sha256": "3"}})
+    require(json.dumps(index, indent=1) == before, "self-test: merged_index mutated its input")
+    require(out["jobs"] == [old_job, new_job], "self-test: jobs are not the old ones followed by the added one")
+    require(out["current"] == index["current"] and out["retrieved_utc"] == index["retrieved_utc"], "self-test: header")
+    require(list(out["files"]) == ["p0", "p1", "p2", "p3"], "self-test: files are not in sorted path order")
+    require(all(out["files"][k] == v for k, v in index["files"].items()), "self-test: an indexed file changed")
+    require(out["files"]["p1"] == {"calibration": "c1", "sha256": "1"}, "self-test: the appended snapshot moved wrong")
+    require(rest["files"] == {}, "self-test: the moved snapshot stays appended")
+    text = json.dumps(out, indent=1)
+    require(text.startswith(before.split('"jobs"')[0]), "self-test: header bytes changed")
+    cases: list[tuple[tuple[list[dict[str, Any]], dict[str, dict[str, str]]], str]] = [
+        (([old_job], {}), "already indexed"),
+        (([new_job, new_job], {"p3": {"calibration": "c3", "sha256": "3"}}), "repeats"),
+        (([new_job], {}), "p3: no calibration"),
+    ]
+    for bad, fragment in cases:
+        try:
+            merged_index(index, appended, *bad)
+        except SystemExit as reason:
+            require(fragment in str(reason), f"self-test: {reason} lacks {fragment!r}")
+            continue
+        raise SystemExit(f"self-test: expected a failure naming {fragment!r}")
+    print("ghost calibrations self-test: --add keeps every indexed entry and lists new snapshots in order")
 
 
 def append() -> int:
@@ -241,7 +370,14 @@ def main() -> int:
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
     mode.add_argument("--append", action="store_true")
+    mode.add_argument("--add", action="store_true", help="index only the audited jobs index.json lacks")
+    mode.add_argument("--self-test", action="store_true", help="exercise --add's merge on a synthetic index")
     args = parser.parse_args()
+    if args.self_test:
+        self_test()
+        return 0
+    if args.add:
+        return add()
     if args.append:
         return append()
     return write() if args.write else check()

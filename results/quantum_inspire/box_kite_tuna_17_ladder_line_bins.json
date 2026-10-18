@@ -1,0 +1,2482 @@
+{
+ "analysis_sha256": "bb0069e432201b268b7ef983108d88e2c9187ffa1ca48b6e9fdc8127acf7a5f6",
+ "binds": "a future run only; the preregistered ladder record is analyze_ladder's",
+ "cells": [
+  "all",
+  "bin-0",
+  "bin-1",
+  "bin-2",
+  "bin-3",
+  "bin-4",
+  "bin-5",
+  "bin-6",
+  "bin-7"
+ ],
+ "exploratory": true,
+ "harmonic_rules": {
+  "first_harmonic_rule_holds": 10,
+  "first_rule_fails": [
+   "batch-04 latin-x-1.cq",
+   "batch-05 latin-y-1.cq"
+  ],
+  "jobs": 12,
+  "max_rule_fails": [],
+  "max_rule_holds": 12,
+  "undetermined": []
+ },
+ "harmonics": [
+  {
+   "batch": "batch-01",
+   "cycles_per_shot": 0.020042693,
+   "depths": {
+    "1": {
+     "aligned": null,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.00254440271,
+      "phase": 0.005135602297,
+      "significant": false
+     },
+     "max_amplitude": 0.00254440271,
+     "phase_offsets": [],
+     "qubit": 1,
+     "se": 0.000828982385,
+     "second": {
+      "amplitude": 0.000281058578,
+      "phase": -1.908173998118,
+      "significant": false
+     }
+    },
+    "5": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.078998432519,
+      "phase": 0.615131416364,
+      "significant": true
+     },
+     "max_amplitude": 0.078998432519,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.07327422664,
+       "se": 0.057428285304
+      }
+     ],
+     "qubit": 10,
+     "se": 0.001518879357,
+     "second": {
+      "amplitude": 0.003170707338,
+      "phase": 0.56615080908,
+      "significant": false
+     }
+    },
+    "9": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.023863694627,
+      "phase": 0.541857189724,
+      "significant": true
+     },
+     "max_amplitude": 0.023863694627,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.049277787436,
+       "se": 0.062347431846
+      }
+     ],
+     "qubit": 12,
+     "se": 0.001291363691,
+     "second": {
+      "amplitude": 0.020851672041,
+      "phase": 0.985158804575,
+      "significant": true
+     }
+    }
+   },
+   "detected": true,
+   "file": "latin-x-1.cq",
+   "first_harmonic_rule": {
+    "difference": 0.021319291918,
+    "holds": true,
+    "se": 0.001534546179
+   },
+   "line_band": "first",
+   "log10_p": -683.2,
+   "log10_p_doubled_band": -53.61,
+   "max_rule": {
+    "difference": 0.021319291918,
+    "holds": true,
+    "se": 0.001442824295
+   },
+   "reference_significant": true
+  },
+  {
+   "batch": "batch-01",
+   "cycles_per_shot": 0.020038832,
+   "depths": {
+    "1": {
+     "aligned": null,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.002042318293,
+      "phase": -0.253355482431,
+      "significant": false
+     },
+     "max_amplitude": 0.002042318293,
+     "phase_offsets": [],
+     "qubit": 12,
+     "se": 0.00089136416,
+     "second": {
+      "amplitude": 0.001022874533,
+      "phase": -1.241463445792,
+      "significant": false
+     }
+    },
+    "5": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.09690228362,
+      "phase": 0.045464986296,
+      "significant": true
+     },
+     "max_amplitude": 0.09690228362,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.014274371426,
+       "se": 0.019462190743
+      }
+     ],
+     "qubit": 1,
+     "se": 0.001482367549,
+     "second": {
+      "amplitude": 0.00570769407,
+      "phase": -0.502005743125,
+      "significant": false
+     }
+    },
+    "9": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.136090346671,
+      "phase": 0.03119061487,
+      "significant": true
+     },
+     "max_amplitude": 0.136090346671,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.195285372402,
+       "se": 0.052010892552
+      }
+     ],
+     "qubit": 10,
+     "se": 0.001637398344,
+     "second": {
+      "amplitude": 0.016179790404,
+      "phase": -0.328189515065,
+      "significant": true
+     }
+    }
+   },
+   "detected": true,
+   "file": "latin-x-2.cq",
+   "first_harmonic_rule": {
+    "difference": 0.134048028378,
+    "holds": true,
+    "se": 0.001864297026
+   },
+   "line_band": "first",
+   "log10_p": -2385.0,
+   "log10_p_doubled_band": -17.76,
+   "max_rule": {
+    "difference": 0.134048028378,
+    "holds": true,
+    "se": 0.001739363351
+   },
+   "reference_significant": true
+  },
+  {
+   "batch": "batch-01",
+   "cycles_per_shot": 0.020039389,
+   "depths": {
+    "1": {
+     "aligned": null,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.003004900953,
+      "phase": -0.126420973194,
+      "significant": false
+     },
+     "max_amplitude": 0.003004900953,
+     "phase_offsets": [],
+     "qubit": 10,
+     "se": 0.001140048462,
+     "second": {
+      "amplitude": 0.001384093386,
+      "phase": 0.088926037604,
+      "significant": false
+     }
+    },
+    "5": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.028282745603,
+      "phase": 0.705929525727,
+      "significant": true
+     },
+     "max_amplitude": 0.028282745603,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.012723281638,
+       "se": 0.039694072891
+      },
+      {
+       "harmonic": 2,
+       "offset": -0.075348210218,
+       "se": 0.080766990644
+      }
+     ],
+     "qubit": 12,
+     "se": 0.001070741991,
+     "second": {
+      "amplitude": 0.006702118212,
+      "phase": 1.235716067744,
+      "significant": true
+     }
+    },
+    "9": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.130290191775,
+      "phase": 0.69320624409,
+      "significant": true
+     },
+     "max_amplitude": 0.130290191775,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.170612318352,
+       "se": 0.030675769657
+      }
+     ],
+     "qubit": 1,
+     "se": 0.00155452248,
+     "second": {
+      "amplitude": 0.027503575539,
+      "phase": 1.045187851475,
+      "significant": true
+     }
+    }
+   },
+   "detected": true,
+   "file": "latin-x-3.cq",
+   "first_harmonic_rule": {
+    "difference": 0.127285290822,
+    "holds": true,
+    "se": 0.00192775793
+   },
+   "line_band": "first",
+   "log10_p": -1708.0,
+   "log10_p_doubled_band": -71.86,
+   "max_rule": {
+    "difference": 0.127285290822,
+    "holds": true,
+    "se": 0.001789670944
+   },
+   "reference_significant": true
+  },
+  {
+   "batch": "batch-02",
+   "cycles_per_shot": 0.020040209,
+   "depths": {
+    "1": {
+     "aligned": null,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.001321278094,
+      "phase": 0.551701938706,
+      "significant": false
+     },
+     "max_amplitude": 0.001321278094,
+     "phase_offsets": [],
+     "qubit": 1,
+     "se": 0.000833923434,
+     "second": {
+      "amplitude": 0.000552615498,
+      "phase": -1.674863001437,
+      "significant": false
+     }
+    },
+    "5": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.077069183569,
+      "phase": -1.133526014706,
+      "significant": true
+     },
+     "max_amplitude": 0.077069183569,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": -0.023962033399,
+       "se": 0.053076597017
+      }
+     ],
+     "qubit": 10,
+     "se": 0.001511656608,
+     "second": {
+      "amplitude": 0.005876309372,
+      "phase": -2.814699503862,
+      "significant": false
+     }
+    },
+    "9": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.026260952057,
+      "phase": -1.109563981308,
+      "significant": true
+     },
+     "max_amplitude": 0.026260952057,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.100098370919,
+       "se": 0.057607045818
+      }
+     ],
+     "qubit": 12,
+     "se": 0.001295174911,
+     "second": {
+      "amplitude": 0.021754081015,
+      "phase": -2.419324704453,
+      "significant": true
+     }
+    }
+   },
+   "detected": true,
+   "file": "latin-y-1.cq",
+   "first_harmonic_rule": {
+    "difference": 0.024939673963,
+    "holds": true,
+    "se": 0.001540424079
+   },
+   "line_band": "first",
+   "log10_p": -641.3,
+   "log10_p_doubled_band": -54.05,
+   "max_rule": {
+    "difference": 0.024939673963,
+    "holds": true,
+    "se": 0.001443280413
+   },
+   "reference_significant": true
+  },
+  {
+   "batch": "batch-02",
+   "cycles_per_shot": 0.020041674,
+   "depths": {
+    "1": {
+     "aligned": null,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.001531518544,
+      "phase": -1.681088502164,
+      "significant": false
+     },
+     "max_amplitude": 0.001531518544,
+     "phase_offsets": [],
+     "qubit": 12,
+     "se": 0.000850941205,
+     "second": {
+      "amplitude": 0.000987389623,
+      "phase": 0.821785318252,
+      "significant": false
+     }
+    },
+    "5": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.090027328213,
+      "phase": -1.079864692008,
+      "significant": true
+     },
+     "max_amplitude": 0.090027328213,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.039720537301,
+       "se": 0.021323582318
+      }
+     ],
+     "qubit": 1,
+     "se": 0.001478314874,
+     "second": {
+      "amplitude": 0.002759266824,
+      "phase": 2.855933901891,
+      "significant": false
+     }
+    },
+    "9": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.117454697326,
+      "phase": -1.11958522931,
+      "significant": true
+     },
+     "max_amplitude": 0.117454697326,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.162464584983,
+       "se": 0.050842161901
+      }
+     ],
+     "qubit": 10,
+     "se": 0.001597792479,
+     "second": {
+      "amplitude": 0.016307840183,
+      "phase": -2.564099628585,
+      "significant": true
+     }
+    }
+   },
+   "detected": true,
+   "file": "latin-y-2.cq",
+   "first_harmonic_rule": {
+    "difference": 0.115923178782,
+    "holds": true,
+    "se": 0.001810260131
+   },
+   "line_band": "first",
+   "log10_p": -1883.0,
+   "log10_p_doubled_band": -17.36,
+   "max_rule": {
+    "difference": 0.115923178782,
+    "holds": true,
+    "se": 0.001672202059
+   },
+   "reference_significant": true
+  },
+  {
+   "batch": "batch-02",
+   "cycles_per_shot": 0.020044766,
+   "depths": {
+    "1": {
+     "aligned": null,
+     "dominant": "second",
+     "first": {
+      "amplitude": 0.003142078374,
+      "phase": -2.082424370946,
+      "significant": false
+     },
+     "max_amplitude": 0.003452468732,
+     "phase_offsets": [],
+     "qubit": 10,
+     "se": 0.001089863978,
+     "second": {
+      "amplitude": 0.003452468732,
+      "phase": 2.123368004105,
+      "significant": false
+     }
+    },
+    "5": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.024647135917,
+      "phase": -2.364669071493,
+      "significant": true
+     },
+     "max_amplitude": 0.024647135917,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.018944780003,
+       "se": 0.044634928242
+      },
+      {
+       "harmonic": 2,
+       "offset": -0.140969656935,
+       "se": 0.06210710326
+      }
+     ],
+     "qubit": 12,
+     "se": 0.001056467173,
+     "second": {
+      "amplitude": 0.008681395556,
+      "phase": 1.234018290318,
+      "significant": true
+     }
+    },
+    "9": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.123961474925,
+      "phase": -2.383613851495,
+      "significant": true
+     },
+     "max_amplitude": 0.123961474925,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.245176303082,
+       "se": 0.028749065204
+      }
+     ],
+     "qubit": 1,
+     "se": 0.001543213174,
+     "second": {
+      "amplitude": 0.029775833994,
+      "phase": 1.025604998024,
+      "significant": true
+     }
+    }
+   },
+   "detected": true,
+   "file": "latin-y-3.cq",
+   "first_harmonic_rule": {
+    "difference": 0.120819396551,
+    "holds": true,
+    "se": 0.001889261864
+   },
+   "line_band": "first",
+   "log10_p": -1492.0,
+   "log10_p_doubled_band": -86.61,
+   "max_rule": {
+    "difference": 0.120509006193,
+    "holds": true,
+    "se": 0.001744444507
+   },
+   "reference_significant": true
+  },
+  {
+   "batch": "batch-04",
+   "cycles_per_shot": 0.020052268,
+   "depths": {
+    "1": {
+     "aligned": null,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.001373626452,
+      "phase": 0.999030553946,
+      "significant": false
+     },
+     "max_amplitude": 0.001373626452,
+     "phase_offsets": [],
+     "qubit": 12,
+     "se": 0.000838766269,
+     "second": {
+      "amplitude": 0.000551497671,
+      "phase": 0.987330119991,
+      "significant": false
+     }
+    },
+    "5": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.079719289517,
+      "phase": 2.611627567228,
+      "significant": true
+     },
+     "max_amplitude": 0.079719289517,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.000167478429,
+       "se": 0.02224193601
+      }
+     ],
+     "qubit": 1,
+     "se": 0.001420188451,
+     "second": {
+      "amplitude": 0.003999833794,
+      "phase": -1.323509086003,
+      "significant": false
+     }
+    },
+    "9": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.123631656031,
+      "phase": 2.611460088798,
+      "significant": true
+     },
+     "max_amplitude": 0.123631656031,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.252003269732,
+       "se": 0.093322570554
+      }
+     ],
+     "qubit": 10,
+     "se": 0.001646364615,
+     "second": {
+      "amplitude": 0.008912027368,
+      "phase": -1.564271669047,
+      "significant": true
+     }
+    }
+   },
+   "detected": true,
+   "file": "latin-x-2.cq",
+   "first_harmonic_rule": {
+    "difference": 0.122258029579,
+    "holds": true,
+    "se": 0.001847713533
+   },
+   "line_band": "first",
+   "log10_p": -1899.0,
+   "log10_p_doubled_band": -3.295,
+   "max_rule": {
+    "difference": 0.122258029579,
+    "holds": true,
+    "se": 0.001748855556
+   },
+   "reference_significant": true
+  },
+  {
+   "batch": "batch-04",
+   "cycles_per_shot": 0.020042204,
+   "depths": {
+    "1": {
+     "aligned": null,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.001475848605,
+      "phase": 1.200393403903,
+      "significant": false
+     },
+     "max_amplitude": 0.001475848605,
+     "phase_offsets": [],
+     "qubit": 10,
+     "se": 0.001154338655,
+     "second": {
+      "amplitude": 0.00147270951,
+      "phase": -2.612936564281,
+      "significant": false
+     }
+    },
+    "5": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.015967554279,
+      "phase": 1.251791364934,
+      "significant": true
+     },
+     "max_amplitude": 0.015967554279,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.011895739176,
+       "se": 0.064665302289
+      },
+      {
+       "harmonic": 2,
+       "offset": -0.156058516178,
+       "se": 0.061556366455
+      }
+     ],
+     "qubit": 12,
+     "se": 0.001010547742,
+     "second": {
+      "amplitude": 0.008406181586,
+      "phase": 2.167674219161,
+      "significant": true
+     }
+    },
+    "9": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.1131800179,
+      "phase": 1.239895625758,
+      "significant": true
+     },
+     "max_amplitude": 0.1131800179,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.208573429633,
+       "se": 0.031237247387
+      }
+     ],
+     "qubit": 1,
+     "se": 0.001502715881,
+     "second": {
+      "amplitude": 0.02657313447,
+      "phase": 2.06264439225,
+      "significant": true
+     }
+    }
+   },
+   "detected": true,
+   "file": "latin-x-3.cq",
+   "first_harmonic_rule": {
+    "difference": 0.111704169295,
+    "holds": true,
+    "se": 0.001894901779
+   },
+   "line_band": "first",
+   "log10_p": -1330.0,
+   "log10_p_doubled_band": -71.0,
+   "max_rule": {
+    "difference": 0.111704169295,
+    "holds": true,
+    "se": 0.001712476895
+   },
+   "reference_significant": true
+  },
+  {
+   "batch": "batch-04",
+   "cycles_per_shot": 0.02004042,
+   "depths": {
+    "1": {
+     "aligned": null,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.002890764055,
+      "phase": -3.134279726804,
+      "significant": false
+     },
+     "max_amplitude": 0.002890764055,
+     "phase_offsets": [],
+     "qubit": 1,
+     "se": 0.000827263624,
+     "second": {
+      "amplitude": 0.000956765477,
+      "phase": -2.681508937122,
+      "significant": false
+     }
+    },
+    "5": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.073012143268,
+      "phase": -2.925052356048,
+      "significant": true
+     },
+     "max_amplitude": 0.073012143268,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.764824115832,
+       "se": 0.467993848678
+      },
+      {
+       "harmonic": 2,
+       "offset": 0.623294874305,
+       "se": 0.476427812127
+      }
+     ],
+     "qubit": 10,
+     "se": 0.001588258322,
+     "second": {
+      "amplitude": 0.00864490901,
+      "phase": 0.150022112031,
+      "significant": true
+     }
+    },
+    "9": {
+     "aligned": true,
+     "dominant": "second",
+     "first": {
+      "amplitude": 0.002741006104,
+      "phase": -0.54828381829,
+      "significant": false
+     },
+     "max_amplitude": 0.020273323061,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": 0.664413185594,
+       "se": 0.468554982095
+      }
+     ],
+     "qubit": 12,
+     "se": 0.001281387474,
+     "second": {
+      "amplitude": 0.020273323061,
+      "phase": 0.232258734608,
+      "significant": true
+     }
+    }
+   },
+   "detected": true,
+   "file": "latin-x-1.cq",
+   "first_harmonic_rule": {
+    "difference": -0.000149757952,
+    "holds": false,
+    "se": 0.001525227512
+   },
+   "line_band": "first",
+   "log10_p": -484.9,
+   "log10_p_doubled_band": -59.3,
+   "max_rule": {
+    "difference": 0.017382559005,
+    "holds": true,
+    "se": 0.001506362985
+   },
+   "reference_significant": false
+  },
+  {
+   "batch": "batch-05",
+   "cycles_per_shot": 0.020038164,
+   "depths": {
+    "1": {
+     "aligned": null,
+     "dominant": "second",
+     "first": {
+      "amplitude": 0.000346698528,
+      "phase": -2.543994217687,
+      "significant": false
+     },
+     "max_amplitude": 0.000474497556,
+     "phase_offsets": [],
+     "qubit": 12,
+     "se": 0.000844942828,
+     "second": {
+      "amplitude": 0.000474497556,
+      "phase": 1.100859909037,
+      "significant": false
+     }
+    },
+    "5": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.091206135867,
+      "phase": -2.694011926857,
+      "significant": true
+     },
+     "max_amplitude": 0.091206135867,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.026941956126,
+       "se": 0.019755794683
+      }
+     ],
+     "qubit": 1,
+     "se": 0.001446150714,
+     "second": {
+      "amplitude": 0.004998574989,
+      "phase": 0.440951520438,
+      "significant": false
+     }
+    },
+    "9": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.137168819829,
+      "phase": -2.720953882983,
+      "significant": true
+     },
+     "max_amplitude": 0.137168819829,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.137968285035,
+       "se": 0.042375073278
+      }
+     ],
+     "qubit": 10,
+     "se": 0.001616518553,
+     "second": {
+      "amplitude": 0.019857311895,
+      "phase": 0.565340971144,
+      "significant": true
+     }
+    }
+   },
+   "detected": true,
+   "file": "latin-y-2.cq",
+   "first_harmonic_rule": {
+    "difference": 0.136822121301,
+    "holds": true,
+    "se": 0.001824023194
+   },
+   "line_band": "first",
+   "log10_p": -2327.0,
+   "log10_p_doubled_band": -27.12,
+   "max_rule": {
+    "difference": 0.136694322273,
+    "holds": true,
+    "se": 0.001668408156
+   },
+   "reference_significant": true
+  },
+  {
+   "batch": "batch-05",
+   "cycles_per_shot": 0.020039437,
+   "depths": {
+    "1": {
+     "aligned": null,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.004859826054,
+      "phase": -2.99368598446,
+      "significant": false
+     },
+     "max_amplitude": 0.004859826054,
+     "phase_offsets": [],
+     "qubit": 10,
+     "se": 0.001072013925,
+     "second": {
+      "amplitude": 0.001344911227,
+      "phase": 1.576827237042,
+      "significant": false
+     }
+    },
+    "5": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.013075030288,
+      "phase": -2.307758226869,
+      "significant": true
+     },
+     "max_amplitude": 0.013075030288,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.119738479817,
+       "se": 0.078084434568
+      }
+     ],
+     "qubit": 12,
+     "se": 0.001004758104,
+     "second": {
+      "amplitude": 0.00455662549,
+      "phase": 1.369862891267,
+      "significant": false
+     }
+    },
+    "9": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.109127904412,
+      "phase": -2.427496706686,
+      "significant": true
+     },
+     "max_amplitude": 0.109127904412,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": -0.177121921696,
+       "se": 0.039359509581
+      }
+     ],
+     "qubit": 1,
+     "se": 0.001511876014,
+     "second": {
+      "amplitude": 0.020519130793,
+      "phase": 1.073948050415,
+      "significant": true
+     }
+    }
+   },
+   "detected": true,
+   "file": "latin-y-3.cq",
+   "first_harmonic_rule": {
+    "difference": 0.104268078358,
+    "holds": true,
+    "se": 0.001853370696
+   },
+   "line_band": "first",
+   "log10_p": -1159.0,
+   "log10_p_doubled_band": -36.51,
+   "max_rule": {
+    "difference": 0.104268078358,
+    "holds": true,
+    "se": 0.001797436378
+   },
+   "reference_significant": true
+  },
+  {
+   "batch": "batch-05",
+   "cycles_per_shot": 0.020038948,
+   "depths": {
+    "1": {
+     "aligned": null,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.001854909037,
+      "phase": -0.481940876851,
+      "significant": false
+     },
+     "max_amplitude": 0.001854909037,
+     "phase_offsets": [],
+     "qubit": 1,
+     "se": 0.000813289073,
+     "second": {
+      "amplitude": 0.000255326579,
+      "phase": 1.430857374409,
+      "significant": false
+     }
+    },
+    "5": {
+     "aligned": true,
+     "dominant": "first",
+     "first": {
+      "amplitude": 0.076669609492,
+      "phase": 0.457744595761,
+      "significant": true
+     },
+     "max_amplitude": 0.076669609492,
+     "phase_offsets": [
+      {
+       "harmonic": 1,
+       "offset": 0.400597824559,
+       "se": 0.470156798781
+      }
+     ],
+     "qubit": 10,
+     "se": 0.001485580808,
+     "second": {
+      "amplitude": 0.003865936095,
+      "phase": 0.584207311371,
+      "significant": false
+     }
+    },
+    "9": {
+     "aligned": true,
+     "dominant": "second",
+     "first": {
+      "amplitude": 0.002696509634,
+      "phase": 0.057146771202,
+      "significant": false
+     },
+     "max_amplitude": 0.021996161091,
+     "phase_offsets": [
+      {
+       "harmonic": 2,
+       "offset": 0.29107655575,
+       "se": 0.4706389831
+      }
+     ],
+     "qubit": 12,
+     "se": 0.001266705228,
+     "second": {
+      "amplitude": 0.021996161091,
+      "phase": 0.696446653904,
+      "significant": true
+     }
+    }
+   },
+   "detected": true,
+   "file": "latin-y-1.cq",
+   "first_harmonic_rule": {
+    "difference": 0.000841600597,
+    "holds": false,
+    "se": 0.001505317658
+   },
+   "line_band": "first",
+   "log10_p": -568.2,
+   "log10_p_doubled_band": -56.92,
+   "max_rule": {
+    "difference": 0.020141252054,
+    "holds": true,
+    "se": 0.001449754377
+   },
+   "reference_significant": false
+  }
+ ],
+ "inputs": {
+  "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-00": {
+   "cases_sha256": "0f7845b18927d4c533b5be9b7c2d3da3569eb5ce1e68fd351a68310519af5299",
+   "raw_sha256": {
+    "readout-0.cq.json": "54c44ce0ea4f3f77c4ce7e01d2e18570adbc342274c72ac0abcc8c821a624f32",
+    "readout-1.cq.json": "6428b533b5c7e2da78ba5dd7f3b27e0af1fb0b38842ac6e480c017c83401601d",
+    "readout-iso-x.cq.json": "f927456c19749566288b253ac8ebea3f5378b6bcc73c1529924d4bb07b0a0e0f"
+   }
+  },
+  "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-01": {
+   "cases_sha256": "181e4112a8bd40af1ddcf19ed57857c8372a9153a9a6f09bcfa741ce5253bcef",
+   "raw_sha256": {
+    "latin-x-1.cq.json": "f5dce9abbafe759c3c4ddcc109b6e3d6ff86b740ab72430fd1f2ab3a74a6d478",
+    "latin-x-2.cq.json": "995ccc7fd1953c3a8c084efc1157b5b06800731521d42064ae36f0cf294c523a",
+    "latin-x-3.cq.json": "c9db3baa7e5e69ed49a14d8ea0982a4d8c9dd9bd17e2250366d30b5efc14eb43"
+   }
+  },
+  "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-02": {
+   "cases_sha256": "4c95a699da03fc914b047162140d0e82b6f8aa81a5f527851cc026043648c988",
+   "raw_sha256": {
+    "latin-y-1.cq.json": "91eba65693dd9115dbab4c961783928e082987e222cac35096334c31c8c3cb05",
+    "latin-y-2.cq.json": "4f871f83f1cac7a7a9a1d140e7a8b654b6d539aaf4c147e159e4edca6da04dbd",
+    "latin-y-3.cq.json": "da67833e946be05fcb32c34eaa838b07d2605defb95d75cbcae15595f492493d"
+   }
+  },
+  "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-03": {
+   "cases_sha256": "e54d83fffc12cf258111f9730e65d3682724665dfe18aedfdd44d883639f8e8f",
+   "raw_sha256": {
+    "readout-0.cq.json": "02a52c03a92141c2e98b395a021918c31b26f930eb14053831d7facc85fb1e48",
+    "readout-1.cq.json": "325d787e56a05511c9812bc76151c55fd7334763b30c585996bda317053c2906",
+    "readout-iso-hzh.cq.json": "83de5336f061688381cb820d18a4e9c5c1714a407058e108ec041a0fb64571de"
+   }
+  },
+  "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-04": {
+   "cases_sha256": "3b30200c639fc57e5807b45c5ba63395ce5656ace7adcff6840b2d48ca680f9c",
+   "raw_sha256": {
+    "latin-x-1.cq.json": "3a86d1ae7d6b33e053afa080f88284e18d5fbf95801afaff40633824dd23128e",
+    "latin-x-2.cq.json": "68b350f5ddcf3f80e9d3a8739f055a46c1f941d16b536500afb0f43f4794d735",
+    "latin-x-3.cq.json": "ebb1860543080f60ac0a72e6f64adcd086891469a8be347f0eba7e54990d4836"
+   }
+  },
+  "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-05": {
+   "cases_sha256": "f031cca6fc285f17ff93d1aa31a75939946416bf280b4556e903a932a904fbeb",
+   "raw_sha256": {
+    "latin-y-1.cq.json": "3e91faf57d25149a88a7255a3b1949c14a80df4e378b91e1de4ba2efc5f1cfb8",
+    "latin-y-2.cq.json": "5ca0b1aada302c39bc75e839ebe80b644ea5d828f47e12748b80e17423c3a66a",
+    "latin-y-3.cq.json": "6a6f0f83a468b924d6f287e01b33154476ceb5e1ddde014f886689967fd9c6a3"
+   }
+  },
+  "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-06": {
+   "cases_sha256": "15c27916161ee2d1d7d25dec3e85810770667b1f60fda937961d68ac54dade80",
+   "raw_sha256": {
+    "readout-0.cq.json": "213468a8de8be55679fd32d597904f39c5e6436cccecec8499c62349ad90c8d6",
+    "readout-1.cq.json": "2109057e2289a5f10c5a2367bd68810ed9bad7121906fa8e5bcc09c7b2f8828c",
+    "readout-iso-x.cq.json": "3b5c81f58cbafdf37b175e916b09a3e8756b9999159fd29cd910d811bfa395a9"
+   }
+  }
+ },
+ "ladder_record": {
+  "path": "results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json",
+  "sha256": "b301929aef16321096dfd04c37e85e58729201bb01db0f9d63a904de7fe5675e"
+ },
+ "line_phase_bins": 8,
+ "post_hoc_rules": [
+  "the line-phase-bin cells (every bin, and the stationary pair of bins 0 and bins / 2 combined in ln rho) were chosen after the ladder analysis showed rho above 1 on every pair",
+  "the max(A1, A2) rule and its depth-9 over depth-1 margin test were chosen after the first-harmonic test read zero at an extremum of a selector's response in batches 4 and 5",
+  "the clean-reference restriction was chosen after the depth-9 first harmonic of (12,14) fell to noise in batch 4",
+  "the doubled-band scan and the quarter-bin phase alignment of every significant harmonic were added after the record was read; on the retained jobs neither moves a detection or a clean batch"
+ ],
+ "rho": [
+  {
+   "batches": [
+    "batch-01",
+    "batch-04"
+   ],
+   "bin_verdicts": {
+    "bin-0": "above 1",
+    "bin-1": "above 1",
+    "bin-2": "above 1",
+    "bin-3": "above 1",
+    "bin-4": "above 1",
+    "bin-5": "above 1",
+    "bin-6": "above 1",
+    "bin-7": "above 1"
+   },
+   "cells": {
+    "all": {
+     "clean": {
+      "interval": [
+       1.020117088751,
+       1.022506067228
+      ],
+      "se": 0.000453432585,
+      "undefined_draws": 0,
+      "value": 1.021339442044
+     },
+     "combined": {
+      "interval": [
+       1.020049377496,
+       1.021655446365
+      ],
+      "se": 0.000310967018,
+      "undefined_draws": 0,
+      "value": 1.020839534689
+     },
+     "combined_iso": {
+      "interval": [
+       1.020105882925,
+       1.021690471206
+      ],
+      "se": 0.000311458009,
+      "undefined_draws": 0,
+      "value": 1.020879626768
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.020117088751,
+        1.022506067228
+       ],
+       "se": 0.000453432585,
+       "undefined_draws": 0,
+       "value": 1.021339442044
+      },
+      "batch-04": {
+       "interval": [
+        1.019210829732,
+        1.021396484899
+       ],
+       "se": 0.000425905808,
+       "undefined_draws": 0,
+       "value": 1.020339872019
+      }
+     }
+    },
+    "bin-0": {
+     "combined": {
+      "interval": [
+       1.054593113275,
+       1.061936326358
+      ],
+      "se": 0.001414527457,
+      "undefined_draws": 0,
+      "value": 1.058223124607
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.057643760618,
+        1.069086684893
+       ],
+       "se": 0.002229983929,
+       "undefined_draws": 0,
+       "value": 1.063143150053
+      },
+      "batch-04": {
+       "interval": [
+        1.048947018465,
+        1.05780629632
+       ],
+       "se": 0.001758800209,
+       "undefined_draws": 0,
+       "value": 1.05332586811
+      }
+     }
+    },
+    "bin-1": {
+     "combined": {
+      "interval": [
+       1.060038498759,
+       1.068052236634
+      ],
+      "se": 0.001553627296,
+      "undefined_draws": 0,
+      "value": 1.063962620553
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.063091523188,
+        1.075654948296
+       ],
+       "se": 0.002377849083,
+       "undefined_draws": 0,
+       "value": 1.068968885317
+      },
+      "batch-04": {
+       "interval": [
+        1.054010266864,
+        1.064052982333
+       ],
+       "se": 0.001970062862,
+       "undefined_draws": 0,
+       "value": 1.058979801453
+      }
+     }
+    },
+    "bin-2": {
+     "combined": {
+      "interval": [
+       1.009849309507,
+       1.013925694558
+      ],
+      "se": 0.000783273193,
+      "undefined_draws": 0,
+      "value": 1.011937657566
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.008508099217,
+        1.014526881859
+       ],
+       "se": 0.001145137036,
+       "undefined_draws": 0,
+       "value": 1.01148299926
+      },
+      "batch-04": {
+       "interval": [
+        1.009664387799,
+        1.015061978875
+       ],
+       "se": 0.00105305903,
+       "undefined_draws": 0,
+       "value": 1.012392520239
+      }
+     }
+    },
+    "bin-3": {
+     "combined": {
+      "interval": [
+       1.000194075314,
+       1.00382091997
+      ],
+      "se": 0.000706793999,
+      "undefined_draws": 0,
+      "value": 1.002012170154
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        0.998736391736,
+        1.003962595299
+       ],
+       "se": 0.001046473418,
+       "undefined_draws": 0,
+       "value": 1.001367997762
+      },
+      "batch-04": {
+       "interval": [
+        1.000207655785,
+        1.005197972634
+       ],
+       "se": 0.000971257025,
+       "undefined_draws": 0,
+       "value": 1.002656756937
+      }
+     }
+    },
+    "bin-4": {
+     "combined": {
+      "interval": [
+       1.000719132488,
+       1.004367426343
+      ],
+      "se": 0.000700117356,
+      "undefined_draws": 0,
+      "value": 1.002591302502
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.000325911056,
+        1.005484004812
+       ],
+       "se": 0.000994002211,
+       "undefined_draws": 0,
+       "value": 1.002928639965
+      },
+      "batch-04": {
+       "interval": [
+        0.999595915504,
+        1.004800771056
+       ],
+       "se": 0.001006684024,
+       "undefined_draws": 0,
+       "value": 1.002254078504
+      }
+     }
+    },
+    "bin-5": {
+     "combined": {
+      "interval": [
+       1.001658916533,
+       1.005307109817
+      ],
+      "se": 0.000704291282,
+      "undefined_draws": 0,
+      "value": 1.003490888673
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.000479870938,
+        1.005602532978
+       ],
+       "se": 0.001004911834,
+       "undefined_draws": 0,
+       "value": 1.002984254881
+      },
+      "batch-04": {
+       "interval": [
+        1.001550069885,
+        1.006511668712
+       ],
+       "se": 0.000991727843,
+       "undefined_draws": 0,
+       "value": 1.00399777838
+      }
+     }
+    },
+    "bin-6": {
+     "combined": {
+      "interval": [
+       1.013704841463,
+       1.018018274529
+      ],
+      "se": 0.000816787633,
+      "undefined_draws": 0,
+      "value": 1.015876647222
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.012692384232,
+        1.018994488986
+       ],
+       "se": 0.001202319929,
+       "undefined_draws": 0,
+       "value": 1.015906463872
+      },
+      "batch-04": {
+       "interval": [
+        1.013080366583,
+        1.018558956555
+       ],
+       "se": 0.001084735162,
+       "undefined_draws": 0,
+       "value": 1.015846831447
+      }
+     }
+    },
+    "bin-7": {
+     "combined": {
+      "interval": [
+       1.04800894139,
+       1.055045032756
+      ],
+      "se": 0.001330401254,
+      "undefined_draws": 0,
+      "value": 1.051461495948
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.049711462402,
+        1.060111980099
+       ],
+       "se": 0.002013221875,
+       "undefined_draws": 0,
+       "value": 1.054668844343
+      },
+      "batch-04": {
+       "interval": [
+        1.043921164197,
+        1.052423062114
+       ],
+       "se": 0.001701815699,
+       "undefined_draws": 0,
+       "value": 1.048263901404
+      }
+     }
+    },
+    "bin_mean": {
+     "combined": {
+      "interval": [
+       1.02493511008,
+       1.026854701663
+      ],
+      "se": 0.000365497441,
+      "undefined_draws": 0,
+      "value": 1.02588873542
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.025914672013,
+        1.028828981245
+       ],
+       "se": 0.000557894387,
+       "undefined_draws": 0,
+       "value": 1.027319157165
+      },
+      "batch-04": {
+       "interval": [
+        1.023209028777,
+        1.025717444726
+       ],
+       "se": 0.000475874199,
+       "undefined_draws": 0,
+       "value": 1.02446030537
+      }
+     }
+    },
+    "stationary": {
+     "clean": {
+      "interval": [
+       1.0297079142,
+       1.035763790769
+      ],
+      "se": 0.001204884228,
+      "undefined_draws": 0,
+      "value": 1.032597072226
+     },
+     "combined": {
+      "interval": [
+       1.028007754374,
+       1.032181246312
+      ],
+      "se": 0.000781410116,
+      "undefined_draws": 0,
+      "value": 1.030031698948
+     },
+     "combined_iso": {
+      "interval": [
+       1.02812412975,
+       1.032105419106
+      ],
+      "se": 0.000780083729,
+      "undefined_draws": 0,
+      "value": 1.0300987299
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.0297079142,
+        1.035763790769
+       ],
+       "se": 0.001204884228,
+       "undefined_draws": 0,
+       "value": 1.032597072226
+      },
+      "batch-04": {
+       "interval": [
+        1.024991614911,
+        1.030176255294
+       ],
+       "se": 0.001006619908,
+       "undefined_draws": 0,
+       "value": 1.027472699056
+      }
+     }
+    }
+   },
+   "job_average_all_verdict": "above 1",
+   "job_average_verdict": "above 1",
+   "pair": [
+    1,
+    4
+   ],
+   "reading": "averaging over the line does not explain rho above 1",
+   "reference_significant": {
+    "batch-01": true,
+    "batch-04": false
+   },
+   "stationary_all_verdict": "above 1",
+   "stationary_verdict": "above 1"
+  },
+  {
+   "batches": [
+    "batch-01",
+    "batch-04"
+   ],
+   "bin_verdicts": {
+    "bin-0": "above 1",
+    "bin-1": "above 1",
+    "bin-2": "above 1",
+    "bin-3": "consistent with 1",
+    "bin-4": "consistent with 1",
+    "bin-5": "consistent with 1",
+    "bin-6": "above 1",
+    "bin-7": "above 1"
+   },
+   "cells": {
+    "all": {
+     "clean": {
+      "interval": [
+       1.019433188448,
+       1.021637734185
+      ],
+      "se": 0.000429366766,
+      "undefined_draws": 0,
+      "value": 1.020580250261
+     },
+     "combined": {
+      "interval": [
+       1.020655505322,
+       1.02224693549
+      ],
+      "se": 0.00031758804,
+      "undefined_draws": 0,
+      "value": 1.021427523396
+     },
+     "combined_iso": {
+      "interval": [
+       1.020302601657,
+       1.021936593274
+      ],
+      "se": 0.000325830818,
+      "undefined_draws": 0,
+      "value": 1.021143479454
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.019433188448,
+        1.021637734185
+       ],
+       "se": 0.000429366766,
+       "undefined_draws": 0,
+       "value": 1.020580250261
+      },
+      "batch-04": {
+       "interval": [
+        1.021123427908,
+        1.023438756897
+       ],
+       "se": 0.000462602461,
+       "undefined_draws": 0,
+       "value": 1.022275499926
+      }
+     }
+    },
+    "bin-0": {
+     "combined": {
+      "interval": [
+       1.059272675466,
+       1.067251836388
+      ],
+      "se": 0.001585296402,
+      "undefined_draws": 0,
+      "value": 1.063053681853
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.056491703927,
+        1.067481154261
+       ],
+       "se": 0.002221584328,
+       "undefined_draws": 0,
+       "value": 1.061984240212
+      },
+      "batch-04": {
+       "interval": [
+        1.058482257597,
+        1.070272920569
+       ],
+       "se": 0.002303361933,
+       "undefined_draws": 0,
+       "value": 1.064124200446
+      }
+     }
+    },
+    "bin-1": {
+     "combined": {
+      "interval": [
+       1.061444188652,
+       1.07034535858
+      ],
+      "se": 0.001707786402,
+      "undefined_draws": 0,
+      "value": 1.065704824267
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.064318237052,
+        1.076979296904
+       ],
+       "se": 0.002536495592,
+       "undefined_draws": 0,
+       "value": 1.070479267484
+      },
+      "batch-04": {
+       "interval": [
+        1.055395001025,
+        1.06693208934
+       ],
+       "se": 0.002270427264,
+       "undefined_draws": 0,
+       "value": 1.060951675538
+      }
+     }
+    },
+    "bin-2": {
+     "combined": {
+      "interval": [
+       1.013451478234,
+       1.01782300327
+      ],
+      "se": 0.000834690618,
+      "undefined_draws": 0,
+      "value": 1.015637227478
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.009406642929,
+        1.015239137802
+       ],
+       "se": 0.001091449334,
+       "undefined_draws": 0,
+       "value": 1.012288821662
+      },
+      "batch-04": {
+       "interval": [
+        1.015765688957,
+        1.022234153643
+       ],
+       "se": 0.001256134356,
+       "undefined_draws": 0,
+       "value": 1.018996709008
+      }
+     }
+    },
+    "bin-3": {
+     "combined": {
+      "interval": [
+       0.999528964677,
+       1.002985379099
+      ],
+      "se": 0.000687629062,
+      "undefined_draws": 0,
+      "value": 1.001250385051
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        0.998177893523,
+        1.002896527291
+       ],
+       "se": 0.000932058077,
+       "undefined_draws": 0,
+       "value": 1.00054284467
+      },
+      "batch-04": {
+       "interval": [
+        0.999416812602,
+        1.004473716519
+       ],
+       "se": 0.001019265541,
+       "undefined_draws": 0,
+       "value": 1.001958425773
+      }
+     }
+    },
+    "bin-4": {
+     "combined": {
+      "interval": [
+       0.998652736671,
+       1.002227576111
+      ],
+      "se": 0.000669975657,
+      "undefined_draws": 0,
+      "value": 1.000396924046
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        0.997106654776,
+        1.00175222462
+       ],
+       "se": 0.000896332219,
+       "undefined_draws": 0,
+       "value": 0.999479994689
+      },
+      "batch-04": {
+       "interval": [
+        0.998862723283,
+        1.003900087653
+       ],
+       "se": 0.000999589815,
+       "undefined_draws": 0,
+       "value": 1.001314694599
+      }
+     }
+    },
+    "bin-5": {
+     "combined": {
+      "interval": [
+       0.999955983336,
+       1.003484694406
+      ],
+      "se": 0.000701092939,
+      "undefined_draws": 0,
+      "value": 1.001677157357
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        0.997988141101,
+        1.002887616759
+       ],
+       "se": 0.000929880124,
+       "undefined_draws": 0,
+       "value": 1.000443154338
+      },
+      "batch-04": {
+       "interval": [
+        1.000278226627,
+        1.005598819381
+       ],
+       "se": 0.001042034851,
+       "undefined_draws": 0,
+       "value": 1.002912682465
+      }
+     }
+    },
+    "bin-6": {
+     "combined": {
+      "interval": [
+       1.016877833374,
+       1.021386526881
+      ],
+      "se": 0.000875868559,
+      "undefined_draws": 0,
+      "value": 1.019075422084
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.014020465358,
+        1.019968362668
+       ],
+       "se": 0.001150077149,
+       "undefined_draws": 0,
+       "value": 1.016997794991
+      },
+      "batch-04": {
+       "interval": [
+        1.017839783218,
+        1.024520079957
+       ],
+       "se": 0.001323471923,
+       "undefined_draws": 0,
+       "value": 1.021157293566
+      }
+     }
+    },
+    "bin-7": {
+     "combined": {
+      "interval": [
+       1.052107256023,
+       1.059190784687
+      ],
+      "se": 0.001431553142,
+      "undefined_draws": 0,
+      "value": 1.055498388836
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.054113621327,
+        1.064702392344
+       ],
+       "se": 0.00207829181,
+       "undefined_draws": 0,
+       "value": 1.059164084395
+      },
+      "batch-04": {
+       "interval": [
+        1.047003782299,
+        1.056736533547
+       ],
+       "se": 0.001928361469,
+       "undefined_draws": 0,
+       "value": 1.051845380002
+      }
+     }
+    },
+    "bin_mean": {
+     "combined": {
+      "interval": [
+       1.026408424608,
+       1.02847509
+      ],
+      "se": 0.000400581337,
+      "undefined_draws": 0,
+      "value": 1.027435770816
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.02589143892,
+        1.028777681564
+       ],
+       "se": 0.000560133142,
+       "undefined_draws": 0,
+       "value": 1.027272779625
+      },
+      "batch-04": {
+       "interval": [
+        1.026212791738,
+        1.02906837716
+       ],
+       "se": 0.000562449567,
+       "undefined_draws": 0,
+       "value": 1.027598787868
+      }
+     }
+    },
+    "stationary": {
+     "clean": {
+      "interval": [
+       1.02724852741,
+       1.033193209487
+      ],
+      "se": 0.00118207219,
+      "undefined_draws": 0,
+      "value": 1.030258221402
+     },
+     "combined": {
+      "interval": [
+       1.029064747951,
+       1.033423567099
+      ],
+      "se": 0.000851664905,
+      "undefined_draws": 0,
+      "value": 1.031249549538
+     },
+     "combined_iso": {
+      "interval": [
+       1.028767164637,
+       1.03320746768
+      ],
+      "se": 0.000862436196,
+      "undefined_draws": 0,
+      "value": 1.030954829106
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.02724852741,
+        1.033193209487
+       ],
+       "se": 0.00118207219,
+       "undefined_draws": 0,
+       "value": 1.030258221402
+      },
+      "batch-04": {
+       "interval": [
+        1.029187239245,
+        1.035608748015
+       ],
+       "se": 0.001244628921,
+       "undefined_draws": 0,
+       "value": 1.032241831542
+      }
+     }
+    }
+   },
+   "job_average_all_verdict": "above 1",
+   "job_average_verdict": "above 1",
+   "pair": [
+    10,
+    13
+   ],
+   "reading": "averaging over the line does not explain rho above 1",
+   "reference_significant": {
+    "batch-01": true,
+    "batch-04": false
+   },
+   "stationary_all_verdict": "above 1",
+   "stationary_verdict": "above 1"
+  },
+  {
+   "batches": [
+    "batch-01",
+    "batch-04"
+   ],
+   "bin_verdicts": {
+    "bin-0": "above 1",
+    "bin-1": "above 1",
+    "bin-2": "above 1",
+    "bin-3": "above 1",
+    "bin-4": "above 1",
+    "bin-5": "consistent with 1",
+    "bin-6": "above 1",
+    "bin-7": "above 1"
+   },
+   "cells": {
+    "all": {
+     "clean": {
+      "interval": [
+       1.003988596309,
+       1.005585141459
+      ],
+      "se": 0.000309113622,
+      "undefined_draws": 0,
+      "value": 1.004794070986
+     },
+     "combined": {
+      "interval": [
+       1.005079749736,
+       1.00617363798
+      ],
+      "se": 0.000214747507,
+      "undefined_draws": 0,
+      "value": 1.005632075994
+     },
+     "combined_iso": {
+      "interval": [
+       1.00511371411,
+       1.006243235869
+      ],
+      "se": 0.000220224866,
+      "undefined_draws": 0,
+      "value": 1.005680110164
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.003988596309,
+        1.005585141459
+       ],
+       "se": 0.000309113622,
+       "undefined_draws": 0,
+       "value": 1.004794070986
+      },
+      "batch-04": {
+       "interval": [
+        1.005696752415,
+        1.007244235649
+       ],
+       "se": 0.000298298154,
+       "undefined_draws": 0,
+       "value": 1.006470779904
+      }
+     }
+    },
+    "bin-0": {
+     "combined": {
+      "interval": [
+       1.00949152204,
+       1.013040372901
+      ],
+      "se": 0.000686682586,
+      "undefined_draws": 0,
+      "value": 1.011248998364
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.009101957294,
+        1.014329551132
+       ],
+       "se": 0.000997027724,
+       "undefined_draws": 0,
+       "value": 1.011713194266
+      },
+      "batch-04": {
+       "interval": [
+        1.008365800376,
+        1.01319054995
+       ],
+       "se": 0.000928803358,
+       "undefined_draws": 0,
+       "value": 1.010785015445
+      }
+     }
+    },
+    "bin-1": {
+     "combined": {
+      "interval": [
+       1.005180354974,
+       1.008383120816
+      ],
+      "se": 0.00062826759,
+      "undefined_draws": 0,
+      "value": 1.00678592362
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.009144446736,
+        1.014014751858
+       ],
+       "se": 0.000956564895,
+       "undefined_draws": 0,
+       "value": 1.011524864531
+      },
+      "batch-04": {
+       "interval": [
+        1.000028603563,
+        1.004156732066
+       ],
+       "se": 0.000820362338,
+       "undefined_draws": 0,
+       "value": 1.002069184399
+      }
+     }
+    },
+    "bin-2": {
+     "combined": {
+      "interval": [
+       1.001751660857,
+       1.00493004736
+      ],
+      "se": 0.000606243017,
+      "undefined_draws": 0,
+      "value": 1.003320841371
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        0.997562588811,
+        1.001803058661
+       ],
+       "se": 0.00083692094,
+       "undefined_draws": 0,
+       "value": 0.999708684901
+      },
+      "batch-04": {
+       "interval": [
+        1.004642437706,
+        1.00926216737
+       ],
+       "se": 0.000875843661,
+       "undefined_draws": 0,
+       "value": 1.006946049318
+      }
+     }
+    },
+    "bin-3": {
+     "combined": {
+      "interval": [
+       1.002385977032,
+       1.005601150073
+      ],
+      "se": 0.000631808879,
+      "undefined_draws": 0,
+      "value": 1.003940279303
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        0.99941187443,
+        1.003940564041
+       ],
+       "se": 0.000877489502,
+       "undefined_draws": 0,
+       "value": 1.001666403779
+      },
+      "batch-04": {
+       "interval": [
+        1.003865938148,
+        1.00858224733
+       ],
+       "se": 0.000893075146,
+       "undefined_draws": 0,
+       "value": 1.006219316735
+      }
+     }
+    },
+    "bin-4": {
+     "combined": {
+      "interval": [
+       1.004321892652,
+       1.007539663342
+      ],
+      "se": 0.000628542859,
+      "undefined_draws": 0,
+      "value": 1.00593992337
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.001043413728,
+        1.00554344414
+       ],
+       "se": 0.000881672889,
+       "undefined_draws": 0,
+       "value": 1.003322535909
+      },
+      "batch-04": {
+       "interval": [
+        1.006242255417,
+        1.01103219598
+       ],
+       "se": 0.000909827026,
+       "undefined_draws": 0,
+       "value": 1.008564138862
+      }
+     }
+    },
+    "bin-5": {
+     "combined": {
+      "interval": [
+       0.99977123714,
+       1.002768450534
+      ],
+      "se": 0.000588749281,
+      "undefined_draws": 0,
+      "value": 1.001270923832
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        0.998531856914,
+        1.00290839079
+       ],
+       "se": 0.000869459294,
+       "undefined_draws": 0,
+       "value": 1.000758457216
+      },
+      "batch-04": {
+       "interval": [
+        0.999672598582,
+        1.003810389468
+       ],
+       "se": 0.000785719255,
+       "undefined_draws": 0,
+       "value": 1.001783652871
+      }
+     }
+    },
+    "bin-6": {
+     "combined": {
+      "interval": [
+       1.002111696926,
+       1.005223542016
+      ],
+      "se": 0.000609933825,
+      "undefined_draws": 0,
+      "value": 1.003631758202
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        0.998728577648,
+        1.003053339734
+       ],
+       "se": 0.000832078377,
+       "undefined_draws": 0,
+       "value": 1.000814102415
+      },
+      "batch-04": {
+       "interval": [
+        1.004194360712,
+        1.008799266683
+       ],
+       "se": 0.000888775393,
+       "undefined_draws": 0,
+       "value": 1.006457346714
+      }
+     }
+    },
+    "bin-7": {
+     "combined": {
+      "interval": [
+       1.008578053429,
+       1.011938254211
+      ],
+      "se": 0.000653655776,
+      "undefined_draws": 0,
+      "value": 1.010223606422
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.008289090619,
+        1.013144236382
+       ],
+       "se": 0.000962786861,
+       "undefined_draws": 0,
+       "value": 1.01066233348
+      },
+      "batch-04": {
+       "interval": [
+        1.007509124466,
+        1.012188839197
+       ],
+       "se": 0.000875341992,
+       "undefined_draws": 0,
+       "value": 1.009785069815
+      }
+     }
+    },
+    "bin_mean": {
+     "combined": {
+      "interval": [
+       1.00521017266,
+       1.006336374564
+      ],
+      "se": 0.000221904496,
+      "undefined_draws": 0,
+      "value": 1.005790000715
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.004188467624,
+        1.005796175142
+       ],
+       "se": 0.000317106605,
+       "undefined_draws": 0,
+       "value": 1.005009079375
+      },
+      "batch-04": {
+       "interval": [
+        1.005746964995,
+        1.007361733201
+       ],
+       "se": 0.000311568484,
+       "undefined_draws": 0,
+       "value": 1.006571528855
+      }
+     }
+    },
+    "stationary": {
+     "clean": {
+      "interval": [
+       1.005853093277,
+       1.00918531351
+      ],
+      "se": 0.000666544493,
+      "undefined_draws": 0,
+      "value": 1.007509130323
+     },
+     "combined": {
+      "interval": [
+       1.007427890894,
+       1.009770570517
+      ],
+      "se": 0.000470204663,
+      "undefined_draws": 0,
+      "value": 1.008590967599
+     },
+     "combined_iso": {
+      "interval": [
+       1.007468604248,
+       1.009801618306
+      ],
+      "se": 0.00045936324,
+      "undefined_draws": 0,
+      "value": 1.008639376942
+     },
+     "per_batch": {
+      "batch-01": {
+       "interval": [
+        1.005853093277,
+        1.00918531351
+       ],
+       "se": 0.000666544493,
+       "undefined_draws": 0,
+       "value": 1.007509130323
+      },
+      "batch-04": {
+       "interval": [
+        1.008055728556,
+        1.011310250681
+       ],
+       "se": 0.00064349303,
+       "undefined_draws": 0,
+       "value": 1.009673966524
+      }
+     }
+    }
+   },
+   "job_average_all_verdict": "above 1",
+   "job_average_verdict": "above 1",
+   "pair": [
+    12,
+    14
+   ],
+   "reading": "averaging over the line does not explain rho above 1",
+   "reference_significant": {
+    "batch-01": true,
+    "batch-04": false
+   },
+   "stationary_all_verdict": "above 1",
+   "stationary_verdict": "above 1"
+  }
+ ],
+ "runs": [
+  "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-00",
+  "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-01",
+  "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-02",
+  "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-03",
+  "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-04",
+  "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-05",
+  "results/quantum_inspire/runs/2026-10-18T015435Z-box_kite_tuna_ladder-batch-06"
+ ],
+ "schema": "qi-ladder-line-bins-v1",
+ "stationary_bins": [
+  0,
+  4
+ ],
+ "streams": {
+  "ladder": [
+   20261017
+  ],
+  "ladder_iso": [
+   20261017,
+   1
+  ],
+  "line_bins": [
+   20261017,
+   2
+  ],
+  "line_bins_iso": [
+   20261017,
+   2,
+   1
+  ],
+  "max_rule": [
+   20261017,
+   2,
+   3
+  ]
+ },
+ "thresholds": {
+  "amplitude_sigmas": 5.0,
+  "bootstrap_draws": 4000,
+  "bootstrap_seed": 20261017,
+  "bracket_drift_max": 0.02,
+  "bracket_span": 2,
+  "bright_floor_cz_depths": [
+   1
+  ],
+  "bright_p_selector_zero_at_least": 0.7,
+  "context_min": 0.02,
+  "depths": [
+   1,
+   5,
+   9
+  ],
+  "idle_p1_above_readout_0_at_most": 0.15,
+  "interval_percentiles": [
+   0.5,
+   99.5
+  ],
+  "iso_qubits": [
+   1,
+   13,
+   14
+  ],
+  "line_band": [
+   0.019,
+   0.021
+  ],
+  "line_detection_p": 1e-06,
+  "line_phase_bins": 8,
+  "readout_0_p1_at_most": 0.1,
+  "readout_1_p1_at_least": 0.8,
+  "sigma": 3.0,
+  "used_qubits": [
+   1,
+   4,
+   10,
+   12,
+   13,
+   14
+  ]
+ },
+ "uncertainty": "intervals are the 0.5 and 99.5 percentiles of a parametric bootstrap (4000 draws): every bracket's readout counts once per draw, shared by all cells, and each cell's joint (a, d) counts from a multinomial on the cell's own shots; they are conditional on each job's fitted line frequency and phase, which fix the bins and are not refitted per draw; harmonic errors are the lock-in standard error sqrt(2 p (1 - p) / n), and the max rule's error is the standard deviation of the depth difference of max(A1, A2) over draws of the depth-9 and depth-1 selectors' eight lock-in coefficients from their joint shot-noise covariance"
+}

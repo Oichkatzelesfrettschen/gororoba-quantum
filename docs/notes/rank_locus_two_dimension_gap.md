@@ -97,7 +97,41 @@ and is never evidence of the gap.
      on an open set of parameters and whose differential has rank m at x,
      or a proof that the tangent cone contains a semialgebraic subset of
      dimension m.
-3. **Relate A15 to the {a, 0} family.** Closure is decided exactly or not
+
+   **Outcome.** The test is vacuous at all 12 witnesses
+   ([evidence](../evidence/rank_locus_second_order/README.md),
+   `scripts/rank_locus_second_order.py`, gates core-553 and core-554).
+   - The projected quadratic map Q(v) = N^T vec(U^T L_v G L_v V) has an
+     identically zero coefficient matrix on T_1(x) in the variables
+     (tau, s, t). So its zero set is T_1(x), and every first-order
+     velocity, e_8 and e_24 alone included, is formally second-order
+     compatible: Outcome B in its degenerate form.
+   - Q vanishes on T(x), so the order-3 condition does not depend on the
+     choice of acceleration. Its cubic is also identically zero on T_1(x):
+     every first-order velocity is formally compatible through order 3.
+   - At the nonzd-axis and nonzd-nonzd-locus witnesses, rotating one half of
+     x = (p, q) toward that half's e_8 is an exact polynomial curve of
+     D_(5,k), with velocity e_8 or e_24. Its nullity is proved from ranks at
+     interpolation nodes. So both directions lie in the tangent cone there.
+   - At the zd-nonzd witnesses both rotations leave the locus, and no
+     transverse curve is known.
+   - The construction reproduces the eight canonical quadrics at e1 + e18.
+     At every witness, an exact curve with a nonzero order-2 target and a
+     nonzero triple term fixes the signs of the order-2 and order-3
+     equations.
+   - Neither the conjecture (B with curves) nor its alternative (A)
+     predicted a vacuous test. Second- and third-order compatibility decide
+     nothing here. The question moves to a certified m-dimensional piece
+     through x, or to higher order.
+   - The A branch above overstates its consequence. A tangent cone inside
+     T_F bounds no local dimension of a real algebraic set: the surface
+     y^2 + z^2 = x^4 has local dimension 2 at 0 and tangent cone the x-axis.
+     An upper bound below dim T_1(x) needs equations that cut out D_(5,k)
+     near x, not its tangent cone.
+3. **Relate A15 to the {a, 0} family.** The second-order test leaves the
+   {a, 0} dimension open, so this computation, or a certified piece of
+   dimension 14 or 15 through an {a, 0} witness, now carries the
+   nullity-12 question. Closure is decided exactly or not
    at all. A positive answer is an explicit curve or parameterization of
    nullity-12 points, certified exactly along its parameter, whose limit is
    an {a, 0} witness with a not a zero divisor. A negative answer is a
@@ -124,7 +158,7 @@ admits on its own:
 
 | Item | First deliverable | Rests on | Admission |
 | --- | --- | --- | --- |
-| 3. Components of D_(5,4), D_(5,8), D_(5,12) | D_(5,12) first: its known pieces are B17, A15, the {a, 0} family and Proposition 8.2's (i_4, e_p) points; the gap computation above fixes the dimension of the {a, 0} piece | the gap computation | a covering argument for every real coefficient vector, exact boundary admission; numerical charts alone do not admit |
+| 3. Components of D_(5,4), D_(5,8), D_(5,12) | D_(5,12) first: its known pieces are B17, A15, the {a, 0} family and Proposition 8.2's (i_4, e_p) points; the gap computation above fixes the dimension of the {a, 0} piece, and after a vacuous second- and third-order test that needs a certified piece of D_(5,12) through an {a, 0} witness | the gap computation | a covering argument for every real coefficient vector, exact boundary admission; numerical charts alone do not admit |
 | 4. Regularity and links | smoothness of each D_(5,12) piece from independent local equations; the normal link at x0, where A15 and B17 meet in dimension 13 | item 3 for D_(5,12) | rank loci and smooth strata kept distinct |
 | 5. Kernel bundles | transition data of ker L_x over each smooth piece of D_(5,12) | item 4 | invariants computed; a classification needs its own sufficiency argument |
 | 6. Attachments | how partner spheres specialize across every admitted closure incidence of D_(5,12) | items 3 and 5 | attaching maps, not a frontier matrix |

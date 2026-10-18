@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-18T17:00:49+00:00",
+ "approval": "Owner approved in this session on 2026-10-18 the written Walsh exemplar case (PR #269): QX twin batch first, then Tuna-17 walsh_exemplar_tuna_17 batch-00 to batch-03 at 131072 shots, under 3 circuits per batch, one batch queued and the 120 s pause; stop on a failed job, a readout below 0.7 or K_high <= K_low.",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "3a547ae808533df1d55ebe3ca8baa7351c318e287c87ba207e16e2b0abd390a7",
+ "shots": 131072,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1535672,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1535673,
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  },
+  {
+   "file": "readout-q13.cq",
+   "job": 1535674,
+   "sha256": "97f6fa87895d1ce212e83913007f55819462d60675a42d0b229b54aa3c8743c8"
+  }
+ ],
+ "project": 769948,
+ "batch_job": 873003,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-18T17:00:52+00:00",
+  "approval": "Owner approved in this session on 2026-10-18 the written Walsh exemplar case (PR #269): QX twin batch first, then Tuna-17 walsh_exemplar_tuna_17 batch-00 to batch-03 at 131072 shots, under 3 circuits per batch, one batch queued and the 120 s pause; stop on a failed job, a readout below 0.7 or K_high <= K_low.",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "3a547ae808533df1d55ebe3ca8baa7351c318e287c87ba207e16e2b0abd390a7",
+  "backend_status_at_submit": "executing",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 873003,
+  "project": 769948,
+  "shots": 131072,
+  "jobs": [
+   {
+    "file": "readout-0.cq",
+    "job": 1535672,
+    "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+   },
+   {
+    "file": "readout-1.cq",
+    "job": 1535673,
+    "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+   },
+   {
+    "file": "readout-q13.cq",
+    "job": 1535674,
+    "sha256": "97f6fa87895d1ce212e83913007f55819462d60675a42d0b229b54aa3c8743c8"
+   }
+  ],
+  "submitted_utc": "2026-10-18T17:00:52+00:00"
+ },
+ "confirmed_utc": "2026-10-18T17:00:52+00:00"
+}

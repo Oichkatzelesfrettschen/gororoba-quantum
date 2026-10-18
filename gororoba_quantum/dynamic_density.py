@@ -256,6 +256,38 @@ def with_prep_excitation(circuit: QuantumCircuit, prep_excitation: float) -> Qua
     return out
 
 
+def structural_refusal(circuit: QuantumCircuit) -> str | None:
+    """Why probabilities() refuses the circuit under every noise model, or None when its structure is supported.
+
+    Every top-level instruction is a barrier, measure, reset, gate, quantum
+    channel or one-level if_else on a clbit or register comparison whose
+    bodies hold gates and barriers only. probabilities() refuses on two
+    further noise-model properties, nonlocal quantum errors and a quantum
+    error on measure; NoiseModel.from_backend attaches neither, since it
+    builds local errors and skips Measure.
+    """
+    from qiskit_aer.noise.errors.base_quantum_error import QuantumChannelInstruction
+
+    for instruction in circuit.data:
+        operation = instruction.operation
+        name = operation.name
+        if name in SKIPPED or name in ("measure", "reset"):
+            continue
+        if name == "if_else":
+            condition = getattr(operation, "condition", None)
+            if not (isinstance(condition, tuple) and isinstance(condition[0], (Clbit, ClassicalRegister))):
+                return f"{circuit.name}: if_else condition {condition!r} is not a clbit or register comparison"
+            for body in operation.blocks:
+                for inner in body.data if body is not None else ():
+                    if inner.operation.name not in SKIPPED and not isinstance(inner.operation, Gate):
+                        return f"{circuit.name}: {inner.operation.name} inside an if_else body"
+            continue
+        if isinstance(operation, (Gate, QuantumChannelInstruction)):
+            continue
+        return f"{circuit.name}: {name} is outside the branch-resolved model"
+    return None
+
+
 def probabilities(
     circuit: QuantumCircuit, noise_model: Any, semantics: Semantics = AER, prep_excitation: float = 0.0
 ) -> np.ndarray:
@@ -268,6 +300,9 @@ def probabilities(
 
     if any(isinstance(i.operation, Delay) for i in circuit.data) and noise_model._pass_manager() is not None:
         raise UnsupportedCircuit(f"{circuit.name}: delays under custom noise passes are outside the model")
+    refusal = structural_refusal(circuit)
+    if refusal is not None:
+        raise UnsupportedCircuit(refusal)
     evolution = _Evolution(circuit, noise_model, semantics, validate_prep_excitation(prep_excitation))
     noisy = insert_noise(circuit, noise_model, transpile=False)
     previous: Any = None

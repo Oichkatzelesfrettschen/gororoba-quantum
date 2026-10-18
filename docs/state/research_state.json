@@ -940,6 +940,41 @@
       "question": "job-02's sixteen configurations at compilation seeds 1 and 2 in one 32-iteration job: does the seed select the served mesh, how far do the algebra shares move between seeds, and does a 32-iteration job fit the 300 s limit?"
     },
     {
+      "id": "kingston-init-control-prep0-50us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T083402.386701Z",
+      "family": "state-prep-control (prep0, 50 us)",
+      "question": "How much excitation does the Sampler's implicit initialization leave on each admitted Kingston qubit after this shot history and repetition delay?"
+    },
+    {
+      "id": "kingston-init-control-prep0-250us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T083404.414317Z",
+      "family": "state-prep-control (prep0, 250 us)",
+      "question": "How much excitation does the Sampler's implicit initialization leave on each admitted Kingston qubit after this shot history and repetition delay?"
+    },
+    {
+      "id": "kingston-init-control-xhistory-50us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T083404.226285Z",
+      "family": "state-prep-control (x_history, 50 us)",
+      "question": "How much excitation does the Sampler's implicit initialization leave on each admitted Kingston qubit after this shot history and repetition delay?"
+    },
+    {
+      "id": "kingston-init-control-xhistory-250us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T083403.945334Z",
+      "family": "state-prep-control (x_history, 250 us)",
+      "question": "How much excitation does the Sampler's implicit initialization leave on each admitted Kingston qubit after this shot history and repetition delay?"
+    },
+    {
+      "id": "kingston-n21-feedback-encoded-50us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T090603.530638Z",
+      "family": "n21-feedback-encoded",
+      "question": "Does mid-circuit feedback change the encoded N=21 contrast on Kingston at a 50 us repetition delay?"
+    },
+    {
       "id": "qd-qpu-belenos-mesh-job-09-bridge",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-18T074524Z-qpu_belenos-belenos_mesh-job-09",
@@ -966,6 +1001,41 @@
       "run": "results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12",
       "family": "Belenos form-versus-dwell D2 and D4",
       "question": "Q1's circuit iterated over sample-budget ladders at seed 20 (29dc6ef8) and seed 46667: does in_block fall with the budget inside an iterated job?"
+    },
+    {
+      "id": "qi-walsh-exemplar-qx-twins-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T165957Z-walsh_exemplar_twins_qx-batch-00",
+      "family": "Walsh exemplar QX twins",
+      "question": "The two Walsh circuits relabeled onto QX qubits 0-7 on the hosted ideal emulator before the Tuna-17 batches: zero shots outside either class's support"
+    },
+    {
+      "id": "qi-walsh-exemplar-tuna17-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-00",
+      "family": "Walsh exemplar Tuna-17 series",
+      "question": "Walsh exemplar batch-00 on Tuna-17 at 131072 shots per job: readout-0 and readout-1 brackets on all 17 qubits and q13's isolated readout (readout-q13)"
+    },
+    {
+      "id": "qi-walsh-exemplar-tuna17-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-01",
+      "family": "Walsh exemplar Tuna-17 series",
+      "question": "Walsh exemplar batch-01 on Tuna-17 at 131072 shots per job: walsh-c1 (high class on block X, low on Y) and walsh-c2 (swapped), and q13 beside X X on q10 and q11 (readout-q13-xx)"
+    },
+    {
+      "id": "qi-walsh-exemplar-tuna17-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-02",
+      "family": "Walsh exemplar Tuna-17 series",
+      "question": "Walsh exemplar batch-02 on Tuna-17 at 131072 shots per job: the walsh-c1 and walsh-c2 replicates and q13 beside an excited q10 (readout-q13-q10)"
+    },
+    {
+      "id": "qi-walsh-exemplar-tuna17-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-03",
+      "family": "Walsh exemplar Tuna-17 series",
+      "question": "Walsh exemplar batch-03 on Tuna-17 at 131072 shots per job: the closing readout-0 and readout-1 brackets and q13 beside an excited q11 (readout-q13-q11)"
     },
     {
       "id": "qi-qx-reset-phase-batch-00",
@@ -2455,7 +2525,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "7eb6a2458621aa96e1bcc04996aef2ce21a4c5c698fa47766b7cefb690534260"
+          "sha256": "fbfa5cb75adb665ba311191e3303cc8fbec3a394e9481f8d2f73fb29cb3df668"
         }
       ],
       "documents": [
@@ -2725,7 +2795,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "4833c80261bb88ed5a5e9bd4225a331cb852a9a1e2fc7524a9636b42b0bbca72"
+          "sha256": "421361810e6d843576e3cd2b017a2702876cd45f95e5ae3c0174cf65f8919635"
         },
         {
           "path": "results/live/2026-10-13T025444.603480Z/isa.qpy",
@@ -2764,7 +2834,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "4833c80261bb88ed5a5e9bd4225a331cb852a9a1e2fc7524a9636b42b0bbca72"
+          "sha256": "421361810e6d843576e3cd2b017a2702876cd45f95e5ae3c0174cf65f8919635"
         },
         {
           "path": "results/live/2026-10-13T025444.603480Z/isa.qpy",
@@ -2838,7 +2908,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "4833c80261bb88ed5a5e9bd4225a331cb852a9a1e2fc7524a9636b42b0bbca72"
+          "sha256": "421361810e6d843576e3cd2b017a2702876cd45f95e5ae3c0174cf65f8919635"
         },
         {
           "path": "results/live/2026-10-11T152922.787095Z/collect.json",
@@ -2884,7 +2954,7 @@
         },
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "4833c80261bb88ed5a5e9bd4225a331cb852a9a1e2fc7524a9636b42b0bbca72"
+          "sha256": "421361810e6d843576e3cd2b017a2702876cd45f95e5ae3c0174cf65f8919635"
         }
       ],
       "documents": [
@@ -3278,7 +3348,7 @@
     },
     {
       "id": "hw-ghost-calibration-replay",
-      "statement": "Replaying the executed circuits of 14 retained IBM runs under every retained calibration of their backend, at each member's executed shot count, the noise model reproduces the recorded replay distances to sampling precision (mean |ghost - recorded| 0.0077 TV over 206 replicas against 0.0079 TV between two independent ghost draws), the predicted distance to hardware moves by only 0.001 to 0.032 TV across calibrations against floors of 0.026 to 0.435 TV, and today's calibration fits the old data better than the execution-time calibration by more than two standard errors on 10 of 14 runs.",
+      "statement": "Replaying the executed circuits of 14 retained IBM runs under every retained calibration of their backend, at each member's executed shot count, the noise model reproduces the recorded replay distances to sampling precision (mean |ghost - recorded| 0.0077 TV over 206 replicas against 0.0079 TV between two independent ghost draws), the predicted distance to hardware moves by only 0.001 to 0.032 TV across calibrations against floors of 0.026 to 0.435 TV, and today's calibration fits the old data better than the execution-time calibration by more than two standard errors on 10 of 14 runs. Five 2026-10-18 Kingston runs and one further Kingston snapshot, added by an incremental merge, widen the calibration spread to as much as 0.054 TV (2026-10-12T055624, 0.088 to 0.142), and the exact-law n21 members and the 149-member control runs reproduce their recorded replays within 0.0027 TV.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -3286,15 +3356,15 @@
       "evidence": [
         {
           "path": "docs/evidence/ghost_runs/result.json",
-          "sha256": "8871bae4f9e1a7513d7851ed4b92c9a8bd0591c7e8dbb30eb2ba67a822d0a622"
+          "sha256": "0a3622f6c484692392b13caf4ef6a0eccbeca65992062d42c499451f022dfecf"
         },
         {
           "path": "docs/evidence/ghost_runs/report.json",
-          "sha256": "07aa731d95a7c5419fc3ddf18dabb2bdd7c4e580f26dfadec66695057484bfb0"
+          "sha256": "413bde5009ee9aec10a19f38076af680269b8342785aee010e7f5e0bd5c30cdd"
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "7eb6a2458621aa96e1bcc04996aef2ce21a4c5c698fa47766b7cefb690534260"
+          "sha256": "fbfa5cb75adb665ba311191e3303cc8fbec3a394e9481f8d2f73fb29cb3df668"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -3322,7 +3392,12 @@
         "kingston-rank-sectors",
         "kingston-ripple-atlas",
         "kingston-corner-baseline",
-        "kingston-zero-divisor-fringe"
+        "kingston-zero-divisor-fringe",
+        "kingston-init-control-prep0-50us",
+        "kingston-init-control-xhistory-250us",
+        "kingston-init-control-xhistory-50us",
+        "kingston-init-control-prep0-250us",
+        "kingston-n21-feedback-encoded-50us"
       ],
       "assumptions": [],
       "depends_on": [],
@@ -3726,13 +3801,22 @@
       "domain": "geometry",
       "evidence_class": "mathematical theorem",
       "status": "open",
-      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound; a second-order obstruction on the two transverse directions would refute the statement, and an explicit curve family of the larger dimension would establish it.",
-      "evidence": [],
+      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only; curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it.",
+      "evidence": [
+        {
+          "path": "docs/evidence/rank_locus_second_order/result.json",
+          "sha256": "a31e90bc02067291876bf0bb2738166e800922912fcf7313e58ad78aa0cdd7bf"
+        }
+      ],
       "documents": [
         "docs/notes/rank_locus_two_dimension_gap.md",
-        "docs/evidence/rank_locus_local_dimension/README.md"
+        "docs/evidence/rank_locus_local_dimension/README.md",
+        "docs/evidence/rank_locus_second_order/README.md"
       ],
-      "gates": {},
+      "gates": {
+        "core-553": "replay",
+        "core-554": "admission"
+      },
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
@@ -4598,7 +4682,7 @@
     },
     {
       "id": "qi-tuna17-shot-record-50hz-line",
-      "statement": "The retained per-shot outcome lists of Tuna-17 jobs carry a line at the 50 Hz grid frequency in wall-clock time. A band scan at 0.019 to 0.021 cycles per shot finds the line (whitened, p below 1e-6 after the band's look-elsewhere factor) in 69 of 147 Tuna-17 jobs and in none of 111 QX jobs, none of 43 readout circuits (readout-0, readout-1 and the context readouts, at up to 131072 shots) and none of the 8 depth-1 LCU circuits; it appears in Ramsey, CZ-ladder, walk and additivity circuits, with first-harmonic amplitudes in P(1) up to 0.43 (q7, ring-down Ramsey) and 0.39 (q5, coupler-ZZ Ramsey). Across the readout ring-down arms, whose circuits differ only in a wait of tau cycles of 20 ns, the peak frequency rises with tau at 50.4 +- 4.0 Hz (31 jobs, one intercept per batch): 12.6 standard errors from the 0 Hz a shot-index-locked source predicts and 0.1 from 50 Hz, which at 50 Hz puts one shot at 402.9 to 404.6 us in the ring-down circuits and 400.7 us in the follow series. In the follow series the bright-edge selectors on (1,4), (10,13) and (12,14) oscillate with amplitudes 0.19 to 0.26 at CZ depth 9, 0.09 to 0.13 at depth 5 and below 0.0175 at depth 1, in phase across the three pairs (resultant 0.996 to 1.000 per job). Within-job stationarity (16 block means per bit, the smallest per-bit chi-square tail times the bits scanned) falls below 0.01 in 11 to 33 percent of the box-kite pre-T0, T0 and follow jobs and in 61 to 75 percent of the morning ring-down jobs. The detection statistic whitens the scanned bits by their same-shot correlation matrix, so correlated bits of one shot do not inflate it.",
+      "statement": "The retained per-shot outcome lists of Tuna-17 jobs carry a line at the 50 Hz grid frequency in wall-clock time. A band scan at 0.019 to 0.021 cycles per shot finds the line (whitened, p below 1e-6 after the band's look-elsewhere factor) in 72 of 159 Tuna-17 jobs and in none of 113 QX jobs, none of 51 readout circuits (readout-0, readout-1 and the context readouts, at up to 131072 shots) and none of the 8 depth-1 LCU circuits; it appears in Ramsey, CZ-ladder, walk, additivity and Walsh-exemplar circuits, with first-harmonic amplitudes in P(1) up to 0.43 (q7, ring-down Ramsey) and 0.39 (q5, coupler-ZZ Ramsey). Across the readout ring-down arms, whose circuits differ only in a wait of tau cycles of 20 ns, the peak frequency rises with tau at 50.4 +- 4.0 Hz (31 jobs, one intercept per batch): 12.6 standard errors from the 0 Hz a shot-index-locked source predicts and 0.1 from 50 Hz, which at 50 Hz puts one shot at 402.9 to 404.6 us in the ring-down circuits and 400.7 us in the follow series. In the follow series the bright-edge selectors on (1,4), (10,13) and (12,14) oscillate with amplitudes 0.19 to 0.26 at CZ depth 9, 0.09 to 0.13 at depth 5 and below 0.0175 at depth 1, in phase across the three pairs (resultant 0.996 to 1.000 per job). Within-job stationarity (16 block means per bit, the smallest per-bit chi-square tail times the bits scanned) falls below 0.01 in 11 to 33 percent of the box-kite pre-T0, T0, follow and Walsh-exemplar jobs and in 61 to 75 percent of the morning ring-down jobs. The detection statistic whitens the scanned bits by their same-shot correlation matrix, so correlated bits of one shot do not inflate it.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -4606,7 +4690,7 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/tuna_17_shot_record_line.json",
-          "sha256": "53727e87db5028e75007960fcde7e4f91f1d6dd72647c47f20fdd4dddf08b275"
+          "sha256": "ebcd189e4f3278ca45d126d92c985a0f9425345ff3cf7c849cf1e68be5e571a9"
         }
       ],
       "documents": [
@@ -4704,7 +4788,12 @@
         "qi-boxkite-tuna17-ladder-batch-05",
         "qi-boxkite-tuna17-ladder-batch-06",
         "qi-boxkite-qx-ladder-twins-batch-00",
-        "qi-boxkite-qx-ladder-twins-batch-01"
+        "qi-boxkite-qx-ladder-twins-batch-01",
+        "qi-walsh-exemplar-qx-twins-batch-00",
+        "qi-walsh-exemplar-tuna17-batch-00",
+        "qi-walsh-exemplar-tuna17-batch-01",
+        "qi-walsh-exemplar-tuna17-batch-02",
+        "qi-walsh-exemplar-tuna17-batch-03"
       ],
       "assumptions": [],
       "depends_on": [],
@@ -4801,7 +4890,7 @@
         },
         {
           "path": "results/quantum_inspire/tuna_17_shot_record_line.json",
-          "sha256": "53727e87db5028e75007960fcde7e4f91f1d6dd72647c47f20fdd4dddf08b275"
+          "sha256": "ebcd189e4f3278ca45d126d92c985a0f9425345ff3cf7c849cf1e68be5e571a9"
         }
       ],
       "documents": [
@@ -5385,6 +5474,121 @@
       "superseded_by": null
     },
     {
+      "id": "hw-kingston-init-excitation-bound",
+      "statement": "On Kingston qubits 104, 105, 106, 117, 124, 125 and 126 the implicit initialization leaves at most eps50 = 0.0144 and eps250 = 0.0157 excitation after the worst shot history, both set by q125, simultaneously with 447 bounds at alpha 0.01 over 149 controlled qubits; the n21 plan's fixed point converged at 0.014393.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration (2026-10-18 01:38:20 PDT) shared by the controls and the n21 run; correlated initialization across qubits is reported as a diagnostic, not bounded (issue #251).",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-18T085924.738302Z/state-prep-excess.json",
+          "sha256": "bf684a66ba92966a75b50ee405c90153057d0bc68b380dc319afa990961b7fe8"
+        },
+        {
+          "path": "results/live/2026-10-18T083402.386701Z/collect.json",
+          "sha256": "59d7b6a0e9a05f647c6bade648f368b207e9b574352b8639bdc0d8fce589e4ea"
+        },
+        {
+          "path": "results/live/2026-10-18T083404.414317Z/collect.json",
+          "sha256": "1440ee0d160e275d2b3c3de53930f3add1ba42a79183f4775178c5723249b75c"
+        },
+        {
+          "path": "results/live/2026-10-18T083404.226285Z/collect.json",
+          "sha256": "a35e07134002d29c5d49cec21bdc437bbfc32a7308dc8aa19536a6e38e733eaf"
+        },
+        {
+          "path": "results/live/2026-10-18T083403.945334Z/collect.json",
+          "sha256": "7be72acea468cb5cbeb941f0ced701d6f5f41bdf698fc4119c2fd2ced7dfe726"
+        }
+      ],
+      "documents": [
+        "results/live/N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md",
+        "results/live/N21_STATE_PREP_CONTROL_CASE.md"
+      ],
+      "gates": {
+        "core-539": "replay"
+      },
+      "acquisitions": [
+        "kingston-init-control-prep0-50us",
+        "kingston-init-control-prep0-250us",
+        "kingston-init-control-xhistory-50us",
+        "kingston-init-control-xhistory-250us"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-n21-feedback-null-kingston",
+      "statement": "At 50 us on Kingston qubits 104-106, 117, 124-126 with 100,000 shots per arm, the encoded N=21 contrast difference between feedback and no feedback is +0.0027 with 95 % interval [-0.0129, +0.0184]; zero is not rejected, and the calibration model's exact +0.0310 (sampled replay +0.0344) lies outside the interval.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One placement and calibration; raw counts without readout correction (feed-forward); the run isolates no suppressing mechanism.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-18T090603.530638Z/collect.json",
+          "sha256": "9bfac1fab310b4c8417bc273600d2b004fe5c30b3c08fd69c9dcd50f12dc9462"
+        }
+      ],
+      "documents": [
+        "results/live/N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md",
+        "results/live/N21_STATE_PREP_CONTROL_CASE.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "kingston-n21-feedback-encoded-50us"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-kingston-init-excitation-bound"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-kingston-init-survey-149q",
+      "statement": "Across 149 Kingston qubits the shot-history excitation averages +0.0011 at 50 us and +0.00003 at 250 us; q58 reads 0.080 after prep0 at 50 us against 0.030 at 250 us and q62 gains +0.030 from a |1> history at 50 us.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Point estimates; each history difference spans a dynamic and a static job as well as the shot history.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-18T083402.386701Z/collect.json",
+          "sha256": "59d7b6a0e9a05f647c6bade648f368b207e9b574352b8639bdc0d8fce589e4ea"
+        },
+        {
+          "path": "results/live/2026-10-18T083404.414317Z/collect.json",
+          "sha256": "1440ee0d160e275d2b3c3de53930f3add1ba42a79183f4775178c5723249b75c"
+        },
+        {
+          "path": "results/live/2026-10-18T083404.226285Z/collect.json",
+          "sha256": "a35e07134002d29c5d49cec21bdc437bbfc32a7308dc8aa19536a6e38e733eaf"
+        },
+        {
+          "path": "results/live/2026-10-18T083403.945334Z/collect.json",
+          "sha256": "7be72acea468cb5cbeb941f0ced701d6f5f41bdf698fc4119c2fd2ced7dfe726"
+        }
+      ],
+      "documents": [
+        "results/live/N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "kingston-init-control-prep0-50us",
+        "kingston-init-control-prep0-250us",
+        "kingston-init-control-xhistory-50us",
+        "kingston-init-control-xhistory-250us"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "qd-belenos-q1-leak-follows-one-circuit-form",
       "statement": "Q1's exact case sent to qpu:belenos as 24 iterations at compilation seeds 0 to 21, 0 and 1 (job c2eea262) returned Q1's one-circuit mesh 29dc6ef8 at seed 20 with in_block 0.949 (Wilson 0.936 to 0.959), against 0.470 and 0.504 on the same mesh as one-circuit jobs; the preregistered rule reads 'form or dwell': with in-job drift bounded by 0.005 on repeated seeds, the leak belongs to the one-circuit job form or its 10000-sample dwell per setting, not to the programmed mesh. Over the 22 distinct meshes the median in_block is 0.943 and none is at or below 0.65 (family verdict 'iteration').",
       "domain": "hardware",
@@ -5518,6 +5722,72 @@
         "docs/notes/quandela/form-dwell-decomposition.md"
       ],
       "assumptions": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-q13-readout-context-q11",
+      "statement": "On Tuna-17 the |1> misassignment of q13 follows the state of q11 alone. With q13 alone excited (readout-q13) e10 reads 0.0456 (SE 0.0006); with q11 also excited (readout-q13-q11) 0.0913, a difference of +0.0457 at about 21 SE once q13's bracket drift between batch-00 and batch-03 (0.0019) joins the shot-noise SE in quadrature (about 45 SE on shot noise alone), established by the preregistered rule (at least 0.02 and 3 SE); with q10 excited (readout-q13-q10) 0.0396, -0.0060, and after X X on q10 and q11 that leaves both in |0> (readout-q13-xx) 0.0419, -0.0037, neither established. readout-1, with all 17 qubits excited, reads 0.0898, the q11 value. The preregistered attribution is 'state': the context dependence of q13 that the ladder established follows q11 ending in |1>. The drive control gives each neighbor two X pulses and returns it to |0>, and q10's single X raises nothing, so neither a drive effect that grows with the pulse count nor q10's single pulse explains the rise; a transient of q11's single pulse that a second pulse cancels is not separated from q11's state.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One device state (17:00Z to 17:31Z, 2026-10-18), one excitation per context circuit at 131072 shots, q13 only. The q10 and drive differences are significant on shot noise alone (about 7.6 and 4.5 SE, 2.9 and 1.8 with the drift term) and below the 0.02 threshold, so they are reported, not decided. No control matches the q11 arm's single pulse with q11 returned to |0>, so a pulse-history effect of that one pulse is not excluded; the mechanism of the q11 dependence (a dispersive shift, readout-resonator crosstalk or residual coupling at measurement) is not identified, and the other block qubits' contexts were not measured.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/walsh_exemplar_tuna_17_analysis.json",
+          "sha256": "c36a3d1085332f6fa5e31930cf1d539e7aad33dd2e611a3acaa02cd037a46d55"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/tuna17-walsh-exemplars.md",
+        "docs/notes/quantum_inspire/tuna-17-run-design.md"
+      ],
+      "gates": {
+        "core-557": "replay"
+      },
+      "acquisitions": [
+        "qi-walsh-exemplar-tuna17-batch-00",
+        "qi-walsh-exemplar-tuna17-batch-01",
+        "qi-walsh-exemplar-tuna17-batch-02",
+        "qi-walsh-exemplar-tuna17-batch-03"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "qi-tuna17-boxkite-ladder-readout-context"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-walsh-exemplar-classes",
+      "statement": "The cubic Walsh exemplars (1,16) (K = 11/32, a 5-CZ circuit on three of a block's four qubits) and (9,18) (K = 5/32, 6 CZ on all four) ran on Tuna-17 blocks X = q1-q4-q8-q12 and Y = q10-q13-q11-q14 in both assignments, twice each. The preregistered decisions: the class order K_high > K_low holds on each block in both batches, the block's high-class job against its low-class job, at z 105 to 114 with the bracket drift in the SE; readout-corrected K (q13 by its neighbors' true state) reads 0.2896 and 0.2890 (high, X), 0.3050 and 0.3054 (high, Y), 0.1296 and 0.1313 (low, X), 0.1251 and 0.1252 (low, Y); the class-by-block interaction I = -0.148 (SE 0.010, a bootstrap that resamples each circuit's shots jointly over both blocks) is established, the high class doing better on Y and the low class on X; the depolarizing-shape G test rejects every job and block (log10 p -26 to -1066) under the bracket mean and under each single bracket. Replicates agree within a TVD of 0.004 to 0.008. The informational global-depolarizing prediction (0.2595 high, 0.1236 low) undershoots the high class.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One device state (17:00Z to 17:31Z, 2026-10-18). The high-class circuit leaves its block's fourth qubit idle, so its forbidden outcomes measure that idle qubit alone (weight 0.003 on X, below 0.0002 on Y) and the uniform-over-16 depolarizing null is misspecified for it: the high-class shape rejection carries no information, while its K below ideal with no forbidden weight shows the noise moving weight among the eight allowed outcomes. For the same reason the interaction does not isolate a class-specific coherent error: the low class alone uses the fourth qubit and the couplers q8-q12 and q11-q14, so the classes run on different hardware subsets. The low-class shape rejection holds under all three q13 corrections and is conditional on the per-qubit readout model. The circuits test a CCZ phase polynomial under Tuna-17 noise, not composition of the sedenion multiplication blocks.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/walsh_exemplar_tuna_17_analysis.json",
+          "sha256": "c36a3d1085332f6fa5e31930cf1d539e7aad33dd2e611a3acaa02cd037a46d55"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/tuna17-walsh-exemplars.md",
+        "docs/notes/quantum_inspire/tuna-17-run-design.md"
+      ],
+      "gates": {
+        "core-557": "replay",
+        "core-432": "admission"
+      },
+      "acquisitions": [
+        "qi-walsh-exemplar-qx-twins-batch-00",
+        "qi-walsh-exemplar-tuna17-batch-00",
+        "qi-walsh-exemplar-tuna17-batch-01",
+        "qi-walsh-exemplar-tuna17-batch-02",
+        "qi-walsh-exemplar-tuna17-batch-03"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     },
