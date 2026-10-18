@@ -9,8 +9,8 @@ from the live Targets; [I] marks repository interpretation.
 account reaches at 2026-10-14T21:00:38Z with qiskit 2.5.2 and
 qiskit-ibm-runtime 0.50.0, plainly and with `use_fractional_gates=True`, and
 retained per-qubit durations and errors in
-[targets.json](../evidence/heron_platform/targets.json). Gates core-254 and
-core-255 recompute the facts block from those values. The table gives
+[targets.json](../evidence/heron_platform/targets.json). Gate core-254
+recomputes the facts block from those values. The table gives
 medians over 156 qubits (352 pairs for two-qubit gates); durations in ns.
 
 | | ibm_fez | ibm_kingston | ibm_marrakesh |
@@ -65,7 +65,7 @@ without versioned URLs, so a later reading checks the live page.
 ## Mapping to this repository
 
 - [I] The Heron execution facts section of AGENTS.md states the rules these
-  measurements and pages support; core-254 and core-255 hold the measured
+  measurements and pages support; core-254 holds the measured
   ones to the retained snapshot.
 - [I] live_run.py already sets `max_execution_time` at the Sampler's top
   level, records the timing constraints in the calibration identity, and

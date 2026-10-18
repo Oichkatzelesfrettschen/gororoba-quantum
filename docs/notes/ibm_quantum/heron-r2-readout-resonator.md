@@ -462,8 +462,8 @@ Evidence for what the account devices expose, from the live API read
   repetition fields are `default_rep_delay` and `rep_delay_range`. The sorted
   key names of all three backends are retained in
   docs/evidence/heron_platform/backend_configuration.json, and
-  `scripts/heron_backend_config_snapshot.py --check` (gates sources-388 and
-  sources-389) verifies these claims offline. Tag: DEVICE-MATCHED, stated by the
+  `scripts/heron_backend_config_snapshot.py --check` (gate sources-388)
+  verifies these claims offline. Tag: DEVICE-MATCHED, stated by the
   API (fields absent, so no LO range is exposed).
 - `backend_version` is exposed as a string; no public changelog maps its
   values to calibrations (section 1g).

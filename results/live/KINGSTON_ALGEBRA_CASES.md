@@ -68,7 +68,7 @@ placements nor the estimator change.
 [scripts/qpu_runtime_levers.py](../../scripts/qpu_runtime_levers.py) prices
 every lever from the records' own ledgers and retains the result in
 [kingston-algebra-runtime-levers.json](kingston-algebra-runtime-levers.json).
-Gates core-260 and core-261 replay it after verifying each case directory's
+Gate core-260 replays it after verifying each case directory's
 SHA256SUMS, the record digests above, the coupling-map edge digest and the
 script's own digest; core-262 mutates a copied case (a whitespace-only
 record.json change, one isa.qpy byte, one SHA256SUMS entry, a re-listed

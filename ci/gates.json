@@ -125,14 +125,6 @@
   },
   {
    "suite": "core",
-   "cwd": "results/live",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error -m unittest test_folded_raw_analysis",
-   "name": "core-015",
-   "seconds": 0.4,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
    "cwd": "results/live/2026-10-12T055624.091217Z",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "core-016",
@@ -158,25 +150,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error scripts/check_diagnose_qiskit_mock.py",
-   "name": "core-019",
-   "seconds": 2.2,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/check_render_folded_job_review.py",
    "name": "core-020",
    "seconds": 4.4,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error scripts/check_render_folded_job_review.py",
-   "name": "core-021",
-   "seconds": 3.9,
    "tier": "pr"
   },
   {
@@ -190,25 +166,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error scripts/check_review_folded_jobs.py",
-   "name": "core-023",
-   "seconds": 13.8,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/check_render_rank_sector_norms.py",
    "name": "core-024",
    "seconds": 10.7,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error scripts/check_render_rank_sector_norms.py",
-   "name": "core-025",
-   "seconds": 11.3,
    "tier": "pr"
   },
   {
@@ -222,14 +182,6 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error scripts/check_render_ripple_visualization.py",
-   "name": "core-027",
-   "seconds": 4.0,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/check_extract_measured_ripple.py",
    "name": "core-028",
    "seconds": 28.7,
@@ -238,25 +190,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error scripts/check_extract_measured_ripple.py",
-   "name": "core-029",
-   "seconds": 21.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/check_render_measured_ripple.py",
    "name": "core-030",
    "seconds": 32.8,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error scripts/check_render_measured_ripple.py",
-   "name": "core-031",
-   "seconds": 33.8,
    "tier": "pr"
   },
   {
@@ -285,26 +221,10 @@
   },
   {
    "suite": "core",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error results/local_compute/mixed_pub_client/probe.py >/dev/null",
-   "name": "core-035",
-   "seconds": 2.3,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
    "cwd": "results/local_compute/mixed_pub_client",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error -m unittest check_probe",
    "name": "core-036",
    "seconds": 1.5,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "results/local_compute/mixed_pub_client",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error -m unittest check_probe",
-   "name": "core-037",
-   "seconds": 4.0,
    "tier": "pr"
   },
   {
@@ -438,25 +358,9 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error schur_acceleration.py >/dev/null",
-   "name": "core-054",
-   "seconds": 122.4,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error nullity_twelve_locus.py >/dev/null",
    "name": "core-055",
    "seconds": 28.4,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error nullity_twelve_locus.py >/dev/null",
-   "name": "core-056",
-   "seconds": 64.5,
    "tier": "pr"
   },
   {
@@ -470,25 +374,9 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error nullity_twelve_curves.py >/dev/null",
-   "name": "core-058",
-   "seconds": 47.9,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error kernel_limit_contracts.py >/dev/null",
    "name": "core-059",
    "seconds": 59.2,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error kernel_limit_contracts.py >/dev/null",
-   "name": "core-060",
-   "seconds": 32.1,
    "tier": "pr"
   },
   {
@@ -502,25 +390,9 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error circle_kernel_attachments.py >/dev/null",
-   "name": "core-062",
-   "seconds": 12.6,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error complex_skew_contracts.py >/dev/null",
    "name": "core-063",
    "seconds": 124.3,
-   "tier": "full"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error complex_skew_contracts.py >/dev/null",
-   "name": "core-064",
-   "seconds": 135.1,
    "tier": "full"
   },
   {
@@ -914,14 +786,6 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error qpu_case_allocation_contracts.py",
-   "name": "core-107",
-   "seconds": 7.2,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" local_compute.py",
    "name": "core-108",
    "seconds": 4.9,
@@ -1050,25 +914,9 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/verify_sources.py",
-   "name": "sources-124",
-   "seconds": 1.8,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/check_verify_sources.py",
    "name": "sources-125",
    "seconds": 0.9,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/check_verify_sources.py",
-   "name": "sources-126",
-   "seconds": 0.5,
    "tier": "pr"
   },
   {
@@ -1082,14 +930,6 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/local_schur/probe.py --check",
-   "name": "sources-128",
-   "seconds": 4.3,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json",
    "name": "sources-129",
    "seconds": 0.7,
@@ -1098,25 +938,9 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json",
-   "name": "sources-130",
-   "seconds": 0.9,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/four_support_rank/replay.py --check",
    "name": "sources-131",
    "seconds": 8.2,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/four_support_rank/replay.py --check",
-   "name": "sources-132",
-   "seconds": 9.2,
    "tier": "pr"
   },
   {
@@ -1137,14 +961,6 @@
   },
   {
    "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/four_support_geometry/replay.py --check",
-   "name": "sources-135",
-   "seconds": 16.4,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
    "cwd": "docs/evidence/four_support_geometry",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-136",
@@ -1157,14 +973,6 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/four_support_doubling/replay.py --check",
    "name": "sources-137",
    "seconds": 5.6,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/four_support_doubling/replay.py --check",
-   "name": "sources-138",
-   "seconds": 5.7,
    "tier": "pr"
   },
   {
@@ -1185,14 +993,6 @@
   },
   {
    "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/four_support_homology/replay.py --check",
-   "name": "sources-141",
-   "seconds": 2.5,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
    "cwd": "docs/evidence/four_support_homology",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-142",
@@ -1205,14 +1005,6 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/dimension32_skew_schur/replay.py --check",
    "name": "sources-143",
    "seconds": 63.4,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/dimension32_skew_schur/replay.py --check",
-   "name": "sources-144",
-   "seconds": 71.1,
    "tier": "pr"
   },
   {
@@ -1233,14 +1025,6 @@
   },
   {
    "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/principal_skew_atlas/replay.py --check",
-   "name": "sources-147",
-   "seconds": 211.0,
-   "tier": "full"
-  },
-  {
-   "suite": "sources",
    "cwd": "docs/evidence/principal_skew_atlas",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-148",
@@ -1253,14 +1037,6 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/schur_acceleration/replay.py --check",
    "name": "sources-149",
    "seconds": 164.7,
-   "tier": "full"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/schur_acceleration/replay.py --check",
-   "name": "sources-150",
-   "seconds": 170.3,
    "tier": "full"
   },
   {
@@ -1282,7 +1058,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/vacuum_models/probe.py --check",
+   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/vacuum_models/probe.py --check",
    "name": "sources-153",
    "seconds": 1.4,
    "tier": "pr"
@@ -1305,26 +1081,10 @@
   },
   {
    "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/vacuum_endpoint_information/probe.py --check",
-   "name": "sources-156",
-   "seconds": 0.4,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
    "cwd": "docs/evidence/vacuum_endpoint_information",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error -m unittest check_probe",
    "name": "sources-157",
    "seconds": 0.4,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": "docs/evidence/vacuum_endpoint_information",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error -m unittest check_probe",
-   "name": "sources-158",
-   "seconds": 0.6,
    "tier": "pr"
   },
   {
@@ -1345,14 +1105,6 @@
   },
   {
    "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/nullity_twelve_locus/replay.py --check",
-   "name": "sources-161",
-   "seconds": 120.4,
-   "tier": "full"
-  },
-  {
-   "suite": "sources",
    "cwd": "docs/evidence/nullity_twelve_locus",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-162",
@@ -1366,14 +1118,6 @@
    "name": "sources-163",
    "seconds": 119.9,
    "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/kernel_limits/replay.py --check",
-   "name": "sources-164",
-   "seconds": 59.9,
-   "tier": "full"
   },
   {
    "suite": "sources",
@@ -1393,14 +1137,6 @@
   },
   {
    "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/complex_skew/replay.py --check",
-   "name": "sources-167",
-   "seconds": 127.0,
-   "tier": "full"
-  },
-  {
-   "suite": "sources",
    "cwd": "docs/evidence/complex_skew",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-168",
@@ -1412,14 +1148,6 @@
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/folding_proofs/check_compiler_gate.py",
    "name": "sources-169",
-   "seconds": 0.2,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/folding_proofs/check_compiler_gate.py",
-   "name": "sources-170",
    "seconds": 0.2,
    "tier": "pr"
   },
@@ -1482,25 +1210,9 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error kernel_determinant_contracts.py >/dev/null",
-   "name": "core-178",
-   "seconds": 21.2,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error projective_kernel_contracts.py >/dev/null",
    "name": "core-179",
    "seconds": 34.8,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error projective_kernel_contracts.py >/dev/null",
-   "name": "core-180",
-   "seconds": 14.6,
    "tier": "pr"
   },
   {
@@ -1509,14 +1221,6 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/kernel_determinant/replay.py --check",
    "name": "sources-181",
    "seconds": 16.6,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/kernel_determinant/replay.py --check",
-   "name": "sources-182",
-   "seconds": 38.2,
    "tier": "pr"
   },
   {
@@ -1533,14 +1237,6 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/projective_kernel_limits/replay.py --check",
    "name": "sources-184",
    "seconds": 15.6,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/projective_kernel_limits/replay.py --check",
-   "name": "sources-185",
-   "seconds": 31.6,
    "tier": "pr"
   },
   {
@@ -1568,14 +1264,6 @@
    "tier": "pr"
   },
   {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/c881_exhaustive/check_replay.py",
-   "name": "sources-189",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error real_frontier_contracts.py >/dev/null",
@@ -1584,28 +1272,12 @@
    "name": "core-190"
   },
   {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error real_frontier_contracts.py >/dev/null",
-   "seconds": 25.0,
-   "tier": "pr",
-   "name": "core-191"
-  },
-  {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/real_frontier_graphs/replay.py --check",
    "seconds": 18.5,
    "tier": "pr",
    "name": "sources-192"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/real_frontier_graphs/replay.py --check",
-   "seconds": 38.1,
-   "tier": "pr",
-   "name": "sources-193"
   },
   {
    "suite": "sources",
@@ -1634,26 +1306,10 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -O -W error scripts/reconcile_qpu_inventory.py --check",
-   "seconds": 3.9,
-   "tier": "pr",
-   "name": "core-197"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/check_reconcile_qpu_inventory.py",
    "seconds": 0.2,
    "tier": "pr",
    "name": "core-198"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -O -W error scripts/check_reconcile_qpu_inventory.py",
-   "seconds": 0.2,
-   "tier": "pr",
-   "name": "core-199"
   },
   {
    "suite": "core",
@@ -1667,27 +1323,10 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -O -W error scripts/review_wide_control_job.py --check",
-   "seconds": 3.0,
-   "tier": "pr",
-   "name": "core-201",
-   "runtime": "qiskit-2.5"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/review_wide_control_job.py --self-test",
    "seconds": 0.8,
    "tier": "pr",
    "name": "core-202"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -O -W error scripts/review_wide_control_job.py --self-test",
-   "seconds": 0.9,
-   "tier": "pr",
-   "name": "core-203"
   },
   {
    "suite": "core",
@@ -1730,14 +1369,6 @@
    "name": "core-208"
   },
   {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -O -W error kernel_determinant_contracts.py",
-   "seconds": 16.8,
-   "tier": "pr",
-   "name": "core-209"
-  },
-  {
    "suite": "sources",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error docs/evidence/kernel_determinant/replay.py --check",
@@ -1748,26 +1379,10 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -O -W error docs/evidence/kernel_determinant/replay.py --check",
-   "seconds": 37.6,
-   "tier": "pr",
-   "name": "sources-211"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error docs/evidence/c881_exhaustive/check_replay.py",
    "seconds": 0.2,
    "tier": "pr",
    "name": "sources-212"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -O -W error docs/evidence/c881_exhaustive/check_replay.py",
-   "seconds": 0.1,
-   "tier": "pr",
-   "name": "sources-213"
   },
   {
    "suite": "sources",
@@ -1804,26 +1419,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z",
-   "name": "core-449",
-   "seconds": 119.2,
-   "tier": "full"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --check results/live/2026-10-13T083417.634585Z",
    "name": "core-447",
    "seconds": 88.0,
-   "tier": "full",
-   "workers": "all"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --check results/live/2026-10-13T083417.634585Z",
-   "name": "core-448",
-   "seconds": 228.3,
    "tier": "full",
    "workers": "all"
   },
@@ -1854,27 +1452,10 @@
   },
   {
    "suite": "core",
-   "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error \"$PYTHON\" -O scripts/patch_window_analysis.py --self-check",
-   "name": "core-221",
-   "seconds": 70.1,
-   "tier": "pr",
-   "workers": "all"
-  },
-  {
-   "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error ../scripts/n21_orbit_context_refit.py --self-check",
    "name": "core-219",
    "seconds": 7.5,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error ../scripts/n21_orbit_context_refit.py --self-check",
-   "name": "core-220",
-   "seconds": 6.9,
    "tier": "pr"
   },
   {
@@ -1888,25 +1469,9 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error ../scripts/cd_associator_defect_census.py >/dev/null",
-   "name": "core-213",
-   "seconds": 13.5,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error ../scripts/qet_two_qubit_reference.py >/dev/null",
    "name": "core-214",
    "seconds": 0.3,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error ../scripts/qet_two_qubit_reference.py >/dev/null",
-   "name": "core-215",
-   "seconds": 0.2,
    "tier": "pr"
   },
   {
@@ -1920,24 +1485,8 @@
   {
    "suite": "sources",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error ../scripts/cd_associator_defect_census.py --replay ../docs/evidence/cd_associator_defect_census/census.json",
-   "name": "sources-218",
-   "seconds": 281.3,
-   "tier": "full"
-  },
-  {
-   "suite": "sources",
-   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error ../scripts/algebra_package_tables.py --check >/dev/null",
    "name": "sources-216",
-   "seconds": 0.3,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error ../scripts/algebra_package_tables.py --check >/dev/null",
-   "name": "sources-217",
    "seconds": 0.3,
    "tier": "pr"
   },
@@ -1984,25 +1533,9 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error ../scripts/coherence_window_analysis.py --self-check",
-   "name": "core-227",
-   "seconds": 3.5,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error ../scripts/octonion_structure_checks.py",
    "name": "core-228",
    "seconds": 2.6,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error ../scripts/octonion_structure_checks.py",
-   "name": "core-229",
-   "seconds": 5.0,
    "tier": "pr"
   },
   {
@@ -2016,25 +1549,9 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error ../scripts/design_c_hardware_verdict.py --check",
-   "name": "core-231",
-   "seconds": 0.4,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error ../scripts/singular_sector_dynamics.py",
    "name": "core-240",
    "seconds": 9.3,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error ../scripts/singular_sector_dynamics.py",
-   "name": "core-241",
-   "seconds": 9.7,
    "tier": "pr"
   },
   {
@@ -2057,14 +1574,6 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -O -W error scripts/qpu_runtime_levers.py --check results/live/kingston-algebra-runtime-levers.json >/dev/null",
-   "name": "core-261",
-   "seconds": 3.5,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
    "cmd": "\"$PYTHON\" -W error scripts/qpu_runtime_levers.py --self-test",
    "name": "core-262",
    "seconds": 0.2,
@@ -2081,65 +1590,65 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/inventory_retained_runs.py && \"$PYTHON\" -B -O -W error scripts/inventory_retained_runs.py",
+   "cmd": "\"$PYTHON\" -B -W error scripts/inventory_retained_runs.py",
    "name": "core-264",
-   "seconds": 19.6,
+   "seconds": 9.8,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error ci/check_run_gates.py && \"$PYTHON\" -B -O -W error ci/check_run_gates.py && \"$PYTHON\" -B -W error ci/check_gate_inputs.py && \"$PYTHON\" -B -O -W error ci/check_gate_inputs.py",
+   "cmd": "\"$PYTHON\" -B -W error ci/check_run_gates.py && \"$PYTHON\" -B -W error ci/check_gate_inputs.py",
    "name": "core-265",
-   "seconds": 77.9,
+   "seconds": 39.0,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error ci/check_pins.py && \"$PYTHON\" -B -O -W error ci/check_pins.py",
+   "cmd": "\"$PYTHON\" -B -W error ci/check_pins.py",
    "name": "core-454",
-   "seconds": 2.0,
+   "seconds": 1.0,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "ci",
-   "cmd": "\"$PYTHON\" -B -W error premerge_gates.py --self-test && \"$PYTHON\" -B -O -W error premerge_gates.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error premerge_gates.py --self-test",
    "name": "core-388",
-   "seconds": 2.4,
+   "seconds": 1.2,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/calibration_scoped_family_analysis.py results/live/2026-10-15T031229.371738Z --check results/live/2026-10-15T031229.371738Z/calibration-scoped-analysis.json && \"$PYTHON\" -B -O -W error scripts/calibration_scoped_family_analysis.py results/live/2026-10-15T031229.371738Z --check results/live/2026-10-15T031229.371738Z/calibration-scoped-analysis.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/calibration_scoped_family_analysis.py results/live/2026-10-15T031229.371738Z --check results/live/2026-10-15T031229.371738Z/calibration-scoped-analysis.json",
    "name": "core-266",
-   "seconds": 7.5,
+   "seconds": 3.8,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/moreno_stiefel_nullity.py --check docs/evidence/moreno_stiefel/nullity.json && \"$PYTHON\" -B -O -W error scripts/moreno_stiefel_nullity.py --check docs/evidence/moreno_stiefel/nullity.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/moreno_stiefel_nullity.py --check docs/evidence/moreno_stiefel/nullity.json",
    "name": "core-267",
-   "seconds": 30.2,
+   "seconds": 15.1,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error qubit_baseline.py && \"$PYTHON\" -B -O -W error qubit_baseline.py",
+   "cmd": "\"$PYTHON\" -B -W error qubit_baseline.py",
    "name": "core-268",
-   "seconds": 3.7,
+   "seconds": 1.9,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition.json && \"$PYTHON\" -B -O -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition.json",
    "name": "core-269",
-   "seconds": 8.1,
+   "seconds": 4.0,
    "tier": "pr"
   },
   {
@@ -2167,26 +1676,10 @@
    "tier": "pr"
   },
   {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -O -W error scripts/heron_target_snapshot.py --check docs/evidence/heron_platform/targets.json",
-   "name": "core-255",
-   "seconds": 0.2,
-   "tier": "pr"
-  },
-  {
    "suite": "sources",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -W error scripts/heron_backend_config_snapshot.py --check docs/evidence/heron_platform/backend_configuration.json",
    "name": "sources-388",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -O -W error scripts/heron_backend_config_snapshot.py --check docs/evidence/heron_platform/backend_configuration.json",
-   "name": "sources-389",
    "seconds": 0.1,
    "tier": "pr"
   },
@@ -2199,27 +1692,11 @@
    "tier": "pr"
   },
   {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -I -O -W error docs/evidence/reviewer_associator_audit/audit.py | cmp - docs/evidence/reviewer_associator_audit/audit_results.json",
-   "name": "sources-241",
-   "seconds": 1.1,
-   "tier": "pr"
-  },
-  {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error ../scripts/algebra_circuit_fixtures.py",
    "name": "core-251",
    "seconds": 4.2,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error ../scripts/algebra_circuit_fixtures.py",
-   "name": "core-252",
-   "seconds": 2.1,
    "tier": "pr"
   },
   {
@@ -2257,50 +1734,50 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/scaffolding_exposure.py --check && \"$PYTHON\" -B -O -W error scripts/scaffolding_exposure.py --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/scaffolding_exposure.py --check",
    "name": "core-276",
-   "seconds": 34.8,
+   "seconds": 17.4,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/research_state.py --check && \"$PYTHON\" -B -O -W error scripts/research_state.py --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/research_state.py --check",
    "name": "core-270",
-   "seconds": 3.5,
+   "seconds": 1.8,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/research_state.py --self-test && \"$PYTHON\" -B -O -W error scripts/research_state.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/research_state.py --self-test",
    "name": "core-271",
-   "seconds": 68.0,
+   "seconds": 34.0,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error crossed_tile_template.py && \"$PYTHON\" -B -O -W error crossed_tile_template.py",
+   "cmd": "\"$PYTHON\" -B -W error crossed_tile_template.py",
    "name": "core-274",
-   "seconds": 5.8,
+   "seconds": 2.9,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error signed_kernel_probe.py --check ../docs/evidence/signed_kernel_probe/result.json && \"$PYTHON\" -B -O -W error signed_kernel_probe.py --check ../docs/evidence/signed_kernel_probe/result.json",
+   "cmd": "\"$PYTHON\" -B -W error signed_kernel_probe.py --check ../docs/evidence/signed_kernel_probe/result.json",
    "name": "core-273",
-   "seconds": 7.7,
+   "seconds": 3.9,
    "tier": "pr",
    "runtime": "qiskit-2.5"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/stiefel_witness_certificate.py --check && \"$PYTHON\" -B -O -W error scripts/stiefel_witness_certificate.py --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/stiefel_witness_certificate.py --check",
    "name": "core-275",
-   "seconds": 4.0,
+   "seconds": 2.0,
    "tier": "pr"
   },
   {
@@ -2330,25 +1807,25 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error conditional_ramsey.py && \"$PYTHON\" -B -O -W error conditional_ramsey.py",
+   "cmd": "\"$PYTHON\" -B -W error conditional_ramsey.py",
    "name": "core-272",
-   "seconds": 10.8,
+   "seconds": 5.4,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error star_ramsey.py && \"$PYTHON\" -B -O -W error star_ramsey.py",
+   "cmd": "\"$PYTHON\" -B -W error star_ramsey.py",
    "name": "core-361",
-   "seconds": 24.9,
+   "seconds": 12.4,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error diagnostic_controls.py && \"$PYTHON\" -B -O -W error diagnostic_controls.py",
+   "cmd": "\"$PYTHON\" -B -W error diagnostic_controls.py",
    "name": "core-277",
-   "seconds": 4.1,
+   "seconds": 2.0,
    "tier": "pr"
   },
   {
@@ -2371,26 +1848,26 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --check && \"$PYTHON\" -B -O -W error scripts/local_member_cz_conformance.py --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --check",
    "name": "core-289",
-   "seconds": 139.2,
+   "seconds": 69.6,
    "tier": "full",
    "runtime": "qiskit-2.5"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --self-test && \"$PYTHON\" -B -O -W error scripts/local_member_cz_conformance.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --self-test",
    "name": "core-406",
-   "seconds": 8.9,
+   "seconds": 4.5,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --self-test-undeclared && \"$PYTHON\" -B -O -W error scripts/local_member_cz_conformance.py --self-test-undeclared",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --self-test-undeclared",
    "name": "core-407",
-   "seconds": 5.5,
+   "seconds": 2.8,
    "tier": "pr"
   },
   {
@@ -2405,9 +1882,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --check-dynamic && \"$PYTHON\" -B -O -W error scripts/local_member_cz_conformance.py --check-dynamic",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --check-dynamic",
    "name": "core-409",
-   "seconds": 83.0,
+   "seconds": 41.5,
    "tier": "pr",
    "runtime": "qiskit-2.5"
   },
@@ -2422,9 +1899,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/kaggle_run.py self-test && \"$PYTHON\" -B -O -W error scripts/kaggle_run.py self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/kaggle_run.py self-test",
    "name": "core-280",
-   "seconds": 16.9,
+   "seconds": 8.4,
    "tier": "pr"
   },
   {
@@ -2471,18 +1948,18 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/census_frequency_design.py --check docs/evidence/census_frequency_design/result.json --pairs \"1,2;2,1\" && \"$PYTHON\" -B -O -W error scripts/census_frequency_design.py --check docs/evidence/census_frequency_design/result.json --pairs \"1,2;2,1\"",
+   "cmd": "\"$PYTHON\" -B -W error scripts/census_frequency_design.py --check docs/evidence/census_frequency_design/result.json --pairs \"1,2;2,1\"",
    "name": "core-288",
-   "seconds": 54.4,
+   "seconds": 27.2,
    "tier": "pr",
    "runtime": "qiskit-2.5"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/kaggle_run.py verify && \"$PYTHON\" -B -O -W error scripts/kaggle_run.py verify",
+   "cmd": "\"$PYTHON\" -B -W error scripts/kaggle_run.py verify",
    "name": "core-290",
-   "seconds": 0.4,
+   "seconds": 0.2,
    "tier": "pr"
   },
   {
@@ -2504,18 +1981,18 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check && \"$PYTHON\" -B -O -W error scripts/compare_submitted_circuits.py --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check",
    "name": "core-281",
-   "seconds": 12.3,
+   "seconds": 6.2,
    "tier": "pr",
    "runtime": "qiskit-2.5"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs results/live/2026-10-13T080216.451663Z,merged && \"$PYTHON\" -B -O -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs results/live/2026-10-13T080216.451663Z,merged && \"$PYTHON\" -B -W error scripts/ghost_run.py --report docs/evidence/ghost_runs/result.json | cmp - docs/evidence/ghost_runs/report.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs results/live/2026-10-13T080216.451663Z,merged && \"$PYTHON\" -B -W error scripts/ghost_run.py --report docs/evidence/ghost_runs/result.json | cmp - docs/evidence/ghost_runs/report.json",
    "name": "core-287",
-   "seconds": 110.5,
+   "seconds": 73.7,
    "tier": "full"
   },
   {
@@ -2538,9 +2015,9 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error snapshot_laws.py && \"$PYTHON\" -B -O -W error snapshot_laws.py",
+   "cmd": "\"$PYTHON\" -B -W error snapshot_laws.py",
    "name": "core-302",
-   "seconds": 63.0,
+   "seconds": 31.5,
    "tier": "pr"
   },
   {
@@ -2597,9 +2074,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/cd_phase_degree.py --max-n 8 && \"$PYTHON\" -B -O -W error scripts/cd_phase_degree.py --max-n 8",
+   "cmd": "\"$PYTHON\" -B -W error scripts/cd_phase_degree.py --max-n 8",
    "name": "core-320",
-   "seconds": 3.0,
+   "seconds": 1.5,
    "tier": "pr"
   },
   {
@@ -2621,17 +2098,17 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json --limit 20 && \"$PYTHON\" -B -O -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json --limit 20",
+   "cmd": "\"$PYTHON\" -B -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json --limit 20",
    "name": "core-323",
-   "seconds": 7.1,
+   "seconds": 3.5,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json && \"$PYTHON\" -B -O -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json",
    "name": "core-324",
-   "seconds": 22.8,
+   "seconds": 11.4,
    "tier": "pr"
   },
   {
@@ -2645,9 +2122,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/capture_qi_docs.py --self-test && \"$PYTHON\" -B -O -W error scripts/capture_qi_docs.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/capture_qi_docs.py --self-test",
    "name": "core-371",
-   "seconds": 0.6,
+   "seconds": 0.3,
    "tier": "pr"
   },
   {
@@ -2661,9 +2138,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/capture_oq_docs.py --self-test && \"$PYTHON\" -B -O -W error scripts/capture_oq_docs.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/capture_oq_docs.py --self-test",
    "name": "core-381",
-   "seconds": 1.0,
+   "seconds": 0.5,
    "tier": "pr"
   },
   {
@@ -2677,9 +2154,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/oq_platform.py --self-test && \"$PYTHON\" -B -O -W error scripts/oq_platform.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/oq_platform.py --self-test",
    "name": "core-383",
-   "seconds": 0.5,
+   "seconds": 0.2,
    "tier": "pr"
   },
   {
@@ -2693,9 +2170,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/capture_qd_docs.py --self-test && \"$PYTHON\" -B -O -W error scripts/capture_qd_docs.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/capture_qd_docs.py --self-test",
    "name": "core-501",
-   "seconds": 0.5,
+   "seconds": 0.2,
    "tier": "pr"
   },
   {
@@ -2709,9 +2186,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_platform.py --self-test && \"$PYTHON\" -B -O -W error scripts/qd_platform.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_platform.py --self-test",
    "name": "core-503",
-   "seconds": 3.5,
+   "seconds": 1.8,
    "tier": "pr"
   },
   {
@@ -2725,9 +2202,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_cases.py --self-test && \"$PYTHON\" -B -O -W error scripts/qd_box_kite_cases.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_cases.py --self-test",
    "name": "core-505",
-   "seconds": 6.7,
+   "seconds": 3.4,
    "tier": "pr"
   },
   {
@@ -2741,9 +2218,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/cd_two_blade_blocks.py --self-test && \"$PYTHON\" -B -O -W error scripts/cd_two_blade_blocks.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/cd_two_blade_blocks.py --self-test",
    "name": "core-507",
-   "seconds": 10.9,
+   "seconds": 5.5,
    "tier": "pr"
   },
   {
@@ -2758,9 +2235,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --self-test && \"$PYTHON\" -B -O -W error scripts/qd_box_kite_analysis.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --self-test",
    "name": "core-509",
-   "seconds": 1.0,
+   "seconds": 0.5,
    "tier": "pr"
   },
   {
@@ -2782,9 +2259,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --self-test && \"$PYTHON\" -B -O -W error scripts/qd_belenos_mesh.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --self-test",
    "name": "core-512",
-   "seconds": 20.0,
+   "seconds": 10.0,
    "tier": "pr"
   },
   {
@@ -2858,9 +2335,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --self-test-bridge && \"$PYTHON\" -B -O -W error scripts/qd_belenos_mesh.py --self-test-bridge",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --self-test-bridge",
    "name": "core-544",
-   "seconds": 1.0,
+   "seconds": 0.5,
    "tier": "pr"
   },
   {
@@ -2874,17 +2351,17 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/anu_qrng.py --self-test && \"$PYTHON\" -B -O -W error scripts/anu_qrng.py --self-test && \"$PYTHON\" -B -W error scripts/anu_qrng.py check docs/evidence/anu_qrng",
+   "cmd": "\"$PYTHON\" -B -W error scripts/anu_qrng.py --self-test && \"$PYTHON\" -B -W error scripts/anu_qrng.py check docs/evidence/anu_qrng",
    "name": "core-541",
-   "seconds": 1.0,
+   "seconds": 0.7,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --self-test-dwell && \"$PYTHON\" -B -O -W error scripts/qd_belenos_mesh.py --self-test-dwell",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --self-test-dwell",
    "name": "core-542",
-   "seconds": 1.0,
+   "seconds": 0.5,
    "tier": "pr"
   },
   {
@@ -2898,9 +2375,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_cone.py --self-test && \"$PYTHON\" -B -O -W error scripts/qd_belenos_cone.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_cone.py --self-test",
    "name": "core-545",
-   "seconds": 2.0,
+   "seconds": 1.0,
    "tier": "pr"
   },
   {
@@ -2930,9 +2407,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test && \"$PYTHON\" -B -O -W error scripts/materialize_gororoba_csv.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test",
    "name": "core-401",
-   "seconds": 0.4,
+   "seconds": 0.2,
    "tier": "pr"
   },
   {
@@ -2962,9 +2439,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_crosstalk_teleport_cases.py --replay results/quantum_inspire/runs/2026-10-16T211635Z-QXsinglenodesimulator results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17 && \"$PYTHON\" -B -W error scripts/qi_crosstalk_teleport_cases.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_crosstalk_teleport_cases.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_crosstalk_teleport_cases.py --replay results/quantum_inspire/runs/2026-10-16T211635Z-QXsinglenodesimulator results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17 && \"$PYTHON\" -B -W error scripts/qi_crosstalk_teleport_cases.py --self-test",
    "name": "core-331",
-   "seconds": 1.3,
+   "seconds": 0.9,
    "tier": "pr"
   },
   {
@@ -2979,9 +2456,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zero_divisor_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -W error scripts/qi_zero_divisor_cases.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zero_divisor_cases.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zero_divisor_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -W error scripts/qi_zero_divisor_cases.py --self-test",
    "name": "core-348",
-   "seconds": 7.8,
+   "seconds": 5.2,
    "tier": "pr"
   },
   {
@@ -3003,59 +2480,59 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_local_dimension.py --check docs/evidence/rank_locus_local_dimension/result.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_local_dimension.py --check docs/evidence/rank_locus_local_dimension/result.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_local_dimension.py --check docs/evidence/rank_locus_local_dimension/result.json",
    "name": "core-328",
-   "seconds": 80.6,
+   "seconds": 40.3,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_gap_directions.py --check docs/evidence/rank_locus_gap_directions/result.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_gap_directions.py --check docs/evidence/rank_locus_gap_directions/result.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_gap_directions.py --check docs/evidence/rank_locus_gap_directions/result.json",
    "name": "core-551",
-   "seconds": 10.5,
+   "seconds": 5.2,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_gap_directions.py --self-test && \"$PYTHON\" -B -O -W error scripts/rank_locus_gap_directions.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_gap_directions.py --self-test",
    "name": "core-552",
-   "seconds": 13.3,
+   "seconds": 6.7,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_second_order.py --check docs/evidence/rank_locus_second_order/result.json && \"$PYTHON\" -B -O -W error scripts/rank_locus_second_order.py --check docs/evidence/rank_locus_second_order/result.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_second_order.py --check docs/evidence/rank_locus_second_order/result.json",
    "name": "core-553",
-   "seconds": 328.4,
+   "seconds": 164.2,
    "tier": "full",
    "workers": "all"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_second_order.py --self-test && \"$PYTHON\" -B -O -W error scripts/rank_locus_second_order.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_locus_second_order.py --self-test",
    "name": "core-554",
-   "seconds": 235.7,
+   "seconds": 117.8,
    "tier": "full",
    "workers": "all"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/exact_rank.py --self-test && \"$PYTHON\" -B -O -W error scripts/exact_rank.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/exact_rank.py --self-test",
    "name": "core-528",
-   "seconds": 3.4,
+   "seconds": 1.7,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/check_qi_platform_retention.py && \"$PYTHON\" -B -O -W error scripts/check_qi_platform_retention.py",
+   "cmd": "\"$PYTHON\" -B -W error scripts/check_qi_platform_retention.py",
    "name": "core-341",
-   "seconds": 20.2,
+   "seconds": 10.1,
    "tier": "pr"
   },
   {
@@ -3128,34 +2605,34 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/readout_ringdown_tuna_17_P_calibration_sensitivity.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08 --replay && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/readout_ringdown_tuna_17_P_calibration_sensitivity.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08 --replay && \"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/readout_ringdown_tuna_17_Q_calibration_sensitivity.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08 --replay && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/readout_ringdown_tuna_17_Q_calibration_sensitivity.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08 --replay",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/readout_ringdown_tuna_17_P_calibration_sensitivity.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-05-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-06-rerun1 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_P-batch-08 --replay && \"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/readout_ringdown_tuna_17_Q_calibration_sensitivity.json results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-00 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-01 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-02 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-03 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-04 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-05 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-06 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-07 results/quantum_inspire/runs/2026-10-17T032034Z-readout_ringdown_tuna_17_Q-batch-08 --replay",
    "name": "core-434",
-   "seconds": 181.8,
+   "seconds": 90.9,
    "tier": "full",
    "workers": "all"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity-self-test && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --sensitivity-self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity-self-test",
    "name": "core-435",
-   "seconds": 3.7,
+   "seconds": 1.9,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "cmp results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json results/kaggle/2026-10-17T150731Z-ringdown-null-calibration/output/output/repo/results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json && \"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --null-calibration results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json --replay && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --null-calibration results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json --replay",
+   "cmd": "cmp results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json results/kaggle/2026-10-17T150731Z-ringdown-null-calibration/output/output/repo/results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json && \"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --null-calibration results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json --replay",
    "name": "core-436",
-   "seconds": 55.3,
+   "seconds": 36.9,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --null-self-test && \"$PYTHON\" -B -O -W error scripts/qi_readout_ringdown_cases.py --null-self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_readout_ringdown_cases.py --null-self-test",
    "name": "core-437",
-   "seconds": 27.7,
+   "seconds": 13.8,
    "tier": "pr"
   },
   {
@@ -3170,25 +2647,25 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_follow_design.py --check docs/evidence/box_kite_follow_design/design.json && \"$PYTHON\" -B -O -W error scripts/box_kite_follow_design.py --check docs/evidence/box_kite_follow_design/design.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_follow_design.py --check docs/evidence/box_kite_follow_design/design.json",
    "name": "core-439",
-   "seconds": 3.7,
+   "seconds": 1.9,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_follow_design.py --self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_follow_design.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_follow_design.py --self-test",
    "name": "core-440",
-   "seconds": 2.0,
+   "seconds": 1.0,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_tuna17_readout_faults.py --check && \"$PYTHON\" -B -O -W error scripts/qi_tuna17_readout_faults.py --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_tuna17_readout_faults.py --check",
    "name": "core-400",
-   "seconds": 2.9,
+   "seconds": 1.4,
    "tier": "pr"
   },
   {
@@ -3210,25 +2687,25 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_coherent_families.py --self-test && \"$PYTHON\" -B -O -W error ../scripts/atlas_coherent_families.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_coherent_families.py --self-test",
    "name": "core-325",
-   "seconds": 173.7,
+   "seconds": 86.8,
    "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/calibration_median_drift.py --check docs/evidence/calibration_median_drift/result.json && \"$PYTHON\" -B -O -W error scripts/calibration_median_drift.py --check docs/evidence/calibration_median_drift/result.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/calibration_median_drift.py --check docs/evidence/calibration_median_drift/result.json",
    "name": "core-326",
-   "seconds": 12.5,
+   "seconds": 6.2,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_coherent_families.py --check ../docs/evidence/atlas_coherent_families/result.json --runs ibm_fez,ibm_kingston --lanes 4 && \"$PYTHON\" -B -O -W error ../scripts/atlas_coherent_families.py --check ../docs/evidence/atlas_coherent_families/result.json --runs ibm_fez,ibm_kingston --lanes 4",
+   "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_coherent_families.py --check ../docs/evidence/atlas_coherent_families/result.json --runs ibm_fez,ibm_kingston --lanes 4",
    "name": "core-329",
-   "seconds": 106.4,
+   "seconds": 53.2,
    "tier": "full",
    "workers": "all"
   },
@@ -3243,17 +2720,17 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/linear_conjugation_search.py --check docs/evidence/linear_conjugation/search.json && \"$PYTHON\" -B -O -W error scripts/linear_conjugation_search.py --check docs/evidence/linear_conjugation/search.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/linear_conjugation_search.py --check docs/evidence/linear_conjugation/search.json",
    "name": "core-335",
-   "seconds": 27.0,
+   "seconds": 13.5,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/linear_conjugation_challenger.py --check results/hw_estimate/n21_linear_conjugation_challenger.json && \"$PYTHON\" -B -O -W error gororoba_quantum/linear_conjugation_challenger.py --check results/hw_estimate/n21_linear_conjugation_challenger.json",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/linear_conjugation_challenger.py --check results/hw_estimate/n21_linear_conjugation_challenger.json",
    "name": "core-336",
-   "seconds": 93.3,
+   "seconds": 46.6,
    "tier": "pr",
    "runtime": "qiskit-2.5"
   },
@@ -3268,9 +2745,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/noise.json --all-seeds && \"$PYTHON\" -B -O -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/noise.json --all-seeds",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/noise.json --all-seeds",
    "name": "core-379",
-   "seconds": 171.5,
+   "seconds": 85.8,
    "tier": "full",
    "workers": "all",
    "runtime": "qiskit-2.5"
@@ -3286,9 +2763,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_idle_budget.py --check docs/evidence/ghost_error_scale/idle_budget.json && \"$PYTHON\" -O -B -W error scripts/ghost_idle_budget.py --check docs/evidence/ghost_error_scale/idle_budget.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_idle_budget.py --check docs/evidence/ghost_error_scale/idle_budget.json",
    "name": "core-343",
-   "seconds": 15.2,
+   "seconds": 7.6,
    "tier": "pr"
   },
   {
@@ -3302,17 +2779,17 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_event_scale.py --self-test && \"$PYTHON\" -O -B -W error scripts/ghost_event_scale.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_event_scale.py --self-test",
    "name": "core-345",
-   "seconds": 15.4,
+   "seconds": 7.7,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --self-test && \"$PYTHON\" -O -B -W error scripts/ghost_error_scale.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --self-test",
    "name": "core-389",
-   "seconds": 1.7,
+   "seconds": 0.8,
    "tier": "pr"
   },
   {
@@ -3358,33 +2835,17 @@
   {
    "suite": "sources",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -O -W error ../docs/notes/packages/manual/checks/algebra_interplay.py --check >/dev/null",
-   "name": "sources-248",
-   "seconds": 9.5,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error ../docs/notes/packages/manual/checks/albert_algebra.py --check >/dev/null",
    "name": "sources-249",
    "seconds": 5.9,
    "tier": "pr"
   },
   {
-   "suite": "sources",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -O -W error ../docs/notes/packages/manual/checks/albert_algebra.py --check >/dev/null",
-   "name": "sources-250",
-   "seconds": 12.8,
-   "tier": "pr"
-  },
-  {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/kaggle_sessions.py --self-test && \"$PYTHON\" -B -O -W error scripts/kaggle_sessions.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/kaggle_sessions.py --self-test",
    "name": "core-351",
-   "seconds": 0.4,
+   "seconds": 0.2,
    "tier": "pr"
   },
   {
@@ -3397,113 +2858,105 @@
   },
   {
    "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -O -W error scripts/jax_bridge_sweep.py --self-test >/dev/null",
-   "name": "core-353",
-   "seconds": 137.5,
-   "tier": "full"
-  },
-  {
-   "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_fringe_amplitudes.py --self-test && \"$PYTHON\" -B -O -W error ../scripts/atlas_fringe_amplitudes.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_fringe_amplitudes.py --self-test",
    "name": "core-359",
-   "seconds": 136.8,
+   "seconds": 68.4,
    "tier": "full"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_fringe_amplitudes.py --check ../docs/evidence/atlas_fringe_amplitudes/result.json --runs ibm_fez,ibm_kingston --lanes 4 && \"$PYTHON\" -B -O -W error ../scripts/atlas_fringe_amplitudes.py --check ../docs/evidence/atlas_fringe_amplitudes/result.json --runs ibm_fez,ibm_kingston --lanes 4",
+   "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_fringe_amplitudes.py --check ../docs/evidence/atlas_fringe_amplitudes/result.json --runs ibm_fez,ibm_kingston --lanes 4",
    "name": "core-360",
-   "seconds": 245.4,
+   "seconds": 122.7,
    "tier": "full",
    "workers": "all"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_census.py --check docs/evidence/box_kite_census/census.json && \"$PYTHON\" -B -O -W error scripts/box_kite_census.py --check docs/evidence/box_kite_census/census.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_census.py --check docs/evidence/box_kite_census/census.json",
    "name": "core-372",
-   "seconds": 19.8,
+   "seconds": 9.9,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_census.py --self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_census.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_census.py --self-test",
    "name": "core-373",
-   "seconds": 20.3,
+   "seconds": 10.2,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/aer_gpu_probe.py --check docs/evidence/aer_gpu_configuration/result.json && \"$PYTHON\" -B -O -W error scripts/aer_gpu_probe.py --check docs/evidence/aer_gpu_configuration/result.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/aer_gpu_probe.py --check docs/evidence/aer_gpu_configuration/result.json",
    "name": "core-367",
-   "seconds": 11.7,
+   "seconds": 5.8,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config/output/output/aer_gpu_probe.json --workloads toy,width --widths 7,10 && \"$PYTHON\" -B -O -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config/output/output/aer_gpu_probe.json --workloads toy,width --widths 7,10",
+   "cmd": "\"$PYTHON\" -B -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config/output/output/aer_gpu_probe.json --workloads toy,width --widths 7,10",
    "name": "core-450",
-   "seconds": 27.8,
+   "seconds": 13.9,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-18T072718Z-gororoba-aer-gpu-cu13-config/output/output/aer_gpu_probe.json --workloads toy,width --widths 7,10 --compare-counts results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config/output/output/aer_gpu_probe.json && \"$PYTHON\" -B -O -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-18T072718Z-gororoba-aer-gpu-cu13-config/output/output/aer_gpu_probe.json --workloads toy,width --widths 7,10 --compare-counts results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config/output/output/aer_gpu_probe.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-18T072718Z-gororoba-aer-gpu-cu13-config/output/output/aer_gpu_probe.json --workloads toy,width --widths 7,10 --compare-counts results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config/output/output/aer_gpu_probe.json",
    "name": "core-442",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/aer_blocking_probe.py --check results/kaggle/2026-10-17T230346Z-gororoba-aer-blocking/output/output/aer_blocking_probe.json --trials density_matrix-15-ghz-blocked,density_matrix-15-ghz-blocked_custatevec,density_matrix-15-ghz-blocked_gpu0,density_matrix-15-dynamic-blocked,density_matrix-15-dynamic-blocked_parallel_shots,density_matrix-15-dynamic_lowered-blocked,statevector-29-ghz-auto,statevector-29-ghz-blocked,statevector-30-ghz-blocked,statevector-30-ghz-blocked_custatevec,statevector-30-ghz-blocked_gpu0,statevector-30-dynamic-blocked,statevector-30-dynamic_lowered-blocked,statevector-30-ghz-auto",
+   "name": "core-451",
+   "seconds": 0.8,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/aer_blocking_probe.py --self-test",
+   "name": "core-452",
+   "seconds": 0.8,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_cases.py --check results/quantum_inspire/cases",
+   "name": "core-420",
+   "seconds": 5.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_cases.py --self-test",
+   "name": "core-421",
    "seconds": 6.0,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/aer_blocking_probe.py --check results/kaggle/2026-10-17T230346Z-gororoba-aer-blocking/output/output/aer_blocking_probe.json --trials density_matrix-15-ghz-blocked,density_matrix-15-ghz-blocked_custatevec,density_matrix-15-ghz-blocked_gpu0,density_matrix-15-dynamic-blocked,density_matrix-15-dynamic-blocked_parallel_shots,density_matrix-15-dynamic_lowered-blocked,statevector-29-ghz-auto,statevector-29-ghz-blocked,statevector-30-ghz-blocked,statevector-30-ghz-blocked_custatevec,statevector-30-ghz-blocked_gpu0,statevector-30-dynamic-blocked,statevector-30-dynamic_lowered-blocked,statevector-30-ghz-auto && \"$PYTHON\" -B -O -W error scripts/aer_blocking_probe.py --check results/kaggle/2026-10-17T230346Z-gororoba-aer-blocking/output/output/aer_blocking_probe.json --trials density_matrix-15-ghz-blocked,density_matrix-15-ghz-blocked_custatevec,density_matrix-15-ghz-blocked_gpu0,density_matrix-15-dynamic-blocked,density_matrix-15-dynamic-blocked_parallel_shots,density_matrix-15-dynamic_lowered-blocked,statevector-29-ghz-auto,statevector-29-ghz-blocked,statevector-30-ghz-blocked,statevector-30-ghz-blocked_custatevec,statevector-30-ghz-blocked_gpu0,statevector-30-dynamic-blocked,statevector-30-dynamic_lowered-blocked,statevector-30-ghz-auto",
-   "name": "core-451",
-   "seconds": 1.5,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/aer_blocking_probe.py --self-test && \"$PYTHON\" -B -O -W error scripts/aer_blocking_probe.py --self-test",
-   "name": "core-452",
-   "seconds": 1.7,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -O -W error scripts/box_kite_cases.py --check results/quantum_inspire/cases",
-   "name": "core-420",
-   "seconds": 10.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_cases.py --self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_cases.py --self-test",
-   "name": "core-421",
-   "seconds": 12.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_qx_sweep.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --self-test",
    "name": "core-422",
-   "seconds": 13.7,
+   "seconds": 6.8,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "cmp docs/evidence/box_kite_qx_sweep/family-a.json results/kaggle/2026-10-17T131115Z-box-kite-qx-sweep/output/output/repo/docs/evidence/box_kite_qx_sweep/family-a.json && cmp docs/evidence/box_kite_qx_sweep/family-de.json results/kaggle/2026-10-17T131115Z-box-kite-qx-sweep/output/output/repo/docs/evidence/box_kite_qx_sweep/family-de.json && \"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a.json --bind --require-pass --live 24 && \"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-de.json --bind --require-pass --live 8 && \"$PYTHON\" -B -O -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a.json --bind --require-pass && \"$PYTHON\" -B -O -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-de.json --bind --require-pass",
+   "cmd": "cmp docs/evidence/box_kite_qx_sweep/family-a.json results/kaggle/2026-10-17T131115Z-box-kite-qx-sweep/output/output/repo/docs/evidence/box_kite_qx_sweep/family-a.json && cmp docs/evidence/box_kite_qx_sweep/family-de.json results/kaggle/2026-10-17T131115Z-box-kite-qx-sweep/output/output/repo/docs/evidence/box_kite_qx_sweep/family-de.json && \"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a.json --bind --require-pass --live 24 && \"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-de.json --bind --require-pass --live 8 && \"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a.json --bind --require-pass && \"$PYTHON\" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-de.json --bind --require-pass",
    "name": "core-423",
    "seconds": 65.5,
    "tier": "full",
@@ -3527,73 +2980,73 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_analysis.py --analyze-self-test && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --analyze-self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_analysis.py --analyze-self-test",
    "name": "core-424",
-   "seconds": 60.7,
+   "seconds": 30.4,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json && \"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_ry_analysis.json && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_ry_analysis.json && \"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_follow_analysis.json && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_follow_analysis.json && \"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json && \"$PYTHON\" -B -O -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_pre_t0_analysis.json && \"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_ry_analysis.json && \"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_follow_analysis.json && \"$PYTHON\" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json",
    "name": "core-425",
-   "seconds": 16.8,
+   "seconds": 8.4,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_shot_record_line.py --check results/quantum_inspire/tuna_17_shot_record_line.json && \"$PYTHON\" -B -O -W error scripts/qi_shot_record_line.py --check results/quantum_inspire/tuna_17_shot_record_line.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_shot_record_line.py --check results/quantum_inspire/tuna_17_shot_record_line.json",
    "name": "core-426",
-   "seconds": 10.1,
+   "seconds": 5.0,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_shot_record_line.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_shot_record_line.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_shot_record_line.py --self-test",
    "name": "core-427",
-   "seconds": 3.7,
+   "seconds": 1.9,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_ladder_line_bins.py --check results/quantum_inspire/box_kite_tuna_17_ladder_line_bins.json && \"$PYTHON\" -B -O -W error scripts/qi_ladder_line_bins.py --check results/quantum_inspire/box_kite_tuna_17_ladder_line_bins.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_ladder_line_bins.py --check results/quantum_inspire/box_kite_tuna_17_ladder_line_bins.json",
    "name": "core-433",
-   "seconds": 12.7,
+   "seconds": 6.3,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_ladder_line_bins.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_ladder_line_bins.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_ladder_line_bins.py --self-test",
    "name": "core-550",
-   "seconds": 66.9,
+   "seconds": 33.5,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -O -W error scripts/qi_walsh_exemplar_cases.py --check results/quantum_inspire/cases",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_cases.py --check results/quantum_inspire/cases",
    "name": "core-428",
-   "seconds": 8.6,
+   "seconds": 4.3,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_cases.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_walsh_exemplar_cases.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_cases.py --self-test",
    "name": "core-429",
-   "seconds": 4.8,
+   "seconds": 2.4,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_analysis.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_walsh_exemplar_analysis.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_analysis.py --self-test",
    "name": "core-431",
-   "seconds": 4.8,
+   "seconds": 2.4,
    "tier": "pr"
   },
   {
@@ -3611,81 +3064,81 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_analysis.py --check results/quantum_inspire/walsh_exemplar_tuna_17_analysis.json results/quantum_inspire/runs/2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-0* && \"$PYTHON\" -B -O -W error scripts/qi_walsh_exemplar_analysis.py --check results/quantum_inspire/walsh_exemplar_tuna_17_analysis.json results/quantum_inspire/runs/2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-0*",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_walsh_exemplar_analysis.py --check results/quantum_inspire/walsh_exemplar_tuna_17_analysis.json results/quantum_inspire/runs/2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-0*",
    "name": "core-557",
-   "seconds": 8.2,
+   "seconds": 4.1,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/gl52_split_conjugators.py --self-test docs/evidence/gl52_split_conjugators/split.json && \"$PYTHON\" -B -O -W error scripts/gl52_split_conjugators.py --self-test docs/evidence/gl52_split_conjugators/split.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/gl52_split_conjugators.py --self-test docs/evidence/gl52_split_conjugators/split.json",
    "name": "core-490",
-   "seconds": 32.9,
+   "seconds": 16.4,
    "tier": "pr",
    "runtime": "qiskit-2.5"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/gl52_split_conjugators.py --check docs/evidence/gl52_split_conjugators/split.json && \"$PYTHON\" -B -O -W error scripts/gl52_split_conjugators.py --check docs/evidence/gl52_split_conjugators/split.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/gl52_split_conjugators.py --check docs/evidence/gl52_split_conjugators/split.json",
    "name": "core-491",
-   "seconds": 458.0,
+   "seconds": 229.0,
    "tier": "full",
    "runtime": "qiskit-2.5"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py && \"$PYTHON\" -B -O -W error ci/check_rocq_ci_pins.py",
+   "cmd": "\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py",
    "name": "core-403",
-   "seconds": 0.3,
+   "seconds": 0.1,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py --self-test && \"$PYTHON\" -B -O -W error ci/check_rocq_ci_pins.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py --self-test",
    "name": "core-404",
-   "seconds": 0.4,
+   "seconds": 0.2,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error dynamic_density.py --self-test && \"$PYTHON\" -B -O -W error dynamic_density.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error dynamic_density.py --self-test",
    "name": "core-480",
-   "seconds": 41.1,
+   "seconds": 20.6,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_model_validation.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_exact_model_validation.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_model_validation.py --self-test",
    "name": "core-481",
-   "seconds": 29.4,
+   "seconds": 14.7,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error n21_exact_planning.py && \"$PYTHON\" -B -O -W error n21_exact_planning.py",
+   "cmd": "\"$PYTHON\" -B -W error n21_exact_planning.py",
    "name": "core-482",
-   "seconds": 23.3,
+   "seconds": 11.7,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_replica_covariance.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_replica_covariance.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_replica_covariance.py --self-test",
    "name": "core-483",
-   "seconds": 2.4,
+   "seconds": 1.2,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_usage_budget.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_usage_budget.py --check gororoba_quantum/N21_USAGE_BUDGET.md",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_usage_budget.py --self-test && \"$PYTHON\" -B -W error scripts/n21_usage_budget.py --check gororoba_quantum/N21_USAGE_BUDGET.md",
    "name": "core-484",
    "seconds": 33.5,
    "tier": "pr"
@@ -3701,161 +3154,161 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error replica_covariance_contracts.py && \"$PYTHON\" -B -O -W error replica_covariance_contracts.py",
+   "cmd": "\"$PYTHON\" -B -W error replica_covariance_contracts.py",
    "name": "core-486",
-   "seconds": 20.5,
+   "seconds": 10.2,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck.json && \"$PYTHON\" -B -O -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck.json",
    "name": "core-487",
-   "seconds": 40.0,
+   "seconds": 20.0,
    "tier": "full",
    "workers": "all"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_crosscheck.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_exact_crosscheck.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_crosscheck.py --self-test",
    "name": "core-488",
-   "seconds": 3.1,
+   "seconds": 1.6,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/patch_window_analysis.py results/live/2026-10-13T201757.782152Z --check results/live/2026-10-13T201757.782152Z/patch-analysis.json && \"$PYTHON\" -B -O -W error scripts/patch_window_analysis.py results/live/2026-10-13T201757.782152Z --check results/live/2026-10-13T201757.782152Z/patch-analysis.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/patch_window_analysis.py results/live/2026-10-13T201757.782152Z --check results/live/2026-10-13T201757.782152Z/patch-analysis.json",
    "name": "core-495",
-   "seconds": 69.2,
+   "seconds": 34.6,
    "tier": "full"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --static-group-admission && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --static-group-admission",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --static-group-admission",
    "name": "core-496",
-   "seconds": 16.1,
+   "seconds": 8.1,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --window-bracket && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --window-bracket",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --window-bracket",
    "name": "core-446",
-   "seconds": 22.0,
+   "seconds": 11.0,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --init-herald && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --init-herald",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --init-herald",
    "name": "core-445",
-   "seconds": 48.0,
+   "seconds": 24.0,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --self-test-herald && PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O scripts/n21_orbit_rca.py --self-test-herald",
+   "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --self-test-herald",
    "name": "core-459",
-   "seconds": 14.0,
+   "seconds": 7.0,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/result.json && \"$PYTHON\" -B -O -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/result.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/result.json",
    "name": "core-489",
-   "seconds": 106.7,
+   "seconds": 53.4,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/lsq_conditioning_study.py --self-test && \"$PYTHON\" -B -O -W error scripts/lsq_conditioning_study.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/lsq_conditioning_study.py --self-test",
    "name": "core-492",
-   "seconds": 3.8,
+   "seconds": 1.9,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/axis_tilt_substrate_split.py --check docs/evidence/lsq_conditioning/substrate_split.json && \"$PYTHON\" -B -O -W error scripts/axis_tilt_substrate_split.py --check docs/evidence/lsq_conditioning/substrate_split.json && \"$PYTHON\" -B -W error scripts/axis_tilt_substrate_split.py --self-test docs/evidence/lsq_conditioning/substrate_split.json && \"$PYTHON\" -B -O -W error scripts/axis_tilt_substrate_split.py --self-test docs/evidence/lsq_conditioning/substrate_split.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/axis_tilt_substrate_split.py --check docs/evidence/lsq_conditioning/substrate_split.json && \"$PYTHON\" -B -W error scripts/axis_tilt_substrate_split.py --self-test docs/evidence/lsq_conditioning/substrate_split.json",
    "name": "core-458",
-   "seconds": 3.5,
+   "seconds": 1.8,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error wheel_algebra.py --self-test && \"$PYTHON\" -B -O -W error wheel_algebra.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error wheel_algebra.py --self-test",
    "name": "core-493",
-   "seconds": 6.4,
+   "seconds": 3.2,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error parallel.py --self-test && \"$PYTHON\" -B -O -W error parallel.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error parallel.py --self-test",
    "name": "core-520",
-   "seconds": 0.4,
+   "seconds": 0.2,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error dynamic_density.py --prep-excitation-test && \"$PYTHON\" -B -O -W error dynamic_density.py --prep-excitation-test && \"$PYTHON\" -B -W error qpu_planning_contracts.py --prep-excitation && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --prep-excitation",
+   "cmd": "\"$PYTHON\" -B -W error dynamic_density.py --prep-excitation-test && \"$PYTHON\" -B -W error qpu_planning_contracts.py --prep-excitation",
    "name": "core-525",
-   "seconds": 77.8,
+   "seconds": 38.9,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck_prep_excitation.json && \"$PYTHON\" -B -O -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck_prep_excitation.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crosscheck_prep_excitation.json",
    "name": "core-526",
-   "seconds": 54.4,
+   "seconds": 27.2,
    "tier": "full",
    "workers": "all"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --coverage && \"$PYTHON\" -B -O -W error empirical_bernstein_contracts.py --coverage",
+   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --coverage",
    "name": "core-529",
-   "seconds": 8.2,
+   "seconds": 4.1,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --methods && \"$PYTHON\" -B -O -W error empirical_bernstein_contracts.py --methods",
+   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --methods",
    "name": "core-530",
-   "seconds": 6.1,
+   "seconds": 3.0,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --planner && \"$PYTHON\" -B -O -W error empirical_bernstein_contracts.py --planner",
+   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --planner",
    "name": "core-531",
-   "seconds": 4.3,
+   "seconds": 2.1,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --default-identity && \"$PYTHON\" -B -O -W error empirical_bernstein_contracts.py --default-identity",
+   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --default-identity",
    "name": "core-532",
-   "seconds": 5.2,
+   "seconds": 2.6,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -O -W error qpu_planning_contracts.py --rep-delay",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --rep-delay",
    "name": "core-523",
    "seconds": 60.7,
    "tier": "full",
@@ -3865,17 +3318,17 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error diagnostic_experiments.py --self-test && \"$PYTHON\" -B -O -W error diagnostic_experiments.py --self-test && \"$PYTHON\" -B -W error qpu_planning_contracts.py --state-prep && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --state-prep",
+   "cmd": "\"$PYTHON\" -B -W error diagnostic_experiments.py --self-test && \"$PYTHON\" -B -W error qpu_planning_contracts.py --state-prep",
    "name": "core-524",
-   "seconds": 42.3,
+   "seconds": 21.1,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --submit-reuse && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --submit-reuse",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --submit-reuse",
    "name": "core-549",
-   "seconds": 69.5,
+   "seconds": 34.8,
    "tier": "pr"
   },
   {
@@ -3889,9 +3342,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json --live 0 && \"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json && \"$PYTHON\" -B -O -W error scripts/n21_qx_conformance.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json --live 0 && \"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --self-test && \"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json",
    "name": "core-499",
-   "seconds": 136.3,
+   "seconds": 102.2,
    "tier": "full",
    "requires": [
     "qi"
@@ -3901,106 +3354,106 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_zero_divisors.py --check docs/evidence/wheel_zero_divisors/result.json && \"$PYTHON\" -B -O -W error scripts/wheel_zero_divisors.py --check docs/evidence/wheel_zero_divisors/result.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_zero_divisors.py --check docs/evidence/wheel_zero_divisors/result.json",
    "name": "core-494",
-   "seconds": 42.8,
+   "seconds": 21.4,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_zero_divisors.py --self-test && \"$PYTHON\" -B -O -W error scripts/wheel_zero_divisors.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_zero_divisors.py --self-test",
    "name": "core-497",
-   "seconds": 7.3,
+   "seconds": 3.6,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error gaussian_wheel.py --self-test && \"$PYTHON\" -B -O -W error gaussian_wheel.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error gaussian_wheel.py --self-test",
    "name": "core-498",
-   "seconds": 21.0,
+   "seconds": 10.5,
    "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_rust_audit.py --check docs/evidence/wheel_rust_audit && \"$PYTHON\" -B -O -W error scripts/wheel_rust_audit.py --check docs/evidence/wheel_rust_audit",
+   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_rust_audit.py --check docs/evidence/wheel_rust_audit",
    "name": "sources-251",
-   "seconds": 17.9,
+   "seconds": 8.9,
    "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_rust_audit.py --self-test && \"$PYTHON\" -B -O -W error scripts/wheel_rust_audit.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/wheel_rust_audit.py --self-test",
    "name": "sources-252",
-   "seconds": 0.8,
+   "seconds": 0.4,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ibm_runtime_options_inventory.py --check docs/evidence/ibm_runtime_options/inventory.json && \"$PYTHON\" -B -O -W error scripts/ibm_runtime_options_inventory.py --check docs/evidence/ibm_runtime_options/inventory.json && \"$PYTHON\" -B -W error scripts/ibm_runtime_options_inventory.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ibm_runtime_options_inventory.py --check docs/evidence/ibm_runtime_options/inventory.json && \"$PYTHON\" -B -W error scripts/ibm_runtime_options_inventory.py --self-test",
    "name": "core-533",
-   "seconds": 8.8,
+   "seconds": 5.9,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/check_n21_conjugation_target.py && \"$PYTHON\" -B -O -W error scripts/check_n21_conjugation_target.py",
+   "cmd": "\"$PYTHON\" -B -W error scripts/check_n21_conjugation_target.py",
    "name": "core-conjugation-target",
-   "seconds": 69.6,
+   "seconds": 34.8,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/walk_scaffold_channels.py --check-extract && \"$PYTHON\" -B -O -W error scripts/walk_scaffold_channels.py --check-extract",
+   "cmd": "\"$PYTHON\" -B -W error scripts/walk_scaffold_channels.py --check-extract",
    "name": "core-walk-extract",
-   "seconds": 17.9,
+   "seconds": 8.9,
    "tier": "pr",
    "runtime": "qiskit-2.5"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/walk_scaffold_channels.py --self-test && \"$PYTHON\" -B -O -W error scripts/walk_scaffold_channels.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/walk_scaffold_channels.py --self-test",
    "name": "core-walk-extract-contract",
-   "seconds": 2.5,
+   "seconds": 1.2,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/atlas_coherent_families.py --self-test-channels && \"$PYTHON\" -B -O -W error scripts/atlas_coherent_families.py --self-test-channels",
+   "cmd": "\"$PYTHON\" -B -W error scripts/atlas_coherent_families.py --self-test-channels",
    "name": "core-atlas-channel-contract",
-   "seconds": 2.7,
+   "seconds": 1.4,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/atlas_fringe_amplitudes.py --self-test-channels && \"$PYTHON\" -B -O -W error scripts/atlas_fringe_amplitudes.py --self-test-channels",
+   "cmd": "\"$PYTHON\" -B -W error scripts/atlas_fringe_amplitudes.py --self-test-channels",
    "name": "core-fringe-channel-contract",
-   "seconds": 3.8,
+   "seconds": 1.9,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/jax_bridge_sweep.py --unit-test && \"$PYTHON\" -B -O -W error scripts/jax_bridge_sweep.py --unit-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/jax_bridge_sweep.py --unit-test",
    "name": "core-jax-program-contract",
-   "seconds": 2.5,
+   "seconds": 1.2,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --unit-test && \"$PYTHON\" -B -O -W error scripts/n21_qx_conformance.py --unit-test && if [ \"${GOROROBA_QI_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error -c 'import sys; sys.path.insert(0, \"gororoba_quantum\"); import qi_stack; qi_stack.live(\"N21 QX emitter\", \"synthetic replay\")' && \"$QI_PYTHON\" -B -W error scripts/n21_qx_conformance.py --unit-test && \"$QI_PYTHON\" -B -O -W error scripts/n21_qx_conformance.py --unit-test; fi",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --unit-test && if [ \"${GOROROBA_QI_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error -c 'import sys; sys.path.insert(0, \"gororoba_quantum\"); import qi_stack; qi_stack.live(\"N21 QX emitter\", \"synthetic replay\")' && \"$QI_PYTHON\" -B -W error scripts/n21_qx_conformance.py --unit-test && \"$QI_PYTHON\" -B -W error scripts/n21_qx_conformance.py --unit-test; fi",
    "name": "core-qx-emitter-contract",
-   "seconds": 1.8,
+   "seconds": 1.4,
    "tier": "pr",
    "requires": [
     "qi"
@@ -4009,33 +3462,33 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error results/local_compute/n21_shared_predicate/check_probe.py --current-sdk && \"$PYTHON\" -B -O -W error results/local_compute/n21_shared_predicate/check_probe.py --current-sdk",
+   "cmd": "\"$PYTHON\" -B -W error results/local_compute/n21_shared_predicate/check_probe.py --current-sdk",
    "name": "core-native-predicate-current",
-   "seconds": 12.6,
+   "seconds": 6.3,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error runtime_contracts.py --case approval_calibration_values && \"$PYTHON\" -B -O -W error runtime_contracts.py --case approval_calibration_values",
+   "cmd": "\"$PYTHON\" -B -W error runtime_contracts.py --case approval_calibration_values",
    "name": "core-521",
-   "seconds": 53.4,
+   "seconds": 26.7,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/state_prep_excess.py --self-test && \"$PYTHON\" -B -O -W error scripts/state_prep_excess.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/state_prep_excess.py --self-test",
    "name": "core-522",
-   "seconds": 6.0,
+   "seconds": 3.0,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/state_prep_excess.py --check && \"$PYTHON\" -B -O -W error scripts/state_prep_excess.py --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/state_prep_excess.py --check",
    "name": "core-539",
-   "seconds": 3.0,
+   "seconds": 1.5,
    "tier": "pr"
   },
   {
@@ -4049,9 +3502,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --self-test >/dev/null && \"$PYTHON\" -B -O -W error scripts/ghost_error_scale_branching.py --self-test >/dev/null",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale_branching.py --self-test >/dev/null",
    "name": "core-363",
-   "seconds": 53.5,
+   "seconds": 26.8,
    "tier": "pr"
   },
   {
@@ -4073,9 +3526,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_branching_benchmark.py --check docs/evidence/ghost_error_scale_branching/benchmark-host.json results/kaggle/2026-10-18T041945Z-gororoba-ghost-branching-t4/output/output/ghost_branching_benchmark.json && \"$PYTHON\" -B -O -W error scripts/ghost_branching_benchmark.py --check docs/evidence/ghost_error_scale_branching/benchmark-host.json results/kaggle/2026-10-18T041945Z-gororoba-ghost-branching-t4/output/output/ghost_branching_benchmark.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_branching_benchmark.py --check docs/evidence/ghost_error_scale_branching/benchmark-host.json results/kaggle/2026-10-18T041945Z-gororoba-ghost-branching-t4/output/output/ghost_branching_benchmark.json",
    "name": "core-441",
-   "seconds": 2.0,
+   "seconds": 1.0,
    "tier": "pr"
   },
   {
@@ -4089,17 +3542,17 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_calibrations.py --self-test && \"$PYTHON\" -O -B -W error scripts/ghost_calibrations.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_calibrations.py --self-test",
    "name": "core-560",
-   "seconds": 1.2,
+   "seconds": 0.6,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_run.py --self-test && \"$PYTHON\" -O -B -W error scripts/ghost_run.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_run.py --self-test",
    "name": "core-561",
-   "seconds": 1.2,
+   "seconds": 0.6,
    "tier": "pr"
   },
   {
@@ -4114,25 +3567,25 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -O -W error scripts/qx_reset_phase_probe.py --check results/quantum_inspire/cases",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --check results/quantum_inspire/cases",
    "name": "core-455",
-   "seconds": 0.2,
+   "seconds": 0.1,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --replay results/quantum_inspire/qx_reset_phase_analysis.json && \"$PYTHON\" -B -O -W error scripts/qx_reset_phase_probe.py --replay results/quantum_inspire/qx_reset_phase_analysis.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --replay results/quantum_inspire/qx_reset_phase_analysis.json",
    "name": "core-456",
-   "seconds": 0.2,
+   "seconds": 0.1,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --self-test && \"$PYTHON\" -B -O -W error scripts/qx_reset_phase_probe.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --self-test",
    "name": "core-457",
-   "seconds": 0.3,
+   "seconds": 0.1,
    "tier": "pr"
   }
  ],
