@@ -3658,6 +3658,14 @@
   },
   {
    "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --submit-reuse && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --submit-reuse",
+   "name": "core-546",
+   "seconds": 69.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json --live 0 && \"$PYTHON\" -B -W error scripts/n21_qx_conformance.py --self-test && \"$PYTHON\" -B -O -W error scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.json && \"$PYTHON\" -B -O -W error scripts/n21_qx_conformance.py --self-test",
    "name": "core-499",
