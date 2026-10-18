@@ -248,3 +248,26 @@ ET approval preflight uses deduplicated parallel ideal validation. The focused a
 - The origin of the bursty off-cone one-click background on the low-index
   modes is open. The light-cone reading excludes those clicks from every
   score.
+
+## Feed-forward planner fix and the control-run evidence PR
+
+- The planner fix exists only as the description in the N=21 section; no
+  branch carries code for it. `gororoba_quantum/QPU_OPTIMIZATION.md` on main
+  still documents the declared classical-latency allowance
+  (`--classical-latency-us`). The fix lands as one pull request that changes
+  `gororoba_quantum/live_run.py` and `QPU_OPTIMIZATION.md` together, with
+  the live dry run the repository requires for `live_run.py`, and only after
+  the control-run evidence below is on main.
+- The control-run evidence is open pull request #280, branch
+  `live/rep-delay-zero-control-records`, worktree
+  `~/worktrees/IBMQuantum/live/rep-delay-zero-control-records`. The remote
+  branch holds the control-job records. The worktree holds a merge of main
+  and an unpushed commit carrying the `state_prep_control_parameters`
+  extractor; pushing that commit is the first step.
+- The pull request merges once the service inventory records the failed
+  jobs, which needs their charges settled and the failed-job inventory
+  extension built on the `ibm/named-account-overflow` branch, and once its
+  review threads (failed-run retention, a repetition-delay floor guard and
+  the refuted timeout-code distinction in its findings note) are answered.
+- The N=21 owner session holds this work; the note that marks the planner
+  revision unresolved is removed in the change that lands the fix.
