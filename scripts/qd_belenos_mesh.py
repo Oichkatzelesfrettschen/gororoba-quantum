@@ -102,6 +102,10 @@ STATIC_TAUS = (0.1, 0.3)
 STATIC_GAIN_MIN = 10.0
 STATIC_SCHEMA = "qd-belenos-static-offsets-v1"
 STATIC_REPLAY_TOLERANCE = 1e-3
+# L-BFGS stops short of a unique optimum on a 574-offset fit the data do not identify, so its endpoint follows the
+# BLAS build: the C1 session's held-out gains differ by up to 3.2 % between AOCL and OpenBLAS, the efficiency
+# record's by 0.4 %. Optimizer endpoints replay within this relative bound; deterministic fields stay exact.
+STATIC_FIT_REPLAY_TOLERANCE = 0.1
 EFFICIENCY_SCHEMA = "qd-belenos-mesh-efficiency-v1"
 EFFICIENCY_SWEEPS = 5000
 EFFICIENCY_TOLERANCE = 1e-10
@@ -1325,6 +1329,28 @@ class Dephased:
         return out
 
 
+def floored_likelihood(weighted: Any, counts: Any, dark: Any) -> tuple[float, Any]:
+    """The multinomial log-likelihood `loglik` scores, summed over settings, and its gradient in the weighted light.
+
+    Per setting lambda_m = max(A w_m / S + d_m, LIKELIHOOD_FLOOR N) with A = N - sum d and S = sum w, normalized
+    to lambda_m / Lambda as `rates` does; a floored bin is constant in w, so with r_m = n_m / lambda_m - N / Lambda
+    on the unfloored bins and 0 elsewhere, d/dw_j = (A / S) r_j - (A / S^2) sum_m r_m w_m.
+    """
+    import numpy as np
+
+    total = counts.sum(1, keepdims=True)
+    norm = np.maximum(weighted.sum(1, keepdims=True), 1e-300)
+    light = np.maximum(total - dark.sum(1, keepdims=True), 0)
+    free = light * weighted / norm + dark
+    floor = LIKELIHOOD_FLOOR * total
+    lam = np.maximum(free, floor)
+    whole = lam.sum(1, keepdims=True)
+    value = float((counts * np.log(lam / whole)).sum())
+    r = np.where(free >= floor, counts / lam - total / whole, 0.0)
+    dw = light / norm * r - light / norm**2 * (r * weighted).sum(1, keepdims=True)
+    return value, dw
+
+
 class StaticFit:
     """MAP estimate of one heater-offset vector shared by every setting, under a Gaussian prior of width tau."""
 
@@ -1339,19 +1365,8 @@ class StaticFit:
         import numpy as np
 
         p, jac = jacobians(self.arch, self.meshes[keep] + delta, [self.sources[i] for i in keep])
-        n, eta, dark = self.counts[keep], self.eta, self.dark[keep]
-        total = n.sum(1, keepdims=True)
-        weighted = p * eta
-        norm = weighted.sum(1, keepdims=True)
-        scale = np.maximum(total - dark.sum(1, keepdims=True), 0) / np.maximum(norm, 1e-300)
-        free = scale * weighted + dark
-        lam = np.maximum(free, LIKELIHOOD_FLOOR * total)
-        value = float((n * np.log(lam / total)).sum())
-        # A bin held at the floor is constant in delta, so only the unfloored bins differentiate.
-        live = np.where(free >= LIKELIHOOD_FLOOR * total, n / lam, 0.0)
-        inner = (live * eta * p).sum(1, keepdims=True)
-        dldp = scale * eta * live - scale * eta / norm * inner
-        return value, np.einsum("sm,smj->j", dldp, jac)
+        value, dw = floored_likelihood(p * self.eta, self.counts[keep], self.dark[keep])
+        return value, np.einsum("sm,smj->j", dw * self.eta, jac)
 
     def fit(self, keep: Any, tau: float) -> Any:
         import numpy as np
@@ -1470,18 +1485,33 @@ def static_record(runs: list[Path]) -> dict[str, Any]:
     }
 
 
-def static_close(a: dict[str, Any], b: dict[str, Any]) -> None:
-    """A static record replays when its verdict, prior width and digests match and every number agrees within
-    STATIC_REPLAY_TOLERANCE relative (at least one nat), since L-BFGS paths differ across BLAS builds."""
-    require(
-        {k: a[k] for k in ("schema", "runs", "analysis_sha256", "settings", "best_tau", "static_declared")}
-        == {k: b[k] for k in ("schema", "runs", "analysis_sha256", "settings", "best_tau", "static_declared")},
-        f"{a.get('runs')}: static verdict differs",
-    )
+def fit_endpoints_close(a: dict[str, Any], b: dict[str, Any], owner: str) -> None:
+    """Static-fit blocks replay when their verdicts match and every endpoint agrees within
+    STATIC_FIT_REPLAY_TOLERANCE relative (at least one nat); the best prior width must match whenever the
+    retained gains of the widths lie further apart than that tolerance, so a near tie may resolve either way."""
+    require(a["static_declared"] == b["static_declared"], f"{owner}: static verdict differs")
+    require(set(a["by_tau"]) == set(b["by_tau"]), f"{owner}: prior widths differ")
     for tau, row in a["by_tau"].items():
+        require(set(row) == set(b["by_tau"][tau]), f"{owner}: {tau} fields differ")
         for key, value in row.items():
             other = b["by_tau"][tau][key]
-            require(abs(value - other) <= max(1.0, STATIC_REPLAY_TOLERANCE * abs(other)), f"{a['runs']}: {tau} {key}")
+            require(abs(value - other) <= max(1.0, STATIC_FIT_REPLAY_TOLERANCE * abs(other)), f"{owner}: {tau} {key}")
+    gains = sorted(row["gain_over_dephasing"] for row in a["by_tau"].values())
+    separated = all(
+        hi - lo > STATIC_FIT_REPLAY_TOLERANCE * max(abs(hi), abs(lo), 1.0)
+        for lo, hi in zip(gains, gains[1:], strict=False)
+    )
+    require(not separated or a["best_tau"] == b["best_tau"], f"{owner}: best prior width differs")
+
+
+def static_close(a: dict[str, Any], b: dict[str, Any]) -> None:
+    """A static record replays when its digests and settings match exactly and its fit block replays."""
+    require(
+        {k: a[k] for k in ("schema", "runs", "analysis_sha256", "settings")}
+        == {k: b[k] for k in ("schema", "runs", "analysis_sha256", "settings")},
+        f"{a.get('runs')}: static record differs",
+    )
+    fit_endpoints_close(a, b, str(a["runs"]))
 
 
 # --- fitted detection efficiencies -----------------------------------------------------------
@@ -1595,22 +1625,9 @@ class StaticEfficiencyFit(StaticFit):
 
         eta = np.exp(u - u.mean())
         p, jac = jacobians(self.arch, self.meshes[keep] + delta, [self.sources[i] for i in keep])
-        n = self.counts[keep]
-        total = n.sum(1, keepdims=True)
-        weighted = p * eta
-        norm = weighted.sum(1, keepdims=True)
-        scale = total / np.maximum(norm, 1e-300)
-        free = scale * weighted
-        lam = np.maximum(free, LIKELIHOOD_FLOOR * total)
-        value = float((n * np.log(lam / total)).sum())
-        # A bin held at the floor is constant in delta and u, so only the unfloored bins differentiate.
-        live = np.where(free >= LIKELIHOOD_FLOOR * total, n / lam, 0.0)
-        inner = (live * weighted).sum(1, keepdims=True)
-        ratio = scale * live
-        dldp = eta * ratio - scale * eta / norm * inner
-        dldeta = (p * ratio - scale * p / norm * inner).sum(0)
-        g = dldeta * eta
-        return value, np.einsum("sm,smj->j", dldp, jac), g - g.mean()
+        value, dw = floored_likelihood(p * eta, self.counts[keep], self.dark[keep])
+        g = (dw * p).sum(0) * eta
+        return value, np.einsum("sm,smj->j", dw * eta, jac), g - g.mean()
 
     def fit_joint(self, keep: Any, tau: float) -> tuple[Any, Any]:
         import numpy as np
@@ -1749,16 +1766,10 @@ def efficiency_record(runs: list[Path]) -> dict[str, Any]:
 
 
 def efficiency_close(a: dict[str, Any], b: dict[str, Any]) -> None:
-    """A fitted-efficiency record replays when its verdicts and digests match and every number agrees within
-    STATIC_REPLAY_TOLERANCE relative (at least one nat on likelihood sums), since L-BFGS paths differ across BLAS
-    builds."""
+    """A fitted-efficiency record replays when its digests, verdicts, classes and efficiencies match (numbers within
+    STATIC_REPLAY_TOLERANCE relative, at least one nat on likelihood sums) and its static fit block replays."""
     keys = ("schema", "runs", "analysis_sha256", "settings", "best_class", "verdict")
     require({k: a[k] for k in keys} == {k: b[k] for k in keys}, f"{a.get('runs')}: fitted-efficiency verdict differs")
-    require(
-        {k: a["static"][k] for k in ("best_tau", "static_declared")}
-        == {k: b["static"][k] for k in ("best_tau", "static_declared")},
-        f"{a['runs']}: static verdict differs",
-    )
     require(set(a) == set(b) and set(a["static"]) == set(b["static"]), f"{a['runs']}: record fields differ")
     require(set(a["static"]["by_tau"]) == set(b["static"]["by_tau"]), f"{a['runs']}: prior widths differ")
     require(set(a["classes"]) == set(b["classes"]), f"{a['runs']}: scanned classes differ")
@@ -1776,27 +1787,38 @@ def efficiency_close(a: dict[str, Any], b: dict[str, Any]) -> None:
                 <= max(1.0 if key == "held_out_log_likelihood" else 1e-3, STATIC_REPLAY_TOLERANCE * abs(other)),
                 f"{name} {key}",
             )
-    for tau, row in a["static"]["by_tau"].items():
-        for key, value in row.items():
-            other = b["static"]["by_tau"][tau][key]
-            require(abs(value - other) <= max(1.0, STATIC_REPLAY_TOLERANCE * abs(other)), f"{a['runs']}: {tau} {key}")
+    fit_endpoints_close(a["static"], b["static"], str(a["runs"]))
     close_relative(a["efficiency_under_ideal"], b["efficiency_under_ideal"], "efficiency_under_ideal")
     require(a["t_out_at_plan"] == b["t_out_at_plan"], "t_out_at_plan differs")
 
 
-def offset_prediction(arch: list[Element], phases: Any, low: int, eta: Any, rms: float, rng: Any) -> dict[str, Any]:
-    """in_block and algebra share a of one block mesh under independent heater offsets of the given rms, weighted
-    by fitted efficiencies: mean and 5th and 95th percentiles over FOLLOWUP_DRAWS draws."""
-    import numpy as np
+class OffsetShare:
+    """in_block and algebra share a of one block mesh at drawn heater phases, weighted by fitted efficiencies."""
 
-    def share(p: Any) -> tuple[float, float]:
-        w = p * eta / (p * eta).sum()
+    def __init__(self, arch: list[Element], eta: list[float]) -> None:
+        self.arch, self.eta = arch, eta
+
+    def __call__(self, job: tuple[list[float], int]) -> tuple[float, float]:
+        import numpy as np
+
+        phases, low = job
+        p = propagate(self.arch, phases, low)[0]
+        w = p * np.asarray(self.eta)
+        w = w / w.sum()
         block = float(w[low : low + 4].sum())
         return block, float(w[low : low + 2].sum()) / block
 
-    draws = np.asarray(
-        [share(propagate(arch, list(phases + rng.normal(0, rms, phases.size)), low)[0]) for _ in range(FOLLOWUP_DRAWS)]
-    )
+
+def offset_draws(phases: Any, low: int, rms: float, rng: Any) -> list[tuple[list[float], int]]:
+    """FOLLOWUP_DRAWS independent heater-offset draws of one block mesh, in the generator's order."""
+    return [(list(phases + rng.normal(0, rms, phases.size)), low) for _ in range(FOLLOWUP_DRAWS)]
+
+
+def offset_summary(shares: list[tuple[float, float]]) -> dict[str, Any]:
+    """Mean and 5th and 95th percentiles of in_block and a over a configuration's offset draws."""
+    import numpy as np
+
+    draws = np.asarray(shares)
 
     def summary(column: Any) -> dict[str, float]:
         return {
@@ -1844,17 +1866,22 @@ def followup_record(preregistration: Path, job02: Path, repeat: Path, original: 
     arch = run_architecture(decode(texts[0]))
     manifest = json.loads((job02 / "cases.json").read_text(encoding="utf-8"))
     rng = np.random.default_rng([SEED, FOLLOWUP_STREAM])
-    configurations = []
+    # Every recomputed configuration draws its offsets in the stream's order before the pool propagates them,
+    # so pooled and serial runs predict the same numbers.
+    jobs: dict[str, list[tuple[list[float], int]]] = {}
     for row, setting, text, case in zip(rows, analysis["settings"], texts, manifest["settings"], strict=True):
         require(row["name"] == setting["name"], f"{job02.name}: {setting['name']} out of order")
-        same = setting["mesh_sha256"] == row["mesh_sha256_s5"]
-        predicted = (
-            row["in_block_at_0.08"]
-            if same
-            else offset_prediction(
-                arch, np.asarray(mesh_phases(arch, decode(text))), case["low"], eta, FOLLOWUP_RMS, rng
-            )["in_block"]
-        )
+        if setting["mesh_sha256"] != row["mesh_sha256_s5"]:
+            phases = np.asarray(mesh_phases(arch, decode(text)))
+            jobs[setting["name"]] = offset_draws(phases, case["low"], FOLLOWUP_RMS, rng)
+    flat = parallel.ordered_map(
+        OffsetShare(arch, list(map(float, eta))), [j for v in jobs.values() for j in v], min_items=2
+    )
+    shares = {name: flat[k * FOLLOWUP_DRAWS : (k + 1) * FOLLOWUP_DRAWS] for k, name in enumerate(jobs)}
+    configurations = []
+    for row, setting in zip(rows, analysis["settings"], strict=True):
+        same = setting["name"] not in shares
+        predicted = row["in_block_at_0.08"] if same else offset_summary(shares[setting["name"]])["in_block"]
         configurations.append(
             {
                 "name": setting["name"],
@@ -2135,8 +2162,17 @@ def gradient_self_test() -> int:
     u = rng.normal(0, 0.2, MODES)
     plain = StaticFit(arch, meshes, sources, counts, np.ones(MODES), np.zeros((len(sources), MODES)))
     joint = StaticEfficiencyFit(arch, meshes, sources, counts)
-    _, g_plain = plain.loglik(delta, keep)
-    _, g_delta, g_u = joint.joint(delta, u, keep)
+    v_plain, g_plain = plain.loglik(delta, keep)
+    v_joint, g_delta, g_u = joint.joint(delta, u, keep)
+    # The fitted objective is the likelihood that scores held-out folds: loglik on the same rates.
+    shifted = jacobians(arch, meshes + delta, sources)[0]
+    eta = np.exp(u - u.mean())
+    zeros = [0.0] * MODES
+    for value, weights in ((v_plain, [1.0] * MODES), (v_joint, list(eta))):
+        scored = sum(loglik(list(map(int, c)), list(q), weights, zeros) for c, q in zip(counts, shifted, strict=True))
+        require(
+            abs(value - scored) <= 1e-9 * max(1.0, abs(scored)), f"fitted objective {value} against loglik {scored}"
+        )
     step = 1e-6
     checked = 0
     for j in sorted(probes):
