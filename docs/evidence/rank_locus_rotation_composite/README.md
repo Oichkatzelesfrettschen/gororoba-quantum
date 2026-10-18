@@ -30,7 +30,7 @@ record checks both equalities.
 | Point (beta, gamma, sigma, tau) | rank L | nullity |
 | --- | --- | --- |
 | x0 (0, 0, 0, 0) | 20 | 12 |
-| differential at x0, on the cone | rank 16 | |
+| differential at x0 of the full-family composite (a over C_4^perp, sigma, tau), on the cone | rank 16 | |
 | upper turn (0, 0, 2, 0), lower turn (0, 0, 0, 3) | 20 | 12 |
 | composite (0, 0, 2, 3) | 32 | 0 |
 | family, u and v parallel: (1, 0), (-2/5, 0) | 20 | 12 |
@@ -51,10 +51,12 @@ The table holds at all three witnesses.
   turn drops to nullity 4, so it leaves the locus off a proper closed
   subset of the family. Turning the whole of x0 toward e_8 + e_24 or e_8 - e_24 gives
   rank 32 at u = 1/2, 1, 2, 3 (exploratory, not retained).
-- **The gap is a family property.** At three generic non-zero-divisor
-  points of C_4^perp (rank L_a = 16 in A_4, one on the complex line
-  -3 e_1 + 4 e_9), the tangent bound of
+- **The bound holds off the witnesses.** At three more non-zero-divisor
+  points of C_4^perp (rank L_a = 16 in A_4), two with non-parallel halves
+  and one, -3 e_1 + 4 e_9, with parallel halves, the tangent bound of
   `rank_locus_local_dimension.tangent_bound` is 15, as at the witnesses.
+  These are point evaluations; the bound at every family point would need
+  a symbolic or stratified rank argument.
 - **The local dimension stays open.** The failure of one candidate map
   bounds nothing. A tangent cone or a set of failed curves gives no upper
   bound either; that needs equations that cut out D_(5,12) near x0.
@@ -72,8 +74,11 @@ the parameter count.
   python-hypercomplex). The flow of D2 preserves nullity. The D2 parts span
   17 dimensions: der(O) on each half, the identity and two maps that move
   e_8 into the lower half and e_24 into the upper half.
-- On the family cone the orbit has dimension 8 at e_1 and 13 at generic
-  slice points, inside the 14-dimensional family cone. The record retains
+- The orbit tangent space {D2 x} has dimension 8 at e_1 and 13 at the two
+  retained slice points, and at those points it lies in the 14-dimensional
+  family span. That is a first-order statement at three points: invariance
+  of the family span under every D2 is not checked, and no parameter
+  reduction rests on it. The record retains
   the cross-half e_8 and e_24 entries of the two extra generators.
 
 ## Package audit

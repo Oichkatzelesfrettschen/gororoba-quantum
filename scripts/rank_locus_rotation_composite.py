@@ -69,6 +69,7 @@ from cd_core import cd_sign  # noqa: E402
 
 SCHEMA = "rank-locus-rotation-composite-v1"
 AUDIT_SCHEMA = "rank-locus-rotation-composite-audit-v1"
+SAGE_VERSION = "10.10"
 AUDIT_PATH = ROOT / "docs/evidence/rank_locus_rotation_composite/audit.json"
 DIM = 32
 HALF = 16
@@ -181,7 +182,10 @@ def witness_row(unit: int) -> dict[str, Any]:
 
 
 def differential_rank(unit: int) -> int:
-    """Exact rank on the cone of the candidate's differential at x0: 14 family directions and both turn velocities.
+    """Exact rank on the cone of the full-family composite's differential at x0.
+
+    The full-family composite takes a over all of C_4^perp (14 directions
+    bracket(e_m, 0)) and both turns; psi restricts it to the slice.
 
     Psi is quadratic in sigma and in tau, so (Psi(1) - Psi(-1)) / 2 is its
     exact partial derivative at 0.
@@ -471,6 +475,7 @@ def audit_verdicts(record: dict[str, Any], core: dict[str, Any]) -> list[str]:
             failures.append(f"{name} disagrees with cd_core")
     sage = record.get("sage", {})
     expected = {
+        "sage_version": SAGE_VERSION,
         "der_o_dimension": len(gap.derivations()),
         "der_o_equals_cd_core_under_sign_flip_e3_e5_e6": True,
         "related_triples_dimension": 18,
@@ -535,6 +540,7 @@ def self_test() -> str:
         "one extra": lambda a: a["sage"]["extra_generator_cross_half_exit_entries"].pop(),
         "orbit 12": lambda a: a["sage"]["orbits_unit_1"]["generic-0"].__setitem__("dimension", 12),
         "der(O) map": lambda a: a["sage"].__setitem__("der_o_equals_cd_core_under_sign_flip_e3_e5_e6", False),
+        "sage version": lambda a: a["sage"].__setitem__("sage_version", "10.9"),
     }
     for label, change in audit_mutations.items():
         bad = copy.deepcopy(retained)
