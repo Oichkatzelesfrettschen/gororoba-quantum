@@ -507,7 +507,9 @@ def readout_series(runs: list[Path]) -> dict[str, Any]:
         raise SystemExit("the series runs carry different preregistrations")
     for role in ("single", "pair"):
         if role in jobs and "iterator" in jobs and not follows(jobs["iterator"], jobs[role]):
-            jobs[role]["problems"].append("submitted before job-14 was collected, so job-14's reading did not select it")
+            jobs[role]["problems"].append(
+                "submitted before job-14 was collected, so job-14's reading did not select it"
+            )
             jobs[role]["readings"] = ["void"] * len(jobs[role]["readings"])
     arms = {role: tuple(arm["readings"]) for role, arm in jobs.items()}
     verdict = series_verdict(arms)

@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (90 established, 34 exploratory, 4 open, 8 proposed, 4 superseded, 11 withdrawn) with its evidence class,
+registered claim (92 established, 35 exploratory, 4 open, 8 proposed, 4 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -165,15 +165,20 @@ acquisition of every provider:
 | [2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08](results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08) | Quandela Cloud | Belenos one-circuit form test | qpu:belenos | 1 | 1 | completed | 1.01 credits |
 | [2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07](results/quandela/runs/2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07) | Quandela Cloud | Belenos mesh 84/84 seed ensemble | qpu:belenos | 1 | 32 | completed | 1.003 credits |
 | [2026-10-18T074524Z-qpu_belenos-belenos_mesh-job-09](results/quandela/runs/2026-10-18T074524Z-qpu_belenos-belenos_mesh-job-09) | Quandela Cloud | Belenos form-mesh bridge | qpu:belenos | 1 | 1 | completed | 1.003 credits |
+| [2026-10-18T083404.226285Z](results/live/2026-10-18T083404.226285Z) | IBM Quantum | state-prep-control (x_history, 50 us) | ibm_kingston | 1 | 1 | DONE | 4 s |
+| [2026-10-18T083404.414317Z](results/live/2026-10-18T083404.414317Z) | IBM Quantum | state-prep-control (prep0, 250 us) | ibm_kingston | 1 | 1 | DONE | 6 s |
+| [2026-10-18T083403.945334Z](results/live/2026-10-18T083403.945334Z) | IBM Quantum | state-prep-control (x_history, 250 us) | ibm_kingston | 1 | 1 | DONE | 6 s |
+| [2026-10-18T083402.386701Z](results/live/2026-10-18T083402.386701Z) | IBM Quantum | state-prep-control (prep0, 50 us) | ibm_kingston | 1 | 1 | DONE | 4 s |
 | [2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10](results/quandela/runs/2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10) | Quandela Cloud | Belenos form-versus-dwell D1 | qpu:belenos | 1 | 1 | completed | 1.0015 credits |
 | [2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11](results/quandela/runs/2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11) | Quandela Cloud | Belenos form-versus-dwell D3 | qpu:belenos | 1 | 1 | completed | 1.01 credits |
 | [2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12](results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12) | Quandela Cloud | Belenos form-versus-dwell D2 and D4 | qpu:belenos | 1 | 1 | completed | 1.12 credits |
+| [2026-10-18T090603.530638Z](results/live/2026-10-18T090603.530638Z) | IBM Quantum | n21-feedback-encoded | ibm_kingston | 1 | 2 | DONE | 28 s |
 | [2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13](results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13) | Quandela Cloud | Belenos seeded single job on Q1's mesh | qpu:belenos | 1 | 1 | completed | 1.01 credits |
 | [2026-10-18T161620Z-qx_reset_phase-batch-00](results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00) | Quantum Inspire | cQASM reset semantics on the hosted QX emulator | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
 | [2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14](results/quandela/runs/2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14) | Quandela Cloud | Belenos payload-class series on Q1's mesh | qpu:belenos | 1 | 1 | completed | 1.01 credits |
 | [2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16](results/quandela/runs/2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16) | Quandela Cloud | Belenos payload-class series on Q1's mesh | qpu:belenos | 1 | 1 | completed | 1.02 credits |
 
-The IBM service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 physical jobs with 334 settled seconds; the account then reported 334 of 600 s consumed in the rolling window ending 2026-10-15T07:13:13.771Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-18T09:20:42.042591+00:00 holds 28 physical jobs with 382 settled seconds; the account then reported 382 of 600 s consumed in the rolling window ending 2026-10-18T09:20:41.985Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-18T16:18:13+00:00 lists 278 jobs with 4499456 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 

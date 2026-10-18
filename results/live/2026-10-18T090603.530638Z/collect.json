@@ -1,0 +1,337 @@
+[
+  {
+    "submission_complete": true,
+    "backends_without_recorded_job_id": [],
+    "members_without_recorded_job_id": [],
+    "jobs_without_recorded_id": [],
+    "jobs": {
+      "dba8r7k24mrc738527d0": {
+        "backend": "ibm_kingston",
+        "kind": "dynamic",
+        "usage": {
+          "job_status": "DONE",
+          "usage_status": "final",
+          "usage_source": "job.usage(partial=False)",
+          "submitted_pub_shots": 200000,
+          "qpu_charge_time_seconds": "28",
+          "pub_shots_per_qpu_second": "7142.857",
+          "throughput_unavailable_reason": null,
+          "raw_usage_metadata": {
+            "qpu_charge_time_seconds": 28,
+            "value": 0.457101,
+            "unit": "resource_units",
+            "status": "complete",
+            "details": [
+              {
+                "value": 0.457101,
+                "unit": "resource_units",
+                "metric": {
+                  "id": "caffe3ca-729c-5750-8777-df63bbf8bfd9",
+                  "value": 28
+                }
+              }
+            ]
+          }
+        },
+        "pub_timing": {
+          "ibm_kingston_dynamic_pub_01": {
+            "timing_status": "complete",
+            "timing_source": "executor_chunk_timing",
+            "execution_window_start": "2026-10-18T09:13:06.824184+00:00",
+            "execution_window_stop": "2026-10-18T09:13:35.948473+00:00",
+            "planned_target_gate_lower_bound_dt": 17179,
+            "target_gate_lower_bound_dt": 17179,
+            "scheduled_circuit_duration_dt": 19559,
+            "scheduler_residual_dt": 2380,
+            "feed_forward_operation_count": 1,
+            "sequential_stage_count": 1,
+            "parallel_stream_count": 1,
+            "groups": [
+              "n21_encoded_feedback"
+            ],
+            "timing_unavailable_reason": null
+          },
+          "ibm_kingston_dynamic_pub_02": {
+            "timing_status": "complete",
+            "timing_source": "executor_chunk_timing",
+            "execution_window_start": "2026-10-18T09:13:06.824184+00:00",
+            "execution_window_stop": "2026-10-18T09:13:35.948473+00:00",
+            "planned_target_gate_lower_bound_dt": 17494,
+            "target_gate_lower_bound_dt": 17494,
+            "scheduled_circuit_duration_dt": 19745,
+            "scheduler_residual_dt": 2251,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "groups": [
+              "n21_encoded_feedback"
+            ],
+            "timing_unavailable_reason": null
+          }
+        },
+        "backend_identity": {
+          "backend_version": "1.0.0",
+          "processor_type": {
+            "family": "Heron",
+            "revision": "2"
+          },
+          "backend_version_at_execution": {
+            "2026-10-18T09:13:06.824184+00:00": "1.0.0"
+          }
+        },
+        "raw": {
+          "directory": "raw/dba8r7k24mrc738527d0",
+          "files": {
+            "pub_00.json": "964bae6c99434e47afb55477efb90393dba475519053ca93bb8e3750206a4c1a",
+            "pub_01.json": "64d148b7122b5ea7c0c1722e27a6ed17b44b542e463f9586835730d6d095d1f5",
+            "result_metadata.json": "7a7613caebebeb778271e37e64e6a913b29d57c86cee1ff2c2c9b981d53c24d1"
+          }
+        }
+      }
+    },
+    "family_analysis": {
+      "observables": [
+        {
+          "name": "n21_encoded_feedback_contrast",
+          "estimate": 0.002710000000000018,
+          "lo": -0.012949700641205538,
+          "hi": 0.018369700641205574,
+          "confidence_half_width": 0.015659700641205556,
+          "alpha": 0.05,
+          "null_value": 0.0,
+          "detection_radius": 0.01465741630691219,
+          "reject_null": false,
+          "bound_methods": [
+            "minimum_of_hoeffding_and_empirical_bernstein_split_alpha",
+            "minimum_of_hoeffding_and_empirical_bernstein_split_alpha"
+          ]
+        }
+      ],
+      "method": "shared planning/collection Hoeffding bounds grouped by immutable PUB identity; empirical-Bernstein radii at their alpha split where the plan opted in",
+      "assumptions": [
+        "independent stationary repetitions; arbitrary dependence among replicas and members within each PUB shot",
+        "union bounds across PUBs; no independence assumption between PUBs or jobs",
+        "directional rejection uses the one-sided alpha radius; displayed intervals use the two-sided alpha radius",
+        "empirical-Bernstein radii (Maurer-Pontil Theorem 4) read each PUB score's sample variance through the Minkowski bound over its replica scores and spend their share of alpha"
+      ],
+      "empirical_bernstein": {
+        "specification": {
+          "source": "A. Maurer and M. Pontil, Empirical Bernstein Bounds and Sample Variance Penalization, COLT 2009, arXiv:0907.3740v1, Theorem 4 (i.i.d. scores in [0, 1], n >= 2) and Theorem 10 (4)",
+          "inequality": "one-sided at tail d: mean - sample mean <= sqrt(2 V_n ln(2 / d) / n) + 7 R ln(2 / d) / (3 (n - 1)), V_n the sample variance with denominator n - 1 and R the per-shot score range; the two-sided radius takes d / 2 per side, ln(4 / d)",
+          "alpha_split": "each opted-in endpoint's confidence tail (alpha minus any covariance falsifier tails) splits equally: half to the data-free radius (Hoeffding, or the declared covariance radius where smaller), half to the empirical-Bernstein radius; each PUB reads the smaller, and the union bound over the two methods and over PUBs keeps coverage at alpha",
+          "collection_variance": "each PUB score Y = sum_k w_k s_k reads V_n(Y) <= n / (n - 1) (sum_k |w_k| sigma_k)^2 with sigma_k the plug-in standard deviation of replica score s_k from its outcome frequencies: exact for one replica, valid for any within-shot dependence",
+          "planning_variance": "each modeled replica standard deviation rises by Theorem 10 (4)'s allowance R_k sqrt(2 ln(K / t) / (n - 1)) at t = variance tail / PUBs, K replica scores per PUB; the plan spends the variance tail from its power miss probability, so a variance above plan costs power and never coverage",
+          "scope": "endpoints whose per-shot scores are bounded and i.i.d. over shots within a PUB, the conditions the Hoeffding radius already requires; power radii stay data-free"
+        },
+        "endpoints": [
+          {
+            "observable": "n21_encoded_feedback_contrast",
+            "alpha": 0.05,
+            "falsifier_tail": 0.0,
+            "confidence_tail": 0.05,
+            "share": 0.5,
+            "data_free_tail": 0.025,
+            "empirical_bernstein_tail": 0.025,
+            "variance": "observed: n / (n - 1) (sum_k |w_k| sigma_k)^2 over the PUB's replica score frequencies",
+            "pubs": [
+              {
+                "pub": "ibm_kingston_dynamic_pub_01",
+                "shots": 100000,
+                "score_span": 2.0,
+                "variance": 0.4936973808738086,
+                "confidence": {
+                  "data_free": 0.01007489336443203,
+                  "empirical_bernstein": 0.007816117488938113,
+                  "used": 0.007816117488938113,
+                  "method": "empirical_bernstein"
+                },
+                "detection": {
+                  "data_free": 0.009361652241643972,
+                  "empirical_bernstein": 0.007315826819288096,
+                  "used": 0.007315826819288096,
+                  "method": "empirical_bernstein"
+                }
+              },
+              {
+                "pub": "ibm_kingston_dynamic_pub_02",
+                "shots": 100000,
+                "score_span": 2.0,
+                "variance": 0.49729736297362964,
+                "confidence": {
+                  "data_free": 0.01007489336443203,
+                  "empirical_bernstein": 0.007843583152267443,
+                  "used": 0.007843583152267443,
+                  "method": "empirical_bernstein"
+                },
+                "detection": {
+                  "data_free": 0.009361652241643972,
+                  "empirical_bernstein": 0.007341589487624094,
+                  "used": 0.007341589487624094,
+                  "method": "empirical_bernstein"
+                }
+              }
+            ],
+            "radii": {
+              "confidence": {
+                "data_free": 0.02014978672886406,
+                "empirical_bernstein": 0.015659700641205556,
+                "used": 0.015659700641205556,
+                "without_empirical_bernstein": 0.018723304483287944
+              },
+              "detection": {
+                "data_free": 0.018723304483287944,
+                "empirical_bernstein": 0.01465741630691219,
+                "used": 0.01465741630691219,
+                "without_empirical_bernstein": 0.0171787763338695
+              }
+            },
+            "variance_tail": 0.001,
+            "power_tail": 0.19899999999999995,
+            "power_radius": 0.013587045697479906,
+            "power_radius_without_empirical_bernstein": 0.013572280848830224
+          }
+        ],
+        "power": [
+          {
+            "name": "n21_encoded_feedback_contrast",
+            "power": 0.8,
+            "planned_effect": 0.031039262580353222,
+            "detection_radius": 0.01465741630691219,
+            "power_radius": 0.013587045697479906,
+            "underpowered": false
+          }
+        ]
+      }
+    },
+    "invocation_usage": {
+      "known_final_charge_seconds": "28",
+      "total_charge_seconds": "28",
+      "charge_complete": true,
+      "workload_complete": true,
+      "predicted_charge_seconds": 28.169200000000153,
+      "charge_prediction_residual_seconds": -0.16920000000015278,
+      "charge_prediction_residual_withheld": null,
+      "jobs_without_final_charge": []
+    }
+  },
+  {
+    "group": "n21_encoded_feedback",
+    "backend": "ibm_kingston",
+    "job_id": "dba8r7k24mrc738527d0",
+    "executed": {
+      "n21_encoded_feedback": {
+        "pub": "ibm_kingston_dynamic_pub_01",
+        "start": "2026-10-18T09:13:06.824184+00:00",
+        "stop": "2026-10-18T09:13:35.948473+00:00",
+        "calibration": "2026-10-18T01:38:20-07:00",
+        "calibration_changed_during_shots": false,
+        "window_unavailable_reason": null,
+        "shots": 100000
+      },
+      "n21_encoded_no_feedback": {
+        "pub": "ibm_kingston_dynamic_pub_02",
+        "start": "2026-10-18T09:13:06.824184+00:00",
+        "stop": "2026-10-18T09:13:35.948473+00:00",
+        "calibration": "2026-10-18T01:38:20-07:00",
+        "calibration_changed_during_shots": false,
+        "window_unavailable_reason": null,
+        "shots": 100000
+      }
+    },
+    "packing_schedule": null,
+    "measured": {
+      "n21_encoded_feedback": [
+        [
+          0.26918,
+          0.24476,
+          0.23711,
+          0.24895
+        ]
+      ],
+      "n21_encoded_no_feedback": [
+        [
+          0.2654,
+          0.24522,
+          0.23726,
+          0.25212
+        ]
+      ]
+    },
+    "measured_statistics": {
+      "summary": {
+        "feedback_signed_contrast": -0.004189999999999999,
+        "no_feedback_signed_contrast": -0.006900000000000017,
+        "contrast_difference": 0.002710000000000018,
+        "labeled_tvd": 0.003779999999999978,
+        "feedback_tvd_to_ideal": 0.11211,
+        "no_feedback_tvd_to_ideal": 0.23247999999999996
+      },
+      "summary_per_replica": [
+        {
+          "feedback_signed_contrast": -0.004189999999999999,
+          "no_feedback_signed_contrast": -0.006900000000000017,
+          "contrast_difference": 0.002710000000000018,
+          "labeled_tvd": 0.003779999999999978,
+          "feedback_tvd_to_ideal": 0.11211,
+          "no_feedback_tvd_to_ideal": 0.23247999999999996
+        }
+      ],
+      "variance": {
+        "n21_encoded_feedback": {
+          "replicas": 1.0,
+          "mean": 0.49790499999999993,
+          "shot_variance": 1.2342311097500003e-06
+        },
+        "n21_encoded_no_feedback": {
+          "replicas": 1.0,
+          "mean": 0.49655000000000005,
+          "shot_variance": 1.2432309749999998e-06
+        }
+      }
+    },
+    "packing_interpretation": null,
+    "measured_summary_readout_corrected": {
+      "skipped": "feed-forward circuit: mid-circuit readout error changes later quantum evolution"
+    },
+    "replayed_statistics": {
+      "summary": {
+        "feedback_signed_contrast": 0.005899999999999961,
+        "no_feedback_signed_contrast": -0.028480000000000005,
+        "contrast_difference": 0.034379999999999966,
+        "labeled_tvd": 0.01933999999999997,
+        "feedback_tvd_to_ideal": 0.09425,
+        "no_feedback_tvd_to_ideal": 0.20303
+      },
+      "summary_per_replica": [
+        {
+          "feedback_signed_contrast": 0.005899999999999961,
+          "no_feedback_signed_contrast": -0.028480000000000005,
+          "contrast_difference": 0.034379999999999966,
+          "labeled_tvd": 0.01933999999999997,
+          "feedback_tvd_to_ideal": 0.09425,
+          "no_feedback_tvd_to_ideal": 0.20303
+        }
+      ],
+      "variance": {
+        "n21_encoded_feedback": {
+          "replicas": 1.0,
+          "mean": 0.50295,
+          "shot_variance": 1.2705629749999998e-06
+        },
+        "n21_encoded_no_feedback": {
+          "replicas": 1.0,
+          "mean": 0.48575999999999997,
+          "shot_variance": 1.2628222240000002e-06
+        }
+      }
+    },
+    "tvd_measured_to_replayed": {
+      "n21_encoded_feedback": [
+        0.02611999999999999
+      ],
+      "n21_encoded_no_feedback": [
+        0.02944999999999999
+      ]
+    }
+  }
+]

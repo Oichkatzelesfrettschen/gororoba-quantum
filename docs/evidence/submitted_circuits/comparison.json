@@ -1344,6 +1344,98 @@
     "402f7835d3345cece8a3923d5dd459cb422b2e91a70a5a1ef0cb18a08710fd4d",
     "7e134a35bbc5d0d6b0063a6f216ffc9bef9939974a2d9687a465f8283644cc43"
    ]
+  },
+  {
+   "job_id": "dba8hnk24mrc73851u30",
+   "run": "results/live/2026-10-18T083404.226285Z",
+   "retained_file": "results/live/2026-10-18T083404.226285Z/isa.qpy",
+   "retained_sha256": "1425f694ee64f913a8b7e061115e941e97d64f75358fd40e18e4b0cbc95c23f3",
+   "order_source": "record.json submission.jobs[].pubs",
+   "expected_pubs": [
+    "ibm_kingston_dynamic_pub_01"
+   ],
+   "items": 1,
+   "item_kinds": [
+    "CircuitItem"
+   ],
+   "positional_matches": 1,
+   "submitted_qpy_sha256": [
+    "1425f694ee64f913a8b7e061115e941e97d64f75358fd40e18e4b0cbc95c23f3"
+   ]
+  },
+  {
+   "job_id": "dba8hr424mrc73851u8g",
+   "run": "results/live/2026-10-18T083404.414317Z",
+   "retained_file": "results/live/2026-10-18T083404.414317Z/isa.qpy",
+   "retained_sha256": "c480984606358123526601e7371acdcdc2def07d44e014d0c17c2d8a52dca25e",
+   "order_source": "record.json submission.jobs[].pubs",
+   "expected_pubs": [
+    "ibm_kingston_static_pub_01"
+   ],
+   "items": 1,
+   "item_kinds": [
+    "CircuitItem"
+   ],
+   "positional_matches": 1,
+   "submitted_qpy_sha256": [
+    "c480984606358123526601e7371acdcdc2def07d44e014d0c17c2d8a52dca25e"
+   ]
+  },
+  {
+   "job_id": "dba8hsk24mrc73851uag",
+   "run": "results/live/2026-10-18T083403.945334Z",
+   "retained_file": "results/live/2026-10-18T083403.945334Z/isa.qpy",
+   "retained_sha256": "1425f694ee64f913a8b7e061115e941e97d64f75358fd40e18e4b0cbc95c23f3",
+   "order_source": "record.json submission.jobs[].pubs",
+   "expected_pubs": [
+    "ibm_kingston_dynamic_pub_01"
+   ],
+   "items": 1,
+   "item_kinds": [
+    "CircuitItem"
+   ],
+   "positional_matches": 1,
+   "submitted_qpy_sha256": [
+    "1425f694ee64f913a8b7e061115e941e97d64f75358fd40e18e4b0cbc95c23f3"
+   ]
+  },
+  {
+   "job_id": "dba8huoc77vs7382f8mg",
+   "run": "results/live/2026-10-18T083402.386701Z",
+   "retained_file": "results/live/2026-10-18T083402.386701Z/isa.qpy",
+   "retained_sha256": "c480984606358123526601e7371acdcdc2def07d44e014d0c17c2d8a52dca25e",
+   "order_source": "record.json submission.jobs[].pubs",
+   "expected_pubs": [
+    "ibm_kingston_static_pub_01"
+   ],
+   "items": 1,
+   "item_kinds": [
+    "CircuitItem"
+   ],
+   "positional_matches": 1,
+   "submitted_qpy_sha256": [
+    "c480984606358123526601e7371acdcdc2def07d44e014d0c17c2d8a52dca25e"
+   ]
+  },
+  {
+   "job_id": "dba8r7k24mrc738527d0",
+   "run": "results/live/2026-10-18T090603.530638Z",
+   "retained_file": "results/live/2026-10-18T090603.530638Z/isa.qpy",
+   "retained_sha256": "b68b0146059ff5196905dccc869a25b2bd64ff6b14e94623bed5b3cc0e7d0efc",
+   "order_source": "record.json submission.jobs[].pubs",
+   "expected_pubs": [
+    "ibm_kingston_dynamic_pub_01",
+    "ibm_kingston_dynamic_pub_02"
+   ],
+   "items": 2,
+   "item_kinds": [
+    "CircuitItem"
+   ],
+   "positional_matches": 2,
+   "submitted_qpy_sha256": [
+    "bae88dcdb5666828a7652453c54c055aa55d5551963b5c809316662e3ccc986f",
+    "8cef570674dea4c442f6653a0bc376a1b2e011b169d07124ed43af40a743165d"
+   ]
   }
  ]
 }

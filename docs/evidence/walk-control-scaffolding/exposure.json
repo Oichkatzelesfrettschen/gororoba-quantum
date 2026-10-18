@@ -2006,6 +2006,6197 @@
     }
    },
    "run": "results/live/2026-10-15T070853.550532Z"
+  },
+  {
+   "groups": [
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "readout_fault": [
+       [
+        0
+       ]
+      ]
+     },
+     "group": "state_prep_q0",
+     "replicas": [
+      [
+       0
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "readout_fault": [
+       [
+        1
+       ]
+      ]
+     },
+     "group": "state_prep_q1",
+     "replicas": [
+      [
+       1
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "short_relaxation": [
+       [
+        2
+       ]
+      ]
+     },
+     "group": "state_prep_q2",
+     "replicas": [
+      [
+       2
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "short_relaxation": [
+       [
+        3
+       ]
+      ]
+     },
+     "group": "state_prep_q3",
+     "replicas": [
+      [
+       3
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q4",
+     "replicas": [
+      [
+       4
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q5",
+     "replicas": [
+      [
+       5
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q6",
+     "replicas": [
+      [
+       6
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q7",
+     "replicas": [
+      [
+       7
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q8",
+     "replicas": [
+      [
+       8
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q9",
+     "replicas": [
+      [
+       9
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q10",
+     "replicas": [
+      [
+       10
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q11",
+     "replicas": [
+      [
+       11
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q12",
+     "replicas": [
+      [
+       12
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q13",
+     "replicas": [
+      [
+       13
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q14",
+     "replicas": [
+      [
+       14
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q15",
+     "replicas": [
+      [
+       15
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "short_relaxation": [
+       [
+        16
+       ]
+      ]
+     },
+     "group": "state_prep_q16",
+     "replicas": [
+      [
+       16
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q17",
+     "replicas": [
+      [
+       17
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q18",
+     "replicas": [
+      [
+       18
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q19",
+     "replicas": [
+      [
+       19
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q20",
+     "replicas": [
+      [
+       20
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q21",
+     "replicas": [
+      [
+       21
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q22",
+     "replicas": [
+      [
+       22
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q23",
+     "replicas": [
+      [
+       23
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q24",
+     "replicas": [
+      [
+       24
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q25",
+     "replicas": [
+      [
+       25
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q26",
+     "replicas": [
+      [
+       26
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q27",
+     "replicas": [
+      [
+       27
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q28",
+     "replicas": [
+      [
+       28
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q29",
+     "replicas": [
+      [
+       29
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q30",
+     "replicas": [
+      [
+       30
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q31",
+     "replicas": [
+      [
+       31
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q32",
+     "replicas": [
+      [
+       32
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q33",
+     "replicas": [
+      [
+       33
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q34",
+     "replicas": [
+      [
+       34
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q35",
+     "replicas": [
+      [
+       35
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q36",
+     "replicas": [
+      [
+       36
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q37",
+     "replicas": [
+      [
+       37
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q38",
+     "replicas": [
+      [
+       38
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q39",
+     "replicas": [
+      [
+       39
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q40",
+     "replicas": [
+      [
+       40
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q41",
+     "replicas": [
+      [
+       41
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q42",
+     "replicas": [
+      [
+       42
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q43",
+     "replicas": [
+      [
+       43
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q44",
+     "replicas": [
+      [
+       44
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q45",
+     "replicas": [
+      [
+       45
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q46",
+     "replicas": [
+      [
+       46
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q47",
+     "replicas": [
+      [
+       47
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q48",
+     "replicas": [
+      [
+       48
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q49",
+     "replicas": [
+      [
+       49
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q50",
+     "replicas": [
+      [
+       50
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q51",
+     "replicas": [
+      [
+       51
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q52",
+     "replicas": [
+      [
+       52
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q53",
+     "replicas": [
+      [
+       53
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q54",
+     "replicas": [
+      [
+       54
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q55",
+     "replicas": [
+      [
+       55
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q56",
+     "replicas": [
+      [
+       56
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q57",
+     "replicas": [
+      [
+       57
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q58",
+     "replicas": [
+      [
+       58
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q59",
+     "replicas": [
+      [
+       59
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q60",
+     "replicas": [
+      [
+       60
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q61",
+     "replicas": [
+      [
+       61
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q62",
+     "replicas": [
+      [
+       62
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q63",
+     "replicas": [
+      [
+       63
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q64",
+     "replicas": [
+      [
+       64
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q65",
+     "replicas": [
+      [
+       65
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q66",
+     "replicas": [
+      [
+       66
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q67",
+     "replicas": [
+      [
+       67
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q68",
+     "replicas": [
+      [
+       68
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q69",
+     "replicas": [
+      [
+       69
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q70",
+     "replicas": [
+      [
+       70
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q71",
+     "replicas": [
+      [
+       71
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q72",
+     "replicas": [
+      [
+       72
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q73",
+     "replicas": [
+      [
+       73
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q74",
+     "replicas": [
+      [
+       74
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q75",
+     "replicas": [
+      [
+       75
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q76",
+     "replicas": [
+      [
+       76
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q77",
+     "replicas": [
+      [
+       77
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q78",
+     "replicas": [
+      [
+       78
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "first_bit_correlation": [
+       [
+        79
+       ]
+      ]
+     },
+     "group": "state_prep_q79",
+     "replicas": [
+      [
+       79
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q80",
+     "replicas": [
+      [
+       80
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q81",
+     "replicas": [
+      [
+       81
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q82",
+     "replicas": [
+      [
+       82
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q83",
+     "replicas": [
+      [
+       83
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q84",
+     "replicas": [
+      [
+       84
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q85",
+     "replicas": [
+      [
+       85
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q86",
+     "replicas": [
+      [
+       86
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q87",
+     "replicas": [
+      [
+       87
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q88",
+     "replicas": [
+      [
+       88
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q89",
+     "replicas": [
+      [
+       89
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q90",
+     "replicas": [
+      [
+       90
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q91",
+     "replicas": [
+      [
+       91
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q93",
+     "replicas": [
+      [
+       93
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q94",
+     "replicas": [
+      [
+       94
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q95",
+     "replicas": [
+      [
+       95
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q96",
+     "replicas": [
+      [
+       96
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q97",
+     "replicas": [
+      [
+       97
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q98",
+     "replicas": [
+      [
+       98
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q99",
+     "replicas": [
+      [
+       99
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q100",
+     "replicas": [
+      [
+       100
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q101",
+     "replicas": [
+      [
+       101
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q102",
+     "replicas": [
+      [
+       102
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q103",
+     "replicas": [
+      [
+       103
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q104",
+     "replicas": [
+      [
+       104
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q105",
+     "replicas": [
+      [
+       105
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q106",
+     "replicas": [
+      [
+       106
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q107",
+     "replicas": [
+      [
+       107
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q108",
+     "replicas": [
+      [
+       108
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q109",
+     "replicas": [
+      [
+       109
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q110",
+     "replicas": [
+      [
+       110
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q111",
+     "replicas": [
+      [
+       111
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q112",
+     "replicas": [
+      [
+       112
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q114",
+     "replicas": [
+      [
+       114
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q116",
+     "replicas": [
+      [
+       116
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q117",
+     "replicas": [
+      [
+       117
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q118",
+     "replicas": [
+      [
+       118
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q119",
+     "replicas": [
+      [
+       119
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q120",
+     "replicas": [
+      [
+       120
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q122",
+     "replicas": [
+      [
+       122
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q123",
+     "replicas": [
+      [
+       123
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q124",
+     "replicas": [
+      [
+       124
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q125",
+     "replicas": [
+      [
+       125
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q126",
+     "replicas": [
+      [
+       126
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q127",
+     "replicas": [
+      [
+       127
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q128",
+     "replicas": [
+      [
+       128
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q129",
+     "replicas": [
+      [
+       129
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q130",
+     "replicas": [
+      [
+       130
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q131",
+     "replicas": [
+      [
+       131
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q132",
+     "replicas": [
+      [
+       132
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q133",
+     "replicas": [
+      [
+       133
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q134",
+     "replicas": [
+      [
+       134
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q135",
+     "replicas": [
+      [
+       135
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q136",
+     "replicas": [
+      [
+       136
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q137",
+     "replicas": [
+      [
+       137
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q140",
+     "replicas": [
+      [
+       140
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q141",
+     "replicas": [
+      [
+       141
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q142",
+     "replicas": [
+      [
+       142
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q143",
+     "replicas": [
+      [
+       143
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q144",
+     "replicas": [
+      [
+       144
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q145",
+     "replicas": [
+      [
+       145
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q147",
+     "replicas": [
+      [
+       147
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q148",
+     "replicas": [
+      [
+       148
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q149",
+     "replicas": [
+      [
+       149
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q150",
+     "replicas": [
+      [
+       150
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q151",
+     "replicas": [
+      [
+       151
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q152",
+     "replicas": [
+      [
+       152
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q153",
+     "replicas": [
+      [
+       153
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q154",
+     "replicas": [
+      [
+       154
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q155",
+     "replicas": [
+      [
+       155
+      ]
+     ]
+    }
+   ],
+   "member_kinds": {
+    "spc_prep#_q#": {
+     "cz_max": 0,
+     "cz_median": 0,
+     "cz_min": 0,
+     "members": 149
+    }
+   },
+   "run": "results/live/2026-10-18T083402.386701Z"
+  },
+  {
+   "groups": [
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "readout_fault": [
+       [
+        0
+       ]
+      ]
+     },
+     "group": "state_prep_x_history_q0",
+     "replicas": [
+      [
+       0
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "readout_fault": [
+       [
+        1
+       ]
+      ]
+     },
+     "group": "state_prep_x_history_q1",
+     "replicas": [
+      [
+       1
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "short_relaxation": [
+       [
+        2
+       ]
+      ]
+     },
+     "group": "state_prep_x_history_q2",
+     "replicas": [
+      [
+       2
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "short_relaxation": [
+       [
+        3
+       ]
+      ]
+     },
+     "group": "state_prep_x_history_q3",
+     "replicas": [
+      [
+       3
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q4",
+     "replicas": [
+      [
+       4
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q5",
+     "replicas": [
+      [
+       5
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q6",
+     "replicas": [
+      [
+       6
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q7",
+     "replicas": [
+      [
+       7
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q8",
+     "replicas": [
+      [
+       8
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q9",
+     "replicas": [
+      [
+       9
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q10",
+     "replicas": [
+      [
+       10
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q11",
+     "replicas": [
+      [
+       11
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q12",
+     "replicas": [
+      [
+       12
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q13",
+     "replicas": [
+      [
+       13
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q14",
+     "replicas": [
+      [
+       14
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q15",
+     "replicas": [
+      [
+       15
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "short_relaxation": [
+       [
+        16
+       ]
+      ]
+     },
+     "group": "state_prep_x_history_q16",
+     "replicas": [
+      [
+       16
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q17",
+     "replicas": [
+      [
+       17
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q18",
+     "replicas": [
+      [
+       18
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q19",
+     "replicas": [
+      [
+       19
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q20",
+     "replicas": [
+      [
+       20
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q21",
+     "replicas": [
+      [
+       21
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q22",
+     "replicas": [
+      [
+       22
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q23",
+     "replicas": [
+      [
+       23
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q24",
+     "replicas": [
+      [
+       24
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q25",
+     "replicas": [
+      [
+       25
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q26",
+     "replicas": [
+      [
+       26
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q27",
+     "replicas": [
+      [
+       27
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q28",
+     "replicas": [
+      [
+       28
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q29",
+     "replicas": [
+      [
+       29
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q30",
+     "replicas": [
+      [
+       30
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q31",
+     "replicas": [
+      [
+       31
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q32",
+     "replicas": [
+      [
+       32
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q33",
+     "replicas": [
+      [
+       33
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q34",
+     "replicas": [
+      [
+       34
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q35",
+     "replicas": [
+      [
+       35
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q36",
+     "replicas": [
+      [
+       36
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q37",
+     "replicas": [
+      [
+       37
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q38",
+     "replicas": [
+      [
+       38
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q39",
+     "replicas": [
+      [
+       39
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q40",
+     "replicas": [
+      [
+       40
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q41",
+     "replicas": [
+      [
+       41
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q42",
+     "replicas": [
+      [
+       42
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q43",
+     "replicas": [
+      [
+       43
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q44",
+     "replicas": [
+      [
+       44
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q45",
+     "replicas": [
+      [
+       45
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q46",
+     "replicas": [
+      [
+       46
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q47",
+     "replicas": [
+      [
+       47
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q48",
+     "replicas": [
+      [
+       48
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q49",
+     "replicas": [
+      [
+       49
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q50",
+     "replicas": [
+      [
+       50
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q51",
+     "replicas": [
+      [
+       51
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q52",
+     "replicas": [
+      [
+       52
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q53",
+     "replicas": [
+      [
+       53
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q54",
+     "replicas": [
+      [
+       54
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q55",
+     "replicas": [
+      [
+       55
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q56",
+     "replicas": [
+      [
+       56
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q57",
+     "replicas": [
+      [
+       57
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q58",
+     "replicas": [
+      [
+       58
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q59",
+     "replicas": [
+      [
+       59
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q60",
+     "replicas": [
+      [
+       60
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q61",
+     "replicas": [
+      [
+       61
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q62",
+     "replicas": [
+      [
+       62
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q63",
+     "replicas": [
+      [
+       63
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q64",
+     "replicas": [
+      [
+       64
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q65",
+     "replicas": [
+      [
+       65
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q66",
+     "replicas": [
+      [
+       66
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q67",
+     "replicas": [
+      [
+       67
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q68",
+     "replicas": [
+      [
+       68
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q69",
+     "replicas": [
+      [
+       69
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q70",
+     "replicas": [
+      [
+       70
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q71",
+     "replicas": [
+      [
+       71
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q72",
+     "replicas": [
+      [
+       72
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q73",
+     "replicas": [
+      [
+       73
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q74",
+     "replicas": [
+      [
+       74
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q75",
+     "replicas": [
+      [
+       75
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q76",
+     "replicas": [
+      [
+       76
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q77",
+     "replicas": [
+      [
+       77
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q78",
+     "replicas": [
+      [
+       78
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "first_bit_correlation": [
+       [
+        79
+       ]
+      ]
+     },
+     "group": "state_prep_x_history_q79",
+     "replicas": [
+      [
+       79
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q80",
+     "replicas": [
+      [
+       80
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q81",
+     "replicas": [
+      [
+       81
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q82",
+     "replicas": [
+      [
+       82
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q83",
+     "replicas": [
+      [
+       83
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q84",
+     "replicas": [
+      [
+       84
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q85",
+     "replicas": [
+      [
+       85
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q86",
+     "replicas": [
+      [
+       86
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q87",
+     "replicas": [
+      [
+       87
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q88",
+     "replicas": [
+      [
+       88
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q89",
+     "replicas": [
+      [
+       89
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q90",
+     "replicas": [
+      [
+       90
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q91",
+     "replicas": [
+      [
+       91
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q93",
+     "replicas": [
+      [
+       93
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q94",
+     "replicas": [
+      [
+       94
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q95",
+     "replicas": [
+      [
+       95
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q96",
+     "replicas": [
+      [
+       96
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q97",
+     "replicas": [
+      [
+       97
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q98",
+     "replicas": [
+      [
+       98
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q99",
+     "replicas": [
+      [
+       99
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q100",
+     "replicas": [
+      [
+       100
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q101",
+     "replicas": [
+      [
+       101
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q102",
+     "replicas": [
+      [
+       102
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q103",
+     "replicas": [
+      [
+       103
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q104",
+     "replicas": [
+      [
+       104
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q105",
+     "replicas": [
+      [
+       105
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q106",
+     "replicas": [
+      [
+       106
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q107",
+     "replicas": [
+      [
+       107
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q108",
+     "replicas": [
+      [
+       108
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q109",
+     "replicas": [
+      [
+       109
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q110",
+     "replicas": [
+      [
+       110
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q111",
+     "replicas": [
+      [
+       111
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q112",
+     "replicas": [
+      [
+       112
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q114",
+     "replicas": [
+      [
+       114
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q116",
+     "replicas": [
+      [
+       116
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q117",
+     "replicas": [
+      [
+       117
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q118",
+     "replicas": [
+      [
+       118
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q119",
+     "replicas": [
+      [
+       119
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q120",
+     "replicas": [
+      [
+       120
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q122",
+     "replicas": [
+      [
+       122
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q123",
+     "replicas": [
+      [
+       123
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q124",
+     "replicas": [
+      [
+       124
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q125",
+     "replicas": [
+      [
+       125
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q126",
+     "replicas": [
+      [
+       126
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q127",
+     "replicas": [
+      [
+       127
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q128",
+     "replicas": [
+      [
+       128
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q129",
+     "replicas": [
+      [
+       129
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q130",
+     "replicas": [
+      [
+       130
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q131",
+     "replicas": [
+      [
+       131
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q132",
+     "replicas": [
+      [
+       132
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q133",
+     "replicas": [
+      [
+       133
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q134",
+     "replicas": [
+      [
+       134
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q135",
+     "replicas": [
+      [
+       135
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q136",
+     "replicas": [
+      [
+       136
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q137",
+     "replicas": [
+      [
+       137
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q140",
+     "replicas": [
+      [
+       140
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q141",
+     "replicas": [
+      [
+       141
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q142",
+     "replicas": [
+      [
+       142
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q143",
+     "replicas": [
+      [
+       143
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q144",
+     "replicas": [
+      [
+       144
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q145",
+     "replicas": [
+      [
+       145
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q147",
+     "replicas": [
+      [
+       147
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q148",
+     "replicas": [
+      [
+       148
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q149",
+     "replicas": [
+      [
+       149
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q150",
+     "replicas": [
+      [
+       150
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q151",
+     "replicas": [
+      [
+       151
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q152",
+     "replicas": [
+      [
+       152
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q153",
+     "replicas": [
+      [
+       153
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q154",
+     "replicas": [
+      [
+       154
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q155",
+     "replicas": [
+      [
+       155
+      ]
+     ]
+    }
+   ],
+   "member_kinds": {
+    "spc_x_history_q#": {
+     "cz_max": 0,
+     "cz_median": 0,
+     "cz_min": 0,
+     "members": 149
+    }
+   },
+   "run": "results/live/2026-10-18T083403.945334Z"
+  },
+  {
+   "groups": [
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "readout_fault": [
+       [
+        0
+       ]
+      ]
+     },
+     "group": "state_prep_x_history_q0",
+     "replicas": [
+      [
+       0
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "readout_fault": [
+       [
+        1
+       ]
+      ]
+     },
+     "group": "state_prep_x_history_q1",
+     "replicas": [
+      [
+       1
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "short_relaxation": [
+       [
+        2
+       ]
+      ]
+     },
+     "group": "state_prep_x_history_q2",
+     "replicas": [
+      [
+       2
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "short_relaxation": [
+       [
+        3
+       ]
+      ]
+     },
+     "group": "state_prep_x_history_q3",
+     "replicas": [
+      [
+       3
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q4",
+     "replicas": [
+      [
+       4
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q5",
+     "replicas": [
+      [
+       5
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q6",
+     "replicas": [
+      [
+       6
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q7",
+     "replicas": [
+      [
+       7
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q8",
+     "replicas": [
+      [
+       8
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q9",
+     "replicas": [
+      [
+       9
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q10",
+     "replicas": [
+      [
+       10
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q11",
+     "replicas": [
+      [
+       11
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q12",
+     "replicas": [
+      [
+       12
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q13",
+     "replicas": [
+      [
+       13
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q14",
+     "replicas": [
+      [
+       14
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q15",
+     "replicas": [
+      [
+       15
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "short_relaxation": [
+       [
+        16
+       ]
+      ]
+     },
+     "group": "state_prep_x_history_q16",
+     "replicas": [
+      [
+       16
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q17",
+     "replicas": [
+      [
+       17
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q18",
+     "replicas": [
+      [
+       18
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q19",
+     "replicas": [
+      [
+       19
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q20",
+     "replicas": [
+      [
+       20
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q21",
+     "replicas": [
+      [
+       21
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q22",
+     "replicas": [
+      [
+       22
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q23",
+     "replicas": [
+      [
+       23
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q24",
+     "replicas": [
+      [
+       24
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q25",
+     "replicas": [
+      [
+       25
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q26",
+     "replicas": [
+      [
+       26
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q27",
+     "replicas": [
+      [
+       27
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q28",
+     "replicas": [
+      [
+       28
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q29",
+     "replicas": [
+      [
+       29
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q30",
+     "replicas": [
+      [
+       30
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q31",
+     "replicas": [
+      [
+       31
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q32",
+     "replicas": [
+      [
+       32
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q33",
+     "replicas": [
+      [
+       33
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q34",
+     "replicas": [
+      [
+       34
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q35",
+     "replicas": [
+      [
+       35
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q36",
+     "replicas": [
+      [
+       36
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q37",
+     "replicas": [
+      [
+       37
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q38",
+     "replicas": [
+      [
+       38
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q39",
+     "replicas": [
+      [
+       39
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q40",
+     "replicas": [
+      [
+       40
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q41",
+     "replicas": [
+      [
+       41
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q42",
+     "replicas": [
+      [
+       42
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q43",
+     "replicas": [
+      [
+       43
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q44",
+     "replicas": [
+      [
+       44
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q45",
+     "replicas": [
+      [
+       45
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q46",
+     "replicas": [
+      [
+       46
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q47",
+     "replicas": [
+      [
+       47
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q48",
+     "replicas": [
+      [
+       48
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q49",
+     "replicas": [
+      [
+       49
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q50",
+     "replicas": [
+      [
+       50
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q51",
+     "replicas": [
+      [
+       51
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q52",
+     "replicas": [
+      [
+       52
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q53",
+     "replicas": [
+      [
+       53
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q54",
+     "replicas": [
+      [
+       54
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q55",
+     "replicas": [
+      [
+       55
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q56",
+     "replicas": [
+      [
+       56
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q57",
+     "replicas": [
+      [
+       57
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q58",
+     "replicas": [
+      [
+       58
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q59",
+     "replicas": [
+      [
+       59
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q60",
+     "replicas": [
+      [
+       60
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q61",
+     "replicas": [
+      [
+       61
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q62",
+     "replicas": [
+      [
+       62
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q63",
+     "replicas": [
+      [
+       63
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q64",
+     "replicas": [
+      [
+       64
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q65",
+     "replicas": [
+      [
+       65
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q66",
+     "replicas": [
+      [
+       66
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q67",
+     "replicas": [
+      [
+       67
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q68",
+     "replicas": [
+      [
+       68
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q69",
+     "replicas": [
+      [
+       69
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q70",
+     "replicas": [
+      [
+       70
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q71",
+     "replicas": [
+      [
+       71
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q72",
+     "replicas": [
+      [
+       72
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q73",
+     "replicas": [
+      [
+       73
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q74",
+     "replicas": [
+      [
+       74
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q75",
+     "replicas": [
+      [
+       75
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q76",
+     "replicas": [
+      [
+       76
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q77",
+     "replicas": [
+      [
+       77
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q78",
+     "replicas": [
+      [
+       78
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "first_bit_correlation": [
+       [
+        79
+       ]
+      ]
+     },
+     "group": "state_prep_x_history_q79",
+     "replicas": [
+      [
+       79
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q80",
+     "replicas": [
+      [
+       80
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q81",
+     "replicas": [
+      [
+       81
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q82",
+     "replicas": [
+      [
+       82
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q83",
+     "replicas": [
+      [
+       83
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q84",
+     "replicas": [
+      [
+       84
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q85",
+     "replicas": [
+      [
+       85
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q86",
+     "replicas": [
+      [
+       86
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q87",
+     "replicas": [
+      [
+       87
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q88",
+     "replicas": [
+      [
+       88
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q89",
+     "replicas": [
+      [
+       89
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q90",
+     "replicas": [
+      [
+       90
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q91",
+     "replicas": [
+      [
+       91
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q93",
+     "replicas": [
+      [
+       93
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q94",
+     "replicas": [
+      [
+       94
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q95",
+     "replicas": [
+      [
+       95
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q96",
+     "replicas": [
+      [
+       96
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q97",
+     "replicas": [
+      [
+       97
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q98",
+     "replicas": [
+      [
+       98
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q99",
+     "replicas": [
+      [
+       99
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q100",
+     "replicas": [
+      [
+       100
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q101",
+     "replicas": [
+      [
+       101
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q102",
+     "replicas": [
+      [
+       102
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q103",
+     "replicas": [
+      [
+       103
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q104",
+     "replicas": [
+      [
+       104
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q105",
+     "replicas": [
+      [
+       105
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q106",
+     "replicas": [
+      [
+       106
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q107",
+     "replicas": [
+      [
+       107
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q108",
+     "replicas": [
+      [
+       108
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q109",
+     "replicas": [
+      [
+       109
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q110",
+     "replicas": [
+      [
+       110
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q111",
+     "replicas": [
+      [
+       111
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q112",
+     "replicas": [
+      [
+       112
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q114",
+     "replicas": [
+      [
+       114
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q116",
+     "replicas": [
+      [
+       116
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q117",
+     "replicas": [
+      [
+       117
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q118",
+     "replicas": [
+      [
+       118
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q119",
+     "replicas": [
+      [
+       119
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q120",
+     "replicas": [
+      [
+       120
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q122",
+     "replicas": [
+      [
+       122
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q123",
+     "replicas": [
+      [
+       123
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q124",
+     "replicas": [
+      [
+       124
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q125",
+     "replicas": [
+      [
+       125
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q126",
+     "replicas": [
+      [
+       126
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q127",
+     "replicas": [
+      [
+       127
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q128",
+     "replicas": [
+      [
+       128
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q129",
+     "replicas": [
+      [
+       129
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q130",
+     "replicas": [
+      [
+       130
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q131",
+     "replicas": [
+      [
+       131
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q132",
+     "replicas": [
+      [
+       132
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q133",
+     "replicas": [
+      [
+       133
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q134",
+     "replicas": [
+      [
+       134
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q135",
+     "replicas": [
+      [
+       135
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q136",
+     "replicas": [
+      [
+       136
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q137",
+     "replicas": [
+      [
+       137
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q140",
+     "replicas": [
+      [
+       140
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q141",
+     "replicas": [
+      [
+       141
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q142",
+     "replicas": [
+      [
+       142
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q143",
+     "replicas": [
+      [
+       143
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q144",
+     "replicas": [
+      [
+       144
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q145",
+     "replicas": [
+      [
+       145
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q147",
+     "replicas": [
+      [
+       147
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q148",
+     "replicas": [
+      [
+       148
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q149",
+     "replicas": [
+      [
+       149
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q150",
+     "replicas": [
+      [
+       150
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q151",
+     "replicas": [
+      [
+       151
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q152",
+     "replicas": [
+      [
+       152
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q153",
+     "replicas": [
+      [
+       153
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q154",
+     "replicas": [
+      [
+       154
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_x_history_q155",
+     "replicas": [
+      [
+       155
+      ]
+     ]
+    }
+   ],
+   "member_kinds": {
+    "spc_x_history_q#": {
+     "cz_max": 0,
+     "cz_median": 0,
+     "cz_min": 0,
+     "members": 149
+    }
+   },
+   "run": "results/live/2026-10-18T083404.226285Z"
+  },
+  {
+   "groups": [
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "readout_fault": [
+       [
+        0
+       ]
+      ]
+     },
+     "group": "state_prep_q0",
+     "replicas": [
+      [
+       0
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "readout_fault": [
+       [
+        1
+       ]
+      ]
+     },
+     "group": "state_prep_q1",
+     "replicas": [
+      [
+       1
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "short_relaxation": [
+       [
+        2
+       ]
+      ]
+     },
+     "group": "state_prep_q2",
+     "replicas": [
+      [
+       2
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "short_relaxation": [
+       [
+        3
+       ]
+      ]
+     },
+     "group": "state_prep_q3",
+     "replicas": [
+      [
+       3
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q4",
+     "replicas": [
+      [
+       4
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q5",
+     "replicas": [
+      [
+       5
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q6",
+     "replicas": [
+      [
+       6
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q7",
+     "replicas": [
+      [
+       7
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q8",
+     "replicas": [
+      [
+       8
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q9",
+     "replicas": [
+      [
+       9
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q10",
+     "replicas": [
+      [
+       10
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q11",
+     "replicas": [
+      [
+       11
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q12",
+     "replicas": [
+      [
+       12
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q13",
+     "replicas": [
+      [
+       13
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q14",
+     "replicas": [
+      [
+       14
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q15",
+     "replicas": [
+      [
+       15
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "short_relaxation": [
+       [
+        16
+       ]
+      ]
+     },
+     "group": "state_prep_q16",
+     "replicas": [
+      [
+       16
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q17",
+     "replicas": [
+      [
+       17
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q18",
+     "replicas": [
+      [
+       18
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q19",
+     "replicas": [
+      [
+       19
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q20",
+     "replicas": [
+      [
+       20
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q21",
+     "replicas": [
+      [
+       21
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q22",
+     "replicas": [
+      [
+       22
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q23",
+     "replicas": [
+      [
+       23
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q24",
+     "replicas": [
+      [
+       24
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q25",
+     "replicas": [
+      [
+       25
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q26",
+     "replicas": [
+      [
+       26
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q27",
+     "replicas": [
+      [
+       27
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q28",
+     "replicas": [
+      [
+       28
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q29",
+     "replicas": [
+      [
+       29
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q30",
+     "replicas": [
+      [
+       30
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q31",
+     "replicas": [
+      [
+       31
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q32",
+     "replicas": [
+      [
+       32
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q33",
+     "replicas": [
+      [
+       33
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q34",
+     "replicas": [
+      [
+       34
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q35",
+     "replicas": [
+      [
+       35
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q36",
+     "replicas": [
+      [
+       36
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q37",
+     "replicas": [
+      [
+       37
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q38",
+     "replicas": [
+      [
+       38
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q39",
+     "replicas": [
+      [
+       39
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q40",
+     "replicas": [
+      [
+       40
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q41",
+     "replicas": [
+      [
+       41
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q42",
+     "replicas": [
+      [
+       42
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q43",
+     "replicas": [
+      [
+       43
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q44",
+     "replicas": [
+      [
+       44
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q45",
+     "replicas": [
+      [
+       45
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q46",
+     "replicas": [
+      [
+       46
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q47",
+     "replicas": [
+      [
+       47
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q48",
+     "replicas": [
+      [
+       48
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q49",
+     "replicas": [
+      [
+       49
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q50",
+     "replicas": [
+      [
+       50
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q51",
+     "replicas": [
+      [
+       51
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q52",
+     "replicas": [
+      [
+       52
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q53",
+     "replicas": [
+      [
+       53
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q54",
+     "replicas": [
+      [
+       54
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q55",
+     "replicas": [
+      [
+       55
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q56",
+     "replicas": [
+      [
+       56
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q57",
+     "replicas": [
+      [
+       57
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q58",
+     "replicas": [
+      [
+       58
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q59",
+     "replicas": [
+      [
+       59
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q60",
+     "replicas": [
+      [
+       60
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q61",
+     "replicas": [
+      [
+       61
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q62",
+     "replicas": [
+      [
+       62
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q63",
+     "replicas": [
+      [
+       63
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q64",
+     "replicas": [
+      [
+       64
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q65",
+     "replicas": [
+      [
+       65
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q66",
+     "replicas": [
+      [
+       66
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q67",
+     "replicas": [
+      [
+       67
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q68",
+     "replicas": [
+      [
+       68
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q69",
+     "replicas": [
+      [
+       69
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q70",
+     "replicas": [
+      [
+       70
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q71",
+     "replicas": [
+      [
+       71
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q72",
+     "replicas": [
+      [
+       72
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q73",
+     "replicas": [
+      [
+       73
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q74",
+     "replicas": [
+      [
+       74
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q75",
+     "replicas": [
+      [
+       75
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q76",
+     "replicas": [
+      [
+       76
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q77",
+     "replicas": [
+      [
+       77
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q78",
+     "replicas": [
+      [
+       78
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {
+      "first_bit_correlation": [
+       [
+        79
+       ]
+      ]
+     },
+     "group": "state_prep_q79",
+     "replicas": [
+      [
+       79
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q80",
+     "replicas": [
+      [
+       80
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q81",
+     "replicas": [
+      [
+       81
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q82",
+     "replicas": [
+      [
+       82
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q83",
+     "replicas": [
+      [
+       83
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q84",
+     "replicas": [
+      [
+       84
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q85",
+     "replicas": [
+      [
+       85
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q86",
+     "replicas": [
+      [
+       86
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q87",
+     "replicas": [
+      [
+       87
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q88",
+     "replicas": [
+      [
+       88
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q89",
+     "replicas": [
+      [
+       89
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q90",
+     "replicas": [
+      [
+       90
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q91",
+     "replicas": [
+      [
+       91
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q93",
+     "replicas": [
+      [
+       93
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q94",
+     "replicas": [
+      [
+       94
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q95",
+     "replicas": [
+      [
+       95
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q96",
+     "replicas": [
+      [
+       96
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q97",
+     "replicas": [
+      [
+       97
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q98",
+     "replicas": [
+      [
+       98
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q99",
+     "replicas": [
+      [
+       99
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q100",
+     "replicas": [
+      [
+       100
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q101",
+     "replicas": [
+      [
+       101
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q102",
+     "replicas": [
+      [
+       102
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q103",
+     "replicas": [
+      [
+       103
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q104",
+     "replicas": [
+      [
+       104
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q105",
+     "replicas": [
+      [
+       105
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q106",
+     "replicas": [
+      [
+       106
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q107",
+     "replicas": [
+      [
+       107
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q108",
+     "replicas": [
+      [
+       108
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q109",
+     "replicas": [
+      [
+       109
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q110",
+     "replicas": [
+      [
+       110
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q111",
+     "replicas": [
+      [
+       111
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q112",
+     "replicas": [
+      [
+       112
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q114",
+     "replicas": [
+      [
+       114
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q116",
+     "replicas": [
+      [
+       116
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q117",
+     "replicas": [
+      [
+       117
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q118",
+     "replicas": [
+      [
+       118
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q119",
+     "replicas": [
+      [
+       119
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q120",
+     "replicas": [
+      [
+       120
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q122",
+     "replicas": [
+      [
+       122
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q123",
+     "replicas": [
+      [
+       123
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q124",
+     "replicas": [
+      [
+       124
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q125",
+     "replicas": [
+      [
+       125
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q126",
+     "replicas": [
+      [
+       126
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q127",
+     "replicas": [
+      [
+       127
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q128",
+     "replicas": [
+      [
+       128
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q129",
+     "replicas": [
+      [
+       129
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q130",
+     "replicas": [
+      [
+       130
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q131",
+     "replicas": [
+      [
+       131
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q132",
+     "replicas": [
+      [
+       132
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q133",
+     "replicas": [
+      [
+       133
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q134",
+     "replicas": [
+      [
+       134
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q135",
+     "replicas": [
+      [
+       135
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q136",
+     "replicas": [
+      [
+       136
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q137",
+     "replicas": [
+      [
+       137
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q140",
+     "replicas": [
+      [
+       140
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q141",
+     "replicas": [
+      [
+       141
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q142",
+     "replicas": [
+      [
+       142
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q143",
+     "replicas": [
+      [
+       143
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q144",
+     "replicas": [
+      [
+       144
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q145",
+     "replicas": [
+      [
+       145
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q147",
+     "replicas": [
+      [
+       147
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q148",
+     "replicas": [
+      [
+       148
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q149",
+     "replicas": [
+      [
+       149
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q150",
+     "replicas": [
+      [
+       150
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q151",
+     "replicas": [
+      [
+       151
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q152",
+     "replicas": [
+      [
+       152
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q153",
+     "replicas": [
+      [
+       153
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q154",
+     "replicas": [
+      [
+       154
+      ]
+     ]
+    },
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "state_prep_q155",
+     "replicas": [
+      [
+       155
+      ]
+     ]
+    }
+   ],
+   "member_kinds": {
+    "spc_prep#_q#": {
+     "cz_max": 0,
+     "cz_median": 0,
+     "cz_min": 0,
+     "members": 149
+    }
+   },
+   "run": "results/live/2026-10-18T083404.414317Z"
+  },
+  {
+   "groups": [
+    {
+     "backend": "ibm_kingston",
+     "flagged": {},
+     "group": "n21_encoded_feedback",
+     "replicas": [
+      [
+       104,
+       105,
+       106,
+       117,
+       124,
+       125,
+       126
+      ]
+     ]
+    }
+   ],
+   "member_kinds": {
+    "n#_encoded_feedback": {
+     "cz_max": 713,
+     "cz_median": 713,
+     "cz_min": 713,
+     "members": 1
+    },
+    "n#_encoded_no_feedback": {
+     "cz_max": 714,
+     "cz_median": 714,
+     "cz_min": 714,
+     "members": 1
+    }
+   },
+   "run": "results/live/2026-10-18T090603.530638Z"
   }
  ],
  "schema": "scaffolding-exposure-v1",
