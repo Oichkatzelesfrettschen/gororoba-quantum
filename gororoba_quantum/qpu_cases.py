@@ -25,6 +25,7 @@ from qiskit import QuantumCircuit, qpy
 
 CASE_FILENAME = "UNAPPROVED_CASE.md"
 FAMILIES = {
+    "et-row",
     "folded-qpe",
     "folded-correction",
     "n21-feedback",
@@ -139,7 +140,7 @@ def _shot_allocation(record: dict[str, Any]) -> dict[str, int] | None:
         return None
     _require(
         design["family"] == record["family_configuration"]["name"]
-        and design["family"] in ("ripple", "rank-sector", *PATCH_FAMILIES)
+        and design["family"] in ("et-row", "ripple", "rank-sector", *PATCH_FAMILIES)
         and design["optimize"] is True,
         "per-PUB allocation requires an optimized algebra or patch family",
     )
@@ -212,6 +213,8 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
     )
     _shot_allocation(record)
     arguments = ["--family", family]
+    if family == "et-row":
+        arguments.extend(["--shots", str(_count(record["shots"], "ET maximum PUB shots"))])
     if "shot_allocation" in design:
         arguments.extend(["--shot-allocation", design["shot_allocation"]])
     objective = design.get("objective", "minimum_charge")
@@ -769,6 +772,14 @@ def _correction_cost_inputs(record: dict[str, Any], candidate: dict[str, Any]) -
 
 
 def _case_inputs(run_dir: Path, record: dict[str, Any]) -> tuple[dict[str, Any], str, str]:
+    if record.get("family_configuration", {}).get("name") == "et-row":
+        from et_campaign import validate_configuration
+
+        validate_configuration(record["family_configuration"])
+        _require(
+            record.get("et_calibrated_design", {}).get("admitted") is True,
+            "ET case requires calibrated feasibility at the declared complete allocation",
+        )
     record_bytes = (run_dir / "record.json").read_bytes()
     retained = json.loads(record_bytes)
     _require(
@@ -831,6 +842,30 @@ def _case_inputs(run_dir: Path, record: dict[str, Any]) -> tuple[dict[str, Any],
         "QPY circuit names differ from the ordered execution-PUB manifest",
     )
     _require(bool(circuits), "the QPY archive has no execution circuits")
+    if record["family_configuration"]["name"] == "et-row":
+        from et_planning import measurement_map
+
+        config = record["family_configuration"]
+        members = config["members"]
+        _require(
+            set(config.get("measurement_maps", {})) == set(members), "ET case needs every member's native role map"
+        )
+        seen = set()
+        for pub, circuit in zip(record["execution_pubs"], circuits, strict=True):
+            components = pub["components"]
+            _require(len(components) == 1, "ET case prohibits implicit member fusion")
+            name = components[0]["member"]
+            _require(name in members and name not in seen, "ET case contains unknown or duplicate members")
+            seen.add(name)
+            _require(
+                record.get("pub_shots", {}).get(pub["name"]) == members[name]["shots"],
+                "ET case PUB count differs from the fixed complete allocation",
+            )
+            _require(
+                measurement_map(circuit) == config["measurement_maps"][name]["classical_to_final_physical"],
+                "ET case QPY outcome roles differ from the configuration",
+            )
+        _require(seen == set(members), "ET case omits declared signals or controls")
     if record["family_configuration"]["name"] == "folded-correction":
         _correction_case_inputs(record, candidate, list(circuits))
     return candidate, hashlib.sha256(record_bytes).hexdigest(), hashlib.sha256(archive_bytes).hexdigest()
@@ -1364,6 +1399,28 @@ def _empirical_bernstein(record: dict[str, Any], candidate: dict[str, Any]) -> l
 
 
 def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
+    if family == "et-row":
+        from et_campaign import configuration as et_configuration
+
+        config = et_configuration()
+        total = sum(item["shots"] for item in config["members"].values())
+        return [
+            "## Scientific question and interpretation",
+            "",
+            "The ET family tests whether the routed six-qubit signed multiplication network retains "
+            "column-resolved multiplication and paired marker response under physical readout context and drift. "
+            "Finite algebra is checked classically; retained Aer calibration cannot establish actual decoder "
+            "behavior or context-dependent errors on the device.",
+            "",
+            f"Four acquisition blocks divide 98304 signal shots. The complete manifest budgets {total} "
+            "executions including balanced dephasing, full-register readout, held-out and decoder controls. "
+            "Each signal receives 8192 total shots. One placement runs without automatic isolated references.",
+            "",
+            "Six primary endpoints use paired bounded-score inference, joint response uncertainty, and Holm "
+            "adjustment. Material control discrepancies withhold admission. Bit-zero marker detection does "
+            "not certify full-row fidelity. Native mock outcomes are excluded from scientific analysis.",
+            "",
+        ]
     if family == "folded-correction":
         return [
             "## Scientific question and interpretation",

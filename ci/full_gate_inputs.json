@@ -217,6 +217,18 @@
       "docs/evidence/calibration/history/**",
       "results/live/2026-10-15T070847.644554Z/**",
       "results/live/2026-10-15T070853.550532Z/**"
+    ],
+    "core-564": [
+      "docs/evidence/et_rows/**"
+    ],
+    "core-565": [
+      "docs/evidence/et_rows/**"
+    ],
+    "core-566": [
+      "docs/evidence/et_rows/**"
+    ],
+    "core-567": [
+      "docs/evidence/et_rows/**"
     ]
   }
 }

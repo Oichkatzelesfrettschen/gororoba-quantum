@@ -12,7 +12,7 @@ import json
 import math
 import threading
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 from typing import Any
 
@@ -653,6 +653,10 @@ def family_candidates(
     runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
 ) -> list[tuple[list[Any], dict[str, Any]]]:
     """Enumerate matched circuit sets; a folded family retains its exact physical mapping."""
+    if args.family == "et-row":
+        from et_planning import family_candidates as et_candidates
+
+        return et_candidates(runtime, snapshots, args, trace)
     if args.family in ("ripple", "rank-sector"):
         import algebra_planning
 
@@ -978,6 +982,7 @@ def prepare(
         **({"configuration": candidates[0][1]} if args.family == STATE_PREP_FAMILY else {}),
     )
     plans: list[CandidatePlan] = []
+    et_screens: dict[str, dict[str, Any]] = {}
     ownership: dict[str, tuple[list[Any], dict[str, Any], int]] = {}
     simulators: dict[int, Any] = {}
     tiers = sorted(set(args.shot_tiers if args.optimize else [args.shots]))
@@ -998,7 +1003,7 @@ def prepare(
         if not tiers:
             raise runtime.LiveRunError(f"every shot tier exceeds max_shots {ceiling}: {trace['shot_ceiling']}")
     per_pub = getattr(args, "shot_allocation", "uniform") == "per-pub"
-    if per_pub and (args.family not in ("ripple", "rank-sector", *PATCH_FAMILIES) or not args.optimize):
+    if per_pub and (args.family not in ("et-row", "ripple", "rank-sector", *PATCH_FAMILIES) or not args.optimize):
         raise runtime.LiveRunError("per-PUB shot allocation requires an optimized algebra or patch family")
     if not per_pub and hasattr(args, "pub_shots"):
         del args.pub_shots
@@ -1044,7 +1049,12 @@ def prepare(
                 choice.snap.name, choice.snap.backend.target, choice.snap.properties, local_compute.settings(args)
             )
         start = len(local_compute.batches(simulator))
-        noisy = runtime.simulate(choice, simulator, args.model_shots, **excited)
+        if args.family == "et-row":
+            from et_planning import simulate as simulate_et
+
+            noisy = simulate_et(runtime, choice, simulator, args.model_shots)
+        else:
+            noisy = runtime.simulate(choice, simulator, args.model_shots, **excited)
         return local_compute.batches(simulator)[start:], noisy
 
     ordered = [choice for choices, _configuration in candidates for choice in choices]
@@ -1053,10 +1063,19 @@ def prepare(
         simulated = iter(list(pool.map(simulate_choice, ordered)))
     for candidate_index, (choices, configuration) in enumerate(candidates):
         predictions: dict[str, tuple[tuple[float, ...], ...]] = {}
+        ideal_cache = {}
         for choice in choices:
             for entry in choice.entries:
                 for replica in entry.replicas:
-                    actual = ideal_compiled_probabilities(replica)
+                    if args.family == "et-row":
+                        from et_planning import native_signature
+
+                        key = native_signature(replica)
+                        if key not in ideal_cache:
+                            ideal_cache[key] = ideal_compiled_probabilities(replica)
+                        actual = ideal_cache[key]
+                    else:
+                        actual = ideal_compiled_probabilities(replica)
                     if not np.allclose(actual, entry.ideal, rtol=0, atol=1e-10):
                         raise runtime.LiveRunError(
                             f"{entry.name}: compiled labeled ideal differs from its exact oracle"
@@ -1162,6 +1181,10 @@ def prepare(
                 )
             )
             ownership[name] = choices, configuration, shots
+            if args.family == "et-row":
+                from et_planning import calibrated_design
+
+                et_screens[name] = calibrated_design(configuration, predictions)
     if not plans:
         raise runtime.LiveRunError(
             f"every candidate failed its model or covariance admission: {trace.get('model_rejections')}"
@@ -1193,17 +1216,22 @@ def prepare(
             couplings[candidate.name] = tuple(
                 tuple(row_pubs[row] for row in rows) for rows in configuration.get("matched_walk_rows", {}).values()
             )
-        allocated, allocation_audits = allocate_plans(
-            tuple(plans),
-            contracts,
-            tuple(tiers),
-            budget,
-            simulation_alpha=args.simulation_alpha,
-            objective=policy["objective"],
-            cost_scenarios=scenarios,
-            coupled_pubs=couplings,
-            unscored_tier="smallest" if args.family in PATCH_FAMILIES else "largest",
-        )
+        if args.family == "et-row":
+            from et_planning import fixed_allocations
+
+            allocated, allocation_audits = fixed_allocations(tuple(plans), ownership, runtime)
+        else:
+            allocated, allocation_audits = allocate_plans(
+                tuple(plans),
+                contracts,
+                tuple(tiers),
+                budget,
+                simulation_alpha=args.simulation_alpha,
+                objective=policy["objective"],
+                cost_scenarios=scenarios,
+                coupled_pubs=couplings,
+                unscored_tier="smallest" if args.family in PATCH_FAMILIES else "largest",
+            )
         for original, allocated_plan in zip(plans, allocated, strict=True):
             selected_choices, selected_configuration, _shots = ownership[original.name]
             ownership[allocated_plan.name] = (
@@ -1220,6 +1248,37 @@ def prepare(
         objective=policy["objective"],
         cost_scenarios=scenarios,
     )
+    if args.family == "et-row":
+        eligible = tuple(plan for plan in plans if et_screens[plan.name]["admitted"])
+        eligible_result = (
+            optimize(
+                eligible,
+                contracts,
+                budget,
+                simulation_alpha=args.simulation_alpha,
+                objective=policy["objective"],
+                cost_scenarios=scenarios,
+            )
+            if eligible
+            else None
+        )
+        result = replace(
+            result,
+            selected=eligible_result.selected if eligible_result else None,
+            candidates=tuple(
+                candidate
+                if et_screens[candidate.name]["admitted"]
+                else replace(
+                    candidate,
+                    feasible=False,
+                    rejection_reasons=candidate.rejection_reasons
+                    + ("ET calibrated inference fails at declared allocation",),
+                )
+                for candidate in result.candidates
+            ),
+            pareto_frontier=eligible_result.pareto_frontier if eligible_result else (),
+            selected_objective_value=eligible_result.selected_objective_value if eligible_result else None,
+        )
     # An infeasible dry run retains a concrete candidate and every rejection;
     # its state prevents that diagnostic archive from becoming a submission.
     retained = result.selected or plans[0].name
@@ -1230,6 +1289,7 @@ def prepare(
         args.pub_shots = dict(allocation_audits[retained]["pub_shots"])
     metadata = {
         "family_configuration": configuration,
+        **({"et_calibrated_design": et_screens[retained]} if args.family == "et-row" else {}),
         "observable_contracts": json.loads(json.dumps([asdict(contract) for contract in contracts])),
         "optimization": result.as_dict()
         | {
@@ -1322,6 +1382,10 @@ def measured_family(
     and withholds the analysis when the block's ``specification`` differs
     from experiment_optimizer.EMPIRICAL_BERNSTEIN.
     """
+    if record.get("family_configuration", {}).get("name") == "et-row":
+        from et_planning import collected
+
+        return collected(record, correction_evidence, executed, runtime)
     if record.get("family_configuration", {}).get("name") == "folded-correction":
         import correction_collection
 

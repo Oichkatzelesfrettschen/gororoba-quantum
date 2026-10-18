@@ -1,0 +1,207 @@
+{
+  "manifest_members": 119,
+  "operators": 50,
+  "max_error": 2.0292836671419905e-13,
+  "circuits": [
+    {
+      "file": "row_D128_S9_L2_affine_dark_anf_all_to_all.qpy",
+      "operator_max_error": 1.0512914947928095e-13
+    },
+    {
+      "file": "row_D128_S9_L2_affine_dark_diagonal_all_to_all.qpy",
+      "operator_max_error": 3.4135542083398484e-14
+    },
+    {
+      "file": "row_D128_S9_L2_fixed_plus_anf_all_to_all.qpy",
+      "operator_max_error": 1.0437083536772679e-13
+    },
+    {
+      "file": "row_D128_S9_L2_fixed_plus_diagonal_all_to_all.qpy",
+      "operator_max_error": 3.379577447783895e-14
+    },
+    {
+      "file": "row_D128_S9_L2_matched_dark_anf_all_to_all.qpy",
+      "operator_max_error": 9.890255926422139e-14
+    },
+    {
+      "file": "row_D128_S9_L2_matched_dark_diagonal_all_to_all.qpy",
+      "operator_max_error": 4.500458806001939e-14
+    },
+    {
+      "file": "row_D32_S1_L2_affine_dark_anf_all_to_all.qpy",
+      "operator_max_error": 1.2386636716532105e-13
+    },
+    {
+      "file": "row_D32_S1_L2_affine_dark_diagonal_all_to_all.qpy",
+      "operator_max_error": 2.0023824688668962e-14
+    },
+    {
+      "file": "row_D32_S1_L2_fixed_minus_diagonal_all_to_all.qpy",
+      "operator_max_error": 1.9204882136480618e-14
+    },
+    {
+      "file": "row_D32_S1_L2_fixed_plus_anf_all_to_all.qpy",
+      "operator_max_error": 1.2231997713048575e-13
+    },
+    {
+      "file": "row_D32_S1_L2_fixed_plus_diagonal_all_to_all.qpy",
+      "operator_max_error": 2.0012545565158684e-14
+    },
+    {
+      "file": "row_D32_S1_L2_fixed_plus_diagonal_column_X_all_to_all.qpy",
+      "operator_max_error": 4.402980420833181e-14
+    },
+    {
+      "file": "row_D32_S1_L2_fixed_plus_diagonal_marker1_column_X_all_to_all.qpy",
+      "operator_max_error": 4.436369807150974e-14
+    },
+    {
+      "file": "row_D32_S1_L2_matched_dark_anf_all_to_all.qpy",
+      "operator_max_error": 2.0292836671419905e-13
+    },
+    {
+      "file": "row_D32_S1_L2_matched_dark_diagonal_all_to_all.qpy",
+      "operator_max_error": 2.4634580580249243e-14
+    },
+    {
+      "file": "row_D32_S9_L2_affine_dark_anf_all_to_all.qpy",
+      "operator_max_error": 1.0004398730246188e-13
+    },
+    {
+      "file": "row_D32_S9_L2_affine_dark_anf_line.qpy",
+      "operator_max_error": 1.0444230921777933e-13
+    },
+    {
+      "file": "row_D32_S9_L2_affine_dark_diagonal_all_to_all.qpy",
+      "operator_max_error": 2.169236878969406e-14
+    },
+    {
+      "file": "row_D32_S9_L2_affine_dark_diagonal_line.qpy",
+      "operator_max_error": 1.6516936878259275e-14
+    },
+    {
+      "file": "row_D32_S9_L2_fixed_minus_diagonal_all_to_all.qpy",
+      "operator_max_error": 2.1178803578921888e-14
+    },
+    {
+      "file": "row_D32_S9_L2_fixed_plus_anf_all_to_all.qpy",
+      "operator_max_error": 1.0021476612242097e-13
+    },
+    {
+      "file": "row_D32_S9_L2_fixed_plus_anf_line.qpy",
+      "operator_max_error": 1.0467327139584419e-13
+    },
+    {
+      "file": "row_D32_S9_L2_fixed_plus_diagonal_all_to_all.qpy",
+      "operator_max_error": 2.1040245867097913e-14
+    },
+    {
+      "file": "row_D32_S9_L2_fixed_plus_diagonal_column_X_all_to_all.qpy",
+      "operator_max_error": 4.7318630494632595e-14
+    },
+    {
+      "file": "row_D32_S9_L2_fixed_plus_diagonal_line.qpy",
+      "operator_max_error": 1.6529695216524132e-14
+    },
+    {
+      "file": "row_D32_S9_L2_fixed_plus_diagonal_marker1_column_X_all_to_all.qpy",
+      "operator_max_error": 4.8400967699291445e-14
+    },
+    {
+      "file": "row_D32_S9_L2_matched_dark_anf_all_to_all.qpy",
+      "operator_max_error": 1.3275171398751461e-13
+    },
+    {
+      "file": "row_D32_S9_L2_matched_dark_anf_line.qpy",
+      "operator_max_error": 1.4065888112600284e-13
+    },
+    {
+      "file": "row_D32_S9_L2_matched_dark_diagonal_all_to_all.qpy",
+      "operator_max_error": 2.547886392153341e-14
+    },
+    {
+      "file": "row_D32_S9_L2_matched_dark_diagonal_line.qpy",
+      "operator_max_error": 1.887320549034518e-14
+    },
+    {
+      "file": "row_D32_S9_L8_affine_dark_anf_all_to_all.qpy",
+      "operator_max_error": 9.638425943868315e-14
+    },
+    {
+      "file": "row_D32_S9_L8_affine_dark_diagonal_all_to_all.qpy",
+      "operator_max_error": 1.9493899497473824e-14
+    },
+    {
+      "file": "row_D32_S9_L8_fixed_minus_diagonal_all_to_all.qpy",
+      "operator_max_error": 1.92689170700709e-14
+    },
+    {
+      "file": "row_D32_S9_L8_fixed_plus_anf_all_to_all.qpy",
+      "operator_max_error": 9.67762428089856e-14
+    },
+    {
+      "file": "row_D32_S9_L8_fixed_plus_diagonal_all_to_all.qpy",
+      "operator_max_error": 2.052871986847831e-14
+    },
+    {
+      "file": "row_D32_S9_L8_fixed_plus_diagonal_column_X_all_to_all.qpy",
+      "operator_max_error": 4.761565733478128e-14
+    },
+    {
+      "file": "row_D32_S9_L8_fixed_plus_diagonal_marker1_column_X_all_to_all.qpy",
+      "operator_max_error": 4.7364599444901267e-14
+    },
+    {
+      "file": "row_D32_S9_L8_matched_dark_anf_all_to_all.qpy",
+      "operator_max_error": 1.2575121573972013e-13
+    },
+    {
+      "file": "row_D32_S9_L8_matched_dark_diagonal_all_to_all.qpy",
+      "operator_max_error": 2.5086764290968968e-14
+    },
+    {
+      "file": "row_D64_S9_L2_affine_dark_anf_all_to_all.qpy",
+      "operator_max_error": 1.2274331870128842e-13
+    },
+    {
+      "file": "row_D64_S9_L2_affine_dark_diagonal_all_to_all.qpy",
+      "operator_max_error": 2.5959944495499856e-14
+    },
+    {
+      "file": "row_D64_S9_L2_fixed_plus_anf_all_to_all.qpy",
+      "operator_max_error": 1.2316019292895156e-13
+    },
+    {
+      "file": "row_D64_S9_L2_fixed_plus_diagonal_all_to_all.qpy",
+      "operator_max_error": 2.6738217211308722e-14
+    },
+    {
+      "file": "row_D64_S9_L2_matched_dark_anf_all_to_all.qpy",
+      "operator_max_error": 1.3534422809213214e-13
+    },
+    {
+      "file": "row_D64_S9_L2_matched_dark_diagonal_all_to_all.qpy",
+      "operator_max_error": 3.326778324996982e-14
+    },
+    {
+      "file": "support_D128_S9_L2_uniform_all_to_all.qpy",
+      "operator_max_error": 7.370418863146388e-14
+    },
+    {
+      "file": "support_D32_S1_L2_uniform_all_to_all.qpy",
+      "operator_max_error": 2.0359187707472077e-14
+    },
+    {
+      "file": "support_D32_S9_L2_uniform_all_to_all.qpy",
+      "operator_max_error": 4.2535428686603066e-14
+    },
+    {
+      "file": "support_D32_S9_L8_uniform_all_to_all.qpy",
+      "operator_max_error": 2.0456028698966672e-14
+    },
+    {
+      "file": "support_D64_S9_L2_uniform_all_to_all.qpy",
+      "operator_max_error": 6.927793897665076e-14
+    }
+  ]
+}
