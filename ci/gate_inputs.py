@@ -2,7 +2,8 @@
 
 The explicit manifest covers data globs, QPY and source digests that Python
 imports cannot express. CI and dependency-pin changes invalidate every replay.
-The standard library suffices so selection runs before dependency installation.
+The standard library and git suffice, so selection runs before dependency
+installation.
 """
 
 from __future__ import annotations
@@ -10,7 +11,9 @@ from __future__ import annotations
 import ast
 import fnmatch
 import json
+import os
 import shlex
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -29,10 +32,32 @@ def matches(path: str, pattern: str) -> bool:
     return fnmatch.fnmatchcase(path, pattern)
 
 
+def checkout_files(root: Path, pattern: str) -> list[Path]:
+    """The files under ROOT matching PATTERN that git tracks or would track.
+
+    ``git ls-files --cached --others --exclude-standard`` lists the tracked
+    files and the untracked files .gitignore admits, so a new module counts
+    before its commit while an ignored build tree, virtual environment or
+    cache never does: the index holds the modules a clone of the commit plus
+    the working changes holds, which is what CI's checkout holds.
+    """
+    completed = subprocess.run(
+        ["git", "-C", str(root), "ls-files", "-z", "--cached", "--others", "--exclude-standard", "--", pattern],
+        capture_output=True,
+        check=False,
+    )
+    if completed.returncode != 0:
+        raise ValueError(f"{root} is not a git work tree: {completed.stderr.decode(errors='replace').strip()}")
+    names = {os.fsdecode(name) for name in completed.stdout.split(b"\0") if name}
+    # A tracked file deleted from the working tree stays in the index until
+    # the deletion is staged; the walk reads only files present on disk.
+    return [root / name for name in sorted(names) if (root / name).is_file()]
+
+
 def module_index(root: Path) -> dict[str, set[Path]]:
     """Index repository modules once per selection."""
     modules: dict[str, set[Path]] = {}
-    for path in root.rglob("*.py"):
+    for path in checkout_files(root, "*.py"):
         if any(part.startswith(".") for part in path.relative_to(root).parts):
             continue
         modules.setdefault(path.stem, set()).add(path)

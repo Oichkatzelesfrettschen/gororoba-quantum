@@ -16,13 +16,21 @@
 #   clean       remove the two built images and the pulled base images
 # With no STEP it runs fetch images build check.
 #
-# Environment: AER_CU13_WORK (default <repo>/build/aer-gpu-cu13),
-# AER_BUILD_JOBS (default 6), PODMAN (default podman).
+# Environment: AER_CU13_WORK (default
+# ${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/aer-gpu-cu13),
+# AER_BUILD_JOBS (default 6), PODMAN (default podman). The work tree holds
+# the sources, venvs, uv cache and wheel, several GB of Python packages, and
+# lives outside every checkout so the checkout's tree walks never read it.
+# Every checkout shares it, so one host run at a time holds WORK/.lock (a
+# second run exits 75). images labels both images with the digest of the
+# recipe inputs, build and check refuse an image whose label differs, and
+# build records the digest and the image ids in WORK/producer.txt; check and
+# gpu-check refuse a wheel whose digest differs from the running recipe's.
 set -eu
 
 RECIPE_DIR=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 REPO_ROOT=$(CDPATH='' cd -- "$RECIPE_DIR/../../../.." && pwd)
-WORK=${AER_CU13_WORK:-$REPO_ROOT/build/aer-gpu-cu13}
+WORK=${AER_CU13_WORK:-${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/aer-gpu-cu13}
 JOBS=${AER_BUILD_JOBS:-6}
 PODMAN=${PODMAN:-podman}
 
@@ -45,6 +53,38 @@ libcusolverMg.so.12 libcusparse.so.12 libnvJitLink.so.13 libcustatevec.so.1
 libcutensornet.so.2 libcutensor.so.2 libcutensorMg.so.2 libcuda.so.1"
 
 log() { printf '%s\n' "$*" >&2; }
+
+# recipe_digest: one sha256 over every input a build reads from the checkout.
+recipe_digest() {
+	{
+		(cd "$RECIPE_DIR" && sha256sum build_aer_gpu_cu13_wheel.sh aer-gpu-cu13.Containerfile \
+			aer-cu13-pip-layout.patch aer-gpu-cu13-build-pins.txt aer-gpu-cu13-runtime-pins.txt)
+		(cd "$REPO_ROOT" && sha256sum requirements.txt docs/notes/build_host/recipes/*)
+	} | sha256sum | cut -d' ' -f1
+}
+
+# require_images: both tagged images carry the running recipe's digest, so
+# a step never runs an image a changed Containerfile or base no longer makes.
+require_images() {
+	want=$(recipe_digest)
+	for tag in "$BUILD_TAG" "$TEST_TAG"; do
+		label=$("$PODMAN" image inspect --format '{{index .Labels "gororoba.recipe"}}' "$tag" 2>/dev/null || true)
+		if [ "$label" != "$want" ]; then
+			log "$tag was built by recipe ${label:-unknown}, not $want; run images first"
+			exit 1
+		fi
+	done
+}
+
+require_producer() {
+	require_images
+	want=$(recipe_digest)
+	have=$(sed -n 's/^recipe //p' "$WORK/producer.txt" 2>/dev/null || true)
+	if [ "$have" != "$want" ]; then
+		log "$WORK holds a wheel built by recipe ${have:-unknown}, not $want; run build first"
+		exit 1
+	fi
+}
 
 # container_run IMAGE DEVICE STEP: run this script's STEP inside IMAGE; DEVICE
 # is a CDI device name or empty. One bind mount holds the uv cache and both
@@ -84,17 +124,19 @@ step_fetch() {
 
 step_images() {
 	mkdir -p "$WORK/logs"
-	nice -n 19 "$PODMAN" build --target build -t "$BUILD_TAG" \
+	digest=$(recipe_digest)
+	nice -n 19 "$PODMAN" build --target build -t "$BUILD_TAG" --label "gororoba.recipe=$digest" \
 		--build-arg BUILD_BASE="$BUILD_BASE" --build-arg TEST_BASE="$TEST_BASE" \
 		-f "$RECIPE_DIR/aer-gpu-cu13.Containerfile" "$RECIPE_DIR" >"$WORK/logs/image-build.log" 2>&1
-	nice -n 19 "$PODMAN" build --target test -t "$TEST_TAG" \
+	nice -n 19 "$PODMAN" build --target test -t "$TEST_TAG" --label "gororoba.recipe=$digest" \
 		--build-arg BUILD_BASE="$BUILD_BASE" --build-arg TEST_BASE="$TEST_BASE" \
 		-f "$RECIPE_DIR/aer-gpu-cu13.Containerfile" "$RECIPE_DIR" >"$WORK/logs/image-test.log" 2>&1
 	"$PODMAN" image inspect --format '{{.Id}} {{.RepoTags}}' "$BUILD_TAG" "$TEST_TAG" >"$WORK/logs/images.txt"
 }
 
 step_build() {
-	for stale in "$WORK/src" "$WORK/venv-build" "$WORK/dist"; do
+	require_images
+	for stale in "$WORK/src" "$WORK/venv-build" "$WORK/dist" "$WORK/producer.txt"; do
 		if [ -e "$stale" ]; then
 			log "trash $stale"
 			trash-put "$stale"
@@ -102,9 +144,13 @@ step_build() {
 	done
 	mkdir -p "$WORK/logs"
 	container_run "$BUILD_TAG" '' inner-build >"$WORK/logs/build.log" 2>&1
+	revision=$(git -C "$REPO_ROOT" rev-parse HEAD 2>/dev/null || echo unknown)
+	images=$("$PODMAN" image inspect --format '{{.Id}}' "$BUILD_TAG" "$TEST_TAG" | tr '\n' ' ')
+	printf 'recipe %s\nrevision %s\nimages %s\n' "$(recipe_digest)" "$revision" "${images% }" >"$WORK/producer.txt"
 }
 
 step_check() {
+	require_producer
 	if [ -e "$WORK/venv-test" ]; then
 		trash-put "$WORK/venv-test"
 	fi
@@ -114,6 +160,7 @@ step_check() {
 }
 
 step_gpu_check() {
+	require_producer
 	container_run "$TEST_TAG" nvidia.com/gpu=all inner-gpu-check >"$WORK/logs/gpu-check.log" 2>&1
 }
 
@@ -328,6 +375,24 @@ EOF
 if [ "$#" -eq 0 ]; then
 	set -- fetch images build check
 fi
+# Host steps re-run under flock(1) on WORK/.lock; -o closes the lock's
+# descriptor before the script runs, so a container the run starts never
+# holds it. Container steps (inner-*) run inside a host step's lock.
+case $1 in
+inner-*) ;;
+*)
+	if [ -z "${AER_CU13_LOCKED:-}" ]; then
+		mkdir -p "$WORK"
+		export AER_CU13_LOCKED=1
+		status=0
+		flock -n -o -E 75 "$WORK/.lock" sh "$0" "$@" || status=$?
+		if [ "$status" -eq 75 ]; then
+			log "another run holds $WORK/.lock"
+		fi
+		exit "$status"
+	fi
+	;;
+esac
 for step in "$@"; do
 	case $step in
 	fetch) step_fetch ;;
