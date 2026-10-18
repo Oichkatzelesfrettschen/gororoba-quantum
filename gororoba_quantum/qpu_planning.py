@@ -12,7 +12,7 @@ import json
 import math
 import threading
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import asdict, replace
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -1170,6 +1170,25 @@ def prepare(
                     jobs=tuple(jobs),
                     covariance_bounds=covariance,
                     empirical_bernstein=bernstein,
+                    **(
+                        {
+                            "independent_pub_blocks": tuple(
+                                tuple(
+                                    pub.name
+                                    for job in jobs
+                                    for pub in job.pubs
+                                    if {
+                                        configuration["members"][member]["block"] for member in pub.member_distributions
+                                    }
+                                    == {block}
+                                )
+                                for block in range(configuration["blocks"])
+                            ),
+                            "pub_independence_assumption": configuration["sampling_assumption"],
+                        }
+                        if args.family == "et-row"
+                        else {}
+                    ),
                     proxy_metadata={
                         "backend": choices[0].snap.name,
                         "seed": choices[0].seed,
@@ -1248,35 +1267,12 @@ def prepare(
         cost_scenarios=scenarios,
     )
     if args.family == "et-row":
-        eligible = tuple(plan for plan in plans if et_screens[plan.name]["admitted"])
-        eligible_result = (
-            optimize(
-                eligible,
-                contracts,
-                budget,
-                simulation_alpha=args.simulation_alpha,
-                objective=policy["objective"],
-                cost_scenarios=scenarios,
-            )
-            if eligible
-            else None
-        )
-        result = replace(
+        from experiment_optimizer import restrict_candidates
+
+        result = restrict_candidates(
             result,
-            selected=eligible_result.selected if eligible_result else None,
-            candidates=tuple(
-                candidate
-                if et_screens[candidate.name]["admitted"]
-                else replace(
-                    candidate,
-                    feasible=False,
-                    rejection_reasons=candidate.rejection_reasons
-                    + ("ET calibrated inference fails at declared allocation",),
-                )
-                for candidate in result.candidates
-            ),
-            pareto_frontier=eligible_result.pareto_frontier if eligible_result else (),
-            selected_objective_value=eligible_result.selected_objective_value if eligible_result else None,
+            {name for name, screen in et_screens.items() if screen["admitted"]},
+            "ET calibrated inference fails at declared allocation",
         )
     # An infeasible dry run retains a concrete candidate and every rejection;
     # its state prevents that diagnostic archive from becoming a submission.

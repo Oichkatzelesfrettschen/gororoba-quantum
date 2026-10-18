@@ -40,6 +40,12 @@ exceptions and also run under optimized Python. New ET artifacts require
 Qiskit 2.6.0. Historical evidence continues using the separately pinned replay
 interpreter when its gate requests Qiskit 2.5.2.
 
+The QPY gate also checks the retained receipt's coverage, circuit identities,
+maximum and individual numerical errors. Individual floating errors permit
+absolute roundoff of 1e-14 and relative roundoff of 1e-5 across native numerical
+libraries; each freshly computed full-operator discrepancy separately passes
+the 1e-10 operator contract. `--self-test` exercises receipt mutations.
+
 ## Mathematical scope
 
 `claims.json` binds finite checks and inspected formal declarations to their
@@ -51,6 +57,14 @@ have diagonal entries 2 and off-diagonal entries `eta1+eta2`. An occupied
 block contributes one zero eigenvector and one eigenvector of eigenvalue 4.
 Other blocks have eigenvalue 2. The exact finite census checks the excluded
 labels as well as occupied columns. Numerical rank thresholds are unnecessary.
+
+The source replay also uses the qualified `python-flint` backend through
+`scripts/exact_rank.py` for fifteen representative full multiplier matrices.
+Exact rational kernel bases and modular ranks certify matching upper and lower
+rank bounds. Integer/Fraction substitution independently checks every returned
+kernel vector. The sample covers D32/D64/D128 dense, nonhub and hub rows, plus
+the primary, shifted and boundary S15 rows at D64/D128. FLINT supplies arithmetic;
+`cd_core.cd_sign` supplies the matrix convention.
 
 The signed child box contains shifted interior labels `G_old xor c` and
 boundary labels `G_old,G_old xor S`. At D64/S15, rows 1, 17 and 16 sample

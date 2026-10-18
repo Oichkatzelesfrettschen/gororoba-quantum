@@ -10,6 +10,83 @@ from et_statistics import _union_pvalue, analyze, bounded_pvalue, holm
 
 
 class ETCampaignTests(unittest.TestCase):
+    def test_declared_block_independence_prices_the_complete_raw_law(self) -> None:
+        from dataclasses import replace
+
+        from et_campaign import contracts
+        from experiment_optimizer import BudgetContract, CandidatePlan, JobCandidate, PubPrediction, evaluate_candidate
+
+        config = configuration()
+        group = et_group(config)
+        pubs = {
+            member.name: PubPrediction(
+                member.name,
+                {member.name: (tuple(member.ideal),)},
+                1e-6,
+                0.00025,
+                "ideal fixture",
+                simulation_shots=65536,
+            )
+            for member in group.members
+        }
+        jobs = tuple(
+            JobCandidate(
+                f"tier-{shots}",
+                tuple(pubs[name] for name, item in config["members"].items() if item["shots"] == shots),
+                shots,
+                2.3,
+                90,
+                "fixture",
+            )
+            for shots in (32, 64, 128, 2048)
+        )
+        plan = CandidatePlan("fixture", jobs)
+        budget = BudgetContract(600, 10, 600)
+        endpoints = contracts(0.08, 0.05, 0.8)
+        self.assertFalse(evaluate_candidate(plan, endpoints, budget).feasible)
+        blocks = tuple(
+            tuple(name for name, item in config["members"].items() if item["block"] == block)
+            for block in range(config["blocks"])
+        )
+        declared = replace(
+            plan, independent_pub_blocks=blocks, pub_independence_assumption=config["sampling_assumption"]
+        )
+        result = evaluate_candidate(declared, endpoints, budget)
+        self.assertTrue(result.feasible, result.rejection_reasons)
+        self.assertTrue(
+            all(config["sampling_assumption"] in endpoint.covariance_assumptions for endpoint in result.observables)
+        )
+        self.assertFalse(
+            evaluate_candidate(replace(declared, pub_independence_assumption=None), endpoints, budget).feasible
+        )
+
+    def test_calibrated_filter_preserves_search_wide_admission(self) -> None:
+        from experiment_optimizer import CandidateResult, OptimizationResult, restrict_candidates
+
+        def candidate(name: str, feasible: bool, charge: float) -> CandidateResult:
+            return CandidateResult(name, feasible, charge, 90, (), (), (), {}, worst_case_charge_seconds=charge)
+
+        near_boundary = candidate("raw_infeasible", False, 1)
+        cheapest = candidate("calibration_infeasible", True, 2)
+        retained = candidate("retained", True, 3)
+        original = OptimizationResult(
+            cheapest.name,
+            (near_boundary, cheapest, retained),
+            (cheapest.name, retained.name),
+            (),
+            0.01,
+            99,
+            (),
+            selected_objective_value=2,
+        )
+        result = restrict_candidates(original, {near_boundary.name, retained.name}, "calibrated screen")
+        self.assertEqual(result.selected, retained.name)
+        self.assertEqual(result.simulation_comparisons, 99)
+        self.assertFalse(result.candidates[0].feasible)
+        self.assertFalse(result.candidates[1].feasible)
+        self.assertIs(result.candidates[2], retained)
+        self.assertEqual(result.selected_objective_value, 3)
+
     def test_complete_budget_and_reconstruction(self) -> None:
         config = configuration()
         group = et_group(config)
@@ -74,7 +151,22 @@ class ETCampaignTests(unittest.TestCase):
             bounded_pvalue(float("nan"), 1)
 
     def test_null_bound_with_identical_dependent_blocks(self) -> None:
+        import math
+
+        from experiment_optimizer import CandidatePlan, _plan_radius, _PubObservable
+
         for shots in (32, 128, 2048):
+            blocks = tuple((f"block_{block}",) for block in range(4))
+            plan = CandidatePlan(
+                "null-fixture",
+                (),
+                independent_pub_blocks=blocks,
+                pub_independence_assumption="independent shots within a block",
+            )
+            streams = tuple(_PubObservable(block[0], shots, 0.25, None, None) for block in blocks)
+            self.assertAlmostEqual(
+                _plan_radius(plan, streams, 0.025, False), math.sqrt(math.log(4 / 0.025) / (2 * shots))
+            )
             rejection = [
                 successes
                 for successes in range(shots + 1)

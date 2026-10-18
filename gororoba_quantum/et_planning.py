@@ -231,81 +231,108 @@ def family_candidates(
             primary = Group("et_row_placement", (group.members[0],), lambda _: {})
             routed = runtime.select_candidates(primary, [snapshot], args.seeds, trace)
             for choice in routed[: args.optimizer_candidates]:
-                config = copy.deepcopy(definition)
-                # Restrict native routing to the chosen six-wire region. Extra
-                # routing ancillas would change the declared acquisition width.
-                target = snapshot.admission_target or snapshot.backend.target
-                restricted = Target(
-                    num_qubits=target.num_qubits,
-                    dt=target.dt,
-                    qubit_properties=target.qubit_properties,
-                    granularity=target.granularity,
-                    pulse_alignment=target.pulse_alignment,
-                    acquire_alignment=target.acquire_alignment,
-                    min_length=target.min_length,
-                )
-                for operation in target.operation_names:
-                    properties = {
-                        qargs: props
-                        for qargs, props in target[operation].items()
-                        if qargs is not None and set(qargs) <= set(choice.layout)
-                    }
-                    if properties:
-                        restricted.add_instruction(target.operation_from_name(operation), properties, name=operation)
-                local_snapshot = copy.copy(snapshot)
-                local_snapshot.admission_target = restricted
-                templates = {}
-                isas = []
-                checked = set()
-                operator_jobs = []
-                for member in group.members:
-                    if config["members"][member.name]["kind"] in ("signal", "dephased"):
-                        if id(member.circuit) not in templates:
-                            templates[id(member.circuit)] = runtime._compile(
-                                member.circuit, local_snapshot, choice.seed, choice.layout
-                            )
-                        native = runtime._bind(templates[id(member.circuit)], member)
-                        binding_key = (
-                            id(member.circuit),
-                            tuple((str(key), value) for key, value in (member.binding or {}).items()),
-                        )
-                        if binding_key not in checked:
-                            logical = member.circuit.assign_parameters(member.binding or {})
-                            operator_jobs.append((native, logical, choice.layout))
-                            checked.add(binding_key)
-                        isas.append(native)
-                    else:
-                        # bind_controls replaces every control with an actual
-                        # native readout or decoder twin before ISA admission.
-                        isas.append(isas[0])
-                operator_errors = parallel.ordered_map(_operator_job, operator_jobs, min_items=2)
-                if max(operator_errors) > 1e-10:
-                    raise ValueError(f"native arbitrary-input error {max(operator_errors)}")
-                choice.group = group
-                choice.isas = isas
-                bind_controls(choice, config, runtime)
-                print(f"et-row: {snapshot.name} layout {choice.layout}, {len(choice.isas)} native members", flush=True)
-                scores = [runtime.layout_score(circuit, snapshot.backend.target) for circuit in choice.isas]
-                if any(score <= 0 or not math.isfinite(score) for score in scores):
-                    raise ValueError("ET candidate has an invalid native quality proxy")
-                choice.member_scores = scores
-                choice.joint_score = min(scores)
-                used = sorted({qubit for circuit in choice.isas for qubit in runtime._physical(circuit)})
-                with bulk_packing():
-                    runtime._set_entries(
-                        choice,
-                        [Replica(0, {qubit: qubit for qubit in used}, min(scores))],
-                        runtime.ReplicaPolicy(args.replica_floor, 1, False, True),
+                try:
+                    candidates.append(compile_candidate(runtime, snapshot, args, group, definition, choice))
+                except (QiskitError, ValueError, runtime.LiveRunError) as error:
+                    trace.setdefault("family_rejections", []).append(
+                        {
+                            "backend": snapshot.name,
+                            "initial_layout": list(choice.layout),
+                            "seed": choice.seed,
+                            "reason": str(error),
+                        }
                     )
-                config["dt_seconds"] = snapshot.backend.target.dt
-                config["native_operator_check"] = {"bindings": len(checked), "max_error": max(operator_errors)}
-                config["placement_contract"] = (
-                    "one physical placement; per-member final role maps and native suffix twins"
-                )
-                candidates.append(([choice], config))
         except (QiskitError, ValueError, runtime.LiveRunError) as error:
             trace.setdefault("family_rejections", []).append({"backend": snapshot.name, "reason": str(error)})
     return candidates
+
+
+def _score_job(arguments: tuple[QuantumCircuit, Target]) -> float:
+    from live_run import layout_score
+
+    return layout_score(*arguments)
+
+
+def score_circuits(circuits: list[QuantumCircuit], target: Target) -> list[float]:
+    programs = {native_signature(circuit): circuit for circuit in circuits}
+    scores = parallel.ordered_map(_score_job, [(circuit, target) for circuit in programs.values()], min_items=2)
+    by_program = dict(zip(programs, scores, strict=True))
+    return [by_program[native_signature(circuit)] for circuit in circuits]
+
+
+def compile_candidate(
+    runtime: Any, snapshot: Any, args: Any, group: Group, definition: dict[str, Any], choice: Any
+) -> tuple[list[Any], dict[str, Any]]:
+    config = copy.deepcopy(definition)
+    # Restrict native routing to the chosen six-wire region. Extra
+    # routing ancillas would change the declared acquisition width.
+    target = snapshot.admission_target or snapshot.backend.target
+    restricted = Target(
+        num_qubits=target.num_qubits,
+        dt=target.dt,
+        qubit_properties=target.qubit_properties,
+        granularity=target.granularity,
+        pulse_alignment=target.pulse_alignment,
+        acquire_alignment=target.acquire_alignment,
+        min_length=target.min_length,
+    )
+    for operation in target.operation_names:
+        properties = {
+            qargs: props
+            for qargs, props in target[operation].items()
+            if qargs is not None and set(qargs) <= set(choice.layout)
+        }
+        if properties:
+            restricted.add_instruction(target.operation_from_name(operation), properties, name=operation)
+    local_snapshot = copy.copy(snapshot)
+    local_snapshot.admission_target = restricted
+    templates = {}
+    isas = []
+    checked = set()
+    operator_jobs = []
+    for member in group.members:
+        if config["members"][member.name]["kind"] in ("signal", "dephased"):
+            if id(member.circuit) not in templates:
+                templates[id(member.circuit)] = runtime._compile(
+                    member.circuit, local_snapshot, choice.seed, choice.layout
+                )
+            native = runtime._bind(templates[id(member.circuit)], member)
+            binding_key = (
+                id(member.circuit),
+                tuple((str(key), value) for key, value in (member.binding or {}).items()),
+            )
+            if binding_key not in checked:
+                logical = member.circuit.assign_parameters(member.binding or {})
+                operator_jobs.append((native, logical, choice.layout))
+                checked.add(binding_key)
+            isas.append(native)
+        else:
+            # bind_controls replaces every control with an actual
+            # native readout or decoder twin before ISA admission.
+            isas.append(isas[0])
+    operator_errors = parallel.ordered_map(_operator_job, operator_jobs, min_items=2)
+    if max(operator_errors) > 1e-10:
+        raise ValueError(f"native arbitrary-input error {max(operator_errors)}")
+    choice.group = group
+    choice.isas = isas
+    bind_controls(choice, config, runtime)
+    print(f"et-row: {snapshot.name} layout {choice.layout}, {len(choice.isas)} native members", flush=True)
+    scores = score_circuits(choice.isas, snapshot.backend.target)
+    if any(score <= 0 or not math.isfinite(score) for score in scores):
+        raise ValueError("ET candidate has an invalid native quality proxy")
+    choice.member_scores = scores
+    choice.joint_score = min(scores)
+    used = sorted({qubit for circuit in choice.isas for qubit in runtime._physical(circuit)})
+    with bulk_packing():
+        runtime._set_entries(
+            choice,
+            [Replica(0, {qubit: qubit for qubit in used}, min(scores))],
+            runtime.ReplicaPolicy(args.replica_floor, 1, False, True),
+        )
+    config["dt_seconds"] = snapshot.backend.target.dt
+    config["native_operator_check"] = {"bindings": len(checked), "max_error": max(operator_errors)}
+    config["placement_contract"] = "one physical placement; per-member final role maps and native suffix twins"
+    return [choice], config
 
 
 def simulate(runtime: Any, choice: Any, simulator: Any, shots: int) -> dict:

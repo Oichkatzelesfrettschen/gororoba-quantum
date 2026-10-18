@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import importlib
 import io
 import json
+import math
 import re
 import sys
 import tempfile
@@ -72,7 +74,55 @@ def check_operator(name: str) -> dict[str, Any]:
         return {"file": Path(name).name, "operator_max_error": error}
 
 
+def check_receipt(report: dict[str, Any], path: Path) -> None:
+    retained = json.loads(path.read_text())
+    if set(report) != set(retained) or any(retained[key] != report[key] for key in ("manifest_members", "operators")):
+        raise ValueError("retained QPY receipt coverage differs from replay")
+    expected_rows, actual_rows = retained["circuits"], report["circuits"]
+    if len(expected_rows) != len(actual_rows) or any(
+        expected["file"] != actual["file"] for expected, actual in zip(expected_rows, actual_rows, strict=True)
+    ):
+        raise ValueError("retained QPY receipt circuit identities differ")
+    if retained["max_error"] != max(row["operator_max_error"] for row in expected_rows):
+        raise ValueError("retained QPY receipt maximum disagrees with its circuits")
+    for expected, actual in zip(expected_rows, actual_rows, strict=True):
+        if not math.isclose(expected["operator_max_error"], actual["operator_max_error"], rel_tol=1e-5, abs_tol=1e-14):
+            raise ValueError(f"retained QPY receipt operator error differs: {actual['file']}")
+
+
+def verify_receipt_guard() -> None:
+    report = {
+        "manifest_members": 119,
+        "operators": 1,
+        "max_error": 1e-13,
+        "circuits": [{"file": "fixture.qpy", "operator_max_error": 1e-13}],
+    }
+    with tempfile.TemporaryDirectory(prefix="et-receipt-") as temporary:
+        path = Path(temporary) / "receipt.json"
+        path.write_text(json.dumps(report))
+        check_receipt(report, path)
+        for changed in (
+            report | {"operators": 2},
+            report | {"max_error": 0},
+            report | {"max_error": 1e-8, "circuits": [{"file": "fixture.qpy", "operator_max_error": 1e-8}]},
+            report | {"circuits": [{"file": "wrong.qpy", "operator_max_error": 1e-13}]},
+        ):
+            path.write_text(json.dumps(changed))
+            try:
+                check_receipt(report, path)
+            except ValueError:
+                continue
+            raise AssertionError("stale QPY receipt passed replay validation")
+    print("QPY receipt coverage, identity and numerical mutation guards pass")
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--self-test", action="store_true")
+    args = parser.parse_args()
+    if args.self_test:
+        verify_receipt_guard()
+        return
     if version("qiskit") != "2.6.0":
         raise ValueError("ET pilot QPY replay requires current Qiskit 2.6.0, separate from historical replay")
     with zipfile.ZipFile(BUNDLE / "pilot.zip") as archive:
@@ -85,16 +135,14 @@ def main() -> None:
     rows = parallel.ordered_map(check_operator, names, min_items=2)
     if len(rows) != 50:
         raise ValueError(f"pilot coverage changed: {len(rows)}")
-    print(
-        json.dumps(
-            {
-                "manifest_members": len(manifest["files"]),
-                "operators": len(rows),
-                "max_error": max(row["operator_max_error"] for row in rows),
-                "circuits": rows,
-            }
-        )
-    )
+    report = {
+        "manifest_members": len(manifest["files"]),
+        "operators": len(rows),
+        "max_error": max(row["operator_max_error"] for row in rows),
+        "circuits": rows,
+    }
+    check_receipt(report, BUNDLE / "qpy_replay.json")
+    print(json.dumps(report))
 
 
 if __name__ == "__main__":

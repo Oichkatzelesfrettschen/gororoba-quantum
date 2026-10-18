@@ -7,6 +7,113 @@
     "basis_products": 21760,
     "rust_cells": 273264
   },
+  "flint_kernels": [
+    {
+      "dimension": 32,
+      "strut": 1,
+      "row": 2,
+      "rank": 20,
+      "nullity": 12
+    },
+    {
+      "dimension": 32,
+      "strut": 9,
+      "row": 2,
+      "rank": 28,
+      "nullity": 4
+    },
+    {
+      "dimension": 32,
+      "strut": 9,
+      "row": 8,
+      "rank": 20,
+      "nullity": 12
+    },
+    {
+      "dimension": 64,
+      "strut": 1,
+      "row": 2,
+      "rank": 36,
+      "nullity": 28
+    },
+    {
+      "dimension": 64,
+      "strut": 9,
+      "row": 2,
+      "rank": 52,
+      "nullity": 12
+    },
+    {
+      "dimension": 64,
+      "strut": 9,
+      "row": 8,
+      "rank": 36,
+      "nullity": 28
+    },
+    {
+      "dimension": 128,
+      "strut": 1,
+      "row": 2,
+      "rank": 68,
+      "nullity": 60
+    },
+    {
+      "dimension": 128,
+      "strut": 9,
+      "row": 2,
+      "rank": 100,
+      "nullity": 28
+    },
+    {
+      "dimension": 128,
+      "strut": 9,
+      "row": 8,
+      "rank": 68,
+      "nullity": 60
+    },
+    {
+      "dimension": 64,
+      "strut": 15,
+      "row": 1,
+      "rank": 52,
+      "nullity": 12
+    },
+    {
+      "dimension": 64,
+      "strut": 15,
+      "row": 16,
+      "rank": 36,
+      "nullity": 28
+    },
+    {
+      "dimension": 64,
+      "strut": 15,
+      "row": 17,
+      "rank": 52,
+      "nullity": 12
+    },
+    {
+      "dimension": 128,
+      "strut": 15,
+      "row": 1,
+      "rank": 100,
+      "nullity": 28
+    },
+    {
+      "dimension": 128,
+      "strut": 15,
+      "row": 32,
+      "rank": 68,
+      "nullity": 60
+    },
+    {
+      "dimension": 128,
+      "strut": 15,
+      "row": 33,
+      "rank": 100,
+      "nullity": 28
+    }
+  ],
   "canonical_commit": "2b72e552b95f7fe529a5abb45049f6d3e47cdd97",
   "stdout_sha256": "d25f89e8bd530c1f57bc1e9d9e45c3917b6f0d941b99c1515e7b528b802010e8",
   "scope": "unchanged isolated Rust modules; Python fixture and paired-block comparison"

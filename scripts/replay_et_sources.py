@@ -12,12 +12,32 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
 
+from exact_rank import rank_mod, rational_kernel
+
 import parallel
 from cd_core import cd_sign
 from et_reference import ETSpec
 
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "docs/evidence/et_rows"
+
+
+def check_exact_kernel(arguments: tuple[int, int, int]) -> dict[str, int]:
+    """Cross-check ET nullity using exact FLINT elimination on the full multiplier."""
+    dimension, strut, row = arguments
+    spec = ETSpec(dimension, strut, row)
+    matrix = [[0] * dimension for _ in range(dimension)]
+    for source in range(dimension):
+        for left in (spec.row, spec.high):
+            matrix[left ^ source][source] += cd_sign(dimension, left, source)
+    basis = rational_kernel(matrix)
+    rank = rank_mod(matrix, 2147483647)
+    if len(basis) != spec.degree or rank + len(basis) != dimension:
+        raise ValueError(f"FLINT multiplier rank/nullity differs at {arguments}")
+    for vector in basis:
+        if any(sum(entry * coefficient for entry, coefficient in zip(image, vector, strict=True)) for image in matrix):
+            raise ValueError(f"FLINT kernel vector fails exact substitution at {arguments}")
+    return {"dimension": dimension, "strut": strut, "row": row, "rank": rank, "nullity": len(basis)}
 
 
 def check_table(table: dict) -> tuple[int, int, int, int]:
@@ -116,6 +136,12 @@ def replay() -> dict:
         raise ValueError(f"canonical coverage changed: {counts}")
     return {
         "counts": counts,
+        "flint_kernels": parallel.ordered_map(
+            check_exact_kernel,
+            [(dimension, strut, row) for dimension in (32, 64, 128) for strut, row in ((1, 2), (9, 2), (9, 8))]
+            + [(dimension, 15, row) for dimension in (64, 128) for row in (1, dimension // 4, dimension // 4 ^ 1)],
+            min_items=2,
+        ),
         "canonical_commit": pins["commit"],
         "stdout_sha256": hashlib.sha256(result.stdout).hexdigest(),
         "scope": "unchanged isolated Rust modules; Python fixture and paired-block comparison",

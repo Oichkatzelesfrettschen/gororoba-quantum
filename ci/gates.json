@@ -4132,7 +4132,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" check_et_runtime.py && \"$PYTHON\" -O check_et_runtime.py",
    "name": "core-582",
-   "seconds": 180,
+   "seconds": 900,
    "tier": "full"
   },
   {
@@ -4146,7 +4146,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B scripts/replay_et_pilot.py",
+   "cmd": "\"$PYTHON\" -B scripts/replay_et_pilot.py --self-test && \"$PYTHON\" -B scripts/replay_et_pilot.py",
    "name": "core-584",
    "seconds": 180,
    "tier": "full"

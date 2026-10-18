@@ -18,6 +18,44 @@ from experiments import Group
 
 
 class ETRuntimeTests(unittest.TestCase):
+    def test_rejected_layout_keeps_later_candidates(self) -> None:
+        import et_planning
+
+        first = SimpleNamespace(layout=[0], seed=1)
+        second = SimpleNamespace(layout=[1], seed=2)
+        snapshot = SimpleNamespace(name="fixture")
+        runtime = SimpleNamespace(
+            LiveRunError=live_run.LiveRunError, select_candidates=lambda *arguments: [first, second]
+        )
+        arguments = SimpleNamespace(max_replicas=1, replica_tiers=[1], optimizer_candidates=2, seeds=2)
+        group = SimpleNamespace(members=(object(),))
+        trace: dict[str, Any] = {}
+        with (
+            patch.object(et_planning, "configuration", return_value={}),
+            patch.object(et_planning, "et_group", return_value=group),
+            patch.object(et_planning, "compile_candidate", side_effect=[ValueError("bad placement"), ([second], {})]),
+        ):
+            candidates = et_planning.family_candidates(runtime, [snapshot], arguments, trace)
+        self.assertEqual(candidates, [([second], {})])
+        self.assertEqual(trace["family_rejections"][0]["initial_layout"], [0])
+
+    def test_member_scores_are_deduplicated_and_pooled(self) -> None:
+        import et_planning
+
+        backend = GenericBackendV2(6, basis_gates=["rz", "sx", "x", "cz"], seed=230)
+        first = QuantumCircuit(6, 6)
+        first.measure(range(6), range(6))
+        second = QuantumCircuit(6, 6)
+        second.x(0)
+        second.measure(range(6), range(6))
+        with patch.object(
+            et_planning.parallel, "ordered_map", side_effect=lambda function, items, **_: list(map(function, items))
+        ) as pool:
+            scores = et_planning.score_circuits([first, first.copy(), second], backend.target)
+        self.assertEqual(len(pool.call_args.args[1]), 2)
+        self.assertEqual(scores, [live_run.layout_score(circuit, backend.target) for circuit in (first, first, second)])
+        self.assertEqual(et_planning.score_circuits([first, first.copy(), second], backend.target), scores)
+
     def test_execution_pub_build_uses_bounded_et_gc_context(self) -> None:
         import gc
 
@@ -98,7 +136,14 @@ class ETRuntimeTests(unittest.TestCase):
             self.assertEqual(status, 0)
             (record_path,) = Path(temporary).glob("*/record.json")
             record = json.loads(record_path.read_text())
-            self.assertEqual(record["state"], "planned", record["optimization"])
+            self.assertEqual(
+                record["state"],
+                "planned",
+                {
+                    candidate["name"]: candidate["rejection_reasons"]
+                    for candidate in record["optimization"]["candidates"]
+                },
+            )
             self.assertEqual(sum(record["pub_shots"].values()), 466944)
             self.assertEqual(len(record_groups(record)[0].members), 4656)
             case = record_path.parent / qpu_cases.CASE_FILENAME

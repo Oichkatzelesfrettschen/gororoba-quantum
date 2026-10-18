@@ -85,6 +85,13 @@ allocation. Failure makes the design infeasible. That screen supplements
 the optimizer's raw-observable power calculation; it supplies no guarantee
 of calibrated power under unknown physical errors.
 
+The raw power calculation declares the same independent-shot blocks and
+uses a union bound between blocks. Each block combines all of its signal
+and null PUB shot proxies before the bound. A separate union bound for every
+mask PUB would discard the declared independence and reject even the perfect
+complete design. The simulation allowance retains the full search's comparison
+count when calibrated screening removes candidates.
+
 The report includes calibrated and raw effects, confidence intervals,
 control residuals and detection decisions. A bit-zero marker signal can
 survive dephasing of other column bits; the regression retains that

@@ -241,7 +241,7 @@ def contracts(precision: float, alpha: float, power: float) -> tuple[ObservableC
                 for name, weights, coefficient in endpoint_terms(config, spec, kind)
             ),
             minimum_effect=0.0,
-            alpha=alpha / 6,
+            alpha=alpha / 12,
             power=power,
         )
         for dimensions in ROWS
