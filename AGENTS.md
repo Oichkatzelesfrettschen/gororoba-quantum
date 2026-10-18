@@ -777,8 +777,8 @@ first rerun on qxelarator at their recorded seeds and must reproduce the
 retained counts exactly; core-423 adds 8 family de circuits on the full tier),
 core-499 (`n21_qx_conformance.py --check --live 0`: under the stack every
 reset probe, deferred state and native branch run reruns on qxelarator at its
-retained seed and must equal the retained result; each of the 24 sample jobs
-takes minutes, so `--live N` adds N of them by hand), and
+retained seed and must equal the retained result; each of the 36 sample jobs
+takes minutes, so `--live N` adds N of them by hand and `--live 36` all), and
 core-340 (`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of
 the Tuna-17 cases).
 
