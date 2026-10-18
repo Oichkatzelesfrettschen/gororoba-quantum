@@ -249,6 +249,36 @@ ET approval preflight uses deduplicated parallel ideal validation. The focused a
   modes is open. The light-cone reading excludes those clicks from every
   score.
 
+## Feed-forward planner fix and the control-run evidence PR
+
+- The planner fix exists only as the description in the N=21 section; no
+  branch carries code for it. `gororoba_quantum/QPU_OPTIMIZATION.md` on main
+  still documents the declared classical-latency allowance
+  (`--classical-latency-us`). The charge formula, with its Target-derived
+  duration and `classical_latency_seconds`, is built in
+  `gororoba_quantum/qpu_planning.py`. The fix lands as one pull request that
+  changes `qpu_planning.py`, its affected contracts, `live_run.py` and
+  `QPU_OPTIMIZATION.md` together, with
+  the live dry run the repository requires for `live_run.py`, and only after
+  the control-run evidence below is on main.
+- The control-run evidence is open pull request #280, branch
+  `live/rep-delay-zero-control-records`, worktree
+  `~/worktrees/IBMQuantum/live/rep-delay-zero-control-records`. The remote
+  branch holds the control-job records. The worktree holds a merge of main
+  and an unpushed commit carrying the `state_prep_control_parameters`
+  extractor; pushing that commit is the first step.
+- Two blockers precede the standard merge conditions. The service
+  inventory must record the failed jobs, which needs their charges settled
+  and the failed-job inventory extension built on the
+  `ibm/named-account-overflow` branch. Its review threads (failed-run
+  retention, a repetition-delay floor guard and the refuted timeout-code
+  distinction in its findings note) must be fixed and resolved. The merge
+  then follows the repository rule: a clean current-head Codex review,
+  every thread resolved, a clean mergeable state and
+  `ci/premerge_gates.py` exiting zero.
+- The N=21 owner session holds this work; the note that marks the planner
+  revision unresolved is removed in the change that lands the fix.
+
 ## N=21 feed-forward on other backends
 
 `docs/notes/n21_feedforward_backends.md` ranks the services that can run the
