@@ -142,3 +142,13 @@ of heater exposure. 29dc6ef8 held 0.918 in a 1500-sample single job and
 single-job form with a large budget; the fresh mesh 14a96ca6 held 0.937 in
 a 10000-sample single job and declined to 0.852 at the end of the iterated
 job.
+
+The light-cone reading (`docs/evidence/quandela/belenos_light_cone.json`,
+strategy.md section 7 item 11) reads the same cells inside source 20's cone
+of each served mesh, which excludes the detector background bursts on modes
+0, 1 and 5. Every seeded cell then holds 0.98 to 0.995 at every budget, D4's
+decline is a 5421-click mode-5 burst, and the cells that lose light inside
+the cone are the unseeded single jobs on 29dc6ef8 (Q1 0.519 and 0.534, D1
+0.924). Budget and dwell drop out of the explanation; seeding and the
+single-job form at Q1's budget remain confounded on 29dc6ef8, which case
+job-13 (item 12) separates.

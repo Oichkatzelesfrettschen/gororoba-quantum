@@ -79,9 +79,24 @@ near 4 x 10^4 one-photon samples per second.
   166000-sample I job c1eb1cbb places acquisition near 4 x 10^4 one-photon
   samples per second (section 1a), the order of the clock times
   transmittance estimate, not the 770 per second a job's duration suggests.
-  The analysis's dark expectation multiplies the job duration by the
-  per-mode dark rate (about 68 per second summed), so it overstates dark
-  clicks by the overhead's share of that duration.
+  A result's `physical_perf` is the share of source pulses that pass the
+  one-photon filter, so samples / (physical_perf x 4.94 MHz) is the time the
+  detectors were read: 0.03 to 0.27 s per job or iteration over Q1's
+  circuit, against `status.duration` of 13 to 221 s
+  (`docs/evidence/quandela/belenos_light_cone.json`).
+- **Background clicks.** One-click samples outside the photon's light cone
+  (modes the served mesh cannot reach from the source) sit almost entirely
+  on modes 0, 1 and 5, the three highest receipt dark rates, and arrive in
+  bursts: four identical 1500-sample iterations of 29dc6ef8 in one job read
+  0, 0, 81 and 0 on mode 5, two 40000-sample iterations read 1253 and 5421,
+  and 15 of 24 bridge iterations read none where the receipt rate over the
+  acquisition time predicts 2 to 19. Dispersion indices run 6 to 127
+  against 1 for a stationary rate, no mode-5 click shares a sample with a
+  photon, and on mesh 14a96ca6 mode 5 takes 5421 clicks against 73 on mode
+  0, the reverse of what a photon misrouted from source 0, 2, 4 or 6 would
+  deposit, so the background is detector-side. Neither time base of the
+  receipt's rate predicts it; the light-cone reading excludes it without a
+  model.
 - **Compilation.** Both the simulator and the QPU return `computed_input`
   and `computed_circuit`. For a 24-mode circuit the compiled circuit is the
   full chip mesh: 552 beam splitters (Rx convention, calibrated angles such as
@@ -226,13 +241,15 @@ no-redirect opener and keeps the token out of every file it writes.
   all one-click samples, ideal 1) separates routing loss from the algebra
   share a; the per-mode total variation distance uses every sample. The
   analysis also reports both after subtracting each mode's expected dark
-  clicks (the receipt's per-mode rate times the job's duration). That dark
-  model is refuted: in belenos_mesh job-03 on qpu:belenos modes 0 and 1, the
-  two highest receipt rates (21.8 and 6.0 per second), read zero clicks in
-  every setting whose ideal leaves them dark, where the model predicts about
-  150 and 40. A one-setting job has no such bin to cap it, so Q1's dark
-  correction (in_block 0.470 to 0.505, about 692 clicks removed) subtracts
-  real light; raw in_block is the comparable figure.
+  clicks, the receipt's per-mode rate times the acquisition seconds
+  (`acquisition_seconds`), a few clicks per job. The receipt's rate does not
+  describe the background a histogram carries (section 2, background
+  clicks): in belenos_mesh job-03 on qpu:belenos modes 0 and 1, the two
+  highest receipt rates, read zero clicks in every setting whose ideal leaves
+  them dark, and elsewhere they burst. The background-free statistic is
+  in_block_cone, in_block over the one-click samples inside the source's
+  light cone of the served mesh (`scripts/qd_belenos_cone.py`, gate
+  core-546); raw in_block counts the bursts as leakage.
 - Two-photon block: threshold detectors with min_detected_photons 2 keep
   only two-click samples, so the observable is the conditional label
   fraction f(V) = (V L_ind + (1 - V) L_dist) / (V T_ind + (1 - V) T_dist),
@@ -246,8 +263,9 @@ no-redirect opener and keeps the token out of every file it writes.
   Every model is computed on the mesh the iteration returned, on that run's
   own couplers (`run_architecture`), so a refreshed catalogue never changes a
   retained analysis. Dark clicks are the receipt's per-mode rate times the
-  setting's share of the job, capped by the mode's lowest click fraction over
-  the job's settings (Q1's receipt predicts 277 dark clicks on mode 0, which
+  setting's share of the job's wall time, capped by the mode's lowest click
+  fraction over the job's settings (the cap, not the rate, sets the term;
+  the preregistered fits that consume it keep this definition) (Q1's receipt predicts 277 dark clicks on mode 0, which
   read none). Each class is scanned over its magnitude (exact dephasing
   channel sigma 0 to 0.8, heater gain -0.6 to 0.6, crosstalk -0.2 to 0.2,
   misroute fraction 0 to 1 with noise), and a class fits when the chi-square
@@ -605,6 +623,38 @@ the couplers equaled Q1's throughout.
     job that had already run 114500 samples, so position in the job and
     dwell are confounded for D4.
 
+    **Light-cone reading** (`docs/evidence/quandela/belenos_light_cone.json`,
+    gate core-546, a second analysis; the preregistered verdicts above stand
+    as recorded). Inside source 20's cone every seeded cell reads 0.98 to
+    0.995 on 29dc6ef8 and 14a96ca6: D2 0.993, 0.994, 0.995, 0.992, 0.994 and
+    0.992; D4 0.990, 0.992 and 0.993; D3 0.990; the bridge's seed 20 0.982.
+    D2's dip and D4's decline are off-cone background bursts on mode 5 (938
+    and 5421 clicks), not a mesh or dwell effect. The cells that lose light
+    inside the cone are the unseeded single jobs on 29dc6ef8: Q1 0.519 and
+    0.534 at 10000 samples, D1 0.924 at 1500, with in-cone total variation
+    from the served mesh's ideal of 0.867, 0.853 and 0.131 against 0.058 to
+    0.083 for every seeded cell on the same mesh. D1 ran two minutes before
+    D2 under one calibration, so the deficit follows the unseeded single-job
+    path, not the chip's state; job-08 (seed 1, single, e296b6a9) equals its
+    iterated partners (0.916 against 0.910 and 0.905). No seeded single job
+    on 29dc6ef8 exists, so seeding and the single-job form at Q1's budget
+    stay confounded on that mesh; item 12 separates them. Across the
+    bridge's 22 meshes the in-cone reading spans 0.852 to 0.998 and repeats
+    within the job (seed 0: 0.991, 0.993; seed 1: 0.910, 0.905); exact
+    heater dephasing on each served mesh lowers every mesh together and fits
+    worse than none (chi-square 1012 at sigma 0, 14305 at 0.1), so the
+    compile-dependent deficit lies outside the isotropic dephasing class.
+
+12. **Next: seeded single job on Q1's mesh (case job-13, not run).** Q1's
+    case byte for byte as a single job at compilation_seed 20 and Q1's
+    10000 samples, about 1.01 credits. Preregistered on in_block_cone of
+    the served mesh: the case is void unless the job serves 29dc6ef8; at
+    least 0.95 reads "the leak follows the unseeded single-job path"; at
+    most 0.65 reads "the leak needs the single-job form at Q1's budget on
+    29dc6ef8 whatever the seed"; between reads intermediate. An unseeded
+    replay is unnecessary: D1 already shows the unseeded deficit under the
+    calibration of the seeded 0.99 cells.
+
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 
 The literature note transcribes 30 sources with their arXiv ids and the
@@ -701,7 +751,10 @@ selection needs repeated jobs rather than a split of one.
 | The chip's error class is random heater noise | class scans over C1 | open: under fitted efficiencies sigma 0.05 is the best point of a family that fails the fit (4.2 floors held out) |
 | The chip carries static heater offsets that user jobs can measure | `--static` and `--efficiency` over the four runs of C1 | settled for this session: refuted, held-out gain about -79000 nats (receipt model) and -34000 nats (fitted efficiencies) |
 | The bright-block leak is a property of its job (numeric unitary form or sparse target), not the chip's generic error | belenos_mesh job-02 on qpu:belenos scored against the C1 efficiencies, same couplers | settled: job specific, median in_block 0.952 against the 0.924 threshold; Q1's target kept 0.987 in the iterated form |
-| The one-circuit job form, not the bright block's own mesh, causes the leak | Q1's case as one circuit at compilation_seed 1 (belenos_mesh job-08), then Q1's case iterated over 24 seeds (job-09), which served 29dc6ef8 at seed 20 | supported: 29dc6ef8 kept 0.949 iterated against 0.470 and 0.504 as one circuit, in-job drift 0.005; preregistered verdict form or dwell, mesh specific (e296b6a9 0.886 one-circuit, 0.907 iterated); D1 to D4 (section 7 item 11): at 1500 samples the single job keeps 0.918 on 29dc6ef8, iterations up to 60000 samples keep about 0.945, a fresh ANU-seeded mesh keeps 0.937 at 10000 in a single job; the leak needs the single-job form with a large sample budget on a susceptible mesh |
+| The one-circuit job form, not the bright block's own mesh, causes the leak | Q1's case as one circuit at compilation_seed 1 (belenos_mesh job-08), then Q1's case iterated over 24 seeds (job-09), which served 29dc6ef8 at seed 20 | supported: 29dc6ef8 kept 0.949 iterated against 0.470 and 0.504 as one circuit, in-job drift 0.005; preregistered verdict form or dwell, mesh specific (e296b6a9 0.886 one-circuit, 0.907 iterated); D1 to D4 (section 7 item 11): at 1500 samples the single job keeps 0.918 on 29dc6ef8, iterations up to 60000 samples keep about 0.945, a fresh ANU-seeded mesh keeps 0.937 at 10000 in a single job; read raw, the leak needs the single-job form with a large sample budget on a susceptible mesh; the light-cone reading moves the in-cone deficit to the unseeded single jobs and the D4 decline to background bursts (section 7 item 11) |
+| Off-cone background is a stationary dark rate the receipt measures | light-cone reading over every Q1-circuit run | settled: refuted, bursts of 0 to 5683 clicks on modes 0, 1 and 5, dispersion 6 to 127, no photon coincidence, mode-5 excess no source misroute explains |
+| The in-cone deficit on 29dc6ef8 follows the unseeded single-job path | case job-13 (seeded single job at Q1's budget), section 7 item 12 | open: every unseeded single job on 29dc6ef8 loses in-cone light (0.519, 0.534, 0.924), every seeded cell keeps 0.98 to 0.995 |
+| The compiled phases determine the photon's output on a seeded mesh | in-cone TVD of seeded cells against the served mesh's ideal | supported on 29dc6ef8 and 14a96ca6 (0.058 to 0.088); per-mesh deficits up to 0.15 (seeds 1, 10, 12) repeat within a job and lie outside exact heater dephasing |
 | The same body returns the same meshes on sim:belenos and qpu:belenos | job-02 on both | settled: refuted for iterated jobs (16 of 16 meshes differ); holds for the one-circuit single/job-04 |
 | C1's residual is a fixed property of each mesh within a session | exact repeat of C1 job-03 | settled: refuted, same meshes and G^2 2564 on 226 degrees of freedom (drift) |
 | compilation_seed selects the served mesh | job-02 at seeds 1 and 2 (belenos_mesh job-07) on qpu:belenos | settled: 16 of 16 configurations return three distinct meshes at seeds 0, 1 and 2 |

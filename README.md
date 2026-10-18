@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (86 established, 32 exploratory, 4 open, 8 proposed, 2 superseded, 11 withdrawn) with its evidence class,
+registered claim (86 established, 33 exploratory, 4 open, 9 proposed, 2 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
