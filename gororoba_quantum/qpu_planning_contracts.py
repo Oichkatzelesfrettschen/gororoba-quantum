@@ -25,7 +25,7 @@ from unittest.mock import patch
 import numpy as np
 from qiskit.circuit import Delay, Measure
 from qiskit.transpiler import InstructionProperties, Target
-from qiskit_ibm_runtime.fake_provider import FakeFez
+from qiskit_ibm_runtime.fake_provider import FakeFez, FakePrague
 
 import diagnostic_experiments
 import live_run
@@ -1645,6 +1645,303 @@ def _forbid_service(*args: Any, **kwargs: Any) -> Any:
     raise RuntimeError("credential-free planning contract reached a RuntimeService constructor")
 
 
+class _SmallHeronBackend(_ProbeBackend):
+    """FakePrague, 33 qubits with native CZ, carrying FakeFez's repetition-rate configuration."""
+
+    def configuration(self) -> Any:
+        configuration = super().configuration()
+        heron = FakeFez().configuration()
+        for name in ("dynamic_reprate_enabled", "default_rep_delay", "rep_delay_range", "max_shots"):
+            setattr(configuration, name, getattr(heron, name))
+        return configuration
+
+
+class _SimulationForbidden(RuntimeError):
+    """A reused submission reached a noise simulation."""
+
+
+def _submit_reuse_case(name: str, argv: list[str], directory: Path) -> None:
+    """One approved dry run, then reuse, full-path and refused submissions through live_run.main.
+
+    Every discovery reads a newly republished calibration stamp, so the
+    preflight accepts a timestamp-only change and the refresh before the
+    first batch rebuilds the plan; a shifted readout value on a placed qubit
+    stands for a moved value.
+    """
+    from runtime_contracts import _ShiftedReadout
+
+    out = directory / name
+    with redirect_stdout(io.StringIO()):
+        status = live_run.main([*argv, "--out", str(out / "dry")])
+    dry_runs = list((out / "dry").iterdir())
+    _require(status == 0 and len(dry_runs) == 1, f"{name}: the dry run exited {status}")
+    approved = dry_runs[0]
+    record_sha = hashlib.sha256((approved / "record.json").read_bytes()).hexdigest()
+    approved_record = json.loads((approved / "record.json").read_text())
+    _require(approved_record["state"] == "planned", f"{name}: the dry run left {approved_record['state']}")
+    measured = sorted(
+        int(key.split(":")[1]) for key in approved_record["groups"][0]["calibration_fingerprint"] if key[:4] == "e10:"
+    )
+    _require(bool(measured), f"{name}: the approved group binds no readout value")
+    qubit = measured[0]
+    original_snapshot = live_run.take_snapshot
+
+    def rolled(after: int, shift_after: int | None) -> Any:
+        calls = 0
+
+        def take(service_: Any, backend_name: str, operator_excluded: Any = ()) -> Any:
+            nonlocal calls
+            calls += 1
+            snapshot = original_snapshot(service_, backend_name, operator_excluded)
+            if calls > after:
+                snapshot.calibration = f"2099-01-01T00:{calls:02d}:00+00:00"
+            if shift_after is not None and calls > shift_after:
+                snapshot.properties = _ShiftedReadout(snapshot.properties, qubit)
+            return snapshot
+
+        return patch.object(live_run, "take_snapshot", take)
+
+    def forbidden(*_args: Any, **_kwargs: Any) -> Any:
+        raise _SimulationForbidden("a noise simulation ran")
+
+    def submit(
+        label: str,
+        extra: list[str],
+        shift_after: int | None,
+        *,
+        reuse: bool,
+        simulate: bool,
+        republish: bool = True,
+    ) -> tuple[int, dict[str, Any], list[bytes]]:
+        sent: list[bytes] = []
+
+        def capture(circuits: list[Any]) -> None:
+            buffer = io.BytesIO()
+            live_run.qpy.dump(circuits, buffer)
+            sent.append(buffer.getvalue())
+
+        def sampler(
+            backend_: Any,
+            kind: str,
+            twirl: bool,
+            dd: str | None,
+            tags: list[str],
+            shots: int = 4096,
+            max_execution_seconds: int | None = None,
+            *,
+            rep_delay: float | None = None,
+        ) -> Any:
+            del backend_, twirl, dd, rep_delay
+            return _ProbeSampler(kind, tags, shots, capture, None, max_execution_seconds)
+
+        (approved / live_run.APPROVAL_CONSUMED_FILE).unlink(missing_ok=True)
+        target = out / label
+        patches = [
+            rolled(0 if republish else 1 << 30, shift_after),
+            patch.object(live_run, "configure_sampler", sampler),
+        ]
+        if not simulate:
+            patches += [
+                patch.object(live_run, "simulate", forbidden),
+                patch.object(live_run, "noise_simulator", forbidden),
+                patch.object(local_compute, "run", forbidden),
+            ]
+        if not reuse:
+            patches.append(patch.object(live_run, "_reuse_context", lambda _args: None))
+        with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+            for active in patches:
+                active.start()
+            try:
+                code = live_run.main(
+                    [
+                        *argv,
+                        *extra,
+                        "--out",
+                        str(target),
+                        "--submit",
+                        "--approved-record",
+                        str(approved),
+                        "--approved-record-sha256",
+                        record_sha,
+                    ]
+                )
+            finally:
+                for active in reversed(patches):
+                    active.stop()
+        written = [json.loads(path.read_text()) for path in target.glob("*/record.json")]
+        _require(len(written) == 1, f"{name} {label}: wrote {len(written)} records")
+        return code, written[0], sent
+
+    # Reuse: no planning or evaluation simulation, and a timestamp-only
+    # republish at the refresh rebuilds through the approved design again.
+    code, reused, reused_bytes = submit("reuse", [], None, reuse=True, simulate=False)
+    _require(code == 0 and reused["state"] == "submitted", f"{name}: the reuse run left {reused['state']}")
+    _require(reused["approved_record"]["mismatches"] == [], f"{name}: {reused['approved_record']['mismatches']}")
+    _require(bool(reused_bytes), f"{name}: the reuse run sent nothing")
+    reuse_log = reused["prediction_reuse"]
+    _require(
+        reuse_log["predictions"]["reused"] and reuse_log["record_sha256"] == record_sha,
+        f"{name}: predictions were not reused: {reuse_log}",
+    )
+    family = "family_configuration" in approved_record
+    if family:
+        _require(reuse_log["design"]["reused"], f"{name}: the design was not reused: {reuse_log}")
+        refresh = reused["revalidation"][0]
+        _require(
+            refresh["rebuilt"] and refresh["prediction_reuse"]["design"]["reused"],
+            f"{name}: the refresh rebuilt without the approved design: {refresh}",
+        )
+    _require(
+        {group["calibration"] for group in reused["groups"]} == {"2099-01-01T00:01:00+00:00"},
+        f"{name}: reused groups keep a stale calibration identity",
+    )
+
+    # The full path under the same republish sends the same PUB bytes and
+    # reaches the same verdict; its fresh simulation reproduces the reused
+    # predictions.
+    code, full, full_bytes = submit("full", [], None, reuse=False, simulate=True)
+    _require(code == 0 and full["state"] == "submitted", f"{name}: the full path left {full['state']}")
+    _require(full["approved_record"]["mismatches"] == [], f"{name}: {full['approved_record']['mismatches']}")
+    _require("prediction_reuse" not in full or not full["prediction_reuse"], f"{name}: the full path reused")
+    _require(full_bytes == reused_bytes, f"{name}: reuse and full path sent different PUB bytes")
+    unbound = {"noise_model_calibration"}
+    for fresh, copied in zip(full["groups"], reused["groups"], strict=True):
+        _require(
+            {k: v for k, v in fresh.items() if k not in unbound}
+            == {k: v for k, v in copied.items() if k not in unbound},
+            f"{name} {fresh['group']}: the fresh simulation differs from the reused predictions",
+        )
+    for key in live_run.DESIGN_RECORD_FIELDS:
+        if key != "local_simulation_batches":
+            _require(full.get(key) == reused.get(key), f"{name}: the full path's {key} differs from the reused one")
+    for key in ("shots", "pub_shots", "execution_pubs", "execution_contract", "budget_plan"):
+        _require(full.get(key) == reused.get(key), f"{name}: the full path's {key} differs from the reused one")
+
+    # A moved value refuses at the preflight, at the refresh and at the batch.
+    for shift_after, where in ((0, "preflight"), (1, "refresh"), (2, "batch")):
+        code, moved, sent = submit(f"moved-{where}", [], shift_after, reuse=True, simulate=where != "preflight")
+        _require(
+            code == 1 and moved["state"] == "approval_required" and not sent,
+            f"{name}: a value moved at the {where} left {moved['state']} with {len(sent)} jobs",
+        )
+        _require(not (approved / live_run.APPROVAL_CONSUMED_FILE).exists(), f"{name}: the {where} refusal consumed it")
+        if where == "refresh" and family:
+            blockers = moved["revalidation"][0]["prediction_reuse"]["design"]["blockers"]
+            _require(any(f"e10:{qubit}" in b for b in blockers), f"{name}: the refresh reused moved values {blockers}")
+
+    # An approved batch whose device depended on the host's GPU re-plans
+    # through the full path and sends the same PUB bytes.
+    with patch.object(local_compute, "host_independent_route", lambda _batch: "routed by GPU availability"):
+        code, routed, routed_bytes = submit("device", [], None, reuse=True, simulate=True)
+    _require(code == 0 and routed["state"] == "submitted", f"{name}: the device fallback left {routed['state']}")
+    _require(
+        not routed["prediction_reuse"]["predictions"]["reused"]
+        and (not family or not routed["prediction_reuse"]["design"]["reused"]),
+        f"{name}: a host-dependent device route reused the approved predictions",
+    )
+    _require(routed_bytes == full_bytes, f"{name}: the device fallback sent other PUB bytes than the full path")
+
+    # A changed seed or source digest falls back to the full path, which
+    # refuses exactly as before.
+    changes: tuple[tuple[str, list[str], str, Any], ...] = (
+        ("seed", ["--seeds", "2"], "policy differs", None),
+        ("digest", [], "experiment_digest differs", patch.object(live_run, "experiment_digest", lambda: "0" * 64)),
+    )
+    for label, extra, mismatch, patched in changes:
+        if patched is not None:
+            patched.start()
+        try:
+            # Without a republish the refresh keeps the plan, so the
+            # comparison alone decides.
+            code, changed, sent = submit(label, extra, None, reuse=True, simulate=True, republish=False)
+        finally:
+            if patched is not None:
+                patched.stop()
+        _require(
+            code == 1 and changed["state"] == "approval_required" and not sent,
+            f"{name}: a changed {label} left {changed['state']}",
+        )
+        _require(
+            mismatch in changed["approved_record"]["mismatches"],
+            f"{name}: a changed {label} refused for {changed['approved_record']['mismatches']}",
+        )
+        _require(
+            not changed["prediction_reuse"]["predictions"]["reused"]
+            and (not family or not changed["prediction_reuse"]["design"]["reused"]),
+            f"{name}: a changed {label} reused the approved predictions",
+        )
+
+
+def _verify_submit_reuse() -> None:
+    """A submission reuses the approved predictions exactly when every input they read is unchanged."""
+    from runtime_contracts import _FiniteQuotaService
+
+    narrow = [{"active_input_qubits": list(range(local_compute.GPU_MIN_ACTIVE_QUBITS - 1))}]
+    wide = [{"active_input_qubits": list(range(local_compute.GPU_MIN_ACTIVE_QUBITS))}]
+    routes: tuple[tuple[str, str, str, dict[str, Any] | None, list[dict[str, Any]], bool], ...] = (
+        ("cpu", "density_matrix", "CPU", None, wide, True),
+        ("auto", "statevector", "CPU", None, wide, True),
+        ("auto", "density_matrix", "CPU", None, narrow, True),
+        ("auto", "density_matrix", "CPU", None, wide, False),
+        ("auto", "density_matrix", "CPU", {"rejected": "memory"}, wide, False),
+        ("auto", "density_matrix", "GPU", {"active_qubits": 11}, wide, False),
+        ("gpu", "density_matrix", "GPU", {"active_qubits": 11}, wide, False),
+    )
+    for mode, method, device, admission, metadata, stable in routes:
+        batch = {
+            "policy": {"mode": mode},
+            "method": method,
+            "device": device,
+            "gpu_admission": admission,
+            "experiment_metadata": metadata,
+        }
+        _require(
+            (local_compute.host_independent_route(batch) is None) == stable,
+            f"host_independent_route misreads {mode} {method} on {device} with admission {admission}",
+        )
+
+    # A 33-qubit device keeps each whole-device noise model small.
+    backend = _SmallHeronBackend("reuse_fixture", cast(Any, FakePrague()))
+    service = _FiniteQuotaService([backend])
+    with redirect_stdout(io.StringIO()):
+        snapshot = live_run.take_snapshot(cast(Any, service), backend.name)
+    qubits = [qubit for qubit in range(snapshot.backend.num_qubits) if qubit not in snapshot.excluded_qubits][:1]
+    common = ["--backends", backend.name, "--max-execution-seconds", "60", "--max-total-execution-seconds", "120"]
+    family = [
+        "--family",
+        "state-prep-control",
+        "--layout",
+        ",".join(map(str, qubits)),
+        "--state-prep-arms",
+        "prep0,reset",
+        "--optimize",
+        "--shot-tiers",
+        "4096,8192",
+        "--replica-tiers",
+        "1",
+        "--optimizer-candidates",
+        "1",
+        "--model-shots",
+        "512",
+        "--simulation-threads",
+        "1",
+        *common,
+    ]
+    groups = ["--groups", "design_c_8_1_4", "--max-replicas", "1", "--simulation-threads", "1", *common]
+    with (
+        patch.object(live_run, "QiskitRuntimeService", lambda: service),
+        tempfile.TemporaryDirectory(prefix="gororoba-submit-reuse-") as directory,
+    ):
+        _submit_reuse_case("state-prep-control", family, Path(directory))
+        _submit_reuse_case("groups", groups, Path(directory))
+    print(
+        "QPU planning: a submission whose calibration values, seeds, policy, sources and versions match the "
+        "approved record reuses its design and predictions without simulating and sends the full path's PUB bytes; "
+        "a moved value refuses at the preflight, refresh and batch, a batch routed by the host's GPU re-plans "
+        "and sends the same bytes, and a changed seed or source digest re-plans and refuses as before"
+    )
+
+
 def _verify() -> None:
     with (
         patch.object(live_run, "QiskitRuntimeService", _forbid_service),
@@ -1979,6 +2276,9 @@ if __name__ == "__main__":
         "--prep-excitation", action="store_true", help="run only the declared initial-excitation contracts"
     )
     parser.add_argument(
+        "--submit-reuse", action="store_true", help="run only the approved-prediction reuse submission contracts"
+    )
+    parser.add_argument(
         "--serialized-noise",
         action="store_true",
         help="run only the retained noise-serialization equivalence contract",
@@ -2002,5 +2302,7 @@ if __name__ == "__main__":
         _verify_state_prep_only()
     elif parsed.prep_excitation:
         _verify_prep_excitation_only()
+    elif parsed.submit_reuse:
+        _verify_submit_reuse()
     else:
         _verify()

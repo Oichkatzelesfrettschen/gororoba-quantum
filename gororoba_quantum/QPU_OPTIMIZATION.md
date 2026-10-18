@@ -586,8 +586,24 @@ observable contracts, shots, policy, dependencies, layouts, replica maps,
 execution contract, and QPY bytes, and each group's calibration values
 (`calibration_fingerprint`) must equal the approved ones; a republished
 calibration timestamp with unchanged values keeps the approval, and an
-approved record without values keeps the timestamp rule. A changed plan or
-value requires a fresh case and approval. Historical raw results, records,
+approved record without values keeps the timestamp rule. Predictions are a
+function of the compiled circuits, the calibration values they read, the
+shots, the simulator seed, the local-compute policy, the source digest and
+the dependency versions, so a submission whose inputs all equal the
+approved record's copies its group predictions instead of re-running the
+evaluation simulation. Seeded GPU and CPU counts differ, so reuse also
+requires every recorded planning and evaluation batch to have run on CPU by
+a route independent of the host's GPU: cpu mode, statevector trajectories,
+or a density matrix narrower than `GPU_MIN_ACTIVE_QUBITS` under auto
+(`local_compute.host_independent_route`). A matched family's selection also reads every
+candidate's planning distributions, which the record does not retain; the
+submission reuses the approved design only when the approved search held one
+routed candidate set and the contracts, shot tiers, PUB cost inputs and
+optimization budget are unchanged, and otherwise re-plans in full.
+Comparison, layouts, QPY bytes, the budget check and the per-batch
+calibration check run either way, and the record's `prediction_reuse`
+names what was reused. A changed plan or value requires a fresh case and
+approval. Historical raw results, records,
 and earlier interpretations remain retained under their original identities.
 
 Collection reports `family_analysis` only when every required member has

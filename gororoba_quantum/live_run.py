@@ -68,7 +68,15 @@ import placement_feasibility
 import qpu_planning
 import variance
 from coherence_window import COHERENCE_PRECISION
-from diagnostic_experiments import FAMILY_NAMES, N21_FAMILIES, PATCH_FAMILIES, record_groups, state_prep_arms
+from diagnostic_experiments import (
+    FAMILY_NAMES,
+    N21_FAMILIES,
+    PATCH_FAMILIES,
+    STATE_PREP_FAMILY,
+    record_groups,
+    state_prep_arms,
+)
+from experiment_optimizer import BudgetContract
 from experiments import (
     MIRROR_SUFFIX,
     Group,
@@ -2705,6 +2713,70 @@ def _physical(isa: QuantumCircuit) -> list[int]:
     return sorted({q for _, qargs in _ops(isa) for q in qargs})
 
 
+def _member_fields(entry: Entry) -> dict[str, Any]:
+    """An entry's record fields that its circuits and oracle fix, before any replica."""
+    dynamic = _is_dynamic(entry.base)
+    return {
+        "name": entry.name,
+        "reference": entry.reference,
+        "cz": entry.base.count_ops().get("cz", 0),
+        "depth": entry.base.depth(),
+        "duration_bound": "lower_without_classical_latency" if dynamic else "scheduled",
+        "dynamic": dynamic,
+        "feed_forward": _has_feed_forward(entry.base),
+        "replica_prefixes": entry.prefixes,
+        "replica_qubits": entry.replica_qubits,
+        "ideal": [round(float(p), 12) for p in entry.ideal],
+    }
+
+
+def _replica_fields(replica: QuantumCircuit, target: Any) -> dict[str, Any]:
+    """A compiled replica's placement and the Target-derived duration, success probability and coherence."""
+    return {
+        "physical_qubits": _physical(replica),
+        "duration_s": duration_s(replica, target),
+        "esp": esp(replica, target),
+        "coherence": coherence(replica, target),
+    }
+
+
+def _placement_fields(choice: Choice) -> list[dict[str, Any]]:
+    return [
+        {
+            "index": r.index,
+            "prefix": r.prefix,
+            "score": r.score,
+            "physical_qubits": r.qubits,
+            "initial_layout": [r.mapping.get(q) for q in choice.layout],
+            "mapping": {str(k): v for k, v in sorted(r.mapping.items())},
+        }
+        for r in choice.replicas
+    ]
+
+
+def choice_structure(choice: Choice) -> dict[str, Any]:
+    """The group record fields that the compiled circuits, placement and Target fix, without a simulated value.
+
+    _choice_record writes these same fields beside the noisy distributions
+    and their statistics; the approved-prediction reuse compares them with
+    the approved record's group before it copies that group's predictions.
+    """
+    target = choice.snap.backend.target
+    return {
+        "group": choice.group.name,
+        "backend": choice.snap.name,
+        "seed_transpiler": choice.seed,
+        "initial_layout": choice.layout,
+        "joint_score": choice.joint_score,
+        "replica_floor": choice.replica_floor,
+        "replicas": _placement_fields(choice),
+        "members": [
+            {**_member_fields(entry), "replicas": [_replica_fields(rep, target) for rep in entry.replicas]}
+            for entry in choice.entries
+        ],
+    }
+
+
 def _choice_record(
     choice: Choice,
     noisy: dict[str, list[np.ndarray]],
@@ -2713,34 +2785,20 @@ def _choice_record(
     scopes: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     target = choice.snap.backend.target
-    members = []
-    for entry in choice.entries:
-        dynamic = _is_dynamic(entry.base)
-        members.append(
-            {
-                "name": entry.name,
-                "reference": entry.reference,
-                "cz": entry.base.count_ops().get("cz", 0),
-                "depth": entry.base.depth(),
-                "duration_bound": "lower_without_classical_latency" if dynamic else "scheduled",
-                "dynamic": dynamic,
-                "feed_forward": _has_feed_forward(entry.base),
-                "replica_prefixes": entry.prefixes,
-                "replica_qubits": entry.replica_qubits,
-                "ideal": [round(float(p), 12) for p in entry.ideal],
-                "replicas": [
-                    {
-                        "physical_qubits": _physical(rep),
-                        "duration_s": duration_s(rep, target),
-                        "esp": esp(rep, target),
-                        "coherence": coherence(rep, target),
-                        "noisy": [round(float(p), 6) for p in dist],
-                        "tvd_noisy_to_ideal": tvd(dist, entry.ideal),
-                    }
-                    for rep, dist in zip(entry.replicas, noisy[entry.name], strict=True)
-                ],
-            }
-        )
+    members = [
+        {
+            **_member_fields(entry),
+            "replicas": [
+                {
+                    **_replica_fields(rep, target),
+                    "noisy": [round(float(p), 6) for p in dist],
+                    "tvd_noisy_to_ideal": tvd(dist, entry.ideal),
+                }
+                for rep, dist in zip(entry.replicas, noisy[entry.name], strict=True)
+            ],
+        }
+        for entry in choice.entries
+    ]
     return {
         "group": choice.group.name,
         "backend": choice.snap.name,
@@ -2751,17 +2809,7 @@ def _choice_record(
         "initial_layout": choice.layout,
         "joint_score": choice.joint_score,
         "replica_floor": choice.replica_floor,
-        "replicas": [
-            {
-                "index": r.index,
-                "prefix": r.prefix,
-                "score": r.score,
-                "physical_qubits": r.qubits,
-                "initial_layout": [r.mapping.get(q) for q in choice.layout],
-                "mapping": {str(k): v for k, v in sorted(r.mapping.items())},
-            }
-            for r in choice.replicas
-        ],
+        "replicas": _placement_fields(choice),
         **replica_statistics(choice.group, choice.entries, noisy, shots, _reference_scope(choice, scopes)),
         "summary_readout_corrected": corrected_summary(choice.group, choice.entries, noisy, choice.snap.properties),
         "placed_qubit_calibration": placed_qubit_calibration(
@@ -3012,6 +3060,372 @@ def _preflight_refusal(args: argparse.Namespace, approved_dir: Path, preflight: 
     )
 
 
+def dependency_versions() -> dict[str, str]:
+    """The installed versions of the packages that compile, simulate and score a plan."""
+    return {
+        pkg: version(pkg)
+        for pkg in ("numpy", "qiskit", "qiskit-aer", "qiskit-ibm-runtime", "scipy", "rustworkx", "sympy")
+    }
+
+
+def record_policy(args: argparse.Namespace) -> dict[str, Any]:
+    """The record's policy: the exclusion thresholds and every approval-bound planning and execution setting."""
+    requested_delay = getattr(args, "rep_delay", None)
+    return QUALITY | {
+        "max_pending": args.max_pending,
+        "seeds": args.seeds,
+        "joint_candidates": JOINT_CANDIDATES,
+        "replica_floor": args.replica_floor,
+        "max_replicas": args.max_replicas,
+        "isolated_reference": args.isolated_reference,
+        "cross_group_buffer": getattr(args, "cross_group_buffer", True),
+        # Twirling and DD change the submitted workload without changing
+        # the archived circuits, so the approved-record gate compares them.
+        "twirl": bool(getattr(args, "twirl", False)),
+        "dd": getattr(args, "dd", None),
+        "min_remaining_seconds": getattr(args, "min_remaining_seconds", None),
+        "max_execution_seconds": getattr(args, "max_execution_seconds", None),
+        # The Sampler's execution.rep_delay changes the workload and its
+        # charge, so the approved-record gate compares it; the backend
+        # default leaves the key out.
+        **({"rep_delay_seconds": requested_delay} if requested_delay is not None else {}),
+        "operator_excluded_qubits": {
+            name: sorted(qubits) for name, qubits in sorted((getattr(args, "exclude_qubits", None) or {}).items())
+        },
+        "design": qpu_planning.settings(args),
+        "local_compute": local_compute.settings(args),
+    }
+
+
+def _json_value(value: Any) -> Any:
+    """value as record.json stores it: tuples as lists, integer keys as text, other objects as str."""
+    return json.loads(json.dumps(value, default=str))
+
+
+# Fields qpu_planning.prepare returns for a matched family; a reused design
+# copies each one the approved record carries.
+DESIGN_RECORD_FIELDS = (
+    "family_configuration",
+    "observable_contracts",
+    "optimization",
+    "optimizer_settings",
+    "exact_model",
+    "covariance_bounds",
+    "covariance_falsifier",
+    "empirical_bernstein",
+    "pub_shots",
+    "shot_allocation",
+    "optimization_budget",
+    "local_simulation_batches",
+    "compiled_ideal_validation",
+)
+# Group fields that name the snapshot a reused prediction is submitted
+# under; the reused group takes them from the fresh choice.
+FRESH_GROUP_FIELDS = (
+    "calibration",
+    *BACKEND_IDENTITY_FIELDS,
+    "placed_qubit_calibration",
+    "calibration_fingerprint",
+    "calibration_fingerprint_sha256",
+)
+PREDICTION_REPLICA_FIELDS = ("noisy", "tvd_noisy_to_ideal")
+
+
+def _approved_structure(group: Mapping[str, Any]) -> dict[str, Any]:
+    """An approved group record projected onto the fields choice_structure computes."""
+    return {
+        **{key: group.get(key) for key in ("group", "backend", "seed_transpiler", "initial_layout")},
+        **{key: group.get(key) for key in ("joint_score", "replica_floor", "replicas")},
+        "members": [
+            {
+                **{key: value for key, value in member.items() if key != "replicas"},
+                "replicas": [
+                    {key: value for key, value in replica.items() if key not in PREDICTION_REPLICA_FIELDS}
+                    for replica in member.get("replicas", [])
+                ],
+            }
+            for member in group.get("members", [])
+        ],
+    }
+
+
+def _read_approved(approved_dir: Path, expected_record_sha256: str | None) -> tuple[dict[str, Any] | None, list[str]]:
+    """The approved record when its bytes carry the digest the written case names and it is a submit-free plan."""
+    data = (approved_dir / "record.json").read_bytes()
+    if expected_record_sha256 is None or hashlib.sha256(data).hexdigest() != expected_record_sha256.lower():
+        return None, ["approved record.json sha256 differs from --approved-record-sha256"]
+    approved = json.loads(data)
+    if approved.get("state") != "planned" or "submission" in approved:
+        return None, [f"approved record state is {approved.get('state')!r}, not a submit-free plan"]
+    return approved, []
+
+
+def approved_choice_blockers(approved_dir: Path, approved: Mapping[str, Any], choices: list[Choice]) -> list[str]:
+    """Every way the fresh choices differ from the circuits and calibration values the approved predictions read.
+
+    The groups must match in order, backend, seed, layout, placement,
+    compiled members and Target-derived fields; every approved group must
+    bind calibration_fingerprint and the fresh choice must read those values
+    key for key; the fused PUB manifests and the QPY archive bytes must
+    equal the approved ones.
+    """
+    blockers: list[str] = []
+    approved_groups = approved.get("groups", [])
+    names = [group.get("group") for group in approved_groups]
+    if names != [choice.group.name for choice in choices]:
+        return [f"groups differ: approved {names}, fresh {[choice.group.name for choice in choices]}"]
+    for group, choice in zip(approved_groups, choices, strict=True):
+        values = group.get("calibration_fingerprint")
+        if not isinstance(values, dict):
+            blockers.append(f"{choice.group.name}: the approved record binds no calibration values")
+            continue
+        changes = calibration_value_changes(values, choice_calibration_values(choice)["calibration_fingerprint"])
+        if changes:
+            blockers.append(f"{choice.group.name}: {_changes_summary(changes)}")
+        if _json_value(choice_structure(choice)) != _approved_structure(group):
+            blockers.append(f"{choice.group.name}: compiled members, placement or Target-derived fields differ")
+    if _json_value([pub.manifest() for pub in execution_pubs(choices)]) != approved.get("execution_pubs"):
+        blockers.append("fused PUB manifests differ")
+    approved_qpy = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
+    if hashlib.sha256(archive_bytes(choices)).hexdigest() != approved_qpy:
+        blockers.append("QPY archive bytes differ")
+    return blockers
+
+
+def device_blockers(approved: Mapping[str, Any], field: str) -> list[str]:
+    """Each batch of approved[field] whose draw local_compute.host_independent_route ties to this host's GPU."""
+    batches = approved.get(field) or []
+    if not isinstance(batches, list):
+        return [f"the approved record's {field} is not a list"]
+    return [
+        f"{field}[{index}]: {reason}"
+        for index, batch in enumerate(batches)
+        if (reason := local_compute.host_independent_route(batch)) is not None
+    ]
+
+
+def _reuse_context(args: argparse.Namespace) -> tuple[Path, str | None] | None:
+    approved_dir = getattr(args, "approved_record", None)
+    if not getattr(args, "submit", False) or approved_dir is None:
+        return None
+    return Path(approved_dir), getattr(args, "approved_record_sha256", None)
+
+
+def approved_family_design(
+    snapshots: list[Snapshot],
+    args: argparse.Namespace,
+    usage: dict[str, Any],
+    trace: dict[str, Any],
+    log: dict[str, Any],
+) -> tuple[list[Choice], dict[str, Any]] | None:
+    """The approved record's selected design over freshly compiled choices, or None with log["design"] naming why.
+
+    qpu_planning.prepare selects a design from the routed candidates' noisy
+    predictions, the observable contracts, the shot tiers, the per-PUB cost
+    inputs and the optimization budget. The record retains the selected
+    candidate's evaluation and every candidate's costs but not the planning
+    distributions, so the selection is reused only where it is a function of
+    inputs that all equal the approved ones: one routed candidate set, the
+    same policy, source digest, dependency versions and simulator seed, the
+    same compiled circuits under the same calibration values, configuration,
+    contracts, tiers, PUB cost inputs and budget. The compiled-ideal check
+    still runs. Every other case returns None and the caller re-plans.
+    """
+    context = _reuse_context(args)
+    if context is None:
+        return None
+    approved_dir, expected = context
+    approved, blockers = _read_approved(approved_dir, expected)
+    choices: list[Choice] = []
+    attempt_trace: dict[str, Any] = {}
+    if approved is not None:
+        optimization = approved.get("optimization", {})
+        if args.family == "folded-correction":
+            blockers.append("folded-correction plans from its own correction model")
+        if optimization.get("searched_routed_sets") != 1:
+            blockers.append(
+                f"the approved search held {optimization.get('searched_routed_sets')} routed candidate sets"
+            )
+        for name, fresh in (
+            ("policy", record_policy(args)),
+            ("versions", dependency_versions()),
+            ("experiment_digest", experiment_digest()),
+            ("seed_simulator", SEED_SIMULATOR),
+        ):
+            if _json_value(fresh) != approved.get(name):
+                blockers.append(f"{name} differs")
+        blockers.extend(device_blockers(approved, "local_simulation_batches"))
+    if not blockers and approved is not None:
+        runtime = sys.modules[__name__]
+        candidates = qpu_planning.admitted_family_candidates(
+            runtime, qpu_planning.family_candidates(runtime, snapshots, args, attempt_trace), attempt_trace
+        )
+        if len(candidates) != 1:
+            blockers.append(f"the fresh search admits {len(candidates)} routed candidate sets")
+        else:
+            choices, configuration = candidates[0]
+            contracts = qpu_planning.family_contracts(
+                args.family,
+                args.precision,
+                args.alpha,
+                args.power,
+                **({"configuration": configuration} if args.family == STATE_PREP_FAMILY else {}),
+            )
+            tiers = sorted(set(args.shot_tiers if args.optimize else [args.shots]))
+            ceiling = min(
+                (limit for choice in choices if (limit := qpu_planning.shot_ceiling(choice.snap.backend)) is not None),
+                default=None,
+            )
+            if ceiling is not None and tiers[-1] > ceiling:
+                attempt_trace["shot_ceiling"] = {
+                    "max_shots": ceiling,
+                    "dropped_tiers": [shots for shots in tiers if shots > ceiling],
+                }
+                tiers = [shots for shots in tiers if shots <= ceiling]
+            remaining = usage.get("usage_remaining_seconds")
+            budget = BudgetContract(
+                float(remaining) if remaining is not None else args.max_total_execution_seconds + args.reserve_seconds,
+                args.reserve_seconds,
+                args.max_total_execution_seconds,
+            )
+            requested = getattr(args, "rep_delay", None)
+            fresh_costs = {}
+            for pub in execution_pubs(choices):
+                backend = pub.components[0].choice.snap.backend
+                fresh_costs[pub.name] = [
+                    duration_s(pub.circuit, backend.target),
+                    qpu_planning.repetition_delay(backend, requested),
+                    pub.manifest()["sequential_stage_count"],
+                ]
+            approved_costs = {
+                pub["name"]: [pub["scheduled_seconds"], pub["repetition_delay_seconds"], pub["classical_stage_count"]]
+                for candidate in approved["optimization"].get("candidates", [])
+                for job in candidate.get("jobs", [])
+                for pub in job.get("pubs", [])
+            }
+            comparisons: tuple[tuple[str, Any, Any], ...] = (
+                ("family_configuration", configuration, approved.get("family_configuration")),
+                (
+                    "observable_contracts",
+                    [dataclasses.asdict(c) for c in contracts],
+                    approved.get("observable_contracts"),
+                ),
+                ("shot tiers", tiers, approved["optimization"].get("shot_tiers")),
+                ("optimization budget", dataclasses.asdict(budget), approved.get("optimization_budget")),
+                ("PUB cost inputs", fresh_costs, approved_costs),
+            )
+            for name, fresh, recorded in comparisons:
+                if _json_value(fresh) != recorded:
+                    blockers.append(f"{name}: the fresh value differs from the approved record")
+            blockers.extend(approved_choice_blockers(approved_dir, approved, choices))
+    if blockers or approved is None:
+        log["design"] = {"reused": False, "blockers": blockers}
+        return None
+    for choice in choices:
+        for entry in choice.entries:
+            for replica in entry.replicas:
+                if not np.allclose(qpu_planning.ideal_compiled_probabilities(replica), entry.ideal, rtol=0, atol=1e-10):
+                    raise LiveRunError(f"{entry.name}: compiled labeled ideal differs from its exact oracle")
+    args.shots = approved["shots"]
+    if "pub_shots" in approved:
+        args.pub_shots = dict(approved["pub_shots"])
+    elif hasattr(args, "pub_shots"):
+        del args.pub_shots
+    trace.update(attempt_trace)
+    if "model_rejections" in approved.get("selection_trace", {}):
+        trace["model_rejections"] = copy.deepcopy(approved["selection_trace"]["model_rejections"])
+    log["design"] = {"reused": True}
+    print(
+        f"approved design reused: {approved['optimization'].get('selected')} under unchanged calibration values; "
+        "no planning simulation ran"
+    )
+    return choices, {key: copy.deepcopy(approved[key]) for key in DESIGN_RECORD_FIELDS if key in approved}
+
+
+def family_design(
+    snapshots: list[Snapshot],
+    args: argparse.Namespace,
+    usage: dict[str, Any],
+    trace: dict[str, Any],
+    log: dict[str, Any],
+) -> tuple[list[Choice], dict[str, Any]]:
+    """A matched family's choices and design: the approved one when approved_family_design admits it, else prepare's."""
+    reused = approved_family_design(snapshots, args, usage, trace, log)
+    if reused is not None:
+        return reused
+    return qpu_planning.prepare(sys.modules[__name__], snapshots, args, usage, trace)
+
+
+def reuse_approved_predictions(choices: list[Choice], record: dict[str, Any], args: argparse.Namespace) -> bool:
+    """Fill record's groups from the approved record instead of evaluate's simulation, when every input matches.
+
+    evaluate's predictions are a function of the compiled circuits, the
+    calibration values those circuits read, the shots, the simulator seed,
+    the local-compute policy, the source digest and the dependency versions.
+    When the fresh plan's APPROVED_RECORD_FIELDS, seed and choices equal the
+    approved record's (approved_choice_blockers), a simulation can only
+    return the approved predictions, so each group copies them and takes its
+    calibration identity, placed-qubit calibration and value fingerprint
+    from the fresh choice; noise_model_calibration keeps the calibration the
+    predictions ran under. The Target and properties checks still run.
+    Returns False, with record["prediction_reuse"]["predictions"] naming the
+    differences, when evaluate has to run.
+    """
+    context = _reuse_context(args)
+    if context is None:
+        return False
+    approved_dir, expected = context
+    log = record.setdefault("prediction_reuse", {})
+    log.update(
+        {
+            "approved_record": approved_dir.name,
+            "record_sha256": hashlib.sha256((approved_dir / "record.json").read_bytes()).hexdigest(),
+            "qpy_archive_sha256": hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest(),
+        }
+    )
+    approved, blockers = _read_approved(approved_dir, expected)
+    if approved is not None:
+        blockers.extend(
+            f"{name} differs"
+            for name in (*APPROVED_RECORD_FIELDS, "seed_simulator")
+            if _json_value(record.get(name)) != approved.get(name)
+        )
+        blockers.extend(device_blockers(approved, "evaluation_simulation_batches"))
+        blockers.extend(approved_choice_blockers(approved_dir, approved, choices))
+    if blockers or approved is None:
+        log["predictions"] = {"reused": False, "blockers": blockers}
+        return False
+    check_choice_targets(choices)
+    record["execution_requirements"] = {choice.group.name: execution_requirements(choice) for choice in choices}
+    pubs = execution_pubs(choices)
+    record["fusion_summary"] = fusion_summary(pubs)
+    record["execution_pubs"] = [pub.manifest() for pub in pubs]
+    groups = []
+    for group, choice in zip(approved["groups"], choices, strict=True):
+        fresh = {
+            "calibration": choice.snap.calibration,
+            **choice.snap.identity,
+            "placed_qubit_calibration": placed_qubit_calibration(
+                choice.snap.properties, sorted({qubit for replica in choice.replicas for qubit in replica.qubits})
+            ),
+            **choice_calibration_values(choice),
+        }
+        groups.append(copy.deepcopy(group) | {key: fresh[key] for key in FRESH_GROUP_FIELDS if key in fresh})
+    record["groups"] = groups
+    record["evaluation_simulation_batches"] = copy.deepcopy(approved.get("evaluation_simulation_batches", []))
+    log.update(
+        {
+            "predictions": {"reused": True},
+            "scope": (
+                "groups, evaluation_simulation_batches and, for a reused design, the DESIGN_RECORD_FIELDS are the "
+                "approved record's; calibration identity and values are fresh"
+            ),
+        }
+    )
+    print(f"approved predictions reused from {approved_dir.name}: no evaluation simulation ran")
+    return True
+
+
 def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[Choice], dict[str, Any]]:
     available_groups = all_experiment_groups()
     known = {group.name for group in available_groups}
@@ -3057,8 +3471,9 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             raise LiveRunError(f"--shots {args.shots} is unavailable: {refused_shots}")
     trace: dict[str, Any] = {}
     design: dict[str, Any] = {}
+    reuse_log: dict[str, Any] = {}
     if getattr(args, "family", None):
-        choices, design = qpu_planning.prepare(sys.modules[__name__], snaps, args, service.usage(), trace)
+        choices, design = family_design(snaps, args, service.usage(), trace, reuse_log)
         groups = [choice.group for choice in choices]
         fusion_placement = {"allocation": "matched-family", "configuration": design["family_configuration"]}
     else:
@@ -3130,35 +3545,8 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         "schema_contract": RECORD_SCHEMA_CONTRACT,
         "state": "planned",
         "started": args.started,
-        "versions": {
-            pkg: version(pkg)
-            for pkg in ("numpy", "qiskit", "qiskit-aer", "qiskit-ibm-runtime", "scipy", "rustworkx", "sympy")
-        },
-        "policy": QUALITY
-        | {
-            "max_pending": args.max_pending,
-            "seeds": args.seeds,
-            "joint_candidates": JOINT_CANDIDATES,
-            "replica_floor": args.replica_floor,
-            "max_replicas": args.max_replicas,
-            "isolated_reference": args.isolated_reference,
-            "cross_group_buffer": getattr(args, "cross_group_buffer", True),
-            # Twirling and DD change the submitted workload without changing
-            # the archived circuits, so the approved-record gate compares them.
-            "twirl": bool(getattr(args, "twirl", False)),
-            "dd": getattr(args, "dd", None),
-            "min_remaining_seconds": getattr(args, "min_remaining_seconds", None),
-            "max_execution_seconds": getattr(args, "max_execution_seconds", None),
-            # The Sampler's execution.rep_delay changes the workload and its
-            # charge, so the approved-record gate compares it; the backend
-            # default leaves the key out.
-            **({"rep_delay_seconds": requested_delay} if requested_delay is not None else {}),
-            "operator_excluded_qubits": {
-                name: sorted(qubits) for name, qubits in sorted((getattr(args, "exclude_qubits", None) or {}).items())
-            },
-            "design": qpu_planning.settings(args),
-            "local_compute": local_compute.settings(args),
-        },
+        "versions": dependency_versions(),
+        "policy": record_policy(args),
         "shots": args.shots,
         "instance_sha256_12": _instance_hash(service),
         "seed_simulator": SEED_SIMULATOR,
@@ -3177,6 +3565,7 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
     }
     if preflight is not None:
         record["approval_preflight"] = preflight
+        record["prediction_reuse"] = reuse_log
     record["budget_plan"] = qpu_planning.budget_plan(sys.modules[__name__], choices, args, service.usage())
     record["execution_contract"] = qpu_planning.execution_contract(choices, record)
     if design.get("optimization", {}).get("selected") is None and design:
@@ -3192,19 +3581,10 @@ def _policy(args: argparse.Namespace) -> ReplicaPolicy:
     )
 
 
-def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
-    """Noise-simulate each choice under its backend's live properties, after proving they match the Target."""
-    # One simulator per snapshot: a group recompiled on a fresh snapshot of a
-    # backend is simulated with that snapshot's Target, not an earlier one.
-    sims: dict[int, tuple[AerSimulator, str]] = {}
-    record["groups"] = []
-    record["execution_requirements"] = {choice.group.name: execution_requirements(choice) for choice in choices}
-    pubs = execution_pubs(choices)
-    record["fusion_summary"] = fusion_summary(pubs)
-    record["execution_pubs"] = [pub.manifest() for pub in pubs]
-    scopes = pub_scopes(pubs)
+def check_choice_targets(choices: list[Choice]) -> None:
+    """Prove every fused PUB and every choice's packed circuits read a Target that matches its properties."""
     fused_by_snapshot: dict[int, tuple[Snapshot, list[QuantumCircuit]]] = {}
-    for pub in pubs:
+    for pub in execution_pubs(choices):
         snapshot = pub.components[0].choice.snap
         fused_by_snapshot.setdefault(id(snapshot), (snapshot, []))[1].append(pub.circuit)
     for snapshot, fused_circuits in fused_by_snapshot.values():
@@ -3217,6 +3597,21 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
     for choice in choices:
         isas = [entry.packed for entry in choice.entries]
         check_target_matches_properties(isas, choice.snap.backend.target, choice.snap.properties, choice.snap.name)
+
+
+def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
+    """Noise-simulate each choice under its backend's live properties, after proving they match the Target."""
+    # One simulator per snapshot: a group recompiled on a fresh snapshot of a
+    # backend is simulated with that snapshot's Target, not an earlier one.
+    sims: dict[int, tuple[AerSimulator, str]] = {}
+    record["groups"] = []
+    record["execution_requirements"] = {choice.group.name: execution_requirements(choice) for choice in choices}
+    pubs = execution_pubs(choices)
+    record["fusion_summary"] = fusion_summary(pubs)
+    record["execution_pubs"] = [pub.manifest() for pub in pubs]
+    scopes = pub_scopes(pubs)
+    check_choice_targets(choices)
+    for choice in choices:
         key = id(choice.snap)
         if key not in sims:
             sims[key] = (
@@ -4014,6 +4409,7 @@ def submit(
             f"submission requires an admitted plan, received {record.get('state')!r}: {'; '.join(reasons)}"
         )
     fresh_design: dict[str, Any] = {}
+    reuse_log: dict[str, Any] = {}
     unchanged = unchanged_since_planning(
         record, inventory, choices, fresh_snapshots, service.usage().get("usage_remaining_seconds")
     )
@@ -4025,9 +4421,9 @@ def submit(
         fresh_fusion_placement = record.get("fusion_placement", {})
         print("pre-submit refresh: every backend's calibration, eligibility and queue match planning; reusing the plan")
     elif getattr(args, "family", None):
-        fresh_choices, fresh_design = qpu_planning.prepare(
-            sys.modules[__name__], fresh_snapshots, args, service.usage(), attempt_trace
-        )
+        # A republished calibration with unchanged values rebuilds through
+        # the approved design instead of a second planning simulation.
+        fresh_choices, fresh_design = family_design(fresh_snapshots, args, service.usage(), attempt_trace, reuse_log)
         fresh_fusion_placement = {"allocation": "matched-family", "configuration": fresh_design["family_configuration"]}
         if (
             fresh_design["optimization"]["selected"] is None
@@ -4092,6 +4488,7 @@ def submit(
             "skipped_backends": skipped,
             "reselected_groups": reselected,
             "rebuilt": not unchanged,
+            **({"prediction_reuse": reuse_log} if reuse_log else {}),
             "fusion_placement": fresh_fusion_placement,
             "selection_trace": attempt_trace,
         }
@@ -5812,7 +6209,8 @@ def main(argv: list[str] | None = None) -> int:
         run_dir = args.out / now.strftime("%Y-%m-%dT%H%M%S.%fZ") if args.out else None
         args.approved_scope = approved_backend_scope(args.approved_record) if args.submit else None
         choices, record = plan(service, args)
-        evaluate(choices, record)
+        if not reuse_approved_predictions(choices, record, args):
+            evaluate(choices, record)
         if run_dir:
             run_dir.mkdir(parents=True, exist_ok=False)
             write_archive(run_dir, choices)
@@ -6039,8 +6437,8 @@ def _replace_atomically(target: Path, write: Callable[[Any], None], mode: str) -
         os.close(directory_fd)
 
 
-def write_archive(run_dir: Path, choices: list[Choice]) -> str:
-    """Write the exact fused Runtime PUB circuits and return the QPY-file digest."""
+def archive_bytes(choices: list[Choice]) -> bytes:
+    """The QPY bytes of the exact fused Runtime PUB circuits, each named by its PUB."""
     archived = []
     for pub in execution_pubs(choices):
         named = copy.copy(pub.circuit)
@@ -6048,7 +6446,12 @@ def write_archive(run_dir: Path, choices: list[Choice]) -> str:
         archived.append(named)
     buffer = io.BytesIO()
     qpy.dump(archived, buffer)
-    qpy_bytes = buffer.getvalue()
+    return buffer.getvalue()
+
+
+def write_archive(run_dir: Path, choices: list[Choice]) -> str:
+    """Write the exact fused Runtime PUB circuits and return the QPY-file digest."""
+    qpy_bytes = archive_bytes(choices)
     _replace_atomically(run_dir / "isa.qpy", lambda handle: handle.write(qpy_bytes), "wb")
     return hashlib.sha256(qpy_bytes).hexdigest()
 
