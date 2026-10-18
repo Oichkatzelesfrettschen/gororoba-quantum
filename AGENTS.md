@@ -57,7 +57,12 @@ The lint and type gates (core-000, core-001, core-002, core-039) cover
 gororoba_quantum/, scripts/, ci/ and kaggle_kernel/ whole, so a module there
 is linted and type-checked without a list edit; a checked file elsewhere in
 the tree, such as an evidence replay under results/ or docs/, is named in
-those gates' commands.
+those gates' commands. They run ruff and mypy through
+`ci/pinned_tool.py TOOL ARGS`, which uses the installed tool when it reports
+the ci/requirements-ci.txt pin and otherwise runs the pinned release through
+uv: ruff through `uv tool run`, mypy layered over `"$PYTHON"`'s
+site-packages, so a host mypy run type-checks against that host's packages
+(qiskit 2.5.2 on the build host against CI's 2.6.0).
 
 Gate commands invoke `"$PYTHON"`. ci/run_gates.py sets it to its own
 interpreter when the environment leaves it unset, and assigns
@@ -80,9 +85,21 @@ defaults stay within the outer allocation. Timings retain wall time, user/system
 peak RSS and allocated workers. Ruff formats shared code for Python 3.13.
 
 Current contracts use Qiskit 2.6.0. Gates marked `"runtime": "qiskit-2.5"`
-recompile retained historical evidence using `ci/requirements-replay.txt` and
-require `REPLAY_PYTHON`; missing producer interpreters fail explicitly. CI
-installs that isolated environment only for shards whose plan requires it.
+recompile retained historical evidence under an interpreter holding every pin
+of `ci/requirements-replay.txt`: `ci/run_gates.py --replay-python PATH` (also
+accepted by `ci/premerge_gates.py`), else `REPLAY_PYTHON`, verified against
+those pins in a `-I` subprocess. With neither, the running interpreter serves
+when it holds every pin, as the build host's Arch stack does, and the runner
+prints the choice before the first gate; an unresolved runtime's gates exit
+127 with the differing versions. CI installs that isolated environment only
+for shards whose plan requires it and passes it as `REPLAY_PYTHON`.
+`GOROROBA_PINS_REQUIRED=1`, set workflow-wide in ci.yml, turns every version
+fallback into a failure: the replay interpreter must be named, ruff and mypy
+must be installed at their pins, and `ibm_runtime_options_inventory.py
+--check` (core-533) must find the probe versions its inventory records.
+Without it that check replays the retained inventory (canonical form,
+backend schema, note blocks) and names the differing versions
+(`ci/pins.py`, gate core-454).
 Before Python starts, CI and Kaggle reserve 4096 optional static TLS bytes with
 `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, required by the combined
 Qiskit Rust and Aer OpenMP extensions. Local shells use the same startup setting.
@@ -697,7 +714,7 @@ at those versions, except the linters.
 | python-stim, python-mthree (with python-runningman), python-qiskit-experiments, python-quimb, python-cotengra, python-pyzx, python-galois | stim 1.16.0, mthree 3.0.0, qiskit-experiments 0.14.2, quimb 1.15.0, cotengra 0.8.2, pyzx 0.10.7, galois 0.4.11: the `quantum-tools` group a Kaggle kernel installs with `push --with quantum-tools` (`scripts/kaggle_run.py` PIN_GROUPS) |
 | python-flint | python-flint 0.9.0 (CI pin): exact rank modulo p (`nmod_mat`) and RREF null spaces (`fmpq_mat`) in `scripts/exact_rank.py`, and SymPy 1.14.0's ground types, which it selects when the version is on SymPy's tested list |
 | python-pytorch-opt-cuda, python-pandas | torch and pandas for python-octonion and python-cayley-dickson only |
-| python-ruff, mypy | newer than the CI pins ruff 0.14.11 and mypy 1.19.1; `uvx ruff@0.14.11` reproduces CI formatting |
+| python-ruff, mypy | ruff 0.17.0 and mypy 2.3.1, behind the CI pins ruff 0.17.1 and mypy 2.4.0 (a `~/.local/bin` install of ruff 0.14.11 and mypy 1.19.1 precedes them on PATH); the lint gates run the pins through `ci/pinned_tool.py` and uv |
 
 A broken or missing package is rebuilt and reinstalled from its PKGBUILD in
 `~/Github/PKGBUILDs` with `makepkg -si --nocheck` in the package

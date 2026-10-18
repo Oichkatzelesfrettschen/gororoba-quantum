@@ -121,7 +121,10 @@ and what it must prove before its output counts.
     - a pin that resolved to another version;
     - a CPU qiskit-aer that shares the qiskit_aer/ files;
     - a GPU that nvidia-smi does not list;
-    - a Bell run that raised, ran on another device, or left cuStateVec off.
+    - a Bell run that raised, ran on another device, or left cuStateVec off;
+    - on a `--gpu-aer cu13` push (spec `cuda_in_venv`), a mapped CUDA library
+      other than the driver's libcuda.so from outside the venv, or no mapped
+      CUDA library at all.
   - `push --gpu-env-with torch` adds torch 2.14.1, the build host's version,
     to the venv's pins, so a torch entry runs over the repository's numpy
     and qiskit instead of the image's; the preflight requires it at that

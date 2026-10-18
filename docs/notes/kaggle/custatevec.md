@@ -203,6 +203,14 @@ core-450 rechecks the record. The timings and the two-GPU metadata are in
     naming that directory, so no index can supply the distribution.
   - A missing, ambiguous or different file is a `failures` entry in
     gpu_env.json, and the kernel exits 4 before anything is installed.
+  - Any other artifact a push attaches with `--dataset` is checked the same
+    way before the entry starts (`kernel_main.verify_artifacts`, recorded in
+    artifacts.json); a missing or different file stops the kernel.
+  - The cu13 spec carries `cuda_in_venv`, so the preflight also fails on any
+    mapped CUDA library other than the driver's libcuda.so outside the venv:
+    the DT_RPATH design holds only if the loader took the pinned pip wheels.
+    The cu11 default has no such check, because no retained cu11 report
+    records where its libraries loaded from.
 - **Records.** gpu_env.json's `wheel` holds the dataset path, size and
   sha256. The report names `qiskit-aer-gpu-cu13` as the owner of
   `qiskit_aer/__init__.py`. It also gives the `controller_wrappers` module
