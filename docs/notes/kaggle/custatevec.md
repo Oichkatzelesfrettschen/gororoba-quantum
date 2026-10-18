@@ -208,13 +208,30 @@ core-450 rechecks the record. The timings and the two-GPU metadata are in
   needs no GPU, so a CPU push shows the wheel installing and its libraries
   resolving at no GPU cost, then exits 4 because nvidia-smi lists no GPU and
   the Bell runs raise.
-- **Open risk.** The wheel has run on the build host's RTX 4070 Ti (driver
-  615, sm_89). The T4's sm_75 code and the 580 driver are unexercised.
-  - The cuQuantum and cuTENSOR wheels are compiled with CUDA 13.4. NVIDIA's
-    cuQuantum requirements list driver 580.65.06 or later for CUDA 13.x,
-    and the Kaggle T4 image reports 580.178.04.
-  - The tag requires glibc 2.39, which the image provides exactly.
-  - Kaggle uncompresses archive uploads. A wheel is a ZIP file, so the CPU
-    push also shows whether the dataset keeps the `.whl` intact.
-  - A T4 run whose gpu_env.json lists no failure settles all three.
+- **On Kaggle.**
+  - `results/kaggle/2026-10-18T072100Z-gororoba-aer-gpu-cu13-preflight` (CPU
+    machine): the dataset kept the `.whl` intact, its sha256 verified,
+    `qiskit_aer` belongs to qiskit-aer-gpu-cu13 and all nine CUDA libraries
+    load from the venv's site-packages; the kernel exited 4 on the missing
+    GPU alone.
+  - `results/kaggle/2026-10-18T072718Z-gororoba-aer-gpu-cu13-config` (T4 x2,
+    0.85 GPU hours): gpu_env.json lists no failure, nvidia-smi lists both
+    T4s, and the cuStateVec Bell run reports `cuStateVec_enable` true, so
+    the sm_75 code runs under driver 580.178.04. Every one of the 35 rows of
+    `aer_gpu_probe.py --workloads toy,width --widths 7,10` ran.
+- **Against the cu11 wheel** (the same probe and seed,
+  `results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config`; gate core-442,
+  `aer_gpu_probe.py --check --compare-counts`):
+  - All 15 GPU density-matrix rows draw the cu11 wheel's seeded counts, and
+    run 1 to 14 percent faster per shot.
+  - 4 of 16 GPU statevector rows draw the same counts. The 12 width rows
+    differ, unbatched ones without cuStateVec included, so seeded
+    statevector trajectories are build-specific. The width rows retain only
+    count hashes, so the record cannot test whether the two builds' count
+    distributions agree.
+  - Batched statevector runs about 9 percent faster per shot, unbatched
+    statevector 1 to 4 percent slower and cuStateVec statevector 7 to 12
+    percent slower.
+  - A CPU row, `cpu_density_matrix_branching`, also differs; both builds
+    miss its exact law, which is Aer 0.17.2's shot-branching readout fault.
 

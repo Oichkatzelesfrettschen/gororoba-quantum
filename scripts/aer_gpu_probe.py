@@ -63,10 +63,20 @@ the default CPU simulator keeps the readout-toy law, and a lowered
 feed-forward circuit draws the if_else circuit's seeded counts byte for
 byte while flipping or dropping the condition changes them.
 
+``--compare-counts OTHER`` with ``--check FILE`` pairs the two records' GPU
+rows by workload, configuration, circuit, width and order, and compares
+their seeded counts (the counts of a toy row, every tier's counts sha256 of
+a width row). Every GPU density-matrix row must match: that method samples
+once from the final probabilities, so two Aer builds that agree on the
+state draw the same counts. Statevector rows draw per-shot trajectories
+and are listed with their match without a requirement. It holds a build
+change, such as a CUDA 13 wheel against the CUDA 11.8 one, to the cu11
+record.
+
 Usage:
     "$PYTHON" scripts/aer_gpu_probe.py --out PATH [--workloads toy,n21,width] [--configurations A,B]
         [--widths 7,10] [--require-gpu]
-    "$PYTHON" scripts/aer_gpu_probe.py --check PATH
+    "$PYTHON" scripts/aer_gpu_probe.py --check PATH [--compare-counts OTHER]
 """
 
 from __future__ import annotations
@@ -849,6 +859,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path)
+    parser.add_argument(
+        "--compare-counts", type=Path, help="with --check, a record of another Aer build to compare seeded counts with"
+    )
     parser.add_argument("--workloads", default="toy,n21,width")
     parser.add_argument("--configurations", default=",".join(CONFIGURATIONS))
     parser.add_argument("--widths", help="comma-separated widths of the width workload; default every listed width")
@@ -866,8 +879,13 @@ def main() -> int:
     chosen = None if args.widths is None else {int(width) for width in args.widths.split(",")}
     if chosen is not None and not chosen <= set(WIDTHS) | set(STATEVECTOR_WIDTHS):
         parser.error(f"unknown widths {sorted(chosen - set(WIDTHS) - set(STATEVECTOR_WIDTHS))}")
+    if args.compare_counts and not args.check:
+        parser.error("--compare-counts requires --check")
     if args.check:
-        return check(args.check, [plan_key(spec) for spec in plan(workloads, labels, chosen)])
+        status = check(args.check, [plan_key(spec) for spec in plan(workloads, labels, chosen)])
+        if status == 0 and args.compare_counts:
+            compare_counts(args.check, args.compare_counts)
+        return status
     if args.out is None:
         parser.error("--out or --check is required")
     import parallel
@@ -1089,6 +1107,38 @@ def binding_problems(record: dict[str, Any], requested: list[tuple[str, ...]]) -
     if worse:
         problems.append(f"keeps the more contended attempt of {worse[:3]}")
     return problems
+
+
+def seeded_counts(row: dict[str, Any]) -> Any:
+    """A row's seeded draw: a toy row's counts, or each tier's counts sha256 of a width or n21 row."""
+    if "counts" in row:
+        return row["counts"]
+    return [tier["counts_sha256"] for tier in row["tiers"]]
+
+
+def compare_counts(path: Path, other: Path) -> None:
+    """Every GPU density-matrix row of PATH draws OTHER's seeded counts; statevector matches are listed."""
+    keyed: list[dict[tuple[Any, ...], dict[str, Any]]] = []
+    for record in (path, other):
+        rows: dict[tuple[Any, ...], dict[str, Any]] = {}
+        seen: dict[tuple[Any, ...], int] = {}
+        for row in json.loads(record.read_text(encoding="utf-8"))["rows"]:
+            if row.get("device") != "GPU":
+                continue
+            base = (row["workload"], row["configuration"], str(row["circuit"]), row.get("width"))
+            rows[(*base, seen.get(base, 0))] = row
+            seen[base] = seen.get(base, 0) + 1
+        keyed.append(rows)
+    mine, theirs = keyed
+    if set(mine) != set(theirs):
+        raise SystemExit(f"aer_gpu_probe: {path} and {other} plan different GPU rows")
+    matched = {key: seeded_counts(mine[key]) == seeded_counts(theirs[key]) for key in sorted(mine, key=str)}
+    differing = [key for key, same in matched.items() if not same and mine[key]["method"] == "density_matrix"]
+    if differing:
+        raise SystemExit(f"aer_gpu_probe: GPU density-matrix rows draw other counts than {other}: {differing}")
+    for method in ("density_matrix", "statevector"):
+        keys = [key for key in matched if mine[key]["method"] == method]
+        print(f"{method}: {sum(matched[key] for key in keys)} of {len(keys)} GPU rows draw {other.name}'s counts")
 
 
 def check(path: Path, requested: list[tuple[str, ...]]) -> int:

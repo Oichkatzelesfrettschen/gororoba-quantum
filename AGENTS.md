@@ -584,7 +584,10 @@ retain its output under results/kaggle/. The kernel's own guide is
     the CUDA 13 wheel `docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh`
     builds, which the push attaches from its `kaggle_run.py artifact`
     dataset (`AER_GPU_WHEELS`) and the kernel installs only when its sha256
-    matches (`docs/notes/kaggle/custatevec.md`, "CUDA 13 build").
+    matches (`docs/notes/kaggle/custatevec.md`, "CUDA 13 build"). On the
+    T4 x2 it ran every probe row with cuStateVec on; its GPU density-matrix
+    rows draw the cu11 wheel's seeded counts, while seeded statevector
+    trajectories differ by build (gate core-442).
   - Only Python itself differs from CI's 3.14.7.
   - On a CPU machine the same push stops at the preflight, which proves the
     error path at no GPU cost.
