@@ -1293,6 +1293,9 @@ def restrict_candidates(result: OptimizationResult, admitted: set[str], reason: 
         return result
     if not admitted <= {candidate.name for candidate in result.candidates}:
         raise ValueError("additional admission names an unknown evaluated candidate")
+    if all(candidate.name in admitted for candidate in result.candidates):
+        return result
+    excludes_feasible = any(candidate.feasible and candidate.name not in admitted for candidate in result.candidates)
     candidates = tuple(
         candidate
         if candidate.name in admitted
@@ -1309,7 +1312,7 @@ def restrict_candidates(result: OptimizationResult, admitted: set[str], reason: 
             candidate.name for candidate in feasible if not any(_dominates(other, candidate) for other in feasible)
         ),
         selected_objective_value=_candidate_rank(selected, result.objective)[0] if selected else None,
-        rejection_reasons=() if feasible else result.rejection_reasons + (reason,),
+        rejection_reasons=() if feasible else result.rejection_reasons + ((reason,) if excludes_feasible else ()),
     )
 
 

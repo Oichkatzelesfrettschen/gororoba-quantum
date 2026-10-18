@@ -198,3 +198,6 @@ usable-graph analysis, which fold into the next Tuna note.
   open review thread is answered.
 - Program analysis and both reviews live in `docs/local/reviews/`, and the
   submit scripts and admitted qubit lists in `docs/local/n21-handover/`.
+
+
+ET approval preflight uses deduplicated parallel ideal validation. The focused approval and optimizer-rejection regressions pass. A complete runner dry run and continuous integration replay remain pending for the integrated changes. The retained native evidence remains bound to its recorded source commit.

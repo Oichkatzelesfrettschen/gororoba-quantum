@@ -3348,6 +3348,11 @@ def approved_family_design(
         log["design"] = {"reused": False, "blockers": blockers}
         return None
     for choice in choices:
+        if args.family == "et-row":
+            from et_planning import validate_ideals
+
+            validate_ideals(choice)
+            continue
         for entry in choice.entries:
             for replica in entry.replicas:
                 if not np.allclose(qpu_planning.ideal_compiled_probabilities(replica), entry.ideal, rtol=0, atol=1e-10):

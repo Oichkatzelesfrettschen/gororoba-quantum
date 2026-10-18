@@ -87,6 +87,16 @@ class ETCampaignTests(unittest.TestCase):
         self.assertIs(result.candidates[2], retained)
         self.assertEqual(result.selected_objective_value, 3)
 
+    def test_calibrated_filter_preserves_raw_failure_reasons(self) -> None:
+        from experiment_optimizer import CandidateResult, OptimizationResult, restrict_candidates
+
+        candidate = CandidateResult("raw_infeasible", False, 1, 90, (), (), ("budget",), {})
+        original = OptimizationResult(None, (candidate,), (), ("raw budget failure",), 0.01, 1, ())
+        self.assertIs(restrict_candidates(original, {candidate.name}, "calibrated screen"), original)
+        rejected = restrict_candidates(original, set(), "calibrated screen")
+        self.assertEqual(rejected.rejection_reasons, original.rejection_reasons)
+        self.assertIn("calibrated screen", rejected.candidates[0].rejection_reasons)
+
     def test_complete_budget_and_reconstruction(self) -> None:
         config = configuration()
         group = et_group(config)

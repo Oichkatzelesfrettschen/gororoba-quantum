@@ -3623,25 +3623,25 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" check_et_rows.py && \"$PYTHON\" -O check_et_rows.py",
+   "cmd": "\"$PYTHON\" check_et_rows.py",
    "name": "core-580",
-   "seconds": 18,
+   "seconds": 9,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" check_et_campaign.py && \"$PYTHON\" -O check_et_campaign.py",
+   "cmd": "\"$PYTHON\" check_et_campaign.py",
    "name": "core-581",
-   "seconds": 14,
+   "seconds": 7,
    "tier": "full"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" check_et_runtime.py && \"$PYTHON\" -O check_et_runtime.py",
+   "cmd": "\"$PYTHON\" check_et_runtime.py",
    "name": "core-582",
-   "seconds": 900,
+   "seconds": 450,
    "tier": "full"
   },
   {

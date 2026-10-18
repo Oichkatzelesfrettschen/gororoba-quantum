@@ -18,6 +18,67 @@ from experiments import Group
 
 
 class ETRuntimeTests(unittest.TestCase):
+    def test_approved_et_design_uses_batched_ideal_validation(self) -> None:
+        import argparse
+        from contextlib import ExitStack
+        from dataclasses import asdict
+        from pathlib import Path
+
+        import et_planning
+        import qpu_planning
+        from experiment_optimizer import BudgetContract
+
+        choice = SimpleNamespace(snap=SimpleNamespace(backend=object()), entries=[SimpleNamespace(replicas=[object()])])
+        arguments = argparse.Namespace(
+            family="et-row",
+            precision=0.08,
+            alpha=0.05,
+            power=0.8,
+            shot_tiers=[128],
+            optimize=True,
+            max_total_execution_seconds=600,
+            reserve_seconds=10,
+            shots=128,
+        )
+        approved = {
+            "optimization": {"searched_routed_sets": 1, "shot_tiers": [128], "candidates": [], "selected": "fixture"},
+            "policy": {},
+            "versions": {},
+            "experiment_digest": "fixture",
+            "seed_simulator": live_run.SEED_SIMULATOR,
+            "family_configuration": {},
+            "observable_contracts": [],
+            "shots": 128,
+            "optimization_budget": asdict(BudgetContract(1000, 10, 600)),
+        }
+        with ExitStack() as stack:
+            for name, value in (
+                ("_reuse_context", (Path("/fixture"), None)),
+                ("_read_approved", (approved, [])),
+                ("record_policy", {}),
+                ("dependency_versions", {}),
+                ("experiment_digest", "fixture"),
+                ("device_blockers", []),
+                ("approved_choice_blockers", []),
+                ("execution_pubs", []),
+            ):
+                stack.enter_context(patch.object(live_run, name, return_value=value))
+            stack.enter_context(patch.object(qpu_planning, "family_candidates", return_value=[([choice], {})]))
+            stack.enter_context(
+                patch.object(qpu_planning, "admitted_family_candidates", side_effect=lambda *args: args[1])
+            )
+            stack.enter_context(patch.object(qpu_planning, "family_contracts", return_value=()))
+            stack.enter_context(patch.object(qpu_planning, "shot_ceiling", return_value=None))
+            stack.enter_context(
+                patch.object(qpu_planning, "ideal_compiled_probabilities", side_effect=AssertionError("serial path"))
+            )
+            validator = stack.enter_context(patch.object(et_planning, "validate_ideals"))
+            log: dict[str, Any] = {}
+            result = live_run.approved_family_design([], arguments, {"usage_remaining_seconds": 1000}, {}, log)
+            self.assertIsNotNone(result)
+            validator.assert_called_once_with(choice)
+            self.assertEqual(log["design"], {"reused": True})
+
     def test_rejected_layout_keeps_later_candidates(self) -> None:
         import et_planning
 
