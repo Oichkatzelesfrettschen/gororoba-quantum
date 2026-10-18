@@ -582,8 +582,12 @@ def self_test() -> str:
     else:
         raise SystemExit("aer_blocking_probe: blocked_batch accepted an if_else with an else body")
     toy_contract("statevector", "CPU")
-    gpu = "no GPU here, so the GPU toy did not run"
-    if aer_gpu_probe.gpus():
+    from qiskit_aer import AerSimulator
+
+    gpu = "no GPU or no GPU Aer build here, so the GPU toy did not run"
+    # Aer's GPU builds list GPU whether or not a device exists, and its CPU
+    # build lists CPU only, so both readings gate the GPU contracts.
+    if aer_gpu_probe.gpus() and "GPU" in AerSimulator().available_devices():
         for method in ("statevector", "density_matrix"):
             toy_contract(method, "GPU")
         run_contract()

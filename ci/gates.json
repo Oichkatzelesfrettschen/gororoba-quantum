@@ -3169,7 +3169,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/aer_blocking_probe.py --self-test && \"$PYTHON\" -B -O -W error scripts/aer_blocking_probe.py --self-test",
    "name": "core-452",
-   "seconds": 15.0,
+   "seconds": 5.0,
    "tier": "pr"
   },
   {
