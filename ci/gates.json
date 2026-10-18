@@ -4115,39 +4115,39 @@
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" check_et_rows.py && \"$PYTHON\" -O check_et_rows.py",
-   "name": "core-563",
-   "seconds": 6,
+   "name": "core-580",
+   "seconds": 18,
    "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" check_et_campaign.py && \"$PYTHON\" -O check_et_campaign.py",
-   "name": "core-564",
-   "seconds": 160,
+   "name": "core-581",
+   "seconds": 14,
    "tier": "full"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" check_et_runtime.py && \"$PYTHON\" -O check_et_runtime.py",
-   "name": "core-565",
-   "seconds": 50,
+   "name": "core-582",
+   "seconds": 32,
    "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B scripts/replay_et_sources.py --check",
-   "name": "core-566",
-   "seconds": 5,
+   "name": "core-583",
+   "seconds": 45,
    "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B scripts/replay_et_pilot.py",
-   "name": "core-567",
+   "name": "core-584",
    "seconds": 180,
    "tier": "full"
   }

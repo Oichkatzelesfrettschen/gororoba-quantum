@@ -42,6 +42,10 @@ interpreter when its gate requests Qiskit 2.5.2.
 
 ## Mathematical scope
 
+`claims.json` binds finite checks and inspected formal declarations to their
+domains, conventions and outstanding bridges. The checksum ledger covers
+every retained file in this evidence directory.
+
 For the unnormalized assessor `a=e_l+e_(l xor X)`, the paired Gram blocks
 have diagonal entries 2 and off-diagonal entries `eta1+eta2`. An occupied
 block contributes one zero eigenvector and one eigenvector of eigenvalue 4.

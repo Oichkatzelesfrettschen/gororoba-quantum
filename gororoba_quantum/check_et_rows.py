@@ -5,8 +5,22 @@ import unittest
 import numpy as np
 from qiskit.quantum_info import Operator, Statevector
 
+import parallel
 from et_reference import ETSpec, child_box, table_census
 from et_rows import direct_state, row_circuit
+
+
+def check_signed_embedding(arguments: tuple[int, int]) -> None:
+    dimension, strut = arguments
+    labels = ETSpec(dimension, strut, 1 if strut != 1 else 2).tone_row
+    for row in labels:
+        parent = ETSpec(dimension, strut, row)
+        primary = ETSpec(2 * dimension, strut, row)
+        shifted = ETSpec(2 * dimension, strut, dimension // 2 ^ row)
+        for column in labels:
+            value = parent.cell(column).value
+            if primary.cell(column).value != value or shifted.cell(dimension // 2 ^ column).value != value:
+                raise ValueError(f"signed ET embedding differs at {dimension}/{strut}/{row}/{column}")
 
 
 class ETRowTests(unittest.TestCase):
@@ -23,10 +37,18 @@ class ETRowTests(unittest.TestCase):
             ETSpec(32, 9, 9)
 
     def test_shifted_child_box(self) -> None:
-        self.assertEqual(child_box(32, 15)["counts"], {"interior": 72, "border": 56, "box": 128})
+        for dimension, interior, border in ((32, 72, 56), (64, 456, 120), (128, 2184, 248)):
+            self.assertEqual(
+                child_box(dimension, 15)["counts"], {"interior": interior, "border": border, "box": interior + border}
+            )
         self.assertEqual(ETSpec(32, 15, 1).cell(6).value, -7)
         self.assertEqual(ETSpec(64, 15, 17).cell(22).value, -7)
         self.assertEqual(ETSpec(64, 15, 1).cell(22).value, -23)
+
+    def test_all_signed_inherited_copies_through_d128(self) -> None:
+        transitions = [(dimension, strut) for dimension in (16, 32, 64) for strut in range(1, dimension // 2)]
+        self.assertEqual(len(transitions), 53)
+        parallel.ordered_map(check_signed_embedding, transitions, min_items=2)
 
     def test_direct_states_and_complete_dephasing(self) -> None:
         for dimension in (32, 64, 128):

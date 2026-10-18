@@ -3,6 +3,7 @@
     "tables": 116,
     "full_grid": 273264,
     "addressable": 263088,
+    "paired_blocks": 283440,
     "basis_products": 21760,
     "rust_cells": 273264
   },

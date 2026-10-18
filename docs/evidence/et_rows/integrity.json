@@ -1,6 +1,7 @@
 {
-  "README.md": "083b3f06cde19eeddc1ea2daba6071ae3226291f23bdadb100e58c007991e98a",
-  "canonical_replay.json": "a5ec591c43206264095865c74cb6d0e2b751a2ad7c8942c18a1c80e3fe4bba9a",
+  "README.md": "be6843671b9a826025d017820491a8f3329d01849ba3fb86213752dea4efa529",
+  "canonical_replay.json": "a478c820cb794bebd3f00fe8037d7f307332c4fb5378fcfca8f1358f01d31cc9",
+  "claims.json": "0e27e2f527fef4ceea81e70c56fd0cc13701e67dbe3ec856718e8a91a43edfa8",
   "pilot.zip": "435dde3f320bc713ea07c6ea067e825cbf28c168a15ad13a8625754af8a793f5",
   "pilot_et_fixtures.json": "af4b7b96f3b496ea118518a12e96de0178fbb88cc3f3c9b3e324919269da54da",
   "pilot_manifest.json": "44eec32517e980e9394779751f4691b04a7f89f35b7e9bbac131917aff48b724",

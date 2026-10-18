@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "docs/evidence/et_rows"
 
 
-def check_table(table: dict) -> tuple[int, int, int]:
+def check_table(table: dict) -> tuple[int, int, int, int]:
     dimension, strut = table["dimension"], table["strut"]
     spec = ETSpec(dimension, strut, table["labels"][0])
     if list(spec.tone_row) != table["labels"]:
@@ -34,7 +34,21 @@ def check_table(table: dict) -> tuple[int, int, int]:
             occupied = first == second
             if occupied != reference.cell(column).occupied:
                 raise ValueError("paired-block occupancy differs, including excluded labels")
-    return 1, len(table["labels"]) ** 2, table["ordered_addressable"]
+            partner = column ^ reference.xor_label
+            images = [
+                {left ^ source: cd_sign(dimension, left, source) for left in (row, reference.high)}
+                for source in (column, partner)
+            ]
+            diagonal = [sum(value * value for value in image.values()) for image in images]
+            off_diagonal = sum(value * images[1].get(label, 0) for label, value in images[0].items())
+            if diagonal != [2, 2] or off_diagonal != first + second:
+                raise ValueError("exact multiplier-column Gram block differs")
+            if occupied and any(
+                images[0].get(label, 0) - first * images[1].get(label, 0)
+                for label in images[0].keys() | images[1].keys()
+            ):
+                raise ValueError("occupied block's exact annihilator vector differs")
+    return 1, len(table["labels"]) ** 2, table["ordered_addressable"], len(table["labels"]) * dimension // 2
 
 
 def replay() -> dict:
@@ -59,6 +73,7 @@ def replay() -> dict:
         "tables": sum(row[0] for row in totals),
         "full_grid": sum(row[1] for row in totals),
         "addressable": sum(row[2] for row in totals),
+        "paired_blocks": sum(row[3] for row in totals),
         "basis_products": 0,
         "rust_cells": 0,
     }
@@ -94,6 +109,7 @@ def replay() -> dict:
         "tables": 116,
         "full_grid": 273264,
         "addressable": 263088,
+        "paired_blocks": 283440,
         "basis_products": 21760,
         "rust_cells": 273264,
     }:
