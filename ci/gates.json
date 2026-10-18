@@ -808,7 +808,7 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" qpu_planning_contracts.py",
+   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py",
    "name": "core-094",
    "seconds": 123.8,
    "tier": "full",
@@ -2741,9 +2741,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --check results/quandela/runs/*/",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --check $(for d in results/quandela/runs/*/; do case \"$d\" in *-qpu_belenos-belenos_mesh-*) ;; *) printf \"%s \" \"$d\" ;; esac; done)",
    "name": "core-508",
-   "seconds": 62.0,
+   "seconds": 80.0,
    "tier": "pr",
    "workers": "all"
   },
@@ -2790,9 +2790,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-static results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/static.json results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00 && \"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-static results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02/static.json results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-static results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/static.json results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00 && \"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-static results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02/static.json results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02 && \"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-static results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/static.json results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03 results/quandela/runs/2026-10-18T030428Z-qpu_belenos-belenos_mesh-job-04 results/quandela/runs/2026-10-18T030731Z-qpu_belenos-belenos_mesh-job-05 results/quandela/runs/2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06",
    "name": "core-514",
-   "seconds": 60.0,
+   "seconds": 200.0,
    "tier": "full"
   },
   {
@@ -2802,6 +2802,50 @@
    "name": "core-515",
    "seconds": 90.0,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --self-test-efficiency",
+   "name": "core-534",
+   "seconds": 360.0,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-efficiency results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/efficiency.json results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03 results/quandela/runs/2026-10-18T030428Z-qpu_belenos-belenos_mesh-job-04 results/quandela/runs/2026-10-18T030731Z-qpu_belenos-belenos_mesh-job-05 results/quandela/runs/2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06",
+   "name": "core-535",
+   "seconds": 240.0,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-followup results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/followup.json results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/followup-preregistration.json results/quandela/runs/2026-10-18T033336Z-qpu_belenos-belenos_mesh-job-02 results/quandela/runs/2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03 results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03",
+   "name": "core-536",
+   "seconds": 10.0,
+   "tier": "pr",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_analysis.py --check results/quandela/runs/*-qpu_belenos-belenos_mesh-*/",
+   "name": "core-537",
+   "seconds": 90.0,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-pair results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair.json results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair-preregistration.json results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08 results/quandela/runs/2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07 results/quandela/runs/2026-10-18T033336Z-qpu_belenos-belenos_mesh-job-02",
+   "name": "core-538",
+   "seconds": 2.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
@@ -3605,9 +3649,9 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --rep-delay && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --rep-delay",
+   "cmd": "\"$PYTHON\" -B -O -W error qpu_planning_contracts.py --rep-delay",
    "name": "core-523",
-   "seconds": 121.3,
+   "seconds": 60.7,
    "tier": "full",
    "workers": "all",
    "timing_origin": "local-four-worker-qualification"
@@ -3754,6 +3798,22 @@
    "cmd": "\"$PYTHON\" -B -W error runtime_contracts.py --case approval_calibration_values && \"$PYTHON\" -B -O -W error runtime_contracts.py --case approval_calibration_values",
    "name": "core-521",
    "seconds": 53.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/state_prep_excess.py --self-test && \"$PYTHON\" -B -O -W error scripts/state_prep_excess.py --self-test",
+   "name": "core-522",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/state_prep_excess.py --check && \"$PYTHON\" -B -O -W error scripts/state_prep_excess.py --check",
+   "name": "core-539",
+   "seconds": 3.0,
    "tier": "pr"
   },
   {

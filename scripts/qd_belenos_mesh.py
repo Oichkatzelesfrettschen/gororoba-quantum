@@ -37,6 +37,23 @@ requires architecture, phase, source, baseline and RCA mutations to be
 rejected and cross-checks the decoder and BS convention against exqalibur
 and Perceval where they import.
 
+--efficiency OUT RUN... writes the reanalysis of one calibration session's
+mesh runs with relative per-mode detection efficiencies fitted jointly with
+every error class and with the static offsets, each run held out in turn and
+no dark term; --check-efficiency OUT RUN... replays it, and
+--self-test-efficiency requires an efficiency-only truth to read ideal
+without static offsets, efficiencies plus offsets to be declared and
+recovered, and a flat truth scored with the receipt's t_out to read "no
+class fits". --followup OUT PREREGISTRATION JOB02 REPEAT ORIGINAL reads the
+preregistered follow-up: job-02's median in_block against the predicted 5th
+percentile under the session's efficiencies and FOLLOWUP_RMS heater offsets
+(job specific) and FOLLOWUP_SPARSE_FAIL (sparse targets fail), and the summed
+per-setting G^2 homogeneity of a repeated job against its original;
+--check-followup replays it. --pair OUT PREREGISTRATION FORM ENSEMBLE JOB02
+reads the one-circuit form test (job-08: Q1's case at compilation_seed 1)
+and the seed ensemble (job-07: job-02 at seeds 1 and 2); --check-pair
+replays it.
+
 Usage: "$PYTHON" scripts/qd_belenos_mesh.py (--write DIR | --check DIR | --rca OUT | --check-rca OUT | --self-test)
 """
 
@@ -88,6 +105,21 @@ STATIC_TAUS = (0.1, 0.3)
 STATIC_GAIN_MIN = 10.0
 STATIC_SCHEMA = "qd-belenos-static-offsets-v1"
 STATIC_REPLAY_TOLERANCE = 1e-3
+# L-BFGS stops short of a unique optimum on a 574-offset fit the data do not identify, so its endpoint follows the
+# BLAS build: the C1 session's held-out gains differ by up to 3.2 % between AOCL and OpenBLAS, the efficiency
+# record's by 0.4 %. Optimizer endpoints replay within this relative bound; deterministic fields stay exact.
+STATIC_FIT_REPLAY_TOLERANCE = 0.1
+EFFICIENCY_SCHEMA = "qd-belenos-mesh-efficiency-v1"
+EFFICIENCY_SWEEPS = 5000
+EFFICIENCY_TOLERANCE = 1e-10
+EFFICIENCY_STATIC_ITERATIONS = 600
+FOLLOWUP_SCHEMA = "qd-belenos-followup-v1"
+FOLLOWUP_RMS = 0.08
+FOLLOWUP_DRAWS = 200
+# followup-preregistration.json fixes the offset draws to the stream [SEED, 21].
+FOLLOWUP_STREAM = 21
+FOLLOWUP_SPARSE_FAIL = 0.65
+PAIR_SCHEMA = "qd-belenos-form-ensemble-v1"
 FIT_TVD_RATIO = 3.0
 SAMPLES_PER_SETTING = 1_500
 SHOT_HEADROOM = 2
@@ -134,6 +166,12 @@ ZERO_DIVISOR_JOBS = {"dark": (5, 6, 8, 11, 16, 19, 21, 22), "bright": (4, 7, 9, 
 SOURCES.update({f"{k}-{n:02d}": f"{SINGLE}/job-{n:02d}" for k, numbers in ZERO_DIVISOR_JOBS.items() for n in numbers})
 SINGLE_SETTING = "cold-bright-20"
 CAMPAIGN_JOBS = (3, 4, 5, 6)
+# job-07 repeats job-02's settings at these compilation seeds; job-08 sends Q1's case as one circuit at FORM_SEED.
+ENSEMBLE_JOB = "job-07"
+ENSEMBLE_SEEDS = (1, 2)
+FORM_JOB = "job-08"
+FORM_SEED = 1
+FORM_SOURCE = "box_kite_photonic_single/job-04"
 CONNECTED = (0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22)
 
 Element = tuple[str, int, Any]
@@ -835,7 +873,12 @@ class Derive:
 
 
 def documents(
-    arch: list[Element], settings: list[dict[str, Any]], catalogue_sha: str, job: str, coverage: Any = None
+    arch: list[Element],
+    settings: list[dict[str, Any]],
+    catalogue_sha: str,
+    job: str,
+    coverage: Any = None,
+    preregistered: dict[str, str] | None = None,
 ) -> tuple[str, str]:
     nbr = neighbours(arch)
     facts = parallel.ordered_map(Derive(arch, nbr), settings, min_items=2)
@@ -848,14 +891,20 @@ def documents(
             "couplers": [[m, p[0]] for k, m, p in arch if k == "bs"],
         },
         "settings": [
-            {"name": s["name"], "input_mode": s["low"], "phases": [round(v, 12) for v in s["phases"]]} for s in settings
+            {
+                "name": s["name"],
+                "input_mode": s["low"],
+                "phases": [round(v, 12) for v in s["phases"]],
+                **({"compilation_seed": s["compilation_seed"]} if "compilation_seed" in s else {}),
+            }
+            for s in settings
         ],
     }
     circuit_text = json.dumps(circuit, separators=(",", ":")) + "\n"
     rows = []
     for s, f in zip(settings, facts, strict=True):
         row = {k: s[k] for k in ("name", "mesh", "target", "low")}
-        for key in ("source", "source_run", "seed", "block_mzis", "frame_out", "frame_in"):
+        for key in ("source", "source_run", "seed", "compilation_seed", "block_mzis", "frame_out", "frame_in"):
             if s.get(key) is not None:
                 row[key] = [round(v, 12) for v in s[key]] if key.startswith("frame") else s[key]
         row.update(f)
@@ -878,7 +927,8 @@ def documents(
         "seed": SEED,
         "settings": rows,
         **({"coverage": coverage} if coverage is not None else {}),
-        "preregistered": {
+        "preregistered": preregistered
+        or {
             "transpilation": "the service re-transpiles every iteration, so each model's prediction is computed "
             "on the computed_circuit the iteration returns; the same body compiles to the same meshes on "
             "sim:belenos and qpu:belenos while the couplers are unchanged",
@@ -906,16 +956,85 @@ def write(directory: Path) -> None:
     settings = realize(arch, plan_settings())
     write_job(directory, arch, "job-00", settings)
     write_job(directory, arch, "job-01", [s for s in settings if s["name"] == SINGLE_SETTING])
-    write_job(directory, arch, "job-02", realize(arch, plan_zero_divisor_settings()), edge_coverage())
+    zero_divisor = realize(arch, plan_zero_divisor_settings())
+    write_job(directory, arch, "job-02", zero_divisor, edge_coverage())
     for job in CAMPAIGN_JOBS:
         write_job(directory, arch, f"job-{job:02d}", realize(arch, plan_characterization_settings(job)))
+    write_job(directory, arch, ENSEMBLE_JOB, ensemble_settings(zero_divisor), None, ENSEMBLE_PREREGISTERED)
+    write_seeded(directory)
+
+
+ENSEMBLE_PREREGISTERED = {
+    "transpilation": "every iteration names its compilation_seed: job-02's sixteen configurations at seeds 1 and "
+    "2, the two seeds of a configuration adjacent; each prediction is computed on the computed_circuit the "
+    "iteration returns, and the QPU need not return the simulator's meshes for an iterated body",
+    "decision": "per configuration and seed the algebra share a and in_block with Wilson intervals; the "
+    "bright-minus-dark contrast of a over all 32 iterations; compilation_seed selects the served mesh when "
+    "the two seeds of every configuration return different meshes; the spread between seeds 0 (job-02), 1 "
+    "and 2 is reported per configuration; the class scans and fit test are those of job-02",
+}
+FORM_PREREGISTERED = {
+    "transpilation": "Q1's case sent as one circuit with compilation_seed 1, the only change against Q1's body "
+    "besides its job name and Perceval's process_id",
+    "decision": "a returned mesh other than Q1's (29dc6ef8) with in_block at most 0.65 reads 'one-circuit form', "
+    "at least 0.90 reads 'Q1 mesh', between reads 'intermediate'; Q1's mesh again reads 'seed ignored'",
+}
+
+
+def ensemble_settings(zero_divisor: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """job-02's realized settings at each of ENSEMBLE_SEEDS, the seeds of one configuration adjacent."""
+    return [
+        {**s, "name": f"{s['name']}-s{seed}", "compilation_seed": seed} for s in zero_divisor for seed in ENSEMBLE_SEEDS
+    ]
+
+
+def seeded_manifest(source: dict[str, Any], source_sha: str) -> dict[str, Any]:
+    """The one-circuit form case: the source case's manifest with only its name, seed and preregistration changed."""
+    return {
+        **source,
+        "family": FAMILY,
+        "job": FORM_JOB,
+        "compilation_seed": FORM_SEED,
+        "seeded_from": {"case": FORM_SOURCE, "cases_sha256": source_sha},
+        "preregistered": FORM_PREREGISTERED,
+    }
+
+
+def write_seeded(directory: Path) -> None:
+    source = directory / FORM_SOURCE
+    manifest = seeded_manifest(
+        json.loads((source / "cases.json").read_text(encoding="utf-8")), sha256(source / "cases.json")
+    )
+    job = directory / FAMILY / FORM_JOB
+    job.mkdir(parents=True, exist_ok=True)
+    (job / "circuit.json").write_bytes((source / "circuit.json").read_bytes())
+    (job / "cases.json").write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
+    print(f"{job}: {FORM_SOURCE} as one circuit at compilation_seed {FORM_SEED}")
+
+
+def admit_seeded(job: Path) -> None:
+    """The one-circuit form case equals its source case byte for byte in its circuit and field for field elsewhere."""
+    manifest = json.loads((job / "cases.json").read_text(encoding="utf-8"))
+    source = CASES / manifest["seeded_from"]["case"]
+    require(manifest["seeded_from"]["case"] == FORM_SOURCE, f"{job.name}: source case {manifest['seeded_from']}")
+    require(sha256(source / "cases.json") == manifest["seeded_from"]["cases_sha256"], f"{job.name}: source digest")
+    require((job / "circuit.json").read_bytes() == (source / "circuit.json").read_bytes(), f"{job.name}: circuit bytes")
+    expected = seeded_manifest(
+        json.loads((source / "cases.json").read_text(encoding="utf-8")), sha256(source / "cases.json")
+    )
+    require(manifest == expected, f"{job.name}: manifest differs from its source beyond name, seed and preregistration")
 
 
 def write_job(
-    directory: Path, arch: list[Element], name: str, settings: list[dict[str, Any]], coverage: Any = None
+    directory: Path,
+    arch: list[Element],
+    name: str,
+    settings: list[dict[str, Any]],
+    coverage: Any = None,
+    preregistered: dict[str, str] | None = None,
 ) -> None:
     """One case directory; a one-setting job sends its phases as numbers, the guide's pre-compiled form."""
-    manifest, circuit = documents(arch, settings, sha256(CATALOGUE), name, coverage)
+    manifest, circuit = documents(arch, settings, sha256(CATALOGUE), name, coverage, preregistered)
     job = directory / FAMILY / name
     job.mkdir(parents=True, exist_ok=True)
     (job / "circuit.json").write_text(circuit, encoding="utf-8")
@@ -966,6 +1085,9 @@ def admit(job: Path, catalogue: dict[str, Any] | None = None) -> None:
     catalogue = load_catalogue() if catalogue is None else catalogue
     arch = architecture(catalogue)
     manifest = json.loads((job / "cases.json").read_text(encoding="utf-8"))
+    if "seeded_from" in manifest:
+        admit_seeded(job)
+        return
     circuit_text = (job / "circuit.json").read_text(encoding="utf-8")
     require(hashlib.sha256(circuit_text.encode()).hexdigest() == manifest["circuit"]["sha256"], "circuit digest")
     circuit = json.loads(circuit_text)
@@ -977,6 +1099,7 @@ def admit(job: Path, catalogue: dict[str, Any] | None = None) -> None:
     rebuilt = []
     for row, sent in zip(manifest["settings"], circuit["settings"], strict=True):
         require(row["name"] == sent["name"] and sent["input_mode"] == row["low"], f"{row['name']}: setting order")
+        require(row.get("compilation_seed") == sent.get("compilation_seed"), f"{row['name']}: compilation seed")
         require(len(sent["phases"]) == len(spec["symbols"]), f"{row['name']}: phase count")
         setting = {**row, "phases": sent["phases"]}
         if row["mesh"] == "random":
@@ -1023,7 +1146,8 @@ def check_baseline(arch: list[Element], row: dict[str, Any], phases: list[float]
 def check(directory: Path) -> None:
     jobs = sorted(p for p in (directory / FAMILY).iterdir() if p.is_dir())
     require(
-        [p.name for p in jobs] == ["job-00", "job-01", "job-02"] + [f"job-{j:02d}" for j in CAMPAIGN_JOBS],
+        [p.name for p in jobs]
+        == ["job-00", "job-01", "job-02"] + [f"job-{j:02d}" for j in CAMPAIGN_JOBS] + [ENSEMBLE_JOB, FORM_JOB],
         f"{directory / FAMILY} holds {[p.name for p in jobs]}",
     )
     for job in jobs:
@@ -1035,6 +1159,18 @@ def check(directory: Path) -> None:
     require(
         [r["target"] for r in manifest["settings"]] == list(coverage["uses"]),
         "job-02 settings differ from its coverage",
+    )
+    circuit = json.loads((directory / FAMILY / "job-02" / "circuit.json").read_text(encoding="utf-8"))
+    ensemble = json.loads((directory / FAMILY / ENSEMBLE_JOB / "circuit.json").read_text(encoding="utf-8"))
+    require(
+        [(s["name"], s["input_mode"], s["phases"]) for s in ensemble["settings"]]
+        == [
+            (f"{s['name']}-s{seed}", s["input_mode"], s["phases"])
+            for s in circuit["settings"]
+            for seed in ENSEMBLE_SEEDS
+        ]
+        and [s["compilation_seed"] for s in ensemble["settings"]] == list(ENSEMBLE_SEEDS) * len(circuit["settings"]),
+        f"{ENSEMBLE_JOB} is not job-02 at seeds {ENSEMBLE_SEEDS}",
     )
     products = f"{coverage['dark_products']} zero products, {coverage['bright_products']} controls"
     print(f"job-02 covers {coverage['edges']} edges: {products}")
@@ -1289,6 +1425,40 @@ def jacobians(arch: list[Element], phases: Any, sources: list[int]) -> tuple[Any
     return np.abs(psi) ** 2, 2 * np.real(np.conj(psi)[:, :, None] * d)
 
 
+class Dephased:
+    """Exact dephasing-channel detection probabilities of one (phases, source, sigma) job on one architecture."""
+
+    def __init__(self, arch: list[Element]) -> None:
+        self.arch = arch
+
+    def __call__(self, job: tuple[list[float], int, float]) -> list[float]:
+        phases, source, sigma = job
+        out: list[float] = channel(self.arch, phases, source, sigma=sigma).tolist()
+        return out
+
+
+def floored_likelihood(weighted: Any, counts: Any, dark: Any) -> tuple[float, Any]:
+    """The multinomial log-likelihood `loglik` scores, summed over settings, and its gradient in the weighted light.
+
+    Per setting lambda_m = max(A w_m / S + d_m, LIKELIHOOD_FLOOR N) with A = N - sum d and S = sum w, normalized
+    to lambda_m / Lambda as `rates` does; a floored bin is constant in w, so with r_m = n_m / lambda_m - N / Lambda
+    on the unfloored bins and 0 elsewhere, d/dw_j = (A / S) r_j - (A / S^2) sum_m r_m w_m.
+    """
+    import numpy as np
+
+    total = counts.sum(1, keepdims=True)
+    norm = np.maximum(weighted.sum(1, keepdims=True), 1e-300)
+    light = np.maximum(total - dark.sum(1, keepdims=True), 0)
+    free = light * weighted / norm + dark
+    floor = LIKELIHOOD_FLOOR * total
+    lam = np.maximum(free, floor)
+    whole = lam.sum(1, keepdims=True)
+    value = float((counts * np.log(lam / whole)).sum())
+    r = np.where(free >= floor, counts / lam - total / whole, 0.0)
+    dw = light / norm * r - light / norm**2 * (r * weighted).sum(1, keepdims=True)
+    return value, dw
+
+
 class StaticFit:
     """MAP estimate of one heater-offset vector shared by every setting, under a Gaussian prior of width tau."""
 
@@ -1303,16 +1473,8 @@ class StaticFit:
         import numpy as np
 
         p, jac = jacobians(self.arch, self.meshes[keep] + delta, [self.sources[i] for i in keep])
-        n, eta, dark = self.counts[keep], self.eta, self.dark[keep]
-        total = n.sum(1, keepdims=True)
-        weighted = p * eta
-        norm = weighted.sum(1, keepdims=True)
-        scale = np.maximum(total - dark.sum(1, keepdims=True), 0) / np.maximum(norm, 1e-300)
-        lam = np.maximum(scale * weighted + dark, LIKELIHOOD_FLOOR * total)
-        value = float((n * np.log(lam / total)).sum())
-        inner = (n * eta * p / lam).sum(1, keepdims=True)
-        dldp = scale * eta * n / lam - scale * eta / norm * inner
-        return value, np.einsum("sm,smj->j", dldp, jac)
+        value, dw = floored_likelihood(p * self.eta, self.counts[keep], self.dark[keep])
+        return value, np.einsum("sm,smj->j", dw * self.eta, jac)
 
     def fit(self, keep: Any, tau: float) -> Any:
         import numpy as np
@@ -1354,10 +1516,12 @@ def static_cross_validation(
     rows = [list(map(int, c)) for c in np.asarray(counts)]
     darks = [list(map(float, d)) for d in np.asarray(dark)]
     effs = list(map(float, np.asarray(eta)))
-    noisy = [
-        [channel(arch, list(ph), src, sigma=sg).tolist() for sg in SCAN_SIGMAS]
-        for ph, src in zip(meshes, sources, strict=True)
-    ]
+    flat = parallel.ordered_map(
+        Dephased(arch),
+        [(list(ph), src, sg) for ph, src in zip(meshes, sources, strict=True) for sg in SCAN_SIGMAS],
+        min_items=2,
+    )
+    noisy = [flat[i * len(SCAN_SIGMAS) : (i + 1) * len(SCAN_SIGMAS)] for i in range(len(sources))]
     index = np.arange(len(sources))
     label = np.asarray(folds) if folds is not None else index % STATIC_FOLDS
     out: dict[str, Any] = {}
@@ -1429,18 +1593,527 @@ def static_record(runs: list[Path]) -> dict[str, Any]:
     }
 
 
-def static_close(a: dict[str, Any], b: dict[str, Any]) -> None:
-    """A static record replays when its verdict, prior width and digests match and every number agrees within
-    STATIC_REPLAY_TOLERANCE relative (at least one nat), since L-BFGS paths differ across BLAS builds."""
-    require(
-        {k: a[k] for k in ("schema", "runs", "analysis_sha256", "settings", "best_tau", "static_declared")}
-        == {k: b[k] for k in ("schema", "runs", "analysis_sha256", "settings", "best_tau", "static_declared")},
-        f"{a.get('runs')}: static verdict differs",
-    )
+def fit_endpoints_close(a: dict[str, Any], b: dict[str, Any], owner: str) -> None:
+    """Static-fit blocks replay when their verdicts match and every endpoint agrees within
+    STATIC_FIT_REPLAY_TOLERANCE relative (at least one nat); the best prior width must match whenever the
+    retained gains of the widths lie further apart than that tolerance, so a near tie may resolve either way."""
+    require(a["static_declared"] == b["static_declared"], f"{owner}: static verdict differs")
+    require(set(a["by_tau"]) == set(b["by_tau"]), f"{owner}: prior widths differ")
     for tau, row in a["by_tau"].items():
+        require(set(row) == set(b["by_tau"][tau]), f"{owner}: {tau} fields differ")
         for key, value in row.items():
             other = b["by_tau"][tau][key]
-            require(abs(value - other) <= max(1.0, STATIC_REPLAY_TOLERANCE * abs(other)), f"{a['runs']}: {tau} {key}")
+            require(abs(value - other) <= max(1.0, STATIC_FIT_REPLAY_TOLERANCE * abs(other)), f"{owner}: {tau} {key}")
+    gains = sorted(row["gain_over_dephasing"] for row in a["by_tau"].values())
+    separated = all(
+        hi - lo > STATIC_FIT_REPLAY_TOLERANCE * max(abs(hi), abs(lo), 1.0)
+        for lo, hi in zip(gains, gains[1:], strict=False)
+    )
+    require(not separated or a["best_tau"] == b["best_tau"], f"{owner}: best prior width differs")
+
+
+def static_close(a: dict[str, Any], b: dict[str, Any]) -> None:
+    """A static record replays when its digests and settings match exactly and its fit block replays."""
+    require(
+        {k: a[k] for k in ("schema", "runs", "analysis_sha256", "settings")}
+        == {k: b[k] for k in ("schema", "runs", "analysis_sha256", "settings")},
+        f"{a.get('runs')}: static record differs",
+    )
+    fit_endpoints_close(a, b, str(a["runs"]))
+
+
+# --- fitted detection efficiencies -----------------------------------------------------------
+
+
+def fit_efficiency(p: Any, counts: Any) -> Any:
+    """Relative per-mode detection efficiencies, geometric mean 1, maximizing the multinomial likelihood.
+
+    p is (..., S, 24) model detection probabilities and counts (S, 24). The fit is the iterative
+    proportional fit of lambda_sm = A_s eta_m p_sm, whose profile over the free scales A_s is the
+    multinomial of each setting's one-click histogram: a sweep sets every A_s to the setting's clicks over
+    its weighted light and every eta_m to the mode's clicks over its scaled light. Leading axes batch
+    independent fits (one per scan point). A mode that receives no model light in any setting keeps 1.
+    """
+    import numpy as np
+
+    p = np.asarray(p, float)
+    n = np.asarray(counts, float)
+    eta = np.ones(p.shape[:-2] + (MODES,))
+    clicks = n.sum(-2)
+    for _ in range(EFFICIENCY_SWEEPS):
+        scale = n.sum(-1) / np.maximum((p * eta[..., None, :]).sum(-1), 1e-300)
+        light = (scale[..., None] * p).sum(-2)
+        new = np.where(light > 0, (clicks + 1e-12) / np.maximum(light, 1e-300), 1.0)
+        new = new / np.exp(np.log(new).mean(-1, keepdims=True))
+        if np.max(np.abs(new - eta)) < EFFICIENCY_TOLERANCE:
+            return new
+        eta = new
+    return eta
+
+
+def held_out_fit(rows: list[tuple[list[int], list[float]]]) -> dict[str, Any]:
+    """Pooled deviance p-value and median TVD over the shot-noise floor of held-out settings."""
+    from scipy.stats import chi2
+
+    pooled = [pooled_deviance(c, q) for c, q in rows]
+    g2 = sum(d for d, _ in pooled)
+    dof = max(sum(k - 1 for _, k in pooled), 1)
+    ratios = sorted(
+        float(0.5 * sum(abs(v / sum(c) - x) for v, x in zip(c, q, strict=True)) / max(shot_floor(q, sum(c)), 1e-12))
+        for c, q in rows
+    )
+    p_value = float(f"{chi2.sf(g2, dof):.6g}")
+    median = ratios[len(ratios) // 2]
+    return {
+        "g2_per_dof": round(g2 / dof, 6),
+        "p_value": p_value,
+        "median_tvd_over_floor": round(median, 6),
+        "fits": bool(p_value >= FIT_P_MIN and median <= FIT_TVD_RATIO),
+    }
+
+
+def efficiency_classes(
+    scans: list[dict[str, list[list[float]]]], singles: list[list[int]], folds: list[int]
+) -> dict[str, Any]:
+    """Every class scanned with per-mode efficiencies fitted jointly, scored on settings held out by fold.
+
+    For each fold and each scan point the efficiencies are fitted on the other folds; the point with the
+    best training likelihood, its efficiencies and the class's prediction then score the fold. A class fits
+    when the held-out pooled deviance has p >= FIT_P_MIN and the held-out median TVD stays within
+    FIT_TVD_RATIO shot-noise floors; the verdict is the best held-out class when it fits ("ideal" when its
+    every chosen point is the null magnitude), otherwise "no class fits".
+    """
+    import numpy as np
+
+    zeros = [0.0] * MODES
+    index = np.arange(len(singles))
+    label = np.asarray(folds)
+    counts = np.asarray(singles, float)
+    classes: dict[str, dict[str, Any]] = {}
+    for name, points in scan_axes().items():
+        p = np.asarray([[scans[i][name][j] for i in index] for j in range(len(points))])
+        held, chosen, rows = 0.0, [], []
+        for fold in sorted(set(folds)):
+            test, train = index[label == fold], index[label != fold]
+            eta = fit_efficiency(p[:, train], counts[train])
+            trained = [
+                sum(loglik(singles[i], list(p[j, i]), list(eta[j]), zeros) for i in train) for j in range(len(points))
+            ]
+            j = first_best(trained)
+            chosen.append(points[j])
+            for i in test:
+                held += loglik(singles[i], list(p[j, i]), list(eta[j]), zeros)
+                rows.append((singles[i], rates(singles[i], list(p[j, i]), list(eta[j]), zeros)))
+        classes[name] = {"chosen": chosen, "held_out_log_likelihood": round(float(held), 6), **held_out_fit(rows)}
+    order = list(classes)
+    best = order[first_best([classes[k]["held_out_log_likelihood"] for k in order])]
+    null = all(not any(point.values()) for point in classes[best]["chosen"])
+    return {
+        "classes": classes,
+        "best_class": best,
+        "verdict": ("ideal" if null else best) if classes[best]["fits"] else "no class fits",
+    }
+
+
+class StaticEfficiencyFit(StaticFit):
+    """MAP estimate of shared heater offsets (Gaussian prior of width tau) and relative per-mode efficiencies.
+
+    The efficiencies are exp(u - mean u), so their geometric mean is 1 and u carries no prior; the
+    multinomial of each setting is invariant to a common efficiency scale.
+    """
+
+    def __init__(self, arch: list[Element], meshes: Any, sources: list[int], counts: Any) -> None:
+        import numpy as np
+
+        super().__init__(arch, meshes, sources, counts, np.ones(MODES), np.zeros((len(sources), MODES)))
+
+    def joint(self, delta: Any, u: Any, keep: Any) -> tuple[float, Any, Any]:
+        """Summed log-likelihood of the kept settings and its gradients in delta and u."""
+        import numpy as np
+
+        eta = np.exp(u - u.mean())
+        p, jac = jacobians(self.arch, self.meshes[keep] + delta, [self.sources[i] for i in keep])
+        value, dw = floored_likelihood(p * eta, self.counts[keep], self.dark[keep])
+        g = (dw * p).sum(0) * eta
+        return value, np.einsum("sm,smj->j", dw * eta, jac), g - g.mean()
+
+    def fit_joint(self, keep: Any, tau: float) -> tuple[Any, Any]:
+        import numpy as np
+        from scipy.optimize import minimize
+
+        size = self.meshes.shape[1]
+        start = np.log(
+            fit_efficiency(
+                jacobians(self.arch, self.meshes[keep], [self.sources[i] for i in keep])[0], self.counts[keep]
+            )
+        )
+
+        def objective(x: Any) -> tuple[float, Any]:
+            delta, u = x[:size], x[size:]
+            value, gd, gu = self.joint(delta, u, keep)
+            return -(value - float((delta**2).sum()) / (2 * tau**2)), -np.concatenate([gd - delta / tau**2, gu])
+
+        found = minimize(
+            objective,
+            np.concatenate([np.zeros(size), start]),
+            jac=True,
+            method="L-BFGS-B",
+            options={"maxiter": EFFICIENCY_STATIC_ITERATIONS},
+        )
+        return found.x[:size], np.exp(found.x[size:] - found.x[size:].mean())
+
+
+def efficiency_static(
+    arch: list[Element], meshes: Any, sources: list[int], counts: Any, taus: tuple[float, ...], folds: list[int]
+) -> dict[str, Any]:
+    """Held-out gain of shared static offsets with fitted efficiencies over fitted efficiencies and dephasing.
+
+    On each fold the baseline is the exact dephasing channel at the sigma of SCAN_SIGMAS (0 included) whose
+    efficiency fit best explains the other folds, and the static model fits offsets and efficiencies jointly
+    on the other folds; both score the fold. Static offsets are declared when the summed gain exceeds
+    STATIC_GAIN_MIN nats and the held-out median TVD stays within FIT_TVD_RATIO shot-noise floors, so an
+    efficiency correction alone never passes for a static calibration error.
+    """
+    import numpy as np
+
+    fitter = StaticEfficiencyFit(arch, meshes, sources, counts)
+    rows = [list(map(int, c)) for c in np.asarray(counts)]
+    zeros = [0.0] * MODES
+    noisy = np.asarray(
+        parallel.ordered_map(
+            Dephased(arch),
+            [(list(ph), src, sg) for sg in SCAN_SIGMAS for ph, src in zip(meshes, sources, strict=True)],
+            min_items=2,
+        )
+    ).reshape(len(SCAN_SIGMAS), len(sources), MODES)
+    index = np.arange(len(sources))
+    label = np.asarray(folds)
+    out: dict[str, Any] = {}
+    for tau in taus:
+        gain, ratios = 0.0, []
+        for fold in sorted(set(folds)):
+            test, train = index[label == fold], index[label != fold]
+            etas = fit_efficiency(noisy[:, train], np.asarray(rows, float)[train])
+            k = first_best(
+                [
+                    sum(loglik(rows[i], list(noisy[s, i]), list(etas[s]), zeros) for i in train)
+                    for s in range(len(SCAN_SIGMAS))
+                ]
+            )
+            baseline = sum(loglik(rows[i], list(noisy[k, i]), list(etas[k]), zeros) for i in test)
+            delta, eta = fitter.fit_joint(train, tau)
+            p, _ = jacobians(arch, np.asarray(meshes)[test] + delta, [sources[i] for i in test])
+            for i, row in zip(test, p, strict=True):
+                q = rates(rows[i], list(row), list(eta), zeros)
+                gain += loglik(rows[i], list(row), list(eta), zeros)
+                tvd_i = 0.5 * sum(abs(c / sum(rows[i]) - v) for c, v in zip(rows[i], q, strict=True))
+                ratios.append(float(tvd_i / max(shot_floor(q, sum(rows[i])), 1e-12)))
+            gain -= baseline
+        ratios.sort()
+        out[f"{tau}"] = {
+            "gain_over_dephasing": round(float(gain), 3),
+            "median_tvd_over_floor": round(ratios[len(ratios) // 2], 3),
+        }
+    best = max(out, key=lambda key: out[key]["gain_over_dephasing"])
+    declared = (
+        out[best]["gain_over_dephasing"] > STATIC_GAIN_MIN and out[best]["median_tvd_over_floor"] <= FIT_TVD_RATIO
+    )
+    return {"by_tau": out, "best_tau": float(best), "static_declared": bool(declared)}
+
+
+def campaign(runs: list[Path]) -> dict[str, Any]:
+    """Meshes, sources, one-click counts and folds of the retained mesh runs of one calibration session."""
+    meshes: list[list[float]] = []
+    lows: list[int] = []
+    singles: list[list[int]] = []
+    folds: list[int] = []
+    arch: list[Element] = []
+    t_out: list[list[float]] = []
+    for k, run in enumerate(runs):
+        manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+        analysis = json.loads((run / "analysis.json").read_text(encoding="utf-8"))
+        texts = computed_circuits(run)
+        mine = run_architecture(decode(texts[0]))
+        require(
+            not arch or mine == arch, f"{run.name}: couplers differ from {runs[0].name}, another calibration session"
+        )
+        arch = mine
+        meshes += [mesh_phases(arch, decode(t)) for t in texts]
+        singles += [s["single_click"] for s in analysis["settings"]]
+        lows += [row["low"] for row in manifest["settings"]]
+        folds += [k] * len(texts)
+        perfs = json.loads((run / "submission.json").read_text(encoding="utf-8")).get("perfs_at_plan", {})
+        t_out.append((perfs.get("Transmission per mode (%)") or {}).get("t_out") or [1.0] * MODES)
+    return {"arch": arch, "meshes": meshes, "lows": lows, "singles": singles, "folds": folds, "t_out": t_out}
+
+
+def efficiency_record(runs: list[Path]) -> dict[str, Any]:
+    """The fitted-efficiency reanalysis of the mesh runs of one calibration session, each run one fold.
+
+    It replaces the receipt's t_out efficiencies and dark rates, which the runs themselves refute, by
+    relative per-mode efficiencies fitted with every class and with the static offsets, and no dark term.
+    """
+    import numpy as np
+
+    require(len(runs) > 1, "the fitted-efficiency reanalysis holds out whole runs, so it needs two or more")
+    data = campaign(runs)
+    arch, meshes, lows, singles = data["arch"], data["meshes"], data["lows"], data["singles"]
+    scans = parallel.ordered_map(Scan(arch, neighbours(arch)), list(zip(meshes, lows, strict=True)), min_items=2)
+    ideal = np.asarray([scan["phase_noise"][0] for scan in scans])
+    eta = fit_efficiency(ideal, np.asarray(singles, float))
+    return {
+        "schema": EFFICIENCY_SCHEMA,
+        "runs": [run.name for run in runs],
+        "analysis_sha256": [sha256(run / "analysis.json") for run in runs],
+        "settings": len(lows),
+        "t_out_at_plan": data["t_out"],
+        "efficiency_under_ideal": [round(float(v), 6) for v in eta],
+        **efficiency_classes(scans, singles, data["folds"]),
+        "static": efficiency_static(arch, meshes, lows, singles, STATIC_TAUS, data["folds"]),
+    }
+
+
+def efficiency_close(a: dict[str, Any], b: dict[str, Any]) -> None:
+    """A fitted-efficiency record replays when its digests, verdicts, classes and efficiencies match (numbers within
+    STATIC_REPLAY_TOLERANCE relative, at least one nat on likelihood sums) and its static fit block replays."""
+    keys = ("schema", "runs", "analysis_sha256", "settings", "best_class", "verdict")
+    require({k: a[k] for k in keys} == {k: b[k] for k in keys}, f"{a.get('runs')}: fitted-efficiency verdict differs")
+    require(set(a) == set(b) and set(a["static"]) == set(b["static"]), f"{a['runs']}: record fields differ")
+    require(set(a["static"]["by_tau"]) == set(b["static"]["by_tau"]), f"{a['runs']}: prior widths differ")
+    require(set(a["classes"]) == set(b["classes"]), f"{a['runs']}: scanned classes differ")
+    for name, row in a["classes"].items():
+        require(set(row) == set(b["classes"][name]), f"{name}: fields differ")
+        require(row["chosen"] == b["classes"][name]["chosen"] and row["fits"] == b["classes"][name]["fits"], name)
+        p_retained, p_replayed = row["p_value"], b["classes"][name]["p_value"]
+        require(
+            abs(p_retained - p_replayed) <= max(1e-12, STATIC_REPLAY_TOLERANCE * abs(p_replayed)), f"{name} p_value"
+        )
+        for key in ("held_out_log_likelihood", "g2_per_dof", "median_tvd_over_floor"):
+            other = b["classes"][name][key]
+            require(
+                abs(row[key] - other)
+                <= max(1.0 if key == "held_out_log_likelihood" else 1e-3, STATIC_REPLAY_TOLERANCE * abs(other)),
+                f"{name} {key}",
+            )
+    fit_endpoints_close(a["static"], b["static"], str(a["runs"]))
+    close_relative(a["efficiency_under_ideal"], b["efficiency_under_ideal"], "efficiency_under_ideal")
+    require(a["t_out_at_plan"] == b["t_out_at_plan"], "t_out_at_plan differs")
+
+
+class OffsetShare:
+    """in_block and algebra share a of one block mesh at drawn heater phases, weighted by fitted efficiencies."""
+
+    def __init__(self, arch: list[Element], eta: list[float]) -> None:
+        self.arch, self.eta = arch, eta
+
+    def __call__(self, job: tuple[list[float], int]) -> tuple[float, float]:
+        import numpy as np
+
+        phases, low = job
+        p = propagate(self.arch, phases, low)[0]
+        w = p * np.asarray(self.eta)
+        w = w / w.sum()
+        block = float(w[low : low + 4].sum())
+        return block, float(w[low : low + 2].sum()) / block
+
+
+def offset_draws(phases: Any, low: int, rms: float, rng: Any) -> list[tuple[list[float], int]]:
+    """FOLLOWUP_DRAWS independent heater-offset draws of one block mesh, in the generator's order."""
+    return [(list(phases + rng.normal(0, rms, phases.size)), low) for _ in range(FOLLOWUP_DRAWS)]
+
+
+def offset_summary(shares: list[tuple[float, float]]) -> dict[str, Any]:
+    """Mean and 5th and 95th percentiles of in_block and a over a configuration's offset draws."""
+    import numpy as np
+
+    draws = np.asarray(shares)
+
+    def summary(column: Any) -> dict[str, float]:
+        return {
+            k: round(float(f(column)), 4)
+            for k, f in (
+                ("mean", np.mean),
+                ("p05", lambda c: np.percentile(c, 5)),
+                ("p95", lambda c: np.percentile(c, 95)),
+            )
+        }
+
+    return {"in_block": summary(draws[:, 0]), "a": summary(draws[:, 1])}
+
+
+def homogeneity(a: list[int], b: list[int]) -> tuple[float, int]:
+    """G^2 of two one-click histograms against their pooled shape and its degrees of freedom; modes whose
+    expected count falls below POOL_MIN in either run merge into one rest column."""
+    na, nb = sum(a), sum(b)
+    pooled = [(x + y) / (na + nb) for x, y in zip(a, b, strict=True)]
+    keep = [m for m in range(MODES) if min(na, nb) * pooled[m] >= POOL_MIN]
+    rest = [m for m in range(MODES) if m not in keep]
+    columns = [([a[m]], [b[m]], pooled[m]) for m in keep]
+    if rest and sum(pooled[m] for m in rest) > 0:
+        columns.append(([a[m] for m in rest], [b[m] for m in rest], sum(pooled[m] for m in rest)))
+    g2 = 0.0
+    for xs, ys, q in columns:
+        for observed, n in ((sum(xs), na), (sum(ys), nb)):
+            if observed:
+                g2 += 2 * observed * math.log(observed / (n * q))
+    return g2, len(columns) - 1
+
+
+def followup_record(preregistration: Path, job02: Path, repeat: Path, original: Path) -> dict[str, Any]:
+    """The preregistered readout of the job-02 discriminator and the C1 job-03 repeat."""
+    import numpy as np
+    from scipy.stats import chi2
+
+    prereg = json.loads(preregistration.read_text(encoding="utf-8"))
+    rows = prereg["job_02"]["per_configuration"]
+    analysis = json.loads((job02 / "analysis.json").read_text(encoding="utf-8"))
+    eta = np.asarray(
+        json.loads((preregistration.parent / "efficiency.json").read_text(encoding="utf-8"))["efficiency_under_ideal"]
+    )
+    texts = computed_circuits(job02)
+    arch = run_architecture(decode(texts[0]))
+    manifest = json.loads((job02 / "cases.json").read_text(encoding="utf-8"))
+    rng = np.random.default_rng([SEED, FOLLOWUP_STREAM])
+    # Every recomputed configuration draws its offsets in the stream's order before the pool propagates them,
+    # so pooled and serial runs predict the same numbers.
+    jobs: dict[str, list[tuple[list[float], int]]] = {}
+    for row, setting, text, case in zip(rows, analysis["settings"], texts, manifest["settings"], strict=True):
+        require(row["name"] == setting["name"], f"{job02.name}: {setting['name']} out of order")
+        if setting["mesh_sha256"] != row["mesh_sha256_s5"]:
+            phases = np.asarray(mesh_phases(arch, decode(text)))
+            jobs[setting["name"]] = offset_draws(phases, case["low"], FOLLOWUP_RMS, rng)
+    flat = parallel.ordered_map(
+        OffsetShare(arch, list(map(float, eta))), [j for v in jobs.values() for j in v], min_items=2
+    )
+    shares = {name: flat[k * FOLLOWUP_DRAWS : (k + 1) * FOLLOWUP_DRAWS] for k, name in enumerate(jobs)}
+    configurations = []
+    for row, setting in zip(rows, analysis["settings"], strict=True):
+        same = setting["name"] not in shares
+        predicted = row["in_block_at_0.08"] if same else offset_summary(shares[setting["name"]])["in_block"]
+        configurations.append(
+            {
+                "name": setting["name"],
+                "mesh_equals_s5": same,
+                "in_block": setting["in_block"],
+                "in_block_wilson95": setting["in_block_wilson95"],
+                "a": setting.get("a"),
+                "a_wilson95": setting.get("a_wilson95"),
+                "predicted_in_block_at_0.08": predicted,
+            }
+        )
+    median = float(np.median([c["in_block"] for c in configurations]))
+    threshold = float(np.median([c["predicted_in_block_at_0.08"]["p05"] for c in configurations]))
+    verdict = (
+        "job_specific"
+        if median >= threshold
+        else "sparse_targets_fail"
+        if median <= FOLLOWUP_SPARSE_FAIL
+        else "intermediate"
+    )
+    first = json.loads((original / "analysis.json").read_text(encoding="utf-8"))["settings"]
+    again = json.loads((repeat / "analysis.json").read_text(encoding="utf-8"))["settings"]
+    tests = [homogeneity(x["single_click"], y["single_click"]) for x, y in zip(first, again, strict=True)]
+    g2, dof = sum(g for g, _ in tests), sum(d for _, d in tests)
+    p_value = float(f"{chi2.sf(g2, max(dof, 1)):.6g}")
+    tvds = sorted(
+        0.5
+        * sum(
+            abs(u / sum(x["single_click"]) - v / sum(y["single_click"]))
+            for u, v in zip(x["single_click"], y["single_click"], strict=True)
+        )
+        for x, y in zip(first, again, strict=True)
+    )
+    return {
+        "schema": FOLLOWUP_SCHEMA,
+        "preregistration_sha256": sha256(preregistration),
+        "job_02": {
+            "run": job02.name,
+            "configurations": configurations,
+            "median_in_block": round(median, 6),
+            "job_specific_threshold": round(threshold, 4),
+            "sparse_fail_threshold": FOLLOWUP_SPARSE_FAIL,
+            "verdict": verdict,
+            "a_mean_by_kind": analysis.get("a_mean_by_kind"),
+        },
+        "job_03_repeat": {
+            "runs": [original.name, repeat.name],
+            "meshes_identical": [x["mesh_sha256"] == y["mesh_sha256"] for x, y in zip(first, again, strict=True)],
+            "g2": round(g2, 6),
+            "dof": dof,
+            "p_value": p_value,
+            "median_tvd_between_runs": round(tvds[len(tvds) // 2], 6),
+            "verdict": "reproducible" if p_value >= FIT_P_MIN else "drift",
+        },
+    }
+
+
+def mesh_sha(text: str) -> str:
+    return hashlib.sha256(unzip(text).encode()).hexdigest()
+
+
+def pair_record(preregistration: Path, form: Path, ensemble: Path, job02: Path) -> dict[str, Any]:
+    """The preregistered readout of the one-circuit form test and the 32-iteration seed ensemble."""
+    import numpy as np
+
+    prereg = json.loads(preregistration.read_text(encoding="utf-8"))
+    rule = prereg["form"]
+    block = json.loads((form / "analysis.json").read_text(encoding="utf-8"))["blocks"][0]
+    (text,) = computed_circuits(form)
+    returned = mesh_sha(text)
+    if returned == rule["q1_mesh_sha256"]:
+        form_verdict = "seed ignored"
+    elif block["in_block"] <= rule["one_circuit_form_at_most"]:
+        form_verdict = "one-circuit form"
+    elif block["in_block"] >= rule["q1_mesh_at_least"]:
+        form_verdict = "Q1 mesh"
+    else:
+        form_verdict = "intermediate"
+    analysis = json.loads((ensemble / "analysis.json").read_text(encoding="utf-8"))
+    zero = {s["name"]: s for s in json.loads((job02 / "analysis.json").read_text(encoding="utf-8"))["settings"]}
+    rows: dict[str, dict[str, Any]] = {}
+    for s in analysis["settings"]:
+        name, seed = s["name"].rsplit("-s", 1)
+        row = rows.setdefault(
+            name, {"name": name, "seed_0": {k: zero[name][k] for k in ("a", "in_block", "mesh_sha256")}}
+        )
+        row[f"seed_{seed}"] = {k: s[k] for k in ("a", "in_block", "mesh_sha256")}
+    configurations = []
+    for row in rows.values():
+        seeds = [row[f"seed_{k}"] for k in (0, *ENSEMBLE_SEEDS)]
+        a = [s["a"] for s in seeds]
+        configurations.append(
+            {
+                **row,
+                "meshes_distinct": len({s["mesh_sha256"] for s in seeds}) == len(seeds),
+                "a_spread": round(float(max(a) - min(a)), 6),
+                "in_block_spread": round(
+                    float(max(s["in_block"] for s in seeds) - min(s["in_block"] for s in seeds)), 6
+                ),
+            }
+        )
+    window = prereg["ensemble"]["duration_s"]
+    return {
+        "schema": PAIR_SCHEMA,
+        "preregistration_sha256": sha256(preregistration),
+        "form": {
+            "run": form.name,
+            "mesh_sha256": returned,
+            "in_block": block["in_block"],
+            "in_block_wilson95": block["in_block_wilson95"],
+            "a": block["a"],
+            "a_wilson95": block["a_wilson95"],
+            "verdict": form_verdict,
+        },
+        "ensemble": {
+            "run": ensemble.name,
+            "configurations": configurations,
+            "seed_selects_mesh": all(c["meshes_distinct"] for c in configurations),
+            "a_mean_by_kind": analysis["a_mean_by_kind"],
+            "median_a_spread": round(float(np.median([c["a_spread"] for c in configurations])), 6),
+            "duration_s": analysis["duration_s"],
+            "duration_within_prediction": window["low"] <= analysis["duration_s"] <= window["high"],
+        },
+    }
 
 
 def scan_axes() -> dict[str, list[dict[str, float]]]:
@@ -1637,6 +2310,69 @@ def wilson(successes: int, trials: int) -> list[float] | None:
 # --- self-test -------------------------------------------------------------------------------
 
 
+def gradient_self_test() -> int:
+    """Both static fits return the derivative of the likelihood they return, bins held at the floor included.
+
+    S3's returned meshes put most modes near zero light, so clicks added where the mesh predicts below
+    LIKELIHOOD_FLOOR hold those bins at the floor; central differences of the likelihood in the offsets and
+    the efficiency logarithms must match the analytic gradients there.
+    """
+    import numpy as np
+
+    texts = computed_circuits(RUNS / S3_RUN)
+    arch = run_architecture(decode(texts[0]))
+    manifest = json.loads((RUNS / S3_RUN / "cases.json").read_text(encoding="utf-8"))
+    meshes = np.asarray([mesh_phases(arch, decode(t)) for t in texts[:3]])
+    sources = [row["low"] for row in manifest["settings"][:3]]
+    rng = np.random.default_rng([SEED, 31])
+    p, jac = jacobians(arch, meshes, sources)
+    counts = np.asarray([rng.multinomial(SAMPLES_PER_SETTING, row / row.sum()) for row in p], float)
+    floored = [(s, int(np.argmin(p[s]))) for s in range(len(sources))]
+    # The heaters that move each floored bin most are where a derivative that counts its clicks goes wrong.
+    probes = {int(j) for s, m in floored for j in np.argsort(-np.abs(jac[s, m]))[:2]}
+    probes |= {int(j) for j in rng.choice(meshes.shape[1], 3, replace=False)}
+    for s, m in floored:
+        require(p[s, m] < LIKELIHOOD_FLOOR / 10, f"gradient self-test: mode {m} of setting {s} carries light")
+        counts[s, m] += 50
+    keep = np.arange(len(sources))
+    delta = rng.normal(0, 0.05, meshes.shape[1])
+    u = rng.normal(0, 0.2, MODES)
+    plain = StaticFit(arch, meshes, sources, counts, np.ones(MODES), np.zeros((len(sources), MODES)))
+    joint = StaticEfficiencyFit(arch, meshes, sources, counts)
+    v_plain, g_plain = plain.loglik(delta, keep)
+    v_joint, g_delta, g_u = joint.joint(delta, u, keep)
+    # The fitted objective is the likelihood that scores held-out folds: loglik on the same rates.
+    shifted = jacobians(arch, meshes + delta, sources)[0]
+    eta = np.exp(u - u.mean())
+    zeros = [0.0] * MODES
+    for value, weights in ((v_plain, [1.0] * MODES), (v_joint, list(eta))):
+        scored = sum(loglik(list(map(int, c)), list(q), weights, zeros) for c, q in zip(counts, shifted, strict=True))
+        require(
+            abs(value - scored) <= 1e-9 * max(1.0, abs(scored)), f"fitted objective {value} against loglik {scored}"
+        )
+    step = 1e-6
+    checked = 0
+    for j in sorted(probes):
+        e = np.zeros(meshes.shape[1])
+        e[j] = step
+        pairs = (
+            ((plain.loglik(delta + e, keep)[0] - plain.loglik(delta - e, keep)[0]) / (2 * step), g_plain[j]),
+            ((joint.joint(delta + e, u, keep)[0] - joint.joint(delta - e, u, keep)[0]) / (2 * step), g_delta[j]),
+        )
+        for numeric, analytic in pairs:
+            require(
+                abs(numeric - analytic) <= 1e-4 * max(1.0, abs(analytic)), f"offset {j}: {numeric} against {analytic}"
+            )
+            checked += 1
+    for k in rng.choice(MODES, 4, replace=False):
+        e = np.zeros(MODES)
+        e[k] = step
+        numeric = (joint.joint(delta, u + e, keep)[0] - joint.joint(delta, u - e, keep)[0]) / (2 * step)
+        require(abs(numeric - g_u[k]) <= 1e-4 * max(1.0, abs(g_u[k])), f"efficiency {k}: {numeric} against {g_u[k]}")
+        checked += 1
+    return checked
+
+
 def self_test() -> int:
     import numpy as np
 
@@ -1717,7 +2453,8 @@ def self_test() -> int:
         rejected += 1
     else:
         raise SystemExit("self-test: an altered RCA verdict replayed")
-    print(f"self-test: {rejected} mutations rejected")
+    checked = gradient_self_test()
+    print(f"self-test: {rejected} mutations rejected, {checked} static-fit derivatives match central differences")
     return 0
 
 
@@ -1816,6 +2553,62 @@ def static_self_test() -> int:
     return 0
 
 
+def efficiency_self_test() -> int:
+    """Fitted efficiencies separate an instrument error from an optical one.
+
+    Sixty-four uniform random meshes over the connected inputs in four folds stand in for a campaign of four
+    runs. Two detector banks at different efficiency without offsets read ideal and declare no static offsets;
+    the same efficiencies with 0.1 rad static offsets declare them and recover both; an ideal truth at flat
+    efficiency scored with Q1's receipt t_out reads "no class fits" under the receipt-efficiency score and
+    "ideal" under fitted efficiencies.
+    """
+    import numpy as np
+
+    texts = computed_circuits(RUNS / S3_RUN)
+    arch = run_architecture(decode(texts[0]))
+    rng = np.random.default_rng([SEED, 13])
+    meshes = rng.uniform(0, 2 * math.pi, (64, len(phase_slots(arch))))
+    lows = [CONNECTED[k % len(CONNECTED)] for k in range(64)]
+    folds = [k // 16 for k in range(64)]
+    pairs = list(zip(meshes, lows, strict=True))
+    truth = np.where(np.arange(MODES) < MODES // 2, 1.0, 0.5) * rng.uniform(0.8, 1.2, MODES)
+    offsets = rng.normal(0, 0.1, meshes.shape[1])
+    nominal = np.asarray([propagate(arch, list(ph), low)[0] for ph, low in pairs])
+    shifted = np.asarray([propagate(arch, list(ph + offsets), low)[0] for ph, low in pairs])
+
+    def draw(p: Any, eta: Any) -> list[list[int]]:
+        return [list(map(int, rng.multinomial(SAMPLES_PER_SETTING, w / w.sum()))) for w in p * eta]
+
+    instrument, both, flat = draw(nominal, truth), draw(shifted, truth), draw(nominal, np.ones(MODES))
+    scans = parallel.ordered_map(Scan(arch, neighbours(arch)), pairs, min_items=2)
+    seen: dict[str, Any] = {}
+    read = efficiency_classes(scans, instrument, folds)
+    static = efficiency_static(arch, meshes, lows, instrument, (0.1,), folds)
+    seen["efficiency only"] = (read["verdict"], static["by_tau"]["0.1"])
+    require(read["verdict"] == "ideal", f"self-test: an efficiency-only truth reads {read['verdict']}")
+    require(not static["static_declared"], f"self-test: an efficiency-only truth declared static offsets: {static}")
+    static = efficiency_static(arch, meshes, lows, both, (0.1,), folds)
+    delta, eta = StaticEfficiencyFit(arch, meshes, lows, both).fit_joint(np.arange(64), 0.1)
+    recovered = (float(np.corrcoef(delta, offsets)[0, 1]), float(np.corrcoef(np.log(eta), np.log(truth))[0, 1]))
+    seen["efficiency and offsets"] = (static["by_tau"]["0.1"], [round(v, 3) for v in recovered])
+    require(static["static_declared"], f"self-test: static offsets with efficiencies were not declared: {static}")
+    require(
+        recovered[0] >= 0.8 and recovered[1] >= 0.95, f"self-test: offsets and efficiencies recovered at {recovered}"
+    )
+    receipt = json.loads((RUNS / Q1_RUN / "submission.json").read_text(encoding="utf-8"))["perfs_at_plan"]
+    t_out = receipt["Transmission per mode (%)"]["t_out"]
+    preregistered = score(arch, [list(m) for m in meshes], lows, flat, t_out, [[0.0] * MODES for _ in lows])
+    fitted = efficiency_classes(scans, flat, folds)
+    seen["flat under t_out"] = (preregistered["verdict"], fitted["verdict"])
+    require(
+        preregistered["verdict"] == "no class fits",
+        f"self-test: t_out scoring of a flat truth reads {preregistered['verdict']}",
+    )
+    require(fitted["verdict"] == "ideal", f"self-test: fitted efficiencies on a flat truth read {fitted['verdict']}")
+    print(f"efficiency self-test: instrument and optical errors separate; {seen}")
+    return 0
+
+
 def block_slot(arch: list[Element], low: int) -> int:
     slot: int = block_mzis(arch, low, 4, BLOCK_SIZES[0])[2]["ps"][1]
     return slot
@@ -1838,6 +2631,19 @@ def main() -> int:
     group.add_argument("--self-test-rule", action="store_true")
     group.add_argument("--static", type=Path, nargs="+", metavar=("OUT", "RUN"))
     group.add_argument("--check-static", type=Path, nargs="+", metavar=("OUT", "RUN"))
+    group.add_argument("--self-test-efficiency", action="store_true")
+    group.add_argument("--efficiency", type=Path, nargs="+", metavar=("OUT", "RUN"))
+    group.add_argument("--check-efficiency", type=Path, nargs="+", metavar=("OUT", "RUN"))
+    group.add_argument(
+        "--followup", type=Path, nargs=5, metavar=("OUT", "PREREGISTRATION", "JOB02", "REPEAT", "ORIGINAL")
+    )
+    group.add_argument(
+        "--check-followup", type=Path, nargs=5, metavar=("OUT", "PREREGISTRATION", "JOB02", "REPEAT", "ORIGINAL")
+    )
+    group.add_argument("--pair", type=Path, nargs=5, metavar=("OUT", "PREREGISTRATION", "FORM", "ENSEMBLE", "JOB02"))
+    group.add_argument(
+        "--check-pair", type=Path, nargs=5, metavar=("OUT", "PREREGISTRATION", "FORM", "ENSEMBLE", "JOB02")
+    )
     args = parser.parse_args()
     try:
         if args.self_test:
@@ -1846,6 +2652,45 @@ def main() -> int:
             return static_self_test()
         if args.self_test_rule:
             return rule_self_test()
+        if args.self_test_efficiency:
+            return efficiency_self_test()
+        if args.pair or args.check_pair:
+            out, *inputs = args.pair or args.check_pair
+            record = pair_record(*inputs)
+            if args.pair:
+                out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+            else:
+                close_relative(json.loads(out.read_text(encoding="utf-8")), record)
+            print(
+                f"{out}: pair {'written' if args.pair else 'replays'}, form {record['form']['verdict']}, "
+                f"seed selects mesh {record['ensemble']['seed_selects_mesh']}"
+            )
+            return 0
+        if args.followup or args.check_followup:
+            out, *inputs = args.followup or args.check_followup
+            record = followup_record(*inputs)
+            if args.followup:
+                out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+            else:
+                close_relative(json.loads(out.read_text(encoding="utf-8")), record)
+            print(
+                f"{out}: follow-up {'written' if args.followup else 'replays'}, job-02 {record['job_02']['verdict']}, "
+                f"repeat {record['job_03_repeat']['verdict']}"
+            )
+            return 0
+        if args.efficiency or args.check_efficiency:
+            out, *runs = args.efficiency or args.check_efficiency
+            record = efficiency_record(runs)
+            if args.efficiency:
+                out.parent.mkdir(parents=True, exist_ok=True)
+                out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+            else:
+                efficiency_close(json.loads(out.read_text(encoding="utf-8")), record)
+            print(
+                f"{out}: fitted efficiencies {'written' if args.efficiency else 'replay'}, "
+                f"verdict {record['verdict']}, static declared {record['static']['static_declared']}"
+            )
+            return 0
         if args.static or args.check_static:
             out, *runs = args.static or args.check_static
             record = static_record(runs)
