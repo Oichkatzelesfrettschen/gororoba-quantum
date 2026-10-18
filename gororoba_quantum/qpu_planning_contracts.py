@@ -2082,6 +2082,19 @@ def _verify_init_herald(snapshot: live_run.Snapshot) -> None:
         heralded_policy["design"].get("init_herald") is True and heralded_policy != live_run.record_policy(plain_args),
         "the record policy does not bind the herald",
     )
+    import qpu_cases
+
+    fixture = qpu_cases._fixture()
+    location = Path("results/live/fixture/record.json")
+    _require(
+        "--init-herald" not in qpu_cases._reproduction_arguments(fixture, location),
+        "an unheralded record replays with the herald",
+    )
+    fixture["policy"]["design"]["init_herald"] = True
+    _require(
+        "--init-herald" in qpu_cases._reproduction_arguments(fixture, location),
+        "a heralded record's written commands omit --init-herald",
+    )
     trace: dict[str, Any] = {}
     candidates = qpu_planning.family_candidates(live_run, [snapshot], heralded_args, trace)
     _require(bool(candidates), f"FakeFez rejects every heralded N=21 window family: {trace}")
