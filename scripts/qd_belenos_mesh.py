@@ -44,7 +44,12 @@ no dark term; --check-efficiency OUT RUN... replays it, and
 --self-test-efficiency requires an efficiency-only truth to read ideal
 without static offsets, efficiencies plus offsets to be declared and
 recovered, and a flat truth scored with the receipt's t_out to read "no
-class fits".
+class fits". --followup OUT PREREGISTRATION JOB02 REPEAT ORIGINAL reads the
+preregistered follow-up: job-02's median in_block against the predicted 5th
+percentile under the session's efficiencies and FOLLOWUP_RMS heater offsets
+(job specific) and FOLLOWUP_SPARSE_FAIL (sparse targets fail), and the summed
+per-setting G^2 homogeneity of a repeated job against its original;
+--check-followup replays it.
 
 Usage: "$PYTHON" scripts/qd_belenos_mesh.py (--write DIR | --check DIR | --rca OUT | --check-rca OUT | --self-test)
 """
@@ -101,6 +106,10 @@ EFFICIENCY_SCHEMA = "qd-belenos-mesh-efficiency-v1"
 EFFICIENCY_SWEEPS = 5000
 EFFICIENCY_TOLERANCE = 1e-10
 EFFICIENCY_STATIC_ITERATIONS = 600
+FOLLOWUP_SCHEMA = "qd-belenos-followup-v1"
+FOLLOWUP_RMS = 0.08
+FOLLOWUP_DRAWS = 200
+FOLLOWUP_SPARSE_FAIL = 0.65
 FIT_TVD_RATIO = 3.0
 SAMPLES_PER_SETTING = 1_500
 SHOT_HEADROOM = 2
@@ -1744,6 +1753,134 @@ def efficiency_close(a: dict[str, Any], b: dict[str, Any]) -> None:
     require(a["t_out_at_plan"] == b["t_out_at_plan"], "t_out_at_plan differs")
 
 
+def offset_prediction(arch: list[Element], phases: Any, low: int, eta: Any, rms: float, rng: Any) -> dict[str, Any]:
+    """in_block and algebra share a of one block mesh under independent heater offsets of the given rms, weighted
+    by fitted efficiencies: mean and 5th and 95th percentiles over FOLLOWUP_DRAWS draws."""
+    import numpy as np
+
+    def share(p: Any) -> tuple[float, float]:
+        w = p * eta / (p * eta).sum()
+        block = float(w[low : low + 4].sum())
+        return block, float(w[low : low + 2].sum()) / block
+
+    draws = np.asarray(
+        [share(propagate(arch, list(phases + rng.normal(0, rms, phases.size)), low)[0]) for _ in range(FOLLOWUP_DRAWS)]
+    )
+
+    def summary(column: Any) -> dict[str, float]:
+        return {
+            k: round(float(f(column)), 4)
+            for k, f in (
+                ("mean", np.mean),
+                ("p05", lambda c: np.percentile(c, 5)),
+                ("p95", lambda c: np.percentile(c, 95)),
+            )
+        }
+
+    return {"in_block": summary(draws[:, 0]), "a": summary(draws[:, 1])}
+
+
+def homogeneity(a: list[int], b: list[int]) -> tuple[float, int]:
+    """G^2 of two one-click histograms against their pooled shape and its degrees of freedom; modes whose
+    expected count falls below POOL_MIN in either run merge into one rest column."""
+    na, nb = sum(a), sum(b)
+    pooled = [(x + y) / (na + nb) for x, y in zip(a, b, strict=True)]
+    keep = [m for m in range(MODES) if min(na, nb) * pooled[m] >= POOL_MIN]
+    rest = [m for m in range(MODES) if m not in keep]
+    columns = [([a[m]], [b[m]], pooled[m]) for m in keep]
+    if rest and sum(pooled[m] for m in rest) > 0:
+        columns.append(([a[m] for m in rest], [b[m] for m in rest], sum(pooled[m] for m in rest)))
+    g2 = 0.0
+    for xs, ys, q in columns:
+        for observed, n in ((sum(xs), na), (sum(ys), nb)):
+            if observed:
+                g2 += 2 * observed * math.log(observed / (n * q))
+    return g2, len(columns) - 1
+
+
+def followup_record(preregistration: Path, job02: Path, repeat: Path, original: Path) -> dict[str, Any]:
+    """The preregistered readout of the job-02 discriminator and the C1 job-03 repeat."""
+    import numpy as np
+    from scipy.stats import chi2
+
+    prereg = json.loads(preregistration.read_text(encoding="utf-8"))
+    rows = prereg["job_02"]["per_configuration"]
+    analysis = json.loads((job02 / "analysis.json").read_text(encoding="utf-8"))
+    eta = np.asarray(
+        json.loads((preregistration.parent / "efficiency.json").read_text(encoding="utf-8"))["efficiency_under_ideal"]
+    )
+    texts = computed_circuits(job02)
+    arch = run_architecture(decode(texts[0]))
+    manifest = json.loads((job02 / "cases.json").read_text(encoding="utf-8"))
+    rng = np.random.default_rng([SEED, 22])
+    configurations = []
+    for row, setting, text, case in zip(rows, analysis["settings"], texts, manifest["settings"], strict=True):
+        require(row["name"] == setting["name"], f"{job02.name}: {setting['name']} out of order")
+        same = setting["mesh_sha256"] == row["mesh_sha256_s5"]
+        predicted = (
+            row["in_block_at_0.08"]
+            if same
+            else offset_prediction(
+                arch, np.asarray(mesh_phases(arch, decode(text))), case["low"], eta, FOLLOWUP_RMS, rng
+            )["in_block"]
+        )
+        configurations.append(
+            {
+                "name": setting["name"],
+                "mesh_equals_s5": same,
+                "in_block": setting["in_block"],
+                "in_block_wilson95": setting["in_block_wilson95"],
+                "a": setting.get("a"),
+                "a_wilson95": setting.get("a_wilson95"),
+                "predicted_in_block_at_0.08": predicted,
+            }
+        )
+    median = float(np.median([c["in_block"] for c in configurations]))
+    threshold = float(np.median([c["predicted_in_block_at_0.08"]["p05"] for c in configurations]))
+    verdict = (
+        "job_specific"
+        if median >= threshold
+        else "sparse_targets_fail"
+        if median <= FOLLOWUP_SPARSE_FAIL
+        else "intermediate"
+    )
+    first = json.loads((original / "analysis.json").read_text(encoding="utf-8"))["settings"]
+    again = json.loads((repeat / "analysis.json").read_text(encoding="utf-8"))["settings"]
+    tests = [homogeneity(x["single_click"], y["single_click"]) for x, y in zip(first, again, strict=True)]
+    g2, dof = sum(g for g, _ in tests), sum(d for _, d in tests)
+    p_value = float(f"{chi2.sf(g2, max(dof, 1)):.6g}")
+    tvds = sorted(
+        0.5
+        * sum(
+            abs(u / sum(x["single_click"]) - v / sum(y["single_click"]))
+            for u, v in zip(x["single_click"], y["single_click"], strict=True)
+        )
+        for x, y in zip(first, again, strict=True)
+    )
+    return {
+        "schema": FOLLOWUP_SCHEMA,
+        "preregistration_sha256": sha256(preregistration),
+        "job_02": {
+            "run": job02.name,
+            "configurations": configurations,
+            "median_in_block": round(median, 6),
+            "job_specific_threshold": round(threshold, 4),
+            "sparse_fail_threshold": FOLLOWUP_SPARSE_FAIL,
+            "verdict": verdict,
+            "a_mean_by_kind": analysis.get("a_mean_by_kind"),
+        },
+        "job_03_repeat": {
+            "runs": [original.name, repeat.name],
+            "meshes_identical": [x["mesh_sha256"] == y["mesh_sha256"] for x, y in zip(first, again, strict=True)],
+            "g2": round(g2, 6),
+            "dof": dof,
+            "p_value": p_value,
+            "median_tvd_between_runs": round(tvds[len(tvds) // 2], 6),
+            "verdict": "reproducible" if p_value >= FIT_P_MIN else "drift",
+        },
+    }
+
+
 def scan_axes() -> dict[str, list[dict[str, float]]]:
     mixture = [{"sigma": s, "fraction": f} for s in SCAN_SIGMAS for f in SCAN_FRACTIONS]
     return {
@@ -2198,6 +2335,12 @@ def main() -> int:
     group.add_argument("--self-test-efficiency", action="store_true")
     group.add_argument("--efficiency", type=Path, nargs="+", metavar=("OUT", "RUN"))
     group.add_argument("--check-efficiency", type=Path, nargs="+", metavar=("OUT", "RUN"))
+    group.add_argument(
+        "--followup", type=Path, nargs=5, metavar=("OUT", "PREREGISTRATION", "JOB02", "REPEAT", "ORIGINAL")
+    )
+    group.add_argument(
+        "--check-followup", type=Path, nargs=5, metavar=("OUT", "PREREGISTRATION", "JOB02", "REPEAT", "ORIGINAL")
+    )
     args = parser.parse_args()
     try:
         if args.self_test:
@@ -2208,6 +2351,18 @@ def main() -> int:
             return rule_self_test()
         if args.self_test_efficiency:
             return efficiency_self_test()
+        if args.followup or args.check_followup:
+            out, *inputs = args.followup or args.check_followup
+            record = followup_record(*inputs)
+            if args.followup:
+                out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+            else:
+                close_relative(json.loads(out.read_text(encoding="utf-8")), record)
+            print(
+                f"{out}: follow-up {'written' if args.followup else 'replays'}, job-02 {record['job_02']['verdict']}, "
+                f"repeat {record['job_03_repeat']['verdict']}"
+            )
+            return 0
         if args.efficiency or args.check_efficiency:
             out, *runs = args.efficiency or args.check_efficiency
             record = efficiency_record(runs)
