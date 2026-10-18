@@ -236,11 +236,11 @@ it ran.
   gates (core-368, core-270) reach their inputs through glob, directory
   listing and git; a skip rule for pr-tier gates needs each gate's recorded
   read set and a self-test that plants a missed input.
-- Reserve `assert` for internal invariants and validate input and records
-  with an explicit raise. `python -O` strips every assert, so a gate's `-O`
-  half proves no check depends on one, and that half costs as much CPU as
-  the normal half; ruff `S101` carries the same guarantee at lint time
-  ([#283](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/283)).
+- Check with an explicit raise, never `assert`. `python -O` strips every
+  assert, and ruff `S101` (pyproject.toml) rejects one at lint time, so each
+  check holds in every interpreter mode and each gate runs its command once.
+  The files whose bytes retained evidence pins keep their asserts under
+  per-file ignores.
 
 ## Source library and research replay
 
