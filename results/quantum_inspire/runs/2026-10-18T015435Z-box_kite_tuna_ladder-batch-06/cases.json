@@ -1,0 +1,135 @@
+{
+ "schema": "box-kite-cases-v1",
+ "family": "tuna_ladder",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 131072,
+ "dialect": "tuna",
+ "bit_order": "qubit 0 at the rightmost character (Tuna)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "layout": {
+  "excluded": [
+   0,
+   5,
+   6,
+   7,
+   9
+  ],
+  "avoided": [
+   15
+  ],
+  "lcu_pairs": [
+   [
+    1,
+    4
+   ],
+   [
+    10,
+    13
+   ],
+   [
+    12,
+    14
+   ]
+  ],
+  "iso_qubits": [
+   1,
+   13,
+   14
+  ]
+ },
+ "encodings": {
+  "reduced": "selector a = the pair's first qubit, data d = its second; reduced two-label LCU with CNOT as H CZ H on d; setting X adds H on d and setting Y adds Sdag, H on d before the measurement; CZ depth n repeats CZ(a, d) (n - 1) times after the SELECT CZ, each after a per-qubit barrier run",
+  "readout": "readout-0 measures all 17 qubits in |0>, readout-1 after X on all 17; readout-iso-x after X and readout-iso-hzh after H Z H (a per-qubit barrier run between the gates) on LADDER_ISO_QUBITS only"
+ },
+ "preregistered": {
+  "observable": "per Latin replica the selector success P(a = 0) and the data expectation E_0 = 2 P(d = 0 | a = 0) - 1 in the replica's setting (X: H on d; Y: Sdag, H on d); per job the shot-ordered outcome of every bit; per context readout the P1 of every qubit",
+  "design": "seven batches in LADDER_PLAN order. latin-{x,y}-c (c = 1, 2, 3) places the bright edge (1,10)(4,15) of kite 3 at y_sign +1 at CZ depth LADDER_DEPTHS[(p + c - 1) % 3], depths [1, 5, 9], on pair p of [[1, 4], [10, 13], [12, 14]]: every circuit holds all three depths, and the three circuits of one setting form a 3 x 3 Latin square inside one batch. Batches 1 and 2 read the square in X then Y; batches 4 and 5 repeat it with the circuit order rotated by one. Batches 0, 3 and 6 hold readout-0, readout-1 and a context readout",
+  "readout": "the primary correction interpolates each qubit's e01 and e10 from the readout-0 and readout-1 circuits of batches 0, 3 and 6 linearly in job finish time, as in the follow series; Pc = (p - e10) / (1 - e01 - e10) on the selector and E_0 inverts the tensor product of both assignment matrices on the joint (a, d) counts. The context readouts enter only the context analysis below",
+  "ladder": "per pair and Latin batch, from the replicas of that one batch: the population contrast C(n) = 2 Pc(n) - 1 and, in X, the joint coherence J(n) = Pc(n) |E_0(n)|; r_pop and r_coh are exp of the unweighted least-squares slopes of ln C(n) and ln J(n) on n over the three depths, and rho = r_coh / r_pop. Under a global depolarizing channel rho = 1; dephasing lowers rho, amplitude damping raises r_pop. Each carries a 99% parametric-bootstrap interval (4000 draws, seed 20261017) of the binomial counts and the brackets. Decision per pair: rho below 1 when the intervals of both X batches (1 and 4) lie below 1, above 1 when both lie above, consistent with 1 when both contain it, and replicate-split otherwise; |rho(batch 1) - rho(batch 4)| above 3 combined standard errors measures between-batch scatter beyond shot noise at the ladder level. The Y batches give the phase atan2(E_Y, -E_X) per depth, with E_X from the adjacent X batch, reported as an estimate",
+  "line": "per Latin job, the shot-ordered selector and data outcomes are scanned for a line in [0.019, 0.021] cycles per shot with scripts/qi_shot_record_line.scan (detected at p below 1e-06 after the band's look-elsewhere factor); at the peak each selector's first-harmonic amplitude A and phase come from a least-squares lock-in. Predictions from the retained follow series (claim qi-tuna17-shot-record-50hz-line): the line is detected in every Latin job, and on each job A at CZ depth 9 exceeds A at depth 1 by more than 5 standard errors sqrt(2 var / n). Falsifier: a Latin job without the line, or a job whose depth-9 amplitude does not exceed its depth-1 amplitude by that margin, refutes the depth-growing 50 Hz modulation for that job. Reported: A per pair and depth, the depth-5 and depth-9 phase resultant per job, the third-harmonic amplitude, and per pair the contrast C(n) in eight bins of the line's phase",
+  "context": "q in [1, 13, 14]: e10_all = 1 - P1(q | readout-1), e10_iso = 1 - P1(q | readout-iso-x) in batches 0 and 6, and e10_hzh = 1 - P1(q | readout-iso-hzh) in batch 3 against e10_iso interpolated in time between batches 0 and 6. Neighbor context on q: e10_all - e10_iso above 0.02 and above 5 binomial standard errors in both batches 0 and 6; absent when |e10_all - e10_iso| is below 0.02 in both. Preparation path on q: |e10_hzh - e10_iso| above 0.02 and 5 standard errors; absent below 0.02. 0.02 is about three times the largest e10 move between follow brackets. Cross-check on the witness: the depth-1 E_0 in X on each pair whose data qubit is an iso qubit, (10, 13) and (12, 14), where the data qubit reads with every coupled neighbor but its selector idle in |0> and the selector in |0> on the bright branch, is corrected with the data qubit's e10 from readout-1 and, separately, from readout-iso-x; under neighbor context the iso-corrected |E_0| lies within 3 sigma of at most 1 while the readout-1 value exceeds 1. The e01 of each pair's other qubit in readout-iso-x, beside an excited neighbor, against readout-0 is reported",
+  "replication": "the depth-9 and depth-5 bright populations per pair against the follow series' values on the same pair and depth, reported as drift",
+  "stop_rule": "each batch: every job completed with the manifest's shots; circuit digests equal cases.json; the account's queue empty; a 120 s pause before the next batch. At each bracket: readout-0 P1 at most 0.10 and readout-1 P1 at least 0.80 on every used qubit [1, 4, 10, 12, 13, 14], no used qubit's e01 or e10 moved more than 0.02 since the previous bracket, and the context readout's P1 at least 0.80 on [1, 13, 14]; a failure stops the series. In every Latin circuit the depth-1 replica's raw P(selector = 0) at least 0.7, and every idle qubit at P1 at most 0.15 above its readout-0 P1",
+  "thresholds": {
+   "readout_0_p1_at_most": 0.1,
+   "readout_1_p1_at_least": 0.8,
+   "bright_p_selector_zero_at_least": 0.7,
+   "bright_floor_cz_depths": [
+    1
+   ],
+   "idle_p1_above_readout_0_at_most": 0.15,
+   "used_qubits": [
+    1,
+    4,
+    10,
+    12,
+    13,
+    14
+   ],
+   "iso_qubits": [
+    1,
+    13,
+    14
+   ],
+   "depths": [
+    1,
+    5,
+    9
+   ],
+   "context_min": 0.02,
+   "amplitude_sigmas": 5.0,
+   "line_band": [
+    0.019,
+    0.021
+   ],
+   "line_detection_p": 1e-06,
+   "line_phase_bins": 8,
+   "sigma": 3.0,
+   "bracket_drift_max": 0.02,
+   "bracket_span": 2,
+   "bootstrap_draws": 4000,
+   "bootstrap_seed": 20261017,
+   "interval_percentiles": [
+    0.5,
+    99.5
+   ]
+  }
+ },
+ "readout_calibration": "bracketed",
+ "batch": "batch-06",
+ "stage": "ladder",
+ "circuits": [
+  {
+   "file": "readout-0.cq",
+   "kind": "readout",
+   "stage": "ladder",
+   "prepared": "0",
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout",
+   "stage": "ladder",
+   "prepared": "1",
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  },
+  {
+   "file": "readout-iso-x.cq",
+   "kind": "readout",
+   "stage": "ladder",
+   "prepared": "iso-x",
+   "excited": [
+    1,
+    13,
+    14
+   ],
+   "sha256": "7960d570cb68372ffc75f96e4f76e584c371b3ad6ad420ebb1a4ba78fc21f013"
+  }
+ ]
+}

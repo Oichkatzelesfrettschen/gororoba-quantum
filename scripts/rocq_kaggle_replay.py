@@ -1,8 +1,8 @@
 """Replay the retained Rocq proof receipts on a Kaggle kernel or a CI runner under the pinned toolchain.
 
 The replay scripts under docs/evidence run only where a pinned toolchain
-exists. A Kaggle CPU kernel builds one from source:
-opam (Ubuntu's package, sandboxing off) creates a switch on
+exists. A Kaggle CPU kernel builds one from the pinned opam repository in a fresh
+temporary OPAMROOT. Opam (Ubuntu's package, sandboxing off) creates a switch on
 ocaml-base-compiler OCAML and installs rocq-runtime, rocq-core and
 rocq-stdlib at ROCQ_PACKAGES, then this script requires ``rocq --version`` to
 equal docs/evidence/c881_exhaustive/toolchain.txt before any replay runs.
@@ -16,7 +16,10 @@ equal ``--gororoba-commit``, and ``--only NAME...`` selects replays by name
 (formal_certificates, c881_exhaustive, stiefel_witness, folding_proofs,
 TargetFlipN21; the default is the Kaggle set).
 
-Each replay runs unchanged, with ROCQ pointing at the built executable:
+Independent replays run through parallel.ordered_map with the detected CPU
+allowance capped by GOROROBA_WORKERS. Each replay uses separate temporary
+proof storage and returns its record in the requested order. Each replay runs
+unchanged, with ROCQ pointing at the built executable:
 
 - formal_certificates/replay_rocq.sh (repository proofs and receipts),
 - c881_exhaustive/replay_rocq.sh and stiefel_witness/replay_rocq.sh
@@ -30,7 +33,8 @@ Each replay runs unchanged, with ROCQ pointing at the built executable:
 times, and each replay's exit code, every output line carrying ``Warning:``
 and the output tail. The run passes only when
 every replay exits 0. Push it with scripts/kaggle_run.py --machine cpu and
---include for the proofs/, docs/evidence/ directories and the result files
+--include for ci/rocq_toolchain.pin, gororoba_quantum/parallel.py, the proofs/
+and docs/evidence/ directories, and the result files
 the formal certificates hash.
 """
 
@@ -47,12 +51,16 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+
+import parallel  # noqa: E402
+
 TOOLCHAIN = ROOT / "docs/evidence/c881_exhaustive/toolchain.txt"
-OCAML = "ocaml-base-compiler.5.5.0"
-ROCQ_PACKAGES = ("rocq-runtime.9.2.0", "rocq-core.9.2.0", "rocq-stdlib.9.2.0")
+OCAML = "ocaml-base-compiler.5.5.1"
+ROCQ_PACKAGES = ("rocq-runtime.9.3.0", "rocq-core.9.3.0", "rocq-stdlib.9.2.0")
 SYSTEM_PACKAGES = ("opam", "m4", "pkg-config", "libgmp-dev", "git", "make", "gcc", "unzip", "bubblewrap")
 GOROROBA_URL = "https://github.com/Oichkatzelesfrettschen/open_gororoba.git"
-SWITCH = "rocq-9.2"
+SWITCH = "rocq-9.3"
 REPLAYS = ("formal_certificates", "c881_exhaustive", "stiefel_witness")
 SELECTABLE = (*REPLAYS, "folding_proofs", "TargetFlipN21")
 
@@ -83,11 +91,26 @@ def run(
 
 
 def build_toolchain(steps: list[dict[str, Any]]) -> Path:
-    env = dict(os.environ, OPAMYES="1", OPAMROOTISOK="1", OPAMJOBS=str(os.cpu_count() or 2))
+    pin = dict(line.split("=", 1) for line in (ROOT / "ci/rocq_toolchain.pin").read_text().splitlines())
+    env = dict(
+        os.environ,
+        OPAMYES="1",
+        OPAMROOTISOK="1",
+        OPAMJOBS=str(parallel.workers()),
+        OPAMROOT=tempfile.mkdtemp(prefix="quantum-rocq-opam-"),
+    )
     for cmd in (
         ["apt-get", "update", "-qq"],
         ["apt-get", "install", "-y", "-qq", *SYSTEM_PACKAGES],
-        ["opam", "init", "--bare", "--disable-sandboxing", "-n"],
+        [
+            "opam",
+            "init",
+            "--bare",
+            "--disable-sandboxing",
+            "-n",
+            "default",
+            "https://github.com/ocaml/opam-repository.git#" + pin["opam_repository"],
+        ],
         ["opam", "switch", "create", SWITCH, OCAML],
         ["opam", "install", "--switch", SWITCH, *ROCQ_PACKAGES],
     ):
@@ -114,6 +137,17 @@ def target_flip(rocq: Path) -> dict[str, Any]:
         "warning_lines": compiled["warning_lines"] + checked["warning_lines"],
         "tail": compiled["tail"] + checked["tail"],
     }
+
+
+def replay_entry(arguments: tuple[str, Path, Path]) -> tuple[str, dict[str, Any]]:
+    """Run one independent bundle in its own temporary proof storage."""
+    name, rocq, gororoba = arguments
+    if name == "TargetFlipN21":
+        return name, target_flip(rocq)
+    evidence = ROOT / "docs/evidence" / name
+    retained = evidence / "rocq_replay.log" if name == "folding_proofs" else None
+    env = dict(os.environ, ROCQ=str(rocq), GOROROBA_ROOT=str(gororoba))
+    return name, run(["sh", str(evidence / "replay_rocq.sh")], env=env, cwd=ROOT, retained_log=retained)
 
 
 def main() -> int:
@@ -144,16 +178,8 @@ def main() -> int:
         steps.append(run(["git", "-C", str(gororoba), "checkout", "-q", args.gororoba_commit]))
         if steps[-1]["returncode"]:
             raise SystemExit(f"open_gororoba checkout failed\n{steps[-1]['tail']}")
-    env = dict(os.environ, ROCQ=str(rocq), GOROROBA_ROOT=str(gororoba))
     selected = args.only or (*REPLAYS, *(("folding_proofs",) if args.folding else ()), "TargetFlipN21")
-    replays: dict[str, Any] = {}
-    for name in selected:
-        if name == "TargetFlipN21":
-            replays[name] = target_flip(rocq)
-            continue
-        evidence = ROOT / "docs/evidence" / name
-        retained = evidence / "rocq_replay.log" if name == "folding_proofs" else None
-        replays[name] = run(["sh", str(evidence / "replay_rocq.sh")], env=env, cwd=ROOT, retained_log=retained)
+    replays = dict(parallel.ordered_map(replay_entry, [(name, rocq, gororoba) for name in selected], min_items=2))
     result = {
         "schema": "rocq-kaggle-replay-v2",
         "toolchain": version,

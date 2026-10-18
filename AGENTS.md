@@ -14,15 +14,29 @@ GitHub Actions runs every gate ([.github/workflows/ci.yml](.github/workflows/ci.
 working directory; [ci/run_gates.py](ci/run_gates.py) runs a shard of them on
 a thread pool sized to the runner's CPUs and keeps going past failures, so a
 red shard lists every failing gate. Each gate records its measured seconds;
-shards are assigned longest-first. Pull requests run the `pr` tier, every
-gate that measured under two minutes, on six shards; pushes to main, the
-nightly schedule and manual runs add the `full` tier's long simulation
-contracts on twelve shards. Runners are 2-vCPU, 8 GB machines on Python 3.14
+shards are assigned longest-first by estimated occupied CPU-slot seconds.
+The stable `--shard-cpus` profile defaults to the recorded four-CPU runner;
+actual gate concurrency follows each runner's detected allocation. Pull requests run the `pr` tier and affected
+`full` gates on six shards;
+pushes to main use the same selection on twelve shards. Nightly and manual
+runs execute every gate on twelve shards. The changed-path selection follows
+local Python imports and the dynamic data/source scopes in
+[ci/full_gate_inputs.json](ci/full_gate_inputs.json). Every full gate declares
+its non-imported inputs there, including source digests and JSON-selected
+raw evidence; a missing declaration fails selection. CI and dependency-pin
+changes select every gate, and an unavailable diff base runs the full suite.
+Gate seconds are scheduling estimates, independent of tier membership.
+[CI runtime analysis](docs/notes/build_host/ci-runtime.md) records the timing
+denominators, measured bottlenecks and replay commands. Runner-spec logs
+record the allocation; the retained audit measured four affinity CPUs and
+about 16 GB on ubuntu-latest. CI uses Ubuntu 26.04, retains an Ubuntu 24.04 compatibility job, and pins
+Node 24 action commits. Jobs use Python 3.14.7
 with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
 the plotting-only `matplotlib==3.11.2`). A pull request merges when every
 shard and the `qi-stack` and `external-ground-truth` jobs are green and its
 review threads are resolved; a red main or nightly run is fixed in the next
-change. The `qi-stack` job runs, at the same tier, the gates that ci/gates.json
+change. The `qi-stack` job applies the same changed-input selection to the gates
+that ci/gates.json
 tags `"requires": ["qi"]`, under the Quantum Inspire interpreter
 ([Quantum Inspire](#quantum-inspire)). The
 `external-ground-truth` job runs `verify.py` over the open_gororoba commit
@@ -39,13 +53,32 @@ the tree, such as an evidence replay under results/ or docs/, is named in
 those gates' commands.
 
 Gate commands invoke `"$PYTHON"`. ci/run_gates.py sets it to its own
-interpreter when the environment leaves it unset, and sets
-`GOROROBA_WORKERS=1` the same way. A gate command run outside run_gates.py
+interpreter when the environment leaves it unset, and assigns
+`GOROROBA_WORKERS=1` to ordinary gates when the caller leaves the cap unset.
+An explicit worker cap also bounds gates that request the full allocation. A gate command run outside run_gates.py
 needs `PYTHON` exported (`export PYTHON="${PYTHON:-python3}"`): a variable
 assigned without `export` expands empty in the child shell, and every gate
 then exits 127 in 0.0 s with `/bin/sh: line 1: : command not found`, which
 reads as a gate failure.
 
+
+The runner expands `runtime_contracts.CONTRACT_CASES` into independently sharded
+cases. CPU slots cover outer gates and inner process pools together: ordinary
+gates reserve one slot, while manifest `"workers": "all"` gates reserve the
+detected allocation. Native BLAS, OpenMP, Rayon and Qiskit subprocess defaults
+stay at one inside each slot. `parallel.default_threads()` and `workers()`
+share the affinity/quota-bounded `GOROROBA_WORKERS` cap. Spawned pool children
+receive one slot through a child-only initializer, so nested maps and simulator
+defaults stay within the outer allocation. Timings retain wall time, user/system CPU time,
+peak RSS and allocated workers. Ruff formats shared code for Python 3.13.
+
+Current contracts use Qiskit 2.6.0. Gates marked `"runtime": "qiskit-2.5"`
+recompile retained historical evidence using `ci/requirements-replay.txt` and
+require `REPLAY_PYTHON`; missing producer interpreters fail explicitly. CI
+installs that isolated environment only for shards whose plan requires it.
+Before Python starts, CI and Kaggle reserve 4096 optional static TLS bytes with
+`GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, required by the combined
+Qiskit Rust and Aer OpenMP extensions. Local shells use the same startup setting.
 
 Every CPU-bound loop over independent items (embedding scores in replica
 placement, operator checks, registry parsing, exact certificates, synthesis
@@ -127,7 +160,7 @@ modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
 Changes to `proofs/FoldAverageDescent.v`, `proofs/TerminalChannelSeparation.v`,
 `proofs/TerminalChannelSeparationReal.v`, or their receipts also run
 `ROCQ="${ROCQ:-rocq}" sh docs/evidence/formal_certificates/replay_rocq.sh` with the
-toolchain its `toolchain.txt` pins, Rocq 9.2 with OCaml 5.5.0. The replay compiles in temporary storage,
+toolchain its `toolchain.txt` pins, Rocq 9.3.0 with OCaml 5.5.1 and Stdlib 9.2.0. The replay compiles in temporary storage,
 treats warnings as errors, kernel-checks, and compares raw assumptions.
 The [bundle](docs/evidence/formal_certificates/README.md) distinguishes
 real foundations, deterministic interval premises and unproved coverage.
@@ -148,8 +181,8 @@ Changes to the C881 proof sources or receipts also run the pinned Rocq
 procedure in `docs/evidence/c881_exhaustive/README.md`. The CI receipt
 check verifies retained hashes. The ci.yml job `rocq-replay` replays the
 formal_certificates, c881_exhaustive, folding_proofs and TargetFlipN21
-bundles under the opam switch of `ci/rocq_toolchain.pin` (Rocq 9.2.0 on OCaml
-5.5.0) on a pull request that touches `proofs/`, a replay bundle, the replay
+bundles under the opam switch of `ci/rocq_toolchain.pin` (Rocq 9.3.0 on OCaml
+5.5.1 with Stdlib 9.2.0) on a pull request that touches `proofs/`, a replay bundle, the replay
 driver, a pin or the workflow (`ci/rocq_changed.sh` holds the path list), and
 adds the stiefel_witness bundle on pushes to main and the nightly schedule.
 Gates core-403 and core-404 hold the pin, the toolchain.txt banners, the path
@@ -361,7 +394,7 @@ sedenion statement never rests on them.
 - Simulations of 14 qubits or fewer run on Kaggle kernels through
   `scripts/kaggle_run.py` (`push`, `status`, `collect`), which bundles the
   entry's repository imports with `kaggle_kernel/` (the kernel program and
-  its AGENTS.md), installs qiskit 2.5.2 and qiskit-ibm-runtime 0.50.0 with
+  its AGENTS.md), installs qiskit 2.6.0 and qiskit-ibm-runtime 0.50.0 with
   qiskit-aer 0.17.2 (or qiskit-aer-gpu-cu11 0.17.2 on a GPU), proves the
   hypercomplex package stack before the entry runs, and retains the output
   under results/kaggle/.
@@ -408,10 +441,23 @@ sedenion statement never rests on them.
   plan must match the record in experiment
   digest, shots, policy (twirling, DD, budget floor, execution ceiling),
   dependency versions, IBM Cloud instance, groups, backends, seeds, layouts,
-  replica qubits, fused PUB manifests, calibration at the refresh and again
-  at each batch, and QPY bytes, or the run writes an `approval_required`
-  record and sends nothing. The submission plans only over the backends the
-  approved record found eligible (`live_run.approved_backend_scope`), so a
+  replica qubits, fused PUB manifests, calibration values at the refresh and
+  again at each batch, and QPY bytes, or the run writes an
+  `approval_required` record and sends nothing. The calibration binds by
+  value: each dry-run group records `calibration_fingerprint`
+  (`live_run.calibration_values` over its packed circuits: the Target timing
+  constraints, error and duration of every routed instruction, T1 and T2 of
+  every touched or delayed qubit, and each measured qubit's asymmetric
+  readout channel), so a republished `last_update_date` with every value
+  unchanged keeps the approval and the run records the accepted timestamp
+  pair under `approved_record.calibration_values`, while any changed value
+  refuses. An approved record without fingerprints keeps the timestamp rule,
+  and timestamps compare as instants whatever their UTC offset. Right after
+  the first discovery, before planning, the submission checks the approved
+  isa.qpy circuits against the fresh Target and properties by the same rule
+  and writes `approval_required` in seconds. The submission plans only over
+  the backends the approved record found eligible
+  (`live_run.approved_backend_scope`), so a
   backend whose queue or status changed after the dry run cannot enter the
   plan; an approved backend that turns ineligible still refuses through the
   comparison. `--exclude-qubits BACKEND:Q[,Q|A-B...]` withholds named qubits
@@ -654,7 +700,7 @@ lists libcustatevec.so.1 and libcutensornet.so.2 among its NEEDED entries;
 a module without them raises `Simulation device "GPU" does not support
 cuStateVec on this system` on `cuStateVec_enable=True`.
 `docs/notes/build_host/custatevec.md` holds the requirement list, the build
-and install commands and the probe results. A Kaggle kernel installs qiskit 2.5.2,
+and install commands and the probe results. A Kaggle kernel installs qiskit 2.6.0,
 qiskit-ibm-runtime 0.50.0 (its fake backends, such as FakeFez, need no
 account) and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel
 stops at 0.15.1) over the Kaggle image's numpy and scipy, records every
@@ -696,7 +742,7 @@ it replays the record and prints one line naming the replay.
 | quantuminspire | 4.1.0 | `qi` CLI, `quantuminspire.api.Api`, OAuth device login |
 | qi-compute-api-client | 0.63.0 | generated client of the compute job manager REST API |
 | qiskit-quantuminspire | 0.18.5 | `QIProvider`, Qiskit backends, cQASM writer (per-qubit barriers) |
-| qiskit | 2.3.1 | the newest release below the provider's < 2.4 cap; the repository runs 2.5.2 |
+| qiskit | 2.3.1 | the newest release below the provider's < 2.4 cap; the repository runs 2.6.0 |
 | opensquirrel | 0.9.1 | compiler: decomposition, mapping, routing, ALAP scheduling |
 | libqasm | 1.2.1 | cQASM 3.0 parser and analyzer |
 | qxelarator | 0.10.0 | local QX state-vector emulator |
@@ -771,8 +817,8 @@ forty-two jobs of 2026-10-16 on QX, the Ry emulator and Tuna-17, so no metered s
 or credits apply to this account as observed; the limits are structural: the
 table's qubits, shots, per-job execution limit and batch and queue counts,
 plus the FAQ's three queued jobs per hardware backend, which is stricter than
-the API's five batch jobs. Tuna-17 execution time fits 2.9 s per job plus
-0.51 ms per shot over the retained jobs, so a 16384-shot job takes about 11 s
+the API's five batch jobs. Tuna-17 execution time fits 2.6 s per job plus
+0.53 ms per shot over the retained jobs, so a 16384-shot job takes about 11 s
 and the 120 s pause, not the shots, sets a batch's cost; QX finished 2048
 shots in 0.03 to 10.4 s.
 Calibration and tuning run between user jobs (Tuna-17 read `calibrating`

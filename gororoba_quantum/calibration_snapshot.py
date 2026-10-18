@@ -211,9 +211,14 @@ def round_trip(snapshot: dict[str, Any]) -> None:
             raise ValueError(f"rebuilt Target differs from the snapshot on qubit {q} T1/T2")
 
 
+def snapshot_backend(snapshot: dict[str, Any]) -> SnapshotBackend:
+    """The backend view over the rebuilt Target, which transpile reads; it builds no Aer channel."""
+    return SnapshotBackend(snapshot["backend"], build_target(snapshot))
+
+
 def noise_model(snapshot: dict[str, Any]) -> tuple[SnapshotBackend, NoiseModel]:
     """live_run._noise_model's two steps applied to the rebuilt Target."""
-    view = SnapshotBackend(snapshot["backend"], build_target(snapshot))
+    view = snapshot_backend(snapshot)
     noise = NoiseModel.from_backend(view, readout_error=False)
     for q, qubit in enumerate(snapshot["qubits"]):
         e10, e01 = qubit["e10"], qubit["e01"]

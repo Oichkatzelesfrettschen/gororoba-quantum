@@ -1,2 +1,2 @@
-The Rocq Prover, version 9.2
-compiled with OCaml 5.5.0
+The Rocq Prover, version 9.3.0
+compiled with OCaml 5.5.1

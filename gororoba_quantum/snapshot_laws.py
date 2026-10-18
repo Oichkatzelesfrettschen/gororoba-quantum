@@ -144,7 +144,7 @@ def self_check(snapshot_path: str) -> str:
     from qiskit.quantum_info import Statevector
 
     snapshot = json.loads(Path(snapshot_path).read_text(encoding="utf-8"))
-    view, _ = calibration_snapshot.noise_model(snapshot)
+    view = calibration_snapshot.snapshot_backend(snapshot)
     device = calibration_snapshot.aer_device()
     circuit = QuantumCircuit(3, 3)
     circuit.h(0)

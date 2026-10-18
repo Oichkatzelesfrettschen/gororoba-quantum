@@ -7,11 +7,11 @@
  "counts": {
   "QX": {
    "detected": 0,
-   "jobs": 102
+   "jobs": 108
   },
   "Tuna-17": {
-   "detected": 57,
-   "jobs": 126
+   "detected": 69,
+   "jobs": 147
   }
  },
  "detection_p": 1e-06,
@@ -137,7 +137,7 @@
    ],
    "block_log10_p_adjusted": -0.01486,
    "cycles_per_shot": 0.019352818,
-   "cycles_per_shot_se": 7.58e-05,
+   "cycles_per_shot_se": 7.59e-05,
    "detected": false,
    "file": "additivity-none.cq",
    "log10_p": -0.6125,
@@ -171,26 +171,42 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.1345,
-     0.9613,
-     0.03443
-    ],
-    "11": [
-     0.03048,
-     0.8992,
-     0.01027
-    ],
-    "12": [
-     0.02902,
-     0.9196,
-     0.009344
-    ],
-    "7": [
-     0.02598,
-     -2.66,
-     0.002613
-    ]
+    "0": {
+     "first": 0.1345,
+     "first_significant": true,
+     "phase": 0.9612,
+     "se": 0.00546,
+     "second": 0.01313,
+     "second_significant": false,
+     "third": 0.03444
+    },
+    "11": {
+     "first": 0.03048,
+     "first_significant": true,
+     "phase": 0.8991,
+     "se": 0.00551,
+     "second": 0.002868,
+     "second_significant": false,
+     "third": 0.01027
+    },
+    "12": {
+     "first": 0.02902,
+     "first_significant": true,
+     "phase": 0.9196,
+     "se": 0.0055,
+     "second": 0.005715,
+     "second_significant": false,
+     "third": 0.009339
+    },
+    "7": {
+     "first": 0.02598,
+     "first_significant": true,
+     "phase": -2.66,
+     "se": 0.00491,
+     "second": 0.007586,
+     "second_significant": false,
+     "third": 0.002613
+    }
    },
    "bits_scanned": [
     0,
@@ -225,11 +241,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.1302,
-     2.06,
-     0.03385
-    ]
+    "0": {
+     "first": 0.1302,
+     "first_significant": true,
+     "phase": 2.059,
+     "se": 0.00552,
+     "second": 0.007938,
+     "second_significant": false,
+     "third": 0.03385
+    }
    },
    "bits_scanned": [
     0,
@@ -264,16 +284,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.1354,
-     2.783,
-     0.04696
-    ],
-    "12": [
-     0.03449,
-     2.848,
-     0.004203
-    ]
+    "0": {
+     "first": 0.1354,
+     "first_significant": true,
+     "phase": 2.783,
+     "se": 0.00549,
+     "second": 0.009061,
+     "second_significant": false,
+     "third": 0.04696
+    },
+    "12": {
+     "first": 0.03449,
+     "first_significant": true,
+     "phase": 2.848,
+     "se": 0.00551,
+     "second": 0.01094,
+     "second_significant": false,
+     "third": 0.004212
+    }
    },
    "bits_scanned": [
     0,
@@ -307,16 +335,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.1318,
-     -2.553,
-     0.04671
-    ],
-    "12": [
-     0.02864,
-     -2.303,
-     0.01137
-    ]
+    "0": {
+     "first": 0.1318,
+     "first_significant": true,
+     "phase": -2.553,
+     "se": 0.00552,
+     "second": 0.004022,
+     "second_significant": false,
+     "third": 0.04671
+    },
+    "12": {
+     "first": 0.02864,
+     "first_significant": true,
+     "phase": -2.303,
+     "se": 0.00552,
+     "second": 0.004862,
+     "second_significant": false,
+     "third": 0.01137
+    }
    },
    "bits_scanned": [
     0,
@@ -496,36 +532,60 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.03677,
-     2.216,
-     0.007431
-    ],
-    "11": [
-     0.03575,
-     2.035,
-     0.006218
-    ],
-    "4": [
-     0.033,
-     -0.6948,
-     0.008596
-    ],
-    "5": [
-     0.03235,
-     -1.15,
-     0.002945
-    ],
-    "7": [
-     0.03427,
-     2.457,
-     0.008897
-    ],
-    "8": [
-     0.03803,
-     -0.9363,
-     0.007019
-    ]
+    "0": {
+     "first": 0.03677,
+     "first_significant": true,
+     "phase": 2.216,
+     "se": 0.00551,
+     "second": 0.006912,
+     "second_significant": false,
+     "third": 0.007427
+    },
+    "11": {
+     "first": 0.03575,
+     "first_significant": true,
+     "phase": 2.035,
+     "se": 0.00552,
+     "second": 0.005545,
+     "second_significant": false,
+     "third": 0.006222
+    },
+    "4": {
+     "first": 0.03299,
+     "first_significant": true,
+     "phase": -0.6949,
+     "se": 0.00548,
+     "second": 0.01018,
+     "second_significant": false,
+     "third": 0.008595
+    },
+    "5": {
+     "first": 0.03235,
+     "first_significant": true,
+     "phase": -1.15,
+     "se": 0.00547,
+     "second": 0.006654,
+     "second_significant": false,
+     "third": 0.002945
+    },
+    "7": {
+     "first": 0.03427,
+     "first_significant": true,
+     "phase": 2.458,
+     "se": 0.00552,
+     "second": 0.00391,
+     "second_significant": false,
+     "third": 0.008899
+    },
+    "8": {
+     "first": 0.03802,
+     "first_significant": true,
+     "phase": -0.9364,
+     "se": 0.00552,
+     "second": 0.006241,
+     "second_significant": false,
+     "third": 0.007019
+    }
    },
    "bits_scanned": [
     0,
@@ -559,21 +619,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.03988,
-     0.7922,
-     0.01221
-    ],
-    "2": [
-     0.04275,
-     -2.161,
-     0.007784
-    ],
-    "9": [
-     0.03169,
-     -2.365,
-     0.002177
-    ]
+    "14": {
+     "first": 0.03988,
+     "first_significant": true,
+     "phase": 0.7923,
+     "se": 0.00552,
+     "second": 0.009992,
+     "second_significant": false,
+     "third": 0.01221
+    },
+    "2": {
+     "first": 0.04274,
+     "first_significant": true,
+     "phase": -2.161,
+     "se": 0.00552,
+     "second": 0.006929,
+     "second_significant": false,
+     "third": 0.007782
+    },
+    "9": {
+     "first": 0.0317,
+     "first_significant": true,
+     "phase": -2.365,
+     "se": 0.00551,
+     "second": 0.007775,
+     "second_significant": false,
+     "third": 0.00217
+    }
    },
    "bits_scanned": [
     0,
@@ -607,21 +679,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "11": [
-     0.05092,
-     -2.683,
-     0.0129
-    ],
-    "16": [
-     0.03126,
-     -2.637,
-     0.006545
-    ],
-    "7": [
-     0.02887,
-     0.8987,
-     0.009721
-    ]
+    "11": {
+     "first": 0.0509,
+     "first_significant": true,
+     "phase": -2.683,
+     "se": 0.00551,
+     "second": 0.01918,
+     "second_significant": false,
+     "third": 0.01289
+    },
+    "16": {
+     "first": 0.03126,
+     "first_significant": true,
+     "phase": -2.637,
+     "se": 0.0054,
+     "second": 0.003409,
+     "second_significant": false,
+     "third": 0.006546
+    },
+    "7": {
+     "first": 0.02887,
+     "first_significant": true,
+     "phase": 0.8986,
+     "se": 0.00551,
+     "second": 0.002069,
+     "second_significant": false,
+     "third": 0.00972
+    }
    },
    "bits_scanned": [
     0,
@@ -976,11 +1060,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "6": [
-     0.0361,
-     0.3249,
-     0.005728
-    ]
+    "5": {
+     "first": 0.002877,
+     "first_significant": false,
+     "phase": -1.556,
+     "se": 0.00366,
+     "second": 0.02903,
+     "second_significant": true,
+     "third": 0.004088
+    },
+    "6": {
+     "first": 0.03615,
+     "first_significant": true,
+     "phase": 0.3248,
+     "se": 0.00431,
+     "second": 0.06337,
+     "second_significant": true,
+     "third": 0.005761
+    }
    },
    "bits_scanned": [
     0,
@@ -1015,16 +1112,42 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.05598,
-     -2.015,
-     0.005431
-    ],
-    "12": [
-     0.04757,
-     1.059,
-     0.01533
-    ]
+    "0": {
+     "first": 0.05598,
+     "first_significant": true,
+     "phase": -2.014,
+     "se": 0.00396,
+     "second": 0.03267,
+     "second_significant": true,
+     "third": 0.005423
+    },
+    "12": {
+     "first": 0.04757,
+     "first_significant": true,
+     "phase": 1.059,
+     "se": 0.00447,
+     "second": 0.00499,
+     "second_significant": false,
+     "third": 0.01534
+    },
+    "5": {
+     "first": 0.02081,
+     "first_significant": false,
+     "phase": 1.06,
+     "se": 0.00551,
+     "second": 0.1736,
+     "second_significant": true,
+     "third": 0.02031
+    },
+    "6": {
+     "first": 0.01182,
+     "first_significant": false,
+     "phase": 2.332,
+     "se": 0.00532,
+     "second": 0.09811,
+     "second_significant": true,
+     "third": 0.02569
+    }
    },
    "bits_scanned": [
     0,
@@ -1059,21 +1182,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.1048,
-     -0.4967,
-     0.03861
-    ],
-    "5": [
-     0.2485,
-     -0.5562,
-     0.06633
-    ],
-    "6": [
-     0.3805,
-     -0.5337,
-     0.09934
-    ]
+    "0": {
+     "first": 0.1048,
+     "first_significant": true,
+     "phase": -0.4967,
+     "se": 0.00552,
+     "second": 0.00335,
+     "second_significant": false,
+     "third": 0.03861
+    },
+    "5": {
+     "first": 0.2485,
+     "first_significant": true,
+     "phase": -0.5562,
+     "se": 0.00552,
+     "second": 0.009287,
+     "second_significant": false,
+     "third": 0.06634
+    },
+    "6": {
+     "first": 0.3804,
+     "first_significant": true,
+     "phase": -0.5337,
+     "se": 0.00552,
+     "second": 0.004816,
+     "second_significant": false,
+     "third": 0.09934
+    }
    },
    "bits_scanned": [
     0,
@@ -1108,36 +1243,60 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.2921,
-     2.627,
-     0.07832
-    ],
-    "11": [
-     0.06747,
-     2.611,
-     0.02222
-    ],
-    "12": [
-     0.05303,
-     2.459,
-     0.009271
-    ],
-    "16": [
-     0.0422,
-     2.557,
-     0.01399
-    ],
-    "5": [
-     0.3928,
-     2.672,
-     0.1235
-    ],
-    "6": [
-     0.04523,
-     -2.672,
-     0.04518
-    ]
+    "0": {
+     "first": 0.2921,
+     "first_significant": true,
+     "phase": 2.627,
+     "se": 0.00549,
+     "second": 0.0138,
+     "second_significant": false,
+     "third": 0.07831
+    },
+    "11": {
+     "first": 0.06747,
+     "first_significant": true,
+     "phase": 2.611,
+     "se": 0.00551,
+     "second": 0.003424,
+     "second_significant": false,
+     "third": 0.02222
+    },
+    "12": {
+     "first": 0.05302,
+     "first_significant": true,
+     "phase": 2.459,
+     "se": 0.00464,
+     "second": 0.009858,
+     "second_significant": false,
+     "third": 0.009266
+    },
+    "16": {
+     "first": 0.04221,
+     "first_significant": true,
+     "phase": 2.557,
+     "se": 0.00552,
+     "second": 0.01381,
+     "second_significant": false,
+     "third": 0.01398
+    },
+    "5": {
+     "first": 0.3928,
+     "first_significant": true,
+     "phase": 2.672,
+     "se": 0.00552,
+     "second": 0.04435,
+     "second_significant": true,
+     "third": 0.1235
+    },
+    "6": {
+     "first": 0.04523,
+     "first_significant": true,
+     "phase": -2.671,
+     "se": 0.00552,
+     "second": 0.02448,
+     "second_significant": false,
+     "third": 0.04519
+    }
    },
    "bits_scanned": [
     0,
@@ -1172,11 +1331,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.1212,
-     0.6415,
-     0.02907
-    ]
+    "7": {
+     "first": 0.1212,
+     "first_significant": true,
+     "phase": 0.6415,
+     "se": 0.00466,
+     "second": 0.01649,
+     "second_significant": false,
+     "third": 0.02906
+    }
    },
    "bits_scanned": [
     0,
@@ -1211,21 +1374,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.03123,
-     1.822,
-     0.008592
-    ],
-    "7": [
-     0.2936,
-     -1.24,
-     0.09141
-    ],
-    "8": [
-     0.02635,
-     1.578,
-     0.008202
-    ]
+    "14": {
+     "first": 0.03123,
+     "first_significant": true,
+     "phase": 1.822,
+     "se": 0.00428,
+     "second": 0.001462,
+     "second_significant": false,
+     "third": 0.008593
+    },
+    "7": {
+     "first": 0.2936,
+     "first_significant": true,
+     "phase": -1.24,
+     "se": 0.00552,
+     "second": 0.0159,
+     "second_significant": false,
+     "third": 0.09141
+    },
+    "8": {
+     "first": 0.02635,
+     "first_significant": true,
+     "phase": 1.578,
+     "se": 0.00379,
+     "second": 0.002282,
+     "second_significant": false,
+     "third": 0.008199
+    }
    },
    "bits_scanned": [
     0,
@@ -1260,21 +1435,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.03608,
-     -0.2363,
-     0.009269
-    ],
-    "7": [
-     0.182,
-     -0.5092,
-     0.04859
-    ],
-    "8": [
-     0.02769,
-     -0.7737,
-     0.004906
-    ]
+    "14": {
+     "first": 0.03609,
+     "first_significant": true,
+     "phase": -0.2364,
+     "se": 0.0055,
+     "second": 0.00849,
+     "second_significant": false,
+     "third": 0.009264
+    },
+    "7": {
+     "first": 0.182,
+     "first_significant": true,
+     "phase": -0.5091,
+     "se": 0.00487,
+     "second": 0.01228,
+     "second_significant": false,
+     "third": 0.0486
+    },
+    "8": {
+     "first": 0.02769,
+     "first_significant": true,
+     "phase": -0.7734,
+     "se": 0.00551,
+     "second": 0.01015,
+     "second_significant": false,
+     "third": 0.004914
+    }
    },
    "bits_scanned": [
     0,
@@ -1309,36 +1496,60 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.07759,
-     1.32,
-     0.02934
-    ],
-    "15": [
-     0.04423,
-     1.029,
-     0.002995
-    ],
-    "3": [
-     0.05157,
-     1.076,
-     0.004332
-    ],
-    "7": [
-     0.1823,
-     -1.805,
-     0.06669
-    ],
-    "8": [
-     0.06991,
-     1.155,
-     0.02832
-    ],
-    "9": [
-     0.04014,
-     1.183,
-     0.01004
-    ]
+    "14": {
+     "first": 0.07759,
+     "first_significant": true,
+     "phase": 1.32,
+     "se": 0.00542,
+     "second": 0.009454,
+     "second_significant": false,
+     "third": 0.02934
+    },
+    "15": {
+     "first": 0.04423,
+     "first_significant": true,
+     "phase": 1.03,
+     "se": 0.00552,
+     "second": 0.007661,
+     "second_significant": false,
+     "third": 0.002998
+    },
+    "3": {
+     "first": 0.05157,
+     "first_significant": true,
+     "phase": 1.076,
+     "se": 0.00543,
+     "second": 0.01405,
+     "second_significant": false,
+     "third": 0.004335
+    },
+    "7": {
+     "first": 0.1822,
+     "first_significant": true,
+     "phase": -1.806,
+     "se": 0.00548,
+     "second": 0.1199,
+     "second_significant": true,
+     "third": 0.06669
+    },
+    "8": {
+     "first": 0.0699,
+     "first_significant": true,
+     "phase": 1.155,
+     "se": 0.0053,
+     "second": 0.008079,
+     "second_significant": false,
+     "third": 0.02831
+    },
+    "9": {
+     "first": 0.04014,
+     "first_significant": true,
+     "phase": 1.183,
+     "se": 0.00547,
+     "second": 0.006728,
+     "second_significant": false,
+     "third": 0.01004
+    }
    },
    "bits_scanned": [
     0,
@@ -1361,7 +1572,7 @@
    ],
    "block_log10_p_adjusted": -68.79,
    "cycles_per_shot": 0.020117876,
-   "cycles_per_shot_se": 8.27e-07,
+   "cycles_per_shot_se": 8.28e-07,
    "detected": true,
    "file": "targets-Q-y-d100.cq",
    "log10_p": -324.5,
@@ -1445,7 +1656,7 @@
    ],
    "block_log10_p_adjusted": -0.762,
    "cycles_per_shot": 0.020757209,
-   "cycles_per_shot_se": 7.19e-05,
+   "cycles_per_shot_se": 7.21e-05,
    "detected": false,
    "file": "reference-y-d002.cq",
    "log10_p": -0.3891,
@@ -1485,7 +1696,7 @@
    ],
    "block_log10_p_adjusted": -0.04466,
    "cycles_per_shot": 0.020773274,
-   "cycles_per_shot_se": 6.18e-05,
+   "cycles_per_shot_se": 6.17e-05,
    "detected": false,
    "file": "tau005-y-d002.cq",
    "log10_p": -1.122,
@@ -1505,7 +1716,7 @@
    ],
    "block_log10_p_adjusted": 0.0,
    "cycles_per_shot": 0.019443916,
-   "cycles_per_shot_se": 6.2e-05,
+   "cycles_per_shot_se": 6.21e-05,
    "detected": false,
    "file": "tau015-y-d002.cq",
    "log10_p": -1.087,
@@ -1653,7 +1864,7 @@
    ],
    "block_log10_p_adjusted": -0.1898,
    "cycles_per_shot": 0.020105306,
-   "cycles_per_shot_se": 7.66e-05,
+   "cycles_per_shot_se": 7.65e-05,
    "detected": false,
    "file": "tau005-y-d077.cq",
    "log10_p": -0.1692,
@@ -1843,7 +2054,7 @@
    ],
    "block_log10_p_adjusted": -0.06063,
    "cycles_per_shot": 0.019666392,
-   "cycles_per_shot_se": 6.41e-05,
+   "cycles_per_shot_se": 6.42e-05,
    "detected": false,
    "file": "tau005-y-d002.cq",
    "log10_p": -0.1971,
@@ -1865,7 +2076,7 @@
    ],
    "block_log10_p_adjusted": 0.0,
    "cycles_per_shot": 0.019409853,
-   "cycles_per_shot_se": 6.15e-05,
+   "cycles_per_shot_se": 6.14e-05,
    "detected": false,
    "file": "tau015-y-d002.cq",
    "log10_p": -0.3709,
@@ -1909,7 +2120,7 @@
    ],
    "block_log10_p_adjusted": 0.0,
    "cycles_per_shot": 0.019835595,
-   "cycles_per_shot_se": 4.86e-05,
+   "cycles_per_shot_se": 4.87e-05,
    "detected": false,
    "file": "tau100-y-d002.cq",
    "log10_p": -1.953,
@@ -2067,7 +2278,7 @@
    ],
    "block_log10_p_adjusted": 0.0,
    "cycles_per_shot": 0.020142854,
-   "cycles_per_shot_se": 6.52e-05,
+   "cycles_per_shot_se": 6.53e-05,
    "detected": false,
    "file": "tau040-y-d077.cq",
    "log10_p": -0.1202,
@@ -2089,7 +2300,7 @@
    ],
    "block_log10_p_adjusted": -1.109,
    "cycles_per_shot": 0.01947469,
-   "cycles_per_shot_se": 6.51e-05,
+   "cycles_per_shot_se": 6.5e-05,
    "detected": false,
    "file": "tau100-y-d077.cq",
    "log10_p": -0.1371,
@@ -2250,7 +2461,7 @@
    ],
    "block_log10_p_adjusted": -1.792,
    "cycles_per_shot": 0.020546165,
-   "cycles_per_shot_se": 8.9e-06,
+   "cycles_per_shot_se": 8.91e-06,
    "detected": false,
    "file": "tau005-x-d002.cq",
    "log10_p": -0.3926,
@@ -2369,11 +2580,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "6": [
-     0.04787,
-     -2.367,
-     0.004267
-    ]
+    "6": {
+     "first": 0.04787,
+     "first_significant": true,
+     "phase": -2.367,
+     "se": 0.00753,
+     "second": 0.01388,
+     "second_significant": false,
+     "third": 0.004266
+    }
    },
    "bits_scanned": [
     0,
@@ -2442,11 +2657,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.0405,
-     0.8381,
-     0.005795
-    ]
+    "5": {
+     "first": 0.04051,
+     "first_significant": true,
+     "phase": 0.8377,
+     "se": 0.00779,
+     "second": 0.0165,
+     "second_significant": false,
+     "third": 0.005808
+    }
    },
    "bits_scanned": [
     0,
@@ -2483,11 +2702,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "6": [
-     0.04509,
-     -2.11,
-     0.007754
-    ]
+    "6": {
+     "first": 0.04509,
+     "first_significant": true,
+     "phase": -2.11,
+     "se": 0.00772,
+     "second": 0.01086,
+     "second_significant": false,
+     "third": 0.007744
+    }
    },
    "bits_scanned": [
     0,
@@ -2525,11 +2748,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "6": [
-     0.04597,
-     -1.346,
-     0.02535
-    ]
+    "6": {
+     "first": 0.04599,
+     "first_significant": true,
+     "phase": -1.346,
+     "se": 0.00776,
+     "second": 0.01018,
+     "second_significant": false,
+     "third": 0.02537
+    }
    },
    "bits_scanned": [
     0,
@@ -2567,11 +2794,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "6": [
-     0.04306,
-     0.7872,
-     0.007923
-    ]
+    "6": {
+     "first": 0.04308,
+     "first_significant": true,
+     "phase": 0.7865,
+     "se": 0.00776,
+     "second": 0.01943,
+     "second_significant": false,
+     "third": 0.007943
+    }
    },
    "bits_scanned": [
     0,
@@ -2609,16 +2840,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.147,
-     0.1553,
-     0.01941
-    ],
-    "6": [
-     0.06161,
-     0.3599,
-     0.03477
-    ]
+    "5": {
+     "first": 0.1467,
+     "first_significant": true,
+     "phase": 0.1555,
+     "se": 0.0078,
+     "second": 0.1473,
+     "second_significant": true,
+     "third": 0.01958
+    },
+    "6": {
+     "first": 0.06141,
+     "first_significant": true,
+     "phase": 0.361,
+     "se": 0.00743,
+     "second": 0.129,
+     "second_significant": true,
+     "third": 0.03492
+    }
    },
    "bits_scanned": [
     0,
@@ -2639,7 +2878,7 @@
    ],
    "block_log10_p_adjusted": -7.015,
    "cycles_per_shot": 0.020242871,
-   "cycles_per_shot_se": 3.21e-06,
+   "cycles_per_shot_se": 3.22e-06,
    "detected": true,
    "file": "reference-x-d077.cq",
    "log10_p": -72.17,
@@ -2651,16 +2890,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.2042,
-     1.29,
-     0.05009
-    ],
-    "6": [
-     0.04486,
-     1.332,
-     0.03043
-    ]
+    "5": {
+     "first": 0.204,
+     "first_significant": true,
+     "phase": 1.289,
+     "se": 0.00781,
+     "second": 0.1281,
+     "second_significant": true,
+     "third": 0.04999
+    },
+    "6": {
+     "first": 0.04473,
+     "first_significant": true,
+     "phase": 1.327,
+     "se": 0.00739,
+     "second": 0.1435,
+     "second_significant": true,
+     "third": 0.03052
+    }
    },
    "bits_scanned": [
     0,
@@ -2698,11 +2945,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.1685,
-     1.446,
-     0.02398
-    ]
+    "5": {
+     "first": 0.1685,
+     "first_significant": true,
+     "phase": 1.445,
+     "se": 0.0078,
+     "second": 0.1328,
+     "second_significant": true,
+     "third": 0.02391
+    },
+    "6": {
+     "first": 0.01487,
+     "first_significant": false,
+     "phase": -2.455,
+     "se": 0.00736,
+     "second": 0.1457,
+     "second_significant": true,
+     "third": 0.01902
+    }
    },
    "bits_scanned": [
     0,
@@ -2740,11 +3000,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.2227,
-     0.9986,
-     0.0366
-    ]
+    "5": {
+     "first": 0.2226,
+     "first_significant": true,
+     "phase": 0.9983,
+     "se": 0.00781,
+     "second": 0.1104,
+     "second_significant": true,
+     "third": 0.03666
+    },
+    "6": {
+     "first": 0.009892,
+     "first_significant": false,
+     "phase": 0.4658,
+     "se": 0.00362,
+     "second": 0.0263,
+     "second_significant": true,
+     "third": 0.006936
+    }
    },
    "bits_scanned": [
     0,
@@ -2779,11 +3052,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.1796,
-     -1.687,
-     0.02949
-    ]
+    "5": {
+     "first": 0.1796,
+     "first_significant": true,
+     "phase": -1.686,
+     "se": 0.00781,
+     "second": 0.1214,
+     "second_significant": true,
+     "third": 0.02956
+    },
+    "6": {
+     "first": 0.0117,
+     "first_significant": false,
+     "phase": -0.2423,
+     "se": 0.00364,
+     "second": 0.02845,
+     "second_significant": true,
+     "third": 0.001134
+    }
    },
    "bits_scanned": [
     0,
@@ -2810,7 +3096,7 @@
    ],
    "block_log10_p_adjusted": -5.433,
    "cycles_per_shot": 0.020204316,
-   "cycles_per_shot_se": 2.81e-06,
+   "cycles_per_shot_se": 2.8e-06,
    "detected": true,
    "file": "tau000-x-d077.cq",
    "log10_p": -92.94,
@@ -2822,11 +3108,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.2039,
-     2.418,
-     0.0512
-    ]
+    "5": {
+     "first": 0.2041,
+     "first_significant": true,
+     "phase": 2.417,
+     "se": 0.00781,
+     "second": 0.1328,
+     "second_significant": true,
+     "third": 0.051
+    },
+    "6": {
+     "first": 0.01508,
+     "first_significant": false,
+     "phase": 2.845,
+     "se": 0.00375,
+     "second": 0.02409,
+     "second_significant": true,
+     "third": 0.004098
+    }
    },
    "bits_scanned": [
     0,
@@ -2853,7 +3152,7 @@
    ],
    "block_log10_p_adjusted": -1.207,
    "cycles_per_shot": 0.02020864,
-   "cycles_per_shot_se": 2.52e-06,
+   "cycles_per_shot_se": 2.51e-06,
    "detected": true,
    "file": "tau005-x-d077.cq",
    "log10_p": -121.5,
@@ -2865,11 +3164,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.2166,
-     -0.2338,
-     0.04276
-    ]
+    "5": {
+     "first": 0.2164,
+     "first_significant": true,
+     "phase": -0.233,
+     "se": 0.0078,
+     "second": 0.1417,
+     "second_significant": true,
+     "third": 0.04301
+    },
+    "6": {
+     "first": 0.001889,
+     "first_significant": false,
+     "phase": 0.5591,
+     "se": 0.00359,
+     "second": 0.02484,
+     "second_significant": true,
+     "third": 0.0117
+    }
    },
    "bits_scanned": [
     0,
@@ -2908,11 +3220,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.2456,
-     1.889,
-     0.05984
-    ]
+    "5": {
+     "first": 0.2455,
+     "first_significant": true,
+     "phase": 1.888,
+     "se": 0.00781,
+     "second": 0.1324,
+     "second_significant": true,
+     "third": 0.05973
+    },
+    "6": {
+     "first": 0.005595,
+     "first_significant": false,
+     "phase": 1.368,
+     "se": 0.00371,
+     "second": 0.03073,
+     "second_significant": true,
+     "third": 0.008274
+    }
    },
    "bits_scanned": [
     0,
@@ -2951,11 +3276,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.2499,
-     1.525,
-     0.06014
-    ]
+    "5": {
+     "first": 0.25,
+     "first_significant": true,
+     "phase": 1.526,
+     "se": 0.00781,
+     "second": 0.1229,
+     "second_significant": true,
+     "third": 0.06021
+    },
+    "6": {
+     "first": 0.0079,
+     "first_significant": false,
+     "phase": 1.409,
+     "se": 0.00369,
+     "second": 0.03352,
+     "second_significant": true,
+     "third": 0.007266
+    }
    },
    "bits_scanned": [
     0,
@@ -2994,11 +3332,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.2177,
-     -1.231,
-     0.04705
-    ]
+    "5": {
+     "first": 0.2177,
+     "first_significant": true,
+     "phase": -1.23,
+     "se": 0.00781,
+     "second": 0.1243,
+     "second_significant": true,
+     "third": 0.04714
+    },
+    "6": {
+     "first": 0.006188,
+     "first_significant": false,
+     "phase": -0.9128,
+     "se": 0.00371,
+     "second": 0.02154,
+     "second_significant": true,
+     "third": 0.004699
+    }
    },
    "bits_scanned": [
     0,
@@ -3037,11 +3388,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.202,
-     -3.007,
-     0.05617
-    ]
+    "5": {
+     "first": 0.2022,
+     "first_significant": true,
+     "phase": -3.007,
+     "se": 0.00781,
+     "second": 0.1268,
+     "second_significant": true,
+     "third": 0.05603
+    },
+    "6": {
+     "first": 0.008072,
+     "first_significant": false,
+     "phase": -2.106,
+     "se": 0.00354,
+     "second": 0.01928,
+     "second_significant": true,
+     "third": 0.00527
+    }
    },
    "bits_scanned": [
     0,
@@ -3068,7 +3432,7 @@
    ],
    "block_log10_p_adjusted": -1.96,
    "cycles_per_shot": 0.020245102,
-   "cycles_per_shot_se": 2.55e-06,
+   "cycles_per_shot_se": 2.54e-06,
    "detected": true,
    "file": "tau040-x-d077.cq",
    "log10_p": -117.9,
@@ -3080,11 +3444,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "5": [
-     0.2131,
-     2.296,
-     0.04515
-    ]
+    "5": {
+     "first": 0.213,
+     "first_significant": true,
+     "phase": 2.297,
+     "se": 0.00781,
+     "second": 0.1261,
+     "second_significant": true,
+     "third": 0.04531
+    },
+    "6": {
+     "first": 0.001082,
+     "first_significant": false,
+     "phase": 2.042,
+     "se": 0.00368,
+     "second": 0.02854,
+     "second_significant": true,
+     "third": 0.003208
+    }
    },
    "bits_scanned": [
     0,
@@ -3123,26 +3500,42 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.1157,
-     -0.4319,
-     0.01797
-    ],
-    "12": [
-     0.06102,
-     -0.4771,
-     0.01448
-    ],
-    "2": [
-     0.01854,
-     -0.9881,
-     0.003133
-    ],
-    "5": [
-     0.3677,
-     -0.3956,
-     0.1081
-    ]
+    "0": {
+     "first": 0.1157,
+     "first_significant": true,
+     "phase": -0.4319,
+     "se": 0.00649,
+     "second": 0.008698,
+     "second_significant": false,
+     "third": 0.01798
+    },
+    "12": {
+     "first": 0.06102,
+     "first_significant": true,
+     "phase": -0.4773,
+     "se": 0.0076,
+     "second": 0.0069,
+     "second_significant": false,
+     "third": 0.01448
+    },
+    "2": {
+     "first": 0.01854,
+     "first_significant": true,
+     "phase": -0.9881,
+     "se": 0.00341,
+     "second": 0.0007003,
+     "second_significant": false,
+     "third": 0.003133
+    },
+    "5": {
+     "first": 0.3677,
+     "first_significant": true,
+     "phase": -0.3955,
+     "se": 0.00777,
+     "second": 0.06047,
+     "second_significant": true,
+     "third": 0.1082
+    }
    },
    "bits_scanned": [
     0,
@@ -3176,36 +3569,60 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.09716,
-     2.296,
-     0.01525
-    ],
-    "11": [
-     0.05058,
-     2.342,
-     0.009372
-    ],
-    "12": [
-     0.0631,
-     2.212,
-     0.02579
-    ],
-    "16": [
-     0.04047,
-     2.321,
-     0.008247
-    ],
-    "2": [
-     0.02286,
-     2.488,
-     0.009103
-    ],
-    "5": [
-     0.345,
-     2.349,
-     0.09648
-    ]
+    "0": {
+     "first": 0.09716,
+     "first_significant": true,
+     "phase": 2.296,
+     "se": 0.00638,
+     "second": 0.00214,
+     "second_significant": false,
+     "third": 0.01525
+    },
+    "11": {
+     "first": 0.05056,
+     "first_significant": true,
+     "phase": 2.343,
+     "se": 0.0076,
+     "second": 0.008784,
+     "second_significant": false,
+     "third": 0.009385
+    },
+    "12": {
+     "first": 0.06309,
+     "first_significant": true,
+     "phase": 2.212,
+     "se": 0.00749,
+     "second": 0.007668,
+     "second_significant": false,
+     "third": 0.02578
+    },
+    "16": {
+     "first": 0.04045,
+     "first_significant": true,
+     "phase": 2.322,
+     "se": 0.00781,
+     "second": 0.01075,
+     "second_significant": false,
+     "third": 0.00824
+    },
+    "2": {
+     "first": 0.02286,
+     "first_significant": true,
+     "phase": 2.488,
+     "se": 0.00355,
+     "second": 0.00489,
+     "second_significant": false,
+     "third": 0.009109
+    },
+    "5": {
+     "first": 0.3451,
+     "first_significant": true,
+     "phase": 2.349,
+     "se": 0.00779,
+     "second": 0.06367,
+     "second_significant": true,
+     "third": 0.0964
+    }
    },
    "bits_scanned": [
     0,
@@ -3244,31 +3661,51 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.09775,
-     2.788,
-     0.02725
-    ],
-    "11": [
-     0.05643,
-     2.707,
-     0.01304
-    ],
-    "12": [
-     0.05976,
-     2.992,
-     0.01535
-    ],
-    "16": [
-     0.05062,
-     2.569,
-     0.005401
-    ],
-    "5": [
-     0.3689,
-     2.884,
-     0.1067
-    ]
+    "0": {
+     "first": 0.09775,
+     "first_significant": true,
+     "phase": 2.788,
+     "se": 0.00638,
+     "second": 0.008795,
+     "second_significant": false,
+     "third": 0.02726
+    },
+    "11": {
+     "first": 0.05642,
+     "first_significant": true,
+     "phase": 2.707,
+     "se": 0.0076,
+     "second": 0.005171,
+     "second_significant": false,
+     "third": 0.01304
+    },
+    "12": {
+     "first": 0.05977,
+     "first_significant": true,
+     "phase": 2.993,
+     "se": 0.00773,
+     "second": 0.007606,
+     "second_significant": false,
+     "third": 0.01534
+    },
+    "16": {
+     "first": 0.05065,
+     "first_significant": true,
+     "phase": 2.569,
+     "se": 0.00781,
+     "second": 0.01426,
+     "second_significant": false,
+     "third": 0.005406
+    },
+    "5": {
+     "first": 0.369,
+     "first_significant": true,
+     "phase": 2.884,
+     "se": 0.0078,
+     "second": 0.07652,
+     "second_significant": true,
+     "third": 0.1065
+    }
    },
    "bits_scanned": [
     0,
@@ -3307,36 +3744,60 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.08774,
-     -0.2635,
-     0.03139
-    ],
-    "11": [
-     0.06352,
-     -0.2232,
-     0.007484
-    ],
-    "12": [
-     0.06798,
-     -0.2435,
-     0.00504
-    ],
-    "16": [
-     0.03897,
-     -0.135,
-     0.01522
-    ],
-    "5": [
-     0.3754,
-     -0.2247,
-     0.1096
-    ],
-    "6": [
-     0.02233,
-     0.1833,
-     0.01427
-    ]
+    "0": {
+     "first": 0.08773,
+     "first_significant": true,
+     "phase": -0.2633,
+     "se": 0.00641,
+     "second": 0.01143,
+     "second_significant": false,
+     "third": 0.0314
+    },
+    "11": {
+     "first": 0.0635,
+     "first_significant": true,
+     "phase": -0.2229,
+     "se": 0.00756,
+     "second": 0.01355,
+     "second_significant": false,
+     "third": 0.007501
+    },
+    "12": {
+     "first": 0.068,
+     "first_significant": true,
+     "phase": -0.2431,
+     "se": 0.00776,
+     "second": 0.01638,
+     "second_significant": false,
+     "third": 0.005062
+    },
+    "16": {
+     "first": 0.03898,
+     "first_significant": true,
+     "phase": -0.1352,
+     "se": 0.00774,
+     "second": 0.003477,
+     "second_significant": false,
+     "third": 0.01522
+    },
+    "5": {
+     "first": 0.3753,
+     "first_significant": true,
+     "phase": -0.2244,
+     "se": 0.0078,
+     "second": 0.06775,
+     "second_significant": true,
+     "third": 0.1098
+    },
+    "6": {
+     "first": 0.02234,
+     "first_significant": true,
+     "phase": 0.1837,
+     "se": 0.00394,
+     "second": 0.003935,
+     "second_significant": false,
+     "third": 0.01427
+    }
    },
    "bits_scanned": [
     0,
@@ -3375,31 +3836,51 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.09357,
-     1.438,
-     0.02044
-    ],
-    "11": [
-     0.05041,
-     1.402,
-     0.01327
-    ],
-    "12": [
-     0.06532,
-     1.476,
-     0.005131
-    ],
-    "5": [
-     0.3756,
-     1.527,
-     0.1042
-    ],
-    "6": [
-     0.02363,
-     1.836,
-     0.009776
-    ]
+    "0": {
+     "first": 0.09357,
+     "first_significant": true,
+     "phase": 1.438,
+     "se": 0.00629,
+     "second": 0.006762,
+     "second_significant": false,
+     "third": 0.02044
+    },
+    "11": {
+     "first": 0.05041,
+     "first_significant": true,
+     "phase": 1.402,
+     "se": 0.0077,
+     "second": 0.002781,
+     "second_significant": false,
+     "third": 0.01327
+    },
+    "12": {
+     "first": 0.06532,
+     "first_significant": true,
+     "phase": 1.477,
+     "se": 0.00779,
+     "second": 0.01467,
+     "second_significant": false,
+     "third": 0.00514
+    },
+    "5": {
+     "first": 0.3756,
+     "first_significant": true,
+     "phase": 1.527,
+     "se": 0.00777,
+     "second": 0.04842,
+     "second_significant": true,
+     "third": 0.1042
+    },
+    "6": {
+     "first": 0.02363,
+     "first_significant": true,
+     "phase": 1.835,
+     "se": 0.00404,
+     "second": 0.007035,
+     "second_significant": false,
+     "third": 0.009772
+    }
    },
    "bits_scanned": [
     0,
@@ -3438,26 +3919,42 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "0": [
-     0.09718,
-     2.275,
-     0.02365
-    ],
-    "11": [
-     0.05162,
-     2.063,
-     0.004994
-    ],
-    "12": [
-     0.0547,
-     2.19,
-     0.02369
-    ],
-    "5": [
-     0.3838,
-     2.247,
-     0.1167
-    ]
+    "0": {
+     "first": 0.09718,
+     "first_significant": true,
+     "phase": 2.275,
+     "se": 0.00636,
+     "second": 0.004299,
+     "second_significant": false,
+     "third": 0.02365
+    },
+    "11": {
+     "first": 0.05165,
+     "first_significant": true,
+     "phase": 2.063,
+     "se": 0.00765,
+     "second": 0.01931,
+     "second_significant": false,
+     "third": 0.004967
+    },
+    "12": {
+     "first": 0.05468,
+     "first_significant": true,
+     "phase": 2.19,
+     "se": 0.00743,
+     "second": 0.008851,
+     "second_significant": false,
+     "third": 0.0237
+    },
+    "5": {
+     "first": 0.3838,
+     "first_significant": true,
+     "phase": 2.247,
+     "se": 0.00779,
+     "second": 0.05629,
+     "second_significant": true,
+     "third": 0.1167
+    }
    },
    "bits_scanned": [
     0,
@@ -3696,7 +4193,7 @@
    ],
    "block_log10_p_adjusted": -73.66,
    "cycles_per_shot": 0.020458646,
-   "cycles_per_shot_se": 9.59e-06,
+   "cycles_per_shot_se": 9.6e-06,
    "detected": false,
    "file": "reference-x-d002.cq",
    "log10_p": -1.182,
@@ -3708,11 +4205,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "31": [
-     0.01422,
-     1.444,
-     0.002728
-    ]
+    "31": {
+     "first": 0.01422,
+     "first_significant": true,
+     "phase": 1.444,
+     "se": 0.00261,
+     "second": 0.002779,
+     "second_significant": false,
+     "third": 0.002729
+    }
    },
    "bits_scanned": [
     0,
@@ -3751,11 +4252,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.06746,
-     2.939,
-     0.009029
-    ]
+    "7": {
+     "first": 0.06746,
+     "first_significant": true,
+     "phase": 2.939,
+     "se": 0.00728,
+     "second": 0.004462,
+     "second_significant": false,
+     "third": 0.00903
+    }
    },
    "bits_scanned": [
     0,
@@ -3834,11 +4339,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.05035,
-     -1.735,
-     0.004506
-    ]
+    "7": {
+     "first": 0.05035,
+     "first_significant": true,
+     "phase": -1.735,
+     "se": 0.00645,
+     "second": 0.01356,
+     "second_significant": false,
+     "third": 0.004508
+    }
    },
    "bits_scanned": [
     0,
@@ -3879,11 +4388,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.04155,
-     -1.63,
-     0.007358
-    ]
+    "7": {
+     "first": 0.04156,
+     "first_significant": true,
+     "phase": -1.63,
+     "se": 0.00642,
+     "second": 0.007352,
+     "second_significant": false,
+     "third": 0.00735
+    }
    },
    "bits_scanned": [
     0,
@@ -4103,11 +4616,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.05656,
-     -2.571,
-     0.006047
-    ]
+    "7": {
+     "first": 0.05657,
+     "first_significant": true,
+     "phase": -2.57,
+     "se": 0.00779,
+     "second": 0.01079,
+     "second_significant": false,
+     "third": 0.006033
+    }
    },
    "bits_scanned": [
     0,
@@ -4148,11 +4665,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.3641,
-     1.74,
-     0.09009
-    ]
+    "7": {
+     "first": 0.3641,
+     "first_significant": true,
+     "phase": 1.74,
+     "se": 0.00775,
+     "second": 0.0154,
+     "second_significant": false,
+     "third": 0.09007
+    }
    },
    "bits_scanned": [
     0,
@@ -4183,11 +4704,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.3573,
-     2.968,
-     0.1045
-    ]
+    "7": {
+     "first": 0.3573,
+     "first_significant": true,
+     "phase": 2.967,
+     "se": 0.00778,
+     "second": 0.04372,
+     "second_significant": true,
+     "third": 0.1044
+    }
    },
    "bits_scanned": [
     0,
@@ -4226,11 +4751,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.3433,
-     0.893,
-     0.08527
-    ]
+    "7": {
+     "first": 0.3432,
+     "first_significant": true,
+     "phase": 0.8929,
+     "se": 0.00777,
+     "second": 0.04731,
+     "second_significant": true,
+     "third": 0.08527
+    }
    },
    "bits_scanned": [
     0,
@@ -4269,11 +4798,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.2811,
-     -1.939,
-     0.08505
-    ]
+    "7": {
+     "first": 0.2811,
+     "first_significant": true,
+     "phase": -1.939,
+     "se": 0.00768,
+     "second": 0.02457,
+     "second_significant": false,
+     "third": 0.08507
+    }
    },
    "bits_scanned": [
     0,
@@ -4311,11 +4844,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.246,
-     -0.5262,
-     0.06239
-    ]
+    "7": {
+     "first": 0.246,
+     "first_significant": true,
+     "phase": -0.5262,
+     "se": 0.00776,
+     "second": 0.05035,
+     "second_significant": true,
+     "third": 0.06243
+    }
    },
    "bits_scanned": [
     0,
@@ -4352,11 +4889,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "7": [
-     0.224,
-     0.8977,
-     0.05967
-    ]
+    "7": {
+     "first": 0.2241,
+     "first_significant": true,
+     "phase": 0.8978,
+     "se": 0.00768,
+     "second": 0.02735,
+     "second_significant": false,
+     "third": 0.05965
+    }
    },
    "bits_scanned": [
     0,
@@ -4394,21 +4935,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.09545,
-     2.478,
-     0.02055
-    ],
-    "7": [
-     0.05136,
-     2.664,
-     0.008101
-    ],
-    "8": [
-     0.06443,
-     2.698,
-     0.01223
-    ]
+    "14": {
+     "first": 0.09544,
+     "first_significant": true,
+     "phase": 2.478,
+     "se": 0.00781,
+     "second": 0.007482,
+     "second_significant": false,
+     "third": 0.02055
+    },
+    "7": {
+     "first": 0.05126,
+     "first_significant": true,
+     "phase": 2.665,
+     "se": 0.00732,
+     "second": 0.09845,
+     "second_significant": true,
+     "third": 0.007982
+    },
+    "8": {
+     "first": 0.06443,
+     "first_significant": true,
+     "phase": 2.698,
+     "se": 0.00773,
+     "second": 0.008174,
+     "second_significant": false,
+     "third": 0.01224
+    }
    },
    "bits_scanned": [
     1,
@@ -4439,26 +4992,51 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.09059,
-     -0.7853,
-     0.03451
-    ],
-    "3": [
-     0.05289,
-     -0.9587,
-     0.0104
-    ],
-    "7": [
-     0.04297,
-     -1.002,
-     0.003411
-    ],
-    "8": [
-     0.04442,
-     -0.8853,
-     0.01415
-    ]
+    "14": {
+     "first": 0.09057,
+     "first_significant": true,
+     "phase": -0.7851,
+     "se": 0.0078,
+     "second": 0.01335,
+     "second_significant": false,
+     "third": 0.03453
+    },
+    "3": {
+     "first": 0.0529,
+     "first_significant": true,
+     "phase": -0.9591,
+     "se": 0.00769,
+     "second": 0.01286,
+     "second_significant": false,
+     "third": 0.01038
+    },
+    "7": {
+     "first": 0.04313,
+     "first_significant": true,
+     "phase": -1.006,
+     "se": 0.00737,
+     "second": 0.1045,
+     "second_significant": true,
+     "third": 0.003534
+    },
+    "8": {
+     "first": 0.04442,
+     "first_significant": true,
+     "phase": -0.8856,
+     "se": 0.00775,
+     "second": 0.006895,
+     "second_significant": false,
+     "third": 0.01413
+    },
+    "9": {
+     "first": 0.03902,
+     "first_significant": true,
+     "phase": -0.8075,
+     "se": 0.0078,
+     "second": 0.01824,
+     "second_significant": false,
+     "third": 0.002014
+    }
    },
    "bits_scanned": [
     0,
@@ -4496,21 +5074,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.08205,
-     2.213,
-     0.0163
-    ],
-    "7": [
-     0.04845,
-     2.238,
-     0.004778
-    ],
-    "8": [
-     0.04555,
-     2.706,
-     0.01655
-    ]
+    "14": {
+     "first": 0.08205,
+     "first_significant": true,
+     "phase": 2.212,
+     "se": 0.00781,
+     "second": 0.01146,
+     "second_significant": false,
+     "third": 0.01631
+    },
+    "7": {
+     "first": 0.04829,
+     "first_significant": true,
+     "phase": 2.241,
+     "se": 0.00743,
+     "second": 0.1034,
+     "second_significant": true,
+     "third": 0.004781
+    },
+    "8": {
+     "first": 0.04555,
+     "first_significant": true,
+     "phase": 2.706,
+     "se": 0.00774,
+     "second": 0.008539,
+     "second_significant": false,
+     "third": 0.01657
+    }
    },
    "bits_scanned": [
     0,
@@ -4547,26 +5137,42 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.0674,
-     1.913,
-     0.02826
-    ],
-    "7": [
-     0.4275,
-     2.082,
-     0.1127
-    ],
-    "8": [
-     0.04623,
-     2.15,
-     0.00815
-    ],
-    "9": [
-     0.05275,
-     2.199,
-     0.001954
-    ]
+    "14": {
+     "first": 0.0674,
+     "first_significant": true,
+     "phase": 1.913,
+     "se": 0.0078,
+     "second": 0.0126,
+     "second_significant": false,
+     "third": 0.02828
+    },
+    "7": {
+     "first": 0.4275,
+     "first_significant": true,
+     "phase": 2.082,
+     "se": 0.00779,
+     "second": 0.006249,
+     "second_significant": false,
+     "third": 0.1126
+    },
+    "8": {
+     "first": 0.04623,
+     "first_significant": true,
+     "phase": 2.15,
+     "se": 0.00777,
+     "second": 0.01244,
+     "second_significant": false,
+     "third": 0.008172
+    },
+    "9": {
+     "first": 0.05277,
+     "first_significant": true,
+     "phase": 2.199,
+     "se": 0.0078,
+     "second": 0.01114,
+     "second_significant": false,
+     "third": 0.001933
+    }
    },
    "bits_scanned": [
     0,
@@ -4604,31 +5210,51 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.07557,
-     0.9194,
-     0.01665
-    ],
-    "3": [
-     0.03881,
-     0.5939,
-     0.01627
-    ],
-    "7": [
-     0.4247,
-     1.051,
-     0.119
-    ],
-    "8": [
-     0.05578,
-     1.207,
-     0.0247
-    ],
-    "9": [
-     0.04314,
-     0.8813,
-     0.01443
-    ]
+    "14": {
+     "first": 0.07556,
+     "first_significant": true,
+     "phase": 0.9196,
+     "se": 0.00781,
+     "second": 0.01687,
+     "second_significant": false,
+     "third": 0.01663
+    },
+    "3": {
+     "first": 0.03881,
+     "first_significant": true,
+     "phase": 0.5937,
+     "se": 0.0077,
+     "second": 0.007523,
+     "second_significant": false,
+     "third": 0.01628
+    },
+    "7": {
+     "first": 0.4247,
+     "first_significant": true,
+     "phase": 1.051,
+     "se": 0.00779,
+     "second": 0.009319,
+     "second_significant": false,
+     "third": 0.119
+    },
+    "8": {
+     "first": 0.05579,
+     "first_significant": true,
+     "phase": 1.207,
+     "se": 0.00775,
+     "second": 0.004616,
+     "second_significant": false,
+     "third": 0.0247
+    },
+    "9": {
+     "first": 0.04315,
+     "first_significant": true,
+     "phase": 0.8811,
+     "se": 0.00781,
+     "second": 0.004539,
+     "second_significant": false,
+     "third": 0.01443
+    }
    },
    "bits_scanned": [
     0,
@@ -4666,26 +5292,42 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.077,
-     0.8001,
-     0.02905
-    ],
-    "3": [
-     0.04644,
-     0.5037,
-     0.01479
-    ],
-    "7": [
-     0.4093,
-     0.7427,
-     0.1149
-    ],
-    "8": [
-     0.04582,
-     0.7463,
-     0.009897
-    ]
+    "14": {
+     "first": 0.07699,
+     "first_significant": true,
+     "phase": 0.8001,
+     "se": 0.0078,
+     "second": 0.007893,
+     "second_significant": false,
+     "third": 0.02905
+    },
+    "3": {
+     "first": 0.04643,
+     "first_significant": true,
+     "phase": 0.5035,
+     "se": 0.00771,
+     "second": 0.0117,
+     "second_significant": false,
+     "third": 0.01481
+    },
+    "7": {
+     "first": 0.4093,
+     "first_significant": true,
+     "phase": 0.7428,
+     "se": 0.00777,
+     "second": 0.006998,
+     "second_significant": false,
+     "third": 0.1149
+    },
+    "8": {
+     "first": 0.04582,
+     "first_significant": true,
+     "phase": 0.7466,
+     "se": 0.00774,
+     "second": 0.008426,
+     "second_significant": false,
+     "third": 0.009884
+    }
    },
    "bits_scanned": [
     0,
@@ -4790,7 +5432,7 @@
    ],
    "block_log10_p_adjusted": 0.0,
    "cycles_per_shot": 0.019420529,
-   "cycles_per_shot_se": 7.77e-05,
+   "cycles_per_shot_se": 7.78e-05,
    "detected": false,
    "file": "twin-1.cq",
    "log10_p": -1.07,
@@ -4838,7 +5480,7 @@
    ],
    "block_log10_p_adjusted": 0.0,
    "cycles_per_shot": 0.020274515,
-   "cycles_per_shot_se": 6.94e-05,
+   "cycles_per_shot_se": 6.91e-05,
    "detected": false,
    "file": "twin-3.cq",
    "log10_p": -0.5356,
@@ -4927,7 +5569,7 @@
    ],
    "block_log10_p_adjusted": -0.9357,
    "cycles_per_shot": 0.020303559,
-   "cycles_per_shot_se": 7.12e-05,
+   "cycles_per_shot_se": 7.13e-05,
    "detected": false,
    "file": "twin-2.cq",
    "log10_p": -0.4308,
@@ -4951,7 +5593,7 @@
    ],
    "block_log10_p_adjusted": 0.0,
    "cycles_per_shot": 0.019656458,
-   "cycles_per_shot_se": 6.38e-05,
+   "cycles_per_shot_se": 6.39e-05,
    "detected": false,
    "file": "twin-3.cq",
    "log10_p": -0.9386,
@@ -4997,7 +5639,7 @@
    ],
    "block_log10_p_adjusted": 0.0,
    "cycles_per_shot": 0.020304953,
-   "cycles_per_shot_se": 8.54e-05,
+   "cycles_per_shot_se": 8.56e-05,
    "detected": false,
    "file": "twin-2.cq",
    "log10_p": 0.0,
@@ -5021,7 +5663,7 @@
    ],
    "block_log10_p_adjusted": 0.0,
    "cycles_per_shot": 0.02048069,
-   "cycles_per_shot_se": 7.39e-05,
+   "cycles_per_shot_se": 7.4e-05,
    "detected": false,
    "file": "twin-3.cq",
    "log10_p": -0.2893,
@@ -5033,11 +5675,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "4": [
-     0.04534,
-     -2.624,
-     0.01494
-    ]
+    "4": {
+     "first": 0.04535,
+     "first_significant": true,
+     "phase": -2.624,
+     "se": 0.00552,
+     "second": 0.008985,
+     "second_significant": false,
+     "third": 0.01494
+    }
    },
    "bits_scanned": [
     0,
@@ -5132,16 +5778,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "13": [
-     0.0309,
-     2.752,
-     0.006907
-    ],
-    "4": [
-     0.02891,
-     -0.5297,
-     0.01166
-    ]
+    "13": {
+     "first": 0.03091,
+     "first_significant": true,
+     "phase": 2.753,
+     "se": 0.0055,
+     "second": 0.01205,
+     "second_significant": false,
+     "third": 0.006896
+    },
+    "4": {
+     "first": 0.02893,
+     "first_significant": true,
+     "phase": -0.5301,
+     "se": 0.00551,
+     "second": 0.01991,
+     "second_significant": false,
+     "third": 0.01164
+    }
    },
    "bits_scanned": [
     0,
@@ -5237,11 +5891,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.03346,
-     0.4518,
-     0.005458
-    ]
+    "14": {
+     "first": 0.03346,
+     "first_significant": true,
+     "phase": 0.4521,
+     "se": 0.00552,
+     "second": 0.01176,
+     "second_significant": false,
+     "third": 0.005463
+    }
    },
    "bits_scanned": [
     0,
@@ -5486,16 +6144,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "10": [
-     0.04046,
-     2.305,
-     0.01709
-    ],
-    "12": [
-     0.2211,
-     2.42,
-     0.05946
-    ]
+    "10": {
+     "first": 0.04046,
+     "first_significant": true,
+     "phase": 2.305,
+     "se": 0.00357,
+     "second": 0.007982,
+     "second_significant": false,
+     "third": 0.01709
+    },
+    "12": {
+     "first": 0.2211,
+     "first_significant": true,
+     "phase": 2.42,
+     "se": 0.00507,
+     "second": 0.008784,
+     "second_significant": false,
+     "third": 0.05946
+    }
    },
    "bits_scanned": [
     0,
@@ -5587,16 +6253,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.09609,
-     0.3686,
-     0.03233
-    ],
-    "10": [
-     0.0184,
-     -2.714,
-     0.0009783
-    ]
+    "1": {
+     "first": 0.09608,
+     "first_significant": true,
+     "phase": 0.3686,
+     "se": 0.0042,
+     "second": 0.009191,
+     "second_significant": false,
+     "third": 0.03234
+    },
+    "10": {
+     "first": 0.0184,
+     "first_significant": true,
+     "phase": -2.713,
+     "se": 0.00249,
+     "second": 0.004192,
+     "second_significant": false,
+     "third": 0.0009746
+    }
    },
    "bits_scanned": [
     0,
@@ -5687,11 +6361,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.145,
-     -2.49,
-     0.04174
-    ]
+    "1": {
+     "first": 0.145,
+     "first_significant": true,
+     "phase": -2.49,
+     "se": 0.00454,
+     "second": 0.03102,
+     "second_significant": true,
+     "third": 0.04173
+    }
    },
    "bits_scanned": [
     0,
@@ -5730,7 +6408,7 @@
    ],
    "block_log10_p_adjusted": -0.1842,
    "cycles_per_shot": 0.020614804,
-   "cycles_per_shot_se": 8.58e-05,
+   "cycles_per_shot_se": 8.59e-05,
    "detected": false,
    "file": "twin-t0-1.cq",
    "log10_p": -0.1766,
@@ -5749,7 +6427,7 @@
    ],
    "block_log10_p_adjusted": -0.018,
    "cycles_per_shot": 0.020315162,
-   "cycles_per_shot_se": 8.33e-05,
+   "cycles_per_shot_se": 8.35e-05,
    "detected": false,
    "file": "twin-t0-2.cq",
    "log10_p": -0.2718,
@@ -5804,7 +6482,7 @@
    ],
    "block_log10_p_adjusted": 0.0,
    "cycles_per_shot": 0.01974577,
-   "cycles_per_shot_se": 4.92e-06,
+   "cycles_per_shot_se": 4.93e-06,
    "detected": false,
    "file": "readout-0.cq",
    "log10_p": -0.9183,
@@ -5881,21 +6559,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.1926,
-     0.614,
-     0.03915
-    ],
-    "10": [
-     0.2093,
-     0.5403,
-     0.04782
-    ],
-    "12": [
-     0.2486,
-     0.5799,
-     0.05405
-    ]
+    "1": {
+     "first": 0.1926,
+     "first_significant": true,
+     "phase": 0.614,
+     "se": 0.00471,
+     "second": 0.02606,
+     "second_significant": true,
+     "third": 0.03917
+    },
+    "10": {
+     "first": 0.2093,
+     "first_significant": true,
+     "phase": 0.5403,
+     "se": 0.00514,
+     "second": 0.008432,
+     "second_significant": false,
+     "third": 0.04782
+    },
+    "12": {
+     "first": 0.2486,
+     "first_significant": true,
+     "phase": 0.5799,
+     "se": 0.00552,
+     "second": 0.002883,
+     "second_significant": false,
+     "third": 0.05404
+    }
    },
    "bits_scanned": [
     0,
@@ -5990,21 +6680,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.2277,
-     -2.581,
-     0.04655
-    ],
-    "10": [
-     0.1986,
-     -2.6,
-     0.04541
-    ],
-    "12": [
-     0.2617,
-     -2.569,
-     0.05428
-    ]
+    "1": {
+     "first": 0.2277,
+     "first_significant": true,
+     "phase": -2.581,
+     "se": 0.00491,
+     "second": 0.02361,
+     "second_significant": false,
+     "third": 0.04654
+    },
+    "10": {
+     "first": 0.1986,
+     "first_significant": true,
+     "phase": -2.6,
+     "se": 0.00502,
+     "second": 0.01968,
+     "second_significant": false,
+     "third": 0.04539
+    },
+    "12": {
+     "first": 0.2617,
+     "first_significant": true,
+     "phase": -2.569,
+     "se": 0.00552,
+     "second": 0.001408,
+     "second_significant": false,
+     "third": 0.05428
+    }
    },
    "bits_scanned": [
     0,
@@ -6160,11 +6862,15 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.06154,
-     -0.4767,
-     0.01803
-    ]
+    "14": {
+     "first": 0.06154,
+     "first_significant": true,
+     "phase": -0.4768,
+     "se": 0.00374,
+     "second": 0.01188,
+     "second_significant": false,
+     "third": 0.01802
+    }
    },
    "bits_scanned": [
     0,
@@ -6262,16 +6968,24 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "14": [
-     0.1863,
-     -0.5312,
-     0.04471
-    ],
-    "4": [
-     0.06718,
-     -0.5188,
-     0.01698
-    ]
+    "14": {
+     "first": 0.1863,
+     "first_significant": true,
+     "phase": -0.5312,
+     "se": 0.00539,
+     "second": 0.005078,
+     "second_significant": false,
+     "third": 0.04471
+    },
+    "4": {
+     "first": 0.06717,
+     "first_significant": true,
+     "phase": -0.5188,
+     "se": 0.0055,
+     "second": 0.01083,
+     "second_significant": false,
+     "third": 0.01699
+    }
    },
    "bits_scanned": [
     0,
@@ -6306,21 +7020,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.09267,
-     -2.975,
-     0.01799
-    ],
-    "10": [
-     0.09433,
-     -2.743,
-     0.02544
-    ],
-    "12": [
-     0.1293,
-     -2.848,
-     0.0314
-    ]
+    "1": {
+     "first": 0.09267,
+     "first_significant": true,
+     "phase": -2.975,
+     "se": 0.00412,
+     "second": 0.008791,
+     "second_significant": false,
+     "third": 0.01799
+    },
+    "10": {
+     "first": 0.09433,
+     "first_significant": true,
+     "phase": -2.743,
+     "se": 0.00452,
+     "second": 0.004311,
+     "second_significant": false,
+     "third": 0.02544
+    },
+    "12": {
+     "first": 0.1293,
+     "first_significant": true,
+     "phase": -2.848,
+     "se": 0.00484,
+     "second": 0.007979,
+     "second_significant": false,
+     "third": 0.0314
+    }
    },
    "bits_scanned": [
     0,
@@ -6404,7 +7130,7 @@
    ],
    "block_log10_p_adjusted": -0.3806,
    "cycles_per_shot": 0.019618475,
-   "cycles_per_shot_se": 4.33e-06,
+   "cycles_per_shot_se": 4.32e-06,
    "detected": false,
    "file": "lcu-dark-y-2.cq",
    "log10_p": -1.579,
@@ -6416,21 +7142,33 @@
   {
    "backend": "Tuna-17",
    "bits": {
-    "1": [
-     0.09378,
-     3.058,
-     0.01999
-    ],
-    "10": [
-     0.1073,
-     2.94,
-     0.02518
-    ],
-    "12": [
-     0.125,
-     2.992,
-     0.03387
-    ]
+    "1": {
+     "first": 0.09378,
+     "first_significant": true,
+     "phase": 3.058,
+     "se": 0.00413,
+     "second": 0.008716,
+     "second_significant": false,
+     "third": 0.01999
+    },
+    "10": {
+     "first": 0.1073,
+     "first_significant": true,
+     "phase": 2.94,
+     "se": 0.00462,
+     "second": 0.009732,
+     "second_significant": false,
+     "third": 0.02518
+    },
+    "12": {
+     "first": 0.125,
+     "first_significant": true,
+     "phase": 2.992,
+     "se": 0.00486,
+     "second": 0.01005,
+     "second_significant": false,
+     "third": 0.03387
+    }
    },
    "bits_scanned": [
     0,
@@ -6656,7 +7394,7 @@
    ],
    "block_log10_p_adjusted": -0.1852,
    "cycles_per_shot": 0.019695086,
-   "cycles_per_shot_se": 7.51e-05,
+   "cycles_per_shot_se": 7.53e-05,
    "detected": false,
    "file": "twin-lcu-dark-x-1.cq",
    "log10_p": -1.198,
@@ -6741,7 +7479,7 @@
    ],
    "block_log10_p_adjusted": -0.9011,
    "cycles_per_shot": 0.020122049,
-   "cycles_per_shot_se": 7.2e-05,
+   "cycles_per_shot_se": 7.18e-05,
    "detected": false,
    "file": "twin-lcu-dark-y-2.cq",
    "log10_p": -0.3881,
@@ -6749,14 +7487,1004 @@
    "run": "2026-10-17T230513Z-box_kite_tuna_twins_qx-batch-06",
    "shots": 2048,
    "whitened_rank": 4
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -0.7669,
+   "cycles_per_shot": 0.019662653,
+   "cycles_per_shot_se": 6.1e-07,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -0.1229,
+   "peak_power": 23.777,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-00",
+   "shots": 131072,
+   "whitened_rank": 12
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -0.644,
+   "cycles_per_shot": 0.019239661,
+   "cycles_per_shot_se": 5.17e-07,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.6801,
+   "peak_power": 33.053,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-00",
+   "shots": 131072,
+   "whitened_rank": 17
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -1.164,
+   "cycles_per_shot": 0.019861988,
+   "cycles_per_shot_se": 5.83e-07,
+   "detected": false,
+   "file": "readout-iso-x.cq",
+   "log10_p": -0.7094,
+   "peak_power": 26.087,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-00",
+   "shots": 131072,
+   "whitened_rank": 12
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "10": {
+     "first": 0.079,
+     "first_significant": true,
+     "phase": 0.6151,
+     "se": 0.00152,
+     "second": 0.003173,
+     "second_significant": false,
+     "third": 0.02023
+    },
+    "12": {
+     "first": 0.02386,
+     "first_significant": true,
+     "phase": 0.5419,
+     "se": 0.00129,
+     "second": 0.02085,
+     "second_significant": true,
+     "third": 0.006747
+    }
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -3.576,
+   "cycles_per_shot": 0.020042691,
+   "cycles_per_shot_se": 7.39e-08,
+   "detected": true,
+   "file": "latin-x-1.cq",
+   "log10_p": -667.7,
+   "peak_power": 1621.3,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-01",
+   "shots": 131072,
+   "whitened_rank": 15
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "1": {
+     "first": 0.0969,
+     "first_significant": true,
+     "phase": 0.04547,
+     "se": 0.00148,
+     "second": 0.005704,
+     "second_significant": false,
+     "third": 0.02556
+    },
+    "10": {
+     "first": 0.1361,
+     "first_significant": true,
+     "phase": 0.0312,
+     "se": 0.00164,
+     "second": 0.01617,
+     "second_significant": true,
+     "third": 0.03346
+    }
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -5.306,
+   "cycles_per_shot": 0.020038831,
+   "cycles_per_shot_se": 4e-08,
+   "detected": true,
+   "file": "latin-x-2.cq",
+   "log10_p": -2366.0,
+   "peak_power": 5548.0,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-01",
+   "shots": 131072,
+   "whitened_rank": 15
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": {
+     "first": 0.006645,
+     "first_significant": true,
+     "phase": -2.1,
+     "se": 0.00108,
+     "second": 0.001074,
+     "second_significant": false,
+     "third": 0.002022
+    },
+    "1": {
+     "first": 0.1303,
+     "first_significant": true,
+     "phase": 0.6932,
+     "se": 0.00155,
+     "second": 0.02749,
+     "second_significant": true,
+     "third": 0.02761
+    },
+    "12": {
+     "first": 0.02828,
+     "first_significant": true,
+     "phase": 0.7059,
+     "se": 0.00107,
+     "second": 0.006698,
+     "second_significant": true,
+     "third": 0.005009
+    }
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -10.58,
+   "cycles_per_shot": 0.020039391,
+   "cycles_per_shot_se": 4.69e-08,
+   "detected": true,
+   "file": "latin-x-3.cq",
+   "log10_p": -1712.0,
+   "peak_power": 4039.1,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-01",
+   "shots": 131072,
+   "whitened_rank": 15
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "10": {
+     "first": 0.07707,
+     "first_significant": true,
+     "phase": -1.133,
+     "se": 0.00151,
+     "second": 0.00588,
+     "second_significant": false,
+     "third": 0.01576
+    },
+    "12": {
+     "first": 0.02626,
+     "first_significant": true,
+     "phase": -1.109,
+     "se": 0.0013,
+     "second": 0.02176,
+     "second_significant": true,
+     "third": 0.009069
+    }
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -5.512,
+   "cycles_per_shot": 0.020040206,
+   "cycles_per_shot_se": 7.63e-08,
+   "detected": true,
+   "file": "latin-y-1.cq",
+   "log10_p": -625.7,
+   "peak_power": 1523.7,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-02",
+   "shots": 131072,
+   "whitened_rank": 15
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "1": {
+     "first": 0.09003,
+     "first_significant": true,
+     "phase": -1.08,
+     "se": 0.00148,
+     "second": 0.002763,
+     "second_significant": false,
+     "third": 0.01988
+    },
+    "10": {
+     "first": 0.1175,
+     "first_significant": true,
+     "phase": -1.12,
+     "se": 0.0016,
+     "second": 0.01631,
+     "second_significant": true,
+     "third": 0.02937
+    }
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -7.383,
+   "cycles_per_shot": 0.020041674,
+   "cycles_per_shot_se": 4.49e-08,
+   "detected": true,
+   "file": "latin-y-2.cq",
+   "log10_p": -1864.0,
+   "peak_power": 4389.4,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-02",
+   "shots": 131072,
+   "whitened_rank": 15
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": {
+     "first": 0.00768,
+     "first_significant": true,
+     "phase": 0.9502,
+     "se": 0.00107,
+     "second": 0.001198,
+     "second_significant": false,
+     "third": 0.0008144
+    },
+    "1": {
+     "first": 0.124,
+     "first_significant": true,
+     "phase": -2.384,
+     "se": 0.00154,
+     "second": 0.02978,
+     "second_significant": true,
+     "third": 0.02904
+    },
+    "12": {
+     "first": 0.02465,
+     "first_significant": true,
+     "phase": -2.365,
+     "se": 0.00106,
+     "second": 0.008691,
+     "second_significant": true,
+     "third": 0.004495
+    }
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -5.826,
+   "cycles_per_shot": 0.020044758,
+   "cycles_per_shot_se": 5e-08,
+   "detected": true,
+   "file": "latin-y-3.cq",
+   "log10_p": -1493.0,
+   "peak_power": 3538.0,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-02",
+   "shots": 131072,
+   "whitened_rank": 16
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -4.291,
+   "cycles_per_shot": 0.019385033,
+   "cycles_per_shot_se": 5.95e-07,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -0.4199,
+   "peak_power": 24.964,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-03",
+   "shots": 131072,
+   "whitened_rank": 12
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -0.9282,
+   "cycles_per_shot": 0.020607094,
+   "cycles_per_shot_se": 5.36e-07,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.2032,
+   "peak_power": 30.964,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-03",
+   "shots": 131072,
+   "whitened_rank": 17
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -3.023,
+   "cycles_per_shot": 0.019682411,
+   "cycles_per_shot_se": 5.8e-07,
+   "detected": false,
+   "file": "readout-iso-hzh.cq",
+   "log10_p": -0.766,
+   "peak_power": 26.303,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-03",
+   "shots": 131072,
+   "whitened_rank": 12
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "10": {
+     "first": 0.07301,
+     "first_significant": true,
+     "phase": -2.925,
+     "se": 0.00159,
+     "second": 0.008653,
+     "second_significant": true,
+     "third": 0.01561
+    },
+    "12": {
+     "first": 0.002739,
+     "first_significant": false,
+     "phase": -0.5487,
+     "se": 0.00128,
+     "second": 0.02027,
+     "second_significant": true,
+     "third": 0.0007158
+    }
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -318.6,
+   "cycles_per_shot": 0.02004042,
+   "cycles_per_shot_se": 8.74e-08,
+   "detected": true,
+   "file": "latin-x-1.cq",
+   "log10_p": -470.1,
+   "peak_power": 1161.7,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-04",
+   "shots": 131072,
+   "whitened_rank": 15
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "1": {
+     "first": 0.07972,
+     "first_significant": true,
+     "phase": 2.612,
+     "se": 0.00142,
+     "second": 0.004003,
+     "second_significant": false,
+     "third": 0.008003
+    },
+    "10": {
+     "first": 0.1236,
+     "first_significant": true,
+     "phase": 2.611,
+     "se": 0.00165,
+     "second": 0.008915,
+     "second_significant": true,
+     "third": 0.01669
+    }
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -1.827,
+   "cycles_per_shot": 0.02005227,
+   "cycles_per_shot_se": 4.47e-08,
+   "detected": true,
+   "file": "latin-x-2.cq",
+   "log10_p": -1880.0,
+   "peak_power": 4427.3,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-04",
+   "shots": 131072,
+   "whitened_rank": 15
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": {
+     "first": 0.008117,
+     "first_significant": true,
+     "phase": -2.04,
+     "se": 0.00107,
+     "second": 0.002536,
+     "second_significant": false,
+     "third": 0.002613
+    },
+    "1": {
+     "first": 0.1132,
+     "first_significant": true,
+     "phase": 1.24,
+     "se": 0.0015,
+     "second": 0.02655,
+     "second_significant": true,
+     "third": 0.03097
+    },
+    "12": {
+     "first": 0.01596,
+     "first_significant": true,
+     "phase": 1.252,
+     "se": 0.00101,
+     "second": 0.00841,
+     "second_significant": true,
+     "third": 0.003987
+    }
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -104.5,
+   "cycles_per_shot": 0.02004222,
+   "cycles_per_shot_se": 5.28e-08,
+   "detected": true,
+   "file": "latin-x-3.cq",
+   "log10_p": -1338.0,
+   "peak_power": 3174.5,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-04",
+   "shots": 131072,
+   "whitened_rank": 15
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "10": {
+     "first": 0.07666,
+     "first_significant": true,
+     "phase": 0.4576,
+     "se": 0.00149,
+     "second": 0.003864,
+     "second_significant": false,
+     "third": 0.01508
+    },
+    "12": {
+     "first": 0.002702,
+     "first_significant": false,
+     "phase": 0.05274,
+     "se": 0.00127,
+     "second": 0.02198,
+     "second_significant": true,
+     "third": 0.00111
+    }
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -1.818,
+   "cycles_per_shot": 0.020038959,
+   "cycles_per_shot_se": 8.09e-08,
+   "detected": true,
+   "file": "latin-y-1.cq",
+   "log10_p": -553.9,
+   "peak_power": 1356.8,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-05",
+   "shots": 131072,
+   "whitened_rank": 15
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "1": {
+     "first": 0.09121,
+     "first_significant": true,
+     "phase": -2.694,
+     "se": 0.00145,
+     "second": 0.005007,
+     "second_significant": false,
+     "third": 0.02284
+    },
+    "10": {
+     "first": 0.1372,
+     "first_significant": true,
+     "phase": -2.721,
+     "se": 0.00162,
+     "second": 0.01987,
+     "second_significant": true,
+     "third": 0.03181
+    }
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -3.264,
+   "cycles_per_shot": 0.020038164,
+   "cycles_per_shot_se": 4.05e-08,
+   "detected": true,
+   "file": "latin-y-2.cq",
+   "log10_p": -2308.0,
+   "peak_power": 5415.3,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-05",
+   "shots": 131072,
+   "whitened_rank": 15
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {
+    "0": {
+     "first": 0.00737,
+     "first_significant": true,
+     "phase": 0.7182,
+     "se": 0.00107,
+     "second": 0.001299,
+     "second_significant": false,
+     "third": 0.001931
+    },
+    "1": {
+     "first": 0.1091,
+     "first_significant": true,
+     "phase": -2.428,
+     "se": 0.00151,
+     "second": 0.02052,
+     "second_significant": true,
+     "third": 0.0103
+    },
+    "12": {
+     "first": 0.01307,
+     "first_significant": true,
+     "phase": -2.307,
+     "se": 0.001,
+     "second": 0.004544,
+     "second_significant": false,
+     "third": 0.001784
+    }
+   },
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -0.4632,
+   "cycles_per_shot": 0.020039457,
+   "cycles_per_shot_se": 5.66e-08,
+   "detected": true,
+   "file": "latin-y-3.cq",
+   "log10_p": -1162.0,
+   "peak_power": 2767.9,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-05",
+   "shots": 131072,
+   "whitened_rank": 15
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -0.3911,
+   "cycles_per_shot": 0.020679915,
+   "cycles_per_shot_se": 6.11e-07,
+   "detected": false,
+   "file": "readout-0.cq",
+   "log10_p": -0.1145,
+   "peak_power": 23.743,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-06",
+   "shots": 131072,
+   "whitened_rank": 12
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -1.827,
+   "cycles_per_shot": 0.02099596,
+   "cycles_per_shot_se": 5.28e-07,
+   "detected": false,
+   "file": "readout-1.cq",
+   "log10_p": -0.4272,
+   "peak_power": 31.959,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-06",
+   "shots": 131072,
+   "whitened_rank": 17
+  },
+  {
+   "backend": "Tuna-17",
+   "bits": {},
+   "bits_scanned": [
+    0,
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16
+   ],
+   "block_log10_p_adjusted": -0.3354,
+   "cycles_per_shot": 0.02013966,
+   "cycles_per_shot_se": 5.88e-07,
+   "detected": false,
+   "file": "readout-iso-x.cq",
+   "log10_p": -0.589,
+   "peak_power": 25.624,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder-batch-06",
+   "shots": 131072,
+   "whitened_rank": 12
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "twin-latin-x-1.cq",
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder_twins_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "twin-latin-x-2.cq",
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder_twins_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits_scanned": [],
+   "detected": false,
+   "file": "twin-latin-x-3.cq",
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder_twins_qx-batch-00",
+   "shots": 2048
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    4,
+    5
+   ],
+   "block_log10_p_adjusted": -1.133,
+   "cycles_per_shot": 0.019252729,
+   "cycles_per_shot_se": 7.49e-05,
+   "detected": false,
+   "file": "twin-latin-y-1.cq",
+   "log10_p": -0.6279,
+   "peak_power": 6.377,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder_twins_qx-batch-01",
+   "shots": 2048,
+   "whitened_rank": 3
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    4,
+    5
+   ],
+   "block_log10_p_adjusted": 0.0,
+   "cycles_per_shot": 0.019,
+   "cycles_per_shot_se": 7.61e-05,
+   "detected": false,
+   "file": "twin-latin-y-2.cq",
+   "log10_p": -0.5824,
+   "peak_power": 6.2339,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder_twins_qx-batch-01",
+   "shots": 2048,
+   "whitened_rank": 3
+  },
+  {
+   "backend": "QX",
+   "bits": {},
+   "bits_scanned": [
+    1,
+    4,
+    5
+   ],
+   "block_log10_p_adjusted": -0.6777,
+   "cycles_per_shot": 0.020105349,
+   "cycles_per_shot_se": 6.03e-05,
+   "detected": false,
+   "file": "twin-latin-y-3.cq",
+   "log10_p": -1.871,
+   "peak_power": 10.035,
+   "run": "2026-10-18T015435Z-box_kite_tuna_ladder_twins_qx-batch-01",
+   "shots": 2048,
+   "whitened_rank": 3
   }
  ],
- "schema": "qi-shot-record-line-v1",
+ "schema": "qi-shot-record-line-v2",
  "stationarity": {
   "box_kite_tuna_follow": {
    "fraction_below_0_01": 0.1429,
    "jobs": 21,
    "median_log10_p_adjusted": -0.3691
+  },
+  "box_kite_tuna_ladder": {
+   "fraction_below_0_01": 0.5238,
+   "jobs": 21,
+   "median_log10_p_adjusted": -3.023
   },
   "box_kite_tuna_pre": {
    "fraction_below_0_01": 0.3333,

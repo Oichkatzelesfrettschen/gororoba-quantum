@@ -1,0 +1,12 @@
+version 3.0
+
+qubit[17] q
+bit[17] b
+
+// X on q[1, 13, 14], every other qubit in |0>; ideal P1 1 there
+X q[1]
+X q[13]
+X q[14]
+
+barrier q
+b = measure q

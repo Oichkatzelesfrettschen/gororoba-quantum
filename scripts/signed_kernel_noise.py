@@ -139,7 +139,7 @@ def compile_all(snapshot: dict[str, Any], ts: tuple[float, ...]) -> tuple[dict[s
     arms load one LCU term at phase 0 or pi; the e2 term ideally reads
     +1 or -1 and the e1 and e10 terms 0.
     """
-    view, _ = calibration_snapshot.noise_model(snapshot)
+    view = calibration_snapshot.snapshot_backend(snapshot)
     layouts: dict[str, list[int]] = {}
     arms: list[Any] = []
     for name, builder in PER_T.items():

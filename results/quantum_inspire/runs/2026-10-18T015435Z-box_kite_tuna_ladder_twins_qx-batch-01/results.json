@@ -1,0 +1,127 @@
+{
+ "schema": "qi-collection-v1",
+ "collected_utc": "2026-10-18T01:55:43+00:00",
+ "jobs": [
+  {
+   "file": "twin-latin-y-1.cq",
+   "job": {
+    "id": 1531005,
+    "created_on": "2026-10-18T01:55:17.947416Z",
+    "file_id": 1541386,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 871677,
+    "queued_at": "2026-10-18T01:55:25.250034Z",
+    "finished_at": "2026-10-18T01:55:25.600886Z",
+    "number_of_shots": 2048,
+    "raw_data_enabled": true,
+    "session_id": "f109b9db-88c1-4ce7-be4f-ff4bcd986a32",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1492988,
+     "created_on": "2026-10-18T01:55:25.514006Z",
+     "job_id": 1531005,
+     "execution_time_in_seconds": 0.11218,
+     "shots_requested": 2048,
+     "shots_done": 2048,
+     "results": {
+      "0000000000": 279,
+      "0000000010": 277,
+      "0000010000": 253,
+      "0000010010": 255,
+      "0000100000": 239,
+      "0000100010": 237,
+      "0000110000": 281,
+      "0000110010": 227
+     }
+    }
+   ],
+   "logs": null
+  },
+  {
+   "file": "twin-latin-y-2.cq",
+   "job": {
+    "id": 1531006,
+    "created_on": "2026-10-18T01:55:18.747398Z",
+    "file_id": 1541387,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 871677,
+    "queued_at": "2026-10-18T01:55:24.468091Z",
+    "finished_at": "2026-10-18T01:55:24.818007Z",
+    "number_of_shots": 2048,
+    "raw_data_enabled": true,
+    "session_id": "f109b9db-88c1-4ce7-be4f-ff4bcd986a32",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1492986,
+     "created_on": "2026-10-18T01:55:24.719776Z",
+     "job_id": 1531006,
+     "execution_time_in_seconds": 0.097283,
+     "shots_requested": 2048,
+     "shots_done": 2048,
+     "results": {
+      "0000000000": 253,
+      "0000000010": 263,
+      "0000010000": 257,
+      "0000010010": 251,
+      "0000100000": 251,
+      "0000100010": 248,
+      "0000110000": 274,
+      "0000110010": 251
+     }
+    }
+   ],
+   "logs": null
+  },
+  {
+   "file": "twin-latin-y-3.cq",
+   "job": {
+    "id": 1531007,
+    "created_on": "2026-10-18T01:55:19.597379Z",
+    "file_id": 1541388,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 871677,
+    "queued_at": "2026-10-18T01:55:24.864633Z",
+    "finished_at": "2026-10-18T01:55:25.203011Z",
+    "number_of_shots": 2048,
+    "raw_data_enabled": true,
+    "session_id": "f109b9db-88c1-4ce7-be4f-ff4bcd986a32",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1492987,
+     "created_on": "2026-10-18T01:55:25.109626Z",
+     "job_id": 1531007,
+     "execution_time_in_seconds": 0.109386,
+     "shots_requested": 2048,
+     "shots_done": 2048,
+     "results": {
+      "0000000000": 243,
+      "0000000010": 270,
+      "0000010000": 266,
+      "0000010010": 249,
+      "0000100000": 244,
+      "0000100010": 233,
+      "0000110000": 268,
+      "0000110010": 275
+     }
+    }
+   ],
+   "logs": null
+  }
+ ],
+ "transactions": []
+}

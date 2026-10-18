@@ -149,7 +149,7 @@ def compiled_arms(snapshot: dict[str, Any], pair: tuple[int, int], slice_dt: int
     """Every member of the design compiled to the snapshot Target with A on pair[0], B on pair[1]."""
     key = (snapshot["calibration"], pair, slice_dt)
     if key not in _COMPILED:
-        view, _ = calibration_snapshot.noise_model(snapshot)
+        view = calibration_snapshot.snapshot_backend(snapshot)
         arms = {}
         for name, circuit, _ in cr.circuits(sliced_idle(slice_dt)):
             compiled = transpile(

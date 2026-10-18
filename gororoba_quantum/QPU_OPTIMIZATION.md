@@ -522,11 +522,14 @@ budget membership and cost-scenario workloads. The top-level `shots` equals
 the largest allocated count; the full PUB ledger supplies each actual count.
 Reproduction includes `--shot-allocation` only when the saved design records
 that option, preserving historical uniform commands. A written case still requires
-owner approval. Fresh selection and calibration must match the approved
-experiment, observable contracts, shots, policy, dependencies, layouts,
-replica maps, execution contract, and QPY bytes. A changed plan requires a
-fresh case and approval. Historical raw results, records, and earlier
-interpretations remain retained under their original identities.
+owner approval. Fresh selection must match the approved experiment,
+observable contracts, shots, policy, dependencies, layouts, replica maps,
+execution contract, and QPY bytes, and each group's calibration values
+(`calibration_fingerprint`) must equal the approved ones; a republished
+calibration timestamp with unchanged values keeps the approval, and an
+approved record without values keeps the timestamp rule. A changed plan or
+value requires a fresh case and approval. Historical raw results, records,
+and earlier interpretations remain retained under their original identities.
 
 Collection reports `family_analysis` only when every required member has
 compatible execution-time calibration evidence. The pure

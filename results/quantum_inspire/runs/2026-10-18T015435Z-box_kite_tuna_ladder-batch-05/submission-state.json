@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-18T02:50:38+00:00",
+ "approval": "Owner approval in session boxkite-quantum-main, 2026-10-18: \"131072 shots (maximum)\" (about 01:10Z) to the written case for the Tuna-17 box-kite ladder series, conditional on PRs #238 and #239 merging with the case digests unchanged, met at main 5c285fc (QX twins batch-00, batch-01; ladder batch-00 to batch-06)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "f031cca6fc285f17ff93d1aa31a75939946416bf280b4556e903a932a904fbeb",
+ "shots": 131072,
+ "jobs": [
+  {
+   "file": "latin-y-2.cq",
+   "job": 1531044,
+   "sha256": "57ae83039a29fd7788b457faf0f8ab42c5df45f4ec58c648c85a88d47d9a913d"
+  },
+  {
+   "file": "latin-y-3.cq",
+   "job": 1531045,
+   "sha256": "5bf3b402a86905971474ad328a5406b0760741e082a578361d2648fb275a031e"
+  },
+  {
+   "file": "latin-y-1.cq",
+   "job": 1531046,
+   "sha256": "3baddfdc2f755949150685d7ee29c17ca0229b743b974c221affee7e89c015fa"
+  }
+ ],
+ "project": 767830,
+ "batch_job": 871704,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-18T02:50:41+00:00",
+  "approval": "Owner approval in session boxkite-quantum-main, 2026-10-18: \"131072 shots (maximum)\" (about 01:10Z) to the written case for the Tuna-17 box-kite ladder series, conditional on PRs #238 and #239 merging with the case digests unchanged, met at main 5c285fc (QX twins batch-00, batch-01; ladder batch-00 to batch-06)",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "f031cca6fc285f17ff93d1aa31a75939946416bf280b4556e903a932a904fbeb",
+  "backend_status_at_submit": "executing",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 871704,
+  "project": 767830,
+  "shots": 131072,
+  "jobs": [
+   {
+    "file": "latin-y-2.cq",
+    "job": 1531044,
+    "sha256": "57ae83039a29fd7788b457faf0f8ab42c5df45f4ec58c648c85a88d47d9a913d"
+   },
+   {
+    "file": "latin-y-3.cq",
+    "job": 1531045,
+    "sha256": "5bf3b402a86905971474ad328a5406b0760741e082a578361d2648fb275a031e"
+   },
+   {
+    "file": "latin-y-1.cq",
+    "job": 1531046,
+    "sha256": "3baddfdc2f755949150685d7ee29c17ca0229b743b974c221affee7e89c015fa"
+   }
+  ],
+  "submitted_utc": "2026-10-18T02:50:41+00:00"
+ },
+ "confirmed_utc": "2026-10-18T02:50:41+00:00"
+}

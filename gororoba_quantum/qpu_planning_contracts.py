@@ -1128,9 +1128,9 @@ def _verify_rep_delay_approval() -> None:
         submit_args.approved_record_sha256 = record_digest
         original_drift = live_run.approved_calibration_drift
 
-        def drift_then_move(record_: dict[str, Any], name: str, calibration: str) -> str | None:
+        def drift_then_move(record_: dict[str, Any], name: str, calibration: str, *values: Any) -> str | None:
             backend.rep_delay_range = [0.0, 0.00008]
-            return original_drift(record_, name, calibration)
+            return original_drift(record_, name, calibration, *values)
 
         try:
             with (

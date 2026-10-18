@@ -75,6 +75,25 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error PYTHONOPTIMIZE=1 "$PYTHON" \
   results/local_compute/n21_shared_predicate/check_probe.py
 ```
 
+Qiskit 2.5.2 supplies the historical compiler-cost replay. Qiskit 2.6 lowers
+KG24's RCCX/CCX operations to elementary gates, changing source operation counts,
+unrouted costs and floating-point rounding. The current probe recognizes each
+complete native RCCX endpoint through exact gate, parameter and wire matching
+against the installed RCCX definition and checks whole-operator reconstruction.
+The historical archive and result retain their recorded bytes.
+
+The current SDK contract preserves the original `1e-12` operator, permutation
+and scratch-leakage bound, exact multiplier/pivot/shared-boundary metadata, source
+mutation rejection and exclusive output creation. Producer cost fields receive
+schema and basis-count consistency checks and are logged with the current SDK
+and executing-source digest; they are distinct from the historical costs.
+
+```sh
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+"$PYTHON" -B -W error results/local_compute/n21_shared_predicate/check_probe.py --current-sdk
+"$PYTHON" -B -O -W error results/local_compute/n21_shared_predicate/check_probe.py --current-sdk
+```
+
 `SHA256SUMS` binds the scripts, historical source archive, report, and note:
 
 ```sh
