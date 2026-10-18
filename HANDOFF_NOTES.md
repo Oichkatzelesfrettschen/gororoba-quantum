@@ -29,17 +29,18 @@
   full.
 - `ci/run_gates.py --changed-files` already skips full-tier gates whose
   declared inputs are unchanged. Skipping unchanged pull-request-tier gates
-  is not done yet, and needs each gate's recorded read set. Whole-tree record gates reach their inputs through glob,
-  directory listing and git, which an import closure misses. Any skip rule
-  needs a self-test with a planted missed input.
+  is not done yet, and needs each gate's recorded read set. Whole-tree
+  record gates reach their inputs through glob, directory listing and git,
+  which an import closure misses. Any skip rule needs a self-test with a
+  planted missed input.
 
 ## Behavioral test suite
 
 The script-gate harness is the next redesign. Each gate starts its own
-process, so every Python gate pays for interpreter start-up and each one that
-imports qiskit pays for that import again. The long gates re-derive retained
-evidence end to end. The target is a normal-Python
-behavioral suite:
+process, so every Python gate pays for interpreter start-up and each one
+that imports qiskit pays for that import again. The long gates re-derive
+retained evidence end to end. The target is a normal-Python behavioral
+suite:
 
 - pytest with xdist, so modules import once per worker;
 - session-scoped fixtures built once;
@@ -55,11 +56,11 @@ from retained durations keeps the suite fast.
 
 ## Bytecode cache
 
-Most Python gate commands pass `-B` or set `PYTHONDONTWRITEBYTECODE=1`.
-Both stop Python from writing bytecode but still let it read existing
-bytecode. A cache under `PYTHONPYCACHEPREFIX` moves
-every module's bytecode, site-packages included, so a cold prefix recompiles
-qiskit, numpy and scipy in every process.
+Most Python gate commands pass `-B` or set `PYTHONDONTWRITEBYTECODE=1`. Both
+stop Python from writing bytecode but still let it read existing bytecode. A
+cache under `PYTHONPYCACHEPREFIX` moves every module's bytecode, site-
+packages included, so a cold prefix recompiles qiskit, numpy and scipy in
+every process.
 
 1. Fill the prefix once with `compileall` over the checkout and the
    interpreter's site-packages before the first gate.
