@@ -123,8 +123,72 @@ follow series runs in the same 7 batches with 15 witnesses and 42 replicas at
 vectors, the coherence ladder and the walk phase, and cost 243 s of
 execution.
 
+## The ladder series
+
+The pause guard of `qi_platform.py submit` refuses a hardware batch until
+every hardware job of the account has been finished for 120 s, so the pause
+falls per batch. The three jobs inside a batch run back to back. Shots are
+priced by the timing fit and capped at 131072 per job and 300 s per job.
+Shots inside one job are therefore the cheap resource.
+
+That only pays where the comparison sits inside a job:
+- The follow series' X and Y replicas of one depth-9 edge, a batch apart,
+  scatter by about 0.03 beyond shot noise, which no shot count removes.
+- The shot record (claim `qi-tuna17-shot-record-50hz-line`) adds a second
+  within-job resource: every shot carries its phase of the 50 Hz line, so a
+  longer job gives more line cycles and finer phase bins.
+
+The ladder series (`LADDER_PLAN`) moves every comparison it makes into one
+job or one batch:
+
+| Batch | Circuits | What they measure |
+|---|---|---|
+| 0 | readout-0, readout-1, readout-iso-x | bracket; q1, q13, q14 excited alone against all 17 excited |
+| 1 | latin-x-1, latin-x-2, latin-x-3 | every pair at CZ depths 1, 5 and 9 in X, inside one batch |
+| 2 | latin-y-1, latin-y-2, latin-y-3 | the same in Y |
+| 3 | readout-0, readout-1, readout-iso-hzh | bracket; q1, q13, q14 prepared by H Z H, alone |
+| 4 | latin-x-2, latin-x-3, latin-x-1 | batch 1 repeated, circuit order rotated |
+| 5 | latin-y-2, latin-y-3, latin-y-1 | batch 2 repeated, circuit order rotated |
+| 6 | readout-0, readout-1, readout-iso-x | bracket; the context readout again |
+
+- **Latin square.** Circuit c places the bright edge at depth
+  LADDER_DEPTHS[(p + c - 1) % 3] on pair p. Every job therefore holds depths
+  1, 5 and 9 at once, and every pair reads all three depths inside one
+  batch. The ladder of one pair never crosses a batch boundary, and the
+  depth-9 pair of every job gives the line's phase reference for the
+  shallower pairs.
+- **Replication.** Batches 4 and 5 repeat the square with the circuit
+  order rotated. The difference of rho = r_coh / r_pop between batches 1 and
+  4 measures between-batch scatter at the ladder level, and the rotation
+  separates a circuit from its position in the batch.
+- **Readout context.** LADDER_ISO_QUBITS = (1, 13, 14) takes one qubit of
+  each pair, none coupled to another, so in readout-iso-x every excited
+  qubit has each coupled neighbor in |0>. That is the context q13 reads in
+  on the bright branch of a witness. readout-iso-hzh reaches |1> by H Z H,
+  the gate path of a witness's data qubit. e10 from readout-1 against
+  readout-iso-x separates neighbor-dependent readout; readout-iso-hzh
+  against readout-iso-x separates the preparation path. LADDER_CONTEXT_MIN =
+  0.02 is about three times the largest e10 move between follow brackets.
+- **Line.** Each Latin job is scanned and locked in at its peak. The
+  preregistered falsifier is a job without the line, or a job whose
+  depth-9 amplitude does not exceed its depth-1 amplitude by 5 standard
+  errors. Each pair's contrast is also reported in eight bins of the line's
+  phase.
+
+Budget at 65536 shots per job, from the timing fit:
+- 2.92 s + 0.509 ms x 65536 = 36.3 s per job, and 762 s for the 21 jobs.
+- With the seven pauses and collection, about 35 minutes of wall time.
+- About 1.5 MB of raw shots per job.
+
+At 131072 shots a job takes 69.6 s, and the series 1462 s and about 62 MB.
+The QX twins of the six Latin circuits run in two emulator batches first.
+All 27 circuits pass their 117 checks on local qxelarator.
+
 ## Libraries
 
+- scipy.signal.zoom_fft scans a job's shot record in a narrow band and a
+  numpy least-squares lock-in reads every bit's amplitude and phase at the
+  peak, all bits of a job in one call (`scripts/qi_shot_record_line.py`).
 - numpy carries the design model (state vectors of at most four qubits under
   diagonal ZZ and detuning phases), the timing least squares and the
   analysis bootstraps, batched over draws.

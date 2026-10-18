@@ -1,0 +1,345 @@
+{
+ "schema": "box-kite-cases-v1",
+ "family": "tuna_ladder_twins",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "dialect": "qx",
+ "bit_order": "qubit 0 at the rightmost character (QX)",
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "schema": "box-kite-census-v1",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "twin_of": "tuna_17",
+ "role": "the gate list of each Tuna-17 witness circuit relabeled onto QX qubits 0-9 (qubit_map: Tuna qubit -> QX qubit), run on the remote ideal emulator before its Tuna batch; the identical Tuna bytes run on local qxelarator",
+ "preregistered": {
+  "falsifier": "any shot violating a deterministic replica refutes the emitted cQASM; a P = 1/2 replica outside |z| < 4.5 at 2048 shots refutes it"
+ },
+ "batch": "batch-01",
+ "stage": "ladder",
+ "circuits": [
+  {
+   "file": "twin-latin-y-1.cq",
+   "kind": "witness",
+   "stage": "ladder",
+   "tuna_case": "box_kite_tuna_ladder/batch-02/latin-y-1.cq",
+   "qubit_map": {
+    "1": 0,
+    "4": 1,
+    "10": 2,
+    "12": 3,
+    "13": 4,
+    "14": 5
+   },
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "lcu",
+     "label": "edge+",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "label": "edge+",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 2,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 5,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "label": "edge+",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 3,
+      "data": [
+       5
+      ]
+     },
+     "cz_depth": 9,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
+    }
+   ],
+   "sha256": "3c3d27600f6b136ba0eb55580db01cd31e7edb43e05ae5dc9859099a8cbb8665"
+  },
+  {
+   "file": "twin-latin-y-2.cq",
+   "kind": "witness",
+   "stage": "ladder",
+   "tuna_case": "box_kite_tuna_ladder/batch-02/latin-y-2.cq",
+   "qubit_map": {
+    "1": 0,
+    "4": 1,
+    "10": 2,
+    "12": 3,
+    "13": 4,
+    "14": 5
+   },
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "lcu",
+     "label": "edge+",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "cz_depth": 5,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "label": "edge+",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 2,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 9,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "label": "edge+",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 3,
+      "data": [
+       5
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
+    }
+   ],
+   "sha256": "017effcb3654014307c58d86f955d0b3c0bff460b38e13ae77bea816ad5ab37c"
+  },
+  {
+   "file": "twin-latin-y-3.cq",
+   "kind": "witness",
+   "stage": "ladder",
+   "tuna_case": "box_kite_tuna_ladder/batch-02/latin-y-3.cq",
+   "qubit_map": {
+    "1": 0,
+    "4": 1,
+    "10": 2,
+    "12": 3,
+    "13": 4,
+    "14": 5
+   },
+   "replicas": [
+    {
+     "slot": 0,
+     "kind": "lcu",
+     "label": "edge+",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 0,
+      "data": [
+       1
+      ]
+     },
+     "cz_depth": 9,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
+    },
+    {
+     "slot": 1,
+     "kind": "lcu",
+     "label": "edge+",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 2,
+      "data": [
+       4
+      ]
+     },
+     "cz_depth": 1,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
+    },
+    {
+     "slot": 2,
+     "kind": "lcu",
+     "label": "edge+",
+     "census": "within_kite[244]",
+     "kite": 3,
+     "p": [
+      1,
+      10,
+      1
+     ],
+     "q": [
+      4,
+      15,
+      1
+     ],
+     "relation": "edge_opposite",
+     "roles": {
+      "selector": 3,
+      "data": [
+       5
+      ]
+     },
+     "cz_depth": 5,
+     "p_selector_zero": "1",
+     "setting": "Y",
+     "coherence_selector_0": "-1/2",
+     "expectation_given_selector_zero": "0",
+     "p_data_zero_given_selector_zero": "1/2"
+    }
+   ],
+   "sha256": "7b15b202fd459928e890e5958e8c8b8eaf8dfef0dc58d97cae2df684416904cb"
+  }
+ ]
+}
