@@ -790,6 +790,39 @@ the couplers equaled Q1's throughout.
     The singleton iterator payload alone does not restore the iterated
     behavior, so the branch rule prescribes job-16.
 
+    **job-16 extended before sending** (preregistration
+    `PAIR_EXTENSION_PREREGISTERED`, readout `extension` field). Every
+    failing cell on 29dc6ef8 is the first and only entry of its job at 10000
+    samples; every passing large cell on it sits at position 2 or later
+    (D2), and a 1500-sample first entry passes (D1). Entry duration is about
+    7 s whatever the budget (job-07, job-09, job-12), so an entry, not a
+    sample, is the unit of cost. job-16 keeps its two preregistered seed-20
+    entries first and appends 11 blocks of (seed 46667, which serves
+    14a96ca6, then seed 20), all at 10000 samples: 24 entries, about 170 s,
+    a 480000-shot cap and a 1.48-credit ceiling inside the 1.49 the user set,
+    which puts the series at about 2.5 credits. No earlier job ran a large
+    29dc6ef8 entry right after a mesh switch: job-09 switched meshes at 1500
+    samples and D2 ran large entries without a switch. The readings:
+    - any 14a96ca6 entry failing: the fault reaches beyond 29dc6ef8 in this
+      job, and mesh specificity is not supported;
+    - of the post-load seed-20 entries that read pass or fail (at least 9,
+      else inconclusive), a share of 0.8 or more failing reads that a large
+      29dc6ef8 acquisition fails after a mesh load, none failing that
+      post-load acquisitions hold, and anything between is intermittent,
+      reported as a share with its Wilson interval;
+    - each is read beside the pair: a passing first entry implicates the
+      job's entry count or path, a passing second entry with failing
+      post-load entries implicates the load, and a failing second entry with
+      holding post-load entries implicates repetition of the first mesh.
+
+    The extension cannot ask the first-entry question again; a 1500-sample
+    first entry today (D1's order) needs its own job. No result entry
+    carries a timestamp, so every position reading assumes in-order
+    execution. Offline, 29dc6ef8 is unremarkable among the 135 meshes
+    served to this account in mean heater phase (3rd lowest) and sits in
+    the upper sixth for phases within 0.3 rad of the wrap, a weak feature
+    that changes no design.
+
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 
 The literature note transcribes 30 sources with their arXiv ids and the

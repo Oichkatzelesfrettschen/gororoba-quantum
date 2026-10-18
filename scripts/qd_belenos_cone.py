@@ -377,6 +377,56 @@ def next_job(verdict: str, arms: dict[str, Arms]) -> str | None:
     return "job-15" if arms["iterator"] == ("pass",) else "job-16"
 
 
+def extension_entry(rule: dict[str, Any], row: dict[str, Any]) -> str:
+    """pass, fail, intermediate or void for one extension entry, against the mesh its seed is expected to serve."""
+    expected = rule["expected_mesh_sha256_prefix"].get(str(row["compilation_seed"]))
+    if expected is None:
+        return "void"
+    return entry_reading({**rule, "void_unless_mesh_sha256_prefix": expected}, row)
+
+
+def extension_verdict(rule: dict[str, Any], pair: Arms, reference: Arms, reload: Arms) -> dict[str, Any]:
+    """The extension's preregistered reading: reference entries first, then the post-load 29dc6ef8 entries read
+    beside the pair's two entries."""
+    read = [r for r in reload if r in ("pass", "fail")]
+    failed = read.count("fail")
+    summary: dict[str, Any] = {
+        "pair": list(pair),
+        "reference_failures": reference.count("fail"),
+        "reference_read": sum(r in ("pass", "fail") for r in reference),
+        "reload_failures": failed,
+        "reload_read": len(read),
+        "reload_failure_wilson95": wilson(failed, len(read)) if read else None,
+    }
+    if summary["reference_failures"]:
+        reading = (
+            "a 14a96ca6 entry failed: the fault reaches beyond 29dc6ef8 in this job; mesh specificity is not supported"
+        )
+    elif len(read) < rule["minimum_read_entries"]:
+        reading = (
+            f"inconclusive: {len(read)} post-load entries read pass or fail, fewer than {rule['minimum_read_entries']}"
+        )
+    elif failed >= rule["reload_fails_at_least_share"] * len(read):
+        reading = {
+            "fail": "29dc6ef8 fails at 10000 samples throughout this job while 14a96ca6 holds",
+            "pass": "a 10000-sample 29dc6ef8 acquisition fails after a mesh load and holds when it repeats "
+            "the previous mesh",
+        }.get(pair[1], "a 10000-sample 29dc6ef8 acquisition fails after a mesh load")
+    elif failed == 0:
+        reading = {
+            "fail": "29dc6ef8 recovers after a load of another mesh while repeating the job's first mesh kept "
+            "the failure",
+            "pass": "post-load acquisitions hold: the failure is confined to the job's first acquisition",
+        }.get(pair[1], "post-load acquisitions hold")
+    else:
+        reading = f"intermittent: {failed} of {len(read)} post-load 29dc6ef8 entries failed"
+    if pair[0] == "pass":
+        reading += (
+            "; the job's first entry passed, so the single-entry failure depends on the job's entry count or path"
+        )
+    return {**summary, "reading": reading}
+
+
 def readout_series(runs: list[Path]) -> dict[str, Any]:
     """Validates each run's result shape and receipts before any cell is scored; a run that fails a check reads
     void with its reasons and its raw result stays in the run directory."""
@@ -391,7 +441,8 @@ def readout_series(runs: list[Path]) -> dict[str, Any]:
             raise SystemExit(f"{run.name}: {manifest['job']} appears twice in the series")
         inner = mesh_lib.raw_result(run)
         returned = len(inner["results_list"]) if "results_list" in inner else 0
-        sent = rule["payload_entries"][manifest["job"]]
+        extension = manifest.get("extension_preregistered")
+        sent = rule["payload_entries"][manifest["job"]] + (2 * extension["blocks"] if extension else 0)
         arm: dict[str, Any] = {
             "run": run.name,
             "job": manifest["job"],
@@ -410,11 +461,29 @@ def readout_series(runs: list[Path]) -> dict[str, Any]:
             budgets, entries = [manifest["max_samples"]], [inner]
         problems = [entry_problems(entry, source, budget) for entry, budget in zip(entries, budgets, strict=True)]
         cells = run_cells(run)
+        series = rule["payload_entries"][manifest["job"]] or 1
         arm |= {
-            "cells": cells,
-            "problems": [p for entry in problems for p in entry],
-            "readings": ["void" if bad else entry_reading(rule, row) for bad, row in zip(problems, cells, strict=True)],
+            "cells": cells[:series],
+            "problems": [p for entry in problems[:series] for p in entry],
+            "readings": [
+                "void" if bad else entry_reading(rule, row) for bad, row in zip(problems, cells[:series], strict=True)
+            ],
         }
+        if extension:
+            rows = cells[series:]
+            readings = [
+                "void" if bad else extension_entry(extension, row)
+                for bad, row in zip(problems[series:], rows, strict=True)
+            ]
+            reference = tuple(r for r, row in zip(readings, rows, strict=True) if row["name"].startswith("r"))
+            reload = tuple(r for r, row in zip(readings, rows, strict=True) if row["name"].startswith("t"))
+            arm["extension"] = {
+                "rule": extension,
+                "cells": rows,
+                "problems": [p for entry in problems[series:] for p in entry],
+                "readings": readings,
+                **extension_verdict(extension, tuple(arm["readings"]), reference, reload),
+            }
         jobs[role] = arm
     if not rules or any(rule != rules[0] for rule in rules):
         raise SystemExit("the series runs carry different preregistrations")
@@ -521,6 +590,31 @@ def self_test() -> int:
     for arms, want, follower in verdicts:
         if series_verdict(arms) != want or next_job(want, arms) != follower:
             raise SystemExit(f"cone self-test: series {arms} did not read {want} then {follower}")
+    extension = {
+        "expected_mesh_sha256_prefix": {"20": "q1", "46667": "ref"},
+        "pass_at_most": 0.2,
+        "fail_at_least": 0.5,
+        "reload_fails_at_least_share": 0.8,
+        "minimum_read_entries": 9,
+    }
+    for seed, mesh, want in ((46667, "refx", "pass"), (46667, "q1x", "void"), (5, "q1x", "void"), (20, "q1x", "pass")):
+        probe: dict[str, Any] = {"compilation_seed": seed, "mesh_sha256": mesh, "tvd_cone_from_ideal": 0.08}
+        if extension_entry(extension, probe) != want:
+            raise SystemExit(f"cone self-test: extension entry at seed {seed} on {mesh} did not read {want}")
+    held, broke = ("pass",) * 11, ("fail",) * 11
+    for pair, reference, reload, want in (
+        (("fail", "pass"), ("pass",) * 10 + ("fail",), held, "reaches beyond 29dc6ef8"),
+        (("fail", "pass"), held, broke, "fails after a mesh load and holds when it repeats"),
+        (("fail", "fail"), held, broke, "fails at 10000 samples throughout this job"),
+        (("fail", "fail"), held, held, "recovers after a load of another mesh"),
+        (("fail", "pass"), held, held, "confined to the job's first acquisition"),
+        (("fail", "pass"), held, ("fail",) * 5 + ("pass",) * 6, "intermittent: 5 of 11"),
+        (("fail", "pass"), held, ("void",) * 3 + ("pass",) * 8, "inconclusive: 8 post-load"),
+        (("pass", "pass"), held, held, "depends on the job's entry count or path"),
+    ):
+        got = extension_verdict(extension, pair, reference, reload)["reading"]
+        if want not in got:
+            raise SystemExit(f"cone self-test: extension {pair} {reload} read {got!r}, not {want!r}")
     if any("1500" in text or "whatever" in text for text in SERIES_READINGS.values()):
         raise SystemExit("cone self-test: a series reading attributes a mechanism the block does not vary")
     poisson = np.random.default_rng(7).poisson(50, 400).tolist()
@@ -533,7 +627,8 @@ def self_test() -> int:
         raise SystemExit(f"cone self-test: a Poisson background read dispersion {row['dispersion_index']}")
     print(
         "cone self-test: off-cone clicks excluded, in-cone loss read, one-click account closes, four readings, "
-        "six series entries, four receipts, fourteen series verdicts, Poisson dispersion near 1"
+        "six series entries, four receipts, fourteen series verdicts, four extension entries, eight extension "
+        "readings, Poisson dispersion near 1"
     )
     return 0
 

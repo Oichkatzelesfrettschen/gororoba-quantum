@@ -1192,20 +1192,53 @@ def wrapper_single_manifest(source: dict[str, Any], source_sha: str) -> dict[str
     }
 
 
+# The pair's two seed-20 entries open job-16 unchanged; PAIR_EXTENSION_BLOCKS blocks of (14a96ca6, 29dc6ef8) at
+# 10000 samples follow, so every later seed-20 entry is the first acquisition of 29dc6ef8 after a mesh load and
+# every 14a96ca6 entry is a reference read in the same job. Each entry costs about 7 s of the 300 s limit whatever
+# its budget, and the shot cap of 2 x samples prices the job at 1 + 480000e-6 credits.
+PAIR_EXTENSION_BLOCKS = 11
+PAIR_EXTENSION_PREREGISTERED = {
+    "question": "does a 10000-sample 29dc6ef8 entry fail when it is the first acquisition of that mesh after a "
+    "load of 14a96ca6, and does 14a96ca6 hold in the same job",
+    "first_entry": 2,
+    "blocks": PAIR_EXTENSION_BLOCKS,
+    "expected_mesh_sha256_prefix": {str(DWELL_Q1_SEED): "29dc6ef8", "46667": "14a96ca6"},
+    "pass_at_most": 0.2,
+    "fail_at_least": 0.5,
+    "reload_fails_at_least_share": 0.8,
+    "minimum_read_entries": 9,
+    "order": "results_list order is taken as execution order; no result entry carries a timestamp",
+    "readings": "any 14a96ca6 entry failing: the fault reaches beyond 29dc6ef8 in this job, mesh specificity is "
+    "not supported; otherwise, of the post-load 29dc6ef8 entries that read pass or fail (at least 9 needed, "
+    "else inconclusive), at least 0.8 failing: a large 29dc6ef8 acquisition fails after a mesh load; none "
+    "failing: post-load acquisitions hold; between: intermittent, reported as a share with its Wilson "
+    "interval. Each is read beside the pair's two entries: a passing first entry implicates the job's entry "
+    "count or path, a passing second entry with failing post-load entries implicates the load, a failing "
+    "second entry with holding post-load entries implicates repetition of the job's first mesh.",
+}
+
+
 def wrapper_pair_manifest(source: dict[str, Any], source_sha: str) -> dict[str, Any]:
-    """Arm C: Q1's case as two identical iterator entries at seed 20 and 10000 samples each."""
+    """Arm C: Q1's case as two identical iterator entries at seed 20 and 10000 samples each, then the
+    extension's alternating reference and post-load entries."""
+    seed = anu_seed(DWELL_ANU)
+    rows = [("c", DWELL_Q1_SEED)] * 2 + [("r", seed["value"]), ("t", DWELL_Q1_SEED)] * PAIR_EXTENSION_BLOCKS
+    settings = [
+        {"name": f"{tag}{k}-s{value}-n{WRAPPER_SAMPLES}", "compilation_seed": value}
+        for k, (tag, value) in enumerate(rows)
+    ]
     return {
         **source,
         "family": FAMILY,
         "job": WRAPPER_PAIR_JOB,
-        "iterations": 2,
-        "max_samples": 2 * WRAPPER_SAMPLES,
-        "max_shots": 4 * WRAPPER_SAMPLES,
-        "settings": [
-            {"name": f"c{k}-s{DWELL_Q1_SEED}-n{WRAPPER_SAMPLES}", "compilation_seed": DWELL_Q1_SEED} for k in range(2)
-        ],
+        "iterations": len(settings),
+        "max_samples": len(settings) * WRAPPER_SAMPLES,
+        "max_shots": 2 * len(settings) * WRAPPER_SAMPLES,
+        "settings": settings,
+        "seed_source": seed,
         "seeded_from": {"case": FORM_SOURCE, "cases_sha256": source_sha},
         "preregistered": WRAPPER_PREREGISTERED,
+        "extension_preregistered": PAIR_EXTENSION_PREREGISTERED,
     }
 
 
