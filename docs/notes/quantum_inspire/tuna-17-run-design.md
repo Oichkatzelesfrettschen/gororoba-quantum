@@ -287,6 +287,56 @@ core-425; claims `qi-tuna17-boxkite-ladder-readout-context`,
 - **Drift.** Against the follow series, the depth-9 bright populations rose
   by 0.07, 0.09 and 0.39, with (12,14) moving from 0.483 to 0.877.
 
+### Ladder line-phase bins (exploratory)
+
+`scripts/qi_ladder_line_bins.py` re-reads the 12 Latin jobs' raw shots with the
+ladder estimators after cutting each job into 8 line-phase bins, bin 0 at the
+depth-9 selector's P1 peak, and tests the max(A1, A2) line statistic
+(`results/quantum_inspire/box_kite_tuna_17_ladder_line_bins.json`, gates
+core-433 and core-550). Both rules were chosen after the ladder data were
+read, so the record is exploratory and binds a future run only. Its bootstrap
+stream, numpy seed [20261017, 2], differs from the ladder's.
+
+- **rho by phase.** A peak and a trough pooled into one cell restore the
+  covariance of the modulation with the decay, so the stationary estimate
+  averages ln rho over bin 0 and bin 4, each fitted on its own shots. Against
+  the job-averaged value, rho reads:
+
+  | pair | job average | mean over 8 bins | stationary bins 0 and 4 | bin 0 | bin 4 |
+  |---|---|---|---|---|---|
+  | (1,4) | 1.0208 | 1.0259 | 1.0300 | 1.058 | 1.0026 |
+  | (10,13) | 1.0214 | 1.0274 | 1.0312 | 1.063 | 1.0004 |
+  | (12,14) | 1.0056 | 1.0058 | 1.0086 | 1.011 | 1.0059 |
+
+  The stationary 99% intervals exclude 1 on all three pairs, at 1.0280 to
+  1.0322, 1.0291 to 1.0334 and 1.0074 to 1.0098, and the readout-iso-x
+  correction moves them by at most 0.0003. Restricting the combination to
+  batch 1, the only X batch whose jobs all carry a significant depth-9 first
+  harmonic, gives 1.0326, 1.0303 and 1.0075. The ln-mean over all 8
+  bins, which carries no choice of bin, also reads at or above the job
+  average, so job-averaging does not raise rho here and the modulation
+  covariance does not explain the excess.
+- **Phase profile.** The excess follows the line. On (1,4) and (10,13) rho
+  is 1.05 to 1.07 in bins 7, 0 and 1, around the depth-9 selector's lowest
+  population contrast, and 1.000 to 1.004 in bins 3 to 5, where the 99%
+  interval of (10,13) includes 1. A coherent selector-population error
+  that is itself modulated by the line fits this profile; a depth-only
+  error would leave rho flat across bins.
+- **Reference.** In batch 4 the depth-9 selector of latin-x-1 has a first
+  harmonic of 0.0027, so that job's bins take their phase from noise and every
+  pair's depth cell from it averages over phases. The clean-batch row above
+  removes that job's batch.
+- **Harmonics at 2 f.** max(A1, A2) at depth 9 exceeds depth 1 by 0.0174 to
+  0.137 against a margin error of 0.0015 to 0.0019 in all 12 jobs, where the
+  first-harmonic rule holds in 10. In the two failing jobs (batch 4
+  latin-x-1 and batch 5 latin-y-1, both with (12,14) at depth 9) A1 is 0.0027
+  and A2 0.0203 and 0.0220, 12 to 13 margin errors. A depth-9 second
+  harmonic of 0.009 to 0.030 appears in every job, so the selector responses
+  are not pure first harmonics.
+
+The intervals carry shot noise and readout-count noise only; the batch-to-batch
+scatter of deep populations that the follow series measured is outside them.
+
 ## Open questions
 
 - Readout context: readout-1 and readout-iso-x differ in the neighbors'
@@ -297,12 +347,16 @@ core-425; claims `qi-tuna17-boxkite-ladder-readout-context`,
   q11; a context readout that excites one at a time would name the neighbor,
   and the same circuits for every used qubit would give a context-resolved
   correction.
-- rho above 1: a coherent selector-population error and the job-averaged
-  50 Hz modulation both raise it. A ladder analyzed in line-phase bins at
-  the bins where the modulation is stationary would separate them.
-- The line at 2 f: the first-harmonic test reads zero at an extremum of a
-  selector's response, so a preregistered line test should take the larger
-  of the first and second harmonics.
+- rho above 1: the stationary line-phase bins keep rho above 1 on all three
+  pairs, so the job-averaged modulation does not explain it, and the excess
+  tracks the line phase. A run that separates a line-modulated selector
+  population from a depth-dependent one needs the population measured per
+  phase bin at each depth in one job, so every depth shares the bin
+  reference; the Latin square puts each pair's depths in different jobs.
+- The line at 2 f: max(A1, A2) holds in all 12 jobs where the first-harmonic
+  test fails in two. The max rule is exploratory; a preregistered line test
+  for a future run adopts it with its margin and the Rayleigh bias of a
+  noise amplitude stated.
 - The per-CZ time term and the decomposition of H: an A/B of H against
   Y90 then X on one replica would price the decomposed gate, and a ladder of
   `wait` cycles beside the CZ ladder would separate the detuning phase from
