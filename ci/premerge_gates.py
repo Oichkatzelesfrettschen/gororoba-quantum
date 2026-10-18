@@ -22,7 +22,9 @@ chooses from --replay-python, REPLAY_PYTHON or the running interpreter,
 verified per tree against that tree's ci/requirements-replay.txt; each
 runner receives it as REPLAY_PYTHON in its own environment, so a base whose
 runner predates --replay-python runs those gates too. An explicit
-interpreter that fails the merge's pins stops the run.
+interpreter that fails the merge's pins stops the run, and under
+GOROROBA_PINS_REQUIRED=1 so does any runtime either tree cannot resolve,
+since its gates would fail in both trees and read as shared failures.
 
 The worktrees live under --worktrees (default ~/worktrees/<repository>/premerge,
 <repository> naming the primary checkout), named by base, ref and process id,
@@ -49,6 +51,7 @@ import tempfile
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
+from unittest import mock
 
 import pins
 
@@ -134,8 +137,9 @@ def compare(base: dict[str, tuple[int, str]], merged: dict[str, tuple[int, str]]
 def replay_interpreters(explicit: str | None, root: Path, label: str) -> tuple[dict[str, str], list[str]]:
     """The historical-runtime interpreter variables ROOT's runner receives, verified against ROOT's pins.
 
-    The second element names each runtime an explicit interpreter fails to
-    satisfy, so a caller can refuse rather than compare gates neither tree ran.
+    The second element names each runtime left without an interpreter when
+    one was demanded, by an explicit interpreter or by PINS_REQUIRED, so a
+    caller refuses rather than compare gates neither tree ran.
     """
     found: dict[str, str] = {}
     refused: list[str] = []
@@ -144,7 +148,7 @@ def replay_interpreters(explicit: str | None, root: Path, label: str) -> tuple[d
         print(f"premerge: {label} historical runtime {runtime}: {reason}", flush=True)
         if chosen is not None:
             found[variable] = os.path.abspath(shutil.which(chosen) or chosen)
-        elif explicit:
+        elif explicit or pins.pins_required(os.environ):
             refused.append(f"{runtime}: {reason}")
     return found, refused
 
@@ -180,10 +184,12 @@ def premerge(
             # interpreter must satisfy the merge, the tree under test.
             merge_replay, refused = replay_interpreters(replay_python, merge_tree, "merge")
             if refused:
-                raise SystemExit(f"--replay-python {replay_python} fails the merge's pins: {'; '.join(refused)}")
-            base_replay, _base_refused = replay_interpreters(replay_python, base_tree, "base")
-            if replay_python and not base_replay:
-                base_replay, _base_refused = replay_interpreters(None, base_tree, "base")
+                raise SystemExit(f"premerge: the merge's historical runtimes cannot run: {'; '.join(refused)}")
+            base_replay, base_refused = replay_interpreters(replay_python, base_tree, "base")
+            if replay_python and base_refused:
+                base_replay, base_refused = replay_interpreters(None, base_tree, "base")
+            if base_refused:
+                raise SystemExit(f"premerge: the base's historical runtimes cannot run: {'; '.join(base_refused)}")
             base_results = results(base_tree, max_seconds, base_replay)
             merge_results = results(merge_tree, max_seconds, merge_replay)
     finally:
@@ -259,7 +265,22 @@ def self_test() -> None:
             status = premerge(repo, "conflicting", "main", DEFAULT_MAX_SECONDS, worktrees)
         if status != 2 or worktrees.exists():
             raise RuntimeError(f"a conflicting merge returned {status}, expected 2, or left its directory")
-    print("premerge: a clean merge that breaks a record gate fails, a consistent merge passes, a conflict stops")
+        # Under PINS_REQUIRED an unnamed historical runtime stops the run
+        # rather than failing its gates in both trees as shared failures.
+        strict = {key: value for key, value in os.environ.items() if key not in pins.REPLAY_VARIABLES}
+        with mock.patch.dict(os.environ, {**strict, pins.PINS_REQUIRED: "1"}, clear=True):
+            try:
+                with contextlib.redirect_stdout(io.StringIO()):
+                    premerge(repo, "consistent", "main", DEFAULT_MAX_SECONDS, worktrees)
+            except SystemExit as error:
+                if "historical runtimes cannot run" not in str(error) or worktrees.exists():
+                    raise RuntimeError(f"a strict run without a replay interpreter stopped with {error}") from error
+            else:
+                raise RuntimeError("a strict run without a replay interpreter compared its gates")
+    print(
+        "premerge: a clean merge that breaks a record gate fails, a consistent merge passes, a conflict stops, "
+        "and a strict run without a replay interpreter stops"
+    )
 
 
 def main(argv: list[str] | None = None) -> int:

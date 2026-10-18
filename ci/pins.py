@@ -25,6 +25,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PINS_REQUIRED = "GOROROBA_PINS_REQUIRED"
 # Each historical runtime: the variable naming its interpreter and the pins it holds.
 REPLAY_RUNTIMES = {"qiskit-2.5": ("REPLAY_PYTHON", ROOT / "ci" / "requirements-replay.txt")}
+REPLAY_VARIABLES = frozenset(variable for variable, _path in REPLAY_RUNTIMES.values())
 
 _PROBE = """
 import json, sys
