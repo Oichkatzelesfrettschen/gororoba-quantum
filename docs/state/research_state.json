@@ -5516,11 +5516,11 @@
     },
     {
       "id": "qi-qx-hosted-reset-drops-register-phase",
-      "statement": "The hosted QX emulator (QXsinglenodesimulator, backend type 1) applies qxelarator 0.10.0's reset map, not cQASM 3.0's measure-and-flip: with q[0] in |1> and q[1] in |->, reset q[0] then H on q[1] reads q[1] = 0 in 2048 of 2048 shots, where measure-and-flip reads 1 in every shot, while the same program with X in place of the reset and a reset of an already-zero q[0] read q[1] = 1 in 2048 of 2048. Local qxelarator 0.10.0 returns the same three outcomes, so a QX or qxelarator law of any circuit that resets a qubit with weight on |1> beside a register carrying relative phase is the qxelarator map's law.",
+      "statement": "The hosted QX emulator (QXsinglenodesimulator, backend type 1) does not apply cQASM 3.0's measure-and-flip reset to a qubit in |1> beside a qubit in |->: reset q[0] then H on q[1] reads q[1] = 0 in 2048 of 2048 shots, where measure-and-flip reads 1 in every shot and qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map reads 0, while the same program with X in place of the reset and a reset of an already-zero q[0] read q[1] = 1 in 2048 of 2048. On that input the hosted reset discards q[1]'s relative phase, so a QX law of a circuit that resets a |1>-weighted qubit beside a register carrying relative phase is not the cQASM law.",
       "domain": "implementation",
       "evidence_class": "preregistered emulator control",
       "status": "established",
-      "boundary": "One batch of three two-qubit circuits on 2026-10-18 under the emulator's deployment that day; it pins the map on a |1>-weighted reset beside one |-> qubit and says nothing about Tuna hardware, whose reset is physical. A redeployed emulator or a newer qxelarator can change it.",
+      "boundary": "One batch of three two-qubit circuits on 2026-10-18 under the emulator's deployment that day. It pins the outcome of one input, a |1> reset beside one |-> qubit: it rules out measure-and-flip there and agrees with the qxelarator sqrt map, but it does not establish that map on superposed or entangled reset inputs, where another phase-dropping implementation could differ. It says nothing about Tuna hardware, whose reset is physical. A redeployed emulator can change it.",
       "evidence": [
         {
           "path": "results/quantum_inspire/qx_reset_phase_analysis.json",

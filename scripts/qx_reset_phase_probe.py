@@ -131,6 +131,15 @@ def shots_of(run: Path) -> dict[str, list[str]]:
 
 
 def sanity(run: Path) -> None:
+    """The run holds the generator's manifest and programs byte for byte, and SHOTS two-bit outcomes per circuit.
+
+    LAWS describe the generated programs only, so a run whose manifest or any
+    program differs from batch_files() gets no verdict.
+    """
+    for name, data in batch_files().items():
+        path = run / name
+        if not path.is_file() or path.read_bytes() != data:
+            raise SystemExit(f"{run}: {name} differs from the generated batch, so LAWS do not describe it")
     for name, shots in shots_of(run).items():
         if len(shots) != SHOTS or any(not isinstance(s, str) or len(s) != 2 or set(s) - {"0", "1"} for s in shots):
             raise SystemExit(f"{run}: {name} holds {len(shots)} shots, not {SHOTS} two-bit outcomes")
@@ -204,13 +213,18 @@ def self_test() -> None:
             pass
         else:
             raise SystemExit("self-test: one-bit outcomes pass the sanity check")
+        (batch / "raw" / "reset_phase.cq.json").write_text(json.dumps(["10"] * SHOTS), encoding="utf-8")
+        sanity(batch)
         (batch / "reset_phase.cq").write_bytes(b"version 3.0\n")
-        try:
-            check(Path(scratch))
-        except SystemExit:
-            pass
-        else:
-            raise SystemExit("self-test: an altered program passes --check")
+        for label, action in (
+            ("--check", lambda: check(Path(scratch))),
+            ("the run sanity check", lambda: sanity(batch)),
+        ):
+            try:
+                action()
+            except SystemExit:
+                continue
+            raise SystemExit(f"self-test: an altered program passes {label}")
     print("qx reset phase self-test: each map, a mixed run, a failed control, a malformed run and an altered program")
 
 
