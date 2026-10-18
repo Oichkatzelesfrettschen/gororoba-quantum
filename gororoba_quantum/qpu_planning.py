@@ -824,13 +824,22 @@ def family_candidates(
     return candidates
 
 
+# IBM's latest-updates changelog sets the repetition delay of Heron and
+# Eagle QPUs to 20 us through 2 ms, while their configurations report a
+# rep_delay_range starting at 0; a job below 20 us passes the service's range
+# check and then ends without a shot loop (docs/notes/ibm_heron_platform.md).
+REP_DELAY_FLOOR_SECONDS = {"Heron": 20e-6, "Eagle": 20e-6}
+
+
 def repetition_delay(backend: Any, requested: float | None = None) -> float:
     """The repetition delay in seconds a job on backend runs at: requested, or the backend default.
 
     The SDK attributes carry seconds; configuration.to_dict uses wire
     microseconds. A requested value must lie in rep_delay_range, which IBM's
     repetition-rate guide names the supported interval and which changes
-    over time, so every caller reads it from a fresh configuration.
+    over time, so every caller reads it from a fresh configuration. A
+    request on a Heron or Eagle processor also holds the changelog floor in
+    REP_DELAY_FLOOR_SECONDS, which the configuration's range omits.
     """
     configuration = backend.configuration()
     value = getattr(configuration, "default_rep_delay", None)
@@ -850,6 +859,11 @@ def repetition_delay(backend: Any, requested: float | None = None) -> float:
     low, high = float(interval[0]), float(interval[1])
     if not math.isfinite(requested) or not low <= requested <= high:
         raise ValueError(f"repetition delay {requested} s lies outside the backend range [{low}, {high}] s")
+    processor = getattr(configuration, "processor_type", None)
+    family = processor.get("family") if isinstance(processor, dict) else None
+    floor = REP_DELAY_FLOOR_SECONDS.get(str(family))
+    if floor is not None and requested < floor:
+        raise ValueError(f"repetition delay {requested} s lies below the {family} floor of {floor} s")
     return float(requested)
 
 

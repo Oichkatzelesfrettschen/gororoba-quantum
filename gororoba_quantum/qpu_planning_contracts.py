@@ -901,6 +901,22 @@ def _verify_rep_delay_range() -> None:
     low, high = backend.configuration().rep_delay_range
     _require(qpu_planning.repetition_delay(backend) == 0.00025, "the default repetition delay moved")
     _require(qpu_planning.repetition_delay(backend, 0.00005) == 0.00005, "an in-range request was not honored")
+    _require(qpu_planning.repetition_delay(backend, 20e-6) == 20e-6, "the Heron floor itself was refused")
+    _require(
+        (backend.configuration().processor_type or {}).get("family") == "Heron",
+        "the range fixture lost its Heron processor family",
+    )
+    for below in (0.0, 19e-6):
+        try:
+            qpu_planning.repetition_delay(backend, below)
+        except ValueError:
+            pass
+        else:
+            raise RuntimeError(f"the charge model accepted a repetition delay {below} below the Heron floor")
+        _require(
+            bool(qpu_planning.repetition_delay_violations(backend, below, None)),
+            f"a repetition delay {below} below the Heron floor raised no violation",
+        )
     for outside in (high + 1e-6, -1e-6, float("nan")):
         try:
             qpu_planning.repetition_delay(backend, outside)
