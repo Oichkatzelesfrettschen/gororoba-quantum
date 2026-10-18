@@ -26,6 +26,9 @@ env:
   NUMEXPR_NUM_THREADS: "1"
   RAYON_NUM_THREADS: "1"
   QISKIT_NUM_PROCS: "1"
+  # Every fallback (replay interpreter detection, pinned lint tools through uv,
+  # record replays under other package versions) fails instead (ci/pins.py).
+  GOROROBA_PINS_REQUIRED: "1"
 
 jobs:
   gates:

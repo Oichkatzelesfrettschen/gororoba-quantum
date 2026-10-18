@@ -58,6 +58,7 @@ import copy
 import hashlib
 import json
 import os
+import re
 import sys
 from collections import Counter
 from collections.abc import Callable, Iterable
@@ -156,6 +157,9 @@ NEEDS_ACQUISITION = {
 # and admission exercises the replay procedure's failure paths.
 GATE_ROLES = ("replay", "freshness", "admission", "bytes")
 CHECK_PREFIXES = ("sha256sum -c", "shellcheck ", "ruff ", "mypy ", "MYPYPATH=")
+# ci/pinned_tool.py runs ruff or mypy at the CI pin, so a gate it launches is
+# the same lint or type check as the bare tool.
+PINNED_TOOL = re.compile(r'^"\$PYTHON" (?:\.\./)*ci/pinned_tool\.py ')
 CLAIM_KEYS = {
     "id",
     "statement",
@@ -611,7 +615,7 @@ def _strings(value: Any, field: str, owner: str) -> list[str]:
 
 
 def _static_check(command: str) -> bool:
-    return command.strip().startswith(CHECK_PREFIXES)
+    return PINNED_TOOL.sub("", command.strip(), count=1).startswith(CHECK_PREFIXES)
 
 
 def validate(registry: dict[str, Any], context: Context) -> None:
