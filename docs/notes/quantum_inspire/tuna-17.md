@@ -148,7 +148,7 @@ the 50 Hz grid frequency (`scripts/qi_shot_record_line.py`,
 core-427; claim `qi-tuna17-shot-record-50hz-line`).
 
 - A band scan at 0.019 to 0.021 cycles per shot finds it in 69 of 147
-  Tuna-17 jobs and in none of 108 QX jobs. On Tuna-17 it is absent from
+  Tuna-17 jobs and in none of 111 QX jobs. On Tuna-17 it is absent from
   all 43 readout circuits, at up to 131072 shots, and all 8 depth-1 LCU
   circuits.
   It is present in Ramsey, CZ-ladder, walk and additivity circuits.

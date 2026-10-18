@@ -1003,6 +1003,13 @@
       "question": "Q1's circuit iterated over sample-budget ladders at seed 20 (29dc6ef8) and seed 46667: does in_block fall with the budget inside an iterated job?"
     },
     {
+      "id": "qi-qx-reset-phase-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00",
+      "family": "cQASM reset semantics on the hosted QX emulator",
+      "question": "Does the hosted QX emulator's reset keep the rest of the register's relative phase, as cQASM's measure-and-flip does, or apply qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map?"
+    },
+    {
       "id": "qd-qpu-belenos-mesh-job-13-seeded-single",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
@@ -4626,7 +4633,7 @@
     },
     {
       "id": "qi-tuna17-shot-record-50hz-line",
-      "statement": "The retained per-shot outcome lists of Tuna-17 jobs carry a line at the 50 Hz grid frequency in wall-clock time. A band scan at 0.019 to 0.021 cycles per shot finds the line (whitened, p below 1e-6 after the band's look-elsewhere factor) in 69 of 147 Tuna-17 jobs and in none of 108 QX jobs, none of 43 readout circuits (readout-0, readout-1 and the context readouts, at up to 131072 shots) and none of the 8 depth-1 LCU circuits; it appears in Ramsey, CZ-ladder, walk and additivity circuits, with first-harmonic amplitudes in P(1) up to 0.43 (q7, ring-down Ramsey) and 0.39 (q5, coupler-ZZ Ramsey). Across the readout ring-down arms, whose circuits differ only in a wait of tau cycles of 20 ns, the peak frequency rises with tau at 50.4 +- 4.0 Hz (31 jobs, one intercept per batch): 12.6 standard errors from the 0 Hz a shot-index-locked source predicts and 0.1 from 50 Hz, which at 50 Hz puts one shot at 402.9 to 404.6 us in the ring-down circuits and 400.7 us in the follow series. In the follow series the bright-edge selectors on (1,4), (10,13) and (12,14) oscillate with amplitudes 0.19 to 0.26 at CZ depth 9, 0.09 to 0.13 at depth 5 and below 0.0175 at depth 1, in phase across the three pairs (resultant 0.996 to 1.000 per job). Within-job stationarity (16 block means per bit, the smallest per-bit chi-square tail times the bits scanned) falls below 0.01 in 11 to 33 percent of the box-kite pre-T0, T0 and follow jobs and in 61 to 75 percent of the morning ring-down jobs. The detection statistic whitens the scanned bits by their same-shot correlation matrix, so correlated bits of one shot do not inflate it.",
+      "statement": "The retained per-shot outcome lists of Tuna-17 jobs carry a line at the 50 Hz grid frequency in wall-clock time. A band scan at 0.019 to 0.021 cycles per shot finds the line (whitened, p below 1e-6 after the band's look-elsewhere factor) in 69 of 147 Tuna-17 jobs and in none of 111 QX jobs, none of 43 readout circuits (readout-0, readout-1 and the context readouts, at up to 131072 shots) and none of the 8 depth-1 LCU circuits; it appears in Ramsey, CZ-ladder, walk and additivity circuits, with first-harmonic amplitudes in P(1) up to 0.43 (q7, ring-down Ramsey) and 0.39 (q5, coupler-ZZ Ramsey). Across the readout ring-down arms, whose circuits differ only in a wait of tau cycles of 20 ns, the peak frequency rises with tau at 50.4 +- 4.0 Hz (31 jobs, one intercept per batch): 12.6 standard errors from the 0 Hz a shot-index-locked source predicts and 0.1 from 50 Hz, which at 50 Hz puts one shot at 402.9 to 404.6 us in the ring-down circuits and 400.7 us in the follow series. In the follow series the bright-edge selectors on (1,4), (10,13) and (12,14) oscillate with amplitudes 0.19 to 0.26 at CZ depth 9, 0.09 to 0.13 at depth 5 and below 0.0175 at depth 1, in phase across the three pairs (resultant 0.996 to 1.000 per job). Within-job stationarity (16 block means per bit, the smallest per-bit chi-square tail times the bits scanned) falls below 0.01 in 11 to 33 percent of the box-kite pre-T0, T0 and follow jobs and in 61 to 75 percent of the morning ring-down jobs. The detection statistic whitens the scanned bits by their same-shot correlation matrix, so correlated bits of one shot do not inflate it.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -4634,7 +4641,7 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/tuna_17_shot_record_line.json",
-          "sha256": "aaaff37360da315dd5abe25cdeafbc9ecb3777b7c66eb19afb8ea2212258de19"
+          "sha256": "53727e87db5028e75007960fcde7e4f91f1d6dd72647c47f20fdd4dddf08b275"
         }
       ],
       "documents": [
@@ -4829,7 +4836,7 @@
         },
         {
           "path": "results/quantum_inspire/tuna_17_shot_record_line.json",
-          "sha256": "aaaff37360da315dd5abe25cdeafbc9ecb3777b7c66eb19afb8ea2212258de19"
+          "sha256": "53727e87db5028e75007960fcde7e4f91f1d6dd72647c47f20fdd4dddf08b275"
         }
       ],
       "documents": [
@@ -5661,6 +5668,35 @@
         "docs/notes/quandela/form-dwell-decomposition.md"
       ],
       "assumptions": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-qx-hosted-reset-drops-register-phase",
+      "statement": "The hosted QX emulator (QXsinglenodesimulator, backend type 1) does not apply cQASM 3.0's measure-and-flip reset to a qubit in |1> beside a qubit in |->: reset q[0] then H on q[1] reads q[1] = 0 in 2048 of 2048 shots, where measure-and-flip reads 1 in every shot and qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map reads 0, while the same program with X in place of the reset and a reset of an already-zero q[0] read q[1] = 1 in 2048 of 2048. On that input the hosted reset discards q[1]'s relative phase, so a QX law of a circuit that resets a |1>-weighted qubit beside a register carrying relative phase is not the cQASM law.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "One batch of three two-qubit circuits on 2026-10-18 under the emulator's deployment that day. It pins the outcome of one input, a |1> reset beside one |-> qubit: it rules out measure-and-flip there and agrees with the qxelarator sqrt map, but it does not establish that map on superposed or entangled reset inputs, where another phase-dropping implementation could differ. It says nothing about Tuna hardware, whose reset is physical. A redeployed emulator can change it.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/qx_reset_phase_analysis.json",
+          "sha256": "3a862e6bc95608b346731b863a7611a196ff694d5e87e6998e065407a8022782"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/qx-runs.md"
+      ],
+      "gates": {
+        "core-456": "replay",
+        "core-455": "freshness",
+        "core-457": "admission"
+      },
+      "acquisitions": [
+        "qi-qx-reset-phase-batch-00"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     },
