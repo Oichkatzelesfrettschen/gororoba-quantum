@@ -441,10 +441,23 @@ sedenion statement never rests on them.
   plan must match the record in experiment
   digest, shots, policy (twirling, DD, budget floor, execution ceiling),
   dependency versions, IBM Cloud instance, groups, backends, seeds, layouts,
-  replica qubits, fused PUB manifests, calibration at the refresh and again
-  at each batch, and QPY bytes, or the run writes an `approval_required`
-  record and sends nothing. The submission plans only over the backends the
-  approved record found eligible (`live_run.approved_backend_scope`), so a
+  replica qubits, fused PUB manifests, calibration values at the refresh and
+  again at each batch, and QPY bytes, or the run writes an
+  `approval_required` record and sends nothing. The calibration binds by
+  value: each dry-run group records `calibration_fingerprint`
+  (`live_run.calibration_values` over its packed circuits: the Target timing
+  constraints, error and duration of every routed instruction, T1 and T2 of
+  every touched or delayed qubit, and each measured qubit's asymmetric
+  readout channel), so a republished `last_update_date` with every value
+  unchanged keeps the approval and the run records the accepted timestamp
+  pair under `approved_record.calibration_values`, while any changed value
+  refuses. An approved record without fingerprints keeps the timestamp rule,
+  and timestamps compare as instants whatever their UTC offset. Right after
+  the first discovery, before planning, the submission checks the approved
+  isa.qpy circuits against the fresh Target and properties by the same rule
+  and writes `approval_required` in seconds. The submission plans only over
+  the backends the approved record found eligible
+  (`live_run.approved_backend_scope`), so a
   backend whose queue or status changed after the dry run cannot enter the
   plan; an approved backend that turns ineligible still refuses through the
   comparison. `--exclude-qubits BACKEND:Q[,Q|A-B...]` withholds named qubits

@@ -3739,6 +3739,14 @@
    "name": "core-native-predicate-current",
    "seconds": 12.6,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error runtime_contracts.py --case approval_calibration_values && \"$PYTHON\" -B -O -W error runtime_contracts.py --case approval_calibration_values",
+   "name": "core-521",
+   "seconds": 53.4,
+   "tier": "pr"
   }
  ],
  "excluded": [
