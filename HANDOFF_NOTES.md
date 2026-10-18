@@ -278,12 +278,14 @@ the commit confirm retention.
 ## Merges without CI
 
 The feed-forward backend note and the dry-run log directory merged on
-Codex review alone, without a completed CI run. The next full CI run on main
-is their first gate check, and a red shard there traces to them first.
+Codex review alone, without a completed CI run. Several other changes on
+main also wait for their first full CI run, so a red shard traces to the
+failing gate's declared inputs, not to any one of those merges.
 
 ## Archived stash
 
-The branch `archive/n21-orbit-rca-window-unitary-model` holds a repo-wide
-stash entry of the window-unitary model for the orbit root-cause work. The
-stash itself remains in place, and the N=21 owner decides whether its content
-joins a change or the archive alone carries it.
+The branch `archive/n21-orbit-rca-window-unitary-model` points at the stash
+commit itself, so a fresh clone recovers the window-unitary model for the
+orbit root-cause work from that branch's tip diff against its first parent.
+The local stash entry stays as well. The N=21 owner decides whether the
+content joins a change or the archive alone carries it.
