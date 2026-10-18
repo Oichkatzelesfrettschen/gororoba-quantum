@@ -2841,6 +2841,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-pair results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair.json results/quandela/sessions/2026-10-18T030133Z-qpu_belenos-belenos_mesh/pair-preregistration.json results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08 results/quandela/runs/2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07 results/quandela/runs/2026-10-18T033336Z-qpu_belenos-belenos_mesh-job-02",
+   "name": "core-538",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test && \"$PYTHON\" -B -O -W error scripts/materialize_gororoba_csv.py --self-test",
    "name": "core-401",
    "seconds": 0.4,

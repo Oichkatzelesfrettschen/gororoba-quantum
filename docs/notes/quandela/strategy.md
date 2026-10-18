@@ -438,6 +438,20 @@ the couplers equaled Q1's throughout.
    fitted on three runs predicts the fourth. Q1 and its replay, whose
    one-circuit failure repeated within 0.034 across a calibration, are the
    exception that this drift does not explain.
+7. The form test (`pair-preregistration.json`, readout `pair.json`):
+   Q1's exact case as one circuit at compilation_seed 1 (job 8d28f121)
+   compiled to a new mesh (e296b6a9) and kept in_block 0.886 (Wilson 0.879
+   to 0.892, a = 0.931). The preregistered rule reads "intermediate" (0.65 <
+   0.886 < 0.90): **most of Q1's leak belongs to its compiled mesh
+   29dc6ef8**; the one-circuit form costs at most the 0.114 that remains,
+   which sits inside the iterated bright configurations' own 0.75 to 0.997
+   spread.
+8. The seed ensemble (job b8e2ec0c, belenos_mesh job-07): every
+   configuration returned three distinct meshes at seeds 0, 1 and 2, so
+   **compilation_seed selects the served mesh**, and a configuration's a moves
+   by a median of 0.043 between seeds (at most 0.185, bright-10). Thirty-two
+   iterations of 1500 samples ran in 221 s, inside the preregistered 200 to
+   290 s window: a job carries twice the settings the first campaigns sent.
 
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 
@@ -513,6 +527,14 @@ a chip that drifts between jobs (section 7, item 6); the seed ensemble with
 split-half selection that the "no class fits" branch preregisters measures
 their spread.
 
+At seeds 1 and 2 in one 32-iteration job (b8e2ec0c) the program reads dark
+a = 0.028 and bright a = 0.938 (contrast 0.910). Across seeds 0, 1 and 2 a
+configuration's a moves by a median of 0.043; bright-10 (0.989, 0.994, 0.808),
+bright-18 (0.988, 0.888, 0.815) and dark-11 (0.184, 0.061, 0.017) move most, so
+a production readout takes the median of several seeds and jobs.
+`sample_count` returns counts without shot order, so split-half seed
+selection needs repeated jobs rather than a split of one.
+
 ## 9. Open conjectures and their falsifiers
 
 | Conjecture | Test | Falsifier |
@@ -527,10 +549,10 @@ their spread.
 | The chip's error class is random heater noise | class scans over C1 | open: under fitted efficiencies sigma 0.05 is the best point of a family that fails the fit (4.2 floors held out) |
 | The chip carries static heater offsets that user jobs can measure | `--static` and `--efficiency` over the four runs of C1 | settled for this session: refuted, held-out gain -81576 nats (receipt model) and -33944 nats (fitted efficiencies) |
 | The bright-block leak is a property of its job (numeric unitary form or sparse target), not the chip's generic error | belenos_mesh job-02 on qpu:belenos scored against the C1 efficiencies, same couplers | settled: job specific, median in_block 0.952 against the 0.924 threshold; Q1's target kept 0.987 in the iterated form |
-| The one-circuit job form, not the bright block's own mesh, causes the leak | the bright block as a one-setting architecture-form job (job-01 shape) and as a two-setting iterated job on qpu:belenos | the one-setting job leaks like Q1 while the iterated one does not (form), or both keep in_block above 0.9 (the mesh 29dc6ef8) |
+| The one-circuit job form, not the bright block's own mesh, causes the leak | Q1's case as one circuit at compilation_seed 1 (belenos_mesh job-08) | settled: mostly the mesh, in_block 0.886 on a new mesh against 0.470 on 29dc6ef8 (preregistered verdict intermediate) |
 | The same body returns the same meshes on sim:belenos and qpu:belenos | job-02 on both | settled: refuted for iterated jobs (16 of 16 meshes differ); holds for the one-circuit single/job-04 |
 | C1's residual is a fixed property of each mesh within a session | exact repeat of C1 job-03 | settled: refuted, same meshes and G^2 2564 on 226 degrees of freedom (drift) |
-| compilation_seed selects the served mesh | a seed screen on sim:belenos | two seeds return the same mesh for the same target |
+| compilation_seed selects the served mesh | job-02 at seeds 1 and 2 (belenos_mesh job-07) on qpu:belenos | settled: 16 of 16 configurations return three distinct meshes at seeds 0, 1 and 2 |
 | The bright-block leak is a calibration episode that the HOM figure indexes | exact replay of Q1's mesh after the calibration that moved HOM from 92.6 % to 57.6 % | settled: refuted, the identical mesh 29dc6ef8 kept in_block 0.504 (0.470 at Q1) with the leak on modes 17 to 19 |
 | The fringe visibility separates edge from strut on hardware | the fringe settings of belenos_mesh job-00 on qpu:belenos | edge visibility within 4.5 standard errors of the strut's |
 
@@ -578,3 +600,5 @@ Not yet used:
 | 2026-10-18 03:10 | 445e0482 | qpu:belenos | belenos_mesh job-06, C1 run 4 | 1.003 | no class fits (14.4 floors); `--static` declares nothing; fitted efficiencies reach 4.2 floors held out |
 | 2026-10-18 03:34 | 4e208d22 | qpu:belenos | belenos_mesh job-02, the 84/84 program | 1.003 | dark a = 0.048, bright a = 0.979; median in_block 0.952, preregistered verdict job specific; 16 meshes differ from the sim's |
 | 2026-10-18 03:37 | f9e13312 | qpu:belenos | belenos_mesh job-03, exact repeat of f945a01d | 1.003 | same 16 meshes; G^2 2564 on 226 dof, median TVD 0.128: drift |
+| 2026-10-18 04:24 | 8d28f121 | qpu:belenos | belenos_mesh job-08, Q1's case as one circuit at seed 1 | 1.01 | new mesh e296b6a9; in_block 0.886, a = 0.931; preregistered verdict intermediate |
+| 2026-10-18 04:25 | b8e2ec0c | qpu:belenos | belenos_mesh job-07, 84/84 at seeds 1 and 2, 32 iterations | 1.003 | 221 s; seed selects the mesh (16 of 16); dark a = 0.028, bright a = 0.938 |
