@@ -1379,19 +1379,44 @@ def iso_brackets(batches: dict[str, Batch], brackets: list[dict[str, Any]], iso:
     return out
 
 
-def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
-    """The ladder series (module docstring): brackets, sanity, within-batch ladder, line lock-in, readout context."""
-    used = ladder_used(batches)
-    iso = list(t["iso_qubits"])
-    block, stops = bracket_block(batches, t, used)
-    refutations: list[str] = []
+def ladder_stops(batches: dict[str, Batch], t: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any], list[str]]:
+    """The stop rules a ladder batch is judged by before the next one: brackets, context floor, per-batch sanity.
+
+    They read only the batches run so far, so an incomplete series is judged by the same rules.
+    """
+    block, stops = bracket_block(batches, t, ladder_used(batches))
     brackets = follow_brackets(batches)
+    batch_block: dict[str, Any] = {}
     for name, batch in batches.items():
+        problems = []
         for file in context_files(batch):
-            for q in iso:
+            for q in t["iso_qubits"]:
                 p1 = int(batch["bits"][file][:, q].sum()) / batch["bits"][file].shape[0]
                 if p1 < t["readout_1_p1_at_least"]:
                     stops.append(f"bracket stop: {name} {file} q{q} P1 {p1:.3f} below {t['readout_1_p1_at_least']}")
+        for row in witness_rows(batch):
+            if not brackets:
+                fail(f"{name}: a Latin batch before any readout bracket")
+            bits = batch["bits"][row["file"]]
+            for r in row["replicas"]:
+                if r["cz_depth"] in t["bright_floor_cz_depths"] and r["p_selector_zero"] == "1":
+                    p = int((bits[:, r["roles"]["selector"]] == 0).sum()) / bits.shape[0]
+                    if p < t["bright_p_selector_zero_at_least"]:
+                        problems.append(f"{row['file']} slot {r['slot']} raw P(a = 0) {p:.3f} below "
+                                        f"{t['bright_p_selector_zero_at_least']}")  # fmt: skip
+            problems += idle_problems(batch, row, brackets, t["idle_p1_above_readout_0_at_most"])
+        batch_block[name] = {"run": batch["run"], "sanity": "pass" if not problems else "fail", "problems": problems}
+        if problems:
+            stops.append(f"sanity stop at {name}: {problems[0]}")
+    return block, batch_block, stops
+
+
+def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, Any]:
+    """The ladder series (module docstring): brackets, sanity, within-batch ladder, line lock-in, readout context."""
+    iso = list(t["iso_qubits"])
+    block, batch_block, stops = ladder_stops(batches, t)
+    refutations: list[str] = []
+    brackets = follow_brackets(batches)
     lcu, walks = follow_items(batches, brackets)
     if walks:
         fail("the ladder design holds no walk")
@@ -1405,22 +1430,6 @@ def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, An
     def both(fn: Any, percentiles: list[float] | None = None) -> dict[str, Any]:
         with np.errstate(all="ignore"):
             return summary(fn(point), fn(boot), percentiles)
-
-    batch_block: dict[str, Any] = {}
-    for name, batch in batches.items():
-        problems = []
-        for row in witness_rows(batch):
-            bits = batch["bits"][row["file"]]
-            for r in row["replicas"]:
-                if r["cz_depth"] in t["bright_floor_cz_depths"] and r["p_selector_zero"] == "1":
-                    p = int((bits[:, r["roles"]["selector"]] == 0).sum()) / bits.shape[0]
-                    if p < t["bright_p_selector_zero_at_least"]:
-                        problems.append(f"{row['file']} slot {r['slot']} raw P(a = 0) {p:.3f} below "
-                                        f"{t['bright_p_selector_zero_at_least']}")  # fmt: skip
-            problems += idle_problems(batch, row, brackets, t["idle_p1_above_readout_0_at_most"])
-        batch_block[name] = {"run": batch["run"], "sanity": "pass" if not problems else "fail", "problems": problems}
-        if problems:
-            stops.append(f"sanity stop at {name}: {problems[0]}")
 
     replicas = []
     for index, item in enumerate(lcu):
@@ -1514,7 +1523,7 @@ def analyze_ladder(batches: dict[str, Batch], t: dict[str, Any]) -> dict[str, An
     for name, batch in batches.items():
         for row in witness_rows(batch):
             bits = batch["bits"][row["file"]]
-            scanned = scan(bits.astype(np.float64))
+            scanned = scan(bits.astype(np.float64), tuple(t["line_band"]), t["line_detection_p"])
             by_depth = {r["cz_depth"]: r for r in row["replicas"]}
             entry = {"batch": name, "file": row["file"], "detected": scanned["detected"],
                      "log10_p": scanned.get("log10_p"), "cycles_per_shot": scanned.get("cycles_per_shot")}  # fmt: skip
@@ -1853,7 +1862,8 @@ def analyze(runs: list[Path], base: Path = ROOT, cases_root: Path = CASES) -> di
                 # The bracket stop rule decides before each later batch, so the brackets run so far are judged.
                 estimates["brackets"], estimates["stops"] = bracket_block(batches, t)
             elif family == "tuna_ladder":
-                estimates["brackets"], estimates["stops"] = bracket_block(batches, t, ladder_used(batches))
+                # Every ladder stop rule decides before the next batch, so the batches run so far are judged.
+                estimates["brackets"], out["batches"], estimates["stops"] = ladder_stops(batches, t)
             out["verdict"] = f"incomplete: {', '.join(missing)} not analyzed"
         else:
             if family == "tuna_pre":
@@ -2063,6 +2073,7 @@ def scenario_jobs(name: str, scenario: dict[str, Any], seed: int) -> list[tuple[
                 if family.startswith("ry"):
                     jobs.append((family, entry["batch"], file, ry_item(seed, manifest, row, scenario), failures))
                     continue
+                item: Any
                 if row["kind"] == "readout" and "excited" in row:
                     model = {q: float(q in row["excited"]) for q in range(width)}
                     item = (seed, width, n, model, {**readout, **scenario.get(f"readout_{file}", {})})
@@ -2193,6 +2204,7 @@ SCENARIOS: dict[str, dict[str, Any]] = {
                 "ry_failed": {"r1-width-9.cq": "Quantum backend error: error interpreting cQASM script"}},
     "ladder": {**LADDER_ONLY, "line": LADDER_LINE, "readout_readout-1.cq": {13: (0.02, 0.10)}},
     "ladder_flat": {**LADDER_ONLY},
+    "ladder_context_low": {**LADDER_ONLY, "readout_readout-iso-x.cq": {13: (0.02, 0.4)}},
     "ladder_twins": {"families": ["tuna_ladder_twins"], "readout": IDEAL_QX, "visibility": 1.0},
     "ry_stopped": {"families": ["ry_ladder", "ry_smoke"], "ry_fidelity": 0.85,
                    "ry_failed": {"r1-width-9.cq": "Quantum backend error: error interpreting cQASM script"}},
@@ -2383,6 +2395,13 @@ def analyze_self_test() -> None:
         check(
             flat["verdict"] == "refuted" and not flat["stops"] and len(flat["refutations"]) == 12,
             f"i.i.d. shots carry a line: {flat['refutations']}",
+        )
+        low = runs["ladder_context_low"]
+        first = analyze([run for run in low if run.name.endswith("batch-00")], root / "ladder_context_low")
+        partial = first["stages"]["tuna_ladder"]
+        check(
+            partial["verdict"].startswith("incomplete") and any("readout-iso-x.cq q13" in s for s in partial["stops"]),
+            f"a context readout below its floor did not stop the incomplete series: {partial['stops']}",
         )
         ladder_twins = stages("ladder_twins")["tuna_ladder_twins"]
         check(ladder_twins["verdict"] == "continue", f"ideal ladder twins: {ladder_twins['stops']}")
