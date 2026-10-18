@@ -289,14 +289,23 @@ QPU for the same body) respond differently to each class.
    Monte Carlo within its own error.
 3. An ensemble is the wrong object for a miscalibrated chip, which is one
    static realization shared by every job on it. Resolved: `StaticFit`
-   estimates one offset per heater, shared by all settings of a job, by MAP
-   under a Gaussian prior, with the exact adjoint Jacobian (`jacobians`,
-   equal to a central difference to 4e-10), and `static_cross_validation`
-   scores each fold of settings with offsets fitted on the others. The
-   photons of the 16 S3 meshes touch 83 % of the 574 heaters, so one job
-   constrains most of the chip. On the simulator the held-out gain is -28
-   nats (no offsets), and on a synthetic static truth of 0.3 rad it is about
-   1.1e5 nats.
+   estimates one offset per heater, shared by all settings of a calibration
+   session, by MAP under a Gaussian prior, with the exact adjoint Jacobian
+   (`jacobians`, equal to a central difference to 4e-10), and
+   `static_cross_validation` scores each fold (one run of a campaign) with
+   offsets fitted on the others against the dephasing ensemble fitted on the
+   same folds. Two traps were found and closed on the way. Scored against the
+   nominal mesh, any offset vector "won" by about 1e5 nats on dephasing and
+   out-of-family truths, because it only spread light where the nominal mesh
+   puts none; the baseline is now the fitted ensemble. And one 16-setting job
+   cannot identify 574 offsets: on the S3 block meshes the fit drives
+   training TVD below the shot-noise floor while held-out TVD stays at 3 to
+   12 floors, even from the true offsets. With uniform-random meshes (the
+   transpiler's statistics) on the 12 connected inputs, 48 training settings
+   recover 0.1 rad offsets to correlation 0.89 with held-out TVD at 1.2
+   floors, and 192 to 0.95 at 1.0. Static offsets therefore need a
+   characterization campaign of about 64 random-target settings in one
+   calibration session; a single block job reads "not identifiable".
 4. The first decision rule crowned the best of twelve fixed models, so a
    data set no model explains still named a class. Resolved: magnitude
    scans, an absolute fit criterion and the preregistered "no class fits"
@@ -351,6 +360,18 @@ QPU for the same body) respond differently to each class.
   measures the QPU's per-iteration overhead; until then a QPU job plans
   sixteen settings of 1500 samples, and a simulator validation of a larger
   job splits into halves that each stay under 300 s.
+
+**The characterization campaign this implies (C1).** Four iterated jobs of
+16 one-photon settings each, Haar-random target columns on the 12 connected
+inputs in rotation, submitted back to back inside one calibration session
+(every plan checks the couplers): about 4.1 credits. Each run is one fold of
+`--static`, the class scans run on all 64 returned meshes, and the source
+models test the misroute on every input. Its output is a session-keyed
+offset vector that predicts the realized column of any mesh the transpiler
+returns, which turns seed screening from a heuristic into a computed choice:
+compile candidates on sim:belenos, predict each under the fitted offsets,
+and send the best. The local transpiler replay converges on 96 % of random
+targets (8 of 220 failed), so a campaign plans a few spare settings.
 
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 
@@ -427,7 +448,7 @@ encoding needs 34 modes, beyond the chip's 24.
 | The transpiler is exqalibur's CircuitOptimizer with photon-free modes ignored | local replay against the S3 meshes | settled statistically; bitwise replay open (server seed mapping) |
 | The photon is misrouted into another source mode | source models on the returned meshes of belenos_mesh job-00 on qpu:belenos | the misroute class fits and outscores every other class |
 | The chip's error class is random heater noise | class scans over belenos_mesh job-00 on qpu:belenos | another class fits better, the static offsets gain over 10 nats held out, or no class fits |
-| The chip carries static heater offsets that a user job can measure | static cross-validation over belenos_mesh job-00 on qpu:belenos | held-out gain at or below 10 nats |
+| The chip carries static heater offsets that user jobs can measure | `--static` over the four runs of campaign C1 | held-out gain over the fitted dephasing ensemble at or below 10 nats, or held-out TVD above 3 floors |
 | compilation_seed selects the served mesh | a seed screen on sim:belenos | two seeds return the same mesh for the same target |
 | The fringe visibility separates edge from strut on hardware | the fringe settings of belenos_mesh job-00 on qpu:belenos | edge visibility within 4.5 standard errors of the strut's |
 

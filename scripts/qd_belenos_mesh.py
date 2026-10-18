@@ -84,6 +84,8 @@ POOL_MIN = 5.0
 STATIC_FOLDS = 4
 STATIC_TAUS = (0.1, 0.3)
 STATIC_GAIN_MIN = 10.0
+STATIC_SCHEMA = "qd-belenos-static-offsets-v1"
+STATIC_REPLAY_TOLERANCE = 1e-3
 FIT_TVD_RATIO = 3.0
 SAMPLES_PER_SETTING = 1_500
 SHOT_HEADROOM = 2
@@ -853,12 +855,12 @@ def documents(
             "crosstalk, misroute plus noise) is scored by efficiency-weighted multinomial likelihood on the "
             "returned meshes; the best class fits only when the chi-square p-value of its deviance, with "
             "bins expected below 5 counts pooled into one rest bin floored at one count once it saw a click, "
-            "is at least 0.001 "
-            "at its degrees of freedom and the median ratio of setting TVD to its shot-noise floor is at "
-            "most 3, and otherwise the job reads 'no class fits'; a best point at every class's null "
-            "magnitude reads 'ideal'; one shared static heater-offset vector, fitted by MAP on three folds "
-            "of settings and scored on the fourth, is the static class and wins when its held-out gain "
-            "exceeds 10 nats; a misroute is read from the likelihood of the source models on the returned "
+            "is at least 0.001 at its degrees of freedom and the median ratio of setting TVD to its "
+            "shot-noise floor is at most 3, and otherwise the job reads 'no class fits'; a best point at "
+            "every class's null magnitude reads 'ideal'; static heater offsets (static.json) are declared "
+            "when one shared offset vector, fitted by MAP on three folds of settings, beats the dephasing "
+            "channel fitted on the same folds by more than 10 nats on the fourth and its held-out median TVD "
+            "stays within 3 shot-noise floors; a misroute is read from the source models on the returned "
             "meshes, whose unused columns are transpiler draws",
         },
     }
@@ -1260,28 +1262,118 @@ class StaticFit:
 
 
 def static_cross_validation(
-    arch: list[Element], meshes: Any, sources: list[int], counts: Any, eta: Any, dark: Any, taus: tuple[float, ...]
+    arch: list[Element],
+    meshes: Any,
+    sources: list[int],
+    counts: Any,
+    eta: Any,
+    dark: Any,
+    taus: tuple[float, ...],
+    folds: list[int] | None = None,
 ) -> dict[str, Any]:
-    """Held-out log-likelihood gain of shared static heater offsets over the nominal mesh, per prior width.
+    """Held-out log-likelihood gain of shared static heater offsets over the best dephasing ensemble.
 
-    Settings split into STATIC_FOLDS folds by index; each fold's offsets are fitted on the other folds and
-    scored on it. A positive gain above STATIC_GAIN_MIN nats means the offsets predict settings they never saw.
+    Settings split into the given folds (one per run in a campaign), or STATIC_FOLDS folds by index. On
+    each fold the baseline is the exact dephasing
+    channel at the sigma of SCAN_SIGMAS that best fits the other folds, and the static model is the MAP
+    offset vector fitted on the other folds; both are scored on the fold. The static class is declared
+    when the summed gain exceeds STATIC_GAIN_MIN nats and the median held-out TVD over the shot-noise
+    floor stays at most FIT_TVD_RATIO, so an offset vector that only spreads light where the nominal mesh
+    puts none, or that fits nothing, is not a static calibration error.
     """
     import numpy as np
 
     fitter = StaticFit(arch, meshes, sources, counts, eta, dark)
+    rows = [list(map(int, c)) for c in np.asarray(counts)]
+    darks = [list(map(float, d)) for d in np.asarray(dark)]
+    effs = list(map(float, np.asarray(eta)))
+    noisy = [
+        [channel(arch, list(ph), src, sigma=sg).tolist() for sg in SCAN_SIGMAS]
+        for ph, src in zip(meshes, sources, strict=True)
+    ]
     index = np.arange(len(sources))
-    zero = np.zeros(np.asarray(meshes).shape[1])
-    out = {}
+    label = np.asarray(folds) if folds is not None else index % STATIC_FOLDS
+    out: dict[str, Any] = {}
     for tau in taus:
-        gain = 0.0
-        for fold in range(STATIC_FOLDS):
-            test, train = index[index % STATIC_FOLDS == fold], index[index % STATIC_FOLDS != fold]
+        gain, ratios = 0.0, []
+        for fold in sorted(set(label.tolist())):
+            test, train = index[label == fold], index[label != fold]
+            sigma = max(
+                range(len(SCAN_SIGMAS)),
+                key=lambda k: sum(loglik(rows[i], noisy[i][k], effs, darks[i]) for i in train),
+            )
+            baseline = sum(loglik(rows[i], noisy[i][sigma], effs, darks[i]) for i in test)
             delta = fitter.fit(train, tau)
-            gain += fitter.loglik(delta, test)[0] - fitter.loglik(zero, test)[0]
-        out[f"{tau}"] = round(gain, 6)
-    best = max(out, key=lambda k: out[k])
-    return {"heldout_gain_by_tau": out, "best_tau": float(best), "predictive": out[best] > STATIC_GAIN_MIN}
+            gain += fitter.loglik(delta, test)[0] - baseline
+            p, _ = jacobians(arch, np.asarray(meshes)[test] + delta, [sources[i] for i in test])
+            for i, row in zip(test, p, strict=True):
+                q = rates(rows[i], list(row), effs, darks[i])
+                tvd_i = 0.5 * sum(abs(c / sum(rows[i]) - v) for c, v in zip(rows[i], q, strict=True))
+                ratios.append(tvd_i / max(shot_floor(q, sum(rows[i])), 1e-12))
+        ratios.sort()
+        out[f"{tau}"] = {
+            "gain_over_dephasing": round(gain, 3),
+            "median_tvd_over_floor": round(ratios[len(ratios) // 2], 3),
+        }
+    best = max(out, key=lambda k: out[k]["gain_over_dephasing"])
+    declared = (
+        out[best]["gain_over_dephasing"] > STATIC_GAIN_MIN and out[best]["median_tvd_over_floor"] <= FIT_TVD_RATIO
+    )
+    return {"by_tau": out, "best_tau": float(best), "static_declared": bool(declared)}
+
+
+def static_record(runs: list[Path]) -> dict[str, Any]:
+    """The static-offset cross-validation of retained mesh runs of one calibration session.
+
+    Every run must carry the same couplers (one session); with two or more runs each run is a fold, so the
+    offsets fitted on the other runs must predict a whole run they never saw.
+    """
+    meshes: list[list[float]] = []
+    lows: list[int] = []
+    singles: list[list[int]] = []
+    dark: list[list[float]] = []
+    folds: list[int] = []
+    arch: list[Element] = []
+    eta: list[float] = []
+    for k, run in enumerate(runs):
+        manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+        analysis = json.loads((run / "analysis.json").read_text(encoding="utf-8"))
+        texts = computed_circuits(run)
+        mine = run_architecture(decode(texts[0]))
+        require(
+            not arch or mine == arch, f"{run.name}: couplers differ from {runs[0].name}, another calibration session"
+        )
+        arch = mine
+        meshes += [mesh_phases(arch, decode(t)) for t in texts]
+        perfs = json.loads((run / "submission.json").read_text(encoding="utf-8")).get("perfs_at_plan", {})
+        eta = (perfs.get("Transmission per mode (%)") or {}).get("t_out") or [1.0] * MODES
+        singles += [s["single_click"] for s in analysis["settings"]]
+        dark += analysis["dark_expected"]
+        lows += [row["low"] for row in manifest["settings"]]
+        folds += [k] * len(texts)
+    return {
+        "schema": STATIC_SCHEMA,
+        "runs": [run.name for run in runs],
+        "analysis_sha256": [sha256(run / "analysis.json") for run in runs],
+        "settings": len(lows),
+        **static_cross_validation(
+            arch, meshes, lows, singles, eta, dark, STATIC_TAUS, folds if len(runs) > 1 else None
+        ),
+    }
+
+
+def static_close(a: dict[str, Any], b: dict[str, Any]) -> None:
+    """A static record replays when its verdict, prior width and digests match and every number agrees within
+    STATIC_REPLAY_TOLERANCE relative (at least one nat), since L-BFGS paths differ across BLAS builds."""
+    require(
+        {k: a[k] for k in ("schema", "runs", "analysis_sha256", "settings", "best_tau", "static_declared")}
+        == {k: b[k] for k in ("schema", "runs", "analysis_sha256", "settings", "best_tau", "static_declared")},
+        f"{a.get('runs')}: static verdict differs",
+    )
+    for tau, row in a["by_tau"].items():
+        for key, value in row.items():
+            other = b["by_tau"][tau][key]
+            require(abs(value - other) <= max(1.0, STATIC_REPLAY_TOLERANCE * abs(other)), f"{a['runs']}: {tau} {key}")
 
 
 def scan_axes() -> dict[str, list[dict[str, float]]]:
@@ -1399,11 +1491,6 @@ def analyze_run(run: Path, manifest: dict[str, Any], circuit: dict[str, Any]) ->
     receipt_dark = [[r * duration * used / max(sum(shots), 1) for r in receipt] for used in shots]
     lows = [row["low"] for row in manifest["settings"]]
     scored = score(arch, meshes, lows, singles, eta, receipt_dark)
-    static = (
-        static_cross_validation(arch, meshes, lows, singles, eta, scored["dark_expected"], STATIC_TAUS)
-        if len(lows) >= 2 * STATIC_FOLDS
-        else None
-    )
     settings = []
     for i, (entry, row, sent) in enumerate(zip(entries, manifest["settings"], circuit["settings"], strict=True)):
         single, low = singles[i], row["low"]
@@ -1461,9 +1548,9 @@ def analyze_run(run: Path, manifest: dict[str, Any], circuit: dict[str, Any]) ->
         "best_model": scored["fixed_best"],
         "classes": scored["classes"],
         "best_class": scored["best_class"],
-        "verdict": "static heater offsets" if static and static["predictive"] else scored["verdict"],
+        "verdict": scored["verdict"],
         "fitting_classes": scored["fitting_classes"],
-        "static_offsets": static,
+        "dark_expected": scored["dark_expected"],
         "a_mean_by_kind": contrast,
     }
 
@@ -1612,36 +1699,45 @@ def synthetic_verdicts() -> dict[str, str]:
 
 
 def static_self_test() -> int:
-    """Shared static offsets predict held-out settings of a static truth and fail to on the simulator's counts."""
+    """The static class is declared on a static truth and on no other.
+
+    Uniform random phases are statistically the transpiler's output (section 7 of strategy.md), so 64 of
+    them on the connected inputs stand in for a 64-setting campaign of four runs: 0.1 rad static offsets
+    must be declared, and an exact dephasing ensemble at sigma 0.6 and an out-of-family distribution must
+    not; the simulator's 16-setting S3 run must not either.
+    """
     import numpy as np
 
-    run = RUNS / S3_RUN
-    circuit = json.loads((run / "circuit.json").read_text(encoding="utf-8"))
-    texts = computed_circuits(run)
+    texts = computed_circuits(RUNS / S3_RUN)
     arch = run_architecture(decode(texts[0]))
-    meshes = np.array([mesh_phases(arch, decode(text)) for text in texts])
-    lows = [s["input_mode"] for s in circuit["settings"]]
-    eta = np.array(
-        json.loads((RUNS / Q1_RUN / "submission.json").read_text(encoding="utf-8"))["perfs_at_plan"][
-            "Transmission per mode (%)"
-        ]["t_out"]
-    )
-    dark = np.zeros((len(lows), MODES))
-    sim = np.array(
-        [s["single_click"] for s in json.loads((run / "analysis.json").read_text(encoding="utf-8"))["settings"]]
-    )
     rng = np.random.default_rng([SEED, 11])
-    offsets = rng.normal(0, 0.3, meshes.shape[1])
-    truth = []
-    for ph, low in zip(meshes, lows, strict=True):
-        q = propagate(arch, list(ph + offsets), low)[0] * eta
-        truth.append(rng.multinomial(SAMPLES_PER_SETTING, q / q.sum()))
-    on_sim = static_cross_validation(arch, meshes, lows, sim, np.ones(MODES), dark, STATIC_TAUS)
-    on_truth = static_cross_validation(arch, meshes, lows, np.array(truth), eta, dark, STATIC_TAUS)
-    if on_sim["predictive"] or not on_truth["predictive"]:
-        raise SystemExit(f"self-test: static offsets read {on_sim} on the simulator and {on_truth} on a static truth")
-    gains = (on_sim["heldout_gain_by_tau"], on_truth["heldout_gain_by_tau"])
-    print(f"static self-test: simulator gain {gains[0]}, static truth {gains[1]}")
+    connected = (0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22)
+    meshes = rng.uniform(0, 2 * math.pi, (64, len(phase_slots(arch))))
+    lows = [connected[k % len(connected)] for k in range(64)]
+    folds = [k // 16 for k in range(64)]
+    ones = np.ones(MODES)
+    dark = np.zeros((64, MODES))
+
+    def draw(probabilities: list[Any]) -> Any:
+        return np.array([rng.multinomial(SAMPLES_PER_SETTING, p / p.sum()) for p in probabilities])
+
+    offsets = rng.normal(0, 0.1, meshes.shape[1])
+    pairs = list(zip(meshes, lows, strict=True))
+    truths = {
+        "static_0.1": (draw([propagate(arch, list(ph + offsets), low)[0] for ph, low in pairs]), True),
+        "dephasing_0.6": (draw([channel(arch, list(ph), low, sigma=0.6) for ph, low in pairs]), False),
+        "out_of_family": (draw([rng.dirichlet(np.full(MODES, 0.3)) for _ in lows]), False),
+    }
+    seen = {}
+    for name, (counts, want) in truths.items():
+        record = static_cross_validation(arch, meshes, lows, counts, ones, dark, (0.1,), folds)
+        seen[name] = record["by_tau"]["0.1"]
+        if record["static_declared"] != want:
+            raise SystemExit(f"self-test: the static class read {record} on the {name} truth")
+    s3 = static_record([RUNS / S3_RUN])
+    if s3["static_declared"]:
+        raise SystemExit(f"self-test: the static class was declared on the simulator's S3 run: {s3}")
+    print(f"static self-test: declared only on the static truth; {seen}")
     return 0
 
 
@@ -1664,12 +1760,25 @@ def main() -> int:
     group.add_argument("--check-rca", type=Path)
     group.add_argument("--self-test", action="store_true")
     group.add_argument("--self-test-static", action="store_true")
+    group.add_argument("--static", type=Path, nargs="+", metavar=("OUT", "RUN"))
+    group.add_argument("--check-static", type=Path, nargs="+", metavar=("OUT", "RUN"))
     args = parser.parse_args()
     try:
         if args.self_test:
             return self_test()
         if args.self_test_static:
             return static_self_test()
+        if args.static or args.check_static:
+            out, *runs = args.static or args.check_static
+            record = static_record(runs)
+            if args.static:
+                out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+            else:
+                static_close(json.loads(out.read_text(encoding="utf-8")), record)
+            print(
+                f"{out}: static offsets {'written' if args.static else 'replay'}, declared {record['static_declared']}"
+            )
+            return 0
         if args.write:
             write(args.write)
         elif args.check:

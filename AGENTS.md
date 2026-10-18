@@ -957,10 +957,14 @@ reader and writes `results/quandela/cases/belenos_mesh/`: iterated jobs of
 the architecture circuit whose iterations bind all 574 phases and the input
 mode, so one credit buys up to sixteen different unitaries (job-00 the
 error-class diagnostic, job-02 the 84/84 box-kite edges).
-`qd_box_kite_analysis.py` computes every error model's prediction (heater
-noise, coupler noise, heater gain, thermal crosstalk, a phase ceiling, a
-demultiplexer misroute) on the mesh each iteration returned and names the
-class by summed likelihood. `plan` decodes the live architecture and
+`qd_box_kite_analysis.py` scans every error class (exact heater and coupler
+dephasing, heater gain, thermal crosstalk, a demultiplexer misroute with
+noise) over its magnitude on the mesh each iteration returned and names a
+class only when its pooled deviance and shot-noise TVD pass an absolute fit
+test, otherwise "no class fits"; `--static OUT RUN...` fits one shared
+heater-offset vector across the runs of one calibration session and declares
+static offsets only when they beat the fitted dephasing ensemble on held-out
+runs, which takes about 64 random-target settings. `plan` decodes the live architecture and
 refuses a mesh case whose couplers or symbols changed, so a recalibration
 means a regenerated case. `docs/evidence/quandela/belenos_leakage_rca.json` holds the
 root-cause record of the qpu:belenos bright-block leakage, and
@@ -979,9 +983,10 @@ retained run), core-509 (its `--self-test`), core-510
 (`qd_belenos_mesh.py --check results/quandela/cases`), core-511 (its
 `--check-rca` replay of the leakage record), core-512 (its
 `--self-test`, the decision rule on synthetic in-family and out-of-family
-truths included) and core-513 (`--self-test-static`: shared static heater
-offsets predict held-out settings of a static truth and not the
-simulator's).
+truths included), core-513 (full tier, `--self-test-static`: static offsets
+are declared on a static truth and on no dephasing, out-of-family or
+simulator data) and core-514 (full tier, `--check-static` of the retained
+static records within a BLAS-path tolerance).
 
 **Strategy guide.** [docs/notes/quandela/strategy.md](docs/notes/quandela/strategy.md)
 is the living record of what a credit buys on Belenos: the measured cost

@@ -2710,8 +2710,16 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --self-test-static",
    "name": "core-513",
-   "seconds": 70.0,
-   "tier": "pr"
+   "seconds": 250.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-static results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00/static.json results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00 && \"$PYTHON\" -B -W error scripts/qd_belenos_mesh.py --check-static results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02/static.json results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02",
+   "name": "core-514",
+   "seconds": 60.0,
+   "tier": "full"
   },
   {
    "suite": "core",

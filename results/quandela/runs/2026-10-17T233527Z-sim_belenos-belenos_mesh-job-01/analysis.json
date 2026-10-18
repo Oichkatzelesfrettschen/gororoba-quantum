@@ -69,6 +69,34 @@
   }
  },
  "couplers_match_case": true,
+ "dark_expected": [
+  [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ]
+ ],
  "duration_s": 13.0,
  "fitting_classes": [
   "phase_noise",
@@ -161,7 +189,6 @@
    "transpiled": true
   }
  ],
- "static_offsets": null,
  "transpiled_iterations": 1,
  "verdict": "ideal"
 }
