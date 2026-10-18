@@ -1,0 +1,904 @@
+{
+ "schema": "ghost-error-scale-branching-v1-reduced",
+ "engine": "numpy",
+ "dtype": "complex128",
+ "seed": 20261016,
+ "cz_factors": [
+  0.5,
+  12.0
+ ],
+ "readout_factors": [
+  0.5,
+  3.0
+ ],
+ "run": {
+  "run": "results/live/2026-10-11T152922.787095Z",
+  "backend": "ibm_kingston",
+  "members": [
+   "folded_qpe_s1",
+   "folded_qpe_s0",
+   "folded_qpe_s2",
+   "folded_qpe_s3",
+   "folded_qpe_null",
+   "folded_qpe_s1_isolated",
+   "hybrid_shor_N15_a2",
+   "hybrid_shor_N15_a2_null",
+   "hybrid_shor_N15_a2_isolated"
+  ],
+  "member_shots": {
+   "folded_qpe_s1": 4096,
+   "folded_qpe_s0": 4096,
+   "folded_qpe_s2": 4096,
+   "folded_qpe_s3": 4096,
+   "folded_qpe_null": 4096,
+   "folded_qpe_s1_isolated": 4096,
+   "hybrid_shor_N15_a2": 4096,
+   "hybrid_shor_N15_a2_null": 4096,
+   "hybrid_shor_N15_a2_isolated": 4096
+  },
+  "execution_snapshot": {
+   "folded_qpe_s1": "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json",
+   "folded_qpe_s0": "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json",
+   "folded_qpe_s2": "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json",
+   "folded_qpe_s3": "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json",
+   "folded_qpe_null": "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json",
+   "folded_qpe_s1_isolated": "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json",
+   "hybrid_shor_N15_a2": "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json",
+   "hybrid_shor_N15_a2_null": "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json",
+   "hybrid_shor_N15_a2_isolated": "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json"
+  },
+  "structures": [
+   {
+    "replicas": [
+     "folded_qpe_s1#0",
+     "folded_qpe_s1_isolated#0"
+    ],
+    "qubits": 5,
+    "exported_ops": 493,
+    "steps": 43,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "folded_qpe_s1#1"
+    ],
+    "qubits": 5,
+    "exported_ops": 493,
+    "steps": 43,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "folded_qpe_s1#2"
+    ],
+    "qubits": 5,
+    "exported_ops": 493,
+    "steps": 43,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "folded_qpe_s0#0"
+    ],
+    "qubits": 5,
+    "exported_ops": 492,
+    "steps": 43,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "folded_qpe_s0#1"
+    ],
+    "qubits": 5,
+    "exported_ops": 492,
+    "steps": 43,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "folded_qpe_s0#2"
+    ],
+    "qubits": 5,
+    "exported_ops": 492,
+    "steps": 43,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "folded_qpe_s2#0"
+    ],
+    "qubits": 5,
+    "exported_ops": 488,
+    "steps": 43,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "folded_qpe_s2#1"
+    ],
+    "qubits": 5,
+    "exported_ops": 488,
+    "steps": 43,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "folded_qpe_s2#2"
+    ],
+    "qubits": 5,
+    "exported_ops": 488,
+    "steps": 43,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "folded_qpe_s3#0"
+    ],
+    "qubits": 5,
+    "exported_ops": 493,
+    "steps": 43,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "folded_qpe_s3#1"
+    ],
+    "qubits": 5,
+    "exported_ops": 493,
+    "steps": 43,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "folded_qpe_s3#2"
+    ],
+    "qubits": 5,
+    "exported_ops": 493,
+    "steps": 43,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "folded_qpe_null#0"
+    ],
+    "qubits": 5,
+    "exported_ops": 91,
+    "steps": 7,
+    "splits": 1,
+    "live_branches": 2
+   },
+   {
+    "replicas": [
+     "folded_qpe_null#1"
+    ],
+    "qubits": 5,
+    "exported_ops": 91,
+    "steps": 7,
+    "splits": 1,
+    "live_branches": 2
+   },
+   {
+    "replicas": [
+     "folded_qpe_null#2"
+    ],
+    "qubits": 5,
+    "exported_ops": 91,
+    "steps": 7,
+    "splits": 1,
+    "live_branches": 2
+   },
+   {
+    "replicas": [
+     "hybrid_shor_N15_a2#0",
+     "hybrid_shor_N15_a2_isolated#0"
+    ],
+    "qubits": 5,
+    "exported_ops": 420,
+    "steps": 40,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "hybrid_shor_N15_a2#1"
+    ],
+    "qubits": 5,
+    "exported_ops": 420,
+    "steps": 40,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "hybrid_shor_N15_a2#2"
+    ],
+    "qubits": 5,
+    "exported_ops": 420,
+    "steps": 40,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "hybrid_shor_N15_a2#3"
+    ],
+    "qubits": 5,
+    "exported_ops": 420,
+    "steps": 40,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "hybrid_shor_N15_a2#4"
+    ],
+    "qubits": 5,
+    "exported_ops": 420,
+    "steps": 40,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "hybrid_shor_N15_a2#5"
+    ],
+    "qubits": 5,
+    "exported_ops": 420,
+    "steps": 40,
+    "splits": 1,
+    "live_branches": 4
+   },
+   {
+    "replicas": [
+     "hybrid_shor_N15_a2_null#0"
+    ],
+    "qubits": 2,
+    "exported_ops": 13,
+    "steps": 4,
+    "splits": 1,
+    "live_branches": 2
+   },
+   {
+    "replicas": [
+     "hybrid_shor_N15_a2_null#1"
+    ],
+    "qubits": 2,
+    "exported_ops": 13,
+    "steps": 4,
+    "splits": 1,
+    "live_branches": 2
+   },
+   {
+    "replicas": [
+     "hybrid_shor_N15_a2_null#2"
+    ],
+    "qubits": 2,
+    "exported_ops": 13,
+    "steps": 4,
+    "splits": 1,
+    "live_branches": 2
+   },
+   {
+    "replicas": [
+     "hybrid_shor_N15_a2_null#3"
+    ],
+    "qubits": 2,
+    "exported_ops": 13,
+    "steps": 4,
+    "splits": 1,
+    "live_branches": 2
+   },
+   {
+    "replicas": [
+     "hybrid_shor_N15_a2_null#4"
+    ],
+    "qubits": 2,
+    "exported_ops": 13,
+    "steps": 4,
+    "splits": 1,
+    "live_branches": 2
+   },
+   {
+    "replicas": [
+     "hybrid_shor_N15_a2_null#5"
+    ],
+    "qubits": 2,
+    "exported_ops": 13,
+    "steps": 4,
+    "splits": 1,
+    "live_branches": 2
+   }
+  ],
+  "branches": {
+   "folded_qpe_s1#0": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "folded_qpe_s1_isolated#0": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "folded_qpe_s1#1": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "folded_qpe_s1#2": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "folded_qpe_s0#0": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "folded_qpe_s0#1": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "folded_qpe_s0#2": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "folded_qpe_s2#0": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "folded_qpe_s2#1": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "folded_qpe_s2#2": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "folded_qpe_s3#0": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "folded_qpe_s3#1": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "folded_qpe_s3#2": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "folded_qpe_null#0": {
+    "splits": 1,
+    "children": 4,
+    "live": 2
+   },
+   "folded_qpe_null#1": {
+    "splits": 1,
+    "children": 4,
+    "live": 2
+   },
+   "folded_qpe_null#2": {
+    "splits": 1,
+    "children": 4,
+    "live": 2
+   },
+   "hybrid_shor_N15_a2#0": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "hybrid_shor_N15_a2_isolated#0": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "hybrid_shor_N15_a2#1": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "hybrid_shor_N15_a2#2": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "hybrid_shor_N15_a2#3": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "hybrid_shor_N15_a2#4": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "hybrid_shor_N15_a2#5": {
+    "splits": 1,
+    "children": 4,
+    "live": 4
+   },
+   "hybrid_shor_N15_a2_null#0": {
+    "splits": 1,
+    "children": 4,
+    "live": 2
+   },
+   "hybrid_shor_N15_a2_null#1": {
+    "splits": 1,
+    "children": 4,
+    "live": 2
+   },
+   "hybrid_shor_N15_a2_null#2": {
+    "splits": 1,
+    "children": 4,
+    "live": 2
+   },
+   "hybrid_shor_N15_a2_null#3": {
+    "splits": 1,
+    "children": 4,
+    "live": 2
+   },
+   "hybrid_shor_N15_a2_null#4": {
+    "splits": 1,
+    "children": 4,
+    "live": 2
+   },
+   "hybrid_shor_N15_a2_null#5": {
+    "splits": 1,
+    "children": 4,
+    "live": 2
+   }
+  },
+  "mean_tvd": [
+   0.118556,
+   0.112169,
+   0.110374,
+   0.12055
+  ],
+  "sampled_mean_tvd": [
+   0.118316,
+   0.112145,
+   0.113079,
+   0.123628
+  ],
+  "best": {
+   "cz": 12.0,
+   "readout": 0.5,
+   "mean_tvd": 0.110374
+  },
+  "sampled_best": {
+   "cz": 0.5,
+   "readout": 3.0,
+   "mean_tvd": 0.112145
+  },
+  "points": [
+   {
+    "cz": 0.5,
+    "readout": 0.5,
+    "tvd": {
+     "folded_qpe_s1": [
+      0.267728,
+      0.208088,
+      0.246708
+     ],
+     "folded_qpe_s0": [
+      0.255332,
+      0.160797,
+      0.219395
+     ],
+     "folded_qpe_s2": [
+      0.21393,
+      0.260271,
+      0.188522
+     ],
+     "folded_qpe_s3": [
+      0.237823,
+      0.200461,
+      0.195901
+     ],
+     "folded_qpe_null": [
+      0.039713,
+      0.029877,
+      0.007367
+     ],
+     "folded_qpe_s1_isolated": [
+      0.264066
+     ],
+     "hybrid_shor_N15_a2": [
+      0.124465,
+      0.079272,
+      0.016888,
+      0.022039,
+      0.021337,
+      0.028839
+     ],
+     "hybrid_shor_N15_a2_null": [
+      0.003045,
+      0.006772,
+      0.006705,
+      0.010776,
+      0.006178,
+      0.013567
+     ],
+     "hybrid_shor_N15_a2_isolated": [
+      0.102248
+     ]
+    },
+    "sampled_tvd": {
+     "folded_qpe_s1": [
+      0.263427,
+      0.209228,
+      0.245117
+     ],
+     "folded_qpe_s0": [
+      0.248291,
+      0.156494,
+      0.218261
+     ],
+     "folded_qpe_s2": [
+      0.213135,
+      0.256347,
+      0.191162
+     ],
+     "folded_qpe_s3": [
+      0.242188,
+      0.203125,
+      0.189698
+     ],
+     "folded_qpe_null": [
+      0.039063,
+      0.028076,
+      0.00708
+     ],
+     "folded_qpe_s1_isolated": [
+      0.269532
+     ],
+     "hybrid_shor_N15_a2": [
+      0.126221,
+      0.081055,
+      0.027588,
+      0.029786,
+      0.018798,
+      0.033936
+     ],
+     "hybrid_shor_N15_a2_null": [
+      0.003418,
+      0.00708,
+      0.007569,
+      0.012207,
+      0.00708,
+      0.013672
+     ],
+     "hybrid_shor_N15_a2_isolated": [
+      0.082519
+     ]
+    }
+   },
+   {
+    "cz": 0.5,
+    "readout": 3.0,
+    "tvd": {
+     "folded_qpe_s1": [
+      0.250356,
+      0.174544,
+      0.216012
+     ],
+     "folded_qpe_s0": [
+      0.245706,
+      0.142904,
+      0.197001
+     ],
+     "folded_qpe_s2": [
+      0.176936,
+      0.243868,
+      0.157696
+     ],
+     "folded_qpe_s3": [
+      0.193225,
+      0.168093,
+      0.156628
+     ],
+     "folded_qpe_null": [
+      0.015225,
+      0.062125,
+      0.003418
+     ],
+     "folded_qpe_s1_isolated": [
+      0.246695
+     ],
+     "hybrid_shor_N15_a2": [
+      0.144483,
+      0.079312,
+      0.019301,
+      0.022277,
+      0.021315,
+      0.021526
+     ],
+     "hybrid_shor_N15_a2_null": [
+      0.029526,
+      0.029972,
+      0.010271,
+      0.068608,
+      0.021262,
+      0.012352
+     ],
+     "hybrid_shor_N15_a2_isolated": [
+      0.122266
+     ]
+    },
+    "sampled_tvd": {
+     "folded_qpe_s1": [
+      0.247558,
+      0.172852,
+      0.212646
+     ],
+     "folded_qpe_s0": [
+      0.238526,
+      0.140381,
+      0.196045
+     ],
+     "folded_qpe_s2": [
+      0.170654,
+      0.240966,
+      0.162597
+     ],
+     "folded_qpe_s3": [
+      0.205078,
+      0.171875,
+      0.149659
+     ],
+     "folded_qpe_null": [
+      0.021484,
+      0.060547,
+      0.003906
+     ],
+     "folded_qpe_s1_isolated": [
+      0.251709
+     ],
+     "hybrid_shor_N15_a2": [
+      0.145752,
+      0.077149,
+      0.029785,
+      0.029542,
+      0.024415,
+      0.026611
+     ],
+     "hybrid_shor_N15_a2_null": [
+      0.032226,
+      0.031738,
+      0.009521,
+      0.065185,
+      0.019043,
+      0.012695
+     ],
+     "hybrid_shor_N15_a2_isolated": [
+      0.102051
+     ]
+    }
+   },
+   {
+    "cz": 12.0,
+    "readout": 0.5,
+    "tvd": {
+     "folded_qpe_s1": [
+      0.197044,
+      0.218022,
+      0.17942
+     ],
+     "folded_qpe_s0": [
+      0.164564,
+      0.218495,
+      0.165347
+     ],
+     "folded_qpe_s2": [
+      0.242779,
+      0.159266,
+      0.235522
+     ],
+     "folded_qpe_s3": [
+      0.23066,
+      0.230381,
+      0.23449
+     ],
+     "folded_qpe_null": [
+      0.039713,
+      0.029877,
+      0.007367
+     ],
+     "folded_qpe_s1_isolated": [
+      0.200706
+     ],
+     "hybrid_shor_N15_a2": [
+      0.138527,
+      0.071994,
+      0.020388,
+      0.012209,
+      0.015988,
+      0.024734
+     ],
+     "hybrid_shor_N15_a2_null": [
+      0.003045,
+      0.006772,
+      0.006705,
+      0.010776,
+      0.006178,
+      0.013567
+     ],
+     "hybrid_shor_N15_a2_isolated": [
+      0.11631
+     ]
+    },
+    "sampled_tvd": {
+     "folded_qpe_s1": [
+      0.194092,
+      0.231445,
+      0.181397
+     ],
+     "folded_qpe_s0": [
+      0.175293,
+      0.228515,
+      0.175782
+     ],
+     "folded_qpe_s2": [
+      0.259033,
+      0.16211,
+      0.235352
+     ],
+     "folded_qpe_s3": [
+      0.2229,
+      0.239258,
+      0.243164
+     ],
+     "folded_qpe_null": [
+      0.039063,
+      0.028076,
+      0.00708
+     ],
+     "folded_qpe_s1_isolated": [
+      0.204101
+     ],
+     "hybrid_shor_N15_a2": [
+      0.137939,
+      0.070069,
+      0.030029,
+      0.019776,
+      0.018799,
+      0.030762
+     ],
+     "hybrid_shor_N15_a2_null": [
+      0.003418,
+      0.00708,
+      0.007569,
+      0.012207,
+      0.00708,
+      0.013672
+     ],
+     "hybrid_shor_N15_a2_isolated": [
+      0.094238
+     ]
+    }
+   },
+   {
+    "cz": 12.0,
+    "readout": 3.0,
+    "tvd": {
+     "folded_qpe_s1": [
+      0.196994,
+      0.232463,
+      0.190675
+     ],
+     "folded_qpe_s0": [
+      0.160339,
+      0.223804,
+      0.172539
+     ],
+     "folded_qpe_s2": [
+      0.259065,
+      0.162107,
+      0.248498
+     ],
+     "folded_qpe_s3": [
+      0.250829,
+      0.243665,
+      0.25228
+     ],
+     "folded_qpe_null": [
+      0.015225,
+      0.062125,
+      0.003418
+     ],
+     "folded_qpe_s1_isolated": [
+      0.200655
+     ],
+     "hybrid_shor_N15_a2": [
+      0.157775,
+      0.072393,
+      0.022724,
+      0.013108,
+      0.030238,
+      0.017487
+     ],
+     "hybrid_shor_N15_a2_null": [
+      0.029526,
+      0.029972,
+      0.010271,
+      0.068608,
+      0.021262,
+      0.012352
+     ],
+     "hybrid_shor_N15_a2_isolated": [
+      0.135558
+     ]
+    },
+    "sampled_tvd": {
+     "folded_qpe_s1": [
+      0.192871,
+      0.246826,
+      0.194336
+     ],
+     "folded_qpe_s0": [
+      0.171142,
+      0.233642,
+      0.183106
+     ],
+     "folded_qpe_s2": [
+      0.274658,
+      0.164307,
+      0.247071
+     ],
+     "folded_qpe_s3": [
+      0.241211,
+      0.252686,
+      0.257568
+     ],
+     "folded_qpe_null": [
+      0.021484,
+      0.060547,
+      0.003906
+     ],
+     "folded_qpe_s1_isolated": [
+      0.208252
+     ],
+     "hybrid_shor_N15_a2": [
+      0.159912,
+      0.072266,
+      0.032715,
+      0.020508,
+      0.032715,
+      0.024414
+     ],
+     "hybrid_shor_N15_a2_null": [
+      0.032226,
+      0.031738,
+      0.009521,
+      0.065185,
+      0.019043,
+      0.012695
+     ],
+     "hybrid_shor_N15_a2_isolated": [
+      0.118652
+     ]
+    }
+   }
+  ]
+ }
+}

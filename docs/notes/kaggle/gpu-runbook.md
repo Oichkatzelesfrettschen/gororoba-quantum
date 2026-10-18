@@ -13,6 +13,8 @@ it and the code or gate that enforces it.
 | --- | --- | --- |
 | `results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config` (core-450) | Does the pinned GPU venv run on both T4s, and which Aer executor wins? | every GPU row on the GPU; batched trajectories 3.5 and 3.8 times faster than unbatched at 7 and 10 qubits; cuStateVec 1.44 and 1.63 times faster on the dynamic density matrix; Aer spreads per-shot and batched runs over both GPUs |
 | `results/kaggle/2026-10-17T211857Z-gororoba-aer-gpu-env-preflight` | Does the preflight stop a CPU fallback? | exit 4 on a CPU machine, at no GPU quota |
+| `results/kaggle/2026-10-18T041945Z-gororoba-ghost-branching-t4` (core-441) | Does the exact branching ghost sweep gain from a T4, or from one process per T4? | no: the CPU pool map takes 34 s in every row and the GPU phases 4 s, so numpy over 4 workers (34.9 s) beats torch CUDA (39.3 s); one process per T4 ran 0.994 of one process; torch complex128 laws match numpy within 1.4e-15 (`docs/evidence/ghost_error_scale_branching/README.md`) |
+| `results/kaggle/2026-10-18T041018Z-gororoba-ghost-branching-preflight` | Does `--gpu-env-with torch` install torch 2.14.1 in the pinned venv? | yes, at version, and the CPU machine stopped at the preflight with exit 4 |
 | `results/kaggle/2026-10-17T225519Z-gororoba-aer-blocking` and `2026-10-17T230346Z-gororoba-aer-blocking` (core-451) | Why did density matrix 15 and statevector 30 die on a T4? | Aer's automatic blocking filled host memory and the OOM killer ended it; explicit chunks ran both across the two T4s in 4.2 and 7.2 s |
 
 The timings are in `docs/evidence/aer_gpu_configuration/README.md` and
@@ -172,7 +174,7 @@ PIN_GROUPS):
 | quimb 1.15.0, cotengra 0.8.2, autoray 0.11.0 | ideal simulation past 14 qubits | a 22-qubit expectation agrees with numpy to 10 digits on torch-cpu, torch-cuda and cupy | no kahypar, so cotengra's path quality is lower; `HyperOptimizer(seed=)` needs `optlib="random"`; compare to 1e-10, since contraction order changes the last digits |
 | mthree 3.0.0 | readout mitigation | mitigated `<Z0>` 0.7986 against raw 0.7946 and ideal 0.8 | `mthree.openmp` reads False; a 4000-shot calibration carries about 0.002 error per element; mid-circuit measurement breaks `final_measurement_mapping` |
 | qiskit-experiments 0.14.2, lmfit 1.3.4 | readout, RB, T1 and Ramsey fits | T1 298 +/- 13 us against 313.2 us; Ramsey tau 373.3 +/- 5.6 us against T2 366.7 us | unweighted lmfit fits assume unit variance; quality "good" judges the fit, not agreement with calibration |
-| torch (image 2.11.0) | quimb backend, package checks | complex128 matmul on the GPU within 1e-10 of numpy | warm up before timing; the first CUDA call costs seconds |
+| torch (image 2.11.0; 2.14.1 in the venv with `--gpu-env-with torch`) | quimb backend, package checks, branch_dm's GPU evolver | complex128 matmul on the GPU within 1e-10 of numpy; branch_dm laws within 1.4e-15 | warm up before timing; the first CUDA call costs seconds; a GPU evolver fed from a CPU pool pays the plans' transfer to the GPU process |
 | jax (host 0.9.0, CPU jaxlib) | `jax_bridge` evolver | numpy complex128 stays the reference | the JAX evolver stores complex64 |
 | pyzx 0.10.7, galois 0.4.11, numba 0.68.0 | T-count rewriting, GF(2) algebra, JIT for galois and the quaternion packages | a 200 x 200 GF(2) product takes 0.0004 s on a repeat call | CPU only; `compare_tensors` allocates 2^n x 2^n |
 
@@ -189,6 +191,8 @@ installs the group into the image interpreter, which `--gpu-env` refuses.
 | gororoba-aer-gpu-config v2 | T4 x2 | 0.84 | 35 rows, every GPU row on the GPU |
 | gororoba-aer-blocking v1 | T4 x2 | 0.09 | 3 trials, then the OOM kill took the kernel |
 | gororoba-aer-blocking v2 | T4 x2 | 0.21 | 14 trials, both wide widths blocked across both GPUs |
+| gororoba-ghost-branching-preflight | CPU | 0 | torch 2.14.1 at version in the venv, exit 4 on the missing GPU |
+| gororoba-ghost-branching-t4 | T4 x2 | 0.19 | 5 rows; the sweep is CPU-bound, so its route is a CPU kernel |
 
 The plan before the fixes budgeted a 3 h rerun of the full matrix
 (`--timeout 10800`). The rehearsal, the reduced matrix and the contention

@@ -121,20 +121,32 @@ def member_replicas(
         for pub in job["pubs"]:
             for component in pub["components"]:
                 components[component["member"]] = (job["backend"], pub["name"], component)
+    wanted = [member for group in record["groups"] for member in group["members"] if member["name"] in components]
+    by_pub: dict[str, list[dict[str, Any]]] = {}
+    for member in wanted:
+        by_pub.setdefault(components[member["name"]][1], []).append(member)
+    packed: dict[str, QuantumCircuit] = {}
+    for pub_name, members in by_pub.items():
+        specs = [
+            (
+                components[m["name"]][2]["register_prefix"],
+                sorted({q for replica in m["replica_qubits"] for q in replica}),
+                m["name"],
+            )
+            for m in members
+        ]
+        # One pass over the fused PUB places every member's instructions (packing.extract_many).
+        for m, circuit in zip(members, packing.extract_many(isas[pub_name], specs), strict=True):
+            packed[m["name"]] = circuit
     out: dict[str, tuple[str, list[QuantumCircuit]]] = {}
-    for group in record["groups"]:
-        for member in group["members"]:
-            name = member["name"]
-            if name not in components:
-                continue
-            backend, pub_name, component = components[name]
-            qubits = sorted({q for replica in member["replica_qubits"] for q in replica})
-            packed = packing.extract(isas[pub_name], component["register_prefix"], qubits, name)
-            replicas = [
-                packing.split(packed, component["register_prefix"] + prefix, replica_qubits, name)
-                for prefix, replica_qubits in zip(member["replica_prefixes"], member["replica_qubits"], strict=True)
-            ]
-            out[name] = (backend, replicas)
+    for member in wanted:
+        name = member["name"]
+        backend, _, component = components[name]
+        replicas = [
+            packing.split(packed[name], component["register_prefix"] + prefix, replica_qubits, name)
+            for prefix, replica_qubits in zip(member["replica_prefixes"], member["replica_qubits"], strict=True)
+        ]
+        out[name] = (backend, replicas)
     return out
 
 

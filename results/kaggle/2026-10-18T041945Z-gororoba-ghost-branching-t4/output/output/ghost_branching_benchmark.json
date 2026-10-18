@@ -1,0 +1,1396 @@
+{
+ "schema": "ghost-branching-benchmark-v1",
+ "host": {
+  "python": "3.13.15",
+  "cpu_model": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+  "available_cpus": 4,
+  "workers": 4,
+  "versions": {
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "qiskit": "2.5.2",
+   "qiskit-aer": null,
+   "qiskit-aer-gpu-cu11": "0.17.2",
+   "torch": "2.14.1"
+  },
+  "torch_cuda": "13.0",
+  "driver": "580.178.04"
+ },
+ "gpu_check": {
+  "name": "Tesla T4",
+  "count": 2,
+  "devices": [
+   "Tesla T4",
+   "Tesla T4"
+  ],
+  "matmul_gap": [
+   3.623071274882353e-14,
+   3.197442310920451e-14
+  ],
+  "failures": []
+ },
+ "rows": [
+  {
+   "row": "numpy",
+   "engine": "numpy",
+   "device": "cpu",
+   "dtype": "complex128",
+   "workers": 4,
+   "warmup_seconds": 0.989,
+   "wall_seconds": 34.936,
+   "seconds": {
+    "workers": 34.21986370700006,
+    "worker_seconds": {
+     "prepare": 19.784,
+     "export": 64.012,
+     "evolve": 10.238,
+     "sample": 4.22
+    }
+   },
+   "before": {
+    "utc": "2026-10-18T04:27:47Z",
+    "loadavg": [
+     2.06103515625,
+     1.2744140625,
+     0.654296875
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "Tesla T4",
+      "utilization.gpu": "0",
+      "memory.used": "243",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     },
+     {
+      "index": "1",
+      "name": "Tesla T4",
+      "utilization.gpu": "0",
+      "memory.used": "243",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     }
+    ]
+   },
+   "after": {
+    "utc": "2026-10-18T04:28:22Z",
+    "loadavg": [
+     2.39599609375,
+     1.46240234375,
+     0.7421875
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "Tesla T4",
+      "utilization.gpu": "0",
+      "memory.used": "243",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     },
+     {
+      "index": "1",
+      "name": "Tesla T4",
+      "utilization.gpu": "0",
+      "memory.used": "243",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     }
+    ]
+   },
+   "runs": {
+    "results/live/2026-10-11T152922.787095Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032911
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032488
+     }
+    },
+    "results/live/2026-10-12T055624.091217Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.044982
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.043854
+     }
+    },
+    "results/live/2026-10-13T020454.599853Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.024079
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.025665
+     }
+    },
+    "results/live/2026-10-13T022433.333775Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.040422
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.042297
+     }
+    },
+    "results/live/2026-10-13T025444.603480Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.049931
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.051388
+     }
+    },
+    "results/live/2026-10-13T032011.664435Z": {
+     "best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.031417
+     },
+     "sampled_best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.035142
+     }
+    },
+    "results/live/2026-10-13T080216.451663Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 2.0,
+      "mean_tvd": 0.022819
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 3.0,
+      "mean_tvd": 0.026245
+     }
+    },
+    "results/live/2026-10-13T083417.634585Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.029438
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.032593
+     }
+    },
+    "results/live/2026-10-13T201757.782152Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.023388
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.026617
+     }
+    },
+    "results/live/2026-10-15T030748.903241Z": {
+     "best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.175978
+     },
+     "sampled_best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.17959
+     }
+    },
+    "results/live/2026-10-15T030903.235380Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.053895
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.05682
+     }
+    },
+    "results/live/2026-10-15T031229.371738Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.071851
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.072627
+     }
+    },
+    "results/live/2026-10-15T070847.644554Z": {
+     "best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.409716
+     },
+     "sampled_best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.414481
+     }
+    },
+    "results/live/2026-10-15T070853.550532Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055475
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055032
+     }
+    },
+    "results/live/kingston-wide-control-result": {
+     "skipped": "the run keeps no record.json, isa.qpy, collect.json"
+    }
+   }
+  },
+  {
+   "row": "torch-cuda-complex128",
+   "engine": "torch",
+   "device": "cuda",
+   "dtype": "complex128",
+   "workers": 4,
+   "warmup_seconds": 0.04,
+   "wall_seconds": 39.329,
+   "seconds": {
+    "workers": 34.21038747,
+    "worker_seconds": {
+     "prepare": 19.63,
+     "export": 64.216
+    },
+    "upload": 1.038,
+    "evolve": 1.963,
+    "sample": 1.265
+   },
+   "before": {
+    "utc": "2026-10-18T04:28:22Z",
+    "loadavg": [
+     2.39599609375,
+     1.46240234375,
+     0.7421875
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "Tesla T4",
+      "utilization.gpu": "2",
+      "memory.used": "257",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     },
+     {
+      "index": "1",
+      "name": "Tesla T4",
+      "utilization.gpu": "0",
+      "memory.used": "243",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     }
+    ]
+   },
+   "after": {
+    "utc": "2026-10-18T04:29:01Z",
+    "loadavg": [
+     2.408203125,
+     1.60400390625,
+     0.82275390625
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "Tesla T4",
+      "utilization.gpu": "38",
+      "memory.used": "331",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     },
+     {
+      "index": "1",
+      "name": "Tesla T4",
+      "utilization.gpu": "0",
+      "memory.used": "243",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     }
+    ]
+   },
+   "runs": {
+    "results/live/2026-10-11T152922.787095Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032911
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032488
+     }
+    },
+    "results/live/2026-10-12T055624.091217Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.044982
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.043854
+     }
+    },
+    "results/live/2026-10-13T020454.599853Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.024079
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.025665
+     }
+    },
+    "results/live/2026-10-13T022433.333775Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.040422
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.042297
+     }
+    },
+    "results/live/2026-10-13T025444.603480Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.049931
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.051388
+     }
+    },
+    "results/live/2026-10-13T032011.664435Z": {
+     "best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.031417
+     },
+     "sampled_best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.035142
+     }
+    },
+    "results/live/2026-10-13T080216.451663Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 2.0,
+      "mean_tvd": 0.022819
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 3.0,
+      "mean_tvd": 0.026245
+     }
+    },
+    "results/live/2026-10-13T083417.634585Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.029438
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.032593
+     }
+    },
+    "results/live/2026-10-13T201757.782152Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.023388
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.026617
+     }
+    },
+    "results/live/2026-10-15T030748.903241Z": {
+     "best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.175978
+     },
+     "sampled_best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.17959
+     }
+    },
+    "results/live/2026-10-15T030903.235380Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.053895
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.05682
+     }
+    },
+    "results/live/2026-10-15T031229.371738Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.071851
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.072627
+     }
+    },
+    "results/live/2026-10-15T070847.644554Z": {
+     "best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.409716
+     },
+     "sampled_best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.414481
+     }
+    },
+    "results/live/2026-10-15T070853.550532Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055475
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055032
+     }
+    },
+    "results/live/kingston-wide-control-result": {
+     "skipped": "the run keeps no record.json, isa.qpy, collect.json"
+    }
+   },
+   "law_gap": {
+    "results/live/2026-10-11T152922.787095Z": 6.661338147750939e-16,
+    "results/live/2026-10-12T055624.091217Z": 7.771561172376096e-16,
+    "results/live/2026-10-13T020454.599853Z": 5.551115123125783e-16,
+    "results/live/2026-10-13T022433.333775Z": 5.551115123125783e-16,
+    "results/live/2026-10-13T025444.603480Z": 1.4432899320127035e-15,
+    "results/live/2026-10-13T032011.664435Z": 4.440892098500626e-16,
+    "results/live/2026-10-13T080216.451663Z": 2.220446049250313e-16,
+    "results/live/2026-10-13T083417.634585Z": 2.7755575615628914e-16,
+    "results/live/2026-10-13T201757.782152Z": 3.3306690738754696e-16,
+    "results/live/2026-10-15T030748.903241Z": 1.6653345369377348e-16,
+    "results/live/2026-10-15T030903.235380Z": 4.440892098500626e-16,
+    "results/live/2026-10-15T031229.371738Z": 7.771561172376096e-16,
+    "results/live/2026-10-15T070847.644554Z": 5.551115123125783e-16,
+    "results/live/2026-10-15T070853.550532Z": 6.661338147750939e-16
+   }
+  },
+  {
+   "row": "torch-cuda-complex64",
+   "engine": "torch",
+   "device": "cuda",
+   "dtype": "complex64",
+   "workers": 4,
+   "warmup_seconds": 0.005,
+   "wall_seconds": 38.427,
+   "seconds": {
+    "workers": 33.30033683199997,
+    "worker_seconds": {
+     "prepare": 19.793,
+     "export": 63.226
+    },
+    "upload": 1.202,
+    "evolve": 1.746,
+    "sample": 1.189
+   },
+   "before": {
+    "utc": "2026-10-18T04:29:01Z",
+    "loadavg": [
+     2.408203125,
+     1.60400390625,
+     0.82275390625
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "Tesla T4",
+      "utilization.gpu": "38",
+      "memory.used": "331",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     },
+     {
+      "index": "1",
+      "name": "Tesla T4",
+      "utilization.gpu": "0",
+      "memory.used": "243",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     }
+    ]
+   },
+   "after": {
+    "utc": "2026-10-18T04:29:40Z",
+    "loadavg": [
+     2.39111328125,
+     1.70751953125,
+     0.888671875
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "Tesla T4",
+      "utilization.gpu": "29",
+      "memory.used": "331",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     },
+     {
+      "index": "1",
+      "name": "Tesla T4",
+      "utilization.gpu": "0",
+      "memory.used": "243",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     }
+    ]
+   },
+   "runs": {
+    "results/live/2026-10-11T152922.787095Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032911
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032488
+     }
+    },
+    "results/live/2026-10-12T055624.091217Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.044982
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.043854
+     }
+    },
+    "results/live/2026-10-13T020454.599853Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.024079
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.025665
+     }
+    },
+    "results/live/2026-10-13T022433.333775Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.040422
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.042297
+     }
+    },
+    "results/live/2026-10-13T025444.603480Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.049931
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.051388
+     }
+    },
+    "results/live/2026-10-13T032011.664435Z": {
+     "best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.031417
+     },
+     "sampled_best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.035142
+     }
+    },
+    "results/live/2026-10-13T080216.451663Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 2.0,
+      "mean_tvd": 0.022819
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 3.0,
+      "mean_tvd": 0.026245
+     }
+    },
+    "results/live/2026-10-13T083417.634585Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.029438
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.032593
+     }
+    },
+    "results/live/2026-10-13T201757.782152Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.023388
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.026617
+     }
+    },
+    "results/live/2026-10-15T030748.903241Z": {
+     "best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.175978
+     },
+     "sampled_best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.17959
+     }
+    },
+    "results/live/2026-10-15T030903.235380Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.053895
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.05682
+     }
+    },
+    "results/live/2026-10-15T031229.371738Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.071851
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.072627
+     }
+    },
+    "results/live/2026-10-15T070847.644554Z": {
+     "best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.409716
+     },
+     "sampled_best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.414481
+     }
+    },
+    "results/live/2026-10-15T070853.550532Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055475
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055032
+     }
+    },
+    "results/live/kingston-wide-control-result": {
+     "skipped": "the run keeps no record.json, isa.qpy, collect.json"
+    }
+   },
+   "law_gap": {
+    "results/live/2026-10-11T152922.787095Z": 1.8407924107233242e-07,
+    "results/live/2026-10-12T055624.091217Z": 2.0936093692025537e-07,
+    "results/live/2026-10-13T020454.599853Z": 1.549257031552287e-07,
+    "results/live/2026-10-13T022433.333775Z": 1.549257031552287e-07,
+    "results/live/2026-10-13T025444.603480Z": 4.753914839561446e-07,
+    "results/live/2026-10-13T032011.664435Z": 2.1677831131550196e-07,
+    "results/live/2026-10-13T080216.451663Z": 1.1565698554427684e-07,
+    "results/live/2026-10-13T083417.634585Z": 1.2179331670969518e-07,
+    "results/live/2026-10-13T201757.782152Z": 9.708225945370685e-08,
+    "results/live/2026-10-15T030748.903241Z": 9.923905533448796e-08,
+    "results/live/2026-10-15T030903.235380Z": 2.4855944036339395e-07,
+    "results/live/2026-10-15T031229.371738Z": 3.938389653637686e-07,
+    "results/live/2026-10-15T070847.644554Z": 3.801896808486305e-08,
+    "results/live/2026-10-15T070853.550532Z": 3.549489155929564e-07
+   }
+  },
+  {
+   "row": "process-complex128",
+   "engine": "torch",
+   "device": "cuda",
+   "dtype": "complex128",
+   "processes": [
+    {
+     "seconds": {
+      "workers": 34.42054850799991,
+      "worker_seconds": {
+       "prepare": 19.898,
+       "export": 65.606
+      },
+      "upload": 1.069,
+      "evolve": 2.001,
+      "sample": 1.279
+     },
+     "warmup_seconds": 1.16,
+     "runs": [
+      "results/live/2026-10-11T152922.787095Z",
+      "results/live/2026-10-12T055624.091217Z",
+      "results/live/2026-10-13T020454.599853Z",
+      "results/live/2026-10-13T022433.333775Z",
+      "results/live/2026-10-13T025444.603480Z",
+      "results/live/2026-10-13T032011.664435Z",
+      "results/live/2026-10-13T080216.451663Z",
+      "results/live/2026-10-13T083417.634585Z",
+      "results/live/2026-10-13T201757.782152Z",
+      "results/live/2026-10-15T030748.903241Z",
+      "results/live/2026-10-15T030903.235380Z",
+      "results/live/2026-10-15T031229.371738Z",
+      "results/live/2026-10-15T070847.644554Z",
+      "results/live/2026-10-15T070853.550532Z",
+      "results/live/kingston-wide-control-result"
+     ],
+     "cuda_visible_devices": null,
+     "workers": 4
+    }
+   ],
+   "wall_seconds": 44.994,
+   "before": {
+    "utc": "2026-10-18T04:29:40Z",
+    "loadavg": [
+     2.39111328125,
+     1.70751953125,
+     0.888671875
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "Tesla T4",
+      "utilization.gpu": "29",
+      "memory.used": "331",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     },
+     {
+      "index": "1",
+      "name": "Tesla T4",
+      "utilization.gpu": "0",
+      "memory.used": "243",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     }
+    ]
+   },
+   "after": {
+    "utc": "2026-10-18T04:30:25Z",
+    "loadavg": [
+     2.28076171875,
+     1.7919921875,
+     0.958984375
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "Tesla T4",
+      "utilization.gpu": "5",
+      "memory.used": "331",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     },
+     {
+      "index": "1",
+      "name": "Tesla T4",
+      "utilization.gpu": "0",
+      "memory.used": "243",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     }
+    ]
+   },
+   "runs": {
+    "results/live/2026-10-11T152922.787095Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032911
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032488
+     }
+    },
+    "results/live/2026-10-12T055624.091217Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.044982
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.043854
+     }
+    },
+    "results/live/2026-10-13T020454.599853Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.024079
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.025665
+     }
+    },
+    "results/live/2026-10-13T022433.333775Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.040422
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.042297
+     }
+    },
+    "results/live/2026-10-13T025444.603480Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.049931
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.051388
+     }
+    },
+    "results/live/2026-10-13T032011.664435Z": {
+     "best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.031417
+     },
+     "sampled_best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.035142
+     }
+    },
+    "results/live/2026-10-13T080216.451663Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 2.0,
+      "mean_tvd": 0.022819
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 3.0,
+      "mean_tvd": 0.026245
+     }
+    },
+    "results/live/2026-10-13T083417.634585Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.029438
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.032593
+     }
+    },
+    "results/live/2026-10-13T201757.782152Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.023388
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.026617
+     }
+    },
+    "results/live/2026-10-15T030748.903241Z": {
+     "best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.175978
+     },
+     "sampled_best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.17959
+     }
+    },
+    "results/live/2026-10-15T030903.235380Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.053895
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.05682
+     }
+    },
+    "results/live/2026-10-15T031229.371738Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.071851
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.072627
+     }
+    },
+    "results/live/2026-10-15T070847.644554Z": {
+     "best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.409716
+     },
+     "sampled_best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.414481
+     }
+    },
+    "results/live/2026-10-15T070853.550532Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055475
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055032
+     }
+    },
+    "results/live/kingston-wide-control-result": {
+     "skipped": "the run keeps no record.json, isa.qpy, collect.json"
+    }
+   },
+   "records_equal_in_process": true
+  },
+  {
+   "row": "split-complex128",
+   "engine": "torch",
+   "device": "cuda",
+   "dtype": "complex128",
+   "processes": [
+    {
+     "seconds": {
+      "workers": 36.98948381499997,
+      "worker_seconds": {
+       "prepare": 11.267,
+       "export": 39.696
+      },
+      "upload": 0.571,
+      "evolve": 1.36,
+      "sample": 0.685
+     },
+     "warmup_seconds": 1.339,
+     "runs": [
+      "results/live/2026-10-11T152922.787095Z",
+      "results/live/2026-10-12T055624.091217Z",
+      "results/live/2026-10-13T020454.599853Z",
+      "results/live/2026-10-13T022433.333775Z",
+      "results/live/2026-10-13T032011.664435Z",
+      "results/live/2026-10-13T083417.634585Z",
+      "results/live/2026-10-13T201757.782152Z",
+      "results/live/2026-10-15T030748.903241Z",
+      "results/live/2026-10-15T031229.371738Z",
+      "results/live/2026-10-15T070847.644554Z"
+     ],
+     "cuda_visible_devices": "0",
+     "workers": 2
+    },
+    {
+     "seconds": {
+      "workers": 24.687196328000027,
+      "worker_seconds": {
+       "prepare": 10.823,
+       "export": 30.815
+      },
+      "upload": 0.524,
+      "evolve": 0.879,
+      "sample": 0.683
+     },
+     "warmup_seconds": 1.371,
+     "runs": [
+      "results/live/2026-10-13T025444.603480Z",
+      "results/live/2026-10-13T080216.451663Z",
+      "results/live/2026-10-15T030903.235380Z",
+      "results/live/2026-10-15T070853.550532Z",
+      "results/live/kingston-wide-control-result"
+     ],
+     "cuda_visible_devices": "1",
+     "workers": 2
+    }
+   ],
+   "wall_seconds": 44.708,
+   "before": {
+    "utc": "2026-10-18T04:30:25Z",
+    "loadavg": [
+     2.28076171875,
+     1.7919921875,
+     0.958984375
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "Tesla T4",
+      "utilization.gpu": "5",
+      "memory.used": "331",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     },
+     {
+      "index": "1",
+      "name": "Tesla T4",
+      "utilization.gpu": "0",
+      "memory.used": "243",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     }
+    ]
+   },
+   "after": {
+    "utc": "2026-10-18T04:31:10Z",
+    "loadavg": [
+     2.69384765625,
+     2.01318359375,
+     1.0771484375
+    ],
+    "gpus": [
+     {
+      "index": "0",
+      "name": "Tesla T4",
+      "utilization.gpu": "4",
+      "memory.used": "331",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     },
+     {
+      "index": "1",
+      "name": "Tesla T4",
+      "utilization.gpu": "0",
+      "memory.used": "243",
+      "memory.total": "15360",
+      "driver_version": "580.178.04"
+     }
+    ]
+   },
+   "runs": {
+    "results/live/2026-10-11T152922.787095Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032911
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 1.0,
+      "mean_tvd": 0.032488
+     }
+    },
+    "results/live/2026-10-12T055624.091217Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.044982
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.043854
+     }
+    },
+    "results/live/2026-10-13T020454.599853Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.024079
+     },
+     "sampled_best": {
+      "cz": 5.0,
+      "readout": 0.5,
+      "mean_tvd": 0.025665
+     }
+    },
+    "results/live/2026-10-13T022433.333775Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.040422
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 0.5,
+      "mean_tvd": 0.042297
+     }
+    },
+    "results/live/2026-10-13T032011.664435Z": {
+     "best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.031417
+     },
+     "sampled_best": {
+      "cz": 1.5,
+      "readout": 1.5,
+      "mean_tvd": 0.035142
+     }
+    },
+    "results/live/2026-10-13T083417.634585Z": {
+     "best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.029438
+     },
+     "sampled_best": {
+      "cz": 6.0,
+      "readout": 3.0,
+      "mean_tvd": 0.032593
+     }
+    },
+    "results/live/2026-10-13T201757.782152Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.023388
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.026617
+     }
+    },
+    "results/live/2026-10-15T030748.903241Z": {
+     "best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.175978
+     },
+     "sampled_best": {
+      "cz": 3.0,
+      "readout": 3.0,
+      "mean_tvd": 0.17959
+     }
+    },
+    "results/live/2026-10-15T031229.371738Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.071851
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.072627
+     }
+    },
+    "results/live/2026-10-15T070847.644554Z": {
+     "best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.409716
+     },
+     "sampled_best": {
+      "cz": 0.5,
+      "readout": 3.0,
+      "mean_tvd": 0.414481
+     }
+    },
+    "results/live/2026-10-13T025444.603480Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.049931
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 1.0,
+      "mean_tvd": 0.051388
+     }
+    },
+    "results/live/2026-10-13T080216.451663Z": {
+     "best": {
+      "cz": 5.0,
+      "readout": 2.0,
+      "mean_tvd": 0.022819
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 3.0,
+      "mean_tvd": 0.026245
+     }
+    },
+    "results/live/2026-10-15T030903.235380Z": {
+     "best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.053895
+     },
+     "sampled_best": {
+      "cz": 2.0,
+      "readout": 2.0,
+      "mean_tvd": 0.05682
+     }
+    },
+    "results/live/2026-10-15T070853.550532Z": {
+     "best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055475
+     },
+     "sampled_best": {
+      "cz": 4.0,
+      "readout": 0.5,
+      "mean_tvd": 0.055032
+     }
+    },
+    "results/live/kingston-wide-control-result": {
+     "skipped": "the run keeps no record.json, isa.qpy, collect.json"
+    }
+   },
+   "records_equal_in_process": true
+  }
+ ],
+ "prediction": {
+  "split_over_process_at_least": 0.95
+ },
+ "runs": [
+  "results/live/2026-10-11T152922.787095Z",
+  "results/live/2026-10-12T055624.091217Z",
+  "results/live/2026-10-13T020454.599853Z",
+  "results/live/2026-10-13T022433.333775Z",
+  "results/live/2026-10-13T025444.603480Z",
+  "results/live/2026-10-13T032011.664435Z",
+  "results/live/2026-10-13T080216.451663Z",
+  "results/live/2026-10-13T083417.634585Z",
+  "results/live/2026-10-13T201757.782152Z",
+  "results/live/2026-10-15T030748.903241Z",
+  "results/live/2026-10-15T030903.235380Z",
+  "results/live/2026-10-15T031229.371738Z",
+  "results/live/2026-10-15T070847.644554Z",
+  "results/live/2026-10-15T070853.550532Z",
+  "results/live/kingston-wide-control-result"
+ ],
+ "derived": {
+  "numpy": {
+   "speedup_vs_numpy": 1.0,
+   "best_matches_numpy": true
+  },
+  "torch-cuda-complex128": {
+   "speedup_vs_numpy": 0.888,
+   "best_matches_numpy": true,
+   "max_abs_law_minus_numpy": 1.4432899320127035e-15,
+   "laws_agree": true
+  },
+  "torch-cuda-complex64": {
+   "speedup_vs_numpy": 0.909,
+   "best_matches_numpy": true,
+   "max_abs_law_minus_numpy": 4.753914839561446e-07,
+   "laws_agree": true
+  },
+  "process-complex128": {
+   "speedup_vs_numpy": 0.776,
+   "best_matches_numpy": true
+  },
+  "split-complex128": {
+   "speedup_vs_numpy": 0.781,
+   "best_matches_numpy": true,
+   "split_over_process": 0.994,
+   "prediction_holds": true
+  }
+ }
+}

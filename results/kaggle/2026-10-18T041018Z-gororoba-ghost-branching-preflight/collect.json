@@ -1,0 +1,20 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-ghost-branching-preflight/1",
+ "state": "ERROR",
+ "collected_utc": "2026-10-18T041902Z",
+ "files": {
+  "gororoba-ghost-branching-preflight.log": "b719ff27fb43ede41677cdf271df62cc374f3dd006704ed81185d2e011360441",
+  "output/datasets.json": "a7466c8e0435562584de75acfadee673a4498dca8d47b0f7945c8e04737c2c08",
+  "output/environment.json": "b87bccc8ada1aa6984aaef66f5fabec146dd3839a86d4fb81897865aad3aef50",
+  "output/exit.json": "62d006958623915c9ffc71dec3e3e129e4295c9ed05f437f645991d60f683b48",
+  "output/gpu-env-report.txt": "43bd80f89c701ef6dc8b7029c3e9d2fb9e997a8ae86f573ce4be45c50d00e8f5",
+  "output/gpu-freeze.txt": "ec38a422a168858d0c3885f4bdc118af6e9bf91ce7d11b9ebed637734df7f8f3",
+  "output/gpu-venv.txt": "3ea249f1b95aef7d0c560fdddbe785d61f8481f8cc2a3556cf81746829c149ff",
+  "output/gpu_env.json": "dccd8d9b2943f756d4f863387a2e26708fd2b2f101861e5ff0bd6f12a1aa45de",
+  "output/hypercomplex.json": "657b6725a70595dd1443b97e82cfe8dc3db8ff4ec15f7f2c08e04e50550daede",
+  "output/install-pins.txt": "06d73efbf7ccf01c997968210ebb20049d918f34086a1b99b2743dded54c11ba",
+  "output/pip.txt": "ce27a6eeddb4fb23dbd73020166220855b4d047c13822c6009bf8604a5eb14c4",
+  "output/uv-install.txt": "87d4a108698841ec8cac45e4b9df71e20138960a41583e023ac98ad1e2af78ec"
+ }
+}
