@@ -151,7 +151,7 @@ exhaustive replay rather than establishing the full corpus's scientific claim.
 
 `parallel.available_cpus()` intersects scheduler affinity with the CPU quotas
 of the process and its cgroup ancestors. The runner maintains that many CPU
-slots across all active gates. Ordinary gates consume one slot; eighteen gates
+slots across all active gates. Ordinary gates consume one slot; twenty gates
 with independent inner work reserve the whole allocation using `workers: all`.
 A reserved gate receives the slot count through `GOROROBA_WORKERS`. Other gates
 wait until enough slots return. BLAS, OpenMP, NumExpr, Rayon and Qiskit process
@@ -353,3 +353,14 @@ transmission receipt used by the synthetic decision rule. Transitive
 Python imports add their implementation inputs. The long retained-analysis
 gate reserves the allocation for its existing independent mesh-scan pool; the
 static optimizer checks keep one slot per process.
+
+The final long-case profile qualifies the broad planning and repetition-delay
+contracts with four workers. Their existing placement/process and simulation
+paths use multiple CPUs and preserve the original assertions. The
+[local receipt](../../evidence/ci_runtime/planning_pool.json) records walls
+123.83 s and 121.34 s, with 209.33 s and 258.94 s of user CPU. Both gates now
+reserve the allocation. Their provisional manifest estimates explicitly carry
+`timing_origin: local-four-worker-qualification`; the timing refresher removes
+that label when a successful hosted primary sample replaces it. The older
+635.81-second single-slot sample identifies the original bottleneck and remains
+in the qualification receipt rather than representing the new allocation.

@@ -93,9 +93,10 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(len(report["runner_specs"]["gates 0/1"]), 1)
         self.assertEqual(report["gate_elapsed_seconds"], 15)
         self.assertEqual(report["stage_runner_seconds"]["Run shard"], 8)
-        manifest = {"gates": [{"name": "fast", "seconds": 1}]}
+        manifest = {"gates": [{"name": "fast", "seconds": 1, "timing_origin": "local-four-worker-qualification"}]}
         analyze_timings.refresh(manifest, [report])
         self.assertEqual(manifest["gates"][0]["seconds"], 7)
+        self.assertNotIn("timing_origin", manifest["gates"][0])
 
     def test_manifest_coverage_and_scope_validation(self) -> None:
         for manifest in ({}, {"long": ["../outside"]}, {"long": "data/**"}):

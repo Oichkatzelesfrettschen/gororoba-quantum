@@ -104,6 +104,7 @@ def refresh(manifest: dict[str, Any], reports: list[dict[str, Any]], root: Path 
                 gate["seconds"] = round(sum(gate["case_seconds"].values()), 1)
         if gate["name"] in samples:
             gate["seconds"] = round(statistics.median(samples[gate["name"]]), 1)
+            gate.pop("timing_origin", None)
 
 
 def main() -> None:
