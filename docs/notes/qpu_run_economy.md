@@ -145,6 +145,47 @@ the bound each contribute; none of them changes the circuit.
     measured one), accepts a republish whose values are equal, and refuses
     a moved value before re-planning, against the approved ISA.
 
+13. **Make the submit a check, not a re-plan.** A submission whose planning
+    inputs all equal the approved record's reuses the record's predictions
+    (`live_run.reuse_approved_predictions`, gate core-549), and a re-plan
+    that does run serializes each noise model once and restricts it per
+    batch (gate core-548): a 146-qubit ibm_kingston dry run takes 45 s of
+    wall time. A submit therefore lands inside the calibration window its
+    approval was written against
+    ([simulation-cost-levers.md](build_host/simulation-cost-levers.md)).
+
+## The run as executed on ibm_kingston, 2026-10-18
+
+| Stage | Jobs | Shots | Billed | Predicted |
+|---|---|---|---|---|
+| initialization control, prep0 and x_history at 50 us | 2 | 32,768 per job | 4 s each | 4.01 s (prep0) |
+| initialization control, prep0 and x_history at 250 us | 2 | 16,384 per job | 6 s each | 6.43 s (prep0) |
+| n21-feedback-encoded at 50 us, eps 0.014393 | 1 | 100,000 per arm | 28 s | 28.17 s |
+
+The n21 execution is 19,559 and 19,745 dt of scheduled circuit (78 to
+79 us) plus the 50 us delay: 200,000 executions at about 128.6 us give
+25.7 s, and the job overhead brings the total to the 28 s billed. The
+circuit is 61 percent of the shot loop and the delay 39 percent.
+
+The control's excited fractions over 149 qubits match at both delays
+(median 0.0045 at 50 us and 0.0047 at 250 us for prep0; 0.0058 and 0.0051
+for x_history), and the bound on the n21 placement reads 0.0144 at 50 us
+against 0.0157 at 250 us. A 50 us delay therefore cost no measurable
+initialization error on this device. The remaining levers on the n21 shot
+loop are:
+
+- **A delay below 50 us.** `rep_delay_range` admits 0, and at 0 the same
+  plan bills about 18 s. The excitation there is unmeasured, so the step
+  carries its own control at the shorter delay before any run relies on
+  it; the falsifier is a Clopper-Pearson bound on the run's qubits above
+  the eps the plan can absorb within `max_shots`.
+- **Fewer routed CZ.** The unitary part holds 320 CX before routing on
+  the 7-qubit tree, and routing roughly doubles it. IBM's local AI
+  routing (qiskit-ibm-transpiler 0.18.0) routed it to 798 CZ against 786
+  to 799 for qiskit's optimization level 3, while live_run's search
+  reaches 713, so the next reduction has to come from the encoding or the
+  placement graph, not from a router.
+
 ## What transfers from Tuna-17
 
 Tuna-17 cannot run n21: its 737 routed CZ at r = 0.9654 per CZ leave a
