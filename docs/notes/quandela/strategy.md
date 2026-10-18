@@ -859,12 +859,16 @@ the couplers equaled Q1's throughout.
     Operational procedure, nominated: an entry on another mesh before each
     29dc6ef8 entry returned 11 of 11 passing entries. It is one job on one
     target mesh, a procedure candidate rather than a causal resolution.
-    Open: why the job's opening configuration is wrong at 10000 samples
-    while D1's and D2's 1500-sample openings on 29dc6ef8 passed, and whether
-    a warm-up entry repairs other meshes. The next discriminator is a job
-    opening on 29dc6ef8 at 1500 samples followed by a 10000-sample entry
-    with no switch (D2's order today), with a mesh-switch block as its
-    positive control.
+    The retained runs already hold that discriminator: D2 (job-12,
+    c1eb1cbb) opened on 29dc6ef8 at 1500 samples and then passed at 10000,
+    40000 and 60000 with no switch. Over all ten jobs carrying Q1's case,
+    each of the five 10000-sample openings on 29dc6ef8 failed and each of
+    the two 1500-sample openings passed (one-sided Fisher p 0.048), in
+    both job forms, interleaved in time with the failures
+    (docs/notes/quandela/belenos-first-load-hypothesis-2026-10-18.md).
+    Open: the time-of-day control (no 10000-sample opening ran inside
+    D1's and D2's two-minute window), the threshold between 1500 and
+    10000, and whether either opening repairs other meshes.
 
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 
@@ -988,7 +992,7 @@ columns.
 | A second 10000-sample entry on the same mesh restores it | case job-16, section 7 item 13 | settled: refuted, job-16's two leading 29dc6ef8 entries failed at 0.819 and 0.814 |
 | The failure is a property of 29dc6ef8 in any execution context | job-16 extension: 11 29dc6ef8 entries, each after a 14a96ca6 entry | settled: refuted, 11 of 11 passed (0.078 to 0.104) |
 | The chip's state fails every mesh in a job that opens badly | job-16 extension: 11 14a96ca6 entries | settled: refuted, 11 of 11 passed (0.080 to 0.103) |
-| The bad opening state needs a 10000-sample opening entry (D1's and D2's 1500-sample openings passed) | a job opening on 29dc6ef8 at 1500 samples, then 10000 samples with no switch | open: not run |
+| The bad opening state needs a 10000-sample opening entry (D1's and D2's 1500-sample openings passed) | a job opening on 29dc6ef8 at 1500 samples, then 10000 samples with no switch | supported by retained data: D2 (job-12) did exactly this and passed at 10000, 40000 and 60000; 5 of 5 10000-sample openings failed and 2 of 2 1500-sample openings passed (Fisher p 0.048); open: time-of-day control and the threshold |
 | The compiled phases alone determine the photon's output on a seeded mesh | in-cone TVD of seeded cells against the served mesh's ideal, raw and weighted by C1's fitted efficiencies | refuted at the 0.01 to 0.23 level: seeded cells sit 1 to 23 shot floors from the ideal (29dc6ef8 a stable 0.058 to 0.083 across six iterations and every budget), C1's efficiencies do not close the gap, and per-mesh in-cone deficits up to 0.15 (seeds 1, 10, 12) repeat within a job outside exact heater dephasing |
 | The same body returns the same meshes on sim:belenos and qpu:belenos | job-02 on both | settled: refuted for iterated jobs (16 of 16 meshes differ); holds for the one-circuit single/job-04 |
 | C1's residual is a fixed property of each mesh within a session | exact repeat of C1 job-03 | settled: refuted, same meshes and G^2 2564 on 226 degrees of freedom (drift) |

@@ -77,3 +77,83 @@ positive control) is clean. Consider:
 2. Failing histograms vs all served-mesh ideals (best-match config ID).
 3. D1/D2 vs job-14/16 full covariate diff (timestamp, version, form, queue).
 4. Bridge job (c2eea262) first-loaded mesh — the form-or-dwell collapse check.
+
+## Resolution against the retained runs
+
+Every reading below comes from `docs/evidence/quandela/belenos_light_cone.json`
+(gate core-546) and each run's `submission.json`, so no job ran. Two facts in
+the notes above need correcting: D1 and D2 opened at 1500 samples, not 1600,
+and the bridge job c2eea262 is belenos_mesh job-09.
+
+**Contingency table, every qpu:belenos job holding Q1's case.** A job's
+opening entry is its first returned entry. Under the series rule, a TVD of at
+most 0.20 passes and at least 0.50 fails.
+
+| job (id) | submitted UTC | opening mesh, samples, form | first 29dc6ef8 entry | 29dc6ef8 entries after it |
+|---|---|---|---|---|
+| single/job-04 (7419efb8) | 10-17 21:37 | 29dc6ef8, 10000, single | fail 0.870 | none |
+| single/job-04 (7af74302) | 10-18 02:55 | 29dc6ef8, 10000, single | fail 0.857 | none |
+| job-08 (8d28f121) | 04:24 | e296b6a9, 10000, single | absent | none |
+| job-09 (c2eea262) | 07:45 | 54aef849, 1500, iterated | pass 0.064 (entry 20) | none |
+| job-10, D1 (aa4218f1) | 09:03 | 29dc6ef8, 1500, single | pass 0.137 | none |
+| job-11, D3 (a5f0a8a4) | 09:04 | 14a96ca6, 10000, single | absent | none |
+| job-12, D2 and D4 (c1eb1cbb) | 09:05 | 29dc6ef8, 1500, iterated | pass 0.060 | 5 of 5 pass at 10000, 1500, 40000, 1500 and 60000 (0.058 to 0.083) |
+| job-13 (c0db42f6) | 15:53 | 29dc6ef8, 10000, single | fail 0.829 | none |
+| job-14 (3d95587b) | 19:05 | 29dc6ef8, 10000, iterated | fail 0.823 | none |
+| job-16 (46b810ae) | 19:36 | 29dc6ef8, 10000, iterated | fail 0.819 | entry 1 fails 0.814; 11 of 11 after a 14a96ca6 load pass |
+
+The rule that fits all ten jobs: a job that opens on 29dc6ef8 with a
+10000-sample entry fails, and the failure holds until another mesh loads. A
+job that opens on 29dc6ef8 with a 1500-sample entry passes, and the good state
+then holds through later 10000, 40000 and 60000-sample entries on the same
+mesh. Every job that opens on another mesh passes, at 1500 or 10000 samples.
+Among the seven jobs that opened on 29dc6ef8, five opened at 10000 and failed
+and two opened at 1500 and passed; Fisher's exact one-sided p is
+1/C(7,2) = 0.048. Uncertainty is medium. The single-to-iterated replication
+(D1 single, D2 iterated) raises confidence; the two 1500-sample openings
+falling within two minutes of each other lowers it.
+
+**Idea 1, form or dwell.** Resolved. The form drops out. Both forms pass when
+they open at 1500 (D1 single, D2 iterated), and both fail when they open at
+10000 (job-13 single, job-14 iterated). The bridge job c2eea262 opened on
+54aef849 and reached 29dc6ef8 at its twentieth entry, so its pass is a
+non-opening pass. PR #257's verdict, "form or dwell, mesh specific", reduces
+to the opening entry's sample budget on 29dc6ef8, which matches the dwell
+half: a longer first acquisition on that mesh.
+
+**Idea 2, a stale characterization configuration.** Unsupported. e3f757ed
+first appears in characterization job-04 (fa847dfd, submitted 03:04:59 UTC
+on 10-18). The second Q1 failure (7af74302, 02:55) precedes it, so that
+failure could not have served a stale e3f757ed load. Across the 135 meshes
+served to this account, the best whole-mesh match is TVD 0.20, against a
+shot floor of 0.012, which counts as a mismatch, and 0.20 is the minimum of
+135 comparisons. The full-ideal sweep this idea asks for is already in the
+strategy note's conjecture table: stale load of an earlier complete mesh,
+refuted for those 135 meshes. Partial and mixed configurations stay open.
+
+**Idea 3, covariates.** Resolved for the recorded covariates. Every job ran
+exqalibur 1.4.2 and perceval-quandela 1.3.1 at a 4.94 MHz clock. The receipt's
+HOM, g2 and transmittance stay within 57.0 to 58.3 %, 0.9 to 1.1 % and 2.69
+to 2.95 % for both passing and failing jobs; the first job reads HOM 92.6.
+The failures interleave with the passes in time (fail 02:55, pass 09:03 to
+09:05, fail 15:53), so a single deploy step cannot produce the split. The
+service records no deploy marker or queue identity, so neither covariate can
+be checked. The one confound left is time of day: no 10000-sample opening on
+29dc6ef8 ran inside the 09:03 to 09:05 window.
+
+**Idea 4, the designed experiment.** Its main arm already ran: job-12 opened
+on 29dc6ef8 at 1500 and then ran 10000 with no switch, and passed. Repeating
+it at another hour is the only new information it can give, and that is the
+time-of-day control from Idea 3. Arm (a), open on another mesh and then run
+29dc6ef8 at 10000, ran only after a failing 29dc6ef8 opening (job-16 entries 3
+to 23), so the clean form stays open. Arm (b), a 5000-sample opening, stays
+open and is the threshold measurement. Each arm needs its own job, because
+the opening state exists only at job start, so the arms cost one credit
+each.
+
+**Idea 5, the procedure.** The retained data support two openings for a job
+whose first entry is on 29dc6ef8: a 1500-sample entry on 29dc6ef8 itself
+(job-10, job-12), or any entry on another mesh (job-09, job-16). Neither has
+been tried on another target mesh. The bug report rests on the table above,
+the fixed-point evidence (TVD 0.042 between job-14 and job-16 entry 0) and
+the refuted stale-load sweep.
