@@ -254,6 +254,28 @@ def _verify_folded_conformance(simulator: AerSimulator) -> None:
                 )
 
 
+def _verify_synthesis_costs(circuit: QuantumCircuit, relative_toffolis: int, toffolis: int, label: str) -> None:
+    """Compare native KG24 representations in the common RCCX/CCX elementary basis.
+
+    Qiskit 2.6 returns elementary KG24 gates where 2.5 returned named
+    RCCX/CCX gates. Their definitions contribute respectively three/six CX,
+    two/four T and two/three T-dagger gates. Lowering named gates preserves
+    the resource assertion across that representation change.
+    """
+    operations = circuit.decompose(gates_to_decompose=["rccx", "ccx"]).count_ops()
+    expected = {
+        "cx": 3 * relative_toffolis + 6 * toffolis,
+        "t": 2 * relative_toffolis + 4 * toffolis,
+        "tdg": 2 * relative_toffolis + 3 * toffolis,
+    }
+    observed = {name: operations.get(name, 0) for name in expected}
+    opaque = {
+        name: count for name, count in operations.items() if name in {"rccx", "ccx", "mcx"} or name.startswith("mcx_o")
+    }
+    if observed != expected or opaque:
+        raise RuntimeError(f"{label} elementary synthesis is {observed}, expected {expected}; opaque gates {opaque}")
+
+
 def _verify_factor_path(simulator: AerSimulator) -> None:
     plan = order_finding_plan(15, 2, 8)
     coefficients = (
@@ -321,20 +343,7 @@ def _verify_factor_path(simulator: AerSimulator) -> None:
     if generic_strategies != {"cycle_transpositions_1_clean"}:
         raise RuntimeError(f"unexpected N=21 synthesis strategies {sorted(generic_strategies)}")
     generic_circuit = factor_order_finding(21, 2, 10, multiplier_strategy="cycle_transpositions_1_clean")
-    generic_operations = generic_circuit.count_ops()
-    expected_synthesis_counts = {"rccx": 2_694, "ccx": 449}
-    observed_synthesis_counts = {
-        operation: generic_operations.get(operation, 0) for operation in expected_synthesis_counts
-    }
-    opaque_mcx_operations = {
-        name: count for name, count in generic_operations.items() if name == "mcx" or name.startswith("mcx_o")
-    }
-    if observed_synthesis_counts != expected_synthesis_counts or opaque_mcx_operations:
-        raise RuntimeError(
-            f"N=21 one-clean source synthesis is {dict(generic_operations)}, "
-            f"expected {expected_synthesis_counts} and zero opaque MCX gates; "
-            f"opaque operations are {opaque_mcx_operations}"
-        )
+    _verify_synthesis_costs(generic_circuit, 2_694, 449, "N=21 one-clean")
 
     target_plan = order_finding_plan(21, 2, 10)
     target_counts = (
@@ -345,9 +354,7 @@ def _verify_factor_path(simulator: AerSimulator) -> None:
     )
     if target_counts != (7, 170, 0, ((2, 20), (3, 87), (4, 20), (5, 43))):
         raise RuntimeError(f"unexpected N=21 target-flip coefficients {target_counts}")
-    target_operations = factor_order_finding(21, 2, 10).count_ops()
-    if target_operations.get("rccx", 0) != 512 or target_operations.get("ccx", 0) != 170:
-        raise RuntimeError(f"unexpected N=21 target-flip synthesis {dict(target_operations)}")
+    _verify_synthesis_costs(factor_order_finding(21, 2, 10), 512, 170, "N=21 target-flip")
     target_phase_bits = 5
     target_simulation_circuit = transpile(
         factor_order_finding(21, 2, target_phase_bits), simulator, optimization_level=0

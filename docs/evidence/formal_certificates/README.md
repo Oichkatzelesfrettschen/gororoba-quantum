@@ -54,16 +54,17 @@ replacement readout and context-dependent instruments have different models.
 
 The current open_gororoba terminal-channel theorems accept arbitrary observed
 centers and four radii. This bundle preserves the fixed-count application and
-its Rocq 9.2 receipt. The external build now uses Rocq 9.3.0 / OCaml 5.5.1;
-that build identity differs from the replay pin recorded here. Both variants
+its freshly replayed Rocq 9.3.0 / OCaml 5.5.1 receipt. Both variants
 require explicit statistical and physical premises at their application.
 
 ## Replay
 
-Use the toolchain `toolchain.txt` records, Rocq 9.2 with OCaml 5.5.0. The
-receipts were first recorded under Rocq 9.1.1 with OCaml 5.4.0; a fresh
-compile and kernel check under 9.2 reproduce every compile and kernel
-receipt byte for byte, so the pin moved forward with the files unchanged.
+Use the toolchain `toolchain.txt` records, Rocq 9.3.0 with OCaml 5.5.1
+and Stdlib 9.2.0. Fresh compilation and independent kernel checks reproduce
+the theorem assumption reports and renew the raw kernel receipts. Rocq 9.3
+adds an explicit list of inductives relying on indices not mattering; the
+retained outputs preserve that diagnostic in full. Stdlib releases independently
+of Rocq; its 9.2.0 package permits Rocq 9.3.0.
 Set `ROCQ` to that toolchain's executable when another version is first on
 PATH, then run from the repository root:
 

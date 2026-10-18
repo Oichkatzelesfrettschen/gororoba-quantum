@@ -1,5 +1,5 @@
-The Rocq Prover, version 9.2
-compiled with OCaml 5.5.0
+The Rocq Prover, version 9.3.0
+compiled with OCaml 5.5.1
 compile_pass theories/GF2Algebra.v
 compile_pass theories/SignCodeProjection.v
 compile_pass theories/SchreierSignCode.v
@@ -29,5 +29,11 @@ CONTEXT SUMMARY
 * Constants/Inductives relying on unsafe (co)fixpoints: <none>
   
 * Inductives whose positivity is assumed: <none>
+  
+* Inductives relying on indices not mattering:
+    Corelib.Init.Datatypes.eq_true
+    Stdlib.btauto.Algebra.null
+    Stdlib.Logic.EqdepFacts.eq_dep
+    Corelib.Init.Logic.eq
   
 kernel_check_pass
