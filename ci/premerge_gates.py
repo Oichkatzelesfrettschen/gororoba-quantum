@@ -91,6 +91,9 @@ KEY_PREFIXES = (
     "OPENBLAS_",
     "MKL_",
     "BLIS_",
+    "VECLIB_",
+    "NUMEXPR_",
+    "RAYON_",
     "MYPY",
     "MPL",
     "UV_",
@@ -481,6 +484,18 @@ def self_test() -> None:
 
 def cache_self_test(repo: Path, worktrees: Path, cache: Path) -> None:
     """The first run stores the base passes; later runs over the key reuse them and still classify failures."""
+    import run_gates
+
+    # Every variable the runner sets for its gates changes their results,
+    # so each one must fall under the key.
+    supplied = run_gates.environment_for(None)
+    unkeyed = sorted(
+        name
+        for name in supplied
+        if not (name.startswith(KEY_PREFIXES) or name in KEY_VARIABLES) and name not in os.environ
+    )
+    if unkeyed:
+        raise RuntimeError(f"run_gates sets variables the cache key omits: {unkeyed}")
 
     def run(ref: str, max_seconds: float = DEFAULT_MAX_SECONDS) -> tuple[int, str]:
         output = io.StringIO()
