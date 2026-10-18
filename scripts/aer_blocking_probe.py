@@ -498,6 +498,37 @@ def toy_contract(method: str, device: str) -> None:
         raise SystemExit("aer_blocking_probe: the toy's condition does not reach its outcome")
 
 
+def run_contract() -> None:
+    """SnapshotSimulator.run blocks a GPU batch past its chunk, lowers its if_else, and keeps the seeded counts.
+
+    blocking_options is replaced by the toy's forced chunk, so the six-qubit
+    toy takes the path a state wider than one GPU takes.
+    """
+    from qiskit_aer.noise import NoiseModel, ReadoutError
+
+    noise = NoiseModel()
+    noise.add_readout_error(ReadoutError([[1 - TOY_E10, TOY_E10], [TOY_E01, 1 - TOY_E01]]), [0])
+
+    def counts() -> tuple[dict[str, int], Any]:
+        simulator = calibration_snapshot.SnapshotSimulator(method="statevector", device="GPU", noise_model=noise)
+        result = simulator.run(readout_toy(), shots=TOY_SHOTS, seed_simulator=SEED).result()
+        return dict(sorted(result.get_counts().items())), result.results[0].metadata.get("cacheblocking")
+
+    plain, unblocked = counts()
+    original = calibration_snapshot.blocking_options
+    calibration_snapshot.blocking_options = lambda method, width, memory: {  # type: ignore[assignment]
+        "blocking_enable": True,
+        "blocking_qubits": TOY_CHUNK,
+        "max_parallel_shots": 1,
+    }
+    try:
+        blocked, metadata = counts()
+    finally:
+        calibration_snapshot.blocking_options = original
+    if unblocked or (metadata or {}).get("block_bits") != TOY_CHUNK or blocked != plain:
+        raise SystemExit(f"aer_blocking_probe: SnapshotSimulator.run chunks {metadata}, counts kept {blocked == plain}")
+
+
 def self_test() -> str:
     """Chunk sizes, the blocking trigger, active width, refusal, and the readout toy under blocking."""
     from qiskit import ClassicalRegister, QuantumCircuit
@@ -555,7 +586,11 @@ def self_test() -> str:
     if aer_gpu_probe.gpus():
         for method in ("statevector", "density_matrix"):
             toy_contract(method, "GPU")
-        gpu = "on the GPU it draws the if_else counts, the condition on the recorded bit (statevector, density matrix)"
+        run_contract()
+        gpu = (
+            "on the GPU it draws the if_else counts, the condition on the recorded bit (statevector, density "
+            "matrix), and SnapshotSimulator.run blocks and lowers the if_else toy with its counts unchanged"
+        )
     return (
         f"chunks {sorted(set(sizes.values()))}; a T4 blocks statevector 30 and density matrix 15, not 29 or 14; "
         f"a 156-qubit circuit counts its 7 active qubits; an else body is refused; under {TOY_CHUNK}-qubit chunks "
