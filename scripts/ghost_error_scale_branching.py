@@ -47,8 +47,9 @@ reports, per run, the sampled-estimator mean at every point minus the Aer
 part's, how many points fall within ghost_error_scale.tolerance, and
 whether the minimizing (c, r) of either estimator matches the Aer one; with
 ``--result OUT`` it compares a retained sweep output without sweeping, and
-``--require-tolerance`` then fails unless every point of every compared run
-lies within the tolerance.
+``--require-tolerance`` then fails unless OUT evaluates every run the part
+evaluates and every point of each lies within the tolerance. Both files must
+list the same grid in the same order.
 
 ``--replay FILE`` recomputes the reduced case, run REDUCED_RUN at the grid
 corners on numpy complex128, and requires FILE to equal its deterministic
@@ -697,6 +698,11 @@ def compare_parts(result: dict[str, Any], part_path: Path) -> dict[str, Any]:
     part = json.loads(part_path.read_text(encoding="utf-8"))
     aer = {run["run"]: run for run in part["runs"] if "skipped" not in run}
     grid = [tuple(p) for p in part["grid"]]
+    # Means pair by position, so both files must order the same (c, r) points.
+    require(
+        [tuple(p) for p in result["grid"]] == grid,
+        f"the result's grid differs from {part_path.name}'s, so its means index other (c, r) points",
+    )
     rows = []
     for run in result["runs"]:
         if "skipped" in run or run["run"] not in aer:
@@ -726,7 +732,8 @@ def compare_parts(result: dict[str, Any], part_path: Path) -> dict[str, Any]:
                 "aer_best_mean": min(reference["mean_tvd"]),
             }
         )
-    return {"part": part_path.as_posix(), "runs": rows}
+    evaluated = {run["run"] for run in result["runs"] if "skipped" not in run}
+    return {"part": part_path.as_posix(), "runs": rows, "missing": sorted(set(aer) - evaluated)}
 
 
 def replay_document(index: dict[str, Any]) -> str:
@@ -1161,6 +1168,10 @@ def main() -> int:
         if not args.require_tolerance:
             print(json.dumps(compared, indent=1))
             return 0
+        require(
+            not compared["missing"],
+            f"{args.result} omits {args.compare_parts}'s runs {compared['missing']}",
+        )
         require(bool(compared["runs"]), f"{args.result} shares no run with {args.compare_parts}")
         for row in compared["runs"]:
             require(
