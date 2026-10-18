@@ -193,3 +193,50 @@ usable-graph analysis, which fold into the next Tuna note.
   open review thread is answered.
 - Program analysis and both reviews live in `docs/local/reviews/`, and the
   submit scripts and admitted qubit lists in `docs/local/n21-handover/`.
+
+## Belenos photonic campaign
+
+- On Q1's served mesh, the sample budget of a job's opening entry separates
+  failing jobs from passing ones, in both the single and the iterated form.
+  A failing opening holds its wrong state until the job loads another mesh,
+  and a low-budget opening lets the large entry right after it pass. The
+  split is descriptive, because the rule was read off the jobs it counts. The contingency table, the covariate check and
+  the falsification plan are in
+  `docs/notes/quandela/belenos-first-load-hypothesis-2026-10-18.md`, and
+  the campaign record is in `docs/notes/quandela/strategy.md`.
+- The jobs left, in order, each its own job, collected and read before the
+  next is planned:
+  1. A back-to-back pair at one hour on Q1's mesh, low opening first. The
+     first job opens low and follows with consecutive large entries; the
+     second opens large. The pair separates budget from time of day and
+     tests persistence without a refresh.
+  2. The threshold job: an intermediate-budget opening. It runs only when
+     the low-opening job passes and the large-opening job fails; any other
+     pair outcome makes the axis time or service state and drops it. An
+     intermediate reading here is inconclusive.
+  3. The prevention job: an opening on the reference mesh followed by a
+     high-budget entry on Q1's mesh.
+- Stop the series on a void or intermediate reading. Each job waits for a
+  written case and the user's approval. No case directory exists for these
+  jobs yet:
+  - `scripts/qd_belenos_mesh.py` generates case directories;
+  - `scripts/qd_belenos_cone.py` reads them out;
+  - every job uses the fixed reproduction seeds that serve Q1's mesh and the
+    reference mesh, recorded in the strategy note. Fresh ANU draws are
+    reserved for exploratory meshes, since a new seed can serve an
+    unexplored mesh and void a mesh-specific reading.
+- Iterated jobs pay one per-job charge however many entries they hold, and
+  each entry costs a fixed few seconds whatever its budget. Only a job's
+  first entry observes the opening state, so packing fills a job with the
+  repeated entries and controls of its own arm, never with another arm's
+  opening question.
+- Warming up on another mesh before entries on Q1's mesh is a candidate
+  procedure only. It becomes the campaign procedure when the prevention job
+  passes.
+- The complete-mesh stale-load sweep lives only in the strategy record. A
+  replayable sweep artifact is owed under `docs/evidence/quandela/`. The
+  partial or mixed configuration fit has not been run. Both are offline
+  and need no credit.
+- The origin of the bursty off-cone one-click background on the low-index
+  modes is open. The light-cone reading excludes those clicks from every
+  score.
