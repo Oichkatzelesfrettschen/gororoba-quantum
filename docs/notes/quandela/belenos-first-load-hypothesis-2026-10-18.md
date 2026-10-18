@@ -157,3 +157,26 @@ whose first entry is on 29dc6ef8: a 1500-sample entry on 29dc6ef8 itself
 been tried on another target mesh. The bug report rests on the table above,
 the fixed-point evidence (TVD 0.042 between job-14 and job-16 entry 0) and
 the refuted stale-load sweep.
+
+## Falsification plan
+
+Each surviving claim is listed with its status and the result that would
+falsify it. Each job below needs a written case approved before submission
+and costs about one credit. The jobs run in the order listed, each planned
+after the previous one is collected.
+
+| claim | status | falsifier | cost |
+|---|---|---|---|
+| F1. On 29dc6ef8, the opening entry's sample budget sets a state that holds until another mesh loads | supported, 7 of 7 openings on 29dc6ef8 (p 0.048) | a job opening on 29dc6ef8 at 1500 then 10000 fails at the 10000 entry, at an hour outside 09:03 to 09:05 UTC (job A) | 1 job |
+| F2. Time of day, not budget, separates the openings | live confound | job A passes and job B fails: at any hour, a 1500 opening holds and a 10000 opening fails | carried by A and B |
+| F3. The budget axis is a threshold between 1500 and 10000 | open | job B opens on 29dc6ef8 at 5000. Pass or fail places the threshold; an intermediate TVD (0.20 to 0.50) means a graded effect | 1 job |
+| F4. Opening on another mesh protects a later 29dc6ef8 entry at 10000 | supported only after a failed opening (job-16) and at 1500 (job-09) | job C opens on 14a96ca6 at 1500, then 29dc6ef8 at 10000 fails | 1 job |
+| F5. 29dc6ef8 is the only mesh with a budget-sensitive opening | untested | a 10000-sample opening on e296b6a9 or 14a96ca6 fails. job-08 and job-11 already pass at 10000, so two meshes already support F5 | 0 jobs, already read |
+| F6. The failing state is a stale complete mesh served earlier | refuted for 135 meshes (best 0.20, floor 0.012; e3f757ed postdates the 02:55 failure) | a fit to a partial or mixed configuration of earlier meshes that reaches the shot floor | offline |
+| F7. The failing state is one fixed wrong configuration | supported (TVD 0.042 between job-14 and job-16 entry 0, 0.052 within job-16) | a repeated 10000 opening that moves more than 0.10 from the job-14 histogram | carried by any failing job |
+
+Order: job A first, because it decides F1 against F2 directly. Job B runs next
+if A passes; if A fails, the axis is time or service state, and B is
+replaced by a 10000-sample opening inside the 09:00 UTC hour. Job C runs
+last, and its pass is what licenses the warm-up procedure. Stop at any void
+or intermediate result. The plan's ceiling is three jobs, about 3 credits.
