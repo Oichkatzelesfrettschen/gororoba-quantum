@@ -14,11 +14,347 @@
    "dispersion_index": 81.0,
    "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
    "mode": 5
+  },
+  {
+   "cells": [
+    "job-16:r2-s46667-n10000",
+    "job-16:r4-s46667-n10000",
+    "job-16:r6-s46667-n10000",
+    "job-16:r8-s46667-n10000",
+    "job-16:r10-s46667-n10000",
+    "job-16:r12-s46667-n10000",
+    "job-16:r14-s46667-n10000",
+    "job-16:r16-s46667-n10000",
+    "job-16:r18-s46667-n10000",
+    "job-16:r20-s46667-n10000",
+    "job-16:r22-s46667-n10000"
+   ],
+   "counts": [
+    76,
+    42,
+    0,
+    49,
+    0,
+    42,
+    36,
+    0,
+    0,
+    49,
+    95
+   ],
+   "dispersion_index": 30.174,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "mode": 0
+  },
+  {
+   "cells": [
+    "job-16:r2-s46667-n10000",
+    "job-16:r4-s46667-n10000",
+    "job-16:r6-s46667-n10000",
+    "job-16:r8-s46667-n10000",
+    "job-16:r10-s46667-n10000",
+    "job-16:r12-s46667-n10000",
+    "job-16:r14-s46667-n10000",
+    "job-16:r16-s46667-n10000",
+    "job-16:r18-s46667-n10000",
+    "job-16:r20-s46667-n10000",
+    "job-16:r22-s46667-n10000"
+   ],
+   "counts": [
+    0,
+    0,
+    51,
+    0,
+    75,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "dispersion_index": 59.214,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "mode": 1
+  },
+  {
+   "cells": [
+    "job-16:r2-s46667-n10000",
+    "job-16:r4-s46667-n10000",
+    "job-16:r6-s46667-n10000",
+    "job-16:r8-s46667-n10000",
+    "job-16:r10-s46667-n10000",
+    "job-16:r12-s46667-n10000",
+    "job-16:r14-s46667-n10000",
+    "job-16:r16-s46667-n10000",
+    "job-16:r18-s46667-n10000",
+    "job-16:r20-s46667-n10000",
+    "job-16:r22-s46667-n10000"
+   ],
+   "counts": [
+    32,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "dispersion_index": 32.0,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "mode": 4
+  },
+  {
+   "cells": [
+    "job-16:r2-s46667-n10000",
+    "job-16:r4-s46667-n10000",
+    "job-16:r6-s46667-n10000",
+    "job-16:r8-s46667-n10000",
+    "job-16:r10-s46667-n10000",
+    "job-16:r12-s46667-n10000",
+    "job-16:r14-s46667-n10000",
+    "job-16:r16-s46667-n10000",
+    "job-16:r18-s46667-n10000",
+    "job-16:r20-s46667-n10000",
+    "job-16:r22-s46667-n10000"
+   ],
+   "counts": [
+    822,
+    0,
+    249,
+    0,
+    1013,
+    1007,
+    69,
+    0,
+    267,
+    65,
+    478
+   ],
+   "dispersion_index": 458.246,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "mode": 5
+  },
+  {
+   "cells": [
+    "job-16:r2-s46667-n10000",
+    "job-16:r4-s46667-n10000",
+    "job-16:r6-s46667-n10000",
+    "job-16:r8-s46667-n10000",
+    "job-16:r10-s46667-n10000",
+    "job-16:r12-s46667-n10000",
+    "job-16:r14-s46667-n10000",
+    "job-16:r16-s46667-n10000",
+    "job-16:r18-s46667-n10000",
+    "job-16:r20-s46667-n10000",
+    "job-16:r22-s46667-n10000"
+   ],
+   "counts": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    48,
+    0,
+    0
+   ],
+   "dispersion_index": 48.0,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "mode": 6
+  },
+  {
+   "cells": [
+    "job-16:c0-s20-n10000",
+    "job-16:c1-s20-n10000",
+    "job-16:t3-s20-n10000",
+    "job-16:t5-s20-n10000",
+    "job-16:t7-s20-n10000",
+    "job-16:t9-s20-n10000",
+    "job-16:t11-s20-n10000",
+    "job-16:t13-s20-n10000",
+    "job-16:t15-s20-n10000",
+    "job-16:t17-s20-n10000",
+    "job-16:t19-s20-n10000",
+    "job-16:t21-s20-n10000",
+    "job-16:t23-s20-n10000"
+   ],
+   "counts": [
+    0,
+    93,
+    43,
+    0,
+    43,
+    42,
+    0,
+    146,
+    49,
+    43,
+    50,
+    38,
+    58
+   ],
+   "dispersion_index": 33.716,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "mode": 0
+  },
+  {
+   "cells": [
+    "job-16:c0-s20-n10000",
+    "job-16:c1-s20-n10000",
+    "job-16:t3-s20-n10000",
+    "job-16:t5-s20-n10000",
+    "job-16:t7-s20-n10000",
+    "job-16:t9-s20-n10000",
+    "job-16:t11-s20-n10000",
+    "job-16:t13-s20-n10000",
+    "job-16:t15-s20-n10000",
+    "job-16:t17-s20-n10000",
+    "job-16:t19-s20-n10000",
+    "job-16:t21-s20-n10000",
+    "job-16:t23-s20-n10000"
+   ],
+   "counts": [
+    51,
+    0,
+    51,
+    39,
+    0,
+    49,
+    89,
+    0,
+    57,
+    0,
+    0,
+    0,
+    0
+   ],
+   "dispersion_index": 37.432,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "mode": 1
+  },
+  {
+   "cells": [
+    "job-16:c0-s20-n10000",
+    "job-16:c1-s20-n10000",
+    "job-16:t3-s20-n10000",
+    "job-16:t5-s20-n10000",
+    "job-16:t7-s20-n10000",
+    "job-16:t9-s20-n10000",
+    "job-16:t11-s20-n10000",
+    "job-16:t13-s20-n10000",
+    "job-16:t15-s20-n10000",
+    "job-16:t17-s20-n10000",
+    "job-16:t19-s20-n10000",
+    "job-16:t21-s20-n10000",
+    "job-16:t23-s20-n10000"
+   ],
+   "counts": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    70,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "dispersion_index": 70.0,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "mode": 3
+  },
+  {
+   "cells": [
+    "job-16:c0-s20-n10000",
+    "job-16:c1-s20-n10000",
+    "job-16:t3-s20-n10000",
+    "job-16:t5-s20-n10000",
+    "job-16:t7-s20-n10000",
+    "job-16:t9-s20-n10000",
+    "job-16:t11-s20-n10000",
+    "job-16:t13-s20-n10000",
+    "job-16:t15-s20-n10000",
+    "job-16:t17-s20-n10000",
+    "job-16:t19-s20-n10000",
+    "job-16:t21-s20-n10000",
+    "job-16:t23-s20-n10000"
+   ],
+   "counts": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    42,
+    0,
+    0
+   ],
+   "dispersion_index": 42.0,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "mode": 4
+  },
+  {
+   "cells": [
+    "job-16:c0-s20-n10000",
+    "job-16:c1-s20-n10000",
+    "job-16:t3-s20-n10000",
+    "job-16:t5-s20-n10000",
+    "job-16:t7-s20-n10000",
+    "job-16:t9-s20-n10000",
+    "job-16:t11-s20-n10000",
+    "job-16:t13-s20-n10000",
+    "job-16:t15-s20-n10000",
+    "job-16:t17-s20-n10000",
+    "job-16:t19-s20-n10000",
+    "job-16:t21-s20-n10000",
+    "job-16:t23-s20-n10000"
+   ],
+   "counts": [
+    465,
+    152,
+    394,
+    0,
+    780,
+    63,
+    1154,
+    71,
+    487,
+    822,
+    192,
+    307,
+    167
+   ],
+   "dispersion_index": 310.961,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "mode": 5
   }
  ],
  "cells": [
   {
    "acquisition_s_estimate": 0.274447,
+   "block_counts": [
+    206,
+    996,
+    1772,
+    1724
+   ],
    "compilation_seed": null,
    "cone_modes": [
     8,
@@ -38,6 +374,7 @@
     22,
     23
    ],
+   "cone_share": 0.927393,
    "form": "single",
    "ideal_cone_modes": [
     13,
@@ -70,8 +407,12 @@
    "in_cone_samples": 9273,
    "independent_gated_expectation": 5.395,
    "job_duration_s": 13.0,
+   "label_share": 0.120212,
    "max_samples": 10000,
    "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 4698,
+   "n_cone_outside_block": 4575,
+   "n_off_cone": 726,
    "name": "job-04",
    "off_cone_by_mode": {
     "3": 62,
@@ -91,6 +432,12 @@
   },
   {
    "acquisition_s_estimate": 0.108122,
+   "block_counts": [
+    260,
+    1130,
+    1770,
+    1878
+   ],
    "compilation_seed": null,
    "cone_modes": [
     8,
@@ -110,6 +457,7 @@
     22,
     23
    ],
+   "cone_share": 0.9724,
    "form": "single",
    "ideal_cone_modes": [
     13,
@@ -142,8 +490,12 @@
    "in_cone_samples": 9724,
    "independent_gated_expectation": 5.266,
    "job_duration_s": 14.0,
+   "label_share": 0.139,
    "max_samples": 10000,
    "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 5038,
+   "n_cone_outside_block": 4686,
+   "n_off_cone": 276,
    "name": "job-04",
    "off_cone_by_mode": {
     "0": 129,
@@ -164,6 +516,12 @@
   },
   {
    "acquisition_s_estimate": 0.236139,
+   "block_counts": [
+    4469,
+    3780,
+    411,
+    196
+   ],
    "compilation_seed": 1,
    "cone_modes": [
     8,
@@ -183,6 +541,7 @@
     22,
     23
    ],
+   "cone_share": 0.9666,
    "form": "single",
    "ideal_cone_modes": [
     11,
@@ -217,8 +576,12 @@
    "in_cone_samples": 9666,
    "independent_gated_expectation": 2.888,
    "job_duration_s": 15.0,
+   "label_share": 0.8249,
    "max_samples": 10000,
    "mesh_sha256": "e296b6a9cbad9732a0b96ceb56dae2a2c1eba1424bae0396eb56eb946fb2140f",
+   "n_block": 8856,
+   "n_cone_outside_block": 810,
+   "n_off_cone": 334,
    "name": "job-08",
    "off_cone_by_mode": {
     "0": 79,
@@ -238,6 +601,12 @@
   },
   {
    "acquisition_s_estimate": 0.249326,
+   "block_counts": [
+    756,
+    720,
+    4,
+    7
+   ],
    "compilation_seed": 0,
    "cone_modes": [
     8,
@@ -257,6 +626,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     12,
@@ -290,8 +660,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.984,
    "max_samples": 1500,
    "mesh_sha256": "54aef849f484eb03e3d59afeee90dd8e7db58280650e15565f23c0502dc4fa0d",
+   "n_block": 1487,
+   "n_cone_outside_block": 13,
+   "n_off_cone": 0,
    "name": "q1-00-s0",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -308,6 +682,12 @@
   },
   {
    "acquisition_s_estimate": 0.246162,
+   "block_counts": [
+    675,
+    593,
+    44,
+    53
+   ],
    "compilation_seed": 1,
    "cone_modes": [
     8,
@@ -327,6 +707,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     11,
@@ -361,8 +742,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.845333,
    "max_samples": 1500,
    "mesh_sha256": "e296b6a9cbad9732a0b96ceb56dae2a2c1eba1424bae0396eb56eb946fb2140f",
+   "n_block": 1365,
+   "n_cone_outside_block": 135,
+   "n_off_cone": 0,
    "name": "q1-01-s1",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -379,6 +764,12 @@
   },
   {
    "acquisition_s_estimate": 0.115421,
+   "block_counts": [
+    450,
+    954,
+    45,
+    9
+   ],
    "compilation_seed": 2,
    "cone_modes": [
     8,
@@ -398,6 +789,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     12,
@@ -431,8 +823,12 @@
    "in_cone_samples": 1496,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.938503,
    "max_samples": 1500,
    "mesh_sha256": "bd84241b4b2073f8c1b0d38957e52a445d2c84a25264cf189b3f13a0c17e9e13",
+   "n_block": 1458,
+   "n_cone_outside_block": 38,
+   "n_off_cone": 0,
    "name": "q1-02-s2",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -449,6 +845,12 @@
   },
   {
    "acquisition_s_estimate": 0.257333,
+   "block_counts": [
+    399,
+    780,
+    96,
+    92
+   ],
    "compilation_seed": 3,
    "cone_modes": [
     8,
@@ -468,6 +870,7 @@
     22,
     23
    ],
+   "cone_share": 0.919333,
    "form": "iterated",
    "ideal_cone_modes": [
     12,
@@ -501,8 +904,12 @@
    "in_cone_samples": 1379,
    "independent_gated_expectation": 0.143,
    "job_duration_s": 152.0,
+   "label_share": 0.786,
    "max_samples": 1500,
    "mesh_sha256": "f4745fe6b6936927f73d1444cecbe863a21d1fe313ebf511d2d2af87bd825218",
+   "n_block": 1367,
+   "n_cone_outside_block": 12,
+   "n_off_cone": 121,
    "name": "q1-03-s3",
    "off_cone_by_mode": {
     "0": 59,
@@ -522,6 +929,12 @@
   },
   {
    "acquisition_s_estimate": 0.268129,
+   "block_counts": [
+    505,
+    943,
+    0,
+    20
+   ],
    "compilation_seed": 4,
    "cone_modes": [
     8,
@@ -541,6 +954,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     10,
@@ -576,8 +990,12 @@
    "in_cone_samples": 1498,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.966622,
    "max_samples": 1500,
    "mesh_sha256": "682edb1c12f95fac8a8189f1e7633fac792187f0c303703ced0cf151d7538a0c",
+   "n_block": 1468,
+   "n_cone_outside_block": 30,
+   "n_off_cone": 0,
    "name": "q1-04-s4",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -594,6 +1012,12 @@
   },
   {
    "acquisition_s_estimate": 0.168341,
+   "block_counts": [
+    816,
+    636,
+    4,
+    38
+   ],
    "compilation_seed": 5,
    "cone_modes": [
     7,
@@ -614,6 +1038,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     11,
@@ -648,8 +1073,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.968,
    "max_samples": 1500,
    "mesh_sha256": "28ceb06920ca810d237edf002485759f5ec4830bb6097ab2df0afff86b547bc5",
+   "n_block": 1494,
+   "n_cone_outside_block": 6,
+   "n_off_cone": 0,
    "name": "q1-05-s5",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -666,6 +1095,12 @@
   },
   {
    "acquisition_s_estimate": 0.179921,
+   "block_counts": [
+    532,
+    819,
+    23,
+    33
+   ],
    "compilation_seed": 6,
    "cone_modes": [
     8,
@@ -685,6 +1120,7 @@
     22,
     23
    ],
+   "cone_share": 0.942667,
    "form": "iterated",
    "ideal_cone_modes": [
     12,
@@ -718,8 +1154,12 @@
    "in_cone_samples": 1414,
    "independent_gated_expectation": 0.145,
    "job_duration_s": 152.0,
+   "label_share": 0.900667,
    "max_samples": 1500,
    "mesh_sha256": "224bb75045b3f078f69552f54f54f12709ba5533efd002977b382d090516c4f1",
+   "n_block": 1407,
+   "n_cone_outside_block": 7,
+   "n_off_cone": 86,
    "name": "q1-06-s6",
    "off_cone_by_mode": {
     "7": 86
@@ -738,6 +1178,12 @@
   },
   {
    "acquisition_s_estimate": 0.087998,
+   "block_counts": [
+    653,
+    761,
+    5,
+    13
+   ],
    "compilation_seed": 7,
    "cone_modes": [
     9,
@@ -756,6 +1202,7 @@
     22,
     23
    ],
+   "cone_share": 0.969333,
    "form": "iterated",
    "ideal_cone_modes": [
     12,
@@ -789,8 +1236,12 @@
    "in_cone_samples": 1454,
    "independent_gated_expectation": 0.159,
    "job_duration_s": 152.0,
+   "label_share": 0.942667,
    "max_samples": 1500,
    "mesh_sha256": "646a73af85f97bf86bd10cba7a8465c25db6cd267e44c78d9bda7a3e17046351",
+   "n_block": 1432,
+   "n_cone_outside_block": 22,
+   "n_off_cone": 46,
    "name": "q1-07-s7",
    "off_cone_by_mode": {
     "0": 46
@@ -809,6 +1260,12 @@
   },
   {
    "acquisition_s_estimate": 0.099389,
+   "block_counts": [
+    634,
+    764,
+    3,
+    0
+   ],
    "compilation_seed": 8,
    "cone_modes": [
     10,
@@ -826,6 +1283,7 @@
     22,
     23
    ],
+   "cone_share": 0.938,
    "form": "iterated",
    "ideal_cone_modes": [
     12,
@@ -859,8 +1317,12 @@
    "in_cone_samples": 1407,
    "independent_gated_expectation": 0.285,
    "job_duration_s": 152.0,
+   "label_share": 0.932,
    "max_samples": 1500,
    "mesh_sha256": "b5ecb15f193cac7b831371496a087d97970807bae1b6fbbda391f2c30f032cab",
+   "n_block": 1401,
+   "n_cone_outside_block": 6,
+   "n_off_cone": 93,
    "name": "q1-08-s8",
    "off_cone_by_mode": {
     "5": 93
@@ -879,6 +1341,12 @@
   },
   {
    "acquisition_s_estimate": 0.193506,
+   "block_counts": [
+    623,
+    539,
+    0,
+    0
+   ],
    "compilation_seed": 9,
    "cone_modes": [
     4,
@@ -902,6 +1370,7 @@
     22,
     23
    ],
+   "cone_share": 0.939333,
    "form": "iterated",
    "ideal_cone_modes": [
     13,
@@ -934,8 +1403,12 @@
    "in_cone_samples": 1409,
    "independent_gated_expectation": 0.143,
    "job_duration_s": 152.0,
+   "label_share": 0.774667,
    "max_samples": 1500,
    "mesh_sha256": "57b630ebd72fab6bb3a75376267c2818580c69bd293f1d333f76b3d13334a3db",
+   "n_block": 1162,
+   "n_cone_outside_block": 247,
+   "n_off_cone": 91,
    "name": "q1-09-s9",
    "off_cone_by_mode": {
     "0": 91
@@ -954,6 +1427,12 @@
   },
   {
    "acquisition_s_estimate": 0.261722,
+   "block_counts": [
+    462,
+    740,
+    3,
+    13
+   ],
    "compilation_seed": 10,
    "cone_modes": [
     7,
@@ -974,6 +1453,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     11,
@@ -1008,8 +1488,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.801333,
    "max_samples": 1500,
    "mesh_sha256": "5d20a0bb042fc01d0521e7f57d4de8c596c051e72f90ea2318d903374c676a57",
+   "n_block": 1218,
+   "n_cone_outside_block": 282,
+   "n_off_cone": 0,
    "name": "q1-10-s10",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -1026,6 +1510,12 @@
   },
   {
    "acquisition_s_estimate": 0.242107,
+   "block_counts": [
+    658,
+    582,
+    5,
+    155
+   ],
    "compilation_seed": 11,
    "cone_modes": [
     7,
@@ -1046,6 +1536,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     13,
@@ -1078,8 +1569,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.826667,
    "max_samples": 1500,
    "mesh_sha256": "6bc583b3fd6ca84b1d6945963f36017aca2616289206cb65000cb9cb7a0d0431",
+   "n_block": 1400,
+   "n_cone_outside_block": 100,
+   "n_off_cone": 0,
    "name": "q1-11-s11",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -1096,6 +1591,12 @@
   },
   {
    "acquisition_s_estimate": 0.259347,
+   "block_counts": [
+    570,
+    643,
+    75,
+    32
+   ],
    "compilation_seed": 12,
    "cone_modes": [
     8,
@@ -1115,6 +1616,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     11,
@@ -1149,8 +1651,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.808667,
    "max_samples": 1500,
    "mesh_sha256": "09312618553aa2aadb41d979844e0519c8cb49d6ed520e757d01c13e871e452e",
+   "n_block": 1320,
+   "n_cone_outside_block": 180,
+   "n_off_cone": 0,
    "name": "q1-12-s12",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -1167,6 +1673,12 @@
   },
   {
    "acquisition_s_estimate": 0.240912,
+   "block_counts": [
+    807,
+    619,
+    42,
+    20
+   ],
    "compilation_seed": 13,
    "cone_modes": [
     8,
@@ -1186,6 +1698,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     14,
@@ -1217,8 +1730,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.950667,
    "max_samples": 1500,
    "mesh_sha256": "b45415ab763055f9d2e6d00ca6d4cf983180f920451ea47058cf8907cd436558",
+   "n_block": 1488,
+   "n_cone_outside_block": 12,
+   "n_off_cone": 0,
    "name": "q1-13-s13",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -1235,6 +1752,12 @@
   },
   {
    "acquisition_s_estimate": 0.034239,
+   "block_counts": [
+    600,
+    802,
+    7,
+    85
+   ],
    "compilation_seed": 14,
    "cone_modes": [
     7,
@@ -1255,6 +1778,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     11,
@@ -1289,8 +1813,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.934667,
    "max_samples": 1500,
    "mesh_sha256": "34eb8c25af0d303ed2640b79e85e3100832649dc1b8f08a1068fabb8e2feede2",
+   "n_block": 1494,
+   "n_cone_outside_block": 6,
+   "n_off_cone": 0,
    "name": "q1-14-s14",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -1307,6 +1835,12 @@
   },
   {
    "acquisition_s_estimate": 0.101186,
+   "block_counts": [
+    667,
+    822,
+    0,
+    0
+   ],
    "compilation_seed": 15,
    "cone_modes": [
     7,
@@ -1327,6 +1861,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     11,
@@ -1361,8 +1896,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.992667,
    "max_samples": 1500,
    "mesh_sha256": "85711d7f7b84780a84c809e6e0111c2d84dda89a11deb4026311f6c3e12c68b0",
+   "n_block": 1489,
+   "n_cone_outside_block": 11,
+   "n_off_cone": 0,
    "name": "q1-15-s15",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -1379,6 +1918,12 @@
   },
   {
    "acquisition_s_estimate": 0.094618,
+   "block_counts": [
+    777,
+    541,
+    6,
+    40
+   ],
    "compilation_seed": 16,
    "cone_modes": [
     8,
@@ -1398,6 +1943,7 @@
     22,
     23
    ],
+   "cone_share": 0.943333,
    "form": "iterated",
    "ideal_cone_modes": [
     10,
@@ -1433,8 +1979,12 @@
    "in_cone_samples": 1415,
    "independent_gated_expectation": 0.274,
    "job_duration_s": 152.0,
+   "label_share": 0.878667,
    "max_samples": 1500,
    "mesh_sha256": "a4c4cb5a783ae9d5a2ceb6f199c107f09e19644efe5226fa229bf1419b9667eb",
+   "n_block": 1364,
+   "n_cone_outside_block": 51,
+   "n_off_cone": 85,
    "name": "q1-16-s16",
    "off_cone_by_mode": {
     "5": 85
@@ -1453,6 +2003,12 @@
   },
   {
    "acquisition_s_estimate": 0.099064,
+   "block_counts": [
+    824,
+    564,
+    63,
+    12
+   ],
    "compilation_seed": 17,
    "cone_modes": [
     6,
@@ -1474,6 +2030,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     12,
@@ -1507,8 +2064,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.925333,
    "max_samples": 1500,
    "mesh_sha256": "f5488544257f652444b15cef2c1bb64b26f5dd1d1a83a3e8efd770c947c7d08d",
+   "n_block": 1463,
+   "n_cone_outside_block": 37,
+   "n_off_cone": 0,
    "name": "q1-17-s17",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -1525,6 +2086,12 @@
   },
   {
    "acquisition_s_estimate": 0.086494,
+   "block_counts": [
+    654,
+    551,
+    2,
+    49
+   ],
    "compilation_seed": 18,
    "cone_modes": [
     8,
@@ -1544,6 +2111,7 @@
     22,
     23
    ],
+   "cone_share": 0.890667,
    "form": "iterated",
    "ideal_cone_modes": [
     11,
@@ -1578,8 +2146,12 @@
    "in_cone_samples": 1336,
    "independent_gated_expectation": 0.578,
    "job_duration_s": 152.0,
+   "label_share": 0.803333,
    "max_samples": 1500,
    "mesh_sha256": "069ec2fc4e47f0ea0c99e56b319d0576d4e8488399d1e32ab7cf2101762c24ab",
+   "n_block": 1256,
+   "n_cone_outside_block": 80,
+   "n_off_cone": 164,
    "name": "q1-18-s18",
    "off_cone_by_mode": {
     "5": 164
@@ -1598,6 +2170,12 @@
   },
   {
    "acquisition_s_estimate": 0.097791,
+   "block_counts": [
+    664,
+    761,
+    26,
+    3
+   ],
    "compilation_seed": 19,
    "cone_modes": [
     7,
@@ -1618,6 +2196,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     12,
@@ -1651,8 +2230,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.95,
    "max_samples": 1500,
    "mesh_sha256": "f1df22294aed07cf6ef33bfd21b5fa03985002beda0b68c93dabd2a1196854f5",
+   "n_block": 1454,
+   "n_cone_outside_block": 46,
+   "n_off_cone": 0,
    "name": "q1-19-s19",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -1669,6 +2252,12 @@
   },
   {
    "acquisition_s_estimate": 0.099019,
+   "block_counts": [
+    632,
+    751,
+    38,
+    2
+   ],
    "compilation_seed": 20,
    "cone_modes": [
     8,
@@ -1688,6 +2277,7 @@
     22,
     23
    ],
+   "cone_share": 0.966,
    "form": "iterated",
    "ideal_cone_modes": [
     13,
@@ -1720,8 +2310,12 @@
    "in_cone_samples": 1449,
    "independent_gated_expectation": 0.157,
    "job_duration_s": 152.0,
+   "label_share": 0.922,
    "max_samples": 1500,
    "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 1423,
+   "n_cone_outside_block": 26,
+   "n_off_cone": 51,
    "name": "q1-20-s20",
    "off_cone_by_mode": {
     "0": 51
@@ -1740,6 +2334,12 @@
   },
   {
    "acquisition_s_estimate": 0.089151,
+   "block_counts": [
+    309,
+    750,
+    40,
+    23
+   ],
    "compilation_seed": 21,
    "cone_modes": [
     9,
@@ -1758,6 +2358,7 @@
     22,
     23
    ],
+   "cone_share": 0.757333,
    "form": "iterated",
    "ideal_cone_modes": [
     13,
@@ -1790,8 +2391,12 @@
    "in_cone_samples": 1136,
    "independent_gated_expectation": 1.244,
    "job_duration_s": 152.0,
+   "label_share": 0.706,
    "max_samples": 1500,
    "mesh_sha256": "df70c3d8b1742f6a4757c7c4f1b4c2c73df7a7c0b34a98683a51cce57e18c6d3",
+   "n_block": 1122,
+   "n_cone_outside_block": 14,
+   "n_off_cone": 364,
    "name": "q1-21-s21",
    "off_cone_by_mode": {
     "5": 364
@@ -1810,6 +2415,12 @@
   },
   {
    "acquisition_s_estimate": 0.244056,
+   "block_counts": [
+    746,
+    736,
+    1,
+    7
+   ],
    "compilation_seed": 0,
    "cone_modes": [
     8,
@@ -1829,6 +2440,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     12,
@@ -1862,8 +2474,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.988,
    "max_samples": 1500,
    "mesh_sha256": "54aef849f484eb03e3d59afeee90dd8e7db58280650e15565f23c0502dc4fa0d",
+   "n_block": 1490,
+   "n_cone_outside_block": 10,
+   "n_off_cone": 0,
    "name": "q1-22-s0",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -1880,6 +2496,12 @@
   },
   {
    "acquisition_s_estimate": 0.254063,
+   "block_counts": [
+    645,
+    618,
+    57,
+    37
+   ],
    "compilation_seed": 1,
    "cone_modes": [
     8,
@@ -1899,6 +2521,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     11,
@@ -1933,8 +2556,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 152.0,
+   "label_share": 0.842,
    "max_samples": 1500,
    "mesh_sha256": "e296b6a9cbad9732a0b96ceb56dae2a2c1eba1424bae0396eb56eb946fb2140f",
+   "n_block": 1357,
+   "n_cone_outside_block": 143,
+   "n_off_cone": 0,
    "name": "q1-23-s1",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -1951,6 +2578,12 @@
   },
   {
    "acquisition_s_estimate": 0.250565,
+   "block_counts": [
+    699,
+    596,
+    50,
+    32
+   ],
    "compilation_seed": null,
    "cone_modes": [
     8,
@@ -1970,6 +2603,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "single",
    "ideal_cone_modes": [
     13,
@@ -2002,8 +2636,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 14.0,
+   "label_share": 0.863333,
    "max_samples": 1500,
    "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 1377,
+   "n_cone_outside_block": 123,
+   "n_off_cone": 0,
    "name": "job-10",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -2020,6 +2658,12 @@
   },
   {
    "acquisition_s_estimate": 0.029438,
+   "block_counts": [
+    4942,
+    4060,
+    239,
+    125
+   ],
    "compilation_seed": 46667,
    "cone_modes": [
     7,
@@ -2040,6 +2684,7 @@
     22,
     23
    ],
+   "cone_share": 0.9513,
    "form": "single",
    "ideal_cone_modes": [
     12,
@@ -2073,8 +2718,12 @@
    "in_cone_samples": 9513,
    "independent_gated_expectation": 35.961,
    "job_duration_s": 14.0,
+   "label_share": 0.9002,
    "max_samples": 10000,
    "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 9366,
+   "n_cone_outside_block": 147,
+   "n_off_cone": 487,
    "name": "job-11",
    "off_cone_by_mode": {
     "1": 40,
@@ -2095,6 +2744,12 @@
   },
   {
    "acquisition_s_estimate": 0.100917,
+   "block_counts": [
+    743,
+    667,
+    55,
+    24
+   ],
    "compilation_seed": 20,
    "cone_modes": [
     8,
@@ -2114,6 +2769,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     13,
@@ -2146,8 +2802,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 61.0,
+   "label_share": 0.94,
    "max_samples": 1500,
    "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 1489,
+   "n_cone_outside_block": 11,
+   "n_off_cone": 0,
    "name": "d2-00-s20-n1500",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -2164,6 +2824,12 @@
   },
   {
    "acquisition_s_estimate": 0.08985,
+   "block_counts": [
+    4765,
+    3800,
+    263,
+    131
+   ],
    "compilation_seed": 20,
    "cone_modes": [
     8,
@@ -2183,6 +2849,7 @@
     22,
     23
    ],
+   "cone_share": 0.902271,
    "form": "iterated",
    "ideal_cone_modes": [
     13,
@@ -2215,8 +2882,12 @@
    "in_cone_samples": 9020,
    "independent_gated_expectation": 22.519,
    "job_duration_s": 61.0,
+   "label_share": 0.856757,
    "max_samples": 10000,
    "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 8959,
+   "n_cone_outside_block": 61,
+   "n_off_cone": 977,
    "name": "d2-01-s20-n10000",
    "off_cone_by_mode": {
     "0": 39,
@@ -2236,6 +2907,12 @@
   },
   {
    "acquisition_s_estimate": 0.100123,
+   "block_counts": [
+    758,
+    662,
+    50,
+    20
+   ],
    "compilation_seed": 20,
    "cone_modes": [
     8,
@@ -2255,6 +2932,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     13,
@@ -2287,8 +2965,12 @@
    "in_cone_samples": 1498,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 61.0,
+   "label_share": 0.947931,
    "max_samples": 1500,
    "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 1490,
+   "n_cone_outside_block": 8,
+   "n_off_cone": 0,
    "name": "d2-02-s20-n1500",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -2305,6 +2987,12 @@
   },
   {
    "acquisition_s_estimate": 0.155186,
+   "block_counts": [
+    20352,
+    15966,
+    1095,
+    554
+   ],
    "compilation_seed": 20,
    "cone_modes": [
     8,
@@ -2324,6 +3012,7 @@
     22,
     23
    ],
+   "cone_share": 0.958219,
    "form": "iterated",
    "ideal_cone_modes": [
     13,
@@ -2356,8 +3045,12 @@
    "in_cone_samples": 38323,
    "independent_gated_expectation": 91.988,
    "job_duration_s": 61.0,
+   "label_share": 0.908086,
    "max_samples": 40000,
    "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 37967,
+   "n_cone_outside_block": 356,
+   "n_off_cone": 1671,
    "name": "d2-03-s20-n40000",
    "off_cone_by_mode": {
     "0": 214,
@@ -2380,6 +3073,12 @@
   },
   {
    "acquisition_s_estimate": 0.095774,
+   "block_counts": [
+    736,
+    610,
+    43,
+    21
+   ],
    "compilation_seed": 20,
    "cone_modes": [
     8,
@@ -2399,6 +3098,7 @@
     22,
     23
    ],
+   "cone_share": 0.946,
    "form": "iterated",
    "ideal_cone_modes": [
     13,
@@ -2431,8 +3131,12 @@
    "in_cone_samples": 1419,
    "independent_gated_expectation": 0.258,
    "job_duration_s": 61.0,
+   "label_share": 0.897333,
    "max_samples": 1500,
    "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 1410,
+   "n_cone_outside_block": 9,
+   "n_off_cone": 81,
    "name": "d2-04-s20-n1500",
    "off_cone_by_mode": {
     "5": 81
@@ -2451,6 +3155,12 @@
   },
   {
    "acquisition_s_estimate": 0.230204,
+   "block_counts": [
+    30188,
+    24112,
+    1427,
+    798
+   ],
    "compilation_seed": 20,
    "cone_modes": [
     8,
@@ -2470,6 +3180,7 @@
     22,
     23
    ],
+   "cone_share": 0.955423,
    "form": "iterated",
    "ideal_cone_modes": [
     13,
@@ -2502,8 +3213,12 @@
    "in_cone_samples": 57119,
    "independent_gated_expectation": 148.439,
    "job_duration_s": 61.0,
+   "label_share": 0.90827,
    "max_samples": 60000,
    "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 56525,
+   "n_cone_outside_block": 594,
+   "n_off_cone": 2665,
    "name": "d2-05-s20-n60000",
    "off_cone_by_mode": {
     "0": 330,
@@ -2526,6 +3241,12 @@
   },
   {
    "acquisition_s_estimate": 0.22561,
+   "block_counts": [
+    795,
+    642,
+    23,
+    25
+   ],
    "compilation_seed": 46667,
    "cone_modes": [
     7,
@@ -2546,6 +3267,7 @@
     22,
     23
    ],
+   "cone_share": 1.0,
    "form": "iterated",
    "ideal_cone_modes": [
     12,
@@ -2579,8 +3301,12 @@
    "in_cone_samples": 1500,
    "independent_gated_expectation": 0.0,
    "job_duration_s": 61.0,
+   "label_share": 0.958,
    "max_samples": 1500,
    "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 1485,
+   "n_cone_outside_block": 15,
+   "n_off_cone": 0,
    "name": "d4-06-s46667-n1500",
    "off_cone_by_mode": {},
    "off_cone_total": 0,
@@ -2597,6 +3323,12 @@
   },
   {
    "acquisition_s_estimate": 0.096069,
+   "block_counts": [
+    5201,
+    3997,
+    290,
+    126
+   ],
    "compilation_seed": 46667,
    "cone_modes": [
     7,
@@ -2617,6 +3349,7 @@
     22,
     23
    ],
+   "cone_share": 0.969,
    "form": "iterated",
    "ideal_cone_modes": [
     12,
@@ -2650,8 +3383,12 @@
    "in_cone_samples": 9690,
    "independent_gated_expectation": 6.673,
    "job_duration_s": 61.0,
+   "label_share": 0.9198,
    "max_samples": 10000,
    "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 9614,
+   "n_cone_outside_block": 76,
+   "n_off_cone": 310,
    "name": "d4-07-s46667-n10000",
    "off_cone_by_mode": {
     "5": 310
@@ -2670,6 +3407,12 @@
   },
   {
    "acquisition_s_estimate": 0.144544,
+   "block_counts": [
+    18060,
+    14502,
+    1004,
+    494
+   ],
    "compilation_seed": 46667,
    "cone_modes": [
     7,
@@ -2690,6 +3433,7 @@
     22,
     23
    ],
+   "cone_share": 0.86144,
    "form": "iterated",
    "ideal_cone_modes": [
     12,
@@ -2723,8 +3467,12 @@
    "in_cone_samples": 34449,
    "independent_gated_expectation": 328.819,
    "job_duration_s": 61.0,
+   "label_share": 0.814254,
    "max_samples": 40000,
    "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 34060,
+   "n_cone_outside_block": 389,
+   "n_off_cone": 5541,
    "name": "d4-08-s46667-n40000",
    "off_cone_by_mode": {
     "0": 73,
@@ -2745,6 +3493,12 @@
   },
   {
    "acquisition_s_estimate": 0.100024,
+   "block_counts": [
+    425,
+    1123,
+    849,
+    951
+   ],
    "compilation_seed": 20,
    "cone_modes": [
     8,
@@ -2764,6 +3518,7 @@
     22,
     23
    ],
+   "cone_share": 0.906363,
    "form": "single",
    "ideal_cone_modes": [
     13,
@@ -2796,8 +3551,12 @@
    "in_cone_samples": 9060,
    "independent_gated_expectation": 19.334,
    "job_duration_s": 14.0,
+   "label_share": 0.154862,
    "max_samples": 10000,
    "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 3348,
+   "n_cone_outside_block": 5712,
+   "n_off_cone": 936,
    "name": "job-13",
    "off_cone_by_mode": {
     "5": 936
@@ -2813,6 +3572,2105 @@
    "shot_floor": 0.004203,
    "tvd_cone_from_ideal": 0.829139,
    "wall_share_s": 14.0
+  },
+  {
+   "acquisition_s_estimate": 0.236038,
+   "block_counts": [
+    1683,
+    13,
+    1433,
+    1218
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.960396,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.434743,
+   "in_block_cone": 0.452671,
+   "in_block_cone_wilson95": [
+    0.442736504,
+    0.462643427
+   ],
+   "in_block_ideal_cone": 0.471117,
+   "in_block_ideal_cone_wilson95": [
+    0.460946481,
+    0.481312304
+   ],
+   "in_block_wilson95": [
+    0.425053885,
+    0.444483186
+   ],
+   "in_cone_samples": 9603,
+   "independent_gated_expectation": 3.426,
+   "job_duration_s": 14.0,
+   "label_share": 0.169617,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 4347,
+   "n_cone_outside_block": 5256,
+   "n_off_cone": 396,
+   "name": "b-s20-n10000",
+   "off_cone_by_mode": {
+    "0": 46,
+    "1": 50,
+    "5": 252,
+    "6": 48
+   },
+   "off_cone_total": 396,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9999,
+   "physical_perf": 0.008576141,
+   "receipt_dark_off_cone_acquisition": 67.601,
+   "receipt_dark_off_cone_wall": 4009.6,
+   "run": "2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14",
+   "samples": 10000,
+   "shot_floor": 0.004082,
+   "tvd_cone_from_ideal": 0.823388,
+   "wall_share_s": 14.0
+  },
+  {
+   "acquisition_s_estimate": 0.236606,
+   "block_counts": [
+    1708,
+    7,
+    1378,
+    1175
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.948364,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.427099,
+   "in_block_cone": 0.450353,
+   "in_block_cone_wilson95": [
+    0.440358763,
+    0.460388444
+   ],
+   "in_block_ideal_cone": 0.462656,
+   "in_block_ideal_cone_wilson95": [
+    0.45249881,
+    0.472843932
+   ],
+   "in_block_wilson95": [
+    0.417430314,
+    0.436823652
+   ],
+   "in_cone_samples": 9477,
+   "independent_gated_expectation": 4.453,
+   "job_duration_s": 149.0,
+   "label_share": 0.17162,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 4268,
+   "n_cone_outside_block": 5209,
+   "n_off_cone": 516,
+   "name": "c0-s20-n10000",
+   "off_cone_by_mode": {
+    "1": 51,
+    "5": 465
+   },
+   "off_cone_total": 516,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9993,
+   "physical_perf": 0.008555539,
+   "receipt_dark_off_cone_acquisition": 67.764,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004109,
+   "tvd_cone_from_ideal": 0.819035,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.242498,
+   "block_counts": [
+    1788,
+    25,
+    1427,
+    1215
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.975495,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.445589,
+   "in_block_cone": 0.456783,
+   "in_block_cone_wilson95": [
+    0.446915476,
+    0.466683612
+   ],
+   "in_block_ideal_cone": 0.470334,
+   "in_block_ideal_cone_wilson95": [
+    0.460296158,
+    0.480395125
+   ],
+   "in_block_wilson95": [
+    0.435869269,
+    0.455350763
+   ],
+   "in_cone_samples": 9753,
+   "independent_gated_expectation": 2.062,
+   "job_duration_s": 149.0,
+   "label_share": 0.181336,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 4455,
+   "n_cone_outside_block": 5298,
+   "n_off_cone": 245,
+   "name": "c1-s20-n10000",
+   "off_cone_by_mode": {
+    "0": 93,
+    "5": 152
+   },
+   "off_cone_total": 245,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9998,
+   "physical_perf": 0.008347664,
+   "receipt_dark_off_cone_acquisition": 69.451,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004051,
+   "tvd_cone_from_ideal": 0.814108,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.212655,
+   "block_counts": [
+    4916,
+    3667,
+    237,
+    136
+   ],
+   "compilation_seed": 46667,
+   "cone_modes": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.907,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.8956,
+   "in_block_cone": 0.987431,
+   "in_block_cone_wilson95": [
+    0.984923254,
+    0.989526216
+   ],
+   "in_block_ideal_cone": 0.992685,
+   "in_block_ideal_cone_wilson95": [
+    0.990704351,
+    0.994245367
+   ],
+   "in_block_wilson95": [
+    0.889454162,
+    0.901442018
+   ],
+   "in_cone_samples": 9070,
+   "independent_gated_expectation": 8.938,
+   "job_duration_s": 149.0,
+   "label_share": 0.8583,
+   "max_samples": 10000,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 8956,
+   "n_cone_outside_block": 114,
+   "n_off_cone": 930,
+   "name": "r2-s46667-n10000",
+   "off_cone_by_mode": {
+    "0": 76,
+    "4": 32,
+    "5": 822
+   },
+   "off_cone_total": 930,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 10000,
+   "physical_perf": 0.00951914,
+   "receipt_dark_off_cone_acquisition": 60.904,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004201,
+   "tvd_cone_from_ideal": 0.095787,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.086121,
+   "block_counts": [
+    4988,
+    3992,
+    227,
+    134
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.9512,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.9341,
+   "in_block_cone": 0.982023,
+   "in_block_cone_wilson95": [
+    0.97915143,
+    0.98450481
+   ],
+   "in_block_ideal_cone": 0.992456,
+   "in_block_ideal_cone_wilson95": [
+    0.990496334,
+    0.99401472
+   ],
+   "in_block_wilson95": [
+    0.929068571,
+    0.938798041
+   ],
+   "in_cone_samples": 9512,
+   "independent_gated_expectation": 11.747,
+   "job_duration_s": 149.0,
+   "label_share": 0.898,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 9341,
+   "n_cone_outside_block": 171,
+   "n_off_cone": 488,
+   "name": "t3-s20-n10000",
+   "off_cone_by_mode": {
+    "0": 43,
+    "1": 51,
+    "5": 394
+   },
+   "off_cone_total": 488,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 10000,
+   "physical_perf": 0.023505206,
+   "receipt_dark_off_cone_acquisition": 24.665,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004102,
+   "tvd_cone_from_ideal": 0.080407,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.23267,
+   "block_counts": [
+    5293,
+    4044,
+    301,
+    126
+   ],
+   "compilation_seed": 46667,
+   "cone_modes": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.995798,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.976791,
+   "in_block_cone": 0.980912,
+   "in_block_cone_wilson95": [
+    0.978032716,
+    0.983420632
+   ],
+   "in_block_ideal_cone": 0.990967,
+   "in_block_ideal_cone_wilson95": [
+    0.988898347,
+    0.992653405
+   ],
+   "in_block_wilson95": [
+    0.973650783,
+    0.979564329
+   ],
+   "in_cone_samples": 9954,
+   "independent_gated_expectation": 0.369,
+   "job_duration_s": 149.0,
+   "label_share": 0.934074,
+   "max_samples": 10000,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 9764,
+   "n_cone_outside_block": 190,
+   "n_off_cone": 42,
+   "name": "r4-s46667-n10000",
+   "off_cone_by_mode": {
+    "0": 42
+   },
+   "off_cone_total": 42,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9996,
+   "physical_perf": 0.008700283,
+   "receipt_dark_off_cone_acquisition": 66.637,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.00401,
+   "tvd_cone_from_ideal": 0.093818,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.097133,
+   "block_counts": [
+    5338,
+    4145,
+    293,
+    125
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.9961,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.990199,
+   "in_block_cone": 0.994076,
+   "in_block_cone_wilson95": [
+    0.992367077,
+    0.995404561
+   ],
+   "in_block_ideal_cone": 0.994276,
+   "in_block_ideal_cone_wilson95": [
+    0.99259171,
+    0.995579005
+   ],
+   "in_block_wilson95": [
+    0.988071053,
+    0.991950478
+   ],
+   "in_cone_samples": 9960,
+   "independent_gated_expectation": 0.83,
+   "job_duration_s": 149.0,
+   "label_share": 0.948395,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 9901,
+   "n_cone_outside_block": 59,
+   "n_off_cone": 39,
+   "name": "t5-s20-n10000",
+   "off_cone_by_mode": {
+    "1": 39
+   },
+   "off_cone_total": 39,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9999,
+   "physical_perf": 0.020840475,
+   "receipt_dark_off_cone_acquisition": 27.819,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004008,
+   "tvd_cone_from_ideal": 0.083922,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.094496,
+   "block_counts": [
+    5131,
+    4022,
+    284,
+    173
+   ],
+   "compilation_seed": 46667,
+   "cone_modes": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.969991,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.961288,
+   "in_block_cone": 0.991028,
+   "in_block_cone_wilson95": [
+    0.988947254,
+    0.992720166
+   ],
+   "in_block_ideal_cone": 0.991028,
+   "in_block_ideal_cone_wilson95": [
+    0.988947254,
+    0.992720166
+   ],
+   "in_block_wilson95": [
+    0.957326305,
+    0.964896093
+   ],
+   "in_cone_samples": 9697,
+   "independent_gated_expectation": 6.567,
+   "job_duration_s": 149.0,
+   "label_share": 0.915575,
+   "max_samples": 10000,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 9610,
+   "n_cone_outside_block": 87,
+   "n_off_cone": 300,
+   "name": "r6-s46667-n10000",
+   "off_cone_by_mode": {
+    "1": 51,
+    "5": 249
+   },
+   "off_cone_total": 300,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9997,
+   "physical_perf": 0.021421896,
+   "receipt_dark_off_cone_acquisition": 27.064,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004063,
+   "tvd_cone_from_ideal": 0.08532,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.215947,
+   "block_counts": [
+    4947,
+    3689,
+    285,
+    124
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.917601,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.905587,
+   "in_block_cone": 0.986907,
+   "in_block_cone_wilson95": [
+    0.984367017,
+    0.989038406
+   ],
+   "in_block_ideal_cone": 0.992974,
+   "in_block_ideal_cone_wilson95": [
+    0.991038703,
+    0.99449364
+   ],
+   "in_block_wilson95": [
+    0.899695323,
+    0.911166222
+   ],
+   "in_cone_samples": 9165,
+   "independent_gated_expectation": 7.788,
+   "job_duration_s": 149.0,
+   "label_share": 0.864638,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 9045,
+   "n_cone_outside_block": 120,
+   "n_off_cone": 823,
+   "name": "t7-s20-n10000",
+   "off_cone_by_mode": {
+    "0": 43,
+    "5": 780
+   },
+   "off_cone_total": 823,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9988,
+   "physical_perf": 0.009374016,
+   "receipt_dark_off_cone_acquisition": 61.847,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004178,
+   "tvd_cone_from_ideal": 0.097578,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.096604,
+   "block_counts": [
+    5410,
+    3953,
+    277,
+    133
+   ],
+   "compilation_seed": 46667,
+   "cone_modes": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.9951,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.9773,
+   "in_block_cone": 0.982112,
+   "in_block_cone_wilson95": [
+    0.979315988,
+    0.98453663
+   ],
+   "in_block_ideal_cone": 0.991277,
+   "in_block_ideal_cone_wilson95": [
+    0.989240536,
+    0.992930782
+   ],
+   "in_block_wilson95": [
+    0.974192254,
+    0.980041181
+   ],
+   "in_cone_samples": 9951,
+   "independent_gated_expectation": 1.049,
+   "job_duration_s": 149.0,
+   "label_share": 0.9363,
+   "max_samples": 10000,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 9773,
+   "n_cone_outside_block": 178,
+   "n_off_cone": 49,
+   "name": "r8-s46667-n10000",
+   "off_cone_by_mode": {
+    "0": 49
+   },
+   "off_cone_total": 49,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 10000,
+   "physical_perf": 0.020954509,
+   "receipt_dark_off_cone_acquisition": 27.667,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004011,
+   "tvd_cone_from_ideal": 0.10284,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.090125,
+   "block_counts": [
+    5318,
+    4030,
+    280,
+    135
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.984598,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.976398,
+   "in_block_cone": 0.991671,
+   "in_block_cone_wilson95": [
+    0.989674019,
+    0.993284235
+   ],
+   "in_block_ideal_cone": 0.991973,
+   "in_block_ideal_cone_wilson95": [
+    0.990008248,
+    0.993554207
+   ],
+   "in_block_wilson95": [
+    0.97323413,
+    0.979195241
+   ],
+   "in_cone_samples": 9845,
+   "independent_gated_expectation": 3.538,
+   "job_duration_s": 149.0,
+   "label_share": 0.934893,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 9763,
+   "n_cone_outside_block": 82,
+   "n_off_cone": 154,
+   "name": "t9-s20-n10000",
+   "off_cone_by_mode": {
+    "0": 42,
+    "1": 49,
+    "5": 63
+   },
+   "off_cone_total": 154,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9999,
+   "physical_perf": 0.022461055,
+   "receipt_dark_off_cone_acquisition": 25.812,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004032,
+   "tvd_cone_from_ideal": 0.090742,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.213027,
+   "block_counts": [
+    4761,
+    3647,
+    222,
+    138
+   ],
+   "compilation_seed": 46667,
+   "cone_modes": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.890422,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.88307,
+   "in_block_cone": 0.991743,
+   "in_block_cone_wilson95": [
+    0.989631512,
+    0.993427375
+   ],
+   "in_block_ideal_cone": 0.991743,
+   "in_block_ideal_cone_wilson95": [
+    0.989631512,
+    0.993427375
+   ],
+   "in_block_wilson95": [
+    0.876600562,
+    0.889242729
+   ],
+   "in_cone_samples": 8841,
+   "independent_gated_expectation": 10.438,
+   "job_duration_s": 149.0,
+   "label_share": 0.846812,
+   "max_samples": 10000,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 8768,
+   "n_cone_outside_block": 73,
+   "n_off_cone": 1088,
+   "name": "r10-s46667-n10000",
+   "off_cone_by_mode": {
+    "1": 75,
+    "5": 1013
+   },
+   "off_cone_total": 1088,
+   "off_cone_with_in_cone_click": 68,
+   "one_click_samples": 9929,
+   "physical_perf": 0.009502492,
+   "receipt_dark_off_cone_acquisition": 61.011,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004255,
+   "tvd_cone_from_ideal": 0.087577,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.078867,
+   "block_counts": [
+    4728,
+    3616,
+    254,
+    93
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.875675,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.869274,
+   "in_block_cone": 0.99269,
+   "in_block_cone_wilson95": [
+    0.990676774,
+    0.99427084
+   ],
+   "in_block_ideal_cone": 0.993144,
+   "in_block_ideal_cone_wilson95": [
+    0.991185238,
+    0.994669279
+   ],
+   "in_block_wilson95": [
+    0.862524061,
+    0.87573999
+   ],
+   "in_cone_samples": 8755,
+   "independent_gated_expectation": 32.745,
+   "job_duration_s": 149.0,
+   "label_share": 0.834567,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 8691,
+   "n_cone_outside_block": 64,
+   "n_off_cone": 1243,
+   "name": "t11-s20-n10000",
+   "off_cone_by_mode": {
+    "1": 89,
+    "5": 1154
+   },
+   "off_cone_total": 1243,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9998,
+   "physical_perf": 0.025667116,
+   "receipt_dark_off_cone_acquisition": 22.588,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004275,
+   "tvd_cone_from_ideal": 0.087066,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.086933,
+   "block_counts": [
+    4807,
+    3565,
+    279,
+    146
+   ],
+   "compilation_seed": 46667,
+   "cone_modes": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.895058,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.880052,
+   "in_block_cone": 0.983235,
+   "in_block_cone_wilson95": [
+    0.980359323,
+    0.985695102
+   ],
+   "in_block_ideal_cone": 0.993114,
+   "in_block_ideal_cone_wilson95": [
+    0.991164796,
+    0.994634831
+   ],
+   "in_block_wilson95": [
+    0.873536363,
+    0.886275684
+   ],
+   "in_cone_samples": 8947,
+   "independent_gated_expectation": 25.009,
+   "job_duration_s": 149.0,
+   "label_share": 0.837535,
+   "max_samples": 10000,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 8797,
+   "n_cone_outside_block": 150,
+   "n_off_cone": 1049,
+   "name": "r12-s46667-n10000",
+   "off_cone_by_mode": {
+    "0": 42,
+    "5": 1007
+   },
+   "off_cone_total": 1049,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9996,
+   "physical_perf": 0.023285579,
+   "receipt_dark_off_cone_acquisition": 24.898,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.00423,
+   "tvd_cone_from_ideal": 0.101629,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.087722,
+   "block_counts": [
+    5235,
+    3977,
+    271,
+    115
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.971289,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.960184,
+   "in_block_cone": 0.988567,
+   "in_block_cone_wilson95": [
+    0.986251037,
+    0.990497121
+   ],
+   "in_block_ideal_cone": 0.993273,
+   "in_block_ideal_cone_wilson95": [
+    0.991436094,
+    0.994718488
+   ],
+   "in_block_wilson95": [
+    0.956170938,
+    0.963843648
+   ],
+   "in_cone_samples": 9709,
+   "independent_gated_expectation": 6.779,
+   "job_duration_s": 149.0,
+   "label_share": 0.921569,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 9598,
+   "n_cone_outside_block": 111,
+   "n_off_cone": 287,
+   "name": "t13-s20-n10000",
+   "off_cone_by_mode": {
+    "0": 146,
+    "3": 70,
+    "5": 71
+   },
+   "off_cone_total": 287,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9996,
+   "physical_perf": 0.023076196,
+   "receipt_dark_off_cone_acquisition": 25.124,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.00406,
+   "tvd_cone_from_ideal": 0.090467,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.089536,
+   "block_counts": [
+    5297,
+    3967,
+    300,
+    159
+   ],
+   "compilation_seed": 46667,
+   "cone_modes": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.9895,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.9723,
+   "in_block_cone": 0.982617,
+   "in_block_cone_wilson95": [
+    0.979848821,
+    0.985011565
+   ],
+   "in_block_ideal_cone": 0.992548,
+   "in_block_ideal_cone_wilson95": [
+    0.990641241,
+    0.994068567
+   ],
+   "in_block_wilson95": [
+    0.968897611,
+    0.975339664
+   ],
+   "in_cone_samples": 9895,
+   "independent_gated_expectation": 2.429,
+   "job_duration_s": 149.0,
+   "label_share": 0.9264,
+   "max_samples": 10000,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 9723,
+   "n_cone_outside_block": 172,
+   "n_off_cone": 105,
+   "name": "r14-s46667-n10000",
+   "off_cone_by_mode": {
+    "0": 36,
+    "5": 69
+   },
+   "off_cone_total": 105,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 10000,
+   "physical_perf": 0.02260865,
+   "receipt_dark_off_cone_acquisition": 25.643,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004022,
+   "tvd_cone_from_ideal": 0.099177,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.231927,
+   "block_counts": [
+    4981,
+    3975,
+    266,
+    127
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.9407,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.9349,
+   "in_block_cone": 0.993834,
+   "in_block_cone_wilson95": [
+    0.992038466,
+    0.99522713
+   ],
+   "in_block_ideal_cone": 0.994046,
+   "in_block_ideal_cone_wilson95": [
+    0.992276453,
+    0.995411568
+   ],
+   "in_block_wilson95": [
+    0.929895769,
+    0.939570229
+   ],
+   "in_cone_samples": 9407,
+   "independent_gated_expectation": 5.221,
+   "job_duration_s": 149.0,
+   "label_share": 0.8956,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 9349,
+   "n_cone_outside_block": 58,
+   "n_off_cone": 593,
+   "name": "t15-s20-n10000",
+   "off_cone_by_mode": {
+    "0": 49,
+    "1": 57,
+    "5": 487
+   },
+   "off_cone_total": 593,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 10000,
+   "physical_perf": 0.008728143,
+   "receipt_dark_off_cone_acquisition": 66.424,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004124,
+   "tvd_cone_from_ideal": 0.077529,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.2357,
+   "block_counts": [
+    5352,
+    4196,
+    245,
+    132
+   ],
+   "compilation_seed": 46667,
+   "cone_modes": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 1.0,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.9925,
+   "in_block_cone": 0.9925,
+   "in_block_cone_wilson95": [
+    0.990609659,
+    0.994012102
+   ],
+   "in_block_ideal_cone": 0.9925,
+   "in_block_ideal_cone_wilson95": [
+    0.990609659,
+    0.994012102
+   ],
+   "in_block_wilson95": [
+    0.990609659,
+    0.994012102
+   ],
+   "in_cone_samples": 10000,
+   "independent_gated_expectation": 0.0,
+   "job_duration_s": 149.0,
+   "label_share": 0.9548,
+   "max_samples": 10000,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 9925,
+   "n_cone_outside_block": 75,
+   "n_off_cone": 0,
+   "name": "r16-s46667-n10000",
+   "off_cone_by_mode": {},
+   "off_cone_total": 0,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 10000,
+   "physical_perf": 0.00858844,
+   "receipt_dark_off_cone_acquisition": 67.504,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004001,
+   "tvd_cone_from_ideal": 0.080487,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.215097,
+   "block_counts": [
+    4975,
+    3731,
+    227,
+    133
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.913474,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.906872,
+   "in_block_cone": 0.992773,
+   "in_block_cone_wilson95": [
+    0.990816199,
+    0.994314732
+   ],
+   "in_block_ideal_cone": 0.992881,
+   "in_block_ideal_cone_wilson95": [
+    0.990937682,
+    0.994410563
+   ],
+   "in_block_wilson95": [
+    0.901017989,
+    0.912413564
+   ],
+   "in_cone_samples": 9132,
+   "independent_gated_expectation": 8.218,
+   "job_duration_s": 149.0,
+   "label_share": 0.870861,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 9066,
+   "n_cone_outside_block": 66,
+   "n_off_cone": 865,
+   "name": "t17-s20-n10000",
+   "off_cone_by_mode": {
+    "0": 43,
+    "5": 822
+   },
+   "off_cone_total": 865,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9997,
+   "physical_perf": 0.009411071,
+   "receipt_dark_off_cone_acquisition": 61.604,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004186,
+   "tvd_cone_from_ideal": 0.091524,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.229439,
+   "block_counts": [
+    5206,
+    4005,
+    261,
+    133
+   ],
+   "compilation_seed": 46667,
+   "cone_modes": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.968497,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.960596,
+   "in_block_cone": 0.991842,
+   "in_block_cone_wilson95": [
+    0.989845409,
+    0.993448965
+   ],
+   "in_block_ideal_cone": 0.991842,
+   "in_block_ideal_cone_wilson95": [
+    0.989845409,
+    0.993448965
+   ],
+   "in_block_wilson95": [
+    0.956602425,
+    0.964235922
+   ],
+   "in_cone_samples": 9684,
+   "independent_gated_expectation": 2.804,
+   "job_duration_s": 149.0,
+   "label_share": 0.921192,
+   "max_samples": 10000,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 9605,
+   "n_cone_outside_block": 79,
+   "n_off_cone": 315,
+   "name": "r18-s46667-n10000",
+   "off_cone_by_mode": {
+    "5": 267,
+    "6": 48
+   },
+   "off_cone_total": 315,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9999,
+   "physical_perf": 0.0088228,
+   "receipt_dark_off_cone_acquisition": 65.711,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004066,
+   "tvd_cone_from_ideal": 0.086518,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.228316,
+   "block_counts": [
+    5346,
+    3848,
+    299,
+    142
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.971574,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.964368,
+   "in_block_cone": 0.992583,
+   "in_block_cone_wilson95": [
+    0.990670145,
+    0.994105483
+   ],
+   "in_block_ideal_cone": 0.992787,
+   "in_block_ideal_cone_wilson95": [
+    0.990897758,
+    0.99428673
+   ],
+   "in_block_wilson95": [
+    0.960550931,
+    0.967827977
+   ],
+   "in_cone_samples": 9707,
+   "independent_gated_expectation": 2.541,
+   "job_duration_s": 149.0,
+   "label_share": 0.920228,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 9635,
+   "n_cone_outside_block": 72,
+   "n_off_cone": 284,
+   "name": "t19-s20-n10000",
+   "off_cone_by_mode": {
+    "0": 50,
+    "4": 42,
+    "5": 192
+   },
+   "off_cone_total": 284,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9991,
+   "physical_perf": 0.008866197,
+   "receipt_dark_off_cone_acquisition": 65.39,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.00406,
+   "tvd_cone_from_ideal": 0.103672,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.233018,
+   "block_counts": [
+    5294,
+    4087,
+    253,
+    113
+   ],
+   "compilation_seed": 46667,
+   "cone_modes": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.988595,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.97509,
+   "in_block_cone": 0.986339,
+   "in_block_cone_wilson95": [
+    0.983853799,
+    0.988445831
+   ],
+   "in_block_ideal_cone": 0.991556,
+   "in_block_ideal_cone_wilson95": [
+    0.98954582,
+    0.99318306
+   ],
+   "in_block_wilson95": [
+    0.971847439,
+    0.977967619
+   ],
+   "in_cone_samples": 9882,
+   "independent_gated_expectation": 0.999,
+   "job_duration_s": 149.0,
+   "label_share": 0.938475,
+   "max_samples": 10000,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 9747,
+   "n_cone_outside_block": 135,
+   "n_off_cone": 114,
+   "name": "r20-s46667-n10000",
+   "off_cone_by_mode": {
+    "0": 49,
+    "5": 65
+   },
+   "off_cone_total": 114,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9996,
+   "physical_perf": 0.008687259,
+   "receipt_dark_off_cone_acquisition": 66.736,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004025,
+   "tvd_cone_from_ideal": 0.086507,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.227735,
+   "block_counts": [
+    5216,
+    3940,
+    263,
+    151
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.965479,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.957575,
+   "in_block_cone": 0.991813,
+   "in_block_cone_wilson95": [
+    0.989808617,
+    0.993425185
+   ],
+   "in_block_ideal_cone": 0.992224,
+   "in_block_ideal_cone_wilson95": [
+    0.990264412,
+    0.993791553
+   ],
+   "in_block_wilson95": [
+    0.953443935,
+    0.961353527
+   ],
+   "in_cone_samples": 9649,
+   "independent_gated_expectation": 3.094,
+   "job_duration_s": 149.0,
+   "label_share": 0.91615,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 9570,
+   "n_cone_outside_block": 79,
+   "n_off_cone": 345,
+   "name": "t21-s20-n10000",
+   "off_cone_by_mode": {
+    "0": 38,
+    "5": 307
+   },
+   "off_cone_total": 345,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9994,
+   "physical_perf": 0.008888812,
+   "receipt_dark_off_cone_acquisition": 65.223,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004072,
+   "tvd_cone_from_ideal": 0.091755,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.221447,
+   "block_counts": [
+    5087,
+    3804,
+    278,
+    137
+   ],
+   "compilation_seed": 46667,
+   "cone_modes": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.942689,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.930786,
+   "in_block_cone": 0.987374,
+   "in_block_cone_wilson95": [
+    0.984913029,
+    0.989437854
+   ],
+   "in_block_ideal_cone": 0.992746,
+   "in_block_ideal_cone_wilson95": [
+    0.990814686,
+    0.994273412
+   ],
+   "in_block_wilson95": [
+    0.92564368,
+    0.935597726
+   ],
+   "in_cone_samples": 9425,
+   "independent_gated_expectation": 5.286,
+   "job_duration_s": 149.0,
+   "label_share": 0.889278,
+   "max_samples": 10000,
+   "mesh_sha256": "14a96ca640ebc6cc8c0164a8c0735c8ee3f7aa7cacffc0350e0a630f7bb12b24",
+   "n_block": 9306,
+   "n_cone_outside_block": 119,
+   "n_off_cone": 573,
+   "name": "r22-s46667-n10000",
+   "off_cone_by_mode": {
+    "0": 95,
+    "5": 478
+   },
+   "off_cone_total": 573,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9998,
+   "physical_perf": 0.009141199,
+   "receipt_dark_off_cone_acquisition": 63.422,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004121,
+   "tvd_cone_from_ideal": 0.09648,
+   "wall_share_s": 6.208333
+  },
+  {
+   "acquisition_s_estimate": 0.228018,
+   "block_counts": [
+    5247,
+    3973,
+    282,
+    114
+   ],
+   "compilation_seed": 20,
+   "cone_modes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "cone_share": 0.977491,
+   "form": "iterated",
+   "ideal_cone_modes": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "in_block": 0.961985,
+   "in_block_cone": 0.984137,
+   "in_block_cone_wilson95": [
+    0.981462221,
+    0.986430715
+   ],
+   "in_block_ideal_cone": 0.991647,
+   "in_block_ideal_cone_wilson95": [
+    0.989630665,
+    0.993273761
+   ],
+   "in_block_wilson95": [
+    0.958054995,
+    0.965559648
+   ],
+   "in_cone_samples": 9771,
+   "independent_gated_expectation": 2.015,
+   "job_duration_s": 149.0,
+   "label_share": 0.922369,
+   "max_samples": 10000,
+   "mesh_sha256": "29dc6ef891348eb0cbac6d660ab1cfdbc4484a0c9ce94ae80c20ccf47dcfe8ff",
+   "n_block": 9616,
+   "n_cone_outside_block": 155,
+   "n_off_cone": 225,
+   "name": "t23-s20-n10000",
+   "off_cone_by_mode": {
+    "0": 58,
+    "5": 167
+   },
+   "off_cone_total": 225,
+   "off_cone_with_in_cone_click": 0,
+   "one_click_samples": 9996,
+   "physical_perf": 0.008877787,
+   "receipt_dark_off_cone_acquisition": 65.304,
+   "receipt_dark_off_cone_wall": 1778.067,
+   "run": "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "samples": 10000,
+   "shot_floor": 0.004047,
+   "tvd_cone_from_ideal": 0.093476,
+   "wall_share_s": 6.208333
   }
  ],
  "cone_floor": 1e-06,
@@ -2824,7 +5682,9 @@
   "2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10",
   "2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11",
   "2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12",
-  "2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13"
+  "2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
+  "2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14",
+  "2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16"
  ],
- "schema": "qd-belenos-cone-reading-v1"
+ "schema": "qd-belenos-cone-reading-v2"
 }
