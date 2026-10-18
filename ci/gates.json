@@ -3373,6 +3373,38 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --coverage && \"$PYTHON\" -B -O -W error empirical_bernstein_contracts.py --coverage",
+   "name": "core-529",
+   "seconds": 3.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --methods && \"$PYTHON\" -B -O -W error empirical_bernstein_contracts.py --methods",
+   "name": "core-530",
+   "seconds": 2.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --planner && \"$PYTHON\" -B -O -W error empirical_bernstein_contracts.py --planner",
+   "name": "core-531",
+   "seconds": 4.6,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error empirical_bernstein_contracts.py --default-identity && \"$PYTHON\" -B -O -W error empirical_bernstein_contracts.py --default-identity",
+   "name": "core-532",
+   "seconds": 2.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --rep-delay && \"$PYTHON\" -B -O -W error qpu_planning_contracts.py --rep-delay",
    "name": "core-523",
    "seconds": 158.8,
