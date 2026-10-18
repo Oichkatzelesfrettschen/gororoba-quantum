@@ -940,6 +940,41 @@
       "question": "job-02's sixteen configurations at compilation seeds 1 and 2 in one 32-iteration job: does the seed select the served mesh, how far do the algebra shares move between seeds, and does a 32-iteration job fit the 300 s limit?"
     },
     {
+      "id": "kingston-init-control-prep0-50us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T083402.386701Z",
+      "family": "state-prep-control (prep0, 50 us)",
+      "question": "How much excitation does the Sampler's implicit initialization leave on each admitted Kingston qubit after this shot history and repetition delay?"
+    },
+    {
+      "id": "kingston-init-control-prep0-250us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T083404.414317Z",
+      "family": "state-prep-control (prep0, 250 us)",
+      "question": "How much excitation does the Sampler's implicit initialization leave on each admitted Kingston qubit after this shot history and repetition delay?"
+    },
+    {
+      "id": "kingston-init-control-xhistory-50us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T083404.226285Z",
+      "family": "state-prep-control (x_history, 50 us)",
+      "question": "How much excitation does the Sampler's implicit initialization leave on each admitted Kingston qubit after this shot history and repetition delay?"
+    },
+    {
+      "id": "kingston-init-control-xhistory-250us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T083403.945334Z",
+      "family": "state-prep-control (x_history, 250 us)",
+      "question": "How much excitation does the Sampler's implicit initialization leave on each admitted Kingston qubit after this shot history and repetition delay?"
+    },
+    {
+      "id": "kingston-n21-feedback-encoded-50us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-18T090603.530638Z",
+      "family": "n21-feedback-encoded",
+      "question": "Does mid-circuit feedback change the encoded N=21 contrast on Kingston at a 50 us repetition delay?"
+    },
+    {
       "id": "qd-qpu-belenos-mesh-job-09-bridge",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-18T074524Z-qpu_belenos-belenos_mesh-job-09",
@@ -2455,7 +2490,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "7eb6a2458621aa96e1bcc04996aef2ce21a4c5c698fa47766b7cefb690534260"
+          "sha256": "fbfa5cb75adb665ba311191e3303cc8fbec3a394e9481f8d2f73fb29cb3df668"
         }
       ],
       "documents": [
@@ -2725,7 +2760,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "4833c80261bb88ed5a5e9bd4225a331cb852a9a1e2fc7524a9636b42b0bbca72"
+          "sha256": "421361810e6d843576e3cd2b017a2702876cd45f95e5ae3c0174cf65f8919635"
         },
         {
           "path": "results/live/2026-10-13T025444.603480Z/isa.qpy",
@@ -2764,7 +2799,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "4833c80261bb88ed5a5e9bd4225a331cb852a9a1e2fc7524a9636b42b0bbca72"
+          "sha256": "421361810e6d843576e3cd2b017a2702876cd45f95e5ae3c0174cf65f8919635"
         },
         {
           "path": "results/live/2026-10-13T025444.603480Z/isa.qpy",
@@ -2838,7 +2873,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "4833c80261bb88ed5a5e9bd4225a331cb852a9a1e2fc7524a9636b42b0bbca72"
+          "sha256": "421361810e6d843576e3cd2b017a2702876cd45f95e5ae3c0174cf65f8919635"
         },
         {
           "path": "results/live/2026-10-11T152922.787095Z/collect.json",
@@ -2884,7 +2919,7 @@
         },
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "4833c80261bb88ed5a5e9bd4225a331cb852a9a1e2fc7524a9636b42b0bbca72"
+          "sha256": "421361810e6d843576e3cd2b017a2702876cd45f95e5ae3c0174cf65f8919635"
         }
       ],
       "documents": [
@@ -3278,7 +3313,7 @@
     },
     {
       "id": "hw-ghost-calibration-replay",
-      "statement": "Replaying the executed circuits of 14 retained IBM runs under every retained calibration of their backend, at each member's executed shot count, the noise model reproduces the recorded replay distances to sampling precision (mean |ghost - recorded| 0.0077 TV over 206 replicas against 0.0079 TV between two independent ghost draws), the predicted distance to hardware moves by only 0.001 to 0.032 TV across calibrations against floors of 0.026 to 0.435 TV, and today's calibration fits the old data better than the execution-time calibration by more than two standard errors on 10 of 14 runs.",
+      "statement": "Replaying the executed circuits of 14 retained IBM runs under every retained calibration of their backend, at each member's executed shot count, the noise model reproduces the recorded replay distances to sampling precision (mean |ghost - recorded| 0.0077 TV over 206 replicas against 0.0079 TV between two independent ghost draws), the predicted distance to hardware moves by only 0.001 to 0.032 TV across calibrations against floors of 0.026 to 0.435 TV, and today's calibration fits the old data better than the execution-time calibration by more than two standard errors on 10 of 14 runs. Five 2026-10-18 Kingston runs and one further Kingston snapshot, added by an incremental merge, widen the calibration spread to as much as 0.054 TV (2026-10-12T055624, 0.088 to 0.142), and the exact-law n21 members and the 149-member control runs reproduce their recorded replays within 0.0027 TV.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -3286,15 +3321,15 @@
       "evidence": [
         {
           "path": "docs/evidence/ghost_runs/result.json",
-          "sha256": "8871bae4f9e1a7513d7851ed4b92c9a8bd0591c7e8dbb30eb2ba67a822d0a622"
+          "sha256": "0a3622f6c484692392b13caf4ef6a0eccbeca65992062d42c499451f022dfecf"
         },
         {
           "path": "docs/evidence/ghost_runs/report.json",
-          "sha256": "07aa731d95a7c5419fc3ddf18dabb2bdd7c4e580f26dfadec66695057484bfb0"
+          "sha256": "413bde5009ee9aec10a19f38076af680269b8342785aee010e7f5e0bd5c30cdd"
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "7eb6a2458621aa96e1bcc04996aef2ce21a4c5c698fa47766b7cefb690534260"
+          "sha256": "fbfa5cb75adb665ba311191e3303cc8fbec3a394e9481f8d2f73fb29cb3df668"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -3322,7 +3357,12 @@
         "kingston-rank-sectors",
         "kingston-ripple-atlas",
         "kingston-corner-baseline",
-        "kingston-zero-divisor-fringe"
+        "kingston-zero-divisor-fringe",
+        "kingston-init-control-prep0-50us",
+        "kingston-init-control-xhistory-250us",
+        "kingston-init-control-xhistory-50us",
+        "kingston-init-control-prep0-250us",
+        "kingston-n21-feedback-encoded-50us"
       ],
       "assumptions": [],
       "depends_on": [],
@@ -5381,6 +5421,121 @@
       "depends_on": [
         "qd-qpu-belenos-84-84-zero-divisor-program"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-kingston-init-excitation-bound",
+      "statement": "On Kingston qubits 104, 105, 106, 117, 124, 125 and 126 the implicit initialization leaves at most eps50 = 0.0144 and eps250 = 0.0157 excitation after the worst shot history, both set by q125, simultaneously with 447 bounds at alpha 0.01 over 149 controlled qubits; the n21 plan's fixed point converged at 0.014393.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration (2026-10-18 01:38:20 PDT) shared by the controls and the n21 run; correlated initialization across qubits is reported as a diagnostic, not bounded (issue #251).",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-18T085924.738302Z/state-prep-excess.json",
+          "sha256": "bf684a66ba92966a75b50ee405c90153057d0bc68b380dc319afa990961b7fe8"
+        },
+        {
+          "path": "results/live/2026-10-18T083402.386701Z/collect.json",
+          "sha256": "59d7b6a0e9a05f647c6bade648f368b207e9b574352b8639bdc0d8fce589e4ea"
+        },
+        {
+          "path": "results/live/2026-10-18T083404.414317Z/collect.json",
+          "sha256": "1440ee0d160e275d2b3c3de53930f3add1ba42a79183f4775178c5723249b75c"
+        },
+        {
+          "path": "results/live/2026-10-18T083404.226285Z/collect.json",
+          "sha256": "a35e07134002d29c5d49cec21bdc437bbfc32a7308dc8aa19536a6e38e733eaf"
+        },
+        {
+          "path": "results/live/2026-10-18T083403.945334Z/collect.json",
+          "sha256": "7be72acea468cb5cbeb941f0ced701d6f5f41bdf698fc4119c2fd2ced7dfe726"
+        }
+      ],
+      "documents": [
+        "results/live/N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md",
+        "results/live/N21_STATE_PREP_CONTROL_CASE.md"
+      ],
+      "gates": {
+        "core-539": "replay"
+      },
+      "acquisitions": [
+        "kingston-init-control-prep0-50us",
+        "kingston-init-control-prep0-250us",
+        "kingston-init-control-xhistory-50us",
+        "kingston-init-control-xhistory-250us"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-n21-feedback-null-kingston",
+      "statement": "At 50 us on Kingston qubits 104-106, 117, 124-126 with 100,000 shots per arm, the encoded N=21 contrast difference between feedback and no feedback is +0.0027 with 95 % interval [-0.0129, +0.0184]; zero is not rejected, and the calibration model's exact +0.0310 (sampled replay +0.0344) lies outside the interval.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One placement and calibration; raw counts without readout correction (feed-forward); the run isolates no suppressing mechanism.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-18T090603.530638Z/collect.json",
+          "sha256": "9bfac1fab310b4c8417bc273600d2b004fe5c30b3c08fd69c9dcd50f12dc9462"
+        }
+      ],
+      "documents": [
+        "results/live/N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md",
+        "results/live/N21_STATE_PREP_CONTROL_CASE.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "kingston-n21-feedback-encoded-50us"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-kingston-init-excitation-bound"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-kingston-init-survey-149q",
+      "statement": "Across 149 Kingston qubits the shot-history excitation averages +0.0011 at 50 us and +0.00003 at 250 us; q58 reads 0.080 after prep0 at 50 us against 0.030 at 250 us and q62 gains +0.030 from a |1> history at 50 us.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Point estimates; each history difference spans a dynamic and a static job as well as the shot history.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-18T083402.386701Z/collect.json",
+          "sha256": "59d7b6a0e9a05f647c6bade648f368b207e9b574352b8639bdc0d8fce589e4ea"
+        },
+        {
+          "path": "results/live/2026-10-18T083404.414317Z/collect.json",
+          "sha256": "1440ee0d160e275d2b3c3de53930f3add1ba42a79183f4775178c5723249b75c"
+        },
+        {
+          "path": "results/live/2026-10-18T083404.226285Z/collect.json",
+          "sha256": "a35e07134002d29c5d49cec21bdc437bbfc32a7308dc8aa19536a6e38e733eaf"
+        },
+        {
+          "path": "results/live/2026-10-18T083403.945334Z/collect.json",
+          "sha256": "7be72acea468cb5cbeb941f0ced701d6f5f41bdf698fc4119c2fd2ced7dfe726"
+        }
+      ],
+      "documents": [
+        "results/live/N21_STATE_PREP_AND_FEEDBACK_FINDINGS.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "kingston-init-control-prep0-50us",
+        "kingston-init-control-prep0-250us",
+        "kingston-init-control-xhistory-50us",
+        "kingston-init-control-xhistory-250us"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     },

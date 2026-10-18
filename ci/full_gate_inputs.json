@@ -119,7 +119,12 @@
     "core-287": [
       "docs/evidence/ghost_runs/**",
       "docs/evidence/calibration/history/**",
-      "results/live/2026-10-13T080216.451663Z/**"
+      "results/live/2026-10-13T080216.451663Z/**",
+      "results/live/2026-10-18T083402.386701Z/**",
+      "results/live/2026-10-18T083403.945334Z/**",
+      "results/live/2026-10-18T083404.226285Z/**",
+      "results/live/2026-10-18T083404.414317Z/**",
+      "results/live/2026-10-18T090603.530638Z/**"
     ],
     "core-311": [
       "docs/evidence/walk_scaffold_channels/**",
