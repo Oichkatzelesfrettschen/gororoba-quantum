@@ -5185,6 +5185,13 @@ def main(argv: list[str] | None = None) -> int:
         "the planner applies it through Cantelli or Chebyshev and the collector after its falsifier passes",
     )
     parser.add_argument(
+        "--empirical-bernstein",
+        action="store_true",
+        help="N21 families under --model-method exact: each endpoint's confidence and detection radius takes the "
+        "smaller of the data-free radius and the Maurer-Pontil empirical-Bernstein radius at an equal alpha split, "
+        "planned on the exact law's variance raised to its sample-variance upper limit; the policy binds it",
+    )
+    parser.add_argument(
         "--prep-excitation",
         type=float,
         metavar="EPS",
@@ -5352,6 +5359,8 @@ def main(argv: list[str] | None = None) -> int:
         args.family not in N21_FAMILIES
     ):
         parser.error("--model-method exact and --replica-variance-bound apply to the N21 families only")
+    if args.empirical_bernstein and (args.family not in N21_FAMILIES or args.model_method != "exact"):
+        parser.error("--empirical-bernstein applies to the N21 families under --model-method exact only")
     if args.prep_excitation is not None:
         if args.family not in N21_FAMILIES:
             parser.error("--prep-excitation applies to the N21 families only")

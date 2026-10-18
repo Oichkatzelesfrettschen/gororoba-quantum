@@ -35,10 +35,12 @@ from diagnostic_experiments import (
     state_prep_groups,
 )
 from experiment_optimizer import (
+    EMPIRICAL_BERNSTEIN,
     BudgetContract,
     CandidatePlan,
     CostScenario,
     CovarianceBound,
+    EmpiricalBernsteinDesign,
     JobCandidate,
     ObservableContract,
     ObservableTerm,
@@ -46,7 +48,9 @@ from experiment_optimizer import (
     PubPrediction,
     analyze_observations,
     observation_power_radii,
+    observed_empirical_bernstein,
     optimize,
+    planned_empirical_bernstein,
 )
 from packing import Replica
 from qpe_diagnostics import ideal_compiled_probabilities
@@ -55,10 +59,12 @@ from qpe_diagnostics import ideal_compiled_probabilities
 def settings(args: Any) -> dict[str, Any]:
     """Approval-bound design inputs, distinct from fluctuating quota readings.
 
-    A declared preparation excitation or state-prep arm selection joins them
-    only when given, so a plan without it keeps its settings unchanged.
+    A declared preparation excitation, the empirical-Bernstein opt-in and a
+    state-prep arm selection join them only when given, so a plan without
+    them keeps its settings unchanged.
     """
     excitation = getattr(args, "prep_excitation", None)
+    bernstein = {"empirical_bernstein": True} if getattr(args, "empirical_bernstein", False) else {}
     arms = getattr(args, "state_prep_arms", None)
     return (
         {
@@ -87,6 +93,7 @@ def settings(args: Any) -> dict[str, Any]:
             )
         }
         | ({"prep_excitation": excitation} if excitation is not None else {})
+        | bernstein
         | ({"state_prep_arms": list(arms)} if arms is not None else {})
     )
 
@@ -991,6 +998,14 @@ def prepare(
     variance_bound = getattr(args, "replica_variance_bound", None)
     if (model_method != "sampled" or variance_bound is not None) and args.family not in N21_FAMILIES:
         raise runtime.LiveRunError("--model-method exact and --replica-variance-bound apply to the N21 families")
+    # Every endpoint of an opted-in N21 family plans its confidence and
+    # detection radii under the empirical-Bernstein rule on the exact law's
+    # variance; other families keep the data-free radii.
+    bernstein: tuple[EmpiricalBernsteinDesign, ...] = ()
+    if getattr(args, "empirical_bernstein", False):
+        if args.family not in N21_FAMILIES or model_method != "exact":
+            raise runtime.LiveRunError("--empirical-bernstein applies to the N21 families under --model-method exact")
+        bernstein = tuple(EmpiricalBernsteinDesign(contract.name) for contract in contracts)
     exact_evidence: dict[int, dict[str, Any]] = {}
     for choices, _configuration in candidates:
         for choice in choices:
@@ -1118,6 +1133,7 @@ def prepare(
                     name=name,
                     jobs=tuple(jobs),
                     covariance_bounds=covariance,
+                    empirical_bernstein=bernstein,
                     proxy_metadata={
                         "backend": choices[0].snap.name,
                         "seed": choices[0].seed,
@@ -1237,6 +1253,17 @@ def prepare(
             if retained_plan.covariance_bounds
             else {}
         ),
+        **(
+            {
+                "empirical_bernstein": {
+                    "specification": dict(EMPIRICAL_BERNSTEIN),
+                    "designs": [asdict(design) for design in retained_plan.empirical_bernstein],
+                    "planned": planned_empirical_bernstein(retained_plan, contracts),
+                }
+            }
+            if retained_plan.empirical_bernstein
+            else {}
+        ),
         **({"pub_shots": args.pub_shots, "shot_allocation": allocation_audits[retained]} if per_pub else {}),
         "optimization_budget": asdict(budget),
         "local_simulation_batches": (
@@ -1271,7 +1298,11 @@ def measured_family(
     registers are absent, every endpoint takes the Hoeffding
     arbitrary-dependence radius. ``replica_covariance`` records the branch,
     the falsifier rows and each directional endpoint's power condition at
-    the observed shots under the applied radius.
+    the observed shots under the applied radius. A record that carries an
+    ``empirical_bernstein`` block applies its designs to the confidence and
+    detection radii and reports every radius they compose under that key,
+    and withholds the analysis when the block's ``specification`` differs
+    from experiment_optimizer.EMPIRICAL_BERNSTEIN.
     """
     if record.get("family_configuration", {}).get("name") == "folded-correction":
         import correction_collection
@@ -1322,9 +1353,19 @@ def measured_family(
             pubs = tuple(ObservedPub(name, members, shot_map[name]) for name, members in by_pub.items())
         else:
             pubs = tuple(ObservedPub(name, members, int(record["shots"])) for name, members in by_pub.items())
+        # The designs apply only under the rule the record preregistered; a
+        # record whose rule differs from EMPIRICAL_BERNSTEIN withholds its
+        # analysis, as the case renderer refuses to state it.
+        block = record.get("empirical_bernstein")
+        if block is not None and (not isinstance(block, dict) or block.get("specification") != EMPIRICAL_BERNSTEIN):
+            raise ValueError(
+                "record empirical-Bernstein specification differs from experiment_optimizer.EMPIRICAL_BERNSTEIN"
+            )
+        bernstein = tuple(EmpiricalBernsteinDesign(**design) for design in (block or {}).get("designs", []))
         bounds = record.get("covariance_bounds", [])
         if not bounds:
-            return analyze_observations(pubs, endpoints).as_dict()
+            analysis = analyze_observations(pubs, endpoints, (), bernstein).as_dict()
+            return analysis | _bernstein_status(record, pubs, endpoints, (), bernstein, analysis)
         falsifier = n21_exact_planning.covariance_falsifier(record, replica_registers, distributions)
         # The record's planned allowance sized the run; collection replaces it
         # with the measured excess of the UCL over the declared projection.
@@ -1344,7 +1385,7 @@ def measured_family(
                 for bound, row in zip(bounds, falsifier["bounds"], strict=True)
             )
         )
-        analysis = analyze_observations(pubs, endpoints, covariance).as_dict()
+        analysis = analyze_observations(pubs, endpoints, covariance, bernstein).as_dict()
         analysis["replica_covariance"] = falsifier | {
             "alpha_split": [
                 {
@@ -1357,11 +1398,31 @@ def measured_family(
                 }
                 for endpoint in endpoints
             ],
-            "power": _power_status(record, pubs, endpoints, covariance, analysis),
+            "power": _power_status(record, pubs, endpoints, covariance, analysis, bernstein),
         }
-        return analysis
+        return analysis | _bernstein_status(record, pubs, endpoints, covariance, bernstein, analysis)
     except ValueError as error:
         return {"withheld": f"invalid measured family data: {error}"}
+
+
+def _bernstein_status(
+    record: dict[str, Any],
+    pubs: tuple[ObservedPub, ...],
+    endpoints: tuple[ObservableContract, ...],
+    covariance: tuple[CovarianceBound, ...],
+    bernstein: tuple[EmpiricalBernsteinDesign, ...],
+    analysis: dict[str, Any],
+) -> dict[str, Any]:
+    """The empirical-Bernstein block of an opted-in collection: every radius it composes and the power condition."""
+    if not bernstein:
+        return {}
+    return {
+        "empirical_bernstein": {
+            "specification": record["empirical_bernstein"]["specification"],
+            "endpoints": observed_empirical_bernstein(pubs, endpoints, covariance, bernstein),
+            "power": _power_status(record, pubs, endpoints, covariance, analysis, bernstein),
+        }
+    }
 
 
 def _power_status(
@@ -1370,6 +1431,7 @@ def _power_status(
     endpoints: tuple[ObservableContract, ...],
     covariance: tuple[CovarianceBound, ...],
     analysis: dict[str, Any],
+    bernstein: tuple[EmpiricalBernsteinDesign, ...] = (),
 ) -> list[dict[str, Any]]:
     """Each directional endpoint's detection plus power radius at the observed shots against its planned effect."""
     optimization = record.get("optimization", {})
@@ -1379,7 +1441,7 @@ def _power_status(
         if candidate["name"] == optimization.get("selected")
         for observable in candidate["observables"]
     }
-    radii = observation_power_radii(pubs, endpoints, covariance)
+    radii = observation_power_radii(pubs, endpoints, covariance, bernstein)
     contracts = {contract.name: contract for contract in endpoints}
     rows = []
     for row in analysis["observables"]:
