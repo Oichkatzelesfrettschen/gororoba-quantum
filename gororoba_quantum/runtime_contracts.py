@@ -13,7 +13,7 @@ import os
 import shutil
 import tempfile
 from collections.abc import Collection
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
@@ -2209,6 +2209,7 @@ def _verify_approved_record_gate() -> None:
             raise RuntimeError("the plan's policy does not record the execution ceiling")
         drifted = copy.deepcopy(record)
         drifted["groups"][0]["calibration"] = "2000-01-01T00:00:00+00:00"
+        drifted["groups"][0]["calibration_fingerprint"]["target:dt"] = 0.0
         drifted["groups"][0]["initial_layout"] = list(reversed(drifted["groups"][0]["initial_layout"]))
         found = live_run_module.approved_record_mismatches(approved_dir, drifted, "0" * 64)
         if not any("calibration" in m for m in found) or not any("initial_layout" in m for m in found):
@@ -2221,13 +2222,6 @@ def _verify_approved_record_gate() -> None:
         same_view = live_run_module.refreshed_plan_view(record, choices, pubs)
         if live_run_module.approved_record_mismatches(approved_dir, same_view, fresh_qpy):
             raise RuntimeError("the refreshed view of an unchanged plan mismatches the approved record")
-        moved = copy.copy(choices[0])
-        moved.snap = copy.copy(choices[0].snap)
-        moved.snap.calibration = "2000-01-01T00:00:00+00:00"
-        moved_view = live_run_module.refreshed_plan_view(record, [moved], pubs)
-        moved_found = live_run_module.approved_record_mismatches(approved_dir, moved_view, fresh_qpy)
-        if not any("calibration" in m for m in moved_found):
-            raise RuntimeError("a calibration that moved during the refresh passes the approved-record gate")
         for label, mutate in (
             ("twirl", lambda r: r["policy"].__setitem__("twirl", not r["policy"].get("twirl", False))),
             ("min_remaining_seconds", lambda r: r["policy"].__setitem__("min_remaining_seconds", 999)),
@@ -2327,54 +2321,321 @@ def _verify_approved_record_gate() -> None:
         if runs or second_record["state"] != "approval_required":
             raise RuntimeError("a second attempt ran a Sampler or left the state unchanged")
         marker.unlink()
-        # A calibration that rolls between the approved-record check and the
-        # batch stops before the Sampler.
-        original_take_snapshot = live_run_module.take_snapshot
-        snapshot_calls = 0
 
-        def rolled_snapshot(service: Any, name: str, operator_excluded: Collection[int] = ()) -> Snapshot:
-            # The refresh before the gate reads the first snapshot; the
-            # per-batch revalidation reads the next, which has rolled.
-            nonlocal snapshot_calls
-            snapshot_calls += 1
-            snapshot = original_take_snapshot(service, name, operator_excluded)
-            if snapshot_calls > 1:
-                snapshot.calibration = "2099-01-01T00:00:00+00:00"
+
+class _ShiftedReadout:
+    """BackendProperties whose prob_meas1_prep0 on one qubit reads shifted: a republish that moved one value."""
+
+    def __init__(self, properties: Any, qubit: int, shift: float = 0.01):
+        self._properties = properties
+        self._qubit = qubit
+        self._shift = shift
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._properties, name)
+
+    def qubit_property(self, qubit: int, name: str | None = None) -> Any:
+        value = self._properties.qubit_property(qubit, name)
+        if qubit == self._qubit and name == "prob_meas1_prep0":
+            return (value[0] + self._shift, *value[1:])
+        return value
+
+
+def _legacy_approved(source: Path, destination: Path) -> Path:
+    """A copy of an approved dry run whose groups carry no calibration values, as every earlier record."""
+    destination.mkdir()
+    shutil.copyfile(source / "isa.qpy", destination / "isa.qpy")
+    legacy = json.loads((source / "record.json").read_text())
+    for group in legacy["groups"]:
+        group.pop("calibration_fingerprint")
+        group.pop("calibration_fingerprint_sha256")
+    write_json(destination, legacy)
+    return destination
+
+
+class _FiniteQuotaService(_ProbeService):
+    """A service reporting a fixed finite quota, so a same-calibration refresh reuses the plan."""
+
+    def usage(self) -> dict[str, Any]:
+        return {"usage_limit_reached": False, "usage_remaining_seconds": 600.0}
+
+
+def _verify_approval_calibration_values() -> None:
+    """An approval binds the consumed calibration values: a timestamp-only republish passes, a moved value refuses.
+
+    The dry run records each group's calibration_values; the refresh, the
+    preflight before planning, and every batch compare fresh values with
+    them. An approved record without values keeps the timestamp rule.
+    """
+    backend = _ProbeBackend("viable", FakeFez())
+    service = _FiniteQuotaService([backend])
+    args = _fixture_args(groups=["hybrid_shor_mod15"])
+    with redirect_stdout(io.StringIO()):
+        choices, record = live_run_module.plan(service, args)
+        live_run_module.evaluate(choices, record)
+    group = record["groups"][0]
+    name = group["group"]
+    values = group.get("calibration_fingerprint")
+    if not isinstance(values, dict) or not values:
+        raise RuntimeError("the dry-run group records no calibration values")
+    if group["calibration_fingerprint_sha256"] != live_run_module.calibration_values_sha256(values):
+        raise RuntimeError("the recorded calibration-value digest differs from its values")
+    digest = group.get("noise_serialized_channels_sha256")
+    if not (isinstance(digest, str) and len(digest) == 64):
+        raise RuntimeError(f"the dry-run group records no noise-model digest: {digest!r}")
+    measured = sorted(int(key.split(":")[1]) for key in values if key.startswith("e10:"))
+    if not measured or "target:dt" not in values or not any(key.startswith("target:t1:") for key in values):
+        raise RuntimeError(f"the calibration values omit readout, timing or coherence: {sorted(values)[:8]}")
+    shifted_qubit = measured[0]
+    same = live_run_module.same_calibration_instant
+    if not same("2026-10-17T17:50:43-07:00", "2026-10-18T00:50:43+00:00") or same(
+        "2026-10-17T17:50:43-07:00", "2026-10-18T00:50:44+00:00"
+    ):
+        raise RuntimeError("calibration stamps do not compare as instants")
+    if same("unparsed", "other") or not same("unparsed", "unparsed"):
+        raise RuntimeError("unparsed calibration stamps do not compare as text")
+    republished = "2099-01-01T00:00:00+00:00"
+
+    def moved_choice(shift: bool) -> Choice:
+        moved = copy.copy(choices[0])
+        moved.snap = copy.copy(choices[0].snap)
+        moved.snap.calibration = republished
+        if shift:
+            moved.snap.properties = _ShiftedReadout(moved.snap.properties, shifted_qubit)
+        return moved
+
+    def rolled_snapshots(shift: bool, after: int) -> Any:
+        original = live_run_module.take_snapshot
+        calls = 0
+
+        def rolled(service_: Any, backend_name: str, operator_excluded: Collection[int] = ()) -> Snapshot:
+            nonlocal calls
+            calls += 1
+            snapshot = original(service_, backend_name, operator_excluded)
+            if calls > after:
+                snapshot.calibration = republished
+                if shift:
+                    snapshot.properties = _ShiftedReadout(snapshot.properties, shifted_qubit)
             return snapshot
 
+        return patch.object(live_run_module, "take_snapshot", rolled)
+
+    class PlanningStarted(RuntimeError):
+        """Candidate selection began: the preflight let the plan proceed."""
+
+    def refuse_planning(*_args: Any, **_kwargs: Any) -> Any:
+        raise PlanningStarted("planning started")
+
+    runs: list[int] = []
+
+    def counting_sampler(
+        backend_: Any,
+        kind: str,
+        twirl: bool,
+        dd: str | None,
+        tags: list[str],
+        shots: int = 4096,
+        max_execution_seconds: int | None = None,
+        *,
+        rep_delay: float | None = None,
+    ) -> Any:
+        del backend_, twirl, dd, rep_delay
+        return _ProbeSampler(
+            kind, tags, shots, lambda circuits: runs.append(len(circuits)), None, max_execution_seconds
+        )
+
+    with tempfile.TemporaryDirectory(prefix="gororoba-approval-values-") as directory:
+        approved_dir = Path(directory) / "approved"
+        approved_dir.mkdir()
+        write_archive(approved_dir, choices)
+        write_json(approved_dir, record)
+        legacy_dir = _legacy_approved(approved_dir, Path(directory) / "legacy")
+        qpy_digest = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
+        pubs = execution_pubs(choices)
+
+        # The refresh comparison.
+        binding: dict[str, Any] = {}
+        view = live_run_module.refreshed_plan_view(record, [moved_choice(False)], pubs)
+        found = live_run_module.approved_record_mismatches(approved_dir, view, qpy_digest, None, binding)
+        accepted = binding.get("accepted_timestamp_changes", [])
+        if found or len(accepted) != 1 or accepted[0]["fresh_calibration"] != republished:
+            raise RuntimeError(f"a timestamp-only republish refuses or goes unrecorded: {found} {binding}")
+        if binding.get("fingerprint_sha256") != {name: group["calibration_fingerprint_sha256"]}:
+            raise RuntimeError(f"the refresh binds other digests than the approved values: {binding}")
+        view = live_run_module.refreshed_plan_view(record, [moved_choice(True)], pubs)
+        found = live_run_module.approved_record_mismatches(approved_dir, view, qpy_digest)
+        if not any("calibration values changed" in m and f"e10:{shifted_qubit}" in m for m in found):
+            raise RuntimeError(f"a moved readout value on a placed qubit passes the refresh: {found}")
+        legacy_binding: dict[str, Any] = {}
+        view = live_run_module.refreshed_plan_view(record, [moved_choice(False)], pubs)
+        found = live_run_module.approved_record_mismatches(legacy_dir, view, qpy_digest, None, legacy_binding)
+        if not any(f"{name}: calibration" in m for m in found) or legacy_binding:
+            raise RuntimeError(f"a record without values accepts a moved timestamp: {found} {legacy_binding}")
+        offset = copy.copy(choices[0])
+        offset.snap = copy.copy(choices[0].snap)
+        instant = datetime.fromisoformat(choices[0].snap.calibration)
+        offset.snap.calibration = instant.astimezone(UTC).isoformat()
+        if offset.snap.calibration == choices[0].snap.calibration:
+            raise RuntimeError("the fixture calibration already reads UTC")
+        view = live_run_module.refreshed_plan_view(record, [offset], pubs)
+        found = live_run_module.approved_record_mismatches(legacy_dir, view, qpy_digest)
+        if found:
+            raise RuntimeError(f"one calibration instant under another UTC offset refuses: {found}")
+
+        # The preflight at the first discovery, before any planning.
+        def preflight_plan(approved: Path, shift: bool) -> Any:
+            submit_args = _fixture_args(groups=["hybrid_shor_mod15"], submit=True, approved_record=approved)
+            with (
+                rolled_snapshots(shift, 0),
+                patch.object(live_run_module, "select_candidates", refuse_planning),
+                redirect_stdout(io.StringIO()),
+            ):
+                try:
+                    live_run_module.plan(service, submit_args)
+                except live_run_module.ApprovalPreflightRefused as error:
+                    return error
+                except PlanningStarted:
+                    return None
+            raise RuntimeError(f"the plan neither started nor stopped (shift={shift}, approved={approved.name})")
+
+        refused = preflight_plan(approved_dir, True)
+        if refused is None:
+            raise RuntimeError("a moved readout value on a placed qubit lets planning start")
+        refusal = refused.record
+        if (
+            refusal["state"] != "approval_required"
+            or not any(f"e10:{shifted_qubit}" in m for m in refusal["renewed_approval"]["mismatches"])
+            or refusal["approved_record"]["record_sha256"]
+            != hashlib.sha256((approved_dir / "record.json").read_bytes()).hexdigest()
+        ):
+            raise RuntimeError(f"the preflight refusal record is incomplete: {refusal}")
+        legacy_refused = preflight_plan(legacy_dir, False)
+        if legacy_refused is None or not any(
+            "binds no calibration values" in m for m in legacy_refused.record["renewed_approval"]["mismatches"]
+        ):
+            raise RuntimeError("a record without values passes a moved timestamp at the preflight")
+        if preflight_plan(approved_dir, False) is not None:
+            raise RuntimeError("a timestamp-only republish stops at the preflight")
+        with rolled_snapshots(False, 0), redirect_stdout(io.StringIO()):
+            republished_snapshots, _skipped, _inventory = discover_snapshots(service, None, None)
+        passed = live_run_module.approved_calibration_preflight(approved_dir, republished_snapshots)
+        accepted = passed["accepted_timestamp_changes"]
+        if passed["mismatches"] or [entry["fresh_calibration"] for entry in accepted] != [republished]:
+            raise RuntimeError(f"the preflight records no accepted timestamp change: {passed}")
+        # The CLI writes the refusal as an approval_required run record.
+        out = Path(directory) / "out"
+        argv = [
+            "--groups",
+            "hybrid_shor_mod15",
+            "--backends",
+            "viable",
+            "--out",
+            str(out),
+            "--submit",
+            "--approved-record",
+            str(approved_dir),
+            "--approved-record-sha256",
+            hashlib.sha256((approved_dir / "record.json").read_bytes()).hexdigest(),
+            "--max-execution-seconds",
+            "60",
+            "--max-total-execution-seconds",
+            "60",
+        ]
+        with (
+            patch.object(live_run_module, "QiskitRuntimeService", lambda: service),
+            rolled_snapshots(True, 0),
+            patch.object(live_run_module, "select_candidates", refuse_planning),
+            redirect_stdout(io.StringIO()),
+            redirect_stderr(io.StringIO()),
+        ):
+            status = live_run_module.main(argv)
+        written = [json.loads(path.read_text()) for path in out.glob("*/record.json")]
+        if status != 1 or len(written) != 1 or written[0]["state"] != "approval_required":
+            raise RuntimeError(f"the CLI preflight refusal exits {status} with records {written}")
+        if (approved_dir / live_run_module.APPROVAL_CONSUMED_FILE).exists():
+            raise RuntimeError("a preflight refusal consumed the approval")
+
+        # A republish before the refresh is accepted there and again at the
+        # batch; a value that moves after the refresh stops the batch for
+        # renewed approval.
+        run_dir = Path(directory) / "run"
+        run_dir.mkdir()
         args.approved_record = approved_dir
-        rolled_record = copy.deepcopy(record)
-        live_run_module.configure_sampler = counting_sampler
-        live_run_module.take_snapshot = rolled_snapshot
         try:
-            try:
+            with (
+                rolled_snapshots(False, 0),
+                patch.object(live_run_module, "configure_sampler", counting_sampler),
+                redirect_stdout(io.StringIO()),
+            ):
+                proceeded = copy.deepcopy(record)
                 live_run_module.submit(
-                    service, list(choices), args, rolled_record, lambda: write_archive(run_dir, choices), lambda: None
+                    service, list(choices), args, proceeded, lambda: write_archive(run_dir, choices), lambda: None
                 )
-            except LiveRunError as error:
-                if "calibration moved after the approved-record check" not in str(error):
-                    raise RuntimeError(f"a rolled batch calibration reports {error}") from error
-            else:
-                raise RuntimeError("a calibration that rolled before the batch reaches submission")
+            revalidated = proceeded["submission"]["planned_jobs"][0]["pre_submit_revalidation"]
+            refreshed = proceeded["approved_record"]["calibration_values"]
+            if proceeded["approved_record"]["mismatches"] or [
+                entry["fresh_calibration"] for entry in refreshed["accepted_timestamp_changes"]
+            ] != [republished]:
+                raise RuntimeError(f"the refresh records no accepted timestamp change: {refreshed}")
+            if (
+                not runs
+                or proceeded["state"] != "submitted"
+                or revalidated["calibration"] != republished
+                or revalidated["calibration_fingerprint_sha256"] != {name: group["calibration_fingerprint_sha256"]}
+            ):
+                raise RuntimeError(f"a timestamp-only batch republish stops or goes unrecorded: {revalidated}")
+            (approved_dir / live_run_module.APPROVAL_CONSUMED_FILE).unlink()
+            runs.clear()
+            for approved, shift, expected in (
+                (approved_dir, True, "calibration values changed"),
+                (legacy_dir, False, "calibration moved after the approved-record check"),
+            ):
+                args.approved_record = approved
+                stopped = copy.deepcopy(record)
+                with (
+                    rolled_snapshots(shift, 1),
+                    patch.object(live_run_module, "configure_sampler", counting_sampler),
+                    redirect_stdout(io.StringIO()),
+                ):
+                    try:
+                        live_run_module.submit(
+                            service, list(choices), args, stopped, lambda: write_archive(run_dir, choices), lambda: None
+                        )
+                    except LiveRunError as error:
+                        if expected not in str(error):
+                            raise RuntimeError(f"a moved batch calibration reports {error}") from error
+                    else:
+                        raise RuntimeError(f"a moved batch calibration reaches submission ({approved.name})")
+                if runs or stopped["state"] != "approval_required":
+                    raise RuntimeError(f"a moved batch calibration ran a Sampler or left {stopped['state']}")
+                if (approved / live_run_module.APPROVAL_CONSUMED_FILE).exists():
+                    raise RuntimeError("a refused batch consumed the approval")
         finally:
-            live_run_module.configure_sampler = original_configure_sampler
-            live_run_module.take_snapshot = original_take_snapshot
             args.approved_record = None
-        if runs or rolled_record["state"] != "approval_required":
-            raise RuntimeError("a rolled batch calibration runs a Sampler or leaves the state unchanged")
-        # With a batch already sent, the lifecycle stays with the submission.
-        partial = copy.deepcopy(record)
-        partial["submission"] = {"jobs": [{"job_id": "sent-earlier"}]}
-        partial["approved_record"] = {"calibrations": {backend.name: "approved"}}
-        partial["state"] = "submitted"
-        rolled = original_take_snapshot(service, backend.name)
-        rolled.calibration = "2099-01-01T00:00:00+00:00"
-        if partial["approved_record"]["calibrations"].get(backend.name) == rolled.calibration:
-            raise RuntimeError("fixture calibrations coincide")
-        if live_run_module.approved_calibration_drift(partial, backend.name, rolled.calibration) is None:
-            raise RuntimeError("a rolled calibration after a sent batch is not reported")
-        if partial["state"] != "submitted" or "renewed_approval_for_unsent_batches" not in partial:
-            raise RuntimeError("a rolled calibration after a sent batch resets the lifecycle or goes unrecorded")
+
+    # With a batch already sent, the lifecycle stays with the submission.
+    fresh = live_run_module.take_snapshot(service, backend.name)
+    packed = [entry.packed for entry in choices[0].entries]
+    unchanged = {name: live_run_module.calibration_values(packed, fresh.backend.target, fresh.properties)}
+    shifted = {
+        name: live_run_module.calibration_values(
+            packed, fresh.backend.target, _ShiftedReadout(fresh.properties, shifted_qubit)
+        )
+    }
+    bound = {name: group["calibration_fingerprint_sha256"]}
+    for digests, fresh_values, reported in ((bound, unchanged, False), (bound, shifted, True), ({}, None, True)):
+        sent = copy.deepcopy(record)
+        sent["submission"] = {"jobs": [{"job_id": "sent-earlier"}]}
+        sent["approved_record"] = {
+            "calibrations": {backend.name: "approved"},
+            "calibration_values": {"fingerprint_sha256": digests},
+        }
+        sent["state"] = "submitted"
+        drift = live_run_module.approved_calibration_drift(sent, backend.name, republished, fresh_values)
+        if (drift is not None) != reported:
+            raise RuntimeError(f"batch drift with bound digests {bool(digests)} reports {drift!r}")
+        if sent["state"] != "submitted" or ("renewed_approval_for_unsent_batches" in sent) != reported:
+            raise RuntimeError("batch drift after a sent batch resets the lifecycle or goes unrecorded")
 
 
 def _verify_schema_lifecycle() -> None:
@@ -3460,6 +3721,7 @@ def _verify() -> None:
     _verify_packing_equivalence()
     _verify_usage_wait()
     _verify_approved_record_gate()
+    _verify_approval_calibration_values()
     _verify_instance_and_ceiling()
     _verify_raw_scrubbing()
     _verify_nested_operations()
@@ -3507,4 +3769,14 @@ def _verify() -> None:
 
 
 if __name__ == "__main__":
-    _verify()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--approval-calibration",
+        action="store_true",
+        help="run only the approval calibration-value contract",
+    )
+    if parser.parse_args().approval_calibration:
+        _verify_approval_calibration_values()
+        print("approval calibration values: timestamp-only republish passes, moved values refuse")
+    else:
+        _verify()

@@ -3588,6 +3588,14 @@
    "name": "core-533",
    "seconds": 12.3,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error runtime_contracts.py --approval-calibration && \"$PYTHON\" -B -O -W error runtime_contracts.py --approval-calibration",
+   "name": "core-521",
+   "seconds": 53.4,
+   "tier": "pr"
   }
  ],
  "excluded": [
