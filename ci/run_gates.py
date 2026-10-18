@@ -273,6 +273,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--changed-files", type=Path, help="NUL-delimited git paths; fast gates plus affected full gates"
     )
+    parser.add_argument(
+        "--gates",
+        help="comma-separated gate names; a registered case gate matches by its own or its parent's name",
+    )
     parser.add_argument("--timings", type=Path, help="write measured gate durations and shard wall time as JSON")
     parser.add_argument("--plan", type=Path, help="write the selected shard and historical environments, then exit")
     parser.add_argument("--github-output", type=Path, help="append historical=true/false for a --plan step")
@@ -290,13 +294,13 @@ def main(argv: list[str] | None = None) -> int:
     if arguments.changed_files is not None:
         changed = arguments.changed_files.read_bytes().decode("utf-8").split("\0")
         changed = [path for path in changed if path]
-    selected = assign(
-        gate_inputs.expand_cases(
-            ROOT, select(ROOT, arguments.tier, arguments.max_seconds, arguments.requires, changed)
-        ),
-        count,
-        arguments.shard_cpus,
-    )[shard]
+    candidates = gate_inputs.expand_cases(
+        ROOT, select(ROOT, arguments.tier, arguments.max_seconds, arguments.requires, changed)
+    )
+    if arguments.gates is not None:
+        named = {name for name in arguments.gates.split(",") if name}
+        candidates = [gate for gate in candidates if gate["name"] in named or gate.get("parent") in named]
+    selected = assign(candidates, count, arguments.shard_cpus)[shard]
     if arguments.plan is not None:
         environments = sorted({gate["runtime"] for gate in selected if gate.get("runtime")})
         arguments.plan.write_text(
